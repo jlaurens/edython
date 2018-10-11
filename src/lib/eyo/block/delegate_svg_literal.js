@@ -282,7 +282,8 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (variant) {
  * @private
  * @suppress {globalThis}
 */
-eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
   var current = this.data.prefix.get()

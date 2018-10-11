@@ -492,7 +492,7 @@ eYo.DelegateSvg.prototype.render = (function () {
    *   If true, also render block's parent, grandparent, etc.  Defaults to true.
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
-  var renderDrawParent = function (optBubble) {
+  var renderDrawParent = function (optBubble, recorder) {
     if (optBubble === false || this.downRendering) {
       return
     }
@@ -510,7 +510,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           if (eYo.DelegateSvg.debugStartTrackingRender) {
             console.log(eYo.DelegateSvg.debugPrefix, 'UP')
           }
-          parent.render(!justConnected)
+          parent.render(!justConnected, recorder)
         } catch (err) {
           console.error(err)
           throw err
@@ -526,7 +526,7 @@ eYo.DelegateSvg.prototype.render = (function () {
               if (eYo.DelegateSvg.debugStartTrackingRender) {
                 console.log(eYo.DelegateSvg.debugPrefix, 'UP')
               }
-              parent.render()
+              parent.render(false, recorder)
             } catch (err) {
               console.error(err)
               throw err
@@ -563,14 +563,14 @@ eYo.DelegateSvg.prototype.render = (function () {
         var block = this.block_
         this.minWidth = block.width = 0
         this.consolidate()
-        this.willRender_()
-        this.renderDraw_()
-        this.renderDrawNext_()
-        this.layoutConnections_()
-        this.renderMove_()
-        renderDrawParent.call(this, optBubble)
+        this.willRender_(recorder)
+        this.renderDraw_(recorder)
+        this.renderDrawNext_(recorder)
+        this.layoutConnections_(recorder)
+        this.renderMove_(recorder)
+        renderDrawParent.call(this, optBubble, recorder)
         block.rendered = true
-        this.didRender_()
+        this.didRender_(recorder)
         if (eYo.traceOutputConnection && block.outputConnection) {
           console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
         }
@@ -585,7 +585,7 @@ eYo.DelegateSvg.prototype.render = (function () {
       }    
     }
   )
-  return function (optBubble) {
+  return function (optBubble, recorder) {
     var block = this.block_
     if (!this.isEditing && (this.isDragging_ || this.change.level || !block.workspace)) {
       return
@@ -595,19 +595,19 @@ eYo.DelegateSvg.prototype.render = (function () {
     if (block.rendered) {
       if (eYo.Connection.disconnectedChildC8n && block.previousConnection === eYo.Connection.disconnectedChildC8n) {
         // this block is the top one
-        this.layoutConnections_()
-        this.renderMove_()
-        this.updateAllPaths_(block)
-        this.alignRightEdges_(block)
+        this.layoutConnections_(recorder)
+        this.renderMove_(recorder)
+        this.updateAllPaths_()
+        this.alignRightEdges_(recorder)
         this.renderCount = this.change.count
         return
       } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
         // this block is the bottom one
         // but it may belong to a suite
-        this.layoutConnections_()
-        this.renderMove_()
-        this.updateAllPaths_(block)
-        renderDrawParent.call(this, optBubble)
+        this.layoutConnections_(recorder)
+        this.renderMove_(recorder)
+        this.updateAllPaths_()
+        renderDrawParent.call(this, optBubble, recorder)
         this.renderCount = this.change.count
         return
       } else if (eYo.Connection.connectedParentC8n) {
@@ -615,18 +615,18 @@ eYo.DelegateSvg.prototype.render = (function () {
           // this is not a statement connection
           // no shortcut
         } else if (block.previousConnection && eYo.Connection.connectedParentC8n == block.previousConnection.targetConnection) {
-          this.layoutConnections_()
-          this.renderMove_()
-          this.updateAllPaths_(block)
-          renderDrawParent.call(this, optBubble)
+          this.layoutConnections_(recorder)
+          this.renderMove_(recorder)
+          this.updateAllPaths_()
+          renderDrawParent.call(this, optBubble, recorder)
           this.renderCount = this.change.count
           return
         } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
-          this.layoutConnections_()
-          this.renderMove_()
-          this.updateAllPaths_(block)
+          this.layoutConnections_(recorder)
+          this.renderMove_(recorder)
+          this.updateAllPaths_()
           var root = block.getRootBlock()
-          root.eyo.alignRightEdges_(root)
+          root.eyo.alignRightEdges_(recorder)
           this.renderCount = this.change.count
           return
         }
@@ -647,7 +647,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
             try {
               parent.eyo.upRendering = true
-              parent.eyo.render(optBubble)
+              parent.eyo.render(optBubble, recorder)
             } catch (err) {
               console.error(err)
               throw err
@@ -655,7 +655,7 @@ eYo.DelegateSvg.prototype.render = (function () {
               parent.eyo.upRendering = false
             }
           } else {
-            parent.eyo.render(optBubble)
+            parent.eyo.render(optBubble, recorder)
           }
         }
         return
@@ -663,12 +663,12 @@ eYo.DelegateSvg.prototype.render = (function () {
     }
     if (this.renderCount === this.change.count) {
       // minimal rendering
-      this.layoutConnections_()
-      this.renderMove_()
-      this.updateAllPaths_(block)
+      this.layoutConnections_(recorder)
+      this.renderMove_(recorder)
+      this.updateAllPaths_()
       return
     }  
-    longRender.call(this, optBubble)
+    longRender.call(this, optBubble, recorder)
   }
 }) ()
 
@@ -814,7 +814,7 @@ eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.renderDraw_ = function () {
+eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
   if (this.svgPathInner_) {
     // if the above path does not exist
     // the block is not yet ready for rendering
@@ -824,7 +824,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function () {
     try {
       // chain the tiles to properly manage spaces between tiles
       unlocker = this.chainTiles()
-      d = this.renderDrawModel_()
+      d = this.renderDrawModel_(recorder)
       this.svgPathInner_.setAttribute('d', d)
     } catch (err) {
       console.error (err)
@@ -832,11 +832,9 @@ eYo.DelegateSvg.prototype.renderDraw_ = function () {
     } finally {
       unlocker && unlocker.eyo.unlockChainTiles(unlocker)
       var root = block.getRootBlock()
-      if (root.eyo) {
-        root.eyo.alignRightEdges_(root)
-      }
-      this.renderDrawSuite_(block)
-      this.updateAllPaths_(block)
+      root.eyo.alignRightEdges_(recorder)
+      this.renderDrawSuite_(recorder)
+      this.updateAllPaths_()
     }
   }
 }
@@ -847,28 +845,24 @@ eYo.DelegateSvg.prototype.renderDraw_ = function () {
  * @param {!eYo.Block} block
  * @protected
  */
-eYo.DelegateSvg.prototype.alignRightEdges_ = function (block) {
+eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
   var right = 0
   var e8r = eYo.StatementBlockEnumerator(block)
   var b
   var t = eYo.Font.tabWidth
   while ((b = e8r.next())) {
-    if (b.eyo) {
-      if (b.eyo.minWidth) {
-        right = Math.max(right, b.eyo.minWidth + t * e8r.depth())
-      } else {
-        return
-      }
+    if (b.eyo.minWidth) {
+      right = Math.max(right, b.eyo.minWidth + t * e8r.depth())
+    } else {
+      return
     }
   }
   e8r = eYo.StatementBlockEnumerator(block)
   while ((b = e8r.next())) {
-    if (b.eyo) {
-      var width = right - t * e8r.depth()
-      if (b.width !== width) {
-        b.width = width
-        b.eyo.updateAllPaths_(b)
-      }
+    var width = right - t * e8r.depth()
+    if (b.width !== width) {
+      b.width = width
+      b.eyo.updateAllPaths_()
     }
   }
 }
@@ -882,7 +876,7 @@ eYo.DelegateSvg.prototype.updatePath_ = function (path, def) {
   if (path) {
     if (def) {
       try {
-        var d = def.call(this, block)
+        var d = def.call(this)
         if (d.indexOf('NaN') >= 0) {
           d = def.call(this)
           console.log('d', d)
@@ -903,7 +897,7 @@ eYo.DelegateSvg.prototype.updatePath_ = function (path, def) {
  * @param {!eYo.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.updateAllPaths_ = function (block) {
+eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
   if (this.wrapped_) {
     this.updatePath_(this.svgPathContour_)
     this.updatePath_(this.svgPathShape_)
@@ -2804,7 +2798,7 @@ Object.defineProperty(eYo, 'SelectedConnection', function () {
             oldBlock.eyo.selectedConnectionSource_ = null
             oldBlock.removeSelect()
             if (oldBlock === Blockly.selected) {
-              oldBlock.eyo.updateAllPaths_(oldBlock)
+              oldBlock.eyo.updateAllPaths_()
               oldBlock.addSelect()
             } else if ((B = Blockly.selected)) {
               B.eyo.selectedConnectionSource_ = null
@@ -2826,7 +2820,7 @@ Object.defineProperty(eYo, 'SelectedConnection', function () {
             unwrapped.eyo.selectedConnectionSource_ = block
             unwrapped.select()
             block.removeSelect()
-            block.eyo.updateAllPaths_(block)
+            block.eyo.updateAllPaths_()
             block.addSelect()
           }
         }
