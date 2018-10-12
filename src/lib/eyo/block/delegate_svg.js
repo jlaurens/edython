@@ -590,6 +590,7 @@ eYo.DelegateSvg.prototype.render = (function () {
     if (!this.isEditing && (this.isDragging_ || this.change.level || !block.workspace)) {
       return
     }
+    recorder && recorder.caret.do_it(!this.wrapped_ && eYo.Key.LEFT)
     // rendering is very special when this is just a matter of
     // statement connection
     if (block.rendered) {
@@ -600,6 +601,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.updateAllPaths_()
         this.alignRightEdges_(recorder)
         this.renderCount = this.change.count
+        recorder && (recorder.didRenderBlock = true)
         return
       } else if (eYo.Connection.disconnectedParentC8n && block.nextConnection === eYo.Connection.disconnectedParentC8n) {
         // this block is the bottom one
@@ -609,6 +611,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.updateAllPaths_()
         renderDrawParent.call(this, recorder, optBubble)
         this.renderCount = this.change.count
+        recorder && (recorder.didRenderBlock = true)
         return
       } else if (eYo.Connection.connectedParentC8n) {
         if (block.outputConnection && eYo.Connection.connectedParentC8n == block.outputConnection.targetConnection) {
@@ -620,6 +623,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           this.updateAllPaths_()
           renderDrawParent.call(this, recorder, optBubble)
           this.renderCount = this.change.count
+          recorder && (recorder.didRenderBlock = true)
           return
         } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
           this.layoutConnections_(recorder)
@@ -628,6 +632,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           var root = block.getRootBlock()
           root.eyo.alignRightEdges_(recorder)
           this.renderCount = this.change.count
+          recorder && (recorder.didRenderBlock = true)
           return
         }
       }
@@ -667,9 +672,11 @@ eYo.DelegateSvg.prototype.render = (function () {
       this.layoutConnections_(recorder)
       this.renderMove_(recorder)
       this.updateAllPaths_()
+      recorder && (recorder.didRenderBlock = true)
       return
     }  
     longRender.call(this, optBubble, recorder)
+    recorder && (recorder.didRenderBlock = true)
   }
 }) ()
 
@@ -1205,6 +1212,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
    */
   Caret.prototype.set = function (self, newValue) {
     var ans = this.do_it()
+    if (this.f_) {
+      console.log('THERE WAS AN f_')
+    }
     this.self_ = newValue && self
     this.f_ = newValue
     return ans
@@ -1215,6 +1225,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
    */
   Caret.prototype.do_it = function (side) {
     if (this.f_) {
+      console.log('HERE: do_it', side)
       var ans = this.f_.call(this.self_, side)
       this.f_ = this.self_ = undefined
     } else {
@@ -1234,7 +1245,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
         },
         set (newValue) {
           if (this.x_ !== newValue) {
-            if (this.type_ === eYo.T3.Expr.named_call_expr) {
+            if (this.type_ === eYo.T3.Expr.optional_expression_list) {
               console.log('BLABLABLA')
             }
             console.log(this.type_, ':', this.x_, '->', newValue)
@@ -1253,7 +1264,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
     var io = {
       block: block,
       steps: [],
-      caret: new Caret(),
+      caret: new Caret(), // only for lists
       i: 0, // input index
       f: 0, // field index
       cursor: new Cursor(block.type)
@@ -1263,7 +1274,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
       io.recorder = recorder
       io.field = recorder.field // It is always defined
       // perform any pending caret action
-      recorder.caret.do_it(!this.wrapped_ && eYo.Key.LEFT)
     } else {
       io.field = {}
     }
@@ -1619,7 +1629,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
   steps = steps.concat(a_expr)
   steps.push(h_total)
   // next are for statement shape
-  var rr = eYo.Style.Path.radius()
+  var rr = eYo.Style.Path.r
   var aa = [' a ', rr, ', ', rr, ' 0 0 1 ']
   var parent
   // the left edge is different when the block is the head of a statement
@@ -1760,7 +1770,7 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
   } else {
     steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
     steps = steps.concat(a)
-    var r_stmt = eYo.Style.Path.radius()
+    var r_stmt = eYo.Style.Path.r
     var cy = r_stmt - eYo.Margin.V - dy
     if (true || cy) {
       var cx = Math.sqrt(r_stmt ** 2 + cy ** 2) - r_stmt
@@ -1803,7 +1813,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
       steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius() + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       } else {
         steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       }
@@ -2852,7 +2862,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
       R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
         c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
-        eYo.Font.tabWidth + eYo.Style.Path.radius(), // R U sure?
+        eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {

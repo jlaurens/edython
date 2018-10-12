@@ -130,11 +130,13 @@ eYo.Style.Path = {
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 1.5, // px
-  radius: function () {
+  width: 1.5 // px
+}
+Object.defineProperty(eYo.Style.Path, 'r', {
+  get () {
     return eYo.Margin.V + eYo.Padding.v + eYo.Font.descent / 2
   }
-}
+})
 eYo.Style.MenuItem = {
   'padding-h': eYo.Padding.t,
   'padding-v': eYo.Padding.t

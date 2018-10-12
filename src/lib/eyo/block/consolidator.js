@@ -699,7 +699,8 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     this.doFinalize(io)
     // this.doAry(io)
     return input
-  }).call(this)
+  })
+  return f.call(this).ans
 }
 
 /**

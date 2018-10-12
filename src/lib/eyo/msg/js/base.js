@@ -137,7 +137,7 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.LIST = 'Liste et assimilé'
 /** @export */ eYo.Msg.TEXT = 'Texte'
 /** @export */ eYo.Msg.LOOPING = 'Boucle'
-/** @export */ eYo.Msg.FUNCTION = 'Fonction et object'
+/** @export */ eYo.Msg.FUNCTION = 'Fonction et objet'
 
 /**
  * Internationalization entry.

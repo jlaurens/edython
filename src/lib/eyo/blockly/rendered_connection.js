@@ -809,6 +809,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       eYo.Connection.disconnectedChildC8n = childC8n
                       eYo.Connection.disconnectedParentC8n = undefined
                       eYo.Connection.disconnectedChildC8n = undefined
+                      parentC8n.incrementInputChangeCount && parentC8n.incrementInputChangeCount() // list are special
                     }
                   } catch (err) {
                     console.error(err)

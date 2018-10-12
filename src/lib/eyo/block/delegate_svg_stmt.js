@@ -126,7 +126,7 @@ eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   var w = block.width
   var h = block.height
   var steps = ['m ' + w + ',0 v ' + h]
-  var r = eYo.Style.Path.radius()
+  var r = eYo.Style.Path.r
   var a = ' a ' + r + ', ' + r + ' 0 0 1 '
   var c8n = block.nextConnection
   if (c8n && c8n.isConnected()) {

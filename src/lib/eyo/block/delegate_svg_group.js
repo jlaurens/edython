@@ -45,7 +45,7 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   var h = block.isCollapsed() ? 2 * line : block.height
   var steps = ['m ' + w + ',0 v ' + line]
   h -= line
-  var r = eYo.Style.Path.radius()
+  var r = eYo.Style.Path.r
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
   var t = eYo.Font.tabWidth
   w -= t + r
@@ -80,7 +80,7 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   var line = eYo.Font.lineHeight()
   var h = block.isCollapsed() ? 2 * line : block.height
   var t = eYo.Font.tabWidth
-  var r = eYo.Style.Path.radius()
+  var r = eYo.Style.Path.r
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
   var previous = this.hasPreviousStatement_(block)
   var next = this.hasNextStatement_(block)
@@ -123,7 +123,7 @@ eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
   if (block.isCollapsed()) {
     var line = eYo.Font.lineHeight()
     var t = eYo.Font.tabWidth
-    var r = eYo.Style.Path.radius()
+    var r = eYo.Style.Path.r
     return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r) +
     ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
@@ -244,13 +244,13 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
     if (c8n.offsetInBlock_.x > 0) {
       steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth - eYo.Font.space / 2) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + a + (-2 * r) + ' z'
     }
   } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
     r = eYo.Style.Path.Selected.width / 2
     a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.radius() - eYo.Font.space / 2) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r - eYo.Font.space / 2) + a + (-2 * r) + ' z'
     } else {
       steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.space / 2) + a + (-2 * r) + ' z'
     }

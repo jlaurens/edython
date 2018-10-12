@@ -108,6 +108,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = function () {
  * @private
  */
 eYo.DelegateSvg.List.prototype.removeItems = function (block) {
+  var block = this.block_
   var list = block.inputList
   var i = 0
   var input
@@ -124,6 +125,24 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
       this.consolidate()
     }
   )
+}
+
+
+/**
+ * Increment the change count.
+ * Force to recompute the chain tile.
+ * For edython.
+ */
+eYo.DelegateSvg.List.prototype.incrementInputChangeCount = function () {
+  var i = 0
+  var input
+  while ((input = this.block_.inputList[i++])) {
+    var c8n = input.connection
+    var target = c8n.targetBlock()
+    if (target) {
+      target.eyo.incrementChangeCount()
+    }
+  }
 }
 
 /**

@@ -576,6 +576,10 @@ eYo.Do.typeOfString = function (candidate, module) {
       raw: eYo.T3.Expr.reserved_keyword,
       stmt: eYo.T3.Stmt.raise_stmt
     },
+    return: {
+      raw: eYo.T3.Expr.reserved_keyword,
+      stmt: eYo.T3.Stmt.return_stmt
+    },
     print: {
       raw: eYo.T3.Expr.builtin__name,
       expr: eYo.T3.Expr.call_expr,

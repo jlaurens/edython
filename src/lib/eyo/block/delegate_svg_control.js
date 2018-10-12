@@ -53,7 +53,7 @@ eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
   /* eslint-disable indent */
   var w = block.width - eYo.Font.space + eYo.Padding.l
   var h = block.height
-  var r = eYo.Style.Path.radius()
+  var r = eYo.Style.Path.r
   var d = eYo.Font.space
   var steps = ['m ' + (d + eYo.Font.space - eYo.Padding.l) + ',0']
   var lh = eYo.Font.lineHeight() / 2
