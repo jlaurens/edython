@@ -1212,9 +1212,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
    */
   Caret.prototype.set = function (self, newValue) {
     var ans = this.do_it()
-    if (this.f_) {
-      console.log('THERE WAS AN f_')
-    }
     this.self_ = newValue && self
     this.f_ = newValue
     return ans
@@ -1225,7 +1222,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
    */
   Caret.prototype.do_it = function (side) {
     if (this.f_) {
-      console.log('HERE: do_it', side)
       var ans = this.f_.call(this.self_, side)
       this.f_ = this.self_ = undefined
     } else {
@@ -1244,12 +1240,12 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
           return this.x_
         },
         set (newValue) {
-          if (this.x_ !== newValue) {
-            if (this.type_ === eYo.T3.Expr.optional_expression_list) {
-              console.log('BLABLABLA')
-            }
-            console.log(this.type_, ':', this.x_, '->', newValue)
-          }
+          // if (this.x_ !== newValue) {
+          //   if (this.type_ === eYo.T3.Expr.optional_expression_list) {
+          //     console.log('BLABLABLA')
+          //   }
+          //   console.log(this.type_, ':', this.x_, '->', newValue)
+          // }
           this.x_ = newValue
         }
       }
@@ -1259,7 +1255,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
     /* eslint-disable indent */
     // when defined, `recorder` comes from the `renderDrawValueInput_`
     var block = this.block_
-    console.log('Rendering', block.type)
     // we define the `io` named recorder which is specific to this block.
     var io = {
       block: block,
@@ -1359,9 +1354,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
       // But may be we just rendered blocks in cascade such that
       // there might be some right edge already.
       recorder.didRenderBlock = io.didRenderBlock || (!this.wrapped_ && !this.locked_)
-      if (recorder.didRenderBlock) {
-        console.log('recorder.didRenderBlock', block.type)
-      }
     }
     return io.steps.join(' ')
   }
@@ -1378,7 +1370,6 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
   if (io.slot.isIncog()) {
     root.setAttribute('display', 'none')
   } else {
-    console.log('Slot', io.slot.key)
     root.removeAttribute('display')
     root.setAttribute('transform',
     'translate(' + io.cursor.x + ', 0)')
