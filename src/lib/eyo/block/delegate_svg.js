@@ -473,7 +473,7 @@ eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
  * @param {!Block} block
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.DelegateSvg.prototype.renderDrawSuite_ = function (block) {
+eYo.DelegateSvg.prototype.renderDrawSuite_ = function (recorder) {
   return
 }
 
@@ -643,7 +643,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         }
         // parent has no output connection
         // which means that it is an expression block.
-        recorder && (recorder.lastField = undefined)
+        recorder && (recorder.field.last = undefined)
         if (parent && !parent.eyo.downRendering) {
           if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
             try {
@@ -796,7 +796,7 @@ eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePat
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
   return this.selectedConnection
-    ? this.highlightConnectionPathDef(this.block_, this.selectedConnection)
+    ? this.highlightConnectionPathDef(this.selectedConnection)
     : ''
 }
 
@@ -832,7 +832,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
     } finally {
       unlocker && unlocker.eyo.unlockChainTiles(unlocker)
       var root = block.getRootBlock()
-      root.eyo.alignRightEdges_(recorder)
+      !recorder && root.eyo.alignRightEdges_(recorder)
       this.renderDrawSuite_(recorder)
       this.updateAllPaths_()
     }
@@ -927,14 +927,14 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (recorder) {
     if (parent && this.tileHead) {
       var child = this.tileHead.sourceBlock_
       if (child && (child === block) && (this.tileHead === child.eyo.tileHead)) {
-        return recorder.lastField ? eYo.Font.space : 0
+        return recorder.field.last ? eYo.Font.space : 0
       }
     }
-    return (this.locked_ || !recorder || !recorder.lastField) && parent
+    return (this.locked_ || !recorder || !recorder.field.last) && parent
       ? 0
       : eYo.Font.space
   } else {
-    return eYo.Font.space // eYo.Padding.l()
+    return eYo.Font.space // eYo.Padding.l
   }
 }
 
@@ -949,7 +949,7 @@ eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
   } else if (block.outputConnection) {
     return this.locked_ && block.getParent() ? 0 : eYo.Font.space
   } else {
-    return eYo.Padding.r()
+    return eYo.Padding.r
   }
 }
 
@@ -1184,96 +1184,178 @@ eYo.DelegateSvg.prototype.chainTiles = (function () {
 
 /**
  * Render the inputs, the fields and the slots of the block.
+ * The `recorder` is an object that keeps track of some
+ * rendering information. It is the argument of various methods.
+ * @param {Object} recorder 
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
-  /* eslint-disable indent */
-  var block = this.block_
-  var io = {
-    block: block,
-    steps: [],
-    canDummy: true,
-    canValue: true,
-    canStatement: true,
-    i: 0, // input index
-    i_max: block.inputList.length,
-    f: 0, // field index
-    /** ?Object */ field: undefined,
-    /** boolean */ canStarSymbol: true,
-    recorder: recorder,
-    lastField: recorder && recorder.lastField
+eYo.DelegateSvg.prototype.renderDrawModel_ = (function () {
+  /**
+   * The Caret object is used to defer caret creation with the next object.
+   * If the caret is followed by a block with a boundary,
+   * then its shape is different and drown over the following block.
+   * This is a trick to save horizontal space.
+   */
+  var Caret = function () {
   }
-  io.cursorX = this.getPaddingLeft(recorder)
-  io.offsetX = 0
-  if (!block.outputConnection) {
-    this.renderDrawSharp_(io)
-    this.shouldSeparateField = false // when true, add a space to separate letters
-    // only blocks with outputConnection may be stacked horizontally
-    // such that visual letter separation may be a problem
-    // For other blocks, there is no text field rendered to the left
-  } else if (!block.outputConnection.isConnected() || (!this.wrapped_ && !this.locked_)) {
-    // the left part of the contour is the visual separator
-    this.shouldSeparateField = false
+  /**
+   * 
+   * @param {Object} self 
+   * @param {Function} newValue  will be called with `self` as `this` during `do_it`. Calls `do_it` first.
+   */
+  Caret.prototype.set = function (self, newValue) {
+    var ans = this.do_it()
+    this.self_ = newValue && self
+    this.f_ = newValue
+    return ans
   }
-  io.shouldSeparateField = this.shouldSeparateField
-  io.wasSeparatorField = this.wasSeparatorField
-
-  if ((io.field = this.fromStartField)) {
-    io.f = 0
-    do {
-      this.renderDrawField_(io)
-      ++io.f
-    } while ((io.field = io.field.eyo.nextField))
+  /**
+   * Calls `do_it` with `self` as `this`.
+   * @param {String} side  on which side of a block is the caret.
+   */
+  Caret.prototype.do_it = function (side) {
+    if (this.f_) {
+      var ans = this.f_.call(this.self_, side)
+      this.f_ = this.self_ = undefined
+    } else {
+      ans = {dx: 0}
+    }
+    return ans
   }
-  if ((io.slot = this.headSlot)) {
-    do {
-      this.renderDrawSlot_(io)
-    } while ((io.slot = io.slot.next))
-  } else {
-    for (; (io.input = block.inputList[io.i]); io.i++) {
-      goog.asserts.assert(io.input.eyo, 'Input with no eyo ' + io.input.name + ' in block ' + block.type)
-      if (io.input.isVisible()) {
-        this.renderDrawInput_(io)
-      } else {
-        for (var j = 0; (io.field = io.input.fieldRow[j]); ++j) {
-          if (io.field.getText().length > 0) {
-            var root = io.field.getSvgRoot()
-            if (root) {
-              root.setAttribute('display', 'none')
-            } else {
-              // console.log('Field with no root: did you ...initSvg()?')
+  var Cursor = function (type) {
+    this.type_ = type
+    this.x_ = 0
+    Object.defineProperty(
+      this,
+      'x',
+      {
+        get () {
+          return this.x_
+        },
+        set (newValue) {
+          if (this.x_ !== newValue) {
+            if (this.type_ === eYo.T3.Expr.named_call_expr) {
+              console.log('BLABLABLA')
+            }
+            console.log(this.type_, ':', this.x_, '->', newValue)
+          }
+          this.x_ = newValue
+        }
+      }
+    )
+  }
+  return function (recorder) {
+    /* eslint-disable indent */
+    // when defined, `recorder` comes from the `renderDrawValueInput_`
+    var block = this.block_
+    console.log('Rendering', block.type)
+    // we define the `io` named recorder which is specific to this block.
+    var io = {
+      block: block,
+      steps: [],
+      caret: new Caret(),
+      i: 0, // input index
+      f: 0, // field index
+      cursor: new Cursor(block.type)
+    }
+    if (recorder) {
+      // io inherits some values from the given recorder
+      io.recorder = recorder
+      io.field = recorder.field // It is always defined
+      // perform any pending caret action
+      recorder.caret.do_it(!this.wrapped_ && eYo.Key.LEFT)
+    } else {
+      io.field = {}
+    }
+    // A "star like" field's text is one of '*', '+', '-', '~'...
+    // This field is the very first of the block.
+    // Once we have rendered a field with a positive length,
+    // we cannot have a start like field.
+    io.field.canStarLike = true
+    io.cursor.x = this.getPaddingLeft(recorder)
+    io.cursor.dx = 0
+    if (!block.outputConnection) {
+      this.renderDrawSharp_(io)
+      io.field.shouldSeparate = false // when true, add a space to separate letters
+      // only blocks with outputConnection may be stacked horizontally
+      // such that visual letter separation may be a problem
+      // For other blocks, there is no text field rendered to the left
+    } else if (!this.wrapped_ && !this.locked_) {
+      // the left part of the contour is the visual separator
+      io.field.shouldSeparate = false
+    }
+    if ((io.field.current = this.fromStartField)) {
+      io.f = 0
+      do {
+        this.renderDrawField_(io)
+        ++io.f
+      } while ((io.field.current = io.field.current.eyo.nextField))
+    }
+    if ((io.slot = this.headSlot)) {
+      do {
+        this.renderDrawSlot_(io)
+      } while ((io.slot = io.slot.next))
+    } else {
+      for (; (io.input = block.inputList[io.i]); io.i++) {
+        goog.asserts.assert(io.input.eyo, 'Input with no eyo ' + io.input.name + ' in block ' + block.type)
+        if (io.input.isVisible()) {
+          this.renderDrawInput_(io)
+        } else {
+          for (var j = 0; (io.field.current = io.input.fieldRow[j]); ++j) {
+            if (io.field.current.getText().length > 0) {
+              var root = io.field.current.getSvgRoot()
+              if (root) {
+                root.setAttribute('display', 'none')
+              } else {
+                // console.log('Field with no root: did you ...initSvg()?')
+              }
             }
           }
-        }
-        if ((io.c8n = io.input.connection)) {
-          if ((io.target = io.c8n.targetBlock())) {
-            if ((root = io.target.getSvgRoot())) {
-              root.setAttribute('display', 'none')
-              if (io.target.eyo.svgContourGroup_) {
-                io.target.eyo.svgContourGroup_.setAttribute('display', 'none')
-                io.target.eyo.svgShapeGroup_.setAttribute('display', 'none')
+          if ((io.c8n = io.input.connection)) {
+            if ((io.target = io.c8n.targetBlock())) {
+              if ((root = io.target.getSvgRoot())) {
+                root.setAttribute('display', 'none')
+                if (io.target.eyo.svgContourGroup_) {
+                  io.target.eyo.svgContourGroup_.setAttribute('display', 'none')
+                  io.target.eyo.svgShapeGroup_.setAttribute('display', 'none')
+                }
+              } else {
+                console.log('Block with no root: did you ...initSvg()?')
               }
-            } else {
-              console.log('Block with no root: did you ...initSvg()?')
             }
           }
         }
       }
     }
+    if ((io.field.current = this.toEndField)) {
+      do {
+        this.renderDrawField_(io)
+      } while ((io.field.current = io.field.current.eyo.nextField))
+    }
+    io.caret.do_it(!this.wrapped_ && !this.locked_ && eYo.Key.RIGHT)
+    // enlarge the width if necessary
+    io.cursor.x = Math.max(io.cursor.x, this.minBlockWidth())
+    io.cursor.x += this.getPaddingRight(block)
+    this.minWidth = block.width = Math.max(block.width, io.cursor.x)
+    if (recorder) {
+      // We ended a block. The right edge is a separator.
+      // No need to add a separator if the block is wrapped or locked
+      io.field.shouldSeparate && (io.field.shouldSeparate =  this.wrapped_ || this.locked_)
+      // forward the field map to the recorder
+      // essentially for `field.last`.
+      recorder.field = io.field
+      // if the block is wrapped or locked, there won't be any 
+      // right edge where a caret could be placed.
+      // But may be we just rendered blocks in cascade such that
+      // there might be some right edge already.
+      recorder.didRenderBlock = io.didRenderBlock || (!this.wrapped_ && !this.locked_)
+      if (recorder.didRenderBlock) {
+        console.log('recorder.didRenderBlock', block.type)
+      }
+    }
+    return io.steps.join(' ')
   }
-  if ((io.field = this.toEndField)) {
-    do {
-      this.renderDrawField_(io)
-    } while ((io.field = io.field.eyo.nextField))
-  }
-  // enlarge the width if necessary
-  io.cursorX = Math.max(io.cursorX, this.minBlockWidth())
-  io.cursorX += this.getPaddingRight(block)
-  this.minWidth = block.width = Math.max(block.width, io.cursorX)
-  this.shouldSeparateField = io.shouldSeparateField
-  recorder && (recorder.lastField = io.lastField)
-  return io.steps.join(' ')
-}
+}) ()
 
 /**
  * Render the the slot in `io.slot`.
@@ -1286,29 +1368,29 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
   if (io.slot.isIncog()) {
     root.setAttribute('display', 'none')
   } else {
+    console.log('Slot', io.slot.key)
     root.removeAttribute('display')
     root.setAttribute('transform',
-    'translate(' + io.cursorX + ', 0)')
-    io.offsetX = io.cursorX
-    io.cursorX = 0
-    if ((io.field = io.slot.fromStartField)) {
+    'translate(' + io.cursor.x + ', 0)')
+    io.cursor.dx = io.cursor.x
+    io.cursor.x = 0
+    if ((io.field.current = io.slot.fromStartField)) {
       do {
         this.renderDrawField_(io)
-      } while ((io.field = io.field.eyo.nextField))
+      } while ((io.field.current = io.field.current.eyo.nextField))
     }
     if ((io.input = io.slot.input)) {
       io.bindField = io.slot.bindField
       this.renderDrawInput_(io)
       io.bindField = undefined
     }
-    if ((io.field = io.slot.toEndField)) {
+    if ((io.field.current = io.slot.toEndField)) {
       do {
         this.renderDrawField_(io)
-      } while ((io.field = io.field.eyo.nextField))
+      } while ((io.field.current = io.field.current.eyo.nextField))
     }
-    io.cursorX += io.offsetX
-    io.offsetX = 0
-    io.canStarSymbol = false
+    io.cursor.x += io.cursor.dx
+    io.cursor.dx = 0
   }
 }
 
@@ -1333,46 +1415,65 @@ eYo.DelegateSvg.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
- * Render the field at io.field, which must be defined.
+ * Render the field at io.field.current, which must be defined.
  *
- * @param io An input/output record.
+ * @param {!Object} io An input/output recorder.
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
-  var root = io.field.getSvgRoot()
+  var root = io.field.current.getSvgRoot()
   if (root) {
-    if (!io.field.isVisible()) {
+    if (!io.field.current.isVisible()) {
       root.setAttribute('display', 'none')
     } else {
       root.removeAttribute('display')
-      var text = io.field.getDisplayText_()
-      var eyo = io.field.eyo
+      // Actually, io.cursor.x points to the location where the field
+      // is expected. It is relative to the enclosing `SVG` group.
+      // If there is a pending caret, draw it and advance the cursor.
+      io.cursor.x += io.caret.do_it().dx
+      var eyo = io.field.current.eyo
+      var text = io.field.current.getDisplayText_()
       if (text.length) {
-        io.lastField = io.field
-        io.isSeparatorField = io.field.name === 'separator' || (eyo.model && eyo.model.separator)
+        // further rendering may be different whether some
+        // field has already been rendered or not.
+        // Is the field a separator?
+        // Fields are separated from each other by a white space
+        // except separators.
+        var isSeparator = io.field.current.name === 'separator' || (eyo.model && eyo.model.separator)
         // if the text is void, it can not change whether
         // the last character was a letter or not
-        if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && eyo.tilePrevious) {
-          // add a separation
-          io.cursorX += eYo.Font.space
+        if (io.field.shouldSeparate && !isSeparator
+            && !io.field.wasStarLike
+            && io.field.last) {
+          if (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) {
+            // add a separation before
+            io.cursor.x += eYo.Font.space
+          }
         }
-        io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
-        io.canStarSymbol = false
-        io.shouldSeparateField = !io.starSymbol && (eYo.XRE.id_continue.test(text[text.length - 1]) ||
-        eYo.XRE.operator.test(text[text.length - 1]) ||
-        text[text.length - 1] === ':' ||
-        (text[text.length - 1] === '.' && !((io.field) instanceof eYo.FieldTextInput)))
-        io.wasSeparatorField = io.isSeparatorField
-        io.isSeparatorField = false
+        var tail = text[text.length - 1]
+        io.field.wasStarLike = (io.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
+        io.field.canStarLike = false
+        io.field.shouldSeparate = !io.field.wasStarLike
+          && (eYo.XRE.id_continue.test(tail)
+            || eYo.XRE.operator.test(tail)
+            || tail === ':'
+            || (tail === '.'
+              && !(io.field.current instanceof eYo.FieldTextInput)))
       }
-      var x_shift = eyo && !io.block.eyo.wrapped_ ? eyo.x_shift || 0 : 0
-      root.setAttribute('transform', 'translate(' + (io.cursorX + x_shift) +
-        ', ' + eYo.Padding.t() + ')')
-      var size = io.field.getSize()
-      io.cursorX += size.width
+      // place the field at the right position:
+      root.setAttribute('transform', 'translate(' + io.cursor.x +
+        ', ' + eYo.Padding.t + ')')
+      // then advance the cursor after the field.
+      var size = io.field.current.getSize()
+      io.cursor.x += size.width
       if (eyo.isEditing) {
-        io.cursorX += eYo.Font.space
+        // This is a trick to avoid some bad geometry while editing
+        // this is useful for widget only.
+        io.cursor.x += eYo.Font.space
       }
+      io.field.last = io.field.current
+      // we have rendered something after eventually rendering some block
+      io.didRenderBlock = false
     }
   } else {
     console.log('Field with no root: did you ...initSvg()?')
@@ -1380,71 +1481,54 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
 }
 
 /**
- * Render the fields of a block input.
- *
- * @param io An input/output record.
- * @param only_prefix boolean
- * @return the delta of io.cursorX
+ * Render the fields of a block input/slot.
+ * Fields are either before or after the connection.
+ * If `only_prefix` is true, only fields before the
+ * connection are rendered.
+ * @param {!Object} io An input/output record.
+ * @param {?Boolean} only_prefix
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
-  var here = io.cursorX
   io.f = 0
-  for (; (io.field = io.input.fieldRow[io.f]); ++io.f) {
-    if (!!only_prefix === !io.field.eyo.suffix) {
+  for (; (io.field.current = io.input.fieldRow[io.f]); ++io.f) {
+    if (!!only_prefix === !io.field.current.eyo.suffix) {
       this.renderDrawField_(io)
     }
   }
-  return here - io.cursorX
 }
-
-/**
- * Render the fields of a dummy input, if relevant.
- * @param io An input/output record.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawDummyInput_ = function (io) {
-  if (!io.canDummy || io.input.type !== Blockly.DUMMY_INPUT) {
-    return false
-  }
-  this.renderDrawFields_(io, true)
-  this.renderDrawFields_(io, false)
-  return true
-}
-
 /**
  * Render the fields of a value input, if relevant.
- * @param io the input/output argument.
+ * @param {!Object} io the input/output argument.
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
-  if (!io.canValue || io.input.type !== Blockly.INPUT_VALUE) {
+  if (io.input.type !== Blockly.INPUT_VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
+  this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    this.renderDrawFields_(io, true)
-    var cursorX = io.cursorX + io.offsetX
+    io.field.canStarLike = false
+    // io.cursor is relative to the block or the slot.
+    var absoluteX = io.cursor.x + io.cursor.dx
     var target = c8n.targetBlock()
     if (io.bindField && !target) {
       c8n.eyo.bindField = io.bindField
       c8n.eyo.editWidth = io.bindField.getSize().width
-      c8n.setOffsetInBlock(cursorX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
+      c8n.setOffsetInBlock(absoluteX - c8n.eyo.editWidth - eYo.Font.space / 2, 0)
+      // The `bind` field hides the connection.
+      // The bind field is always the last field before the connection.
     } else {
       delete c8n.eyo.editWidth
-      c8n.setOffsetInBlock(cursorX, 0)
+      c8n.setOffsetInBlock(absoluteX, 0)
     }
     if (target) {
-      if (target.eyo.tileHead) {
-        cursorX -= eYo.Font.space
-      }
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
         try {
           target.eyo.downRendering = true
-          target.eyo.shouldSeparateField = io.shouldSeparateField
-          target.eyo.wasSeparatorField = io.wasSeparatorField
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
             if (eYo.DelegateSvg.debugStartTrackingRender) {
               console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
@@ -1456,35 +1540,63 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
            throw err
          } finally {
           target.eyo.downRendering = false
-          target.eyo.shouldSeparateField = undefined
-          target.eyo.wasSeparatorField = undefined
-          io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
           var bBox = target.getHeightWidth()
-          io.cursorX += bBox.width
+          io.cursor.x += bBox.width
         }
       }
     } else if (io.bindField) {
+      // don't display anything for that connection
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
       var eyo = c8n.eyo
       if (!eyo.disabled_) {
-        if (eyo.s7r_ || eyo.optional_) {
-          var pw = this.caretPathDefWidth_(cursorX)
-          
-        } else {
-          pw = this.placeHolderPathDefWidth_(cursorX, c8n)
-          io.steps.push(pw.d)
-          io.cursorX += pw.width
-          if (pw.width) {
-            // a space was added as a visual separator anyway
-            io.shouldSeparateField = false
+        if (eyo.s7r_) {
+          eyo.side = eYo.Key.NONE
+          if (io.didRenderBlock) {
+            eyo.side = eYo.Key.RIGHT
+            var pw = this.caretPathDefWidth_(c8n.offsetInBlock_.x, eyo.side )
+            io.steps.push(pw.d)
+            if (pw.width) {
+              // a space was added as a visual separator anyway
+              io.field.shouldSeparate = false
+            }
+          } else {
+            io.caret.set(this, function (side) {
+              eyo.side = side
+              var pw = this.caretPathDefWidth_(c8n.offsetInBlock_.x, eyo.side)
+              io.steps.push(pw.d)
+              io.cursor.x += pw.width
+              if (pw.width) {
+                // a space was added as a visual separator anyway
+                io.field.shouldSeparate = false
+              }
+              return {dx: pw.width}
+            })
           }
+        } else if (eyo.optional_) {
+          eyo.side = eYo.Key.NONE
+          var pw = this.caretPathDefWidth_(c8n.offsetInBlock_.x, eyo.side )
+          io.steps.push(pw.d)
+          if (pw.width) {
+            io.cursor.x += pw.width
+            // a space was added as a visual separator anyway
+            io.field.shouldSeparate = false
+          }
+        } else {
+          var pw = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n)
+          io.steps.push(pw.d)
+          if (pw.width) {
+            io.cursor.x += pw.width
+            // a space was added as a visual separator anyway
+            io.field.shouldSeparate = false
+          }
+          io.didRenderBlock = false
         }
       }
     }
-    this.renderDrawFields_(io, false)
   }
+  this.renderDrawFields_(io, false)
   return true
 }
 
@@ -1497,7 +1609,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
   var block = this.block_
   var w = block.width
   var h = block.height
-  var p = eYo.Padding.h()
+  var p = eYo.Padding.h
   var r_expr = (p ** 2 + h ** 2 / 4) / 2 / p // radius of left and right arcs
   var dx = (eYo.Font.space - p) / 2 // offset of the left and right arcs
   var a_expr = [' a ', r_expr, ', ', r_expr, ' 0 0 1 0,']
@@ -1517,7 +1629,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
     }
     if (parent) {
       if (parent.nextConnection && parent.nextConnection.isConnected()) {
-        steps.push(' H ', -eYo.Padding.l())
+        steps.push(' H ', -eYo.Padding.l)
         if (parent.previousConnection && parent.previousConnection.isConnected()) {
           steps.push(' v ', -h_total, ' z')
         } else {
@@ -1526,7 +1638,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
           steps.push(rr, ',', -rr, ' z')
         }
       } else {
-        steps.push(' H ', -eYo.Padding.l() + rr)
+        steps.push(' H ', -eYo.Padding.l + rr)
         steps = steps.concat(aa)
         steps.push(-rr, ',', -rr)
         if (parent.previousConnection && parent.previousConnection.isConnected()) {
@@ -1557,7 +1669,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
  */
 eYo.DelegateSvg.prototype.outPathDef_ = function () {
   // Top edge.
-  var p = eYo.Padding.h()
+  var p = eYo.Padding.h
   var r = (p ** 2 + eYo.Font.lineHeight() ** 2 / 4) / 2 / p
   var dx = (eYo.Font.space - p) / 2
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
@@ -1568,24 +1680,44 @@ eYo.DelegateSvg.prototype.outPathDef_ = function () {
 /**
  * Block path for an optional connection.
  * @param {Number} cursorX position.
+ * @param {?String} side variant.
  * @private
  */
-eYo.DelegateSvg.prototype.caretPathDefWidth_ = function (cursorX) {
+eYo.DelegateSvg.prototype.caretPathDefWidth_ = function (cursorX, side) {
   /* eslint-disable indent */
   var size = {width: eYo.Font.space, height: eYo.Font.lineHeight()}
-  var p = eYo.Padding.h()
+  var p = eYo.Padding.h
   var r = (p ** 2 + size.height ** 2 / 4) / 2 / p
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var h = size.height + 2 * eYo.Margin.V
+  var height = size.height + 2 * eYo.Margin.V
   var dx = 2
   var correction = eYo.Font.descent / 2
-  var dy = eYo.Padding.v() + eYo.Font.descent / 2 - correction
-  var d = 'M ' + (cursorX + size.width / 2 - dx/2) + ',' + (eYo.Margin.V + dy) +
-  'h ' + (dx / 2) + ' ' +
-  a + (h - 2 * dy) +
-  'h ' + (-dx / 2) + ' ' +
-  a + (-h + 2 * dy) + ' z'
-  return {width: size.width, d: d}
+  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
+  if (side === eYo.Key.LEFT) {
+    dx = 0
+    var d = 'M ' + (cursorX + size.width / 2 - dx/2) + ',' + (eYo.Margin.V + dy) +
+    'h ' + (dx / 2) + ' ' +
+    'v ' + (height - 2 * dy) + ' ' +
+    'h ' + (-dx / 2) + ' ' +
+    a + (-height + 2 * dy) + ' z'
+    return {width: 0, d: d}
+  } else if (side === eYo.Key.RIGHT) {
+    cursorX -= size.width
+    dx = 0
+    d = 'M ' + (cursorX + size.width / 2 - dx/2) + ',' + (eYo.Margin.V + dy) +
+    'h ' + (dx / 2) + ' ' +
+    a + (height - 2 * dy) +
+    'h ' + (-dx / 2) + ' ' +
+    'v ' + (-dy) + ' z'
+    return {width: size.width, d: d}
+  } else {
+    d = 'M ' + (cursorX + size.width / 2 - dx/2) + ',' + (eYo.Margin.V + dy) +
+    'h ' + (dx / 2) + ' ' +
+    a + (height - 2 * dy) +
+    'h ' + (-dx / 2) + ' ' +
+    a + (-height + 2 * dy) + ' z'
+    return {width: size.width, d: d}
+  }
 } /* eslint-enable indent */
 
 /**
@@ -1604,12 +1736,12 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
   }
   var w = size.width
   var h = size.height
-  var p = eYo.Padding.h()
+  var p = eYo.Padding.h
   var r_ph = (p ** 2 + h ** 2 / 4) / 2 / p
   var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
   var h_total = h + 2 * eYo.Margin.V
   var correction = eYo.Font.descent / 2
-  var dy = eYo.Padding.v() + eYo.Font.descent / 2 - correction
+  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
   var steps
   if (!connection || (connection.eyo.chainBlock && connection.eyo.chainBlock.outputConnection)) {
     steps = ['M ', cursorX + w - p, ',', eYo.Margin.V + dy]
@@ -1632,7 +1764,7 @@ eYo.DelegateSvg.prototype.placeHolderPathDefWidth_ = function (cursorX, connecti
     var cy = r_stmt - eYo.Margin.V - dy
     if (true || cy) {
       var cx = Math.sqrt(r_stmt ** 2 + cy ** 2) - r_stmt
-      steps.push(h_total - 2 * dy, 'h ', -(w - p + eYo.Padding.l()) + cx)
+      steps.push(h_total - 2 * dy, 'h ', -(w - p + eYo.Padding.l) + cx)
       var a_stmt_ph = [' a ', r_stmt , ',', r_stmt, ' 0 0 1 ']
       steps = steps.concat(a_stmt_ph)
       steps.push(-cx, ',', -cy)
@@ -1658,7 +1790,7 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
-      steps = this.caretPathDefWidth_(c8n.offsetInBlock_.x).d
+      steps = this.caretPathDefWidth_(c8n.offsetInBlock_.x, c8n.eyo.side).d
     } else {
       steps = this.placeHolderPathDefWidth_(c8n.offsetInBlock_.x, c8n).d
     }
@@ -1668,12 +1800,12 @@ eYo.DelegateSvg.prototype.highlightConnectionPathDef = function (c8n) {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     if (c8n === block.previousConnection) {
-      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
+      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight()) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius() + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.radius() + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
+        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       }
     } else {
       steps = 'm ' + (block.width) + ',' + (-r + eYo.Font.lineHeight()) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - block.width) + a + (-2 * r) + ' z'
@@ -1692,7 +1824,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (c8n) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!c8n.eyo.disabled_ && (c8n.eyo.s7r_ || c8n.eyo.optional_)) {
-      steps = this.caretPathDefWidth_(0).d
+      steps = this.caretPathDefWidth_(0, c8n.eyo.side).d
     } else {
       steps = this.placeHolderPathDefWidth_(0, c8n).d
     }
@@ -1702,7 +1834,7 @@ eYo.DelegateSvg.prototype.highlightConnection = function (c8n) {
     var w = block.width
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
-    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l()) + a + (-2 * r) + ' z'
+    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
   }
   var xy = block.getRelativeToSurfaceXY()
   var x = c8n.x_ - xy.x
@@ -2684,7 +2816,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
         }
         R = new goog.math.Rect(
           c8n.offsetInBlock_.x - eYo.Font.space / 4,
-          c8n.offsetInBlock_.y + eYo.Padding.t(),
+          c8n.offsetInBlock_.y + eYo.Padding.t,
           c8n.eyo.optional_ || c8n.eyo.s7r_ ? 1.5 * eYo.Font.space : 3.5 * eYo.Font.space,
           eYo.Font.height
         )
@@ -2696,7 +2828,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
           c8n.offsetInBlock_.x,
           c8n.offsetInBlock_.y - eYo.Style.Path.width,
           eYo.Font.tabWidth,
-          1.5 * eYo.Padding.t() + 2 * eYo.Style.Path.width
+          1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
         if (R.contains(where)) {
           return c8n
@@ -2709,7 +2841,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y - 2 * eYo.Style.Path.width,
       rect.width,
-      1.5 * eYo.Padding.t() + 2 * eYo.Style.Path.width
+      1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
     if (R.contains(where)) {
       return c8n
@@ -2719,16 +2851,16 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
     if (rect.height > eYo.Font.lineHeight()) { // Not the cleanest design
       R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b() - eYo.Style.Path.width,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         eYo.Font.tabWidth + eYo.Style.Path.radius(), // R U sure?
-        1.5 * eYo.Padding.b() + 2 * eYo.Style.Path.width
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {
       R = new goog.math.Rect(
         c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b() - eYo.Style.Path.width,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         rect.width,
-        1.5 * eYo.Padding.b() + 2 * eYo.Style.Path.width
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
     if (R.contains(where)) {

@@ -954,9 +954,9 @@ Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
   var xDiff = c8nA.x_ - c8nB.x_
   var yDiff = c8nA.y_ - c8nB.y_
   if (c8nA.type === Blockly.INPUT_VALUE) {
-    yDiff += eYo.Padding.h()
+    yDiff += eYo.Padding.h
   } else if (c8nB.type === Blockly.INPUT_VALUE) {
-    yDiff -= eYo.Padding.h()
+    yDiff -= eYo.Padding.h
   }
   return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 };

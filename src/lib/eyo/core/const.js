@@ -138,6 +138,9 @@ eYo.Key = {
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase
 
+  LEFT: 'left',
+  RIGHT: 'right',
+  
   // IN PROGRESS
   ANY: 'ANY',
 

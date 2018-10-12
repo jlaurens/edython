@@ -56,9 +56,9 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (this.hasNextStatement_(block)) {
-    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l() - r))
+    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l - r))
   } else {
-    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l()) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l) + a + (-r) + ',' + (-r))
   }
   if (this.hasPreviousStatement_(block)) {
     steps.push('V 0 z')
@@ -99,9 +99,9 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (next) {
-    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l() - r))
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l - r))
   } else {
-    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l()) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l) + a + (-r) + ',' + (-r))
     h -= r
   }
   if (previous) {
@@ -144,11 +144,9 @@ eYo.DelegateSvg.Group.prototype.shapePathDef_ =
  */
 eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
   /* eslint-disable indent */
-  if (!io.canStatement || io.input.type !== Blockly.NEXT_STATEMENT) {
+  if (io.input.type !== Blockly.NEXT_STATEMENT) {
     return false
   }
-  io.MinMaxCursorX = 2 * eYo.Font.tabWidth
-  io.canStatement = false
   var c8n = io.input.connection
   // this must be the last one
   if (c8n) {
@@ -179,13 +177,14 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
  * @param {!Block} block
  * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
+eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
   if (!this.inputSuite) {
     return
   }
   if (eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
   }
+  var block = this.block_
   var c8n = this.inputSuite.connection
   if (c8n) {
     c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
@@ -197,7 +196,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
         if (!target.rendered || !target.eyo.upRendering) {
           try {
             target.eyo.downRendering = true
-            target.eyo.render()
+            target.eyo.render(false, recorder)
           } catch (err) {
             console.error(err)
             throw err
@@ -218,8 +217,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-    this.renderDrawValueInput_(io) ||
+  this.renderDrawValueInput_(io) ||
       this.renderDrawSuiteInput_(io)
 }
 

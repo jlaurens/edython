@@ -49,10 +49,22 @@ eYo.Style.weight = function (x) {
   return x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 }
 
-eYo.Padding.l = eYo.Padding.r = eYo.Padding.h =
-  function () { return 8 * eYo.Style.weight(eYo.Font.size / 10) }
-eYo.Padding.t = eYo.Padding.b = eYo.Padding.v =
-  function () { return 6 * eYo.Style.weight(eYo.Font.size / 10) }
+var g = {
+  get () {
+    return 8 * eYo.Style.weight(eYo.Font.size / 10)
+  }
+}
+Object.defineProperty(eYo.Padding, 'l', g)
+Object.defineProperty(eYo.Padding, 'r', g)
+Object.defineProperty(eYo.Padding, 'h', g)
+g = {
+  get () {
+    return 6 * eYo.Style.weight(eYo.Font.size / 10)
+  }
+}
+Object.defineProperty(eYo.Padding, 't', g)
+Object.defineProperty(eYo.Padding, 'b', g)
+Object.defineProperty(eYo.Padding, 'v', g)
 
 eYo.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
 
@@ -76,7 +88,7 @@ eYo.Font = (function (ascent) {
     return my
   }
   my.lineHeight = function () {
-    return eYo.Font.height + eYo.Padding.t() + eYo.Padding.b()
+    return eYo.Font.height + eYo.Padding.t + eYo.Padding.b
   }
   return my.updateAscent(ascent)
 }(13))
@@ -120,7 +132,7 @@ eYo.Style.Path = {
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
   width: 1.5, // px
   radius: function () {
-    return eYo.Margin.V + eYo.Padding.v() + eYo.Font.descent / 2
+    return eYo.Margin.V + eYo.Padding.v + eYo.Font.descent / 2
   }
 }
 eYo.Style.MenuItem = {
