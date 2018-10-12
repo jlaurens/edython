@@ -363,9 +363,8 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     return c8n
   }
   if (c8n.eyo.isPrevious()) {
-    var F = B
-  ) {
-      return block.nextConnection
+    var F = function(B) {
+      return B.nextConnection
     }
   } else if (c8n.eyo.isNext()) {
     F = function (B) {

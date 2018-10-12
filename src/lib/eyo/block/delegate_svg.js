@@ -443,7 +443,7 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
   if (do_it) {
     try {
       target.eyo.downRendering = true
-      target.render(false)
+      target.eyo.render(false, recorder)
     } catch (err) {
       console.error(err)
       throw err
@@ -492,7 +492,7 @@ eYo.DelegateSvg.prototype.render = (function () {
    *   If true, also render block's parent, grandparent, etc.  Defaults to true.
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
-  var renderDrawParent = function (optBubble, recorder) {
+  var renderDrawParent = function (recorder, optBubble) {
     if (optBubble === false || this.downRendering) {
       return
     }
@@ -510,7 +510,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           if (eYo.DelegateSvg.debugStartTrackingRender) {
             console.log(eYo.DelegateSvg.debugPrefix, 'UP')
           }
-          parent.render(!justConnected, recorder)
+          parent.eyo.render(!justConnected, recorder)
         } catch (err) {
           console.error(err)
           throw err
@@ -526,7 +526,7 @@ eYo.DelegateSvg.prototype.render = (function () {
               if (eYo.DelegateSvg.debugStartTrackingRender) {
                 console.log(eYo.DelegateSvg.debugPrefix, 'UP')
               }
-              parent.render(false, recorder)
+              parent.eyo.render(false, recorder)
             } catch (err) {
               console.error(err)
               throw err
@@ -544,7 +544,7 @@ eYo.DelegateSvg.prototype.render = (function () {
   }
   var longRender = eYo.Decorate.reentrant_method(
     'longRender',
-    function (optBubble) {
+    function (optBubble, recorder) {
       this.renderCount = this.change.count
       if (eYo.DelegateSvg.debugStartTrackingRender) {
         var n = eYo.DelegateSvg.debugCount[block.id]
@@ -568,7 +568,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.renderDrawNext_(recorder)
         this.layoutConnections_(recorder)
         this.renderMove_(recorder)
-        renderDrawParent.call(this, optBubble, recorder)
+        renderDrawParent.call(this, recorder, optBubble)
         block.rendered = true
         this.didRender_(recorder)
         if (eYo.traceOutputConnection && block.outputConnection) {
@@ -607,7 +607,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.layoutConnections_(recorder)
         this.renderMove_(recorder)
         this.updateAllPaths_()
-        renderDrawParent.call(this, optBubble, recorder)
+        renderDrawParent.call(this, recorder, optBubble)
         this.renderCount = this.change.count
         return
       } else if (eYo.Connection.connectedParentC8n) {
@@ -618,7 +618,7 @@ eYo.DelegateSvg.prototype.render = (function () {
           this.layoutConnections_(recorder)
           this.renderMove_(recorder)
           this.updateAllPaths_()
-          renderDrawParent.call(this, optBubble, recorder)
+          renderDrawParent.call(this, recorder, optBubble)
           this.renderCount = this.change.count
           return
         } else if (block.nextConnection && eYo.Connection.connectedParentC8n == block.nextConnection) {
@@ -643,6 +643,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         }
         // parent has no output connection
         // which means that it is an expression block.
+        recorder && (recorder.lastField = undefined)
         if (parent && !parent.eyo.downRendering) {
           if (!parent.eyo.upRendering && block.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.sourceBlock_ === block) {
             try {
@@ -846,7 +847,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
   var right = 0
-  var e8r = eYo.StatementBlockEnumerator(block)
+  var e8r = eYo.StatementBlockEnumerator(this.block_)
   var b
   var t = eYo.Font.tabWidth
   while ((b = e8r.next())) {
@@ -856,7 +857,7 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
       return
     }
   }
-  e8r = eYo.StatementBlockEnumerator(block)
+  e8r = eYo.StatementBlockEnumerator(this.block_)
   while ((b = e8r.next())) {
     var width = right - t * e8r.depth()
     if (b.width !== width) {
@@ -917,7 +918,8 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
+eYo.DelegateSvg.prototype.getPaddingLeft = function (recorder) {
+  var block = this.block_
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
@@ -925,10 +927,12 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (block) {
     if (parent && this.tileHead) {
       var child = this.tileHead.sourceBlock_
       if (child && (child === block) && (this.tileHead === child.eyo.tileHead)) {
-        return this.isHeadOfStatement ? 0 : eYo.Font.space
+        return recorder.lastField ? eYo.Font.space : 0
       }
     }
-    return (this.locked_ || this.isHeadOfStatement) && parent ? 0 : eYo.Font.space
+    return (this.locked_ || !recorder.lastField) && parent
+      ? 0
+      : eYo.Font.space
   } else {
     return eYo.Font.space // eYo.Padding.l()
   }
@@ -1196,9 +1200,10 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     f: 0, // field index
     /** ?Object */ field: undefined,
     /** boolean */ canStarSymbol: true,
-    recorder: recorder
+    recorder: recorder,
+    lastField: recorder && recorder.lastField
   }
-  io.cursorX = this.getPaddingLeft(block)
+  io.cursorX = this.getPaddingLeft(recorder)
   io.offsetX = 0
   if (!block.outputConnection) {
     this.renderDrawSharp_(io)
@@ -1212,11 +1217,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   }
   io.shouldSeparateField = this.shouldSeparateField
   io.wasSeparatorField = this.wasSeparatorField
-  // isHeadOfStatement can be set by the parent block,
-  io.isHeadOfStatement = !this.disabled && (
-    !block.outputConnection // if this is a statement
-    || this.isHeadOfStatement // or if the parent already set it
-  )
 
   if ((io.field = this.fromStartField)) {
     io.f = 0
@@ -1271,6 +1271,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   io.cursorX += this.getPaddingRight(block)
   this.minWidth = block.width = Math.max(block.width, io.cursorX)
   this.shouldSeparateField = io.shouldSeparateField
+  recorder && (recorder.lastField = io.lastField)
   return io.steps.join(' ')
 }
 
@@ -1346,8 +1347,8 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       root.removeAttribute('display')
       var text = io.field.getDisplayText_()
       var eyo = io.field.eyo
-      var here = io.cursorX
       if (text.length) {
+        io.lastField = io.field
         io.isSeparatorField = io.field.name === 'separator' || (eyo.model && eyo.model.separator)
         // if the text is void, it can not change whether
         // the last character was a letter or not
@@ -1355,11 +1356,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
           // add a separation
           io.cursorX += eYo.Font.space
         }
-        // if (!io.isSeparatorField && !io.wasSeparatorField && io.shouldSeparateField && !io.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing) && (!this.isHeadOfStatement)) {
-        //   // add a separation
-        //   io.cursorX += eYo.Font.space
-        // }
-        io.isHeadOfStatement = false
         io.starSymbol = (io.canStarSymbol && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
         io.canStarSymbol = false
         io.shouldSeparateField = !io.starSymbol && (eYo.XRE.id_continue.test(text[text.length - 1]) ||
@@ -1376,9 +1372,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       io.cursorX += size.width
       if (eyo.isEditing) {
         io.cursorX += eYo.Font.space
-      }
-      if (io.cursorX > here) {
-        io.isHeadOfStatement = false
       }
     }
   } else {
@@ -1430,7 +1423,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea but why was it here?
-    var here = io.cursorX
     this.renderDrawFields_(io, true)
     var cursorX = io.cursorX + io.offsetX
     var target = c8n.targetBlock()
@@ -1442,8 +1434,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       delete c8n.eyo.editWidth
       c8n.setOffsetInBlock(cursorX, 0)
     }
-    c8n.eyo.isHeadOfStatement = io.isHeadOfStatement
-    // this.tileHead && !this.tileHead.eyo.tilePrevious && (parent = block.getParent())
     if (target) {
       if (target.eyo.tileHead) {
         cursorX -= eYo.Font.space
@@ -1455,22 +1445,17 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           target.eyo.downRendering = true
           target.eyo.shouldSeparateField = io.shouldSeparateField
           target.eyo.wasSeparatorField = io.wasSeparatorField
-          if (io.cursorX > here) {
-            io.isHeadOfStatement = false
-          }
-          target.eyo.isHeadOfStatement = io.isHeadOfStatement
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
             if (eYo.DelegateSvg.debugStartTrackingRender) {
               console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
             }
-            target.render(false)
+            target.eyo.render(false, io)
           }      
          } catch(err) {
            console.error(err)
            throw err
          } finally {
           target.eyo.downRendering = false
-          // target.eyo.isHeadOfStatement = keep it unchanged
           target.eyo.shouldSeparateField = undefined
           target.eyo.wasSeparatorField = undefined
           io.shouldSeparateField = (target.eyo.wrapped_ || target.eyo.locked_) && target.eyo.shouldSeparateField
@@ -1484,21 +1469,21 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // (input with no target)
       var eyo = c8n.eyo
       if (!eyo.disabled_) {
-        var pw = eyo.s7r_ || eyo.optional_
-        ? this.caretPathDefWidth_(cursorX)
-        : this.placeHolderPathDefWidth_(cursorX, c8n)
-        io.steps.push(pw.d)
-        io.cursorX += pw.width
-        if (pw.width) {
-          // a space was added as a visual separator anyway
-          io.shouldSeparateField = false
+        if (eyo.s7r_ || eyo.optional_) {
+          var pw = this.caretPathDefWidth_(cursorX)
+          
+        } else {
+          pw = this.placeHolderPathDefWidth_(cursorX, c8n)
+          io.steps.push(pw.d)
+          io.cursorX += pw.width
+          if (pw.width) {
+            // a space was added as a visual separator anyway
+            io.shouldSeparateField = false
+          }
         }
       }
     }
     this.renderDrawFields_(io, false)
-    if (io.cursorX > here) {
-      io.isHeadOfStatement = false
-    }
   }
   return true
 }
