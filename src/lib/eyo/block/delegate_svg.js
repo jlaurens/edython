@@ -930,7 +930,7 @@ eYo.DelegateSvg.prototype.getPaddingLeft = function (recorder) {
         return recorder.lastField ? eYo.Font.space : 0
       }
     }
-    return (this.locked_ || !recorder.lastField) && parent
+    return (this.locked_ || !recorder || !recorder.lastField) && parent
       ? 0
       : eYo.Font.space
   } else {
