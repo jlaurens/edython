@@ -3191,14 +3191,11 @@ eYo.DelegateSvg.prototype.lock = function () {
       block, eYo.Const.Event.locked, null, this.locked_, true))
   }
   this.locked_ = true
-  if (block === eYo.SelectedConnection.set) {
-    eYo.SelectedConnection = null
-  }
-  // list all the input for connections with a target
   var c8n
   if ((c8n = eYo.SelectedConnection) && (block === c8n.getSourceBlock())) {
     eYo.SelectedConnection = null
   }
+  // list all the input for connections with a target
   var e8r = block.eyo.inputEnumerator()
   var target
   while (e8r.next()) {
