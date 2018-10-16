@@ -14,6 +14,7 @@
 goog.provide('eYo.FieldLabel')
 goog.provide('eYo.Field.Label')
 
+goog.provide('eYo.FieldHelper')
 goog.require('Blockly.FieldLabel')
 goog.require('eYo.Field')
 goog.require('eYo.Block')
@@ -29,15 +30,22 @@ goog.require('goog.dom');
  */
 eYo.FieldLabel = function (owner, text, optClass) {
   eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
-  this.size_ = new goog.math.Size(0, eYo.Font.height)
   if (owner) {
     this.eyo = owner
     owner.field_ = this
   } else {
-    this.eyo = {
-      field_: this
-    }
+    this.eyo = new eYo.FieldHelper(this)
   }
+  Object.defineProperties(
+    this,
+    {
+      size_: {
+        get () {
+          return this.eyo.size
+        }
+      }
+    }
+  )
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
 
@@ -83,6 +91,7 @@ Blockly.Field.prototype.updateWidth = function () {
     this.borderRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h)
   }
   this.size_.width = width
+  this.eyo && (this.eyo.size.dx = width)
 }
 
 /**

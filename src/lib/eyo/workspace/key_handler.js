@@ -497,7 +497,7 @@ eYo.KeyHandler = (function () {
             }
           })
         }
-        var scaledHeight = eYo.Font.lineHeight() * B.workspace.scale
+        var scaledHeight = eYo.Font.lineHeight * B.workspace.scale
         var c8n = eYo.SelectedConnection
         if (c8n && c8n.sourceBlock_) {
           var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)

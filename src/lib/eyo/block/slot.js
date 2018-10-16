@@ -14,6 +14,7 @@
 goog.provide('eYo.Slot')
 
 goog.require('eYo.Do')
+goog.require('eYo.Where')
 goog.require('eYo.Decorate')
 goog.require('eYo.ConnectionDelegate')
 goog.require('goog.dom');
@@ -61,7 +62,29 @@ eYo.Slot = function (owner, key, model) {
   setupModel(model)
   this.model = model
   this.input = undefined
-  var block = this.block = owner.block_
+  Object.defineProperties(
+    this,
+    {
+      sourceBlock_: {
+        get () {
+          return this.owner.block_
+        }
+      },
+      incog_p: {
+        get () {
+          return this.isIncog
+        },
+        set (newValue) {
+          this.owner.changeWrap(
+            this.setIncog,
+            this,
+            newValue
+          )
+        }
+      }
+    }
+  )
+  var block = this.sourceBlock_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
   eYo.Slot.makeFields(this, model.fields)
@@ -79,34 +102,10 @@ eYo.Slot = function (owner, key, model) {
     this.setInput(block.appendValueInput(key))
     f.call(this)
   }
-  Object.defineProperty(
-    this,
-    'sourceBlock_',
-    {
-      get () {
-        return this.owner.block_
-      }
-    }
-  )
-  Object.defineProperty(
-    this,
-    'incog_p',
-    {
-      get () {
-        return this.isIncog
-      },
-      set (newValue) {
-        this.owner.changeWrap(
-          this.setIncog,
-          this,
-          newValue
-        )
-      }
-    }
-  )
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
+  this.where = new eYo.Where()
 }
 
 /**

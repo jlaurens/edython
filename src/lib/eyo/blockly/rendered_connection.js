@@ -7,7 +7,7 @@
  */
 /**
  * @fileoverview Extends connections.
- * Insert a class between Blockly.Connection and Blockly.REnderedConnection
+ * Insert a class between Blockly.Connection and Blockly.RenderedConnection
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -23,6 +23,7 @@ goog.require('Blockly.Connection')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
 goog.require('eYo.T3')
+goog.require('eYo.Where')
 
 /**
  * Class for a connection delegate.
@@ -32,8 +33,31 @@ goog.require('eYo.T3')
 eYo.ConnectionDelegate = function (connection) {
   goog.asserts.assert(connection, 'A connection delegate MUST belong to a connection')
   this.connection = connection
+  this.where = new eYo.Where()
+  this.slot = undefined // except when the connection belongs to a slot
+  Object.defineProperties(
+    this,
+    {
+      x: { // in block text coordinates
+        get () {
+          return this.slot ? this.where.x + this.slot.where.x : this.where.x
+        }
+      },
+      y: { // in block text coordinates
+        get () {
+          return this.slot ? this.where.y + this.slot.where.y : this.where.y
+        }
+      },
+      sourceBlock_: {
+        get () {
+          return this.connection.sourceBlock_
+        }
+      }
+    }
+  )
 }
 
+The slot must have a `where` property
 /**
  * Whether the connection is a separator.
  * Used in lists.
@@ -179,7 +203,6 @@ eYo.ConnectionDelegate.prototype.completeWrapped = function () {
   }
 } ()
 
-
 /**
  * Will connect.
  * Forwards to the model.
@@ -268,7 +291,7 @@ eYo.ConnectionDelegate.prototype.isNext = function () {
 }
 
 /**
- * Is it a next connection.
+ * Is it a previous connection.
  * @return {boolean} True if the connection is the block's previous one.
  * @private
  */
@@ -386,6 +409,195 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
 }
 
 /**
+ * Set the origin of the connection.
+ * When the connection is in a slot, the origin is the top left point
+ * of the slot otherwise it is `(0, 0)`.
+ * @param {number} c The column index.
+ * @param {number} l The line index.
+ */
+eYo.ConnectionDelegate.prototype.setOffset = function(c, l) {
+  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+    l = c.l
+    c = c.c
+  }
+  this.where.set_cl(c, l)
+  this.connection.setOffsetInBlock(this.x, this.y)
+}
+
+/**
+ * Block path for an optional connection.
+ * This path is in block coordinates, it will be inserted
+ * into the block's svg group.
+ * When absent, `shape` is set to `side`.
+ * All combinations of shape and side won't perhaps make sense.
+ * For example, a sided `shape` should correspond to a left or right side.
+ * Statement blocks will have a left shaped caret at its right end,
+ * whereas expression blocks will have a right shaped caret at
+ * its right end.
+ * @return a `{width: ..., d: ...}` dictionary. The width attribute in font space unit.
+ * @private
+ */
+eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
+  /* eslint-disable indent */
+  var where = this.where
+  var p = eYo.Padding.h
+  var r = (p ** 2 + eYo.Font.lineHeight ** 2 / 4) / 2 / p
+  var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
+  var height = eYo.Font.lineHeight
+  var dx = 2
+  var correction = eYo.Font.descent / 2
+  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
+  var shape = this.shape || this.side
+  if (shape === eYo.Key.LEFT) {
+    dx = 0
+    var d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    'h ' + (dx / 2) + ' ' +
+    'v ' + (height - 2 * dy) + ' ' +
+    'h ' + (-dx / 2) + ' ' +
+    a + (-height + 2 * dy) + ' z'
+    return {w: this.side === eYo.Key.LEFT ? 0 : 1, d: d}
+  } else if (shape === eYo.Key.RIGHT) {
+    cursor.c -= 1
+    dx = 0
+    d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    'h ' + (dx / 2) + ' ' +
+    a + (height - 2 * dy) +
+    'h ' + (-dx / 2) + ' ' +
+    'v ' + (-dy) + ' z'
+    return {w: this.side === eYo.Key.RIGHT ? 1 : 0, d: d}
+  } else {
+    d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    'h ' + (dx / 2) + ' ' +
+    a + (height - 2 * dy) +
+    'h ' + (-dx / 2) + ' ' +
+    a + (-height + 2 * dy) + ' z'
+    return {w: 1, d: d}
+  }
+} /* eslint-enable indent */
+
+/**
+ * Placeholder path.
+ * @private
+ */
+eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
+  /* eslint-disable indent */
+  var w = goog.isDef(this.editW) ? this.editW + 1 : 3
+  var width = w * eYo.Font.space
+  var dw = goog.isDef(this.editW) ? -1 / 2 : 0
+  var dwidth = dw * eYo.Font.space
+  var height = eYo.Font.lineHeight
+  var p = eYo.Padding.h
+  var r_ph = (p ** 2 + height ** 2 / 4) / 2 / p
+  var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
+  var h_total = height
+  var correction = eYo.Font.descent / 2
+  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
+  var steps
+  if (!c8n || (this.chainBlock && this.chainBlock.outputConnection)) {
+    steps = ['M ', this.x + width - dwidth - p, ',', this.y + dy]
+    steps = steps.concat(a)
+    steps.push(h_total - 2 * dy, 'h ', -(width - 2 * p))
+    steps = steps.concat(a)
+    steps.push(-h_total + 2 * dy, ' z')
+    return {w: w, d: steps.join('')}
+  } else {
+    steps = ['M ', this.x + width - dwidth - p, ',', this.y + dy]
+    steps = steps.concat(a)
+    steps.push(h_total - 2 * dy, 'h ', -(width - 2 * p))
+    steps = steps.concat(a)
+    steps.push(-h_total + 2 * dy, ' z')
+    return {w: w, d: steps.join('')}
+  }
+} /* eslint-enable indent */
+
+/**
+ * Path definition for an hilighted connection
+ */
+eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
+  var c8n = this.connection
+  var block = c8n.sourceBlock_
+  if (!block.workspace) {
+    return
+  }
+  var steps = ''
+  if (c8n.type === Blockly.INPUT_VALUE) {
+    if (c8n.isConnected()) {
+      steps = c8n.targetBlock().eyo.valuePathDef_()
+    } else if (!this.disabled_ && (this.s7r_ || this.optional_)) {
+      steps = c8n.eyo.caretPathWidthDef_().d
+    } else {
+      steps = c8n.eyo.placeHolderPathWidthDef_().d
+    }
+  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+    steps = block.eyo.valuePathDef_()
+  } else {
+    var r = eYo.Style.Path.Selected.width / 2
+    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    if (c8n === block.previousConnection) {
+      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+    } else if (c8n === block.nextConnection) {
+      if (block.height > eYo.Font.lineHeight) { // this is not clean design
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+      } else {
+        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+      }
+    } else {
+      steps = 'm ' + (block.width) + ',' + (-r + eYo.Font.lineHeight) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - block.width) + a + (-2 * r) + ' z'
+    }
+  }
+  return steps
+}
+/**
+ * Highlight the receiver's connection
+ */
+eYo.ConnectionDelegate.prototype.highlight = function () {
+  var c8n = this.connection
+  var block = c8n.sourceBlock_
+  if (!block.workspace) {
+    return
+  }
+  if (block.eyo.higlightConnection) {
+    block.eyo.higlightConnection(c8n)
+    return
+  }
+  var steps
+  if (c8n.type === Blockly.INPUT_VALUE) {
+    if (c8n.isConnected()) {
+      steps = c8n.targetBlock().eyo.valuePathDef_()
+    } else {
+      if (!this.disabled_ && (this.s7r_ || this.optional_)) {
+        steps = this.caretPathWidthDef_().d
+      } else {
+        steps = this.placeHolderPathWidthDef_().d
+      }
+      Blockly.Connection.highlightedPath_ =
+      Blockly.utils.createSvgElement('path',
+        {
+          class: 'blocklyHighlightedConnectionPath',
+          d: steps
+        },
+        block.getSvgRoot()
+      )
+      return
+    }
+  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+    steps = block.eyo.valuePathDef_()
+  } else {
+    // this is a statement connection
+    var w = block.width
+    var r = eYo.Style.Path.Selected.width / 2
+    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+  }
+  Blockly.Connection.highlightedPath_ =
+  Blockly.utils.createSvgElement('path',
+    {'class': 'blocklyHighlightedConnectionPath',
+      'd': steps,
+      transform: 'translate(' + this.x + ',' + this.y + ')'},
+    block.getSvgRoot())
+}
+
+/**
  * Class for a connection between blocks that may be rendered on screen.
  * @param {!Blockly.Block} source The block establishing this connection.
  * @param {number} type The type of the connection.
@@ -408,12 +620,10 @@ eYo.Connection.prototype.eyo = undefined
 
 /**
  * Add highlighting around this connection.
- * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.highlight = function () {
-  var block = this.getSourceBlock()
-  if (block && block.eyo) {
-    block.eyo.highlightConnection(this)
+  if (this.eyo) {
+    this.eyo.highlight()
     return
   }
   Blockly.RenderedConnection.superClass_.highlight.call(this)
@@ -1010,7 +1220,7 @@ Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection
     if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.editWidth) {
+        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.editW) {
       if (connection) {
         return null // More than one connection.
       }
@@ -1068,3 +1278,4 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
     block.eyo.setOffset(-dx, -dy);
   }
 };
+

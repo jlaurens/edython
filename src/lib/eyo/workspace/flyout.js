@@ -181,7 +181,7 @@ eYo.Flyout.prototype.show = function(model) {
   // Create the blocks to be shown in this flyout.
   var contents = [];
   var gaps = [];
-  var default_gap = eYo.Font.lineHeight()/4;
+  var default_gap = eYo.Font.lineHeight/4;
  
   this.permanentlyDisabled_.length = 0;
   for (var i = 0, xml; xml = model[i]; i++) {

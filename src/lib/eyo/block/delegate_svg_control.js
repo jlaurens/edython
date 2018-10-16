@@ -32,7 +32,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
  */
 eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
   /* eslint-disable indent */
-  var lh = eYo.Font.lineHeight() / 2
+  var lh = eYo.Font.lineHeight / 2
   var ratio = 1.5
   var blh = lh * ratio
   var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
@@ -56,7 +56,7 @@ eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
   var r = eYo.Style.Path.r
   var d = eYo.Font.space
   var steps = ['m ' + (d + eYo.Font.space - eYo.Padding.l) + ',0']
-  var lh = eYo.Font.lineHeight() / 2
+  var lh = eYo.Font.lineHeight / 2
   var blh = lh * 1.5
   steps.push('a ' + lh + ', ' + lh + ' 0 0 1 ' + blh + ',0')
   steps.push('a ' + lh + ', ' + lh + ' 0 1 1 ' + (-blh) + ',0')
@@ -145,7 +145,7 @@ eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
  * @private
  */
 eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
-  io.cursor.x += eYo.Font.space * 4
+  io.cursor.c += 4
 }
 
 /**

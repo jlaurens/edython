@@ -180,7 +180,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
 var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
 eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t
-eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight() + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
+eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
 
 eYo.FlyoutToolbar.prototype.BUTTON_RADIUS = eYo.FlyoutToolbar.prototype.HEIGHT / 4
 // left margin

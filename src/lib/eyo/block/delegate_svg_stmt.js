@@ -170,7 +170,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     }
     var expected = io.block.eyo.getStatementCount()
     while (length < expected) {
-      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight()
+      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
       text = Blockly.utils.createSvgElement('text',
         {'x': 0, 'y': y},
         this.svgSharpGroup_)
@@ -184,8 +184,9 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     }
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursor.x) +
         ', ' + eYo.Padding.t + ')')
-    io.cursor.x += 2 * eYo.Font.space
-    io.didRenderBlock = false
+    io.cursor.c += 2
+    io.renderedBlock = undefined
+    io.lastBlockEnd = undefined
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }

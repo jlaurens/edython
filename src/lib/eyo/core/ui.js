@@ -15,7 +15,6 @@ goog.provide('eYo.UI')
 goog.provide('eYo.Style')
 goog.provide('eYo.Font')
 goog.provide('eYo.Padding')
-goog.provide('eYo.Margin')
 
 goog.require('eYo')
 goog.require('goog.cssom');
@@ -54,20 +53,27 @@ var g = {
     return 8 * eYo.Style.weight(eYo.Font.size / 10)
   }
 }
-Object.defineProperty(eYo.Padding, 'l', g)
-Object.defineProperty(eYo.Padding, 'r', g)
-Object.defineProperty(eYo.Padding, 'h', g)
+Object.defineProperties(
+  eYo.Padding,
+  {
+    l: g,
+    r: g,
+    h: g
+  }
+)
 g = {
   get () {
     return 6 * eYo.Style.weight(eYo.Font.size / 10)
   }
 }
-Object.defineProperty(eYo.Padding, 't', g)
-Object.defineProperty(eYo.Padding, 'b', g)
-Object.defineProperty(eYo.Padding, 'v', g)
-
-eYo.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
-
+Object.defineProperties(
+  eYo.Padding,
+  {
+    t: g,
+    b: g,
+    v: g
+  }
+)
 /**
  * Point size of text.
  */
@@ -87,9 +93,15 @@ eYo.Font = (function (ascent) {
     my.tabWidth = 4 * my.space
     return my
   }
-  my.lineHeight = function () {
-    return eYo.Font.height + eYo.Padding.t + eYo.Padding.b
-  }
+  Object.defineProperty(
+    my,
+    'lineHeight',
+    {
+      get () {
+        return eYo.Font.height + eYo.Padding.t + eYo.Padding.b
+      }
+    }
+  )
   return my.updateAscent(ascent)
 }(13))
 
@@ -134,7 +146,7 @@ eYo.Style.Path = {
 }
 Object.defineProperty(eYo.Style.Path, 'r', {
   get () {
-    return eYo.Margin.V + eYo.Padding.v + eYo.Font.descent / 2
+    return eYo.Padding.v + eYo.Font.descent / 2
   }
 })
 eYo.Style.MenuItem = {

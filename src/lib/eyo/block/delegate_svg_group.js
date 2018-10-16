@@ -41,7 +41,7 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   var w = block.width
-  var line = eYo.Font.lineHeight()
+  var line = eYo.Font.lineHeight
   var h = block.isCollapsed() ? 2 * line : block.height
   var steps = ['m ' + w + ',0 v ' + line]
   h -= line
@@ -77,7 +77,7 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   var w = block.width
-  var line = eYo.Font.lineHeight()
+  var line = eYo.Font.lineHeight
   var h = block.isCollapsed() ? 2 * line : block.height
   var t = eYo.Font.tabWidth
   var r = eYo.Style.Path.r
@@ -121,7 +121,7 @@ eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   if (block.isCollapsed()) {
-    var line = eYo.Font.lineHeight()
+    var line = eYo.Font.lineHeight
     var t = eYo.Font.tabWidth
     var r = eYo.Style.Path.r
     return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
@@ -150,7 +150,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
   var c8n = io.input.connection
   // this must be the last one
   if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
+    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight)
     var target = c8n.targetBlock()
     if (target) {
       var root = target.getSvgRoot()
@@ -167,7 +167,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
         }
       }
     }
-    io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount()
+    io.block.height = eYo.Font.lineHeight * io.block.eyo.getStatementCount()
   }
   return true
 } /* eslint-enable indent */
@@ -187,7 +187,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
   var block = this.block_
   var c8n = this.inputSuite.connection
   if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
+    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight)
     var target = c8n.targetBlock()
     if (target) {
       var root = target.getSvgRoot()
@@ -206,7 +206,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
         }
       }
     }
-    block.height = eYo.Font.lineHeight() * this.getStatementCount()
+    block.height = eYo.Font.lineHeight * this.getStatementCount()
     return true
   }
 }
@@ -222,19 +222,31 @@ eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
 }
 
 /**
+ * Is it still relevant ?
+ * There is a difference with the connection delegate's
+ * highlight method.
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
 eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
-  var steps
   var block = c8n.sourceBlock_
   if (!block.workspace) {
     return
   }
+  var steps
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
-      steps = this.placeHolderPathDefWidth_(0, c8n).d
+      steps = c8n.eyo.placeHolderPathWidthDef_().d
+      Blockly.Connection.highlightedPath_ =
+      Blockly.utils.createSvgElement('path',
+        {
+          class: 'blocklyHighlightedConnectionPath',
+          d: steps
+        },
+        c8n.sourceBlock_.getSvgRoot()
+      )
+      return
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5'

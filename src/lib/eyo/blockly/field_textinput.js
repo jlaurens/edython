@@ -14,35 +14,17 @@
 goog.provide('eYo.FieldTextInput')
 goog.provide('eYo.FieldInput')
 goog.provide('eYo.FieldVariable')
-goog.provide('eYo.FieldHelper')
 
 goog.provide('eYo.Field.TextInput')
 goog.provide('eYo.Field.Variable')
 goog.provide('eYo.Field.Input')
-goog.provide('eYo.Field.Helper')
 
+goog.require('eYo.FieldHelper')
 goog.require('eYo.Msg')
 goog.require('eYo.Content')
 goog.require('eYo.Field')
 goog.require('goog.dom');
 goog.require('Blockly.FieldTextInput')
-
-/**
- * Class for an editable text field helper.
- * @param {eYo.TextInputField} owner  The owner of the field.
- * @constructor
- */
-eYo.FieldHelper = function (field) {
-  this.field_ = field
-  field.eyo = this
-}
-
-/**
- * Late delegate.
- */
-eYo.FieldHelper.prototype.getDlgt = function () {
-  return this.field_.sourceBlock_.eyo
-}
 
 /**
  * Class for an editable text field.
@@ -62,6 +44,16 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
+  Object.defineProperties(
+    this,
+    {
+      size_: {
+        get () {
+          return this.eyo.size
+        }
+      }
+    }
+  )
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
@@ -438,64 +430,6 @@ eYo.FieldInput.prototype.render_ = function () {
   } else {
     goog.dom.classlist.remove(this.textElement_, 'eyo-code-comment')
   }
-}
-
-/**
- * Default method to start editing.
- * @this {Object} is a field owning an helper
- */
-eYo.FieldHelper.onStartEditing = function () {
-}
-
-/**
- * Default method to end editing.
- * @this {Object} is a field owning an helper
- */
-eYo.FieldHelper.onEndEditing = function () {
-  var newValue = this.getValue()
-  this.eyo.data.fromField(newValue)
-}
-
-/**
- * Set the keyed data of the source block to the given value.
- * Eventual problem: there might be some kind of formatting such that
- * the data stored and the data shown in the ui are not the same.
- * There is no step for such a translation but the need did not occur yet.
- * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
- */
-eYo.FieldHelper.prototype.getData_ = function (key) {
-  var data = this.data
-  if (!data) {
-    var block = this.field_.sourceBlock_
-    data = block && block.eyo.data[key || this.key]
-    goog.asserts.assert(data,
-      eYo.Do.format('No data bound to field {0}/{1}', key || this.key, block && block.type))
-  }
-  return data
-}
-
-/**
- * Validate the keyed data of the source block.
- * Asks the data object to do so.
- * The bound data must exist.
- * @param {Object} txt
- */
-eYo.FieldHelper.prototype.validate = function (txt) {
-  var v = this.getData_().validate(goog.isDef(txt) ? txt : this.field_.getValue())
-  return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
-}
-
-/**
- * Validate the keyed data of the source block.
- * Asks the data object to do so.
- * The bound data must exist.
- * @param {Object} txt
- */
-eYo.FieldHelper.prototype.validateIfData = function (txt) {
-  if (this.data) {
-    return this.validate(txt)
-  }
-  return txt
 }
 
 /**
