@@ -6,12 +6,12 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview CMath module blocks for edython.
+ * @fileoverview Decimal module blocks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.CMath')
+goog.provide('eYo.DelegateSvg.Decimal')
 
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
@@ -272,6 +272,6 @@ goog.mixin(eYo.Tooltip.Title, {
   decimal__import_stmt: 'Importer le module decimal',
 })
 
-eYo.DelegateSvg.CMath.T3s = [
+eYo.DelegateSvg.Decimal.T3s = [
   eYo.T3.Expr.decimal__const
 ]

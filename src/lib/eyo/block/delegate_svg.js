@@ -18,7 +18,7 @@ goog.provide('eYo.SelectedConnection')
 goog.require('eYo.T3')
 goog.require('eYo.Data')
 goog.require('eYo.Slot')
-goog.require('eYo.CLXY')
+goog.require('eYo.Where')
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
 goog.forwardDeclare('eYo.DelegateSvg.Expr')
@@ -153,7 +153,7 @@ eYo.DelegateSvg.prototype.initBlock = eYo.Decorate.reentrant_method(
   function () {
     this.changeWrap(
       function () {
-        this.size = new CLXY()
+        this.size = new eYo.Size()
         eYo.DelegateSvg.superClass_.initBlock.call(this)
         var block = this.block_
         block.setTooltip('')
@@ -759,16 +759,16 @@ eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
 eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
   var block = this.block_
   if (block.outputConnection) {
-    block.outputConnection.setOffsetInBlock(0, 0)
+    block.outputConnection.eyo.setOffset()
   } else {
     if (block.previousConnection) {
-      block.previousConnection.setOffsetInBlock(0, 0)
+      block.previousConnection.eyo.setOffset()
     }
     if (block.nextConnection) {
       if (block.isCollapsed()) {
-        block.nextConnection.setOffsetInBlock(0, 2 * eYo.Font.lineHeight)
+        block.nextConnection.eyo.setOffset(0, 2)
       } else {
-        block.nextConnection.setOffsetInBlock(0, block.height)
+        block.nextConnection.eyo.setOffset(0, this.size.h)
       }
     }
   }
@@ -925,16 +925,16 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
 
 /**
  * The right padding of a block.
- * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.getPaddingRight = function (block) {
+eYo.DelegateSvg.prototype.getPaddingRight = function () {
+  var block = this.block_
   if (this.wrapped_) {
     return 0
   } else if (block.outputConnection) {
-    return this.locked_ && block.getParent() ? 0 : eYo.Font.space
+    return this.locked_ && block.getParent() ? 0 : 1
   } else {
-    return eYo.Padding.r
+    return 1
   }
 }
 
@@ -1187,7 +1187,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       steps: [],
       i: 0, // input index
       f: 0, // field index
-      cursor: new Where(),
+      cursor: new eYo.Where(),
       shouldSeparate: false,
       didJustSeparate: false,
       pending: undefined
@@ -1198,7 +1198,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       io.caret = recorder.caret, // It is always defined
       io.field = recorder.field // It is always defined
     } else {
-      io.caret = new Caret(),
+      io.caret = new eYo.Where(),
       io.field = {}
     }
     // A "star like" field's text is one of '*', '+', '-', '~'...
@@ -1273,17 +1273,19 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       this.renderDrawField_(io)
     } while ((io.field.current = io.field.current.eyo.nextField))
   }
-  if (!this.wrapped_ || this.wrapped_) {
+  if (this.wrapped_) {
+    // forward an eventual pending connection caret
+    recorder && (recorder.pending = io.pending)
+  } else if (!this.locked_) {
     if (block.outputConnection) {
-      this.renderDrawPending_(io, !this.locked_ && eYo.Key.RIGHT)
+      this.renderDrawPending_(io, eYo.Key.RIGHT)
     } else {
-      this.renderDrawPending_(io, !this.locked_ && eYo.Key.RIGHT, 
-        eYo.Key.LEFT)
+      this.renderDrawPending_(io, eYo.Key.RIGHT, eYo.Key.LEFT)
     }
   }
-  // enlarge the width if necessary
+  // enlarge the width if necessary to take into account the right edge.
   io.cursor.x = Math.max(io.cursor.x, this.minBlockWidth())
-  io.cursor.x += this.getPaddingRight(block)
+  io.cursor.c += this.getPaddingRight()
   this.minWidth = block.width = Math.max(block.width, io.cursor.x)
   if (recorder) {
     // We ended a block. The right edge is a separator.
@@ -1364,20 +1366,26 @@ eYo.DelegateSvg.prototype.renderDrawInput_ = function (io) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
-  var root = io.field.current.getSvgRoot()
+  var field = io.field.current
+  var root = field.getSvgRoot()
   if (root) {
-    if (!io.field.current.isVisible()) {
+    if (!field.isVisible()) {
       root.setAttribute('display', 'none')
     } else {
       root.removeAttribute('display')
-      // Actually, io.cursor.x points to the location where the field
+      // Actually, io.cursor points to the location where the field
       // is expected. It is relative to the enclosing `SVG` group,
       // which is either a block or a slot.
       // If there is a pending caret, draw it and advance the cursor.
       this.renderDrawPending_(io)
-      var eyo = io.field.current.eyo
-      var text = io.field.current.getDisplayText_()
-      eyo.size.set_cl(text.length, 1)
+      var eyo = field.eyo
+      var text = field.getDisplayText_()
+      // Replace the text.
+      goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
+      var textNode = document.createTextNode(text)
+      field.textElement_.appendChild(textNode)
+
+      eyo.size.set(text.length, 1)
       if (text.length) {
         if (io.field.shouldSeparate
             && !eyo.startsWithSeparator()
@@ -1392,7 +1400,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
             || eYo.XRE.operator.test(tail)
             || tail === ':'
             || (tail === '.'
-              && !(io.field.current instanceof eYo.FieldTextInput)))
+              && !(field instanceof eYo.FieldTextInput)))
       }
       // place the field at the right position:
       root.setAttribute('transform', 'translate(' + io.cursor.x +
@@ -1404,7 +1412,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         // this is useful for widget only.
         io.cursor.c += 1
       }
-      io.field.last = io.field.current
+      io.field.last = field
       // we have rendered something after eventually rendering some block
       io.renderedBlock = undefined
       io.lastBlockEnd = undefined
@@ -1484,22 +1492,23 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
-    c8n.eyo.side = c8n.eyo.shape = undefined
+    var eyo = c8n.eyo
+    eyo.side = eyo.shape = undefined
     io.field.canStarLike = false
     // io.cursor is relative to the block or the slot
     // but the connection must be located relative to the block
     var target = c8n.targetBlock()
     if (io.bindField && !target) {
-      c8n.eyo.bindField = io.bindField
-      c8n.eyo.editW = io.bindField.eyo.size.w
-      c8n.eyo.setOffset(io.cursor.c - c8n.eyo.editW, io.cursor.l)
+      eyo.bindField = io.bindField
+      eyo.editW = io.bindField.eyo.size.w
+      eyo.setOffset(io.cursor.c - eyo.editW, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
       // if the connection has an editW, then rendering the placeholder
       // for that connection is a bit different.
     } else {
-      c8n.eyo.editW = undefined
-      c8n.eyo.setOffset(io.cursor)
+      eyo.editW = undefined
+      eyo.setOffset(io.cursor)
     }
     if (target) {
       var root = target.getSvgRoot()
@@ -1518,8 +1527,8 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
            throw err
          } finally {
           target.eyo.downRendering = false
-          var bBox = target.eyo.size_
-          io.cursor.advance_cl(bBox.w, bBox.h - 1)
+          var size = target.eyo.size
+          io.cursor.advance_cl(size.w, size.h - 1)
         }
       }
     } else if (io.bindField) {
@@ -1527,7 +1536,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
-      var eyo = c8n.eyo
       eyo.didMovedLeft = false
       if (!eyo.disabled_) {
         if (eyo.s7r_) {
@@ -1536,7 +1544,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             // an expression block with a right end has been rendered
             // we put the caret on that end to save space,
             // we move the connection one character to the left
-            eyo.cursor.c -= 1
+            eyo.where.c -= 1
             eyo.didMovedLeft = true
             var wd = eyo.caretPathWidthDef_()
             io.steps.push(wd.d)

@@ -142,7 +142,7 @@ eYo.Slot.prototype.beReady = function () {
   // init all the fields
   var f = function(field) {
     if (!field.sourceBlock_) {
-      field.setSourceBlock(this.block)
+      field.setSourceBlock(this.sourceBlock_)
       field.eyo.slot = this
       field.init()// installs in the owner's group, not the block group
     }
@@ -183,7 +183,7 @@ eYo.Slot.prototype.dispose = function () {
   this.key = null
   this.model = null
   this.input = null
-  this.block = null
+  this.sourceBlock_ = null
 }
 
 goog.require('eYo.FieldLabel')
@@ -465,10 +465,9 @@ eYo.Slot.prototype.setInput = function (input) {
 /**
  * Get the block.
  * For edython.
- * @param {boolean} newValue
  */
 eYo.Slot.prototype.getBlock = function () {
-  return this.block
+  return this.sourceBlock_
 }
 
 /**

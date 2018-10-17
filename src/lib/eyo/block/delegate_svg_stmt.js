@@ -123,7 +123,8 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
 eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
-  var w = block.width
+  // both edges of the block count for one character
+  var w = block.width - eYo.Font.space / 2
   var h = block.height
   var steps = ['m ' + w + ',0 v ' + h]
   var r = eYo.Style.Path.r

@@ -13,7 +13,7 @@
 
 goog.provide('eYo.FieldHelper')
 
-goog.require('eYo.CLXY')
+goog.require('eYo.Size')
 goog.require('eYo.Field')
 
 /**
@@ -33,7 +33,7 @@ eYo.FieldHelper = function (field) {
 eYo.FieldHelper.prototype.startsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
-  var text = this.field_.getDisplayText()
+  var text = this.field_.getDisplayText_()
   if (text.length) {
     if (this.field_.name === 'separator'
       || (this.model && this.model.separator)
@@ -111,3 +111,19 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
   }
   return txt
 }
+
+/**
+ * Overriden by edython because of monospace fonts.
+ * Gets the width of a text element, caching it in the process.
+ * @param {!Element} textElement An SVG 'text' element.
+ * @return {number} Width of element.
+ */
+Blockly.Field.getCachedWidth = (function () {
+  var getCachedWidth = Blockly.Field.getCachedWidth
+  return function(textElement) {
+    if (this.eyo) {
+      return this.eyo.size_.width
+    }
+    return getCachedWidth(textElement)
+  };  
+}) ()

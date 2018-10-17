@@ -258,9 +258,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/core/cmath_model.js" \
+--js "src/lib/eyo/core/decimal_model.js" \
+--js "src/lib/eyo/core/fractions_model.js" \
 --js "src/lib/eyo/core/functions_model.js" \
 --js "src/lib/eyo/core/math_model.js" \
 --js "src/lib/eyo/core/random_model.js" \
+--js "src/lib/eyo/core/statistics_model.js" \
 --js "src/lib/eyo/core/stdtypes_model.js" \
 --js "src/lib/eyo/core/turtle_model.js" \
 --js "src/lib/eyo/core/T3_all.js" \
@@ -270,8 +273,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/core/ui.js" \
---js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/block/delegate.js" \
+--js "src/lib/eyo/core/geometry.js" \
+--js "src/lib/eyo/blockly/rendered_connection.js" \
+--js "src/lib/eyo/blockly/field_helper.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
@@ -312,6 +317,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_range.js" \
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/block/delegate_svg_cmath.js" \
+--js "src/lib/eyo/block/delegate_svg_decimal.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
 --js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_print.js" \

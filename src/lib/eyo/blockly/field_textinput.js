@@ -50,8 +50,11 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
       size_: {
         get () {
           return this.eyo.size
+        },
+        set (newValue) {
+          this.eyo.size.set(newValue)
         }
-      }
+      },
     }
   )
   eYo.FieldTextInput.superClass_.constructor.call(this, text,

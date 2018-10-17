@@ -14,7 +14,7 @@
 goog.provide('eYo.FieldLabel')
 goog.provide('eYo.Field.Label')
 
-goog.provide('eYo.FieldHelper')
+goog.require('eYo.FieldHelper')
 goog.require('Blockly.FieldLabel')
 goog.require('eYo.Field')
 goog.require('eYo.Block')
@@ -75,8 +75,6 @@ eYo.FieldLabel.prototype.init = function () {
   // Configure the field to be transparent with respect to tooltips.
   this.textElement_.tooltip = this.sourceBlock_
   Blockly.Tooltip.bindMouseEvents(this.textElement_)
-  // Force a render.
-  this.render_()
 }
 
 /**
@@ -91,7 +89,6 @@ Blockly.Field.prototype.updateWidth = function () {
     this.borderRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h)
   }
   this.size_.width = width
-  this.eyo && (this.eyo.size.dx = width)
 }
 
 /**

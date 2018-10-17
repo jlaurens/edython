@@ -57,7 +57,6 @@ eYo.ConnectionDelegate = function (connection) {
   )
 }
 
-The slot must have a `where` property
 /**
  * Whether the connection is a separator.
  * Used in lists.
@@ -415,7 +414,7 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
  * @param {number} c The column index.
  * @param {number} l The line index.
  */
-eYo.ConnectionDelegate.prototype.setOffset = function(c, l) {
+eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l
     c = c.c
@@ -439,7 +438,6 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c, l) {
  */
 eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
   /* eslint-disable indent */
-  var where = this.where
   var p = eYo.Padding.h
   var r = (p ** 2 + eYo.Font.lineHeight ** 2 / 4) / 2 / p
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
@@ -457,7 +455,7 @@ eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
     a + (-height + 2 * dy) + ' z'
     return {w: this.side === eYo.Key.LEFT ? 0 : 1, d: d}
   } else if (shape === eYo.Key.RIGHT) {
-    cursor.c -= 1
+    this.where.c -= 1
     dx = 0
     d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
     'h ' + (dx / 2) + ' ' +
@@ -493,7 +491,7 @@ eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
   var correction = eYo.Font.descent / 2
   var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
   var steps
-  if (!c8n || (this.chainBlock && this.chainBlock.outputConnection)) {
+  if (this.chainBlock && this.chainBlock.outputConnection) {
     steps = ['M ', this.x + width - dwidth - p, ',', this.y + dy]
     steps = steps.concat(a)
     steps.push(h_total - 2 * dy, 'h ', -(width - 2 * p))
@@ -530,19 +528,20 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = block.eyo.valuePathDef_()
-  } else {
+  } else { // statement connection
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    var w = block.width - eYo.Font.space / 2
     if (c8n === block.previousConnection) {
-      steps = 'm ' + block.width + ',' + (-r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+      steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight) { // this is not clean design
         steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + block.width + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-block.width + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = 'm ' + w + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
       }
     } else {
-      steps = 'm ' + (block.width) + ',' + (-r + eYo.Font.lineHeight) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - block.width) + a + (-2 * r) + ' z'
+      steps = 'm ' + w + ',' + (-r + eYo.Font.lineHeight) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w) + a + (-2 * r) + ' z'
     }
   }
   return steps
@@ -584,7 +583,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
     steps = block.eyo.valuePathDef_()
   } else {
     // this is a statement connection
-    var w = block.width
+    var w = block.width - eYo.Font.space / 2
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
