@@ -205,7 +205,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.updateProfile()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.attributeref) {
+        if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name) {
           this.change(1)
         }
       },

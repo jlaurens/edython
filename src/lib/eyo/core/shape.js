@@ -71,19 +71,19 @@ Object.defineProperties(
     },
     max_caret_extra: {
       get () {
-        return this.expr_radius - this.caret_width / 2
+        return eYo.Unit.x - this.caret_width / 2
       }
     },
     caret_extra: { // half the H width
       get () {
-        return 0.066 * this.max_caret_extra // coefficient in ]0 ; 1]
+        return 0.25 * this.max_caret_extra // coefficient in ]0 ; 1]
       }
     },
     caret_height: {
       get () {
         var r = this.expr_radius
-        var w = this.max_caret_extra - this.caret_extra
-        return Math.sqrt(r**2 - w**2)
+        var w = this.caret_width
+        return Math.sqrt(w * (4 * r - w))
       }
     },
     stmt_radius: {
@@ -443,15 +443,25 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
   var dd = this.caret_extra
   if (eyo) {
     var shape = eyo.shape || eyo.side || eYo.Key.NONE
-    var x = eyo.where.x
-    var y = eyo.where.y
-    this.width = eyo.optional_ || eyo.s7r_ ? 1 : 3
+    var x = eyo.x
+    var y = eyo.y
+    this.width = eyo.w
   } else {
     x = 0
     y = 0
     this.width = 3
   }
-  if (shape === eYo.Key.LEFT) {
+  if (this.width > 1) {
+    var dd = 2 * this.caret_extra
+    var h = eYo.Unit.y / 2
+    var r = this.expr_radius
+    var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
+    var p_h = this.caret_height
+    this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
+    this.arc(this.caret_height, false, true)
+    this.h(true, (1 - this.width) * eYo.Unit.x + dd)
+    this.arc(this.caret_height, true, false)
+  } else if (shape === eYo.Key.LEFT) {
     this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.h(true, dd / 2)
     this.arc(this.caret_height, false, true)

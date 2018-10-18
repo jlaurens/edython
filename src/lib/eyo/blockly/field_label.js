@@ -29,25 +29,29 @@ goog.require('goog.dom');
  * @constructor
  */
 eYo.FieldLabel = function (owner, text, optClass) {
-  eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
   if (owner) {
     this.eyo = owner
     owner.field_ = this
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
-  Object.defineProperties(
-    this,
-    {
-      size_: {
-        get () {
-          return this.eyo.size
-        }
-      }
-    }
-  )
+  eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
+
+Object.defineProperties(
+  eYo.FieldLabel.prototype,
+  {
+    size_: {
+      get () {
+        return this.eyo.size
+      },
+      set (newValue) {
+        this.eyo.size = new eYo.Size()
+      }
+    }
+  }
+)
 
 /**
  * Install this text on a block.

@@ -51,13 +51,13 @@ var set_l = function (newValue) {
   this.l_ = newValue
 }
 var get_x = function () {
-  return this.c * eYo.Font.space
+  return this.c * eYo.Unit.x
 }
 var set_x = function (newValue) {
   this.c = Math.round(newValue / eYo.Unit.x)
 }
 var get_y = function () {
-  return this.l * eYo.Font.lineHeight
+  return this.l * eYo.Unit.y
 }
 var set_y = function (newValue) {
   this.l = Math.round(newValue / eYo.Unit.y)
@@ -67,39 +67,40 @@ var set_y = function (newValue) {
  * `Where` is a descendant of `goog.math.Coordinate` that stores its data in text units.
  */
 eYo.Where = function(c, l) {
-  Object.defineProperties(
-    this,
-    {
-      c: {
-        get: get_c,
-        set: set_c
-      },
-      l: {
-        get: get_l,
-        set: set_l
-      },
-      w: {
-        get: get_c,
-        set: set_c
-      },
-      h: {
-        get: get_l,
-        set: set_l
-      },
-      x: {
-        get: get_x,
-        set: set_x
-      },
-      y: {
-        get: get_y,
-        set: set_y
-      }
-    }
-  )
   this.set(c, l)
 }
 
 goog.inherits(eYo.Where, goog.math.Coordinate)
+
+Object.defineProperties(
+  eYo.Where.prototype,
+  {
+    c: {
+      get: get_c,
+      set: set_c
+    },
+    l: {
+      get: get_l,
+      set: set_l
+    },
+    w: {
+      get: get_c,
+      set: set_c
+    },
+    h: {
+      get: get_l,
+      set: set_l
+    },
+    x: {
+      get: get_x,
+      set: set_x
+    },
+    y: {
+      get: get_y,
+      set: set_y
+    }
+  }
+)
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -112,8 +113,8 @@ eYo.Where.prototype.set = function (c = 0, l = 0) {
     c = c.w || 0
     l = c.h || 0
   } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x_ = c.x
-    this.y_ = c.y
+    this.x = c.x
+    this.y = c.y
     return
   }
   this.c_ = c
@@ -139,8 +140,8 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
     c = c.w || 0
     l = c.h || 0
   } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x_ += c.x
-    this.y_ += c.y
+    this.x += c.x
+    this.y += c.y
     return
   }
   this.c_ += c
@@ -151,63 +152,64 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
  * `Size` is a descendant of `goog.math.Size` that stores its data in text units.
  */
 eYo.Size = function (w, h) {
-  Object.defineProperties(
-    this,
-    {
-      width: {
-        get () {
-          return this.c_ * eYo.Unit.x
-        },
-        set (newValue) {
-          this.c_ = Math.round(newValue / eYo.Unit.x)
-        }
-      },
-      height: {
-        get () {
-          return this.l_ * eYo.Unit.y
-        },
-        set (newValue) {
-          this.l_ = Math.round(newValue / eYo.Unit.y)
-        }
-      },
-      c: {
-        get: get_c,
-        set: set_c
-      },
-      l: {
-        get: get_l,
-        set: set_l
-      },
-      w: {
-        get: get_c,
-        set: set_c
-      },
-      h: {
-        get: get_l,
-        set: set_l
-      },
-      x: {
-        get: get_x,
-        set: set_x
-      },
-      y: {
-        get: get_y,
-        set: set_y
-      },
-      dx: {
-        get: get_x,
-        set: set_x
-      },
-      dy: {
-        get: get_y,
-        set: set_y
-      }
-    }
-  )
   this.set(w, h)
 }
 
 goog.inherits(eYo.Size, goog.math.Size)
+
+Object.defineProperties(
+  eYo.Size.prototype,
+  {
+    width: {
+      get () {
+        return this.c_ * eYo.Unit.x
+      },
+      set (newValue) {
+        this.c_ = Math.round(newValue / eYo.Unit.x)
+      }
+    },
+    height: {
+      get () {
+        return this.l_ * eYo.Unit.y
+      },
+      set (newValue) {
+        this.l_ = Math.round(newValue / eYo.Unit.y)
+      }
+    },
+    c: {
+      get: get_c,
+      set: set_c
+    },
+    l: {
+      get: get_l,
+      set: set_l
+    },
+    w: {
+      get: get_c,
+      set: set_c
+    },
+    h: {
+      get: get_l,
+      set: set_l
+    },
+    x: {
+      get: get_x,
+      set: set_x
+    },
+    y: {
+      get: get_y,
+      set: set_y
+    },
+    dx: {
+      get: get_x,
+      set: set_x
+    },
+    dy: {
+      get: get_y,
+      set: set_y
+    }
+  }
+)
 
 /**
  * set the `Size`.

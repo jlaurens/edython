@@ -62,28 +62,6 @@ eYo.Slot = function (owner, key, model) {
   setupModel(model)
   this.model = model
   this.input = undefined
-  Object.defineProperties(
-    this,
-    {
-      sourceBlock_: {
-        get () {
-          return this.owner.block_
-        }
-      },
-      incog_p: {
-        get () {
-          return this.isIncog
-        },
-        set (newValue) {
-          this.owner.changeWrap(
-            this.setIncog,
-            this,
-            newValue
-          )
-        }
-      }
-    }
-  )
   var block = this.sourceBlock_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
@@ -107,6 +85,29 @@ eYo.Slot = function (owner, key, model) {
   }
   this.where = new eYo.Where()
 }
+
+Object.defineProperties(
+  eYo.Slot.prototype,
+  {
+    sourceBlock_: {
+      get () {
+        return this.owner.block_
+      }
+    },
+    incog_p: {
+      get () {
+        return this.isIncog
+      },
+      set (newValue) {
+        this.owner.changeWrap(
+          this.setIncog,
+          this,
+          newValue
+        )
+      }
+    }
+  }
+)
 
 /**
  * Init the slot.

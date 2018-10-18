@@ -44,23 +44,24 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
-  Object.defineProperties(
-    this,
-    {
-      size_: {
-        get () {
-          return this.eyo.size
-        },
-        set (newValue) {
-          this.eyo.size.set(newValue)
-        }
-      },
-    }
-  )
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
 goog.inherits(eYo.FieldTextInput, Blockly.FieldTextInput)
+
+Object.defineProperties(
+  eYo.FieldTextInput.prototype,
+  {
+    size_: {
+      get () {
+        return this.eyo.size
+      },
+      set (newValue) {
+        this.eyo.size.set(newValue)
+      }
+    },
+  }
+)
 
 /**
  * The HTML input element for the user to type, or null if no FieldTextInput

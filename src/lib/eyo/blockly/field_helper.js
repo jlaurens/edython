@@ -40,7 +40,9 @@ eYo.FieldHelper.prototype.startsWithSeparator = function () {
       || eYo.XRE.operator.test(text[0])
       || eYo.XRE.delimiter.test(text[0])
       || text[0] === '.'
-      || eYo.XRE.id_continue.test(text[0])
+      || text[0] === ':'
+      || text[0] === ','
+      || text[0] === ';'
       || this.isEditing) {
       // add a separation before
       return true

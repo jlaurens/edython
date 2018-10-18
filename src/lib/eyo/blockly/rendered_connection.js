@@ -35,27 +35,47 @@ eYo.ConnectionDelegate = function (connection) {
   this.connection = connection
   this.where = new eYo.Where()
   this.slot = undefined // except when the connection belongs to a slot
-  Object.defineProperties(
-    this,
-    {
-      x: { // in block text coordinates
-        get () {
-          return this.slot ? this.where.x + this.slot.where.x : this.where.x
-        }
-      },
-      y: { // in block text coordinates
-        get () {
-          return this.slot ? this.where.y + this.slot.where.y : this.where.y
-        }
-      },
-      sourceBlock_: {
-        get () {
-          return this.connection.sourceBlock_
-        }
+}
+
+Object.defineProperties(
+  eYo.ConnectionDelegate.prototype,
+  {
+    c: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.c + this.slot.where.c : this.where.c
+      }
+    },
+    l: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.l + this.slot.where.l : this.where.l
+      }
+    },
+    x: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.x + this.slot.where.x : this.where.x
+      }
+    },
+    y: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.y + this.slot.where.y : this.where.y
+      }
+    },
+    w: {
+      get () {
+        return this.bindField
+          ? this.bindField.eyo.size.w + 1
+          : this.optional_ || this.s7r_
+            ? 1
+            : 3
+      }
+    },
+    sourceBlock_: {
+      get () {
+        return this.connection.sourceBlock_
       }
     }
-  )
-}
+  }
+)
 
 /**
  * Whether the connection is a separator.
@@ -420,6 +440,10 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
     c = c.c
   }
   this.where.set(c, l)
+  if (isNaN(this.x)) {
+    this.where.set(c, l)
+    console.error(this.x)
+  }
   this.connection.setOffsetInBlock(this.x, this.y)
 }
 
@@ -437,58 +461,27 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
  * @private
  */
 eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
-  /* eslint-disable indent */
   var shape = eYo.Shape.newWithConnection(this)
   return {w: shape.width, d: shape.definition}
-  var p = eYo.Padding.h
-  var r = (p ** 2 + eYo.Font.lineHeight ** 2 / 4) / 2 / p
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
-  var height = eYo.Font.lineHeight
-  var dx = 2
-  var correction = eYo.Font.descent / 100
-  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
-  var shape = this.shape || this.side
-  if (shape === eYo.Key.LEFT) {
-    dx = 0
-    var d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
-    'h ' + (dx / 2) + ' ' +
-    'v ' + (height - 2 * dy) + ' ' +
-    'h ' + (-dx / 2) + ' ' +
-    a + (-height + 2 * dy) + ' z'
-    return {w: this.side === eYo.Key.LEFT ? 0 : 1, d: d}
-  } else if (shape === eYo.Key.RIGHT) {
-    this.where.c -= 1
-    dx = 0
-    d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
-    'h ' + (dx / 2) + ' ' +
-    a + (height - 2 * dy) +
-    'h ' + (-dx / 2) + ' ' +
-    'v ' + (-dy) + ' z'
-    return {w: this.side === eYo.Key.RIGHT ? 1 : 0, d: d}
-  } else {
-    dx = 0
-    d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
-    'h ' + (dx / 2) + ' ' +
-    a + (height - 2 * dy) +
-    'h ' + (-dx / 2) + ' ' +
-    a + (-height + 2 * dy) + ' z'
-    return {w: 1, d: d}
-  }
-} /* eslint-enable indent */
+}
 
 /**
  * Placeholder path.
  * @private
  */
 eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
+  var shape = eYo.Shape.newWithConnection(this)
+  return {w: shape.width, d: shape.definition}
+
+
   /* eslint-disable indent */
-  var w = goog.isDef(this.editW) ? this.editW + 1 : 3
-  var width = w * eYo.Font.space
-  var dw = goog.isDef(this.editW) ? -1 / 2 : 0
-  var dwidth = dw * eYo.Font.space
-  var height = eYo.Font.lineHeight
+  var w = this.w
+  var width = w * eYo.Unit.x
+  var dw = goog.isDef(this.bindField) ? -1 / 2 : 0
+  var dwidth = dw * eYo.Unit.x
+  var height = eYo.Unit.y
   var p = eYo.Padding.h
-  var r_ph = (p ** 2 + height ** 2 / 4) / 2 / p
+  var r_ph = eYo.Shape.shared.expr_radius
   var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
   var h_total = height
   var correction = eYo.Font.descent / 2
@@ -525,9 +518,9 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!this.disabled_ && (this.s7r_ || this.optional_)) {
-      steps = c8n.eyo.caretPathWidthDef_().d
+      steps = this.caretPathWidthDef_().d
     } else {
-      steps = c8n.eyo.placeHolderPathWidthDef_().d
+      steps = this.placeHolderPathWidthDef_().d
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = block.eyo.valuePathDef_()
@@ -1222,7 +1215,7 @@ Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection
     if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.editW) {
+        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.bindField) {
       if (connection) {
         return null // More than one connection.
       }
