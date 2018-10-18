@@ -77,33 +77,68 @@ Object.defineProperties(
 /**
  * Point size of text.
  */
-eYo.Font = (function (ascent) {
-  var my = {}
-  my.updateAscent = function (ascent) {
-    my.ascent = my.size = ascent
-    my.descent = ascent * 492 / 1556
-    my.xHeight = ascent * 1120 / 1556
-    my.space = ascent * 1233 / 1556
-    my.totalAscent = ascent * 2048 / 1556
-    my.height = my.totalAscent + my.descent
-    my.familyMono = 'DejaVuSansMono,monospace'
-    my.familySans = 'DejaVuSans,sans-serif'
-    my.style = 'font-family:'+my.familyMono+';font-size:' + ascent + 'pt;'
-    my.menuStyle = 'font-family:'+my.familySans+';font-size:' + ascent + 'pt;'
-    my.tabWidth = 4 * my.space
-    return my
-  }
-  Object.defineProperty(
-    my,
-    'lineHeight',
-    {
+eYo.Font = {
+  ascent: 13,
+  familyMono: 'DejaVuSansMono,monospace',
+  familySans: 'DejaVuSans,sans-serif',
+  tabW: 4
+}
+
+Object.defineProperties(
+  eYo.Font,
+  {
+    size: {
       get () {
-        return eYo.Font.height + eYo.Padding.t + eYo.Padding.b
+        return this.ascent
+      }
+    },
+    descent: {
+      get () {
+        return this.ascent * 492 / 1556
+      }
+    },
+    xHeight: {
+      get () {
+        return this.ascent * 1120 / 1556
+      }
+    },
+    space: {
+      get () {
+        return this.ascent * 1233 / 1556
+      }
+    },
+    totalAscent: {
+      get () {
+        return this.ascent * 2048 / 1556
+      }
+    },
+    height: {
+      get () {
+        return this.totalAscent + this.descent
+      }
+    },
+    lineHeight: {
+      get () {
+        return this.height + eYo.Padding.t + eYo.Padding.b
+      }
+    },
+    style: {
+      get () {
+        return 'font-family:' + this.familyMono + ';font-size:' + this.ascent + 'pt;'
+      }
+    },
+    menuStyle: {
+      get () {
+        return 'font-family:' + this.familySans + ';font-size:' + this.ascent + 'pt;'
+      }
+    },
+    tabWidth: {
+      get () {
+        return this.tabW * this.space
       }
     }
-  )
-  return my.updateAscent(ascent)
-}(13))
+  }
+)
 
 /**
  * Offset of the text editor.

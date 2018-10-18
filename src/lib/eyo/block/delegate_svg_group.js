@@ -55,12 +55,12 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   steps.push(' v ' + h)
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (this.hasNextStatement_(block)) {
+  if (this.hasNextStatement_()) {
     steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l - r))
   } else {
     steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l) + a + (-r) + ',' + (-r))
   }
-  if (this.hasPreviousStatement_(block)) {
+  if (this.hasPreviousStatement_()) {
     steps.push('V 0 z')
   } else {
     steps.push('V ' + r + a + r + ',' + (-r) + ' z')
@@ -82,8 +82,8 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   var t = eYo.Font.tabWidth
   var r = eYo.Style.Path.r
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var previous = this.hasPreviousStatement_(block)
-  var next = this.hasNextStatement_(block)
+  var previous = this.hasPreviousStatement_()
+  var next = this.hasNextStatement_()
   if (previous) {
     var steps = ['m 0,0 h ' + w]
   } else {
@@ -150,7 +150,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
   var c8n = io.input.connection
   // this must be the last one
   if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight)
+    c8n.eyo.setOffset(eYo.Font.tabW, 1)
     var target = c8n.targetBlock()
     if (target) {
       var root = target.getSvgRoot()
@@ -187,7 +187,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
   var block = this.block_
   var c8n = this.inputSuite.connection
   if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight)
+    c8n.eyo.setOffset(eYo.Font.tabW, 1)
     var target = c8n.targetBlock()
     if (target) {
       var root = target.getSvgRoot()

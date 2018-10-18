@@ -419,7 +419,7 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
     l = c.l
     c = c.c
   }
-  this.where.set_cl(c, l)
+  this.where.set(c, l)
   this.connection.setOffsetInBlock(this.x, this.y)
 }
 
@@ -438,17 +438,19 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
  */
 eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
   /* eslint-disable indent */
+  var shape = eYo.Shape.newWithConnection(this)
+  return {w: shape.width, d: shape.definition}
   var p = eYo.Padding.h
   var r = (p ** 2 + eYo.Font.lineHeight ** 2 / 4) / 2 / p
   var a = ' a ' + r + ', ' + r + ' 0 0 1 0,'
   var height = eYo.Font.lineHeight
   var dx = 2
-  var correction = eYo.Font.descent / 2
+  var correction = eYo.Font.descent / 100
   var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
   var shape = this.shape || this.side
   if (shape === eYo.Key.LEFT) {
     dx = 0
-    var d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    var d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
     'h ' + (dx / 2) + ' ' +
     'v ' + (height - 2 * dy) + ' ' +
     'h ' + (-dx / 2) + ' ' +
@@ -457,14 +459,15 @@ eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
   } else if (shape === eYo.Key.RIGHT) {
     this.where.c -= 1
     dx = 0
-    d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
     'h ' + (dx / 2) + ' ' +
     a + (height - 2 * dy) +
     'h ' + (-dx / 2) + ' ' +
     'v ' + (-dy) + ' z'
     return {w: this.side === eYo.Key.RIGHT ? 1 : 0, d: d}
   } else {
-    d = 'M ' + (this.x + eYo.Font.space / 2 - dx/2) + ',' + (this.y + dy) +
+    dx = 0
+    d = 'M ' + (this.x + eYo.Font.space / 2 - dx / 2) + ',' + (this.y + dy) +
     'h ' + (dx / 2) + ' ' +
     a + (height - 2 * dy) +
     'h ' + (-dx / 2) + ' ' +

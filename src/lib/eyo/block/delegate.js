@@ -1190,19 +1190,19 @@ eYo.Delegate.prototype.deinitBlock = function (block) {
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.hasPreviousStatement_ = function (block) {
-  var c8n = block.previousConnection
+eYo.Delegate.prototype.hasPreviousStatement_ = function () {
+  var c8n = this.block_.previousConnection
   return c8n && c8n.isConnected() &&
     c8n.targetBlock().nextConnection === c8n.targetConnection
 }
 
 /**
  * Whether the block has a next statement.
- * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.hasNextStatement_ = function (block) {
-  return block.nextConnection && block.nextConnection.isConnected()
+eYo.Delegate.prototype.hasNextStatement_ = function () {
+  var c8n = this.block_.nextConnection
+  return c8n && c8n.isConnected()
 }
 
 /**

@@ -277,6 +277,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/geometry.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
+--js "src/lib/eyo/core/shape.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \

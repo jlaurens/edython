@@ -38,6 +38,7 @@ eYo.FieldHelper.prototype.startsWithSeparator = function () {
     if (this.field_.name === 'separator'
       || (this.model && this.model.separator)
       || eYo.XRE.operator.test(text[0])
+      || eYo.XRE.delimiter.test(text[0])
       || text[0] === '.'
       || eYo.XRE.id_continue.test(text[0])
       || this.isEditing) {

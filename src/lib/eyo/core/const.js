@@ -140,7 +140,7 @@ eYo.Key = {
 
   LEFT: 'left',
   RIGHT: 'right',
-  
+
   // IN PROGRESS
   ANY: 'ANY',
 
@@ -381,6 +381,7 @@ eYo.XRE = {
   s3d: XRegExp(`^(?:eyo:)?(?<core>.*?)$`),
   event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
+  delimiter: XRegExp(`^[.,;:\\(\\)\\[\\]\\{\\}\\[\\]'"]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
   upper: XRegExp(`^[A-Z_]*$`)
 }

@@ -121,6 +121,8 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
+  return eYo.Shape.definitionWithBlock(this)
+  
   /* eslint-disable indent */
   var block = this.block_
   // both edges of the block count for one character
@@ -186,7 +188,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursor.x) +
         ', ' + eYo.Padding.t + ')')
     io.cursor.c += 2
-    io.renderedBlock = undefined
+    io.didRenderBlock = undefined
     io.lastBlockEnd = undefined
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
@@ -207,8 +209,8 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
  * @param {!Blockly.Block} block
  * @protected
  */
-eYo.DelegateSvg.Stmt.prototype.minBlockWidth = function (block) {
-  return eYo.Font.tabWidth
+eYo.DelegateSvg.Stmt.prototype.minBlockW = function () {
+  return eYo.Font.tabW
 }
 
 console.error('workspace cancel last gesture?')
