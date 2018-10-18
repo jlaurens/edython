@@ -1515,13 +1515,19 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
+        var t_eyo = target.eyo
         try {
-          target.eyo.downRendering = true
+        var t_eyo = target.eyo
+          t_eyo.downRendering = true
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
             if (eYo.DelegateSvg.debugStartTrackingRender) {
               console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
             }
-            target.eyo.render(false, io)
+            if (t_eyo.wrapped_) {
+              // force target rendering
+              t_eyo.incrementChangeCount()
+            }
+            t_eyo.render(false, io)
           }      
          } catch(err) {
            console.error(err)

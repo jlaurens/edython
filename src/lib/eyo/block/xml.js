@@ -586,7 +586,6 @@ eYo.Xml.Data.toDom = function (block, element) {
  * @this a block delegate
  */
 eYo.Xml.Data.fromDom = function (block, element) {
-  console.log(block.eyo.change.count)
   var hasText
   var eyo = block.eyo
   eyo.changeWrap(

@@ -97,7 +97,7 @@
     },
     computed: {
       slotholder () {
-        var d = eYo.DelegateSvg.prototype.placeHolderPathDefWidth_(0).d
+        var d = eYo.Shape.definitionWithConnection().d
         var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
         return function (className) {
           return '<div class="eyo-info-slotholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'

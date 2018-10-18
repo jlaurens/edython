@@ -59,7 +59,7 @@ Object.defineProperties(
     },
     expr_radius: {
       get () {
-        return this.min_expr_radius * 2.718
+        return this.min_expr_radius * 2.5
       }
     },
     caret_width: {
@@ -76,7 +76,7 @@ Object.defineProperties(
     },
     caret_extra: { // half the H width
       get () {
-        return 0.0725 * this.max_caret_extra // coefficient in ]0 ; 1]
+        return 0.066 * this.max_caret_extra // coefficient in ]0 ; 1]
       }
     },
     caret_height: {
@@ -436,26 +436,33 @@ eYo.Shape.definitionWithConnection = function(eyo) {
 
 /**
  * create a shape with the given connection delegate.
- * @param {eYo.ConnectionDelegateSvg} eyo  Connection delegate
+ * @param {?eYo.ConnectionDelegateSvg} eyo  Connection delegate
  */
 eYo.Shape.prototype.initWithConnection = function(eyo) {
   this.begin()
   var dd = this.caret_extra
-  var shape = eyo.shape || eyo.side
-  this.width = 1
+  if (eyo) {
+    var shape = eyo.shape || eyo.side || eYo.Key.NONE
+    var x = eyo.where.x
+    var y = eyo.where.y
+    this.width = eyo.optional_ || eyo.s7r_ ? 1 : 3
+  } else {
+    x = 0
+    y = 0
+    this.width = 3
+  }
   if (shape === eYo.Key.LEFT) {
-    this.M(true, eyo.where.x + eYo.Unit.x / 2, eyo.where.y + (eYo.Unit.x - this.caret_height)/ 2)
+    this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.h(true, dd / 2)
     this.arc(this.caret_height, false, true)
     this.h(true, -dd / 2)
   } else if (shape === eYo.Key.RIGHT) {
-    this.M(true, eyo.where.x + eYo.Unit.x / 2, eyo.where.y + (eYo.Unit.x - this.caret_height)/ 2)
+    this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.h(-dd / 2)
     this.arc(this.caret_height, true, true)
     this.h(true, dd / 2)
   } else {
-    this.width = eyo.optional_ || eyo.s7r_ ? 1 : 3
-    this.M(true, eyo.where.x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, eyo.where.y + (eYo.Unit.y - this.caret_height)/ 2)
+    this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x - dd)
     this.arc(this.caret_height, true, false)
