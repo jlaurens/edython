@@ -1175,63 +1175,63 @@ eYo.DelegateSvg.prototype.chainTiles = (function () {
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
-    /* eslint-disable indent */
-    // when defined, `recorder` comes from
-    // the parent's `renderDrawValueInput_` method.
-    var block = this.block_
-    // we define the `io` named recorder which is specific to this block.
-    var io = {
-      block: block,
-      steps: [],
-      i: 0, // input index
-      f: 0, // field index
-      n: 0, // count of rendered objects (fields, slots and inputs)
-      cursor: new eYo.Where()
-    }
-    if (recorder) {
-      // io inherits some values from the given recorder
-      io.common = recorder.common // It is always defined
-    } else {
-      io.common = {
-        pending: undefined,
-        ending: [],
-        shouldSeparate: true,
-        beforeIsRightEdge: false,
-        field: {
-          beforeIsBlack: false, // true if the position before the cursor contains a black character
-          shouldSeparate: false // and other properties...
-        }
+  /* eslint-disable indent */
+  // when defined, `recorder` comes from
+  // the parent's `renderDrawValueInput_` method.
+  var block = this.block_
+  // we define the `io` named recorder which is specific to this block.
+  var io = {
+    block: block,
+    steps: [],
+    i: 0, // input index
+    f: 0, // field index
+    n: 0, // count of rendered objects (fields, slots and inputs)
+    cursor: new eYo.Where()
+  }
+  if (recorder) {
+    // io inherits some values from the given recorder
+    io.common = recorder.common // It is always defined
+  } else {
+    io.common = {
+      pending: undefined,
+      ending: [],
+      shouldSeparate: true,
+      beforeIsRightEdge: false,
+      field: {
+        beforeIsBlack: false, // true if the position before the cursor contains a black character
+        shouldSeparate: false // and other properties...
       }
     }
-    // A "star like" field's text is one of '*', '+', '-', '~'...
-    // This field is the very first of the block.
-    // Once we have rendered a field with a positive length,
-    // we cannot have a start like field.
-    io.common.field.canStarLike = true
-    // By default, we restart from scratch,
-    // set the size to 0 for the width and 1 for the height
-    this.size.set(0, 1)
-    // And reset properties
-    this.mayBeLast = false
-    this.isLastInExpression = false
-    this.isLastInStatement = false
-    // Do we need some room for the left side of the block?
-    // no for wrapped blocks
-    if (!this.wrapped_) {
-      if (!block.outputConnection || !this.locked_ || !recorder) {
-        // statement or unlocked,
-        // one space for the left edge of the block
-        // (even for locked statements, this is to avoid a
-        // display shift when locking/unlocking)
-        this.size.w = 1
-      }
+  }
+  // A "star like" field's text is one of '*', '+', '-', '~'...
+  // This field is the very first of the block.
+  // Once we have rendered a field with a positive length,
+  // we cannot have a start like field.
+  io.common.field.canStarLike = true
+  // By default, we restart from scratch,
+  // set the size to 0 for the width and 1 for the height
+  this.size.set(0, 1)
+  // And reset properties
+  this.mayBeLast = false
+  this.isLastInExpression = false
+  this.isLastInStatement = false
+  // Do we need some room for the left side of the block?
+  // no for wrapped blocks
+  if (!this.wrapped_) {
+    if (!block.outputConnection || !this.locked_ || !recorder) {
+      // statement or unlocked,
+      // one space for the left edge of the block
+      // (even for locked statements, this is to avoid a
+      // display shift when locking/unlocking)
+      this.size.w = 1
     }
-    io.cursor.c = this.size.w
-    if (!block.outputConnection) {
-      this.renderDrawSharp_(io)
-    }
-    if ((io.common.field.current = this.fromStartField)) {
-      io.f = 0
+  }
+  io.cursor.c = this.size.w
+  if (!block.outputConnection) {
+    this.renderDrawSharp_(io)
+  }
+  if ((io.common.field.current = this.fromStartField)) {
+    io.f = 0
     do {
       this.renderDrawField_(io)
       ++io.f
@@ -1360,9 +1360,7 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
     } while ((icf.current = icf.current.eyo.nextField))
   }
   if ((io.input = io.slot.input)) {
-    io.bindField = io.slot.bindField
     this.renderDrawInput_(io)
-    io.bindField = undefined
   }
   if ((icf.current = io.slot.toEndField)) {
     do {
@@ -1627,7 +1625,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
     ++ io.n
     var c_eyo = c8n.eyo
-    c_eyo.side = c_eyo.shape = c_eyo.bindField = undefined
+    c_eyo.side = c_eyo.shape = undefined
     io.common.field.canStarLike = false
     // io.cursor is relative to the block or the slot
     // but the connection must be located relative to the block
@@ -1682,8 +1680,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           }
         }
       }
-    } else if (io.bindField) {
-      c_eyo.bindField = io.bindField
+    } else if (c_eyo.bindField) {
       c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
@@ -1965,7 +1962,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
     return block
   }
   var B = processModel(null, model, id)
-  B.eyo.consolidate()
+  B && B.eyo.consolidate()
   return B
 }
 

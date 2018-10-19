@@ -68,10 +68,9 @@ eYo.Slot = function (owner, key, model) {
   eYo.Slot.makeFields(this, model.fields)
   eYo.Content.feed(this, model.contents || model.fields)
   var f = function () {
-    var eyo = this.input.connection.eyo
-    eyo.model = model
-    eyo.source = this
-    eyo.bindField = this.bindField
+    var c_eyo = this.input.connection.eyo
+    c_eyo.source = this
+    c_eyo.model = model
   }
   if (model.wrap) {
     this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))

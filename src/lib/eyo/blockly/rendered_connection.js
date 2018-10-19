@@ -73,6 +73,11 @@ Object.defineProperties(
       get () {
         return this.connection.sourceBlock_
       }
+    },
+    bindField: {
+      get () {
+        return this.slot && this.slot.bindField
+      }
     }
   }
 )
@@ -916,7 +921,6 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
                     }
                   }
                 }
-                parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
                 var c8n = eYo.SelectedConnection
                 if (c8n === childC8n || c8n === parentC8n) {
                   eYo.SelectedConnection = null
@@ -926,6 +930,8 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
                 console.error(err)
                 throw err
               } finally {
+                parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
+                childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
                 eYo.Connection.connectedParentC8n = parentC8n
                 // next must absolutely run because of possible undo management
                 child.eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)
@@ -1005,7 +1011,6 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       if (child.eyo.plugged_) {
                         child.eyo.plugged_ = undefined
                       }
-                      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
                     } catch (err) {
                       console.error(err)
                       throw err
@@ -1015,7 +1020,9 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       eYo.Connection.disconnectedParentC8n = undefined
                       eYo.Connection.disconnectedChildC8n = undefined
                       parentC8n.incrementInputChangeCount && parentC8n.incrementInputChangeCount() // list are special
-                    }
+                      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
+                      childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true)
+                     }
                   } catch (err) {
                     console.error(err)
                     throw err

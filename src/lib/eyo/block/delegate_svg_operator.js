@@ -231,10 +231,20 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
     operator: {
       main: true,
       all: ['-', '+', '~', 'not']
+    },
+    rhs: {
+      synchronize: true
     }
   },
   slots: {
     rhs: {
+      fields: {
+        bind: {
+          placeholder: '1',
+          validate: true,
+          endEditing: true
+        }
+      },
       check: /** @suppress {globalThis} */ function () {
         return [this.sourceBlock().eyo.getOperatorModel().rhs]
       }
@@ -288,7 +298,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Operator', {
     rhs: {
       order: 2,
       fields: {
-        operator: ''
+        operator: {
+          order: 1,
+          value: ''
+        }
       },
       hole_value: 'name'
     }
@@ -336,10 +349,20 @@ eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
     operator: {
       main: true,
       all: ['-', '+', '~']
+    },
+    rhs: {
+      synchronize: true
     }
   },
   slots: {
     rhs: {
+      fields: {
+        bind: {
+          order: 2,
+          endEditing: true,
+          placeholder: '1'
+        }
+      },
       check: eYo.T3.Expr.Check.u_expr_all
     }
   }
