@@ -20,6 +20,7 @@
     name: 'info-number',
     data: function () {
       return {
+        step_: undefined,
         suffix_: undefined,
         value_: undefined
       }
@@ -35,10 +36,12 @@
     },
     computed: {
       type () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
         return eYo.Do.typeOfString(this.value_).expr
       },
       imag: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.type === this.$$.eYo.T3.Expr.imagnumber
         },
         set (newValue) {
@@ -49,10 +52,12 @@
         }
       },
       can_imag () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.imag || eYo.Do.typeOfString(this.value_ + 'j').expr === this.$$.eYo.T3.Expr.imagnumber
       },
       content: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.imag
             ? this.value_.slice(0, -1)
             : this.value_
@@ -65,6 +70,7 @@
     },
     methods: {
       synchronize () {
+        this.step_ = this.eyo.change.step
         this.value_ = this.eyo.value_p
         this.suffix_ = this.imag ? this.value_.slice(-1) : 'j'
       }

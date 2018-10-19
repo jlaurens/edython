@@ -1196,6 +1196,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
         pending: undefined,
         ending: [],
         shouldSeparate: true,
+        beforeIsRightEdge: false,
         field: {
           beforeIsBlack: false, // true if the position before the cursor contains a black character
           shouldSeparate: false // and other properties...
@@ -1317,7 +1318,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
         this.renderDrawPending_(io)
       }
     } else {
-      this.renderDrawPending_(io, eYo.Key.RIGHT, eYo.Key.LEFT)
+      this.renderDrawPending_(io, eYo.Key.RIGHT, eYo.Key.RIGHT)
     }
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
@@ -1426,7 +1427,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
-        console.log('<', head, '>')
         if (io.common.field.beforeIsBlack
           && (eYo.XRE.operator.test(head) || head === '=')) {
           io.cursor.c += 1
@@ -1463,6 +1463,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         io.common.field.beforeIsBlack = false
       }
       io.common.field.last = field
+      io.common.beforeIsRightEdge = false
     }
   } else {
     console.log('Field with no root: did you ...initSvg()?')
@@ -1672,13 +1673,11 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             if (t_eyo.hasRightSpace) {
               io.common.ending.push(t_eyo)
               t_eyo.rightCaret = undefined
+              io.common.shouldSeparate = false
             } else {
               // All the blocks that where potentially the last
               // part of their enclosing block no longer are !
               this.renderDrawEnding_(io)
-            }
-            if (t_eyo.hasRightSpace) {
-              io.common.shouldSeparate = false
             }
           }
         }
@@ -1705,6 +1704,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             // we move the connection one character to the left
             c_eyo.where.c -= 1
             ending.rightCaret = c_eyo
+            c_eyo.isAfterRightEdge = io.beforeIsRightEdge
           } else {
             // we might want this caret not to advance the cursor
             // If the next rendered object is a field, then
@@ -1743,6 +1743,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           io.common.field.shouldSeparate = false
           io.common.shouldSeparate = false
         }
+        io.common.beforeIsRightEdge = true
       }
     }
   }

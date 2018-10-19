@@ -481,14 +481,14 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.h(true, -dd / 2)
   } else if (shape === eYo.Key.RIGHT) {
     this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
-    this.h(-dd / 2)
+    this.h(true, -dd / 2)
     this.arc(this.caret_height, true, true)
     this.h(true, dd / 2)
   } else {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x - dd)
-    this.arc(this.caret_height, true, false)
+    this.arc(this.caret_height, !eyo || !eyo.isAfterRightEdge, false)
   }
   this.end()
 }

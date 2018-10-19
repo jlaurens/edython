@@ -54,11 +54,12 @@ export default {
   as_alias: reserved('as') + ' …',
   call_expr: '(…)',
   slicing: '[…]',
-  prefix_r_for_raw: 'préfixe r pour raw',
+  prefix_r_for_raw: 'préfixe r pour raw (ie brut)',
   prefix_f_for_format: 'préfixe f pour format',
   prefix_b_for_byte: 'préfixe b pour bytes (ie octets)',
   bytes: 'octets',
   use_single_quotes_in_long_literal: 'Utiliser des guillemets droits simples',
   use_double_quotes_in_long_literal: 'Utiliser des guillemets droits doubles',
-  enter_any_valid_expression: 'Saisir une expression valide'
+  enter_any_valid_expression: 'Saisir une expression valide',
+  one_line_of_text: 'Saisir du texte (une ligne)'
 }

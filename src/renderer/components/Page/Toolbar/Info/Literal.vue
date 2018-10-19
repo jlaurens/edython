@@ -2,16 +2,16 @@
   <b-button-toolbar id="info-literal" key-nav  aria-label="Info toolbar literal" justify>
     <b-button-toolbar>
       <div id='info-literal-keyword' class="btn btn-outline-secondary">
-        <input type="checkbox" id="info-literal-r" v-model="r" :disabled="!can_r">
+        <input type="checkbox" id="info-literal-r" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
         <label for="info-literal-r" class="eyo-code">r</label>
-        <input type="checkbox" id="info-literal-b" v-model="b" :disabled="!can_b">
+        <input type="checkbox" id="info-literal-b" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
         <label for="info-literal-b" class="eyo-code">b</label>
-        <input type="checkbox" id="info-literal-f" v-model="f" :disabled="!can_f">
+        <input type="checkbox" id="info-literal-f" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
         <label for="info-literal-f" class="eyo-code" :disabled="!can_f">f</label>
       </div>
       <span class="eyo-code-reserved" d>{{delimiter}}</span>
       <b-button-group class="mx-1">
-        <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+        <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy ></b-form-input>
       </b-button-group>
       <span class="eyo-code-reserved" d>{{delimiter}}</span>
       <b-button-group class="mx-1">
@@ -33,6 +33,7 @@
     name: 'info-literal',
     data: function () {
       return {
+        step_: undefined,
         prefix_: undefined,
         delimiter_: undefined,
         long_: undefined,
@@ -151,11 +152,15 @@
       },
       content: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.content_
         },
         set (newValue) {
           this.content_ = this.eyo.content_p = newValue
         }
+      },
+      title_content () {
+        return this.$t('message.one_line_of_text')
       }
     },
     methods: {
@@ -195,6 +200,7 @@
         }[this.prefix]
       },
       synchronize () {
+        this.step_ = this.eyo.change.step
         this.prefix_ = this.eyo.prefix_p.toLowerCase()
         this.delimiter_ = this.eyo.delimiter_p
         this.long_ = this.delimiter_.length === 3
