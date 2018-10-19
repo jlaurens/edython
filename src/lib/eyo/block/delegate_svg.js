@@ -1179,6 +1179,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   // when defined, `recorder` comes from
   // the parent's `renderDrawValueInput_` method.
   this.parentIsShort = false
+  this.isShort = false
   var block = this.block_
   // we define the `io` named recorder which is specific to this block.
   var io = {
@@ -1339,7 +1340,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     // there might be some right edge already.
   }
   if (io.n < 2) {
-    var c8n = io.forc.connection
+    var c8n = io.forc && io.forc.connection
     block = c8n && c8n.targetBlock()
     if (block) {
       block.eyo.parentIsShort = true
