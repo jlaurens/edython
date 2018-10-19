@@ -39,12 +39,12 @@ eYo.DelegateSvg = eYo.Delegate.Svg
 Object.defineProperties(
   eYo.DelegateSvg.prototype,
   {
-    hasLeftSpace: {
+    hasLeftEdge: {
       get () {
         return !this.wrapped_ && !this.locked_
       }
     },
-    hasRightSpace: {
+    hasRightEdge: {
       get () {
         return !this.wrapped_ && !this.locked_
       }
@@ -1227,9 +1227,22 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       io.common.field.beforeIsBlack = false
     }
   }
+
+  if (this.hasLeftEdge || !recorder || !block.outputConnection) {
+    // statement or unlocked,
+    // one space for the left edge of the block
+    // (even for locked statements, this is to avoid a
+    // display shift when locking/unlocking)
+    this.size.w = 1
+    io.common.field.beforeIsBlack = false
+  }
   io.cursor.c = this.size.w
+  
   if (!block.outputConnection) {
+    io.common.startOfStatement = true
     this.renderDrawSharp_(io)
+  } else if (!recorder) {
+    io.common.startOfStatement = false
   }
   if ((io.common.field.current = this.fromStartField)) {
     io.f = 0
@@ -1311,7 +1324,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   } else if (!recorder) {
     this.renderDrawEnding_(io)
   }
-  if (this.hasRightSpace) {
+  if (this.hasRightEdge) {
     if (block.outputConnection) {
       if (recorder) {
         this.renderDrawPending_(io, eYo.Key.RIGHT)
@@ -1328,7 +1341,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   if (recorder) {
     // We ended a block. The right edge is generally a separator.
     // No need to add a separator if the block is wrapped or locked
-    io.common.field.shouldSeparate && (io.common.field.shouldSeparate = this.hasRightSpace)
+    io.common.field.shouldSeparate && (io.common.field.shouldSeparate = this.hasRightEdge)
     // if the block is wrapped or locked, there won't be any 
     // right edge where a caret could be placed.
     // But may be we just rendered blocks in cascade such that
@@ -1422,6 +1435,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
       f_eyo.size.set(text.length, 1)
       if (text.length) {
+        io.common.startOfStatement = false
         ++ io.n
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
@@ -1638,7 +1652,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         c8n.tighten_()
         var t_eyo = target.eyo
         try {
-          t_eyo.mayBeLast = t_eyo.hasRightSpace
+          t_eyo.mayBeLast = t_eyo.hasRightEdge
           t_eyo.downRendering = true
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
             if (eYo.DelegateSvg.debugStartTrackingRender) {
@@ -1669,7 +1683,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.cursor.advance(size.w, size.h - 1)
             // We just rendered a block
             // is is potentially the rightmost object inside its parent.
-            if (t_eyo.hasRightSpace) {
+            if (t_eyo.hasRightEdge) {
               io.common.ending.push(t_eyo)
               t_eyo.rightCaret = undefined
               io.common.shouldSeparate = false
@@ -1693,6 +1707,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // (input with no target)
       if (!c_eyo.disabled_) {
         c_eyo.setOffset(io.cursor)
+        c_eyo.startOfStatement = io.common.startOfStatement
         if (c_eyo.s7r_) {
           c_eyo.side = eYo.Key.NONE
           var ending = io.common.ending.slice(-1)[0]
@@ -1742,6 +1757,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           io.common.shouldSeparate = false
         }
         io.common.beforeIsRightEdge = true
+        io.common.startOfStatement = false
       }
     }
   }

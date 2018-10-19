@@ -31,16 +31,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
  * @private
  */
 eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
-  /* eslint-disable indent */
-  var lh = eYo.Font.lineHeight / 2
-  var ratio = 1.5
-  var blh = lh * ratio
-  var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
-  var d = cursorX + eYo.Font.space + blh / 2 + eYo.Font.space - eYo.Padding.l
-  var steps = ['m ' + (d + 2 * y / Math.sqrt(3)) + ',' + y]
-  steps.push('l ' + (-Math.sqrt(3) * y) + ',' + y)
-  steps.push('l 0,' + (-2 * y) + ' z')
-  return steps.join(' ')
+  return eYo.Shape.definitionForPlay({x: cursorX, y: 0})
 } /* eslint-enable indent */
 
 /**
@@ -49,31 +40,7 @@ eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
  * @private
  */
 eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
-  var block = this.block_
-  /* eslint-disable indent */
-  var w = block.width - eYo.Font.space + eYo.Padding.l
-  var h = block.height
-  var r = eYo.Style.Path.r
-  var d = eYo.Font.space
-  var steps = ['m ' + (d + eYo.Font.space - eYo.Padding.l) + ',0']
-  var lh = eYo.Font.lineHeight / 2
-  var blh = lh * 1.5
-  steps.push('a ' + lh + ', ' + lh + ' 0 0 1 ' + blh + ',0')
-  steps.push('a ' + lh + ', ' + lh + ' 0 1 1 ' + (-blh) + ',0')
-  steps.push('m ' + blh + ',0')
-  steps.push('h ' + (w - blh - d))
-  steps.push('v ' + h)
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  var c8n = block.nextConnection
-  if (c8n && c8n.isConnected()) {
-    steps.push('h ' + (-w))
-  } else {
-    steps.push('h ' + (-w + r) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  steps.push('v ' + (-h + r) + a + r + ',' + (-r))
-  steps.push('h ' + (d - r))
-  return steps.join(' ')
+  return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Control.prototype.shapePathDef_ =

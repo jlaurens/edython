@@ -111,8 +111,8 @@ eYo.Shape.prototype.begin = function () {
 /**
  * end
  */
-eYo.Shape.prototype.end = function () {
-  if (this.steps.length) {
+eYo.Shape.prototype.end = function (noClose = false) {
+  if (!noClose && this.steps.length) {
     this.steps.push('z')
   }
 }
@@ -123,6 +123,26 @@ eYo.Shape.prototype.end = function () {
  */
 eYo.Shape.prototype.format = function (x) {
   return Math.round(1000 * x) / 1000
+}
+
+/**
+ * end
+ */
+eYo.Shape.prototype.push = function () {
+  var i
+  for(i = 0; i < arguments.length ; i++) {
+    var arg = arguments[i]
+    if (goog.isString(arg)) {
+      this.steps.push(arg)
+    } else if (goog.isArray(arg)) {
+      var j = 0
+      for(j = 0; j < arg.length ; j++) {
+        this.push(arg[j])
+      }
+    } else {
+      this.steps.push(this.format(arg))
+    }
+  }
 }
 
 /**
@@ -137,19 +157,19 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
       l = c.y
       c = c.x
     }
-    this.steps.push('m', c, ',', l)
+    this.push('m', c, ',', l)
     this.cursor.advance({x: c, y: l})
     return
   } else if (is_block !== false) {
-    c = is_block
     l = c
+    c = is_block
   }
-  this.steps.push('m', this.format(c * eYo.Unit.x), ',', this.format(l * eYo.Unit.y))
+  this.push('m', c * eYo.Unit.x, ',', l * eYo.Unit.y)
   this.cursor.advance(c, l)
 }
 
 /**
- * `M` for move with absoluet arguments.
+ * `M` for move with absolute arguments.
  * @param {*?} is_block  In block coordinates, when true and present
  * @param {*?} c 
  * @param {*?} l 
@@ -161,13 +181,59 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
       c = c.x
     }
     this.cursor.set({x: c, y: l})    
-    this.steps.push('M', this.format(c), ',', this.format(l))
+    this.push('M', c, ',', l)
     return
   } else if (is_block !== false) {
-    c = is_block
     l = c
+    c = is_block
   }
-  this.steps.push('M', this.format(c * eYo.Unit.x), ',', this.format(l * eYo.Unit.y))
+  this.push('M', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.cursor.set(c, l)
+}
+
+/**
+ * `l` for line with relative arguments.
+ * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} c 
+ * @param {*?} l 
+ */
+eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
+  if (is_block === true) {
+    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+      l = c.y
+      c = c.x
+    }
+    this.push('l', c, ',', l)
+    this.cursor.advance({x: c, y: l})
+    return
+  } else if (is_block !== false) {
+    l = c
+    c = is_block
+  }
+  this.push('l', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.cursor.advance(c, l)
+}
+
+/**
+ * `L` for line with absolute arguments.
+ * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} c 
+ * @param {*?} l 
+ */
+eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
+  if (is_block === true) {
+    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+      l = c.y
+      c = c.x
+    }
+    this.cursor.set({x: c, y: l})    
+    this.push('L', c, ',', l)
+    return
+  } else if (is_block !== false) {
+    l = c
+    c = is_block
+  }
+  this.push('L', c * eYo.Unit.x, ',', l * eYo.Unit.y)
   this.cursor.set(c, l)
 }
 
@@ -178,14 +244,16 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
  */
 eYo.Shape.prototype.h = function (is_block = false, c = 0) {
   if (is_block === true) {
-    this.steps.push('h', c)
-    this.cursor.x += c
+    if (c) {
+      this.push('h', c)
+      this.cursor.x += c
+    }
     return
   } else if (is_block !== false) {
     c = is_block
   }
   if (c) {
-    this.steps.push('h', this.format(c * eYo.Unit.x))
+    this.push('h', c * eYo.Unit.x)
     this.cursor.c += c
   }
 }
@@ -197,16 +265,14 @@ eYo.Shape.prototype.h = function (is_block = false, c = 0) {
  */
 eYo.Shape.prototype.H = function (is_block = false, c = 0) {
   if (is_block === true) {
-    this.steps.push('H', this.format(c))
+    this.push('H', c)
     this.cursor.x = c
     return
   } else if (is_block !== false) {
     c = is_block
   }
-  if (c) {
-    this.steps.push('H', this.format(c * eYo.Unit.x))
-    this.cursor.c += c
-  }
+  this.push('H', c * eYo.Unit.x)
+  this.cursor.c = c
 }
 
 /**
@@ -215,14 +281,16 @@ eYo.Shape.prototype.H = function (is_block = false, c = 0) {
  */
 eYo.Shape.prototype.v = function (is_block, l) {
   if (is_block === true) {
-    this.steps.push('v', this.format(l))
-    this.cursor.y += l
+    if (l) {
+      this.push('v', l)
+      this.cursor.y += l
+    }
     return
   } else if (is_block !== false) {
     l = is_block
   }
   if (l) {
-    this.steps.push('v', this.format(l * eYo.Unit.x))
+    this.push('v', l * eYo.Unit.x)
     this.cursor.l += l
   }
 }
@@ -233,16 +301,14 @@ eYo.Shape.prototype.v = function (is_block, l) {
  */
 eYo.Shape.prototype.V = function (is_block, l) {
   if (is_block === true) {
-    this.steps.push('V', this.format(l))
+    this.push('V', l)
     this.cursor.y = l
     return
   } else if (is_block !== false) {
     l = is_block
   }
-  if (l) {
-    this.steps.push('V', this.format(l * eYo.Unit.x))
-    this.cursor.l = l
-  }
+  this.push('V', l * eYo.Unit.x)
+  this.cursor.l = l
 }
 
 /**
@@ -257,7 +323,7 @@ eYo.Shape.prototype.quarter_circle = function (left = true, down = true) {
   var dy = down ? r : -r
   var r = this.stmt_radius
   var a = 'a ' + this.format(r) + ', ' + this.format(r) + ' 0 0 ' + (down ? 0 : 1) + ' '
-  this.steps.push(a + this.format(dx) + ',' + dy)
+  this.push(a, dx, ',', dy)
   this.cursor.advance(dx, dy)
 }
 
@@ -272,8 +338,7 @@ eYo.Shape.prototype.arc = function (h, left = true, down = true) {
   var dx = 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
-  var a = 'a ' + this.format(r) + ', ' + this.format(r) + ' 0 0 ' + (left === down? 0 : 1) + ' '
-  this.steps.push(a + this.format(dx) + ',' + this.format(dy))
+  this.push('a ', r, ',', r, '0 0', (left === down? 0 : 1), dx, ',', dy)
   this.cursor.advance(dx, dy)
 }
 
@@ -407,18 +472,47 @@ var initWithExpressionBlock = function(eyo) {
   }
 }
 
+var initWithControlBlock = function (eyo) {
+  var block = eyo.block_
+  /* eslint-disable indent */
+  var w = block.width - eYo.Unit.x
+  var h = block.height
+  var r = this.stmt_radius
+  var d = eYo.Unit.x
+  var lh = eYo.Unit.y / 2
+  var blh = lh * 1.5
+  this.M(1.5, 0)
+  this.push('a', lh, ',', lh, '0 0 1',  blh, ',0')
+  this.push('a', lh, ',', lh, '0 1 1', -blh, ',0')
+  this.m(true, blh)
+  this.h(true, w - blh - d)
+  this.v(true, h)
+  if (eyo.hasNextStatement_()) {
+    this.H(true, d / 2)
+  } else {
+    this.H(true, d / 2 + r)
+    this.quarter_circle(true, false)
+  }
+  this.V(true, r)
+  this.quarter_circle(false, false)
+  this.h(true, d - r)
+  return true
+} /* eslint-enable indent */
+
 return function(eyo) {
     this.begin()
     var block = eyo.block_
-    this.width = block.width
+    var ans
     if (block.outputConnection) {
-      initWithExpressionBlock.call(this, eyo)
+      ans = initWithExpressionBlock.call(this, eyo)
     } else if (eyo.inputSuite) {
-      initWithGroupBlock.call(this, eyo)
+      ans = initWithGroupBlock.call(this, eyo)
+    } else if (eyo.runScript) {
+      ans = initWithControlBlock.call(this, eyo)
     } else {
-      initWithStatementBlock.call(this, eyo)
+      ans = initWithStatementBlock.call(this, eyo)
     }
-    this.end()
+    this.end(ans)
   }
 }) ()
 
@@ -463,7 +557,11 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.M(true, x + (this.width + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, - this.width * eYo.Unit.x + 2 * dd)
-    this.arc(this.caret_height, true, false)
+    if (eyo && eyo.startOfStatement) {
+      this.v(true, -this.caret_height)
+    } else {
+      this.arc(this.caret_height, true, false)
+    }
   } else if (this.width > 1) {
     var dd = 2 * this.caret_extra
     var h = eYo.Unit.y / 2
@@ -473,7 +571,11 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x + dd)
-    this.arc(this.caret_height, true, false)
+    if (eyo && eyo.startOfStatement) {
+      this.v(true, -this.caret_height)
+    } else {
+      this.arc(this.caret_height, true, false)
+    }
   } else if (shape === eYo.Key.LEFT) {
     this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.h(true, dd / 2)
@@ -491,4 +593,31 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.arc(this.caret_height, !eyo || !eyo.isAfterRightEdge, false)
   }
   this.end()
+}
+
+/**
+ * initPlay
+ * @param {*} cursor 
+ */
+eYo.Shape.prototype.initForPlay = function (cursor) {
+  this.begin()
+  var lh = eYo.Unit.y / 2
+  var ratio = 1.5
+  var blh = lh * ratio
+  var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
+  var d = cursor.x + eYo.Unit.x + blh / 2 + eYo.Unit.x - eYo.Padding.l
+  this.m(true, d + 2 * y / Math.sqrt(3), y)
+  this.l(true, -Math.sqrt(3) * y, y)
+  this.l(true, 0, -2 * y)
+  this.end()
+}
+
+/**
+ * Create a path definition for the play icon.
+ * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @return {String!} A path definition.
+ */
+eYo.Shape.definitionForPlay = function(cursor) {
+  eYo.Shape.shared.initForPlay(cursor)
+  return eYo.Shape.shared.definition
 }
