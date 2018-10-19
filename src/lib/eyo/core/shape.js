@@ -290,7 +290,7 @@ eYo.Shape.prototype.v = function (is_block, l) {
     l = is_block
   }
   if (l) {
-    this.push('v', l * eYo.Unit.x)
+    this.push('v', l * eYo.Unit.y)
     this.cursor.l += l
   }
 }
@@ -307,7 +307,7 @@ eYo.Shape.prototype.V = function (is_block, l) {
   } else if (is_block !== false) {
     l = is_block
   }
-  this.push('V', l * eYo.Unit.x)
+  this.push('V', l * eYo.Unit.y)
   this.cursor.l = l
 }
 
@@ -397,27 +397,22 @@ var initWithStatementBlock = function(eyo) {
  */
 var initWithGroupBlock = function(eyo) {
   // this is a group
+  var block = eyo.block_
+  var width = block.width
   var r = this.stmt_radius
-  var previous = this.hasPreviousStatement_()
-  if (previous) {
-    this.M(1 / 2)
-  } else {
-    this.M(true, eYo.Unit.x / 2 + r)
-  }
-  this.H(true, width - eYo.Unit.x / 2)
+  this.M(true, width - eYo.Unit.x / 2, 0)
   this.v(1)
   this.H(true, eYo.Font.tabWidth + r)
   this.quarter_circle(true, true)
   this.v(true, (block.isCollapsed ? eYo.Unit.y : eyo.size.height) - 2 * r)
-  this.quarter_circle(true, false)
-  var next = this.hasNextStatement_()
-  if (next) {
-    this.H(0)
+  this.quarter_circle(false, true)
+  if (eyo.hasNextStatement_()) {
+    this.H(1/2)
   } else {
-    this.H(true, r)
-    this.quarter_circle(false, true)
+    this.H(true, eYo.Unit.x / 2 + r)
+    this.quarter_circle(true, false)
   }
-  if (previous) {
+  if (eyo.hasPreviousStatement_()) {
     this.V(0)
   } else {
     this.V(true, r)
@@ -507,7 +502,7 @@ return function(eyo) {
       ans = initWithExpressionBlock.call(this, eyo)
     } else if (eyo.inputSuite) {
       ans = initWithGroupBlock.call(this, eyo)
-    } else if (eyo.runScript) {
+    } else if (eyo.controlPathDef_) {
       ans = initWithControlBlock.call(this, eyo)
     } else {
       ans = initWithStatementBlock.call(this, eyo)

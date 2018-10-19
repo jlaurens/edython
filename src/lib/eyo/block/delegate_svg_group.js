@@ -39,6 +39,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
  */
 eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
+  return eYo.Shape.definitionWithBlock(this)
+  
   var block = this.block_
   var w = block.width
   var line = eYo.Font.lineHeight
