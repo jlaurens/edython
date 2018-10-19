@@ -118,6 +118,14 @@ eYo.Shape.prototype.end = function () {
 }
 
 /**
+ * formatter.
+ * @param {Number} x
+ */
+eYo.Shape.prototype.format = function (x) {
+  return Math.round(1000 * x) / 1000
+}
+
+/**
  * `m` for move with relative arguments.
  * @param {*?} is_block  In block coordinates, when true and present
  * @param {*?} c 
@@ -136,7 +144,7 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
     c = is_block
     l = c
   }
-  this.steps.push('m', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.steps.push('m', this.format(c * eYo.Unit.x), ',', this.format(l * eYo.Unit.y))
   this.cursor.advance(c, l)
 }
 
@@ -153,13 +161,13 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
       c = c.x
     }
     this.cursor.set({x: c, y: l})    
-    this.steps.push('M', c, ',', l)
+    this.steps.push('M', this.format(c), ',', this.format(l))
     return
   } else if (is_block !== false) {
     c = is_block
     l = c
   }
-  this.steps.push('M', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.steps.push('M', this.format(c * eYo.Unit.x), ',', this.format(l * eYo.Unit.y))
   this.cursor.set(c, l)
 }
 
@@ -177,7 +185,7 @@ eYo.Shape.prototype.h = function (is_block = false, c = 0) {
     c = is_block
   }
   if (c) {
-    this.steps.push('h', c * eYo.Unit.x)
+    this.steps.push('h', this.format(c * eYo.Unit.x))
     this.cursor.c += c
   }
 }
@@ -189,14 +197,14 @@ eYo.Shape.prototype.h = function (is_block = false, c = 0) {
  */
 eYo.Shape.prototype.H = function (is_block = false, c = 0) {
   if (is_block === true) {
-    this.steps.push('H', c)
+    this.steps.push('H', this.format(c))
     this.cursor.x = c
     return
   } else if (is_block !== false) {
     c = is_block
   }
   if (c) {
-    this.steps.push('H', c * eYo.Unit.x)
+    this.steps.push('H', this.format(c * eYo.Unit.x))
     this.cursor.c += c
   }
 }
@@ -207,14 +215,14 @@ eYo.Shape.prototype.H = function (is_block = false, c = 0) {
  */
 eYo.Shape.prototype.v = function (is_block, l) {
   if (is_block === true) {
-    this.steps.push('v', l)
+    this.steps.push('v', this.format(l))
     this.cursor.y += l
     return
   } else if (is_block !== false) {
     l = is_block
   }
   if (l) {
-    this.steps.push('v', l * eYo.Unit.x)
+    this.steps.push('v', this.format(l * eYo.Unit.x))
     this.cursor.l += l
   }
 }
@@ -225,14 +233,14 @@ eYo.Shape.prototype.v = function (is_block, l) {
  */
 eYo.Shape.prototype.V = function (is_block, l) {
   if (is_block === true) {
-    this.steps.push('V', l)
+    this.steps.push('V', this.format(l))
     this.cursor.y = l
     return
   } else if (is_block !== false) {
     l = is_block
   }
   if (l) {
-    this.steps.push('V', l * eYo.Unit.x)
+    this.steps.push('V', this.format(l * eYo.Unit.x))
     this.cursor.l = l
   }
 }
@@ -248,8 +256,8 @@ eYo.Shape.prototype.quarter_circle = function (left = true, down = true) {
   var dx = left ? -r : r
   var dy = down ? r : -r
   var r = this.stmt_radius
-  var a = 'a ' + r + ', ' + r + ' 0 0 ' + (down ? 0 : 1) + ' '
-  this.steps.push(a + dx + ',' + dy)
+  var a = 'a ' + this.format(r) + ', ' + this.format(r) + ' 0 0 ' + (down ? 0 : 1) + ' '
+  this.steps.push(a + this.format(dx) + ',' + dy)
   this.cursor.advance(dx, dy)
 }
 
@@ -264,8 +272,8 @@ eYo.Shape.prototype.arc = function (h, left = true, down = true) {
   var dx = 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
-  var a = 'a ' + r + ', ' + r + ' 0 0 ' + (left === down? 0 : 1) + ' '
-  this.steps.push(a + dx + ',' + dy)
+  var a = 'a ' + this.format(r) + ', ' + this.format(r) + ' 0 0 ' + (left === down? 0 : 1) + ' '
+  this.steps.push(a + this.format(dx) + ',' + this.format(dy))
   this.cursor.advance(dx, dy)
 }
 
@@ -451,7 +459,12 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     y = 0
     this.width = 3
   }
-  if (this.width > 1) {
+  if (eyo && eyo.bindField) {
+    this.M(true, x + (this.width + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
+    this.arc(this.caret_height, false, true)
+    this.h(true, - this.width * eYo.Unit.x + 2 * dd)
+    this.arc(this.caret_height, true, false)
+  } else if (this.width > 1) {
     var dd = 2 * this.caret_extra
     var h = eYo.Unit.y / 2
     var r = this.expr_radius

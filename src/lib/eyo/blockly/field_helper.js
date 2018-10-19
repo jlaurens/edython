@@ -42,8 +42,7 @@ eYo.FieldHelper.prototype.startsWithSeparator = function () {
       || text[0] === '.'
       || text[0] === ':'
       || text[0] === ','
-      || text[0] === ';'
-      || this.isEditing) {
+      || text[0] === ';') {
       // add a separation before
       return true
     }
@@ -78,7 +77,7 @@ eYo.FieldHelper.onEndEditing = function () {
  * Eventual problem: there might be some kind of formatting such that
  * the data stored and the data shown in the ui are not the same.
  * There is no step for such a translation but the need did not occur yet.
- * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
+ * @param {string|null} key  The data key, when null or undefined, this receiver's key.
  */
 eYo.FieldHelper.prototype.getData_ = function (key) {
   var data = this.data

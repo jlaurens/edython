@@ -383,7 +383,8 @@ eYo.XRE = {
   operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
   delimiter: XRegExp(`^[.,;:\\(\\)\\[\\]\\{\\}\\[\\]'"]$`),
   comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
-  upper: XRegExp(`^[A-Z_]*$`)
+  upper: XRegExp(`^[A-Z_]*$`),
+  white_space: XRegExp('\\p{Zl}')
 }
 
 /*

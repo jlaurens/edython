@@ -1197,6 +1197,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
         ending: [],
         shouldSeparate: true,
         field: {
+          beforeIsBlack: false, // true if the position before the cursor contains a black character
           shouldSeparate: false // and other properties...
         }
       }
@@ -1282,6 +1283,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       return this.renderDrawModel_(recorder)
     } catch (err) {
       console.error(err)
+      throw err
     } finally {
       this.dontShrink = false
     }
@@ -1289,7 +1291,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   // and now some space for the right edge, if any
   if (!this.wrapped_) {
     if (block.outputConnection && !this.dontShrink) {
-      if (io.common.shouldSeparate) {
+      if (io.common.field.last && io.common.field.last.eyo.isEditing) {
+        io.cursor.c += 1
+      } else if (io.common.shouldSeparate) {
         if (!recorder) {
           io.cursor.c += 1
         } else if (!this.locked_ && !io.common.ending.length) {
@@ -1348,20 +1352,21 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
   root.removeAttribute('display')
   // Now reset the cursor relative to the slot
   io.cursor.set()
-  if ((io.common.field.current = io.slot.fromStartField)) {
+  var icf = io.common.field
+  if ((icf.current = io.slot.fromStartField)) {
     do {
       this.renderDrawField_(io)
-    } while ((io.common.field.current = io.common.field.current.eyo.nextField))
+    } while ((icf.current = icf.current.eyo.nextField))
   }
   if ((io.input = io.slot.input)) {
     io.bindField = io.slot.bindField
     this.renderDrawInput_(io)
     io.bindField = undefined
   }
-  if ((io.common.field.current = io.slot.toEndField)) {
+  if ((icf.current = io.slot.toEndField)) {
     do {
       this.renderDrawField_(io)
-    } while ((io.common.field.current = io.common.field.current.eyo.nextField))
+    } while ((icf.current = icf.current.eyo.nextField))
   }
   // come back to the block coordinates
   io.cursor.advance(io.slot.where)
@@ -1420,9 +1425,14 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         ++ io.n
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
-        if (io.common.field.shouldSeparate
+        var head = text[0]
+        console.log('<', head, '>')
+        if (io.common.field.beforeIsBlack
+          && (eYo.XRE.operator.test(head) || head === '=')) {
+          io.cursor.c += 1
+        } else if (io.common.field.shouldSeparate
             && (!f_eyo.startsWithSeparator()
-            || text[0] === '=')) {
+            || head === '=')) {
           io.cursor.c += 1
         }
         var tail = text[text.length - 1]
@@ -1437,6 +1447,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
             || (tail === '.'
               && !(field instanceof eYo.FieldLabel)))
         io.common.shouldSeparate = true
+        io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
       }
       // place the field at the right position:
       root.setAttribute('transform', 'translate(' + io.cursor.x +
@@ -1447,6 +1458,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         // This is a trick to avoid some bad geometry while editing
         // this is useful for widget only.
         io.cursor.c += 1
+        io.common.shouldSeparate =
+        io.common.field.shouldSeparate =
+        io.common.field.beforeIsBlack = false
       }
       io.common.field.last = field
     }

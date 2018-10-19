@@ -52,12 +52,24 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
           this.set('in')
         }
       }
+    },
+    lhs: {
+      synchronize: true
+    },
+    rhs: {
+      synchronize: true
     }
   },
   slots: {
     lhs: {
       order: 1,
       hole_value: 'name',
+      fields: {
+        bind: {
+          endEditing: true,
+          placeholder: '1'
+        }
+      },
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type).lhs
       }
@@ -65,7 +77,15 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
     rhs: {
       order: 2,
       fields: {
-        operator: ''
+        operator: {
+          order: 1,
+          value: ''
+        },
+        bind: {
+          order: 2,
+          endEditing: true,
+          placeholder: '1'
+        }
       },
       hole_value: 'name',
       check: /** @suppress {globalThis} */ function (type) {
