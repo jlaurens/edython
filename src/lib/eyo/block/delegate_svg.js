@@ -1224,6 +1224,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       // (even for locked statements, this is to avoid a
       // display shift when locking/unlocking)
       this.size.w = 1
+      io.common.field.beforeIsBlack = false
     }
   }
   io.cursor.c = this.size.w
