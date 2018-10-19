@@ -444,16 +444,16 @@ var initWithExpressionBlock = function(eyo) {
         if (parent.eyo.hasPreviousStatement_()) {
           this.V(0)
         } else {
-          this.V(true, this.stmt_r)
+          this.V(true, this.stmt_radius)
           this.quarter_circle(false, false)
         }
       } else {
-        this.H(true, eYo.Unit.x / 2 + this.stmt_r)
-        this.quarter_circle(false, true)
+        this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
+        this.quarter_circle(true, false)
         if (parent.eyo.hasPreviousStatement_()) {
           this.V(0)
         } else {
-          this.V(true, this.stmt_r)
+          this.V(true, this.stmt_radius)
           this.quarter_circle(false, false)
         }
       }

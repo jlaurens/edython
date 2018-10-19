@@ -304,19 +304,6 @@ eYo.FlyoutCategory = {
       }
     },
     {
-      type: eYo.T3.Expr.slicing,
-      data: {
-        variant: eYo.Key.NAME
-      },
-      slots: {
-        slice: {
-          slots: {
-            O: 0
-          }
-        }
-      }
-    },
-    {
       type: eYo.T3.Stmt.expression_stmt,
       slots: {
         expression: {
@@ -426,17 +413,7 @@ eYo.FlyoutCategory = {
         }
       }
     },
-    eYo.T3.Expr.proper_slice,
-    eYo.T3.Expr.a_expr,
-    {
-      type: eYo.T3.Stmt.augmented_assignment_stmt,
-      data: '+='
-    },
-    eYo.T3.Expr.m_expr,
-    {
-      type: eYo.T3.Stmt.augmented_assignment_stmt,
-      data: '*='
-    },
+    eYo.T3.Expr.proper_slice
   ],
   'text': [
     {

@@ -118,11 +118,23 @@ eYo.BlockSvg.prototype.select = function () {
   if (!this.workspace) {
     return
   }
-  if (!this.eyo.selectedConnection && this.eyo.wrapped_ && this.getSurroundParent()) {
-    // Wrapped blocks should not be selected.
-    this.getSurroundParent().select()
-    return
+  if (!this.eyo.selectedConnection) {
+    var parent = this.getSurroundParent()
+    if (parent) {
+      if (this.eyo.wrapped_) {
+        // Wrapped blocks should not be selected.
+        parent.select()
+        return
+      }
+      if (parent.eyo.isShort
+          && parent !== Blockly.selected
+          && this !== Blockly.selected) {
+        parent.select()
+        return
+      }
+    }
   }
+  // if the parent is short and not connected, select it
   var more = this.eyo.selectedConnection || (this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this)
   if (more) {

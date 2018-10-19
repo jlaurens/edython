@@ -1178,6 +1178,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   /* eslint-disable indent */
   // when defined, `recorder` comes from
   // the parent's `renderDrawValueInput_` method.
+  this.parentIsShort = false
   var block = this.block_
   // we define the `io` named recorder which is specific to this block.
   var io = {
@@ -1186,7 +1187,8 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     i: 0, // input index
     f: 0, // field index
     n: 0, // count of rendered objects (fields, slots and inputs)
-    cursor: new eYo.Where()
+    cursor: new eYo.Where(),
+    forc: undefined // rendered file or connection
   }
   if (recorder) {
     // io inherits some values from the given recorder
@@ -1237,7 +1239,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     io.common.field.beforeIsBlack = false
   }
   io.cursor.c = this.size.w
-  
+
   if (!block.outputConnection) {
     io.common.startOfStatement = true
     this.renderDrawSharp_(io)
@@ -1292,20 +1294,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       this.renderDrawField_(io)
     } while ((io.common.field.current = io.common.field.current.eyo.nextField))
   }
-  if (io.shrinkedLeft && io.n === 1) {
-    this.dontShrink = true
-    try {
-      return this.renderDrawModel_(recorder)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      this.dontShrink = false
-    }
-  }
   // and now some space for the right edge, if any
   if (!this.wrapped_) {
-    if (block.outputConnection && !this.dontShrink) {
+    if (block.outputConnection) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
       } else if (io.common.shouldSeparate) {
@@ -1346,6 +1337,14 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     // right edge where a caret could be placed.
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
+  }
+  if (io.n < 2) {
+    var c8n = io.forc.connection
+    block = c8n && c8n.targetBlock()
+    if (block) {
+      block.eyo.parentIsShort = true
+      this.isShort = true
+    }
   }
   return io.steps.join(' ')
 }
@@ -1430,6 +1429,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       this.renderDrawEnding_(io)
       this.renderDrawPending_(io)
       var f_eyo = field.eyo
+      io.forc = f_eyo
       var text = field.getDisplayText_()
       // Replace the text.
       goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
@@ -1640,6 +1640,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
     ++ io.n
     var c_eyo = c8n.eyo
+    io.forc = c_eyo
     c_eyo.side = c_eyo.shape = undefined
     io.common.field.canStarLike = false
     // io.cursor is relative to the block or the slot
@@ -1662,8 +1663,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
               // force target rendering
               t_eyo.incrementChangeCount()
             }
-            if (!this.dontShrink && c_eyo.c === 1) {
-              io.shrinkedLeft = true
+            if (c_eyo.c === 1) {
               if (c_eyo.slot) {
                 c_eyo.slot.where.c -= 1
               } else {
@@ -1738,8 +1738,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           io.common.pending = c_eyo
         } else {
           this.renderDrawPending_(io)
-          if (!this.dontShrink && c_eyo.c === 1) {
-            io.shrinkedLeft = true
+          if (c_eyo.c === 1) {
             if (c_eyo.slot) {
               c_eyo.slot.where.c -= 1
             } else {
