@@ -184,6 +184,21 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 200,
       init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
+        var model = p.tos && p.tos.model
+        if (model) {
+          if (model.type) {
+            
+          }
+          validated = goog.isDef(model.type) ? model.ary : Infinity
+        } else if (goog.isString(newValue)) {
+          if (newValue.length) {
+            validated = Math.max(0, Math.floor(Number(newValue)))
+          } else {
+            validated = Infinity
+          }
+        } else if (goog.isNumber(newValue)) {
+          validated = Math.max(0, Math.floor(newValue))
+        }
         return goog.isNumber(newValue)
         ? {
           validated: Math.floor(newValue)

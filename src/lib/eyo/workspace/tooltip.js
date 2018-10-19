@@ -171,7 +171,7 @@ eYo.Tooltip.Title = {
   classdef_part: 'Définition d\'une classe',
   decorator: 'Décorateur : filtre pour modifier automagiquement la définition d\'une fonction ou d\'une classe',
   global_nonlocal_stmt: 'Variable : global ou nonlocal',
-  list_insert: 'Insère un élément dans la liste',
+  list_insert: 'Insère un élément dans la liste: `list.insert(index, obj)`',
   list_append: 'Insère un élément en fin de liste',
   list_remove: 'Supprimer un élement de la list',
   list_index: 'Obtenir le rang d\'un élément de la liste',

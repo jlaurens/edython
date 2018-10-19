@@ -281,14 +281,7 @@ eYo.FlyoutCategory = {
       },
     },
     {
-      type: eYo.T3.Expr.list_display,
-      slots: {
-        expression: "'...'",
-      }
-    },
-    {
-      type: eYo.T3.Expr.call_expr,
-      data: 'len'
+      type: eYo.T3.Expr.identifier,
     },
     {
       type: eYo.T3.Expr.slicing,
@@ -304,13 +297,23 @@ eYo.FlyoutCategory = {
       }
     },
     {
+      type: eYo.T3.Expr.list_display,
+      slots: {
+        expression: "'...'",
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'len'
+    },
+    {
       type: eYo.T3.Stmt.expression_stmt,
       slots: {
         expression: {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'insert',
-            variant: eYo.Key.BLOCK_NAME,
+            dotted: 1,
             ary: 2
           }
         }
@@ -324,7 +327,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'append',
-            variant: eYo.Key.BLOCK_NAME,
+            dotted: 1,
             ary: 1
           }
         }
@@ -338,7 +341,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: eYo.Key.BLOCK_NAME,
+            dotted: 1,
             ary: 1
           }
         }
@@ -349,7 +352,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 1
       },
       title: 'list_index'
@@ -358,7 +361,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 1
       },
       title: 'list_count'
@@ -367,7 +370,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'pop',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 1
       },
       slots: {
@@ -385,7 +388,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'reverse',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 0
       },
       title: 'list_reverse'
@@ -446,26 +449,20 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.call_expr,
       data: {
-        name: 'startswith',
-        variant: eYo.Key.BLOCK_NAME,
-        ary: 3
+        name: 'startswith'
       },
       title: 'text_startswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'endswith',
-        variant: eYo.Key.BLOCK_NAME,
-        ary: 3
-      },
+      data: 'endswith',
       title: 'text_endswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'find',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 3
       },
       title: 'text_find'
@@ -474,7 +471,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'replace',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 3
       },
       title: 'text_replace'
@@ -483,7 +480,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 3
       },
       title: 'text_count'
@@ -492,7 +489,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'upper',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 0
       },
       title: 'text_upper'
@@ -501,7 +498,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'lower',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 0
       },
       title: 'text_lower'
@@ -510,7 +507,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'join',
-        variant: eYo.Key.BLOCK_NAME
+        dotted: 1
       },
       title: 'text_join'
     },
@@ -518,7 +515,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'split',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 2
       },
       title: 'text_split'
@@ -549,7 +546,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'splitlines',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 1,
         mandatory: 0
       },
@@ -559,7 +556,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.BLOCK_NAME,
+        dotted: 1,
         ary: 3
       },
       title: 'text_index'
@@ -665,7 +662,7 @@ eYo.FlyoutCategory = {
       data: {
         name: 'conjugate',
         ary: 0,
-        variant: eYo.Key.BLOCK_NAME
+        dotted: 1
       }
     },
   ]

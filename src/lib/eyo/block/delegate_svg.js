@@ -1654,6 +1654,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         c8n.tighten_()
         var t_eyo = target.eyo
         try {
+          t_eyo.startOfStatement = io.common.startOfStatement
           t_eyo.mayBeLast = t_eyo.hasRightEdge
           t_eyo.downRendering = true
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {

@@ -434,7 +434,7 @@ var initWithExpressionBlock = function(eyo) {
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
   this.arc(eYo.Unit.y, false, true)
   var parent
-  if (eyo.tileHead && !eyo.tileHead.eyo.tilePrevious && (parent = block.getParent())) {
+  if (eyo.startOfStatement && (parent = block.getParent())) {
     while (parent && parent.outputConnection) {
       parent = parent.getParent()
     }
