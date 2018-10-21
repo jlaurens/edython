@@ -34,11 +34,9 @@ var F = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      module: 'decimal',
-      dotted: 0
-    },
+    name_d: name,
+    holder_d: 'decimal',
+    dotted_d: 0,
     title: key
   }
 }
@@ -46,12 +44,10 @@ var F_k = function (name, title) {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      module: 'decimal',
-      dotted: 0
-    },
+    type: eYo.T3.Expr.identifier,
+    name_d: name,
+    holder_d: 'decimal',
+    dotted_d: 0,
     title: key
   }
 }
@@ -91,71 +87,70 @@ var F_k = function (name, title) {
     */
 eYo.FlyoutCategory.basic_decimal__module = [
   {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'decimal',
-      dotted: 0
-    }
-  },
-  /*
-  <s eyo="assignment" variant="name">
-  <x eyo="primary" dotted="1"><x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x>
-  <x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x>
-  </x>
-  <x eyo="list" slot="assigned">
-  <x eyo="literal" slot="O">28</x>
-  </x>
-  </s>
-  */
-  {
     type: eYo.T3.Stmt.import_stmt,
-    data: {
-      variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      from: 'decimal'
-    }
+    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    from_d: 'decimal',
+    title: 'decimal__import_stmt'
+  },
+  F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    assigned_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.call_expr,
+          name_d: 'Decimal',
+          holder_d: 'decimal',
+          dotted_d: 0,
+          arguments_s: {
+            slots: {
+              O: '"0.1"'
+            }
+          }
+        }
+      },
+    },
+    title: 'decimal__assigned_from_string'
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    slots: {
-      assigned: {
-        slots: {
-          O: {
-            type: eYo.T3.Expr.call_expr,
-            data: {
-              holder: 'decimal',
-              name: 'Decimal',
-              dotted: 0
+    assigned_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.call_expr,
+          name_d: 'Decimal',
+          holder_d: 'decimal',
+          dotted_d: 0,
+          arguments_s: {
+            slots: {
+              O: 0.1
             }
-          },
-        },
+          }
+        }
       },
+      title: 'decimal__assigned_from_float'
     },
   },
-  /*
-  <x eyo="primary" dotted="1" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="call" dotted="1" holder="decimal" name="getcontext" slot="holder"></x><x eyo="identifier" name="prec" slot="name"></x></x>
-  */
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    slots: {
-      name: {
-
-      },
-      assigned: {
-        slots: {
-          O: {
-            type: eYo.T3.Expr.call_expr,
-            data: {
-              holder: 'decimal',
-              name: 'Decimal',
-              dotted: 0
-            }
-          },
-        },
-      },
+    variant_d: eYo.Key.TARGET,
+    target_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.attributeref,
+          holder_d: F('getcontext'),
+          dotted_d: 1,
+          name_d: 'prec'
+        }
+      }
     },
-  },
-  F('getcontext', 'Le contexte de calcul'),
-  F_k('tau', 'τ (≅ 2π)'),
+    assigned_s: {
+      slots: {
+        O: 50
+      }
+    },
+    title: 'decimal__assigned_prec'
+  }
 ]
 
 var F = function (name, title) {
@@ -270,6 +265,10 @@ eYo.FlyoutCategory.decimal__module = [
 
 goog.mixin(eYo.Tooltip.Title, {
   decimal__import_stmt: 'Importer le module decimal',
+  decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un flottant et l\'affecter à une variable.',
+  decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un texte et l\'affecter à une variable.',
+  decimal__assigned_contexte: 'Obtenir le contexte de calcul et l\'affecter à une variable.',
+  decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })
 
 eYo.DelegateSvg.Decimal.T3s = [
