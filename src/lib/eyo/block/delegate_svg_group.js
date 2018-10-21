@@ -51,16 +51,16 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   var a = ' a ' + r + ', ' + r + ' 0 0 0 '
   var t = eYo.Font.tabWidth
   w -= t + r
-  steps.push('h ' + (-w + eYo.Font.space / 2))
+  steps.push('h ' + (-w + eYo.Unit.x / 2))
   steps.push(a + (-r) + ',' + r)
   h -= 2 * r// Assuming 2*r<line height...
   steps.push(' v ' + h)
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (this.hasNextStatement_()) {
-    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l - r))
+    steps.push('h ' + (-t + eYo.Unit.x / 2 - eYo.Padding.l - r))
   } else {
-    steps.push('h ' + (-t + eYo.Font.space / 2 - eYo.Padding.l) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-t + eYo.Unit.x / 2 - eYo.Padding.l) + a + (-r) + ',' + (-r))
   }
   if (this.hasPreviousStatement_()) {
     steps.push('V 0 z')
@@ -101,9 +101,9 @@ eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
   steps.push(a + r + ',' + r)
   a = ' a ' + r + ', ' + r + ' 0 0 1 '
   if (next) {
-    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l - r))
+    steps.push('h ' + (-t + eYo.Unit.x - eYo.Padding.l - r))
   } else {
-    steps.push('h ' + (-t + eYo.Font.space - eYo.Padding.l) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-t + eYo.Unit.x - eYo.Padding.l) + a + (-r) + ',' + (-r))
     h -= r
   }
   if (previous) {
@@ -256,17 +256,17 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth - eYo.Font.space / 2) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + a + (-2 * r) + ' z'
     }
   } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
     r = eYo.Style.Path.Selected.width / 2
     a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r - eYo.Font.space / 2) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm ' + eYo.Font.space / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.space / 2) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     }
   }
   var xy = block.getRelativeToSurfaceXY()
