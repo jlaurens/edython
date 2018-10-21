@@ -127,9 +127,9 @@ eYo.FlyoutCategory.basic_decimal__module = [
             }
           }
         }
-      },
-      title: 'decimal__assigned_from_float'
+      }
     },
+    title: 'decimal__assigned_from_float'
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
@@ -138,7 +138,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.attributeref,
-          holder_d: F('getcontext'),
+          holder_s: F('getcontext'),
           dotted_d: 1,
           name_d: 'prec'
         }
@@ -266,7 +266,7 @@ eYo.FlyoutCategory.decimal__module = [
 goog.mixin(eYo.Tooltip.Title, {
   decimal__import_stmt: 'Importer le module decimal',
   decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un flottant et l\'affecter à une variable.',
-  decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un texte et l\'affecter à une variable.',
+  decimal__assigned_from_string: 'Créer une représentation d\'un nombre décimal à partir d\'un texte et l\'affecter à une variable.',
   decimal__assigned_contexte: 'Obtenir le contexte de calcul et l\'affecter à une variable.',
   decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })

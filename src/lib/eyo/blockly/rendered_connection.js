@@ -938,6 +938,9 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
               } finally {
                 parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
                 childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
+                if (parentC8n.eyo.startOfStatement) {
+                  child.eyo.incrementChangeCount()
+                }
                 eYo.Connection.connectedParentC8n = parentC8n
                 // next must absolutely run because of possible undo management
                 child.eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)

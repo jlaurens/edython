@@ -530,10 +530,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var variant = this.data.variant
-  const current = variant.get()
-  var withTarget = current === variant.TARGET_EXPRESSIONS
-  var name = this.data.name.get()
+  var withTarget = this.name_s.connection.targetBlock()
+  var name = this.name_p
   var operator = this.data.operator.get()
   var withBitwise = this.data.operator.bitwise
   var operators = withBitwise
@@ -560,27 +558,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     F(i)
   }
   mgr.shouldSeparate()
-  F = function (value, content) {
-    if (value !== current) {
-      var menuItem = mgr.newMenuItem(content, function () {
-        variant.set(value)
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
   var content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
-    eYo.Do.createSPAN(' ' + operator + ' …', 'eyo-code')
-  )
-  F(variant.NAME_EXPRESSIONS, content)
-  content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    goog.dom.createTextNode('… ' + operator + ' …')
-  )
-  F(variant.TARGET_EXPRESSIONS, content)
-  mgr.shouldSeparate()
-  content =
   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
   var menuItem = (function (eyo) {
     return mgr.newMenuItem(content, function () {

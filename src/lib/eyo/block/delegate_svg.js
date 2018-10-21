@@ -564,7 +564,6 @@ eYo.DelegateSvg.prototype.render = (function () {
   var longRender = eYo.Decorate.reentrant_method(
     'longRender',
     function (optBubble, recorder) {
-      this.renderCount = this.change.count
       if (eYo.DelegateSvg.debugStartTrackingRender) {
         var n = eYo.DelegateSvg.debugCount[block.id]
         eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
@@ -609,7 +608,7 @@ eYo.DelegateSvg.prototype.render = (function () {
     if (!this.isEditing && (this.isDragging_ || this.change.level || !block.workspace)) {
       return
     }
-    this.renderDrawPending_(recorder, !this.wrapped_ && eYo.Key.LEFT)
+    recorder && this.renderDrawPending_(recorder, !this.wrapped_ && eYo.Key.LEFT)
     // rendering is very special when this is just a matter of
     // statement connection
     if (block.rendered) {
@@ -690,6 +689,7 @@ eYo.DelegateSvg.prototype.render = (function () {
       return
     }  
     longRender.call(this, optBubble, recorder)
+    this.renderCount = this.change.count
   }
 }) ()
 
@@ -1244,8 +1244,11 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   if (!block.outputConnection) {
     io.common.startOfStatement = true
     this.renderDrawSharp_(io)
-  } else if (!recorder) {
-    io.common.startOfStatement = false
+  } else {
+    if (!recorder) {
+      io.common.startOfStatement = false
+    }
+    this.startOfStatement = io.common.startOfStatement
   }
   if ((io.common.field.current = this.fromStartField)) {
     io.f = 0
@@ -1312,15 +1315,16 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     }
   }
   if (!block.outputConnection) {
-    this.renderDrawEnding_(io, true)
+    this.renderDrawEnding_(io, true, true)
   } else if (!recorder) {
-    this.renderDrawEnding_(io)
+    this.renderDrawEnding_(io, true)
   }
   if (this.hasRightEdge) {
     if (block.outputConnection) {
       if (recorder) {
         this.renderDrawPending_(io, eYo.Key.RIGHT)
       } else {
+        io.isLastInStatement =  true
         this.renderDrawPending_(io)
       }
     } else {
@@ -1427,8 +1431,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       // is expected. It is relative to the enclosing `SVG` group,
       // which is either a block or a slot.
       // If there is a pending caret, draw it and advance the cursor.
-      this.renderDrawEnding_(io)
-      this.renderDrawPending_(io)
       var f_eyo = field.eyo
       io.forc = f_eyo
       var text = field.getDisplayText_()
@@ -1436,6 +1438,8 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
       f_eyo.size.set(text.length, 1)
       if (text.length) {
+        this.renderDrawEnding_(io)
+        this.renderDrawPending_(io)
         io.common.startOfStatement = false
         ++ io.n
         var textNode = document.createTextNode(text)
@@ -1563,7 +1567,7 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
         var c_eyo = eyo.rightCaret
         if (c_eyo) {
           c_eyo.side = eYo.Key.RIGHT
-          c_eyo.shape = isLastInStatement ? eYo.Key.LEFT : eYo.Key.NONE
+          c_eyo.shape = isLastInStatement ? eYo.Key.RIGHT : eYo.Key.NONE
           var wd = c_eyo.caretPathWidthDef_() // depends on the shape and the side
           var block = c_eyo.sourceBlock_
           if (io.block === block) {
@@ -1597,7 +1601,7 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
     var eyo = io.common.pending
     if (eyo) {
       eyo.side = side
-      eyo.shape = shape
+      eyo.shape = io.isLastInStatement ? eYo.Key.Right : shape
       var wd = eyo.caretPathWidthDef_() // depends on the shape and the side
       var block = eyo.sourceBlock_
       if (io.block === block) {
@@ -1616,6 +1620,8 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
         // should we advance the cursor?
         if (eyo.side === eYo.Key.NONE) {
           io.cursor.advance(wd.w)
+        } else if (eyo.startOfStatement) {
+          io.common.startOfStatement = true
         }
         // a space was added as a visual separator anyway
         io.common.field.shouldSeparate = false
@@ -1646,33 +1652,34 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     io.common.field.canStarLike = false
     // io.cursor is relative to the block or the slot
     // but the connection must be located relative to the block
+    // the connection delegate will take care of that because it knows
+    // if there is a slot or only an input.
     var target = c8n.targetBlock()
     if (target) {
-      c_eyo.setOffset(io.cursor)
       var root = target.getSvgRoot()
       if (root) {
-        c8n.tighten_()
         var t_eyo = target.eyo
         try {
           t_eyo.startOfStatement = io.common.startOfStatement
           t_eyo.mayBeLast = t_eyo.hasRightEdge
           t_eyo.downRendering = true
-          if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !target.eyo.upRendering) {
-            if (eYo.DelegateSvg.debugStartTrackingRender) {
-              console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
+          if (eYo.DelegateSvg.debugStartTrackingRender) {
+            console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
+          }
+          if (t_eyo.wrapped_) {
+            // force target rendering
+            t_eyo.incrementChangeCount()
+          }
+          if (c_eyo.c === 1) {
+            if (c_eyo.slot) {
+              c_eyo.slot.where.c -= 1
+            } else {
+              io.cursor.c = c_eyo.where.c = 0
             }
-            if (t_eyo.wrapped_) {
-              // force target rendering
-              t_eyo.incrementChangeCount()
-            }
-            if (c_eyo.c === 1) {
-              if (c_eyo.slot) {
-                c_eyo.slot.where.c -= 1
-              } else {
-                io.cursor.c = c_eyo.where.c = 0
-              }
-            }
-            c_eyo.setOffset(io.cursor)
+          }
+          c_eyo.setOffset(io.cursor)
+          c8n.tighten_()
+        if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
           }      
         } catch(err) {
@@ -1689,10 +1696,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
               io.common.ending.push(t_eyo)
               t_eyo.rightCaret = undefined
               io.common.shouldSeparate = false
-            } else {
-              // All the blocks that where potentially the last
-              // part of their enclosing block no longer are !
-              this.renderDrawEnding_(io)
             }
           }
         }
@@ -1704,62 +1707,64 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // don't display anything for that connection
-    } else if (!this.locked_ && !c8n.hidden_ && !c_eyo.disabled_) {
+    } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
-      c_eyo.setOffset(io.cursor)
-      c_eyo.startOfStatement = io.common.startOfStatement
-      if (c_eyo.s7r_) {
-        c_eyo.side = eYo.Key.NONE
-        var ending = io.common.ending.slice(-1)[0]
-        if (ending && !ending.rightCaret) {
-          // an expression block with a right end has been rendered
-          // we put the caret on that end to save space,
-          // we move the connection one character to the left
-          c_eyo.where.c -= 1
-          ending.rightCaret = c_eyo
-          c_eyo.isAfterRightEdge = io.beforeIsRightEdge
-        } else {
-          // we might want this caret not to advance the cursor
-          // If the next rendered object is a field, then
-          // this caret should be rendered normally
-          // and the cursor should advance.
-          // If the next rendered object is an expression block
-          // with a left end, then this caret shoud be rendered
-          // with a left shape and the cursor should not advance.
-          // If the caret is the last rendered object of the block,
-          // then it should be rendered with special shape and
-          // the cursor should not advance.
-          io.common.pending = c_eyo
-        }
-        io.common.field.shouldSeparate = false
-        io.common.shouldSeparate = false
-      } else if (c_eyo.optional_) {
-        this.renderDrawPending_(io)
-        io.common.pending = c_eyo
-      } else {
-        this.renderDrawPending_(io)
-        if (c_eyo.c === 1) {
-          if (c_eyo.slot) {
-            c_eyo.slot.where.c -= 1
+      if (!c_eyo.disabled_) {
+        c_eyo.setOffset(io.cursor)
+        c_eyo.startOfStatement = io.common.startOfStatement
+        if (c_eyo.s7r_) {
+          c_eyo.side = eYo.Key.NONE
+          var ending = io.common.ending.slice(-1)[0]
+          if (ending && !ending.rightCaret) {
+            // an expression block with a right end has been rendered
+            // we put the caret on that end to save space,
+            // we move the connection one character to the left
+            io.cursor.c -= 1
+            c_eyo.setOffset(io.cursor)
+            ending.rightCaret = c_eyo
+            c_eyo.isAfterRightEdge = io.beforeIsRightEdge
           } else {
-            io.cursor.c = c_eyo.where.c = 0
+            // we might want this caret not to advance the cursor
+            // If the next rendered object is a field, then
+            // this caret should be rendered normally
+            // and the cursor should advance.
+            // If the next rendered object is an expression block
+            // with a left end, then this caret shoud be rendered
+            // with a left shape and the cursor should not advance.
+            // If the caret is the last rendered object of the block,
+            // then it should be rendered with special shape and
+            // the cursor should not advance.
+            io.common.pending = c_eyo
           }
-          c_eyo.setOffset(io.cursor)
+          io.common.field.shouldSeparate = false
+          io.common.shouldSeparate = false
+        } else if (c_eyo.optional_) {
+          this.renderDrawPending_(io)
+          io.common.pending = c_eyo
+        } else {
+          this.renderDrawPending_(io)
+          if (c_eyo.c === 1) {
+            if (c_eyo.slot) {
+              c_eyo.slot.where.c -= 1
+            } else {
+              io.cursor.c = c_eyo.where.c = 0
+            }
+            c_eyo.setOffset(io.cursor)
+          }
+          var wd = c_eyo.placeHolderPathWidthDef_()
+          io.steps.push(wd.d)
+          if (wd.w) {
+            io.cursor.c += wd.w
+            // a space was added as a visual separator anyway
+          }
+          io.common.field.shouldSeparate = false
+          io.common.shouldSeparate = false
         }
-        var wd = c_eyo.placeHolderPathWidthDef_()
-        io.steps.push(wd.d)
-        if (wd.w) {
-          io.cursor.c += wd.w
-          // a space was added as a visual separator anyway
-        }
-        io.common.field.shouldSeparate = false
-        io.common.shouldSeparate = false
+        io.common.beforeIsRightEdge = true
+        io.common.startOfStatement = false
       }
-      io.common.beforeIsRightEdge = true
-      io.common.startOfStatement = false
     }
-    
   }
   this.renderDrawFields_(io, false)
   return true

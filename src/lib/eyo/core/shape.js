@@ -265,14 +265,18 @@ eYo.Shape.prototype.h = function (is_block = false, c = 0) {
  */
 eYo.Shape.prototype.H = function (is_block = false, c = 0) {
   if (is_block === true) {
-    this.push('H', c)
-    this.cursor.x = c
+    if (this.cursor.x !== c) {
+      this.push('H', c)
+      this.cursor.x = c
+    }
     return
   } else if (is_block !== false) {
     c = is_block
   }
-  this.push('H', c * eYo.Unit.x)
-  this.cursor.c = c
+  if (this.cursor.c !== c) {
+    this.push('H', c * eYo.Unit.x)
+    this.cursor.c = c
+  }
 }
 
 /**
@@ -301,14 +305,18 @@ eYo.Shape.prototype.v = function (is_block, l) {
  */
 eYo.Shape.prototype.V = function (is_block, l) {
   if (is_block === true) {
-    this.push('V', l)
-    this.cursor.y = l
+    if (this.cursor.y !== l) {
+      this.push('V', l)
+      this.cursor.y = l
+    }
     return
   } else if (is_block !== false) {
     l = is_block
   }
-  this.push('V', l * eYo.Unit.y)
-  this.cursor.l = l
+  if (this.cursor.l !== l) {
+    this.push('V', l * eYo.Unit.y)
+    this.cursor.l = l  
+  }
 }
 
 /**
@@ -432,7 +440,12 @@ var initWithExpressionBlock = function(eyo) {
   var r = this.expr_radius
   var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  this.arc(eYo.Unit.y, false, true)
+  if (eyo.isLastInStatement) {
+    this.V(eyo.size.l)
+  } else {
+    this.V(eyo.size.l - 1)
+    this.arc(eYo.Unit.y, false, true)
+  }
   var parent
   if (eyo.startOfStatement && (parent = block.getParent())) {
     while (parent && parent.outputConnection) {
@@ -460,6 +473,7 @@ var initWithExpressionBlock = function(eyo) {
     } else {
       this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
       this.arc(eYo.Unit.y, true, false)
+      this.V(0)
     }
   } else {
     this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
@@ -539,6 +553,9 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
   this.begin()
   var dd = this.caret_extra
   if (eyo) {
+    if (eyo.startOfStatement) {
+      eyo.shape = eYo.Key.LEFT
+    }
     var shape = eyo.shape || eyo.side || eYo.Key.NONE
     var x = eyo.x
     var y = eyo.y
