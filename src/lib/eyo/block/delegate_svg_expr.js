@@ -52,7 +52,7 @@ eYo.DelegateSvg.makeSubclass('Expr', {
         }
         // this.set()
       },
-      synchronize: true
+      synchronize: true,
     }
   },
   fields: {

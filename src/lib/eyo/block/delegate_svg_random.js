@@ -269,6 +269,7 @@ goog.mixin(eYo.Tooltip.Title, {
   random__seed_stmt: 'Initialiser le générateur aléatoire',
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
+
 eYo.DelegateSvg.Random.T3s = [
   eYo.T3.Expr.random__randrange,
 ]

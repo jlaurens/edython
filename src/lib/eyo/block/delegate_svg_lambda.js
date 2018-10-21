@@ -402,16 +402,15 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
           } 
         }
         return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)     
-      },
-      check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
+      }
     }
   },
   output: {
     check: /** @suppress {globalThis} */ function (type) {
-      var block = this.connection.sourceBlock_
-      var c8nIn = block.eyo.expression_s.connection
+      var eyo = this.b_eyo // does is always exist ?
+      var c8nIn = eyo.expression_s.connection
       var cond_in = true // cond are accepted by default
-      var nocond_in = true // nocond not accepted by default
+      var nocond_in = true // nocond are accepted by default
       var targetC8n = c8nIn.targetConnection
       if (targetC8n) {
         cond_in = false

@@ -297,6 +297,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/blockly/block_svg.js" \
 --js "src/lib/eyo/block/consolidator.js" \
 --js "src/lib/eyo/block/delegate_svg_expr.js" \
+--js "src/lib/eyo/block/delegate_svg_starred.js" \
 --js "src/lib/eyo/block/draw.js" \
 --js "src/lib/eyo/workspace/key_handler.js" \
 --js "src/lib/eyo/block/python_exporter.js" \
@@ -319,10 +320,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/block/delegate_svg_cmath.js" \
 --js "src/lib/eyo/block/delegate_svg_decimal.js" \
+--js "src/lib/eyo/block/delegate_svg_fraction.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
 --js "src/lib/eyo/block/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_print.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
+--js "src/lib/eyo/block/delegate_svg_statistics.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
 --js "src/lib/eyo/block/delegate_svg_turtle.js" \
 --js "src/lib/eyo/block/delegate_svg_random.js" \

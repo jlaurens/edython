@@ -40,6 +40,9 @@ goog.require('eYo.DelegateSvg.Random');
 goog.require('eYo.DelegateSvg.Math');
 goog.require('eYo.DelegateSvg.CMath');
 goog.require('eYo.DelegateSvg.Turtle');
+goog.require('eYo.DelegateSvg.Decimal');
+goog.require('eYo.DelegateSvg.Fraction');
+goog.require('eYo.DelegateSvg.Statistics');
 
 eYo.Xml = {
   EXPR: 'x', // tag name
@@ -271,15 +274,17 @@ goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-eYo.Xml.savedBlockToDom = Blockly.Xml.blockToDom
-Blockly.Xml.blockToDom = function (block, optNoId) {
-  if (block.type.indexOf('eyo:') < 0) {
-    // leave the control to the original player
-    return eYo.Xml.savedBlockToDom(block, optNoId)
-  } else {
-    return eYo.Xml.blockToDom(block, optNoId)
+Blockly.Xml.blockToDom = (function () {
+  var savedBlockToDom = Blockly.Xml.blockToDom
+  return function (block, optNoId) {
+    if (block.type.indexOf('eyo:') < 0) {
+      // leave the control to the original player
+      return savedBlockToDom(block, optNoId)
+    } else {
+      return eYo.Xml.blockToDom(block, optNoId)
+    }
   }
-}
+}) ()
 
 /**
  * Decode an XML block tag and create a block (and possibly sub blocks) on the
@@ -288,7 +293,7 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {!Blockly.Block} The root block created.
  */
-eYo.Xml.savedDomToBlock = Blockly.Xml.domToBlock
+// eYo.Xml.savedDomToBlock = Blockly.Xml.domToBlock
 Blockly.Xml.domToBlock = function (dom, workspace) {
   if (goog.isString(dom)) {
     return workspace.eyo.fromString(dom)
@@ -355,21 +360,23 @@ eYo.DelegateSvg.newBlockComplete = (function () {
  * @return {!Blockly.Block} The root block created.
  * @private
  */
-eYo.Xml.savedDomToBlockHeadless_ = Blockly.Xml.domToBlockHeadless_
-Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
-  var block = null
-  if (goog.isFunction(xmlBlock.getAttribute)) {
-    var attr = xmlBlock.getAttribute('eyo')
-    if (attr || xmlBlock.namespaceURI.startsWith('urn:edython:')) {
-      block = eYo.Xml.domToBlock(xmlBlock, workspace)
-    } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
-      block = eYo.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
-    } else {
-      block = eYo.Xml.domToBlock(xmlBlock, workspace)
+Blockly.Xml.domToBlockHeadless_ = (function () {
+  var savedDomToBlockHeadless_ = Blockly.Xml.domToBlockHeadless_
+  return function (xmlBlock, workspace) {
+    var block = null
+    if (goog.isFunction(xmlBlock.getAttribute)) {
+      var attr = xmlBlock.getAttribute('eyo')
+      if (attr || xmlBlock.namespaceURI.startsWith('urn:edython:')) {
+        block = eYo.Xml.domToBlock(xmlBlock, workspace)
+      } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
+        block = eYo.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
+      } else {
+        block = eYo.Xml.domToBlock(xmlBlock, workspace)
+      }
     }
+    return block
   }
-  return block
-}
+}) ()
 
 /**
  * Encode a block subtree as dom.
@@ -1023,6 +1030,11 @@ eYo.DelegateSvg.Expr.primary.prototype.tagName = function () {
   }
   return type
 }
+
+
+goog.provide('eYo.Xml.Starred')
+goog.require('eYo.DelegateSvg.Starred')
+
 
 goog.provide('eYo.Xml.Comparison')
 goog.require('eYo.DelegateSvg.Operator')

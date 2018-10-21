@@ -94,31 +94,29 @@ eYo.InputDelegate = function (input) {
   this.owner = input
   var c8n = input.connection
   if (c8n) {
-    Object.defineProperty(
-      this,
-      'connection',
-      {
-        get () {
-          return c8n
-        }
-      }
-    )
     c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
   }
   input.eyo = this
-  Object.defineProperty(
-    this,
-    'tile',
-    {
+}
+
+Object.defineProperties(
+  eYo.InputDelegate.prototype,
+  {
+    tile: {
       get () {
         if (!this.tile_) {
           this.updateTile()
         }
         return this.tile_
       }
+    },
+    connection: {
+      get () {
+        return this.owner.connection
+      }
     }
-  )
-}
+  }
+)
 
 /**
  * be ready the delegate.

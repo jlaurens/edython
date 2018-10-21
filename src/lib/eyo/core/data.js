@@ -85,19 +85,20 @@ eYo.Data = function (owner, key, model) {
       this[k] = model[k]
     }
   }
-  Object.defineProperty(
-    this,
-    'incog_p',
-    {
-      get () {
-        return this.incog_
-      },
-      set (newValue) {
-        this.changeIncog(newValue)
-      }
-    }
-  )
 }
+
+Object.defineProperty(
+  eYo.Data.prototype,
+  'incog_p',
+  {
+    get () {
+      return this.incog_
+    },
+    set (newValue) {
+      this.changeIncog(newValue)
+    }
+  }
+)
 
 /**
  * Get the owner of the data.

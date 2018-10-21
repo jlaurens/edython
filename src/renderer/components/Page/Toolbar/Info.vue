@@ -1,24 +1,24 @@
 <template>
   <div id="toolbar-info" :style="style">
     <div v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)">
-      <info-primary :eyo="eyo" :slotholder="slotholder"></info-primary>
+      <info-primary :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])">
         <info-primary :eyo="eyo" :slotholder="slotholder"></info-primary>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])">
-      <info-literal :eyo="eyo"></info-literal>
+      <info-literal :eyo="eyo" :modifiable="modifiable"></info-literal>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.integer,
     $$.eYo.T3.Expr.floatnumber,
     $$.eYo.T3.Expr.imagnumber])">
-      <info-number :eyo="eyo"></info-number>
+      <info-number :eyo="eyo" :modifiable="modifiable"></info-number>
     </div>
     <div v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])">
-      <info-print :eyo="eyo"></info-print>
+      <info-print :eyo="eyo" :modifiable="modifiable"></info-print>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.u_expr)">
-      <info-unary :eyo="eyo" :slotholder="slotholder"></info-unary>
+      <info-unary :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-unary>
     </div>
     <div v-else-if="isSelected([
       $$.eYo.T3.Expr.binary,
@@ -27,25 +27,25 @@
       $$.eYo.T3.Expr.or_expr,
       $$.eYo.T3.Expr.power
     ])">
-      <info-binary :eyo="eyo" :slotholder="slotholder"></info-binary>
+      <info-binary :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-binary>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)">
       <info-assignment :eyo="eyo" :slotholder="slotholder"></info-assignment>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)">
-      <builtin :eyo="eyo"></builtin>
+      <builtin :eyo="eyo" :modifiable="modifiable"></builtin>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)">
       <info-augmented-assignment :eyo="eyo" :slotholder="slotholder"></info-augmented-assignment>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Expr.any)">
-      <info-any-expression :eyo="eyo" :slotholder="slotholder"></info-any-expression>
+      <info-any-expression :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-any-expression>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.any_stmt)">
       <info-any-statement :eyo="eyo" :slotholder="slotholder"></info-any-statement>
     </div>
     <div v-else-if="eyo">
-      <info-default :eyo="eyo" :slotholder="slotholder"></info-default>
+      <info-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-default>
     </div>
     <div v-else>
       <info-none></info-none>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+  import InfoModifier from './Info/Modifier.vue'
   import InfoPrimary from './Info/Primary.vue'
   import InfoLiteral from './Info/Literal.vue'
   import InfoNumber from './Info/Number.vue'
@@ -77,6 +78,7 @@
       }
     },
     components: {
+      InfoModifier,
       InfoPrimary,
       InfoLiteral,
       InfoNumber,
@@ -120,6 +122,9 @@
       },
       style () {
         return ['width: ', 100 * this.step, '%;'].join('')
+      },
+      modifiable () {
+        return this.isSelected(this.$$.eYo.T3.Expr.Check.or_expr_all)
       }
     },
     watch: {

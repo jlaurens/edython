@@ -184,13 +184,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 200,
       init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var model = p.tos && p.tos.model
-        if (model) {
-          if (model.type) {
-            
-          }
-          validated = goog.isDef(model.type) ? model.ary : Infinity
-        } else if (goog.isString(newValue)) {
+        var validated
+        if (goog.isString(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))
           } else {
@@ -199,9 +194,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         } else if (goog.isNumber(newValue)) {
           validated = Math.max(0, Math.floor(newValue))
         }
-        return goog.isNumber(newValue)
+        return goog.isDef(validated)
         ? {
-          validated: Math.floor(newValue)
+          validated: validated
         }
         : {}
       },
@@ -220,6 +215,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.updateProfile()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
+        var p = this.owner.profile_p
+        var model = p.tos && p.tos.model
+        if (model) {
+          if (model.type === 'method') {
+            this.change(1)
+            return
+          }
+        }
         if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name) {
           this.change(1)
         }
@@ -430,6 +433,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.updateProfile()
         var p = this.owner.profile_p
         if (p.tos && p.tos.model) {
+          console.log('p.tos.model', p.tos.model.type, p.tos.model)
+          if (p.tos.model.type === 'method' && this.owner.dotted_p === 0) {
+            this.owner.dotted_p = 1
+          }
           this.owner.ary_p = -1 // will be validated below
           this.owner.mandatory_p = -1 // will be validated below
         }
@@ -766,21 +773,22 @@ for (var _ = 0, k;(k = [
 eYo.DelegateSvg.Expr.primary.prototype.initBlock = function () {
   eYo.DelegateSvg.Expr.primary.superClass_.initBlock.call(this)
   this.profile_ = undefined
-  Object.defineProperty(
-    this,
-    'profile_p',
-    {
-      get () {
-        return this.profile_ === this.getProfile()
-          ? this.profile_
-          : (this.profile_ = this.getProfile()) // this should never happen
-      },
-      set (newValue) {
-        this.profile_ = newValue
-      }
-    }
-  )
 }
+
+Object.defineProperty(
+  eYo.DelegateSvg.Expr.primary.prototype,
+  'profile_p',
+  {
+    get () {
+      return this.profile_ === this.getProfile()
+        ? this.profile_
+        : (this.profile_ = this.getProfile()) // this should never happen
+    },
+    set (newValue) {
+      this.profile_ = newValue
+    }
+  }
+)
 
 /**
  * updateProfile.
@@ -809,23 +817,23 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         defined: !this.data.definition.isNone(),
         annotated: !this.data.annotation.isNone()
       }
-      var target, eyo, candidate
+      var target, t_eyo, tos
       var type
       if ((target = this.name_s.targetBlock())) {
-        eyo = target.eyo
-        if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+        t_eyo = target.eyo
+        if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
-        } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
           type = eYo.T3.Expr.dotted_name
-        } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
           type = eYo.T3.Expr.parent_module
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_attributeref)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_attributeref)) {
           type = eYo.T3.Expr.named_attributeref
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
           type = eYo.T3.Expr.named_primary
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
           type = eYo.T3.Expr.primary
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
           type = eYo.T3.Expr.expression
         } else {
           type = eYo.T3.Expr.error // this block should not be connected
@@ -835,14 +843,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           slot: type,
           target: target
         }
-        var p = eyo.profile_p
+        var p = t_eyo.profile_p
         if (p) {
           ans.identifier = p.identifier
           ans.module = p.module
         }
         // a target block with no profile... bad luck
       } else {
-        var tos = eYo.Do.typeOfString(this.name_p, null)
+        tos = eYo.Do.typeOfString(this.name_p, null)
         type = tos.expr
         ans.name = {
           type: type,
@@ -853,16 +861,16 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       }
       target = this.holder_s.targetBlock()
       if (ans.dotted < 2 && target) {
-        eyo = target.eyo
-        if (eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+        t_eyo = target.eyo
+        if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
-        } else if (eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
           type = eYo.T3.Expr.dotted_name
-        } else if (eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
           type = eYo.T3.Expr.parent_module
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
           type = eYo.T3.Expr.named_primary
-        } else if (eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
           type = eYo.T3.Expr.primary
         } else {
           type = eYo.T3.Expr.error // this block should not be connected
@@ -872,7 +880,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           slot: type,
           target: target
         }
-        p = eyo.profile_p
+        p = t_eyo.profile_p
         if (p) {
           var base = p.module
             ? p.module + '.' + p.identifier
@@ -885,13 +893,13 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           ans.holder.profile = p
         }
       } else {
-        tos = eYo.Do.typeOfString(this.holder_p)
+        base = this.holder_p
+        tos = eYo.Do.typeOfString(base)
         type = tos.expr
         ans.holder = {
           type: type,
           field: type
         }
-        base = this.holder_p
         base && (
           ans.module = ans.module
             ? base + '.' + ans.module
@@ -1227,21 +1235,22 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.initBlock = function () {
   eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.initBlock.call(this)
   this.profile_ = undefined
-  Object.defineProperty(
-    this,
-    'profile_p',
-    {
-      get () {
-        return this.profile_ === this.getProfile()
-          ? this.profile_
-          : (this.profile_ = this.getProfile()) // this should never happen
-      },
-      set (newValue) {
-        this.profile_ = newValue
-      }
-    }
-  )
 }
+
+Object.defineProperty(
+  eYo.DelegateSvg.Stmt.base_call_stmt.prototype,
+  'profile_p',
+  {
+    get () {
+      return this.profile_ === this.getProfile()
+        ? this.profile_
+        : (this.profile_ = this.getProfile()) // this should never happen
+    },
+    set (newValue) {
+      this.profile_ = newValue
+    }
+  }
+)
 
 /**
  * Class for a DelegateSvg, call statement block.

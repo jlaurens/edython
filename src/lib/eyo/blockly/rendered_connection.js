@@ -74,6 +74,12 @@ Object.defineProperties(
         return this.connection.sourceBlock_
       }
     },
+    b_eyo: {
+      get () {
+        var block = this.sourceBlock_
+        return block && block.eyo
+      }
+    },
     bindField: {
       get () {
         return this.slot && this.slot.bindField

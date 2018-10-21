@@ -8,7 +8,6 @@ import json
 re_addDep = re.compile(r"^goog.addDependency\((?P<file>'[^']+'), (?P<provided>\[[^\]]*\]), (?P<required>\[[^\]]*\]), (?P<options>\{[^\}]*\})\);?$")
 
 def loads(input):
-    print(input)
     return json.loads(input.replace("'", '"'))
 
 class Provide:
@@ -57,7 +56,9 @@ class DB:
                             self.by_provide[p] = dep
 
     def getDep(self, provide):
-        return self.by_provide[provide]
+        if provide in self.by_provide:
+            return self.by_provide[provide]
+        raise Exception('No provider for', provide)
 
     def getDepWithFile(self, file):
         return self.by_file[file]
@@ -74,6 +75,9 @@ if __name__ != "main":
 #    print(path0)
 #    path00 = pathlib.Path(__file__).parent / 'lexical_xtd.html'
 #    print(path00)
+    print('Step 2:')
+    print('=======')
+    print('Resolve dependencies.')
     print(pathlib.Path(__file__).resolve())
     pathRoot = pathlib.Path(__file__).resolve().parent.parent.parent
     pathBuild = pathRoot / 'build' / 'helpers'

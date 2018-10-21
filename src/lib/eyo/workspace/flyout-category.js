@@ -416,7 +416,8 @@ eYo.FlyoutCategory = {
         }
       }
     },
-    eYo.T3.Expr.proper_slice
+    eYo.T3.Expr.proper_slice,
+    eYo.T3.Stmt.del_stmt
   ],
   'text': [
     {

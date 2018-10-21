@@ -425,6 +425,7 @@ eYo.Do.typeOfString = function (candidate, module) {
         return {
           raw: eYo.T3.Expr.known_identifier,
           expr: eYo.T3.Expr.identifier,
+          name: candidate,
           module: module,
           model: item
         }

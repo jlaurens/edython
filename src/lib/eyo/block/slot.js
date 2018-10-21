@@ -117,7 +117,8 @@ eYo.Slot.prototype.init = function () {
 }
 
 /**
- * Install this slot on a block.
+ * Retrieve the target block.
+ * Forwards to the connection.
  */
 eYo.Slot.prototype.targetBlock = function () {
   return this.input && this.input.connection && this.input.connection.targetBlock()

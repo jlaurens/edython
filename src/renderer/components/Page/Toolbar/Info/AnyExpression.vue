@@ -1,6 +1,9 @@
 <template>
   <b-button-toolbar id="info-any-expression" key-nav  aria-label="Info any expression" justify>
     <b-button-toolbar>
+      <div v-if="modifiable">
+        <modifier :eyo="eyo"></modifier>
+      </div>
       <b-form-input v-model="expression" type="text" class="btn btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
@@ -8,6 +11,7 @@
 </template>
 
 <script>
+  import Modifier from './Modifier.vue'
   import Common from './Common.vue'
 
   export default {
@@ -18,12 +22,17 @@
       }
     },
     components: {
+      Modifier,
       Common
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      modifiable: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

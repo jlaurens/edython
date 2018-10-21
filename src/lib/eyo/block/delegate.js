@@ -240,51 +240,17 @@ eYo.Delegate.prototype.makeData = function () {
   var data = Object.create(null) // just a hash
   var dataModel = this.getModel().data
   var byOrder = []
-  var defineProperty = function (k) {
-    // make a closure to catch the value of k
-    return function () {
-      Object.defineProperty(
-        this,
-        k + '_p',
-        {
-          get: function () {
-            return data[k].get()
-          },
-          set: function (newValue) {
-            data[k].change(newValue)
-          }
-        }
-      )
-    }
-  }
-
   for (var k in dataModel) {
     if (eYo.Do.hasOwnProperty(dataModel, k)) {
       var model = dataModel[k]
       if (model) {
         // null models are used to neutralize the inherited data
-        if (!model.setup_) {
-          model.setup_ = true
-          if (goog.isFunction(model.willChange)
-            && !goog.isFunction(model.willUnchange)) {
-            model.willUnchange = model.willChange
-          }
-          if (goog.isFunction(model.didChange)
-            && !goog.isFunction(model.didUnchange)) {
-            model.didUnchange = model.didChange
-          }
-          if (goog.isFunction(model.isChanging)
-            && !goog.isFunction(model.isUnchanging)) {
-            model.isUnchanging = model.isChanging
-          }
-        }
         var d = new eYo.Data(this, k, model)
         if (d.model.main) {
           goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+this.block_.type)
           data.main = d
         }
         data[k] = d
-        defineProperty(k).call(this)
         d.data = data // convenient shortcut
         for (var i = 0, dd; (dd = byOrder[i]); ++i) {
           if (dd.model.order > d.model.order) {
@@ -369,20 +335,6 @@ eYo.Delegate.prototype.makeConnections = function () {
 eYo.Delegate.prototype.feedSlots = function (slotsModel) {
   var slots = this.slots
   var ordered = []
-  var defineProperty = function (k) {
-    // make a closure to catch the value of k
-    return function () {
-      Object.defineProperty(
-        this,
-        k + '_s',
-        {
-          get: function () {
-            return slots[k]
-          }
-        }
-      )
-    }
-  }
   for (var k in slotsModel) {
     var model = slotsModel[k]
     if (!model) {
@@ -411,7 +363,7 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
       goog.asserts.assert(!goog.isDef(slots[k]),
         eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
       slots[k] = slot
-      defineProperty(k).call(this)
+      slot.slots = slots
     } else {
       continue
     }
@@ -575,90 +527,169 @@ eYo.Delegate.Manager = (function () {
    * because they are not meant to really exist yet.
    @return the constructor created
    */
-  me.makeSubclass = function (key, model, parent, owner = undefined) {
-    goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
-    if (key.indexOf('eyo:') >= 0) {
-      key = key.substring(4)
+  me.makeSubclass = (function () {
+    var defineDataProperty = function (k) {
+      var key = k + '_p'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key in this)) {
+          // print("Data property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: function () {
+                return this.data[k].get()
+              },
+              set: function (newValue) {
+                this.data[k].change(newValue)
+              }
+            }
+          )
+        }
+      }
     }
-    owner = owner ||
-    (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
-    (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
-    parent
-    var delegateC9r = owner[key] = function (block) {
-      delegateC9r.superClass_.constructor.call(this, block)
+    var defineSlotProperty = function (k) {
+      var key = k + '_s'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: function () {
+                return this.slots[k]
+              }
+            }
+          )
+        }
+      }
     }
-    goog.inherits(delegateC9r, parent)
-    me.prepareDelegate(delegateC9r, key)
-    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
-    if (goog.isFunction(model)) {
-      model = model()
-    }
-    if (model) {
-      // manage the link: key
-      var link
-      var linkModel = model
-      if ((link = model.link)) {
-        do {
-          var linkC9r = goog.isFunction(link) ? link : me.get(link)
-          goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
-          var linkModel = linkC9r.eyo.getModel()
-          if (linkModel) {
-            model = linkModel
-          } else {
-            break
+    return function (key, model, parent, owner = undefined) {
+      goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
+      if (key.indexOf('eyo:') >= 0) {
+        key = key.substring(4)
+      }
+      owner = owner ||
+      (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
+      (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
+      parent
+      var delegateC9r = owner[key] = function (block) {
+        delegateC9r.superClass_.constructor.call(this, block)
+      }
+      goog.inherits(delegateC9r, parent)
+      me.prepareDelegate(delegateC9r, key)
+      eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
+      if (goog.isFunction(model)) {
+        model = model()
+      }
+      if (model) {
+        // manage the link: key
+        var link
+        var linkModel = model
+        if ((link = model.link)) {
+          do {
+            var linkC9r = goog.isFunction(link) ? link : me.get(link)
+            goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
+            var linkModel = linkC9r.eyo.getModel()
+            if (linkModel) {
+              model = linkModel
+            } else {
+              break
+            }
+          } while ((link = model.link))
+          model = {}
+          linkModel && me.merger(model, linkModel)
+        }
+        // manage the inherits key, uncomplete management,
+        var inherits = model.inherits
+        if (inherits) {
+          var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
+          var inheritsModel = inheritsC9r.eyo.getModel()
+          if (inheritsModel) {
+            var m = {}
+            merger(m, inheritsModel)
+            merger(m, model)
+            model = m
           }
-        } while ((link = model.link))
-        model = {}
-        linkModel && me.merger(model, linkModel)
-      }
-      // manage the inherits key, uncomplete management,
-      var inherits = model.inherits
-      if (inherits) {
-        var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
-        var inheritsModel = inheritsC9r.eyo.getModel()
-        if (inheritsModel) {
-          var m = {}
-          merger(m, inheritsModel)
-          merger(m, model)
-          model = m
+        }
+        var inherits
+        var t = eYo.T3.Expr[key]
+        if (t) {
+          if (!model.output) {
+            model.output = Object.create(null)
+          }
+          model.output.check = eYo.Do.ensureArrayFunction(model.output.check || t)
+          model.statement && (model.statement = undefined)
+        } else if ((t = eYo.T3.Stmt[key])) {
+          var statement = model.statement || (model.statement = Object.create(null))
+          if (!statement.previous) {
+            statement.previous = Object.create(null)
+          }
+          if (statement.previous.check) {
+            statement.previous.check = eYo.Do.ensureArrayFunction(statement.previous.check)
+          } else if (!goog.isNull(statement.previous.check)) {
+            statement.previous.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Previous[key])
+          }
+          if (!statement.next) {
+            statement.next = Object.create(null)
+          }
+          if (statement.next.check) {
+            statement.next.check = eYo.Do.ensureArrayFunction(statement.next.check)
+          } else if (!goog.isNull(statement.next.check)) {
+            statement.next.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Next[key])
+          }
+          // this is a statement, remove the irrelevant output info
+          model.output && (model.output = undefined)
+        }
+        delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+        // Create properties to access data
+        if (model.data) {
+          for (var k in model.data) {
+            if (eYo.Do.hasOwnProperty(model.data, k)) {
+              var MD = model.data[k]
+              if (MD) {
+                // null models are used to neutralize the inherited data
+                if (!MD.setup_) {
+                  MD.setup_ = true
+                  if (goog.isFunction(MD.willChange)
+                    && !goog.isFunction(MD.willUnchange)) {
+                      MD.willUnchange = MD.willChange
+                  }
+                  if (goog.isFunction(MD.didChange)
+                    && !goog.isFunction(MD.didUnchange)) {
+                      MD.didUnchange = MD.didChange
+                  }
+                  if (goog.isFunction(MD.isChanging)
+                    && !goog.isFunction(MD.isUnchanging)) {
+                      MD.isUnchanging = MD.isChanging
+                  }
+                }
+                defineDataProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }      
+        }
+        // Create properties to access slots
+        if (model.slots) {
+          for (var k in model.slots) {
+            if (eYo.Do.hasOwnProperty(model.slots, k)) {
+              var MS = model.slots[k]
+              if (MS) {
+                defineSlotProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }      
         }
       }
-      var inherits
-      var t = eYo.T3.Expr[key]
-      if (t) {
-        if (!model.output) {
-          model.output = Object.create(null)
-        }
-        model.output.check = eYo.Do.ensureArrayFunction(model.output.check || t)
-        model.statement && (model.statement = undefined)
-      } else if ((t = eYo.T3.Stmt[key])) {
-        var statement = model.statement || (model.statement = Object.create(null))
-        if (!statement.previous) {
-          statement.previous = Object.create(null)
-        }
-        if (statement.previous.check) {
-          statement.previous.check = eYo.Do.ensureArrayFunction(statement.previous.check)
-        } else if (!goog.isNull(statement.previous.check)) {
-          statement.previous.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Previous[key])
-        }
-        if (!statement.next) {
-          statement.next = Object.create(null)
-        }
-        if (statement.next.check) {
-          statement.next.check = eYo.Do.ensureArrayFunction(statement.next.check)
-        } else if (!goog.isNull(statement.next.check)) {
-          statement.next.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Next[key])
-        }
-        // this is a statement, remove the irrelevant output info
-        model.output && (model.output = undefined)
+      delegateC9r.makeSubclass = function (key, model, owner) {
+        return me.makeSubclass(key, model, delegateC9r, owner)
       }
-      delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+      return delegateC9r
     }
-    delegateC9r.makeSubclass = function (key, model, owner) {
-      return me.makeSubclass(key, model, delegateC9r, owner)
-    }
-    return delegateC9r
-  }
+}) ()
   /**
    * Delegate instance creator.
    * @param {!Blockly.Block} block
@@ -971,9 +1002,14 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
             }
           }
         }
-      } else {
-        done = true
-      }    
+      }
+      this.foreachData(function () {
+        var k = this.key + '_d'
+        if (eYo.Do.hasOwnProperty(model, k)) {
+          this.set(model[k])
+          done = true
+        }
+      })
     }
   )
   return done
