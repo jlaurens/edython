@@ -126,16 +126,16 @@ eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   // both edges of the block count for one character
-  var w = block.width - eYo.Font.space / 2
+  var w = block.width - eYo.Unit.x / 2
   var h = block.height
   var steps = ['m ' + w + ',0 v ' + h]
   var r = eYo.Style.Path.r
   var a = ' a ' + r + ', ' + r + ' 0 0 1 '
   var c8n = block.nextConnection
   if (c8n && c8n.isConnected()) {
-    steps.push('h ' + (-w + eYo.Font.space - eYo.Padding.l))
+    steps.push('h ' + (-w + eYo.Unit.x - eYo.Padding.l))
   } else {
-    steps.push('h ' + (-w + eYo.Font.space - eYo.Padding.l + r) + a + (-r) + ',' + (-r))
+    steps.push('h ' + (-w + eYo.Unit.x - eYo.Padding.l + r) + a + (-r) + ',' + (-r))
     h -= r
   }
   c8n = block.previousConnection
