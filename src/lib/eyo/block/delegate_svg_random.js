@@ -91,7 +91,8 @@ eYo.FlyoutCategory.basic_random__module = [
     data: {
       from: 'random',
       variant: eYo.Key.FROM_MODULE_IMPORT_STAR
-    }
+    },
+    title: 'random__import_stmt'
   },
   {
     type: eYo.T3.Expr.call_expr,
@@ -198,33 +199,24 @@ F_s = function (name, title) {
 eYo.FlyoutCategory.random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    data: {
-      variant: eYo.Key.IMPORT
-    },
-    slots: {
-      import_module: {
-        slots: {
-          O: {
-            type: eYo.T3.Expr.identifier,
-            data: 'random'
-          }
+    variant_d: eYo.Key.IMPORT,
+    import_module_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier,
+          data: 'random'
         }
       }
-    }
+    },
+    title: 'random__import_stmt'
   },
   {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'randint',
-      holder: 'random'
-    },
-    slots: {
-      binary: { // implement 'main' instead of 'binary'
-        slots: {
-          fstart: 1,
-          rend: 6
-        }
-      }
+    name_d: 'randint',
+    holder_d: 'random',
+    binary_s: {
+      fstart_s: 1,
+      rend_s: 6
     },
     title: 'random__randint'
   },
