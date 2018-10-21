@@ -100,7 +100,7 @@ eYo.FieldTextInput.prototype.init = function () {
     { class: 'eyo-edit',
       'rx': eYo.Style.Edit.radius,
       'ry': eYo.Style.Edit.radius,
-      'x': -eYo.Style.Edit.padding_h - (this.eyo.left_space ? eYo.Font.space : 0),
+      'x': -eYo.Style.Edit.padding_h - (this.eyo.left_space ? eYo.Unit.x : 0),
       'y': -eYo.Style.Edit.padding_v,
       'height': eYo.Font.height + 2 * eYo.Style.Edit.padding_v},
     this.fieldGroup_, this.sourceBlock_.workspace)
@@ -139,7 +139,7 @@ eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
   var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.editRect_) {
-    this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Font.space : 0))
+    this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Unit.x : 0))
   }
 }
 
@@ -326,7 +326,7 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
     var div = Blockly.WidgetDiv.DIV
     if (div.style.display !== 'none') {
       var bBox = this.fieldGroup_.getBBox()
-      div.style.width = (bBox.width + eYo.Font.space - (this.eyo.left_space ? eYo.Font.space : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
+      div.style.width = (bBox.width + eYo.Unit.x - (this.eyo.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
       div.style.height = bBox.height * this.workspace_.scale + 'px'
       var xy = this.getAbsoluteXY_()
       div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
