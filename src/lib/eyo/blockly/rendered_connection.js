@@ -538,14 +538,14 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
   } else { // statement connection
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
-    var w = block.width - eYo.Font.space / 2
+    var w = block.width - eYo.Unit.x / 2
     if (c8n === block.previousConnection) {
-      steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+      steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
     } else if (c8n === block.nextConnection) {
       if (block.height > eYo.Font.lineHeight) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + w + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = 'm ' + w + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
       }
     } else {
       steps = 'm ' + w + ',' + (-r + eYo.Font.lineHeight) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w) + a + (-2 * r) + ' z'
@@ -590,10 +590,10 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
     steps = block.eyo.valuePathDef_()
   } else {
     // this is a statement connection
-    var w = block.width - eYo.Font.space / 2
+    var w = block.width - eYo.Unit.x / 2
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
-    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Font.space - eYo.Padding.l) + a + (-2 * r) + ' z'
+    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
   }
   Blockly.Connection.highlightedPath_ =
   Blockly.utils.createSvgElement('path',
