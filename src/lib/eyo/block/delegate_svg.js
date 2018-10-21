@@ -2766,9 +2766,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
           }
         }
         R = new goog.math.Rect(
-          c8n.offsetInBlock_.x - eYo.Font.space / 4,
+          c8n.offsetInBlock_.x - eYo.Unit.x / 4,
           c8n.offsetInBlock_.y + eYo.Padding.t,
-          c8n.eyo.optional_ || c8n.eyo.s7r_ ? 1.5 * eYo.Font.space : 3.5 * eYo.Font.space,
+          c8n.eyo.optional_ || c8n.eyo.s7r_ ? 1.5 * eYo.Unit.x : 3.5 * eYo.Unit.x,
           eYo.Font.height
         )
         if (R.contains(where)) {
@@ -2829,7 +2829,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
 Object.defineProperty(
   eYo,
   'SelectedConnection',
-  function () {
+  (function () {
     var c8n_
     return {
       get: function () {
@@ -2896,7 +2896,7 @@ Object.defineProperty(
         }
       }
     }
-  }
+  }) ()
 )
 
 /**
