@@ -496,7 +496,6 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
-  // console.log('MOUSE UP', target)
   // reentrancy filter
   if (!target || target.eyo.lastMouseUpEvent_ === e) {
     return
