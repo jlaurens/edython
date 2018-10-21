@@ -1738,7 +1738,7 @@ eYo.Delegate.prototype.isIncog = function () {
 /**
  * Input enumerator
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Boolean} all  Retrieve all the inputs, or just the ones with a slot.
  * @return true if the given value is accepted, false otherwise
  */
 eYo.Delegate.prototype.inputEnumerator = function (all) {
