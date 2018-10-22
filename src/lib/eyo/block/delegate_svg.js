@@ -1337,6 +1337,18 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       this.renderDrawPending_(io, eYo.Key.RIGHT, eYo.Key.RIGHT)
     }
   }
+  if (io.n < 2) {
+    var c8n = io.forc && io.forc.connection
+    var target = c8n && c8n.targetBlock()
+    if (target) {
+      target.eyo.parentIsShort = true
+      this.isShort = true
+      // always add a space to the right
+      target.eyo.isLastInStatement = false
+      target.eyo.updateAllPaths_()
+      io.cursor.c += 1
+    }
+  }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
   this.size.setFromWhere(io.cursor)
   this.minWidth = block.width = Math.max(block.width, this.size.x)
@@ -1348,14 +1360,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     // right edge where a caret could be placed.
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
-  }
-  if (io.n < 2) {
-    var c8n = io.forc && io.forc.connection
-    block = c8n && c8n.targetBlock()
-    if (block) {
-      block.eyo.parentIsShort = true
-      this.isShort = true
-    }
   }
   return io.steps.join(' ')
 }
@@ -1676,15 +1680,12 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             // force target rendering
             t_eyo.incrementChangeCount()
           }
-          if (c_eyo.c === 1) {
-            if (c_eyo.slot) {
-              c_eyo.slot.where.c -= 1
-            } else {
-              io.cursor.c = c_eyo.where.c = 0
-            }
-          }
           c_eyo.setOffset(io.cursor)
-        if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
+          if (c_eyo.c === 1 && !io.common.field.beforeIsBlack && c_eyo.slot) {
+            c_eyo.slot.where.c -= 1
+            c_eyo.setOffset(io.cursor)
+          }
+          if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
           }      
         } catch(err) {
@@ -2753,7 +2754,6 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function (block) {
  * The block is already rendered once.
  *
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @param {Object} e in general a mouse down event
  * @return {Object|undefined|null}
  */
@@ -2777,21 +2777,38 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
             return targetC8n
           }
           var R = new goog.math.Rect(
-            c8n.offsetInBlock_.x,
+            c8n.offsetInBlock_.x + eYo.Unit.x / 2,
             c8n.offsetInBlock_.y,
-            target.width,
+            target.width - eYo.Unit.x,
             target.height
           )
           if (R.contains(where)) {
+            console.error('return c8n', block.type, c8n, where, R, target)
             return c8n
           }
         }
-        R = new goog.math.Rect(
-          c8n.offsetInBlock_.x - eYo.Unit.x / 4,
-          c8n.offsetInBlock_.y + eYo.Padding.t,
-          c8n.eyo.optional_ || c8n.eyo.s7r_ ? 1.5 * eYo.Unit.x : 3.5 * eYo.Unit.x,
-          eYo.Font.height
-        )
+        if (c8n.eyo.optional_ || c8n.eyo.s7r_) {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x - eYo.Unit.x / 4,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            1.5 * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else if (c8n.eyo.slot && c8n.eyo.slot.bindField) {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            c8n.eyo.w * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x + eYo.Unit.x / 4,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            (c8n.eyo.w - 1 / 2) * eYo.Unit.x,
+            eYo.Font.height
+          )
+        }
         if (R.contains(where)) {
           return c8n
         }

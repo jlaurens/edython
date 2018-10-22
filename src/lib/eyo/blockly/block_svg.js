@@ -460,6 +460,13 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
+  if (this.eyo.parentIsShort && Blockly.selected !== this) {
+    var parent = this.getParent()
+    if (Blockly.selected !== parent) {
+      eYo.BlockSvg.superClass_.onMouseDown_.call(parent, e)
+      return
+    }
+  }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this

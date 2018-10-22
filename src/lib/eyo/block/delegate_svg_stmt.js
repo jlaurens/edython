@@ -506,11 +506,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       xml: {
         text: true,
-        didLoad: /** @suppress {globalThis} */ function () {
-          this.whenRequiredFromModel(function () {
-            this.setIncog(false)
-          }) || (this.toText().length && this.setIncog(false))
-        }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        this.whenRequiredFromModel(function () {
+          this.setIncog(false)
+        }) || (this.toText().length && this.setIncog(false))
       }
     },
     comment: {
