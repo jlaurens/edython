@@ -527,7 +527,7 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
-  (!Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
+  (Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
   this.synchronize(newValue)
 }
 

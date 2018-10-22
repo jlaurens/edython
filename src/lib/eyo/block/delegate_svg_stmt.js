@@ -285,7 +285,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
-  eYo.Events.groupWrap(this,
+  return eYo.Events.groupWrap(this,
     function () {
       var block = this.block_
       var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
@@ -304,9 +304,9 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
       if (Blockly.selected === block) {
         blockAfter.select()
       }
+      return blockAfter
     }
   )
-  return blockAfter
 }
 
 /**
@@ -519,7 +519,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       init: eYo.Key.NONE,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
+        this.afterChange(oldValue, newValue)
         var data = this.data.code
         data.required = newValue === this.CODE
         data.setIncog()
@@ -568,11 +568,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
-      init: /** @suppress {globalThis} */ function () {
-        this.init()
-        this.setIncog(true)
-      }
+      check: eYo.T3.Expr.Check.expression
     }
   }
 })

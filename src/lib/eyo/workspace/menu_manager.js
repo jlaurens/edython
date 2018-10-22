@@ -1088,14 +1088,13 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     eYo.T3.Stmt.print_stmt, // JL defined?
     eYo.T3.Stmt.builtin__input_stmt// JL defined?
   ]
-  var F = function (action, type) {
+  var F = function (action, self, type) {
     return (function () {
       // create a closure that catches the value of the loop variable
-      var T = type
       return function () {
-        action(T)
+        action.call(self, type)
       }
-    }())
+    }) ()
   }
   var /** !eYo.Connection */ c8n, sep
   var F_after = /** @suppress{accessControls} */ function (targetC8n, type) {
@@ -1106,7 +1105,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = this.newMenuItem(content, F(block.eyo.insertBlockAfter, type))
+      var MI = this.newMenuItem(content, F(block.eyo.insertBlockAfter, block.eyo, type))
       this.addInsertAfterChild(MI)
       return true
     }
@@ -1120,7 +1119,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = this.newMenuItem(content, F(block.eyo.insertParentWithModel, type))
+      var MI = this.newMenuItem(content, F(block.eyo.insertParentWithModel, block.eyo, type))
       this.addInsertBeforeChild(MI)
       return true
     }

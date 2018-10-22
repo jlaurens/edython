@@ -1198,7 +1198,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     io.common = {
       pending: undefined,
       ending: [],
-      shouldSeparate: true,
+      shouldSeparate: false,
       beforeIsRightEdge: false,
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
@@ -1238,6 +1238,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     // display shift when locking/unlocking)
     this.size.w = 1
     io.common.field.beforeIsBlack = false
+    io.common.field.shouldSeparate = false
   }
   io.cursor.c = this.size.w
 
@@ -1303,15 +1304,19 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     if (block.outputConnection) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
+        io.common.field.beforeIsBlack = false
       } else if (io.common.shouldSeparate) {
         if (!recorder) {
           io.cursor.c += 1
+          io.common.field.beforeIsBlack = false
         } else if (!this.locked_ && !io.common.ending.length) {
           io.cursor.c += 1
+          io.common.field.beforeIsBlack = false
         }
       }
-    } else {
+    } else if (io.common.shouldSeparate) {
       io.cursor.c += 1
+      io.common.field.beforeIsBlack = false
     }
   }
   if (!block.outputConnection) {
