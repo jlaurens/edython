@@ -192,7 +192,11 @@ eYo.Data.prototype.init = function (newValue) {
   var init = this.model.init
   var f = eYo.Decorate.reentrant_method.call(this, 'model_init', this.model.init)
   if (f) {
-    f.apply(this, arguments)
+    this.internalSet(f.apply(this, arguments))
+    if (!goog.isDef(this.value_)) {
+      console.error('THIS SHOULD BE DEFINED')
+      f.apply(this, arguments)
+    }
     return
   } else if (goog.isDef(init)) {
     this.internalSet(init)
@@ -201,6 +205,9 @@ eYo.Data.prototype.init = function (newValue) {
   var all = this.getAll()
   if (all && all.length) {
     this.internalSet(all[0])
+  }
+  if (!goog.isDef(this.value_)) {
+    console.error('THIS SHOULD BE DEFINED')
   }
 }
 
@@ -662,6 +669,9 @@ eYo.Data.prototype.setIncog = function (newValue) {
     newValue = validator.call(this, newValue)
   }
   if (this.incog_ !== newValue) {
+    // if (this.key === 'comment') {
+    //   console.error('comment data incog', newValue)
+    // }
     this.incog_ = newValue
     if (this.slot) {
       this.slot.setIncog(newValue)
@@ -817,7 +827,7 @@ eYo.Data.prototype.load = function (element) {
     }
     var required = this.required
     var isText = xml && xml.text
-    this.setRequiredFromDom(false)
+    this.setRequiredFromModel(false)
     var txt
     if (isText) {
       eYo.Do.forEachChild(element, function (child) {
@@ -834,7 +844,7 @@ eYo.Data.prototype.load = function (element) {
         this.fromText('', false)
       } else {
         if ((isText && txt === '?') || (!isText && txt === '')) {
-          this.setRequiredFromDom(true)
+          this.setRequiredFromModel(true)
         }
         this.fromText(txt, false) // do not validate, there might be an error while saving, please check
       }
@@ -842,8 +852,18 @@ eYo.Data.prototype.load = function (element) {
       this.fromText('', false)
     }
   }
+}
+
+/**
+ * When all the data and slots have been loaded.
+ * For edython.
+ */
+eYo.Data.prototype.setRequirdidLoadedFromModel = function () {
   if (xml && xml.didLoad) {
     xml.didLoad.call(this)
+  }
+  if (this.model.didLoad) {
+    this.model.didLoad.call(this)
   }
 }
 
@@ -852,8 +872,8 @@ eYo.Data.prototype.load = function (element) {
  * When some data is required, an `?` might be used instead of nothing
  * For edython.
  */
-eYo.Data.prototype.setRequiredFromDom = function (newValue) {
-  this.required_from_dom = newValue
+eYo.Data.prototype.setRequiredFromModel = function (newValue) {
+  this.required_from_model = newValue
 }
 
 /**
@@ -861,16 +881,16 @@ eYo.Data.prototype.setRequiredFromDom = function (newValue) {
  * For edython.
  */
 eYo.Data.prototype.isRequiredFromModel = function () {
-  return this.required_from_dom
+  return this.required_from_model
 }
 
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
  */
-eYo.Data.prototype.clearRequiredFromDom = function () {
+eYo.Data.prototype.clearRequiredFromModel = function () {
   if (this.isRequiredFromModel()) {
-    this.setRequiredFromDom(false)
+    this.setRequiredFromModel(false)
     this.fromText('', false)// useful if the text was a '?'
     return true
   }
@@ -881,9 +901,9 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFromDom = function (helper) {
+eYo.Data.prototype.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel()) {
-    this.setRequiredFromDom(false)
+    this.setRequiredFromModel(false)
     this.fromText('', false)// useful if the text was a '?'
     if (goog.isFunction(helper)) {
       helper.call(this)

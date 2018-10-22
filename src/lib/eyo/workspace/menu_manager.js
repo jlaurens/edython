@@ -873,7 +873,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
   case eYo.T3.Stmt.else_part:return Stmt2('else')
   case eYo.T3.Stmt.finally_part:return Stmt2('finally')
   case eYo.T3.Stmt.with_part: return Stmt1('with')
-  case eYo.T3.Stmt.any_stmt:
+  case eYo.T3.Stmt.expression_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('#', 'eyo-code-reserved'),
       eYo.Do.createSPAN(' comment', 'eyo-code-placeholder')

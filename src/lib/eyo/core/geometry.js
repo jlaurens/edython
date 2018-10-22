@@ -42,6 +42,9 @@ var get_c = function () {
   return this.c_
 }
 var set_c = function (newValue) {
+  if (this.trace_on__ && newValue === 4) {
+    console.warn('where.c is 4')
+  }
   this.c_ = newValue
 }
 var get_l = function () {

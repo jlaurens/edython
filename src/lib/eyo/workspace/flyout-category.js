@@ -138,7 +138,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.power,
   ],
   'intermediate': [
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,

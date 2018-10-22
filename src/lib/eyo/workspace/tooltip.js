@@ -106,7 +106,7 @@ eYo.Tooltip.Title = {
   m_expr: 'Opération multiplicative : *, /, //, %, @',
   a_expr: 'Opération additive : +, -',
   power: 'Puissance',
-  any_stmt: 'Instruction, commentaire, les deux',
+  expression_stmt: 'Instruction, commentaire, les deux',
   parenth_form: 'Objet entre parenthèses',
   list_display: 'Liste',
   set_display: 'Ensemble, pour un ensemble vide utiliser la fonction `set()`',

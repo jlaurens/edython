@@ -609,9 +609,6 @@ eYo.Xml.Data.fromDom = function (block, element) {
       })
     }
   )
-  eyo.incrementChangeCount() // force new type
-  eyo.consolidateType()
-  eyo.consolidateConnections()
 }
 
 /**
@@ -817,7 +814,7 @@ eYo.Xml.domToBlock = (function () {
       block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
     } else {
       if (!name) {
-        name = xmlBlock.tagName.toLowerCase() === 's' ? 'any_stmt': 'any_expression'
+        name = xmlBlock.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
       }
       prototypeName = 'eyo:'+name
       var solid = prototypeName + ''
@@ -916,6 +913,15 @@ eYo.Xml.fromDom = function (block, element) {
             }
           }
         })
+        eyo.foreachData(function () {
+          this.didLoad()
+        })
+        eyo.foreachSlot(function () {
+          this.didLoad()
+        })
+        eyo.incrementChangeCount() // force new type
+        eyo.consolidateType()
+        eyo.consolidateConnections()
         eyo.consolidate()
       }
       // read flow and suite

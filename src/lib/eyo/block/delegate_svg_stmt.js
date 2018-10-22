@@ -25,10 +25,26 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
+    comment: {
+      order: 1000000,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
+      },
+      synchronize: true,
+      placeholderText: eYo.Msg.Placeholder.COMMENT,
+      xml: {
+        load: /** @suppress {globalThis} */ function (element) {
+          this.load(element)
+          this.whenRequiredFromModel(function () {
+            this.setIncog(false)
+          }) || (this.toText().length && this.setIncog(false))
+        }
+      }
+    },
     comment_variant: { // variant are very useful with undo/redo
       NONE: eYo.Key.NONE,
       COMMENT: eYo.Key.COMMENT,
-      order: 1000000, // initialization comes last
+      order: 1000001, // initialization comes last
       all: [eYo.Key.NONE, eYo.Key.COMMENT],
       init: eYo.Key.NONE,
       xml: false,
@@ -39,26 +55,6 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.set(this.data.comment.isIncog() ? this.NONE : this.COMMENT)
-      }
-    },
-    comment: {
-      order: 1000001,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.data.comment_variant.consolidate()
-      },
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
-      },
-      synchronize: true,
-      placeholderText: eYo.Msg.Placeholder.COMMENT,
-      xml: {
-        load: /** @suppress {globalThis} */ function (element) {
-          this.load(element)
-          this.whenRequiredFromDom(function () {
-            this.setIncog(false)
-          }) || (this.toText().length && this.setIncog(false))
-        }
       }
     }
   },
@@ -122,29 +118,6 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
  */
 eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
-  
-  /* eslint-disable indent */
-  var block = this.block_
-  // both edges of the block count for one character
-  var w = block.width - eYo.Unit.x / 2
-  var h = block.height
-  var steps = ['m ' + w + ',0 v ' + h]
-  var r = eYo.Style.Path.r
-  var a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  var c8n = block.nextConnection
-  if (c8n && c8n.isConnected()) {
-    steps.push('h ' + (-w + eYo.Unit.x - eYo.Padding.l))
-  } else {
-    steps.push('h ' + (-w + eYo.Unit.x - eYo.Padding.l + r) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  c8n = block.previousConnection
-  if (c8n && c8n.isConnected() && c8n.targetBlock().getNextBlock() === block) {
-    steps.push('v ' + (-h) + ' z')
-  } else {
-    steps.push('v ' + (-h + r) + a + r + ',' + (-r) + ' z')
-  }
-  return steps.join(' ')
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
@@ -494,44 +467,31 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
-  slots: {
-    expression: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression
-    }
-  }
-})
-
-/**
- * Class for a DelegateSvg, any_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
   data: {
     variant: {
       NONE: eYo.Key.NONE,
-      CODE: eYo.Key.CODE,
+      EXPRESSION: eYo.Key.EXPRESSION,
       order: 10000, // initialization comes last
       all: [
         eYo.Key.NONE,
-        eYo.Key.CODE,
+        eYo.Key.EXPRESSION,
       ],
       init: eYo.Key.NONE,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.afterChange(oldValue, newValue)
-        var data = this.data.code
-        data.required = newValue === this.CODE
+        var data = this.data.expression
+        data.required = newValue === this.EXPRESSION
         data.setIncog()
-        if (!data.required) {
-          this.owner.comment_variant_p = eYo.Key.COMMENT
-        }
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.data.code.isIncog() ? this.NONE : this.CODE)
+        if (this.data.comment.isIncog()) {
+          this.change(this.EXPRESSION)
+        }
       }
     },
-    code: {
+    expression: {
+      init: '',
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         // remove any newline character from newValue
@@ -547,23 +507,37 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
       xml: {
         text: true,
         didLoad: /** @suppress {globalThis} */ function () {
-          this.whenRequiredFromDom(function () {
+          this.whenRequiredFromModel(function () {
             this.setIncog(false)
           }) || (this.toText().length && this.setIncog(false))
         }
       }
     },
-    comment_variant: {
-      init: eYo.Key.COMMENT
+    comment: {
+      init: /** @suppress {globalThis} */ function () {
+        this.setIncog(false)
+        this.owner.comment_variant_p = eYo.Key.COMMENT
+        return ''
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        this.whenRequiredFromModel(function () {
+          this.setIncog(false)
+        }) || this.setIncog(true)
+      },
+      consolidate: /** @suppress {globalThis} */ function () {
+        if (this.data.expression.isIncog()) {
+          this.setIncog(false)
+        }
+      }
     }
   },
   slots: {
-    code: {
+    expression: {
       order: 1,
       fields: {
         bind: {
           placeholder: /** @suppress {globalThis} */ function () {
-            return eYo.Msg.Placeholder.CODE
+            return eYo.Msg.Placeholder.EXPRESSION
           },
           endEditing: true
         }
@@ -580,7 +554,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('any_stmt', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function () {
+eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
   return this.data.variant.get() === this.data.variant.model.COMMENT
 }
 
@@ -590,51 +564,47 @@ eYo.DelegateSvg.Stmt.any_stmt.prototype.isWhite = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.any_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var data = this.data.variant
-  var current = data.get()
-  var comment = this.data.comment.toText()
-  var code = this.data.code.toText()
-  if (code.length > 32) {
-    var short_code = code.substring(0, 31) + '…'
-  }
-  if (comment.length > 32) {
-    var short_comment = comment.substring(0, 31) + '…'
-  }
-  var total = code.length + comment.length
-  if (total > 30) {
-    var short_code_all = code.substring(0, Math.floor(30 * code.length / total) + 2) + '…'
-    var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total) + 2) + '…'
-  }
-  var F = function (content, variant) {
-    if (variant !== current) {
-      var menuItem = mgr.newMenuItem(content, function () {
-        data.set(variant)
-      })
-      mgr.addChild(menuItem)
+eYo.DelegateSvg.Stmt.expression_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  if (this.comment_variant_p === eYo.Key.COMMENT) {
+    var data = this.data.variant
+    var current = data.get()
+    var comment = this.data.comment.toText()
+    var code = this.data.expression.toText()
+    if (code.length > 32) {
+      var short_code = code.substring(0, 31) + '…'
     }
+    if (comment.length > 32) {
+      var short_comment = comment.substring(0, 31) + '…'
+    }
+    var total = code.length + comment.length
+    if (total > 30) {
+      var short_code_all = code.substring(0, Math.floor(30 * code.length / total) + 2) + '…'
+      var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total) + 2) + '…'
+    }
+    var F = function (content, variant) {
+      if (variant !== current) {
+        var menuItem = mgr.newMenuItem(content, function () {
+          data.change(variant)
+        })
+        mgr.addChild(menuItem)
+      }
+    }
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
+      eYo.Do.createSPAN(short_comment || comment || eYo.Msg.Placeholder.COMMENT,
+        'eyo-code-comment')
+    )
+    F(content, eYo.Key.NONE)
+    content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN(short_code_all || code || eYo.Msg.Placeholder.CODE,
+        'eyo-code'),
+      eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
+      eYo.Do.createSPAN(short_comment_all || comment || eYo.Msg.Placeholder.COMMENT,
+        'eyo-code-comment')
+    )
+    F(content, eYo.Key.EXPRESSION)
   }
-  var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN('# ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(short_comment || comment || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment')
-  )
-  F(content, data.COMMENT)
-  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(short_code || code || eYo.Msg.Placeholder.CODE,
-      'eyo-code')
-  )
-  F(content, data.CODE)
-  content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(short_code_all || code || eYo.Msg.Placeholder.CODE,
-      'eyo-code'),
-    eYo.Do.createSPAN(' # ', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(short_comment_all || comment || eYo.Msg.Placeholder.COMMENT,
-      'eyo-code-comment')
-  )
-  F(content, data.CODE_COMMENT)
-  return eYo.DelegateSvg.Stmt.any_stmt.superClass_.populateContextMenuFirst_.call(this, mgr) || true
+  return eYo.DelegateSvg.Stmt.expression_stmt.superClass_.populateContextMenuFirst_.call(this, mgr) || true
 }
 
 eYo.DelegateSvg.Stmt.T3s = [
@@ -645,6 +615,5 @@ eYo.DelegateSvg.Stmt.T3s = [
   eYo.T3.Stmt.expression_stmt,
   eYo.T3.Stmt.docstring__stmt,
   eYo.T3.Stmt.del_stmt,
-  eYo.T3.Stmt.return_stmt,
-  eYo.T3.Stmt.any_stmt
+  eYo.T3.Stmt.return_stmt
 ]

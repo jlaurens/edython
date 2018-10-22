@@ -775,7 +775,7 @@ Ks = {
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,
-  '# comment': eYo.T3.Stmt.any_stmt,
+  '# comment': eYo.T3.Stmt.expression_stmt,
   'global …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
     data: {

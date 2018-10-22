@@ -22,9 +22,9 @@ if_part/if ::= "if" expression ":"
 elif_part/elif ::= "elif" expression ":"
 else_part/else ::= "else" ":"
 last_else_part ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> if_part | elif_part | any_stmt
-last_else_part >>> if_part | elif_part | any_stmt
-elif_part >>> if_part | elif_part | any_stmt
+else_part >>> if_part | elif_part | expression_stmt
+last_else_part >>> if_part | elif_part | expression_stmt
+elif_part >>> if_part | elif_part | expression_stmt
 </pre>
 <pre>
 while_stmt ::= IGNORE
@@ -57,14 +57,14 @@ try_part/try
 except_part/except
 void_except_part ::= "except" ":" # this block type is never used in a definition, only for checking
 finally_part/finally
-try_part <<< except_part | void_except_part | finally_part | any_stmt
+try_part <<< except_part | void_except_part | finally_part | expression_stmt
 void_except_part >>> except_part
-except_part >>> try_part | except_part | any_stmt
-void_except_part >>> try_part | except_part | any_stmt
+except_part >>> try_part | except_part | expression_stmt
+void_except_part >>> try_part | except_part | expression_stmt
 try_else_part/else ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> except_part | void_except_part | any_stmt
-try_else_part >>> except_part | void_except_part | any_stmt
-finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | any_stmt
+else_part >>> except_part | void_except_part | expression_stmt
+try_else_part >>> except_part | void_except_part | expression_stmt
+finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | expression_stmt
 </pre>
 
 with_stmt ::=  "with" with_item ("," with_item)* ":" suite

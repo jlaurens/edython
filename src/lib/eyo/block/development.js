@@ -358,7 +358,7 @@ eYo.DelegateSvg.Expr.longliteral.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.pass_stmt,
   eYo.T3.Stmt.break_stmt,
   eYo.T3.Stmt.continue_stmt,
-  eYo.T3.Stmt.any_stmt
+  eYo.T3.Stmt.expression_stmt
 ])
 
 eYo.DelegateSvg.Stmt.try_part.workspaceBlocks =
@@ -374,7 +374,7 @@ eYo.DelegateSvg.Stmt.raise_stmt.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Stmt.else_part,
   eYo.T3.Stmt.finally_part,
   eYo.T3.Stmt.pass_stmt,
-  eYo.T3.Stmt.any_stmt
+  eYo.T3.Stmt.expression_stmt
 ])
 
 // in progress

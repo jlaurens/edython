@@ -747,19 +747,19 @@ eYo.DelegateSvg.prototype.didRender_ = function (recorder) {
 eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
   var block = this.block_
   block.renderMoveConnections_()
-  var blockTL = block.getRelativeToSurfaceXY()
-  this.foreachSlot(function () {
-    var input = this.input
-    if(input) {
-      var c8n = input.connection
-      if (c8n) {
-        c8n.moveToOffset(blockTL)
-        if (c8n.isConnected()) {
-          c8n.tighten_();
-        }
-      }
-    }
-  })
+  // var blockTL = block.getRelativeToSurfaceXY()
+  // this.foreachSlot(function () {
+  //   var input = this.input
+  //   if(input) {
+  //     var c8n = input.connection
+  //     if (c8n) {
+  //       c8n.moveToOffset(blockTL)
+  //       if (c8n.isConnected()) {
+  //         c8n.tighten_();
+  //       }
+  //     }
+  //   }
+  // })
 }
 
 /**
@@ -1191,6 +1191,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     cursor: new eYo.Where(),
     forc: undefined // rendered file or connection
   }
+  io.cursor.trace_on__ = true
   if (recorder) {
     // io inherits some values from the given recorder
     io.common = recorder.common // It is always defined
@@ -1683,7 +1684,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             }
           }
           c_eyo.setOffset(io.cursor)
-          c8n.tighten_()
         if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
           }      
@@ -1961,6 +1961,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
               function () {
                 block.eyo.changeWrap(
                   function () {
+                    var slot = input.connection.slot
+                    slot && slot.setIncog(false)
                     B.outputConnection.connect(input.connection)
                   }
                 )
@@ -1984,6 +1986,9 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
               function () {
                 block.eyo.changeWrap(
                   function () {
+                    // The connection cas be established only with not incog
+                    var slot = input.connection.eyo.slot
+                    slot && slot.setIncog(false)
                     B.outputConnection.connect(input.connection)
                   }
                 )
@@ -1992,6 +1997,13 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           }
         }
       }
+    })
+    // now blocks and slots have been set
+    block.eyo.foreachData(function () {
+      this.model.didLoad && this.model.didLoad.call(this)
+    })
+    block.eyo.foreachSlot(function () {
+      this.model.didLoad && this.model.didLoad.call(this)
     })
     if (block.nextConnection) {
       var nextModel = dataModel.next

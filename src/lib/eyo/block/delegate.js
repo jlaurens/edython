@@ -223,8 +223,8 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
   'consolidate',
   eYo.Decorate.onChangeCount(
     'consolidate',
-    function () {
-      this.doConsolidate()
+    function (deep, force) {
+      this.doConsolidate(deep, force)
     }
   )
 )
@@ -975,6 +975,10 @@ eYo.Delegate.prototype.setDataWithType = function (type) {
  */
 eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
+  this.foreachData(function () {
+      this.setRequiredFromModel(false)
+    }
+  )
   this.changeWrap(
     function () {
       var data_in = model.data
@@ -982,6 +986,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
         var d = this.data.main || this.headData
         if (d && d.validate(data_in)) {
           d.set(data_in)
+          d.setRequiredFromModel(true)
           done = true
         }
       } else if (goog.isDef(data_in)) {
@@ -989,6 +994,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
           var k = this.key
           if (eYo.Do.hasOwnProperty(data_in, k)) {
             this.set(data_in[k])
+            this.setRequiredFromModel(true)
             done = true
           }
         })
@@ -1008,6 +1014,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
         if (eYo.Do.hasOwnProperty(model, k)) {
           this.set(model[k])
           done = true
+          this.setRequiredFromModel(true)
         }
       })
     }

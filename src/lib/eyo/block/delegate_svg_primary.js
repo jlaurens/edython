@@ -419,6 +419,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     name: {
       order: 10000, // the name must be quite last
       main: true,
+      init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name

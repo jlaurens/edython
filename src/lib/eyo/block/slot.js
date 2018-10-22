@@ -95,7 +95,7 @@ Object.defineProperties(
     },
     incog_p: {
       get () {
-        return this.isIncog
+        return this.isIncog()
       },
       set (newValue) {
         this.owner.changeWrap(
@@ -541,7 +541,7 @@ eYo.Slot.prototype.isIncog = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.isRequiredToDom = function () {
+eYo.Slot.prototype.isRequiredToModel = function () {
   if (this.incog) {
     return false
   }
@@ -569,7 +569,7 @@ eYo.Slot.prototype.isRequiredToDom = function () {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFromModel = function () {
-  return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
+  return this.is_required_from_model || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
 /**
@@ -577,8 +577,8 @@ eYo.Slot.prototype.isRequiredFromModel = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
-  this.is_required_from_dom = newValue
+eYo.Slot.prototype.setRequiredFromModel = function (newValue) {
+  this.is_required_from_model = newValue
 }
 
 /**
@@ -586,9 +586,9 @@ eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
+eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel()) {
-    this.setRequiredFromDom(false)
+    this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {
       helper.call(this)
     }
@@ -728,7 +728,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
       }
     }
   }.call(this))
-  if (!out && this.isRequiredToDom()) {
+  if (!out && this.isRequiredToModel()) {
     var child = goog.dom.createDom(eYo.Xml.EXPR)
     child.setAttribute('eyo', 'placeholder')
     child.setAttribute(eYo.Xml.SLOT, this.key)
@@ -774,11 +774,11 @@ eYo.Slot.prototype.load = function (element) {
       return
     }
   }
-  this.setRequiredFromDom(false)
+  this.setRequiredFromModel(false)
   var out
   var target = this.targetBlock()
   if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
-    this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
+    this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(target, element)
   } else {
   // find the xml child with the proper slot attribute
@@ -794,7 +794,7 @@ eYo.Slot.prototype.load = function (element) {
         }
         if (attribute === this.key) {
           if (child.getAttribute('eyo') === 'placeholder') {
-            this.setRequiredFromDom(true)
+            this.setRequiredFromModel(true)
             out = true
           } else if (target) {
             if (target.eyo instanceof eYo.DelegateSvg.List) {
@@ -814,7 +814,7 @@ eYo.Slot.prototype.load = function (element) {
                         var targetC8n = grandTarget.outputConnection
                         if (targetC8n && targetC8n.checkType_(input.connection)) {
                           targetC8n.connect(input.connection)
-                          this.setRequiredFromDom(true)
+                          this.setRequiredFromModel(true)
                         }
                       }
                     } else {
@@ -833,7 +833,7 @@ eYo.Slot.prototype.load = function (element) {
             var c8n = this.input && this.input.connection
             if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection)) {
               c8n.connect(target.outputConnection)
-              this.setRequiredFromDom(true)
+              this.setRequiredFromModel(true)
             } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
               c8n.connect(target.previousConnection)
             }
@@ -844,10 +844,21 @@ eYo.Slot.prototype.load = function (element) {
       }
     }
   }
+  return out
+}
+
+/**
+ * When all the slots and data have been loaded.
+ * For edython.
+ */
+eYo.Slot.prototype.didLoad = function () {
+  var xml = this.model.xml
   if (out && xml && xml.didLoad) {
     xml.didLoad.call(this)
   }
-  return out
+  if (this.model.didLoad) {
+    this.model.didLoad.call(this)
+  }
 }
 
 /**
