@@ -21,47 +21,48 @@ goog.require('Blockly.Events')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
 
-eYo.Do.Events_Change_prototype_run =
-Blockly.Events.Change.prototype.run
 /**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  * @suppress{accessControls}
  */
-Blockly.Events.Change.prototype.run = function (forward) {
-  if (!this.element.startsWith('eyo:')) {
-    eYo.Do.Events_Change_prototype_run.call(this, forward)
-    return
-  }
-  var workspace = this.getEventWorkspace_()
-  var block = workspace.getBlockById(this.blockId)
-  if (!block) {
-    console.warn("Can't change non-existant block: " + this.blockId)
-    return
-  }
-  if (block.mutator) {
-    // Close the mutator (if open) since we don't want to update it.
-    block.mutator.setVisible(false)
-  }
-  var value = forward ? this.newValue : this.oldValue
-  switch (this.element) {
-  case eYo.Const.Event.locked:
-    if (value) {
-      block.eyo.lock()
-    } else {
-      block.eyo.unlock()
+Blockly.Events.Change.prototype.run = (function () {
+  var run = Blockly.Events.Change.prototype.run
+  return function (forward) {
+    if (!this.element.startsWith('eyo:')) {
+      run.call(this, forward)
+      return
     }
-    break
-  default:
-    var m = XRegExp.exec(this.element, eYo.XRE.event_data)
-    var data
-    if (m && (data = block.eyo.data[m.key])) {
-      data.set(value, false) // do not validate, it may change value
-    } else {
-      console.warn('Unknown change type: ' + this.element)
+    var workspace = this.getEventWorkspace_()
+    var block = workspace.getBlockById(this.blockId)
+    if (!block) {
+      console.warn("Can't change non-existant block: " + this.blockId)
+      return
+    }
+    if (block.mutator) {
+      // Close the mutator (if open) since we don't want to update it.
+      block.mutator.setVisible(false)
+    }
+    var value = forward ? this.newValue : this.oldValue
+    switch (this.element) {
+    case eYo.Const.Event.locked:
+      if (value) {
+        block.eyo.lock()
+      } else {
+        block.eyo.unlock()
+      }
+      break
+    default:
+      var m = XRegExp.exec(this.element, eYo.XRE.event_data)
+      var data
+      if (m && (data = block.eyo.data[m.key])) {
+        data.set(value, false) // do not validate, it may change value
+      } else {
+        console.warn('Unknown change type: ' + this.element)
+      }
     }
   }
-}
+}) ()
 
 /**
  * Start or stop a group.

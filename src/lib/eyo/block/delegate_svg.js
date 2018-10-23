@@ -1166,21 +1166,15 @@ eYo.DelegateSvg.prototype.chainTiles = (function () {
 }) ()
 
 /**
- * Render the inputs, the fields and the slots of the block.
- * The `recorder` is an object that keeps track of some
- * rendering information. It is the argument of various methods.
- * This method is executed at least once for any rendered block.
- * Since then, it won't be executed as long as the block has not been edited.
- * @param {?Object} recorder 
+ * Prepare rendering.
+ * @param {?Object} recorder
+ * @return {!Object} a local recorder
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
-  /* eslint-disable indent */
-  // when defined, `recorder` comes from
-  // the parent's `renderDrawValueInput_` method.
+eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
+  var block = this.block_
   this.parentIsShort = false
   this.isShort = false
-  var block = this.block_
   // we define the `io` named recorder which is specific to this block.
   var io = {
     block: block,
@@ -1194,6 +1188,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   io.cursor.trace_on__ = true
   if (recorder) {
     // io inherits some values from the given recorder
+    io.recorder = recorder
     io.common = recorder.common // It is always defined
   } else {
     io.common = {
@@ -1252,6 +1247,23 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     }
     this.startOfStatement = io.common.startOfStatement
   }
+  return io
+}
+
+/**
+ * Render the inputs, the fields and the slots of the block.
+ * The `recorder` is an object that keeps track of some
+ * rendering information. It is the argument of various methods.
+ * This method is executed at least once for any rendered block.
+ * Since then, it won't be executed as long as the block has not been edited.
+ * @param {?Object} recorder 
+ * @private
+ */
+eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
+  var block = this.block_
+  // when defined, `recorder` comes from
+  // the parent's `renderDrawValueInput_` method.
+  var io = this.renderDrawModelBegin_(recorder)
   if ((io.common.field.current = this.fromStartField)) {
     io.f = 0
     do {
@@ -1300,14 +1312,25 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       this.renderDrawField_(io)
     } while ((io.common.field.current = io.common.field.current.eyo.nextField))
   }
+  this.renderDrawModelEnd_(io)
+  return io.steps.join(' ')
+}
+
+/**
+ * Terminate to render the model.
+ * @param {?Object} recorder 
+ * @private
+ */
+eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
+  var block = this.block_
   if (!this.wrapped_) {
     if (block.outputConnection) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
         io.common.field.beforeIsBlack = false
       } else if (io.common.shouldSeparate) {
-        if (!recorder) {
+        if (!io.recorder) {
           io.cursor.c += 1
           io.common.field.beforeIsBlack = false
         } else if (!this.locked_ && !io.common.ending.length) {
@@ -1322,12 +1345,12 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   }
   if (!block.outputConnection) {
     this.renderDrawEnding_(io, true, true)
-  } else if (!recorder) {
+  } else if (!io.recorder) {
     this.renderDrawEnding_(io, true)
   }
   if (this.hasRightEdge) {
     if (block.outputConnection) {
-      if (recorder) {
+      if (io.recorder) {
         this.renderDrawPending_(io, eYo.Key.RIGHT)
       } else {
         io.isLastInStatement =  true
@@ -1352,7 +1375,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
   this.size.setFromWhere(io.cursor)
   this.minWidth = block.width = Math.max(block.width, this.size.x)
-  if (recorder) {
+  if (io.recorder) {
     // We ended a block. The right edge is generally a separator.
     // No need to add a separator if the block is wrapped or locked
     io.common.field.shouldSeparate && (io.common.field.shouldSeparate = this.hasRightEdge)
@@ -1361,7 +1384,6 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
   }
-  return io.steps.join(' ')
 }
 
 /**
@@ -2783,7 +2805,6 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
             target.height
           )
           if (R.contains(where)) {
-            console.error('return c8n', block.type, c8n, where, R, target)
             return c8n
           }
         }

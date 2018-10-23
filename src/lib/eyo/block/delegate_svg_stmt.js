@@ -27,6 +27,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
   data: {
     comment: {
       order: 1000000,
+      init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },

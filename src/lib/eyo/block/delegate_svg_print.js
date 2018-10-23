@@ -217,9 +217,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('builtin__print_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_(mgr)
+eYo.DelegateSvg.Stmt.builtin__print_stmt.prototype.populateContextMenuFirst_ = function () {
+  var yorn = eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_.apply(this, arguments)
   return eYo.DelegateSvg.Stmt.builtin__print_stmt.superClass_.populateContextMenuFirst_.apply(this, arguments) || yorn
 }
 

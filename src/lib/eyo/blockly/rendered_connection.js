@@ -1028,7 +1028,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       eYo.Connection.disconnectedChildC8n = childC8n
                       eYo.Connection.disconnectedParentC8n = undefined
                       eYo.Connection.disconnectedChildC8n = undefined
-                      parentC8n.incrementInputChangeCount && parentC8n.incrementInputChangeCount() // list are special
+                      parent.eyo.incrementInputChangeCount && parent.eyo.incrementInputChangeCount() // list are special
                       parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
                       childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true)
                      }

@@ -191,23 +191,25 @@ eYo.Data.prototype.init = function (newValue) {
   }
   var init = this.model.init
   var f = eYo.Decorate.reentrant_method.call(this, 'model_init', this.model.init)
-  if (f) {
-    this.internalSet(f.apply(this, arguments))
-    if (!goog.isDef(this.value_)) {
-      console.error('THIS SHOULD BE DEFINED')
-      f.apply(this, arguments)
+  try {
+    if (f) {
+      this.internalSet(f.apply(this, arguments))
+      return
+    } else if (goog.isDef(init)) {
+      this.internalSet(init)
+      return
     }
-    return
-  } else if (goog.isDef(init)) {
-    this.internalSet(init)
-    return
-  }
-  var all = this.getAll()
-  if (all && all.length) {
-    this.internalSet(all[0])
-  }
-  if (!goog.isDef(this.value_)) {
-    console.error('THIS SHOULD BE DEFINED')
+    var all = this.getAll()
+    if (all && all.length) {
+      this.internalSet(all[0])
+    }
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    if (!goog.isDef(this.value_)) {
+      console.error('THIS SHOULD BE DEFINED', this.key, this.owner.block_.type)
+    }
   }
 }
 

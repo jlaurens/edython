@@ -88,6 +88,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = function () {
       // may cause rerendering ad vitam eternam.
       return
     }
+    force = true  // always force consolidation because of the dynamics
     if (eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && this.consolidator.consolidate(this.block_, deep, force)
     }
@@ -143,6 +144,7 @@ eYo.DelegateSvg.List.prototype.incrementInputChangeCount = function () {
       target.eyo.incrementChangeCount()
     }
   }
+  this.incrementChangeCount()
 }
 
 /**
