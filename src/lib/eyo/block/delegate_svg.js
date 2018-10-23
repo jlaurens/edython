@@ -1339,7 +1339,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
           io.common.field.beforeIsBlack = false
         }
       }
-    } else if (io.common.shouldSeparate) {
+    } else /* if (io.common.shouldSeparate) */ {
       io.cursor.c += 1
       io.common.field.beforeIsBlack = false
     }
@@ -1349,18 +1349,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
   } else if (!io.recorder) {
     this.renderDrawEnding_(io, true)
   }
-  if (this.hasRightEdge) {
-    if (block.outputConnection) {
-      if (io.recorder) {
-        this.renderDrawPending_(io, eYo.Key.RIGHT)
-      } else {
-        io.isLastInStatement =  true
-        this.renderDrawPending_(io)
-      }
-    } else {
-      this.renderDrawPending_(io, eYo.Key.RIGHT, eYo.Key.RIGHT)
-    }
-  }
+  this.renderDrawPending_(io)
   if (io.n < 2) {
     var c8n = io.forc && io.forc.connection
     var target = c8n && c8n.targetBlock()
@@ -1394,7 +1383,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
  */
 eYo.DelegateSvg.prototype.renderDrawSlot_ = function (io) {
   var root = io.slot.getSvgRoot()
-  goog.asserts.assert(root, 'Slot with no root')
+  goog.asserts.assert(root, 'Slot with no root', io.block.type, io.slot.key)
   if (io.slot.isIncog()) {
     root.setAttribute('display', 'none')
     return
@@ -1600,7 +1589,7 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
         var c_eyo = eyo.rightCaret
         if (c_eyo) {
           c_eyo.side = eYo.Key.RIGHT
-          c_eyo.shape = isLastInStatement ? eYo.Key.RIGHT : eYo.Key.NONE
+          c_eyo.shape = eYo.Key.NONE
           var wd = c_eyo.caretPathWidthDef_() // depends on the shape and the side
           var block = c_eyo.sourceBlock_
           if (io.block === block) {
@@ -2102,6 +2091,9 @@ eYo.DelegateSvg.prototype.beReady = function () {
         goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
           'eyo-inner')
       }
+      this.foreachData(function () {
+        this.synchronize() // this is not headless
+      })
       this.beReady = eYo.Do.nothing // one shot function  
     }
   )

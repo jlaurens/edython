@@ -472,7 +472,7 @@ eYo.KeyHandler = (function () {
             me.alreadyListening_ = false
             var target = event.target
             if (target) {
-              var targetModel = target.model
+              var targetModel = target.model_
               if (targetModel) {
                 setTimeout(function () { // try/finally?
                   if (me.alreadyListened_) {

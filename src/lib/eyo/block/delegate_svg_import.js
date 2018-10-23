@@ -95,6 +95,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       }
     },
     from: {
+      init:'',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         var data = this.data.variant

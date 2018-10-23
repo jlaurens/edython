@@ -440,12 +440,8 @@ var initWithExpressionBlock = function(eyo) {
   var r = this.expr_radius
   var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  if (eyo.isLastInStatement) {
-    this.V(eyo.size.l)
-  } else {
-    this.V(eyo.size.l - 1)
-    this.arc(eYo.Unit.y, false, true)
-  }
+  this.V(eyo.size.l - 1)
+  this.arc(eYo.Unit.y, false, true)
   var parent
   if (eyo.startOfStatement && (parent = block.getParent())) {
     while (parent && parent.outputConnection) {
@@ -578,7 +574,6 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     var dd = 2 * this.caret_extra
     var h = eYo.Unit.y / 2
     var r = this.expr_radius
-    var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
     var p_h = this.caret_height
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)
@@ -594,6 +589,7 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.arc(this.caret_height, false, true)
     this.h(true, -dd / 2)
   } else if (shape === eYo.Key.RIGHT) {
+    // logically unreachable code
     this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.h(true, -dd / 2)
     this.arc(this.caret_height, true, true)

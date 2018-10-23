@@ -160,14 +160,14 @@ eYo.DelegateSvg.Expr.dict_comprehension.workspaceBlocks = [
   eYo.T3.Expr.comp_iter_list
 ]
 
-eYo.DelegateSvg.Expr.a_expr.workspaceBlocks =
-eYo.DelegateSvg.Expr.m_expr.workspaceBlocks =
-eYo.DelegateSvg.Expr.u_expr.workspaceBlocks = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.a_expr,
-  eYo.T3.Expr.m_expr,
-  eYo.T3.Expr.u_expr
-]
+// eYo.DelegateSvg.Expr.a_expr.workspaceBlocks =
+// eYo.DelegateSvg.Expr.m_expr.workspaceBlocks =
+// eYo.DelegateSvg.Expr.u_expr.workspaceBlocks = [
+//   eYo.T3.Expr.identifier,
+//   eYo.T3.Expr.a_expr,
+//   eYo.T3.Expr.m_expr,
+//   eYo.T3.Expr.u_expr
+// ]
 
 eYo.DelegateSvg.Expr.shift_expr.workspaceBlocks =
 eYo.DelegateSvg.Expr.and_expr.workspaceBlocks =

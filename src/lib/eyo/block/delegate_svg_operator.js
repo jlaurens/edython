@@ -54,9 +54,11 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       }
     },
     lhs: {
+      init: 1,
       synchronize: true
     },
     rhs: {
+      init: 1,
       synchronize: true
     }
   },
@@ -227,50 +229,96 @@ eYo.DelegateSvg.Expr.binary.prototype.getBaseType = function () {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('unary', {
+  xml: {
+    types: [
+      eYo.T3.Expr.u_expr,
+      eYo.T3.Expr.not_test
+    ],
+    tag: 'unary'
+  },
   data: {
     operator: {
       main: true,
-      all: ['-', '+', '~', 'not']
+      all: ['-', '+', '~', 'not'],
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var root = this.field.getSvgRoot()
+        if (root) {
+          if (newValue === 'not') {
+            goog.dom.classlist.add(root, 'eyo-code-reserved')
+          } else {
+            goog.dom.classlist.remove(root, 'eyo-code-reserved')
+          }
+        }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.not_test) {
+          this.set('not')
+        }
+      }
     },
     rhs: {
+      init: 1,
       synchronize: true
     }
   },
   slots: {
     rhs: {
+      order: 1000,
       fields: {
+        operator: {
+          order: 1,
+          value: ''
+        },
         bind: {
+          order: 2,
           placeholder: '1',
           validate: true,
           endEditing: true
         }
       },
-      check: /** @suppress {globalThis} */ function () {
-        return [this.sourceBlock().eyo.getOperatorModel().rhs]
+      check: /** @suppress {globalThis} */ function (type) {
+        return eYo.DelegateSvg.Expr.unary.getOperatorModelForType(type).rhs
       }
+    }
+  },
+  output: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return type
     }
   }
 })
+
+eYo.DelegateSvg.Expr.u_expr = eYo.DelegateSvg.Expr.not_test = eYo.DelegateSvg.Expr.unary
+eYo.DelegateSvg.Manager.register('u_expr')
+eYo.DelegateSvg.Manager.register('not_test')
+
+eYo.T3.Expr.unary = 'eyo:unary' // don't forget it !
 
 /**
  * Get the operator model.
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
-  var op = this.data.operator.get()
-  if (['-', '+', '~'].indexOf(op) >= 0) {
-    return {
-      type: eYo.T3.Expr.u_expr,
+eYo.DelegateSvg.Expr.unary.getOperatorModelForType = function (type) {
+  return {
+    [eYo.T3.Expr.u_expr]: {
       rhs: eYo.T3.Expr.Check.u_expr_all
-    }
-  }
-  if ('not' === op) {
-    return {
-      type: eYo.T3.Expr.not_test,
+    },
+    [eYo.T3.Expr.not_test]: {
       rhs: eYo.T3.Expr.Check.not_test_all
     }
-  }
+  } [type]
+}
+
+/**
+ * Get the operator model.
+ * For edython.
+ * @return a dictionary
+ */
+eYo.DelegateSvg.Expr.unary.prototype.getOperatorModel = function () {
+  var op = this.data.operator.get()
+  return eYo.DelegateSvg.Expr.unary.getOperatorModel(op)
 }
 
 /**
@@ -279,7 +327,23 @@ eYo.DelegateSvg.Expr.unary.getOperatorModel = function () {
  * For edython.
  */
 eYo.DelegateSvg.Expr.unary.prototype.getBaseType = function () {
-  return this.constructor.getOperatorModel().type
+  return this.constructor.getTypeForOperator(this.operator_p)
+}
+
+/**
+ * Get the operator model.
+ * For edython.
+ * @return a dictionary
+ */
+eYo.DelegateSvg.Expr.unary.getTypeForOperator = function (op) {
+  if (['+', '-', '~'].indexOf(op) >= 0) {
+    return eYo.T3.Expr.u_expr
+  }
+  if ('not' === op) {
+    return eYo.T3.Expr.not_test
+  }
+  console.error("UNKNOWN OPERATOR", op)
+  return eYo.T3.Expr.unset
 }
 
 /**
@@ -344,39 +408,40 @@ eYo.DelegateSvg.Operator.prototype.populateContextMenuFirst_ = function (mgr) {
  * u_expr.
  * For edython.
  */
-eYo.DelegateSvg.Operator.makeSubclass('u_expr', {
-  data: {
-    operator: {
-      main: true,
-      all: ['-', '+', '~']
-    },
-    rhs: {
-      synchronize: true
-    }
-  },
-  slots: {
-    rhs: {
-      fields: {
-        bind: {
-          order: 2,
-          endEditing: true,
-          placeholder: '1'
-        }
-      },
-      check: eYo.T3.Expr.Check.u_expr_all
-    }
-  }
-})
+// eYo.DelegateSvg.Operator.makeSubclass('ux_expr', {
+//   data: {
+//     operator: {
+//       main: true,
+//       all: ['-', '+', '~']
+//     },
+//     rhs: {
+//       init: 1,
+//       synchronize: true
+//     }
+//   },
+//   slots: {
+//     rhs: {
+//       fields: {
+//         bind: {
+//           order: 2,
+//           endEditing: true,
+//           placeholder: '1'
+//         }
+//       },
+//       check: eYo.T3.Expr.Check.u_expr_all
+//     }
+//   }
+// })
 
-/**
- * Get the content for the menu item.
- * @param {!Blockly.Block} block The block.
- * @param {string} op op is the operator
- * @private
- */
-eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (op) {
-  return op + ' …'
-}
+// /**
+//  * Get the content for the menu item.
+//  * @param {!Blockly.Block} block The block.
+//  * @param {string} op op is the operator
+//  * @private
+//  */
+// eYo.DelegateSvg.Expr.u_expr.prototype.makeTitle = function (op) {
+//   return op + ' …'
+// }
 
 // /**
 //  * Class for a DelegateSvg, ... op ... block.

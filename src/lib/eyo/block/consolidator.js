@@ -619,7 +619,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
-    console.error('EXPECTED CONSOLIDATION', block.type)
+    // console.error('EXPECTED CONSOLIDATION', block.type)
     if (this.consolidate_first_connected(io)) {
       while (this.walk_to_next_connected(io, true) &&
         this.consolidate_connected(io)) {}

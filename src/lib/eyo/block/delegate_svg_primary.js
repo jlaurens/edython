@@ -434,7 +434,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.owner.updateProfile()
         var p = this.owner.profile_p
         if (p.tos && p.tos.model) {
-          console.log('p.tos.model', p.tos.model.type, p.tos.model)
+          // console.log('p.tos.model', p.tos.model.type, p.tos.model)
           if (p.tos.model.type === 'method' && this.owner.dotted_p === 0) {
             this.owner.dotted_p = 1
           }
