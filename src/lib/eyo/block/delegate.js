@@ -59,6 +59,25 @@ eYo.Delegate = function (block) {
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
+
+/**
+ * Model getter. Convenient shortcut.
+ */
+eYo.Do.getModel = function (type) {
+  return eYo.Delegate.Manager.getModel(type)
+}
+
+Object.defineProperties(
+  eYo.Delegate.prototype,
+  {
+    model: {
+      get () {
+        return this.constructor.eyo.model
+      }
+    }
+  }
+)
+
 /**
  * Get the block.
  * For edython.
@@ -230,166 +249,6 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
 )
 
 /**
- * Make the data.
- * Called only by `initBlock`.
- * Should be called only once.
- * No data change, no rendering.
- * For edython.
- */
-eYo.Delegate.prototype.makeData = function () {
-  var data = Object.create(null) // just a hash
-  var dataModel = this.getModel().data
-  var byOrder = []
-  for (var k in dataModel) {
-    if (eYo.Do.hasOwnProperty(dataModel, k)) {
-      var model = dataModel[k]
-      if (model) {
-        // null models are used to neutralize the inherited data
-        var d = new eYo.Data(this, k, model)
-        if (d.model.main) {
-          goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+this.block_.type)
-          data.main = d
-        }
-        data[k] = d
-        d.data = data // convenient shortcut
-        for (var i = 0, dd; (dd = byOrder[i]); ++i) {
-          if (dd.model.order > d.model.order) {
-            break
-          }
-        }
-        byOrder.splice(i, 0, d)
-      }
-    }
-  }
-  if ((d = this.headData = byOrder[0])) {
-    for (i = 1; (dd = byOrder[i]); ++i) {
-      d.next = dd
-      dd.previous = d
-      d = dd
-    }
-  }
-  this.data = data
-}
-
-/**
- * Make the Fields.
- * No rendering.
- * For edython.
- */
-eYo.Delegate.prototype.makeFields = function () {
-  eYo.Slot.makeFields(this, this.getModel().fields)
-}
-
-/**
- * Make the contents
- * For edython.
- */
-eYo.Delegate.prototype.makeContents = function () {
-  eYo.Content.feed(this, this.getModel().contents || this.getModel().fields)
-}
-
-/**
- * Make the slots
- * For edython.
- */
-eYo.Delegate.prototype.makeSlots = function () {
-  this.slots = Object.create(null)
-  this.headSlot = this.feedSlots(this.getModel().slots)
-}
-
-/**
- * Create the block connections.
- * Called from receiver's initBlock method.
- * For subclassers eventually
- */
-eYo.Delegate.prototype.makeConnections = function () {
-  // configure the connections
-  var block = this.block_
-  var model = this.getModel()
-  var D
-  if ((D = model.output) && Object.keys(D).length) {
-    block.setOutput(true) // check is setup in the consolidateConnections
-    var eyo = block.outputConnection.eyo
-    eyo.model = D
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.previous && D.previous.check !== null) {
-      block.setPreviousStatement(true)
-      block.previousConnection.eyo.model = D.previous
-    }
-    if (D.next && D.next.check !== null) {
-      block.setNextStatement(true)
-      block.nextConnection.eyo.model = D.next
-    }
-    if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite')
-      this.inputSuite.connection.eyo.model = D
-    }
-  }
-}
-
-/**
- * Feed the owner with slots built from the model.
- * For edython.
- * @param {!Blockly.Input} input
- */
-eYo.Delegate.prototype.feedSlots = function (slotsModel) {
-  var slots = this.slots
-  var ordered = []
-  for (var k in slotsModel) {
-    var model = slotsModel[k]
-    if (!model) {
-      continue
-    }
-    var order = model.order
-    var insert = model.insert
-    var slot, next
-    if (insert) {
-      var model = eYo.Delegate.Manager.getModel(insert)
-      if (model) {
-        if ((slot = this.feedSlots(model.slots))) {
-          next = slot
-          do {
-            goog.asserts.assert(!goog.isDef(slots[next.key]),
-              'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
-            slots[next.key] = next
-          } while ((next = next.next))
-        } else {
-          continue
-        }
-      } else {
-        continue
-      }
-    } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
-      goog.asserts.assert(!goog.isDef(slots[k]),
-        eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
-      slots[k] = slot
-      slot.slots = slots
-    } else {
-      continue
-    }
-    slot.order = order
-    for (var i = 0; i < ordered.length; i++) {
-      // we must not find an aleady existing entry.
-      goog.asserts.assert(i !== slot.order,
-        eYo.Do.format('Same order slot {0}/{1}', i, this.block_.type))
-      if (ordered[i].model.order > slot.model.order) {
-        break
-      }
-    }
-    ordered.splice(i, 0, slot)
-  }
-  if ((slot = ordered[0])) {
-    i = 1
-    while ((next = ordered[i++])) {
-      slot.next = next
-      next.previous = slot
-      slot = next
-    }
-  }
-  return ordered[0]
-}
-
-/**
  * Get the eyo namespace in the constructor.
  * Create one if it does not exist.
  * Closure used.
@@ -425,9 +284,21 @@ eYo.Delegate.Manager = (function () {
    */
   me.prepareDelegate = function (delegateC9r, key) {
     var eyo = eYo.Delegate.getC9rEyO(delegateC9r, key || '')
-    eyo.getModel || (eyo.getModel = function () {
-      return modeller(delegateC9r)
-    })
+    if (!eyo.getModel) {
+      eyo.getModel || (eyo.getModel = function () {
+        return modeller(delegateC9r)
+      })
+      Object.defineProperties(
+        eyo,
+        {
+          model: {
+            get () {
+              return this.getModel()
+            }
+          }
+        }
+      )
+    }
     return eyo
   }
   /**
@@ -477,7 +348,7 @@ eYo.Delegate.Manager = (function () {
   }
   me.merger = merger
   /**
-   * Private modeller to provide the constructor with a complete getModel.
+   * Private modeller to provide the constructor with a complete `model` property.
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
@@ -593,7 +464,7 @@ eYo.Delegate.Manager = (function () {
           do {
             var linkC9r = goog.isFunction(link) ? link : me.get(link)
             goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
-            var linkModel = linkC9r.eyo.getModel()
+            var linkModel = linkC9r.eyo.model
             if (linkModel) {
               model = linkModel
             } else {
@@ -607,7 +478,7 @@ eYo.Delegate.Manager = (function () {
         var inherits = model.inherits
         if (inherits) {
           var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
-          var inheritsModel = inheritsC9r.eyo.getModel()
+          var inheritsModel = inheritsC9r.eyo.model
           if (inheritsModel) {
             var m = {}
             merger(m, inheritsModel)
@@ -725,7 +596,7 @@ eYo.Delegate.Manager = (function () {
    */
   me.getModel = function (prototypeName) {
     var delegateC9r = C9rs[prototypeName]
-    return (delegateC9r && delegateC9r.eyo.getModel()) || Object.create(null)
+    return (delegateC9r && delegateC9r.eyo.model) || Object.create(null)
   }
   /**
    * Delegate registrator.
@@ -789,20 +660,6 @@ eYo.Delegate.Manager = (function () {
   }
   return me
 }())
-
-/**
- * Model getter. Convenient shortcut.
- */
-eYo.Do.getModel = function (type) {
-  return eYo.Delegate.Manager.getModel(type)
-}
-
-/**
- * Model getter. Ask the constructor.
- */
-eYo.Delegate.prototype.getModel = function () {
-  return this.constructor.eyo.getModel()
-}
 
 // register this delegate for all the T3 types
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)
@@ -902,7 +759,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
  * if the data model contains an initializer, use it,
  * otherwise send an init message to all the data controllers.
  */
-eYo.Delegate.prototype.setupModel = function () {
+eYo.Delegate.prototype.makeBounds = function () {
   for (var k in this.data) {
     var data = this.data[k]
     var slot = this.slots[k]
@@ -1052,6 +909,187 @@ eYo.Delegate.makeSubclass = function (key, model, owner) {
   return eYo.Delegate.Manager.makeSubclass(key, model, eYo.Delegate, owner)
 }
 
+
+/**
+ * Initialize a block's implementation model.
+ * Called from block's creation method.
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * When done, the block has all its properties ready to use
+ * but their values are not proerly setup.
+ * The block may not be in a consistent state,
+ * for what it was designed to.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.makeState = function () {
+  this.makeData()
+  this.makeContents()
+  this.makeFields()
+  this.makeSlots()
+  this.makeConnections()
+  // now make the bounds between data and fields
+  this.makeBounds()
+}
+
+/**
+ * Make the data.
+ * Called only by `makeState`.
+ * Should be called only once.
+ * No data change, no rendering.
+ * For edython.
+ */
+eYo.Delegate.prototype.makeData = function () {
+  var data = Object.create(null) // just a hash
+  var dataModel = this.model.data
+  var byOrder = []
+  for (var k in dataModel) {
+    if (eYo.Do.hasOwnProperty(dataModel, k)) {
+      var model = dataModel[k]
+      if (model) {
+        // null models are used to neutralize the inherited data
+        var d = new eYo.Data(this, k, model)
+        if (d.model.main) {
+          goog.asserts.assert(!data.main, 'No 2 main data ' + k + '/' + this.block_.type)
+          data.main = d
+        }
+        data[k] = d
+        d.data = data // convenient shortcut
+        for (var i = 0, dd; (dd = byOrder[i]); ++i) {
+          if (dd.model.order > d.model.order) {
+            break
+          }
+        }
+        byOrder.splice(i, 0, d)
+      }
+    }
+  }
+  if ((d = this.headData = byOrder[0])) {
+    for (i = 1; (dd = byOrder[i]); ++i) {
+      d.next = dd
+      dd.previous = d
+      d = dd
+    }
+  }
+  this.data = data
+}
+
+/**
+ * Make the Fields.
+ * No rendering.
+ * For edython.
+ */
+eYo.Delegate.prototype.makeFields = function () {
+  eYo.Slot.makeFields(this, this.model.fields)
+}
+
+/**
+ * Make the contents
+ * For edython.
+ */
+eYo.Delegate.prototype.makeContents = function () {
+  eYo.Content.feed(this, this.model.contents || this.model.fields)
+}
+
+/**
+ * Make the slots
+ * For edython.
+ */
+eYo.Delegate.prototype.makeSlots = function () {
+  this.slots = Object.create(null)
+  this.headSlot = this.feedSlots(this.model.slots)
+}
+
+/**
+ * Create the block connections.
+ * Called from receiver's `makeState` method.
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.makeConnections = function () {
+  // configure the connections
+  var block = this.block_
+  var model = this.model
+  var D
+  if ((D = model.output) && Object.keys(D).length) {
+    block.setOutput(true) // check is setup in the consolidateConnections
+    var eyo = block.outputConnection.eyo
+    eyo.model = D
+  } else if ((D = model.statement) && Object.keys(D).length) {
+    if (D.previous && D.previous.check !== null) {
+      block.setPreviousStatement(true)
+      block.previousConnection.eyo.model = D.previous
+    }
+    if (D.next && D.next.check !== null) {
+      block.setNextStatement(true)
+    }
+    if (D.suite) {
+      this.inputSuite = block.appendStatementInput('suite')
+      this.inputSuite.connection.eyo.model = D
+    }
+  }
+}
+/**
+ * Feed the owner with slots built from the model.
+ * For edython.
+ * @param {!Blockly.Input} input
+ */
+eYo.Delegate.prototype.feedSlots = function (slotsModel) {
+  var slots = this.slots
+  var ordered = []
+  for (var k in slotsModel) {
+    var model = slotsModel[k]
+    if (!model) {
+      continue
+    }
+    var order = model.order
+    var insert = model.insert
+    var slot, next
+    if (insert) {
+      var model = eYo.Delegate.Manager.getModel(insert)
+      if (model) {
+        if ((slot = this.feedSlots(model.slots))) {
+          next = slot
+          do {
+            goog.asserts.assert(!goog.isDef(slots[next.key]),
+              'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
+            slots[next.key] = next
+          } while ((next = next.next))
+        } else {
+          continue
+        }
+      } else {
+        continue
+      }
+    } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
+      goog.asserts.assert(!goog.isDef(slots[k]),
+        eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
+      slots[k] = slot
+      slot.slots = slots
+    } else {
+      continue
+    }
+    slot.order = order
+    for (var i = 0; i < ordered.length; i++) {
+      // we must not find an aleady existing entry.
+      goog.asserts.assert(i !== slot.order,
+        eYo.Do.format('Same order slot {0}/{1}', i, this.block_.type))
+      if (ordered[i].model.order > slot.model.order) {
+        break
+      }
+    }
+    ordered.splice(i, 0, slot)
+  }
+  if ((slot = ordered[0])) {
+    i = 1
+    while ((next = ordered[i++])) {
+      slot.next = next
+      next.previous = slot
+      slot = next
+    }
+  }
+  return ordered[0]
+}
+
 /**
  * The python type of the owning block.
  */
@@ -1195,18 +1233,14 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * For subclassers eventually
  */
 eYo.Delegate.prototype.initBlock = function () {
-  // configure the connections
   try {
     this.change.level++ // will prevent any rendering
-    this.makeData()
-    this.makeContents()
-    this.makeFields()
-    this.makeSlots()
-    this.makeConnections()
-    // now make the bounds between data and fields
-    this.setupModel()
+    this.makeState()
     // initialize the data
     this.foreachData(function () {
+      this.init()
+    })
+    this.foreachSlot(function () {
       this.init()
     })
     // At this point the state value may not be consistent
@@ -1291,9 +1325,10 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Add a 'true' eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
+ * This is the only way to create a wrapped block.
  * @return {!Blockly.Input} The input object created.
  */
 eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {

@@ -159,7 +159,7 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * Called once at block creation time.
  * Should not be called directly
  * The block implementation is created according to a dictionary
- * input model available through `getModel().slots`.
+ * input model available through `model.slots`.
  * The structure of that dictionary is detailled in the treatment flow
  * below.
  * @param {!Blockly.Block} block to be initialized..
@@ -213,7 +213,8 @@ eYo.DelegateSvg.prototype.preInitSvg = function () {
 
 /**
  * Create and initialize the SVG representation of the block.
- * May be called more than once.
+ * Called by `initSvg`.
+ * May be called more than once along with `initSvg`.
  * No rendering.
  * @param {!Blockly.Block} block to be initialized.
  */
@@ -1264,6 +1265,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
   // when defined, `recorder` comes from
   // the parent's `renderDrawValueInput_` method.
   var io = this.renderDrawModelBegin_(recorder)
+  console.error('After `renderDrawModelBegin_` this.size.c =', this.size.c, io.block.type)
   if ((io.common.field.current = this.fromStartField)) {
     io.f = 0
     do {
@@ -1312,7 +1314,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
       this.renderDrawField_(io)
     } while ((io.common.field.current = io.common.field.current.eyo.nextField))
   }
+  console.error('Before `renderDrawModelEnd_` this.size.c =', this.size.c, io.block.type)
   this.renderDrawModelEnd_(io)
+  console.error('RENDERED BLOCK', block.type, block.width, this.size.c, io.block.type)
   return io.steps.join(' ')
 }
 
@@ -1374,6 +1378,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
   this.size.setFromWhere(io.cursor)
+  console.error('Within `renderDrawModelEnd_` this.size.c =', this.size.c)
   this.minWidth = block.width = Math.max(block.width, this.size.x)
   if (io.recorder) {
     // We ended a block. The right edge is generally a separator.
@@ -1717,6 +1722,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           t_eyo.downRendering = false
           var size = t_eyo.size
           if (size.w) {
+            console.error('ADVANCE THE CURSOR', size, io.block.type)
             io.cursor.advance(size.w, size.h - 1)
             // We just rendered a block
             // is is potentially the rightmost object inside its parent.
@@ -1795,6 +1801,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     }
   }
   this.renderDrawFields_(io, false)
+  console.error('Within `renderDrawValueInput_` io.cursor =', io.cursor)
   return true
 }
 

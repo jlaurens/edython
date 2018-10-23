@@ -21,6 +21,21 @@ goog.require('Blockly.Events')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
 
+// debug feature
+// Object.defineProperties(
+//   Blockly.Events,
+//   {
+//     disabled_: {
+//       get () {
+//         return this.disabled__ || 0
+//       },
+//       set (newValue) {
+//         this.disabled__ = newValue
+//       }
+//     }
+//   }
+// )
+
 /**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).

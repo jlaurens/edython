@@ -180,17 +180,21 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
       change = true
     }
   }
-  var target = c8n.targetBlock()
-  if (target) {
+  if (this.isIncog()) {
+    var target = c8n.targetBlock()
+
+  } else {
+    var target = c8n.targetBlock()
+    if (target) {
+      var c_eyo = target.eyo
+      c_eyo.setIncog(this.isIncog())
+    }
+  }
+  if (c8n.isConnected()) {
+    var target = c8n.targetBlock()
     if (target.eyo.setIncog(incog)) {
       change = true
     }
-  } else if (!incog && this.wrapped_) {
-    this.incog_ = incog
-    c8n.setHidden(incog)
-    // maybe there is another wrapped block to be initialized
-    this.completeWrapped()
-    change =  true
   }
   return change
 }
@@ -875,6 +879,7 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
             try {
               child.eyo.willConnect(childC8n, parentC8n)
               try {
+                child.initSvg() // too much
                 connect_.call(parentC8n, childC8n)
                 if (parentC8n.eyo.plugged_) {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
@@ -1290,3 +1295,27 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   }
 };
 
+
+/**
+ * Returns the block that this connection connects to.
+ * @return {Blockly.Block} The connected block or null if none is connected.
+ */
+eYo.Connection.prototype.targetBlock = function() {
+  var target = eYo.Connection.superClass_.targetBlock.call(this)
+  if (!target && this.eyo.wrapped_) {
+    var block = this.sourceBlock_
+    if ((target = eYo.DelegateSvg.newBlockReady(block.workspace, this.eyo.wrapped_))) {
+      var targetC8n = target.outputConnection
+      if (targetC8n && targetC8n.checkType_(this)) {
+        targetC8n.connect(this)
+        target = eYo.Connection.superClass_.targetBlock.call(this)
+        goog.asserts.assert(target, 'CONNECTION REFUSED')
+      } else {
+        console.error('No possible connection with wrapped type', this.eyo.wrapped_)
+      }
+    } else {
+      console.error('Bad wrapped type', this.eyo.wrapped_)
+    }
+  }
+  return target;
+};

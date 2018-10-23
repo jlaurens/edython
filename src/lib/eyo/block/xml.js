@@ -340,13 +340,13 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @private
  */
 eYo.DelegateSvg.newBlockComplete = (function () {
-  var saved = eYo.DelegateSvg.newBlockComplete
+  var newBlockComplete = eYo.DelegateSvg.newBlockComplete
   return function (workspace, model, id, render) {
     if (goog.isString(model) && model.startsWith('<')) {
       var B = eYo.Xml.stringToBlock(model, workspace)
     }
     if (!B) {
-      B = saved.call(this, workspace, model, id)
+      B = newBlockComplete.call(this, workspace, model, id)
     }
     return B
   }
@@ -422,7 +422,7 @@ Blockly.Xml.domToBlockHeadless_ = (function () {
 eYo.Xml.blockToDom = (function () {
   var blockToDom = function (block, optNoId, optNoNext) {
     var eyo = block.eyo
-    if (eyo.wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
+    if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
       // a wrapped block does not create a new element on its own
       // it only can populate an already existing xml node.
       // Except for list nodes.
@@ -1060,14 +1060,14 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
     if ((C8r = eYo.DelegateSvg.Manager.get(type))
-      && (model = C8r.eyo.getModel().data)
+      && (model = C8r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
       && (C8r = eYo.DelegateSvg.Manager.get(type))
-      && (model = C8r.eyo.getModel().data)
+      && (model = C8r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {

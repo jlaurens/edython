@@ -32,6 +32,9 @@ goog.forwardDeclare('eYo.Xml')
  * 3) start field
  * 4) either editable field, value input of wrapped block.
  * 5) end field
+ * 
+ * If the given model contains a `wrap` key, then a wrapped
+ * block is created.
  *
   // we assume that one input model only contains at most one of
   // - editable field
@@ -598,6 +601,7 @@ eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
 
 /**
  * Consolidate the state.
+ * Forwards to the connection delegate.
  * For edython.
  * @param {Boolean} deep whether to consolidate connected blocks.
  * @param {Boolean} force whether to force synchronization.
@@ -610,31 +614,31 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
   }
   var c8n = this.connection
   if (c8n) {
-    var eyo = c8n.eyo
-    eyo.setIncog(this.isIncog())
-    eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    var c_eyo = c8n.eyo
+    c_eyo.setIncog(this.isIncog())
+    c_eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
     var v
     if ((v = this.model.check)) {
-      var check = v.call(eyo, c8n.sourceBlock_.type)
+      var check = v.call(c_eyo, c8n.sourceBlock_.type)
       c8n.setCheck(check)
       if (!this.model.wrap) {
-        eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
+        c_eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
       }
     }
-    var target = c8n.targetBlock()
-    if (target) {
-      var eyo = target.eyo
-      eyo.setIncog(this.isIncog())
-      eyo.consolidate.apply(eyo, arguments)
-    }
   }
+}
+
+/**
+ * Init the slot.
+ * For edython.
+ */
+eYo.Slot.prototype.init = function () {
 }
 
 /**
  * Set the UI state.
  * Called only by `setIncog`.
  * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.synchronize = function () {
   var input = this.input

@@ -318,7 +318,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
         return
       }
       me.alreadyListened = true
-      var model = event.target && event.target.getModel()
+      var model = event.target && event.target.model
       if (goog.isFunction(model)) {
         model(event)
       } else {
@@ -609,7 +609,7 @@ eYo.DelegateSvg.prototype.handleMenuItemActionLast = function (block, mgr, event
  * the MenuItem selected within menu.
  */
 eYo.MenuManager.prototype.handleActionLast = function (block, event) {
-  var model = event.target.getModel()
+  var model = event.target.model
   if (goog.isFunction(model)) {
     setTimeout(function () {
       model(block, event)
@@ -690,7 +690,7 @@ eYo.MenuManager.prototype.populateVariable_ = function (block) {
  * the MenuItem selected within menu.
  */
 eYo.MenuManager.prototype.handleAction_movable_parent = function (block, event) {
-  var model = event.target.getModel()
+  var model = event.target.model
   if (goog.isFunction(model)) {
     setTimeout(function () {
       model(block, event)

@@ -87,7 +87,7 @@ eYo.DelegateSvg.prototype.addTooltip = function (key) {
       block.svgGroup_ && block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
     }
   })
-  var model = this.constructor.eyo.getModel()
+  var model = this.constructor.eyo.model
   var title = eYo.Tooltip.getTitle(key || model.tooltip || this.tooltipKey || block.type.substring(4))
   if (title) {
     eYo.Tooltip.add(block.svgGroup_, title, options)

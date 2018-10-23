@@ -95,6 +95,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = function () {
   }
   return function (deep, force) {
     this.createConsolidator()
+    console.error('this.consolidator:', this.consolidator)
     this.doConsolidate = doConsolidate
     return doConsolidate.apply(this, arguments)// this is not recursive
   }
