@@ -970,6 +970,9 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
         } finally {
           childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
           eYo.Connection.connectedParentC8n = undefined
+          if (parent.eyo.isReady) {
+            child.eyo.beReady()
+          }
         }
       }
     )
@@ -1214,9 +1217,10 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
   var onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
   return function () {
     onCheckChanged_.call(this)
-    var block = this.targetBlock()
-    if (block) {
-      block.eyo.consolidate(false, true)
+    this.sourceBlock_.eyo.incrementChangeCount()
+    var target = this.targetBlock()
+    if (target) {
+      target.eyo.incrementChangeCount() // there was once a `consolidate(false, true)` here.
     }
   }
 } ()

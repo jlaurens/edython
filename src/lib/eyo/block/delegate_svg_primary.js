@@ -771,8 +771,8 @@ for (var _ = 0, k;(k = [
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-eYo.DelegateSvg.Expr.primary.prototype.initBlock = function () {
-  eYo.DelegateSvg.Expr.primary.superClass_.initBlock.call(this)
+eYo.DelegateSvg.Expr.primary.prototype.init = function () {
+  eYo.DelegateSvg.Expr.primary.superClass_.init.call(this)
   this.profile_ = undefined
 }
 
@@ -1233,8 +1233,8 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-eYo.DelegateSvg.Stmt.base_call_stmt.prototype.initBlock = function () {
-  eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.initBlock.call(this)
+eYo.DelegateSvg.Stmt.base_call_stmt.prototype.init = function () {
+  eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.init.call(this)
   this.profile_ = undefined
 }
 

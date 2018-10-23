@@ -58,6 +58,7 @@ eYo.Data = function (owner, key, model) {
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = (xml && xml.attribute) || key
   }
+  this.reentrant = {}
   if (!model.setup_) {
     model.setup_ = true
     if (goog.isDefAndNotNull(xml)) {
@@ -190,7 +191,11 @@ eYo.Data.prototype.init = function (newValue) {
     return
   }
   var init = this.model.init
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_init', this.model.init)
+  var f = eYo.Decorate.reentrant_method.call(
+    this,
+    'model_init',
+    this.model.init
+  )
   try {
     if (f) {
       this.internalSet(f.apply(this, arguments))
@@ -216,10 +221,15 @@ eYo.Data.prototype.init = function (newValue) {
 /**
  * Init the value of the property depending on the type.
  * This is usefull for variants and options.
- * @param {Object} newValue
+ * The model is asked for a method.
+ * @param {Object} type
  */
 eYo.Data.prototype.setWithType = function (type) {
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_fromType', this.model.fromType)
+  var f = eYo.Decorate.reentrant_method.call(
+    this,
+    'model_fromType',
+    this.model.fromType
+  )
   f && f.apply(this, arguments)
 }
 

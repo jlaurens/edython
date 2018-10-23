@@ -34,6 +34,7 @@ goog.require('eYo.DelegateSvg')
  */
 eYo.Consolidator = function (d) {
   this.data = {}
+  this.reentrant = {}
   var D = this.constructor.eyo && this.constructor.eyo.data_
   if (D) {
     goog.mixin(this.data, D)
@@ -611,12 +612,14 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (block, force) {
+  // do not consolidate while changing
   if (block.eyo.change.level) {
     return
   }
   var io = this.getIO(block)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
+    console.error('EXPECTED CONSOLIDATION', block.type)
     if (this.consolidate_first_connected(io)) {
       while (this.walk_to_next_connected(io, true) &&
         this.consolidate_connected(io)) {}

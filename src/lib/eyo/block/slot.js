@@ -54,6 +54,7 @@ eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(model.order, 'Missing slot model order')
   this.owner = owner
   this.key = key
+  this.reentrant = {}
   var setupModel = function(model) {
     if (!model.setup_) {
       model.setup_ = true

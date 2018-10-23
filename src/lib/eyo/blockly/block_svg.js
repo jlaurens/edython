@@ -41,16 +41,6 @@ eYo.BlockSvg = function (workspace, prototypeName, optId) {
 goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
 
 /**
- * Initialize the block.
- * Let the delegate do the job.
- * No rendering of that block is done during that process,
- * linked blocks may render though.
- */
-eYo.BlockSvg.prototype.init = function () {
-  this.eyo.initBlock()
-}
-
-/**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
  * Called by the `beReady` method.

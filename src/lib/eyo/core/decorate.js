@@ -20,19 +20,20 @@ goog.provide('eYo.Decorate')
  * @return An object which `return` property is the value returned by f when called.
  */
 eYo.Decorate.reentrant_method = function(key, f) {
-  var k = key + '_reentrant_lock'
-  return (!this || !this[k]) && goog.isFunction(f) && function() {
-    if (this[k]) {
-      return {}
-    }
-    this[k] = true
-    try {
-      return {ans: f.apply(this, arguments)}
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this[k]
-    }
-  }
+  return (!this || !this.reentrant || !this.reentrant[key])
+    && goog.isFunction(f)
+      && function() {
+        if (this.reentrant[key]) {
+          return {}
+        }
+        this.reentrant[key] = true
+        try {
+          return {ans: f.apply(this, arguments)}
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          this.reentrant[key] = false
+        }
+      }
 }

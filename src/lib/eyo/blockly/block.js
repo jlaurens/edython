@@ -35,6 +35,16 @@ eYo.Block = function (workspace, prototypeName, optId) {
 goog.inherits(eYo.Block, Blockly.Block)
 
 /**
+ * Initialize the block.
+ * Let the delegate do the job.
+ * No rendering of that block is done during that process,
+ * linked blocks may render though.
+ */
+eYo.Block.prototype.init = function () {
+  this.eyo.init()
+}
+
+/**
  * Dispose the delegate too.
  * @param {number|string} colour HSV hue value, or #RRGGBB string.
  */
@@ -50,7 +60,7 @@ eYo.Block.prototype.dispose = function (healStack) {
     }
   }
   if (this.eyo) {
-    this.eyo.deinitBlock(this)
+    this.eyo.deinit(this)
   }
   eYo.Block.superClass_.dispose.call(this, healStack)
 }

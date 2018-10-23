@@ -54,8 +54,18 @@ eYo.Delegate = function (block) {
     // Such level aware actions are not performed when B and C
     // have changed because the level is positive (respectivelly 1 and 2),// a contrario they are performed when the A has changed because
     // the level is 0.
-    level: 0
+    level: 0,
+    // Some operations are performed only when there is a change
+    // In order to decide whether to run or do nothing,
+    // we have to store the last change count when the operation was
+    // last performed. See `onChangeCount` decorator.
+    save: {},
+    // When these operations return values, they are cached below
+    // until they are computed once again.
+    cache: {}
   }
+  // to manage reentrency
+  this.reentrant = {}
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -165,23 +175,22 @@ eYo.Delegate.prototype.changeWrap = function () {
  * the `change.count` is recorded such that `do_it` won't be executed
  * until the next `change.count` increment.
  * @param {!String} key, 
- * @param {!Function} do_it
+ * @param {!Function} do_it  must return something.
  * @return {!Function}
  */
 eYo.Decorate.onChangeCount = function (key, do_it) {
   goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
-  var saved = key + '_changeCount_saved'
-  var cached = key + '_cached'
   return function() {
-    if (this[saved] === this.change.count) {
-      return this[cached]
+    var c = this.change
+    if (c.save[key] === c.count) {
+      return c.cache[key]
     }
     var did_it = do_it.apply(this, arguments)
     if (did_it) {
-      this[saved] = this.change.count
-      this[cached] = did_it.ans  
+      c.save[key] = c.count
+      c.cache[key] = did_it.ans  
     }
-    return this[cached]
+    return c.cache[key]
   }
 }
 
@@ -814,7 +823,7 @@ eYo.Delegate.prototype.consolidateData = function () {
  * Set the data values from the type.
  * One block implementation may correspond to different types,
  * For example, there is one implementation for all the primaries.
- * @param {!Blockly.Block} block to be initialized..
+ * @param {!Blockly.Block} block to be initialized.
  * @param {!String} type
  * @return {boolean} whether the model was really used.
  */
@@ -1012,8 +1021,7 @@ eYo.Delegate.prototype.makeConnections = function () {
   var D
   if ((D = model.output) && Object.keys(D).length) {
     block.setOutput(true) // check is setup in the consolidateConnections
-    var eyo = block.outputConnection.eyo
-    eyo.model = D
+    block.outputConnection.eyo.model = D
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.previous && D.previous.check !== null) {
       block.setPreviousStatement(true)
@@ -1021,6 +1029,7 @@ eYo.Delegate.prototype.makeConnections = function () {
     }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true)
+      block.nextConnection.eyo.model = D.next
     }
     if (D.suite) {
       this.inputSuite = block.appendStatementInput('suite')
@@ -1028,6 +1037,7 @@ eYo.Delegate.prototype.makeConnections = function () {
     }
   }
 }
+
 /**
  * Feed the owner with slots built from the model.
  * For edython.
@@ -1232,7 +1242,7 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-eYo.Delegate.prototype.initBlock = function () {
+eYo.Delegate.prototype.init = function () {
   try {
     this.change.level++ // will prevent any rendering
     this.makeState()
@@ -1259,7 +1269,7 @@ eYo.Delegate.prototype.initBlock = function () {
 * @param {!Blockly.Block} block to be deinitialized..
 * @constructor
 */
-eYo.Delegate.prototype.deinitBlock = function (block) {
+eYo.Delegate.prototype.deinit = function (block) {
 }
 
 /**
