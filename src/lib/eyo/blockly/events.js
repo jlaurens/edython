@@ -253,3 +253,13 @@ eYo.Events.groupWrap = function (self, try_f, finally_f) {
     eYo.Events.setGroup(false)
   }
 }
+
+/**
+ * Convenient shortcut.
+ * @param {!Blockly.Block} block  The newly created block.
+ */
+eYo.Events.fireBlockCreate = function (block) {
+  Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+}
+
+    
