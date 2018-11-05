@@ -765,9 +765,10 @@ eYo.Slot.prototype.getTag = function () {
  * No consistency test is made however.
  * For edython.
  * @param {Element} element a dom element in which to save the input
+ * @param {eYo.Xml.Recover?} recover the recover helper.
  * @return the added child, if any
  */
-eYo.Slot.prototype.load = function (element) {
+eYo.Slot.prototype.load = function (element, recover) {
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -784,7 +785,7 @@ eYo.Slot.prototype.load = function (element) {
   var target = this.targetBlock()
   if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
-    out = eYo.Xml.fromDom(target, element)
+    out = eYo.Xml.fromDom(target, element, recover)
   } else {
   // find the xml child with the proper slot attribute
     var children = Array.prototype.slice.call(element.childNodes)
@@ -814,8 +815,8 @@ eYo.Slot.prototype.load = function (element) {
                     if (input.connection) {
                       var grandTarget = input.connection.targetBlock()
                       if ((grandTarget)) {
-                        eYo.Xml.fromDom(grandTarget, grandChild)
-                      } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
+                        eYo.Xml.fromDom(grandTarget, grandChild, recover)
+                      } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace, recover))) {
                         var targetC8n = grandTarget.outputConnection
                         if (targetC8n && targetC8n.checkType_(input.connection)) {
                           targetC8n.connect(input.connection)
@@ -830,9 +831,9 @@ eYo.Slot.prototype.load = function (element) {
               }
               out = true
             } else {
-              out = eYo.Xml.fromDom(target, child)
+              out = eYo.Xml.fromDom(target, child, recover)
             }
-          } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
+          } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace(), recover))) {
             // we could create a block from that child element
             // then connect it
             var c8n = this.input && this.input.connection
