@@ -759,40 +759,47 @@ eYo.Xml.stringToBlock = function (string, workspace) {
 
 goog.provide('eYo.Xml.Recover')
 
-var f = (function () {
-  var recovered = []
-  /**
-   * Execute the given action for each previously recovered block.
-   * @param {?Function} f 
-   */
-  eYo.Xml.Recover.forEach = function (f) {
-    if (goog.isFunction(f)) {
-      recovered.forEach(f, this)
-    }
+/**
+ * Recover nodes from a possibly corrupted xml data.
+ */
+eYo.Xml.Recover = function () {
+  this.recovered = []
+}
+
+/**
+ * Execute the given action for each previously recovered block.
+ * @param {?Function} f 
+ */
+eYo.Xml.Recover.prototype.forEach = function (f) {
+  if (goog.isFunction(f)) {
+    this.recovered.forEach(f, this)
   }
-  /**
-   * Execute the given action for each recovered block and removes
-   * it from the recovered list.
-   * @param {?Function} f 
-   */
-  eYo.Xml.Recover.forEachAndFlush = function (f) {
-    eYo.Xml.Recover.forEach(f)
-    eYo.Xml.Recover.flush()
-  }
-  /**
-   * Append a block to the list of recovered blocks
-   * @param {?Blockly.Block} block 
-   */
-  eYo.Xml.Recover.push = function (block) {
-    block && recovered.push(block)
-  }
-  /**
-   * Empties the list of recovered blocks.
-   */
-  eYo.Xml.Recover.flush = function () {
-    recovered.length = 0
-  }
-}) ()
+}
+
+/**
+ * Execute the given action for each recovered block and removes
+ * it from the recovered list.
+ * @param {?Function} f 
+ */
+eYo.Xml.Recover.prototype.forEachAndFlush = function (f) {
+  this.forEach(f)
+  this.flush()
+}
+
+/**
+ * Append a block to the list of recovered blocks
+ * @param {?Blockly.Block} block 
+ */
+eYo.Xml.Recover.prototype.push = function (block) {
+  block && this.recovered.push(block)
+}
+
+/**
+ * Empties the list of recovered blocks.
+ */
+eYo.Xml.Recover.prototype.flush = function () {
+  this.recovered.length = 0
+}
 
 /**
  * The `domToBlock` could not return a block.
@@ -804,11 +811,11 @@ var f = (function () {
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {!Blockly.Block} The root block created.
  */
-eYo.Xml.Recover.domToBlock = function (dom, workspace) {
+eYo.Xml.Recover.prototype.domToBlock = function (dom, workspace) {
   console.error('BAD DOM', dom)
   // First create a block that we will return to replace the previous one
   // This is a block of the same kind (expression/statement)
-  // but wit a generic type such that any connection will fit.
+  // but with a generic type such that any connection will fit.
   var tag = dom.tagName
   var ans
   if (tag === eYo.Xml.EXPR) {
@@ -820,12 +827,13 @@ eYo.Xml.Recover.domToBlock = function (dom, workspace) {
   if (ans) {
     ans.eyo.errorRecover = true
   }
+  var me = this // catch this
   // Now recover the children
   eYo.Do.forEachElementChild(
     dom,
     function (child) {
-      var b = eYo.Xml.domToBlock(workspace, child)
-      eYo.Xml.Recover.push(b)
+      var b = eYo.Xml.domToBlock(child, workspace)
+      me.push(b)
     }
   )
   return ans
@@ -916,7 +924,8 @@ eYo.Xml.domToBlock = (function () {
       return block
     }
     // error recovery
-    return eYo.Xml.Recover.domToBlock(dom, workspace)
+    var recover = new eYo.Xml.Recover()
+    return recover.domToBlock(dom, workspace)
   }
   return function (dom, workspace) {
     eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()

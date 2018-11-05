@@ -54,6 +54,7 @@
 </template>
 
 <script>
+  import Builtin from './Info/Builtin.vue'
   import InfoModifier from './Info/Modifier.vue'
   import InfoPrimary from './Info/Primary.vue'
   import InfoLiteral from './Info/Literal.vue'
@@ -66,7 +67,6 @@
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
   import InfoValue from './Info/Value.vue'
-  import Builtin from './Info/Builtin.vue'
   import InfoDefault from './Info/Default.vue'
   import InfoNone from './Info/None.vue'
 
@@ -78,6 +78,7 @@
       }
     },
     components: {
+      Builtin,
       InfoModifier,
       InfoPrimary,
       InfoLiteral,
@@ -90,7 +91,6 @@
       InfoAssignment,
       InfoAugmentedAssignment,
       InfoValue,
-      Builtin,
       InfoDefault,
       InfoNone
     },
