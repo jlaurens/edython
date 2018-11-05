@@ -442,7 +442,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     eYo.Events.groupWrap(this,
       function () {
         if (Blockly.Events.isEnabled()) {
-          Blockly.Events.fire(new Blockly.Events.BlockCreate(parentBlock))
+          eYo.Events.fireBlockCreate(parentBlock)
         }
         var targetC8n = parentInputC8n.targetConnection
         if (targetC8n/* && targetC8n.isConnected() */) {
