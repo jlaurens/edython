@@ -24,6 +24,8 @@ goog.require('eYo.Msg')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
+eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
+
 // /**
 //  * Class for a DelegateSvg, import turtle block.
 //  * A unique block for each module to ease forthcoming management.
@@ -95,7 +97,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__setup_stmt', {
   fields: {
     label: 'edython.turtleSetup()'
   }
-})
+}, true)
 
 var F_expr = function (name, title) {
   var key = 'turtle__'+name

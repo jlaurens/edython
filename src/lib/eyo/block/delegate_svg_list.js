@@ -308,7 +308,7 @@ eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
     prefix: '{',
     suffix: '}'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
@@ -341,7 +341,7 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
     prefix: '{',
     suffix: '}'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, slice_list block.

@@ -47,7 +47,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
       wrap: eYo.T3.Expr.comp_iter_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -72,7 +72,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
       hole_value: 'name'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, comp_if block.
@@ -90,7 +90,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
       hole_value: 'yorn'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, comp_iter_list block.
@@ -146,7 +146,7 @@ eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
       wrap: eYo.T3.Expr.comp_iter_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, key_datum block.
@@ -169,7 +169,7 @@ eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
       hole_value: 'value'
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Comprehension.T3s = [
   eYo.T3.Expr.comprehension,

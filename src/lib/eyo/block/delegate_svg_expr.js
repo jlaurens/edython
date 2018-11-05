@@ -539,7 +539,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       hole_value: 'stride'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, conditional_expression block.
@@ -570,7 +570,7 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
       hole_value: 'alternate'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, not_test.
@@ -588,7 +588,7 @@ eYo.DelegateSvg.Expr.makeSubclass('not_test', {
       hole_value: 'name'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, builtin object.
@@ -606,7 +606,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
       css: 'reserved'
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -652,7 +652,7 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
   output: {
     check: null // means that every output type will fit, once we have a python parser...
   }
-})
+}, true)
 console.warn('value and subtype')
 
 eYo.DelegateSvg.Expr.T3s = [

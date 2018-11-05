@@ -25,7 +25,7 @@ eYo.DelegateSvg.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, except_part block.
@@ -102,7 +102,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       }
     }
   }
-})
+}, true)
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -167,7 +167,7 @@ eYo.DelegateSvg.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, raise_stmt.
@@ -227,7 +227,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       }
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -311,7 +311,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       }
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.

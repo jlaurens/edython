@@ -41,8 +41,8 @@
     <div v-else-if="isSelected($$.eYo.T3.Expr.any)">
       <info-any-expression :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-any-expression>
     </div>
-    <div v-else-if="isSelected($$.eYo.T3.Stmt.any_stmt)">
-      <info-any-statement :eyo="eyo" :slotholder="slotholder"></info-any-statement>
+    <div v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)">
+      <info-expression-statement :eyo="eyo" :slotholder="slotholder"></info-expression-statement>
     </div>
     <div v-else-if="eyo">
       <info-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-default>
@@ -63,7 +63,7 @@
   import InfoUnary from './Info/Unary.vue'
   import InfoBinary from './Info/Binary.vue'
   import InfoAnyExpression from './Info/AnyExpression.vue'
-  import InfoAnyStatement from './Info/AnyStatement.vue'
+  import InfoExpressionStatement from './Info/ExpressionStatement.vue'
   import InfoAssignment from './Info/Assignment.vue'
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
   import InfoValue from './Info/Value.vue'

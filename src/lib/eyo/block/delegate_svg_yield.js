@@ -74,7 +74,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       }
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -162,7 +162,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
   link: eYo.T3.Expr.yield_expression
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.

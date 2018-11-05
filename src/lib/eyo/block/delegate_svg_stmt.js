@@ -418,7 +418,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
  */
 eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
   link: eYo.T3.Expr.longliteral
-})
+}, true)
 
 /**
  * docstring blocks are white, to be confirmed.
@@ -445,7 +445,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
       wrap: eYo.T3.Expr.target_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, return_stmt.
@@ -461,7 +461,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
       wrap: eYo.T3.Expr.optional_expression_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, expression_stmt.
@@ -546,7 +546,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       check: eYo.T3.Expr.Check.expression
     }
   }
-})
+}, true)
 
 /**
  * comment blocks are white.

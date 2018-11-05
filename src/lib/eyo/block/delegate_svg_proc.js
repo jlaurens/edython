@@ -142,7 +142,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       required: true
     }
   }
-})
+}, true)
 
 /**
  * decorator blocks are white when followed by a statement.
@@ -263,7 +263,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       check: eYo.T3.Expr.Check.expression
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -360,7 +360,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       }
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.

@@ -97,7 +97,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
   output: {
     check: [eYo.T3.Expr.builtin__print_expr, eYo.T3.Expr.call_expr]
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, print_argument_list_comprehensive block.
@@ -209,7 +209,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.populateContextMenuFirst_ = f
 eYo.DelegateSvg.Stmt.makeSubclass('builtin__print_stmt', {
   inherits: eYo.T3.Expr.builtin__print_expr,
   output: null,
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.

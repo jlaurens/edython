@@ -447,10 +447,14 @@ eYo.Delegate.Manager = (function () {
         }
       }
     }
-    return function (key, model, parent, owner = undefined) {
+    return function (key, model, parent, owner = undefined, register = false) {
       goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
+      }
+      if (owner === true) {
+        register = true
+        owner = undefined
       }
       owner = owner ||
       (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
@@ -564,8 +568,11 @@ eYo.Delegate.Manager = (function () {
           }      
         }
       }
-      delegateC9r.makeSubclass = function (key, model, owner) {
-        return me.makeSubclass(key, model, delegateC9r, owner)
+      delegateC9r.makeSubclass = function (key, model, owner, register) {
+        return me.makeSubclass(key, model, delegateC9r, owner, register)
+      }
+      if (register) {
+        me.register(key)
       }
       return delegateC9r
     }

@@ -740,7 +740,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       return eyo.getOutCheck(profile)
     }
   }
-})
+}, true)
 
 for (var _ = 0, k;(k = [
   'call_expr',
@@ -1207,7 +1207,7 @@ eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
       }
     }
   }
-}, eYo.DelegateSvg.Stmt)
+}, eYo.DelegateSvg.Stmt, true)
 
 /**
  * Class for a DelegateSvg, call statement block.
@@ -1216,7 +1216,7 @@ eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('base_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.DelegateSvg.Stmt)
+}, eYo.DelegateSvg.Stmt, true)
 
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getType = eYo.DelegateSvg.Expr.primary.prototype.getType
 
@@ -1259,7 +1259,7 @@ Object.defineProperty(
  * For edython.
  */
 eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('call_stmt', {
-})
+}, true)
 
 eYo.DelegateSvg.Expr.primary.T3s = [
   eYo.T3.Expr.primary,

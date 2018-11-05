@@ -23,6 +23,8 @@ goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
+eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
+
 /**
  * Class for a DelegateSvg, random range block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
@@ -57,7 +59,7 @@ eYo.DelegateSvg.Expr.primary.makeSubclass('random__randrange', {
   output: {
     check: [eYo.T3.Expr.random__randrange, eYo.T3.Expr.call_expr]
   }
-})
+}, true)
 
 var F = function (name, title) {
   var key = 'random__'+name

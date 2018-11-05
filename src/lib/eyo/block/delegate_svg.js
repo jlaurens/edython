@@ -97,6 +97,11 @@ eYo.DelegateSvg.Manager.register = function (key) {
   }
   eYo.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
+  if (available === eYo.T3.Stmt.Available) {
+    console.error('available.push', prototypeName)
+  } else {
+    console.warn('available.push', prototypeName)
+  }
 }
 
 /**

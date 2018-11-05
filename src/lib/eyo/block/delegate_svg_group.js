@@ -299,7 +299,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, elif_part block.
@@ -317,7 +317,7 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, else_part block.
@@ -359,7 +359,8 @@ eYo.DelegateSvg.Group.makeSubclass('else_part', {
         ]
       }
     }
-  }})
+  }
+}, true)
 
 eYo.DelegateSvg.Stmt.last_else_part = eYo.DelegateSvg.Stmt.try_else_part = eYo.DelegateSvg.Stmt.else_part
 eYo.DelegateSvg.Manager.register('try_else_part')
@@ -424,7 +425,7 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -495,7 +496,7 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
       hole_value: 'set'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, with_part block.
@@ -515,7 +516,7 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
       wrap: eYo.T3.Expr.with_item_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, expression_as block.
@@ -538,7 +539,7 @@ eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
       hole_value: 'target'
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Group.T3s = [
   eYo.T3.Stmt.if_part,

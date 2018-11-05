@@ -431,7 +431,7 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
     }
   }
-})
+}, true)
 
 /**
  * The output check may change depending on the content.

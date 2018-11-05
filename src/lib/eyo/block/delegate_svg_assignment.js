@@ -39,7 +39,7 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
       hole_value: 'target'
     }
   }
-})
+}, true)
 
 /**
  * List consolidator for target list. Used is assignment.
@@ -241,7 +241,7 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
       value: ')'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
@@ -258,7 +258,7 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
       value: ']'
     }
   }
-})
+}, true)
 
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
@@ -274,7 +274,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
     empty: false,
     postsep: '='
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -358,7 +358,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       wrap: eYo.T3.Expr.assigned_list
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -520,7 +520,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       wrap: eYo.T3.Expr.augassigned_list
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.

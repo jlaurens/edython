@@ -185,9 +185,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       }
     }
   }
-})
-
-console.log('When read from dom, if the read data is not valid, what to do?')
+}, true)
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
@@ -261,7 +259,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Import.T3s = [
   eYo.T3.Expr.identifier,
