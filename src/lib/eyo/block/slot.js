@@ -51,6 +51,9 @@ eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing slot owner')
   goog.asserts.assert(key, 'Missing slot key')
   goog.asserts.assert(model, 'Missing slot model')
+  if (!model.order) {
+    console.error('Missing slot model order')
+  }
   goog.asserts.assert(model.order, 'Missing slot model order')
   this.owner = owner
   this.key = key

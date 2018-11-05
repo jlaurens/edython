@@ -33,6 +33,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
 }, eYo.DelegateSvg)
 
 /**
+ * Whether the block has a suite statement.
+ * @private
+ */
+eYo.DelegateSvg.Group.prototype.hasSuiteStatement_ = function () {
+  return true
+}
+
+/**
  * Block path.
  * @param {!Blockly.Block} block
  * @private
@@ -40,34 +48,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
 eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
   return eYo.Shape.definitionWithBlock(this)
-  
-  var block = this.block_
-  var w = block.width
-  var line = eYo.Font.lineHeight
-  var h = block.isCollapsed() ? 2 * line : block.height
-  var steps = ['m ' + w + ',0 v ' + line]
-  h -= line
-  var r = eYo.Style.Path.r
-  var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var t = eYo.Font.tabWidth
-  w -= t + r
-  steps.push('h ' + (-w + eYo.Unit.x / 2))
-  steps.push(a + (-r) + ',' + r)
-  h -= 2 * r// Assuming 2*r<line height...
-  steps.push(' v ' + h)
-  steps.push(a + r + ',' + r)
-  a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (this.hasNextStatement_()) {
-    steps.push('h ' + (-t + eYo.Unit.x / 2 - eYo.Padding.l - r))
-  } else {
-    steps.push('h ' + (-t + eYo.Unit.x / 2 - eYo.Padding.l) + a + (-r) + ',' + (-r))
-  }
-  if (this.hasPreviousStatement_()) {
-    steps.push('V 0 z')
-  } else {
-    steps.push('V ' + r + a + r + ',' + (-r) + ' z')
-  }
-  return steps.join(' ')
 } /* eslint-enable indent */
 
 /**
@@ -176,10 +156,9 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
 
 /**
  * Render the suite block, if relevant.
- * @param {!Block} block
  * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
+eYo.DelegateSvg.Group.prototype.renderSuite_ = function () {
   if (!this.inputSuite) {
     return
   }
@@ -198,7 +177,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
         if (!target.rendered || !target.eyo.upRendering) {
           try {
             target.eyo.downRendering = true
-            target.eyo.render(false, recorder)
+            target.eyo.render(false)
           } catch (err) {
             console.error(err)
             throw err
@@ -208,7 +187,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (recorder) {
         }
       }
     }
-    block.height = eYo.Font.lineHeight * this.getStatementCount()
+    this.size.l = this.getStatementCount()
     return true
   }
 }

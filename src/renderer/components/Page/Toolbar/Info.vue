@@ -87,7 +87,7 @@
       InfoUnary,
       InfoBinary,
       InfoAnyExpression,
-      InfoAnyStatement,
+      InfoExpressionStatement,
       InfoAssignment,
       InfoAugmentedAssignment,
       InfoValue,

@@ -1300,6 +1300,14 @@ eYo.Delegate.prototype.hasNextStatement_ = function () {
 }
 
 /**
+ * Whether the block has a suite statement.
+ * @private
+ */
+eYo.Delegate.prototype.hasSuiteStatement_ = function () {
+  return false
+}
+
+/**
  * The default implementation does nothing.
  * @param {!Blockly.Block} block
  * @param {boolean} hidden True if connections are hidden.

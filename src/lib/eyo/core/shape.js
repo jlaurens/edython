@@ -410,7 +410,7 @@ var initWithGroupBlock = function(eyo) {
   var r = this.stmt_radius
   this.M(true, width - eYo.Unit.x / 2, 0)
   this.v(1)
-  this.H(true, eYo.Font.tabWidth + r)
+  this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
   this.quarter_circle(true, true)
   this.v(true, (block.isCollapsed ? eYo.Unit.y : eyo.size.height) - 2 * r)
   this.quarter_circle(false, true)
@@ -572,8 +572,6 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     }
   } else if (this.width > 1) {
     var dd = 2 * this.caret_extra
-    var h = eYo.Unit.y / 2
-    var r = this.expr_radius
     var p_h = this.caret_height
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)

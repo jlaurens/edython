@@ -177,7 +177,7 @@ eYo.Style.Path = {
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 1.5 // px
+  width: 0.75 // px
 }
 Object.defineProperty(
   eYo.Style.Path,

@@ -34,10 +34,10 @@ eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
  * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('eyo:')) {
-    return new eYo.BlockSvg(this, prototypeName, optId)
+  if (prototypeName && prototypeName.startsWith('eyo:')) {
+    return new eYo.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
   } else {
-    return new Blockly.BlockSvg(this, prototypeName, optId)
+    return new Blockly.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
   }
 }
 
@@ -53,14 +53,16 @@ goog.provide('eYo.Gesture')
  * @package
  * @suppress{accessControls}
  */
-eYo.Gesture.handleWsStart_saved = Blockly.Gesture.prototype.handleWsStart
-Blockly.Gesture.prototype.handleWsStart = function (e, ws) {
-  if (Blockly.WidgetDiv.DIV.childNodes.length) {
-    Blockly.WidgetDiv.hide()
-  } else {
-    eYo.Gesture.handleWsStart_saved.call(this, e, ws)
+Blockly.Gesture.prototype.handleWsStart = (function () {
+  var handleWsStart = Blockly.Gesture.prototype.handleWsStart
+  return function (e, ws) {
+    if (Blockly.WidgetDiv.DIV.childNodes.length) {
+      Blockly.WidgetDiv.hide()
+    } else {
+      handleWsStart.call(this, e, ws)
+    }
   }
-}
+}) ()
 
 Blockly.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
@@ -302,10 +304,11 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   if (this.currentGesture_) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
-  var c8n, targetC8n
+  var c8n, targetC8n, block
+  var recover = new eYo.Xml.Recover(this)
   if ((c8n = eYo.SelectedConnection)) {
     try {
-      var block = Blockly.Xml.domToBlock(xmlBlock, this)
+      block = Blockly.Xml.domToBlock(xmlBlock, this, recover)
       if (c8n.type === Blockly.INPUT_VALUE) {
         targetC8n = block.outputConnection
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -316,12 +319,17 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     } catch (e) {
       targetC8n = null
     }
-    if (targetC8n && c8n.checkType_(targetC8n)) {
-      eYo.Events.groupWrap(this,
-        function () {
-          if (Blockly.Events.isEnabled()) {
-            Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-          }
+    eYo.Events.groupWrap(this,
+      function () {
+        if (Blockly.Events.isEnabled()) {
+          eYo.Events.fireBlockCreate(block)
+          recover.forEachAndFlush(
+            function () {
+              eYo.Events.fireBlockCreate(this)
+            }
+          )
+        }
+        if (targetC8n && c8n.checkType_(targetC8n)) {
           if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
             // the pasted block must move before it is connected
             // otherwise the newly created block will attract the old one
@@ -361,12 +369,13 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           //   eYo.SelectedConnection = c8n
           // }
         }
-      )
-    }
+      }
+    )
+    return
   }
   Blockly.Events.disable(true)
   try {
-    block = Blockly.Xml.domToBlock(xmlBlock, this)
+    block = Blockly.Xml.domToBlock(xmlBlock, this, recover)
     // Move the duplicate to original position.
     var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
     var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
@@ -438,20 +447,13 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     Blockly.Events.enable()
   }
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-  }
+    eYo.Events.fireBlockCreate(block)
+    recover.forEachAndFlush(
+      function () {
+        eYo.Events.fireBlockCreate(this)
+      }
+    )
+}
   block.select()
 }
 
-/**
- * Handle a mouse-down on SVG drawing surface.
- * @param {!Event} e Mouse down event.
- * @private
- * @suppress {accessControls}
- */
-Blockly.WorkspaceSvg.prototype.onMouseDown_ = function (e) {
-  var gesture = this.getGesture(e)
-  if (gesture) {
-    gesture.handleWsStart(e, this)
-  }
-}

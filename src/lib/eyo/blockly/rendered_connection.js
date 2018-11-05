@@ -595,6 +595,13 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
   } else {
     // this is a statement connection
     var w = block.width - eYo.Unit.x / 2
+    if (block.eyo.inputSuite) {
+      if (block.eyo.inputSuite.connection === c8n) {
+        w -= eYo.Font.tabWidth
+      } else if (block.nextConnection === c8n) {
+        w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
+      }
+    }
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'

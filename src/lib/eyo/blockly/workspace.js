@@ -35,22 +35,25 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 // Dependency ordering?
 /**
  * Add the nodes from string to the workspace.
+ * UNUSED.
  * @param {!String} str
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
-  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
+eYo.WorkspaceDelegate.prototype.fromDom = function (dom, recover) {
+  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_, recover)
 }
 
 /**
  * Add the nodes from string to the workspace.
  * @param {!String} str
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromString = function (str) {
+eYo.WorkspaceDelegate.prototype.fromString = function (str, recover) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
-  return this.fromDom(dom)
+  return this.fromDom(dom, recover)
 }
 
 /**
@@ -80,13 +83,14 @@ eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
 }
 
 /**
- * Add the nodes from string to the workspace.
+ * Add the nodes from UTF8 string representation to the workspace. UNUSED.
  * @param {!Array} bytes
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
+eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes, recover) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
-  return str && this.fromString(str)
+  return str && this.fromString(str, recover)
 }
 
 /**
@@ -157,7 +161,7 @@ Blockly.Workspace.prototype.dispose = function () {
  * @return {!Blockly.Block} The created block.
  */
 eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('eyo:')) {
+  if (prototypeName && prototypeName.startsWith('eyo:')) {
     return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
   } else {
     return new Blockly.Block(/** Blockly.Workspace */ this, prototypeName, optId)

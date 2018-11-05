@@ -870,7 +870,8 @@ eYo.Data.prototype.load = function (element) {
  * When all the data and slots have been loaded.
  * For edython.
  */
-eYo.Data.prototype.setRequirdidLoadedFromModel = function () {
+eYo.Data.prototype.didLoad = function () {
+  var xml = this.model.xml
   if (xml && xml.didLoad) {
     xml.didLoad.call(this)
   }

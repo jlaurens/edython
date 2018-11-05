@@ -97,11 +97,6 @@ eYo.DelegateSvg.Manager.register = function (key) {
   }
   eYo.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
-  if (available === eYo.T3.Stmt.Available) {
-    console.error('available.push', prototypeName)
-  } else {
-    console.warn('available.push', prototypeName)
-  }
 }
 
 /**
@@ -495,10 +490,9 @@ eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
 
 /**
  * Render the suite block, if relevant.
- * @param {!Block} block
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.DelegateSvg.prototype.renderDrawSuite_ = function (recorder) {
+eYo.DelegateSvg.prototype.renderSuite_ = function () {
   return
 }
 
@@ -862,7 +856,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
       unlocker && unlocker.eyo.unlockChainTiles(unlocker)
       var root = block.getRootBlock()
       !recorder && root.eyo.alignRightEdges_(recorder)
-      this.renderDrawSuite_(recorder)
+      this.renderSuite_()
       this.updateAllPaths_()
     }
   }
