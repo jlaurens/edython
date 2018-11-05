@@ -26,7 +26,17 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
     operator: { // only one field with that key,
       main: true,
       init: '+',
-      synchronize: true,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var root = this.field.getSvgRoot()
+        if (root) {
+          if (['in', 'or', 'and'].indexOf(newValue) >= 0) {
+            goog.dom.classlist.add(root, 'eyo-code-reserved')
+          } else {
+            goog.dom.classlist.remove(root, 'eyo-code-reserved')
+          }
+        }
+      },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.m_expr) {
           this.set('*')
@@ -58,13 +68,13 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       synchronize: true
     },
     rhs: {
-      init: 1,
+      init: '',
       synchronize: true
     }
   },
   slots: {
     lhs: {
-      order: 1,
+      order: '',
       hole_value: 'name',
       fields: {
         bind: {

@@ -24,17 +24,9 @@ if __name__ != "main":
     print(path6)
     path7 = parent / 'eyo.html'
     print(path7)
-    path8 = parent / 'random.html'
-    print(path8)
-    path9 = parent / 'math.html'
-    print(path9)
-    path10 = parent / 'turtle.html'
-    print(path10)
-    path11 = parent / 'cmath.html'
-    print(path11)
 
 # do not change the order of the path arguments
-    types = T3.Types(path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11)
+    types = T3.Types(path1, path2, path3, path4, path5, path6, path7)
     t = types.get_type("call")
     print(t.name, t.alias.name if t.alias else None)
     print(types.get_T3_data(debug = True))

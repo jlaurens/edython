@@ -605,6 +605,9 @@ eYo.DelegateSvg.prototype.render = (function () {
     }
   )
   return function (optBubble, recorder) {
+    if (!this.isReady) {
+      return
+    }
     var block = this.block_
     if (!this.isEditing && (this.isDragging_ || this.change.level || !block.workspace)) {
       return

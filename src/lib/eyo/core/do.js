@@ -830,12 +830,12 @@ eYo.Do.logTiles = function (src) {
   }
 }
 
-eYo.Do.forEachChild = function (element, handler, thisObject) {
+eYo.Do.forEachChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
-  children.forEach(handler, thisObject)
+  children.forEach(handler, this)
 }
 
-eYo.Do.forEachElementChild = function (element, handler, thisObject) {
+eYo.Do.forEachElementChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(function (child) {
     if (child.nodeType === Node.ELEMENT_NODE) {
