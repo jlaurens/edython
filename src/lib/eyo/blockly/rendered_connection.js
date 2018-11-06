@@ -76,13 +76,39 @@ Object.defineProperties(
     },
     b_eyo: {
       get () {
-        var block = this.sourceBlock_
-        return block && block.eyo
+        return this.sourceBlock_.eyo
       }
     },
     bindField: {
       get () {
         return this.slot && this.slot.bindField
+      }
+    },
+    /**
+     * Is it a next connection.
+     * @return {boolean} True if the connection is the block's next one.
+     */
+    isNext: {
+      get () {
+        return this.connection === this.connection.sourceBlock_.nextConnection
+      }
+    },
+    /**
+     * Is it a previous connection.
+     * @return {boolean} True if the connection is the block's previous one.
+     */
+    isPrevious: {
+      get () {
+        return this.connection === this.connection.sourceBlock_.previousConnection
+      }
+    },
+    /**
+     * Is it a previous connection.
+     * @return {boolean} True if the connection is the block's previous one.
+     */
+    isSuite: {
+      get () {
+        return this.connection === this.b_eyo.suiteConnection
       }
     }
   }
@@ -316,24 +342,6 @@ eYo.ConnectionDelegate.prototype.getCheck = function () {
 }
 
 /**
- * Is it a next connection.
- * @return {boolean} True if the connection is the block's next one.
- * @private
- */
-eYo.ConnectionDelegate.prototype.isNext = function () {
-  return this.connection === this.connection.getSourceBlock().nextConnection
-}
-
-/**
- * Is it a previous connection.
- * @return {boolean} True if the connection is the block's previous one.
- * @private
- */
-eYo.ConnectionDelegate.prototype.isPrevious = function () {
-  return this.connection === this.connection.getSourceBlock().previousConnection
-}
-
-/**
  * Get the connection of the same kind on the block above.
  * If the connection is named, returns the connection,
  * whatever its source block status may be.
@@ -387,11 +395,11 @@ eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
   if (F(block)) {
     return c8n
   }
-  if (this.isPrevious()) {
+  if (this.isPrevious) {
     var otherConnection = function (B) {
       return B.nextConnection
     }
-  } else if (this.isNext()) {
+  } else if (this.isNext) {
     otherConnection = function (B) {
       return B.previousConnection
     }
@@ -419,11 +427,11 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
   if (!block.eyo.isWhite()) {
     return c8n
   }
-  if (c8n.eyo.isPrevious()) {
+  if (c8n.eyo.isPrevious) {
     var F = function(B) {
       return B.nextConnection
     }
-  } else if (c8n.eyo.isNext()) {
+  } else if (c8n.eyo.isNext) {
     F = function (B) {
       return B.previousConnection
     }
@@ -543,16 +551,16 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     var w = block.width - eYo.Unit.x / 2
-    if (c8n === block.previousConnection) {
+    if (this.isPrevious) {
       steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
-    } else if (c8n === block.nextConnection) {
-      if (block.height > eYo.Font.lineHeight) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+    } else if (this.isNext) {
+      if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
       } else {
-        steps = 'm ' + w + ',' + (block.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = 'm ' + w + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
       }
-    } else {
-      steps = 'm ' + w + ',' + (-r + eYo.Font.lineHeight) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w) + a + (-2 * r) + ' z'
+    } else /* if (this.isSuite) */ {
+      steps = 'm ' + w + ',' + (-r + eYo.Unit.y) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w + eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     }
   }
   return steps

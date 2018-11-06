@@ -68,7 +68,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   this.mouseDownWrapper_ =
     Blockly.bindEventWithChecks_(this.svgPathPlay_, 'mousedown', this,
       function (event) {
-        if (!block.nextConnection.isConnected()) {
+        if (!this.nextConnection.isConnected()) {
           var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
           dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
           dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
@@ -76,7 +76,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
           goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, function (e) {})
           dialogModal.setVisible(true)
         }
-        console.log('Start executing ' + block.id)
+        console.log('Start executing ' + this.block_.id)
         this.runScript && this.runScript()
       })
   goog.dom.insertSiblingAfter(this.svgPathPlay_, this.svgPathContour_)

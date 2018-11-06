@@ -512,7 +512,7 @@ eYo.KeyHandler = (function () {
         var F = function (f) {
           event.preventDefault()
           event.stopPropagation()
-          f.call(B.eyo, B)
+          f.call(B.eyo)
           if (!B.eyo.inVisibleArea()) {
             B.workspace.centerOnBlock(B.id)
           }

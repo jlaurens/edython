@@ -55,50 +55,6 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function () {
-  /* eslint-disable indent */
-  var block = this.block_
-  var w = block.width
-  var line = eYo.Font.lineHeight
-  var h = block.isCollapsed() ? 2 * line : block.height
-  var t = eYo.Font.tabWidth
-  var r = eYo.Style.Path.r
-  var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var previous = this.hasPreviousStatement_()
-  var next = this.hasNextStatement_()
-  if (previous) {
-    var steps = ['m 0,0 h ' + w]
-  } else {
-    steps = ['m ' + r + ',0 h ' + (w - r)]
-  }
-  steps.push('v ' + line)
-  h -= line
-  w -= t + r
-  steps.push('h ' + (-w))
-  steps.push(a + (-r) + ',' + r)
-  h -= 2 * r// Assuming 2*r<line height...
-  steps.push(' v ' + h)
-  steps.push(a + r + ',' + r)
-  a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (next) {
-    steps.push('h ' + (-t + eYo.Unit.x - eYo.Padding.l - r))
-  } else {
-    steps.push('h ' + (-t + eYo.Unit.x - eYo.Padding.l) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  if (previous) {
-    steps.push('V 0')
-  } else {
-    steps.push('V ' + r + a + r + ',' + (-r))
-  }
-  return steps.join(' ')
-} /* eslint-enable indent */
-
-/**
- * Block path.
- * @param {!Blockly.Block} block
- * @private
- */
 eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
@@ -120,39 +76,13 @@ eYo.DelegateSvg.Group.prototype.shapePathDef_ =
       eYo.DelegateSvg.Group.prototype.groupShapePathDef_
 
 /**
- * Render an input of a group block.
- * @param io parameter.
- * @private
+ * Get the suite count.
+ * For edython.
+ * @param {boolean} newValue
  */
-eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
-  /* eslint-disable indent */
-  if (io.input.type !== Blockly.NEXT_STATEMENT) {
-    return false
-  }
-  var c8n = io.input.connection
-  // this must be the last one
-  if (c8n) {
-    c8n.eyo.setOffset(eYo.Font.tabW, 1)
-    var target = c8n.targetBlock()
-    if (target) {
-      var root = target.getSvgRoot()
-      if (root) {
-        c8n.tighten_()
-        try {
-          target.eyo.downRendering = true
-          target.eyo.render(false, io)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          target.eyo.downRendering = false
-        }
-      }
-    }
-    io.block.height = eYo.Font.lineHeight * io.block.eyo.getStatementCount()
-  }
-  return true
-} /* eslint-enable indent */
+eYo.DelegateSvg.Group.prototype.getSuiteCount_ = function () {
+  return Math.max(1, this.suiteCount_)
+}
 
 /**
  * Render the suite block, if relevant.
@@ -165,8 +95,7 @@ eYo.DelegateSvg.Group.prototype.renderSuite_ = function () {
   if (eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
   }
-  var block = this.block_
-  var c8n = this.inputSuite.connection
+  var c8n = this.suiteConnection
   if (c8n) {
     c8n.eyo.setOffset(eYo.Font.tabW, 1)
     var target = c8n.targetBlock()
@@ -362,21 +291,21 @@ eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
     var block = this.block_
     var T3 = eYo.T3.Stmt
     var type = T3.else_part
-    var targetConnection
-    if ((targetConnection = block.previousConnection.targetConnection)) {
-      var target = targetConnection.getSourceBlock()
-      if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+    var targetC8n
+    if ((targetC8n = block.previousConnection.targetConnection)) {
+      var target = targetC8n.getSourceBlock()
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
         type = T3.last_else_part
       }
-    } else if ((targetConnection = block.nextConnection.targetConnection)) {
+    } else if ((targetC8n = this.nextConnection.targetConnection)) {
       // the previous connection did not add any constrain
       // may be the next connection will?
-      target = targetConnection.getSourceBlock()
-      if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+      target = targetC8n.getSourceBlock()
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
         type = T3.last_else_part
       }
     }  

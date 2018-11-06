@@ -152,7 +152,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
  * @return None
  */
 eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function () {
-  return this.block_.nextConnection.isConnected()
+  return this.nextConnection.isConnected()
 }
 
 /**

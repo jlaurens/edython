@@ -412,7 +412,7 @@ var initWithGroupBlock = function(eyo) {
   this.v(1)
   this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
   this.quarter_circle(true, true)
-  this.v(true, (block.isCollapsed ? eYo.Unit.y : eyo.size.height) - 2 * r)
+  this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
   this.quarter_circle(false, true)
   if (eyo.hasNextStatement_()) {
     this.H(1/2)

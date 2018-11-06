@@ -667,7 +667,7 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
     }
     // the suite and the flow
     blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    !optNoNext && blockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 
@@ -1068,8 +1068,8 @@ eYo.Xml.fromDom = function (block, element, recover) {
           })
         }
       }
-      var out = statement(block.nextConnection, eYo.Xml.NEXT)
-      out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.SUITE) || out
+      var out = statement(eyo.nextConnection, eYo.Xml.NEXT)
+      out = statement(eyo.suiteConnection, eYo.Xml.SUITE) || out
       return out
     }
     var state = dom.getAttribute(eYo.Xml.STATE)

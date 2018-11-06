@@ -66,6 +66,7 @@ eYo.Delegate = function (block) {
   }
   // to manage reentrency
   this.reentrant = {}
+  this.nextCount_ = this.suiteCount_ = 0
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -80,20 +81,165 @@ eYo.Do.getModel = function (type) {
 Object.defineProperties(
   eYo.Delegate.prototype,
   {
+    id: {
+      get () {
+        return this.block_.id
+      }
+    },
     model: {
       get () {
         return this.constructor.eyo.model
+      }
+    },
+    // next are not relevant for expression blocks
+    // this may illustrates a bad design choice.
+    // To be enhanced.
+    nextCount: {
+      get () {
+        return this.nextCount_
+      },
+      set (newValue) {
+        var d = newValue - this.nextCount_
+        this.nextCount_ = newValue
+        if (d) {
+          var parent = this.block_.getParent()
+          if (parent) {
+            if (parent.eyo.next === this) {
+              parent.eyo.nextCount += d
+            } else {
+              parent.eyo.suiteCount += d
+            }
+          }
+        }
+      }
+    },
+    suiteCount: {
+      get () {
+        return this.getSuiteCount_()
+      },
+      set (newValue) {
+        var d = newValue - this.suiteCount_
+        if (d) {
+          this.incrementChangeCount()
+          this.suiteCount_ = newValue
+          var parent = this.block_.getParent()
+          if (parent) {
+            if (parent.eyo.next === this) {
+              parent.eyo.nextCount += d
+            } else {
+              parent.eyo.suiteCount += d
+            }
+          }
+        }
+      }
+    },
+    previousConnection: {
+      get () {
+        return this.block_.previousConnection
+      }
+    },
+    previousBlock: {
+      get () {
+        var c8n = this.previousConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    previous: {
+      get () {
+        var b = this.previousBlock
+        return b && b.eyo
+      }
+    },
+    nextConnection: {
+      get () {
+        return this.block_.nextConnection
+      }
+    },
+    nextBlock: {
+      get () {
+        var c8n = this.nextConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    next: {
+      get () {
+        var b = this.nextBlock
+        return b && b.eyo
+      }
+    },
+    suiteConnection: {
+      get () {
+        return this.inputSuite && this.inputSuite.connection
+      }
+    },
+    suiteBlock: {
+      get () {
+        var c8n = this.suiteConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    suite: {
+      get () {
+        var b = this.suiteBlock
+        return b && b.eyo
+      }
+    },
+    /**
+     * Get the next connection of this block.
+     * Comment and disabled blocks are transparent with respect to connection checking.
+     * UNUSED.
+     */
+    nextBlackConnection: {
+      get () {
+        var block = this.block_
+        while (block.eyo.isWhite()) {
+          var c8n
+          if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
+            return undefined
+          }
+        }
+        return block.nextConnection      
+      }
+    },
+    /**
+     * Get the previous connection of this block.
+     * Comment and disabled blocks are transparent with respect to connection checking.
+     * For edython.
+     * @param {!Blockly.Block} block The owner of the receiver.
+     * @return None
+     */
+    previousBlackConnection: {
+      get () {
+        var block = this.block_
+        while (block.eyo.isWhite()) {
+          var c8n
+          if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
+            return undefined
+          }
+        }
+        return block.previousConnection
       }
     }
   }
 )
 
 /**
+ * Get the suite count.
+ * Default implementation returns the suite count,
+ * as is. Subclassers (see group) return a filtered value.
+ * For edython.
+ * @param {boolean} newValue
+ */
+eYo.Delegate.prototype.getSuiteCount_ = function () {
+  return this.suiteCount_
+}
+
+/**
  * Get the block.
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Delegate.prototype.getBlock = function () {
+ eYo.Delegate.prototype.getBlock = function () {
   return this.block_
 }
 
@@ -1036,11 +1182,11 @@ eYo.Delegate.prototype.makeConnections = function () {
     }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true)
-      block.nextConnection.eyo.model = D.next
+      this.nextConnection.eyo.model = D.next
     }
     if (D.suite) {
       this.inputSuite = block.appendStatementInput('suite')
-      this.inputSuite.connection.eyo.model = D
+      this.suiteConnection.eyo.model = D
     }
   }
 }
@@ -1295,7 +1441,7 @@ eYo.Delegate.prototype.hasPreviousStatement_ = function () {
  * @private
  */
 eYo.Delegate.prototype.hasNextStatement_ = function () {
-  var c8n = this.block_.nextConnection
+  var c8n = this.nextConnection
   return c8n && c8n.isConnected()
 }
 
@@ -1462,7 +1608,6 @@ eYo.Delegate.prototype.getUnwrapped = function () {
 
 /**
  * Will connect this block's connection to another connection.
- * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection
  * @param {!Blockly.Connection} childConnection
  */
@@ -1471,17 +1616,23 @@ eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
 
 /**
  * Did connect this block's connection to another connection.
- * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
 eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+  // how many blocks did I add ?
+  if (connection.eyo.isNext) {
+    var target = connection.targetBlock()
+    this.nextCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
+  } else if (connection.eyo.isSuite) {
+    var target = connection.targetBlock()
+    this.suiteCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
+  }
 }
 
 /**
  * Will disconnect this block's connection.
- * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  */
 eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
@@ -1489,11 +1640,18 @@ eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
 
 /**
  * Did disconnect this block's connection from another connection.
- * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
 eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
+  // how many blocks did I remove ?
+  if (connection.eyo.isNext) {
+    this.nextCount = 0
+    this.incrementChangeCount()
+  } else if (connection.eyo.isSuite) {
+    this.suiteCount = 0
+    this.incrementChangeCount()
+  }
 }
 
 /**
@@ -1599,41 +1757,6 @@ eYo.Delegate.prototype.getStatementCount = function () {
  */
 eYo.Delegate.prototype.isWhite = function () {
   return this.block_.disabled
-}
-
-/**
- * Get the next connection of this block.
- * Comment and disabled blocks are transparent with respect to connection checking.
- * If block
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-eYo.Delegate.prototype.getNextConnection = function (block) {
-  while (block.eyo.isWhite()) {
-    var c8n
-    if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
-      return undefined
-    }
-  }
-  return block.nextConnection
-}
-
-/**
- * Get the previous connection of this block.
- * Comment and disabled blocks are transparent with respect to connection checking.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-eYo.Delegate.prototype.getPreviousConnection = function (block) {
-  while (block.eyo.isWhite()) {
-    var c8n
-    if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
-      return undefined
-    }
-  }
-  return block.previousConnection
 }
 
 /**
