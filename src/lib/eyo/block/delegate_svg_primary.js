@@ -296,7 +296,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length) {
+        if (this.get().length || this.isRequiredFromModel()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       }

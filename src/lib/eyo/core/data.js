@@ -803,7 +803,7 @@ eYo.Data.prototype.save = function (element) {
         return
       }
     }
-    var required = this.required || (goog.isDefAndNotNull(xml) && xml.required)
+    var required = this.required || (goog.isDefAndNotNull(xml) && xml.required) || this.model.placeholder
     var isText = xml && xml.text
     var txt = this.toText()
     if (txt.length || (required && ((txt = isText ? '?' : ''), true))) {
@@ -811,7 +811,11 @@ eYo.Data.prototype.save = function (element) {
         var child = goog.dom.createTextNode(txt)
         goog.dom.appendChild(element, child)
       } else {
-        element.setAttribute(this.attributeName, txt)
+        if (txt.length) {
+          element.setAttribute(this.attributeName, txt)
+        } else {
+          element.setAttribute(this.attributeName + '_placeholder', this.model.placeholder || '?')
+        }
       }
     }
   }
@@ -850,6 +854,15 @@ eYo.Data.prototype.load = function (element) {
       })
     } else {
       txt = element.getAttribute(this.attributeName)
+      if (!goog.isDefAndNotNull(txt)) {
+        txt = element.getAttribute(this.attributeName + '_placeholder')
+        var m = {}
+        goog.mixin(m, this.model)
+        this.model = m
+        m.placeholder = txt
+        this.setRequiredFromModel(true)
+        return
+      }
     }
     if (goog.isDefAndNotNull(txt)) {
       if (required && txt === '?') {

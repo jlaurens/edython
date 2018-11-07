@@ -385,10 +385,22 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
     return this.placeholderText_
   }
   return (function () {
-    var model = this.eyo && this.eyo.model
-    if (model) {
-      var placeholder = model.placeholder
-      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this))
+    if (this.eyo) {
+      var data = this.eyo.data
+      if (data) {
+        var model = data.model
+        var placeholder = model && data.model.placeholder
+        if (goog.isString(placeholder)) {
+          return placeholder
+        } else if (goog.isFunction(placeholder) && this.sourceBlock_) {
+          return placeholder.call(this)
+        }
+      }
+      model = this.eyo && this.eyo.model
+      if (model) {
+        var placeholder = model.placeholder
+        return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this))
+      }
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE
 }

@@ -1015,6 +1015,17 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
             this.set(data_in[k])
             this.setRequiredFromModel(true)
             done = true
+          } else {
+            k = k + '_placeholder'
+            if (eYo.Do.hasOwnProperty(data_in, k)) {
+              this.setRequiredFromModel(true)
+              // change the place holder in the objects's model
+              var m = {}
+              goog.mixin(m, this.model)
+              m.placeholder = data_in[k]
+              this.model = m
+              done = true
+            }
           }
         })
         if (!noCheck) {
