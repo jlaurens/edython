@@ -6,12 +6,12 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Proto utilities.
+ * @fileoverview Protocol utilities.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.Proto')
+goog.provide('eYo.Protocol')
 
 goog.require('eYo.Do')
 
@@ -21,7 +21,7 @@ goog.require('eYo.Do')
  */
 eYo.Do.enhance_prototype = function (proto, base) {
   if (goog.isString(base)) {
-    base = eYo.Proto[base]
+    base = eYo.Protocol[base]
   }
   if (base.methods) {
     var key

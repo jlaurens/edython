@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Proto.ChangeCount')
+goog.provide('eYo.Protocol.ChangeCount')
 
-goog.require('eYo.Proto')
+goog.require('eYo.Protocol')
 goog.require('eYo.Events')
 
-eYo.Proto.ChangeCount = {
+eYo.Protocol.ChangeCount = {
   methods: {},
   properties: {}
 }
@@ -26,7 +26,7 @@ eYo.Proto.ChangeCount = {
  * Should be sent when the document is saved.
  * `this.resetChangeCount()` must be sent at initialization time by the constructor.
  */
-eYo.Proto.ChangeCount.methods.resetChangeCount = function () {
+eYo.Protocol.ChangeCount.methods.resetChangeCount = function () {
   this.changeCount_ = 0
 }
 
@@ -35,7 +35,7 @@ eYo.Proto.ChangeCount.methods.resetChangeCount = function () {
  * @param {Blockly.Event} event  The current event fired.
  * @param {!Boolean} redo  Whether (re)doing, id est not undoing.
  */
-eYo.Proto.ChangeCount.methods.updateChangeCount = function (event, redo) {
+eYo.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {
   if (event.type == Blockly.Events.UI) {
     return
   }
@@ -49,7 +49,7 @@ eYo.Proto.ChangeCount.methods.updateChangeCount = function (event, redo) {
 /**
  * Read only change count property.
  */
-eYo.Proto.ChangeCount.properties.changeCount = {
+eYo.Protocol.ChangeCount.properties.changeCount = {
   get () {
     return this.changeCount_
   }
