@@ -93,8 +93,8 @@ console.warn('No eYo.Xml.CALL !!!!')
  * @return {string} Value representation.
  */
 Blockly.Xml.domToText = function (dom) {
-  dom.setAttribute('xmlns', 'urn:edython:1.0')
-  dom.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  dom.setAttribute('xmlns', 'urn:edython:0.2')
+  dom.setAttribute('xmlns:eyo', 'urn:edython:0.2')
   var oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(dom)
 }
@@ -116,8 +116,8 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
   for (var i = 0, block; block = blocks[i]; i++) {
     xml.appendChild(Blockly.Xml.blockToDomWithXY(block, opt_noId));
   }
-  root.setAttribute('xmlns', 'urn:edython:1.0')
-  root.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  root.setAttribute('xmlns', 'urn:edython:0.2')
+  root.setAttribute('xmlns:eyo', 'urn:edython:0.2')
   return root;
 };
 
@@ -1049,6 +1049,17 @@ eYo.Xml.fromDom = function (block, element, recover) {
         eyo.consolidateType()
         eyo.consolidateConnections()
         eyo.consolidate()
+      } else {
+        eyo.foreachData(function () {
+          this.didLoad()
+        })
+        eyo.foreachSlot(function () {
+          this.didLoad()
+        })
+        // eyo.incrementChangeCount() // force new type
+        // eyo.consolidateType()
+        // eyo.consolidateConnections()
+        // eyo.consolidate()
       }
       // read flow and suite
       var statement = function (c8n, key) {
@@ -1089,13 +1100,14 @@ goog.require('eYo.DelegateSvg.Primary')
  * Set the option from the `eyo` attribute.
  * The block argument is expected
  * @param {!Blockly.Block} block
- * @param {!Element} element dom element to be completed.
+ * @param {!Element} element dom element to be processed.
  * @param {?eYo.Xml.Recover} recover the recover helper.
  * @override
  */
 eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element, recover) {
   // trick to call this function without the first argument
   // just like all other delegate methods
+  // please deprecate this
   if (block !== this.block_) {
     element = block
     block = this.block_
@@ -1118,8 +1130,6 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element, recov
       d.set(d.ALIASED)
       this.data.annotation.set(d.NONE)
       this.data.definition.set(d.NONE)
-    } else {
-      d.set(d.NONE)
     }
   }
   return block

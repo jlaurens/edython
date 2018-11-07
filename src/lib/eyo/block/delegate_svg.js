@@ -1208,7 +1208,6 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
     cursor: new eYo.Where(),
     forc: undefined // rendered file or connection
   }
-  io.cursor.trace_on__ = true
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder

@@ -291,9 +291,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          var d = this.data.variant
-          this.required = d.get() === d.ALIASED
+          this.required = this.data.variant_p === eYo.Key.ALIASED
           this.save(element, optNoId, optNoNext)
+        }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.get().length) {
+          this.owner.variant_p = eYo.Key.ALIASED
         }
       }
     }, // new

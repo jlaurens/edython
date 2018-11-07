@@ -207,7 +207,10 @@ eYo.FlyoutCategory.turtle__module = [
         slots: {
           O: {
             type: eYo.T3.Expr.identifier,
-            data: 'turtle'
+            data: {
+              name: 'turtle',
+              alias: 'T'
+            }
           }
         }
       }
@@ -246,6 +249,9 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
   F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
   F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).'),
+  F_stmt('pensize', 'Changer l\'épaisseur du trait.'),
+  F_stmt('pencolor', 'Changer la couleur du trait.'),
+  F_stmt('fillcolor', 'Changer la couleur de remplissage.'),
   F_expr('pensize', 'Obtenir l\'épaisseur du trait.'),
   F_expr('pencolor', 'Obtenir la couleur du trait.'),
   F_expr('fillcolor', 'Obtenir la couleur de remplissage.'),
@@ -273,7 +279,7 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('clearstamp', 'Supprime la reproduction de l\'image de la tortue.'),
   F_stmt('clearstamps', 'Supprime toutes les reproduction d\'image de tortues.')
 ]
-/* <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
+/* <s eyo="assignment" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <x eyo="list" slot="assigned"><x eyo="turtle__call_expr" name="stamp" ary="0" slot="O"></x>
 </x>
 </s> */

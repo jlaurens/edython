@@ -862,7 +862,7 @@ eYo.Slot.prototype.load = function (element, recover) {
  */
 eYo.Slot.prototype.didLoad = function () {
   var xml = this.model.xml
-  if (out && xml && xml.didLoad) {
+  if (xml && xml.didLoad) {
     xml.didLoad.call(this)
   }
   if (this.model.didLoad) {

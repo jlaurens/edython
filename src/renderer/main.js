@@ -154,12 +154,12 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
         'openFile'
       ]
     }, (fileNames) => {
-      var fileName = fileNames[0]
-      if (fileName === undefined) {
+      var fileName = fileNames && fileNames[0]
+      if (fileName) {
+        eYo.App.Document.readFile(fileName)
+      } else {
         console.log('Opération annulée')
-        return
       }
-      eYo.App.Document.readFile(fileName)
     })
   },
   doWriteContent: function (deflate) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <prefs>{
 "selectedPanel":"console",
 "flyoutClosed":true
