@@ -156,6 +156,9 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
     var eyo = field.eyo
+    if (!text.length) {
+      text = eyo.data && eyo.data.model.placeholder || ''
+    }
     if (text.length) {
       this.isSeparatorField = field.name === 'separator' || (eyo.model && eyo.model.separator)
       // if the text is void, it can not change whether

@@ -640,13 +640,13 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
   data: {
     expression: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true
     }
   },
   fields: {
     expression: {
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.EXPRESSION
+      endEditing: true
     }
   },
   output: {

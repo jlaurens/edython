@@ -67,6 +67,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         eYo.T3.Expr.unset
       ],
       init: '',
+      placeholder: eYo.Msg.Placeholder.DECORATOR,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return ((this.getAll().indexOf(tos.expr) >= 0) && {validated: newValue}) || null
@@ -87,7 +88,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         bind: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.DECORATOR,
           variable: true
           // left_space: true,
         }
@@ -228,6 +228,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
     },
     name: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return tos.expr === eYo.T3.Expr.identifier 
@@ -242,8 +243,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
     prefix: 'def',
     name: {
       validate: true,
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.IDENTIFIER
+      endEditing: true
     }
   },
   slots: {
@@ -318,6 +318,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
     },
     name: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return tos.expr === eYo.T3.Expr.identifier
@@ -340,7 +341,6 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
         bind: {
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
           variable: true
         }
       }

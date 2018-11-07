@@ -28,6 +28,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
     comment: {
       order: 1000000,
       init: '',
+      placeholder: eYo.Msg.Placeholder.COMMENT,
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
@@ -72,7 +73,6 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
           order: 1,
           validate: true,
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.COMMENT,
           css: 'comment'
         }
       }    
@@ -493,6 +493,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
     },
     expression: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         // remove any newline character from newValue
@@ -537,9 +538,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       order: 1,
       fields: {
         bind: {
-          placeholder: /** @suppress {globalThis} */ function () {
-            return eYo.Msg.Placeholder.EXPRESSION
-          },
           endEditing: true
         }
       },

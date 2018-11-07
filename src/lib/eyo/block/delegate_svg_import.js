@@ -96,6 +96,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     },
     from: {
       init:'',
+      placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         var data = this.data.variant
@@ -123,7 +124,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         label: 'from',
         bind: {
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.MODULE,
           variable: true // change this to/with a `module` data
         }
       },

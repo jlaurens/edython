@@ -249,7 +249,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     holder: {
       order: 201,
       init: '', // will be saved only when not built in
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      placeholder: eYo.Msg.Placeholder.UNSET,      validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return !newValue
         || tos.expr === eYo.T3.Expr.unset
@@ -280,6 +280,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     alias: {
       order: 400,
       init: '',
+      placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue).expr
@@ -424,6 +425,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 10000, // the name must be quite last
       main: true,
       init: '',
+      placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.Do.typeOfString(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
@@ -568,8 +570,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       fields: {
         bind: {
           validate: true,
-          endEditing: true,
-          placeholder: eYo.Msg.Placeholder.UNSET
+          endEditing: true
         }
       },
       check: eYo.T3.Expr.Check.primary,
@@ -632,9 +633,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       hole_value: 'expression',
       fields: {
         bind: {
-          placeholder: /** @suppress {globalThis} */ function () {
-            return eYo.Msg.Placeholder.TERM
-          },
           validate: true,
           endEditing: true,
           variable: true
@@ -716,7 +714,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       fields: {
         label: 'as',
         bind: {
-          placeholder: eYo.Msg.Placeholder.ALIAS,
           validate: true,
           endEditing: true,
           variable: true

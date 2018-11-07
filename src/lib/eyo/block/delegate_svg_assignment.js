@@ -300,6 +300,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     name: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       subtypes: [
         eYo.T3.Expr.unset,
         eYo.T3.Expr.identifier,
@@ -319,9 +320,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       order: 1,
       fields: {
         bind: {
-          placeholder: /** @suppress {globalThis} */ function () {
-            return eYo.Msg.Placeholder.IDENTIFIER
-          },
           validate: true,
           endEditing: true,
           variable: true
@@ -443,6 +441,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
     name: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return tos.expr === eYo.T3.Expr.unset
@@ -497,9 +496,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       order: 1,
       fields: {
         bind: {
-          placeholder: /** @suppress {globalThis} */ function () {
-            return eYo.Msg.Placeholder.IDENTIFIER
-          },
           validate: true,
           endEditing: true,
           variable: true

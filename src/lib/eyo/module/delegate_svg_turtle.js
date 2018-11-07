@@ -26,68 +26,6 @@ goog.require('eYo.FlyoutCategory')
 
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
-// /**
-//  * Class for a DelegateSvg, import turtle block.
-//  * A unique block for each module to ease forthcoming management.
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Stmt.makeSubclass('turtle__config_stmt', {
-//   xml: {
-//     tag: 'turtle__config',
-//   },
-//   data: {
-//     key: {
-//       all: [
-//         'turtle_canvas_wrapper',
-//         'canvwidth',
-//         'canvheight'
-//       ],
-//       synchronize: true
-//     },
-//     value: {
-//       synchronize: true
-//     }
-//   },
-//   fields: {
-//     module: {
-//       order: 1,
-//       value: 'turtle',
-//     },
-//     separator: {
-//       order: 3,
-//       value: '.',
-//     },
-//     start: {
-//       order: 4,
-//       value: 'setConfig',
-//     }
-//   },
-//   slots: {
-//     key: {
-//       order: 1,
-//       fields: {
-//         prefix: {
-//           value: '('
-//         },
-//         edit: {
-//           placeholder: eYo.Msg.Placeholder.ARGUMENT,
-//           endEditing: true,
-//           variable: true
-//         },    
-//       }
-//     },
-//     value: {
-//       order: 3,
-//       fields: {
-//         prefix: '=',
-//         suffix: ')'
-//       },
-//       check: eYo.T3.Expr.Check.expression,
-//       hole_value: eYo.Msg.Placeholder.VALUE
-//     }
-//   }
-// })
-
 /**
  * Class for a DelegateSvg, turtle setup statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.

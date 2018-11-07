@@ -64,11 +64,13 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       }
     },
     lhs: {
-      init: 1,
+      init: '',
+      placeholder: '1',
       synchronize: true
     },
     rhs: {
       init: '',
+      placeholder: '1',
       synchronize: true
     }
   },
@@ -78,8 +80,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       hole_value: 'name',
       fields: {
         bind: {
-          endEditing: true,
-          placeholder: '1'
+          endEditing: true
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
@@ -95,8 +96,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         },
         bind: {
           order: 2,
-          endEditing: true,
-          placeholder: '1'
+          endEditing: true
         }
       },
       hole_value: 'name',
@@ -268,7 +268,8 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
       }
     },
     rhs: {
-      init: 1,
+      init: '',
+      placeholder: '1',
       synchronize: true
     }
   },
@@ -282,7 +283,6 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
         },
         bind: {
           order: 2,
-          placeholder: '1',
           validate: true,
           endEditing: true
         }

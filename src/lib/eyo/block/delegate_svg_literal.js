@@ -50,7 +50,8 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
     },
     value: {
       main: true,
-      init: '0',
+      init: '',
+      placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.data.type.getAll()
         var type = eYo.Do.typeOfString(newValue, null).expr
@@ -71,8 +72,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   },
   fields: {
     value: {
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.NUMBER
+      endEditing: true
     }
   },
   output: {
