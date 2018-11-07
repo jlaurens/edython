@@ -44,6 +44,7 @@ eYo.Const.Field = {
 }
 
 eYo.Key = {
+  EYO: 'eyo',
   TERM: 'term', // this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',

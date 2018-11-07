@@ -351,10 +351,20 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
+  xml: {
+    tags: [eYo.Key.GLOBAL, eYo.Key.NONLOCAL]
+  },
   data: {
     variant: {
       all: [eYo.Key.GLOBAL, eYo.Key.NONLOCAL],
-      synchronize: true
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
+        }
+      }
     }
   },
   fields: {
@@ -378,9 +388,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
  * @return true if the given value is accepted, false otherwise
  */
 eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function () {
-  var M = this.data.variant.model
-  var current = this.data.variant.get()
-  return current === M.GLOBAL ? 'eyo:global' : 'eyo:nonlocal'
+  return this.variant_p === eYo.Key.GLOBAL ? 'eyo:global' : 'eyo:nonlocal'
 }
 
 /**
@@ -391,9 +399,8 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function () {
  */
 eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var M = this.data.variant.model
-  var current = block.eyo.data.variant.get()
-  var variants = block.eyo.data.variant.getAll()
+  var current = this.variant_p
+  var variants = this.data.variant.getAll()
   var F = function (i) {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
@@ -406,8 +413,8 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
-  F(M.GLOBAL)
-  F(M.NONLOCAL)
+  F(0)
+  F(1)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }

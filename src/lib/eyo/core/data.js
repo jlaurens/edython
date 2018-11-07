@@ -838,6 +838,9 @@ eYo.Data.prototype.load = function (element) {
       var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
       if (f) {
         f.apply(this, arguments)
+        if (goog.isFunction(xml.didLoad)) {
+          xml.didLoad.call(this, element)
+        }
         return
       }
     }
@@ -849,6 +852,9 @@ eYo.Data.prototype.load = function (element) {
       eYo.Do.forEachChild(element, function (child) {
         if (child.nodeType === Node.TEXT_NODE) {
           txt = child.nodeValue
+          if (goog.isFunction(xml.didLoad)) {
+            xml.didLoad.call(this, element)
+          }
           return true
         }
       })
@@ -862,7 +868,10 @@ eYo.Data.prototype.load = function (element) {
           this.model = m
           m.placeholder = txt
           this.setRequiredFromModel(true)
-          return
+          if (goog.isFunction(xml.didLoad)) {
+            xml.didLoad.call(this, element)
+          }
+          return true
         }
       }
     }
@@ -878,6 +887,10 @@ eYo.Data.prototype.load = function (element) {
     } else if (required) {
       this.fromText('', false)
     }
+    if (goog.isFunction(xml.didLoad)) {
+      xml.didLoad.call(this, element)
+    }
+    return true
   }
 }
 

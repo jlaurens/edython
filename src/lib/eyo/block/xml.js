@@ -301,8 +301,8 @@ Blockly.Xml.domToBlock = function (dom, workspace, recover) {
   // Create top-level block.
   Blockly.Events.disable();
   try {
-    var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace, recover);
     if (workspace.rendered) {
+      var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace, recover);
       // Hide connections to speed up assembly.
       // topBlock.setConnectionsHidden(true);
       topBlock.eyo.beReady()
@@ -367,7 +367,7 @@ Blockly.Xml.domToBlockHeadless_ = (function () {
   return function (xmlBlock, workspace, recover) {
     var block = null
     if (goog.isFunction(xmlBlock.getAttribute)) {
-      var attr = xmlBlock.getAttribute('eyo')
+      var attr = xmlBlock.getAttribute(eYo.Key.EYO)
       if (attr || xmlBlock.namespaceURI.startsWith('urn:edython:')) {
         block = eYo.Xml.domToBlock(xmlBlock, workspace, recover)
       } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
@@ -444,7 +444,7 @@ eYo.Xml.blockToDom = (function () {
     } else {
       var tag = block.eyo.tagName()
       element = goog.dom.createDom(block.eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
-      element.setAttribute('eyo', tag.substring(4))
+      element.setAttribute(eYo.Key.EYO, tag.substring(4))
       !optNoId && element.setAttribute('id', block.id)
       eYo.Xml.toDom(block, element, optNoId, optNoNext)
     }
@@ -530,7 +530,7 @@ goog.provide('eYo.Xml.Literal')
  * @override
  */
 eYo.Xml.Literal.domToBlock = function (element, workspace) {
-  if (element.getAttribute('eyo') !== eYo.Xml.LITERAL) {
+  if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
     return
   }
   // is it a statement or an expression ?
@@ -609,6 +609,10 @@ eYo.Xml.Data.fromDom = function (block, element) {
         }
         hasText = hasText || (xml && xml.text)
       })
+      var xml = this.model.xml
+      if (xml && goog.isFunction(xml.didLoad)) {
+        xml.didLoad.call(this, element)
+      }
     }
   )
 }
@@ -718,7 +722,17 @@ eYo.Xml.registerAllTags = function () {
           one_tag(tags[i])
         }
       } else {
-        var tag = model && model.xml && model.xml.tag
+        var xml = model && model.xml
+        if (xml && xml.tags) {
+          var i = xml.tags.length
+          if (i--) {
+            do {
+              one_tag(xml.tags[i])
+            } while (i--)
+            continue
+          }
+        }
+        var tag = xml && xml.tag
         if (!goog.isString(tag)) {
           var m = XRegExp.exec(type, eYo.XRE.s3d)
           if (m) {
@@ -904,7 +918,7 @@ eYo.Xml.domToBlock = (function () {
     }
     // var isStmt = xmlBlock.tagName.toLowerCase() === eYo.XML.STMT
     var id = dom.getAttribute('id')
-    var name = dom.getAttribute('eyo')
+    var name = dom.getAttribute(eYo.Key.EYO)
     var prototypeName
     //
     // is it a literal or something else special ?
@@ -1039,23 +1053,13 @@ eYo.Xml.fromDom = function (block, element, recover) {
             }
           }
         })
-        eyo.foreachData(function () {
-          this.didLoad()
-        })
-        eyo.foreachSlot(function () {
-          this.didLoad()
-        })
+        eyo.didLoad()
         eyo.incrementChangeCount() // force new type
         eyo.consolidateType()
         eyo.consolidateConnections()
         eyo.consolidate()
       } else {
-        eyo.foreachData(function () {
-          this.didLoad()
-        })
-        eyo.foreachSlot(function () {
-          this.didLoad()
-        })
+        eyo.didLoad()
         // eyo.incrementChangeCount() // force new type
         // eyo.consolidateType()
         // eyo.consolidateConnections()
@@ -1113,7 +1117,7 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element, recov
     block = this.block_
   }
   eYo.Xml.fromDom(block, element, recover)
-  var type = element.getAttribute('eyo')
+  var type = element.getAttribute(eYo.Key.EYO)
   var d = this.data.variant
   if (type === eYo.Key.CALL) {
     d.set(d.CALL_EXPR)
@@ -1191,7 +1195,7 @@ goog.require('eYo.DelegateSvg.Operator')
  */
 eYo.Xml.Comparison.domToBlock = function (element, workspace, recover) {
   var block
-  var prototypeName = element.getAttribute('eyo')
+  var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === eYo.Xml.COMPARISON) {
     var op = element.getAttribute(eYo.Xml.OPERATOR)
@@ -1229,7 +1233,7 @@ goog.provide('eYo.Xml.Group')
  * @override
  */
 eYo.Xml.Group.domToBlock = function (element, workspace, recover) {
-  var name = element.getAttribute('eyo')
+  var name = element.getAttribute(eYo.Key.EYO)
   if (name === eYo.DelegateSvg.Stmt.else_part.prototype.tagName().substring(4)) {
     var type = eYo.T3.Stmt.else_part
     var id = element.getAttribute('id')
@@ -1253,7 +1257,7 @@ console.warn('convert print statement to print expression and conversely, top bl
  * @override
  */
 eYo.Xml.Call.domToBlock = function (element, workspace, recover) {
-  if (element.getAttribute('eyo') === eYo.Xml.CALL) {
+  if (element.getAttribute(eYo.Key.EYO) === eYo.Xml.CALL) {
     var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)

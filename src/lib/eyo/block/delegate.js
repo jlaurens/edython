@@ -341,6 +341,18 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 }
 
 /**
+ * Called when data and slots have loaded..
+ */
+eYo.Delegate.prototype.didLoad = function () {
+  this.foreachData(function () {
+    this.didLoad()
+  })
+  this.foreachSlot(function () {
+    this.didLoad()
+  })
+}
+
+/**
  * This methods is a higher state mutator.
  * A primary data change or a primary connection change has just occurred.
  * (Primary meaning that no other change has been performed

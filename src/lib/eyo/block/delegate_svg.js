@@ -859,7 +859,6 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
     // if the above path does not exist
     // the block is not yet ready for rendering
     var block = this.block_
-    block.height = eYo.Font.lineHeight
     var d, unlocker
     try {
       // chain the tiles to properly manage spaces between tiles
@@ -873,6 +872,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
       unlocker && unlocker.eyo.unlockChainTiles(unlocker)
       var root = block.getRootBlock()
       this.renderSuite_()
+      block.height = this.size.height
       !recorder && root.eyo.alignRightEdges_(recorder)
       this.updateAllPaths_()
     }

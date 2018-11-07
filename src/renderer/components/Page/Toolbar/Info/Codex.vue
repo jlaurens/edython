@@ -20,7 +20,7 @@
     name: 'info-stmt-code',
     data: function () {
       return {
-        code_: undefined,
+        expression_: undefined,
         withSlotholder_: undefined
       }
     },
@@ -49,26 +49,26 @@
         return this.commentVariant === eYo.Key.NONE
       },
       canCode () {
-        return !!this.eyo.data.code
+        return !!this.eyo.data.expression
       },
       hasCode: {
         get () {
-          return this.variant === eYo.Key.CODE
+          return this.variant === eYo.Key.EXPRESSION
         },
         set (newValue) {
           this.hasCode_ = newValue
           this.eyo.variant_p = newValue
-            ? eYo.Key.CODE
+            ? eYo.Key.EXPRESSION
             : eYo.Key.NONE
           this.$emit('synchronize')
         }
       },
       code: {
         get () {
-          return this.code_
+          return this.expression_
         },
         set (newValue) {
-          this.code_ = this.eyo.code_p = newValue
+          this.expression_ = this.eyo.expression_p = newValue
         }
       },
       my_slot () {
@@ -76,8 +76,8 @@
       }
     },
     created () {
-      this.code_ = this.eyo.code_p
-      this.withSlotholder_ = this.eyo.slots.code.targetBlock()
+      this.expression_ = this.eyo.expression_p
+      this.withSlotholder_ = this.eyo.slots.expression.targetBlock()
     }
   }
 </script>
