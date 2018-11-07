@@ -856,12 +856,14 @@ eYo.Data.prototype.load = function (element) {
       txt = element.getAttribute(this.attributeName)
       if (!goog.isDefAndNotNull(txt)) {
         txt = element.getAttribute(this.attributeName + '_placeholder')
-        var m = {}
-        goog.mixin(m, this.model)
-        this.model = m
-        m.placeholder = txt
-        this.setRequiredFromModel(true)
-        return
+        if (txt) {
+          var m = {}
+          goog.mixin(m, this.model)
+          this.model = m
+          m.placeholder = txt
+          this.setRequiredFromModel(true)
+          return
+        }
       }
     }
     if (goog.isDefAndNotNull(txt)) {

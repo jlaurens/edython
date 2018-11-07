@@ -239,7 +239,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          if (this.get()) {
+          if (this.get() || this.model.placeholder) {
             this.save(element, optNoId, optNoNext)
           }
         }
@@ -270,7 +270,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var target = this.owner.holder_s.input.connection.targetBlock()
           if (!target) {
-            if (this.get()) {
+            if (this.get() || this.model.placeholder) {
               this.save(element, optNoId, optNoNext)
             }
           }
