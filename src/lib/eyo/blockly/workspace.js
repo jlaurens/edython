@@ -18,7 +18,7 @@ goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
-goog.require('eYo.Proto.ChangeCount')
+goog.require('eYo.Protocol.ChangeCount')
 goog.require('goog.crypt')
 
 /**

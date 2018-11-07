@@ -209,7 +209,9 @@ eYo.FlyoutCategory.turtle__module = [
             type: eYo.T3.Expr.identifier,
             data: {
               name: 'turtle',
-              alias: 'T'
+              alias: {
+                placeholder: 'T'
+              }
             }
           }
         }
