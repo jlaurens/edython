@@ -131,8 +131,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       wrap: eYo.T3.Expr.argument_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.ARGUMENTS)
+          this.owner.variant_p = eYo.Key.ARGUMENTS
         }
       }
     }
@@ -307,12 +306,11 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
-      ARGUMENTS: eYo.Key.ARGUMENTS,
-      all: [null, eYo.Key.ARGUMENTS],
+      all: [eYo.Key.NONE, eYo.Key.ARGUMENTS],
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
         var slot = this.owner.arguments_s
-        slot.required = newValue === this.ARGUMENTS
+        slot.required = newValue === eYo.Key..ARGUMENTS
         slot.setIncog()
       }
     },
@@ -354,8 +352,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       wrap: eYo.T3.Expr.argument_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.data.variant
-          variant.set(variant.ARGUMENTS)
+          this.owner.variant_p = eYo.Key.ARGUMENTS
         }
       }
     }

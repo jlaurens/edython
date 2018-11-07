@@ -28,16 +28,20 @@
       formatter: {
         type: Function,
         default: function (item) {
-          var formatted = item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
-          if (formatted.indexOf('{{slotholder}}') < 0) {
-            return formatted
+          if (item) {
+            var formatted = item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
+            if (formatted.indexOf('{{slotholder}}') < 0) {
+              return formatted
+            }
+            var replacement = '</span>' +
+              this.slotholder('eyo-info-primary-variant1') +
+              '<span class="eyo-info-primary-variant2">'
+            return '<span class="eyo-info-primary-variant2">' +
+              formatted.replace('{{slotholder}}', replacement) +
+              '</span>'
+          } else {
+            return ''
           }
-          var replacement = '</span>' +
-            this.slotholder('eyo-info-primary-variant1') +
-            '<span class="eyo-info-primary-variant2">'
-          return '<span class="eyo-info-primary-variant2">' +
-            formatted.replace('{{slotholder}}', replacement) +
-            '</span>'
         }
       },
       dataKey: {

@@ -236,10 +236,13 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.pass_stmt,
     eYo.T3.Expr.lambda,
     eYo.T3.Stmt.classdef_part,
-    eYo.T3.Stmt.global_nonlocal_stmt,
     {
       type: eYo.T3.Stmt.global_nonlocal_stmt,
-      data: 'non_local'
+      variant_d: 'global'
+    },
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'non_local'
     },
     eYo.T3.Stmt.decorator,
     {

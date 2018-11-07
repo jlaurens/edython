@@ -899,10 +899,6 @@ eYo.Data.prototype.load = function (element) {
  * For edython.
  */
 eYo.Data.prototype.didLoad = function () {
-  var xml = this.model.xml
-  if (xml && xml.didLoad) {
-    xml.didLoad.call(this)
-  }
   if (this.model.didLoad) {
     this.model.didLoad.call(this)
   }
