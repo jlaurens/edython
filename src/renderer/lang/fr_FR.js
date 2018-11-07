@@ -37,6 +37,8 @@ export default {
   name_expressions: nom + ' {operator} …',
   target_expressions: '… {operator} …',
   import: reserved('import') + ' ' + '{{slotholder}}',
+  global: reserved('global') + ' {{slotholder}}',
+  nonlocal: reserved('nonlocal') + ' {{slotholder}}',
   from_module_import: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import') + '{{slotholder}}',
   from_module_import_star: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import *'),
   expr: '…',
