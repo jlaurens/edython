@@ -30,7 +30,7 @@
     },
     mounted: function () {
       var self = this
-      this.$$.eYo.FlyoutDelegate.prototype.oneStep = function (step) {
+      eYo.FlyoutDelegate.prototype.oneStep = function (step) {
         // next loop to disable tooltips while scrolling
         for (const popper of document.querySelectorAll('.tippy-popper')) {
           const instance = popper._tippy

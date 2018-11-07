@@ -18,6 +18,7 @@ goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
+goog.require('eYo.Proto.ChangeCount')
 goog.require('goog.crypt')
 
 /**
@@ -29,8 +30,11 @@ goog.require('goog.crypt')
 eYo.WorkspaceDelegate = function (workspace) {
   eYo.WorkspaceDelegate.superClass_.constructor.call(this)
   this.workspace_ = workspace
+  this.resetChangeCount()
 }
 goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
+
+eYo.Do.enhance_prototype(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
 
 // Dependency ordering?
 /**
@@ -263,6 +267,7 @@ eYo.Workspace.prototype.undo = function(redo) {
     while (inputStack.length && inputEvent.group &&
         inputEvent.group == inputStack[inputStack.length - 1].group) {
       events.push(inputStack.pop())
+      // update the change count
     }
     events = Blockly.Events.filter(events, redo)
     if (events.length) {
@@ -284,6 +289,7 @@ eYo.Workspace.prototype.undo = function(redo) {
         }
         for (var i = 0, event; event = events[i]; i++) {
           event.run(redo)
+          this.eyo.updateChangeCount(event, redo)
         }
       } catch (err) {
         console.error(err)
@@ -308,7 +314,10 @@ eYo.Workspace.prototype.undo = function(redo) {
 eYo.Workspace.prototype.fireChangeListener = function(event) {
   var before = this.undoStack_.length
   eYo.Workspace.superClass_.fireChangeListener.call(this, event)
-  var after = this.undoStack_.length
+  // For newly created events, update the change count
+  if (event.recordUndo) {
+    this.eyo.updateChangeCount(event, true)
+  }
   if (before === this.undoStack_.length) {
     eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
   } else {

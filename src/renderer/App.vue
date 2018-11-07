@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(this.$$.eYo.App.Document.doNew)
+    this.$nextTick(eYo.App.Document.doNew)
   }
 }
 </script>

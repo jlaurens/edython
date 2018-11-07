@@ -46,7 +46,7 @@
         if (block) {
           var p = new eYo.PythonExporter()
           var code = p.export(block, true)
-          this.$$.eYo.App.copyTextToClipboard(code)
+          eYo.App.copyTextToClipboard(code)
           this.step = 0
           this.$$.TweenLite.to(this, 0.5, {step: 1})
         }

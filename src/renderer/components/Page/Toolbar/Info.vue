@@ -107,7 +107,7 @@
       },
       selectedBlock () {
         var id = this.$store.state.UI.selectedBlockId
-        var block = id && this.$$.eYo.App.workspace.blockDB_[id]
+        var block = id && eYo.App.workspace.blockDB_[id]
         return block
       },
       eyo () {
@@ -124,7 +124,7 @@
         return ['width: ', 100 * this.step, '%;'].join('')
       },
       modifiable () {
-        return this.isSelected(this.$$.eYo.T3.Expr.Check.or_expr_all)
+        return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
       }
     },
     watch: {

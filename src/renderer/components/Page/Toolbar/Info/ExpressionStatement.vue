@@ -47,7 +47,7 @@
         console.log('COUCOU')
         this.variant = this.eyo.variant_p
         this.commentVariant = this.eyo.comment_variant_p
-        this.mustComment = this.variant === this.$$.eYo.Key.NONE
+        this.mustComment = this.variant === eYo.Key.NONE
       }
     }
   }

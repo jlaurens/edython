@@ -81,7 +81,7 @@
         this.on = 0
         this.$$.TweenLite.to(this, 0.5, {on: 1})
         if (this.flashInterval) {
-          var topBlocks = this.$$.eYo.App.workspace.topBlocks_
+          var topBlocks = eYo.App.workspace.topBlocks_
           if (!topBlocks.length) {
             return
           }
@@ -99,9 +99,9 @@
           var str = demo.xml
           var parser = new DOMParser()
           var dom = parser.parseFromString(str, 'application/xml')
-          this.$$.eYo.App.workspace.eyo.fromDom(dom)
+          eYo.App.workspace.eyo.fromDom(dom)
           // problem of code reuse
-          this.$$.eYo.App.doDomToPref(dom)
+          eYo.App.doDomToPref(dom)
         }
       },
       doShow () {

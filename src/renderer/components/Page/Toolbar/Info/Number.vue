@@ -42,7 +42,7 @@
       imag: {
         get () {
           (this.step_ !== this.eyo.change.step) && this.synchronize()
-          return this.type === this.$$.eYo.T3.Expr.imagnumber
+          return this.type === eYo.T3.Expr.imagnumber
         },
         set (newValue) {
           if (this.imag !== newValue) {
@@ -53,7 +53,7 @@
       },
       can_imag () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()
-        return this.imag || eYo.Do.typeOfString(this.value_ + 'j').expr === this.$$.eYo.T3.Expr.imagnumber
+        return this.imag || eYo.Do.typeOfString(this.value_ + 'j').expr === eYo.T3.Expr.imagnumber
       },
       content: {
         get () {

@@ -128,7 +128,7 @@
             return true
           }
           var value = this.eyo.value_p
-          var can = !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, this.$$.eYo.XRE.shortbytesliteralDoubleNoPrefix)
+          var can = !!XRegExp.exec(value, eYo.XRE.longbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.longbytesliteralDoubleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingleNoPrefix) || !!XRegExp.exec(value, eYo.XRE.shortbytesliteralDoubleNoPrefix)
           return can
         }
       },

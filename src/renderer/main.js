@@ -103,10 +103,10 @@ eYo.App.doDomToPref = function (dom) {
 }
 
 eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
-  doSave: function (ev) {
-    eYo.App.Document.doSaveAs(ev)
+  doSave: function (ev, callback) {
+    eYo.App.Document.doSaveAs(ev, callback)
   },
-  doSaveAs: function (ev) {
+  doSaveAs: function (ev, callback) {
     var documentPath = store.state.Document.path
     var basename = documentPath && documentPath.lastIndexOf
       ? documentPath.substr(documentPath.lastIndexOf('/') + 1)
@@ -117,18 +117,21 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     let deflate = eYo.App.Document.getDeflate()
     var file = new File([deflate], basename, {type: 'application/octet-stream'})
     FileSaver.saveAs(file)
+    callback && callback()
   },
   doOpen: function (ev) {
     controller.bus.$emit('webUploadStart', ev)
   }
 } : {
-  readFile: function (fileName) {
+  readFile: function (fileName, callback) {
     require('fs').readFile(fileName, (err, content) => {
       if (err) {
         alert('An error ocurred reading the file ' + err.message)
         return
       }
       eYo.App.Document.readDeflate(content, fileName)
+      eYo.App.workspace.eyo.resetChangeCount()
+      callback && callback()
     })
   },
   getDocumentPath: function () {
@@ -143,7 +146,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     }
     return defaultPath
   },
-  doOpen: function (ev) {
+  doOpen: function (ev, callback) {
     var defaultPath = eYo.App.Document.getDocumentPath()
     require('electron').remote.dialog.showOpenDialog({
       defaultPath: defaultPath,
@@ -156,13 +159,13 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     }, (fileNames) => {
       var fileName = fileNames && fileNames[0]
       if (fileName) {
-        eYo.App.Document.readFile(fileName)
+        eYo.App.Document.readFile(fileName, callback)
       } else {
         console.log('Opération annulée')
       }
     })
   },
-  doWriteContent: function (deflate) {
+  doWriteContent: function (deflate, callback) {
     var path = require('path')
     var defaultPath = path.join(eYo.App.Document.getDocumentPath(), 'Sans titre.eyo')
     const {dialog} = require('electron').remote
@@ -174,6 +177,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     }, function (filePath) {
       if (filePath === undefined) {
         console.log('Opération annulée')
+        callback && callback()
         return
       }
       var dirname = path.dirname(filePath)
@@ -182,37 +186,46 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
         fs.mkdirSync(dirname)
       }
       store.commit('DOC_SET_PATH', filePath)
-      eYo.App.Document.writeContentToFile(filePath, deflate)
+      eYo.App.Document.writeContentToFile(filePath, deflate, callback)
     })
   },
-  writeContentToFile: function (path, deflate) {
+  writeContentToFile: function (path, deflate, callback) {
     require('fs').writeFile(path, deflate, function (err) {
       if (err) {
         alert('An error ocurred creating the file ' + err.message)
       } else {
         store.commit('UI_STAGE_UNDO')
+        eYo.App.workspace.eyo.resetChangeCount()
         controller.bus.$emit('saveDidSucceed')
+        callback && callback(path)
       }
     })
   },
-  doSave: function (ev) {
+  doSave: function (ev, callback) {
     let deflate = eYo.App.Document.getDeflate()
     var documentPath = store.state.Document.path
     if (documentPath) {
-      eYo.App.Document.writeContentToFile(documentPath, deflate)
+      eYo.App.Document.writeContentToFile(documentPath, deflate, callback)
     } else {
-      eYo.App.Document.doWriteContent(deflate)
+      eYo.App.Document.doWriteContent(deflate, callback)
     }
   },
-  doSaveAs: function (ev) {
+  doSaveAs: function (ev, callback) {
     let deflate = eYo.App.Document.getDeflate()
-    eYo.App.Document.doWriteContent(deflate)
+    eYo.App.Document.doWriteContent(deflate, callback)
   }
 }
 
 eYo.App.Document.doNew = function (ev) {
-  eYo.App.Document.doClear()
-  eYo.App.Document.readString(blank)
+  console.log('doNew')
+  if (eYo.App.workspace.eyo.changeCount) {
+    console.log('will bv::show::modal')
+    window['vue'].$emit('bv::show::modal', 'page-modal-should-save')
+  } else {
+    console.log('will doClear')
+    eYo.App.Document.doClear()
+    eYo.App.Document.readString(blank)
+  }
 }
 
 eYo.App.Document.getDeflate = function () {
@@ -242,8 +255,10 @@ eYo.App.Document.getDeflate = function () {
 }
 
 eYo.App.Document.doClear = function () {
+  console.log('doClear')
   controller.bus.$emit('new-document')
   eYo.App.workspace.clearUndo()
+  eYo.App.workspace.eyo.resetChangeCount()
   store.commit('UI_STAGE_UNDO')
   store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
   store.commit('DOC_SET_PATH', undefined)
@@ -254,6 +269,7 @@ eYo.App.Document.readString = function (str) {
   var dom = parser.parseFromString(str, 'application/xml')
   eYo.App.workspace.eyo.fromDom(dom)
   eYo.App.workspace.clearUndo()
+  eYo.App.workspace.eyo.resetChangeCount()
   eYo.App.doDomToPref(dom)
 }
 

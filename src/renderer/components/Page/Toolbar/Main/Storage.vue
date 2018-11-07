@@ -38,16 +38,16 @@
     },
     methods: {
       doNew: function (ev) {
-        this.$$.eYo.App.Document.doNew(ev)
+        eYo.App.Document.doNew(ev)
       },
       doOpen: function (ev) {
-        this.$$.eYo.App.Document.doOpen(ev)
+        eYo.App.Document.doOpen(ev)
       },
       doSave: function (ev) {
-        this.$$.eYo.App.Document.doSave(ev)
+        eYo.App.Document.doSave(ev)
       },
       doSaveAs: function (ev) {
-        this.$$.eYo.App.Document.doSaveAs(ev)
+        eYo.App.Document.doSaveAs(ev)
       }
     }
   }

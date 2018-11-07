@@ -30,7 +30,7 @@
     },
     computed: {
       unary () {
-        return this.eyo.block_.type === this.$$.eYo.T3.Expr.u_expr
+        return this.eyo.block_.type === eYo.T3.Expr.u_expr
       },
       operator_d () {
         return this.eyo.data[this.dataKey]

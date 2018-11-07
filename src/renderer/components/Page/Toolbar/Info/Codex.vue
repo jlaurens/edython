@@ -46,14 +46,14 @@
     },
     computed: {
       noCheck () {
-        return this.commentVariant === this.$$.eYo.Key.NONE
+        return this.commentVariant === eYo.Key.NONE
       },
       canCode () {
         return !!this.eyo.data.code
       },
       hasCode: {
         get () {
-          return this.variant === this.$$.eYo.Key.CODE
+          return this.variant === eYo.Key.CODE
         },
         set (newValue) {
           this.hasCode_ = newValue

@@ -13,6 +13,8 @@ var comment = function (value) {
 var nom = placeholder('nom')
 
 export default {
+  YES: 'Oui',
+  NO: 'Non',
   hello: 'Bonjour monde',
   name_value: nom + ' = …',
   name_annotation_value: nom + ': … = …',
@@ -61,5 +63,7 @@ export default {
   use_single_quotes_in_long_literal: 'Utiliser des guillemets droits simples',
   use_double_quotes_in_long_literal: 'Utiliser des guillemets droits doubles',
   enter_any_valid_expression: 'Saisir une expression valide',
-  one_line_of_text: 'Saisir du texte (une ligne)'
+  one_line_of_text: 'Saisir du texte (une ligne)',
+  should_save_title: 'Sauvegarder d\'abord ?',
+  should_save_content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.'
 }
