@@ -292,7 +292,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         this.data.name.setIncog(newValue === this.TARGET)
-        var slot = this.owner.target_s
+        var slot = this.owner.lhs_s
         slot.required = newValue === this.TARGET
         slot.setIncog(!slot.required)
       },
@@ -334,7 +334,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       }
     },
-    target: {
+    lhs: {
       order: 2,
       wrap: eYo.T3.Expr.target_list,
       xml: {
@@ -345,7 +345,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       }
     },
-    assigned: {
+    rhs: {
       order: 4,
       fields: {
         operator: {

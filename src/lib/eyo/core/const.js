@@ -45,6 +45,7 @@ eYo.Const.Field = {
 
 eYo.Key = {
   EYO: 'eyo',
+  PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
   TARGET: 'target',
   ASSIGNED: 'assigned',
@@ -62,7 +63,7 @@ eYo.Key = {
   FUTURE: 'future',
   PARAMETERS: 'parameters',
   SLICE: 'slice',
-  ARGUMENTS: 'arguments',
+  N_ARY: 'n_ary',
   IDENTIFIERS: 'identifiers',
   DEL: 'del',
   RETURN: 'return',
@@ -161,7 +162,6 @@ eYo.Key = {
   ANNOTATED: 'annotated',
   DEFINED: 'defined',
   
-  BUILTIN: 'builtin',
   EXPRESSION: 'expression',
   
   IMPORT: 'import',
@@ -182,7 +182,6 @@ eYo.Key = {
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
-
   SETTER: 'setter',
   DELETER: 'deleter',
   
@@ -193,9 +192,7 @@ eYo.Key = {
   TARGET_EXPRESSIONS: 'target_expressions',
 
   DOTTED_NAME: 'dotted_name',
-  BUILTIN: 'builtin',
-  ARGUMENTS: 'arguments',
-
+  
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
   

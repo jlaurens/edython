@@ -783,7 +783,7 @@ eYo.Data.prototype.beReady = function () {
 
 /**
  * Does nothing if the data is disabled or if the model
- * has a `false`valued xml property.
+ * has a `false` valued xml property.
  * Saves the data to the given element.
  * For edython.
  * @param {Element} element the persistent element.
@@ -803,22 +803,40 @@ eYo.Data.prototype.save = function (element) {
         return
       }
     }
-    var required = this.required || (goog.isDefAndNotNull(xml) && xml.required) || this.model.placeholder
+    var required = this.required || (xml && xml.required) || goog.isDefAndNotNull(this.model.placeholder)
     var isText = xml && xml.text
     var txt = this.toText()
-    if (txt.length || (required && ((txt = isText ? '?' : ''), true))) {
-      if (isText) {
-        var child = goog.dom.createTextNode(txt)
-        goog.dom.appendChild(element, child)
-      } else {
-        if (txt.length) {
-          element.setAttribute(this.attributeName, txt)
-        } else {
-          element.setAttribute(this.attributeName + '_placeholder', this.model.placeholder || '?')
-        }
+    if (isText) {
+      if (txt.length) {
+        goog.dom.appendChild(element, goog.dom.createTextNode(txt))        
+      } else if (required) {
+        goog.dom.appendChild(element, goog.dom.createTextNode('?'))
       }
+    } else if (txt.length || this.required) {
+      element.setAttribute(this.attributeName, txt)
+    } else if (this.model.custom_placeholder) {
+      element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
     }
   }
+}
+
+/**
+ * Customize the placeholder.
+ * For edython.
+ * @param {String} txt the new placeholder.
+ */
+eYo.Data.prototype.customizePlaceholder = function (txt) {
+  if (txt == this.model.placeholder) {
+    return
+  }
+  if (goog.isDef(this.model.custom_placeholder)) {
+    this.model.custom_placeholder = txt
+    return
+  }
+  var m = {}
+  goog.mixin(m, this.model)
+  this.model = m
+  m.placeholder = m.custom_placeholder = txt
 }
 
 /**
@@ -849,24 +867,26 @@ eYo.Data.prototype.load = function (element) {
     this.setRequiredFromModel(false)
     var txt
     if (isText) {
+      // get the first child
+      var done
       eYo.Do.forEachChild(element, function (child) {
         if (child.nodeType === Node.TEXT_NODE) {
           txt = child.nodeValue
           if (xml && goog.isFunction(xml.didLoad)) {
             xml.didLoad.call(this, element)
           }
-          return true
+          return done = true
         }
       })
+      if (!done) {
+        this.customizePlaceholder(element.getAttribute(eYo.Key.PLACEHOLDER))
+      }
     } else {
       txt = element.getAttribute(this.attributeName)
       if (!goog.isDefAndNotNull(txt)) {
         txt = element.getAttribute(this.attributeName + '_placeholder')
         if (txt) {
-          var m = {}
-          goog.mixin(m, this.model)
-          this.model = m
-          m.placeholder = txt
+          this.customizePlaceholder(txt)
           this.setRequiredFromModel(true)
           if (xml && goog.isFunction(xml.didLoad)) {
             xml.didLoad.call(this, element)

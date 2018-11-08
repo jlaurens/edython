@@ -215,7 +215,11 @@ Object.defineProperties(
  * set the `Size`.
  */
 eYo.Size.prototype.set = function (c = 0, l = 0) {
-  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+  if (goog.isDef(c.width) && goog.isDef(c.height)) {
+    this.width = c.width
+    this.height = c.height
+    return
+  } else if (goog.isDef(c.c) && goog.isDef(c.l)) {
     c = c.c || 0
     l = c.l || 0
   } else if (goog.isDef(c.x) && goog.isDef(c.y)) {

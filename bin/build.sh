@@ -258,6 +258,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/model/cmath_model.js" \
+--js "src/lib/eyo/model/datastructures_model.js" \
 --js "src/lib/eyo/model/decimal_model.js" \
 --js "src/lib/eyo/model/fractions_model.js" \
 --js "src/lib/eyo/model/functions_model.js" \
@@ -265,6 +266,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/model/random_model.js" \
 --js "src/lib/eyo/model/statistics_model.js" \
 --js "src/lib/eyo/model/stdtypes_model.js" \
+--js "src/lib/eyo/model/string_model.js" \
 --js "src/lib/eyo/model/turtle_model.js" \
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/data.js" \

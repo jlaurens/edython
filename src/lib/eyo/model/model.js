@@ -47,6 +47,11 @@ Object.defineProperties(
       get () {
         return this.model.data.types[this.type_]
       }
+    },
+    ary: {
+      get () {
+        return this.arguments ? this.arguments.length : 0
+      }
     }
   }
 )

@@ -151,11 +151,9 @@ eYo.FlyoutCategory.basic_random__module = [
       parent: 'random',
       variant: eYo.Key.NAME
     },
-    slots: {
-      arguments: {
-        slots: {
-          O: 10
-        }
+    n_ary_s: {
+      slots: {
+        O: 10
       }
     },
     title: 'random__randrange'
@@ -239,11 +237,9 @@ eYo.FlyoutCategory.random__module = [
   F('weibullvariate', 'Distribution de Weibull'),
   {
     type: eYo.T3.Expr.random__randrange,
-    slots: {
-      arguments: {
-        slots: {
-          O: 10
-        }
+    n_ary_s: {
+      slots: {
+        O: 10
       }
     },
     title: 'random__randrange'

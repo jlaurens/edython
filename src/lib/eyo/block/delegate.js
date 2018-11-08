@@ -86,6 +86,11 @@ Object.defineProperties(
         return this.block_.id
       }
     },
+    type: {
+      get () {
+        return this.block_.type
+      }
+    },
     model: {
       get () {
         return this.constructor.eyo.model
@@ -341,7 +346,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 }
 
 /**
- * Called when data and slots have loaded..
+ * Called when data and slots have loaded.
  */
 eYo.Delegate.prototype.didLoad = function () {
   this.foreachData(function () {
@@ -350,6 +355,46 @@ eYo.Delegate.prototype.didLoad = function () {
   this.foreachSlot(function () {
     this.didLoad()
   })
+}
+
+/**
+ * Tests if two block delegates are equal.
+ * Blocks must be of the same type.
+ * Lists and dictionaries are managed differently.
+ * Usefull for testing purposes for example.
+ * @param {?eYo.Delegate} rhs  Another block delegate
+ */
+eYo.Delegate.prototype.equals = function (rhs) {
+  var equals = rhs && (this.type == rhs.type)
+  if (equals) {
+    this.foreachData(function () {
+      var r_data = rhs.data[this.key]
+      equals = r_data && (this.get() == r_data.get() || (this.isIncog() && r_data.isIncog()))
+      return equals // breaks if false
+    })
+    if (equals) {
+      this.foreachSlot(function () {
+        var r_slot = rhs.slots[this.key]
+        if (this.isIncog()) {
+          equals = !r_slot || r_slot.isIncog()
+        } else if (r_slot) {
+          if (r_slot.isIncog()) {
+            equals = false
+          } else {
+            var target = this.targetBlock()
+            var r_target = r_slot.targetBlock()
+            equals = target
+              ? r_target && target.eyo.equals(r_target.eyo)
+              : !r_target
+          }
+        } else {
+          equals = false
+        }
+        return equals // breaks if false
+      })
+    }
+  }
+  return equals
 }
 
 /**
@@ -1442,10 +1487,9 @@ eYo.Delegate.prototype.init = function () {
 
 /**
 * Deinitialize a block. Nothing to do yet.
-* @param {!Blockly.Block} block to be deinitialized..
 * @constructor
 */
-eYo.Delegate.prototype.deinit = function (block) {
+eYo.Delegate.prototype.deinit = function () {
 }
 
 /**

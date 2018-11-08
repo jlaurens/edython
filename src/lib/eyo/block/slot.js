@@ -738,7 +738,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
   }.call(this))
   if (!out && this.isRequiredToModel()) {
     var child = goog.dom.createDom(eYo.Xml.EXPR)
-    child.setAttribute(eYo.Key.EYO, 'placeholder')
+    child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
     child.setAttribute(eYo.Xml.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
@@ -802,7 +802,7 @@ eYo.Slot.prototype.load = function (element, recover) {
           attribute = child.getAttribute(eYo.Xml.FLOW)
         }
         if (attribute === this.key) {
-          if (child.getAttribute(eYo.Key.EYO) === 'placeholder') {
+          if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
             this.setRequiredFromModel(true)
             out = true
           } else if (target) {

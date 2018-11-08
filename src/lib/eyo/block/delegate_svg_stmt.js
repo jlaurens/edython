@@ -444,7 +444,7 @@ eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
   slots: {
-    del: {
+    n_ary: {
       order: 1,
       fields: {
         label: 'del'
@@ -514,7 +514,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         }
       },
       xml: {
-        text: true,
+        text: true, // there must be an only one
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.whenRequiredFromModel(function () {

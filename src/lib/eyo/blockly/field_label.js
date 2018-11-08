@@ -88,7 +88,9 @@ eYo.FieldLabel.prototype.init = function () {
  * @suppress{accessControls}
  */
 Blockly.Field.prototype.updateWidth = function () {
-  var width = Blockly.Field.getCachedWidth(this.textElement_)
+  var width = this.eyo
+  ? this.eyo.size.width
+  : Blockly.Field.getCachedWidth(this.textElement_)
   if (this.borderRect_) {
     this.borderRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h)
   }

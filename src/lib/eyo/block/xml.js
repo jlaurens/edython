@@ -70,8 +70,6 @@ eYo.Xml = {
   PARAMETER: 'parameter',
   LAMBDA: 'lambda',
   CALL: 'call',
-  BUILTIN: 'builtin',
-  BUILTIN_CALL: 'builtin__call',
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
 
@@ -80,8 +78,6 @@ eYo.Xml = {
   WORKSPACE: 'workspace', // tag name
   CONTENT: 'content', // tag name
   EDYTHON: 'edython', // tag name
-
-  PLACEHOLDER: 'placeholder'
 }
 
 console.warn('No eYo.Xml.CALL !!!!')
@@ -472,7 +468,7 @@ goog.require('eYo.DelegateSvg.Expr')
  */
 eYo.Delegate.prototype.tagName = function () {
   var tag = this.constructor.eyo.tagName || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.XML.PLACEHOLDER)
+  return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.Key.PLACEHOLDER)
 }
 
 goog.require('eYo.DelegateSvg.Group')
@@ -529,60 +525,72 @@ goog.provide('eYo.Xml.Literal')
  * @param {!Element} element dom element to be completed.
  * @override
  */
-eYo.Xml.Literal.domToBlock = function (element, workspace) {
-  if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
-    return
-  }
-  // is it a statement or an expression ?
-  var stmt_expected = element.tagName.toLowerCase() === 's'
-  var id = element.getAttribute('id')
-  var block
-  eYo.Do.someChild(element, function (child) {
-    if (child.nodeType === Node.TEXT_NODE) {
-      var text = child.nodeValue
+eYo.Xml.Literal.domToBlock = (function () {
+  var newBlock = function (text, id, stmt_expected) {
+    if (text && text.length) {
       var type = eYo.Do.typeOfString(text, null).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:
       case eYo.T3.Expr.imagnumber:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.numberliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.numberliteral, id)
       case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
       case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected ? eYo.T3.Stmt.docstring_stmt : eYo.T3.Expr.longliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected
+          ? eYo.T3.Stmt.docstring_stmt
+          : eYo.T3.Expr.longliteral, id)
       case eYo.T3.Expr.longbytesliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
-        break
-      }
-      if (block) {
-        block.eyo.data.value.set(text)
-        return true
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
       }
     }
-  })
-  return block || eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
-}
+  }
+  return function (element, workspace) {
+    if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
+      return
+    }
+    // is it a statement or an expression ?
+    var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
+    var id = element.getAttribute('id')
+    var block
+    eYo.Do.someChild(element, function (child) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        return block = newBlock(child.nodeValue, id, stmt_expected)
+      }
+    })
+    if (!block) {
+      // there was no text node to infer the type
+      block = newBlock(element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+    }
+    return block || eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
+  }
+}) ()
 
 goog.provide('eYo.Xml.Data')
 
 /**
- * Convert the block's data.
- * List all the available data and converts them to xml.
+ * Save the block's data.
  * For edython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
+ * @param {Element} element the persistent element.
  */
-eYo.Xml.Data.toDom = function (block, element) {
-  block.eyo.foreachData(function () {
+eYo.Delegate.prototype.saveData = function (element) {
+  this.foreachData(function () {
     this.save(element)
+  })
+}
+
+/**
+ * Save the block's slots.
+ * For edython.
+ * @param {Element} element the persistent element.
+ * @param {?Boolean} opt_noId
+ */
+eYo.Delegate.prototype.saveSlots = function (element, opt_noId) {
+  this.foreachSlot(function () {
+    this.save(element, opt_noId)
   })
 }
 
@@ -645,11 +653,8 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
     ((controller = eyo.constructor) && goog.isFunction(controller.toDom))) {
     return controller.toDom.call(eyo, block, element, optNoId, optNoNext)
   } else {
-    eYo.Xml.Data.toDom(block, element, optNoId)
-    // save slots
-    eyo.foreachSlot(function () {
-      this.save(element, optNoId)
-    })
+    block.eyo.saveData(element)
+    block.eyo.saveSlots(element, optNoId)
     var blockToDom = function (c8n, name, key) {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
@@ -926,6 +931,7 @@ eYo.Xml.domToBlock = (function () {
     (block = eYo.Xml.Comparison.domToBlock(dom, workspace)) ||
     (block = eYo.Xml.Group.domToBlock(dom, workspace)) ||
     (block = eYo.Xml.Call.domToBlock(dom, workspace))) {
+      eYo.Xml.fromDom(block, dom, recover)
       return block
     }
     // is there a simple correspondance with a known type
@@ -943,6 +949,7 @@ eYo.Xml.domToBlock = (function () {
             }
           }
         } () ) )) {
+          // no prototype found, bail out.
           return block
         }
       }

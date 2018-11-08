@@ -59,9 +59,7 @@ eYo.Block.prototype.dispose = function (healStack) {
       setTimeout(function () { target.select() }, 100)// broken for outputConnection ?
     }
   }
-  if (this.eyo) {
-    this.eyo.deinit(this)
-  }
+  this.eyo && this.eyo.deinit()
   eYo.Block.superClass_.dispose.call(this, healStack)
 }
 

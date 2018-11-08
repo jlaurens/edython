@@ -181,6 +181,8 @@ eYo.Tooltip.Title = {
   min: 'Trouver le minimum d\'une liste, un ensemble, un tuple',
   max: 'Trouver le maximum d\'une liste, un ensemble, un tuple',
   sum: 'Trouver la somme des éléments d\'une liste, un ensemble, un tuple',
+  all: 'Vrai si tous les éléments d\'une liste, un ensemble, un tuple, sont vrais',
+  any: 'Vrai si l\'un des éléments d\'une liste, un ensemble, un tuple, est vrai',
   list: 'Convertir en liste',
   named_slicing: 'Obtenir un ou plusieurs éléments d\'une liste',
   proper_slice: 'Arguments d\'extraction d\'éléments d\'une liste (à glisser entre [ et ])',

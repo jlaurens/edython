@@ -438,7 +438,7 @@ eYo.Do.typeOfString = function (candidate, module) {
       return ans
     }
   } else {
-    ans = f('functions') || f('stdtypes')
+    ans = f('functions') || f('stdtypes') || f('datastructures')
     if (ans) {
       return ans
     }
@@ -856,6 +856,10 @@ eYo.Do.someElementChild = function (element, handler, thisObject) {
       return handler.call(thisObject, child)
     }
   })
+}
+
+eYo.Do.valueOf = function (f) {
+  return goog.isFunction(f) ? f.call() : f
 }
 
 eYo.Do.nothing = function () {

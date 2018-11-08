@@ -31,6 +31,29 @@ blablabla</p>
 
 This `dl` element contains other `dl` element for methods.
 
+Another example of class
+
+<dl class="class">
+<dt id="string.Template">
+<em class="property">class </em><code class="descclassname">string.</code><code class="descname">Template</code><span class="sig-paren">(</span><em>template</em><span class="sig-paren">)</span><a class="headerlink" href="#string.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>The constructor takes a single argument which is the template string.</p>
+<dl class="method">
+<dt id="string.Template.substitute">
+<code class="descname">substitute</code><span class="sig-paren">(</span><em>mapping</em>, <em>**kwds</em><span class="sig-paren">)...
+...
+</dd></dl>
+
+</dd></dl>
+
+
+For the datastructures, the entry is
+
+<dl class="method">
+<dt>
+<code class="descclassname">list.</code><code class="descname">append</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span></dt>
+<dd><p>Add an item to the end of the list.  Equivalent to <code class="docutils literal notranslate"><span class="pre">a[len(a):]</span> <span class="pre">=</span> <span class="pre">[x]</span></code>.</p>
+</dd></dl>
+
 """
 import xml.etree.ElementTree as ET
 import urllib.request
@@ -40,6 +63,7 @@ import datetime
 import argparse
 import io
 import math
+import string
 
 def do_one_module(module, suffix, verbose):
         
@@ -49,6 +73,12 @@ def do_one_module(module, suffix, verbose):
         def do_module(txt):
             if txt.startswith('Return')\
                     or txt.startswith('Retrieve')\
+                    or txt.startswith('The concatenation of the ')\
+                    or txt.startswith('The lowercase letters ')\
+                    or txt.startswith('The uppercase letters ')\
+                    or txt.startswith('The string ')\
+                    or txt.startswith('String of ASCII characters which are considered ')\
+                    or txt.startswith('A string containing all ASCII characters ')\
                     or re.match(r'^[^\.]*returns?', txt, re.S | re.I) is not None\
                     or re.match(r'^.*\.\s*Returns?', txt, re.S) is not None:
                 return True
@@ -59,6 +89,17 @@ def do_one_module(module, suffix, verbose):
             except:
                 pass
             return False
+
+        @staticmethod
+        def do_string(txt):
+            if txt.startswith('The concatenation of the ')\
+                    or txt.startswith('The lowercase letters ')\
+                    or txt.startswith('The uppercase letters ')\
+                    or txt.startswith('The string ')\
+                    or txt.startswith('String of ASCII characters which are considered ')\
+                    or txt.startswith('A string containing all ASCII characters ')\
+                    or re.match(r'^\s*The constructor', txt, re.S) is not None:
+                return True
 
         @staticmethod
         def do_name_functions(txt):
@@ -136,6 +177,7 @@ def do_one_module(module, suffix, verbose):
         arguments = None
         keyword_arguments = None
         class_name = None
+        holder_name = None
         returner = None
         description = None
         filter = None
@@ -156,12 +198,13 @@ def do_one_module(module, suffix, verbose):
                 if self.filter.do_module(self.description):
                     self.returner = True
             dt = dl.find("{http://www.w3.org/1999/xhtml}dt[@id]")
-            if dt is None:
-                return
-            self.name = dt.attrib['id'].split('.')[-1]
-            self.type = self.filter.do_type_module(dl.get('class'), self.name)
-            if self.type in ['attribute', 'exception']:
-                self.returner = True
+            if dt is not None:
+                components = dt.attrib['id'].split('.')
+                self.name = components[-1]
+                self.class_name = '.'.join(components[0:-1:1])
+                self.type = self.filter.do_type_module(dl.get('class'), self.name)
+                if self.type in ['attribute', 'exception']:
+                    self.returner = True
             for dt in dl.findall("{http://www.w3.org/1999/xhtml}dt"):
                 self.parse_dt(dt)
 
@@ -242,16 +285,25 @@ and its first attribute
 <dd><p>The value of …</p>
 </dd>
 
+Example of `dt` for the `append`list method.
+<dt>
+<code class="descclassname">list.</code><code class="descname">append</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span></dt>
+<dd><p>Add an item to the end of the list.  Equivalent to <code class="docutils literal notranslate"><span class="pre">a[len(a):]</span> <span class="pre">=</span> <span class="pre">[x]</span></code>.</p>
+</dd>
 
 """
             element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descclass_name']")
+            if element is None:
+                # thing may have changed in the documentation
+                element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descclassname']")
             if element is not None:
-                descclass_name = element.text.strip()
+                descclass_name = element.text.strip("." + string.whitespace)
                 if self.class_name is None:
                     if len(descclass_name):
                         self.class_name = descclass_name
                 elif len(descclass_name) and self.class_name != descclass_name:
-                    print('! discordant descclass_name', self.class_name, descclass_name)
+                    self.holder_name = self.class_name
+                    self.class_name = descclass_name
             call = "".join(dt.itertext()).strip()
             m = re.match(r'^(?:\S+\s+)?'
                         r'(?:(?P<class>\S+)\.)?'
@@ -447,10 +499,21 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
         def do_import(self):
             print('Importing', self.path_in)
             if not self.path_in.exists():
-                urllib.request.urlretrieve (
-                    "https://docs.python.org/3.6/library/{}.html".format(self.key),
-                    self.path_in
-                ) # this line needs certification
+                url = "https://docs.python.org/3.6/library/{}.html".format(self.key)
+                print('Downloading', url)
+                try:
+                    urllib.request.urlretrieve (
+                        url,
+                        self.path_in
+                    ) # this line needs certification
+                except:
+                    print('Failed')
+                    url = "https://docs.python.org/3.6/tutorial/{}.html".format(self.key)
+                    print('Downloading', url)
+                    urllib.request.urlretrieve (
+                        url,
+                        self.path_in
+                    ) # this line needs certification
             with self.path_in.open('r', encoding='utf-8') as f:
                 contents = f.read()
                 f.close()
@@ -493,17 +556,17 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
             kv_args['file'] = self.f
             print(*args, **kv_args)
 
-        def print(self, *args, nl=False, s7r=None, **kv_args):
+        def do_print(self, *args, nl=False, s7r=None, **kv_args):
             self.raw_print(s7r if s7r is not None else "", "\n" if nl else "" , self.indent, *args, **kv_args)
 
         def up_print(self, *args, **kv_args):
             self.depth -= 1
             kv_args['nl'] = True
-            self.print(*args, **kv_args)
+            self.do_print(*args, **kv_args)
 
         def down_print(self, *args, **kv_args):
             kv_args['nl'] = True
-            self.print(*args, **kv_args)
+            self.do_print(*args, **kv_args)
             self.depth += 1
 
         def print_item(self, separator, item):
@@ -526,19 +589,20 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                     key = key.replace('_index', '')
                 if attr is math.inf:
                     attr = 'Infinity'
-                self.print(template.format(key, attr), s7r=s7r, nl=True)
+                self.do_print(template.format(key, attr), s7r=s7r, nl=True)
 
             self.down_print("new Item({", s7r=separator)
             do_print_attribute(item, 'name', s7r='')
             do_print_attribute(item, 'class_name', key='class')
+            do_print_attribute(item, 'holder_name', key='holder')
             do_print_attribute(item, 'category_index')
             do_print_attribute(item, 'type_index')
             if item.returner is None:
-                self.print("stmt: true", s7r=',', nl=True)
+                self.do_print("stmt: true", s7r=',', nl=True)
 
             arguments = item.arguments
             if arguments is not None and len(arguments) > 0:
-                do_print_attribute(item, 'ary')
+                # do_print_attribute(item, 'ary')
                 if item.ary != item.mandatory:
                     do_print_attribute(item, 'mandatory')
                 self.down_print("arguments: [", s7r=',')
@@ -549,7 +613,7 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                     if argument.default is not None:
                         do_print_attribute(argument, 'default', s7r=",")
                     if argument.optional:
-                        self.print('optional: true', nl=True, s7r=",")
+                        self.do_print('optional: true', nl=True, s7r=",")
                     self.up_print("}")
                     end = ','
                 self.up_print("]")
@@ -565,14 +629,14 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                 self.down_print('categories: [')
                 separator = ''
                 for category in list(x[0] for x in sorted(list((k,v) for k,v in self.categories.items()), key= lambda x: x[1])):
-                    self.print("'{}'".format(category), s7r=separator, nl=True)
+                    self.do_print("'{}'".format(category), s7r=separator, nl=True)
                     separator = ','
                 del separator
                 self.up_print('],')
                 self.down_print('types: [')
                 separator = ''
                 for tipe in list(x[0] for x in sorted(list((k,v) for k,v in self.types.items()), key=lambda x: x[1])):
-                    self.print("'{}'".format(tipe), s7r=separator, nl=True)
+                    self.do_print("'{}'".format(tipe), s7r=separator, nl=True)
                     separator = ','
                 self.up_print('],')
                 self.down_print('items: [')
@@ -584,7 +648,7 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                 self.down_print('by_name: {')
                 separator = ''
                 for (name, index) in self.items_by_name.items():
-                    self.print("'{}': {}".format(name, index), s7r=separator, nl=True)
+                    self.do_print("'{}': {}".format(name, index), s7r=separator, nl=True)
                     separator = ','
                 self.up_print('},')
                 self.down_print('by_category: {')
@@ -595,7 +659,7 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                         if item.category_index == index:
                             ra.append(str(item.index))
                     if len(ra) > 0:
-                        self.print("{}: [{}]".format(index, ", ".join(ra)), s7r=separator, nl=True)
+                        self.do_print("{}: [{}]".format(index, ", ".join(ra)), s7r=separator, nl=True)
                         separator = ","
                 self.up_print('},', nl=True)
                 self.down_print('by_type: {')
@@ -606,12 +670,12 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                         if item.type_index == index:
                             ra.append(str(item.index))
                     if len(ra) > 0:
-                        self.print("{}: [{}]".format(index, ", ".join(ra)), s7r=separator, nl=True)
+                        self.do_print("{}: [{}]".format(index, ", ".join(ra)), s7r=separator, nl=True)
                         separator = ","
                 self.up_print('}', nl=True)
                 self.up_print('}', nl=True)
-                self.print(self.suffix_, nl=True)
-                self.print(
+                self.do_print(self.suffix_, nl=True)
+                self.do_print(
                     '// This file was generated by `python3 ./bin/helpers/modulebot.py {{--no-suffix}}{{module}}`' + ' on {}\n\n'.format(
                         datetime.datetime.utcnow()),
                     nl=True)

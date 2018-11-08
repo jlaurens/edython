@@ -117,8 +117,6 @@ eYo.FieldTextInput.prototype.init = function () {
   if (this.eyo.css_class) {
     goog.dom.classlist.add(this.textElement_, this.eyo.css_class)
   }
-  // Force a render.
-  this.render_()
 }
 
 /**
@@ -137,8 +135,8 @@ eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
  **/
 eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
-  var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.editRect_) {
+    var width = this.eyo.size.width
     this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Unit.x : 0))
   }
 }
@@ -390,16 +388,14 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
       if (data) {
         var model = data.model
         var placeholder = model && data.model.placeholder
-        if (goog.isString(placeholder)) {
-          return placeholder
-        } else if (goog.isFunction(placeholder) && this.sourceBlock_) {
-          return placeholder.call(this)
+        if (goog.isDefAndNotNull(placeholder)) {
+          return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
         }
       }
       model = this.eyo && this.eyo.model
       if (model) {
         var placeholder = model.placeholder
-        return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this))
+        return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
       }
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE

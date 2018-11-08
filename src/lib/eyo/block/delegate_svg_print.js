@@ -85,7 +85,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
     }
   },
   slots: {
-    arguments: {
+    n_ary: {
       order: 1,
       fields: {
         start: '(',
@@ -127,7 +127,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function () {
  */
 eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var list = block.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
+  var list = block.getInput(eYo.Key.N_ARY).connection.targetBlock()
   var c10r = list.eyo.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {

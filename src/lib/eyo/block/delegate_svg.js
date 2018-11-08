@@ -182,9 +182,8 @@ eYo.DelegateSvg.prototype.init = eYo.Decorate.reentrant_method(
 console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of init.
- * @param {!Blockly.Block} block to be initialized..
  */
-eYo.DelegateSvg.prototype.deinit = function (block) {
+eYo.DelegateSvg.prototype.deinit = function () {
   goog.dom.removeNode(this.svgRoot_)
   this.svgRoot_ = undefined
   // just in case the path were not already removed as child or a removed parent
@@ -200,7 +199,7 @@ eYo.DelegateSvg.prototype.deinit = function (block) {
   this.svgPathHighlight_ = undefined
   goog.dom.removeNode(this.svgPathConnection_)
   this.svgPathConnection_ = undefined
-  eYo.DelegateSvg.superClass_.deinit.call(this, block)
+  eYo.DelegateSvg.superClass_.deinit.call(this)
 }
 
 /**
@@ -1480,6 +1479,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       // Replace the text.
       goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
       f_eyo.size.set(text.length, 1)
+      field.updateWidth()
       if (text.length) {
         this.renderDrawEnding_(io)
         this.renderDrawPending_(io)
@@ -2010,28 +2010,33 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         }
         Vs = model
         block.eyo.foreachSlot(function () {
+          var input = this.input
+          if (!input || !input.connection) {
+            return
+          }
           k = this.key + '_s'
-          if (eYo.Do.hasOwnProperty(model, k)) {
-            var input = this.input
-            if (input && input.connection) {
-              var target = input.connection.targetBlock()
-              var V = Vs[k]
-              var B = processModel(target, V)
-              if (!target && B && B.outputConnection) {
-                B.eyo.changeWrap(
+          if (eYo.Do.hasOwnProperty(Vs, k)) {
+            var V = Vs[k]
+          } else if (Vs.slots && eYo.Do.hasOwnProperty(Vs.slots, this.key)) {
+            V = Vs.slots[this.key]
+          } else {
+            return
+          }
+          var target = input.connection.targetBlock()
+          var B = processModel(target, V)
+          if (!target && B && B.outputConnection) {
+            B.eyo.changeWrap(
+              function () {
+                block.eyo.changeWrap(
                   function () {
-                    block.eyo.changeWrap(
-                      function () {
-                        // The connection cas be established only with not incog
-                        var slot = input.connection.eyo.slot
-                        slot && slot.setIncog(false)
-                        B.outputConnection.connect(input.connection)
-                      }
-                    )
+                    // The connection cas be established only with not incog
+                    var slot = input.connection.eyo.slot
+                    slot && slot.setIncog(false)
+                    B.outputConnection.connect(input.connection)
                   }
                 )
               }
-            }
+            )
           }
         })
         // now blocks and slots have been set

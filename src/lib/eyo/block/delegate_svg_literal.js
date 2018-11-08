@@ -34,6 +34,19 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
 }, eYo.DelegateSvg)
 
 /**
+ * Save the block's data.
+ * For edython.
+ * @param {Element} element the persistent element.
+ */
+eYo.DelegateSvg.Literal.prototype.saveData = function (element) {
+  eYo.DelegateSvg.Literal.superClass_.saveData.call(this, element)
+  if (this.value_p == '') {
+    element.setAttribute(eYo.Key.PLACEHOLDER, this.data.value.model.placeholder)
+  }
+}
+
+
+/**
  * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
  * For edython.
  */
@@ -41,6 +54,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
       all: [
+        eYo.T3.Expr.unset,
         eYo.T3.Expr.integer,
         eYo.T3.Expr.floatnumber,
         eYo.T3.Expr.imagnumber
@@ -54,8 +68,8 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.data.type.getAll()
-        var type = eYo.Do.typeOfString(newValue, null).expr
-        return ((types.indexOf(type) >= 0) && {validated: newValue}) || null
+        var tos = eYo.Do.typeOfString(newValue, null)
+        return ((types.indexOf(tos.expr) >= 0 || tos.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -66,7 +80,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
       synchronize: true,
       xml: {
-        text: true,
+        text: true, // there must be an only one
       },
     }
   },
@@ -170,6 +184,16 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     content: {
       init: '',
+      placeholder: /** @suppress {globalThis} */ function () {
+        var block = this.sourceBlock_
+        var eyo = block.eyo
+        if (this.placeholderText_) {
+          return this.placeholderText_
+        }
+        var subtype = eyo.data.subtype.get()
+        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
+          ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.data.value.consolidate()
@@ -220,7 +244,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         }
       },
       xml: {
-        text: true,
+        text: true, // there must be an only one
       },
     },
   },
@@ -232,16 +256,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       css: 'reserved'
     },
     content: { // this is the only really unordered field
-      placeholder: /** @suppress {globalThis} */ function () {
-        var block = this.sourceBlock_
-        var eyo = block.eyo
-        if (this.placeholderText_) {
-          return this.placeholderText_
-        }
-        var subtype = eyo.data.subtype.get()
-        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
-          ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
-      },
       startEditing: /** @suppress {globalThis} */ function () {
         this.eyo.getDlgt().fields.end.setVisible(false)
       },
@@ -337,8 +351,7 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
  * @private
  */
 eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
   eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }

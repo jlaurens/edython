@@ -114,18 +114,3 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
   return txt
 }
 
-/**
- * Overriden by edython because of monospace fonts.
- * Gets the width of a text element, caching it in the process.
- * @param {!Element} textElement An SVG 'text' element.
- * @return {number} Width of element.
- */
-Blockly.Field.getCachedWidth = (function () {
-  var getCachedWidth = Blockly.Field.getCachedWidth
-  return function(textElement) {
-    if (this.eyo) {
-      return this.eyo.size_.width
-    }
-    return getCachedWidth(textElement)
-  };  
-}) ()

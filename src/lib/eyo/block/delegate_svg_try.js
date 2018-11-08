@@ -64,9 +64,8 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       hole_value: 'expression',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          if (variant.get() === variant.model.EXCEPT) {
-            variant.set(variant.model.EXCEPT_EXPRESSION)
+          if (this.owner.variant_p === eYo.Key.EXCEPT) {
+            this.owner.variant_p = eYo.Key.EXCEPT_EXPRESSION
           }
         }
       }
@@ -80,8 +79,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       hole_value: 'name',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.model.EXCEPT_AS)
+          this.owner.variant_p = eYo.Key.EXCEPT_AS
         }
       }
     }
@@ -113,9 +111,9 @@ eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
   function () {
     var block = this.block_
     this.setupType(
-      this.data.variant.get() > 0
-      ? eYo.T3.Stmt.except_part
-      : eYo.T3.Stmt.void_except_part
+      this.variant_p === eYo.Key.EXCEPT
+      ? eYo.T3.Stmt.void_except_part
+      : eYo.T3.Stmt.except_part
     )
     return block.type
   }
@@ -129,30 +127,29 @@ eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
  */
 eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var M = this.data.variant.model
-  var current = block.eyo.data.variant.get()
+  var current = this.variant_p
   var F = function (content, k) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(k)
+      block.eyo.variant_p = k
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('except:')
-  ), M.EXCEPT
+  ), eYo.Key.EXCEPT
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('except ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…:')
-  ), M.EXCEPT_EXPRESSION
+  ), eYo.Key.EXCEPT_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('except', 'eyo-code-reserved'),
     goog.dom.createTextNode(' … '),
     eYo.Do.createSPAN(' as', 'eyo-code-reserved'),
     goog.dom.createTextNode(' …:')
-  ), M.EXCEPT_AS
+  ), eYo.Key.EXCEPT_AS
   )
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
@@ -205,9 +202,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       hole_value: 'expression',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          if (variant.get() === variant.RAISE) {
-            variant.set(variant.RAISE_EXPRESSION)
+          if (this.owner.variant_p === variant.RAISE) {
+            this.owner.variant_p = eYo.Key.RAISE_EXPRESSION
           }
         }
       }
@@ -221,8 +217,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       hole_value: 'expression',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.model.RAISE_FROM)
+          this.owner.variant_p = eYo.Key.RAISE_FROM
         }
       }
     }
@@ -237,30 +232,29 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
  */
 eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var M = this.data.variant.model
-  var current = this.data.variant.get()
+  var current = this.variant_p
   var F = function (content, k) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(k)
+      block.eyo.variant_p = k
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('raise')
-  ), M.RAISE
+  ), eYo.Key.RAISE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('raise ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), M.RAISE_EXPRESSION
+  ), eYo.Key.RAISE_EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('raise', 'eyo-code-reserved'),
     goog.dom.createTextNode(' … '),
     eYo.Do.createSPAN(' from', 'eyo-code-reserved'),
     goog.dom.createTextNode(' …')
-  ), M.RAISE_FROM
+  ), eYo.Key.RAISE_FROM
   )
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
@@ -305,8 +299,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       hole_value: 'expression',
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(eYo.Key.BINARY)
+          this.owner.variant_p = eYo.Key.BINARY
         }
       }
     }
@@ -320,11 +313,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  * @private
  */
 eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var current = block.eyo.data.variant.get()
+  var variant_d = this.data.variant
+  var current = this.variant_p
   var F = function (content, key) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(key)
+      variant_d.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

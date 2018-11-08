@@ -25,52 +25,139 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
   data: {
-    builtin: {
-      all: [
-        eYo.Key.STATICMETHOD,
-        eYo.Key.CLASSMETHOD,
-        eYo.Key.PROPERTY
-      ],
-      synchronize: true
-    },
     property: {
       all: [
+        eYo.Key.NONE,
         eYo.Key.SETTER,
         eYo.Key.DELETER
       ],
-      synchronize: true
+      init: eYo.Key.NONE,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var dotted_name = this.owner.dotted_name_p
+        if (newValue === eYo.Key.SETTER) {
+          if (!dotted_name.endsWith('.setter')) {
+            this.owner.dotted_name_p = dotted_name + '.setter'
+          }
+        } else if (newValue === eYo.Key.DELETER) {
+          if (!dotted_name.endsWith('.deleter')) {
+            this.owner.dotted_name_p = dotted_name + '.deleter'
+          }
+        } else {
+          if (dotted_name.endsWith('.setter')) {
+            this.owner.dotted_name_p = dotted_name.substring(0, dotted_name.length - '.setter'.length)
+          } else if (dotted_name.endsWith('.deleter')) {
+            this.owner.dotted_name_p = dotted_name.substring(0, dotted_name.length - '.deleter'.length)
+          }
+        }
+        this.setIncog(newValue === eYo.Key.NONE)
+        // update the placeholder for the name field.
+        this.owner.data.name.field.placeholderText(true)
+      },
+      xml: false
     },
     variant: {
-      DOTTED_NAME: eYo.Key.DOTTED_NAME,
-      BUILTIN: eYo.Key.BUILTIN,
-      PROPERTY: eYo.Key.PROPERTY,
-      ARGUMENTS: eYo.Key.ARGUMENTS,
       all: [
-        eYo.Key.DOTTED_NAME,
-        eYo.Key.BUILTIN,
+        eYo.Key.NONE,
         eYo.Key.PROPERTY,
-        eYo.Key.ARGUMENTS
+        eYo.Key.STATICMETHOD,
+        eYo.Key.CLASSMETHOD,
+        eYo.Key.N_ARY
       ],
+      init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
+        this.setIncog(newValue !== eYo.Key.N_ARY)
         this.synchronize(newValue)
-        this.data.dotted_name.setIncog(newValue === this.BUILTIN) // disable the data not the slot
-        this.data.builtin.setIncog(newValue !== this.BUILTIN)
-        this.data.property.setIncog(newValue !== this.PROPERTY)
-        var slot = this.owner.arguments_s
-        slot.setIncog(newValue !== this.ARGUMENTS)
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue !== eYo.Key.PROPERTY) {
+          this.owner.property_p = eYo.Key.NONE
+        }
+        this.owner.n_ary_s.setIncog(newValue !== eYo.Key.N_ARY)
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.get() === eYo.Key.N_ARY) {
+            var target = this.owner.n_ary_s.targetBlock()
+            if (!target.childBlocks_.length) {
+              this.save(element)
+            }
+          }
+        }
       }
     },
-    dotted_name: {
-      all: [
+    name: {
+      all: [ // accepted types
         eYo.T3.Expr.dotted_name,
         eYo.T3.Expr.identifier,
         eYo.T3.Expr.unset
       ],
       init: '',
-      placeholder: eYo.Msg.Placeholder.DECORATOR,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      placeholder: /** @suppress {globalThis} */ function () {
+        var O = this.sourceBlock_.eyo    
+        return O.variant_p === eYo.Key.PROPERTY && O.property_p !== eYo.Key.NONE
+        ? eYo.Msg.Placeholder.IDENTIFIER
+        : eYo.Msg.Placeholder.DECORATOR
+      },
+      validate: /** @suppress {globalThis} */ function (newValue) {        
         var tos = eYo.Do.typeOfString(newValue, null)
-        return ((this.getAll().indexOf(tos.expr) >= 0) && {validated: newValue}) || null
+        if (this.getAll().indexOf(tos.expr) >= 0) {
+          return {validated: newValue}
+        }
+        return null
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var O = this.owner
+        var p = O.property_p
+        if (O.variant_p === eYo.Key.PROPERTY && p !== eYo.Key.NONE) {
+          newValue = newValue + '.' + p
+        }
+        O.dotted_name_p = newValue
+      },
+      xml: false
+    },
+    dotted_name: {
+      all: [ // accepted types
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.unset
+      ],
+      init: '',
+      validate: /** @suppress {globalThis} */ function (newValue) {        
+        var tos = eYo.Do.typeOfString(newValue, null)
+        if (this.getAll().indexOf(tos.expr) >= 0) {
+          return {validated: newValue}
+        }
+        return null
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue) {
+          if (newValue.endsWith('.setter')) {
+            this.owner.name_p = newValue.substring(0, newValue.length - '.setter'.length)
+            this.owner.variant_p = eYo.Key.PROPERTY
+            this.owner.property_p = eYo.Key.SETTER
+          } else if(newValue.endsWith('.deleter')) {
+            this.owner.name_p = newValue.substring(0, newValue.length - '.deleter'.length)
+            this.owner.variant_p = eYo.Key.PROPERTY
+            this.owner.property_p === eYo.Key.DELETER
+          } else {
+            if ([
+              eYo.Key.PROPERTY,
+              eYo.Key.STATICMETHOD,
+              eYo.Key.CLASSMETHOD
+            ].indexOf(newValue) >= 0) {
+              this.owner.variant_p = newValue
+            }
+            this.owner.name_p = newValue
+            this.owner.property_p = eYo.Key.NONE
+          }
+        } else {
+          this.owner.name_p = newValue
+          this.owner.property_p = eYo.Key.NONE
+        }
       },
       synchronize: true
     }
@@ -82,7 +169,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
     }
   },
   slots: {
-    dotted_name: {
+    name: {
       order: 1,
       fields: {
         bind: {
@@ -93,37 +180,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         }
       }
     },
-    builtin: {
+    property: {
       order: 2,
       fields: {
-        label: {
-          css: 'reserved'
-        }
-      },
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.BUILTIN)
-        }
-      }
-    },
-    property: {
-      order: 3,
-      fields: {
         prefix: '.',
-        label: {
+        bind: {
           css: 'reserved'
-        }
-      },
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.PROPERTY)
         }
       }
     },
-    arguments: {
-      order: 4,
+    n_ary: {
+      order: 3,
       fields: {
         start: '(',
         end: ')'
@@ -131,7 +198,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       wrap: eYo.T3.Expr.argument_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          this.owner.variant_p = eYo.Key.ARGUMENTS
+          if (this.targetBlock().childBlocks_.length) {
+            this.owner.variant_p = eYo.Key.N_ARY
+          }
         }
       }
     }
@@ -161,50 +230,63 @@ eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function () {
  * @override
  */
 eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var dotted_name = this.data.dotted_name.get()
-  var builtin = this.data.builtin.get()
-  var builtins = this.data.builtin.getAll()
-  var i_b = builtins.indexOf(builtin)
-  var M = this.data.variant.model
-  var current = this.data.variant.get
-  var property = this.data.property.get()
-  var properties = this.data.property.getAll()
-  var j_p = properties.indexOf(property)
-  var F = function (content, variant, i, j) {
-    if (current !== variant ||
-      (goog.isDefAndNotNull(i) && i !== i_b) ||
-      (goog.isDefAndNotNull(j) && j !== j_p)) {
-      var menuItem = mgr.newMenuItem(content, function () {
-        if (goog.isDef(i)) {
-          block.eyo.data.builtin.set(i)
-        } else if (goog.isDef(j)) {
-          block.eyo.data.property.set(j)
+  var name_d = this.data.name
+  var name_p = name_d.get()
+  var variant_d = this.data.variant
+  var variant_p = variant_d.get()
+  var property_d = this.data.property
+  var property_p = property_d.get()
+  if (variant_p !== eYo.Key.NONE) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.DECORATOR, 'eyo-code-placeholder')
+    )
+    mgr.addChild(mgr.newMenuItem(content, function () {
+      variant_d.set(eYo.Key.NONE)
+    }))
+  }
+  var builtins = [
+    eYo.Key.STATICMETHOD,
+    eYo.Key.CLASSMETHOD,
+    eYo.Key.PROPERTY
+  ]
+  for (var i = 0; i < builtins.length; i++) {
+    var builtin = builtins[i]
+    if (builtin !== name_p) {
+      var content = eYo.Do.createSPAN('@' + builtin, 'eyo-code-reserved')
+      mgr.addChild(mgr.newMenuItem(content, (function() {
+        var b = builtin
+        return function () {
+          variant_d.set(b)
+          name_d.set(b)
+          property_d.set(eYo.Key.NONE)
         }
-        block.eyo.data.variant.set(variant)
-      })
-      mgr.addChild(menuItem)
+      }) ()))
     }
   }
+  builtins = [
+    eYo.Key.SETTER,
+    eYo.Key.DELETER
+  ]
   for (var i = 0; i < builtins.length; i++) {
-    F(eYo.Do.createSPAN('@' + builtins[i], 'eyo-code-reserved'), M.BUILTIN, i)
+    var builtin = builtins[i]
+    if (builtin !== property_p) {
+      var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+        eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+        eYo.Do.createSPAN('.', 'eyo-code'),
+        eYo.Do.createSPAN(builtin, 'eyo-code-reserved')
+      )
+      mgr.addChild(mgr.newMenuItem(content, (function () {
+        var b = builtin
+        return function () {
+          variant_d.set(eYo.Key.PROPERTY)
+          property_d.set(b)
+        }
+      }) ()
+      ))
+    }
   }
-  for (var j = 0; j < properties.length; j++) {
-    F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('@', 'eyo-code-reserved'),
-      eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
-      eYo.Do.createSPAN('.' + properties[j], 'eyo-code-reserved')
-    ), M.PROPERTY, null, j)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('@', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder')
-  ), M.DOTTED_NAME)
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('@', 'eyo-code-reserved'),
-    eYo.Do.createSPAN(dotted_name || eYo.Msg.Placeholder.DECORATOR, !dotted_name && 'eyo-code-placeholder'),
-    goog.dom.createTextNode('(…)')
-  ), M.ARGUMENTS)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
@@ -306,13 +388,14 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
-      all: [eYo.Key.NONE, eYo.Key.ARGUMENTS],
+      all: [eYo.Key.NONE, eYo.Key.N_ARY],
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        var slot = this.owner.arguments_s
-        slot.required = newValue === eYo.Key..ARGUMENTS
+        var slot = this.owner.n_ary_s
+        slot.required = newValue === eYo.Key.N_ARY
         slot.setIncog()
-      }
+      },
+      xml: false
     },
     name: {
       init: '',
@@ -327,15 +410,11 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       synchronize: true
     }
   },
-  fields: {
-    label: {
-      value: 'class'
-    }
-  },
   slots: {
     name: {
       order: 1,
       fields: {
+        label: 'class',
         bind: {
           validate: true,
           endEditing: true,
@@ -343,7 +422,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
         }
       }
     },
-    arguments: {
+    n_ary: {
       order: 2,
       fields: {
         start: '(',
@@ -352,7 +431,9 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       wrap: eYo.T3.Expr.argument_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          this.owner.variant_p = eYo.Key.ARGUMENTS
+          if (this.isRequiredFromModel()) {
+            this.owner.variant_p = eYo.Key.N_ARY
+          }
         }
       }
     }

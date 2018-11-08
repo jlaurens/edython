@@ -43,21 +43,17 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.builtin__print_stmt,
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.call_expr,
-              data: 'input',
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'input',
+            n_ary_s: {
               slots: {
-                arguments: {
-                  slots: {
-                    O: "'...'"
-                  }
-                }
-              },
-            }, 
-          },
+                O: "'...'"
+              }
+            },
+          }, 
         },
       },
     },
@@ -67,22 +63,18 @@ eYo.FlyoutCategory = {
     */
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.call_expr,
-              data: 'int',
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'int',
+            n_ary_s: {
               slots: {
-                arguments: {
-                  slots: {
-                    O: {
-                      type: eYo.T3.Expr.call_expr,
-                      data: 'input'
-                    }
-                  }
+                O: {
+                  type: eYo.T3.Expr.call_expr,
+                  data: 'input'
                 }
-              },
+              }
             },
           },
         },
@@ -90,22 +82,18 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.call_expr,
-              data: 'float',
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'float',
+            n_ary_s: {
               slots: {
-                arguments: {
-                  slots: {
-                    O: {
-                      type: eYo.T3.Expr.call_expr,
-                      data: 'input'
-                    }
-                  }
+                O: {
+                  type: eYo.T3.Expr.call_expr,
+                  data: 'input'
                 }
-              },
+              }
             },
           },
         },
@@ -154,9 +142,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.identifier,
-      data: {
-        variant: eYo.Key.ALIASED
-      }
+      variant_d: eYo.Key.ALIASED
     },
     eYo.T3.Stmt.docstring_stmt,
     eYo.T3.Expr.longliteral,
@@ -242,44 +228,31 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.global_nonlocal_stmt,
-      variant_d: 'non_local'
+      variant_d: 'nonlocal'
     },
     eYo.T3.Stmt.decorator,
     {
       type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.STATICMETHOD
-      }
+      name_d: eYo.Key.STATICMETHOD
     },
     {
       type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.CLASSMETHOD
-      }
+      name_d: eYo.Key.CLASSMETHOD
     },
     {
       type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.PROPERTY
-      }
+      name_d: eYo.Key.PROPERTY
     }
   ],
   'list': [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.list_display,
-              slots: {
-                expression: "'...'",
-              },
-            }, 
-          },
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.list_display,
+            expression_s: "'...'"
+          }, 
         },
       },
     },
@@ -288,14 +261,10 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.slicing,
-      data: {
-        variant: eYo.Key.NAME
-      },
-      slots: {
-        slice: {
-          slots: {
-            O: 0
-          }
+      variant_d: eYo.Key.NAME,
+      slice_s: {
+        slots: {
+          O: 0
         }
       }
     },
@@ -311,43 +280,28 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'insert',
-            dotted: 1,
-            ary: 2
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'insert',
+        dotted_d: 1
       },
       title: 'list_insert'
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'append',
-            dotted: 1,
-            ary: 1
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'append',
+        dotted_d: 1
       },
       title: 'list_append'
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'remove',
-            dotted: 1,
-            ary: 1
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'remove',
+        dotted_d: 1
       },
       title: 'list_remove'
     },
@@ -355,8 +309,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        dotted: 1,
-        ary: 1
+        dotted: 1
       },
       title: 'list_index'
     },
@@ -364,8 +317,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        dotted: 1,
-        ary: 1
+        dotted: 1
       },
       title: 'list_count'
     },
@@ -373,8 +325,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'pop',
-        dotted: 1,
-        ary: 1
+        dotted: 1
       },
       slots: {
         n_ary: {
@@ -391,26 +342,41 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'reverse',
-        dotted: 1,
-        ary: 0
+        dotted: 1
       },
       title: 'list_reverse'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'min'
+      data: {
+        name: 'copy',
+        dotted: 1
+      },
+      title: 'list_copy'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'max'
+      name_d: 'min'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'sum'
+      name_d: 'max'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'list',
+      name_d: 'sum'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'all'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'any'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'list',
       slots: {
         n_ary: {
           slots: {
@@ -420,16 +386,22 @@ eYo.FlyoutCategory = {
       }
     },
     eYo.T3.Expr.proper_slice,
-    eYo.T3.Stmt.del_stmt
+    eYo.T3.Stmt.del_stmt,
+    {
+      type: eYo.T3.Stmt.del_stmt,
+      n_ary_s: {
+        slots: {
+          O: eYo.T3.Expr.slicing
+        }
+      }
+    }
   ],
   'text': [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: "'...'", 
-          },
+      rhs_s: {
+        slots: {
+          O: "'...'", 
         },
       },
       title: 'text_assignment'
@@ -437,11 +409,9 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.call_expr,
       data: 'print',
-      slots: {
-        n_ary: {
-          slots: {
-            O: "'...'"
-          }
+      n_ary_s: {
+        slots: {
+          O: "'...'"
         }
       }
     },
@@ -452,31 +422,27 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'startswith'
-      },
+      name_d: 'startswith',
+      dotted_d: 1,
       title: 'text_startswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'endswith',
+      name_d: 'endswith',
+      dotted_d: 1,
       title: 'text_endswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'find',
-        dotted: 1,
-        ary: 3
-      },
+      name_d: 'find',
+      dotted_d: 1,
       title: 'text_find'
     },
     {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'replace',
-        dotted: 1,
-        ary: 3
+        dotted: 1
       },
       title: 'text_replace'
     },
@@ -484,8 +450,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        dotted: 1,
-        ary: 3
+        dotted: 1
       },
       title: 'text_count'
     },
@@ -493,8 +458,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'upper',
-        dotted: 1,
-        ary: 0
+        dotted: 1
       },
       title: 'text_upper'
     },
@@ -502,8 +466,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'lower',
-        dotted: 1,
-        ary: 0
+        dotted: 1
       },
       title: 'text_lower'
     },
@@ -519,8 +482,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'split',
-        dotted: 1,
-        ary: 2
+        dotted: 1
       },
       title: 'text_split'
     },

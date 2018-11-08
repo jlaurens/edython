@@ -239,7 +239,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          if (this.get() || this.model.placeholder) {
+          if (this.get() || goog.isDef(this.model.placeholder)) {
             this.save(element, optNoId, optNoNext)
           }
         }
@@ -270,7 +270,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
           var target = this.owner.holder_s.input.connection.targetBlock()
           if (!target) {
-            if (this.get() || this.model.placeholder) {
+            if (this.get()) {
+              this.save(element, optNoId, optNoNext)
+            }
+            var v = eYo.Do.valueOf(this.model.placeholder)
+            v = v && v.toString().trim()
+            if (v.length>0) {
               this.save(element, optNoId, optNoNext)
             }
           }
@@ -292,7 +297,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          this.required = this.data.variant_p === eYo.Key.ALIASED
+          this.required = this.owner.variant_p === eYo.Key.ALIASED
           this.save(element, optNoId, optNoNext)
         }
       },
@@ -411,7 +416,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.updateProfile()
-        this.owner.arguments_s.setIncog(newValue !== this.CALL_EXPR)
+        this.owner.n_ary_s.setIncog(newValue !== this.CALL_EXPR)
         this.owner.slicing_s.setIncog(newValue !== this.SLICING)
         this.owner.alias_s.setIncog(newValue !== this.ALIASED)
         if (newValue !== this.NONE) {
@@ -495,7 +500,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         this.didChange(oldValue, newValue)
-        var input = this.owner.arguments_s.input
+        var input = this.owner.n_ary_s.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
@@ -506,9 +511,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          var variant_d = this.owner.data.variant
-          var variant = variant_d.get()
-          if (variant === variant_d.CALL_EXPR && this.get() !== Infinity) {
+          if (this.owner.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
+            if (this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
+              return
+            }
             this.save(element, optNoId, optNoNext)
           }
         }
@@ -544,7 +550,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var input = this.owner.arguments_s.input
+        var input = this.owner.n_ary_s.input
         if (input && input.connection) {
           var target = input.connection.targetBlock()
           if (target) {
@@ -555,9 +561,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
-          var variant_d = this.owner.data.variant
-          var variant = variant_d.get()
-          if (variant === variant_d.CALL_EXPR && this.get()) {
+          if (this.owner.profile_p && this.owner.variant_p === eYo.Key.CALL_EXPR && this.get()) {
+            if (this.owner.profile_p && this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
+              return
+            }
             this.save(element, optNoId, optNoNext)
           }
         }
@@ -687,7 +694,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       }
     },
-    arguments: {
+    n_ary: {
       order: 1000,
       fields: {
         start: '(',
@@ -1180,7 +1187,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
         }
       }
     }
-    f(this.arguments_s) || f(this.slicing_s)
+    f(this.n_ary_s) || f(this.slicing_s)
   }
   return input
 }
@@ -1236,7 +1243,7 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.
  */
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.init = function () {
   eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.init.call(this)
-  this.profile_ = undefined
+  this.profile_p = undefined
 }
 
 Object.defineProperty(
@@ -1244,12 +1251,12 @@ Object.defineProperty(
   'profile_p',
   {
     get () {
-      return this.profile_ === this.getProfile()
-        ? this.profile_
-        : (this.profile_ = this.getProfile()) // this should never happen
+      return this.profile_p === this.getProfile()
+        ? this.profile_p
+        : (this.profile_p = this.getProfile()) // this should never happen
     },
     set (newValue) {
-      this.profile_ = newValue
+      this.profile_p = newValue
     }
   }
 )
