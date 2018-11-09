@@ -113,11 +113,9 @@ var F_expr = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder_placeholder: 'T',
-      dotted: 1
-    },
+    name_d: name,
+    holder_placeholder: 'T',
+    dotted_d: 1,
     title: key
   }
 }
@@ -126,11 +124,9 @@ var F_stmt = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Stmt.call_stmt,
-    data: {
-      name: name,
-      holder_placeholder: 'T',
-      dotted: 1
-    },
+    name_d: name,
+    holder_placeholder: 'T',
+    dotted_d: 1,
     title: key
   }
 }
@@ -145,10 +141,8 @@ eYo.FlyoutCategory.turtle__module = [
         slots: {
           O: {
             type: eYo.T3.Expr.identifier,
-            data: {
-              name: 'turtle',
-              alias_placeholder: 'T'
-            }
+            name_d: 'turtle',
+            alias_placeholder: 'T'
           }
         }
       }
@@ -161,11 +155,9 @@ eYo.FlyoutCategory.turtle__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
-          data: {
-            holder_placeholder: 'T',
-            name: 'Turtle',
-            dotted: 1
-          }
+          name_d: 'Turtle',
+          holder_placeholder: 'T',
+          dotted_d: 1
         },
       },
     },

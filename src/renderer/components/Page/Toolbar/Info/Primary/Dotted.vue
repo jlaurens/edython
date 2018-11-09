@@ -101,7 +101,9 @@
         while ((module = this.moduleKeys[i++])) {
           d[module] = {
             key: module,
-            content: module + '.',
+            content: this.blockHolder === module
+              ? '<b>' + module + '.</b>'
+              : module + '.',
             title: '.',
             action (item) {
               // this.eyo.changeBegin()

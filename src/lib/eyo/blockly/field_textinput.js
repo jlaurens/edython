@@ -421,30 +421,6 @@ eYo.FieldInput.prototype.setValue = function (newValue) {
 }
 
 /**
- * Adds a 'eyo-code-error' class in case of error.
- * @private
- * @override
- * @suppress{accessControls}
- */
-eYo.FieldInput.prototype.render_ = function () {
-  if (!this.textElement_) {
-    // not yet available
-    return
-  }
-  eYo.FieldInput.superClass_.render_.call(this)
-  if (this.eyo.placeholder) {
-    goog.dom.classlist.add(this.textElement_, 'eyo-code-placeholder')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'eyo-code-placeholder')
-  }
-  if (this.eyo.isComment) {
-    goog.dom.classlist.add(this.textElement_, 'eyo-code-comment')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'eyo-code-comment')
-  }
-}
-
-/**
  * Class for an editable code field for variables.
  * @param {string} text The initial content of the field.
  * @param {Function=} optValidator An optional function that is called

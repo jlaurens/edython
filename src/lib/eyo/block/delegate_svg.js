@@ -1469,6 +1469,16 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
       root.setAttribute('display', 'none')
     } else {
       root.removeAttribute('display')
+      if (field.eyo.placeholder) {
+        goog.dom.classlist.add(field.textElement_, 'eyo-code-placeholder')
+      } else {
+        goog.dom.classlist.remove(field.textElement_, 'eyo-code-placeholder')
+      }
+      if (field.eyo.isComment) {
+        goog.dom.classlist.add(field.textElement_, 'eyo-code-comment')
+      } else {
+        goog.dom.classlist.remove(field.textElement_, 'eyo-code-comment')
+      }    
       // Actually, io.cursor points to the location where the field
       // is expected. It is relative to the enclosing `SVG` group,
       // which is either a block or a slot.

@@ -1103,6 +1103,10 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
           done = true
           this.setRequiredFromModel(true)
         }
+        k = this.key + '_placeholder'
+        if (eYo.Do.hasOwnProperty(model, k)) {
+          this.customizePlaceholder(model[k])
+        }
       })
     }
   )

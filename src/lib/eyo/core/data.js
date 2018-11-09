@@ -803,7 +803,7 @@ eYo.Data.prototype.save = function (element) {
         return
       }
     }
-    var required = this.required || (xml && xml.required) || goog.isDefAndNotNull(this.model.placeholder)
+    var required = this.required || (xml && xml.required)
     var isText = xml && xml.text
     var txt = this.toText()
     if (isText) {
@@ -812,10 +812,14 @@ eYo.Data.prototype.save = function (element) {
       } else if (required) {
         goog.dom.appendChild(element, goog.dom.createTextNode('?'))
       }
-    } else if (txt.length || this.required) {
+    } else if (txt.length) {
       element.setAttribute(this.attributeName, txt)
-    } else if (this.model.custom_placeholder) {
-      element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
+    } else if (this.required) {
+      if (this.model.custom_placeholder) {
+        element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
+      } else {
+        element.setAttribute(this.attributeName, txt)
+      }
     }
   }
 }

@@ -21,7 +21,7 @@
                         value="basic"
                         unchecked-value=""
                         v-if="canBasic"
-                        variant="light">
+                        button-variant="light">
           basic
         </b-form-checkbox>
       </div>
