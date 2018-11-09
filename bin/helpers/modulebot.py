@@ -65,7 +65,11 @@ import io
 import math
 import string
 
-def do_one_module(module, suffix, verbose):
+def do_one_module(module, **kwargs):
+
+    suffix = kwargs['suffix']
+    verbose = kwargs['verbose']
+    version = kwargs['version'] if 'version' in kwargs else '3.6'
         
     class Filter:
 
@@ -183,6 +187,7 @@ def do_one_module(module, suffix, verbose):
         filter = None
         mandatory_ = None
         star = False
+        href = None
 
         def __init__(self, owner, dl, filter=Filter):
             """Parses the dl dom element into an item
@@ -377,6 +382,10 @@ Example of `dt` for the `append`list method.
                 self.arguments = arguments
             elif len(self.arguments) < len(arguments):
                 self.arguments = arguments
+            # permalink
+            element = dt.find("{http://www.w3.org/1999/xhtml}a[@class='headerlink']")
+            if element is not None:
+                self.href = element.attrib['href']
 
         @property
         def ary(self):
@@ -437,6 +446,20 @@ goog.inherits(Item, eYo.Model.Item)
  */
 Item.prototype.model = eYo.Model.{{key}}
 
+Item.prototype.model.url = '{{url}}'
+
+Object.defineProperties(
+  Item.prototype,
+  {
+    url: {
+      get() {
+        return this.href
+          ? this.model.url + this.href
+          : this.model.url
+      }
+    }
+  }
+)
 """
         suffix_ = """/**
  * Get the item with the given key
@@ -484,6 +507,9 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
     return ra
   }
 }
+// register the types
+eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
+
 """
         def __init__(self, path_root, key):
             self.key = key
@@ -495,25 +521,27 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
             self.categories = {}
             self.types = {}
             self.depth = 0
+            self.url = "https://docs.python.org/" + version + "/library/{}.html".format(self.key)
 
         def do_import(self):
             print('Importing', self.path_in)
             if not self.path_in.exists():
-                url = "https://docs.python.org/3.6/library/{}.html".format(self.key)
-                print('Downloading', url)
+                print('Downloading', self.url)
                 try:
                     urllib.request.urlretrieve (
-                        url,
+                        self.url,
                         self.path_in
                     ) # this line needs certification
                 except:
                     print('Failed')
-                    url = "https://docs.python.org/3.6/tutorial/{}.html".format(self.key)
-                    print('Downloading', url)
+                    self.url = "https://docs.python.org/" + version + "/tutorial/{}.html".format(self.key)
+                    print('Downloading', self.url)
                     urllib.request.urlretrieve (
-                        url,
+                        self.url,
                         self.path_in
                     ) # this line needs certification
+            else:
+                self.url = self.path_in
             with self.path_in.open('r', encoding='utf-8') as f:
                 contents = f.read()
                 f.close()
@@ -597,6 +625,7 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
             do_print_attribute(item, 'holder_name', key='holder')
             do_print_attribute(item, 'category_index')
             do_print_attribute(item, 'type_index')
+            do_print_attribute(item, 'href')
             if item.returner is None:
                 self.do_print("stmt: true", s7r=',', nl=True)
 
@@ -685,7 +714,8 @@ eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
                 with self.path_out.open('w', encoding='utf-8') as f:
                     contents = contents.replace('{{module}}', module)
                     contents = contents.replace('{{key}}', self.key + suffix)
-                    contents = contents.replace('{{--no-suffix}}', '[--no-suffix] ' if suffix == '' else '')
+                    contents = contents.replace('{{url}}', str(self.url).replace('\'', '\\\''))
+                    contents = contents.replace('{{--no-suffix}}', '--no-suffix ' if suffix == '' else '')
                     print(contents, file=f)
                     if verbose:
                         print(contents)
@@ -708,4 +738,4 @@ parser.add_argument('--verbose', dest='verbose', action='store_const',
 args = parser.parse_args()
 
 for module in args.module:
-    do_one_module(module, args.suffix, args.verbose)
+    do_one_module(module, suffix = args.suffix, verbose = args.verbose)

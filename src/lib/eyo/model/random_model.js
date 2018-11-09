@@ -35,6 +35,20 @@ goog.inherits(Item, eYo.Model.Item)
  */
 Item.prototype.model = eYo.Model.random__module
 
+Item.prototype.model.url = 'https://docs.python.org/3.6/library/random.html'
+
+Object.defineProperties(
+  Item.prototype,
+  {
+    url: {
+      get() {
+        return this.href
+          ? this.model.url + this.href
+          : this.model.url
+      }
+    }
+  }
+)
 
 eYo.Model.random__module.data = {
   categories: [
@@ -54,6 +68,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 0,
       type_: 0,
+      href: '#random.seed',
       stmt: true,
       mandatory: 0,
       arguments: [
@@ -71,13 +86,15 @@ eYo.Model.random__module.data = {
       name: 'getstate',
       class: 'random',
       category: 0,
-      type_: 0
+      type_: 0,
+      href: '#random.getstate'
     }),
     new Item({
       name: 'setstate',
       class: 'random',
       category: 0,
       type_: 0,
+      href: '#random.setstate',
       stmt: true,
       arguments: [
         {
@@ -90,6 +107,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 0,
       type_: 0,
+      href: '#random.getrandbits',
       arguments: [
         {
           name: 'k'
@@ -101,6 +119,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 1,
       type_: 0,
+      href: '#random.randrange',
       mandatory: 2,
       arguments: [
         {
@@ -120,6 +139,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 1,
       type_: 0,
+      href: '#random.randint',
       arguments: [
         {
           name: 'a'
@@ -134,6 +154,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 2,
       type_: 0,
+      href: '#random.choice',
       arguments: [
         {
           name: 'seq'
@@ -145,6 +166,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 2,
       type_: 0,
+      href: '#random.choices',
       mandatory: 2,
       arguments: [
         {
@@ -172,6 +194,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 2,
       type_: 0,
+      href: '#random.shuffle',
       stmt: true,
       mandatory: 1,
       arguments: [
@@ -189,6 +212,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 2,
       type_: 0,
+      href: '#random.sample',
       arguments: [
         {
           name: 'population'
@@ -202,13 +226,15 @@ eYo.Model.random__module.data = {
       name: 'random',
       class: 'random',
       category: 3,
-      type_: 0
+      type_: 0,
+      href: '#random.random'
     }),
     new Item({
       name: 'uniform',
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.uniform',
       arguments: [
         {
           name: 'a'
@@ -223,6 +249,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.triangular',
       arguments: [
         {
           name: 'low'
@@ -240,6 +267,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.betavariate',
       arguments: [
         {
           name: 'alpha'
@@ -254,6 +282,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.expovariate',
       arguments: [
         {
           name: 'lambd'
@@ -265,6 +294,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.gammavariate',
       arguments: [
         {
           name: 'alpha'
@@ -279,6 +309,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.gauss',
       arguments: [
         {
           name: 'mu'
@@ -293,6 +324,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.lognormvariate',
       arguments: [
         {
           name: 'mu'
@@ -307,6 +339,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.normalvariate',
       arguments: [
         {
           name: 'mu'
@@ -321,6 +354,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.vonmisesvariate',
       arguments: [
         {
           name: 'mu'
@@ -335,6 +369,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.paretovariate',
       arguments: [
         {
           name: 'alpha'
@@ -346,6 +381,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 3,
       type_: 0,
+      href: '#random.weibullvariate',
       arguments: [
         {
           name: 'alpha'
@@ -360,6 +396,7 @@ eYo.Model.random__module.data = {
       class: 'random',
       category: 4,
       type_: 1,
+      href: '#random.SystemRandom',
       stmt: true,
       mandatory: 0,
       arguments: [
@@ -453,7 +490,10 @@ eYo.Model.random__module.getItemsInCategory = function (category, type) {
     return ra
   }
 }
+// register the types
+eYo.Model.Item.registerTypes(eYo.Model.random__module.data.types)
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2018-11-08 21:44:04.510062
+
+// This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2018-11-09 17:32:01.683722
 
 

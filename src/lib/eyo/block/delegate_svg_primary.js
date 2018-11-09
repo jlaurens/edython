@@ -1251,12 +1251,12 @@ Object.defineProperty(
   'profile_p',
   {
     get () {
-      return this.profile_p === this.getProfile()
-        ? this.profile_p
-        : (this.profile_p = this.getProfile()) // this should never happen
+      return this.profile_ === this.getProfile()
+        ? this.profile_
+        : (this.profile_ = this.getProfile()) // this should never happen
     },
     set (newValue) {
-      this.profile_p = newValue
+      this.profile_ = newValue
     }
   }
 )

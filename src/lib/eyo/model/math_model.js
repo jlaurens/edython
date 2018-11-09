@@ -35,6 +35,20 @@ goog.inherits(Item, eYo.Model.Item)
  */
 Item.prototype.model = eYo.Model.math__module
 
+Item.prototype.model.url = 'https://docs.python.org/3.6/library/math.html'
+
+Object.defineProperties(
+  Item.prototype,
+  {
+    url: {
+      get() {
+        return this.href
+          ? this.model.url + this.href
+          : this.model.url
+      }
+    }
+  }
+)
 
 eYo.Model.math__module.data = {
   categories: [
@@ -56,6 +70,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.ceil',
       arguments: [
         {
           name: 'x'
@@ -67,6 +82,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.copysign',
       arguments: [
         {
           name: 'x'
@@ -81,6 +97,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.fabs',
       arguments: [
         {
           name: 'x'
@@ -92,6 +109,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.factorial',
       arguments: [
         {
           name: 'x'
@@ -103,6 +121,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.floor',
       arguments: [
         {
           name: 'x'
@@ -114,6 +133,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.fmod',
       arguments: [
         {
           name: 'x'
@@ -128,6 +148,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.frexp',
       arguments: [
         {
           name: 'x'
@@ -139,6 +160,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.fsum',
       arguments: [
         {
           name: 'iterable'
@@ -150,6 +172,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.gcd',
       arguments: [
         {
           name: 'a'
@@ -164,6 +187,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.isclose',
       mandatory: 3,
       arguments: [
         {
@@ -190,6 +214,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.isfinite',
       arguments: [
         {
           name: 'x'
@@ -201,6 +226,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.isinf',
       arguments: [
         {
           name: 'x'
@@ -212,6 +238,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.isnan',
       arguments: [
         {
           name: 'x'
@@ -223,6 +250,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.ldexp',
       arguments: [
         {
           name: 'x'
@@ -237,6 +265,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.modf',
       arguments: [
         {
           name: 'x'
@@ -248,6 +277,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 0,
       type_: 0,
+      href: '#math.trunc',
       arguments: [
         {
           name: 'x'
@@ -259,6 +289,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.exp',
       arguments: [
         {
           name: 'x'
@@ -270,6 +301,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.expm1',
       arguments: [
         {
           name: 'x'
@@ -281,6 +313,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.log',
       mandatory: 1,
       arguments: [
         {
@@ -297,6 +330,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.log1p',
       arguments: [
         {
           name: 'x'
@@ -308,6 +342,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.log2',
       arguments: [
         {
           name: 'x'
@@ -319,6 +354,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.log10',
       arguments: [
         {
           name: 'x'
@@ -330,6 +366,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.pow',
       arguments: [
         {
           name: 'x'
@@ -344,6 +381,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 1,
       type_: 0,
+      href: '#math.sqrt',
       arguments: [
         {
           name: 'x'
@@ -355,6 +393,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.acos',
       arguments: [
         {
           name: 'x'
@@ -366,6 +405,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.asin',
       arguments: [
         {
           name: 'x'
@@ -377,6 +417,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.atan',
       arguments: [
         {
           name: 'x'
@@ -388,6 +429,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.atan2',
       arguments: [
         {
           name: 'y'
@@ -402,6 +444,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.cos',
       arguments: [
         {
           name: 'x'
@@ -413,6 +456,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.hypot',
       arguments: [
         {
           name: 'x'
@@ -427,6 +471,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.sin',
       arguments: [
         {
           name: 'x'
@@ -438,6 +483,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 2,
       type_: 0,
+      href: '#math.tan',
       arguments: [
         {
           name: 'x'
@@ -449,6 +495,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 3,
       type_: 0,
+      href: '#math.degrees',
       stmt: true,
       arguments: [
         {
@@ -461,6 +508,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 3,
       type_: 0,
+      href: '#math.radians',
       stmt: true,
       arguments: [
         {
@@ -473,6 +521,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.acosh',
       arguments: [
         {
           name: 'x'
@@ -484,6 +533,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.asinh',
       arguments: [
         {
           name: 'x'
@@ -495,6 +545,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.atanh',
       arguments: [
         {
           name: 'x'
@@ -506,6 +557,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.cosh',
       arguments: [
         {
           name: 'x'
@@ -517,6 +569,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.sinh',
       arguments: [
         {
           name: 'x'
@@ -528,6 +581,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 4,
       type_: 0,
+      href: '#math.tanh',
       arguments: [
         {
           name: 'x'
@@ -539,6 +593,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 5,
       type_: 0,
+      href: '#math.erf',
       arguments: [
         {
           name: 'x'
@@ -550,6 +605,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 5,
       type_: 0,
+      href: '#math.erfc',
       arguments: [
         {
           name: 'x'
@@ -561,6 +617,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 5,
       type_: 0,
+      href: '#math.gamma',
       arguments: [
         {
           name: 'x'
@@ -572,6 +629,7 @@ eYo.Model.math__module.data = {
       class: 'math',
       category: 5,
       type_: 0,
+      href: '#math.lgamma',
       arguments: [
         {
           name: 'x'
@@ -725,7 +783,10 @@ eYo.Model.math__module.getItemsInCategory = function (category, type) {
     return ra
   }
 }
+// register the types
+eYo.Model.Item.registerTypes(eYo.Model.math__module.data.types)
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2018-11-08 21:44:04.338963
+
+// This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2018-11-09 17:31:58.924936
 
 

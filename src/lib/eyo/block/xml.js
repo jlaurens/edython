@@ -526,7 +526,7 @@ goog.provide('eYo.Xml.Literal')
  * @override
  */
 eYo.Xml.Literal.domToBlock = (function () {
-  var newBlock = function (text, id, stmt_expected) {
+  var newBlock = function (workspace, text, id, stmt_expected) {
     if (text && text.length) {
       var type = eYo.Do.typeOfString(text, null).expr
       switch (type) {
@@ -558,12 +558,12 @@ eYo.Xml.Literal.domToBlock = (function () {
     var block
     eYo.Do.someChild(element, function (child) {
       if (child.nodeType === Node.TEXT_NODE) {
-        return block = newBlock(child.nodeValue, id, stmt_expected)
+        return block = newBlock(workspace, child.nodeValue, id, stmt_expected)
       }
     })
     if (!block) {
       // there was no text node to infer the type
-      block = newBlock(element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+      block = newBlock(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
     return block || eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
   }

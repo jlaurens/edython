@@ -3,7 +3,7 @@
     <b-button-toolbar>
       <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted"></dotted>
       <name :eyo="eyo" :name="name"></name>
-      <variant :eyo="eyo" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
+      <variant :eyo="eyo" :can_ry="can_ry" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
       <ry :eyo="eyo" :can_ry="can_ry" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR"></ry>
       <comment :eyo="eyo"></comment>
     </b-button-toolbar>
@@ -32,6 +32,7 @@
         definition_: undefined,
         alias_: undefined,
         can_ry_: undefined,
+        can_andef_: undefined,
         ary_: undefined,
         mandatory_: undefined
       }
@@ -89,6 +90,10 @@
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.can_ry_
       },
+      can_andef () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.can_andef_
+      },
       ary () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.ary_
@@ -114,7 +119,9 @@
           this.definition_ = eyo.definition_p
           this.alias_ = eyo.alias_p
           var tos = eyo.profile_p.tos
-          this.can_ry_ = !tos || !tos.model
+          this.can_ry_ = !tos || !tos.model || (tos.model.type !== 'attribute' && tos.model.type !== 'data' && tos.model.type !== 'first last data')
+          this.can_andef_ = !tos || !tos.model
+          this.can_slice_ = !tos || !tos.model || (tos.model.type !== 'method' && tos.model.type !== 'function')
           this.ary_ = eyo.ary_p
           this.mandatory_ = eyo.mandatory_p
         }

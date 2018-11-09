@@ -116,7 +116,16 @@
         return [0, 1, 2]
       },
       moduleKeys () {
-        return ['turtle', 'random', 'math', 'cmath']
+        return [
+          'turtle',
+          'math',
+          'decimal',
+          'fraction',
+          'statistics',
+          'random',
+          'cmath',
+          'string'
+        ]
       }
     },
     created () {

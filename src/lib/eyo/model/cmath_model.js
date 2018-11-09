@@ -35,6 +35,20 @@ goog.inherits(Item, eYo.Model.Item)
  */
 Item.prototype.model = eYo.Model.cmath__module
 
+Item.prototype.model.url = 'https://docs.python.org/3.6/library/cmath.html'
+
+Object.defineProperties(
+  Item.prototype,
+  {
+    url: {
+      get() {
+        return this.href
+          ? this.model.url + this.href
+          : this.model.url
+      }
+    }
+  }
+)
 
 eYo.Model.cmath__module.data = {
   categories: [
@@ -55,6 +69,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 0,
       type_: 0,
+      href: '#cmath.phase',
       arguments: [
         {
           name: 'x'
@@ -66,6 +81,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 0,
       type_: 0,
+      href: '#cmath.polar',
       arguments: [
         {
           name: 'x'
@@ -77,6 +93,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 0,
       type_: 0,
+      href: '#cmath.rect',
       arguments: [
         {
           name: 'r'
@@ -91,6 +108,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 1,
       type_: 0,
+      href: '#cmath.exp',
       arguments: [
         {
           name: 'x'
@@ -102,6 +120,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 1,
       type_: 0,
+      href: '#cmath.log',
       mandatory: 1,
       arguments: [
         {
@@ -118,6 +137,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 1,
       type_: 0,
+      href: '#cmath.log10',
       arguments: [
         {
           name: 'x'
@@ -129,6 +149,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 1,
       type_: 0,
+      href: '#cmath.sqrt',
       arguments: [
         {
           name: 'x'
@@ -140,6 +161,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.acos',
       arguments: [
         {
           name: 'x'
@@ -151,6 +173,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.asin',
       arguments: [
         {
           name: 'x'
@@ -162,6 +185,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.atan',
       arguments: [
         {
           name: 'x'
@@ -173,6 +197,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.cos',
       arguments: [
         {
           name: 'x'
@@ -184,6 +209,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.sin',
       arguments: [
         {
           name: 'x'
@@ -195,6 +221,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 2,
       type_: 0,
+      href: '#cmath.tan',
       arguments: [
         {
           name: 'x'
@@ -206,6 +233,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.acosh',
       arguments: [
         {
           name: 'x'
@@ -217,6 +245,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.asinh',
       arguments: [
         {
           name: 'x'
@@ -228,6 +257,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.atanh',
       arguments: [
         {
           name: 'x'
@@ -239,6 +269,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.cosh',
       arguments: [
         {
           name: 'x'
@@ -250,6 +281,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.sinh',
       arguments: [
         {
           name: 'x'
@@ -261,6 +293,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 3,
       type_: 0,
+      href: '#cmath.tanh',
       arguments: [
         {
           name: 'x'
@@ -272,6 +305,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 4,
       type_: 0,
+      href: '#cmath.isfinite',
       arguments: [
         {
           name: 'x'
@@ -283,6 +317,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 4,
       type_: 0,
+      href: '#cmath.isinf',
       arguments: [
         {
           name: 'x'
@@ -294,6 +329,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 4,
       type_: 0,
+      href: '#cmath.isnan',
       arguments: [
         {
           name: 'x'
@@ -305,6 +341,7 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 4,
       type_: 0,
+      href: '#cmath.isclose',
       mandatory: 3,
       arguments: [
         {
@@ -467,7 +504,10 @@ eYo.Model.cmath__module.getItemsInCategory = function (category, type) {
     return ra
   }
 }
+// register the types
+eYo.Model.Item.registerTypes(eYo.Model.cmath__module.data.types)
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2018-11-08 21:44:04.362094
+
+// This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2018-11-09 17:31:59.380375
 
 

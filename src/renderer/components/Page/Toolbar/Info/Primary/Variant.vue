@@ -26,6 +26,14 @@
           return item
         }
       },
+      can_ry: {
+        type: Boolean,
+        default: true
+      },
+      can_andef: {
+        type: Boolean,
+        default: true
+      },
       variant: {
         type: String,
         default: eYo.Key.NONE
@@ -140,15 +148,37 @@
         }
       },
       variants () {
-        return [
-          this.items.NONE,
-          this.items.CALL_EXPR,
-          this.items.SLICING,
-          this.items.ALIASED,
-          this.items.ANNOTATED,
-          this.items.DEFINED,
-          this.items.ANNOTATED_DEFINED
-        ]
+        return this.can_ry
+          ? this.can_andef
+            ? [
+              this.items.NONE,
+              this.items.CALL_EXPR,
+              this.items.SLICING,
+              this.items.ALIASED,
+              this.items.ANNOTATED,
+              this.items.DEFINED,
+              this.items.ANNOTATED_DEFINED
+            ]
+            : [
+              this.items.NONE,
+              this.items.CALL_EXPR,
+              this.items.SLICING,
+              this.items.ALIASED
+            ]
+          : this.can_andef
+            ? [
+              this.items.NONE,
+              this.items.SLICING,
+              this.items.ALIASED,
+              this.items.ANNOTATED,
+              this.items.DEFINED,
+              this.items.ANNOTATED_DEFINED
+            ]
+            : [
+              this.items.NONE,
+              this.items.SLICING,
+              this.items.ALIASED
+            ]
       },
       blockAlias: {
         get () {

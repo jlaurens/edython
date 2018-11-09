@@ -27,11 +27,31 @@ eYo.Model.Item.prototype.model = eYo.Model
 
 /**
  * Other model data are more complex...
+ * Is it used ?
  */
-eYo.Model.data = {
+eYo.Model.Item.data = {
   types: [
     '.'
   ]
+}
+
+/**
+ * Collect here all the types
+ */
+eYo.Model.Item.types = []
+
+/**
+ * Collect here all the types
+ */
+eYo.Model.Item.registerTypes = function (types) {
+  var a = eYo.Model.Item.types = eYo.Model.Item.types.concat(types)
+  for(var i=0; i<a.length; ++i) {
+    for(var j=i+1; j<a.length; ++j) {
+      if(a[i] === a[j]) {
+        a.splice(j--, 1)
+      }
+    }
+  }
 }
 
 /**

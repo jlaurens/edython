@@ -319,6 +319,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_group.js" \
 --js "src/lib/eyo/block/delegate_svg_import.js" \
 --js "src/lib/eyo/block/delegate_svg_primary.js" \
+--js "src/lib/eyo/module/delegate_svg_string.js" \
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
 --js "src/lib/eyo/block/delegate_svg_range.js" \
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \

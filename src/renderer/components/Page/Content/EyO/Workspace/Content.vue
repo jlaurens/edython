@@ -92,6 +92,10 @@
       moduleF('math')
       moduleF('random')
       moduleF('cmath')
+      moduleF('decimal')
+      moduleF('fraction')
+      moduleF('statistics')
+      moduleF('string')
       model.levels = [
         model.items.basic,
         model.items.intermediate,
@@ -107,10 +111,14 @@
         model.items.function
       ]
       model.modules = [
-        model.items.math__module,
-        model.items.random__module,
         model.items.turtle__module,
-        model.items.cmath__module
+        model.items.math__module,
+        model.items.decimal__module,
+        model.items.fraction__module,
+        model.items.statistics__module,
+        model.items.random__module,
+        model.items.cmath__module,
+        model.items.string__module
       ]
       return model
     },
