@@ -14,7 +14,7 @@
 goog.provide('eYo.Model')
 goog.provide('eYo.Model.Item')
 
-goog.require('eYo.Protocol')
+goog.require('eYo.Protocol.Register')
 
 eYo.Model.Item = function (model) {
   goog.object.extend(this, model)

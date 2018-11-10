@@ -65,6 +65,8 @@ import io
 import math
 import string
 
+parent_map = None
+
 def do_one_module(module, **kwargs):
 
     suffix = kwargs['suffix']
@@ -188,6 +190,7 @@ def do_one_module(module, **kwargs):
         mandatory_ = None
         star = False
         href = None
+        synonyms = None
 
         def __init__(self, owner, dl, filter=Filter):
             """Parses the dl dom element into an item
@@ -195,6 +198,7 @@ def do_one_module(module, **kwargs):
             self.owner = owner
             self.filter = filter
             self.keyword_arguments = {}
+            self.synonyms = []
             #
             # one dd for the description
             dd = dl.find("{http://www.w3.org/1999/xhtml}dd")
@@ -211,7 +215,8 @@ def do_one_module(module, **kwargs):
                 if self.type in ['attribute', 'exception']:
                     self.returner = True
             for dt in dl.findall("{http://www.w3.org/1999/xhtml}dt"):
-                self.parse_dt(dt)
+                if dl == parent_map[dt]:
+                    self.parse_dt(dt)
 
         @property
         def name(self):
@@ -296,6 +301,28 @@ Example of `dt` for the `append`list method.
 <dd><p>Add an item to the end of the list.  Equivalent to <code class="docutils literal notranslate"><span class="pre">a[len(a):]</span> <span class="pre">=</span> <span class="pre">[x]</span></code>.</p>
 </dd>
 
+Example of `dt` for the turtle module, class.
+
+<dl class="class">
+<dt id="turtle.Turtle">
+<em class="property">class </em>
+<code class="descclassname">turtle.</code><code class="descname">Turtle</code><a class="headerlink" href="#turtle.Turtle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclass of RawTurtle, has the same interface but draws on a default
+<a class="reference internal" href="#turtle.Screen" title="turtle.Screen"><code class="xref py py-class docutils literal notranslate"><span class="pre">Screen</span></code></a> object created automatically when needed for the first time.</p>
+</dd></dl>
+
+Example of `dt` for the turtle module, method synonyms.
+
+<dl class="function">
+<dt id="turtle.back">
+<code class="descclassname">turtle.</code><code class="descname">back</code><span class="sig-paren">(</span><em>distance</em><span class="sig-paren">)</span><a class="headerlink" href="#turtle.back" title="Permalink to this definition">¶</a></dt>
+<dt id="turtle.bk">
+<code class="descclassname">turtle.</code><code class="descname">bk</code><span class="sig-paren">(</span><em>distance</em><span class="sig-paren">)</span><a class="headerlink" href="#turtle.bk" title="Permalink to this definition">¶</a></dt>
+<dt id="turtle.backward">
+<code class="descclassname">turtle.</code><code class="descname">backward</code><span class="sig-paren">(</span><em>distance</em><span class="sig-paren">)</span><a class="headerlink" href="#turtle.backward" title="Permalink to this definition">¶</a></dt>
+<dd>…</dd></dl>
+
+
 """
             element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descclass_name']")
             if element is None:
@@ -309,17 +336,35 @@ Example of `dt` for the `append`list method.
                 elif len(descclass_name) and self.class_name != descclass_name:
                     self.holder_name = self.class_name
                     self.class_name = descclass_name
+            # permalink
+            element = dt.find("{http://www.w3.org/1999/xhtml}a[@class='headerlink']")
+            if element is not None:
+                self.href = element.attrib['href']
             call = "".join(dt.itertext()).strip()
-            m = re.match(r'^(?:\S+\s+)?'
-                        r'(?:(?P<class>\S+)\.)?'
-                        r'(?P<name>[^\s\.]+)'
-                        r'(?P<arguments>\((?P<mandatory>[^[]*)(?:\[(?P<optional>.*)\])?(?P<rest>[^][]*)?\))', call)
+            m = re.match(r"""^(?:\S+\s+)?
+            (?:
+                (?P<class>\S+)\.)?
+                (?P<name>[^\s\.]+)
+                (?P<arguments>\(
+                    (?P<mandatory>[^[]*)
+                    (?:\[(?P<optional>.*)\])?
+                    (?P<rest>[^][]*)?
+                \))
+            """, call, re.X)
             if m is None:
+                element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descname']")
+                if element is None:
+                    if verbose:
+                        print('Ignored:', call, ET.tostring(dt, encoding='utf8'), sep = '\n')
+                    return
+                self.name = element.text
                 return
             class_name = m.group('class')
             name = m.group('name')
             if self.name is None:
                 self.name = name
+            elif self.name != name:
+                self.synonyms.append(name)
             if self.class_name is None:
                 self.class_name = class_name
             # print(self.name, '--->', m)
@@ -382,10 +427,6 @@ Example of `dt` for the `append`list method.
                 self.arguments = arguments
             elif len(self.arguments) < len(arguments):
                 self.arguments = arguments
-            # permalink
-            element = dt.find("{http://www.w3.org/1999/xhtml}a[@class='headerlink']")
-            if element is not None:
-                self.href = element.attrib['href']
 
         @property
         def ary(self):
@@ -505,6 +546,7 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                 f = None
                 contents = contents.replace('&copy;', '©')
                 root = ET.fromstring(contents)
+                global parent_map
                 parent_map = {c: p for p in root.iter() for c in p}
                 for dl in root.iter("{http://www.w3.org/1999/xhtml}dl"):
                     ancestor = parent_map[dl]
@@ -529,6 +571,9 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                     self.items.append(item)
                     item.type_index = self.types[item.type]
                     self.items_by_name[item.name] = item.index
+                    for synonym in item.synonyms:
+                        self.items_by_name[synonym] = item.index
+                        
             print('Imported {} symbols'.format(len(self.items)))
 
         @property
@@ -578,6 +623,14 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
 
             self.down_print("new Item({", s7r=separator)
             do_print_attribute(item, 'name', s7r='')
+            synonyms = item.synonyms
+            if synonyms is not None and len(synonyms) > 0:
+                self.down_print("synonyms: [", s7r=',')
+                end = ''
+                for synonym in synonyms:
+                    self.do_print("'", synonym, "'", nl=True, s7r=end)
+                    end = ','
+                self.up_print("]")
             do_print_attribute(item, 'class_name', key='class')
             do_print_attribute(item, 'holder_name', key='holder')
             do_print_attribute(item, 'category_index')
@@ -588,7 +641,7 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
 
             arguments = item.arguments
             if arguments is not None and len(arguments) > 0:
-                # do_print_attribute(item, 'ary')
+                do_print_attribute(item, 'ary')
                 if item.ary != item.mandatory:
                     do_print_attribute(item, 'mandatory')
                 self.down_print("arguments: [", s7r=',')

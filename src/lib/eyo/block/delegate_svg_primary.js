@@ -239,9 +239,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         return txt
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        save: /** @suppress {globalThis} */ function (element) {
           if (this.get() || goog.isDef(this.model.placeholder)) {
-            this.save(element, optNoId, optNoNext)
+            this.save(element)
           }
         }
       },
@@ -250,7 +250,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     holder: {
       order: 201,
       init: '', // will be saved only when not built in
-      placeholder: eYo.Msg.Placeholder.UNSET,      validate: /** @suppress {globalThis} */ function (newValue) {
+      placeholder: eYo.Msg.Placeholder.UNSET,
+      validate: /** @suppress {globalThis} */ function (newValue) {
         var tos = eYo.Do.typeOfString(newValue, null)
         return !newValue
         || tos.expr === eYo.T3.Expr.unset
@@ -268,16 +269,19 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        force: /** @suppress {globalThis} */ function () {
+          return this.owner.variant_p === eYo.Key.CALL_EXPR
+        },
+        save: /** @suppress {globalThis} */ function (element) {
           var target = this.owner.holder_s.input.connection.targetBlock()
           if (!target) {
             if (this.get()) {
-              this.save(element, optNoId, optNoNext)
+              this.save(element)
             }
             var v = eYo.Do.valueOf(this.model.placeholder)
             v = v && v.toString().trim()
             if (v.length>0) {
-              this.save(element, optNoId, optNoNext)
+              this.save(element)
             }
           }
         }
@@ -297,9 +301,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         : null
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        save: /** @suppress {globalThis} */ function (element) {
           this.required = this.owner.variant_p === eYo.Key.ALIASED
-          this.save(element, optNoId, optNoNext)
+          this.save(element)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -337,9 +341,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         slot.setIncog()
       },
       xml: {
-        save: function (el, optNoId, optNoNext) {
+        save: function (element) {
           if (this.get() !== this.NONE) {
-            this.save(el, optNoId, optNoNext)
+            this.save(element)
           }
         }
       }
@@ -374,9 +378,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         slot.setIncog()
       },
       xml: {
-        save: function (el, optNoId, optNoNext) {
+        save: function (element) {
           if (this.get() !== this.NONE) {
-            this.save(el, optNoId, optNoNext)
+            this.save(element)
           }
         }
       }
@@ -456,10 +460,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        save: /** @suppress {globalThis} */ function (element) {
           var target = this.owner.name_s.input.connection.targetBlock()
           if (!target) {
-            this.save(element, optNoId, optNoNext)
+            this.save(element)
           }
         }
       }
@@ -511,12 +515,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        save: /** @suppress {globalThis} */ function (element) {
           if (this.owner.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
             if (this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
               return
             }
-            this.save(element, optNoId, optNoNext)
+            this.save(element)
           }
         }
       }
@@ -561,12 +565,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, optNoId, optNoNext) {
+        save: /** @suppress {globalThis} */ function (element) {
           if (this.owner.profile_p && this.owner.variant_p === eYo.Key.CALL_EXPR && this.get()) {
             if (this.owner.profile_p && this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
               return
             }
-            this.save(element, optNoId, optNoNext)
+            this.save(element)
           }
         }
       }

@@ -60,7 +60,7 @@ print('=======')
 print('Update source files.')
 out = updateBuild(pathRoot / 'bin' / 'build.sh',
                   pathRoot / 'bin' / 'build.sh',
-                pathBuild / 'deps-buid.txt'
+                pathBuild / 'deps-build.txt'
                   )
 
 out = updateWeb(pathRoot / 'src' / 'index.ejs',

@@ -784,18 +784,19 @@ eYo.Data.prototype.beReady = function () {
 /**
  * Does nothing if the data is disabled or if the model
  * has a `false` valued xml property.
- * Saves the data to the given element.
+ * Saves the data to the given element, except when incog
+ * or when the model forces.
  * For edython.
  * @param {Element} element the persistent element.
  */
 eYo.Data.prototype.save = function (element) {
-  if (!this.isIncog()) {
+  var xml = this.model.xml
+  if (xml === false) {
+    // only few data need not be saved
+    return
+  }
+  if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {
     // in general, data should be saved
-    var xml = this.model.xml
-    if (xml === false) {
-      // only few data need not be saved
-      return
-    }
     if (xml) {
       var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
       if (f) {

@@ -14,10 +14,10 @@
 goog.provide('eYo.Do')
 
 goog.require('eYo.Const')
-goog.require('eYo.Model')
-goog.require('eYo.Model')
 
 goog.require('goog.dom')
+
+goog.forwardDeclare('eYo.Model')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
@@ -878,8 +878,8 @@ eYo.Do.someElementChild = function (element, handler) {
   }, this)
 }
 
-eYo.Do.valueOf = function (f) {
-  return goog.isFunction(f) ? f.call() : f
+eYo.Do.valueOf = function (f, thisObject) {
+  return goog.isFunction(f) ? f.call(thisObject) : f
 }
 
 eYo.Do.nothing = function () {
