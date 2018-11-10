@@ -16,23 +16,22 @@ goog.provide('eYo.Protocol.Register')
 goog.require('eYo.Protocol')
 goog.require('eYo.Events')
 
-eYo.Protocol.Register = function (key) {
+eYo.Protocol.Register = function (key, filter) {
   var ans = {
     methods: {},
     properties: {}
   }
   var registered = []
-  ans.methods['register' + key.charAt(0).toUpperCase() + key.slice(1)] = function (delegate) {
-    if (delegate.block_.isInFlyout) {
-      return
-    }
-    var i = registered.indexOf(delegate)
-    if (i < 0) {
-      registered.push(delegate)
+  ans.methods['register' + key.charAt(0).toUpperCase() + key.slice(1)] = function (object) {
+    if (filter(object)) {
+      var i = registered.indexOf(object)
+      if (i < 0) {
+        registered.push(object)
+      }
     }
   }
-  ans.methods['unregister' + key.charAt(0).toUpperCase() + key.slice(1)] = function (delegate) {
-    var i = registered.indexOf(delegate)
+  ans.methods['unregister' + key.charAt(0).toUpperCase() + key.slice(1)] = function (object) {
+    var i = registered.indexOf(object)
     if (i>=0) {
       registered.splice(i)
     }
