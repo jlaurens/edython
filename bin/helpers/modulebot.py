@@ -499,8 +499,6 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                         self.url,
                         self.path_in
                     ) # this line needs certification
-            else:
-                self.url = self.path_in
             with self.path_in.open('r', encoding='utf-8') as f:
                 contents = f.read()
                 f.close()
