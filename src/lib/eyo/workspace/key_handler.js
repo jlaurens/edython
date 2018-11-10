@@ -49,7 +49,9 @@ console.warn('Problem inserting a print block')
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
 eYo.KeyHandler = (function () {
-  var me = {MAX_CHILD_COUNT: 20}
+  var me = {
+    MAX_CHILD_COUNT: 20
+  }
   var keys_ = []
   var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
@@ -71,7 +73,7 @@ eYo.KeyHandler = (function () {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isString(model.type), 'No model to register for ' + key)
+      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isFunction(model.action) || goog.isString(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -86,24 +88,6 @@ eYo.KeyHandler = (function () {
         model: model
       })
     }
-  }
-  /**
-   * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
-   * If sep is not in the list, returns undefined.
-   * split('foo', 'f') -> ['', 'oo']
-   * split('foo', 'o') -> ['f', 'o']
-   * split('bar', 'r') -> ['ba', '']
-   * split('foo', 'b') -> undefined
-   * @param {string} key
-   * @param {string} sep
-   * @return an array of 2 elements, what is before sep and what is after
-   */
-  me.split = function (key, sep) {
-    var i = key.indexOf(sep)
-    if (i < 0) {
-      return undefined
-    }
-    return [key.substring(0, i), key.substring(i + sep.length)]
   }
   me.handleMenuKeyEvent = function (event) {
     var K = event.key
@@ -165,6 +149,10 @@ eYo.KeyHandler = (function () {
   me.handleModel = function (model) {
     // if key is a number, then create a number block
     // otherwise, take the first model and pass it to handleModel
+    if (goog.isFunction(model.action)) {
+      model.action.call(me, model.model)
+      return
+    }
     var B = Blockly.selected
     if (B) {
       var c8n = eYo.SelectedConnection
@@ -548,6 +536,42 @@ eYo.KeyHandler = (function () {
   return me
 }())
 
+/**
+ * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
+ * If sep is not in the list, returns undefined.
+ * split('foo', 'f') -> ['', 'oo']
+ * split('foo', 'o') -> ['f', 'o']
+ * split('bar', 'r') -> ['ba', '']
+ * split('foo', 'b') -> undefined
+ * 
+ * @param {*} key 
+ * @param {*} sep 
+ * @return an array of 2 elements, what is before `sep` and what is after
+ */
+eYo.KeyHandler.split = function (key, sep) {
+  var i = key.indexOf(sep)
+  if (i < 0) {
+    return undefined
+  }
+  return [key.substring(0, i), key.substring(i + sep.length)]
+}
+
+  /**
+ * Turn the selected block into a call block or insert a call block.
+ * @param {*} model 
+ */
+eYo.KeyHandler.makeCall = function (model) {
+  this.processModel(model)
+}
+
+/**
+ * Turn the selected block into a slicing, or inert a slicing
+ * @param {*} model 
+ */
+eYo.KeyHandler.makeSlicing = function (model) {
+  this.processModel(model)
+}
+
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
 var Ks = {
@@ -880,8 +904,18 @@ Ks = {
     }
   },
   'f(…)': {
-    type: eYo.T3.Expr.call_expr,
-    data: ''
+    action: eYo.KeyHandler.makeCall,
+    model: {
+      type: eYo.T3.Expr.call_expr,
+      data: '' 
+    }
+  },
+  'x[…]': {
+    action: eYo.KeyHandler.makeSlicing,
+    model: {
+      type: eYo.T3.Expr.slicing,
+      parent: true
+    }
   },
   'module as alias': eYo.T3.Expr.dotted_name_as,
   '(…)': {
@@ -898,10 +932,6 @@ Ks = {
   },
   '{…}': {
     type: eYo.T3.Expr.set_display,
-    parent: true
-  },
-  'foo[…]': {
-    type: eYo.T3.Expr.slicing,
     parent: true
   }
 }

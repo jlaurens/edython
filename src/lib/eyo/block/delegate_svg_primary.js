@@ -20,6 +20,7 @@ goog.require('eYo.Model.functions')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Protocol.Register')
 goog.require('goog.dom');
 
 /**
@@ -747,8 +748,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       }
       return eyo.getOutCheck(profile)
     }
+  },
+  init: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Expr.registerPrimary(this)
+  },
+  deinit: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Expr.unregisterPrimary(this)
   }
 }, true)
+
+eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary')
 
 for (var _ = 0, k;(k = [
   'call_expr',

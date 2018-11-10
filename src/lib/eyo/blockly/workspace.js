@@ -34,7 +34,7 @@ eYo.WorkspaceDelegate = function (workspace) {
 }
 goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 
-eYo.Do.enhance_prototype(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
+eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
 
 // Dependency ordering?
 /**

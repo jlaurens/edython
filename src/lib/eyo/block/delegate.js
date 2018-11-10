@@ -1464,8 +1464,7 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * Called from block's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!Blockly.Block} block to be initialized.
- * For subclassers eventually
+ * Call's the model's `init` method if any.
  */
 eYo.Delegate.prototype.init = function () {
   try {
@@ -1481,6 +1480,7 @@ eYo.Delegate.prototype.init = function () {
     // At this point the state value may not be consistent
     this.consolidate()
     // but now it should be
+    this.model.init && this.model.init.call(this)
   } catch (err) {
     console.error(err)
     throw err
@@ -1490,10 +1490,11 @@ eYo.Delegate.prototype.init = function () {
 }
 
 /**
-* Deinitialize a block. Nothing to do yet.
+* Deinitialize a block. Calls the model's `deinit` method is any.
 * @constructor
 */
 eYo.Delegate.prototype.deinit = function () {
+  this.model.deinit && this.model.deinit.call(this)
 }
 
 /**

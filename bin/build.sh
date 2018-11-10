@@ -279,6 +279,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/core/geometry.js" \
 --js "src/lib/eyo/protocol/change_count.js" \
+--js "src/lib/eyo/protocol/register.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
 --js "src/lib/eyo/core/shape.js" \

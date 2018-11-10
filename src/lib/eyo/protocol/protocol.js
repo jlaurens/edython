@@ -19,9 +19,15 @@ goog.require('eYo.Do')
  * Enhance the prototype with the given methods and properties.
  * Only new method are allowed.
  */
-eYo.Do.enhance_prototype = function (proto, base) {
+eYo.Do.addProtocol = function () {
+  var args = Array.prototype.slice.call(arguments)
+  var proto = args.shift()
+  var base = args.shift()
   if (goog.isString(base)) {
     base = eYo.Protocol[base]
+  }
+  if (goog.isFunction(base)) {
+    base = base.apply(proto, args)
   }
   if (base.methods) {
     var key

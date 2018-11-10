@@ -184,8 +184,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         }
       }
     }
+  },
+  init: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Stmt.registerImport(this)
+  },
+  deinit: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Stmt.unregisterImport(this)
   }
 }, true)
+
+eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import')
 
 /**
  * When the block is just a wrapper, returns the wrapped target.

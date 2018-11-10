@@ -830,32 +830,52 @@ eYo.Do.logTiles = function (src) {
   }
 }
 
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
 eYo.Do.forEachChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(handler, this)
 }
 
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
 eYo.Do.forEachElementChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(function (child) {
     if (child.nodeType === Node.ELEMENT_NODE) {
       handler.call(this, child)
     }
-  })
+  }, this)
 }
 
-eYo.Do.someChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.someChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
-  return children.some(handler, thisObject)
+  return children.some(handler, this)
 }
 
-eYo.Do.someElementChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.someElementChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some(function (child) {
     if (child.nodeType === Node.ELEMENT_NODE) {
-      return handler.call(thisObject, child)
+      return handler.call(this, child)
     }
-  })
+  }, this)
 }
 
 eYo.Do.valueOf = function (f) {
