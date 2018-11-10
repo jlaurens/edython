@@ -14,11 +14,14 @@
 goog.provide('eYo.Model')
 goog.provide('eYo.Model.Item')
 
-goog.require('eYo')
+goog.require('eYo.Protocol')
 
 eYo.Model.Item = function (model) {
   goog.object.extend(this, model)
 }
+
+// Each model loaded comes hear
+eYo.Do.addProtocol(eYo.Model.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the model it belongs to.
@@ -75,4 +78,3 @@ Object.defineProperties(
     }
   }
 )
-
