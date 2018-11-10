@@ -428,6 +428,7 @@ goog.provide('eYo.Model.{{key}}.Item')
 
 goog.require('eYo.Model')
 goog.require('eYo.Model.Item')
+goog.require('eYo.Protocol.Item')
 
 /**
  * @constructor
@@ -461,52 +462,10 @@ Object.defineProperties(
   }
 )
 """
-        suffix_ = """/**
- * Get the item with the given key
- * @param {!String|Number} key  The key or index of the item
- * @return {?Object} return the model object for that item, if any.
- */
-eYo.Model.{{key}}.getItem = function (key) {
-  if (!goog.isNumber(key)) {
-    key = eYo.Model.{{key}}.data.by_name[key]
-  }
-  if (goog.isNumber(key)) {
-    return eYo.Model.{{key}}.data.items[key]
-  }
-}
+        suffix_ = """
+// Add the `Item` methods.
+eYo.Do.addProtocol(eYo.Model.{{key}}, 'Item', eYo.Model.{{key}})
 
-/**
- * Get the type of the given item.
- * @param {!Object} item.
- * @return {?String} return the type.
- */
-eYo.Model.{{key}}.getType = function (item) {
-  return item && item.type && eYo.Model.{{key}}.data.types[item.type]
-}
-
-/**
- * Get the indices of the items for the given category
- * @param {!String} key  The name of the category
- * @return {!Array} the list of item indices with the given category (possibly void).
- */
-eYo.Model.{{key}}.getItemsInCategory = function (category, type) {
-  var ra = eYo.Model.{{key}}.data.by_category[category] || []
-  if (goog.isString(type)) {
-    type = eYo.Model.{{key}}.data.type.indexOf(type)
-  }
-  if (goog.isNumber(type) && type >= 0) {
-    var ra2 = []
-    for (var i = 0; i < ra.length ; i++ ) {
-      var item = eYo.Model.{{key}}.getItem(i)
-      if (item && item.type === type) {
-        ra2.append(i)
-      }
-    }
-    return ra2
-  } else {
-    return ra
-  }
-}
 // register the types
 eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
 
