@@ -193,7 +193,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   }
 }, true)
 
-eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import')
+eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import', function (delegate) {
+  return !delegate.block_.isInFlyout
+})
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
