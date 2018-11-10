@@ -757,9 +757,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   }
 }, true)
 
-eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary')
+eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delegate) {
+  return !delegate.block_.isInFlyout
+})
 
-for (var _ = 0, k;(k = [
+for (var _ = 0, k; (k = [
   'call_expr',
   'subscription',
   'slicing',
