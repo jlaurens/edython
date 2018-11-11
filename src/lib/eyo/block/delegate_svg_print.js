@@ -144,7 +144,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       }
     }
     var insert = function (key) {
-      eYo.Events.groupWrap(this,
+      eYo.Events.groupWrap.call(this,
         function () {
           var B = eYo.DelegateSvg.newBlockReady(block.workspace, {
             type: eYo.T3.Expr.keyword_item,
@@ -157,7 +157,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       )
     }
     var remove = function (key) {
-      eYo.Events.groupWrap(this,
+      eYo.Events.groupWrap.call(this,
         function () {
           var B = has[key]
           B.unplug()

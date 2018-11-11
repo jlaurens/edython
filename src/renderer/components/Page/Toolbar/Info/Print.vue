@@ -39,7 +39,7 @@
     },
     computed: {
       list () {
-        return this.eyo.block_.getInput(eYo.Key.ARGUMENTS).connection.targetBlock()
+        return this.eyo.block_.getInput(eYo.Key.N_ARY).connection.targetBlock()
       },
       has () {
         var has = {}

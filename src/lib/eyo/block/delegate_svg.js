@@ -68,12 +68,13 @@ eYo.DelegateSvg.prototype.changeEnd = function () {
  * Increment the change count.
  * Force to recompute the chain tile.
  * For edython.
- */
-eYo.DelegateSvg.prototype.incrementChangeCount = function () {
+* @param {*} deep  Whether to propagate the message to children.
+  */
+eYo.DelegateSvg.prototype.incrementChangeCount = function (deep) {
   // force to compute a new chain tile
   this.tileHead = undefined
   this.tileTail = undefined
-  eYo.DelegateSvg.superClass_.incrementChangeCount.call(this)
+  eYo.DelegateSvg.superClass_.incrementChangeCount.call(this, deep)
 }
 
 eYo.DelegateSvg.Manager = eYo.Delegate.Manager
@@ -1970,7 +1971,7 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
         block = workspace.newBlock(model.type, id)
         block.eyo.setDataWithType(model.type)
       } else if (eYo.DelegateSvg.Manager.get(model)) {
-        block = workspace.newBlock(model, id)
+        block = workspace.newBlock(model, id) // can undo
         block.eyo.setDataWithType(model)
       } else {
         var type = eYo.Do.typeOfString(model, null)
@@ -2239,7 +2240,7 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
-  eYo.Events.groupWrap(this,
+  eYo.Events.groupWrap.call(this,
     function () {
       for (; i < holes.length; ++i) {
         var c8n = holes[i]
@@ -3043,7 +3044,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       var c8n, otherC8n
       var fin = function (prepare) {
         Blockly.Events.enable()
-        eYo.Events.groupWrap(this,
+        eYo.Events.groupWrap.call(this,
           function () {
             try {
               if (Blockly.Events.isEnabled()) {

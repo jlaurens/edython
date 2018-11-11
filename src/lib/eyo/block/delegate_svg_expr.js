@@ -71,9 +71,10 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
  * Increment the change count.
  * For expressions, the change count is also forwarded to the parent.
  * For edython.
+ * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function () {
-  eYo.DelegateSvg.Expr.superClass_.incrementChangeCount.call(this)
+eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function (deep) {
+  eYo.DelegateSvg.Expr.superClass_.incrementChangeCount.call(this, deep)
   var parent = this.block_.parentBlock_
   parent && parent.eyo.incrementChangeCount()
 }
@@ -266,7 +267,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.groupWrap(this,
+    eYo.Events.groupWrap.call(this,
       function () {
         try {
           var block = this.block_
@@ -439,7 +440,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    eYo.Events.groupWrap(this,
+    eYo.Events.groupWrap.call(this,
       function () {
         if (Blockly.Events.isEnabled()) {
           eYo.Events.fireBlockCreate(parentBlock)

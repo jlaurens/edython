@@ -146,7 +146,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         if (!content_d.get().length) {
           var content_f = this.owner.fields.content
           content_f.placeholderText(true)
-          content_f.render_()
         }
       },
       xml: false

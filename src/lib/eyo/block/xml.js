@@ -152,7 +152,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
     workspace.setResizesEnabled(false)
   }
 
-  // This part is the custom part for edython
+  // This part is a custom part for edython
   var recover = new eYo.Xml.Recover(workspace)
   var newBlock = function (xmlChild) {
     var block
@@ -253,9 +253,10 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
   if (workspace.setResizesEnabled) {
     workspace.setResizesEnabled(true)
   }
+  recover.resit(workspace)
   recover.forEachAndFlush(
-    function (block) {
-      newBlockIds.push(block.id)
+    block => {
+      newBlockIds.push(block.id)   
     }
   )
   return newBlockIds
@@ -675,7 +676,7 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
       }
     }
     // the suite and the flow
-    blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    blockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
     !optNoNext && blockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
@@ -786,6 +787,7 @@ goog.provide('eYo.Xml.Recover')
 eYo.Xml.Recover = function (workspace) {
   this.workspace = workspace
   this.recovered = []
+  this.to_resit = []
 }
 
 /**
@@ -824,19 +826,63 @@ eYo.Xml.Recover.prototype.flush = function () {
 }
 
 /**
+ * Records the `dom` that were not used during normal creation flow.
+ *
+ * @param {!Element} dom XML dom element.
+ * @param {!Blockly.Workspace} workspace  The workspace.
+ */
+eYo.Xml.Recover.prototype.willResitChildren = function (dom) {
+  eYo.Do.forEachElementChild.call(this, dom, child => {
+    this.to_resit.push(child)
+  })
+}
+
+/**
+ * Don't resit the dome.
+ *
+ * @param {!Element} dom XML dom element.
+ * @param {!Blockly.Workspace} workspace  The workspace.
+ */
+eYo.Xml.Recover.prototype.dontResit = function (dom) {
+  var i = this.to_resit.indexOf(dom)
+  if (i >= 0) {
+    this.to_resit.splice(i)
+  }
+}
+
+/**
+ * Create blocks with elements that were not used during the normal flow.
+ */
+eYo.Xml.Recover.prototype.resit = function () {
+  var dom
+  while ((dom = this.to_resit.shift())) {
+    var b = eYo.Xml.domToBlock(dom, this.workspace, this)
+    if (b) {
+      b.eyo.beReady()
+      this.push(b)
+    }
+  }
+}
+
+/**
  * The `domToBlock` could not return a block.
  * We must do something to recover errors.
  * The idea is to replace the faulty xml part by a block
  * and parse the children separately with `recoverDom`
  *
  * @param {!Element} dom XML dom element.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {*} owner either the workspace or a block.
  * @return {!Blockly.Block} The root block created.
  */
-eYo.Xml.Recover.prototype.domToBlock = function (dom, workspace) {
-  // First create a block that we will return to replace the previous one
+eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
+  var workspace = owner.workspace_
+  if (!workspace) {
+    workspace = owner
+    owner = undefined
+  }
+  // First create a block that we will return to replace the expected one
   // This is a block of the same kind (expression/statement)
-  // but with a generic type such that any connection will fit.
+  // but at least with a generic type such that any connection will fit.
   var tag = dom.tagName
   var ans, fallback, where
   if (tag === eYo.Xml.EXPR) {
@@ -846,7 +892,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, workspace) {
     fallback = eYo.T3.Stmt.expression_stmt
     where = eYo.T3.Stmt
   }
-  // amongst all the expression blocks,
+  // amongst all the `where` blocks,
   // if there is an only one that can initialize with all
   // the attributes of the dom element
   // first get all the attributes
@@ -876,23 +922,45 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, workspace) {
       best.types.push[type]
     }
   })
-  if (best.types.length === 1) {
-    fallback = best.types[0]
-  }
-  ans = eYo.DelegateSvg.newBlockReady(workspace, fallback)
-  if (ans) {
-    eYo.Xml.fromDom(ans, dom, this)
-    ans.eyo.errorRecover = true
-  }
-  var me = this // catch this
-  // Now recover the children
-  eYo.Do.forEachElementChild(
-    dom,
-    function (child) {
-      var b = eYo.Xml.domToBlock(child, workspace)
-      me.push(b)
+  eYo.Events.disableWrap(this, function () {
+    if (best.types.length === 1) {
+      fallback = best.types[0]
+    } else if (owner && (best.types.length > 1)) {
+      var name = dom.getAttribute(eYo.Xml.SLOT)
+      var input = owner.eyo.getInput(name)
+      var slot_c8n = input && input.connection
+      var flow = dom.getAttribute(eYo.Xml.FLOW)
+      var flow_c8n = flow
+        ? owner.eyo.suiteConnection
+        : owner.nextConnection
+      // return the first block that would connect to the owner
+      if (!best.types.some(type => {
+          var b = eYo.DelegateSvg.newBlockReady(workspace, type)
+          var c8n = ans && ans.outputConnection
+          if (slot_c8n && c8n && slot_c8n.checkType_(c8n)) {
+            ans = b
+            return true
+          }
+          c8n = b.previousConnection
+          if (flow_c8n && c8n && flow_c8n.checkType_(c8n)) {
+            ans = b
+            return true
+          }
+        })) {
+        fallback = best.types[0]
+      }
     }
-  )
+    ans || (ans = eYo.DelegateSvg.newBlockReady(workspace, fallback))
+  })
+  if (ans) {
+    ans.eyo.errorRecover = true
+    eYo.Events.fireBlockCreate(ans)
+    eYo.Xml.fromDom(ans, dom, this)
+  } else {
+    // impossible to recover this element
+    // maybe the children will work.
+    this.willResitChildren(dom)
+  }
   return ans
 }
 
@@ -911,12 +979,17 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, workspace) {
  * Is it really headless ?
  *
  * @param {!Element} xmlBlock XML block element.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {*} owner The workspace or the owning block.
  * @param {?eYo.Xml.Recover} recover The recover helper.
  * @return {!Blockly.Block} The root block created.
  */
 eYo.Xml.domToBlock = (function () {
-  var domToBlock = function (dom, workspace, recover) {
+  var domToBlock = function (dom, owner, recover) {
+    var workspace = owner.workspace_
+    // `owner` is used only for recovery.
+    if (!workspace) {
+      workspace = owner
+    }
     var block = null
     if (!goog.isFunction(dom.getAttribute)) {
       return block
@@ -983,7 +1056,7 @@ eYo.Xml.domToBlock = (function () {
       return block
     }
     // error recovery
-    return recover && recover.domToBlock(dom, workspace)
+    return recover && recover.domToBlock(dom, owner)
   }
   return function (dom, workspace, recover) {
     eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
@@ -1037,6 +1110,7 @@ eYo.Xml.fromDom = function (block, element, recover) {
     } else {
       eYo.Xml.Data.fromDom(block, element)
       // read slot
+      recover.willResitChildren(element)
       eyo.foreachSlot(function () {
         this.load(element, recover)
       })
@@ -1044,20 +1118,20 @@ eYo.Xml.fromDom = function (block, element, recover) {
         eYo.Do.forEachElementChild(element, function (child) {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
-          if (input) {
-            if (input.connection) {
-              var target = input.connection.targetBlock()
-              if (target) {
-                eYo.Xml.fromDom(target, child, recover)
-              } else if ((target = eYo.Xml.domToBlock(child, block.workspace, recover))) {
-                var targetC8n = target.outputConnection
-                if (targetC8n && targetC8n.checkType_(input.connection)) {
-                  targetC8n.connect(input.connection)
-                }
+          if (input && input.connection) {
+            var target = input.connection.targetBlock()
+            if (target) {
+              recover.dontResit(child)
+              eYo.Xml.fromDom(target, child, recover)
+            } else if ((target = eYo.Xml.domToBlock(child, block.workspace, recover))) {
+              recover.dontResit(child)
+              var targetC8n = target.outputConnection
+              if (targetC8n && targetC8n.checkType_(input.connection)) {
+                targetC8n.connect(input.connection)
               }
-            } else {
-              console.error('Missing connection')
             }
+          } else if (input) {
+            console.error('Missing connection')
           }
         })
         eyo.didLoad()
@@ -1077,6 +1151,7 @@ eYo.Xml.fromDom = function (block, element, recover) {
         if (c8n) {
           return eYo.Do.someElementChild(element, function (child) {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
+              recover.dontResit(child)
               var target = eYo.Xml.domToBlock(child, block.workspace, recover)
               if (target) { // still headless!
                 // we could create a block from that child element
@@ -1098,9 +1173,6 @@ eYo.Xml.fromDom = function (block, element, recover) {
     if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
       eyo.lock()
     }
-    // this block have been created from untrusted data
-    // We might need to fix some stuff before returning
-    // In particular, it will be the perfect place to setup variants
   }
   eyo.changeWrap(do_it)
 }

@@ -57,7 +57,7 @@
           this.eyo.ary_p = newValue === '∞'
             ? Infinity
             : Number(newValue)
-          console.log('this.eyo.ary_p = ', this.eyo.ary_p, newValue, Number(newValue))
+          console.error('NaN Here sometimes: this.eyo.ary_p = ', this.eyo.ary_p, newValue, Number(newValue))
           this.$emit('synchronize')
         }
       },

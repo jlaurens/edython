@@ -333,7 +333,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             content,
             function () {
               var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-              eYo.Events.groupWrap(this,
+              eYo.Events.groupWrap.call(this,
                 function () {
                   B.eyo.changeWrap(
                     function () {

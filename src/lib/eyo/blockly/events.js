@@ -176,7 +176,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
     var oldValue = this.value_
     eyo.changeWrap(
       function () {
-        eYo.Events.groupWrap(data,
+        eYo.Events.groupWrap.call(data,
           function () {
             this.beforeChange(oldValue, newValue)
             try {
@@ -239,17 +239,16 @@ Blockly.Events.filter = function(queueIn, forward) {
 /**
  * Filter the queued events and merge duplicates.
  * @param {!Function} do_it
- * @param {self} This
  */
-eYo.Events.groupWrap = function (self, try_f, finally_f) {
+eYo.Events.groupWrap = function (try_f, finally_f) {
   try {
     eYo.Events.setGroup(true)
-    return try_f.call(self)
+    return try_f.call(this)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
-    finally_f && finally_f.call(self)
+    finally_f && finally_f.call(this)
     eYo.Events.setGroup(false)
   }
 }

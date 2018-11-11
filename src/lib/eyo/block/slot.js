@@ -488,15 +488,6 @@ eYo.Slot.prototype.getConnection = function () {
 }
 
 /**
- * Geth the workspace.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Slot.prototype.getWorkspace = function () {
-  return this.connection && this.connection.sourceBlock_.workspace
-}
-
-/**
  * The target.
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
@@ -802,6 +793,7 @@ eYo.Slot.prototype.load = function (element, recover) {
           attribute = child.getAttribute(eYo.Xml.FLOW)
         }
         if (attribute === this.key) {
+          recover.dontResit(child)
           if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
             this.setRequiredFromModel(true)
             out = true
@@ -819,7 +811,7 @@ eYo.Slot.prototype.load = function (element, recover) {
                       var grandTarget = input.connection.targetBlock()
                       if ((grandTarget)) {
                         eYo.Xml.fromDom(grandTarget, grandChild, recover)
-                      } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace, recover))) {
+                      } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_, recover))) {
                         var targetC8n = grandTarget.outputConnection
                         if (targetC8n && targetC8n.checkType_(input.connection)) {
                           targetC8n.connect(input.connection)
@@ -836,7 +828,7 @@ eYo.Slot.prototype.load = function (element, recover) {
             } else {
               out = eYo.Xml.fromDom(target, child, recover)
             }
-          } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace(), recover))) {
+          } else if ((target = eYo.Xml.domToBlock(child, this.owner.block_, recover))) {
             // we could create a block from that child element
             // then connect it
             var c8n = this.input && this.input.connection

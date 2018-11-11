@@ -607,13 +607,14 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
 
 /**
  * List consolidator.
- * Removes empty place holders
+ * Removes empty place holders, add some...
+ * Problem of `when`: the block should not consolidate when not in a wokspace.
  * @param {!Block} block, to be consolidated....
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (block, force) {
-  // do not consolidate while changing
-  if (block.eyo.change.level) {
+  // do not consolidate while changing or not in a workspace
+  if (block.eyo.change.level || !block.workspace) {
     return
   }
   var io = this.getIO(block)

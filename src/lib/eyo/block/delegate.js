@@ -259,11 +259,17 @@ eYo.Delegate.prototype.getSuiteCount_ = function () {
  * This is used by the primary delegate's getType
  * to cache the return value.
  * For edython.
+ * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.Delegate.prototype.incrementChangeCount = function () {
+eYo.Delegate.prototype.incrementChangeCount = function (deep) {
   ++ this.change.count
   if (!this.isEditing) {
     this.change.step = this.change.count
+  }
+  if (deep) {
+    this.block_.childBlocks_.forEach(block => {
+      block.eyo.incrementChangeCount(deep)
+    });
   }
 }
 
@@ -1257,7 +1263,7 @@ eYo.Delegate.prototype.makeConnections = function () {
       this.nextConnection.eyo.model = D.next
     }
     if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite')
+      this.inputSuite = block.appendStatementInput(eYo.Key.SUITE)
       this.suiteConnection.eyo.model = D
     }
   }

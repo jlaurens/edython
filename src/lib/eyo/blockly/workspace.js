@@ -362,7 +362,7 @@ Blockly.onKeyDown_ = function(e) {
     if (Blockly.selected &&
         Blockly.selected.isDeletable() && Blockly.selected.isMovable()) {
       // Eyo:
-      var deep = (e.altKey ? 1 : 0 + e.ctrlKey ? 1 : 0 + e.metaKey ? 1 : 0) > 1
+      var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
       // would be to paste, which would create additional undeletable/immovable
       // blocks on the workspace.

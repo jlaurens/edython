@@ -604,7 +604,8 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
     // this is a statement connection
     var w = block.width - eYo.Unit.x / 2
     if (block.eyo.inputSuite) {
-      if (block.eyo.inputSuite.connection === c8n) {
+      // this is a group
+      if (block.eyo.suiteConnection === c8n) {
         w -= eYo.Font.tabWidth
       } else if (block.nextConnection === c8n) {
         w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius

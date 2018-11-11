@@ -267,7 +267,7 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
   var x = offset.x
   var y = offset.y
   var i = 0
-  eYo.Events.groupWrap(this,
+  eYo.Events.groupWrap.call(this,
     function () {
       for (; i < types.length; i++) {
         this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
@@ -319,15 +319,18 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     } catch (e) {
       targetC8n = null
     }
-    eYo.Events.groupWrap(this,
+    eYo.Events.groupWrap.call(this,
       function () {
+        recover.resit()
         if (Blockly.Events.isEnabled()) {
           eYo.Events.fireBlockCreate(block)
-          recover.forEachAndFlush(
-            function () {
-              eYo.Events.fireBlockCreate(this)
-            }
-          )
+          eYo.Events.groupWrap(function () {
+            recover.forEachAndFlush(
+              block => {
+                eYo.Events.fireBlockCreate(block)
+              }
+            )
+          })
         }
         if (targetC8n && c8n.checkType_(targetC8n)) {
           if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
@@ -376,6 +379,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   Blockly.Events.disable(true)
   try {
     block = Blockly.Xml.domToBlock(xmlBlock, this, recover)
+    recover.resit()
     // Move the duplicate to original position.
     var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
     var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
@@ -448,11 +452,13 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   }
   if (Blockly.Events.isEnabled()) {
     eYo.Events.fireBlockCreate(block)
-    recover.forEachAndFlush(
-      function () {
-        eYo.Events.fireBlockCreate(this)
-      }
-    )
+    eYo.Events.groupWrap(function () {
+      recover.forEachAndFlush(
+        block => {
+          eYo.Events.fireBlockCreate(block)
+        }
+      )
+    })
 }
   block.select()
 }
