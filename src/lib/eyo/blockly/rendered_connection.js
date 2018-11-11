@@ -1307,6 +1307,16 @@ eYo.ConnectionDelegate.prototype.consolidateSource = function () {
  * @private
  */
 Blockly.RenderedConnection.prototype.tighten_ = function() {
+  var where = this.eyo.where
+  var target_where = this.targetConnection.eyo.where
+  var dc = target_where.c - where.c
+  var dl = target_where.l - where.l
+  if (dc != 0 || dl != 0) {
+    var block = this.targetBlock();
+    block.eyo.setOffset(-dc, -dl);
+  }
+};
+Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dx = this.targetConnection.x_ - this.x_;
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
@@ -1314,7 +1324,6 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
     block.eyo.setOffset(-dx, -dy);
   }
 };
-
 
 /**
  * Returns the block that this connection connects to.

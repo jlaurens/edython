@@ -581,7 +581,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         this,
         function () {
           field.setValue(this.toField())
-          if (this.slot) {
+          if (this.slot && this.slot.data === this) {
             this.slot.setIncog(this.incog_p)
             field.setVisible(!this.slot.targetBlock())
           } else {

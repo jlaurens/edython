@@ -818,18 +818,6 @@ eYo.Do.stringToDom = function (string) {
   return stringToDom(string)
 }
 
-eYo.Do.logTiles = function (src) {
-  var eyo = (src && src.eyo) || src
-  var tile
-  if (eyo && (tile = eyo.tileHead)) {
-    console.log(tile)
-    while (tile != eyo.tileTail && (tile = tile.tileNext)) {
-      console.log(tile)
-    }
-    console.log(eyo.tileTail)
-  }
-}
-
 /**
  * Forwards `this` to the handler.
  * @param {*} element 

@@ -122,10 +122,10 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
  * overriden to support other kind of blocks
  * This is a copy with a tiny formal modification.
  * @param {!Element} xml XML DOM.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {!*} owner The workspace or the parent block.
  * @return {Array.<string>} An array containing new block IDs.
  */
-Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) {
+Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   if (xml instanceof Blockly.Workspace) {
     var swap = xml
     xml = workspace
@@ -133,6 +133,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
     console.warn('Deprecated call to Blockly.Xml.domToWorkspace, ' +
                  'swap the arguments.')
   }
+  var workspace = owner.workspace || owner
   var width // Not used in LTR.
   if (workspace.RTL) {
     width = workspace.getWidth()
@@ -157,14 +158,25 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
   var newBlock = function (xmlChild) {
     var block
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
-      if ((block = eYo.Xml.domToBlock(xmlChild, workspace, recover))) {
+      if ((block = eYo.Xml.domToBlock(xmlChild, owner, recover))) {
         newBlockIds.push(block.id)
-        var blockX = xmlChild.hasAttribute('x')
+        var x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
-        var blockY = xmlChild.hasAttribute('y')
+        var y = xmlChild.hasAttribute('y')
           ? parseInt(xmlChild.getAttribute('y'), 10) : 10
-        if (!isNaN(blockX) && !isNaN(blockY)) {
-          block.moveBy(blockX, blockY)
+        if (!isNaN(x) && !isNaN(y)) {
+          block.moveBy(x, y)
+        } else {
+          var c = xmlChild.hasAttribute('c')
+            ? parseInt(xmlChild.getAttribute('c'), 10)
+            : 10
+          var l = xmlChild.hasAttribute('l')
+            ? parseInt(xmlChild.getAttribute('l'), 10)
+            : 10
+          if (!isNaN(c) && !isNaN(l)) {
+            block.eyo.moveBy(c, l)
+            
+          }
         }
       }
     }
@@ -522,8 +534,8 @@ goog.require('eYo.DelegateSvg.Literal')
 goog.provide('eYo.Xml.Literal')
 /**
  * Try to create a Literal block from the given element.
- * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
  * @override
  */
 eYo.Xml.Literal.domToBlock = (function () {
@@ -549,10 +561,11 @@ eYo.Xml.Literal.domToBlock = (function () {
       }
     }
   }
-  return function (element, workspace) {
+  return function (element, owner) {
     if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
       return
     }
+    var workspace = owner.workspace || owner
     // is it a statement or an expression ?
     var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
     var id = element.getAttribute('id')
@@ -875,10 +888,13 @@ eYo.Xml.Recover.prototype.resit = function () {
  * @return {!Blockly.Block} The root block created.
  */
 eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
-  var workspace = owner.workspace_
+  var workspace = owner.workspace
   if (!workspace) {
     workspace = owner
     owner = undefined
+  }
+  if (!workspace.newBlock) {
+    console.error('ARGH')
   }
   // First create a block that we will return to replace the expected one
   // This is a block of the same kind (expression/statement)
@@ -935,7 +951,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
         : owner.nextConnection
       // return the first block that would connect to the owner
       if (!best.types.some(type => {
-          var b = eYo.DelegateSvg.newBlockReady(workspace, type)
+          var b = eYo.DelegateSvg.newBlockComplete(workspace, type)
           var c8n = ans && ans.outputConnection
           if (slot_c8n && c8n && slot_c8n.checkType_(c8n)) {
             ans = b
@@ -950,7 +966,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
         fallback = best.types[0]
       }
     }
-    ans || (ans = eYo.DelegateSvg.newBlockReady(workspace, fallback))
+    ans || (ans = eYo.DelegateSvg.newBlockComplete(workspace, fallback))
   })
   if (ans) {
     ans.eyo.errorRecover = true
@@ -985,11 +1001,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
  */
 eYo.Xml.domToBlock = (function () {
   var domToBlock = function (dom, owner, recover) {
-    var workspace = owner.workspace_
-    // `owner` is used only for recovery.
-    if (!workspace) {
-      workspace = owner
-    }
+    var workspace = owner.workspace || owner
     var block = null
     if (!goog.isFunction(dom.getAttribute)) {
       return block
@@ -1000,10 +1012,10 @@ eYo.Xml.domToBlock = (function () {
     var prototypeName
     //
     // is it a literal or something else special ?
-    if ((block = eYo.Xml.Literal.domToBlock(dom, workspace)) ||
-    (block = eYo.Xml.Comparison.domToBlock(dom, workspace)) ||
-    (block = eYo.Xml.Group.domToBlock(dom, workspace)) ||
-    (block = eYo.Xml.Call.domToBlock(dom, workspace))) {
+    if ((block = eYo.Xml.Literal.domToBlock(dom, owner, recover)) ||
+    (block = eYo.Xml.Comparison.domToBlock(dom, owner, recover)) ||
+    (block = eYo.Xml.Group.domToBlock(dom, owner, recover)) ||
+    (block = eYo.Xml.Call.domToBlock(dom, owner, recover))) {
       eYo.Xml.fromDom(block, dom, recover)
       return block
     }
@@ -1058,10 +1070,10 @@ eYo.Xml.domToBlock = (function () {
     // error recovery
     return recover && recover.domToBlock(dom, owner)
   }
-  return function (dom, workspace, recover) {
+  return function (dom, owner, recover) {
     eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
     eYo.Xml.domToBlock = domToBlock
-    return domToBlock(dom, workspace, recover)
+    return domToBlock(dom, owner, recover)
   }
 }())
 
@@ -1123,7 +1135,7 @@ eYo.Xml.fromDom = function (block, element, recover) {
             if (target) {
               recover.dontResit(child)
               eYo.Xml.fromDom(target, child, recover)
-            } else if ((target = eYo.Xml.domToBlock(child, block.workspace, recover))) {
+            } else if ((target = eYo.Xml.domToBlock(child, block, recover))) {
               recover.dontResit(child)
               var targetC8n = target.outputConnection
               if (targetC8n && targetC8n.checkType_(input.connection)) {
@@ -1152,7 +1164,7 @@ eYo.Xml.fromDom = function (block, element, recover) {
           return eYo.Do.someElementChild(element, function (child) {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               recover.dontResit(child)
-              var target = eYo.Xml.domToBlock(child, block.workspace, recover)
+              var target = eYo.Xml.domToBlock(child, block, recover)
               if (target) { // still headless!
                 // we could create a block from that child element
                 // then connect it to
@@ -1267,16 +1279,17 @@ goog.require('eYo.DelegateSvg.Operator')
 
 /**
  * Try to create a comparison block from the given element.
- * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
  * @param {?eYo.Xml.Recover} recover the recover helper.
  * @override
  */
-eYo.Xml.Comparison.domToBlock = function (element, workspace, recover) {
+eYo.Xml.Comparison.domToBlock = function (element, owner, recover) {
   var block
   var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === eYo.Xml.COMPARISON) {
+    var workspace = owner.workspace || owner
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
@@ -1307,13 +1320,14 @@ goog.provide('eYo.Xml.Group')
 /**
  * Reads the given element into a block.
  * @param {!Element} element dom element to be completed.
- * @param {!Blockly.Workspace} workspace
+ * @param {!*} owner  The workspace or the parent block.
  * @param {?eYo.Xml.Recover} recover the recover helper.
  * @override
  */
 eYo.Xml.Group.domToBlock = function (element, workspace, recover) {
   var name = element.getAttribute(eYo.Key.EYO)
   if (name === eYo.DelegateSvg.Stmt.else_part.prototype.tagName().substring(4)) {
+    var workspace = owner.workspace || owner
     var type = eYo.T3.Stmt.else_part
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
@@ -1331,12 +1345,13 @@ console.warn('convert print statement to print expression and conversely, top bl
  * if there is an eyo:input attribute, even a ''
  * then it is an expression block otherwise it is a statement block. DEPRECATED.
  * @param {!Element} element dom element to be completed.
- * @param {!Blockly.Workspace} workspace
+ * @param {!*} owner  The workspace or the parent block
  * @param {?eYo.Xml.Recover} recover the recover helper.
  * @override
  */
-eYo.Xml.Call.domToBlock = function (element, workspace, recover) {
+eYo.Xml.Call.domToBlock = function (element, owner, recover) {
   if (element.getAttribute(eYo.Key.EYO) === eYo.Xml.CALL) {
+    var workspace = owner.workspace || owner
     var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)

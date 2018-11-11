@@ -48,6 +48,11 @@ Object.defineProperties(
       get () {
         return !this.wrapped_ && !this.locked_
       }
+    },
+    isCollapsed: {
+      get () {
+        return this.block_.isCollapsed()
+      }
     }
   }
 )
@@ -72,8 +77,6 @@ eYo.DelegateSvg.prototype.changeEnd = function () {
   */
 eYo.DelegateSvg.prototype.incrementChangeCount = function (deep) {
   // force to compute a new chain tile
-  this.tileHead = undefined
-  this.tileTail = undefined
   eYo.DelegateSvg.superClass_.incrementChangeCount.call(this, deep)
 }
 
@@ -163,7 +166,6 @@ eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
  * input model available through `model.slots`.
  * The structure of that dictionary is detailled in the treatment flow
  * below.
- * @param {!Blockly.Block} block to be initialized..
  */
 eYo.DelegateSvg.prototype.init = eYo.Decorate.reentrant_method(
   'initBlockSvg',
@@ -206,7 +208,6 @@ eYo.DelegateSvg.prototype.deinit = function () {
 /**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
- * @param {!Blockly.Block} block to be initialized..
  */
 eYo.DelegateSvg.prototype.preInitSvg = function () {
 }
@@ -216,7 +217,6 @@ eYo.DelegateSvg.prototype.preInitSvg = function () {
  * Called by `initSvg`.
  * May be called more than once along with `initSvg`.
  * No rendering.
- * @param {!Blockly.Block} block to be initialized.
  */
 eYo.DelegateSvg.prototype.postInitSvg = function () {
   if (this.svgPathContour_) {
@@ -284,7 +284,6 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {!Blockly.Block} block to be modified.
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
@@ -410,7 +409,6 @@ eYo.DelegateSvg.prototype.synchronizeSlots = function () {
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
- * @param {!Blockly.Block} block owning the delegate.
  */
 eYo.DelegateSvg.prototype.getMenuTarget = function () {
   var wrapped
@@ -444,7 +442,8 @@ eYo.Data.prototype.change = function (newValue) {
 
 /**
  * Render the given connection, if relevant.
- * @param {!Blockly.Connection} c8n
+ * @param {*} recorder 
+ * @param {*} c8n 
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
@@ -454,6 +453,9 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
   var target = c8n.targetBlock()
   if (!target) {
     return
+  }
+  if (c8n.type === Blockly.NEXT_STATEMENT) {
+    c8n.tighten_()
   }
   var do_it = !target.rendered ||
   (!this.upRendering &&
@@ -479,6 +481,7 @@ eYo.DelegateSvg.debugCount = {}
 
 /**
  * Render the next block, if relevant.
+ * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
@@ -499,7 +502,7 @@ eYo.DelegateSvg.prototype.renderSuite_ = function () {
 /**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
- * @param {!Block} block
+ * @param {*} recorder
  * @param {boolean=} optBubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
@@ -585,13 +588,14 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.minWidth = block.width = 0
         this.consolidate()
         this.willRender_(recorder)
-        this.renderDraw_(recorder)
-        this.renderDrawNext_(recorder)
-        this.layoutConnections_(recorder)
-        this.renderMove_(recorder)
-        renderDrawParent.call(this, recorder, optBubble)
+        var io = this.renderDraw_(recorder)
+        this.layoutConnections_(io)
+        this.renderDrawNext_(io)
+        this.renderMove_(io)
+        this.updateAllPaths_()
+        renderDrawParent.call(this, io, optBubble)
         block.rendered = true
-        this.didRender_(recorder)
+        this.didRender_(io)
         if (eYo.traceOutputConnection && block.outputConnection) {
           console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
         }
@@ -620,41 +624,45 @@ eYo.DelegateSvg.prototype.render = (function () {
     if (block.rendered) {
       if (eYo.Connection.disconnectedChildC8n && block.previousConnection === eYo.Connection.disconnectedChildC8n) {
         // this block is the top one
-        this.willShortRender_(recorder)
-        this.layoutConnections_(recorder)
-        this.renderMove_(recorder)
+        var io = this.willShortRender_(recorder)
+        this.layoutConnections_(io)
+        this.renderDrawNext_(io)
+        this.renderMove_(io)
         this.updateAllPaths_()
         this.change.save.render = this.change.count
-        renderDrawParent.call(this, recorder, optBubble) || this.alignRightEdges_(recorder)
+        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Connection.disconnectedParentC8n && this.nextConnection === eYo.Connection.disconnectedParentC8n) {
         // this block is the bottom one
         // but it may belong to a suite
-        this.willShortRender_(recorder)
-        this.layoutConnections_(recorder)
-        this.renderMove_(recorder)
+        var io = this.willShortRender_(recorder)
+        this.layoutConnections_(io)
+        this.renderDrawNext_(io)
+        this.renderMove_(io)
         this.updateAllPaths_()
         this.change.save.render = this.change.count
-        renderDrawParent.call(this, recorder, optBubble) || this.alignRightEdges_(recorder)
+        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Connection.connectedParentC8n) {
         if (block.outputConnection && eYo.Connection.connectedParentC8n === block.outputConnection.targetConnection) {
           // this is not a statement connection
           // no shortcut
         } else if (block.previousConnection && eYo.Connection.connectedParentC8n === block.previousConnection.targetConnection) {
-          this.willShortRender_(recorder)
-          this.layoutConnections_(recorder)
-          this.renderMove_(recorder)
+          var io = this.willShortRender_(recorder)
+          this.layoutConnections_(io)
+          this.renderDrawNext_(io)
+          this.renderMove_(io)
           this.updateAllPaths_()
           this.change.save.render = this.change.count
-          renderDrawParent.call(this, recorder, optBubble) || this.alignRightEdges_(recorder)
+          renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
           } else if (this.nextConnection && eYo.Connection.connectedParentC8n === this.nextConnection) {
-          this.willShortRender_(recorder)
-          this.layoutConnections_(recorder)
-          this.renderMove_(recorder)
+          var io = this.willShortRender_(recorder)
+          this.layoutConnections_(io)
+          this.renderDrawNext_(io)
+          this.renderMove_(io)
           this.updateAllPaths_()
           this.change.save.render = this.change.count
-          renderDrawParent.call(this, recorder, optBubble) || this.alignRightEdges_(recorder)
+          renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
           }
       }
     }
@@ -690,11 +698,12 @@ eYo.DelegateSvg.prototype.render = (function () {
     }
     if (this.change.save.render === this.change.count) {
       // minimal rendering
-      this.willShortRender_(recorder)
-      this.layoutConnections_(recorder)
-      this.renderMove_(recorder)
+      var io = this.willShortRender_(recorder)
+      this.layoutConnections_(io)
+      this.renderDrawNext_(io)
+      this.renderMove_(io)
       this.updateAllPaths_()
-      renderDrawParent.call(this, recorder, optBubble) || this.alignRightEdges_(recorder)
+      renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
       return
     }  
     longRender.call(this, optBubble, recorder)
@@ -713,17 +722,54 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
 /**
  * Will draw the block, short version.
  * The print statement needs some preparation before drawing.
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.willShortRender_ = function (recorder) {
   if (this.inputSuite) {
     this.size.h = this.suiteCount + 1
   }
+  return this.newDrawRecorder(recorder)
+}
+
+/**
+ * Get a new draw recorder.
+ * @param {*} recorder
+ * @private
+ */
+eYo.DelegateSvg.prototype.newDrawRecorder = function (recorder) {
+  var io = {
+    block: this.block_,
+    steps: [],
+    i: 0, // input index
+    f: 0, // field index
+    n: 0, // count of rendered objects (fields, slots and inputs)
+    cursor: new eYo.Where(),
+    forc: undefined // rendered file or connection
+  }
+  if (recorder) {
+    // io inherits some values from the given recorder
+    io.recorder = recorder
+    io.common = recorder.common // It is always defined
+  } else {
+    io.common = {
+      pending: undefined,
+      ending: [],
+      shouldSeparate: false,
+      beforeIsRightEdge: false,
+      field: {
+        beforeIsBlack: false, // true if the position before the cursor contains a black character
+        shouldSeparate: false // and other properties...
+      }
+    }
+  }
+  return io
 }
 
 /**
  * Will draw the block. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
@@ -755,6 +801,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
 
 /**
  * Did draw the block. Default implementation does nothing.
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.didRender_ = function (recorder) {
@@ -762,6 +809,7 @@ eYo.DelegateSvg.prototype.didRender_ = function (recorder) {
 
 /**
  * Layout previous, next and output block connections.
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
@@ -784,21 +832,24 @@ eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
 
 /**
  * Layout previous, next and output block connections.
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
-  var block = this.block_
-  if (block.outputConnection) {
-    block.outputConnection.eyo.setOffset()
+  var c8n = this.outputConnection
+  if (c8n) {
+    c8n.eyo.setOffset()
   } else {
-    if (block.previousConnection) {
-      block.previousConnection.eyo.setOffset()
+    c8n = this.previousConnection
+    if (c8n) {
+      c8n.eyo.setOffset()
     }
-    if (this.nextConnection) {
-      if (block.isCollapsed()) {
-        this.nextConnection.eyo.setOffset(0, 2)
+    c8n = this.nextConnection
+    if (c8n) {
+      if (this.isCollapsed) {
+        c8n.eyo.setOffset(0, 2)
       } else {
-        this.nextConnection.eyo.setOffset(0, this.size.h)
+        c8n.eyo.setOffset(0, this.size.h)
       }
     }
   }
@@ -807,7 +858,6 @@ eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
 /**
  * Block shape. Default implementation throws.
  * Subclasses must override it. Used in renderDraw_.
- * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.shapePathDef_ = function () {
@@ -831,7 +881,6 @@ eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePat
  * When a block is selected and one of its connection is also selected
  * the ui displays a bold line on the connection. When the block has wrapped input,
  * the selected connection may belong to a wrapped block.
- * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
@@ -842,7 +891,6 @@ eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
 
 /**
  * Extra disabled block outline. Default implementation return a void string.
- * @param {!eYo.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
@@ -851,7 +899,7 @@ eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
 
 /**
  * Draw the path of the block.
- * @param {!eYo.Block} block
+ * @param {*} recorder
  * @private
  */
 eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
@@ -859,17 +907,18 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
     // if the above path does not exist
     // the block is not yet ready for rendering
     var block = this.block_
-    var d, unlocker
+    var d
+    // when defined, `recorder` comes from
+    // the parent's `renderDrawValueInput_` method.
+    var io = this.renderDrawModelBegin_(recorder)
     try {
       // chain the tiles to properly manage spaces between tiles
-      unlocker = this.chainTiles()
-      d = this.renderDrawModel_(recorder)
+      d = this.renderDrawModel_(io)
       this.svgPathInner_.setAttribute('d', d)
     } catch (err) {
       console.error (err)
       throw err
     } finally {
-      unlocker && unlocker.eyo.unlockChainTiles(unlocker)
       var root = block.getRootBlock()
       this.renderSuite_()
       block.height = this.size.height
@@ -877,12 +926,13 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
       this.updateAllPaths_()
     }
   }
+  return io
 }
 
 /**
  * Align the right edges by changing the size of all the connected statement blocks.
  * The default implementation does nothing.
- * @param {!eYo.Block} block
+ * @param {*} recorder
  * @protected
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
@@ -912,8 +962,8 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!eYo.Block} block
- * @private
+ * @param {*} path 
+ * @param {*} def 
  */
 eYo.DelegateSvg.prototype.updatePath_ = function (path, def) {
   if (path) {
@@ -961,232 +1011,11 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
 
 /**
  * Render the inputs of the block.
- * @param {!Blockly.Block} block
  * @protected
  */
 eYo.DelegateSvg.prototype.minBlockW = function () {
   return 0
 }
-
-/**
- * A tile is a field to be displayed.
- * Tiles are stacked horizontally to draw the block content.
- * There is no (as of june 2018) support for line break inside blocks.
- * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
- * The purpose is to chain the tiles before rendering.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.unlockChainTiles = function (block) {
-  this.chainTiles_locked = false // unlock now
-  var slot
-  var unlock = function (input) {
-    if (!input) {
-      return
-    }
-    var c8n, target
-    if ((c8n = input.connection)) {
-      if ((target = c8n.targetBlock()) && target.outputConnection) {
-        target.eyo.unlockChainTiles(target)
-      }
-    } 
-  }
-  if ((slot = this.headSlot)) {
-    do {
-      unlock(slot.input)
-    } while ((slot = slot.next))
-  } else {
-    for (var i = 0, input; (input = block.inputList[i]); i++) {
-      unlock(input)
-    }
-  }
-}
-
-/**
- * A tile is either a field or a connection to be displayed.
- * Tiles are stacked horizontally to draw the block content.
- * There is no (as of june 2018) support for line break inside blocks.
- * Each tile has a delegate who implements `tileNext` and `tilePrevious`.
- * The purpose is to chain the tiles before rendering in order to
- * add or remove space between blocks.
- * Each block has a tile chain.
- * Statement blocks and standalone value blocks have standalone chains.
- * Value blocks' chain is a subchain of the parent's one
- * when there is a parent.
- * The chain depends on the inner connected blocks.
- * If an inner connection is closed, the chain changes.
- * If an inner connection is established, the chain changes too.
- * If the block tile chain changes, the parent's chain changes too.
- * When does the chain should be in stable state?
- * Answer: just before rendering the statement block or
- * the standalone value block.
- * When an operation may change some tile chain,
- * rendering should start from the proper root node which is
- * the first enclosing statement block if any or the root if none.
- * There is a collision with up rendering and down rendering concept.
- * When the chain has changed, there must be some down rendering,
- * at least for the blocks which chain has changed.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.chainTiles = (function () {
-  // this is a closure
-  /**
-   * Chain the fields.
-   * In stable state, there is no tileHead without a tileTail
-   * @param {*} headField A field within a field chain
-   * @return {*} The tail field of the last chain element, if any
-   */
-  var chainFields = function (headField) {
-    var head, tile, next
-    if ((head = headField)) {
-      headField.eyo.tileHead = null
-      headField.eyo.tileTail = null
-      // `tileHead` and `tileTail` are both null
-      // or not null at the same time
-      // first unchain all
-      tile = head
-      do {
-        tile.eyo.tilePrevious = tile.eyo.tileNext = null
-      } while ((tile = tile.eyo.nextField))
-      // the head is the first visible field
-      while (!head.isVisible()) {
-        if (!(head = head.eyo.nextField)) {
-          return
-        }
-      }
-      // !!head and head.isVisible()
-      // then chain all starting from tile
-      next = tile = head
-      while ((next = next.eyo.nextField)) {
-        if (next.isVisible()) {
-          next.eyo.tilePrevious = tile
-          tile.eyo.tileNext = next
-          tile = next
-        }
-      }
-      headField.eyo.tileHead = head
-      headField.eyo.tileTail = tile
-      return headField.eyo.tileTail
-    }
-  }
-  /**
-   * Merges the chains of left and right
-   * There is no tileHead without a tileTail
-   * @param {*} left An eyo like object which receives the merge.
-   * @param {*} right An object with an eyo
-   * @return {*} the last element of the chain
-   */
-  var chainMerge = function () {
-    var left = arguments[0]
-    if (left) {
-      var i = 1
-      while (i < arguments.length) {
-        var right = arguments[i++]
-        if (right && right.eyo.tileHead) {
-          if (left.tileHead) {
-            left.tileTail.eyo.tileNext = right.eyo.tileHead
-            right.eyo.tileHead.eyo.tilePrevious = left.tileTail
-          } else {
-            left.tileHead = right.eyo.tileHead
-          }
-          left.tileTail = right.eyo.tileTail
-        }    
-      }
-      return left.tileTail
-    }
-  }
-  var chainInput = function (input) {
-    // what about visible blocks ?
-    if (!input) {
-      return
-    }
-    input.eyo.tileHead = undefined
-    input.eyo.tileTail = undefined
-    // what about visible blocks ?
-    if (!input.isVisible()) {
-      return
-    }
-    // As there is a double entry for fields,
-    // one through headField and one through fieldRow,
-    // we do not assume
-    // that fields do not belong to a chain
-    var j = 0
-    var field, nextField
-    while ((field = input.fieldRow[j++])) {
-      while ((nextField = field.eyo.nextField)) {
-        field = nextField
-      }
-      while ((nextField = input.fieldRow[++j])) {
-        if (nextField.eyo.previousField) {
-          // this field already belongs to a chain
-          // so we ignore it
-          continue
-        } else if (nextField.isVisible()) {
-          field.eyo.nextField = nextField
-          nextField.eyo.previousField = field
-          do {
-            field = nextField
-          } while ((nextField = field.eyo.nextField))
-        }
-      }
-      field.eyo.nextField = null
-    }
-    chainMerge(input.eyo, input.fieldRow[0])
-    var c8n, target
-    if ((c8n = input.connection)) {
-      c8n.eyo.tilePrevious = null
-      c8n.eyo.tileNext = null
-      if ((target = c8n.targetBlock()) && target.outputConnection) {
-        target.eyo.chainTiles(target)
-        chainMerge(input.eyo, target)
-      } else if (c8n.hidden_ || c8n.eyo.bindField || c8n.eyo.bindContent) {
-        c8n.eyo.tileHead = undefined
-        c8n.eyo.tileTail = undefined
-      } else {
-        c8n.eyo.tileHead = c8n
-        c8n.eyo.tileTail = c8n
-        chainMerge(input.eyo, c8n)
-      }
-    } 
-  }
-  return function () {
-    // if there is already a tileHead,
-    // the tile chain has already been computed
-    // and no change was made in the block (and children)
-    if (this.chainTiles_locked || this.tileHead) {
-      return
-    }
-    this.chainTiles_locked = true
-    var block = this.block_
-    this.tileHead = this.tileTail = null
-    // chain
-    chainFields(this.fromStartField)
-    chainMerge(this, this.fromStartField)
-    var slot
-    if ((slot = this.headSlot)) {
-      do {
-        slot.tileHead = slot.tileTail = null
-        if (slot.isIncog()) {
-          continue
-        }
-        chainFields(slot.fromStartField)
-        chainInput(slot.input)
-        chainFields(slot.toEndField)
-        chainMerge(this, slot.fromStartField, slot.input, slot.toEndField)
-      } while ((slot = slot.next))
-    } else {
-      for (var i = 0, input; (input = block.inputList[i]); i++) {
-        chainInput(input)
-        chainMerge(this, input)
-      }
-    }
-    chainFields(this.toEndField)
-    chainMerge(this, this.toEndField)
-    this.tileHead && (this.tileHead.eyo.chainBlock = block)
-    return block
-  }
-}) ()
 
 /**
  * Prepare rendering.
@@ -1199,31 +1028,7 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
   this.parentIsShort = false
   this.isShort = false
   // we define the `io` named recorder which is specific to this block.
-  var io = {
-    block: block,
-    steps: [],
-    i: 0, // input index
-    f: 0, // field index
-    n: 0, // count of rendered objects (fields, slots and inputs)
-    cursor: new eYo.Where(),
-    forc: undefined // rendered file or connection
-  }
-  if (recorder) {
-    // io inherits some values from the given recorder
-    io.recorder = recorder
-    io.common = recorder.common // It is always defined
-  } else {
-    io.common = {
-      pending: undefined,
-      ending: [],
-      shouldSeparate: false,
-      beforeIsRightEdge: false,
-      field: {
-        beforeIsBlack: false, // true if the position before the cursor contains a black character
-        shouldSeparate: false // and other properties...
-      }
-    }
-  }
+  var io = this.newDrawRecorder(recorder)
   // A "star like" field's text is one of '*', '+', '-', '~'...
   // This field is the very first of the block.
   // Once we have rendered a field with a positive length,
@@ -1278,14 +1083,11 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
  * rendering information. It is the argument of various methods.
  * This method is executed at least once for any rendered block.
  * Since then, it won't be executed as long as the block has not been edited.
- * @param {?Object} recorder 
+ * @param {?Object} io 
  * @private
  */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function (recorder) {
+eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
   var block = this.block_
-  // when defined, `recorder` comes from
-  // the parent's `renderDrawValueInput_` method.
-  var io = this.renderDrawModelBegin_(recorder)
   if ((io.common.field.current = this.fromStartField)) {
     io.f = 0
     do {
@@ -1823,7 +1625,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
 
 /**
  * Block path.
- * @param {!Blockly.Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.valuePathDef_ = function () {
@@ -1832,7 +1633,6 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
 
 /**
  * Fetches the named input object.
- * @param {!Blockly.Block} name The name of the input.
  * @param {!String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly. Ignored.
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
@@ -2236,6 +2036,9 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  * create and connect an identifier block.
  * Called once at block creation time.
  * Should not be called directly
+ * 
+ * @param {*} workspace 
+ * @param {*} holes 
  * @param {!Blockly.Block} block to be initialized..
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
@@ -2274,32 +2077,14 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
  * block.
  * As the shape is not the same comparing to Blockly's default,
  * the bounding rect changes too.
- * Coordinate system: global coordinates.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return {!goog.math.Rect}
- *    Object with top left and bottom right coordinates of the bounding box.
- */
-eYo.DelegateSvg.prototype.getGlobalBoundingRect = function (block) {
-  var R = this.getBoundingRect(block)
-  R.scale(block.workspace.scale)
-  R.translate(block.workspace.getOriginOffsetInPixels())
-  return R
-}
-
-/**
- * Returns the coordinates of a bounding rect describing the dimensions of this
- * block.
- * As the shape is not the same comparing to Blockly's default,
- * the bounding rect changes too.
  * Coordinate system: workspace coordinates.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return {!goog.math.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.DelegateSvg.prototype.getBoundingRect = function (block) {
+eYo.DelegateSvg.prototype.getBoundingRect = function () {
   return goog.math.Rect.createFromPositionAndSize(
-    block.getRelativeToSurfaceXY(),
-    block.getHeightWidth()
+    this.block_.getRelativeToSurfaceXY(),
+    this.block_.getHeightWidth()
   )
 }
 
@@ -2309,12 +2094,11 @@ eYo.DelegateSvg.prototype.getBoundingRect = function (block) {
  * As the shape is not the same comparing to Blockly's default,
  * the bounding box changes too.
  * Coordinate system: workspace coordinates.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.DelegateSvg.prototype.getBoundingBox = function (block) {
-  return this.getBoundingRect(block).toBox()
+eYo.DelegateSvg.prototype.getBoundingBox = function () {
+  return this.getBoundingRect().toBox()
 }
 
 /**
@@ -2328,7 +2112,7 @@ eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity
   var best
   for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
-    var box = top.eyo.getBoundingRect(top)
+    var box = top.eyo.getBoundingRect()
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
@@ -2347,18 +2131,18 @@ eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
  */
 eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
   var block = this.block_
-  const a = this.getBoundingBox(block)
+  const a = this.getBoundingBox()
   var smallest = {}
   var best
   for (var i = 0, top; (top = block.workspace.topBlocks_[i++]);) {
     if (top === block) {
       continue
     }
-    var b = top.eyo.getBoundingBox(top)
+    var b = top.eyo.getBoundingBox()
     var target = top
     var c8n
     while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
-      b.expandToInclude(target.eyo.getBoundingBox(target))
+      b.expandToInclude(target.eyo.getBoundingBox())
     }
     var d = distance(a, b)
     if (d.major && (!smallest.major || d.major < smallest.major)) {
@@ -2830,7 +2614,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   block.workspace.getInverseScreenCTM());
   where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
   where.scale(1 / block.workspace.scale)
-  var rect = this.getBoundingRect(block)
+  var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var e8r = block.eyo.inputEnumerator()
   while (e8r.next()) {
@@ -3378,15 +3162,18 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
 /**
  * Whether the block of the receiver is in the visible area.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {*} dx 
+ * @param {*} dy 
  * @return {boolean}
  */
-eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
+eYo.DelegateSvg.prototype.setOffset = function (dc, dl) {
   // Workspace coordinates.
   var block = this.block_
   if (!this.svgShapeGroup_) {
-    throw 'block is not inited '+block.type
+    throw 'block is not inited '+this.type
   }
+  var dx = dc * eYo.Unit.x
+  var dy = dl * eYo.Unit.y
   var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
   var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
   block.getSvgRoot().setAttribute('transform', transform);
@@ -3394,10 +3181,30 @@ eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
   this.svgContourGroup_.setAttribute('transform', transform);
   block.moveConnections_(dx, dy);
 }
+eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
+  // Workspace coordinates.
+  var block = this.block_
+  if (!this.svgShapeGroup_) {
+    throw 'block is not inited '+this.type
+  }
+  var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
+  var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
+  block.getSvgRoot().setAttribute('transform', transform);
+  var xy1 = Blockly.utils.getRelativeXY(this.svgShapeGroup_);
+  this.svgShapeGroup_.setAttribute('transform', transform);
+  var xy2 = Blockly.utils.getRelativeXY(this.svgContourGroup_);
+  this.svgContourGroup_.setAttribute('transform', transform);
+  if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
+    console.error('WEIRD', xy1, xy2)
+  }
+  if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
+    console.error('WEIRD', xy, xy1)
+  }
+  block.moveConnections_(dx, dy);
+}
 
 /**
  * Renders the block when connections are no longer hidden.
- * @param {!Blockly.Block} block
  * @param {boolean} hidden True to hide connections.
  */
 eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
@@ -3420,7 +3227,6 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
 /**
  * Execute the handler with block rendering deferred to the end, if any.
  * handler
- * @param {!Blockly.Block} block
  * @param {!Function} handler `this` is the receiver.
  * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
  */
@@ -3439,4 +3245,13 @@ eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
       block.eyo.changeEnd()
     }
   }
+}
+
+/**
+ * Move a block by a relative offset.
+ * @param {number} dx Horizontal offset in character units.
+ * @param {number} dy Vertical offset in character units.
+ */
+eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
+  this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
 }
