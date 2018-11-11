@@ -536,10 +536,19 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                     print('Failed')
                     self.url = "https://docs.python.org/" + version + "/tutorial/{}.html".format(self.key)
                     print('Downloading', self.url)
-                    urllib.request.urlretrieve (
-                        self.url,
-                        self.path_in
-                    ) # this line needs certification
+                    try:
+                        urllib.request.urlretrieve (
+                            self.url,
+                            self.path_in
+                        ) # this line needs certification
+                    except:
+                        print('Failed')
+                        self.url = "https://docs.python.org/" + version + "/reference/{}.html".format(self.key)
+                        print('Downloading', self.url)
+                        urllib.request.urlretrieve (
+                            self.url,
+                            self.path_in
+                        ) # this line needs certification
             with self.path_in.open('r', encoding='utf-8') as f:
                 contents = f.read()
                 f.close()

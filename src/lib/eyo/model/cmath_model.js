@@ -71,6 +71,7 @@ eYo.Model.cmath__module.data = {
       category: 0,
       type_: 0,
       href: '#cmath.phase',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -83,6 +84,7 @@ eYo.Model.cmath__module.data = {
       category: 0,
       type_: 0,
       href: '#cmath.polar',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -95,6 +97,7 @@ eYo.Model.cmath__module.data = {
       category: 0,
       type_: 0,
       href: '#cmath.rect',
+      ary: 2,
       arguments: [
         {
           name: 'r'
@@ -110,6 +113,7 @@ eYo.Model.cmath__module.data = {
       category: 1,
       type_: 0,
       href: '#cmath.exp',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -122,6 +126,7 @@ eYo.Model.cmath__module.data = {
       category: 1,
       type_: 0,
       href: '#cmath.log',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -139,6 +144,7 @@ eYo.Model.cmath__module.data = {
       category: 1,
       type_: 0,
       href: '#cmath.log10',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -151,6 +157,7 @@ eYo.Model.cmath__module.data = {
       category: 1,
       type_: 0,
       href: '#cmath.sqrt',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -163,6 +170,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.acos',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -175,6 +183,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.asin',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -187,6 +196,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.atan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -199,6 +209,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.cos',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -211,6 +222,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.sin',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -223,6 +235,7 @@ eYo.Model.cmath__module.data = {
       category: 2,
       type_: 0,
       href: '#cmath.tan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -235,6 +248,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.acosh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -247,6 +261,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.asinh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -259,6 +274,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.atanh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -271,6 +287,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.cosh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -283,6 +300,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.sinh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -295,6 +313,7 @@ eYo.Model.cmath__module.data = {
       category: 3,
       type_: 0,
       href: '#cmath.tanh',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -307,6 +326,7 @@ eYo.Model.cmath__module.data = {
       category: 4,
       type_: 0,
       href: '#cmath.isfinite',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -319,6 +339,7 @@ eYo.Model.cmath__module.data = {
       category: 4,
       type_: 0,
       href: '#cmath.isinf',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -331,6 +352,7 @@ eYo.Model.cmath__module.data = {
       category: 4,
       type_: 0,
       href: '#cmath.isnan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -343,6 +365,7 @@ eYo.Model.cmath__module.data = {
       category: 4,
       type_: 0,
       href: '#cmath.isclose',
+      ary: Infinity,
       mandatory: 3,
       arguments: [
         {
@@ -369,49 +392,49 @@ eYo.Model.cmath__module.data = {
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.pi'
     }),
     new Item({
       name: 'e',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.e'
     }),
     new Item({
       name: 'tau',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.tau'
     }),
     new Item({
       name: 'inf',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.inf'
     }),
     new Item({
       name: 'infj',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.infj'
     }),
     new Item({
       name: 'nan',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.nan'
     }),
     new Item({
       name: 'nanj',
       class: 'cmath',
       category: 5,
       type_: 1,
-      stmt: true
+      href: '#cmath.nanj'
     })
   ],
   by_name: {
@@ -467,6 +490,6 @@ eYo.Do.addProtocol(eYo.Model.cmath__module, 'Item', eYo.Model.cmath__module)
 eYo.Model.Item.registerTypes(eYo.Model.cmath__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2018-11-10 11:13:46.795548
+// This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2018-11-10 19:09:26.549637
 
 

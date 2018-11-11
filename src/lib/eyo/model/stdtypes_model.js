@@ -93,6 +93,7 @@ eYo.Model.stdtypes.data = {
       category: 0,
       type_: 0,
       href: '#int.to_bytes',
+      ary: Infinity,
       mandatory: 3,
       arguments: [
         {
@@ -116,6 +117,7 @@ eYo.Model.stdtypes.data = {
       category: 0,
       type_: 1,
       href: '#int.from_bytes',
+      ary: Infinity,
       mandatory: 3,
       arguments: [
         {
@@ -160,6 +162,7 @@ eYo.Model.stdtypes.data = {
       category: 1,
       type_: 1,
       href: '#float.fromhex',
+      ary: 1,
       arguments: [
         {
           name: 's'
@@ -193,6 +196,7 @@ eYo.Model.stdtypes.data = {
       category: 3,
       type_: 2,
       href: '#list',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -208,6 +212,7 @@ eYo.Model.stdtypes.data = {
       type_: 0,
       href: '#list.sort',
       stmt: true,
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -229,6 +234,7 @@ eYo.Model.stdtypes.data = {
       category: 4,
       type_: 2,
       href: '#tuple',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -243,6 +249,7 @@ eYo.Model.stdtypes.data = {
       category: 5,
       type_: 2,
       href: '#range',
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -261,19 +268,22 @@ eYo.Model.stdtypes.data = {
       name: 'start',
       class: 'range',
       category: 5,
-      type_: 3
+      type_: 3,
+      href: '#range.start'
     }),
     new Item({
       name: 'stop',
       class: 'range',
       category: 5,
-      type_: 3
+      type_: 3,
+      href: '#range.stop'
     }),
     new Item({
       name: 'step',
       class: 'range',
       category: 5,
-      type_: 3
+      type_: 3,
+      href: '#range.step'
     }),
     new Item({
       name: 'str',
@@ -281,6 +291,7 @@ eYo.Model.stdtypes.data = {
       category: 6,
       type_: 2,
       href: '#str',
+      ary: 3,
       mandatory: 0,
       arguments: [
         {
@@ -317,6 +328,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.center',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -334,6 +346,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.count',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -355,6 +368,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.encode',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -373,6 +387,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.endswith',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -394,6 +409,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.expandtabs',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -408,6 +424,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.find',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -429,6 +446,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.format',
+      ary: Infinity,
       mandatory: 2,
       arguments: [
         {
@@ -445,6 +463,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.format_map',
+      ary: 1,
       arguments: [
         {
           name: 'mapping'
@@ -457,6 +476,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.index',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -555,6 +575,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.join',
+      ary: 1,
       arguments: [
         {
           name: 'iterable'
@@ -567,6 +588,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.ljust',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -591,6 +613,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.lstrip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -605,6 +628,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 4,
       href: '#str.maketrans',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -626,6 +650,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.partition',
+      ary: 1,
       arguments: [
         {
           name: 'sep'
@@ -638,6 +663,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.replace',
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -658,6 +684,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rfind',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -679,6 +706,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rindex',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -700,6 +728,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rjust',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -717,6 +746,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rpartition',
+      ary: 1,
       arguments: [
         {
           name: 'sep'
@@ -729,6 +759,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rsplit',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -747,6 +778,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.rstrip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -761,6 +793,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.split',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -779,6 +812,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.splitlines',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -793,6 +827,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.startswith',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -814,6 +849,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.strip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -842,6 +878,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.translate',
+      ary: 1,
       arguments: [
         {
           name: 'table'
@@ -861,6 +898,7 @@ eYo.Model.stdtypes.data = {
       category: 7,
       type_: 0,
       href: '#str.zfill',
+      ary: 1,
       arguments: [
         {
           name: 'width'
@@ -874,6 +912,7 @@ eYo.Model.stdtypes.data = {
       type_: 2,
       href: '#bytes',
       stmt: true,
+      ary: 3,
       mandatory: 0,
       arguments: [
         {
@@ -896,6 +935,7 @@ eYo.Model.stdtypes.data = {
       category: 8,
       type_: 1,
       href: '#bytes.fromhex',
+      ary: 1,
       arguments: [
         {
           name: 'string'
@@ -916,6 +956,7 @@ eYo.Model.stdtypes.data = {
       type_: 2,
       href: '#bytearray',
       stmt: true,
+      ary: 3,
       mandatory: 0,
       arguments: [
         {
@@ -938,6 +979,7 @@ eYo.Model.stdtypes.data = {
       category: 9,
       type_: 1,
       href: '#bytearray.fromhex',
+      ary: 1,
       arguments: [
         {
           name: 'string'
@@ -958,6 +1000,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.count',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -980,6 +1023,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.decode',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -999,6 +1043,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.endswith',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1021,6 +1066,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.find',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1043,6 +1089,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.index',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1065,6 +1112,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.join',
+      ary: 1,
       arguments: [
         {
           name: 'iterable'
@@ -1078,6 +1126,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 4,
       href: '#bytearray.maketrans',
+      ary: 2,
       arguments: [
         {
           name: 'from'
@@ -1094,6 +1143,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.partition',
+      ary: 1,
       arguments: [
         {
           name: 'sep'
@@ -1107,6 +1157,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.replace',
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -1128,6 +1179,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rfind',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1150,6 +1202,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rindex',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1172,6 +1225,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rpartition',
+      ary: 1,
       arguments: [
         {
           name: 'sep'
@@ -1185,6 +1239,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.startswith',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -1207,6 +1262,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.translate',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1225,6 +1281,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.center',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1243,6 +1300,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.ljust',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1261,6 +1319,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.lstrip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1276,6 +1335,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rjust',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1294,6 +1354,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rsplit',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -1313,6 +1374,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rstrip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1328,6 +1390,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.split',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -1347,6 +1410,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.strip',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1370,6 +1434,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.expandtabs',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1449,6 +1514,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.splitlines',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1488,6 +1554,7 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.zfill',
+      ary: 1,
       arguments: [
         {
           name: 'width'
@@ -1501,6 +1568,7 @@ eYo.Model.stdtypes.data = {
       type_: 2,
       href: '#memoryview',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'obj'
@@ -1513,6 +1581,7 @@ eYo.Model.stdtypes.data = {
       category: 11,
       type_: 0,
       href: '#memoryview.__eq__',
+      ary: 1,
       arguments: [
         {
           name: 'exporter'
@@ -1555,6 +1624,7 @@ eYo.Model.stdtypes.data = {
       type_: 0,
       href: '#memoryview.cast',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1570,80 +1640,96 @@ eYo.Model.stdtypes.data = {
       name: 'obj',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.obj'
     }),
     new Item({
       name: 'nbytes',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.nbytes'
     }),
     new Item({
       name: 'readonly',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.readonly'
     }),
     new Item({
       name: 'format',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.format'
     }),
     new Item({
       name: 'itemsize',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.itemsize'
     }),
     new Item({
       name: 'ndim',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.ndim'
     }),
     new Item({
       name: 'shape',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.shape'
     }),
     new Item({
       name: 'strides',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.strides'
     }),
     new Item({
       name: 'suboffsets',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.suboffsets'
     }),
     new Item({
       name: 'c_contiguous',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.c_contiguous'
     }),
     new Item({
       name: 'f_contiguous',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.f_contiguous'
     }),
     new Item({
       name: 'contiguous',
       class: 'memoryview',
       category: 11,
-      type_: 3
+      type_: 3,
+      href: '#memoryview.contiguous'
     }),
     new Item({
       name: 'set',
+      synonyms: [
+        'frozenset'
+      ],
       class: '',
       category: 12,
       type_: 2,
       href: '#frozenset',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -1656,6 +1742,7 @@ eYo.Model.stdtypes.data = {
       name: 'len',
       category: 12,
       type_: 5,
+      ary: 1,
       arguments: [
         {
           name: 's'
@@ -1663,11 +1750,24 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
+      name: 'x in s',
+      category: 12,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
+      name: 'x not in s',
+      category: 12,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
       name: 'isdisjoint',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.isdisjoint',
+      ary: 1,
       arguments: [
         {
           name: 'other'
@@ -1675,12 +1775,13 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'issubset',
+      name: 'set <= other',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.issubset',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'other'
@@ -1688,12 +1789,19 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'issuperset',
+      name: 'set < other',
+      category: 12,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
+      name: 'set >= other',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.issuperset',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'other'
@@ -1701,11 +1809,18 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'union',
+      name: 'set > other',
+      category: 12,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
+      name: 'set | other | ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.union',
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1714,11 +1829,12 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'intersection',
+      name: 'set & other & ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.intersection',
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1727,11 +1843,12 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'difference',
+      name: 'set - other - ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.difference',
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1740,11 +1857,12 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'symmetric_difference',
+      name: 'set ^ other',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.symmetric_difference',
+      ary: 1,
       arguments: [
         {
           name: 'other'
@@ -1759,12 +1877,13 @@ eYo.Model.stdtypes.data = {
       href: '#frozenset.copy'
     }),
     new Item({
-      name: 'update',
+      name: 'set |= other | ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.update',
       stmt: true,
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1773,12 +1892,13 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'intersection_update',
+      name: 'set &= other & ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.intersection_update',
       stmt: true,
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1787,12 +1907,13 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'difference_update',
+      name: 'set -= other | ...',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.difference_update',
       stmt: true,
+      ary: Infinity,
       mandatory: 1,
       arguments: [
         {
@@ -1801,12 +1922,13 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
-      name: 'symmetric_difference_update',
+      name: 'set ^= other',
       class: 'frozenset',
       category: 12,
       type_: 0,
       href: '#frozenset.symmetric_difference_update',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'other'
@@ -1820,6 +1942,7 @@ eYo.Model.stdtypes.data = {
       type_: 0,
       href: '#frozenset.add',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'elem'
@@ -1833,6 +1956,7 @@ eYo.Model.stdtypes.data = {
       type_: 0,
       href: '#frozenset.remove',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'elem'
@@ -1846,6 +1970,7 @@ eYo.Model.stdtypes.data = {
       type_: 0,
       href: '#frozenset.discard',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'elem'
@@ -1873,6 +1998,7 @@ eYo.Model.stdtypes.data = {
       category: 13,
       type_: 2,
       href: '#dict',
+      ary: Infinity,
       mandatory: 2,
       arguments: [
         {
@@ -1887,6 +2013,7 @@ eYo.Model.stdtypes.data = {
       name: 'len',
       category: 13,
       type_: 5,
+      ary: 1,
       arguments: [
         {
           name: 'd'
@@ -1894,9 +2021,38 @@ eYo.Model.stdtypes.data = {
       ]
     }),
     new Item({
+      name: 'd[key]',
+      category: 13,
+      type_: 5
+    }),
+    new Item({
+      name: 'd[key] = value',
+      category: 13,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
+      name: 'del d[key]',
+      category: 13,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
+      name: 'key in d',
+      category: 13,
+      type_: 5
+    }),
+    new Item({
+      name: 'key not in d',
+      category: 13,
+      type_: 5,
+      stmt: true
+    }),
+    new Item({
       name: 'iter',
       category: 13,
       type_: 5,
+      ary: 1,
       arguments: [
         {
           name: 'd'
@@ -1925,6 +2081,7 @@ eYo.Model.stdtypes.data = {
       type_: 1,
       href: '#dict.fromkeys',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1942,6 +2099,7 @@ eYo.Model.stdtypes.data = {
       category: 13,
       type_: 0,
       href: '#dict.get',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1973,6 +2131,7 @@ eYo.Model.stdtypes.data = {
       category: 13,
       type_: 0,
       href: '#dict.pop',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -1997,6 +2156,7 @@ eYo.Model.stdtypes.data = {
       category: 13,
       type_: 0,
       href: '#dict.setdefault',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -2014,6 +2174,7 @@ eYo.Model.stdtypes.data = {
       category: 13,
       type_: 0,
       href: '#dict.update',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -2033,6 +2194,7 @@ eYo.Model.stdtypes.data = {
       name: 'len',
       category: 14,
       type_: 5,
+      ary: 1,
       arguments: [
         {
           name: 'dictview'
@@ -2043,11 +2205,17 @@ eYo.Model.stdtypes.data = {
       name: 'iter',
       category: 14,
       type_: 5,
+      ary: 1,
       arguments: [
         {
           name: 'dictview'
         }
       ]
+    }),
+    new Item({
+      name: 'x in dictview',
+      category: 14,
+      type_: 5
     }),
     new Item({
       name: '__enter__',
@@ -2062,6 +2230,7 @@ eYo.Model.stdtypes.data = {
       category: 15,
       type_: 0,
       href: '#contextmanager.__exit__',
+      ary: 3,
       arguments: [
         {
           name: 'exc_type'
@@ -2078,37 +2247,43 @@ eYo.Model.stdtypes.data = {
       name: '__dict__',
       class: 'object',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#object.__dict__'
     }),
     new Item({
       name: '__class__',
       class: 'instance',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#instance.__class__'
     }),
     new Item({
       name: '__bases__',
       class: 'class',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#class.__bases__'
     }),
     new Item({
       name: '__name__',
       class: 'definition',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#definition.__name__'
     }),
     new Item({
       name: '__qualname__',
       class: 'definition',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#definition.__qualname__'
     }),
     new Item({
       name: '__mro__',
       class: 'class',
       category: 16,
-      type_: 3
+      type_: 3,
+      href: '#class.__mro__'
     }),
     new Item({
       name: 'mro',
@@ -2208,43 +2383,55 @@ eYo.Model.stdtypes.data = {
     'f_contiguous': 122,
     'contiguous': 123,
     'set': 124,
-    'len': 157,
-    'isdisjoint': 126,
-    'issubset': 127,
-    'issuperset': 128,
-    'union': 129,
-    'intersection': 130,
-    'difference': 131,
-    'symmetric_difference': 132,
-    'copy': 147,
-    'update': 155,
-    'intersection_update': 135,
-    'difference_update': 136,
-    'symmetric_difference_update': 137,
-    'add': 138,
-    'remove': 139,
-    'discard': 140,
-    'pop': 152,
-    'clear': 146,
-    'dict': 143,
-    'iter': 158,
-    'fromkeys': 148,
-    'get': 149,
-    'items': 150,
-    'keys': 151,
-    'popitem': 153,
-    'setdefault': 154,
-    'values': 156,
-    '__enter__': 159,
-    '__exit__': 160,
-    '__dict__': 161,
-    '__class__': 162,
-    '__bases__': 163,
-    '__name__': 164,
-    '__qualname__': 165,
-    '__mro__': 166,
-    'mro': 167,
-    '__subclasses__': 168
+    'frozenset': 124,
+    'len': 166,
+    'x in s': 126,
+    'x not in s': 127,
+    'isdisjoint': 128,
+    'set <= other': 129,
+    'set < other': 130,
+    'set >= other': 131,
+    'set > other': 132,
+    'set | other | ...': 133,
+    'set & other & ...': 134,
+    'set - other - ...': 135,
+    'set ^ other': 136,
+    'copy': 156,
+    'set |= other | ...': 138,
+    'set &= other & ...': 139,
+    'set -= other | ...': 140,
+    'set ^= other': 141,
+    'add': 142,
+    'remove': 143,
+    'discard': 144,
+    'pop': 161,
+    'clear': 155,
+    'dict': 147,
+    'd[key]': 149,
+    'd[key] = value': 150,
+    'del d[key]': 151,
+    'key in d': 152,
+    'key not in d': 153,
+    'iter': 167,
+    'fromkeys': 157,
+    'get': 158,
+    'items': 159,
+    'keys': 160,
+    'popitem': 162,
+    'setdefault': 163,
+    'update': 164,
+    'values': 165,
+    'x in dictview': 168,
+    '__enter__': 169,
+    '__exit__': 170,
+    '__dict__': 171,
+    '__class__': 172,
+    '__bases__': 173,
+    '__name__': 174,
+    '__qualname__': 175,
+    '__mro__': 176,
+    'mro': 177,
+    '__subclasses__': 178
   },
   by_category: {
     0: [0, 1, 2],
@@ -2259,19 +2446,19 @@ eYo.Model.stdtypes.data = {
     9: [65, 66, 67],
     10: [68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104],
     11: [105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123],
-    12: [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142],
-    13: [143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156],
-    14: [157, 158],
-    15: [159, 160],
-    16: [161, 162, 163, 164, 165, 166, 167, 168]
+    12: [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146],
+    13: [147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165],
+    14: [166, 167, 168],
+    15: [169, 170],
+    16: [171, 172, 173, 174, 175, 176, 177, 178]
   },
   by_type: {
-    0: [0, 1, 3, 4, 5, 7, 8, 9, 11, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 107, 108, 109, 110, 111, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 146, 147, 149, 150, 151, 152, 153, 154, 155, 156, 159, 160, 167, 168],
-    1: [2, 6, 63, 66, 148],
-    2: [10, 12, 13, 17, 62, 65, 105, 124, 143],
-    3: [14, 15, 16, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 161, 162, 163, 164, 165, 166],
+    0: [0, 1, 3, 4, 5, 7, 8, 9, 11, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 106, 107, 108, 109, 110, 111, 128, 129, 131, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 155, 156, 158, 159, 160, 161, 162, 163, 164, 165, 169, 170, 177, 178],
+    1: [2, 6, 63, 66, 157],
+    2: [10, 12, 13, 17, 62, 65, 105, 124, 147],
+    3: [14, 15, 16, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 171, 172, 173, 174, 175, 176],
     4: [44, 74],
-    5: [125, 144, 145, 157, 158]
+    5: [125, 126, 127, 130, 132, 148, 149, 150, 151, 152, 153, 154, 166, 167, 168]
   }
 }
 
@@ -2282,6 +2469,6 @@ eYo.Do.addProtocol(eYo.Model.stdtypes, 'Item', eYo.Model.stdtypes)
 eYo.Model.Item.registerTypes(eYo.Model.stdtypes.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-10 11:13:46.381787
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-10 19:09:18.724804
 
 

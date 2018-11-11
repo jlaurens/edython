@@ -73,6 +73,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 0,
       href: '#decimal.Decimal',
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -120,6 +121,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.compare',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -138,6 +140,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.compare_signal',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -156,6 +159,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.compare_total',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -174,6 +178,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.compare_total_mag',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -212,6 +217,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.copy_sign',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -229,6 +235,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.exp',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -244,6 +251,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.from_float',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'f'
@@ -256,6 +264,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.fma',
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -304,6 +313,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.is_normal',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -339,6 +349,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.is_subnormal',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -360,6 +371,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.ln',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -374,6 +386,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.log10',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -388,6 +401,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.logb',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -403,6 +417,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.logical_and',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -421,6 +436,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.logical_invert',
       stmt: true,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -436,6 +452,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.logical_or',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -454,6 +471,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.logical_xor',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -471,6 +489,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.max',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -489,6 +508,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.max_mag',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -506,6 +526,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.min',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -524,6 +545,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.min_mag',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -541,6 +563,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.next_minus',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -555,6 +578,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.next_plus',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -569,6 +593,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.next_toward',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -587,6 +612,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.normalize',
       stmt: true,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -601,6 +627,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.number_class',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -615,6 +642,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.quantize',
+      ary: 3,
       mandatory: 1,
       arguments: [
         {
@@ -643,6 +671,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.remainder_near',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -660,6 +689,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.rotate',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -678,6 +708,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.same_quantum',
       stmt: true,
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -695,6 +726,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.scaleb',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -712,6 +744,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.shift',
+      ary: 2,
       mandatory: 1,
       arguments: [
         {
@@ -729,6 +762,7 @@ eYo.Model.decimal__module.data = {
       category: 0,
       type_: 1,
       href: '#decimal.Decimal.sqrt',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -744,6 +778,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.to_eng_string',
       stmt: true,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -759,6 +794,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.to_integral',
       stmt: true,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -778,6 +814,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.to_integral_exact',
       stmt: true,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -797,6 +834,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Decimal.to_integral_value',
       stmt: true,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
@@ -823,6 +861,7 @@ eYo.Model.decimal__module.data = {
       type_: 2,
       href: '#decimal.setcontext',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'c'
@@ -835,6 +874,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 2,
       href: '#decimal.localcontext',
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
@@ -848,21 +888,21 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 1,
       type_: 0,
-      stmt: true
+      href: '#decimal.BasicContext'
     }),
     new Item({
       name: 'ExtendedContext',
       class: 'decimal',
       category: 1,
       type_: 0,
-      stmt: true
+      href: '#decimal.ExtendedContext'
     }),
     new Item({
       name: 'DefaultContext',
       class: 'decimal',
       category: 1,
       type_: 0,
-      stmt: true
+      href: '#decimal.DefaultContext'
     }),
     new Item({
       name: 'Context',
@@ -871,6 +911,7 @@ eYo.Model.decimal__module.data = {
       type_: 0,
       href: '#decimal.Context',
       stmt: true,
+      ary: 8,
       mandatory: 0,
       arguments: [
         {
@@ -936,6 +977,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.copy_decimal',
+      ary: 1,
       arguments: [
         {
           name: 'num'
@@ -949,6 +991,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.create_decimal',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'num'
@@ -962,6 +1005,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.create_decimal_from_float',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'f'
@@ -988,6 +1032,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.abs',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1000,6 +1045,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.add',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1015,6 +1061,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.canonical',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1028,6 +1075,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.compare',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1044,6 +1092,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.compare_signal',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1060,6 +1109,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.compare_total',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1076,6 +1126,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.compare_total_mag',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1091,6 +1142,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.copy_abs',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1103,6 +1155,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.copy_negate',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1116,6 +1169,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.copy_sign',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1131,6 +1185,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.divide',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1146,6 +1201,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.divide_int',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1161,6 +1217,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.divmod',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1176,6 +1233,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.exp',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1188,6 +1246,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.fma',
+      ary: 3,
       arguments: [
         {
           name: 'x'
@@ -1206,6 +1265,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_canonical',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1218,6 +1278,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_finite',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1230,6 +1291,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_infinite',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1242,6 +1304,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_nan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1254,6 +1317,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_normal',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1266,6 +1330,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_qnan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1278,6 +1343,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_signed',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1290,6 +1356,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_snan',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1302,6 +1369,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_subnormal',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1314,6 +1382,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.is_zero',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1326,6 +1395,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.ln',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1338,6 +1408,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.log10',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1350,6 +1421,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.logb',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1363,6 +1435,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.logical_and',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1379,6 +1452,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.logical_invert',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1392,6 +1466,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.logical_or',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1408,6 +1483,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.logical_xor',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1423,6 +1499,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.max',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1439,6 +1516,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.max_mag',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1454,6 +1532,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.min',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1470,6 +1549,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.min_mag',
       stmt: true,
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1486,6 +1566,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.minus',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1498,6 +1579,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.multiply',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1513,6 +1595,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.next_minus',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1525,6 +1608,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.next_plus',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1537,6 +1621,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.next_toward',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1553,6 +1638,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.normalize',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1565,6 +1651,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.number_class',
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1578,6 +1665,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.plus',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1590,6 +1678,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.power',
+      ary: 3,
       mandatory: 2,
       arguments: [
         {
@@ -1610,6 +1699,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.quantize',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1632,6 +1722,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.remainder',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1647,6 +1738,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.remainder_near',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1662,6 +1754,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.rotate',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1677,6 +1770,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.same_quantum',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1692,6 +1786,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.scaleb',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1707,6 +1802,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.shift',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1723,6 +1819,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.sqrt',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1735,6 +1832,7 @@ eYo.Model.decimal__module.data = {
       category: 1,
       type_: 1,
       href: '#decimal.Context.subtract',
+      ary: 2,
       arguments: [
         {
           name: 'x'
@@ -1751,6 +1849,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.to_eng_string',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1764,6 +1863,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.to_integral_exact',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1777,6 +1877,7 @@ eYo.Model.decimal__module.data = {
       type_: 1,
       href: '#decimal.Context.to_sci_string',
       stmt: true,
+      ary: 1,
       arguments: [
         {
           name: 'x'
@@ -1788,6 +1889,7 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 2,
       type_: 3,
+      href: '#decimal.MAX_PREC',
       stmt: true
     }),
     new Item({
@@ -1795,6 +1897,7 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 2,
       type_: 3,
+      href: '#decimal.MAX_EMAX',
       stmt: true
     }),
     new Item({
@@ -1802,6 +1905,7 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 2,
       type_: 3,
+      href: '#decimal.MIN_EMIN',
       stmt: true
     }),
     new Item({
@@ -1809,6 +1913,7 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 2,
       type_: 3,
+      href: '#decimal.MIN_ETINY',
       stmt: true
     }),
     new Item({
@@ -1816,133 +1921,133 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 2,
       type_: 4,
-      stmt: true
+      href: '#decimal.HAVE_THREADS'
     }),
     new Item({
       name: 'ROUND_CEILING',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_CEILING'
     }),
     new Item({
       name: 'ROUND_DOWN',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_DOWN'
     }),
     new Item({
       name: 'ROUND_FLOOR',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_FLOOR'
     }),
     new Item({
       name: 'ROUND_HALF_DOWN',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_HALF_DOWN'
     }),
     new Item({
       name: 'ROUND_HALF_EVEN',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_HALF_EVEN'
     }),
     new Item({
       name: 'ROUND_HALF_UP',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_HALF_UP'
     }),
     new Item({
       name: 'ROUND_UP',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_UP'
     }),
     new Item({
       name: 'ROUND_05UP',
       class: 'decimal',
       category: 3,
       type_: 4,
-      stmt: true
+      href: '#decimal.ROUND_05UP'
     }),
     new Item({
       name: 'Clamped',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Clamped'
     }),
     new Item({
       name: 'DecimalException',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.DecimalException'
     }),
     new Item({
       name: 'DivisionByZero',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.DivisionByZero'
     }),
     new Item({
       name: 'Inexact',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Inexact'
     }),
     new Item({
       name: 'InvalidOperation',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.InvalidOperation'
     }),
     new Item({
       name: 'Overflow',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Overflow'
     }),
     new Item({
       name: 'Rounded',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Rounded'
     }),
     new Item({
       name: 'Subnormal',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Subnormal'
     }),
     new Item({
       name: 'Underflow',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.Underflow'
     }),
     new Item({
       name: 'FloatOperation',
       class: 'decimal',
       category: 4,
       type_: 0,
-      stmt: true
+      href: '#decimal.FloatOperation'
     })
   ],
   by_name: {
@@ -2074,6 +2179,6 @@ eYo.Do.addProtocol(eYo.Model.decimal__module, 'Item', eYo.Model.decimal__module)
 eYo.Model.Item.registerTypes(eYo.Model.decimal__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-10 11:13:46.874749
+// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-10 19:09:26.612036
 
 
