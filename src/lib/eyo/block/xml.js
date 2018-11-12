@@ -537,7 +537,7 @@ goog.provide('eYo.Xml.Literal')
  * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Literal.domToBlock = (function () {
+eYo.Xml.Literal.domToBlockComplete = (function () {
   var newBlock = function (workspace, text, id, stmt_expected) {
     if (text && text.length) {
       var type = eYo.Do.typeOfString(text, null).expr
@@ -835,6 +835,7 @@ eYo.Xml.Recover.prototype.dontResit = function (dom) {
  * @param {?*} recovered_f 
  */
 eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
+  this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
   eYo.Do.forEachElementChild.call(this, dom, child => {
@@ -1011,10 +1012,10 @@ eYo.Xml.domToBlock = (function () {
       () => {
         var block
         // is it a literal or something else special ?
-        if ((block = eYo.Xml.Literal.domToBlock(dom, owner)) ||
-        (block = eYo.Xml.Comparison.domToBlock(dom, owner)) ||
-        (block = eYo.Xml.Group.domToBlock(dom, owner)) ||
-        (block = eYo.Xml.Call.domToBlock(dom, owner))) {
+        if ((block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Call.domToBlockComplete(dom, owner))) {
           eYo.Xml.fromDom(block, dom)
           return block
         }
@@ -1095,6 +1096,7 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.fromDom = function (block, element) {
+  console.log('eYo.Xml.fromDom', element)
   var eyo = block.eyo
   // headless please
   var do_it = function () { // `this` is `eyo`
@@ -1281,7 +1283,7 @@ goog.require('eYo.DelegateSvg.Operator')
  * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Comparison.domToBlock = function (element, owner) {
+eYo.Xml.Comparison.domToBlockComplete = function (element, owner) {
   var block
   var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
@@ -1306,7 +1308,6 @@ eYo.Xml.Comparison.domToBlock = function (element, owner) {
     } else {
       return block
     }
-    eYo.Xml.fromDom(block, element)
     return block
   }
 }
@@ -1320,14 +1321,13 @@ goog.provide('eYo.Xml.Group')
  * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Group.domToBlock = function (element, workspace) {
+eYo.Xml.Group.domToBlockComplete = function (element, workspace) {
   var name = element.getAttribute(eYo.Key.EYO)
   if (name === eYo.DelegateSvg.Stmt.else_part.prototype.tagName().substring(4)) {
     var workspace = owner.workspace || owner
     var type = eYo.T3.Stmt.else_part
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    eYo.Xml.fromDom(block, element)
     return block
   }
 }
@@ -1344,14 +1344,13 @@ console.warn('convert print statement to print expression and conversely, top bl
  * @param {!*} owner  The workspace or the parent block
  * @override
  */
-eYo.Xml.Call.domToBlock = function (element, owner) {
+eYo.Xml.Call.domToBlockComplete = function (element, owner) {
   if (element.getAttribute(eYo.Key.EYO) === eYo.Xml.CALL) {
     var workspace = owner.workspace || owner
     var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     if (block) {
-      eYo.Xml.fromDom(block, element)
       return block
     }
   }
