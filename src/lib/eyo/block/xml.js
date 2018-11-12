@@ -841,40 +841,44 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   eYo.Do.forEachElementChild.call(this, dom, child => {
     this.to_resit.push(child)
   })
-  var ans
-  try {
-    ans = try_f()
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    try {
-      finally_f && (ans = finally_f(ans))
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      this.recovered.length = 0
-      var dom
-      while ((dom = this.to_resit.shift())) {
-        var b = eYo.Xml.domToBlock(dom, this.workspace, this)
-        if (b) {
-          b.eyo.beReady()
-          this.recovered.push(b)
-        }
-      }
+  return eYo.Events.groupWrap(
+    () => {
+      var ans
       try {
-        this.recovered_f && this.recovered.forEach(this.recovered_f)
+        ans = try_f()
       } catch (err) {
         console.error(err)
         throw err
       } finally {
-        this.recovered.length = 0
-        this.to_resit = this.to_resit_stack.pop()
-        return ans
+        try {
+          finally_f && (ans = finally_f(ans))
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          this.recovered.length = 0
+          var dom
+          while ((dom = this.to_resit.shift())) {
+            var b = eYo.Xml.domToBlock(dom, this.workspace, this)
+            if (b) {
+              b.eyo.beReady()
+              this.recovered.push(b)
+            }
+          }
+          try {
+            this.recovered_f && this.recovered.forEach(this.recovered_f)
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            this.recovered.length = 0
+            this.to_resit = this.to_resit_stack.pop()
+            return ans
+          }
+        }
       }
     }
-  }
+  )
 }
 
 /**
@@ -938,8 +942,8 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
       best.types.push[type]
     }
   })
-  eYo.Events.disableWrap.call(this,
-    function () {
+  eYo.Events.disableWrap(
+    () => {
       if (best.types.length === 1) {
         fallback = best.types[0]
       } else if (owner && (best.types.length > 1)) {
@@ -1096,7 +1100,6 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.fromDom = function (block, element) {
-  console.log('eYo.Xml.fromDom', element)
   var eyo = block.eyo
   // headless please
   var do_it = function () { // `this` is `eyo`

@@ -113,8 +113,8 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   var list = block.inputList
   var i = 0
   var input
-  eYo.Events.groupWrap.call(this,
-    function () {
+  eYo.Events.groupWrap(
+    () => {
       while ((input = list[i++])) {
         var c8n = input.connection
         var target = c8n.targetBlock()

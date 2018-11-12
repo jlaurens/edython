@@ -28,7 +28,8 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   },
   data: {
     content: {
-      init: ''
+      init: '',
+      xml: false
     }
   }
 }, eYo.DelegateSvg)
@@ -201,8 +202,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         var prefix = this.data.prefix.get()
         return ((!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue}) || null
       },
-      synchronize: true,
-      xml: false,
+      synchronize: true
     },
     value: {
       main: true,

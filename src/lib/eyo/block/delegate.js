@@ -327,6 +327,23 @@ eYo.Delegate.prototype.changeWrap = function () {
 }
 
 /**
+ * Set the value wrapping in a `changeBegin`/`changeEnd`
+ * group call of the owner.
+ * @param {Object} newValue
+ * @param {Boolean} notUndoable
+ */
+eYo.Data.prototype.change = function (newValue, validate) {
+  if (newValue !== this.get()) {
+    this.owner.changeWrap(
+      this.set,
+      this,
+      newValue,
+      validate
+    )  
+  }
+}
+
+/**
  * Decorate of change count hooks.
  * Returns a function with signature is `foo(whatever) → whatever`
  * `foo` is overriden by the model.

@@ -352,7 +352,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
         }
       }
     }
-    eYo.Events.disableWrap.call(this, function () {
+    eYo.Events.disableWrap(() => {
       BB.dispose(true)
     })
   }

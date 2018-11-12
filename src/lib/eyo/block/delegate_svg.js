@@ -425,22 +425,6 @@ eYo.DelegateSvg.prototype.getMenuTarget = function () {
 }
 
 /**
- * Set the value wrapping in a `changeBegin`/`changeEnd`
- * group call of the owner.
- * @param {Object} newValue
- * @param {Boolean} notUndoable
- */
-eYo.Data.prototype.change = function (newValue) {
-  if (newValue !== this.get()) {
-    this.owner.changeWrap(
-      this.set,
-      this,
-      newValue
-    )  
-  }
-}
-
-/**
  * Render the given connection, if relevant.
  * @param {*} recorder 
  * @param {*} c8n 
@@ -2036,8 +2020,8 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
   var i = 0
-  eYo.Events.groupWrap.call(this,
-    function () {
+  eYo.Events.groupWrap(
+    () => {
       for (; i < holes.length; ++i) {
         var c8n = holes[i]
         if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
@@ -2813,8 +2797,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   }
   // create a block out of the undo mechanism
   var candidate
-  eYo.Events.disableWrap.call(this,
-    function () {
+  eYo.Events.disableWrap(
+    () => {
       candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {
         return
@@ -2823,8 +2807,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       var c8n, otherC8n
       var fin = function (prepare) {
         Blockly.Events.enable()
-        eYo.Events.groupWrap.call(this,
-          function () {
+        eYo.Events.groupWrap(
+          () => {
             try {
               if (Blockly.Events.isEnabled()) {
                 eYo.Events.fireBlockCreate(candidate)

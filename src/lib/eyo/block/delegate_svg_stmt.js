@@ -203,16 +203,16 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
   var c8n = block.previousConnection
   if (c8n) {
     var parentBlock
-    eYo.Events.disableWrap.call(this,
-      function () {
+    eYo.Events.disableWrap(
+      () => {
         parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       },
-      function () {
+      () => {
         if (parentBlock) {
           var parentC8n = parentBlock.nextConnection
           if (parentC8n && c8n.checkType_(parentC8n)) {
-            eYo.Events.groupWrap.call(this,
-              function () {
+            eYo.Events.groupWrap(
+              () => {
                 if (Blockly.Events.isEnabled()) {
                   eYo.Events.fireBlockCreate(parentBlock)
                 }
@@ -259,8 +259,8 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
-  return eYo.Events.groupWrap.call(this,
-    function () {
+  return eYo.Events.groupWrap(
+    () => {
       var block = this.block_
       var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
       var c8n = block.nextConnection

@@ -240,8 +240,8 @@ eYo.ConnectionDelegate.prototype.completeWrapped = function () {
     if (!this.isIncog || !this.isIncog()) {
       var target = c8n.targetBlock()
       if (!target) {
-        eYo.Events.disableWrap.call(this,
-          function () {
+        eYo.Events.disableWrap(
+          () => {
             if (firewall > 0) {
               --firewall
               goog.asserts.assert(firewall, 'ERROR: Maximum value reached in completeWrapped (circular)')

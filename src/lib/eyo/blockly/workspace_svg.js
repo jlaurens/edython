@@ -267,8 +267,8 @@ Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspac
   var x = offset.x
   var y = offset.y
   var i = 0
-  eYo.Events.groupWrap.call(this,
-    function () {
+  eYo.Events.groupWrap(
+    () => {
       for (; i < types.length; i++) {
         this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
         if (++n < n_col) {
@@ -305,24 +305,17 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
   var c8n, targetC8n, block
-  var recover = this.eyo.recover
   if ((c8n = eYo.SelectedConnection)) {
-    try {
-      block = Blockly.Xml.domToBlock(xmlBlock, this)
-      if (c8n.type === Blockly.INPUT_VALUE) {
-        targetC8n = block.outputConnection
-      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
-        targetC8n = block.previousConnection
-      } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-        targetC8n = block.nextConnection
-      }
-    } catch (e) {
-      targetC8n = null
-    }
-    eYo.Events.groupWrap.call(this,
-      function () {
-        eYo.Events.fireBlockCreate(block)
-        recover.resit()
+    eYo.Events.groupWrap(
+      () => {
+        block = Blockly.Xml.domToBlock(xmlBlock, this)
+        if (c8n.type === Blockly.INPUT_VALUE) {
+          targetC8n = block.outputConnection
+        } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+          targetC8n = block.previousConnection
+        } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+          targetC8n = block.nextConnection
+        }
         if (targetC8n && c8n.checkType_(targetC8n)) {
           if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
             // the pasted block must move before it is connected
@@ -347,30 +340,14 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
             targetC8n = block.nextConnection
           }
           block.select()
-          // if (c8n.type === Blockly.INPUT_VALUE) {
-          //   var parent = block
-          //   do {
-          //     var e8r = parent.eyo.inputEnumerator()
-          //     while (e8r.next()) {
-          //       if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
-          //         eYo.SelectedConnection = c8n
-          //         parent = null
-          //         break
-          //       }
-          //     }
-          //   } while (parent && (parent = parent.getSurroundParent()))
-          // } else if ((c8n = block.nextConnection)) {
-          //   eYo.SelectedConnection = c8n
-          // }
         }
       }
     )
     return
   }
-  eYo.Events.disableWrap(
+  eYo.Events.groupWrap(
     () => {
       block = Blockly.Xml.domToBlock(xmlBlock, this)
-      recover.resit()
       // Move the duplicate to original position.
       var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
       var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
@@ -381,7 +358,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         // Offset block until not clobbering another block and not in connection
         // distance with neighbouring blocks.
         var allBlocks = this.getAllBlocks()
-        var avoidCollision = function () {
+        var avoidCollision = (function () {
           do {
             var collide = false
             for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
@@ -410,8 +387,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
               blockY += Blockly.SNAP_RADIUS * 2
             }
           } while (collide)
-        }
-        avoidCollision()
+        }) ()
         // is the block in the visible area ?
         var metrics = this.getMetrics()
         var scale = this.scale || 1
@@ -435,10 +411,6 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           this.centerOnBlock(block.id)
         }
       }
-    },
-    null,
-    () => {
-      eYo.Events.fireBlockCreate(block)
       block.select()
     }
   )
