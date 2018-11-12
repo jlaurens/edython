@@ -53,7 +53,7 @@ eYo.Protocol.Item = function (model) {
     }
     if (goog.isNumber(type) && type >= 0) {
       var ra2 = []
-      for (var i = 0; i < ra.length ; i++ ) {
+      for (var i = 0; i < ra.length ; i++) {
         var item = model.getItem(i)
         if (item && item.type === type) {
           ra2.append(i)

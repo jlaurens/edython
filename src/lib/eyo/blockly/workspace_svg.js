@@ -305,10 +305,10 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
   var c8n, targetC8n, block
-  var recover = new eYo.Xml.Recover(this)
+  var recover = this.eyo.recover
   if ((c8n = eYo.SelectedConnection)) {
     try {
-      block = Blockly.Xml.domToBlock(xmlBlock, this, recover)
+      block = Blockly.Xml.domToBlock(xmlBlock, this)
       if (c8n.type === Blockly.INPUT_VALUE) {
         targetC8n = block.outputConnection
       } else if (c8n.type === Blockly.NEXT_STATEMENT) {
@@ -321,17 +321,8 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     }
     eYo.Events.groupWrap.call(this,
       function () {
+        eYo.Events.fireBlockCreate(block)
         recover.resit()
-        if (Blockly.Events.isEnabled()) {
-          eYo.Events.fireBlockCreate(block)
-          eYo.Events.groupWrap(function () {
-            recover.forEachAndFlush(
-              block => {
-                eYo.Events.fireBlockCreate(block)
-              }
-            )
-          })
-        }
         if (targetC8n && c8n.checkType_(targetC8n)) {
           if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
             // the pasted block must move before it is connected
@@ -376,90 +367,80 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     )
     return
   }
-  Blockly.Events.disable(true)
-  try {
-    block = Blockly.Xml.domToBlock(xmlBlock, this, recover)
-    recover.resit()
-    // Move the duplicate to original position.
-    var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
-    var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
-    if (!isNaN(blockX) && !isNaN(blockY)) {
-      if (this.RTL) {
-        blockX = -blockX
-      }
-      // Offset block until not clobbering another block and not in connection
-      // distance with neighbouring blocks.
-      var allBlocks = this.getAllBlocks()
-      var avoidCollision = function () {
-        do {
-          var collide = false
-          for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
-            var otherXY = otherBlock.getRelativeToSurfaceXY()
-            if (Math.abs(blockX - otherXY.x) <= 10 &&
-                Math.abs(blockY - otherXY.y) <= 10) {
-              collide = true
-              break
-            }
-          }
-          if (!collide) {
-            // Check for blocks in snap range to any of its connections.
-            var connections = block.getConnections_(false)
-            var connection
-            for (i = 0; (connection = connections[i]); i++) {
-              var neighbour = connection.closest(Blockly.SNAP_RADIUS,
-                new goog.math.Coordinate(blockX, blockY))
-              if (neighbour.connection) {
+  eYo.Events.disableWrap(
+    () => {
+      block = Blockly.Xml.domToBlock(xmlBlock, this)
+      recover.resit()
+      // Move the duplicate to original position.
+      var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
+      var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
+      if (!isNaN(blockX) && !isNaN(blockY)) {
+        if (this.RTL) {
+          blockX = -blockX
+        }
+        // Offset block until not clobbering another block and not in connection
+        // distance with neighbouring blocks.
+        var allBlocks = this.getAllBlocks()
+        var avoidCollision = function () {
+          do {
+            var collide = false
+            for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
+              var otherXY = otherBlock.getRelativeToSurfaceXY()
+              if (Math.abs(blockX - otherXY.x) <= 10 &&
+                  Math.abs(blockY - otherXY.y) <= 10) {
                 collide = true
                 break
               }
             }
-          }
-          if (collide) {
-            blockX += Blockly.SNAP_RADIUS
-            blockY += Blockly.SNAP_RADIUS * 2
-          }
-        } while (collide)
-      }
-      avoidCollision()
-      // is the block in the visible area ?
-      var metrics = this.getMetrics()
-      var scale = this.scale || 1
-      var heightWidth = block.getHeightWidth()
-      // the block is in the visible area if we see its center
-      var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
-      var topBound = metrics.viewTop / scale - heightWidth.height / 2
-      var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
-      var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-      var inVisibleArea = function () {
-        return blockX >= leftBound && blockX <= rightBound &&
-        blockY >= topBound && blockY <= downBound
-      }
-      if (!inVisibleArea()) {
-        blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
-        blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
-        avoidCollision()
-      }
-      block.moveBy(blockX, blockY)
-      if (!inVisibleArea()) {
-        this.centerOnBlock(block.id)
-      }
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable()
-  }
-  if (Blockly.Events.isEnabled()) {
-    eYo.Events.fireBlockCreate(block)
-    eYo.Events.groupWrap(function () {
-      recover.forEachAndFlush(
-        block => {
-          eYo.Events.fireBlockCreate(block)
+            if (!collide) {
+              // Check for blocks in snap range to any of its connections.
+              var connections = block.getConnections_(false)
+              var connection
+              for (i = 0; (connection = connections[i]); i++) {
+                var neighbour = connection.closest(Blockly.SNAP_RADIUS,
+                  new goog.math.Coordinate(blockX, blockY))
+                if (neighbour.connection) {
+                  collide = true
+                  break
+                }
+              }
+            }
+            if (collide) {
+              blockX += Blockly.SNAP_RADIUS
+              blockY += Blockly.SNAP_RADIUS * 2
+            }
+          } while (collide)
         }
-      )
-    })
-}
-  block.select()
+        avoidCollision()
+        // is the block in the visible area ?
+        var metrics = this.getMetrics()
+        var scale = this.scale || 1
+        var heightWidth = block.getHeightWidth()
+        // the block is in the visible area if we see its center
+        var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
+        var topBound = metrics.viewTop / scale - heightWidth.height / 2
+        var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
+        var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
+        var inVisibleArea = function () {
+          return blockX >= leftBound && blockX <= rightBound &&
+          blockY >= topBound && blockY <= downBound
+        }
+        if (!inVisibleArea()) {
+          blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
+          blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
+          avoidCollision()
+        }
+        block.moveBy(blockX, blockY)
+        if (!inVisibleArea()) {
+          this.centerOnBlock(block.id)
+        }
+      }
+    },
+    null,
+    () => {
+      eYo.Events.fireBlockCreate(block)
+      block.select()
+    }
+  )
 }
 

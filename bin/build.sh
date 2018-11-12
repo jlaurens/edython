@@ -251,7 +251,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/block/signature.js" \
 --js "src/lib/eyo/core/const.js" \
---js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
@@ -262,6 +261,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/content.js" \
 --js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/blockly/events.js" \
+--js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/protocol/protocol.js" \
 --js "src/lib/eyo/block/delegate.js" \
@@ -275,6 +275,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/shape.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/model/cmath_model.js" \
+--js "src/lib/eyo/model/datamodel_model.js" \
 --js "src/lib/eyo/model/datastructures_model.js" \
 --js "src/lib/eyo/model/decimal_model.js" \
 --js "src/lib/eyo/model/fractions_model.js" \

@@ -203,7 +203,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
   var c8n = block.previousConnection
   if (c8n) {
     var parentBlock
-    eYo.Events.disableWrap(this,
+    eYo.Events.disableWrap.call(this,
       function () {
         parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       },

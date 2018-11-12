@@ -313,11 +313,14 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var e8r = block.eyo.inputEnumerator()
   var F = function (modifier, flags, msg) {
     var BB
-    eYo.Events.disableWrap(this, function () {
+    eYo.Events.disableWrap(() => {
       BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-      BB.eyo.changeBegin()
-      BB.eyo.data.modifier.set(modifier)
-      BB.eyo.data.variant.set(flags)
+      BB.eyo.changeWrap(
+        function() { // `this` is `BB.eyo`
+          this.modifier_p = modifier
+          this.variant_p = flags
+        }
+      )
     })
     e8r.end()
     while (e8r.previous()) {
@@ -333,10 +336,10 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             content,
             function () {
               var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
-              eYo.Events.groupWrap.call(this,
-                function () {
+              eYo.Events.groupWrap(
+                () => { // `this` is catched
                   B.eyo.changeWrap(
-                    function () {
+                    function () { // `this` is `B.eyo`
                       this.modifier_p = modifier
                       this.variant_p = flags
                       c8n.connect(B.outputConnection)    
@@ -349,7 +352,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
         }
       }
     }
-    eYo.Events.disableWrap(this, function () {
+    eYo.Events.disableWrap.call(this, function () {
       BB.dispose(true)
     })
   }

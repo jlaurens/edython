@@ -724,7 +724,7 @@ eYo.Model.math__module.getItemsInCategory = function (category, type) {
   }
   if (goog.isNumber(type) && type >= 0) {
     var ra2 = []
-    for (var i = 0; i < ra.length ; i++ ) {
+    for (var i = 0; i < ra.length ; i++) {
       var item = eYo.Model.math__module.getItem(i)
       if (item && item.type === type) {
         ra2.append(i)

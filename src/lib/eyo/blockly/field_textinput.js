@@ -265,7 +265,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
     block.eyo.changeWrap(
-      function () {
+      function () { // `this` is `block.eyo``
         field.onEndEditing_ && field.onEndEditing_()
         field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
         var model = field.eyo.model
@@ -276,7 +276,7 @@ eYo.FieldTextInput.prototype.widgetDispose_ = function () {
             field.eyo.constructor.onEndEditing.call(field)
           }
         }
-        block.eyo.endEditingField && block.eyo.endEditingField(field)
+        this.endEditingField && this.endEditingField(field)
         if (field.eyo.grouper_) {
           eYo.Events.setGroup(false)
           delete field.eyo.grouper_
@@ -329,8 +329,7 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
       var xy = this.getAbsoluteXY_()
       div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
       div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      this.sourceBlock_.eyo.changeWrap()
-      this.sourceBlock_.eyo.render()    
+      this.sourceBlock_.eyo.changeWrap() // force rendering 
     }
   }
 }

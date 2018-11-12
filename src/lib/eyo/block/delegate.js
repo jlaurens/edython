@@ -305,20 +305,25 @@ eYo.Delegate.prototype.changeEnd = function () {
 }
 
 /**
- * Begin a mutation
+ * Begin a mutation.
  * For edython.
+ * @param {!Function} do_it
+ * @param {*} thisObject
+ * @param {*} rest
  */
 eYo.Delegate.prototype.changeWrap = function () {
   var args = Array.prototype.slice.call(arguments)
+  var ans
   try {
     this.changeBegin()
-    args[0] && args[0].apply(args[1] || this, args.slice(2))
+    args[0] && (ans = args[0].apply(args[1] || this, args.slice(2)))
   } catch (err) {
     console.error(err)
     throw err
   } finally {
     this.changeEnd()
   }
+  return ans
 }
 
 /**

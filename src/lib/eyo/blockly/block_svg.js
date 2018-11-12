@@ -69,8 +69,6 @@ eYo.BlockSvg.prototype.getField = function (name) {
   return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(name)
 }
 
-eYo.BlockSvg.CORNER_RADIUS = 3
-
 /**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.

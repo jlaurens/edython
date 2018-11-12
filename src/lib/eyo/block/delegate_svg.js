@@ -1745,7 +1745,7 @@ eYo.DelegateSvg.prototype.hasSelect = function (block) {
  * @private
  */
 eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
-  var B = eYo.DelegateSvg.newBlockComplete(workspace, model, id)
+  var B = eYo.DelegateSvg.newBlockComplete.apply(null, arguments)
   B && B.eyo.beReady()
   return B
 }
@@ -1761,6 +1761,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * This is headless and should not render until a beReady message is sent.
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} model
+ * @param {?String|Object} id
  * @private
  */
 eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
@@ -1793,8 +1794,8 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
       }
     }
     block.eyo.changeWrap(
-      function () {
-        block.eyo.setDataWithModel(dataModel)
+      function () { // `this` is `block.eyo`
+        this.setDataWithModel(dataModel)
         var Vs = model.slots
         for (var k in Vs) {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
@@ -1805,14 +1806,10 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
               var B = processModel(target, V)
               if (!target && B && B.outputConnection) {
                 B.eyo.changeWrap(
-                  function () {
-                    block.eyo.changeWrap(
-                      function () {
-                        var slot = input.connection.slot
-                        slot && slot.setIncog(false)
-                        B.outputConnection.connect(input.connection)
-                      }
-                    )
+                  () => {
+                    var slot = input.connection.slot
+                    slot && slot.setIncog(false)
+                    B.outputConnection.connect(input.connection)
                   }
                 )
               }
@@ -1837,15 +1834,11 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
           var B = processModel(target, V)
           if (!target && B && B.outputConnection) {
             B.eyo.changeWrap(
-              function () {
-                block.eyo.changeWrap(
-                  function () {
-                    // The connection cas be established only with not incog
-                    var slot = input.connection.eyo.slot
-                    slot && slot.setIncog(false)
-                    B.outputConnection.connect(input.connection)
-                  }
-                )
+              () => {
+                // The connection can be established only when not incog
+                var slot = input.connection.eyo.slot
+                slot && slot.setIncog(false)
+                B.outputConnection.connect(input.connection)
               }
             )
           }
@@ -2708,77 +2701,79 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   }
 }
 
+
 /**
  * The selected connection is used to insert blocks with the keyboard.
  * When a connection is selected, one of the ancestor blocks is also selected.
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-Object.defineProperty(
+Object.defineProperties(
   eYo,
-  'SelectedConnection',
   (function () {
     var c8n_
     return {
-      get: function () {
-        return c8n_
-      },
-      set: function (connection) {
-        var B
-        if (connection) {
-          if (connection.hidden_) {
-            console.error('Do not select a hidden connection')
-          }
-          var block = connection.getSourceBlock()
-          if (block) {
-            if (block.eyo.locked_) {
-              return
-            }
-            if (connection === block.previousConnection && connection.targetConnection) {
-              connection = connection.targetConnection
-              var unwrapped = block = connection.getSourceBlock()
-              do {
-                if (!unwrapped.eyo.wrapped_) {
-                  unwrapped.select()
-                  unwrapped.bringToFront()
-                  break
-                }
-              } while ((unwrapped = unwrapped.getSurroundParent()))
-            }
-          }
-        }
-        if (connection !== c8n_) {
-          if (c8n_) {
-            var oldBlock = c8n_.getSourceBlock()
-            if (oldBlock) {
-              oldBlock.eyo.selectedConnection = null
-              oldBlock.eyo.selectedConnectionSource_ = null
-              oldBlock.removeSelect()
-              if (oldBlock === Blockly.selected) {
-                oldBlock.eyo.updateAllPaths_()
-                oldBlock.addSelect()
-              } else if ((B = Blockly.selected)) {
-                B.eyo.selectedConnectionSource_ = null
-                B.removeSelect()
-                B.addSelect()
-              }
-            }
-            c8n_ = null
-          }
+      SelectedConnection: {
+        get () {
+          return c8n_
+        },
+        set (connection) {
+          var B
           if (connection) {
-            if ((block = connection.getSourceBlock())) {
-              unwrapped = block
-              while (unwrapped.eyo.wrapped_) {
-                if (!(unwrapped = unwrapped.getSurroundParent())) {
-                  return
+            if (connection.hidden_) {
+              console.error('Do not select a hidden connection')
+            }
+            var block = connection.getSourceBlock()
+            if (block) {
+              if (block.eyo.locked_) {
+                return
+              }
+              if (connection === block.previousConnection && connection.targetConnection) {
+                connection = connection.targetConnection
+                var unwrapped = block = connection.getSourceBlock()
+                do {
+                  if (!unwrapped.eyo.wrapped_) {
+                    unwrapped.select()
+                    unwrapped.bringToFront()
+                    break
+                  }
+                } while ((unwrapped = unwrapped.getSurroundParent()))
+              }
+            }
+          }
+          if (connection !== c8n_) {
+            if (c8n_) {
+              var oldBlock = c8n_.getSourceBlock()
+              if (oldBlock) {
+                oldBlock.eyo.selectedConnection = null
+                oldBlock.eyo.selectedConnectionSource_ = null
+                oldBlock.removeSelect()
+                if (oldBlock === Blockly.selected) {
+                  oldBlock.eyo.updateAllPaths_()
+                  oldBlock.addSelect()
+                } else if ((B = Blockly.selected)) {
+                  B.eyo.selectedConnectionSource_ = null
+                  B.removeSelect()
+                  B.addSelect()
                 }
               }
-              block.eyo.selectedConnection = c8n_ = connection
-              unwrapped.eyo.selectedConnectionSource_ = block
-              unwrapped.select()
-              block.removeSelect()
-              block.eyo.updateAllPaths_()
-              block.addSelect()
+              c8n_ = null
+            }
+            if (connection) {
+              if ((block = connection.getSourceBlock())) {
+                unwrapped = block
+                while (unwrapped.eyo.wrapped_) {
+                  if (!(unwrapped = unwrapped.getSurroundParent())) {
+                    return
+                  }
+                }
+                block.eyo.selectedConnection = c8n_ = connection
+                unwrapped.eyo.selectedConnectionSource_ = block
+                unwrapped.select()
+                block.removeSelect()
+                block.eyo.updateAllPaths_()
+                block.addSelect()
+              }
             }
           }
         }
@@ -2818,7 +2813,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   }
   // create a block out of the undo mechanism
   var candidate
-  eYo.Events.disableWrap(this,
+  eYo.Events.disableWrap.call(this,
     function () {
       candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {

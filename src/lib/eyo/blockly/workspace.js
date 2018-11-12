@@ -12,12 +12,14 @@
 'use strict'
 
 goog.provide('eYo.Workspace')
+goog.provide('eYo.WorkspaceDelegate')
 
 goog.require('Blockly.Workspace')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
+goog.require('eYo.Xml.Recover')
 goog.require('eYo.Protocol.ChangeCount')
 goog.require('goog.crypt')
 
@@ -36,6 +38,32 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 
 eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
 
+/**
+ * 
+ */
+eYo.WorkspaceDelegate.prototype.getRecover = (function () {
+  var get = function () {
+    return this.recover_
+  }
+  return function () {
+    goog.asserts.assert(!this.recover_, 'Collision: this.recover_')
+    this.recover_ = new eYo.Xml.Recover(this.workspace_)
+    this.getRecover = get
+    return this.recover_
+  }
+}) ()
+
+Object.defineProperties(
+  eYo.WorkspaceDelegate.prototype,
+  {
+    recover: {
+      get () {
+        return this.getRecover()
+      }
+    }
+  }
+)
+
 // Dependency ordering?
 /**
  * Add the nodes from string to the workspace.
@@ -44,8 +72,8 @@ eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
  * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromDom = function (dom, recover) {
-  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_, recover)
+eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
+  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
 }
 
 /**
@@ -54,10 +82,10 @@ eYo.WorkspaceDelegate.prototype.fromDom = function (dom, recover) {
  * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromString = function (str, recover) {
+eYo.WorkspaceDelegate.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
-  return this.fromDom(dom, recover)
+  return this.fromDom(dom)
 }
 
 /**
@@ -92,9 +120,9 @@ eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
  * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
-eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes, recover) {
+eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
-  return str && this.fromString(str, recover)
+  return str && this.fromString(str)
 }
 
 /**

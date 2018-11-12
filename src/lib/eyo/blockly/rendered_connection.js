@@ -240,7 +240,7 @@ eYo.ConnectionDelegate.prototype.completeWrapped = function () {
     if (!this.isIncog || !this.isIncog()) {
       var target = c8n.targetBlock()
       if (!target) {
-        eYo.Events.disableWrap(this,
+        eYo.Events.disableWrap.call(this,
           function () {
             if (firewall > 0) {
               --firewall
@@ -886,7 +886,7 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
     var oldChildC8n = parentC8n.targetConnection
     var oldParentC8n = childC8n.targetConnection
     child.eyo.changeWrap( // the child will cascade changes to the parent
-      function () {
+      () => {
         parentC8n.eyo.willConnect(childC8n)
         try {
           childC8n.eyo.willConnect(parentC8n)
@@ -1017,9 +1017,9 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
       childC8n = this
     }
     child.eyo.changeWrap(
-      function () {
+      () => { // `this` is catched
         parent.eyo.changeWrap(
-          function () {
+          () => { // `this` is catched
             try {
               parentC8n.eyo.willDisconnect()
               try {
@@ -1080,11 +1080,9 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
             } finally {
               parentC8n.eyo.didDisconnect(childC8n)
             }
-          },
-          this
+          }
         )
-      },
-      this
+      }
     )
   }
 } ()

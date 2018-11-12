@@ -872,3 +872,32 @@ eYo.Do.valueOf = function (f, thisObject) {
 
 eYo.Do.nothing = function () {
 }
+
+
+/**
+ * A wrapper creator.
+ * This is used to populate prototypes and define functions at setup time.
+ * Both functions share the `this` object of the caller.
+ * @param {?Function} start_f 
+ * @param {?Function} begin_finally_f
+ * @param {?Function} end_finally_f 
+ */
+eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
+  return (try_f, finally_f) => {
+    start_f && start_f()
+    var ans
+    try {
+      ans = try_f()
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      begin_finally_f && begin_finally_f()
+      // enable first to allow finally_f to eventually fire events
+      // or eventually modify `ans`
+      finally_f && (ans = finally_f(ans))
+      end_finally_f && end_finally_f()
+      return ans
+    }
+  }
+}

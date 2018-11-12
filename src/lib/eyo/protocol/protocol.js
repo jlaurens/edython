@@ -17,7 +17,7 @@ goog.require('eYo.Do')
 
 /**
  * Enhance the prototype with the given methods and properties.
- * Only new method are allowed.
+ * Only new methods are allowed.
  */
 eYo.Do.addProtocol = function () {
   var args = Array.prototype.slice.call(arguments)

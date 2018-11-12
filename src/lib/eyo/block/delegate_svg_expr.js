@@ -267,8 +267,8 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.groupWrap.call(this,
-      function () {
+    eYo.Events.groupWrap(
+      () => { // this is catched
         try {
           var block = this.block_
           console.log('**** replaceBlock', block, other)
@@ -295,7 +295,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
           throw err
         } finally {
           other.dispose(true)
-        }    
+        }
       }
     )
   }
@@ -377,12 +377,13 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
+console.error('insertParentWithModel: newBlockReady may create more than one block, Why not using a Delete event instead ?')
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_holes) {
   var block = this.block_
   var parentSlotName = model.slot || model.input
   var parentBlock
-  eYo.Events.disableWrap(this, function () {
-    parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+  eYo.Events.disableWrap(() => {
+    parentBlock = eYo.DelegateSvg.newBlockReady(block, model)
   })
   if (!parentBlock) {
     return parentBlock
@@ -440,10 +441,12 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
   // Next connections should be connected
   var outputC8n = block.outputConnection
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
-    eYo.Events.groupWrap.call(this,
-      function () {
+    eYo.Events.groupWrap(
+      () => { // `this` is catched
         if (Blockly.Events.isEnabled()) {
           eYo.Events.fireBlockCreate(parentBlock)
+          // what about the other blocks that may have been created during this stage?
+          // Why not using a Delete event instead
         }
         var targetC8n = parentInputC8n.targetConnection
         if (targetC8n/* && targetC8n.isConnected() */) {

@@ -88,15 +88,26 @@ eYo.Data = function (owner, key, model) {
   }
 }
 
-Object.defineProperty(
+Object.defineProperties(
   eYo.Data.prototype,
-  'incog_p',
   {
-    get () {
-      return this.incog_
+    block: {
+      get () {
+        return this.owner.block_
+      }
     },
-    set (newValue) {
-      this.changeIncog(newValue)
+    blockType: {
+      get () {
+        return this.owner.block_.type
+      }
+    },
+    incog_p: {
+      get () {
+        return this.incog_
+      },
+      set (newValue) {
+        this.changeIncog(newValue)
+      }
     }
   }
 )
@@ -107,13 +118,6 @@ Object.defineProperty(
  */
 eYo.Data.prototype.getOwner = function () {
   return this.owner
-}
-
-/**
- * Get the type of the underlying block.
- */
-eYo.Data.prototype.getBlockType = function () {
-  return this.owner.block_.type
 }
 
 /**
@@ -213,7 +217,7 @@ eYo.Data.prototype.init = function (newValue) {
     throw err
   } finally {
     if (!goog.isDef(this.value_)) {
-      console.error('THIS SHOULD BE DEFINED', this.key, this.owner.block_.type)
+      console.error('THIS SHOULD BE DEFINED', this.key, this.blockType)
     }
   }
 }
@@ -574,12 +578,11 @@ eYo.Data.prototype.synchronize = function (newValue) {
     newValue = this.get()
   }
   if (this.reentrant['model_synchronize'] || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getBlockType())
+    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {
       eYo.Events.disableWrap(
-        this,
-        function () {
+        () => {
           field.setValue(this.toField())
           if (this.slot && this.slot.data === this) {
             this.slot.setIncog(this.incog_p)
@@ -712,12 +715,11 @@ eYo.Data.prototype.changeIncog = function (newValue) {
   }
   if (this.incog_ !== newValue) {
     this.owner.changeWrap(
-      function() {
+      () => { // catch `this`
         this.incog_ = newValue
         this.slot && this.slot.setIncog(newValue)
         this.field && this.field.setVisible(!newValue)    
-      },
-      this
+      }
     )
     return true
   }

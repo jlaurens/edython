@@ -34,7 +34,7 @@ goog.require('eYo.Do')
 //       }
 //     }
 //   }
-// )
+//)
 
 /**
  * Run a change event.
@@ -107,15 +107,22 @@ eYo.Events.setGroup = (function () {
 
 /**
  * Event disabler.
- * @param {?Object} self, for `this`.
+ * Use the arrow definition of functions to catch `this`.
  * @param {!Function} try_f
- * @param {?Function} finally_f
+ * @param {?Function} begin_finally_f
+ * @param {?Function} end_finally_f
  */
-eYo.Events.disableWrap = function (self, try_f, finally_f) {
+eYo.Events.disableWrap = eYo.Do.makeWrapper(
+  Blockly.Events.disable,
+  Blockly.Events.enable
+)
+
+/*
+function (try_f, finally_f) {
   Blockly.Events.disable()
   var out
   try {
-    out = try_f.call(self)
+    out = try_f.call(this)
   } catch (err) {
     console.error(err)
     throw err
@@ -123,10 +130,11 @@ eYo.Events.disableWrap = function (self, try_f, finally_f) {
     Blockly.Events.enable()
     // enable first to allow finally_f to eventually fire events
     // or eventually modify `out`
-    finally_f && finally_f.call(self)
+    finally_f && finally_f.call(this)
     return out && out.ans
   }
 }
+*/
 
 goog.require('eYo.Data')
 
@@ -158,7 +166,7 @@ goog.require('eYo.Data')
  *    e - the data rechange is pushed to the redo stack
  *    f - blocks are reconnected and the redo event is pushed to the redo stack
  *    undo/redo stacks : [...]/[disconnect block, data rechange]
- *  3 ) when redoing
+ *  3) when redoing
  *    a - blocks are disconnected and the reconnect event is pushed to the undo stack
  *    b - the data is rechanged, with type and connection checks.
  *        No block is disconnected, no other move event is recorded.
@@ -170,14 +178,11 @@ goog.require('eYo.Data')
 eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   'setTrusted_',
   function (newValue) {
-    var data = this
-    var eyo = this.owner
-    var block = eyo.block_
     var oldValue = this.value_
-    eyo.changeWrap(
-      function () {
-        eYo.Events.groupWrap.call(data,
-          function () {
+    this.owner.changeWrap(
+      () => { // catch `this`
+        eYo.Events.groupWrap(
+          () => { // catch `this`
             this.beforeChange(oldValue, newValue)
             try {
               this.value_ = newValue
@@ -188,7 +193,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
             } finally {
               if (!this.noUndo && Blockly.Events.isEnabled()) {
                 Blockly.Events.fire(new Blockly.Events.BlockChange(
-                  block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+                  this.block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
               }
               this.afterChange(oldValue, newValue)
             }
@@ -238,9 +243,22 @@ Blockly.Events.filter = function(queueIn, forward) {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {!Function} do_it
+ * Use the arrow definition of functions to catch `this`.
+ * @param {!Function} try_f 
+ * @param {?Function} finally_f 
  */
-eYo.Events.groupWrap = function (try_f, finally_f) {
+eYo.Events.groupWrap = eYo.Do.makeWrapper(
+  function () {
+    eYo.Events.setGroup(true)
+  },
+  null,
+  function () {
+    eYo.Events.setGroup(false)
+  }
+)
+
+/*
+function (try_f, finally_f) {
   try {
     eYo.Events.setGroup(true)
     return try_f.call(this)
@@ -252,13 +270,15 @@ eYo.Events.groupWrap = function (try_f, finally_f) {
     eYo.Events.setGroup(false)
   }
 }
+*/
 
 /**
  * Convenient shortcut.
  * @param {!Blockly.Block} block  The newly created block.
  */
 eYo.Events.fireBlockCreate = function (block) {
-  Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+  }
 }
 
-    
