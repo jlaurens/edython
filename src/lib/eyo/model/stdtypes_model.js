@@ -965,25 +965,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.count',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'sub'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1007,22 +988,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.decode',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'encoding',
-              default: '"utf-8"'
-            },
-            {
-              name: 'errors',
-              default: '"strict"'
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 0,
       arguments: [
@@ -1043,25 +1008,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.endswith',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'suffix'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1085,25 +1031,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.find',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'sub'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1127,25 +1054,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.index',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'sub'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1169,16 +1077,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.join',
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'iterable'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1193,19 +1091,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 3,
       href: '#bytearray.maketrans',
-      signatures: [
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'from'
-            },
-            {
-              name: 'to'
-            }
-          ]
-        }
-      ],
       ary: 2,
       arguments: [
         {
@@ -1223,16 +1108,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.partition',
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'sep'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1247,24 +1122,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.replace',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 2,
-          arguments: [
-            {
-              name: 'old'
-            },
-            {
-              name: 'new'
-            },
-            {
-              name: 'count',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 2,
       arguments: [
@@ -1287,25 +1144,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rfind',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'sub'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1329,25 +1167,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rindex',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'sub'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1371,16 +1190,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rpartition',
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'sep'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1395,25 +1204,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.startswith',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'prefix'
-            },
-            {
-              name: 'start',
-              optional: true
-            },
-            {
-              name: 'end',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1437,21 +1227,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.translate',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'table'
-            },
-            {
-              name: 'delete',
-              default: 'b\'\''
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1471,21 +1246,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.center',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'width'
-            },
-            {
-              name: 'fillbyte',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1505,21 +1265,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.ljust',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'width'
-            },
-            {
-              name: 'fillbyte',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1539,18 +1284,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.lstrip',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'chars',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1567,21 +1300,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rjust',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'width'
-            },
-            {
-              name: 'fillbyte',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1601,22 +1319,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rsplit',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'sep',
-              default: 'None'
-            },
-            {
-              name: 'maxsplit',
-              default: -1
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 0,
       arguments: [
@@ -1637,18 +1339,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.rstrip',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'chars',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1665,22 +1355,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.split',
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'sep',
-              default: 'None'
-            },
-            {
-              name: 'maxsplit',
-              default: -1
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 0,
       arguments: [
@@ -1701,18 +1375,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.strip',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'chars',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1729,11 +1391,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.capitalize',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1743,18 +1400,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.expandtabs',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'tabsize',
-              default: 8
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1771,11 +1416,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.isalnum',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1785,11 +1425,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.isalpha',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1799,11 +1434,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.isdigit',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1813,11 +1443,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.islower',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1827,11 +1452,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.isspace',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1841,11 +1461,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.istitle',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1855,11 +1470,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.isupper',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1869,11 +1479,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.lower',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1883,18 +1488,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.splitlines',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'keepends',
-              default: 'False'
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1911,11 +1504,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.swapcase',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1925,11 +1513,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.title',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1939,11 +1522,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.upper',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1953,16 +1531,6 @@ eYo.Model.stdtypes.data = {
       category: 10,
       type_: 0,
       href: '#bytearray.zfill',
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'width'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1993,18 +1561,6 @@ eYo.Model.stdtypes.data = {
       category: 12,
       type_: 2,
       href: '#frozenset',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'iterable',
-              optional: true
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -2801,6 +2357,6 @@ eYo.Do.addProtocol(eYo.Model.stdtypes, 'Item', eYo.Model.stdtypes)
 eYo.Model.Item.registerTypes(eYo.Model.stdtypes.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-13 19:35:32.556369
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-13 21:20:38.759903
 
 

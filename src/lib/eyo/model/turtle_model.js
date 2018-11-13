@@ -89,16 +89,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.fd',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'distance'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -117,24 +107,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.backward',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'distance'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'distance'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -152,16 +124,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.rt',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'angle'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -179,16 +141,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.lt',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'angle'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -207,34 +159,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.setposition',
       stmt: true,
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'x'
-            },
-            {
-              name: 'y',
-              default: 'None'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'x'
-            },
-            {
-              name: 'y',
-              default: 'None'
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -285,16 +209,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.seth',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'to_angle'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -425,11 +339,6 @@ eYo.Model.turtle__module.data = {
       category: 1,
       type_: 0,
       href: '#turtle.pos',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -528,14 +437,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.down',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        },
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -549,14 +450,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.up',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        },
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -568,18 +461,6 @@ eYo.Model.turtle__module.data = {
       category: 3,
       type_: 0,
       href: '#turtle.width',
-      signatures: [
-        {
-          ary: 1,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'width',
-              default: 'None'
-            }
-          ]
-        }
-      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -875,11 +756,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.ht',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -892,11 +768,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.st',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -947,26 +818,6 @@ eYo.Model.turtle__module.data = {
       category: 8,
       type_: 0,
       href: '#turtle.turtlesize',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'stretch_wid',
-              default: 'None'
-            },
-            {
-              name: 'stretch_len',
-              default: 'None'
-            },
-            {
-              name: 'outline',
-              default: 'None'
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 0,
       arguments: [
@@ -1189,11 +1040,6 @@ eYo.Model.turtle__module.data = {
       category: 10,
       type_: 0,
       href: '#turtle.getpen',
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1266,11 +1112,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.clearscreen',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1283,11 +1124,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.resetscreen',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1409,19 +1245,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.onkeyrelease',
       stmt: true,
-      signatures: [
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'fun'
-            },
-            {
-              name: 'key'
-            }
-          ]
-        }
-      ],
       ary: 2,
       arguments: [
         {
@@ -1461,25 +1284,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.onscreenclick',
       stmt: true,
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'fun'
-            },
-            {
-              name: 'btn',
-              default: 1
-            },
-            {
-              name: 'add',
-              default: 'None'
-            }
-          ]
-        }
-      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1525,11 +1329,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.done',
       stmt: true,
-      signatures: [
-        {
-          ary: 0
-        }
-      ],
       ary: 0
     }),
     new Item({
@@ -1633,21 +1432,6 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.addshape',
       stmt: true,
-      signatures: [
-        {
-          ary: 2,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'name'
-            },
-            {
-              name: 'shape',
-              default: 'None'
-            }
-          ]
-        }
-      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1757,16 +1541,6 @@ eYo.Model.turtle__module.data = {
       category: 17,
       type_: 1,
       href: '#turtle.RawPen',
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'canvas'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -2044,6 +1818,6 @@ eYo.Do.addProtocol(eYo.Model.turtle__module, 'Item', eYo.Model.turtle__module)
 eYo.Model.Item.registerTypes(eYo.Model.turtle__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-13 19:35:33.916688
+// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-13 21:20:39.226633
 
 

@@ -226,63 +226,6 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ge__',
       stmt: true,
-      signatures: [
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        }
-      ],
       ary: 2,
       arguments: [
         {
@@ -723,83 +666,6 @@ eYo.Model.datamodel.data = {
       stmt: true,
       signatures: [
         {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
           ary: 3,
           mandatory: 2,
           arguments: [
@@ -812,61 +678,6 @@ eYo.Model.datamodel.data = {
             {
               name: 'modulo',
               optional: true
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
             }
           ]
         }
@@ -903,151 +714,6 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ror__',
       stmt: true,
-      signatures: [
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        }
-      ],
       ary: 2,
       arguments: [
         {
@@ -1081,72 +747,6 @@ eYo.Model.datamodel.data = {
       stmt: true,
       signatures: [
         {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
           ary: 3,
           mandatory: 2,
           arguments: [
@@ -1159,61 +759,6 @@ eYo.Model.datamodel.data = {
             {
               name: 'modulo',
               optional: true
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
-            }
-          ]
-        },
-        {
-          ary: 2,
-          arguments: [
-            {
-              name: 'self'
-            },
-            {
-              name: 'other'
             }
           ]
         }
@@ -1240,32 +785,6 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__invert__',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1284,24 +803,6 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__float__',
       stmt: true,
-      signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        }
-      ],
       ary: 1,
       arguments: [
         {
@@ -1336,22 +837,6 @@ eYo.Model.datamodel.data = {
       href: '#object.__ceil__',
       stmt: true,
       signatures: [
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'self'
-            }
-          ]
-        },
         {
           ary: 1,
           arguments: [
@@ -1668,6 +1153,6 @@ eYo.Do.addProtocol(eYo.Model.datamodel, 'Item', eYo.Model.datamodel)
 eYo.Model.Item.registerTypes(eYo.Model.datamodel.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2018-11-13 19:35:32.650186
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2018-11-13 21:20:38.853927
 
 
