@@ -45,6 +45,9 @@ goog.require('eYo.DelegateSvg.Fraction');
 goog.require('eYo.DelegateSvg.Statistics');
 
 eYo.Xml = {
+  URN: 'urn:edython:',
+  XMLNS: 'urn:edython:0.2',
+  PYTHON: 'python',
   EXPR: 'x', // tag name
   STMT: 's', // tag name
   SLOT: 'slot', // attribute name
@@ -89,8 +92,8 @@ console.warn('No eYo.Xml.CALL !!!!')
  * @return {string} Value representation.
  */
 Blockly.Xml.domToText = function (dom) {
-  dom.setAttribute('xmlns', 'urn:edython:0.2')
-  dom.setAttribute('xmlns:eyo', 'urn:edython:0.2')
+  dom.setAttribute('xmlns', eYo.Xml.XMLNS)
+  dom.setAttribute('xmlns:eyo', eYo.Xml.XMLNS)
   var oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(dom)
 }
@@ -110,10 +113,22 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
   var xml = root.firstChild.firstChild
   var blocks = workspace.getTopBlocks(true);
   for (var i = 0, block; block = blocks[i]; i++) {
-    xml.appendChild(Blockly.Xml.blockToDomWithXY(block, opt_noId));
+    var dom = Blockly.Xml.blockToDomWithXY(block, opt_noId)
+    var p = new eYo.PythonExporter()
+    try {
+      var code = p.export(block, true)
+      if (code.length) {
+        var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+        goog.dom.insertChildAt(dom, py_dom, 0)
+        goog.dom.appendChild(py_dom, goog.dom.createTextNode(code))        
+      }
+    } finally {
+      xml.appendChild(dom);
+    }
+    
   }
-  root.setAttribute('xmlns', 'urn:edython:0.2')
-  root.setAttribute('xmlns:eyo', 'urn:edython:0.2')
+  root.setAttribute('xmlns', eYo.Xml.XMLNS)
+  root.setAttribute('xmlns:eyo', eYo.Xml.XMLNS)
   return root;
 };
 
@@ -376,7 +391,7 @@ Blockly.Xml.domToBlockHeadless_ = (function () {
     var block = null
     if (goog.isFunction(xmlBlock.getAttribute)) {
       var attr = xmlBlock.getAttribute(eYo.Key.EYO)
-      if (attr || xmlBlock.namespaceURI.startsWith('urn:edython:')) {
+      if (attr || xmlBlock.namespaceURI.startsWith(eYo.Xml.URN)) {
         block = eYo.Xml.domToBlock(xmlBlock, workspace)
       } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
         block = domToBlockHeadless(xmlBlock, workspace)
@@ -1039,7 +1054,7 @@ eYo.Xml.domToBlock = (function () {
                 }
               } ()))) {
               // no prototype found, bail out.
-              return recover.domToBlock(dom, owner)
+              return
             }
           }
           block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
@@ -1071,8 +1086,6 @@ eYo.Xml.domToBlock = (function () {
           eYo.Xml.fromDom(block, dom)
           return block
         }
-        // block recovery
-        return recover.domToBlock(dom, owner)
       }
     )
   }
