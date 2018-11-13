@@ -75,7 +75,6 @@ eYo.Model.turtle__module.data = {
   ],
   types: [
     'function',
-    'None',
     'class',
     'method'
   ],
@@ -90,6 +89,16 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.fd',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'distance'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -108,6 +117,24 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.backward',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'distance'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'distance'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -125,6 +152,16 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.rt',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'angle'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -142,6 +179,16 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.lt',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'angle'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -160,6 +207,34 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.setposition',
       stmt: true,
+      signatures: [
+        {
+          ary: 2,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'x'
+            },
+            {
+              name: 'y',
+              default: 'None'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'x'
+            },
+            {
+              name: 'y',
+              default: 'None'
+            }
+          ]
+        }
+      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -210,6 +285,16 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.seth',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'to_angle'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -223,7 +308,8 @@ eYo.Model.turtle__module.data = {
       category: 0,
       type_: 0,
       href: '#turtle.home',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'circle',
@@ -256,14 +342,15 @@ eYo.Model.turtle__module.data = {
       href: '#turtle.dot',
       stmt: true,
       ary: Infinity,
-      mandatory: 1,
+      mandatory: 0,
       arguments: [
         {
           name: 'size',
           default: 'None'
         },
         {
-          name: '*color'
+          name: '*color',
+          optional: true
         }
       ]
     }),
@@ -272,7 +359,8 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 0,
       type_: 0,
-      href: '#turtle.stamp'
+      href: '#turtle.stamp',
+      ary: 0
     }),
     new Item({
       name: 'clearstamp',
@@ -309,7 +397,8 @@ eYo.Model.turtle__module.data = {
       category: 0,
       type_: 0,
       href: '#turtle.undo',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'speed',
@@ -335,7 +424,13 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 1,
       type_: 0,
-      href: '#turtle.pos'
+      href: '#turtle.pos',
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'towards',
@@ -360,21 +455,24 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 1,
       type_: 0,
-      href: '#turtle.xcor'
+      href: '#turtle.xcor',
+      ary: 0
     }),
     new Item({
       name: 'ycor',
       class: 'turtle',
       category: 1,
       type_: 0,
-      href: '#turtle.ycor'
+      href: '#turtle.ycor',
+      ary: 0
     }),
     new Item({
       name: 'heading',
       class: 'turtle',
       category: 1,
       type_: 0,
-      href: '#turtle.heading'
+      href: '#turtle.heading',
+      ary: 0
     }),
     new Item({
       name: 'distance',
@@ -416,7 +514,8 @@ eYo.Model.turtle__module.data = {
       category: 2,
       type_: 0,
       href: '#turtle.radians',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'pendown',
@@ -428,7 +527,16 @@ eYo.Model.turtle__module.data = {
       category: 3,
       type_: 0,
       href: '#turtle.down',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        },
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'penup',
@@ -440,7 +548,16 @@ eYo.Model.turtle__module.data = {
       category: 3,
       type_: 0,
       href: '#turtle.up',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        },
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'pensize',
@@ -451,6 +568,18 @@ eYo.Model.turtle__module.data = {
       category: 3,
       type_: 0,
       href: '#turtle.width',
+      signatures: [
+        {
+          ary: 1,
+          mandatory: 0,
+          arguments: [
+            {
+              name: 'width',
+              default: 'None'
+            }
+          ]
+        }
+      ],
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -467,14 +596,15 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.pen',
       ary: Infinity,
-      mandatory: 1,
+      mandatory: 0,
       arguments: [
         {
           name: 'pen',
           default: 'None'
         },
         {
-          name: '**pendict'
+          name: '**pendict',
+          optional: true
         }
       ]
     }),
@@ -483,7 +613,8 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 3,
       type_: 0,
-      href: '#turtle.isdown'
+      href: '#turtle.isdown',
+      ary: 0
     }),
     new Item({
       name: 'pencolor',
@@ -491,31 +622,47 @@ eYo.Model.turtle__module.data = {
       category: 4,
       type_: 0,
       href: '#turtle.pencolor',
-      ary: Infinity,
-      mandatory: 1,
-      arguments: [
+      signatures: [
         {
-          name: '*args'
+          ary: 0
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'colorstring'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: '(r, g, b)'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'r'
+            },
+            {
+              name: 'g'
+            },
+            {
+              name: 'b'
+            }
+          ]
         }
-      ]
-    }),
-    new Item({
-      name: 'pencolor',
-      synonyms: [
-        'pencolor('
       ],
-      category: 4,
-      type_: 1,
       ary: 3,
+      mandatory: 0,
       arguments: [
         {
-          name: 'r'
-        },
-        {
-          name: 'g'
-        },
-        {
-          name: 'b)'
+          name: '*args',
+          optional: true
         }
       ]
     }),
@@ -525,31 +672,47 @@ eYo.Model.turtle__module.data = {
       category: 4,
       type_: 0,
       href: '#turtle.fillcolor',
-      ary: Infinity,
-      mandatory: 1,
-      arguments: [
+      signatures: [
         {
-          name: '*args'
+          ary: 0
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'colorstring'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: '(r, g, b)'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'r'
+            },
+            {
+              name: 'g'
+            },
+            {
+              name: 'b'
+            }
+          ]
         }
-      ]
-    }),
-    new Item({
-      name: 'fillcolor',
-      synonyms: [
-        'fillcolor('
       ],
-      category: 4,
-      type_: 1,
       ary: 3,
+      mandatory: 0,
       arguments: [
         {
-          name: 'r'
-        },
-        {
-          name: 'g'
-        },
-        {
-          name: 'b)'
+          name: '*args',
+          optional: true
         }
       ]
     }),
@@ -559,46 +722,69 @@ eYo.Model.turtle__module.data = {
       category: 4,
       type_: 0,
       href: '#turtle.color',
-      ary: Infinity,
-      mandatory: 1,
-      arguments: [
+      signatures: [
         {
-          name: '*args'
+          ary: 0
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'colorstring'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: '(r,g,b)'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'r'
+            },
+            {
+              name: 'g'
+            },
+            {
+              name: 'b'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'colorstring1'
+            },
+            {
+              name: 'colorstring2'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: '(r1,g1,b1)'
+            },
+            {
+              name: '(r2,g2,b2)'
+            }
+          ]
         }
-      ]
-    }),
-    new Item({
-      name: 'color',
-      synonyms: [
-        'color('
       ],
-      category: 4,
-      type_: 1,
-      ary: 8,
+      ary: 3,
+      mandatory: 0,
       arguments: [
         {
-          name: 'colorstring1'
-        },
-        {
-          name: 'colorstring2)'
-        },
-        {
-          name: 'color((r1'
-        },
-        {
-          name: 'g1'
-        },
-        {
-          name: 'b1)'
-        },
-        {
-          name: '(r2'
-        },
-        {
-          name: 'g2'
-        },
-        {
-          name: 'b2)'
+          name: '*args',
+          optional: true
         }
       ]
     }),
@@ -607,7 +793,8 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 5,
       type_: 0,
-      href: '#turtle.filling'
+      href: '#turtle.filling',
+      ary: 0
     }),
     new Item({
       name: 'begin_fill',
@@ -615,7 +802,8 @@ eYo.Model.turtle__module.data = {
       category: 5,
       type_: 0,
       href: '#turtle.begin_fill',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'end_fill',
@@ -623,7 +811,8 @@ eYo.Model.turtle__module.data = {
       category: 5,
       type_: 0,
       href: '#turtle.end_fill',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'reset',
@@ -631,7 +820,8 @@ eYo.Model.turtle__module.data = {
       category: 6,
       type_: 0,
       href: '#turtle.reset',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'clear',
@@ -639,7 +829,8 @@ eYo.Model.turtle__module.data = {
       category: 6,
       type_: 0,
       href: '#turtle.clear',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'write',
@@ -683,7 +874,13 @@ eYo.Model.turtle__module.data = {
       category: 7,
       type_: 0,
       href: '#turtle.ht',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'showturtle',
@@ -694,14 +891,21 @@ eYo.Model.turtle__module.data = {
       category: 7,
       type_: 0,
       href: '#turtle.st',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'isvisible',
       class: 'turtle',
       category: 7,
       type_: 0,
-      href: '#turtle.isvisible'
+      href: '#turtle.isvisible',
+      ary: 0
     }),
     new Item({
       name: 'shape',
@@ -743,6 +947,26 @@ eYo.Model.turtle__module.data = {
       category: 8,
       type_: 0,
       href: '#turtle.turtlesize',
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 0,
+          arguments: [
+            {
+              name: 'stretch_wid',
+              default: 'None'
+            },
+            {
+              name: 'stretch_len',
+              default: 'None'
+            },
+            {
+              name: 'outline',
+              default: 'None'
+            }
+          ]
+        }
+      ],
       ary: 3,
       mandatory: 0,
       arguments: [
@@ -850,7 +1074,8 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 8,
       type_: 0,
-      href: '#turtle.get_shapepoly'
+      href: '#turtle.get_shapepoly',
+      ary: 0
     }),
     new Item({
       name: 'onclick',
@@ -927,7 +1152,8 @@ eYo.Model.turtle__module.data = {
       category: 10,
       type_: 0,
       href: '#turtle.begin_poly',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'end_poly',
@@ -935,21 +1161,24 @@ eYo.Model.turtle__module.data = {
       category: 10,
       type_: 0,
       href: '#turtle.end_poly',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'get_poly',
       class: 'turtle',
       category: 10,
       type_: 0,
-      href: '#turtle.get_poly'
+      href: '#turtle.get_poly',
+      ary: 0
     }),
     new Item({
       name: 'clone',
       class: 'turtle',
       category: 10,
       type_: 0,
-      href: '#turtle.clone'
+      href: '#turtle.clone',
+      ary: 0
     }),
     new Item({
       name: 'getturtle',
@@ -959,14 +1188,21 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 10,
       type_: 0,
-      href: '#turtle.getpen'
+      href: '#turtle.getpen',
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'getscreen',
       class: 'turtle',
       category: 10,
       type_: 0,
-      href: '#turtle.getscreen'
+      href: '#turtle.getscreen',
+      ary: 0
     }),
     new Item({
       name: 'setundobuffer',
@@ -987,7 +1223,8 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 10,
       type_: 0,
-      href: '#turtle.undobufferentries'
+      href: '#turtle.undobufferentries',
+      ary: 0
     }),
     new Item({
       name: 'bgcolor',
@@ -996,10 +1233,11 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.bgcolor',
       ary: Infinity,
-      mandatory: 1,
+      mandatory: 0,
       arguments: [
         {
-          name: '*args'
+          name: '*args',
+          optional: true
         }
       ]
     }),
@@ -1027,7 +1265,13 @@ eYo.Model.turtle__module.data = {
       category: 11,
       type_: 0,
       href: '#turtle.clearscreen',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'resetscreen',
@@ -1038,7 +1282,13 @@ eYo.Model.turtle__module.data = {
       category: 11,
       type_: 0,
       href: '#turtle.resetscreen',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'screensize',
@@ -1126,7 +1376,8 @@ eYo.Model.turtle__module.data = {
       category: 12,
       type_: 0,
       href: '#turtle.update',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'listen',
@@ -1158,6 +1409,19 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.onkeyrelease',
       stmt: true,
+      signatures: [
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'fun'
+            },
+            {
+              name: 'key'
+            }
+          ]
+        }
+      ],
       ary: 2,
       arguments: [
         {
@@ -1197,6 +1461,25 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.onscreenclick',
       stmt: true,
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'fun'
+            },
+            {
+              name: 'btn',
+              default: 1
+            },
+            {
+              name: 'add',
+              default: 'None'
+            }
+          ]
+        }
+      ],
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1241,7 +1524,13 @@ eYo.Model.turtle__module.data = {
       category: 13,
       type_: 0,
       href: '#turtle.done',
-      stmt: true
+      stmt: true,
+      signatures: [
+        {
+          ary: 0
+        }
+      ],
+      ary: 0
     }),
     new Item({
       name: 'textinput',
@@ -1323,14 +1612,16 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 15,
       type_: 0,
-      href: '#turtle.getcanvas'
+      href: '#turtle.getcanvas',
+      ary: 0
     }),
     new Item({
       name: 'getshapes',
       class: 'turtle',
       category: 15,
       type_: 0,
-      href: '#turtle.getshapes'
+      href: '#turtle.getshapes',
+      ary: 0
     }),
     new Item({
       name: 'register_shape',
@@ -1342,6 +1633,21 @@ eYo.Model.turtle__module.data = {
       type_: 0,
       href: '#turtle.addshape',
       stmt: true,
+      signatures: [
+        {
+          ary: 2,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'name'
+            },
+            {
+              name: 'shape',
+              default: 'None'
+            }
+          ]
+        }
+      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -1359,21 +1665,24 @@ eYo.Model.turtle__module.data = {
       class: 'turtle',
       category: 15,
       type_: 0,
-      href: '#turtle.turtles'
+      href: '#turtle.turtles',
+      ary: 0
     }),
     new Item({
       name: 'window_height',
       class: 'turtle',
       category: 15,
       type_: 0,
-      href: '#turtle.window_height'
+      href: '#turtle.window_height',
+      ary: 0
     }),
     new Item({
       name: 'window_width',
       class: 'turtle',
       category: 15,
       type_: 0,
-      href: '#turtle.window_width'
+      href: '#turtle.window_width',
+      ary: 0
     }),
     new Item({
       name: 'bye',
@@ -1381,7 +1690,8 @@ eYo.Model.turtle__module.data = {
       category: 16,
       type_: 0,
       href: '#turtle.bye',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'exitonclick',
@@ -1389,7 +1699,8 @@ eYo.Model.turtle__module.data = {
       category: 16,
       type_: 0,
       href: '#turtle.exitonclick',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'setup',
@@ -1444,9 +1755,18 @@ eYo.Model.turtle__module.data = {
       ],
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.RawPen',
-      stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'canvas'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -1458,16 +1778,15 @@ eYo.Model.turtle__module.data = {
       name: 'Turtle',
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.Turtle'
     }),
     new Item({
       name: 'TurtleScreen',
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.TurtleScreen',
-      stmt: true,
       ary: 1,
       arguments: [
         {
@@ -1479,16 +1798,16 @@ eYo.Model.turtle__module.data = {
       name: 'Screen',
       class: 'turtle',
       category: 17,
-      type_: 2,
-      href: '#turtle.Screen'
+      type_: 1,
+      href: '#turtle.Screen',
+      stmt: true
     }),
     new Item({
       name: 'ScrolledCanvas',
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.ScrolledCanvas',
-      stmt: true,
       ary: 1,
       arguments: [
         {
@@ -1500,9 +1819,8 @@ eYo.Model.turtle__module.data = {
       name: 'Shape',
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.Shape',
-      stmt: true,
       ary: 2,
       arguments: [
         {
@@ -1514,34 +1832,11 @@ eYo.Model.turtle__module.data = {
       ]
     }),
     new Item({
-      name: 'addcomponent',
-      class: 'turtle.Shape',
-      category: 17,
-      type_: 3,
-      href: '#turtle.Shape.addcomponent',
-      stmt: true,
-      ary: 3,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'poly'
-        },
-        {
-          name: 'fill'
-        },
-        {
-          name: 'outline',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
       name: 'Vec2D',
       class: 'turtle',
       category: 17,
-      type_: 2,
+      type_: 1,
       href: '#turtle.Vec2D',
-      stmt: true,
       ary: 2,
       arguments: [
         {
@@ -1565,6 +1860,28 @@ eYo.Model.turtle__module.data = {
         {
           name: 'filename',
           default: '"turtle_docstringdict"'
+        }
+      ]
+    }),
+    new Item({
+      name: 'addcomponent',
+      class: 'turtle.Shape',
+      category: 17,
+      type_: 2,
+      href: '#turtle.Shape.addcomponent',
+      stmt: true,
+      ary: 3,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'poly'
+        },
+        {
+          name: 'fill'
+        },
+        {
+          name: 'outline',
+          default: 'None'
         }
       ]
     })
@@ -1613,114 +1930,110 @@ eYo.Model.turtle__module.data = {
     'width': 26,
     'pen': 27,
     'isdown': 28,
-    'pencolor': 30,
-    'pencolor(': 30,
-    'fillcolor': 32,
-    'fillcolor(': 32,
-    'color': 34,
-    'color(': 34,
-    'filling': 35,
-    'begin_fill': 36,
-    'end_fill': 37,
-    'reset': 67,
-    'clear': 66,
-    'write': 40,
-    'hideturtle': 41,
-    'ht': 41,
-    'showturtle': 42,
-    'st': 42,
-    'isvisible': 43,
-    'shape': 44,
-    'resizemode': 45,
-    'shapesize': 46,
-    'turtlesize': 46,
-    'shearfactor': 47,
-    'tilt': 48,
-    'settiltangle': 49,
-    'tiltangle': 50,
-    'shapetransform': 51,
-    'get_shapepoly': 52,
-    'onclick': 76,
-    'onrelease': 54,
-    'ondrag': 55,
-    'begin_poly': 56,
-    'end_poly': 57,
-    'get_poly': 58,
-    'clone': 59,
-    'getturtle': 60,
-    'getpen': 60,
-    'getscreen': 61,
-    'setundobuffer': 62,
-    'undobufferentries': 63,
-    'bgcolor': 64,
-    'bgpic': 65,
-    'clearscreen': 66,
-    'resetscreen': 67,
-    'screensize': 68,
-    'setworldcoordinates': 69,
-    'delay': 70,
-    'tracer': 71,
-    'update': 72,
-    'listen': 73,
-    'onkey': 74,
-    'onkeyrelease': 74,
-    'onkeypress': 75,
-    'onscreenclick': 76,
-    'ontimer': 77,
-    'mainloop': 78,
-    'done': 78,
-    'textinput': 79,
-    'numinput': 80,
-    'mode': 81,
-    'colormode': 82,
-    'getcanvas': 83,
-    'getshapes': 84,
-    'register_shape': 85,
-    'addshape': 85,
-    'turtles': 86,
-    'window_height': 87,
-    'window_width': 88,
-    'bye': 89,
-    'exitonclick': 90,
-    'setup': 91,
-    'title': 92,
-    'RawTurtle': 93,
-    'RawPen': 93,
-    'Turtle': 94,
-    'TurtleScreen': 95,
-    'Screen': 96,
-    'ScrolledCanvas': 97,
-    'Shape': 98,
-    'addcomponent': 99,
-    'Vec2D': 100,
-    'write_docstringdict': 101
+    'pencolor': 29,
+    'fillcolor': 30,
+    'color': 31,
+    'filling': 32,
+    'begin_fill': 33,
+    'end_fill': 34,
+    'reset': 64,
+    'clear': 63,
+    'write': 37,
+    'hideturtle': 38,
+    'ht': 38,
+    'showturtle': 39,
+    'st': 39,
+    'isvisible': 40,
+    'shape': 41,
+    'resizemode': 42,
+    'shapesize': 43,
+    'turtlesize': 43,
+    'shearfactor': 44,
+    'tilt': 45,
+    'settiltangle': 46,
+    'tiltangle': 47,
+    'shapetransform': 48,
+    'get_shapepoly': 49,
+    'onclick': 73,
+    'onrelease': 51,
+    'ondrag': 52,
+    'begin_poly': 53,
+    'end_poly': 54,
+    'get_poly': 55,
+    'clone': 56,
+    'getturtle': 57,
+    'getpen': 57,
+    'getscreen': 58,
+    'setundobuffer': 59,
+    'undobufferentries': 60,
+    'bgcolor': 61,
+    'bgpic': 62,
+    'clearscreen': 63,
+    'resetscreen': 64,
+    'screensize': 65,
+    'setworldcoordinates': 66,
+    'delay': 67,
+    'tracer': 68,
+    'update': 69,
+    'listen': 70,
+    'onkey': 71,
+    'onkeyrelease': 71,
+    'onkeypress': 72,
+    'onscreenclick': 73,
+    'ontimer': 74,
+    'mainloop': 75,
+    'done': 75,
+    'textinput': 76,
+    'numinput': 77,
+    'mode': 78,
+    'colormode': 79,
+    'getcanvas': 80,
+    'getshapes': 81,
+    'register_shape': 82,
+    'addshape': 82,
+    'turtles': 83,
+    'window_height': 84,
+    'window_width': 85,
+    'bye': 86,
+    'exitonclick': 87,
+    'setup': 88,
+    'title': 89,
+    'RawTurtle': 90,
+    'RawPen': 90,
+    'Turtle': 91,
+    'TurtleScreen': 92,
+    'Screen': 93,
+    'ScrolledCanvas': 94,
+    'Shape': 95,
+    'Vec2D': 96,
+    'write_docstringdict': 97,
+    'addcomponent': 98
   },
   by_category: {
     0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
     1: [16, 17, 18, 19, 20, 21],
     2: [22, 23],
     3: [24, 25, 26, 27, 28],
-    4: [29, 30, 31, 32, 33, 34],
-    5: [35, 36, 37],
-    6: [38, 39, 40],
-    7: [41, 42, 43],
-    8: [44, 45, 46, 47, 48, 49, 50, 51, 52],
-    9: [53, 54, 55],
-    10: [56, 57, 58, 59, 60, 61, 62, 63],
-    11: [64, 65, 66, 67, 68, 69],
-    12: [70, 71, 72],
-    13: [73, 74, 75, 76, 77, 78],
-    14: [79, 80],
-    15: [81, 82, 83, 84, 85, 86, 87, 88],
-    16: [89, 90, 91, 92],
-    17: [93, 94, 95, 96, 97, 98, 99, 100],
-    18: [101]
+    4: [29, 30, 31],
+    5: [32, 33, 34],
+    6: [35, 36, 37],
+    7: [38, 39, 40],
+    8: [41, 42, 43, 44, 45, 46, 47, 48, 49],
+    9: [50, 51, 52],
+    10: [53, 54, 55, 56, 57, 58, 59, 60],
+    11: [61, 62, 63, 64, 65, 66],
+    12: [67, 68, 69],
+    13: [70, 71, 72, 73, 74, 75],
+    14: [76, 77],
+    15: [78, 79, 80, 81, 82, 83, 84, 85],
+    16: [86, 87, 88, 89],
+    17: [90, 91, 92, 93, 94, 95, 96, 98],
+    18: [97]
   },
   by_type: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 101],
-    1: [30, 32, 34],
-    2: [93, 94, 95, 96, 97, 98, 100],
-    3: [99]
+    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 97],
+    1: [90, 91, 92, 93, 94, 95, 96],
+    2: [98]
   }
 }
 
@@ -1731,6 +2044,6 @@ eYo.Do.addProtocol(eYo.Model.turtle__module, 'Item', eYo.Model.turtle__module)
 eYo.Model.Item.registerTypes(eYo.Model.turtle__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-10 19:09:26.508525
+// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-13 19:35:33.916688
 
 

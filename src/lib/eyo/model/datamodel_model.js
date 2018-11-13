@@ -36,7 +36,7 @@ goog.inherits(Item, eYo.Model.Item)
  */
 Item.prototype.model = eYo.Model.datamodel
 
-Item.prototype.model.url = 'https://docs.python.org/3.6/reference/datamodel.html'
+Item.prototype.model.url = 'https://docs.python.org/3.6/library/datamodel.html'
 
 Object.defineProperties(
   Item.prototype,
@@ -82,7 +82,8 @@ eYo.Model.datamodel.data = {
       category: 0,
       type_: 0,
       href: '#frame.clear',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'indices',
@@ -225,6 +226,63 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ge__',
       stmt: true,
+      signatures: [
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        }
+      ],
       ary: 2,
       arguments: [
         {
@@ -429,7 +487,8 @@ eYo.Model.datamodel.data = {
       class: 'object',
       category: 4,
       type_: 2,
-      href: '#object.__slots__'
+      href: '#object.__slots__',
+      stmt: true
     }),
     new Item({
       name: '__init_subclass__',
@@ -662,18 +721,163 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__or__',
       stmt: true,
-      ary: 3,
-      mandatory: 2,
+      signatures: [
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            },
+            {
+              name: 'modulo',
+              optional: true
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        }
+      ],
+      ary: 2,
       arguments: [
         {
           name: 'self'
         },
         {
           name: 'other'
-        },
-        {
-          name: 'modulo',
-          optional: true
         }
       ]
     }),
@@ -699,6 +903,151 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ror__',
       stmt: true,
+      signatures: [
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        }
+      ],
       ary: 2,
       arguments: [
         {
@@ -730,18 +1079,152 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ior__',
       stmt: true,
-      ary: 3,
-      mandatory: 2,
+      signatures: [
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            },
+            {
+              name: 'modulo',
+              optional: true
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        },
+        {
+          ary: 2,
+          arguments: [
+            {
+              name: 'self'
+            },
+            {
+              name: 'other'
+            }
+          ]
+        }
+      ],
+      ary: 2,
       arguments: [
         {
           name: 'self'
         },
         {
           name: 'other'
-        },
-        {
-          name: 'modulo',
-          optional: true
         }
       ]
     }),
@@ -757,6 +1240,32 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__invert__',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -775,6 +1284,24 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__float__',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        }
+      ],
       ary: 1,
       arguments: [
         {
@@ -808,6 +1335,32 @@ eYo.Model.datamodel.data = {
       type_: 1,
       href: '#object.__ceil__',
       stmt: true,
+      signatures: [
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'self'
+            }
+          ]
+        }
+      ],
       ary: 2,
       mandatory: 1,
       arguments: [
@@ -913,7 +1466,8 @@ eYo.Model.datamodel.data = {
       category: 12,
       type_: 1,
       href: '#coroutine.close',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: '__aiter__',
@@ -1114,6 +1668,6 @@ eYo.Do.addProtocol(eYo.Model.datamodel, 'Item', eYo.Model.datamodel)
 eYo.Model.Item.registerTypes(eYo.Model.datamodel.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2018-11-10 19:09:26.122804
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2018-11-13 19:35:32.650186
 
 

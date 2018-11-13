@@ -57,8 +57,7 @@ eYo.Model.functions.data = {
   ],
   types: [
     'function',
-    'class',
-    'None'
+    'class'
   ],
   items: [
     new Item({
@@ -144,7 +143,7 @@ eYo.Model.functions.data = {
     new Item({
       name: 'bytearray',
       category: 0,
-      type_: 2,
+      type_: 1,
       ary: 3,
       mandatory: 0,
       arguments: [
@@ -165,7 +164,7 @@ eYo.Model.functions.data = {
     new Item({
       name: 'bytes',
       category: 0,
-      type_: 2,
+      type_: 1,
       ary: 3,
       mandatory: 0,
       arguments: [
@@ -288,16 +287,42 @@ eYo.Model.functions.data = {
     new Item({
       name: 'dict',
       category: 0,
-      type_: 2,
+      type_: 1,
       stmt: true,
-      ary: Infinity,
-      mandatory: 2,
-      arguments: [
+      signatures: [
         {
-          name: 'mapping'
+          ary: Infinity,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'mapping'
+            },
+            {
+              name: '**kwarg',
+              optional: true
+            }
+          ]
         },
         {
-          name: '**kwarg'
+          ary: Infinity,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'iterable'
+            },
+            {
+              name: '**kwarg',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '**kwarg',
+          optional: true
         }
       ]
     }),
@@ -447,7 +472,7 @@ eYo.Model.functions.data = {
     new Item({
       name: 'frozenset',
       category: 0,
-      type_: 2,
+      type_: 1,
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -483,7 +508,8 @@ eYo.Model.functions.data = {
       class: '',
       category: 0,
       type_: 0,
-      href: '#globals'
+      href: '#globals',
+      ary: 0
     }),
     new Item({
       name: 'hasattr',
@@ -577,15 +603,27 @@ eYo.Model.functions.data = {
       category: 0,
       type_: 1,
       href: '#int',
-      ary: 2,
-      mandatory: 1,
+      signatures: [
+        {
+          ary: 2,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'x'
+            },
+            {
+              name: 'base',
+              default: 10
+            }
+          ]
+        }
+      ],
+      ary: 1,
+      mandatory: 0,
       arguments: [
         {
-          name: 'x'
-        },
-        {
-          name: 'base',
-          default: 10
+          name: 'x',
+          default: 0
         }
       ]
     }),
@@ -655,7 +693,7 @@ eYo.Model.functions.data = {
     new Item({
       name: 'list',
       category: 0,
-      type_: 2,
+      type_: 1,
       stmt: true,
       ary: 1,
       mandatory: 0,
@@ -671,7 +709,8 @@ eYo.Model.functions.data = {
       class: '',
       category: 0,
       type_: 0,
-      href: '#locals'
+      href: '#locals',
+      ary: 0
     }),
     new Item({
       name: 'map',
@@ -698,14 +737,37 @@ eYo.Model.functions.data = {
       category: 0,
       type_: 0,
       href: '#max',
+      signatures: [
+        {
+          ary: Infinity,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'arg1'
+            },
+            {
+              name: 'arg2'
+            },
+            {
+              name: '*args',
+              optional: true
+            },
+            {
+              name: 'key',
+              optional: true
+            }
+          ]
+        }
+      ],
       ary: Infinity,
-      mandatory: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'iterable'
         },
         {
-          name: '*'
+          name: '*',
+          optional: true
         },
         {
           name: 'key',
@@ -720,7 +782,6 @@ eYo.Model.functions.data = {
     new Item({
       name: 'memoryview',
       category: 0,
-      type_: 2,
       ary: 1,
       arguments: [
         {
@@ -734,14 +795,37 @@ eYo.Model.functions.data = {
       category: 0,
       type_: 0,
       href: '#min',
+      signatures: [
+        {
+          ary: Infinity,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'arg1'
+            },
+            {
+              name: 'arg2'
+            },
+            {
+              name: '*args',
+              optional: true
+            },
+            {
+              name: 'key',
+              optional: true
+            }
+          ]
+        }
+      ],
       ary: Infinity,
-      mandatory: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'iterable'
         },
         {
-          name: '*'
+          name: '*',
+          optional: true
         },
         {
           name: 'key',
@@ -877,11 +961,15 @@ eYo.Model.functions.data = {
       mandatory: 1,
       arguments: [
         {
-          name: '*objects'
+          name: '*objects',
+          optional: true
         },
         {
           name: 'sep',
           default: '\''
+        },
+        {
+          name: '\''
         },
         {
           name: 'end',
@@ -927,20 +1015,29 @@ eYo.Model.functions.data = {
     new Item({
       name: 'range',
       category: 0,
-      type_: 2,
       stmt: true,
-      ary: 3,
-      mandatory: 2,
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'start'
+            },
+            {
+              name: 'stop'
+            },
+            {
+              name: 'step',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: 1,
       arguments: [
         {
-          name: 'start'
-        },
-        {
           name: 'stop'
-        },
-        {
-          name: 'step',
-          optional: true
         }
       ]
     }),
@@ -991,7 +1088,7 @@ eYo.Model.functions.data = {
     new Item({
       name: 'set',
       category: 0,
-      type_: 2,
+      type_: 1,
       ary: 1,
       mandatory: 0,
       arguments: [
@@ -1027,18 +1124,28 @@ eYo.Model.functions.data = {
       category: 0,
       type_: 1,
       href: '#slice',
-      ary: 3,
-      mandatory: 2,
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'start'
+            },
+            {
+              name: 'stop'
+            },
+            {
+              name: 'step',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: 1,
       arguments: [
         {
-          name: 'start'
-        },
-        {
           name: 'stop'
-        },
-        {
-          name: 'step',
-          optional: true
         }
       ]
     }),
@@ -1049,13 +1156,14 @@ eYo.Model.functions.data = {
       type_: 0,
       href: '#sorted',
       ary: Infinity,
-      mandatory: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'iterable'
         },
         {
-          name: '*'
+          name: '*',
+          optional: true
         },
         {
           name: 'key',
@@ -1079,21 +1187,33 @@ eYo.Model.functions.data = {
     new Item({
       name: 'str',
       category: 0,
-      type_: 2,
-      ary: 3,
+      type_: 1,
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 0,
+          arguments: [
+            {
+              name: 'object',
+              default: 'b\'\''
+            },
+            {
+              name: 'encoding',
+              default: '\'utf-8\''
+            },
+            {
+              name: 'errors',
+              default: '\'strict\''
+            }
+          ]
+        }
+      ],
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
           name: 'object',
-          default: 'b\'\''
-        },
-        {
-          name: 'encoding',
-          default: '\'utf-8\''
-        },
-        {
-          name: 'errors',
-          default: '\'strict\''
+          default: '\'\''
         }
       ]
     }),
@@ -1137,7 +1257,6 @@ eYo.Model.functions.data = {
     new Item({
       name: 'tuple',
       category: 0,
-      type_: 2,
       stmt: true,
       ary: 1,
       mandatory: 0,
@@ -1154,16 +1273,26 @@ eYo.Model.functions.data = {
       category: 0,
       type_: 1,
       href: '#type',
-      ary: 3,
+      signatures: [
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'name'
+            },
+            {
+              name: 'bases'
+            },
+            {
+              name: 'dict'
+            }
+          ]
+        }
+      ],
+      ary: 1,
       arguments: [
         {
-          name: 'name'
-        },
-        {
-          name: 'bases'
-        },
-        {
-          name: 'dict'
+          name: 'object'
         }
       ]
     }),
@@ -1189,10 +1318,11 @@ eYo.Model.functions.data = {
       type_: 0,
       href: '#zip',
       ary: Infinity,
-      mandatory: 1,
+      mandatory: 0,
       arguments: [
         {
-          name: '*iterables'
+          name: '*iterables',
+          optional: true
         }
       ]
     }),
@@ -1303,8 +1433,7 @@ eYo.Model.functions.data = {
   },
   by_type: {
     0: [0, 1, 2, 3, 4, 8, 9, 10, 11, 13, 15, 16, 17, 18, 19, 20, 22, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 38, 39, 40, 42, 43, 45, 46, 47, 48, 49, 52, 53, 54, 56, 58, 59, 61, 62, 65, 66, 67],
-    1: [5, 12, 21, 32, 44, 50, 57, 64],
-    2: [6, 7, 14, 23, 37, 41, 51, 55, 60, 63]
+    1: [5, 6, 7, 12, 14, 21, 23, 32, 37, 44, 50, 55, 57, 60, 64]
   }
 }
 
@@ -1315,6 +1444,6 @@ eYo.Do.addProtocol(eYo.Model.functions, 'Item', eYo.Model.functions)
 eYo.Model.Item.registerTypes(eYo.Model.functions.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix functions` on 2018-11-10 19:09:18.597962
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix functions` on 2018-11-13 19:35:32.426306
 
 

@@ -56,6 +56,7 @@ For the datastructures, the entry is
 
 """
 import xml.etree.ElementTree as ET
+import copy
 import urllib.request
 import pathlib
 import re
@@ -72,11 +73,16 @@ def do_one_module(module, **kwargs):
     suffix = kwargs['suffix']
     verbose = kwargs['verbose']
     version = kwargs['version'] if 'version' in kwargs else '3.6'
+
+    dls = None # The list of dl elements parsed
         
     class Filter:
 
         @staticmethod
         def do_module(txt):
+            '''
+            Returns `True` to indicate that there is a return value.
+            '''
             if txt.startswith('Return')\
                     or txt.startswith('Retrieve')\
                     or txt.startswith('The concatenation of the ')\
@@ -113,7 +119,7 @@ def do_one_module(module, **kwargs):
 
         @staticmethod
         def do_name_turtle(txt):
-            return txt in ['bgcolor', 'tracer', 'mode', 'colormode']
+            return txt in ['bgcolor', 'tracer', 'mode', 'colormode', 'Turtle', 'TurtleScreen', 'RawTurtle', 'ScrolledCanvas', 'Shape', 'Vec2D']
 
         @staticmethod
         def do_name_module(txt):
@@ -161,7 +167,157 @@ def do_one_module(module, **kwargs):
 
         @staticmethod
         def ary(name, default):
+            try:
+                f = getattr(Filter, 'ary_' + module)
+                if not f is None:
+                    return f(name, default)
+            except:
+                pass
             return default
+
+        @staticmethod
+        def ary_turtle(name, default):
+            if name == 'Turtle':
+                return 1
+            return default
+
+        @staticmethod
+        def mandatory(name, default):
+            try:
+                f = getattr(Filter, 'mandatory_' + module)
+                if not f is None:
+                    return f(name, default)
+            except:
+                pass
+            return default
+
+        @staticmethod
+        def mandatory_turtle(name, default):
+            if name == 'Turtle':
+                return 1
+            return default
+
+    class Signature:
+
+        arguments = None
+        star = False
+        name = None
+        mandatory_ = None
+    
+        def __init__(self, owner, call = None):
+            if verbose:
+                print('Signature:', owner.name, call)
+            self.owner = owner
+            if call is not None:
+                self.parse(call)
+        
+        @property
+        def ary(self):
+            if self.arguments is None:
+                return None
+            if len(self.arguments):
+                arg = self.arguments[0]
+                if arg.name == '*args':
+                    signatures = self.owner.signatures
+                    if len(signatures):
+                        return max(map(lambda x: x.ary, signatures))
+            if self.star:
+                return math.inf
+            return Filter.ary(self.owner.name, len(self.arguments))
+
+        @property
+        def mandatory(self):
+            if self.arguments is None:
+                return None
+            if len(self.arguments):
+                arg = self.arguments[0]
+                if arg.name == '*args':
+                    signatures = self.owner.signatures
+                    if len(signatures):
+                        return min(map(lambda x: x.mandatory, signatures))
+            if self.mandatory_ is None:
+                self.mandatory_ = 0
+                for argument in self.arguments:
+                    if argument.default is None and argument.optional is not True:
+                        self.mandatory_ += 1
+            return Filter.mandatory(self.owner.name, self.mandatory_)
+
+        def parse(self, call):
+            '''
+            call is the `(…)` in `foo(…)`.
+            '''
+            m = re.match(r"""^
+            (?:
+                \(
+                    (?P<mandatory>[^[]*)
+                    (?:\[(?P<optional>.*)\])?
+                    (?P<rest>[^][]*)
+                \)
+            )
+            """, call, re.X)
+            # print(self.name, '--->', m)
+            if m is None:
+                # there are no arguments
+                return
+            args1 = m.group('mandatory')
+            args2 = m.group('optional')
+            args3 = m.group('rest')
+            # print(self.name, '===>', call, '/1:', args1, '/2:', args2, '/3:', args3, sep='')
+            # take care of the mandatory argument
+            arguments = []
+            for arg in re.findall(r'''
+            \s*(?:\([^)]+\)|,|[^,\s]+)\s*
+            ''', args1, re.X):
+                m = re.match('(?P<name>(?:\([^)]+\)|[^=,\s]+))(?:\s*=\s*(?P<default>[^=,\s]+))?', arg)
+                if m is None:
+                    continue
+                name = m.group('name')
+                default = m.group('default')
+                argument = Argument(self, name)
+                arguments.append(argument)
+                if default is not None:
+                    # record the default, just in case
+                    # convert to number if possible
+                    try:
+                        n = int(default)
+                        default = n
+                    except:
+                        try:
+                            x = float(default)
+                            default = x
+                        except:
+                            pass
+                    argument.default = default
+                if name.startswith('*'):
+                    self.star = True
+                    argument.optional = True
+            # now the optional arguments
+            if args2 is not None:
+                args2 = args2.replace('[', '').replace(']', '')
+                for arg in re.split(r'\s*,\s*', args2):
+                    m = re.match('(?P<name>[^=\s]+)(?:\s*=\s*(?P<default>[^=\s]+))?', arg)
+                    if m is None:
+                        continue
+                    name = m.group('name')
+                    default = m.group('default')
+                    argument = Argument(self, name)
+                    arguments.append(argument)
+                    if default is None:
+                        argument.optional = True
+                    else:
+                        # record the default, just in case
+                        # convert to number if possible
+                        try:
+                            n = int(default)
+                            default = n
+                        except:
+                            pass
+                        argument.default = default
+            if self.arguments is None:
+                self.arguments = arguments
+            elif len(self.arguments) < len(arguments):
+                self.arguments = arguments
+
 
     class Argument:
 
@@ -170,6 +326,9 @@ def do_one_module(module, **kwargs):
             self.name = name
             self.default = None
             self.optional = None
+
+        def __str__(self):
+            return '<argument: ' + self.name + '>'
 
     class Item:
         """An Item represents either a function, a class, a method, a class method or an attribute.
@@ -180,38 +339,34 @@ def do_one_module(module, **kwargs):
         type = None
         type_index = None
         name_ = None
-        arguments = None
-        keyword_arguments = None
         class_name = None
         holder_name = None
         returner = None
         description = None
-        filter = None
-        mandatory_ = None
-        star = False
         href = None
         synonyms = None
+        signature = None
+        signatures = None
 
-        def __init__(self, owner, dl, filter=Filter):
+        def __init__(self, owner, dl):
             """Parses the dl dom element into an item
             One dd sub element but possibly many dt's"""
             self.owner = owner
-            self.filter = filter
-            self.keyword_arguments = {}
             self.synonyms = []
+            self.signatures = []
             #
             # one dd for the description
             dd = dl.find("{http://www.w3.org/1999/xhtml}dd")
             if dd is not None:
                 self.description = "".join(dd.itertext()).strip()
-                if self.filter.do_module(self.description):
+                if Filter.do_module(self.description):
                     self.returner = True
             dt = dl.find("{http://www.w3.org/1999/xhtml}dt[@id]")
             if dt is not None:
                 components = dt.attrib['id'].split('.')
                 self.name = components[-1]
                 self.class_name = '.'.join(components[0:-1:1])
-                self.type = self.filter.do_type_module(dl.get('class'), self.name)
+                self.type = Filter.do_type_module(dl.get('class'), self.name)
                 if self.type in ['attribute', 'exception']:
                     self.returner = True
             for dt in dl.findall("{http://www.w3.org/1999/xhtml}dt"):
@@ -228,11 +383,8 @@ def do_one_module(module, **kwargs):
             if self.returner is None \
                 and (self.type in ['class', 'attribute', 'data']
                     or self.type in [None, 'method', 'classmethod', 'staticmethod', 'function'] \
-                        and self.filter.do_name_module(new_name)):
+                        and Filter.do_name_module(new_name)):
                 self.returner = True
-
-        def get_argument(self, name):
-            return self.keyword_arguments[name]
 
         def parse_dt(self, dt):
             """
@@ -324,129 +476,86 @@ Example of `dt` for the turtle module, method synonyms.
 
 
 """
-            element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descclass_name']")
-            if element is None:
-                # thing may have changed in the documentation
-                element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descclassname']")
+            # permalink
+            element = dt.find("{http://www.w3.org/1999/xhtml}a[@class='headerlink']")
             if element is not None:
-                descclass_name = element.text.strip("." + string.whitespace)
+                self.href = element.attrib['href']
+            ddt = copy.deepcopy(dt)
+            codes = ddt.findall("{http://www.w3.org/1999/xhtml}code")
+            if not len(codes):
+                if verbose:
+                    print('Ignored:', ET.tostring(dt, encoding='utf8'), sep = '\n')
+                return
+            by_index = []
+            by_class = {}
+            for code in codes:
+                ddt.remove(code)
+                component = "".join(code.itertext()).strip("." + string.whitespace)
+                by_index.append(component)
+                key = code.attrib['class']
+                if key is not None:
+                    by_class[key] = component
+            name = None
+            try:
+                name = by_class['descclass_name']
+            except KeyError:
+                # thing may have changed in the documentation
+                try:
+                    name = by_class['descclassname']
+                except KeyError:
+                    name = '.'.join(list(by_index)[:-1])
+            if name is not None:
+                descclass_name = name
                 if self.class_name is None:
                     if len(descclass_name):
                         self.class_name = descclass_name
                 elif len(descclass_name) and self.class_name != descclass_name:
                     self.holder_name = self.class_name
                     self.class_name = descclass_name
-            # permalink
-            element = dt.find("{http://www.w3.org/1999/xhtml}a[@class='headerlink']")
-            if element is not None:
-                self.href = element.attrib['href']
-            call = "".join(dt.itertext()).strip()
-            m = re.match(r"""^(?:\S+\s+)?
-            (?:
-                (?P<class>\S+)\.)?
-                (?P<name>[^\s\.]+)
-                (?P<arguments>\(
-                    (?P<mandatory>[^[]*)
-                    (?:\[(?P<optional>.*)\])?
-                    (?P<rest>[^][]*)?
-                \))
-            """, call, re.X)
-            if m is None:
-                element = dt.find("{http://www.w3.org/1999/xhtml}code[@class='descname']")
-                if element is None:
-                    if verbose:
-                        print('Ignored:', call, ET.tostring(dt, encoding='utf8'), sep = '\n')
-                    return
-                self.name = element.text
-                return
-            class_name = m.group('class')
-            name = m.group('name')
+            try:
+                name = by_class['descname']
+            except KeyError:
+                name = by_index[-1]
             if self.name is None:
                 self.name = name
             elif self.name != name:
                 self.synonyms.append(name)
-            if self.class_name is None:
-                self.class_name = class_name
-            # print(self.name, '--->', m)
-            args0 = m.group('arguments')
-            args1 = m.group('mandatory')
-            args2 = m.group('optional')
-            args3 = m.group('rest')
-            # print(self.name, '===>', call, '/1:', args1, '/2:', args2, '/3:', args3, '/', args0, sep='')
-            if args0 is None:
-                # there are no arguments
-                return
-            # take care of the mandatory argument
-            arguments = []
-            for arg in re.split(r'\s*,\s*', args1):
-                m = re.match('(?P<name>[^=\s]+)(?:\s*=\s*(?P<default>[^=\s]+))?', arg)
-                if m is None:
-                    continue
-                name = m.group('name')
-                default = m.group('default')
-                argument = Argument(self, name)
-                arguments.append(argument)
-                if default is not None:
-                    # record the default, just in case
-                    # convert to number if possible
-                    try:
-                        n = int(default)
-                        default = n
-                    except:
-                        try:
-                            x = float(default)
-                            default = x
-                        except:
-                            pass
-                    argument.default = default
-                if name.startswith('*'):
-                    self.star = True
-            # now the optional arguments
-            if args2 is not None:
-                args2 = args2.replace('[', '').replace(']', '')
-                for arg in re.split(r'\s*,\s*', args2):
-                    m = re.match('(?P<name>[^=\s]+)(?:\s*=\s*(?P<default>[^=\s]+))?', arg)
-                    if m is None:
-                        continue
-                    name = m.group('name')
-                    default = m.group('default')
-                    argument = Argument(self, name)
-                    arguments.append(argument)
-                    if default is None:
-                        argument.optional = True
+            prop = ddt.find(".//{http://www.w3.org/1999/xhtml}em[@class='property']")
+            if prop is not None:
+                ddt.remove(prop)
+                prop = "".join(prop.itertext()).strip()
+                if self.type is None:
+                    self.type = prop
+                elif prop != self.type and (prop, self.type) != ('static', 'staticmethod'):
+                    print('! ATTENTION, possible inconsistency', prop, self.type, self.type is None)
+            call = "".join(ddt.itertext()).strip()
+
+            signature = Signature(self, call)
+            if signature.arguments is not None:
+                if self.signature is None:
+                    self.signature = signature
+                else:
+                    self.signatures.append(signature)
+            elif verbose:
+                print('Ignored call:', call)
+
+        def parse_inner(self, dt):
+            codes = dt.findall('.//{http://www.w3.org/1999/xhtml}code')
+            for code in codes:
+                call = "".join(code.itertext()).strip("." + string.whitespace)
+                m = re.match(r"""^
+                    {}\s*
+                    (?P<arguments>\(\s*.*?\s*\))\s*
+                    $""".format(self.name), call, re.X)
+                if m is not None:
+                    signature = Signature(self, m.group('arguments'))
+                    if signature.arguments is not None:
+                        self.signatures.append(signature)
                     else:
-                        # record the default, just in case
-                        # convert to number if possible
-                        try:
-                            n = int(default)
-                            default = n
-                        except:
-                            pass
-                        argument.default = default
-            if self.arguments is None:
-                self.arguments = arguments
-            elif len(self.arguments) < len(arguments):
-                self.arguments = arguments
-
-        @property
-        def ary(self):
-            if self.arguments is None:
-                return None
-            if self.star:
-                return math.inf
-            return self.filter.ary(self.name, len(self.arguments))
-
-        @property
-        def mandatory(self):
-            if self.arguments is None:
-                return None
-            if self.mandatory_ is None:
-                self.mandatory_ = 0
-                for argument in self.arguments:
-                    if argument.default is None and argument.optional is not True:
-                        self.mandatory_ += 1
-            return self.mandatory_
-
+                        print('NO INNER', call)
+                else:
+                    print('NO INNER', call)
+           
     class Model:
 
         indent_ = '  '
@@ -523,6 +632,52 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
             self.depth = 0
             self.url = "https://docs.python.org/" + version + "/library/{}.html".format(self.key)
 
+        def process_dl(self, dl):
+            if dl.attrib['class'] == 'docutils':
+                # only embedded 'docutils' are used
+                return
+            global dls
+            if dl in dls:
+                dls.remove(dl)
+            ancestor = parent_map[dl]
+            while ancestor is not None:
+                category = ancestor.get('id')
+                if category is None:
+                    ancestor = parent_map[ancestor]
+                else:
+                    break
+            if category is None:
+                return None
+            item = Item(self, dl)
+            if item is None or item.name is None:
+                return None
+            item.category = category
+            if not category in self.categories:
+                self.categories[category] = len(self.categories)
+            item.category_index = self.categories[category]
+            if item.type is not None:
+                if not item.type in self.types:
+                    self.types[item.type] = len(self.types)
+                item.type_index = self.types[item.type]
+            item.index = len(self.items)
+            self.items.append(item)
+            self.items_by_name[item.name] = item.index
+            for synonym in item.synonyms:
+                self.items_by_name[synonym] = item.index
+            
+            # now the inner dl's
+            for dl in dl.findall('.//{http://www.w3.org/1999/xhtml}dl'):
+                if dl in dls:
+                    dls.remove(dl)
+                if dl.attrib['class'] == 'method':
+                    dls.append(dl)
+                elif dl.attrib['class'] == 'docutils':
+                    dts = dl.findall('.//{http://www.w3.org/1999/xhtml}dt')
+                    for dt in dts:
+                        item.parse_inner(dt)
+                                
+
+
         def do_import(self):
             print('Importing', self.path_in)
             if not self.path_in.exists():
@@ -557,32 +712,15 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                 root = ET.fromstring(contents)
                 global parent_map
                 parent_map = {c: p for p in root.iter() for c in p}
-                for dl in root.iter("{http://www.w3.org/1999/xhtml}dl"):
-                    ancestor = parent_map[dl]
-                    while ancestor is not None:
-                        category = ancestor.get('id')
-                        if category is None:
-                            ancestor = parent_map[ancestor]
-                        else:
-                            break
-                    if category is None:
-                        continue
-                    item = Item(self, dl)
-                    if item is None or item.name is None:
-                        continue
-                    item.category = category
-                    if not category in self.categories:
-                        self.categories[category] = len(self.categories)
-                    item.category_index = self.categories[category]
-                    if not item.type in self.types:
-                        self.types[item.type] = len(self.types)
-                    item.index = len(self.items)
-                    self.items.append(item)
-                    item.type_index = self.types[item.type]
-                    self.items_by_name[item.name] = item.index
-                    for synonym in item.synonyms:
-                        self.items_by_name[synonym] = item.index
-                        
+                # find all the dl candidats
+                global dls
+                what = "{http://www.w3.org/1999/xhtml}dl"
+                dls = list(root.iter(what))
+                while len(dls):
+                    dl = dls[0]
+                    del dls[0]
+                    self.process_dl(dl)
+
             print('Imported {} symbols'.format(len(self.items)))
 
         @property
@@ -596,6 +734,9 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
             print(*args, **kv_args)
 
         def do_print(self, *args, nl=False, s7r=None, **kv_args):
+            """
+            Use `s7r` keyword argument to print something before
+            """
             self.raw_print(s7r if s7r is not None else "", "\n" if nl else "" , self.indent, *args, **kv_args)
 
         def up_print(self, *args, **kv_args):
@@ -648,13 +789,9 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
             if item.returner is None:
                 self.do_print("stmt: true", s7r=',', nl=True)
 
-            arguments = item.arguments
-            if arguments is not None and len(arguments) > 0:
-                do_print_attribute(item, 'ary')
-                if item.ary != item.mandatory:
-                    do_print_attribute(item, 'mandatory')
-                self.down_print("arguments: [", s7r=',')
-                end = ''
+            def print_argument(arguments, sep="", end=""):
+                self.down_print("arguments: [", s7r=sep)
+                end = ""
                 for argument in arguments:
                     self.down_print("{", s7r=end)
                     do_print_attribute(argument, 'name', s7r="")
@@ -665,13 +802,34 @@ eYo.Model.Item.registerTypes(eYo.Model.{{key}}.data.types)
                     self.up_print("}")
                     end = ','
                 self.up_print("]")
-            self.up_print("})")
+
+            def print_signature(signature, s7r = ","):
+                if signature.star and verbose:
+                    print('STAR', signature.name, signature.owner.name)
+                do_print_attribute(signature, 'ary', s7r=s7r)
+                if signature.ary > 0:
+                    if signature.ary != signature.mandatory:
+                        do_print_attribute(signature, 'mandatory')
+                    print_argument(signature.arguments, sep=",")
+
+            if len(item.signatures):
+                self.down_print("signatures: [", s7r=',')
+                end = ''
+                for signature in item.signatures:
+                    self.down_print("{", s7r=end)
+                    print_signature(signature, s7r='')
+                    self.up_print("}")
+                    end = ','
+                self.up_print("]")
+            if item.signature is not None:
+                print_signature(item.signature)
+
+            self.up_print("})")                
 
         def do_export(self):
             print('Exporting', self.path_out)
             with io.StringIO() as self.f:
             # with path_out.open('w', encoding='utf-8') as f:
-
                 self.raw_print(self.prefix_)
                 self.down_print('eYo.Model.{{key}}.data = {')
                 self.down_print('categories: [')

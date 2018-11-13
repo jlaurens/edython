@@ -61,9 +61,8 @@ eYo.Model.string__module.data = {
   types: [
     'data',
     'class',
-    'method',
-    'attribute',
-    'function'
+    'function',
+    'method'
   ],
   items: [
     new Item({
@@ -137,23 +136,57 @@ eYo.Model.string__module.data = {
       href: '#string.Formatter'
     }),
     new Item({
+      name: 'Template',
+      class: 'string',
+      category: 2,
+      type_: 1,
+      href: '#string.Template',
+      ary: 1,
+      arguments: [
+        {
+          name: 'template'
+        }
+      ]
+    }),
+    new Item({
+      name: 'capwords',
+      class: 'string',
+      category: 3,
+      type_: 2,
+      href: '#string.capwords',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 's'
+        },
+        {
+          name: 'sep',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
       name: 'format',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.format',
       stmt: true,
       ary: Infinity,
-      mandatory: 3,
+      mandatory: 1,
       arguments: [
         {
           name: 'format_string'
         },
         {
-          name: '*args'
+          name: '*args',
+          optional: true
         },
         {
-          name: '**kwargs'
+          name: '**kwargs',
+          optional: true
         }
       ]
     }),
@@ -161,7 +194,7 @@ eYo.Model.string__module.data = {
       name: 'vformat',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.vformat',
       stmt: true,
       ary: 3,
@@ -181,7 +214,7 @@ eYo.Model.string__module.data = {
       name: 'parse',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.parse',
       ary: 1,
       arguments: [
@@ -194,7 +227,7 @@ eYo.Model.string__module.data = {
       name: 'get_field',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.get_field',
       ary: 3,
       arguments: [
@@ -213,7 +246,7 @@ eYo.Model.string__module.data = {
       name: 'get_value',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.get_value',
       ary: 3,
       arguments: [
@@ -232,7 +265,7 @@ eYo.Model.string__module.data = {
       name: 'check_unused_args',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.check_unused_args',
       stmt: true,
       ary: 3,
@@ -252,7 +285,7 @@ eYo.Model.string__module.data = {
       name: 'format_field',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.format_field',
       stmt: true,
       ary: 2,
@@ -269,7 +302,7 @@ eYo.Model.string__module.data = {
       name: 'convert_field',
       class: 'string.Formatter',
       category: 1,
-      type_: 2,
+      type_: 3,
       href: '#string.Formatter.convert_field',
       ary: 2,
       arguments: [
@@ -282,32 +315,20 @@ eYo.Model.string__module.data = {
       ]
     }),
     new Item({
-      name: 'Template',
-      class: 'string',
-      category: 2,
-      type_: 1,
-      href: '#string.Template',
-      ary: 1,
-      arguments: [
-        {
-          name: 'template'
-        }
-      ]
-    }),
-    new Item({
       name: 'substitute',
       class: 'string.Template',
       category: 2,
-      type_: 2,
+      type_: 3,
       href: '#string.Template.substitute',
       ary: Infinity,
-      mandatory: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'mapping'
         },
         {
-          name: '**kwds'
+          name: '**kwds',
+          optional: true
         }
       ]
     }),
@@ -315,43 +336,18 @@ eYo.Model.string__module.data = {
       name: 'safe_substitute',
       class: 'string.Template',
       category: 2,
-      type_: 2,
+      type_: 3,
       href: '#string.Template.safe_substitute',
       stmt: true,
       ary: Infinity,
-      mandatory: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'mapping'
         },
         {
-          name: '**kwds'
-        }
-      ]
-    }),
-    new Item({
-      name: 'template',
-      class: 'string.Template',
-      category: 2,
-      type_: 3,
-      href: '#string.Template.template'
-    }),
-    new Item({
-      name: 'capwords',
-      class: 'string',
-      category: 3,
-      type_: 4,
-      href: '#string.capwords',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 's'
-        },
-        {
-          name: 'sep',
-          default: 'None'
+          name: '**kwds',
+          optional: true
         }
       ]
     })
@@ -367,32 +363,30 @@ eYo.Model.string__module.data = {
     'printable': 7,
     'whitespace': 8,
     'Formatter': 9,
-    'format': 10,
-    'vformat': 11,
-    'parse': 12,
-    'get_field': 13,
-    'get_value': 14,
-    'check_unused_args': 15,
-    'format_field': 16,
-    'convert_field': 17,
-    'Template': 18,
-    'substitute': 19,
-    'safe_substitute': 20,
-    'template': 21,
-    'capwords': 22
+    'Template': 10,
+    'capwords': 11,
+    'format': 12,
+    'vformat': 13,
+    'parse': 14,
+    'get_field': 15,
+    'get_value': 16,
+    'check_unused_args': 17,
+    'format_field': 18,
+    'convert_field': 19,
+    'substitute': 20,
+    'safe_substitute': 21
   },
   by_category: {
     0: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    1: [9, 10, 11, 12, 13, 14, 15, 16, 17],
-    2: [18, 19, 20, 21],
-    3: [22]
+    1: [9, 12, 13, 14, 15, 16, 17, 18, 19],
+    2: [10, 20, 21],
+    3: [11]
   },
   by_type: {
     0: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    1: [9, 18],
-    2: [10, 11, 12, 13, 14, 15, 16, 17, 19, 20],
-    3: [21],
-    4: [22]
+    1: [9, 10],
+    2: [11],
+    3: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
   }
 }
 
@@ -403,6 +397,6 @@ eYo.Do.addProtocol(eYo.Model.string__module, 'Item', eYo.Model.string__module)
 eYo.Model.Item.registerTypes(eYo.Model.string__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2018-11-10 19:09:26.440173
+// This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2018-11-13 19:35:33.544173
 
 

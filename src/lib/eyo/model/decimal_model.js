@@ -61,10 +61,10 @@ eYo.Model.decimal__module.data = {
   ],
   types: [
     'class',
-    'method',
     'function',
     'first last data',
-    'data'
+    'data',
+    'method'
   ],
   items: [
     new Item({
@@ -87,778 +87,18 @@ eYo.Model.decimal__module.data = {
       ]
     }),
     new Item({
-      name: 'adjusted',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.adjusted'
-    }),
-    new Item({
-      name: 'as_integer_ratio',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.as_integer_ratio'
-    }),
-    new Item({
-      name: 'as_tuple',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.as_tuple'
-    }),
-    new Item({
-      name: 'canonical',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.canonical'
-    }),
-    new Item({
-      name: 'compare',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.compare',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'compare_signal',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.compare_signal',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'compare_total',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.compare_total',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'compare_total_mag',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.compare_total_mag',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'conjugate',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.conjugate'
-    }),
-    new Item({
-      name: 'copy_abs',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.copy_abs'
-    }),
-    new Item({
-      name: 'copy_negate',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.copy_negate'
-    }),
-    new Item({
-      name: 'copy_sign',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.copy_sign',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'exp',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.exp',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'from_float',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.from_float',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'f'
-        }
-      ]
-    }),
-    new Item({
-      name: 'fma',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.fma',
-      ary: 3,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'third'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'is_canonical',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_canonical'
-    }),
-    new Item({
-      name: 'is_finite',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_finite'
-    }),
-    new Item({
-      name: 'is_infinite',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_infinite'
-    }),
-    new Item({
-      name: 'is_nan',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_nan'
-    }),
-    new Item({
-      name: 'is_normal',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_normal',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'is_qnan',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_qnan'
-    }),
-    new Item({
-      name: 'is_signed',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_signed'
-    }),
-    new Item({
-      name: 'is_snan',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_snan'
-    }),
-    new Item({
-      name: 'is_subnormal',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_subnormal',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'is_zero',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.is_zero'
-    }),
-    new Item({
-      name: 'ln',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.ln',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'log10',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.log10',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'logb',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.logb',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'logical_and',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.logical_and',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'logical_invert',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.logical_invert',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'logical_or',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.logical_or',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'logical_xor',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.logical_xor',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'max',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.max',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'max_mag',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.max_mag',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'min',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.min',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'min_mag',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.min_mag',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'next_minus',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.next_minus',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'next_plus',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.next_plus',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'next_toward',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.next_toward',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'normalize',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.normalize',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'number_class',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.number_class',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'quantize',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.quantize',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'exp'
-        },
-        {
-          name: 'rounding',
-          default: 'None'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'radix',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.radix'
-    }),
-    new Item({
-      name: 'remainder_near',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.remainder_near',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'rotate',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.rotate',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'same_quantum',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.same_quantum',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'scaleb',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.scaleb',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'shift',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.shift',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'other'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'sqrt',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.sqrt',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'to_eng_string',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.to_eng_string',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'to_integral',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.to_integral',
-      stmt: true,
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'rounding',
-          default: 'None'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'to_integral_exact',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.to_integral_exact',
-      stmt: true,
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'rounding',
-          default: 'None'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'to_integral_value',
-      class: 'decimal.Decimal',
-      category: 0,
-      type_: 1,
-      href: '#decimal.Decimal.to_integral_value',
-      stmt: true,
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'rounding',
-          default: 'None'
-        },
-        {
-          name: 'context',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
       name: 'getcontext',
       class: 'decimal',
       category: 1,
-      type_: 2,
-      href: '#decimal.getcontext'
+      type_: 1,
+      href: '#decimal.getcontext',
+      ary: 0
     }),
     new Item({
       name: 'setcontext',
       class: 'decimal',
       category: 1,
-      type_: 2,
+      type_: 1,
       href: '#decimal.setcontext',
       stmt: true,
       ary: 1,
@@ -872,7 +112,7 @@ eYo.Model.decimal__module.data = {
       name: 'localcontext',
       class: 'decimal',
       category: 1,
-      type_: 2,
+      type_: 1,
       href: '#decimal.localcontext',
       ary: 1,
       mandatory: 0,
@@ -888,21 +128,24 @@ eYo.Model.decimal__module.data = {
       class: 'decimal',
       category: 1,
       type_: 0,
-      href: '#decimal.BasicContext'
+      href: '#decimal.BasicContext',
+      stmt: true
     }),
     new Item({
       name: 'ExtendedContext',
       class: 'decimal',
       category: 1,
       type_: 0,
-      href: '#decimal.ExtendedContext'
+      href: '#decimal.ExtendedContext',
+      stmt: true
     }),
     new Item({
       name: 'DefaultContext',
       class: 'decimal',
       category: 1,
       type_: 0,
-      href: '#decimal.DefaultContext'
+      href: '#decimal.DefaultContext',
+      stmt: true
     }),
     new Item({
       name: 'Context',
@@ -949,33 +192,997 @@ eYo.Model.decimal__module.data = {
       ]
     }),
     new Item({
+      name: 'MAX_PREC',
+      class: 'decimal',
+      category: 2,
+      type_: 2,
+      href: '#decimal.MAX_PREC',
+      stmt: true
+    }),
+    new Item({
+      name: 'MAX_EMAX',
+      class: 'decimal',
+      category: 2,
+      type_: 2,
+      href: '#decimal.MAX_EMAX',
+      stmt: true
+    }),
+    new Item({
+      name: 'MIN_EMIN',
+      class: 'decimal',
+      category: 2,
+      type_: 2,
+      href: '#decimal.MIN_EMIN',
+      stmt: true
+    }),
+    new Item({
+      name: 'MIN_ETINY',
+      class: 'decimal',
+      category: 2,
+      type_: 2,
+      href: '#decimal.MIN_ETINY',
+      stmt: true
+    }),
+    new Item({
+      name: 'HAVE_THREADS',
+      class: 'decimal',
+      category: 2,
+      type_: 3,
+      href: '#decimal.HAVE_THREADS',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_CEILING',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_CEILING',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_DOWN',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_DOWN',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_FLOOR',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_FLOOR',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_HALF_DOWN',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_HALF_DOWN',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_HALF_EVEN',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_HALF_EVEN',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_HALF_UP',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_HALF_UP',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_UP',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_UP',
+      stmt: true
+    }),
+    new Item({
+      name: 'ROUND_05UP',
+      class: 'decimal',
+      category: 3,
+      type_: 3,
+      href: '#decimal.ROUND_05UP',
+      stmt: true
+    }),
+    new Item({
+      name: 'Clamped',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Clamped',
+      stmt: true
+    }),
+    new Item({
+      name: 'DecimalException',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.DecimalException',
+      stmt: true
+    }),
+    new Item({
+      name: 'DivisionByZero',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.DivisionByZero',
+      stmt: true
+    }),
+    new Item({
+      name: 'Inexact',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Inexact',
+      stmt: true
+    }),
+    new Item({
+      name: 'InvalidOperation',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.InvalidOperation',
+      stmt: true
+    }),
+    new Item({
+      name: 'Overflow',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Overflow',
+      stmt: true
+    }),
+    new Item({
+      name: 'Rounded',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Rounded',
+      stmt: true
+    }),
+    new Item({
+      name: 'Subnormal',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Subnormal',
+      stmt: true
+    }),
+    new Item({
+      name: 'Underflow',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.Underflow',
+      stmt: true
+    }),
+    new Item({
+      name: 'FloatOperation',
+      class: 'decimal',
+      category: 4,
+      type_: 0,
+      href: '#decimal.FloatOperation',
+      stmt: true
+    }),
+    new Item({
+      name: 'adjusted',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.adjusted',
+      ary: 0
+    }),
+    new Item({
+      name: 'as_integer_ratio',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.as_integer_ratio',
+      ary: 0
+    }),
+    new Item({
+      name: 'as_tuple',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.as_tuple',
+      ary: 0
+    }),
+    new Item({
+      name: 'canonical',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.canonical',
+      ary: 0
+    }),
+    new Item({
+      name: 'compare',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.compare',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'compare_signal',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.compare_signal',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'compare_total',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.compare_total',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'compare_total_mag',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.compare_total_mag',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'conjugate',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.conjugate',
+      ary: 0
+    }),
+    new Item({
+      name: 'copy_abs',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.copy_abs',
+      ary: 0
+    }),
+    new Item({
+      name: 'copy_negate',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.copy_negate',
+      ary: 0
+    }),
+    new Item({
+      name: 'copy_sign',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.copy_sign',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'exp',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.exp',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'from_float',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.from_float',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'f'
+        }
+      ]
+    }),
+    new Item({
+      name: 'fma',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.fma',
+      ary: 3,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'third'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'is_canonical',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_canonical',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_finite',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_finite',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_infinite',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_infinite',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_nan',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_nan',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_normal',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_normal',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'is_qnan',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_qnan',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_signed',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_signed',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_snan',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_snan',
+      ary: 0
+    }),
+    new Item({
+      name: 'is_subnormal',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_subnormal',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'is_zero',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.is_zero',
+      ary: 0
+    }),
+    new Item({
+      name: 'ln',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.ln',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'log10',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.log10',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'logb',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.logb',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'logical_and',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.logical_and',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'logical_invert',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.logical_invert',
+      stmt: true,
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'logical_or',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.logical_or',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'logical_xor',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.logical_xor',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'max',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.max',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'max_mag',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.max_mag',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'min',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.min',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'min_mag',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.min_mag',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'next_minus',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.next_minus',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'next_plus',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.next_plus',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'next_toward',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.next_toward',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'normalize',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.normalize',
+      stmt: true,
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'number_class',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.number_class',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'quantize',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.quantize',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'exp'
+        },
+        {
+          name: 'rounding',
+          default: 'None'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'radix',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.radix',
+      ary: 0
+    }),
+    new Item({
+      name: 'remainder_near',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.remainder_near',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'rotate',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.rotate',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'same_quantum',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.same_quantum',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'scaleb',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.scaleb',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shift',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.shift',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'other'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'sqrt',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.sqrt',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'to_eng_string',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.to_eng_string',
+      stmt: true,
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'to_integral',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.to_integral',
+      stmt: true,
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'rounding',
+          default: 'None'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'to_integral_exact',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.to_integral_exact',
+      stmt: true,
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'rounding',
+          default: 'None'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'to_integral_value',
+      class: 'decimal.Decimal',
+      category: 0,
+      type_: 4,
+      href: '#decimal.Decimal.to_integral_value',
+      stmt: true,
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'rounding',
+          default: 'None'
+        },
+        {
+          name: 'context',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
       name: 'clear_flags',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.clear_flags',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'clear_traps',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.clear_traps',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'copy',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
-      href: '#decimal.Context.copy'
+      type_: 4,
+      href: '#decimal.Context.copy',
+      ary: 0
     }),
     new Item({
       name: 'copy_decimal',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.copy_decimal',
       ary: 1,
       arguments: [
@@ -988,7 +1195,7 @@ eYo.Model.decimal__module.data = {
       name: 'create_decimal',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.create_decimal',
       stmt: true,
       ary: 1,
@@ -1002,7 +1209,7 @@ eYo.Model.decimal__module.data = {
       name: 'create_decimal_from_float',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.create_decimal_from_float',
       stmt: true,
       ary: 1,
@@ -1016,21 +1223,23 @@ eYo.Model.decimal__module.data = {
       name: 'Etiny',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
-      href: '#decimal.Context.Etiny'
+      type_: 4,
+      href: '#decimal.Context.Etiny',
+      ary: 0
     }),
     new Item({
       name: 'Etop',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
-      href: '#decimal.Context.Etop'
+      type_: 4,
+      href: '#decimal.Context.Etop',
+      ary: 0
     }),
     new Item({
       name: 'abs',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.abs',
       ary: 1,
       arguments: [
@@ -1043,7 +1252,7 @@ eYo.Model.decimal__module.data = {
       name: 'add',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.add',
       ary: 2,
       arguments: [
@@ -1059,7 +1268,7 @@ eYo.Model.decimal__module.data = {
       name: 'canonical',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.canonical',
       ary: 1,
       arguments: [
@@ -1072,7 +1281,7 @@ eYo.Model.decimal__module.data = {
       name: 'compare',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.compare',
       stmt: true,
       ary: 2,
@@ -1089,7 +1298,7 @@ eYo.Model.decimal__module.data = {
       name: 'compare_signal',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.compare_signal',
       stmt: true,
       ary: 2,
@@ -1106,7 +1315,7 @@ eYo.Model.decimal__module.data = {
       name: 'compare_total',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.compare_total',
       stmt: true,
       ary: 2,
@@ -1123,7 +1332,7 @@ eYo.Model.decimal__module.data = {
       name: 'compare_total_mag',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.compare_total_mag',
       stmt: true,
       ary: 2,
@@ -1140,7 +1349,7 @@ eYo.Model.decimal__module.data = {
       name: 'copy_abs',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.copy_abs',
       ary: 1,
       arguments: [
@@ -1153,7 +1362,7 @@ eYo.Model.decimal__module.data = {
       name: 'copy_negate',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.copy_negate',
       ary: 1,
       arguments: [
@@ -1166,7 +1375,7 @@ eYo.Model.decimal__module.data = {
       name: 'copy_sign',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.copy_sign',
       stmt: true,
       ary: 2,
@@ -1183,7 +1392,7 @@ eYo.Model.decimal__module.data = {
       name: 'divide',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.divide',
       ary: 2,
       arguments: [
@@ -1199,7 +1408,7 @@ eYo.Model.decimal__module.data = {
       name: 'divide_int',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.divide_int',
       ary: 2,
       arguments: [
@@ -1215,7 +1424,7 @@ eYo.Model.decimal__module.data = {
       name: 'divmod',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.divmod',
       ary: 2,
       arguments: [
@@ -1231,7 +1440,7 @@ eYo.Model.decimal__module.data = {
       name: 'exp',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.exp',
       ary: 1,
       arguments: [
@@ -1244,7 +1453,7 @@ eYo.Model.decimal__module.data = {
       name: 'fma',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.fma',
       ary: 3,
       arguments: [
@@ -1263,7 +1472,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_canonical',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_canonical',
       ary: 1,
       arguments: [
@@ -1276,7 +1485,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_finite',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_finite',
       ary: 1,
       arguments: [
@@ -1289,7 +1498,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_infinite',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_infinite',
       ary: 1,
       arguments: [
@@ -1302,7 +1511,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_nan',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_nan',
       ary: 1,
       arguments: [
@@ -1315,7 +1524,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_normal',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_normal',
       ary: 1,
       arguments: [
@@ -1328,7 +1537,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_qnan',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_qnan',
       ary: 1,
       arguments: [
@@ -1341,7 +1550,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_signed',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_signed',
       ary: 1,
       arguments: [
@@ -1354,7 +1563,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_snan',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_snan',
       ary: 1,
       arguments: [
@@ -1367,7 +1576,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_subnormal',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_subnormal',
       ary: 1,
       arguments: [
@@ -1380,7 +1589,7 @@ eYo.Model.decimal__module.data = {
       name: 'is_zero',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.is_zero',
       ary: 1,
       arguments: [
@@ -1393,7 +1602,7 @@ eYo.Model.decimal__module.data = {
       name: 'ln',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.ln',
       ary: 1,
       arguments: [
@@ -1406,7 +1615,7 @@ eYo.Model.decimal__module.data = {
       name: 'log10',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.log10',
       ary: 1,
       arguments: [
@@ -1419,7 +1628,7 @@ eYo.Model.decimal__module.data = {
       name: 'logb',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.logb',
       ary: 1,
       arguments: [
@@ -1432,7 +1641,7 @@ eYo.Model.decimal__module.data = {
       name: 'logical_and',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.logical_and',
       stmt: true,
       ary: 2,
@@ -1449,7 +1658,7 @@ eYo.Model.decimal__module.data = {
       name: 'logical_invert',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.logical_invert',
       stmt: true,
       ary: 1,
@@ -1463,7 +1672,7 @@ eYo.Model.decimal__module.data = {
       name: 'logical_or',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.logical_or',
       stmt: true,
       ary: 2,
@@ -1480,7 +1689,7 @@ eYo.Model.decimal__module.data = {
       name: 'logical_xor',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.logical_xor',
       stmt: true,
       ary: 2,
@@ -1497,7 +1706,7 @@ eYo.Model.decimal__module.data = {
       name: 'max',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.max',
       ary: 2,
       arguments: [
@@ -1513,7 +1722,7 @@ eYo.Model.decimal__module.data = {
       name: 'max_mag',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.max_mag',
       stmt: true,
       ary: 2,
@@ -1530,7 +1739,7 @@ eYo.Model.decimal__module.data = {
       name: 'min',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.min',
       ary: 2,
       arguments: [
@@ -1546,7 +1755,7 @@ eYo.Model.decimal__module.data = {
       name: 'min_mag',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.min_mag',
       stmt: true,
       ary: 2,
@@ -1563,7 +1772,7 @@ eYo.Model.decimal__module.data = {
       name: 'minus',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.minus',
       stmt: true,
       ary: 1,
@@ -1577,7 +1786,7 @@ eYo.Model.decimal__module.data = {
       name: 'multiply',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.multiply',
       ary: 2,
       arguments: [
@@ -1593,7 +1802,7 @@ eYo.Model.decimal__module.data = {
       name: 'next_minus',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.next_minus',
       ary: 1,
       arguments: [
@@ -1606,7 +1815,7 @@ eYo.Model.decimal__module.data = {
       name: 'next_plus',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.next_plus',
       ary: 1,
       arguments: [
@@ -1619,7 +1828,7 @@ eYo.Model.decimal__module.data = {
       name: 'next_toward',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.next_toward',
       ary: 2,
       arguments: [
@@ -1635,7 +1844,7 @@ eYo.Model.decimal__module.data = {
       name: 'normalize',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.normalize',
       stmt: true,
       ary: 1,
@@ -1649,7 +1858,7 @@ eYo.Model.decimal__module.data = {
       name: 'number_class',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.number_class',
       ary: 1,
       arguments: [
@@ -1662,7 +1871,7 @@ eYo.Model.decimal__module.data = {
       name: 'plus',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.plus',
       stmt: true,
       ary: 1,
@@ -1676,7 +1885,7 @@ eYo.Model.decimal__module.data = {
       name: 'power',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.power',
       ary: 3,
       mandatory: 2,
@@ -1697,7 +1906,7 @@ eYo.Model.decimal__module.data = {
       name: 'quantize',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.quantize',
       ary: 2,
       arguments: [
@@ -1713,14 +1922,15 @@ eYo.Model.decimal__module.data = {
       name: 'radix',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
-      href: '#decimal.Context.radix'
+      type_: 4,
+      href: '#decimal.Context.radix',
+      ary: 0
     }),
     new Item({
       name: 'remainder',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.remainder',
       ary: 2,
       arguments: [
@@ -1736,7 +1946,7 @@ eYo.Model.decimal__module.data = {
       name: 'remainder_near',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.remainder_near',
       ary: 2,
       arguments: [
@@ -1752,7 +1962,7 @@ eYo.Model.decimal__module.data = {
       name: 'rotate',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.rotate',
       ary: 2,
       arguments: [
@@ -1768,7 +1978,7 @@ eYo.Model.decimal__module.data = {
       name: 'same_quantum',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.same_quantum',
       ary: 2,
       arguments: [
@@ -1784,7 +1994,7 @@ eYo.Model.decimal__module.data = {
       name: 'scaleb',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.scaleb',
       ary: 2,
       arguments: [
@@ -1800,7 +2010,7 @@ eYo.Model.decimal__module.data = {
       name: 'shift',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.shift',
       ary: 2,
       arguments: [
@@ -1816,7 +2026,7 @@ eYo.Model.decimal__module.data = {
       name: 'sqrt',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.sqrt',
       stmt: true,
       ary: 1,
@@ -1830,7 +2040,7 @@ eYo.Model.decimal__module.data = {
       name: 'subtract',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.subtract',
       ary: 2,
       arguments: [
@@ -1846,7 +2056,7 @@ eYo.Model.decimal__module.data = {
       name: 'to_eng_string',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.to_eng_string',
       stmt: true,
       ary: 1,
@@ -1860,7 +2070,7 @@ eYo.Model.decimal__module.data = {
       name: 'to_integral_exact',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.to_integral_exact',
       stmt: true,
       ary: 1,
@@ -1874,7 +2084,7 @@ eYo.Model.decimal__module.data = {
       name: 'to_sci_string',
       class: 'decimal.Context',
       category: 1,
-      type_: 1,
+      type_: 4,
       href: '#decimal.Context.to_sci_string',
       stmt: true,
       ary: 1,
@@ -1883,292 +2093,127 @@ eYo.Model.decimal__module.data = {
           name: 'x'
         }
       ]
-    }),
-    new Item({
-      name: 'MAX_PREC',
-      class: 'decimal',
-      category: 2,
-      type_: 3,
-      href: '#decimal.MAX_PREC',
-      stmt: true
-    }),
-    new Item({
-      name: 'MAX_EMAX',
-      class: 'decimal',
-      category: 2,
-      type_: 3,
-      href: '#decimal.MAX_EMAX',
-      stmt: true
-    }),
-    new Item({
-      name: 'MIN_EMIN',
-      class: 'decimal',
-      category: 2,
-      type_: 3,
-      href: '#decimal.MIN_EMIN',
-      stmt: true
-    }),
-    new Item({
-      name: 'MIN_ETINY',
-      class: 'decimal',
-      category: 2,
-      type_: 3,
-      href: '#decimal.MIN_ETINY',
-      stmt: true
-    }),
-    new Item({
-      name: 'HAVE_THREADS',
-      class: 'decimal',
-      category: 2,
-      type_: 4,
-      href: '#decimal.HAVE_THREADS'
-    }),
-    new Item({
-      name: 'ROUND_CEILING',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_CEILING'
-    }),
-    new Item({
-      name: 'ROUND_DOWN',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_DOWN'
-    }),
-    new Item({
-      name: 'ROUND_FLOOR',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_FLOOR'
-    }),
-    new Item({
-      name: 'ROUND_HALF_DOWN',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_HALF_DOWN'
-    }),
-    new Item({
-      name: 'ROUND_HALF_EVEN',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_HALF_EVEN'
-    }),
-    new Item({
-      name: 'ROUND_HALF_UP',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_HALF_UP'
-    }),
-    new Item({
-      name: 'ROUND_UP',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_UP'
-    }),
-    new Item({
-      name: 'ROUND_05UP',
-      class: 'decimal',
-      category: 3,
-      type_: 4,
-      href: '#decimal.ROUND_05UP'
-    }),
-    new Item({
-      name: 'Clamped',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Clamped'
-    }),
-    new Item({
-      name: 'DecimalException',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.DecimalException'
-    }),
-    new Item({
-      name: 'DivisionByZero',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.DivisionByZero'
-    }),
-    new Item({
-      name: 'Inexact',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Inexact'
-    }),
-    new Item({
-      name: 'InvalidOperation',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.InvalidOperation'
-    }),
-    new Item({
-      name: 'Overflow',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Overflow'
-    }),
-    new Item({
-      name: 'Rounded',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Rounded'
-    }),
-    new Item({
-      name: 'Subnormal',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Subnormal'
-    }),
-    new Item({
-      name: 'Underflow',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.Underflow'
-    }),
-    new Item({
-      name: 'FloatOperation',
-      class: 'decimal',
-      category: 4,
-      type_: 0,
-      href: '#decimal.FloatOperation'
     })
   ],
   by_name: {
     'Decimal': 0,
-    'adjusted': 1,
-    'as_integer_ratio': 2,
-    'as_tuple': 3,
-    'canonical': 71,
-    'compare': 72,
-    'compare_signal': 73,
-    'compare_total': 74,
-    'compare_total_mag': 75,
-    'conjugate': 9,
-    'copy_abs': 76,
-    'copy_negate': 77,
-    'copy_sign': 78,
-    'exp': 82,
-    'from_float': 14,
-    'fma': 83,
-    'is_canonical': 84,
-    'is_finite': 85,
-    'is_infinite': 86,
-    'is_nan': 87,
-    'is_normal': 88,
-    'is_qnan': 89,
-    'is_signed': 90,
-    'is_snan': 91,
-    'is_subnormal': 92,
-    'is_zero': 93,
-    'ln': 94,
-    'log10': 95,
-    'logb': 96,
-    'logical_and': 97,
-    'logical_invert': 98,
-    'logical_or': 99,
-    'logical_xor': 100,
-    'max': 101,
-    'max_mag': 102,
-    'min': 103,
-    'min_mag': 104,
-    'next_minus': 107,
-    'next_plus': 108,
-    'next_toward': 109,
-    'normalize': 110,
-    'number_class': 111,
-    'quantize': 114,
-    'radix': 115,
-    'remainder_near': 117,
-    'rotate': 118,
-    'same_quantum': 119,
-    'scaleb': 120,
-    'shift': 121,
-    'sqrt': 122,
-    'to_eng_string': 124,
-    'to_integral': 51,
-    'to_integral_exact': 125,
-    'to_integral_value': 53,
-    'getcontext': 54,
-    'setcontext': 55,
-    'localcontext': 56,
-    'BasicContext': 57,
-    'ExtendedContext': 58,
-    'DefaultContext': 59,
-    'Context': 60,
-    'clear_flags': 61,
-    'clear_traps': 62,
-    'copy': 63,
-    'copy_decimal': 64,
-    'create_decimal': 65,
-    'create_decimal_from_float': 66,
-    'Etiny': 67,
-    'Etop': 68,
-    'abs': 69,
-    'add': 70,
-    'divide': 79,
-    'divide_int': 80,
-    'divmod': 81,
-    'minus': 105,
-    'multiply': 106,
-    'plus': 112,
-    'power': 113,
-    'remainder': 116,
-    'subtract': 123,
-    'to_sci_string': 126,
-    'MAX_PREC': 127,
-    'MAX_EMAX': 128,
-    'MIN_EMIN': 129,
-    'MIN_ETINY': 130,
-    'HAVE_THREADS': 131,
-    'ROUND_CEILING': 132,
-    'ROUND_DOWN': 133,
-    'ROUND_FLOOR': 134,
-    'ROUND_HALF_DOWN': 135,
-    'ROUND_HALF_EVEN': 136,
-    'ROUND_HALF_UP': 137,
-    'ROUND_UP': 138,
-    'ROUND_05UP': 139,
-    'Clamped': 140,
-    'DecimalException': 141,
-    'DivisionByZero': 142,
-    'Inexact': 143,
-    'InvalidOperation': 144,
-    'Overflow': 145,
-    'Rounded': 146,
-    'Subnormal': 147,
-    'Underflow': 148,
-    'FloatOperation': 149
+    'getcontext': 1,
+    'setcontext': 2,
+    'localcontext': 3,
+    'BasicContext': 4,
+    'ExtendedContext': 5,
+    'DefaultContext': 6,
+    'Context': 7,
+    'MAX_PREC': 8,
+    'MAX_EMAX': 9,
+    'MIN_EMIN': 10,
+    'MIN_ETINY': 11,
+    'HAVE_THREADS': 12,
+    'ROUND_CEILING': 13,
+    'ROUND_DOWN': 14,
+    'ROUND_FLOOR': 15,
+    'ROUND_HALF_DOWN': 16,
+    'ROUND_HALF_EVEN': 17,
+    'ROUND_HALF_UP': 18,
+    'ROUND_UP': 19,
+    'ROUND_05UP': 20,
+    'Clamped': 21,
+    'DecimalException': 22,
+    'DivisionByZero': 23,
+    'Inexact': 24,
+    'InvalidOperation': 25,
+    'Overflow': 26,
+    'Rounded': 27,
+    'Subnormal': 28,
+    'Underflow': 29,
+    'FloatOperation': 30,
+    'adjusted': 31,
+    'as_integer_ratio': 32,
+    'as_tuple': 33,
+    'canonical': 94,
+    'compare': 95,
+    'compare_signal': 96,
+    'compare_total': 97,
+    'compare_total_mag': 98,
+    'conjugate': 39,
+    'copy_abs': 99,
+    'copy_negate': 100,
+    'copy_sign': 101,
+    'exp': 105,
+    'from_float': 44,
+    'fma': 106,
+    'is_canonical': 107,
+    'is_finite': 108,
+    'is_infinite': 109,
+    'is_nan': 110,
+    'is_normal': 111,
+    'is_qnan': 112,
+    'is_signed': 113,
+    'is_snan': 114,
+    'is_subnormal': 115,
+    'is_zero': 116,
+    'ln': 117,
+    'log10': 118,
+    'logb': 119,
+    'logical_and': 120,
+    'logical_invert': 121,
+    'logical_or': 122,
+    'logical_xor': 123,
+    'max': 124,
+    'max_mag': 125,
+    'min': 126,
+    'min_mag': 127,
+    'next_minus': 130,
+    'next_plus': 131,
+    'next_toward': 132,
+    'normalize': 133,
+    'number_class': 134,
+    'quantize': 137,
+    'radix': 138,
+    'remainder_near': 140,
+    'rotate': 141,
+    'same_quantum': 142,
+    'scaleb': 143,
+    'shift': 144,
+    'sqrt': 145,
+    'to_eng_string': 147,
+    'to_integral': 81,
+    'to_integral_exact': 148,
+    'to_integral_value': 83,
+    'clear_flags': 84,
+    'clear_traps': 85,
+    'copy': 86,
+    'copy_decimal': 87,
+    'create_decimal': 88,
+    'create_decimal_from_float': 89,
+    'Etiny': 90,
+    'Etop': 91,
+    'abs': 92,
+    'add': 93,
+    'divide': 102,
+    'divide_int': 103,
+    'divmod': 104,
+    'minus': 128,
+    'multiply': 129,
+    'plus': 135,
+    'power': 136,
+    'remainder': 139,
+    'subtract': 146,
+    'to_sci_string': 149
   },
   by_category: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53],
-    1: [54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126],
-    2: [127, 128, 129, 130, 131],
-    3: [132, 133, 134, 135, 136, 137, 138, 139],
-    4: [140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
+    0: [0, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83],
+    1: [1, 2, 3, 4, 5, 6, 7, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149],
+    2: [8, 9, 10, 11, 12],
+    3: [13, 14, 15, 16, 17, 18, 19, 20],
+    4: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
   },
   by_type: {
-    0: [0, 57, 58, 59, 60, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149],
-    1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126],
-    2: [54, 55, 56],
-    3: [127, 128, 129, 130],
-    4: [131, 132, 133, 134, 135, 136, 137, 138, 139]
+    0: [0, 4, 5, 6, 7, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+    1: [1, 2, 3],
+    2: [8, 9, 10, 11],
+    3: [12, 13, 14, 15, 16, 17, 18, 19, 20],
+    4: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
   }
 }
 
@@ -2179,6 +2224,6 @@ eYo.Do.addProtocol(eYo.Model.decimal__module, 'Item', eYo.Model.decimal__module)
 eYo.Model.Item.registerTypes(eYo.Model.decimal__module.data.types)
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-10 19:09:26.612036
+// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-13 19:35:34.448888
 
 
