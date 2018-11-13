@@ -211,6 +211,15 @@ def do_one_module(module, **kwargs):
             if call is not None:
                 self.parse(call)
         
+        def __eq__(self, other):
+            """Overrides the default implementation"""
+            if isinstance(other, Signature):
+                return self.arguments == other.arguments
+            return NotImplemented
+
+        def __str__(self):
+            return str(self.arguments)
+
         @property
         def ary(self):
             if self.arguments is None:
@@ -327,7 +336,16 @@ def do_one_module(module, **kwargs):
             self.default = None
             self.optional = None
 
-        def __str__(self):
+        def __eq__(self, other):
+            """Overrides the default implementation"""
+            if isinstance(other, Argument):
+                return (self.name, self.default, self.optional) == (other.name, other.default, other.optional)
+            return NotImplemented
+
+        def __hash__(self):
+            return self.name
+
+        def __repr__(self):
             return '<argument: ' + self.name + '>'
 
     class Item:
@@ -534,8 +552,13 @@ Example of `dt` for the turtle module, method synonyms.
             if signature.arguments is not None:
                 if self.signature is None:
                     self.signature = signature
-                else:
+                elif self.signature != signature and signature not in self.signatures:
                     self.signatures.append(signature)
+                    try:
+                        arg0 = signature.arguments[0]
+                        arg1 = self.signature.arguments[0]
+                    except:
+                        pass
             elif verbose:
                 print('Ignored call:', call)
 
@@ -549,7 +572,7 @@ Example of `dt` for the turtle module, method synonyms.
                     $""".format(self.name), call, re.X)
                 if m is not None:
                     signature = Signature(self, m.group('arguments'))
-                    if signature.arguments is not None:
+                    if signature.arguments is not None and signature != self.signature and not signature in self.signatures:
                         self.signatures.append(signature)
                     else:
                         print('NO INNER', call)
