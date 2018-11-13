@@ -35,6 +35,7 @@ eYo.ConnectionDelegate = function (connection) {
   this.connection = connection
   this.where = new eYo.Where()
   this.slot = undefined // except when the connection belongs to a slot
+  this.reentrant = {}
 }
 
 Object.defineProperties(
@@ -229,39 +230,30 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
  * Complete with a wrapped block.
  * @param {String} prototypeName
  */
-eYo.ConnectionDelegate.prototype.completeWrapped = function () {
-  // this is a closure
-  var firewall
-  return function () {
+eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method(
+  'completeWrapped',
+  function () {
     if (!this.wrapped_) {
       return
     }
     var c8n = this.connection
-    if (!this.isIncog || !this.isIncog()) {
-      var target = c8n.targetBlock()
-      if (!target) {
-        eYo.Events.disableWrap(
-          () => {
-            if (firewall > 0) {
-              --firewall
-              goog.asserts.assert(firewall, 'ERROR: Maximum value reached in completeWrapped (circular)')
-            } else {
-              firewall = 100
-            }
-            var block = c8n.sourceBlock_
-            var makeNewBlock = block.eyo.beReady === eYo.Do.nothing
-            ? eYo.DelegateSvg.newBlockReady
-            : eYo.DelegateSvg.newBlockComplete
-            target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
-            goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
-            goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-            c8n.connect(target.outputConnection)
-          }
-        )
-      }
-    } 
+    var target = c8n.targetBlock()
+    if (!target) {
+      eYo.Events.disableWrap(
+        () => {
+          var block = c8n.sourceBlock_
+          var makeNewBlock = block.eyo.beReady === eYo.Do.nothing
+          ? eYo.DelegateSvg.newBlockReady
+          : eYo.DelegateSvg.newBlockComplete
+          target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+          goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
+          goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
+          c8n.connect(target.outputConnection)
+        }
+      )
+    }
   }
-} ()
+)
 
 /**
  * Will connect.
@@ -292,6 +284,7 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
   if (this.model && goog.isFunction(this.model.didConnect)) {
     this.model.didConnect.call(this, oldTargetC8n, targetOldC8n)
   } else {
+    eyo.incrementChangeCount()
     eyo.consolidate()
   }
 }
@@ -317,7 +310,7 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
   if (this.model && goog.isFunction(this.model.didDisconnect)) {
     this.model.didDisconnect.call(this, oldTargetC8n)
   } else {
-    eyo.consolidate()
+    eyo.incrementChangeCount()
   }
 }
 
@@ -1330,19 +1323,8 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
 eYo.Connection.prototype.targetBlock = function() {
   var target = eYo.Connection.superClass_.targetBlock.call(this)
   if (!target && this.eyo.wrapped_) {
-    var block = this.sourceBlock_
-    if ((target = eYo.DelegateSvg.newBlockReady(block.workspace, this.eyo.wrapped_))) {
-      var targetC8n = target.outputConnection
-      if (targetC8n && targetC8n.checkType_(this)) {
-        targetC8n.connect(this)
-        target = eYo.Connection.superClass_.targetBlock.call(this)
-        goog.asserts.assert(target, 'CONNECTION REFUSED')
-      } else {
-        console.error('No possible connection with wrapped type', this.eyo.wrapped_)
-      }
-    } else {
-      console.error('Bad wrapped type', this.eyo.wrapped_)
-    }
+    this.eyo.completeWrapped()
+    target = eYo.Connection.superClass_.targetBlock.call(this)
   }
   return target;
 };
