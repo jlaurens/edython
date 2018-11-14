@@ -366,12 +366,12 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  */
 eYo.DelegateSvg.newBlockComplete = (function () {
   var newBlockComplete = eYo.DelegateSvg.newBlockComplete
-  return function (workspace, model, id) {
+  return function (owner, model, id) {
     if (goog.isString(model) && model.startsWith('<')) {
-      var B = eYo.Xml.stringToBlock(model, workspace)
+      var B = eYo.Xml.stringToBlock(model, owner)
     }
     if (!B) {
-      B = newBlockComplete.call(this, workspace, model, id)
+      B = newBlockComplete.call(this, owner, model, id)
     }
     return B
   }
@@ -791,15 +791,15 @@ eYo.Xml.registerAllTags = function () {
  * If the string is not valid xml, then nothing is returned.
  *
  * @param {!String} string a serialized dom element.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {!*} owner workspace or block.
  * @return {?Blockly.Block} The root block created, if any.
  */
-eYo.Xml.stringToBlock = function (string, workspace) {
+eYo.Xml.stringToBlock = function (string, owner) {
   var block
   try {
     var dom = eYo.Do.stringToDom(string)
     if (dom) {
-      block = eYo.Xml.domToBlock(dom.documentElement, workspace)
+      block = eYo.Xml.domToBlock(dom.documentElement, owner)
     }
   } catch (err) {
     console.error(err)

@@ -1743,12 +1743,13 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
  * This is headless and should not render until a beReady message is sent.
- * @param {!WorkspaceSvg} workspace
+ * @param {!*} owner  workspace or block
  * @param {!String|Object} model
  * @param {?String|Object} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = function (workspace, model, id) {
+eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
+  var workspace = owner.workspace || owner
   var processModel = function(block, model, id) {
     var dataModel = model
     if (!block) {
