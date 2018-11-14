@@ -1241,8 +1241,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('base_call_stmt', {
   link: eYo.T3.Expr.primary
 }, eYo.DelegateSvg.Stmt, true)
 
-eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getType = eYo.DelegateSvg.Expr.primary.prototype.getType
-
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.updateProfile = eYo.DelegateSvg.Expr.primary.prototype.updateProfile
 
 eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.primary.prototype.getProfile

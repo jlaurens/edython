@@ -88,7 +88,7 @@ Object.defineProperties(
     },
     type: {
       get () {
-        return this.block_.type
+        return this.getBaseType()
       }
     },
     model: {

@@ -630,8 +630,6 @@ eYo.Connection = function (source, type) {
 goog.inherits(eYo.Connection, Blockly.Connection)
 eYo.Do.inherits(Blockly.RenderedConnection, eYo.Connection)
 
-eYo.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
-
 /**
  * Every connection has a delegate.
  */
@@ -640,13 +638,16 @@ eYo.Connection.prototype.eyo = undefined
 /**
  * Add highlighting around this connection.
  */
-Blockly.RenderedConnection.prototype.highlight = function () {
-  if (this.eyo) {
-    this.eyo.highlight()
-    return
-  }
-  Blockly.RenderedConnection.superClass_.highlight.call(this)
-}
+Blockly.RenderedConnection.prototype.highlight = (function () {
+  var highlight = Blockly.RenderedConnection.prototype.highlight
+  return function () {
+    if (this.eyo) {
+      this.eyo.highlight()
+      return
+    }
+    highlight.call(this)
+  }  
+}) ()
 
 /**
  * Move the block(s) belonging to the connection to a point where they don't
@@ -751,8 +752,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
   }
   var sourceA = c8nA.getSourceBlock()
   var sourceB = c8nB.getSourceBlock()
-  var typeA = sourceA.type
-  var typeB = sourceB.type
+  var typeA = sourceA.eyo.type // the block type is not up to date
+  var typeB = sourceB.eyo.type // the block type is not up to date
   if (typeA.indexOf('eyo:') === 0 && typeB.indexOf('eyo:') === 0) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
@@ -832,33 +833,6 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
   }
   return eYo.Connection.superClass_.checkType_.call(this, otherConnection)
 }
-
-/**
- * Connect two connections together.  This is the connection on the superior
- * block.  Rerender blocks as needed.
- * @param {!Blockly.Connection} childConnection Connection on inferior block.
- * @private
- */
-Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
-  Blockly.RenderedConnection.superClass_.connect_.call(this, childConnection);
-
-  var parentConnection = this;
-  var parentBlock = parentConnection.getSourceBlock();
-  var childBlock = childConnection.getSourceBlock();
-
-  if (parentBlock.rendered && childBlock.rendered) {
-    if (parentConnection.type == Blockly.NEXT_STATEMENT ||
-        parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
-      // Child block may need to square off its corners if it is in a stack.
-      // Rendering a child will render its parent.
-      childBlock.render();
-    } else {
-      // Child block does not change shape.  Rendering the parent node will
-      // move its connected children into position.
-      parentBlock.render();
-    }
-  }
-};
 
 /**
  * Connect two connections together.  This is the connection on the superior
@@ -1079,8 +1053,6 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
     )
   }
 } ()
-
-Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
 
 /**
  * Does the given block have one and only one connection point that will accept
@@ -1327,4 +1299,25 @@ eYo.Connection.prototype.targetBlock = function() {
     target = eYo.Connection.superClass_.targetBlock.call(this)
   }
   return target;
+};
+
+/**
+ * Change a connection's compatibility.
+ * @param {*} check Compatible value type or list of value types.
+ *     Null if all types are compatible.
+ * @return {!Blockly.Connection} The connection being modified
+ *     (to allow chaining).
+ */
+Blockly.Connection.prototype.setCheck = function(check) {
+  if (check) {
+    // Ensure that check is in an array.
+    if (!goog.isArray(check)) {
+      check = [check];
+    }
+    this.check_ = check;
+    this.onCheckChanged_();
+  } else {
+    this.check_ = null;
+  }
+  return this;
 };

@@ -46,7 +46,6 @@ eYo.DelegateSvg.Literal.prototype.saveData = function (element) {
   }
 }
 
-
 /**
  * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
  * For edython.
@@ -119,7 +118,7 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  * @constructor
  */
 eYo.DelegateSvg.Expr.numberliteral.prototype.getBaseType = function () {
-  return this.data.type.get()
+  return this.type_p
 }
 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')
@@ -277,6 +276,17 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
 eYo.DelegateSvg.Expr.shortstringliteral = eYo.DelegateSvg.Expr.shortbytesliteral = eYo.DelegateSvg.Expr.shortliteral
 eYo.DelegateSvg.Manager.register('shortstringliteral')
 eYo.DelegateSvg.Manager.register('shortbytesliteral')
+
+/**
+ * The type and connection depend on the properties prefix, value and variant.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Expr.shortliteral.prototype.getBaseType = function () {
+  return this.subtype_p
+}
 
 /**
  * Get the content for the menu item.
