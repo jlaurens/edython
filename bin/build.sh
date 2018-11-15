@@ -258,7 +258,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/core/do.js" \
---js "src/lib/eyo/block/content.js" \
 --js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/core/Field.js" \
@@ -267,7 +266,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/core/geometry.js" \
 --js "src/lib/eyo/protocol/change_count.js" \
---js "src/lib/eyo/protocol/item.js" \
 --js "src/lib/eyo/protocol/register.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
@@ -286,6 +284,8 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/model/stdtypes_model.js" \
 --js "src/lib/eyo/model/string_model.js" \
 --js "src/lib/eyo/model/turtle_model.js" \
+--js "src/lib/eyo/model/profile.js" \
+--js "src/lib/eyo/block/content.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
 --js "src/lib/eyo/blockly/field_textinput.js" \

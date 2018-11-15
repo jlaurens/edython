@@ -307,8 +307,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         eYo.T3.Expr.dotted_name
       ],
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var tos = eYo.Do.typeOfString(newValue, null)
-        return this.model.subtypes.indexOf(tos.expr) >= 0
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return this.model.subtypes.indexOf(p5e.expr) >= 0
         ? {validated: newValue}
         : null
       },
@@ -443,10 +443,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var tos = eYo.Do.typeOfString(newValue, null)
-        return tos.expr === eYo.T3.Expr.unset
-        || tos.expr === eYo.T3.Expr.identifier
-        || tos.expr === eYo.T3.Expr.dotted_name
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.unset
+        || p5e.expr === eYo.T3.Expr.identifier
+        || p5e.expr === eYo.T3.Expr.dotted_name
           ? {validated: newValue}
           : null
       },

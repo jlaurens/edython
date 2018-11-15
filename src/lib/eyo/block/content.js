@@ -15,6 +15,7 @@ goog.provide('eYo.Content')
 
 goog.require('eYo.Const')
 goog.require('eYo.Do')
+goog.require('eYo.T3.Profile')
 
 goog.forwardDeclare('eYo.Field')
 goog.forwardDeclare('eYo.Field.Label')
@@ -206,7 +207,7 @@ eYo.Content.prototype.makeField = function () {
       return
     }
     field = new eYo.FieldLabel(this, model)
-    field.eyo.css_class = eYo.Do.cssClassForText(model)
+    field.eyo.css_class = eYo.T3.getCssClassForText(model)
   } else if (goog.isObject(model)) {
     setupModel(model)
     if (model.edit || model.validator || model.endEditing || model.startEditing) {
@@ -220,7 +221,7 @@ eYo.Content.prototype.makeField = function () {
     }
     field.eyo.model = model
     if (!(field.eyo.css_class = model.css_class || (model.css && 'eyo-code-' + model.css))) {
-      field.eyo.css_class = eYo.Do.cssClassForText(field.getValue())
+      field.eyo.css_class = eYo.T3.getCssClassForText(field.getValue())
     }
     field.eyo.css_style = model.css_style
   } else {

@@ -555,7 +555,7 @@ goog.provide('eYo.Xml.Literal')
 eYo.Xml.Literal.domToBlockComplete = (function () {
   var newBlock = function (workspace, text, id, stmt_expected) {
     if (text && text.length) {
-      var type = eYo.Do.typeOfString(text, null).expr
+      var type = eYo.T3.Profile.get(text, null).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:

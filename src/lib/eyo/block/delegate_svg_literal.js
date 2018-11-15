@@ -68,13 +68,13 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.data.type.getAll()
-        var tos = eYo.Do.typeOfString(newValue, null)
-        return ((types.indexOf(tos.expr) >= 0 || tos.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = newValue 
-          ? eYo.Do.typeOfString(newValue, null).expr 
+          ? eYo.T3.Profile.get(newValue, null).expr 
           : eYo.T3.Expr.integer
         this.owner.type_p = type
       },

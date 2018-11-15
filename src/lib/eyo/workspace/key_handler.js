@@ -497,7 +497,7 @@ eYo.KeyHandler = (function () {
         menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
-        var F = function (f) {
+        var F = (f) => {
           event.preventDefault()
           event.stopPropagation()
           f.call(B.eyo)
@@ -526,10 +526,10 @@ eYo.KeyHandler = (function () {
         }
       }
       switch (k) {
-      case 'arrowdown': F(function (P) { return P.y }); return
-      case 'arrowup': F(function (P) { return -P.y }); return
-      case 'arrowleft': F(function (P) { return -P.x }); return
-      case 'arrowright': F(function (P) { return P.x })
+      case 'arrowdown': F((P) => { return P.y }); return
+      case 'arrowup': F((P) => { return -P.y }); return
+      case 'arrowleft': F((P) => { return -P.x }); return
+      case 'arrowright': F((P) => { return P.x })
       }
     }
   }

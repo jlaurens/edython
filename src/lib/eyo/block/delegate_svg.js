@@ -1760,7 +1760,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         block = workspace.newBlock(model, id) // can undo
         block.eyo.setDataWithType(model)
       } else {
-        var type = eYo.Do.typeOfString(model, null)
+        var type = eYo.T3.Profile.get(model, null)
         if (type.expr && (block = workspace.newBlock(type.expr, id))) {
           type.expr && block.eyo.setDataWithType(type.expr)
           model && block.eyo.setDataWithModel(model)
@@ -2780,7 +2780,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   }
   var block = this.block_
   // get the type:
-  var type = eYo.Do.typeOfString(model, null)
+  var type = eYo.T3.Profile.get(model, null)
   if (type) {
     if (connection) {
       if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {

@@ -17,7 +17,10 @@ goog.require('eYo.Do')
 goog.require('eYo.Where')
 goog.require('eYo.Decorate')
 goog.require('eYo.ConnectionDelegate')
+goog.require('eYo.T3.Profile')
+
 goog.require('goog.dom');
+
 goog.forwardDeclare('eYo.Xml')
 
 /**
@@ -74,17 +77,17 @@ eYo.Slot = function (owner, key, model) {
     eYo.Do.format('block must exist {0}/{1}', key))
   eYo.Slot.makeFields(this, model.fields)
   eYo.Content.feed(this, model.contents || model.fields)
-  var f = function () {
+  var f = () => {
     var c_eyo = this.input.connection.eyo
     c_eyo.source = this
     c_eyo.model = model
   }
   if (model.wrap) {
     this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
-    f.call(this)
+    f()
   } else if (goog.isDefAndNotNull(model.check)) {
     this.setInput(block.appendValueInput(key))
-    f.call(this)
+    f()
   }
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
@@ -158,7 +161,7 @@ eYo.Slot.prototype.beReady = function () {
   //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
-  var f = function(field) {
+  var f = (field) => {
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.sourceBlock_)
       field.eyo.slot = this
@@ -166,9 +169,9 @@ eYo.Slot.prototype.beReady = function () {
     }
   }
   for (var k in this.fields) {
-    f.call(this, this.fields[k])
+    f(this.fields[k])
   }
-  this.bindField && f.call(this, this.bindField)
+  this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
   this.beReady = eYo.Do.nothing // one shot function
 }
@@ -263,7 +266,7 @@ eYo.Slot.makeFields = function () {
         return
       }
       field = new eYo.FieldLabel(null, model)
-      field.eyo.css_class = eYo.Do.cssClassForText(model)
+      field.eyo.css_class = eYo.T3.getCssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validator || model.endEditing || model.startEditing) {
@@ -277,7 +280,7 @@ eYo.Slot.makeFields = function () {
       }
       field.eyo.model = model
       if (!(field.eyo.css_class = model.css_class || (model.css && 'eyo-code-' + model.css))) {
-        field.eyo.css_class = eYo.Do.cssClassForText(field.getValue())
+        field.eyo.css_class = eYo.T3.getCssClassForText(field.getValue())
       }
       field.eyo.css_style = model.css_style
       field.eyo.order = model.order

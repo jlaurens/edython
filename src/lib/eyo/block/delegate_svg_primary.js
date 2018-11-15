@@ -217,9 +217,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         var p = this.owner.profile_p
-        var model = p.tos && p.tos.model
-        if (model) {
-          if (model.type === 'method') {
+        var item = p.p5e && p.p5e.item
+        if (item) {
+          if (item.type === 'method') {
             this.change(1)
             return
           }
@@ -252,14 +252,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: '', // will be saved only when not built in
       placeholder: eYo.Msg.Placeholder.UNSET,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var tos = eYo.Do.typeOfString(newValue, null)
+        var p5e = eYo.T3.Profile.get(newValue, null)
         return !newValue
-        || tos.expr === eYo.T3.Expr.unset
-        || tos.expr === eYo.T3.Expr.identifier
-        || tos.expr === eYo.T3.Expr.builtin__name
-        || tos.expr === eYo.T3.Expr.dotted_name
-        || tos.expr === eYo.T3.Expr.attributeref
-        || tos.expr === eYo.T3.Expr.parent_module
+        || p5e.expr === eYo.T3.Expr.unset
+        || p5e.expr === eYo.T3.Expr.identifier
+        || p5e.expr === eYo.T3.Expr.builtin__name
+        || p5e.expr === eYo.T3.Expr.dotted_name
+        || p5e.expr === eYo.T3.Expr.attributeref
+        || p5e.expr === eYo.T3.Expr.parent_module
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
@@ -293,7 +293,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue).expr
+        var type = eYo.T3.Profile.get(newValue).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
         || type === eYo.T3.Expr.builtin__name
@@ -437,7 +437,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
+        var type = eYo.T3.Profile.get(newValue)
         return type.raw === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.parent_module
@@ -449,9 +449,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         this.owner.updateProfile()
         var p = this.owner.profile_p
-        if (p.tos && p.tos.model) {
-          // console.log('p.tos.model', p.tos.model.type, p.tos.model)
-          if (p.tos.model.type === 'method' && this.owner.dotted_p === 0) {
+        if (p.p5e && p.p5e.item) {
+          // console.log('p.p5e.item', p.p5e.item.type, p.p5e.item)
+          if (p.p5e.item.type === 'method' && this.owner.dotted_p === 0) {
             this.owner.dotted_p = 1
           }
           this.owner.ary_p = -1 // will be validated below
@@ -487,9 +487,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var validated
         this.owner.updateProfile()
         var p = this.owner.profile_p
-        var model = p.tos && p.tos.model
-        if (model) {
-          validated = goog.isDef(model.ary) ? model.ary : Infinity
+        var item = p.p5e && p.p5e.item
+        if (item) {
+          validated = goog.isDef(item.ary) ? item.ary : Infinity
         } else if (goog.isString(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))
@@ -517,7 +517,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
           if (this.owner.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
-            if (this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
+            if (this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
               return
             }
             this.save(element)
@@ -532,13 +532,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // returns a `Number` or `Infinity`
         var validated
         var p = this.owner.profile_p
-        var model = p.tos && p.tos.model
-        if (model) {
-          if (goog.isDef(model.mandatory)) {
-            validated = model.mandatory
-          } else if (goog.isDef(model.ary)) {
-            // when `model.mandatory` is not defined, `mandatory` is `ary`
-            validated = model.ary
+        var item = p.p5e && p.p5e.item
+        if (item) {
+          if (goog.isDef(item.mandatory)) {
+            validated = item.mandatory
+          } else if (goog.isDef(item.ary)) {
+            // when `item.mandatory` is not defined, `mandatory` is `ary`
+            validated = item.ary
           } else {
             validated = 0
           }
@@ -567,7 +567,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
           if (this.owner.profile_p && this.owner.variant_p === eYo.Key.CALL_EXPR && this.get()) {
-            if (this.owner.profile_p && this.owner.profile_p.tos.raw === eYo.T3.Expr.known_identifier) {
+            if (this.owner.profile_p && this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
               return
             }
             this.save(element)
@@ -820,7 +820,7 @@ Object.defineProperty(
 eYo.DelegateSvg.Expr.primary.prototype.updateProfile = function () {
   ++this.change.count
   this.profile_p = this.getProfile()
-  this.data.subtype.set(this.profile_p.tos && this.profile_p.tos.raw)
+  this.data.subtype.set(this.profile_p.p5e && this.profile_p.p5e.raw)
 }
 
 /**
@@ -841,7 +841,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         defined: !this.data.definition.isNone(),
         annotated: !this.data.annotation.isNone()
       }
-      var target, t_eyo, tos
+      var target, t_eyo, p5e
       var type
       if ((target = this.name_s.targetBlock())) {
         t_eyo = target.eyo
@@ -874,14 +874,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         }
         // a target block with no profile... bad luck
       } else {
-        tos = eYo.Do.typeOfString(this.name_p, null)
-        type = tos.expr
+        p5e = eYo.T3.Profile.get(this.name_p, null)
+        type = p5e.expr
         ans.name = {
           type: type,
           field: type
         }
-        ans.identifier = tos.name
-        ans.module = tos.holder
+        ans.identifier = p5e.name
+        ans.module = p5e.holder
       }
       target = this.holder_s.targetBlock()
       if (ans.dotted < 2 && target) {
@@ -918,8 +918,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         }
       } else {
         base = this.holder_p
-        tos = eYo.Do.typeOfString(base)
-        type = tos.expr
+        p5e = eYo.T3.Profile.get(base)
+        type = p5e.expr
         ans.holder = {
           type: type,
           field: type
@@ -930,7 +930,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
             : base
         )
       }
-      ans.identifier && (ans.tos = eYo.Do.typeOfString(ans.identifier, ans.module))
+      ans.identifier && (ans.p5e = eYo.T3.Profile.get(ans.identifier, ans.module))
       return {
         ans: ans
       }

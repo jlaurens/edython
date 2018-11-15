@@ -101,8 +101,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         : eYo.Msg.Placeholder.DECORATOR
       },
       validate: /** @suppress {globalThis} */ function (newValue) {        
-        var tos = eYo.Do.typeOfString(newValue, null)
-        if (this.getAll().indexOf(tos.expr) >= 0) {
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
         }
         return null
@@ -126,8 +126,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       ],
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {        
-        var tos = eYo.Do.typeOfString(newValue, null)
-        if (this.getAll().indexOf(tos.expr) >= 0) {
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
         }
         return null
@@ -311,9 +311,9 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var tos = eYo.Do.typeOfString(newValue, null)
-        return tos.expr === eYo.T3.Expr.identifier 
-          || tos.expr === eYo.T3.Expr.unset
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.identifier 
+          || p5e.expr === eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
@@ -401,9 +401,9 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var tos = eYo.Do.typeOfString(newValue, null)
-        return tos.expr === eYo.T3.Expr.identifier
-          || tos.expr === eYo.T3.Expr.unset
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.identifier
+          || p5e.expr === eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
