@@ -122,14 +122,14 @@ eYo.Data.prototype.getOwner = function () {
 
 /**
  * Get the value of the data
- * @param {String} type
  */
-eYo.Data.prototype.get = function (type) {
+eYo.Data.prototype.get = function () {
   if (!goog.isDef(this.value_)) {
-    eYo.Decorate.reentrant_method.call(this, 
+    var f = eYo.Decorate.reentrant_method.call(this, 
       'get',
       this.init
-    ).apply(this, arguments)
+    )
+    f && f.apply(this, arguments)
   }
   return this.value_
 }

@@ -266,7 +266,7 @@ eYo.Slot.makeFields = function () {
         return
       }
       field = new eYo.FieldLabel(null, model)
-      field.eyo.css_class = eYo.T3.getCssClassForText(model)
+      field.eyo.css_class = model.css_class || eYo.T3.getCssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validator || model.endEditing || model.startEditing) {

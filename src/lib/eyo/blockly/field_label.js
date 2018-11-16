@@ -69,7 +69,7 @@ eYo.FieldLabel.prototype.init = function () {
     goog.dom.classlist.add(this.textElement_, this.class_)
   }
   if (this.eyo.css_class) {
-    goog.dom.classlist.add(this.textElement_, this.eyo.css_class)
+    goog.dom.classlist.add(this.textElement_, eYo.Do.valueOf(this.eyo.css_class, this.eyo))
   }
   if (this.eyo.slot) {
     this.eyo.slot.getSvgRoot().appendChild(this.textElement_)

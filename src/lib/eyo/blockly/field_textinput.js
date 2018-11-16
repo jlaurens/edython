@@ -115,7 +115,7 @@ eYo.FieldTextInput.prototype.init = function () {
   Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this, this.onMouseDown_
   )
   if (this.eyo.css_class) {
-    goog.dom.classlist.add(this.textElement_, this.eyo.css_class)
+    goog.dom.classlist.add(this.textElement_, eYo.Do.valueOf(this.eyo.css_class, this.eyo))
   }
 }
 

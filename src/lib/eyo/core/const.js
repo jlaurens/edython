@@ -182,6 +182,7 @@ eYo.Key = {
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
+  GETTER: 'getter',
   SETTER: 'setter',
   DELETER: 'deleter',
   

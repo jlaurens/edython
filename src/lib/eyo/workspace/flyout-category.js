@@ -215,12 +215,13 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.call_stmt,
       data: ''
     },
+    eYo.T3.Expr.lambda,
+    eYo.T3.Stmt.funcdef_part,
+    eYo.T3.Expr.primary,
     eYo.T3.Expr.parameter_star,
     eYo.T3.Expr.parameter_star_star,
-    eYo.T3.Stmt.funcdef_part,
     eYo.T3.Stmt.return_stmt,
     eYo.T3.Stmt.pass_stmt,
-    eYo.T3.Expr.lambda,
     eYo.T3.Stmt.classdef_part,
     {
       type: eYo.T3.Stmt.global_nonlocal_stmt,
@@ -230,19 +231,19 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.global_nonlocal_stmt,
       variant_d: 'nonlocal'
     },
-    eYo.T3.Stmt.decorator,
     {
-      type: eYo.T3.Stmt.decorator,
+      type: eYo.T3.Stmt.decorator_stmt,
       name_d: eYo.Key.STATICMETHOD
     },
     {
-      type: eYo.T3.Stmt.decorator,
+      type: eYo.T3.Stmt.decorator_stmt,
       name_d: eYo.Key.CLASSMETHOD
     },
     {
-      type: eYo.T3.Stmt.decorator,
+      type: eYo.T3.Stmt.decorator_stmt,
       name_d: eYo.Key.PROPERTY
-    }
+    },
+    eYo.T3.Stmt.decorator_stmt
   ],
   'list': [
     {

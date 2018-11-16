@@ -600,7 +600,7 @@ var Ks = {
   },
   'finally': eYo.T3.Stmt.finally_part,
   'for': eYo.T3.Stmt.for_part,
-  '@': eYo.T3.Stmt.decorator,
+  '@': eYo.T3.Stmt.decorator_stmt,
   'def': eYo.T3.Stmt.funcdef_part,
   'import': eYo.T3.Stmt.import_stmt,
   'try': eYo.T3.Stmt.try_part,
@@ -812,7 +812,7 @@ Ks = {
       variant: eYo.Key.NONLOCAL
     }
   },
-  '@decorator': eYo.T3.Stmt.decorator,
+  '@decorator': eYo.T3.Stmt.decorator_stmt,
   '"""…"""(stmt)': {
     type: eYo.T3.Stmt.docstring_stmt,
     data: {

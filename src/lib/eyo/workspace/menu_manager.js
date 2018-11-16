@@ -1077,7 +1077,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     eYo.T3.Stmt.else_part,
     eYo.T3.Stmt.finally_part,
     eYo.T3.Stmt.with_part
-    // eYo.T3.Stmt.decorator,
+    // eYo.T3.Stmt.decorator_stmt,
     // eYo.T3.Stmt.funcdef_part,
     // eYo.T3.Stmt.classdef_part,
     // eYo.T3.Stmt.import_stmt,

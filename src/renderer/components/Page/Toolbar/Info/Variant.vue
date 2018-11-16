@@ -2,7 +2,6 @@
   <b-dropdown id="info-variant" class="eyo-dropdown" variant="outline-secondary" v-if="data">
     <template slot="button-content"><span class="info-variant eyo-code eyo-content" v-html="formatter(variant)"></span></template>
     <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" :key="item" class="info-variant eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
-    </b-dropdown-item-button>
   </b-dropdown>
 </template>
 

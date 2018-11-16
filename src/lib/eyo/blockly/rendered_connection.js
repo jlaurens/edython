@@ -198,6 +198,9 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
   }
   incog = !!incog
   var change = this.incog_ !== incog
+  if (change) {
+    this.b_eyo.incrementChangeCount()
+  }
   var c8n = this.connection
   if (incog || !this.wrapped_) {
     // We cannot disable wrapped connections

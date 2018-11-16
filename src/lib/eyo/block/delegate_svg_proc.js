@@ -23,34 +23,41 @@ goog.require('goog.dom');
  * Class for a DelegateSvg, decorator.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
+eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
+  xml: {
+    tag: '@'
+  },
   data: {
     property: {
       all: [
-        eYo.Key.NONE,
+        eYo.Key.GETTER,
         eYo.Key.SETTER,
         eYo.Key.DELETER
       ],
-      init: eYo.Key.NONE,
+      init: eYo.Key.GETTER,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var dotted_name = this.owner.dotted_name_p
-        if (newValue === eYo.Key.SETTER) {
-          if (!dotted_name.endsWith('.setter')) {
-            this.owner.dotted_name_p = dotted_name + '.setter'
-          }
-        } else if (newValue === eYo.Key.DELETER) {
-          if (!dotted_name.endsWith('.deleter')) {
-            this.owner.dotted_name_p = dotted_name + '.deleter'
+        var decorator = this.owner.decorator_p
+        if (newValue === eYo.Key.GETTER) {
+          if (decorator.endsWith('.setter')) {
+            this.owner.decorator_p = decorator.substring(0, decorator.length - '.setter'.length)
+          } else if (decorator.endsWith('.deleter')) {
+            this.owner.decorator_p = decorator.substring(0, decorator.length - '.deleter'.length)
+          } else if (this.owner.decorator_p.length) {
+            this.owner.decorator_p = eYo.Key.PROPERTY
           }
         } else {
-          if (dotted_name.endsWith('.setter')) {
-            this.owner.dotted_name_p = dotted_name.substring(0, dotted_name.length - '.setter'.length)
-          } else if (dotted_name.endsWith('.deleter')) {
-            this.owner.dotted_name_p = dotted_name.substring(0, dotted_name.length - '.deleter'.length)
+          if (newValue === eYo.Key.SETTER) {
+            if (!decorator.endsWith('.setter')) {
+              this.owner.decorator_p = decorator + '.setter'
+            }
+          } else if (newValue === eYo.Key.DELETER) {
+            if (!decorator.endsWith('.deleter')) {
+              this.owner.decorator_p = decorator + '.deleter'
+            }
           }
         }
-        this.setIncog(newValue === eYo.Key.NONE)
+        this.setIncog(newValue === eYo.Key.GETTER)
         // update the placeholder for the name field.
         this.owner.data.name.field.placeholderText(true)
       },
@@ -58,11 +65,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
     },
     variant: {
       all: [
-        eYo.Key.NONE,
-        eYo.Key.PROPERTY,
-        eYo.Key.STATICMETHOD,
-        eYo.Key.CLASSMETHOD,
-        eYo.Key.N_ARY
+        eYo.Key.NONE, // custom name with no arguments
+        eYo.Key.STATICMETHOD, // @staticmethod
+        eYo.Key.CLASSMETHOD, // @classmethod
+        eYo.Key.PROPERTY, // @property
+        eYo.Key.N_ARY // custom name with arguments
       ],
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
@@ -72,7 +79,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue !== eYo.Key.PROPERTY) {
-          this.owner.property_p = eYo.Key.NONE
+          this.owner.property_p = eYo.Key.GETTER
         }
         this.owner.n_ary_s.setIncog(newValue !== eYo.Key.N_ARY)
       },
@@ -96,7 +103,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
         var O = this.sourceBlock_.eyo    
-        return O.variant_p === eYo.Key.PROPERTY && O.property_p !== eYo.Key.NONE
+        return O.variant_p === eYo.Key.PROPERTY && O.property_p !== eYo.Key.GETTER
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR
       },
@@ -114,11 +121,24 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         if (O.variant_p === eYo.Key.PROPERTY && p !== eYo.Key.NONE) {
           newValue = newValue + '.' + p
         }
-        O.dotted_name_p = newValue
+        O.decorator_p = newValue
+        var f = (txt) => {
+          switch (eYo.T3.Profile.get(txt, null).raw) {
+            case eYo.T3.Expr.reserved_identifier:
+            case eYo.T3.Expr.reserved_keyword:
+            case eYo.T3.Expr.known_identifier:
+              return 'eyo-code-reserved'
+            case eYo.T3.Expr.builtin__name:
+              return 'eyo-code-builtin'
+            default:
+              return 'eyo-code'
+            }
+        }
+        this.field.eyo.set_css_class(f(O.name_p))
       },
       xml: false
     },
-    dotted_name: {
+    decorator: {
       all: [ // accepted types
         eYo.T3.Expr.dotted_name,
         eYo.T3.Expr.identifier,
@@ -127,7 +147,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {        
         var p5e = eYo.T3.Profile.get(newValue, null)
-        if (this.getAll().indexOf(p5e.expr) >= 0) {
+        if (this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0) {
           return {validated: newValue}
         }
         return null
@@ -137,12 +157,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         if (newValue) {
           if (newValue.endsWith('.setter')) {
             this.owner.name_p = newValue.substring(0, newValue.length - '.setter'.length)
-            this.owner.variant_p = eYo.Key.PROPERTY
+            if (this.owner.variant_p === eYo.Key.N_ARY) {
+              this.owner.variant_p = eYo.Key.NONE
+            }
             this.owner.property_p = eYo.Key.SETTER
           } else if(newValue.endsWith('.deleter')) {
             this.owner.name_p = newValue.substring(0, newValue.length - '.deleter'.length)
-            this.owner.variant_p = eYo.Key.PROPERTY
-            this.owner.property_p === eYo.Key.DELETER
+            if (this.owner.variant_p === eYo.Key.N_ARY) {
+              this.owner.variant_p = eYo.Key.NONE
+            }
+            this.owner.property_p = eYo.Key.DELETER
           } else {
             if ([
               eYo.Key.PROPERTY,
@@ -152,14 +176,70 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
               this.owner.variant_p = newValue
             }
             this.owner.name_p = newValue
-            this.owner.property_p = eYo.Key.NONE
+            this.owner.property_p = eYo.Key.GETTER
           }
         } else {
           this.owner.name_p = newValue
-          this.owner.property_p = eYo.Key.NONE
+          this.owner.property_p = eYo.Key.GETTER
         }
       },
-      synchronize: true
+      synchronize: true,
+      xml: true
+    },
+    controller: {
+      all: [
+        eYo.Key.NONE, // custom name with no arguments
+        eYo.Key.STATICMETHOD, // @staticmethod
+        eYo.Key.CLASSMETHOD, // @classmethod
+        eYo.Key.PROPERTY, // @property
+        eYo.Key.N_ARY, // custom name with arguments
+        // eYo.Key.GETTER,
+        eYo.Key.SETTER,
+        eYo.Key.DELETER
+      ],
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        switch(newValue) {
+          case eYo.Key.NONE:
+          if(this.owner.decorator_p.endsWith('.setter')) {
+            this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p - '.setter'.length)
+          } else if(this.owner.decorator_p.endsWith('.deleter')) {
+            this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p.length - '.deleter'.length)
+          } 
+          break
+          case eYo.Key.STATICMETHOD:
+          case eYo.Key.CLASSMETHOD:
+          case eYo.Key.PROPERTY:
+            if(this.owner.decorator_p.endsWith('.setter')) {
+              this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p.length - '.setter'.length)
+            } else if(this.owner.decorator_p.endsWith('.deleter')) {
+              this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p.length - '.deleter'.length)
+            } 
+            this.owner.decorator_p = newValue
+            break
+          case eYo.Key.N_ARY:
+            this.owner.variant_p = eYo.Key.N_ARY
+            break
+          case eYo.Key.SETTER:
+            if(this.owner.decorator_p.endsWith('.deleter')) {
+              this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p.length - '.deleter'.length)
+            } 
+            if(!this.owner.decorator_p.endsWith('.' + newValue)) {
+              this.owner.decorator_p += '.' + newValue
+            }
+            break
+          case eYo.Key.DELETER:
+            if(this.owner.decorator_p.endsWith('.setter')) {
+              this.owner.decorator_p = this.owner.decorator_p.substring(0, this.owner.decorator_p.length - '.setter'.length)
+            } 
+            if(!this.owner.decorator_p.endsWith('.' + newValue)) {
+              this.owner.decorator_p += '.' + newValue
+            }
+            break
+        }
+      },
+      synchronize: false,
+      xml: false
     }
   },
   fields: {
@@ -175,8 +255,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
         bind: {
           validate: true,
           endEditing: true,
-          variable: true
+          variable: true,
           // left_space: true,
+          css_class: /** @suppress {globalThis} */ function () {
+            console.log('this.b_eyo.decorator_p', this.b_eyo.decorator_p)
+            return [
+              eYo.Key.PROPERTY,
+              eYo.Key.STATICMETHOD,
+              eYo.Key.CLASSMETHOD
+            ].indexOf(this.b_eyo.decorator_p) >= 0
+            ? 'eyo-code-reserved'
+            : 'eyo-code'
+          }
         }
       }
     },
@@ -219,7 +309,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator', {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function () {
+eYo.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function () {
   return this.nextConnection.isConnected()
 }
 
@@ -229,20 +319,15 @@ eYo.DelegateSvg.Stmt.decorator.prototype.isWhite = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (mgr) {
-  var name_d = this.data.name
-  var name_p = name_d.get()
-  var variant_d = this.data.variant
-  var variant_p = variant_d.get()
-  var property_d = this.data.property
-  var property_p = property_d.get()
+eYo.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var variant_p = this.variant_p
   if (variant_p !== eYo.Key.NONE) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('@', 'eyo-code-reserved'),
       eYo.Do.createSPAN(eYo.Msg.Placeholder.DECORATOR, 'eyo-code-placeholder')
     )
-    mgr.addChild(mgr.newMenuItem(content, function () {
-      variant_d.set(eYo.Key.NONE)
+    mgr.addChild(mgr.newMenuItem(content, () => {
+      this.controller_p = eYo.Key.NONE
     }))
   }
   var builtins = [
@@ -250,45 +335,46 @@ eYo.DelegateSvg.Stmt.decorator.prototype.populateContextMenuFirst_ = function (m
     eYo.Key.CLASSMETHOD,
     eYo.Key.PROPERTY
   ]
-  for (var i = 0; i < builtins.length; i++) {
-    var builtin = builtins[i]
-    if (builtin !== name_p) {
+  builtins.forEach((builtin) => {
+    if (builtin !== this.name_p) {
       var content = eYo.Do.createSPAN('@' + builtin, 'eyo-code-reserved')
-      mgr.addChild(mgr.newMenuItem(content, (function() {
-        var b = builtin
-        return function () {
-          variant_d.set(b)
-          name_d.set(b)
-          property_d.set(eYo.Key.NONE)
+      mgr.addChild(mgr.newMenuItem(content, () => {
+          this.controller_p = builtin
         }
-      }) ()))
-    }
-  }
-  builtins = [
-    eYo.Key.SETTER,
-    eYo.Key.DELETER
-  ]
-  for (var i = 0; i < builtins.length; i++) {
-    var builtin = builtins[i]
-    if (builtin !== property_p) {
-      var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('@', 'eyo-code-reserved'),
-        eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
-        eYo.Do.createSPAN('.', 'eyo-code'),
-        eYo.Do.createSPAN(builtin, 'eyo-code-reserved')
-      )
-      mgr.addChild(mgr.newMenuItem(content, (function () {
-        var b = builtin
-        return function () {
-          variant_d.set(eYo.Key.PROPERTY)
-          property_d.set(b)
-        }
-      }) ()
       ))
     }
+  })
+  if (variant_p !== eYo.Key.N_ARY) {
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+      eYo.Do.createSPAN(eYo.Msg.Placeholder.DECORATOR, 'eyo-code-placeholder'),
+      eYo.Do.createSPAN('(…)', 'eyo-code')
+    )
+    mgr.addChild(mgr.newMenuItem(content, () => {
+      this.controller_p = eYo.Key.N_ARY
+    }))
+  }
+  if (this.decorator_p.length) {
+    builtins = [
+      eYo.Key.SETTER,
+      eYo.Key.DELETER
+    ]
+    builtins.forEach((builtin) => {
+      if (builtin !== this.property_p) {
+        var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+          eYo.Do.createSPAN('@', 'eyo-code-reserved'),
+          eYo.Do.createSPAN(eYo.Msg.Placeholder.IDENTIFIER, 'eyo-code-placeholder'),
+          eYo.Do.createSPAN('.', 'eyo-code'),
+          eYo.Do.createSPAN(builtin, 'eyo-code-reserved')
+        )
+        mgr.addChild(mgr.newMenuItem(content, () => {
+          this.controller_p = builtin
+        }))
+      }
+    })
   }
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.decorator.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -472,7 +558,7 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
 
 eYo.DelegateSvg.Proc.T3s = [
   eYo.T3.Expr.identifier,
-  eYo.T3.Stmt.decorator,
+  eYo.T3.Stmt.decorator_stmt,
   eYo.T3.Stmt.funcdef_part,
   eYo.T3.Stmt.classdef_part
 ]

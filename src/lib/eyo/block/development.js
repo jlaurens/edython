@@ -310,9 +310,9 @@ eYo.DelegateSvg.Expr.list_display.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.comprehension
 ], eYo.T3.Expr.Check.starred_item)
 
-eYo.DelegateSvg.Stmt.decorator.workspaceBlocks =
+eYo.DelegateSvg.Stmt.decorator_stmt.workspaceBlocks =
 eYo.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = eYo.Do.arraysMerged([
-  eYo.T3.Stmt.decorator,
+  eYo.T3.Stmt.decorator_stmt,
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.dotted_name,
   eYo.T3.Stmt.funcdef_part,
@@ -321,7 +321,7 @@ eYo.DelegateSvg.Stmt.funcdef_part.workspaceBlocks = eYo.Do.arraysMerged([
 eYo.DelegateSvg.Expr.parameter_list.workspaceBlocks)
 
 eYo.DelegateSvg.Stmt.classdef_part.workspaceBlocks = eYo.Do.arraysMerged([
-  eYo.T3.Stmt.decorator,
+  eYo.T3.Stmt.decorator_stmt,
   eYo.T3.Stmt.classdef_part,
   eYo.T3.Stmt.assignment_stmt
 ],

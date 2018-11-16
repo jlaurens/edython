@@ -31,7 +31,7 @@
       },
       slotholder: {
         type: Function,
-        default: function (item) {
+        default: (item) => {
           return item
         }
       },
@@ -49,7 +49,7 @@
         return this.commentVariant === eYo.Key.NONE
       },
       canCode () {
-        return !!this.eyo.data.expression
+        return !!this.eyo.expression_d
       },
       hasCode: {
         get () {
@@ -77,7 +77,7 @@
     },
     created () {
       this.expression_ = this.eyo.expression_p
-      this.withSlotholder_ = this.eyo.slots.expression.targetBlock()
+      this.withSlotholder_ = this.eyo.expression_s.targetBlock()
     }
   }
 </script>

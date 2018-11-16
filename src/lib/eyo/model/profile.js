@@ -32,6 +32,7 @@ eYo.Do.defineReadOnlyProperties(
     custom_identifier: '.custom identifier',
     custom_dotted_name: '.custom dotted name',
     custom_parent_module: '.custom parent module',
+    const: '.const',
     unset: '.unset',
     error: '.error',
     bininteger: '.bininteger',
@@ -310,6 +311,9 @@ var setup = (function () {
     if ((ans = eYo.T3.Profile.getReserved(candidate))) {
       return (profiles['.builtin'] = ans)
     }
+    if ((ans = eYo.T3.Profile.getShort(candidate))) {
+      return (profiles['.builtin'] = ans)
+    }
     if ((ans = eYo.T3.Profile.getDotted(candidate, module))) {
       return ans
     }
@@ -490,12 +494,36 @@ eYo.T3.Profile.getLiteral = function (candidate) {
  * @return {!eYo.T3} the profile of this identifier when a reference.
  */
 eYo.T3.Profile.getReference = function (identifier) {
-  for (var ref in {0: 'functions', 1: 'stdtypes', 2: 'datamodel'}) {
+  for (var ref in {'functions': 0, 'stdtypes': 0, 'datamodel': 0}) {
     var M = eYo.Model[ref]
-    var ans = M && M.getProfile(candidate)
+    var ans = M && M.getProfile(identifier)
     if (ans) {
       return ans
     }
+  }
+  if ([
+    eYo.Key.PROPERTY,
+    eYo.Key.STATICMETHOD,
+    eYo.Key.CLASSMETHOD
+  ].indexOf(identifier)) {
+    return new eYo.T3.Profile(null,  {
+      raw: eYo.T3.Expr.reserved_identifier,
+      stmt: eYo.T3.Stmt.decorator_stmt
+    })
+  }
+}
+
+/**
+ * Returns a profile if `identifier` is a reference keyword/identifier
+ * For edython.
+ * @param {!String} identifier
+ * @return {!eYo.T3} the profile of this identifier when reserved.
+ */
+eYo.T3.Profile.getShort = function (identifier) {
+  if (['(', ')', '[', ']', '{', '}', ',', ':', ';'].indexOf(identifier) >= 0) {
+    return new eYo.T3.Profile(null, {
+      raw: eYo.T3.Expr.const
+    })
   }
 }
 

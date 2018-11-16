@@ -60,16 +60,19 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
   },
   data: {
     variant: {
-      order: 99,
-      all: [eYo.Key.None, eYo.Key.STAR],
-      init: eYo.Key.None, // not a lonely '*'
-      validate: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      order: 98,
+      all: [eYo.Key.NONE, eYo.Key.STAR],
+      init: eYo.Key.NONE, // not a lonely '*'
+      validate: /** @suppress {globalThis} */ function (newValue) {
         return newValue === eYo.Key.STAR && this.owner.modifier_p !== '*'
           ? {}
           : {validated: newValue}
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.None)
+        this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.owner.modified_s.setIncog(newValue === eYo.Key.STAR)
       }
     },
     modifier: {
@@ -78,7 +81,9 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       init: '*',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.setIncog(!newValue || !newValue.length)
+        if (newValue !== '*' && this.owner.variant_p === eYo.Key.STAR) {
+          this.owner.variant_p = eYo.Key.NONE
+        }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         /* if (type === eYo.T3.Expr.star) {
@@ -104,16 +109,17 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       xml: false
     }
   },
-  slots: {
+  fields: {
     modifier: {
-      fields: {
-        bind: {
-          value: '',
-          css: 'reserved'
-        }
-      },
+      value: '',
+      css: 'reserved'
+    }
+  },
+  slots: {
+    modified: {
+      order: 10,
       check: /** @suppress {globalThis} */ function (type) {
-        return this.owner.modifier_p === '*'
+        return this.b_eyo.modifier_p === '*'
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
       }
@@ -122,11 +128,11 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the block delegate
-      var eyo = this.b_eyo // does it always exist ?
+      var eyo = this.b_eyo
       if (eyo.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
-      var slot = eyo.modifier_s
+      var slot = eyo.modified_s
       var t = slot.targetBlock()
       var types = []
       if (eyo.modifier_p === '*') {
@@ -160,3 +166,19 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
     }
   }
 })
+
+var ra = [
+  'star_expr',
+  'expression_star',
+  'expression_star_star',
+  'target_star',
+  'star',
+  'parameter_star',
+  'parameter_star_star'
+]
+ra.forEach(
+    key => {
+      eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.Starred
+      eYo.DelegateSvg.Manager.register(key)    
+    }
+  )

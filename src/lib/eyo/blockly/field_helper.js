@@ -27,6 +27,16 @@ eYo.FieldHelper = function (field) {
   this.size = new eYo.Size(0, 1)
 }
 
+Object.defineProperties(
+  eYo.FieldHelper.prototype,
+  {
+    b_eyo: {
+      get () {
+        return this.field_.sourceBlock_.eyo
+      }
+    }
+  }
+)
 /**
  * Whether the field of the receiver starts with a separator.
  */
@@ -112,5 +122,17 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
     return this.validate(txt)
   }
   return txt
+}
+
+/**
+ * Set th entire dom class list.
+ * @param {!String} class_name
+ */
+eYo.FieldHelper.prototype.set_css_class = function (class_name) {
+  var e = this.field_.textElement_
+  if (e) {
+    goog.dom.classlist.removeAll(e, goog.dom.classlist.get(e))
+    goog.dom.classlist.add(e, class_name)
+  }
 }
 

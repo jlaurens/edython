@@ -42,7 +42,10 @@
       <info-any-expression :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-any-expression>
     </div>
     <div v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)">
-      <info-expression-statement :eyo="eyo" :slotholder="slotholder"></info-expression-statement>
+        <info-expression-statement :eyo="eyo" :slotholder="slotholder"></info-expression-statement>
+      </div>
+    <div v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)">
+      <info-decorator :eyo="eyo" :slotholder="slotholder"></info-decorator>
     </div>
     <div v-else-if="eyo">
       <info-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-default>
@@ -68,6 +71,7 @@
   import InfoAugmentedAssignment from './Info/AugmentedAssignment.vue'
   import InfoValue from './Info/Value.vue'
   import InfoDefault from './Info/Default.vue'
+  import InfoDecorator from './Info/Decorator.vue'
   import InfoNone from './Info/None.vue'
 
   export default {
@@ -92,6 +96,7 @@
       InfoAugmentedAssignment,
       InfoValue,
       InfoDefault,
+      InfoDecorator,
       InfoNone
     },
     mounted () {
