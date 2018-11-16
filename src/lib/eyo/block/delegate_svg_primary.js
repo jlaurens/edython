@@ -489,7 +489,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var p = this.owner.profile_p
         var item = p.p5e && p.p5e.item
         if (item) {
-          validated = goog.isDef(item.ary) ? item.ary : Infinity
+          var ary = item.ary
+          validated = goog.isDef(ary) ? ary : Infinity
         } else if (goog.isString(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))

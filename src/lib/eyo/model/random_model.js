@@ -65,104 +65,34 @@ eYo.Model.random__module.setData({
   ],
   items: [
     new Item({
-      name: 'seed',
+      name: 'SystemRandom',
       class: 'random',
-      category: 0,
-      type_: 0,
-      href: '#random.seed',
+      category: 4,
+      type_: 1,
+      href: '#random.SystemRandom',
       stmt: true,
-      ary: 2,
+      ary: 1,
       mandatory: 0,
       arguments: [
         {
-          name: 'a',
-          default: 'None'
-        },
-        {
-          name: 'version',
-          default: 2
+          name: 'seed',
+          optional: true
         }
       ]
     }),
     new Item({
-      name: 'getstate',
+      name: 'betavariate',
       class: 'random',
-      category: 0,
+      category: 3,
       type_: 0,
-      href: '#random.getstate',
-      ary: 0
-    }),
-    new Item({
-      name: 'setstate',
-      class: 'random',
-      category: 0,
-      type_: 0,
-      href: '#random.setstate',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'state'
-        }
-      ]
-    }),
-    new Item({
-      name: 'getrandbits',
-      class: 'random',
-      category: 0,
-      type_: 0,
-      href: '#random.getrandbits',
-      ary: 1,
-      arguments: [
-        {
-          name: 'k'
-        }
-      ]
-    }),
-    new Item({
-      name: 'randrange',
-      class: 'random',
-      category: 1,
-      type_: 0,
-      href: '#random.randrange',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 2,
-          arguments: [
-            {
-              name: 'start'
-            },
-            {
-              name: 'stop'
-            },
-            {
-              name: 'step',
-              optional: true
-            }
-          ]
-        }
-      ],
-      ary: 1,
-      arguments: [
-        {
-          name: 'stop'
-        }
-      ]
-    }),
-    new Item({
-      name: 'randint',
-      class: 'random',
-      category: 1,
-      type_: 0,
-      href: '#random.randint',
+      href: '#random.betavariate',
       ary: 2,
       arguments: [
         {
-          name: 'a'
+          name: 'alpha'
         },
         {
-          name: 'b'
+          name: 'beta'
         }
       ]
     }),
@@ -206,100 +136,6 @@ eYo.Model.random__module.setData({
         {
           name: 'k',
           default: 1
-        }
-      ]
-    }),
-    new Item({
-      name: 'shuffle',
-      class: 'random',
-      category: 2,
-      type_: 0,
-      href: '#random.shuffle',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'random',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'sample',
-      class: 'random',
-      category: 2,
-      type_: 0,
-      href: '#random.sample',
-      ary: 2,
-      arguments: [
-        {
-          name: 'population'
-        },
-        {
-          name: 'k'
-        }
-      ]
-    }),
-    new Item({
-      name: 'random',
-      class: 'random',
-      category: 3,
-      type_: 0,
-      href: '#random.random',
-      ary: 0
-    }),
-    new Item({
-      name: 'uniform',
-      class: 'random',
-      category: 3,
-      type_: 0,
-      href: '#random.uniform',
-      ary: 2,
-      arguments: [
-        {
-          name: 'a'
-        },
-        {
-          name: 'b'
-        }
-      ]
-    }),
-    new Item({
-      name: 'triangular',
-      class: 'random',
-      category: 3,
-      type_: 0,
-      href: '#random.triangular',
-      ary: 3,
-      arguments: [
-        {
-          name: 'low'
-        },
-        {
-          name: 'high'
-        },
-        {
-          name: 'mode'
-        }
-      ]
-    }),
-    new Item({
-      name: 'betavariate',
-      class: 'random',
-      category: 3,
-      type_: 0,
-      href: '#random.betavariate',
-      ary: 2,
-      arguments: [
-        {
-          name: 'alpha'
-        },
-        {
-          name: 'beta'
         }
       ]
     }),
@@ -349,6 +185,27 @@ eYo.Model.random__module.setData({
       ]
     }),
     new Item({
+      name: 'getrandbits',
+      class: 'random',
+      category: 0,
+      type_: 0,
+      href: '#random.getrandbits',
+      ary: 1,
+      arguments: [
+        {
+          name: 'k'
+        }
+      ]
+    }),
+    new Item({
+      name: 'getstate',
+      class: 'random',
+      category: 0,
+      type_: 0,
+      href: '#random.getstate',
+      ary: 0
+    }),
+    new Item({
       name: 'lognormvariate',
       class: 'random',
       category: 3,
@@ -381,6 +238,178 @@ eYo.Model.random__module.setData({
       ]
     }),
     new Item({
+      name: 'paretovariate',
+      class: 'random',
+      category: 3,
+      type_: 0,
+      href: '#random.paretovariate',
+      ary: 1,
+      arguments: [
+        {
+          name: 'alpha'
+        }
+      ]
+    }),
+    new Item({
+      name: 'randint',
+      class: 'random',
+      category: 1,
+      type_: 0,
+      href: '#random.randint',
+      ary: 2,
+      arguments: [
+        {
+          name: 'a'
+        },
+        {
+          name: 'b'
+        }
+      ]
+    }),
+    new Item({
+      name: 'random',
+      class: 'random',
+      category: 3,
+      type_: 0,
+      href: '#random.random',
+      ary: 0
+    }),
+    new Item({
+      name: 'randrange',
+      class: 'random',
+      category: 1,
+      type_: 0,
+      href: '#random.randrange',
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'start'
+            },
+            {
+              name: 'stop'
+            },
+            {
+              name: 'step',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: 1,
+      arguments: [
+        {
+          name: 'stop'
+        }
+      ]
+    }),
+    new Item({
+      name: 'sample',
+      class: 'random',
+      category: 2,
+      type_: 0,
+      href: '#random.sample',
+      ary: 2,
+      arguments: [
+        {
+          name: 'population'
+        },
+        {
+          name: 'k'
+        }
+      ]
+    }),
+    new Item({
+      name: 'seed',
+      class: 'random',
+      category: 0,
+      type_: 0,
+      href: '#random.seed',
+      stmt: true,
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'a',
+          default: 'None'
+        },
+        {
+          name: 'version',
+          default: 2
+        }
+      ]
+    }),
+    new Item({
+      name: 'setstate',
+      class: 'random',
+      category: 0,
+      type_: 0,
+      href: '#random.setstate',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'state'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shuffle',
+      class: 'random',
+      category: 2,
+      type_: 0,
+      href: '#random.shuffle',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'random',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'triangular',
+      class: 'random',
+      category: 3,
+      type_: 0,
+      href: '#random.triangular',
+      ary: 3,
+      arguments: [
+        {
+          name: 'low'
+        },
+        {
+          name: 'high'
+        },
+        {
+          name: 'mode'
+        }
+      ]
+    }),
+    new Item({
+      name: 'uniform',
+      class: 'random',
+      category: 3,
+      type_: 0,
+      href: '#random.uniform',
+      ary: 2,
+      arguments: [
+        {
+          name: 'a'
+        },
+        {
+          name: 'b'
+        }
+      ]
+    }),
+    new Item({
       name: 'vonmisesvariate',
       class: 'random',
       category: 3,
@@ -393,19 +422,6 @@ eYo.Model.random__module.setData({
         },
         {
           name: 'kappa'
-        }
-      ]
-    }),
-    new Item({
-      name: 'paretovariate',
-      class: 'random',
-      category: 3,
-      type_: 0,
-      href: '#random.paretovariate',
-      ary: 1,
-      arguments: [
-        {
-          name: 'alpha'
         }
       ]
     }),
@@ -424,64 +440,48 @@ eYo.Model.random__module.setData({
           name: 'beta'
         }
       ]
-    }),
-    new Item({
-      name: 'SystemRandom',
-      class: 'random',
-      category: 4,
-      type_: 1,
-      href: '#random.SystemRandom',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'seed',
-          optional: true
-        }
-      ]
     })
   ],
   by_name: {
-    'seed': 0,
-    'getstate': 1,
-    'setstate': 2,
-    'getrandbits': 3,
-    'randrange': 4,
-    'randint': 5,
-    'choice': 6,
-    'choices': 7,
-    'shuffle': 8,
-    'sample': 9,
-    'random': 10,
-    'uniform': 11,
-    'triangular': 12,
-    'betavariate': 13,
-    'expovariate': 14,
-    'gammavariate': 15,
-    'gauss': 16,
-    'lognormvariate': 17,
-    'normalvariate': 18,
-    'vonmisesvariate': 19,
-    'paretovariate': 20,
-    'weibullvariate': 21,
-    'SystemRandom': 22
+    'SystemRandom': 0,
+    'betavariate': 1,
+    'choice': 2,
+    'choices': 3,
+    'expovariate': 4,
+    'gammavariate': 5,
+    'gauss': 6,
+    'getrandbits': 7,
+    'getstate': 8,
+    'lognormvariate': 9,
+    'normalvariate': 10,
+    'paretovariate': 11,
+    'randint': 12,
+    'random': 13,
+    'randrange': 14,
+    'sample': 15,
+    'seed': 16,
+    'setstate': 17,
+    'shuffle': 18,
+    'triangular': 19,
+    'uniform': 20,
+    'vonmisesvariate': 21,
+    'weibullvariate': 22
   },
   by_category: {
-    0: [0, 1, 2, 3],
-    1: [4, 5],
-    2: [6, 7, 8, 9],
-    3: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-    4: [22]
+    0: [7, 8, 16, 17],
+    1: [12, 14],
+    2: [2, 3, 15, 18],
+    3: [1, 4, 5, 6, 9, 10, 11, 13, 19, 20, 21, 22],
+    4: [0]
   },
   by_type: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-    1: [22]
+    0: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+    1: [0]
   }
 })
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2018-11-15 15:55:06.755018
+// This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2018-11-16 00:27:21.413075
 
 

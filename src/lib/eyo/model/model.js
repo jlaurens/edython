@@ -23,6 +23,7 @@ goog.require('eYo.Protocol.Register')
 eYo.Model.Module = function (url) {
   this.url = url
   this.profiles = {}
+  this.items_by_type = {}
 }
 
 /**
@@ -57,15 +58,6 @@ eYo.Model.Module.prototype.getItem = function (key) {
 }
 
 /**
- * Get the type of the given item.
- * @param {!Object} item.
- * @return {?String} return the type.
- */
-eYo.Model.Module.prototype.getType = function (item) {
-  return item && item.type && this.data.types[item.type]
-}
-
-/**
  * Get the indices of the items for the given category
  * @param {!String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
@@ -89,8 +81,42 @@ eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
   }
 }
 
+/**
+ * Sends a message for each ordered item with the give type
+ * @param {!String} key  The name of the category
+ */
+eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
+  if (goog.isString(type)) {
+    var ra = this.items_by_type[type]
+    if (!ra) {
+      ra = this.items_by_type[type] = []
+      for (var i = 0; i < this.data.items.length; i++) {
+        var item = this.data.items[i]
+        if (item.type === type) {
+          ra.push(item)
+        }
+      }
+    }
+    ra.forEach(handler)
+  }
+}
+
+/**
+ * Item constuctor
+ * @param {*} model 
+ */
 eYo.Model.Item = function (model) {
-  goog.object.extend(this, model)
+  var key
+  for (key in model) {
+    Object.defineProperty(
+      this,
+      key,
+      {
+        value: model[key]
+      }
+    )
+  }
+  // goog.object.extend(this, model)
 }
 
 // Each model loaded comes hear
@@ -106,7 +132,7 @@ Object.defineProperty(
   'model',
   {
     get() {
-      raise('RENAMED property: model -> module')
+      throw 'RENAMED property: model -> module'
     }
   }
 )
@@ -137,12 +163,6 @@ Object.defineProperties(
     type: {
       get () {
         return this.module.data.types[this.type_]
-      }
-    },
-    ary: {
-      get () {
-        raise('the ary is more difficult to compute')
-        return this.arguments ? this.arguments.length : 0
       }
     }
   }

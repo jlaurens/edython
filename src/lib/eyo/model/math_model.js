@@ -67,6 +67,100 @@ eYo.Model.math__module.setData({
   ],
   items: [
     new Item({
+      name: 'acos',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.acos',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'acosh',
+      class: 'math',
+      category: 4,
+      type_: 0,
+      href: '#math.acosh',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'asin',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.asin',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'asinh',
+      class: 'math',
+      category: 4,
+      type_: 0,
+      href: '#math.asinh',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'atan',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.atan',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'atan2',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.atan2',
+      ary: 2,
+      arguments: [
+        {
+          name: 'y'
+        },
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'atanh',
+      class: 'math',
+      category: 4,
+      type_: 0,
+      href: '#math.atanh',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
       name: 'ceil',
       class: 'math',
       category: 0,
@@ -92,6 +186,106 @@ eYo.Model.math__module.setData({
         },
         {
           name: 'y'
+        }
+      ]
+    }),
+    new Item({
+      name: 'cos',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.cos',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'cosh',
+      class: 'math',
+      category: 4,
+      type_: 0,
+      href: '#math.cosh',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'degrees',
+      class: 'math',
+      category: 3,
+      type_: 0,
+      href: '#math.degrees',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'e',
+      class: 'math',
+      category: 6,
+      type_: 1,
+      href: '#math.e',
+      stmt: true
+    }),
+    new Item({
+      name: 'erf',
+      class: 'math',
+      category: 5,
+      type_: 0,
+      href: '#math.erf',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'erfc',
+      class: 'math',
+      category: 5,
+      type_: 0,
+      href: '#math.erfc',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'exp',
+      class: 'math',
+      category: 1,
+      type_: 0,
+      href: '#math.exp',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'expm1',
+      class: 'math',
+      category: 1,
+      type_: 0,
+      href: '#math.expm1',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
         }
       ]
     }),
@@ -177,6 +371,19 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
+      name: 'gamma',
+      class: 'math',
+      category: 5,
+      type_: 0,
+      href: '#math.gamma',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
       name: 'gcd',
       class: 'math',
       category: 0,
@@ -191,6 +398,30 @@ eYo.Model.math__module.setData({
           name: 'b'
         }
       ]
+    }),
+    new Item({
+      name: 'hypot',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.hypot',
+      ary: 2,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'y'
+        }
+      ]
+    }),
+    new Item({
+      name: 'inf',
+      class: 'math',
+      category: 6,
+      type_: 1,
+      href: '#math.inf',
+      stmt: true
     }),
     new Item({
       name: 'isclose',
@@ -277,50 +508,11 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
-      name: 'modf',
+      name: 'lgamma',
       class: 'math',
-      category: 0,
+      category: 5,
       type_: 0,
-      href: '#math.modf',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'trunc',
-      class: 'math',
-      category: 0,
-      type_: 0,
-      href: '#math.trunc',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'exp',
-      class: 'math',
-      category: 1,
-      type_: 0,
-      href: '#math.exp',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'expm1',
-      class: 'math',
-      category: 1,
-      type_: 0,
-      href: '#math.expm1',
+      href: '#math.lgamma',
       ary: 1,
       arguments: [
         {
@@ -343,6 +535,19 @@ eYo.Model.math__module.setData({
         {
           name: 'base',
           optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'log10',
+      class: 'math',
+      category: 1,
+      type_: 0,
+      href: '#math.log10',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
         }
       ]
     }),
@@ -373,17 +578,33 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
-      name: 'log10',
+      name: 'modf',
       class: 'math',
-      category: 1,
+      category: 0,
       type_: 0,
-      href: '#math.log10',
+      href: '#math.modf',
       ary: 1,
       arguments: [
         {
           name: 'x'
         }
       ]
+    }),
+    new Item({
+      name: 'nan',
+      class: 'math',
+      category: 6,
+      type_: 1,
+      href: '#math.nan',
+      stmt: true
+    }),
+    new Item({
+      name: 'pi',
+      class: 'math',
+      category: 6,
+      type_: 1,
+      href: '#math.pi',
+      stmt: true
     }),
     new Item({
       name: 'pow',
@@ -402,143 +623,6 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
-      name: 'sqrt',
-      class: 'math',
-      category: 1,
-      type_: 0,
-      href: '#math.sqrt',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'acos',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.acos',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'asin',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.asin',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'atan',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.atan',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'atan2',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.atan2',
-      ary: 2,
-      arguments: [
-        {
-          name: 'y'
-        },
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'cos',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.cos',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'hypot',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.hypot',
-      ary: 2,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'y'
-        }
-      ]
-    }),
-    new Item({
-      name: 'sin',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.sin',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'tan',
-      class: 'math',
-      category: 2,
-      type_: 0,
-      href: '#math.tan',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'degrees',
-      class: 'math',
-      category: 3,
-      type_: 0,
-      href: '#math.degrees',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
       name: 'radians',
       class: 'math',
       category: 3,
@@ -553,50 +637,11 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
-      name: 'acosh',
+      name: 'sin',
       class: 'math',
-      category: 4,
+      category: 2,
       type_: 0,
-      href: '#math.acosh',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'asinh',
-      class: 'math',
-      category: 4,
-      type_: 0,
-      href: '#math.asinh',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'atanh',
-      class: 'math',
-      category: 4,
-      type_: 0,
-      href: '#math.atanh',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'cosh',
-      class: 'math',
-      category: 4,
-      type_: 0,
-      href: '#math.cosh',
+      href: '#math.sin',
       ary: 1,
       arguments: [
         {
@@ -618,6 +663,32 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
+      name: 'sqrt',
+      class: 'math',
+      category: 1,
+      type_: 0,
+      href: '#math.sqrt',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'tan',
+      class: 'math',
+      category: 2,
+      type_: 0,
+      href: '#math.tan',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
       name: 'tanh',
       class: 'math',
       category: 4,
@@ -631,74 +702,6 @@ eYo.Model.math__module.setData({
       ]
     }),
     new Item({
-      name: 'erf',
-      class: 'math',
-      category: 5,
-      type_: 0,
-      href: '#math.erf',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'erfc',
-      class: 'math',
-      category: 5,
-      type_: 0,
-      href: '#math.erfc',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'gamma',
-      class: 'math',
-      category: 5,
-      type_: 0,
-      href: '#math.gamma',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'lgamma',
-      class: 'math',
-      category: 5,
-      type_: 0,
-      href: '#math.lgamma',
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'pi',
-      class: 'math',
-      category: 6,
-      type_: 1,
-      href: '#math.pi',
-      stmt: true
-    }),
-    new Item({
-      name: 'e',
-      class: 'math',
-      category: 6,
-      type_: 1,
-      href: '#math.e',
-      stmt: true
-    }),
-    new Item({
       name: 'tau',
       class: 'math',
       category: 6,
@@ -707,90 +710,87 @@ eYo.Model.math__module.setData({
       stmt: true
     }),
     new Item({
-      name: 'inf',
+      name: 'trunc',
       class: 'math',
-      category: 6,
-      type_: 1,
-      href: '#math.inf',
-      stmt: true
-    }),
-    new Item({
-      name: 'nan',
-      class: 'math',
-      category: 6,
-      type_: 1,
-      href: '#math.nan',
-      stmt: true
+      category: 0,
+      type_: 0,
+      href: '#math.trunc',
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
     })
   ],
   by_name: {
-    'ceil': 0,
-    'copysign': 1,
-    'fabs': 2,
-    'factorial': 3,
-    'floor': 4,
-    'fmod': 5,
-    'frexp': 6,
-    'fsum': 7,
-    'gcd': 8,
-    'isclose': 9,
-    'isfinite': 10,
-    'isinf': 11,
-    'isnan': 12,
-    'ldexp': 13,
-    'modf': 14,
-    'trunc': 15,
-    'exp': 16,
-    'expm1': 17,
-    'log': 18,
-    'log1p': 19,
-    'log2': 20,
-    'log10': 21,
-    'pow': 22,
-    'sqrt': 23,
-    'acos': 24,
-    'asin': 25,
-    'atan': 26,
-    'atan2': 27,
-    'cos': 28,
-    'hypot': 29,
-    'sin': 30,
-    'tan': 31,
-    'degrees': 32,
-    'radians': 33,
-    'acosh': 34,
-    'asinh': 35,
-    'atanh': 36,
-    'cosh': 37,
-    'sinh': 38,
-    'tanh': 39,
-    'erf': 40,
-    'erfc': 41,
-    'gamma': 42,
-    'lgamma': 43,
-    'pi': 44,
-    'e': 45,
-    'tau': 46,
-    'inf': 47,
-    'nan': 48
+    'acos': 0,
+    'acosh': 1,
+    'asin': 2,
+    'asinh': 3,
+    'atan': 4,
+    'atan2': 5,
+    'atanh': 6,
+    'ceil': 7,
+    'copysign': 8,
+    'cos': 9,
+    'cosh': 10,
+    'degrees': 11,
+    'e': 12,
+    'erf': 13,
+    'erfc': 14,
+    'exp': 15,
+    'expm1': 16,
+    'fabs': 17,
+    'factorial': 18,
+    'floor': 19,
+    'fmod': 20,
+    'frexp': 21,
+    'fsum': 22,
+    'gamma': 23,
+    'gcd': 24,
+    'hypot': 25,
+    'inf': 26,
+    'isclose': 27,
+    'isfinite': 28,
+    'isinf': 29,
+    'isnan': 30,
+    'ldexp': 31,
+    'lgamma': 32,
+    'log': 33,
+    'log10': 34,
+    'log1p': 35,
+    'log2': 36,
+    'modf': 37,
+    'nan': 38,
+    'pi': 39,
+    'pow': 40,
+    'radians': 41,
+    'sin': 42,
+    'sinh': 43,
+    'sqrt': 44,
+    'tan': 45,
+    'tanh': 46,
+    'tau': 47,
+    'trunc': 48
   },
   by_category: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    1: [16, 17, 18, 19, 20, 21, 22, 23],
-    2: [24, 25, 26, 27, 28, 29, 30, 31],
-    3: [32, 33],
-    4: [34, 35, 36, 37, 38, 39],
-    5: [40, 41, 42, 43],
-    6: [44, 45, 46, 47, 48]
+    0: [7, 8, 17, 18, 19, 20, 21, 22, 24, 27, 28, 29, 30, 31, 37, 48],
+    1: [15, 16, 33, 34, 35, 36, 40, 44],
+    2: [0, 2, 4, 5, 9, 25, 42, 45],
+    3: [11, 41],
+    4: [1, 3, 6, 10, 43, 46],
+    5: [13, 14, 23, 32],
+    6: [12, 26, 38, 39, 47]
   },
   by_type: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43],
-    1: [44, 45, 46, 47, 48]
+    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 45, 46, 48],
+    1: [12, 26, 38, 39, 47]
   }
 })
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2018-11-15 15:55:06.531588
+// This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2018-11-16 00:27:21.111747
 
 

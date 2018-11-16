@@ -540,12 +540,12 @@ eYo.T3.Profile.getReserved = function (identifier) {
     return new eYo.T3.Profile(null, out)
   }
   if ((out = {
-    class: eYo.T3.Stmt.class_part,
+    class: eYo.T3.Stmt.classdef_part,
     finally: eYo.T3.Stmt.finally_part,
     return: eYo.T3.Stmt.return_stmt,
     continue: eYo.T3.Stmt.continue_stmt,
     try: eYo.T3.Stmt.try_part,
-    def: eYo.T3.Stmt.def_part,
+    def: eYo.T3.Stmt.funcdef_part,
     while: eYo.T3.Stmt.while_part,
     del: eYo.T3.Stmt.del_stmt,
     with: eYo.T3.Stmt.with_part,

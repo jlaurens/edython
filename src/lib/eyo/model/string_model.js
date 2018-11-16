@@ -66,6 +66,26 @@ eYo.Model.string__module.setData({
   ],
   items: [
     new Item({
+      name: 'Formatter',
+      class: 'string',
+      category: 1,
+      type_: 1,
+      href: '#string.Formatter'
+    }),
+    new Item({
+      name: 'Template',
+      class: 'string',
+      category: 2,
+      type_: 1,
+      href: '#string.Template',
+      ary: 1,
+      arguments: [
+        {
+          name: 'template'
+        }
+      ]
+    }),
+    new Item({
       name: 'ascii_letters',
       class: 'string',
       category: 0,
@@ -87,68 +107,6 @@ eYo.Model.string__module.setData({
       href: '#string.ascii_uppercase'
     }),
     new Item({
-      name: 'digits',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.digits'
-    }),
-    new Item({
-      name: 'hexdigits',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.hexdigits'
-    }),
-    new Item({
-      name: 'octdigits',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.octdigits'
-    }),
-    new Item({
-      name: 'punctuation',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.punctuation'
-    }),
-    new Item({
-      name: 'printable',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.printable'
-    }),
-    new Item({
-      name: 'whitespace',
-      class: 'string',
-      category: 0,
-      type_: 0,
-      href: '#string.whitespace'
-    }),
-    new Item({
-      name: 'Formatter',
-      class: 'string',
-      category: 1,
-      type_: 1,
-      href: '#string.Formatter'
-    }),
-    new Item({
-      name: 'Template',
-      class: 'string',
-      category: 2,
-      type_: 1,
-      href: '#string.Template',
-      ary: 1,
-      arguments: [
-        {
-          name: 'template'
-        }
-      ]
-    }),
-    new Item({
       name: 'capwords',
       class: 'string',
       category: 3,
@@ -166,6 +124,49 @@ eYo.Model.string__module.setData({
           default: 'None'
         }
       ]
+    }),
+    new Item({
+      name: 'check_unused_args',
+      class: 'string.Formatter',
+      category: 1,
+      type_: 3,
+      href: '#string.Formatter.check_unused_args',
+      stmt: true,
+      ary: 3,
+      arguments: [
+        {
+          name: 'used_args'
+        },
+        {
+          name: 'args'
+        },
+        {
+          name: 'kwargs'
+        }
+      ]
+    }),
+    new Item({
+      name: 'convert_field',
+      class: 'string.Formatter',
+      category: 1,
+      type_: 3,
+      href: '#string.Formatter.convert_field',
+      ary: 2,
+      arguments: [
+        {
+          name: 'value'
+        },
+        {
+          name: 'conversion'
+        }
+      ]
+    }),
+    new Item({
+      name: 'digits',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.digits'
     }),
     new Item({
       name: 'format',
@@ -191,35 +192,19 @@ eYo.Model.string__module.setData({
       ]
     }),
     new Item({
-      name: 'vformat',
+      name: 'format_field',
       class: 'string.Formatter',
       category: 1,
       type_: 3,
-      href: '#string.Formatter.vformat',
+      href: '#string.Formatter.format_field',
       stmt: true,
-      ary: 3,
+      ary: 2,
       arguments: [
         {
-          name: 'format_string'
+          name: 'value'
         },
         {
-          name: 'args'
-        },
-        {
-          name: 'kwargs'
-        }
-      ]
-    }),
-    new Item({
-      name: 'parse',
-      class: 'string.Formatter',
-      category: 1,
-      type_: 3,
-      href: '#string.Formatter.parse',
-      ary: 1,
-      arguments: [
-        {
-          name: 'format_string'
+          name: 'format_spec'
         }
       ]
     }),
@@ -262,55 +247,62 @@ eYo.Model.string__module.setData({
       ]
     }),
     new Item({
-      name: 'check_unused_args',
+      name: 'hexdigits',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.hexdigits'
+    }),
+    new Item({
+      name: 'octdigits',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.octdigits'
+    }),
+    new Item({
+      name: 'parse',
       class: 'string.Formatter',
       category: 1,
       type_: 3,
-      href: '#string.Formatter.check_unused_args',
-      stmt: true,
-      ary: 3,
+      href: '#string.Formatter.parse',
+      ary: 1,
       arguments: [
         {
-          name: 'used_args'
-        },
-        {
-          name: 'args'
-        },
-        {
-          name: 'kwargs'
+          name: 'format_string'
         }
       ]
     }),
     new Item({
-      name: 'format_field',
-      class: 'string.Formatter',
-      category: 1,
-      type_: 3,
-      href: '#string.Formatter.format_field',
-      stmt: true,
-      ary: 2,
-      arguments: [
-        {
-          name: 'value'
-        },
-        {
-          name: 'format_spec'
-        }
-      ]
+      name: 'printable',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.printable'
     }),
     new Item({
-      name: 'convert_field',
-      class: 'string.Formatter',
-      category: 1,
+      name: 'punctuation',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.punctuation'
+    }),
+    new Item({
+      name: 'safe_substitute',
+      class: 'string.Template',
+      category: 2,
       type_: 3,
-      href: '#string.Formatter.convert_field',
-      ary: 2,
+      href: '#string.Template.safe_substitute',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 1,
       arguments: [
         {
-          name: 'value'
+          name: 'mapping'
         },
         {
-          name: 'conversion'
+          name: '**kwds',
+          optional: true
         }
       ]
     }),
@@ -333,65 +325,73 @@ eYo.Model.string__module.setData({
       ]
     }),
     new Item({
-      name: 'safe_substitute',
-      class: 'string.Template',
-      category: 2,
+      name: 'vformat',
+      class: 'string.Formatter',
+      category: 1,
       type_: 3,
-      href: '#string.Template.safe_substitute',
+      href: '#string.Formatter.vformat',
       stmt: true,
-      ary: Infinity,
-      mandatory: 1,
+      ary: 3,
       arguments: [
         {
-          name: 'mapping'
+          name: 'format_string'
         },
         {
-          name: '**kwds',
-          optional: true
+          name: 'args'
+        },
+        {
+          name: 'kwargs'
         }
       ]
+    }),
+    new Item({
+      name: 'whitespace',
+      class: 'string',
+      category: 0,
+      type_: 0,
+      href: '#string.whitespace'
     })
   ],
   by_name: {
-    'ascii_letters': 0,
-    'ascii_lowercase': 1,
-    'ascii_uppercase': 2,
-    'digits': 3,
-    'hexdigits': 4,
-    'octdigits': 5,
-    'punctuation': 6,
-    'printable': 7,
-    'whitespace': 8,
-    'Formatter': 9,
-    'Template': 10,
-    'capwords': 11,
-    'format': 12,
-    'vformat': 13,
-    'parse': 14,
-    'get_field': 15,
-    'get_value': 16,
-    'check_unused_args': 17,
-    'format_field': 18,
-    'convert_field': 19,
-    'substitute': 20,
-    'safe_substitute': 21
+    'Formatter': 0,
+    'Template': 1,
+    'ascii_letters': 2,
+    'ascii_lowercase': 3,
+    'ascii_uppercase': 4,
+    'capwords': 5,
+    'check_unused_args': 6,
+    'convert_field': 7,
+    'digits': 8,
+    'format': 9,
+    'format_field': 10,
+    'get_field': 11,
+    'get_value': 12,
+    'hexdigits': 13,
+    'octdigits': 14,
+    'parse': 15,
+    'printable': 16,
+    'punctuation': 17,
+    'safe_substitute': 18,
+    'substitute': 19,
+    'vformat': 20,
+    'whitespace': 21
   },
   by_category: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    1: [9, 12, 13, 14, 15, 16, 17, 18, 19],
-    2: [10, 20, 21],
-    3: [11]
+    0: [2, 3, 4, 8, 13, 14, 16, 17, 21],
+    1: [0, 6, 7, 9, 10, 11, 12, 15, 20],
+    2: [1, 18, 19],
+    3: [5]
   },
   by_type: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    1: [9, 10],
-    2: [11],
-    3: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+    0: [2, 3, 4, 8, 13, 14, 16, 17, 21],
+    1: [0, 1],
+    2: [5],
+    3: [6, 7, 9, 10, 11, 12, 15, 18, 19, 20]
   }
 })
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2018-11-15 15:55:06.325109
+// This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2018-11-16 00:27:20.957292
 
 

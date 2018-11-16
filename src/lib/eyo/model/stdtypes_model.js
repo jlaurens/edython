@@ -80,97 +80,63 @@ eYo.Model.stdtypes.setData({
   ],
   items: [
     new Item({
-      name: 'bit_length',
-      class: 'int',
-      category: 0,
+      name: '__bases__',
+      class: 'class',
+      category: 16,
+      type_: 4,
+      href: '#class.__bases__'
+    }),
+    new Item({
+      name: '__class__',
+      class: 'instance',
+      category: 16,
+      type_: 4,
+      href: '#instance.__class__'
+    }),
+    new Item({
+      name: '__dict__',
+      class: 'object',
+      category: 16,
+      type_: 4,
+      href: '#object.__dict__'
+    }),
+    new Item({
+      name: '__enter__',
+      class: 'contextmanager',
+      category: 15,
       type_: 0,
-      href: '#int.bit_length',
+      href: '#contextmanager.__enter__',
       ary: 0
     }),
     new Item({
-      name: 'to_bytes',
-      class: 'int',
-      category: 0,
+      name: '__eq__',
+      class: 'memoryview',
+      category: 11,
       type_: 0,
-      href: '#int.to_bytes',
-      ary: Infinity,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'length'
-        },
-        {
-          name: 'byteorder'
-        },
-        {
-          name: '*',
-          optional: true
-        },
-        {
-          name: 'signed',
-          default: 'False'
-        }
-      ]
-    }),
-    new Item({
-      name: 'from_bytes',
-      class: 'int',
-      category: 0,
-      type_: 1,
-      href: '#int.from_bytes',
-      ary: Infinity,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'bytes'
-        },
-        {
-          name: 'byteorder'
-        },
-        {
-          name: '*',
-          optional: true
-        },
-        {
-          name: 'signed',
-          default: 'False'
-        }
-      ]
-    }),
-    new Item({
-      name: 'as_integer_ratio',
-      class: 'float',
-      category: 1,
-      type_: 0,
-      href: '#float.as_integer_ratio',
-      ary: 0
-    }),
-    new Item({
-      name: 'is_integer',
-      class: 'float',
-      category: 1,
-      type_: 0,
-      href: '#float.is_integer',
-      ary: 0
-    }),
-    new Item({
-      name: 'hex',
-      class: 'float',
-      category: 1,
-      type_: 0,
-      href: '#float.hex',
-      ary: 0
-    }),
-    new Item({
-      name: 'fromhex',
-      class: 'float',
-      category: 1,
-      type_: 1,
-      href: '#float.fromhex',
+      href: '#memoryview.__eq__',
       ary: 1,
       arguments: [
         {
-          name: 's'
+          name: 'exporter'
+        }
+      ]
+    }),
+    new Item({
+      name: '__exit__',
+      class: 'contextmanager',
+      category: 15,
+      type_: 0,
+      href: '#contextmanager.__exit__',
+      ary: 3,
+      arguments: [
+        {
+          name: 'exc_type'
+        },
+        {
+          name: 'exc_val'
+        },
+        {
+          name: 'exc_tb'
         }
       ]
     }),
@@ -191,6 +157,20 @@ eYo.Model.stdtypes.setData({
       ary: 0
     }),
     new Item({
+      name: '__mro__',
+      class: 'class',
+      category: 16,
+      type_: 4,
+      href: '#class.__mro__'
+    }),
+    new Item({
+      name: '__name__',
+      class: 'definition',
+      category: 16,
+      type_: 4,
+      href: '#definition.__name__'
+    }),
+    new Item({
       name: '__next__',
       class: 'iterator',
       category: 2,
@@ -199,98 +179,95 @@ eYo.Model.stdtypes.setData({
       ary: 0
     }),
     new Item({
-      name: 'list',
-      class: '',
-      category: 3,
-      type_: 2,
-      href: '#list',
+      name: '__qualname__',
+      class: 'definition',
+      category: 16,
+      type_: 4,
+      href: '#definition.__qualname__'
+    }),
+    new Item({
+      name: '__subclasses__',
+      class: 'class',
+      category: 16,
+      type_: 0,
+      href: '#class.__subclasses__',
+      ary: 0
+    }),
+    new Item({
+      name: 'add',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.add',
+      stmt: true,
       ary: 1,
+      arguments: [
+        {
+          name: 'elem'
+        }
+      ]
+    }),
+    new Item({
+      name: 'as_integer_ratio',
+      class: 'float',
+      category: 1,
+      type_: 0,
+      href: '#float.as_integer_ratio',
+      ary: 0
+    }),
+    new Item({
+      name: 'bit_length',
+      class: 'int',
+      category: 0,
+      type_: 0,
+      href: '#int.bit_length',
+      ary: 0
+    }),
+    new Item({
+      name: 'bytearray',
+      class: '',
+      category: 9,
+      type_: 2,
+      href: '#bytearray',
+      stmt: true,
+      ary: 3,
       mandatory: 0,
       arguments: [
         {
-          name: 'iterable',
+          name: 'source',
+          optional: true
+        },
+        {
+          name: 'encoding',
+          optional: true
+        },
+        {
+          name: 'errors',
           optional: true
         }
       ]
     }),
     new Item({
-      name: 'tuple',
+      name: 'bytes',
       class: '',
-      category: 4,
+      category: 8,
       type_: 2,
-      href: '#tuple',
-      ary: 1,
+      href: '#bytes',
+      stmt: true,
+      ary: 3,
       mandatory: 0,
       arguments: [
         {
-          name: 'iterable',
+          name: 'source',
           optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'range',
-      class: '',
-      category: 5,
-      type_: 2,
-      href: '#range',
-      signatures: [
+        },
         {
-          ary: 3,
-          mandatory: 2,
-          arguments: [
-            {
-              name: 'start'
-            },
-            {
-              name: 'stop'
-            },
-            {
-              name: 'step',
-              optional: true
-            }
-          ]
-        }
-      ],
-      ary: 1,
-      arguments: [
+          name: 'encoding',
+          optional: true
+        },
         {
-          name: 'stop'
-        }
-      ]
-    }),
-    new Item({
-      name: 'str',
-      class: '',
-      category: 6,
-      type_: 2,
-      href: '#str',
-      signatures: [
-        {
-          ary: 3,
-          mandatory: 0,
-          arguments: [
-            {
-              name: 'object',
-              default: 'b\'\''
-            },
-            {
-              name: 'encoding',
-              default: '\'utf-8\''
-            },
-            {
-              name: 'errors',
-              default: '\'strict\''
-            }
-          ]
-        }
-      ],
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'object',
-          default: '\'\''
+          name: 'errors',
+          optional: true
         }
       ]
     }),
@@ -303,12 +280,40 @@ eYo.Model.stdtypes.setData({
       ary: 0
     }),
     new Item({
+      name: 'capitalize',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.capitalize',
+      ary: 0
+    }),
+    new Item({
       name: 'casefold',
       class: 'str',
       category: 7,
       type_: 0,
       href: '#str.casefold',
       ary: 0
+    }),
+    new Item({
+      name: 'cast',
+      class: 'memoryview',
+      category: 11,
+      type_: 0,
+      href: '#memoryview.cast',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'format'
+        },
+        {
+          name: 'shape',
+          optional: true
+        }
+      ]
     }),
     new Item({
       name: 'center',
@@ -329,6 +334,59 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'center',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.center',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'width'
+        },
+        {
+          name: 'fillbyte',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'clear',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.clear',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'clear',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.clear',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'copy',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.copy',
+      ary: 0
+    }),
+    new Item({
+      name: 'copy',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.copy',
+      ary: 0
+    }),
+    new Item({
       name: 'count',
       class: 'str',
       category: 7,
@@ -347,6 +405,143 @@ eYo.Model.stdtypes.setData({
         {
           name: 'end',
           optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'count',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.count',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'sub'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'decode',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.decode',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'encoding',
+          default: '"utf-8"'
+        },
+        {
+          name: 'errors',
+          default: '"strict"'
+        }
+      ]
+    }),
+    new Item({
+      name: 'dict',
+      class: '',
+      category: 13,
+      type_: 2,
+      href: '#dict',
+      signatures: [
+        {
+          ary: Infinity,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'mapping'
+            },
+            {
+              name: '**kwarg',
+              optional: true
+            }
+          ]
+        },
+        {
+          ary: Infinity,
+          mandatory: 1,
+          arguments: [
+            {
+              name: 'iterable'
+            },
+            {
+              name: '**kwarg',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '**kwarg',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'difference',
+      synonyms: [
+        'set - other -'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.difference',
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*others',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'difference_update',
+      synonyms: [
+        'set -= other |'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.difference_update',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*others',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'discard',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.discard',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'elem'
         }
       ]
     }),
@@ -392,6 +587,29 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'endswith',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.endswith',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'suffix'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
       name: 'expandtabs',
       class: 'str',
       category: 7,
@@ -407,11 +625,50 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'expandtabs',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.expandtabs',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'tabsize',
+          default: 8
+        }
+      ]
+    }),
+    new Item({
       name: 'find',
       class: 'str',
       category: 7,
       type_: 0,
       href: '#str.find',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'sub'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'find',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.find',
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -461,576 +718,99 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'from_bytes',
+      class: 'int',
+      category: 0,
+      type_: 1,
+      href: '#int.from_bytes',
+      ary: Infinity,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'bytes'
+        },
+        {
+          name: 'byteorder'
+        },
+        {
+          name: '*',
+          optional: true
+        },
+        {
+          name: 'signed',
+          default: 'False'
+        }
+      ]
+    }),
+    new Item({
+      name: 'fromhex',
+      class: 'float',
+      category: 1,
+      type_: 1,
+      href: '#float.fromhex',
+      ary: 1,
+      arguments: [
+        {
+          name: 's'
+        }
+      ]
+    }),
+    new Item({
+      name: 'get',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.get',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'key'
+        },
+        {
+          name: 'default',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'hex',
+      class: 'float',
+      category: 1,
+      type_: 0,
+      href: '#float.hex',
+      ary: 0
+    }),
+    new Item({
+      name: 'hex',
+      class: 'bytes',
+      category: 8,
+      type_: 0,
+      href: '#bytes.hex',
+      ary: 0
+    }),
+    new Item({
+      name: 'hex',
+      class: 'bytearray',
+      category: 9,
+      type_: 0,
+      href: '#bytearray.hex',
+      ary: 0
+    }),
+    new Item({
+      name: 'hex',
+      class: 'memoryview',
+      category: 11,
+      type_: 0,
+      href: '#memoryview.hex',
+      ary: 0
+    }),
+    new Item({
       name: 'index',
       class: 'str',
       category: 7,
       type_: 0,
       href: '#str.index',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'sub'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'isalnum',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isalnum',
-      ary: 0
-    }),
-    new Item({
-      name: 'isalpha',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isalpha',
-      ary: 0
-    }),
-    new Item({
-      name: 'isdecimal',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isdecimal',
-      ary: 0
-    }),
-    new Item({
-      name: 'isdigit',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isdigit',
-      ary: 0
-    }),
-    new Item({
-      name: 'isidentifier',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isidentifier',
-      ary: 0
-    }),
-    new Item({
-      name: 'islower',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.islower',
-      ary: 0
-    }),
-    new Item({
-      name: 'isnumeric',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isnumeric',
-      ary: 0
-    }),
-    new Item({
-      name: 'isprintable',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isprintable',
-      ary: 0
-    }),
-    new Item({
-      name: 'isspace',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isspace',
-      ary: 0
-    }),
-    new Item({
-      name: 'istitle',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.istitle',
-      ary: 0
-    }),
-    new Item({
-      name: 'isupper',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.isupper',
-      ary: 0
-    }),
-    new Item({
-      name: 'join',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.join',
-      ary: 1,
-      arguments: [
-        {
-          name: 'iterable'
-        }
-      ]
-    }),
-    new Item({
-      name: 'ljust',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.ljust',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'width'
-        },
-        {
-          name: 'fillchar',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'lower',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.lower',
-      ary: 0
-    }),
-    new Item({
-      name: 'lstrip',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.lstrip',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'chars',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'maketrans',
-      class: 'str',
-      category: 7,
-      type_: 3,
-      href: '#str.maketrans',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'y',
-          optional: true
-        },
-        {
-          name: 'z',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'partition',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.partition',
-      ary: 1,
-      arguments: [
-        {
-          name: 'sep'
-        }
-      ]
-    }),
-    new Item({
-      name: 'replace',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.replace',
-      ary: 3,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'old'
-        },
-        {
-          name: 'new'
-        },
-        {
-          name: 'count',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rfind',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rfind',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'sub'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rindex',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rindex',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'sub'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rjust',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rjust',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'width'
-        },
-        {
-          name: 'fillchar',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rpartition',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rpartition',
-      ary: 1,
-      arguments: [
-        {
-          name: 'sep'
-        }
-      ]
-    }),
-    new Item({
-      name: 'rsplit',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rsplit',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'sep',
-          default: 'None'
-        },
-        {
-          name: 'maxsplit',
-          default: -1
-        }
-      ]
-    }),
-    new Item({
-      name: 'rstrip',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.rstrip',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'chars',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'split',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.split',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'sep',
-          default: 'None'
-        },
-        {
-          name: 'maxsplit',
-          default: -1
-        }
-      ]
-    }),
-    new Item({
-      name: 'splitlines',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.splitlines',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'keepends',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'startswith',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.startswith',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'prefix'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'strip',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.strip',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'chars',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'swapcase',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.swapcase',
-      ary: 0
-    }),
-    new Item({
-      name: 'title',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.title',
-      ary: 0
-    }),
-    new Item({
-      name: 'translate',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.translate',
-      ary: 1,
-      arguments: [
-        {
-          name: 'table'
-        }
-      ]
-    }),
-    new Item({
-      name: 'upper',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.upper',
-      ary: 0
-    }),
-    new Item({
-      name: 'zfill',
-      class: 'str',
-      category: 7,
-      type_: 0,
-      href: '#str.zfill',
-      ary: 1,
-      arguments: [
-        {
-          name: 'width'
-        }
-      ]
-    }),
-    new Item({
-      name: 'bytes',
-      class: '',
-      category: 8,
-      type_: 2,
-      href: '#bytes',
-      stmt: true,
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'source',
-          optional: true
-        },
-        {
-          name: 'encoding',
-          optional: true
-        },
-        {
-          name: 'errors',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'bytearray',
-      class: '',
-      category: 9,
-      type_: 2,
-      href: '#bytearray',
-      stmt: true,
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'source',
-          optional: true
-        },
-        {
-          name: 'encoding',
-          optional: true
-        },
-        {
-          name: 'errors',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'count',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.count',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'sub'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'decode',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.decode',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'encoding',
-          default: '"utf-8"'
-        },
-        {
-          name: 'errors',
-          default: '"strict"'
-        }
-      ]
-    }),
-    new Item({
-      name: 'endswith',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.endswith',
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'suffix'
-        },
-        {
-          name: 'start',
-          optional: true
-        },
-        {
-          name: 'end',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'find',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.find',
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1071,6 +851,274 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'intersection',
+      synonyms: [
+        'set & other &'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.intersection',
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*others',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'intersection_update',
+      synonyms: [
+        'set &= other &'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.intersection_update',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*others',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'is_integer',
+      class: 'float',
+      category: 1,
+      type_: 0,
+      href: '#float.is_integer',
+      ary: 0
+    }),
+    new Item({
+      name: 'isalnum',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isalnum',
+      ary: 0
+    }),
+    new Item({
+      name: 'isalnum',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.isalnum',
+      ary: 0
+    }),
+    new Item({
+      name: 'isalpha',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isalpha',
+      ary: 0
+    }),
+    new Item({
+      name: 'isalpha',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.isalpha',
+      ary: 0
+    }),
+    new Item({
+      name: 'isdecimal',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isdecimal',
+      ary: 0
+    }),
+    new Item({
+      name: 'isdigit',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isdigit',
+      ary: 0
+    }),
+    new Item({
+      name: 'isdigit',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.isdigit',
+      ary: 0
+    }),
+    new Item({
+      name: 'isdisjoint',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.isdisjoint',
+      ary: 1,
+      arguments: [
+        {
+          name: 'other'
+        }
+      ]
+    }),
+    new Item({
+      name: 'isidentifier',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isidentifier',
+      ary: 0
+    }),
+    new Item({
+      name: 'islower',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.islower',
+      ary: 0
+    }),
+    new Item({
+      name: 'islower',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.islower',
+      ary: 0
+    }),
+    new Item({
+      name: 'isnumeric',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isnumeric',
+      ary: 0
+    }),
+    new Item({
+      name: 'isprintable',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isprintable',
+      ary: 0
+    }),
+    new Item({
+      name: 'isspace',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isspace',
+      ary: 0
+    }),
+    new Item({
+      name: 'isspace',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.isspace',
+      ary: 0
+    }),
+    new Item({
+      name: 'issubset',
+      synonyms: [
+        'set <= other'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.issubset',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'other'
+        }
+      ]
+    }),
+    new Item({
+      name: 'issuperset',
+      synonyms: [
+        'set >= other'
+      ],
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.issuperset',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'other'
+        }
+      ]
+    }),
+    new Item({
+      name: 'istitle',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.istitle',
+      ary: 0
+    }),
+    new Item({
+      name: 'istitle',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.istitle',
+      ary: 0
+    }),
+    new Item({
+      name: 'isupper',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.isupper',
+      ary: 0
+    }),
+    new Item({
+      name: 'isupper',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.isupper',
+      ary: 0
+    }),
+    new Item({
+      name: 'items',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.items',
+      ary: 0
+    }),
+    new Item({
+      name: 'iter(dictview)',
+      category: 14
+    }),
+    new Item({
+      name: 'join',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.join',
+      ary: 1,
+      arguments: [
+        {
+          name: 'iterable'
+        }
+      ]
+    }),
+    new Item({
       name: 'join',
       class: 'bytearray',
       holder: 'bytes',
@@ -1081,6 +1129,140 @@ eYo.Model.stdtypes.setData({
       arguments: [
         {
           name: 'iterable'
+        }
+      ]
+    }),
+    new Item({
+      name: 'keys',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.keys',
+      ary: 0
+    }),
+    new Item({
+      name: 'len(dictview)',
+      category: 14
+    }),
+    new Item({
+      name: 'list',
+      class: '',
+      category: 3,
+      type_: 2,
+      href: '#list',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'iterable',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'ljust',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.ljust',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'width'
+        },
+        {
+          name: 'fillchar',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'ljust',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.ljust',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'width'
+        },
+        {
+          name: 'fillbyte',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'lower',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.lower',
+      ary: 0
+    }),
+    new Item({
+      name: 'lower',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.lower',
+      ary: 0
+    }),
+    new Item({
+      name: 'lstrip',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.lstrip',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'chars',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'lstrip',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.lstrip',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'chars',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'maketrans',
+      class: 'str',
+      category: 7,
+      type_: 3,
+      href: '#str.maketrans',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'y',
+          optional: true
+        },
+        {
+          name: 'z',
+          optional: true
         }
       ]
     }),
@@ -1102,6 +1284,41 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'memoryview',
+      class: '',
+      category: 11,
+      type_: 2,
+      href: '#memoryview',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'obj'
+        }
+      ]
+    }),
+    new Item({
+      name: 'mro',
+      class: 'class',
+      category: 16,
+      type_: 0,
+      href: '#class.mro',
+      ary: 0
+    }),
+    new Item({
+      name: 'partition',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.partition',
+      ary: 1,
+      arguments: [
+        {
+          name: 'sep'
+        }
+      ]
+    }),
+    new Item({
       name: 'partition',
       class: 'bytearray',
       holder: 'bytes',
@@ -1112,6 +1329,115 @@ eYo.Model.stdtypes.setData({
       arguments: [
         {
           name: 'sep'
+        }
+      ]
+    }),
+    new Item({
+      name: 'pop',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.pop',
+      ary: 0
+    }),
+    new Item({
+      name: 'pop',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.pop',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'key'
+        },
+        {
+          name: 'default',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'popitem',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.popitem',
+      ary: 0
+    }),
+    new Item({
+      name: 'range',
+      class: '',
+      category: 5,
+      type_: 2,
+      href: '#range',
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 2,
+          arguments: [
+            {
+              name: 'start'
+            },
+            {
+              name: 'stop'
+            },
+            {
+              name: 'step',
+              optional: true
+            }
+          ]
+        }
+      ],
+      ary: 1,
+      arguments: [
+        {
+          name: 'stop'
+        }
+      ]
+    }),
+    new Item({
+      name: 'release',
+      class: 'memoryview',
+      category: 11,
+      type_: 0,
+      href: '#memoryview.release',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'remove',
+      class: 'frozenset',
+      category: 12,
+      type_: 0,
+      href: '#frozenset.remove',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'elem'
+        }
+      ]
+    }),
+    new Item({
+      name: 'replace',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.replace',
+      ary: 3,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'old'
+        },
+        {
+          name: 'new'
+        },
+        {
+          name: 'count',
+          optional: true
         }
       ]
     }),
@@ -1139,11 +1465,55 @@ eYo.Model.stdtypes.setData({
     }),
     new Item({
       name: 'rfind',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rfind',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'sub'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'rfind',
       class: 'bytearray',
       holder: 'bytes',
       category: 10,
       type_: 0,
       href: '#bytearray.rfind',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'sub'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'rindex',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rindex',
       ary: 3,
       mandatory: 1,
       arguments: [
@@ -1184,6 +1554,56 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'rjust',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rjust',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'width'
+        },
+        {
+          name: 'fillchar',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'rjust',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.rjust',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'width'
+        },
+        {
+          name: 'fillbyte',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'rpartition',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rpartition',
+      ary: 1,
+      arguments: [
+        {
+          name: 'sep'
+        }
+      ]
+    }),
+    new Item({
       name: 'rpartition',
       class: 'bytearray',
       holder: 'bytes',
@@ -1194,6 +1614,238 @@ eYo.Model.stdtypes.setData({
       arguments: [
         {
           name: 'sep'
+        }
+      ]
+    }),
+    new Item({
+      name: 'rsplit',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rsplit',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'sep',
+          default: 'None'
+        },
+        {
+          name: 'maxsplit',
+          default: -1
+        }
+      ]
+    }),
+    new Item({
+      name: 'rsplit',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.rsplit',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'sep',
+          default: 'None'
+        },
+        {
+          name: 'maxsplit',
+          default: -1
+        }
+      ]
+    }),
+    new Item({
+      name: 'rstrip',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.rstrip',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'chars',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'rstrip',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.rstrip',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'chars',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'set',
+      synonyms: [
+        'frozenset'
+      ],
+      class: '',
+      category: 12,
+      type_: 2,
+      href: '#frozenset',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'iterable',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'set < other',
+      category: 12,
+      stmt: true
+    }),
+    new Item({
+      name: 'set > other',
+      category: 12,
+      stmt: true
+    }),
+    new Item({
+      name: 'setdefault',
+      class: 'dict',
+      category: 13,
+      type_: 0,
+      href: '#dict.setdefault',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'key'
+        },
+        {
+          name: 'default',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'sort',
+      class: 'list',
+      category: 3,
+      type_: 0,
+      href: '#list.sort',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*',
+          optional: true
+        },
+        {
+          name: 'key',
+          default: 'None'
+        },
+        {
+          name: 'reverse',
+          default: 'False'
+        }
+      ]
+    }),
+    new Item({
+      name: 'split',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.split',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'sep',
+          default: 'None'
+        },
+        {
+          name: 'maxsplit',
+          default: -1
+        }
+      ]
+    }),
+    new Item({
+      name: 'split',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.split',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'sep',
+          default: 'None'
+        },
+        {
+          name: 'maxsplit',
+          default: -1
+        }
+      ]
+    }),
+    new Item({
+      name: 'splitlines',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.splitlines',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'keepends',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'splitlines',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.splitlines',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'keepends',
+          default: 'False'
+        }
+      ]
+    }),
+    new Item({
+      name: 'startswith',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.startswith',
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'prefix'
+        },
+        {
+          name: 'start',
+          optional: true
+        },
+        {
+          name: 'end',
+          optional: true
         }
       ]
     }),
@@ -1221,150 +1873,52 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
-      name: 'translate',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.translate',
-      ary: 2,
-      mandatory: 1,
+      name: 'str',
+      class: '',
+      category: 6,
+      type_: 2,
+      href: '#str',
+      signatures: [
+        {
+          ary: 3,
+          mandatory: 0,
+          arguments: [
+            {
+              name: 'object',
+              default: 'b\'\''
+            },
+            {
+              name: 'encoding',
+              default: '\'utf-8\''
+            },
+            {
+              name: 'errors',
+              default: '\'strict\''
+            }
+          ]
+        }
+      ],
+      ary: 1,
+      mandatory: 0,
       arguments: [
         {
-          name: 'table'
-        },
-        {
-          name: 'delete',
-          default: 'b\'\''
+          name: 'object',
+          default: '\'\''
         }
       ]
     }),
     new Item({
-      name: 'center',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
+      name: 'strip',
+      class: 'str',
+      category: 7,
       type_: 0,
-      href: '#bytearray.center',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'width'
-        },
-        {
-          name: 'fillbyte',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'ljust',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.ljust',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'width'
-        },
-        {
-          name: 'fillbyte',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'lstrip',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.lstrip',
+      href: '#str.strip',
       ary: 1,
       mandatory: 0,
       arguments: [
         {
           name: 'chars',
           optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rjust',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.rjust',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'width'
-        },
-        {
-          name: 'fillbyte',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'rsplit',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.rsplit',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'sep',
-          default: 'None'
-        },
-        {
-          name: 'maxsplit',
-          default: -1
-        }
-      ]
-    }),
-    new Item({
-      name: 'rstrip',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.rstrip',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'chars',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'split',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.split',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'sep',
-          default: 'None'
-        },
-        {
-          name: 'maxsplit',
-          default: -1
         }
       ]
     }),
@@ -1385,117 +1939,12 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
-      name: 'capitalize',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
+      name: 'swapcase',
+      class: 'str',
+      category: 7,
       type_: 0,
-      href: '#bytearray.capitalize',
+      href: '#str.swapcase',
       ary: 0
-    }),
-    new Item({
-      name: 'expandtabs',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.expandtabs',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'tabsize',
-          default: 8
-        }
-      ]
-    }),
-    new Item({
-      name: 'isalnum',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.isalnum',
-      ary: 0
-    }),
-    new Item({
-      name: 'isalpha',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.isalpha',
-      ary: 0
-    }),
-    new Item({
-      name: 'isdigit',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.isdigit',
-      ary: 0
-    }),
-    new Item({
-      name: 'islower',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.islower',
-      ary: 0
-    }),
-    new Item({
-      name: 'isspace',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.isspace',
-      ary: 0
-    }),
-    new Item({
-      name: 'istitle',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.istitle',
-      ary: 0
-    }),
-    new Item({
-      name: 'isupper',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.isupper',
-      ary: 0
-    }),
-    new Item({
-      name: 'lower',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.lower',
-      ary: 0
-    }),
-    new Item({
-      name: 'splitlines',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.splitlines',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'keepends',
-          default: 'False'
-        }
-      ]
     }),
     new Item({
       name: 'swapcase',
@@ -1505,426 +1954,6 @@ eYo.Model.stdtypes.setData({
       type_: 0,
       href: '#bytearray.swapcase',
       ary: 0
-    }),
-    new Item({
-      name: 'title',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.title',
-      ary: 0
-    }),
-    new Item({
-      name: 'upper',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.upper',
-      ary: 0
-    }),
-    new Item({
-      name: 'zfill',
-      class: 'bytearray',
-      holder: 'bytes',
-      category: 10,
-      type_: 0,
-      href: '#bytearray.zfill',
-      ary: 1,
-      arguments: [
-        {
-          name: 'width'
-        }
-      ]
-    }),
-    new Item({
-      name: 'memoryview',
-      class: '',
-      category: 11,
-      type_: 2,
-      href: '#memoryview',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'obj'
-        }
-      ]
-    }),
-    new Item({
-      name: 'set',
-      synonyms: [
-        'frozenset'
-      ],
-      class: '',
-      category: 12,
-      type_: 2,
-      href: '#frozenset',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'iterable',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'dict',
-      class: '',
-      category: 13,
-      type_: 2,
-      href: '#dict',
-      signatures: [
-        {
-          ary: Infinity,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'mapping'
-            },
-            {
-              name: '**kwarg',
-              optional: true
-            }
-          ]
-        },
-        {
-          ary: Infinity,
-          mandatory: 1,
-          arguments: [
-            {
-              name: 'iterable'
-            },
-            {
-              name: '**kwarg',
-              optional: true
-            }
-          ]
-        }
-      ],
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '**kwarg',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'len(dictview)',
-      category: 14
-    }),
-    new Item({
-      name: 'iter(dictview)',
-      category: 14
-    }),
-    new Item({
-      name: 'x in dictview',
-      category: 14
-    }),
-    new Item({
-      name: '__enter__',
-      class: 'contextmanager',
-      category: 15,
-      type_: 0,
-      href: '#contextmanager.__enter__',
-      ary: 0
-    }),
-    new Item({
-      name: '__exit__',
-      class: 'contextmanager',
-      category: 15,
-      type_: 0,
-      href: '#contextmanager.__exit__',
-      ary: 3,
-      arguments: [
-        {
-          name: 'exc_type'
-        },
-        {
-          name: 'exc_val'
-        },
-        {
-          name: 'exc_tb'
-        }
-      ]
-    }),
-    new Item({
-      name: '__dict__',
-      class: 'object',
-      category: 16,
-      type_: 4,
-      href: '#object.__dict__'
-    }),
-    new Item({
-      name: '__class__',
-      class: 'instance',
-      category: 16,
-      type_: 4,
-      href: '#instance.__class__'
-    }),
-    new Item({
-      name: '__bases__',
-      class: 'class',
-      category: 16,
-      type_: 4,
-      href: '#class.__bases__'
-    }),
-    new Item({
-      name: '__name__',
-      class: 'definition',
-      category: 16,
-      type_: 4,
-      href: '#definition.__name__'
-    }),
-    new Item({
-      name: '__qualname__',
-      class: 'definition',
-      category: 16,
-      type_: 4,
-      href: '#definition.__qualname__'
-    }),
-    new Item({
-      name: '__mro__',
-      class: 'class',
-      category: 16,
-      type_: 4,
-      href: '#class.__mro__'
-    }),
-    new Item({
-      name: 'mro',
-      class: 'class',
-      category: 16,
-      type_: 0,
-      href: '#class.mro',
-      ary: 0
-    }),
-    new Item({
-      name: '__subclasses__',
-      class: 'class',
-      category: 16,
-      type_: 0,
-      href: '#class.__subclasses__',
-      ary: 0
-    }),
-    new Item({
-      name: 'sort',
-      class: 'list',
-      category: 3,
-      type_: 0,
-      href: '#list.sort',
-      stmt: true,
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*',
-          optional: true
-        },
-        {
-          name: 'key',
-          default: 'None'
-        },
-        {
-          name: 'reverse',
-          default: 'False'
-        }
-      ]
-    }),
-    new Item({
-      name: 'hex',
-      class: 'bytes',
-      category: 8,
-      type_: 0,
-      href: '#bytes.hex',
-      ary: 0
-    }),
-    new Item({
-      name: 'hex',
-      class: 'bytearray',
-      category: 9,
-      type_: 0,
-      href: '#bytearray.hex',
-      ary: 0
-    }),
-    new Item({
-      name: '__eq__',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.__eq__',
-      ary: 1,
-      arguments: [
-        {
-          name: 'exporter'
-        }
-      ]
-    }),
-    new Item({
-      name: 'tobytes',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.tobytes',
-      ary: 0
-    }),
-    new Item({
-      name: 'hex',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.hex',
-      ary: 0
-    }),
-    new Item({
-      name: 'tolist',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.tolist',
-      ary: 0
-    }),
-    new Item({
-      name: 'release',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.release',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'cast',
-      class: 'memoryview',
-      category: 11,
-      type_: 0,
-      href: '#memoryview.cast',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'format'
-        },
-        {
-          name: 'shape',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'isdisjoint',
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.isdisjoint',
-      ary: 1,
-      arguments: [
-        {
-          name: 'other'
-        }
-      ]
-    }),
-    new Item({
-      name: 'issubset',
-      synonyms: [
-        'set <= other'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.issubset',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'other'
-        }
-      ]
-    }),
-    new Item({
-      name: 'set < other',
-      category: 12,
-      stmt: true
-    }),
-    new Item({
-      name: 'issuperset',
-      synonyms: [
-        'set >= other'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.issuperset',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'other'
-        }
-      ]
-    }),
-    new Item({
-      name: 'set > other',
-      category: 12,
-      stmt: true
-    }),
-    new Item({
-      name: 'union',
-      synonyms: [
-        'set | other |'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.union',
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'intersection',
-      synonyms: [
-        'set & other &'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.intersection',
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'difference',
-      synonyms: [
-        'set - other -'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.difference',
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
-        }
-      ]
     }),
     new Item({
       name: 'symmetric_difference',
@@ -1939,71 +1968,6 @@ eYo.Model.stdtypes.setData({
       arguments: [
         {
           name: 'other'
-        }
-      ]
-    }),
-    new Item({
-      name: 'copy',
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.copy',
-      ary: 0
-    }),
-    new Item({
-      name: 'update',
-      synonyms: [
-        'set |= other |'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.update',
-      stmt: true,
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'intersection_update',
-      synonyms: [
-        'set &= other &'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.intersection_update',
-      stmt: true,
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'difference_update',
-      synonyms: [
-        'set -= other |'
-      ],
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.difference_update',
-      stmt: true,
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*others',
-          optional: true
         }
       ]
     }),
@@ -2025,155 +1989,143 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
-      name: 'add',
-      class: 'frozenset',
-      category: 12,
+      name: 'title',
+      class: 'str',
+      category: 7,
       type_: 0,
-      href: '#frozenset.add',
-      stmt: true,
-      ary: 1,
+      href: '#str.title',
+      ary: 0
+    }),
+    new Item({
+      name: 'title',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.title',
+      ary: 0
+    }),
+    new Item({
+      name: 'to_bytes',
+      class: 'int',
+      category: 0,
+      type_: 0,
+      href: '#int.to_bytes',
+      ary: Infinity,
+      mandatory: 2,
       arguments: [
         {
-          name: 'elem'
+          name: 'length'
+        },
+        {
+          name: 'byteorder'
+        },
+        {
+          name: '*',
+          optional: true
+        },
+        {
+          name: 'signed',
+          default: 'False'
         }
       ]
     }),
     new Item({
-      name: 'remove',
-      class: 'frozenset',
-      category: 12,
+      name: 'tobytes',
+      class: 'memoryview',
+      category: 11,
       type_: 0,
-      href: '#frozenset.remove',
-      stmt: true,
+      href: '#memoryview.tobytes',
+      ary: 0
+    }),
+    new Item({
+      name: 'tolist',
+      class: 'memoryview',
+      category: 11,
+      type_: 0,
+      href: '#memoryview.tolist',
+      ary: 0
+    }),
+    new Item({
+      name: 'translate',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.translate',
       ary: 1,
       arguments: [
         {
-          name: 'elem'
+          name: 'table'
         }
       ]
     }),
     new Item({
-      name: 'discard',
-      class: 'frozenset',
-      category: 12,
+      name: 'translate',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
       type_: 0,
-      href: '#frozenset.discard',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'elem'
-        }
-      ]
-    }),
-    new Item({
-      name: 'pop',
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.pop',
-      ary: 0
-    }),
-    new Item({
-      name: 'clear',
-      class: 'frozenset',
-      category: 12,
-      type_: 0,
-      href: '#frozenset.clear',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'clear',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.clear',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'copy',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.copy',
-      ary: 0
-    }),
-    new Item({
-      name: 'get',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.get',
+      href: '#bytearray.translate',
       ary: 2,
       mandatory: 1,
       arguments: [
         {
-          name: 'key'
+          name: 'table'
         },
         {
-          name: 'default',
+          name: 'delete',
+          default: 'b\'\''
+        }
+      ]
+    }),
+    new Item({
+      name: 'tuple',
+      class: '',
+      category: 4,
+      type_: 2,
+      href: '#tuple',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'iterable',
           optional: true
         }
       ]
     }),
     new Item({
-      name: 'items',
-      class: 'dict',
-      category: 13,
+      name: 'union',
+      synonyms: [
+        'set | other |'
+      ],
+      class: 'frozenset',
+      category: 12,
       type_: 0,
-      href: '#dict.items',
-      ary: 0
-    }),
-    new Item({
-      name: 'keys',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.keys',
-      ary: 0
-    }),
-    new Item({
-      name: 'pop',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.pop',
-      ary: 2,
-      mandatory: 1,
+      href: '#frozenset.union',
+      ary: Infinity,
+      mandatory: 0,
       arguments: [
         {
-          name: 'key'
-        },
-        {
-          name: 'default',
+          name: '*others',
           optional: true
         }
       ]
     }),
     new Item({
-      name: 'popitem',
-      class: 'dict',
-      category: 13,
+      name: 'update',
+      synonyms: [
+        'set |= other |'
+      ],
+      class: 'frozenset',
+      category: 12,
       type_: 0,
-      href: '#dict.popitem',
-      ary: 0
-    }),
-    new Item({
-      name: 'setdefault',
-      class: 'dict',
-      category: 13,
-      type_: 0,
-      href: '#dict.setdefault',
-      ary: 2,
-      mandatory: 1,
+      href: '#frozenset.update',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 0,
       arguments: [
         {
-          name: 'key'
-        },
-        {
-          name: 'default',
+          name: '*others',
           optional: true
         }
       ]
@@ -2194,164 +2146,212 @@ eYo.Model.stdtypes.setData({
       ]
     }),
     new Item({
+      name: 'upper',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.upper',
+      ary: 0
+    }),
+    new Item({
+      name: 'upper',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.upper',
+      ary: 0
+    }),
+    new Item({
       name: 'values',
       class: 'dict',
       category: 13,
       type_: 0,
       href: '#dict.values',
       ary: 0
+    }),
+    new Item({
+      name: 'x in dictview',
+      category: 14
+    }),
+    new Item({
+      name: 'zfill',
+      class: 'str',
+      category: 7,
+      type_: 0,
+      href: '#str.zfill',
+      ary: 1,
+      arguments: [
+        {
+          name: 'width'
+        }
+      ]
+    }),
+    new Item({
+      name: 'zfill',
+      class: 'bytearray',
+      holder: 'bytes',
+      category: 10,
+      type_: 0,
+      href: '#bytearray.zfill',
+      ary: 1,
+      arguments: [
+        {
+          name: 'width'
+        }
+      ]
     })
   ],
   by_name: {
-    'bit_length': 0,
-    'to_bytes': 1,
-    'from_bytes': 2,
-    'as_integer_ratio': 3,
-    'is_integer': 4,
-    'hex': 118,
-    'fromhex': 6,
-    '__iter__': 8,
-    '__next__': 9,
-    'list': 10,
-    'tuple': 11,
-    'range': 12,
-    'str': 13,
-    'capitalize': 82,
-    'casefold': 15,
-    'center': 74,
-    'count': 60,
-    'encode': 18,
-    'endswith': 62,
-    'expandtabs': 83,
-    'find': 63,
-    'format': 22,
-    'format_map': 23,
-    'index': 64,
-    'isalnum': 84,
-    'isalpha': 85,
-    'isdecimal': 27,
-    'isdigit': 86,
-    'isidentifier': 29,
-    'islower': 87,
-    'isnumeric': 31,
-    'isprintable': 32,
-    'isspace': 88,
-    'istitle': 89,
-    'isupper': 90,
-    'join': 65,
-    'ljust': 75,
-    'lower': 91,
-    'lstrip': 76,
-    'maketrans': 66,
-    'partition': 67,
-    'replace': 68,
-    'rfind': 69,
-    'rindex': 70,
-    'rjust': 77,
-    'rpartition': 71,
-    'rsplit': 78,
-    'rstrip': 79,
-    'split': 80,
-    'splitlines': 92,
-    'startswith': 72,
-    'strip': 81,
-    'swapcase': 93,
-    'title': 94,
-    'translate': 73,
-    'upper': 95,
-    'zfill': 96,
-    'bytes': 58,
-    'bytearray': 59,
-    'decode': 61,
-    'memoryview': 97,
-    'set': 98,
-    'frozenset': 98,
-    'dict': 99,
-    'len(dictview)': 100,
-    'iter(dictview)': 101,
-    'x in dictview': 102,
-    '__enter__': 103,
-    '__exit__': 104,
-    '__dict__': 105,
-    '__class__': 106,
-    '__bases__': 107,
-    '__name__': 108,
-    '__qualname__': 109,
-    '__mro__': 110,
-    'mro': 111,
-    '__subclasses__': 112,
-    'sort': 113,
-    '__eq__': 116,
-    'tobytes': 117,
-    'tolist': 119,
-    'release': 120,
-    'cast': 121,
-    'isdisjoint': 122,
-    'issubset': 123,
-    'set <= other': 123,
-    'set < other': 124,
-    'issuperset': 125,
-    'set >= other': 125,
-    'set > other': 126,
-    'union': 127,
-    'set | other |': 127,
-    'intersection': 128,
-    'set & other &': 128,
-    'difference': 129,
-    'set - other -': 129,
-    'symmetric_difference': 130,
-    'set ^ other': 130,
-    'copy': 142,
-    'update': 149,
-    'set |= other |': 132,
-    'intersection_update': 133,
-    'set &= other &': 133,
-    'difference_update': 134,
-    'set -= other |': 134,
-    'symmetric_difference_update': 135,
-    'set ^= other': 135,
-    'add': 136,
-    'remove': 137,
-    'discard': 138,
-    'pop': 146,
-    'clear': 141,
-    'get': 143,
-    'items': 144,
-    'keys': 145,
-    'popitem': 147,
-    'setdefault': 148,
-    'values': 150
+    '__bases__': 0,
+    '__class__': 1,
+    '__dict__': 2,
+    '__enter__': 3,
+    '__eq__': 4,
+    '__exit__': 5,
+    '__iter__': 7,
+    '__mro__': 8,
+    '__name__': 9,
+    '__next__': 10,
+    '__qualname__': 11,
+    '__subclasses__': 12,
+    'add': 13,
+    'as_integer_ratio': 14,
+    'bit_length': 15,
+    'bytearray': 16,
+    'bytes': 17,
+    'capitalize': 19,
+    'casefold': 20,
+    'cast': 21,
+    'center': 23,
+    'clear': 25,
+    'copy': 27,
+    'count': 29,
+    'decode': 30,
+    'dict': 31,
+    'difference': 32,
+    'set - other -': 32,
+    'difference_update': 33,
+    'set -= other |': 33,
+    'discard': 34,
+    'encode': 35,
+    'endswith': 37,
+    'expandtabs': 39,
+    'find': 41,
+    'format': 42,
+    'format_map': 43,
+    'from_bytes': 44,
+    'fromhex': 45,
+    'get': 46,
+    'hex': 50,
+    'index': 52,
+    'intersection': 53,
+    'set & other &': 53,
+    'intersection_update': 54,
+    'set &= other &': 54,
+    'is_integer': 55,
+    'isalnum': 57,
+    'isalpha': 59,
+    'isdecimal': 60,
+    'isdigit': 62,
+    'isdisjoint': 63,
+    'isidentifier': 64,
+    'islower': 66,
+    'isnumeric': 67,
+    'isprintable': 68,
+    'isspace': 70,
+    'issubset': 71,
+    'set <= other': 71,
+    'issuperset': 72,
+    'set >= other': 72,
+    'istitle': 74,
+    'isupper': 76,
+    'items': 77,
+    'iter(dictview)': 78,
+    'join': 80,
+    'keys': 81,
+    'len(dictview)': 82,
+    'list': 83,
+    'ljust': 85,
+    'lower': 87,
+    'lstrip': 89,
+    'maketrans': 91,
+    'memoryview': 92,
+    'mro': 93,
+    'partition': 95,
+    'pop': 97,
+    'popitem': 98,
+    'range': 99,
+    'release': 100,
+    'remove': 101,
+    'replace': 103,
+    'rfind': 105,
+    'rindex': 107,
+    'rjust': 109,
+    'rpartition': 111,
+    'rsplit': 113,
+    'rstrip': 115,
+    'set': 116,
+    'frozenset': 116,
+    'set < other': 117,
+    'set > other': 118,
+    'setdefault': 119,
+    'sort': 120,
+    'split': 122,
+    'splitlines': 124,
+    'startswith': 126,
+    'str': 127,
+    'strip': 129,
+    'swapcase': 131,
+    'symmetric_difference': 132,
+    'set ^ other': 132,
+    'symmetric_difference_update': 133,
+    'set ^= other': 133,
+    'title': 135,
+    'to_bytes': 136,
+    'tobytes': 137,
+    'tolist': 138,
+    'translate': 140,
+    'tuple': 141,
+    'union': 142,
+    'set | other |': 142,
+    'update': 144,
+    'set |= other |': 143,
+    'upper': 146,
+    'values': 147,
+    'x in dictview': 148,
+    'zfill': 150
   },
   by_category: {
-    0: [0, 1, 2],
-    1: [3, 4, 5, 6],
-    2: [7, 8, 9],
-    3: [10, 113],
-    4: [11],
-    5: [12],
-    6: [13],
-    7: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57],
-    8: [58, 114],
-    9: [59, 115],
-    10: [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96],
-    11: [97, 116, 117, 118, 119, 120, 121],
-    12: [98, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140],
-    13: [99, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150],
-    14: [100, 101, 102],
-    15: [103, 104],
-    16: [105, 106, 107, 108, 109, 110, 111, 112]
+    0: [15, 44, 136],
+    1: [14, 45, 47, 55],
+    2: [6, 7, 10],
+    3: [83, 120],
+    4: [141],
+    5: [99],
+    6: [127],
+    7: [18, 20, 22, 28, 35, 36, 38, 40, 42, 43, 51, 56, 58, 60, 61, 64, 65, 67, 68, 69, 73, 75, 79, 84, 86, 88, 90, 94, 102, 104, 106, 108, 110, 112, 114, 121, 123, 125, 128, 130, 134, 139, 145, 149],
+    8: [17, 48],
+    9: [16, 49],
+    10: [19, 23, 29, 30, 37, 39, 41, 52, 57, 59, 62, 66, 70, 74, 76, 80, 85, 87, 89, 91, 95, 103, 105, 107, 109, 111, 113, 115, 122, 124, 126, 129, 131, 135, 140, 146, 150],
+    11: [4, 21, 50, 92, 100, 137, 138],
+    12: [13, 24, 26, 32, 33, 34, 53, 54, 63, 71, 72, 96, 101, 116, 117, 118, 132, 133, 142, 143],
+    13: [25, 27, 31, 46, 77, 81, 97, 98, 119, 144, 147],
+    14: [78, 82, 148],
+    15: [3, 5],
+    16: [0, 1, 2, 8, 9, 11, 12, 93]
   },
   by_type: {
-    0: [0, 1, 3, 4, 5, 7, 8, 9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 60, 61, 62, 63, 64, 65, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 103, 104, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 125, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150],
-    1: [2, 6],
-    2: [10, 11, 12, 13, 58, 59, 97, 98, 99],
-    3: [40, 66],
-    4: [105, 106, 107, 108, 109, 110]
+    0: [3, 4, 5, 6, 7, 10, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 79, 80, 81, 84, 85, 86, 87, 88, 89, 93, 94, 95, 96, 97, 98, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 119, 120, 121, 122, 123, 124, 125, 126, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 142, 143, 144, 145, 146, 147, 149, 150],
+    1: [44, 45],
+    2: [16, 17, 31, 83, 92, 99, 116, 127, 141],
+    3: [90, 91],
+    4: [0, 1, 2, 8, 9, 11]
   }
 })
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-15 15:55:05.688358
+// This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2018-11-16 00:27:20.541525
 
 

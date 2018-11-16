@@ -26,7 +26,7 @@
           return item
         }
       },
-      can_ry: {
+      can_call: {
         type: Boolean,
         default: true
       },
@@ -148,7 +148,7 @@
         }
       },
       variants () {
-        return this.can_ry
+        return this.can_call
           ? this.can_andef
             ? [
               this.items.NONE,

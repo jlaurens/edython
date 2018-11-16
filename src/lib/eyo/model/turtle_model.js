@@ -80,19 +80,113 @@ eYo.Model.turtle__module.setData({
   ],
   items: [
     new Item({
-      name: 'forward',
+      name: 'RawTurtle',
       synonyms: [
-        'fd'
+        'RawPen'
       ],
       class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.fd',
-      stmt: true,
+      category: 17,
+      type_: 1,
+      href: '#turtle.RawPen',
       ary: 1,
       arguments: [
         {
-          name: 'distance'
+          name: 'canvas'
+        }
+      ]
+    }),
+    new Item({
+      name: 'Screen',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.Screen',
+      stmt: true
+    }),
+    new Item({
+      name: 'ScrolledCanvas',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.ScrolledCanvas',
+      ary: 1,
+      arguments: [
+        {
+          name: 'master'
+        }
+      ]
+    }),
+    new Item({
+      name: 'Shape',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.Shape',
+      ary: 2,
+      arguments: [
+        {
+          name: 'type_'
+        },
+        {
+          name: 'data'
+        }
+      ]
+    }),
+    new Item({
+      name: 'Turtle',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.Turtle'
+    }),
+    new Item({
+      name: 'TurtleScreen',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.TurtleScreen',
+      ary: 1,
+      arguments: [
+        {
+          name: 'cv'
+        }
+      ]
+    }),
+    new Item({
+      name: 'Vec2D',
+      class: 'turtle',
+      category: 17,
+      type_: 1,
+      href: '#turtle.Vec2D',
+      ary: 2,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'y'
+        }
+      ]
+    }),
+    new Item({
+      name: 'addcomponent',
+      class: 'turtle.Shape',
+      category: 17,
+      type_: 2,
+      href: '#turtle.Shape.addcomponent',
+      stmt: true,
+      ary: 3,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'poly'
+        },
+        {
+          name: 'fill'
+        },
+        {
+          name: 'outline',
+          default: 'None'
         }
       ]
     }),
@@ -115,113 +209,59 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'right',
-      synonyms: [
-        'rt'
-      ],
+      name: 'begin_fill',
       class: 'turtle',
-      category: 0,
+      category: 5,
       type_: 0,
-      href: '#turtle.rt',
+      href: '#turtle.begin_fill',
       stmt: true,
-      ary: 1,
+      ary: 0
+    }),
+    new Item({
+      name: 'begin_poly',
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.begin_poly',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'bgcolor',
+      class: 'turtle',
+      category: 11,
+      type_: 0,
+      href: '#turtle.bgcolor',
+      ary: Infinity,
+      mandatory: 0,
       arguments: [
         {
-          name: 'angle'
+          name: '*args',
+          optional: true
         }
       ]
     }),
     new Item({
-      name: 'left',
-      synonyms: [
-        'lt'
-      ],
+      name: 'bgpic',
       class: 'turtle',
-      category: 0,
+      category: 11,
       type_: 0,
-      href: '#turtle.lt',
-      stmt: true,
+      href: '#turtle.bgpic',
       ary: 1,
+      mandatory: 0,
       arguments: [
         {
-          name: 'angle'
-        }
-      ]
-    }),
-    new Item({
-      name: 'goto',
-      synonyms: [
-        'setpos',
-        'setposition'
-      ],
-      class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.setposition',
-      stmt: true,
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'y',
+          name: 'picname',
           default: 'None'
         }
       ]
     }),
     new Item({
-      name: 'setx',
+      name: 'bye',
       class: 'turtle',
-      category: 0,
+      category: 16,
       type_: 0,
-      href: '#turtle.setx',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'x'
-        }
-      ]
-    }),
-    new Item({
-      name: 'sety',
-      class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.sety',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'y'
-        }
-      ]
-    }),
-    new Item({
-      name: 'setheading',
-      synonyms: [
-        'seth'
-      ],
-      class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.seth',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'to_angle'
-        }
-      ]
-    }),
-    new Item({
-      name: 'home',
-      class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.home',
+      href: '#turtle.bye',
       stmt: true,
       ary: 0
     }),
@@ -249,31 +289,24 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'dot',
+      name: 'clear',
       class: 'turtle',
-      category: 0,
+      category: 6,
       type_: 0,
-      href: '#turtle.dot',
+      href: '#turtle.clear',
       stmt: true,
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'size',
-          default: 'None'
-        },
-        {
-          name: '*color',
-          optional: true
-        }
-      ]
+      ary: 0
     }),
     new Item({
-      name: 'stamp',
+      name: 'clearscreen',
+      synonyms: [
+        'clear'
+      ],
       class: 'turtle',
-      category: 0,
+      category: 11,
       type_: 0,
-      href: '#turtle.stamp',
+      href: '#turtle.clearscreen',
+      stmt: true,
       ary: 0
     }),
     new Item({
@@ -306,296 +339,12 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'undo',
+      name: 'clone',
       class: 'turtle',
-      category: 0,
+      category: 10,
       type_: 0,
-      href: '#turtle.undo',
-      stmt: true,
+      href: '#turtle.clone',
       ary: 0
-    }),
-    new Item({
-      name: 'speed',
-      class: 'turtle',
-      category: 0,
-      type_: 0,
-      href: '#turtle.speed',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'speed',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'position',
-      synonyms: [
-        'pos'
-      ],
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.pos',
-      ary: 0
-    }),
-    new Item({
-      name: 'towards',
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.towards',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'y',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'xcor',
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.xcor',
-      ary: 0
-    }),
-    new Item({
-      name: 'ycor',
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.ycor',
-      ary: 0
-    }),
-    new Item({
-      name: 'heading',
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.heading',
-      ary: 0
-    }),
-    new Item({
-      name: 'distance',
-      class: 'turtle',
-      category: 1,
-      type_: 0,
-      href: '#turtle.distance',
-      ary: 2,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'x'
-        },
-        {
-          name: 'y',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'degrees',
-      class: 'turtle',
-      category: 2,
-      type_: 0,
-      href: '#turtle.degrees',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'fullcircle',
-          default: 360.0
-        }
-      ]
-    }),
-    new Item({
-      name: 'radians',
-      class: 'turtle',
-      category: 2,
-      type_: 0,
-      href: '#turtle.radians',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'pendown',
-      synonyms: [
-        'pd',
-        'down'
-      ],
-      class: 'turtle',
-      category: 3,
-      type_: 0,
-      href: '#turtle.down',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'penup',
-      synonyms: [
-        'pu',
-        'up'
-      ],
-      class: 'turtle',
-      category: 3,
-      type_: 0,
-      href: '#turtle.up',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'pensize',
-      synonyms: [
-        'width'
-      ],
-      class: 'turtle',
-      category: 3,
-      type_: 0,
-      href: '#turtle.width',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'width',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'pen',
-      class: 'turtle',
-      category: 3,
-      type_: 0,
-      href: '#turtle.pen',
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'pen',
-          default: 'None'
-        },
-        {
-          name: '**pendict',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'isdown',
-      class: 'turtle',
-      category: 3,
-      type_: 0,
-      href: '#turtle.isdown',
-      ary: 0
-    }),
-    new Item({
-      name: 'pencolor',
-      class: 'turtle',
-      category: 4,
-      type_: 0,
-      href: '#turtle.pencolor',
-      signatures: [
-        {
-          ary: 0
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'colorstring'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: '(r, g, b)'
-            }
-          ]
-        },
-        {
-          ary: 3,
-          arguments: [
-            {
-              name: 'r'
-            },
-            {
-              name: 'g'
-            },
-            {
-              name: 'b'
-            }
-          ]
-        }
-      ],
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*args',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'fillcolor',
-      class: 'turtle',
-      category: 4,
-      type_: 0,
-      href: '#turtle.fillcolor',
-      signatures: [
-        {
-          ary: 0
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: 'colorstring'
-            }
-          ]
-        },
-        {
-          ary: 1,
-          arguments: [
-            {
-              name: '(r, g, b)'
-            }
-          ]
-        },
-        {
-          ary: 3,
-          arguments: [
-            {
-              name: 'r'
-            },
-            {
-              name: 'g'
-            },
-            {
-              name: 'b'
-            }
-          ]
-        }
-      ],
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*args',
-          optional: true
-        }
-      ]
     }),
     new Item({
       name: 'color',
@@ -670,21 +419,88 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'filling',
+      name: 'colormode',
       class: 'turtle',
-      category: 5,
+      category: 15,
       type_: 0,
-      href: '#turtle.filling',
-      ary: 0
+      href: '#turtle.colormode',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'cmode',
+          default: 'None'
+        }
+      ]
     }),
     new Item({
-      name: 'begin_fill',
+      name: 'degrees',
       class: 'turtle',
-      category: 5,
+      category: 2,
       type_: 0,
-      href: '#turtle.begin_fill',
+      href: '#turtle.degrees',
       stmt: true,
-      ary: 0
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'fullcircle',
+          default: 360.0
+        }
+      ]
+    }),
+    new Item({
+      name: 'delay',
+      class: 'turtle',
+      category: 12,
+      type_: 0,
+      href: '#turtle.delay',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'delay',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'distance',
+      class: 'turtle',
+      category: 1,
+      type_: 0,
+      href: '#turtle.distance',
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'y',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'dot',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.dot',
+      stmt: true,
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'size',
+          default: 'None'
+        },
+        {
+          name: '*color',
+          optional: true
+        }
+      ]
     }),
     new Item({
       name: 'end_fill',
@@ -696,55 +512,179 @@ eYo.Model.turtle__module.setData({
       ary: 0
     }),
     new Item({
-      name: 'reset',
+      name: 'end_poly',
       class: 'turtle',
-      category: 6,
+      category: 10,
       type_: 0,
-      href: '#turtle.reset',
+      href: '#turtle.end_poly',
       stmt: true,
       ary: 0
     }),
     new Item({
-      name: 'clear',
+      name: 'exitonclick',
       class: 'turtle',
-      category: 6,
+      category: 16,
       type_: 0,
-      href: '#turtle.clear',
+      href: '#turtle.exitonclick',
       stmt: true,
       ary: 0
     }),
     new Item({
-      name: 'write',
+      name: 'fillcolor',
       class: 'turtle',
-      category: 6,
+      category: 4,
       type_: 0,
-      href: '#turtle.write',
-      stmt: true,
-      ary: 6,
-      mandatory: 3,
+      href: '#turtle.fillcolor',
+      signatures: [
+        {
+          ary: 0
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'colorstring'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: '(r, g, b)'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'r'
+            },
+            {
+              name: 'g'
+            },
+            {
+              name: 'b'
+            }
+          ]
+        }
+      ],
+      ary: 3,
+      mandatory: 0,
       arguments: [
         {
-          name: 'arg'
-        },
-        {
-          name: 'move',
-          default: 'False'
-        },
-        {
-          name: 'align',
-          default: '"left"'
-        },
-        {
-          name: 'font',
-          default: '("Arial"'
-        },
-        {
-          name: '8'
-        },
-        {
-          name: '"normal")'
+          name: '*args',
+          optional: true
         }
       ]
+    }),
+    new Item({
+      name: 'filling',
+      class: 'turtle',
+      category: 5,
+      type_: 0,
+      href: '#turtle.filling',
+      ary: 0
+    }),
+    new Item({
+      name: 'forward',
+      synonyms: [
+        'fd'
+      ],
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.fd',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'distance'
+        }
+      ]
+    }),
+    new Item({
+      name: 'get_poly',
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.get_poly',
+      ary: 0
+    }),
+    new Item({
+      name: 'get_shapepoly',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.get_shapepoly',
+      ary: 0
+    }),
+    new Item({
+      name: 'getcanvas',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.getcanvas',
+      ary: 0
+    }),
+    new Item({
+      name: 'getscreen',
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.getscreen',
+      ary: 0
+    }),
+    new Item({
+      name: 'getshapes',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.getshapes',
+      ary: 0
+    }),
+    new Item({
+      name: 'getturtle',
+      synonyms: [
+        'getpen'
+      ],
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.getpen',
+      ary: 0
+    }),
+    new Item({
+      name: 'goto',
+      synonyms: [
+        'setpos',
+        'setposition'
+      ],
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.setposition',
+      stmt: true,
+      ary: 2,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'x'
+        },
+        {
+          name: 'y',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'heading',
+      class: 'turtle',
+      category: 1,
+      type_: 0,
+      href: '#turtle.heading',
+      ary: 0
     }),
     new Item({
       name: 'hideturtle',
@@ -759,15 +699,20 @@ eYo.Model.turtle__module.setData({
       ary: 0
     }),
     new Item({
-      name: 'showturtle',
-      synonyms: [
-        'st'
-      ],
+      name: 'home',
       class: 'turtle',
-      category: 7,
+      category: 0,
       type_: 0,
-      href: '#turtle.st',
+      href: '#turtle.home',
       stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'isdown',
+      class: 'turtle',
+      category: 3,
+      type_: 0,
+      href: '#turtle.isdown',
       ary: 0
     }),
     new Item({
@@ -779,83 +724,14 @@ eYo.Model.turtle__module.setData({
       ary: 0
     }),
     new Item({
-      name: 'shape',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.shape',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'name',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'resizemode',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.resizemode',
-      stmt: true,
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'rmode',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'shapesize',
+      name: 'left',
       synonyms: [
-        'turtlesize'
+        'lt'
       ],
       class: 'turtle',
-      category: 8,
+      category: 0,
       type_: 0,
-      href: '#turtle.turtlesize',
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'stretch_wid',
-          default: 'None'
-        },
-        {
-          name: 'stretch_len',
-          default: 'None'
-        },
-        {
-          name: 'outline',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'shearfactor',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.shearfactor',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'shear',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'tilt',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.tilt',
+      href: '#turtle.lt',
       stmt: true,
       ary: 1,
       arguments: [
@@ -865,68 +741,80 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'settiltangle',
+      name: 'listen',
       class: 'turtle',
-      category: 8,
+      category: 13,
       type_: 0,
-      href: '#turtle.settiltangle',
+      href: '#turtle.listen',
       stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'angle'
-        }
-      ]
-    }),
-    new Item({
-      name: 'tiltangle',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.tiltangle',
-      ary: 1,
+      ary: 2,
       mandatory: 0,
       arguments: [
         {
-          name: 'angle',
+          name: 'xdummy',
+          default: 'None'
+        },
+        {
+          name: 'ydummy',
           default: 'None'
         }
       ]
     }),
     new Item({
-      name: 'shapetransform',
+      name: 'mainloop',
+      synonyms: [
+        'done'
+      ],
       class: 'turtle',
-      category: 8,
+      category: 13,
       type_: 0,
-      href: '#turtle.shapetransform',
-      ary: 4,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 't11',
-          default: 'None'
-        },
-        {
-          name: 't12',
-          default: 'None'
-        },
-        {
-          name: 't21',
-          default: 'None'
-        },
-        {
-          name: 't22',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'get_shapepoly',
-      class: 'turtle',
-      category: 8,
-      type_: 0,
-      href: '#turtle.get_shapepoly',
+      href: '#turtle.done',
+      stmt: true,
       ary: 0
+    }),
+    new Item({
+      name: 'mode',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.mode',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'mode',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'numinput',
+      class: 'turtle',
+      category: 14,
+      type_: 0,
+      href: '#turtle.numinput',
+      ary: 5,
+      mandatory: 2,
+      arguments: [
+        {
+          name: 'title'
+        },
+        {
+          name: 'prompt'
+        },
+        {
+          name: 'default',
+          default: 'None'
+        },
+        {
+          name: 'minval',
+          default: 'None'
+        },
+        {
+          name: 'maxval',
+          default: 'None'
+        }
+      ]
     }),
     new Item({
       name: 'onclick',
@@ -934,29 +822,6 @@ eYo.Model.turtle__module.setData({
       category: 9,
       type_: 0,
       href: '#turtle.onclick',
-      stmt: true,
-      ary: 3,
-      mandatory: 1,
-      arguments: [
-        {
-          name: 'fun'
-        },
-        {
-          name: 'btn',
-          default: 1
-        },
-        {
-          name: 'add',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'onrelease',
-      class: 'turtle',
-      category: 9,
-      type_: 0,
-      href: '#turtle.onrelease',
       stmt: true,
       ary: 3,
       mandatory: 1,
@@ -998,244 +863,6 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'begin_poly',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.begin_poly',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'end_poly',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.end_poly',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'get_poly',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.get_poly',
-      ary: 0
-    }),
-    new Item({
-      name: 'clone',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.clone',
-      ary: 0
-    }),
-    new Item({
-      name: 'getturtle',
-      synonyms: [
-        'getpen'
-      ],
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.getpen',
-      ary: 0
-    }),
-    new Item({
-      name: 'getscreen',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.getscreen',
-      ary: 0
-    }),
-    new Item({
-      name: 'setundobuffer',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.setundobuffer',
-      stmt: true,
-      ary: 1,
-      arguments: [
-        {
-          name: 'size'
-        }
-      ]
-    }),
-    new Item({
-      name: 'undobufferentries',
-      class: 'turtle',
-      category: 10,
-      type_: 0,
-      href: '#turtle.undobufferentries',
-      ary: 0
-    }),
-    new Item({
-      name: 'bgcolor',
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.bgcolor',
-      ary: Infinity,
-      mandatory: 0,
-      arguments: [
-        {
-          name: '*args',
-          optional: true
-        }
-      ]
-    }),
-    new Item({
-      name: 'bgpic',
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.bgpic',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'picname',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'clearscreen',
-      synonyms: [
-        'clear'
-      ],
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.clearscreen',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'resetscreen',
-      synonyms: [
-        'reset'
-      ],
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.resetscreen',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'screensize',
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.screensize',
-      ary: 3,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'canvwidth',
-          default: 'None'
-        },
-        {
-          name: 'canvheight',
-          default: 'None'
-        },
-        {
-          name: 'bg',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'setworldcoordinates',
-      class: 'turtle',
-      category: 11,
-      type_: 0,
-      href: '#turtle.setworldcoordinates',
-      stmt: true,
-      ary: 4,
-      arguments: [
-        {
-          name: 'llx'
-        },
-        {
-          name: 'lly'
-        },
-        {
-          name: 'urx'
-        },
-        {
-          name: 'ury'
-        }
-      ]
-    }),
-    new Item({
-      name: 'delay',
-      class: 'turtle',
-      category: 12,
-      type_: 0,
-      href: '#turtle.delay',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'delay',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'tracer',
-      class: 'turtle',
-      category: 12,
-      type_: 0,
-      href: '#turtle.tracer',
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'n',
-          default: 'None'
-        },
-        {
-          name: 'delay',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'update',
-      class: 'turtle',
-      category: 12,
-      type_: 0,
-      href: '#turtle.update',
-      stmt: true,
-      ary: 0
-    }),
-    new Item({
-      name: 'listen',
-      class: 'turtle',
-      category: 13,
-      type_: 0,
-      href: '#turtle.listen',
-      stmt: true,
-      ary: 2,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'xdummy',
-          default: 'None'
-        },
-        {
-          name: 'ydummy',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
       name: 'onkey',
       synonyms: [
         'onkeyrelease'
@@ -1270,6 +897,29 @@ eYo.Model.turtle__module.setData({
         },
         {
           name: 'key',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'onrelease',
+      class: 'turtle',
+      category: 9,
+      type_: 0,
+      href: '#turtle.onrelease',
+      stmt: true,
+      ary: 3,
+      mandatory: 1,
+      arguments: [
+        {
+          name: 'fun'
+        },
+        {
+          name: 'btn',
+          default: 1
+        },
+        {
+          name: 'add',
           default: 'None'
         }
       ]
@@ -1320,106 +970,136 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'mainloop',
+      name: 'pen',
+      class: 'turtle',
+      category: 3,
+      type_: 0,
+      href: '#turtle.pen',
+      ary: Infinity,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'pen',
+          default: 'None'
+        },
+        {
+          name: '**pendict',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'pencolor',
+      class: 'turtle',
+      category: 4,
+      type_: 0,
+      href: '#turtle.pencolor',
+      signatures: [
+        {
+          ary: 0
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: 'colorstring'
+            }
+          ]
+        },
+        {
+          ary: 1,
+          arguments: [
+            {
+              name: '(r, g, b)'
+            }
+          ]
+        },
+        {
+          ary: 3,
+          arguments: [
+            {
+              name: 'r'
+            },
+            {
+              name: 'g'
+            },
+            {
+              name: 'b'
+            }
+          ]
+        }
+      ],
+      ary: 3,
+      mandatory: 0,
+      arguments: [
+        {
+          name: '*args',
+          optional: true
+        }
+      ]
+    }),
+    new Item({
+      name: 'pendown',
       synonyms: [
-        'done'
+        'pd',
+        'down'
       ],
       class: 'turtle',
-      category: 13,
+      category: 3,
       type_: 0,
-      href: '#turtle.done',
+      href: '#turtle.down',
       stmt: true,
       ary: 0
     }),
     new Item({
-      name: 'textinput',
+      name: 'pensize',
+      synonyms: [
+        'width'
+      ],
       class: 'turtle',
-      category: 14,
+      category: 3,
       type_: 0,
-      href: '#turtle.textinput',
-      ary: 2,
-      arguments: [
-        {
-          name: 'title'
-        },
-        {
-          name: 'prompt'
-        }
-      ]
-    }),
-    new Item({
-      name: 'numinput',
-      class: 'turtle',
-      category: 14,
-      type_: 0,
-      href: '#turtle.numinput',
-      ary: 5,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'title'
-        },
-        {
-          name: 'prompt'
-        },
-        {
-          name: 'default',
-          default: 'None'
-        },
-        {
-          name: 'minval',
-          default: 'None'
-        },
-        {
-          name: 'maxval',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'mode',
-      class: 'turtle',
-      category: 15,
-      type_: 0,
-      href: '#turtle.mode',
+      href: '#turtle.width',
       ary: 1,
       mandatory: 0,
       arguments: [
         {
-          name: 'mode',
+          name: 'width',
           default: 'None'
         }
       ]
     }),
     new Item({
-      name: 'colormode',
+      name: 'penup',
+      synonyms: [
+        'pu',
+        'up'
+      ],
       class: 'turtle',
-      category: 15,
+      category: 3,
       type_: 0,
-      href: '#turtle.colormode',
-      ary: 1,
-      mandatory: 0,
-      arguments: [
-        {
-          name: 'cmode',
-          default: 'None'
-        }
-      ]
-    }),
-    new Item({
-      name: 'getcanvas',
-      class: 'turtle',
-      category: 15,
-      type_: 0,
-      href: '#turtle.getcanvas',
+      href: '#turtle.up',
+      stmt: true,
       ary: 0
     }),
     new Item({
-      name: 'getshapes',
+      name: 'position',
+      synonyms: [
+        'pos'
+      ],
       class: 'turtle',
-      category: 15,
+      category: 1,
       type_: 0,
-      href: '#turtle.getshapes',
+      href: '#turtle.pos',
+      ary: 0
+    }),
+    new Item({
+      name: 'radians',
+      class: 'turtle',
+      category: 2,
+      type_: 0,
+      href: '#turtle.radians',
+      stmt: true,
       ary: 0
     }),
     new Item({
@@ -1445,46 +1125,126 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'turtles',
+      name: 'reset',
       class: 'turtle',
-      category: 15,
+      category: 6,
       type_: 0,
-      href: '#turtle.turtles',
-      ary: 0
-    }),
-    new Item({
-      name: 'window_height',
-      class: 'turtle',
-      category: 15,
-      type_: 0,
-      href: '#turtle.window_height',
-      ary: 0
-    }),
-    new Item({
-      name: 'window_width',
-      class: 'turtle',
-      category: 15,
-      type_: 0,
-      href: '#turtle.window_width',
-      ary: 0
-    }),
-    new Item({
-      name: 'bye',
-      class: 'turtle',
-      category: 16,
-      type_: 0,
-      href: '#turtle.bye',
+      href: '#turtle.reset',
       stmt: true,
       ary: 0
     }),
     new Item({
-      name: 'exitonclick',
+      name: 'resetscreen',
+      synonyms: [
+        'reset'
+      ],
       class: 'turtle',
-      category: 16,
+      category: 11,
       type_: 0,
-      href: '#turtle.exitonclick',
+      href: '#turtle.resetscreen',
       stmt: true,
       ary: 0
+    }),
+    new Item({
+      name: 'resizemode',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.resizemode',
+      stmt: true,
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'rmode',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'right',
+      synonyms: [
+        'rt'
+      ],
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.rt',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'angle'
+        }
+      ]
+    }),
+    new Item({
+      name: 'screensize',
+      class: 'turtle',
+      category: 11,
+      type_: 0,
+      href: '#turtle.screensize',
+      ary: 3,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'canvwidth',
+          default: 'None'
+        },
+        {
+          name: 'canvheight',
+          default: 'None'
+        },
+        {
+          name: 'bg',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'setheading',
+      synonyms: [
+        'seth'
+      ],
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.seth',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'to_angle'
+        }
+      ]
+    }),
+    new Item({
+      name: 'settiltangle',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.settiltangle',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'angle'
+        }
+      ]
+    }),
+    new Item({
+      name: 'setundobuffer',
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.setundobuffer',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'size'
+        }
+      ]
     }),
     new Item({
       name: 'setup',
@@ -1519,6 +1279,221 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
+      name: 'setworldcoordinates',
+      class: 'turtle',
+      category: 11,
+      type_: 0,
+      href: '#turtle.setworldcoordinates',
+      stmt: true,
+      ary: 4,
+      arguments: [
+        {
+          name: 'llx'
+        },
+        {
+          name: 'lly'
+        },
+        {
+          name: 'urx'
+        },
+        {
+          name: 'ury'
+        }
+      ]
+    }),
+    new Item({
+      name: 'setx',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.setx',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'x'
+        }
+      ]
+    }),
+    new Item({
+      name: 'sety',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.sety',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'y'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shape',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.shape',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'name',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shapesize',
+      synonyms: [
+        'turtlesize'
+      ],
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.turtlesize',
+      ary: 3,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'stretch_wid',
+          default: 'None'
+        },
+        {
+          name: 'stretch_len',
+          default: 'None'
+        },
+        {
+          name: 'outline',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shapetransform',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.shapetransform',
+      ary: 4,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 't11',
+          default: 'None'
+        },
+        {
+          name: 't12',
+          default: 'None'
+        },
+        {
+          name: 't21',
+          default: 'None'
+        },
+        {
+          name: 't22',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'shearfactor',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.shearfactor',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'shear',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'showturtle',
+      synonyms: [
+        'st'
+      ],
+      class: 'turtle',
+      category: 7,
+      type_: 0,
+      href: '#turtle.st',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'speed',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.speed',
+      stmt: true,
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'speed',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'stamp',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.stamp',
+      ary: 0
+    }),
+    new Item({
+      name: 'textinput',
+      class: 'turtle',
+      category: 14,
+      type_: 0,
+      href: '#turtle.textinput',
+      ary: 2,
+      arguments: [
+        {
+          name: 'title'
+        },
+        {
+          name: 'prompt'
+        }
+      ]
+    }),
+    new Item({
+      name: 'tilt',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.tilt',
+      stmt: true,
+      ary: 1,
+      arguments: [
+        {
+          name: 'angle'
+        }
+      ]
+    }),
+    new Item({
+      name: 'tiltangle',
+      class: 'turtle',
+      category: 8,
+      type_: 0,
+      href: '#turtle.tiltangle',
+      ary: 1,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'angle',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
       name: 'title',
       class: 'turtle',
       category: 16,
@@ -1533,91 +1508,122 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'RawTurtle',
-      synonyms: [
-        'RawPen'
-      ],
+      name: 'towards',
       class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.RawPen',
-      ary: 1,
-      arguments: [
-        {
-          name: 'canvas'
-        }
-      ]
-    }),
-    new Item({
-      name: 'Turtle',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.Turtle'
-    }),
-    new Item({
-      name: 'TurtleScreen',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.TurtleScreen',
-      ary: 1,
-      arguments: [
-        {
-          name: 'cv'
-        }
-      ]
-    }),
-    new Item({
-      name: 'Screen',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.Screen',
-      stmt: true
-    }),
-    new Item({
-      name: 'ScrolledCanvas',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.ScrolledCanvas',
-      ary: 1,
-      arguments: [
-        {
-          name: 'master'
-        }
-      ]
-    }),
-    new Item({
-      name: 'Shape',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.Shape',
+      category: 1,
+      type_: 0,
+      href: '#turtle.towards',
       ary: 2,
-      arguments: [
-        {
-          name: 'type_'
-        },
-        {
-          name: 'data'
-        }
-      ]
-    }),
-    new Item({
-      name: 'Vec2D',
-      class: 'turtle',
-      category: 17,
-      type_: 1,
-      href: '#turtle.Vec2D',
-      ary: 2,
+      mandatory: 1,
       arguments: [
         {
           name: 'x'
         },
         {
-          name: 'y'
+          name: 'y',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'tracer',
+      class: 'turtle',
+      category: 12,
+      type_: 0,
+      href: '#turtle.tracer',
+      ary: 2,
+      mandatory: 0,
+      arguments: [
+        {
+          name: 'n',
+          default: 'None'
+        },
+        {
+          name: 'delay',
+          default: 'None'
+        }
+      ]
+    }),
+    new Item({
+      name: 'turtles',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.turtles',
+      ary: 0
+    }),
+    new Item({
+      name: 'undo',
+      class: 'turtle',
+      category: 0,
+      type_: 0,
+      href: '#turtle.undo',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'undobufferentries',
+      class: 'turtle',
+      category: 10,
+      type_: 0,
+      href: '#turtle.undobufferentries',
+      ary: 0
+    }),
+    new Item({
+      name: 'update',
+      class: 'turtle',
+      category: 12,
+      type_: 0,
+      href: '#turtle.update',
+      stmt: true,
+      ary: 0
+    }),
+    new Item({
+      name: 'window_height',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.window_height',
+      ary: 0
+    }),
+    new Item({
+      name: 'window_width',
+      class: 'turtle',
+      category: 15,
+      type_: 0,
+      href: '#turtle.window_width',
+      ary: 0
+    }),
+    new Item({
+      name: 'write',
+      class: 'turtle',
+      category: 6,
+      type_: 0,
+      href: '#turtle.write',
+      stmt: true,
+      ary: 6,
+      mandatory: 3,
+      arguments: [
+        {
+          name: 'arg'
+        },
+        {
+          name: 'move',
+          default: 'False'
+        },
+        {
+          name: 'align',
+          default: '"left"'
+        },
+        {
+          name: 'font',
+          default: '("Arial"'
+        },
+        {
+          name: '8'
+        },
+        {
+          name: '"normal")'
         }
       ]
     }),
@@ -1638,181 +1644,175 @@ eYo.Model.turtle__module.setData({
       ]
     }),
     new Item({
-      name: 'addcomponent',
-      class: 'turtle.Shape',
-      category: 17,
-      type_: 2,
-      href: '#turtle.Shape.addcomponent',
-      stmt: true,
-      ary: 3,
-      mandatory: 2,
-      arguments: [
-        {
-          name: 'poly'
-        },
-        {
-          name: 'fill'
-        },
-        {
-          name: 'outline',
-          default: 'None'
-        }
-      ]
+      name: 'xcor',
+      class: 'turtle',
+      category: 1,
+      type_: 0,
+      href: '#turtle.xcor',
+      ary: 0
+    }),
+    new Item({
+      name: 'ycor',
+      class: 'turtle',
+      category: 1,
+      type_: 0,
+      href: '#turtle.ycor',
+      ary: 0
     })
   ],
   by_name: {
-    'forward': 0,
-    'fd': 0,
-    'back': 1,
-    'bk': 1,
-    'backward': 1,
-    'right': 2,
-    'rt': 2,
-    'left': 3,
-    'lt': 3,
-    'goto': 4,
-    'setpos': 4,
-    'setposition': 4,
-    'setx': 5,
-    'sety': 6,
-    'setheading': 7,
-    'seth': 7,
-    'home': 8,
-    'circle': 9,
-    'dot': 10,
-    'stamp': 11,
-    'clearstamp': 12,
-    'clearstamps': 13,
-    'undo': 14,
-    'speed': 15,
-    'position': 16,
-    'pos': 16,
-    'towards': 17,
-    'xcor': 18,
-    'ycor': 19,
-    'heading': 20,
-    'distance': 21,
+    'RawTurtle': 0,
+    'RawPen': 0,
+    'Screen': 1,
+    'ScrolledCanvas': 2,
+    'Shape': 3,
+    'Turtle': 4,
+    'TurtleScreen': 5,
+    'Vec2D': 6,
+    'addcomponent': 7,
+    'back': 8,
+    'bk': 8,
+    'backward': 8,
+    'begin_fill': 9,
+    'begin_poly': 10,
+    'bgcolor': 11,
+    'bgpic': 12,
+    'bye': 13,
+    'circle': 14,
+    'clear': 16,
+    'clearscreen': 16,
+    'clearstamp': 17,
+    'clearstamps': 18,
+    'clone': 19,
+    'color': 20,
+    'colormode': 21,
     'degrees': 22,
-    'radians': 23,
-    'pendown': 24,
-    'pd': 24,
-    'down': 24,
-    'penup': 25,
-    'pu': 25,
-    'up': 25,
-    'pensize': 26,
-    'width': 26,
-    'pen': 27,
-    'isdown': 28,
-    'pencolor': 29,
-    'fillcolor': 30,
-    'color': 31,
-    'filling': 32,
-    'begin_fill': 33,
-    'end_fill': 34,
-    'reset': 64,
-    'clear': 63,
-    'write': 37,
-    'hideturtle': 38,
-    'ht': 38,
-    'showturtle': 39,
-    'st': 39,
-    'isvisible': 40,
-    'shape': 41,
-    'resizemode': 42,
-    'shapesize': 43,
-    'turtlesize': 43,
-    'shearfactor': 44,
-    'tilt': 45,
-    'settiltangle': 46,
-    'tiltangle': 47,
-    'shapetransform': 48,
-    'get_shapepoly': 49,
-    'onclick': 73,
-    'onrelease': 51,
-    'ondrag': 52,
-    'begin_poly': 53,
-    'end_poly': 54,
-    'get_poly': 55,
-    'clone': 56,
-    'getturtle': 57,
-    'getpen': 57,
-    'getscreen': 58,
-    'setundobuffer': 59,
-    'undobufferentries': 60,
-    'bgcolor': 61,
-    'bgpic': 62,
-    'clearscreen': 63,
-    'resetscreen': 64,
-    'screensize': 65,
-    'setworldcoordinates': 66,
-    'delay': 67,
-    'tracer': 68,
-    'update': 69,
-    'listen': 70,
-    'onkey': 71,
-    'onkeyrelease': 71,
-    'onkeypress': 72,
-    'onscreenclick': 73,
-    'ontimer': 74,
-    'mainloop': 75,
-    'done': 75,
-    'textinput': 76,
-    'numinput': 77,
-    'mode': 78,
-    'colormode': 79,
-    'getcanvas': 80,
-    'getshapes': 81,
-    'register_shape': 82,
-    'addshape': 82,
-    'turtles': 83,
-    'window_height': 84,
-    'window_width': 85,
-    'bye': 86,
-    'exitonclick': 87,
-    'setup': 88,
-    'title': 89,
-    'RawTurtle': 90,
-    'RawPen': 90,
-    'Turtle': 91,
-    'TurtleScreen': 92,
-    'Screen': 93,
-    'ScrolledCanvas': 94,
-    'Shape': 95,
-    'Vec2D': 96,
-    'write_docstringdict': 97,
-    'addcomponent': 98
+    'delay': 23,
+    'distance': 24,
+    'dot': 25,
+    'end_fill': 26,
+    'end_poly': 27,
+    'exitonclick': 28,
+    'fillcolor': 29,
+    'filling': 30,
+    'forward': 31,
+    'fd': 31,
+    'get_poly': 32,
+    'get_shapepoly': 33,
+    'getcanvas': 34,
+    'getscreen': 35,
+    'getshapes': 36,
+    'getturtle': 37,
+    'getpen': 37,
+    'goto': 38,
+    'setpos': 38,
+    'setposition': 38,
+    'heading': 39,
+    'hideturtle': 40,
+    'ht': 40,
+    'home': 41,
+    'isdown': 42,
+    'isvisible': 43,
+    'left': 44,
+    'lt': 44,
+    'listen': 45,
+    'mainloop': 46,
+    'done': 46,
+    'mode': 47,
+    'numinput': 48,
+    'onclick': 54,
+    'ondrag': 50,
+    'onkey': 51,
+    'onkeyrelease': 51,
+    'onkeypress': 52,
+    'onrelease': 53,
+    'onscreenclick': 54,
+    'ontimer': 55,
+    'pen': 56,
+    'pencolor': 57,
+    'pendown': 58,
+    'pd': 58,
+    'down': 58,
+    'pensize': 59,
+    'width': 59,
+    'penup': 60,
+    'pu': 60,
+    'up': 60,
+    'position': 61,
+    'pos': 61,
+    'radians': 62,
+    'register_shape': 63,
+    'addshape': 63,
+    'reset': 65,
+    'resetscreen': 65,
+    'resizemode': 66,
+    'right': 67,
+    'rt': 67,
+    'screensize': 68,
+    'setheading': 69,
+    'seth': 69,
+    'settiltangle': 70,
+    'setundobuffer': 71,
+    'setup': 72,
+    'setworldcoordinates': 73,
+    'setx': 74,
+    'sety': 75,
+    'shape': 76,
+    'shapesize': 77,
+    'turtlesize': 77,
+    'shapetransform': 78,
+    'shearfactor': 79,
+    'showturtle': 80,
+    'st': 80,
+    'speed': 81,
+    'stamp': 82,
+    'textinput': 83,
+    'tilt': 84,
+    'tiltangle': 85,
+    'title': 86,
+    'towards': 87,
+    'tracer': 88,
+    'turtles': 89,
+    'undo': 90,
+    'undobufferentries': 91,
+    'update': 92,
+    'window_height': 93,
+    'window_width': 94,
+    'write': 95,
+    'write_docstringdict': 96,
+    'xcor': 97,
+    'ycor': 98
   },
   by_category: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    1: [16, 17, 18, 19, 20, 21],
-    2: [22, 23],
-    3: [24, 25, 26, 27, 28],
-    4: [29, 30, 31],
-    5: [32, 33, 34],
-    6: [35, 36, 37],
-    7: [38, 39, 40],
-    8: [41, 42, 43, 44, 45, 46, 47, 48, 49],
-    9: [50, 51, 52],
-    10: [53, 54, 55, 56, 57, 58, 59, 60],
-    11: [61, 62, 63, 64, 65, 66],
-    12: [67, 68, 69],
-    13: [70, 71, 72, 73, 74, 75],
-    14: [76, 77],
-    15: [78, 79, 80, 81, 82, 83, 84, 85],
-    16: [86, 87, 88, 89],
-    17: [90, 91, 92, 93, 94, 95, 96, 98],
-    18: [97]
+    0: [8, 14, 17, 18, 25, 31, 38, 41, 44, 67, 69, 74, 75, 81, 82, 90],
+    1: [24, 39, 61, 87, 97, 98],
+    2: [22, 62],
+    3: [42, 56, 58, 59, 60],
+    4: [20, 29, 57],
+    5: [9, 26, 30],
+    6: [15, 64, 95],
+    7: [40, 43, 80],
+    8: [33, 66, 70, 76, 77, 78, 79, 84, 85],
+    9: [49, 50, 53],
+    10: [10, 19, 27, 32, 35, 37, 71, 91],
+    11: [11, 12, 16, 65, 68, 73],
+    12: [23, 88, 92],
+    13: [45, 46, 51, 52, 54, 55],
+    14: [48, 83],
+    15: [21, 34, 36, 47, 63, 89, 93, 94],
+    16: [13, 28, 72, 86],
+    17: [0, 1, 2, 3, 4, 5, 6, 7],
+    18: [96]
   },
   by_type: {
-    0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 97],
-    1: [90, 91, 92, 93, 94, 95, 96],
-    2: [98]
+    0: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98],
+    1: [0, 1, 2, 3, 4, 5, 6],
+    2: [7]
   }
 })
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-15 15:55:06.496910
+// This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2018-11-16 00:27:21.044065
 
 

@@ -22,6 +22,8 @@ goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
+goog.require('eYo.Model.math__module')
+
 /**
  * Populate the context menu for the given block.
  * @param {!Blockly.Block} block The block.

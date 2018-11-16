@@ -2,9 +2,9 @@
   <b-button-toolbar id="info-primary" key-nav  aria-label="Info toolbar primary" justify>
     <b-button-toolbar>
       <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted"></dotted>
-      <name :eyo="eyo" :name="name"></name>
-      <variant :eyo="eyo" :can_ry="can_ry" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
-      <ry :eyo="eyo" :can_ry="can_ry" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR"></ry>
+      <name :eyo="eyo" :variant="variant" :name="name" :module="module"></name>
+      <variant :eyo="eyo" :can_call="can_call" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
+      <ry :eyo="eyo" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR && can_ry"></ry>
       <comment :eyo="eyo"></comment>
     </b-button-toolbar>
     <common :eyo="eyo"></common>
@@ -31,10 +31,12 @@
         annotation_: undefined,
         definition_: undefined,
         alias_: undefined,
+        can_call_: undefined,
         can_ry_: undefined,
         can_andef_: undefined,
         ary_: undefined,
-        mandatory_: undefined
+        mandatory_: undefined,
+        module_: undefined
       }
     },
     components: {
@@ -90,6 +92,10 @@
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.can_ry_
       },
+      can_call () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.can_call_
+      },
       can_andef () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.can_andef_
@@ -101,6 +107,10 @@
       mandatory () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.mandatory_
+      },
+      module () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.module_
       }
     },
     created () {
@@ -118,12 +128,14 @@
           this.annotation_ = eyo.annotation_p
           this.definition_ = eyo.definition_p
           this.alias_ = eyo.alias_p
-          var tos = eyo.profile_p.tos
-          this.can_ry_ = !tos || !tos.model || (tos.model.type !== 'attribute' && tos.model.type !== 'data' && tos.model.type !== 'first last data')
-          this.can_andef_ = !tos || !tos.model
-          this.can_slice_ = !tos || !tos.model || (tos.model.type !== 'method' && tos.model.type !== 'function')
+          var p5e = eyo.profile_p.p5e
+          this.can_ry_ = !p5e || !p5e.item
+          this.can_call_ = !p5e || !p5e.item || (p5e.item.type !== 'attribute' && p5e.item.type !== 'data' && p5e.item.type !== 'first last data')
+          this.can_andef_ = !p5e || !p5e.item
+          this.can_slice_ = !p5e || !p5e.item || (p5e.item.type !== 'method' && p5e.item.type !== 'function')
           this.ary_ = eyo.ary_p
           this.mandatory_ = eyo.mandatory_p
+          this.module_ = p5e && p5e.item && p5e.item.module
         }
       }
     }

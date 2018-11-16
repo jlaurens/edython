@@ -679,9 +679,6 @@ Object.defineProperties(
                 item.type_index = self.types[item.type]
             item.index = len(self.items)
             self.items.append(item)
-            self.items_by_name[item.name] = item.index
-            for synonym in item.synonyms:
-                self.items_by_name[synonym] = item.index
             
             # now the inner dl's
             for dl in dl.findall('.//{http://www.w3.org/1999/xhtml}dl'):
@@ -740,6 +737,15 @@ Object.defineProperties(
                     self.process_dl(dl)
 
             print('Imported {} symbols'.format(len(self.items)))
+
+        def do_prepare(self):
+            self.items.sort(key = lambda item: item.name)
+            for i in range(len(self.items)):
+                item = self.items[i]
+                item.index = i
+                self.items_by_name[item.name] = i
+                for synonym in item.synonyms:
+                    self.items_by_name[synonym] = i
 
         @property
         def indent(self):
@@ -917,6 +923,7 @@ Object.defineProperties(
 
     model = Model(pathlib.Path(__file__).parent.parent.parent, module)
     model.do_import()
+    model.do_prepare()
     model.do_export()
 
 parser = argparse.ArgumentParser(description='Extract module model from online document.')
