@@ -17,11 +17,12 @@
 
 goog.provide('eYo.T3.Profile')
 
+goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Model')
 goog.require('eYo.Do')
 
-eYo.Do.defineReadOnlyProperties(
+eYo.Do.readOnlyMixin(
   eYo.T3.Expr,
   {
     reserved_identifier: '.reserved identifier',
@@ -44,7 +45,7 @@ eYo.Do.defineReadOnlyProperties(
   }
 )
 
-eYo.Do.defineReadOnlyProperties(
+eYo.Do.readOnlyMixin(
   eYo.T3.Stmt,
   {
     control: '.control statement',
@@ -192,7 +193,7 @@ eYo.T3.Profile = function (owner, model) {
       }
     }
   } else {
-    eYo.Do.defineReadOnlyProperties(this, m)
+    eYo.Do.readOnlyMixin(this, m)
   }
 }
 
@@ -305,16 +306,16 @@ var setup = (function () {
     if (ans) {
       return ans
     }
-    if ((ans = eYo.T3.Profile.getReference(candidate))) {
+    if ((ans = eYo.T3.Profile.getReference(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getReserved(candidate))) {
+    if ((ans = eYo.T3.Profile.getReserved(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getShort(candidate))) {
+    if ((ans = eYo.T3.Profile.getShort(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getDotted(candidate, module))) {
+    if ((ans = eYo.T3.Profile.getDotted(candidate, module)) && !ans.isVoid) {
       return ans
     }
     if (eYo.XRE.identifier.exec(candidate)) {
@@ -330,7 +331,7 @@ var setup = (function () {
   }
 }) ()
 
-eYo.Do.defineReadOnlyProperties(
+eYo.Do.readOnlyMixin(
   eYo.T3.Profile,
   {
     /* Default void profile */
@@ -497,7 +498,7 @@ eYo.T3.Profile.getReference = function (identifier) {
   for (var ref in {'functions': 0, 'stdtypes': 0, 'datamodel': 0}) {
     var M = eYo.Model[ref]
     var ans = M && M.getProfile(identifier)
-    if (ans) {
+    if (ans && !ans.isVoid) {
       return ans
     }
   }

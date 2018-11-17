@@ -129,10 +129,8 @@ eYo.Consolidator.List.prototype.init = function () {
  */
 eYo.Consolidator.List.prototype.getAry = function (io) {
   if (io.list) {
-    var ary_d = io.list.eyo.data.ary
-    if (ary_d) {
-      return ary_d.get()
-    }
+    var eyo = io.list.eyo
+    return eyo.ary_d && eyo.ary_p
   }
   return this.data.ary || (this.data.ary = Infinity)
 }
@@ -144,10 +142,8 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
  */
 eYo.Consolidator.List.prototype.getMandatory = function (io) {
   if (io.block) {
-    var mandatory_d = io.block.eyo.data.mandatory
-    if (mandatory_d) {
-      return mandatory_d.get()
-    }
+    var eyo = io.block.eyo
+    return eyo.mandatory_d && eyo.mandatory_p
   }
   return goog.isDef(this.data.mandatory)
     ? this.data.mandatory

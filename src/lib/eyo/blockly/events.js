@@ -20,6 +20,7 @@ goog.provide('eYo.Events')
 goog.require('Blockly.Events')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
+goog.require('eYo.XRE')
 
 // debug feature
 // Object.defineProperties(

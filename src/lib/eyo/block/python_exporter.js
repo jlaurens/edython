@@ -14,6 +14,7 @@
 goog.provide('eYo.PythonExporter')
 
 goog.require('eYo')
+goog.require('eYo.XRE')
 goog.require('eYo.Slot')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.FieldTextInput')

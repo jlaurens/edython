@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Stmt')
 
+goog.require('eYo.XRE')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Operator')

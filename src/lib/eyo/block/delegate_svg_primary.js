@@ -610,17 +610,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 100,
       check: /** @suppress {globalThis} */ function () {
         // a general expression or a more specific block
-        var eyo = this.connection.sourceBlock_.eyo
-        var variant_d = eyo.data.variant
-        var variant = variant_d.get()
-        if (variant === variant_d.ALIASED) {
+        var b_eyo = this.connection.eyo.b_eyo
+        var variant_p = b_eyo.variant_p
+        if (variant_p === eYo.Key.ALIASED) {
           return eYo.T3.Expr.Check.expression
         }
-        if (variant === variant_d.CALL_EXPR
-          || variant === variant_d.SLICING) {
+        if (variant_p === eYo.Key.CALL_EXPR
+          || variant_p === eYo.Key.SLICING) {
           return eYo.T3.Expr.Check.primary
         }
-        var profile = eyo.profile_p
+        var profile = b_eyo.profile_p
         return profile.annotated
         ? eYo.T3.Expr.Check.expression
         : [

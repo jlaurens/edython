@@ -24,14 +24,16 @@
  */
 'use strict'
 
-goog.require('eYo')
 goog.provide('eYo.Data')
 
+goog.require('eYo')
+goog.require('eYo.XRE')
 goog.require('eYo.Decorate');
 goog.require('goog.dom');
 
 /**
  * Base property constructor.
+ * The bounds between the data and the arguments are immutable.
  * For edython.
  * @param {!Object} owner The object owning the data.
  * @param {!string} key name of the data.
@@ -44,21 +46,30 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
-  // create and initialize the state
+  Object.defineProperties(this, {
+    reentrant: { value: {} },
+    key: { value: key},
+    upperKey: { value: key[0].toUpperCase() + key.slice(1) },
+    model: {
+      value: goog.isObject(model) ? model: (model = {init: model})
+    },
+    name: {
+      value: 'eyo:' + (model.name || key).toLowerCase()
+    },
+    noUndo: {value: model.noUndo},
+    data: {
+      get () {
+        return this.owner.data
+      }
+    }
+  })
   this.owner = owner // circular reference
-  this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
-  this.key = key
-  this.upperKey = key[0].toUpperCase() + key.slice(1)
   this.incog_ = false
-  this.model = goog.isObject(model) ? model: (model = {init: model})
-  this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
-  this.noUndo = model.noUndo
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = (xml && xml.attribute) || key
   }
-  this.reentrant = {}
   if (!model.setup_) {
     model.setup_ = true
     if (goog.isDefAndNotNull(xml)) {
@@ -81,6 +92,7 @@ eYo.Data = function (owner, key, model) {
       delete model.validateIncog
     }
   }
+  // next should be removed, thick to repalce `eYo.Key.FOO` by `this.FOO`
   for (var k in model) {
     if (XRegExp.exec(k, eYo.XRE.upper)) {
       this[k] = model[k]

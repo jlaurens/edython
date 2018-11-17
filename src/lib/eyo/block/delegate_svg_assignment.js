@@ -366,26 +366,25 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var name = this.data.name.get()
-  var variant_d = this.data.variant
-  var variant = variant_d.get()
-  var F = function (content, newVariant) {
-    var menuItem = mgr.newMenuItem(content, function () {
-      variant_d.set(newVariant)
+  var name_p = this.data.name_p
+  var variant_p = this.variant_p
+  var F = (content, newVariant) => {
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = newVariant
     })
-    menuItem.setEnabled(newVariant !== variant)
+    menuItem.setEnabled(newVariant !== variant_p)
     mgr.addChild(menuItem, true)
   }
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
+    eYo.Do.createSPAN(name_p || eYo.Msg.Placeholder.IDENTIFIER, name_p ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, variant_d.NAME)
+  F(content, eYo.Key.NAME)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (variant !== variant_d.TARGET) {
+  if (variant_p !== eYo.Key.TARGET) {
     var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })

@@ -13,11 +13,7 @@
 
 goog.provide('eYo.Do')
 
-goog.require('eYo.Const')
-
 goog.require('goog.dom')
-
-goog.forwardDeclare('eYo.Model')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
@@ -566,9 +562,10 @@ eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
  * @param {*} object 
  * @param {*} props 
  */
-eYo.Do.defineReadOnlyProperties = function(object, props) {
+eYo.Do.readOnlyMixin = function(object, props) {
   var key
   for (key in props) {
+    goog.asserts.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
     var value = props[key]
     var prop = goog.isFunction(value)
     ? { get: value }

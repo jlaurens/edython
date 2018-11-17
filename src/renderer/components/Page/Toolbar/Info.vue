@@ -47,6 +47,17 @@
     <div v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)">
       <info-decorator :eyo="eyo" :slotholder="slotholder"></info-decorator>
     </div>
+    <div v-else-if="isSelected([
+      $$.eYo.T3.Expr.star_expr,
+      $$.eYo.T3.Expr.expression_star,
+      $$.eYo.T3.Expr.expression_star_star,
+      $$.eYo.T3.Expr.target_star,
+      $$.eYo.T3.Expr.star,
+      $$.eYo.T3.Expr.parameter_star,
+      $$.eYo.T3.Expr.parameter_star_star
+    ])">
+      <info-starred :eyo="eyo" :slotholder="slotholder"></info-starred>
+    </div>
     <div v-else-if="eyo">
       <info-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></info-default>
     </div>
@@ -72,6 +83,7 @@
   import InfoValue from './Info/Value.vue'
   import InfoDefault from './Info/Default.vue'
   import InfoDecorator from './Info/Decorator.vue'
+  import InfoStarred from './Info/Starred.vue'
   import InfoNone from './Info/None.vue'
 
   export default {
@@ -97,6 +109,7 @@
       InfoValue,
       InfoDefault,
       InfoDecorator,
+      InfoStarred,
       InfoNone
     },
     mounted () {

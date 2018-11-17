@@ -30,6 +30,7 @@
 goog.provide('eYo.Xml')
 
 goog.require('eYo.Const')
+goog.require('eYo.XRE')
 goog.require('eYo.T3')
 
 goog.require('Blockly.Xml')

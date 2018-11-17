@@ -15,6 +15,7 @@ goog.provide('eYo.DelegateSvg')
 goog.provide('eYo.HoleFiller')
 goog.provide('eYo.SelectedConnection')
 
+goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Data')
 goog.require('eYo.Slot')

@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Literal')
 goog.provide('eYo.DelegateSvg.Expr.numberliteral')
 
+goog.require('eYo.XRE')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('goog.dom');
@@ -142,10 +143,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
-        var content_d = this.data.content
-        if (!content_d.get().length) {
-          var content_f = this.owner.fields.content
-          content_f.placeholderText(true)
+        if (!this.content_p.length) {
+          this.owner.content_d.field.placeholderText(true)
         }
       },
       xml: false

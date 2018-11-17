@@ -126,8 +126,8 @@
   }
   .eyo-dropdown .btn::after {
     position: absolute;
-    right: 5px;
-    bottom: 5px;
+    right: 0.125rem;
+    bottom: 0.25rem;
     opacity: 0.666;
   }
   .dropdown-menu {

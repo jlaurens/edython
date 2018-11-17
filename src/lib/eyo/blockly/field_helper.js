@@ -13,6 +13,7 @@
 
 goog.provide('eYo.FieldHelper')
 
+goog.require('eYo.XRE')
 goog.require('eYo.Size')
 goog.require('eYo.Field')
 

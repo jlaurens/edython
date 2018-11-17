@@ -1216,7 +1216,6 @@ eYo.Delegate.prototype.makeData = function () {
           data.main = d
         }
         data[k] = d
-        d.data = data // convenient shortcut
         for (var i = 0, dd; (dd = byOrder[i]); ++i) {
           if (dd.model.order > d.model.order) {
             break
@@ -1234,6 +1233,10 @@ eYo.Delegate.prototype.makeData = function () {
     }
   }
   this.data = data
+  // now we can use `foreachData`
+  this.foreachData(function () {
+    Object.defineProperty(this.owner, this.key + '_d', { value: this })
+  })
 }
 
 /**

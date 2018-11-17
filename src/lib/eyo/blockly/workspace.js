@@ -15,6 +15,7 @@ goog.provide('eYo.Workspace')
 goog.provide('eYo.WorkspaceDelegate')
 
 goog.require('Blockly.Workspace')
+goog.require('eYo.XRE')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
