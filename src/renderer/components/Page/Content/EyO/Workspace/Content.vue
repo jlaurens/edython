@@ -150,12 +150,13 @@
       },
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
-        if (newValue) {
+        console.log(newValue, oldValue)
+        if (!oldValue || (newValue !== oldValue)) {
           this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.key)
           this.label = newValue.label
         }
       },
-      // whenever `selectedCategory` changes, this function will run
+      // whenever `isBasic` changes, this function will run
       isBasic: function (newValue, oldValue) {
         var item = this.selectedCategory
         if (newValue && item.basic) {

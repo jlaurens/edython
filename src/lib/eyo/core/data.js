@@ -51,17 +51,13 @@ eYo.Data = function (owner, key, model) {
     key: { value: key},
     upperKey: { value: key[0].toUpperCase() + key.slice(1) },
     model: {
-      value: goog.isObject(model) ? model: (model = {init: model})
+      value: goog.isObject(model) ? model: (model = {init: model}),
+      writable: true
     },
     name: {
       value: 'eyo:' + (model.name || key).toLowerCase()
     },
-    noUndo: {value: model.noUndo},
-    data: {
-      get () {
-        return this.owner.data
-      }
-    }
+    noUndo: {value: model.noUndo}
   })
   this.owner = owner // circular reference
   this.value_ = /** Object|null */ undefined
@@ -111,6 +107,11 @@ Object.defineProperties(
     blockType: {
       get () {
         return this.owner.block_.type
+      }
+    },
+    data: {
+      get () {
+        return this.owner.data
       }
     },
     incog_p: {

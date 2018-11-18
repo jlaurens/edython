@@ -150,7 +150,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
           newValue = newValue + '.' + p
         }
         O.decorator_p = newValue
-        console.warn('new decorator:', newValue)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)

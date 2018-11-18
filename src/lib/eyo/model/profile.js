@@ -506,8 +506,9 @@ eYo.T3.Profile.getReference = function (identifier) {
     eYo.Key.PROPERTY,
     eYo.Key.STATICMETHOD,
     eYo.Key.CLASSMETHOD
-  ].indexOf(identifier)) {
+  ].indexOf(identifier) >= 0) {
     return new eYo.T3.Profile(null,  {
+      expr: eYo.T3.Expr.identifier,
       raw: eYo.T3.Expr.reserved_identifier,
       stmt: eYo.T3.Stmt.decorator_stmt
     })

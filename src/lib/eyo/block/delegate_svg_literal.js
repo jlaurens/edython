@@ -143,7 +143,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
-        if (!this.content_p.length) {
+        var p = this.content_p
+        if (!p || !p.length) {
           this.owner.content_d.field.placeholderText(true)
         }
       },
