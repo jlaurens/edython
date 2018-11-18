@@ -3,15 +3,15 @@
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
     <div id="eyo-flyout-toolbar-switcher">
       <b-button-group id="eyo-flyout-switcher">
-        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown"  v-on:show="doShow()">
+        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown">
           <template slot="button-content">Blocs</template>
-          <b-dropdown-item-button v-for="item in levels" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item-button v-for="item in categories" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
-        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown"  v-on:show="doShow()">
+        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown">
           <template slot="button-content">Module&nbsp;</template>
-          <b-dropdown-item-button v-for="item in modules" v-on:click="selectedCategory = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
+          <b-dropdown-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
       </b-button-group>
       <div id="eyo-flyout-toolbar-label">
@@ -136,20 +136,22 @@
         this.flyout && this.flyout.eyo.doSlide(newValue)
       },
       flyoutCategory: function (newValue, oldValue) {
-        console.log(newValue, oldValue)
         var item = this.items[newValue]
         if (this.workspace && this.flyout && item) { // this.workspace is necessary
           var list = this.flyout.eyo.getList(newValue)
           if (list && list.length) {
             this.flyout.show(list)
-            this.selectedCategory = (this.isBasic && item.basic) || item
+            this.selectedCategory = item
+            this.isBasic = !item.basic
           }
         }
       },
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
-        console.log(newValue, oldValue)
+        console.log('selectedCategory', newValue, oldValue)
         if (!oldValue || (newValue !== oldValue)) {
+          var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
+          eYo.Tooltip.hideAll(el)
           this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.key)
           this.label = newValue.label
         }
@@ -165,9 +167,13 @@
       }
     },
     methods: {
-      doShow () {
-        var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
-        eYo.Tooltip.hideAll(el)
+      selectCategory (item) {
+        if (this.isBasic && item.basic) {
+          item = item.basic
+        } else if (item.full) {
+          item = item.full
+        }
+        this.selectedCategory = item
       }
     },
     mounted () {
