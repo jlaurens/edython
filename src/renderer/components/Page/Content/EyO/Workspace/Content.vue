@@ -18,8 +18,6 @@
         {{label}}
         <b-form-checkbox id="eyo-flyout-toolbar-label-check"
                         v-model="isBasic"
-                        value="basic"
-                        unchecked-value=""
                         v-if="canBasic"
                         button-variant="light">
           basic
