@@ -1,19 +1,19 @@
 <template>
   <div id="toolbar">
     <toolbar-main />
-    <toolbar-info />
+    <toolbar-block />
   </div>
 </template>
 
 <script>
   import ToolbarMain from './Toolbar/Main.vue'
-  import ToolbarInfo from './Toolbar/Info.vue'
+  import ToolbarBlock from './Toolbar/Block.vue'
 
   export default {
     name: 'page-toolbar',
     components: {
       ToolbarMain,
-      ToolbarInfo
+      ToolbarBlock
     }
   }
 </script>

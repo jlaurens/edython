@@ -1,6 +1,6 @@
 <template>
   <g>
-    <path :d="pathDef" transform="rotate(45, 10, 10)"/> 
+    <path :d="pathDef" transform="rotate(45, 16, 16)"/> 
     <path :d="lineDef"/> 
   </g>
 </template>
@@ -10,16 +10,16 @@
     props: {
       radius: {
         type: [Number, String],
-        default: 7
+        default: 10
       }
     },
     computed: {
       pathDef: function () {
         var R = this.radius.toString()
-        return ['M 10 10 m -', R, ',0 a ', R, ',', R, ' 0 1,0 ', R, ',-', R].join('')
+        return `M ${16 - R} 16 a ${R},${R} 0 1,0 ${R},${-R}`
       },
       lineDef: function () {
-        return 'M 10 10 10 ' + (10 - this.radius)
+        return `M 16 16 16 ${16 - this.radius}`
       }
     }
   }

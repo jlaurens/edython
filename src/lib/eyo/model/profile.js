@@ -278,6 +278,11 @@ var setup = (function () {
    * @return {!eYo.T3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
    */
   eYo.T3.Profile.get = function (candidate, module) {
+    if (goog.isNumber(candidate)) {
+      return candidate === Math.floor(candidate)
+      ? eYo.T3.Profile.integer
+      : eYo.T3.Profile.floatnumber
+    }
     if (!candidate || !goog.isString(candidate)) {
       return eYo.T3.Profile.void
     }
@@ -342,6 +347,14 @@ eYo.Do.readOnlyMixin(
     unset: new eYo.T3.Profile(null, {
       expr: eYo.T3.Expr.identifier,
       isUnset: true
+    }),
+    /* Profile for an integer */
+    integer: new eYo.T3.Profile(null, {
+      expr: eYo.T3.Expr.integer
+    }),
+    /* Profile for a float number */
+    floatnumber: new eYo.T3.Profile(null, {
+      expr: eYo.T3.Expr.floatnumber
     })
   }
 )

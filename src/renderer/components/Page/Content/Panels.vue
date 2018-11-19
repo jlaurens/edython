@@ -12,13 +12,13 @@
           </b-dropdown>
         </div>
         <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === 'console'" title="Redémarrer l'interpréteur python" 
-        v-tippy ><icon-base icon-name="restart"><icon-restart /></icon-base></b-button>
+        v-tippy ><icon-base icon-name="restart" :width="26" :height="26"><icon-restart /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Effacer les dessins de tortue" 
-        v-tippy ><icon-base icon-name="replay"><icon-restart /></icon-base></b-button>
+        v-tippy ><icon-base icon-name="replay" :width="26" :height="26"><icon-restart /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-erase-python" class="eyo-round-btn" v-on:click="erase()" title="Effacer la console" 
-        v-if="selected === 'console'" v-tippy ><icon-base icon-name="erase console"><icon-erase /></icon-base></b-button>
+        v-if="selected === 'console'" v-tippy ><icon-base icon-name="erase console" :width="26" :height="26"><icon-erase /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-erase-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation" 
-        v-if="selected !== 'console'" v-tippy ><icon-base icon-name="replay turtle"><icon-replay /></icon-base></b-button>
+        v-if="selected !== 'console'" v-tippy ><icon-base icon-name="replay turtle" :width="26" :height="26"><icon-replay /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
         <panel-console :visible="selected === 'console'"></panel-console>
@@ -104,6 +104,7 @@
   #eyo-panels-toolbar-select {
     height: 100%;
     width: calc(100% - 4rem);
+    max-width: 12rem;
   }
   #eyo-panels-toolbar-dropdown {
     box-sizing: border-box;
@@ -126,7 +127,7 @@
   }
   .eyo-dropdown .btn::after {
     position: absolute;
-    right: 0.125rem;
+    right: 0.2rem;
     bottom: 0.25rem;
     opacity: 0.666;
   }

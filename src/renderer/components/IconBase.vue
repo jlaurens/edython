@@ -8,7 +8,7 @@
     class="eyo-icon"
   >
     <title :id="iconName" lang="en">{{iconName}} icon</title>
-    <g class="icon" :stroke="iconColor">
+    <g class="icon" :stroke="iconColor" :transform="transform">
       <slot :iconColor="iconColor" />
     </g>
   </svg>
@@ -16,11 +16,6 @@
 
 <script>
 export default {
-  computed: {
-    viewBox: function () {
-      return '0 0 ' + this.width + ' ' + this.height
-    }
-  },
   props: {
     iconName: {
       type: String,
@@ -28,15 +23,38 @@ export default {
     },
     width: {
       type: Number,
-      default: 20
+      default: 32
     },
     height: {
       type: Number,
-      default: 20
+      default: 32
     },
     iconColor: {
       type: String,
       default: 'currentColor'
+    },
+    dx: {
+      type: Number,
+      default: 0
+    },
+    dy: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    viewBox: function () {
+      return '0 0 ' + this.width + ' ' + this.height
+    },
+    transform () {
+      var t = ''
+      if (this.dx || this.dy) {
+        t = `translate(${this.dx} ${this.dy})`
+      }
+      if (this.height !== 32) {
+        t += `scale(${this.height / 32})`
+      }
+      return t
     }
   }
 }

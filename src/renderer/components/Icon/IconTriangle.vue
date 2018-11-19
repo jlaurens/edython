@@ -9,15 +9,6 @@
         step: 0
       }
     },
-    computed: {
-      d: function () {
-        var radius = this.width / 2 * 0.8
-        return ['M', 0, ',', this.height / 2, 'l', radius * 1.5, ',', radius * 0.866, 'l', 0, ',', -radius * 1.732, 'z'].join('')
-      },
-      transform: function () {
-        return ['rotate(', -540 * this.step, ',', 2 * this.width / 5, ',', this.height / 2, ')'].join('')
-      }
-    },
     props: {
       width: {
         type: Number,
@@ -26,6 +17,15 @@
       height: {
         type: Number,
         default: 20
+      }
+    },
+    computed: {
+      d: function () {
+        var radius = this.width / 2 * 0.8
+        return `M 0,16 l${radius * 1.5},${radius * 0.866} l 0,${-radius * 1.732} z`
+      },
+      transform: function () {
+        return `rotate(${-540 * this.step},${2 * this.width / 5},16)`
       }
     },
     mounted: function () {

@@ -11,24 +11,6 @@
 
 <script>
   export default {
-    computed: {
-      from () {
-        return this.duplicate || this.copy ? '' : 'clipboard'
-      },
-      to () {
-        return this.copy ? 'clipboard' : ''
-      },
-      fromPath () {
-        return ['M 11,', 31 - this.step * 7, ' 11,31 31,31 31,11 ', 31 - this.step * 7, ',11'].join('')
-      },
-      fromMultiPath () {
-        return ['M ', 31 - this.step * 7, ',21 31,21'].join('')
-      },
-      copyTransform () {
-        var t = this.copy ? 1 - this.step : 0
-        return ['translate(', 10 * t, ',', 10 * t, ')'].join('')
-      }
-    },
     props: {
       copy: {
         type: Boolean,
@@ -45,6 +27,24 @@
       step: {
         type: Number,
         default: 1
+      }
+    },
+    computed: {
+      from () {
+        return this.duplicate || this.copy ? '' : 'clipboard'
+      },
+      to () {
+        return this.copy ? 'clipboard' : ''
+      },
+      fromPath () {
+        return `M 11,${31 - this.step * 7} 11,31 31,31 31,11 ${31 - this.step * 7},11`
+      },
+      fromMultiPath () {
+        return `M ${31 - this.step * 7},21 31,21`
+      },
+      copyTransform () {
+        var t = this.copy ? 1 - this.step : 0
+        return `translate(${10 * t} ${10 * t})`
       }
     }
   }
