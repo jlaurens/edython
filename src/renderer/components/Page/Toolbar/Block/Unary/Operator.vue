@@ -11,6 +11,7 @@
     name: 'info-unary-operator',
     data () {
       return {
+        step_: undefined,
         operator_: 0
       }
     },
@@ -35,12 +36,11 @@
     computed: {
       operator: {
         get () {
-          return this.operator_ === this.eyo.operator_p
-            ? this.operator_
-            : (this.operator_ = this.eyo.operator_p)
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.operator_
         },
         set (newValue) {
-          this.operator_ = this.eyo.operator_p = newValue
+          this.eyo.operator_p = newValue
         }
       },
       operators () {
@@ -51,7 +51,16 @@
       }
     },
     created () {
-      this.operator_ = this.eyo.operator_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.operator_ = this.eyo.operator_p
+      }
     }
   }
 </script>

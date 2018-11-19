@@ -30,6 +30,10 @@
       $$.eYo.T3.Expr.parameter_star,
       $$.eYo.T3.Expr.parameter_star_star
     ])" :eyo="eyo" :slotholder="slotholder"></block-starred>
+    <block-except v-else-if="isSelected([
+      $$.eYo.T3.Stmt.except_part,
+      $$.eYo.T3.Stmt.void_except_part
+    ])" :eyo="eyo" :slotholder="slotholder"></block-except>
     <block-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
     <block-none v-else></block-none>
     <b-btn-group>
@@ -61,6 +65,7 @@
   import BlockNone from './Block/None.vue'
   import BlockCopyPaste from './Block/CopyPaste.vue'
   import BlockLayout from './Block/Layout.vue'
+  import BlockExcept from './Block/Except.vue'
 
   export default {
     name: 'toolbar-block',
@@ -89,7 +94,8 @@
       BlockStarred,
       BlockNone,
       BlockCopyPaste,
-      BlockLayout
+      BlockLayout,
+      BlockExcept
     },
     mounted () {
       this.step = this.$store.state.UI.toolbarEditVisible ? 1 : 0

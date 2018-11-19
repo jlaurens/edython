@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconUndoRedo from '@@/Icon/IconUndoRedo.vue'
 
   export default {

@@ -47,7 +47,9 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
  * @param {!String} single, the required type for a single element....
  */
 eYo.Consolidator.List.Target = function (D) {
-  var d = {}
+  var d = {
+    mandatory: 1
+  }
   goog.mixin(d, eYo.Consolidator.List.Target.data)
   goog.mixin(d, D)
   eYo.Consolidator.List.Target.superClass_.constructor.call(this, d)
@@ -291,10 +293,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.name.setIncog(newValue === this.TARGET)
+        this.data.name.setIncog(newValue === eYo.Key.TARGET)
         var slot = this.owner.lhs_s
-        slot.required = newValue === this.TARGET
-        slot.setIncog(!slot.required)
+        slot.required = newValue === eYo.Key.TARGET
+        slot.setIncog()
       },
       xml: false
     },

@@ -1,11 +1,11 @@
 <template>
-  <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="title" v-tippy>
+  <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="title" v-tippy :variant="variant">
     <icon-base :width="width" :height="height" :icon-name="name"><icon-copy-paste :copy="copy" :duplicate="duplicate" :deep="deep" :step="step"/></icon-base>
   </b-btn>
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconCopyPaste from '@@/Icon/IconCopyPaste.vue'
 
   export default {
@@ -35,6 +35,10 @@
       duplicate: {
         type: Boolean,
         default: false
+      },
+      variant: {
+        type: String,
+        default: 'secondary'
       }
     },
     components: {

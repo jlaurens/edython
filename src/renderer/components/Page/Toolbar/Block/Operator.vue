@@ -10,6 +10,7 @@
     name: 'info-operator',
     data: function () {
       return {
+        step_: undefined
       }
     },
     props: {
@@ -22,38 +23,35 @@
         default: function (item) {
           return this.unary ? item + '…' : '…' + item + '…'
         }
-      },
-      dataKey: {
-        type: String,
-        default: 'operator'
       }
     },
     computed: {
       unary () {
         return this.eyo.block_.type === eYo.T3.Expr.u_expr
       },
-      operator_d () {
-        return this.eyo.data[this.dataKey]
-      },
       operator: {
         get () {
-          var operator_d = this.operator_d
-          return operator_d
-            ? operator_d.get()
-            : 'Operator'
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.operator_d
         },
         set (newValue) {
-          var operator_d = this.operator_d
-          if (operator_d) {
-            operator_d.set(newValue)
-          }
+          this.eyo.operator_p = newValue
         }
       },
       operators () {
-        var operator_d = this.operator_d
-        return operator_d
-          ? operator_d.model.all
-          : []
+        return this.eyo.operator_d.getAll()
+      }
+    },
+    created () {
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.operator_ = this.eyo.operator_p
       }
     }
   }

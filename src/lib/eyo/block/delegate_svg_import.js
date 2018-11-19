@@ -84,14 +84,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         this.synchronize(newValue)
         var slot = this.owner.import_module_s
         slot.required = newValue === this.IMPORT
-        slot.setIncog(!slot.required)
+        slot.setIncog()
         this.data.from.setIncog(newValue === this.IMPORT)
         slot = this.owner.import_s
         slot.required = newValue === this.FROM_MODULE_IMPORT
-        slot.setIncog(!slot.required)
+        slot.setIncog()
         slot = this.owner.import_star_s
         slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
-        slot.setIncog(!slot.required)
+        slot.setIncog()
       }
     },
     from: {
@@ -135,9 +135,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
           if (this.isRequiredFromModel()) {
-            var variant = this.owner.data.variant
-            if (variant.get() === variant.IMPORT) {
-              variant.set(variant.FROM_MODULE_IMPORT_STAR)
+            if (this.owner.variant_p === eYo.Key.IMPORT) {
+              this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
             }
           }
         }

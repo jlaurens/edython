@@ -71,6 +71,9 @@
     },
     created () {
       this.variant_ = this.eyo.variant_p
+    },
+    updated () {
+      this.synchronize()
     }
   }
 </script>

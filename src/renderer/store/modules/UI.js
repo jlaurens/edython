@@ -8,13 +8,17 @@ const state = {
   selectedBlockType: undefined, // the selected block type
   blockClipboard: undefined,
   panelsVisible: true,
+  workspaceVisible: true,
   panelsWidth: '100%',
-  selectedPanel: 'console',
+  selectedPanel: eYo.App.CONSOLE,
+  selectedMode: eYo.App.NORMAL,
   flyoutClosed: false,
   flyoutCategory: undefined,
   toolbarEditVisible: true,
   toolbarInfoDebug: false
 }
+
+console.log(eYo.App)
 
 const types = namespace('UI', {
   getters: [
@@ -28,8 +32,10 @@ const types = namespace('UI', {
     'SET_SELECTED_BLOCK',
     'DID_COPY_BLOCK',
     'SET_PANELS_VISIBLE',
+    'SET_WORKSPACE_VISIBLE',
     'SET_PANELS_WIDTH',
     'SET_SELECTED_PANEL',
+    'SET_SELECTED_MODE',
     'SET_FLYOUT_CATEGORY',
     'SET_FLYOUT_CLOSED',
     'SET_TOOLBAR_INFO_VISIBLE',
@@ -60,14 +66,26 @@ const mutations = {
   [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
     state.blockClipboard = ctxt.xml
   },
-  [types.mutations.SET_PANELS_VISIBLE] (state, yorn) {
-    state.panelsVisible = yorn
-  },
   [types.mutations.SET_PANELS_WIDTH] (state, newWidth) {
     state.panelsWidth = newWidth
   },
+  [types.mutations.SET_PANELS_VISIBLE] (state, yorn) {
+    state.panelsVisible = yorn
+    if (!yorn && !state.workspaceVisible) {
+      state.workspaceVisible = true
+    }
+  },
+  [types.mutations.SET_WORKSPACE_VISIBLE] (state, yorn) {
+    state.workspaceVisible = yorn
+    if (!yorn && !state.panelsVisible) {
+      state.panelsVisible = true
+    }
+  },
   [types.mutations.SET_SELECTED_PANEL] (state, key) {
     state.selectedPanel = key
+  },
+  [types.mutations.SET_SELECTED_MODE] (state, mode) {
+    state.selectedMode = mode
   },
   [types.mutations.SET_FLYOUT_CATEGORY] (state, category) {
     if (goog.isString(category)) {

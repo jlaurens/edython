@@ -159,18 +159,34 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.any,
     eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.star_expr,
-    eYo.T3.Stmt.del_stmt
-  ],
-  'expert': [
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'global'
+    },
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'nonlocal'
+    },
+    eYo.T3.Stmt.del_stmt,
     eYo.T3.Expr.builtin__print_expr,
     eYo.T3.Expr.comprehension,
     eYo.T3.Expr.comp_for,
     eYo.T3.Expr.comp_if,
     eYo.T3.Expr.dict_comprehension,
     eYo.T3.Expr.key_datum,
+  ],
+  'expert': [
     eYo.T3.Stmt.with_part,
     eYo.T3.Stmt.try_part,
     eYo.T3.Stmt.except_part,
+    {
+      type: eYo.T3.Stmt.except_part,
+      expression_d: 'IndexError'
+    },
+    {
+      type: eYo.T3.Stmt.except_part,
+      expression_d: 'KeyError'
+    },
     eYo.T3.Stmt.finally_part,
     eYo.T3.Stmt.assert_stmt,
     eYo.T3.Stmt.raise_stmt,

@@ -74,5 +74,14 @@ export default {
   main_mode_normal: 'Normal',
   main_mode_normal_title: 'Interface pour une utilisation normale',
   main_mode_teacher: 'Professeur',
-  main_mode_teacher_title: 'Interface étendue à l\'usage des professeurs'
+  main_mode_teacher_title: 'Interface étendue à l\'usage des professeurs',
+  hide_workspace: 'Cacher l\'espace des blocs',
+  show_workspace: 'Montrer l\'espace des blocs',
+  hide_console_panel: 'Cacher le panneau de console',
+  show_console_panel: 'Montrer le panneau de console',
+  send_selection_to_back: 'Sélection à l\'arrière plan',
+  show_selection: 'Montrer la sélection',
+  decorator_input: 'Nom du décorateur',
+  except_expression: 'Un ou plusieurs objets exception',
+  except_alias: 'Un nom de variable'
 }

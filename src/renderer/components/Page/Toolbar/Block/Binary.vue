@@ -1,7 +1,5 @@
 <template>
-  <b-button-toolbar id="info-binary" key-nav  aria-label="Info toolbar binary" justify>
-    <operator :eyo="eyo" :slotholder="slotholder"></operator>
-  </b-button-toolbar>
+  <operator id="info-binary" key-nav  aria-label="Info toolbar binary" :eyo="eyo" :slotholder="slotholder"></operator>
 </template>
 
 <script>

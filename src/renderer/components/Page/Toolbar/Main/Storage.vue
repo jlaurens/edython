@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconNew from '@@/Icon/IconNew.vue'
   import IconSaveLoad from '@@/Icon/IconSaveLoad.vue'
   

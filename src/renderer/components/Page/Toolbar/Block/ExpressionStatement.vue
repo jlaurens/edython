@@ -1,7 +1,7 @@
 <template>
   <b-button-toolbar id="info-any-statement" key-nav  aria-label="Info any statement" justify>
-    <codex :eyo="eyo" :slotholder="slotholder" :variant="variant" :comment-variant="commentVariant" v-on:synchronize="synchronize"></codex>
-    <comment :eyo="eyo" :must-comment="mustComment" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
+    <codex :eyo="eyo" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
+    <comment :eyo="eyo" ></comment>
   </b-button-toolbar>
 </template>
 
@@ -13,8 +13,6 @@
     name: 'info-any-statement',
     data: function () {
       return {
-        variant: undefined,
-        commentVariant: undefined,
         mustComment: undefined
       }
     },
@@ -37,12 +35,13 @@
     created () {
       this.synchronize()
     },
+    updated () {
+      this.synchronize()
+    },
     methods: {
       synchronize () {
-        console.log('COUCOU')
-        this.variant = this.eyo.variant_p
-        this.commentVariant = this.eyo.comment_variant_p
-        this.mustComment = this.variant === eYo.Key.NONE
+        this.step = this.eyo.change.step
+        this.mustComment = this.eyo.variant_p === eYo.Key.NONE
       }
     }
   }

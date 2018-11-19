@@ -10,6 +10,7 @@
     name: 'info-value',
     data () {
       return {
+        step_: undefined,
         value_: undefined
       }
     },
@@ -22,10 +23,10 @@
     computed: {
       value: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.value_
         },
         set (newValue) {
-          this.value_ = newValue
           this.eyo.value_p = newValue
         }
       },
@@ -34,7 +35,16 @@
       }
     },
     created () {
-      this.value_ = this.eyo.value_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.value_ = this.eyo.value_p
+      }
     }
   }
 </script>

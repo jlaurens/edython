@@ -583,21 +583,15 @@ var Ks = {
   'class': eYo.T3.Stmt.classdef_part,
   'except': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT
-    }
+    variant_d: eYo.Key.NONE
   },
   'except …': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT_EXPRESSION
-    }
+    variant_d: eYo.Key.EXPRESSION
   },
   'except … as …': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT_AS
-    }
+    variant_d: eYo.Key.ALIASED
   },
   'finally': eYo.T3.Stmt.finally_part,
   'for': eYo.T3.Stmt.for_part,
@@ -780,23 +774,14 @@ Ks = {
   'del …': eYo.T3.Stmt.del_stmt,
   'return …': eYo.T3.Stmt.return_stmt,
   'yield …': eYo.T3.Stmt.yield_stmt,
-  'raise': {
-    type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE
-    }
-  },
+  'raise': eYo.T3.Stmt.raise_stmt,
   'raise …': {
     type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE_EXPRESSION
-    }
+    variant_d: eYo.Key.EXPRESSION
   },
   'raise … from …': {
     type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE_FROM
-    }
+    variant_d: eYo.Key.FROM
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,

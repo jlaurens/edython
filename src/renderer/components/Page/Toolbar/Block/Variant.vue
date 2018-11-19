@@ -10,6 +10,7 @@
     name: 'info-variant',
     data () {
       return {
+        step_: undefined,
         variant_: undefined
       }
     },
@@ -42,35 +43,33 @@
             return ''
           }
         }
-      },
-      dataKey: {
-        type: String,
-        default: 'variant'
       }
     },
     computed: {
-      data () {
-        return this.eyo.data[this.dataKey]
-      },
       variant: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.variant_
         },
         set (newValue) {
-          this.variant_ = newValue
-          this.data && this.data.change(newValue)
+          this.eyo.variant_p = newValue
         }
       },
       variants () {
-        return this.data
-          ? this.data.model.all
-          : []
+        return this.eyo.variant_d.getAll()
       }
     },
     created () {
-      this.variant_ = this.data
-        ? this.data.get()
-        : this.dataKey.charAt(0).toUpperCase() + this.dataKey.slice(1)
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.variant = this.eyo.variant_p
+      }
     }
   }
 </script>

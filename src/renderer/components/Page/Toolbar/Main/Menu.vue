@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown class="eyo-toolbar-menu eyo-dropdown" right>
+  <b-dropdown class="eyo-toolbar-menu eyo-dropdown mx-1" right>
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="menu"><icon-menu /></icon-base>
     </template>
@@ -12,7 +12,7 @@
 <script>
   import {mapState, mapMutations} from 'vuex'
 
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconMenu from '@@/Icon/IconMenu.vue'
   import CheckMark from '@@/Util/CheckMark.vue'
   

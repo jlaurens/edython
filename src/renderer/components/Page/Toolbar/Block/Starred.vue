@@ -88,6 +88,9 @@
     created () {
       this.synchronize()
     },
+    updated () {
+      this.synchronize()
+    },
     methods: {
       synchronize () {
         var eyo = this.eyo

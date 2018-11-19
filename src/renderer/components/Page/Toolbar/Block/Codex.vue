@@ -1,6 +1,6 @@
 <template>
   <b-button-toolbar>
-    <div id='info-stmt-code' class="btn btn-outline-secondary" v-if="withSlotholder_">
+    <div id='info-stmt-code' class="btn btn-outline-secondary" v-if="withSlotholder">
       <div class="eyo-block-primary-variant2">
         <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
         <div class="eyo-block-primary-variant3" v-html="my_slot"></div>
@@ -20,6 +20,9 @@
     name: 'info-stmt-code',
     data: function () {
       return {
+        step_: undefined,
+        variant_: undefined,
+        commentVariant_: undefined,
         expression_: undefined,
         withSlotholder_: undefined
       }
@@ -34,19 +37,16 @@
         default: (item) => {
           return item
         }
-      },
-      variant: {
-        type: String,
-        default: undefined
-      },
-      commentVariant: {
-        type: String,
-        required: true
       }
     },
     computed: {
+      commentVariant () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.commentVariant_ === eYo.Key.NONE
+      },
       noCheck () {
-        return this.commentVariant === eYo.Key.NONE
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.commentVariant_ === eYo.Key.NONE
       },
       canCode () {
         return !!this.eyo.expression_d
@@ -63,21 +63,41 @@
           this.$emit('synchronize')
         }
       },
+      variant () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.variant_
+      },
       code: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.expression_
         },
         set (newValue) {
-          this.expression_ = this.eyo.expression_p = newValue
+          this.eyo.expression_p = newValue
         }
       },
       my_slot () {
         return this.slotholder('eyo-block-primary-variant1')
+      },
+      withSlotholder () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.withSlotholder_
       }
     },
     created () {
-      this.expression_ = this.eyo.expression_p
-      this.withSlotholder_ = this.eyo.expression_s.targetBlock()
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.expression_ = this.eyo.expression_p
+        this.withSlotholder_ = this.eyo.expression_s.targetBlock()
+        this.commentVariant_ = this.eyo.commentVariant_p
+        this.variant_ = this.eyo.variant_p
+      }
     }
   }
 </script>

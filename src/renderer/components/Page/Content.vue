@@ -36,7 +36,8 @@
         return this.$store.state.UI.toolbarEditVisible
       },
       style () {
-        return ['top: ', 3.25 + this.step, 'rem;height: calc(100% - ', 3.5 + this.step, 'rem)'].join('')
+        return `top: ${3.25 + this.step}rem;
+        height: calc(100% - ${3.5 + this.step}rem)`
       }
     },
     mounted () {

@@ -1228,20 +1228,20 @@ eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
   var type = element.getAttribute(eYo.Key.EYO)
   var d = this.data.variant
   if (type === eYo.Key.CALL) {
-    d.set(d.CALL_EXPR)
+    d.set(eYo.Key.CALL_EXPR)
   } else if (type === eYo.T3.Expr.call_expr.substring(4)) {
-    d.set(d.CALL_EXPR)
+    d.set(eYo.Key.CALL_EXPR)
   } else if (type === eYo.T3.Expr.slicing.substring(4)) {
-    d.set(d.SLICING)
+    d.set(eYo.Key.SLICING)
   } else if (type === eYo.T3.Expr.identifier_as.substring(4)) {
-    d.set(d.ALIASED)
+    d.set(eYo.Key.ALIASED)
   } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
-    d.set(d.ALIASED)
+    d.set(eYo.Key.ALIASED)
   } else {
     if (this.data.alias.isRequiredFromModel()) {
-      d.set(d.ALIASED)
-      this.data.annotation.set(d.NONE)
-      this.data.definition.set(d.NONE)
+      d.set(eYo.Key.ALIASED)
+      this.data.annotation.set(eYo.Key.NONE)
+      this.data.definition.set(eYo.Key.NONE)
     }
   }
   return block

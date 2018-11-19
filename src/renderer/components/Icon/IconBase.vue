@@ -7,7 +7,7 @@
     role="presentation"
     class="eyo-icon"
   >
-    <title :id="iconName" lang="en">{{iconName}} icon</title>
+    <!--title :id="iconName" lang="en">{{iconName}} icon</title-->
     <g class="icon" :stroke="iconColor" :transform="transform">
       <slot :iconColor="iconColor" />
     </g>

@@ -4,7 +4,7 @@
     <operator :eyo="eyo"></operator>
     <variant :eyo="eyo" :slotholder="slotholder"></variant>
     <comment :eyo="eyo"></comment>
-    d<span>{{eyo.block_.type}}</span>
+    <span>type:&nbsp;{{eyo.block_.type}}</span>
   </b-button-toolbar>
 </template>
 

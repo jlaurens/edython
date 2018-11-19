@@ -1,13 +1,13 @@
 <template>
   <b-button-toolbar id="info-decorator" key-nav  aria-label="Info decorator" justify>
     <b-button-group>
-      <b-form-input v-model="myName" type="text" class="btn btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+      <b-form-input v-model="name" type="text" class="btn btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
       <b-dropdown id="info-variant" class="eyo-dropdown" variant="outline-secondary">
-        <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="info-variant eyo-code" v-html="title(choice)"></b-dropdown-item-button>
+        <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="info-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
       </b-dropdown>    
       <span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
     </b-button-group>
-    <comment :eyo="eyo" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
+    <comment :eyo="eyo"></comment>
   </b-button-toolbar>
 </template>
 
@@ -18,10 +18,9 @@
     name: 'info-decorator',
     data: function () {
       return {
-        variant_: undefined,
-        commentVariant_: undefined,
+        step_: undefined,
         property_: undefined,
-        myName: undefined
+        name_: undefined
       }
     },
     components: {
@@ -31,36 +30,32 @@
       eyo: {
         type: Object,
         default: undefined
-      },
-      slotholder: {
-        type: Function,
-        default: function (item) {
-          return item
-        }
       }
     },
     computed: {
+      name () {
+        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        return this.name_
+      },
       property () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()
         return this.property_
       },
-      variant () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
-        return this.variant_
-      },
-      commentVariant () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
-        return this.commentVariant_
-      },
       choices () {
         return this.eyo.data.chooser.getAll()
+      },
+      title () {
+        return this.$t('message.decorator_input')
       }
     },
     created () {
       this.synchronize()
     },
+    updated () {
+      this.synchronize()
+    },
     methods: {
-      title (choice) {
+      content (choice) {
         if (choice === eYo.Key.NONE) {
           return '@…'
         } else if (choice === eYo.Key.N_ARY) {
@@ -77,10 +72,9 @@
         this.eyo.chooser_p = choice
       },
       synchronize () {
-        this.variant_ = this.eyo.variant_p
-        this.commentVariant_ = this.eyo.comment_variant_p
+        this.step_ = this.eyo.change.step
         this.property_ = this.eyo.property_p
-        this.myName = this.eyo.name_p
+        this.name_ = this.eyo.name_p
       }
     }
   }

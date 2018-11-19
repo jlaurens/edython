@@ -57,6 +57,14 @@ if (process.env.BABEL_ENV !== 'web') {
   Vue.use(require('vue-electron'))
 }
 
+eYo.Do.readOnlyMixin(eYo.App, {
+  TUTORIAL: 'tutorial',
+  NORMAL: 'normal',
+  TEACHER: 'teacher',
+  CONSOLE: 'console',
+  TURTLE: 'turtle'
+})
+
 eYo.App.doDomToPref = function (dom) {
   var children = dom.childNodes
   var i = 0

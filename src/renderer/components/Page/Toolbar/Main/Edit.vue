@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconClap from '@@/Icon/IconClap.vue'
   import IconGear from '@@/Icon/IconGear.vue'
 

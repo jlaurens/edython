@@ -1,9 +1,7 @@
 <template>
   <b-button-toolbar id="info-augmented-assignment" key-nav  aria-label="Info toolbar augmented-assignment" justify>
-  <b-button-group>
     <operator :eyo="eyo" :slotholder="slotholder"></operator>
-  </b-button-group>
-  <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo"></comment>
   </b-button-toolbar>
 </template>
 

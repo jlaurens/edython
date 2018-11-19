@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconTriangle from '@@/Icon/IconTriangle.vue'
   import IconBug from '@@/Icon/IconBug.vue'
 

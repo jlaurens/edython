@@ -39,7 +39,6 @@
         set (newValue) {
           if (this.imag !== newValue) {
             this.eyo.value_p = this.content + (newValue ? this.suffix_ : '')
-            this.synchronize()
           }
         }
       },
@@ -56,7 +55,6 @@
         },
         set (newValue) {
           this.eyo.value_p = newValue + (this.imag ? this.suffix_ : '')
-          this.synchronize()
         }
       }
     },

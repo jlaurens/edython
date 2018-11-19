@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconDemo from '@@/Icon/IconDemo.vue'
   
   import demoBasicHello from '@static/demo/basic/hello.xml'

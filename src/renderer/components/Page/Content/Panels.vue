@@ -7,29 +7,29 @@
             <template slot="button-content">
               {{titles[selected]}}
             </template>
-            <b-dropdown-item-button v-on:click="selectPanel('console')" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
-            <b-dropdown-item-button v-on:click="selectPanel('turtle')" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}">{{titles.turtle}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selectPanel($$.eYo.App.CONSOLE)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
+            <b-dropdown-item-button v-on:click="selectPanel($$.eYo.App.TURTLE)" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.turtle}}</b-dropdown-item-button>
           </b-dropdown>
         </div>
-        <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === 'console'" title="Redémarrer l'interpréteur python" 
+        <b-button id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === $$.eYo.App.CONSOLE" title="Redémarrer l'interpréteur python" 
         v-tippy ><icon-base icon-name="restart" :width="26" :height="26"><icon-restart /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Effacer les dessins de tortue" 
         v-tippy ><icon-base icon-name="replay" :width="26" :height="26"><icon-restart /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-erase-python" class="eyo-round-btn" v-on:click="erase()" title="Effacer la console" 
-        v-if="selected === 'console'" v-tippy ><icon-base icon-name="erase console" :width="26" :height="26"><icon-erase /></icon-base></b-button>
+        v-if="selected === $$.eYo.App.CONSOLE" v-tippy ><icon-base icon-name="erase console" :width="26" :height="26"><icon-erase /></icon-base></b-button>
         <b-button id ="eyo-panels-toolbar-erase-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation" 
-        v-if="selected !== 'console'" v-tippy ><icon-base icon-name="replay turtle" :width="26" :height="26"><icon-replay /></icon-base></b-button>
+        v-if="selected !== $$.eYo.App.CONSOLE" v-tippy ><icon-base icon-name="replay turtle" :width="26" :height="26"><icon-replay /></icon-base></b-button>
       </div>
       <div id="eyo-panels-content">
-        <panel-console :visible="selected === 'console'"></panel-console>
-        <panel-turtle :visible="selected === 'turtle'"></panel-turtle>
+        <panel-console :visible="selected === $$.eYo.App.CONSOLE"></panel-console>
+        <panel-turtle :visible="selected === $$.eYo.App.TURTLE"></panel-turtle>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconRestart from '@@/Icon/IconRestart.vue'
   import IconReplay from '@@/Icon/IconReplay.vue'
   import IconErase from '@@/Icon/IconErase.vue'

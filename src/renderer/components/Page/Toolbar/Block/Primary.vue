@@ -4,7 +4,7 @@
     <name :eyo="eyo" :variant="variant" :name="name" :module="module"></name>
     <variant :eyo="eyo" :can_call="can_call" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
     <ry :eyo="eyo" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR && can_ry"></ry>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :must-comment="mustComment" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
   </b-button-toolbar>
 </template>
 
@@ -109,6 +109,9 @@
       }
     },
     created () {
+      this.synchronize()
+    },
+    updated () {
       this.synchronize()
     },
     methods: {

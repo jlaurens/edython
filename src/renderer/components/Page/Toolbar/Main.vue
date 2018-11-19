@@ -9,6 +9,10 @@
       </b-btn>
       <main-demo/>
     </b-button-group>
+    <b-button-group class="mx-1">
+      <main-mode />
+      <main-display />
+    </b-button-group>
     <main-storage />
     <b-button-group class="mx-1">
       <run-python />
@@ -19,13 +23,6 @@
       <main-undo-redo :redo="false" />
       <main-undo-redo :redo="true" />
     </b-button-group>
-    <main-display />
-    <main-mode />
-    <!--b-button-group class="mx-1">
-      <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
-        <icon-base :width="32" :height="32" icon-name="toggle"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
-      </b-btn>
-    </b-button-group-->
     <main-menu />
   </b-button-toolbar>
 </template>
@@ -41,18 +38,18 @@
   import MainDisplay from './Main/Display.vue'
   import MainMode from './Main/Mode.vue'
   
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconBug from '@@/Icon/IconBug.vue'
   import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
 
   export default {
     name: 'page-toolbar',
-    data: function () {
+    data: () => {
       return {
-        selected: 'console',
+        selected: this.$$.eYo.App.CONSOLE,
         titles: {
-          console: 'Console',
-          turtle: 'Tortue'
+          console: this.$$.eYo.App.CONSOLE,
+          turtle: this.$$.eYo.App.Turtle
         }
       }
     },
@@ -70,16 +67,6 @@
       MainDisplay,
       MainMode
     },
-    computed: {
-      showTogglePanel () {
-        return this.$store.state.UI.panelsVisible ? 'hide' : 'show'
-      },
-      toolbarTogglePanelsTitle () {
-        return this.$store.state.UI.panelsVisible
-          ? 'Cacher les consoles'
-          : 'Afficher les consoles'
-      }
-    },
     methods: {
       doSite (url) {
         if (this.$$.electron && this.$$.electron.shell) {
@@ -89,9 +76,6 @@
           var win = window.open(url, '_blank')
           win.focus()
         }
-      },
-      doTogglePanelsVisible () {
-        this.$store.commit('UI_SET_PANELS_VISIBLE', !this.$store.state.UI.panelsVisible)
       }
     }
   }

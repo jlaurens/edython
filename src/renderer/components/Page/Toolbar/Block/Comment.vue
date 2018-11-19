@@ -15,9 +15,10 @@
     name: 'info-stmt-comment',
     data: function () {
       return {
+        step_: undefined,
         comment_: undefined,
         hasComment_: undefined,
-        myCommentVariant_: undefined
+        commentVariant_: undefined
       }
     },
     props: {
@@ -28,45 +29,53 @@
       mustComment: {
         type: Boolean,
         default: false
-      },
-      commentVariant: {
-        type: String,
-        default: undefined
       }
     },
     computed: {
       canComment () {
-        return this.eyo && this.eyo.data.comment
+        return this.eyo && this.eyo.comment_d
       },
-      myCommentVariant () {
-        return this.commentVariant || this.myCommentVariant_
+      commentVariant: {
+        get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.commentVariant_
+        },
+        set (newValue) {
+          this.eyo.comment_variant_p = newValue
+        }
       },
       hasComment: {
         get () {
           return this.commentVariant === eYo.Key.COMMENT
         },
         set (newValue) {
-          this.hasComment_ = newValue
-          this.eyo.comment_variant_p = newValue
+          this.commentVariant = newValue
             ? eYo.Key.COMMENT
             : eYo.Key.NONE
-          this.$emit('synchronize')
         }
       },
       comment: {
         get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
           return this.comment_
         },
         set (newValue) {
-          this.comment_ = this.eyo.comment_p = newValue
+          this.eyo.comment_p = newValue
           this.$emit('synchronize')
         }
       }
     },
     created () {
-      this.comment_ = this.eyo.comment_p
-      if (!this.commentVariant) {
-        this.myCommentVariant_ = this.eyo.comment_variant_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.comment_ = this.eyo.comment_p
+        this.commentVariant_ = this.eyo.comment_variant_p
       }
     }
   }
@@ -87,5 +96,6 @@
     border: none;
     position:relative;
     top:-0.0625rem;
+    right:-0.0625rem;
   }
 </style>

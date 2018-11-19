@@ -447,6 +447,17 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
 }
 
 /**
+ * Connection.
+ * @param {!Blockly.Connection} c8n
+ */
+eYo.ConnectionDelegate.prototype.connect = function(c8n) {
+  if (c8n) {
+    this.setIncog(false)
+    this.connection.connect(c8n)
+  }
+}
+
+/**
  * Set the origin of the connection.
  * When the connection is in a slot, the origin is the top left point
  * of the slot otherwise it is `(0, 0)`.
@@ -491,37 +502,7 @@ eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
 eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
   var shape = eYo.Shape.newWithConnection(this)
   return {w: shape.width, d: shape.definition}
-
-
-  /* eslint-disable indent */
-  var w = this.w
-  var width = w * eYo.Unit.x
-  var dw = goog.isDef(this.bindField) ? -1 / 2 : 0
-  var dwidth = dw * eYo.Unit.x
-  var height = eYo.Unit.y
-  var p = eYo.Padding.h
-  var r_ph = eYo.Shape.shared.expr_radius
-  var a = [' a ', r_ph , ',', r_ph, ' 0 0 1 0,']
-  var h_total = height
-  var correction = eYo.Font.descent / 2
-  var dy = eYo.Padding.v + eYo.Font.descent / 2 - correction
-  var steps
-  if (this.chainBlock && this.chainBlock.outputConnection) {
-    steps = ['M ', this.x + width - dwidth - p, ',', this.y + dy]
-    steps = steps.concat(a)
-    steps.push(h_total - 2 * dy, 'h ', -(width - 2 * p))
-    steps = steps.concat(a)
-    steps.push(-h_total + 2 * dy, ' z')
-    return {w: w, d: steps.join('')}
-  } else {
-    steps = ['M ', this.x + width - dwidth - p, ',', this.y + dy]
-    steps = steps.concat(a)
-    steps.push(h_total - 2 * dy, 'h ', -(width - 2 * p))
-    steps = steps.concat(a)
-    steps.push(-h_total + 2 * dy, ' z')
-    return {w: w, d: steps.join('')}
-  }
-} /* eslint-enable indent */
+}
 
 /**
  * Path definition for an hilighted connection
@@ -723,11 +704,12 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
  * The check_ is used more precisely.
  * For example, elif blocks cannot connect to the suite connection, only the next connection.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @param {?Boolean} force  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.prototype.checkType_ = function (otherConnection) {
+eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
   if (!Blockly.Events.recordUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
@@ -750,7 +732,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
     if (c8nB.targetConnection) {
       return c8nB === c8nA.targetConnection
     }
-  } else if (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_) {
+  } else if (!force && (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_)) {
     return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()

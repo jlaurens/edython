@@ -53,11 +53,11 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.data.comment.required = newValue === this.COMMENT
+        this.data.comment.required = newValue === eYo.Key.COMMENT
         this.data.comment.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.data.comment.isIncog() ? this.NONE : this.COMMENT)
+        this.set(this.data.comment.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
       }
     }
   },
@@ -490,12 +490,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.afterChange(oldValue, newValue)
         var data = this.data.expression
-        data.required = newValue === this.EXPRESSION
+        data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         if (this.data.comment.isIncog()) {
-          this.change(this.EXPRESSION)
+          this.change(eYo.Key.EXPRESSION)
         }
       }
     },

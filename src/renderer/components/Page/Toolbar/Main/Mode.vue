@@ -5,29 +5,26 @@
 </template>
 
 <script>
-  eYo.Do.readOnlyMixin(eYo.Key, {
-    TUTORIAL: 'tutorial',
-    NORMAL: 'normal',
-    TEACHER: 'teacher'
-  })
-
   export default {
     name: 'main-mode',
     data: function () {
       return {
-        chosen: eYo.Key.NORMAL
+        chosen: eYo.App.NORMAL
       }
     },
     computed: {
       choices () {
         return [
-          eYo.Key.TUTORIAL,
-          eYo.Key.NORMAL,
-          eYo.Key.TEACHER
+          eYo.App.TUTORIAL,
+          eYo.App.NORMAL,
+          eYo.App.TEACHER
         ]
       }
     },
     created () {
+      this.synchronize()
+    },
+    updated () {
       this.synchronize()
     },
     methods: {
@@ -35,6 +32,7 @@
         this.chosen = choice
       },
       synchronize () {
+        this.step_ = this.eyo.change.step
       }
     }
   }

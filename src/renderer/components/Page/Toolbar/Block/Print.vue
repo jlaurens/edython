@@ -10,7 +10,7 @@
       <input type="checkbox" id="info-print-file" v-model="file" :disabled="!can_file">
       <label for="info-print-file" class="eyo-code" :disabled="!can_file">file=…</label>
     </div>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :must-comment="mustComment" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
   </b-button-toolbar>
 </template>
 
@@ -21,6 +21,7 @@
     name: 'info-print',
     data: function () {
       return {
+        step_: undefined
       }
     },
     components: {
@@ -128,8 +129,7 @@
     methods: {
       do (key) {
         eYo.Events.groupWrap(
-          this,
-          function () {
+          () => {
             var B = this.has[key]
             if (B) {
               B.unplug()

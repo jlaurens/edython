@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import IconBase from '@@/IconBase.vue'
+  import IconBase from '@@/Icon/IconBase.vue'
   import IconDisplay from '@@/Icon/IconDisplay.vue'
 
   export default {
@@ -28,13 +28,13 @@
     computed: {
       titleLeft () {
         return this.left
-          ? 'Cacher l\'espace des blocs'
-          : 'Montrer l\'espace des blocs'
+          ? this.$t('message.hide_workspace')
+          : this.$t('message.show_workspace')
       },
       titleRight () {
         return this.right
-          ? 'Cacher le panneau de console'
-          : 'Montrer le panneau de console'
+          ? this.$t('message.hide_console_panel')
+          : this.$t('message.show_console_panel')
       }
     },
     methods: {

@@ -18,7 +18,7 @@
         {{otherQuote}}
       </b-btn>
     </b-button-group>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :must-comment="mustComment" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
   </b-button-toolbar>
 </template>
 

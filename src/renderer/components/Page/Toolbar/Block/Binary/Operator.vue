@@ -14,6 +14,7 @@
     name: 'info-binary-operator',
     data: function () {
       return {
+        step_: undefined,
         operator_: '?',
         operators: {
           num: ['+', '-', '*', '/', '//', '%', '**', '@'],
@@ -42,12 +43,11 @@
     computed: {
       operator: {
         get () {
-          return this.operator_ === this.eyo.operator_p
-            ? this.operator_
-            : (this.operator_ = this.eyo.operator_p)
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.operator_
         },
         set (newValue) {
-          this.operator_ = this.eyo.operator_p = newValue
+          this.eyo.operator_p = newValue
         }
       },
       operatorsA () {
@@ -65,7 +65,16 @@
       }
     },
     created () {
-      this.operator_ = this.eyo.operator_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.operator_ = this.eyo.operator_p
+      }
     }
   }
 </script>

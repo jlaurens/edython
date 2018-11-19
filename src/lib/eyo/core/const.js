@@ -170,14 +170,6 @@ eYo.Key = {
   FROM_MODULE_IMPORT: 'from_module_import',
   FROM_MODULE_IMPORT_STAR: 'from_module_import_star',
 
-  EXCEPT: 'except',
-  EXCEPT_EXPRESSION: 'except_expression',
-  EXCEPT_AS: 'except_as',
-
-  RAISE: 'raise',
-  RAISE_EXPRESSION: 'raise_expression',
-  RAISE_FROM: 'raise_from',
-
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
 

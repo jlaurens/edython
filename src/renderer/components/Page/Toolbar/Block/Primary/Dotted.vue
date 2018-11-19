@@ -1,6 +1,6 @@
 <template>
   <b-button-group class="mx-1">
-    <b-form-input id="eyo-block-primary-holder" v-model="blockHolder" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
+    <b-form-input id="eyo-block-primary-holder" v-model="holder" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
     <b-dropdown id="info-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
     <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
     <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
@@ -14,7 +14,10 @@
   export default {
     data () {
       return {
-        selectedItem_: undefined
+        step_: undefined,
+        selectedItem_: undefined,
+        holder_: undefined,
+        dotted_: undefined
       }
     },
     name: 'info-primary-dotted',
@@ -22,31 +25,25 @@
       eyo: {
         type: Object,
         default: undefined
-      },
-      dotted: {
-        type: Number,
-        default: 0
-      },
-      holder: {
-        type: String,
-        default: ''
       }
     },
     computed: {
       canHolder () {
         return this.dotted === 1
       },
-      blockHolder: {
+      holder: {
         get () {
-          return this.holder
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.holder_
         },
         set (newValue) {
           this.eyo.holder_p = newValue
         }
       },
-      blockDotted: {
+      dotted: {
         get () {
-          return this.dotted
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.dotted_
         },
         set (newValue) {
           this.eyo.dotted_p = newValue
@@ -59,7 +56,7 @@
           if (dotted === 1) {
             var eyo = this.eyo
             if (!eyo.slots.holder.targetBlock()) {
-              var module = this.moduleItems[this.blockHolder]
+              var module = this.moduleItems[this.holder]
               if (module) {
                 candidate = module
               }
@@ -71,7 +68,7 @@
           if (newValue.action) {
             newValue.action.call(this, newValue)
           } else {
-            this.blockDotted = newValue.key
+            this.dotted = newValue.key
           }
         }
       },
@@ -101,14 +98,14 @@
         while ((module = this.moduleKeys[i++])) {
           d[module] = {
             key: module,
-            content: this.blockHolder === module
+            content: this.holder === module
               ? '<b>' + module + '.</b>'
               : module + '.',
             title: '.',
             action (item) {
               // this.eyo.changeBegin()
-              this.blockDotted = 1
-              this.blockHolder = item.key
+              this.dotted = 1
+              this.holder = item.key
             }
           }
         }
@@ -131,18 +128,28 @@
       }
     },
     created () {
+      this.synchronize()
       var dotted = this.dotted
       var candidate = this.dottedItems[dotted]
       if (dotted === 1) {
-        var eyo = this.eyo
-        if (!eyo.slots.holder.targetBlock()) {
-          var module = this.moduleItems[this.blockHolder]
+        if (!this.eyo.holder_s.targetBlock()) {
+          var module = this.moduleItems[this.holder]
           if (module) {
             candidate = module
           }
         }
       }
       this.selectedItem_ = candidate || this.dottedItems[0]
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.holder_ = this.eyo.holder_p
+        this.dotted_ = this.eyo.dotted_p
+      }
     }
   }
 </script>

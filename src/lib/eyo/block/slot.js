@@ -517,7 +517,9 @@ eYo.Slot.prototype.targetBlock = function () {
  * @return {boolean} whether changes have been made
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
-  if (!goog.isDef(newValue)) {
+  if (this.data) {
+    newValue = this.data.isIncog()
+  } else if (!goog.isDef(newValue)) {
     newValue = !this.required
   } else {
     newValue = !!newValue
@@ -826,7 +828,7 @@ eYo.Slot.prototype.load = function (element) {
                         eYo.Xml.fromDom(grandTarget, grandChild)
                       } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
                         var targetC8n = grandTarget.outputConnection
-                        if (targetC8n && targetC8n.checkType_(input.connection)) {
+                        if (targetC8n && targetC8n.checkType_(input.connection, true)) {
                           targetC8n.connect(input.connection)
                           this.setRequiredFromModel(true)
                         }
@@ -845,11 +847,11 @@ eYo.Slot.prototype.load = function (element) {
             // we could create a block from that child element
             // then connect it
             var c8n = this.input && this.input.connection
-            if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection)) {
-              c8n.connect(target.outputConnection)
+            if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
+              c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
               this.setRequiredFromModel(true)
-            } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-              c8n.connect(target.previousConnection)
+            } else if (target.previousConnection && c8n.checkType_(target.previousConnection, true)) {
+              c8n.eyo.connect(target.previousConnection) // Notice the `.eyo`
             }
             out = target
           }

@@ -8,6 +8,12 @@
 <script>
   export default {
     name: 'info-value',
+    data: function () {
+      return {
+        step_: undefined,
+        value_: undefined
+      }
+    },
     props: {
       eyo: {
         type: Object,
@@ -18,31 +24,35 @@
         default: function (item) {
           return item && item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
         }
-      },
-      dataKey: {
-        type: String,
-        default: 'value'
       }
     },
     computed: {
       id () {
-        return 'info-' + this.dataKey
-      },
-      data () {
-        return this.eyo.data[this.dataKey]
+        return 'info-value'
       },
       value: {
         get () {
-          return this.data
-            ? this.data.get()
-            : this.dataKey.charAt(0).toUpperCase() + this.dataKey.slice(1)
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.value_
         },
         set (newValue) {
-          this.data && this.data.set(newValue)
+          this.eyo.value_p = newValue
         }
       },
       values () {
-        return this.data && this.data.model.all
+        return this.eyo.value_d.getAll()
+      }
+    },
+    created () {
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.value_ = this.eyo.value_p
       }
     }
   }

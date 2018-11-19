@@ -12,6 +12,7 @@
     name: 'info-any-expression',
     data: function () {
       return {
+        step_: undefined,
         expression_: undefined
       }
     },
@@ -34,17 +35,25 @@
       },
       expression: {
         get () {
-          return this.expression_ === this.eyo.expression_p
-            ? this.expression_
-            : (this.expression_ = this.eyo.expression_p)
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.expression_
         },
         set (newValue) {
-          this.expression_ = this.eyo.expression_p = newValue
+          this.eyo.expression_p = newValue
         }
       }
     },
     created () {
-      this.expression_ = this.eyo.expression_p
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        this.step_ = this.eyo.change.step
+        this.expression = this.eyo.expression_p
+      }
     }
   }
 </script>
