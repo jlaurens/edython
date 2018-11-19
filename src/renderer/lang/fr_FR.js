@@ -67,5 +67,12 @@ export default {
   enter_any_valid_expression: 'Saisir une expression valide',
   one_line_of_text: 'Saisir du texte (une ligne)',
   should_save_title: 'Sauvegarder d\'abord ?',
-  should_save_content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.'
+  should_save_content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.',
+  main_mode_title: 'Choisir une interface adaptée',
+  main_mode_tutorial: 'Tutoriel',
+  main_mode_tutorial_title: 'Interface simple pour débuter',
+  main_mode_normal: 'Normal',
+  main_mode_normal_title: 'Interface pour une utilisation normale',
+  main_mode_teacher: 'Professeur',
+  main_mode_teacher_title: 'Interface étendue à l\'usage des professeurs'
 }

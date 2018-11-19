@@ -14,11 +14,13 @@
       <run-python />
       <copy-python />
     </b-button-group>
+    <copy-paste />
     <b-button-group class="mx-1">
       <main-undo-redo :redo="false" />
       <main-undo-redo :redo="true" />
     </b-button-group>
     <main-display />
+    <main-mode />
     <!--b-button-group class="mx-1">
       <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
         <icon-base :width="32" :height="32" icon-name="toggle"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
@@ -33,9 +35,11 @@
   import MainUndoRedo from './Main/UndoRedo.vue'
   import MainDemo from './Main/Demo.vue'
   import RunPython from './Main/RunPython.vue'
+  import CopyPaste from './Main/CopyPaste.vue'
   import CopyPython from './Main/CopyPython.vue'
   import MainStorage from './Main/Storage.vue'
   import MainDisplay from './Main/Display.vue'
+  import MainMode from './Main/Mode.vue'
   
   import IconBase from '@@/IconBase.vue'
   import IconBug from '@@/Icon/IconBug.vue'
@@ -60,9 +64,11 @@
       MainUndoRedo,
       MainDemo,
       RunPython,
+      CopyPaste,
       CopyPython,
       MainStorage,
-      MainDisplay
+      MainDisplay,
+      MainMode
     },
     computed: {
       showTogglePanel () {
