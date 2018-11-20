@@ -14,8 +14,13 @@
 goog.provide('eYo.Slot')
 
 goog.require('eYo.Do')
+goog.require('eYo.Where')
+goog.require('eYo.Decorate')
 goog.require('eYo.ConnectionDelegate')
+goog.require('eYo.T3.Profile')
+
 goog.require('goog.dom');
+
 goog.forwardDeclare('eYo.Xml')
 
 /**
@@ -30,6 +35,9 @@ goog.forwardDeclare('eYo.Xml')
  * 3) start field
  * 4) either editable field, value input of wrapped block.
  * 5) end field
+ * 
+ * If the given model contains a `wrap` key, then a wrapped
+ * block is created.
  *
   // we assume that one input model only contains at most one of
   // - editable field
@@ -38,55 +46,99 @@ goog.forwardDeclare('eYo.Xml')
   // - insert input
   // It may contain label fields
  * @param {!Object} owner  The owner is a block delegate.
- * @param {!string} key  One of the keys in `slots` section of the model.
- * @param {!Object} slotModel  the model for the given key i the above mention section.
+ * @param {!string} key  One of the keys in `slots` section of the block model.
+ * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.Slot = function (owner, key, slotModel) {
+eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing slot owner')
   goog.asserts.assert(key, 'Missing slot key')
-  goog.asserts.assert(slotModel, 'Missing slot model')
-  goog.asserts.assert(slotModel.order, 'Missing slot model order')
+  goog.asserts.assert(model, 'Missing slot model')
+  if (!model.order) {
+    console.error('Missing slot model order')
+  }
+  goog.asserts.assert(model.order, 'Missing slot model order')
   this.owner = owner
   this.key = key
-  this.model = slotModel
+  this.reentrant = {}
+  var setupModel = function(model) {
+    if (!model.setup_) {
+      model.setup_ = true
+      if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+        delete model.validateIncog
+      }
+    }
+  }
+  setupModel(model)
+  this.model = model
   this.input = undefined
-  this.wait = 1
-  var block = this.block = owner.block_
+  var block = this.sourceBlock_
   goog.asserts.assert(block,
     eYo.Do.format('block must exist {0}/{1}', key))
-  eYo.Slot.makeFields(this, slotModel.fields)
-  if (slotModel.wrap) {
-    this.setInput(block.appendWrapValueInput(key, slotModel.wrap, slotModel.optional, slotModel.hidden))
-    this.input.connection.eyo.model = slotModel
-  } else if (slotModel.check) {
-    this.setInput(block.appendValueInput(key))
-    this.input.connection.eyo.model = slotModel
+  eYo.Slot.makeFields(this, model.fields)
+  eYo.Content.feed(this, model.contents || model.fields)
+  var f = () => {
+    var c_eyo = this.input.connection.eyo
+    c_eyo.source = this
+    c_eyo.model = model
   }
+  if (model.wrap) {
+    this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
+    f()
+  } else if (goog.isDefAndNotNull(model.check)) {
+    this.setInput(block.appendValueInput(key))
+    f()
+  }
+  if (key === 'comment') {
+    this.fields.bind && (this.fields.bind.eyo.isComment = true)
+  }
+  this.where = new eYo.Where()
 }
+
+Object.defineProperties(
+  eYo.Slot.prototype,
+  {
+    block: {
+      get () {
+        return this.owner.block_
+      }
+    },
+    sourceBlock_: {
+      get () {
+        return this.owner.block_
+      }
+    },
+    incog_p: {
+      get () {
+        return this.isIncog()
+      },
+      set (newValue) {
+        this.owner.changeWrap(
+          this.setIncog,
+          this,
+          newValue
+        )
+      }
+    },
+    recover: {
+      get () {
+        return this.owner.block_.workspace.eyo.recover
+      }
+    }
+  }
+)
 
 /**
  * Init the slot.
  */
 eYo.Slot.prototype.init = function () {
-  var init = this.model.init
-  if (goog.isFunction(init)) {
-    if (!this.model_init_lock) {
-      this.model_init_lock = true
-      try {
-        init.call(this)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_init_lock
-      }
-    }
-  }
+  var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
+  f && f.call(this)
 }
 
 /**
- * Install this slot on a block.
+ * Retrieve the target block.
+ * Forwards to the connection.
  */
 eYo.Slot.prototype.targetBlock = function () {
   return this.input && this.input.connection && this.input.connection.targetBlock()
@@ -94,13 +146,9 @@ eYo.Slot.prototype.targetBlock = function () {
 
 /**
  * Install this slot on a block.
+ * No data change.
  */
 eYo.Slot.prototype.beReady = function () {
-  this.wait = 0
-  if (this.svgGroup_) {
-    // Slot has already been initialized once.
-    return
-  }
   // Build the DOM.
   this.svgGroup_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-slot'
@@ -113,17 +161,20 @@ eYo.Slot.prototype.beReady = function () {
   //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
-  for (var k in this.fields) {
-    var field = this.fields[k]
+  var f = (field) => {
     if (!field.sourceBlock_) {
-      field.setSourceBlock(this.block)
+      field.setSourceBlock(this.sourceBlock_)
       field.eyo.slot = this
       field.init()// installs in the owner's group, not the block group
     }
   }
+  for (var k in this.fields) {
+    f(this.fields[k])
+  }
+  this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
+  this.beReady = eYo.Do.nothing // one shot function
 }
-console.warn('What would be an slot rendering?')
 /**
  * The DOM SVG group representing this slot.
  */
@@ -153,14 +204,14 @@ eYo.Slot.prototype.dispose = function () {
   this.key = null
   this.model = null
   this.input = null
-  this.block = null
+  this.sourceBlock_ = null
 }
 
 goog.require('eYo.FieldLabel')
 goog.require('eYo.FieldInput')
 
 /**
- * Create all the fields from the model.
+ * Create all the fields from the given model.
  * For edython.
  * @param {!Object} owner
  * @param {!Object} fieldsModel
@@ -180,8 +231,7 @@ eYo.Slot.makeFields = function () {
     goog.asserts.assert(data, 'No data bound to field ' + this.key + '/' + this.sourceBlock_.type)
     var result = this.callValidator(this.getValue())
     if (result !== null) {
-      data.fromText(result)
-      data.synchronize(result) // would is be included in the previous method ?
+      data.fromField(result)
     } else {
       this.setValue(data.toText())
     }
@@ -215,22 +265,22 @@ eYo.Slot.makeFields = function () {
       if (model.startsWith('css')) {
         return
       }
-      field = new eYo.FieldLabel(model)
-      field.eyo.css_class = eYo.Do.cssClassForText(model)
+      field = new eYo.FieldLabel(null, model)
+      field.eyo.css_class = model.css_class || eYo.T3.getCssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.validator || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.edit || '', model.validator, fieldName)
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(null, model.edit || '', model.validator, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
-        field = new eYo.FieldLabel(model.value || '')
+        field = new eYo.FieldLabel(null, model.value || '')
       } else { // other entries are ignored
         return
       }
       field.eyo.model = model
       if (!(field.eyo.css_class = model.css_class || (model.css && 'eyo-code-' + model.css))) {
-        field.eyo.css_class = eYo.Do.cssClassForText(field.getValue())
+        field.eyo.css_class = eYo.T3.getCssClassForText(field.getValue())
       }
       field.eyo.css_style = model.css_style
       field.eyo.order = model.order
@@ -246,11 +296,14 @@ eYo.Slot.makeFields = function () {
     // field maker
     // Serious things here
     var block = owner.getBlock()
-    goog.asserts.assert(block, 'Missing while making fields')
+    goog.asserts.assert(block, 'Missing block while making fields')
     for (var key in fieldsModel) {
       var model = fieldsModel[key]
       var field = makeField(key, model)
       if (field) {
+        if (key === eYo.Key.BIND) {
+          owner.bindField = field
+        }
         owner.fields[key] = field
       }
     }
@@ -396,22 +449,21 @@ eYo.Slot.makeFields = function () {
     unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
     owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
-    owner.fields.comment && (owner.fields.comment.eyo.comment = true)
   }
 } ()
 
 /**
  * Set the underlying Blockly input.
  * Some time we will not need these inputs.
+ * It must be done only once at initialization time.
  * For edython.
  * @param {!Blockly.Input} input
  */
 eYo.Slot.prototype.setInput = function (input) {
   this.input = input
-  this.inputType = this.input.type
-  this.connection = input.connection
+  this.inputType = input.type
   input.eyo.slot = this
-  var c8n = this.connection
+  var c8n = this.connection = input.connection
   if (c8n) {
     var eyo = c8n.eyo
     eyo.slot = this
@@ -425,12 +477,8 @@ eYo.Slot.prototype.setInput = function (input) {
     if (this.model.optional) { // svg
       eyo.optional_ = true
     }
-    var v
-    if ((v = this.model.check)) {
-      c8n.setCheck(v)
-      eyo.hole_data = eYo.HoleFiller.getData(v, this.model.hole_value)
-    } else if ((v = this.model.check = this.model.wrap)) {
-      c8n.setCheck(v)
+    if (this.model.hidden) { // svg
+      this.incog = eyo.hidden_ = true
     }
   }
 }
@@ -438,10 +486,9 @@ eYo.Slot.prototype.setInput = function (input) {
 /**
  * Get the block.
  * For edython.
- * @param {boolean} newValue
  */
 eYo.Slot.prototype.getBlock = function () {
-  return this.block
+  return this.sourceBlock_
 }
 
 /**
@@ -454,46 +501,44 @@ eYo.Slot.prototype.getConnection = function () {
 }
 
 /**
- * Geth the workspace.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Slot.prototype.getWorkspace = function () {
-  return this.connection && this.connection.sourceBlock_.workspace
-}
-
-/**
  * The target.
  * For edython.
  * @param {!Blockly.Input} workspace The block's workspace.
  */
-eYo.Slot.prototype.getTarget = function () {
+eYo.Slot.prototype.targetBlock = function () {
   return this.connection && this.connection.targetBlock()
 }
 
 /**
  * Set the disable state.
+ * Synchronize when the incog state did change.
  * For edython.
- * @param {!boolean} newValue  When not defined, replaced by `!this.required`
+ * @param {!boolean} newValue  When not defined, replaced by `!this.required`, then validated if the model asks to.
  * @return {boolean} whether changes have been made
  */
 eYo.Slot.prototype.setIncog = function (newValue) {
-  if (!goog.isDef(newValue)) {
+  if (this.data) {
+    newValue = this.data.isIncog()
+  } else if (!goog.isDef(newValue)) {
     newValue = !this.required
   } else {
     newValue = !!newValue
   }
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
   var change = this.incog !== newValue
-  this.incog = newValue
-  if (this.wait) {
-    return
+  if (change) {
+    this.incog = newValue
+    // forward to the connection
+    var c8n = this.input && this.input.connection
+    if (c8n && c8n.eyo.isIncog() !== newValue) {
+      change = true 
+      c8n.eyo.setIncog(newValue)
+    }
   }
-  var c8n = this.input && this.input.connection
-  if (c8n && c8n.eyo.isIncog() !== newValue) {
-    change = true 
-    c8n.eyo.setIncog(newValue)
-  }
-  change && this.synchronize()
+  return change
 }
 
 /**
@@ -509,21 +554,21 @@ eYo.Slot.prototype.isIncog = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.isRequiredToDom = function () {
+eYo.Slot.prototype.isRequiredToModel = function () {
   if (this.incog) {
     return false
   }
   if (!this.connection) {
     return false
   }
-  if (!this.connection.eyo.wrapped_ && this.connection.targetBlock()) {
+  if (!this.connection.eyo.wrapped_ && this.targetBlock()) {
     return true
   }
   if (this.required) {
     return true
   }
   if (this.data && this.data.required) {
-    return true
+    return false
   }
   if (this.model.xml && this.model.xml.required) {
     return true
@@ -536,8 +581,8 @@ eYo.Slot.prototype.isRequiredToDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.isRequiredFromDom = function () {
-  return this.is_required_from_dom || (!this.incog && this.model.xml && this.model.xml.required)
+eYo.Slot.prototype.isRequiredFromModel = function () {
+  return this.is_required_from_model || (!this.incog && this.model.xml && this.model.xml.required)
 }
 
 /**
@@ -545,8 +590,8 @@ eYo.Slot.prototype.isRequiredFromDom = function () {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
-  this.is_required_from_dom = newValue
+eYo.Slot.prototype.setRequiredFromModel = function (newValue) {
+  this.is_required_from_model = newValue
 }
 
 /**
@@ -554,9 +599,9 @@ eYo.Slot.prototype.setRequiredFromDom = function (newValue) {
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
-  if (this.isRequiredFromDom()) {
-    this.setRequiredFromDom(false)
+eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
+  if (this.isRequiredFromModel()) {
+    this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {
       helper.call(this)
     }
@@ -565,44 +610,45 @@ eYo.Slot.prototype.whenRequiredFromDom = function (helper) {
 }
 
 /**
- * Consolidate the incog state.
+ * Consolidate the state.
+ * Forwards to the connection delegate.
  * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
+ * @param {Boolean} deep whether to consolidate connected blocks.
+ * @param {Boolean} force whether to force synchronization.
  */
-eYo.Slot.prototype.consolidate = function () {
-  if (this.wait) {
+eYo.Slot.prototype.consolidate = function (deep, force) {
+  var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', this.model.consolidate)
+  if (f) {
+    f.apply(this, arguments)
     return
   }
-  var c8n = this.input && this.input.connection
+  var c8n = this.connection
   if (c8n) {
-    c8n.eyo.setIncog(this.isIncog())
-    c8n.eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    var c_eyo = c8n.eyo
+    c_eyo.setIncog(this.isIncog())
+    c_eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
+    var v
+    if ((v = this.model.check)) {
+      var check = v.call(c_eyo, c8n.sourceBlock_.type)
+      c8n.setCheck(check)
+      if (!this.model.wrap) {
+        c_eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
+      }
+    }
   }
 }
 
 /**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Slot.prototype.waitOn = function () {
-  return ++this.wait
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Slot.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}', this.key, this.owner.block_.type))
-  if (--this.wait === 0) {
-    this.consolidate()
-  }
-}
-
-/**
- * Set the disable state.
+ * Init the slot.
  * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
+ */
+eYo.Slot.prototype.init = function () {
+}
+
+/**
+ * Set the UI state.
+ * Called only by `setIncog`.
+ * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
   var input = this.input
@@ -611,14 +657,6 @@ eYo.Slot.prototype.synchronize = function () {
   }
   var newValue = this.incog
   input.setVisible(!newValue)
-  // this.owner.skipRendering()
-  // try {
-  // } catch (err) {
-  //   console.error(err)
-  //   throw err
-  // } finally {
-  //   this.owner.unskipRendering()
-  // }
   if (input.isVisible()) {
     for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
       if (field.getText().length > 0) {
@@ -630,20 +668,16 @@ eYo.Slot.prototype.synchronize = function () {
         }
       }
     }
-    var c8n = input.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        root = target.getSvgRoot()
-        if (root) {
-          root.removeAttribute('display')
-        } else {
-          console.log('Block with no root: did you ...initSvg()?')
-        }
+    var target = this.targetBlock()
+    if (target) {
+      root = target.getSvgRoot()
+      if (root) {
+        root.removeAttribute('display')
+      } else {
+        console.log('Block with no root: did you ...initSvg()?')
       }
     }
   }
-  this.owner.delayedRender(this.block)
 }
 
 goog.forwardDeclare('eYo.DelegateSvg.List')
@@ -665,63 +699,67 @@ eYo.Slot.prototype.save = function (element, optNoId) {
   if (xml === false) {
     return
   }
-  if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
-    this.xml_save_lock = true
-    try {
-      xml.save.call(this, element, optNoId)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.xml_save_lock
+  if (goog.isDef(xml)) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
+    if (f) {
+      f.apply(this, arguments)
+      return
     }
-    return
   }
   var out = (function () {
-    var c8n = this.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) { // otherwise, there is nothing to remember
-        if (target.eyo.wrapped_) {
-          // wrapped blocks are just a convenient computational model.
-          // For lists only, we do create a further level
-          // Actually, every wrapped block is a list
-          if (target.eyo instanceof eYo.DelegateSvg.List) {
-            var child = eYo.Xml.blockToDom(target, optNoId)
-            if (child.firstElementChild) {
-              if (!xml || !xml.noInputName) {
-                child.setAttribute(eYo.Xml.SLOT, this.key)
-              }
-              goog.dom.appendChild(element, child)
-              return child
-            }
-          } else {
-            // let the target populate the given element
-            return eYo.Xml.toDom(target, element, optNoId)
-          }
-        } else {
-          child = eYo.Xml.blockToDom(target, optNoId)
-          if (child.firstElementChild || child.hasAttributes()) {
+    var target = this.targetBlock()
+    if (target) { // otherwise, there is nothing to remember
+      if (target.eyo.wrapped_) {
+        // wrapped blocks are just a convenient computational model.
+        // For lists only, we do create a further level
+        // Actually, every wrapped block is a list
+        if (target.eyo instanceof eYo.DelegateSvg.List) {
+          var child = eYo.Xml.blockToDom(target, optNoId)
+          if (child.firstElementChild) {
             if (!xml || !xml.noInputName) {
-              if (this.inputType === Blockly.INPUT_VALUE) {
-                child.setAttribute(eYo.XmlKey.SLOT, this.key)
-              } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-                child.setAttribute(eYo.XmlKey.FLOW, this.key)
-              }
+              child.setAttribute(eYo.Xml.SLOT, this.getTag())
             }
             goog.dom.appendChild(element, child)
             return child
           }
+        } else {
+          // let the target populate the given element
+          return eYo.Xml.toDom(target, element, optNoId)
+        }
+      } else {
+        child = eYo.Xml.blockToDom(target, optNoId)
+        if (child.firstElementChild || child.hasAttributes()) {
+          if (!xml || !xml.noInputName) {
+            if (this.inputType === Blockly.INPUT_VALUE) {
+              child.setAttribute(eYo.Xml.SLOT, this.key)
+            } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+              child.setAttribute(eYo.Xml.FLOW, this.key)
+            }
+          }
+          goog.dom.appendChild(element, child)
+          return child
         }
       }
     }
   }.call(this))
-  if (!out && this.isRequiredToDom()) {
-    var child = goog.dom.createDom(eYo.XmlKey.EXPR)
-    child.setAttribute('eyo', 'placeholder')
-    child.setAttribute(eYo.XmlKey.SLOT, this.key)
+  if (!out && this.isRequiredToModel()) {
+    var child = goog.dom.createDom(eYo.Xml.EXPR)
+    child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
+    child.setAttribute(eYo.Xml.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
+}
+
+/**
+ * Get the xml tag for xml persistent storage.
+ * For edython.
+ * @param {Element} element a dom element in which to save the input
+ * @return the added child, if any
+ */
+eYo.Slot.prototype.getTag = function () {
+  var xml = this.model.xml
+  var tag = xml && xml.tag
+  return goog.isFunction(tag) ? tag() : tag || this.key
 }
 
 /**
@@ -743,93 +781,99 @@ eYo.Slot.prototype.load = function (element) {
   if (xml === false) {
     return
   }
-  if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
-    this.xml_load_lock = true
-    try {
-      xml.load.call(this, element)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.xml_load_lock
+  if (goog.isDef(xml)) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
+    if (f) {
+      f.apply(this, arguments)
+      return
     }
-    return
   }
-  this.setRequiredFromDom(false)
-  var c8n = this.connection
-  if (c8n) {
-    var out
-    var target = c8n.targetBlock()
-    if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
-      this.setRequiredFromDom(true) // this is not sure, it depends on how the target read the dom
-      out = eYo.Xml.fromDom(target, element)
-    } else {
-    // find the xml child with the proper slot attribute
-      var children = Array.prototype.slice.call(element.childNodes)
-      var i = 0
-      while (i < children.length) {
-        var child = children[i++]
-        if (child.nodeType === Node.ELEMENT_NODE) {
-          if (this.inputType === Blockly.INPUT_VALUE) {
-            var attribute = child.getAttribute(eYo.Xml.SLOT)
-          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-            attribute = child.getAttribute(eYo.Xml.FLOW)
-          }
-          if (attribute === this.key) {
-            if (child.getAttribute('eyo') === 'placeholder') {
-              this.setRequiredFromDom(true)
-              out = true
-            } else if (target) {
-              if (target.eyo instanceof eYo.DelegateSvg.List) {
-                var grandChildren = Array.prototype.slice.call(child.childNodes)
-                var ii = 0
-                while (ii < grandChildren.length) {
-                  var grandChild = grandChildren[ii++]
-                  if (grandChild.nodeType === Node.ELEMENT_NODE) {
-                    var name = grandChild.getAttribute(eYo.XmlKey.SLOT)
-                    var input = target.getInput(name)
-                    if (input) {
-                      if (input.connection) {
-                        var grandTarget = input.connection.targetBlock()
-                        if ((grandTarget)) {
-                          eYo.Xml.fromDom(grandTarget, grandChild)
-                        } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.owner.block_.workspace))) {
-                          var targetC8n = grandTarget.outputConnection
-                          if (targetC8n && targetC8n.checkType_(input.connection)) {
-                            targetC8n.connect(input.connection)
-                            this.setRequiredFromDom(true)
-                          }
+  this.setRequiredFromModel(false)
+  var out
+  var target = this.targetBlock()
+  if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
+    this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
+    out = eYo.Xml.fromDom(target, element)
+  } else {
+  // find the xml child with the proper slot attribute
+    var children = Array.prototype.slice.call(element.childNodes)
+    var i = 0
+    var recover = this.recover
+    while (i < children.length) {
+      var child = children[i++]
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        if (this.inputType === Blockly.INPUT_VALUE) {
+          var attribute = child.getAttribute(eYo.Xml.SLOT)
+        } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+          attribute = child.getAttribute(eYo.Xml.FLOW)
+        }
+        if (attribute === this.key) {
+          recover.dontResit(child)
+          if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
+            this.setRequiredFromModel(true)
+            out = true
+          } else if (target) {
+            if (target.eyo instanceof eYo.DelegateSvg.List) {
+              var grandChildren = Array.prototype.slice.call(child.childNodes)
+              var ii = 0
+              while (ii < grandChildren.length) {
+                var grandChild = grandChildren[ii++]
+                if (grandChild.nodeType === Node.ELEMENT_NODE) {
+                  var name = grandChild.getAttribute(eYo.Xml.SLOT)
+                  var input = target.getInput(name)
+                  if (input) {
+                    if (input.connection) {
+                      var grandTarget = input.connection.targetBlock()
+                      if ((grandTarget)) {
+                        eYo.Xml.fromDom(grandTarget, grandChild)
+                      } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
+                        var targetC8n = grandTarget.outputConnection
+                        if (targetC8n && targetC8n.checkType_(input.connection, true)) {
+                          targetC8n.connect(input.connection)
+                          this.setRequiredFromModel(true)
                         }
-                      } else {
-                        console.error('Missing connection')
                       }
+                    } else {
+                      console.error('Missing connection')
                     }
                   }
                 }
-                out = true
-              } else {
-                out = eYo.Xml.fromDom(target, child)
               }
-            } else if ((target = eYo.Xml.domToBlock(child, this.getWorkspace()))) {
-              // we could create a block from that child element
-              // then connect it
-              if (target.outputConnection && c8n.checkType_(target.outputConnection)) {
-                c8n.connect(target.outputConnection)
-                this.setRequiredFromDom(true)
-              } else if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-                c8n.connect(target.previousConnection)
-              }
-              out = target
+              out = true
+            } else {
+              out = eYo.Xml.fromDom(target, child)
             }
-            break // the element was found
+          } else if ((target = eYo.Xml.domToBlock(child, this.block))) {
+            // we could create a block from that child element
+            // then connect it
+            var c8n = this.input && this.input.connection
+            if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
+              c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
+              this.setRequiredFromModel(true)
+            } else if (target.previousConnection && c8n.checkType_(target.previousConnection, true)) {
+              c8n.eyo.connect(target.previousConnection) // Notice the `.eyo`
+            }
+            out = target
           }
+          break // the element was found
         }
       }
     }
-    if (out && xml && xml.didLoad) {
-      xml.didLoad.call(this)
-    }
-    return out
+  }
+  return out
+}
+
+/**
+ * When all the slots and data have been loaded.
+ * For edython.
+ */
+eYo.Slot.prototype.didLoad = function () {
+  var xml = this.model.xml
+  if (xml && xml.didLoad) {
+    xml.didLoad.call(this)
+  }
+  if (this.model.didLoad) {
+    this.model.didLoad.call(this)
   }
 }
 
@@ -884,7 +928,7 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
     }
     var block = this.connection.sourceBlock_
   } else if ((block = this.connection.sourceBlock_)) {
-    var e8r = block.eyo.inputEnumerator(block)
+    var e8r = block.eyo.inputEnumerator()
     if (e8r) {
       while (e8r.next()) {
         if (e8r.here.connection && this.connection === e8r.here.connection) {

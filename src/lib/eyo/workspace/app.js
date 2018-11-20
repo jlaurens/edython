@@ -23,6 +23,23 @@ goog.require('Blockly')
 goog.require('eYo.Xml')
 goog.require('eYo.App')
 
+/**
+ * Convenient property
+ */
+Object.defineProperties(
+  eYo,
+  {
+    selected: {
+      get () {
+        return Blockly.selected && Blockly.selected.eyo
+      },
+      set (newValue) {
+        Blockly.selected = newValue && newValue.block_
+      }
+    }
+  }
+)
+
 eYo.App = Object.create(null)
 
 /**
@@ -34,7 +51,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var block = Blockly.selected
   if (block) {
-    var xmlBlock = eYo.Xml.blockToDom(block, false, optNoNext);
+    var xmlBlock = eYo.Xml.blockToDom(block, true, optNoNext);
     // Encode start position in XML.
     var xy = block.getRelativeToSurfaceXY();
     xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);

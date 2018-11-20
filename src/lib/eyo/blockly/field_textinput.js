@@ -13,28 +13,18 @@
 
 goog.provide('eYo.FieldTextInput')
 goog.provide('eYo.FieldInput')
-goog.provide('eYo.FieldHelper')
+goog.provide('eYo.FieldVariable')
 
+goog.provide('eYo.Field.TextInput')
+goog.provide('eYo.Field.Variable')
+goog.provide('eYo.Field.Input')
+
+goog.require('eYo.FieldHelper')
 goog.require('eYo.Msg')
+goog.require('eYo.Content')
+goog.require('eYo.Field')
 goog.require('goog.dom');
 goog.require('Blockly.FieldTextInput')
-
-/**
- * Class for an editable text field helper.
- * @param {eYo.TextInputField} owner  The owner of the field.
- * @constructor
- */
-eYo.FieldHelper = function (field) {
-  this.field_ = field
-  field.eyo = this
-}
-
-/**
- * Late delegate.
- */
-eYo.FieldHelper.prototype.getDlgt = function () {
-  return this.field_.sourceBlock_.eyo
-}
 
 /**
  * Class for an editable text field.
@@ -47,12 +37,31 @@ eYo.FieldHelper.prototype.getDlgt = function () {
  * @constructor
  * @suppress{accessControls}
  */
-eYo.FieldTextInput = function (text, optValidator) {
-  this.eyo = new eYo.FieldHelper(this)
+eYo.FieldTextInput = function (owner, text, optValidator) {
+  if (owner) {
+    this.eyo = owner
+    owner.field_ = this
+  } else {
+    this.eyo = new eYo.FieldHelper(this)
+  }
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
 goog.inherits(eYo.FieldTextInput, Blockly.FieldTextInput)
+
+Object.defineProperties(
+  eYo.FieldTextInput.prototype,
+  {
+    size_: {
+      get () {
+        return this.eyo.size
+      },
+      set (newValue) {
+        this.eyo.size.set(newValue)
+      }
+    },
+  }
+)
 
 /**
  * The HTML input element for the user to type, or null if no FieldTextInput
@@ -91,7 +100,7 @@ eYo.FieldTextInput.prototype.init = function () {
     { class: 'eyo-edit',
       'rx': eYo.Style.Edit.radius,
       'ry': eYo.Style.Edit.radius,
-      'x': -eYo.Style.Edit.padding_h - (this.eyo.left_space ? eYo.Font.space : 0),
+      'x': -eYo.Style.Edit.padding_h - (this.eyo.left_space ? eYo.Unit.x : 0),
       'y': -eYo.Style.Edit.padding_v,
       'height': eYo.Font.height + 2 * eYo.Style.Edit.padding_v},
     this.fieldGroup_, this.sourceBlock_.workspace)
@@ -105,8 +114,9 @@ eYo.FieldTextInput.prototype.init = function () {
   this.mouseDownWrapper_ =
   Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this, this.onMouseDown_
   )
-  // Force a render.
-  this.render_()
+  if (this.eyo.css_class) {
+    goog.dom.classlist.add(this.textElement_, eYo.Do.valueOf(this.eyo.css_class, this.eyo))
+  }
 }
 
 /**
@@ -125,9 +135,9 @@ eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
  **/
 eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
-  var width = Blockly.Field.getCachedWidth(this.textElement_)
   if (this.editRect_) {
-    this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Font.space : 0))
+    var width = this.eyo.size.width
+    this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Unit.x : 0))
   }
 }
 
@@ -158,10 +168,10 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
   var block = this.sourceBlock_
-  if (block.eyo.locked_ || !block.eyo.canEdit_ || block.isInFlyout) {
+  if (this.eyo.doNotEdit || block.eyo.locked_ || !block.eyo.canEdit_ || block.isInFlyout) {
     return
   }
-  this.eyo.isEditing = true
+  block.eyo.isEditing = this.eyo.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'eyo-editing')
   eYo.Events.setGroup(true)
   this.eyo.grouper_ = Blockly.Events.getGroup()
@@ -175,7 +185,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
       this.eyo.constructor.onStartEditing.call(this)
     }
   }
-  block.eyo.startEditingField && block.eyo.startEditingField(block, this)
+  block.eyo.startEditingField && block.eyo.startEditingField(this)
   this.render_()
   block.render()
   this.workspace_ = block.workspace
@@ -222,7 +232,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
 
   goog.dom.classlist.add(div, this.cssClass)
   goog.dom.classlist.add(htmlInput, this.cssClass)
-  if (this.eyo.comment) {
+  if (this.eyo.isComment) {
     goog.dom.classlist.remove(htmlInput, 'eyo-code')
     goog.dom.classlist.add(htmlInput, 'eyo-code-comment')
   }
@@ -250,27 +260,30 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
   var field = this
   return function () {
-    field.eyo.isEditing = false
+    var block = field.sourceBlock_
+    block.eyo.isEditing = field.eyo.isEditing = false
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
-    field.onEndEditing_ && field.onEndEditing_()
-    field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
-    var model = field.eyo.model
-    if (model) {
-      if (goog.isFunction(model.endEditing)) {
-        model.endEditing.call(field)
-      } else if (model.endEditing) {
-        field.eyo.constructor.onEndEditing.call(field)
+    block.eyo.changeWrap(
+      function () { // `this` is `block.eyo``
+        field.onEndEditing_ && field.onEndEditing_()
+        field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
+        var model = field.eyo.model
+        if (model) {
+          if (goog.isFunction(model.endEditing)) {
+            model.endEditing.call(field)
+          } else if (model.endEditing) {
+            field.eyo.constructor.onEndEditing.call(field)
+          }
+        }
+        this.endEditingField && this.endEditingField(field)
+        if (field.eyo.grouper_) {
+          eYo.Events.setGroup(false)
+          delete field.eyo.grouper_
+        }
+        field.render_()
       }
-    }
-    var block = field.sourceBlock_
-    block.eyo.endEditingField && block.eyo.endEditingField(block, field)
-    if (field.eyo.grouper_) {
-      eYo.Events.setGroup(false)
-      delete field.eyo.grouper_
-    }
-    field.render_()
-    block.render()
+    )
     eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
     Blockly.WidgetDiv.DIV.style.fontFamily = ''
   }
@@ -309,12 +322,15 @@ eYo.FieldTextInput.prototype.validate_ = function () {
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
   if (this.fieldGroup_) {
     var div = Blockly.WidgetDiv.DIV
-    var bBox = this.fieldGroup_.getBBox()
-    div.style.width = (bBox.width + eYo.Font.space - (this.eyo.left_space ? eYo.Font.space : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
-    div.style.height = bBox.height * this.workspace_.scale + 'px'
-    var xy = this.getAbsoluteXY_()
-    div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-    div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
+    if (div.style.display !== 'none') {
+      var bBox = this.fieldGroup_.getBBox()
+      div.style.width = (bBox.width + eYo.Unit.x - (this.eyo.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
+      div.style.height = bBox.height * this.workspace_.scale + 'px'
+      var xy = this.getAbsoluteXY_()
+      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
+      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
+      this.sourceBlock_.eyo.changeWrap() // force rendering 
+    }
   }
 }
 
@@ -329,12 +345,12 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
-eYo.FieldInput = function (text, optValidator, key) {
+eYo.FieldInput = function (owner, text, optValidator, key) {
   goog.asserts.assert(key, 'missing key for an editable field')
-  eYo.FieldInput.superClass_.constructor.call(this, text,
+  eYo.FieldInput.superClass_.constructor.call(this, owner, text,
     optValidator)
   this.spellcheck_ = false
-  this.eyo.key = key
+  key && (this.eyo.key = key)
 }
 goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
 
@@ -355,18 +371,31 @@ eYo.FieldInput.prototype.getDisplayText_ = function () {
 /**
  * The placeholder text.
  * Get the model driven value if any.
+ * @param {boolean} clear
  * @return {string} Currently displayed text.
  * @private
  */
-eYo.FieldInput.prototype.placeholderText = function () {
-  if (this.placeholderText_) {
+eYo.FieldInput.prototype.placeholderText = function (clear) {
+  if (clear) {
+    this.placeholderText_ = undefined
+  } else if (this.placeholderText_) {
     return this.placeholderText_
   }
   return (function () {
-    var model = this.eyo && this.eyo.model
-    if (model) {
-      var placeholder = model.placeholder
-      return (goog.isString(placeholder) && placeholder) || (goog.isFunction(placeholder) && placeholder.call(this))
+    if (this.eyo) {
+      var data = this.eyo.data
+      if (data) {
+        var model = data.model
+        var placeholder = model && data.model.placeholder
+        if (goog.isDefAndNotNull(placeholder)) {
+          return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
+        }
+      }
+      model = this.eyo && this.eyo.model
+      if (model) {
+        var placeholder = model.placeholder
+        return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
+      }
     }
   }.call(this)) || eYo.Msg.Placeholder.CODE
 }
@@ -378,88 +407,16 @@ eYo.FieldInput.prototype.placeholderText = function () {
  */
 eYo.FieldInput.prototype.setValue = function (newValue) {
   this.eyo.placeholder = !newValue || !newValue.length
-  eYo.FieldInput.superClass_.setValue.call(this, newValue)
-}
-
-/**
- * Adds a 'eyo-code-error' class in case of error.
- * @private
- * @override
- * @suppress{accessControls}
- */
-eYo.FieldInput.prototype.render_ = function () {
-  if (!this.textElement_) {
-    // not yet available
-    return
+  // no undo recording
+  Blockly.Events.disable()
+  try {
+    eYo.FieldInput.superClass_.setValue.call(this, newValue)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    Blockly.Events.enable()
   }
-  eYo.FieldInput.superClass_.render_.call(this)
-  if (this.eyo.placeholder) {
-    goog.dom.classlist.add(this.textElement_, 'eyo-code-placeholder')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'eyo-code-placeholder')
-  }
-  if (this.eyo.comment) {
-    goog.dom.classlist.add(this.textElement_, 'eyo-code-comment')
-  } else {
-    goog.dom.classlist.remove(this.textElement_, 'eyo-code-comment')
-  }
-}
-
-/**
- * Default method to start editing.
- * @this {Object} is a field owning an helper
- */
-eYo.FieldHelper.onStartEditing = function () {
-}
-
-/**
- * Default method to end editing.
- * @this {Object} is a field owning an helper
- */
-eYo.FieldHelper.onEndEditing = function () {
-  this.eyo.data.fromText(this.getValue())
-}
-
-/**
- * Set the keyed data of the source block to the given value.
- * Eventual problem: there might be some kind of formatting such that
- * the data stored and the data shown in the ui are not the same.
- * There is no step for such a translation but the need did not occur yet.
- * @param {string|null} key  The data key, when null or undefined, ths receiver's key.
- */
-eYo.FieldHelper.prototype.getData_ = function (key) {
-  var data = this.data
-  if (!data) {
-    var block = this.field_.sourceBlock_
-    data = block && block.eyo.data[key || this.key]
-    goog.asserts.assert(data,
-      eYo.Do.format('No data bound to field {0}/{1}', key || this.key, block && block.type))
-  }
-  return data
-}
-
-/**
- * Validate the keyed data of the source block.
- * Asks the data object to do so.
- * The bound data must exist.
- * @param {Object} txt
- */
-eYo.FieldHelper.prototype.validate = function (txt) {
-  var v = this.getData_().validate(goog.isDef(txt) ? txt : this.field_.getValue())
-  return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
-}
-
-/**
- * Validate the keyed data of the source block.
- * Asks the data object to do so.
- * The bound data must exist.
- * @param {Object} txt
- */
-eYo.FieldHelper.prototype.validateIfData = function (txt) {
-  if (this.data) {
-    return this.validate(txt)
-  }
-  return txt
 }
 
 /**
@@ -473,8 +430,8 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
-eYo.FieldVariable = function (text, optValidator, key) {
-  eYo.FieldVariable.superClass_.constructor.call(this, text, optValidator, key)
+eYo.FieldVariable = function (owner, text, optValidator, key) {
+  eYo.FieldVariable.superClass_.constructor.call(this, owner, text, optValidator, key)
 }
 goog.inherits(eYo.FieldVariable, eYo.FieldInput)
 
@@ -486,7 +443,53 @@ goog.inherits(eYo.FieldVariable, eYo.FieldInput)
  * @suppress{accessControls}
  */
 eYo.FieldVariable.prototype.getPythonText_ = function () {
-  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this)
+  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this) // beware: jump over the direct ancestor
   return !XRegExp.match(candidate, /\s/) && candidate || 'MISSING NAME'
 }
 
+/**
+ * Setup the model.
+ * Overrides the original method appending edition related stuff.
+ */
+eYo.Content.prototype.setupModel = function () {
+  var setupModel = eYo.Content.prototype.setupModel
+  // This is a closure
+  // default helper functions for an editable field bound to a data object
+  // `this` is an instance of  eYo.FieldInput
+  var validate = function (txt) {
+    // `this` is a field's owner
+    return this.validate(txt)
+  }
+  var startEditing = function () {
+  }
+  var endEditing = function () {
+    var data = this.eyo.data
+    goog.asserts.assert(data, 'No data bound to content ' + this.key + '/' + this.owner.getBlock().type)
+    var result = this.callValidator(this.getValue())
+    if (result !== null) {
+      data.fromField(result)
+      data.synchronize(result) // would this be included in the previous method ?
+    } else {
+      this.setValue(data.toText())
+    }
+  }
+  return function () {
+    // no need to setup the model each time we create a new field master
+    setupModel.call(this)
+    if (model.validate === true) {
+      model.validate = validate
+    } else if (model.validate && !goog.isFunction(model.validate)) {
+      delete model.validate
+    }
+    if (model.startEditing === true) {
+      model.startEditing = startEditing
+    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
+      delete model.startEditing
+    }
+    if (model.endEditing === true) {
+      model.endEditing = endEditing
+    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
+      delete model.endEditing
+    }
+  }
+}

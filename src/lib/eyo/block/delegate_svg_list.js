@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.List')
 
+goog.require('eYo.Decorate')
 goog.require('eYo.Consolidator.List')
 goog.require('eYo.DelegateSvg.Expr')
 
@@ -26,77 +27,42 @@ eYo.DelegateSvg.Expr.makeSubclass('List', {
 }, eYo.DelegateSvg)
 
 /**
- * Will render the block.
- * @param {!Block} block
- * @private
- */
-eYo.DelegateSvg.List.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.List.superClass_.willRender_.call(this, block)
-  this.consolidate(block)
-}
-
-/**
  * Fetches the named input object, getInput.
- * @param {!Block} block
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.List.prototype.getInput = function (block, name, dontCreate) {
-  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, block, name)
+eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
+  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, name)
   if (!input) {
-    this.createConsolidator(block)
-    input = this.consolidator.getInput(block, name, dontCreate)
+    this.createConsolidator()
+    input = this.consolidator.getInput(this.block_, name, dontCreate)
   }
   return input
 }
 
 /**
- * Consolidate the input.
- * Removes empty place holders.
- * This must not be overriden.
+ * Create a consolidator..
  *
- * @param {!Block} block
+ * @param {boolean} force
  */
-eYo.DelegateSvg.List.prototype.consolidate_ = function (block, force) {
-  if (this.consolidate_lock || this.will_connect_) {
-    // reentrant flag or wait for the new connection
-    // to be established before consolidating
-    // reentrant is essential because the consolidation
-    // may cause rerendering ad vitam eternam.
-    return
-  }
-  eYo.DelegateSvg.List.superClass_.consolidate.call(this, block, force)
-  if (this.connectionsIncog) {
-    return
-  }
-  this.consolidate_lock = true
-  try {
-    this.consolidator.consolidate(block, force)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.consolidate_lock
-  }
-}
-
-/**
- * Consolidate the input.
- * Removes empty place holders.
- * This must not be overriden.
- *
- * @param {!Block} block
- */
-eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
-  if (!this.consolidator) {
+eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
+  'createConsolidator',
+  function (force) {
+  if (!this.consolidator || force) {
+    var block = this.block_
     var D = eYo.DelegateSvg.Manager.getModel(block.type).list
     goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
-    var C10r = D.consolidator || eYo.Consolidator.List
-    this.consolidator = new C10r(D)
-    goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+    var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
+    if (!this.consolidator || this.consolidator.constructor !== C10r) {
+      this.consolidator = new C10r(D)
+      goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+    }
+    if (force) {
+      this.consolidate()
+    }
   }
-}
+})
 
 /**
  * Consolidate the input.
@@ -105,11 +71,34 @@ eYo.DelegateSvg.List.prototype.createConsolidator = function (block) {
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
-  this.createConsolidator(block)
-  this.consolidate = eYo.DelegateSvg.List.prototype.consolidate_
-  this.consolidate(block, force)// this is not recursive
-}
+eYo.DelegateSvg.List.prototype.doConsolidate = function () {
+  // this is a closure
+  /**
+   * Consolidate the input.
+   * Removes empty place holders.
+   * This must not be overriden.
+   *
+   * @param {!Block} block
+   */
+  var doConsolidate = function (deep, force) {
+    if (this.will_connect_ || this.change.level) {
+      // reentrant flag or wait for the new connection
+      // to be established before consolidating
+      // reentrant is essential because the consolidation
+      // may cause rerendering ad vitam eternam.
+      return
+    }
+    force = true  // always force consolidation because of the dynamics
+    if (eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)) {
+      return !this.connectionsIncog && this.consolidator.consolidate(this.block_, deep, force)
+    }
+  }
+  return function (deep, force) {
+    this.createConsolidator()
+    this.doConsolidate = doConsolidate
+    return doConsolidate.apply(this, arguments)// this is not recursive
+  }
+} ()
 
 // eYo.DelegateSvg.List.prototype.consolidator = undefined
 
@@ -120,38 +109,54 @@ eYo.DelegateSvg.List.prototype.consolidate = function (block, deep, force) {
  * @private
  */
 eYo.DelegateSvg.List.prototype.removeItems = function (block) {
+  var block = this.block_
   var list = block.inputList
   var i = 0
   var input
-  eYo.Events.setGroup(true)
-  try {
-    while ((input = list[i++])) {
-      var c8n = input.connection
-      var target = c8n.targetBlock()
-      if (target) {
-        c8n.disconnect()
-        target.dispose()
+  eYo.Events.groupWrap(
+    () => {
+      while ((input = list[i++])) {
+        var c8n = input.connection
+        var target = c8n.targetBlock()
+        if (target) {
+          c8n.disconnect()
+          target.dispose()
+        }
       }
+      this.consolidate()
     }
-    this.consolidate(block)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eYo.Events.setGroup(false)
+  )
+}
+
+
+/**
+ * Increment the change count.
+ * Force to recompute the chain tile.
+ * For edython.
+ */
+eYo.DelegateSvg.List.prototype.incrementInputChangeCount = function () {
+  var i = 0
+  var input
+  while ((input = this.block_.inputList[i++])) {
+    var c8n = input.connection
+    var target = c8n.targetBlock()
+    if (target) {
+      target.eyo.incrementChangeCount()
+    }
   }
+  this.incrementChangeCount()
 }
 
 /**
  * Class for a DelegateSvg, optional expression_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -159,7 +164,7 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
 
 /**
  * Class for a DelegateSvg, expression_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -174,7 +179,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -189,28 +194,28 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 
 /**
  * Class for a DelegateSvg, key_datum_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
   list: {
     check: eYo.T3.Expr.Check.key_datum_all,
-    empty: true,
+    mandatory: 0,
     presep: ','
   }
 })
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -218,7 +223,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -233,7 +238,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
 
 /**
  * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -242,7 +247,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function ()
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: eYo.T3.Expr.comprehension,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -270,7 +275,7 @@ eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display'
 
 /**
  * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -303,11 +308,11 @@ eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_
     prefix: '{',
     suffix: '}'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, key_datum_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -316,7 +321,7 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function () {
     check: eYo.T3.Expr.Check.key_datum_list,
     unique: eYo.T3.Expr.dict_comprehension,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: true,
+    mandatory: 0,
     presep: ','
   }
   var RA = goog.array.concat(D.check, D.unique)
@@ -336,11 +341,11 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
     prefix: '{',
     suffix: '}'
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, slice_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -354,7 +359,7 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
 
 /**
  * Class for a DelegateSvg, with_item_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -368,8 +373,7 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
 })
 
 eYo.DelegateSvg.List.T3s = [
-  eYo.T3.Expr.term,
-  eYo.T3.Expr.starred_expression,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.key_datum,

@@ -20,48 +20,65 @@ goog.provide('eYo.Events')
 goog.require('Blockly.Events')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
+goog.require('eYo.XRE')
 
-eYo.Do.Events_Change_prototype_run =
-Blockly.Events.Change.prototype.run
+// debug feature
+// Object.defineProperties(
+//   Blockly.Events,
+//   {
+//     disabled_: {
+//       get () {
+//         return this.disabled__ || 0
+//       },
+//       set (newValue) {
+//         this.disabled__ = newValue
+//       }
+//     }
+//   }
+//)
+
 /**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  * @suppress{accessControls}
  */
-Blockly.Events.Change.prototype.run = function (forward) {
-  if (!this.element.startsWith('eyo:')) {
-    eYo.Do.Events_Change_prototype_run.call(this, forward)
-    return
-  }
-  var workspace = this.getEventWorkspace_()
-  var block = workspace.getBlockById(this.blockId)
-  if (!block) {
-    console.warn("Can't change non-existant block: " + this.blockId)
-    return
-  }
-  if (block.mutator) {
-    // Close the mutator (if open) since we don't want to update it.
-    block.mutator.setVisible(false)
-  }
-  var value = forward ? this.newValue : this.oldValue
-  switch (this.element) {
-  case eYo.Const.Event.locked:
-    if (value) {
-      block.eyo.lock(block)
-    } else {
-      block.eyo.unlock(block)
+Blockly.Events.Change.prototype.run = (function () {
+  var run = Blockly.Events.Change.prototype.run
+  return function (forward) {
+    if (!this.element.startsWith('eyo:')) {
+      run.call(this, forward)
+      return
     }
-    break
-  default:
-    var m = XRegExp.exec(this.element, eYo.XRE.event_data)
-    var data
-    if (m && (data = block.eyo.data[m.key])) {
-      data.setTrusted(value) // do not validate, it may change value
-    } else {
-      console.warn('Unknown change type: ' + this.element)
+    var workspace = this.getEventWorkspace_()
+    var block = workspace.getBlockById(this.blockId)
+    if (!block) {
+      console.warn("Can't change non-existant block: " + this.blockId)
+      return
+    }
+    if (block.mutator) {
+      // Close the mutator (if open) since we don't want to update it.
+      block.mutator.setVisible(false)
+    }
+    var value = forward ? this.newValue : this.oldValue
+    switch (this.element) {
+    case eYo.Const.Event.locked:
+      if (value) {
+        block.eyo.lock()
+      } else {
+        block.eyo.unlock()
+      }
+      break
+    default:
+      var m = XRegExp.exec(this.element, eYo.XRE.event_data)
+      var data
+      if (m && (data = block.eyo.data[m.key])) {
+        data.set(value, false) // do not validate, it may change value
+      } else {
+        console.warn('Unknown change type: ' + this.element)
+      }
     }
   }
-}
+}) ()
 
 /**
  * Start or stop a group.
@@ -89,57 +106,115 @@ eYo.Events.setGroup = (function () {
   }
 }())
 
-goog.provide('eYo.Events.Disabler')
 /**
  * Event disabler.
+ * Use the arrow definition of functions to catch `this`.
+ * @param {!Function} try_f
+ * @param {?Function} begin_finally_f
+ * @param {?Function} end_finally_f
  */
-eYo.Events.Disabler.wrap = function (f) {
+eYo.Events.disableWrap = eYo.Do.makeWrapper(
+  Blockly.Events.disable,
+  Blockly.Events.enable
+)
+
+/*
+function (try_f, finally_f) {
   Blockly.Events.disable()
+  var out
   try {
-    f()
+    out = try_f.call(this)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
     Blockly.Events.enable()
+    // enable first to allow finally_f to eventually fire events
+    // or eventually modify `out`
+    finally_f && finally_f.call(this)
+    return out && out.ans
   }
 }
+*/
 
 goog.require('eYo.Data')
 
 /**
-* set the value of the property,
-* without validation but with undo and synchronization
-* @param {Object} newValue
-*/
-eYo.Data.prototype.setTrusted__ = function (newValue) {
-  this.error = false
-  eYo.Events.setGroup(true)
-  var eyo = this.owner
-  var block = eyo.block_
-  try {
-    eyo.skipRendering()
+ * set the value of the property,
+ * without validation but with undo and synchronization.
+ * `duringChange` message is sent just before consolidating and undo registration.
+ * Note on interference with the undo stack.
+ * Let's suppose that we have triggered a UI event
+ * that modifies some data of a block.
+ * As a consequence, this block automatically changes type and
+ * may be disconnected.
+ * Take a look at what happens regarding the default undo/redo stack
+ * management when connected blocks are involved
+ * as data change.
+ * NB the changeEnd method may disconnect
+ *  1) normal flow
+ *    a - the user asks for a data change
+ *    b - the type change
+ *    c - the connection check change triggering a disconnect block event
+ *    d - the data change undo event is trigerred
+ *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ *  2) when undoing
+ *    a - the user asks for an undo
+ *    b - the data undo change is performed first
+ *    c - the type change
+ *    d - the connection check change but no undo event is recorded
+ *        because no block has been connected nor disconnected meanwhile
+ *    e - the data rechange is pushed to the redo stack
+ *    f - blocks are reconnected and the redo event is pushed to the redo stack
+ *    undo/redo stacks : [...]/[disconnect block, data rechange]
+ *  3) when redoing
+ *    a - blocks are disconnected and the reconnect event is pushed to the undo stack
+ *    b - the data is rechanged, with type and connection checks.
+ *        No block is disconnected, no other move event is recorded.
+ *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ * This is the reason why we consolidate the type before the undo change is recorded.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
+  'setTrusted_',
+  function (newValue) {
     var oldValue = this.value_
-    this.willChange(oldValue, newValue)
-    if (!this.noUndo && Blockly.Events.isEnabled()) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
-    }
-    this.value_ = newValue
-    this.didChange(oldValue, newValue)
-    eyo.consolidate(block)
-    this.synchronizeIfUI(newValue)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eyo.unskipRendering()
-    eYo.Events.setGroup(false)
+    this.owner.changeWrap(
+      () => { // catch `this`
+        eYo.Events.groupWrap(
+          () => { // catch `this`
+            this.beforeChange(oldValue, newValue)
+            try {
+              this.value_ = newValue
+              this.duringChange(oldValue, newValue)
+            } catch(err) {
+              console.error(err)
+              throw err
+            } finally {
+              if (!this.noUndo && Blockly.Events.isEnabled()) {
+                Blockly.Events.fire(new Blockly.Events.BlockChange(
+                  this.block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
+              }
+              this.afterChange(oldValue, newValue)
+            }
+          }
+        )    
+      }
+    )
   }
-  block.render() // render now or possibly later ?
-}
+)
+
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
 
 eYo.Events.filter = Blockly.Events.filter 
+
 /**
  * Filter the queued events and merge duplicates.
  * @param {!Array.<!Blockly.Events.Abstract>} queueIn Array of events.
@@ -165,3 +240,46 @@ Blockly.Events.filter = function(queueIn, forward) {
   }
   return eYo.Events.filter(queueIn, forward)
 }
+
+
+/**
+ * Filter the queued events and merge duplicates.
+ * Use the arrow definition of functions to catch `this`.
+ * @param {!Function} try_f 
+ * @param {?Function} finally_f 
+ */
+eYo.Events.groupWrap = eYo.Do.makeWrapper(
+  function () {
+    eYo.Events.setGroup(true)
+  },
+  null,
+  function () {
+    eYo.Events.setGroup(false)
+  }
+)
+
+/*
+function (try_f, finally_f) {
+  try {
+    eYo.Events.setGroup(true)
+    return try_f.call(this)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    finally_f && finally_f.call(this)
+    eYo.Events.setGroup(false)
+  }
+}
+*/
+
+/**
+ * Convenient shortcut.
+ * @param {!Blockly.Block} block  The newly created block.
+ */
+eYo.Events.fireBlockCreate = function (block) {
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
+  }
+}
+

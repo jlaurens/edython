@@ -29,11 +29,20 @@ goog.forwardDeclare('eYo.T3.All')
  * @constructor
  */
 eYo.Block = function (workspace, prototypeName, optId) {
-  this.type = prototypeName
-  this.eyo = eYo.Delegate.Manager.create(this)
+  this.eyo = eYo.Delegate.Manager.create(this, prototypeName)
   eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
 }
 goog.inherits(eYo.Block, Blockly.Block)
+
+/**
+ * Initialize the block.
+ * Let the delegate do the job.
+ * No rendering of that block is done during that process,
+ * linked blocks may render though.
+ */
+eYo.Block.prototype.init = function () {
+  this.eyo.init()
+}
 
 /**
  * Dispose the delegate too.
@@ -50,9 +59,7 @@ eYo.Block.prototype.dispose = function (healStack) {
       setTimeout(function () { target.select() }, 100)// broken for outputConnection ?
     }
   }
-  if (this.eyo) {
-    this.eyo.deinitBlock(this)
-  }
+  this.eyo && this.eyo.deinit()
   eYo.Block.superClass_.dispose.call(this, healStack)
 }
 
@@ -80,7 +87,7 @@ eYo.Block.prototype.appendInput_ = function (type, name) {
  */
 eYo.Block.prototype.setConnectionsHidden = function (hidden) {
   eYo.Block.superClass_.setConnectionsHidden.call(this, hidden)
-  this.eyo.setConnectionsHidden(this, hidden)
+  this.eyo.setConnectionsHidden(hidden)
 }
 
 /**
@@ -133,28 +140,6 @@ eYo.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
       }
     }
   }
-}
-
-/**
- * Shortcut for appending a sealed value input row.
- * Add a 'true' eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this block.
- * @return {!Blockly.Input} The input object created.
- */
-eYo.Block.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
-  goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
-  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
-  var input = this.appendValueInput(name)
-  input.connection.eyo.wrapped_ = true
-  input.connection.eyo.optional_ = optional
-  if (!this.eyo.wrappedInputs_) {
-    this.eyo.wrappedInputs_ = []
-  }
-  if (!optional) {
-    this.eyo.wrappedInputs_.push([input, prototypeName])
-  }
-  return input
 }
 
 /**

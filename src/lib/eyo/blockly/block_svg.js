@@ -41,26 +41,9 @@ eYo.BlockSvg = function (workspace, prototypeName, optId) {
 goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
 
 /**
- * Initialize the block.
- * Let the delegate do the job.
- * No rendering of that block is done during that process,
- * linked blocks may render though.
- */
-eYo.BlockSvg.prototype.init = function () {
-  this.eyo.skipRendering()
-  try {
-    this.eyo.initBlock(this)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.eyo.unskipRendering()
-  }
-}
-
-/**
  * Create and initialize the SVG representation of the block.
  * May be called more than once.
+ * Called by the `beReady` method.
  */
 eYo.BlockSvg.prototype.initSvg = function () {
   this.eyo.preInitSvg(this)
@@ -68,7 +51,6 @@ eYo.BlockSvg.prototype.initSvg = function () {
   for (var i = 0, input; (input = this.inputList[i]); i++) {
     input.init()
   }
-
   if (!this.getSvgRoot().parentNode) {
     this.workspace.getCanvas().appendChild(this.getSvgRoot())
   }
@@ -84,20 +66,19 @@ eYo.BlockSvg.prototype.initSvg = function () {
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
 eYo.BlockSvg.prototype.getField = function (name) {
-  return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(this, name)
+  return eYo.BlockSvg.superClass_.getField.call(this, name) || this.eyo.getField(name)
 }
-
-eYo.BlockSvg.CORNER_RADIUS = 3
 
 /**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
  * @param {boolean=} optBubble If false, just render this block.
+ * @param {?Object} io  rendering state recorder.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
-eYo.BlockSvg.prototype.render = function (optBubble) {
+eYo.BlockSvg.prototype.render = function (optBubble, io) {
   if (this.workspace) {
-    this.eyo.render(this, optBubble)
+    this.eyo.render(optBubble, io)
   }
 }
 
@@ -107,7 +88,7 @@ eYo.BlockSvg.prototype.render = function (optBubble) {
  * @return {Blockly.Input} The input object, or null if input does not exist.
  */
 eYo.BlockSvg.prototype.getInput = function (name) {
-  var input = this.eyo.getInput(this, name)
+  var input = this.eyo.getInput(name)
   if (!input) {
     input = eYo.BlockSvg.superClass_.getInput.call(this, name)
   }
@@ -125,11 +106,23 @@ eYo.BlockSvg.prototype.select = function () {
   if (!this.workspace) {
     return
   }
-  if (!this.eyo.selectedConnection && this.eyo.wrapped_ && this.getSurroundParent()) {
-    // Wrapped blocks should not be selected.
-    this.getSurroundParent().select()
-    return
+  if (!this.eyo.selectedConnection) {
+    var parent = this.getSurroundParent()
+    if (parent) {
+      if (this.eyo.wrapped_) {
+        // Wrapped blocks should not be selected.
+        parent.select()
+        return
+      }
+      if (parent.eyo.isShort
+          && parent !== Blockly.selected
+          && this !== Blockly.selected) {
+        parent.select()
+        return
+      }
+    }
   }
+  // if the parent is short and not connected, select it
   var more = this.eyo.selectedConnection || (this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this)
   if (more) {
@@ -200,7 +193,7 @@ eYo.BlockSvg.prototype.addSelect = function () {
   }
   // ensure that the svgGroup is the last in the list
   this.bringToFront()
-  var e8r = this.eyo.inputEnumerator(this)
+  var e8r = this.eyo.inputEnumerator()
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.addSelect)) {
@@ -247,7 +240,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
   if (!this.eyo.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ !== this)) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
   }
-  var e8r = this.eyo.inputEnumerator(this)
+  var e8r = this.eyo.inputEnumerator()
   while (e8r.next()) {
     for (var j = 0, field; (field = e8r.here.fieldRow[j++]);) {
       if (goog.isFunction(field.removeSelect)) {
@@ -267,9 +260,9 @@ eYo.BlockSvg.prototype.setParent = function (newParent) {
   if (newParent === this.parentBlock_) {
     return
   }
-  this.eyo.parentWillChange(this, newParent)
+  this.eyo.parentWillChange(newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
-  this.eyo.parentDidChange(this, newParent)
+  this.eyo.parentDidChange(newParent)
   if ((this.eyo.svgPathHighlight_ &&
       this.svgGroup_ === this.eyo.svgPathHighlight_.parentElement) || (this.eyo.svgPathConnection_ &&
         this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {
@@ -387,14 +380,6 @@ eYo.BlockSvg.prototype.setCollapsed = function (collapsed) {
 }
 
 /**
- * Enable or disable a block. Noop. Disabled blocks start with '#'.
- * @override
- */
-eYo.BlockSvg.prototype.updateDisabled = function () {
-  // this.render()
-}
-
-/**
  * Noop. Bypass the inherited method.
  * @override
  */
@@ -463,23 +448,31 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
+  if (this.eyo.parentIsShort && Blockly.selected !== this) {
+    var parent = this.getParent()
+    if (Blockly.selected !== parent) {
+      eYo.BlockSvg.superClass_.onMouseDown_.call(parent, e)
+      return
+    }
+  }
   // unfortunately, the mouse events do not find there way to the proper block
-  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var c8n = this.eyo.getConnectionForEvent(e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
+  // console.log('MOUSE DOWN', target)
+  // Next trick because of the the dual event binding
+  // reentrant management
   if (!target || target.eyo.lastMouseDownEvent_ === e) {
     return
   }
-  // console.log('MOUSE DOWN', target)
-  // Next trick because of the the dual event binding
   target.eyo.lastMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  target.eyo.lastSelectedConnection = eYo.SelectedConnection.get()
-  eYo.SelectedConnection.set(null)
+  target.eyo.lastSelectedConnection = eYo.SelectedConnection
+  eYo.SelectedConnection = null
   target.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
   target.eyo.lastMouseDownEvent = target === Blockly.selected ? e : null
@@ -493,36 +486,38 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
-  var c8n = this.eyo.getConnectionForEvent(this, e)
+  var c8n = this.eyo.getConnectionForEvent(e)
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
+  // reentrancy filter
   if (!target || target.eyo.lastMouseUpEvent_ === e) {
     return
   }
-  // console.log('MOUSE UP', target)
   target.eyo.lastMouseUpEvent_ = e
   var ee = target.eyo.lastMouseDownEvent
   if (ee) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      // console.log('MOUSE UP NOT A DRAG MOVE', target.type, Blockly.selected.type)
       if (target === Blockly.selected) {
         // if the block was already selected,
         // try to select an input connection
-        if (c8n && c8n === eYo.SelectedConnection.get()) {
-          eYo.SelectedConnection.set(null)
+        var field = c8n && c8n.eyo.bindField
+        field && (field.eyo.doNotEdit = false)
+        if (c8n && c8n === eYo.SelectedConnection) {
+          eYo.SelectedConnection = null
         } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
-          eYo.SelectedConnection.set(c8n)
+          field && (field.eyo.doNotEdit = true)
+          eYo.SelectedConnection = c8n    
         } else {
-          eYo.SelectedConnection.set(null)
+          eYo.SelectedConnection = null
         }
       }
     } else {
       // a drag move
-      eYo.SelectedConnection.set(null)
+      eYo.SelectedConnection = null
     }
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
@@ -538,26 +533,22 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @override
  */
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
-  eYo.Events.setGroup(true)
-  try {
-    if (this === Blockly.selected) {
-      // this block was selected, select the block below or above before deletion
-      var c8n, target
-      if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
-        target.select()
-      } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
-        target = c8n.sourceBlock_
-        target.select()
-        eYo.SelectedConnection.set(c8n)
+  eYo.Events.groupWrap(
+    () => {
+      if (this === Blockly.selected) {
+        // this block was selected, select the block below or above before deletion
+        var c8n, target
+        if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
+          target.select()
+        } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
+          target = c8n.sourceBlock_
+          target.select()
+          eYo.SelectedConnection = c8n
+        }
       }
+      eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
     }
-    eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eYo.Events.setGroup(false)
-  }
+  )
 }
 
 /**
@@ -586,7 +577,7 @@ eYo.BlockSvg.prototype.bringToFront = function () {
  * @package
  */
 eYo.BlockSvg.prototype.moveDuringDrag = function(newLoc) {
-  var d = this.eyo.getDistanceFromVisible(this, newLoc)
+  var d = this.eyo.getDistanceFromVisible(newLoc)
   if (d) {
     newLoc.x -= d.x
     newLoc.y -= d.y
@@ -645,8 +636,12 @@ eYo.BlockSvg.prototype.bringToFront = function() {
   try {
     do {
       var root = block.getSvgRoot();
-      goog.dom.appendChild(root.parentNode, root)
-      block = block.getParent();
+      if (root.parentNode) {
+        goog.dom.appendChild(root.parentNode, root)
+        block = block.getParent();
+      } else {
+        break
+      }
     } while (block);
   } catch (err) {
     console.error(err)

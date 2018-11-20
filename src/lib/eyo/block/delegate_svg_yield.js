@@ -37,10 +37,10 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.slots.expression
+        var slot = this.owner.expression_s
         slot.required = (newValue === this.YIELD_EXPRESSION)
         slot.setIncog()
-        slot = this.owner.slots.from
+        slot = this.owner.from_s
         slot.required = (newValue === this.YIELD_FROM)
         slot.setIncog()
       }
@@ -74,7 +74,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       }
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -83,14 +83,15 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
  * @this {eYo.Delegate}
  * @private
  */
-eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   if (block.eyo.locked_) {
     return
   }
   var D = this.data.variant
   var current = D.get()
   var F = function (content, k) {
-    var menuItem = new eYo.MenuItem(content, function () {
+    var menuItem = mgr.newMenuItem(content, function () {
       block.eyo.data.variant.set(k)
     })
     mgr.addChild(menuItem, true)
@@ -119,14 +120,15 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (bloc
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var yorn = eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this, block, mgr) || yorn
+eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var yorn = eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Expr.yield_expression.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
 
 /**
  * Class for a DelegateSvg, starred_item_list_or_yield block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -135,7 +137,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.comprehension],
     consolidator: eYo.Consolidator.List.Singled,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
@@ -160,7 +162,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
   link: eYo.T3.Expr.yield_expression
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -168,14 +170,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, block, mgr)
-  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Yield.T3s = [
   eYo.T3.Expr.yield_expression,
   eYo.T3.Stmt.yield_stmt,
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.parenth_form
 ]

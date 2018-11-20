@@ -26,3 +26,4 @@ thumbs.db
 !/**/README.md
 !/**/Readme.md
 /bin/compiler-latest/**
+/src/lib/eyo/debugging.js

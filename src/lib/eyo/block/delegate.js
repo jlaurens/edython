@@ -14,6 +14,8 @@
 goog.provide('eYo.Delegate')
 
 goog.require('eYo.Helper')
+goog.require('eYo.Decorate')
+goog.require('eYo.Events')
 goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')
@@ -34,47 +36,457 @@ eYo.Delegate = function (block) {
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   block.eyo = this
-  var data = this.data = Object.create(null) // just a hash
-  var dataModel = this.getModel().data
-  var byOrder = []
-  for (var k in dataModel) {
-    if (eYo.Do.hasOwnProperty(dataModel, k)) {
-      var model = dataModel[k]
-      if (model) {
-        // null models are used to neutralize the inherited data
-        var d = new eYo.Data(this, k, model)
-        if (d.model.main) {
-          goog.asserts.assert(!data.main, 'No 2 main data '+k+'/'+block.type)
-          data.main = d
-        }
-        data[k] = d
-        for (var i = 0, dd; (dd = byOrder[i]); ++i) {
-          if (dd.model.order > d.model.order) {
-            break
+  this.change = {
+    // the count is incremented each time a change occurs,
+    // even when undoing.
+    // Some lengthy actions may be shortened when the count
+    // has not changed since the last time it was performed
+    count: 0,
+    // the step is the count, except that it is freezed while editing
+    step: 0,
+    // The level indicates cascading changes
+    // Some actions that are performed when something changes
+    // should not be performed while there is a pending change.
+    // The level is incremented before the change and
+    // decremented after the change (see `changeWrap`)
+    // If we have
+    // A change (level 1) => B change (level 2) => C change (level 3)
+    // Such level aware actions are not performed when B and C
+    // have changed because the level is positive (respectivelly 1 and 2),// a contrario they are performed when the A has changed because
+    // the level is 0.
+    level: 0,
+    // Some operations are performed only when there is a change
+    // In order to decide whether to run or do nothing,
+    // we have to store the last change count when the operation was
+    // last performed. See `onChangeCount` decorator.
+    save: {},
+    // When these operations return values, they are cached below
+    // until they are computed once again.
+    cache: {}
+  }
+  // to manage reentrency
+  this.reentrant = {}
+  this.nextCount_ = this.suiteCount_ = 0
+}
+goog.inherits(eYo.Delegate, eYo.Helper)
+
+
+/**
+ * Model getter. Convenient shortcut.
+ */
+eYo.Do.getModel = function (type) {
+  return eYo.Delegate.Manager.getModel(type)
+}
+
+Object.defineProperties(
+  eYo.Delegate.prototype,
+  {
+    id: {
+      get () {
+        return this.block_.id
+      }
+    },
+    type: {
+      get () {
+        return this.getBaseType()
+      }
+    },
+    model: {
+      get () {
+        return this.constructor.eyo.model
+      }
+    },
+    // next are not relevant for expression blocks
+    // this may illustrates a bad design choice.
+    // To be enhanced.
+    nextCount: {
+      get () {
+        return this.nextCount_
+      },
+      set (newValue) {
+        var d = newValue - this.nextCount_
+        this.nextCount_ = newValue
+        if (d) {
+          var parent = this.block_.getParent()
+          if (parent) {
+            if (parent.eyo.next === this) {
+              parent.eyo.nextCount += d
+            } else {
+              parent.eyo.suiteCount += d
+            }
           }
         }
-        byOrder.splice(i, 0, d)
+      }
+    },
+    suiteCount: {
+      get () {
+        return this.getSuiteCount_()
+      },
+      set (newValue) {
+        var d = newValue - this.suiteCount_
+        if (d) {
+          this.incrementChangeCount()
+          this.suiteCount_ = newValue
+          var parent = this.block_.getParent()
+          if (parent) {
+            if (parent.eyo.next === this) {
+              parent.eyo.nextCount += d
+            } else {
+              parent.eyo.suiteCount += d
+            }
+          }
+        }
+      }
+    },
+    previousConnection: {
+      get () {
+        return this.block_.previousConnection
+      }
+    },
+    previousBlock: {
+      get () {
+        var c8n = this.previousConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    previous: {
+      get () {
+        var b = this.previousBlock
+        return b && b.eyo
+      }
+    },
+    nextConnection: {
+      get () {
+        return this.block_.nextConnection
+      }
+    },
+    nextBlock: {
+      get () {
+        var c8n = this.nextConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    next: {
+      get () {
+        var b = this.nextBlock
+        return b && b.eyo
+      }
+    },
+    suiteConnection: {
+      get () {
+        return this.inputSuite && this.inputSuite.connection
+      }
+    },
+    suiteBlock: {
+      get () {
+        var c8n = this.suiteConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    suite: {
+      get () {
+        var b = this.suiteBlock
+        return b && b.eyo
+      }
+    },
+    /**
+     * Get the next connection of this block.
+     * Comment and disabled blocks are transparent with respect to connection checking.
+     * UNUSED.
+     */
+    nextBlackConnection: {
+      get () {
+        var block = this.block_
+        while (block.eyo.isWhite()) {
+          var c8n
+          if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
+            return undefined
+          }
+        }
+        return block.nextConnection      
+      }
+    },
+    /**
+     * Get the previous connection of this block.
+     * Comment and disabled blocks are transparent with respect to connection checking.
+     * For edython.
+     * @param {!Blockly.Block} block The owner of the receiver.
+     * @return None
+     */
+    previousBlackConnection: {
+      get () {
+        var block = this.block_
+        while (block.eyo.isWhite()) {
+          var c8n
+          if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
+            return undefined
+          }
+        }
+        return block.previousConnection
       }
     }
   }
-  if ((d = this.headData = byOrder[0])) {
-    for (i = 1; (dd = byOrder[i]); ++i) {
-      d.next = dd
-      dd.previous = d
-      d = dd
-    }
-  }
+)
+
+/**
+ * Get the suite count.
+ * Default implementation returns the suite count,
+ * as is. Subclassers (see group) return a filtered value.
+ * For edython.
+ * @param {boolean} newValue
+ */
+eYo.Delegate.prototype.getSuiteCount_ = function () {
+  return this.suiteCount_
 }
-goog.inherits(eYo.Delegate, eYo.Helper)
 
 /**
  * Get the block.
  * For edython.
  * @param {boolean} newValue
  */
-eYo.Delegate.prototype.getBlock = function () {
+ eYo.Delegate.prototype.getBlock = function () {
   return this.block_
 }
+
+/**
+ * Increment the change count.
+ * The change.count is used to compute some properties that depend
+ * on the core state. Some changes induce a change in the change.count
+ * which in turn may induce a change in properties.
+ * Beware of the stability problem.
+ * The change.count is incremented whenever a data changes,
+ * a child block changes or a connection changes.
+ * This is used by the primary delegate's getType
+ * to cache the return value.
+ * For edython.
+ * @param {*} deep  Whether to propagate the message to children.
+ */
+eYo.Delegate.prototype.incrementChangeCount = function (deep) {
+  ++ this.change.count
+  if (!this.isEditing) {
+    this.change.step = this.change.count
+  }
+  if (deep) {
+    this.block_.childBlocks_.forEach(block => {
+      block.eyo.incrementChangeCount(deep)
+    });
+  }
+}
+
+/**
+ * Begin a mutation.
+ * The change level is used to keep track of the cascading mutations.
+ * When mutations imply other mutations, there is no need to perform some actions until the original mutation is done.
+ * For example, rendering should not be done until all the mutations are made.
+ * Changes not only concern the data, they may concern the
+ * slot visibility too.
+ * For edython.
+ */
+eYo.Delegate.prototype.changeBegin = function () {
+  ++this.change.level
+}
+
+/**
+ * Ends a mutation.
+ * When a change is complete at the top level,
+ * the change count is incremented and the receiver
+ * is consolidated.
+ * This is the only place where consolidation should occur.
+ * For edython.
+ * @return {Number} the change level
+ */
+eYo.Delegate.prototype.changeEnd = function () {
+  --this.change.level
+  if (this.change.level === 0) {
+    this.incrementChangeCount()
+    this.consolidate()
+  }
+  return this.change.level
+}
+
+/**
+ * Begin a mutation.
+ * For edython.
+ * @param {!Function} do_it
+ * @param {*} thisObject
+ * @param {*} rest
+ */
+eYo.Delegate.prototype.changeWrap = function () {
+  var args = Array.prototype.slice.call(arguments)
+  var ans
+  try {
+    this.changeBegin()
+    args[0] && (ans = args[0].apply(args[1] || this, args.slice(2)))
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.changeEnd()
+  }
+  return ans
+}
+
+/**
+ * Set the value wrapping in a `changeBegin`/`changeEnd`
+ * group call of the owner.
+ * @param {Object} newValue
+ * @param {Boolean} notUndoable
+ */
+eYo.Data.prototype.change = function (newValue, validate) {
+  if (newValue !== this.get()) {
+    this.owner.changeWrap(
+      this.set,
+      this,
+      newValue,
+      validate
+    )  
+  }
+}
+
+/**
+ * Decorate of change count hooks.
+ * Returns a function with signature is `foo(whatever) → whatever`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * `do_it` receives all the parameters that the decorated function will receive.
+ * If `do_it` return value is not an object, the change.count is not recorded
+ * If `do_it` return value is an object with a `return` property,
+ * the `change.count` is recorded such that `do_it` won't be executed
+ * until the next `change.count` increment.
+ * @param {!String} key, 
+ * @param {!Function} do_it  must return something.
+ * @return {!Function}
+ */
+eYo.Decorate.onChangeCount = function (key, do_it) {
+  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  return function() {
+    var c = this.change
+    if (c.save[key] === c.count) {
+      return c.cache[key]
+    }
+    var did_it = do_it.apply(this, arguments)
+    if (did_it) {
+      c.save[key] = c.count
+      c.cache[key] = did_it.ans  
+    }
+    return c.cache[key]
+  }
+}
+
+/**
+ * Called when data and slots have loaded.
+ */
+eYo.Delegate.prototype.didLoad = function () {
+  this.foreachData(function () {
+    this.didLoad()
+  })
+  this.foreachSlot(function () {
+    this.didLoad()
+  })
+}
+
+/**
+ * Tests if two block delegates are equal.
+ * Blocks must be of the same type.
+ * Lists and dictionaries are managed differently.
+ * Usefull for testing purposes for example.
+ * @param {?eYo.Delegate} rhs  Another block delegate
+ */
+eYo.Delegate.prototype.equals = function (rhs) {
+  var equals = rhs && (this.type == rhs.type)
+  if (equals) {
+    this.foreachData(function () {
+      var r_data = rhs.data[this.key]
+      equals = r_data && (this.get() == r_data.get() || (this.isIncog() && r_data.isIncog()))
+      return equals // breaks if false
+    })
+    if (equals) {
+      this.foreachSlot(function () {
+        var r_slot = rhs.slots[this.key]
+        if (this.isIncog()) {
+          equals = !r_slot || r_slot.isIncog()
+        } else if (r_slot) {
+          if (r_slot.isIncog()) {
+            equals = false
+          } else {
+            var target = this.targetBlock()
+            var r_target = r_slot.targetBlock()
+            equals = target
+              ? r_target && target.eyo.equals(r_target.eyo)
+              : !r_target
+          }
+        } else {
+          equals = false
+        }
+        return equals // breaks if false
+      })
+    }
+  }
+  return equals
+}
+
+/**
+ * This methods is a higher state mutator.
+ * A primary data change or a primary connection change has just occurred.
+ * (Primary meaning that no other change has been performed
+ * that has caused the so called primary change).
+ * At return type, the block is in a consistent state.
+ * All the connections and components are consolidated
+ * and are in a consistent state.
+ * This method is sent from a `changeEnd` method only.
+ * Sends a `consolidate` message to each component of the block.
+ * However, there might be some caveats related to undo management,
+ * this must be investigated.
+ * This message is sent by:
+ * - an expression to its parent when consolidated
+ * - a list just before rendering
+ * - when removing items from a list
+ * - when a list creates a consolidator
+ * - when an argument list changes its `ary` or `mandatory`
+ * - in the changeEnd method
+ * Consolidation will not occur when no change has been
+ * preformed since the last consolidation.
+ * 
+ * The return value may be cached.
+ * 
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ * @return {Boolean} true when consolidation occurred
+ */
+eYo.Delegate.prototype.doConsolidate = function (deep, force) {
+  if (!force && (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1)) {
+    // do not consolidate while un(re)doing
+    return
+  }
+  // synchronize everything
+  this.synchronizeData()
+  this.synchronizeSlots()
+  // first the type
+  this.consolidateType()
+  // first the in state
+  this.consolidateData()
+  this.consolidateSlots(deep, force)
+  this.consolidateInputs(deep, force)
+  // then the out state
+  this.consolidateConnections()
+  return true
+}
+
+/**
+ * Wraps `doConsolidate` into a reentrant and `change.count` aware method.
+ 
+ * 
+ * 
+ */
+eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
+  'consolidate',
+  eYo.Decorate.onChangeCount(
+    'consolidate',
+    function (deep, force) {
+      this.doConsolidate(deep, force)
+    }
+  )
+)
 
 /**
  * Get the eyo namespace in the constructor.
@@ -112,9 +524,21 @@ eYo.Delegate.Manager = (function () {
    */
   me.prepareDelegate = function (delegateC9r, key) {
     var eyo = eYo.Delegate.getC9rEyO(delegateC9r, key || '')
-    eyo.getModel || (eyo.getModel = function () {
-      return modeller(delegateC9r)
-    })
+    if (!eyo.getModel) {
+      eyo.getModel || (eyo.getModel = function () {
+        return modeller(delegateC9r)
+      })
+      Object.defineProperties(
+        eyo,
+        {
+          model: {
+            get () {
+              return this.getModel()
+            }
+          }
+        }
+      )
+    }
     return eyo
   }
   /**
@@ -127,9 +551,9 @@ eYo.Delegate.Manager = (function () {
   var merger = function (to, from, ignore) {
     var from_d
     if ((from.check)) {
-      from.check = eYo.Do.ensureArray(from.check)
+      from.check = eYo.Do.ensureArrayFunction(from.check)
     } else if ((from_d = from.wrap)) {
-      from.check = eYo.Do.ensureArray(from_d)
+      from.check = eYo.Do.ensureArrayFunction(from_d)
     }
     for (var k in from) {
       if (ignore && ignore(k)) {
@@ -157,14 +581,14 @@ eYo.Delegate.Manager = (function () {
       }
     }
     if ((to.check)) {
-      to.check = eYo.Do.ensureArray(to.check)
+      to.check = eYo.Do.ensureArrayFunction(to.check)
     } else if ((to_d = to.wrap)) {
-      to.check = eYo.Do.ensureArray(to_d)
+      to.check = eYo.Do.ensureArrayFunction(to_d)
     }
   }
   me.merger = merger
   /**
-   * Private modeller to provide the constructor with a complete getModel.
+   * Private modeller to provide the constructor with a complete `model` property.
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
@@ -189,7 +613,9 @@ eYo.Delegate.Manager = (function () {
     }
     if (insertModel) {
       insertModel.data && merger(model.data, insertModel.data)
+      insertModel.heads && merger(model.heads, insertModel.heads)
       insertModel.slots && merger(model.slots, insertModel.slots)
+      insertModel.tails && merger(model.tails, insertModel.tails)
     }
     // store that object permanently
     delegateC9r.eyo.model_ = model
@@ -208,100 +634,192 @@ eYo.Delegate.Manager = (function () {
    * and in general
    * key in me.get(key).eyo.types
    * but this is not a requirement!
-   * In particular, some blocks share a bseic do nothing delegate
+   * In particular, some blocks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    @return the constructor created
    */
-  me.makeSubclass = function (key, model, parent, owner = undefined) {
-    goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
-    if (key.indexOf('eyo:') >= 0) {
-      key = key.substring(4)
+  me.makeSubclass = (function () {
+    var defineDataProperty = function (k) {
+      var key = k + '_p'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key in this)) {
+          // print("Data property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: function () {
+                return this.data[k].get()
+              },
+              set: function (newValue) {
+                this.data[k].change(newValue)
+              }
+            }
+          )
+        }
+      }
     }
-    owner = owner ||
-    (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
-    (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
-    parent
-    var delegateC9r = owner[key] = function (block) {
-      delegateC9r.superClass_.constructor.call(this, block)
+    var defineSlotProperty = function (k) {
+      var key = k + '_s'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: function () {
+                return this.slots[k]
+              }
+            }
+          )
+        }
+      }
     }
-    goog.inherits(delegateC9r, parent)
-    me.prepareDelegate(delegateC9r, key)
-    eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
-    if (goog.isFunction(model)) {
-      model = model()
-    }
-    if (model) {
-      // manage the link: key
-      var link
-      var linkModel = model
-      if ((link = model.link)) {
-        do {
-          var linkC9r = goog.isFunction(link) ? link : me.get(link)
-          goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
-          var linkModel = linkC9r.eyo.getModel()
-          if (linkModel) {
-            model = linkModel
-          } else {
-            break
+    return function (key, model, parent, owner = undefined, register = false) {
+      goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
+      if (key.indexOf('eyo:') >= 0) {
+        key = key.substring(4)
+      }
+      if (owner === true) {
+        register = true
+        owner = undefined
+      }
+      owner = owner ||
+      (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
+      (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
+      parent
+      var delegateC9r = owner[key] = function (block) {
+        delegateC9r.superClass_.constructor.call(this, block)
+      }
+      goog.inherits(delegateC9r, parent)
+      me.prepareDelegate(delegateC9r, key)
+      eYo.Delegate.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
+      if (goog.isFunction(model)) {
+        model = model()
+      }
+      if (model) {
+        // manage the link: key
+        var link
+        var linkModel = model
+        if ((link = model.link)) {
+          do {
+            var linkC9r = goog.isFunction(link) ? link : me.get(link)
+            goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
+            var linkModel = linkC9r.eyo.model
+            if (linkModel) {
+              model = linkModel
+            } else {
+              break
+            }
+          } while ((link = model.link))
+          model = {}
+          linkModel && me.merger(model, linkModel)
+        }
+        // manage the inherits key, uncomplete management,
+        var inherits = model.inherits
+        if (inherits) {
+          var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
+          var inheritsModel = inheritsC9r.eyo.model
+          if (inheritsModel) {
+            var m = {}
+            merger(m, inheritsModel)
+            merger(m, model)
+            model = m
           }
-        } while ((link = model.link))
-        model = {}
-        linkModel && me.merger(model, linkModel)
-      }
-      // manage the inherits key, uncomplete management,
-      var inherits = model.inherits
-      if (inherits) {
-        var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
-        var inheritsModel = inheritsC9r.eyo.getModel()
-        if (inheritsModel) {
-          var m = {}
-          merger(m, inheritsModel)
-          merger(m, model)
-          model = m
+        }
+        var inherits
+        var t = eYo.T3.Expr[key]
+        if (t) {
+          if (!model.output) {
+            model.output = Object.create(null)
+          }
+          model.output.check = eYo.Do.ensureArrayFunction(model.output.check || t)
+          model.statement && (model.statement = undefined)
+        } else if ((t = eYo.T3.Stmt[key])) {
+          var statement = model.statement || (model.statement = Object.create(null))
+          if (!statement.previous) {
+            statement.previous = Object.create(null)
+          }
+          if (statement.previous.check) {
+            statement.previous.check = eYo.Do.ensureArrayFunction(statement.previous.check)
+          } else if (!goog.isNull(statement.previous.check)) {
+            statement.previous.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Previous[key])
+          }
+          if (!statement.next) {
+            statement.next = Object.create(null)
+          }
+          if (statement.next.check) {
+            statement.next.check = eYo.Do.ensureArrayFunction(statement.next.check)
+          } else if (!goog.isNull(statement.next.check)) {
+            statement.next.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Next[key])
+          }
+          // this is a statement, remove the irrelevant output info
+          model.output && (model.output = undefined)
+        }
+        delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+        // Create properties to access data
+        if (model.data) {
+          for (var k in model.data) {
+            if (eYo.Do.hasOwnProperty(model.data, k)) {
+              var MD = model.data[k]
+              if (MD) {
+                // null models are used to neutralize the inherited data
+                if (!MD.setup_) {
+                  MD.setup_ = true
+                  if (goog.isFunction(MD.willChange)
+                    && !goog.isFunction(MD.willUnchange)) {
+                      MD.willUnchange = MD.willChange
+                  }
+                  if (goog.isFunction(MD.didChange)
+                    && !goog.isFunction(MD.didUnchange)) {
+                      MD.didUnchange = MD.didChange
+                  }
+                  if (goog.isFunction(MD.isChanging)
+                    && !goog.isFunction(MD.isUnchanging)) {
+                      MD.isUnchanging = MD.isChanging
+                  }
+                }
+                defineDataProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }      
+        }
+        // Create properties to access slots
+        if (model.slots) {
+          for (var k in model.slots) {
+            if (eYo.Do.hasOwnProperty(model.slots, k)) {
+              var MS = model.slots[k]
+              if (MS) {
+                defineSlotProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }      
         }
       }
-      var inherits
-      var t = eYo.T3.Expr[key]
-      if (t) {
-        if (!model.output) {
-          model.output = Object.create(null)
-        }
-        if (!model.output.check) {
-          model.output.check = t
-        }
-        model.statement && (model.statement = undefined)
-      } else if ((t = eYo.T3.Stmt[key])) {
-        var statement = model.statement || (model.statement = Object.create(null))
-        if (!statement.previous) {
-          statement.previous = Object.create(null)
-        }
-        if (!statement.previous.check && !goog.isNull(statement.previous.check)) {
-          statement.previous.check = eYo.T3.Stmt.Previous[key]
-        }
-        if (!statement.next) {
-          statement.next = Object.create(null)
-        }
-        if (!statement.next.check && !goog.isNull(statement.next.check)) {
-          statement.next.check = eYo.T3.Stmt.Next[key]
-        }
-        model.output && (model.output = undefined)
+      delegateC9r.makeSubclass = function (key, model, owner, register) {
+        return me.makeSubclass(key, model, delegateC9r, owner, register)
       }
-      delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+      if (register) {
+        me.register(key)
+      }
+      return delegateC9r
     }
-    delegateC9r.makeSubclass = function (key, model, owner) {
-      return me.makeSubclass(key, model, delegateC9r, owner)
-    }
-    return delegateC9r
-  }
+}) ()
   /**
    * Delegate instance creator.
+   * @param {!Blockly.Block} block
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (block) {
+  me.create = function (block, prototypeName) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
-    var DelegateC9r = C9rs[block.type]
-    goog.asserts.assert(DelegateC9r, 'No delegate for ' + block.type)
-    return DelegateC9r && new DelegateC9r(block)
+    var DelegateC9r = C9rs[prototypeName || block.type]
+    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName || block.type)
+    var d = DelegateC9r && new DelegateC9r(block)
+    d && d.setupType(prototypeName)
+    return d
   }
   /**
    * Get the Delegate constructor for the given prototype name.
@@ -325,7 +843,7 @@ eYo.Delegate.Manager = (function () {
    */
   me.getModel = function (prototypeName) {
     var delegateC9r = C9rs[prototypeName]
-    return (delegateC9r && delegateC9r.eyo.getModel()) || Object.create(null)
+    return (delegateC9r && delegateC9r.eyo.model) || Object.create(null)
   }
   /**
    * Delegate registrator.
@@ -390,37 +908,44 @@ eYo.Delegate.Manager = (function () {
   return me
 }())
 
-/**
- * Model getter. Convenient shortcut.
- */
-eYo.Do.getModel = function (type) {
-  return eYo.Delegate.Manager.getModel(eYo.T3.Stmt.comment_any)
-}
-
-/**
- * Model getter. Ask the constructor.
- */
-eYo.Delegate.prototype.getModel = function () {
-  return this.constructor.eyo.getModel()
-}
-
 // register this delegate for all the T3 types
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
 
 /**
- * Some blocks may change when their properties change,
- * for example. This message is sent whenever one of the properties
- * declared below changes.
- * The type of the block may change, thus implying some connection changes.
- * The connection checks may change too.
- * For edython.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * getType.
+ * The default implementation just returns the block type.
+ * This should be used instead of direct block querying.
+ * @return {String} The type of the receiver's block.
  */
-eYo.Delegate.prototype.consolidateType = function (block) {
-  this.setupType(block)
+eYo.Delegate.prototype.getType = function () {
+  return this.block_.type
+}
+
+/**
+ * getSubtype.
+ * The default implementation just returns `undefined`.
+ * Subclassers will use it to return the correct type
+ * depending on their actual inner state.
+ * This should be used instead of direct block querying.
+ * @return {String} The type of the receiver's block.
+ */
+eYo.Delegate.prototype.getSubtype = eYo.Do.nothing
+
+/**
+ * getBaseType.
+ * The default implementation just returns the receiver's
+ * `baseType_` property or its block type.
+ * Subclassers will use it to return the correct type
+ * depending on their actual inner state.
+ * The raw type of the block is the type without any modifier.
+ * The raw type is the same as the block type except for blocks
+ * with modifiers.
+ * This should be used instead of direct block querying.
+ * @return {?String} The type of the receiver's block.
+ */
+eYo.Delegate.prototype.getBaseType = function () {
+  return this.baseType_ || this.block_.type
 }
 
 /**
@@ -459,7 +984,7 @@ eYo.Delegate.prototype.foreachSlot = function (helper) {
 
 /**
  * execute the given function for the head data of the receiver and its next sibling.
- * Ends the loop as soon as the 
+ * Ends the loop as soon as the helper returns true.
  * For edython.
  * @param {!function} helper
  * @return {boolean} whether there was a data to act upon or a valid helper
@@ -475,14 +1000,13 @@ eYo.Delegate.prototype.foreachData = function (helper) {
 }
 
 /**
- * Initialize the data.
  * Bind data and fields.
  * We assume that if data and fields share the same name,
  * they must be bound, otherwise we would have chosen different names...
- * if the data model contains an intializer, use it,
+ * if the data model contains an initializer, use it,
  * otherwise send an init message to all the data controllers.
  */
-eYo.Delegate.prototype.initData = function () {
+eYo.Delegate.prototype.makeBounds = function () {
   for (var k in this.data) {
     var data = this.data[k]
     var slot = this.slots[k]
@@ -496,7 +1020,7 @@ eYo.Delegate.prototype.initData = function () {
           break
         }
       } else {
-        data.field = slot.fields.edit
+        data.field = slot.fields.bind
       }
     } else if ((data.field = this.fields[k])) {
       data.slot = null
@@ -517,55 +1041,123 @@ eYo.Delegate.prototype.initData = function () {
       eyo.data = data
     }
   }
-  var init = this.getModel().initData
-  if (goog.isFunction(init)) {
-    init.call(this)
-    return
-  }
-  this.foreachData(function () {
-    this.init()
+}
+
+/**
+ * Consolidate the data by sending a `consolidate` message to
+ * all the data controllers.
+ * Called only once at
+ * 
+ */
+eYo.Delegate.prototype.consolidateData = function () {
+  this.changeWrap(function () {
+    this.foreachData(function () {
+      this.consolidate()
+    })
   })
 }
 
 /**
- * Initialize the data values from the model.
- * @param {!Blockly.Block} block to be initialized..
+ * Set the data values from the type.
+ * One block implementation may correspond to different types,
+ * For example, there is one implementation for all the primaries.
+ * @param {!Blockly.Block} block to be initialized.
+ * @param {!String} type
+ * @return {boolean} whether the model was really used.
+ */
+eYo.Delegate.prototype.setDataWithType = function (type) {
+  this.foreachData(function () {
+    this.setWithType(type)
+  })
+}
+
+/**
+ * Set the data values from the model.
+ * @param {!Blockly.Block} block to be modified.
  * @param {!Object} model
  * @return {boolean} whether the model was really used.
  */
-eYo.Delegate.prototype.initDataWithModel = function (block, model, noCheck) {
+eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
-  var data_in = model.data
-  if (goog.isString(data_in)) {
-    var d = this.data.main || this.headData
-    if (d && d.validate(data_in)) {
-      d.set(data_in)
-      done = true
+  this.foreachData(function () {
+      this.setRequiredFromModel(false)
     }
-  } else { // data_in can be a string
-    for (var k in data_in) {
-      if (eYo.Do.hasOwnProperty(data_in, k)) {
-        var D = this.data[k]
-        if (D) {
-          D.set(data_in[k])
+  )
+  this.changeWrap(
+    function () {
+      var data_in = model.data
+      if (goog.isString(data_in)) {
+        var d = this.data.main || this.headData
+        if (d && d.validate(data_in)) {
+          d.set(data_in)
+          d.setRequiredFromModel(true)
           done = true
-        } else if (!noCheck) {
-          console.warn('Unused data:', k, data_in[k])
+        }
+      } else if (goog.isDef(data_in)) {
+        this.foreachData(function () {
+          var k = this.key
+          if (eYo.Do.hasOwnProperty(data_in, k)) {
+            this.set(data_in[k])
+            this.setRequiredFromModel(true)
+            done = true
+          } else {
+            k = k + '_placeholder'
+            if (eYo.Do.hasOwnProperty(data_in, k)) {
+              this.setRequiredFromModel(true)
+              // change the place holder in the objects's model
+              var m = {}
+              goog.mixin(m, this.model)
+              m.placeholder = data_in[k]
+              this.model = m
+              done = true
+            }
+          }
+        })
+        if (!noCheck) {
+          for (var k in data_in) {
+            if (eYo.Do.hasOwnProperty(data_in, k)) {
+              var D = this.data[k]
+              if (!D) {
+                console.warn('Unused data:', this.block_.type, k, data_in[k])
+              }
+            }
+          }
         }
       }
+      this.foreachData(function () {
+        var k = this.key + '_d'
+        if (eYo.Do.hasOwnProperty(model, k)) {
+          this.set(model[k])
+          done = true
+          this.setRequiredFromModel(true)
+        }
+        k = this.key + '_placeholder'
+        if (eYo.Do.hasOwnProperty(model, k)) {
+          this.customizePlaceholder(model[k])
+        }
+      })
     }
-  }
+  )
   return done
 }
 
 /**
  * Synchronize the data to the UI.
+ * The change level and change count should not change here.
  * Sends a `synchronize` message to all data controllers.
+ * This is a one shot method only called by the `consolidate` method.
+ * The fact is that all data must be synchronized at least once
+ * at least when the model has been made. While running,
+ * the synchronization will occur each time the data changes.
+ * As a data change can not be reentrant, the synchronization can be
+ * performed just after the change, whether doing, undoing or redoing.
+ * This is why the one shot.
  */
-eYo.Delegate.prototype.synchronizeData = function (block) {
+eYo.Delegate.prototype.synchronizeData = function () {
   this.foreachData(function () {
-    this.synchronize(this.get())
+    this.synchronize()
   })
+  this.synchronizeData = eYo.Do.nothing
 }
 
 /**
@@ -577,6 +1169,191 @@ eYo.Delegate.makeSubclass = function (key, model, owner) {
   // First ensure that eYo.Delegate is well formed
   eYo.Delegate.Manager.prepareDelegate(eYo.Delegate)
   return eYo.Delegate.Manager.makeSubclass(key, model, eYo.Delegate, owner)
+}
+
+
+/**
+ * Initialize a block's implementation model.
+ * Called from block's creation method.
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * When done, the block has all its properties ready to use
+ * but their values are not proerly setup.
+ * The block may not be in a consistent state,
+ * for what it was designed to.
+ * @param {!Blockly.Block} block to be initialized.
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.makeState = function () {
+  this.makeData()
+  this.makeContents()
+  this.makeFields()
+  this.makeSlots()
+  this.makeConnections()
+  // now make the bounds between data and fields
+  this.makeBounds()
+}
+
+/**
+ * Make the data.
+ * Called only by `makeState`.
+ * Should be called only once.
+ * No data change, no rendering.
+ * For edython.
+ */
+eYo.Delegate.prototype.makeData = function () {
+  var data = Object.create(null) // just a hash
+  var dataModel = this.model.data
+  var byOrder = []
+  for (var k in dataModel) {
+    if (eYo.Do.hasOwnProperty(dataModel, k)) {
+      var model = dataModel[k]
+      if (model) {
+        // null models are used to neutralize the inherited data
+        var d = new eYo.Data(this, k, model)
+        if (d.model.main) {
+          goog.asserts.assert(!data.main, 'No 2 main data ' + k + '/' + this.block_.type)
+          data.main = d
+        }
+        data[k] = d
+        for (var i = 0, dd; (dd = byOrder[i]); ++i) {
+          if (dd.model.order > d.model.order) {
+            break
+          }
+        }
+        byOrder.splice(i, 0, d)
+      }
+    }
+  }
+  if ((d = this.headData = byOrder[0])) {
+    for (i = 1; (dd = byOrder[i]); ++i) {
+      d.next = dd
+      dd.previous = d
+      d = dd
+    }
+  }
+  this.data = data
+  // now we can use `foreachData`
+  this.foreachData(function () {
+    Object.defineProperty(this.owner, this.key + '_d', { value: this })
+  })
+}
+
+/**
+ * Make the Fields.
+ * No rendering.
+ * For edython.
+ */
+eYo.Delegate.prototype.makeFields = function () {
+  eYo.Slot.makeFields(this, this.model.fields)
+}
+
+/**
+ * Make the contents
+ * For edython.
+ */
+eYo.Delegate.prototype.makeContents = function () {
+  eYo.Content.feed(this, this.model.contents || this.model.fields)
+}
+
+/**
+ * Make the slots
+ * For edython.
+ */
+eYo.Delegate.prototype.makeSlots = function () {
+  this.slots = Object.create(null)
+  this.headSlot = this.feedSlots(this.model.slots)
+}
+
+/**
+ * Create the block connections.
+ * Called from receiver's `makeState` method.
+ * For subclassers eventually
+ */
+eYo.Delegate.prototype.makeConnections = function () {
+  // configure the connections
+  var block = this.block_
+  var model = this.model
+  var D
+  if ((D = model.output) && Object.keys(D).length) {
+    block.setOutput(true) // check is setup in the consolidateConnections
+    block.outputConnection.eyo.model = D
+  } else if ((D = model.statement) && Object.keys(D).length) {
+    if (D.previous && D.previous.check !== null) {
+      block.setPreviousStatement(true)
+      block.previousConnection.eyo.model = D.previous
+    }
+    if (D.next && D.next.check !== null) {
+      block.setNextStatement(true)
+      this.nextConnection.eyo.model = D.next
+    }
+    if (D.suite) {
+      this.inputSuite = block.appendStatementInput(eYo.Key.SUITE)
+      this.suiteConnection.eyo.model = D
+    }
+  }
+}
+
+/**
+ * Feed the owner with slots built from the model.
+ * For edython.
+ * @param {!Blockly.Input} input
+ */
+eYo.Delegate.prototype.feedSlots = function (slotsModel) {
+  var slots = this.slots
+  var ordered = []
+  for (var k in slotsModel) {
+    var model = slotsModel[k]
+    if (!model) {
+      continue
+    }
+    var order = model.order
+    var insert = model.insert
+    var slot, next
+    if (insert) {
+      var model = eYo.Delegate.Manager.getModel(insert)
+      if (model) {
+        if ((slot = this.feedSlots(model.slots))) {
+          next = slot
+          do {
+            goog.asserts.assert(!goog.isDef(slots[next.key]),
+              'Duplicate inserted slot key %s/%s/%s', next.key, insert, block.type)
+            slots[next.key] = next
+          } while ((next = next.next))
+        } else {
+          continue
+        }
+      } else {
+        continue
+      }
+    } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
+      goog.asserts.assert(!goog.isDef(slots[k]),
+        eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
+      slots[k] = slot
+      slot.slots = slots
+    } else {
+      continue
+    }
+    slot.order = order
+    for (var i = 0; i < ordered.length; i++) {
+      // we must not find an aleady existing entry.
+      goog.asserts.assert(i !== slot.order,
+        eYo.Do.format('Same order slot {0}/{1}', i, this.block_.type))
+      if (ordered[i].model.order > slot.model.order) {
+        break
+      }
+    }
+    ordered.splice(i, 0, slot)
+  }
+  if ((slot = ordered[0])) {
+    i = 1
+    while ((next = ordered[i++])) {
+      slot.next = next
+      next.previous = slot
+      slot = next
+    }
+  }
+  return ordered[0]
 }
 
 /**
@@ -593,11 +1370,18 @@ eYo.Delegate.prototype.type_ = undefined
 
 /**
  * Set the [python ]type of the delegate according to the type of the block.
- * @param {!Blockly.Block} block to be initialized..
- * @param {string} optNewType
+ * No need to override this.
+ * @param {?string} optNewType, 
  * @constructor
  */
-eYo.Delegate.prototype.setupType = function (block, optNewType) {
+eYo.Delegate.prototype.setupType = function (optNewType) {
+  var block = this.block_
+  if (!optNewType && !block.type) {
+    console.error('Error!')
+  }
+  if (optNewType === eYo.T3.Expr.unset) {
+    console.error('C\'est une erreur!')
+  }
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
   }
@@ -605,68 +1389,143 @@ eYo.Delegate.prototype.setupType = function (block, optNewType) {
   var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
-  this.xmlType_ = m ? m[3] : block.type
-  // test all connections
-  var c8n, targetC8n
-  if ((c8n = block.previousConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      block.unplug()
-      block.bumpNeighbours_()
+  if (!this.pythonType_) {
+    console.error('Error! this.pythonType_')
+  } 
+}
+
+/**
+ * For edython.
+ */
+eYo.Delegate.prototype.synchronizeSlots = function () {
+  this.foreachSlot(function () {
+    this.synchronize()
+  })
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the data.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?string} type Name of the new type.
+ */
+eYo.Delegate.prototype.consolidateData = function () {
+  this.foreachData(function () {
+    this.consolidate()
+  })
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the slots.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ */
+eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
+  this.foreachSlot(function () {
+    // some child blocks may be disconnected as side effect
+    this.consolidate(deep, force)
+  })
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * Consolidate the slots.
+ * Only used by `consolidate`.
+ * Should not be called directly, but may be overriden.
+ * For edython.
+ * @param {?Boolean} deep
+ * @param {?Boolean} force
+ */
+eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
+  if (deep) {
+    // Consolidate the child blocks that are still connected
+    var e8r = this.block_.eyo.inputEnumerator()
+    while (e8r.next()) {
+      e8r.here.eyo.consolidate(deep, force)
     }
   }
-  if ((c8n = block.outputConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      block.unplug()
-      block.bumpNeighbours_()
-    }
+}
+
+/**
+ * Some blocks may change when their properties change.
+ * For edython.
+ * @param {?string} type Name of the new type.
+ */
+eYo.Delegate.prototype.consolidateType = function (type) {
+  this.setupType(type || this.getType())
+}
+
+/**
+ * Set the connection check array.
+ * The connections are supposed to be configured once.
+ * This method may disconnect blocks as side effect,
+ * thus interacting with the undo manager.
+ * After initialization, this should be called whenever
+ * the block type has changed.
+ * @param {!Blockly.Block} block to be initialized.
+ * @constructor
+ */
+eYo.Delegate.prototype.consolidateConnections = function () {
+  this.completeWrapped_()
+  var b = this.block_
+  var t = this.getType()
+  var st = this.getSubtype()
+  var f = function (c8n) {
+    c8n && c8n.eyo.updateCheck(t, st)
   }
-  if ((c8n = block.nextConnection) && (targetC8n = c8n.targetConnection)) {
-    if (!c8n.checkType_(targetC8n)) {
-      c8n.disconnect()
-      targetC8n.getSourceBlock().bumpNeighbours_()
+  this.foreachSlot(
+    function () {
+      f(this.connection)
     }
-  }
+  )
+  f(b.outputConnection)
+  f(b.previousConnection)
+  f(b.nextConnection)
+  f(this.inputSuite && this.inputSuite.connection)
 }
 
 /**
  * Initialize a block.
  * Called from block's init method.
- * @param {!Blockly.Block} block to be initialized..
- * For subclassers eventually
+ * This should be called only once.
+ * The underlying model is not expected to change while running.
+ * Call's the model's `init` method if any.
  */
-eYo.Delegate.prototype.initBlock = function (block) {
-  this.setupType(block)
-  var model = this.getModel()
-  var D = model.output
-  if (D && Object.keys(D).length) {
-    block.setOutput(true, D.check)
-    var eyo = block.outputConnection.eyo
-    eyo.model = D
-    if (D.suite && Object.keys(D.suite).length) {
-      goog.mixin(eyo, D.suite)
-    }
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.suite) {
-      this.inputSuite = block.appendStatementInput('suite').setCheck(D.check) // Check ?
-      this.inputSuite.connection.eyo.model = D
-    }
-    if (D.next && D.next.check !== null) {
-      block.setNextStatement(true, D.next.check)
-      block.nextConnection.eyo.model = D.next
-    }
-    if (D.previous && D.previous.check !== null) {
-      block.setPreviousStatement(true, D.previous.check)
-      block.previousConnection.eyo.model = D.previous
-    }
+eYo.Delegate.prototype.init = function () {
+  try {
+    this.change.level++ // will prevent any rendering
+    this.makeState()
+    // initialize the data
+    this.foreachData(function () {
+      this.init()
+    })
+    this.foreachSlot(function () {
+      this.init()
+    })
+    // At this point the state value may not be consistent
+    this.consolidate()
+    // but now it should be
+    this.model.init && this.model.init.call(this)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.change.level--
   }
 }
 
 /**
-* Deinitialize a block. Nothing to do yet.
-* @param {!Blockly.Block} block to be deinitialized..
+* Deinitialize a block. Calls the model's `deinit` method is any.
 * @constructor
 */
-eYo.Delegate.prototype.deinitBlock = function (block) {
+eYo.Delegate.prototype.deinit = function () {
+  this.model.deinit && this.model.deinit.call(this)
 }
 
 /**
@@ -674,19 +1533,27 @@ eYo.Delegate.prototype.deinitBlock = function (block) {
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.hasPreviousStatement_ = function (block) {
-  var c8n = block.previousConnection
+eYo.Delegate.prototype.hasPreviousStatement_ = function () {
+  var c8n = this.block_.previousConnection
   return c8n && c8n.isConnected() &&
     c8n.targetBlock().nextConnection === c8n.targetConnection
 }
 
 /**
  * Whether the block has a next statement.
- * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.hasNextStatement_ = function (block) {
-  return block.nextConnection && block.nextConnection.isConnected()
+eYo.Delegate.prototype.hasNextStatement_ = function () {
+  var c8n = this.nextConnection
+  return c8n && c8n.isConnected()
+}
+
+/**
+ * Whether the block has a suite statement.
+ * @private
+ */
+eYo.Delegate.prototype.hasSuiteStatement_ = function () {
+  return false
 }
 
 /**
@@ -694,7 +1561,7 @@ eYo.Delegate.prototype.hasNextStatement_ = function (block) {
  * @param {!Blockly.Block} block
  * @param {boolean} hidden True if connections are hidden.
  */
-eYo.Delegate.prototype.setConnectionsHidden = function (block, hidden) {
+eYo.Delegate.prototype.setConnectionsHidden = function (hidden) {
 }
 
 /**
@@ -731,39 +1598,62 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
 }
 
 /**
+ * Shortcut for appending a sealed value input row.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * @param {string} name Language-neutral identifier which may used to find this
+ *     input again.  Should be unique to this block.
+ * This is the only way to create a wrapped block.
+ * @return {!Blockly.Input} The input object created.
+ */
+eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
+  goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
+  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
+  var block = this.block_
+  var input = block.appendValueInput(name)
+  var eyo = input.connection.eyo
+  eyo.wrapped_ = prototypeName
+  eyo.optional_ = optional
+  eyo.hidden_ = hidden
+  if (!this.wrappedC8nDlgt_) {
+    this.wrappedC8nDlgt_ = []
+  }
+  if (!optional) {
+    this.wrappedC8nDlgt_.push(eyo)
+  }
+  return input
+}
+
+/**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the wrappedInputs_ list.
+ * The default implementation connects all the blocks from the wrappedC8nDlgt_ list.
  * Subclassers will evntually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.completeWrapped_ = function (block) {
-  if (this.wrappedInputs_) {
-    eYo.Delegate.wrappedFireWall = 100
-    for (var i = 0; i < this.wrappedInputs_.length; i++) {
-      var data = this.wrappedInputs_[i]
-      this.completeWrappedInput_(block, data[0], data[1])
+eYo.Delegate.prototype.completeWrapped_ = function () {
+  if (this.wrappedC8nDlgt_) {
+    for (var i = 0; i < this.wrappedC8nDlgt_.length; i++) {
+      this.wrappedC8nDlgt_[i].completeWrapped()
     }
   }
 }
 
 /**
  * The default implementation does nothing.
- * Subclassers will override this but won't call it.
+ * Subclassers will override this but no one will call it.
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockWrapped = function (block) {
+eYo.Delegate.prototype.doMakeBlockWrapped = function () {
 }
 
 /**
  * The default implementation is false.
  * Subclassers will override this but won't call it.
- * @param {!Block} block
  */
-eYo.Delegate.prototype.canUnwrap = function (block) {
+eYo.Delegate.prototype.canUnwrap = function () {
   return false
 }
 
@@ -778,24 +1668,15 @@ eYo.Delegate.prototype.makeBlockUnwrapped = function (block) {
 
 /**
  * The wrapped blocks are special.
+ * Do not override.
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockWrapped_ = function (block) {
-  if (!block.eyo.wrapped_ && !this.noBlockWrapped(block)) {
-    block.eyo.makeBlockWrapped(block)
-    block.eyo.wrapped_ = true
+eYo.Delegate.prototype.makeBlockWrapped = function () {
+  if (!this.wrapped_) {
+    this.doMakeBlockWrapped()
+    this.wrapped_ = true
   }
-}
-
-/**
- * Some block should not be wrapped.
- * Default implementation returns false
- * @param {!Block} block
- * @return whether the block should be wrapped
- */
-eYo.Delegate.prototype.noBlockWrapped = function (block) {
-  return false
 }
 
 /**
@@ -818,8 +1699,8 @@ eYo.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
  * @return yorn whether a change has been made
  * @private
  */
-eYo.Delegate.prototype.getUnwrapped = function (block) {
-  var parent = block
+eYo.Delegate.prototype.getUnwrapped = function () {
+  var parent = this.block_
   do {
     if (!parent.eyo.wrapped_) {
       break
@@ -829,76 +1710,51 @@ eYo.Delegate.prototype.getUnwrapped = function (block) {
 }
 
 /**
- * Complete the wrapped block.
- * When created from dom, the connections are established
- * but the nodes were not created sealed.
- * @param {!Block} block
- * @param {!Input} input
- * @param {!String} prototypeName
- * @return yorn whether a change has been made
- * @private
+ * Will connect this block's connection to another connection.
+ * @param {!Blockly.Connection} connection
+ * @param {!Blockly.Connection} childConnection
  */
-eYo.Delegate.prototype.completeWrappedInput_ = function (block, input, prototypeName) {
-  if (input) {
-    var target = input.connection.targetBlock()
-    if (!target) {
-      try {
-        Blockly.Events.disable()
-        goog.asserts.assert(prototypeName, 'Missing wrapping prototype name in block ' + block.type)
-        goog.asserts.assert(eYo.Delegate.wrappedFireWall, 'ERROR: Maximum value reached in completeWrappedInput_ (circular)')
-        --eYo.Delegate.wrappedFireWall
-        target = eYo.DelegateSvg.newBlockComplete(block.workspace, prototypeName, block.id+'.wrapped:'+input.connection.eyo.name_)
-        goog.asserts.assert(target, 'completeWrapped_ failed: ' + prototypeName)
-        goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-        input.connection.connect(target.outputConnection)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Events.enable()
-      }
-    }
+eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
+}
+
+/**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Connection} connection what has been connected in the block
+ * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
+ * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
+ */
+eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+  // how many blocks did I add ?
+  if (connection.eyo.isNext) {
+    var target = connection.targetBlock()
+    this.nextCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
+  } else if (connection.eyo.isSuite) {
+    var target = connection.targetBlock()
+    this.suiteCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
   }
 }
 
 /**
- * Will connect this block's connection to another connection.
- * @param {!Blockly.Block} block
- * @param {!Blockly.Connection} connection
- * @param {!Blockly.Connection} childConnection
- */
-eYo.Delegate.prototype.willConnect = function (block, connection, childConnection) {
-  // console.log('will connect')
-}
-
-/**
- * Did connect this block's connection to another connection.
- * @param {!Blockly.Block} block
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetConnection what was previously connected in the block
- * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
- */
-eYo.Delegate.prototype.didConnect = function (block, connection, oldTargetConnection, oldConnection) {
-  // console.log('did connect')
-}
-
-/**
  * Will disconnect this block's connection.
- * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} blockConnection
  */
-eYo.Delegate.prototype.willDisconnect = function (block, blockConnection) {
-  // console.log('will disconnect')
+eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
 }
 
 /**
- * Did connect this block's connection to another connection.
- * @param {!Blockly.Block} block
+ * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Connection} blockConnection
- * @param {!Blockly.Connection} oldTargetConnection that was connected to blockConnection
+ * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.Delegate.prototype.didDisconnect = function (block, blockConnection, oldTargetConnection) {
-  // console.log('did disconnect')
+eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
+  // how many blocks did I remove ?
+  if (connection.eyo.isNext) {
+    this.nextCount = 0
+    this.incrementChangeCount()
+  } else if (connection.eyo.isSuite) {
+    this.suiteCount = 0
+    this.incrementChangeCount()
+  }
 }
 
 /**
@@ -918,7 +1774,7 @@ eYo.Delegate.prototype.plugged_ = undefined
  * @param {!Block} block
  * @param {!Block} other the block to be replaced
  */
-eYo.Delegate.prototype.canReplaceBlock = function (block, other) {
+eYo.Delegate.prototype.canReplaceBlock = function (other) {
   return false
 }
 
@@ -930,7 +1786,8 @@ eYo.Delegate.prototype.canReplaceBlock = function (block, other) {
  * @throws {goog.asserts.AssertionError} if the input is not present and
  *     opt_quiet is not true.
  */
-eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
+eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
+  var block = this.block_
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null)
@@ -952,8 +1809,8 @@ eYo.Delegate.prototype.removeInput = function (block, input, opt_quiet) {
  * @param {!Blockly.Block} block The owner of the delegate.
  * @return an input.
  */
-eYo.Delegate.prototype.getParentInput = function (block) {
-  var c8n = block.outputConnection
+eYo.Delegate.prototype.getParentInput = function () {
+  var c8n = this.block_.outputConnection
   if (c8n && (c8n = c8n.targetConnection)) {
     var list = c8n.sourceBlock_.inputList
     for (var i = 0, input; (input = list[i++]);) {
@@ -971,7 +1828,7 @@ eYo.Delegate.prototype.getParentInput = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return {Number}.
  */
-eYo.Delegate.prototype.getStatementCount = function (block) {
+eYo.Delegate.prototype.getStatementCount = function () {
   var n = 1
   var hasActive = false
   var hasNext = false
@@ -982,8 +1839,8 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
       if (c8n.isConnected()) {
         var target = c8n.targetBlock()
         do {
-          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite(target))
-          n += target.eyo.getStatementCount(target)
+          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite())
+          n += target.eyo.getStatementCount()
         } while ((target = target.getNextBlock()))
       }
     }
@@ -1001,43 +1858,8 @@ eYo.Delegate.prototype.getStatementCount = function (block) {
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
-eYo.Delegate.prototype.isWhite = function (block) {
-  return block.disabled
-}
-
-/**
- * Get the next connection of this block.
- * Comment and disabled blocks are transparent with respect to connection checking.
- * If block
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-eYo.Delegate.prototype.getNextConnection = function (block) {
-  while (block.eyo.isWhite(block)) {
-    var c8n
-    if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
-      return undefined
-    }
-  }
-  return block.nextConnection
-}
-
-/**
- * Get the previous connection of this block.
- * Comment and disabled blocks are transparent with respect to connection checking.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return None
- */
-eYo.Delegate.prototype.getPreviousConnection = function (block) {
-  while (block.eyo.isWhite(block)) {
-    var c8n
-    if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
-      return undefined
-    }
-  }
-  return block.previousConnection
+eYo.Delegate.prototype.isWhite = function () {
+  return this.block_.disabled
 }
 
 /**
@@ -1050,7 +1872,8 @@ eYo.Delegate.prototype.getPreviousConnection = function (block) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return None
  */
-eYo.Delegate.prototype.setDisabled = function (block, yorn) {
+eYo.Delegate.prototype.setDisabled = function (yorn) {
+  var block = this.block_
   if (!!block.disabled === !!yorn) {
     // nothing to do the block is already in the good state
     return
@@ -1098,7 +1921,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
                   break
                 }
               }
-            } else if (!target.eyo.isWhite(target)) {
+            } else if (!target.eyo.isWhite()) {
               // the black connection is reached, no need to go further
               // but the next may have change and the checkType_ must
               // be computed once again
@@ -1133,7 +1956,7 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
                   break
                 }
               }
-            } else if (!target.eyo.isWhite(target)) {
+            } else if (!target.eyo.isWhite()) {
               // the black connection is reached, no need to go further
               // but the next may have change and the checkType_ must
               // be computed once again
@@ -1152,20 +1975,19 @@ eYo.Delegate.prototype.setDisabled = function (block, yorn) {
     console.error(err)
     throw err
   } finally {
-    this.render(block)
+    this.render()
     eYo.Events.setGroup(false)
   }
 }
 
 /**
- * Enable/Disable the connections of the block.
- * A disabled block cannot enable its connections.
- * @param {!Block} block
+ * Change the incog status.
+ * An incog block won't render.
+ * The connections must be explicitely hidden when the block is incog.
  * @param {!Boolean} disabled
  * @return {boolean} whether changes have been made
- * @private
  */
-eYo.Delegate.prototype.setIncog = function (block, incog) {
+eYo.Delegate.prototype.setIncog = function (incog) {
   if (!this.incog_ === !incog) {
     return false
   }
@@ -1175,27 +1997,26 @@ eYo.Delegate.prototype.setIncog = function (block, incog) {
       // normally no change to the block tree
       return false
     }
-  } else if (block.disabled) {
+  } else if (this.block_.disabled) {
     // enable the block before enabling its connections
     return false
   }
   this.incog_ = incog
+  this.foreachSlot(function () {
+    this.setIncog(incog) // with incog validator
+  })
   var setupIncog = function (input) {
     var c8n = input && input.connection
-    c8n && c8n.eyo.setIncog(incog)
-  }
-  var slot = this.headSlot
-  while (slot) {
-    setupIncog(slot.input)
-    slot = slot.next
+    c8n && c8n.eyo.setIncog(incog) // without incog validator
   }
   setupIncog(this.inputSuite)
   for (var i = 0, input; (input = this.block_.inputList[i++]);) {
-    setupIncog(input)
+    // input may belong to a slot
+    if (!input.eyo.slot) (
+      setupIncog(input)
+    )
   }
-  if (!incog) { // for lists mainly
-    this.consolidate(block) // no deep consolidation because connected blocs were consolidated above
-  }
+  this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's setIncog
   return true
 }
 
@@ -1208,23 +2029,13 @@ eYo.Delegate.prototype.isIncog = function () {
 }
 
 /**
- * The xml type of this block, as it should appear in the saved data.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
- */
-eYo.Delegate.prototype.xmlType = function (block) {
-  return this.xmlType_
-}
-
-/**
  * Input enumerator
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {!Boolean} all  Retrieve all the inputs, or just the ones with a slot.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.inputEnumerator = function (block, all) {
-  return eYo.Do.Enumerator(block.inputList, all ? undefined : function (x) {
+eYo.Delegate.prototype.inputEnumerator = function (all) {
+  return eYo.Do.Enumerator(this.block_.inputList, all ? undefined : function (x) {
     return !x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog()
   })
 }
@@ -1237,7 +2048,7 @@ eYo.Delegate.prototype.inputEnumerator = function (block, all) {
  * @param {!string} msg
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.setError = function (block, key, msg) {
+eYo.Delegate.prototype.setError = function (key, msg) {
   this.errors[key] = {
     message: msg
   }
@@ -1250,7 +2061,7 @@ eYo.Delegate.prototype.setError = function (block, key, msg) {
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.getError = function (block, key) {
+eYo.Delegate.prototype.getError = function (key) {
   return this.errors[key]
 }
 
@@ -1261,6 +2072,22 @@ eYo.Delegate.prototype.getError = function (block, key) {
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.removeError = function (block, key) {
+eYo.Delegate.prototype.removeError = function (key) {
   delete this.errors[key]
+}
+
+/**
+ * get the slot connections, mainly for debugging purposes.
+ * For edython.
+ * @return An aray of all the connections
+ */
+eYo.Delegate.prototype.getSlotConnections = function () {
+  var ra = []
+  this.foreachSlot(
+    function () {
+      var c8n = this.input && this.input.connection
+      c8n && ra.push(c8n)
+    }
+  )
+  return ra
 }

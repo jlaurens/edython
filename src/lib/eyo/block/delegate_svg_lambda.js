@@ -15,7 +15,7 @@ goog.provide('eYo.DelegateSvg.Lambda')
 goog.provide('eYo.DelegateSvg.Parameter')
 
 goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.ConnectionDelegate')
 goog.require('goog.dom');
 
@@ -42,13 +42,13 @@ goog.require('goog.dom');
 
 // eYo.Consolidator.Parameter.data = {
 //   check: eYo.T3.Expr.Check.primary,
-//   empty: true,
+//   mandatory: 0,
 //   presep: ',',
 // }
 
 eYo.Consolidator.List.makeSubclass('Parameter', {
   check: eYo.T3.Expr.Check.primary,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 /**
@@ -61,7 +61,7 @@ eYo.Consolidator.List.makeSubclass('Parameter', {
 eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.c8n.targetConnection.check_
-    if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+    if (!check || goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -72,7 +72,7 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {!Blockly.block} block owner of the receiver
+ * @param {!Blockly.Block} block owner of the receiver
  */
 eYo.Consolidator.Parameter.prototype.getIO = function (block) {
   var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, block)
@@ -105,14 +105,18 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
       return Type.unconnected
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
-      return Type.star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
-      return Type.star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
-      return Type.star_star
-    } else if (goog.array.contains(check, eYo.T3.Expr.parameter_defined)) {
-      return Type.default
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.star)) {
+        return Type.star
+      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
+        return Type.star
+      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+        return Type.star_star
+      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
+        return Type.default
+      } else {
+        return Type.parameter
+      }
     } else {
       return Type.parameter
     }
@@ -273,9 +277,10 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
       out = eYo.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(eYo.T3.Expr.parameter_defined)
+      out.push(eYo.T3.Expr.identifier_defined)
     }
     if (can_star) {
+      out.push(eYo.T3.Expr.star)
       out.push(eYo.T3.Expr.parameter_star)
     }
     if (can_star_star) {
@@ -287,7 +292,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (function () {
 
 /**
  * Class for a DelegateSvg, parameter_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -303,15 +308,19 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var e8r = block.eyo.inputEnumerator(block)
+eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var e8r = block.eyo.inputEnumerator()
   var F = function (modifier, flags, msg) {
     var BB
-    eYo.Events.Disabler.wrap(function () {
-      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
-      BB.eyo.skipRendering()
-      BB.eyo.data.modifier.set(modifier)
-      BB.eyo.data.variant.set(flags)
+    eYo.Events.disableWrap(() => {
+      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
+      BB.eyo.changeWrap(
+        function() { // `this` is `BB.eyo`
+          this.modifier_p = modifier
+          this.variant_p = flags
+        }
+      )
     })
     e8r.end()
     while (e8r.previous()) {
@@ -323,32 +332,27 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             eYo.Do.createSPAN(msg),
             eYo.Do.createSPAN(' )', 'eyo-code-disabled')
           )
-          mgr.addInsertChild(new eYo.MenuItem(content, function () {
-            eYo.Events.setGroup(true)
-            try {
-              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.term)
-              try {
-                B.eyo.data.modifier.set(modifier)
-                B.eyo.data.variant.set(flags)
-                c8n.connect(B.outputConnection)  
-              } catch (err) {
-                console.error(err)
-                throw err
-              } finally {
-                B.eyo.beReady(B)
-                B.render()
-              }
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
-              eYo.Events.setGroup(false)
+          mgr.addInsertChild(mgr.newMenuItem(
+            content,
+            function () {
+              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
+              eYo.Events.groupWrap(
+                () => { // `this` is catched
+                  B.eyo.changeWrap(
+                    function () { // `this` is `B.eyo`
+                      this.modifier_p = modifier
+                      this.variant_p = flags
+                      c8n.connect(B.outputConnection)    
+                    }
+                  )
+                }
+              )
             }
-          }))
+          ))
         }
       }
     }
-    eYo.Events.Disabler.wrap(function () {
+    eYo.Events.disableWrap(() => {
       BB.dispose(true)
     })
   }
@@ -359,7 +363,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   F('*', 0, '*…')
   F('**', 0, '**…')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -390,21 +394,56 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       fields: {
         label: ':'
       },
-      check: eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
+      check: /** @suppress {globalThis} */ function (type) {
+        var block = this.connection.sourceBlock_
+        var c8nOut = block.outputConnection
+        var targetC8n = c8nOut.targetConnection
+        if (targetC8n) {
+          // does the target accept general expression in lambda
+          if (targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
+            return eYo.T3.Expr.Check.expression_nocond
+          } 
+        }
+        return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)     
+      }
     }
   },
   output: {
-    check: [eYo.T3.Expr.lambda_expr, eYo.T3.Expr.lambda_expr_nocond]
+    check: /** @suppress {globalThis} */ function (type) {
+      var eyo = this.b_eyo // does is always exist ?
+      var c8nIn = eyo.expression_s.connection
+      var cond_in = true // cond are accepted by default
+      var nocond_in = true // nocond are accepted by default
+      var targetC8n = c8nIn.targetConnection
+      if (targetC8n) {
+        cond_in = false
+        for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
+          if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+            cond_in = true
+            break
+          }
+        }
+        nocond_in = false
+        for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
+          if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+            nocond_in = true
+            break
+          }
+        }
+      }
+      return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
+    }
   }
-})
+}, true)
 
 /**
  * The output check may change depending on the content.
  * For edython.
- * @param {!Blockly.Block} block
+ * @param {!String} type
  */
-eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
-  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, block)
+eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
+  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, type)
+  var block = this.connection.sourceBlock_
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
   var c8nIn = input.connection
@@ -412,7 +451,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
   var targetC8n = c8nOut.targetConnection
   if (targetC8n) {
     // does the target accept general expression in lambda
-    nocond_only_out = targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
@@ -420,14 +459,14 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
   if (targetC8n) {
     cond_in = false
     for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
-      if (targetC8n.check_.indexOf(t) >= 0) {
+      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
     for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
-      if (targetC8n.check_.indexOf(t) >= 0) {
+      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
       }
@@ -442,7 +481,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (block) {
 }
 
 eYo.DelegateSvg.Lambda.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda
 ]

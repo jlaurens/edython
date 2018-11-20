@@ -11,9 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.ui')
+goog.provide('eYo.UI')
 goog.provide('eYo.Style')
 goog.provide('eYo.Font')
+goog.provide('eYo.Padding')
 
 goog.require('eYo')
 goog.require('goog.cssom');
@@ -47,38 +48,97 @@ eYo.Style.weight = function (x) {
   return x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 }
 
-eYo.Padding = {}
-eYo.Padding.l = eYo.Padding.r = eYo.Padding.h =
-  function () { return 8 * eYo.Style.weight(eYo.Font.size / 10) }
-eYo.Padding.t = eYo.Padding.b = eYo.Padding.v =
-  function () { return 6 * eYo.Style.weight(eYo.Font.size / 10) }
-
-eYo.Margin = {T: 0, L: 0, B: 0, R: 0, H: 0, V: 0}
-
+var g = {
+  get () {
+    return 8 * eYo.Style.weight(eYo.Font.size / 10)
+  }
+}
+Object.defineProperties(
+  eYo.Padding,
+  {
+    l: g,
+    r: g,
+    h: g
+  }
+)
+g = {
+  get () {
+    return 6 * eYo.Style.weight(eYo.Font.size / 10)
+  }
+}
+Object.defineProperties(
+  eYo.Padding,
+  {
+    t: g,
+    b: g,
+    v: g
+  }
+)
 /**
  * Point size of text.
  */
-eYo.Font = (function (ascent) {
-  var my = {}
-  my.updateAscent = function (ascent) {
-    my.ascent = my.size = ascent
-    my.descent = ascent * 492 / 1556
-    my.xHeight = ascent * 1120 / 1556
-    my.space = ascent * 1233 / 1556
-    my.totalAscent = ascent * 2048 / 1556
-    my.height = my.totalAscent + my.descent
-    my.familyMono = 'DejaVuSansMono,monospace'
-    my.familySans = 'DejaVuSans,sans-serif'
-    my.style = 'font-family:'+my.familyMono+';font-size:' + ascent + 'pt;'
-    my.menuStyle = 'font-family:'+my.familySans+';font-size:' + ascent + 'pt;'
-    my.tabWidth = 4 * my.space
-    return my
+eYo.Font = {
+  ascent: 13,
+  familyMono: 'DejaVuSansMono,monospace',
+  familySans: 'DejaVuSans,sans-serif',
+  tabW: 4
+}
+
+Object.defineProperties(
+  eYo.Font,
+  {
+    size: {
+      get () {
+        return this.ascent
+      }
+    },
+    descent: {
+      get () {
+        return this.ascent * 492 / 1556
+      }
+    },
+    xHeight: {
+      get () {
+        return this.ascent * 1120 / 1556
+      }
+    },
+    space: {
+      get () {
+        return this.ascent * 1233 / 1556
+      }
+    },
+    totalAscent: {
+      get () {
+        return this.ascent * 2048 / 1556
+      }
+    },
+    height: {
+      get () {
+        return this.totalAscent + this.descent
+      }
+    },
+    lineHeight: {
+      get () {
+        return this.height + eYo.Padding.t + eYo.Padding.b
+      }
+    },
+    style: {
+      get () {
+        return 'font-family:' + this.familyMono + ';font-size:' + this.ascent + 'pt;'
+      }
+    },
+    menuStyle: {
+      get () {
+        return 'font-family:' + this.familySans + ';font-size:' + this.ascent + 'pt;'
+      }
+    },
+    tabWidth: {
+      get () {
+        return this.tabW * this.space
+      }
+    }
   }
-  my.lineHeight = function () {
-    return eYo.Font.height + eYo.Padding.t() + eYo.Padding.b()
-  }
-  return my.updateAscent(ascent)
-}(13))
+)
 
 /**
  * Offset of the text editor.
@@ -117,11 +177,18 @@ eYo.Style.Path = {
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 1.5, // px
-  radius: function () {
-    return eYo.Margin.V + eYo.Padding.v() + eYo.Font.descent / 2
-  }
+  width: 0.75 // px
 }
+Object.defineProperty(
+  eYo.Style.Path,
+  'r',
+  {
+    get () {
+      return eYo.Padding.v + eYo.Font.descent / 2
+    }
+  }
+)
+
 eYo.Style.MenuItem = {
   'padding-h': eYo.Padding.t,
   'padding-v': eYo.Padding.t

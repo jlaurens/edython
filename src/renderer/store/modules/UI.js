@@ -1,54 +1,105 @@
+import namespace from '../util/namespace'
+
 const state = {
   undoCount: 0,
   redoCount: 0,
   undoStage: 0,
-  selectedBlockId: undefined, // the selected block
+  selectedBlockId: undefined, // the selected block id
+  selectedBlockType: undefined, // the selected block type
   blockClipboard: undefined,
   panelsVisible: true,
+  workspaceVisible: true,
   panelsWidth: '100%',
-  selectedPanel: 'console',
+  selectedPanel: eYo.App.CONSOLE,
+  selectedMode: eYo.App.NORMAL,
   flyoutClosed: false,
-  flyoutCategory: undefined
+  flyoutCategory: undefined,
+  toolbarEditVisible: true,
+  toolbarInfoDebug: false
 }
 
+console.log(eYo.App)
+
+const types = namespace('UI', {
+  getters: [
+    'IS_DOCUMENT_EDITED'
+  ],
+  mutations: [
+    'SET_UNDO_COUNT',
+    'SET_REDO_COUNT',
+    'SET_UNDO_STAGE',
+    'STAGE_UNDO',
+    'SET_SELECTED_BLOCK',
+    'DID_COPY_BLOCK',
+    'SET_PANELS_VISIBLE',
+    'SET_WORKSPACE_VISIBLE',
+    'SET_PANELS_WIDTH',
+    'SET_SELECTED_PANEL',
+    'SET_SELECTED_MODE',
+    'SET_FLYOUT_CATEGORY',
+    'SET_FLYOUT_CLOSED',
+    'SET_TOOLBAR_INFO_VISIBLE',
+    'SET_TOOLBAR_INFO_DEBUG'
+  ]
+})
+
 const mutations = {
-  UI_SET_UNDO_COUNT (state, n) {
+  [types.mutations.SET_UNDO_COUNT] (state, n) {
     state.undoCount = n
   },
-  UI_SET_REDO_COUNT (state, n) {
+  [types.mutations.SET_REDO_COUNT] (state, n) {
     state.redoCount = n
   },
-  UI_SET_UNDO_STAGE (state, n) {
+  [types.mutations.SET_UNDO_STAGE] (state, n) {
     state.undoStage = n
   },
-  UI_STAGE_UNDO (state) {
+  [types.mutations.STAGE_UNDO] (state) {
     state.undoCount = eYo.App.workspace.undoStack_.length
   },
-  UI_SET_SELECTED_BLOCK (state, block) {
+  [types.mutations.SET_SELECTED_BLOCK] (state, block) {
     if ((block && block.isInFlyout) || block === state.selectedBlockId) {
       return
     }
     state.selectedBlockId = block ? block.id : null
+    state.selectedBlockType = block ? block.type : null
   },
-  UI_DID_COPY_BLOCK (state, ctxt) {
+  [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
     state.blockClipboard = ctxt.xml
   },
-  UI_SET_PANELS_VISIBLE (state, yorn) {
-    state.panelsVisible = yorn
-  },
-  UI_SET_PANELS_WIDTH (state, newWidth) {
+  [types.mutations.SET_PANELS_WIDTH] (state, newWidth) {
     state.panelsWidth = newWidth
   },
-  UI_SET_SELECTED_PANEL (state, key) {
+  [types.mutations.SET_PANELS_VISIBLE] (state, yorn) {
+    state.panelsVisible = yorn
+    if (!yorn && !state.workspaceVisible) {
+      state.workspaceVisible = true
+    }
+  },
+  [types.mutations.SET_WORKSPACE_VISIBLE] (state, yorn) {
+    state.workspaceVisible = yorn
+    if (!yorn && !state.panelsVisible) {
+      state.panelsVisible = true
+    }
+  },
+  [types.mutations.SET_SELECTED_PANEL] (state, key) {
     state.selectedPanel = key
   },
-  UI_SET_FLYOUT_CATEGORY (state, category) {
+  [types.mutations.SET_SELECTED_MODE] (state, mode) {
+    state.selectedMode = mode
+  },
+  [types.mutations.SET_FLYOUT_CATEGORY] (state, category) {
     if (goog.isString(category)) {
       state.flyoutCategory = category
     }
   },
-  UI_SET_FLYOUT_CLOSED (state, yorn) {
+  [types.mutations.SET_FLYOUT_CLOSED] (state, yorn) {
     state.flyoutClosed = !!yorn
+  },
+  [types.mutations.SET_TOOLBAR_INFO_VISIBLE] (state, yorn) {
+    state.toolbarEditVisible = !!yorn
+  },
+  [types.mutations.SET_TOOLBAR_INFO_DEBUG] (state, yorn) {
+    state.toolbarInfoDebug = !!yorn
   }
 }
 
@@ -56,7 +107,7 @@ const actions = {
 }
 
 const getters = {
-  isDocumentEdited: state => {
+  [types.getters.IS_DOCUMENT_EDITED]: state => {
     return state.undoCount === state.undoStage
   }
 }
@@ -65,5 +116,6 @@ export default {
   state,
   mutations,
   actions,
-  getters
+  getters,
+  types
 }

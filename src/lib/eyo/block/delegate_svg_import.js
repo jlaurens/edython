@@ -82,28 +82,29 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.slots.import_module
+        var slot = this.owner.import_module_s
         slot.required = newValue === this.IMPORT
-        slot.setIncog(!slot.required)
+        slot.setIncog()
         this.data.from.setIncog(newValue === this.IMPORT)
-        slot = this.owner.slots.import
+        slot = this.owner.import_s
         slot.required = newValue === this.FROM_MODULE_IMPORT
-        slot.setIncog(!slot.required)
-        slot = this.owner.slots.import_star
+        slot.setIncog()
+        slot = this.owner.import_star_s
         slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
-        slot.setIncog(!slot.required)
+        slot.setIncog()
       }
     },
     from: {
+      init:'',
+      placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
+        var p5e = eYo.T3.Profile.get(newValue, null)
         var data = this.data.variant
         var variant = data.get()
-        var M = data.model
-        return type.expr === eYo.T3.Expr.identifier
-        || type.expr === eYo.T3.Expr.dotted_name
+        return p5e.expr === eYo.T3.Expr.identifier
+        || p5e.expr === eYo.T3.Expr.dotted_name
         || ((variant === data.FROM_MODULE_IMPORT)
-          && (type.expr === eYo.T3.Expr.parent_module))
+          && (p5e.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },
       synchronize: true
@@ -121,18 +122,21 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       order: 2,
       fields: {
         label: 'from',
-        edit: {
+        bind: {
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.MODULE,
           variable: true // change this to/with a `module` data
         }
       },
+      check: [
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.dotted_name
+      ],
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
-            var variant = this.owner.data.variant
-            if (variant.get() === variant.IMPORT) {
-              variant.set(variant.FROM_MODULE_IMPORT_STAR)
+          if (this.isRequiredFromModel()) {
+            if (this.owner.variant_p === eYo.Key.IMPORT) {
+              this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
             }
           }
         }
@@ -146,7 +150,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
       xml: {
         didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromDom()) {
+          if (this.isRequiredFromModel()) {
             var variant = this.owner.data.variant
             var current = variant.get()
             if (current !== variant.FROM_MODULE_IMPORT && current !== variant.FROM_MODULE_IMPORT_STAR)
@@ -179,17 +183,25 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         }
       }
     }
+  },
+  init: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Stmt.registerImport(this)
+  },
+  deinit: /** @suppress {globalThis} */ function () {
+    eYo.DelegateSvg.Stmt.unregisterImport(this)
   }
-})
+}, true)
 
-console.log('When read from dom, if the read data is not valid, what to do?')
+eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import', function (delegate) {
+  return !delegate.block_.isInFlyout
+})
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
  * @param {!Blockly.Block} block owning the delegate.
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function (block) {
-  return block
+eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
+  return this.block_
 }
 
 /**
@@ -198,11 +210,12 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   var current = block.eyo.data.variant.get()
   var F = function (content, variant) {
     if (variant !== current) {
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         block.eyo.data.variant.set(variant)
       })
       mgr.addChild(menuItem, true)
@@ -233,7 +246,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /// //////// future
@@ -255,10 +268,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Import.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.non_void_import_identifier_as_list,
   eYo.T3.Stmt.import_stmt,

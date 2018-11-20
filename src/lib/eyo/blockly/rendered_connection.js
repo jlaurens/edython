@@ -7,7 +7,7 @@
  */
 /**
  * @fileoverview Extends connections.
- * Insert a class between Blockly.Connection and Blockly.REnderedConnection
+ * Insert a class between Blockly.Connection and Blockly.RenderedConnection
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -23,15 +23,97 @@ goog.require('Blockly.Connection')
 goog.require('eYo.Const')
 goog.require('eYo.Do')
 goog.require('eYo.T3')
+goog.require('eYo.Where')
 
 /**
  * Class for a connection delegate.
- * @param {Blockly.Connection} connection the connection owning the delegate
+ * @param {!Blockly.Connection} connection the connection owning the delegate
  * @constructor
  */
 eYo.ConnectionDelegate = function (connection) {
+  goog.asserts.assert(connection, 'A connection delegate MUST belong to a connection')
   this.connection = connection
+  this.where = new eYo.Where()
+  this.slot = undefined // except when the connection belongs to a slot
+  this.reentrant = {}
 }
+
+Object.defineProperties(
+  eYo.ConnectionDelegate.prototype,
+  {
+    c: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.c + this.slot.where.c : this.where.c
+      }
+    },
+    l: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.l + this.slot.where.l : this.where.l
+      }
+    },
+    x: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.x + this.slot.where.x : this.where.x
+      }
+    },
+    y: { // in block text coordinates
+      get () {
+        return this.slot ? this.where.y + this.slot.where.y : this.where.y
+      }
+    },
+    w: {
+      get () {
+        return this.bindField
+          ? this.bindField.eyo.size.w + 1
+          : this.optional_ || this.s7r_
+            ? 1
+            : 3
+      }
+    },
+    sourceBlock_: {
+      get () {
+        return this.connection.sourceBlock_
+      }
+    },
+    b_eyo: {
+      get () {
+        return this.sourceBlock_.eyo
+      }
+    },
+    bindField: {
+      get () {
+        return this.slot && this.slot.bindField
+      }
+    },
+    /**
+     * Is it a next connection.
+     * @return {boolean} True if the connection is the block's next one.
+     */
+    isNext: {
+      get () {
+        return this.connection === this.connection.sourceBlock_.nextConnection
+      }
+    },
+    /**
+     * Is it a previous connection.
+     * @return {boolean} True if the connection is the block's previous one.
+     */
+    isPrevious: {
+      get () {
+        return this.connection === this.connection.sourceBlock_.previousConnection
+      }
+    },
+    /**
+     * Is it a previous connection.
+     * @return {boolean} True if the connection is the block's previous one.
+     */
+    isSuite: {
+      get () {
+        return this.connection === this.b_eyo.suiteConnection
+      }
+    }
+  }
+)
 
 /**
  * Whether the connection is a separator.
@@ -74,9 +156,25 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 eYo.ConnectionDelegate.prototype.beReady = function () {
   var target = this.connection.targetBlock()
   if (target) {
-    target.eyo.beReady(target)
-    target.eyo.parentDidChange(target, this.connection.getSourceBlock())
+    target.eyo.beReady()
+    target.eyo.parentDidChange(this.connection.getSourceBlock())
   }
+  this.beReady = eYo.Do.nothing // one shot function
+}
+
+/**
+ * `consolidate` the target block.
+ */
+eYo.ConnectionDelegate.prototype.consolidate = function (deep, force) {
+  var target = this.connection.targetBlock()
+  target && target.eyo.consolidate(deep, force)
+}
+
+/**
+ * Convenient method to get the source block of the receiver's connection.
+ */
+eYo.ConnectionDelegate.prototype.sourceBlock = function () {
+  return this.connection.sourceBlock_
 }
 
 /**
@@ -98,8 +196,11 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
     // the last time the connections have been disabled
     return false
   }
-  incog == !!incog
+  incog = !!incog
   var change = this.incog_ !== incog
+  if (change) {
+    this.b_eyo.incrementChangeCount()
+  }
   var c8n = this.connection
   if (incog || !this.wrapped_) {
     // We cannot disable wrapped connections
@@ -109,43 +210,95 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
       change = true
     }
   }
-  var target = c8n.targetBlock()
-  if (target && target.eyo.setIncog(target, incog)) {
-    change = true
+  if (this.isIncog()) {
+    var target = c8n.targetBlock()
+
+  } else {
+    var target = c8n.targetBlock()
+    if (target) {
+      var c_eyo = target.eyo
+      c_eyo.setIncog(this.isIncog())
+    }
+  }
+  if (c8n.isConnected()) {
+    var target = c8n.targetBlock()
+    if (target.eyo.setIncog(incog)) {
+      change = true
+    }
   }
   return change
 }
 
 /**
+ * Complete with a wrapped block.
+ * @param {String} prototypeName
+ */
+eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method(
+  'completeWrapped',
+  function () {
+    if (!this.wrapped_) {
+      return
+    }
+    var c8n = this.connection
+    var target = c8n.targetBlock()
+    if (!target) {
+      eYo.Events.disableWrap(
+        () => {
+          var block = c8n.sourceBlock_
+          var makeNewBlock = block.eyo.beReady === eYo.Do.nothing
+          ? eYo.DelegateSvg.newBlockReady
+          : eYo.DelegateSvg.newBlockComplete
+          target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+          goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
+          goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
+          c8n.connect(target.outputConnection)
+        }
+      )
+    }
+  }
+)
+
+/**
  * Will connect.
  * Forwards to the model.
  * @param {Blockly.Connection} connection the connection owning the delegate
- * @param {Blockly.Connection} targetConnection
+ * @param {Blockly.Connection} targetC8n
  */
-eYo.ConnectionDelegate.prototype.willConnect = function (targetConnection) {
-  this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this.connection, targetConnection)
+eYo.ConnectionDelegate.prototype.willConnect = function (targetC8n) {
+  this.model && goog.isFunction(this.model.willConnect) && this.model.willConnect.call(this, targetC8n)
 }
 
 /**
  * Did connect.
- * Default implementation does nothing.
- * This can be overriden at block creation time.
- * @param {Blockly.Connection} oldTargetConnection
+ * Increment the block step.
+ * @param {Blockly.Connection} oldTargetC8n
  *     what was previously connected to connection
  * @param {Blockly.Connection} targetOldConnection
  *     what was previously connected to the actual connection.targetConnection
  */
-eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetConnection, targetOldConnection) {
-  this.model && goog.isFunction(this.model.didConnect) && this.model.didConnect.call(this.connection, oldTargetConnection, targetOldConnection)
+eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC8n) {
+  var eyo =  this.connection.sourceBlock_.eyo
+  if (this.beReady === eYo.Do.nothing) {
+    this.connection.targetBlock().eyo.beReady()
+  }
+  // No need to increment step for the old connections because
+  // if any, they were already disconnected and
+  // the step has already been incremented then.
+  if (this.model && goog.isFunction(this.model.didConnect)) {
+    this.model.didConnect.call(this, oldTargetC8n, targetOldC8n)
+  } else {
+    eyo.incrementChangeCount()
+    eyo.consolidate()
+  }
 }
 
 /**
- * Will connect.
+ * Will disconnect.
  * Default implementation does nothing.
  * This can be overriden at block creation time.
  */
 eYo.ConnectionDelegate.prototype.willDisconnect = function () {
-  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this.connection)
+  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this)
 }
 
 /**
@@ -153,10 +306,25 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
  * Default implementation does nothing.
  * This can be overriden at block creation time.
  * @param {Blockly.Connection} connection  the connection owning the delegate
- * @param {Blockly.Connection} oldTargetConnection  what was previously connected to connection
+ * @param {Blockly.Connection} oldTargetC8n  what was previously connected to connection
  */
-eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) {
-  this.model && goog.isFunction(this.model.didDisconnect) && this.model.didDisconnect.call(this.connection, oldTargetConnection)
+eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
+  var eyo = this.connection.sourceBlock_.eyo
+  if (this.model && goog.isFunction(this.model.didDisconnect)) {
+    this.model.didDisconnect.call(this, oldTargetC8n)
+  } else {
+    eyo.incrementChangeCount()
+  }
+}
+
+/**
+ * Set the receiver's connection's check_ array according to the given type.
+ * The defaults implements asks the model then sets the check_ property.
+ */
+eYo.ConnectionDelegate.prototype.updateCheck = function () {
+  if (this.model.check) {
+    this.connection.setCheck(this.model.check.apply(this, arguments))
+  }
 }
 
 /**
@@ -167,24 +335,6 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetConnection) 
  */
 eYo.ConnectionDelegate.prototype.getCheck = function () {
   return this.connection.check_
-}
-
-/**
- * Is it a next connection.
- * @return {boolean} True if the connection is the block's next one.
- * @private
- */
-eYo.ConnectionDelegate.prototype.isNext = function () {
-  return this.connection === this.connection.getSourceBlock().nextConnection
-}
-
-/**
- * Is it a next connection.
- * @return {boolean} True if the connection is the block's previous one.
- * @private
- */
-eYo.ConnectionDelegate.prototype.isPrevious = function () {
-  return this.connection === this.connection.getSourceBlock().previousConnection
 }
 
 /**
@@ -229,25 +379,25 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function () {
  * and so on.
  * If the connection is named, returns the connection, whatever its source block
  * status may be.
- * @param F optional function defaults to !argument.eyo.isWhite(argument)
+ * @param F optional function defaults to !argument.eyo.isWhite()
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
-  F = F || function (block) {
-    return !block.eyo.isWhite(block)
+  F = F || function (B) {
+    return !B.eyo.isWhite()
   }
   var c8n = this.connection
   var block = c8n.getSourceBlock()
   if (F(block)) {
     return c8n
   }
-  if (this.isPrevious()) {
-    var otherConnection = function (block) {
-      return block.nextConnection
+  if (this.isPrevious) {
+    var otherConnection = function (B) {
+      return B.nextConnection
     }
-  } else if (this.isNext()) {
-    otherConnection = function (block) {
-      return block.previousConnection
+  } else if (this.isNext) {
+    otherConnection = function (B) {
+      return B.previousConnection
     }
   } else {
     // this is a 'do' statement input connection
@@ -270,16 +420,16 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     return undefined
   }
   var block = c8n.getSourceBlock()
-  if (!block.eyo.isWhite(block)) {
+  if (!block.eyo.isWhite()) {
     return c8n
   }
-  if (c8n.eyo.isPrevious()) {
-    var F = function (block) {
-      return block.nextConnection
+  if (c8n.eyo.isPrevious) {
+    var F = function(B) {
+      return B.nextConnection
     }
-  } else if (c8n.eyo.isNext()) {
-    F = function (block) {
-      return block.previousConnection
+  } else if (c8n.eyo.isNext) {
+    F = function (B) {
+      return B.previousConnection
     }
   } else {
     return undefined
@@ -290,10 +440,164 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     !(block = c8n.getSourceBlock())) {
       return undefined
     }
-    if (!block.eyo.isWhite(block)) {
+    if (!block.eyo.isWhite()) {
       return c8n
     }
   } while (true)
+}
+
+/**
+ * Connection.
+ * @param {!Blockly.Connection} c8n
+ */
+eYo.ConnectionDelegate.prototype.connect = function(c8n) {
+  if (c8n) {
+    this.setIncog(false)
+    this.connection.connect(c8n)
+  }
+}
+
+/**
+ * Set the origin of the connection.
+ * When the connection is in a slot, the origin is the top left point
+ * of the slot otherwise it is `(0, 0)`.
+ * @param {number} c The column index.
+ * @param {number} l The line index.
+ */
+eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
+  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+    l = c.l
+    c = c.c
+  }
+  this.where.set(c, l)
+  if (isNaN(this.x)) {
+    this.where.set(c, l)
+    console.error(this.x)
+  }
+  this.connection.setOffsetInBlock(this.x, this.y)
+}
+
+/**
+ * Block path for an optional connection.
+ * This path is in block coordinates, it will be inserted
+ * into the block's svg group.
+ * When absent, `shape` is set to `side`.
+ * All combinations of shape and side won't perhaps make sense.
+ * For example, a sided `shape` should correspond to a left or right side.
+ * Statement blocks will have a left shaped caret at its right end,
+ * whereas expression blocks will have a right shaped caret at
+ * its right end.
+ * @return a `{width: ..., d: ...}` dictionary. The width attribute in font space unit.
+ * @private
+ */
+eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
+  var shape = eYo.Shape.newWithConnection(this)
+  return {w: shape.width, d: shape.definition}
+}
+
+/**
+ * Placeholder path.
+ * @private
+ */
+eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
+  var shape = eYo.Shape.newWithConnection(this)
+  return {w: shape.width, d: shape.definition}
+}
+
+/**
+ * Path definition for an hilighted connection
+ */
+eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
+  var c8n = this.connection
+  var block = c8n.sourceBlock_
+  if (!block.workspace) {
+    return
+  }
+  var steps = ''
+  if (c8n.type === Blockly.INPUT_VALUE) {
+    if (c8n.isConnected()) {
+      steps = c8n.targetBlock().eyo.valuePathDef_()
+    } else if (!this.disabled_ && (this.s7r_ || this.optional_)) {
+      steps = this.caretPathWidthDef_().d
+    } else {
+      steps = this.placeHolderPathWidthDef_().d
+    }
+  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+    steps = block.eyo.valuePathDef_()
+  } else { // statement connection
+    var r = eYo.Style.Path.Selected.width / 2
+    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    var w = block.width - eYo.Unit.x / 2
+    if (this.isPrevious) {
+      steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+    } else if (this.isNext) {
+      if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
+        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+      } else {
+        steps = 'm ' + w + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+      }
+    } else /* if (this.isSuite) */ {
+      steps = 'm ' + w + ',' + (-r + eYo.Unit.y) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w + eYo.Unit.x / 2) + a + (-2 * r) + ' z'
+    }
+  }
+  return steps
+}
+/**
+ * Highlight the receiver's connection
+ */
+eYo.ConnectionDelegate.prototype.highlight = function () {
+  var c8n = this.connection
+  var block = c8n.sourceBlock_
+  if (!block.workspace) {
+    return
+  }
+  if (block.eyo.higlightConnection) {
+    block.eyo.higlightConnection(c8n)
+    return
+  }
+  var steps
+  if (c8n.type === Blockly.INPUT_VALUE) {
+    if (c8n.isConnected()) {
+      steps = c8n.targetBlock().eyo.valuePathDef_()
+    } else {
+      if (!this.disabled_ && (this.s7r_ || this.optional_)) {
+        steps = this.caretPathWidthDef_().d
+      } else {
+        steps = this.placeHolderPathWidthDef_().d
+      }
+      Blockly.Connection.highlightedPath_ =
+      Blockly.utils.createSvgElement('path',
+        {
+          class: 'blocklyHighlightedConnectionPath',
+          d: steps
+        },
+        block.getSvgRoot()
+      )
+      return
+    }
+  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+    steps = block.eyo.valuePathDef_()
+  } else {
+    // this is a statement connection
+    var w = block.width - eYo.Unit.x / 2
+    if (block.eyo.inputSuite) {
+      // this is a group
+      if (block.eyo.suiteConnection === c8n) {
+        w -= eYo.Font.tabWidth
+      } else if (block.nextConnection === c8n) {
+        w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
+      }
+    }
+    var r = eYo.Style.Path.Selected.width / 2
+    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+  }
+  Blockly.Connection.highlightedPath_ =
+  Blockly.utils.createSvgElement('path',
+    {'class': 'blocklyHighlightedConnectionPath',
+      'd': steps,
+      transform: 'translate(' + this.x + ',' + this.y + ')'},
+    block.getSvgRoot())
 }
 
 /**
@@ -310,8 +614,6 @@ eYo.Connection = function (source, type) {
 goog.inherits(eYo.Connection, Blockly.Connection)
 eYo.Do.inherits(Blockly.RenderedConnection, eYo.Connection)
 
-eYo.Connection.prototype.highlight = Blockly.RenderedConnection.prototype.highlight
-
 /**
  * Every connection has a delegate.
  */
@@ -319,16 +621,17 @@ eYo.Connection.prototype.eyo = undefined
 
 /**
  * Add highlighting around this connection.
- * @suppress {accessControls}
  */
-Blockly.RenderedConnection.prototype.highlight = function () {
-  var block = this.getSourceBlock()
-  if (block && block.eyo) {
-    block.eyo.highlightConnection(block, this)
-    return
-  }
-  Blockly.RenderedConnection.superClass_.highlight.call(this)
-}
+Blockly.RenderedConnection.prototype.highlight = (function () {
+  var highlight = Blockly.RenderedConnection.prototype.highlight
+  return function () {
+    if (this.eyo) {
+      this.eyo.highlight()
+      return
+    }
+    highlight.call(this)
+  }  
+}) ()
 
 /**
  * Move the block(s) belonging to the connection to a point where they don't
@@ -401,11 +704,12 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
  * The check_ is used more precisely.
  * For example, elif blocks cannot connect to the suite connection, only the next connection.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
+ * @param {?Boolean} force  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.prototype.checkType_ = function (otherConnection) {
+eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
   if (!Blockly.Events.recordUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
@@ -428,13 +732,13 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
     if (c8nB.targetConnection) {
       return c8nB === c8nA.targetConnection
     }
-  } else if (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_) {
+  } else if (!force && (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_)) {
     return c8nA === c8nB.targetConnection
   }
   var sourceA = c8nA.getSourceBlock()
   var sourceB = c8nB.getSourceBlock()
-  var typeA = sourceA.type
-  var typeB = sourceB.type
+  var typeA = sourceA.eyo.type // the block type is not up to date
+  var typeB = sourceB.eyo.type // the block type is not up to date
   if (typeA.indexOf('eyo:') === 0 && typeB.indexOf('eyo:') === 0) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
@@ -517,139 +821,131 @@ eYo.Connection.prototype.checkType_ = function (otherConnection) {
 
 /**
  * Connect two connections together.  This is the connection on the superior
- * block.  Rerender blocks as needed.
- * @param {!Blockly.Connection} childConnection Connection on inferior block.
- * @private
- */
-Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
-  Blockly.RenderedConnection.superClass_.connect_.call(this, childConnection);
-
-  var parentConnection = this;
-  var parentBlock = parentConnection.getSourceBlock();
-  var childBlock = childConnection.getSourceBlock();
-
-  if (parentBlock.rendered) {
-    parentBlock.updateDisabled();
-  }
-  if (childBlock.rendered) {
-    childBlock.updateDisabled();
-  }
-  if (parentBlock.rendered && childBlock.rendered) {
-    if (parentConnection.type == Blockly.NEXT_STATEMENT ||
-        parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
-      // Child block may need to square off its corners if it is in a stack.
-      // Rendering a child will render its parent.
-      childBlock.render();
-    } else {
-      // Child block does not change shape.  Rendering the parent node will
-      // move its connected children into position.
-      parentBlock.render();
-    }
-  }
-};
-
-/**
- * Connect two connections together.  This is the connection on the superior
  * block.
  * Add hooks to allow customization.
  * @param {!Blockly.Connection} childC8n Connection on inferior block.
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.saved_connect_ = Blockly.RenderedConnection.prototype.connect_
-Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
-  // `this` is actually the parentC8n
-  var parentC8n = this
-  var parent = parentC8n.sourceBlock_
-  var child = childC8n.sourceBlock_
-  parent.eyo.skipRendering()
-  child.eyo.skipRendering()
-  try {
+Blockly.RenderedConnection.prototype.connect_ = (function () {
+  // this is a closure
+  var connect_ = Blockly.RenderedConnection.prototype.connect_
+  return function (childC8n) {
+    // `this` is actually the parentC8n
+    var parentC8n = this
+    var parent = parentC8n.sourceBlock_
+    var child = childC8n.sourceBlock_
     var oldChildC8n = parentC8n.targetConnection
     var oldParentC8n = childC8n.targetConnection
-    parentC8n.eyo.willConnect(childC8n)
-    childC8n.eyo.willConnect(parentC8n)
-    parent.eyo.willConnect(parent, parentC8n, childC8n)
-    child.eyo.willConnect(child, childC8n, parentC8n)
-    eYo.Connection.saved_connect_.call(parentC8n, childC8n)
-    if (parentC8n.eyo.plugged_) {
-      child.eyo.plugged_ = parentC8n.eyo.plugged_
-    }
-    if (parentC8n.eyo.wrapped_) {
-      if (child.eyo.hasSelect(child)) { // Blockly.selected === child
-        child.unselect()
-        var P = child
-        while ((P = P.getSurroundParent())) {
-          if (!P.eyo.wrapped_) {
-            P.select()
-            break
-          }
-        }
-      }
-      child.eyo.makeBlockWrapped_(child)
-    } else {
-      // if this connection was selected, the newly connected block should be selected too
-      if (parentC8n === eYo.SelectedConnection.get()) {
-        P = parent
-        do {
-          if (P === Blockly.selected) {
-            child.select()
-            break
-          }
-        } while ((P = P.getSurroundParent()))
-      }
-    }
-    if (oldChildC8n && childC8n !== oldChildC8n) {
-      var oldChild = oldChildC8n.sourceBlock_
-      if (oldChild) {
-        if (oldChild.eyo.wrapped_) {
-          if (Blockly.Events.recordUndo) {
-            oldChild.dispose(true)
-          }
-        } else if (!oldChildC8n.targetBlock()) {
-          // another chance to reconnect the orphan
-          // just in case the check_ has changed in between
-          // which might be the case for the else_part blocks
-          P = child
-          var c8n
-          while ((c8n = P.nextConnection)) {
-            if ((P = c8n.targetBlock())) {
-              continue
-            } else if (c8n.checkType_(oldChildC8n)) {
-              c8n.connect(oldChildC8n)
+    child.eyo.changeWrap( // the child will cascade changes to the parent
+      () => {
+        parentC8n.eyo.willConnect(childC8n)
+        try {
+          childC8n.eyo.willConnect(parentC8n)
+          try {
+            parent.eyo.willConnect(parentC8n, childC8n)
+            try {
+              child.eyo.willConnect(childC8n, parentC8n)
+              try {
+                child.initSvg() // too much
+                connect_.call(parentC8n, childC8n)
+                if (parentC8n.eyo.plugged_) {
+                  child.eyo.plugged_ = parentC8n.eyo.plugged_
+                }
+                if (parentC8n.eyo.wrapped_) {
+                  if (child.eyo.hasSelect(child)) { // Blockly.selected === child
+                    child.unselect()
+                    var P = child
+                    while ((P = P.getSurroundParent())) {
+                      if (!P.eyo.wrapped_) {
+                        P.select()
+                        break
+                      }
+                    }
+                  }
+                  child.eyo.makeBlockWrapped()
+                } else {
+                  // if this connection was selected, the newly connected block should be selected too
+                  if (parentC8n === eYo.SelectedConnection) {
+                    P = parent
+                    do {
+                      if (P === Blockly.selected) {
+                        child.select()
+                        break
+                      }
+                    } while ((P = P.getSurroundParent()))
+                  }
+                }
+                if (oldChildC8n && childC8n !== oldChildC8n) {
+                  var oldChild = oldChildC8n.sourceBlock_
+                  if (oldChild) {
+                    if (oldChild.eyo.wrapped_) {
+                      if (Blockly.Events.recordUndo) {
+                        oldChild.dispose(true)
+                      }
+                    } else if (!oldChildC8n.targetBlock()) {
+                      // another chance to reconnect the orphan
+                      // just in case the check_ has changed in between
+                      // which might be the case for the else_part blocks
+                      P = child
+                      var c8n
+                      while ((c8n = P.nextConnection)) {
+                        if ((P = c8n.targetBlock())) {
+                          continue
+                        } else if (c8n.checkType_(oldChildC8n)) {
+                          c8n.connect(oldChildC8n)
+                        }
+                        break
+                      }
+                    }
+                  }
+                }
+                var c8n = eYo.SelectedConnection
+                if (c8n === childC8n || c8n === parentC8n) {
+                  eYo.SelectedConnection = null
+                }
+                child.eyo.setIncog(parentC8n.eyo.isIncog())
+              } catch (err) {
+                console.error(err)
+                throw err
+              } finally {
+                parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
+                childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
+                if (parentC8n.eyo.startOfStatement) {
+                  child.eyo.incrementChangeCount()
+                }
+                eYo.Connection.connectedParentC8n = parentC8n
+                // next must absolutely run because of possible undo management
+                child.eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)
+              }
+            } catch (err) {
+              console.error(err)
+              throw err
+            } finally {
+              // next must absolutely run because of possible undo management
+              parent.eyo.didConnect(parentC8n, oldChildC8n, oldParentC8n)
             }
-            break
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            // next must absolutely run because of possible undo management
+            parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+          }
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
+          eYo.Connection.connectedParentC8n = undefined
+          if (parent.eyo.isReady) {
+            child.eyo.beReady()
           }
         }
       }
-    }
-    childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
-    parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-    var c8n = eYo.SelectedConnection.get()
-    parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-    if (c8n === childC8n || c8n === parentC8n) {
-      eYo.SelectedConnection.set(null)
-    }
-    parent.eyo.didConnect(parent, parentC8n, oldChildC8n, oldParentC8n)
-    child.eyo.didConnect(child, childC8n, oldParentC8n, oldChildC8n)
-    child.eyo.setIncog(child, parentC8n.eyo.isIncog())
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    parent.eyo.unskipRendering()
-    child.eyo.unskipRendering()
-    try {
-      eYo.Connection.connectedParentC8n = parentC8n
-      child.render() // bubble
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      eYo.Connection.connectedParentC8n = undefined
-    }
+    )
   }
-}
+}) ()
 
 /**
  * Disconnect two blocks that are connected by this connection.
@@ -659,68 +955,89 @@ Blockly.RenderedConnection.prototype.connect_ = function (childC8n) {
  * @private
  * @suppress {accessControls}
  */
-eYo.Connection.saved_disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
-Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock,
-  childBlock) {
-  var block = this.getSourceBlock()
-  if (block === parentBlock) {
-    var parentC8n = this
-    var childC8n = this.targetConnection
-  } else {
-    parentC8n = this.targetConnection
-    childC8n = this
-  }
-  try {
-    parentBlock.eyo.skipRendering()
-    childBlock.eyo.skipRendering()
-    parentC8n.eyo.willDisconnect()
-    childC8n.eyo.willDisconnect()
-    parentBlock.eyo.willDisconnect(parentBlock, parentC8n)
-    childBlock.eyo.willDisconnect(childBlock, childC8n)
-    if (parentC8n.eyo.wrapped_) {
-      // currently unwrapping a block,
-      // this occurs while removing the parent
-      // if the parent was selected, select the child
-      childBlock.eyo.makeBlockUnwrapped_(childBlock)
-      if (parentBlock.eyo.hasSelect(parentBlock)) {
-        parentBlock.unselect()
-        childBlock.select()
-      }
-    }
-    eYo.Connection.saved_disconnectInternal_.call(this, parentBlock, childBlock)
-    if (childBlock.eyo.plugged_) {
-      childBlock.eyo.plugged_ = undefined
-    }
-    parentBlock.eyo.didDisconnect(parentBlock, parentC8n, childC8n)
-    childBlock.eyo.didDisconnect(childBlock, childC8n, parentC8n)
-    parentC8n.eyo.didDisconnect(childC8n)
-    childC8n.eyo.didDisconnect(parentC8n)
-    parentBlock.eyo.consolidate(parentBlock, true) // update all connections, possibly deleting parentC8n !
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    parentBlock.eyo.unskipRendering()
-    childBlock.eyo.unskipRendering()
-    eYo.Connection.disconnectedParentC8n = parentC8n
-    eYo.Connection.disconnectedChildC8n = childC8n
-    try {
-      parentBlock.rendered && parentBlock.render()
-      if (childBlock.rendered) {
-        childBlock.updateDisabled();
-        childBlock.render()
-      }
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      eYo.Connection.disconnectedParentC8n = undefined
-      eYo.Connection.disconnectedChildC8n = undefined
-    }
-  }
-}
+Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
+  // Closure
+  var disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
 
-Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnection_
+  return function (parent, child) {
+    var block = this.getSourceBlock()
+    if (block === parent) {
+      var parentC8n = this
+      var childC8n = this.targetConnection
+    } else {
+      parentC8n = this.targetConnection
+      childC8n = this
+    }
+    child.eyo.changeWrap(
+      () => { // `this` is catched
+        parent.eyo.changeWrap(
+          () => { // `this` is catched
+            try {
+              parentC8n.eyo.willDisconnect()
+              try {
+                childC8n.eyo.willDisconnect()
+                try {
+                  parent.eyo.willDisconnect(parentC8n)
+                  try {
+                    child.eyo.willDisconnect(childC8n)
+                    try {
+                      // the work starts here
+                      if (parentC8n.eyo.wrapped_) {
+                        // currently unwrapping a block,
+                        // this occurs while removing the parent
+                        // if the parent was selected, select the child
+                        child.eyo.makeBlockUnwrapped_(child)
+                        if (parent.eyo.hasSelect(parent)) {
+                          parent.unselect()
+                          child.select()
+                        }
+                      }
+                      disconnectInternal_.call(this, parent, child)
+                      if (child.eyo.plugged_) {
+                        child.eyo.plugged_ = undefined
+                      }
+                    } catch (err) {
+                      console.error(err)
+                      throw err
+                    } finally {
+                      eYo.Connection.disconnectedParentC8n = parentC8n
+                      eYo.Connection.disconnectedChildC8n = childC8n
+                      eYo.Connection.disconnectedParentC8n = undefined
+                      eYo.Connection.disconnectedChildC8n = undefined
+                      parent.eyo.incrementInputChangeCount && parent.eyo.incrementInputChangeCount() // list are special
+                      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
+                      childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true)
+                     }
+                  } catch (err) {
+                    console.error(err)
+                    throw err
+                  } finally {
+                    child.eyo.didDisconnect(childC8n, parentC8n)
+                  }
+                } catch (err) {
+                  console.error(err)
+                  throw err
+                } finally {
+                  parent.eyo.didDisconnect(parentC8n, childC8n)
+                }
+              } catch (err) {
+                console.error(err)
+                throw err
+              } finally {
+                childC8n.eyo.didDisconnect(parentC8n)
+              }
+            } catch (err) {
+              console.error(err)
+              throw err
+            } finally {
+              parentC8n.eyo.didDisconnect(childC8n)
+            }
+          }
+        )
+      }
+    )
+  }
+} ()
 
 /**
  * Does the given block have one and only one connection point that will accept
@@ -736,7 +1053,7 @@ Blockly.Connection.uniqueConnection_original = Blockly.Connection.uniqueConnecti
  * @suppress {accessControls}
  */
 Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
-  var e8r = block.eyo.inputEnumerator(block)
+  var e8r = block.eyo.inputEnumerator()
   while (e8r.next()) {
     var c8n = e8r.here.connection
     if (c8n && c8n.type === Blockly.INPUT_VALUE &&
@@ -749,8 +1066,6 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
   return null
 }
 
-eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.setHidden
-
 /**
  * Set whether this connections is hidden (not tracked in a database) or not.
  * The delegate's hidden_ property takes precedence over `hidden`parameter.
@@ -758,17 +1073,21 @@ eYo.RenderedConnection.savedSetHidden = Blockly.RenderedConnection.prototype.set
  * In fact we bypass the real method if the connection is not epected to show.
  * @param {boolean} hidden True if connection is hidden.
  */
-Blockly.RenderedConnection.prototype.setHidden = function (hidden) {
-  // ADDED by JL:
-  if (!hidden && this.eyo.incog_) {
-    // Incog connections must stay hidden
-    return
+Blockly.RenderedConnection.prototype.setHidden = function () {
+  // this is a closure
+  var setHidden = Blockly.RenderedConnection.prototype.setHidden
+  return function (hidden) {
+    // ADDED by JL:
+    if (!hidden && this.eyo.incog_) {
+      // Incog connections must stay hidden
+      return
+    }
+    if (goog.isDef(this.eyo.hidden_)) {
+      hidden = this.eyo.hidden_
+    }
+    // DONE
+    setHidden.call(this, hidden)
   }
-  if (goog.isDef(this.eyo.hidden_)) {
-    hidden = this.eyo.hidden_
-  }
-  // DONE
-  eYo.RenderedConnection.savedSetHidden.call(this, hidden)
 }
 
 /**
@@ -829,38 +1148,46 @@ Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
   var xDiff = c8nA.x_ - c8nB.x_
   var yDiff = c8nA.y_ - c8nB.y_
   if (c8nA.type === Blockly.INPUT_VALUE) {
-    yDiff += eYo.Padding.h()
+    yDiff += eYo.Padding.h
   } else if (c8nB.type === Blockly.INPUT_VALUE) {
-    yDiff -= eYo.Padding.h()
+    yDiff -= eYo.Padding.h
   }
   return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 };
 
-eYo.RenderedConnection.savedDispose = Blockly.Connection.prototype.dispose
 /**
  * Sever all links to this connection (not including from the source object).
  * @suppress{accessControls}
  */
 Blockly.Connection.prototype.dispose = function () {
-  if (this === eYo.SelectedConnection.get()) {
-    eYo.SelectedConnection.set(null)
+  // this is a closure
+  var dispose = Blockly.Connection.prototype.dispose
+  return function () {
+    if (this === eYo.SelectedConnection) {
+      eYo.SelectedConnection = null
+    }
+    dispose.call(this)
   }
-  eYo.RenderedConnection.savedDispose.call(this)
-}
-/** @suppress{accessControls} */
-eYo.RenderedConnection.onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
+} ()
+
 /**
  * Function to be called when this connection's compatible types have changed.
  * @private
  * @suppress{accessControls}
  */
 Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
-  eYo.RenderedConnection.onCheckChanged_.call(this)
-  var block = this.targetBlock()
-  if (block) {
-    block.eyo.consolidate(block, false, true)
+  // this is a closure
+  /** @suppress{accessControls} */
+  var onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
+  return function () {
+    onCheckChanged_.call(this)
+    this.sourceBlock_.eyo.incrementChangeCount()
+    var target = this.targetBlock()
+    if (target) {
+      target.eyo.incrementChangeCount() // there was once a `consolidate(false, true)` here.
+    }
   }
-}
+} ()
 
 /**
  * Does the given block have one and only one connection point that will accept
@@ -877,7 +1204,7 @@ Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   for (var i = 0; i < block.inputList.length; i++) {
     var thisConnection = block.inputList[i].connection
     if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection)) {
+        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.bindField) {
       if (connection) {
         return null // More than one connection.
       }
@@ -915,11 +1242,11 @@ Blockly.Connection.lastConnectionInRow_ = function (startBlock, orphanBlock) {
 }
 
 /**
- * Walks down a row a blocks, at each stage
+ * May be useful for `didConnect` and `didDisconnect` in models.
  */
 eYo.ConnectionDelegate.prototype.consolidateSource = function () {
   var block = this.connection.getSourceBlock()
-  block.eyo.consolidate(block)
+  block.eyo.consolidate()
 }
 
 /**
@@ -928,10 +1255,54 @@ eYo.ConnectionDelegate.prototype.consolidateSource = function () {
  * @private
  */
 Blockly.RenderedConnection.prototype.tighten_ = function() {
+  var where = this.eyo.where
+  var target_where = this.targetConnection.eyo.where
+  var dc = target_where.c - where.c
+  var dl = target_where.l - where.l
+  if (dc != 0 || dl != 0) {
+    var block = this.targetBlock();
+    block.eyo.setOffset(-dc, -dl);
+  }
+};
+Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dx = this.targetConnection.x_ - this.x_;
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
     var block = this.targetBlock();
-    block.eyo.setOffset(block, -dx, -dy);
+    block.eyo.setOffset(-dx, -dy);
   }
+};
+
+/**
+ * Returns the block that this connection connects to.
+ * @return {Blockly.Block} The connected block or null if none is connected.
+ */
+eYo.Connection.prototype.targetBlock = function() {
+  var target = eYo.Connection.superClass_.targetBlock.call(this)
+  if (!target && this.eyo.wrapped_) {
+    this.eyo.completeWrapped()
+    target = eYo.Connection.superClass_.targetBlock.call(this)
+  }
+  return target;
+};
+
+/**
+ * Change a connection's compatibility.
+ * @param {*} check Compatible value type or list of value types.
+ *     Null if all types are compatible.
+ * @return {!Blockly.Connection} The connection being modified
+ *     (to allow chaining).
+ */
+Blockly.Connection.prototype.setCheck = function(check) {
+  if (check) {
+    // Ensure that check is in an array.
+    if (!goog.isArray(check)) {
+      check = [check];
+    }
+    this.check_ = check;
+    this.onCheckChanged_();
+  } else {
+    this.check_ = null;
+  }
+  return this;
 };

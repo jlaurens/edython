@@ -8,16 +8,32 @@
 /**
  * @fileoverview eYo.Data is a class for a data controller.
  * It merely provides the API.
+ * There is a design problem concerning the binding between the model
+ * and the ui.
+ * The data definitely belongs to the model layer.
+ * When the data corresponds to some ui object, they must be synchronized,
+ * at least when no change is actually pending (see the change level).
+ * The typical synchronization problem concerns the text fields.
+ * We say that an object is in a consistant state when all the synchronizations
+ * have been performed.
+ * A change in the ui must reflect any change to the data and conversely.
+ * Care must be taken to be sure that there is indeed a change,
+ * to avoid infinite loops.
+ * For that purpose, reentrancy is managed with a lock.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.require('eYo')
 goog.provide('eYo.Data')
+
+goog.require('eYo')
+goog.require('eYo.XRE')
+goog.require('eYo.Decorate');
 goog.require('goog.dom');
 
 /**
  * Base property constructor.
+ * The bounds between the data and the arguments are immutable.
  * For edython.
  * @param {!Object} owner The object owning the data.
  * @param {!string} key name of the data.
@@ -30,16 +46,22 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(owner, 'Missing owner')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
+  Object.defineProperties(this, {
+    reentrant: { value: {} },
+    key: { value: key},
+    upperKey: { value: key[0].toUpperCase() + key.slice(1) },
+    model: {
+      value: goog.isObject(model) ? model: (model = {init: model}),
+      writable: true
+    },
+    name: {
+      value: 'eyo:' + (model.name || key).toLowerCase()
+    },
+    noUndo: {value: model.noUndo}
+  })
   this.owner = owner // circular reference
-  this.data = owner.data // the owner's other data objects
   this.value_ = /** Object|null */ undefined
-  this.key = key
-  this.model = goog.isObject(model) ? model: (model = {init: model})
-  this.upperKey = key[0].toUpperCase() + key.slice(1)
-  this.name = 'eyo:' + (this.model.name || this.key).toLowerCase()
-  this.noUndo = model.noUndo
   this.incog_ = false
-  this.wait_ = 1 // start with 1 exactly
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
     this.attributeName = (xml && xml.attribute) || key
@@ -53,22 +75,55 @@ eYo.Data = function (owner, key, model) {
       if (!goog.isFunction(xml.fromText)) {
         delete xml.fromText
       }
-      if (!goog.isFunction(xml.toDom)) {
-        delete xml.toDom
+      if (!goog.isFunction(xml.toField)) {
+        delete xml.toField
       }
-      if (!goog.isFunction(xml.fromDom)) {
-        delete xml.fromDom
+      if (!goog.isFunction(xml.fromField)) {
+        delete xml.fromField
       }
-    } else if (key === 'variant' || key === 'subtype') {
+    } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
     }
+    if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+      delete model.validateIncog
+    }
   }
+  // next should be removed, thick to repalce `eYo.Key.FOO` by `this.FOO`
   for (var k in model) {
     if (XRegExp.exec(k, eYo.XRE.upper)) {
       this[k] = model[k]
     }
   }
 }
+
+Object.defineProperties(
+  eYo.Data.prototype,
+  {
+    block: {
+      get () {
+        return this.owner.block_
+      }
+    },
+    blockType: {
+      get () {
+        return this.owner.block_.type
+      }
+    },
+    data: {
+      get () {
+        return this.owner.data
+      }
+    },
+    incog_p: {
+      get () {
+        return this.incog_
+      },
+      set (newValue) {
+        this.changeIncog(newValue)
+      }
+    }
+  }
+)
 
 /**
  * Get the owner of the data.
@@ -79,32 +134,38 @@ eYo.Data.prototype.getOwner = function () {
 }
 
 /**
- * Get the type of the underlying block.
+ * Get the value of the data
  */
-eYo.Data.prototype.getType = function () {
-  return this.owner.block_.type
+eYo.Data.prototype.get = function () {
+  if (!goog.isDef(this.value_)) {
+    var f = eYo.Decorate.reentrant_method.call(this, 
+      'get',
+      this.init
+    )
+    f && f.apply(this, arguments)
+  }
+  return this.value_
 }
 
 /**
- * Get the value of the data
+ * Set the value with no extra task except hooks before, during and after the change.
  * @param {Object} newValue
+ * @param {Boolean} notUndoable
  */
-eYo.Data.prototype.get = function () {
-  if (goog.isDef(this.value_) || this.lock_get) {
-    return this.value_
+eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
+  var oldValue = this.value_
+  this.owner.changeBegin()
+  this.beforeChange(oldValue, newValue)
+  try {
+    this.value_ = newValue
+    this.duringChange(oldValue, newValue)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    this.afterChange(oldValue, newValue)
+    this.owner.changeEnd() // may render
   }
-  if (this.init) {
-    try {
-      this.lock_get = true
-      this.init()
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.lock_get
-    }
-  }
-  return this.value_
 }
 
 /**
@@ -126,10 +187,7 @@ eYo.Data.prototype.internalSet = function (newValue) {
       newValue = x
     }
   }
-  var oldValue = this.value_
-  this.willChange(oldValue, newValue)
-  this.value_ = newValue
-  this.didChange(oldValue, newValue)
+  this.rawSet(newValue)
 }
 
 /**
@@ -150,27 +208,46 @@ eYo.Data.prototype.init = function (newValue) {
     return
   }
   var init = this.model.init
-  if (goog.isFunction(init)) {
-    if (!this.model_init_lock) {
-      this.model_init_lock = true
-      try {
-        init.call(this)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_init_lock
-      }
+  var f = eYo.Decorate.reentrant_method.call(
+    this,
+    'model_init',
+    this.model.init
+  )
+  try {
+    if (f) {
+      this.internalSet(f.apply(this, arguments))
+      return
+    } else if (goog.isDef(init)) {
+      this.internalSet(init)
       return
     }
-  } else if (goog.isDef(init)) {
-    this.internalSet(init)
-    return
+    var all = this.getAll()
+    if (all && all.length) {
+      this.internalSet(all[0])
+    }
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    if (!goog.isDef(this.value_)) {
+      console.error('THIS SHOULD BE DEFINED', this.key, this.blockType)
+    }
   }
-  var all = this.getAll()
-  if (all && all.length) {
-    this.internalSet(all[0])
-  }
+}
+
+/**
+ * Init the value of the property depending on the type.
+ * This is usefull for variants and options.
+ * The model is asked for a method.
+ * @param {Object} type
+ */
+eYo.Data.prototype.setWithType = function (type) {
+  var f = eYo.Decorate.reentrant_method.call(
+    this,
+    'model_fromType',
+    this.model.fromType
+  )
+  f && f.apply(this, arguments)
 }
 
 /**
@@ -190,22 +267,22 @@ eYo.Data.prototype.getAll = function () {
 }
 
 /**
+ * Whether the data value is eYo.Key.NONE.
+ * @return {Boolean}
+ */
+eYo.Data.prototype.isNone = function () {
+  return this.get() === eYo.Key.NONE
+}
+
+/**
  * Validates the value of the property
  * May be overriden by the model.
  * @param {Object} newValue
  */
 eYo.Data.prototype.validate = function (newValue) {
-  if (!this.lock_model_validate && goog.isFunction(this.model.validate)) {
-    try {
-      this.lock_model_validate = true
-      var out = this.model.validate.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.lock_model_validate
-    }
-    return out
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
+  if (f) {
+    return f.apply(this, arguments).ans
   }
   var all = this.getAll()
   return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
@@ -216,39 +293,113 @@ eYo.Data.prototype.validate = function (newValue) {
  * Returns the text representation of the data.
  * @param {?Object} newValue
  */
-eYo.Data.prototype.toText = function (newValue = undefined) {
-  if (!this.toText_locked && goog.isFunction(this.model.toText)) {
-    this.toText_locked = true
-    try {
-      return this.model.toText.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.toText_locked
-    }
+eYo.Data.prototype.toText = function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
+  var result = this.get()
+  if (f) {
+    return f.call(this, result).ans
   }
-  return this.get() || ''
+  if (goog.isNumber(result)) {
+    result = result.toString()
+  }
+  return result || ''
 }
 
 /**
+ * Returns the text representation of the data.
+ * Called during synchronization.
+ * @param {?Object} newValue
+ */
+eYo.Data.prototype.toField = function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
+  var result = this.get()
+  if (f) {
+    return f.call(this, result).ans
+  }
+  if (goog.isNumber(result)) {
+    result = result.toString()
+  }
+  return result || ''
+}
+
+/*
+ * Below are collected the various setters.
+ * The setters come in different flavours depending on
+ * 1) undo management
+ * 2) UI synchronization
+ * 3) validation (related to point 2)
+ * Whether these points are orthogonal is not clear.
+ * Discussion about states.
+ * a) consistent state: all rules are fullfilled.
+ * b) transitional state: some rules are broken.
+ * The program runs from consistent state to consistent state
+ * through transitional states.
+ * Some methods break the consistency, some methods repair things.
+ * Is it possible to identify the methods that do not break state?
+ * And conversely the methods that break state.
+ * One important thing is to clearly list the rules that define a
+ * consistent state.
+ * Consistency rules may concern the data model, the user interface
+ * and their relationship.
+ * The rendering process consists in setting the view model according
+ * to the data model. Then displaying is processed by some engine
+ * (in the navigator for example).
+ * 
+ */
+
+/**
  * Set the value from the given text representation.
- * Calls the model, reentrant.
+ * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
+ * Calls the javascript model, reentrant.
+ * Does nothing when the actual value and
+ * the actual argument are the same.
  * @param {Object} txt
  * @param {boolean=} dontValidate
  */
-eYo.Data.prototype.fromText = function (txt, dontValidate) {
+eYo.Data.prototype.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
-    if (goog.isFunction(this.model.fromText)) {
-      this.model_fromText_lock = true
-      try {
-        this.model.fromText.call(this, txt, dontValidate)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_fromText_lock
-      }
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
+    if (f) {
+      f.apply(this, arguments)
+      return
+    }
+  }
+  if (txt.length && !this.model.isText) {
+    var n = Number(txt)
+    if (!isNaN(n)) {
+      txt = n
+    }
+  }
+  if (!validate) {
+    this.change(txt, false)
+  } else if (this.value_ !== txt) {
+    var v7d = this.validate(txt)
+    if (!v7d || !goog.isDef((v7d = v7d.validated))) {
+      this.error = true
+      v7d = txt
+    } else {
+      this.error = false
+    }
+    this.setTrusted_(v7d)
+  }
+}
+
+
+/**
+ * Set the value from the given text representation
+ * as text field content.
+ * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
+ * Calls the javascript model, reentrant.
+ * Does nothing when the actual value and
+ * the actual argument are the same.
+ * @param {Object} txt
+ * @param {boolean=} dontValidate
+ */
+eYo.Data.prototype.fromField = function (txt, dontValidate) {
+  if (!this.model_fromField_lock) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
+    if (f) {
+      f.apply(this, arguments)
       return
     }
   }
@@ -262,46 +413,77 @@ eYo.Data.prototype.fromText = function (txt, dontValidate) {
     } else {
       this.error = false
     }
-    this.internalSet(v7d)
+    this.setTrusted_(v7d)
+  }
+}
+
+/**
+ * Decorate of change hooks.
+ * Returns a function with signature is `foo(before, after) → void`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * @param {Object} key, 
+ * @param {Object} do_it
+ * @return undefined
+ */
+eYo.Data.decorateChange = function (key, do_it) {
+  return function(before, after) {
+    var lock = key + '_lock'
+    if (this[lock]) {
+      if (goog.isFunction(do_it)) {
+        do_it.apply(this, arguments)
+      }
+      return
+    }
+    this[lock] = true
+    var model_lock = 'model_' + lock
+    if (this[model_lock]) {
+      // no built in behaviour yet
+      return
+    }
+    try {
+      var model_do_it = this.model[key]
+      if (goog.isFunction(model_do_it)) {
+        try {
+          this[model_lock] = true
+          model_do_it.apply(this, arguments)
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          delete this[model_lock]
+        }
+        return
+      }
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      delete this[lock]
+    }  
   }
 }
 
 /**
  * Will change the value of the property.
- * The signature is `willChange( oldValue, newValue ) → void`
+ * The signature is `willChange(oldValue, newValue) → void`
  * May be overriden by the model.
  * @param {Object} oldValue
  * @param {Object} newValue
  * @return undefined
  */
-eYo.Data.prototype.willChange = function (oldValue, newValue) {
-  if (this.lock_willChange) {
-    return
-  }
-  try {
-    this.lock_willChange = true
-    if (goog.isFunction(this.model.willChange)) {
-      if (this.model_willChange_lock) {
-        return
-      }
-      this.model_willChange_lock = true
-      try {
-        this.model.willChange.call(this, oldValue, newValue)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_willChange_lock
-      }
-      return
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.lock_willChange
-  }
-}
+eYo.Data.prototype.willChange = eYo.Data.decorateChange('willChange')
+
+/**
+ * When unchange the value of the property.
+ * The signature is `didUnchange(newValue, oldValue) → void`
+ * May be overriden by the model.
+ * Replaces `willChange` when undoing.
+ * @param {Object} newValue
+ * @param {Object} oldValue
+ * @return undefined
+ */
+eYo.Data.prototype.didUnchange = eYo.Data.decorateChange('didUnchange')
 
 /**
  * Did change the value of the property.
@@ -311,46 +493,92 @@ eYo.Data.prototype.willChange = function (oldValue, newValue) {
  * @param {Object} newValue
  * @return undefined
  */
-eYo.Data.prototype.didChange = function (oldValue, newValue) {
-  if (this.didChange_lock) {
-    return
-  }
-  this.didChange_lock = true
-  try {
-    if (goog.isFunction(this.model.didChange)) {
-      if (this.model_didChange_lock) {
-        // no built in behaviour yet
-        return
-      }
-      this.model_didChange_lock = true
-      try {
-        this.model.didChange.call(this, oldValue, newValue)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.model_didChange_lock
-      }
-      return
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.didChange_lock
-  }
+eYo.Data.prototype.didChange = eYo.Data.decorateChange('didChange')
+
+/**
+ * Will unchange the value of the property.
+ * The signature is `willUnchange( oldValue, newValue ) → void`.
+ * Replaces `didChange` while undoing.
+ * May be overriden by the model.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.willUnchange = eYo.Data.decorateChange('willUnchange')
+
+/**
+ * Before the didChange message is sent.
+ * The signature is `isChanging( oldValue, newValue ) → void`
+ * May be overriden by the model.
+ * No undo message is yet sent but the data has recorded the new value.
+ * Other object may change to conform to this new state,
+ * before undo events are posted.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.isChanging = eYo.Data.decorateChange('isChanging')
+
+/**
+ * Before the didUnchange message is sent.
+ * The signature is `isUnchanging( oldValue, newValue ) → void`
+ * May be overriden by the model.
+ * No undo message is yet sent but the data has recorded the new value.
+ * Other object may change to conform to this new state,
+ * before undo events are posted.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
+
+/**
+ * Before change the value of the property.
+ * Branch to `willChange` or `willUnchange`.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
+  (!Blockly.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
+}
+
+/**
+ * During change the value of the property.
+ * Branch to `isChanging` or `isUnchanging`.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.duringChange = function(oldValue, newValue) {
+  (!Blockly.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+}
+
+/**
+ * After change the value of the property.
+ * Branch to `didChange` or `didUnchange`.
+ * `synchronize` in fine.
+ * @param {Object} oldValue
+ * @param {Object} newValue
+ * @return undefined
+ */
+eYo.Data.prototype.afterChange = function(oldValue, newValue) {
+  (Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
+  this.synchronize(newValue)
 }
 
 /**
  * Wether a value change fires an undo event.
- * May be overriden by the model.
+ * May be overriden by the javascript model.
  */
 eYo.Data.prototype.noUndo = undefined
 
 /**
  * Synchronize the value of the property with the UI.
+ * Called once when the model has been made,
+ * and called each time the value changes,
+ * whether doing, undoing or redoing.
  * May be overriden by the model.
- * Do nothing if the receiver should wait.
  * When not overriden by the model, updates the field and slot state.
  * We can call `this.synchronize()` from the model.
  * `synchronize: true`, and
@@ -359,151 +587,158 @@ eYo.Data.prototype.noUndo = undefined
  * @param {Object} newValue
  */
 eYo.Data.prototype.synchronize = function (newValue) {
-  if (this.wait_) {
-    return
+  if (!goog.isDef(newValue)) {
+    newValue = this.get()
   }
-  if (this.model_synchronize_lock || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.getType())
+  if (this.reentrant['model_synchronize'] || this.model.synchronize === true) {
+    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {
-      Blockly.Events.disable()
-      try {
-        field.setValue(this.toText())
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Events.enable()
-      }
-      field.setVisible(!this.isIncog())
-      var element = field.textElement_
-      if (element) {
-        if (this.error) {
-          goog.dom.classlist.add(element, 'eyo-code-error')
-        } else {
-          goog.dom.classlist.remove(element, 'eyo-code-error')
+      eYo.Events.disableWrap(
+        () => {
+          field.setValue(this.toField())
+          if (this.slot && this.slot.data === this) {
+            this.slot.setIncog(this.incog_p)
+            field.setVisible(!this.slot.targetBlock())
+          } else {
+            field.setVisible(!this.incog_p)
+          }
+          var element = field.textElement_
+          if (element) {
+            if (this.error) {
+              goog.dom.classlist.add(element, 'eyo-code-error')
+            } else {
+              goog.dom.classlist.remove(element, 'eyo-code-error')
+            }
+          }
         }
-      }
+      )
     }
-    this.slot && this.slot.setIncog(this.isIncog())
-  } else if (goog.isFunction(this.model.synchronize)) {
-    this.model_synchronize_lock = true
-    try {
-      this.model.synchronize.call(this, newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.model_synchronize_lock
-    }
-  }
-  this.owner && this.owner.shouldRender && this.owner.shouldRender()
-}
-
-/**
- * Synchronize the value of the property with the UI only when bounded.
- * @param {Object} newValue
- */
-eYo.Data.prototype.synchronizeIfUI = function (newValue) {
-  if (this.field || this.slot || this.model.synchronize) {
-    this.synchronize(newValue)
+  } else if (this.model.synchronize) {
+    var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
+    f && f.call(this, newValue)
   }
 }
 
 /**
  * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+ eYo.Data.prototype.setTrusted_ = function (newValue) {
+  this.internalSet(newValue)
+}
+
+/**
+ * set the value of the property without any validation.
+ * This is overriden by the events module.
+ * @param {Object} newValue
+ * @param {Boolean} noRender
+ */
+eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
+
+/**
+ * If the value is an uppercase string,
+ * change it to a key.
  * If the value is a number, change to the corresponding item
  * in the `getAll()` array.
  * @param {Object} newValue
  */
-eYo.Data.prototype.setTrusted = function (newValue) {
-  if (this.key == 'callerFlag') {
-    console.log('DATA callerFlag:',newValue)
-  }
+eYo.Data.prototype.filter = function (newValue) {
+  // tricky argument management
+  // Used when newValue is an uppercase string
   if (goog.isString(newValue)) {
-    var x = this.model[newValue]
-    !x || (newValue = x)
-  }
-  if (goog.isNumber(newValue)) {
+    if (newValue === newValue.toUpperCase()) {
+      var x = eYo.Key[newValue]
+      !x || (newValue = x)
+    }
+  } else if (goog.isNumber(newValue)) {
     x = this.getAll()
     if (x && goog.isDefAndNotNull((x = x[newValue]))) {
       newValue = x
     }
   }
-  this.setTrusted_(newValue)
-}
-
-/**
- * set the value of the property without any validation.
- * This is overriden by the events module.
- * @param {Object} newValue
- */
-eYo.Data.prototype.setTrusted_ = function (newValue) {
-  if (this.trusted_lock) {
-    return
-  }
-  try {
-    this.trusted_lock = true
-    this.setTrusted__(newValue)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    delete this.trusted_lock
-  }
-}
-
-/**
- * set the value of the property without any validation.
- * This is overriden by the events module.
- * @param {Object} newValue
- */
-eYo.Data.prototype.setTrusted__ = function (newValue) {
-  this.error = false
-  this.internalSet(newValue)
-  this.synchronizeIfUI(newValue)
+  return newValue
 }
 
 /**
  * set the value of the property,
  * with validation, undo and synchronization.
- * Always synchronize, even when no value changed.
+ * Undo management and synchronization only occur when
+ * the old value and the new value are not the same.
  * @param {Object} newValue
+ * @param {Boolean} noRender
  */
-eYo.Data.prototype.set = function (newValue) {
-  if (goog.isNumber(newValue)) {
-    var all = this.getAll()
-    if (all && goog.isDefAndNotNull(all = all[newValue])) {
-      newValue = all
-    }
-  }
-  if ((this.value_ === newValue) || !(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)) {
-    this.synchronizeIfUI(this.value_)
+eYo.Data.prototype.set = function (newValue, validate = true) {
+  newValue = this.filter(newValue)
+  if ((this.value_ === newValue) || ( validate && (!(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)))) {
     return false
   }
-  this.setTrusted_(newValue)
+  this.error = false
+  this.setTrusted(newValue)
   return true
 }
 
 /**
- * Disabled data correspond to diabled input.
+ * Disabled data correspond to disabled input.
  * Changing this value will cause an UI synchronization.
- * Always synchronize, even when no value changed.
  * @param {Object} newValue  When not defined, replaced by `!this.required`
  * @return {boolean} whether changes have been made
  */
 eYo.Data.prototype.setIncog = function (newValue) {
   if (!goog.isDef(newValue)) {
     newValue = !this.required
+  } else {
+    newValue = !!newValue
   }
-  if (!this.incog_ !== !newValue) {
-    this.incog_ = !!newValue
-    this.didChange(this.value_, this.value_)
-    this.synchronizeIfUI(this.value_)
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
+  if (this.incog_ !== newValue) {
+    // if (this.key === 'comment') {
+    //   console.error('comment data incog', newValue)
+    // }
+    this.incog_ = newValue
+    if (this.slot) {
+      this.slot.setIncog(newValue)
+    } else {
+      this.field && this.field.setVisible(!newValue)
+    }
     return true
   }
   return false
 }
+/**
+ * Disabled data correspond to disabled input.
+ * Changing this value will cause an UI synchronization.
+ * @param {Object} newValue  When not defined, replaced by `!this.required`
+ * @return {boolean} whether changes have been made
+ */
+eYo.Data.prototype.changeIncog = function (newValue) {
+  if (!goog.isDef(newValue)) {
+    newValue = !this.required
+  } else {
+    newValue = !!newValue
+  }
+  var validator = this.model.validateIncog
+  if (validator) {
+    newValue = validator.call(this, newValue)
+  }
+  if (this.incog_ !== newValue) {
+    this.owner.changeWrap(
+      () => { // catch `this`
+        this.incog_ = newValue
+        this.slot && this.slot.setIncog(newValue)
+        this.field && this.field.setVisible(!newValue)    
+      }
+    )
+    return true
+  }
+  return false
+}
+
 /**
  * Whether the data is incognito.
  */
@@ -514,27 +749,14 @@ eYo.Data.prototype.isIncog = function () {
 /**
  * Consolidate the value.
  * Should be overriden by the model.
- * Reentrant management here.
- * Do nothing if the receiver should wait.
+ * Reentrant management here of the model action.
  */
 eYo.Data.prototype.consolidate = function () {
-  if (this.wait_) {
+  if (this.owner.change.level) {
     return
   }
-  if (goog.isFunction(this.model.consolidate)) {
-    if (this.model_consolidate_lock) {
-      return
-    }
-    this.model_consolidate_lock = true
-    try {
-      this.model.consolidate.call(this)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this.model_consolidate_lock
-    }
-  }
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
+  f && f.apply(this, arguments)
 }
 
 /**
@@ -546,7 +768,7 @@ eYo.Data.prototype.isActive = function () {
 }
 
 /**
- * Set the value of the main field given by its key.
+ * Set the value of the main field eventually given by its key.
  * @param {!Object} newValue
  * @param {string|null} fieldKey  of the input holder in the ui object
  * @param {boolean} noUndo  true when no undo tracking should be performed.
@@ -568,66 +790,49 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
 }
 
 /**
- * The receiver is now ready to eventually synchronize and consolidate.
+ * No change is made except that this is a one shot function.
  */
 eYo.Data.prototype.beReady = function () {
-  this.wait_ = 0
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Data.prototype.waitOn = function () {
-  return ++this.wait_
-}
-
-/**
- * Set the wait status of the field.
- * Any call to `waitOn` must be balanced by a call to `waitOff`
- */
-eYo.Data.prototype.waitOff = function () {
-  goog.asserts.assert(this.wait_ > 0, eYo.Do.format('Too  many `waitOn` {0}/{1}',
-    this.key, this.getType()))
-  if (--this.wait_ === 0) {
-    this.consolidate()
-  }
+  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**
  * Does nothing if the data is disabled or if the model
- * has a `false`valued xml property.
- * Saves the data to the given element.
+ * has a `false` valued xml property.
+ * Saves the data to the given element, except when incog
+ * or when the model forces.
  * For edython.
  * @param {Element} element the persistent element.
  */
 eYo.Data.prototype.save = function (element) {
-  if (!this.isIncog()) {
+  var xml = this.model.xml
+  if (xml === false) {
+    // only few data need not be saved
+    return
+  }
+  if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {
     // in general, data should be saved
-    var xml = this.model.xml
-    if (xml === false) {
-      // only few data need not be saved
-      return
-    }
-    if (!this.xml_save_lock && goog.isDef(xml) && goog.isFunction(xml.save)) {
-      this.xml_save_lock = true
-      try {
-        xml.save.call(this, element)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.xml_save_lock
+    if (xml) {
+      var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
+      if (f) {
+        f.apply(this, arguments)
+        return
       }
-      return
     }
-    var required = this.required || (goog.isDefAndNotNull(xml) && xml.required)
+    var required = this.required || (xml && xml.required)
     var isText = xml && xml.text
     var txt = this.toText()
-    if (txt.length || (required && ((txt = isText ? '?' : ''), true))) {
-      if (xml && xml.text) {
-        var child = goog.dom.createTextNode(txt)
-        goog.dom.appendChild(element, child)
+    if (isText) {
+      if (txt.length) {
+        goog.dom.appendChild(element, goog.dom.createTextNode(txt))        
+      } else if (required) {
+        goog.dom.appendChild(element, goog.dom.createTextNode('?'))
+      }
+    } else if (txt.length) {
+      element.setAttribute(this.attributeName, txt)
+    } else if (this.required) {
+      if (this.model.custom_placeholder) {
+        element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
       } else {
         element.setAttribute(this.attributeName, txt)
       }
@@ -636,7 +841,28 @@ eYo.Data.prototype.save = function (element) {
 }
 
 /**
+ * Customize the placeholder.
+ * For edython.
+ * @param {String} txt the new placeholder.
+ */
+eYo.Data.prototype.customizePlaceholder = function (txt) {
+  if (txt == this.model.placeholder) {
+    return
+  }
+  if (goog.isDef(this.model.custom_placeholder)) {
+    this.model.custom_placeholder = txt
+    return
+  }
+  var m = {}
+  goog.mixin(m, this.model)
+  this.model = m
+  m.placeholder = m.custom_placeholder = txt
+}
+
+/**
  * Convert the block's data from a dom element.
+ * What is the status with respect to the undo management.
+ * This function is important.
  * For edython.
  * @param {Element} xml the persistent element.
  */
@@ -646,47 +872,75 @@ eYo.Data.prototype.load = function (element) {
     return
   }
   if (element) {
-    if (!this.xml_load_lock && xml && goog.isFunction(xml.load)) {
-      this.xml_load_lock = true
-      try {
-        xml.load.call(this, element)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.xml_load_lock
+    if (xml) {
+      var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
+      if (f) {
+        f.apply(this, arguments)
+        if (xml && goog.isFunction(xml.didLoad)) {
+          xml.didLoad.call(this, element)
+        }
+        return
       }
-      return
     }
     var required = this.required
     var isText = xml && xml.text
-    this.setRequiredFromDom(false)
+    this.setRequiredFromModel(false)
     var txt
     if (isText) {
+      // get the first child
+      var done
       eYo.Do.forEachChild(element, function (child) {
         if (child.nodeType === Node.TEXT_NODE) {
           txt = child.nodeValue
-          return true
+          if (xml && goog.isFunction(xml.didLoad)) {
+            xml.didLoad.call(this, element)
+          }
+          return done = true
         }
       })
+      if (!done) {
+        this.customizePlaceholder(element.getAttribute(eYo.Key.PLACEHOLDER))
+      }
     } else {
       txt = element.getAttribute(this.attributeName)
+      if (!goog.isDefAndNotNull(txt)) {
+        txt = element.getAttribute(this.attributeName + '_placeholder')
+        if (txt) {
+          this.customizePlaceholder(txt)
+          this.setRequiredFromModel(true)
+          if (xml && goog.isFunction(xml.didLoad)) {
+            xml.didLoad.call(this, element)
+          }
+          return true
+        }
+      }
     }
     if (goog.isDefAndNotNull(txt)) {
       if (required && txt === '?') {
-        this.fromText('', true)
+        this.fromText('', false)
       } else {
         if ((isText && txt === '?') || (!isText && txt === '')) {
-          this.setRequiredFromDom(true)
+          this.setRequiredFromModel(true)
         }
-        this.fromText(txt, true) // do not validate, there might be an error while saving, please check
+        this.fromText(txt, false) // do not validate, there might be an error while saving, please check
       }
     } else if (required) {
-      this.fromText('', true)
+      this.fromText('', false)
     }
+    if (xml && goog.isFunction(xml.didLoad)) {
+      xml.didLoad.call(this, element)
+    }
+    return true
   }
-  if (xml && xml.didLoad) {
-    xml.didLoad.call(this)
+}
+
+/**
+ * When all the data and slots have been loaded.
+ * For edython.
+ */
+eYo.Data.prototype.didLoad = function () {
+  if (this.model.didLoad) {
+    this.model.didLoad.call(this)
   }
 }
 
@@ -695,26 +949,26 @@ eYo.Data.prototype.load = function (element) {
  * When some data is required, an `?` might be used instead of nothing
  * For edython.
  */
-eYo.Data.prototype.setRequiredFromDom = function (newValue) {
-  this.required_from_dom = newValue
+eYo.Data.prototype.setRequiredFromModel = function (newValue) {
+  this.required_from_model = newValue
 }
 
 /**
  * Get the required status.
  * For edython.
  */
-eYo.Data.prototype.isRequiredFromDom = function () {
-  return this.required_from_dom
+eYo.Data.prototype.isRequiredFromModel = function () {
+  return this.required_from_model
 }
 
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
  */
-eYo.Data.prototype.clearRequiredFromDom = function () {
-  if (this.isRequiredFromDom()) {
-    this.setRequiredFromDom(false)
-    this.fromText('', true)// useful if the text was a '?'
+eYo.Data.prototype.clearRequiredFromModel = function () {
+  if (this.isRequiredFromModel()) {
+    this.setRequiredFromModel(false)
+    this.fromText('', false)// useful if the text was a '?'
     return true
   }
 }
@@ -724,10 +978,10 @@ eYo.Data.prototype.clearRequiredFromDom = function () {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFromDom = function (helper) {
-  if (this.isRequiredFromDom()) {
-    this.setRequiredFromDom(false)
-    this.fromText('', true)// useful if the text was a '?'
+eYo.Data.prototype.whenRequiredFromModel = function (helper) {
+  if (this.isRequiredFromModel()) {
+    this.setRequiredFromModel(false)
+    this.fromText('', false)// useful if the text was a '?'
     if (goog.isFunction(helper)) {
       helper.call(this)
     }

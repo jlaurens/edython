@@ -14,7 +14,7 @@
 goog.provide('eYo.DelegateSvg.Assignment')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Term')
+goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('goog.dom');
@@ -39,7 +39,7 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
       hole_value: 'target'
     }
   }
-})
+}, true)
 
 /**
  * List consolidator for target list. Used is assignment.
@@ -47,7 +47,9 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
  * @param {!String} single, the required type for a single element....
  */
 eYo.Consolidator.List.Target = function (D) {
-  var d = {}
+  var d = {
+    mandatory: 1
+  }
   goog.mixin(d, eYo.Consolidator.List.Target.data)
   goog.mixin(d, D)
   eYo.Consolidator.List.Target.superClass_.constructor.call(this, d)
@@ -84,7 +86,7 @@ goog.inherits(eYo.Consolidator.List.Target.Void, eYo.Consolidator.List.Target)
 eYo.Consolidator.List.Target.Void.data = {
   hole_value: 'name',
   check: null,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }
 
@@ -123,8 +125,15 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
-      return Type.STARRED
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
+        return Type.STARRED
+      } else {
+        if (!io.annotatedInput && goog.array.contains(check, eYo.T3.Expr.identifier_annotated)) {
+          io.annotatedInput = io.input
+        }
+        return Type.OTHER
+      }
     } else {
       return Type.OTHER
     }
@@ -179,8 +188,22 @@ eYo.Consolidator.List.Target.prototype.getCheck = function (io) {
 }
 
 /**
+ * Once the whole list has been managed,
+ * there might be unwanted things.
+ * @param {object} io
+ */
+eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
+  eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
+  if (this.setupIO(io, 0)) {
+    do {
+      io.c8n.eyo.setIncog(io.annotatedInput && io.annotatedInput !== io.input)
+    } while (this.nextInput(io))
+  }
+}
+
+/**
  * Class for a DelegateSvg, target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -193,21 +216,21 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
 
 /**
  * Class for a DelegateSvg, void_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('void_target_list', {
   list: {
     consolidator: eYo.Consolidator.List.Target,
-    empty: true,
+    mandatory: 0,
     hole_value: 'name'
   }
 })
 
 /**
  * Class for a DelegateSvg, parenth_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -220,11 +243,11 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
       value: ')'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, bracket_target_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -237,13 +260,13 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
       value: ']'
     }
   }
-})
+}, true)
 
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
  * Class for a DelegateSvg, target_list_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -253,7 +276,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
     empty: false,
     postsep: '='
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, assignment_stmt.
@@ -262,31 +285,34 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
-      NAME_VALUE: eYo.Key.NAME_VALUE,
-      NAME_ANNOTATION_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
-      TARGET_VALUE: eYo.Key.NAME_ANNOTATION_VALUE,
+      NAME: eYo.Key.NAME,
+      TARGET: eYo.Key.TARGET,
       all: [
-        eYo.Key.NAME_VALUE,
-        eYo.Key.NAME_ANNOTATION_VALUE,
-        eYo.Key.TARGET_VALUE
+        eYo.Key.NAME,
+        eYo.Key.TARGET
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.name.setIncog(newValue === this.TARGET_VALUE)
-        var slot = this.owner.slots.annotation
-        slot.required = newValue === this.NAME_ANNOTATION_VALUE
-        slot.setIncog(!slot.required)
-        var slot = this.owner.slots.target
-        slot.required = newValue === this.TARGET_VALUE
-        slot.setIncog(!slot.required)
+        this.data.name.setIncog(newValue === eYo.Key.TARGET)
+        var slot = this.owner.lhs_s
+        slot.required = newValue === eYo.Key.TARGET
+        slot.setIncog()
       },
+      xml: false
     },
     name: {
       init: '',
-      subtypes: [eYo.T3.Expr.identifier, eYo.T3.Expr.dotted_name],
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+      subtypes: [
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.dotted_name
+      ],
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var t = eYo.Do.typeOfString(newValue)
-        return this.model.subtypes.indexOf(t.expr) >= 0 ? {validated: newValue} : null
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return this.model.subtypes.indexOf(p5e.expr) >= 0
+        ? {validated: newValue}
+        : null
       },
       synchronize: true,
     },
@@ -295,29 +321,33 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     name: {
       order: 1,
       fields: {
-        edit: {
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+        bind: {
+          validate: true,
           endEditing: true,
           variable: true
-        },
+        }
       },
+      check: eYo.T3.Expr.Check.target,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromModel()) {
+            this.owner.variant_p = eYo.Key.NAME
+          }
+        }
+      }
     },
-    annotation: {
+    lhs: {
       order: 2,
-      fields: {
-        label: {
-          value: ':',
-          css: 'reserved'
-        },
-      },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression'
+      wrap: eYo.T3.Expr.target_list,
+      xml: {
+        didLoad: /** @suppress {globalThis} */ function () {
+          if (this.isRequiredFromModel()) {
+            this.owner.variant_p = eYo.Key.TARGET
+          }
+        }
+      }
     },
-    target: {
-      order: 3,
-      wrap: eYo.T3.Expr.target_list_list
-    },
-    assigned: {
+    rhs: {
       order: 4,
       fields: {
         operator: {
@@ -328,7 +358,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       wrap: eYo.T3.Expr.assigned_list
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -336,40 +366,34 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var name = this.data.name.get()
-  var variant = this.data.variant
-  var current = variant.get()
-  var F = function (content, newVariant) {
-    var menuItem = new eYo.MenuItem(content, function () {
-      block.eyo.data.variant.set(newVariant)
+eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var name_p = this.data.name_p
+  var variant_p = this.variant_p
+  var F = (content, newVariant) => {
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = newVariant
     })
-    menuItem.setEnabled(newVariant !== current)
+    menuItem.setEnabled(newVariant !== variant_p)
     mgr.addChild(menuItem, true)
   }
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
+    eYo.Do.createSPAN(name_p || eYo.Msg.Placeholder.IDENTIFIER, name_p ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, variant.NAME_VALUE)
-  content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
-    eYo.Do.createSPAN(': … = …', 'eyo-code')
-  )
-  F(content, variant.NAME_ANNOTATION_VALUE)
+  F(content, eYo.Key.NAME)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, 2)
   mgr.shouldSeparate()
-  if (current !== variant.TARGET_VALUE) {
-    var menuItem = new eYo.MenuItem(eYo.Msg.RENAME, function () {
+  if (variant_p !== eYo.Key.TARGET) {
+    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
       block.eyo.data.name.field.showEditor()
     })
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }
-  eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -416,34 +440,25 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
-    variant: {
-      NAME_EXPRESSIONS: eYo.Key.NAME_EXPRESSIONS,
-      TARGET_EXPRESSIONS: eYo.Key.TARGET_EXPRESSIONS,
-      all: [
-        eYo.Key.NAME_EXPRESSIONS,
-        eYo.Key.TARGET_EXPRESSIONS
-      ],
-      synchronize: /** @suppress {globalThis} */ function (newVariant) {
-        this.synchronize(newVariant)
-        this.data.name.setIncog(newVariant !== this.NAME)
-        var slot = this.owner.slots.target
-        slot.required = newVariant === this.TARGET_EXPRESSIONS
-        slot.setIncog(!slot.required)
-      }
-    },
     name: {
       init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.Do.typeOfString(newValue)
-        return type.expr === eYo.T3.Expr.identifier || type.expr === eYo.T3.Expr.dotted_name
-          ? {validated: newValue} : null
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.unset
+        || p5e.expr === eYo.T3.Expr.identifier
+        || p5e.expr === eYo.T3.Expr.dotted_name
+          ? {validated: newValue}
+          : null
       },
       synchronize: true
     },
     operator: {
+      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       init: '+=',
       synchronize: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       },
@@ -456,6 +471,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if (oldValue && (newValue !== oldValue)) {
+          this.didChange(oldValue, newValue)
           this.data.operator.set(newValue)
           this.data.operator.bitwise = (this.data.operator.get() !== this.get())
         }
@@ -467,6 +483,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       noUndo: true,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
           this.data.operator.set(newValue)
           this.data.operator.bitwise = (this.data.operator.get() === this.get())
@@ -479,28 +496,28 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
     name: {
       order: 1,
       fields: {
-        edit: {
-          placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+        bind: {
+          validate: true,
           endEditing: true,
           variable: true
         }
-      }
-    },
-    target: {
-      order: 2,
+      },
       check: eYo.T3.Expr.Check.augtarget
+    },
+    operator: {
+      order: 2,
+      fields: {
+        bind: {// only one `operator` field
+          value: ''
+        }
+      }
     },
     expressions: {
       order: 3,
-      fields: {
-        operator: {// only one `operator` field
-          value: ''
-        }
-      },
       wrap: eYo.T3.Expr.augassigned_list
     }
   }
-})
+}, true)
 
 /**
  * Populate the context menu for the given block.
@@ -508,11 +525,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  var variant = this.data.variant
-  const current = variant.get()
-  var withTarget = current === variant.TARGET_EXPRESSIONS
-  var name = this.data.name.get()
+eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var withTarget = this.name_s.targetBlock()
+  var name = this.name_p
   var operator = this.data.operator.get()
   var withBitwise = this.data.operator.bitwise
   var operators = withBitwise
@@ -528,7 +544,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
         eYo.Do.createSPAN(' ' + op + ' ', 'eyo-code'),
         eYo.Do.createSPAN('…', 'eyo-code')
       )
-      var menuItem = new eYo.MenuItem(content, function () {
+      var menuItem = mgr.newMenuItem(content, function () {
         console.log('Change', withBitwise ? 'bitwise' : 'number', 'operator to', op)
         withBitwise ? block.eyo.data.bitwiseOperator.set(op) : block.eyo.data.numberOperator.set(op)
       })
@@ -539,41 +555,21 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
     F(i)
   }
   mgr.shouldSeparate()
-  F = function (value, content) {
-    if (value !== current) {
-      var menuItem = new eYo.MenuItem(content, function () {
-        variant.set(value)
-      })
-      mgr.addChild(menuItem, true)
-    }
-  }
   var content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, null,
-    eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
-    eYo.Do.createSPAN(' ' + operator + ' …', 'eyo-code')
-  )
-  F(variant.NAME_EXPRESSIONS, content)
-  content =
-  goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    goog.dom.createTextNode('… ' + operator + ' …')
-  )
-  F(variant.TARGET_EXPRESSIONS, content)
-  mgr.shouldSeparate()
-  content =
   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
   var menuItem = (function (eyo) {
-    return new eYo.MenuItem(content, function () {
+    return mgr.newMenuItem(content, function () {
       eyo.data.operator.set(withBitwise
         ? eyo.data.numberOperator.get() : eyo.data.bitwiseOperator.get())
     })
   }(this))
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.DelegateSvg.Assignment.T3s = [
-  eYo.T3.Expr.term,
+  eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Expr.target_list,
   eYo.T3.Expr.target_list_list,

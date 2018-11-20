@@ -12,12 +12,16 @@
 'use strict'
 
 goog.provide('eYo.Workspace')
+goog.provide('eYo.WorkspaceDelegate')
 
 goog.require('Blockly.Workspace')
+goog.require('eYo.XRE')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
+goog.require('eYo.Xml.Recover')
+goog.require('eYo.Protocol.ChangeCount')
 goog.require('goog.crypt')
 
 /**
@@ -29,13 +33,44 @@ goog.require('goog.crypt')
 eYo.WorkspaceDelegate = function (workspace) {
   eYo.WorkspaceDelegate.superClass_.constructor.call(this)
   this.workspace_ = workspace
+  this.resetChangeCount()
 }
 goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
+
+eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
+
+/**
+ * 
+ */
+eYo.WorkspaceDelegate.prototype.getRecover = (function () {
+  var get = function () {
+    return this.recover_
+  }
+  return function () {
+    goog.asserts.assert(!this.recover_, 'Collision: this.recover_')
+    this.recover_ = new eYo.Xml.Recover(this.workspace_)
+    this.getRecover = get
+    return this.recover_
+  }
+}) ()
+
+Object.defineProperties(
+  eYo.WorkspaceDelegate.prototype,
+  {
+    recover: {
+      get () {
+        return this.getRecover()
+      }
+    }
+  }
+)
 
 // Dependency ordering?
 /**
  * Add the nodes from string to the workspace.
+ * UNUSED.
  * @param {!String} str
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
@@ -45,6 +80,7 @@ eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
 /**
  * Add the nodes from string to the workspace.
  * @param {!String} str
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromString = function (str) {
@@ -80,8 +116,9 @@ eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
 }
 
 /**
- * Add the nodes from string to the workspace.
+ * Add the nodes from UTF8 string representation to the workspace. UNUSED.
  * @param {!Array} bytes
+ * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
@@ -157,7 +194,7 @@ Blockly.Workspace.prototype.dispose = function () {
  * @return {!Blockly.Block} The created block.
  */
 eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('eyo:')) {
+  if (prototypeName && prototypeName.startsWith('eyo:')) {
     return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
   } else {
     return new Blockly.Block(/** Blockly.Workspace */ this, prototypeName, optId)
@@ -229,7 +266,7 @@ Blockly.Workspace.prototype.getBlockById = function (id) {
   }
   var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
   if (m && (block = eYo.Workspace.savedGetBlockById.call(this, m.id))) {
-    var e8r = block.eyo.inputEnumerator(block)
+    var e8r = block.eyo.inputEnumerator()
     while (e8r.next()) {
       var c8n = e8r.here.connection
       if (c8n) {
@@ -259,6 +296,7 @@ eYo.Workspace.prototype.undo = function(redo) {
     while (inputStack.length && inputEvent.group &&
         inputEvent.group == inputStack[inputStack.length - 1].group) {
       events.push(inputStack.pop())
+      // update the change count
     }
     events = Blockly.Events.filter(events, redo)
     if (events.length) {
@@ -273,13 +311,14 @@ eYo.Workspace.prototype.undo = function(redo) {
           for (var i = 0, event; event = events[i]; i++) {
             var B = this.getBlockById(event.blockId)
             if (B) {
-              B.eyo.skipRendering()
+              B.eyo.changeBegin()
               Bs.push(B)
             }
           }  
         }
         for (var i = 0, event; event = events[i]; i++) {
           event.run(redo)
+          this.eyo.updateChangeCount(event, redo)
         }
       } catch (err) {
         console.error(err)
@@ -287,8 +326,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       } finally {
         Blockly.Events.recordUndo = true
         for (var i = 0; B = Bs[i]; i++) {
-          B.eyo.unskipRendering()
-          B.eyo.render(B)
+          B.eyo.changeEnd()
         }
         eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
       }
@@ -305,7 +343,10 @@ eYo.Workspace.prototype.undo = function(redo) {
 eYo.Workspace.prototype.fireChangeListener = function(event) {
   var before = this.undoStack_.length
   eYo.Workspace.superClass_.fireChangeListener.call(this, event)
-  var after = this.undoStack_.length
+  // For newly created events, update the change count
+  if (event.recordUndo) {
+    this.eyo.updateChangeCount(event, true)
+  }
   if (before === this.undoStack_.length) {
     eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
   } else {
@@ -350,7 +391,7 @@ Blockly.onKeyDown_ = function(e) {
     if (Blockly.selected &&
         Blockly.selected.isDeletable() && Blockly.selected.isMovable()) {
       // Eyo:
-      var deep = (e.altKey ? 1 : 0 + e.ctrlKey ? 1 : 0 + e.metaKey ? 1 : 0) > 1
+      var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
       // would be to paste, which would create additional undeletable/immovable
       // blocks on the workspace.
@@ -422,7 +463,7 @@ eYo.deleteBlock = function (block, deep) {
  * @private
  */
 eYo.copyBlock = function(block, deep) {
-  var xmlBlock = eYo.Xml.blockToDom(block, false, !deep);
+  var xmlBlock = eYo.Xml.blockToDom(block, true, !deep);
   // Copy only the selected block and internal blocks.
   // Encode start position in XML.
   var xy = block.getRelativeToSurfaceXY();

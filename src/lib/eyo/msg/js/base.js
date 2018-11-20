@@ -65,6 +65,14 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.IDENTIFIER = 'nom'
 
+/** @export */ eYo.Msg.Placeholder.UNSET = ' ' // no break space
+
+/** @export */ eYo.Msg.Placeholder.ROOT = 'root'
+
+/** @export */ eYo.Msg.Placeholder.PARENT = 'parent'
+
+/** @export */ eYo.Msg.Placeholder.PRIMARY = 'primary'
+
 /** @export */ eYo.Msg.Placeholder.ATTRIBUTE = 'attribut'
 
 /** @export */ eYo.Msg.Placeholder.EXPRESSION = 'expression'
@@ -98,7 +106,7 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.REDO = 'Refaire'
 /** @export */ eYo.Msg.CLEAN_UP = 'Ranger'
 /** @export */ eYo.Msg.DUPLICATE_BLOCK = 'Dupliquer'
-/** @export */ eYo.Msg.DUPLICATE_X_BLOCKS = 'Dupliquer {0}} blocs'
+/** @export */ eYo.Msg.DUPLICATE_X_BLOCKS = 'Dupliquer {0} blocs'
 /** @export */ eYo.Msg.ADD_COMMENT = 'Ajouter un commentaire'
 /** @export */ eYo.Msg.REMOVE_COMMENT = 'Supprimer le commentaire'
 /** @export */ eYo.Msg.EXPAND_BLOCK = 'Déplier'
@@ -129,13 +137,13 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.LIST = 'Liste et assimilé'
 /** @export */ eYo.Msg.TEXT = 'Texte'
 /** @export */ eYo.Msg.LOOPING = 'Boucle'
-/** @export */ eYo.Msg.FUNCTION = 'Fonction et object'
+/** @export */ eYo.Msg.FUNCTION = 'Fonction et objet'
 
 /**
  * Internationalization entry.
  * For edython.
  * @param {!String} key  key is the string to be localized
- * @param {?String} pack pack is the pack where le localization should be found
+ * @param {?String} pack pack is the pack where the localization should be found
  * @return {!String}
  */
 eYo.Msg.i18n = function(key, pack) {

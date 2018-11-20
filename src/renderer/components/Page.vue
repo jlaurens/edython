@@ -3,6 +3,7 @@
     <page-toolbar></page-toolbar>
     <page-web-load></page-web-load>
     <page-content></page-content>
+    <page-modal></page-modal>
   </div>
 </template>
 
@@ -10,13 +11,15 @@
   import PageToolbar from './Page/Toolbar'
   import PageWebLoad from './Page/WebLoad'
   import PageContent from './Page/Content'
+  import PageModal from './Page/Modal'
   
   export default {
     name: 'page',
     components: {
       PageToolbar,
       PageWebLoad,
-      PageContent
+      PageContent,
+      PageModal
     }
   }
 </script>

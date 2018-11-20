@@ -73,15 +73,14 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
 var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
-eYo.FlyoutDelegate.prototype.BUTTON_RADIUS = one_rem
-eYo.FlyoutDelegate.prototype.BUTTON_MARGIN = one_rem / 8
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 2*(eYo.FlyoutDelegate.prototype.BUTTON_RADIUS+eYo.FlyoutDelegate.prototype.BUTTON_MARGIN)
+// eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS + 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * one_rem
+
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
-eYo.FlyoutDelegate.prototype.HEIGHT = 2 * one_rem + 2 * eYo.FlyoutDelegate.prototype.MARGIN
 
 /**
  * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
@@ -182,7 +181,7 @@ eYo.Flyout.prototype.show = function(model) {
   // Create the blocks to be shown in this flyout.
   var contents = [];
   var gaps = [];
-  var default_gap = eYo.Font.lineHeight()/2;
+  var default_gap = eYo.Font.lineHeight/4;
  
   this.permanentlyDisabled_.length = 0;
   for (var i = 0, xml; xml = model[i]; i++) {
@@ -236,7 +235,7 @@ eYo.Flyout.prototype.show = function(model) {
         var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
         contents.push({type: 'block', block: block})
         block.render()
-        block.eyo.addTooltip(block, xml.title || (xml.data && xml.data.main) || xml.data)
+        block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
         gaps.push(default_gap)
       } catch (err) {
         console.error(xml, err)
@@ -246,7 +245,7 @@ eYo.Flyout.prototype.show = function(model) {
       }
     }
   }
-
+  
   this.layout_(contents, gaps);
 
   // IE 11 is an incompetent browser that fails to fire mouseout events.
@@ -405,7 +404,7 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
   this.eyo.toolbar_.div_.style.left = x + 'px'
   this.eyo.toolbar_.div_.style.top = y + 'px'
-}
+};
 
 /**
  * Return an object with all the metrics required to size scrollbars for the
@@ -504,7 +503,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
     this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
     var div = this.eyo.toolbar_.createDom()
     goog.dom.insertSiblingAfter(div, this.svgGroup_)
-    this.eyo.toolbar_.doSelect(null)
+    this.eyo.toolbar_.doSelectGeneral(null)
   }
   this.eyo.toolbar_.resize(width, height)
 };

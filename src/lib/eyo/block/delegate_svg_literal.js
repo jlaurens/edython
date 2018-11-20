@@ -14,6 +14,7 @@
 goog.provide('eYo.DelegateSvg.Literal')
 goog.provide('eYo.DelegateSvg.Expr.numberliteral')
 
+goog.require('eYo.XRE')
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Expr')
 goog.require('goog.dom');
@@ -28,20 +29,22 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   },
   data: {
     content: {
-      init: ''
+      init: '',
+      xml: false
     }
   }
 }, eYo.DelegateSvg)
 
 /**
- * The xml type of this block, as it should appear in the saved data.
- * Numbers have no xml type.
+ * Save the block's data.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @return true if the given value is accepted, false otherwise
+ * @param {Element} element the persistent element.
  */
-eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
-  return null
+eYo.DelegateSvg.Literal.prototype.saveData = function (element) {
+  eYo.DelegateSvg.Literal.superClass_.saveData.call(this, element)
+  if (this.value_p == '') {
+    element.setAttribute(eYo.Key.PLACEHOLDER, this.data.value.model.placeholder)
+  }
 }
 
 /**
@@ -51,36 +54,46 @@ eYo.DelegateSvg.Literal.prototype.xmlType = function (block) {
 eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
-      all: [eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
+      all: [
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.integer,
+        eYo.T3.Expr.floatnumber,
+        eYo.T3.Expr.imagnumber
+      ],
       noUndo: true,
       xml: false
     },
     value: {
       main: true,
-      init: '0',
+      init: '',
+      placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.data.type.getAll()
-        var type = eYo.Do.typeOfString(newValue).expr
-        return ((types.indexOf(type) >= 0) && {validated: newValue}) || null
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var type = newValue ? eYo.Do.typeOfString(newValue).expr : eYo.T3.Expr.integer
-        this.data.type.set(type)
+        this.didChange(oldValue, newValue)
+        var type = newValue 
+          ? eYo.T3.Profile.get(newValue, null).expr 
+          : eYo.T3.Expr.integer
+        this.owner.type_p = type
       },
       synchronize: true,
       xml: {
-        text: true,
+        text: true, // there must be an only one
       },
     }
   },
   fields: {
     value: {
-      endEditing: true,
-      placeholder: eYo.Msg.Placeholder.NUMBER
+      endEditing: true
     }
   },
   output: {
-    check: eYo.T3.Expr.integer
+    check: /** @suppress {globalThis} */ function (type) {
+      return type
+    }
   }
 })
 
@@ -105,10 +118,8 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.numberliteral.prototype.consolidateType = function (block) {
-  var type = this.data.type.get()
-  block.outputConnection.setCheck(type)
-  eYo.DelegateSvg.Expr.term.superClass_.consolidateType.call(this, block)
+eYo.DelegateSvg.Expr.numberliteral.prototype.getBaseType = function () {
+  return this.type_p
 }
 
 goog.provide('eYo.DelegateSvg.Expr.shortliteral')
@@ -129,11 +140,20 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral) ||
         (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral) ||
         (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.T3.Expr.shortstringliteral)
-      }
+      },
+      synchronize: /** @this{eYo.Data} */ function (newValue) {
+        // synchronize the placeholder text
+        var p = this.content_p
+        if (!p || !p.length) {
+          this.owner.content_d.field.placeholderText(true)
+        }
+      },
+      xml: false
     },
     delimiter: {
       all: ["'", '"'],
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
@@ -148,6 +168,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       validate: /** @this{eYo.Data} */ function (newValue) {
@@ -162,15 +183,25 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     content: {
       init: '',
+      placeholder: /** @suppress {globalThis} */ function () {
+        var block = this.sourceBlock_
+        var eyo = block.eyo
+        if (this.placeholderText_) {
+          return this.placeholderText_
+        }
+        var subtype = eyo.data.subtype.get()
+        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
+          ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.data.value.consolidate()
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
         var prefix = this.data.prefix.get()
         return ((!goog.isDef(prefix) || this.data.subtype.model.getPossible.call(this, prefix, newValue)) && {validated: newValue}) || null
       },
-      synchronize: true,
-      xml: false,
+      synchronize: true
     },
     value: {
       main: true,
@@ -179,6 +210,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return goog.isString(newValue)? {validated: newValue}: null
       },
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var data = this.data
         var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -195,9 +227,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
-          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
+          this.owner.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
@@ -210,7 +242,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         }
       },
       xml: {
-        text: true,
+        text: true, // there must be an only one
       },
     },
   },
@@ -222,16 +254,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       css: 'reserved'
     },
     content: { // this is the only really unordered field
-      placeholder: /** @suppress {globalThis} */ function () {
-        var block = this.sourceBlock_
-        var eyo = block.eyo
-        if (this.placeholderText_) {
-          return this.placeholderText_
-        }
-        var subtype = eyo.data.subtype.get()
-        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.shortbytesliteral
-          ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
-      },
       startEditing: /** @suppress {globalThis} */ function () {
         this.eyo.getDlgt().fields.end.setVisible(false)
       },
@@ -245,7 +267,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     }
   },
   output: {
-    check: eYo.T3.Expr.shortstringliteral
+    check: /** @suppress globalThis */ function () {
+      return [this.sourceBlock().eyo.data.subtype.get()]
+    }
   }
 })
 
@@ -254,12 +278,14 @@ eYo.DelegateSvg.Manager.register('shortstringliteral')
 eYo.DelegateSvg.Manager.register('shortbytesliteral')
 
 /**
- * Set the type dynamically from the prefix.
- * @param {!Blockly.Block} block the owner of the receiver
+ * The type and connection depend on the properties prefix, value and variant.
+ * For edython.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function (block) {
-  var type = this.data.subtype.get()
-  block.outputConnection.setCheck([type])
+eYo.DelegateSvg.Expr.shortliteral.prototype.getBaseType = function () {
+  return this.subtype_p
 }
 
 /**
@@ -268,7 +294,7 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.consolidateType = function (block) {
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant) {
+eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (variant) {
   return eYo.Do.createSPAN(variant + '…' + variant, 'eyo-code')
 }
 
@@ -279,7 +305,8 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (block, variant
  * @private
  * @suppress {globalThis}
 */
-eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
   var current = this.data.prefix.get()
@@ -293,7 +320,7 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
         eYo.Do.createSPAN(msg, 'eyo-code'),
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
-      return new eYo.MenuItem(title, function () {
+      return mgr.newMenuItem(title, function () {
         block.eyo.data.prefix.set(prefix)
       })
     }
@@ -332,9 +359,9 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (block, mgr)
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (block, mgr) {
-  eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, block, mgr)
-  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
+  eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
+  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -364,6 +391,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     value: {
       init: "''''''",
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         var data = this.data
         var F = function (xre, type) {
           var m = XRegExp.exec(newValue, xre)
@@ -380,9 +408,9 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
         F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral) ||
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
-          this.owner.removeError(this.owner.block_, eYo.Key.VALUE)
+          this.owner.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(this.owner.block_, eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       }

@@ -14,6 +14,7 @@
 goog.provide('eYo.KeyHandler')
 goog.provide('eYo.KeyHandlerMenu')
 
+goog.require('eYo.XRE')
 goog.require('eYo.DelegateSvg')
 goog.require('eYo.PopupMenu')
 goog.require('eYo.MenuItem')
@@ -49,7 +50,9 @@ console.warn('Problem inserting a print block')
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
 eYo.KeyHandler = (function () {
-  var me = {MAX_CHILD_COUNT: 20}
+  var me = {
+    MAX_CHILD_COUNT: 20
+  }
   var keys_ = []
   var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
@@ -71,7 +74,7 @@ eYo.KeyHandler = (function () {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isString(model.type), 'No model to register for ' + key)
+      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isFunction(model.action) || goog.isString(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -86,24 +89,6 @@ eYo.KeyHandler = (function () {
         model: model
       })
     }
-  }
-  /**
-   * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
-   * If sep is not in the list, returns undefined.
-   * split('foo', 'f') -> ['', 'oo']
-   * split('foo', 'o') -> ['f', 'o']
-   * split('bar', 'r') -> ['ba', '']
-   * split('foo', 'b') -> undefined
-   * @param {string} key
-   * @param {string} sep
-   * @return an array of 2 elements, what is before sep and what is after
-   */
-  me.split = function (key, sep) {
-    var i = key.indexOf(sep)
-    if (i < 0) {
-      return undefined
-    }
-    return [key.substring(0, i), key.substring(i + sep.length)]
   }
   me.handleMenuKeyEvent = function (event) {
     var K = event.key
@@ -131,11 +116,11 @@ eYo.KeyHandler = (function () {
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected block can handle the model
     var B = Blockly.selected
-    var c8n = eYo.SelectedConnection.get()
+    var c8n = eYo.SelectedConnection
     if (B && !c8n) {
       var D = model.data
       var done = false
-      if (D && B.eyo.initDataWithModel(B, D)) {
+      if (D && B.eyo.setDataWithModel(D)) {
         // yes it does
         return
       }
@@ -157,7 +142,7 @@ eYo.KeyHandler = (function () {
       return
     }
     if (current_.length) {
-      model = current_[0]
+      model = current_[0].model
       me.handleModel(model)
     }
   }
@@ -165,23 +150,27 @@ eYo.KeyHandler = (function () {
   me.handleModel = function (model) {
     // if key is a number, then create a number block
     // otherwise, take the first model and pass it to handleModel
+    if (goog.isFunction(model.action)) {
+      model.action.call(me, model.model)
+      return
+    }
     var B = Blockly.selected
     if (B) {
-      var c8n = eYo.SelectedConnection.get()
+      var c8n = eYo.SelectedConnection
       var newB = model.parent
-      ? B.eyo.insertParentWithModel(B, model) || B.eyo.insertBlockWithModel(B, model, c8n)
-      : B.eyo.insertBlockWithModel(B, model, c8n) || B.eyo.insertParentWithModel(B, model)
+      ? B.eyo.insertParentWithModel(model) || B.eyo.insertBlockWithModel(model, c8n)
+      : B.eyo.insertBlockWithModel(model, c8n) || B.eyo.insertParentWithModel(model)
       if (newB) {
         if (c8n) {
           // There was a selected connection,
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
           var doFirst = function (block, type) {
-            var e8r = block.eyo.inputEnumerator(block)
+            var e8r = block.eyo.inputEnumerator()
             while (e8r.next()) {
               if ((c8n = e8r.here.connection) && c8n.type === type) {
-                if (!c8n.hidden_ && !c8n.targetConnection) {
-                  eYo.SelectedConnection.set(c8n)
+                if (!c8n.hidden_ && !c8n.targetConnection && (!c8n.eyo.source || !c8n.eyo.source.bindField)) {
+                  eYo.SelectedConnection = c8n
                   return true
                 } else if (c8n.targetConnection) {
                   return doFirst(c8n.targetBlock(), type)
@@ -192,25 +181,25 @@ eYo.KeyHandler = (function () {
           if (doFirst(newB, Blockly.INPUT_VALUE)) {
             return true
           } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
-            eYo.SelectedConnection.set(c8n)
+            eYo.SelectedConnection = c8n
             return true
           }
-          eYo.SelectedConnection.set(null)
+          eYo.SelectedConnection = null
           newB.select()
           return true
         }
         // no selected connection
         var parent = B
         do {
-          var e8r = parent.eyo.inputEnumerator(parent)
+          var e8r = parent.eyo.inputEnumerator()
           while (e8r.next()) {
             if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
-              eYo.SelectedConnection.set(c8n)
+              eYo.SelectedConnection = c8n
               return true
             }
           }
         } while ((parent = parent.getSurroundParent(parent)))
-        eYo.SelectedConnection.set(null)
+        eYo.SelectedConnection = null
         newB.select()
         return true
       }
@@ -472,7 +461,7 @@ eYo.KeyHandler = (function () {
             me.alreadyListening_ = false
             var target = event.target
             if (target) {
-              var targetModel = target.getModel()
+              var targetModel = target.model_
               if (targetModel) {
                 setTimeout(function () { // try/finally?
                   if (me.alreadyListened_) {
@@ -497,8 +486,8 @@ eYo.KeyHandler = (function () {
             }
           })
         }
-        var scaledHeight = eYo.Font.lineHeight() * B.workspace.scale
-        var c8n = eYo.SelectedConnection.get()
+        var scaledHeight = eYo.Font.lineHeight * B.workspace.scale
+        var c8n = eYo.SelectedConnection
         if (c8n && c8n.sourceBlock_) {
           var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)
           var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
@@ -509,11 +498,11 @@ eYo.KeyHandler = (function () {
         menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
-        var F = function (f) {
+        var F = (f) => {
           event.preventDefault()
           event.stopPropagation()
-          f.call(B.eyo, B)
-          if (!B.eyo.inVisibleArea(B)) {
+          f.call(B.eyo)
+          if (!B.eyo.inVisibleArea()) {
             B.workspace.centerOnBlock(B.id)
           }
         }
@@ -532,21 +521,57 @@ eYo.KeyHandler = (function () {
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
         if (block) {
           block.select()
-          if (!block.eyo.inVisibleArea(block)) {
+          if (!block.eyo.inVisibleArea()) {
             block.workspace.centerOnBlock(block.id)
           }
         }
       }
       switch (k) {
-      case 'arrowdown': F(function (P) { return P.y }); return
-      case 'arrowup': F(function (P) { return -P.y }); return
-      case 'arrowleft': F(function (P) { return -P.x }); return
-      case 'arrowright': F(function (P) { return P.x })
+      case 'arrowdown': F((P) => { return P.y }); return
+      case 'arrowup': F((P) => { return -P.y }); return
+      case 'arrowleft': F((P) => { return -P.x }); return
+      case 'arrowright': F((P) => { return P.x })
       }
     }
   }
   return me
 }())
+
+/**
+ * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
+ * If sep is not in the list, returns undefined.
+ * split('foo', 'f') -> ['', 'oo']
+ * split('foo', 'o') -> ['f', 'o']
+ * split('bar', 'r') -> ['ba', '']
+ * split('foo', 'b') -> undefined
+ * 
+ * @param {*} key 
+ * @param {*} sep 
+ * @return an array of 2 elements, what is before `sep` and what is after
+ */
+eYo.KeyHandler.split = function (key, sep) {
+  var i = key.indexOf(sep)
+  if (i < 0) {
+    return undefined
+  }
+  return [key.substring(0, i), key.substring(i + sep.length)]
+}
+
+  /**
+ * Turn the selected block into a call block or insert a call block.
+ * @param {*} model 
+ */
+eYo.KeyHandler.makeCall = function (model) {
+  this.processModel(model)
+}
+
+/**
+ * Turn the selected block into a slicing, or inert a slicing
+ * @param {*} model 
+ */
+eYo.KeyHandler.makeSlicing = function (model) {
+  this.processModel(model)
+}
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
@@ -558,25 +583,19 @@ var Ks = {
   'class': eYo.T3.Stmt.classdef_part,
   'except': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT
-    }
+    variant_d: eYo.Key.NONE
   },
   'except …': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT_EXPRESSION
-    }
+    variant_d: eYo.Key.EXPRESSION
   },
   'except … as …': {
     type: eYo.T3.Stmt.except_part,
-    data: {
-      variant: eYo.Key.EXCEPT_AS
-    }
+    variant_d: eYo.Key.ALIASED
   },
   'finally': eYo.T3.Stmt.finally_part,
   'for': eYo.T3.Stmt.for_part,
-  '@': eYo.T3.Stmt.decorator,
+  '@': eYo.T3.Stmt.decorator_stmt,
   'def': eYo.T3.Stmt.funcdef_part,
   'import': eYo.T3.Stmt.import_stmt,
   'try': eYo.T3.Stmt.try_part,
@@ -591,13 +610,13 @@ var Ks = {
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-        B.eyo.replaceBlock(B, parent)
+        B.eyo.replaceBlock(parent)
         return
       }
-      if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockWithModel(B, eYo.T3.Expr.not_test)
+      if (eYo.SelectedConnection) {
+        B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
       } else {
-        B.eyo.insertParentWithModel(B, eYo.T3.Expr.not_test)
+        B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
       }
     }
   },
@@ -614,10 +633,10 @@ var Ks = {
           main: '+'
         }
       }
-      if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockWithModel(B, model)
+      if (eYo.SelectedConnection) {
+        B.eyo.insertBlockWithModel(model)
       } else {
-        B.eyo.insertParentWithModel(B, model)
+        B.eyo.insertParentWithModel(model)
       }
     }
   }
@@ -633,7 +652,7 @@ Ks = function () {
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === op) {
-        B.eyo.replaceBlock(B, parent)
+        B.eyo.replaceBlock(parent)
         return
       }
       var model = {
@@ -642,10 +661,10 @@ Ks = function () {
           main: op
         }
       }
-      if (eYo.SelectedConnection.get()) {
-        B.eyo.insertBlockWithModel(B, model)
+      if (eYo.SelectedConnection) {
+        B.eyo.insertBlockWithModel(model)
       } else {
-        B.eyo.insertParentWithModel(B, model)
+        B.eyo.insertParentWithModel(model)
       }
     }
   }
@@ -726,7 +745,7 @@ Ks = ['True', 'False', 'None', '...']
 for (var i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register(K, {
     type: eYo.T3.Expr.builtin__object,
-    subtype: K
+    data: K
   })
 }
 Ks = ['is', 'is not', 'in', 'not in']
@@ -755,27 +774,18 @@ Ks = {
   'del …': eYo.T3.Stmt.del_stmt,
   'return …': eYo.T3.Stmt.return_stmt,
   'yield …': eYo.T3.Stmt.yield_stmt,
-  'raise': {
-    type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE
-    }
-  },
+  'raise': eYo.T3.Stmt.raise_stmt,
   'raise …': {
     type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE_EXPRESSION
-    }
+    variant_d: eYo.Key.EXPRESSION
   },
   'raise … from …': {
     type: eYo.T3.Stmt.raise_stmt,
-    data: {
-      variant: eYo.Key.RAISE_FROM
-    }
+    variant_d: eYo.Key.FROM
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,
-  '# comment': eYo.T3.Stmt.any_stmt,
+  '# comment': eYo.T3.Stmt.expression_stmt,
   'global …': {
     type: eYo.T3.Stmt.global_nonlocal_stmt,
     data: {
@@ -788,7 +798,7 @@ Ks = {
       variant: eYo.Key.NONLOCAL
     }
   },
-  '@decorator': eYo.T3.Stmt.decorator,
+  '@decorator': eYo.T3.Stmt.decorator_stmt,
   '"""…"""(stmt)': {
     type: eYo.T3.Stmt.docstring_stmt,
     data: {
@@ -802,25 +812,29 @@ Ks = {
     }
   },
   '"""…"""': {
-    type: eYo.T3.Expr.longstringliteral,
+    type: eYo.T3.Expr.longliteral,
     data: {
       delimiter: '"""'
     }
   },
   "'''…'''": {
-    type: eYo.T3.Expr.longstringliteral,
+    type: eYo.T3.Expr.longliteral,
     data: {
       delimiter: "'''"
     }
   },
   'print(…)': eYo.T3.Stmt.builtin__print_stmt,
-  'input(…)': eYo.T3.Expr.builtin__input_expr,
-  'range(…)': eYo.T3.Expr.builtin__range,
+  'input(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'input'
+  },
+  'range(…)': {
+    type: eYo.T3.Expr.call_expr,
+    data: 'range'
+  },
   'int(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'int'
-    }
+    data: 'int'
   },
   'float(…)': {
     type: eYo.T3.Expr.call_expr,
@@ -872,12 +886,22 @@ Ks = {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: 'conjugate',
-      variant: eYo.Key.EXPRESSION_ATTRIBUTE
+      variant: eYo.Key.BLOCK_NAME
     }
   },
   'f(…)': {
-    type: eYo.T3.Expr.call_expr,
-    data: ''
+    action: eYo.KeyHandler.makeCall,
+    model: {
+      type: eYo.T3.Expr.call_expr,
+      data: '' 
+    }
+  },
+  'x[…]': {
+    action: eYo.KeyHandler.makeSlicing,
+    model: {
+      type: eYo.T3.Expr.slicing,
+      parent: true
+    }
   },
   'module as alias': eYo.T3.Expr.dotted_name_as,
   '(…)': {
@@ -895,10 +919,6 @@ Ks = {
   '{…}': {
     type: eYo.T3.Expr.set_display,
     parent: true
-  },
-  'foo[…]': {
-    type: eYo.T3.Expr.slicing,
-    parent: true
   }
 }
 console.warn('Implement support for `key` in range above')
@@ -912,5 +932,14 @@ for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Stmt.augmented_assignment_stmt,
     operator: K
+  })
+}
+
+// cmath
+Ks = ['real', 'imag']
+for (i = 0; (K = Ks[i++]);) {
+  eYo.KeyHandler.register('… ' + K + ' …', {
+    type: eYo.T3.Expr.object_comparison,
+    data: K
   })
 }

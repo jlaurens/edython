@@ -33,39 +33,21 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
 }, eYo.DelegateSvg)
 
 /**
+ * Whether the block has a suite statement.
+ * @private
+ */
+eYo.DelegateSvg.Group.prototype.hasSuiteStatement_ = function () {
+  return true
+}
+
+/**
  * Block path.
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
+eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
-  var w = block.width
-  var line = eYo.Font.lineHeight()
-  var h = block.isCollapsed() ? 2 * line : block.height
-  var steps = ['m ' + w + ',0 v ' + line]
-  h -= line
-  var r = eYo.Style.Path.radius()
-  var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var t = eYo.Font.tabWidth
-  w -= t + r
-  steps.push('h ' + (-w))
-  steps.push(a + (-r) + ',' + r)
-  h -= 2 * r// Assuming 2*r<line height...
-  steps.push(' v ' + h)
-  steps.push(a + r + ',' + r)
-  a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (this.hasNextStatement_(block)) {
-    steps.push('h ' + (-t - r))
-  } else {
-    steps.push('h ' + (-t) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  if (this.hasPreviousStatement_(block)) {
-    steps.push('V 0 z')
-  } else {
-    steps.push('V ' + r + a + r + ',' + (-r) + ' z')
-  }
-  return steps.join(' ')
+  return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
 /**
@@ -73,61 +55,19 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function (block) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupContourPathDef_ = function (block) {
+eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
   /* eslint-disable indent */
-  var w = block.width
-  var line = eYo.Font.lineHeight()
-  var h = block.isCollapsed() ? 2 * line : block.height
-  var t = eYo.Font.tabWidth
-  var r = eYo.Style.Path.radius()
-  var a = ' a ' + r + ', ' + r + ' 0 0 0 '
-  var previous = this.hasPreviousStatement_(block)
-  var next = this.hasNextStatement_(block)
-  if (previous) {
-    var steps = ['m 0,0 h ' + w]
-  } else {
-    steps = ['m ' + r + ',0 h ' + (w - r)]
-  }
-  steps.push('v ' + line)
-  h -= line
-  w -= t + r
-  steps.push('h ' + (-w))
-  steps.push(a + (-r) + ',' + r)
-  h -= 2 * r// Assuming 2*r<line height...
-  steps.push(' v ' + h)
-  steps.push(a + r + ',' + r)
-  a = ' a ' + r + ', ' + r + ' 0 0 1 '
-  if (next) {
-    steps.push('h ' + (-t - r))
-  } else {
-    steps.push('h ' + (-t) + a + (-r) + ',' + (-r))
-    h -= r
-  }
-  if (previous) {
-    steps.push('V 0')
-  } else {
-    steps.push('V ' + r + a + r + ',' + (-r))
-  }
-  return steps.join(' ')
-} /* eslint-enable indent */
-
-/**
- * Block path.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function (block) {
-  /* eslint-disable indent */
+  var block = this.block_
   if (block.isCollapsed()) {
-    var line = eYo.Font.lineHeight()
+    var line = eYo.Font.lineHeight
     var t = eYo.Font.tabWidth
-    var r = eYo.Style.Path.radius()
+    var r = eYo.Style.Path.r
     return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r) +
     ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
-  return eYo.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this, block)
+  return eYo.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this)
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Group.prototype.shapePathDef_ =
@@ -136,57 +76,28 @@ eYo.DelegateSvg.Group.prototype.shapePathDef_ =
       eYo.DelegateSvg.Group.prototype.groupShapePathDef_
 
 /**
- * Render an input of a group block.
- * @param io parameter.
- * @private
+ * Get the suite count.
+ * For edython.
+ * @param {boolean} newValue
  */
-eYo.DelegateSvg.Group.prototype.renderDrawSuiteInput_ = function (io) {
-  /* eslint-disable indent */
-  if (!io.canStatement || io.input.type !== Blockly.NEXT_STATEMENT) {
-    return false
-  }
-  io.MinMaxCursorX = 2 * eYo.Font.tabWidth
-  io.canStatement = false
-  var c8n = io.input.connection
-  // this must be the last one
-  if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
-    var target = c8n.targetBlock()
-    if (target) {
-      var root = target.getSvgRoot()
-      if (root) {
-        c8n.tighten_()
-        try {
-          target.eyo.downRendering = true
-          target.render()
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          target.eyo.downRendering = false
-        }
-      }
-    }
-    io.block.height = eYo.Font.lineHeight() * io.block.eyo.getStatementCount(io.block)
-  }
-  return true
-} /* eslint-enable indent */
+eYo.DelegateSvg.Group.prototype.getSuiteCount_ = function () {
+  return Math.max(1, this.suiteCount_)
+}
 
 /**
  * Render the suite block, if relevant.
- * @param {!Block} block
- * @return {boolean=} true if an rendering message was sent, false othrwise.
+ * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
+eYo.DelegateSvg.Group.prototype.renderSuite_ = function () {
   if (!this.inputSuite) {
     return
   }
   if (eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
   }
-  var c8n = this.inputSuite.connection
+  var c8n = this.suiteConnection
   if (c8n) {
-    c8n.setOffsetInBlock(eYo.Font.tabWidth, eYo.Font.lineHeight())
+    c8n.eyo.setOffset(eYo.Font.tabW, 1)
     var target = c8n.targetBlock()
     if (target) {
       var root = target.getSvgRoot()
@@ -195,7 +106,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
         if (!target.rendered || !target.eyo.upRendering) {
           try {
             target.eyo.downRendering = true
-            target.render()
+            target.eyo.render(false)
           } catch (err) {
             console.error(err)
             throw err
@@ -205,7 +116,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
         }
       }
     }
-    block.height = eYo.Font.lineHeight() * this.getStatementCount(block)
+    this.size.l = this.getStatementCount()
     return true
   }
 }
@@ -216,25 +127,36 @@ eYo.DelegateSvg.Group.prototype.renderDrawSuite_ = function (block) {
  * @private
  */
 eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawDummyInput_(io) ||
-    this.renderDrawValueInput_(io) ||
+  this.renderDrawValueInput_(io) ||
       this.renderDrawSuiteInput_(io)
 }
 
 /**
+ * Is it still relevant ?
+ * There is a difference with the connection delegate's
+ * highlight method.
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
+eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
+  var block = c8n.sourceBlock_
   if (!block.workspace) {
     return
   }
   var steps
-  block = c8n.sourceBlock_
   if (c8n.type === Blockly.INPUT_VALUE) {
     if (c8n.isConnected()) {
-      steps = this.valuePathDef_(c8n.targetBlock())
+      steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
-      steps = this.placeHolderPathDefWidth_(0, c8n).d
+      steps = c8n.eyo.placeHolderPathWidthDef_().d
+      Blockly.Connection.highlightedPath_ =
+      Blockly.utils.createSvgElement('path',
+        {
+          class: 'blocklyHighlightedConnectionPath',
+          d: steps
+        },
+        c8n.sourceBlock_.getSvgRoot()
+      )
+      return
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5'
@@ -242,17 +164,17 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (block, c8n) {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + a + (-2 * r) + ' z'
     }
   } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
     r = eYo.Style.Path.Selected.width / 2
     a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Font.tabWidth) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     } else {
-      steps = 'm 0,' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.radius()) + a + (-2 * r) + ' z'
+      steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (block.width - eYo.Unit.x / 2) + a + (-2 * r) + ' z'
     }
   }
   var xy = block.getRelativeToSurfaceXY()
@@ -285,7 +207,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, elif_part block.
@@ -293,9 +215,6 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('elif_part', {
-  xml: {
-    tag: 'elif',
-  },
   fields: {
     label: 'elif'
   },
@@ -306,7 +225,7 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, else_part block.
@@ -322,23 +241,34 @@ eYo.DelegateSvg.Group.makeSubclass('elif_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('else_part', {
-  xml: {
-    tag: 'else',
-  },
   fields: {
     label: 'else'
   },
   statement: {
     previous: {
-      didConnect: /** @suppress {globalThis} */ function (oldTargetConnection, oldConnection) {
-        this.eyo.consolidateSource()
-      },
-      didDisconnect: /** @suppress {globalThis} */ function (oldConnection) {
-        this.eyo.consolidateSource()
+      check: /** @suppress {globalThis} */ function (type) {
+        return [
+          type === eYo.T3.Stmt.else_part
+          ? eYo.T3.Stmt.Previous.else_part
+          : type === eYo.T3.Stmt.try_else_part
+            ? eYo.T3.Stmt.Previous.try_else_part
+            : eYo.T3.Stmt.Previous.last_else_part
+        ]
+      }
+    },
+    next: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return [
+          type === eYo.T3.Stmt.else_part
+          ? eYo.T3.Stmt.Next.else_part
+          : type === eYo.T3.Stmt.try_else_part
+            ? eYo.T3.Stmt.Next.try_else_part
+            : eYo.T3.Stmt.Next.last_else_part
+        ]
       }
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Stmt.last_else_part = eYo.DelegateSvg.Stmt.try_else_part = eYo.DelegateSvg.Stmt.else_part
 eYo.DelegateSvg.Manager.register('try_else_part')
@@ -355,43 +285,34 @@ eYo.DelegateSvg.Manager.register('last_else_part')
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.consolidateType = function (block) {
-  var T3 = eYo.T3.Stmt
-  var expected = T3.else_part
-  var P = T3.Previous.else_part
-  var N = T3.Next.else_part
-  var targetConnection
-  if ((targetConnection = block.previousConnection.targetConnection)) {
-    var target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
-      expected = T3.try_else_part
-      P = T3.Previous.try_else_part
-      N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
-      expected = T3.last_else_part
-      P = T3.Previous.last_else_part
-      N = T3.Next.last_else_part
-    }
-  } else if ((targetConnection = block.nextConnection.targetConnection)) {
-    // the previous connection did not add any constrain
-    // may be the next connection will?
-    target = targetConnection.getSourceBlock()
-    if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
-      expected = T3.try_else_part
-      P = T3.Previous.try_else_part
-      N = T3.Next.try_else_part
-    } else if ((targetConnection.check_ && targetConnection.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
-      expected = T3.last_else_part
-      P = T3.Previous.last_else_part
-      N = T3.Next.last_else_part
-    }
+eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var block = this.block_
+    var T3 = eYo.T3.Stmt
+    var type = T3.else_part
+    var targetC8n
+    if ((targetC8n = block.previousConnection.targetConnection)) {
+      var target = targetC8n.getSourceBlock()
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+        type = T3.try_else_part
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+        type = T3.last_else_part
+      }
+    } else if ((targetC8n = this.nextConnection.targetConnection)) {
+      // the previous connection did not add any constrain
+      // may be the next connection will?
+      target = targetC8n.getSourceBlock()
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+        type = T3.try_else_part
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+        type = T3.last_else_part
+      }
+    }  
+    this.setupType(type) // bad smell, the code has changed
+    return block.type
   }
-  if (block.type !== expected) {
-    this.setupType(block, expected)
-    block.previousConnection.setCheck(P)
-    block.nextConnection.setCheck(N)
-  }
-}
+)
 
 /**
  * Class for a DelegateSvg, while_part block.
@@ -412,7 +333,7 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
       hole_value: 'condition'
     }
   }
-})
+}, true)
 
 /**
  * Will draw the block. Default implementation does nothing.
@@ -420,8 +341,8 @@ eYo.DelegateSvg.Group.makeSubclass('while_part', {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
-  eYo.DelegateSvg.Group.superClass_.willRender_.call(this, block)
+eYo.DelegateSvg.Group.prototype.willRender_ = function (recorder) {
+  eYo.DelegateSvg.Group.superClass_.willRender_.call(this, recorder)
   var field = this.fields.async
   if (field) {
     field.setVisible(this.async_)
@@ -434,25 +355,26 @@ eYo.DelegateSvg.Group.prototype.willRender_ = function (block) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (block, mgr) {
+eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
   if (block.eyo.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (block.eyo.getProperty(block, eYo.Key.ASYNC)) {
-      mgr.addRemoveChild(new eYo.MenuItem(content, function () {
+      mgr.addRemoveChild(mgr.newMenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(new eYo.MenuItem(content, function () {
+      mgr.addInsertChild(mgr.newMenuItem(content, function () {
         block.eyo.setProperty(block, eYo.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()
     }
   }
-  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, block, mgr)
+  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -482,7 +404,7 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
       hole_value: 'set'
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, with_part block.
@@ -502,7 +424,7 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
       wrap: eYo.T3.Expr.with_item_list
     }
   }
-})
+}, true)
 
 /**
  * Class for a DelegateSvg, expression_as block.
@@ -525,7 +447,7 @@ eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
       hole_value: 'target'
     }
   }
-})
+}, true)
 
 eYo.DelegateSvg.Group.T3s = [
   eYo.T3.Stmt.if_part,

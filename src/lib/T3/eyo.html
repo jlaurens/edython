@@ -7,20 +7,14 @@
 </head>
 <body>
 <pre>
-any_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at least one of them...
+expression_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at least one of them...
 call_stmt/call ::= call_expr
-base_call_stmt ::= base_call_expr
+base_call_stmt ::= call_expr
 module__call_expr ::= "module".foo (args)
 module__call_stmt ::= module__call_expr
 builtin__print_expr/print ::= "print(" argument_list ")"
 builtin__print_stmt/print ::= builtin__print_expr
-builtin__range/range ::= "range(" range_argument_list ")"
-range_argument_list ::= 3 elements
-builtin__input_expr/input ::= "input(" [any_argument] ")"
-argument_list_2 ::= 2 arguments at most
-argument_list_3 ::= 3 arguments at most
-argument_list_4 ::= 4 arguments at most
-argument_list_5 ::= 5 arguments at most
+print_argument_list_comprehensive ::= subclass of argument_list_comprehensive
 </pre>
 
 Adding weight to types
@@ -89,7 +83,6 @@ bracket_target_list(1000)
 void_target_list(1000)
 target_star(1000)
 dotted_name_as(1000)
-term(1000)
 parent_module(1000)
 identifier(1000)
 identifier_as(1000)
@@ -176,7 +169,7 @@ eYo.T3.Expr.numberliteral
 eYo.T3.Stmt.builtin__print_stmt
 eYo.T3.Expr.builtin__input_expr
 eYo.T3.Stmt.assignment_stmt
-eYo.T3.Expr.term
+eYo.T3.Expr.primary
 eYo.T3.Expr.u_expr
 eYo.T3.Expr.m_expr
 eYo.T3.Expr.a_expr
@@ -207,7 +200,6 @@ eYo.T3.Expr.or_expr
 eYo.T3.Expr.starred_expression
 eYo.T3.Expr.any
 eYo.T3.Stmt.expression_stmt
-eYo.T3.Stmt.any_stmt
 eYo.T3.Stmt.del_stmt
 eYo.T3.Stmt.global_nonlocal_stmt
 eYo.T3.Expr.lambda

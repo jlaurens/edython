@@ -30,6 +30,7 @@
 goog.provide('eYo.Xml')
 
 goog.require('eYo.Const')
+goog.require('eYo.XRE')
 goog.require('eYo.T3')
 
 goog.require('Blockly.Xml')
@@ -40,8 +41,14 @@ goog.require('eYo.DelegateSvg.Random');
 goog.require('eYo.DelegateSvg.Math');
 goog.require('eYo.DelegateSvg.CMath');
 goog.require('eYo.DelegateSvg.Turtle');
+goog.require('eYo.DelegateSvg.Decimal');
+goog.require('eYo.DelegateSvg.Fraction');
+goog.require('eYo.DelegateSvg.Statistics');
 
 eYo.Xml = {
+  URN: 'urn:edython:',
+  XMLNS: 'urn:edython:0.2',
+  PYTHON: 'python',
   EXPR: 'x', // tag name
   STMT: 's', // tag name
   SLOT: 'slot', // attribute name
@@ -67,8 +74,6 @@ eYo.Xml = {
   PARAMETER: 'parameter',
   LAMBDA: 'lambda',
   CALL: 'call',
-  BUILTIN: 'builtin',
-  BUILTIN_CALL: 'builtin__call',
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
 
@@ -76,7 +81,7 @@ eYo.Xml = {
   
   WORKSPACE: 'workspace', // tag name
   CONTENT: 'content', // tag name
-  EDYTHON: 'edython' // tag name
+  EDYTHON: 'edython', // tag name
 }
 
 console.warn('No eYo.Xml.CALL !!!!')
@@ -88,8 +93,8 @@ console.warn('No eYo.Xml.CALL !!!!')
  * @return {string} Value representation.
  */
 Blockly.Xml.domToText = function (dom) {
-  dom.setAttribute('xmlns', 'urn:edython:1.0')
-  dom.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  dom.setAttribute('xmlns', eYo.Xml.XMLNS)
+  dom.setAttribute('xmlns:eyo', eYo.Xml.XMLNS)
   var oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(dom)
 }
@@ -109,10 +114,22 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
   var xml = root.firstChild.firstChild
   var blocks = workspace.getTopBlocks(true);
   for (var i = 0, block; block = blocks[i]; i++) {
-    xml.appendChild(Blockly.Xml.blockToDomWithXY(block, opt_noId));
+    var dom = Blockly.Xml.blockToDomWithXY(block, opt_noId)
+    var p = new eYo.PythonExporter()
+    try {
+      var code = p.export(block, true)
+      if (code.length) {
+        var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+        goog.dom.insertChildAt(dom, py_dom, 0)
+        goog.dom.appendChild(py_dom, goog.dom.createTextNode(code))        
+      }
+    } finally {
+      xml.appendChild(dom);
+    }
+    
   }
-  root.setAttribute('xmlns', 'urn:edython:1.0')
-  root.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  root.setAttribute('xmlns', eYo.Xml.XMLNS)
+  root.setAttribute('xmlns:eyo', eYo.Xml.XMLNS)
   return root;
 };
 
@@ -121,10 +138,11 @@ eYo.Xml.workspaceToDom = function(workspace, opt_noId) {
  * overriden to support other kind of blocks
  * This is a copy with a tiny formal modification.
  * @param {!Element} xml XML DOM.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {!*} owner The workspace or the parent block.
  * @return {Array.<string>} An array containing new block IDs.
  */
-Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) {
+Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
+  var workspace = owner
   if (xml instanceof Blockly.Workspace) {
     var swap = xml
     xml = workspace
@@ -132,54 +150,65 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
     console.warn('Deprecated call to Blockly.Xml.domToWorkspace, ' +
                  'swap the arguments.')
   }
+  var workspace = owner.workspace || owner
   var width // Not used in LTR.
   if (workspace.RTL) {
     width = workspace.getWidth()
   }
+  if (goog.isString(xml)) {
+    var parser = new DOMParser()
+    xml = parser.parseFromString(xml, 'application/xml')
+  }
   var newBlockIds = [] // A list of block IDs added by this call.
-  Blockly.Field.startCache()
   // Safari 7.1.3 is known to provide node lists with extra references to
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
   
+  workspace.eyo.recover.whenRecovered(
+    (block) => {
+      newBlockIds.push(block.id)   
+    }
+  )
+
   // Disable workspace resizes as an optimization.
   if (workspace.setResizesEnabled) {
     workspace.setResizesEnabled(false)
   }
 
-  // This part is the custom part for edython
+  // This part is a custom part for edython
   var newBlock = function (xmlChild) {
     var block
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
-      if ((block = eYo.Xml.domToBlock(xmlChild, workspace))) {
+      if ((block = eYo.Xml.domToBlock(xmlChild, owner))) {
         newBlockIds.push(block.id)
-        var blockX = xmlChild.hasAttribute('x')
+        var x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
-        var blockY = xmlChild.hasAttribute('y')
+        var y = xmlChild.hasAttribute('y')
           ? parseInt(xmlChild.getAttribute('y'), 10) : 10
-        if (!isNaN(blockX) && !isNaN(blockY)) {
-          block.moveBy(blockX, blockY)
-        }
-      } else {
-        // create children in a conservative idea
-        // does not work if the error is on top
-        eYo.Do.forEachChild(xml, function (child) {
-          var b = eYo.Xml.domToBlock(child, workspace)
-          if (b) {
-            newBlockIds.push(b.id)
-            b.eyo.beReady(b)
-            b.eyo.render(b)
+        if (!isNaN(x) && !isNaN(y)) {
+          block.moveBy(x, y)
+        } else {
+          var c = xmlChild.hasAttribute('c')
+            ? parseInt(xmlChild.getAttribute('c'), 10)
+            : 10
+          var l = xmlChild.hasAttribute('l')
+            ? parseInt(xmlChild.getAttribute('l'), 10)
+            : 10
+          if (!isNaN(c) && !isNaN(l)) {
+            block.eyo.moveBy(c, l)
+            
           }
-        })
+        }
       }
     }
     return block
   }
-  eYo.Events.setGroup(true)
   var variablesFirst = true
   var b
   var children = xml.childNodes
+  eYo.Events.setGroup(true)
   try {
+    Blockly.Field.startCache()
     for (var i = 0; i < children.length; i++) {
       var child = children[i]
       var name = child.nodeName.toLowerCase()
@@ -230,8 +259,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
                   child = blockNodes[j++]
                   if ((b = newBlock(child))) {
                     newBlockIds.push(b.id)
-                    b.eyo.beReady(b)
-                    b.eyo.render(b)
+                    b.eyo.beReady()
                   }
                 }
                 break
@@ -240,12 +268,11 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
             break
           }
         }
-      } else if (name === 's' || name === 'x') {
+      } else if (name === eYo.Xml.STMT || name === eYo.Xml.EXPR) {
         // for edython
         if (b = newBlock(child)) {
           newBlockIds.push(b.id)
-          b.eyo.beReady(b)
-          b.eyo.render(b)
+          b.eyo.beReady()
         }
       }
     }
@@ -260,6 +287,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, workspace) 
   if (workspace.setResizesEnabled) {
     workspace.setResizesEnabled(true)
   }
+  workspace.eyo.recover.whenRecovered(null)
   return newBlockIds
 }
 
@@ -272,15 +300,17 @@ goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-eYo.Xml.savedBlockToDom = Blockly.Xml.blockToDom
-Blockly.Xml.blockToDom = function (block, optNoId) {
-  if (block.type.indexOf('eyo:') < 0) {
-    // leave the control to the original player
-    return eYo.Xml.savedBlockToDom(block, optNoId)
-  } else {
-    return eYo.Xml.blockToDom(block, optNoId)
+Blockly.Xml.blockToDom = (function () {
+  var blockToDom = Blockly.Xml.blockToDom
+  return function (block, optNoId) {
+    if (block.type.indexOf('eyo:') < 0) {
+      // leave the control to the original player
+      return blockToDom(block, optNoId)
+    } else {
+      return eYo.Xml.blockToDom(block, optNoId)
+    }
   }
-}
+}) ()
 
 /**
  * Decode an XML block tag and create a block (and possibly sub blocks) on the
@@ -289,7 +319,6 @@ Blockly.Xml.blockToDom = function (block, optNoId) {
  * @param {!Blockly.Workspace} workspace The workspace.
  * @return {!Blockly.Block} The root block created.
  */
-eYo.Xml.savedDomToBlock = Blockly.Xml.domToBlock
 Blockly.Xml.domToBlock = function (dom, workspace) {
   if (goog.isString(dom)) {
     return workspace.eyo.fromString(dom)
@@ -297,12 +326,11 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
   // Create top-level block.
   Blockly.Events.disable();
   try {
-    var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace);
     if (workspace.rendered) {
+      var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace);
       // Hide connections to speed up assembly.
       // topBlock.setConnectionsHidden(true);
-      topBlock.eyo.beReady(topBlock)
-      topBlock.eyo.render(topBlock)
+      topBlock.eyo.beReady()
       // Populating the connection database may be deferred until after the
       // blocks have rendered.
       // console.log('setTimeout', topBlock.type, topBlock.id)
@@ -311,7 +339,6 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       //     topBlock.setConnectionsHidden(false);
       //   }
       // }, 1);
-      topBlock.updateDisabled();
       // Allow the scrollbars to resize and move based on the new contents.
       // TODO(@picklesrus): #387. Remove when domToBlock avoids resizing.
       workspace.resizeContents();
@@ -323,7 +350,8 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
     Blockly.Events.enable();
   }
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(topBlock));
+    eYo.Events.fireBlockCreate(topBlock);
+
   }
   return topBlock;
 }
@@ -337,16 +365,18 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @param {?string} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete_saved = eYo.DelegateSvg.newBlockComplete
-eYo.DelegateSvg.newBlockComplete = function (workspace, model, id, render) {
-  if (goog.isString(model) && model.startsWith('<')) {
-    var B = eYo.Xml.stringToBlock(model, workspace)
+eYo.DelegateSvg.newBlockComplete = (function () {
+  var newBlockComplete = eYo.DelegateSvg.newBlockComplete
+  return function (owner, model, id) {
+    if (goog.isString(model) && model.startsWith('<')) {
+      var B = eYo.Xml.stringToBlock(model, owner)
+    }
+    if (!B) {
+      B = newBlockComplete.call(this, owner, model, id)
+    }
+    return B
   }
-  if (!B) {
-    B = this.newBlockComplete_saved(workspace, model, id)
-  }
-  return B
-}
+}) ()
 
 /**
  * Decode an XML block tag and create a block (and possibly sub blocks) on the
@@ -356,21 +386,23 @@ eYo.DelegateSvg.newBlockComplete = function (workspace, model, id, render) {
  * @return {!Blockly.Block} The root block created.
  * @private
  */
-eYo.Xml.savedDomToBlockHeadless_ = Blockly.Xml.domToBlockHeadless_
-Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
-  var block = null
-  if (goog.isFunction(xmlBlock.getAttribute)) {
-    var attr = xmlBlock.getAttribute('eyo')
-    if (attr || xmlBlock.namespaceURI.startsWith('urn:edython:')) {
-      block = eYo.Xml.domToBlock(xmlBlock, workspace)
-    } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
-      block = eYo.Xml.savedDomToBlockHeadless_(xmlBlock, workspace)
-    } else {
-      block = eYo.Xml.domToBlock(xmlBlock, workspace)
+Blockly.Xml.domToBlockHeadless_ = (function () {
+  var domToBlockHeadless = Blockly.Xml.domToBlockHeadless_
+  return function (xmlBlock, workspace) {
+    var block = null
+    if (goog.isFunction(xmlBlock.getAttribute)) {
+      var attr = xmlBlock.getAttribute(eYo.Key.EYO)
+      if (attr || xmlBlock.namespaceURI.startsWith(eYo.Xml.URN)) {
+        block = eYo.Xml.domToBlock(xmlBlock, workspace)
+      } else if (xmlBlock.tagName.toLowerCase().indexOf('eyo:') < 0) {
+        block = domToBlockHeadless(xmlBlock, workspace)
+      } else {
+        block = eYo.Xml.domToBlock(xmlBlock, workspace)
+      }
     }
+    return block
   }
-  return block
-}
+}) ()
 
 /**
  * Encode a block subtree as dom.
@@ -416,7 +448,7 @@ Blockly.Xml.domToBlockHeadless_ = function (xmlBlock, workspace) {
 eYo.Xml.blockToDom = (function () {
   var blockToDom = function (block, optNoId, optNoNext) {
     var eyo = block.eyo
-    if (eyo.wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
+    if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
       // a wrapped block does not create a new element on its own
       // it only can populate an already existing xml node.
       // Except for list nodes.
@@ -434,9 +466,9 @@ eYo.Xml.blockToDom = (function () {
       goog.isFunction(controller.blockToDom))) {
       var element = controller.blockToDom.call(eyo, block, optNoId, optNoNext)
     } else {
-      var tag = block.eyo.tagName(block)
+      var tag = block.eyo.tagName()
       element = goog.dom.createDom(block.eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
-      element.setAttribute('eyo', tag.substring(4))
+      element.setAttribute(eYo.Key.EYO, tag.substring(4))
       !optNoId && element.setAttribute('id', block.id)
       eYo.Xml.toDom(block, element, optNoId, optNoNext)
     }
@@ -460,12 +492,11 @@ goog.require('eYo.DelegateSvg.Expr')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.tagName = function (block) {
+eYo.Delegate.prototype.tagName = function () {
   var tag = this.constructor.eyo.tagName || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return (tag && 'eyo:' + tag) || block.type
+  return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.Key.PLACEHOLDER)
 }
 
 goog.require('eYo.DelegateSvg.Group')
@@ -476,11 +507,10 @@ goog.require('eYo.DelegateSvg.List')
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns the block type.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.List.prototype.tagName = function (block) {
-  return block.eyo.wrapped_ ? 'eyo:' + eYo.Xml.LIST : eYo.DelegateSvg.List.superClass_.tagName.call(this, block)
+eYo.DelegateSvg.List.prototype.tagName = function () {
+  return this.block_.eyo.wrapped_ ? 'eyo:' + eYo.Xml.LIST : eYo.DelegateSvg.List.superClass_.tagName.call(this)
 }
 
 goog.provide('eYo.Xml.Text')
@@ -519,62 +549,77 @@ goog.require('eYo.DelegateSvg.Literal')
 goog.provide('eYo.Xml.Literal')
 /**
  * Try to create a Literal block from the given element.
- * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Literal.domToBlock = function (element, workspace) {
-  if (element.getAttribute('eyo') !== eYo.Xml.LITERAL) {
-    return
-  }
-  // is it a statement or an expression ?
-  var stmt_expected = element.tagName.toLowerCase() === 's'
-  var id = element.getAttribute('id')
-  var block
-  eYo.Do.someChild(element, function (child) {
-    if (child.nodeType === Node.TEXT_NODE) {
-      var text = child.nodeValue
-      var type = eYo.Do.typeOfString(text).expr
+eYo.Xml.Literal.domToBlockComplete = (function () {
+  var newBlock = function (workspace, text, id, stmt_expected) {
+    if (text && text.length) {
+      var type = eYo.T3.Profile.get(text, null).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:
       case eYo.T3.Expr.imagnumber:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.numberliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.numberliteral, id)
+      case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
+      case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected ? eYo.T3.Stmt.docstring_stmt : eYo.T3.Expr.longstringliteral, id)
-        break
+        return eYo.DelegateSvg.newBlockComplete(workspace, stmt_expected
+          ? eYo.T3.Stmt.docstring_stmt
+          : eYo.T3.Expr.longliteral, id)
       case eYo.T3.Expr.longbytesliteral:
-        block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
-        break
-      }
-      if (block) {
-        block.eyo.data.value.set(text)
-        return true
+        return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.longliteral, id)
       }
     }
-  })
-  return block || eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
-}
+  }
+  return function (element, owner) {
+    if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
+      return
+    }
+    var workspace = owner.workspace || owner
+    // is it a statement or an expression ?
+    var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
+    var id = element.getAttribute('id')
+    var block
+    eYo.Do.someChild(element, function (child) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        return block = newBlock(workspace, child.nodeValue, id, stmt_expected)
+      }
+    })
+    if (!block) {
+      // there was no text node to infer the type
+      block = newBlock(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+    }
+    return block || eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.shortliteral, id)
+  }
+}) ()
 
 goog.provide('eYo.Xml.Data')
 
 /**
- * Convert the block's data.
- * List all the available data and converts them to xml.
+ * Save the block's data.
  * For edython.
- * @param {!Blockly.Block} block The block to be converted.
- * @param {Element} xml the persistent element.
- * @return a dom element, void lists may return nothing
- * @this a block delegate
+ * @param {Element} element the persistent element.
  */
-eYo.Xml.Data.toDom = function (block, element) {
-  block.eyo.foreachData(function () {
+eYo.Delegate.prototype.saveData = function (element) {
+  this.foreachData(function () {
     this.save(element)
+  })
+}
+
+/**
+ * Save the block's slots.
+ * For edython.
+ * @param {Element} element the persistent element.
+ * @param {?Boolean} opt_noId
+ */
+eYo.Delegate.prototype.saveSlots = function (element, opt_noId) {
+  this.foreachSlot(function () {
+    this.save(element, opt_noId)
   })
 }
 
@@ -588,16 +633,25 @@ eYo.Xml.Data.toDom = function (block, element) {
  */
 eYo.Xml.Data.fromDom = function (block, element) {
   var hasText
-  block.eyo.foreachData(function () {
-    this.load(element)
-    // Consistency section, to be removed
-    var xml = this.model.xml
-    if (hasText && xml && xml.text) {
-      console.log(eYo.Do.format('Only one text node {0}/{1}',
-        this.key, block.type))
+  var eyo = block.eyo
+  eyo.changeWrap(
+    function () { // `this` is `eyo`
+      this.foreachData(function () {
+        this.load(element)
+        // Consistency section, to be removed
+        var xml = this.model.xml
+        if (hasText && xml && xml.text) {
+          console.log(eYo.Do.format('Only one text node {0}/{1}',
+            this.key, block.type))
+        }
+        hasText = hasText || (xml && xml.text)
+      })
+      var xml = this.model.xml
+      if (xml && goog.isFunction(xml.didLoad)) {
+        xml.didLoad.call(this, element)
+      }
     }
-    hasText = hasText || (xml && xml.text)
-  })
+  )
 }
 
 /**
@@ -628,11 +682,8 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
     ((controller = eyo.constructor) && goog.isFunction(controller.toDom))) {
     return controller.toDom.call(eyo, block, element, optNoId, optNoNext)
   } else {
-    eYo.Xml.Data.toDom(block, element, optNoId)
-    // save slots
-    eyo.foreachSlot(function () {
-      this.save(element, optNoId)
-    })
+    block.eyo.saveData(element)
+    block.eyo.saveSlots(element, optNoId)
     var blockToDom = function (c8n, name, key) {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
@@ -653,8 +704,8 @@ eYo.Xml.toDom = function (block, element, optNoId, optNoNext) {
       }
     }
     // the suite and the flow
-    blockToDom(eyo.inputSuite && eyo.inputSuite.connection, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && blockToDom(block.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    blockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    !optNoNext && blockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 
@@ -674,40 +725,59 @@ eYo.Xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var model = eYo.Delegate.Manager.getModel(type)
-      var tag = model && model.xml && model.xml.tag
-      if (!goog.isString(tag)) {
-        var m = XRegExp.exec(type, eYo.XRE.s3d)
-        if (m) {
-          tag = m.core
+      var c9r = eYo.Delegate.Manager.get(type)
+      var one_tag = function (tag) {
+        var already = eYo.T3.Xml.fromDom[tag]
+        if (goog.isArray(already)) {
+          if (already.indexOf(type) < 0) {
+            already.push(type)
+          }
+        } else if (goog.isString(already)) {
+          if (type !== already) {
+            eYo.T3.Xml.fromDom[tag] = already = [already, type]
+          }
         } else {
-          tag = type.substring(4)
+          eYo.T3.Xml.fromDom[tag] = type
         }
-      } else if (!tag.length) {
-        continue
+        // register the reverse
+        if (c9r) {
+          // if (!tag.startsWith('eyo:')) {
+          //   console.warn('DOUBLE eYo')
+          // }
+          // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
+          c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key // ERROR ? Dynamic tag name ?
+        }
       }
-      // register as fromDom
-      // console.log('register ', tag)
-      var already = eYo.T3.Xml.fromDom[tag]
-      if (goog.isArray(already)) {
-        if (already.indexOf(type) < 0) {
-          already.push(type)
-        }
-      } else if (goog.isString(already)) {
-        if (type !== already) {
-          eYo.T3.Xml.fromDom[tag] = already = [already, type]
+      var model = eYo.Delegate.Manager.getModel(type)
+      var tags = model && model.xml && model.xml.tags
+      if (tags) {
+        for (var i = 0; i < tags.length; i++) {
+          var tag = tags[i]
+          one_tag(tags[i])
         }
       } else {
-        eYo.T3.Xml.fromDom[tag] = type
-      }
-      // register the reverse
-      var c9r = eYo.Delegate.Manager.get(type)
-      if (c9r) {
-        // if (!tag.startsWith('eyo:')) {
-        //   console.warn('DOUBLE eYo')
-        // }
-        // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
-        c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key
+        var xml = model && model.xml
+        if (xml && xml.tags) {
+          var i = xml.tags.length
+          if (i--) {
+            do {
+              one_tag(xml.tags[i])
+            } while (i--)
+            continue
+          }
+        }
+        var tag = xml && xml.tag
+        if (!goog.isString(tag)) {
+          var m = XRegExp.exec(type, eYo.XRE.s3d)
+          if (m) {
+            tag = m.core
+          } else {
+            tag = type.substring(4)
+          }
+        } else if (!tag.length) {
+          continue
+        }
+        one_tag(tag)
       }
     }
   }
@@ -722,19 +792,210 @@ eYo.Xml.registerAllTags = function () {
  * If the string is not valid xml, then nothing is returned.
  *
  * @param {!String} string a serialized dom element.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {!*} owner workspace or block.
  * @return {?Blockly.Block} The root block created, if any.
  */
-eYo.Xml.stringToBlock = function (string, workspace) {
+eYo.Xml.stringToBlock = function (string, owner) {
   var block
   try {
     var dom = eYo.Do.stringToDom(string)
-    block = dom && eYo.Xml.domToBlock(dom.documentElement, workspace)
+    if (dom) {
+      block = eYo.Xml.domToBlock(dom.documentElement, owner)
+    }
   } catch (err) {
     console.error(err)
     throw err
   }
   return block
+}
+
+goog.provide('eYo.Xml.Recover')
+
+/**
+ * Recover nodes from a possibly corrupted xml data.
+ */
+eYo.Xml.Recover = function (workspace) {
+  this.workspace = workspace
+  this.recovered = []
+  this.to_resit = []
+  this.to_resit_stack = []
+}
+
+/**
+ * Will execute the given action for each recovered block.
+ * @param {?Function} f
+ */
+eYo.Xml.Recover.prototype.whenRecovered = function (f) {
+  this.recovered_f = f
+}
+
+/**
+ * Don't resit the given dom.
+ *
+ * @param {!Element} dom XML dom element.
+ * @param {!Blockly.Workspace} workspace  The workspace.
+ */
+eYo.Xml.Recover.prototype.dontResit = function (dom) {
+  var i = this.to_resit.indexOf(dom)
+  if (i >= 0) {
+    this.to_resit.splice(i, 1)
+  }
+}
+
+/**
+ * Create blocks with elements that were not used during the normal flow.
+ * Uses `domToBlock`.
+ * @param {!*} dom 
+ * @param {!*} try_f  Use the 
+ * @param {?*} finally_f 
+ * @param {?*} recovered_f 
+ */
+eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
+  this.dontResit(dom)
+  this.to_resit_stack.push(this.to_resit)
+  this.to_resit = []
+  eYo.Do.forEachElementChild.call(this, dom, child => {
+    this.to_resit.push(child)
+  })
+  return eYo.Events.groupWrap(
+    () => {
+      var ans
+      try {
+        ans = try_f()
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        try {
+          finally_f && (ans = finally_f(ans))
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          this.recovered.length = 0
+          var dom
+          while ((dom = this.to_resit.shift())) {
+            var b = eYo.Xml.domToBlock(dom, this.workspace, this)
+            if (b) {
+              b.eyo.beReady()
+              this.recovered.push(b)
+            }
+          }
+          try {
+            this.recovered_f && this.recovered.forEach(this.recovered_f)
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            this.recovered.length = 0
+            this.to_resit = this.to_resit_stack.pop()
+            return ans
+          }
+        }
+      }
+    }
+  )
+}
+
+/**
+ * The `domToBlock` could not return a block.
+ * We must do something to recover errors.
+ * The idea is to replace the faulty xml part by a block
+ * and parse the children separately with `recoverDom`
+ *
+ * @param {!Element} dom XML dom element.
+ * @param {*} owner either the workspace or a block.
+ * @return {!Blockly.Block} The root block created.
+ */
+eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
+  var workspace = owner.workspace
+  if (!workspace) {
+    workspace = owner
+    owner = undefined
+  }
+  if (!workspace.newBlock) {
+    console.error('ARGH')
+  }
+  // First create a block that we will return to replace the expected one
+  // This is a block of the same kind (expression/statement)
+  // but at least with a generic type such that any connection will fit.
+  var tag = dom.tagName
+  var ans, fallback, where
+  if (tag === eYo.Xml.EXPR) {
+    fallback = eYo.T3.Expr.expression_any
+    where = eYo.T3.Expr
+  } else if (tag === eYo.Xml.STMT) {
+    fallback = eYo.T3.Stmt.expression_stmt
+    where = eYo.T3.Stmt
+  }
+  // amongst all the `where` blocks,
+  // if there is an only one that can initialize with all
+  // the attributes of the dom element
+  // first get all the attributes
+  var attributeNames = []
+  Array.prototype.forEach.call(
+    dom.attributes,
+    function (attribute) {
+      attributeNames.push(attribute.nodeName)
+    }
+  )
+  var best = {
+    match: -Infinity,
+    types: []
+  }
+  where.Available.forEach(function(type) {
+    var data = eYo.Do.getModel(type).data
+    var match = 0
+    attributeNames.forEach(function (name) {
+      if (data[name]) {
+        ++match
+      }
+    })
+    if (match > best.match) {
+      best.match = match
+      best.types = [type]
+    } else if (match == best.match) {
+      best.types.push[type]
+    }
+  })
+  eYo.Events.disableWrap(
+    () => {
+      if (best.types.length === 1) {
+        fallback = best.types[0]
+      } else if (owner && (best.types.length > 1)) {
+        var name = dom.getAttribute(eYo.Xml.SLOT)
+        var input = owner.eyo.getInput(name)
+        var slot_c8n = input && input.connection
+        var flow = dom.getAttribute(eYo.Xml.FLOW)
+        var flow_c8n = flow
+          ? owner.eyo.suiteConnection
+          : owner.nextConnection
+        // return the first block that would connect to the owner
+        if (!best.types.some(type => {
+            var b = eYo.DelegateSvg.newBlockComplete(workspace, type)
+            var c8n = ans && ans.outputConnection
+            if (slot_c8n && c8n && slot_c8n.checkType_(c8n)) {
+              ans = b
+              return true
+            }
+            c8n = b.previousConnection
+            if (flow_c8n && c8n && flow_c8n.checkType_(c8n)) {
+              ans = b
+              return true
+            }
+          })) {
+          fallback = best.types[0]
+        }
+      }
+      ans || (ans = eYo.DelegateSvg.newBlockComplete(workspace, fallback))
+    }
+  )
+  if (ans) {
+    ans.eyo.errorRecover = true
+    eYo.Events.fireBlockCreate(ans)
+    eYo.Xml.fromDom(ans, dom, this)
+  }
+  return ans
 }
 
 /**
@@ -752,77 +1013,87 @@ eYo.Xml.stringToBlock = function (string, workspace) {
  * Is it really headless ?
  *
  * @param {!Element} xmlBlock XML block element.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {*} owner The workspace or the owning block.
  * @return {!Blockly.Block} The root block created.
  */
 eYo.Xml.domToBlock = (function () {
-  var domToBlock = function (xmlBlock, workspace) {
-    var block = null
-    if (!goog.isFunction(xmlBlock.getAttribute)) {
-      return block
+  var domToBlock = function (dom, owner) {
+    if (!goog.isFunction(dom.getAttribute)) {
+      return undefined
     }
     // var isStmt = xmlBlock.tagName.toLowerCase() === eYo.XML.STMT
-    var id = xmlBlock.getAttribute('id')
-    var name = xmlBlock.getAttribute('eyo')
+    var id = dom.getAttribute('id')
+    var name = dom.getAttribute(eYo.Key.EYO)
     var prototypeName
     //
-    // is it a literal or something else special ?
-    if ((block = eYo.Xml.Literal.domToBlock(xmlBlock, workspace)) ||
-    (block = eYo.Xml.Comparison.domToBlock(xmlBlock, workspace)) ||
-    (block = eYo.Xml.Group.domToBlock(xmlBlock, workspace)) ||
-    (block = eYo.Xml.Call.domToBlock(xmlBlock, workspace))) {
-      return block
-    }
-    // is there a simple correspondance with a known type
-    if ((prototypeName = eYo.T3.Xml.fromDom[name])) {
-      if (goog.isArray(prototypeName)) {
-        if (prototypeName.length === 1) {
-          prototypeName = prototypeName[0]
-        } else if (!(prototypeName = (function () {
-          var where = xmlBlock.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
-          for (var i = 0; i < prototypeName.length; i++) {
-            var candidate = prototypeName[i]
-            var C8r = eYo.DelegateSvg.Manager.get(candidate)
-            if (C8r && where[C8r.eyo.key]) {
-              return candidate
+    var workspace = owner.workspace || owner
+    return workspace.eyo.recover.resitWrap(
+      dom,
+      () => {
+        var block
+        // is it a literal or something else special ?
+        if ((block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Call.domToBlockComplete(dom, owner))) {
+          eYo.Xml.fromDom(block, dom)
+          return block
+        }
+        // is there a simple correspondance with a known type
+        if ((prototypeName = eYo.T3.Xml.fromDom[name])) {
+          if (goog.isArray(prototypeName)) {
+            if (prototypeName.length === 1) {
+              prototypeName = prototypeName[0]
+            } else if (!(prototypeName = (function () {
+                var where = dom.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
+                for (var i = 0; i < prototypeName.length; i++) {
+                  var candidate = prototypeName[i]
+                  var C8r = eYo.DelegateSvg.Manager.get(candidate)
+                  if (C8r && where[C8r.eyo.key]) {
+                    return candidate
+                  }
+                }
+              } ()))) {
+              // no prototype found, bail out.
+              return
             }
           }
-        } () ) )) {
+          block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
+        } else {
+          if (!name) {
+            name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
+          }
+          prototypeName = 'eyo:'+name
+          var solid = prototypeName + ''
+          var controller = eYo.DelegateSvg.Manager.get(solid)
+          if (controller) {
+            if (controller.eyo && goog.isFunction(controller.eyo.domToBlock)) {
+              return controller.eyo.domToBlock(dom, workspace, id)
+            } else if (goog.isFunction(controller.domToBlock)) {
+              return controller.domToBlock(dom, workspace, id)
+            }
+            block = eYo.DelegateSvg.newBlockComplete(workspace, solid, id)
+          } else if ((controller = eYo.DelegateSvg.Manager.get(prototypeName))) {
+            if (controller.eyo && goog.isFunction(controller.eyo.domToBlock)) {
+              return controller.eyo.domToBlock(dom, workspace, id)
+            } else if (goog.isFunction(controller.domToBlock)) {
+              return controller.domToBlock(dom, workspace, id)
+            }
+            block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
+          }
+          // Now create the block, either solid or not
+        }
+        if (block) {
+          eYo.Xml.fromDom(block, dom)
           return block
         }
       }
-      block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
-    } else {
-      if (!name) {
-        name = xmlBlock.tagName.toLowerCase() === 's' ? 'any_stmt': 'any_expression'
-      }
-      prototypeName = 'eyo:'+name
-      var solid = prototypeName + ''
-      var controller = eYo.DelegateSvg.Manager.get(solid)
-      if (controller) {
-        if (controller.eyo && goog.isFunction(controller.eyo.domToBlock)) {
-          return controller.eyo.domToBlock(xmlBlock, workspace, id)
-        } else if (goog.isFunction(controller.domToBlock)) {
-          return controller.domToBlock(xmlBlock, workspace, id)
-        }
-        block = eYo.DelegateSvg.newBlockComplete(workspace, solid, id)
-      } else if ((controller = eYo.DelegateSvg.Manager.get(prototypeName))) {
-        if (controller.eyo && goog.isFunction(controller.eyo.domToBlock)) {
-          return controller.eyo.domToBlock(xmlBlock, workspace, id)
-        } else if (goog.isFunction(controller.domToBlock)) {
-          return controller.domToBlock(xmlBlock, workspace, id)
-        }
-        block = eYo.DelegateSvg.newBlockComplete(workspace, prototypeName, id)
-      }
-      // Now create the block, either solid or not
-    }
-    block && eYo.Xml.fromDom(block, xmlBlock)
-    return block
+    )
   }
-  return function (xmlBlock, workspace) {
+  return function (dom, owner) {
     eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
     eYo.Xml.domToBlock = domToBlock
-    return domToBlock(xmlBlock, workspace)
+    return domToBlock(dom, owner)
   }
 }())
 
@@ -845,26 +1116,29 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
 eYo.Xml.fromDom = function (block, element) {
   var eyo = block.eyo
   // headless please
-  eyo.skipRendering()
-  try {
-    //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
-    // then fill it based on the xml data
-
+  var do_it = function () { // `this` is `eyo`
+  //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
+  // then fill it based on the xml data
     var controller = eyo
-    if ((controller &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eyo.xml) &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-      (controller = controller.xml) &&
-      goog.isFunction(controller.fromDom)) ||
-      ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
-      goog.isFunction(controller.fromDom))) {
-      return controller.fromDom.call(eyo, block, element)
+    if (!eyo.controller_fromDom_locked && (controller &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eyo.xml) &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        (controller = controller.xml) &&
+        goog.isFunction(controller.fromDom)) ||
+        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        goog.isFunction(controller.fromDom))) {
+      try {
+        eyo.controller_fromDom_locked = true
+        return controller.fromDom.call(eyo, block, element)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        delete eyo.controller_fromDom_locked
+      }
     } else {
-      eyo.foreachData(function () {
-        this.waitOn()
-      })
       eYo.Xml.Data.fromDom(block, element)
       // read slot
       eyo.foreachSlot(function () {
@@ -872,32 +1146,43 @@ eYo.Xml.fromDom = function (block, element) {
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
         eYo.Do.forEachElementChild(element, function (child) {
-          var name = child.getAttribute(eYo.XmlKey.SLOT)
-          var input = eyo.getInput(block, name)
-          if (input) {
-            if (input.connection) {
-              var target = input.connection.targetBlock()
-              if (target) {
-                eYo.Xml.fromDom(target, child)
-              } else if ((target = eYo.Xml.domToBlock(child, block.workspace))) {
-                var targetC8n = target.outputConnection
-                if (targetC8n && targetC8n.checkType_(input.connection)) {
-                  targetC8n.connect(input.connection)
-                }
+          var name = child.getAttribute(eYo.Xml.SLOT)
+          var input = eyo.getInput(name)
+          if (input && input.connection) {
+            var target = input.connection.targetBlock()
+            if (target) {
+              block.workspace.eyo.recover.dontResit(child)
+              eYo.Xml.fromDom(target, child)
+            } else if ((target = eYo.Xml.domToBlock(child, block))) {
+              block.workspace.eyo.recover.dontResit(child)
+              var targetC8n = target.outputConnection
+              if (targetC8n && targetC8n.checkType_(input.connection)) {
+                targetC8n.connect(input.connection)
               }
-            } else {
-              console.error('Missing connection')
             }
+          } else if (input) {
+            console.error('Missing connection')
           }
         })
-        eyo.consolidate(block)
+        eyo.didLoad()
+        eyo.incrementChangeCount() // force new type
+        eyo.consolidateType()
+        eyo.consolidateConnections()
+        eyo.consolidate()
+      } else {
+        eyo.didLoad()
+        // eyo.incrementChangeCount() // force new type
+        // eyo.consolidateType()
+        // eyo.consolidateConnections()
+        // eyo.consolidate()
       }
       // read flow and suite
       var statement = function (c8n, key) {
         if (c8n) {
           return eYo.Do.someElementChild(element, function (child) {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
-              var target = eYo.Xml.domToBlock(child, block.workspace)
+              block.workspace.eyo.recover.dontResit(child)
+              var target = eYo.Xml.domToBlock(child, block)
               if (target) { // still headless!
                 // we could create a block from that child element
                 // then connect it to
@@ -910,51 +1195,129 @@ eYo.Xml.fromDom = function (block, element) {
           })
         }
       }
-      var out = statement(block.nextConnection, eYo.XmlKey.NEXT)
-      out = statement(eyo.inputSuite && eyo.inputSuite.connection, eYo.XmlKey.SUITE) || out
+      var out = statement(eyo.nextConnection, eYo.Xml.NEXT)
+      out = statement(eyo.suiteConnection, eYo.Xml.SUITE) || out
       return out
     }
-    var state = xmlBlock.getAttribute(eYo.Xml.STATE)
+    var state = dom.getAttribute(eYo.Xml.STATE)
     if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-      eyo.lock(block)
+      eyo.lock()
     }
-    // this block have been created from untrusted data
-    // We might need to fix some stuff before returning
-    // In particular, it will be the perfect place to setup variants
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eyo.unskipRendering()
   }
+  eyo.changeWrap(do_it)
 }
+
+goog.require('eYo.DelegateSvg.Primary')
+
+/**
+ * Set the option from the `eyo` attribute.
+ * The block argument is expected
+ * @param {!Blockly.Block} block
+ * @param {!Element} element dom element to be processed.
+ * @override
+ */
+eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
+  // trick to call this function without the first argument
+  // just like all other delegate methods
+  // please deprecate this
+  if (block !== this.block_) {
+    element = block
+    block = this.block_
+  }
+  eYo.Xml.fromDom(block, element)
+  var type = element.getAttribute(eYo.Key.EYO)
+  var d = this.data.variant
+  if (type === eYo.Key.CALL) {
+    d.set(eYo.Key.CALL_EXPR)
+  } else if (type === eYo.T3.Expr.call_expr.substring(4)) {
+    d.set(eYo.Key.CALL_EXPR)
+  } else if (type === eYo.T3.Expr.slicing.substring(4)) {
+    d.set(eYo.Key.SLICING)
+  } else if (type === eYo.T3.Expr.identifier_as.substring(4)) {
+    d.set(eYo.Key.ALIASED)
+  } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
+    d.set(eYo.Key.ALIASED)
+  } else {
+    if (this.data.alias.isRequiredFromModel()) {
+      d.set(eYo.Key.ALIASED)
+      this.data.annotation.set(eYo.Key.NONE)
+      this.data.definition.set(eYo.Key.NONE)
+    }
+  }
+  return block
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * For edython.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Expr.primary.prototype.tagName = function () {
+  var type = this.block_.type
+  if ([
+    eYo.T3.Expr.parent_module,
+    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.dotted_name,
+    eYo.T3.Expr.dotted_name_as,
+    eYo.T3.Expr.attributeref
+  ].indexOf(type) >= 0) {
+    return eYo.T3.Expr.primary
+  }
+  if (type === eYo.T3.Expr.call_expr) {
+    return 'eyo:' + eYo.Key.CALL
+  }
+  if (type === eYo.T3.Expr.named_call_expr) {
+    return 'eyo:' + eYo.Key.CALL
+  }
+  if (type === eYo.T3.Expr.named_slicing) {
+    return eYo.T3.Expr.slicing
+  }
+  if (type === eYo.T3.Expr.named_subscription) {
+    return eYo.T3.Expr.subscription
+  }
+  if ([
+    eYo.T3.Expr.identifier_as,
+    eYo.T3.Expr.identifier_annotated,
+    eYo.T3.Expr.identifier_annotated_defined,
+    eYo.T3.Expr.identifier_defined
+  ].indexOf(type) >= 0) {
+    return eYo.T3.Expr.identifier
+  }
+  return type
+}
+
+
+goog.provide('eYo.Xml.Starred')
+goog.require('eYo.DelegateSvg.Starred')
+
 
 goog.provide('eYo.Xml.Comparison')
 goog.require('eYo.DelegateSvg.Operator')
 
 /**
  * Try to create a comparison block from the given element.
- * @param {!Blockly.Block} block
  * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Comparison.domToBlock = function (element, workspace) {
+eYo.Xml.Comparison.domToBlockComplete = function (element, owner) {
   var block
-  var prototypeName = element.getAttribute('eyo')
+  var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === eYo.Xml.COMPARISON) {
+    var workspace = owner.workspace || owner
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C8r, model
     var type = eYo.T3.Expr.number_comparison
     if ((C8r = eYo.DelegateSvg.Manager.get(type))
-      && (model = C8r.eyo.getModel().data)
+      && (model = C8r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
       block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
       && (C8r = eYo.DelegateSvg.Manager.get(type))
-      && (model = C8r.eyo.getModel().data)
+      && (model = C8r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
@@ -962,7 +1325,6 @@ eYo.Xml.Comparison.domToBlock = function (element, workspace) {
     } else {
       return block
     }
-    eYo.Xml.fromDom(block, element)
     return block
   }
 }
@@ -971,35 +1333,41 @@ goog.require('eYo.DelegateSvg.Group')
 goog.provide('eYo.Xml.Group')
 
 /**
- * Set the operator from the element's tagName.
- * @param {!Blockly.Block} block
+ * Reads the given element into a block.
  * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Group.domToBlock = function (element, workspace) {
-  var name = element.getAttribute('eyo')
+eYo.Xml.Group.domToBlockComplete = function (element, workspace) {
+  var name = element.getAttribute(eYo.Key.EYO)
   if (name === eYo.DelegateSvg.Stmt.else_part.prototype.tagName().substring(4)) {
+    var workspace = owner.workspace || owner
     var type = eYo.T3.Stmt.else_part
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    eYo.Xml.fromDom(block, element)
     return block
   }
 }
 
 goog.provide('eYo.Xml.Call')
 
-// call blocks have eyo:call and tag eyo:builtin__call names
-// if there is an eyo:input attribute, even a ''
-// then it is an expression block otherwise it is a statement block.
 console.warn('convert print statement to print expression and conversely, top blocks only')
-eYo.Xml.Call.domToBlock = function (element, workspace) {
-  if (element.getAttribute('eyo') === eYo.Xml.CALL) {
+/**
+ * Reads the given element into a block.
+ * call blocks have eyo:call and tag eyo:builtin__call names
+ * if there is an eyo:input attribute, even a ''
+ * then it is an expression block otherwise it is a statement block. DEPRECATED.
+ * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block
+ * @override
+ */
+eYo.Xml.Call.domToBlockComplete = function (element, owner) {
+  if (element.getAttribute(eYo.Key.EYO) === eYo.Xml.CALL) {
+    var workspace = owner.workspace || owner
     var type = element.tagName.toLowerCase() === eYo.Xml.EXPR? eYo.T3.Expr.call_expr: eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
     if (block) {
-      eYo.Xml.fromDom(block, element)
       return block
     }
   }
@@ -1014,7 +1382,7 @@ eYo.Xml.Call.domToBlock = function (element, workspace) {
  * @return an enumerator
  */
 eYo.Xml.compareBlocks = function (lhs, rhs) {
-  var xmlL = goog.dom.xml.serialize(eYo.Xml.blockToDom(lhs, false))
-  var xmlR = goog.dom.xml.serialize(eYo.Xml.blockToDom(rhs, false))
+  var xmlL = goog.dom.xml.serialize(eYo.Xml.blockToDom(lhs, true))
+  var xmlR = goog.dom.xml.serialize(eYo.Xml.blockToDom(rhs, true))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }

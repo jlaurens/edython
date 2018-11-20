@@ -13,10 +13,19 @@
 
 goog.provide('eYo.Do')
 
-goog.require('eYo.Const')
-goog.require('goog.dom');
+goog.require('goog.dom')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
+
+// Object.keys polyfill
+// http://tokenposts.blogspot.com/2012/04/javascript-objectkeys-browser.html
+if (!Object.keys) Object.keys = function(o) {
+  if (o !== Object(o))
+    throw new TypeError('Object.keys called on a non-object');
+  var k=[],p;
+  for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
+  return k;
+}
 
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.
@@ -317,302 +326,49 @@ eYo.Do.Name = (function () {
   return me
 }())
 
-eYo.Do.ensureArray = function (object) {
-  return goog.isArray(object) ? object : (object ? [object] : object)
+eYo.Do.ensureArray = eYo.Do.ensureFunctionOrArray = function (object) {
+  return goog.isArray(object) || goog.isFunction(object) ? object : (object ? [object] : object)
+}
+
+eYo.Do.ensureFunction = function (object) {
+  return goog.isFunction(object)
+    ? object
+    : function () {
+        return object
+      }
+}
+
+/**
+ * Used only by the model's checking.
+ * @param {!Object} object
+ * @return A function with signature f() -> []
+ */
+eYo.Do.ensureArrayFunction = function (object) {
+  var did = goog.isFunction(object)
+    ? object
+    : goog.isArray(object)
+      ? function () {
+        return object
+      }
+      : object
+        ? function () {
+          return [object]
+        }
+        : function () {
+        }
+  return did
+}
+
+eYo.Do.Exec = function (f) {
+  return goog.isFunction(f)
+  ? f(Array.prototype.slice.call(arguments, 1))
+  : f
 }
 
 eYo.Do.createSPAN = function (text, css) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
     goog.dom.createTextNode(text)
   )
-}
-
-goog.require('eYo.T3')
-
-eYo.T3.Expr.reserved_identifier = '.reserved identifier'
-eYo.T3.Expr.reserved_keyword = '.reserved keyword'
-eYo.T3.Expr.builtin__name = '.builtin name'
-eYo.T3.Expr.custom_literal = '.custom literal'
-eYo.T3.Expr.custom_identifier = '.custom identifier'
-eYo.T3.Expr.custom_dotted_name = '.custom dotted name'
-eYo.T3.Expr.custom_parent_module = '.custom parent module'
-
-eYo.T3.Stmt.control = '.control statement'
-
-/**
- * What is the type of this string? an identifier, a number, a reserved word ?
- * For edython.
- * @return {!Object} the type of this candidate, possible keys are `name`, `expr`, `stmt`, `modelExpr`, `modelStmt`.
- */
-eYo.Do.typeOfString = function (candidate) {
-  if (!goog.isString(candidate)) {
-    return {}
-  }
-  if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(candidate) >= 0) {
-    return {
-      raw: eYo.T3.Expr.reserved_identifier,
-      model: candidate,
-      expr: eYo.T3.Expr.builtin__object
-    }
-  }
-  var out
-  if ((out = {
-    class: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.class_part
-    },
-    finally: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.finally_part
-    },
-    is: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      model: 'is',
-      expr: eYo.T3.Expr.object_comparison
-    },
-    return: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.return_stmt
-    },
-    continue: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.continue_stmt
-    },
-    for: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.comp_for,
-      stmt: eYo.T3.Stmt.for_part
-    },
-    lambda: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.lambda
-    },
-    try: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.try_part
-    },
-    def: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.def_part
-    },
-    from: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.yield_expression,
-      modelStmt: 'from',// mmm ?
-      stmt: eYo.T3.Stmt.import_stmt,
-      modelStmt: 'from'// mmm ?
-    },
-    nonlocal: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
-      model: 'nonlocal'
-    },
-    while: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.while_part
-    },
-    and: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.and_expr
-    },
-    del: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.del_stmt
-    },
-    global: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
-      model: 'global'
-    },
-    not: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.not_test
-    },
-    with: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.with_part
-    },
-    as: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.term,
-      modelExpr: {
-        alias: '?'
-      },
-      stmt: eYo.T3.Stmt.except_part
-    },
-    elif: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.elif_part
-    },
-    if: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.if_part
-    },
-    or: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.or_expr
-    },
-    yield: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.yield_expr,
-      stmt: eYo.T3.Stmt.yield_stmt
-    },
-    assert: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.assert_stmt
-    },
-    else: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.else_part
-    },
-    import: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.import_stmt
-    },
-    pass: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.pass_stmt
-    },
-    break: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.break_stmt
-    },
-    except: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.except_part
-    },
-    in: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      expr: eYo.T3.Expr.object_comparison,
-      modeExpr: 'in'
-    },
-    raise: {
-      raw: eYo.T3.Expr.reserved_keyword,
-      stmt: eYo.T3.Stmt.raise_stmt
-    },
-    print: {
-      raw: eYo.T3.Expr.builtin__name,
-      expr: eYo.T3.Expr.call_expr,
-      modeExpr: 'print',
-      stmt: eYo.T3.Expr.call_stmt,
-      modeStmt: 'print'
-    }
-  } [candidate])) {
-    return out
-  }
-  if (['int', 'float', 'complex', 'input', 'list', 'set', 'len', 'min', 'max', 'sum', 'abs', 'trunc', 'pow', 'conjugate'].indexOf(candidate) >= 0) {
-    return {
-      raw: eYo.T3.Expr.builtin__name,
-      expr: eYo.T3.Expr.call_expr,
-      modelExpr: candidate
-    }
-  }
-  // is it a number ?
-  if (eYo.XRE.integer.exec(candidate)) {
-    return {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.integer,
-      modelExpr: candidate
-    }
-  }
-  if (eYo.XRE.floatnumber.exec(candidate)) {
-    return {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.floatnumber,
-      modelExpr: candidate
-    }
-  }
-  if (eYo.XRE.imagnumber.exec(candidate)) {
-    return {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.imagnumber,
-      modelExpr: candidate
-    }
-  }
-  if (candidate === 'start') {
-    return {
-      raw: eYo.T3.Stmt.control,
-      stmt: eYo.T3.Stmt.start_stmt
-    }
-  }
-  var components = candidate.split('.')
-  if (components.length > 1) {
-    var dotted_name = true
-    var first
-    // skip the void components
-    for (var i = 0; i < components.length;) {
-      var c = components[i]
-      if (c.length) {
-        first = i
-        break
-      }
-      i++
-    }
-    for (; i < components.length; i++) {
-      c = components[i]
-      if (!eYo.XRE.identifier.exec(c)) {
-        dotted_name = false
-        break
-      }
-    }
-    if (dotted_name) {
-      return goog.isDef(first) && first > 0 ? {
-        raw: eYo.T3.Expr.custom_parent_module,
-        expr: eYo.T3.Expr.parent_module
-      } : {
-         raw: eYo.T3.Expr.custom_dotted_name,
-         expr: eYo.T3.Expr.dotted_name
-      }
-    }
-  } else if (eYo.XRE.identifier.exec(candidate)) {
-    return {
-      raw: eYo.T3.Expr.custom_identifier,
-      expr: eYo.T3.Expr.identifier
-    }
-  }
-  if (eYo.XRE.shortstringliteralSingle.exec(candidate) || eYo.XRE.shortstringliteralDouble.exec(candidate)) {
-    return {
-      raw: 'short string literal',
-      expr: eYo.T3.Expr.shortstringliteral
-    }
-  }
-  if (eYo.XRE.shortbytesliteralSingle.exec(candidate) || eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
-    return {
-      raw: 'short bytes literal',
-      expr: eYo.T3.Expr.shortbytesliteral
-    }
-  }
-  if (eYo.XRE.longstringliteralSingle.exec(candidate) || eYo.XRE.longstringliteralDouble.exec(candidate)) {
-    return {
-      raw: 'long string literal',
-      expr: eYo.T3.Expr.longstringliteral
-    }
-  }
-  if (eYo.XRE.longbytesliteralSingle.exec(candidate) || eYo.XRE.longbytesliteralDouble.exec(candidate)) {
-    return {
-      raw: 'long bytes literal',
-      expr: eYo.T3.Expr.longbytesliteral
-    }
-  }
-  return {}
-}
-
-/**
- * The css class for the given text
- * For edython.
- * @param {!string} txt The text toyield_expr
- * @return {string}
- */
-eYo.Do.cssClassForText = function (txt) {
-  switch (eYo.Do.typeOfString(txt).raw) {
-  case eYo.T3.Expr.reserved_identifier:
-  case eYo.T3.Expr.reserved_keyword:
-    return 'eyo-code-reserved'
-  case eYo.T3.Expr.builtin__name:
-    return 'eyo-code-builtin'
-  default:
-    return 'eyo-code'
-  }
 }
 
 /**
@@ -676,7 +432,7 @@ eYo.Do.Enumerator = function (list, filter) {
  * @return {boolean}
  */
 eYo.Do.hasOwnProperty = function (object, key) {
-  return Object.prototype.hasOwnProperty.call(object, key)
+  return object && key && Object.prototype.hasOwnProperty.call(object, key)
 }
 
 /**
@@ -716,42 +472,108 @@ eYo.Do.stringToDom = function (string) {
   return stringToDom(string)
 }
 
-eYo.Do.logTiles = function (src) {
-  var eyo = (src && src.eyo) || src
-  var tile
-  if (eyo && (tile = eyo.tileHead)) {
-    console.log(tile)
-    while (tile != eyo.tileTail && (tile = tile.tileNext)) {
-      console.log(tile)
-    }
-    console.log(eyo.tileTail)
-  }
-}
-
-eYo.Do.forEachChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.forEachChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
-  children.forEach(handler, thisObject)
+  children.forEach(handler, this)
 }
 
-eYo.Do.forEachElementChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.forEachElementChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(function (child) {
     if (child.nodeType === Node.ELEMENT_NODE) {
       handler.call(this, child)
     }
-  })
+  }, this)
 }
 
-eYo.Do.someChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.someChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
-  return children.some(handler, thisObject)
+  return children.some(handler, this)
 }
 
-eYo.Do.someElementChild = function (element, handler, thisObject) {
+/**
+ * Forwards `this` to the handler.
+ * @param {*} element 
+ * @param {*} handler 
+ */
+eYo.Do.someElementChild = function (element, handler) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some(function (child) {
     if (child.nodeType === Node.ELEMENT_NODE) {
-      return handler.call(thisObject, child)
+      return handler.call(this, child)
     }
-  })
+  }, this)
+}
+
+eYo.Do.valueOf = function (f, thisObject) {
+  return goog.isFunction(f) ? f.call(thisObject) : f
+}
+
+eYo.Do.nothing = function () {
+}
+
+
+/**
+ * A wrapper creator.
+ * This is used to populate prototypes and define functions at setup time.
+ * Both functions share the `this` object of the caller.
+ * @param {?Function} start_f 
+ * @param {?Function} begin_finally_f
+ * @param {?Function} end_finally_f 
+ */
+eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
+  return (try_f, finally_f) => {
+    start_f && start_f()
+    var ans
+    try {
+      ans = try_f()
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      begin_finally_f && begin_finally_f()
+      // enable first to allow finally_f to eventually fire events
+      // or eventually modify `ans`
+      finally_f && (ans = finally_f(ans))
+      end_finally_f && end_finally_f()
+      return ans
+    }
+  }
+}
+
+/**
+ * The props dictionary is a `key=>value` mapping where values
+ * are getters, not a dictionary containing a getter.
+ * @param {*} object 
+ * @param {*} props 
+ */
+eYo.Do.readOnlyMixin = function(object, props) {
+  var key
+  for (key in props) {
+    goog.asserts.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
+    var value = props[key]
+    var prop = goog.isFunction(value)
+    ? { get: value }
+    : { value: value }
+    Object.defineProperty(
+      object,
+      key,
+      prop
+    )
+  }
 }

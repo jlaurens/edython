@@ -14,29 +14,30 @@
 goog.provide('eYo.DelegateSvg.Argument')
 
 goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.Signature')
 
 /**
  * Class for a DelegateSvg, keyword_item block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
-  slots: {
-    identifier: {
-      order: 1,
-      check: eYo.T3.Expr.identifier,
-      hole_value: 'key'
-    },
-    expression: {
-      order: 3,
-      fields: {
-        label: '='
-      },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value'
-    }
-  }
-})
+// eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
+//   slots: {
+//     identifier: {
+//       order: 1,
+//       check: eYo.T3.Expr.identifier,
+//       hole_value: 'key'
+//     },
+//     expression: {
+//       order: 3,
+//       fields: {
+//         label: '='
+//       },
+//       check: eYo.T3.Expr.Check.expression,
+//       hole_value: 'value'
+//     }
+//   }
+// })
 
 /**
  * List consolidator for argument list.
@@ -48,7 +49,7 @@ eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
-  empty: true,
+  mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 
@@ -88,12 +89,18 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
       return Type.UNCONNECTED
     }
     var check = target.check_
-    if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
-      io.unique = io.i
-      return Type.COMPREHENSION
-    } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star) || goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
-      return Type.KEYWORD
+    if (check) {
+      if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
+        io.unique = io.i
+        return Type.COMPREHENSION
+      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star) || goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
+        return Type.KEYWORD
+      } else {
+        return Type.ARGUMENT
+      }
     } else {
+      // this is for 'any' expression
+      // bad answer because we should check for the type of the block
       return Type.ARGUMENT
     }
   }
@@ -215,7 +222,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (function () {
 
 /**
  * Class for a DelegateSvg, argument_list block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
@@ -223,101 +230,105 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,
-      N_ARY: Infinity,
-      Z_ARY: 0,
-      UNARY: 1,
-      BINARY: 2,
-      TERNARY: 3,
-      QUADARY: 4,
-      PENTARY: 5,
-      all: [0, 1, 2, 3, 4, 5, Infinity], // default value is Infinity
       init: Infinity,
       xml: false,
+      undo: false,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return {validated: goog.isNumber(newValue) ? newValue : Infinity}
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        this.owner.changeWrap(
+          function () {
+            this.createConsolidator()
+            this.consolidator.data.ary = newValue
+          }
+        )
+      }
+    },
+    mandatory: {
+      order: 300,
+      init: 0,
+      xml: false,
+      undo: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        console.log('list ary did change', oldValue, newValue)
-        this.consolidate()
+        this.didChange(oldValue, newValue)
+        this.owner.changeWrap(
+          function () {
+            this.createConsolidator()
+            this.consolidator.data.mandatory = newValue
+            this.consolidator.data.empty = !newValue    
+          }
+        )
       }
     }
   },
   list: {
     check: eYo.T3.Expr.Check.argument_any,
     consolidator: eYo.Consolidator.List,
-    empty: true,
     presep: ',',
     hole_value: 'name'
   }
 })
 
 /**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be sealed.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
+ * Create a consolidator..
+ *
+ * @param {boolean} force
  */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_2', {
-  list: {
-    ary: 2,
-    empty: false
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be sealed.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_3', {
-  list: {
-    ary: 3,
-    empty: false,
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be sealed.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_4', {
-  list: {
-    ary: 4,
-    empty: false,
-  }
-})
-
-/**
- * Class for a DelegateSvg, argument_list_2 block.
- * This block may be sealed.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_5', {
-  list: {
-    ary: 5,
-    empty: false,
+eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
+  if (!this.consolidator || force) {
+    var block = this.block_
+    if (!block.type) {
+      console.error('unexpected void type')
+    }
+    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
+    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
+    if (block.parentBlock_) {
+      var parent = block.parentBlock_.eyo
+      var n = parent.data.name.get()
+      var h = parent.data.holder.get()
+      var Ss = eYo.Signature[h]
+      var s = Ss && Ss[n]
+      var C10r = (s && s.consolidator) || D.consolidator || eYo.Consolidator.List
+      if (!this.consolidator || this.consolidator.constructor !== C10r) {
+        this.consolidator = new C10r(D)
+        goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+      }
+      if (s) {
+        s.ary && this.data.ary.set(s.ary)
+        s.mandatory && this.data.mandatory.set(s.mandatory)
+      } else {
+        this.data.ary.set(D.ary || Infinity)
+        this.data.mandatory.set(D.mandatory || 0)
+      }
+    } else {
+      this.consolidator = new eYo.Consolidator.List(D)
+    }
+    if (force) {
+      this.consolidate()
+    }
   }
 })
 
 /**
  * Class for a DelegateSvg, argument_list_comprehensive block.
- * This block may be sealed.
+ * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('argument_list_comprehensive', {
+eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     consolidator: eYo.Consolidator.Arguments,
-    empty: true,
+    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }
 })
 
 eYo.DelegateSvg.Argument.T3s = [
-  eYo.T3.Expr.keyword_item,
-  eYo.T3.Expr.starred_expression, // from Expr
+  // eYo.T3.Expr.keyword_item,
+  eYo.T3.Expr.starred_item_list, // from Expr
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive
 ]

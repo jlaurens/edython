@@ -15,6 +15,7 @@ goog.provide('eYo.FlyoutCategory')
 
 goog.require('eYo.T3')
 goog.require('eYo.Const')
+goog.require('eYo.Tooltip')
 
 /**
  * Flyout list of node models by category.
@@ -28,7 +29,7 @@ eYo.FlyoutCategory = {
           type: eYo.T3.Expr.call_expr,
           data: {
             name: 'remove',
-            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
+            variant: eYo.Key.BLOCK_NAME,
             ary: 1
           }
         }
@@ -42,33 +43,38 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.builtin__print_stmt,
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.builtin__input_expr,
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'input',
+            n_ary_s: {
               slots: {
-                expression: "'...'",
-              },
-            }, 
-          },
+                O: "'...'"
+              }
+            },
+          }, 
         },
       },
     },
     /*
-    <s eyo="assignment" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="binary"><x eyo="input" slot="O"></x></x></x></x></s>
+    <s eyo="assignment" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="binary"><x eyo="input" slot="O"></x></x></x></x></s>
+    <s eyo="assignment" variant="name_value" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="arguments"><x eyo="call" name="input" slot="O"><x eyo="list" slot="arguments"><x eyo="literal" subtype="eyo:shortstringliteral" slot="O">''</x></x></x></x></x></x></s>
     */
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.call_expr,
-              data: 'int',
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'int',
+            n_ary_s: {
               slots: {
-                O: eYo.T3.Expr.builtin__input_expr
-              },
+                O: {
+                  type: eYo.T3.Expr.call_expr,
+                  data: 'input'
+                }
+              }
             },
           },
         },
@@ -76,23 +82,26 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.call_expr,
-              data: 'float',
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.call_expr,
+            data: 'float',
+            n_ary_s: {
               slots: {
-                unary: eYo.T3.Expr.builtin__input_expr
-              },
+                O: {
+                  type: eYo.T3.Expr.call_expr,
+                  data: 'input'
+                }
+              }
             },
           },
         },
       },
     },
-    // '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0"><s eyo="assignment_stmt"><x eyo="list" slot="assigned"><x eyo="builtin__input_expr" slot="O"></x></x></s></edython>', // eYo.T3.Expr.builtin__input_expr,
+    // '<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><s eyo="assignment_stmt"><x eyo="list" slot="assigned"><x eyo="builtin__input_expr" slot="O"></x></x></s></edython>', // eYo.T3.Expr.builtin__input_expr,
     eYo.T3.Stmt.assignment_stmt,
-    eYo.T3.Expr.term,
+    eYo.T3.Expr.identifier,
     eYo.T3.Expr.u_expr,
     {
       type: eYo.T3.Expr.a_expr,
@@ -117,54 +126,67 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.power,
   ],
   'intermediate': [
-    eYo.T3.Stmt.any_stmt,
+    eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,
     eYo.T3.Expr.dict_display,
     eYo.T3.Expr.builtin__object,
-    eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Stmt.import_stmt,
     {
       type: eYo.T3.Stmt.import_stmt,
       data: {
         variant: eYo.Key.FROM_MODULE_IMPORT
-      }
+      },
+      title: eYo.Tooltip.Title.import_stmt
     },
     {
-      type: eYo.T3.Expr.term,
-      data: {
-        variant: eYo.Key.NAME_ALIAS
-      }
+      type: eYo.T3.Expr.identifier,
+      variant_d: eYo.Key.ALIASED
     },
     eYo.T3.Stmt.docstring_stmt,
     eYo.T3.Expr.longliteral,
     eYo.T3.Expr.attributeref,
-    eYo.T3.Expr.proper_slice,
     eYo.T3.Expr.slicing,
+    eYo.T3.Expr.proper_slice,
   ],
   'advanced': [
-    eYo.T3.Expr.any,
-    eYo.T3.Stmt.expression_stmt,
+    eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Expr.shift_expr,
     eYo.T3.Expr.and_expr,
     eYo.T3.Expr.xor_expr,
     eYo.T3.Expr.or_expr,
-    eYo.T3.Expr.starred_expression,
+    eYo.T3.Expr.any,
+    eYo.T3.Stmt.expression_stmt,
+    eYo.T3.Expr.star_expr,
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'global'
+    },
+    {
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'nonlocal'
+    },
     eYo.T3.Stmt.del_stmt,
-    eYo.T3.Expr.parenth_target_list,
-    eYo.T3.Expr.bracket_target_list,
-  ],
-  'expert': [
     eYo.T3.Expr.builtin__print_expr,
     eYo.T3.Expr.comprehension,
     eYo.T3.Expr.comp_for,
     eYo.T3.Expr.comp_if,
     eYo.T3.Expr.dict_comprehension,
     eYo.T3.Expr.key_datum,
+  ],
+  'expert': [
     eYo.T3.Stmt.with_part,
     eYo.T3.Stmt.try_part,
     eYo.T3.Stmt.except_part,
+    {
+      type: eYo.T3.Stmt.except_part,
+      expression_d: 'IndexError'
+    },
+    {
+      type: eYo.T3.Stmt.except_part,
+      expression_d: 'KeyError'
+    },
     eYo.T3.Stmt.finally_part,
     eYo.T3.Stmt.assert_stmt,
     eYo.T3.Stmt.raise_stmt,
@@ -191,8 +213,11 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.or_test,
     eYo.T3.Expr.and_test,
     eYo.T3.Stmt.while_part,
-    eYo.T3.Expr.builtin__range,
     eYo.T3.Stmt.for_part,
+    {
+      type: eYo.T3.Expr.call_expr,
+      data: 'range'
+    },
     eYo.T3.Stmt.else_part,
     eYo.T3.Stmt.break_stmt,
     eYo.T3.Stmt.continue_stmt,
@@ -206,55 +231,59 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.call_stmt,
       data: ''
     },
-    eYo.T3.Expr.starred_expression,
+    eYo.T3.Expr.lambda,
     eYo.T3.Stmt.funcdef_part,
+    eYo.T3.Expr.primary,
+    eYo.T3.Expr.parameter_star,
+    eYo.T3.Expr.parameter_star_star,
     eYo.T3.Stmt.return_stmt,
     eYo.T3.Stmt.pass_stmt,
-    eYo.T3.Expr.lambda,
     eYo.T3.Stmt.classdef_part,
-    eYo.T3.Stmt.global_nonlocal_stmt,
     {
       type: eYo.T3.Stmt.global_nonlocal_stmt,
-      data: 'non_local'
-    },
-    eYo.T3.Stmt.decorator,
-    {
-      type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.STATICMETHOD
-      }
+      variant_d: 'global'
     },
     {
-      type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.CLASSMETHOD
-      }
+      type: eYo.T3.Stmt.global_nonlocal_stmt,
+      variant_d: 'nonlocal'
     },
     {
-      type: eYo.T3.Stmt.decorator,
-      data: {
-        variant: eYo.Key.BUILTIN,
-        builtin: eYo.Key.PROPERTY
-      }
-    }
+      type: eYo.T3.Stmt.decorator_stmt,
+      name_d: eYo.Key.STATICMETHOD
+    },
+    {
+      type: eYo.T3.Stmt.decorator_stmt,
+      name_d: eYo.Key.CLASSMETHOD
+    },
+    {
+      type: eYo.T3.Stmt.decorator_stmt,
+      name_d: eYo.Key.PROPERTY
+    },
+    eYo.T3.Stmt.decorator_stmt
   ],
   'list': [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.list_display,
-              slots: {
-                expression: "'...'",
-              },
-            }, 
-          },
+      rhs_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.list_display,
+            expression_s: "'...'"
+          }, 
         },
       },
+    },
+    {
+      type: eYo.T3.Expr.identifier,
+    },
+    {
+      type: eYo.T3.Expr.slicing,
+      variant_d: eYo.Key.NAME,
+      slice_s: {
+        slots: {
+          O: 0
+        }
+      }
     },
     {
       type: eYo.T3.Expr.list_display,
@@ -267,70 +296,29 @@ eYo.FlyoutCategory = {
       data: 'len'
     },
     {
-      type: eYo.T3.Expr.slicing,
-      data: {
-        variant: eYo.Key.NAME
-      },
-      slots: {
-        slice: {
-          slots: {
-            O: 0
-          }
-        }
-      }
-    },
-    {
-      type: eYo.T3.Expr.slicing,
-      data: {
-        variant: eYo.Key.PRIMARY
-      },
-      slots: {
-        slice: {
-          slots: {
-            O: 0
-          }
-        }
-      }
-    },
-    {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'insert',
-            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-            ary: 2
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'insert',
+        dotted_d: 1
       },
       title: 'list_insert'
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'append',
-            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-            ary: 1
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'append',
+        dotted_d: 1
       },
       title: 'list_append'
     },
     {
       type: eYo.T3.Stmt.expression_stmt,
-      slots: {
-        expression: {
-          type: eYo.T3.Expr.call_expr,
-          data: {
-            name: 'remove',
-            variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-            ary: 1
-          }
-        }
+      expression_s: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: 'remove',
+        dotted_d: 1
       },
       title: 'list_remove'
     },
@@ -338,8 +326,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 1
+        dotted: 1
       },
       title: 'list_index'
     },
@@ -347,8 +334,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 1
+        dotted: 1
       },
       title: 'list_count'
     },
@@ -356,8 +342,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'pop',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 1
+        dotted: 1
       },
       slots: {
         n_ary: {
@@ -374,26 +359,41 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'reverse',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 0
+        dotted: 1
       },
       title: 'list_reverse'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'min'
+      data: {
+        name: 'copy',
+        dotted: 1
+      },
+      title: 'list_copy'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'max'
+      name_d: 'min'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'sum'
+      name_d: 'max'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: 'list',
+      name_d: 'sum'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'all'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'any'
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'list',
       slots: {
         n_ary: {
           slots: {
@@ -403,25 +403,22 @@ eYo.FlyoutCategory = {
       }
     },
     eYo.T3.Expr.proper_slice,
-    eYo.T3.Expr.a_expr,
+    eYo.T3.Stmt.del_stmt,
     {
-      type: eYo.T3.Stmt.augmented_assignment_stmt,
-      data: '+='
-    },
-    eYo.T3.Expr.m_expr,
-    {
-      type: eYo.T3.Stmt.augmented_assignment_stmt,
-      data: '*='
-    },
+      type: eYo.T3.Stmt.del_stmt,
+      n_ary_s: {
+        slots: {
+          O: eYo.T3.Expr.slicing
+        }
+      }
+    }
   ],
   'text': [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      slots: {
-        assigned: {
-          slots: {
-            O: "'...'", 
-          },
+      rhs_s: {
+        slots: {
+          O: "'...'", 
         },
       },
       title: 'text_assignment'
@@ -429,11 +426,9 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.call_expr,
       data: 'print',
-      slots: {
-        n_ary: {
-          slots: {
-            O: "'...'"
-          }
+      n_ary_s: {
+        slots: {
+          O: "'...'"
         }
       }
     },
@@ -444,37 +439,27 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'startswith',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 3
-      },
+      name_d: 'startswith',
+      dotted_d: 1,
       title: 'text_startswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'endswith',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 3
-      },
+      name_d: 'endswith',
+      dotted_d: 1,
       title: 'text_endswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'find',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 3
-      },
+      name_d: 'find',
+      dotted_d: 1,
       title: 'text_find'
     },
     {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'replace',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 3
+        dotted: 1
       },
       title: 'text_replace'
     },
@@ -482,8 +467,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'count',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 3
+        dotted: 1
       },
       title: 'text_count'
     },
@@ -491,8 +475,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'upper',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 0
+        dotted: 1
       },
       title: 'text_upper'
     },
@@ -500,8 +483,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'lower',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 0
+        dotted: 1
       },
       title: 'text_lower'
     },
@@ -509,7 +491,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'join',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE
+        dotted: 1
       },
       title: 'text_join'
     },
@@ -517,16 +499,15 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'split',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
-        ary: 2
+        dotted: 1
       },
       title: 'text_split'
     },
     {
-      type: eYo.T3.Expr.term,
+      type: eYo.T3.Expr.identifier,
       data: {
         name: 'sep',
-        variant: eYo.Key.NAME_DEFINITION
+        definition: eYo.Key.DEFINED
       },
       slots: {
         definition: 'None'
@@ -534,10 +515,10 @@ eYo.FlyoutCategory = {
       title: 'text_split_sep'
     },
     {
-      type: eYo.T3.Expr.term,
+      type: eYo.T3.Expr.identifier,
       data: {
         name: 'maxsplit',
-        variant: eYo.Key.NAME_DEFINITION
+        definition: eYo.Key.DEFINED
       },
       slots: {
         definition: -1
@@ -548,9 +529,9 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'splitlines',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
+        dotted: 1,
         ary: 1,
-        isOptionalUnary: true
+        mandatory: 0
       },
       title: 'text_splitlines'
     },
@@ -558,7 +539,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE,
+        dotted: 1,
         ary: 3
       },
       title: 'text_index'
@@ -664,7 +645,7 @@ eYo.FlyoutCategory = {
       data: {
         name: 'conjugate',
         ary: 0,
-        variant: eYo.Key.EXPRESSION_ATTRIBUTE
+        dotted: 1
       }
     },
   ]

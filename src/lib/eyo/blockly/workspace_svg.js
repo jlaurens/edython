@@ -34,10 +34,10 @@ eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
  * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName.startsWith('eyo:')) {
-    return new eYo.BlockSvg(this, prototypeName, optId)
+  if (prototypeName && prototypeName.startsWith('eyo:')) {
+    return new eYo.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
   } else {
-    return new Blockly.BlockSvg(this, prototypeName, optId)
+    return new Blockly.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
   }
 }
 
@@ -53,14 +53,16 @@ goog.provide('eYo.Gesture')
  * @package
  * @suppress{accessControls}
  */
-eYo.Gesture.handleWsStart_saved = Blockly.Gesture.prototype.handleWsStart
-Blockly.Gesture.prototype.handleWsStart = function (e, ws) {
-  if (Blockly.WidgetDiv.DIV.childNodes.length) {
-    Blockly.WidgetDiv.hide()
-  } else {
-    eYo.Gesture.handleWsStart_saved.call(this, e, ws)
+Blockly.Gesture.prototype.handleWsStart = (function () {
+  var handleWsStart = Blockly.Gesture.prototype.handleWsStart
+  return function (e, ws) {
+    if (Blockly.WidgetDiv.DIV.childNodes.length) {
+      Blockly.WidgetDiv.hide()
+    } else {
+      handleWsStart.call(this, e, ws)
+    }
   }
-}
+}) ()
 
 Blockly.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
@@ -259,35 +261,31 @@ Blockly.WorkspaceSvg.prototype.addElementInWorkspaceBlocks = function (workspace
  * @private
  */
 Blockly.WorkspaceSvg.prototype.addElementsInWorkspaceBlocks = function (workspaceXMLElement, types, n_col, offset, step) {
-  workspaceXMLElement.setAttribute('xmlns', 'urn:edython:1.0')
-  workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:1.0')
+  workspaceXMLElement.setAttribute('xmlns', 'urn:edython:0.2')
+  workspaceXMLElement.setAttribute('xmlns:eyo', 'urn:edython:0.2')
   var n = 0
   var x = offset.x
   var y = offset.y
   var i = 0
-  eYo.Events.setGroup(true)
-  try {
-    for (; i < types.length; i++) {
-      this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
-      if (++n < n_col) {
-        x += step.x
-        y += step.y
-      } else {
-        n = 0
+  eYo.Events.groupWrap(
+    () => {
+      for (; i < types.length; i++) {
+        this.addElementInWorkspaceBlocks(workspaceXMLElement, types[i], x, y)
+        if (++n < n_col) {
+          x += step.x
+          y += step.y
+        } else {
+          n = 0
+          x = offset.x
+          y += step.y
+        }
+      }
+      if (n < n_col) {
         x = offset.x
         y += step.y
       }
     }
-    if (n < n_col) {
-      x = offset.x
-      y += step.y
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    eYo.Events.setGroup(false)
-  }
+  )
   return {x: x, y: y}
 }
 
@@ -306,163 +304,115 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
   if (this.currentGesture_) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
-  var c8n, targetC8n
-  if ((c8n = eYo.SelectedConnection.get())) {
-    try {
-      var block = Blockly.Xml.domToBlock(xmlBlock, this)
-      if (c8n.type === Blockly.INPUT_VALUE) {
-        targetC8n = block.outputConnection
-      } else if (c8n.type === Blockly.NEXT_STATEMENT) {
-        targetC8n = block.previousConnection
-      } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-        targetC8n = block.nextConnection
-      }
-    } catch (e) {
-      targetC8n = null
-    }
-    if (targetC8n && c8n.checkType_(targetC8n)) {
-      eYo.Events.setGroup(true)
-      try {
-        if (Blockly.Events.isEnabled()) {
-          Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-        }
-        if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
-          // the pasted block must move before it is connected
-          // otherwise the newly created block will attract the old one
-          // resulting in a move of the existing connection
-          // 1) get the location of c8n in the workspace
-          var xy = c8n.offsetInBlock_.clone()
-          var xy_block = c8n.sourceBlock_.getRelativeToSurfaceXY()
-          xy.translate(xy_block.x, xy_block.y)
-          // This is where the targetC8n should be once the
-          // connection has been made
-          var xyxy = targetC8n.offsetInBlock_.clone()
-          xy_block = targetC8n.getSourceBlock().getRelativeToSurfaceXY()
-          xyxy.translate(xy_block.x, xy_block.y)
-          // This is where the targetC8n is
-          xyxy.scale(-1)
-          xy.translate(xyxy.x, xyxy.y)
-          targetC8n.getSourceBlock().moveBy(xy.x, xy.y)
-        }
-        c8n.connect(targetC8n)
-        if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+  var c8n, targetC8n, block
+  if ((c8n = eYo.SelectedConnection)) {
+    eYo.Events.groupWrap(
+      () => {
+        block = Blockly.Xml.domToBlock(xmlBlock, this)
+        if (c8n.type === Blockly.INPUT_VALUE) {
+          targetC8n = block.outputConnection
+        } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+          targetC8n = block.previousConnection
+        } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
           targetC8n = block.nextConnection
         }
-        block.select()
-        // if (c8n.type === Blockly.INPUT_VALUE) {
-        //   var parent = block
-        //   do {
-        //     var e8r = parent.eyo.inputEnumerator(parent)
-        //     while (e8r.next()) {
-        //       if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection) {
-        //         eYo.SelectedConnection.set(c8n)
-        //         parent = null
-        //         break
-        //       }
-        //     }
-        //   } while (parent && (parent = parent.getSurroundParent()))
-        // } else if ((c8n = block.nextConnection)) {
-        //   eYo.SelectedConnection.set(c8n)
-        // }
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
-      return
-    } else if (block) {
-      block.dispose(true)
-    }
-  }
-  Blockly.Events.disable(true)
-  try {
-    block = Blockly.Xml.domToBlock(xmlBlock, this)
-    // Move the duplicate to original position.
-    var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
-    var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
-    if (!isNaN(blockX) && !isNaN(blockY)) {
-      if (this.RTL) {
-        blockX = -blockX
-      }
-      // Offset block until not clobbering another block and not in connection
-      // distance with neighbouring blocks.
-      var allBlocks = this.getAllBlocks()
-      var avoidCollision = function () {
-        do {
-          var collide = false
-          for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
-            var otherXY = otherBlock.getRelativeToSurfaceXY()
-            if (Math.abs(blockX - otherXY.x) <= 10 &&
-                Math.abs(blockY - otherXY.y) <= 10) {
-              collide = true
-              break
-            }
+        if (targetC8n && c8n.checkType_(targetC8n)) {
+          if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+            // the pasted block must move before it is connected
+            // otherwise the newly created block will attract the old one
+            // resulting in a move of the existing connection
+            // 1) get the location of c8n in the workspace
+            var xy = c8n.offsetInBlock_.clone()
+            var xy_block = c8n.sourceBlock_.getRelativeToSurfaceXY()
+            xy.translate(xy_block.x, xy_block.y)
+            // This is where the targetC8n should be once the
+            // connection has been made
+            var xyxy = targetC8n.offsetInBlock_.clone()
+            xy_block = targetC8n.getSourceBlock().getRelativeToSurfaceXY()
+            xyxy.translate(xy_block.x, xy_block.y)
+            // This is where the targetC8n is
+            xyxy.scale(-1)
+            xy.translate(xyxy.x, xyxy.y)
+            targetC8n.getSourceBlock().moveBy(xy.x, xy.y)
           }
-          if (!collide) {
-            // Check for blocks in snap range to any of its connections.
-            var connections = block.getConnections_(false)
-            var connection
-            for (i = 0; (connection = connections[i]); i++) {
-              var neighbour = connection.closest(Blockly.SNAP_RADIUS,
-                new goog.math.Coordinate(blockX, blockY))
-              if (neighbour.connection) {
+          c8n.connect(targetC8n)
+          if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+            targetC8n = block.nextConnection
+          }
+          block.select()
+        }
+      }
+    )
+    return
+  }
+  eYo.Events.groupWrap(
+    () => {
+      block = Blockly.Xml.domToBlock(xmlBlock, this)
+      // Move the duplicate to original position.
+      var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
+      var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
+      if (!isNaN(blockX) && !isNaN(blockY)) {
+        if (this.RTL) {
+          blockX = -blockX
+        }
+        // Offset block until not clobbering another block and not in connection
+        // distance with neighbouring blocks.
+        var allBlocks = this.getAllBlocks()
+        var avoidCollision = (function () {
+          do {
+            var collide = false
+            for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
+              var otherXY = otherBlock.getRelativeToSurfaceXY()
+              if (Math.abs(blockX - otherXY.x) <= 10 &&
+                  Math.abs(blockY - otherXY.y) <= 10) {
                 collide = true
                 break
               }
             }
-          }
-          if (collide) {
-            blockX += Blockly.SNAP_RADIUS
-            blockY += Blockly.SNAP_RADIUS * 2
-          }
-        } while (collide)
+            if (!collide) {
+              // Check for blocks in snap range to any of its connections.
+              var connections = block.getConnections_(false)
+              var connection
+              for (i = 0; (connection = connections[i]); i++) {
+                var neighbour = connection.closest(Blockly.SNAP_RADIUS,
+                  new goog.math.Coordinate(blockX, blockY))
+                if (neighbour.connection) {
+                  collide = true
+                  break
+                }
+              }
+            }
+            if (collide) {
+              blockX += Blockly.SNAP_RADIUS
+              blockY += Blockly.SNAP_RADIUS * 2
+            }
+          } while (collide)
+        }) ()
+        // is the block in the visible area ?
+        var metrics = this.getMetrics()
+        var scale = this.scale || 1
+        var heightWidth = block.getHeightWidth()
+        // the block is in the visible area if we see its center
+        var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
+        var topBound = metrics.viewTop / scale - heightWidth.height / 2
+        var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
+        var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
+        var inVisibleArea = function () {
+          return blockX >= leftBound && blockX <= rightBound &&
+          blockY >= topBound && blockY <= downBound
+        }
+        if (!inVisibleArea()) {
+          blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
+          blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
+          avoidCollision()
+        }
+        block.moveBy(blockX, blockY)
+        if (!inVisibleArea()) {
+          this.centerOnBlock(block.id)
+        }
       }
-      avoidCollision()
-      // is the block in the visible area ?
-      var metrics = this.getMetrics()
-      var scale = this.scale || 1
-      var heightWidth = block.getHeightWidth()
-      // the block is in the visible area if we see its center
-      var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
-      var topBound = metrics.viewTop / scale - heightWidth.height / 2
-      var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
-      var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-      var inVisibleArea = function () {
-        return blockX >= leftBound && blockX <= rightBound &&
-        blockY >= topBound && blockY <= downBound
-      }
-      if (!inVisibleArea()) {
-        blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
-        blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
-        avoidCollision()
-      }
-      block.moveBy(blockX, blockY)
-      if (!inVisibleArea()) {
-        this.centerOnBlock(block.id)
-      }
+      block.select()
     }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable()
-  }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(block))
-  }
-  block.select()
+  )
 }
 
-/**
- * Handle a mouse-down on SVG drawing surface.
- * @param {!Event} e Mouse down event.
- * @private
- * @suppress {accessControls}
- */
-Blockly.WorkspaceSvg.prototype.onMouseDown_ = function (e) {
-  var gesture = this.getGesture(e)
-  if (gesture) {
-    gesture.handleWsStart(e, this)
-  }
-}

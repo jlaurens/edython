@@ -22,9 +22,9 @@ if_part/if ::= "if" expression ":"
 elif_part/elif ::= "elif" expression ":"
 else_part/else ::= "else" ":"
 last_else_part ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> if_part | elif_part | any_stmt
-last_else_part >>> if_part | elif_part | any_stmt
-elif_part >>> if_part | elif_part | any_stmt
+else_part >>> if_part | elif_part | expression_stmt
+last_else_part >>> if_part | elif_part | expression_stmt
+elif_part >>> if_part | elif_part | expression_stmt
 </pre>
 <pre>
 while_stmt ::= IGNORE
@@ -57,14 +57,14 @@ try_part/try
 except_part/except
 void_except_part ::= "except" ":" # this block type is never used in a definition, only for checking
 finally_part/finally
-try_part <<< except_part | void_except_part | finally_part | any_stmt
+try_part <<< except_part | void_except_part | finally_part | expression_stmt
 void_except_part >>> except_part
-except_part >>> try_part | except_part | any_stmt
-void_except_part >>> try_part | except_part | any_stmt
+except_part >>> try_part | except_part | expression_stmt
+void_except_part >>> try_part | except_part | expression_stmt
 try_else_part/else ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> except_part | void_except_part | any_stmt
-try_else_part >>> except_part | void_except_part | any_stmt
-finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | any_stmt
+else_part >>> except_part | void_except_part | expression_stmt
+try_else_part >>> except_part | void_except_part | expression_stmt
+finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | expression_stmt
 </pre>
 
 with_stmt ::=  "with" with_item ("," with_item)* ":" suite
@@ -86,8 +86,8 @@ async_funcdef ::= REMOVE
 funcdef_part/function ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->" expression] ":" SUITE
 decorators ::= REMOVE
 decorator ::= REMOVE
-decorator(stmt) ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
-decorator <<< decorator | funcdef_part
+decorator_stmt ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
+decorator_stmt <<< decorator_stmt | funcdef_part
 </pre>
 
 
@@ -142,14 +142,16 @@ parameter_list ::=
 | '**' tfpdef
 
 <pre>
-parameter_list ::=
-parameter_star ::= "*" [parameter]
+parameter_list ::= 
+star ::= "*"
+parameter_star ::= "*" parameter
 parameter_star_star ::= "**" parameter
-parameter_any ::= parameter | defparameter | parameter_star | parameter_star_star
+parameter_any ::= parameter | defparameter | star | parameter_star | parameter_star_star
+identifier_annotated     ::=  identifier ":" expression
+identifier_defined       ::=  identifier "=" expression
+identifier_annotated_defined ::=  identifier_annotated "=" expression
 parameter               ::=  identifier | identifier_annotated
-identifier_annotated    ::=  identifier ":" expression
-defparameter            ::=  parameter | parameter_defined
-parameter_defined       ::=  parameter "=" expression
+defparameter            ::=  parameter | identifier_defined | identifier_annotated_defined
 </pre>
 
 classdef    ::=  [decorators] "class" classname [inheritance] ":" suite

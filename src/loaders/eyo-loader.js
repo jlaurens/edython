@@ -28,10 +28,10 @@ module.exports = function (content, map, meta) {
   // }
   // var xml = [
   //   '<?xml version="1.0" encoding="utf-8"?>',
-  //   '<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
+  //   '<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">',
   //   '<workspace>',
   //   '<content>',
-  //   // '<s eyo="start_stmt" comment="Avec des listes" xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">',
+  //   // '<s eyo="start_stmt" comment="Avec des listes" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">',
   //   // '<s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next">',
   //   // '<s eyo="assignment" name="liste" flow="next">',
   //   // '<x eyo="list" slot="assigned">',

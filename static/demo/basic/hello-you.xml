@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<edython xmlns="urn:edython:1.0" xmlns:eyo="urn:edython:1.0">
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <prefs>{"selectedPanel":"console",
 "flyoutClosed":true,
 "flyoutCategory":"basic"}</prefs>
@@ -8,8 +8,10 @@
 <s eyo="start_stmt" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
 <s eyo="assignment" name="prénom" flow="next">
 <x eyo="list" slot="assigned">
-<x eyo="input" slot="O">
-<x eyo="literal" slot="expression">'Quel est votre prénom ?'</x>
+<x eyo="call" name="input" slot="O">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="O">'Quel est votre prénom ?'</x>
+</x>
 </x>
 </x>
 <s eyo="print" flow="next">

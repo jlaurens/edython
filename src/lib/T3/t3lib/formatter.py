@@ -455,9 +455,8 @@ goog.require('eYo.T3')
         self.append(']')
         TTs = [t for t in Ts if t.is_list]
         self.append('eYo.T3.All.lists = [ // count {}'.format(len(TTs)))
-        for t in Ts:
-            if t.is_list:
-                self.append(template.format(t.name))
+        for t in TTs:
+            self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_wrapper and not t.alias]
         self.append('eYo.T3.All.wrappers = [ // count {}'.format(len(TTs)))

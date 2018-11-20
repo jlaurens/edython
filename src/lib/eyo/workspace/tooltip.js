@@ -77,16 +77,17 @@ eYo.Tooltip.hideAll = function (el) {
 
 /**
  * Add tooltip to a block
- * @param {!Blockly.Block} block Block target of the tooltip.
+ * @param {!String} key
  */
-eYo.DelegateSvg.prototype.addTooltip = function (block, key) {
+eYo.DelegateSvg.prototype.addTooltip = function (key) {
   var options = eYo.Tooltip.options
+  var block = this.block_
   goog.mixin(options, {
     onShow(instance) {
       block.svgGroup_ && block.svgGroup_.parentNode && eYo.Tooltip.hideAll(block.svgGroup_.parentNode)
     }
   })
-  var model = this.constructor.eyo.getModel()
+  var model = this.constructor.eyo.model
   var title = eYo.Tooltip.getTitle(key || model.tooltip || this.tooltipKey || block.type.substring(4))
   if (title) {
     eYo.Tooltip.add(block.svgGroup_, title, options)
@@ -99,12 +100,13 @@ eYo.Tooltip.Title = {
   shortliteral: 'Texte court',
   numberliteral: 'Nombre entier, flottant ou complexe',
   assignment_stmt: 'Instruction d\'assignement',
-  term: 'variable et argument',
+  identifier: 'variable ou argument',
+  dotted_name: 'variable avec attribut ou module et sous module',
   u_expr: 'Opération unaire : +, -, ~',
   m_expr: 'Opération multiplicative : *, /, //, %, @',
   a_expr: 'Opération additive : +, -',
   power: 'Puissance',
-  any_stmt: 'Instruction, commentaire, les deux',
+  expression_stmt: 'Instruction, commentaire, les deux',
   parenth_form: 'Objet entre parenthèses',
   list_display: 'Liste',
   set_display: 'Ensemble, pour un ensemble vide utiliser la fonction `set()`',
@@ -122,7 +124,10 @@ eYo.Tooltip.Title = {
   and_expr: 'Opération sur les nombres binaires',
   xor_expr: 'Opération sur les nombres binaires',
   or_expr: 'Opération sur les nombres binaires',
-  starred_expression: 'Expression *',
+  expression_star: 'Expression *',
+  parameter_star: 'Paramètre *',
+  target_star: 'Cible *',
+  star_expr: 'Expression *',
   del_stmt: 'Supprimer une variable, un element',
   parenth_target_list: 'Liste d\'objets assignables entre parenthèses',
   bracket_target_list: 'Liste d\'objets assignables entre crochets',
@@ -166,7 +171,7 @@ eYo.Tooltip.Title = {
   classdef_part: 'Définition d\'une classe',
   decorator: 'Décorateur : filtre pour modifier automagiquement la définition d\'une fonction ou d\'une classe',
   global_nonlocal_stmt: 'Variable : global ou nonlocal',
-  list_insert: 'Insère un élément dans la liste',
+  list_insert: 'Insère un élément dans la liste: `list.insert(index, obj)`',
   list_append: 'Insère un élément en fin de liste',
   list_remove: 'Supprimer un élement de la list',
   list_index: 'Obtenir le rang d\'un élément de la liste',
@@ -176,8 +181,11 @@ eYo.Tooltip.Title = {
   min: 'Trouver le minimum d\'une liste, un ensemble, un tuple',
   max: 'Trouver le maximum d\'une liste, un ensemble, un tuple',
   sum: 'Trouver la somme des éléments d\'une liste, un ensemble, un tuple',
+  all: 'Vrai si tous les éléments d\'une liste, un ensemble, un tuple, sont vrais',
+  any: 'Vrai si l\'un des éléments d\'une liste, un ensemble, un tuple, est vrai',
   list: 'Convertir en liste',
-  proper_slice: 'Arguments d\'extraction d\'éléments d\'une liste',
+  named_slicing: 'Obtenir un ou plusieurs éléments d\'une liste',
+  proper_slice: 'Arguments d\'extraction d\'éléments d\'une liste (à glisser entre [ et ])',
   '+=': 'Ajouter des éléments en place',
   '*=': 'Reproduire en place',
   text_assignment: 'Assigner un texte à une variable',
