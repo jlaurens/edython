@@ -227,17 +227,23 @@
         }
         this.$store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
       }
-      var oldSvg = document.getElementById('svg-control-image')
-      var newSvg = document.getElementById('svg-control-image-v')
-      if (oldSvg && newSvg) {
-        oldSvg.parentNode.appendChild(newSvg)
-        newSvg.parentNode.removeChild(oldSvg)
-        // JL: critical section of code,
-        // next instruction does not work despite what stackoverflow states
-        // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
-      } else {
-        console.error('MISSING svg-control-image…')
-      }
+      this.$nextTick(() => {
+        // sometimes the `oldSvg` is not found
+        var oldSvg = document.getElementById('svg-control-image')
+        var newSvg = document.getElementById('svg-control-image-v')
+        if (oldSvg && newSvg) {
+          oldSvg.parentNode.appendChild(newSvg)
+          newSvg.parentNode.removeChild(oldSvg)
+          // JL: critical section of code,
+          // next instruction does not work despite what stackoverflow states
+          // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+        } else {
+          if (newSvg) {
+            newSvg.parentNode.removeChild(newSvg)
+          }
+          console.error('MISSING svg-control-image…')
+        }
+      })
       eYo.KeyHandler.setup(document)
       this.$$.bus.$on('new-document', () => {
         this.workspace.clear()
@@ -289,5 +295,11 @@
   }
   #eyo-flyout-toolbar-switcher .eyo-round-btn {
     top: 0;
+  }
+  #eyo-workspace-content .eyo-flyout-control {
+    top: -0.125rem;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    height: 2rem;
   }
 </style>

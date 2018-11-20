@@ -40,10 +40,9 @@
     },
     mounted: function () {
       window.addEventListener('resize', this.resize, false)
-      var self = this
-      this.$nextTick(function () {
-        self.$$.bus.$on('size-did-change', self.resize)
-        self.resize()
+      this.$nextTick(() => {
+        this.$$.bus.$on('size-did-change', this.resize)
+        this.resize()
       })
     }
   }

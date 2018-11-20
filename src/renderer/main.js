@@ -95,7 +95,7 @@ eYo.App.doDomToPref = function (dom) {
                 }
                 // close at last because it is an animation
                 if (goog.isDef(prefs.flyoutClosed)) {
-                  Vue.nextTick(function () {
+                  Vue.nextTick(() => {
                     store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
                   })
                 }
@@ -367,7 +367,7 @@ eYo.Delegate.prototype.didConnect = (function () {
   var didConnect = eYo.Delegate.prototype.didConnect
   return function (connection, oldTargetC8n, targetOldC8n) {
     didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
-    Vue.nextTick(function () {
+    Vue.nextTick(() => {
       controller.bus.$emit('didConnect')
     })
   }
@@ -379,7 +379,7 @@ eYo.Delegate.prototype.didDisconnect = (function () {
   var didDisconnect = eYo.Delegate.prototype.didDisconnect
   return function (connection, oldTargetC8n, targetOldC8n) {
     didDisconnect.call(this, connection, oldTargetC8n)
-    Vue.nextTick(function () {
+    Vue.nextTick(() => {
       controller.bus.$emit('didDisconnect')
     })
   }
