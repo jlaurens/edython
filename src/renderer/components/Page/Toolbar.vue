@@ -1,49 +1,47 @@
 <template>
-  <div id="toolbar">
-    <b-button-toolbar key-nav  aria-label="Main toolbar" justify>
-      <b-button-group class="mx-1">
-        <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
-          <img src="static/icon_light.svg" height="32" alt="Edython"/>
-        </b-btn>
-        <b-btn id="toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')" title="Demander une correction, une amélioration" v-tippy>
-          <icon-base :width="32" :height="32" icon-name="bug"><icon-bug /></icon-base>
-        </b-btn>
-        <b-dropdown-demo/>
-      </b-button-group>
-      <b-btn-group-storage />
-      <b-button-group class="mx-1">
-        <b-btn-run-python />
-        <b-btn-copy-python />
-      </b-button-group>
-      <b-button-group class="mx-1">
-        <b-btn-copy-paste :copy="true" :deep="false" />
-        <b-btn-copy-paste :copy="true" :deep="true" />
-        <b-btn-copy-paste :copy="false" />
-      </b-button-group>
-      <b-button-group class="mx-1">
-        <b-btn-undo-redo :redo="false" />
-        <b-btn-undo-redo :redo="true" />
-      </b-button-group>
-      <b-btn-group-layout />
-      <!--b-button-group class="mx-1">
-        <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
-          <icon-base :width="32" :height="32" icon-name="toggle"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
-        </b-btn>
-      </b-button-group-->
-      <b-dropdown-menu />
-    </b-button-toolbar>
-  </div>
+  <b-button-toolbar id="main-toolbar" key-nav  aria-label="Main toolbar" justify>
+    <b-button-group class="mx-1">
+      <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
+        <img src="static/icon_light.svg" height="32" alt="Edython"/>
+      </b-btn>
+      <b-btn id="toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')" title="Demander une correction, une amélioration" v-tippy>
+        <icon-base :width="32" :height="32" icon-name="bug"><icon-bug /></icon-base>
+      </b-btn>
+      <b-dropdown-demo/>
+    </b-button-group>
+    <b-btn-group-storage />
+    <b-button-group class="mx-1">
+      <b-btn-run-python />
+      <b-btn-copy-python />
+    </b-button-group>
+    <b-button-group class="mx-1">
+      <b-btn-copy-paste :copy="true" :deep="false" />
+      <b-btn-copy-paste :copy="true" :deep="true" />
+      <b-btn-copy-paste :copy="false" />
+    </b-button-group>
+    <b-button-group class="mx-1">
+      <b-btn-undo-redo :redo="false" />
+      <b-btn-undo-redo :redo="true" />
+    </b-button-group>
+    <b-btn-group-layout />
+    <!--b-button-group class="mx-1">
+      <b-btn id="toolbar-toggle-panels" v-on:click="doTogglePanelsVisible()" :title="toolbarTogglePanelsTitle" v-tippy>
+        <icon-base :width="32" :height="32" icon-name="toggle"><icon-toggle-panels :variant="showTogglePanel" /></icon-base>
+      </b-btn>
+    </b-button-group-->
+    <b-dropdown-menu />
+  </b-button-toolbar>
 </template>
 
 <script>
   import ToolbarMenu from './Toolbar/Menu.vue'
   import ToolbarUndoRedo from './Toolbar/UndoRedo.vue'
   import ToolbarDemo from './Toolbar/Demo.vue'
-  import CopyPaste from './Toolbar/CopyPaste.vue'
-  import RunPython from './Toolbar/RunPython.vue'
-  import CopyPython from './Toolbar/CopyPython.vue'
-  import Storage from './Toolbar/Storage.vue'
-  import Layout from './Toolbar/Layout.vue'
+  import ToolbarCopyPaste from './Toolbar/CopyPaste.vue'
+  import ToolbarRunPython from './Toolbar/RunPython.vue'
+  import ToolbarCopyPython from './Toolbar/CopyPython.vue'
+  import ToolbarStorage from './Toolbar/Storage.vue'
+  import ToolbarLayout from './Toolbar/Layout.vue'
   
   import IconBase from '@@/IconBase.vue'
   import IconBug from '@@/Icon/IconBug.vue'
@@ -67,11 +65,11 @@
       'b-dropdown-menu': ToolbarMenu,
       'b-btn-undo-redo': ToolbarUndoRedo,
       'b-dropdown-demo': ToolbarDemo,
-      'b-btn-copy-paste': CopyPaste,
-      'b-btn-run-python': RunPython,
-      'b-btn-copy-python': CopyPython,
-      'b-btn-group-storage': Storage,
-      'b-btn-group-layout': Layout
+      'b-btn-copy-paste': ToolbarCopyPaste,
+      'b-btn-run-python': ToolbarRunPython,
+      'b-btn-copy-python': ToolbarCopyPython,
+      'b-btn-group-storage': ToolbarStorage,
+      'b-btn-group-layout': ToolbarLayout
     },
     computed: {
       showTogglePanel () {
