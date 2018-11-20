@@ -124,7 +124,7 @@
         return this.$store.state.UI.toolbarEditVisible
       },
       style () {
-        return ['width: ', 100 * this.step, '%;'].join('')
+        return `right: ${100 * (1 - this.step)}%;`
       },
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
@@ -153,13 +153,14 @@
 </script>
 <style>
 #block-toolbar {
+  position: relative;
   padding: 0.25rem;
   text-align:center;
   height: 2.25rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 #block-toolbar .btn {
-  height: 2rem;
+  height: 1.75rem;
   padding: 0rem 0.5rem;
   vertical-align:middle;
 }

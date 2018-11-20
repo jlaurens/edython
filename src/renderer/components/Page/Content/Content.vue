@@ -19,12 +19,13 @@
     name: 'content-content',
     data: function () {
       return {
-        step: 0
+        step: 0,
+        max: 2.25
       }
     },
     methods: {
       onDrag (size) {
-        this.$$.bus.$emit('size-did-change', size)
+        this.$$.bus.$emit('size-did-change')
       }
     },
     components: {
@@ -36,17 +37,22 @@
         return this.$store.state.UI.toolbarEditVisible
       },
       style () {
-        return `top: ${0.5 + this.step}rem;
-        height: calc(100% - ${0.5 + this.step}rem)`
+        return `top: ${this.step}rem;
+        height: calc(100% - ${this.step}rem)`
       }
     },
     mounted () {
-      this.step = this.$store.state.UI.toolbarEditVisible ? 2 : 0
+      this.step = this.$store.state.UI.toolbarEditVisible ? this.max : 0
     },
     watch: {
       toolbarEditVisible (newValue, oldValue) {
-        this.step = newValue ? 0 : 2
-        this.$$.TweenLite.to(this, 1, {step: 2 - this.step})
+        this.step = newValue ? 0 : this.max
+        this.$$.TweenLite.to(this, 1, {
+          step: this.max - this.step,
+          onUpdate: () => {
+            this.$$.bus.$emit('size-did-change')
+          }
+        })
       }
     }
   }
