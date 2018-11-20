@@ -32,13 +32,12 @@
         this.chosen = choice
       },
       synchronize () {
-        this.step_ = this.eyo.change.step
       }
     }
   }
 </script>
 <style>
   #main-mode .btn {
-    padding-right: 0.75rem;
+    padding-right: 1rem;
   }
 </style>

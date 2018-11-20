@@ -1,5 +1,5 @@
 <template>
-  <b-button-group class="mx-1">
+  <b-button-group>
     <copy-paste :copy="true" :deep="false" />
     <copy-paste :copy="false" />
   </b-button-group>

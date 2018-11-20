@@ -5,7 +5,7 @@
     :viewBox="viewBox"
     :aria-labelledby="iconName" 
     role="presentation"
-    class="eyo-icon"
+    class="eyo-icon h-100"
   >
     <!--title :id="iconName" lang="en">{{iconName}} icon</title-->
     <g class="icon" :stroke="iconColor" :transform="transform">
@@ -54,7 +54,7 @@ export default {
       if (this.height !== 32) {
         t += `scale(${this.height / 32})`
       }
-      return t
+      return t || null
     }
   }
 }
@@ -64,15 +64,13 @@ export default {
   svg.eyo-icon {
     display: block;
     margin: auto;
-    height:100%;
   }
   .dropdown-item svg.eyo-icon {
     display: inline-block;
-    height:100%;
     margin-right:0.5rem;
     margin-left:0;
   }
-  .icon path {
+  .icon path, .icon rect {
     opacity:1;
     fill:none;
     fill-opacity:1;

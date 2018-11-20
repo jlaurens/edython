@@ -44,7 +44,7 @@
       },
       copyTransform () {
         var t = this.copy ? 1 - this.step : 0
-        return `translate(${10 * t} ${10 * t})`
+        return t ? `translate(${10 * t} ${10 * t})` : null
       }
     }
   }

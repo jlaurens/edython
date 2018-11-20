@@ -1,5 +1,5 @@
 <template>
-  <b-button-group class="mx-1">
+  <b-button-group>
     <b-form-input id="eyo-block-primary-holder" v-model="holder" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
     <b-dropdown id="info-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
     <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>

@@ -98,6 +98,7 @@
     position: relative;
     width: 100%;
     padding: 0.25rem;
+    padding-top: 0;
     margin-top: 0;
     margin-bottom: 0.25rem;
   }
@@ -115,21 +116,6 @@
   }
   #eyo-panels-toolbar-dropdown .btn {
     width: 100%;
-  }
-  .eyo-dropdown .btn {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    text-align: left;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    vertical-align: baseline;
-  }
-  .eyo-dropdown .btn::after {
-    position: absolute;
-    right: 0.2rem;
-    bottom: 0.25rem;
-    opacity: 0.666;
   }
   .dropdown-menu {
     padding: 0;
@@ -155,11 +141,11 @@
   #eyo-panels-content {
     position: relative;
     width: 100%;
-    height: calc(100% - 2.5rem);
+    height: calc(100% - 2.25rem);
   }
   .eyo-round-btn.btn {
     padding: 0px;
-    top: 0.25rem;
+    top: 0;
     right: 0;
     height: 1.75rem;
     width: 1.75rem;

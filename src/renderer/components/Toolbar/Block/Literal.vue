@@ -9,11 +9,11 @@
       <label for="info-literal-f" class="eyo-code" :disabled="!can_f">f</label>
     </div>
     <span class="eyo-code-reserved" d>{{delimiter}}</span>
-    <b-button-group class="mx-1">
+    <b-button-group>
       <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy ></b-form-input>
     </b-button-group>
     <span class="eyo-code-reserved" d>{{delimiter}}</span>
-    <b-button-group class="mx-1">
+    <b-button-group>
       <b-btn v-on:click="doOtherQuote()" :title="titleOtherQuote" v-tippy class="btn-outline-secondary eyo-code-reserved">
         {{otherQuote}}
       </b-btn>

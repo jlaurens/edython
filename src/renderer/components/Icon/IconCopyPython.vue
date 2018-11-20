@@ -23,7 +23,7 @@
   export default {
     computed: {
       transform () {
-        return `rotate(${this.step * 180},16,16)`
+        return this.step ? `rotate(${this.step * 180},16,16)` : null
       }
     },
     props: {

@@ -1,5 +1,5 @@
 <template>
-  <b-button-group v-if="locked || toolbarInfoDebug" class="mx-1">
+  <b-button-group v-if="locked || toolbarInfoDebug">
     <span>info:&nbsp;<span class="eyo-code small">{{info}}</span></span>
   </b-button-group>
 </template>

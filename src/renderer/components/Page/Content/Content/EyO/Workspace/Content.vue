@@ -211,34 +211,36 @@
       // Then create the flyout
       flyout.init(eYo.App.workspace)
       flyout.autoClose = false
-      Blockly.Events.disable()
-      try {
-        flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
-      } catch (err) {
-        console.log(err)
-      } finally {
-        Blockly.Events.enable()
-      }
+      // Blockly.Events.disable()
+      // try {
+      //   flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+      // } catch (err) {
+      //   console.log(err)
+      // } finally {
+      //   Blockly.Events.enable()
+      // }
       // eYo.App.workspace.flyout_ = flyout
       this.flyout = eYo.App.flyout = flyout
-      var store = this.$store
-      flyout.eyo.slide = function (closed) {
+      flyout.eyo.slide = (closed) => {
         if (!goog.isDef(closed)) {
-          closed = !store.state.UI.flyoutClosed
+          closed = !this.$store.state.UI.flyoutClosed
         }
-        store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
+        this.$store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
       }
       var oldSvg = document.getElementById('svg-control-image')
       var newSvg = document.getElementById('svg-control-image-v')
-      oldSvg.parentNode.appendChild(newSvg)
-      newSvg.parentNode.removeChild(oldSvg)
-      // JL: critical section of code,
-      // next instruction does not work despite what stackoverflow states
-      // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+      if (oldSvg && newSvg) {
+        oldSvg.parentNode.appendChild(newSvg)
+        newSvg.parentNode.removeChild(oldSvg)
+        // JL: critical section of code,
+        // next instruction does not work despite what stackoverflow states
+        // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+      } else {
+        console.error('MISSING svg-control-image…')
+      }
       eYo.KeyHandler.setup(document)
-      var self = this
-      this.$$.bus.$on('new-document', function () {
-        self.workspace.clear()
+      this.$$.bus.$on('new-document', () => {
+        this.workspace.clear()
       })
       this.selectedCategory = this.items.basic
       this.workspace.render()
@@ -258,6 +260,9 @@
   }
   .eyo-flyout-control {
     vertical-align: middle;
+  }
+  .eyo-flyout-toolbar {
+    padding-top: 0;
   }
   #eyo-flyout-toolbar-switcher {
     position: relative;

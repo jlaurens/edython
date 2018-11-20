@@ -1,5 +1,5 @@
 <template>
-  <b-button-group class="mx-1" variant="outline-secondary">
+  <b-button-group variant="outline-secondary">
     <b-btn id="toolbar-back" v-on:click="doBack()" :title="$t('message.send_selection_to_back')" v-tippy :disabled="!canDoIt">
       <icon-base :width="24" :height="24" icon-name="back"><icon-front-back :front="false" /></icon-base>
     </b-btn>

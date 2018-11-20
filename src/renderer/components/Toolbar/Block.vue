@@ -1,5 +1,5 @@
 <template>
-  <b-button-toolbar id="toolbar-block" key-nav  aria-label="Main toolbar" justify :style="style">
+  <b-button-toolbar id="block-toolbar" key-nav  aria-label="Block toolbar" justify :style="style">
     <block-primary v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-primary>
     <block-primary v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])" :eyo="eyo" :slotholder="slotholder"></block-primary>
     <block-literal v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])" :eyo="eyo" :modifiable="modifiable"></block-literal>
@@ -152,16 +152,23 @@
   }
 </script>
 <style>
-#toolbar-block {
+#block-toolbar {
   padding: 0.25rem;
   text-align:center;
-  height: 2.5rem;
-  font-size: 0.9rem;
+  height: 2.25rem;
+  font-size: 1rem;
 }
-#toolbar-block .btn {
+#block-toolbar .btn {
+  height: 2rem;
   padding: 0rem 0.5rem;
-  height: 1.75rem;
   vertical-align:middle;
+}
+#block-toolbar .btn-group {
+  padding: 0;
+  margin:0;
+}
+#block-toolbar .btn-group .btn-group {
+  margin: 0;
 }
 .btn-outline-secondary {
   background-color: rgba(255,255,255,90);

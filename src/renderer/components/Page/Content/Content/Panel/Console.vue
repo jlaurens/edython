@@ -34,7 +34,7 @@
     background-color:#000;
     color:#fff;
     font-family: monospace;
-    font-size:14px;
+    font-size:1.2rem;
     overflow:auto;
     width:100%;
     height: 100%;

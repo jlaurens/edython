@@ -1,10 +1,9 @@
 <template>
   <g>
-    <path d="M 12,6 6,6 A 3,3 0 0 0 3,9 L 3,31 29,31 29,9 A 3,3 0 0 0 26,6 L 20,6"/>
-    <path d="M 12,14 8,14 8,31 24,31 24,14 20,14"/>
+    <rect x="1" y="20" width="30" height="11" rx="3" ry="3" />
+    <rect x="23" y="24.5" width="4" height="2"/>
     <g :transform="arrowTransform">
-      <path d="M 16,0 16,26" />
-      <path :transform="edgeTransform" d="M 13.5,21.5 16,26 18.5,21.5" />  
+      <path :d="d" /> 
     </g>
   </g>
 </template>
@@ -13,10 +12,11 @@
   export default {
     computed: {
       arrowTransform: function () {
-        return this.variant === 'save' ? '' : 'rotate(180,16,12.5)'
+        return this.variant === 'save' ? null : 'rotate(180,16,8.5)' // no attribute when `null`
       },
-      edgeTransform: function () {
-        return ['translate(0,', -23 * (1 - this.step), ')'].join('')
+      d () {
+        var h = 1 + 11.5 * this.step
+        return `M 13,1 13,${h} 10.5,${h} 16,${h + 4.5} 21.5,${h} 19,${h} 19,1 Z`
       }
     },
     props: {

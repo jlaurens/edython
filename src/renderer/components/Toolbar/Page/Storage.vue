@@ -1,5 +1,5 @@
 <template>
-  <b-button-group class="mx-1">
+  <b-button-group>
     <b-btn id="toolbar-new" @click="doNew" title="Nouveau" v-tippy>
       <icon-base :width="32" :height="32" icon-name="new"><icon-new /></icon-base>
     </b-btn>
@@ -30,10 +30,9 @@
       IconSaveLoad
     },
     created: function () {
-      var self = this
-      this.$$.bus.$on('saveDidSucceed', function () {
-        self.step = 0
-        self.$$.TweenLite.to(self, 0.5, {step: 1})
+      this.$$.bus.$on('saveDidSucceed', () => {
+        this.step = 0
+        this.$$.TweenLite.to(this, 0.5, {step: 1})
       })
     },
     methods: {

@@ -1,14 +1,14 @@
 <template>
-  <div id="page">
+  <div id="page" class="m-0 px-1 w-100 h-100">
     <page-toolbar></page-toolbar>
-    <page-web-load></page-web-load>
     <page-content></page-content>
+    <page-web-load></page-web-load>
     <page-modal></page-modal>
   </div>
 </template>
 
 <script>
-  import PageToolbar from './Page/Toolbar'
+  import PageToolbar from '@@/Toolbar/Page'
   import PageWebLoad from './Page/WebLoad'
   import PageContent from './Page/Content'
   import PageModal from './Page/Modal'
@@ -28,8 +28,5 @@
     position: absolute;
     left: 0px;
     top: 0px;
-    height: 100%;
-    width: 100%;
-    padding:0.25rem;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <b-button-toolbar id="info-except" key-nav  aria-label="Info decorator" justify>
-    <b-button-group class="mx-1">
+    <b-button-group>
         <span class="btn btn-outline-secondary eyo-code eyo-code-reserved" :style="{fontFamily: $$.eYo.Font.familyMono}">except</span>
         <b-dropdown id="info-variant" class="eyo-dropdown" variant="outline-secondary">
         <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="info-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
