@@ -1082,7 +1082,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
   }
   if ((io.slot = this.headSlot)) {
     do {
-      this.renderDrawSlot_(io)
+      if ((io.slot !== this.comment_s)) {
+        this.renderDrawSlot_(io)
+      }
     } while ((io.slot = io.slot.next))
   } else {
     for (; (io.input = block.inputList[io.i]); io.i++) {
@@ -1120,6 +1122,9 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
     do {
       this.renderDrawField_(io)
     } while ((io.common.field.current = io.common.field.current.eyo.nextField))
+  }
+  if ((io.slot = this.comment_s)) {
+    this.renderDrawSlot_(io)
   }
   this.renderDrawModelEnd_(io)
   return io.steps.join(' ')

@@ -34,6 +34,7 @@
       $$.eYo.T3.Stmt.except_part,
       $$.eYo.T3.Stmt.void_except_part
     ])" :eyo="eyo" :slotholder="slotholder"></block-except>
+    <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo"></block-funcdef>
     <block-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
     <block-none v-else></block-none>
     <b-btn-group>
@@ -66,6 +67,7 @@
   import BlockCopyPaste from './Block/CopyPaste.vue'
   import BlockLayout from './Block/Layout.vue'
   import BlockExcept from './Block/Except.vue'
+  import BlockFuncdef from './Block/Funcdef.vue'
 
   export default {
     name: 'toolbar-block',
@@ -95,7 +97,8 @@
       BlockNone,
       BlockCopyPaste,
       BlockLayout,
-      BlockExcept
+      BlockExcept,
+      BlockFuncdef
     },
     mounted () {
       this.step = this.$store.state.UI.toolbarEditVisible ? 1 : 0
@@ -152,70 +155,118 @@
   }
 </script>
 <style>
-#block-toolbar {
-  position: relative;
-  padding: 0.25rem;
-  text-align:center;
-  height: 2.25rem;
-  font-size: 0.9rem;
-}
-#block-toolbar .btn {
-  height: 1.75rem;
-  padding: 0rem 0.5rem;
-  vertical-align:middle;
-}
-#block-toolbar .btn-group {
-  padding: 0;
-  margin:0;
-}
-#block-toolbar .btn-group .btn-group {
-  margin: 0;
-}
-.btn-outline-secondary {
-  background-color: rgba(255,255,255,90);
-}
-.dropdown-toggle-split {
-    padding-right: 0.5rem;
+  .eyo-btn-inert {
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  #block-toolbar {
+    position: relative;
+    padding: 0.25rem;
+    text-align:center;
+    height: 2.25rem;
+    font-size: 1rem;
+  }
+  #block-toolbar input[type="checkbox"]:first-child {
     padding-left: 0.5rem;
-}
-.btn-secondary:hover .eyo-code-reserved {
-  color: #fff;
-}
-.eyo-block-slotholder {
-  display: inline-block;
-  height: 1.75rem;
-}
-.btn .eyo-block-slotholder .eyo-path-contour {
-  stroke-width: 2px;
-}
-.dropdown-item:hover .eyo-block-slotholder .eyo-path-contour {
-  stroke: rgb(100,100,100);
-}
-.eyo-block-primary-variant1 {
-  display: inline-block;
-}
-.eyo-block-primary-variant2 {
-  display: inline-block;
-  position: relative;
-  top: -0.45rem;
-}
-.eyo-block-primary-variant3 {
-  display: inline-block;
-  position: relative;
-  top: 0.45rem;
-}
-.eyo-form-input-text {
-  text-align: left;
-  width: 8rem;
-}
-.btn-outline-secondary.eyo-form-input-text:hover {
-  background: white;
-  color: black;
-}
-.eyo-button-group {
-  padding-right: 0.25rem;
-}
-.eyo-block-primary-variant1, .eyo-block-primary-variant2 {
-  display: inline;
-}
+  }
+  #block-toolbar .input-group-text {
+    padding: 0 0.25rem;
+  }
+  #block-toolbar .btn,
+  #block-toolbar .input-group-text {
+    height: 1.75rem;
+  }
+  #block-toolbar .btn:not(.input-group),
+  .eyo-btn-inert:not(.input-group) {
+    padding: 0rem 0.25rem;
+  }
+  #block-toolbar .input-group {
+    padding: 0;
+  }
+  #block-toolbar .btn-group {
+    padding: 0 0.25rem;
+    margin:0;
+  }
+  #block-toolbar .btn-group:first-child {
+    padding-left:0;
+  }
+  #block-toolbar .btn-group:last-child {
+    padding-right:0;
+  }
+  #block-toolbar .btn-group .btn-group {
+    margin: 0;
+  }
+  #block-toolbar label.btn:first-child {
+    padding-left:0.25rem;
+  }
+  #block-toolbar label {
+    margin:0;
+  }
+  .btn-outline-secondary {
+    background-color: rgba(255,255,255,90);
+  }
+  .dropdown-toggle-split {
+      padding-right: 0.5rem;
+      padding-left: 0.5rem;
+  }
+  .btn-secondary:hover .eyo-code-reserved {
+    color: #fff;
+  }
+  .eyo-block-slotholder {
+    display: inline-block;
+    height: 1.75rem;
+  }
+  .btn .eyo-block-slotholder .eyo-path-contour {
+    stroke-width: 2px;
+  }
+  .dropdown-item:hover .eyo-block-slotholder .eyo-path-contour {
+    stroke: rgb(100,100,100);
+  }
+  .eyo-block-primary-variant1 {
+    display: inline-block;
+  }
+  .eyo-block-primary-variant2 {
+    display: inline-block;
+    position: relative;
+    top: -0.45rem;
+  }
+  .eyo-block-primary-variant3 {
+    display: inline-block;
+    position: relative;
+    top: 0.45rem;
+  }
+  .eyo-form-input-text {
+    text-align: left;
+    width: 8rem;
+  }
+  .btn-outline-secondary.eyo-form-input-text:hover {
+    background: white;
+    color: black;
+  }
+  .eyo-button-group {
+    padding-right: 0.25rem;
+  }
+  .eyo-block-primary-variant1, .eyo-block-primary-variant2 {
+    display: inline;
+  }
+  .eyo-btn-inert:focus,
+  .eyo-btn-inert:hover,
+  .eyo-btn-inert:active,
+  .eyo-btn-inert:not(:disabled):not(.disabled):active,
+  .eyo-btn-inert:not(:disabled):not(.disabled).active {
+    color: inherit;
+    background-color: white;
+    border-color: inherit;
+    box-shadow: none;
+  }
 </style>

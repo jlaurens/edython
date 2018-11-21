@@ -1,11 +1,11 @@
 <template>
-  <b-button-toolbar id="info-number" key-nav  aria-label="Info toolbar number" justify>
+  <b-button-toolbar id="block-number" key-nav  aria-label="Block toolbar number" justify>
     <b-button-group>
-      <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+      <b-form-input v-model="content" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
     </b-button-group>
-    <div id='info-number-keyword' class="btn btn-outline-secondary" :disabled="!can_imag">
-      <input type="checkbox" id="info-imag" v-model="imag" :disabled="!can_imag">
-      <label for="info-imag" class="eyo-code">{{suffix_}}</label>
+    <div id='info-number-keyword' class="eyo-btn-inert btn-outline-secondary" :disabled="!can_imag">
+      <input type="checkbox" id="block-imag" v-model="imag" :disabled="!can_imag">
+      <label for="block-imag" class="eyo-code">{{suffix_}}</label>
     </div>
   </b-button-toolbar>
 </template>

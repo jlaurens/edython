@@ -1,6 +1,6 @@
 <template>
-  <b-dropdown id="info-modifier" class="eyo-dropdown" v-if="modifiers && modifiers.length" variant="outline-secondary">
-    <template slot="button-content"><span class="info-modifier eyo-content"  v-html="selected.title || selected.content"></span></template>
+  <b-dropdown id="block-modifier" class="eyo-dropdown" v-if="modifiers && modifiers.length" variant="outline-secondary">
+    <template slot="button-content"><span class="block-modifier eyo-content"  v-html="selected.title || selected.content"></span></template>
     <b-dropdown-item-button v-for="item in modifiers" v-on:click="selected = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.key" v-html="item.content"></b-dropdown-item-button>
   </b-dropdown>
 </template>

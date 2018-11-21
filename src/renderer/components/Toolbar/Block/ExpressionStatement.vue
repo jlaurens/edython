@@ -1,5 +1,5 @@
 <template>
-  <b-button-toolbar id="info-any-statement" key-nav  aria-label="Info any statement" justify>
+  <b-button-toolbar id="block-any-statement" key-nav  aria-label="Block any statement" justify>
     <codex :eyo="eyo" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
     <comment :eyo="eyo" ></comment>
   </b-button-toolbar>
@@ -47,7 +47,7 @@
   }
 </script>
 <style>
-  #info-any-statement {
+  #block-any-statement {
     padding: 0 0.25rem;
   }
 </style>

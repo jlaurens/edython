@@ -42,8 +42,6 @@
     data: function () {
       var model = {
         items: {},
-        workspace: null,
-        flyout: null,
         label: '...',
         isBasic: true,
         selectedCategory: undefined
@@ -133,16 +131,16 @@
     },
     watch: {
       flyoutClosed: function (newValue, oldValue) {
-        this.flyout && this.flyout.eyo.doSlide(newValue)
+        eYo.App.flyout && eYo.App.flyout.eyo.doSlide(newValue)
       },
       flyoutCategory: function (newValue, oldValue) {
         var item = this.items[newValue]
-        if (this.workspace && this.flyout && item) { // this.workspace is necessary
-          var list = this.flyout.eyo.getList(newValue)
+        if (eYo.App.workspace && eYo.App.flyout && item) { // this.workspace is necessary
+          var list = eYo.App.flyout.eyo.getList(newValue)
           if (list && list.length) {
-            this.flyout.show(list)
-            this.selectedCategory = item
-            this.isBasic = !item.basic
+            eYo.App.flyout.show(list)
+            eYo.App.selectedCategory = item
+            eYo.App.isBasic = !item.basic
           }
         }
       },
@@ -178,78 +176,83 @@
     },
     mounted () {
       // the workspace
-      var staticOptions = {
-        collapse: true,
-        comments: false,
-        disable: true,
-        maxBlocks: Infinity,
-        trashcan: true,
-        horizontalLayout: false,
-        toolboxPosition: 'start',
-        css: true,
-        media: 'static/media/',
-        rtl: false,
-        scrollbars: true,
-        sounds: true,
-        oneBasedIndex: true
-      }
-      var workspace = this.workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
-      eYo.setup(workspace)
-      workspace.eyo.options = {
-        noLeftSeparator: true,
-        noDynamicList: false
-      }
-      // Get what will replace the old flyout selector
-      eYo.App.flyoutToolbarSwitcher = document.getElementById('eyo-flyout-toolbar-switcher')
-      goog.dom.removeNode(eYo.App.flyoutToolbarSwitcher)
-      // First remove the old flyout selector
-      var flyout = new eYo.Flyout(eYo.App.workspace)
-      goog.dom.insertSiblingAfter(
-        flyout.createDom('svg'),
-        eYo.App.workspace.getParentSvg()
-      )
-      // Then create the flyout
-      flyout.init(eYo.App.workspace)
-      flyout.autoClose = false
-      // Blockly.Events.disable()
-      // try {
-      //   flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
-      // } catch (err) {
-      //   console.log(err)
-      // } finally {
-      //   Blockly.Events.enable()
-      // }
-      // eYo.App.workspace.flyout_ = flyout
-      this.flyout = eYo.App.flyout = flyout
-      flyout.eyo.slide = (closed) => {
-        if (!goog.isDef(closed)) {
-          closed = !this.$store.state.UI.flyoutClosed
+      // there is only one workspace
+      if (eYo.App.workspace) {
+
+      } else {
+        var staticOptions = {
+          collapse: true,
+          comments: false,
+          disable: true,
+          maxBlocks: Infinity,
+          trashcan: true,
+          horizontalLayout: false,
+          toolboxPosition: 'start',
+          css: true,
+          media: 'static/media/',
+          rtl: false,
+          scrollbars: true,
+          sounds: true,
+          oneBasedIndex: true
         }
-        this.$store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
-      }
-      this.$nextTick(() => {
-        // sometimes the `oldSvg` is not found
-        var oldSvg = document.getElementById('svg-control-image')
-        var newSvg = document.getElementById('svg-control-image-v')
-        if (oldSvg && newSvg) {
-          oldSvg.parentNode.appendChild(newSvg)
-          newSvg.parentNode.removeChild(oldSvg)
-          // JL: critical section of code,
-          // next instruction does not work despite what stackoverflow states
-          // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
-        } else {
-          if (newSvg) {
-            newSvg.parentNode.removeChild(newSvg)
+        var workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
+        eYo.setup(workspace)
+        workspace.eyo.options = {
+          noLeftSeparator: true,
+          noDynamicList: false
+        }
+        // Get what will replace the old flyout selector
+        eYo.App.flyoutToolbarSwitcher = document.getElementById('eyo-flyout-toolbar-switcher')
+        goog.dom.removeNode(eYo.App.flyoutToolbarSwitcher)
+        // First remove the old flyout selector
+        var flyout = new eYo.Flyout(eYo.App.workspace)
+        goog.dom.insertSiblingAfter(
+          flyout.createDom('svg'),
+          eYo.App.workspace.getParentSvg()
+        )
+        // Then create the flyout
+        flyout.init(eYo.App.workspace)
+        flyout.autoClose = false
+        // Blockly.Events.disable()
+        // try {
+        //   flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+        // } catch (err) {
+        //   console.log(err)
+        // } finally {
+        //   Blockly.Events.enable()
+        // }
+        // eYo.App.workspace.flyout_ = flyout
+        eYo.App.flyout = flyout
+        flyout.eyo.slide = (closed) => {
+          if (!goog.isDef(closed)) {
+            closed = !this.$store.state.UI.flyoutClosed
           }
-          console.error('MISSING svg-control-image…')
+          this.$store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
         }
-      })
-      eYo.KeyHandler.setup(document)
-      this.$$.bus.$on('new-document', () => {
-        this.workspace.clear()
-      })
-      this.selectedCategory = this.items.basic
-      this.workspace.render()
+        this.$nextTick(() => {
+          // sometimes the `oldSvg` is not found
+          var oldSvg = document.getElementById('svg-control-image')
+          var newSvg = document.getElementById('svg-control-image-v')
+          if (oldSvg && newSvg) {
+            oldSvg.parentNode.appendChild(newSvg)
+            newSvg.parentNode.removeChild(oldSvg)
+            // JL: critical section of code,
+            // next instruction does not work despite what stackoverflow states
+            // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+          } else {
+            if (newSvg) {
+              newSvg.parentNode.removeChild(newSvg)
+            }
+            console.error('MISSING svg-control-image…')
+          }
+        })
+        eYo.KeyHandler.setup(document)
+        this.$$.bus.$on('new-document', () => {
+          eYo.App.workspace.clear()
+        })
+        this.selectedCategory = this.items.basic
+        eYo.App.workspace.render()
+      }
     }
   }
 </script>

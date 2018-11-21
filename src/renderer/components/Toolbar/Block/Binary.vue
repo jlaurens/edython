@@ -1,5 +1,5 @@
 <template>
-  <operator id="info-binary" key-nav  aria-label="Info toolbar binary" :eyo="eyo" :slotholder="slotholder"></operator>
+  <operator id="block-binary" key-nav  aria-label="Block toolbar binary" :eyo="eyo" :slotholder="slotholder"></operator>
 </template>
 
 <script>
@@ -29,7 +29,7 @@
   }
 </script>
 <style>
-  #info-binary {
+  #block-binary {
     padding: 0 0.25rem;
   }
 </style>

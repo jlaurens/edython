@@ -7,8 +7,7 @@ const state = {
   selectedBlockId: undefined, // the selected block id
   selectedBlockType: undefined, // the selected block type
   blockClipboard: undefined,
-  panelsVisible: true,
-  workspaceVisible: true,
+  displayMode: undefined,
   panelsWidth: '100%',
   selectedPanel: eYo.App.CONSOLE,
   selectedMode: eYo.App.NORMAL,
@@ -31,8 +30,7 @@ const types = namespace('UI', {
     'STAGE_UNDO',
     'SET_SELECTED_BLOCK',
     'DID_COPY_BLOCK',
-    'SET_PANELS_VISIBLE',
-    'SET_WORKSPACE_VISIBLE',
+    'SET_DISPLAY_MODE',
     'SET_PANELS_WIDTH',
     'SET_SELECTED_PANEL',
     'SET_SELECTED_MODE',
@@ -69,16 +67,11 @@ const mutations = {
   [types.mutations.SET_PANELS_WIDTH] (state, newWidth) {
     state.panelsWidth = newWidth
   },
-  [types.mutations.SET_PANELS_VISIBLE] (state, yorn) {
-    state.panelsVisible = yorn
-    if (!yorn && !state.workspaceVisible) {
-      state.workspaceVisible = true
-    }
-  },
-  [types.mutations.SET_WORKSPACE_VISIBLE] (state, yorn) {
-    state.workspaceVisible = yorn
-    if (!yorn && !state.panelsVisible) {
-      state.panelsVisible = true
+  [types.mutations.SET_DISPLAY_MODE] (state, mode) {
+    if ([eYo.App.CONSOLE_ONLY, eYo.App.WORKSPACE_ONLY].indexOf(mode) < 0) {
+      state.displayMode = undefined
+    } else {
+      state.displayMode = mode
     }
   },
   [types.mutations.SET_SELECTED_PANEL] (state, key) {

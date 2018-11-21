@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="info-variant" class="eyo-dropdown" variant="outline-secondary" v-if="data">
-    <template slot="button-content"><span class="info-variant eyo-code eyo-content" v-html="formatter(variant)"></span></template>
-    <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" :key="item" class="info-variant eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
+  <b-dropdown id="block-variant" class="eyo-dropdown" variant="outline-secondary" v-if="!!eyo.variant_d">
+    <template slot="button-content"><span class="block-variant eyo-code eyo-content" v-html="formatter(variant)"></span></template>
+    <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" :key="item" class="block-variant eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -56,7 +56,7 @@
         }
       },
       variants () {
-        return this.eyo.variant_d.getAll()
+        return (this.eyo.variant_d && this.eyo.variant_d.getAll()) || []
       }
     },
     created () {

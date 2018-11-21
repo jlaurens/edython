@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="info-assignment-variant" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="info-variant eyo-code eyo-content" v-html="selected_item.title"></span></template>
-    <b-dropdown-item-button v-for="item in items" v-on:click="variant = item.key" :key="item.key" class="info-variant eyo-code" v-html="item.title"></b-dropdown-item-button>
+  <b-dropdown id="block-assignment-variant" class="eyo-dropdown" variant="outline-secondary">
+    <template slot="button-content"><span class="block-variant eyo-code eyo-content" v-html="selected_item.title"></span></template>
+    <b-dropdown-item-button v-for="item in items" v-on:click="variant = item.key" :key="item.key" class="block-variant eyo-code" v-html="item.title"></b-dropdown-item-button>
     </b-dropdown-item-button>
   </b-dropdown>
 </template>

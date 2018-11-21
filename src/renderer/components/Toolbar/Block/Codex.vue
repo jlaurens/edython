@@ -1,13 +1,13 @@
 <template>
   <b-button-toolbar>
-    <div id='info-stmt-code' class="btn btn-outline-secondary" v-if="withSlotholder">
+    <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-if="withSlotholder">
       <div class="eyo-block-primary-variant2">
-        <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
+        <input type="checkbox" id="block-stmt-code-check" v-model="hasCode" :disabled="noCheck">
         <div class="eyo-block-primary-variant3" v-html="my_slot"></div>
       </div>
     </div>
-    <div id='info-stmt-code' class="btn btn-outline-secondary" v-else>
-      <input type="checkbox" id="info-stmt-code-check" v-model="hasCode" :disabled="noCheck">
+    <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-else>
+      <input type="checkbox" id="block-stmt-code-check" v-model="hasCode" :disabled="noCheck">
       <b-form-input v-model="code"
       type="text"
       class="eyo-code"></b-form-input>
@@ -102,14 +102,14 @@
   }
 </script>
 <style>
-  #info-stmt-code.btn {
+  #block-stmt-code.btn {
     margin: 0 0 0 0.25rem;
     padding: 0 0.125rem 0 0.25rem;
   }
-  #info-stmt-code label {
+  #block-stmt-code label {
     margin: 0;
   }
-  #info-stmt-code input {
+  #block-stmt-code input {
     margin: 0;
     padding: 0 0.25rem;
     display: inline-block;

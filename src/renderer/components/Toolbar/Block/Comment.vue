@@ -1,13 +1,16 @@
 <template>
-  <b-button-toolbar v-if="canComment">
-    <div id='info-stmt-comment' class="btn btn-outline-secondary">
-      <input type="checkbox" id="info-stmt-comment-check" v-model="hasComment" :disabled="mustComment">
-      <label for="info-stmt-comment-check" class="eyo-code-reserved">#</label>
-      <b-form-input v-model="comment"
-      type="text"
-      class="eyo-code" :disabled="!hasComment"></b-form-input>
+  <b-btn-toolbar id="block-stmt-comment" v-if="canComment">
+    <div class="input-group btn-outline-secondary eyo-btn-inert">
+      <div class="input-group-prepend">
+        <div class="input-group-text">
+          <input type="checkbox" aria-label="Checkbox to enable comment" v-model="hasComment" :disabled="mustComment">
+          <span class="pl-2 eyo-code-reserved">#</span>
+        </div>
+      </div>
+      <input type="text"
+      class="form-control eyo-code-comment" v-model="comment" :disabled="!hasComment" aria-label="Comment input">
     </div>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>
@@ -46,12 +49,14 @@
       },
       hasComment: {
         get () {
-          return this.commentVariant === eYo.Key.COMMENT
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.hasComment_
         },
         set (newValue) {
-          this.commentVariant = newValue
+          this.commentVariant = newValue || this.mustComment
             ? eYo.Key.COMMENT
             : eYo.Key.NONE
+          this.synchronize()
         }
       },
       comment: {
@@ -75,27 +80,21 @@
       synchronize () {
         this.step_ = this.eyo.change.step
         this.comment_ = this.eyo.comment_p
+        if (this.mustComment) {
+          this.eyo.comment_variant_p = eYo.Key.COMMENT
+        }
         this.commentVariant_ = this.eyo.comment_variant_p
+        this.hasComment_ = this.commentVariant_ === eYo.Key.COMMENT
       }
     }
   }
 </script>
-<style>
-  #info-stmt-comment.btn {
-    margin: 0 0 0 0.25rem;
-    padding: 0 0.125rem 0 0.25rem;
-  }
-  #info-stmt-comment label {
+<style scoped>
+  label {
     margin: 0;
   }
-  #info-stmt-comment input {
+  .form-control {
     margin: 0;
     padding: 0 0.25rem;
-    display: inline-block;
-    width: auto;
-    border: none;
-    position:relative;
-    top:-0.0625rem;
-    right:-0.0625rem;
   }
 </style>

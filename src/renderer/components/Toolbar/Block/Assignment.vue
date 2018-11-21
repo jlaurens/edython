@@ -1,8 +1,10 @@
 <template>
-  <b-button-toolbar id="info-assignment" key-nav  aria-label="Info toolbar assignment" justify>
-    <variant :eyo="eyo" :slotholder="slotholder"></variant>
+  <b-button-group id="block-assignment" key-nav  aria-label="Block group assignment" justify>
+    <b-button-group>
+      <variant :eyo="eyo" :slotholder="slotholder"></variant>
+    </b-button-group>
     <comment :eyo="eyo"></comment>
-  </b-button-toolbar>
+  </b-button-group>
 </template>
 
 <script>
@@ -34,7 +36,7 @@
   }
 </script>
 <style>
-  #info-assignment {
+  #block-assignment {
     padding: 0 0.25rem;
   }
 </style>

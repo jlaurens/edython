@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="info-builtin" class="eyo-dropdown" v-if="values && values.length" variant="outline-secondary">
-    <template slot="button-content"><span class="info-value eyo-code-reserved eyo-content" v-html="value"></span></template>
-    <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="info-value eyo-code-reserved" v-html="item"></b-dropdown-item-button>
+  <b-dropdown id="block-builtin" class="eyo-dropdown" v-if="values && values.length" variant="outline-secondary">
+    <template slot="button-content"><span class="block-value eyo-code-reserved eyo-content" v-html="value"></span></template>
+    <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="block-value eyo-code-reserved" v-html="item"></b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -49,7 +49,7 @@
   }
 </script>
 <style>
-  #info-builtin {
+  #block-builtin {
     padding-left:0.25rem;
   }
 </style>

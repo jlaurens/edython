@@ -87,6 +87,5 @@ eYo.Consolidator.Range.prototype.doFinalize = function (io) {
 
 eYo.Signature.builtin.range = {
   consolidator: eYo.Consolidator.Range,
-  ary: 3,
-  mandatory: 1
+  ary: 3
 }

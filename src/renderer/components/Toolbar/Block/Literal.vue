@@ -1,16 +1,16 @@
 <template>
-  <b-button-toolbar id="info-literal" key-nav  aria-label="Info toolbar literal" justify>
-    <div id='info-literal-keyword' class="btn btn-outline-secondary">
-      <input type="checkbox" id="info-literal-r" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
-      <label for="info-literal-r" class="eyo-code">r</label>
-      <input type="checkbox" id="info-literal-b" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
-      <label for="info-literal-b" class="eyo-code">b</label>
-      <input type="checkbox" id="info-literal-f" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
-      <label for="info-literal-f" class="eyo-code" :disabled="!can_f">f</label>
+  <b-button-toolbar id="block-literal" key-nav  aria-label="Block toolbar literal" justify>
+    <div id='info-literal-keyword' class="eyo-btn-inert btn-outline-secondary">
+      <input type="checkbox" id="block-literal-r" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
+      <label for="block-literal-r" class="eyo-code">r</label>
+      <input type="checkbox" id="block-literal-b" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
+      <label for="block-literal-b" class="eyo-code">b</label>
+      <input type="checkbox" id="block-literal-f" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
+      <label for="block-literal-f" class="eyo-code" :disabled="!can_f">f</label>
     </div>
     <span class="eyo-code-reserved" d>{{delimiter}}</span>
     <b-button-group>
-      <b-form-input v-model="content" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy ></b-form-input>
+      <b-form-input v-model="content" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy ></b-form-input>
     </b-button-group>
     <span class="eyo-code-reserved" d>{{delimiter}}</span>
     <b-button-group>
@@ -211,7 +211,7 @@
   }
 </script>
 <style>
-  #info-literal {
+  #block-literal {
     padding: 0 0.25rem;
   }
 </style>

@@ -1,11 +1,11 @@
 <template>
-  <b-button-toolbar id="info-default" key-nav  aria-label="Info toolbar default" justify>
+  <b-button-group id="block-default" key-nav  aria-label="Block default" justify>
     <value :eyo="eyo"></value>
     <operator :eyo="eyo"></operator>
     <variant :eyo="eyo" :slotholder="slotholder"></variant>
     <comment :eyo="eyo"></comment>
     <span>type:&nbsp;{{eyo.block_.type}}</span>
-  </b-button-toolbar>
+  </b-button-group>
 </template>
 
 <script>
@@ -37,7 +37,7 @@
   }
 </script>
 <style>
-  #info-default {
+  #block-default {
     padding: 0 0.25rem;
   }
 </style>

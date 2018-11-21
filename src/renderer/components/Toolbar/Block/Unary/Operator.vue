@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="info-unary-operator" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="info-unary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
-    <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="info-unary-operator eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
+  <b-dropdown id="block-unary-operator" class="eyo-dropdown" variant="outline-secondary">
+    <template slot="button-content"><span class="block-unary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
+    <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="block-unary-operator eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
     </b-dropdown-item-button>
   </b-dropdown>
 </template>

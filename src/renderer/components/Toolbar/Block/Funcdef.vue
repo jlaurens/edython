@@ -1,0 +1,64 @@
+<template>
+  <b-button-group id="block-funcdef" key-nav  aria-label="Block decorator" justify>
+    <b-btn-group>
+      <label for="block-funcdef-name"" class="eyo-btn-inert btn-outline-secondary eyo-btn-inert"><span :style="{fontFamily: $$.eYo.Font.familyMono}" class="eyo-code-reserved">def</span></label>
+      <b-form-input id="block-funcdef-name" v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+      <label class="eyo-btn-inert btn-outline-secondary eyo-btn-inert" :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span  class="eyo-code-reserved">:</span> </label>  
+    </b-btn-group>
+    <comment :eyo="eyo"></comment>
+  </b-button-group>
+</template>
+
+<script>
+  import Comment from './Comment.vue'
+
+  export default {
+    name: 'block-funcdef',
+    data: function () {
+      return {
+        step_: undefined,
+        name_: undefined
+      }
+    },
+    components: {
+      Comment
+    },
+    props: {
+      eyo: {
+        type: Object,
+        default: undefined
+      }
+    },
+    computed: {
+      title () {
+        return this.$t('message.funcdef_name_title')
+      },
+      name: {
+        get () {
+          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          return this.name_
+        },
+        set (newValue) {
+          this.eyo.name_p = newValue
+        }
+      }
+    },
+    created () {
+      this.synchronize()
+    },
+    updated () {
+      this.synchronize()
+    },
+    methods: {
+      synchronize () {
+        var eyo = this.eyo
+        if (this.step_ !== eyo.change.step) {
+          this.step_ = eyo.change.step
+          this.name_ = eyo.name_p
+        }
+      }
+    }
+  }
+</script>
+<style>
+</style>

@@ -84,7 +84,7 @@
 #page-toolbar {
   text-align: center;
   height: 3rem;
-  padding: 0.25rem 0.25rem;
+  padding: 0.25rem 0;
 }
 #page-toolbar .btn {
   height: 2.5rem;

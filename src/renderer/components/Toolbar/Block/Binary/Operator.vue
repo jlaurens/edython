@@ -1,10 +1,10 @@
 <template>
-  <b-dropdown id="info-binary-operator" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="info-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
-    <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
+  <b-dropdown id="block-binary-operator" class="eyo-dropdown" variant="outline-secondary">
+    <template slot="button-content"><span class="block-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
+    <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="formatter(item)">
     </b-dropdown-item-button>
     <b-dropdown-divider></b-dropdown-divider>
-    <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="info-binary-operator eyo-code" v-html="formatter(item)">
+    <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="formatter(item)">
     </b-dropdown-item-button>            
   </b-dropdown>
 </template>

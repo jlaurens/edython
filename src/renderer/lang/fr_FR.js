@@ -70,7 +70,9 @@ export default {
   should_save_content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.',
   main_mode_title: 'Choisir une interface adaptée',
   main_mode_tutorial: 'Tutoriel',
-  main_mode_tutorial_title: 'Interface simple pour débuter',
+  main_mode_tutorial_title: 'Interface minimale pour débuter',
+  main_mode_simple: 'Simple',
+  main_mode_simple_title: 'Interface pour une utilisation simple',
   main_mode_normal: 'Normal',
   main_mode_normal_title: 'Interface pour une utilisation normale',
   main_mode_teacher: 'Professeur',
@@ -83,5 +85,6 @@ export default {
   show_selection: 'Montrer la sélection',
   decorator_input: 'Nom du décorateur',
   except_expression: 'Un ou plusieurs objets exception',
-  except_alias: 'Un nom de variable'
+  except_alias: 'Un nom de variable',
+  funcdef_name_title: 'Un identifiant pour nommer la fonction'
 }

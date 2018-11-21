@@ -1,12 +1,10 @@
 <template>
-  <b-button-toolbar id="info-starred" key-nav  aria-label="Info decorator" justify>
-    <b-button-group>
-      <b-dropdown id="info-starred-dd" class="eyo-dropdown" variant="outline-secondary">
-        <template slot="button-content"><span class="info-modifier eyo-code eyo-content" v-html="chosen.title"></span></template>
-        <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="info-variant eyo-code" v-html="choice.title"></b-dropdown-item-button>
-      </b-dropdown>
-    </b-button-group>
-  </b-button-toolbar>
+  <b-button-group id="block-starred" key-nav  aria-label="Block decorator" justify>
+    <b-dropdown id="block-starred-dd" class="eyo-dropdown" variant="outline-secondary">
+      <template slot="button-content"><span class="block-modifier eyo-code eyo-content" v-html="chosen.title"></span></template>
+      <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="block-variant eyo-code" v-html="choice.title"></b-dropdown-item-button>
+    </b-dropdown>
+  </b-button-group>
 </template>
 
 <script>
@@ -109,7 +107,7 @@
   }
 </script>
 <style>
-  #info-decorator {
+  #block-decorator {
     padding: 0 0.25rem;
   }
 </style>

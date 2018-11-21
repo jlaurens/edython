@@ -1,6 +1,6 @@
 <template>
   <b-button-group :id="id">
-    <b-form-input v-model="myName" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+    <b-form-input v-model="myName" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
     <b-dropdown :id="'dd-' + id" class="eyo-dropdown" v-if="module" variant="outline-secondary">
       <b-dropdown-item-button v-for="method in methods" v-on:click="myName = method" :key="method" class="eyo-block-primary-variant eyo-code">{{method}}</b-dropdown-item-button>
     </b-dropdown>

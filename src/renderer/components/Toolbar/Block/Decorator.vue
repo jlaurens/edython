@@ -1,9 +1,9 @@
 <template>
-  <b-button-toolbar id="info-decorator" key-nav  aria-label="Info decorator" justify>
+  <b-button-toolbar id="block-decorator" key-nav  aria-label="Block decorator" justify>
     <b-button-group>
-      <b-form-input v-model="name" type="text" class="btn btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-      <b-dropdown id="info-variant" class="eyo-dropdown" variant="outline-secondary">
-        <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="info-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
+      <b-form-input v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+      <b-dropdown id="block-variant" class="eyo-dropdown" variant="outline-secondary">
+        <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
       </b-dropdown>    
       <span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
     </b-button-group>
@@ -80,7 +80,7 @@
   }
 </script>
 <style>
-  #info-decorator {
+  #block-decorator {
     padding: 0 0.25rem;
   }
   .eyo-width-10 {

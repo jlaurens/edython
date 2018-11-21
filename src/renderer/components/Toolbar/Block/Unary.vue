@@ -1,5 +1,5 @@
 <template>
-  <operator id="info-unary" key-nav  aria-label="Info toolbar unary" :eyo="eyo" :slotholder="slotholder"></operator>
+  <operator id="block-unary" key-nav  aria-label="Block toolbar unary" :eyo="eyo" :slotholder="slotholder"></operator>
 </template>
 
 <script>
@@ -29,7 +29,7 @@
   }
 </script>
 <style>
-  #info-unary {
+  #block-unary {
     padding: 0 0.25rem;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="info-modifier" key-nav  aria-label="Info toolbar modifier" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="info-modifier eyo-code eyo-content" v-html="selected_item.title"></span></template>
-    <b-dropdown-item-button v-for="item in items" v-on:click="modifier = item.key" :key="item.key" class="info-modifier eyo-code" v-html="item.title"></b-dropdown-item-button>
+  <b-dropdown id="block-modifier" key-nav  aria-label="Block toolbar modifier" class="eyo-dropdown" variant="outline-secondary">
+    <template slot="button-content"><span class="block-modifier eyo-code eyo-content" v-html="selected_item.title"></span></template>
+    <b-dropdown-item-button v-for="item in items" v-on:click="modifier = item.key" :key="item.key" class="block-modifier eyo-code" v-html="item.title"></b-dropdown-item-button>
     </b-dropdown-item-button>
   </b-dropdown>
 </template>
@@ -78,7 +78,7 @@
   }
 </script>
 <style>
-  #info-modifier {
+  #block-modifier {
     padding-right:0.5rem;
   }
   .info-modifier {

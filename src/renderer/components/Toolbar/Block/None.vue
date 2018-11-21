@@ -1,5 +1,5 @@
 <template>
-  <b-button-toolbar id="info-none" key-nav  aria-label="Info none" justify>
+  <b-button-toolbar id="block-none" key-nav  aria-label="Block none" justify>
     {{info}}
   </b-button-toolbar>
 </template>
@@ -15,7 +15,7 @@
   }
 </script>
 <style>
-  #info-none {
+  #block-none {
     padding: 0 0.25rem;
   }
 </style>

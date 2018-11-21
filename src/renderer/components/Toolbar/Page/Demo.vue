@@ -77,20 +77,25 @@
       }, 2000)
     },
     methods: {
+      displayMode () {
+        return this.$store.state.UI.displayMode
+      },
       flash () {
         this.on = 0
         this.$$.TweenLite.to(this, 0.5, {on: 1})
         if (this.flashInterval) {
-          var topBlocks = eYo.App.workspace.topBlocks_
-          if (!topBlocks.length) {
-            return
-          }
-          if (topBlocks.length === 1) {
-            if (topBlocks[0].childBlocks_.length === 0) {
+          if (eYo.App.workspace) {
+            var topBlocks = eYo.App.workspace.topBlocks_
+            if (!topBlocks.length) {
               return
             }
+            if (topBlocks.length === 1) {
+              if (topBlocks[0].childBlocks_.length === 0) {
+                return
+              }
+            }
+            clearInterval(this.flashInterval)
           }
-          clearInterval(this.flashInterval)
         }
       },
       doSelect (index) {
@@ -99,9 +104,17 @@
           var str = demo.xml
           var parser = new DOMParser()
           var dom = parser.parseFromString(str, 'application/xml')
-          eYo.App.workspace.eyo.fromDom(dom)
-          // problem of code reuse
-          eYo.App.doDomToPref(dom)
+          var f = () => {
+            eYo.App.workspace.eyo.fromDom(dom)
+            // problem of code reuse
+            eYo.App.doDomToPref(dom)
+          }
+          if (this.displayMode === eYo.App.CONSOLE_ONLY) {
+            this.$store.commit('UI_SET_DISPLAY_MODE', null)
+            this.$nextTick(f)
+          } else {
+            f()
+          }
         }
       },
       doShow () {

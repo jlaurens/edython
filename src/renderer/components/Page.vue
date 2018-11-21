@@ -1,10 +1,10 @@
 <template>
-  <div id="page" class="m-0 px-1 w-100 h-100">
+  <b-container id="page" class="m-0 px-1 h-100 fluid">
     <page-toolbar></page-toolbar>
     <page-content></page-content>
     <page-web-load></page-web-load>
     <page-modal></page-modal>
-  </div>
+  </b-container>
 </template>
 
 <script>

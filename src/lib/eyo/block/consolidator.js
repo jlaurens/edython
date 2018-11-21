@@ -142,8 +142,10 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
  */
 eYo.Consolidator.List.prototype.getMandatory = function (io) {
   if (io.block) {
-    var eyo = io.block.eyo
-    return eyo.mandatory_d && eyo.mandatory_p
+    var d = io.block.eyo.mandatory_d
+    if (d) {
+      return d.get()
+    }
   }
   return goog.isDef(this.data.mandatory)
     ? this.data.mandatory

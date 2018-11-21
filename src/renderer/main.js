@@ -62,7 +62,9 @@ eYo.Do.readOnlyMixin(eYo.App, {
   NORMAL: 'normal',
   TEACHER: 'teacher',
   CONSOLE: 'console',
-  TURTLE: 'turtle'
+  TURTLE: 'turtle',
+  WORKSPACE_ONLY: 'workspace only',
+  CONSOLE_ONLY: 'console only'
 })
 
 eYo.App.doDomToPref = function (dom) {

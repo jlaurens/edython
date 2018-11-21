@@ -4,7 +4,7 @@
       <template slot="button-content"><div class="eyo-block-primary-variant eyo-code eyo-content" v-html="selected.content"></div></template>
       <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-block-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>
-    <b-form-input v-model="blockAlias" type="text" class="btn btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
+    <b-form-input v-model="blockAlias" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
   </b-button-group>
 </template>
 

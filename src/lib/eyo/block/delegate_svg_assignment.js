@@ -47,9 +47,7 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
  * @param {!String} single, the required type for a single element....
  */
 eYo.Consolidator.List.Target = function (D) {
-  var d = {
-    mandatory: 1
-  }
+  var d = {}
   goog.mixin(d, eYo.Consolidator.List.Target.data)
   goog.mixin(d, D)
   eYo.Consolidator.List.Target.superClass_.constructor.call(this, d)
@@ -402,7 +400,6 @@ eYo.DelegateSvg.List.makeSubclass('assigned_list', function () {
     check: eYo.T3.Expr.Check.starred_item,
     unique: eYo.T3.Expr.yield_expression,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: false,
     presep: ','
   }
   var RA = goog.array.concat(D.check, D.unique)

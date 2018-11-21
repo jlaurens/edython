@@ -1,10 +1,10 @@
 <template>
   <div id="content-content" :style="style">
-    <Split @onDrag="onDrag">
-      <SplitArea :size="75">
+    <Split @onDrag="onDrag" id="content-split">
+      <SplitArea :size="75" id="content-split-eyo">
         <content-eyo></content-eyo>
       </SplitArea>
-      <SplitArea :size="25">
+      <SplitArea :size="25" id="content-split-panels">
         <content-panels></content-panels>
       </SplitArea>
     </Split>
@@ -33,6 +33,9 @@
       'content-panels': ContentPanels
     },
     computed: {
+      displayMode () {
+        return this.$store.state.UI.displayMode
+      },
       toolbarEditVisible () {
         return this.$store.state.UI.toolbarEditVisible
       },

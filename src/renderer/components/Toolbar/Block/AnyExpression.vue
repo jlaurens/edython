@@ -1,7 +1,7 @@
 <template>
-  <b-button-toolbar id="info-any-expression" key-nav  aria-label="Info any expression" justify>
+  <b-button-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
     <modifier v-if="modifiable" :eyo="eyo"></modifier>
-    <b-form-input v-model="expression" type="text" class="btn btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+    <b-form-input v-model="expression" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
   </b-button-toolbar>
 </template>
 
@@ -58,7 +58,7 @@
   }
 </script>
 <style>
-  #info-any-expression {
+  #block-any-expression {
     padding: 0 0.25rem;
   }
   .eyo-form-input-text-any-expression {

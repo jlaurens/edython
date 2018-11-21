@@ -26,6 +26,14 @@
       IconDisplay
     },
     computed: {
+      displayMode: {
+        get () {
+          return this.$store.state.UI.displayMode
+        },
+        set (newValue) {
+          this.$store.commit('UI_SET_DISPLAY_MODE', newValue)
+        }
+      },
       titleLeft () {
         return this.left
           ? this.$t('message.hide_workspace')
@@ -39,10 +47,33 @@
     },
     methods: {
       toggleLeft () {
-        this.left = !this.left
+        if (this.left) {
+          this.left = !(this.right = true)
+        } else {
+          this.left = true
+        }
+        this.update()
       },
       toggleRight () {
-        this.right = !this.right
+        if (this.right) {
+          this.right = !(this.left = true)
+        } else {
+          this.right = true
+        }
+        this.update()
+      },
+      update () {
+        // retrieve the dimensions of the split components
+        // resize the split component
+        //
+        //
+        // if (this.left && !this.right) {
+        //   this.displayMode = eYo.App.WORKSPACE_ONLY
+        // } else if (this.right && !this.left) {
+        //   this.displayMode = eYo.App.CONSOLE_ONLY
+        // } else {
+        //   this.displayMode = null
+        // }
       }
     }
   }
