@@ -36,7 +36,7 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item.length ? this.my_slot + '<div class="eyo-block-primary-variant2">' + item + '</div>' + this.my_slot : '&nbsp;'
+          return item.length ? this.my_slot + '<div>' + item + '</div>' + this.my_slot : '&nbsp;'
         }
       }
     },
@@ -61,7 +61,7 @@
           : this.operators.bin
       },
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       }
     },
     created () {

@@ -34,9 +34,9 @@
               return formatted
             }
             var replacement = '</span>' +
-              this.slotholder('eyo-block-primary-variant1') +
-              '<span class="eyo-block-primary-variant2">'
-            return '<span class="eyo-block-primary-variant2">' +
+              this.slotholder('eyo-slot-holder') +
+              '<span>'
+            return '<span>' +
               formatted.replace('{{slotholder}}', replacement) +
               '</span>'
           } else {

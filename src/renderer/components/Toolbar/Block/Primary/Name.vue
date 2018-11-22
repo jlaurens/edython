@@ -1,10 +1,10 @@
 <template>
-  <b-button-group :id="id">
+  <b-btn-group id="eyo-block-primary-name">
     <b-form-input v-model="myName" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
     <b-dropdown :id="'dd-' + id" class="eyo-dropdown" v-if="module" variant="outline-secondary">
-      <b-dropdown-item-button v-for="method in methods" v-on:click="myName = method" :key="method" class="eyo-block-primary-variant eyo-code">{{method}}</b-dropdown-item-button>
+      <b-dropdown-item-button v-for="method in methods" v-on:click="myName = method" :key="method" class="eyo-code">{{method}}</b-dropdown-item-button>
     </b-dropdown>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>
@@ -35,9 +35,6 @@
       }
     },
     computed: {
-      id () {
-        return 'eyo-info-name'
-      },
       myName: {
         get () {
           return this.name

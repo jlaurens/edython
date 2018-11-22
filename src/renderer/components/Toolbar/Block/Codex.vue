@@ -1,9 +1,9 @@
 <template>
-  <b-button-toolbar>
+  <b-btn-toolbar>
     <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-if="withSlotholder">
-      <div class="eyo-block-primary-variant2">
+      <div>
         <input type="checkbox" id="block-stmt-code-check" v-model="hasCode" :disabled="noCheck">
-        <div class="eyo-block-primary-variant3" v-html="my_slot"></div>
+        <div class="eyo-slot-holder-group" v-html="my_slot"></div>
       </div>
     </div>
     <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-else>
@@ -12,7 +12,7 @@
       type="text"
       class="eyo-code"></b-form-input>
     </div>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>
@@ -77,7 +77,7 @@
         }
       },
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       },
       withSlotholder () {
         (this.step_ !== this.eyo.change.step) && this.synchronize()

@@ -1,13 +1,13 @@
 <template>
-  <b-button-group>
-    <b-form-input id="eyo-block-primary-holder" v-model="holder" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
+  <b-btn-group id="eyo-block-primary-holder">
+    <b-form-input v-model="holder" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
     <b-dropdown id="block-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
-    <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
-    <b-dropdown-divider></b-dropdown-divider>
-    <b-dropdown-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+      <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
+      <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+      <b-dropdown-divider></b-dropdown-divider>
+      <b-dropdown-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
     </b-dropdown>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>
@@ -154,13 +154,13 @@
   }
 </script>
 <style>
-    .btn .eyo-block-primary-dotted {
+    .Xbtn .eyo-block-primary-dotted {
     padding-right: 0.75rem;
   }
-  .dropdown-item.eyo-block-primary-dotted {
+  .Xdropdown-item.eyo-block-primary-dotted {
     padding-right: 0.5rem;
   }
-  .eyo-block-primary-dotted2 {
+  .Xeyo-block-primary-dotted2 {
     display: inline-block
   }
 </style>

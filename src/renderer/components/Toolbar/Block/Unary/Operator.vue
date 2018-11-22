@@ -29,7 +29,7 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item.length ? '<div class="eyo-block-primary-variant2">' + item + '</div>' + this.my_slot : '&nbsp;'
+          return item.length ? '<div>' + item + '</div>' + this.my_slot : '&nbsp;'
         }
       }
     },
@@ -47,7 +47,7 @@
         return this.eyo.data.operator.getAll()
       },
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       }
     },
     created () {

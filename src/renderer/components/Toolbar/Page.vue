@@ -1,6 +1,6 @@
 <template>
-  <b-button-toolbar id="page-toolbar" key-nav  aria-label="Page toolbar" justify>
-    <b-button-group>
+  <b-btn-toolbar id="page-toolbar" key-nav  aria-label="Page toolbar" justify>
+    <b-btn-group>
       <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
         <img src="static/icon_light.svg" height="32" alt="Edython"/>
       </b-btn>
@@ -8,23 +8,23 @@
         <icon-base icon-name="bug"><icon-bug /></icon-base>
       </b-btn>
       <page-demo/>
-    </b-button-group>
-    <b-button-group>
+    </b-btn-group>
+    <b-btn-group>
       <page-mode />
       <page-display />
-    </b-button-group>
+    </b-btn-group>
     <page-storage />
-    <b-button-group>
+    <b-btn-group>
       <run-python />
       <copy-python />
-    </b-button-group>
+    </b-btn-group>
     <copy-paste />
-    <b-button-group>
+    <b-btn-group>
       <page-undo-redo :redo="false" />
       <page-undo-redo :redo="true" />
-    </b-button-group>
+    </b-btn-group>
     <page-menu />
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

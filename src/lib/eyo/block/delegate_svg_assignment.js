@@ -365,7 +365,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * @private
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
   var name_p = this.data.name_p
   var variant_p = this.variant_p
   var F = (content, newVariant) => {
@@ -382,11 +381,11 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   )
   F(content, eYo.Key.NAME)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
-  F(content, 2)
+  F(content, eYo.Key.TARGET)
   mgr.shouldSeparate()
   if (variant_p !== eYo.Key.TARGET) {
-    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, function () {
-      block.eyo.data.name.field.showEditor()
+    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, () => {
+      this.name_d.field.showEditor()
     })
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()

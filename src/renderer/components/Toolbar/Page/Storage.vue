@@ -1,5 +1,5 @@
 <template>
-  <b-button-group>
+  <b-btn-group>
     <b-btn id="toolbar-new" @click="doNew" title="Nouveau" v-tippy>
       <icon-base :width="32" :height="32" icon-name="new"><icon-new /></icon-base>
     </b-btn>
@@ -9,7 +9,7 @@
     <b-btn id="toolbar-save" @click="doSave" title="Sauvegarder" v-tippy>
       <icon-base :width="32" :height="32" icon-name="save"><icon-save-load variant="save" :step="step"/></icon-base>
     </b-btn>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

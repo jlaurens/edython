@@ -1,11 +1,10 @@
 <template>
-  <b-button-group id="block-primary" key-nav  aria-label="Block group primary" justify>
+  <b-btn-group id="block-primary" key-nav  aria-label="Block group primary" class="eyo-block-edit" justify>
     <dotted :eyo="eyo" :slotholder="slotholder" :holder="holder" :dotted="dotted"></dotted>
     <name :eyo="eyo" :variant="variant" :name="name" :module="module"></name>
     <variant :eyo="eyo" :can_call="can_call" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
     <ry :eyo="eyo" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR && can_ry"></ry>
-    <comment :eyo="eyo"></comment>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

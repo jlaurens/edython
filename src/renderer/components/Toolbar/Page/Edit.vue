@@ -1,12 +1,12 @@
 <template>
-  <b-button-group>
+  <b-btn-group>
     <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="titleClap" v-tippy>
       <icon-base :width="32" :height="32" :icon-name="name"><icon-clap/></icon-base>
     </b-btn>
     <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="titleGear" v-tippy>
       <icon-base :width="32" :height="32" :icon-name="name"><icon-gear/></icon-base>
     </b-btn>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

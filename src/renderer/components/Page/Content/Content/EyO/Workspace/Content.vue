@@ -2,7 +2,7 @@
   <div id="eyo-workspace-content">
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
     <div id="eyo-flyout-toolbar-switcher">
-      <b-button-group id="eyo-flyout-switcher">
+      <b-btn-group id="eyo-flyout-switcher">
         <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown">
           <template slot="button-content">Blocs</template>
           <b-dropdown-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
@@ -13,7 +13,7 @@
           <template slot="button-content">Module&nbsp;</template>
           <b-dropdown-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
-      </b-button-group>
+      </b-btn-group>
       <div id="eyo-flyout-toolbar-label">
         {{label}}
         <b-form-checkbox id="eyo-flyout-toolbar-label-check"

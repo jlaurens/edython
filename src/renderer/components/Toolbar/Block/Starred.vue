@@ -1,10 +1,10 @@
 <template>
-  <b-button-group id="block-starred" key-nav  aria-label="Block decorator" justify>
+  <b-btn-group id="block-starred" key-nav  aria-label="Block decorator" justify>
     <b-dropdown id="block-starred-dd" class="eyo-dropdown" variant="outline-secondary">
       <template slot="button-content"><span class="block-modifier eyo-code eyo-content" v-html="chosen.title"></span></template>
       <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="block-variant eyo-code" v-html="choice.title"></b-dropdown-item-button>
     </b-dropdown>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>
@@ -35,7 +35,7 @@
     },
     computed: {
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       },
       choices_by_key () {
         return {
@@ -49,7 +49,7 @@
           },
           [eYo.Key.STAR_NAME]: {
             key: eYo.Key.STAR_NAME,
-            title: '<div class="eyo-block-primary-variant2 eyo-code-reserved">*</div>' + this.my_slot,
+            title: '<div class="eyo-code-reserved">*</div>' + this.my_slot,
             action (eyo) {
               eyo.modifier_p = '*'
               eyo.variant_p = eYo.Key.NONE
@@ -57,7 +57,7 @@
           },
           [eYo.Key.STAR_STAR_NAME]: {
             key: eYo.Key.STAR_STAR_NAME,
-            title: '<div class="eyo-block-primary-variant2 eyo-code-reserved">**</div>' + this.my_slot,
+            title: '<div class="eyo-code-reserved">**</div>' + this.my_slot,
             action (eyo) {
               eyo.modifier_p = '**'
               eyo.variant_p = eYo.Key.NONE

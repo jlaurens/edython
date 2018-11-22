@@ -1,8 +1,8 @@
 <template>
-  <b-button-group>
+  <b-btn-group>
     <copy-paste :copy="true" :deep="false" />
     <copy-paste :copy="false" />
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

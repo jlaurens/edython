@@ -1,13 +1,13 @@
 <template>
-  <b-button-toolbar id="block-number" key-nav  aria-label="Block toolbar number" justify>
-    <b-button-group>
+  <b-btn-toolbar id="block-number" key-nav  aria-label="Block toolbar number" justify>
+    <b-btn-group>
       <b-form-input v-model="content" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
-    </b-button-group>
+    </b-btn-group>
     <div id='info-number-keyword' class="eyo-btn-inert btn-outline-secondary" :disabled="!can_imag">
       <input type="checkbox" id="block-imag" v-model="imag" :disabled="!can_imag">
       <label for="block-imag" class="eyo-code">{{suffix_}}</label>
     </div>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

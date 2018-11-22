@@ -1,11 +1,11 @@
 <template>
-  <b-button-group class="mx-1 eyo-button-group">
-    <b-dropdown :id="id" class="eyo-dropdown" v-if="variants && variants.length" variant="outline-secondary">
-      <template slot="button-content"><div class="eyo-block-primary-variant eyo-code eyo-content" v-html="selected.content"></div></template>
-      <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-block-primary-variant eyo-code" v-html="variant.content"></b-dropdown-item-button>
+  <b-btn-group id="eyo-block-primary-variant">
+    <b-dropdown variant="outline-secondary" class="eyo-dropdown">
+      <template slot="button-content"><span class="eyo-code" v-html="selected.content"></span></template>
+      <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>
     <b-form-input v-model="blockAlias" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>
@@ -52,9 +52,6 @@
       }
     },
     computed: {
-      id () {
-        return 'eyo-info-variant'
-      },
       selected: {
         get () {
           var variant = this.variant
@@ -101,28 +98,28 @@
             }
           },
           CALL_EXPR: {
-            content: '<div class="eyo-block-primary-variant2">(</div>' + this.slotholder('eyo-block-primary-variant1') + '<div class="eyo-block-primary-variant2">)</div>',
+            content: `<span>(</span>${this.slotholder('eyo-slot-holder')}<span>)</span>`,
             key: 'CALL_EXPR',
             action (eyo) {
               eyo.variant_p = eYo.Key.CALL_EXPR
             }
           },
           SLICING: {
-            content: '<div class="eyo-block-primary-variant2">[</div>' + this.slotholder('eyo-block-primary-variant1') + '<div class="eyo-block-primary-variant2">]</div>',
+            content: `<span>[</span>${this.slotholder('eyo-slot-holder')}<span>]</span>`,
             key: 'SLICING',
             action (eyo) {
               eyo.variant_p = eYo.Key.SLICING
             }
           },
           ALIASED: {
-            content: '<div class="eyo-code eyo-code-reserved">as</div>',
+            content: '<span class="eyo-code eyo-code-reserved">as</span>',
             key: 'ALIASED',
             action (eyo) {
               eyo.variant_p = eYo.Key.ALIASED
             }
           },
           ANNOTATED: {
-            content: '<div class="eyo-block-primary-variant2">:</div>' + this.slotholder('eyo-block-primary-variant1'),
+            content: `<span>:</span>${this.slotholder('eyo-slot-holder')}`,
             key: 'ANNOTATED',
             action (eyo) {
               eyo.annotation_p = eYo.Key.ANNOTATED
@@ -130,7 +127,7 @@
             }
           },
           DEFINED: {
-            content: '<div class="eyo-block-primary-variant2">=</div>' + this.slotholder('eyo-block-primary-variant1'),
+            content: `<span>=</span>${this.slotholder('eyo-slot-holder')}`,
             key: 'DEFINED',
             action (eyo) {
               eyo.annotation_p = eYo.Key.NONE
@@ -138,7 +135,7 @@
             }
           },
           ANNOTATED_DEFINED: {
-            content: '<div class="eyo-block-primary-variant2">:</div>' + this.slotholder('eyo-block-primary-variant1') + '<div class="eyo-block-primary-variant2">=</div>' + this.slotholder('eyo-block-primary-variant1'),
+            content: `<span>:</span>${this.slotholder('eyo-slot-holder')}<span>=</span>${this.slotholder('eyo-slot-holder')}`,
             key: 'ANNOTATED_DEFINED',
             action (eyo) {
               eyo.annotation_p = eYo.Key.ANNOTATED
@@ -193,8 +190,5 @@
   }
 </script>
 <style>
-  .btn .eyo-block-primary-variant {
-    padding-right: 0.75rem;
-  }
 </style>
   

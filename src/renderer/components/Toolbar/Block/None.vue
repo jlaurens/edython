@@ -1,7 +1,7 @@
 <template>
-  <b-button-toolbar id="block-none" key-nav  aria-label="Block none" justify>
+  <b-btn-toolbar id="block-none" key-nav  aria-label="Block none" justify>
     {{info}}
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

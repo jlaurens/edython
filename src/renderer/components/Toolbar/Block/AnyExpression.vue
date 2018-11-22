@@ -1,8 +1,8 @@
 <template>
-  <b-button-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
+  <b-btn-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
     <modifier v-if="modifiable" :eyo="eyo"></modifier>
     <b-form-input v-model="expression" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

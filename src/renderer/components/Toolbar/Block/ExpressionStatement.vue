@@ -1,8 +1,8 @@
 <template>
-  <b-button-toolbar id="block-any-statement" key-nav  aria-label="Block any statement" justify>
+  <b-btn-toolbar id="block-any-statement" key-nav  aria-label="Block any statement" justify>
     <codex :eyo="eyo" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
     <comment :eyo="eyo" ></comment>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

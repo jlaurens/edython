@@ -1,11 +1,11 @@
 <template>
-  <b-button-group id="block-default" key-nav  aria-label="Block default" justify>
+  <b-btn-group id="block-default" key-nav  aria-label="Block default" justify>
     <value :eyo="eyo"></value>
     <operator :eyo="eyo"></operator>
     <variant :eyo="eyo" :slotholder="slotholder"></variant>
     <comment :eyo="eyo"></comment>
     <span>type:&nbsp;{{eyo.block_.type}}</span>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

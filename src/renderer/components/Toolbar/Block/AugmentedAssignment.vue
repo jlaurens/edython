@@ -1,8 +1,8 @@
 <template>
-  <b-button-toolbar id="block-augmented-assignment" key-nav  aria-label="Block toolbar augmented-assignment" justify>
+  <b-btn-toolbar id="block-augmented-assignment" key-nav  aria-label="Block toolbar augmented-assignment" justify>
     <operator :eyo="eyo" :slotholder="slotholder"></operator>
     <comment :eyo="eyo"></comment>
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>

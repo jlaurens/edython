@@ -52,7 +52,7 @@
           : this.operators.bin
       },
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       }
     },
     created () {

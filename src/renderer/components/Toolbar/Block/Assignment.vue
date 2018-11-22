@@ -1,10 +1,10 @@
 <template>
-  <b-button-group id="block-assignment" key-nav  aria-label="Block group assignment" justify>
-    <b-button-group>
+  <b-btn-group id="block-assignment" key-nav  aria-label="Block group assignment" justify>
+    <b-btn-group>
       <variant :eyo="eyo" :slotholder="slotholder"></variant>
-    </b-button-group>
+    </b-btn-group>
     <comment :eyo="eyo"></comment>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>

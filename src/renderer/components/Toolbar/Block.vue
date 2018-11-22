@@ -1,5 +1,5 @@
 <template>
-  <b-button-toolbar id="block-toolbar" key-nav  aria-label="Block toolbar" justify :style="style">
+  <b-btn-toolbar id="block-toolbar" key-nav  aria-label="Block toolbar" justify :style="style">
     <block-primary v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-primary>
     <block-primary v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])" :eyo="eyo" :slotholder="slotholder"></block-primary>
     <block-literal v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])" :eyo="eyo" :modifiable="modifiable"></block-literal>
@@ -37,12 +37,13 @@
     <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo"></block-funcdef>
     <block-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
     <block-none v-else></block-none>
+    <comment :eyo="eyo"></comment>
     <b-btn-group>
       <block-copy-paste />
       <block-layout />    
     </b-btn-group>
     <block-common :eyo="eyo" />
-  </b-button-toolbar>
+  </b-btn-toolbar>
 </template>
 
 <script>
@@ -106,9 +107,9 @@
     computed: {
       slotholder () {
         var d = eYo.Shape.definitionWithConnection()
-        var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+        var one_rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
         return function (className) {
-          return '<div class="eyo-block-slotholder' + (className ? ' ' : '') + className + '"><svg xmlns="http://www.w3.org/2000/svg" height="' + (1.75 * one_rem) + '" width="' + (2 * one_rem) + '"><path class="eyo-path-contour" d="' + d + ' z"></path></svg></div>'
+          return `<div class="eyo-block-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
         }
       },
       selectedBlock () {
@@ -186,7 +187,7 @@
   #block-toolbar .input-group-text {
     height: 1.75rem;
   }
-  #block-toolbar .btn:not(.input-group),
+  #block-toolbar .btn:not(.input-group):not(.dropdown-toggle),
   .eyo-btn-inert:not(.input-group) {
     padding: 0rem 0.25rem;
   }
@@ -197,25 +198,27 @@
     padding: 0 0.25rem;
     margin:0;
   }
-  #block-toolbar .btn-group:first-child {
-    padding-left:0;
-  }
-  #block-toolbar .btn-group:last-child {
-    padding-right:0;
-  }
-  #block-toolbar .btn-group .btn-group {
-    margin: 0;
-  }
   #block-toolbar label.btn:first-child {
     padding-left:0.25rem;
   }
   #block-toolbar label {
     margin:0;
   }
-  .btn-outline-secondary {
+  #block-toolbar .btn-outline-secondary {
     background-color: rgba(255,255,255,90);
   }
-  .dropdown-toggle-split {
+  #block-toolbar .btn-outline-secondary:hover,
+  #block-toolbar .btn-outline-secondary:active,
+  #block-toolbar .btn-outline-secondary:focus {
+    color: inherit;
+  }
+  #block-toolbar .dropdown-toggle {
+    padding-left: 0.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-right: 1rem;
+  }
+  #block-toolbar .dropdown-toggle-split {
       padding-right: 0.5rem;
       padding-left: 0.5rem;
   }
@@ -232,19 +235,6 @@
   .dropdown-item:hover .eyo-block-slotholder .eyo-path-contour {
     stroke: rgb(100,100,100);
   }
-  .eyo-block-primary-variant1 {
-    display: inline-block;
-  }
-  .eyo-block-primary-variant2 {
-    display: inline-block;
-    position: relative;
-    top: -0.45rem;
-  }
-  .eyo-block-primary-variant3 {
-    display: inline-block;
-    position: relative;
-    top: 0.45rem;
-  }
   .eyo-form-input-text {
     text-align: left;
     width: 8rem;
@@ -252,12 +242,6 @@
   .btn-outline-secondary.eyo-form-input-text:hover {
     background: white;
     color: black;
-  }
-  .eyo-button-group {
-    padding-right: 0.25rem;
-  }
-  .eyo-block-primary-variant1, .eyo-block-primary-variant2 {
-    display: inline;
   }
   .eyo-btn-inert:focus,
   .eyo-btn-inert:hover,
@@ -268,5 +252,40 @@
     background-color: white;
     border-color: inherit;
     box-shadow: none;
+  }
+  #block-toolbar .btn-group:first-child,
+  #block-toolbar .btn-group .btn-group {
+    padding-left:0;
+  }
+  #block-toolbar .btn-group:last-child {
+    padding-right:0;
+  }
+  #block-toolbar .btn-group .btn-group {
+    margin: 0;
+  }
+  #block-toolbar .btn-group .btn-group:not(:first-child) {
+    padding-left: 0;
+  }
+  #block-toolbar .btn-group .btn-group:not(:last-child) {
+    padding-right: 0;
+  }
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .eyo-btn-inert:not(:last-child),
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .b-dropdown:not(last-child) .btn,
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .eyo-btn-inert {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-width: 0;
+  }
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert:not(:first-child),
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert,
+  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .eyo-slot-holder {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: -0.0625rem;
   }
 </style>

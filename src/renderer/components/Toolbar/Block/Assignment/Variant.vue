@@ -51,17 +51,17 @@
         ]
       },
       my_slot () {
-        return this.slotholder('eyo-block-primary-variant1')
+        return this.slotholder('eyo-slot-holder')
       },
       items_by_key () {
         return {
           [eYo.Key.NAME]: {
             key: eYo.Key.NAME,
-            title: '<div class="eyo-block-primary-variant2">nom =</div>' + this.my_slot
+            title: `<span>nom =</span>${this.my_slot}`
           },
           [eYo.Key.TARGET]: {
             key: eYo.Key.TARGET,
-            title: this.my_slot + '<div class="eyo-block-primary-variant2">,… =</div>' + this.my_slot + '<div class="eyo-block-primary-variant2">,…</div>'
+            title: `${this.my_slot}<span>,… =</span>${this.my_slot}<span>,…</span>`
           }
         }
       },
@@ -78,7 +78,4 @@
   }
 </script>
 <style>
-  .info-variant {
-    padding-right:1rem;
-  }
 </style>

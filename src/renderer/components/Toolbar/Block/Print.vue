@@ -1,6 +1,6 @@
 <template>
-  <b-button-group id="block-print" key-nav  aria-label="Block toolbar print" justify>
-    <b-button-group id='info-print-keyword' class="mr-2">
+  <b-btn-group id="block-print" key-nav  aria-label="Block toolbar print" justify>
+    <b-btn-group id='info-print-keyword' class="mr-2">
     <div class="input-group btn-outline-secondary eyo-btn-inert">
       <div class="input-group-prepend">
         <div class="input-group-text">
@@ -27,9 +27,9 @@
       </div>
       <input type="text" readOnly class="eyo-code" value="file=…"  style="width: 5rem;" :disabled="!can_file">
     </div>
-    </b-button-group>
+    </b-btn-group>
     <comment :eyo="eyo"></comment>
-  </b-button-group>
+  </b-btn-group>
 </template>
 
 <script>
