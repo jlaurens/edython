@@ -1,5 +1,5 @@
 <template>
-  <b-btn-toolbar id="block-stmt-comment" v-if="canComment">
+  <b-btn-group id="block-stmt-comment" class="eyo-block-edit-comment" v-if="canComment">
     <div class="input-group btn-outline-secondary eyo-btn-inert">
       <div class="input-group-prepend">
         <div class="input-group-text">
@@ -10,7 +10,7 @@
       <input type="text"
       class="form-control eyo-code-comment" v-model="comment" :disabled="!hasComment" aria-label="Comment input">
     </div>
-  </b-btn-toolbar>
+  </b-btn-group>
 </template>
 
 <script>

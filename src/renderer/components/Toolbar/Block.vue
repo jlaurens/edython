@@ -1,43 +1,54 @@
+<!--
+  This template is divided into 2 parts:
+  1) the block edition
+    a) block content
+    b) comment if any
+  2) the block actions
+    a) copy/paste
+    b) common stuff to be defined later
+-->
 <template>
   <b-btn-toolbar id="block-toolbar" key-nav  aria-label="Block toolbar" justify :style="style">
-    <block-primary v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-primary>
-    <block-primary v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])" :eyo="eyo" :slotholder="slotholder"></block-primary>
-    <block-literal v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])" :eyo="eyo" :modifiable="modifiable"></block-literal>
-    <block-number v-else-if="isSelected([$$.eYo.T3.Expr.integer,
-    $$.eYo.T3.Expr.floatnumber,
-    $$.eYo.T3.Expr.imagnumber])" :eyo="eyo" :modifiable="modifiable"></block-number>
-    <block-print v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])" :eyo="eyo" :modifiable="modifiable"></block-print>
-    <block-unary v-else-if="isSelected($$.eYo.T3.Expr.u_expr)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-unary>
-    <block-binary v-else-if="isSelected([
-      $$.eYo.T3.Expr.binary,
-      $$.eYo.T3.Expr.a_expr,
-      $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
-      $$.eYo.T3.Expr.or_expr,
-      $$.eYo.T3.Expr.power
-    ])" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-binary>
-    <block-assignment v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)" :eyo="eyo" :slotholder="slotholder"></block-assignment>
-    <block-builtin v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)" :eyo="eyo" :modifiable="modifiable"></block-builtin>
-    <block-augmented-assignment v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)" :eyo="eyo" :slotholder="slotholder"></block-augmented-assignment>
-    <block-any-expression v-else-if="isSelected($$.eYo.T3.Expr.any)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-any-expression>
-    <block-expression-statement v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)" :eyo="eyo" :slotholder="slotholder"></block-expression-statement>
-    <block-decorator v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)" :eyo="eyo" :slotholder="slotholder"></block-decorator>
-    <block-starred v-else-if="isSelected([
-      $$.eYo.T3.Expr.star_expr,
-      $$.eYo.T3.Expr.expression_star,
-      $$.eYo.T3.Expr.expression_star_star,
-      $$.eYo.T3.Expr.target_star,
-      $$.eYo.T3.Expr.star,
-      $$.eYo.T3.Expr.parameter_star,
-      $$.eYo.T3.Expr.parameter_star_star
-    ])" :eyo="eyo" :slotholder="slotholder"></block-starred>
-    <block-except v-else-if="isSelected([
-      $$.eYo.T3.Stmt.except_part,
-      $$.eYo.T3.Stmt.void_except_part
-    ])" :eyo="eyo" :slotholder="slotholder"></block-except>
-    <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo"></block-funcdef>
-    <block-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
-    <block-none v-else></block-none>
-    <comment :eyo="eyo"></comment>
+    <b-btn-group class="eyo-block-edit btn-outline-secondary">
+      <block-primary v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-primary>
+      <block-primary v-else-if="isSelected([$$.eYo.T3.Stmt.call_stmt])" :eyo="eyo" :slotholder="slotholder"></block-primary>
+      <block-literal v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])" :eyo="eyo" :modifiable="modifiable"></block-literal>
+      <block-number v-else-if="isSelected([$$.eYo.T3.Expr.integer,
+      $$.eYo.T3.Expr.floatnumber,
+      $$.eYo.T3.Expr.imagnumber])" :eyo="eyo" :modifiable="modifiable"></block-number>
+      <block-print v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])" :eyo="eyo" :modifiable="modifiable"></block-print>
+      <block-unary v-else-if="isSelected($$.eYo.T3.Expr.u_expr)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-unary>
+      <block-binary v-else-if="isSelected([
+        $$.eYo.T3.Expr.binary,
+        $$.eYo.T3.Expr.a_expr,
+        $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
+        $$.eYo.T3.Expr.or_expr,
+        $$.eYo.T3.Expr.power
+      ])" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-binary>
+      <block-assignment v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)" :eyo="eyo" :slotholder="slotholder"></block-assignment>
+      <block-builtin v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)" :eyo="eyo" :modifiable="modifiable"></block-builtin>
+      <block-augmented-assignment v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)" :eyo="eyo" :slotholder="slotholder"></block-augmented-assignment>
+      <block-any-expression v-else-if="isSelected($$.eYo.T3.Expr.any)" :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable"></block-any-expression>
+      <block-expression-statement v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)" :eyo="eyo" :slotholder="slotholder"></block-expression-statement>
+      <block-decorator v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)" :eyo="eyo" :slotholder="slotholder"></block-decorator>
+      <block-starred v-else-if="isSelected([
+        $$.eYo.T3.Expr.star_expr,
+        $$.eYo.T3.Expr.expression_star,
+        $$.eYo.T3.Expr.expression_star_star,
+        $$.eYo.T3.Expr.target_star,
+        $$.eYo.T3.Expr.star,
+        $$.eYo.T3.Expr.parameter_star,
+        $$.eYo.T3.Expr.parameter_star_star
+      ])" :eyo="eyo" :slotholder="slotholder"></block-starred>
+      <block-except v-else-if="isSelected([
+        $$.eYo.T3.Stmt.except_part,
+        $$.eYo.T3.Stmt.void_except_part
+      ])" :eyo="eyo" :slotholder="slotholder"></block-except>
+      <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo"></block-funcdef>
+      <block-default :eyo="eyo" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
+      <block-none v-else></block-none>
+      <comment :eyo="eyo"></comment>
+    </b-btn-group>
     <b-btn-group>
       <block-copy-paste />
       <block-layout />    
@@ -269,13 +280,6 @@
   #block-toolbar .btn-group .btn-group:not(:last-child) {
     padding-right: 0;
   }
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .eyo-btn-inert:not(:last-child),
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .b-dropdown:not(last-child) .btn,
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:last-child) .eyo-btn-inert {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right-width: 0;
-  }
   #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert:not(:first-child),
   #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert,
   #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .btn {
@@ -287,5 +291,27 @@
     vertical-align: middle;
     position: relative;
     top: -0.0625rem;
+  }
+  .eyo-block-edit {
+    border-radius: 0.25rem;
+  }
+  .eyo-block-edit-content .input-group-text.eyo-label {
+    background-color: inherit;
+  }
+  .eyo-block-edit-content .input-group-text:not(last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -1px;
+  }
+  .eyo-block-edit-content:not(:first-child),
+  .input-group-text:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .eyo-block-edit .btn-group:not(:last-child) .b-dropdown:not(last-child) .btn,
+  .eyo-block-edit .btn-group:not(:last-child) .eyo-btn-inert {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-width: 0;
   }
 </style>

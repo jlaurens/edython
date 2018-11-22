@@ -124,12 +124,12 @@ Object.defineProperties(
     },
     style: {
       get () {
-        return 'font-family:' + this.familyMono + ';font-size:' + this.ascent + 'pt;'
+        return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
       }
     },
     menuStyle: {
       get () {
-        return 'font-family:' + this.familySans + ';font-size:' + this.ascent + 'pt;'
+        return `font-family:${this.familySans};font-size:${this.ascent}pt;`
       }
     },
     tabWidth: {
@@ -271,7 +271,7 @@ eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt('.eyo-path-dotted{stroke: ' + eYo.Style.Path.colour + ';stroke-width: ' + (eYo.Style.Path.width * 1.5) + 'px;stroke-linecap:round;stroke-dasharray:0 ' + eYo.Font.space / 2 + ';}')
   eYo.Style.insertCssRuleAt('.eyo-no-path{display:none;}', 5)
   eYo.Style.insertCssRuleAt('.eyo-code-emph {font-weight: bold;}')
-  eYo.Style.insertCssRuleAt('.eyo-code-reserved, .eyo-code-builtin, .eyo-sharp-group {font-weight:bold;color: rgba(0, 84, 147, 0.75);fill: rgba(0, 84, 147, 0.75);}')
+  eYo.Style.insertCssRuleAt('.eyo-code-reserved, .eyo-code-builtin, .eyo-sharp-group {font-weight:bold!important;color: rgba(0, 84, 147, 0.75)!important;fill: rgba(0, 84, 147, 0.75)!important;}')
   eYo.Style.insertCssRuleAt('.eyo-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.75);fill: rgba(60, 0, 145, 0.75);}')
   eYo.Style.insertCssRuleAt('.eyo-menuitem-disabled .eyo-code-reserved {color: rgba(60, 0, 145, 0.3);fill: rgba(0, 84, 147, 0.3);}')
   eYo.Style.insertCssRuleAt('.eyo-menuitem-disabled .eyo-code-builtin {font-weight:bold;color: rgba(60, 0, 145, 0.3);fill: rgba(60, 0, 145, 0.3);}')

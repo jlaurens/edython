@@ -1,13 +1,19 @@
 <template>
-  <b-btn-toolbar id="block-literal" key-nav  aria-label="Block toolbar literal" justify>
-    <div id='info-literal-keyword' class="eyo-btn-inert btn-outline-secondary">
-      <input type="checkbox" id="block-literal-r" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
-      <label for="block-literal-r" class="eyo-code">r</label>
-      <input type="checkbox" id="block-literal-b" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
-      <label for="block-literal-b" class="eyo-code">b</label>
-      <input type="checkbox" id="block-literal-f" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
-      <label for="block-literal-f" class="eyo-code" :disabled="!can_f">f</label>
-    </div>
+  <b-btn-group id="block-literal" key-nav  aria-label="Block toolbar literal" class="eyo-block-edit-content">
+    <b-btn-group>
+      <div class="input-group-text">
+        <input type="checkbox" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
+      </div>
+      <div class="input-group-text eyo-label eyo-code-reserved">r</div>
+      <div class="input-group-text">
+        <input type="checkbox" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
+      </div>
+      <div class="input-group-text eyo-label eyo-code-reserved">b</div>
+      <div class="input-group-text">
+        <input type="checkbox" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
+      </div>
+      <div class="input-group-text eyo-label eyo-code-reserved">f</div>
+    </b-btn-group>
     <span class="eyo-code-reserved" d>{{delimiter}}</span>
     <b-btn-group>
       <b-form-input v-model="content" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy ></b-form-input>
@@ -18,8 +24,7 @@
         {{otherQuote}}
       </b-btn>
     </b-btn-group>
-    <comment :eyo="eyo" :must-comment="mustComment" :comment-variant="commentVariant" v-on:synchronize="synchronize"></comment>
-  </b-btn-toolbar>
+  </b-btn-group>
 </template>
 
 <script>

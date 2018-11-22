@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="h-100">
     <router-view></router-view>
   </div>
 </template>
@@ -29,7 +29,9 @@ export default {
     height: 100vh;
   }
   #app {
-    height: 100%;
     background-color:rgba(221, 221, 221, 0.8);
+  }
+  #app .container {
+    max-width: 100%; /* override B */
   }
 </style>

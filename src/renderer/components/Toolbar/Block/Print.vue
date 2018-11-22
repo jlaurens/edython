@@ -1,34 +1,21 @@
 <template>
-  <b-btn-group id="block-print" key-nav  aria-label="Block toolbar print" justify>
-    <b-btn-group id='info-print-keyword' class="mr-2">
-    <div class="input-group btn-outline-secondary eyo-btn-inert">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <input type="checkbox" v-model="sep">
-        </div>
-        <input type="text" readOnly class="eyo-code" value="sep=…"  style="width: 4rem;">
-      </div>
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <input type="checkbox" v-model="end">
-        </div>
-      </div>
-      <input type="text" readOnly class="eyo-code" value="end=…"  style="width: 4rem;">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <input type="checkbox" v-model="flush">
-        </div>
-      </div>
-      <input type="text" readOnly class="eyo-code" value="flush=…"  style="width: 6rem;">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <input type="checkbox" v-model="file" :disabled="!can_file">
-        </div>
-      </div>
-      <input type="text" readOnly class="eyo-code" value="file=…"  style="width: 5rem;" :disabled="!can_file">
+  <b-btn-group id="block-print" class="eyo-block-edit-content btn-outline-secondary"  aria-label="Block print edit content" justify>
+    <div class="input-group-text">
+      <input type="checkbox" v-model="sep">
     </div>
-    </b-btn-group>
-    <comment :eyo="eyo"></comment>
+    <div class="eyo-label eyo-code">sep=…</div>
+    <div class="input-group-text">
+      <input type="checkbox" v-model="end">
+    </div>
+    <div class="eyo-label eyo-code">end=…</div>
+    <div class="input-group-text">
+      <input type="checkbox" v-model="flush">
+    </div>
+    <div class="eyo-label eyo-code">flush=…</div>
+    <div class="input-group-text">
+      <input type="checkbox" v-model="file" :disabled="!can_file">
+    </div>
+    <div class="eyo-label eyo-code">file=…</div>
   </b-btn-group>
 </template>
 
@@ -200,20 +187,4 @@
   }
 </script>
 <style>
-  #block-print-keyword {
-    margin: 0;
-    padding: 0 0.25rem;
-  }
-  #block-print-keyword label {
-    margin: 0;
-    padding-right: 0.25rem;
-  }
-  #block-print-keyword input {
-    position: relative;
-    top: -0.0625rem;
-  }
-  .input-group .input:last-child {
-    border-top-right-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-  }
 </style>
