@@ -19,6 +19,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -73,7 +77,7 @@
       this.variant_ = this.eyo.variant_p
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     }
   }
 </script>

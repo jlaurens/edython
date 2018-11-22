@@ -1,7 +1,7 @@
 <template>
   <b-btn-toolbar id="block-augmented-assignment" key-nav  aria-label="Block toolbar augmented-assignment" justify>
-    <operator :eyo="eyo" :slotholder="slotholder"></operator>
-    <comment :eyo="eyo"></comment>
+    <operator :eyo="eyo" :step="step" :slotholder="slotholder"></operator>
+    <comment :eyo="eyo" :step="step"></comment>
   </b-btn-toolbar>
 </template>
 
@@ -23,6 +23,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,

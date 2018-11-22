@@ -1,7 +1,7 @@
 <template>
   <b-btn-toolbar id="block-any-statement" key-nav  aria-label="Block any statement" justify>
-    <codex :eyo="eyo" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
-    <comment :eyo="eyo" ></comment>
+    <codex :eyo="eyo" :step="step" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
+    <comment :eyo="eyo" :step="step" ></comment>
   </b-btn-toolbar>
 </template>
 
@@ -25,6 +25,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -33,13 +37,16 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
         this.step = this.eyo.change.step
         this.mustComment = this.eyo.variant_p === eYo.Key.NONE
       }

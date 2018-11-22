@@ -323,7 +323,7 @@ var setup = (function () {
     if ((ans = eYo.T3.Profile.getDotted(candidate, module)) && !ans.isVoid) {
       return ans
     }
-    if (eYo.XRE.identifier.exec(candidate)) {
+    if (!!XRegExp.exec(candidate, eYo.XRE.identifier)) {
       ans = new eYo.T3.Profile(null, {
         raw: eYo.T3.Expr.custom_identifier,
         expr: eYo.T3.Expr.identifier,
@@ -445,56 +445,70 @@ eYo.T3.Profile.getLiteral = function (candidate) {
             : eYo.T3.Expr.decinteger
     })
   }
-  if (eYo.XRE.floatnumber.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.floatnumber)) {
     return new eYo.T3.Profile(null, {
       raw: eYo.T3.custom_literal,
       expr: eYo.T3.Expr.floatnumber
     })
   }
-  if (eYo.XRE.imagnumber.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.imagnumber)) {
     return new eYo.T3.Profile(null, {
       raw: eYo.T3.custom_literal,
       expr: eYo.T3.Expr.imagnumber
     })
   }
-  if (eYo.XRE.shortstringliteralSingle.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.shortbytesliteralSingle)) {
     return {
-      raw: eYo.T3.Expr.shortstringliteral,
+      raw: eYo.T3.Expr.shortbytesliteral,
       expr: eYo.T3.Expr.shortliteral,
       type: eYo.T3.Expr.singleQuoted
     }
   }
-  if (eYo.XRE.shortbytesliteralDouble.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.shortbytesliteralDouble)) {
     return {
       raw: eYo.T3.Expr.shortbytesliteral,
       expr: eYo.T3.Expr.shortliteral,
       type: eYo.T3.Expr.doubleQuoted
     }
   }
-  if (eYo.XRE.longstringliteralSingle.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.shortstringliteralSingle)) {
     return {
-      raw: eYo.T3.Expr.longstringliteral,
+      raw: eYo.T3.Expr.shortstringliteral,
+      expr: eYo.T3.Expr.shortliteral,
+      type: eYo.T3.Expr.singleQuoted
+    }
+  }
+  if (!!XRegExp.exec(candidate, eYo.XRE.shortstringliteralDouble)) {
+    return {
+      raw: eYo.T3.Expr.shortstringliteral,
+      expr: eYo.T3.Expr.shortliteral,
+      type: eYo.T3.Expr.doubleQuoted
+    }
+  }
+  if (!!XRegExp.exec(candidate, eYo.XRE.longbytesliteralSingle)) {
+    return {
+      raw: eYo.T3.Expr.longbytesliteral,
       expr: eYo.T3.Expr.longliteral,
       type: eYo.T3.Expr.singleQuoted
     }
   }
-  if (eYo.XRE.longstringliteralDouble.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.longbytesliteralDouble)) {
     return {
-      raw: eYo.T3.Expr.longstringliteral,
+      raw: eYo.T3.Expr.longbytesliteral,
       expr: eYo.T3.Expr.longliteral,
       type: eYo.T3.Expr.doubleQuoted
     }
   }
-  if (eYo.XRE.longbytesliteralSingle.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.longstringliteralSingle)) {
     return {
-      raw: eYo.T3.Expr.longbytesliteral,
+      raw: eYo.T3.Expr.longstringliteral,
       expr: eYo.T3.Expr.longliteral,
       type: eYo.T3.Expr.singleQuoted
     }
   }
-  if (eYo.XRE.longbytesliteralDouble.exec(candidate)) {
+  if (!!XRegExp.exec(candidate, eYo.XRE.longstringliteralDouble)) {
     return {
-      raw: eYo.T3.Expr.longbytesliteral,
+      raw: eYo.T3.Expr.longstringliteral,
       expr: eYo.T3.Expr.longliteral,
       type: eYo.T3.Expr.doubleQuoted
     }

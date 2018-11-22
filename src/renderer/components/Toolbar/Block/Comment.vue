@@ -18,7 +18,7 @@
     name: 'info-stmt-comment',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         comment_: undefined,
         hasComment_: undefined,
         commentVariant_: undefined
@@ -28,6 +28,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       mustComment: {
         type: Boolean,
@@ -40,7 +44,7 @@
       },
       commentVariant: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.commentVariant_
         },
         set (newValue) {
@@ -49,19 +53,19 @@
       },
       hasComment: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.hasComment_
         },
         set (newValue) {
           this.commentVariant = newValue || this.mustComment
             ? eYo.Key.COMMENT
             : eYo.Key.NONE
-          this.synchronize()
+          this.$$synchronize()
         }
       },
       comment: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.comment_
         },
         set (newValue) {
@@ -71,14 +75,17 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.comment_ = this.eyo.comment_p
         if (this.mustComment) {
           this.eyo.comment_variant_p = eYo.Key.COMMENT

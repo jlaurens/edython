@@ -342,9 +342,36 @@ eYo.App.didAddSelect = function (block) {
     store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
   }, 1)
 }
+eYo.App.selectedBlockUpdate = (eyo) => {
+  if (eyo) {
+    if (eyo.id === store.state.UI.selectedBlockId) {
+      setTimeout(() => {
+        store.commit('UI_SELECTED_BLOCK_UPDATE', Blockly.selected)
+      }, 1)
+    } else {
+      eyo.didChangeEnd = null
+    }
+  }
+}
+Object.defineProperties(eYo.App, {
+  selectedBlock: {
+    get () {
+      var id = store.state.UI.selectedBlockId
+      return id && eYo.App.workspace.blockDB_[id]
+    }
+  }
+})
 eYo.App.didRemoveSelect = function (block) {
-  setTimeout(function () {
+  setTimeout(() => {
+    var b = eYo.App.selectedBlock
+    if (b) {
+      b.eyo.didChangeEnd = null
+    }
     store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
+    b = eYo.App.selectedBlock
+    if (b) {
+      b.eyo.didChangeEnd = eYo.App.selectedBlockUpdate
+    }
   }, 1)
 }
 

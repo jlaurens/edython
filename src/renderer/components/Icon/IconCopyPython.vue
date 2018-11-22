@@ -21,19 +21,19 @@
 <script>
   // Bug: 'white' is hard coded but should be currentColor?
   export default {
-    computed: {
-      transform () {
-        return this.step ? `rotate(${this.step * 180},16,16)` : null
-      }
-    },
     props: {
       iconColor: {
         type: String,
         default: 'currentColor'
       },
-      step: {
+      theta: {
         type: Number,
         default: 1
+      }
+    },
+    computed: {
+      transform () {
+        return this.theta ? `rotate(${this.theta * 180},16,16)` : null
       }
     }
   }

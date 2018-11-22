@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="h-100">
+  <b-container id="app" fluid>
     <router-view></router-view>
-  </div>
+  </b-container>
 </template>
 
 <script>
@@ -28,10 +28,8 @@ export default {
     padding: 0;
     height: 100vh;
   }
-  #app {
-    background-color:rgba(221, 221, 221, 0.8);
-  }
   #app .container {
+    background-color:rgba(221, 221, 221, 0.8);
     max-width: 100%; /* override B */
   }
 </style>

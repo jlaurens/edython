@@ -1,10 +1,9 @@
 <template>
   <b-btn-group id="block-default" key-nav  aria-label="Block default" justify>
-    <value :eyo="eyo"></value>
-    <operator :eyo="eyo"></operator>
-    <variant :eyo="eyo" :slotholder="slotholder"></variant>
-    <comment :eyo="eyo"></comment>
-    <span>type:&nbsp;{{eyo.block_.type}}</span>
+    <value :eyo="eyo" :step="step"></value>
+    <operator :eyo="eyo" :step="step"></operator>
+    <variant :eyo="eyo" :step="step" :slotholder="slotholder"></variant>
+    <div class="info">type:&nbsp;{{eyo.block_.type}}</div>
   </b-btn-group>
 </template>
 
@@ -12,20 +11,22 @@
   import Operator from './Operator.vue'
   import Value from './Value.vue'
   import Variant from './Variant.vue'
-  import Comment from './Comment.vue'
 
   export default {
     name: 'info-default',
     components: {
       Operator,
       Value,
-      Variant,
-      Comment
+      Variant
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,

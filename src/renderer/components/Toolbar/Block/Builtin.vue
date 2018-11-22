@@ -10,7 +10,7 @@
     name: 'info-value',
     data () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         value_: undefined
       }
     },
@@ -18,12 +18,16 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       value: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.value_
         },
         set (newValue) {
@@ -35,14 +39,17 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.value_ = this.eyo.value_p
       }
     }

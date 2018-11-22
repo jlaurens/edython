@@ -11,7 +11,7 @@
     name: 'info-modifier',
     data () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         modifier_: undefined
       }
     },
@@ -19,12 +19,16 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       modifier: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.modifier_
         },
         set (newValue) {
@@ -61,18 +65,19 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        var eyo = this.eyo
-        if (this.step_ !== eyo.change.step) {
-          this.step_ = eyo.change.step
-          this.modifier_ = eyo.modifier_p || ''
+      $$synchronize () {
+        if (!this.eyo) {
+          return
         }
+        var eyo = this.eyo
+        this.saved_step = eyo.change.step
+        this.modifier_ = eyo.modifier_p || ''
       }
     }
   }

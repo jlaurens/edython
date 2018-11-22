@@ -5,7 +5,7 @@
       <b-form-input id="block-funcdef-name" v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
       <label class="eyo-btn-inert btn-outline-secondary eyo-btn-inert" :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span  class="eyo-code-reserved">:</span> </label>  
     </b-btn-group>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :step="step"></comment>
   </b-btn-group>
 </template>
 
@@ -16,7 +16,7 @@
     name: 'block-funcdef',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         name_: undefined
       }
     },
@@ -27,6 +27,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
@@ -35,7 +39,7 @@
       },
       name: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.name_
         },
         set (newValue) {
@@ -44,18 +48,19 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        var eyo = this.eyo
-        if (this.step_ !== eyo.change.step) {
-          this.step_ = eyo.change.step
-          this.name_ = eyo.name_p
+      $$synchronize () {
+        if (!this.eyo) {
+          return
         }
+        var eyo = this.eyo
+        this.saved_step = eyo.change.step
+        this.name_ = eyo.name_p
       }
     }
   }

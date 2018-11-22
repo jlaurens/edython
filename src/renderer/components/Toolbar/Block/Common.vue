@@ -12,6 +12,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       locked: {
         type: Boolean,
         default: false

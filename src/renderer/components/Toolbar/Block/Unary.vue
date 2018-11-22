@@ -1,5 +1,5 @@
 <template>
-  <operator id="block-unary" key-nav  aria-label="Block toolbar unary" :eyo="eyo" :slotholder="slotholder"></operator>
+  <operator id="block-unary" key-nav  aria-label="Block toolbar unary" :eyo="eyo" :step="step" :slotholder="slotholder"></operator>
 </template>
 
 <script>
@@ -18,6 +18,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,

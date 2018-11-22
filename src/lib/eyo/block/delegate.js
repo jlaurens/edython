@@ -86,6 +86,11 @@ Object.defineProperties(
         return this.block_.id
       }
     },
+    workspace: {
+      get () {
+        return this.block_.workspace
+      }
+    },
     type: {
       get () {
         return this.getBaseType()
@@ -300,6 +305,7 @@ eYo.Delegate.prototype.changeEnd = function () {
   if (this.change.level === 0) {
     this.incrementChangeCount()
     this.consolidate()
+    this.didChangeEnd && this.didChangeEnd(this)
   }
   return this.change.level
 }

@@ -10,7 +10,7 @@
       <b-form-input v-if="can_alias" v-model="alias" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style="{fontFamily: $$.eYo.Font.familyMono}"" :title="$t('message.except_alias')" v-tippy ></b-form-input>
       <!--span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span-->
     </b-btn-group>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :step="step"></comment>
   </b-btn-toolbar>
 </template>
 
@@ -21,7 +21,7 @@
     name: 'info-decorator',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         expression_: undefined,
         alias_: undefined,
         variant_: undefined
@@ -34,11 +34,15 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       variant () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.variant_
       },
       choices () {
@@ -49,7 +53,7 @@
       },
       expression: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.expression_
         },
         set (newValue) {
@@ -61,7 +65,7 @@
       },
       alias: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.alias_
         },
         set (newValue) {
@@ -70,10 +74,10 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
       content (choice) {
@@ -88,8 +92,11 @@
       choose (choice) {
         this.eyo.variant_p = choice
       },
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.variant_ = this.eyo.variant_p
         this.expression_ = this.eyo.expression_p
         this.alias_ = this.eyo.alias_p

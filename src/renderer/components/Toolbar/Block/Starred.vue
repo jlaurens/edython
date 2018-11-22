@@ -8,23 +8,22 @@
 </template>
 
 <script>
-  import Comment from './Comment.vue'
-
   export default {
     name: 'info-starred',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         chosen_: undefined
       }
-    },
-    components: {
-      Comment
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,
@@ -74,33 +73,34 @@
       },
       chosen: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.chosen_
         },
         set (newValue) {
           newValue.action(this.eyo)
-          this.synchronize()
+          this.$$synchronize()
         }
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
         var eyo = this.eyo
-        if (this.step_ !== eyo.change.step) {
-          this.step_ = eyo.change.step
-          if (eyo.modifier_p === '**') {
-            this.chosen_ = this.choices_by_key[eYo.Key.STAR_STAR_NAME]
-          } else if (eyo.variant_p === eYo.Key.STAR) {
-            this.chosen_ = this.choices_by_key[eYo.Key.STAR]
-          } else /* if (eyo.variant_p === eYo.Key.STAR) */ {
-            this.chosen_ = this.choices_by_key[eYo.Key.STAR_NAME]
-          }
+        this.saved_step = eyo.change.step
+        if (eyo.modifier_p === '**') {
+          this.chosen_ = this.choices_by_key[eYo.Key.STAR_STAR_NAME]
+        } else if (eyo.variant_p === eYo.Key.STAR) {
+          this.chosen_ = this.choices_by_key[eYo.Key.STAR]
+        } else /* if (eyo.variant_p === eYo.Key.STAR) */ {
+          this.chosen_ = this.choices_by_key[eYo.Key.STAR_NAME]
         }
       }
     }

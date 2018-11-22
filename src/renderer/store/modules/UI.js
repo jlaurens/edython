@@ -6,6 +6,7 @@ const state = {
   undoStage: 0,
   selectedBlockId: undefined, // the selected block id
   selectedBlockType: undefined, // the selected block type
+  selectedBlockStep: 0, // the selected block type
   blockClipboard: undefined,
   displayMode: undefined,
   panelsWidth: '100%',
@@ -29,6 +30,7 @@ const types = namespace('UI', {
     'SET_UNDO_STAGE',
     'STAGE_UNDO',
     'SET_SELECTED_BLOCK',
+    'SELECTED_BLOCK_UPDATE',
     'DID_COPY_BLOCK',
     'SET_DISPLAY_MODE',
     'SET_PANELS_WIDTH',
@@ -55,11 +57,23 @@ const mutations = {
     state.undoCount = eYo.App.workspace.undoStack_.length
   },
   [types.mutations.SET_SELECTED_BLOCK] (state, block) {
-    if ((block && block.isInFlyout) || block === state.selectedBlockId) {
-      return
+    if (block) {
+      if (block.isInFlyout || (block.id === state.selectedBlockId)) {
+        return
+      }
+      state.selectedBlockId = block.id
+      state.selectedBlockType = block.type
+      state.selectedBlockStep = block.eyo.change.step
+    } else {
+      if (!state.selectedBlockId) {
+        return
+      }
+      state.selectedBlockId = state.selectedBlockType = null
+      state.selectedBlockStep = 0
     }
-    state.selectedBlockId = block ? block.id : null
-    state.selectedBlockType = block ? block.type : null
+  },
+  [types.mutations.SELECTED_BLOCK_UPDATE] (state, block) {
+    state.selectedBlockStep = block ? block.eyo.change.step : 0
   },
   [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
     state.blockClipboard = ctxt.xml

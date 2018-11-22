@@ -20,6 +20,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       slotholder: {
         type: Function,
         default: function (item) {

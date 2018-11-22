@@ -1,9 +1,9 @@
 <template>
   <b-btn-group id="block-assignment" key-nav  aria-label="Block group assignment" justify>
     <b-btn-group>
-      <variant :eyo="eyo" :slotholder="slotholder"></variant>
+      <variant :eyo="eyo" :step="step" :slotholder="slotholder"></variant>
     </b-btn-group>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :step="step"></comment>
   </b-btn-group>
 </template>
 
@@ -25,6 +25,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,

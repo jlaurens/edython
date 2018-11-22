@@ -112,10 +112,4 @@
   padding-bottom: 0px;
   vertical-align: baseline;
 }
-.eyo-dropdown .btn::after {
-  position: absolute;
-  right: 0.2rem;
-  bottom: 0.25rem;
-  opacity: 0.666;
-}
 </style>

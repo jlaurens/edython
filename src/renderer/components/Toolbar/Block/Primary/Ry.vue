@@ -29,6 +29,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       can_ry: {
         type: Boolean,
         default: true

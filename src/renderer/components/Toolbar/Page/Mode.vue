@@ -22,16 +22,20 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
       choose (choice) {
         this.chosen = choice
       },
-      synchronize () {
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        console.log('WIP')
       }
     }
   }

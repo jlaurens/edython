@@ -1,6 +1,6 @@
 <template>
   <b-btn id="toolbar-btn-copy-python" v-on:click="doIt()" :title="title" v-tippy :disabled="!canDoIt">
-    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-python :step="step"/></icon-base>
+    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-python :theta="theta"/></icon-base>
   </b-btn>
 </template>
 
@@ -12,7 +12,7 @@
     name: 'copy-python',
     data: function () {
       return {
-        step: 1
+        theta: 1
       }
     },
     computed: {
@@ -47,8 +47,8 @@
           var p = new eYo.PythonExporter()
           var code = p.export(block, true)
           eYo.App.copyTextToClipboard(code)
-          this.step = 0
-          this.$$.TweenLite.to(this, 0.5, {step: 1})
+          this.theta = 0
+          this.$$.TweenLite.to(this, 0.5, {theta: 1})
         }
       }
     }

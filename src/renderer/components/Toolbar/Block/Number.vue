@@ -15,7 +15,7 @@
     name: 'info-number',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         suffix_: undefined,
         value_: undefined
       }
@@ -24,16 +24,20 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       type () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return eYo.T3.Profile.get(this.value_).expr
       },
       imag: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.type === eYo.T3.Expr.imagnumber
         },
         set (newValue) {
@@ -43,12 +47,12 @@
         }
       },
       can_imag () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.imag || eYo.T3.Profile.get(this.value_ + 'j').expr === eYo.T3.Expr.imagnumber
       },
       content: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.imag
             ? this.value_.slice(0, -1)
             : this.value_
@@ -59,17 +63,20 @@
       }
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.value_ = this.eyo.value_p
         this.suffix_ = this.imag ? this.value_.slice(-1) : 'j'
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     }
   }
 </script>

@@ -3,40 +3,39 @@
     <div class="input-group-text">
       <input type="checkbox" v-model="sep">
     </div>
-    <div class="eyo-label eyo-code">sep=…</div>
+    <div class="input-group-text eyo-label eyo-code">sep=…</div>
     <div class="input-group-text">
       <input type="checkbox" v-model="end">
     </div>
-    <div class="eyo-label eyo-code">end=…</div>
+    <div class="input-group-text eyo-label eyo-code">end=…</div>
     <div class="input-group-text">
       <input type="checkbox" v-model="flush">
     </div>
-    <div class="eyo-label eyo-code">flush=…</div>
+    <div class="input-group-text eyo-label eyo-code">flush=…</div>
     <div class="input-group-text">
       <input type="checkbox" v-model="file" :disabled="!can_file">
     </div>
-    <div class="eyo-label eyo-code">file=…</div>
+    <div class="input-group-text eyo-label eyo-code">file=…</div>
   </b-btn-group>
 </template>
 
 <script>
-  import Comment from './Comment.vue'
-
   export default {
     name: 'info-print',
     data () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         has_: undefined
       }
-    },
-    components: {
-      Comment
     },
     props: {
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
@@ -44,7 +43,7 @@
         return this.eyo.block_.getInput(eYo.Key.N_ARY).connection.targetBlock()
       },
       has () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.has_
       },
       data () {
@@ -111,40 +110,41 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        if (this.step_ !== this.eyo.change.step) {
-          this.step_ = this.eyo.change.step
-          var has = {}
-          var block = this.eyo.block_
-          if (block) {
-            var list = this.list
-            var c10r = list.eyo.consolidator
-            if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {
-              var io = c10r.getIO(list)
-              var input
-              while ((input = c10r.nextInputForType(io, [
-                eYo.T3.Expr.identifier_defined,
-                eYo.T3.Expr.keyword_item
-              ]))) {
-                var target = input.connection.targetBlock()
-                if (target) {
-                  if (target.eyo.data.name) {
-                    has[target.eyo.data.name.get()] = target
-                  } else {
-                    console.log(target)
-                  }
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.step
+        var has = {}
+        var block = this.eyo.block_
+        if (block) {
+          var list = this.list
+          var c10r = list.eyo.consolidator
+          if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {
+            var io = c10r.getIO(list)
+            var input
+            while ((input = c10r.nextInputForType(io, [
+              eYo.T3.Expr.identifier_defined,
+              eYo.T3.Expr.keyword_item
+            ]))) {
+              var target = input.connection.targetBlock()
+              if (target) {
+                if (target.eyo.data.name) {
+                  has[target.eyo.data.name.get()] = target
+                } else {
+                  console.log(target)
                 }
               }
             }
           }
-          this.has_ = has
         }
+        this.has_ = has
       },
       do (key) {
         eYo.Events.groupWrap(
@@ -156,17 +156,15 @@
               return
             }
             this.eyo.changeWrap(
-              function () {
-                var block = this.eyo.block_
-                B = eYo.DelegateSvg.newBlockReady(block.workspace, {
+              () => {
+                var B = eYo.DelegateSvg.newBlockReady(this.eyo.workspace, {
                   type: eYo.T3.Expr.keyword_item,
                   data: key
                 })
                 var list = this.list
                 var c8n = list.inputList[list.inputList.length - 1].connection
                 c8n.connect(B.outputConnection)
-              },
-              this
+              }
             )
           }
         )

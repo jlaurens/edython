@@ -7,7 +7,7 @@
       </b-dropdown>    
       <span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
     </b-btn-group>
-    <comment :eyo="eyo"></comment>
+    <comment :eyo="eyo" :step="step"></comment>
   </b-btn-toolbar>
 </template>
 
@@ -18,7 +18,7 @@
     name: 'info-decorator',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         property_: undefined,
         name_: undefined
       }
@@ -30,15 +30,19 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
       name () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.name_
       },
       property () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.property_
       },
       choices () {
@@ -49,10 +53,10 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
       content (choice) {
@@ -71,8 +75,11 @@
       choose (choice) {
         this.eyo.chooser_p = choice
       },
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.property_ = this.eyo.property_p
         this.name_ = this.eyo.name_p
       }

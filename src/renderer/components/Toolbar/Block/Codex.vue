@@ -20,7 +20,7 @@
     name: 'info-stmt-code',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         variant_: undefined,
         commentVariant_: undefined,
         expression_: undefined,
@@ -32,6 +32,10 @@
         type: Object,
         default: undefined
       },
+      step: {
+        type: Number,
+        default: 0
+      },
       slotholder: {
         type: Function,
         default: (item) => {
@@ -41,11 +45,11 @@
     },
     computed: {
       commentVariant () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.commentVariant_ === eYo.Key.NONE
       },
       noCheck () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.commentVariant_ === eYo.Key.NONE
       },
       canCode () {
@@ -64,12 +68,12 @@
         }
       },
       variant () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.variant_
       },
       code: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.expression_
         },
         set (newValue) {
@@ -80,19 +84,22 @@
         return this.slotholder('eyo-slot-holder')
       },
       withSlotholder () {
-        (this.step_ !== this.eyo.change.step) && this.synchronize()
+        (this.saved_step === this.step) || this.$$synchronize()
         return this.withSlotholder_
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.expression_ = this.eyo.expression_p
         this.withSlotholder_ = this.eyo.expression_s.targetBlock()
         this.commentVariant_ = this.eyo.commentVariant_p

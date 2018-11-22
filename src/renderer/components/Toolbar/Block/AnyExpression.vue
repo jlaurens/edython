@@ -1,6 +1,6 @@
 <template>
   <b-btn-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
-    <modifier v-if="modifiable" :eyo="eyo"></modifier>
+    <modifier v-if="modifiable" :eyo="eyo" :step="step"></modifier>
     <b-form-input v-model="expression" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
   </b-btn-toolbar>
 </template>
@@ -12,7 +12,7 @@
     name: 'info-any-expression',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         expression_: undefined
       }
     },
@@ -23,6 +23,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       modifiable: {
         type: Boolean,
@@ -35,7 +39,7 @@
       },
       expression: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.expression_
         },
         set (newValue) {
@@ -44,14 +48,17 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.expression = this.eyo.expression_p
       }
     }

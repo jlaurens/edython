@@ -14,7 +14,7 @@
     name: 'info-binary-operator',
     data: function () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         operator_: '?',
         operators: {}
       }
@@ -23,6 +23,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       },
       slotholder: {
         type: Function,
@@ -34,7 +38,7 @@
     computed: {
       operator: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.operator_
         },
         set (newValue) {
@@ -58,14 +62,17 @@
     created () {
       this.operators.num = this.eyo.data.numberOperator.getAll()
       this.operators.bin = this.eyo.data.bitwiseOperator.getAll()
-      this.synchronize()
+      this.$$synchronize()
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.operator_ = this.eyo.operator_p
       }
     }

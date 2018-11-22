@@ -7,7 +7,7 @@
         <icon-base :width="32" :height="32" icon-name="load"><icon-save-load variant="load" /></icon-base>
     </b-btn>
     <b-btn id="toolbar-save" @click="doSave" title="Sauvegarder" v-tippy>
-      <icon-base :width="32" :height="32" icon-name="save"><icon-save-load variant="save" :step="step"/></icon-base>
+      <icon-base :width="32" :height="32" icon-name="save"><icon-save-load variant="save" :theta="theta"/></icon-base>
     </b-btn>
   </b-btn-group>
 </template>
@@ -21,7 +21,7 @@
     name: 'page-toolbar-new-load-save',
     data: function () {
       return {
-        step: 1
+        theta: 1
       }
     },
     components: {
@@ -31,8 +31,8 @@
     },
     created: function () {
       this.$$.bus.$on('saveDidSucceed', () => {
-        this.step = 0
-        this.$$.TweenLite.to(this, 0.5, {step: 1})
+        this.theta = 0
+        this.$$.TweenLite.to(this, 0.5, {theta: 1})
       })
     },
     methods: {

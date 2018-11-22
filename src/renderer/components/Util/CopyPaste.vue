@@ -1,6 +1,6 @@
 <template>
   <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="title" v-tippy :variant="variant">
-    <icon-base :width="width" :height="height" :icon-name="name"><icon-copy-paste :copy="copy" :duplicate="duplicate" :deep="deep" :step="step"/></icon-base>
+    <icon-base :width="width" :height="height" :icon-name="name"><icon-copy-paste :copy="copy" :duplicate="duplicate" :deep="deep" :theta="theta"/></icon-base>
   </b-btn>
 </template>
 
@@ -12,7 +12,7 @@
     name: 'copy-paste',
     data: function () {
       return {
-        step: 1
+        theta: 1
       }
     },
     props: {
@@ -90,8 +90,8 @@
       doIt () {
         if (this.copy) {
           if (eYo.App.doCopy(!this.deep)) {
-            this.step = 0
-            this.$$.TweenLite.to(this, 0.5, {step: 1})
+            this.theta = 0
+            this.$$.TweenLite.to(this, 0.5, {theta: 1})
           }
         } else if (this.duplicate) {
           Blockly.duplicate_(Blockly.selected)

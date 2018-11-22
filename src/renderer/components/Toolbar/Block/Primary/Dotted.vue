@@ -14,7 +14,7 @@
   export default {
     data () {
       return {
-        step_: undefined,
+        saved_step: undefined,
         selectedItem_: undefined,
         holder_: undefined,
         dotted_: undefined
@@ -25,6 +25,10 @@
       eyo: {
         type: Object,
         default: undefined
+      },
+      step: {
+        type: Number,
+        default: 0
       }
     },
     computed: {
@@ -33,7 +37,7 @@
       },
       holder: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.holder_
         },
         set (newValue) {
@@ -42,7 +46,7 @@
       },
       dotted: {
         get () {
-          (this.step_ !== this.eyo.change.step) && this.synchronize()
+          (this.saved_step === this.step) || this.$$synchronize()
           return this.dotted_
         },
         set (newValue) {
@@ -128,7 +132,7 @@
       }
     },
     created () {
-      this.synchronize()
+      this.$$synchronize()
       var dotted = this.dotted
       var candidate = this.dottedItems[dotted]
       if (dotted === 1) {
@@ -142,11 +146,14 @@
       this.selectedItem_ = candidate || this.dottedItems[0]
     },
     updated () {
-      this.synchronize()
+      this.$$synchronize()
     },
     methods: {
-      synchronize () {
-        this.step_ = this.eyo.change.step
+      $$synchronize () {
+        if (!this.eyo) {
+          return
+        }
+        this.saved_step = this.eyo.change.step
         this.holder_ = this.eyo.holder_p
         this.dotted_ = this.eyo.dotted_p
       }
