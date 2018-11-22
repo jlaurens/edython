@@ -24,15 +24,15 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       choose (choice) {
         this.chosen = choice
       },
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
         console.log('WIP')

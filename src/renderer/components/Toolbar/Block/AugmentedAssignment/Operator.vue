@@ -64,15 +64,15 @@
       this.operators.bin = this.eyo.data.bitwiseOperator.getAll()
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
-        this.saved_step = this.eyo.change.step
+        this.saved_step = this.step
         this.operator_ = this.eyo.operator_p
       }
     }

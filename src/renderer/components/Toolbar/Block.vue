@@ -279,9 +279,12 @@
   #block-toolbar .btn-group .btn-group:not(:last-child) {
     padding-right: 0;
   }
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert:not(:first-child),
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert,
-  #block-toolbar .btn-group.eyo-block-edit .btn-group:not(:first-child) .btn {
+  .eyo-block-edit-content {
+    border-radius: inherit;
+  }
+  .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert:not(:first-child),
+  .btn-group.eyo-block-edit .btn-group:not(:first-child) .eyo-btn-inert,
+  .btn-group.eyo-block-edit .btn-group:not(:first-child) .btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }

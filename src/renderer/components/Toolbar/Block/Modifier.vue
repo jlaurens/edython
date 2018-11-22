@@ -67,12 +67,12 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
         var eyo = this.eyo

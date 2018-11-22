@@ -41,15 +41,15 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
-        this.saved_step = this.eyo.change.step
+        this.saved_step = this.step
         this.value_ = this.eyo.value_p
       }
     }

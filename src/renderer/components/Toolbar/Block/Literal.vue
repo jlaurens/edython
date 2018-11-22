@@ -134,15 +134,15 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
-        this.saved_step = this.eyo.change.step
+        this.saved_step = this.step
         this.prefix_ = this.eyo.prefix_p.toLowerCase()
         this.content_ = this.eyo.content_p
       },

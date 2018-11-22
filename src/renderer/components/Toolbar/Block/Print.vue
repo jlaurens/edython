@@ -25,7 +25,7 @@
     data () {
       return {
         saved_step: undefined,
-        has_: undefined
+        target_by_name_: undefined
       }
     },
     props: {
@@ -40,18 +40,18 @@
     },
     computed: {
       list () {
-        return this.eyo.block_.getInput(eYo.Key.N_ARY).connection.targetBlock()
+        return this.eyo.n_ary_s.connection.targetBlock()
       },
-      has () {
+      target_by_name () {
         (this.saved_step === this.step) || this.$$synchronize()
-        return this.has_
+        return this.target_by_name_
       },
       data () {
         return this.eyo.data
       },
       sep: {
         get () {
-          return !!this.has['sep']
+          return !!this.target_by_name['sep']
         },
         set (newValue) {
           this.do('sep')
@@ -59,7 +59,7 @@
       },
       end: {
         get () {
-          return !!this.has['end']
+          return !!this.target_by_name['end']
         },
         set (newValue) {
           this.do('end')
@@ -67,7 +67,7 @@
       },
       file: {
         get () {
-          return !!this.has['file']
+          return !!this.target_by_name['file']
         },
         set (newValue) {
           this.do('file')
@@ -75,7 +75,7 @@
       },
       flush: {
         get () {
-          return !!this.has['flush']
+          return !!this.target_by_name['flush']
         },
         set (newValue) {
           this.do('flush')
@@ -112,16 +112,21 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
+    },
+    watch: {
+      step (newValue, oldValue) {
+        console.error(newValue, oldValue)
+      }
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
         this.saved_step = this.step
-        var has = {}
+        var target_by_name = {}
         var block = this.eyo.block_
         if (block) {
           var list = this.list
@@ -135,8 +140,9 @@
             ]))) {
               var target = input.connection.targetBlock()
               if (target) {
-                if (target.eyo.data.name) {
-                  has[target.eyo.data.name.get()] = target
+                if (target.eyo.name_d) {
+                  console.warn('target_by_name:', target.eyo.name_p)
+                  target_by_name[target.eyo.name_p] = target
                 } else {
                   console.log(target)
                 }
@@ -144,12 +150,12 @@
             }
           }
         }
-        this.has_ = has
+        this.target_by_name_ = target_by_name
       },
       do (key) {
         eYo.Events.groupWrap(
           () => {
-            var B = this.has[key]
+            var B = this.target_by_name[key]
             if (B) {
               B.unplug()
               B.dispose()

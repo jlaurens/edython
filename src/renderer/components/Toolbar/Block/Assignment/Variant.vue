@@ -74,10 +74,18 @@
       }
     },
     created () {
-      this.variant_ = this.eyo.variant_p
-    },
-    updated () {
       this.$$synchronize()
+    },
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
+    },
+    methods: {
+      $$synchronize () {
+        if (!this.eyo || (this.saved_step === this.step)) {
+          return
+        }
+        this.variant_ = this.eyo.variant_p
+      }
     }
   }
 </script>

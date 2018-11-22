@@ -970,7 +970,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
     }
     child.eyo.changeWrap(
       () => { // `this` is catched
-        parent.eyo.changeWrap(
+        parent.eyo.wrapper.changeWrap( // the parent may be a wrapped block
           () => { // `this` is catched
             try {
               parentC8n.eyo.willDisconnect()

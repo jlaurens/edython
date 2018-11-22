@@ -76,8 +76,8 @@
     created () {
       this.$$synchronize()
     },
-    updated () {
-      this.$$synchronize()
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
     },
     methods: {
       content (choice) {
@@ -93,10 +93,10 @@
         this.eyo.variant_p = choice
       },
       $$synchronize () {
-        if (!this.eyo) {
+        if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
-        this.saved_step = this.eyo.change.step
+        this.saved_step = this.step
         this.variant_ = this.eyo.variant_p
         this.expression_ = this.eyo.expression_p
         this.alias_ = this.eyo.alias_p

@@ -338,16 +338,16 @@ eYo.App.didPushUndo = function () {
 //   // store.commit('UI_SET_SELECTED_BLOCK', block) once broke everything when uncommented
 // }
 eYo.App.didAddSelect = function (block) {
-  setTimeout(function () {
+  Vue.nextTick(() => {
     store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
-  }, 1)
+  })
 }
 eYo.App.selectedBlockUpdate = (eyo) => {
   if (eyo) {
     if (eyo.id === store.state.UI.selectedBlockId) {
-      setTimeout(() => {
-        store.commit('UI_SELECTED_BLOCK_UPDATE', Blockly.selected)
-      }, 1)
+      Vue.nextTick(() => {
+        store.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
+      })
     } else {
       eyo.didChangeEnd = null
     }
@@ -362,7 +362,7 @@ Object.defineProperties(eYo.App, {
   }
 })
 eYo.App.didRemoveSelect = function (block) {
-  setTimeout(() => {
+  Vue.nextTick(() => {
     var b = eYo.App.selectedBlock
     if (b) {
       b.eyo.didChangeEnd = null
@@ -372,7 +372,7 @@ eYo.App.didRemoveSelect = function (block) {
     if (b) {
       b.eyo.didChangeEnd = eYo.App.selectedBlockUpdate
     }
-  }, 1)
+  })
 }
 
 eYo.App.didCopyBlock = function (block, xml) {

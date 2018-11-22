@@ -101,6 +101,26 @@ Object.defineProperties(
         return this.constructor.eyo.model
       }
     },
+    parent: {
+      get () {
+        var parent = this.block_.getParent()
+        return parent && parent.eyo
+      }
+    },
+    wrapper: {
+      get () {
+        var ans = this
+        while (ans.wrapped_) {
+          var parent = ans.parent
+          if (parent) {
+            ans = parent
+          } else {
+            break
+          }
+        }
+        return ans
+      }
+    },
     // next are not relevant for expression blocks
     // this may illustrates a bad design choice.
     // To be enhanced.
@@ -1759,6 +1779,8 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
     this.incrementChangeCount()
   } else if (connection.eyo.isSuite) {
     this.suiteCount = 0
+    this.incrementChangeCount()
+  } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()
   }
 }
