@@ -1,7 +1,7 @@
 <template>
   <b-btn-group id="eyo-block-primary-name">
-    <b-form-input v-model="myName" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
-    <b-dropdown :id="'dd-' + id" class="eyo-dropdown" v-if="module" variant="outline-secondary">
+    <b-input v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
+    <b-dropdown class="eyo-code eyo-text-dropdown eyo-form-input-text" v-if="module" variant="outline-secondary">
       <b-dropdown-item-button v-for="method in methods" v-on:click="myName = method" :key="method" class="eyo-code">{{method}}</b-dropdown-item-button>
     </b-dropdown>
   </b-btn-group>
@@ -12,8 +12,10 @@
     name: 'info-primary-name',
     data () {
       return {
-        myName_: undefined,
-        methods_: undefined
+        saved_step: 0,
+        name_: undefined,
+        variant_: undefined,
+        module_: undefined
       }
     },
     props: {
@@ -24,24 +26,13 @@
       step: {
         type: Number,
         default: 0
-      },
-      name: {
-        type: String,
-        default: undefined
-      },
-      variant: {
-        type: String,
-        default: undefined
-      },
-      module: {
-        type: Object,
-        defaut: undefined
       }
     },
     computed: {
-      myName: {
+      name: {
         get () {
-          return this.name
+          (this.step_ === this.step) || this.$$synchronize()
+          return this.name_
         },
         set (newValue) {
           this.eyo.name_p = newValue
@@ -56,6 +47,22 @@
           })
           return ra
         }
+      }
+    },
+    created () {
+      this.$$synchronize()
+    },
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
+    },
+    methods: {
+      $$synchronize () {
+        if (!this.eyo || (this.saved_step === this.step)) {
+          return
+        }
+        this.name_ = this.eyo.name_p
+        this.variant_ = this.eyo.variant_p
+        this.module_ = this.eyo.module_p
       }
     }
   }

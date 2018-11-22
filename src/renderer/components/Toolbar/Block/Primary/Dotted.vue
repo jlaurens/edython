@@ -1,7 +1,7 @@
 <template>
   <b-btn-group id="eyo-block-primary-holder">
-    <b-form-input v-model="holder" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
-    <b-dropdown id="block-primary-dotted" class="eyo-dropdown" variant="outline-secondary">
+    <b-form-input v-model="holder" type="text" class="eyo-code eyo-text-dropdown eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
+    <b-dropdown id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved eyo-text-dropdown" variant="outline-secondary">
       <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
       <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
@@ -29,6 +29,12 @@
       step: {
         type: Number,
         default: 0
+      },
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     },
     computed: {
@@ -103,7 +109,7 @@
           d[module] = {
             key: module,
             content: this.holder === module
-              ? '<b>' + module + '.</b>'
+              ? `<b>${module}.</b>`
               : module + '.',
             title: '.',
             action (item) {
@@ -161,14 +167,5 @@
   }
 </script>
 <style>
-    .Xbtn .eyo-block-primary-dotted {
-    padding-right: 0.75rem;
-  }
-  .Xdropdown-item.eyo-block-primary-dotted {
-    padding-right: 0.5rem;
-  }
-  .Xeyo-block-primary-dotted2 {
-    display: inline-block
-  }
 </style>
   

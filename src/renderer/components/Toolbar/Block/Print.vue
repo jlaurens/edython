@@ -115,11 +115,6 @@
     beforeUpdate () {
       (this.saved_step === this.step) || this.$$synchronize()
     },
-    watch: {
-      step (newValue, oldValue) {
-        console.error(newValue, oldValue)
-      }
-    },
     methods: {
       $$synchronize () {
         if (!this.eyo || (this.saved_step === this.step)) {
@@ -141,7 +136,6 @@
               var target = input.connection.targetBlock()
               if (target) {
                 if (target.eyo.name_d) {
-                  console.warn('target_by_name:', target.eyo.name_p)
                   target_by_name[target.eyo.name_p] = target
                 } else {
                   console.log(target)

@@ -1,7 +1,7 @@
 <template>
   <b-btn-group id="block-primary" key-nav  aria-label="Block group primary" class="eyo-block-edit" justify>
-    <dotted :eyo="eyo" :step="step" :slotholder="slotholder" :holder="holder" :dotted="dotted"></dotted>
-    <name :eyo="eyo" :step="step" :variant="variant" :name="name" :module="module"></name>
+    <dotted :eyo="eyo" :step="step" :slotholder="slotholder"></dotted>
+    <name :eyo="eyo" :step="step"></name>
     <variant :eyo="eyo" :step="step" :can_call="can_call" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
     <ry :eyo="eyo" :step="step" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR && can_ry"></ry>
   </b-btn-group>

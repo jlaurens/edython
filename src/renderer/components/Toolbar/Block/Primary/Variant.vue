@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="eyo-block-primary-variant">
-    <b-dropdown variant="outline-secondary" class="eyo-dropdown">
+    <b-dropdown variant="outline-secondary" class="eyo-code eyo-text-dropdown eyo-form-input-text">
       <template slot="button-content"><span class="eyo-code" v-html="selected.content"></span></template>
       <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>

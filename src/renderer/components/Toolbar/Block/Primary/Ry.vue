@@ -1,13 +1,13 @@
 <template>
   <b-btn-group id="block-primary-ry" key-nav  aria-label="Block toolbar primary">
     <b-form-input id="eyo-block-primary-mandatory" v-model="myMandatory" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text-ry" :style='{fontFamily: $$.eYo.Font.familyMono}' :disabled="!can_ry"></b-form-input>
-    <b-dropdown id="block-unary-operator" class="eyo-dropdown eyo-dropdown-ry" variant="outline-secondary" :disabled="!can_ry">
+    <b-dropdown id="block-unary-operator" class="eyo-code eyo-text-dropdown eyo-form-input-text" variant="outline-secondary" :disabled="!can_ry">
       <b-dropdown-item-button v-for="item in items" v-on:click="myMandatory = item" :key="item" class="eyo-code eyo-content" v-html="item"></b-dropdown-item-button>
       </b-dropdown-item-button>
     </b-dropdown>
     <span class="eyo-btn-inert btn-outline-secondary eyo-form-input-text">{{'≤ # args ≤'}}</span>
     <b-form-input id="eyo-block-primary-ary" v-model="myAry" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text-ry" :style='{fontFamily: $$.eYo.Font.familyMono}' :disabled="!can_ry"></b-form-input>
-    <b-dropdown id="block-unary-operator" class="eyo-dropdown eyo-dropdown-ry" variant="outline-secondary" :disabled="!can_ry">
+    <b-dropdown id="block-unary-operator" class="eyo-code eyo-text-dropdown eyo-form-input-text" variant="outline-secondary" :disabled="!can_ry">
       <b-dropdown-item-button v-for="item in items" v-on:click="myAry = item" :key="item" class="eyo-code eyo-content" v-html="item"></b-dropdown-item-button>
       </b-dropdown-item-button>
     </b-dropdown>
