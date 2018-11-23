@@ -1,11 +1,11 @@
 <template>
-  <b-btn-group id="eyo-block-primary-holder">
-    <b-form-input v-model="holder" type="text" class="eyo-code eyo-text-dropdown eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-form-input>
-    <b-dropdown id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved eyo-text-dropdown" variant="outline-secondary">
-      <template slot="button-content"><div class="eyo-block-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
-      <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+  <b-btn-group id="b3k-primary-holder" v-if="show_dotted">
+    <b-input v-model="holder" type="text" class="eyo-code eyo-form-input-text item text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-input>
+    <b-dropdown id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved item text" variant="outline-secondary">
+      <template slot="button-content"><div class="b3k-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
+      <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="b3k-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="eyo-block-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
+      <b-dropdown-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="b3k-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
     </b-dropdown>
   </b-btn-group>
 </template>
@@ -38,6 +38,11 @@
       }
     },
     computed: {
+      show_dotted: {
+        get () {
+          return this.$store.state.UI.blockEditShowDotted
+        }
+      },
       canHolder () {
         return this.dotted === 1
       },

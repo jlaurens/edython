@@ -163,6 +163,7 @@ eYo.Key = {
   ALIASED: 'as_alias',
   ANNOTATED: 'annotated',
   DEFINED: 'defined',
+  ANNOTATED_DEFINED: 'annotated_defined',
   
   EXPRESSION: 'expression',
   

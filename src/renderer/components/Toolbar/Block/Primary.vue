@@ -1,9 +1,9 @@
 <template>
-  <b-btn-group id="block-primary" key-nav  aria-label="Block group primary" class="eyo-block-edit" justify>
+  <b-btn-group id="block-primary" key-nav  aria-label="Block group primary">
     <dotted :eyo="eyo" :step="step" :slotholder="slotholder"></dotted>
     <name :eyo="eyo" :step="step"></name>
-    <variant :eyo="eyo" :step="step" :can_call="can_call" :can_andef="can_andef" :slotholder="slotholder" :variant="variant" :annotation="annotation" :definition="definition" :alias="alias"></variant>
-    <ry :eyo="eyo" :step="step" :ary="ary" :mandatory="mandatory" v-if="variant === $$.eYo.Key.CALL_EXPR && can_ry"></ry>
+    <variant :eyo="eyo" :step="step" :slotholder="slotholder"></variant>
+    <ry :eyo="eyo" :step="step"></ry>
   </b-btn-group>
 </template>
 

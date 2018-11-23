@@ -1,46 +1,94 @@
 <template>
-  <b-btn-group id="block-assignment" key-nav  aria-label="Block group assignment" justify>
-    <b-btn-group>
-      <variant :eyo="eyo" :step="step" :slotholder="slotholder"></variant>
-    </b-btn-group>
-    <comment :eyo="eyo" :step="step"></comment>
-  </b-btn-group>
-</template>
-
-<script>
-  import Variant from './Assignment/Variant.vue'
-  import Comment from './Comment.vue'
-
-  export default {
-    name: 'info-assignment',
-    data: function () {
-      return {
-      }
-    },
-    components: {
-      Variant,
-      Comment
-    },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
+    <b-dropdown id="block-assignment" class="eyo-dropdown item text eyo-with-slot-holder" variant="outline-secondary">
+      <template slot="button-content"><span class="eyo-code eyo-content" v-html="selected_item.title"></span></template>
+      <b-dropdown-item-button v-for="item in items" v-on:click="variant = item.key" :key="item.key" class="eyo-code" v-html="item.title"></b-dropdown-item-button>
+      </b-dropdown-item-button>
+    </b-dropdown>
+  </template>
+  
+  <script>
+    export default {
+      name: 'block-assignment',
+      data () {
+        return {
+          saved_step: 0,
+          variant_: undefined
+        }
       },
-      step: {
-        type: Number,
-        default: 0
+      props: {
+        eyo: {
+          type: Object,
+          default: undefined
+        },
+        step: {
+          type: Number,
+          default: 0
+        },
+        slotholder: {
+          type: Function,
+          default: function (item) {
+            return item
+          }
+        },
+        formatter: {
+          type: Function,
+          default: function (item) {
+            console.log('default ', item)
+            return item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
+          }
+        }
       },
-      slotholder: {
-        type: Function,
-        default: function (item) {
-          return item
+      computed: {
+        variant: {
+          get () {
+            (this.saved_step === this.step) || this.$$synchronize()
+            return this.variant_
+          },
+          set (newValue) {
+            this.eyo.variant_p = newValue
+          }
+        },
+        items () {
+          return [
+            this.items_by_key[eYo.Key.NAME],
+            this.items_by_key[eYo.Key.TARGET]
+          ]
+        },
+        slot () {
+          return this.slotholder('eyo-slot-holder')
+        },
+        items_by_key () {
+          return {
+            [eYo.Key.NAME]: {
+              key: eYo.Key.NAME,
+              title: `<span>nom =</span>${this.slot}`
+            },
+            [eYo.Key.TARGET]: {
+              key: eYo.Key.TARGET,
+              title: `${this.slot}<span>,… =</span>${this.slot}<span>,…</span>`
+            }
+          }
+        },
+        selected_item () {
+          return this.items_by_key[this.variant]
+        }
+      },
+      created () {
+        this.$$synchronize()
+      },
+      beforeUpdate () {
+        (this.saved_step === this.step) || this.$$synchronize()
+      },
+      methods: {
+        $$synchronize () {
+          if (!this.eyo || (this.saved_step === this.step)) {
+            return
+          }
+          this.variant_ = this.eyo.variant_p
         }
       }
     }
-  }
-</script>
-<style>
-  #block-assignment {
-    padding: 0 0.25rem;
-  }
-</style>
+  </script>
+  <style>
+  </style>
+  

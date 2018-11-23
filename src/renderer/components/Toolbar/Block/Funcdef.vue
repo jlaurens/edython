@@ -1,9 +1,9 @@
 <template>
   <b-btn-group id="block-funcdef" key-nav  aria-label="Block decorator" justify>
     <b-btn-group>
-      <label for="block-funcdef-name"" class="eyo-btn-inert btn-outline-secondary eyo-btn-inert"><span :style="{fontFamily: $$.eYo.Font.familyMono}" class="eyo-code-reserved">def</span></label>
-      <b-form-input id="block-funcdef-name" v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-      <label class="eyo-btn-inert btn-outline-secondary eyo-btn-inert" :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span  class="eyo-code-reserved">:</span> </label>  
+      <label for="block-funcdef-name"" class="btn-outline-secondary"><span :style="{fontFamily: $$.eYo.Font.familyMono}" class="eyo-code-reserved">def</span></label>
+      <b-form-input id="block-funcdef-name" v-model="name" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+      <label class="btn-outline-secondary" :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span  class="eyo-code-reserved">:</span> </label>  
     </b-btn-group>
     <comment :eyo="eyo" :step="step"></comment>
   </b-btn-group>

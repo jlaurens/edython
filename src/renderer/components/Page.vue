@@ -29,4 +29,20 @@
     left: 0px;
     top: 0px;
   }
+  .eyo-dropdown .btn {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    vertical-align: baseline;
+  }
+  /* main toolbar ? */
+  .dropdown>.btn::after {
+    position: absolute;
+    right: 0.2rem;
+    bottom: 0.25rem;
+    opacity: 0.666;
+  }
 </style>

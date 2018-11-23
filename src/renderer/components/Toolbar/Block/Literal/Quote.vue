@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown variant="outline-secondary" :text="chosen" class="eyo-code-reserved eyo-text-dropdown eyo-block-literal-quote">
+  <b-dropdown variant="outline-secondary" :text="chosen" class="eyo-code-reserved b3k-literal-quote">
     <template slot="button-content"><span class="eyo-code-reserved">{{chosen}}</span></template>
     <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice" :title="other_title(choice)" v-tippy v-html="as_html(choice)"></b-dropdown-item-button>
   </b-dropdown>
@@ -78,7 +78,7 @@
   }
 </script>
 <style>
-  .eyo-block-literal-quote .dropdown-menu {
+  .b3k-literal-quote .dropdown-menu {
     min-width: 4rem;
     width: 4rem;
   }

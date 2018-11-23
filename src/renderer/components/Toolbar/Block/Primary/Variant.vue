@@ -1,10 +1,10 @@
 <template>
-  <b-btn-group id="eyo-block-primary-variant">
-    <b-dropdown variant="outline-secondary" class="eyo-code eyo-text-dropdown eyo-form-input-text">
+  <b-btn-group id="b3k-primary-variant">
+    <b-dropdown variant="outline-secondary" class="eyo-code item text eyo-with-slot-holder">
       <template slot="button-content"><span class="eyo-code" v-html="selected.content"></span></template>
       <b-dropdown-item-button v-for="variant in variants" v-on:click="selected = variant" :key="variant.key" class="eyo-code" v-html="variant.content"></b-dropdown-item-button>
     </b-dropdown>
-    <b-form-input v-model="blockAlias" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-form-input>
+    <b-input v-model="alias" type="text" class="btn-outline-secondary eyo-form-input-text item" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="selected.key === 'ALIASED'"></b-input>
   </b-btn-group>
 </template>
 
@@ -13,6 +13,13 @@
     name: 'info-primary-variant',
     data () {
       return {
+        saved_step: 0,
+        can_call_: true,
+        can_andef_: true,
+        variant_: eYo.Key.NONE,
+        annotation_: eYo.Key.NONE,
+        definition_: eYo.Key.NONE,
+        alias_: eYo.Key.NONE
       }
     },
     props: {
@@ -29,54 +36,70 @@
         default: function (item) {
           return item
         }
-      },
-      can_call: {
-        type: Boolean,
-        default: true
-      },
-      can_andef: {
-        type: Boolean,
-        default: true
-      },
-      variant: {
-        type: String,
-        default: eYo.Key.NONE
-      },
-      annotation: {
-        type: String,
-        default: eYo.Key.NONE
-      },
-      definition: {
-        type: String,
-        default: eYo.Key.NONE
-      },
-      alias: {
-        type: String,
-        default: eYo.Key.NONE
       }
     },
     computed: {
+      can_call: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.can_call_
+        }
+      },
+      can_andef: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.can_andef_
+        }
+      },
+      variant: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.variant_
+        }
+      },
+      annotation: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.annotation_
+        }
+      },
+      definition: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.definition_
+        }
+      },
+      alias: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.alias_
+        },
+        set (newValue) {
+          this.eyo.alias_p = newValue
+        }
+      },
       selected: {
         get () {
+          (this.saved_step === this.step) || this.$$synchronize()
           var variant = this.variant
           if (variant === eYo.Key.NONE) {
             if (this.annotation !== eYo.Key.NONE) {
               if (this.definition !== eYo.Key.NONE) {
-                return this.items.ANNOTATED_DEFINED
+                return this.items[eYo.Key.ANNOTATED_DEFINED]
               } else {
-                return this.items.ANNOTATED
+                return this.items[eYo.Key.ANNOTATED]
               }
             } else if (this.definition !== eYo.Key.NONE) {
-              return this.items.DEFINED
+              return this.items[eYo.Key.DEFINED]
             } else {
-              return this.items.NONE
+              return this.items[eYo.Key.NONE]
             }
           } else if (variant === eYo.Key.CALL_EXPR) {
-            return this.items.CALL_EXPR
+            return this.items[eYo.Key.CALL_EXPR]
           } else if (variant === eYo.Key.SLICING) {
-            return this.items.SLICING
+            return this.items[eYo.Key.SLICING]
           } else if (variant === eYo.Key.ALIASED) {
-            return this.items.ALIASED
+            return this.items[eYo.Key.ALIASED]
           } else {
             console.warn('Logically unreachable code')
           }
@@ -87,60 +110,59 @@
               newValue.action(this)
             }
           )
-          this.$emit('synchronize')
         }
       },
       items () {
         return {
-          NONE: {
+          [eYo.Key.NONE]: {
             content: '&nbsp;',
-            key: 'NONE',
+            key: eYo.Key.NONE,
             action (eyo) {
               eyo.annotation_p = eYo.Key.NONE
               eyo.definition_p = eYo.Key.NONE
               eyo.variant_p = eYo.Key.NONE
             }
           },
-          CALL_EXPR: {
+          [eYo.Key.CALL_EXPR]: {
             content: `<span>(</span>${this.slotholder('eyo-slot-holder')}<span>)</span>`,
-            key: 'CALL_EXPR',
+            key: eYo.Key.CALL_EXPR,
             action (eyo) {
               eyo.variant_p = eYo.Key.CALL_EXPR
             }
           },
-          SLICING: {
+          [eYo.Key.SLICING]: {
             content: `<span>[</span>${this.slotholder('eyo-slot-holder')}<span>]</span>`,
-            key: 'SLICING',
+            key: eYo.Key.SLICING,
             action (eyo) {
               eyo.variant_p = eYo.Key.SLICING
             }
           },
-          ALIASED: {
+          [eYo.Key.ALIASED]: {
             content: '<span class="eyo-code eyo-code-reserved">as</span>',
-            key: 'ALIASED',
+            key: eYo.Key.ALIASED,
             action (eyo) {
               eyo.variant_p = eYo.Key.ALIASED
             }
           },
-          ANNOTATED: {
+          [eYo.Key.ANNOTATED]: {
             content: `<span>:</span>${this.slotholder('eyo-slot-holder')}`,
-            key: 'ANNOTATED',
+            key: eYo.Key.ANNOTATED,
             action (eyo) {
               eyo.annotation_p = eYo.Key.ANNOTATED
               eyo.definition_p = eYo.Key.NONE
             }
           },
-          DEFINED: {
+          [eYo.Key.DEFINED]: {
             content: `<span>=</span>${this.slotholder('eyo-slot-holder')}`,
-            key: 'DEFINED',
+            key: eYo.Key.DEFINED,
             action (eyo) {
               eyo.annotation_p = eYo.Key.NONE
               eyo.definition_p = eYo.Key.DEFINED
             }
           },
-          ANNOTATED_DEFINED: {
+          [eYo.Key.ANNOTATED_DEFINED]: {
             content: `<span>:</span>${this.slotholder('eyo-slot-holder')}<span>=</span>${this.slotholder('eyo-slot-holder')}`,
-            key: 'ANNOTATED_DEFINED',
+            key: eYo.Key.ANNOTATED_DEFINED,
             action (eyo) {
               eyo.annotation_p = eYo.Key.ANNOTATED
               eyo.definition_p = eYo.Key.DEFINED
@@ -152,43 +174,56 @@
         return this.can_call
           ? this.can_andef
             ? [
-              this.items.NONE,
-              this.items.CALL_EXPR,
-              this.items.SLICING,
-              this.items.ALIASED,
-              this.items.ANNOTATED,
-              this.items.DEFINED,
-              this.items.ANNOTATED_DEFINED
+              this.items[eYo.Key.NONE],
+              this.items[eYo.Key.CALL_EXPR],
+              this.items[eYo.Key.SLICING],
+              this.items[eYo.Key.ALIASED],
+              this.items[eYo.Key.ANNOTATED],
+              this.items[eYo.Key.DEFINED],
+              this.items[eYo.Key.ANNOTATED_DEFINED]
             ]
             : [
-              this.items.NONE,
-              this.items.CALL_EXPR,
-              this.items.SLICING,
-              this.items.ALIASED
+              this.items[eYo.Key.NONE],
+              this.items[eYo.Key.CALL_EXPR],
+              this.items[eYo.Key.SLICING],
+              this.items[eYo.Key.ALIASED]
             ]
           : this.can_andef
             ? [
-              this.items.NONE,
-              this.items.SLICING,
-              this.items.ALIASED,
-              this.items.ANNOTATED,
-              this.items.DEFINED,
-              this.items.ANNOTATED_DEFINED
+              this.items[eYo.Key.NONE],
+              this.items[eYo.Key.SLICING],
+              this.items[eYo.Key.ALIASED],
+              this.items[eYo.Key.ANNOTATED],
+              this.items[eYo.Key.DEFINED],
+              this.items[eYo.Key.ANNOTATED_DEFINED]
             ]
             : [
-              this.items.NONE,
-              this.items.SLICING,
-              this.items.ALIASED
+              this.items[eYo.Key.NONE],
+              this.items[eYo.Key.SLICING],
+              this.items[eYo.Key.ALIASED]
             ]
-      },
-      blockAlias: {
-        get () {
-          return this.alias
-        },
-        set (newValue) {
-          this.eyo.alias_p = newValue
-          this.$emit('synchronize')
+      }
+    },
+    created () {
+      this.$$synchronize()
+    },
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
+    },
+    methods: {
+      $$synchronize () {
+        var eyo = this.eyo
+        if (!eyo || (this.saved_step === this.step)) {
+          return
         }
+        this.saved_step = eyo.change.step
+        this.variant_ = eyo.variant_p
+        this.annotation_ = eyo.annotation_p
+        this.definition_ = eyo.definition_p
+        this.alias_ = eyo.alias_p
+        var p5e = eyo.profile_p.p5e
+        this.can_call_ = !p5e || !p5e.item || (p5e.item.type !== 'attribute' && p5e.item.type !== 'data' && p5e.item.type !== 'first last data')
+        this.can_andef_ = !p5e || !p5e.item
       }
     }
   }

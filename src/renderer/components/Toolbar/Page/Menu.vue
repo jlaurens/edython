@@ -3,8 +3,8 @@
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="menu"><icon-menu /></icon-base>
     </template>
-    <b-dropdown-item-button v-on:click="doToggleToolbarInfoVisible()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoVisible" v-tippy><check-mark></check-mark>{{contentToolbarInfoVisible}}</b-dropdown-item-button>
-    <b-dropdown-item-button v-if="toolbarEditVisible" v-on:click="doToggleToolbarInfoDebug()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarInfoDebug" v-tippy><check-mark :checked="toolbarInfoDebug" />{{contentToolbarInfoDebug}}</b-dropdown-item-button>    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />{{contentEcoSave}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-on:click="doToggleToolbarBlockVisible()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarBlockVisible" v-tippy><check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dropdown-item-button>
+    <b-dropdown-item-button v-if="toolbarBlockVisible" v-on:click="doToggleToolbarBlockDebug()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarBlockDebug" v-tippy><check-mark :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dropdown-item-button>    <b-dropdown-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />{{contentEcoSave}}</b-dropdown-item-button>
     <b-dropdown-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dropdown-item-button>
   </b-dropdown>
 </template>
@@ -40,16 +40,16 @@
       contentDisabledTips () {
         return this.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
       },
-      titleToolbarInfoVisible () {
-        return this.toolbarEditVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition et de réglage du bloc sélectionné'
+      titleToolbarBlockVisible () {
+        return this.toolbarBlockVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition et de réglage du bloc sélectionné'
       },
-      contentToolbarInfoVisible () {
-        return this.toolbarEditVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition'
+      contentToolbarBlockVisible () {
+        return this.toolbarBlockVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition'
       },
-      titleToolbarInfoDebug () {
+      titleToolbarBlockDebug () {
         return this.toolbarInfoDebug ? 'Cacher les informations de débogage' : 'Afficher les informations de débogage'
       },
-      contentToolbarInfoDebug () {
+      contentToolbarBlockDebug () {
         return 'Mode débogage'
       },
       titleMenu () {
@@ -58,19 +58,19 @@
       ...mapState({
         ecoSave: state => state.Document.ecoSave,
         disabledTips: state => state.Document.disabledTips,
-        toolbarEditVisible: state => state.UI.toolbarEditVisible,
+        toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
         toolbarInfoDebug: state => state.UI.toolbarInfoDebug
       })
     },
     methods: {
       ...mapMutations({
-        setToolbarInfoVisible: 'UI_SET_TOOLBAR_INFO_VISIBLE' // map `this.add()` to `this.$store.commit('increment')`
+        setToolbarBlockVisible: 'UI_SET_TOOLBAR_BLOCK_VISIBLE'
       }),
-      doToggleToolbarInfoVisible () {
-        this.setToolbarInfoVisible(!this.toolbarEditVisible)
+      doToggleToolbarBlockVisible () {
+        this.setToolbarBlockVisible(!this.toolbarBlockVisible)
       },
-      doToggleToolbarInfoDebug () {
-        this.$store.commit('UI_SET_TOOLBAR_INFO_DEBUG', !this.$store.state.UI.toolbarInfoDebug)
+      doToggleToolbarBlockDebug () {
+        this.$store.commit('UI_SET_TOOLBAR_BLOCK_DEBUG', !this.$store.state.UI.toolbarInfoDebug)
       },
       doToggleEcoSave () {
         this.$store.commit('DOC_SET_ECO_SAVE', !this.$store.state.Document.ecoSave)

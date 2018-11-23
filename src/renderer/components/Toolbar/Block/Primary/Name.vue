@@ -1,8 +1,8 @@
 <template>
-  <b-btn-group id="eyo-block-primary-name">
-    <b-input v-model="name" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
-    <b-dropdown class="eyo-code eyo-text-dropdown eyo-form-input-text" v-if="module" variant="outline-secondary">
-      <b-dropdown-item-button v-for="method in methods" v-on:click="myName = method" :key="method" class="eyo-code">{{method}}</b-dropdown-item-button>
+  <b-btn-group id="b3k-primary-name">
+    <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$t('message.placeholder_name')"></b-input>
+    <b-dropdown class="eyo-code item text" v-if="module" variant="outline-secondary">
+      <b-dropdown-item-button v-for="method in methods" v-on:click="name = method" :key="method" class="eyo-code">{{method}}</b-dropdown-item-button>
     </b-dropdown>
   </b-btn-group>
 </template>
@@ -29,6 +29,11 @@
       }
     },
     computed: {
+      $$class: {
+        get () {
+          return `eyo-code and item text${this.name.length ? '' : ' placeholder'}`
+        }
+      },
       name: {
         get () {
           (this.step_ === this.step) || this.$$synchronize()
@@ -38,11 +43,23 @@
           this.eyo.name_p = newValue
         }
       },
+      variant: {
+        get () {
+          (this.step_ === this.step) || this.$$synchronize()
+          return this.variant_
+        }
+      },
+      module: {
+        get () {
+          (this.step_ === this.step) || this.$$synchronize()
+          return this.module_
+        }
+      },
       methods: {
         get () {
           //
           var ra = []
-          this.module.forEachItemWithType(this.variant === eYo.Key.CALL_EXPR ? 'function' : 'data', item => {
+          this.module.forEachItemWithType(this.variant === eYo.Key.NONE || this.variant === eYo.Key.CALL_EXPR || this.variant === eYo.Key.ALIASED ? 'function' : 'data', (item) => {
             ra.push(item.name)
           })
           return ra

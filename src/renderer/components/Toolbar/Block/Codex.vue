@@ -1,12 +1,12 @@
 <template>
   <b-btn-toolbar>
-    <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-if="withSlotholder">
+    <div id='info-stmt-code' class="btn-outline-secondary" v-if="withSlotholder">
       <div>
         <input type="checkbox" id="block-stmt-code-check" v-model="hasCode" :disabled="noCheck">
         <div class="eyo-slot-holder-group" v-html="my_slot"></div>
       </div>
     </div>
-    <div id='info-stmt-code' class="eyo-btn-inert btn-outline-secondary" v-else>
+    <div id='info-stmt-code' class="btn-outline-secondary" v-else>
       <input type="checkbox" id="block-stmt-code-check" v-model="hasCode" :disabled="noCheck">
       <b-form-input v-model="code"
       type="text"

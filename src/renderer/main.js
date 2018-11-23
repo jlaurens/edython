@@ -8,6 +8,7 @@ import Stacktrace from 'stack-trace'
 
 import App from './App'
 import router from './router'
+
 import store from './store'
 
 import VueSplit from 'vue-split-panel'
@@ -58,9 +59,6 @@ if (process.env.BABEL_ENV !== 'web') {
 }
 
 eYo.Do.readOnlyMixin(eYo.App, {
-  TUTORIAL: 'tutorial',
-  NORMAL: 'normal',
-  TEACHER: 'teacher',
   CONSOLE: 'console',
   TURTLE: 'turtle',
   WORKSPACE_ONLY: 'workspace only',
@@ -388,6 +386,17 @@ controller.bus.$on('webUploadEnd', function (result) {
   var content = new Uint8Array(result)
   eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
   eYo.App.Document.fileName_ = undefined
+})
+
+Object.defineProperties(eYo.App, {
+  selectedMode: {
+    get () {
+      return store.state.UI.selectedMode
+    },
+    set (newValue) {
+      store.commit('UI_SET_SELECTED_MODE', newValue)
+    }
+  }
 })
 
 // listen to connections

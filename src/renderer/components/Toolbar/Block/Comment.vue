@@ -1,15 +1,11 @@
 <template>
-  <b-btn-group id="block-stmt-comment" class="eyo-block-edit-comment" v-if="canComment">
-    <div class="input-group btn-outline-secondary eyo-btn-inert">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <input type="checkbox" aria-label="Checkbox to enable comment" v-model="hasComment" :disabled="mustComment">
-          <span class="pl-2 eyo-code-reserved">#</span>
-        </div>
-      </div>
-      <input type="text"
-      class="form-control eyo-code-comment" v-model="comment" :disabled="!hasComment" aria-label="Comment input">
+  <b-btn-group id="block-stmt-comment" class="b3k-edit-comment" v-if="canComment">
+    <div class="item">
+      <input type="checkbox" aria-label="Checkbox to enable comment" v-model="hasComment" :disabled="mustComment">
+      <span class="pl-2 eyo-code-reserved">#</span>
     </div>
+    <b-input type="text"
+      :class="$$class" v-model="comment" :disabled="!hasComment" aria-label="Comment input" :placeholder="$t('message.placeholder_comment')"></b-input>
   </b-btn-group>
 </template>
 
@@ -39,6 +35,11 @@
       }
     },
     computed: {
+      $$class: {
+        get () {
+          return `eyo-code and item${this.hasComment ? ' text' : ''}${this.comment.length ? '' : ' placeholder'} w-16rem`
+        }
+      },
       canComment () {
         return this.eyo && this.eyo.comment_d
       },
@@ -60,7 +61,6 @@
           this.commentVariant = newValue || this.mustComment
             ? eYo.Key.COMMENT
             : eYo.Key.NONE
-          this.$$synchronize()
         }
       },
       comment: {
@@ -70,7 +70,6 @@
         },
         set (newValue) {
           this.eyo.comment_p = newValue
-          this.$emit('synchronize')
         }
       }
     },

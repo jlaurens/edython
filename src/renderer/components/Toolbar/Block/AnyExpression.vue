@@ -1,7 +1,7 @@
 <template>
   <b-btn-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
     <modifier v-if="modifiable" :eyo="eyo" :step="step"></modifier>
-    <b-form-input v-model="expression" type="text" class="eyo-btn-inert btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+    <b-form-input v-model="expression" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
   </b-btn-toolbar>
 </template>
 

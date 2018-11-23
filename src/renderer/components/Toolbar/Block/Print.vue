@@ -1,21 +1,21 @@
 <template>
-  <b-btn-group id="block-print" class="eyo-block-edit-content btn-outline-secondary"  aria-label="Block print edit content" justify>
-    <div class="input-group-text">
+  <b-btn-group id="block-print" class="b3k-edit-content btn-outline-secondary"  aria-label="Block print edit content" justify>
+    <div class="item">
       <input type="checkbox" v-model="sep">
     </div>
-    <div class="input-group-text eyo-label eyo-code">sep=…</div>
-    <div class="input-group-text">
+    <div class="eyo-label eyo-code item text">sep=…</div>
+    <div class="item">
       <input type="checkbox" v-model="end">
     </div>
-    <div class="input-group-text eyo-label eyo-code">end=…</div>
-    <div class="input-group-text">
+    <div class="eyo-label eyo-code item text">end=…</div>
+    <div class="item">
       <input type="checkbox" v-model="flush">
     </div>
-    <div class="input-group-text eyo-label eyo-code">flush=…</div>
-    <div class="input-group-text">
+    <div class="eyo-label eyo-code item text">flush=…</div>
+    <div class="item">
       <input type="checkbox" v-model="file" :disabled="!can_file">
     </div>
-    <div class="input-group-text eyo-label eyo-code">file=…</div>
+    <div class="eyo-label eyo-code item text">file=…</div>
   </b-btn-group>
 </template>
 

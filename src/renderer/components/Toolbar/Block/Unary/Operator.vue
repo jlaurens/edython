@@ -1,6 +1,6 @@
 <template>
-  <b-dropdown id="block-unary-operator" class="eyo-dropdown" variant="outline-secondary">
-    <template slot="button-content"><span class="block-unary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
+  <b-dropdown id="block-unary-operator" class="eyo-dropdown item text  eyo-with-slot-holder" variant="outline-secondary">
+    <template slot="button-content"><span class="eyo-code eyo-content text" v-html="formatter(operator)"></span></template>
     <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="block-unary-operator eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
     </b-dropdown-item-button>
   </b-dropdown>
@@ -33,7 +33,7 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item.length ? '<div>' + item + '</div>' + this.my_slot : '&nbsp;'
+          return item.length ? `<span>${item}</span>${this.slot}` : '&nbsp;'
         }
       }
     },
@@ -48,9 +48,9 @@
         }
       },
       operators () {
-        return this.eyo.data.operator.getAll()
+        return this.eyo.operator_d.getAll()
       },
-      my_slot () {
+      slot () {
         return this.slotholder('eyo-slot-holder')
       }
     },
@@ -72,8 +72,5 @@
   }
 </script>
 <style>
-  .info-unary-operator {
-    padding-right: 0.75rem;
-  }
 </style>
   

@@ -1,5 +1,12 @@
 import namespace from '../util/namespace'
 
+eYo.Do.readOnlyMixin(eYo.App, {
+  TUTORIAL: 'tutorial',
+  BASIC: 'basic',
+  NORMAL: 'normal',
+  TEACHER: 'teacher'
+})
+
 const state = {
   undoCount: 0,
   redoCount: 0,
@@ -15,7 +22,9 @@ const state = {
   flyoutClosed: false,
   flyoutCategory: undefined,
   toolbarEditVisible: true,
-  toolbarInfoDebug: false
+  toolbarInfoDebug: false,
+  blockEditShowRy: true,
+  blockEditShowDotted: true
 }
 
 console.log(eYo.App)
@@ -38,8 +47,10 @@ const types = namespace('UI', {
     'SET_SELECTED_MODE',
     'SET_FLYOUT_CATEGORY',
     'SET_FLYOUT_CLOSED',
-    'SET_TOOLBAR_INFO_VISIBLE',
-    'SET_TOOLBAR_INFO_DEBUG'
+    'SET_TOOLBAR_BLOCK_VISIBLE',
+    'SET_TOOLBAR_BLOCK_DEBUG',
+    'SET_BLOCK_EDIT_SHOW_RY',
+    'SET_BLOCK_EDIT_SHOW_DOTTED'
   ]
 })
 
@@ -93,6 +104,10 @@ const mutations = {
   },
   [types.mutations.SET_SELECTED_MODE] (state, mode) {
     state.selectedMode = mode
+    this.commit('UI_SET_TOOLBAR_BLOCK_VISIBLE', mode !== eYo.App.TUTORIAL)
+    var yorn = mode !== eYo.App.TUTORIAL && mode !== eYo.App.BASIC
+    this.commit('UI_SET_BLOCK_EDIT_SHOW_RY', yorn)
+    this.commit('UI_SET_BLOCK_EDIT_SHOW_DOTTED', yorn)
   },
   [types.mutations.SET_FLYOUT_CATEGORY] (state, category) {
     if (goog.isString(category)) {
@@ -102,11 +117,17 @@ const mutations = {
   [types.mutations.SET_FLYOUT_CLOSED] (state, yorn) {
     state.flyoutClosed = !!yorn
   },
-  [types.mutations.SET_TOOLBAR_INFO_VISIBLE] (state, yorn) {
+  [types.mutations.SET_TOOLBAR_BLOCK_VISIBLE] (state, yorn) {
     state.toolbarEditVisible = !!yorn
   },
-  [types.mutations.SET_TOOLBAR_INFO_DEBUG] (state, yorn) {
+  [types.mutations.SET_TOOLBAR_BLOCK_DEBUG] (state, yorn) {
     state.toolbarInfoDebug = !!yorn
+  },
+  [types.mutations.SET_BLOCK_EDIT_SHOW_RY] (state, yorn) {
+    state.blockEditShowRy = !!yorn
+  },
+  [types.mutations.SET_BLOCK_EDIT_SHOW_DOTTED] (state, yorn) {
+    state.blockEditShowDotted = !!yorn
   }
 }
 

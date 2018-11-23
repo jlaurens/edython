@@ -81,35 +81,26 @@
   }
 </script>
 <style>
-#page-toolbar {
-  text-align: center;
-  height: 3rem;
-  padding: 0.25rem 0;
-}
-#page-toolbar .btn {
-  height: 2.5rem;
-  vertical-align: middle;
-  padding: 0.25rem 0.5rem;
-}
-#page-toolbar .btn-group {
-  margin: 0 0.25rem;
-}
-#page-toolbar .btn-group .btn-group {
-  margin: 0;
-}
-#page-toolbar .btn.eyo-display-packed:not(:last-child) {
-  padding-right:0;
-}
-#page-toolbar .btn.eyo-display-packed:last-child {
-  padding-left:0;
-}
-.eyo-dropdown .btn {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  text-align: left;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  vertical-align: baseline;
-}
+  #page-toolbar {
+    text-align: center;
+    height: 3rem;
+    padding: 0.25rem 0;
+  }
+  #page-toolbar .btn {
+    height: 2.5rem;
+    vertical-align: middle;
+    padding: 0.25rem 0.5rem;
+  }
+  #page-toolbar .btn-group {
+    margin: 0 0.25rem;
+  }
+  #page-toolbar .btn-group .btn-group {
+    margin: 0;
+  }
+  #page-toolbar .btn.eyo-display-packed:not(:last-child) {
+    padding-right:0;
+  }
+  #page-toolbar .btn.eyo-display-packed:last-child {
+    padding-left:0;
+  }
 </style>

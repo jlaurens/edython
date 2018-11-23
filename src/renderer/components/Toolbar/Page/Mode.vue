@@ -1,42 +1,31 @@
 <template>
-  <b-dropdown id="main-mode" class="eyo-dropdown" variant="secondary" :text="$t(`message.main_mode_${chosen}`)">
-    <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="$t(`message.main_mode_${choice}`)" :title="$t(`message.main_mode_${choice}_title`)" v-tippy ></b-dropdown-item-button>
+  <b-dropdown id="main-mode" class="eyo-dropdown" variant="secondary" :text="$t(`message.main_mode_${selectedMode}`)">
+    <b-dropdown-item-button v-for="choice in choices" v-on:click="setSelectedMode(choice)" :key="choice" class="block-variant eyo-code" v-html="$t(`message.main_mode_${choice}`)" :title="$t(`message.main_mode_${choice}_title`)" v-tippy ></b-dropdown-item-button>
   </b-dropdown>
 </template>
 
 <script>
+  import {mapState, mapMutations} from 'vuex'
+
   export default {
     name: 'main-mode',
-    data: function () {
-      return {
-        chosen: eYo.App.NORMAL
-      }
-    },
     computed: {
       choices () {
         return [
           eYo.App.TUTORIAL,
+          eYo.App.BASIC,
           eYo.App.NORMAL,
           eYo.App.TEACHER
         ]
-      }
-    },
-    created () {
-      this.$$synchronize()
-    },
-    beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      },
+      ...mapState({
+        selectedMode: state => state.UI.selectedMode
+      })
     },
     methods: {
-      choose (choice) {
-        this.chosen = choice
-      },
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        console.log('WIP')
-      }
+      ...mapMutations({
+        setSelectedMode: 'UI_SET_SELECTED_MODE'
+      })
     }
   }
 </script>
