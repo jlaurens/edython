@@ -44,6 +44,7 @@
         $$.eYo.T3.Stmt.void_except_part
       ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
+      <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
       <block-default :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
       <block-none v-else></block-none>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
@@ -80,6 +81,7 @@
   import BlockLayout from './Block/Layout.vue'
   import BlockExcept from './Block/Except.vue'
   import BlockFuncdef from './Block/Funcdef.vue'
+  import BlockImport from './Block/Import.vue'
 
   export default {
     name: 'toolbar-block',
@@ -112,7 +114,8 @@
       BlockCopyPaste,
       BlockLayout,
       BlockExcept,
-      BlockFuncdef
+      BlockFuncdef,
+      BlockImport
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarEditVisible ? 1 : 0
@@ -320,7 +323,8 @@
   .b3k-edit .item:not(:first-child)>.btn,
   .b3k-edit .btn-group:not(:first-child)>.dropdown>.btn,
   .b3k-edit .btn-group:not(:first-child)>.btn-group>.dropdown>.btn,
-  .b3k-edit .deeper>.item:not(:first-child) {
+  .b3k-edit .deeper>.item:not(:first-child),
+  .b3k-edit>.dropdown:not(:first-child)>.btn {
     border-top-left-radius: 0!important;
     border-bottom-left-radius: 0!important;
   }
@@ -336,7 +340,8 @@
   .b3k-edit *:not(.deeper) .dropdown:not(:last-child)>.btn,
   .b3k-edit .btn-group:not(:last-child):not(.deeper)>.dropdown>.btn,
   .b3k-edit .btn-group:not(:last-child)>.btn-group:not(.deeper)>.dropdown>.btn,
-  .b3k-edit .deeper>.item:not(:last-child) {
+  .b3k-edit .deeper>.item:not(:last-child),
+  .b3k-edit>.dropdown:not(:last-child)>.btn {
     border-top-right-radius: 0!important;
     border-bottom-right-radius: 0!important;
     margin-right: -1px!important;
@@ -382,9 +387,9 @@
   }
   .b3k-edit .dropdown>.btn {
     padding-right: 1rem!important;
+    vertical-align: baseline;
   }
 
-  /* merge: eyo-dropdown */
   /* merge: eyo-form-input-text */
   .b3k-edit .item.text:not(.dropdown),
   .b3k-edit .item.text.dropdown>.btn:not(:hover) {
@@ -395,7 +400,7 @@
     text-align: left;
     width: 8rem;
   }
-  .b3k-edit input.item.w-2rem {
+  .b3k-edit .item.w-2rem {
     width: 2rem;
   }
   .b3k-edit .mw-4rem>.dropdown-menu {
@@ -410,6 +415,9 @@
     width: 8rem;
     min-width: 8rem;
   }
+  .b3k-edit .item.w-12rem {
+    width: 12rem;
+  }
   .b3k-edit input.item.w-16rem {
     width: 16rem;
   }
@@ -418,9 +426,7 @@
     color: rgb(21, 25, 29, 0.2)!important;
   }
   .b3k-edit .item input[type="checkbox"] {
-    position: relative;
-    bottom: 0.2rem;
     padding-left: 0.5rem;
-    vertical-align: middle;
+    vertical-align: text-top;
   }
 </style>

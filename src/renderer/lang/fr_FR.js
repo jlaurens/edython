@@ -36,9 +36,9 @@ export default {
   comment: comment('# commentaire'),
   name_expressions: nom + ' {operator} …',
   target_expressions: '… {operator} …',
-  import: reserved('import') + ' ' + '{{slotholder}}',
   global: reserved('global') + ' {{slotholder}}',
   nonlocal: reserved('nonlocal') + ' {{slotholder}}',
+  import: reserved('import') + ' ' + '{{slotholder}}',
   from_module_import: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import') + '{{slotholder}}',
   from_module_import_star: reserved('from') + ' ' + placeholder('module') + ' ' + reserved('import *'),
   expr: '…',
@@ -90,5 +90,6 @@ export default {
   except_alias: 'Un nom de variable',
   funcdef_name_title: 'Un identifiant pour nommer la fonction',
   placeholder_name: 'nom',
-  placeholder_comment: 'Un commentaire ici'
+  placeholder_comment: 'Un commentaire ici',
+  placeholder_module: 'module'
 }

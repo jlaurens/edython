@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown id="block-variant" class="eyo-dropdown" variant="outline-secondary" v-if="!!eyo.variant_d">
-    <template slot="button-content"><span class="block-variant eyo-code eyo-content" v-html="formatter(variant)"></span></template>
-    <b-dropdown-item-button v-for="item in variants" v-on:click="variant = item" :key="item" class="block-variant eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
+  <b-dropdown id="block-variant" :class="`item${withSlot ? ' eyo-with-slot-holder': ''}`" variant="outline-secondary" v-if="!!eyo.variant_d">
+    <template slot="button-content"><span class="eyo-code" v-html="chosen.title"></span></template>
+    <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
   </b-dropdown>
 </template>
 
@@ -11,7 +11,8 @@
     data () {
       return {
         saved_step: undefined,
-        variant_: undefined
+        chosen_: undefined,
+        choices_: undefined
       }
     },
     props: {
@@ -28,39 +29,21 @@
         default: function (item) {
           return item
         }
-      },
-      formatter: {
-        type: Function,
-        default: function (item) {
-          if (item) {
-            var formatted = item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
-            if (formatted.indexOf('{{slotholder}}') < 0) {
-              return formatted
-            }
-            var replacement = '</span>' +
-              this.slotholder('eyo-slot-holder') +
-              '<span>'
-            return '<span>' +
-              formatted.replace('{{slotholder}}', replacement) +
-              '</span>'
-          } else {
-            return ''
-          }
-        }
       }
     },
     computed: {
-      variant: {
+      chosen: {
         get () {
           (this.saved_step === this.step) || this.$$synchronize()
-          return this.variant_
+          return this.chosen_
         },
         set (newValue) {
-          this.eyo.variant_p = newValue
+          this.eyo.variant_p = newValue.key
         }
       },
-      variants () {
-        return (this.eyo.variant_d && this.eyo.variant_d.getAll()) || []
+      choices () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.choices_
       }
     },
     created () {
@@ -76,6 +59,30 @@
         }
         this.saved_step = this.step
         this.variant = this.eyo.variant_p
+        var keys = (this.eyo.variant_d && this.eyo.variant_d.getAll()) || []
+        this.chosen_ = null
+        this.choices_ = []
+        this.withSlot = false
+        for (var i = 0; i < keys.length; ++i) {
+          var k = keys[i]
+          var choice = {
+            key: k,
+            title: this.formatted(k)
+          }
+          if ((k === this.eyo.variant_p) || !this.chosen_) {
+            this.chosen_ = choice
+          }
+          this.choices_.push(choice)
+        }
+      },
+      formatted: function (item) {
+        var formatted = item.length ? this.$t(`message.${({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)}`) : '&nbsp;'
+        if (formatted.indexOf('{{slotholder}}') < 0) {
+          return formatted
+        }
+        var replacement = `</span>${this.slotholder('eyo-slot-holder')}<span>`
+        this.withSlot = true
+        return `<span>${formatted.replace('{{slotholder}}', replacement)}</span>`
       }
     }
   }
