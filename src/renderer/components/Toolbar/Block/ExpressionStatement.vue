@@ -1,24 +1,27 @@
 <template>
-  <b-btn-toolbar id="block-any-statement" key-nav  aria-label="Block any statement" justify>
-    <codex :eyo="eyo" :step="step" :slotholder="slotholder" v-on:synchronize="synchronize"></codex>
-    <comment :eyo="eyo" :step="step" ></comment>
-  </b-btn-toolbar>
+  <b-btn-group id='block-stmt-expression' v-if="canShow">
+    <div class="item" v-if="canCheck">
+      <input type="checkbox" id="block-stmt-expression-check" v-model="hasExpression" :disabled="noCheck">
+    </div>
+    <div class="item text" v-if="withSlotholder" v_html="slot"></div>
+    <b-input v-else v-model="expression" type="text" :disabled="!hasExpression" :class="$$class"></b-input>
+  </b-btn-group>
 </template>
 
 <script>
-  import Codex from './Codex.vue'
-  import Comment from './Comment.vue'
+  import {mapState} from 'vuex'
 
   export default {
-    name: 'info-any-statement',
+    name: 'block-stmt-expression',
     data: function () {
       return {
-        mustComment: undefined
+        saved_step: 0,
+        saved_eyo: undefined,
+        variant_: undefined,
+        commentVariant_: undefined,
+        expression_: undefined,
+        withSlotholder_: undefined
       }
-    },
-    components: {
-      Codex,
-      Comment
     },
     props: {
       eyo: {
@@ -31,10 +34,69 @@
       },
       slotholder: {
         type: Function,
-        default: function (item) {
+        default: (item) => {
           return item
         }
       }
+    },
+    computed: {
+      $$class () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return `eyo-code item${this.hasExpression ? ' text' : ''} w-16rem`
+      },
+      commentVariant () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.commentVariant_ === eYo.Key.NONE
+      },
+      noCheck () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.commentVariant_ === eYo.Key.NONE
+      },
+      canExpression () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return !this.eyo.expression_s.targetBlock()
+      },
+      hasExpression: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.variant === eYo.Key.EXPRESSION
+        },
+        set (newValue) {
+          this.hasExpression_ = newValue
+          this.eyo.variant_p = newValue
+            ? eYo.Key.EXPRESSION
+            : eYo.Key.NONE
+        }
+      },
+      variant () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.variant_
+      },
+      expression: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.expression_
+        },
+        set (newValue) {
+          this.eyo.expression_p = newValue
+        }
+      },
+      slot () {
+        return this.slotholder('eyo-slot-holder')
+      },
+      withSlotholder () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.withSlotholder_
+      },
+      canShow () {
+        return this.canCheck || this.hasExpression
+      },
+      canCheck () {
+        return (this.selectedMode !== eYo.App.TUTORIAL) && (this.selectedMode !== eYo.App.BASIC)
+      },
+      ...mapState({
+        selectedMode: state => state.UI.selectedMode
+      })
     },
     created () {
       this.$$synchronize()
@@ -47,14 +109,15 @@
         if (!this.eyo || (this.saved_step === this.step)) {
           return
         }
-        this.step = this.eyo.change.step
-        this.mustComment = this.eyo.variant_p === eYo.Key.NONE
+        this.saved_eyo = this.eyo
+        this.saved_step = this.step
+        this.expression_ = this.eyo.expression_p
+        this.withSlotholder_ = !!this.eyo.expression_s.targetBlock()
+        this.commentVariant_ = this.eyo.commentVariant_p
+        this.variant_ = this.eyo.variant_p
       }
     }
   }
 </script>
 <style>
-  #block-any-statement {
-    padding: 0 0.25rem;
-  }
 </style>

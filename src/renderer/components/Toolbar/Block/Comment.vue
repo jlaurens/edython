@@ -15,6 +15,7 @@
     data: function () {
       return {
         saved_step: undefined,
+        variant_: undefined,
         comment_: undefined,
         hasComment_: undefined,
         commentVariant_: undefined
@@ -28,10 +29,6 @@
       step: {
         type: Number,
         default: 0
-      },
-      mustComment: {
-        type: Boolean,
-        default: false
       }
     },
     computed: {
@@ -51,6 +48,14 @@
         set (newValue) {
           this.eyo.comment_variant_p = newValue
         }
+      },
+      mustComment () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.eyo.expression_d && (this.variant !== eYo.Key.EXPRESSION)
+      },
+      variant () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.variant_
       },
       hasComment: {
         get () {
@@ -85,7 +90,12 @@
           return
         }
         this.saved_step = this.step
+        this.variant_ = this.eyo.variant_p
         this.comment_ = this.eyo.comment_p
+        if (this.comment_ && !goog.isString(this.comment_)) {
+          // sometimes, I receive an object named `observer`, this might be related to Vuejs...
+          this.comment_ = this.eyo.comment_p = ''
+        }
         if (this.mustComment) {
           this.eyo.comment_variant_p = eYo.Key.COMMENT
         }
@@ -95,12 +105,5 @@
     }
   }
 </script>
-<style scoped>
-  label {
-    margin: 0;
-  }
-  .form-control {
-    margin: 0;
-    padding: 0 0.25rem;
-  }
+<style>
 </style>
