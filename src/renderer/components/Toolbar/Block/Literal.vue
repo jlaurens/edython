@@ -1,19 +1,19 @@
 <template>
   <b-btn-group id="block-literal" key-nav  aria-label="Block toolbar literal" class="b3k-edit-content">
-    <div class="input-group-text">
+    <div class="item">
       <input type="checkbox" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
     </div>
-    <div class="input-group-text eyo-label eyo-code-reserved">r</div>
-    <div class="input-group-text">
+    <div class="item text eyo-code-reserved">r</div>
+    <div class="item">
       <input type="checkbox" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
     </div>
-    <div class="input-group-text eyo-label eyo-code-reserved">b</div>
-    <div class="input-group-text">
+    <div class="item text eyo-code-reserved">b</div>
+    <div class="item">
       <input type="checkbox" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
     </div>
-    <div class="input-group-text eyo-label eyo-code-reserved">f</div>
+    <div class="item text eyo-code-reserved">f</div>
     <literal-quote :eyo="eyo" :step="step"></literal-quote>
-    <b-form-input v-model="content" type="text" class="btn-outline-secondary eyo-form-input-text" size="20" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy></b-form-input>
+    <b-input v-model="content" type="text" class="item text" size="20" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy></b-input>
     <literal-quote :eyo="eyo" :step="step"></literal-quote>
   </b-btn-group>
 </template>

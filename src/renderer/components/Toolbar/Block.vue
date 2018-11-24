@@ -234,7 +234,7 @@
   #toolbar-block .btn-group .btn-group:not(:first-child) {
     padding-left: 0;
   }
-  #toolbar-block .btn-group .btn-group:not(:last-child) {
+  #toolbar-block .btn-group .btn-group:not(:last-child):not(.dropdown) {
     padding-right: 0;
   }
   .b3k-edit-content {
@@ -290,15 +290,15 @@
     padding: 0rem 0.25rem;
     border: 1px solid #ced4da!important;
     border-radius: 0.25rem!important;
-    background: rgba(255, 255, 255, 0.333)!important;
-    color: #212529!important;
+    background: rgba(255, 255, 255, 0.333);
+    color: #212529;
   }
   .b3k-edit .deeper .item:not(.btn-group),
   .b3k-edit .deeper .dropdown>.btn {
     border-radius: 0.875rem!important;
   }
   .b3k-edit .item.no-text {
-    background: transparent!important;
+    background: transparent;
   }
   .b3k-cpl .btn-group:not(:first-child) {
     margin-left: 0.25rem!important;
@@ -360,13 +360,13 @@
   .b3k-edit .btn:hover,
   .b3k-edit .btn:active,
   .bk3-edit .deeper {
-    color: white!important;
-    background-color: #6c757d!important;
-    border-color: #6c757d!important;
+    color: white;
+    background-color: #6c757d;
+    border-color: #6c757d;
   }
   .bk3-edit .deeper {
-    border-style: solid!important;
-    border-width: 1px!important;
+    border-style: solid;
+    border-width: 1px;
   }
   .b3k-edit .item:not(.dropdown):focus,
   .b3k-edit .dropdown>.btn:focus,
@@ -385,16 +385,19 @@
     height: 2.5rem;
     line-height: 2.5rem;
   }
-  .b3k-edit .dropdown>.btn {
-    padding-right: 1rem!important;
+  #toolbar-block .dropdown>.btn {
+    padding-right: 1rem;
     vertical-align: baseline;
+  }
+  #toolbar-block .dropdown:not(:last-child)>.btn {
+    padding-right: 0.75rem;
   }
 
   /* merge: eyo-form-input-text */
   .b3k-edit .item.text:not(.dropdown),
   .b3k-edit .item.text.dropdown>.btn:not(:hover) {
-    color: #212529!important;
-    background: white!important;
+    color: #212529;
+    background: white;
   }
   .b3k-edit input.item {
     text-align: left;
@@ -423,7 +426,7 @@
   }
   .b3k-edit .item.placeholder {
     font-style: oblique;
-    color: rgb(21, 25, 29, 0.2)!important;
+    color: rgb(21, 25, 29, 0.2);
   }
   .b3k-edit .item input[type="checkbox"] {
     padding-left: 0.5rem;
