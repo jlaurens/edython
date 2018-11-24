@@ -403,11 +403,11 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * Called when data and slots have loaded.
  */
 eYo.Delegate.prototype.didLoad = function () {
-  this.foreachData(function () {
-    this.didLoad()
+  this.foreachData((data) => {
+    data.didLoad()
   })
-  this.foreachSlot(function () {
-    this.didLoad()
+  this.foreachSlot((slot) => {
+    slot.didLoad()
   })
 }
 
@@ -421,21 +421,21 @@ eYo.Delegate.prototype.didLoad = function () {
 eYo.Delegate.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
   if (equals) {
-    this.foreachData(function () {
-      var r_data = rhs.data[this.key]
-      equals = r_data && (this.get() == r_data.get() || (this.isIncog() && r_data.isIncog()))
+    this.foreachData((data) => {
+      var r_data = rhs.data[data.key]
+      equals = r_data && (data.get() == r_data.get() || (data.isIncog() && r_data.isIncog()))
       return equals // breaks if false
     })
     if (equals) {
-      this.foreachSlot(function () {
-        var r_slot = rhs.slots[this.key]
-        if (this.isIncog()) {
+      this.foreachSlot((slot) => {
+        var r_slot = rhs.slots[slot.key]
+        if (slot.isIncog()) {
           equals = !r_slot || r_slot.isIncog()
         } else if (r_slot) {
           if (r_slot.isIncog()) {
             equals = false
           } else {
-            var target = this.targetBlock()
+            var target = slot.targetBlock()
             var r_target = r_slot.targetBlock()
             equals = target
               ? r_target && target.eyo.equals(r_target.eyo)
@@ -1002,9 +1002,10 @@ eYo.Delegate.prototype.someSlot = function (helper) {
 eYo.Delegate.prototype.foreachSlot = function (helper) {
   var slot = this.headSlot
   if (slot && goog.isFunction(helper)) {
+    var last
     do {
-      helper.call(slot)
-    } while ((slot = slot.next))
+      last = helper(slot)
+    } while (!last  && (slot = slot.next))
   }
 }
 
@@ -1020,7 +1021,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
   if (data && goog.isFunction(helper)) {
     var last
     do {
-      last = helper.call(data)
+      last = helper(data)
     } while (!last && (data = data.next))
   }
 }
@@ -1077,8 +1078,8 @@ eYo.Delegate.prototype.makeBounds = function () {
  */
 eYo.Delegate.prototype.consolidateData = function () {
   this.changeWrap(function () {
-    this.foreachData(function () {
-      this.consolidate()
+    this.foreachData((data) => {
+      data.consolidate()
     })
   })
 }
@@ -1092,8 +1093,8 @@ eYo.Delegate.prototype.consolidateData = function () {
  * @return {boolean} whether the model was really used.
  */
 eYo.Delegate.prototype.setDataWithType = function (type) {
-  this.foreachData(function () {
-    this.setWithType(type)
+  this.foreachData((data) => {
+    data.setWithType(type)
   })
 }
 
@@ -1105,8 +1106,8 @@ eYo.Delegate.prototype.setDataWithType = function (type) {
  */
 eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
-  this.foreachData(function () {
-      this.setRequiredFromModel(false)
+  this.foreachData((data) => {
+      data.setRequiredFromModel(false)
     }
   )
   this.changeWrap(
@@ -1120,21 +1121,21 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
           done = true
         }
       } else if (goog.isDef(data_in)) {
-        this.foreachData(function () {
-          var k = this.key
+        this.foreachData((data) => {
+          var k = data.key
           if (eYo.Do.hasOwnProperty(data_in, k)) {
-            this.set(data_in[k])
-            this.setRequiredFromModel(true)
+            data.set(data_in[k])
+            data.setRequiredFromModel(true)
             done = true
           } else {
             k = k + '_placeholder'
             if (eYo.Do.hasOwnProperty(data_in, k)) {
-              this.setRequiredFromModel(true)
+              data.setRequiredFromModel(true)
               // change the place holder in the objects's model
               var m = {}
-              goog.mixin(m, this.model)
+              goog.mixin(m, data.model)
               m.placeholder = data_in[k]
-              this.model = m
+              data.model = m
               done = true
             }
           }
@@ -1150,16 +1151,23 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
           }
         }
       }
-      this.foreachData(function () {
-        var k = this.key + '_d'
+      this.foreachData((data) => {
+        var k = data.key + '_d'
         if (eYo.Do.hasOwnProperty(model, k)) {
-          this.set(model[k])
+          data.set(model[k])
           done = true
-          this.setRequiredFromModel(true)
+          data.setRequiredFromModel(true)
+        } else {
+          k = data.key + '_p'
+          if (eYo.Do.hasOwnProperty(model, k)) {
+            data.set(model[k])
+            done = true
+            data.setRequiredFromModel(true)
+          }
         }
-        k = this.key + '_placeholder'
+        k = data.key + '_placeholder'
         if (eYo.Do.hasOwnProperty(model, k)) {
-          this.customizePlaceholder(model[k])
+          data.customizePlaceholder(model[k])
         }
       })
     }
@@ -1180,8 +1188,8 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
  * This is why the one shot.
  */
 eYo.Delegate.prototype.synchronizeData = function () {
-  this.foreachData(function () {
-    this.synchronize()
+  this.foreachData((data) => {
+    data.synchronize()
   })
   this.synchronizeData = eYo.Do.nothing
 }
@@ -1260,8 +1268,8 @@ eYo.Delegate.prototype.makeData = function () {
   }
   this.data = data
   // now we can use `foreachData`
-  this.foreachData(function () {
-    Object.defineProperty(this.owner, this.key + '_d', { value: this })
+  this.foreachData((data) => {
+    Object.defineProperty(data.owner, data.key + '_d', { value: data })
   })
 }
 
@@ -1424,8 +1432,8 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
  * For edython.
  */
 eYo.Delegate.prototype.synchronizeSlots = function () {
-  this.foreachSlot(function () {
-    this.synchronize()
+  this.foreachSlot((slot) => {
+    slot.synchronize()
   })
 }
 
@@ -1438,8 +1446,8 @@ eYo.Delegate.prototype.synchronizeSlots = function () {
  * @param {?string} type Name of the new type.
  */
 eYo.Delegate.prototype.consolidateData = function () {
-  this.foreachData(function () {
-    this.consolidate()
+  this.foreachData((data) => {
+    data.consolidate()
   })
 }
 
@@ -1453,9 +1461,9 @@ eYo.Delegate.prototype.consolidateData = function () {
  * @param {?Boolean} force
  */
 eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
-  this.foreachSlot(function () {
+  this.foreachSlot((slot) => {
     // some child blocks may be disconnected as side effect
-    this.consolidate(deep, force)
+    slot.consolidate(deep, force)
   })
 }
 
@@ -1505,11 +1513,9 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   var f = function (c8n) {
     c8n && c8n.eyo.updateCheck(t, st)
   }
-  this.foreachSlot(
-    function () {
-      f(this.connection)
-    }
-  )
+  this.foreachSlot((slot) => {
+    f(slot.connection)
+  })
   f(b.outputConnection)
   f(b.previousConnection)
   f(b.nextConnection)
@@ -1528,11 +1534,11 @@ eYo.Delegate.prototype.init = function () {
     this.change.level++ // will prevent any rendering
     this.makeState()
     // initialize the data
-    this.foreachData(function () {
-      this.init()
+    this.foreachData((data) => {
+      data.init()
     })
-    this.foreachSlot(function () {
-      this.init()
+    this.foreachSlot((slot) => {
+      slot.init()
     })
     // At this point the state value may not be consistent
     this.consolidate()
@@ -2030,8 +2036,8 @@ eYo.Delegate.prototype.setIncog = function (incog) {
     return false
   }
   this.incog_ = incog
-  this.foreachSlot(function () {
-    this.setIncog(incog) // with incog validator
+  this.foreachSlot((slot) => {
+    slot.setIncog(incog) // with incog validator
   })
   var setupIncog = function (input) {
     var c8n = input && input.connection
@@ -2111,11 +2117,9 @@ eYo.Delegate.prototype.removeError = function (key) {
  */
 eYo.Delegate.prototype.getSlotConnections = function () {
   var ra = []
-  this.foreachSlot(
-    function () {
-      var c8n = this.input && this.input.connection
-      c8n && ra.push(c8n)
-    }
-  )
+  this.foreachSlot((slot) => {
+    var c8n = slot.input && slot.input.connection
+    c8n && ra.push(c8n)
+  })
   return ra
 }

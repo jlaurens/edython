@@ -104,8 +104,17 @@ Object.defineProperties(
       }
     },
     /**
-     * Is it a previous connection.
-     * @return {boolean} True if the connection is the block's previous one.
+     * Is it an output connection.
+     * @return {boolean} True if the connection is the block's output one.
+     */
+    isOutput: {
+      get () {
+        return this.connection === this.connection.sourceBlock_.outputConnection
+      }
+    },
+    /**
+     * Is it a suite connection.
+     * @return {boolean} True if the connection is the block's suite one.
      */
     isSuite: {
       get () {

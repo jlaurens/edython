@@ -403,8 +403,8 @@ eYo.DelegateSvg.prototype.getField = function (name) {
  * May be used at the end of an initialization process.
  */
 eYo.DelegateSvg.prototype.synchronizeSlots = function () {
-  this.foreachSlot(function () {
-    this.synchronize()
+  this.foreachSlot((slot) => {
+    slot.synchronize()
   })
 }
 
@@ -801,8 +801,8 @@ eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
   var block = this.block_
   block.renderMoveConnections_()
   // var blockTL = block.getRelativeToSurfaceXY()
-  // this.foreachSlot(function () {
-  //   var input = this.input
+  // this.foreachSlot((slot) => {
+  //   var input = slot.input
   //   if(input) {
   //     var c8n = input.connection
   //     if (c8n) {
@@ -1808,16 +1808,16 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         }
         Vs = model
-        block.eyo.foreachSlot(function () {
-          var input = this.input
+        block.eyo.foreachSlot((slot) => {
+          var input = slot.input
           if (!input || !input.connection) {
             return
           }
-          k = this.key + '_s'
+          k = slot.key + '_s'
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var V = Vs[k]
-          } else if (Vs.slots && eYo.Do.hasOwnProperty(Vs.slots, this.key)) {
-            V = Vs.slots[this.key]
+          } else if (Vs.slots && eYo.Do.hasOwnProperty(Vs.slots, slot.key)) {
+            V = Vs.slots[slot.key]
           } else {
             return
           }
@@ -1835,11 +1835,11 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         })
         // now blocks and slots have been set
-        block.eyo.foreachData(function () {
-          this.model.didLoad && this.model.didLoad.call(this)
+        block.eyo.foreachData((data) => {
+          data.model.didLoad && data.model.didLoad.call(data)
         })
-        block.eyo.foreachSlot(function () {
-          this.model.didLoad && this.model.didLoad.call(this)
+        block.eyo.foreachSlot((slot) => {
+          slot.model.didLoad && slot.model.didLoad.call(slot)
         })
         if (block.nextConnection) {
           var nextModel = dataModel.next
@@ -1875,8 +1875,8 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
 eYo.DelegateSvg.prototype.beReady = function () {
   this.changeWrap(
     function () {
-      this.foreachData(function () {
-        this.beReady() // this is headless
+      this.foreachData((data) => {
+        data.beReady() // data is headless
       })
       var block = this.block_
       block.initSvg()
@@ -1888,8 +1888,8 @@ eYo.DelegateSvg.prototype.beReady = function () {
           field.init()
         }
       }
-      this.foreachSlot(function () {
-        this.beReady()
+      this.foreachSlot((slot) => {
+        slot.beReady()
       })
       for (var i = 0, input; (input = block.inputList[i++]);) {
         input.eyo.beReady()
@@ -1912,8 +1912,8 @@ eYo.DelegateSvg.prototype.beReady = function () {
         goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
           'eyo-inner')
       }
-      this.foreachData(function () {
-        this.synchronize() // this is not headless
+      this.foreachData((data) => {
+        data.synchronize() // data is not headless
       })
       this.beReady = eYo.Do.nothing // one shot function  
     }
@@ -3036,8 +3036,8 @@ eYo.DelegateSvg.prototype.lock = function () {
       }
     }
   }
-  this.foreachSlot(function () {
-    if (this.input && (c8n = this.input.connection)) {
+  this.foreachSlot((slot) => {
+    if (slot.input && (c8n = slot.input.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
       }

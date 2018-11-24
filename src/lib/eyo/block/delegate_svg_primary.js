@@ -401,6 +401,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.annotation_p = eYo.Key.NONE
           this.owner.definition_p = eYo.Key.NONE
         }
+        this.owner.consolidateType()
+        this.owner.consolidateConnections()
         this.isChanging(oldValue, newValue)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -730,7 +732,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.owner.variant_p !== eYo.Key.ALIASED
-      }
+      },
+      check: [eYo.T3.Expr.identifier, eYo.T3.Expr.unset]
     }
   },
   output: {

@@ -606,8 +606,8 @@ goog.provide('eYo.Xml.Data')
  * @param {Element} element the persistent element.
  */
 eYo.Delegate.prototype.saveData = function (element) {
-  this.foreachData(function () {
-    this.save(element)
+  this.foreachData((data) => {
+    data.save(element)
   })
 }
 
@@ -618,8 +618,8 @@ eYo.Delegate.prototype.saveData = function (element) {
  * @param {?Boolean} opt_noId
  */
 eYo.Delegate.prototype.saveSlots = function (element, opt_noId) {
-  this.foreachSlot(function () {
-    this.save(element, opt_noId)
+  this.foreachSlot((slot) => {
+    slot.save(element, opt_noId)
   })
 }
 
@@ -636,13 +636,13 @@ eYo.Xml.Data.fromDom = function (block, element) {
   var eyo = block.eyo
   eyo.changeWrap(
     function () { // `this` is `eyo`
-      this.foreachData(function () {
-        this.load(element)
+      this.foreachData((data) => {
+        data.load(element)
         // Consistency section, to be removed
-        var xml = this.model.xml
+        var xml = data.model.xml
         if (hasText && xml && xml.text) {
           console.log(eYo.Do.format('Only one text node {0}/{1}',
-            this.key, block.type))
+            data.key, block.type))
         }
         hasText = hasText || (xml && xml.text)
       })
@@ -1141,8 +1141,8 @@ eYo.Xml.fromDom = function (block, element) {
     } else {
       eYo.Xml.Data.fromDom(block, element)
       // read slot
-      eyo.foreachSlot(function () {
-        this.load(element)
+      eyo.foreachSlot((slot) => {
+        slot.load(element)
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
         eYo.Do.forEachElementChild(element, function (child) {
