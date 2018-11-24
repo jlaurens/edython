@@ -27,7 +27,6 @@
       <block-assignment v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-assignment>
       <block-builtin v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)" :eyo="eyo" :step="step" :modifiable="modifiable"></block-builtin>
       <block-augmented-assignment v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-augmented-assignment>
-      <block-any-expression v-else-if="isSelected($$.eYo.T3.Expr.any)" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-any-expression>
       <block-expression-statement v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-expression-statement>
       <block-decorator v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-decorator>
       <block-starred v-else-if="isSelected([
@@ -45,6 +44,7 @@
       ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
+      <block-variant v-else-if="isSelected($$.eYo.T3.Stmt.global_nonlocal_stmt)" :eyo="eyo" :step="step" :modifiable="modifiable" :text="true" child_id="block-global-nonlocal" :slotholder="slotholder"></block-variant>
       <block-default :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
       <block-none v-else></block-none>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
@@ -73,6 +73,7 @@
   import BlockAssignment from './Block/Assignment.vue'
   import BlockAugmentedAssignment from './Block/AugmentedAssignment.vue'
   import BlockValue from './Block/Value.vue'
+  import BlockVariant from './Block/Variant.vue'
   import BlockDefault from './Block/Default.vue'
   import BlockDecorator from './Block/Decorator.vue'
   import BlockStarred from './Block/Starred.vue'
@@ -107,6 +108,7 @@
       BlockAssignment,
       BlockAugmentedAssignment,
       BlockValue,
+      BlockVariant,
       BlockDefault,
       BlockDecorator,
       BlockStarred,

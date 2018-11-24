@@ -1,8 +1,8 @@
 <template>
-  <b-btn-group id="block-starred" key-nav  aria-label="Block decorator" justify>
-    <b-dropdown id="block-starred-dd" class="eyo-dropdown" variant="outline-secondary">
-      <template slot="button-content"><span class="block-modifier eyo-code eyo-content" v-html="chosen.title"></span></template>
-      <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="block-variant eyo-code" v-html="choice.title"></b-dropdown-item-button>
+  <b-btn-group id="block-starred" key-nav  aria-label="Block decorator">
+    <b-dropdown class="item text eyo-with-slot-holder mw-4rem" variant="outline-secondary">
+      <template slot="button-content"><span class="eyo-code-reserved" v-html="chosen.title"></span></template>
+      <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
     </b-dropdown>
   </b-btn-group>
 </template>
@@ -40,7 +40,7 @@
         return {
           [eYo.Key.STAR]: {
             key: eYo.Key.STAR,
-            title: '<div class="eyo-code-reserved">*&nbsp;</div>',
+            title: '<span class="eyo-code-reserved">*&nbsp;</span>',
             action (eyo) {
               eyo.modifier_p = '*'
               eyo.variant_p = eYo.Key.STAR
@@ -48,7 +48,7 @@
           },
           [eYo.Key.STAR_NAME]: {
             key: eYo.Key.STAR_NAME,
-            title: '<div class="eyo-code-reserved">*</div>' + this.my_slot,
+            title: '<span class="eyo-code-reserved">*</span>' + this.my_slot,
             action (eyo) {
               eyo.modifier_p = '*'
               eyo.variant_p = eYo.Key.NONE
@@ -56,7 +56,7 @@
           },
           [eYo.Key.STAR_STAR_NAME]: {
             key: eYo.Key.STAR_STAR_NAME,
-            title: '<div class="eyo-code-reserved">**</div>' + this.my_slot,
+            title: '<span class="eyo-code-reserved">**</span>' + this.my_slot,
             action (eyo) {
               eyo.modifier_p = '**'
               eyo.variant_p = eYo.Key.NONE

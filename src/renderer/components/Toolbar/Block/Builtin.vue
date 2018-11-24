@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown id="block-builtin" class="eyo-dropdown" v-if="values && values.length" variant="outline-secondary">
+  <b-dropdown id="block-builtin" class="item text" v-if="values && values.length" variant="outline-secondary">
     <template slot="button-content"><span class="block-value eyo-code-reserved eyo-content" v-html="value"></span></template>
     <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="block-value eyo-code-reserved" v-html="item"></b-dropdown-item-button>
   </b-dropdown>
@@ -35,7 +35,7 @@
         }
       },
       values () {
-        return this.eyo.data.value.model.all
+        return this.eyo.value_d.getAll()
       }
     },
     created () {
@@ -56,8 +56,5 @@
   }
 </script>
 <style>
-  #block-builtin {
-    padding-left:0.25rem;
-  }
 </style>
   

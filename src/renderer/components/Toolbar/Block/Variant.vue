@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown id="block-variant" :class="`item${withSlot ? ' eyo-with-slot-holder': ''}`" variant="outline-secondary" v-if="!!eyo.variant_d">
+  <b-dropdown :id="child_id" :class="$$class" variant="outline-secondary" v-if="!!eyo.variant_d">
     <template slot="button-content"><span class="eyo-code" v-html="chosen.title"></span></template>
     <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
   </b-dropdown>
@@ -16,6 +16,10 @@
       }
     },
     props: {
+      child_id: {
+        type: String,
+        default: 'block-variant'
+      },
       eyo: {
         type: Object,
         default: undefined
@@ -23,6 +27,10 @@
       step: {
         type: Number,
         default: 0
+      },
+      text: {
+        type: Boolean,
+        default: false
       },
       slotholder: {
         type: Function,
@@ -32,6 +40,9 @@
       }
     },
     computed: {
+      $$class () {
+        return `item${this.withSlot ? ' eyo-with-slot-holder' : ''}${this.text ? ' text' : ''}`
+      },
       chosen: {
         get () {
           (this.saved_step === this.step) || this.$$synchronize()
@@ -69,7 +80,9 @@
             key: k,
             title: this.formatted(k)
           }
-          if ((k === this.eyo.variant_p) || !this.chosen_) {
+          if (!this.chosen_) {
+            this.chosen_ = choice
+          } else if ((k === this.eyo.variant_p)) {
             this.chosen_ = choice
           }
           this.choices_.push(choice)
