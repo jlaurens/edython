@@ -2787,7 +2787,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   var block = this.block_
   // get the type:
   var type = eYo.T3.Profile.get(model, null)
-  if (type) {
+  if (type !== eYo.T3.Profile.unset) {
     if (connection) {
       if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {
         type.stmt && (model = {

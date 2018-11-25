@@ -146,7 +146,6 @@ eYo.KeyHandler = (function () {
       me.handleModel(model)
     }
   }
-
   me.handleModel = function (model) {
     // if key is a number, then create a number block
     // otherwise, take the first model and pass it to handleModel
@@ -562,7 +561,7 @@ eYo.KeyHandler.split = function (key, sep) {
  * @param {*} model 
  */
 eYo.KeyHandler.makeCall = function (model) {
-  this.processModel(model)
+  this.handleModel(model)
 }
 
 /**
@@ -570,7 +569,7 @@ eYo.KeyHandler.makeCall = function (model) {
  * @param {*} model 
  */
 eYo.KeyHandler.makeSlicing = function (model) {
-  this.processModel(model)
+  this.handleModel(model)
 }
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)

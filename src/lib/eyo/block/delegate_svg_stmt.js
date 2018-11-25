@@ -356,8 +356,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
     tags: [
       eYo.Key.GLOBAL,
       eYo.Key.NONLOCAL,
-      eYo.Key.DEL,
-      eYo.Key.RETURN
+      eYo.Key.DEL
     ]
   },
   data: {
@@ -365,10 +364,14 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       all: [
         eYo.Key.GLOBAL,
         eYo.Key.NONLOCAL,
-        eYo.Key.DEL,
-        eYo.Key.RETURN
+        eYo.Key.DEL
       ],
-      synchronize: true,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var del = newValue === eYo.Key.DEL
+        this.owner.identifiers_s.setIncog(del)
+        this.owner.del_s.setIncog(!del)
+      },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
         },
