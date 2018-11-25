@@ -403,7 +403,8 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 for (var _ = 0, k; (k = [
   'nonlocal',
   'del'
-][_++] + '_stmt');) {
+][_++]);) {
+  k = k + '_stmt'
   eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
   eYo.DelegateSvg.Manager.register(k)
 }
