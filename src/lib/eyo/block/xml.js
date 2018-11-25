@@ -74,8 +74,6 @@ eYo.Xml = {
   PARAMETER: 'parameter',
   LAMBDA: 'lambda',
   CALL: 'call',
-  GLOBAL: 'global',
-  NONLOCAL: 'nonlocal',
 
   LIST: 'list', // attribute name
   

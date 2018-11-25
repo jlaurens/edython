@@ -787,16 +787,10 @@ Ks = {
   'import …': eYo.T3.Stmt.import_stmt,
   '# comment': eYo.T3.Stmt.expression_stmt,
   'global …': {
-    type: eYo.T3.Stmt.global_nonlocal_stmt,
-    data: {
-      variant: eYo.Key.GLOBAL
-    }
+    type: eYo.T3.Stmt.global_stmt
   },
   'nonlocal …': {
-    type: eYo.T3.Stmt.global_nonlocal_stmt,
-    data: {
-      variant: eYo.Key.NONLOCAL
-    }
+    type: eYo.T3.Stmt.nonlocal_stmt
   },
   '@decorator': eYo.T3.Stmt.decorator_stmt,
   '"""…"""(stmt)': {

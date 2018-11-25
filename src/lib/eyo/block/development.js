@@ -281,9 +281,10 @@ eYo.DelegateSvg.Stmt.builtin__print_stmt.workspaceBlocks = eYo.Do.arraysMerged([
 eYo.DelegateSvg.Expr.argument_list_comprehensive.workspaceBlocks
 )
 
-eYo.DelegateSvg.Stmt.global_nonlocal_stmt.workspaceBlocks =
+eYo.DelegateSvg.Stmt.global_stmt.workspaceBlocks =
 [
-  eYo.T3.Stmt.global_nonlocal_stmt,
+  eYo.T3.Stmt.global_stmt,
+  eYo.T3.Stmt.nonlocal_stmt,
   eYo.T3.Expr.non_void_identifier_list,
   eYo.T3.Expr.identifier
 ]

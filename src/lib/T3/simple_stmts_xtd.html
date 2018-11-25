@@ -84,10 +84,10 @@ docstring_stmt ::= longstringliteral+{1}
 global_stmt ::=  "global" identifier ("," identifier)*
 nonlocal_stmt ::=  "nonlocal" identifier ("," identifier)*
 <pre>
-global_stmt ::= IGNORE
-nonlocal_stmt ::=  IGNORE
-global_nonlocal_stmt/global|nonlocal ::= ("global"|"nonlocal") non_void_identifier_list
+global_stmt ::= "global" non_void_identifier_list
+nonlocal_stmt ::= "nonlocal" non_void_identifier_list
 non_void_identifier_list ::= identifier ("," identifier)*
+gndr_stmt ::= global_stmt | nonlocal_stmt | del_stmt | return_stmt
 </pre>
 
 <pre>

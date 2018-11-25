@@ -348,16 +348,26 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
 })
 
 /**
- * Class for a DelegateSvg, global_nonlocal_expr.
+ * Class for a DelegateSvg, global_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   xml: {
-    tags: [eYo.Key.GLOBAL, eYo.Key.NONLOCAL]
+    tags: [
+      eYo.Key.GLOBAL,
+      eYo.Key.NONLOCAL,
+      eYo.Key.DEL,
+      eYo.Key.RETURN
+    ]
   },
   data: {
     variant: {
-      all: [eYo.Key.GLOBAL, eYo.Key.NONLOCAL],
+      all: [
+        eYo.Key.GLOBAL,
+        eYo.Key.NONLOCAL,
+        eYo.Key.DEL,
+        eYo.Key.RETURN
+      ],
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -365,6 +375,11 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
         load: /** @suppress {globalThis} */ function (element) {
           this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
         }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        this.variant_p = {
+          [eYo.T3.Stmt.global_stmt]: eYo.Key.GLOBAL,[eYo.T3.Stmt.nonlocal_stmt]: eYo.Key.NONLOCAL,          [eYo.T3.Stmt.del_stmt]: eYo.Key.DEL
+        } [type]
       }
     }
   },
@@ -377,19 +392,29 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_nonlocal_stmt, {
     identifiers: {
       order: 1,
       wrap: eYo.T3.Expr.non_void_identifier_list
+    },
+    del: {
+      order: 2,
+      wrap: eYo.T3.Expr.target_list
     }
   }
 })
 
+for (var _ = 0, k; (k = [
+  'nonlocal',
+  'del'
+][_++] + '_stmt');) {
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
+  eYo.DelegateSvg.Manager.register(k)
+}
+
 /**
  * The xml tag name of this block, as it should appear in the saved data.
- * Default implementation just returns 'eyo:list' when this block is embedded
- * and the inherited value otherwise.
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function () {
-  return this.variant_p === eYo.Key.GLOBAL ? 'eyo:global' : 'eyo:nonlocal'
+eYo.DelegateSvg.Stmt.global_stmt.prototype.tagName = function () {
+  return 'eyo:' + this.variant_p
 }
 
 /**
@@ -398,7 +423,7 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.tagName = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var current = this.variant_p
   var variants = this.data.variant.getAll()
@@ -416,9 +441,27 @@ eYo.DelegateSvg.Stmt.global_nonlocal_stmt.prototype.populateContextMenuFirst_ = 
   }
   F(0)
   F(1)
+  F(2)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.global_nonlocal_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
+
+
+/**
+ * Class for a DelegateSvg, return_stmt.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
+  slots: {
+    ans: {
+      order: 1,
+      fields: {
+        label: 'return'
+      },
+      wrap: eYo.T3.Expr.optional_expression_list
+    }
+  }
+}, true)
 
 /**
  * Class for a DelegateSvg, docstring_stmt.
@@ -438,38 +481,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
 eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
   return true
 }
-
-/**
- * Class for a DelegateSvg, del_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('del_stmt', {
-  slots: {
-    n_ary: {
-      order: 1,
-      fields: {
-        label: 'del'
-      },
-      wrap: eYo.T3.Expr.target_list
-    }
-  }
-}, true)
-
-/**
- * Class for a DelegateSvg, return_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass('return_stmt', {
-  slots: {
-    ans: {
-      order: 1,
-      fields: {
-        label: 'return'
-      },
-      wrap: eYo.T3.Expr.optional_expression_list
-    }
-  }
-}, true)
 
 /**
  * Class for a DelegateSvg, expression_stmt.
@@ -618,7 +629,8 @@ eYo.DelegateSvg.Stmt.T3s = [
   eYo.T3.Stmt.pass_stmt,
   eYo.T3.Stmt.break_stmt,
   eYo.T3.Stmt.continue_stmt,
-  eYo.T3.Stmt.global_nonlocal_stmt,
+  eYo.T3.Stmt.global_stmt,
+  eYo.T3.Stmt.nonlocal_stmt,
   eYo.T3.Stmt.expression_stmt,
   eYo.T3.Stmt.docstring__stmt,
   eYo.T3.Stmt.del_stmt,

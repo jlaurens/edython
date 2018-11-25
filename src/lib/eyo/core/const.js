@@ -67,9 +67,7 @@ eYo.Key = {
   SLICE: 'slice',
   N_ARY: 'n_ary',
   IDENTIFIERS: 'identifiers',
-  DEL: 'del',
-  RETURN: 'return',
-
+  
   VALUE: 'value', // this MUST be in lower case
   LIST: 'list',
 
@@ -173,6 +171,8 @@ eYo.Key = {
 
   GLOBAL: 'global',
   NONLOCAL: 'nonlocal',
+  DEL: 'del',
+  RETURN: 'return',
 
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',

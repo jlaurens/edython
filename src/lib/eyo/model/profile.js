@@ -48,9 +48,7 @@ eYo.Do.readOnlyMixin(
 eYo.Do.readOnlyMixin(
   eYo.T3.Stmt,
   {
-    control: '.control statement',
-    builtin_global: '.global',
-    builtin_nonlocal: '.nonlocal'
+    control: '.control statement'
   }
 )
 
@@ -575,12 +573,16 @@ eYo.T3.Profile.getReserved = function (identifier) {
       stmt: eYo.T3.Stmt.import_stmt
     },
     nonlocal: {
-      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
-      type: eYo.T3.Stmt.builtin_nonlocal
+      stmt: eYo.T3.Stmt.nonlocal
     },
     global: {
-      stmt: eYo.T3.Stmt.global_nonlocal_stmt,
-      model: eYo.T3.Stmt.builtin_global
+      stmt: eYo.T3.Stmt.global_stmt
+    },
+    del: {
+      stmt: eYo.T3.Stmt.del_stmt
+    },
+    return: {
+      stmt: eYo.T3.Stmt.return_stmt
     },
     as: {
       expr: eYo.T3.Expr.identifier,
