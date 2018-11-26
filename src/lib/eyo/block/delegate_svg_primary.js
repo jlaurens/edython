@@ -208,11 +208,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var holder_d = this.data.holder
         holder_d.required = newValue === 1
         holder_d.setIncog()
-        if (newValue !== 0) {
-          // this is a dotted expression
-          this.data.annotation.change(eYo.Key.NONE)
-          this.data.definition.change(eYo.Key.NONE)
-        }
         this.owner.updateProfile()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -346,6 +341,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           }
         }
       },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        this.didChange(oldValue, newValue)
+         if (newValue === eYo.Key.NONE) {
+           console.error('UNEXPECTED')
+         }
+      },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
           this.owner.variant_p = eYo.Key.DEFINED
@@ -363,9 +365,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.Key.CALL_EXPR,
         eYo.Key.SLICING,
         eYo.Key.ALIASED,
-        eYo.Key.DEFINED,
         eYo.Key.ANNOTATED,
-        eYo.Key.ANNOTATED_DEFINED
+        eYo.Key.ANNOTATED_DEFINED,
+        eYo.Key.DEFINED
       ],
       init: eYo.Key.NONE,
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -802,7 +804,7 @@ Object.defineProperty(
 eYo.DelegateSvg.Expr.primary.prototype.updateProfile = function () {
   ++this.change.count
   this.profile_p = this.getProfile()
-  this.data.subtype.set(this.profile_p.p5e && this.profile_p.p5e.raw)
+  this.subtype_p = this.profile_p.p5e && this.profile_p.p5e.raw
 }
 
 /**
@@ -820,11 +822,12 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       var ans = {
         dotted: this.dotted_p,
         variant: this.variant_p,
-        defined: !this.data.definition.isNone(),
-        annotated: !this.data.annotation.isNone()
+        defined: !this.definition_d.isNone(),
+        annotated: !this.annotation_d.isNone()
       }
       var target, t_eyo, p5e
       var type
+      // if the `name` slot is connected.
       if ((target = this.name_s.targetBlock())) {
         t_eyo = target.eyo
         if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {

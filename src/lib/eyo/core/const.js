@@ -107,8 +107,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   DEFINITION: 'definition',
   
   // Primary delegate
-  VOID: '',
-  NONE: 'none',
+  NONE: '----',
   CALL: 'call',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
