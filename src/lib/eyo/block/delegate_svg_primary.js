@@ -353,6 +353,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.variant_p = eYo.Key.DEFINED
         }
       },
+      synchronize: true,
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         var v = this.owner.variant_p
         return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED
