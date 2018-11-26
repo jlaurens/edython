@@ -175,8 +175,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         return (!goog.isDef(content) || this.data.subtype.model.getPossible.call(this, newValue, content)) && {validated: newValue}
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
+        this.setIncog(!newValue || !newValue.length)
         this.synchronize()
-        this.owner.fields.prefix.setVisible(!!newValue && !!newValue.length)
       },
       xml: false,
     },

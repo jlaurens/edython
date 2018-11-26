@@ -596,7 +596,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
   if (!goog.isDef(newValue)) {
     newValue = this.get()
   }
-  if (this.reentrant['model_synchronize'] || this.field || this.slot || this.model.synchronize === true) {
+  if (this.reentrant['model_synchronize']) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {

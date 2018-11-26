@@ -83,6 +83,10 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
+        var m = eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type)
+        if (!m) {
+          console.error('NO MODEL FOR', type)
+        }
         return eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type).lhs
       }
     },
