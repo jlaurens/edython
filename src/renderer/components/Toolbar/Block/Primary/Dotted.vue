@@ -1,7 +1,8 @@
 <template>
   <b-btn-group id="b3k-primary-holder" v-if="show_dotted">
     <b-input v-model="holder" type="text" class="eyo-code eyo-form-input-text item text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-input>
-    <b-dropdown id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved item text" variant="outline-secondary">
+    <div v-if="ismethod" class="item text">.</div>
+    <b-dropdown v-else id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved item text" variant="outline-secondary">
       <template slot="button-content"><div class="b3k-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
       <b-dropdown-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="b3k-primary-dotted eyo-code" v-html="item.content"></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
@@ -11,6 +12,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     data () {
       return {
@@ -35,13 +38,15 @@
         default: function (item) {
           return item
         }
+      },
+      ismethod: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
-      show_dotted: {
-        get () {
-          return this.$store.state.UI.blockEditShowDotted
-        }
+      show_dotted () {
+        return this.ismethod || this.blockEditShowDotted
       },
       canHolder () {
         return this.dotted === 1
@@ -140,7 +145,10 @@
           'cmath',
           'string'
         ]
-      }
+      },
+      ...mapState({
+        blockEditShowDotted: state => state.UI.blockEditShowDotted
+      })
     },
     created () {
       this.$$synchronize()
@@ -167,6 +175,8 @@
         this.saved_step = this.step
         this.holder_ = this.eyo.holder_p
         this.dotted_ = this.eyo.dotted_p
+        var p5e = this.eyo.profile_.p5e
+        this.isMethod_ = p5e && p5e.item && (p5e.item.type === eYo.Key.METHOD)
       }
     }
   }

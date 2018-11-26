@@ -24,7 +24,6 @@ goog.require('eYo.DelegateSvg.Expr')
 eYo.DelegateSvg.Expr.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
-      main: true,
       init: '+',
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
@@ -248,7 +247,6 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   },
   data: {
     operator: {
-      main: true,
       all: ['-', '+', '~', 'not'],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)

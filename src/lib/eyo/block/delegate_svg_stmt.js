@@ -380,9 +380,9 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        this.variant_p = {
+        this.set({
           [eYo.T3.Stmt.global_stmt]: eYo.Key.GLOBAL,[eYo.T3.Stmt.nonlocal_stmt]: eYo.Key.NONLOCAL,          [eYo.T3.Stmt.del_stmt]: eYo.Key.DEL
-        } [type]
+        } [type])
       }
     }
   },

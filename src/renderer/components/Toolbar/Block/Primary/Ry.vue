@@ -1,5 +1,5 @@
 <template>
-  <b-btn-group id="block-primary-ry" key-nav  aria-label="Block primary ary" v-if="(variant === $$.eYo.Key.CALL_EXPR) && can_ry && show_ry" class="deeper">
+  <b-btn-group v-if="show_ry" id="block-primary-ry" key-nav  aria-label="Block primary ary" class="deeper">
     <b-input v-model="mandatory" type="text" class="eyo-code item w-2rem" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
     <b-dropdown class="eyo-code eyo-form-input-text item mw-4rem" variant="outline-secondary">
       <b-dropdown-item-button v-for="item in items" v-on:click="mandatory = item" :key="item" class="eyo-code eyo-content" v-html="item"></b-dropdown-item-button>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     name: 'block-primary-ry',
     data: function () {
@@ -35,6 +37,10 @@
       step: {
         type: Number,
         default: 0
+      },
+      ismethod: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -44,10 +50,8 @@
           return this.variant_
         }
       },
-      show_ry: {
-        get () {
-          return this.$store.state.UI.blockEditShowRy
-        }
+      show_ry () {
+        return this.blockEditShowRy && !this.isMethod && (this.variant === eYo.Key.CALL_EXPR) && this.can_ry
       },
       ary: {
         get () {
@@ -80,7 +84,10 @@
             this.eyo.mandatory_p = filtered
           }
         }
-      }
+      },
+      ...mapState({
+        blockEditShowRy: state => state.UI.blockEditShowRy
+      })
     },
     created () {
       this.$$synchronize()

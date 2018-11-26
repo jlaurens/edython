@@ -536,11 +536,9 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            this.owner.variant_p = eYo.Key.N_ARY
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.N_ARY
         }
       }
     }

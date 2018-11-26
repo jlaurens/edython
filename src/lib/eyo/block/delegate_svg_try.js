@@ -64,7 +64,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length || this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -89,7 +89,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length || this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       }
@@ -110,7 +110,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFromModel()) {
+        if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -131,7 +131,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       check: eYo.T3.Expr.identifier,
       hole_value: 'name',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       }
@@ -255,7 +255,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length || this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -272,7 +272,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length || this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.FROM
         }
       }
@@ -298,10 +298,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromModel()) {
-          if (this.owner.variant_p === eYo.Key.NONE) {
-            this.owner.variant_p = eYo.Key.EXPRESSION
-          }
+        if (this.isRequiredFrom() && this.owner.variant_p === eYo.Key.NONE) {
+          this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
@@ -317,7 +315,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: eYo.Msg.Placeholder.EXPRESSION,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.FROM
         }
       }

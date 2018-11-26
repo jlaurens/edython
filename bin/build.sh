@@ -250,13 +250,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/block/signature.js" \
---js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/core/do.js" \
+--js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/protocol/protocol.js" \

@@ -64,7 +64,6 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       xml: false
     },
     value: {
-      main: true,
       init: '',
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -204,7 +203,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       synchronize: true
     },
     value: {
-      main: true,
       init: "''",
       validate: /** @this{eYo.Data} */ function (newValue) {
         return goog.isString(newValue)? {validated: newValue}: null

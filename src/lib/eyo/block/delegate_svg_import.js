@@ -83,14 +83,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var slot = this.owner.import_module_s
-        slot.required = newValue === this.IMPORT
+        slot.required = newValue === eYo.Key.IMPORT
         slot.setIncog()
-        this.data.from.setIncog(newValue === this.IMPORT)
+        this.data.from.setIncog(newValue === eYo.Key.IMPORT)
         slot = this.owner.import_s
-        slot.required = newValue === this.FROM_MODULE_IMPORT
+        slot.required = newValue === eYo.Key.FROM_MODULE_IMPORT
         slot.setIncog()
         slot = this.owner.import_star_s
-        slot.required = newValue === this.FROM_MODULE_IMPORT_STAR
+        slot.required = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
         slot.setIncog()
       }
     },
@@ -103,7 +103,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         var variant = data.get()
         return p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
-        || ((variant === data.FROM_MODULE_IMPORT)
+        || ((variant === eYo.Key.FROM_MODULE_IMPORT)
           && (p5e.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },
@@ -132,12 +132,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         eYo.T3.Expr.identifier,
         eYo.T3.Expr.dotted_name
       ],
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            if (this.owner.variant_p === eYo.Key.IMPORT) {
-              this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
-            }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          if (this.owner.variant_p === eYo.Key.IMPORT) {
+            this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
           }
         }
       }
@@ -148,14 +146,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         label: 'import'
       },
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            var variant = this.owner.data.variant
-            var current = variant.get()
-            if (current !== variant.FROM_MODULE_IMPORT && current !== variant.FROM_MODULE_IMPORT_STAR)
-            variant.set(variant.FROM_MODULE_IMPORT)
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          var d = this.owner.data.variant
+          var v = d.get()
+          if (v !== eYo.Key.FROM_MODULE_IMPORT && v !== eYo.Key.FROM_MODULE_IMPORT_STAR)
+          d.set(eYo.Key.FROM_MODULE_IMPORT)
         }
       }
     },
@@ -170,7 +166,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
           var variant = this.owner.data.variant
-          if (variant.get() === variant.FROM_MODULE_IMPORT_STAR) {
+          if (variant.get() === eYo.Key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
         },
@@ -178,7 +174,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           var attr = element.getAttribute('star')
           if (attr === 'true') {
             var variant = this.owner.data.variant
-            variant.set(variant.FROM_MODULE_IMPORT_STAR)
+            variant.set(eYo.Key.FROM_MODULE_IMPORT_STAR)
           }
         }
       }

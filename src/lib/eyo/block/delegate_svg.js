@@ -1766,13 +1766,13 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         block = workspace.newBlock(model, id) // can undo
         block.eyo.setDataWithType(model)
       } else {
-        var type = eYo.T3.Profile.get(model, null)
-        if (type.expr && (block = workspace.newBlock(type.expr, id))) {
-          type.expr && block.eyo.setDataWithType(type.expr)
+        var p5e = eYo.T3.Profile.get(model, null)
+        if (p5e.expr && (block = workspace.newBlock(p5e.expr, id))) {
+          p5e.expr && block.eyo.setDataWithType(p5e.expr)
           model && block.eyo.setDataWithModel(model)
           dataModel = {data: model}
-        } else if (type.stmt && (block = workspace.newBlock(type.stmt, id))) {
-          type.stmt && block.eyo.setDataWithType(type.stmt)
+        } else if (p5e.stmt && (block = workspace.newBlock(p5e.stmt, id))) {
+          p5e.stmt && block.eyo.setDataWithType(p5e.stmt)
           model && block.eyo.setDataWithModel(model)
           dataModel = {data: model}
         } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
@@ -1827,8 +1827,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
             B.eyo.changeWrap(
               () => {
                 // The connection can be established only when not incog
-                var slot = input.connection.eyo.slot
-                slot && slot.setIncog(false)
+                slot.setIncog(false)
                 B.outputConnection.connect(input.connection)
               }
             )
@@ -2786,17 +2785,17 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   }
   var block = this.block_
   // get the type:
-  var type = eYo.T3.Profile.get(model, null)
-  if (type !== eYo.T3.Profile.unset) {
+  var p5e = eYo.T3.Profile.get(model, null)
+  if (p5e !== eYo.T3.Profile.unset) {
     if (connection) {
       if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {
-        type.stmt && (model = {
-          type: type.stmt,
+        p5e.stmt && (model = {
+          type: p5e.stmt,
           data: model
         })
       } else {
-        type.expr && (model = {
-          type: type.expr,
+        p5e.expr && (model = {
+          type: p5e.expr,
           data: model
         })
       }

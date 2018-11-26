@@ -537,7 +537,7 @@ eYo.Xml.Text.toDom = function (block, element) {
  * @return a dom element
  */
 eYo.Xml.Text.fromDom = function (block, element) {
-  return eYo.Do.someChild(element, function (child) {
+  return eYo.Do.someChild(element, (child) => {
     return child.nodeType === Node.TEXT_NODE && block.eyo.data.value.set(child.nodeValue)
   })
 }
@@ -583,7 +583,7 @@ eYo.Xml.Literal.domToBlockComplete = (function () {
     var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
     var id = element.getAttribute('id')
     var block
-    eYo.Do.someChild(element, function (child) {
+    eYo.Do.someChild(element, (child) => {
       if (child.nodeType === Node.TEXT_NODE) {
         return block = newBlock(workspace, child.nodeValue, id, stmt_expected)
       }
@@ -852,9 +852,9 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
-  eYo.Do.forEachElementChild.call(this, dom, child => {
+  eYo.Do.forEachElementChild(dom, (child) => {
     this.to_resit.push(child)
-  })
+  }, this)
   return eYo.Events.groupWrap(
     () => {
       var ans
@@ -1143,7 +1143,7 @@ eYo.Xml.fromDom = function (block, element) {
         slot.load(element)
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
-        eYo.Do.forEachElementChild(element, function (child) {
+        eYo.Do.forEachElementChild(element, (child) => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input && input.connection) {
@@ -1177,7 +1177,7 @@ eYo.Xml.fromDom = function (block, element) {
       // read flow and suite
       var statement = function (c8n, key) {
         if (c8n) {
-          return eYo.Do.someElementChild(element, function (child) {
+          return eYo.Do.someElementChild(element, (child) => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               block.workspace.eyo.recover.dontResit(child)
               var target = eYo.Xml.domToBlock(child, block)
@@ -1206,44 +1206,6 @@ eYo.Xml.fromDom = function (block, element) {
 }
 
 goog.require('eYo.DelegateSvg.Primary')
-
-/**
- * Set the option from the `eyo` attribute.
- * The block argument is expected
- * @param {!Blockly.Block} block
- * @param {!Element} element dom element to be processed.
- * @override
- */
-eYo.DelegateSvg.Expr.primary.prototype.fromDom = function (block, element) {
-  // trick to call this function without the first argument
-  // just like all other delegate methods
-  // please deprecate this
-  if (block !== this.block_) {
-    element = block
-    block = this.block_
-  }
-  eYo.Xml.fromDom(block, element)
-  var type = element.getAttribute(eYo.Key.EYO)
-  var d = this.data.variant
-  if (type === eYo.Key.CALL) {
-    d.set(eYo.Key.CALL_EXPR)
-  } else if (type === eYo.T3.Expr.call_expr.substring(4)) {
-    d.set(eYo.Key.CALL_EXPR)
-  } else if (type === eYo.T3.Expr.slicing.substring(4)) {
-    d.set(eYo.Key.SLICING)
-  } else if (type === eYo.T3.Expr.identifier_as.substring(4)) {
-    d.set(eYo.Key.ALIASED)
-  } else if (type === eYo.T3.Expr.dotted_name_as.substring(4)) {
-    d.set(eYo.Key.ALIASED)
-  } else {
-    if (this.data.alias.isRequiredFromModel()) {
-      d.set(eYo.Key.ALIASED)
-      this.data.annotation.set(eYo.Key.NONE)
-      this.data.definition.set(eYo.Key.NONE)
-    }
-  }
-  return block
-}
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.

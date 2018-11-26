@@ -68,6 +68,9 @@ eYo.Data = function (owner, key, model) {
   }
   if (!model.setup_) {
     model.setup_ = true
+    if (!goog.isFunction(model.didLoad)) {
+      delete model.didLoad
+    }
     if (goog.isDefAndNotNull(xml)) {
       if (!goog.isFunction(xml.toText)) {
         delete xml.toText
@@ -81,17 +84,20 @@ eYo.Data = function (owner, key, model) {
       if (!goog.isFunction(xml.fromField)) {
         delete xml.fromField
       }
+      if (!goog.isFunction(xml.save)) {
+        delete xml.save
+      }
+      if (!goog.isFunction(xml.load)) {
+        delete xml.load
+      }
+      if (!goog.isFunction(xml.didLoad)) {
+        delete xml.didLoad
+      }
     } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
     }
     if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
       delete model.validateIncog
-    }
-  }
-  // next should be removed, thick to repalce `eYo.Key.FOO` by `this.FOO`
-  for (var k in model) {
-    if (XRegExp.exec(k, eYo.XRE.upper)) {
-      this[k] = model[k]
     }
   }
 }
@@ -105,12 +111,12 @@ Object.defineProperties(
       }
     },
     blockType: {
-      get () {
+      get  () {
         return this.owner.block_.type
       }
     },
     data: {
-      get () {
+      get  () {
         return this.owner.data
       }
     },
@@ -590,7 +596,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
   if (!goog.isDef(newValue)) {
     newValue = this.get()
   }
-  if (this.reentrant['model_synchronize'] || this.model.synchronize === true) {
+  if (this.reentrant['model_synchronize'] || this.field || this.slot || this.model.synchronize === true) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {
@@ -810,6 +816,10 @@ eYo.Data.prototype.save = function (element) {
     // only few data need not be saved
     return
   }
+  // do not save if there is an associate slot with a target block.
+  if (this.slot && this.slot.targetBlock()) {
+    return
+  }
   if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {
     // in general, data should be saved
     if (xml) {
@@ -867,6 +877,7 @@ eYo.Data.prototype.customizePlaceholder = function (txt) {
  * @param {Element} xml the persistent element.
  */
 eYo.Data.prototype.load = function (element) {
+  this.loaded_ = false
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -876,7 +887,7 @@ eYo.Data.prototype.load = function (element) {
       var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
       if (f) {
         f.apply(this, arguments)
-        if (xml && goog.isFunction(xml.didLoad)) {
+        if (xml && xml.didLoad) {
           xml.didLoad.call(this, element)
         }
         return
@@ -889,16 +900,17 @@ eYo.Data.prototype.load = function (element) {
     if (isText) {
       // get the first child
       var done
-      eYo.Do.forEachChild(element, function (child) {
+      eYo.Do.forEachChild(element, (child) => {
         if (child.nodeType === Node.TEXT_NODE) {
           txt = child.nodeValue
-          if (xml && goog.isFunction(xml.didLoad)) {
-            xml.didLoad.call(this, element)
-          }
           return done = true
         }
       })
-      if (!done) {
+      if (done) {
+        if (xml && xml.didLoad) {
+          xml.didLoad.call(this, element)
+        }
+      } else {
         this.customizePlaceholder(element.getAttribute(eYo.Key.PLACEHOLDER))
       }
     } else {
@@ -908,10 +920,10 @@ eYo.Data.prototype.load = function (element) {
         if (txt) {
           this.customizePlaceholder(txt)
           this.setRequiredFromModel(true)
-          if (xml && goog.isFunction(xml.didLoad)) {
+          if (xml && xml.didLoad) {
             xml.didLoad.call(this, element)
           }
-          return true
+          return this.loaded_ = true
         }
       }
     }
@@ -927,10 +939,10 @@ eYo.Data.prototype.load = function (element) {
     } else if (required) {
       this.fromText('', false)
     }
-    if (xml && goog.isFunction(xml.didLoad)) {
+    if (xml && xml.didLoad) {
       xml.didLoad.call(this, element)
     }
-    return true
+    return this.loaded_ = true
   }
 }
 
@@ -959,6 +971,14 @@ eYo.Data.prototype.setRequiredFromModel = function (newValue) {
  */
 eYo.Data.prototype.isRequiredFromModel = function () {
   return this.required_from_model
+}
+
+/**
+ * Get the concrete required status.
+ * For edython.
+ */
+eYo.Data.prototype.isRequiredFrom = function () {
+  return this.isRequiredFromModel() || this.get().length
 }
 
 /**

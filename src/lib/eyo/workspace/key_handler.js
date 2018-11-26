@@ -623,14 +623,12 @@ var Ks = {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === '+') {
+      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_p === '+') {
         return
       }
       var model = {
         type: eYo.T3.Expr.u_expr,
-        data: {
-          main: '+'
-        }
+        operator_d: '+'
       }
       if (eYo.SelectedConnection) {
         B.eyo.insertBlockWithModel(model)
@@ -650,15 +648,13 @@ Ks = function () {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
-      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.data.main.get() === op) {
+      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_ === op) {
         B.eyo.replaceBlock(parent)
         return
       }
       var model = {
         type: eYo.T3.Expr.u_expr,
-        data: {
-          main: op
-        }
+        operator_d: op
       }
       if (eYo.SelectedConnection) {
         B.eyo.insertBlockWithModel(model)

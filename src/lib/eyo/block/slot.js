@@ -258,6 +258,21 @@ eYo.Slot.makeFields = function () {
     } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
       delete model.endEditing
     }
+    if (!goog.isFunction(model.didLoad)) {
+      delete model.didLoad
+    }
+    var xml = model.xml
+    if (xml) {
+      if (!goog.isFunction(xml.save)) {
+        delete xml.save
+      }
+      if (!goog.isFunction(xml.load)) {
+        delete xml.load
+      }
+      if (!goog.isFunction(xml.didLoad)) {
+        delete xml.didLoad
+      }
+    }
   }
   var makeField = function (fieldName, model) {
     var field
@@ -524,6 +539,9 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   } else {
     newValue = !!newValue
   }
+  if (this.owner.isReady) {
+    
+  }
   var validator = this.model.validateIncog
   if (validator) {
     newValue = validator.call(this, newValue)
@@ -577,12 +595,21 @@ eYo.Slot.prototype.isRequiredToModel = function () {
 }
 
 /**
- * Get the required status.
+ * Get the required status as stated by the model.
  * For edython.
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFromModel = function () {
   return this.is_required_from_model || (!this.incog && this.model.xml && this.model.xml.required)
+}
+
+/**
+ * Get the concrete required status.
+ * For edython.
+ * @param {boolean} newValue
+ */
+eYo.Slot.prototype.isRequiredFrom = function () {
+  return this.isRequiredFromModel() || this.targetBlock()
 }
 
 /**
@@ -777,6 +804,7 @@ eYo.Slot.prototype.getTag = function () {
  * @return the added child, if any
  */
 eYo.Slot.prototype.load = function (element) {
+  this.loaded_ = false
   var xml = this.model.xml
   if (xml === false) {
     return
@@ -860,7 +888,7 @@ eYo.Slot.prototype.load = function (element) {
       }
     }
   }
-  return out
+  return this.loaded_ = out
 }
 
 /**

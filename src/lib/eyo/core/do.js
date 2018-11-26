@@ -473,49 +473,53 @@ eYo.Do.stringToDom = function (string) {
 }
 
 /**
- * Forwards `this` to the handler.
+ * .
  * @param {*} element 
  * @param {*} handler 
+ * @param {*} thisArg
  */
-eYo.Do.forEachChild = function (element, handler) {
+eYo.Do.forEachChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
-  children.forEach(handler, this)
+  children.forEach(handler, thisArg)
 }
 
 /**
  * Forwards `this` to the handler.
  * @param {*} element 
  * @param {*} handler 
+ * @param {*} thisArg 
  */
-eYo.Do.forEachElementChild = function (element, handler) {
+eYo.Do.forEachElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
-  children.forEach(function (child) {
+  children.forEach((child, index, item) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
-      handler.call(this, child)
+      handler.call(thisArg, child, index, item)
     }
-  }, this)
+  }, thisArg)
 }
 
 /**
  * Forwards `this` to the handler.
  * @param {*} element 
  * @param {*} handler 
+ * @param {*} thisArg 
  */
-eYo.Do.someChild = function (element, handler) {
+eYo.Do.someChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
-  return children.some(handler, this)
+  return children.some(handler, thisArg)
 }
 
 /**
  * Forwards `this` to the handler.
  * @param {*} element 
  * @param {*} handler 
+ * @param {*} thisArg 
  */
-eYo.Do.someElementChild = function (element, handler) {
+eYo.Do.someElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
-  return children.some(function (child) {
+  return children.some((child, index, array) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
-      return handler.call(this, child)
+      return handler.call(thisArg, child, index, array)
     }
   }, this)
 }

@@ -326,22 +326,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.target,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            this.owner.variant_p = eYo.Key.NAME
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.NAME
         }
       }
     },
     lhs: {
       order: 2,
       wrap: eYo.T3.Expr.target_list,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            this.owner.variant_p = eYo.Key.TARGET
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.TARGET
         }
       }
     },
@@ -458,8 +454,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         this.data.numberOperator.set(newValue)
         this.data.bitwiseOperator.set(newValue)
       },
-      validate: false,
-      main: true
+      validate: false
     },
     numberOperator: {
       all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],

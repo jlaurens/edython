@@ -307,100 +307,68 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.get().length || this.isRequiredFromModel()) {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       }
     }, // new
     annotation: {
-      NONE: eYo.Key.NONE,
-      ANNOTATED: eYo.Key.ANNOTATED,
       order: 1000,
-      all: [
-        eYo.Key.NONE,
-        eYo.Key.ANNOTATED
-      ],
-      default: eYo.Key.NONE,
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.identifier_annotated
-        || type === eYo.T3.Expr.identifier_annotated_defined) {
-          this.set(eYo.Key.ANNOTATED)
-        }
-      },
-      validate: true,
-      didChange: function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        // override previous data if necessary
-        if (newValue !== eYo.Key.NONE) {
-          // no holder nor dotted nor variant
-          this.owner.dotted_p = 0
-          this.owner.variant_p = eYo.Key.NONE
-        }
-        this.required = newValue !== eYo.Key.NONE
-        this.setIncog()
-      },
+      init: '',
       xml: {
-        save: function (element) {
-          if (this.get() !== eYo.Key.NONE) {
+        save: /** @suppress {globalThis} */ function (element) {
+          var v = this.owner.variant_p
+          if (v === eYo.Key.ANNOTATED || v === eYo.Key.ANNOTATED_DEFINED) {
             this.save(element)
           }
         }
+      },
+      didLoad: /** @suppress {globalThis} */ function (element) {
+        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+          this.owner.variant_p = eYo.Key.ANNOTATED
+        }
+      },
+      synchronize: true,
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        var v = this.owner.variant_p
+        return v !== eYo.Key.ANNOTATED && v !== eYo.Key.ANNOTATED_DEFINED
       }
     },
     definition: {
       order: 1001,
-      NONE: eYo.Key.NONE,
-      DEFINED: eYo.Key.DEFINED,
-      all: [
-        eYo.Key.NONE,
-        eYo.Key.DEFINED
-      ],
-      default: eYo.Key.NONE,
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.keyword_item
-          || type === eYo.T3.Expr.identifier_defined
-          || type === eYo.T3.Expr.identifier_annotated_defined) {
-          this.set(eYo.Key.DEFINED)
-        }
-      },
-      validate: true,
-      didChange: function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        // override previous data if necessary
-        if (newValue !== eYo.Key.NONE) {
-          // no holder nor dotted nor variant
-          this.owner.dotted_p = 0
-          this.owner.variant_p = eYo.Key.NONE
-        }
-        this.required = newValue !== eYo.Key.NONE
-        this.setIncog()
-      },
+      init: '',
+      validate: false,
       xml: {
-        save: function (element) {
-          if (this.get() !== eYo.Key.NONE) {
+        save: /** @suppress {globalThis} */ function (element) {
+          var v = this.owner.variant_p
+          if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED) {
             this.save(element)
           }
         }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+          this.owner.variant_p = eYo.Key.DEFINED
+        }
+      },
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        var v = this.owner.variant_p
+        return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED
       }
     },
     variant: {
       order: 2000,
-      NONE: eYo.Key.NONE,
-      CALL_EXPR: eYo.Key.CALL_EXPR,
-      SLICING: eYo.Key.SLICING,
-      ALIASED: eYo.Key.ALIASED,
       all: [
         eYo.Key.NONE,
         eYo.Key.CALL_EXPR,
         eYo.Key.SLICING,
-        eYo.Key.ALIASED
+        eYo.Key.ALIASED,
+        eYo.Key.DEFINED,
+        eYo.Key.ANNOTATED,
+        eYo.Key.ANNOTATED_DEFINED
       ],
       init: eYo.Key.NONE,
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        if (newValue !== eYo.Key.NONE) {
-          this.owner.annotation_p = eYo.Key.NONE
-          this.owner.definition_p = eYo.Key.NONE
-        }
         this.owner.consolidateType()
         this.owner.consolidateConnections()
         this.isChanging(oldValue, newValue)
@@ -414,6 +382,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(eYo.Key.SLICING)
         } else if (type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.identifier_as || type === eYo.T3.Expr.expression_as) {
           this.set(eYo.Key.ALIASED)
+        } else if (type === eYo.T3.Expr.identifier_annotated) {
+          this.set(eYo.Key.ANNOTATED)
+        } else if (type === eYo.T3.Expr.identifier_defined) {
+          this.set(eYo.Key.DEFINED)
+        } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
+          this.set(eYo.Key.ANNOTATED_DEFINED)
         } else {
           this.set(eYo.Key.NONE)
         }
@@ -425,16 +399,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         O.n_ary_s.setIncog(newValue !== eYo.Key.CALL_EXPR)
         O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
         O.alias_d.setIncog(newValue !== eYo.Key.ALIASED)
-        if (newValue !== eYo.Key.NONE) {
-          O.definition_d.setIncog(true)
-          O.annotation_d.setIncog(true)
-        }
+        O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED)
+        O.annotation_d.setIncog(newValue !== eYo.Key.ANNOTATED && newValue !== eYo.Key.ANNOTATED_DEFINED)
       },
       xml: false
     },
     name: {
-      order: 10000, // the name must be quite last
-      main: true,
+      order: 10000, // the name must be quite last, still ?
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -652,26 +623,42 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       }
     },
+    alias: {
+      order: 101,
+      fields: {
+        label: {
+          value: 'as',
+          css: 'reserved'
+        },
+        bind: {
+          endEditing: true
+        }
+      },
+      check: eYo.T3.Expr.identifier,
+      hole_value: 'identifier',
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.ALIASED         
+        }
+      }
+    },
     annotation: {
       order: 102,
       fields: {
         label: {
           value: ':',
           css: 'reserved'
+        },
+        bind: {
+          endEditing: true
         }
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromModel()) {
-          this.owner.variant_p = eYo.Key.NONE
-          this.owner.annotation_p = eYo.Key.ANNOTATED         
-        } else {
-          this.owner.annotation_p = eYo.Key.NONE
+        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+          this.owner.variant_p = eYo.Key.ANNOTATED
         }
-      },
-      validateIncog: /** @suppress {globalThis} */ function (newValue) {
-        return this.owner.annotation_p !== eYo.Key.ANNOTATED
       }
     },
     definition: {
@@ -680,21 +667,16 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         label: {
           value: '=',
           css: 'reserved'
+        },
+        bind: {
+          endEditing: true
         }
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.isRequiredFromModel()) {
-            var d = this.owner.data.variant
-            d.set(eYo.Key.NONE)
-            d = this.owner.data.definition
-            d.set(eYo.Key.DEFINED)            
-          } else {
-            d = this.owner.data.definition
-            d.set(eYo.Key.NONE)
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+          this.owner.variant_p = eYo.Key.DEFINED
         }
       }
     },
@@ -1023,13 +1005,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
     return [
       eYo.T3.Expr.expression_as
     ]
-  }
-  if (profile.annotated) {
-    if(profile.defined) {
-      return [
-        eYo.T3.Expr.identifier_annotated_defined
-      ]
-    }
+  } else if (profile.variant === eYo.Key.ANNOTATED) {
     return profile.name.type === eYo.T3.Expr.identifier
       ? [
         eYo.T3.Expr.identifier_annotated,
@@ -1038,10 +1014,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
       : [
         eYo.T3.Expr.key_datum
       ]
-  } else if(profile.defined) {
+  } else if (profile.variant === eYo.Key.DEFINED) {
     return [
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
+    ]
+  } else if (profile.variant === eYo.Key.ANNOTATED_DEFINED) {
+    return [
+      eYo.T3.Expr.identifier_annotated_defined
     ]
   }
   // if this is just a wrapper, forwards the check array

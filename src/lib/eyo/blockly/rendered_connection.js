@@ -730,6 +730,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
   if (!c8nA || !c8nB) {
     return true
   }
+  var sourceA = c8nA.getSourceBlock()
+  var sourceB = c8nB.getSourceBlock()
   // short stop if one of the connection is hidden or disabled
   // except when we try to establish a connection with a wrapped block.
   // in either case, returns true iff the connetion is aready established
@@ -741,11 +743,9 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
     if (c8nB.targetConnection) {
       return c8nB === c8nA.targetConnection
     }
-  } else if (!force && (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_)) {
+  } else if (!force && sourceA.eyo.isready && sourceB.eyo.isready && (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_)) { // the `force` argument may be useless now that there is a readiness test.
     return c8nA === c8nB.targetConnection
   }
-  var sourceA = c8nA.getSourceBlock()
-  var sourceB = c8nB.getSourceBlock()
   var typeA = sourceA.eyo.type // the block type is not up to date
   var typeB = sourceB.eyo.type // the block type is not up to date
   if (typeA.indexOf('eyo:') === 0 && typeB.indexOf('eyo:') === 0) {

@@ -27,9 +27,6 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
   },
   data: {
     variant: {
-      YIELD: eYo.Key.YIELD,
-      YIELD_EXPRESSION: eYo.Key.YIELD_EXPRESSION,
-      YIELD_FROM: eYo.Key.YIELD_FROM,
       all: [
         eYo.Key.YIELD,
         eYo.Key.YIELD_EXPRESSION,
@@ -38,10 +35,10 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var slot = this.owner.expression_s
-        slot.required = (newValue === this.YIELD_EXPRESSION)
+        slot.required = (newValue === eYo.Key.YIELD_EXPRESSION)
         slot.setIncog()
         slot = this.owner.from_s
-        slot.required = (newValue === this.YIELD_FROM)
+        slot.required = (newValue === eYo.Key.YIELD_FROM)
         slot.setIncog()
       }
     }

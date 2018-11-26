@@ -159,14 +159,8 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.any,
     eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.star_expr,
-    {
-      type: eYo.T3.Stmt.global_nonlocal_stmt,
-      variant_d: 'global'
-    },
-    {
-      type: eYo.T3.Stmt.global_nonlocal_stmt,
-      variant_d: 'nonlocal'
-    },
+    eYo.T3.Stmt.global_stmt,
+    eYo.T3.Stmt.nonlocal_stmt,
     eYo.T3.Stmt.del_stmt,
     eYo.T3.Expr.builtin__print_expr,
     eYo.T3.Expr.comprehension,
@@ -198,6 +192,10 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
     eYo.T3.Expr.object_comparison,
+    {
+      type: eYo.T3.Expr.builtin__object,
+      value_d: 'None'
+    },
     eYo.T3.Expr.or_test,
     eYo.T3.Expr.and_test,
     eYo.T3.Stmt.if_part,
@@ -504,25 +502,18 @@ eYo.FlyoutCategory = {
       title: 'text_split'
     },
     {
-      type: eYo.T3.Expr.identifier,
-      data: {
-        name: 'sep',
-        definition: eYo.Key.DEFINED
-      },
-      slots: {
-        definition: 'None'
+      type: eYo.T3.Expr.identifier_defined,
+      name_d: 'sep',
+      definition_s: {
+        type: eYo.T3.Expr.builtin__object,
+        value_d: 'None'
       },
       title: 'text_split_sep'
     },
     {
-      type: eYo.T3.Expr.identifier,
-      data: {
-        name: 'maxsplit',
-        definition: eYo.Key.DEFINED
-      },
-      slots: {
-        definition: -1
-      },
+      type: eYo.T3.Expr.identifier_defined,
+      name_d: 'maxsplit',
+      definition_d: -1,
       title: 'text_split_maxsplit'
     },
     {

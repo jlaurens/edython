@@ -44,7 +44,7 @@
       ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
-      <block-variant v-else-if="isSelected($$.eYo.T3.Stmt.global_nonlocal_stmt)" :eyo="eyo" :step="step" :modifiable="modifiable" :text="true" child_id="block-global-nonlocal" :slotholder="slotholder"></block-variant>
+      <block-variant v-else-if="isSelected([$$.eYo.T3.Stmt.global_global, $$.eYo.T3.Stmt.global_nonlocal, $$.eYo.T3.Stmt.global_del])" :eyo="eyo" :step="step" :modifiable="modifiable" :text="true" child_id="block-g-n-d" :slotholder="slotholder"></block-variant>
       <block-default :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
       <block-none v-else></block-none>
       <block-comment :eyo="eyo" :step="step" ></block-comment>

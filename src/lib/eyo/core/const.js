@@ -18,7 +18,7 @@
 goog.provide('eYo.Const')
 goog.provide('eYo.ID')
 
-goog.require('eYo')
+goog.require('eYo.Do')
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
@@ -45,7 +45,9 @@ eYo.Const.Field = {
 
 goog.provide('eYo.Key')
 
-eYo.Key = {
+eYo.Key = {}
+
+eYo.Do.readOnlyMixin(eYo.Key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
@@ -174,6 +176,7 @@ eYo.Key = {
   DEL: 'del',
   RETURN: 'return',
 
+  METHOD: 'method',
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
@@ -199,4 +202,4 @@ eYo.Key = {
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
-}
+})

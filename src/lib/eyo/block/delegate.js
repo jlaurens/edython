@@ -1114,7 +1114,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
     function () {
       var data_in = model.data
       if (goog.isString(data_in)) {
-        var d = this.data.main || this.headData
+        var d = this.headData
         if (d && d.validate(data_in)) {
           d.set(data_in)
           d.setRequiredFromModel(true)
@@ -1245,10 +1245,6 @@ eYo.Delegate.prototype.makeData = function () {
       if (model) {
         // null models are used to neutralize the inherited data
         var d = new eYo.Data(this, k, model)
-        if (d.model.main) {
-          goog.asserts.assert(!data.main, 'No 2 main data ' + k + '/' + this.block_.type)
-          data.main = d
-        }
         data[k] = d
         for (var i = 0, dd; (dd = byOrder[i]); ++i) {
           if (dd.model.order > d.model.order) {
@@ -1268,8 +1264,8 @@ eYo.Delegate.prototype.makeData = function () {
   }
   this.data = data
   // now we can use `foreachData`
-  this.foreachData((data) => {
-    Object.defineProperty(data.owner, data.key + '_d', { value: data })
+  this.foreachData((d) => {
+    Object.defineProperty(d.owner, d.key + '_d', { value: d })
   })
 }
 
