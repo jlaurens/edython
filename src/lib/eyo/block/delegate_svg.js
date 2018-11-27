@@ -1523,6 +1523,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           }
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
+            if (!target.eyo.wrapped_) {
+              io.common.field.shouldSeparate = false
+            }
           }      
         } catch(err) {
            console.error(err)
