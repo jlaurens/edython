@@ -268,7 +268,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           return this.owner.variant_p === eYo.Key.CALL_EXPR
         },
         save: /** @suppress {globalThis} */ function (element) {
-          var target = this.owner.holder_s.input.connection.targetBlock()
+          var target = this.owner.holder_s.connection.targetBlock()
           if (!target) {
             if (this.get()) {
               this.save(element)
@@ -410,6 +410,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     },
     name: {
       order: 10000, // the name must be quite last, still ?
+      main: true,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {

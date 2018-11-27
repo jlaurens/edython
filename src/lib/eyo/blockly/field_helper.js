@@ -84,31 +84,13 @@ eYo.FieldHelper.onEndEditing = function () {
 }
 
 /**
- * Set the keyed data of the source block to the given value.
- * Eventual problem: there might be some kind of formatting such that
- * the data stored and the data shown in the ui are not the same.
- * There is no step for such a translation but the need did not occur yet.
- * @param {string|null} key  The data key, when null or undefined, this receiver's key.
- */
-eYo.FieldHelper.prototype.getData_ = function (key) {
-  var data = this.data
-  if (!data) {
-    var block = this.field_.sourceBlock_
-    data = block && block.eyo.data[key || this.key]
-    goog.asserts.assert(data,
-      eYo.Do.format('No data bound to field {0}/{1}', key || this.key, block && block.type))
-  }
-  return data
-}
-
-/**
  * Validate the keyed data of the source block.
  * Asks the data object to do so.
  * The bound data must exist.
  * @param {Object} txt
  */
 eYo.FieldHelper.prototype.validate = function (txt) {
-  var v = this.getData_().validate(goog.isDef(txt) ? txt : this.field_.getValue())
+  var v = this.data.validate(goog.isDef(txt) ? txt : this.field_.getValue())
   return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
 }
 

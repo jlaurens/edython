@@ -125,15 +125,18 @@ eYo.KeyHandler = (function () {
         return
       }
       // Maybe the main data can handle the model
-      var data = B.eyo.data
-      var main = data.main
-      if (!main) {
-        var values = Object.values(data)
-        main = (values.length === 1) && values[0]
-      }
+      var main = B.eyo.main_d
       if (main && main.validate(model)) {
         // yes it does
         main.set(model)
+        return
+      }
+      if (B.eyo.foreachData((d) => {
+        if (!d.isIncog() && d.validate(model)) {
+          d.change(model)
+          return true
+        }
+      })) {
         return
       }
     }

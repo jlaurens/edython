@@ -213,6 +213,7 @@ eYo.Content.prototype.makeField = function () {
     if (model.edit || model.validator || model.endEditing || model.startEditing) {
       // this is an editable field
       field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(this, model.edit || '', model.validator, fieldName)
+      field.eyo.isEditable = true
     } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
       // this is just a label field
       field = new eYo.FieldLabel(this, model.value || '')

@@ -1006,6 +1006,7 @@ eYo.Delegate.prototype.foreachSlot = function (helper) {
     do {
       last = helper(slot)
     } while (!last  && (slot = slot.next))
+    return !!last
   }
 }
 
@@ -1023,6 +1024,7 @@ eYo.Delegate.prototype.foreachData = function (helper) {
     do {
       last = helper(data)
     } while (!last && (data = data.next))
+    return !!last
   }
 }
 
@@ -1034,39 +1036,50 @@ eYo.Delegate.prototype.foreachData = function (helper) {
  * otherwise send an init message to all the data controllers.
  */
 eYo.Delegate.prototype.makeBounds = function () {
+  var theField = undefined
   for (var k in this.data) {
     var data = this.data[k]
     var slot = this.slots[k]
     if (slot) {
       data.slot = slot
       slot.data = data
-      // try the unique editable field
-      if (Object.keys(slot.fields).length === 1) {
+      // try the `bind` or unique editable field
+      data.field = slot.fields.bind
+      if (!data.field) {
+        var candidate
         for (var kk in slot.fields) {
-          data.field = slot.fields[kk]
-          break
+          var f = slot.fields[kk]
+          if (f.eyo.isEditable) {
+            goog.asserts.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
+            candidate = f
+          }
         }
-      } else {
-        data.field = slot.fields.bind
       }
     } else if ((data.field = this.fields[k])) {
       data.slot = null
-      data.field.eyo.data = data
     } else {
       for (kk in this.slots) {
         slot = this.slots[kk]
         if ((data.field = slot.fields[k])) {
+          goog.asserts.assert(!slot.data, 'Ambiguous slot <-> data bound')
           data.slot = slot
+          slot.data = data
           break
         }
       }
     }
     var field = data.field
+    if (field && k === 'name') {
+      theField = field
+    }
     var eyo = field && field.eyo
     if (eyo) {
       // this is for editable fields
       eyo.data = data
     }
+  }
+  if (this.name_d && this.name_d.field !== theField) {
+    console.error('ERROR')
   }
 }
 
@@ -1114,12 +1127,14 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
     function () {
       var data_in = model.data
       if (goog.isString(data_in)) {
-        var d = this.headData
-        if (d && d.validate(data_in)) {
-          d.set(data_in)
-          d.setRequiredFromModel(true)
-          done = true
-        }
+        this.foreachData((d) => {
+          if (!d.isIncog() && d.validate(data_in)) {
+            d.change(data_in)
+            d.setRequiredFromModel(true)
+            done = true
+            return true
+          }
+        })
       } else if (goog.isDef(data_in)) {
         this.foreachData((data) => {
           var k = data.key
@@ -1266,6 +1281,10 @@ eYo.Delegate.prototype.makeData = function () {
   // now we can use `foreachData`
   this.foreachData((d) => {
     Object.defineProperty(d.owner, d.key + '_d', { value: d })
+    if (d.model.main === true) {
+      goog.asserts.assert(!data.main, 'Only one main data please')
+      Object.defineProperty(d.owner, 'main_d', { value: d })
+    }
   })
 }
 

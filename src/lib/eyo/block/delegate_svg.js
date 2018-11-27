@@ -1291,7 +1291,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
-        if (io.common.field.beforeIsBlack
+        if (head === '.' && !io.common.field.beforeIsBlack) {
+          io.cursor.c -= 1
+        } else if (io.common.field.beforeIsBlack
           && (eYo.XRE.operator.test(head) || head === '=')) {
           io.cursor.c += 1
         } else if (io.common.field.shouldSeparate
