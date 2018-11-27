@@ -562,9 +562,10 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
     this.width = 3
   }
   if (eyo && eyo.bindField) {
-    this.M(true, x + (this.width + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
+    var w = Math.max(this.width, 1)
+    this.M(true, x + (w + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
-    this.h(true, - this.width * eYo.Unit.x + 2 * dd)
+    this.h(true, - w * eYo.Unit.x + 2 * dd)
     if (eyo && eyo.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
