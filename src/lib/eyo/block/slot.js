@@ -216,7 +216,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} owner
  * @param {!Object} fieldsModel
  */
-eYo.Slot.makeFields = function () {
+eYo.Slot.makeFields = (function () {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -260,6 +260,9 @@ eYo.Slot.makeFields = function () {
     }
     if (!goog.isFunction(model.didLoad)) {
       delete model.didLoad
+    }
+    if (!goog.isFunction(model.willRender)) {
+      delete model.willRender
     }
     var xml = model.xml
     if (xml) {
@@ -465,7 +468,7 @@ eYo.Slot.makeFields = function () {
     owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
   }
-} ()
+}) ()
 
 /**
  * Set the underlying Blockly input.

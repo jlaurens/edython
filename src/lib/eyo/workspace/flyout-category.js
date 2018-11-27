@@ -510,19 +510,12 @@ eYo.FlyoutCategory = {
       title: 'text_split'
     },
     {
-      type: eYo.T3.Expr.identifier_defined,
-      name_d: 'sep',
-      definition_s: {
-        type: eYo.T3.Expr.builtin__object,
-        value_d: 'None'
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: 'rsplit',
+        dotted: 1
       },
-      title: 'text_split_sep'
-    },
-    {
-      type: eYo.T3.Expr.identifier_defined,
-      name_d: 'maxsplit',
-      definition_d: -1,
-      title: 'text_split_maxsplit'
+      title: 'text_rsplit'
     },
     {
       type: eYo.T3.Expr.call_expr,

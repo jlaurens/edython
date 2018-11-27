@@ -26,6 +26,7 @@ eYo.FieldHelper = function (field) {
   this.field_ = field
   field.eyo = this
   this.size = new eYo.Size(0, 1)
+  this.reentrant = {}
 }
 
 Object.defineProperties(
@@ -108,7 +109,7 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
 }
 
 /**
- * Set th entire dom class list.
+ * Set the entire dom class list.
  * @param {!String} class_name
  */
 eYo.FieldHelper.prototype.set_css_class = function (class_name) {
@@ -119,3 +120,38 @@ eYo.FieldHelper.prototype.set_css_class = function (class_name) {
   }
 }
 
+/**
+ * Synchronize the value of the property with the UI.
+ * Called once when the model has been made,
+ * and called each time the value changes,
+ * whether doing, undoing or redoing.
+ * May be overriden by the model.
+ * When not overriden by the model, updates the field and slot state.
+ * We can call `this.synchronize()` from the model.
+ * `synchronize: true`, and
+ * synchronize: function() { this.synchronize()} are equivalent.
+ * Raises when not bound to some field or slot, in the non model variant.
+ * @param {Object} newValue
+ */
+eYo.FieldHelper.prototype.willRender = function () {
+  var f = this.model && eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender)
+  if (f) {
+    f.call(this)
+    return
+  } else {
+    var field = this.field_
+    var root = field.getSvgRoot()
+    if (root && field.isVisible()) {
+      if (field.eyo.placeholder) {
+        goog.dom.classlist.add(field.textElement_, 'eyo-code-placeholder')
+      } else {
+        goog.dom.classlist.remove(field.textElement_, 'eyo-code-placeholder')
+      }
+      if (field.eyo.isComment) {
+        goog.dom.classlist.add(field.textElement_, 'eyo-code-comment')
+      } else {
+        goog.dom.classlist.remove(field.textElement_, 'eyo-code-comment')
+      }
+    }
+  }
+}

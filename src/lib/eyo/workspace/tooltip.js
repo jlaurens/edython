@@ -199,6 +199,7 @@ eYo.Tooltip.Title = {
   text_lower: 'Transformer le texte en minuscules',
   text_join: 'Joindre une liste de textes avec un séparateur',
   text_split: 'Couper le texte selon le séparateur donné en argument',
+  text_rsplit: 'Couper le texte selon le séparateur donné en argument, depuis la droite',
   text_split_sep: 'Séparateur pour couper le texte',
   text_split_maxsplit: 'Nombre maximum de parties dans le découpage',
   text_splitlines: 'Découper le texte en lignes, avec ou sans séparateur de fin de ligne',

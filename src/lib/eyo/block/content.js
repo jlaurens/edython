@@ -37,7 +37,7 @@ eYo.Content = function (owner, key, model) {
   this.model = model
   this.field = undefined
   this.next = undefined
-  if (!model.setp_) {
+  if (!model.setupp_) {
     this.setupModel()
   }
 }

@@ -451,7 +451,7 @@ eYo.FieldVariable.prototype.getPythonText_ = function () {
  * Setup the model.
  * Overrides the original method appending edition related stuff.
  */
-eYo.Content.prototype.setupModel = function () {
+eYo.Content.prototype.setupModel = (function () {
   var setupModel = eYo.Content.prototype.setupModel
   // This is a closure
   // default helper functions for an editable field bound to a data object
@@ -476,6 +476,7 @@ eYo.Content.prototype.setupModel = function () {
   return function () {
     // no need to setup the model each time we create a new field master
     setupModel.call(this)
+    var model = this.model
     if (model.validate === true) {
       model.validate = validate
     } else if (model.validate && !goog.isFunction(model.validate)) {
@@ -492,4 +493,4 @@ eYo.Content.prototype.setupModel = function () {
       delete model.endEditing
     }
   }
-}
+}) ()
