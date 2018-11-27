@@ -169,14 +169,15 @@
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
+        var eyo = this.eyo
+        if (!eyo || (this.saved_step === this.step)) {
           return
         }
         this.saved_step = this.step
-        this.holder_ = this.eyo.holder_p
-        this.dotted_ = this.eyo.dotted_p
-        var p5e = this.eyo.profile_.p5e
-        this.isMethod_ = p5e && p5e.item && (p5e.item.type === eYo.Key.METHOD)
+        this.holder_ = eyo.holder_p
+        this.dotted_ = eyo.dotted_p
+        var item = eyo.item_p
+        this.isMethod_ = item && item.isMethod
       }
     }
   }

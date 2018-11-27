@@ -13,10 +13,13 @@
       <div class="eyo-code-reserved item text">=</div>
       <b-input v-model="definition" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
     </b-btn-group>
+    <keyword v-if="showKeyword" :eyo="eyo" :step="step" :slotholder="slotholder"></keyword>
   </b-btn-group>
 </template>
 
 <script>
+  import Keyword from './Keyword.vue'
+
   export default {
     name: 'info-primary-variant',
     data () {
@@ -27,8 +30,12 @@
         variant_: eYo.Key.NONE,
         annotation_: undefined,
         definition_: undefined,
-        alias_: undefined
+        alias_: undefined,
+        hasKeyword_: false
       }
+    },
+    components: {
+      Keyword
     },
     props: {
       eyo: {
@@ -52,10 +59,23 @@
     },
     computed: {
       showAnnotation () {
-        return true
+        if (this.can_andef) {
+          var v = this.variant
+          return v === eYo.Key.ANNOTATED || v === eYo.Key.ANNOTATED_DEFINED
+        }
       },
       showDefinition () {
-        return true
+        if (this.can_andef) {
+          var v = this.variant
+          return v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED
+        }
+      },
+      showKeyword () {
+        return this.variant === eYo.Key.CALL_EXPR && this.ismethod && this.hasKeyword_
+      },
+      keywordArguments () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.keywordArguments_
       },
       can_call () {
         (this.saved_step === this.step) || this.$$synchronize()
@@ -196,9 +216,13 @@
         this.annotation_ = eyo.annotation_p
         this.definition_ = eyo.definition_p
         this.alias_ = eyo.alias_p
-        var p5e = eyo.profile_p.p5e
-        this.can_call_ = !p5e || !p5e.item || (p5e.item.type !== 'attribute' && p5e.item.type !== 'data' && p5e.item.type !== 'first last data')
-        this.can_andef_ = !p5e || !p5e.item
+        var item = this.eyo.item_p
+        this.can_call_ = !item || (item.type !== 'attribute' && item.type !== 'data' && item.type !== 'first last data') // that would let functions and methods
+        this.can_andef_ = !item
+        // any keyword argument?
+        this.hasKeyword_ = item && item.arguments && item.arguments.some((arg) => {
+          return goog.isDef(arg.default)
+        })
       }
     }
   }

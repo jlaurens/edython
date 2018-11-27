@@ -175,10 +175,13 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   DEL: 'del',
   RETURN: 'return',
 
+  // types of model items.
+  FUNCTION: 'function',
   METHOD: 'method',
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
+  
   GETTER: 'getter',
   SETTER: 'setter',
   DELETER: 'deleter',

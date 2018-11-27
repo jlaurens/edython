@@ -44,14 +44,12 @@
       }
     },
     computed: {
-      variant: {
-        get () {
-          (this.saved_step === this.step) || this.$$synchronize()
-          return this.variant_
-        }
+      variant () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.variant_
       },
       show_ry () {
-        return this.blockEditShowRy && !this.isMethod && (this.variant === eYo.Key.CALL_EXPR) && this.can_ry
+        return this.blockEditShowRy && !this.ismethod && (this.variant === eYo.Key.CALL_EXPR) && this.can_ry
       },
       ary: {
         get () {

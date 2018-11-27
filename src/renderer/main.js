@@ -27,6 +27,7 @@ import VueTippy from 'vue-tippy'
 import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 import VueI18n from 'vue-i18n'
+
 import msg_fr_FR from './lang/fr_FR'
 
 var FileSaver = require('file-saver')
@@ -500,10 +501,25 @@ const numberFormats = {
 
 const i18n = new VueI18n({
   locale: 'fr_FR', // set locale
+  fallbackLocale: 'fr_FR',
   messages, // set locale messages,
   dateTimeFormats,
   numberFormats
 })
+
+/**
+ * Returns undefined when the key is not registered for localization.
+ */
+Vue.prototype.$$t = function (key, locale, value) {
+  return this.$te(key, locale) && this.$t(key, locale, value)
+}
+
+/**
+ * Returns undefined when the key is not registered for localization.
+ */
+Vue.prototype.$$tc = function (key, choice, locale, value) {
+  return this.$te(key, locale) && this.$tc(key, choice, locale, value)
+}
 
 /* eslint-disable no-new */
 export const app = new Vue({

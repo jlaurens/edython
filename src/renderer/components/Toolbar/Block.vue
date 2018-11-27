@@ -431,7 +431,8 @@
     color: rgb(21, 25, 29, 0.2);
   }
   .b3k-edit .item input[type="checkbox"] {
-    padding-left: 0.5rem;
-    vertical-align: text-top;
+    vertical-align: baseline;
+    position:relative;
+    bottom:0.125rem;
   }
 </style>

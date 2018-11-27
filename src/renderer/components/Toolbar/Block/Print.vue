@@ -1,5 +1,5 @@
 <template>
-  <b-btn-group id="block-print" class="b3k-edit-content btn-outline-secondary"  aria-label="Block print edit content" justify>
+  <b-btn-group id="block-print" class="b3k-edit-content btn-outline-secondary" aria-label="Block print edit content" justify>
     <div class="item">
       <input type="checkbox" v-model="sep">
     </div>
@@ -16,12 +16,18 @@
       <input type="checkbox" v-model="file" :disabled="!can_file">
     </div>
     <div class="eyo-label eyo-code item text">file=…</div>
+    <keyword :eyo="eyo" :step="step"></keyword>
   </b-btn-group>
 </template>
 
 <script>
+  import Keyword from './Primary/Keyword'
+
   export default {
     name: 'info-print',
+    components: {
+      Keyword
+    },
     data () {
       return {
         saved_step: undefined,

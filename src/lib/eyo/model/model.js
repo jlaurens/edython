@@ -20,8 +20,15 @@ goog.require('eYo.Protocol.Register')
 /**
  * @constructor
  */
-eYo.Model.Module = function (url) {
-  this.url = url
+eYo.Model.Module = function (name, url) {
+  Object.defineProperties(this,{
+    name: {
+      value: name
+    },
+    url: {
+      value: url
+    }
+  })
   this.profiles = {}
   this.items_by_type = {}
 }
@@ -127,15 +134,23 @@ eYo.Do.addProtocol(eYo.Model.Item, 'Register', 'module')
  */
 eYo.Model.Item.prototype.module = new eYo.Model.Module()
 
-Object.defineProperty(
-  eYo.Model.Item.prototype,
-  'model',
-  {
+Object.defineProperties(eYo.Model.Item.prototype, {
+  isMethod: {
+    get () {
+      return this.type === eYo.Key.METHOD
+    }
+  },
+  isFunction: {
+    get () {
+      return this.type === eYo.Key.FUNCTION
+    }
+  },
+  model: {
     get() {
       throw 'RENAMED property: model -> module'
     }
   }
-)
+})
 /**
  * Other model data are more complex...
  * Is it used ?
@@ -163,6 +178,19 @@ Object.defineProperties(
     type: {
       get () {
         return this.module.data.types[this.type_]
+      }
+    },
+    kwargs: { // only those arguments with a `default` key
+      get () {
+        if (!this.kwargs_) {
+          this.kwargs_ = []
+          this.arguments && this.arguments.forEach((arg) => {
+            if (goog.isDef(arg.default)) {
+              this.kwargs_.push(arg)
+            }
+          })
+        }
+        return this.kwargs_
       }
     }
   }

@@ -332,6 +332,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     definition: {
       order: 1001,
       init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
       validate: false,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
@@ -387,7 +388,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.set(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated) {
           this.set(eYo.Key.ANNOTATED)
-        } else if (type === eYo.T3.Expr.identifier_defined) {
+        } else if (type === eYo.T3.Expr.identifier_defined || type === eYo.T3.Expr.keyword_item) {
           this.set(eYo.Key.DEFINED)
         } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
           this.set(eYo.Key.ANNOTATED_DEFINED)
@@ -784,10 +785,8 @@ eYo.DelegateSvg.Expr.primary.prototype.init = function () {
   this.profile_ = undefined
 }
 
-Object.defineProperty(
-  eYo.DelegateSvg.Expr.primary.prototype,
-  'profile_p',
-  {
+Object.defineProperties( eYo.DelegateSvg.Expr.primary.prototype, {
+  profile_p : {
     get () {
       return this.profile_ === this.getProfile()
         ? this.profile_
@@ -796,8 +795,14 @@ Object.defineProperty(
     set (newValue) {
       this.profile_ = newValue
     }
+  },
+  item_p : {
+    get () {
+      var p5e = this.profile_p.p5e
+      return p5e && p5e.item
+    }
   }
-)
+})
 
 /**
  * updateProfile.

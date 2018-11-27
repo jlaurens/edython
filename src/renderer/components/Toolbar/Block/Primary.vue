@@ -62,8 +62,8 @@
           return
         }
         this.saved_step = eyo.change.step
-        var p5e = eyo.profile_.p5e
-        this.isMethod_ = p5e && p5e.item && (p5e.item.type === eYo.Key.METHOD)
+        var item = eyo.item_p
+        this.isMethod_ = item && item.isMethod
       }
     }
   }

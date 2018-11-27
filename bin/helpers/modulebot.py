@@ -603,7 +603,7 @@ goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
 goog.require('eYo.Model.Item')
 
-eYo.Model.{{key}} = new eYo.Model.Module('{{url}}')
+eYo.Model.{{key}} = new eYo.Model.Module('{{key}}', '{{url}}')
 
 /**
  * @constructor

@@ -92,5 +92,11 @@ export default {
   funcdef_name_title: 'Un identifiant pour nommer la fonction',
   placeholder_name: 'nom',
   placeholder_comment: 'Un commentaire ici',
-  placeholder_module: 'module'
+  placeholder_module: 'module',
+  kwarg_sep: 'Séparateur de champs (par défaut {{default}})',
+  kwarg_function_print_file: 'Fichier de sortie',
+  kwarg_function_print_end: 'Séparateur de fin de ligne (End of line)',
+  kwarg_function_print_flush: 'Affichage immédiat (y compris ce qui est en attente)',
+  kwarg_stdtypes_split_sep: 'Séparateur de champs (par défaut {{default}})',
+  kwarg_stdtypes_split_maxsplit: 'Nombre maximum de composantes créées (par défaut {{default}})'
 }
