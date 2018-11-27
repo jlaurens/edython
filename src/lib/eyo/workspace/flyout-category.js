@@ -42,6 +42,15 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.numberliteral,
     eYo.T3.Stmt.builtin__print_stmt,
     {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'print',
+      n_ary_s: {
+        slots: {
+          O: "'...'"
+        }
+      },
+    },
+    {
       type: eYo.T3.Stmt.assignment_stmt,
       rhs_s: {
         slots: {
@@ -162,7 +171,6 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.global_stmt,
     eYo.T3.Stmt.nonlocal_stmt,
     eYo.T3.Stmt.del_stmt,
-    eYo.T3.Expr.builtin__print_expr,
     eYo.T3.Expr.comprehension,
     eYo.T3.Expr.comp_for,
     eYo.T3.Expr.comp_if,

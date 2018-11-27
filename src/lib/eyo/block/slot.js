@@ -609,7 +609,7 @@ eYo.Slot.prototype.isRequiredFromModel = function () {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFrom = function () {
-  return this.isRequiredFromModel() || this.targetBlock()
+  return this.isRequiredFromModel() || (this.targetBlock() && !this.targetBlock().eyo.wrapped_)
 }
 
 /**

@@ -283,12 +283,11 @@ eYo.DelegateSvg.List.makeSubclass('target_list_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
-      NAME: eYo.Key.NAME,
-      TARGET: eYo.Key.TARGET,
       all: [
         eYo.Key.NAME,
         eYo.Key.TARGET
       ],
+      init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         this.data.name.setIncog(newValue === eYo.Key.TARGET)

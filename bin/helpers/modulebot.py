@@ -115,7 +115,7 @@ def do_one_module(module, **kwargs):
 
         @staticmethod
         def do_name_functions(txt):
-            return txt in ['bin', 'compile', 'delattr', 'eval', 'format', 'hasattr', 'hex', 'input', 'oct', 'print']
+            return txt in ['bin', 'compile', 'delattr', 'eval', 'format', 'hasattr', 'hex', 'input', 'oct']
 
         @staticmethod
         def do_name_turtle(txt):
