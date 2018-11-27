@@ -1127,14 +1127,21 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
     function () {
       var data_in = model.data
       if (goog.isString(data_in)) {
-        this.foreachData((d) => {
-          if (!d.isIncog() && d.validate(data_in)) {
-            d.change(data_in)
-            d.setRequiredFromModel(true)
-            done = true
-            return true
-          }
-        })
+        var d = this.main_d
+        if (d && !d.isIncog() && d.validate(data_in)) {
+          d.change(data_in)
+          d.setRequiredFromModel(true)
+          done = true
+        } else {
+          this.foreachData((d) => {
+            if (!d.isIncog() && d.validate(data_in)) {
+              goog.asserts.assert(!done, 'Ambiguous data model', data)
+              d.change(data_in)
+              d.setRequiredFromModel(true)
+              done = true
+            }
+          })
+        }
       } else if (goog.isDef(data_in)) {
         this.foreachData((data) => {
           var k = data.key
