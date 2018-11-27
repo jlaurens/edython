@@ -64,10 +64,8 @@
         this.target_by_name_ = {}
         this.choices_ = []
         var item = this.eyo.item_p
-        console.log('item', item)
         if (item && ((item.isFunction && this.eyo.dotted_p === 0) || item.isMethod)) {
           var kwargs = item.kwargs
-          console.log('kwargs', kwargs)
           if (kwargs) {
             var block = this.eyo.block_
             if (block) {
@@ -78,7 +76,6 @@
                 var names = kwargs.map((arg) => {
                   return arg.name
                 })
-                console.log('names', names)
                 var io = c10r.getIO(list)
                 var input
                 while ((input = c10r.nextInputForType(io, [
@@ -90,11 +87,7 @@
                     var name = target.eyo.name_p
                     if (names.indexOf(name) >= 0) {
                       this.target_by_name_[name] = target
-                    } else {
-                      console.log(target)
                     }
-                  } else {
-                    console.log('NO TARGET')
                   }
                 }
                 for (var i = 0; i < kwargs.length; ++i) {
@@ -139,8 +132,6 @@
             }
           }
         }
-        console.log('this.target_by_name', this.target_by_name)
-        console.log('this.choices', this.choices)
       },
       do (key) {
         eYo.Events.groupWrap(
