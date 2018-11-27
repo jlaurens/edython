@@ -1082,7 +1082,7 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
  * In fact we bypass the real method if the connection is not epected to show.
  * @param {boolean} hidden True if connection is hidden.
  */
-Blockly.RenderedConnection.prototype.setHidden = function () {
+Blockly.RenderedConnection.prototype.setHidden = (function () {
   // this is a closure
   var setHidden = Blockly.RenderedConnection.prototype.setHidden
   return function (hidden) {
@@ -1097,7 +1097,7 @@ Blockly.RenderedConnection.prototype.setHidden = function () {
     // DONE
     setHidden.call(this, hidden)
   }
-}
+}) ()
 
 /**
  * Change the connection's coordinates.
