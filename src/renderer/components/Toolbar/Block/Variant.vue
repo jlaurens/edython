@@ -89,7 +89,14 @@
         }
       },
       formatted: function (item) {
-        var formatted = item.length ? this.$t(`message.${({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)}`) : '&nbsp;'
+        var formatted = item.length
+        ? this.$$t(`message.${({
+          '*': 'star',
+          '**': 'two_stars',
+          '.': 'dot',
+          '..': 'two_dots'
+        }[item] || item)}`)
+        : '&nbsp;'
         if (formatted.indexOf('{{slotholder}}') < 0) {
           return formatted
         }
