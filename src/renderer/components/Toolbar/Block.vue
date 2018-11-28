@@ -58,8 +58,6 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-
   import BlockCommon from './Block/Common.vue'
   import BlockComment from './Block/Comment.vue'
   import BlockBuiltin from './Block/Builtin.vue'
@@ -122,7 +120,7 @@
       BlockImport
     },
     mounted () {
-      this.theta = this.toolbarBlockVisible ? 1 : 0
+      this.theta = this.$store.state.UI.toolbarEditVisible ? 1 : 0
     },
     computed: {
       slotholder () {
@@ -132,21 +130,33 @@
           return `<div class="eyo-slot-holder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
         }
       },
+      selectedBlock () {
+        var id = this.$store.state.UI.selectedBlockId
+        var block = id && eYo.App.workspace.blockDB_[id]
+        return block
+      },
+      eyo () {
+        return this.selectedBlock && this.selectedBlock.eyo
+      },
+      step () {
+        return this.$store.state.UI.selectedBlockStep
+      },
+      selectedBlockType () {
+        var type = this.$store.state.UI.selectedBlockType
+        return type ? type.substring(4) : null
+      },
+      toolbarEditVisible () {
+        return this.$store.state.UI.toolbarEditVisible
+      },
       style () {
         return `right: ${100 * (1 - this.theta)}%;`
       },
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
-      },
-      ...mapState({
-        toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
-        step: state => state.UI.selectedBlockStep,
-        eyo: state => state.UI.selectedBlockEyo,
-        selectedBlockType: state => state.UI.selectedBlockType
-      })
+      }
     },
     watch: {
-      toolbarBlockVisible (newValue, oldValue) {
+      toolbarEditVisible (newValue, oldValue) {
         this.theta = newValue ? 0 : 1
         this.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
       }
@@ -155,12 +165,12 @@
       isSelected (type) {
         if (goog.isArray(type)) {
           for (var i = 0, t; (t = type[i++]) ;) {
-            if (t === this.selectedBlockType) {
+            if (t === this.$store.state.UI.selectedBlockType) {
               return true
             }
           }
         } else {
-          return type === this.selectedBlockType
+          return type === this.$store.state.UI.selectedBlockType
         }
       }
     }
