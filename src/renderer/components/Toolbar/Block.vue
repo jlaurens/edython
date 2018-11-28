@@ -138,10 +138,18 @@
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
       },
+      selectedBlock () {
+        var id = this.$store.state.UI.selectedBlockId
+        var block = id && eYo.App.workspace.blockDB_[id]
+        return block
+      },
+      eyo () {
+        return this.selectedBlock && this.selectedBlock.eyo
+      },
       ...mapState({
         toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
+        selectedBlockId: state => state.UI.selectedBlockId,
         step: state => state.UI.selectedBlockStep,
-        eyo: state => state.UI.selectedBlockEyo,
         selectedBlockType: state => state.UI.selectedBlockType
       })
     },
