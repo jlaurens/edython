@@ -36,8 +36,8 @@
       displayMode () {
         return this.$store.state.UI.displayMode
       },
-      toolbarBlockVisible () {
-        return this.$store.state.UI.toolbarBlockVisible
+      toolbarEditVisible () {
+        return this.$store.state.UI.toolbarEditVisible
       },
       style () {
         return `top: ${this.step}rem;
@@ -45,10 +45,10 @@
       }
     },
     mounted () {
-      this.step = this.$store.state.UI.toolbarBlockVisible ? this.max : 0
+      this.step = this.$store.state.UI.toolbarEditVisible ? this.max : 0
     },
     watch: {
-      toolbarBlockVisible (newValue, oldValue) {
+      toolbarEditVisible (newValue, oldValue) {
         this.step = newValue ? 0 : this.max
         this.$$.TweenLite.to(this, 1, {
           step: this.max - this.step,
