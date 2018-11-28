@@ -49,7 +49,7 @@
         return this.eyo.data.chooser.getAll()
       },
       title () {
-        return this.$t('message.decorator_input')
+        return this.$$t('block.tooltip.decorator.input')
       }
     },
     created () {
