@@ -35,7 +35,7 @@
     },
     computed: {
       title () {
-        return this.$$t('block.tooltip.funcdef.name')
+        return this.$t('message.funcdef_name_title')
       },
       name: {
         get () {
