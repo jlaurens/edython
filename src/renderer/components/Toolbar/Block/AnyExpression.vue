@@ -35,7 +35,7 @@
     },
     computed: {
       title () {
-        return this.$t('message.enter_any_valid_expression')
+        return this.$$t('block.enter_any_valid_expression')
       },
       expression: {
         get () {
