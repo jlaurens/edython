@@ -347,8 +347,6 @@ eYo.App.selectedBlockUpdate = (eyo) => {
       Vue.nextTick(() => {
         store.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
       })
-    } else {
-      eyo.didChangeEnd = null
     }
   }
 }
@@ -362,15 +360,7 @@ Object.defineProperties(eYo.App, {
 })
 eYo.App.didRemoveSelect = function (block) {
   Vue.nextTick(() => {
-    var b = eYo.App.selectedBlock
-    if (b) {
-      b.eyo.didChangeEnd = null
-    }
     store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
-    b = eYo.App.selectedBlock
-    if (b) {
-      b.eyo.didChangeEnd = eYo.App.selectedBlockUpdate
-    }
   })
 }
 

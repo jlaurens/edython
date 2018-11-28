@@ -58,6 +58,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import BlockCommon from './Block/Common.vue'
   import BlockComment from './Block/Comment.vue'
   import BlockBuiltin from './Block/Builtin.vue'
@@ -120,7 +122,7 @@
       BlockImport
     },
     mounted () {
-      this.theta = this.$store.state.UI.toolbarEditVisible ? 1 : 0
+      this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
     },
     computed: {
       slotholder () {
@@ -138,25 +140,21 @@
       eyo () {
         return this.selectedBlock && this.selectedBlock.eyo
       },
-      step () {
-        return this.$store.state.UI.selectedBlockStep
-      },
-      selectedBlockType () {
-        var type = this.$store.state.UI.selectedBlockType
-        return type ? type.substring(4) : null
-      },
-      toolbarEditVisible () {
-        return this.$store.state.UI.toolbarEditVisible
-      },
       style () {
         return `right: ${100 * (1 - this.theta)}%;`
       },
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
-      }
+      },
+      ...mapState({
+        toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
+        selectedBlockId: state => state.UI.selectedBlockId,
+        step: state => state.UI.selectedBlockStep,
+        selectedBlockType: state => state.UI.selectedBlockType
+      })
     },
     watch: {
-      toolbarEditVisible (newValue, oldValue) {
+      toolbarBlockVisible (newValue, oldValue) {
         this.theta = newValue ? 0 : 1
         this.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
       }
