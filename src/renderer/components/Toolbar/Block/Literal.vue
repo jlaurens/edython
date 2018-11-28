@@ -104,19 +104,19 @@
         return 'r'
       },
       title_r () {
-        return this.$$t('block.tooltip.literal.raw')
+        return this.$t('message.prefix_r_for_raw')
       },
       content_f () {
         return 'f'
       },
       title_f () {
-        return this.$$t('block.tooltip.literal.format')
+        return this.$t('message.prefix_f_for_format')
       },
       content_b () {
         return 'b'
       },
       title_b () {
-        return this.$$t('block.tooltip.literal.byte')
+        return this.$t('message.prefix_b_for_byte')
       },
       content: {
         get () {
@@ -128,7 +128,7 @@
         }
       },
       title_content () {
-        return this.$$t('block.one_line_of_text')
+        return this.$t('message.one_line_of_text')
       }
     },
     created () {
