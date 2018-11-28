@@ -66,7 +66,7 @@
         return `eyo-code item text w-12rem${this.from.length ? '' : ' placeholder'}`
       },
       $$placeholder () {
-        return this.$$t('block.placeholder.module')
+        return this.$t('message.placeholder_module')
       },
       chosen: {
         get () {
