@@ -27,12 +27,6 @@
       step: {
         type: Number,
         default: 0
-      },
-      slotholder: {
-        type: Function,
-        default: function (item) {
-          return item
-        }
       }
     },
     computed: {
@@ -101,9 +95,10 @@
                   var key = arg.name
                   var choice = {
                     key: key,
-                    content: `${key}=…`
+                    content: `${key}=…`,
+                    title: this.$$t(`message.kwarg_${item.module.name}_${item.name}_${key}`) || this.$$t(`message.kwarg_${item.name}_${key}`) || this.$$t(`message.kwarg_${key}`)
                   }
-                  var title = this.$$t(`block.keyword.${item.module.name}.${item.name}.${key}`) || this.$$t(`block.keyword.${item.module.name}.${key}`) || this.$$t(`block.keyword.${item.name}.${key}`) || this.$$t(`block.keyword.${key}`)
+                  var title = this.$$t(`message.kwarg_${item.module.name}_${item.name}_${key}`) || this.$$t(`message.kwarg_${item.name}_${key}`) || this.$$t(`message.kwarg_${key}`)
                   if (title) {
                     choice.title = title.replace('{{default}}', arg.default)
                   }
