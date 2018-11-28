@@ -39,7 +39,7 @@
                 '*': 'star',
                 '**': 'two_stars',
                 '.': 'dot',
-                '..': 'two_dots'
+                '..' : 'two_dots'
               }[item] || item}`)
               : '&nbsp;'
           }
