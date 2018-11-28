@@ -67,11 +67,11 @@
         return `<span class="eyo-code-reserved">${choice}</span>`
       },
       other_title (choice) {
-        return this.$t({
-          '\'': 'message.use_single_quotes_in_string',
-          '"': 'message.use_double_quotes_in_string',
-          '\'\'\'': 'message.use_single_quotes_in_long_literal',
-          '"""': 'message.use_double_quotes_in_long_literal'
+        return this.$$t({
+          '\'': 'block.tooltip.quote.single',
+          '"': 'block.tooltip.quote.double',
+          '\'\'\'': 'block.tooltip.quote.single',
+          '"""': 'block.tooltip.quote.double'
         }[choice])
       }
     }
