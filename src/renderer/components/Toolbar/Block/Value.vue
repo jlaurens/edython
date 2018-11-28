@@ -30,12 +30,7 @@
       formatter: {
         type: Function,
         default: function (item) {
-          return item && item.length
-            ? this.$$t(`block.${({
-              '*': 'star',
-              '**': 'two_stars'
-            }[item] || item)}`)
-            : '&nbsp;'
+          return item && item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars'}[item] || item)) : '&nbsp;'
         }
       }
     },
