@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="block-augmented-assignment">
-    <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$$t('block.placeholder.name')"></b-input>
+    <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$t('message.placeholder_name')"></b-input>
       <b-dropdown class="item text mw-4rem" variant="outline-secondary" :text="operator">
       <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="item">
       </b-dropdown-item-button>
