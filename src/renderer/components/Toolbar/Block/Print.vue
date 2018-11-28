@@ -94,7 +94,7 @@
         return 'sep=…'
       },
       title_sep () {
-        return 'Séparateur de champs'
+        return this.$$t('block.tooltip.keyword.sep')
       },
       content_file () {
         return 'file=…'
