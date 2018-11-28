@@ -1,8 +1,8 @@
 import 'babel-polyfill'
 import Vue from 'vue'
 import axios from 'axios'
-import lodash from 'lodash' // eslint-disable-line no-unused-vars
-import pako from 'pako' // eslint-disable-line no-unused-vars
+import lodash from 'lodash'
+import pako from 'pako'
 
 import Stacktrace from 'stack-trace'
 
@@ -28,25 +28,32 @@ import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 import VueI18n from 'vue-i18n'
 
-import msg_fr_FR from './lang/fr_FR'
+import message_fr_FR from './lang/fr_FR/message'
+import toolbar_fr_FR from './lang/fr_FR/toolbar'
+import block_fr_FR from './lang/fr_FR/block'
+import panel_fr_FR from './lang/fr_FR/panel'
 
 var FileSaver = require('file-saver')
 
 eYo.App.Stacktrace = Stacktrace
 
-var controller = {
+var controller = {}
+eYo.Do.readOnlyMixin(controller, {
   goog,
-  eYo: eYo,
-  Blockly: Blockly,
-  pako: pako,
-  bus: new Vue(),
-  TweenLite: TweenLite,
-  process: process
-}
+  eYo,
+  Blockly,
+  pako,
+  lodash,
+  TweenLite,
+  process,
+  bus: new Vue()
+})
 
-Vue.prototype.$$ = controller
+eYo.Do.readOnlyMixin(Vue.prototype, {
+  $$: controller,
+  $http: axios
+})
 
-Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
@@ -55,7 +62,9 @@ Vue.use(VueTippy, eYo.Tooltip.options)
 Vue.use(VueI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
-  Vue.prototype.$$.electron = require('electron')
+  eYo.Do.readOnlyMixin(controller, {
+    electron: require('electron')
+  })
   Vue.use(require('vue-electron'))
 }
 
@@ -230,7 +239,7 @@ eYo.App.Document.doNew = function (ev) {
   console.log('doNew')
   if (eYo.App.workspace.eyo.changeCount) {
     console.log('will bv::show::modal')
-    window['vue'].$emit('bv::show::modal', 'page-modal-should-save')
+    this.$$.vue.$emit('bv::show::modal', 'page-modal-should-save')
   } else {
     console.log('will doClear')
     eYo.App.Document.doClear()
@@ -442,7 +451,10 @@ const messages = {
     }
   },
   fr_FR: {
-    message: msg_fr_FR
+    message: message_fr_FR,
+    toolbar: toolbar_fr_FR,
+    block: block_fr_FR,
+    panel: panel_fr_FR
   }
 }
 
@@ -513,7 +525,6 @@ const i18n = new VueI18n({
 Vue.prototype.$$t = function (key, locale, value) {
   return this.$te(key, locale) && this.$t(key, locale, value)
 }
-
 /**
  * Returns undefined when the key is not registered for localization.
  */
@@ -530,8 +541,9 @@ export const app = new Vue({
   i18n
 })
 
-window['vue'] = app
-window.store = store
+eYo.Do.readOnlyMixin(controller, {
+  app
+})
 
 app.$mount('#app')
 
