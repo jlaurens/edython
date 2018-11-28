@@ -21,7 +21,7 @@ const state = {
   selectedMode: eYo.App.NORMAL,
   flyoutClosed: false,
   flyoutCategory: undefined,
-  toolbarEditVisible: true,
+  toolbarBlockVisible: true,
   toolbarInfoDebug: false,
   blockEditShowRy: true,
   blockEditShowDotted: true
@@ -120,7 +120,7 @@ const mutations = {
     state.flyoutClosed = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_VISIBLE] (state, yorn) {
-    state.toolbarEditVisible = !!yorn
+    state.toolbarBlockVisible = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_DEBUG] (state, yorn) {
     state.toolbarInfoDebug = !!yorn
