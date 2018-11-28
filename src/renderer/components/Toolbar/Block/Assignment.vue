@@ -34,7 +34,14 @@
           type: Function,
           default: function (item) {
             console.log('default ', item)
-            return item.length ? this.$t('message.' + ({'*': 'star', '**': 'two_stars', '.': 'dot', '..': 'two_dots'}[item] || item)) : '&nbsp;'
+            return item.length
+              ? this.$$t(`block.${{
+                '*': 'star',
+                '**': 'two_stars',
+                '.': 'dot',
+                '..' : 'two_dots'
+              }[item] || item}`)
+              : '&nbsp;'
           }
         }
       },
