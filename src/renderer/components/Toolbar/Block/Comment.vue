@@ -5,7 +5,7 @@
       <span class="pl-2 eyo-code-reserved">#</span>
     </div>
     <b-input type="text"
-      :class="$$class" v-model="comment" :disabled="!hasComment" aria-label="Comment input" :placeholder="$t('message.placeholder_comment')"></b-input>
+      :class="$$class" v-model="comment" :disabled="!hasComment" aria-label="Comment input" :placeholder="$$t('block.placeholder.comment')"></b-input>
   </b-btn-group>
 </template>
 
