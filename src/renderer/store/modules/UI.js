@@ -11,9 +11,11 @@ const state = {
   undoCount: 0,
   redoCount: 0,
   undoStage: 0,
+  selectedBlock: undefined, // the selected block
+  selectedBlockEyo: undefined, // the selected block delegate
   selectedBlockId: undefined, // the selected block id
   selectedBlockType: undefined, // the selected block type
-  selectedBlockStep: 0, // the selected block type
+  selectedBlockStep: 0, // the selected block step
   blockClipboard: undefined,
   displayMode: undefined,
   panelsWidth: '100%',
@@ -21,7 +23,7 @@ const state = {
   selectedMode: eYo.App.NORMAL,
   flyoutClosed: false,
   flyoutCategory: undefined,
-  toolbarEditVisible: true,
+  toolbarBlockVisible: true,
   toolbarInfoDebug: false,
   blockEditShowRy: true,
   blockEditShowDotted: true
@@ -72,21 +74,18 @@ const mutations = {
       if (block.isInFlyout || (block.id === state.selectedBlockId)) {
         return
       }
+      state.selectedBlock = block
+      state.selectedBlockEyo = block.eyo
       state.selectedBlockId = block.id
-      state.selectedBlockType = block.type
+      state.selectedBlockType = block.type.substring(4)
       state.selectedBlockStep = block.eyo.change.step
-    } else {
-      if (!state.selectedBlockId) {
-        return
-      }
-      state.selectedBlockId = state.selectedBlockType = null
+    } else if (state.selectedBlock) {
+      state.selectedBlock = state.selectedBlockEyo = state.selectedBlockId = state.selectedBlockType = null
       state.selectedBlockStep = 0
     }
   },
   [types.mutations.SELECTED_BLOCK_UPDATE] (state, block) {
-    var old = state.selectedBlockStep
     state.selectedBlockStep = block ? block.eyo.change.step : 0
-    console.warn('step', old, '=>', state.selectedBlockStep)
   },
   [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
     state.blockClipboard = ctxt.xml
@@ -120,7 +119,7 @@ const mutations = {
     state.flyoutClosed = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_VISIBLE] (state, yorn) {
-    state.toolbarEditVisible = !!yorn
+    state.toolbarBlockVisible = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_DEBUG] (state, yorn) {
     state.toolbarInfoDebug = !!yorn
