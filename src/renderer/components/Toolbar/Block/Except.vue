@@ -5,9 +5,9 @@
         <b-dropdown id="block-variant" class="eyo-dropdown" variant="outline-secondary">
         <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
       </b-dropdown>    
-      <b-form-input v-if="can_expression" v-model="expression" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :title="$$t('block.except.expression')" v-tippy  :style="{fontFamily: $$.eYo.Font.familyMono}"></b-form-input>
+      <b-form-input v-if="can_expression" v-model="expression" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :title="$t('message.except_expression')" v-tippy  :style="{fontFamily: $$.eYo.Font.familyMono}"></b-form-input>
       <span v-if="can_alias" class="btn-outline-secondary eyo-code-reserved" :style="{fontFamily: $$.eYo.Font.familyMono}"" >as</span>
-      <b-form-input v-if="can_alias" v-model="alias" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style="{fontFamily: $$.eYo.Font.familyMono}"" :title="$$t('block.except.alias')" v-tippy ></b-form-input>
+      <b-form-input v-if="can_alias" v-model="alias" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style="{fontFamily: $$.eYo.Font.familyMono}"" :title="$t('message.except_alias')" v-tippy ></b-form-input>
       <!--span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span-->
     </b-btn-group>
     <comment :eyo="eyo" :step="step"></comment>
