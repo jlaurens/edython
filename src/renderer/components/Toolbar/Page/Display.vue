@@ -36,13 +36,13 @@
       },
       titleLeft () {
         return this.left
-          ? this.$t('message.hide_workspace')
-          : this.$t('message.show_workspace')
+          ? this.$$t('toolbar.tooltip.workspace.hide')
+          : this.$$t('toolbar.tooltip.workspace.show')
       },
       titleRight () {
         return this.right
-          ? this.$t('message.hide_console_panel')
-          : this.$t('message.show_console_panel')
+          ? this.$$t('toolbar.tooltip.console_panel.hide')
+          : this.$$t('toolbar.tooltip.console_panel.show')
       }
     },
     methods: {
