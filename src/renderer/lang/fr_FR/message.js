@@ -16,5 +16,10 @@ export default {
   YES: 'Oui',
   NO: 'Non',
   hello: 'Bonjour monde',
-  bytes: 'octets'
+  bytes: 'octets',
+  flyout: {
+    basic: 'basic',
+    module: 'Module {{key}}',
+    blocks: 'Blocs {{key}}'
+  }
 }
