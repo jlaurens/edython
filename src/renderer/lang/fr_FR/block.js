@@ -17,6 +17,7 @@ export default {
   two_stars: reserved('**'),
   dot: reserved('.'),
   two_dots: reserved('..'),
+  no_selection: 'Pas de bloc sélectionné',
   placeholder: { // OK
     name: 'nom',
     comment: 'Un commentaire ici',
@@ -27,7 +28,10 @@ export default {
     enter_any_valid_expression: 'Saisir une expression valide',
     global: 'Déclarer ou utiliser des noms de variables globales',
     nonlocal: 'Utiliser des noms de variables dans la plus petite portée entourant l\'instruction',
-    del: 'Supprime une variable ou une élément de liste',
+    del: 'Supprime une variable ou un élément de liste',
+    pass: 'Instruction sans effet, utile comme bouche trou',
+    continue: 'Continue directement à la prochaine itération de la boucle',
+    break: 'Sort de la boucle',
     proper_slice: { // OK
       lower: 'Valeur minimale de l\'indice',
       upper: 'Valeur maximale de l\'indice + 1',

@@ -45,9 +45,10 @@
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
       <block-g-n-d v-else-if="isSelected([$$.eYo.T3.Stmt.global_stmt, $$.eYo.T3.Stmt.nonlocal_stmt, $$.eYo.T3.Stmt.del_stmt])" :eyo="eyo" :step="step" :modifiable="modifiable" :slotholder="slotholder"></block-g-n-d>
+      <block-p-c-b v-else-if="isSelected([$$.eYo.T3.Stmt.pass_stmt, $$.eYo.T3.Stmt.continue_stmt, $$.eYo.T3.Stmt.break_stmt])" :eyo="eyo" :step="step"></block-p-c-b>
       <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-proper-slice>
       <block-default v-else-if="eyo" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-default>
-      <block-none v-else></block-none>
+      <span v-else class="info">{{this.$$t('block.no_selection')}}</span>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
     </b-btn-group>
     <b-btn-group class="b3k-cpl">
@@ -80,7 +81,6 @@
   import BlockDefault from './Block/Default.vue'
   import BlockDecorator from './Block/Decorator.vue'
   import BlockStarred from './Block/Starred.vue'
-  import BlockNone from './Block/None.vue'
   import BlockCopyPaste from './Block/CopyPaste.vue'
   import BlockLayout from './Block/Layout.vue'
   import BlockExcept from './Block/Except.vue'
@@ -88,6 +88,7 @@
   import BlockImport from './Block/Import.vue'
   import BlockProperSlice from './Block/ProperSlice.vue'
   import BlockGND from './Block/GND.vue'
+  import BlockPCB from './Block/PCB.vue'
 
   export default {
     name: 'toolbar-block',
@@ -117,14 +118,14 @@
       BlockDefault,
       BlockDecorator,
       BlockStarred,
-      BlockNone,
       BlockCopyPaste,
       BlockLayout,
       BlockExcept,
       BlockFuncdef,
       BlockImport,
       BlockProperSlice,
-      BlockGND
+      BlockGND,
+      BlockPCB
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -456,5 +457,9 @@
   }
   .b3k-edit .eyo-code-reserved .btn:not(:hover) {
     color: rgba(0, 84, 147, 0.75) !important;
+  }
+  .b3k-edit .info {
+    color:rgba(26, 29, 21, 0.5);
+    font-style: italic;
   }
 </style>

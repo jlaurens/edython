@@ -303,34 +303,113 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
 }
 
 /**
- * Class for a DelegateSvg, pass_stmt.
+ * Class for a DelegateSvg, global_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.pass_stmt, {
+eYo.DelegateSvg.Stmt.makeSubclass('pass_stmt', {
+  xml: {
+    tags: [
+      eYo.Key.PASS,
+      eYo.Key.CONTINUE,
+      eYo.Key.BREAK
+    ]
+  },
+  data: {
+    variant: {
+      all: [
+        eYo.Key.PASS,
+        eYo.Key.CONTINUE,
+        eYo.Key.BREAK
+      ],
+      init: eYo.Key.PASS,
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
+        }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        this.set({
+          [eYo.T3.Stmt.pass_stmt]: eYo.Key.PASS,
+          [eYo.T3.Stmt.continue_stmt]: eYo.Key.CONTINUE,          [eYo.T3.Stmt.break_stmt]: eYo.Key.BREAK
+        } [type])
+      }
+    }
+  },
   fields: {
-    label: 'pass'
+    variant: {
+      css: 'reserved'
+    }
   }
 })
 
-/**
- * Class for a DelegateSvg, break_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.break_stmt, {
-  fields: {
-    label: 'break'
-  }
-})
 
 /**
- * Class for a DelegateSvg, continue_stmt.
+ * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.continue_stmt, {
-  fields: {
-    label: 'continue'
+eYo.DelegateSvg.Stmt.pass_stmt.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var block = this.block_
+    this.setupType(
+      {
+        [eYo.Key.PASS]: eYo.T3.Stmt.pass_stmt,
+        [eYo.Key.CONTINUE]: eYo.T3.Stmt.continue_stmt,
+        [eYo.Key.BREAK]: eYo.T3.Stmt.break_stmt
+      } [this.variant_p]
+    )
+    return block.type
   }
-})
+)
+
+for (var _ = 0, k; (k = [
+  'continue',
+  'break'
+][_++]);) {
+  k = k + '_stmt'
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
+  eYo.DelegateSvg.Manager.register(k)
+}
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * For edython.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Stmt.pass_stmt.prototype.tagName = function () {
+  return 'eyo:' + this.variant_p
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.pass_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var current = this.variant_p
+  var variants = this.data.variant.getAll()
+  var F = function (i) {
+    var key = variants[i]
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+      eYo.Do.createSPAN(key, 'eyo-code-reserved')
+    )
+    var menuItem = mgr.newMenuItem(content, function () {
+      block.eyo.data.variant.set(key)
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(0)
+  F(1)
+  F(2)
+  mgr.shouldSeparate()
+  return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+}
 
 /// /////// gobal/nonlocal statement
 /**
@@ -376,7 +455,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
         save: /** @suppress {globalThis} */ function (element) {
         },
         load: /** @suppress {globalThis} */ function (element) {
-          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
+          this.owner.variant_p = element.getAttribute(eYo.Key.EYO).substring(4)
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -390,25 +469,34 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
     variant: {
       css: 'reserved'
     }
-  },
-  slots: {
-    identifiers: {
-      order: 1,
-      wrap: eYo.T3.Expr.non_void_identifier_list
-    },
-    del: {
-      order: 2,
-      wrap: eYo.T3.Expr.target_list
-    }
   }
 })
 
+
+/**
+ * The type and connection depend on the properties modifier, value and variant.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.pass_stmt.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    this.setupType(
+      {
+        [eYo.Key.PASS]: eYo.T3.Stmt.pass_stmt,
+        [eYo.Key.CONTINUE]: eYo.T3.Stmt.continue_stmt,
+        [eYo.Key.BREAK]: eYo.T3.Stmt.break_stmt
+      } [this.variant_p]
+    )
+    return this.type
+  }
+)
+
 for (var _ = 0, k; (k = [
-  'nonlocal',
-  'del'
+  'continue',
+  'break'
 ][_++]);) {
   k = k + '_stmt'
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
   eYo.DelegateSvg.Manager.register(k)
 }
 
