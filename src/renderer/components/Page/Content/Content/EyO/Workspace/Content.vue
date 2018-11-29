@@ -3,24 +3,24 @@
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
     <div id="eyo-flyout-toolbar-switcher">
       <b-btn-group id="eyo-flyout-switcher">
-        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown">
+        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown-">
           <template slot="button-content">Blocs</template>
           <b-dropdown-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
-        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown">
+        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown-">
           <template slot="button-content">Module&nbsp;</template>
           <b-dropdown-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
       </b-btn-group>
-      <div id="eyo-flyout-toolbar-label">
+      <div v-if="showBasic" id="eyo-flyout-toolbar-label">
         {{label}}
         <b-form-checkbox id="eyo-flyout-toolbar-label-check"
                         v-model="isBasic"
                         v-if="canBasic"
                         button-variant="light">
-          basic
+          {{$$t('message.flyout.basic')}}
         </b-form-checkbox>
       </div>
     </div>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+  import {mapState, mapMutations} from 'vuex'
+
   import IconBase from '@@/Icon/IconBase.vue'
   import IconTriangle from '@@/Icon/IconTriangle.vue'
   import IconBug from '@@/Icon/IconBug.vue'
@@ -119,15 +121,17 @@
       return model
     },
     computed: {
-      flyoutClosed: function () {
-        return this.$store.state.UI.flyoutClosed
-      },
-      flyoutCategory: function () {
-        return this.$store.state.UI.flyoutCategory
-      },
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module
-      }
+      },
+      showBasic () {
+        return this.displayMode !== eYo.App.TUTORIAL && this.displayMode !== eYo.App.BASIC
+      },
+      ...mapState({
+        flyoutCategory: state => state.UI.flyoutCategory,
+        flyoutClosed: state => state.UI.flyoutClosed,
+        displayMode: state => state.UI.displayMode
+      })
     },
     watch: {
       flyoutClosed: function (newValue, oldValue) {
@@ -136,6 +140,7 @@
       flyoutCategory: function (newValue, oldValue) {
         var item = this.items[newValue]
         if (eYo.App.workspace && eYo.App.flyout && item) { // this.workspace is necessary
+          console.error(item)
           var list = eYo.App.flyout.eyo.getList(newValue)
           if (list && list.length) {
             eYo.App.flyout.show(list)
@@ -146,12 +151,11 @@
       },
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
-        console.log('selectedCategory', newValue, oldValue)
         if (!oldValue || (newValue !== oldValue)) {
           var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
           eYo.Tooltip.hideAll(el)
-          this.$store.commit('UI_SET_FLYOUT_CATEGORY', newValue.key)
-          this.label = newValue.label
+          this.setFlyoutCategory(newValue.key)
+          this.label = newValue.label.replace('{{key}}', eYo.Msg[newValue.key.toUpperCase()])
         }
       },
       // whenever `isBasic` changes, this function will run
@@ -165,6 +169,9 @@
       }
     },
     methods: {
+      ...mapMutations({
+        setFlyoutCategory: 'UI_SET_FLYOUT_CATEGORY'
+      }),
       selectCategory (item) {
         if (this.isBasic && item.basic) {
           item = item.basic
