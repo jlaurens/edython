@@ -29,31 +29,41 @@
     },
     computed: {
       titleEcoSave () {
-        return 'Sauvegarde au format compressé avec gzip si coché'
+        return this.$$t('toolbar.tooltip.eco_save')
       },
       contentEcoSave () {
-        return 'Sauvegarde éco'
+        return this.$$t('toolbar.content.eco_save')
       },
       titleDisabledTips () {
-        return this.disabledTips ? 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet' : 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
+        return this.disabledTips
+          ? this.$$t('toolbar.tooltip.tooltip.on')
+          : this.$$t('toolbar.tooltip.tooltip.off')
       },
       contentDisabledTips () {
-        return this.disabledTips ? 'Activer les bulles d\'aide' : 'Désactiver les bulles d\'aide'
+        return this.disabledTips
+          ? this.$$t('toolbar.content.tooltip.on')
+          : this.$$t('toolbar.content.tooltip.off')
       },
       titleToolbarBlockVisible () {
-        return this.toolbarBlockVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition et de réglage du bloc sélectionné'
+        return this.toolbarBlockVisible
+          ? this.$$t('toolbar.tooltip.block.off')
+          : this.$$t('toolbar.tooltip.block.on')
       },
       contentToolbarBlockVisible () {
-        return this.toolbarBlockVisible ? 'Cacher la barre d\'édition' : 'Afficher la barre d\'édition'
+        return this.toolbarBlockVisible
+          ? this.$$t('toolbar.content.block.off')
+          : this.$$t('toolbar.content.block.on')
       },
       titleToolbarBlockDebug () {
-        return this.toolbarInfoDebug ? 'Cacher les informations de débogage' : 'Afficher les informations de débogage'
+        return this.toolbarInfoDebug
+          ? this.$$t('toolbar.tooltip.debug.off')
+          : this.$$t('toolbar.tooltip.debug.on')
       },
       contentToolbarBlockDebug () {
-        return 'Mode débogage'
+        return this.$$t('toolbar.content.debug')
       },
       titleMenu () {
-        return 'Options et actions'
+        return this.$$t('toolbar.tooltip.menu')
       },
       ...mapState({
         ecoSave: state => state.Document.ecoSave,
