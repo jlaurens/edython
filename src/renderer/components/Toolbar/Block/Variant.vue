@@ -89,20 +89,26 @@
         }
       },
       formatted: function (item) {
+        console.warn(item)
         var formatted = item.length
           ? this.$$t(`message.${({
             '*': 'star',
             '**': 'two_stars',
             '.': 'dot',
             '..': 'two_dots'
-          }[item] || item)}`)
+          }[item] || item)}`) || item
           : '&nbsp;'
-        if (formatted.indexOf('{{slotholder}}') < 0) {
+        console.warn('item, formatted:', item, formatted)
+        if (formatted.indexOf && formatted.indexOf('{{slotholder}}') < 0) {
           return formatted
         }
-        var replacement = `</span>${this.slotholder('eyo-slot-holder')}<span>`
-        this.withSlot = true
-        return `<span>${formatted.replace('{{slotholder}}', replacement)}</span>`
+        if (formatted.replace) {
+          var replacement = `</span>${this.slotholder('eyo-slot-holder')}<span>`
+          this.withSlot = true
+          return `<span>${formatted.replace('{{slotholder}}', replacement)}</span>`
+        } else {
+          return `${formatted}`
+        }
       }
     }
   }

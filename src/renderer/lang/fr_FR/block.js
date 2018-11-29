@@ -25,6 +25,11 @@ export default {
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',
     enter_any_valid_expression: 'Saisir une expression valide',
+    proper_slice: { // OK
+      lower: 'Valeur minimale de l\'indice',
+      upper: 'Valeur maximale de l\'indice + 1',
+      stride: 'Pas de l\'incrémentation'
+    },
     funcdef: { // OK
       name: 'Un identifiant pour nommer la fonction'
     },

@@ -45,7 +45,8 @@
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
       <block-variant v-else-if="isSelected([$$.eYo.T3.Stmt.global_global, $$.eYo.T3.Stmt.global_nonlocal, $$.eYo.T3.Stmt.global_del])" :eyo="eyo" :step="step" :modifiable="modifiable" :text="true" child_id="block-g-n-d" :slotholder="slotholder"></block-variant>
-      <block-default :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable" v-else-if="eyo"></block-default>
+      <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step"></block-proper-slice>
+      <block-default v-else-if="eyo" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-default>
       <block-none v-else></block-none>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
     </b-btn-group>
@@ -85,6 +86,7 @@
   import BlockExcept from './Block/Except.vue'
   import BlockFuncdef from './Block/Funcdef.vue'
   import BlockImport from './Block/Import.vue'
+  import BlockProperSlice from './Block/ProperSlice.vue'
 
   export default {
     name: 'toolbar-block',
@@ -119,7 +121,8 @@
       BlockLayout,
       BlockExcept,
       BlockFuncdef,
-      BlockImport
+      BlockImport,
+      BlockProperSlice
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0

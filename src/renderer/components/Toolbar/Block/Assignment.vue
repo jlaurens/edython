@@ -40,7 +40,7 @@
                 '**': 'two_stars',
                 '.': 'dot',
                 '..': 'two_dots'
-              }[item] || item}`)
+              }[item] || item}`) || item
               : '&nbsp;'
           }
         }

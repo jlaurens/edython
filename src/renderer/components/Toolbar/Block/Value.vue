@@ -33,8 +33,10 @@
           return item && item.length
             ? this.$$t(`block.${({
               '*': 'star',
-              '**': 'two_stars'
-            }[item] || item)}`)
+              '**': 'two_stars',
+              '.': 'dot',
+              '..': 'two_dots'
+            }[item] || item)}`) || item
             : '&nbsp;'
         }
       }
