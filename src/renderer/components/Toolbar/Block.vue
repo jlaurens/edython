@@ -44,8 +44,8 @@
       ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
-      <block-variant v-else-if="isSelected([$$.eYo.T3.Stmt.global_global, $$.eYo.T3.Stmt.global_nonlocal, $$.eYo.T3.Stmt.global_del])" :eyo="eyo" :step="step" :modifiable="modifiable" :text="true" child_id="block-g-n-d" :slotholder="slotholder"></block-variant>
-      <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step"></block-proper-slice>
+      <block-g-n-d v-else-if="isSelected([$$.eYo.T3.Stmt.global_stmt, $$.eYo.T3.Stmt.nonlocal_stmt, $$.eYo.T3.Stmt.del_stmt])" :eyo="eyo" :step="step" :modifiable="modifiable" :slotholder="slotholder"></block-g-n-d>
+      <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-proper-slice>
       <block-default v-else-if="eyo" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-default>
       <block-none v-else></block-none>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
@@ -87,6 +87,7 @@
   import BlockFuncdef from './Block/Funcdef.vue'
   import BlockImport from './Block/Import.vue'
   import BlockProperSlice from './Block/ProperSlice.vue'
+  import BlockGND from './Block/GND.vue'
 
   export default {
     name: 'toolbar-block',
@@ -122,7 +123,8 @@
       BlockExcept,
       BlockFuncdef,
       BlockImport,
-      BlockProperSlice
+      BlockProperSlice,
+      BlockGND
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -132,7 +134,7 @@
         var d = eYo.Shape.definitionWithConnection()
         var one_rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
         return function (className) {
-          return `<div class="eyo-slot-holder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
+          return `<div class="eyo-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
         }
       },
       selectedBlock () {
@@ -208,10 +210,10 @@
   .b3k-edit .item {
     display: inline-block;
   }
-  .btn .eyo-slot-holder .eyo-path-contour {
+  .btn .eyo-slotholder .eyo-path-contour {
     stroke-width: 2px;
   }
-  .dropdown-item:hover .eyo-slot-holder .eyo-path-contour {
+  .dropdown-item:hover .eyo-slotholder .eyo-path-contour {
     stroke: rgb(100,100,100);
   }
   .eyo-btn-inert:focus,
@@ -243,11 +245,14 @@
   .b3k-edit-content {
     border-radius: inherit;
   }
-  .eyo-slot-holder {
+  .eyo-slotholder {
     display: inline-block;
     vertical-align: middle;
     position: relative;
     top: -0.0625rem;
+  }
+  .eyo-slotholder-inline {
+    top: -0.17rem;
   }
   .b3k-edit,
   .b3k-edit .btn-group {
@@ -379,12 +384,12 @@
   }
   .b3k-edit .item,
   .b3k-edit .btn,
-  .b3k-edit .eyo-slot-holder,
+  .b3k-edit .eyo-slotholder,
   .b3k-edit .dropdown-item {
     height: 1.75rem;
     line-height: 1.75rem;
   }
-  .b3k-edit .eyo-with-slot-holder .dropdown-item {
+  .b3k-edit .eyo-with-slotholder .dropdown-item {
     height: 2.5rem;
     line-height: 2.5rem;
   }
@@ -401,6 +406,11 @@
   .b3k-edit .item.text.dropdown>.btn:not(:hover) {
     color: #212529;
     background: white;
+  }
+  .b3k-edit .disabled>.item.text,
+  .b3k-edit .disabled.item.text {
+    color: inherit;
+    background: inherit;
   }
   .b3k-edit input.item {
     text-align: left;
@@ -421,6 +431,9 @@
     width: 8rem;
     min-width: 8rem;
   }
+  .b3k-edit .item.w-10rem {
+    width: 10rem;
+  }
   .b3k-edit .item.w-12rem {
     width: 12rem;
   }
@@ -435,5 +448,13 @@
     vertical-align: baseline;
     position:relative;
     bottom:0.125rem;
+  }
+  /* bad taste */
+  .b3k-edit .eyo-code-reserved .btn {
+    font-family: DejaVuSansMono, monospace !important;
+    font-weight: bold;
+  }
+  .b3k-edit .eyo-code-reserved .btn:not(:hover) {
+    color: rgba(0, 84, 147, 0.75) !important;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="block-starred" key-nav  aria-label="Block decorator">
-    <b-dropdown class="item text eyo-with-slot-holder mw-4rem" variant="outline-secondary">
+    <b-dropdown class="item text eyo-with-slotholder mw-4rem" variant="outline-secondary">
       <template slot="button-content"><span class="eyo-code-reserved" v-html="chosen.title"></span></template>
       <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
     </b-dropdown>
@@ -34,7 +34,7 @@
     },
     computed: {
       my_slot () {
-        return this.slotholder('eyo-slot-holder')
+        return this.slotholder('eyo-slotholder')
       },
       choices_by_key () {
         return {

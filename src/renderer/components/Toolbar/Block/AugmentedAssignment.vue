@@ -73,7 +73,7 @@
           : this.operators.bin
       },
       my_slot () {
-        return this.slotholder('eyo-slot-holder')
+        return this.slotholder('eyo-slotholder')
       }
     },
     created () {

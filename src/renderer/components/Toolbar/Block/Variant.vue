@@ -41,7 +41,7 @@
     },
     computed: {
       $$class () {
-        return `item${this.withSlot ? ' eyo-with-slot-holder' : ''}${this.text ? ' text' : ''}`
+        return `item${this.withSlot ? ' eyo-with-slotholder' : ''}${this.text ? ' text' : ''}`
       },
       chosen: {
         get () {
@@ -103,7 +103,7 @@
           return formatted
         }
         if (formatted.replace) {
-          var replacement = `</span>${this.slotholder('eyo-slot-holder')}<span>`
+          var replacement = `</span>${this.slotholder('eyo-slotholder')}<span>`
           this.withSlot = true
           return `<span>${formatted.replace('{{slotholder}}', replacement)}</span>`
         } else {

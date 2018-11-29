@@ -847,7 +847,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       var target, t_eyo, p5e
       var type
       // if the `name` slot is connected.
-      if ((target = this.name_s.targetBlock())) {
+      if ((target = this.name_t)) {
         t_eyo = target.eyo
         if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
@@ -887,7 +887,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.identifier = p5e.name
         ans.module = p5e.holder
       }
-      target = this.holder_s.targetBlock()
+      target = this.holder_t
       if (ans.dotted < 2 && target) {
         t_eyo = target.eyo
         if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {

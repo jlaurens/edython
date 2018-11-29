@@ -51,7 +51,7 @@
       },
       mustComment () {
         (this.saved_step === this.step) || this.$$synchronize()
-        return this.eyo.expression_d && (this.variant !== eYo.Key.EXPRESSION)
+        return this.eyo.type === eYo.T3.Stmt.any_expression && this.eyo.expression_d && (this.variant !== eYo.Key.EXPRESSION)
       },
       variant () {
         (this.saved_step === this.step) || this.$$synchronize()

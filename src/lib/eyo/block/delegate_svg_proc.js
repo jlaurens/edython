@@ -54,7 +54,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
     tag: '@',
     didLoad: /** @suppress {globalThis} */ function (element) {
       console.error('didLoad')
-      var target = this.n_ary_s.targetBlock()
+      var target = this.n_ary_t
       if (target.childBlocks_.length) {
         this.variant_p = eYo.Key.N_ARY
       }
@@ -109,7 +109,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
           if (this.get() === eYo.Key.N_ARY) {
-            var target = this.owner.n_ary_s.targetBlock()
+            var target = this.owner.n_ary_t
             if (!target.childBlocks_.length) {
               this.save(element)
             }

@@ -82,7 +82,7 @@
         }
       },
       slot () {
-        return this.slotholder('eyo-slot-holder')
+        return this.slotholder('eyo-slotholder')
       },
       withSlotholder () {
         (this.saved_step === this.step) || this.$$synchronize()

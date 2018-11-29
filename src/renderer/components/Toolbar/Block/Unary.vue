@@ -1,5 +1,5 @@
 <template>
-    <b-dropdown id="block-unary-operator" class="eyo-dropdown item text  eyo-with-slot-holder" variant="outline-secondary">
+    <b-dropdown id="block-unary-operator" class="eyo-dropdown item text  eyo-with-slotholder" variant="outline-secondary">
       <template slot="button-content"><span class="eyo-code eyo-content text" v-html="formatter(operator)"></span></template>
       <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="block-unary-operator eyo-code" v-html="formatter(item)"></b-dropdown-item-button>
       </b-dropdown-item-button>
@@ -51,7 +51,7 @@
           return this.eyo.operator_d.getAll()
         },
         slot () {
-          return this.slotholder('eyo-slot-holder')
+          return this.slotholder('eyo-slotholder')
         }
       },
       created () {

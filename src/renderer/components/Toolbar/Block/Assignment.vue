@@ -1,5 +1,5 @@
 <template>
-    <b-dropdown id="block-assignment" class="eyo-dropdown item text eyo-with-slot-holder">
+    <b-dropdown id="block-assignment" class="eyo-dropdown item text eyo-with-slotholder">
       <template slot="button-content"><span class="eyo-code eyo-content" v-html="selected_item.title"></span></template>
       <b-dropdown-item-button v-for="item in items" v-on:click="variant = item.key" :key="item.key" class="eyo-code" v-html="item.title"></b-dropdown-item-button>
       </b-dropdown-item-button>
@@ -62,7 +62,7 @@
           ]
         },
         slot () {
-          return this.slotholder('eyo-slot-holder')
+          return this.slotholder('eyo-slotholder')
         },
         items_by_key () {
           return {

@@ -25,6 +25,9 @@ export default {
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',
     enter_any_valid_expression: 'Saisir une expression valide',
+    global: 'Déclarer ou utiliser des noms de variables globales',
+    nonlocal: 'Utiliser des noms de variables dans la plus petite portée entourant l\'instruction',
+    del: 'Supprime une variable ou une élément de liste',
     proper_slice: { // OK
       lower: 'Valeur minimale de l\'indice',
       upper: 'Valeur maximale de l\'indice + 1',

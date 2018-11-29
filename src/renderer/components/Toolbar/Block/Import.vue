@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="block-import">
-    <b-dropdown class="item eyo-with-slot-holder">
+    <b-dropdown class="item eyo-with-slotholder">
       <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
     </b-dropdown>
     <div class="item text eyo-code-reserved" v-if="isFromInput">from</div>
@@ -126,7 +126,7 @@
         if (input.indexOf('{{slotholder}}') < 0) {
           return input
         }
-        var replacement = `</span>${this.slotholder('eyo-slot-holder')}<span>`
+        var replacement = `</span>${this.slotholder('eyo-slotholder')}<span>`
         return `<span>${input.replace('{{slotholder}}', replacement)}</span>`
       }
     }

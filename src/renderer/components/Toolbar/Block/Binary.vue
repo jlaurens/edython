@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown id="block-binary-operator" class="eyo-code item text eyo-with-slot-holder mw-6rem" variant="outline-secondary">
+  <b-dropdown id="block-binary-operator" class="eyo-code item text eyo-with-slotholder mw-6rem" variant="outline-secondary">
     <template slot="button-content"><span class="block-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
     <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="formatter(item)">
     </b-dropdown-item-button>
@@ -65,7 +65,7 @@
           : this.operators.bin
       },
       my_slot () {
-        return this.slotholder('eyo-slot-holder')
+        return this.slotholder('eyo-slotholder')
       }
     },
     created () {

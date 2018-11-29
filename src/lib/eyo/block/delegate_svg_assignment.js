@@ -517,7 +517,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var withTarget = this.name_s.targetBlock()
+  var withTarget = this.name_t
   var name = this.name_p
   var operator = this.data.operator.get()
   var withBitwise = this.data.operator.bitwise

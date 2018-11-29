@@ -687,17 +687,30 @@ eYo.Delegate.Manager = (function () {
       }
     }
     var defineSlotProperty = function (k) {
-      var key = k + '_s'
+      var key_s = k + '_s'
+      var key_t = k + '_t'
       // make a closure to catch the value of k
       return function () {
-        if (!(key in this)) {
+        if (!(key_s in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
           Object.defineProperty(
             this,
-            key,
+            key_s,
             {
               get: function () {
                 return this.slots[k]
+              }
+            }
+          )
+        }
+        if (!(key_t in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_t,
+            {
+              get: function () {
+                return this.slots[k].targetBlock()
               }
             }
           )

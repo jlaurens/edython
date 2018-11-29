@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="b3k-primary-variant">
-    <b-dropdown variant="outline-secondary" class="eyo-code item text eyo-with-slot-holder mw-6rem">
+    <b-dropdown variant="outline-secondary" class="eyo-code item text eyo-with-slotholder mw-6rem">
       <template slot="button-content"><span class="eyo-code" v-html="selected.title || selected.content"></span></template>
       <b-dropdown-item-button v-for="choice in choices" v-on:click="selected = choice" :key="choice.key" class="eyo-code" v-html="choice.content"></b-dropdown-item-button>
     </b-dropdown>
@@ -132,11 +132,11 @@
             key: eYo.Key.NONE
           },
           [eYo.Key.CALL_EXPR]: {
-            content: `<span>(</span>${this.slotholder('eyo-slot-holder')}<span>)</span>`,
+            content: `<span>(</span>${this.slotholder('eyo-slotholder')}<span>)</span>`,
             key: eYo.Key.CALL_EXPR
           },
           [eYo.Key.SLICING]: {
-            content: `<span>[</span>${this.slotholder('eyo-slot-holder')}<span>]</span>`,
+            content: `<span>[</span>${this.slotholder('eyo-slotholder')}<span>]</span>`,
             key: eYo.Key.SLICING
           },
           [eYo.Key.ALIASED]: {
@@ -145,17 +145,17 @@
           },
           [eYo.Key.ANNOTATED]: {
             title: '&nbsp;',
-            content: `<span class="eyo-code-reserved">:</span>${this.slotholder('eyo-slot-holder')}`,
+            content: `<span class="eyo-code-reserved">:</span>${this.slotholder('eyo-slotholder')}`,
             key: eYo.Key.ANNOTATED
           },
           [eYo.Key.DEFINED]: {
             title: '&nbsp;',
-            content: `<span class="eyo-code-reserved">=</span>${this.slotholder('eyo-slot-holder')}`,
+            content: `<span class="eyo-code-reserved">=</span>${this.slotholder('eyo-slotholder')}`,
             key: eYo.Key.DEFINED
           },
           [eYo.Key.ANNOTATED_DEFINED]: {
             title: '&nbsp;',
-            content: `<span class="eyop-code-reserved">:</span>${this.slotholder('eyo-slot-holder')}<span class="eyo-code-reserved">=</span>${this.slotholder('eyo-slot-holder')}`,
+            content: `<span class="eyop-code-reserved">:</span>${this.slotholder('eyo-slotholder')}<span class="eyo-code-reserved">=</span>${this.slotholder('eyo-slotholder')}`,
             key: eYo.Key.ANNOTATED_DEFINED
           }
         }
