@@ -1,8 +1,8 @@
 import 'babel-polyfill'
 import Vue from 'vue'
 import axios from 'axios'
-import lodash from 'lodash' // eslint-disable-line no-unused-vars
-import pako from 'pako' // eslint-disable-line no-unused-vars
+import lodash from 'lodash'
+import pako from 'pako'
 
 import Stacktrace from 'stack-trace'
 
@@ -39,12 +39,13 @@ eYo.App.Stacktrace = Stacktrace
 
 var controller = {
   goog,
-  eYo: eYo,
-  Blockly: Blockly,
-  pako: pako,
-  bus: new Vue(),
-  TweenLite: TweenLite,
-  process: process
+  eYo,
+  Blockly,
+  pako,
+  lodash,
+  TweenLite,
+  process,
+  bus: new Vue()
 }
 
 Vue.prototype.$$ = controller
@@ -529,7 +530,6 @@ export const app = new Vue({
 })
 
 window['vue'] = app
-window.store = store
 
 app.$mount('#app')
 
