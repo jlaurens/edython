@@ -36,6 +36,11 @@ Object.defineProperties(
       get () {
         return this.field_.sourceBlock_.eyo
       }
+    },
+    textElement: {
+      get () {
+        return this.field_.textElement_
+      }
     }
   }
 )
