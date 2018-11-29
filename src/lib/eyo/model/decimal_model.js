@@ -73,7 +73,8 @@ eYo.Model.decimal__module.setData({
       category: 1,
       type_: 0,
       href: '#decimal.BasicContext',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Clamped',
@@ -81,7 +82,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Clamped',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Context',
@@ -152,7 +154,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.DecimalException',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'DefaultContext',
@@ -160,7 +163,8 @@ eYo.Model.decimal__module.setData({
       category: 1,
       type_: 0,
       href: '#decimal.DefaultContext',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'DivisionByZero',
@@ -168,7 +172,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.DivisionByZero',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Etiny',
@@ -192,7 +197,8 @@ eYo.Model.decimal__module.setData({
       category: 1,
       type_: 0,
       href: '#decimal.ExtendedContext',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'FloatOperation',
@@ -200,7 +206,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.FloatOperation',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'HAVE_THREADS',
@@ -208,7 +215,8 @@ eYo.Model.decimal__module.setData({
       category: 2,
       type_: 3,
       href: '#decimal.HAVE_THREADS',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Inexact',
@@ -216,7 +224,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Inexact',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'InvalidOperation',
@@ -224,7 +233,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.InvalidOperation',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'MAX_EMAX',
@@ -232,7 +242,8 @@ eYo.Model.decimal__module.setData({
       category: 2,
       type_: 2,
       href: '#decimal.MAX_EMAX',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'MAX_PREC',
@@ -240,7 +251,8 @@ eYo.Model.decimal__module.setData({
       category: 2,
       type_: 2,
       href: '#decimal.MAX_PREC',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'MIN_EMIN',
@@ -248,7 +260,8 @@ eYo.Model.decimal__module.setData({
       category: 2,
       type_: 2,
       href: '#decimal.MIN_EMIN',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'MIN_ETINY',
@@ -256,7 +269,8 @@ eYo.Model.decimal__module.setData({
       category: 2,
       type_: 2,
       href: '#decimal.MIN_ETINY',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Overflow',
@@ -264,7 +278,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Overflow',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_05UP',
@@ -272,7 +287,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_05UP',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_CEILING',
@@ -280,7 +296,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_CEILING',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_DOWN',
@@ -288,7 +305,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_DOWN',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_FLOOR',
@@ -296,7 +314,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_FLOOR',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_HALF_DOWN',
@@ -304,7 +323,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_HALF_DOWN',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_HALF_EVEN',
@@ -312,7 +332,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_HALF_EVEN',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_HALF_UP',
@@ -320,7 +341,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_HALF_UP',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'ROUND_UP',
@@ -328,7 +350,8 @@ eYo.Model.decimal__module.setData({
       category: 3,
       type_: 3,
       href: '#decimal.ROUND_UP',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Rounded',
@@ -336,7 +359,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Rounded',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Subnormal',
@@ -344,7 +368,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Subnormal',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'Underflow',
@@ -352,7 +377,8 @@ eYo.Model.decimal__module.setData({
       category: 4,
       type_: 0,
       href: '#decimal.Underflow',
-      stmt: true
+      stmt: true,
+      ary: 0
     }),
     new Item({
       name: 'abs',
@@ -2219,6 +2245,6 @@ eYo.Model.decimal__module.setData({
 
 
 
-// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-27 12:30:35.714956
+// This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2018-11-29 12:46:37.793094
 
 

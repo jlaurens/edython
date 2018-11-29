@@ -403,8 +403,11 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
       var M = eYo.Model[holder] || eYo.Model[holder + '__module']
       var ans = M && M.getProfile(candidate)
     } else {
-      ans = eYo.T3.Profile.getReference(candidate)
+      ans = eYo.T3.Profile.getReference(candidate) || eYo.T3.Profile.getInModule(candidate)
     }
+    var item = ans && ans.item
+    var mdl = item && item.module
+    mdl = mdl && mdl.name.split('__')[0]
     return new eYo.T3.Profile(null, {
       raw: m.dots || m.holder
         ? eYo.T3.Expr.custom_parent_module
@@ -416,7 +419,8 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
       base: base,
       name: candidate,
       holder: holder,
-      item: ans && ans.item
+      module: mdl,
+      item: item
     })
   }
 }
@@ -520,12 +524,19 @@ eYo.T3.Profile.getLiteral = function (candidate) {
  * @return {!eYo.T3} the profile of this identifier when a reference.
  */
 eYo.T3.Profile.getReference = function (identifier) {
-  for (var ref in {'functions': 0, 'stdtypes': 0, 'datamodel': 0}) {
+  var ans
+  if ([
+    'functions',
+    'stdtypes',
+    'datamodel'
+  ].some((ref) => {
     var M = eYo.Model[ref]
-    var ans = M && M.getProfile(identifier)
+    ans = M && M.getProfile(identifier)
     if (ans && !ans.isVoid) {
-      return ans
+      return true
     }
+  })) {
+    return ans
   }
   if ([
     eYo.Key.PROPERTY,
@@ -541,7 +552,35 @@ eYo.T3.Profile.getReference = function (identifier) {
 }
 
 /**
- * Returns a profile if `identifier` is a reference keyword/identifier
+ * Returns a profile if `identifier` is a known module's keyword/identifier
+ * For edython.
+ * @param {!String} identifier
+ * @return {!eYo.T3} the profile of this identifier when a reference.
+ */
+eYo.T3.Profile.getInModule = function (identifier) {
+  var ans
+  if ([
+    'turtle',
+    'math',
+    'decimal',
+    'fraction',
+    'statistics',
+    'random',
+    'cmath',
+    'string'
+  ].some((module) => {
+    var M = eYo.Model[module + '__module']
+    ans = M && M.getProfile(identifier)
+    if (ans && !ans.isVoid) {
+      return true
+    }
+  })) {
+    return ans
+  }
+}
+
+/**
+ * Returns a profile if `identifier` is a delimiter
  * For edython.
  * @param {!String} identifier
  * @return {!eYo.T3} the profile of this identifier when reserved.

@@ -178,7 +178,8 @@ def do_one_module(module, **kwargs):
         @staticmethod
         def ary_turtle(name, default):
             if name == 'Turtle':
-                return 1
+                exit(-1)
+                return 0
             return default
 
         @staticmethod
@@ -265,6 +266,7 @@ def do_one_module(module, **kwargs):
             )
             """, call, re.X)
             # print(self.name, '--->', m)
+            arguments = []
             if m is None:
                 # there are no arguments
                 return
@@ -273,7 +275,6 @@ def do_one_module(module, **kwargs):
             args3 = m.group('rest')
             # print(self.name, '===>', call, '/1:', args1, '/2:', args2, '/3:', args3, sep='')
             # take care of the mandatory argument
-            arguments = []
             for arg in re.findall(r'''
             \s*(?:\([^)]+\)|,|[^,\s]+)\s*
             ''', args1, re.X):
@@ -549,6 +550,8 @@ Example of `dt` for the turtle module, method synonyms.
             call = "".join(ddt.itertext()).strip()
 
             signature = Signature(self, call)
+            if signature.arguments is None and self.class_name is not None:
+                signature = Signature(self, '()')
             if signature.arguments is not None:
                 if self.signature is None:
                     self.signature = signature
