@@ -71,7 +71,7 @@
         }
       },
       showKeyword () {
-        return this.variant === eYo.Key.CALL_EXPR && this.ismethod && this.hasKeyword_
+        return this.variant === eYo.Key.CALL_EXPR && this.hasKeyword_
       },
       keywordArguments () {
         (this.saved_step === this.step) || this.$$synchronize()
@@ -161,42 +161,27 @@
         }
       },
       choices () {
-        return this.ismethod
+        return this.ismethod || this.can_call
           ? [
             this.by_key[eYo.Key.NONE],
             this.by_key[eYo.Key.CALL_EXPR]
           ]
-          : this.can_call
-            ? this.can_andef
-              ? [
-                this.by_key[eYo.Key.NONE],
-                this.by_key[eYo.Key.CALL_EXPR],
-                this.by_key[eYo.Key.SLICING],
-                this.by_key[eYo.Key.ALIASED],
-                this.by_key[eYo.Key.ANNOTATED],
-                this.by_key[eYo.Key.DEFINED],
-                this.by_key[eYo.Key.ANNOTATED_DEFINED]
-              ]
-              : [
-                this.by_key[eYo.Key.NONE],
-                this.by_key[eYo.Key.CALL_EXPR],
-                this.by_key[eYo.Key.SLICING],
-                this.by_key[eYo.Key.ALIASED]
-              ]
-            : this.can_andef
-              ? [
-                this.by_key[eYo.Key.NONE],
-                this.by_key[eYo.Key.SLICING],
-                this.by_key[eYo.Key.ALIASED],
-                this.by_key[eYo.Key.ANNOTATED],
-                this.by_key[eYo.Key.DEFINED],
-                this.by_key[eYo.Key.ANNOTATED_DEFINED]
-              ]
-              : [
-                this.by_key[eYo.Key.NONE],
-                this.by_key[eYo.Key.SLICING],
-                this.by_key[eYo.Key.ALIASED]
-              ]
+          : this.can_andef
+            ? [
+              this.by_key[eYo.Key.NONE],
+              this.by_key[eYo.Key.CALL_EXPR],
+              this.by_key[eYo.Key.SLICING],
+              this.by_key[eYo.Key.ALIASED],
+              this.by_key[eYo.Key.ANNOTATED],
+              this.by_key[eYo.Key.DEFINED],
+              this.by_key[eYo.Key.ANNOTATED_DEFINED]
+            ]
+            : [
+              this.by_key[eYo.Key.NONE],
+              this.by_key[eYo.Key.CALL_EXPR],
+              this.by_key[eYo.Key.SLICING],
+              this.by_key[eYo.Key.ALIASED]
+            ]
       }
     },
     created () {

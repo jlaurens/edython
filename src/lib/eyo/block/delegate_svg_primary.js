@@ -314,6 +314,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         save: /** @suppress {globalThis} */ function (element) {
           var v = this.owner.variant_p
           if (v === eYo.Key.ANNOTATED || v === eYo.Key.ANNOTATED_DEFINED) {
+            this.required = true
             this.save(element)
           }
         }
@@ -338,6 +339,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         save: /** @suppress {globalThis} */ function (element) {
           var v = this.owner.variant_p
           if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED) {
+            this.required = true
             this.save(element)
           }
         }

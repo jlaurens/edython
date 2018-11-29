@@ -28,7 +28,10 @@ import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
 import VueI18n from 'vue-i18n'
 
-import msg_fr_FR from './lang/fr_FR'
+import message_fr_FR from './lang/fr_FR/message'
+import toolbar_fr_FR from './lang/fr_FR/toolbar'
+import block_fr_FR from './lang/fr_FR/block'
+import panel_fr_FR from './lang/fr_FR/panel'
 
 var FileSaver = require('file-saver')
 
@@ -342,9 +345,11 @@ eYo.App.didAddSelect = function (block) {
   })
 }
 eYo.App.selectedBlockUpdate = (eyo) => {
+  console.error('selectedBlockUpdate')
   if (eyo) {
     if (eyo.id === store.state.UI.selectedBlockId) {
       Vue.nextTick(() => {
+        console.error('selectedBlockUpdate echoed')
         store.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
       })
     }
@@ -432,7 +437,10 @@ const messages = {
     }
   },
   fr_FR: {
-    message: msg_fr_FR
+    message: message_fr_FR,
+    panel: panel_fr_FR,
+    block: block_fr_FR,
+    toolbar: toolbar_fr_FR
   }
 }
 

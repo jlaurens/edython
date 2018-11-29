@@ -7,6 +7,10 @@ eYo.Do.readOnlyMixin(eYo.App, {
   TEACHER: 'teacher'
 })
 
+const temp = {
+  eyo: undefined
+}
+
 const state = {
   undoCount: 0,
   redoCount: 0,
@@ -21,7 +25,8 @@ const state = {
   selectedMode: eYo.App.NORMAL,
   flyoutClosed: false,
   flyoutCategory: undefined,
-  toolbarEditVisible: true,
+  toolbarBlockVisible: true,
+  toolbarRyVisible: false,
   toolbarInfoDebug: false,
   blockEditShowRy: true,
   blockEditShowDotted: true
@@ -48,6 +53,7 @@ const types = namespace('UI', {
     'SET_FLYOUT_CATEGORY',
     'SET_FLYOUT_CLOSED',
     'SET_TOOLBAR_BLOCK_VISIBLE',
+    'SET_TOOLBAR_RY_VISIBLE',
     'SET_TOOLBAR_BLOCK_DEBUG',
     'SET_BLOCK_EDIT_SHOW_RY',
     'SET_BLOCK_EDIT_SHOW_DOTTED'
@@ -72,6 +78,15 @@ const mutations = {
       if (block.isInFlyout || (block.id === state.selectedBlockId)) {
         return
       }
+      temp.eyo && (temp.eyo.didChangeEnd = null)
+      temp.eyo = block.eyo
+      temp.eyo.didChangeEnd = (eyo) => {
+        if (eyo) {
+          if (eyo.id === state.selectedBlockId) {
+            this.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
+          }
+        }
+      }
       state.selectedBlockId = block.id
       state.selectedBlockType = block.type
       state.selectedBlockStep = block.eyo.change.step
@@ -79,6 +94,7 @@ const mutations = {
       if (!state.selectedBlockId) {
         return
       }
+      temp.eyo && (temp.eyo.didChangeEnd = null)
       state.selectedBlockId = state.selectedBlockType = null
       state.selectedBlockStep = 0
     }
@@ -120,7 +136,10 @@ const mutations = {
     state.flyoutClosed = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_VISIBLE] (state, yorn) {
-    state.toolbarEditVisible = !!yorn
+    state.toolbarBlockVisible = !!yorn
+  },
+  [types.mutations.SET_TOOLBAR_RY_VISIBLE] (state, yorn) {
+    state.toolbarRyVisible = !!yorn
   },
   [types.mutations.SET_TOOLBAR_BLOCK_DEBUG] (state, yorn) {
     state.toolbarInfoDebug = !!yorn

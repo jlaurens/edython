@@ -3,11 +3,13 @@
     <dotted :eyo="eyo" :step="step" :slotholder="slotholder" :ismethod="isMethod"></dotted>
     <name :eyo="eyo" :step="step"></name>
     <variant :eyo="eyo" :step="step" :slotholder="slotholder" :ismethod="isMethod"></variant>
-    <ry :eyo="eyo" :step="step" :ismethod="isMethod"></ry>
+    <ry v-if="showRy" :eyo="eyo" :step="step" :ismethod="isMethod"></ry>
   </b-btn-group>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import Dotted from './Primary/Dotted.vue'
   import Name from './Primary/Name.vue'
   import Variant from './Primary/Variant.vue'
@@ -47,7 +49,10 @@
       isMethod () {
         (this.saved_step === this.step) || this.$$synchronize()
         return this.isMethod_
-      }
+      },
+      ...mapState({
+        showRy: state => state.UI.toolbarRyVisible
+      })
     },
     created () {
       this.$$synchronize()

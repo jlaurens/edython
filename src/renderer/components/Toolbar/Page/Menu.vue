@@ -59,6 +59,7 @@
         ecoSave: state => state.Document.ecoSave,
         disabledTips: state => state.Document.disabledTips,
         toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
+        toolbarRyVisible: state => state.UI.toolbarRyVisible,
         toolbarInfoDebug: state => state.UI.toolbarInfoDebug
       })
     },

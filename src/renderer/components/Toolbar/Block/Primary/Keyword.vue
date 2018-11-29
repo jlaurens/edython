@@ -63,17 +63,18 @@
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
+        var eyo = this.eyo
+        if (!eyo || (this.saved_step === this.step)) {
           return
         }
         this.saved_step = this.step
         this.target_by_name_ = {}
         this.choices_ = []
-        var item = this.eyo.item_p
-        if (item && ((item.isFunction && this.eyo.dotted_p === 0) || item.isMethod)) {
+        var item = eyo.item_p
+        if (item && ((item.isFunction && eyo.dotted_p === 0) || item.isMethod)) {
           var kwargs = item.kwargs
           if (kwargs) {
-            var block = this.eyo.block_
+            var block = eyo.block_
             if (block) {
               // extract the name component
               var list = this.list
