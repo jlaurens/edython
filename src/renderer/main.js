@@ -37,7 +37,7 @@ var FileSaver = require('file-saver')
 
 eYo.App.Stacktrace = Stacktrace
 
-var controller = {
+var $$ = Vue.prototype.$$ = {
   goog,
   eYo,
   Blockly,
@@ -45,12 +45,10 @@ var controller = {
   lodash,
   TweenLite,
   process,
+  http: axios,
   bus: new Vue()
 }
 
-Vue.prototype.$$ = controller
-
-Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
@@ -59,7 +57,7 @@ Vue.use(VueTippy, eYo.Tooltip.options)
 Vue.use(VueI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
-  Vue.prototype.$$.electron = require('electron')
+  $$.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
 
@@ -134,7 +132,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     callback && callback()
   },
   doOpen: function (ev) {
-    controller.bus.$emit('webUploadStart', ev)
+    $$.bus.$emit('webUploadStart', ev)
   }
 } : {
   readFile: function (fileName, callback) {
@@ -210,7 +208,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
       } else {
         store.commit('UI_STAGE_UNDO')
         eYo.App.workspace.eyo.resetChangeCount()
-        controller.bus.$emit('saveDidSucceed')
+        $$.bus.$emit('saveDidSucceed')
         callback && callback(path)
       }
     })
@@ -270,7 +268,7 @@ eYo.App.Document.getDeflate = function () {
 
 eYo.App.Document.doClear = function () {
   console.log('doClear')
-  controller.bus.$emit('new-document')
+  $$.bus.$emit('new-document')
   eYo.App.workspace.clearUndo()
   eYo.App.workspace.eyo.resetChangeCount()
   store.commit('UI_STAGE_UNDO')
@@ -374,12 +372,12 @@ eYo.App.didCopyBlock = function (block, xml) {
   store.commit('UI_DID_COPY_BLOCK', {block: block, xml: xml})
 }
 
-controller.bus.$on('webUploadDidStart', function (file) {
+$$.bus.$on('webUploadDidStart', function (file) {
   eYo.App.Document.fileName_ = file
   console.log(file)
 })
 
-controller.bus.$on('webUploadEnd', function (result) {
+$$.bus.$on('webUploadEnd', function (result) {
   var content = new Uint8Array(result)
   eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
   eYo.App.Document.fileName_ = undefined
@@ -403,7 +401,7 @@ eYo.Delegate.prototype.didConnect = (function () {
   return function (connection, oldTargetC8n, targetOldC8n) {
     didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
     Vue.nextTick(() => {
-      controller.bus.$emit('didConnect')
+      $$.bus.$emit('didConnect')
     })
   }
 })()
@@ -415,7 +413,7 @@ eYo.Delegate.prototype.didDisconnect = (function () {
   return function (connection, oldTargetC8n, targetOldC8n) {
     didDisconnect.call(this, connection, oldTargetC8n)
     Vue.nextTick(() => {
-      controller.bus.$emit('didDisconnect')
+      $$.bus.$emit('didDisconnect')
     })
   }
 })()
