@@ -66,10 +66,8 @@ var F_stmt = function (name, title) {
 eYo.FlyoutCategory.basic_turtle__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    data: {
-      variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      from: 'turtle'
-    }
+    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    from_d: 'turtle'
   },
   eYo.T3.Stmt.turtle__setup_stmt,
   F_stmt('done', 'Avancer de la distance donnée'),
@@ -133,17 +131,13 @@ var F_stmt = function (name, title) {
 eYo.FlyoutCategory.turtle__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    data: {
-      variant: eYo.Key.IMPORT
-    },
-    slots: {
-      import_module: {
-        slots: {
-          O: {
-            type: eYo.T3.Expr.identifier,
-            name_d: 'turtle',
-            alias_placeholder: 'T'
-          }
+    variant_d: eYo.Key.IMPORT,
+    import_module_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier,
+          name_d: 'turtle',
+          alias_placeholder: 'T'
         }
       }
     }
@@ -156,7 +150,7 @@ eYo.FlyoutCategory.turtle__module = [
         O: {
           type: eYo.T3.Expr.call_expr,
           name_d: 'Turtle',
-          holder_placeholder: 'T',
+          holder_d: 'turtle',
           dotted_d: 1
         },
       },

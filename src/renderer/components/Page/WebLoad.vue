@@ -9,7 +9,7 @@ export default {
   name: 'webLoadAlert',
   mounted: function () {
     var self = this
-    this.$$.bus.$on('webUploadStart', function (ev) {
+    eYo.$$.bus.$on('webUploadStart', function (ev) {
       self.showAlert = false
       self.$refs.input.click(ev)
     })
@@ -18,9 +18,9 @@ export default {
     loadTextFromFile (ev) {
       const file = ev.target.files[0]
       if (file) {
-        this.$$.bus.$emit('webUploadDidStart', file)
+        eYo.$$.bus.$emit('webUploadDidStart', file)
         const reader = new FileReader()
-        reader.onload = e => this.$$.bus.$emit('webUploadEnd', e.target.result)
+        reader.onload = e => eYo.$$.bus.$emit('webUploadEnd', e.target.result)
         console.log(file)
         reader.readAsArrayBuffer(file)
       }

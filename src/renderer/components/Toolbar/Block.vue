@@ -156,7 +156,7 @@
     watch: {
       toolbarBlockVisible (newValue, oldValue) {
         this.theta = newValue ? 0 : 1
-        this.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
+        eYo.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
       }
     },
     methods: {

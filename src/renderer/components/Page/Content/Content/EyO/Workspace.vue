@@ -41,7 +41,7 @@
     mounted: function () {
       window.addEventListener('resize', this.resize, false)
       this.$nextTick(() => {
-        this.$$.bus.$on('size-did-change', this.resize)
+        eYo.$$.bus.$on('size-did-change', this.resize)
         this.resize()
       })
     }

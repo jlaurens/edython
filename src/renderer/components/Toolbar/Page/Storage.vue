@@ -30,9 +30,9 @@
       IconSaveLoad
     },
     created: function () {
-      this.$$.bus.$on('saveDidSucceed', () => {
+      eYo.$$.bus.$on('saveDidSucceed', () => {
         this.theta = 0
-        this.$$.TweenLite.to(this, 0.5, {theta: 1})
+        eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
       })
     },
     methods: {

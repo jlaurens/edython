@@ -82,7 +82,7 @@
       },
       flash () {
         this.on = 0
-        this.$$.TweenLite.to(this, 0.5, {on: 1})
+        eYo.$$.TweenLite.to(this, 0.5, {on: 1})
         if (this.flashInterval) {
           if (eYo.App.workspace) {
             var topBlocks = eYo.App.workspace.topBlocks_

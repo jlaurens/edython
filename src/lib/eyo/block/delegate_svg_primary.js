@@ -1234,6 +1234,26 @@ eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
   }
 }, eYo.DelegateSvg.Stmt, true)
 
+Object.defineProperties( eYo.DelegateSvg.Stmt.call_stmt.prototype, {
+  profile_p : {
+    get () {
+      return this.profile_ === this.getProfile()
+        ? this.profile_
+        : (this.profile_ = this.getProfile()) // this should never happen
+    },
+    set (newValue) {
+      this.profile_ = newValue
+    }
+  },
+  item_p : {
+    get () {
+      var p5e = this.profile_p.p5e
+      return p5e && p5e.item
+    }
+  }
+})
+
+
 /**
  * Class for a DelegateSvg, call statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.

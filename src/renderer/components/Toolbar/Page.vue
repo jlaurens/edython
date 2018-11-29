@@ -46,10 +46,10 @@
     name: 'page-toolbar',
     data: function () {
       return {
-        selected: this.$$.eYo.App.CONSOLE,
+        selected: eYo.$$.eYo.App.CONSOLE,
         titles: {
-          console: this.$$.eYo.App.CONSOLE,
-          turtle: this.$$.eYo.App.Turtle
+          console: eYo.$$.eYo.App.CONSOLE,
+          turtle: eYo.$$.eYo.App.Turtle
         }
       }
     },
@@ -69,9 +69,9 @@
     },
     methods: {
       doSite (url) {
-        if (this.$$.electron && this.$$.electron.shell) {
+        if (eYo.$$.electron && eYo.$$.electron.shell) {
           // we *are i electron
-          this.$$.electron.shell.openExternal(url)
+          eYo.$$.electron.shell.openExternal(url)
         } else {
           var win = window.open(url, '_blank')
           win.focus()

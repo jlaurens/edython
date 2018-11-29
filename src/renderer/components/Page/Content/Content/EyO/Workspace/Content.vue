@@ -3,25 +3,25 @@
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
     <div id="eyo-flyout-toolbar-switcher">
       <b-btn-group id="eyo-flyout-switcher">
-        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown-">
+        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown">
           <template slot="button-content">Blocs</template>
           <b-dropdown-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
-        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown-">
+        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown">
           <template slot="button-content">Module&nbsp;</template>
           <b-dropdown-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
         </b-dropdown>
       </b-btn-group>
-      <div v-if="showBasic" id="eyo-flyout-toolbar-label">
-        {{label}}
-        <b-form-checkbox id="eyo-flyout-toolbar-label-check"
-                        v-model="isBasic"
-                        v-if="canBasic"
-                        button-variant="light">
+      <div id="eyo-flyout-toolbar-label">
+        <div class="item">{{label}}</div>
+        <div class="item" v-if="canBasic">
+          <input type="checkbox"
+                        id="eyo-flyout-toolbar-label-check"
+                        v-model="isBasic">
           {{$$t('message.flyout.basic')}}
-        </b-form-checkbox>
+        </div>
       </div>
     </div>
   </div>
@@ -54,7 +54,7 @@
           key: name,
           content: Msg[name.toUpperCase()],
           in_category: true,
-          label: 'Blocs ' + Msg[name.toUpperCase()]
+          label: eYo.Do.$$t('message.flyout.blocks').replace('{{key}}', Msg[name.toUpperCase()])
         }
       }
       F('basic')
@@ -74,14 +74,14 @@
           key: basic_module,
           content: content,
           in_module: true,
-          label: 'Module ' + name
+          label: eYo.Do.$$t('message.flyout.module').replace('{{key}}', name)
         }
         var module = name + '__module'
         model.items[module] = {
           key: module,
           content: name,
           in_module: true,
-          label: 'Module ' + name,
+          label: eYo.Do.$$t('message.flyout.module').replace('{{key}}', name),
           basic: model.items[basic_module]
         }
         model.items[basic_module].full = model.items[module]
@@ -122,25 +122,24 @@
     },
     computed: {
       canBasic () {
-        return this.selectedCategory && this.selectedCategory.in_module
-      },
-      showBasic () {
-        return this.displayMode !== eYo.App.TUTORIAL && this.displayMode !== eYo.App.BASIC
+        return this.selectedCategory && this.selectedCategory.in_module && this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC
       },
       ...mapState({
         flyoutCategory: state => state.UI.flyoutCategory,
         flyoutClosed: state => state.UI.flyoutClosed,
-        displayMode: state => state.UI.displayMode
+        selectedMode: state => state.UI.selectedMode
       })
     },
     watch: {
-      flyoutClosed: function (newValue, oldValue) {
+      selectedMode (newValue, oldValue) {
+        console.warn(newValue, oldValue)
+      },
+      flyoutClosed (newValue, oldValue) {
         eYo.App.flyout && eYo.App.flyout.eyo.doSlide(newValue)
       },
-      flyoutCategory: function (newValue, oldValue) {
+      flyoutCategory (newValue, oldValue) {
         var item = this.items[newValue]
         if (eYo.App.workspace && eYo.App.flyout && item) { // this.workspace is necessary
-          console.error(item)
           var list = eYo.App.flyout.eyo.getList(newValue)
           if (list && list.length) {
             eYo.App.flyout.show(list)
@@ -155,7 +154,7 @@
           var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
           eYo.Tooltip.hideAll(el)
           this.setFlyoutCategory(newValue.key)
-          this.label = newValue.label.replace('{{key}}', eYo.Msg[newValue.key.toUpperCase()])
+          this.label = newValue.label
         }
       },
       // whenever `isBasic` changes, this function will run
@@ -254,7 +253,7 @@
           }
         })
         eYo.KeyHandler.setup(document)
-        this.$$.bus.$on('new-document', () => {
+        eYo.$$.bus.$on('new-document', () => {
           eYo.App.workspace.clear()
         })
         this.selectedCategory = this.items.basic
@@ -293,7 +292,7 @@
     padding-bottom: 0;
   }
   #eyo-flyout-toolbar-label {
-    width: 100;
+    width: 100%;
     padding: 0.25rem;
     background: #e3e3e3;
     font-style: italic;
@@ -311,5 +310,13 @@
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     height: 2rem;
+  }
+  #eyo-flyout-toolbar-label .item {
+    display: inline-block;
+  }
+  #eyo-flyout-toolbar-label-check {
+    vertical-align: middle;
+    position: relative;
+    bottom: 0.125rem;
   }
 </style>

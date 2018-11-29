@@ -42,13 +42,13 @@
     },
     methods: {
       doIt () {
-        var block = this.$$.Blockly.selected
+        var block = eYo.$$.Blockly.selected
         if (block) {
           var p = new eYo.PythonExporter()
           var code = p.export(block, true)
           eYo.App.copyTextToClipboard(code)
           this.theta = 0
-          this.$$.TweenLite.to(this, 0.5, {theta: 1})
+          eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
         }
       }
     }

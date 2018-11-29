@@ -322,11 +322,11 @@ except:
 export default {
   name: 'panel-console-script',
   mounted: function () {
-    this.$$.bus.$on('erase-console', this.eraseConsole)
-    this.$$.bus.$on('restart-console', this.restartConsole)
-    this.$$.bus.$on('restart-turtle', this.restartTurtle)
-    this.$$.bus.$on('erase-turtle', this.replayTurtle)
-    this.$$.bus.$on('new-document', this.restartAll)
+    eYo.$$.bus.$on('erase-console', this.eraseConsole)
+    eYo.$$.bus.$on('restart-console', this.restartConsole)
+    eYo.$$.bus.$on('restart-turtle', this.restartTurtle)
+    eYo.$$.bus.$on('erase-turtle', this.replayTurtle)
+    eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
     restartConsole () {

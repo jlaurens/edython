@@ -91,7 +91,7 @@
         if (this.copy) {
           if (eYo.App.doCopy(!this.deep)) {
             this.theta = 0
-            this.$$.TweenLite.to(this, 0.5, {theta: 1})
+            eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
           }
         } else if (this.duplicate) {
           Blockly.duplicate_(Blockly.selected)

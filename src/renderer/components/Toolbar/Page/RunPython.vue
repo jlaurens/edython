@@ -32,7 +32,7 @@
     },
     methods: {
       doIt () {
-        var block = this.$$.Blockly.selected
+        var block = eYo.$$.Blockly.selected
         if (block) {
           // get the root
           var root = block.getRootBlock()

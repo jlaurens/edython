@@ -25,7 +25,7 @@
     },
     methods: {
       onDrag (size) {
-        this.$$.bus.$emit('size-did-change')
+        eYo.$$.bus.$emit('size-did-change')
       }
     },
     components: {
@@ -50,10 +50,10 @@
     watch: {
       toolbarBlockVisible (newValue, oldValue) {
         this.step = newValue ? 0 : this.max
-        this.$$.TweenLite.to(this, 1, {
+        eYo.$$.TweenLite.to(this, 1, {
           step: this.max - this.step,
           onUpdate: () => {
-            this.$$.bus.$emit('size-did-change')
+            eYo.$$.bus.$emit('size-did-change')
           }
         })
       }

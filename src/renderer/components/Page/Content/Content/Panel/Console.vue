@@ -1,7 +1,7 @@
 <template>
   <div id="eyo-panel-console" :style="{visibility: visible? 'visible': 'hidden'}">
     <panel-console-script></panel-console-script>
-    <textarea id="eyo-console-area" rows=20 v-bind:style="{fontFamily: this.$$.eYo.Font.familyMono, fontSize: this.$$.eYo.Font.totalAscent + 'px'}"></textarea>
+    <textarea id="eyo-console-area" rows=20 v-bind:style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"></textarea>
   </div>
 </template>
 

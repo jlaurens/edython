@@ -74,10 +74,10 @@
     },
     methods: {
       erase (arg) {
-        this.$$.bus.$emit('erase-' + (arg || this.selected))
+        eYo.$$.bus.$emit('erase-' + (arg || this.selected))
       },
       restart (arg) {
-        this.$$.bus.$emit('restart-' + (arg || this.selected))
+        eYo.$$.bus.$emit('restart-' + (arg || this.selected))
       },
       selectPanel (arg) {
         this.$store.commit('UI_SET_SELECTED_PANEL', arg)

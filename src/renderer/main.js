@@ -37,7 +37,7 @@ var FileSaver = require('file-saver')
 
 eYo.App.Stacktrace = Stacktrace
 
-var $$ = Vue.prototype.$$ = {
+eYo.$$ = Vue.prototype.$$ = {
   goog,
   eYo,
   Blockly,
@@ -57,7 +57,7 @@ Vue.use(VueTippy, eYo.Tooltip.options)
 Vue.use(VueI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
-  $$.electron = require('electron')
+  eYo.$$.electron = require('electron')
   Vue.use(require('vue-electron'))
 }
 
@@ -132,7 +132,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     callback && callback()
   },
   doOpen: function (ev) {
-    $$.bus.$emit('webUploadStart', ev)
+    eYo.$$.bus.$emit('webUploadStart', ev)
   }
 } : {
   readFile: function (fileName, callback) {
@@ -160,7 +160,8 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
   },
   doOpen: function (ev, callback) {
     var defaultPath = eYo.App.Document.getDocumentPath()
-    require('electron').remote.dialog.showOpenDialog({
+    const {dialog} = require('electron').remote
+    dialog.showOpenDialog({
       defaultPath: defaultPath,
       filters: [{
         name: 'Edython', extensions: ['eyo']
@@ -208,7 +209,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
       } else {
         store.commit('UI_STAGE_UNDO')
         eYo.App.workspace.eyo.resetChangeCount()
-        $$.bus.$emit('saveDidSucceed')
+        eYo.$$.bus.$emit('saveDidSucceed')
         callback && callback(path)
       }
     })
@@ -232,7 +233,7 @@ eYo.App.Document.doNew = function (ev) {
   console.log('doNew')
   if (eYo.App.workspace.eyo.changeCount) {
     console.log('will bv::show::modal')
-    window['vue'].$emit('bv::show::modal', 'page-modal-should-save')
+    eYo.$$.app.$emit('bv::show::modal', 'page-modal-should-save')
   } else {
     console.log('will doClear')
     eYo.App.Document.doClear()
@@ -268,7 +269,7 @@ eYo.App.Document.getDeflate = function () {
 
 eYo.App.Document.doClear = function () {
   console.log('doClear')
-  $$.bus.$emit('new-document')
+  eYo.$$.bus.$emit('new-document')
   eYo.App.workspace.clearUndo()
   eYo.App.workspace.eyo.resetChangeCount()
   store.commit('UI_STAGE_UNDO')
@@ -372,12 +373,12 @@ eYo.App.didCopyBlock = function (block, xml) {
   store.commit('UI_DID_COPY_BLOCK', {block: block, xml: xml})
 }
 
-$$.bus.$on('webUploadDidStart', function (file) {
+eYo.$$.bus.$on('webUploadDidStart', function (file) {
   eYo.App.Document.fileName_ = file
   console.log(file)
 })
 
-$$.bus.$on('webUploadEnd', function (result) {
+eYo.$$.bus.$on('webUploadEnd', function (result) {
   var content = new Uint8Array(result)
   eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
   eYo.App.Document.fileName_ = undefined
@@ -401,7 +402,7 @@ eYo.Delegate.prototype.didConnect = (function () {
   return function (connection, oldTargetC8n, targetOldC8n) {
     didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
     Vue.nextTick(() => {
-      $$.bus.$emit('didConnect')
+      eYo.$$.bus.$emit('didConnect')
     })
   }
 })()
@@ -413,7 +414,7 @@ eYo.Delegate.prototype.didDisconnect = (function () {
   return function (connection, oldTargetC8n, targetOldC8n) {
     didDisconnect.call(this, connection, oldTargetC8n)
     Vue.nextTick(() => {
-      $$.bus.$emit('didDisconnect')
+      eYo.$$.bus.$emit('didDisconnect')
     })
   }
 })()
@@ -504,30 +505,42 @@ const i18n = new VueI18n({
   numberFormats
 })
 
-/**
- * Returns undefined when the key is not registered for localization.
- */
-Vue.prototype.$$t = function (key, locale, value) {
-  return this.$te(key, locale) && this.$t(key, locale, value)
-}
-
-/**
- * Returns undefined when the key is not registered for localization.
- */
-Vue.prototype.$$tc = function (key, choice, locale, value) {
-  return this.$te(key, locale) && this.$tc(key, choice, locale, value)
-}
-
 /* eslint-disable no-new */
-export const app = new Vue({
-  components: { App },
-  router,
-  store,
-  template: '<App/>',
-  i18n
+Object.defineProperties(eYo.$$, {
+  app: {
+    value: new Vue({
+      components: { App },
+      router,
+      store,
+      template: '<App/>',
+      i18n
+    })
+  }
 })
+// export const app = new Vue({
+//   components: { App },
+//   router,
+//   store,
+//   template: '<App/>',
+//   i18n
+// })
 
-window['vue'] = app
+export const app = eYo.$$.app
+
+/**
+ * Returns undefined when the key is not registered for localization.
+ */
+eYo.Do.$$t = Vue.prototype.$$t = function (key, locale, value) {
+  // NB: eYo.$$.bus is a vue that is completely created when this function executes
+  return app.$te(key, locale) && app.$t(key, locale, value)
+}
+
+/**
+ * Returns undefined when the key is not registered for localization.
+ */
+eYo.Do.$$tc = Vue.prototype.$$tc = function (key, choice, locale, value) {
+  return app.$te(key, locale) && app.$tc(key, choice, locale, value)
+}
 
 app.$mount('#app')
 
