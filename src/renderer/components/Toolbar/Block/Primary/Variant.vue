@@ -161,27 +161,42 @@
         }
       },
       choices () {
-        return this.ismethod || this.can_call
+        return this.ismethod
           ? [
             this.by_key[eYo.Key.NONE],
             this.by_key[eYo.Key.CALL_EXPR]
           ]
-          : this.can_andef
-            ? [
-              this.by_key[eYo.Key.NONE],
-              this.by_key[eYo.Key.CALL_EXPR],
-              this.by_key[eYo.Key.SLICING],
-              this.by_key[eYo.Key.ALIASED],
-              this.by_key[eYo.Key.ANNOTATED],
-              this.by_key[eYo.Key.DEFINED],
-              this.by_key[eYo.Key.ANNOTATED_DEFINED]
-            ]
-            : [
-              this.by_key[eYo.Key.NONE],
-              this.by_key[eYo.Key.CALL_EXPR],
-              this.by_key[eYo.Key.SLICING],
-              this.by_key[eYo.Key.ALIASED]
-            ]
+          : this.can_call
+            ? this.can_andef
+              ? [
+                this.by_key[eYo.Key.NONE],
+                this.by_key[eYo.Key.CALL_EXPR],
+                this.by_key[eYo.Key.SLICING],
+                this.by_key[eYo.Key.ALIASED],
+                this.by_key[eYo.Key.ANNOTATED],
+                this.by_key[eYo.Key.DEFINED],
+                this.by_key[eYo.Key.ANNOTATED_DEFINED]
+              ]
+              : [
+                this.by_key[eYo.Key.NONE],
+                this.by_key[eYo.Key.CALL_EXPR],
+                this.by_key[eYo.Key.SLICING],
+                this.by_key[eYo.Key.ALIASED]
+              ]
+            : this.can_andef
+              ? [
+                this.by_key[eYo.Key.NONE],
+                this.by_key[eYo.Key.SLICING],
+                this.by_key[eYo.Key.ALIASED],
+                this.by_key[eYo.Key.ANNOTATED],
+                this.by_key[eYo.Key.DEFINED],
+                this.by_key[eYo.Key.ANNOTATED_DEFINED]
+              ]
+              : [
+                this.by_key[eYo.Key.NONE],
+                this.by_key[eYo.Key.SLICING],
+                this.by_key[eYo.Key.ALIASED]
+              ]
       }
     },
     created () {

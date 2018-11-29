@@ -135,7 +135,7 @@ eYo.FlyoutCategory.turtle__module = [
     import_module_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.identifier,
+          type: eYo.T3.Expr.identifier_as,
           name_d: 'turtle',
           alias_placeholder: 'T'
         }
