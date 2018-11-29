@@ -517,30 +517,90 @@ eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
+  data: {
+    variant: {
+      all: [
+        eYo.Key.NONE,
+        eYo.Key.STRIDE
+      ],
+      init: eYo.Key.NONE,
+      validate: true,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        var d = this.data.stride
+        d.required = newValue === eYo.Key.STRIDE
+        d.setIncog()
+      },
+      xml: false
+    },
+    lower_bound: {
+      init: '',
+      synchronize: true,
+      placeholder: 'min'
+    },
+    upper_bound: {
+      init: '',
+      synchronize: true,
+      placeholder: 'end'
+    },
+    stride: {
+      init: '',
+      synchronize: true,
+      placeholder: 'step',
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.owner.variant_p === eYo.Key.STRIDE) {
+            this.save(element)
+          }
+        }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.STRIDE
+        }
+      }
+    }
+  },
   slots: {
     lower_bound: {
       order: 1,
       fields: {
-        end: ':'
+        end: ':',
+        bind: {
+          endEditing: true
+        }
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'lower'
+      hole_value: 'min'
     },
     upper_bound: {
       order: 2,
+      fields: {
+        bind: {
+          endEditing: true
+        }
+      },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'upper'
+      hole_value: 'end'
     },
     stride: {
       order: 3,
       fields: {
-        start: ':'
+        start: ':',
+        bind: {
+          endEditing: true
+        }
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'stride'
+      hole_value: 'stride',
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.STRIDE
+        }
+      }
     }
   }
 }, true)

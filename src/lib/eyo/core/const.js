@@ -123,7 +123,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   SEP: 'sep',
   FILE: 'file',
   FLUSH: 'flush',
-
+  
   PREFIX: 'prefix', // lowercase
   SUFFIX: 'suffix', // lowercase
   START: 'start', // lowercase
