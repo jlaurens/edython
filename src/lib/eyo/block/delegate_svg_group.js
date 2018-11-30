@@ -205,7 +205,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
       init: eYo.Key.IF,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.condition.setIncog(newValue === eYo.Key.ELSE)
+        this.data.if.setIncog(newValue === eYo.Key.ELSE)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.while_part) {
@@ -226,7 +226,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
         },
       }
     },
-    condition: {
+    if: {
       init: '',
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       validate: false, // use the python interpreter to validate this
@@ -239,7 +239,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
     }
   },
   slots: {
-    condition: {
+    if: {
       order: 1,
       fields: {
         bind: {

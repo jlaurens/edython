@@ -358,7 +358,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         // Offset block until not clobbering another block and not in connection
         // distance with neighbouring blocks.
         var allBlocks = this.getAllBlocks()
-        var avoidCollision = (function () {
+        var avoidCollision = () => {
           do {
             var collide = false
             for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
@@ -387,7 +387,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
               blockY += Blockly.SNAP_RADIUS * 2
             }
           } while (collide)
-        }) ()
+        }
         // is the block in the visible area ?
         var metrics = this.getMetrics()
         var scale = this.scale || 1
@@ -397,7 +397,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         var topBound = metrics.viewTop / scale - heightWidth.height / 2
         var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
         var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-        var inVisibleArea = function () {
+        var inVisibleArea = () => {
           return blockX >= leftBound && blockX <= rightBound &&
           blockY >= topBound && blockY <= downBound
         }

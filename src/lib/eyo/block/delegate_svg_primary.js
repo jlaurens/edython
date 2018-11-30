@@ -268,8 +268,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           return this.owner.variant_p === eYo.Key.CALL_EXPR
         },
         save: /** @suppress {globalThis} */ function (element) {
-          var target = this.owner.holder_s.connection.targetBlock()
-          if (!target) {
+          if (!this.owner.holder_t) {
             if (this.get()) {
               this.save(element)
             }
@@ -460,8 +459,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          var target = this.owner.name_s.input.connection.targetBlock()
-          if (!target) {
+          if (!this.owner.name_t) {
             this.save(element)
           }
         }
@@ -505,12 +503,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         this.didChange(oldValue, newValue)
-        var input = this.owner.n_ary_s.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.ary_p = newValue
-          }
+        var target = this.owner.n_ary_t
+        if (target) {
+          target.eyo.ary_p = newValue
         }
         (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
       },
@@ -555,12 +550,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var input = this.owner.n_ary_s.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
-          if (target) {
-            target.eyo.mandatory_p = newValue
-          }
+        var target = this.owner.n_ary_t
+        if (target) {
+          target.eyo.mandatory_p = newValue
         }
         (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
       },
@@ -1213,18 +1205,18 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
   var input = eYo.DelegateSvg.Expr.primary.superClass_.getInput.call(this, name)
   if (!input) {
     // we suppose that ary is set
-    var f = function (slot) {
+    var f = (slot) => {
       if (!slot.isIncog()) {
         var input = slot.input
-        if (input && input.connection) {
-          var target = input.connection.targetBlock()
+        if (input) {
+          var target = slot.targetBlock()
           if (target && (input = target.getInput(name))) {
-            return true
+            return input
           }
         }
       }
     }
-    f(this.n_ary_s) || f(this.slicing_s)
+    input = f(this.n_ary_s) || f(this.slicing_s)
   }
   return input
 }

@@ -1538,7 +1538,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           }
         }
       }
-    } else if (c_eyo.bindField) {
+    } else if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
       c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.

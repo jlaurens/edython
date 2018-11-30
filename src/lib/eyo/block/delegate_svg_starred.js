@@ -132,8 +132,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       if (eyo.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
-      var slot = eyo.modified_s
-      var t = slot.targetBlock()
+      var t = eyo.modified_t
       var types = []
       if (eyo.modifier_p === '*') {
         if (t) {
