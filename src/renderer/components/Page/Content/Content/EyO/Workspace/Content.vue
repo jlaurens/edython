@@ -299,7 +299,7 @@
     color: #666666;
     text-align: center;
   }
-  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dd.dropdown {
+  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dropdown.dropdown {
     width: 50%;
   }
   #eyo-flyout-toolbar-switcher .eyo-round-btn {
