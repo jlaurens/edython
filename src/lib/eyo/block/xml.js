@@ -1000,7 +1000,12 @@ eYo.Xml.domToBlock = (function () {
           return block
         }
         // is there a simple correspondance with a known type
-        if ((prototypeName = eYo.T3.Xml.fromDom[name])) {
+        if (dom.tagName.toLowerCase() === 's') {
+          prototypeName = eYo.T3.Xml.fromDom[name + '_stmt'] || eYo.T3.Xml.fromDom[name + '_part']
+        } else {
+          prototypeName = eYo.T3.Xml.fromDom[name]
+        }
+        if (prototypeName) {
           if (goog.isArray(prototypeName)) {
             if (prototypeName.length === 1) {
               prototypeName = prototypeName[0]
