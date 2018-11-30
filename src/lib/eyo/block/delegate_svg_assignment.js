@@ -312,7 +312,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         : null
       },
       synchronize: true,
-    },
+    }
   },
   slots: {
     name: {
