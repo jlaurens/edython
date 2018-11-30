@@ -555,13 +555,13 @@ Vue.prototype.$$synchronize = function (step) {
   this.$$doSynchronize(eyo)
 }
 
-/**
- * Will be overriden by components.
- * @param{!Object} eyo
- */
-Vue.prototype.$$doSynchronize = function (eyo) {
-  // do nothing
-}
+// /**
+//  * Will be overriden by components.
+//  * @param{!Object} eyo
+//  */
+// Vue.prototype.$$doSynchronize = function (eyo) {
+//   // do nothing
+// }
 
 app.$mount('#app')
 

@@ -271,6 +271,9 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+  .b3k-edit .bl-:not(:first-child)>.btn {
+    border-left-width: 0px;
+  }
   .b3k-edit .b3k-edit:not(:first-child) {
     margin-left:0.25rem;
   }
@@ -301,6 +304,7 @@
     border-radius: 0.25rem!important;
     background: rgba(255, 255, 255, 0.333);
     color: #212529;
+    min-width:1.25rem;
   }
   .b3k-edit .deeper .item:not(.btn-group),
   .b3k-edit .deeper .dropdown>.btn {

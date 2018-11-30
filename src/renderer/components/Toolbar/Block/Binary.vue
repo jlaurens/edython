@@ -12,7 +12,7 @@
       v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-dd
       id="block-binary-operator"
-      class="eyo-code item text mw-6rem"
+      class="eyo-code item text mw-4rem"
       variant="outline-secondary"
       :text="operator">
       <b-dd-item-button
