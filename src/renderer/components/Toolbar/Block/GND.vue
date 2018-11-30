@@ -1,15 +1,23 @@
 <template>
-  <b-btn-group id="b3k-gnd" key-nav  aria-label="Block global, nonlocal or del">
-    <b-dropdown variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.key">
-      <b-dropdown-item-button
-            v-for="choice in choices"
-            v-on:click="chosen = choice"
-            :key="choice.variant"
-            class="eyo-code-reserved"
-            :title="choice.title"
-            v-tippy>{{choice.key}}</b-dropdown-item-button>
-    </b-dropdown>
-    <div class="item text" v-html="slotholder('eyo-slotholder-inline')"></div>
+  <b-btn-group id="b3k-gnd" key-nav  aria-label="Block global, nonlocal or del">ABCD
+    <b-dd variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.variant">
+      <b-dd-item-button
+          v-for="choice in choices"
+          v-on:click="chosen = choice"
+          :key="choice.variant"
+          class="eyo-code-reserved"
+          :title="choice.title"
+        v-tippy>{{choice.variant}}</b-dd-item-button>
+      <b-dd-divider v-if="altChoices.length"></b-dd-divider>
+      <b-dd-item-button
+        v-for="choice in altChoices"
+        v-on:click="chosen = choice"
+        :key="choice.variant"
+        class="eyo-code-reserved"
+        :title="choice.title"
+        v-tippy>{{choice.variant}}</b-dd-item-button>
+  </b-dd>
+    <div v-if="!!slotholder" class="item text" v-html="slotholder('eyo-slotholder-inline')"></div>
   </b-btn-group>
 </template>
 
@@ -21,6 +29,7 @@
         saved_step: undefined,
         variant_: undefined,
         choices_: undefined,
+        altChoices_: undefined,
         chosen_: undefined
       }
     },
@@ -35,8 +44,18 @@
       },
       slotholder: {
         type: Function,
-        default: function (item) {
-          return item
+        default: null
+      },
+      variants: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
+      altVariants: {
+        type: Array,
+        default: () => {
+          return []
         }
       }
     },
@@ -53,6 +72,10 @@
       choices () {
         (this.saved_step === this.step) || this.$$synchronize()
         return this.choices_
+      },
+      altChoices () {
+        (this.saved_step === this.step) || this.$$synchronize()
+        return this.altChoices_
       },
       chosen: {
         get () {
@@ -78,27 +101,52 @@
         }
         this.saved_step = this.step
         this.variant_ = eyo.variant_p
-        if (!this.choices_) {
-          this.choices_ = [
-            {
-              key: 'global',
-              tooltip: this.$$t('block.tooltip.global'),
-              variant: eYo.Key.GLOBAL
-            },
-            {
-              key: 'nonlocal',
-              tooltip: this.$$t('block.tooltip.nonlocal'),
-              variant: eYo.Key.NONLOCAL
-            },
-            {
-              key: 'del',
-              tooltip: this.$$t('block.tooltip.del'),
-              variant: eYo.Key.DEL
-            }
+        this.choices_ = []
+        this.altChoices_ = []
+        var variants = this.variants
+        if (!variants.length) {
+          variants = [
+            eYo.Key.PASS,
+            eYo.Key.CONTINUE,
+            eYo.Key.BREAK
           ]
         }
+        var altVariants = this.altVariants
+        if (!altVariants.length) {
+          altVariants = [
+            eYo.Key.RETURN,
+            eYo.Key.GLOBAL,
+            eYo.Key.NONLOCAL,
+            eYo.Key.DEL
+          ]
+        }
+        var first, second
+        if (altVariants.indexOf(eyo.variant_p) < 0) {
+          first = variants
+          second = altVariants
+        } else {
+          first = altVariants
+          second = variants
+        }
+        first.forEach(element => {
+          this.choices.push({
+            tooltip: this.$$t(`block.tooltip.${element}`),
+            variant: element
+          })
+        })
+        second.forEach(element => {
+          this.altChoices.push({
+            tooltip: this.$$t(`block.tooltip.${element}`),
+            variant: element
+          })
+        })
         this.chosen_ = null
         if (!this.choices_.some((choice) => {
+          if (this.variant_ === choice.variant) {
+            this.chosen_ = choice
+            return true
+          }
+        }) && !this.altChoices_.some((choice) => {
           if (this.variant_ === choice.variant) {
             this.chosen_ = choice
             return true
