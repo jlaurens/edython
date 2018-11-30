@@ -1,14 +1,14 @@
 <template>
   <b-btn-group id="b3k-gnd" key-nav  aria-label="Block pass, continue or break">
-    <b-dropdown variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.key">
-      <b-dropdown-item-button
+    <b-dd variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.key">
+      <b-dd-item-button
             v-for="choice in choices"
             v-on:click="chosen = choice"
             :key="choice.variant"
             class="eyo-code-reserved"
             :title="choice.title"
-            v-tippy>{{choice.key}}</b-dropdown-item-button>
-    </b-dropdown>
+            v-tippy>{{choice.key}}</b-dd-item-button>
+    </b-dd>
   </b-btn-group>
 </template>
 
