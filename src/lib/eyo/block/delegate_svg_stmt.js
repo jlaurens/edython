@@ -422,8 +422,8 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.Stmt.global_stmt.prototype.tagName = function () {
-  return 'eyo:' + this.variant_p
+eYo.DelegateSvg.Stmt.global_stmt.prototype.xmlAttr = function () {
+  return this.variant_p
 }
 
 /**

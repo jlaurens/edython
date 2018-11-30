@@ -265,7 +265,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function ()
  */
 eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
   xml: {
-    tag: 'square_bracket'
+    attr: '[]'
   },
   fields: {
     prefix: '[',
@@ -302,7 +302,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
  */
 eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
   xml: {
-    tag: 'curly_bracket'
+    attr: '{}'
   },
   fields: {
     prefix: '{',

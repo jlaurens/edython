@@ -249,7 +249,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
       eYo.T3.Expr.u_expr,
       eYo.T3.Expr.not_test
     ],
-    tag: 'unary'
+    attr: 'unary'
   },
   data: {
     operator: {

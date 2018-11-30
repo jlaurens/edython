@@ -23,7 +23,7 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
   xml: {
-    tag: 'yield'
+    attr: 'yield'
   },
   data: {
     variant: {
@@ -143,7 +143,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
   D.all = RA
   return {
     xml: {
-      tag: 'parenthesis'
+      attr: '()'
     },
     list: D,
     fields: {

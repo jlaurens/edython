@@ -51,9 +51,8 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
   xml: {
-    tag: '@',
+    attr: '@',
     didLoad: /** @suppress {globalThis} */ function (element) {
-      console.error('didLoad')
       var target = this.n_ary_t
       if (target.childBlocks_.length) {
         this.variant_p = eYo.Key.N_ARY

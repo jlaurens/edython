@@ -76,7 +76,7 @@ eYo.Consolidator.PrintArguments.prototype.doFinalize = function (io) {
  */
 eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
   xml: {
-    tag: 'print',
+    attr: 'print',
   },
   fields: {
     label: {

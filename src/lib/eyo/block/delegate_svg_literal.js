@@ -25,7 +25,7 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Expr.makeSubclass('Literal', {
   xml: {
-    tag: 'literal',
+    attr: 'literal',
   },
   data: {
     content: {
