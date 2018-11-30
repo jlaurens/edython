@@ -1,9 +1,9 @@
 <template>
-  <b-dropdown id="block-modifier" key-nav  aria-label="Block toolbar modifier" class="eyo-dropdown" variant="outline-secondary">
+  <b-dd id="block-modifier" key-nav  aria-label="Block toolbar modifier" class="eyo-dropdown" variant="outline-secondary">
     <template slot="button-content"><span class="block-modifier eyo-code eyo-content" v-html="selected_item.title"></span></template>
-    <b-dropdown-item-button v-for="item in items" v-on:click="modifier = item.key" :key="item.key" class="block-modifier eyo-code" v-html="item.title"></b-dropdown-item-button>
-    </b-dropdown-item-button>
-  </b-dropdown>
+    <b-dd-item-button v-for="item in items" v-on:click="modifier = item.key" :key="item.key" class="block-modifier eyo-code" v-html="item.title"></b-dd-item-button>
+    </b-dd-item-button>
+  </b-dd>
 </template>
 
 <script>
