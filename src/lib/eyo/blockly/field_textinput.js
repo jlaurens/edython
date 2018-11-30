@@ -464,7 +464,7 @@ eYo.Content.prototype.setupModel = (function () {
   }
   var endEditing = function () {
     var data = this.eyo.data
-    goog.asserts.assert(data, 'No data bound to content ' + this.key + '/' + this.owner.getBlock().type)
+    goog.asserts.assert(data, 'No data bound to content ' + this.key + '/' + this.eyo.b_eyo.type)
     var result = this.callValidator(this.getValue())
     if (result !== null) {
       data.fromField(result)

@@ -345,6 +345,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('pass_stmt', {
   }
 })
 
+// register this delegate for other types
+var names = [
+  'continue',
+  'break'
+]
+names.forEach((k) => {
+  k = k + '_stmt'
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
+  eYo.DelegateSvg.Manager.register(k)
+})
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -364,15 +374,6 @@ eYo.DelegateSvg.Stmt.pass_stmt.prototype.getType = eYo.Decorate.onChangeCount(
     return block.type
   }
 )
-
-for (var _ = 0, k; (k = [
-  'continue',
-  'break'
-][_++]);) {
-  k = k + '_stmt'
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
-  eYo.DelegateSvg.Manager.register(k)
-}
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -469,15 +470,34 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
     variant: {
       css: 'reserved'
     }
+  },
+  slots: {
+    identifiers: {
+      order: 1,
+      wrap: eYo.T3.Expr.non_void_identifier_list
+    },
+    del: {
+      order: 2,
+      wrap: eYo.T3.Expr.target_list
+    }
   }
 })
 
+names = [
+  'nonlocal',
+  'del'
+]
+names.forEach((k) => {
+  k = k + '_stmt'
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
+  eYo.DelegateSvg.Manager.register(k)  
+})
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.pass_stmt.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     this.setupType(
@@ -490,15 +510,6 @@ eYo.DelegateSvg.Stmt.pass_stmt.prototype.getType = eYo.Decorate.onChangeCount(
     return this.type
   }
 )
-
-for (var _ = 0, k; (k = [
-  'continue',
-  'break'
-][_++]);) {
-  k = k + '_stmt'
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.pass_stmt
-  eYo.DelegateSvg.Manager.register(k)
-}
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
