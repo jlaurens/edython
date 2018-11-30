@@ -10,8 +10,6 @@
 expression_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at least one of them...
 call_stmt/call ::= call_expr
 base_call_stmt ::= call_expr
-module__call_expr ::= "module".foo (args)
-module__call_stmt ::= module__call_expr
 builtin__print_expr/print ::= "print(" argument_list ")"
 builtin__print_stmt/print ::= builtin__print_expr
 print_argument_list_comprehensive ::= subclass of argument_list_comprehensive
