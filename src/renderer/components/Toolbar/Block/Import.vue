@@ -1,8 +1,8 @@
 <template>
   <b-btn-group id="block-import">
-    <b-dropdown class="item eyo-with-slotholder">
-      <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
-    </b-dropdown>
+    <b-dd class="item eyo-with-slotholder">
+      <b-dd-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dd-item-button>
+    </b-dd>
     <div class="item text eyo-code-reserved" v-if="isFromInput">from</div>
     <div class="item text eyo-code-reserved" v-html="$fromSlot" v-if="isFromSlot"></div>
     <b-input :class="$$class" v-model="from" v-if="isFromInput" :placeholder="$$placeholder"></b-input>
