@@ -984,7 +984,7 @@ eYo.Delegate.prototype.getSubtype = eYo.Do.nothing
  * @return {?String} The type of the receiver's block.
  */
 eYo.Delegate.prototype.getBaseType = function () {
-  return this.baseType_ || this.block_.type
+  return this.baseType_ || this.block_.type // no this.type because of recursion
 }
 
 /**
