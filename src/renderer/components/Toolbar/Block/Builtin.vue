@@ -1,8 +1,8 @@
 <template>
-  <b-dropdown id="block-builtin" class="item text" v-if="values && values.length" variant="outline-secondary">
+  <b-dd id="block-builtin" class="item text" v-if="values && values.length" variant="outline-secondary">
     <template slot="button-content"><span class="block-value eyo-code-reserved eyo-content" v-html="value"></span></template>
-    <b-dropdown-item-button v-for="item in values" v-on:click="value = item" :key="item" class="block-value eyo-code-reserved" v-html="item"></b-dropdown-item-button>
-  </b-dropdown>
+    <b-dd-item-button v-for="item in values" v-on:click="value = item" :key="item" class="block-value eyo-code-reserved" v-html="item"></b-dd-item-button>
+  </b-dd>
 </template>
 
 <script>
