@@ -3,16 +3,16 @@
     <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
     <div id="eyo-flyout-toolbar-switcher">
       <b-btn-group id="eyo-flyout-switcher">
-        <b-dropdown id="eyo-flyout-dropdown-general" class="eyo-dropdown">
+        <b-dd id="eyo-flyout-dropdown-general" class="eyo-dropdown">
           <template slot="button-content">Blocs</template>
-          <b-dropdown-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
-          <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
-        </b-dropdown>
-        <b-dropdown id="eyo-flyout-dropdown-module" class="eyo-dropdown">
+          <b-dd-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+          <b-dd-divider></b-dd-divider>
+          <b-dd-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+        </b-dd>
+        <b-dd id="eyo-flyout-dropdown-module" class="eyo-dropdown">
           <template slot="button-content">Module&nbsp;</template>
-          <b-dropdown-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dropdown-item-button>
-        </b-dropdown>
+          <b-dd-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+        </b-dd>
       </b-btn-group>
       <div id="eyo-flyout-toolbar-label">
         <div class="item">{{label}}</div>
@@ -299,7 +299,7 @@
     color: #666666;
     text-align: center;
   }
-  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dropdown.dropdown {
+  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dd.dropdown {
     width: 50%;
   }
   #eyo-flyout-toolbar-switcher .eyo-round-btn {
