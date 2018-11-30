@@ -194,9 +194,6 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('if_part', {
-  xml: {
-    tag: 'if',
-  },
   fields: {
     label: 'if'
   },
@@ -320,9 +317,6 @@ eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('while_part', {
-  xml: {
-    tag: 'while',
-  },
   fields: {
     label: 'while'
   },
@@ -383,9 +377,6 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('for_part', {
-  xml: {
-    tag: 'for',
-  },
   slots: {
     for: {
       order: 1,
@@ -412,9 +403,6 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('with_part', {
-  xml: {
-    tag: 'with',
-  },
   slots: {
     with: {
       order: 1,

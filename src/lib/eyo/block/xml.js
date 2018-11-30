@@ -464,9 +464,9 @@ eYo.Xml.blockToDom = (function () {
       goog.isFunction(controller.blockToDom))) {
       var element = controller.blockToDom.call(eyo, block, optNoId, optNoNext)
     } else {
-      var tag = block.eyo.tagName()
+      var attr = block.eyo.xmlAttr()
       element = goog.dom.createDom(block.eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
-      element.setAttribute(eYo.Key.EYO, tag.substring(4))
+      element.setAttribute(eYo.Key.EYO, attr)
       !optNoId && element.setAttribute('id', block.id)
       eYo.Xml.toDom(block, element, optNoId, optNoNext)
     }
@@ -492,8 +492,8 @@ goog.require('eYo.DelegateSvg.Expr')
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.Delegate.prototype.tagName = function () {
-  var tag = this.constructor.eyo.tagName || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
+eYo.Delegate.prototype.xmlAttr = function () {
+  var tag = this.constructor.eyo.xmlAttr || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
   return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.Key.PLACEHOLDER)
 }
 
@@ -507,8 +507,10 @@ goog.require('eYo.DelegateSvg.List')
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.List.prototype.tagName = function () {
-  return this.block_.eyo.wrapped_ ? 'eyo:' + eYo.Xml.LIST : eYo.DelegateSvg.List.superClass_.tagName.call(this)
+eYo.DelegateSvg.List.prototype.xmlAttr = function () {
+  return this.block_.eyo.wrapped_
+    ? eYo.Xml.LIST
+    : eYo.DelegateSvg.List.superClass_.xmlAttr.call(this)
 }
 
 goog.provide('eYo.Xml.Text')
@@ -724,58 +726,18 @@ eYo.Xml.registerAllTags = function () {
         continue
       }
       var c9r = eYo.Delegate.Manager.get(type)
-      var one_tag = function (tag) {
-        var already = eYo.T3.Xml.fromDom[tag]
-        if (goog.isArray(already)) {
-          if (already.indexOf(type) < 0) {
-            already.push(type)
-          }
-        } else if (goog.isString(already)) {
-          if (type !== already) {
-            eYo.T3.Xml.fromDom[tag] = already = [already, type]
-          }
         } else {
-          eYo.T3.Xml.fromDom[tag] = type
-        }
-        // register the reverse
-        if (c9r) {
-          // if (!tag.startsWith('eyo:')) {
-          //   console.warn('DOUBLE eYo')
-          // }
-          // console.warn('Register:', c9r.eyo.key, tag, eYo.T3.Xml.toDom[mode][key], key)
-          c9r.eyo.tagName = eYo.T3.Xml.toDom[mode][key] || tag || key // ERROR ? Dynamic tag name ?
         }
       }
-      var model = eYo.Delegate.Manager.getModel(type)
-      var tags = model && model.xml && model.xml.tags
-      if (tags) {
-        for (var i = 0; i < tags.length; i++) {
-          var tag = tags[i]
-          one_tag(tags[i])
+        }
         }
       } else {
-        var xml = model && model.xml
-        if (xml && xml.tags) {
-          var i = xml.tags.length
-          if (i--) {
-            do {
-              one_tag(xml.tags[i])
-            } while (i--)
-            continue
-          }
-        }
-        var tag = xml && xml.tag
-        if (!goog.isString(tag)) {
-          var m = XRegExp.exec(type, eYo.XRE.s3d)
-          if (m) {
-            tag = m.core
-          } else {
-            tag = type.substring(4)
-          }
-        } else if (!tag.length) {
-          continue
-        }
-        one_tag(tag)
+        eYo.T3.Xml.fromDom[attr] = type
+      }
+      // register the reverse
+      if (c9r) {
+        // console.warn('Register:', c9r.eyo.key, attr, eYo.T3.Xml.toDom[mode][key], key)
+        c9r.eyo.attr = eYo.T3.Xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
       }
     }
   }
@@ -1212,8 +1174,8 @@ goog.require('eYo.DelegateSvg.Primary')
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */
-eYo.DelegateSvg.Expr.primary.prototype.tagName = function () {
-  var type = this.block_.type
+eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
+  var type = this.type
   if ([
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.identifier_defined,
@@ -1221,7 +1183,7 @@ eYo.DelegateSvg.Expr.primary.prototype.tagName = function () {
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.attributeref
   ].indexOf(type) >= 0) {
-    return eYo.T3.Expr.primary
+    return eYo.T3.Expr.primary.substring(4)
   }
   if (type === eYo.T3.Expr.call_expr) {
     return 'eyo:' + eYo.Key.CALL
