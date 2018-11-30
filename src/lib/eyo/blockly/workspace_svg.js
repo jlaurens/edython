@@ -360,34 +360,26 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         var allBlocks = this.getAllBlocks()
         var avoidCollision = () => {
           do {
-            var collide = false
-            for (var i = 0, otherBlock; (otherBlock = allBlocks[i]); i++) {
+            var collide = allBlocks.some((otherBlock) => {
               var otherXY = otherBlock.getRelativeToSurfaceXY()
               if (Math.abs(blockX - otherXY.x) <= 10 &&
                   Math.abs(blockY - otherXY.y) <= 10) {
-                collide = true
-                break
+                return true
               }
-            }
-            if (!collide) {
-              // Check for blocks in snap range to any of its connections.
-              var connections = block.getConnections_(false)
-              var connection
-              for (i = 0; (connection = connections[i]); i++) {
+            }) || block.getConnections_(false).some((connection) => {
                 var neighbour = connection.closest(Blockly.SNAP_RADIUS,
                   new goog.math.Coordinate(blockX, blockY))
                 if (neighbour.connection) {
-                  collide = true
-                  break
+                  return true
                 }
-              }
-            }
+            })
             if (collide) {
               blockX += Blockly.SNAP_RADIUS
               blockY += Blockly.SNAP_RADIUS * 2
             }
           } while (collide)
         }
+        avoidCollision()
         // is the block in the visible area ?
         var metrics = this.getMetrics()
         var scale = this.scale || 1
