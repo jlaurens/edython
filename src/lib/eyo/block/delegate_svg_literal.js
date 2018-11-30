@@ -96,10 +96,15 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   }
 })
 
-eYo.DelegateSvg.Expr.integer = eYo.DelegateSvg.Expr.floatnumber = eYo.DelegateSvg.Expr.imagnumber = eYo.DelegateSvg.Expr.numberliteral
-eYo.DelegateSvg.Manager.register('integer')
-eYo.DelegateSvg.Manager.register('floatnumber')
-eYo.DelegateSvg.Manager.register('imagnumber')
+var names = [
+  'integer',
+  'floatnumber',
+  'imagnumber'
+]
+names.forEach(key => {
+  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.numberliteral
+  eYo.DelegateSvg.Manager.register(key)
+})
 
 /**
  * Show the editor for the given block.

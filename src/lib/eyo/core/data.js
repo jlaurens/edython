@@ -858,7 +858,8 @@ eYo.Data.prototype.customizePlaceholder = function (txt) {
     return
   }
   if (goog.isDef(this.model.custom_placeholder)) {
-    this.model.custom_placeholder = eYo.Do.valueOf(txt, this)
+    var placeholder = eYo.Do.valueOf(txt, this)
+    this.model.custom_placeholder = placeholder && placeholder.toString().trim()
     return
   }
   var m = {}

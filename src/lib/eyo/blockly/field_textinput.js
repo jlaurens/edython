@@ -382,23 +382,21 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
     return this.placeholderText_
   }
   if (this.sourceBlock_) {
-    return ((() => {
-      if (this.eyo) {
-        var data = this.eyo.data
-        if (data) {
-          var model = data.model
-          var placeholder = model && model.placeholder
-          if (goog.isDefAndNotNull(placeholder)) {
-            return eYo.Do.valueOf(placeholder, this)
-          }
-        }
-        model = this.eyo && this.eyo.model
-        if (model) {
-          var placeholder = model.placeholder
-          return eYo.Do.valueOf(placeholder, this)
-        }
+    var ph = (model) => {
+      var placeholder = model && model.placeholder
+      if (goog.isNumber(placeholder)) {
+        return placeholder.toString()
       }
-    }) () || eYo.Msg.Placeholder.CODE).toString()
+      placeholder = eYo.Do.valueOf(placeholder, this)
+      return placeholder && placeholder.toString().trim()
+    }
+    return (() => {
+      var eyo = this.eyo
+      if (eyo) {
+        var data = eyo.data
+        return ph(data && data.model) || ph(eyo && eyo.model)
+      }
+    }) () || eYo.Msg.Placeholder.CODE
   }
 }
 
