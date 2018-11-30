@@ -64,7 +64,6 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
     },
     lhs: {
       init: '',
-      placeholder: '1',
       synchronize: true
     },
     rhs: {
@@ -79,7 +78,23 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       hole_value: 'name',
       fields: {
         bind: {
-          endEditing: true
+          endEditing: true,
+          placeholder: /** @suppress {globalThis} */ function () {
+            var type = this.eyo.b_eyo.type
+            return {
+              [eYo.T3.Expr.m_expr]: 1,
+              [eYo.T3.Expr.a_expr]: 1,
+              [eYo.T3.Expr.or_test]: 'test',
+              [eYo.T3.Expr.and_test]: 'test',
+              [eYo.T3.Expr.power]: 1,
+              [eYo.T3.Expr.shift_expr]: 1,
+              [eYo.T3.Expr.and_expr]: 1,
+              [eYo.T3.Expr.xor_expr]: 1,
+              [eYo.T3.Expr.or_expr]: 1,
+              [eYo.T3.Expr.number_comparison]: '1',
+              [eYo.T3.Expr.object_comparison]: 'object'
+            } [type]
+          }
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
@@ -99,7 +114,23 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         },
         bind: {
           order: 2,
-          endEditing: true
+          endEditing: true,
+          placeholder: /** @suppress {globalThis} */ function () {
+            var type = this.eyo.b_eyo.type
+            return {
+              [eYo.T3.Expr.m_expr]: 1,
+              [eYo.T3.Expr.a_expr]: 1,
+              [eYo.T3.Expr.or_test]: 'test',
+              [eYo.T3.Expr.and_test]: 'test',
+              [eYo.T3.Expr.power]: 1,
+              [eYo.T3.Expr.shift_expr]: 1,
+              [eYo.T3.Expr.and_expr]: 1,
+              [eYo.T3.Expr.xor_expr]: 1,
+              [eYo.T3.Expr.or_expr]: 1,
+              [eYo.T3.Expr.number_comparison]: '1',
+              [eYo.T3.Expr.object_comparison]: 'container'
+            } [type]
+          }
         }
       },
       hole_value: 'name',

@@ -854,17 +854,17 @@ eYo.Data.prototype.save = function (element) {
  * @param {String} txt the new placeholder.
  */
 eYo.Data.prototype.customizePlaceholder = function (txt) {
-  if (txt == this.model.placeholder) {
+  if (txt === this.model.placeholder) {
     return
   }
   if (goog.isDef(this.model.custom_placeholder)) {
-    this.model.custom_placeholder = txt
+    this.model.custom_placeholder = eYo.Do.valueOf(txt, this)
     return
   }
   var m = {}
   goog.mixin(m, this.model)
   this.model = m
-  m.placeholder = m.custom_placeholder = txt
+  m.placeholder = m.custom_placeholder = eYo.Do.valueOf(txt, this)
 }
 
 /**

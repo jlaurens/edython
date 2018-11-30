@@ -1,13 +1,38 @@
 <template>
   <b-btn-group id="block-augmented-assignment">
-    <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$$t('block.placeholder.name')"></b-input>
-      <b-dd class="item text mw-4rem" variant="outline-secondary" :text="operator">
-      <b-dd-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="item">
+    <b-input
+      v-if="!eyo.name_t"
+      v-model="name"
+      type="text"
+      :class="$$class"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.name')"></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
+    <b-dd
+      class="item text mw-4rem"
+      variant="outline-secondary"
+      :text="operator">
+      <b-dd-item-button
+        v-for="item in operatorsA"
+        v-on:click="operator = item"
+        :key="item"
+        class="block-binary-operator eyo-code"
+        v-html="item">
       </b-dd-item-button>
       <b-dd-divider></b-dd-divider>
-      <b-dd-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="eyo-code" v-html="item">
+      <b-dd-item-button
+        v-for="item in operatorsB"
+        v-on:click="operator = item"
+        :key="item"
+        class="eyo-code"
+        v-html="item">
       </b-dd-item-button>          
-    </b-dd>    
+    </b-dd>
+    <div
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
   </b-btn-group>
 </template>
 
@@ -33,9 +58,7 @@
       },
       slotholder: {
         type: Function,
-        default: function (item) {
-          return item
-        }
+        default: null
       }
     },
     computed: {
@@ -71,9 +94,6 @@
         return this.operators.bin.indexOf(this.operator) >= 0
           ? this.operators.num
           : this.operators.bin
-      },
-      my_slot () {
-        return this.slotholder('eyo-slotholder')
       }
     },
     created () {

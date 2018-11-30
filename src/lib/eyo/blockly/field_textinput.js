@@ -381,23 +381,25 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
   } else if (this.placeholderText_) {
     return this.placeholderText_
   }
-  return (function () {
-    if (this.eyo) {
-      var data = this.eyo.data
-      if (data) {
-        var model = data.model
-        var placeholder = model && data.model.placeholder
-        if (goog.isDefAndNotNull(placeholder)) {
-          return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
+  if (this.sourceBlock_) {
+    return ((() => {
+      if (this.eyo) {
+        var data = this.eyo.data
+        if (data) {
+          var model = data.model
+          var placeholder = model && model.placeholder
+          if (goog.isDefAndNotNull(placeholder)) {
+            return eYo.Do.valueOf(placeholder, this)
+          }
+        }
+        model = this.eyo && this.eyo.model
+        if (model) {
+          var placeholder = model.placeholder
+          return eYo.Do.valueOf(placeholder, this)
         }
       }
-      model = this.eyo && this.eyo.model
-      if (model) {
-        var placeholder = model.placeholder
-        return (goog.isFunction(placeholder) && this.sourceBlock_ && placeholder.call(this)) || (goog.isDef(placeholder) && placeholder.toString())
-      }
-    }
-  }.call(this)) || eYo.Msg.Placeholder.CODE
+    }) () || eYo.Msg.Placeholder.CODE).toString()
+  }
 }
 
 /**

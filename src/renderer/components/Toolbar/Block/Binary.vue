@@ -1,12 +1,46 @@
 <template>
-  <b-dd id="block-binary-operator" class="eyo-code item text eyo-with-slotholder mw-6rem" variant="outline-secondary">
-    <template slot="button-content"><span class="block-binary-operator eyo-code eyo-content" v-html="formatter(operator)"></span></template>
-    <b-dd-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="formatter(item)">
-    </b-dd-item-button>
-    <b-dd-divider></b-dd-divider>
-    <b-dd-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="formatter(item)">
-    </b-dd-item-button>            
-  </b-dd>
+  <b-btn-group>
+    <b-input
+      v-if="!eyo.lhs_t"
+      v-model="lhs"
+      type="text"
+      :class="$$class(lhs)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.number')"></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
+    <b-dd
+      id="block-binary-operator"
+      class="eyo-code item text mw-6rem"
+      variant="outline-secondary"
+      :text="operator">
+      <b-dd-item-button
+        v-for="item in operatorsA"
+        v-on:click="operator = item"
+        :key="item"
+        class="block-binary-operator eyo-code"
+        >{{item}}</b-dd-item-button> 
+      </b-dd-item-button>
+      <b-dd-divider></b-dd-divider>
+      <b-dd-item-button
+        v-for="item in operatorsB"
+        v-on:click="operator = item"
+        :key="item"
+        class="block-binary-operator eyo-code"
+        >{{item}}</b-dd-item-button>          
+    </b-dd>
+    <b-input
+      v-if="!eyo.rhs_t"
+      v-model="rhs"
+      type="text"
+      :class="$$class(rhs)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.number')"></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
+  </b-btn-group>
 </template>
 
 <script>
@@ -15,6 +49,8 @@
     data: function () {
       return {
         saved_step: undefined,
+        lhs_: undefined,
+        rhs_: undefined,
         operator_: '?',
         operators: {
           num: ['+', '-', '*', '/', '//', '%', '**', '@'],
@@ -36,15 +72,27 @@
         default: function (item) {
           return item
         }
-      },
-      formatter: {
-        type: Function,
-        default: function (item) {
-          return item.length ? `${this.my_slot}<span>${item}</span>${this.my_slot}` : '&nbsp;'
-        }
       }
     },
     computed: {
+      lhs: {
+        get () {
+          (this.step_ === this.step) || this.$$synchronize()
+          return this.lhs_
+        },
+        set (newValue) {
+          this.eyo.lhs_p = newValue
+        }
+      },
+      rhs: {
+        get () {
+          (this.step_ === this.step) || this.$$synchronize()
+          return this.rhs_
+        },
+        set (newValue) {
+          this.eyo.rhs_p = newValue
+        }
+      },
       operator: {
         get () {
           (this.saved_step === this.step) || this.$$synchronize()
@@ -63,9 +111,6 @@
         return this.operators.bin.indexOf(this.operator) >= 0
           ? this.operators.num
           : this.operators.bin
-      },
-      my_slot () {
-        return this.slotholder('eyo-slotholder')
       }
     },
     created () {
@@ -76,11 +121,17 @@
     },
     methods: {
       $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
+        var eyo = this.eyo
+        if (!eyo || (this.saved_step === this.step)) {
           return
         }
         this.saved_step = this.step
-        this.operator_ = this.eyo.operator_p
+        this.operator_ = eyo.operator_p
+        this.lhs_ = eyo.lhs_p
+        this.rhs_ = eyo.rhs_p
+      },
+      $$class (key) {
+        return `eyo-code and item text${key.length ? '' : ' placeholder'}`
       }
     }
   }

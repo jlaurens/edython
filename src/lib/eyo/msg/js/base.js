@@ -59,7 +59,7 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.COMMENT = 'Un commentaire ici'
 
-/** @export */ eYo.Msg.Placeholder.NUMBER = '0'
+/** @export */ eYo.Msg.Placeholder.NUMBER = '1'
 
 /** @export */ eYo.Msg.Placeholder.CODE = 'Une instruction ici'
 

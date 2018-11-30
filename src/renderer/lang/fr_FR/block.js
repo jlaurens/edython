@@ -21,7 +21,8 @@ export default {
   placeholder: { // OK
     name: 'nom',
     comment: 'Un commentaire ici',
-    module: 'module'
+    module: 'module',
+    number: '1'
   },
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',

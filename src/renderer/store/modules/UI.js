@@ -100,7 +100,7 @@ const mutations = {
     }
   },
   [types.mutations.SELECTED_BLOCK_UPDATE] (state, block) {
-    var old = state.selectedBlockStep
+    // var old = state.selectedBlockStep
     state.selectedBlockStep = block ? block.eyo.change.step : 0
     // console.warn('step', old, '=>', state.selectedBlockStep)
   },

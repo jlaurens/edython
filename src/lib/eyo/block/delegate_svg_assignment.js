@@ -443,7 +443,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
           ? {validated: newValue}
           : null
       },
-      synchronize: true
+      synchronize: true,
+      allwaysBoundField: true
     },
     operator: {
       all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
