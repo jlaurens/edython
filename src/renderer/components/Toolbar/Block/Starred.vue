@@ -1,9 +1,9 @@
 <template>
   <b-btn-group id="block-starred" key-nav  aria-label="Block decorator">
-    <b-dropdown class="item text eyo-with-slotholder mw-4rem" variant="outline-secondary">
+    <b-dd class="item text eyo-with-slotholder mw-4rem" variant="outline-secondary">
       <template slot="button-content"><span class="eyo-code-reserved" v-html="chosen.title"></span></template>
-      <b-dropdown-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dropdown-item-button>
-    </b-dropdown>
+      <b-dd-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dd-item-button>
+    </b-dd>
   </b-btn-group>
 </template>
 
