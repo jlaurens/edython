@@ -102,7 +102,7 @@ const mutations = {
   [types.mutations.SELECTED_BLOCK_UPDATE] (state, block) {
     var old = state.selectedBlockStep
     state.selectedBlockStep = block ? block.eyo.change.step : 0
-    console.warn('step', old, '=>', state.selectedBlockStep)
+    // console.warn('step', old, '=>', state.selectedBlockStep)
   },
   [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
     state.blockClipboard = ctxt.xml
