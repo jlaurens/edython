@@ -2,9 +2,9 @@
   <b-btn-toolbar id="block-decorator" key-nav  aria-label="Block decorator" justify>
     <b-btn-group>
       <b-form-input v-model="name" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-      <b-dropdown id="block-variant" class="eyo-dropdown" variant="outline-secondary">
-        <b-dropdown-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dropdown-item-button>
-      </b-dropdown>    
+      <b-dd id="block-variant" class="eyo-dropdown" variant="outline-secondary">
+        <b-dd-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dd-item-button>
+      </b-dd>    
       <span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
     </b-btn-group>
     <comment :eyo="eyo" :step="step"></comment>
