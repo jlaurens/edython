@@ -746,9 +746,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
         if (target.eyo instanceof eYo.DelegateSvg.List) {
           var child = eYo.Xml.blockToDom(target, optNoId)
           if (child.firstElementChild) {
-            if (!xml || !xml.noInputName) {
-              child.setAttribute(eYo.Xml.SLOT, this.getTag())
-            }
+            child.setAttribute(eYo.Xml.SLOT, this.key)
             goog.dom.appendChild(element, child)
             return child
           }
@@ -759,12 +757,10 @@ eYo.Slot.prototype.save = function (element, optNoId) {
       } else {
         child = eYo.Xml.blockToDom(target, optNoId)
         if (child.firstElementChild || child.hasAttributes()) {
-          if (!xml || !xml.noInputName) {
-            if (this.inputType === Blockly.INPUT_VALUE) {
-              child.setAttribute(eYo.Xml.SLOT, this.key)
-            } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-              child.setAttribute(eYo.Xml.FLOW, this.key)
-            }
+          if (this.inputType === Blockly.INPUT_VALUE) {
+            child.setAttribute(eYo.Xml.SLOT, this.key)
+          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+            child.setAttribute(eYo.Xml.FLOW, this.key)
           }
           goog.dom.appendChild(element, child)
           return child
@@ -778,18 +774,6 @@ eYo.Slot.prototype.save = function (element, optNoId) {
     child.setAttribute(eYo.Xml.SLOT, this.key)
     goog.dom.appendChild(element, child)
   }
-}
-
-/**
- * Get the xml tag for xml persistent storage.
- * For edython.
- * @param {Element} element a dom element in which to save the input
- * @return the added child, if any
- */
-eYo.Slot.prototype.getTag = function () {
-  var xml = this.model.xml
-  var tag = xml && xml.tag
-  return goog.isFunction(tag) ? tag() : tag || this.key
 }
 
 /**
