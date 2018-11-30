@@ -1283,8 +1283,8 @@ goog.provide('eYo.Xml.Group')
  * @override
  */
 eYo.Xml.Group.domToBlockComplete = function (element, workspace) {
-  var name = element.getAttribute(eYo.Key.EYO)
-  if (name === eYo.DelegateSvg.Stmt.else_part.prototype.tagName().substring(4)) {
+  var attr = element.getAttribute(eYo.Key.EYO)
+  if (attr === eYo.DelegateSvg.Stmt.else_part.prototype.xmlAttr()) {
     var workspace = owner.workspace || owner
     var type = eYo.T3.Stmt.else_part
     var id = element.getAttribute('id')
