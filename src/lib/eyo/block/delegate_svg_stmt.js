@@ -322,17 +322,6 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
-  xml: {
-    tags: [
-      eYo.Key.PASS,
-      eYo.Key.CONTINUE,
-      eYo.Key.BREAK,
-      eYo.Key.GLOBAL,
-      eYo.Key.NONLOCAL,
-      eYo.Key.DEL,
-      eYo.Key.RETURN
-    ]
-  },
   data: {
     variant: {
       all: [
