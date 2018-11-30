@@ -3,13 +3,13 @@
     <div id="eyo-panels" ref="divPanels" :style="{width: panelsStyleWidth}">
       <div id="eyo-panels-toolbar" :style="{ fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px' }">
         <div id="eyo-panels-toolbar-select">
-          <b-dropdown id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
+          <b-dd id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
             <template slot="button-content">
               {{titles[selected]}}
             </template>
-            <b-dropdown-item-button v-on:click="selectPanel($$.eYo.App.CONSOLE)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dropdown-item-button>
-            <b-dropdown-item-button v-on:click="selectPanel($$.eYo.App.TURTLE)" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.turtle}}</b-dropdown-item-button>
-          </b-dropdown>
+            <b-dd-item-button v-on:click="selectPanel($$.eYo.App.CONSOLE)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dd-item-button>
+            <b-dd-item-button v-on:click="selectPanel($$.eYo.App.TURTLE)" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.turtle}}</b-dd-item-button>
+          </b-dd>
         </div>
         <b-btn id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === $$.eYo.App.CONSOLE" title="Redémarrer l'interpréteur python" 
         v-tippy ><icon-base icon-name="restart" :width="26" :height="26"><icon-restart /></icon-base></b-btn>
