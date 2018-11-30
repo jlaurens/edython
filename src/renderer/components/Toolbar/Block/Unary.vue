@@ -1,77 +1,99 @@
 <template>
-    <b-dd id="block-unary-operator" class="eyo-dropdown item text  eyo-with-slotholder" variant="outline-secondary">
-      <template slot="button-content"><span class="eyo-code eyo-content text" v-html="formatter(operator)"></span></template>
-      <b-dd-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="block-unary-operator eyo-code" v-html="formatter(item)"></b-dd-item-button>
+  <b-btn-group id="block-unary-operator">
+    <b-dd
+      class="eyo-dropdown item text"
+      variant="outline-secondary"
+      :text="operator">
+      <b-dd-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="block-unary-operator eyo-code" v-html="item"></b-dd-item-button>
       </b-dd-item-button>
     </b-dd>
-  </template>
-  
-  <script>
-    export default {
-      name: 'info-unary-operator',
-      data () {
-        return {
-          saved_step: undefined,
-          operator_: 0
-        }
+    <b-input
+      v-if="!eyo.rhs_t"
+      v-model="rhs"
+      type="text"
+      :class="$$class(rhs)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.number')"></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
+  </b-btn-group>
+</template>
+
+<script>
+  export default {
+    name: 'info-unary-operator',
+    data () {
+      return {
+        saved_step: undefined,
+        operator_: 0,
+        rhs_: undefined
+      }
+    },
+    props: {
+      eyo: {
+        type: Object,
+        default: undefined
       },
-      props: {
-        eyo: {
-          type: Object,
-          default: undefined
-        },
-        step: {
-          type: Number,
-          default: 0
-        },
-        slotholder: {
-          type: Function,
-          default: function (item) {
-            return item
-          }
-        },
-        formatter: {
-          type: Function,
-          default: function (item) {
-            return item.length ? `<span>${item}</span>${this.slot}` : '&nbsp;'
-          }
-        }
+      step: {
+        type: Number,
+        default: 0
       },
-      computed: {
-        operator: {
-          get () {
-            (this.saved_step === this.step) || this.$$synchronize()
-            return this.operator_
-          },
-          set (newValue) {
-            this.eyo.operator_p = newValue
-          }
-        },
-        operators () {
-          return this.eyo.operator_d.getAll()
-        },
-        slot () {
-          return this.slotholder('eyo-slotholder')
-        }
-      },
-      created () {
-        this.$$synchronize()
-      },
-      beforeUpdate () {
-        (this.saved_step === this.step) || this.$$synchronize()
-      },
-      methods: {
-        $$synchronize () {
-          if (!this.eyo || (this.saved_step === this.step)) {
-            return
-          }
-          this.saved_step = this.step
-          this.operator_ = this.eyo.operator_p
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
         }
       }
+    },
+    computed: {
+      rhs: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.rhs_
+        },
+        set (newValue) {
+          this.eyo.rhs_p = newValue
+        }
+      },
+      operator: {
+        get () {
+          (this.saved_step === this.step) || this.$$synchronize()
+          return this.operator_
+        },
+        set (newValue) {
+          this.eyo.operator_p = newValue
+        }
+      },
+      operators () {
+        return this.eyo.operator_d.getAll()
+      },
+      slot () {
+        return this.slotholder('eyo-slotholder')
+      }
+    },
+    created () {
+      this.$$synchronize()
+    },
+    beforeUpdate () {
+      (this.saved_step === this.step) || this.$$synchronize()
+    },
+    methods: {
+      $$synchronize () {
+        var eyo = this.eyo
+        if (!eyo || (this.saved_step === this.step)) {
+          return
+        }
+        this.saved_step = this.step
+        this.operator_ = eyo.operator_p
+        this.rhs_ = eyo.rhs_p
+      },
+      $$class (key) {
+        return `eyo-code and item text${key.length ? '' : ' placeholder'}`
+      }
     }
-  </script>
-  <style>
-  </style>
-    
+  }
+</script>
+<style>
+</style>
   
