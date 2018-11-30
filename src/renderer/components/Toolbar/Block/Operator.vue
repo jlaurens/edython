@@ -1,8 +1,8 @@
 <template>
-  <b-dropdown id="block-operator" class="eyo-dropdown" v-if="operators.length">
+  <b-dd id="block-operator" class="eyo-dropdown" v-if="operators.length">
     <template slot="button-content" ><span class="block-operator">{{formatter(operator)}}</span></template>
-    <b-dropdown-item-button v-for="item in operators" v-on:click="operator = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item">{{formatter(item)}}</b-dropdown-item-button>
-  </b-dropdown>
+    <b-dd-item-button v-for="item in operators" v-on:click="operator = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item">{{formatter(item)}}</b-dd-item-button>
+  </b-dd>
 </template>
 
 <script>
