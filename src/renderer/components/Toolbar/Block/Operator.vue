@@ -35,7 +35,7 @@
       },
       operator: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.operator_d
         },
         set (newValue) {
@@ -47,18 +47,14 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.operator_ = this.eyo.operator_p
+      $$doSynchronize (eyo) {
+        this.operator_ = eyo.operator_p
       }
     }
   }

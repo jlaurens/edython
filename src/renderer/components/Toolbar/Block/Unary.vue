@@ -49,7 +49,7 @@
     computed: {
       rhs: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.rhs_
         },
         set (newValue) {
@@ -58,7 +58,7 @@
       },
       operator: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.operator_
         },
         set (newValue) {
@@ -73,18 +73,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.operator_ = eyo.operator_p
         this.rhs_ = eyo.rhs_p
       },

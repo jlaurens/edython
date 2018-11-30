@@ -28,34 +28,30 @@
     computed: {
       choices: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return [this.other_delimiter_]
         }
       },
       chosen: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.delimiter_
         },
         set (newValue) {
           this.eyo.delimiter_p = newValue
-          this.$$synchronize() // could not avoid
+          this.$$synchronize(this.step) // could not avoid
         }
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.delimiter_ = this.eyo.delimiter_p
+      $$doSynchronize (eyo) {
+        this.delimiter_ = eyo.delimiter_p
         this.other_delimiter_ = {
           '\'': '"',
           '"': '\'',

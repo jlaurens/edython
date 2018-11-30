@@ -1,12 +1,12 @@
 <template>
   <b-btn-toolbar id="block-number" key-nav  aria-label="Block toolbar number" justify>
     <b-btn-group>
-      <b-form-input v-model="content" type="text" class="btn-outline-secondary eyo-form-input-text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
+      <b-form-input v-model="content" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-form-input>
     </b-btn-group>
-    <div id='info-number-keyword' class="btn-outline-secondary" :disabled="!can_imag">
+    <div id='info-number-keyword' class="item" :disabled="!can_imag">
       <input type="checkbox" id="block-imag" v-model="imag" :disabled="!can_imag">
-      <label for="block-imag" class="eyo-code">{{suffix_}}</label>
     </div>
+    <div :class="`item${imag ? ' text' : ''}`">{{suffix_}}</div>
   </b-btn-toolbar>
 </template>
 
@@ -32,12 +32,12 @@
     },
     computed: {
       type () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return eYo.T3.Profile.get(this.value_).expr
       },
       imag: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.type === eYo.T3.Expr.imagnumber
         },
         set (newValue) {
@@ -47,12 +47,12 @@
         }
       },
       can_imag () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.imag || eYo.T3.Profile.get(this.value_ + 'j').expr === eYo.T3.Expr.imagnumber
       },
       content: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.imag
             ? this.value_.slice(0, -1)
             : this.value_
@@ -62,21 +62,17 @@
         }
       }
     },
-    methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.value_ = this.eyo.value_p
-        this.suffix_ = this.imag ? this.value_.slice(-1) : 'j'
-      }
-    },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
+    },
+    methods: {
+      $$doSynchronize (eyo) {
+        this.value_ = eyo.value_p
+        this.suffix_ = this.imag ? this.value_.slice(-1) : 'j'
+      }
     }
   }
 </script>

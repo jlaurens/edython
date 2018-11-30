@@ -38,11 +38,11 @@
     },
     computed: {
       name () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.name_
       },
       property () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.property_
       },
       choices () {
@@ -53,10 +53,10 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
       content (choice) {
@@ -75,13 +75,9 @@
       choose (choice) {
         this.eyo.chooser_p = choice
       },
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.property_ = this.eyo.property_p
-        this.name_ = this.eyo.name_p
+      $$doSynchronize (eyo) {
+        this.property_ = eyo.property_p
+        this.name_ = eyo.name_p
       }
     }
   }

@@ -53,7 +53,7 @@
       },
       holder: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.holder_
         },
         set (newValue) {
@@ -62,7 +62,7 @@
       },
       dotted: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.dotted_
         },
         set (newValue) {
@@ -151,7 +151,7 @@
       })
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
       var dotted = this.dotted
       var candidate = this.dottedItems[dotted]
       if (dotted === 1) {
@@ -165,15 +165,10 @@
       this.selectedItem_ = candidate || this.dottedItems[0]
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.holder_ = eyo.holder_p
         this.dotted_ = eyo.dotted_p
         var item = eyo.item_p

@@ -44,7 +44,7 @@
     computed: {
       value: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.value_
         },
         set (newValue) {
@@ -52,23 +52,19 @@
         }
       },
       values () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return (this.eyo.value_d && this.eyo.value_d.getAll()) || []
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.value_ = this.eyo.value_p
+      $$doSynchronize (eyo) {
+        this.value_ = eyo.value_p
       }
     }
   }

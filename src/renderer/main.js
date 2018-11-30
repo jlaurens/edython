@@ -542,6 +542,27 @@ eYo.Do.$$tc = Vue.prototype.$$tc = function (key, choice, locale, value) {
   return app.$te(key, locale) && app.$tc(key, choice, locale, value)
 }
 
+/**
+ * Trick to force synchronization of the various vues with the selected block.
+ * @param{!Number} step
+ */
+Vue.prototype.$$synchronize = function (step) {
+  var eyo = this.eyo
+  if (!eyo || (this.saved_step === step)) {
+    return
+  }
+  this.saved_step = step
+  this.$$doSynchronize(eyo)
+}
+
+/**
+ * Will be overriden by components.
+ * @param{!Object} eyo
+ */
+Vue.prototype.$$doSynchronize = function (eyo) {
+  // do nothing
+}
+
 app.$mount('#app')
 
 console.log('Launching brython')

@@ -47,7 +47,7 @@
     },
     computed: {
       isMethod () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.isMethod_
       },
       ...mapState({
@@ -55,18 +55,13 @@
       })
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         var item = eyo.item_p
         this.isMethod_ = item && item.isMethod
       }

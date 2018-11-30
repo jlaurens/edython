@@ -28,7 +28,7 @@
     computed: {
       modifier: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.modifier_
         },
         set (newValue) {
@@ -65,18 +65,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        var eyo = this.eyo
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         this.modifier_ = eyo.modifier_p || ''
       }
     }

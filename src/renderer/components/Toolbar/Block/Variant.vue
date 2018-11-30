@@ -45,7 +45,7 @@
       },
       chosen: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.chosen_
         },
         set (newValue) {
@@ -53,24 +53,20 @@
         }
       },
       choices () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.choices_
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.variant = this.eyo.variant_p
-        var keys = (this.eyo.variant_d && this.eyo.variant_d.getAll()) || []
+      $$doSynchronize (eyo) {
+        this.variant = eyo.variant_p
+        var keys = (eyo.variant_d && eyo.variant_d.getAll()) || []
         this.chosen_ = null
         this.choices_ = []
         this.withSlot = false
@@ -82,7 +78,7 @@
           }
           if (!this.chosen_) {
             this.chosen_ = choice
-          } else if ((k === this.eyo.variant_p)) {
+          } else if ((k === eyo.variant_p)) {
             this.chosen_ = choice
           }
           this.choices_.push(choice)

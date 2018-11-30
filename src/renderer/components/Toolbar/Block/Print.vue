@@ -49,7 +49,7 @@
         return this.eyo.n_ary_s.connection.targetBlock()
       },
       target_by_name () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.target_by_name_
       },
       data () {
@@ -116,17 +116,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         var target_by_name = {}
         var block = this.eyo.block_
         if (block) {

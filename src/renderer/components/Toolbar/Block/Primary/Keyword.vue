@@ -40,11 +40,11 @@
         return this.eyo.n_ary_s.connection.targetBlock()
       },
       target_by_name () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.target_by_name_
       },
       choices () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.choices_
       }
     },
@@ -56,18 +56,13 @@
         'file',
         'maxsplit'
       ]
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.target_by_name_ = {}
         this.choices_ = []
         var item = eyo.item_p

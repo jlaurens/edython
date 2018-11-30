@@ -42,7 +42,7 @@
     computed: {
       variant: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.variant_
         },
         set (newValue) {
@@ -50,12 +50,12 @@
         }
       },
       choices () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.choices_
       },
       chosen: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.chosen_
         },
         set (newValue) {
@@ -64,18 +64,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.variant_ = eyo.variant_p
         if (!this.choices_) {
           this.choices_ = [

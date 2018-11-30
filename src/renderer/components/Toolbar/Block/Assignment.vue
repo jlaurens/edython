@@ -48,7 +48,7 @@
       computed: {
         variant: {
           get () {
-            (this.saved_step === this.step) || this.$$synchronize()
+            this.$$synchronize(this.step)
             return this.variant_
           },
           set (newValue) {
@@ -81,17 +81,14 @@
         }
       },
       created () {
-        this.$$synchronize()
+        this.$$synchronize(this.step)
       },
       beforeUpdate () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
       },
       methods: {
-        $$synchronize () {
-          if (!this.eyo || (this.saved_step === this.step)) {
-            return
-          }
-          this.variant_ = this.eyo.variant_p
+        $$doSynchronize (eyo) {
+          this.variant_ = eyo.variant_p
         }
       }
     }

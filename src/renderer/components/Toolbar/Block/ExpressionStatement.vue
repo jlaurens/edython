@@ -16,7 +16,6 @@
     data: function () {
       return {
         saved_step: 0,
-        saved_eyo: undefined,
         variant_: undefined,
         commentVariant_: undefined,
         expression_: undefined,
@@ -41,24 +40,24 @@
     },
     computed: {
       $$class () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return `eyo-code item${this.hasExpression ? ' text' : ''} w-16rem`
       },
       commentVariant () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.commentVariant_ === eYo.Key.NONE
       },
       noCheck () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.commentVariant_ === eYo.Key.NONE
       },
       canExpression () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return !this.eyo.expression_s.targetBlock()
       },
       hasExpression: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.variant === eYo.Key.EXPRESSION
         },
         set (newValue) {
@@ -69,12 +68,12 @@
         }
       },
       variant () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.variant_
       },
       expression: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.expression_
         },
         set (newValue) {
@@ -85,7 +84,7 @@
         return this.slotholder('eyo-slotholder')
       },
       withSlotholder () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.withSlotholder_
       },
       canShow () {
@@ -99,22 +98,17 @@
       })
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_eyo = this.eyo
-        this.saved_step = this.step
-        this.expression_ = this.eyo.expression_p
-        this.withSlotholder_ = !!this.eyo.expression_s.targetBlock()
-        this.commentVariant_ = this.eyo.commentVariant_p
-        this.variant_ = this.eyo.variant_p
+      $$doSynchronize (eyo) {
+        this.expression_ = eyo.expression_p
+        this.withSlotholder_ = !!eyo.expression_t
+        this.commentVariant_ = eyo.commentVariant_p
+        this.variant_ = eyo.variant_p
       }
     }
   }

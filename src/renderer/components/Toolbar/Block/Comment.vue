@@ -42,7 +42,7 @@
       },
       commentVariant: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.commentVariant_
         },
         set (newValue) {
@@ -50,16 +50,16 @@
         }
       },
       mustComment () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.eyo.type === eYo.T3.Stmt.any_expression && this.eyo.expression_d && (this.variant !== eYo.Key.EXPRESSION)
       },
       variant () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.variant_
       },
       hasComment: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.hasComment_
         },
         set (newValue) {
@@ -70,7 +70,7 @@
       },
       comment: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.comment_
         },
         set (newValue) {
@@ -79,27 +79,23 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.variant_ = this.eyo.variant_p
-        this.comment_ = this.eyo.comment_p
+      $$doSynchronize (eyo) {
+        this.variant_ = eyo.variant_p
+        this.comment_ = eyo.comment_p
         if (this.comment_ && !goog.isString(this.comment_)) {
           // sometimes, I receive an object named `observer`, this might be related to Vuejs...
-          this.comment_ = this.eyo.comment_p = ''
+          this.comment_ = eyo.comment_p = ''
         }
         if (this.mustComment) {
-          this.eyo.comment_variant_p = eYo.Key.COMMENT
+          eyo.comment_variant_p = eYo.Key.COMMENT
         }
-        this.commentVariant_ = this.eyo.comment_variant_p
+        this.commentVariant_ = eyo.comment_variant_p
         this.hasComment_ = this.commentVariant_ === eYo.Key.COMMENT
       }
     }

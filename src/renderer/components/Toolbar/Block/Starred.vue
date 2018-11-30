@@ -73,28 +73,23 @@
       },
       chosen: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.chosen_
         },
         set (newValue) {
           newValue.action(this.eyo)
-          this.$$synchronize()
+          this.$$synchronize(this.step)
         }
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        var eyo = this.eyo
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         if (eyo.modifier_p === '**') {
           this.chosen_ = this.choices_by_key[eYo.Key.STAR_STAR_NAME]
         } else if (eyo.variant_p === eYo.Key.STAR) {

@@ -48,7 +48,7 @@
         get () {
           var id = this.$store.state.UI.selectedBlockId
           if (id) {
-            this.$$synchronize()
+            this.$$synchronize(this.step)
           }
           return this.prefix_
         },
@@ -120,7 +120,7 @@
       },
       content: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.content_
         },
         set (newValue) {
@@ -132,19 +132,15 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.prefix_ = this.eyo.prefix_p.toLowerCase()
-        this.content_ = this.eyo.content_p
+      $$doSynchronize (eyo) {
+        this.prefix_ = eyo.prefix_p.toLowerCase()
+        this.content_ = eyo.content_p
       },
       do_r () {
         this.prefix = {

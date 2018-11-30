@@ -57,7 +57,7 @@
     computed: {
       lower: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.lower_
         },
         set (newValue) {
@@ -66,7 +66,7 @@
       },
       upper: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.upper_
         },
         set (newValue) {
@@ -75,7 +75,7 @@
       },
       stride: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.stride_
         },
         set (newValue) {
@@ -84,7 +84,7 @@
       },
       variant: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.variant_
         },
         set (newValue) {
@@ -101,18 +101,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.lower_ = eyo.lower_p
         this.upper_ = eyo.upper_p
         this.stride_ = eyo.stride_p

@@ -74,24 +74,24 @@
         return this.variant === eYo.Key.CALL_EXPR && this.hasKeyword_
       },
       keywordArguments () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.keywordArguments_
       },
       can_call () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.can_call_
       },
       can_andef () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.can_andef_
       },
       variant () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.variant_
       },
       annotation: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.annotation_
         },
         set (newValue) {
@@ -100,7 +100,7 @@
       },
       definition: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.definition_
         },
         set (newValue) {
@@ -109,7 +109,7 @@
       },
       alias: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.alias_
         },
         set (newValue) {
@@ -118,7 +118,7 @@
       },
       selected: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.by_key[this.variant]
         },
         set (newValue) {
@@ -200,18 +200,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         this.variant_ = eyo.variant_p
         this.annotation_ = eyo.annotation_p
         this.definition_ = eyo.definition_p

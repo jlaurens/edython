@@ -39,7 +39,7 @@
       },
       expression: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.expression_
         },
         set (newValue) {
@@ -48,18 +48,14 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.expression = this.eyo.expression_p
+      $$doSynchronize (eyo) {
+        this.expression = eyo.expression_p
       }
     }
   }

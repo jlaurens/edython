@@ -39,7 +39,7 @@
       },
       name: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.name_
         },
         set (newValue) {
@@ -48,18 +48,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        var eyo = this.eyo
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         this.name_ = eyo.name_p
       }
     }

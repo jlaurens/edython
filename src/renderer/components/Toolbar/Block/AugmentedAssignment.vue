@@ -69,7 +69,7 @@
       },
       name: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.name_
         },
         set (newValue) {
@@ -78,7 +78,7 @@
       },
       operator: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.operator_
         },
         set (newValue) {
@@ -99,19 +99,15 @@
     created () {
       this.operators.num = this.eyo.numberOperator_d.getAll()
       this.operators.bin = this.eyo.bitwiseOperator_d.getAll()
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.name_ = this.eyo.name_p
-        this.operator_ = this.eyo.operator_p
+      $$doSynchronize (eyo) {
+        this.name_ = eyo.name_p
+        this.operator_ = eyo.operator_p
       }
     }
   }

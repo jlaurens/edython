@@ -36,7 +36,7 @@
       },
       name: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.name_
         },
         set (newValue) {
@@ -45,13 +45,13 @@
       },
       variant: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.variant_
         }
       },
       module: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.module_
         }
       },
@@ -67,19 +67,16 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.name_ = this.eyo.name_p
-        this.variant_ = this.eyo.variant_p
-        this.module_ = this.eyo.module_p
+      $$doSynchronize (eyo) {
+        this.name_ = eyo.name_p
+        this.variant_ = eyo.variant_p
+        this.module_ = eyo.module_p
       }
     }
   }

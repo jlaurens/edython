@@ -39,27 +39,27 @@
     },
     computed: {
       isFromSlot () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.chosen.key !== eYo.Key.IMPORT && this.eyo.from_s.targetBlock()
       },
       isFromInput () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.chosen.key !== eYo.Key.IMPORT && !this.eyo.from_s.targetBlock()
       },
       isImportStar () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.chosen.key === eYo.Key.FROM_MODULE_IMPORT_STAR
       },
       $fromSlot () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.formatted('<span>from{{slotholder}}</span>')
       },
       $import () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.formatted('<span>import{{slotholder}}</span>')
       },
       $importStar () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return '<span>import *</span>'
       },
       $$class () {
@@ -70,7 +70,7 @@
       },
       chosen: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.chosen_
         },
         set (newValue) {
@@ -80,7 +80,7 @@
       },
       from: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.from_
         },
         set (newValue) {
@@ -108,19 +108,15 @@
         this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT],
         this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT_STAR]
       ]
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        if (!this.eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
-        this.chosen_ = this.choices_by_key[this.eyo.variant_p] || this.choices[0]
-        this.from_ = this.eyo.from_p
+      $$doSynchronize (eyo) {
+        this.chosen_ = this.choices_by_key[eyo.variant_p] || this.choices[0]
+        this.from_ = eyo.from_p
       },
       formatted: function (input) {
         if (input.indexOf('{{slotholder}}') < 0) {

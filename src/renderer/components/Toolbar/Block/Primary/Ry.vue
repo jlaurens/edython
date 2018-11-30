@@ -45,7 +45,7 @@
     },
     computed: {
       variant () {
-        (this.saved_step === this.step) || this.$$synchronize()
+        this.$$synchronize(this.step)
         return this.variant_
       },
       show_ry () {
@@ -53,7 +53,7 @@
       },
       ary: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.ary_ === Infinity
             ? '∞'
             : this.ary_.toString()
@@ -69,7 +69,7 @@
       },
       mandatory: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.mandatory_ === Infinity
             ? '∞'
             : this.mandatory_.toString()
@@ -88,18 +88,13 @@
       })
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = eyo.change.step
+      $$doSynchronize (eyo) {
         this.variant_ = eyo.variant_p
         var p5e = eyo.profile_p.p5e
         this.can_ry_ = !p5e || !p5e.item

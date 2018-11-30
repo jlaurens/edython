@@ -92,7 +92,7 @@
       },
       variant: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.variant_
         },
         set (newValue) {
@@ -104,7 +104,7 @@
       },
       expression: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.expression_
         },
         set (newValue) {
@@ -116,7 +116,7 @@
       },
       alias: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.alias_
         },
         set (newValue) {
@@ -125,10 +125,10 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
       content (choice) {
@@ -143,12 +143,7 @@
       choose (choice) {
         this.eyo.variant_p = choice
       },
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.variant_ = eyo.variant_p
         this.expression_ = eyo.expression_p
         this.alias_ = eyo.alias_p

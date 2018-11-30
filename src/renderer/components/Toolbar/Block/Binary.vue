@@ -77,7 +77,7 @@
     computed: {
       lhs: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.lhs_
         },
         set (newValue) {
@@ -86,7 +86,7 @@
       },
       rhs: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize()
+          (this.step_ === this.step) || this.$$synchronize(this.step)
           return this.rhs_
         },
         set (newValue) {
@@ -95,7 +95,7 @@
       },
       operator: {
         get () {
-          (this.saved_step === this.step) || this.$$synchronize()
+          this.$$synchronize(this.step)
           return this.operator_
         },
         set (newValue) {
@@ -114,18 +114,13 @@
       }
     },
     created () {
-      this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     beforeUpdate () {
-      (this.saved_step === this.step) || this.$$synchronize()
+      this.$$synchronize(this.step)
     },
     methods: {
-      $$synchronize () {
-        var eyo = this.eyo
-        if (!eyo || (this.saved_step === this.step)) {
-          return
-        }
-        this.saved_step = this.step
+      $$doSynchronize (eyo) {
         this.operator_ = eyo.operator_p
         this.lhs_ = eyo.lhs_p
         this.rhs_ = eyo.rhs_p
