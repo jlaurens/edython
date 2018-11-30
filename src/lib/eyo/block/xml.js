@@ -1208,16 +1208,16 @@ eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
     return eYo.T3.Expr.primary.substring(4)
   }
   if (type === eYo.T3.Expr.call_expr) {
-    return 'eyo:' + eYo.Key.CALL
+    return eYo.Key.CALL
   }
   if (type === eYo.T3.Expr.named_call_expr) {
-    return 'eyo:' + eYo.Key.CALL
+    return eYo.Key.CALL
   }
   if (type === eYo.T3.Expr.named_slicing) {
-    return eYo.T3.Expr.slicing
+    return eYo.T3.Expr.slicing.substring(4)
   }
   if (type === eYo.T3.Expr.named_subscription) {
-    return eYo.T3.Expr.subscription
+    return eYo.T3.Expr.subscription.substring(4)
   }
   if ([
     eYo.T3.Expr.identifier_as,
@@ -1225,11 +1225,10 @@ eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
     eYo.T3.Expr.identifier_annotated_defined,
     eYo.T3.Expr.identifier_defined
   ].indexOf(type) >= 0) {
-    return eYo.T3.Expr.identifier
+    return eYo.T3.Expr.identifier.substring(4)
   }
-  return type
+  return type.substring(4)
 }
-
 
 goog.provide('eYo.Xml.Starred')
 goog.require('eYo.DelegateSvg.Starred')
