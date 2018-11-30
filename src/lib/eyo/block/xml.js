@@ -726,10 +726,27 @@ eYo.Xml.registerAllTags = function () {
         continue
       }
       var c9r = eYo.Delegate.Manager.get(type)
+      var model = eYo.Delegate.Manager.getModel(type)
+      var xml = model && model.xml
+      var attr = xml && xml.attr
+      if (!goog.isString(attr)) {
+        var m = XRegExp.exec(type, eYo.XRE.s3d)
+        if (m) {
+          attr = m.core
         } else {
+          attr = type.substring(4)
         }
+      } else if (!attr.length) {
+        continue
       }
+      var already = eYo.T3.Xml.fromDom[attr]
+      if (goog.isArray(already)) {
+        if (already.indexOf(type) < 0) {
+          already.push(type)
         }
+      } else if (goog.isString(already)) {
+        if (type !== already) {
+          eYo.T3.Xml.fromDom[attr] = already = [already, type]
         }
       } else {
         eYo.T3.Xml.fromDom[attr] = type
