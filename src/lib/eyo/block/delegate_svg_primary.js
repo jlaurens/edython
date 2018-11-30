@@ -320,8 +320,18 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function (element) {
-        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
-          this.owner.variant_p = eYo.Key.ANNOTATED
+        if (this.isRequiredFrom()) {
+          if (this.owner.variant_p === eYo.Key.DEFINED) {
+            this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
+          } else {
+            this.owner.variant_p = eYo.Key.ANNOTATED
+          }
+        } else {
+          if (this.owner.variant_p === eYo.Key.ANNOTATED_DEFINED) {
+            this.owner.variant_p = eYo.Key.DEFINED
+          } else if (this.owner.variant_p === eYo.Key.ANNOTATED) {
+            this.owner.variant_p = eYo.Key.NONE
+          }
         }
       },
       synchronize: true,
@@ -352,8 +362,18 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
          }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
-          this.owner.variant_p = eYo.Key.DEFINED
+        if (this.isRequiredFrom()) {
+          if (this.owner.variant_p === eYo.Key.ANNOTATED) {
+            this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
+          } else {
+            this.owner.variant_p = eYo.Key.DEFINED
+          }
+        } else {
+          if (this.owner.variant_p === eYo.Key.ANNOTATED_DEFINED) {
+            this.owner.variant_p = eYo.Key.ANNOTATED
+          } else if (this.owner.variant_p === eYo.Key.DEFINED) {
+            this.owner.variant_p = eYo.Key.NONE
+          }
         }
       },
       synchronize: true,

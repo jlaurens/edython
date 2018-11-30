@@ -345,7 +345,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
         save: /** @suppress {globalThis} */ function (element) {
         },
         load: /** @suppress {globalThis} */ function (element) {
-          this.owner.variant_p = element.getAttribute(eYo.Key.EYO).substring(4)
+          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -418,7 +418,7 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
 )
 
 /**
- * The xml tag name of this block, as it should appear in the saved data.
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
  * @return true if the given value is accepted, false otherwise
  */

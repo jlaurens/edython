@@ -218,7 +218,13 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
           this.set(eYo.Key.IF)
         }
       },
-      xml: false
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
+        },
+      }
     },
     condition: {
       init: '',
@@ -235,16 +241,17 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
   slots: {
     condition: {
       order: 1,
+      fields: {
+        bind: {
+          endEditing: true
+        }
+      },
       check: eYo.T3.Expr.Check.expression
     }
   },
   statement: {
     previous: {
       check: /** @suppress {globalThis} */ function (type) {
-        if (!type) {
-          console.error('BREAK HERE')
-          type = this.b_eyo.getType()
-        }
         return eYo.T3.Stmt.Previous[type.substring(4)]
       }
     },
@@ -256,6 +263,14 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
   }
 }, true)
 
+/**
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * For edython.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Stmt.if_part.prototype.xmlAttr = function () {
+  return this.variant_p
+}
 
 /**
  * getBaseType.
@@ -293,6 +308,35 @@ eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
   }
   this.setupType(type) // bad smell, the code has changed
   return this.block_.type // avoid `this.type`
+}
+
+/**
+ * Populate the context menu for the given block.
+ * @param {!Blockly.Block} block The block.
+ * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @private
+ */
+eYo.DelegateSvg.Stmt.if_part.prototype.populateContextMenuFirst_ = function (mgr) {
+  var block = this.block_
+  var current = this.variant_p
+  var variants = this.data.variant.getAll()
+  var F = (i) => {
+    var key = variants[i]
+    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+      eYo.Do.createSPAN(key, 'eyo-code-reserved')
+    )
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = key
+    })
+    mgr.addChild(menuItem, true)
+    menuItem.setEnabled(key !== current)
+  }
+  F(0)
+  F(1)
+  F(2)
+  F(3)
+  mgr.shouldSeparate()
+  return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 // /**

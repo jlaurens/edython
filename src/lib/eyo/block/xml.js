@@ -1011,7 +1011,7 @@ eYo.Xml.domToBlock = (function () {
         // is it a literal or something else special ?
         if ((block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
-        (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
+        // (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Call.domToBlockComplete(dom, owner))) {
           eYo.Xml.fromDom(block, dom)
           return block
@@ -1275,22 +1275,22 @@ eYo.Xml.Comparison.domToBlockComplete = function (element, owner) {
 goog.require('eYo.DelegateSvg.Group')
 goog.provide('eYo.Xml.Group')
 
-/**
- * Reads the given element into a block.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent block.
- * @override
- */
-eYo.Xml.Group.domToBlockComplete = function (element, owner) {
-  var attr = element.getAttribute(eYo.Key.EYO)
-  if (attr === eYo.DelegateSvg.Stmt.else_part.prototype.xmlAttr()) {
-    var workspace = owner.workspace || owner
-    var type = eYo.T3.Stmt.else_part
-    var id = element.getAttribute('id')
-    var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
-    return block
-  }
-}
+// /**
+//  * Reads the given element into a block.
+//  * @param {!Element} element dom element to be read.
+//  * @param {!*} owner  The workspace or the parent block.
+//  * @override
+//  */
+// eYo.Xml.Group.domToBlockComplete = function (element, owner) {
+//   var attr = element.getAttribute(eYo.Key.EYO)
+//   if (attr === eYo.DelegateSvg.Stmt.else_part.prototype.xmlAttr()) {
+//     var workspace = owner.workspace || owner
+//     var type = eYo.T3.Stmt.else_part
+//     var id = element.getAttribute('id')
+//     var block = eYo.DelegateSvg.newBlockComplete(workspace, type, id)
+//     return block
+//   }
+// }
 
 goog.provide('eYo.Xml.Call')
 
