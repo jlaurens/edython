@@ -464,8 +464,8 @@ eYo.Xml.blockToDom = (function () {
       goog.isFunction(controller.blockToDom))) {
       var element = controller.blockToDom.call(eyo, block, optNoId, optNoNext)
     } else {
-      var attr = block.eyo.xmlAttr()
-      element = goog.dom.createDom(block.eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
+      var attr = eyo.xmlAttr()
+      element = goog.dom.createDom(eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute(eYo.Key.EYO, attr)
       !optNoId && element.setAttribute('id', block.id)
       eYo.Xml.toDom(block, element, optNoId, optNoNext)
@@ -494,7 +494,7 @@ goog.require('eYo.DelegateSvg.Expr')
  */
 eYo.Delegate.prototype.xmlAttr = function () {
   var tag = this.constructor.eyo.xmlAttr || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return (tag && 'eyo:' + tag) || this.block_.type || ('eyo:' + eYo.Key.PLACEHOLDER)
+  return tag || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
 goog.require('eYo.DelegateSvg.Group')
@@ -1018,7 +1018,7 @@ eYo.Xml.domToBlock = (function () {
         }
         // is there a simple correspondance with a known type
         if (dom.tagName.toLowerCase() === 's') {
-          prototypeName = eYo.T3.Xml.fromDom[name + '_stmt'] || eYo.T3.Xml.fromDom[name + '_part']
+          prototypeName = eYo.T3.Xml.fromDom[name + '_stmt'] || eYo.T3.Xml.fromDom[name + '_part'] || eYo.T3.Xml.fromDom[name]
         } else {
           prototypeName = eYo.T3.Xml.fromDom[name]
         }
@@ -1281,7 +1281,7 @@ goog.provide('eYo.Xml.Group')
  * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Group.domToBlockComplete = function (element, workspace) {
+eYo.Xml.Group.domToBlockComplete = function (element, owner) {
   var attr = element.getAttribute(eYo.Key.EYO)
   if (attr === eYo.DelegateSvg.Stmt.else_part.prototype.xmlAttr()) {
     var workspace = owner.workspace || owner
