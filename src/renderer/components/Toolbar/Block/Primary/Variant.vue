@@ -1,9 +1,9 @@
 <template>
   <b-btn-group id="b3k-primary-variant">
-    <b-dropdown variant="outline-secondary" class="eyo-code item text eyo-with-slotholder mw-6rem">
+    <b-dd variant="outline-secondary" class="eyo-code item text eyo-with-slotholder mw-6rem">
       <template slot="button-content"><span class="eyo-code" v-html="selected.title || selected.content"></span></template>
-      <b-dropdown-item-button v-for="choice in choices" v-on:click="selected = choice" :key="choice.key" class="eyo-code" v-html="choice.content"></b-dropdown-item-button>
-    </b-dropdown>
+      <b-dd-item-button v-for="choice in choices" v-on:click="selected = choice" :key="choice.key" class="eyo-code" v-html="choice.content"></b-dd-item-button>
+    </b-dd>
     <b-input v-if="selected.key === $$.eYo.Key.ALIASED" v-model="alias" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
     <b-btn-group v-if="showAnnotation">
       <div class="eyo-code-reserved item text">:</div>
