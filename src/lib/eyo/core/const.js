@@ -174,6 +174,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   NONLOCAL: 'nonlocal',
   DEL: 'del',
   RETURN: 'return',
+  
   PASS: 'pass',
   CONTINUE: 'continue',
   BREAK: 'break',
