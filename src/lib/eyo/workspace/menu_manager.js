@@ -1097,7 +1097,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     }) ()
   }
   var /** !eYo.Connection */ c8n, sep
-  var F_after = /** @suppress{accessControls} */ function (targetC8n, type) {
+  var F_after = /** @suppress{accessControls} */ (targetC8n, type) => {
     var B = block.workspace.newBlock(type)
     var yorn = B.previousConnection &&
     B.previousConnection.checkType_(c8n) &&
@@ -1111,7 +1111,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     }
     return false
   }
-  var F_before = /** @suppress{accessControls} */ function (targetC8n, type) {
+  var F_before = /** @suppress{accessControls} */ (targetC8n, type) => {
     var B = block.workspace.newBlock(type)
     var yorn = B.nextConnection &&
     B.nextConnection.checkType_(c8n) &&
@@ -1125,36 +1125,30 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     }
     return false
   }
-  Blockly.Events.disable()
-  try {
+  eYo.Events.disableWrap(() => {
     if ((c8n = block.nextConnection)) {
       var targetC8n = c8n.targetConnection
       for (var _ = 0, type; (type = Us[_++]);) {
-        sep = F_after.call(this, targetC8n, type) || sep
+        sep = F_after(targetC8n, type) || sep
       }
       this.shouldSeparateInsertAfter(sep)
       for (_ = 0; (type = Ts[_++]);) {
-        sep = F_after.call(this, targetC8n, type) || sep
+        sep = F_after(targetC8n, type) || sep
       }
       this.shouldSeparateInsertAfter(sep)
     }
     if ((c8n = block.previousConnection)) {
       targetC8n = c8n.targetConnection
       for (_ = 0; (type = Us[_++]);) {
-        sep = F_before.call(this, targetC8n, type) || sep
+        sep = F_before(targetC8n, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
       for (_ = 0; (type = Ts[_++]);) {
-        sep = F_before.call(this, targetC8n, type) || sep
+        sep = F_before(targetC8n, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
     }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable()
-  }
+  })
 }
 
 /**

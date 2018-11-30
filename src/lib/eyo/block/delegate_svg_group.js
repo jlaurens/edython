@@ -194,100 +194,84 @@ eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
  * For edython.
  */
 eYo.DelegateSvg.Group.makeSubclass('if_part', {
+  data: {
+    variant: {
+      all: [
+        eYo.Key.IF,
+        eYo.Key.ELIF,
+        eYo.Key.ELSE,
+        eYo.Key.WHILE
+      ],
+      init: eYo.Key.IF,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        this.data.condition.setIncog(newValue === eYo.Key.ELSE)
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Stmt.while_part) {
+          this.set(eYo.Key.WHILE)
+        } else if (type === eYo.T3.Stmt.elif_part) {
+          this.set(eYo.Key.ELIF)
+        } else if (type === eYo.T3.Stmt.else_part) {
+          this.set(eYo.Key.ELSE)
+        } else {
+          this.set(eYo.Key.IF)
+        }
+      },
+      xml: false
+    },
+    condition: {
+      init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      validate: false, // use the python interpreter to validate this
+      synchronize: true,
+    }
+  },
   fields: {
-    label: 'if'
+    variant: {
+      css: 'reserved'
+    }
   },
   slots: {
-    if: {
+    condition: {
       order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition'
+      check: eYo.T3.Expr.Check.expression
     }
-  }
-}, true)
-
-/**
- * Class for a DelegateSvg, elif_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Group.makeSubclass('elif_part', {
-  fields: {
-    label: 'elif'
-  },
-  slots: {
-    elif: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition'
-    }
-  }
-}, true)
-
-/**
- * Class for a DelegateSvg, else_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * The else block connection model is more complex than for other blocks.
- * Where can this block appear?
- * - after an if or an elif
- * - after a for
- * - after a while
- * - after and except
- * - before a finally
- * It is always the last box of the sequence, except when before a finally
- * For edython.
- */
-eYo.DelegateSvg.Group.makeSubclass('else_part', {
-  fields: {
-    label: 'else'
   },
   statement: {
     previous: {
       check: /** @suppress {globalThis} */ function (type) {
-        return [
-          type === eYo.T3.Stmt.else_part
-          ? eYo.T3.Stmt.Previous.else_part
-          : type === eYo.T3.Stmt.try_else_part
-            ? eYo.T3.Stmt.Previous.try_else_part
-            : eYo.T3.Stmt.Previous.last_else_part
-        ]
+        if (!type) {
+          console.error('BREAK HERE')
+          type = this.b_eyo.getType()
+        }
+        return eYo.T3.Stmt.Previous[type.substring(4)]
       }
     },
     next: {
       check: /** @suppress {globalThis} */ function (type) {
-        return [
-          type === eYo.T3.Stmt.else_part
-          ? eYo.T3.Stmt.Next.else_part
-          : type === eYo.T3.Stmt.try_else_part
-            ? eYo.T3.Stmt.Next.try_else_part
-            : eYo.T3.Stmt.Next.last_else_part
-        ]
+        return eYo.T3.Stmt.Next[type.substring(4)]
       }
     }
   }
 }, true)
 
-eYo.DelegateSvg.Stmt.last_else_part = eYo.DelegateSvg.Stmt.try_else_part = eYo.DelegateSvg.Stmt.else_part
-eYo.DelegateSvg.Manager.register('try_else_part')
-eYo.DelegateSvg.Manager.register('last_else_part')
 
 /**
- * This block may have one of 3 types: else_part, last_else_part, try_else_part.
- * else_part covers both last_else_part and try_else_part.
- * If the block cannot be of type last_else_part, then its type is try_else_part
- * and conversely. If the block can be of both types, then it is of type else_part.
- * First the previous connection tries to constrain the type,
- * then the next connection.
- * @param {!Blockly.Block} block Name of the language object containing
- *     type-specific functions for this block.
- * @constructor
+ * getBaseType.
+ * The type depends on the variant and the modifiers.
+ * As side effect, the subtype is set.
  */
-eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
-  'getType',
-  function () {
+eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
+  var T3 = eYo.T3.Stmt
+  var type = {
+    [eYo.Key.IF]: T3.if_part,
+    [eYo.Key.ELIF]: T3.elif_part,
+    [eYo.Key.WHILE]: T3.while_part
+  } [this.variant_p]
+  if (!type) {
     var block = this.block_
-    var T3 = eYo.T3.Stmt
-    var type = T3.else_part
+    type = T3.else_part
     var targetC8n
     if ((targetC8n = block.previousConnection.targetConnection)) {
       var target = targetC8n.getSourceBlock()
@@ -305,29 +289,144 @@ eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
       } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
         type = T3.last_else_part
       }
-    }  
-    this.setupType(type) // bad smell, the code has changed
-    return block.type
-  }
-)
-
-/**
- * Class for a DelegateSvg, while_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Group.makeSubclass('while_part', {
-  fields: {
-    label: 'while'
-  },
-  slots: {
-    while: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'condition'
     }
   }
-}, true)
+  this.setupType(type) // bad smell, the code has changed
+  return this.block_.type // avoid `this.type`
+}
+
+// /**
+//  * Class for a DelegateSvg, elif_part block.
+//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+//  * For edython.
+//  */
+// eYo.DelegateSvg.Group.makeSubclass('elif_part', {
+//   fields: {
+//     label: 'elif'
+//   },
+//   slots: {
+//     elif: {
+//       order: 1,
+//       check: eYo.T3.Expr.Check.expression,
+//       hole_value: 'condition'
+//     }
+//   }
+// }, true)
+
+// /**
+//  * Class for a DelegateSvg, else_part block.
+//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+//  * The else block connection model is more complex than for other blocks.
+//  * Where can this block appear?
+//  * - after an if or an elif
+//  * - after a for
+//  * - after a while
+//  * - after and except
+//  * - before a finally
+//  * It is always the last box of the sequence, except when before a finally
+//  * For edython.
+//  */
+// eYo.DelegateSvg.Group.makeSubclass('else_part', {
+//   fields: {
+//     label: 'else'
+//   },
+//   statement: {
+//     previous: {
+//       check: /** @suppress {globalThis} */ function (type) {
+//         return [
+//           type === eYo.T3.Stmt.else_part
+//           ? eYo.T3.Stmt.Previous.else_part
+//           : type === eYo.T3.Stmt.try_else_part
+//             ? eYo.T3.Stmt.Previous.try_else_part
+//             : eYo.T3.Stmt.Previous.last_else_part
+//         ]
+//       }
+//     },
+//     next: {
+//       check: /** @suppress {globalThis} */ function (type) {
+//         return [
+//           type === eYo.T3.Stmt.else_part
+//           ? eYo.T3.Stmt.Next.else_part
+//           : type === eYo.T3.Stmt.try_else_part
+//             ? eYo.T3.Stmt.Next.try_else_part
+//             : eYo.T3.Stmt.Next.last_else_part
+//         ]
+//       }
+//     }
+//   }
+// }, true)
+
+var names = [
+  // 'if',
+  'elif',
+  'else',
+  'while',
+  'try_else',
+  'last_else'
+]
+names.forEach((name) => {
+  var key = name + '_part'
+  eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Stmt.if_part
+  eYo.DelegateSvg.Manager.register(key)
+})
+
+// /**
+//  * This block may have one of 3 types: else_part, last_else_part, try_else_part.
+//  * else_part covers both last_else_part and try_else_part.
+//  * If the block cannot be of type last_else_part, then its type is try_else_part
+//  * and conversely. If the block can be of both types, then it is of type else_part.
+//  * First the previous connection tries to constrain the type,
+//  * then the next connection.
+//  * @param {!Blockly.Block} block Name of the language object containing
+//  *     type-specific functions for this block.
+//  * @constructor
+//  */
+// eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
+//   'getType',
+//   function () {
+//     var block = this.block_
+//     var T3 = eYo.T3.Stmt
+//     var type = T3.else_part
+//     var targetC8n
+//     if ((targetC8n = block.previousConnection.targetConnection)) {
+//       var target = targetC8n.getSourceBlock()
+//       if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+//         type = T3.try_else_part
+//       } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+//         type = T3.last_else_part
+//       }
+//     } else if ((targetC8n = this.nextConnection.targetConnection)) {
+//       // the previous connection did not add any constrain
+//       // may be the next connection will?
+//       target = targetC8n.getSourceBlock()
+//       if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+//         type = T3.try_else_part
+//       } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+//         type = T3.last_else_part
+//       }
+//     }  
+//     this.setupType(type) // bad smell, the code has changed
+//     return block.type
+//   }
+// )
+
+// /**
+//  * Class for a DelegateSvg, while_part block.
+//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+//  * For edython.
+//  */
+// eYo.DelegateSvg.Group.makeSubclass('while_part', {
+//   fields: {
+//     label: 'while'
+//   },
+//   slots: {
+//     while: {
+//       order: 1,
+//       check: eYo.T3.Expr.Check.expression,
+//       hole_value: 'condition'
+//     }
+//   }
+// }, true)
 
 /**
  * Will draw the block. Default implementation does nothing.
