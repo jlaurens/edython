@@ -1,13 +1,13 @@
 <template>
   <b-btn-group id="block-augmented-assignment">
     <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$$t('block.placeholder.name')"></b-input>
-      <b-dropdown class="item text mw-4rem" variant="outline-secondary" :text="operator">
-      <b-dropdown-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="item">
-      </b-dropdown-item-button>
-      <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="eyo-code" v-html="item">
-      </b-dropdown-item-button>          
-    </b-dropdown>    
+      <b-dd class="item text mw-4rem" variant="outline-secondary" :text="operator">
+      <b-dd-item-button v-for="item in operatorsA" v-on:click="operator = item" :key="item" class="block-binary-operator eyo-code" v-html="item">
+      </b-dd-item-button>
+      <b-dd-divider></b-dd-divider>
+      <b-dd-item-button v-for="item in operatorsB" v-on:click="operator = item" :key="item" class="eyo-code" v-html="item">
+      </b-dd-item-button>          
+    </b-dd>    
   </b-btn-group>
 </template>
 
