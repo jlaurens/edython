@@ -1,10 +1,10 @@
 <template>
-  <b-dropdown id="eyo-toolbar-dropdown-demo" class="eyo-dropdown" title="Démo" v-on:show="doShow()" v-on:hidden="doHidden()">
+  <b-dd id="eyo-toolbar-dropdown-demo" class="eyo-dropdown" title="Démo" v-on:show="doShow()" v-on:hidden="doHidden()">
     <template slot="button-content">
       <icon-base :width="32" :height="32" icon-name="demo"><icon-demo :on="on" /></icon-base>
     </template>
-    <b-dropdown-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dropdown-item-button>
-  </b-dropdown>
+    <b-dd-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dd-item-button>
+  </b-dd>
 </template>
 
 <script>
