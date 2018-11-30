@@ -236,6 +236,8 @@ eYo.DelegateSvg.Expr.binary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.operator_p)
 }
 
+eYo.T3.Expr.unary = 'eyo:unary' // don't forget it !
+
 /**
  * Class for a DelegateSvg, unary op ... block.
  * u_expr.
@@ -301,11 +303,14 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   }
 })
 
-eYo.DelegateSvg.Expr.u_expr = eYo.DelegateSvg.Expr.not_test = eYo.DelegateSvg.Expr.unary
-eYo.DelegateSvg.Manager.register('u_expr')
-eYo.DelegateSvg.Manager.register('not_test')
-
-eYo.T3.Expr.unary = 'eyo:unary' // don't forget it !
+var names = [
+  'u_expr',
+  'not_test'
+]
+names.forEach((k) => {
+  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.unary
+  eYo.DelegateSvg.Manager.register(k)
+})
 
 /**
  * Get the operator model.
