@@ -388,7 +388,13 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
         return placeholder.toString()
       }
       placeholder = eYo.Do.valueOf(placeholder, this)
-      return placeholder && placeholder.toString().trim()
+      if (placeholder) {
+        placeholder = placeholder.toString()
+        if (placeholder.length > 1) {
+          placeholder = placeholder.trim() // one space alone is allowed
+        }
+      }
+      return placeholder
     }
     return (() => {
       var eyo = this.eyo
