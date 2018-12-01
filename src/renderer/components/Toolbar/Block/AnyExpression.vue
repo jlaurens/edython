@@ -1,8 +1,12 @@
 <template>
-  <b-btn-toolbar id="block-any-expression" key-nav  aria-label="Block any expression" justify>
-    <modifier v-if="modifiable" :eyo="eyo" :step="step"></modifier>
-    <b-form-input v-model="expression" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-  </b-btn-toolbar>
+  <b-form-input
+    v-model="expression"
+    type="text"
+    :class="$$class(expression)"
+    :style='{fontFamily: $$.eYo.Font.familyMono}'
+    :placeholder="$$t('block.placeholder.expression')"
+    :title="title"
+    v-tippy ></b-form-input>
 </template>
 
 <script>
@@ -27,10 +31,6 @@
       step: {
         type: Number,
         default: 0
-      },
-      modifiable: {
-        type: Boolean,
-        default: false
       }
     },
     computed: {
@@ -55,16 +55,13 @@
     },
     methods: {
       $$doSynchronize (eyo) {
-        this.expression = eyo.expression_p
+        this.expression_ = eyo.expression_p
+      },
+      $$class (key) {
+        return `eyo-code and item text${key.length ? '' : ' placeholder'} w-16rem`
       }
     }
   }
 </script>
 <style>
-  #block-any-expression {
-    padding: 0 0.25rem;
-  }
-  .eyo-form-input-text-any-expression {
-    width: 30rem;
-  }
 </style>

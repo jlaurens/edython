@@ -1,23 +1,23 @@
 <template>
-  <b-btn-group id="b3k-gnd" key-nav  aria-label="Block global, nonlocal or del">ABCD
+  <b-btn-group id="b3k-gnd" key-nav  aria-label="Block global, nonlocal or del">
     <b-dd variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.variant">
       <b-dd-item-button
-          v-for="choice in choices"
-          v-on:click="chosen = choice"
-          :key="choice.variant"
-          class="eyo-code-reserved"
-          :title="choice.title"
-        v-tippy>{{choice.variant}}</b-dd-item-button>
-      <b-dd-divider v-if="altChoices.length"></b-dd-divider>
-      <b-dd-item-button
-        v-for="choice in altChoices"
+        v-for="choice in choices"
         v-on:click="chosen = choice"
         :key="choice.variant"
         class="eyo-code-reserved"
         :title="choice.title"
-        v-tippy>{{choice.variant}}</b-dd-item-button>
+      v-tippy>{{choice.variant}}</b-dd-item-button>
+    <b-dd-divider v-if="altChoices.length"></b-dd-divider>
+    <b-dd-item-button
+      v-for="choice in altChoices"
+      v-on:click="chosen = choice"
+      :key="choice.variant"
+      class="eyo-code-reserved"
+      :title="choice.title"
+      v-tippy>{{choice.variant}}</b-dd-item-button>
   </b-dd>
-    <div v-if="!!slotholder" class="item text" v-html="slotholder('eyo-slotholder-inline')"></div>
+    <div v-if="canSlot && !!slotholder" class="item text" v-html="slotholder('eyo-slotholder-inline')"></div>
   </b-btn-group>
 </template>
 
@@ -28,6 +28,7 @@
       return {
         saved_step: undefined,
         variant_: undefined,
+        variants_: undefined,
         choices_: undefined,
         altChoices_: undefined,
         chosen_: undefined
@@ -60,6 +61,11 @@
       }
     },
     computed: {
+      canSlot () {
+        this.$$synchronize(this.step)
+        console.warn(this.variants_, this.variant, this.variants_.indexOf(this.variant) < 0)
+        return this.variants_.indexOf(this.variant) < 0
+      },
       variant: {
         get () {
           this.$$synchronize(this.step)
@@ -98,9 +104,9 @@
         this.variant_ = eyo.variant_p
         this.choices_ = []
         this.altChoices_ = []
-        var variants = this.variants
+        var variants = this.variants_ = this.variants
         if (!variants.length) {
-          variants = [
+          variants = this.variants_ = [
             eYo.Key.PASS,
             eYo.Key.CONTINUE,
             eYo.Key.BREAK

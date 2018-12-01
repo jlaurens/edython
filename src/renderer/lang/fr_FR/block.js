@@ -22,7 +22,8 @@ export default {
     name: 'nom',
     comment: 'Un commentaire ici',
     module: 'module',
-    number: '1'
+    number: '1',
+    expression: 'expression'
   },
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',

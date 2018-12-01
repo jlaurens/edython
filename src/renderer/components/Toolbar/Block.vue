@@ -44,9 +44,9 @@
       ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
       <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
       <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
-      <block-g-n-d v-else-if="isSelected([$$.eYo.T3.Stmt.global_stmt, $$.eYo.T3.Stmt.nonlocal_stmt, $$.eYo.T3.Stmt.del_stmt])" :eyo="eyo" :step="step" :modifiable="modifiable" :slotholder="slotholder"></block-g-n-d>
-      <block-p-c-b v-else-if="isSelected([$$.eYo.T3.Stmt.pass_stmt, $$.eYo.T3.Stmt.continue_stmt, $$.eYo.T3.Stmt.break_stmt])" :eyo="eyo" :step="step"></block-p-c-b>
+      <block-pcb-gnd-r v-else-if="isSelected([$$.eYo.T3.Stmt.pass_stmt, $$.eYo.T3.Stmt.continue_stmt, $$.eYo.T3.Stmt.break_stmt, $$.eYo.T3.Stmt.global_stmt, $$.eYo.T3.Stmt.nonlocal_stmt, $$.eYo.T3.Stmt.del_stmt,$$.eYo.T3.Stmt.return_stmt])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-pcb-gnd-r>
       <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-proper-slice>
+      <block-any-expression v-else-if="isSelected($$.eYo.T3.Expr.any)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-any-expression>
       <block-default v-else-if="eyo" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-default>
       <span v-else class="info">{{this.$$t('block.no_selection')}}</span>
       <block-comment :eyo="eyo" :step="step" ></block-comment>
@@ -87,8 +87,7 @@
   import BlockFuncdef from './Block/Funcdef.vue'
   import BlockImport from './Block/Import.vue'
   import BlockProperSlice from './Block/ProperSlice.vue'
-  import BlockGND from './Block/GND.vue'
-  import BlockPCB from './Block/PCB.vue'
+  import BlockPcbGndR from './Block/PcbGndR.vue'
 
   export default {
     name: 'toolbar-block',
@@ -124,8 +123,7 @@
       BlockFuncdef,
       BlockImport,
       BlockProperSlice,
-      BlockGND,
-      BlockPCB
+      BlockPcbGndR
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -445,9 +443,12 @@
   .b3k-edit input.item.w-16rem {
     width: 16rem;
   }
-  .b3k-edit .item.placeholder {
+  .b3k-edit input.item.w-20rem {
+    width: 20rem;
+  }
+  .b3k-edit .item.text.placeholder {
     font-style: oblique;
-    color: rgb(21, 25, 29, 0.2);
+    color: rgb(21, 25, 29, 0.7);
   }
   .b3k-edit .item input[type="checkbox"] {
     vertical-align: baseline;
