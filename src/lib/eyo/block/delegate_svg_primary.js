@@ -219,7 +219,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             return
           }
         }
-        if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name) {
+        if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name || type === eYo.T3.Expr.parent_module) {
           this.change(1)
         }
       },
