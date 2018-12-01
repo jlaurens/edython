@@ -9,12 +9,14 @@
     <b-btn-group :class="showError ? '' : 'disabled'">
       <div v-if="eyo.expression_t" class="item text" v-html="slotholder('eyo-slotholder-inline')"></div>
       <b-form-input v-else
-                  v-model="expression"
-                  type="text"
-                  class="eyo-code and item text w-10rem"
-                  :title="$$t('block.except.expression')"
-                  v-tippy
-                  :style="{fontFamily: $$.eYo.Font.familyMono}"></b-form-input>
+        v-model="expression"
+        type="text"
+        :class="$$class(expression)"
+        :placeholder="$$t('block.placeholder.expression')"
+        :title="$$t('block.except.expression')"
+        v-tippy
+        :style="{fontFamily: $$.eYo.Font.familyMono}"
+          ></b-form-input>
     </b-btn-group>
     <div class="item">
       <input  type="checkbox"
@@ -29,8 +31,9 @@
       <b-form-input v-else
               v-model="alias"
               type="text"
-              class="eyo-code and item text w-10rem"
+              :class="$$class(alias)"
               :style="{fontFamily: $$.eYo.Font.familyMono}"
+              :placeholder="$$t('block.placeholder.alias')"
               :title="$$t('block.except.alias')"
               v-tippy ></b-form-input>
     </b-btn-group>
@@ -147,6 +150,9 @@
         this.variant_ = eyo.variant_p
         this.expression_ = eyo.expression_p
         this.alias_ = eyo.alias_p
+      },
+      $$class (key) {
+        return `eyo-code and item text${key.length ? '' : ' placeholder'} w-10rem`
       }
     }
   }

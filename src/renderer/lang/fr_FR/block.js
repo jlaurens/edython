@@ -23,7 +23,8 @@ export default {
     comment: 'Un commentaire ici',
     module: 'module',
     number: '1',
-    expression: 'expression'
+    expression: 'expression',
+    alias: 'alias'
   },
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',
