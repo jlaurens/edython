@@ -59,7 +59,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          this.required = this.owner.variant_p === eYo.Key.EXPRESSION && !this.owner.expression_t
+          this.required = this.owner.variant_p === eYo.Key.EXPRESSION
           this.save(element)
         }
       },
@@ -84,7 +84,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          this.required = this.owner.variant_p === eYo.Key.ALIASED && !this.owner.alias_t
+          this.required = this.owner.variant_p === eYo.Key.ALIASED
           this.save(element)
         }
       },
@@ -380,6 +380,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     },
     expression2: {
       init: '',
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          this.required = this.owner.variant_p === eYo.Key.BINARY
+          this.save(element)
+        }
+      },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.BINARY
