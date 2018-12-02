@@ -184,7 +184,7 @@ eYo.Flyout.prototype.show = function(model) {
   var default_gap = eYo.Font.lineHeight/4;
  
   this.permanentlyDisabled_.length = 0;
-  for (var i = 0, xml; xml = model[i]; i++) {
+  model.forEach((xml) => {
     if (xml.tagName) {
       var tagName = xml.tagName.toUpperCase();
       if (tagName == 'BLOCK') {
@@ -230,31 +230,42 @@ eYo.Flyout.prototype.show = function(model) {
         gaps.push(isNaN(gap) ? default_gap : gap);
       }
     } else {
+      var createOneBlock = (xml) => {
+        try {
+          var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
+          contents.push({type: 'block', block: block})
+          block.render()
+          block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
+          gaps.push(default_gap)
+        } catch (err) {
+          console.error(xml, err)
+          // throw err: catch the error here definitely
+        } finally {
+          // pass
+        }  
+      }
       // this is the part specific to edython
-      try {
-        var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
-        contents.push({type: 'block', block: block})
-        block.render()
-        block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
-        gaps.push(default_gap)
-      } catch (err) {
-        console.error(xml, err)
-        // throw err: catch the error here definitely
-      } finally {
-        // pass
+      if (goog.isFunction(xml)) {
+        // xml is either a function that returns an array of objects
+        // or a function that creates block.
+        var ra = xml(createOneBlock)
+        if (ra && ra.forEach) {
+          ra.forEach(createOneBlock)
+        }
+      } else {
+        createOneBlock(xml)
       }
     }
-  }
+  })
   
   this.layout_(contents, gaps);
 
   // IE 11 is an incompetent browser that fails to fire mouseout events.
   // When the mouse is over the background, deselect all blocks.
   var deselectAll = function() {
-    var topBlocks = this.workspace_.getTopBlocks(false);
-    for (var i = 0, block; block = topBlocks[i]; i++) {
-      block.removeSelect();
-    }
+    this.workspace_.getTopBlocks(false).forEach((block) => {
+      block.removeSelect()
+    })
   };
 
   this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
@@ -524,6 +535,7 @@ eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
 
 /**
  * List of node models by category.
+ * Used by the front end.
  * @param {!String} category The name of the category to retrieve.
  */
 eYo.FlyoutDelegate.prototype.getList = function (category) {
