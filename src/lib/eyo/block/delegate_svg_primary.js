@@ -592,7 +592,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       fields: {
         bind: {
           value: '.',
-          css_class: 'eyo-code-reserved',
+          css: 'reserved',
           separator: true
         }
       }

@@ -1301,6 +1301,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
             || tail === ':'
             || tail === '='
             || tail === '#'
+            || tail === ','
             || (tail === '.'
               && !(field instanceof eYo.FieldLabel)))
         io.common.shouldSeparate = true

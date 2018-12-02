@@ -365,38 +365,54 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
 eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
-      UNARY: eYo.Key.UNARY,
-      BINARY: eYo.Key.BINARY,
       all: [
         eYo.Key.UNARY,
         eYo.Key.BINARY
       ],
+      init: eYo.Key.UNARY,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        var slot = this.owner.expression_s
-        slot.required = newValue === eYo.Key.BINARY
-        slot.setIncog()
+        this.owner.expression2_d.setIncog(newValue !== eYo.Key.BINARY)
+      }
+    },
+    expression: {
+      init: ''
+    },
+    expression2: {
+      init: '',
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.BINARY
+        }
       }
     }
   },
-  fields: {
-    prefix: 'assert'
-  },
   slots: {
-    assert: {
+    expression: {
       order: 1,
+      fields: {
+        prefix: 'assert',
+        bind: {
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.EXPRESSION
+        }
+      },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression'
     },
-    expression: {
+    expression2: {
       order: 2,
       fields: {
-        label: ','
+        label: ',',
+        bind: {
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.EXPRESSION
+        }
       },
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
           this.owner.variant_p = eYo.Key.BINARY
         }
       }

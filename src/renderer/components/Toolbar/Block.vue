@@ -8,54 +8,176 @@
     b) common stuff to be defined later
 -->
 <template>
-  <b-btn-toolbar id="toolbar-block" key-nav  aria-label="Block toolbar" justify :style="style">
+  <b-btn-toolbar id="toolbar-block" key-nav  aria-label="Block toolbar" justify
+        :style="style">
     <b-btn-group class="b3k-edit">
-      <block-primary v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types) || isSelected([$$.eYo.T3.Stmt.call_stmt])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-primary>
-      <block-literal v-else-if="isSelected([$$.eYo.T3.Expr.shortliteral, $$.eYo.T3.Expr.longliteral, $$.eYo.T3.Expr.shortbytesliteral, $$.eYo.T3.Expr.longbytesliteral, $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral, $$.eYo.T3.Stmt.docstring_stmt])" :eyo="eyo" :step="step" :modifiable="modifiable"></block-literal>
-      <block-number v-else-if="isSelected([$$.eYo.T3.Expr.integer,
-      $$.eYo.T3.Expr.floatnumber,
-      $$.eYo.T3.Expr.imagnumber])" :eyo="eyo" :step="step" :modifiable="modifiable"></block-number>
-      <block-print v-else-if="isSelected([$$.eYo.T3.Expr.builtin__print_expr, $$.eYo.T3.Stmt.builtin__print_stmt])" :eyo="eyo" :step="step" :modifiable="modifiable"></block-print>
-      <block-unary v-else-if="isSelected($$.eYo.T3.Expr.u_expr)" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-unary>
-      <block-binary v-else-if="isSelected([
-        $$.eYo.T3.Expr.binary,
-        $$.eYo.T3.Expr.a_expr,
-        $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
-        $$.eYo.T3.Expr.or_expr,
-        $$.eYo.T3.Expr.power
-      ])" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-binary>
-      <block-assignment v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-assignment>
-      <block-builtin v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)" :eyo="eyo" :step="step" :modifiable="modifiable"></block-builtin>
-      <block-augmented-assignment v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-augmented-assignment>
-      <block-expression-statement v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-expression-statement>
-      <block-decorator v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-decorator>
-      <block-starred v-else-if="isSelected([
-        $$.eYo.T3.Expr.star_expr,
-        $$.eYo.T3.Expr.expression_star,
-        $$.eYo.T3.Expr.expression_star_star,
-        $$.eYo.T3.Expr.target_star,
-        $$.eYo.T3.Expr.star,
-        $$.eYo.T3.Expr.parameter_star,
-        $$.eYo.T3.Expr.parameter_star_star
-      ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-starred>
-      <block-except v-else-if="isSelected([
-        $$.eYo.T3.Stmt.except_part,
-        $$.eYo.T3.Stmt.void_except_part
-      ])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-except>
-      <block-funcdef v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)" :eyo="eyo" :step="step"></block-funcdef>
-      <block-import v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-import>
-      <block-pcb-gnd-r v-else-if="isSelected([$$.eYo.T3.Stmt.pass_stmt, $$.eYo.T3.Stmt.continue_stmt, $$.eYo.T3.Stmt.break_stmt, $$.eYo.T3.Stmt.global_stmt, $$.eYo.T3.Stmt.nonlocal_stmt, $$.eYo.T3.Stmt.del_stmt,$$.eYo.T3.Stmt.return_stmt])" :eyo="eyo" :step="step" :slotholder="slotholder"></block-pcb-gnd-r>
-      <block-proper-slice v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-proper-slice>
-      <block-any-expression v-else-if="isSelected($$.eYo.T3.Expr.any)" :eyo="eyo" :step="step" :slotholder="slotholder"></block-any-expression>
-      <block-default v-else-if="eyo" :eyo="eyo" :step="step" :slotholder="slotholder" :modifiable="modifiable"></block-default>
+      <block-primary
+        v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types) || isSelected([$$.eYo.T3.Stmt.call_stmt])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-primary>
+      <block-literal
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.shortliteral,
+          $$.eYo.T3.Expr.longliteral,
+          $$.eYo.T3.Expr.shortbytesliteral,
+          $$.eYo.T3.Expr.longbytesliteral,
+          $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral,
+          $$.eYo.T3.Stmt.docstring_stmt
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :modifiable="modifiable"
+        ></block-literal>
+      <block-number
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.integer,
+          $$.eYo.T3.Expr.floatnumber,
+          $$.eYo.T3.Expr.imagnumber
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :modifiable="modifiable"
+        ></block-number>
+      <block-print
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.builtin__print_expr,
+          $$.eYo.T3.Stmt.builtin__print_stmt
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :modifiable="modifiable"
+        ></block-print>
+      <block-unary
+        v-else-if="isSelected($$.eYo.T3.Expr.u_expr)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        :modifiable="modifiable"
+        ></block-unary>
+      <block-binary
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.binary,
+          $$.eYo.T3.Expr.a_expr,
+          $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
+          $$.eYo.T3.Expr.or_expr,
+          $$.eYo.T3.Expr.power
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        :modifiable="modifiable"
+        ></block-binary>
+      <block-assignment
+        v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-assignment>
+      <block-builtin
+        v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)"
+        :eyo="eyo"
+        :step="step"
+        :modifiable="modifiable"
+        ></block-builtin>
+      <block-augmented-assignment
+        v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-augmented-assignment>
+      <block-expression-statement
+        v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-expression-statement>
+      <block-decorator
+        v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-decorator>
+      <block-starred
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.star_expr,
+          $$.eYo.T3.Expr.expression_star,
+          $$.eYo.T3.Expr.expression_star_star,
+          $$.eYo.T3.Expr.target_star,
+          $$.eYo.T3.Expr.star,
+          $$.eYo.T3.Expr.parameter_star,
+          $$.eYo.T3.Expr.parameter_star_star
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-starred>
+      <block-except
+        v-else-if="isSelected([
+          $$.eYo.T3.Stmt.except_part,
+          $$.eYo.T3.Stmt.void_except_part
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-except>
+      <block-funcdef
+        v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)"
+        :eyo="eyo"
+        :step="step"></block-funcdef>
+      <block-import
+        v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-import>
+      <block-pcb-gnd-r
+        v-else-if="isSelected([
+          $$.eYo.T3.Stmt.pass_stmt,
+          $$.eYo.T3.Stmt.continue_stmt,
+          $$.eYo.T3.Stmt.break_stmt,
+          $$.eYo.T3.Stmt.global_stmt,
+          $$.eYo.T3.Stmt.nonlocal_stmt,
+          $$.eYo.T3.Stmt.del_stmt,$$.eYo.T3.Stmt.return_stmt
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"></block-pcb-gnd-r>
+      <block-proper-slice
+        v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"></block-proper-slice>
+      <block-any-expression
+        v-else-if="isSelected($$.eYo.T3.Expr.any)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"></block-any-expression>
+      <block-assert
+        v-else-if="isSelected($$.eYo.T3.Stmt.assert_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-assert>
+      <block-default
+        v-else-if="eyo"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        :modifiable="modifiable"></block-default>
       <span v-else class="info">{{this.$$t('block.no_selection')}}</span>
-      <block-comment :eyo="eyo" :step="step" ></block-comment>
+      <block-comment
+        :eyo="eyo"
+        :step="step" ></block-comment>
     </b-btn-group>
     <b-btn-group class="b3k-cpl">
       <block-copy-paste />
       <block-layout />    
     </b-btn-group>
-    <block-common :eyo="eyo" :step="step" />
+    <block-common
+      :eyo="eyo"
+      :step="step" />
   </b-btn-toolbar>
 </template>
 
@@ -88,6 +210,7 @@
   import BlockImport from './Block/Import.vue'
   import BlockProperSlice from './Block/ProperSlice.vue'
   import BlockPcbGndR from './Block/PcbGndR.vue'
+  import BlockAssert from './Block/Assert.vue'
 
   export default {
     name: 'toolbar-block',
@@ -123,7 +246,8 @@
       BlockFuncdef,
       BlockImport,
       BlockProperSlice,
-      BlockPcbGndR
+      BlockPcbGndR,
+      BlockAssert
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -446,7 +570,7 @@
   .b3k-edit input.item.w-20rem {
     width: 20rem;
   }
-  .b3k-edit .item.text.placeholder {
+  .b3k-edit .item.placeholder {
     font-style: oblique;
     color: rgb(21, 25, 29, 0.7);
   }
