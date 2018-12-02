@@ -160,6 +160,12 @@
         :step="step"
         :slotholder="slotholder"
         ></block-assert>
+        <block-raise
+        v-else-if="isSelected($$.eYo.T3.Stmt.raise_stmt)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-raise>
       <block-default
         v-else-if="eyo"
         :eyo="eyo"
@@ -211,6 +217,7 @@
   import BlockProperSlice from './Block/ProperSlice.vue'
   import BlockPcbGndR from './Block/PcbGndR.vue'
   import BlockAssert from './Block/Assert.vue'
+  import BlockRaise from './Block/Raise.vue'
 
   export default {
     name: 'toolbar-block',
@@ -247,7 +254,8 @@
       BlockImport,
       BlockProperSlice,
       BlockPcbGndR,
-      BlockAssert
+      BlockAssert,
+      BlockRaise
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -555,20 +563,20 @@
     min-width: 6rem;
   }
   .b3k-edit .mw-8rem>.dropdown-menu {
-    width: 8rem;
-    min-width: 8rem;
+    width: calc(0.75 * 8rem); /**/
+    min-width: calc(0.75 * 8rem);
   }
   .b3k-edit .item.w-10rem {
-    width: 10rem;
+    width: calc(0.75 * 10rem);
   }
   .b3k-edit .item.w-12rem {
-    width: 12rem;
+    width: calc(0.75 * 12rem);
   }
   .b3k-edit input.item.w-16rem {
-    width: 16rem;
+    width: calc(0.75 * 16rem);
   }
   .b3k-edit input.item.w-20rem {
-    width: 20rem;
+    width: calc(0.75 * 20rem);
   }
   .b3k-edit .item.placeholder {
     font-style: oblique;
