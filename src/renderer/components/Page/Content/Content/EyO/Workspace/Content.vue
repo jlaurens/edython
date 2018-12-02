@@ -49,7 +49,7 @@
         selectedCategory: undefined
       }
       var Msg = eYo.Msg
-      var F = function (name) {
+      var F = (name) => {
         model.items[name] = {
           key: name,
           content: Msg[name.toUpperCase()],
@@ -59,8 +59,8 @@
       }
       F('basic')
       F('intermediate')
-      F('expert')
       F('advanced')
+      F('expert')
       F('math')
       F('text')
       F('list')
@@ -90,7 +90,7 @@
       moduleF('math')
       moduleF('random')
       moduleF('cmath')
-      moduleF('decimal')
+      // moduleF('decimal') broken in brython https://github.com/brython-dev/brython/issues/989
       moduleF('fraction')
       moduleF('statistics')
       moduleF('string')
