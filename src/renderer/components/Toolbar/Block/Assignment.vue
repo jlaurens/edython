@@ -74,9 +74,6 @@
           this.items_by_key[eYo.Key.TARGET]
         ]
       },
-      slot () {
-        return this.slotholder('eyo-slotholder-inline')
-      },
       items_by_key () {
         return {
           [eYo.Key.NAME]: {
@@ -85,7 +82,7 @@
           },
           [eYo.Key.TARGET]: {
             key: eYo.Key.TARGET,
-            title: `${this.slot},…`
+            title: `${this.slotholder('eyo-slotholder-inline')},…`
           }
         }
       },

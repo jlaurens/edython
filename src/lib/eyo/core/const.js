@@ -201,10 +201,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
   
-  YIELD: 'yield',
-  YIELD_EXPRESSION: 'yield_expression',
-  YIELD_FROM: 'yield_from',
-
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */

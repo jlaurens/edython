@@ -160,12 +160,21 @@
         :step="step"
         :slotholder="slotholder"
         ></block-assert>
-        <block-raise
+      <block-raise
         v-else-if="isSelected($$.eYo.T3.Stmt.raise_stmt)"
         :eyo="eyo"
         :step="step"
         :slotholder="slotholder"
         ></block-raise>
+      <block-yield
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.yield_expression,
+          $$.eYo.T3.Stmt.yield_stmt
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-yield>
       <block-default
         v-else-if="eyo"
         :eyo="eyo"
@@ -218,6 +227,7 @@
   import BlockPcbGndR from './Block/PcbGndR.vue'
   import BlockAssert from './Block/Assert.vue'
   import BlockRaise from './Block/Raise.vue'
+  import BlockYield from './Block/Yield.vue'
 
   export default {
     name: 'toolbar-block',
@@ -255,7 +265,8 @@
       BlockProperSlice,
       BlockPcbGndR,
       BlockAssert,
-      BlockRaise
+      BlockRaise,
+      BlockYield
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0

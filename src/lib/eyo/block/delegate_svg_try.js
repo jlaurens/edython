@@ -250,7 +250,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          this.required = this.owner.variant_p !== eYo.Key.NONE && !this.slot.targetBlock()
+          this.required = this.owner.variant_p !== eYo.Key.NONE
           this.save(element)
         }
       },
@@ -267,7 +267,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          this.required = this.owner.variant_p === eYo.Key.FROM && !this.slot.targetBlock()
+          this.required = this.owner.variant_p === eYo.Key.FROM
           this.save(element)
         }
       },

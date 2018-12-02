@@ -193,7 +193,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.assert_stmt,
     eYo.T3.Stmt.raise_stmt,
     eYo.T3.Expr.yield_expression,
-    eYo.T3.Stmt.yield_stmt,
+    eYo.T3.Stmt.yield_stmt
   ],
   'branching': [
     eYo.T3.Expr.builtin__object,
@@ -244,6 +244,8 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.parameter_star_star,
     eYo.T3.Stmt.return_stmt,
     eYo.T3.Stmt.pass_stmt,
+    eYo.T3.Expr.yield_expression,
+    eYo.T3.Stmt.yield_stmt,
     eYo.T3.Stmt.classdef_part,
     {
       type: eYo.T3.Stmt.global_nonlocal_stmt,

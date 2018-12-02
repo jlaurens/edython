@@ -28,18 +28,33 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
   data: {
     variant: {
       all: [
-        eYo.Key.YIELD,
-        eYo.Key.YIELD_EXPRESSION,
-        eYo.Key.YIELD_FROM,
+        eYo.Key.NONE,
+        eYo.Key.EXPRESSION,
+        eYo.Key.FROM,
       ],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var slot = this.owner.expression_s
-        slot.required = (newValue === eYo.Key.YIELD_EXPRESSION)
+        slot.required = (newValue === eYo.Key.EXPRESSION)
         slot.setIncog()
-        slot = this.owner.from_s
-        slot.required = (newValue === eYo.Key.YIELD_FROM)
-        slot.setIncog()
+        var d = this.data.from
+        d.required = (newValue === eYo.Key.FROM)
+        d.setIncog()
+      },
+      xml: false
+    },
+    from: {
+      init: '',
+      xml: {
+        save: /** @suppress {globalThis} */ function (element) {
+          this.required = this.owner.variant_p !== eYo.Key.NONE
+          this.save(element)
+        }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.FROM
+        }
       }
     }
   },
@@ -50,23 +65,25 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
     expression: {
       order: 1,
       wrap: eYo.T3.Expr.non_void_expression_list,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.model.YIELD_EXPRESSION)
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
     from: {
       order: 2,
       fields: {
-        label: 'from'
+        label: 'from',
+        bind: {
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.EXPRESSION
+        }
       },
       check: eYo.T3.Expr.Check.expression,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          var variant = this.owner.data.variant
-          variant.set(variant.model.YIELD_FROM)
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFrom()) {
+          this.owner.variant_p = eYo.Key.FROM
         }
       }
     }
@@ -96,17 +113,17 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (mgr)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('yield')
-  ), D.YIELD
+  ), eYo.Key.NONE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('yield ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), D.YIELD_EXPRESSION
+  ), eYo.Key.EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
     eYo.Do.createSPAN('yield from ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), D.YIELD_FROM
+  ), eYo.Key.FROM
   )
   mgr.shouldSeparate()
 }
