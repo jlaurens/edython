@@ -1139,7 +1139,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   this.changeWrap(
     function () {
       var data_in = model.data
-      if (goog.isString(data_in)) {
+      if (goog.isString(data_in) || goog.isNumber(data_in)) {
         var d = this.main_d
         if (d && !d.isIncog() && d.validate(data_in)) {
           d.change(data_in)
@@ -1147,8 +1147,16 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
           done = true
         } else {
           this.foreachData((d) => {
-            if (!d.isIncog() && d.validate(data_in)) {
-              goog.asserts.assert(!done, 'Ambiguous data model', d)
+            if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+              // if (done) {
+              //   console.error('Ambiguous model', this.type, data_in)
+              //   this.foreachData((d) => {
+              //     if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+              //       console.log('candidate:', d.key)
+              //     }
+              //   })
+              // }
+              goog.asserts.assert(!done, `Ambiguous data model ${d.key} / ${data_in}`)
               d.change(data_in)
               d.setRequiredFromModel(true)
               done = true
