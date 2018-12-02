@@ -133,9 +133,10 @@ goog.provide('eYo.Msg.Placeholder')
 /** @export */ eYo.Msg.INTERMEDIATE = 'Intermédiaire'
 /** @export */ eYo.Msg.ADVANCED = 'Avancé'
 /** @export */ eYo.Msg.EXPERT = 'Expert'
-/** @export */ eYo.Msg.BRANCHING = 'Branchement'
-/** @export */ eYo.Msg.LIST = 'Liste et assimilé'
+/** @export */ eYo.Msg.MATH = 'Math'
 /** @export */ eYo.Msg.TEXT = 'Texte'
+/** @export */ eYo.Msg.LIST = 'Liste et assimilé'
+/** @export */ eYo.Msg.BRANCHING = 'Branchement'
 /** @export */ eYo.Msg.LOOPING = 'Boucle'
 /** @export */ eYo.Msg.FUNCTION = 'Fonction et objet'
 
