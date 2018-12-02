@@ -805,6 +805,8 @@ eYo.Data.prototype.beReady = function () {
  * has a `false` valued xml property.
  * Saves the data to the given element, except when incog
  * or when the model forces.
+ * Also, if there is an associate slot with a target,
+ * then the data is not saved either.
  * For edython.
  * @param {Element} element the persistent element.
  */
