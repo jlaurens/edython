@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Decimal module blocks for edython.
+ * @fileoverview Decimal module blocks for edython. BROKEN IN BRYTHON.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -21,6 +21,8 @@ goog.require('eYo.DelegateSvg.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
+
+goog.require('eYo.Model.decimal__module')
 
 /**
  * Populate the context menu for the given block.
@@ -88,8 +90,30 @@ var F_k = function (name, title) {
 eYo.FlyoutCategory.basic_decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
     from_d: 'decimal',
+    import_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier_as,
+          name_d: 'Decimal',
+          alias_d: 'D'
+        }
+      }
+    }
+    title: 'decimal__import_stmt'
+  },
+  {
+    type: eYo.T3.Stmt.import_stmt,
+    from_d: 'decimal',
+    import_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier_as,
+          name_d: 'getContext',
+          alias_d: 'D'
+        }
+      }
+    }
     title: 'decimal__import_stmt'
   },
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
@@ -133,12 +157,15 @@ eYo.FlyoutCategory.basic_decimal__module = [
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    variant_d: eYo.Key.TARGET,
     lhs_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.attributeref,
-          holder_s: F('getcontext'),
+          holder_s: {
+            type: eYo.T3.Expr.call_expr,
+            name_d: 'getcontext',
+            dotted_d: 0
+          },
           dotted_d: 1,
           name_d: 'prec'
         }
@@ -182,55 +209,29 @@ var F_k = function (name, title) {
 
 eYo.FlyoutCategory.decimal__module = [
   {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'complex',
-      dotted: 0
-    }
-  },
-  {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: 'real',
-      dotted: 1
-    }
-  },
-  {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: 'imag',
-      dotted: 1
-    }
-  },
-  {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'conjugate',
-      ary: 0,
-      dotted: 1
+    type: eYo.T3.Stmt.import_stmt,
+    import_module_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier,
+          name_d: 'decimal'
+        }
+      }
     }
   },
   {
     type: eYo.T3.Stmt.import_stmt,
-    data: {
-      variant: eYo.Key.IMPORT
-    },
-    slots: {
-      import_module: {
-        slots: {
-          O: {
-            type: eYo.T3.Expr.identifier,
-            data: 'decimal',
-          },
-        },
+    from_d: 'decimal',
+    import_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier_as,
+          name_d: 'decimal',
+          alias_d: 'D'
+        }
       }
-    },
+    }
   },
-
-  F('phase', ''),
-  F('polar', ''),
-  F('rect', ''),
-
   F('sqrt', 'Racine carrée (square root)'),
   F('exp', 'Fonction exponentielle'),
   F('log', 'Fonction logarithme népérien, donner un deuxième argument pour changer de base'),
@@ -254,13 +255,26 @@ eYo.FlyoutCategory.decimal__module = [
   F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
   F('isnan', 'Teste si l\'argument n\'est pas un nombre (Not A Number)'),
 
-  F_k('pi', '≅ π'),
-  F_k('e', 'Constante d\'Euler (≅)'),
-  F_k('tau', 'τ (≅ 2π)'),
-  F_k('inf', '∞'),
-  F_k('infj', '∞ imaginaire pur'),
-  F_k('nan', 'nan (not a number)'),
-  F_k('nanj', 'nan imaginaire pur')
+  (createOneBlock) => {
+    [
+      'ROUND_CEILING',
+      'ROUND_DOWN',
+      'ROUND_FLOOR',
+      'ROUND_HALF_DOWN',
+      'ROUND_HALF_EVEN',
+      'ROUND_HALF_UP',
+      'ROUND_UP',
+      'ROUND_05UP'
+    ].forEach((key) => {
+      createOneBlock({
+        type: eYo.T3.Expr.identifier,
+        name_d: key,
+        holder_d: 'decimal',
+        dotted_d: 1,
+        title: eYo.Msg[key] // to be changed to a tooltip key
+      })
+    })
+  }
 ]
 
 goog.mixin(eYo.Tooltip.Title, {
