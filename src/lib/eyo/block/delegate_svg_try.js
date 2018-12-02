@@ -13,6 +13,7 @@
 
 goog.provide('eYo.DelegateSvg.Try')
 
+goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Group')
 goog.require('goog.dom');
 
