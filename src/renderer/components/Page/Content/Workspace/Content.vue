@@ -1,25 +1,57 @@
 <template>
-  <div id="eyo-workspace-content">
-    <icon-base id="svg-control-image-v" icon-name="triangle"><icon-triangle /></icon-base>
-    <div id="eyo-flyout-toolbar-switcher">
-      <b-btn-group id="eyo-flyout-switcher">
-        <b-dd id="eyo-flyout-dropdown-general" class="eyo-dropdown">
-          <template slot="button-content">Blocs</template>
-          <b-dd-item-button v-for="item in levels" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+  <div
+    id="eyo-workspace-content">
+    <icon-base
+      id="svg-control-image-v"
+      icon-name="triangle"
+    ><icon-triangle /></icon-base>
+    <div
+      id="eyo-flyout-toolbar-switcher"
+      ref="switcher">
+      <b-btn-group
+        id="eyo-flyout-switcher">
+        <b-dd
+          id="eyo-flyout-dropdown-general"
+          class="eyo-dropdown">
+          <template
+            slot="button-content">Blocs</template>
+          <b-dd-item-button
+            v-for="item in levels"
+            @click="selectCategory(item)"
+            :style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content"
+            >{{item.content}}</b-dd-item-button>
           <b-dd-divider></b-dd-divider>
-          <b-dd-item-button v-for="item in categories" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+          <b-dd-item-button
+            v-for="item in categories"
+            @click="selectCategory(item)"
+            :style="{fontFamily: $$.eYo.Font.familySans}"
+            :key="item.content"
+            >{{item.content}}</b-dd-item-button>
         </b-dd>
-        <b-dd id="eyo-flyout-dropdown-module" class="eyo-dropdown">
-          <template slot="button-content">Module&nbsp;</template>
-          <b-dd-item-button v-for="item in modules" v-on:click="selectCategory(item)" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content">{{item.content}}</b-dd-item-button>
+        <b-dd
+          id="eyo-flyout-dropdown-module"
+          class="eyo-dropdown">
+          <template
+            slot="button-content">Module&nbsp;</template>
+          <b-dd-item-button
+            v-for="item in modules"
+            @click="selectCategory(item)"
+            :style="{fontFamily: $$.eYo.Font.familySans}"
+            :key="item.content"
+            >{{item.content}}</b-dd-item-button>
         </b-dd>
       </b-btn-group>
-      <div id="eyo-flyout-toolbar-label">
-        <div class="item">{{label}}</div>
-        <div class="item" v-if="canBasic">
-          <input type="checkbox"
-                        id="eyo-flyout-toolbar-label-check"
-                        v-model="isBasic">
+      <div
+        id="eyo-flyout-toolbar-label">
+        <div
+          class="item">{{label}}</div>
+        <div
+          v-if="canBasic"
+          class="item">
+          <input
+            type="checkbox"
+            id="eyo-flyout-toolbar-label-check"
+            v-model="isBasic">
           {{$$t('message.flyout.basic')}}
         </div>
       </div>
@@ -56,6 +88,9 @@
           in_category: true,
           label: eYo.Do.$$t('message.flyout.blocks').replace('{{key}}', Msg[name.toUpperCase()])
         }
+        if (!Msg[name.toUpperCase()]) {
+          console.error('MISSING eYo.Msg.' + name.toUpperCase())
+        }
       }
       F('basic')
       F('intermediate')
@@ -90,7 +125,7 @@
       moduleF('math')
       moduleF('random')
       moduleF('cmath')
-      // moduleF('decimal') broken in brython https://github.com/brython-dev/brython/issues/989
+      moduleF('decimal') // broken in brython https://github.com/brython-dev/brython/issues/989
       moduleF('fraction')
       moduleF('statistics')
       moduleF('string')
@@ -111,7 +146,7 @@
       model.modules = [
         model.items.turtle__module,
         model.items.math__module,
-        model.items.decimal__module,
+        // model.items.decimal__module,
         model.items.fraction__module,
         model.items.statistics__module,
         model.items.random__module,
@@ -169,7 +204,8 @@
     },
     methods: {
       ...mapMutations({
-        setFlyoutCategory: 'UI_SET_FLYOUT_CATEGORY'
+        setFlyoutCategory: 'UI_SET_FLYOUT_CATEGORY',
+        setFlyoutClosed: 'UI_SET_FLYOUT_CLOSED'
       }),
       selectCategory (item) {
         if (this.isBasic && item.basic) {
@@ -184,7 +220,7 @@
       // the workspace
       // there is only one workspace
       if (eYo.App.workspace) {
-
+        // do nothing, the workspace already exists
       } else {
         var staticOptions = {
           collapse: true,
@@ -202,13 +238,17 @@
           oneBasedIndex: true
         }
         var workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
+        if (!workspace) {
+          console.error('Injection failure')
+          return
+        }
         eYo.setup(workspace)
         workspace.eyo.options = {
           noLeftSeparator: true,
           noDynamicList: false
         }
         // Get what will replace the old flyout selector
-        eYo.App.flyoutToolbarSwitcher = document.getElementById('eyo-flyout-toolbar-switcher')
+        eYo.App.flyoutToolbarSwitcher = this.$refs.switcher
         goog.dom.removeNode(eYo.App.flyoutToolbarSwitcher)
         // First remove the old flyout selector
         var flyout = new eYo.Flyout(eYo.App.workspace)
@@ -231,9 +271,9 @@
         eYo.App.flyout = flyout
         flyout.eyo.slide = (closed) => {
           if (!goog.isDef(closed)) {
-            closed = !this.$store.state.UI.flyoutClosed
+            closed = !this.flyoutClosed
           }
-          this.$store.commit('UI_SET_FLYOUT_CLOSED', closed) // beware of reentrancy
+          this.setFlyoutClosed(closed) // beware of reentrancy
         }
         this.$nextTick(() => {
           // sometimes the `oldSvg` is not found

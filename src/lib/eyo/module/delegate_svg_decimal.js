@@ -99,7 +99,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
           alias_d: 'D'
         }
       }
-    }
+    },
     title: 'decimal__import_stmt'
   },
   {
@@ -113,7 +113,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
           alias_d: 'D'
         }
       }
-    }
+    },
     title: 'decimal__import_stmt'
   },
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
@@ -226,7 +226,7 @@ eYo.FlyoutCategory.decimal__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.identifier_as,
-          name_d: 'decimal',
+          name_d: 'Decimal',
           alias_d: 'D'
         }
       }
