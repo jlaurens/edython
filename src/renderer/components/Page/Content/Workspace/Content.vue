@@ -1,6 +1,7 @@
 <template>
   <div
-    id="eyo-workspace-content">
+    id="eyo-workspace-content"
+    ref="content">
     <icon-base
       id="svg-control-image-v"
       icon-name="triangle"
@@ -186,7 +187,7 @@
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
         if (!oldValue || (newValue !== oldValue)) {
-          var el = document.getElementById('eyo-workspace-content').getElementsByClassName('eyo-flyout')[0]
+          var el = this.$refs.content.getElementsByClassName('eyo-flyout')[0]
           eYo.Tooltip.hideAll(el)
           this.setFlyoutCategory(newValue.key)
           this.label = newValue.label

@@ -286,8 +286,8 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
     goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
     if (block.parentBlock_) {
       var parent = block.parentBlock_.eyo
-      var n = parent.data.name.get()
-      var h = parent.data.holder.get()
+      var n = parent.name_p
+      var h = parent.holder_p
       var Ss = eYo.Signature[h]
       var s = Ss && Ss[n]
       var C10r = (s && s.consolidator) || D.consolidator || eYo.Consolidator.List
@@ -296,11 +296,11 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
         goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
       }
       if (s) {
-        s.ary && this.data.ary.set(s.ary)
-        s.mandatory && this.data.mandatory.set(s.mandatory)
+        s.ary && this.ary_p = s.ary
+        s.mandatory && this.mandatory_p = s.mandatory
       } else {
-        this.data.ary.set(D.ary || Infinity)
-        this.data.mandatory.set(D.mandatory || 0)
+        this.ary_p = D.ary || Infinity
+        this.mandatory_p = D.mandatory || 0
       }
     } else {
       this.consolidator = new eYo.Consolidator.List(D)

@@ -21,7 +21,7 @@ goog.require('eYo.Tooltip')
  * Flyout list of node models by category.
  */
 eYo.FlyoutCategory = {
-  'test': [
+  test: [
     {
       type: eYo.T3.Stmt.expression_stmt,
       slots: {
@@ -36,7 +36,7 @@ eYo.FlyoutCategory = {
       }
     },
   ],
-  'basic': [
+  basic: [
     eYo.T3.Stmt.start_stmt,
     eYo.T3.Expr.shortliteral,
     eYo.T3.Expr.numberliteral,
@@ -134,7 +134,7 @@ eYo.FlyoutCategory = {
     },
     eYo.T3.Expr.power,
   ],
-  'intermediate': [
+  intermediate: [
     eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
@@ -159,7 +159,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.slicing,
     eYo.T3.Expr.proper_slice,
   ],
-  'advanced': [
+  advanced: [
     eYo.T3.Stmt.augmented_assignment_stmt,
     eYo.T3.Expr.shift_expr,
     eYo.T3.Expr.and_expr,
@@ -177,7 +177,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.dict_comprehension,
     eYo.T3.Expr.key_datum,
   ],
-  'expert': [
+  expert: [
     eYo.T3.Stmt.with_part,
     eYo.T3.Stmt.try_part,
     eYo.T3.Stmt.except_part,
@@ -195,7 +195,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.yield_expression,
     eYo.T3.Stmt.yield_stmt
   ],
-  'branching': [
+  branching: [
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
@@ -211,7 +211,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.else_part,
     eYo.T3.Expr.conditional_expression,
   ],
-  'looping': [
+  looping: [
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
@@ -228,7 +228,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.break_stmt,
     eYo.T3.Stmt.continue_stmt,
   ],
-  'function': [
+  function: [
     {
       type: eYo.T3.Expr.call_expr,
       name_d: ''
@@ -269,7 +269,7 @@ eYo.FlyoutCategory = {
     },
     eYo.T3.Stmt.decorator_stmt
   ],
-  'list': [
+  list: [
     {
       type: eYo.T3.Stmt.assignment_stmt,
       rhs_s: {
@@ -421,7 +421,7 @@ eYo.FlyoutCategory = {
       }
     }
   ],
-  'text': [
+  text: [
     {
       type: eYo.T3.Stmt.assignment_stmt,
       rhs_s: {
@@ -568,18 +568,12 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'divmod',
-        ary: 2
-      }
+      name_d: 'divmod'
     },
     eYo.T3.Expr.power,
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'pow',
-        ary: 2
-      }
+      name_d: 'pow'
     },
     {
       type: eYo.T3.Expr.call_expr,
