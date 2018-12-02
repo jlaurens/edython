@@ -978,7 +978,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
 eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   // there is no validation here
   // simple cases first, variant based
-  var named = function () {
+  var named = () => {
     if (eYo.T3.Expr.Check.named_primary.indexOf(profile.name.type)) {
       if (!profile.holder.type
       || eYo.T3.Expr.Check.named_primary.indexOf(profile.holder.type)) {
@@ -1007,23 +1007,30 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
   } else if (profile.variant === eYo.Key.ALIASED) {
     if (profile.name.type === eYo.T3.Expr.identifier
     || profile.name.type === eYo.T3.Expr.unset) {
-      if (profile.holder && (profile.holder.type === eYo.T3.Expr.unset
-        || profile.holder.type === eYo.T3.Expr.identifier
-        || profile.holder.type === eYo.T3.Expr.dotted_name)) {
-        return [
-          eYo.T3.Expr.dotted_name_as,
-          eYo.T3.Expr.expression_as
-        ]
+      if (profile.holder) {
+        if (profile.holder.type === eYo.T3.Expr.unset) {
+          return [
+            eYo.T3.Expr.identifier_as,
+            eYo.T3.Expr.dotted_name_as,
+            eYo.T3.Expr.expression_as
+          ]
+        } else if (profile.holder.type === eYo.T3.Expr.identifier
+          || profile.holder.type === eYo.T3.Expr.dotted_name) {
+          return [
+            eYo.T3.Expr.dotted_name_as,
+            eYo.T3.Expr.expression_as
+          ]
+        } else if (profile.holder.type) {
+          return [
+            eYo.T3.Expr.expression_as
+          ]
+        }
       }
-      return profile.holder && profile.holder.type
-        ? [
-          eYo.T3.Expr.expression_as
-        ]
-        : [
-          eYo.T3.Expr.identifier_as,
-          eYo.T3.Expr.dotted_name_as,
-          eYo.T3.Expr.expression_as
-        ]
+      return [
+        eYo.T3.Expr.identifier_as,
+        eYo.T3.Expr.dotted_name_as,
+        eYo.T3.Expr.expression_as
+      ]
     }
     if (profile.name.type === eYo.T3.Expr.dotted_name) {
       if (!profile.holder.type
