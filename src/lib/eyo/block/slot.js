@@ -612,7 +612,19 @@ eYo.Slot.prototype.isRequiredFromModel = function () {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFrom = function () {
-  return this.isRequiredFromModel() || (this.targetBlock() && !this.targetBlock().eyo.wrapped_)
+  var target = this.targetBlock()
+  if (target) {
+    if (target.eyo.wrapped_) {
+      // return true if one of the inputs is connected
+      return target.inputList.some((input) => {
+        if (input.connection && input.connection.targetBlock()) {
+          return true
+        }
+      })
+    }
+    return true
+  }
+  return this.isRequiredFromModel()
 }
 
 /**
