@@ -486,7 +486,7 @@ eYo.Slot.prototype.setInput = function (input) {
   this.input = input
   this.inputType = input.type
   input.eyo.slot = this
-  var c8n = this.connection = input.connection
+  var c8n = input.connection
   if (c8n) {
     var eyo = c8n.eyo
     eyo.slot = this

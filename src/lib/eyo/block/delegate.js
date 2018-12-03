@@ -2155,7 +2155,7 @@ eYo.Delegate.prototype.forEachInputConnection = function (helper) {
  * @param {!Function} helper
  * @return {Boolean} yorn
  */
-eYo.Delegate.prototype.someInputConection = function (helper) {
+eYo.Delegate.prototype.someInputConnection = function (helper) {
   return this.block_.inputList.some((input) => {
     var c8n = input.connection
     if (c8n && helper(c8n)) {

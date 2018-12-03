@@ -259,7 +259,7 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
  * @return {?Blockly.Block} The sought after block or null if not found.
  */
 Blockly.Workspace.prototype.getBlockById = (function () {
-  getBlockById = Blockly.Workspace.prototype.getBlockById
+  var getBlockById = Blockly.Workspace.prototype.getBlockById
   return function (id) {
     var block = getBlockById.call(this, id)
     if (block) {

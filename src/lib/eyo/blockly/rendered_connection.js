@@ -1065,8 +1065,9 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
   return block.eyo.someInputConnection((c8n) => {
     if (c8n.type === Blockly.INPUT_VALUE &&
       orphanBlock.outputConnection.checkType_(c8n)) {
-    if (!c8n.isConnected()) {
-      return c8n
+      if (!c8n.isConnected()) {
+        return c8n
+      }
     }
   }) || null
 }
