@@ -534,7 +534,9 @@ eYo.FlyoutCategory = {
     }
   ],
   math: [
-    1,
+    {
+      type: eYo.T3.Expr.integer
+    },
     eYo.T3.Expr.u_expr,
     {
       type: eYo.T3.Expr.a_expr,

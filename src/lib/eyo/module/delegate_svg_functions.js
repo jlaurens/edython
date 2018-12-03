@@ -22,7 +22,7 @@ goog.require('eYo.DelegateSvg.Primary')
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
-goog.require('eYo.Model.function')
+goog.require('eYo.Model.functions')
 
 
 
@@ -32,7 +32,7 @@ goog.require('eYo.Model.function')
  * by `modulebot.py`.
  */
 
-var M = eYo.Model.function
+var M = eYo.Model.functions
 var d = M.data
 var n = d.items.length
 var t = d.types.length
