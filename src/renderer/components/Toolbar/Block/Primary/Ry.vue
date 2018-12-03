@@ -1,7 +1,7 @@
 <template>
   <b-btn-group v-if="show_ry" id="block-primary-ry" key-nav  aria-label="Block primary ary" class="deeper">
     <b-input v-model="mandatory" type="text" class="eyo-code item w-2rem" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
-    <b-dd class="eyo-code eyo-form-input-text item mw-4rem" variant="outline-secondary">
+    <b-dd class="eyo-code item mw-4rem" variant="outline-secondary">
       <b-dd-item-button v-for="item in items" v-on:click="mandatory = item" :key="item" class="eyo-code eyo-content" v-html="item"></b-dd-item-button>
       </b-dd-item-button>
     </b-dd>

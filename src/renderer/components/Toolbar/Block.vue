@@ -547,7 +547,6 @@
     padding-right: 0.75rem;
   }
 
-  /* merge: eyo-form-input-text */
   .b3k-edit .item.text:not(.dropdown),
   .b3k-edit .item.text.dropdown>.btn:not(:hover) {
     color: #212529;
@@ -588,6 +587,9 @@
   }
   .b3k-edit input.item.w-20rem {
     width: calc(0.75 * 20rem);
+  }
+  .b3k-edit input.item.w-30rem {
+    width: calc(0.75 * 30rem);
   }
   .b3k-edit .item.placeholder {
     font-style: oblique;

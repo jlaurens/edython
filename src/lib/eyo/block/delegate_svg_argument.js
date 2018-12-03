@@ -296,8 +296,8 @@ eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.r
         goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
       }
       if (s) {
-        s.ary && this.ary_p = s.ary
-        s.mandatory && this.mandatory_p = s.mandatory
+        s.ary && (this.ary_p = s.ary)
+        s.mandatory && (this.mandatory_p = s.mandatory)
       } else {
         this.ary_p = D.ary || Infinity
         this.mandatory_p = D.mandatory || 0

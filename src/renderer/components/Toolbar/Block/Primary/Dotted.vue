@@ -1,12 +1,48 @@
 <template>
-  <b-btn-group id="b3k-primary-holder" v-if="show_dotted">
-    <b-input v-model="holder" type="text" class="eyo-code eyo-form-input-text item text" :style='{fontFamily: $$.eYo.Font.familyMono}' v-if="canHolder"></b-input>
-    <div v-if="ismethod" class="item text">.</div>
-    <b-dd v-else id="block-primary-dotted" class="eyo-dropdown eyo-code-reserved item text" variant="outline-secondary">
-      <template slot="button-content"><div class="b3k-primary-dotted eyo-code eyo-content" v-html="selectedItem.title"></div></template>
-      <b-dd-item-button v-for="item in dottedItems" v-on:click="selectedItem = item" :key="item.key" class="b3k-primary-dotted eyo-code" v-html="item.content"></b-dd-item-button>
+  <b-btn-group
+    v-if="show_dotted"
+    id="b3k-primary-holder">
+    <div
+      v-if="canHolder && eyo.holder_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"
+      ></div>
+    <b-input
+      v-else-if="canHolder"
+      v-model="holder"
+      type="text"
+      class="eyo-code item text"
+      :style="{fontFamily: $$.eYo.Font.familyMono}"
+      ></b-input>
+    <div
+      v-if="ismethod"
+      class="item text">.</div>
+    <b-dd
+      v-else
+      id="block-primary-dotted"
+      class="eyo-dropdown eyo-code-reserved item text"
+      variant="outline-secondary">
+      <template
+        slot="button-content"
+        ><div
+          class="b3k-primary-dotted eyo-code eyo-content"
+          v-html="selectedItem.title"
+          ></div
+        ></template>
+      <b-dd-item-button
+        v-for="item in dottedItems"
+        @click="selectedItem = item"
+        :key="item.key"
+        class="b3k-primary-dotted eyo-code" v-html="item.content"
+        ></b-dd-item-button>
       <b-dd-divider></b-dd-divider>
-      <b-dd-item-button v-for="item in moduleItems" v-on:click="selectedItem = item" :key="item.key" class="b3k-primary-dotted eyo-code" v-html="item.content"></b-dd-item-button>
+      <b-dd-item-button
+        v-for="item in moduleItems"
+        @click="selectedItem = item"
+        :key="item.key"
+        class="b3k-primary-dotted eyo-code"
+        v-html="item.content"
+        ></b-dd-item-button>
     </b-dd>
   </b-btn-group>
 </template>

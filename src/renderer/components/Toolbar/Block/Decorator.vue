@@ -1,7 +1,7 @@
 <template>
   <b-btn-toolbar id="block-decorator" key-nav  aria-label="Block decorator" justify>
     <b-btn-group>
-      <b-form-input v-model="name" type="text" class="btn-outline-secondary eyo-form-input-text eyo-form-input-text-any-expression eyo-width-10" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
+      <b-form-input v-model="name" type="text" class="item text w-30rem" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
       <b-dd id="block-variant" class="eyo-dropdown" variant="outline-secondary">
         <b-dd-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dd-item-button>
       </b-dd>    
@@ -83,10 +83,4 @@
   }
 </script>
 <style>
-  #block-decorator {
-    padding: 0 0.25rem;
-  }
-  .eyo-width-10 {
-    width: 10rem;
-  }
 </style>

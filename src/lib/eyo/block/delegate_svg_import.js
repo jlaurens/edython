@@ -71,9 +71,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
 eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
-      IMPORT: eYo.Key.IMPORT,
-      FROM_MODULE_IMPORT: eYo.Key.FROM_MODULE_IMPORT,
-      FROM_MODULE_IMPORT_STAR: eYo.Key.FROM_MODULE_IMPORT_STAR,
       all: [
         eYo.Key.IMPORT,
         eYo.Key.FROM_MODULE_IMPORT,
@@ -165,16 +162,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          var variant = this.owner.data.variant
-          if (variant.get() === eYo.Key.FROM_MODULE_IMPORT_STAR) {
+          if (this.owner.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
         },
         load: /** @suppress {globalThis} */ function (element) {
-          var attr = element.getAttribute('star')
-          if (attr === 'true') {
-            var variant = this.owner.data.variant
-            variant.set(eYo.Key.FROM_MODULE_IMPORT_STAR)
+          if (element.getAttribute('star') === 'true') {
+            this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
           }
         }
       }

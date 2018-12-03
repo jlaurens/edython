@@ -123,10 +123,4 @@
   }
 </script>
 <style>
-  #block-any-expression {
-    padding: 0 0.25rem;
-  }
-  .eyo-form-input-text-any-expression {
-    width: 30rem;
-  }
 </style>

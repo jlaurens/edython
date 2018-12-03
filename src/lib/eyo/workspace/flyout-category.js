@@ -247,14 +247,8 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.yield_expression,
     eYo.T3.Stmt.yield_stmt,
     eYo.T3.Stmt.classdef_part,
-    {
-      type: eYo.T3.Stmt.global_nonlocal_stmt,
-      variant_d: 'global'
-    },
-    {
-      type: eYo.T3.Stmt.global_nonlocal_stmt,
-      variant_d: 'nonlocal'
-    },
+    eYo.T3.Stmt.global_stmt,
+    eYo.T3.Stmt.nonlocal_stmt,
     {
       type: eYo.T3.Stmt.decorator_stmt,
       name_d: eYo.Key.STATICMETHOD
@@ -605,20 +599,16 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'trunc'
+      name_d: 'round',
     },
     '1j',
     {
       type: eYo.T3.Expr.a_expr,
       operator_d: '+',
-      slots: {
-        rhs: {
-          type: eYo.T3.Expr.m_expr,
-          operator_d: '*',
-          slots: {
-            rhs: '1j'
-          }
-        }
+      rhs_s: {
+        type: eYo.T3.Expr.m_expr,
+        operator_d: '*',
+        rhs_s: '1j'
       }
     },
     {
@@ -630,12 +620,20 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'conjugate',
-        ary: 0,
-        dotted: 1
-      }
+      name_d: 'conjugate',
+      ary_d: 0,
+      dotted_d: 1
     },
+    {
+      type: eYo.T3.Expr.attributeref,
+      name_d: 'real',
+      dotted_d: 1
+    },
+    {
+      type: eYo.T3.Expr.attributeref,
+      name_d: 'imag',
+      dotted_d: 1
+    }
   ]
 }
 console.warn('key handler: "foo.bar", "foo[]", "foo(…)"')

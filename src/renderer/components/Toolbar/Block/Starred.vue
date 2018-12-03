@@ -102,7 +102,4 @@
   }
 </script>
 <style>
-  #block-decorator {
-    padding: 0 0.25rem;
-  }
 </style>
