@@ -729,11 +729,11 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} xml the persistent element.
- * @param {boolean} optNoId
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
-eYo.Slot.prototype.save = function (element, optNoId) {
+eYo.Slot.prototype.save = function (element, opt) {
   if (this.isIncog()) {
     return
   }
@@ -756,7 +756,7 @@ eYo.Slot.prototype.save = function (element, optNoId) {
         // For lists only, we do create a further level
         // Actually, every wrapped block is a list
         if (target.eyo instanceof eYo.DelegateSvg.List) {
-          var child = eYo.Xml.blockToDom(target, optNoId)
+          var child = eYo.Xml.blockToDom(target, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.key)
             goog.dom.appendChild(element, child)
@@ -764,10 +764,10 @@ eYo.Slot.prototype.save = function (element, optNoId) {
           }
         } else {
           // let the target populate the given element
-          return eYo.Xml.toDom(target, element, optNoId)
+          return eYo.Xml.toDom(target, element, opt)
         }
       } else {
-        child = eYo.Xml.blockToDom(target, optNoId)
+        child = eYo.Xml.blockToDom(target, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           if (this.inputType === Blockly.INPUT_VALUE) {
             child.setAttribute(eYo.Xml.SLOT, this.key)

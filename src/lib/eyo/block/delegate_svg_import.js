@@ -161,7 +161,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         }
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }

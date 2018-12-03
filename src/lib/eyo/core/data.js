@@ -809,8 +809,9 @@ eYo.Data.prototype.beReady = function () {
  * then the data is not saved either.
  * For edython.
  * @param {Element} element the persistent element.
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
  */
-eYo.Data.prototype.save = function (element) {
+eYo.Data.prototype.save = function (element, opt) {
   var xml = this.model.xml
   if (xml === false) {
     // only few data need not be saved
@@ -832,9 +833,20 @@ eYo.Data.prototype.save = function (element) {
     var required = this.required || (xml && xml.required)
     var isText = xml && xml.text
     var txt = this.toText()
+    // if there is no text available, replace with the placeholder
+    if (opt && opt.noEmpty && !txt.length) {
+      var field = this.field
+      if (field) {
+        var displayed = field.getDisplayText_()
+        if (displayed && displayed.length) {
+          txt = displayed
+          this.change(txt)
+        }
+      }
+    }
     if (isText) {
       if (txt.length) {
-        goog.dom.appendChild(element, goog.dom.createTextNode(txt))        
+        goog.dom.appendChild(element, goog.dom.createTextNode(txt))
       } else if (required) {
         goog.dom.appendChild(element, goog.dom.createTextNode('?'))
       }

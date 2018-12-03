@@ -39,9 +39,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
  * Save the block's data.
  * For edython.
  * @param {Element} element the persistent element.
+ * @param {?Object} opt
  */
-eYo.DelegateSvg.Literal.prototype.saveData = function (element) {
-  eYo.DelegateSvg.Literal.superClass_.saveData.call(this, element)
+eYo.DelegateSvg.Literal.prototype.saveData = function (element, opt) {
+  eYo.DelegateSvg.Literal.superClass_.saveData.apply(this, arguments)
   if (this.value_p == '') {
     element.setAttribute(eYo.Key.PLACEHOLDER, this.data.value.model.placeholder)
   }

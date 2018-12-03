@@ -219,7 +219,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
         }
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
         },
         load: /** @suppress {globalThis} */ function (element) {
           this.owner.variant_p = element.getAttribute(eYo.Key.EYO)

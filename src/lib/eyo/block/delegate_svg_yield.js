@@ -47,9 +47,9 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
     from: {
       init: '',
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p !== eYo.Key.NONE
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {

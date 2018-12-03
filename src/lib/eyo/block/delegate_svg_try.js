@@ -59,9 +59,9 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.EXPRESSION
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -84,9 +84,9 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         : null
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.ALIASED
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -250,9 +250,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p !== eYo.Key.NONE
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -267,9 +267,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.FROM
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -382,9 +382,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
     expression2: {
       init: '',
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.BINARY
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {

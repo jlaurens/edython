@@ -91,10 +91,10 @@ eYo.WorkspaceDelegate.prototype.fromString = function (str) {
 
 /**
  * Convert the workspace to string.
- * @param {?Boolean} opt_noId
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
  */
-eYo.WorkspaceDelegate.prototype.toDom = function (opt_noId) {
-  return eYo.Xml.workspaceToDom(this.workspace_, opt_noId)
+eYo.WorkspaceDelegate.prototype.toDom = function (opt) {
+  return eYo.Xml.workspaceToDom(this.workspace_, opt && opt.noId)
 }
 
 /**
@@ -258,26 +258,28 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
  * @param {string} id ID of block to find.
  * @return {?Blockly.Block} The sought after block or null if not found.
  */
-eYo.Workspace.savedGetBlockById = Blockly.Workspace.prototype.getBlockById
-Blockly.Workspace.prototype.getBlockById = function (id) {
-  var block = eYo.Workspace.savedGetBlockById.call(this, id)
-  if (block) {
-    return block
-  }
-  var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
-  if (m && (block = eYo.Workspace.savedGetBlockById.call(this, m.id))) {
-    var e8r = block.eyo.inputEnumerator()
-    while (e8r.next()) {
-      var c8n = e8r.here.connection
-      if (c8n) {
-        var target = c8n.targetBlock()
-        if (target && target.id === id) {
-          return target
+Blockly.Workspace.prototype.getBlockById = (
+  getBlockById = Blockly.Workspace.prototype.getBlockById
+  return function (id) {
+    var block = getBlockById.call(this, id)
+    if (block) {
+      return block
+    }
+    var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
+    if (m && (block = getBlockById.call(this, m.id))) {
+      var e8r = block.eyo.inputEnumerator()
+      while (e8r.next()) {
+        var c8n = e8r.here.connection
+        if (c8n) {
+          var target = c8n.targetBlock()
+          if (target && target.id === id) {
+            return target
+          }
         }
       }
     }
   }
-}
+}) ()
 
 /**
  * Undo or redo the previous action.
@@ -463,7 +465,7 @@ eYo.deleteBlock = function (block, deep) {
  * @private
  */
 eYo.copyBlock = function(block, deep) {
-  var xmlBlock = eYo.Xml.blockToDom(block, true, !deep);
+  var xmlBlock = eYo.Xml.blockToDom(block, {noId: true, noNext: !deep});
   // Copy only the selected block and internal blocks.
   // Encode start position in XML.
   var xy = block.getRelativeToSurfaceXY();

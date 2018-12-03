@@ -548,9 +548,9 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       synchronize: true,
       placeholder: 'step',
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.variant_p === eYo.Key.STRIDE) {
-            this.save(element)
+            this.save(element, opt)
           }
         }
       },

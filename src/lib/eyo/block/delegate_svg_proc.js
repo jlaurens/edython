@@ -106,11 +106,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         this.owner.n_ary_s.setIncog(newValue !== eYo.Key.N_ARY)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.get() === eYo.Key.N_ARY) {
             var target = this.owner.n_ary_t
             if (!target.childBlocks_.length) {
-              this.save(element)
+              this.save(element, opt)
             }
           }
         }

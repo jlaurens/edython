@@ -342,7 +342,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
         O.ans_s.setIncog(newValue !== eYo.Key.RETURN)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
         },
         load: /** @suppress {globalThis} */ function (element) {
           this.owner.variant_p = element.getAttribute(eYo.Key.EYO)

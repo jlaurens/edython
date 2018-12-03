@@ -234,9 +234,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         return txt
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.get() || goog.isDef(this.model.placeholder)) {
-            this.save(element)
+            this.save(element, opt)
           }
         }
       },
@@ -267,15 +267,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         force: /** @suppress {globalThis} */ function () {
           return this.owner.variant_p === eYo.Key.CALL_EXPR
         },
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (!this.owner.holder_t) {
             if (this.get()) {
-              this.save(element)
+              this.save(element, opt)
             }
             var v = eYo.Do.valueOf(this.model.placeholder)
             v = v && v.toString().trim()
             if (v.length>0) {
-              this.save(element)
+              this.save(element, opt)
             }
           }
         }
@@ -295,9 +295,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         : null
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.ALIASED
-          this.save(element)
+          this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -310,11 +310,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 1000,
       init: '',
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
           if (v === eYo.Key.ANNOTATED || v === eYo.Key.ANNOTATED_DEFINED) {
             this.required = true
-            this.save(element)
+            this.save(element, opt)
           }
         }
       },
@@ -345,11 +345,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       validate: false,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
           if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED) {
             this.required = true
-            this.save(element)
+            this.save(element, opt)
           }
         }
       },
@@ -458,9 +458,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (!this.owner.name_t) {
-            this.save(element)
+            this.save(element, opt)
           }
         }
       }
@@ -510,12 +510,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
             if (this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
               return
             }
-            this.save(element)
+            this.save(element, opt)
           }
         }
       }
@@ -557,12 +557,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.profile_p && this.owner.variant_p === eYo.Key.CALL_EXPR && this.get()) {
             if (this.owner.profile_p && this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
               return
             }
-            this.save(element)
+            this.save(element, opt)
           }
         }
       }
