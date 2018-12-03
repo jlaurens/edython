@@ -455,6 +455,9 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(e)
+  if (c8n === true) {
+    c8n = this.eyo.getConnectionForEvent(e)
+  }
   var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()

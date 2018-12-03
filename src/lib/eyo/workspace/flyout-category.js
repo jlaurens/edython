@@ -40,15 +40,14 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.start_stmt,
     eYo.T3.Expr.shortliteral,
     eYo.T3.Expr.numberliteral,
-    eYo.T3.Stmt.builtin__print_stmt,
     {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.T3.Stmt.call_stmt,
       name_d: 'print',
       n_ary_s: {
         slots: {
           O: "'...'"
         }
-      },
+      }
     },
     {
       type: eYo.T3.Stmt.assignment_stmt,

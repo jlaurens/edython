@@ -2129,10 +2129,16 @@ eYo.Delegate.prototype.forEachInput = function (helper) {
  * Runs the helper function for some input, until it responds true
  * For edython.
  * @param {!Function} helper
- * @return {Boolean} yorn
+ * @return {Object} whatever returns the helper, when a truthy value
  */
 eYo.Delegate.prototype.someInput = function (helper) {
-  return this.block_.inputList.some(helper)
+  var ans
+  var list = this.block_.inputList
+  for (var i = 0 ; i < list.length ; i++) {
+    if ((ans = helper(list[i]))) {
+      return ans
+    }
+  }
 }
 
 /**
@@ -2153,14 +2159,17 @@ eYo.Delegate.prototype.forEachInputConnection = function (helper) {
  * Runs the helper function for some input connection, until it responds true
  * For edython.
  * @param {!Function} helper
- * @return {Boolean} yorn
+ * @return {Object} whatever 
  */
 eYo.Delegate.prototype.someInputConnection = function (helper) {
-  return this.block_.inputList.some((input) => {
+  var ans
+  return this.someInput((input) => {
     var c8n = input.connection
-    if (c8n && helper(c8n)) {
-      return true
-    }
+    if (c8n) {
+      if ((ans = helper(c8n))) {
+        return ans
+      }
+    }    
   })
 }
 

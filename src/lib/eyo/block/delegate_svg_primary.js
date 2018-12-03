@@ -1272,7 +1272,6 @@ Object.defineProperties( eYo.DelegateSvg.Stmt.call_stmt.prototype, {
   }
 })
 
-
 /**
  * Class for a DelegateSvg, call statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
@@ -1300,10 +1299,8 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.init = function () {
   this.profile_p = undefined
 }
 
-Object.defineProperty(
-  eYo.DelegateSvg.Stmt.base_call_stmt.prototype,
-  'profile_p',
-  {
+Object.defineProperties(eYo.DelegateSvg.Stmt.base_call_stmt.prototype, {
+  profile_p: {
     get () {
       return this.profile_ === this.getProfile()
         ? this.profile_
@@ -1312,8 +1309,14 @@ Object.defineProperty(
     set (newValue) {
       this.profile_ = newValue
     }
+  },
+  item_p: {
+    get () {
+      var p5e = this.profile_p.p5e
+      return p5e && p5e.item
+    }
   }
-)
+})
 
 /**
  * Class for a DelegateSvg, call statement block.
