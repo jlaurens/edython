@@ -396,7 +396,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   menuItem.setEnabled(holes.length > 0)
   this.addChild(menuItem, true)
   if (block.isMovable() && !block.isInFlyout) {
-    if (block.eyo.canUnlock(block)) {
+    if (block.eyo.canUnlock()) {
       menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
         function (event) {
           eYo.Events.setGroup(true)
@@ -412,7 +412,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
       )
       this.addChild(menuItem, true)
     }
-    if (block.eyo.canLock(block)) {
+    if (block.eyo.canLock()) {
       menuItem = this.newMenuItem(eYo.Msg.LOCK_BLOCK,
         function (event) {
           eYo.Events.setGroup(true)

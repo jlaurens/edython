@@ -1062,17 +1062,13 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
  * @suppress {accessControls}
  */
 Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
-  var e8r = block.eyo.inputEnumerator()
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
-    if (c8n && c8n.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(c8n)) {
-      if (!c8n.isConnected()) {
-        return c8n
-      }
+  return block.eyo.someInputConnection((c8n) => {
+    if (c8n.type === Blockly.INPUT_VALUE &&
+      orphanBlock.outputConnection.checkType_(c8n)) {
+    if (!c8n.isConnected()) {
+      return c8n
     }
-  }
-  return null
+  }) || null
 }
 
 /**

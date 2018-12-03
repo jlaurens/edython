@@ -73,26 +73,26 @@ eYo.PythonExporter.prototype.newline_ = function () {
  */
 eYo.PythonExporter.prototype.exportExpression_ = function (block) {
   var field, input, slot
-  if ((field = block.eyo.fromStartField)) {
+  var eyo = block.eyo
+  if ((field = eyo.fromStartField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  if ((slot = block.eyo.headSlot)) {
+  if ((slot = eyo.headSlot)) {
     do {
       this.exportSlot_(slot)
     } while ((slot = slot.next))
   } else {
     // list blocks
     block.eyo.consolidate()
-    var e8r = block.eyo.inputEnumerator()
-    while (e8r.next()) {
-      if (e8r.here !== block.eyo.inputSuite) {
+    block.eyo.forEachInput((input) => {
+      if (input !== eyo.inputSuite) {
         this.exportInput_(e8r.here)
       }
-    }
+    })
   }
-  if ((field = block.eyo.toEndField)) {
+  if ((field = eyo.toEndField)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))

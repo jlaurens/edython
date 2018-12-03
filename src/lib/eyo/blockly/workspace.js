@@ -258,7 +258,7 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
  * @param {string} id ID of block to find.
  * @return {?Blockly.Block} The sought after block or null if not found.
  */
-Blockly.Workspace.prototype.getBlockById = (
+Blockly.Workspace.prototype.getBlockById = (function () {
   getBlockById = Blockly.Workspace.prototype.getBlockById
   return function (id) {
     var block = getBlockById.call(this, id)
@@ -267,16 +267,12 @@ Blockly.Workspace.prototype.getBlockById = (
     }
     var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
     if (m && (block = getBlockById.call(this, m.id))) {
-      var e8r = block.eyo.inputEnumerator()
-      while (e8r.next()) {
-        var c8n = e8r.here.connection
-        if (c8n) {
+      return block.eyo.someInputConnection((c8n) => {
           var target = c8n.targetBlock()
           if (target && target.id === id) {
             return target
           }
-        }
-      }
+      })
     }
   }
 }) ()

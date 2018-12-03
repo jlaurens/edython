@@ -167,10 +167,9 @@ eYo.KeyHandler = (function () {
           // There was a selected connection,
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
-          var doFirst = function (block, type) {
-            var e8r = block.eyo.inputEnumerator()
-            while (e8r.next()) {
-              if ((c8n = e8r.here.connection) && c8n.type === type) {
+          var doFirst = (block, type) => {
+            return block.eyo.someInputConnection((c8n) => {
+              if (c8n.type === type) {
                 if (!c8n.hidden_ && !c8n.targetConnection && (!c8n.eyo.source || !c8n.eyo.source.bindField)) {
                   eYo.SelectedConnection = c8n
                   return true
@@ -178,7 +177,7 @@ eYo.KeyHandler = (function () {
                   return doFirst(c8n.targetBlock(), type)
                 }
               }
-            }
+            })
           }
           if (doFirst(newB, Blockly.INPUT_VALUE)) {
             return true
@@ -193,12 +192,13 @@ eYo.KeyHandler = (function () {
         // no selected connection
         var parent = B
         do {
-          var e8r = parent.eyo.inputEnumerator()
-          while (e8r.next()) {
-            if ((c8n = e8r.here.connection) && c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
+          if (parent.eyo.someInputConnection((c8n) => {
+            if (c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
               eYo.SelectedConnection = c8n
               return true
             }
+          })) {
+            return true
           }
         } while ((parent = parent.getSurroundParent(parent)))
         eYo.SelectedConnection = null

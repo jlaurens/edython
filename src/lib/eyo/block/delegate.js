@@ -1522,10 +1522,9 @@ eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
 eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
     // Consolidate the child blocks that are still connected
-    var e8r = this.block_.eyo.inputEnumerator()
-    while (e8r.next()) {
-      e8r.here.eyo.consolidate(deep, force)
-    }
+    this.forEachInput((input) => {
+      input.eyo.consolidate(deep, force)
+    })
   }
 }
 
@@ -2114,6 +2113,54 @@ eYo.Delegate.prototype.isIncog = function () {
 eYo.Delegate.prototype.inputEnumerator = function (all) {
   return eYo.Do.Enumerator(this.block_.inputList, all ? undefined : function (x) {
     return !x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog()
+  })
+}
+
+/**
+ * Runs the helper function for each input
+ * For edython.
+ * @param {!Function} helper
+ */
+eYo.Delegate.prototype.forEachInput = function (helper) {
+  this.block_.inputList.forEach(helper)
+}
+
+/**
+ * Runs the helper function for some input, until it responds true
+ * For edython.
+ * @param {!Function} helper
+ * @return {Boolean} yorn
+ */
+eYo.Delegate.prototype.someInput = function (helper) {
+  return this.block_.inputList.some(helper)
+}
+
+/**
+ * Runs the helper function for each input connection
+ * For edython.
+ * @param {!Function} helper
+ */
+eYo.Delegate.prototype.forEachInputConnection = function (helper) {
+  this.block_.inputList.forEach((input) => {
+    var c8n = input.connection
+    if (c8n) {
+      helper(c8n)
+    }
+  })
+}
+
+/**
+ * Runs the helper function for some input connection, until it responds true
+ * For edython.
+ * @param {!Function} helper
+ * @return {Boolean} yorn
+ */
+eYo.Delegate.prototype.someInputConection = function (helper) {
+  return this.block_.inputList.some((input) => {
+    var c8n = input.connection
+    if (c8n && helper(c8n)) {
+      return true
+    }
   })
 }
 

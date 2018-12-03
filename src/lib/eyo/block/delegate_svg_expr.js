@@ -413,9 +413,8 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
       })) {
         return foundC8n
       }
-      const e8r = B.eyo.inputEnumerator()
-      while (e8r.next()) {
-        var c8n = e8r.here.connection
+      B.eyo.someInput((input) => {
+        var c8n = input.connection
         if (c8n) {
           var candidate
           if (c8n.checkType_(block.outputConnection)) {
@@ -426,14 +425,14 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
           if (candidate) {
             if (candidate.eyo.name === parentSlotName) {
               foundC8n = candidate
-              break
+              return true
             }
             if (!foundC8n) {
               foundC8n = candidate
             }
           }
         }
-      }
+      })
       return foundC8n
     }
     parentInputC8n = findC8n(parentBlock)

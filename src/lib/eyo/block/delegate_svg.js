@@ -1625,12 +1625,11 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
 eYo.DelegateSvg.prototype.getInput = function (name, dontCreate) {
-  var e8r = this.inputEnumerator()
-  while (e8r.next()) {
-    if (e8r.here.name === name) {
-      return e8r.here
+  return this.someInput((input) => {
+    if (input.name === name) {
+      return input
     }
-  }
+  })
 }
 
 /**
@@ -2003,10 +2002,9 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
   if (goog.isDef(block.getSourceBlock)) { // this is a connection...
     getDeepHoles(block)
   } else {
-    var e8r = block.eyo.inputEnumerator()
-    while (e8r.next()) {
-      getDeepHoles(e8r.here.connection)
-    }
+    block.eyo.forEachInputConnection((c8n) => {
+      getDeepHoles(c8n)
+    })
   }
   return H
 }
@@ -2331,7 +2329,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
   }
   var selectSlot = function (slot) {
     if (!slot.isIncog()) {
-      var c8n = slot.input && slot.input.connection
+      var c8n = slot.connection
       if (c8n) {
         return (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection(c8n)
       }
@@ -2362,15 +2360,12 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
         }
         c8n = rightC8n
       }
-      var e8r = block.eyo.inputEnumerator()
-      if (e8r) {
-        while (e8r.next()) {
-          if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-            if (selectConnection(c8n)) {
-              return true
-            }
-          }
+      if (this.someInputConnection((c8n) => {
+        if (c8n.type === Blockly.NEXT_STATEMENT && selectConnection(c8n)) {
+          return true
         }
+      })) {
+        return true
       }
     }
   } else {
@@ -2380,24 +2375,21 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     })) {
       return true
     }
-    if ((e8r = block.eyo.inputEnumerator())) {
-      while (e8r.next()) {
-        if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
-          if (selectConnection(c8n)) {
-            return true
-          }
-        }
+    if (this.someInputConnection((c8n) => {
+      if (c8n.type !== Blockly.NEXT_STATEMENT && selectConnection(c8n)) {
+        return true
       }
-      // all the input connections are either dummy or statement connections
-      // select the first statement connection (there is an only one for the moment)
-      e8r.start()
-      while (e8r.next()) {
-        if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT)) {
-          if (selectConnection(c8n)) {
-            return true
-          }
-        }
+    })) {
+      return true
+    }
+    // all the input connections are either dummy or statement connections
+    // select the first statement connection (there is an only one for the moment)
+    if (this.someInputConnection((c8n) => {
+      if (c8n.type === Blockly.NEXT_STATEMENT && selectConnection(c8n)) {
+        return true
       }
+    })) {
+      return true
     }
   }
   if (!(c8n = this.selectedConnection) || (c8n.type !== Blockly.NEXT_STATEMENT)) {
@@ -2414,13 +2406,14 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
       block = target
       target = c8n.sourceBlock_
     }
-    e8r = block.eyo.inputEnumerator()
-    while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && (c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
+    if (this.someInputConnection((c8n) => {
+      if ((c8n.type === Blockly.NEXT_STATEMENT) && (target = c8n.targetBlock()) && (target !== block)) {
         eYo.SelectedConnection = null
         target.select()
         return true
       }
+    })) {
+      return true
     }
   }
   // now try to select a top block
@@ -2596,10 +2589,8 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   where.scale(1 / block.workspace.scale)
   var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
-  var e8r = block.eyo.inputEnumerator()
-  while (e8r.next()) {
-    var c8n = e8r.here.connection
-    if (c8n && !c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
+  var c8n = this.someInputConnection((c8n) => {
+    if (!c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
       if (c8n.type === Blockly.INPUT_VALUE) {
         var target = c8n.targetBlock()
         if (target) {
@@ -2654,8 +2645,10 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
         }
       }
     }
-  }
-  if ((c8n = block.previousConnection) && !c8n.hidden) {
+  })
+  if (c8n) {
+    return c8n
+  } else if ((c8n = block.previousConnection) && !c8n.hidden) {
     R = new goog.math.Rect(
       c8n.offsetInBlock_.x,
       c8n.offsetInBlock_.y - 2 * eYo.Style.Path.width,
@@ -2871,19 +2864,18 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       if ((c8n = candidate.outputConnection)) {
         // try to find a free connection in a block
         // When not undefined, the returned connection can connect to c8n.
-        var findC8n = function (block) {
-          var e8r = block.eyo.inputEnumerator()
-          var otherC8n, foundC8n, target
-          while (e8r.next()) {
-            if ((foundC8n = e8r.here.connection) && foundC8n.type === Blockly.INPUT_VALUE) {
+        var findC8n = (block) => {
+          var otherC8n, target
+          otherC8n = block.eyo.someInputConnection((foundC8n) => {
+            if (foundC8n.type === Blockly.INPUT_VALUE) {
               if ((target = foundC8n.targetBlock())) {
                 if (!(foundC8n = findC8n(target))) {
-                  continue
+                  return
                 }
               } else if (!c8n.checkType_(foundC8n)) {
-                continue
+                return
               } else if (foundC8n.eyo.bindField) {
-                continue
+                return
               }
               if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
                 // we have found a connection
@@ -2899,7 +2891,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
                 otherC8n = foundC8n
               }
             }
-          }
+          })
           return otherC8n
         }
         if ((otherC8n = findC8n(block))) {
@@ -2951,52 +2943,46 @@ console.warn('Use eYo.Events.setGroup(...)')
 /**
  * Whether the given block can lock.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return boolean
  */
-eYo.DelegateSvg.prototype.canLock = function (block) {
+eYo.DelegateSvg.prototype.canLock = function () {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.eyo.inputEnumerator()
   var c8n, target
-  while (e8r.next()) {
-    if ((c8n = e8r.here.connection) && !c8n.eyo.disabled_) {
+  return !this.someInput((input) => {
+    if ((c8n = input.connection) && !c8n.eyo.disabled_) {
       if ((target = c8n.targetBlock())) {
-        if (!target.eyo.canLock(target)) {
-          return false
+        if (!target.eyo.canLock()) {
+          return true
         }
       } else if (!c8n.eyo.optional_ && !c8n.eyo.s7r_) {
-        return false
+        return true
       }
     }
-  }
-  return true
+  })
 }
 /**
  * Whether the given block can unlock.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return {boolean}, true only if there is something to unlock
  */
-eYo.DelegateSvg.prototype.canUnlock = function (block) {
+eYo.DelegateSvg.prototype.canUnlock = function () {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var e8r = block.eyo.inputEnumerator()
   var c8n, target
-  while (e8r.next()) {
-    if ((c8n = e8r.here.connection)) {
+  return this.someInput((input) => {
+    if ((c8n = input.connection)) {
       if ((target = c8n.targetBlock())) {
-        if (target.eyo.canUnlock(target)) {
+        if (target.eyo.canUnlock()) {
           return true
         }
       }
     }
-  }
-  return false
+  })
 }
 
 /**
@@ -3007,7 +2993,7 @@ eYo.DelegateSvg.prototype.canUnlock = function (block) {
  */
 eYo.DelegateSvg.prototype.lock = function () {
   var ans = 0
-  if (this.locked_ || !block.eyo.canLock(block)) {
+  if (this.locked_ || !block.eyo.canLock()) {
     return ans
   }
   if (Blockly.Events.isEnabled()) {
@@ -3020,10 +3006,9 @@ eYo.DelegateSvg.prototype.lock = function () {
     eYo.SelectedConnection = null
   }
   // list all the input for connections with a target
-  var e8r = block.eyo.inputEnumerator()
   var target
-  while (e8r.next()) {
-    if ((c8n = e8r.here.connection)) {
+  this.forEachInput((input) => {
+    if ((c8n = input.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
       }
@@ -3031,7 +3016,8 @@ eYo.DelegateSvg.prototype.lock = function () {
         c8n.setHidden(true)
       }
     }
-  }
+  })
+  // maybe redundant calls here
   this.foreachSlot((slot) => {
     if (slot.input && (c8n = slot.input.connection)) {
       if ((target = c8n.targetBlock())) {
@@ -3075,16 +3061,15 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
   }
   this.locked_ = false
   // list all the input for connections with a target
-  var e8r = block.eyo.inputEnumerator()
   var c8n, target
-  while (e8r.next()) {
-    if ((c8n = e8r.here.connection)) {
+  this.forEachInput((input) => {
+    if ((c8n = input.connection)) {
       if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {
         ans += target.eyo.unlock(shallow)
       }
       c8n.setHidden(false)
     }
-  }
+  })
   if (!shallow && (c8n = block.nextConnection)) {
     if ((target = c8n.targetBlock())) {
       ans += target.eyo.unlock()

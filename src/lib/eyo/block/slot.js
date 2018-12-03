@@ -103,6 +103,11 @@ Object.defineProperties(
         return this.owner.block_
       }
     },
+    connection: {
+      get () {
+        return this.input && this.input.connection
+      }
+    },
     sourceBlock_: {
       get () {
         return this.owner.block_
