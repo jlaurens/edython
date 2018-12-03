@@ -329,7 +329,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/module/delegate_svg_cmath.js" \
 --js "src/lib/eyo/module/delegate_svg_decimal.js" \
---js "src/lib/eyo/module/delegate_svg_fraction.js" \
+--js "src/lib/eyo/module/delegate_svg_fractions.js" \
 --js "src/lib/eyo/module/delegate_svg_functions.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
 --js "src/lib/eyo/module/delegate_svg_math.js" \

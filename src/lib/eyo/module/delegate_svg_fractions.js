@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Fraction')
+goog.provide('eYo.DelegateSvg.Fractions')
 
 goog.require('eYo.Msg')
 goog.require('eYo.DelegateSvg.Stmt')
@@ -112,7 +112,7 @@ eYo.FlyoutCategory.fractions__module = [
   F('Fraction'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    assigned_S: {
+    assigned_s: {
       slots: {
         'O': F('Fraction')
       }
@@ -128,6 +128,6 @@ goog.mixin(eYo.Tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })
 
-eYo.DelegateSvg.Fraction.T3s = [
+eYo.DelegateSvg.Fractions.T3s = [
   eYo.T3.Fraction
 ]

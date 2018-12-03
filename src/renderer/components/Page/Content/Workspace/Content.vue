@@ -127,7 +127,7 @@
       moduleF('random')
       moduleF('cmath')
       moduleF('decimal') // broken in brython https://github.com/brython-dev/brython/issues/989
-      moduleF('fraction')
+      moduleF('fractions')
       moduleF('statistics')
       moduleF('string')
       model.levels = [

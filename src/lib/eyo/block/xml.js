@@ -43,7 +43,7 @@ goog.require('eYo.DelegateSvg.Math');
 goog.require('eYo.DelegateSvg.CMath');
 goog.require('eYo.DelegateSvg.Turtle');
 goog.require('eYo.DelegateSvg.Decimal');
-goog.require('eYo.DelegateSvg.Fraction');
+goog.require('eYo.DelegateSvg.Fractions');
 goog.require('eYo.DelegateSvg.Statistics');
 
 eYo.Xml = {

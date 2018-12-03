@@ -123,6 +123,6 @@ goog.mixin(eYo.Tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
 
-eYo.DelegateSvg.Fraction.T3s = [
+eYo.DelegateSvg.Fractions.T3s = [
   eYo.T3.Fraction
 ]
