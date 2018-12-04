@@ -101,7 +101,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
   },
   slots: {
     start: {
-      order: 2,
+      order: 10,
       fields: {
         bind: {
           order: 1,
@@ -112,7 +112,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       check: eYo.T3.Expr.Check.argument_any
     },
     sep: {
-      order: 3,
+      order: 20,
       fields: {
         sep:{
           value: ',',
@@ -121,7 +121,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       }
     },
     stop: {
-      order: 4,
+      order: 30,
       fields: {
         bind: {
           order: 1,
@@ -132,7 +132,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       check: eYo.T3.Expr.Check.argument_any
     },
     step: {
-      order: 5,
+      order: 40,
       fields: {
         begin:{
           order: 1,
@@ -159,12 +159,10 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
 /**
  * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
- * @return true if the given value is accepted, false otherwise
  */
 eYo.DelegateSvg.Expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
-
 
 eYo.DelegateSvg.Range.T3s = [
   eYo.T3.Expr.identifier,

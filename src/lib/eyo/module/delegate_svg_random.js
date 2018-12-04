@@ -13,6 +13,8 @@
 
 goog.provide('eYo.DelegateSvg.Random')
 
+goog.require('eYo.DelegateSvg.Range')
+
 goog.require('eYo.Model.random__module')
 
 goog.require('eYo.DelegateSvg.Stmt')
@@ -29,36 +31,103 @@ eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.primary.makeSubclass('random__randrange', {
+eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
   data: {
-    holder: {
-      init: 'random',
-    },
-    name: {
-      init: 'randrange',
-      synchronize: true,
-      xml: false
-    },
-    variant: {
-      init: eYo.Key.CALL_EXPR,
-      all: [
-        eYo.Key.NONE,
-        eYo.Key.CALL_EXPR
-      ]
+    dotted: {
+      order: 200,
+      init: 0,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var validated
+        if (goog.isString(newValue)) {
+          if (newValue.length) {
+            validated = Math.max(0, Math.floor(Number(newValue)))
+          } else {
+            validated = Infinity
+          }
+        } else if (goog.isNumber(newValue)) {
+          validated = Math.max(0, Math.floor(newValue))
+        }
+        return goog.isDef(validated) && validated <= 1
+        ? {
+          validated: validated
+        }
+        : {}
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        this.required = newValue > 0
+        this.setIncog()
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        var p = this.owner.profile_p
+        var item = p && p.p5e && p.p5e.item
+        if (item) {
+          if (item.type === 'method') {
+            this.change(1)
+            return
+          }
+        }
+        if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name || type === eYo.T3.Expr.parent_module) {
+          this.change(1)
+        }
+      },
+      fromField: /** @suppress {globalThis} */ function (value) {
+        this.fromField(value.length)
+      },
+      toField: /** @suppress {globalThis} */ function (value) {
+        var txt = ''
+        for (var i = 0; (i < this.get()); i++) {
+          txt += '.'
+        }
+        return txt
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (this.get()) {
+            this.save(element, opt)
+          }
+        }
+      },
+      synchronize: true
+    }
+  },
+  fields: {
+    label: {
+      value: 'randrange',
+      css: '',
     }
   },
   slots: {
-    holder: {
-      order: 10,
+    dotted: {
+      order: 5,
       fields: {
-        bind: ''
+        label: {
+          order: 1,
+          value: 'random',
+          css: 'reserved'
+        },
+        bind: {
+          order: 10,
+          value: '.',
+          css: 'reserved',
+          separator: true
+        }
       }
-    }
+    }  
   },
   output: {
     check: [eYo.T3.Expr.random__randrange, eYo.T3.Expr.call_expr]
   }
 }, true)
+
+/**
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.random__randrange.prototype.xmlAttr = function () {
+  return 'randrange'
+}
+
 
 var F = function (name, title) {
   var key = 'random__'+name
@@ -137,15 +206,7 @@ eYo.FlyoutCategory.basic_random__module = [
   F('uniform', 'Loi uniforme'),
   F('gauss', 'Loi normale'),
   {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'randrange',
-    holder_d: 'random',
-    dotted_d: 0,
-    n_ary_s: {
-      slots: {
-        O: 10
-      }
-    },
+    type: eYo.T3.Expr.random__randrange,
     title: 'random__randrange'
   },
   F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
@@ -226,15 +287,7 @@ eYo.FlyoutCategory.random__module = [
   F('paretovariate', 'Loi de Pareto'),
   F('weibullvariate', 'Distribution de Weibull'),
   {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'randrange',
-    holder_d: 'random',
-    dotted_d: 1,
-    n_ary_s: {
-      slots: {
-        O: 10
-      }
-    },
+    type: eYo.T3.Expr.random__randrange,
     title: 'random__randrange'
   },
   F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),

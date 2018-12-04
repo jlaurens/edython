@@ -37,6 +37,9 @@ eYo.Delegate.makeSubclass('Svg')
 // Mimic Blockly naming convention
 eYo.DelegateSvg = eYo.Delegate.Svg
 
+eYo.DelegateSvg.prototype.packedQuotes = true
+eYo.DelegateSvg.prototype.packedBrackets = true
+
 Object.defineProperties(
   eYo.DelegateSvg.prototype,
   {
@@ -1284,6 +1287,10 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         var head = text[0]
         if (head === '.' && !io.common.field.beforeIsBlack) {
           io.cursor.c -= 1
+        } else if (this.packedQuotes && (head === "'" || head === '"') && !io.common.field.beforeIsBlack) {
+          io.cursor.c -= 1
+        } else if (this.packedBrackets && head === "[" && !io.common.field.beforeIsBlack) {
+          io.cursor.c -= 1
         } else if (io.common.field.beforeIsBlack
           && (eYo.XRE.operator.test(head) || head === '=')) {
           io.cursor.c += 1
@@ -1312,6 +1319,11 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (io) {
         ', ' + (io.cursor.y + eYo.Padding.t) + ')')
       // then advance the cursor after the field.
       io.cursor.c += f_eyo.size.w
+      if ((tail === '"' || tail === "'") && this.packedQuotes && io.cursor.c > 2) {
+        --io.cursor.c
+      } else if (tail === ']' && this.packedBrackets && io.cursor.c > 2) {
+        --io.cursor.c
+      }
       if (f_eyo.isEditing) {
         // This is a trick to avoid some bad geometry while editing
         // this is useful for widget only.
