@@ -45,6 +45,7 @@ goog.require('eYo.DelegateSvg.Turtle');
 goog.require('eYo.DelegateSvg.Decimal');
 goog.require('eYo.DelegateSvg.Fractions');
 goog.require('eYo.DelegateSvg.Statistics');
+goog.require('eYo.DelegateSvg.Range')
 
 eYo.Xml = {
   URN: 'urn:edython:',

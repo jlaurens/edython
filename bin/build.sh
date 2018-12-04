@@ -312,6 +312,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_literal.js" \
 --js "src/lib/eyo/block/delegate_svg_list.js" \
 --js "src/lib/eyo/block/delegate_svg_operator.js" \
+--js "src/lib/eyo/block/delegate_svg_range.js" \
 --js "src/lib/eyo/workspace/flyout-category.js" \
 --js "src/lib/eyo/workspace/menu_manager.js" \
 --js "src/lib/eyo/block/delegate_svg_argument.js" \

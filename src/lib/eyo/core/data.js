@@ -964,8 +964,10 @@ eYo.Data.prototype.load = function (element) {
  * For edython.
  */
 eYo.Data.prototype.didLoad = function () {
-  if (this.model.didLoad) {
-    this.model.didLoad.call(this)
+  var f = eYo.Decorate.reentrant_method.call(this, 'modelDidLoad',this.model.didLoad)
+  if (f) {
+    f.apply(this, arguments)
+    return
   }
 }
 

@@ -131,6 +131,7 @@ eYo.Tooltip.Title = {
   del_stmt: 'Supprimer une variable, un element',
   parenth_target_list: 'Liste d\'objets assignables entre parenthèses',
   bracket_target_list: 'Liste d\'objets assignables entre crochets',
+  builtin__range_expr: 'Expression range (étendue), à utiliser dans les boucles',
   builtin__print_expr: 'Expression print (afficher), pour afficher du texte ou des variables sur la console, gestion des séparateurs de champ et des fins de ligne',
   builtin__print_stmt: 'Expression print (afficher),\npour afficher du texte ou des variables sur la console,\ngestion des séparateurs de champ et des fins de ligne',
   comprehension: 'Compréhension',

@@ -127,7 +127,9 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   PREFIX: 'prefix', // lowercase
   SUFFIX: 'suffix', // lowercase
   START: 'start', // lowercase
+  STEP: 'end', // lowercase
   END: 'end', // lowercase
+  STOP: 'stop', // lowercase
 
   LABEL: 'label', // lowercase
   SEPARATOR: 'separator', // lowercase

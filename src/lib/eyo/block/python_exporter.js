@@ -69,32 +69,33 @@ eYo.PythonExporter.prototype.newline_ = function () {
  * Convert the block to python code.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBlock`.
  * @return some python code
  */
-eYo.PythonExporter.prototype.exportExpression_ = function (block) {
+eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
   var field, input, slot
   var eyo = block.eyo
   if ((field = eyo.fromStartField)) {
     do {
-      this.exportField_(field)
+      this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
   if ((slot = eyo.headSlot)) {
     do {
-      this.exportSlot_(slot)
+      this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
   } else {
     // list blocks
     block.eyo.consolidate()
     block.eyo.forEachInput((input) => {
       if (input !== eyo.inputSuite) {
-        this.exportInput_(e8r.here)
+        this.exportInput_(input, opt)
       }
     })
   }
   if ((field = eyo.toEndField)) {
     do {
-      this.exportField_(field)
+      this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
 }
@@ -106,21 +107,24 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block) {
  * @param {boolean} is_deep whether next blocks should be exported too.
  * @return some python code
  */
-eYo.PythonExporter.prototype.export = function (block, is_deep) {
+eYo.PythonExporter.prototype.export = function (block, opt) {
+  var is_deep = opt && opt.is_deep
   this.newline_()
   try {
     ++this.depth
     this.expression = []
     var field, input, slot
     
-    this.exportExpression_(block)
+    this.exportExpression_(block, opt)
   
     if ((input = block.eyo.inputSuite)) {
       try {
         this.indent_()
         var target = input.connection.targetBlock()
         if (target) {
-          this.export(target, true)
+          opt.is_deep = true
+          this.export(target, opt)
+          opt.is_deep = is_deep
         } else {
           this.newline_()
           this.line.push('MISSING STATEMENT')
@@ -133,7 +137,9 @@ eYo.PythonExporter.prototype.export = function (block, is_deep) {
       }
     }
     if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
-      this.export(target, true)
+      opt.is_deep = true
+      this.export(target, opt)
+      opt.is_deep = is_deep
     }  
   } catch (err) {
     console.error(err)

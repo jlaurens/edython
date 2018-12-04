@@ -156,6 +156,11 @@
         :eyo="eyo"
         :step="step"
         :slotholder="slotholder"></block-proper-slice>
+      <block-range
+        v-else-if="isSelected($$.eYo.T3.Expr.builtin__range_expr)"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"></block-range>
       <block-any-expression
         v-else-if="isSelected($$.eYo.T3.Expr.any)"
         :eyo="eyo"
@@ -235,6 +240,7 @@
   import BlockAssert from './Block/Assert.vue'
   import BlockRaise from './Block/Raise.vue'
   import BlockYield from './Block/Yield.vue'
+  import BlockRange from './Block/Range.vue'
 
   export default {
     name: 'toolbar-block',
@@ -273,7 +279,8 @@
       BlockPcbGndR,
       BlockAssert,
       BlockRaise,
-      BlockYield
+      BlockYield,
+      BlockRange
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
@@ -568,16 +575,25 @@
     text-align: left;
     width: 8rem;
   }
+  .b3k-edit .item.w-1rem {
+    width: calc(0.75 * 1rem); /**/
+    min-width: calc(0.75 * 1rem);
+  }
   .b3k-edit .item.w-2rem {
-    width: 2rem;
+    width: calc(0.75 * 2rem); /**/
+    min-width: calc(0.75 * 2rem);
+  }
+  .b3k-edit .item.w-4rem {
+    width: calc(0.75 * 4rem); /**/
+    min-width: calc(0.75 * 4rem);
   }
   .b3k-edit .mw-4rem>.dropdown-menu {
-    width: 4rem;
-    min-width: 4rem;
+    width: calc(0.75 * 4rem); /**/
+    min-width: calc(0.75 * 4rem);
   }
   .b3k-edit .mw-6rem>.dropdown-menu {
-    width: 6rem;
-    min-width: 6rem;
+    width: calc(0.75 * 6rem); /**/
+    min-width: calc(0.75 * 6rem);
   }
   .b3k-edit .mw-8rem>.dropdown-menu {
     width: calc(0.75 * 8rem); /**/

@@ -85,7 +85,6 @@
         }
       },
       formatted: function (item) {
-        console.warn(item)
         var formatted = item.length
           ? this.$$t(`message.${({
             '*': 'star',
