@@ -32,6 +32,9 @@ eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
  * For edython.
  */
 eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
+  xml: {
+    attr: 'randrange'
+  },
   data: {
     dotted: {
       order: 200,
@@ -91,15 +94,9 @@ eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
       synchronize: true
     }
   },
-  fields: {
-    label: {
-      value: 'randrange',
-      css: '',
-    }
-  },
   slots: {
     dotted: {
-      order: 5,
+      order: 1,
       fields: {
         label: {
           order: 1,
@@ -113,7 +110,15 @@ eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
           separator: true
         }
       }
-    }  
+    },
+    open: {
+      fields: {
+        label: {
+          value: 'randrange',
+          css: ''
+        }
+      },
+    },
   },
   output: {
     check: [eYo.T3.Expr.random__randrange, eYo.T3.Expr.call_expr]
@@ -125,7 +130,7 @@ eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.random__randrange.prototype.xmlAttr = function () {
-  return 'randrange'
+  return this.model.xml.attr
 }
 
 
@@ -288,6 +293,7 @@ eYo.FlyoutCategory.random__module = [
   F('weibullvariate', 'Distribution de Weibull'),
   {
     type: eYo.T3.Expr.random__randrange,
+    dotted_d: 1,
     title: 'random__randrange'
   },
   F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),

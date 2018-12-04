@@ -84,22 +84,21 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       }
     }
   },
-  fields: {
-    label: {
-      order:1,
-      value: 'range',
-      css: 'builtin'
-    },
-    open: {
-      value: '(',
-      order: 2
-    },
-    close: {
-      value: ')',
-      order: -1
-    }
-  },
   slots: {
+    open: {
+      order: 5,
+      fields: {
+        label: {
+          order:1,
+          value: 'range',
+          css: 'builtin'
+        },
+        open: {
+          value: '(',
+          order: 2
+        }
+      },
+    },
     start: {
       order: 10,
       fields: {
@@ -146,7 +145,16 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
         }
       },
       check: eYo.T3.Expr.Check.argument_any
-    }
+    },
+    close: {
+      order: 100,
+      fields: {
+        close: {
+          value: ')',
+          order: -1
+        }
+      },
+    },
   },
   output: {
     check: [

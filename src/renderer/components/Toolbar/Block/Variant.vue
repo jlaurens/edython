@@ -1,7 +1,20 @@
 <template>
-  <b-dd :id="child_id" :class="$$class" variant="outline-secondary" v-if="!!eyo.variant_d">
-    <template slot="button-content"><span class="eyo-code" v-html="chosen.title"></span></template>
-    <b-dd-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dd-item-button>
+  <b-dd
+    v-if="!!eyo.variant_d"
+    :id="child_id"
+    :class="$$class"
+    variant="outline-secondary">
+    <template
+      slot="button-content">
+      <span
+        class="eyo-code"
+        v-html="chosen.title"></span></template>
+    <b-dd-item-button
+      v-for="choice in choices"
+      v-on:click="chosen = choice"
+      :key="choice.key"
+      class="eyo-code"
+      v-html="choice.title"></b-dd-item-button>
   </b-dd>
 </template>
 

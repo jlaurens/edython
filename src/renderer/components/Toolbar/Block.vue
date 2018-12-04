@@ -157,7 +157,10 @@
         :step="step"
         :slotholder="slotholder"></block-proper-slice>
       <block-range
-        v-else-if="isSelected($$.eYo.T3.Expr.builtin__range_expr)"
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.builtin__range_expr,
+          $$.eYo.T3.Expr.random__randrange
+        ])"
         :eyo="eyo"
         :step="step"
         :slotholder="slotholder"></block-range>

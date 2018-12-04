@@ -500,7 +500,7 @@ eYo.Xml.blockToDom = (function () {
     eYo.Xml.blockToDom = blockToDom
     return blockToDom(block, opt)
   }
-}())
+}) ()
 
 goog.exportSymbol('eYo.Xml.blockToDom', eYo.Xml.blockToDom)
 
@@ -734,7 +734,7 @@ eYo.Xml.toDom = function (block, element, opt) {
  *
  */
 eYo.Xml.registerAllTags = function () {
-  // mode is one of 'Expr' and 'Stmt'
+  // mode is one of 'Expr' or 'Stmt'
   var register = function (mode) {
     var where = eYo.T3[mode]
     for (var key in where) {

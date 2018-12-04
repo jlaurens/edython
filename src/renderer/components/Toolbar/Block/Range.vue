@@ -1,8 +1,23 @@
 <template>
-  <b-btn-group id="block-range" class="b3k-edit-content btn-outline-secondary" aria-label="Block range edit content" justify>
+  <b-btn-group
+    id="block-range"
+    class="b3k-edit-content"
+    aria-label="Block range edit content"
+    justify>
+    <b-dd
+      v-if="!!eyo.dotted_d"
+      id="child_id"
+      class="item text eyo-code-reserved"
+      :text="chosen">
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="chosen = choice"
+        :key="choice"
+        class="eyo-code"><span class="eyo-code-reserved">{{choice}}</span></b-dd-item-button>
+    </b-dd>
     <div
       class="item text w-5rem">
-      <span class="eyo-code-reserved">range</span>(</div>
+      <span class="eyo-code-reserved">{{`${!!eyo.dotted_d ? 'rand' : ''}range`}}</span>(</div>
     <div
       class="item">
       <input
@@ -44,7 +59,7 @@
         placeholder="1">
     </div>
     <div
-    :class="$$class({no_text: !showStep, width: 2})">,</div>
+     :class="$$class({no_text: !showStep, width: 2})">,</div>
     <div
       v-if="eyo.step_t"
       :class="$$class({no_text: !showStep})"
@@ -91,6 +106,21 @@
       }
     },
     computed: {
+      choices () {
+        return [
+          '',
+          'random.'
+        ]
+      },
+      chosen: {
+        get () {
+          this.$$synchronize(this.step)
+          return this.choices[this.eyo.dotted_p]
+        },
+        set (newValue) {
+          this.eyo.dotted_p = newValue.length > 0 ? 1 : 0
+        }
+      },
       r_start: {
         get () {
           this.$$synchronize(this.step)
