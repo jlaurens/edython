@@ -130,7 +130,7 @@ var F = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      module: 'cmath',
+      holder: 'cmath',
       dotted: 0
     },
     title: key
@@ -143,7 +143,7 @@ var F_k = function (name, title) {
     type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
-      module: 'cmath',
+      holder: 'cmath',
       dotted: 0
     },
     title: key

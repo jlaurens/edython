@@ -1685,7 +1685,6 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
 /**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
- * @param {!Block} block
  * @private
  */
 eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
@@ -1700,12 +1699,11 @@ eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
 /**
  * Creates the contour path.
  * Does nothing if this contour already exists.
- * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.prototype.makeBlockUnwrapped = function (block) {
+eYo.DelegateSvg.prototype.makeBlockUnwrapped = function () {
   if (this.svgPathContour_) {
-    eYo.DelegateSvg.superClass_.makeBlockUnwrapped.call(this, block)
+    eYo.DelegateSvg.superClass_.makeBlockUnwrapped.call(this)
     this.svgPathContour_.removeAttribute('display')
     this.svgPathShape_.removeAttribute('display')
   }

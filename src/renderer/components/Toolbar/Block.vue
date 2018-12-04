@@ -8,8 +8,12 @@
     b) common stuff to be defined later
 -->
 <template>
-  <b-btn-toolbar id="toolbar-block" key-nav  aria-label="Block toolbar" justify
-        :style="style">
+  <b-btn-toolbar
+    id="toolbar-block"
+    key-nav
+    aria-label="Block toolbar"
+    justify
+    :style="style">
     <b-btn-group class="b3k-edit">
       <block-primary
         v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types) || isSelected([$$.eYo.T3.Stmt.call_stmt])"
@@ -60,7 +64,10 @@
         v-else-if="isSelected([
           $$.eYo.T3.Expr.binary,
           $$.eYo.T3.Expr.a_expr,
-          $$.eYo.T3.Expr.m_expr, $$.eYo.T3.Expr.shift_expr, $$.eYo.T3.Expr.and_expr, $$.eYo.T3.Expr.xor_expr,
+          $$.eYo.T3.Expr.m_expr,
+          $$.eYo.T3.Expr.shift_expr,
+          $$.eYo.T3.Expr.and_expr,
+          $$.eYo.T3.Expr.xor_expr,
           $$.eYo.T3.Expr.or_expr,
           $$.eYo.T3.Expr.power
         ])"

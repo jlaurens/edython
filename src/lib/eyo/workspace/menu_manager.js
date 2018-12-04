@@ -965,7 +965,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
           return false
         }
         // the wrapped block is a list
-        var listCheck = list.all || list.check || (list.consolidator && list.consolidator.data && list.consolidator.data.check)
+        var listCheck = list.all || list.check || (list.consolidator && list.consolidator.model && list.consolidator.model.check)
         check = goog.isFunction(listCheck)
           ? listCheck.call(model.type)
           : listCheck

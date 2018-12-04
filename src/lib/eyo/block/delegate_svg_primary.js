@@ -13,7 +13,6 @@
 
 goog.provide('eYo.DelegateSvg.Primary')
 
-goog.require('eYo.Signature')
 goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 
@@ -422,6 +421,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         var O = this.owner
         O.updateProfile()
         O.n_ary_s.setIncog(newValue !== eYo.Key.CALL_EXPR)
+        if (!O.n_ary_s.isIncog()) {
+          O.n_ary_t.eyo.createConsolidator(true)
+        }
         O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
         O.alias_d.setIncog(newValue !== eYo.Key.ALIASED)
         O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED)
@@ -832,12 +834,19 @@ Object.defineProperties( eYo.DelegateSvg.Expr.primary.prototype, {
 /**
  * updateProfile.
  */
-eYo.DelegateSvg.Expr.primary.prototype.updateProfile = function () {
-  ++this.change.count
-  this.profile_p = this.getProfile()
-  this.subtype_p = this.profile_p.p5e && this.profile_p.p5e.raw
-}
-
+eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
+  'updateProfile',
+  function () {
+    ++this.change.count
+    var p5e = this.profile_p.p5e
+    this.subtype_p = p5e && p5e.raw
+    var item = p5e && p5e.item
+    if (item) {
+      this.ary_p = item.aryMax
+      this.mandatory_p = item.mandatoryMin
+    }
+  }
+)
 /**
  * getProfile.
  * What are the types of holder and name?

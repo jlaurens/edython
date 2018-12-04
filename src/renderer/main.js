@@ -231,7 +231,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
 
 eYo.App.Document.doNew = function (ev) {
   console.log('doNew')
-  if (eYo.App.workspace.eyo.changeCount) {
+  if (eYo.App.workspace && eYo.App.workspace.eyo.changeCount) {
     console.log('will bv::show::modal')
     eYo.$$.app.$emit('bv::show::modal', 'page-modal-should-save')
   } else {

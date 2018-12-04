@@ -96,8 +96,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
-        var data = this.data.variant
-        var variant = data.get()
+        var variant = this.owner.variant_p
         return p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
         || ((variant === eYo.Key.FROM_MODULE_IMPORT)
@@ -145,10 +144,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFrom()) {
-          var d = this.owner.data.variant
-          var v = d.get()
+          var v = this.owner.variant_p
           if (v !== eYo.Key.FROM_MODULE_IMPORT && v !== eYo.Key.FROM_MODULE_IMPORT_STAR)
-          d.set(eYo.Key.FROM_MODULE_IMPORT)
+          this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       }
     },

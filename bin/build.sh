@@ -249,7 +249,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/eyo.js" \
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
---js "src/lib/eyo/block/signature.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
@@ -325,7 +324,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_primary.js" \
 --js "src/lib/eyo/module/delegate_svg_string.js" \
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
---js "src/lib/eyo/block/delegate_svg_range.js" \
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/module/delegate_svg_cmath.js" \
 --js "src/lib/eyo/module/delegate_svg_decimal.js" \
@@ -335,10 +333,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/module/delegate_svg_math.js" \
 --js "src/lib/eyo/block/delegate_svg_print.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
+--js "src/lib/eyo/module/delegate_svg_random.js" \
 --js "src/lib/eyo/module/delegate_svg_statistics.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
 --js "src/lib/eyo/module/delegate_svg_turtle.js" \
---js "src/lib/eyo/module/delegate_svg_random.js" \
 --js "src/lib/eyo/block/development.js" \
 --js "src/lib/eyo/block/xml.js" \
 --js "src/lib/eyo/workspace/app.js" \

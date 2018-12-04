@@ -121,7 +121,6 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function () {
 
 /**
  * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */

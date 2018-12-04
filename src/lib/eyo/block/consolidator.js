@@ -29,25 +29,31 @@ goog.require('eYo.DelegateSvg')
  * These are implemented as potential singletons but are not used as is.
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
- * @param {!Object} d, all the data needed
+ * @param {!Object} d, all the model needed
  * @constructor
  */
 eYo.Consolidator = function (d) {
-  this.data = {}
   this.reentrant = {}
-  var D = this.constructor.eyo && this.constructor.eyo.data_
-  if (D) {
-    goog.mixin(this.data, D)
-  }
-  if (d) {
-    goog.mixin(this.data, d)
-  }
-  goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
-  this.data.check = eYo.Do.ensureArrayFunction(this.data.check)
-  this.init && this.init()
+  this.init(d)
 }
 
 eYo.Consolidator.eyo = {}
+
+/**
+ * Init. Not implemented. No parameter, no return.
+ */
+eYo.Consolidator.prototype.init = function(d) {
+  this.model = {}
+  var D = this.constructor.eyo && this.constructor.eyo.model_
+  if (D) {
+    goog.mixin(this.model, D)
+  }
+  if (d) {
+    goog.mixin(this.model, d)
+  }
+  goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
+  this.model.check = eYo.Do.ensureArrayFunction(this.model.check)
+}
 
 /**
  * Main and unique entry point.
@@ -57,21 +63,16 @@ eYo.Consolidator.eyo = {}
 eYo.Consolidator.prototype.consolidate = undefined
 
 /**
- * Init. Not implemented. No parameter, no return.
- */
-eYo.Consolidator.prototype.init = undefined
-
-/**
  * Create a subclass of a consolidator.
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
  * @param {!string} key
- * @param {!Object} data
+ * @param {!Object} model
  * @param {!Object} C10r  ancestor
  * @param {!Object} owner
  */
-eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
+eYo.Consolidator.makeSubclass = function (key, model, C10r, owner) {
   C10r = C10r || eYo.Consolidator
   owner = owner || C10r
   var subclass = owner[key] = function (d) {
@@ -80,19 +81,19 @@ eYo.Consolidator.makeSubclass = function (key, data, C10r, owner) {
   goog.inherits(subclass, C10r)
   subclass.eyo = {
     key: key,
-    data_: {} // start with a fresh object for the constructor data model
+    model_: {} // start with a fresh object for the constructor model model
   }
-  if (C10r.eyo.data_) {
-    goog.mixin(subclass.eyo.data_, C10r.eyo.data_)
+  if (C10r.eyo.model_) {
+    goog.mixin(subclass.eyo.model_, C10r.eyo.model_)
   }
-  if (goog.isFunction(data)) {
-    data = data.call(this)
+  if (goog.isFunction(model)) {
+    model = model.call(this)
   }
-  if (data) {
-    goog.mixin(subclass.eyo.data_, data)
+  if (model) {
+    goog.mixin(subclass.eyo.model_, model)
   }
-  subclass.makeSubclass = function (key, data, C10r, owner) {
-    eYo.Consolidator.makeSubclass(key, data, C10r || subclass, owner)
+  subclass.makeSubclass = function (key, model, C10r, owner) {
+    eYo.Consolidator.makeSubclass(key, model, C10r || subclass, owner)
   }
 }
 
@@ -112,14 +113,15 @@ eYo.Consolidator.makeSubclass('List')
 
 /**
  * Initialize the list consolidator.
- * @param {!Object} io parameter.
+ * @param {!Object} d model.
  */
-eYo.Consolidator.List.prototype.init = function () {
-  goog.asserts.assert(goog.isDef(this.data.check), 'List consolidators must check their objects')
-  if (this.data.unique) {
-    this.data.unique = eYo.Do.ensureArray(this.data.unique)
+eYo.Consolidator.List.prototype.init = function (d) {
+  eYo.Consolidator.List.superClass_.init.call(this, d)
+  goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
+  if (this.model.unique) {
+    this.model.unique = eYo.Do.ensureArray(this.model.unique)
   }
-  this.data.ary || (this.data.ary = Infinity)
+  this.model.ary || (this.model.ary = Infinity)
 }
 
 /**
@@ -128,11 +130,13 @@ eYo.Consolidator.List.prototype.init = function () {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getAry = function (io) {
-  if (io.list) {
-    var eyo = io.list.eyo
-    return eyo.ary_d && eyo.ary_p
+  if (io.block) {
+    var d = io.block.eyo.ary_d
+    if (d) {
+      return d.get()
+    }
   }
-  return this.data.ary || (this.data.ary = Infinity)
+  return this.model.ary || (this.model.ary = Infinity)
 }
 
 /**
@@ -147,9 +151,9 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
       return d.get()
     }
   }
-  return goog.isDef(this.data.mandatory)
-    ? this.data.mandatory
-    : this.data.mandatory = Infinity
+  return goog.isDef(this.model.mandatory)
+    ? this.model.mandatory
+    : this.model.mandatory = Infinity
 }
 
 /**
@@ -256,20 +260,20 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getCheck = function (io) {
-  if (this.data.all) {
+  if (this.model.all) {
     if (io.unique >= 0 || io.list.length === 1) {
       // a single block or no block at all
-      return this.data.all
+      return this.model.all
     } else if (io.list.length === 3 && io.i === 1) {
       // there is only one item in the list
       // and it can be replaced by any kind of block
-      return this.data.all
+      return this.model.all
     } else {
       // blocks of type check are already there
-      return this.data.check(io.block.type)
+      return this.model.check(io.block.type)
     }
   }
-  return this.data.check(io.block.type)
+  return this.model.check(io.block.type)
 }
 
 /**
@@ -323,13 +327,13 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
       }
       field.eyo.suffix = suffix
     }
-    var sep = io.eyo.presep || this.data.presep
+    var sep = io.eyo.presep || this.model.presep
     sep && sep.length && f(sep)
-    sep = io.eyo.postsep || this.data.postsep
+    sep = io.eyo.postsep || this.model.postsep
     sep && sep.length && f(sep, true)
   }
   io.input.setCheck(this.getCheck(io))
-  io.input.connection.eyo.plugged_ = this.data.plugged
+  io.input.connection.eyo.plugged_ = this.model.plugged
   if (io.block.eyo.locked_) {
     io.c8n.setHidden(true)
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
@@ -419,15 +423,13 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
   while (io.eyo) {
     if (this.willBeConnected(io)) {
-      io.presep = io.eyo.presep || this.data.presep
-      io.postsep = io.eyo.postsep || this.data.postsep
+      io.presep = io.eyo.presep || this.model.presep
+      io.postsep = io.eyo.postsep || this.model.postsep
       // manage the unique input
-      if (this.data.unique && io.unique < 0 &&
-        io.c8n.targetConnection && (function (my) {
-          return goog.array.find(io.c8n.targetConnection.check_, function (x) {
-            return my.data.unique.indexOf(x) >= 0
-          })
-        }(this))) {
+      if (this.model.unique && io.unique < 0 &&
+        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, (x) => {
+            return this.model.unique.indexOf(x) >= 0
+          })) {
         io.unique = io.i
       }
       return true
@@ -452,7 +454,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
   // This is because the placeholder may have been connected
   // before, undoing will be easier.
   this.setupIO(io, 0)
-  var ary = this.data.ary
+  var ary = this.getAry(io)
   if (ary > 0) {
     if (io.eyo) {
       while (true) {
@@ -507,7 +509,7 @@ eYo.Consolidator.List.prototype.doCleanup = function (io) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doAry = function (io) {
-  var ary = this.data.ary
+  var ary = this.getAry(io)
   if (ary < Infinity) {
     this.setupIO(io, 0)
     while (this.nextInput(io)) {
@@ -596,8 +598,8 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
       (!unwrapped ||
         !unwrapped.eyo.withDynamicList_),
     list: block.inputList,
-    presep: this.data.presep,
-    postsep: this.data.postsep
+    presep: this.model.presep,
+    postsep: this.model.postsep
   }
   this.setupIO(io, 0)
   return io
@@ -665,7 +667,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
         }
       }
     } while (this.nextInput(io))
-    var ary = this.data.ary
+    var ary = this.getAry(io)
     if (ary < Infinity) {
       this.setupIO(io, 0)
       while (this.nextInput(io)) {

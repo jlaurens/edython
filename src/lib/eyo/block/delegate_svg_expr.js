@@ -90,7 +90,7 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     var t = this.getBaseType()
-    var modifier = this.data.modifier.get()
+    var modifier = this.modifier_p
     if (!modifier) {
       return {
         ans: t
@@ -339,12 +339,10 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function () {
 
 /**
  * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
 eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
   var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, mgr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -353,13 +351,13 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
     )
     if (this.await_) {
       mgr.shouldSeparateRemove()
-      mgr.addRemoveChild(mgr.newMenuItem(content, function () {
-        block.eyo.data.await.set(false)
+      mgr.addRemoveChild(mgr.newMenuItem(content, () => {
+        this.await_p = false
       }))
     } else {
       mgr.shouldSeparateInsert()
-      mgr.addInsertChild(mgr.newMenuItem(content, function () {
-        block.eyo.data.await.set(true)
+      mgr.addInsertChild(mgr.newMenuItem(content, () => {
+        this.await_p = true
       }))
     }
   }

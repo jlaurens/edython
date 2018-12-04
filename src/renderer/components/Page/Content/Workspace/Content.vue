@@ -148,7 +148,7 @@
         model.items.turtle__module,
         model.items.math__module,
         // model.items.decimal__module,
-        model.items.fraction__module,
+        model.items.fractions__module,
         model.items.statistics__module,
         model.items.random__module,
         model.items.cmath__module,
@@ -187,10 +187,13 @@
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
         if (!oldValue || (newValue !== oldValue)) {
-          var el = this.$refs.content.getElementsByClassName('eyo-flyout')[0]
-          eYo.Tooltip.hideAll(el)
-          this.setFlyoutCategory(newValue.key)
-          this.label = newValue.label
+          var content = this.$refs.content
+          if (content) {
+            var el = content.getElementsByClassName('eyo-flyout')[0]
+            eYo.Tooltip.hideAll(el)
+            this.setFlyoutCategory(newValue.key)
+            this.label = newValue.label
+          }
         }
       },
       // whenever `isBasic` changes, this function will run
@@ -238,11 +241,16 @@
           sounds: true,
           oneBasedIndex: true
         }
+        // var el = document.getElementById('eyo-workspace-content')
+        // if (!el) {
+        //   console.error('WHAT THE HELL?')
+        // }
         var workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
         if (!workspace) {
           console.error('Injection failure')
           return
         }
+        // console.warn('WORKSPACE INSTALLED')
         eYo.setup(workspace)
         workspace.eyo.options = {
           noLeftSeparator: true,
@@ -299,6 +307,7 @@
         })
         this.selectedCategory = this.items.basic
         eYo.App.workspace.render()
+        this.$nextTick(eYo.App.Document.doNew)
       }
     }
   }

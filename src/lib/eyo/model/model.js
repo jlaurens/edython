@@ -126,7 +126,7 @@ eYo.Model.Item = function (model) {
   // goog.object.extend(this, model)
 }
 
-// Each model loaded comes hear
+// Each model loaded comes here
 eYo.Do.addProtocol(eYo.Model.Item, 'Register', 'module')
 
 /**
@@ -148,6 +148,34 @@ Object.defineProperties(eYo.Model.Item.prototype, {
   model: {
     get() {
       throw 'RENAMED property: model -> module'
+    }
+  },
+  aryMax: {
+    get () {
+      var ary = this.ary || Infinity
+      this.signatures.forEach((signature) => {
+        if (ary < signature.ary) {
+          ary = signature.ary
+        }
+      })
+      return ary
+    }
+  },
+  mandatoryMin: {
+    get () {
+      var ary = this.ary || Infinity
+      var mandatory = goog.isDef(this.mandatory)
+        ? this.mandatory
+        : this.ary || 0
+      this.signatures.forEach((signature) => {
+        var candidate = goog.isDef(signature.mandatory)
+          ? signature.mandatory
+          : signature.ary
+        if (mandatory > candidate) {
+          mandatory = candidate
+        }
+      })
+      return mandatory
     }
   }
 })

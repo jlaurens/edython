@@ -675,10 +675,10 @@ eYo.Delegate.Manager = (function () {
             this,
             key,
             {
-              get: function () {
+              get () {
                 return this.data[k].get()
               },
-              set: function (newValue) {
+              set (newValue) {
                 this.data[k].change(newValue)
               }
             }
@@ -697,7 +697,7 @@ eYo.Delegate.Manager = (function () {
             this,
             key_s,
             {
-              get: function () {
+              get () {
                 return this.slots[k]
               }
             }
@@ -709,7 +709,7 @@ eYo.Delegate.Manager = (function () {
             this,
             key_t,
             {
-              get: function () {
+              get () {
                 return this.slots[k].targetBlock()
               }
             }
@@ -1681,18 +1681,17 @@ eYo.Delegate.prototype.getWrappedDescendants = function (block) {
  */
 eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
-  goog.asserts.assert(eYo.T3.All.containsExpression(prototypeName), 'Unnown prototypeName, no block to seal ' + prototypeName)
   var block = this.block_
   var input = block.appendValueInput(name)
-  var eyo = input.connection.eyo
-  eyo.wrapped_ = prototypeName
-  eyo.optional_ = optional
-  eyo.hidden_ = hidden
+  var c_eyo = input.connection.eyo
+  c_eyo.wrapped_ = prototypeName
+  c_eyo.optional_ = optional
+  c_eyo.hidden_ = hidden
   if (!this.wrappedC8nDlgt_) {
     this.wrappedC8nDlgt_ = []
   }
   if (!optional) {
-    this.wrappedC8nDlgt_.push(eyo)
+    this.wrappedC8nDlgt_.push(c_eyo)
   }
   return input
 }
@@ -1717,7 +1716,6 @@ eYo.Delegate.prototype.completeWrapped_ = function () {
 /**
  * The default implementation does nothing.
  * Subclassers will override this but no one will call it.
- * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.doMakeBlockWrapped = function () {
@@ -1734,16 +1732,14 @@ eYo.Delegate.prototype.canUnwrap = function () {
 /**
  * The default implementation does nothing.
  * Subclassers will override this but won't call it.
- * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockUnwrapped = function (block) {
+eYo.Delegate.prototype.makeBlockUnwrapped = function () {
 }
 
 /**
  * The wrapped blocks are special.
  * Do not override.
- * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.makeBlockWrapped = function () {
@@ -1755,22 +1751,17 @@ eYo.Delegate.prototype.makeBlockWrapped = function () {
 
 /**
  * The wrapped blocks are special.
- * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.makeBlockUnwrapped_ = function (block) {
-  if (block.eyo.wrapped_) {
-    block.eyo.makeBlockUnwrapped(block)
-    block.eyo.wrapped_ = false
+eYo.Delegate.prototype.makeBlockUnwrapped_ = function () {
+  if (this.wrapped_) {
+    this.makeBlockUnwrapped()
+    this.wrapped_ = false
   }
 }
 
 /**
  * Get the first enclosing unwrapped block.
- * @param {!Block} block
- * @param {!Input} input
- * @param {!String} prototypeName
- * @return yorn whether a change has been made
  * @private
  */
 eYo.Delegate.prototype.getUnwrapped = function () {

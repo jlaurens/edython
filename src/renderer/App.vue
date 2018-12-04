@@ -15,9 +15,6 @@ export default {
         return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
       }
     }
-  },
-  mounted () {
-    this.$nextTick(eYo.App.Document.doNew)
   }
 }
 </script>

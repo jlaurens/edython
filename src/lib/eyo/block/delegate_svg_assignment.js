@@ -48,13 +48,13 @@ eYo.DelegateSvg.Expr.makeSubclass('target_star', {
  */
 eYo.Consolidator.List.Target = function (D) {
   var d = {}
-  goog.mixin(d, eYo.Consolidator.List.Target.data)
+  goog.mixin(d, eYo.Consolidator.List.Target.model)
   goog.mixin(d, D)
   eYo.Consolidator.List.Target.superClass_.constructor.call(this, d)
 }
 goog.inherits(eYo.Consolidator.List.Target, eYo.Consolidator.List)
 
-eYo.Consolidator.List.Target.data = {
+eYo.Consolidator.List.Target.model = {
   hole_value: 'name',
   check: null,
   empty: false,
@@ -75,13 +75,13 @@ eYo.Consolidator.List.makeSubclass('Target', {
  */
 eYo.Consolidator.List.Target.Void = function (D) {
   var d = {}
-  goog.mixin(d, eYo.Consolidator.List.Target.Void.data)
+  goog.mixin(d, eYo.Consolidator.List.Target.Void.model)
   goog.mixin(d, D)
   eYo.Consolidator.List.Target.Void.superClass_.constructor.call(this, d)
 }
 goog.inherits(eYo.Consolidator.List.Target.Void, eYo.Consolidator.List.Target)
 
-eYo.Consolidator.List.Target.Void.data = {
+eYo.Consolidator.List.Target.Void.model = {
   hole_value: 'name',
   check: null,
   mandatory: 0,

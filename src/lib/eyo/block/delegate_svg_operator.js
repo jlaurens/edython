@@ -68,7 +68,6 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
     },
     rhs: {
       init: '',
-      placeholder: '1',
       synchronize: true
     }
   },

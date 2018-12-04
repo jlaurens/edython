@@ -198,6 +198,12 @@ def do_one_module(module, **kwargs):
                 return 1
             return default
 
+        @staticmethod
+        def mandatory_random(name, default):
+            if name == 'randrange':
+                return 1
+            return default
+
     class Signature:
 
         arguments = None
@@ -835,6 +841,7 @@ Object.defineProperties(
                     print('STAR', signature.name, signature.owner.name)
                 do_print_attribute(signature, 'ary', s7r=s7r)
                 if signature.ary > 0:
+                    # mandatory is recorded only when not equal to ary
                     if signature.ary != signature.mandatory:
                         do_print_attribute(signature, 'mandatory')
                     print_argument(signature.arguments, sep=",")

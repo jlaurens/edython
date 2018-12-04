@@ -14,7 +14,6 @@
 goog.provide('eYo.DelegateSvg.Argument')
 
 goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.Signature')
 
 /**
  * Class for a DelegateSvg, keyword_item block.
@@ -49,7 +48,6 @@ goog.require('eYo.Signature')
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
-  mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
 
@@ -240,8 +238,8 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
         this.synchronize(newValue)
         this.owner.changeWrap(
           function () {
-            this.createConsolidator()
-            this.consolidator.data.ary = newValue
+            this.createConsolidator(true)
+            this.consolidator.model.ary = newValue
           }
         )
       }
@@ -255,9 +253,9 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
         this.didChange(oldValue, newValue)
         this.owner.changeWrap(
           function () {
-            this.createConsolidator()
-            this.consolidator.data.mandatory = newValue
-            this.consolidator.data.empty = !newValue    
+            this.createConsolidator(true)
+            this.consolidator.model.mandatory = newValue
+            this.consolidator.model.empty = !newValue    
           }
         )
       }
@@ -272,55 +270,22 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
 })
 
 /**
- * Create a consolidator..
- *
- * @param {boolean} force
- */
-eYo.DelegateSvg.Expr.argument_list.prototype.createConsolidator = eYo.Decorate.reentrant_method('createConsolidator', function (force) {
-  if (!this.consolidator || force) {
-    var block = this.block_
-    if (!block.type) {
-      console.error('unexpected void type')
-    }
-    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
-    if (block.parentBlock_) {
-      var parent = block.parentBlock_.eyo
-      var n = parent.name_p
-      var h = parent.holder_p
-      var Ss = eYo.Signature[h]
-      var s = Ss && Ss[n]
-      var C10r = (s && s.consolidator) || D.consolidator || eYo.Consolidator.List
-      if (!this.consolidator || this.consolidator.constructor !== C10r) {
-        this.consolidator = new C10r(D)
-        goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
-      }
-      if (s) {
-        s.ary && (this.ary_p = s.ary)
-        s.mandatory && (this.mandatory_p = s.mandatory)
-      } else {
-        this.ary_p = D.ary || Infinity
-        this.mandatory_p = D.mandatory || 0
-      }
-    } else {
-      this.consolidator = new eYo.Consolidator.List(D)
-    }
-    if (force) {
-      this.consolidate()
-    }
-  }
-})
-
-/**
  * Class for a DelegateSvg, argument_list_comprehensive block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
+  data: {
+    ary: {
+      init: 3
+    },
+    mandatory: {
+      init: 1
+    }
+  },
   list: {
     consolidator: eYo.Consolidator.Arguments,
-    mandatory: 0,
     presep: ',',
     hole_value: 'name'
   }

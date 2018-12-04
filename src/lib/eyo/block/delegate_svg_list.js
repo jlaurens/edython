@@ -49,20 +49,54 @@ eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
 eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
-  if (!this.consolidator || force) {
-    var block = this.block_
-    var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-    goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
-    var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
-    if (!this.consolidator || this.consolidator.constructor !== C10r) {
+  var block = this.block_
+  if (!block.type) {
+    console.error('unexpected void type')
+  }
+  var DD = eYo.DelegateSvg.Manager.getModel(block.type).list
+  goog.asserts.assert(DD, 'inputModel__.list is missing in ' + block.type)
+  var D = {}
+  goog.mixin(D, DD)
+  if (block.parentBlock_) {
+    var parent = block.parentBlock_.eyo
+    var item = parent.item_p
+    if (item) {
+      D.ary = item.aryMax
+      D.mandatory = item.mandatoryMin
+    }
+    this.ary_p = D.ary
+    this.mandatory_p = D.mandatory
+  }
+  var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
+  if (this.consolidator) {
+    if (this.consolidator.constructor !== C10r) {
       this.consolidator = new C10r(D)
       goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+    } else {
+      this.consolidator.init(D)
     }
     if (force) {
       this.consolidate()
     }
+  } else {
+    this.consolidator = new C10r(D)
+    goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+    this.consolidate()
   }
 })
+
+/**
+ * Fetches the named input object, getInput.
+ * @param {String} name The name of the input.
+ * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ */
+eYo.DelegateSvg.List.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+  eYo.DelegateSvg.List.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+  if (connection.eyo.isOutput) {
+    this.createConsolidator(true)
+  }
+}
 
 /**
  * Consolidate the input.
@@ -71,14 +105,12 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.doConsolidate = function () {
+eYo.DelegateSvg.List.prototype.doConsolidate = (function () {
   // this is a closure
   /**
    * Consolidate the input.
    * Removes empty place holders.
    * This must not be overriden.
-   *
-   * @param {!Block} block
    */
   var doConsolidate = function (deep, force) {
     if (this.will_connect_ || this.change.level) {
@@ -98,7 +130,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = function () {
     this.doConsolidate = doConsolidate
     return doConsolidate.apply(this, arguments)// this is not recursive
   }
-} ()
+}) ()
 
 // eYo.DelegateSvg.List.prototype.consolidator = undefined
 

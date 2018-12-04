@@ -17,7 +17,6 @@ goog.require('eYo.Model.random__module')
 
 goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Range')
 goog.require('eYo.DelegateSvg.Primary')
 
 goog.require('eYo.Tooltip')
@@ -79,11 +78,9 @@ var F_s = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Stmt.call_stmt,
-    data: {
-      name: name,
-      parent: 'random',
-      dotted: 0
-    },
+    name_d: name,
+    holder_d: 'random',
+    dotted_d: 0,
     title: key
   }
 }
@@ -98,17 +95,11 @@ eYo.FlyoutCategory.basic_random__module = [
   },
   {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'randint',
-      holder: 'random'
-    },
-    slots: {
-      binary: { // implement 'main' instead of 'binary'
-        slots: {
-          fstart: 1,
-          rend: 6
-        }
-      }
+    name_d: 'randint',
+    holder_d: 'random',
+    binary_s: { // implement 'main' instead of 'binary'
+      fstart_s: 1,
+      rend_s: 6
     },
     title: 'random__randint'
   },
@@ -146,11 +137,10 @@ eYo.FlyoutCategory.basic_random__module = [
   F('uniform', 'Loi uniforme'),
   F('gauss', 'Loi normale'),
   {
-    type: eYo.T3.Expr.random__randrange,
-    data: {
-      parent: 'random',
-      variant: eYo.Key.NAME
-    },
+    type: eYo.T3.Expr.call_expr,
+    name_d: 'randrange',
+    holder_d: 'random',
+    dotted_d: 0,
     n_ary_s: {
       slots: {
         O: 10
@@ -236,7 +226,10 @@ eYo.FlyoutCategory.random__module = [
   F('paretovariate', 'Loi de Pareto'),
   F('weibullvariate', 'Distribution de Weibull'),
   {
-    type: eYo.T3.Expr.random__randrange,
+    type: eYo.T3.Expr.call_expr,
+    name_d: 'randrange',
+    holder_d: 'random',
+    dotted_d: 1,
     n_ary_s: {
       slots: {
         O: 10

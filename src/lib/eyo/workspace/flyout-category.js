@@ -16,6 +16,7 @@ goog.provide('eYo.FlyoutCategory')
 goog.require('eYo.T3')
 goog.require('eYo.Const')
 goog.require('eYo.Tooltip')
+goog.require('eYo.Tooltip')
 
 /**
  * Flyout list of node models by category.

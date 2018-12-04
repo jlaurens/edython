@@ -205,7 +205,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
       init: eYo.Key.IF,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.if.setIncog(newValue === eYo.Key.ELSE)
+        this.if_d.setIncog(newValue === eYo.Key.ELSE)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.while_part) {
@@ -319,7 +319,7 @@ eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
 eYo.DelegateSvg.Stmt.if_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var current = this.variant_p
-  var variants = this.data.variant.getAll()
+  var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',

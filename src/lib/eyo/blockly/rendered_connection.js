@@ -995,7 +995,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                         // currently unwrapping a block,
                         // this occurs while removing the parent
                         // if the parent was selected, select the child
-                        child.eyo.makeBlockUnwrapped_(child)
+                        child.eyo.makeBlockUnwrapped_()
                         if (parent.eyo.hasSelect(parent)) {
                           parent.unselect()
                           child.select()
