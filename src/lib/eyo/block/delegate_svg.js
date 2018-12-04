@@ -2587,6 +2587,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   where.scale(1 / block.workspace.scale)
   var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
+  var R
   var c8n = this.someInputConnection((c8n) => {
     if (!c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
       if (c8n.type === Blockly.INPUT_VALUE) {
@@ -2596,7 +2597,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
           if (targetC8n) {
             return targetC8n
           }
-          var R = new goog.math.Rect(
+          R = new goog.math.Rect(
             c8n.offsetInBlock_.x + eYo.Unit.x / 2,
             c8n.offsetInBlock_.y,
             target.width - eYo.Unit.x,

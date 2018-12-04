@@ -1544,8 +1544,6 @@ eYo.Delegate.prototype.consolidateType = function (type) {
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
  * the block type has changed.
- * @param {!Blockly.Block} block to be initialized.
- * @constructor
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrapped_()

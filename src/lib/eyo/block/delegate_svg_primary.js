@@ -970,6 +970,19 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
 )
 
 /**
+ * Set the connection check array.
+ * The connections are supposed to be configured once.
+ * This method may disconnect blocks as side effect,
+ * thus interacting with the undo manager.
+ * After initialization, this should be called whenever
+ * the block type has changed.
+ */
+eYo.DelegateSvg.Expr.primary.prototype.consolidateConnections = function () {
+  eYo.DelegateSvg.Expr.primary.superClass_.consolidateConnections.call(this)
+  this.name_s.connection.setHidden(this.variant_p === eYo.Key.NONE && this.dotted_p === 0)
+}
+
+/**
  * getBaseType.
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
