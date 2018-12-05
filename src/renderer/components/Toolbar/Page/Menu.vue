@@ -5,12 +5,12 @@
     </template>
     <b-dd-item-button v-on:click="doToggleToolbarBlockVisible()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarBlockVisible" v-tippy><check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dd-item-button>
     <b-dd-item-button v-if="toolbarBlockVisible" v-on:click="doToggleToolbarBlockDebug()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleToolbarBlockDebug" v-tippy><check-mark :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>    <b-dd-item-button v-on:click="doToggleEcoSave()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleEcoSave" v-tippy><check-mark :checked="ecoSave" />{{contentEcoSave}}</b-dd-item-button>
-    <b-dd-item-button v-on:click="doToggleDisabledTips()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleDisabledTips" v-tippy><check-mark :checked="false" />{{contentDisabledTips}}</b-dd-item-button>
+    <b-dd-item-button v-on:click="toggleTipsDisabled()" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}" :title="titleTipsDisabled" v-tippy><check-mark :checked="false" />{{contentTipsDisabled}}</b-dd-item-button>
   </b-dd>
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex'
+  import {mapState, mapMutations, mapActions} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconMenu from '@@/Icon/IconMenu.vue'
@@ -34,12 +34,12 @@
       contentEcoSave () {
         return this.$$t('toolbar.content.eco_save')
       },
-      titleDisabledTips () {
+      titleTipsDisabled () {
         return this.disabledTips
           ? this.$$t('toolbar.tooltip.tooltip.on')
           : this.$$t('toolbar.tooltip.tooltip.off')
       },
-      contentDisabledTips () {
+      contentTipsDisabled () {
         return this.disabledTips
           ? this.$$t('toolbar.content.tooltip.on')
           : this.$$t('toolbar.content.tooltip.off')
@@ -77,6 +77,9 @@
       ...mapMutations({
         setToolbarBlockVisible: 'UI_SET_TOOLBAR_BLOCK_VISIBLE'
       }),
+      ...mapActions([
+        'toggleTipsDisabled'
+      ]),
       doToggleToolbarBlockVisible () {
         this.setToolbarBlockVisible(!this.toolbarBlockVisible)
       },
@@ -85,24 +88,6 @@
       },
       doToggleEcoSave () {
         this.$store.commit('DOC_SET_ECO_SAVE', !this.$store.state.Document.ecoSave)
-      },
-      doToggleDisabledTips () {
-        var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
-        var i = 0
-        if (this.$store.state.Document.disabledTips) {
-          for (; i < tippies.length; ++i) {
-            tippies[i].enable()
-          }
-        } else {
-          for (; i < tippies.length; ++i) {
-            var t = tippies[i]
-            if (t.state.visible) {
-              t.hide()
-            }
-            t.disable()
-          }
-        }
-        this.$store.commit('DOC_SET_DISABLED_TIPS', !this.$store.state.Document.disabledTips)
       }
     }
   }

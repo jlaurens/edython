@@ -24,6 +24,8 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
+import namespace from '../util/namespace'
+
 const state = {
   ecoSave: true,
   noLeftSeparator: true,
@@ -32,28 +34,46 @@ const state = {
   disabledTips: false
 }
 
+const _types = {
+  getters: [
+    'IS_DOCUMENT_EDITED'
+  ],
+  mutations: [
+    'SET_ECO_SAVE',
+    'SET_NO_LEFT_SEPARATOR',
+    'SET_NO_DYNAMIC_LIST',
+    'SET_SMART_UNARY',
+    'SET_TIPS_DISABLED'
+  ]
+}
+
+const types = namespace('Config', _types)
+
 const mutations = {
-  CONFIG_SET_ECO_SAVE (state, yorn) {
+  [types.mutations.SET_ECO_SAVE] (state, yorn) {
     state.ecoSave = !!yorn
   },
-  CONFIG_SET_NO_LEFT_SEPARATOR (state, yorn) {
+  [types.mutations.SET_NO_LEFT_SEPARATOR] (state, yorn) {
     state.noLeftSeparator = !!yorn
     eYo.App.options.noLeftSeparator = !!yorn
   },
-  CONFIG_SET_NO_DYNAMIC_LIST (state, yorn) {
+  [types.mutations.SET_NO_DYNAMIC_LIST] (state, yorn) {
     state.noDynamicList = !!yorn
     eYo.App.options.noDynamicList = !!yorn
   },
-  CONFIG_SET_SMART_UNARY (state, yorn) {
+  [types.mutations.SET_SMART_UNARY] (state, yorn) {
     state.smartUnary = !!yorn
     eYo.App.options.smartUnary = !!yorn
   },
-  CONFIG_SET_DISABLED_TIPS (state, yorn) {
+  [types.mutations.SET_TIPS_DISABLED] (state, yorn) {
     state.disabledTips = !!yorn
   }
 }
 
 const actions = {
+  setTipsDisabled: (store, yorn) => {
+    store.commit(types.mutations.SET_TIPS_DISABLED, !!yorn)
+  }
 }
 
 const getters = {

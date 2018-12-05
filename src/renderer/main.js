@@ -515,7 +515,8 @@ Object.defineProperties(eYo.$$, {
       template: '<App/>',
       i18n
     })
-  }
+  },
+  store: store
 })
 // export const app = new Vue({
 //   components: { App },

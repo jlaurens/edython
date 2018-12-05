@@ -32,8 +32,6 @@ const state = {
   blockEditShowDotted: true
 }
 
-console.log(eYo.App)
-
 const types = namespace('UI', {
   getters: [
     'IS_DOCUMENT_EDITED'
