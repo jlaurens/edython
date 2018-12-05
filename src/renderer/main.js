@@ -42,7 +42,7 @@ eYo.$$ = Vue.prototype.$$ = {
   eYo,
   Blockly,
   pako,
-  lodash,
+  _: lodash,
   TweenLite,
   process,
   http: axios,

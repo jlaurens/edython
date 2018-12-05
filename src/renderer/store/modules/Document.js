@@ -50,25 +50,6 @@ const mutations = {
 }
 
 const actions = {
-  toggleTipsDisabled: (store) => {
-    var old = store.state.disabledTips
-    var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
-    var i = 0
-    if (old) {
-      for (; i < tippies.length; ++i) {
-        tippies[i].enable()
-      }
-    } else {
-      for (; i < tippies.length; ++i) {
-        var t = tippies[i]
-        if (t.state.visible) {
-          t.hide()
-        }
-        t.disable()
-      }
-    }
-    store.commit(types.mutations.SET_TIPS_DISABLED, !old)
-  }
 }
 
 const getters = {

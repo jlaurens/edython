@@ -8,9 +8,11 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import MainToolbar from '@@/Toolbar/Main'
-  import MainWebLoad from './Main/WebLoad'
   import MainPage from './Main/Page'
+  import MainWebLoad from './Main/WebLoad'
   import MainModal from './Main/Modal'
   
   export default {
@@ -20,6 +22,16 @@
       MainWebLoad,
       MainPage,
       MainModal
+    },
+    computed: {
+      ...mapState('Pref', {
+        tipsDisabled: state => state.tipsDisabled
+      })
+    },
+    whatch: {
+      tipsDisabled (newValue, oldValue) {
+        console.log('CHANGE', newValue, oldValue)
+      }
     }
   }
 </script>

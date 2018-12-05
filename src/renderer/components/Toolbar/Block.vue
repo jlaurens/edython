@@ -44,15 +44,6 @@
         :step="step"
         :modifiable="modifiable"
         ></block-number>
-      <block-print
-        v-else-if="isSelected([
-          $$.eYo.T3.Expr.builtin__print_expr,
-          $$.eYo.T3.Stmt.builtin__print_stmt
-        ])"
-        :eyo="eyo"
-        :step="step"
-        :modifiable="modifiable"
-        ></block-print>
       <block-unary
         v-else-if="isSelected($$.eYo.T3.Expr.u_expr)"
         :eyo="eyo"
@@ -221,7 +212,6 @@
   import BlockPrimary from './Block/Primary.vue'
   import BlockLiteral from './Block/Literal.vue'
   import BlockNumber from './Block/Number.vue'
-  import BlockPrint from './Block/Print.vue'
   import BlockUnary from './Block/Unary.vue'
   import BlockBinary from './Block/Binary.vue'
   import BlockAnyExpression from './Block/AnyExpression.vue'
@@ -261,7 +251,6 @@
       BlockPrimary,
       BlockLiteral,
       BlockNumber,
-      BlockPrint,
       BlockUnary,
       BlockBinary,
       BlockAnyExpression,
@@ -345,6 +334,8 @@
     text-align:center;
     height: 2.25rem;
     font-size: 1rem;
+    display: flex;
+    max-width: calc(100% -204px);
   }
   #toolbar-block .input-group {
     padding: 0;
@@ -412,6 +403,9 @@
   }
   .eyo-slotholder-inline {
     top: -0.17rem;
+  }
+  .b3k-edit.btn-group {
+    flex-wrap: wrap;
   }
   .b3k-edit,
   .b3k-edit .btn-group {
