@@ -1,5 +1,9 @@
 <template>
-  <b-btn-toolbar id="main-toolbar" key-nav  aria-label="Main toolbar" justify>
+  <b-btn-toolbar
+    id="main-toolbar"
+    key-nav
+    aria-label="Main toolbar"
+    justify>
     <b-btn-group>
       <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
         <img src="static/icon_light.svg" height="32" alt="Edython"/>
@@ -67,6 +71,13 @@
       MainDisplay,
       MainMode
     },
+    mounted () {
+      // offsetHeight
+      // jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+      window.addEventListener('resize', (event) => {
+        console.log('RESIZER', this.$el.offsetHeight, this.$store)
+      })
+    },
     methods: {
       doSite (url) {
         if (eYo.$$.electron && eYo.$$.electron.shell) {
@@ -85,6 +96,7 @@
     text-align: center;
     height: 3rem;
     padding: 0.25rem 0;
+    min-width: 300px!important;
   }
   #main-toolbar .btn {
     height: 2.5rem;

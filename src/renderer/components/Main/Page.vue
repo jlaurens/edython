@@ -82,6 +82,34 @@
     width: calc(100% - 0.5rem);
     padding: 0;
   }
+  /* tablets and desktop */
+  #page-content {
+    top: 3rem;
+    height: calc(100% - 3rem);
+    min-width: 300px;
+  }
+  @media only screen and (max-width: 890px) {
+    /* tablets and desktop */
+      #page-content {
+      top: calc(3rem + 1 * 2.5rem);
+      height: calc(100% - (3rem + 1 * 2.5rem));
+    }
+  }
+  @media only screen and (max-width: 495px) {
+    /* tablets and desktop */
+      #page-content {
+      top: calc(3rem + 2 * 2.5rem);
+      height: calc(100% - (3rem + 2 * 2.5rem));
+    }
+  }
+  @media only screen and (max-width: 340px) {
+    /* tablets and desktop */
+      #page-content {
+      top: calc(3rem + 3 * 2.5rem);
+      height: calc(100% - (3rem + 3 * 2.5rem));
+    }
+  }
+
   #working-area {
     position: absolute;
     width: 100%;

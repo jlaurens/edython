@@ -24,6 +24,7 @@ export default {
     margin: 0;
     padding: 0;
     height: 100vh;
+    min-width: 300px!important;
   }
   #app .container {
     background-color:rgba(221, 221, 221, 0.8);
