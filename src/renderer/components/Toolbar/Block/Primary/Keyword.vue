@@ -86,9 +86,12 @@
                 ]))) {
                   var target = input.connection.targetBlock()
                   if (target) {
-                    var name = target.eyo.name_p
-                    if (names.indexOf(name) >= 0) {
-                      this.target_by_name_[name] = target
+                    var t_eyo = target.eyo
+                    if (!t_eyo.dotted_p) { // no `foo.bar` candidates
+                      var name = t_eyo.name_p
+                      if (names.indexOf(name) >= 0) {
+                        this.target_by_name_[name] = target
+                      }
                     }
                   }
                 }
