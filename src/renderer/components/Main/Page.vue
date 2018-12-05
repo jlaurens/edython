@@ -6,16 +6,16 @@
       :style="style">
       <Split
         @onDrag="onDrag"
-          id="content-split">
+          id="page-split">
         <SplitArea
           :size="75"
-            id="content-split-eyo">
-          <content-workspace></content-workspace>
+            id="page-split-eyo">
+          <page-workspace></page-workspace>
         </SplitArea>
         <SplitArea
           :size="25"
-            id="content-split-panels">
-          <content-panels></content-panels>
+            id="page-split-panels">
+          <page-panels></page-panels>
         </SplitArea>
       </Split>
     </div>
@@ -26,8 +26,8 @@
   import {mapState} from 'vuex'
 
   import BlockToolbar from '@@/Toolbar/Block'
-  import ContentWorkspace from './Content/Workspace'
-  import ContentPanels from './Content/Panels'
+  import PageWorkspace from './Page/Workspace'
+  import PagePanels from './Page/Panels'
 
   export default {
     name: 'page-content',
@@ -39,8 +39,8 @@
     },
     components: {
       BlockToolbar,
-      ContentWorkspace,
-      ContentPanels
+      PageWorkspace,
+      PagePanels
     },
     computed: {
       style () {

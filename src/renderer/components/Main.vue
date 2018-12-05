@@ -1,30 +1,30 @@
 <template>
-  <b-container id="page" class="m-0 px-1 h-100 fluid">
-    <page-toolbar></page-toolbar>
-    <page-content></page-content>
-    <page-web-load></page-web-load>
-    <page-modal></page-modal>
+  <b-container id="Main" class="m-0 px-1 h-100 fluid">
+    <main-toolbar></main-toolbar>
+    <main-Page></main-Page>
+    <main-web-load></main-web-load>
+    <main-modal></main-modal>
   </b-container>
 </template>
 
 <script>
-  import PageToolbar from '@@/Toolbar/Page'
-  import PageWebLoad from './Page/WebLoad'
-  import PageContent from './Page/Content'
-  import PageModal from './Page/Modal'
+  import MainToolbar from '@@/Toolbar/Main'
+  import MainWebLoad from './Main/WebLoad'
+  import MainPage from './Main/Page'
+  import MainModal from './Main/Modal'
   
   export default {
-    name: 'page',
+    name: 'Main',
     components: {
-      PageToolbar,
-      PageWebLoad,
-      PageContent,
-      PageModal
+      MainToolbar,
+      MainWebLoad,
+      MainPage,
+      MainModal
     }
   }
 </script>
 <style>
-  #page {
+  #Main {
     position: absolute;
     left: 0px;
     top: 0px;
