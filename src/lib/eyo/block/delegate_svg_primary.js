@@ -366,12 +366,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           } else {
             this.owner.variant_p = eYo.Key.DEFINED
           }
-        } else {
-          if (this.owner.variant_p === eYo.Key.ANNOTATED_DEFINED) {
-            this.owner.variant_p = eYo.Key.ANNOTATED
-          } else if (this.owner.variant_p === eYo.Key.DEFINED) {
-            this.owner.variant_p = eYo.Key.NONE
-          }
         }
       },
       synchronize: true,
@@ -399,21 +393,21 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.call_expr) {
-          this.set(eYo.Key.CALL_EXPR)
+          this.change(eYo.Key.CALL_EXPR)
         } else if (type === eYo.T3.Stmt.call_stmt) {
-          this.set(eYo.Key.CALL_EXPR)
+          this.change(eYo.Key.CALL_EXPR)
         } else if (type === eYo.T3.Expr.slicing) {
-          this.set(eYo.Key.SLICING)
+          this.change(eYo.Key.SLICING)
         } else if (type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.identifier_as || type === eYo.T3.Expr.expression_as) {
-          this.set(eYo.Key.ALIASED)
+          this.change(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated) {
-          this.set(eYo.Key.ANNOTATED)
+          this.change(eYo.Key.ANNOTATED)
         } else if (type === eYo.T3.Expr.identifier_defined || type === eYo.T3.Expr.keyword_item) {
-          this.set(eYo.Key.DEFINED)
+          this.change(eYo.Key.DEFINED)
         } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
-          this.set(eYo.Key.ANNOTATED_DEFINED)
+          this.change(eYo.Key.ANNOTATED_DEFINED)
         } else {
-          this.set(eYo.Key.NONE)
+          this.change(eYo.Key.NONE)
         }
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
