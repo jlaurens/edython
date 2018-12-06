@@ -1049,17 +1049,13 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
     // display shift when locking/unlocking)
     this.size.w = 1
     io.common.field.beforeIsBlack = false
-    // io.common.field.shouldSeparate = false
-    // Do not change io.common.field.shouldSeparate
+    io.common.field.shouldSeparate = false
+    // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.size.w
   this.startOfStatement = io.common.startOfStatement
-  if (io.common.startOfStatement) {
-    console.error('START OF STATEMENT 1')
-  }
   if (!this.outputConnection) {
     this.startOfStatement = io.common.startOfStatement = true
-    console.error('START OF STATEMENT 2')
     this.renderDrawSharp_(io)
   }
   return io
