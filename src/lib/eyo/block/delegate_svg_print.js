@@ -17,9 +17,6 @@ goog.require('eYo.DelegateSvg.Stmt')
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Primary')
 
-console.warn('Move this block to the builtin blocks, with contextual consolidator and argument list')
-
-
 /**
  * List consolidator for argument list.
  * Rules are a bit stronger than python requires originally

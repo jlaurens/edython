@@ -714,7 +714,6 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
     check: null // means that every output type will fit, once we have a python parser...
   }
 }, true)
-console.warn('value and subtype')
 
 eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.proper_slice,

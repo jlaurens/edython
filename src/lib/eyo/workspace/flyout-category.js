@@ -635,4 +635,3 @@ eYo.FlyoutCategory = {
     }
   ]
 }
-console.warn('key handler: "foo.bar", "foo[]", "foo(…)"')

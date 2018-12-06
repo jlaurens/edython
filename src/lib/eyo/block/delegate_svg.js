@@ -1328,7 +1328,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         } else if ((tail === ')') && this.packedParenthesis) {
           io.common.shouldPack = this
         }
-        console.warn('SHOULD PACK', io.common.shouldPack && io.common.shouldPack.type)
       }
       if (f_eyo.isEditing) {
         // This is a trick to avoid some bad geometry while editing
@@ -1425,23 +1424,18 @@ eYo.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
  * @private
  */
 eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inStatement = false) {
-  console.warn('DRAW ENDING')
   if (io) {
-    console.warn('DRAW ENDING CONCRETE')
     var eyo
     var isLastInExpression = isLast && !inStatement
     var isLastInStatement = isLast && inStatement
     if (io.common.ending.length) {
-      console.warn('SOMETHING TO DO', io.common.shouldPack)
       // should we shrink after a quote or a bracket?
       if (io.common.shouldPack && (!isLast || io.common.shouldPack.wrapped_)) {
-        console.warn('PACK EVENTUALLY')
         // first loop to see if there is a pending rightCaret
         // BTW, there can be an only one right caret
         if (io.common.ending.some((eyo) => {
           return !!eyo.rightCaret
         })) {
-          console.warn('NO THERE IS A CARET')
           io.common.shouldPack = undefined
         } else {
           // there is no following right caret, we can pack
@@ -1451,14 +1445,11 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
               io.common.shouldPack = undefined
               pack = true
               io.cursor.c -= 1
-              console.warn('START PACKING', eyo.type)
               // from now on, we pack just one character width
             }
             if (pack) {
-              console.warn('BEFORE PACKING', eyo.block_.width)
               eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
               eyo.minWidth = eyo.block_.width = eyo.size.x
-              console.warn('AFTER  PACKING', eyo.block_.width)
             }
           })
         }

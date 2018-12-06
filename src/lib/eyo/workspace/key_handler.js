@@ -43,7 +43,6 @@ eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
   return this.eyo.handleMenuKeyEvent(e)
 }
 
-console.warn('Problem inserting a print block')
 /**
  * Key handler class.
  * For edython.
