@@ -999,6 +999,7 @@ eYo.DelegateSvg.prototype.newDrawRecorder = function (recorder) {
       startOfLine: !this.outputConnection || !this.parent, // statement | orphan block
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
+        beforeIsCaret: false, // true if the position before the cursor contains a caret
         shouldSeparate: false // and other properties...
       }
     }
@@ -1269,8 +1270,10 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
-        if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine) {
-          if (this.packedQuotes && (head === "'" || head === '"') && !io.common.field.beforeIsBlack) {
+        if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret) {
+          if (this.packedQuotes && (head === "'" || head === '"')) {
+            console.error(io.common.field.shouldSeparate,
+              io.common.field.beforeIsBlack, io.common.startOfLine)
             io.cursor.c -= 1
           } else if (this.packedBrackets && head === "[") {
             io.cursor.c -= 1
@@ -1304,10 +1307,11 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
               && !(field instanceof eYo.FieldLabel)))
         io.common.shouldSeparate = true
         io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
+        io.common.field.beforeIsCaret = false
       }
       // place the field at the right position:
-      root.setAttribute('transform', 'translate(' + io.cursor.x +
-        ', ' + (io.cursor.y + eYo.Padding.t) + ')')
+      root.setAttribute('transform',
+        `translate(${io.cursor.x}, ${(io.cursor.y + eYo.Padding.t)})`)
       // then advance the cursor after the field.
       if (f_eyo.size.w) {
         io.cursor.c += f_eyo.size.w
@@ -1528,6 +1532,8 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
         io.common.shouldSeparate = false
         // all done
         io.common.pending = undefined
+        io.common.field.beforeIsBlack = false // do not step back
+        io.common.field.beforeIsCaret = true // do not step back
       }
       return wd
     }
@@ -1597,6 +1603,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
               t_eyo.rightCaret = undefined
               io.common.shouldSeparate = false
             }
+            io.common.field.beforeIsCaret = false
           }
         }
       }
@@ -1607,6 +1614,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // Don't display anything for that connection
+      io.common.field.beforeIsCaret = false
     } else if (!this.locked_ && !c8n.hidden_) {
       // locked blocks won't display any placeholder
       // (input with no target)
@@ -1625,6 +1633,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.cursor.c += 1
             ending.rightCaret = c_eyo
             c_eyo.isAfterRightEdge = io.beforeIsRightEdge
+            io.common.field.beforeIsCaret = true
           } else {
             // we might want this caret not to advance the cursor
             // If the next rendered object is a field, then
