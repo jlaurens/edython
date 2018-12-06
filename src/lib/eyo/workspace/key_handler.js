@@ -793,27 +793,27 @@ Ks = {
   '@decorator': eYo.T3.Stmt.decorator_stmt,
   '"""…"""(stmt)': {
     type: eYo.T3.Stmt.docstring_stmt,
-    data: {
-      delimiter: '"""'
-    }
+    delimiter_d: '"""'
   },
   "'''…'''(stmt)": {
     type: eYo.T3.Stmt.docstring_stmt,
-    data: {
-      delimiter: "'''"
-    }
+    delimiter_d: "'''"
   },
   '"""…"""': {
     type: eYo.T3.Expr.longliteral,
-    data: {
-      delimiter: '"""'
-    }
+    delimiter_d: '"""'
   },
   "'''…'''": {
     type: eYo.T3.Expr.longliteral,
-    data: {
-      delimiter: "'''"
-    }
+    delimiter_d: "'''"
+  },
+  "'…'": {
+    type: eYo.T3.Expr.shortliteral,
+    delimiter_d: "'"
+  },
+  '"…"': {
+    type: eYo.T3.Expr.shortliteral,
+    delimiter_d: '"'
   },
   'print(…)': eYo.T3.Stmt.builtin__print_stmt,
   'input(…)': {
