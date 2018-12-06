@@ -1,9 +1,21 @@
 <template>
   <b-btn-group id="block-default" key-nav  aria-label="Block default" justify>
-    <value :eyo="eyo" :step="step"></value>
-    <operator :eyo="eyo" :step="step"></operator>
-    <variant :eyo="eyo" :step="step" :slotholder="slotholder"></variant>
-    <div class="info">type:&nbsp;{{eyo.block_.type}}</div>
+    <value
+      :eyo="eyo"
+      :step="step"
+      >
+    </value>
+    <operator
+      :eyo="eyo"
+      :step="step"
+      >
+    </operator>
+    <variant
+      :eyo="eyo"
+      :step="step"
+      :slotholder="slotholder"
+      >
+    </variant>
   </b-btn-group>
 </template>
 
@@ -38,8 +50,5 @@
   }
 </script>
 <style>
-  #block-default {
-    padding: 0 0.25rem;
-  }
 </style>
   
