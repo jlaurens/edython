@@ -204,5 +204,5 @@ eYo.Tooltip.Title = {
   text_split_sep: 'Séparateur pour couper le texte',
   text_split_maxsplit: 'Nombre maximum de parties dans le découpage',
   text_splitlines: 'Découper le texte en lignes, avec ou sans séparateur de fin de ligne',
-  text_index: 'Trouver une texte inclus, avec levée d\'exception',
+  text_index: 'Trouver un texte inclus, avec levée d\'exception',
 }
