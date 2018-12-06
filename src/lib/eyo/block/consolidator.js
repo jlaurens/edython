@@ -333,7 +333,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     sep && sep.length && f(sep, true)
   }
   io.input.setCheck(this.getCheck(io))
-  io.input.connection.eyo.plugged_ = this.model.plugged
+  io.c8n.eyo.plugged_ = this.model.plugged
   if (io.block.eyo.locked_) {
     io.c8n.setHidden(true)
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
@@ -582,6 +582,35 @@ eYo.Consolidator.List.prototype.doFinalize = function (io) {
 }
 
 /**
+ * In order to prepare rendering, add some information to the inputs.
+ * @param {!Object} io parameter.
+ */
+eYo.Consolidator.List.prototype.doLink = function (io) {
+  this.setupIO(io, 0)
+  var wasSeparator = false
+  var previous = undefined
+  while (this.nextInput(io)) {
+    if (io.c8n.eyo.s7r_) {
+      if (previous) {
+        previous.nextIsSeparator = true
+        previous = undefined
+      }
+      wasSeparator = true
+    } else {
+      if (previous) {
+        previous.nextIsSeparator = false
+      }
+      previous = io.input.eyo
+      previous.previousIsSeparator = wasSeparator
+      wasSeparator = false
+    }
+  }
+  if (previous) {
+    previous.nextIsSeparator = false
+  }
+}
+
+/**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
@@ -634,6 +663,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
     // no connected input
     this.consolidate_unconnected(io)
   }
+  this.doLink(io)
 })
 
 /**

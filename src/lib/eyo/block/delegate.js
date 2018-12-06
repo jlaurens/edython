@@ -212,6 +212,23 @@ Object.defineProperties(
       get () {
         var b = this.suiteBlock
         return b && b.eyo
+      },
+    },
+    outputConnection: {
+      get () {
+        return this.block_.outputConnection
+      }
+    },
+    outputBlock: {
+      get () {
+        var c8n = this.outputConnection
+        return c8n && c8n.targetBlock()
+      }
+    },
+    output: {
+      get () {
+        var b = this.outputBlock
+        return b && b.eyo
       }
     },
     /**

@@ -163,6 +163,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
     this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursor.x) +
         ', ' + eYo.Padding.t + ')')
     io.cursor.c += 2
+    io.common.startOfLine = io.common.startOfStatement = false
   } else {
     goog.dom.removeChildren(this.svgSharpGroup_)
   }
