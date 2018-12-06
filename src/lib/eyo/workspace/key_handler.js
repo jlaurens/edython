@@ -683,37 +683,37 @@ for (K in Ks) {
 Ks = {
   '+': {
     type: eYo.T3.Expr.a_expr,
-    data: '+',
+    operator_d: '+',
     slot: eYo.Key.LHS
   },
   '-': {
     type: eYo.T3.Expr.a_expr,
-    data: '-',
+    operator_d: '-',
     slot: eYo.Key.LHS
   },
   '*': {
     type: eYo.T3.Expr.m_expr,
-    data: '*',
+    operator_d: '*',
     slot: eYo.Key.LHS
   },
   '//': {
     type: eYo.T3.Expr.m_expr,
-    data: '//',
+    operator_d: '//',
     slot: eYo.Key.LHS
   },
   '/': {
     type: eYo.T3.Expr.m_expr,
-    data: '/',
+    operator_d: '/',
     slot: eYo.Key.LHS
   },
   '%': {
     type: eYo.T3.Expr.m_expr,
-    data: '%',
+    operator_d: '%',
     slot: eYo.Key.LHS
   },
   '@': {
     type: eYo.T3.Expr.m_expr,
-    data: '@',
+    operator_d: '@',
     slot: eYo.Key.LHS
   },
   '**': {
@@ -722,12 +722,12 @@ Ks = {
   },
   '<<': {
     type: eYo.T3.Expr.shift_expr,
-    data: '<<',
+    operator_d: '<<',
     slot: eYo.Key.LHS
   },
   '>>': {
     type: eYo.T3.Expr.shift_expr,
-    data: '>>',
+    operator_d: '>>',
     slot: eYo.Key.LHS
   },
   '&': eYo.T3.Expr.and_expr,
@@ -750,14 +750,14 @@ Ks = ['is', 'is not', 'in', 'not in']
 for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.object_comparison,
-    data: K
+    operator_d: K
   })
 }
 Ks = ['<', '>', '==', '>=', '<=', '!=']
 for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
     type: eYo.T3.Expr.number_comparison,
-    data: K
+    operator_d: K
   })
 }
 
@@ -818,74 +818,70 @@ Ks = {
   'print(…)': eYo.T3.Stmt.builtin__print_stmt,
   'input(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'input'
+    name_d: 'input'
   },
   'range(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'range'
+    name_d: 'range'
   },
   'int(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'int'
+    name_d: 'int'
   },
   'float(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'float'
+    name_d: 'float'
   },
   'complex(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'complex'
+    name_d: 'complex'
   },
   'list(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'list'
-    }
+    name_d: 'list'
   },
   'set(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'set'
+    name_d: 'set'
   },
   'len(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'len'
+    name_d: 'len'
   },
   'min(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'min'
+    name_d: 'min'
   },
   'max(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'max'
+    name_d: 'max'
   },
   'sum(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'sum'
+    name_d: 'sum'
   },
   'pow(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'pow'
+    name_d: 'pow'
   },
   'trunc(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'trunc'
+    name_d: 'trunc'
   },
   'abs(…)': {
     type: eYo.T3.Expr.call_expr,
-    data: 'abs'
+    name_d: 'abs'
   },
   '….conjugate()': {
     type: eYo.T3.Expr.call_expr,
-    data: {
-      name: 'conjugate',
-      variant: eYo.Key.BLOCK_NAME
-    }
+    name_d: 'conjugate',
+    dotted_d: 1
   },
   'f(…)': {
     action: eYo.KeyHandler.makeCall,
     model: {
       type: eYo.T3.Expr.call_expr,
-      data: '' 
+      name_d: '' 
     }
   },
   'x[…]': {
@@ -931,7 +927,7 @@ for (i = 0; (K = Ks[i++]);) {
 Ks = ['real', 'imag']
 for (i = 0; (K = Ks[i++]);) {
   eYo.KeyHandler.register('… ' + K + ' …', {
-    type: eYo.T3.Expr.object_comparison,
-    data: K
+    type: eYo.T3.Expr.call_expr,
+    name_d: K
   })
 }
