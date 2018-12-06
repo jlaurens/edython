@@ -17,6 +17,8 @@ export default {
   NO: 'Non',
   hello: 'Bonjour monde',
   bytes: 'octets',
+  console: 'console',
+  turtle: 'tortue',
   flyout: {
     basic: 'basic',
     module: 'Module {{key}}',
