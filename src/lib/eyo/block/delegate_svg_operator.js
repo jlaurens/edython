@@ -303,7 +303,12 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
     },
     rhs: {
       init: '',
-      placeholder: '1',
+      placeholder: /** @suppress {globalThis} */ function (type) {
+        return type === eYo.T3.Expr.not_test
+         ? 'test'
+         : 1
+        }
+      },
       synchronize: true
     }
   },
