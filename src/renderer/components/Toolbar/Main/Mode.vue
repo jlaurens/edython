@@ -1,6 +1,20 @@
 <template>
-  <b-dd id="main-mode" class="eyo-dropdown" variant="secondary" :text="$$t(`toolbar.content.mode.${selectedMode}`)">
-    <b-dd-item-button v-for="choice in choices" v-on:click="setSelectedMode(choice)" :key="choice" class="block-variant eyo-code" v-html="$$t(`toolbar.content.mode.${choice}`)" :title="$$t(`toolbar.tooltip.mode.${choice}`)" v-tippy ></b-dd-item-button>
+  <b-dd
+    id="main-mode"
+    class="eyo-dropdown"
+    variant="secondary"
+    :text="$$t(`toolbar.content.mode.${selectedMode}`)"
+    >
+    <b-dd-item-button
+      v-for="choice in choices"
+      v-on:click="setSelectedMode(choice)"
+      :key="choice"
+      class="block-variant eyo-code"
+      v-html="$$t(`toolbar.content.mode.${choice}`)"
+      :title="$$t(`toolbar.tooltip.mode.${choice}`)"
+      v-tippy
+      >
+    </b-dd-item-button>
   </b-dd>
 </template>
 
@@ -18,13 +32,13 @@
           eYo.App.TEACHER
         ]
       },
-      ...mapState({
-        selectedMode: state => state.UI.selectedMode
+      ...mapState('UI', {
+        selectedMode: state => state.selectedMode
       })
     },
     methods: {
-      ...mapMutations({
-        setSelectedMode: 'UI_SET_SELECTED_MODE'
+      ...mapMutations('UI', {
+        setSelectedMode: 'setSelectedMode'
       })
     }
   }

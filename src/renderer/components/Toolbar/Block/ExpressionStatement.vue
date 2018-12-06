@@ -1,10 +1,26 @@
 <template>
-  <b-btn-group id='block-stmt-expression' v-if="canShow">
-    <div class="item" v-if="canCheck">
-      <input type="checkbox" id="block-stmt-expression-check" v-model="hasExpression" :disabled="noCheck">
+  <b-btn-group
+    v-if="canShow"
+    id='block-stmt-expression'>
+    <div
+      v-if="canCheck"
+      class="item">
+      <input
+        type="checkbox"
+        id="block-stmt-expression-check"
+        v-model="hasExpression"
+        :disabled="noCheck">
     </div>
-    <div class="item text" v-if="withSlotholder" v_html="slot"></div>
-    <b-input v-else v-model="expression" type="text" :disabled="!hasExpression" :class="$$class"></b-input>
+    <div
+      v-if="withSlotholder"
+      class="item text"
+      v_html="slot"></div>
+    <b-input
+      v-else
+      v-model="expression"
+      type="text"
+      :disabled="!hasExpression"
+      :class="$$class"></b-input>
   </b-btn-group>
 </template>
 
@@ -93,8 +109,8 @@
       canCheck () {
         return (this.selectedMode !== eYo.App.TUTORIAL) && (this.selectedMode !== eYo.App.BASIC)
       },
-      ...mapState({
-        selectedMode: state => state.UI.selectedMode
+      ...mapState('UI', {
+        selectedMode: state => state.selectedMode
       })
     },
     created () {

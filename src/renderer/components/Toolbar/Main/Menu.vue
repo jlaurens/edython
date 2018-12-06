@@ -7,34 +7,43 @@
       <icon-base
         :width="32"
         :height="32"
-        icon-name="menu"><icon-menu /></icon-base>
+        icon-name="menu"
+        ><icon-menu /></icon-base>
     </template>
     <b-dd-item-button
       v-on:click="doToggleToolbarBlockVisible()"
       v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
       :title="titleToolbarBlockVisible"
-      v-tippy>
+      v-tippy
+      >
       <check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dd-item-button>
     <b-dd-item-button
       v-if="toolbarBlockVisible"
       v-on:click="doToggleToolbarBlockDebug()"
       v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
       :title="titleToolbarBlockDebug"
-      v-tippy>
+      v-tippy
+      >
       <check-mark
-        :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
-      <b-dd-item-button
-        v-on:click="doToggleEcoSave()"
-        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
-        :title="titleEcoSave"
-        v-tippy><check-mark
-        :checked="ecoSave" />{{contentEcoSave}}</b-dd-item-button>
+    :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
+    <b-dd-item-button
+      v-on:click="doToggleEcoSave()"
+      v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+      :title="titleEcoSave"
+      v-tippy
+      >
+      <check-mark
+        :checked="ecoSave"
+        />{{contentEcoSave}}</b-dd-item-button>
     <b-dd-item-button
       v-on:click="toggleTipsDisabled()"
       v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
       :title="titleTipsDisabled"
-      v-tippy><check-mark
-      :checked="false" />{{contentTipsDisabled}}</b-dd-item-button>
+      v-tippy
+      >
+      <check-mark
+      :checked="false"
+      />{{contentTipsDisabled}}</b-dd-item-button>
   </b-dd>
 </template>
 
@@ -94,32 +103,37 @@
       titleMenu () {
         return this.$$t('toolbar.tooltip.menu')
       },
+      ...mapState({
+        ecoSave: state => state.Document.ecoSave
+      }),
       ...mapState('Pref', {
         tipsDisabled: state => state.tipsDisabled
       }),
-      ...mapState({
-        ecoSave: state => state.Document.ecoSave,
-        disabledTips: state => state.Document.disabledTips,
-        toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
-        toolbarRyVisible: state => state.UI.toolbarRyVisible,
-        toolbarInfoDebug: state => state.UI.toolbarInfoDebug
+      ...mapState('UI', {
+        toolbarBlockVisible: state => state.toolbarBlockVisible,
+        toolbarRyVisible: state => state.toolbarRyVisible,
+        toolbarInfoDebug: state => state.toolbarInfoDebug
       })
     },
     methods: {
-      ...mapMutations({
-        setToolbarBlockVisible: 'UI_SET_TOOLBAR_BLOCK_VISIBLE'
+      ...mapMutations('UI', {
+        setToolbarBlockVisible: 'setToolbarBlockVisible',
+        setToolbarBlockDebug: 'setToolbarBlockDebug'
       }),
       ...mapMutations('Pref', {
         toggleTipsDisabled: 'toggleTipsDisabled'
+      }),
+      ...mapMutations({
+        setEcoSave: 'DOC_SET_ECO_SAVE'
       }),
       doToggleToolbarBlockVisible () {
         this.setToolbarBlockVisible(!this.toolbarBlockVisible)
       },
       doToggleToolbarBlockDebug () {
-        this.$store.commit('UI_SET_TOOLBAR_BLOCK_DEBUG', !this.$store.state.UI.toolbarInfoDebug)
+        this.setToolbarBlockDebug(!this.toolbarInfoDebug)
       },
       doToggleEcoSave () {
-        this.$store.commit('DOC_SET_ECO_SAVE', !this.$store.state.Document.ecoSave)
+        this.setEcoSave(!this.ecoSave)
       }
     }
   }

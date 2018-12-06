@@ -47,9 +47,9 @@
         return `top: ${this.step}rem;
         height: calc(100% - ${this.step}rem)`
       },
-      ...mapState({
-        displayMode: state => state.UI.displayMode,
-        toolbarBlockVisible: state => state.UI.toolbarBlockVisible
+      ...mapState('UI', {
+        displayMode: state => state.displayMode,
+        toolbarBlockVisible: state => state.toolbarBlockVisible
       })
     },
     methods: {

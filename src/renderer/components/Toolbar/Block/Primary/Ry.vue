@@ -1,14 +1,43 @@
 <template>
-  <b-btn-group v-if="show_ry" id="block-primary-ry" key-nav  aria-label="Block primary ary" class="deeper">
-    <b-input v-model="mandatory" type="text" class="eyo-code item w-2rem" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
-    <b-dd class="eyo-code item mw-4rem" variant="outline-secondary">
-      <b-dd-item-button v-for="item in items" v-on:click="mandatory = item" :key="item" class="eyo-code eyo-content" v-html="item"></b-dd-item-button>
+  <b-btn-group
+    v-if="show_ry"
+    id="block-primary-ry"
+    key-nav
+    aria-label="Block primary ary"
+    class="deeper">
+    <b-input
+      v-model="mandatory"
+      type="text"
+      class="eyo-code item w-2rem"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'>
+    </b-input>
+    <b-dd
+      class="eyo-code item mw-4rem"
+      variant="outline-secondary">
+      <b-dd-item-button
+        v-for="item in items"
+        v-on:click="mandatory = item"
+        :key="item"
+        class="eyo-code eyo-content" v-html="item">
       </b-dd-item-button>
     </b-dd>
-    <div class="eyo-label eyo-code item">≤ # args ≤</div>
-    <b-input v-model="ary" type="text" class="eyo-code item w-2rem" :style="{fontFamily: $$.eYo.Font.familyMono}"></b-input>
-    <b-dd class="eyo-code item mw-4rem" variant="outline-secondary">
-      <b-dd-item-button v-for="item in items" v-on:click="ary = item" :key="item" class="eyo-code eyo-content w-4" v-html="item"></b-dd-item-button>
+    <div
+      class="eyo-label eyo-code item"
+      >≤ # args ≤</div>
+    <b-input
+      v-model="ary"
+      type="text"
+      class="eyo-code item w-2rem"
+      :style="{fontFamily: $$.eYo.Font.familyMono}">
+    </b-input>
+    <b-dd
+      class="eyo-code item mw-4rem"
+      variant="outline-secondary">
+      <b-dd-item-button
+        v-for="item in items"
+        v-on:click="ary = item"
+        :key="item"
+        class="eyo-code eyo-content w-4" v-html="item">
       </b-dd-item-button>
     </b-dd>
   </b-btn-group>
@@ -83,8 +112,8 @@
           }
         }
       },
-      ...mapState({
-        blockEditShowRy: state => state.UI.blockEditShowRy
+      ...mapState('UI', {
+        blockEditShowRy: state => state.blockEditShowRy
       })
     },
     created () {

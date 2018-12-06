@@ -299,11 +299,11 @@
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
       },
-      ...mapState({
-        toolbarBlockVisible: state => state.UI.toolbarBlockVisible,
-        selectedBlockId: state => state.UI.selectedBlockId,
-        step: state => state.UI.selectedBlockStep,
-        selectedBlockType: state => state.UI.selectedBlockType
+      ...mapState('UI', {
+        toolbarBlockVisible: state => state.toolbarBlockVisible,
+        selectedBlockId: state => state.selectedBlockId,
+        step: state => state.selectedBlockStep,
+        selectedBlockType: state => state.selectedBlockType
       })
     },
     watch: {

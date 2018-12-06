@@ -1,5 +1,3 @@
-import namespace from '../util/namespace'
-
 eYo.Do.readOnlyMixin(eYo.App, {
   TUTORIAL: 'tutorial',
   BASIC: 'basic',
@@ -32,46 +30,31 @@ const state = {
   blockEditShowDotted: true
 }
 
-const types = namespace('UI', {
-  getters: [
-    'IS_DOCUMENT_EDITED'
-  ],
-  mutations: [
-    'SET_UNDO_COUNT',
-    'SET_REDO_COUNT',
-    'SET_UNDO_STAGE',
-    'STAGE_UNDO',
-    'SET_SELECTED_BLOCK',
-    'SELECTED_BLOCK_UPDATE',
-    'DID_COPY_BLOCK',
-    'SET_DISPLAY_MODE',
-    'SET_PANELS_WIDTH',
-    'SET_SELECTED_PANEL',
-    'SET_SELECTED_MODE',
-    'SET_FLYOUT_CATEGORY',
-    'SET_FLYOUT_CLOSED',
-    'SET_TOOLBAR_BLOCK_VISIBLE',
-    'SET_TOOLBAR_RY_VISIBLE',
-    'SET_TOOLBAR_BLOCK_DEBUG',
-    'SET_BLOCK_EDIT_SHOW_RY',
-    'SET_BLOCK_EDIT_SHOW_DOTTED'
-  ]
-})
-
 const mutations = {
-  [types.mutations.SET_UNDO_COUNT] (state, n) {
+  setSelectedPanel (state, key) {
+    state.selectedPanel = key
+  },
+  setFlyoutCategory (state, category) {
+    if (goog.isString(category)) {
+      state.flyoutCategory = category
+    }
+  },
+  setFlyoutClosed (state, yorn) {
+    state.flyoutClosed = !!yorn
+  },
+  setUndoCount (state, n) {
     state.undoCount = n
   },
-  [types.mutations.SET_REDO_COUNT] (state, n) {
+  setRedoCount (state, n) {
     state.redoCount = n
   },
-  [types.mutations.SET_UNDO_STAGE] (state, n) {
+  setUndoStage (state, n) {
     state.undoStage = n
   },
-  [types.mutations.STAGE_UNDO] (state) {
+  stageUndo (state) {
     state.undoCount = eYo.App.workspace.undoStack_.length
   },
-  [types.mutations.SET_SELECTED_BLOCK] (state, block) {
+  setSelectedBlock (state, block) {
     if (block) {
       if (block.isInFlyout || (block.id === state.selectedBlockId)) {
         return
@@ -81,7 +64,7 @@ const mutations = {
       temp.eyo.didChangeEnd = (eyo) => {
         if (eyo) {
           if (eyo.id === state.selectedBlockId) {
-            this.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
+            this.commit('UI/selectedBlockUpdate', eyo.block_)
           }
         }
       }
@@ -97,55 +80,44 @@ const mutations = {
       state.selectedBlockStep = 0
     }
   },
-  [types.mutations.SELECTED_BLOCK_UPDATE] (state, block) {
+  selectedBlockUpdate (state, block) {
     // var old = state.selectedBlockStep
     state.selectedBlockStep = block ? block.eyo.change.step : 0
     // console.warn('step', old, '=>', state.selectedBlockStep)
   },
-  [types.mutations.DID_COPY_BLOCK] (state, ctxt) {
+  didCopyBlock (state, ctxt) {
     state.blockClipboard = ctxt.xml
   },
-  [types.mutations.SET_PANELS_WIDTH] (state, newWidth) {
+  setPanelsWidth (state, newWidth) {
     state.panelsWidth = newWidth
   },
-  [types.mutations.SET_DISPLAY_MODE] (state, mode) {
+  setDisplayMode (state, mode) {
     if ([eYo.App.CONSOLE_ONLY, eYo.App.WORKSPACE_ONLY].indexOf(mode) < 0) {
       state.displayMode = undefined
     } else {
       state.displayMode = mode
     }
   },
-  [types.mutations.SET_SELECTED_PANEL] (state, key) {
-    state.selectedPanel = key
-  },
-  [types.mutations.SET_SELECTED_MODE] (state, mode) {
+  setSelectedMode (state, mode) {
     state.selectedMode = mode
-    this.commit('UI_SET_TOOLBAR_BLOCK_VISIBLE', mode !== eYo.App.TUTORIAL)
+    this.commit('UI/setToolbarBlockVisible', mode !== eYo.App.TUTORIAL)
     var yorn = mode !== eYo.App.TUTORIAL && mode !== eYo.App.BASIC
-    this.commit('UI_SET_BLOCK_EDIT_SHOW_RY', yorn)
-    this.commit('UI_SET_BLOCK_EDIT_SHOW_DOTTED', yorn)
+    this.commit('UI/setBlockEditShowRy', yorn)
+    this.commit('UI/setBlockEditShowDotted', yorn)
   },
-  [types.mutations.SET_FLYOUT_CATEGORY] (state, category) {
-    if (goog.isString(category)) {
-      state.flyoutCategory = category
-    }
-  },
-  [types.mutations.SET_FLYOUT_CLOSED] (state, yorn) {
-    state.flyoutClosed = !!yorn
-  },
-  [types.mutations.SET_TOOLBAR_BLOCK_VISIBLE] (state, yorn) {
+  setToolbarBlockVisible (state, yorn) {
     state.toolbarBlockVisible = !!yorn
   },
-  [types.mutations.SET_TOOLBAR_RY_VISIBLE] (state, yorn) {
+  setToolbarRyVisible (state, yorn) {
     state.toolbarRyVisible = !!yorn
   },
-  [types.mutations.SET_TOOLBAR_BLOCK_DEBUG] (state, yorn) {
+  setToolbarBlockDebug (state, yorn) {
     state.toolbarInfoDebug = !!yorn
   },
-  [types.mutations.SET_BLOCK_EDIT_SHOW_RY] (state, yorn) {
+  setBlockEditShowRy (state, yorn) {
     state.blockEditShowRy = !!yorn
   },
-  [types.mutations.SET_BLOCK_EDIT_SHOW_DOTTED] (state, yorn) {
+  setBlockEditShowDotted (state, yorn) {
     state.blockEditShowDotted = !!yorn
   }
 }
@@ -154,15 +126,15 @@ const actions = {
 }
 
 const getters = {
-  [types.getters.IS_DOCUMENT_EDITED]: state => {
+  isDocumentEdited: state => {
     return state.undoCount === state.undoStage
   }
 }
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions,
-  getters,
-  types
+  getters
 }

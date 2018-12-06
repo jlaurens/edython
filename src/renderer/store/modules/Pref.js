@@ -23,6 +23,12 @@ const state = {
 // const types = namespace('Pref', _types)
 
 const mutations = {
+/**
+ * Toggles the tips.
+ * The main vue watches this value to turn on and off the tips.
+ * The menu vue uses this mutator.
+ * @param {*} state
+ */
   toggleTipsDisabled (state) {
     state.tipsDisabled = !state.tipsDisabled
   }

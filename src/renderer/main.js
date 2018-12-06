@@ -88,18 +88,15 @@ eYo.App.doDomToPref = function (dom) {
             if (prefs) {
               try {
                 if (prefs.selectedPanel) {
-                  store.commit('UI_SET_SELECTED_PANEL', prefs.selectedPanel)
+                  store.commit('UI/setSelectedPanel', prefs.selectedPanel)
                 }
                 if (goog.isString(prefs.flyoutCategory)) {
-                  store.commit('UI_SET_FLYOUT_CATEGORY', prefs.flyoutCategory)
-                }
-                if (goog.isString(prefs.flyoutModule)) {
-                  store.commit('UI_SET_FLYOUT_MODULE', prefs.flyoutModule)
+                  store.commit('UI/setFlyoutCategory', prefs.flyoutCategory)
                 }
                 // close at last because it is an animation
                 if (goog.isDef(prefs.flyoutClosed)) {
                   Vue.nextTick(() => {
-                    store.commit('UI_SET_FLYOUT_CLOSED', prefs.flyoutClosed)
+                    store.commit('UI/setFlyoutClosed', prefs.flyoutClosed)
                   })
                 }
               } catch (err) {
@@ -207,7 +204,7 @@ eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
       if (err) {
         alert('An error ocurred creating the file ' + err.message)
       } else {
-        store.commit('UI_STAGE_UNDO')
+        store.commit('UI/stageUndo')
         eYo.App.workspace.eyo.resetChangeCount()
         eYo.$$.bus.$emit('saveDidSucceed')
         callback && callback(path)
@@ -272,7 +269,7 @@ eYo.App.Document.doClear = function () {
   eYo.$$.bus.$emit('new-document')
   eYo.App.workspace.clearUndo()
   eYo.App.workspace.eyo.resetChangeCount()
-  store.commit('UI_STAGE_UNDO')
+  store.commit('UI/stageUndo')
   store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
   store.commit('DOC_SET_PATH', undefined)
 }
@@ -311,37 +308,37 @@ eYo.App.Document.readDeflate = function (deflate, fileName) {
 
 eYo.App.didClearUndo = function () {
   // console.log('didClearUndo')
-  store.commit('UI_SET_UNDO_COUNT', 0)
-  store.commit('UI_SET_REDO_COUNT', 0)
+  store.commit('UI/setUndoCount', 0)
+  store.commit('UI/setRedoCount', 0)
   if (store.state.UI.undoStage > 0) {
     // the last saved state won't ever be reached
-    store.commit('UI_SET_UNDO_STAGE', -1)
+    store.commit('UI/setUndoStage', -1)
   }
 }
 eYo.App.didProcessUndo = function () {
   // console.log('didProcessUndo')
-  store.commit('UI_SET_UNDO_COUNT', eYo.App.workspace.undoStack_.length)
-  store.commit('UI_SET_REDO_COUNT', eYo.App.workspace.redoStack_.length)
+  store.commit('UI/setUndoCount', eYo.App.workspace.undoStack_.length)
+  store.commit('UI/setRedoCount', eYo.App.workspace.redoStack_.length)
 }
 eYo.App.didUnshiftUndo = function () {
-  store.commit('UI_SET_UNDO_STAGE', store.state.UI.undoStage - 1) // negative values make sense
+  store.commit('UI/setUndoStage', store.state.UI.undoStage - 1) // negative values make sense
 }
 eYo.App.didPushUndo = function () {
   // console.log('didPushUndo')
   var count = eYo.App.workspace.undoStack_.length
-  store.commit('UI_SET_UNDO_COUNT', count)
+  store.commit('UI/setUndoCount', count)
   if (store.state.UI.undoStage >= count) {
     // the last saved state won't ever be reached
-    store.commit('UI_SET_UNDO_STAGE', -1)
+    store.commit('UI/setUndoStage', -1)
   }
 }
 // eYo.App.didTouchBlock = function (block) {
 //   console.log('didTouchBlock', block)
-//   // store.commit('UI_SET_SELECTED_BLOCK', block) once broke everything when uncommented
+//   // store.commit('UI/setSelectedBlock', block) once broke everything when uncommented
 // }
 eYo.App.didAddSelect = function (block) {
   Vue.nextTick(() => {
-    store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
+    store.commit('UI/setSelectedBlock', Blockly.selected)
   })
 }
 eYo.App.selectedBlockUpdate = (eyo) => {
@@ -350,7 +347,7 @@ eYo.App.selectedBlockUpdate = (eyo) => {
     if (eyo.id === store.state.UI.selectedBlockId) {
       Vue.nextTick(() => {
         console.error('selectedBlockUpdate echoed')
-        store.commit('UI_SELECTED_BLOCK_UPDATE', eyo.block_)
+        store.commit('UI/selectedBlockUpdate', eyo.block_)
       })
     }
   }
@@ -365,12 +362,12 @@ Object.defineProperties(eYo.App, {
 })
 eYo.App.didRemoveSelect = function (block) {
   Vue.nextTick(() => {
-    store.commit('UI_SET_SELECTED_BLOCK', Blockly.selected)
+    store.commit('UI/setSelectedBlock', Blockly.selected)
   })
 }
 
 eYo.App.didCopyBlock = function (block, xml) {
-  store.commit('UI_DID_COPY_BLOCK', {block: block, xml: xml})
+  store.commit('UI/didCopyBlock', {block: block, xml: xml})
 }
 
 eYo.$$.bus.$on('webUploadDidStart', function (file) {
@@ -390,7 +387,7 @@ Object.defineProperties(eYo.App, {
       return store.state.UI.selectedMode
     },
     set (newValue) {
-      store.commit('UI_SET_SELECTED_MODE', newValue)
+      store.commit('UI/setSelectedMode', newValue)
     }
   }
 })

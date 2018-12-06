@@ -160,10 +160,10 @@
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || this.isBasic)
       },
-      ...mapState({
-        flyoutCategory: state => state.UI.flyoutCategory,
-        flyoutClosed: state => state.UI.flyoutClosed,
-        selectedMode: state => state.UI.selectedMode
+      ...mapState('UI', {
+        flyoutCategory: state => state.flyoutCategory,
+        flyoutClosed: state => state.flyoutClosed,
+        selectedMode: state => state.selectedMode
       })
     },
     watch: {
@@ -207,9 +207,9 @@
       }
     },
     methods: {
-      ...mapMutations({
-        setFlyoutCategory: 'UI_SET_FLYOUT_CATEGORY',
-        setFlyoutClosed: 'UI_SET_FLYOUT_CLOSED'
+      ...mapMutations('UI', {
+        setFlyoutCategory: 'setFlyoutCategory',
+        setFlyoutClosed: 'setFlyoutClosed'
       }),
       selectCategory (item) {
         if (this.isBasic && item.basic) {

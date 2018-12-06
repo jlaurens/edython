@@ -1,34 +1,100 @@
 <template>
-  <div id="eyo-panels-area">
-    <div id="eyo-panels" ref="divPanels" :style="{width: panelsStyleWidth}">
-      <div id="eyo-panels-toolbar" :style="{ fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px' }">
-        <div id="eyo-panels-toolbar-select">
-          <b-dd id="eyo-panels-toolbar-dropdown" class="eyo-dropdown">
-            <template slot="button-content">
-              {{titles[selected]}}
+  <div
+    id="eyo-panels-area">
+    <div
+      id="eyo-panels"
+      ref="divPanels"
+      class="w-100">
+      <div
+        id="eyo-panels-toolbar"
+        :style="{ fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px' }">
+        <div
+          id="eyo-panels-toolbar-select">
+          <b-dd
+            id="eyo-panels-toolbar-dropdown"
+            class="eyo-dropdown">
+            <template
+              slot="button-content">
+              {{titles[selectedPanel]}}
             </template>
-            <b-dd-item-button v-on:click="selectPanel($$.eYo.App.CONSOLE)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dd-item-button>
-            <b-dd-item-button v-on:click="selectPanel($$.eYo.App.TURTLE)" v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.turtle}}</b-dd-item-button>
+            <b-dd-item-button
+              v-on:click="selectPanel($$.eYo.App.CONSOLE)"
+              :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.console}}</b-dd-item-button>
+            <b-dd-item-button
+              v-on:click="selectPanel($$.eYo.App.TURTLE)"
+              v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{titles.turtle}}</b-dd-item-button>
           </b-dd>
         </div>
-        <b-btn id ="eyo-panels-toolbar-restart-python" class="eyo-round-btn" v-on:click="restart()" v-if="selected === $$.eYo.App.CONSOLE" title="Redémarrer l'interpréteur python" 
-        v-tippy ><icon-base icon-name="restart" :width="26" :height="26"><icon-restart /></icon-base></b-btn>
-        <b-btn id ="eyo-panels-toolbar-restart-turtle" class="eyo-round-btn" v-on:click="restart()" v-if="selected !== 'console'" title="Effacer les dessins de tortue" 
-        v-tippy ><icon-base icon-name="replay" :width="26" :height="26"><icon-restart /></icon-base></b-btn>
-        <b-btn id ="eyo-panels-toolbar-erase-python" class="eyo-round-btn" v-on:click="erase()" title="Effacer la console" 
-        v-if="selected === $$.eYo.App.CONSOLE" v-tippy ><icon-base icon-name="erase console" :width="26" :height="26"><icon-erase /></icon-base></b-btn>
-        <b-btn id ="eyo-panels-toolbar-erase-turtle" class="eyo-round-btn" v-on:click="erase()" title="Rejouer l'animation" 
-        v-if="selected !== $$.eYo.App.CONSOLE" v-tippy ><icon-base icon-name="replay turtle" :width="26" :height="26"><icon-replay /></icon-base></b-btn>
+        <b-btn
+          v-if="selectedPanel === $$.eYo.App.CONSOLE"
+          id ="eyo-panels-toolbar-restart-python"
+          class="eyo-round-btn"
+          v-on:click="restart()"
+          title="Redémarrer l'interpréteur python"
+          v-tippy >
+          <icon-base
+            icon-name="restart"
+            :width="26"
+            :height="26">
+            <icon-restart /></icon-base>
+        </b-btn>
+        <b-btn
+          v-if="selectedPanel !== $$.eYo.App.CONSOLE"
+          id ="eyo-panels-toolbar-restart-turtle"
+          class="eyo-round-btn"
+          v-on:click="restart()"
+          title="Effacer les dessins de tortue"
+          v-tippy >
+          <icon-base
+            icon-name="replay"
+            :width="26"
+            :height="26"><icon-restart />
+          </icon-base>
+        </b-btn>
+        <b-btn
+          v-if="selectedPanel === $$.eYo.App.CONSOLE"
+          id="eyo-panels-toolbar-erase-python"
+          class="eyo-round-btn"
+          v-on:click="erase()"
+          title="Effacer la console"
+          v-tippy >
+          <icon-base
+            icon-name="erase console"
+            :width="26"
+            :height="26">
+            <icon-erase />
+          </icon-base>
+        </b-btn>
+        <b-btn
+          v-if="selectedPanel !== $$.eYo.App.CONSOLE"
+          id ="eyo-panels-toolbar-erase-turtle"
+          class="eyo-round-btn"
+          v-on:click="erase()"
+          title="Rejouer l'animation"
+          v-tippy >
+          <icon-base
+            icon-name="replay turtle"
+            :width="26"
+            :height="26"><icon-replay />
+          </icon-base>
+        </b-btn>
       </div>
-      <div id="eyo-panels-content">
-        <panel-console :visible="selected === $$.eYo.App.CONSOLE"></panel-console>
-        <panel-turtle :visible="selected === $$.eYo.App.TURTLE"></panel-turtle>
+      <div
+        id="eyo-panels-content">
+        <panel-console
+          :visible="selectedPanel === $$.eYo.App.CONSOLE"
+          ></panel-console>
+        <panel-turtle
+          :visible="selectedPanel === $$.eYo.App.TURTLE"
+          ></panel-turtle>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapState, mapMutations} from 'vuex'
+
   import IconBase from '@@/Icon/IconBase.vue'
   import IconRestart from '@@/Icon/IconRestart.vue'
   import IconReplay from '@@/Icon/IconReplay.vue'
@@ -42,26 +108,9 @@
     data: function () {
       return {
         titles: {
-          console: 'Console',
-          turtle: 'Tortue'
-        },
-        visible: undefined
-      }
-    },
-    computed: {
-      selected: function () {
-        return this.$store.state.UI.selectedPanel
-      },
-      panelsStyleWidth: function () {
-        if (this.visible === undefined) {
-          this.visible = this.$store.state.UI.panelsVisible
-        } else {
-          if (this.visible !== this.$store.state.UI.panelsVisible) {
-            this.visible = this.$store.state.UI.panelsVisible
-            // console.log('change to', this.visible, this.$refs.divPanels.offsetWidth, window.innerWidth)
-          }
+          console: eYo.Do.$$t('message.console'),
+          turtle: eYo.Do.$$t('message.turtle')
         }
-        return '100%'
       }
     },
     components: {
@@ -72,16 +121,21 @@
       IconReplay,
       IconErase
     },
+    computed: {
+      ...mapState('UI', {
+        selectedPanel: state => state.selectedPanel
+      })
+    },
     methods: {
       erase (arg) {
-        eYo.$$.bus.$emit('erase-' + (arg || this.selected))
+        eYo.$$.bus.$emit('erase-' + (arg || this.selectedPanel))
       },
       restart (arg) {
-        eYo.$$.bus.$emit('restart-' + (arg || this.selected))
+        eYo.$$.bus.$emit('restart-' + (arg || this.selectedPanel))
       },
-      selectPanel (arg) {
-        this.$store.commit('UI_SET_SELECTED_PANEL', arg)
-      }
+      ...mapMutations('UI', {
+        selectPanel: 'setSelectedPanel'
+      })
     }
   }
 </script>
