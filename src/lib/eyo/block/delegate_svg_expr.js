@@ -634,24 +634,6 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
 }, true)
 
 /**
- * Class for a DelegateSvg, not_test.
- * This is not an Operator subclass because 'not' is a reserved word.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('not_test', {
-  slots: {
-    expression: {
-      order: 1,
-      fields: {
-        label: 'not'
-      },
-      check: eYo.T3.Expr.Check.not_test_all,
-      hole_value: 'name'
-    }
-  }
-}, true)
-
-/**
  * Class for a DelegateSvg, builtin object.
  * For edython.
  */
