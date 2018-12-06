@@ -1115,7 +1115,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
     })
   }
   this.renderDrawFieldFrom_(this.toEndField, io)
-  this.renderDrawSlot_(this.comment_s)
+  this.renderDrawSlot_(this.comment_s, io)
   this.renderDrawModelEnd_(io)
   return io.steps.join(' ')
 }
