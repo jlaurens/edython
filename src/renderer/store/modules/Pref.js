@@ -24,23 +24,7 @@ const state = {
 
 const mutations = {
   toggleTipsDisabled (state) {
-    var old = state.tipsDisabled
-    var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
-    var i = 0
-    if (old) {
-      for (; i < tippies.length; ++i) {
-        tippies[i].enable()
-      }
-    } else {
-      for (; i < tippies.length; ++i) {
-        var t = tippies[i]
-        if (t.state.visible) {
-          t.hide()
-        }
-        t.disable()
-      }
-    }
-    state.tipsDisabled = !old
+    state.tipsDisabled = !state.tipsDisabled
   }
 }
 

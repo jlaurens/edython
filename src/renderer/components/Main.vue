@@ -28,9 +28,23 @@
         tipsDisabled: state => state.tipsDisabled
       })
     },
-    whatch: {
+    watch: {
       tipsDisabled (newValue, oldValue) {
-        console.log('CHANGE', newValue, oldValue)
+        var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
+        var i = 0
+        if (newValue) {
+          for (; i < tippies.length; ++i) {
+            var t = tippies[i]
+            if (t.state.visible) {
+              t.hide()
+            }
+            t.disable()
+          }
+        } else {
+          for (; i < tippies.length; ++i) {
+            tippies[i].enable()
+          }
+        }
       }
     }
   }
