@@ -1268,8 +1268,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         var head = text[0]
         if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret) {
           if (this.packedQuotes && (head === "'" || head === '"')) {
-            console.error(io.common.field.shouldSeparate,
-              io.common.field.beforeIsBlack, io.common.startOfLine)
             io.cursor.c -= 1
           } else if (this.packedBrackets && head === "[") {
             io.cursor.c -= 1
