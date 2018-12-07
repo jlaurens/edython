@@ -35,13 +35,10 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       },
       synchronize: true,
       placeholderText: eYo.Msg.Placeholder.COMMENT,
-      xml: {
-        load: /** @suppress {globalThis} */ function (element) {
-          this.load(element)
-          this.whenRequiredFromModel(function () {
-            this.setIncog(false)
-          }) || (this.toText().length && this.setIncog(false))
-        }
+      didLoad: /** @suppress {globalThis} */ function () {
+        this.whenRequiredFrom(() => {
+          this.setIncog(false)
+        }) || (this.toText().length && this.setIncog(false))
       }
     },
     comment_variant: { // variant are very useful with undo/redo
@@ -538,7 +535,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         text: true, // there must be an only one
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        this.whenRequiredFromModel(function () {
+        this.whenRequiredFrom(() => {
           this.setIncog(false)
         }) || (this.toText().length && this.setIncog(false))
       }
@@ -550,8 +547,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         return ''
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        this.whenRequiredFromModel(function () {
-          this.setIncog(false)
+        this.whenRequiredFrom(function () {
+          this.owner.comment_variant_p = eYo.Key.COMMENT
         }) || this.setIncog(true)
       },
       consolidate: /** @suppress {globalThis} */ function () {
