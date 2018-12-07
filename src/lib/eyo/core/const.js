@@ -181,9 +181,10 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   CONTINUE: 'continue',
   BREAK: 'break',
 
-  // types of model items.
+  // types of model items. All in lowercase letters!!!
   FUNCTION: 'function',
   METHOD: 'method',
+  CLASS: 'class',
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
