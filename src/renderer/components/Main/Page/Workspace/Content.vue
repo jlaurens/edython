@@ -158,7 +158,7 @@
     },
     computed: {
       canBasic () {
-        return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || this.isBasic)
+        return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
       },
       ...mapState('UI', {
         flyoutCategory: state => state.flyoutCategory,
