@@ -14,7 +14,8 @@
 goog.provide('eYo.Decorate')
 
 /**
- * Decorate the function to be reentrant
+ * Decorate the function to be reentrant.
+ * The return function will test if `this.reentrant[key]` exists.
  * @param {!string} key
  * @param {!function} f
  * @return An object which `return` property is the value returned by f when called.
