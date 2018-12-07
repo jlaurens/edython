@@ -162,7 +162,7 @@
       },
       choices () {
         var item = this.eyo.item_p
-        return item && (item.isMethod || item.isFunction)
+        return item && (item.isMethod || item.isFunction || item.isClass)
           ? [
             this.by_key[eYo.Key.NONE],
             this.by_key[eYo.Key.CALL_EXPR]
