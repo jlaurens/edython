@@ -386,8 +386,11 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
 eYo.DelegateSvg.newBlockComplete = (function () {
   var newBlockComplete = eYo.DelegateSvg.newBlockComplete
   return function (owner, model, id) {
-    if (goog.isString(model) && model.startsWith('<')) {
-      var B = eYo.Xml.stringToBlock(model, owner)
+    if (goog.isString(model)) {
+      model = model.trim()
+      if (model.startsWith('<')) {
+        var B = eYo.Xml.stringToBlock(model, owner)
+      }
     }
     if (!B) {
       B = newBlockComplete.call(this, owner, model, id)
