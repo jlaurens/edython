@@ -45,7 +45,7 @@
         var block = eYo.$$.Blockly.selected
         if (block) {
           var p = new eYo.PythonExporter()
-          var code = p.export(block, true)
+          var code = p.export(block, {is_deep: true})
           eYo.App.copyTextToClipboard(code)
           this.theta = 0
           eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
