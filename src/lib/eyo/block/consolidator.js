@@ -734,7 +734,8 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     // this.doAry(io)
     return input
   })
-  return f.call(this).ans
+  var ans = f.call(this)
+  return ans && ans.ans
 }
 
 /**
@@ -746,19 +747,19 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
  */
 eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
   var filter = goog.isArray(type)
-    ? function (check) {
+    ? (check) => {
       for (var i = 0; i < type.length; i++) {
         if (goog.array.contains(check, type[i])) {
           return true
         }
       }
     }
-    : function (check) {
+    : (check) => {
       return goog.array.contains(check, type)
     }
   while (this.nextInput(io)) {
     var target = io.c8n.targetConnection
-    if (target && filter(target.check_)) {
+    if (target && target.check_ && filter(target.check_)) {
       return io.input
     }
   }
