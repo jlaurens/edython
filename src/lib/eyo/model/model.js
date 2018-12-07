@@ -145,6 +145,11 @@ Object.defineProperties(eYo.Model.Item.prototype, {
       return this.type === eYo.Key.FUNCTION
     }
   },
+  isClass: {
+    get () {
+      return this.type === eYo.Key.CLASS
+    }
+  },
   model: {
     get() {
       throw 'RENAMED property: model -> module'
