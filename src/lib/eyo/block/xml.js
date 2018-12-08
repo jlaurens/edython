@@ -1120,6 +1120,7 @@ eYo.Xml.fromDom = function (block, element) {
   eyo.changeWrap(function () { // `this` is `eyo`
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
   // then fill it based on the xml data
+    eyo.willLoad()
     var controller = eyo
     if (!eyo.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
