@@ -8,21 +8,25 @@
 <s eyo="start_stmt" x="300" y="280" comment="Calculer 1+2+3+...">
 <s eyo="stmt" comment="1) Demander un nombre à l'utilisateur" flow="next">
 <s eyo="assignment" name="réponse" flow="next">
-<x eyo="list" slot="assigned">
-<x eyo="input" slot="O">
-<x eyo="literal" slot="expression">'Donner un nombre entier positif (pas trop grand...)'</x>
+<x eyo="list" slot="rhs">
+<x eyo="call" name="input" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Donner un nombre entier positif (pas trop grand...)'</x>
+</x>
 </x>
 </x>
 <s eyo="stmt" comment="2) Convertir la réponse en nombre entier" flow="next">
 <s eyo="assignment" name="n" flow="next">
-<x eyo="list" slot="assigned">
+<x eyo="list" slot="rhs">
 <x eyo="call" name="int" slot="O">
-<x eyo="identifier" name="réponse" slot="unary"></x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="réponse" slot="O"></x>
+</x>
 </x>
 </x>
 <s eyo="stmt" comment="3) Initialiser la somme à 0" flow="next">
 <s eyo="assignment" name="somme" flow="next">
-<x eyo="list" slot="assigned">
+<x eyo="list" slot="rhs">
 <x eyo="literal" slot="O">0</x>
 </x>
 <s eyo="stmt" comment="4) Calculer la somme" flow="next">
@@ -31,8 +35,8 @@
 <x eyo="identifier" name="i" slot="O"></x>
 </x>
 <x eyo="list" slot="in">
-<x eyo="range" slot="O">
-<x eyo="list" slot="arguments">
+<x eyo="call" name="range" slot="O">
+<x eyo="list" slot="n_ary">
 <x eyo="a_expr" operator="+" slot="O">
 <x eyo="identifier" name="n" slot="lhs"></x>
 <x eyo="literal" slot="rhs">1</x>
@@ -41,7 +45,7 @@
 </x>
 </x>
 <s eyo="assignment" name="somme" flow="suite">
-<x eyo="list" slot="assigned">
+<x eyo="list" slot="rhs">
 <x eyo="a_expr" operator="+" slot="O">
 <x eyo="identifier" name="somme" slot="lhs"></x>
 <x eyo="identifier" name="i" slot="rhs"></x>
@@ -49,8 +53,8 @@
 </x>
 </s>
 <s eyo="stmt" comment="5) Afficher le résultat" flow="next">
-<s eyo="print" flow="next">
-<x eyo="list" slot="arguments">
+<s eyo="call" name="print" flow="next">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">'La somme des'</x>
 <x eyo="identifier" name="n" slot="f"></x>
 <x eyo="literal" slot="o">'premiers entiers est'</x>
