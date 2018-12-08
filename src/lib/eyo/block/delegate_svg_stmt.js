@@ -535,6 +535,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         text: true, // there must be an only one
       },
       didLoad: /** @suppress {globalThis} */ function () {
+        this.setIncog(true)
         this.whenRequiredFrom(() => {
           this.setIncog(false)
         }) || (this.toText().length && this.setIncog(false))
@@ -547,9 +548,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         return ''
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        this.whenRequiredFrom(function () {
+        this.setIncog(!this.whenRequiredFrom(() => {
           this.owner.comment_variant_p = eYo.Key.COMMENT
-        }) || this.setIncog(true)
+        }))
       },
       consolidate: /** @suppress {globalThis} */ function () {
         if (this.data.expression.isIncog()) {
