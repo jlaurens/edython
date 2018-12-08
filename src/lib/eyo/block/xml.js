@@ -669,10 +669,6 @@ eYo.Xml.Data.fromDom = function (block, element) {
         }
         hasText = hasText || (xml && xml.text)
       })
-      var xml = this.model.xml
-      if (xml && goog.isFunction(xml.didLoad)) {
-        xml.didLoad.call(this, element)
-      }
     }
   )
 }
@@ -1142,7 +1138,7 @@ eYo.Xml.fromDom = function (block, element) {
         throw err
       } finally {
         delete eyo.controller_fromDom_locked
-        var state = dom.getAttribute(eYo.Xml.STATE)
+        var state = element.getAttribute(eYo.Xml.STATE)
         if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
           eyo.lock()
         }
@@ -1206,7 +1202,7 @@ eYo.Xml.fromDom = function (block, element) {
       }
       var out = statement(eyo.nextConnection, eYo.Xml.NEXT)
       out = statement(eyo.suiteConnection, eYo.Xml.SUITE) || out
-      var state = dom.getAttribute(eYo.Xml.STATE)
+      var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         eyo.lock()
       }
