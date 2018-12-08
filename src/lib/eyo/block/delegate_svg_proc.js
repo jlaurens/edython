@@ -306,11 +306,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list,
-      xml: {
-        didLoad: /** @suppress {globalThis} */ function () {
-          if (this.targetBlock().childBlocks_.length) {
-            this.owner.variant_p = eYo.Key.N_ARY
-          }
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.targetBlock().childBlocks_.length) {
+          this.owner.variant_p = eYo.Key.N_ARY
         }
       }
     }
