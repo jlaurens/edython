@@ -484,7 +484,18 @@ eYo.Do.forEachChild = function (element, handler, thisArg) {
 }
 
 /**
- * Forwards `this` to the handler.
+ * .
+ * @param {*} element 
+ * @param {*} handler 
+ * @param {*} thisArg
+ */
+eYo.Do.someChild = function (element, handler, thisArg) {
+  var children = Array.prototype.slice.call(element.childNodes)
+  return children.some(handler, thisArg)
+}
+
+/**
+ * Forwards `thisArg` to the handler.
  * @param {*} element 
  * @param {*} handler 
  * @param {*} thisArg 
@@ -499,14 +510,18 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
 }
 
 /**
- * Forwards `this` to the handler.
+ * Forwards `thisArg` to the handler.
  * @param {*} element 
  * @param {*} handler 
  * @param {*} thisArg 
  */
-eYo.Do.someChild = function (element, handler, thisArg) {
+eYo.Do.someElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
-  return children.some(handler, thisArg)
+  return children.some((child, index, item) => {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      return handler.call(thisArg, child, index, item)
+    }
+  }, thisArg)
 }
 
 /**
