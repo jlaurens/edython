@@ -277,9 +277,6 @@ eYo.Slot.makeFields = (function () {
       if (!goog.isFunction(xml.load)) {
         delete xml.load
       }
-      if (!goog.isFunction(xml.didLoad)) {
-        delete xml.didLoad
-      }
     }
   }
   var makeField = function (fieldName, model) {
@@ -899,15 +896,21 @@ eYo.Slot.prototype.load = function (element) {
  * When all the slots and data have been loaded.
  * For edython.
  */
-eYo.Slot.prototype.didLoad = function () {
-  var xml = this.model.xml
-  if (xml && xml.didLoad) {
-    xml.didLoad.call(this)
+eYo.Slot.prototype.willLoad = eYo.Decorate.reentrant_method('willLoad', function () {
+  if (this.model.willLoad) {
+    this.model.willLoad.call(this)
   }
+})
+
+/**
+ * When all the slots and data have been loaded.
+ * For edython.
+ */
+eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function () {
   if (this.model.didLoad) {
     this.model.didLoad.call(this)
   }
-}
+})
 
 /**
  * execute the given function for the receiver and its next siblings.
