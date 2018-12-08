@@ -148,7 +148,10 @@ eYo.Data.prototype.get = function () {
       'get',
       this.init
     )
-    f && f.apply(this, arguments)
+    var ans = f && f.apply(this, arguments)
+    if (goog.isDef(ans.ans)) {
+      this.internalSet(ans.ans)
+    }
   }
   return this.value_
 }
@@ -159,7 +162,7 @@ eYo.Data.prototype.get = function () {
  * @param {Boolean} notUndoable
  */
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
-  var oldValue = this.value_
+    var oldValue = this.value_
   this.owner.changeBegin()
   this.beforeChange(oldValue, newValue)
   try {
@@ -221,7 +224,8 @@ eYo.Data.prototype.init = function (newValue) {
   )
   try {
     if (f) {
-      this.internalSet(f.apply(this, arguments))
+      var ans = f.apply(this, arguments)
+      ans && this.internalSet(ans.ans)
       return
     } else if (goog.isDef(init)) {
       this.internalSet(init)
@@ -253,7 +257,10 @@ eYo.Data.prototype.setWithType = function (type) {
     'model_fromType',
     this.model.fromType
   )
-  f && f.apply(this, arguments)
+  if (f) {
+    var ans = f.apply(this, arguments)
+    ans && this.change(ans.ans)
+  }
 }
 
 /**
@@ -288,7 +295,8 @@ eYo.Data.prototype.isNone = function () {
 eYo.Data.prototype.validate = function (newValue) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
   if (f) {
-    return f.apply(this, arguments).ans
+    var ans = f.apply(this, arguments)
+    return ans && ans.ans
   }
   var all = this.getAll()
   return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
@@ -303,7 +311,8 @@ eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
   var result = this.get()
   if (f) {
-    return f.call(this, result).ans
+    var ans = f.call(this, result)
+    return ans && ans.ans
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -320,7 +329,8 @@ eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
-    return f.call(this, result).ans
+    var ans = f.call(this, result)
+    return ans && ans.ans
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -366,7 +376,10 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
     if (f) {
-      f.apply(this, arguments)
+      var ans = f.apply(this, arguments)
+      if (goog.isDef(ans.ans)) {
+        this.change(ans.ans, validate)
+      }
       return
     }
   }
@@ -405,7 +418,11 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
   if (!this.model_fromField_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
     if (f) {
-      f.apply(this, arguments)
+      var ans = f.apply(this, arguments)
+      if (goog.isDef(ans.ans)) {
+        // reentrant here
+        this.fromField(ans.ans, dontValidate)
+      }
       return
     }
   }
@@ -911,28 +928,32 @@ eYo.Data.prototype.load = function (element) {
     this.setRequiredFromModel(false)
     var txt
     if (isText) {
-      // get the first child
-      var done
-      eYo.Do.forEachChild(element, (child) => {
+      // get the first child which is a text node
+      if (!eYo.Do.someChild(element, (child) => {
         if (child.nodeType === Node.TEXT_NODE) {
           txt = child.nodeValue
-          return done = true
+          return true
         }
-      })
-      if (done) {
-        if (xml && xml.didLoad) {
-          xml.didLoad.call(this, element)
+      })) {
+        txt = element.getAttribute(eYo.Key.PLACEHOLDER)
+        if (goog.isDefAndNotNull(txt)) {
+          this.customizePlaceholder(txt)
+          this.setRequiredFromModel(true)
+          this.fromText('', false)
+          if (xml && xml.didLoad) {
+            xml.didLoad.call(this, element)
+          }
+          return this.loaded_ = true
         }
-      } else {
-        this.customizePlaceholder(element.getAttribute(eYo.Key.PLACEHOLDER))
       }
     } else {
       txt = element.getAttribute(this.attributeName)
       if (!goog.isDefAndNotNull(txt)) {
-        txt = element.getAttribute(this.attributeName + '_placeholder')
-        if (txt) {
+        txt = element.getAttribute(`${this.attributeName}_${eYo.Key.PLACEHOLDER}`)
+        if (goog.isDefAndNotNull(txt)) {
           this.customizePlaceholder(txt)
           this.setRequiredFromModel(true)
+          this.fromText('', false)
           if (xml && xml.didLoad) {
             xml.didLoad.call(this, element)
           }
@@ -942,10 +963,14 @@ eYo.Data.prototype.load = function (element) {
     }
     if (goog.isDefAndNotNull(txt)) {
       if (required && txt === '?') {
-        this.fromText('', false)
+        txt = ''
+        this.setRequiredFromModel(true)
       } else {
         if ((isText && txt === '?') || (!isText && txt === '')) {
+          txt = ''
           this.setRequiredFromModel(true)
+        } else if (txt) {
+          this.setRequiredFromModel(this.validate(txt).validated)
         }
         this.fromText(txt, false) // do not validate, there might be an error while saving, please check
       }
@@ -999,11 +1024,14 @@ eYo.Data.prototype.isRequiredFrom = function () {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
+ * @param {function()} helper
  */
-eYo.Data.prototype.clearRequiredFromModel = function () {
+eYo.Data.prototype.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel()) {
     this.setRequiredFromModel(false)
-    this.fromText('', false)// useful if the text was a '?'
+    if (goog.isFunction(helper)) {
+      helper.call(this)
+    }
     return true
   }
 }
@@ -1013,10 +1041,9 @@ eYo.Data.prototype.clearRequiredFromModel = function () {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFromModel = function (helper) {
-  if (this.isRequiredFromModel()) {
+eYo.Data.prototype.whenRequiredFrom = function (helper) {
+  if (this.isRequiredFrom()) {
     this.setRequiredFromModel(false)
-    this.fromText('', false)// useful if the text was a '?'
     if (goog.isFunction(helper)) {
       helper.call(this)
     }
