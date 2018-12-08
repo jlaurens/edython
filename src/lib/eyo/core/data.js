@@ -148,10 +148,9 @@ eYo.Data.prototype.get = function () {
       'get',
       this.init
     )
-    var ans = f && f.apply(this, arguments)
-    if (goog.isDef(ans.ans)) {
-      this.internalSet(ans.ans)
-    }
+    f && eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+      this.internalSet(ans)
+    })
   }
   return this.value_
 }
@@ -224,8 +223,9 @@ eYo.Data.prototype.init = function (newValue) {
   )
   try {
     if (f) {
-      var ans = f.apply(this, arguments)
-      ans && this.internalSet(ans.ans)
+      eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+        this.internalSet(ans)
+      })
       return
     } else if (goog.isDef(init)) {
       this.internalSet(init)
@@ -257,10 +257,9 @@ eYo.Data.prototype.setWithType = function (type) {
     'model_fromType',
     this.model.fromType
   )
-  if (f) {
-    var ans = f.apply(this, arguments)
-    ans && this.change(ans.ans)
-  }
+  f && eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+    this.intechangernalSet(ans)
+  })
 }
 
 /**
@@ -295,8 +294,7 @@ eYo.Data.prototype.isNone = function () {
 eYo.Data.prototype.validate = function (newValue) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
   if (f) {
-    var ans = f.apply(this, arguments)
-    return ans && ans.ans
+    return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
   var all = this.getAll()
   return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
@@ -311,8 +309,7 @@ eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
   var result = this.get()
   if (f) {
-    var ans = f.call(this, result)
-    return ans && ans.ans
+    return eYo.Decorate.whenAns(f.call(this, result))
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -329,8 +326,7 @@ eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
-    var ans = f.call(this, result)
-    return ans && ans.ans
+    return eYo.Decorate.whenAns(f.call(this), result)
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -376,10 +372,9 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
     if (f) {
-      var ans = f.apply(this, arguments)
-      if (goog.isDef(ans.ans)) {
-        this.change(ans.ans, validate)
-      }
+      eYo.Decorate.whenAns(f.apply(this, arguments), ans => {
+        this.change(ans, validate)
+      })
       return
     }
   }
@@ -418,11 +413,9 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
   if (!this.model_fromField_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
     if (f) {
-      var ans = f.apply(this, arguments)
-      if (goog.isDef(ans.ans)) {
-        // reentrant here
-        this.fromField(ans.ans, dontValidate)
-      }
+      eYo.Decorate.whenAns(f.call(this), ans => {
+        this.fromField(ans, dontValidate)
+      })
       return
     }
   }
@@ -962,6 +955,14 @@ eYo.Data.prototype.load = function (element) {
       }
     }
     if (goog.isDefAndNotNull(txt)) {
+      if (xml) {
+        f = eYo.Decorate.reentrant_method.call(this, 'xml_willLoad', xml.willLoad)
+        if (f) {
+          eYo.Decorate.whenAns(f.call(this, txt), ans => {
+            txt = ans
+          })
+        }
+      }
       if (required && txt === '?') {
         txt = ''
         this.setRequiredFromModel(true)

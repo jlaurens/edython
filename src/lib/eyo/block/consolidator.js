@@ -734,8 +734,7 @@ eYo.Consolidator.List.prototype.getInput = function (block, name, dontCreate) {
     // this.doAry(io)
     return input
   })
-  var ans = f.call(this)
-  return ans && ans.ans
+  return eYo.Decorate.whenAns(f.call(this))
 }
 
 /**
