@@ -180,28 +180,26 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   'setTrusted_',
   function (newValue) {
     var oldValue = this.value_
-    this.owner.changeWrap(
-      () => { // catch `this`
-        eYo.Events.groupWrap(
-          () => { // catch `this`
-            this.beforeChange(oldValue, newValue)
-            try {
-              this.value_ = newValue
-              this.duringChange(oldValue, newValue)
-            } catch(err) {
-              console.error(err)
-              throw err
-            } finally {
-              if (!this.noUndo && Blockly.Events.isEnabled()) {
-                Blockly.Events.fire(new Blockly.Events.BlockChange(
-                  this.block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
-              }
-              this.afterChange(oldValue, newValue)
+    if (oldValue !== newValue) {
+      this.owner.changeWrap(() => { // catch `this`
+        eYo.Events.groupWrap(() => { // catch `this`
+          this.beforeChange(oldValue, newValue)
+          try {
+            this.value_ = newValue
+            this.duringChange(oldValue, newValue)
+          } catch(err) {
+            console.error(err)
+            throw err
+          } finally {
+            if (!this.noUndo && Blockly.Events.isEnabled()) {
+              Blockly.Events.fire(new Blockly.Events.BlockChange(
+                this.block, eYo.Const.Event.DATA + this.key, null, oldValue, newValue))
             }
+            this.afterChange(oldValue, newValue)
           }
-        )    
-      }
-    )
+        })    
+      })
+    }
   }
 )
 

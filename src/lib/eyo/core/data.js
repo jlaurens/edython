@@ -158,18 +158,20 @@ eYo.Data.prototype.get = function () {
  * @param {Boolean} notUndoable
  */
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
-    var oldValue = this.value_
-  this.owner.changeBegin()
-  this.beforeChange(oldValue, newValue)
-  try {
-    this.value_ = newValue
-    this.duringChange(oldValue, newValue)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.afterChange(oldValue, newValue)
-    this.owner.changeEnd() // may render
+  var oldValue = this.value_
+  if (oldValue !== newValue) {
+    this.owner.changeBegin()
+    this.beforeChange(oldValue, newValue)
+    try {
+      this.value_ = newValue
+      this.duringChange(oldValue, newValue)
+    } catch (err) {
+      console.error(err)
+      throw err
+    } finally {
+      this.afterChange(oldValue, newValue)
+      this.owner.changeEnd() // may render
+    }
   }
 }
 
@@ -788,15 +790,9 @@ eYo.Data.prototype.isActive = function () {
 eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
   var field = this.fields[fieldKey || this.key]
   if (field) {
-    Blockly.Events.disable()
-    try {
+    eYo.Events.disableWrap(() => {
       field.setValue(newValue)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      Blockly.Events.enable()
-    }
+    })
   }
 }
 

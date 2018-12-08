@@ -1605,28 +1605,26 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * This should be called only once.
  * The underlying model is not expected to change while running.
  * Call's the model's `init` method if any.
+ * This is always called at creation time such that it must
+ * be executed outised of any undo management.
  */
 eYo.Delegate.prototype.init = function () {
-  try {
-    this.change.level++ // will prevent any rendering
-    this.makeState()
-    // initialize the data
-    this.foreachData((data) => {
-      data.init()
-    })
-    this.foreachSlot((slot) => {
-      slot.init()
-    })
-    // At this point the state value may not be consistent
-    this.consolidate()
-    // but now it should be
-    this.model.init && this.model.init.call(this)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.change.level--
-  }
+  eYo.Events.disableWrap(() => {
+    this.changeWrap(() => {
+      this.makeState()
+      // initialize the data
+      this.foreachData((data) => {
+        data.init()
+      })
+      this.foreachSlot((slot) => {
+        slot.init()
+      })
+      // At this point the state value may not be consistent
+      this.consolidate()
+      // but now it should be
+      this.model.init && this.model.init.call(this)
+    })  
+  })
 }
 
 /**

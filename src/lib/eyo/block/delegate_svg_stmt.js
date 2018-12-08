@@ -212,9 +212,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
           if (parentC8n && c8n.checkType_(parentC8n)) {
             eYo.Events.groupWrap(
               () => {
-                if (Blockly.Events.isEnabled()) {
-                  eYo.Events.fireBlockCreate(parentBlock)
-                }
+                eYo.Events.fireBlockCreate(parentBlock)
                 var targetC8n = c8n.targetConnection
                 if (targetC8n) {
                   targetC8n.disconnect()

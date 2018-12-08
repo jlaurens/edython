@@ -342,9 +342,8 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
     return workspace.eyo.fromString(dom)
   }
   // Create top-level block.
-  Blockly.Events.disable();
-  try {
-    if (workspace.rendered) {
+  if (workspace.rendered) {
+    eYo.Events.disableWrap(() => {
       var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace);
       // Hide connections to speed up assembly.
       // topBlock.setConnectionsHidden(true);
@@ -360,18 +359,10 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       // Allow the scrollbars to resize and move based on the new contents.
       // TODO(@picklesrus): #387. Remove when domToBlock avoids resizing.
       workspace.resizeContents();
-    }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable();
+    })
   }
-  if (Blockly.Events.isEnabled()) {
-    eYo.Events.fireBlockCreate(topBlock);
-
-  }
-  return topBlock;
+  eYo.Events.fireBlockCreate(topBlock)
+  return topBlock
 }
 
 /**

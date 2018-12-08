@@ -2860,9 +2860,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
         eYo.Events.groupWrap(
           () => {
             try {
-              if (Blockly.Events.isEnabled()) {
-                eYo.Events.fireBlockCreate(candidate)
-              }
+              eYo.Events.fireBlockCreate(candidate)
               prepare && prepare()
               otherC8n.connect(c8n)
             } catch (err) {

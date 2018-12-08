@@ -413,16 +413,9 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
  */
 eYo.FieldInput.prototype.setValue = function (newValue) {
   this.eyo.placeholder = !newValue || !newValue.length
-  // no undo recording
-  Blockly.Events.disable()
-  try {
+  eYo.Events.disableWrap(() => {
     eYo.FieldInput.superClass_.setValue.call(this, newValue)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    Blockly.Events.enable()
-  }
+  })
 }
 
 /**

@@ -440,11 +440,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
   if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
     eYo.Events.groupWrap(
       () => { // `this` is catched
-        if (Blockly.Events.isEnabled()) {
-          eYo.Events.fireBlockCreate(parentBlock)
-          // what about the other blocks that may have been created during this stage?
-          // Why not using a Delete event instead
-        }
+        eYo.Events.fireBlockCreate(parentBlock)
         var targetC8n = parentInputC8n.targetConnection
         if (targetC8n/* && targetC8n.isConnected() */) {
           console.log('input already connected, disconnect and dispose target')

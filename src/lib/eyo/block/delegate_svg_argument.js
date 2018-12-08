@@ -230,7 +230,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       order: 200,
       init: Infinity,
       xml: false,
-      undo: false,
+      noUndo: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: goog.isNumber(newValue) ? newValue : Infinity}
       },
@@ -248,7 +248,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       order: 300,
       init: 0,
       xml: false,
-      undo: false,
+      noUndo: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.changeWrap(

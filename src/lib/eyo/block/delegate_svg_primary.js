@@ -442,14 +442,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.updateProfile()
-        var p = this.owner.profile_p
-        if (p.p5e && p.p5e.item) {
+        var item = this.owner.item_p
+        if (item) {
           // console.log('p.p5e.item', p.p5e.item.type, p.p5e.item)
-          if (p.p5e.item.type === 'method' && this.owner.dotted_p === 0) {
+          if (item.type === 'method' && this.owner.dotted_p === 0) {
             this.owner.dotted_p = 1
           }
-          this.owner.ary_p = -1 // will be validated below
-          this.owner.mandatory_p = -1 // will be validated below
         }
       },
       synchronize: true,
@@ -478,20 +476,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        this.owner.updateProfile()
-        var p = this.owner.profile_p
-        var item = p.p5e && p.p5e.item
-        if (item) {
-          var ary = item.ary
-          validated = goog.isDef(ary) ? ary : Infinity
-        } else if (goog.isString(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
-          } else {
-            validated = Infinity
+        var item = this.owner.item_p
+        if (!item) {
+          if (goog.isString(newValue)) {
+            if (newValue.length) {
+              validated = Math.max(0, Math.floor(Number(newValue)))
+            } else {
+              validated = Infinity
+            }
+          } else if (goog.isNumber(newValue)) {
+            validated = Math.max(0, Math.floor(newValue))
           }
-        } else if (goog.isNumber(newValue)) {
-          validated = Math.max(0, Math.floor(newValue))
         }
         return {validated: validated}
       },
@@ -522,25 +517,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         // returns a `Number` or `Infinity`
         var validated
-        var p = this.owner.profile_p
-        var item = p.p5e && p.p5e.item
-        if (item) {
-          if (goog.isDef(item.mandatory)) {
-            validated = item.mandatory
-          } else if (goog.isDef(item.ary)) {
-            // when `item.mandatory` is not defined, `mandatory` is `ary`
-            validated = item.ary
-          } else {
-            validated = 0
+        var item = this.owner.item_p
+        if (!item) {
+          if (goog.isString(newValue)) {
+            if (newValue.length) {
+              validated = Math.max(0, Math.floor(Number(newValue)))
+            } else {
+              validated = 0
+            }
+          } else if (goog.isNumber(newValue)) {
+            validated = Math.max(0, Math.floor(newValue))
           }
-        } else if (goog.isString(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
-          } else {
-            validated = 0
-          }
-        } else if (goog.isNumber(newValue)) {
-          validated = Math.max(0, Math.floor(newValue))
         }
         return {validated: validated}
       },
