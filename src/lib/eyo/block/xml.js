@@ -1121,7 +1121,7 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
 eYo.Xml.fromDom = function (block, element) {
   var eyo = block.eyo
   // headless please
-  var do_it = function () { // `this` is `eyo`
+  eyo.changeWrap(function () { // `this` is `eyo`
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
   // then fill it based on the xml data
     var controller = eyo
@@ -1142,6 +1142,10 @@ eYo.Xml.fromDom = function (block, element) {
         throw err
       } finally {
         delete eyo.controller_fromDom_locked
+        var state = dom.getAttribute(eYo.Xml.STATE)
+        if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
+          eyo.lock()
+        }
       }
     } else {
       eYo.Xml.Data.fromDom(block, element)
@@ -1202,14 +1206,13 @@ eYo.Xml.fromDom = function (block, element) {
       }
       var out = statement(eyo.nextConnection, eYo.Xml.NEXT)
       out = statement(eyo.suiteConnection, eYo.Xml.SUITE) || out
+      var state = dom.getAttribute(eYo.Xml.STATE)
+      if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
+        eyo.lock()
+      }
       return out
     }
-    var state = dom.getAttribute(eYo.Xml.STATE)
-    if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-      eyo.lock()
-    }
-  }
-  eyo.changeWrap(do_it)
+  })
 }
 
 goog.require('eYo.DelegateSvg.Primary')
