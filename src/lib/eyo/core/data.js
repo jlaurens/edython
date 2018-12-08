@@ -90,9 +90,6 @@ eYo.Data = function (owner, key, model) {
       if (!goog.isFunction(xml.load)) {
         delete xml.load
       }
-      if (!goog.isFunction(xml.didLoad)) {
-        delete xml.didLoad
-      }
     } else if (key === 'variant' || key === 'option' || key === 'subtype') {
       model.xml = false
     }
@@ -910,9 +907,6 @@ eYo.Data.prototype.load = function (element) {
       var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
       if (f) {
         f.apply(this, arguments)
-        if (xml && xml.didLoad) {
-          xml.didLoad.call(this, element)
-        }
         return
       }
     }
@@ -933,9 +927,6 @@ eYo.Data.prototype.load = function (element) {
           this.customizePlaceholder(txt)
           this.setRequiredFromModel(true)
           this.fromText('', false)
-          if (xml && xml.didLoad) {
-            xml.didLoad.call(this, element)
-          }
           return this.loaded_ = true
         }
       }
@@ -947,9 +938,6 @@ eYo.Data.prototype.load = function (element) {
           this.customizePlaceholder(txt)
           this.setRequiredFromModel(true)
           this.fromText('', false)
-          if (xml && xml.didLoad) {
-            xml.didLoad.call(this, element)
-          }
           return this.loaded_ = true
         }
       }
@@ -977,9 +965,6 @@ eYo.Data.prototype.load = function (element) {
       }
     } else if (required) {
       this.fromText('', false)
-    }
-    if (xml && xml.didLoad) {
-      xml.didLoad.call(this, element)
     }
     return this.loaded_ = true
   }
