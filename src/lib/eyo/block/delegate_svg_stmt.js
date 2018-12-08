@@ -533,6 +533,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       xml: {
         text: true, // there must be an only one
+        willLoad: /** @suppress {globalThis} */ function (txt) {
+          return txt.trim()
+        }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.setIncog(true)
