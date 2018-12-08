@@ -33,16 +33,6 @@
         set (newValue) {
           this.$store.commit('UI_SET_DISPLAY_MODE', newValue)
         }
-      },
-      titleLeft () {
-        return this.left
-          ? this.$$t('toolbar.tooltip.workspace.hide')
-          : this.$$t('toolbar.tooltip.workspace.show')
-      },
-      titleRight () {
-        return this.right
-          ? this.$$t('toolbar.tooltip.console_panel.hide')
-          : this.$$t('toolbar.tooltip.console_panel.show')
       }
     },
     methods: {

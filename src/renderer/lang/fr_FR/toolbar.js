@@ -21,14 +21,6 @@ export default {
       normal: 'Interface pour une utilisation normale',
       teacher: 'Interface étendue à l\'usage des professeurs'
     },
-    workspace: {
-      hide: 'Cacher l\'espace des blocs',
-      show: 'Montrer l\'espace des blocs'
-    },
-    console_panel: {
-      hide: 'Cacher le panneau de console',
-      show: 'Montrer le panneau de console'
-    },
     selection: {
       send_to_back: 'Sélection à l\'arrière plan',
       show: 'Montrer la sélection'

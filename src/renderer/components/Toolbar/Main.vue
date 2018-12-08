@@ -12,10 +12,7 @@
         <icon-base icon-name="bug"><icon-bug /></icon-base>
       </b-btn>
       <main-demo/>
-    </b-btn-group>
-    <b-btn-group>
       <main-mode />
-      <main-display />
     </b-btn-group>
     <main-storage />
     <b-btn-group>
@@ -23,6 +20,7 @@
       <copy-python />
     </b-btn-group>
     <copy-paste />
+    <layout />    
     <b-btn-group>
       <main-undo-redo :redo="false" />
       <main-undo-redo :redo="true" />
@@ -37,9 +35,9 @@
   import MainDemo from './Main/Demo.vue'
   import RunPython from './Main/RunPython.vue'
   import CopyPaste from './Main/CopyPaste.vue'
+  import Layout from './Main/Layout.vue'
   import CopyPython from './Main/CopyPython.vue'
   import MainStorage from './Main/Storage.vue'
-  import MainDisplay from './Main/Display.vue'
   import MainMode from './Main/Mode.vue'
   
   import IconBase from '@@/Icon/IconBase.vue'
@@ -66,9 +64,9 @@
       MainDemo,
       RunPython,
       CopyPaste,
+      Layout,
       CopyPython,
       MainStorage,
-      MainDisplay,
       MainMode
     },
     mounted () {

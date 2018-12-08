@@ -325,7 +325,7 @@ eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
-    return eYo.Decorate.whenAns(f.call(this), result)
+    return eYo.Decorate.whenAns(f.call(this))
   }
   if (goog.isNumber(result)) {
     result = result.toString()

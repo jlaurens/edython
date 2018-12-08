@@ -192,10 +192,6 @@
         :eyo="eyo"
         :step="step" ></block-comment>
     </b-btn-group>
-    <b-btn-group class="b3k-cpl">
-      <block-copy-paste />
-      <block-layout />    
-    </b-btn-group>
     <block-common
       :eyo="eyo"
       :step="step" />
@@ -223,8 +219,6 @@
   import BlockDefault from './Block/Default.vue'
   import BlockDecorator from './Block/Decorator.vue'
   import BlockStarred from './Block/Starred.vue'
-  import BlockCopyPaste from './Block/CopyPaste.vue'
-  import BlockLayout from './Block/Layout.vue'
   import BlockExcept from './Block/Except.vue'
   import BlockFuncdef from './Block/Funcdef.vue'
   import BlockImport from './Block/Import.vue'
@@ -262,8 +256,6 @@
       BlockDefault,
       BlockDecorator,
       BlockStarred,
-      BlockCopyPaste,
-      BlockLayout,
       BlockExcept,
       BlockFuncdef,
       BlockImport,
