@@ -986,6 +986,18 @@ eYo.Data.prototype.load = function (element) {
 }
 
 /**
+ * Before all the data and slots will load.
+ * For edython.
+ */
+eYo.Data.prototype.willLoad = function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'modelWillLoad',this.model.willLoad)
+  if (f) {
+    f.apply(this, arguments)
+    return
+  }
+}
+
+/**
  * When all the data and slots have been loaded.
  * For edython.
  */
