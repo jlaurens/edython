@@ -343,8 +343,9 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
   }
   // Create top-level block.
   if (workspace.rendered) {
+    var topBlock
     eYo.Events.disableWrap(() => {
-      var topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace);
+      topBlock = Blockly.Xml.domToBlockHeadless_(dom, workspace);
       // Hide connections to speed up assembly.
       // topBlock.setConnectionsHidden(true);
       topBlock.eyo.beReady()
@@ -361,7 +362,7 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
       workspace.resizeContents();
     })
   }
-  eYo.Events.fireBlockCreate(topBlock)
+  topBlock && eYo.Events.fireBlockCreate(topBlock)
   return topBlock
 }
 
