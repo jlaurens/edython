@@ -15,7 +15,7 @@ goog.provide('eYo.DelegateSvg.Control')
 
 goog.require('goog.ui.Dialog')
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.DelegateSvg.Group')
 goog.require('goog.dom');
 
 /**
@@ -23,11 +23,42 @@ goog.require('goog.dom');
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('Control', null, eYo.DelegateSvg)
+eYo.DelegateSvg.BaseGroup.makeSubclass('Control', {
+  data: {
+    flags: {
+      init: Object.create(null),
+      willLoad: /** @suppress{globalThis} */ function () {
+        if (Object.keys(this.get()).length) {
+          this.set(Object.create(null)) // reset the dictionary of flags
+        }
+      },
+      xml: {
+        save: /** @suppress{globalThis} */ function (element) {
+          var flags = this.get()
+          if (flags.hasNext) {
+            element.setAttribute(eYo.Key.HAS_NEXT, eYo.Key.TRUE)
+          }
+        },
+        load: /** @suppress{globalThis} */ function (element) {
+          var flags = this.get()
+          var attr = element.getAttribute(eYo.Key.HAS_NEXT)
+          if (attr === eYo.Key.TRUE) {
+            flags.hasNext = true
+          }
+        }
+      }
+    }
+  }
+}, eYo.DelegateSvg)
+
+/**
+ * True for controls only.
+ */
+eYo.DelegateSvg.Control.prototype.isControl = true
 
 /**
  * Control block path.
- * @param {!Blockly.Block} block
+ * @param {Number} cursorX
  * @private
  */
 eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
@@ -68,7 +99,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   this.mouseDownWrapper_ =
     Blockly.bindEventWithChecks_(this.svgPathPlay_, 'mousedown', this,
       function (event) {
-        if (!this.nextConnection.isConnected()) {
+        if (!this.suiteConnection.isConnected()) {
           var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
           dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
           dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
@@ -121,6 +152,9 @@ eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
  * For edython.
  */
 eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
+  xml: {
+    attr: 'start'
+  },
   statement: {
     previous: {
       check: [] // nothing will fit
