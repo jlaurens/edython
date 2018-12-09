@@ -23,12 +23,20 @@ goog.require('goog.dom');
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('Group', {
-  fields: {
-    suffix: ':'
-  },
+eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   statement: {
     suite: {}
+  }
+}, eYo.DelegateSvg)
+
+/**
+ * Class for a DelegateSvg, statement block.
+ * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * For edython.
+ */
+eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {
+  fields: {
+    suffix: ':'
   }
 }, eYo.DelegateSvg)
 
@@ -36,7 +44,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('Group', {
  * Whether the block has a suite statement.
  * @private
  */
-eYo.DelegateSvg.Group.prototype.hasSuiteStatement_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.hasSuiteStatement_ = function () {
   return true
 }
 
@@ -45,7 +53,7 @@ eYo.DelegateSvg.Group.prototype.hasSuiteStatement_ = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_ = function () {
   /* eslint-disable indent */
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
@@ -55,7 +63,7 @@ eYo.DelegateSvg.Group.prototype.groupShapePathDef_ = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   if (block.isCollapsed()) {
@@ -67,20 +75,20 @@ eYo.DelegateSvg.Group.prototype.collapsedPathDef_ = function () {
     ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
     ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
-  return eYo.DelegateSvg.Group.superClass_.collapsedPathDef_.call(this)
+  return eYo.DelegateSvg.BaseGroup.superClass_.collapsedPathDef_.call(this)
 } /* eslint-enable indent */
 
-eYo.DelegateSvg.Group.prototype.shapePathDef_ =
-  eYo.DelegateSvg.Group.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Group.prototype.highlightPathDef_ =
-      eYo.DelegateSvg.Group.prototype.groupShapePathDef_
+eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
+  eYo.DelegateSvg.BaseGroup.prototype.contourPathDef_ =
+    eYo.DelegateSvg.BaseGroup.prototype.highlightPathDef_ =
+      eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
 
 /**
  * Get the suite count.
  * For edython.
  * @param {boolean} newValue
  */
-eYo.DelegateSvg.Group.prototype.getSuiteCount_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.getSuiteCount_ = function () {
   return Math.max(1, this.suiteCount_)
 }
 
@@ -88,7 +96,7 @@ eYo.DelegateSvg.Group.prototype.getSuiteCount_ = function () {
  * Render the suite block, if relevant.
  * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.Group.prototype.renderSuite_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function () {
   if (!this.inputSuite) {
     return
   }
@@ -126,7 +134,7 @@ eYo.DelegateSvg.Group.prototype.renderSuite_ = function () {
  * @param io
  * @private
  */
-eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
+eYo.DelegateSvg.BaseGroup.prototype.renderDrawInput_ = function (io) {
   this.renderDrawValueInput_(io) ||
       this.renderDrawSuiteInput_(io)
 }
@@ -137,7 +145,7 @@ eYo.DelegateSvg.Group.prototype.renderDrawInput_ = function (io) {
  * highlight method.
  * @param {!Blockly.Connection} c8n The connection to highlight.
  */
-eYo.DelegateSvg.Group.prototype.highlightConnection = function (c8n) {
+eYo.DelegateSvg.BaseGroup.prototype.highlightConnection = function (c8n) {
   var block = c8n.sourceBlock_
   if (!block.workspace) {
     return
