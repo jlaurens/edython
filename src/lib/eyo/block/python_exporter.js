@@ -29,7 +29,7 @@ eYo.PythonExporter = function (oneIndent) {
   this.lines = []
   this.indents = []
   this.indent = ''
-  this.oneIndent = this.constructor.indent
+  this.oneIndent = oneIndent || this.constructor.indent
   this.depth = 0
 }
 
@@ -104,24 +104,23 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
  * Convert the block to python code.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {boolean} is_deep whether next blocks should be exported too.
+ * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
 eYo.PythonExporter.prototype.export = function (block, opt) {
   var is_deep = opt && opt.is_deep
+  var eyo = block.eyo
   this.newline_()
   try {
     ++this.depth
     this.expression = []
-    var field, input, slot
+    var field, input, slot, target
     
     this.exportExpression_(block, opt)
   
-    if ((input = block.eyo.inputSuite)) {
-      try {
-        this.indent_()
-        var target = input.connection.targetBlock()
-        if (target) {
+    if ((input = eyo.inputSuite)) {
+      var f = () => {
+        if ((target = input.connection.targetBlock())) {
           opt.is_deep = true
           this.export(target, opt)
           opt.is_deep = is_deep
@@ -129,11 +128,15 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
           this.newline_()
           this.line.push('MISSING STATEMENT')
         }
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        this.dedent_()
+      }
+      if (eyo.isControl) {
+        f()
+      } else {
+        eYo.Do.makeWrapper(() => {
+          this.indent_()
+        }, () => {
+          this.dedent_()
+        })(f)
       }
     }
     if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
