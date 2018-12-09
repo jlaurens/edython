@@ -113,12 +113,6 @@
           : this.operators.bin
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.operator_ = eyo.operator_p

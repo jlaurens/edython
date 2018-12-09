@@ -51,8 +51,8 @@
         var block = eYo.$$.Blockly.selected
         if (block) {
           // get the root
-          var root = block.getRootBlock()
-          root.eyo.runScript(root)
+          var root = block.eyo.rootControl
+          root.eyo.runScript()
         }
       }
     }

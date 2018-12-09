@@ -258,6 +258,16 @@ eYo.DelegateSvg.Expr.binary.getTypeForOperator = function (op) {
 }
 
 /**
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * For edython.
+ * @return true if the given value is accepted, false otherwise
+ */
+eYo.DelegateSvg.Expr.binary.prototype.xmlAttr = function () {
+  var type = this.type
+  return type.endsWith('comparison') ? 'comparison' : type.substring(4)
+}
+
+/**
  * Consolidate the type of the block.
  * Unstable state.
  * For edython.

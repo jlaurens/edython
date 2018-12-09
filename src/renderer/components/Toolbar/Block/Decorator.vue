@@ -52,12 +52,6 @@
         return this.$$t('block.tooltip.decorator.input')
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       content (choice) {
         if (choice === eYo.Key.NONE) {

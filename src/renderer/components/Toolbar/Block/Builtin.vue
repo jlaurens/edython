@@ -38,12 +38,6 @@
         return this.eyo.value_d.getAll()
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.value_ = eyo.value_p

@@ -87,7 +87,7 @@
           key: name,
           content: Msg[name.toUpperCase()],
           in_category: true,
-          label: eYo.Do.$$t('message.flyout.blocks').replace('{{key}}', Msg[name.toUpperCase()])
+          label: this.$$t('message.flyout.blocks').replace('{{key}}', Msg[name.toUpperCase()])
         }
         if (!Msg[name.toUpperCase()]) {
           console.error('MISSING eYo.Msg.' + name.toUpperCase())
@@ -103,21 +103,21 @@
       F('branching')
       F('looping')
       F('function')
-      var moduleF = function (name) {
+      var moduleF = (name) => {
         var content = 'basic_' + name
         var basic_module = content + '__module'
         model.items[basic_module] = {
           key: basic_module,
           content: content,
           in_module: true,
-          label: eYo.Do.$$t('message.flyout.module').replace('{{key}}', name)
+          label: this.$$t('message.flyout.module').replace('{{key}}', name)
         }
         var module = name + '__module'
         model.items[module] = {
           key: module,
           content: name,
           in_module: true,
-          label: eYo.Do.$$t('message.flyout.module').replace('{{key}}', name),
+          label: this.$$t('message.flyout.module').replace('{{key}}', name),
           basic: model.items[basic_module]
         }
         model.items[basic_module].full = model.items[module]

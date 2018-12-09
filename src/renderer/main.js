@@ -26,12 +26,8 @@ import VueTippy from 'vue-tippy'
 
 import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
 
-import VueI18n from 'vue-i18n'
-
-import message_fr_FR from './lang/fr_FR/message'
-import toolbar_fr_FR from './lang/fr_FR/toolbar'
-import block_fr_FR from './lang/fr_FR/block'
-import panel_fr_FR from './lang/fr_FR/panel'
+import eYoPlugin from './plugin/eyoplugin'
+import eYoI18n from './lang/eyoi18n'
 
 var FileSaver = require('file-saver')
 
@@ -54,7 +50,8 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
-Vue.use(VueI18n)
+Vue.use(eYoPlugin)
+Vue.use(eYoI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
   eYo.$$.electron = require('electron')
@@ -239,7 +236,7 @@ eYo.App.Document.doNew = function (ev) {
 }
 
 eYo.App.Document.getDeflate = function () {
-  var dom = eYo.App.workspace.eyo.toDom(true)
+  var dom = eYo.App.workspace.eyo.toDom({noId: true})
   var prefs = {}
   var value = store.state.UI.selectedPanel
   if (value) {
@@ -427,81 +424,6 @@ if (ipcRenderer) {
 
 // i18n
 
-const messages = {
-  en_US: {
-    message: {
-      hello: 'hello world'
-    }
-  },
-  fr_FR: {
-    message: message_fr_FR,
-    panel: panel_fr_FR,
-    block: block_fr_FR,
-    toolbar: toolbar_fr_FR
-  }
-}
-
-const dateTimeFormats = {
-  'en_US': {
-    short: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    },
-    long: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
-    }
-  },
-  'fr_FR': {
-    short: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    },
-    long: {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'short',
-      hour: 'numeric',
-      minute: 'numeric'
-    }
-  }
-}
-
-const numberFormats = {
-  'en_US': {
-    currency: {
-      style: 'currency', currency: 'USD'
-    },
-    percent: {
-      style: 'percent'
-    }
-  },
-  'fr_FR': {
-    currency: {
-      style: 'currency', currency: 'EUR'
-    },
-    percent: {
-      style: 'percent'
-    }
-  }
-}
-
-const i18n = new VueI18n({
-  locale: 'fr_FR', // set locale
-  fallbackLocale: 'fr_FR',
-  messages, // set locale messages,
-  dateTimeFormats,
-  numberFormats
-})
-
 /* eslint-disable no-new */
 Object.defineProperties(eYo.$$, {
   app: {
@@ -510,7 +432,7 @@ Object.defineProperties(eYo.$$, {
       router,
       store,
       template: '<App/>',
-      i18n
+      i18n: eYoI18n.i18n
     })
   },
   store: store
@@ -528,7 +450,7 @@ export const app = eYo.$$.app
 /**
  * Returns undefined when the key is not registered for localization.
  */
-eYo.Do.$$t = Vue.prototype.$$t = function (key, locale, value) {
+eYo.Do.$$t = function (key, locale, value) {
   // NB: eYo.$$.bus is a vue that is completely created when this function executes
   return app.$te(key, locale) && app.$t(key, locale, value)
 }
@@ -536,21 +458,8 @@ eYo.Do.$$t = Vue.prototype.$$t = function (key, locale, value) {
 /**
  * Returns undefined when the key is not registered for localization.
  */
-eYo.Do.$$tc = Vue.prototype.$$tc = function (key, choice, locale, value) {
+eYo.Do.$$tc = function (key, choice, locale, value) {
   return app.$te(key, locale) && app.$tc(key, choice, locale, value)
-}
-
-/**
- * Trick to force synchronization of the various vues with the selected block.
- * @param{!Number} step
- */
-Vue.prototype.$$synchronize = function (step) {
-  var eyo = this.eyo
-  if (!eyo || (this.saved_step === step)) {
-    return
-  }
-  this.saved_step = step
-  this.$$doSynchronize(eyo)
 }
 
 // /**

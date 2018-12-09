@@ -502,7 +502,8 @@ eYo.Content.prototype.setupModel = (function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.getPythonText_ = function () {
-  if ((this.eyo.placeholder || (this.eyo.data && this.eyo.data.placeholder))) {
+  var eyo = this.eyo
+  if (!eyo.model.canEmpty && (this.eyo.placeholder || (this.eyo.data && this.eyo.data.placeholder))) {
     var t = this.placeholderText().trim()
     this.eyo.data && this.eyo.data.change(t)
     return t

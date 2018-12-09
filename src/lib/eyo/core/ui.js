@@ -378,6 +378,16 @@ eYo.setup.register(() => {
     }`
   )
   eYo.Style.insertCssRuleAt(
+    `.eyo-start-path {
+      fill: rgba(42, 44, 45, 0.06);
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-path-play-contour {
+      fill: rgba(255, 255, 255, 0.8);
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
     `.eyo-none {
       stroke: none;
       fill: none;

@@ -463,7 +463,9 @@ eYo.Do.stringToDom = function (string) {
   var stringToDom = function (string) {
     var parser = new DOMParser();
     var dom = parser.parseFromString(string, 'application/xml');
-    if(dom.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+    var ror = dom.getElementsByTagNameNS(parsererrorNS, 'parsererror')
+    if(ror.length > 0) {
+      console.error(ror)
       throw new Error('Error parsing XML');
     }
     return dom;

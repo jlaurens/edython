@@ -108,8 +108,8 @@
     data: function () {
       return {
         titles: {
-          console: eYo.Do.$$t('message.console'),
-          turtle: eYo.Do.$$t('message.turtle')
+          console: this.$$t('message.console'),
+          turtle: this.$$t('message.turtle')
         }
       }
     },

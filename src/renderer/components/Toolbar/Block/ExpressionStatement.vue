@@ -113,12 +113,6 @@
         selectedMode: state => state.selectedMode
       })
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.expression_ = eyo.expression_p

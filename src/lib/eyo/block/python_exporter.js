@@ -109,43 +109,45 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
  */
 eYo.PythonExporter.prototype.export = function (block, opt) {
   opt = opt || {}
-  var is_deep = opt.is_deep
   var eyo = block.eyo
+  var is_deep = !eyo.isControl && opt.is_deep
   this.newline_()
-  eYo.Do.tryFinally(() => {
-    ++this.depth
-    this.expression = []
-    var input, target
-    this.exportExpression_(block, opt)
-    if ((input = eyo.inputSuite)) {
-      var f = () => {
-        if ((target = input.connection.targetBlock())) {
-          eYo.Do.tryFinally(() => {
-            opt.is_deep = true
-            this.export(target, opt)
-          }, () => {
-            opt.is_deep = is_deep
-          })
+  eYo.Events.groupWrap(() => {
+    eYo.Do.tryFinally(() => {
+      ++this.depth
+      this.expression = []
+      var input, target
+      this.exportExpression_(block, opt)
+      if ((input = eyo.inputSuite)) {
+        var f = () => {
+          if ((target = input.connection.targetBlock())) {
+            eYo.Do.tryFinally(() => {
+              opt.is_deep = true
+              this.export(target, opt)
+            }, () => {
+              opt.is_deep = is_deep
+            })
+          } else {
+            this.newline_()
+            this.line.push('MISSING STATEMENT')
+          }
+        }
+        if (eyo.isControl) {
+          f()
         } else {
-          this.newline_()
-          this.line.push('MISSING STATEMENT')
+          eYo.Do.makeWrapper(() => {
+            this.indent_()
+          }, () => {
+            this.dedent_()
+          })(f)
         }
       }
-      if (eyo.isControl) {
-        f()
-      } else {
-        eYo.Do.makeWrapper(() => {
-          this.indent_()
-        }, () => {
-          this.dedent_()
-        })(f)
-      }
-    }
-    if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
-      this.export(target, opt)
-    }  
-  }, () => {
-    --this.depth
+      if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
+        this.export(target, opt)
+      }  
+    }, () => {
+      --this.depth
+    })
   })
   if (!this.depth) {
     this.newline_()

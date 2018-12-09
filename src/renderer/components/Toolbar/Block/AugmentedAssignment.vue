@@ -99,10 +99,6 @@
     created () {
       this.operators.num = this.eyo.numberOperator_d.getAll()
       this.operators.bin = this.eyo.bitwiseOperator_d.getAll()
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
     },
     methods: {
       $$doSynchronize (eyo) {

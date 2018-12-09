@@ -184,12 +184,6 @@
         }
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.variant_ = this.eyo.variant_p

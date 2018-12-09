@@ -131,12 +131,6 @@
         return this.$$t('block.one_line_of_text')
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.prefix_ = eyo.prefix_p.toLowerCase()

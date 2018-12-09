@@ -1818,17 +1818,22 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         block.eyo.setDataWithType(model)
       } else {
         var p5e = eYo.T3.Profile.get(model, null)
-        if (p5e.expr && (block = workspace.newBlock(p5e.expr, id))) {
-          p5e.expr && block.eyo.setDataWithType(p5e.expr)
-          model && block.eyo.setDataWithModel(model)
-          dataModel = {data: model}
-        } else if (p5e.stmt && (block = workspace.newBlock(p5e.stmt, id))) {
-          p5e.stmt && block.eyo.setDataWithType(p5e.stmt)
-          model && block.eyo.setDataWithModel(model)
-          dataModel = {data: model}
-        } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
-          block.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
-          dataModel = {data: model.toString()}
+        if (p5e !== eYo.T3.Profile.void && p5e !== eYo.T3.Profile.unset) {
+          if (p5e.expr && (block = workspace.newBlock(p5e.expr, id))) {
+            p5e.expr && block.eyo.setDataWithType(p5e.expr)
+            model && block.eyo.setDataWithModel(model)
+            dataModel = {data: model}
+          } else if (p5e.stmt && (block = workspace.newBlock(p5e.stmt, id))) {
+            p5e.stmt && block.eyo.setDataWithType(p5e.stmt)
+            model && block.eyo.setDataWithModel(model)
+            dataModel = {data: model}
+          } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
+            block.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
+            dataModel = {data: model.toString()}
+          } else {
+            console.warn('No block for model:', model)
+            return
+          }
         } else {
           console.warn('No block for model:', model)
           return

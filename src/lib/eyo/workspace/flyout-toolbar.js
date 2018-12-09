@@ -338,9 +338,9 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     e.preventDefault()
   }
 };
-
-console.error(`Uncaught TypeError: this.onButtonLeave_ is not a function
-at eYo.FlyoutToolbar.notOnButtonUp_`)
+// Sometimes this error has poped up.
+// console.error(`Uncaught TypeError: this.onButtonLeave_ is not a function
+// at eYo.FlyoutToolbar.notOnButtonUp_`)
 /**
  * Mouse up catcher.
  * @param {!Event} e Mouse up event.

@@ -78,197 +78,206 @@ eYo.Do.getModel = function (type) {
   return eYo.Delegate.Manager.getModel(type)
 }
 
-Object.defineProperties(
-  eYo.Delegate.prototype,
-  {
-    id: {
-      get () {
-        return this.block_.id
+Object.defineProperties(eYo.Delegate.prototype, {
+  id: {
+    get () {
+      return this.block_.id
+    }
+  },
+  workspace: {
+    get () {
+      return this.block_.workspace
+    }
+  },
+  type: {
+    get () {
+      return this.getBaseType()
+    }
+  },
+  model: {
+    get () {
+      return this.constructor.eyo.model
+    }
+  },
+  parent: {
+    get () {
+      var parent = this.block_.getParent()
+      return parent && parent.eyo
+    }
+  },
+  wrapper: {
+    get () {
+      var ans = this
+      while (ans.wrapped_) {
+        var parent = ans.parent
+        if (parent) {
+          ans = parent
+        } else {
+          break
+        }
       }
+      return ans
+    }
+  },
+  // next are not relevant for expression blocks
+  // this may illustrates a bad design choice.
+  // To be enhanced.
+  nextCount: {
+    get () {
+      return this.nextCount_
     },
-    workspace: {
-      get () {
-        return this.block_.workspace
-      }
-    },
-    type: {
-      get () {
-        return this.getBaseType()
-      }
-    },
-    model: {
-      get () {
-        return this.constructor.eyo.model
-      }
-    },
-    parent: {
-      get () {
+    set (newValue) {
+      var d = newValue - this.nextCount_
+      this.nextCount_ = newValue
+      if (d) {
         var parent = this.block_.getParent()
-        return parent && parent.eyo
-      }
-    },
-    wrapper: {
-      get () {
-        var ans = this
-        while (ans.wrapped_) {
-          var parent = ans.parent
-          if (parent) {
-            ans = parent
+        if (parent) {
+          if (parent.eyo.next === this) {
+            parent.eyo.nextCount += d
           } else {
-            break
+            parent.eyo.suiteCount += d
           }
         }
-        return ans
-      }
-    },
-    // next are not relevant for expression blocks
-    // this may illustrates a bad design choice.
-    // To be enhanced.
-    nextCount: {
-      get () {
-        return this.nextCount_
-      },
-      set (newValue) {
-        var d = newValue - this.nextCount_
-        this.nextCount_ = newValue
-        if (d) {
-          var parent = this.block_.getParent()
-          if (parent) {
-            if (parent.eyo.next === this) {
-              parent.eyo.nextCount += d
-            } else {
-              parent.eyo.suiteCount += d
-            }
-          }
-        }
-      }
-    },
-    suiteCount: {
-      get () {
-        return this.getSuiteCount_()
-      },
-      set (newValue) {
-        var d = newValue - this.suiteCount_
-        if (d) {
-          this.incrementChangeCount()
-          this.suiteCount_ = newValue
-          var parent = this.block_.getParent()
-          if (parent) {
-            if (parent.eyo.next === this) {
-              parent.eyo.nextCount += d
-            } else {
-              parent.eyo.suiteCount += d
-            }
-          }
-        }
-      }
-    },
-    previousConnection: {
-      get () {
-        return this.block_.previousConnection
-      }
-    },
-    previousBlock: {
-      get () {
-        var c8n = this.previousConnection
-        return c8n && c8n.targetBlock()
-      }
-    },
-    previous: {
-      get () {
-        var b = this.previousBlock
-        return b && b.eyo
-      }
-    },
-    nextConnection: {
-      get () {
-        return this.block_.nextConnection
-      }
-    },
-    nextBlock: {
-      get () {
-        var c8n = this.nextConnection
-        return c8n && c8n.targetBlock()
-      }
-    },
-    next: {
-      get () {
-        var b = this.nextBlock
-        return b && b.eyo
-      }
-    },
-    suiteConnection: {
-      get () {
-        return this.inputSuite && this.inputSuite.connection
-      }
-    },
-    suiteBlock: {
-      get () {
-        var c8n = this.suiteConnection
-        return c8n && c8n.targetBlock()
-      }
-    },
-    suite: {
-      get () {
-        var b = this.suiteBlock
-        return b && b.eyo
-      },
-    },
-    outputConnection: {
-      get () {
-        return this.block_.outputConnection
-      }
-    },
-    outputBlock: {
-      get () {
-        var c8n = this.outputConnection
-        return c8n && c8n.targetBlock()
-      }
-    },
-    output: {
-      get () {
-        var b = this.outputBlock
-        return b && b.eyo
-      }
-    },
-    /**
-     * Get the next connection of this block.
-     * Comment and disabled blocks are transparent with respect to connection checking.
-     * UNUSED.
-     */
-    nextBlackConnection: {
-      get () {
-        var block = this.block_
-        while (block.eyo.isWhite()) {
-          var c8n
-          if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
-            return undefined
-          }
-        }
-        return block.nextConnection      
-      }
-    },
-    /**
-     * Get the previous connection of this block.
-     * Comment and disabled blocks are transparent with respect to connection checking.
-     * For edython.
-     * @param {!Blockly.Block} block The owner of the receiver.
-     * @return None
-     */
-    previousBlackConnection: {
-      get () {
-        var block = this.block_
-        while (block.eyo.isWhite()) {
-          var c8n
-          if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
-            return undefined
-          }
-        }
-        return block.previousConnection
       }
     }
+  },
+  suiteCount: {
+    get () {
+      return this.getSuiteCount_()
+    },
+    set (newValue) {
+      var d = newValue - this.suiteCount_
+      if (d) {
+        this.incrementChangeCount()
+        this.suiteCount_ = newValue
+        var parent = this.block_.getParent()
+        if (parent) {
+          if (parent.eyo.next === this) {
+            parent.eyo.nextCount += d
+          } else {
+            parent.eyo.suiteCount += d
+          }
+        }
+      }
+    }
+  },
+  previousConnection: {
+    get () {
+      return this.block_.previousConnection
+    }
+  },
+  previousBlock: {
+    get () {
+      var c8n = this.previousConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  previous: {
+    get () {
+      var b = this.previousBlock
+      return b && b.eyo
+    }
+  },
+  nextConnection: {
+    get () {
+      return this.block_.nextConnection
+    }
+  },
+  nextBlock: {
+    get () {
+      var c8n = this.nextConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  next: {
+    get () {
+      var b = this.nextBlock
+      return b && b.eyo
+    }
+  },
+  suiteConnection: {
+    get () {
+      return this.inputSuite && this.inputSuite.connection
+    }
+  },
+  suiteBlock: {
+    get () {
+      var c8n = this.suiteConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  suite: {
+    get () {
+      var b = this.suiteBlock
+      return b && b.eyo
+    },
+  },
+  outputConnection: {
+    get () {
+      return this.block_.outputConnection
+    }
+  },
+  outputBlock: {
+    get () {
+      var c8n = this.outputConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  output: {
+    get () {
+      var b = this.outputBlock
+      return b && b.eyo
+    }
+  },
+  /**
+   * Get the next connection of this block.
+   * Comment and disabled blocks are transparent with respect to connection checking.
+   * UNUSED.
+   */
+  nextBlackConnection: {
+    get () {
+      var block = this.block_
+      while (block.eyo.isWhite()) {
+        var c8n
+        if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
+          return undefined
+        }
+      }
+      return block.nextConnection      
+    }
+  },
+  /**
+   * Get the previous connection of this block.
+   * Comment and disabled blocks are transparent with respect to connection checking.
+   * For edython.
+   * @param {!Blockly.Block} block The owner of the receiver.
+   * @return None
+   */
+  previousBlackConnection: {
+    get () {
+      var block = this.block_
+      while (block.eyo.isWhite()) {
+        var c8n
+        if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
+          return undefined
+        }
+      }
+      return block.previousConnection
+    }
+  },
+  /**
+   * Return the enclosing block in this block's tree
+   * which is a control.
+   * @return {!Blockly.Block} The root block.
+   */
+  rootControl: {
+    get () {
+      var eyo = this
+      while (!eyo.isControl && (eyo = eyo.parent));
+      return eyo
+    }
   }
-)
+})
 
 /**
  * Get the suite count.

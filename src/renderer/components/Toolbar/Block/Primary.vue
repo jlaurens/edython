@@ -72,12 +72,6 @@
         showRy: state => state.toolbarRyVisible
       })
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         var item = eyo.item_p

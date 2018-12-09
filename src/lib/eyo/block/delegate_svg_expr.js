@@ -560,7 +560,8 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       fields: {
         end: ':',
         bind: {
-          endEditing: true
+          endEditing: true,
+          canEmpty: true
         }
       },
       check: eYo.T3.Expr.Check.expression,
@@ -571,7 +572,8 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       order: 2,
       fields: {
         bind: {
-          endEditing: true
+          endEditing: true,
+          canEmpty: true
         }
       },
       check: eYo.T3.Expr.Check.expression,

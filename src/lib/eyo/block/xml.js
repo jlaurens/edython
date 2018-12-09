@@ -504,11 +504,11 @@ goog.require('eYo.DelegateSvg.Expr')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
- * @return true if the given value is accepted, false otherwise
+ * @return attr name
  */
 eYo.Delegate.prototype.xmlAttr = function () {
-  var tag = this.constructor.eyo.xmlAttr || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
-  return tag || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
+  var attr = this.constructor.eyo.xmlAttr || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
+  return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
 goog.require('eYo.DelegateSvg.Group')

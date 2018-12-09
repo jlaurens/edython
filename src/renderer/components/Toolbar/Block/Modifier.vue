@@ -64,12 +64,6 @@
         return this.items_by_key[this.modifier_]
       }
     },
-    created () {
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
-    },
     methods: {
       $$doSynchronize (eyo) {
         this.modifier_ = eyo.modifier_p || ''

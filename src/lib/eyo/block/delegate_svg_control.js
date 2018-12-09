@@ -100,6 +100,9 @@ eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
  * @constructor
  */
 eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
+  if (this.svgSharpGroup_) {
+    return
+  }
   var block = this.block_
   eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this)
 
@@ -125,9 +128,11 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
         console.log('Start executing ' + this.block_.id)
         this.runScript && this.runScript()
       })
+  goog.dom.classlist.add(this.svgPathShape_, 'eyo-start-path')
   goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathContour_)
   goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
 }
+
 
 /**
  * Run the script exported from the block.
