@@ -1266,26 +1266,28 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
-        if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret) {
-          if (this.packedQuotes && (head === "'" || head === '"')) {
-            io.cursor.c -= 1
-          } else if (this.packedBrackets && head === "[") {
-            io.cursor.c -= 1
-          } else if (this.packedBraces && head === "{") {
-            io.cursor.c -= 1
-          } else if (this.packedParenthesis && head === "(") {
-            io.cursor.c -= 1
+        if (!f_eyo.model.literal) {
+          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret) {
+            if (this.packedQuotes && (head === "'" || head === '"')) {
+              io.cursor.c -= 1
+            } else if (this.packedBrackets && head === "[") {
+              io.cursor.c -= 1
+            } else if (this.packedBraces && head === "{") {
+              io.cursor.c -= 1
+            } else if (this.packedParenthesis && head === "(") {
+              io.cursor.c -= 1
+            }
           }
-        }
-        if (head === '.' && !io.common.field.beforeIsBlack) {
-          io.cursor.c -= 1
-        } else if (io.common.field.beforeIsBlack
-          && (eYo.XRE.operator.test(head) || head === '=')) {
-          io.cursor.c += 1
-        } else if (io.common.field.shouldSeparate
-            && (!f_eyo.startsWithSeparator()
-            || head === '=')) {
-          io.cursor.c += 1
+          if (head === '.' && !io.common.field.beforeIsBlack) {
+            io.cursor.c -= 1
+          } else if (io.common.field.beforeIsBlack
+            && (eYo.XRE.operator.test(head) || head === '=')) {
+            io.cursor.c += 1
+          } else if (io.common.field.shouldSeparate
+              && (!f_eyo.startsWithSeparator()
+              || head === '=')) {
+            io.cursor.c += 1
+          }
         }
         var tail = text[text.length - 1]
         io.common.field.wasStarLike = (io.common.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
@@ -1302,25 +1304,25 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         io.common.shouldSeparate = true
         io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
         io.common.field.beforeIsCaret = false
-      }
-      // place the field at the right position:
-      root.setAttribute('transform',
-        `translate(${io.cursor.x}, ${(io.cursor.y + eYo.Padding.t)})`)
-      // then advance the cursor after the field.
-      if (f_eyo.size.w) {
-        io.cursor.c += f_eyo.size.w
-        // now that I have rendered something
-        io.common.startOfLine = io.common.startOfStatement = false
-      }
-      if (io.cursor.c > 2) {
-        if ((tail === '"' || tail === "'") && this.packedQuotes) {
-          io.common.shouldPack = this
-        } else if (tail === ']' && this.packedBrackets) {
-          io.common.shouldPack = this
-        } else if ((tail === '}') && this.packedBraces) {
-          io.common.shouldPack = this
-        } else if ((tail === ')') && this.packedParenthesis) {
-          io.common.shouldPack = this
+        // place the field at the right position:
+        root.setAttribute('transform',
+          `translate(${io.cursor.x}, ${(io.cursor.y + eYo.Padding.t)})`)
+        // then advance the cursor after the field.
+        if (f_eyo.size.w) {
+          io.cursor.c += f_eyo.size.w
+          // now that I have rendered something
+          io.common.startOfLine = io.common.startOfStatement = false
+        }
+        if (io.cursor.c > 2) {
+          if ((tail === '"' || tail === "'") && this.packedQuotes) {
+            io.common.shouldPack = this
+          } else if (tail === ']' && this.packedBrackets) {
+            io.common.shouldPack = this
+          } else if ((tail === '}') && this.packedBraces) {
+            io.common.shouldPack = this
+          } else if ((tail === ')') && this.packedParenthesis) {
+            io.common.shouldPack = this
+          }
         }
       }
       if (f_eyo.isEditing) {

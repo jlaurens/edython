@@ -721,7 +721,8 @@ eYo.Xml.toDom = function (block, element, opt) {
 }
 
 /**
- * Registers all the known models for their tags
+ * Registers all the known models for their tags.
+ * One shot function deleted after use.
  *
  */
 eYo.Xml.registerAllTags = function () {
@@ -764,8 +765,8 @@ eYo.Xml.registerAllTags = function () {
       }
       // register the reverse
       if (c9r) {
-        // console.warn('Register:', c9r.eyo.key, attr, eYo.T3.Xml.toDom[mode][key], key)
-        c9r.eyo.attr = eYo.T3.Xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
+        // console.warn('REGISTER XML ATTR:', c9r.eyo.key, eYo.T3.Xml.toDom[mode][key], attr, key)
+        c9r.eyo.xmlAttr = eYo.T3.Xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
       }
     }
   }

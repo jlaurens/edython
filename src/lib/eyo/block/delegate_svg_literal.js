@@ -81,13 +81,14 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
       synchronize: true,
       xml: {
-        text: true, // there must be an only one
-      },
+        text: true // there must be an only one
+      }
     }
   },
   fields: {
     value: {
-      endEditing: true
+      endEditing: true,
+      literal: true // no smart spacing
     }
   },
   output: {
@@ -264,7 +265,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       endEditing: /** @suppress {globalThis} */ function () {
         this.eyo.data.set(this.getValue())
         this.eyo.getDlgt().fields.end.setVisible(true)
-      }
+      },
+      literal: true // no smart spacing
     },
     end: {
       css: 'reserved'

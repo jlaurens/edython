@@ -1,4 +1,213 @@
-<?xml version="1.0" encoding="utf-8"?><edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><prefs>{
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{
 "selectedPanel":"console",
 "flyoutCategory":"list"
-}</prefs><workspace><content><s eyo="start_stmt" comment="Avec des listes" x="37" y="-160"><s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next"><s eyo="assignment" name="liste" flow="next"><x eyo="list" slot="assigned"><x eyo="square_bracket" slot="O"><x eyo="literal" slot="O">1</x><x eyo="literal" slot="f">'+'</x><x eyo="literal" slot="r">1</x><x eyo="literal" slot="x">'='</x><x eyo="literal" slot="{">2</x></x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'La liste est'</x><x eyo="identifier" name="liste" slot="r"></x></x></s></s></s></s><s eyo="start_stmt" comment="Le premier élément a pour rang 0" x="53" y="-26"><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le premier élément est'</x><x eyo="slicing" slot="r"><x eyo="identifier" name="liste" slot="primary"></x><x eyo="list" slot="slice"><x eyo="literal" slot="O">0</x></x></x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'La longueur de la liste est'</x><x eyo="call" name="len" ary="1" slot="r"><x eyo="identifier" name="liste" slot="unary"></x></x></x><s eyo="stmt" comment="Le dernier élément a pour rang la longueur - 1" flow="next"><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le dernier élément est'</x><x eyo="slicing" slot="r"><x eyo="identifier" name="liste" slot="primary"></x><x eyo="list" slot="slice"><x eyo="a_expr" operator="-" slot="O"><x eyo="call" name="len" ary="1" slot="lhs"><x eyo="identifier" name="liste" slot="unary"></x></x><x eyo="literal" slot="rhs">1</x></x></x></x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Ce dernier est aussi'</x><x eyo="slicing" slot="r"><x eyo="identifier" name="liste" slot="primary"></x><x eyo="list" slot="slice"><x eyo="literal" slot="O">-1</x></x></x></x></s></s></s></s></s></s><s eyo="start_stmt" comment="Utiliser la méthode `index` pour trouver le rang" x="36" y="170"><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le rang de'</x><x eyo="literal" slot="l">'='</x><x eyo="literal" slot="o">'est'</x><x eyo="call" name="index" ary="1" slot="v"><x eyo="identifier" name="liste" slot="expression"></x><x eyo="literal" slot="unary">'='</x></x></x></s></s><s eyo="start_stmt" comment="Si on ne sait pas si l'élément est dans la liste" x="47" y="239"><s eyo="stmt" comment="on doit commence par tester l'appartenance" flow="next"><s eyo="if" flow="next"><x eyo="comparison" operator="in" slot="if"><x eyo="literal" slot="lhs">1789</x><x eyo="identifier" name="liste" slot="rhs"></x></x><s eyo="print" flow="suite"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le rang de'</x><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'est'</x><x eyo="call" name="index" ary="1" slot="v"><x eyo="identifier" name="liste" slot="expression"></x><x eyo="literal" slot="unary">1789</x></x></x></s><s eyo="else" flow="next"><s eyo="print" flow="suite"><x eyo="list" slot="arguments"><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'n\'est pas dans la liste'</x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'n\'est pas dans la liste'</x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'n\'est pas dans la liste'</x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'n\'est pas dans la liste'</x></x></s></s></s></s></s></s></s></s><s eyo="start_stmt" comment="Sinon c'est une erreur `ValueError`" x="37" y="456"><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le rang de'</x><x eyo="literal" slot="j">1789</x><x eyo="literal" slot="o">'est'</x><x eyo="call" name="index" ary="1" slot="v"><x eyo="identifier" name="liste" slot="expression"></x><x eyo="literal" slot="unary">1789</x></x></x></s></s><s eyo="start_stmt" comment="Combien y en a-t-il ?" x="39" y="553"><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le nombre de'</x><x eyo="literal" slot="j">1</x><x eyo="literal" slot="o">'est'</x><x eyo="call" name="count" ary="1" slot="v"><x eyo="identifier" name="liste" slot="expression"></x><x eyo="literal" slot="unary">1</x></x></x><s eyo="print" flow="next"><x eyo="list" slot="arguments"><x eyo="literal" slot="f">'Le nombre de'</x><x eyo="literal" slot="j">'1'</x><x eyo="literal" slot="o">'est'</x><x eyo="call" name="count" ary="1" slot="v"><x eyo="identifier" name="liste" slot="expression"></x><x eyo="literal" slot="unary">'1'</x></x></x></s></s></s></content></workspace></edython>
+}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Avec des listes" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next">
+<s eyo="assignment" name="liste" flow="next">
+<x eyo="list" slot="rhs">
+<x eyo="list_display" slot="O">
+<x eyo="integer" slot="O">1</x>
+<x eyo="literal" slot="f">'+'</x>
+<x eyo="integer" slot="r">1</x>
+<x eyo="literal" slot="x">'='</x>
+<x eyo="integer" slot="{">2</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'La liste est'</x>
+<x eyo="identifier" name="liste" slot="f">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start_stmt" comment="Avec des listes" x="37" y="-160">
+<s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next">
+<s eyo="assignment" name="liste" flow="next">
+<x eyo="list" slot="assigned">
+<x eyo="square_bracket" slot="O">
+<x eyo="literal" slot="O">1</x>
+<x eyo="literal" slot="f">'+'</x>
+<x eyo="literal" slot="r">1</x>
+<x eyo="literal" slot="x">'='</x>
+<x eyo="literal" slot="{">2</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'La liste est'</x>
+<x eyo="identifier" name="liste" slot="r">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start_stmt" comment="Le premier élément a pour rang 0" x="53" y="-26">
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le premier élément est'</x>
+<x eyo="slicing" slot="r">
+<x eyo="identifier" name="liste" slot="primary">
+</x>
+<x eyo="list" slot="slice">
+<x eyo="literal" slot="O">0</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'La longueur de la liste est'</x>
+<x eyo="call" name="len" ary="1" slot="r">
+<x eyo="identifier" name="liste" slot="unary">
+</x>
+</x>
+</x>
+<s eyo="stmt" comment="Le dernier élément a pour rang la longueur - 1" flow="next">
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le dernier élément est'</x>
+<x eyo="slicing" slot="r">
+<x eyo="identifier" name="liste" slot="primary">
+</x>
+<x eyo="list" slot="slice">
+<x eyo="a_expr" operator="-" slot="O">
+<x eyo="call" name="len" ary="1" slot="lhs">
+<x eyo="identifier" name="liste" slot="unary">
+</x>
+</x>
+<x eyo="literal" slot="rhs">1</x>
+</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Ce dernier est aussi'</x>
+<x eyo="slicing" slot="r">
+<x eyo="identifier" name="liste" slot="primary">
+</x>
+<x eyo="list" slot="slice">
+<x eyo="literal" slot="O">-1</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start_stmt" comment="Utiliser la méthode `index` pour trouver le rang" x="36" y="170">
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le rang de'</x>
+<x eyo="literal" slot="l">'='</x>
+<x eyo="literal" slot="o">'est'</x>
+<x eyo="call" name="index" ary="1" slot="v">
+<x eyo="identifier" name="liste" slot="expression">
+</x>
+<x eyo="literal" slot="unary">'='</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="start_stmt" comment="Si on ne sait pas si l'élément est dans la liste" x="47" y="239">
+<s eyo="stmt" comment="on doit commence par tester l'appartenance" flow="next">
+<s eyo="if" flow="next">
+<x eyo="comparison" operator="in" slot="if">
+<x eyo="literal" slot="lhs">1789</x>
+<x eyo="identifier" name="liste" slot="rhs">
+</x>
+</x>
+<s eyo="print" flow="suite">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le rang de'</x>
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'est'</x>
+<x eyo="call" name="index" ary="1" slot="v">
+<x eyo="identifier" name="liste" slot="expression">
+</x>
+<x eyo="literal" slot="unary">1789</x>
+</x>
+</x>
+</s>
+<s eyo="else" flow="next">
+<s eyo="print" flow="suite">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'n\'est pas dans la liste'</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'n\'est pas dans la liste'</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'n\'est pas dans la liste'</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'n\'est pas dans la liste'</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start_stmt" comment="Sinon c'est une erreur `ValueError`" x="37" y="456">
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le rang de'</x>
+<x eyo="literal" slot="j">1789</x>
+<x eyo="literal" slot="o">'est'</x>
+<x eyo="call" name="index" ary="1" slot="v">
+<x eyo="identifier" name="liste" slot="expression">
+</x>
+<x eyo="literal" slot="unary">1789</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="start_stmt" comment="Combien y en a-t-il ?" x="39" y="553">
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le nombre de'</x>
+<x eyo="literal" slot="j">1</x>
+<x eyo="literal" slot="o">'est'</x>
+<x eyo="call" name="count" ary="1" slot="v">
+<x eyo="identifier" name="liste" slot="expression">
+</x>
+<x eyo="literal" slot="unary">1</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="arguments">
+<x eyo="literal" slot="f">'Le nombre de'</x>
+<x eyo="literal" slot="j">'1'</x>
+<x eyo="literal" slot="o">'est'</x>
+<x eyo="call" name="count" ary="1" slot="v">
+<x eyo="identifier" name="liste" slot="expression">
+</x>
+<x eyo="literal" slot="unary">'1'</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

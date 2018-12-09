@@ -27,6 +27,7 @@ eYo.FieldHelper = function (field) {
   field.eyo = this
   this.size = new eYo.Size(0, 1)
   this.reentrant = {}
+  this.model = {}
 }
 
 Object.defineProperties(

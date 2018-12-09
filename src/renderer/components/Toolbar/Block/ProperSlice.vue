@@ -6,7 +6,7 @@
                   :class="$$class(lower)"
                   :style='{fontFamily: $$.eYo.Font.familyMono}'
                   :title="title('lower')"
-                  :disabled="!!eyo.owner.lower_t"
+                  :disabled="!!eyo.lower_t"
                   v-tippy ></b-form-input>
     <div class="item text eyo-code">:</div>
     <b-form-input v-model="upper"
@@ -15,7 +15,7 @@
                   :class="$$class(upper)"
                   :style='{fontFamily: $$.eYo.Font.familyMono}'
                   :title="title('upper')"
-                  :disabled="!!eyo.owner.upper_t"
+                  :disabled="!!eyo.upper_t"
                   v-tippy ></b-form-input>
     <div class="item">
       <input type="checkbox" aria-label="Checkbox to enable the stride entry" v-model="showStride" >
@@ -27,7 +27,7 @@
                   :class="$$class(stride)"
                   :style='{fontFamily: $$.eYo.Font.familyMono}'
                   :title="title('stride')"
-                  :disabled="!!eyo.owner.stride_t"
+                  :disabled="!!eyo.stride_t"
                   v-tippy ></b-form-input>
   </b-btn-group>
 </template>
