@@ -21,8 +21,8 @@ goog.require('eYo')
 /** @export */ eYo.Msg.IDENTIFIER_RENAME_TITLE = "Renommer la '%1' en :"
 
 /** @export */ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE = 'Connecter ce bloc principal'
-/** @export */ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT = "Glisser des blocs d'instructions et les connecter sous ce bloc principal."
-/** @export */ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions suivant ce bloc en appuyant sur le bouton.'
+/** @export */ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT = "Glisser des blocs d'instructions et les connecter dans ce bloc principal."
+/** @export */ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions de ce bloc en appuyant sur le bouton.'
 
 /** @export */ eYo.Msg.USE_PROPER_SLICING_STRIDE = 'pas personnalisé'
 /** @export */ eYo.Msg.UNUSE_PROPER_SLICING_STRIDE = 'pas de 1'
