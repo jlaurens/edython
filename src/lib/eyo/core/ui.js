@@ -357,7 +357,8 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-path-contour,
     .eyo-path-inner,
-    .eyo-path-collapsed {
+    .eyo-path-collapsed,
+    .eyo-path-play-contour {
       stroke: ${eYo.Style.Path.colour};
       stroke-width: ${eYo.Style.Path.width}px;
       fill: none;

@@ -56,19 +56,20 @@ body {
 }
 
 .eyo-menu-icon,
-.eyo-path-play {
+.eyo-path-play-icon {
   opacity: 0.05;
   -moz-opacity: 0.05;
   filter: alpha(opacity=5);
 }
 .eyo-select .eyo-menu-icon,
 .eyo-menu-icon:hover,
-.eyo-path-play:hover {
+.eyo-path-play-icon:hover {
   opacity: 0.3;
   -moz-opacity: 0.3;
   filter: alpha(opacity=30);
   cursor: pointer;
 }
+
 
 .eyo-menuitem, .eyo-submenu {
   color: #000;

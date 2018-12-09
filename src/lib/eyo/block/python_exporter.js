@@ -108,22 +108,24 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
  * @return some python code
  */
 eYo.PythonExporter.prototype.export = function (block, opt) {
-  var is_deep = opt && opt.is_deep
+  opt = opt || {}
+  var is_deep = opt.is_deep
   var eyo = block.eyo
   this.newline_()
-  try {
+  eYo.Do.tryFinally(() => {
     ++this.depth
     this.expression = []
-    var field, input, slot, target
-    
+    var input, target
     this.exportExpression_(block, opt)
-  
     if ((input = eyo.inputSuite)) {
       var f = () => {
         if ((target = input.connection.targetBlock())) {
-          opt.is_deep = true
-          this.export(target, opt)
-          opt.is_deep = is_deep
+          eYo.Do.tryFinally(() => {
+            opt.is_deep = true
+            this.export(target, opt)
+          }, () => {
+            opt.is_deep = is_deep
+          })
         } else {
           this.newline_()
           this.line.push('MISSING STATEMENT')
@@ -140,16 +142,11 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
       }
     }
     if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
-      opt.is_deep = true
       this.export(target, opt)
-      opt.is_deep = is_deep
     }  
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
+  }, () => {
     --this.depth
-  }
+  })
   if (!this.depth) {
     this.newline_()
     return this.lines.join('\n')

@@ -136,7 +136,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
     var dom = eYo.Xml.blockToDomWithXY(block, opt)
     var p = new eYo.PythonExporter()
     try {
-      var code = p.export(block, {in_deep: true})
+      var code = p.export(block, {is_deep: true})
       if (code.length) {
         var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
         goog.dom.insertChildAt(dom, py_dom, 0)
@@ -715,6 +715,7 @@ eYo.Xml.toDom = function (block, element, opt) {
     })
     // the suite and the flow
     var optNoNext = opt && opt.noNext
+    opt && (opt.noNext = false)
     targetBlockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
     !optNoNext && targetBlockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }

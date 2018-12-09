@@ -61,8 +61,17 @@ eYo.DelegateSvg.Control.prototype.isControl = true
  * @param {Number} cursorX
  * @private
  */
-eYo.DelegateSvg.Control.prototype.playPathDef_ = function (cursorX) {
-  return eYo.Shape.definitionForPlay({x: cursorX, y: 0})
+eYo.DelegateSvg.Control.prototype.playPathContourDef_ = function (cursorX) {
+  return eYo.Shape.definitionForPlayContour({x: cursorX, y: 0})
+} /* eslint-enable indent */
+
+/**
+ * Control block path.
+ * @param {Number} cursorX
+ * @private
+ */
+eYo.DelegateSvg.Control.prototype.playPathIconDef_ = function (cursorX) {
+  return eYo.Shape.definitionForPlayIcon({x: cursorX, y: 0})
 } /* eslint-enable indent */
 
 /**
@@ -93,11 +102,17 @@ eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
 eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   var block = this.block_
   eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this)
-  this.svgPathPlay_ = Blockly.utils.createSvgElement('path',
-    {'class': 'eyo-path-play'}, block.svgGroup_)
-  this.svgPathPlay_.setAttribute('d', this.playPathDef_(0))
+
+  this.svgPlay_ = Blockly.utils.createSvgElement('g',
+    {'class': 'eyo-play'}, block.svgGroup_)
+  this.svgPathPlayContour_ = Blockly.utils.createSvgElement('path',
+  {'class': 'eyo-path-play-contour'}, this.svgPlay_)
+  this.svgPathPlayIcon_ = Blockly.utils.createSvgElement('path',
+  {'class': 'eyo-path-play-icon'}, this.svgPlay_)
+  this.svgPathPlayContour_.setAttribute('d', this.playPathContourDef_(0))
+  this.svgPathPlayIcon_.setAttribute('d', this.playPathIconDef_(0))
   this.mouseDownWrapper_ =
-    Blockly.bindEventWithChecks_(this.svgPathPlay_, 'mousedown', this,
+    Blockly.bindEventWithChecks_(this.svgPathPlayIcon_, 'mousedown', this,
       function (event) {
         if (!this.suiteConnection.isConnected()) {
           var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
@@ -110,7 +125,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
         console.log('Start executing ' + this.block_.id)
         this.runScript && this.runScript()
       })
-  goog.dom.insertSiblingAfter(this.svgPathPlay_, this.svgPathContour_)
+  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathContour_)
   goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
 }
 
@@ -128,8 +143,10 @@ eYo.DelegateSvg.prototype.runScript = function () {
  * @protected
  */
 eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
-  goog.dom.removeNode(this.svgPathPlay_)
-  this.svgPathPlay_ = undefined
+  goog.dom.removeNode(this.svgPlay_)
+  this.svgPlay_ = undefined
+  this.svgPathPlayIcon_ = undefined
+  this.svgPathPlayContour_ = undefined
   if (this.mouseDownWrapper_) {
     Blockly.unbindEvent_(this.mouseDownWrapper_)
     this.mouseDownWrapper_ = null
@@ -157,7 +174,10 @@ eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   },
   statement: {
     previous: {
-      check: [] // nothing will fit
+      check: eYo.T3.Stmt.start_stmt
+    },
+    next: {
+      check: eYo.T3.Stmt.start_stmt
     }
   }
 })

@@ -545,7 +545,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     function (b, e) {
       console.log('Python code for', block.type)
       var p = new eYo.PythonExporter()
-      console.log(p.export(block, {in_deep: true}))
+      console.log(p.export(block, {is_deep: true}))
       block.eyo.runScript()
     })
   menuItem.setEnabled(true)

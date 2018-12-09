@@ -109,11 +109,18 @@ eYo.Shape.prototype.begin = function () {
 }
 
 /**
+ * z
+ */
+eYo.Shape.prototype.z = eYo.Shape.prototype.Z = function () {
+  this.steps.push('z')
+}
+
+/**
  * end
  */
 eYo.Shape.prototype.end = function (noClose = false) {
   if (!noClose && this.steps.length) {
-    this.steps.push('z')
+    this.z()
   }
 }
 
@@ -164,6 +171,10 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
     l = c
     c = is_block
   }
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    l = c.y
+    c = c.x
+  }
   this.push('m', c * eYo.Unit.x, ',', l * eYo.Unit.y)
   this.cursor.advance(c, l)
 }
@@ -186,6 +197,10 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
   } else if (is_block !== false) {
     l = c
     c = is_block
+  }
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    l = c.y
+    c = c.x
   }
   this.push('M', c * eYo.Unit.x, ',', l * eYo.Unit.y)
   this.cursor.set(c, l)
@@ -343,7 +358,7 @@ eYo.Shape.prototype.quarter_circle = function (r = true, left = true, down = tru
 
 /**
  * arc
- * @param {Number} h 
+ * @param {Number|Size} h 
  * @param {Number} r  optional radius
  * @param {Boolean} left
  * @param {Boolean} down
@@ -354,7 +369,7 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
     left = r
     r = this.expr_radius
   }
-  var dx = 0
+  var dx = goog.isDef(h.x) ? h.x : 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
   this.push('a ', r, ',', r, '0 0', (left === down? 0 : 1), dx, ',', dy)
@@ -489,30 +504,8 @@ var initWithExpressionBlock = function(eyo) {
 }
 
 var initWithControlBlock = function (eyo) {
-  var block = eyo.block_
-  /* eslint-disable indent */
-  var w = block.width - eYo.Unit.x
-  var h = block.height
-  var r = this.stmt_radius
-  var d = eYo.Unit.x
-  var lh = eYo.Unit.y / 2
-  var blh = lh * 1.5
-  this.M(1.5, 0)
-  this.push('a', lh, ',', lh, '0 0 1',  blh, ',0')
-  this.push('a', lh, ',', lh, '0 1 1', -blh, ',0')
-  this.m(true, blh)
-  this.h(true, w - blh - d)
-  this.v(true, h)
-  if (eyo.hasNextStatement_()) {
-    this.H(true, d / 2)
-  } else {
-    this.H(true, d / 2 + r)
-    this.quarter_circle(true, false)
-  }
-  this.V(true, r)
-  this.quarter_circle(false, false)
-  this.h(true, d - r)
-  return true
+  var ans = initWithGroupBlock.call(this, eyo)
+  return ans // no close
 } /* eslint-enable indent */
 
 return function(eyo) {
@@ -521,10 +514,10 @@ return function(eyo) {
     var ans
     if (block.outputConnection) {
       ans = initWithExpressionBlock.call(this, eyo)
+    } else if (eyo.isControl) {
+      ans = initWithControlBlock.call(this, eyo)
     } else if (eyo.inputSuite) {
       ans = initWithGroupBlock.call(this, eyo)
-    } else if (eyo.controlPathDef_) {
-      ans = initWithControlBlock.call(this, eyo)
     } else {
       ans = initWithStatementBlock.call(this, eyo)
     }
@@ -617,19 +610,30 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
 }
 
 /**
- * initPlay
- * @param {*} cursor 
+ * initPlayIcon
+ * @param {*} cursor
+ * @param {*} isContour
  */
-eYo.Shape.prototype.initForPlay = function (cursor) {
+eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
   this.begin()
   var lh = eYo.Unit.y / 2
-  var ratio = 1.5
+  var ratio = 1.618
   var blh = lh * ratio
   var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
   var d = cursor.x + eYo.Unit.x + blh / 2 + eYo.Unit.x - eYo.Padding.l
-  this.m(true, d + 2 * y / Math.sqrt(3), y)
-  this.l(true, -Math.sqrt(3) * y, y)
-  this.l(true, 0, -2 * y)
+  if (isContour) {
+    var dr = eYo.Padding.t / 2
+    var r = 2 * y / Math.sqrt(3) + dr
+    this.M(true, d + 2 * y / Math.sqrt(3) + dr, lh)
+    this.arc({x: -r, y: -r}, r, true)
+    this.arc({x: -r, y: r}, r, true)
+    this.arc({x: r, y: r}, r, true)
+    this.arc({x: r, y: -r}, r, true)
+  } else {
+    this.M(true, d + 2 * y / Math.sqrt(3), lh)
+    this.l(true, -Math.sqrt(3) * y, y)
+    this.l(true, 0, -2 * y)
+  }
   this.end()
 }
 
@@ -638,7 +642,17 @@ eYo.Shape.prototype.initForPlay = function (cursor) {
  * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionForPlay = function(cursor) {
-  eYo.Shape.shared.initForPlay(cursor)
+eYo.Shape.definitionForPlayIcon = function(cursor) {
+  eYo.Shape.shared.initForPlay(cursor, false)
+  return eYo.Shape.shared.definition
+}
+
+/**
+ * Create a path definition for the play icon.
+ * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @return {String!} A path definition.
+ */
+eYo.Shape.definitionForPlayContour = function(cursor) {
+  eYo.Shape.shared.initForPlay(cursor, true)
   return eYo.Shape.shared.definition
 }
