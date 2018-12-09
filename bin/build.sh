@@ -319,7 +319,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_comp.js" \
 --js "src/lib/eyo/block/delegate_svg_stmt.js" \
 --js "src/lib/eyo/workspace/flyout.js" \
---js "src/lib/eyo/block/delegate_svg_control.js" \
 --js "src/lib/eyo/block/delegate_svg_group.js" \
 --js "src/lib/eyo/block/delegate_svg_import.js" \
 --js "src/lib/eyo/block/delegate_svg_primary.js" \
@@ -327,6 +326,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/delegate_svg_yield.js" \
 --js "src/lib/eyo/block/delegate_svg_assignment.js" \
 --js "src/lib/eyo/module/delegate_svg_cmath.js" \
+--js "src/lib/eyo/block/delegate_svg_control.js" \
 --js "src/lib/eyo/module/delegate_svg_decimal.js" \
 --js "src/lib/eyo/module/delegate_svg_fractions.js" \
 --js "src/lib/eyo/module/delegate_svg_functions.js" \
