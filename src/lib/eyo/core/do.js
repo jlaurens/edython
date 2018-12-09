@@ -546,6 +546,23 @@ eYo.Do.valueOf = function (f, thisObject) {
 eYo.Do.nothing = function () {
 }
 
+/**
+ * A wrapper creator.
+ * This is used to populate prototypes and define functions at setup time.
+ * @param {?Function} try_f 
+ * @param {?Function} finally_f 
+ * @return whatever returns try_f
+ */
+eYo.Do.tryFinally = function (try_f, finally_f) {
+  try {
+    return try_f()
+  }  catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    finally_f()
+  }
+}
 
 /**
  * A wrapper creator.
@@ -559,19 +576,21 @@ eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
   return (try_f, finally_f) => {
     start_f && start_f()
     var ans
-    try {
-      ans = try_f()
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
+    eYo.Do.tryFinally(() => {
+      ans = try_f()  
+    }, () => {
       begin_finally_f && begin_finally_f()
       // enable first to allow finally_f to eventually fire events
       // or eventually modify `ans`
-      finally_f && (ans = finally_f(ans))
+      if (finally_f) {
+        var out = finally_f(ans)
+        if (goog.isDef(out)) {
+          ans = out
+        }
+      }
       end_finally_f && end_finally_f()
-      return ans
-    }
+    })
+    return ans
   }
 }
 
