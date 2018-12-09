@@ -301,6 +301,7 @@ eYo.Shape.prototype.v = function (is_block, l) {
 
 /**
  * `V` for vertical line with absolute coordinates.
+ * @param {Boolean} is_block, when 'true', units are given in block coordinates
  * @param {*} l 
  */
 eYo.Shape.prototype.V = function (is_block, l) {
@@ -322,11 +323,16 @@ eYo.Shape.prototype.V = function (is_block, l) {
 /**
  * 1/4 circle
  * 
- * @param {*} left 
- * @param {*} down 
+ * @param {Number} r  optional radius
+ * @param {Boolean} left 
+ * @param {Boolean} down 
  */
-eYo.Shape.prototype.quarter_circle = function (left = true, down = true) {
-  var r = this.stmt_radius
+eYo.Shape.prototype.quarter_circle = function (r = true, left = true, down = true) {
+  if (r === true || r === false) {
+    down = left
+    left = r
+    r = this.stmt_radius
+  }
   var dx = left ? -r : r
   var dy = down ? r : -r
   var r = this.stmt_radius
@@ -337,12 +343,17 @@ eYo.Shape.prototype.quarter_circle = function (left = true, down = true) {
 
 /**
  * arc
- * @param {*} h 
- * @param {*} left 
- * @param {*} down 
+ * @param {Number} h 
+ * @param {Number} r  optional radius
+ * @param {Boolean} left
+ * @param {Boolean} down
  */
-eYo.Shape.prototype.arc = function (h, left = true, down = true) {
-  var r = this.expr_radius
+eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
+  if (r === true || r === false) {
+    down = left
+    left = r
+    r = this.expr_radius
+  }
   var dx = 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
