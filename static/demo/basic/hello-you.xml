@@ -5,7 +5,7 @@
 "flyoutCategory":"basic"}</prefs>
 <workspace>
 <content>
-<s eyo="start_stmt" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
+<s eyo="start" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
 <s eyo="assignment" name="prénom" flow="next">
 <x eyo="list" slot="assigned">
 <x eyo="call" name="input" slot="O">

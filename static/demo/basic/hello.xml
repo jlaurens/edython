@@ -7,7 +7,7 @@
 }</prefs>
 <workspace>
 <content>
-<s eyo="start_stmt" x="300" y="120" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
+<s eyo="start" x="300" y="120" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="O">'Bonjour le monde!'</x>

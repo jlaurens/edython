@@ -28,7 +28,7 @@
 </s>
 </s>
 </s>
-<s eyo="start_stmt" comment="Avec des listes" x="37" y="-160">
+<s eyo="start" comment="Avec des listes" x="37" y="-160">
 <s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="next">
 <s eyo="assignment" name="liste" flow="next">
 <x eyo="list" slot="assigned">
@@ -50,7 +50,7 @@
 </s>
 </s>
 </s>
-<s eyo="start_stmt" comment="Le premier élément a pour rang 0" x="53" y="-26">
+<s eyo="start" comment="Le premier élément a pour rang 0" x="53" y="-26">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="f">'Le premier élément est'</x>
@@ -105,7 +105,7 @@
 </s>
 </s>
 </s>
-<s eyo="start_stmt" comment="Utiliser la méthode `index` pour trouver le rang" x="36" y="170">
+<s eyo="start" comment="Utiliser la méthode `index` pour trouver le rang" x="36" y="170">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="f">'Le rang de'</x>
@@ -119,7 +119,7 @@
 </x>
 </s>
 </s>
-<s eyo="start_stmt" comment="Si on ne sait pas si l'élément est dans la liste" x="47" y="239">
+<s eyo="start" comment="Si on ne sait pas si l'élément est dans la liste" x="47" y="239">
 <s eyo="stmt" comment="on doit commence par tester l'appartenance" flow="next">
 <s eyo="if" flow="next">
 <x eyo="comparison" operator="in" slot="if">
@@ -168,7 +168,7 @@
 </s>
 </s>
 </s>
-<s eyo="start_stmt" comment="Sinon c'est une erreur `ValueError`" x="37" y="456">
+<s eyo="start" comment="Sinon c'est une erreur `ValueError`" x="37" y="456">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="f">'Le rang de'</x>
@@ -182,7 +182,7 @@
 </x>
 </s>
 </s>
-<s eyo="start_stmt" comment="Combien y en a-t-il ?" x="39" y="553">
+<s eyo="start" comment="Combien y en a-t-il ?" x="39" y="553">
 <s eyo="print" flow="next">
 <x eyo="list" slot="arguments">
 <x eyo="literal" slot="f">'Le nombre de'</x>
