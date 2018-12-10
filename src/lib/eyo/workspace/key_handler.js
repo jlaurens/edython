@@ -516,7 +516,7 @@ eYo.KeyHandler = (function () {
       }
     } else {
       // B is not always a block!
-      F = function (f) {
+      F = (f) => {
         event.preventDefault()
         event.stopPropagation()
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
@@ -528,10 +528,10 @@ eYo.KeyHandler = (function () {
         }
       }
       switch (k) {
-      case 'arrowdown': F((P) => { return P.y }); return
-      case 'arrowup': F((P) => { return -P.y }); return
-      case 'arrowleft': F((P) => { return -P.x }); return
-      case 'arrowright': F((P) => { return P.x })
+      case 'arrowdown': F(P => P.y); return
+      case 'arrowup': F(P => -P.y); return
+      case 'arrowleft': F(P => -P.x); return
+      case 'arrowright': F(P => P.x)
       }
     }
   }

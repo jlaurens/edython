@@ -471,3 +471,34 @@ eYo.copyBlock = function(block, deep) {
   Blockly.clipboardSource_ = block.workspace;
   eYo.App.didCopyBlock && eYo.App.didCopyBlock(block, xmlBlock)
 };
+
+/**
+ * Record the block that a gesture started on, and set the target block
+ * appropriately.
+ * Addendum: there is a switch to only start from a statement
+ * @param {Blockly.BlockSvg} block The block the gesture started on.
+ * @package
+ */
+Blockly.Gesture.prototype.setStartBlock = (function () {
+  var setStartBlock = Blockly.Gesture.prototype.setStartBlock
+  return function(block) {
+    var candidate = block
+    var eyo = block.eyo
+    do {
+      if (eyo.isStmt) {
+        candidate = eYo.selected === eyo
+          ? block
+          : eyo.block_
+        break
+      } else if (eYo.selected === eyo) {
+        candidate = block
+        break
+      } else {
+        candidate = eyo.block_
+      }
+    } while ((eyo = eyo.parent))
+    setStartBlock.call(this, candidate)
+  }
+}) ()
+
+

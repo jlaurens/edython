@@ -404,7 +404,7 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * This is used to prevent a dragging operation on a sealed block.
  * However, this will manage the selection of an input connection.
  * onMouseDown_ message is sent multiple times for one mouse click
- * because blocks may lay on above the other (when connected for example)
+ * because blocks may lay one above the other (when connected for example)
  * Considering the selection of a connection, we manage the onMouseDown_ calls
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.

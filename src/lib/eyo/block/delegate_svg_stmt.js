@@ -111,6 +111,11 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
 }
 
 /**
+ * True for statement blocks only.
+ */
+eYo.DelegateSvg.Stmt.prototype.isStmt = true
+
+/**
  * Statement block path.
  * @param {!Blockly.Block} block
  * @private
