@@ -389,10 +389,11 @@ eYo.Shape.newWithBlock = function(eyo) {
 /**
  * Create a path definition with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  A block delegate.
+ * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithBlock = function(eyo) {
-  eYo.Shape.shared.initWithBlock(eyo)
+eYo.Shape.definitionWithBlock = function(eyo, opt) {
+  eYo.Shape.shared.initWithBlock(eyo, opt)
   return eYo.Shape.shared.definition
 }
 
@@ -405,11 +406,11 @@ eYo.Shape.prototype.initWithBlock = (function () {
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  */
-var initWithStatementBlock = function(eyo) {
+var initWithStatementBlock = function(eyo, opt) {
   // standard statement
   var width = eyo.block_.width
   this.M(true, width - eYo.Unit.x / 2)
-  this.v(true, eYo.Unit.y)
+  this.v(opt && opt.dido ? 1 + eyo.suiteCount + eyo.nextCount : 1)
   var r = this.stmt_radius
   if (eyo.hasNextStatement_()) {
     this.H(1 / 2)     
@@ -508,18 +509,19 @@ var initWithControlBlock = function (eyo) {
   return ans // no close
 } /* eslint-enable indent */
 
-return function(eyo) {
+return function(eyo, opt) {
     this.begin()
-    var block = eyo.block_
     var ans
-    if (block.outputConnection) {
-      ans = initWithExpressionBlock.call(this, eyo)
+    if (eyo.outputConnection) {
+      ans = initWithExpressionBlock.call(this, eyo, opt)
+    } else if (opt && opt.dido) {
+      ans = initWithStatementBlock.call(this, eyo, opt)
     } else if (eyo.isControl) {
-      ans = initWithControlBlock.call(this, eyo)
+      ans = initWithControlBlock.call(this, eyo, opt)
     } else if (eyo.inputSuite) {
-      ans = initWithGroupBlock.call(this, eyo)
+      ans = initWithGroupBlock.call(this, eyo, opt)
     } else {
-      ans = initWithStatementBlock.call(this, eyo)
+      ans = initWithStatementBlock.call(this, eyo, opt)
     }
     this.end(ans)
   }

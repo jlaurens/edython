@@ -128,9 +128,11 @@ eYo.BlockSvg.prototype.select = function () {
   if (more) {
     if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
       goog.dom.removeNode(this.eyo.svgPathSelect_)
+      goog.dom.removeNode(this.eyo.svgPathHilight_)
     }
   } else if (this.eyo.svgPathSelect_ && !this.eyo.svgPathSelect_.parentNode) {
     this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
+    this.svgGroup_.appendChild(this.eyo.svgPathHilight_)
   }
   if (!this.eyo.canEdit_) {
     var block = this
@@ -178,8 +180,10 @@ eYo.BlockSvg.prototype.addSelect = function () {
     if (this.eyo.svgPathSelect_) {
       if (this.eyo.svgPathSelect_.parentNode && hasSelectedConnection) {
         goog.dom.removeNode(this.eyo.svgPathSelect_)
+        goog.dom.removeNode(this.eyo.svgPathHilight_)
       } else if (!this.eyo.svgPathSelect_.parentNode && !hasSelectedConnection) {
         this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
+        this.svgGroup_.appendChild(this.eyo.svgPathHilight_)
       }
     }
   }
@@ -230,6 +234,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
     goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
   }
   if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
+    goog.dom.removeNode(this.eyo.svgPathHilight_)
     goog.dom.removeNode(this.eyo.svgPathSelect_)
   }
   if (this.eyo.svgPathConnection_ && this.eyo.svgPathConnection_.parentNode) {

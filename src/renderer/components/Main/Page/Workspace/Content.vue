@@ -238,7 +238,7 @@
           media: 'static/media/',
           rtl: false,
           scrollbars: true,
-          sounds: true,
+          sounds: false,
           oneBasedIndex: true
         }
         // var el = document.getElementById('eyo-workspace-content')

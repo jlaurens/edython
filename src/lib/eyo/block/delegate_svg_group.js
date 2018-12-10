@@ -80,7 +80,7 @@ eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
 
 eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
   eYo.DelegateSvg.BaseGroup.prototype.contourPathDef_ =
-    eYo.DelegateSvg.BaseGroup.prototype.highlightPathDef_ =
+    eYo.DelegateSvg.BaseGroup.prototype.selectPathDef_ =
       eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
 
 /**

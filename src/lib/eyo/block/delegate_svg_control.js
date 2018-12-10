@@ -85,12 +85,12 @@ eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
 
 eYo.DelegateSvg.Control.prototype.shapePathDef_ =
   eYo.DelegateSvg.Control.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Control.prototype.highlightPathDef_ =
+    eYo.DelegateSvg.Control.prototype.selectPathDef_ =
       eYo.DelegateSvg.Control.prototype.controlPathDef_
 
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
   eYo.DelegateSvg.Control.superClass_.willRender_.call(this, recorder)
-  this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
+  this.minWidth = this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
 }
 
 /**
@@ -129,7 +129,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
         this.runScript && this.runScript()
       })
   goog.dom.classlist.add(this.svgPathShape_, 'eyo-start-path')
-  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathHighlight_)
+  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathHilight_)
   goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
 }
 

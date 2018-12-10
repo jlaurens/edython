@@ -130,6 +130,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       var d = newValue - this.nextCount_
       this.nextCount_ = newValue
       if (d) {
+        this.incrementChangeCount()
         var parent = this.block_.getParent()
         if (parent) {
           if (parent.eyo.next === this) {
@@ -152,8 +153,18 @@ Object.defineProperties(eYo.Delegate.prototype, {
         this.suiteCount_ = newValue
         var parent = this.block_.getParent()
         if (parent) {
+          // next is not a good design
+          // because suiteCount_ has not a straightforward definition
           if (parent.eyo.next === this) {
-            parent.eyo.nextCount += d
+            if (newValue === d) {
+              // a gap was filled
+              parent.eyo.nextCount += d - 1
+            } else if (newValue === 0) {
+              // we keep a gap
+              parent.eyo.nextCount += d + 1
+            } else {
+              parent.eyo.nextCount += d
+            }
           } else {
             parent.eyo.suiteCount += d
           }

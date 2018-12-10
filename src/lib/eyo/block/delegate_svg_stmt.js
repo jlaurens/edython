@@ -126,8 +126,17 @@ eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
 
 eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
   eYo.DelegateSvg.Stmt.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Stmt.prototype.highlightPathDef_ =
+    eYo.DelegateSvg.Stmt.prototype.selectPathDef_ =
       eYo.DelegateSvg.Stmt.prototype.statementPathDef_
+
+/**
+ * Statement block path.
+ * @param {!Blockly.Block} block
+ * @private
+ */
+eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ = function () {
+  return eYo.Shape.definitionWithBlock(this, {dido: true})
+} /* eslint-enable indent */
 
 /**
  * Render the leading # character for disabled statement blocks.

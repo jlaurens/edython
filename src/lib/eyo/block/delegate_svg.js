@@ -144,6 +144,13 @@ eYo.DelegateSvg.prototype.svgPathInner_ = undefined
 eYo.DelegateSvg.prototype.svgPathSelect_ = undefined
 
 /**
+ * This is the shape used to draw an highlighted block contour when a parent is selected.
+ * @type {SVGPathElement}
+ * @private
+ */
+eYo.DelegateSvg.prototype.svgPathHilight_ = undefined
+
+/**
  * This is the shape used to draw an highlighted connection contour. NOT ANY LONGER.
  * @type {SVGPathElement}
  * @private
@@ -204,6 +211,8 @@ eYo.DelegateSvg.prototype.deinit = function () {
   this.svgPathInner_ = undefined
   goog.dom.removeNode(this.svgPathSelect_)
   this.svgPathSelect_ = undefined
+  goog.dom.removeNode(this.svgPathHilight_)
+  this.svgPathHilight_ = undefined
   goog.dom.removeNode(this.svgPathConnection_)
   this.svgPathConnection_ = undefined
   eYo.DelegateSvg.superClass_.deinit.call(this)
@@ -251,6 +260,9 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
   }, null)
   this.svgPathSelect_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-selected'
+  }, null)
+  this.svgPathHilight_ = Blockly.utils.createSvgElement('path', {
+    'class': 'eyo-path-hilighted'
   }, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-selected DEBUG'
@@ -581,7 +593,7 @@ eYo.DelegateSvg.prototype.render = (function () {
         this.renderDrawNext_(io)
         this.renderMove_(io)
         this.updateAllPaths_()
-        renderDrawParent.call(this, io, optBubble)
+        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         block.rendered = true
         this.didRender_(io)
         if (eYo.traceOutputConnection && block.outputConnection) {
@@ -742,7 +754,8 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
     FF(this.svgPathContour_, 'eyo-locked')
     FF(this.svgPathCollapsed_, 'eyo-locked')
     FF(this.svgPathSelect_, 'eyo-locked')
-      // change the class of the shape on error
+    FF(this.svgPathHilight_, 'eyo-locked')
+    // change the class of the shape on error
     F = Object.keys(this.errors).length
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
@@ -750,6 +763,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
     FF(this.svgPathContour_, 'eyo-error')
     FF(this.svgPathCollapsed_, 'eyo-error')
     FF(this.svgPathSelect_, 'eyo-error')
+    FF(this.svgPathHilight_, 'eyo-error')
   }
 }
 
@@ -828,7 +842,13 @@ eYo.DelegateSvg.prototype.contourPathDef_ = eYo.DelegateSvg.prototype.shapePathD
  * Highlighted block outline. Default implementation forwards to shapePathDef_.
  * @private
  */
-eYo.DelegateSvg.prototype.highlightPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
+eYo.DelegateSvg.prototype.selectPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
+
+/**
+ * Highlighted block outline. Default implementation does nothing.
+ * @private
+ */
+eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
 
 /**
  * Highlighted connection outline.
@@ -876,7 +896,6 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
       var root = block.getRootBlock()
       this.renderSuite_()
       block.height = this.size.height
-      !recorder && root.eyo.alignRightEdges_(recorder)
       this.updateAllPaths_()
     }
   }
@@ -890,28 +909,24 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
  * @protected
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
-  if (this.block_.getParent()) {
+  if (this.parent || !this.isStmt || !this.block_.workspace) {
     return
   }
   var right = 0
-  var e8r = eYo.StatementBlockEnumerator(this.block_)
-  var b
   var t = eYo.Font.tabWidth
-  while ((b = e8r.next())) {
-    if (b.eyo.minWidth) {
-      right = Math.max(right, b.eyo.minWidth + t * e8r.depth())
-    } else {
-      return
+  this.forEachStatement((eyo, depth) => {
+    if (eyo.minWidth) {
+      right = Math.max(right, eyo.minWidth + t * depth)
     }
-  }
-  e8r = eYo.StatementBlockEnumerator(this.block_)
-  while ((b = e8r.next())) {
-    var width = right - t * e8r.depth()
+  })
+  this.forEachStatement((eyo, depth) => {
+    var width = right - t * depth
+    var b = eyo.block_
     if (b.width !== width) {
       b.width = width
-      b.eyo.updateAllPaths_()
+      eyo.updateAllPaths_()
     }
-  }
+  })
 }
 
 /**
@@ -952,12 +967,14 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
     this.updatePath_(this.svgPathContour_)
     this.updatePath_(this.svgPathShape_)
     this.updatePath_(this.svgPathSelect_)
+    this.updatePath_(this.svgPathHilight_)
     this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_)
   } else {
     this.updatePath_(this.svgPathContour_, this.contourPathDef_)
     this.updatePath_(this.svgPathShape_, this.shapePathDef_)
-    this.updatePath_(this.svgPathSelect_, this.highlightPathDef_)
+    this.updatePath_(this.svgPathSelect_, this.selectPathDef_)
+    this.updatePath_(this.svgPathHilight_, this.hilightPathDef_)
     this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_, this.collapsedPathDef_)
   }
@@ -1446,6 +1463,7 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
             if (pack) {
               eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
               eyo.minWidth = eyo.block_.width = eyo.size.x
+              console.warn('EYO WIDTH', eyo.minWidth, eyo.block_.width)
             }
           })
         }
@@ -1697,6 +1715,84 @@ eYo.DelegateSvg.prototype.getInput = function (name, dontCreate) {
  * @param {!Blockly.Block} block The root of the enumeration.
  * @constructor
  */
+eYo.Delegate.prototype.statementEnumerator = function () {
+  var eyo
+  var eyos = [this]
+  var e8r
+  var e8rs = [this.inputEnumerator()]
+  var next
+  var me = {}
+  me.next = () => {
+    me.next = me.next_
+    return this
+  }
+  me.depth = () => {
+    return eyos.length
+  }
+  me.next_ = () => {
+    while ((eyo = eyos.shift())) {
+      e8r = e8rs.shift()
+      while (e8r.next()) {
+        if (e8r.here.type === Blockly.NEXT_STATEMENT) {
+          if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
+            next = next.eyo
+            eyos.unshift(eyo)
+            e8rs.unshift(e8r)
+            eyos.unshift(next)
+            e8rs.unshift(next.inputEnumerator())
+            return next
+          }
+        }
+      }
+      if ((eyo = eyo.next)) {
+        eyos.unshift(eyo)
+        e8rs.unshift(eyo.inputEnumerator())
+        return eyo
+      }
+    }
+  }
+  return me
+}
+
+/**
+ * Execute the helper for all the statements.
+ * Deep first traversal.
+ * @param {!Function} helper
+ * @return the truthy value from the helper.
+ */
+eYo.Delegate.prototype.forEachStatement = function (helper) {
+  var e8r = this.statementEnumerator()
+  var eyo
+  while ((eyo = e8r.next())) {
+    helper(eyo, e8r.depth())
+  }
+}
+
+/**
+ * Execute the helper until one answer is a truthy value.
+ * Deep first traversal.
+ * @param {!Function} helper
+ * @return the truthy value from the helper.
+ */
+eYo.Delegate.prototype.someStatement = function (helper) {
+  var e8r = this.statementEnumerator()
+  var eyo
+  var ans
+  while ((eyo = e8r.next())) {
+    if ((ans = helper(eyo, e8r.depth()))) {
+      return ans
+    }
+  }
+}
+
+/**
+ * Class for a statement block enumerator.
+ * Deep first traversal.
+ * Starts with the given block.
+ * The returned object has next and depth messages.
+ * @param {!Blockly.Block} block The root of the enumeration.
+ * @constructor
+ */
 eYo.StatementBlockEnumerator = function (block) {
   var b
   var bs = [block]
@@ -1816,7 +1912,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
       } else if (eYo.DelegateSvg.Manager.get(model)) {
         block = workspace.newBlock(model, id) // can undo
         block.eyo.setDataWithType(model)
-      } else {
+      } else if (goog.isString(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         if (p5e !== eYo.T3.Profile.void && p5e !== eYo.T3.Profile.unset) {
           if (p5e.expr && (block = workspace.newBlock(p5e.expr, id))) {
@@ -1840,7 +1936,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         }
       }
     }
-    block.eyo.changeWrap(
+    block && block.eyo.changeWrap(
       function () { // `this` is `block.eyo`
         this.setDataWithModel(dataModel)
         var Vs = model.slots

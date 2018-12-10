@@ -177,7 +177,7 @@ eYo.Style.Path = {
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 0.75 // px
+  width: 0.5 // px
 }
 Object.defineProperty(
   eYo.Style.Path,
@@ -276,10 +276,15 @@ eYo.setup.register(() => {
     }`
   )
   eYo.Style.insertCssRuleAt(
-    `.eyo-path-selected {
+    `.eyo-path-selected,
+    .eyo-path-hilighted {
       stroke: ${eYo.Style.Path.Selected.colour};
-      stroke-width: ${eYo.Style.Path.Selected.width}px;
       fill: none;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-path-selected {
+      stroke-width: ${eYo.Style.Path.Selected.width}px;
     }`
   )
   // When the selected block is a statement
@@ -300,12 +305,13 @@ eYo.setup.register(() => {
   // When a statement is selected, select only statements
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-stmt>.eyo-path-contour,
-    .eyo-select.eyo-stmt>.eyo-path-inner,
-    .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
-    .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-inner {
+    .eyo-select.eyo-stmt>.eyo-path-inner {
       stroke: ${eYo.Style.Path.Selected.colour};
     }`
   )
+  //, .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
+  // .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-inner
+  
   // When a statement is selected, select only expressions of that statement
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
