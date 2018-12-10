@@ -3004,10 +3004,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
                   otherSource.eyo.someInputConnection(c8n => {
                     if (next) {
                       otherC8n = c8n
-                      console.error('NEXT CONNECTION FOUND')
                       return true
                     } else if (c8n === otherC8n) {
-                      console.error('CONNECTION FOUND')
                       next = true
                     }
                   })
