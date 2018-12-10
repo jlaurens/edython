@@ -1278,13 +1278,13 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         this.renderDrawEnding_(io)
         this.renderDrawPending_(io)
         io.common.startOfStatement = false
-        io.common.didPack = 0
         ++ io.n
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
         if (!f_eyo.model.literal) {
-          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret) {
+          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret &&
+          !io.common.didPack) {
             if (this.packedQuotes && (head === "'" || head === '"')) {
               io.cursor.c -= 1
             } else if (this.packedBrackets && head === "[") {
@@ -1330,6 +1330,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
           // now that I have rendered something
           io.common.startOfLine = io.common.startOfStatement = false
         }
+        io.common.didPack = 0
         if (io.cursor.c > 2) {
           if ((tail === '"' || tail === "'") && this.packedQuotes) {
             io.common.shouldPack = this
@@ -1464,6 +1465,7 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
               eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
               eyo.minWidth = eyo.block_.width = eyo.size.x
               console.warn('EYO WIDTH', eyo.minWidth, eyo.block_.width)
+              io.common.didPack = true
             }
           })
         }
@@ -1914,24 +1916,27 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         block.eyo.setDataWithType(model)
       } else if (goog.isString(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
-        if (p5e !== eYo.T3.Profile.void && p5e !== eYo.T3.Profile.unset) {
-          if (p5e.expr && (block = workspace.newBlock(p5e.expr, id))) {
-            p5e.expr && block.eyo.setDataWithType(p5e.expr)
-            model && block.eyo.setDataWithModel(model)
+        var f = (p5e) => {
+          var b
+          if (p5e.expr && (b = workspace.newBlock(p5e.expr, id))) {
+            p5e.expr && b.eyo.setDataWithType(p5e.expr)
+            model && b.eyo.setDataWithModel(model)
             dataModel = {data: model}
-          } else if (p5e.stmt && (block = workspace.newBlock(p5e.stmt, id))) {
-            p5e.stmt && block.eyo.setDataWithType(p5e.stmt)
-            model && block.eyo.setDataWithModel(model)
+          } else if (p5e.stmt && (b = workspace.newBlock(p5e.stmt, id))) {
+            p5e.stmt && b.eyo.setDataWithType(p5e.stmt)
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (block = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
-            block.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (b = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
+            b.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No block for model:', model)
-            return
           }
+          return b
+        }
+        if (!p5e.isVoid && !p5e.isUnset) {
+          block = f(p5e)
         } else {
-          console.warn('No block for model:', model)
+          console.warn('No block for model either:', model)
           return
         }
       }
@@ -2141,7 +2146,7 @@ eYo.HoleFiller.getData = function (check, value) {
  * Get an array of the deep connections that can be filled.
  * @param {!Block} block
  * @param {Array} holes whengiven the is the array to be filled
- * @return an array of conections, holes if given.
+ * @return an array of connections, holes if given.
  */
 eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
   var H = holes || []
@@ -2933,7 +2938,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   var block = this.block_
   // get the type:
   var p5e = eYo.T3.Profile.get(model, null)
-  if (p5e !== eYo.T3.Profile.void && p5e !== eYo.T3.Profile.unset) {
+  if (!p5e.isVoid && !p5e.isUnset) {
     if (connection) {
       if (connection.type === Blockly.NEXT_STATEMENT || connection.type === Blockly.PREVIOUS_STATEMENT) {
         p5e.stmt && (model = {
@@ -2952,35 +2957,70 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   var candidate
   eYo.Events.disableWrap(
     () => {
-      candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
-      if (!candidate) {
-        return
-      }
-      var c8n_N = model.input
       var c8n, otherC8n
-      var fin = function (prepare) {
-        Blockly.Events.enable()
-        eYo.Events.groupWrap(
-          () => {
-            try {
+      var fin = (prepare) => {
+        eYo.Events.groupWrap(() => {
+          eYo.Events.enableWrap(() => {
+            eYo.Do.tryFinally(() => {
               eYo.Events.fireBlockCreate(candidate)
               prepare && prepare()
               otherC8n.connect(c8n)
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
+            }, () => {
               candidate.eyo.render()
               candidate.select()
               candidate.bumpNeighbours_()
-              Blockly.Events.disable()
-            }
-          }
-        )
+            })
+          })
+        })
         return candidate
       }
+      candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+      if (!candidate) {
+        // very special management for tuple input
+        if ((otherC8n = eYo.SelectedConnection)) {
+          var otherSource = otherC8n.getSourceBlock()
+          if (otherSource.eyo instanceof eYo.DelegateSvg.List && otherC8n.type === Blockly.INPUT_VALUE) {
+            eYo.Events.groupWrap(() => {
+              var blocks = model.split(',').map(x => {
+                var model = x.trim()
+                var p5e = eYo.T3.Profile.get(model, null)
+                console.warn('MODEL:', model)
+                console.warn('PROFILE:', p5e)
+                return {
+                  model,
+                  p5e
+                }
+              }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
+                var b = eYo.DelegateSvg.newBlockReady(block.workspace, x.model)
+                b.eyo.setDataWithModel(x.model)
+                console.error('BLOCK', b)
+                return b
+              })
+              blocks.some(b => {
+                candidate = b
+                if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
+                  fin()
+                  var next = false
+                  otherSource.eyo.someInputConnection(c8n => {
+                    if (next) {
+                      otherC8n = c8n
+                      console.error('NEXT CONNECTION FOUND')
+                      return true
+                    } else if (c8n === otherC8n) {
+                      console.error('CONNECTION FOUND')
+                      next = true
+                    }
+                  })
+                }
+              })
+              eYo.SelectedConnection = otherC8n
+            })
+          }
+        }
+        return
+      }
       if ((otherC8n = eYo.SelectedConnection)) {
-        var otherSource = otherC8n.getSourceBlock()
+        otherSource = otherC8n.getSourceBlock()
         if (otherC8n.type === Blockly.INPUT_VALUE) {
           if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
             return fin()
@@ -3016,6 +3056,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
           }
         }
       }
+      var c8n_N = model.input
       if ((c8n = candidate.outputConnection)) {
         // try to find a free connection in a block
         // When not undefined, the returned connection can connect to c8n.

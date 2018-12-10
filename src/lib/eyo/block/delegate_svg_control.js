@@ -117,6 +117,9 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   this.mouseDownWrapper_ =
     Blockly.bindEventWithChecks_(this.svgPathPlayIcon_, 'mousedown', this,
       function (event) {
+        if (this.block_.isInFlyout) {
+          return
+        }
         if (!this.suiteConnection.isConnected()) {
           var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
           dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)

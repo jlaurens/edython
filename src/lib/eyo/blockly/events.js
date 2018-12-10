@@ -110,8 +110,18 @@ eYo.Events.setGroup = (function () {
  * Event disabler.
  * Use the arrow definition of functions to catch `this`.
  * @param {!Function} try_f
- * @param {?Function} begin_finally_f
- * @param {?Function} end_finally_f
+ * @param {?Function} finally_f
+ */
+eYo.Events.enableWrap = eYo.Do.makeWrapper(
+  Blockly.Events.enable,
+  Blockly.Events.disable
+)
+
+/**
+ * Event disabler.
+ * Use the arrow definition of functions to catch `this`.
+ * @param {!Function} try_f
+ * @param {?Function} finally_f
  */
 eYo.Events.disableWrap = eYo.Do.makeWrapper(
   Blockly.Events.disable,
