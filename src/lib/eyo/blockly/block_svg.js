@@ -126,11 +126,11 @@ eYo.BlockSvg.prototype.select = function () {
   var more = this.eyo.selectedConnection || (this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this)
   if (more) {
-    if (this.eyo.svgPathHighlight_ && this.eyo.svgPathHighlight_.parentNode) {
-      goog.dom.removeNode(this.eyo.svgPathHighlight_)
+    if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
+      goog.dom.removeNode(this.eyo.svgPathSelect_)
     }
-  } else if (this.eyo.svgPathHighlight_ && !this.eyo.svgPathHighlight_.parentNode) {
-    this.svgGroup_.appendChild(this.eyo.svgPathHighlight_)
+  } else if (this.eyo.svgPathSelect_ && !this.eyo.svgPathSelect_.parentNode) {
+    this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
   }
   if (!this.eyo.canEdit_) {
     var block = this
@@ -175,11 +175,11 @@ eYo.BlockSvg.prototype.addSelect = function () {
     this.svgGroup_.appendChild(this.eyo.svgPathConnection_)
   } else if (!this.eyo.wrapped_) {
     var hasSelectedConnection = this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection
-    if (this.eyo.svgPathHighlight_) {
-      if (this.eyo.svgPathHighlight_.parentNode && hasSelectedConnection) {
-        goog.dom.removeNode(this.eyo.svgPathHighlight_)
-      } else if (!this.eyo.svgPathHighlight_.parentNode && !hasSelectedConnection) {
-        this.svgGroup_.appendChild(this.eyo.svgPathHighlight_)
+    if (this.eyo.svgPathSelect_) {
+      if (this.eyo.svgPathSelect_.parentNode && hasSelectedConnection) {
+        goog.dom.removeNode(this.eyo.svgPathSelect_)
+      } else if (!this.eyo.svgPathSelect_.parentNode && !hasSelectedConnection) {
+        this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
       }
     }
   }
@@ -212,7 +212,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
       return
     }
   } else {
-    if ((!this.eyo.svgPathHighlight_ || !this.eyo.svgPathHighlight_.parentNode) &&
+    if ((!this.eyo.svgPathSelect_ || !this.eyo.svgPathSelect_.parentNode) &&
       (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
       if (this.svgGroup_) { // how come that we must test that?
         goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
@@ -229,8 +229,8 @@ eYo.BlockSvg.prototype.removeSelect = function () {
   if (this.eyo.svgContourGroup_) {
     goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
   }
-  if (this.eyo.svgPathHighlight_ && this.eyo.svgPathHighlight_.parentNode) {
-    goog.dom.removeNode(this.eyo.svgPathHighlight_)
+  if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
+    goog.dom.removeNode(this.eyo.svgPathSelect_)
   }
   if (this.eyo.svgPathConnection_ && this.eyo.svgPathConnection_.parentNode) {
     goog.dom.removeNode(this.eyo.svgPathConnection_)
@@ -261,13 +261,13 @@ eYo.BlockSvg.prototype.setParent = function (newParent) {
   this.eyo.parentWillChange(newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
   this.eyo.parentDidChange(newParent)
-  if ((this.eyo.svgPathHighlight_ &&
-      this.svgGroup_ === this.eyo.svgPathHighlight_.parentElement) || (this.eyo.svgPathConnection_ &&
+  if ((this.eyo.svgPathSelect_ &&
+      this.svgGroup_ === this.eyo.svgPathSelect_.parentElement) || (this.eyo.svgPathConnection_ &&
         this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {
     this.removeSelect()
     this.addSelect()
-  } else if (newParent && ((newParent.eyo.svgPathHighlight_ &&
-      newParent.svgGroup_ === newParent.eyo.svgPathHighlight_.parentElement) || (newParent.eyo.svgPathConnection_ &&
+  } else if (newParent && ((newParent.eyo.svgPathSelect_ &&
+      newParent.svgGroup_ === newParent.eyo.svgPathSelect_.parentElement) || (newParent.eyo.svgPathConnection_ &&
       newParent.svgGroup_ === newParent.eyo.svgPathConnection_.parentElement))) {
     newParent.removeSelect()
     newParent.addSelect()

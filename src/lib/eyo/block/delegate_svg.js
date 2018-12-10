@@ -137,11 +137,11 @@ eYo.DelegateSvg.prototype.svgPathCollapsed_ = undefined
 eYo.DelegateSvg.prototype.svgPathInner_ = undefined
 
 /**
- * This is the shape used to draw an highlighted block contour.
+ * This is the shape used to draw an highlighted block contour when selected.
  * @type {SVGPathElement}
  * @private
  */
-eYo.DelegateSvg.prototype.svgPathHighlight_ = undefined
+eYo.DelegateSvg.prototype.svgPathSelect_ = undefined
 
 /**
  * This is the shape used to draw an highlighted connection contour. NOT ANY LONGER.
@@ -202,8 +202,8 @@ eYo.DelegateSvg.prototype.deinit = function () {
   this.svgPathCollapsed_ = undefined
   goog.dom.removeNode(this.svgPathInner_)
   this.svgPathInner_ = undefined
-  goog.dom.removeNode(this.svgPathHighlight_)
-  this.svgPathHighlight_ = undefined
+  goog.dom.removeNode(this.svgPathSelect_)
+  this.svgPathSelect_ = undefined
   goog.dom.removeNode(this.svgPathConnection_)
   this.svgPathConnection_ = undefined
   eYo.DelegateSvg.superClass_.deinit.call(this)
@@ -249,7 +249,7 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
   this.svgPathShape_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-shape'
   }, null)
-  this.svgPathHighlight_ = Blockly.utils.createSvgElement('path', {
+  this.svgPathSelect_ = Blockly.utils.createSvgElement('path', {
     'class': 'eyo-path-selected'
   }, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
@@ -741,7 +741,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
     FF(this.svgPathShape_, 'eyo-locked')
     FF(this.svgPathContour_, 'eyo-locked')
     FF(this.svgPathCollapsed_, 'eyo-locked')
-    FF(this.svgPathHighlight_, 'eyo-locked')
+    FF(this.svgPathSelect_, 'eyo-locked')
       // change the class of the shape on error
     F = Object.keys(this.errors).length
       ? goog.dom.classlist.add
@@ -749,7 +749,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
     FF(this.svgPathShape_, 'eyo-error')
     FF(this.svgPathContour_, 'eyo-error')
     FF(this.svgPathCollapsed_, 'eyo-error')
-    FF(this.svgPathHighlight_, 'eyo-error')
+    FF(this.svgPathSelect_, 'eyo-error')
   }
 }
 
@@ -951,13 +951,13 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
   if (this.wrapped_) {
     this.updatePath_(this.svgPathContour_)
     this.updatePath_(this.svgPathShape_)
-    this.updatePath_(this.svgPathHighlight_)
+    this.updatePath_(this.svgPathSelect_)
     this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_)
   } else {
     this.updatePath_(this.svgPathContour_, this.contourPathDef_)
     this.updatePath_(this.svgPathShape_, this.shapePathDef_)
-    this.updatePath_(this.svgPathHighlight_, this.highlightPathDef_)
+    this.updatePath_(this.svgPathSelect_, this.highlightPathDef_)
     this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_, this.collapsedPathDef_)
   }
