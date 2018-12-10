@@ -129,7 +129,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
         this.runScript && this.runScript()
       })
   goog.dom.classlist.add(this.svgPathShape_, 'eyo-start-path')
-  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathContour_)
+  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathHighlight_)
   goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
 }
 
