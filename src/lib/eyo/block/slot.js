@@ -759,7 +759,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         // Actually, every wrapped block is a list
         if (target.eyo instanceof eYo.DelegateSvg.List) {
           var child = eYo.Xml.blockToDom(target, opt)
-          if (child.firstChildElement) {
+          if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.key)
             goog.dom.appendChild(element, child)
             return child
@@ -770,7 +770,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         }
       } else {
         child = eYo.Xml.blockToDom(target, opt)
-        if (child.firstChildElement || child.hasAttributes()) {
+        if (child.firstElementChild || child.hasAttributes()) {
           if (this.inputType === Blockly.INPUT_VALUE) {
             child.setAttribute(eYo.Xml.SLOT, this.key)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
@@ -825,7 +825,7 @@ eYo.Slot.prototype.load = function (element) {
     out = eYo.Xml.fromDom(target, element)
   } else {
   // find the xml child with the proper slot attribute
-    eYo.Do.someChildElement(element, (child) => {
+    eYo.Do.someElementChild(element, (child) => {
       if (this.inputType === Blockly.INPUT_VALUE) {
         var attribute = child.getAttribute(eYo.Xml.SLOT)
       } else if (this.inputType === Blockly.NEXT_STATEMENT) {

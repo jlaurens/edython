@@ -296,59 +296,45 @@ eYo.FlyoutCategory = {
       name_d: 'len'
     },
     {
-      type: eYo.T3.Stmt.expression_stmt,
-      expression_s: {
-        type: eYo.T3.Expr.call_expr,
-        name_d: 'insert',
-        dotted_d: 1
-      },
+      type: eYo.T3.Stmt.call_stmt,
+      name_d: 'insert',
+      dotted_d: 1,
       title: 'list_insert'
     },
     {
-      type: eYo.T3.Stmt.expression_stmt,
-      expression_s: {
-        type: eYo.T3.Expr.call_expr,
-        name_d: 'append',
-        dotted_d: 1
-      },
+      type: eYo.T3.Stmt.call_stmt,
+      name_d: 'append',
+      dotted_d: 1,
       title: 'list_append'
     },
     {
-      type: eYo.T3.Stmt.expression_stmt,
-      expression_s: {
-        type: eYo.T3.Expr.call_expr,
-        name_d: 'remove',
-        dotted_d: 1
-      },
+      type: eYo.T3.Stmt.call_stmt,
+      name_d: 'remove',
+      dotted_d: 1,
       title: 'list_remove'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'index',
-        dotted: 1
-      },
+      name_d: 'index',
+      dotted_d: 1,
       title: 'list_index'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'count',
-        dotted: 1
-      },
+      name_d: 'count',
+      dotted_d: 1,
       title: 'list_count'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'pop',
-        dotted: 1
-      },
+      name_d: 'pop',
+      dotted_d: 1,
       slots: {
         n_ary: {
           slots: {
             O: {
-              type: eYo.T3.Expr.list_display
+              type: eYo.T3.Expr.integer,
+              placeholder: -1
             }
           }
         }
@@ -357,18 +343,14 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'reverse',
-        dotted: 1
-      },
+      name_d: 'reverse',
+      dotted_d: 1,
       title: 'list_reverse'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      data: {
-        name: 'copy',
-        dotted: 1
-      },
+      name_d: 'copy',
+      dotted_d: 1,
       title: 'list_copy'
     },
     {
@@ -411,6 +393,22 @@ eYo.FlyoutCategory = {
           O: eYo.T3.Expr.slicing
         }
       }
+    },
+    {
+      type: eYo.T3.Stmt.call_stmt,
+      name_d: 'pop',
+      dotted_d: 1,
+      slots: {
+        n_ary: {
+          slots: {
+            O: {
+              type: eYo.T3.Expr.integer,
+              placeholder: -1
+            }
+          }
+        }
+      },
+      title: 'list_pop'
     }
   ],
   text: [

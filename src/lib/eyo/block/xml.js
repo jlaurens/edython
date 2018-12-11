@@ -845,7 +845,7 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
-  eYo.Do.forEachChildElement(dom, (child) => {
+  eYo.Do.forEachElementChild(dom, (child) => {
     this.to_resit.push(child)
   }, this)
   return eYo.Events.groupWrap(
@@ -1144,7 +1144,7 @@ eYo.Xml.fromDom = function (block, element) {
         slot.load(element)
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
-        eYo.Do.forEachChildElement(element, (child) => {
+        eYo.Do.forEachElementChild(element, (child) => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input && input.connection) {
@@ -1173,7 +1173,7 @@ eYo.Xml.fromDom = function (block, element) {
       // read flow and suite
       var statement = function (c8n, key) {
         if (c8n) {
-          return eYo.Do.someChildElement(element, (child) => {
+          return eYo.Do.someElementChild(element, (child) => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               block.workspace.eyo.recover.dontResit(child)
               var target = eYo.Xml.domToBlock(child, block)

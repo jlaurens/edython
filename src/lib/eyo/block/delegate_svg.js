@@ -1016,6 +1016,7 @@ eYo.DelegateSvg.prototype.newDrawRecorder = function (recorder) {
       startOfLine: !this.outputConnection || !this.parent, // statement | orphan block
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
+        beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
         beforeIsCaret: false, // true if the position before the cursor contains a caret
         shouldSeparate: false // and other properties...
       }
@@ -1066,6 +1067,7 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
     // display shift when locking/unlocking)
     this.size.w = 1
     io.common.field.beforeIsBlack = false
+    io.common.field.beforeIsSeparator = true
     io.common.field.shouldSeparate = false
     // Do not change io.common.field.shouldSeparate ?
   }
@@ -1144,20 +1146,24 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
     if (this.outputConnection) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
+        io.common.field.beforeIsSeparator = false
         io.common.field.beforeIsBlack = false
-      } else if (io.common.shouldSeparate) {
+      } else if (io.common.field.shouldSeparate) {
         if (!io.recorder) {
-          io.common.shouldSeparate = false
+          io.common.field.shouldSeparate = false
           io.cursor.c += 1
+          io.common.field.beforeIsSeparator = true
           io.common.field.beforeIsBlack = false
         } else if (!this.locked_ && !io.common.ending.length) {
-          io.common.shouldSeparate = false
+          io.common.field.shouldSeparate = false
           io.cursor.c += 1
+          io.common.field.beforeIsSeparator = true
           io.common.field.beforeIsBlack = false
         }
       }
     } else /* statement */ {
       io.cursor.c += 1
+      io.common.field.beforeIsSeparator = true
       io.common.field.beforeIsBlack = false
     }
   }
@@ -1283,7 +1289,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         field.textElement_.appendChild(textNode)
         var head = text[0]
         if (!f_eyo.model.literal) {
-          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret &&
+          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsSeparator && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret &&
           !io.common.didPack) {
             if (this.packedQuotes && (head === "'" || head === '"')) {
               io.cursor.c -= 1
@@ -1318,7 +1324,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
             || tail === ','
             || (tail === '.'
               && !(field instanceof eYo.FieldLabel)))
-        io.common.shouldSeparate = true
+        io.common.field.shouldSeparate = true
         io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
         io.common.field.beforeIsCaret = false
         // place the field at the right position:
@@ -1347,7 +1353,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         // This is a trick to avoid some bad geometry while editing
         // this is useful for widget only.
         io.cursor.c += 1
-        io.common.shouldSeparate =
         io.common.field.shouldSeparate =
         io.common.field.beforeIsBlack = false
       }
@@ -1464,7 +1469,6 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
             if (pack) {
               eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
               eyo.minWidth = eyo.block_.width = eyo.size.x
-              console.warn('EYO WIDTH', eyo.minWidth, eyo.block_.width)
               io.common.didPack = true
             }
           })
@@ -1536,7 +1540,6 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
         }
         // a space was added as a visual separator anyway
         io.common.field.shouldSeparate = false
-        io.common.shouldSeparate = false
         // all done
         io.common.pending = undefined
         io.common.field.beforeIsBlack = false // do not step back
@@ -1593,6 +1596,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             t_eyo.render(false, io)
             if (!target.eyo.wrapped_) {
               io.common.field.shouldSeparate = false
+              io.common.field.beforeIsSeparator = true
             }
           }      
         } catch(err) {
@@ -1608,7 +1612,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             if (t_eyo.hasRightEdge || io.common.shouldPack) {
               io.common.ending.push(t_eyo)
               t_eyo.rightCaret = undefined
-              io.common.shouldSeparate = false
+              io.common.field.shouldSeparate = false
             }
             io.common.field.beforeIsCaret = false
           }
@@ -1655,7 +1659,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.common.pending = c_eyo
           }
           io.common.field.shouldSeparate = false
-          io.common.shouldSeparate = false
         } else if (c_eyo.optional_) {
           this.renderDrawPending_(io)
           io.common.pending = c_eyo
@@ -1675,8 +1678,12 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.cursor.c += wd.w
             // a space was added as a visual separator anyway
           }
-          io.common.field.shouldSeparate = false
-          io.common.shouldSeparate = false
+          if (io.common.field.shouldSeparate) {
+            io.common.field.beforeIsSeparator = true
+            io.common.field.shouldSeparate = false
+          } else {
+            io.common.field.beforeIsSeparator = false
+          }
         }
         io.common.beforeIsRightEdge = true
         io.common.startOfStatement = false
