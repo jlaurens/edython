@@ -11,7 +11,7 @@ export default {
     // put this preload for main-window to give it prompt()
     const ipcRenderer = require('electron').ipcRenderer
     if (ipcRenderer) {
-      window.prompt = function (text, defaultText) {
+      window.prompt = (text, defaultText) => {
         return ipcRenderer.sendSync('prompt', {
           text: text,
           defaultText: defaultText
