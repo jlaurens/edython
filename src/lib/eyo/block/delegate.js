@@ -119,6 +119,15 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
+  stmtAncestor: {
+    get () {
+      var eyo = this
+      do {
+        eyo = eyo.parent
+      } while (eyo && !eyo.isStmt)
+      return eyo
+    }
+  },
   // next are not relevant for expression blocks
   // this may illustrates a bad design choice.
   // To be enhanced.

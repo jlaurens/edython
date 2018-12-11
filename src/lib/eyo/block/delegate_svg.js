@@ -1163,7 +1163,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
       }
     } else /* statement */ {
       io.cursor.c += 1
-      io.common.field.beforeIsSeparator = true
+      io.common.field.beforeIsSeparator = false
       io.common.field.beforeIsBlack = false
     }
   }
