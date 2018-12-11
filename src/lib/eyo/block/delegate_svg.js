@@ -1148,20 +1148,30 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
         io.cursor.c += 1
         io.common.field.beforeIsSeparator = false
         io.common.field.beforeIsBlack = false
+      } else if (!io.recorder || io.common.field.didPack) {
+        io.cursor.c += 1
+        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+        io.common.field.shouldSeparate = false
+        io.common.field.beforeIsBlack = false
       } else if (io.common.field.shouldSeparate) {
         if (!io.recorder) {
-          io.common.field.shouldSeparate = false
           io.cursor.c += 1
-          io.common.field.beforeIsSeparator = true
+          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.shouldSeparate = false
           io.common.field.beforeIsBlack = false
         } else if (!this.locked_ && !io.common.ending.length) {
-          io.common.field.shouldSeparate = false
           io.cursor.c += 1
-          io.common.field.beforeIsSeparator = true
+          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.shouldSeparate = false
           io.common.field.beforeIsBlack = false
         }
+      } else {
+        io.cursor.c += 1
+        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+        io.common.field.shouldSeparate = false
+        io.common.field.beforeIsBlack = false
       }
-    } else /* statement */ {
+    } else {
       io.cursor.c += 1
       io.common.field.beforeIsSeparator = false
       io.common.field.beforeIsBlack = false
@@ -1288,9 +1298,14 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
         var head = text[0]
-        if (!f_eyo.model.literal) {
-          if (!io.common.field.shouldSeparate && !io.common.field.beforeIsSeparator && !io.common.field.beforeIsBlack && !io.common.startOfLine && !io.common.field.beforeIsCaret &&
-          !io.common.didPack) {
+        if (f_eyo.model.literal) {
+          io.common.field.didPack = 0
+        } else {
+          if (!io.common.field.shouldSeparate
+            && !io.common.field.beforeIsSeparator
+            && !io.common.field.beforeIsBlack
+            && !io.common.startOfLine
+            && !io.common.field.beforeIsCaret) {
             if (this.packedQuotes && (head === "'" || head === '"')) {
               io.cursor.c -= 1
             } else if (this.packedBrackets && head === "[") {
@@ -1324,7 +1339,6 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
             || tail === ','
             || (tail === '.'
               && !(field instanceof eYo.FieldLabel)))
-        io.common.field.shouldSeparate = true
         io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
         io.common.field.beforeIsCaret = false
         // place the field at the right position:
@@ -1336,10 +1350,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
           // now that I have rendered something
           io.common.startOfLine = io.common.startOfStatement = false
         }
-        io.common.didPack = 0
         if (io.cursor.c > 2) {
           if ((tail === '"' || tail === "'") && this.packedQuotes) {
-            io.common.shouldPack = this
+            io.common.shouldPack = null // this
           } else if (tail === ']' && this.packedBrackets) {
             io.common.shouldPack = this
           } else if ((tail === '}') && this.packedBraces) {
@@ -1444,7 +1457,6 @@ eYo.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
  */
 eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inStatement = false) {
   if (io) {
-    var eyo
     var isLastInExpression = isLast && !inStatement
     var isLastInStatement = isLast && inStatement
     if (io.common.ending.length) {
@@ -1452,9 +1464,7 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
       if (io.common.shouldPack && (!isLast || io.common.shouldPack.wrapped_)) {
         // first loop to see if there is a pending rightCaret
         // BTW, there can be an only one right caret
-        if (io.common.ending.some((eyo) => {
-          return !!eyo.rightCaret
-        })) {
+        if (io.common.ending.some(eyo => !!eyo.rightCaret)) {
           io.common.shouldPack = undefined
         } else {
           // there is no following right caret, we can pack
@@ -1469,7 +1479,8 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
             if (pack) {
               eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
               eyo.minWidth = eyo.block_.width = eyo.size.x
-              io.common.didPack = true
+              io.common.field.didPack = true
+              io.common.field.beforeIsBlack = true
             }
           })
         }
@@ -1678,12 +1689,8 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.cursor.c += wd.w
             // a space was added as a visual separator anyway
           }
-          if (io.common.field.shouldSeparate) {
-            io.common.field.beforeIsSeparator = true
-            io.common.field.shouldSeparate = false
-          } else {
-            io.common.field.beforeIsSeparator = false
-          }
+          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.shouldSeparate = false
         }
         io.common.beforeIsRightEdge = true
         io.common.startOfStatement = false

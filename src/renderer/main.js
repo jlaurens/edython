@@ -50,6 +50,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
+
 Vue.use(eYoPlugin)
 Vue.use(eYoI18n)
 
@@ -446,21 +447,6 @@ Object.defineProperties(eYo.$$, {
 // })
 
 export const app = eYo.$$.app
-
-/**
- * Returns undefined when the key is not registered for localization.
- */
-eYo.Do.$$t = function (key, locale, value) {
-  // NB: eYo.$$.bus is a vue that is completely created when this function executes
-  return app.$te(key, locale) && app.$t(key, locale, value)
-}
-
-/**
- * Returns undefined when the key is not registered for localization.
- */
-eYo.Do.$$tc = function (key, choice, locale, value) {
-  return app.$te(key, locale) && app.$tc(key, choice, locale, value)
-}
 
 // /**
 //  * Will be overriden by components.

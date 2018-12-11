@@ -12,7 +12,10 @@ export default {
     const ipcRenderer = require('electron').ipcRenderer
     if (ipcRenderer) {
       window.prompt = function (text, defaultText) {
-        return ipcRenderer.sendSync('prompt', {text: text, defaultText: defaultText})
+        return ipcRenderer.sendSync('prompt', {
+          text: text,
+          defaultText: defaultText
+        })
       }
     }
   }

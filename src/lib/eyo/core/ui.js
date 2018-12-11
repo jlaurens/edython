@@ -385,7 +385,7 @@ eYo.setup.register(() => {
   )
   eYo.Style.insertCssRuleAt(
     `.eyo-start-path {
-      fill: rgba(42, 44, 45, 0.06);
+      fill: rgba(240, 240, 240, 0.97);
     }`
   )
   eYo.Style.insertCssRuleAt(
