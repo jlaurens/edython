@@ -1914,7 +1914,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
       } else if (eYo.DelegateSvg.Manager.get(model)) {
         block = workspace.newBlock(model, id) // can undo
         block.eyo.setDataWithType(model)
-      } else if (goog.isString(model)) {
+      } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = (p5e) => {
           var b
@@ -1943,11 +1943,12 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
     }
     block && block.eyo.changeWrap(
       function () { // `this` is `block.eyo`
-        this.setDataWithModel(dataModel)
+      this.willLoad()
+      this.setDataWithModel(dataModel)
         var Vs = model.slots
         for (var k in Vs) {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
-            var input = block.eyo.getInput(k)
+            var input = this.getInput(k)
             if (input && input.connection) {
               var target = input.connection.targetBlock()
               var V = Vs[k]
@@ -1965,7 +1966,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         }
         Vs = model
-        block.eyo.foreachSlot((slot) => {
+        this.foreachSlot((slot) => {
           var input = slot.input
           if (!input || !input.connection) {
             return
@@ -1991,12 +1992,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         })
         // now blocks and slots have been set
-        block.eyo.foreachData((data) => {
-          data.model.didLoad && data.model.didLoad.call(data)
-        })
-        block.eyo.foreachSlot((slot) => {
-          slot.model.didLoad && slot.model.didLoad.call(slot)
-        })
+        this.didLoad()
         if (block.nextConnection) {
           var nextModel = dataModel.next
           if (nextModel) {

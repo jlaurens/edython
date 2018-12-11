@@ -327,7 +327,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       check: eYo.T3.Expr.Check.target,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.NAME
         }
       }
@@ -336,7 +336,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       order: 2,
       wrap: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.TARGET
         }
       }

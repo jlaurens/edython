@@ -55,7 +55,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
-        if (this.isRequiredFrom() && newValue !== eYo.Key.STEP) {
+        if (this.isRequiredFromSaved() && newValue !== eYo.Key.STEP) {
           this.owner.variant_p = eYo.Key.START
         }
       }
@@ -78,7 +78,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.STEP
         }
       }

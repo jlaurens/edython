@@ -70,7 +70,6 @@ Object.defineProperties(
  * Add the nodes from string to the workspace.
  * UNUSED.
  * @param {!String} str
- * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
@@ -80,7 +79,6 @@ eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
 /**
  * Add the nodes from string to the workspace.
  * @param {!String} str
- * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromString = function (str) {
@@ -118,7 +116,6 @@ eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
 /**
  * Add the nodes from UTF8 string representation to the workspace. UNUSED.
  * @param {!Array} bytes
- * @param {!eYo.Xml.Recover} recover  the recover helper.
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {

@@ -548,7 +548,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.STRIDE
         }
       }
@@ -592,7 +592,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       optional: true,
       hole_value: 'stride',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.STRIDE
         }
       }

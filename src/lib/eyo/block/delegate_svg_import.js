@@ -129,7 +129,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         eYo.T3.Expr.dotted_name
       ],
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.IMPORT) {
             this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
           }
@@ -143,7 +143,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       },
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           var v = this.owner.variant_p
           if (v !== eYo.Key.FROM_MODULE_IMPORT && v !== eYo.Key.FROM_MODULE_IMPORT_STAR)
           this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT

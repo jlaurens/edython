@@ -53,7 +53,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.FROM
         }
       }
@@ -67,7 +67,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       order: 1,
       wrap: eYo.T3.Expr.non_void_expression_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -83,7 +83,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.FROM
         }
       }

@@ -438,18 +438,20 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 
 /**
  * Called when data and slots will load.
+ * First send an eponym message to both the data and slots,
+ * then use the model's method if any.
  */
 eYo.Delegate.prototype.willLoad = function () {
-  var xml = this.model.xml
-  if (xml && goog.isFunction(xml.willLoad)) {
-    xml.willLoad.call(this, element)
-  }
   this.foreachData((data) => {
     data.willLoad()
   })
   this.foreachSlot((slot) => {
     slot.willLoad()
   })
+  var willLoad = this.model.willLoad
+  if (goog.isFunction(willLoad)) {
+    willLoad.call(this)
+  }
 }
 
 /**
@@ -462,9 +464,9 @@ eYo.Delegate.prototype.didLoad = function () {
   this.foreachSlot((slot) => {
     slot.didLoad()
   })
-  var xml = this.model.xml
-  if (xml && goog.isFunction(xml.didLoad)) {
-    xml.didLoad.call(this, element)
+  var didLoad = this.model.didLoad
+  if (goog.isFunction(didLoad)) {
+    didLoad.call(this)
   }
 }
 

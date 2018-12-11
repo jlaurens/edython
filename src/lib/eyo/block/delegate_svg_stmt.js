@@ -36,9 +36,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       synchronize: true,
       placeholderText: eYo.Msg.Placeholder.COMMENT,
       didLoad: /** @suppress {globalThis} */ function () {
-        this.whenRequiredFrom(() => {
-          this.setIncog(false)
-        }) || (this.toText().length && this.setIncog(false))
+        this.owner.comment_variant_p = this.isRequiredFromSaved() ? eYo.Key.COMMENT : eYo.Key.NONE
       }
     },
     comment_variant: { // variant are very useful with undo/redo
@@ -551,12 +549,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       willLoad: /** @suppress {globalThis} */ function () {
         this.required = false
-      },
-      didLoad: /** @suppress {globalThis} */ function () {
-        this.setIncog(true)
-        this.whenRequiredFrom(() => {
-          this.setIncog(false)
-        }) || (this.toText().length && this.setIncog(false))
       }
     },
     comment: {
@@ -567,11 +559,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       willLoad: /** @suppress {globalThis} */ function () {
         this.required = false
-      },
-      didLoad: /** @suppress {globalThis} */ function () {
-        this.setIncog(!this.whenRequiredFrom(() => {
-          this.owner.comment_variant_p = eYo.Key.COMMENT
-        }))
       },
       consolidate: /** @suppress {globalThis} */ function () {
         if (this.data.expression.isIncog()) {
@@ -589,6 +576,20 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression
+    }
+  },
+  didLoad: /** @suppress {globalThis} */ function () {
+    var requiredExpression = this.expression_s.isRequiredFromSaved() || this.expression_d.isRequiredFromSaved()
+    var requiredComment = this.comment_d.isRequiredFromSaved()
+    if (requiredComment || requiredExpression) {
+      this.variant_p = requiredExpression
+        ? eYo.Key.EXPRESSION
+        : eYo.Key.NONE   
+      this.comment_variant_p = requiredComment || !requiredExpression
+        ? eYo.Key.COMMENT
+        : eYo.Key.NONE
+    } else if (this.variant_p === eYo.Key.NONE) {
+      this.comment_variant_p === eYo.Key.COMMENT
     }
   }
 }, true)

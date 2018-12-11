@@ -653,27 +653,3 @@ eYo.BlockSvg.prototype.bringToFront = function() {
     console.error(err)
   }
 };
-
-/**
- * Returns connections originating from this block.
- * Slot connections are added.
- * @param {boolean} all If true, return all connections even hidden ones.
- *     Otherwise, for a non-rendered block return an empty list, and for a
- *     collapsed block don't return inputs connections.
- * @return {!Array.<!Blockly.Connection>} Array of connections.
- * @package
- */
-eYo.BlockSvg.prototype.getConnections_ = function(all) {
-  var myConnections = eYo.BlockSvg.superClass_.getConnections_.call(this, all)
-  if (all || this.rendered) {
-    if (all || !this.collapsed_) {
-      var slot
-      if ((slot = this.eyo.headSlot)) {
-        if (!slot.isIncog() && slot.input) {
-          myConnections.push(slot.input.connection)
-        }
-      }
-    }
-  }
-  return myConnections
-}

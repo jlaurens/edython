@@ -502,7 +502,7 @@ eYo.Do.someChild = function (element, handler, thisArg) {
  * @param {*} handler 
  * @param {*} thisArg 
  */
-eYo.Do.forEachElementChild = function (element, handler, thisArg) {
+eYo.Do.forEachChildElement = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach((child, index, item) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
@@ -517,7 +517,7 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
  * @param {*} handler 
  * @param {*} thisArg 
  */
-eYo.Do.someElementChild = function (element, handler, thisArg) {
+eYo.Do.someChildElement = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some((child, index, item) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
@@ -532,7 +532,7 @@ eYo.Do.someElementChild = function (element, handler, thisArg) {
  * @param {*} handler 
  * @param {*} thisArg 
  */
-eYo.Do.someElementChild = function (element, handler, thisArg) {
+eYo.Do.someChildElement = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some((child, index, array) => {
     if (child.nodeType === Node.ELEMENT_NODE) {

@@ -38,6 +38,7 @@ goog.require('goog.dom');
 
 // Next are used to let the compiler know that we need them
 goog.require('eYo.DelegateSvg.Functions');
+goog.require('eYo.DelegateSvg.Stdtypes');
 goog.require('eYo.DelegateSvg.Random');
 goog.require('eYo.DelegateSvg.Math');
 goog.require('eYo.DelegateSvg.CMath');
@@ -844,7 +845,7 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
-  eYo.Do.forEachElementChild(dom, (child) => {
+  eYo.Do.forEachChildElement(dom, (child) => {
     this.to_resit.push(child)
   }, this)
   return eYo.Events.groupWrap(
@@ -1115,6 +1116,7 @@ eYo.Xml.fromDom = function (block, element) {
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
   // then fill it based on the xml data
     eyo.willLoad()
+    var conclude // will run after `didLoad` is called
     var controller = eyo
     if (!eyo.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
@@ -1125,19 +1127,16 @@ eYo.Xml.fromDom = function (block, element) {
         goog.isFunction(controller.fromDom)) ||
         ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
         goog.isFunction(controller.fromDom))) {
-      try {
+      eYo.Do.tryFinally(() => {
         eyo.controller_fromDom_locked = true
-        return controller.fromDom.call(eyo, block, element)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
+        out = controller.fromDom.call(eyo, block, element)        
+      }, () => {
         delete eyo.controller_fromDom_locked
         var state = element.getAttribute(eYo.Xml.STATE)
         if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
           eyo.lock()
-        }
-      }
+        }        
+      })
     } else {
       eYo.Xml.Data.fromDom(block, element)
       // read slot
@@ -1145,7 +1144,7 @@ eYo.Xml.fromDom = function (block, element) {
         slot.load(element)
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
-        eYo.Do.forEachElementChild(element, (child) => {
+        eYo.Do.forEachChildElement(element, (child) => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input && input.connection) {
@@ -1164,22 +1163,17 @@ eYo.Xml.fromDom = function (block, element) {
             console.error('Missing connection')
           }
         })
-        eyo.didLoad()
-        eyo.incrementChangeCount() // force new type
-        eyo.consolidateType()
-        eyo.consolidateConnections()
-        eyo.consolidate()
-      } else {
-        eyo.didLoad()
-        // eyo.incrementChangeCount() // force new type
-        // eyo.consolidateType()
-        // eyo.consolidateConnections()
-        // eyo.consolidate()
+        conclude = () => {
+          eyo.incrementChangeCount() // force new type
+          eyo.consolidateType()
+          eyo.consolidateConnections()
+          eyo.consolidate()
+        }
       }
       // read flow and suite
       var statement = function (c8n, key) {
         if (c8n) {
-          return eYo.Do.someElementChild(element, (child) => {
+          return eYo.Do.someChildElement(element, (child) => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               block.workspace.eyo.recover.dontResit(child)
               var target = eYo.Xml.domToBlock(child, block)
@@ -1201,8 +1195,10 @@ eYo.Xml.fromDom = function (block, element) {
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         eyo.lock()
       }
-      return out
     }
+    eyo.didLoad()
+    conclude && conclude()
+    return out
   })
 }
 

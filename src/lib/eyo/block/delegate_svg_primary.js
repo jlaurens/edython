@@ -300,7 +300,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       }
@@ -318,7 +318,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function (element) {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.DEFINED) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
           } else {
@@ -360,7 +360,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
          }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.ANNOTATED) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
           } else {
@@ -649,7 +649,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       check: eYo.T3.Expr.identifier,
       hole_value: 'identifier',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom()) {
+        if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.ALIASED         
         }
       }
@@ -668,7 +668,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
           this.owner.variant_p = eYo.Key.ANNOTATED
         }
       }
@@ -687,7 +687,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: 'expression',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFrom() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
           this.owner.variant_p = eYo.Key.DEFINED
         }
       }

@@ -24,8 +24,6 @@ goog.require('eYo.FlyoutCategory')
 
 goog.require('eYo.Model.functions')
 
-
-
 /**
  * Add the conjugate, imag and real names
  * that are not catched in the documentation

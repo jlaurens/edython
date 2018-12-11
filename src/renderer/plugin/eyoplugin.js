@@ -40,7 +40,7 @@ eYoPlugin.install = function (Vue, options) {
       return
     }
     this.saved_step = step
-    this.$$doSynchronize(eyo)
+    this.$$doSynchronize && this.$$doSynchronize(eyo)
   }
 }
 export default eYoPlugin

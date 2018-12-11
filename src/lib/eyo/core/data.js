@@ -1011,7 +1011,7 @@ eYo.Data.prototype.isRequiredFromModel = function () {
  * Get the concrete required status.
  * For edython.
  */
-eYo.Data.prototype.isRequiredFrom = function () {
+eYo.Data.prototype.isRequiredFromSaved = function () {
   return this.isRequiredFromModel() || this.get().length
 }
 
@@ -1035,8 +1035,8 @@ eYo.Data.prototype.whenRequiredFromModel = function (helper) {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFrom = function (helper) {
-  if (this.isRequiredFrom()) {
+eYo.Data.prototype.whenRequiredFromSaved = function (helper) {
+  if (this.isRequiredFromSaved()) {
     this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {
       helper.call(this)

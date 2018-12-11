@@ -6,7 +6,7 @@
 }</prefs>
 <workspace>
 <content>
-<s eyo="start" comment="Avec des listes" x="14" y="363">
+<!--s eyo="start" comment="Avec des listes" x="14" y="363">
 <s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="suite">
 <s eyo="assignment" name="liste" flow="next">
 <x eyo="list" slot="rhs">
@@ -27,29 +27,29 @@
 </s>
 </s>
 </s>
-<s eyo="start" comment="Pour extraire d'une liste, utiliser &quot;:&quot;" x="49" y="493">
+<s eyo="start" comment="Pour extraire d'une liste, utiliser &quot;:&quot;" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <s eyo="assignment" name="liste1" flow="suite">
 <x eyo="list" slot="rhs">
 <x eyo="slicing" slot="O">
-<x eyo="identifier" name="liste" slot="primary">
+<x eyo="identifier" name="liste" slot="name">
 </x>
-<x eyo="list" slot="slice">
+<x eyo="list" slot="slicing">
 <x eyo="proper_slice" slot="O">
-<x eyo="literal" slot="lower_bound">0</x>
+<x eyo="literal" placeholder="0" slot="lower_bound">0</x>
 <x eyo="literal" slot="upper_bound">2</x>
 </x>
 </x>
 </x>
 </x>
 <s eyo="print" flow="next">
-<x eyo="list" slot="arguments">
-<x eyo="literal" slot="f">'Les éléments extraits:'</x>
-<x eyo="identifier" name="liste1" slot="r">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Les éléments extraits:'</x>
+<x eyo="identifier" name="liste1" slot="f">
 </x>
 </x>
 </s>
 </s>
-</s>
+</s-->
 <!--s eyo="start" comment="On peut ajouter des éléments à la fin" x="16" y="596">
 <s eyo="expression_stmt" flow="suite">
 <x eyo="call" name="append" ary="1" slot="expression">
@@ -66,14 +66,14 @@
 </s>
 </s>
 </s-->
-<!--s eyo="start" comment="On peut ajouter des éléments où on veut" x="57" y="699">
+<s eyo="start" comment="On peut ajouter des éléments où on veut" x="57" y="699">
 <s eyo="expression_stmt" flow="suite">
-<x eyo="call" name="insert" ary="2" slot="expression">
+<x eyo="call" name="insert" slot="rhs">
 <x eyo="identifier" name="liste1" slot="expression">
 </x>
-<x eyo="list" slot="binary">
-<x eyo="literal" slot="O">2</x>
-<x eyo="literal" slot="f">'='</x>
+<x eyo="list" slot="n_ary">
+  <x eyo="literal" slot="O">2</x>
+  <x eyo="literal" slot="f">'='</x>
 </x>
 </x>
 <s eyo="print" flow="next">
@@ -101,7 +101,7 @@
 </s>
 </s>
 </s>
-</s-->
+</s>
 <!--s eyo="start" comment="même vers l'infini et au-delà !" x="24" y="855">
 <s eyo="expression_stmt" flow="suite">
 <x eyo="call" name="insert" ary="2" slot="expression">
