@@ -6,15 +6,15 @@
       :style="style">
       <Split
         @onDrag="onDrag"
-          id="page-split">
+        id="page-split">
         <SplitArea
           :size="75"
-            id="page-split-eyo">
+          id="page-split-eyo">
           <page-workspace></page-workspace>
         </SplitArea>
         <SplitArea
           :size="25"
-            id="page-split-panels">
+          id="page-split-panels">
           <page-panels></page-panels>
         </SplitArea>
       </Split>
