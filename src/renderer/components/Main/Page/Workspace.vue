@@ -5,7 +5,7 @@
     <div id="eyo-workspace"
       ref="workspace">
       <workspace-toolbar></workspace-toolbar>
-      <workspace-content></workspace-content>
+      <workspace-content></workspace-content>  
     </div>
   </div>
 </template>
