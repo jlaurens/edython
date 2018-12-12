@@ -36,7 +36,7 @@
       },
       name: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize(this.step)
+          this.$$synchronize(this.step)
           return this.name_
         },
         set (newValue) {
@@ -45,13 +45,13 @@
       },
       variant: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize(this.step)
+          this.$$synchronize(this.step)
           return this.variant_
         }
       },
       module: {
         get () {
-          (this.step_ === this.step) || this.$$synchronize(this.step)
+          this.$$synchronize(this.step)
           return this.module_
         }
       },

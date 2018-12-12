@@ -1,25 +1,26 @@
 <template>
   <b-btn-group>
+    <div
+      v-if="eyo.lhs_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-input
-      v-if="!eyo.lhs_t"
+      v-else
       v-model="lhs"
       type="text"
       :class="$$class(lhs)"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.number')"></b-input>
-    <div
-      v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      :placeholder="$$t(isNum ? 'block.placeholder.number' : 'block.placeholder.element')"></b-input>
     <b-dd
-      id="block-binary-operator"
-      class="eyo-code item text mw-4rem"
+      id="block-compare-operator"
+      class="eyo-code eyo-code-reserved item text mw-8rem"
       variant="outline-secondary"
       :text="operator">
       <b-dd-item-button
         v-for="item in operatorsA"
         v-on:click="operator = item"
         :key="item"
-        class="block-binary-operator eyo-code"
+        class="block-compare-operator eyo-code"
         >{{item}}</b-dd-item-button> 
       </b-dd-item-button>
       <b-dd-divider></b-dd-divider>
@@ -27,25 +28,26 @@
         v-for="item in operatorsB"
         v-on:click="operator = item"
         :key="item"
-        class="block-binary-operator eyo-code"
+        class="block-compare-operator eyo-code"
         >{{item}}</b-dd-item-button>          
     </b-dd>
+    <div
+      v-if="eyo.rhs_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-input
-      v-if="!eyo.rhs_t"
+      v-else
       v-model="rhs"
       type="text"
       :class="$$class(rhs)"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.number')"></b-input>
-    <div
-      v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      :placeholder="$$t(isNum ? 'block.placeholder.number' : 'block.placeholder.container')"></b-input>
   </b-btn-group>
 </template>
 
 <script>
   export default {
-    name: 'info-binary-operator',
+    name: 'info-compare-operator',
     data: function () {
       return {
         saved_step: undefined,
@@ -53,8 +55,8 @@
         rhs_: undefined,
         operator_: '?',
         operators: {
-          num: ['+', '-', '*', '/', '//', '%', '**', '@'],
-          bin: ['<<', '>>', '&', '^', '|']
+          num: ['<', '>', '==', '>=', '<=', '!='],
+          obj: ['is', 'is not', 'in', 'not in']
         }
       }
     },
@@ -103,14 +105,17 @@
         }
       },
       operatorsA () {
-        return this.operators.bin.indexOf(this.operator) >= 0
-          ? this.operators.bin
-          : this.operators.num
+        return this.isNum
+          ? this.operators.num
+          : this.operators.obj
       },
       operatorsB () {
-        return this.operators.bin.indexOf(this.operator) >= 0
-          ? this.operators.num
-          : this.operators.bin
+        return this.isNum
+          ? this.operators.obj
+          : this.operators.num
+      },
+      isNum () {
+        return this.operators.num.indexOf(this.operator) >= 0
       }
     },
     methods: {
@@ -126,7 +131,7 @@
   }
 </script>
 <style>
-  .info-binary-operator {
+  .info-compare-operator {
     padding-right: 0.75rem;
   }
 </style>

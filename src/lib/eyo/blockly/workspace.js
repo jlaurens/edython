@@ -296,36 +296,33 @@ eYo.Workspace.prototype.undo = function(redo) {
     events = Blockly.Events.filter(events, redo)
     if (events.length) {
       // Push these popped events on the opposite stack.
-      for (var i = 0, event; event = events[i]; i++) {
+      events.forEach((event) => {
         outputStack.push(event)
-      }
+      })
       Blockly.Events.recordUndo = false
-      try {
-        var Bs = []
+      var Bs = []
+      eYo.Do.tryFinally(() => { // try
         if (this.rendered) {
-          for (var i = 0, event; event = events[i]; i++) {
+          events.forEach((event) => {
             var B = this.getBlockById(event.blockId)
             if (B) {
               B.eyo.changeBegin()
               Bs.push(B)
             }
-          }  
+          })
         }
-        for (var i = 0, event; event = events[i]; i++) {
+        events.forEach((event) => {
           event.run(redo)
           this.eyo.updateChangeCount(event, redo)
-        }
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
+        })
+      }, () => { // finally
         Blockly.Events.recordUndo = true
-        for (var i = 0; B = Bs[i]; i++) {
+        Bs.forEach((B) => {
           B.eyo.changeEnd()
-        }
+        })
         eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
-      }
-      return  
+      })
+      return
     }
   }
 }

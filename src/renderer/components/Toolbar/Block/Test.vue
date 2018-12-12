@@ -1,61 +1,53 @@
 <template>
   <b-btn-group>
+    <div
+      v-if="eyo.lhs_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-input
-      v-if="!eyo.lhs_t"
+      v-else
       v-model="lhs"
       type="text"
       :class="$$class(lhs)"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.number')"></b-input>
-    <div
-      v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      :placeholder="$$t('block.placeholder.condition')"></b-input>
     <b-dd
-      id="block-binary-operator"
-      class="eyo-code item text mw-4rem"
+      id="block-test-operator"
+      class="eyo-code eyo-code-reserved item text mw-4rem"
       variant="outline-secondary"
       :text="operator">
       <b-dd-item-button
-        v-for="item in operatorsA"
+        v-for="item in operators"
         v-on:click="operator = item"
         :key="item"
-        class="block-binary-operator eyo-code"
+        class="block-compare-operator eyo-code"
         >{{item}}</b-dd-item-button> 
-      </b-dd-item-button>
-      <b-dd-divider></b-dd-divider>
-      <b-dd-item-button
-        v-for="item in operatorsB"
-        v-on:click="operator = item"
-        :key="item"
-        class="block-binary-operator eyo-code"
-        >{{item}}</b-dd-item-button>          
+      </b-dd-item-button>         
     </b-dd>
+    <div
+      v-if="eyo.rhs_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-input
-      v-if="!eyo.rhs_t"
+      v-else
       v-model="rhs"
       type="text"
       :class="$$class(rhs)"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.number')"></b-input>
-    <div
-      v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      :placeholder="$$t('block.placeholder.condition')"></b-input>
   </b-btn-group>
 </template>
 
 <script>
   export default {
-    name: 'info-binary-operator',
+    name: 'info-compare-operator',
     data: function () {
       return {
         saved_step: undefined,
         lhs_: undefined,
         rhs_: undefined,
         operator_: '?',
-        operators: {
-          num: ['+', '-', '*', '/', '//', '%', '**', '@'],
-          bin: ['<<', '>>', '&', '^', '|']
-        }
+        operators: ['or', 'and']
       }
     },
     props: {
@@ -101,16 +93,6 @@
         set (newValue) {
           this.eyo.operator_p = newValue
         }
-      },
-      operatorsA () {
-        return this.operators.bin.indexOf(this.operator) >= 0
-          ? this.operators.bin
-          : this.operators.num
-      },
-      operatorsB () {
-        return this.operators.bin.indexOf(this.operator) >= 0
-          ? this.operators.num
-          : this.operators.bin
       }
     },
     methods: {
@@ -126,7 +108,7 @@
   }
 </script>
 <style>
-  .info-binary-operator {
+  .block-test-operator {
     padding-right: 0.75rem;
   }
 </style>

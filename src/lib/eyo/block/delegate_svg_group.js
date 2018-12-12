@@ -222,6 +222,10 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
           this.set(eYo.Key.ELIF)
         } else if (type === eYo.T3.Stmt.else_part) {
           this.set(eYo.Key.ELSE)
+        } else if (type === eYo.T3.Stmt.try_else_part) {
+          this.set(eYo.Key.ELSE)
+        } else if (type === eYo.T3.Stmt.last_else_part) {
+          this.set(eYo.Key.ELSE)
         } else {
           this.set(eYo.Key.IF)
         }
@@ -232,7 +236,12 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
         load: /** @suppress {globalThis} */ function (element) {
           this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
         },
-      }
+      },
+      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) { // same code for primary blocks
+        this.owner.consolidateType()
+        this.owner.consolidateConnections()
+        this.isChanging(oldValue, newValue)
+      },
     },
     if: {
       init: '',
@@ -284,6 +293,10 @@ eYo.DelegateSvg.Stmt.if_part.prototype.xmlAttr = function () {
  * getBaseType.
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
+ * When the type changes, the connections may change,
+ * and when the connection changes, the type changes.
+ * Each type change may imply a disconnection.
+ * At least, the type may change to a value when no connection is connected.
  */
 eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
   var T3 = eYo.T3.Stmt
@@ -294,27 +307,29 @@ eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
   } [this.variant_p]
   if (!type) {
     var block = this.block_
-    type = T3.else_part
     var targetC8n
     if ((targetC8n = block.previousConnection.targetConnection)) {
+      // look at the previous connection
+      // 
       var target = targetC8n.getSourceBlock()
-      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.eyo.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.eyo.type) < 0)) {
         type = T3.last_else_part
       }
-    } else if ((targetC8n = this.nextConnection.targetConnection)) {
+    }
+    if (!type && (targetC8n = this.nextConnection.targetConnection)) {
       // the previous connection did not add any constrain
       // may be the next connection will?
       target = targetC8n.getSourceBlock()
-      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
+      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.eyo.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
+      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.eyo.type) < 0)) {
         type = T3.last_else_part
       }
     }
   }
-  this.setupType(type) // bad smell, the code has changed
+  this.setupType(type || T3.else_part) // bad smell, the code has changed
   return this.block_.type // avoid `this.type`
 }
 

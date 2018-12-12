@@ -94,6 +94,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return this.getBaseType()
     }
   },
+  subtype: {
+    get () {
+      return this.getSubtype()
+    }
+  },
   model: {
     get () {
       return this.constructor.eyo.model
@@ -1616,9 +1621,9 @@ eYo.Delegate.prototype.consolidateType = function (type) {
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrapped_()
   var b = this.block_
-  var t = this.getType()
-  var st = this.getSubtype()
-  var f = function (c8n) {
+  var t = this.type
+  var st = this.subtype
+  var f = c8n => {
     c8n && c8n.eyo.updateCheck(t, st)
   }
   this.foreachSlot((slot) => {

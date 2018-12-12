@@ -24,7 +24,10 @@ export default {
     module: 'module',
     number: '1',
     expression: 'expression',
-    alias: 'alias'
+    alias: 'alias',
+    element: 'element',
+    container: 'conteneur',
+    condition: 'condition'
   },
   tooltip: {
     one_line_of_text: 'Saisir du texte (une ligne)',

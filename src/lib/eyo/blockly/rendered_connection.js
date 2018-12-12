@@ -631,7 +631,7 @@ eYo.Connection.prototype.eyo = undefined
 /**
  * Add highlighting around this connection.
  */
-Blockly.RenderedConnection.prototype.highlight = (function () {
+Blockly.RenderedConnection.prototype.highlight = (() => {
   var highlight = Blockly.RenderedConnection.prototype.highlight
   return function () {
     if (this.eyo) {
@@ -706,6 +706,27 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
   var yorn = eYo.Connection.superClass_.isConnectionAllowed.call(this,
     candidate)
   return yorn
+}
+
+/**
+ * Change a connection's compatibility.
+ * Edython: always use `onCheckChanged_`
+ * @param {*} check Compatible value type or list of value types.
+ *     Null if all types are compatible.
+ * @return {!Blockly.Connection} The connection being modified
+ *     (to allow chaining).
+ */
+eYo.Connection.prototype.setCheck = function(check) {
+  var old = this.check_
+  if (check === eYo.T3.Stmt.Previous.try_else_part) {
+    console.error('ERROR!!!!')
+  }
+  eYo.Connection.superClass_.setCheck.call(this, check)
+  if (!check) {
+    // This was not called on original Blockly
+    this.onCheckChanged_()
+  }
+  return this
 }
 
 /**
@@ -849,13 +870,13 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
     child.eyo.changeWrap( // the child will cascade changes to the parent
       () => {
         parentC8n.eyo.willConnect(childC8n)
-        try {
+        eYo.Do.tryFinally(() => {
           childC8n.eyo.willConnect(parentC8n)
-          try {
+          eYo.Do.tryFinally(() => {
             parent.eyo.willConnect(parentC8n, childC8n)
-            try {
+            eYo.Do.tryFinally(() => {
               child.eyo.willConnect(childC8n, parentC8n)
-              try {
+              eYo.Do.tryFinally(() => {
                 child.initSvg() // too much
                 connect_.call(parentC8n, childC8n)
                 if (parentC8n.eyo.plugged_) {
@@ -914,10 +935,7 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
                   eYo.SelectedConnection = null
                 }
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
-              } catch (err) {
-                console.error(err)
-                throw err
-              } finally {
+              }, () => { // finally
                 parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
                 childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
                 if (parentC8n.eyo.startOfStatement) {
@@ -926,31 +944,22 @@ Blockly.RenderedConnection.prototype.connect_ = (function () {
                 eYo.Connection.connectedParentC8n = parentC8n
                 // next must absolutely run because of possible undo management
                 child.eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)
-              }
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
+              })
+            }, () => { // finally
               // next must absolutely run because of possible undo management
               parent.eyo.didConnect(parentC8n, oldChildC8n, oldParentC8n)
-            }
-          } catch (err) {
-            console.error(err)
-            throw err
-          } finally {
+            })
+          }, () => { // finally
             // next must absolutely run because of possible undo management
             parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
-          }
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
+          })
+        }, () => { // finally
           childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
           eYo.Connection.connectedParentC8n = undefined
           if (parent.eyo.isReady) {
             child.eyo.beReady()
           }
-        }
+        })
       }
     )
   }
@@ -981,15 +990,15 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
       () => { // `this` is catched
         parent.eyo.wrapper.changeWrap( // the parent may be a wrapped block
           () => { // `this` is catched
-            try {
+            eYo.Do.tryFinally(() => {
               parentC8n.eyo.willDisconnect()
-              try {
+              eYo.Do.tryFinally(() => {
                 childC8n.eyo.willDisconnect()
-                try {
+                eYo.Do.tryFinally(() => {
                   parent.eyo.willDisconnect(parentC8n)
-                  try {
+                  eYo.Do.tryFinally(() => {
                     child.eyo.willDisconnect(childC8n)
-                    try {
+                    eYo.Do.tryFinally(() => {
                       // the work starts here
                       if (parentC8n.eyo.wrapped_) {
                         // currently unwrapping a block,
@@ -1005,10 +1014,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       if (child.eyo.plugged_) {
                         child.eyo.plugged_ = undefined
                       }
-                    } catch (err) {
-                      console.error(err)
-                      throw err
-                    } finally {
+                    }, () => { // finally
                       eYo.Connection.disconnectedParentC8n = parentC8n
                       eYo.Connection.disconnectedChildC8n = childC8n
                       eYo.Connection.disconnectedParentC8n = undefined
@@ -1016,31 +1022,19 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       parent.eyo.incrementInputChangeCount && parent.eyo.incrementInputChangeCount() // list are special
                       parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
                       childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true)
-                     }
-                  } catch (err) {
-                    console.error(err)
-                    throw err
-                  } finally {
+                    })
+                  }, () => { // finally
                     child.eyo.didDisconnect(childC8n, parentC8n)
-                  }
-                } catch (err) {
-                  console.error(err)
-                  throw err
-                } finally {
+                  })
+                }, () => { // finally
                   parent.eyo.didDisconnect(parentC8n, childC8n)
-                }
-              } catch (err) {
-                console.error(err)
-                throw err
-              } finally {
+                })
+              }, () => { // finally
                 childC8n.eyo.didDisconnect(parentC8n)
-              }
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
+              })
+            }, () => { // finally
               parentC8n.eyo.didDisconnect(childC8n)
-            }
+            })
           }
         )
       }
