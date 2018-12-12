@@ -245,7 +245,7 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
     },
     if: {
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.Msg.Placeholder.CONDITION,
       validate: false, // use the python interpreter to validate this
       synchronize: true,
     }

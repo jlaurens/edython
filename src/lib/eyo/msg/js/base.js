@@ -77,6 +77,8 @@ goog.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.EXPRESSION = 'expression'
 
+/** @export */ eYo.Msg.Placeholder.CONDITION = 'condition'
+
 /** @export */ eYo.Msg.Placeholder.TERM = 'nom'
 
 /** @export */ eYo.Msg.Placeholder.ARGUMENT = 'argument'

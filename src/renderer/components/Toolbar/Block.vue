@@ -66,7 +66,28 @@
         :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"
-        ></block-binary>
+      ></block-binary>
+      <block-comparison
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.comparison,
+          $$.eYo.T3.Expr.number_comparison,
+          $$.eYo.T3.Expr.object_comparison
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        :modifiable="modifiable"
+        ></block-comparison>
+      <block-test
+        v-else-if="isSelected([
+          $$.eYo.T3.Expr.or_test,
+          $$.eYo.T3.Expr.and_test
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        :modifiable="modifiable"
+        ></block-test>
       <block-assignment
         v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)"
         :eyo="eyo"
@@ -181,6 +202,19 @@
         :step="step"
         :slotholder="slotholder"
         ></block-yield>
+      <block-branch
+        v-else-if="isSelected([
+          $$.eYo.T3.Stmt.if_part,
+          $$.eYo.T3.Stmt.elif_part,
+          $$.eYo.T3.Stmt.else_part,
+          $$.eYo.T3.Stmt.last_else_part,
+          $$.eYo.T3.Stmt.try_else_part,
+          $$.eYo.T3.Stmt.while_part
+        ])"
+        :eyo="eyo"
+        :step="step"
+        :slotholder="slotholder"
+        ></block-branch>
       <block-default
         v-else-if="eyo"
         :eyo="eyo"
@@ -210,6 +244,8 @@
   import BlockNumber from './Block/Number.vue'
   import BlockUnary from './Block/Unary.vue'
   import BlockBinary from './Block/Binary.vue'
+  import BlockComparison from './Block/Comparison.vue'
+  import BlockTest from './Block/Test.vue'
   import BlockAnyExpression from './Block/AnyExpression.vue'
   import BlockExpressionStatement from './Block/ExpressionStatement.vue'
   import BlockAssignment from './Block/Assignment.vue'
@@ -228,6 +264,7 @@
   import BlockRaise from './Block/Raise.vue'
   import BlockYield from './Block/Yield.vue'
   import BlockRange from './Block/Range.vue'
+  import BlockBranch from './Block/Branch.vue'
 
   export default {
     name: 'toolbar-block',
@@ -247,6 +284,8 @@
       BlockNumber,
       BlockUnary,
       BlockBinary,
+      BlockComparison,
+      BlockTest,
       BlockAnyExpression,
       BlockExpressionStatement,
       BlockAssignment,
@@ -264,7 +303,8 @@
       BlockAssert,
       BlockRaise,
       BlockYield,
-      BlockRange
+      BlockRange,
+      BlockBranch
     },
     mounted () {
       this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
