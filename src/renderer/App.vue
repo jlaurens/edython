@@ -1,5 +1,8 @@
 <template>
-  <b-container id="app" fluid>
+  <b-container
+    id="app"
+    fluid
+    class="app">
     <router-view></router-view>
   </b-container>
 </template>
@@ -29,7 +32,7 @@ export default {
     height: 100vh;
     min-width: 300px!important;
   }
-  #app .container {
+  .app .container {
     background-color:rgba(221, 221, 221, 0.8);
     max-width: 100%; /* override B */
   }
