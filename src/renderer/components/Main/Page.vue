@@ -226,10 +226,11 @@
       f(this.$refs.component_hh)
       f(this.$refs.component_v)
       f(this.$refs.component_vv)
-      f(this.$refs.pane_workspace)
       // We must keep them in the dom because we really need the elements
+      this.$refs.pane_workspace.$el.style.display = 'none'
       this.$refs.pane_console.$el.style.display = 'none'
       this.$refs.pane_turtle.$el.style.display = 'none'
+      console.error('setWhat_f', 'workspace')
       this.setWhat_f('workspace')
     },
     watch: {
@@ -297,6 +298,7 @@
         }
       },
       what_f (newValue, oldValue) {
+        console.error('what_f', newValue, oldValue)
         if (newValue !== oldValue) {
           var component = this.$refs[`pane_${newValue}`]
           if (component) {

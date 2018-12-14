@@ -28,6 +28,10 @@ const state = {
   height_vv2: 50
 }
 
+wheres.forEach(k => {
+  state[`what_${k}`] = undefined
+})
+
 whats.forEach(k => {
   state[`where_${k}`] = undefined
 })
@@ -43,14 +47,6 @@ wheres.forEach(k => {
   mutations[`setWhat_${k}`] = (() => {
     return (state, payload) => {
       state[`what_${k}`] = payload
-    }
-  })()
-})
-
-whats.forEach(k => {
-  mutations[`setWhere_${k}`] = (() => {
-    return (state, payload) => {
-      state[`where_${k}`] = payload
     }
   })()
 })
