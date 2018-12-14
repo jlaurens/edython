@@ -6,7 +6,7 @@
 }</prefs><workspace>
 <content>
 <s eyo="start" x="300" y="280" comment="Calculer 1+2+3+...">
-<s eyo="stmt" comment="1) Demander un nombre à l'utilisateur" flow="next">
+<s eyo="stmt" comment="1) Demander un nombre à l'utilisateur" flow="suite">
 <s eyo="assignment" name="réponse" flow="next">
 <x eyo="list" slot="rhs">
 <x eyo="call" name="input" slot="O">

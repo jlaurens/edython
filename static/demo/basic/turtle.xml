@@ -8,10 +8,10 @@
 <workspace>
 <content>
 <s eyo="start" comment="Cliquez sur &quot;marche&quot; et soyez patient (20'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
-<s eyo="import" variant="from_module_import_star" from="turtle" star="true" flow="next">
+<s eyo="import" from="turtle" star="true" flow="suite">
 <s eyo="turtle__setup_stmt" flow="next">
-<s eyo="call" name="pensize" ary="1" flow="next">
-<x eyo="list" slot="arguments">
+<s eyo="call" name="pensize" flow="next">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">1</x>
 </x>
 <s eyo="for" flow="next">
@@ -20,7 +20,7 @@
 </x>
 </x>
 <x eyo="list" slot="in">
-<x eyo="square_bracket" slot="O">
+<x eyo="[]" slot="O">
 <x eyo="literal" slot="O">'red'</x>
 <x eyo="literal" slot="f">'#00ff00'</x>
 <x eyo="literal" slot="o">'#fa0'</x>
@@ -28,22 +28,22 @@
 </x>
 </x>
 <s eyo="call" name="pencolor" flow="suite">
-<x eyo="list" slot="arguments">
+<x eyo="list" slot="n_ary">
 <x eyo="identifier" name="c" slot="O">
 </x>
 </x>
 <s eyo="call" name="forward" ary="1" flow="next">
-<x eyo="list" slot="arguments">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">30</x>
 </x>
 <s eyo="call" name="left" ary="1" flow="next">
-<x eyo="list" slot="arguments">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">90</x>
 </x>
 </s>
 </s>
 </s>
-<s eyo="call" name="done" ary="NaN" flow="next">
+<s eyo="call" name="done" flow="next">
 </s>
 </s>
 </s>
