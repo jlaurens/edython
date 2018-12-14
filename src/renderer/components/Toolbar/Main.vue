@@ -20,7 +20,7 @@
       <copy-python />
     </b-btn-group>
     <copy-paste />
-    <layout />    
+    <block-layout />    
     <b-btn-group>
       <main-undo-redo :redo="false" />
       <main-undo-redo :redo="true" />
@@ -35,7 +35,7 @@
   import MainDemo from './Main/Demo.vue'
   import RunPython from './Main/RunPython.vue'
   import CopyPaste from './Main/CopyPaste.vue'
-  import Layout from './Main/Layout.vue'
+  import BlockLayout from './Main/BlockLayout.vue'
   import CopyPython from './Main/CopyPython.vue'
   import MainStorage from './Main/Storage.vue'
   import MainMode from './Main/Mode.vue'
@@ -64,7 +64,7 @@
       MainDemo,
       RunPython,
       CopyPaste,
-      Layout,
+      BlockLayout,
       CopyPython,
       MainStorage,
       MainMode
@@ -101,8 +101,15 @@
     vertical-align: middle;
     padding: 0.25rem 0.5rem;
   }
+
   #main-toolbar .btn-group {
     margin: 0 0.25rem;
+  }
+  #main-toolbar .btn-group:first-child {
+    margin-left: 0;
+  }
+  #main-toolbar .btn-group:last-child {
+    margin-right: 0;
   }
   #main-toolbar .btn-group .btn-group {
     margin: 0;
