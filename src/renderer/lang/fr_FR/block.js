@@ -84,5 +84,11 @@ export default {
       expression: 'Un ou plusieurs objets exception',
       alias: 'Un nom de variable'
     }
+  },
+  pane: {
+    Workspace: 'Établi',
+    Console: 'Console',
+    Turtle: 'Tortue',
+    Workbench: 'Établi'
   }
 }
