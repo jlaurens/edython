@@ -477,7 +477,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // returns a `Number` or `Infinity`
         var validated
         var item = this.owner.item_p
-        if (!item) {
+        if (item) {
+          validated = newValue
+        } else {
           if (goog.isString(newValue)) {
             if (newValue.length) {
               validated = Math.max(0, Math.floor(Number(newValue)))
@@ -518,7 +520,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // returns a `Number` or `Infinity`
         var validated
         var item = this.owner.item_p
-        if (!item) {
+        if (item) {
+          validated = newValue
+        } else {
           if (goog.isString(newValue)) {
             if (newValue.length) {
               validated = Math.max(0, Math.floor(Number(newValue)))

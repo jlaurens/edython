@@ -124,6 +124,7 @@ eYo.Consolidator.List.prototype.init = function (d) {
   this.model.ary || (this.model.ary = Infinity)
 }
 
+
 /**
  * Get the ary.
  * Asks the list
@@ -136,7 +137,9 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
       return d.get()
     }
   }
-  return this.model.ary || (this.model.ary = Infinity)
+  return goog.isDef(this.model.ary)
+    ? this.model.ary
+    : this.model.ary = Infinity
 }
 
 /**
@@ -153,7 +156,7 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
   }
   return goog.isDef(this.model.mandatory)
     ? this.model.mandatory
-    : this.model.mandatory = Infinity
+    : this.model.mandatory = 0
 }
 
 /**

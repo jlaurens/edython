@@ -157,7 +157,9 @@ Object.defineProperties(eYo.Model.Item.prototype, {
   },
   aryMax: {
     get () {
-      var ary = this.ary || Infinity
+      var ary = goog.isDef(this.ary)
+        ? this.ary
+        : Infinity
       this.signatures && this.signatures.forEach((signature) => {
         if (ary < signature.ary) {
           ary = signature.ary
@@ -168,7 +170,6 @@ Object.defineProperties(eYo.Model.Item.prototype, {
   },
   mandatoryMin: {
     get () {
-      var ary = this.ary || Infinity
       var mandatory = goog.isDef(this.mandatory)
         ? this.mandatory
         : this.ary || 0

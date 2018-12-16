@@ -16,29 +16,6 @@ goog.provide('eYo.DelegateSvg.Argument')
 goog.require('eYo.DelegateSvg.List')
 
 /**
- * Class for a DelegateSvg, keyword_item block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-// eYo.DelegateSvg.Expr.makeSubclass('keyword_item', {
-//   slots: {
-//     identifier: {
-//       order: 1,
-//       check: eYo.T3.Expr.identifier,
-//       hole_value: 'key'
-//     },
-//     expression: {
-//       order: 3,
-//       fields: {
-//         label: '='
-//       },
-//       check: eYo.T3.Expr.Check.expression,
-//       hole_value: 'value'
-//     }
-//   }
-// })
-
-/**
  * List consolidator for argument list.
  * Rules are a bit stronger than python requires originally
  * 1) If there is a comprehension, it must be alone.
@@ -234,12 +211,11 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         return {validated: goog.isNumber(newValue) ? newValue : Infinity}
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
         this.owner.changeWrap(
           function () {
             this.createConsolidator(true)
-            this.consolidator.model.ary = newValue
           }
         )
       }
@@ -254,8 +230,6 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
         this.owner.changeWrap(
           function () {
             this.createConsolidator(true)
-            this.consolidator.model.mandatory = newValue
-            this.consolidator.model.empty = !newValue    
           }
         )
       }

@@ -53,20 +53,8 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
   if (!block.type) {
     console.error('unexpected void type')
   }
-  var DD = eYo.DelegateSvg.Manager.getModel(block.type).list
-  goog.asserts.assert(DD, 'inputModel__.list is missing in ' + block.type)
-  var D = {}
-  goog.mixin(D, DD)
-  if (block.parentBlock_) {
-    var parent = block.parentBlock_.eyo
-    var item = parent.item_p
-    if (item) {
-      D.ary = item.aryMax
-      D.mandatory = item.mandatoryMin
-    }
-    this.ary_p = D.ary
-    this.mandatory_p = D.mandatory
-  }
+  var D = eYo.DelegateSvg.Manager.getModel(block.type).list
+  goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
     if (this.consolidator.constructor !== C10r) {
