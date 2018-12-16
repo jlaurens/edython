@@ -664,4 +664,7 @@
     color:rgba(26, 29, 21, 0.5);
     font-style: italic;
   }
+  .b3k-edit dropdown-item {
+    padding: 0 0.25rem;
+  }
 </style>

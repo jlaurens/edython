@@ -9,84 +9,76 @@
     </div>
     <Split
       @onDrag="onDrag"
-      ref="component_h"><!-- top row -->
+      ref="pane_h"><!-- top row -->
       <SplitArea
         :size="width_h1"
         ref="h1">
         <div
           class="container"
-          ref="container_h1">
-        </div>
+          ref="container_h1"></div>
       </SplitArea>
       <SplitArea
         :size="width_h2"
         ref="h2">
         <div
           class="container"
-          ref="container_h2">
-        </div>
+          ref="container_h2"></div>
       </SplitArea>
     </Split>
     <Split
       @onDrag="onDrag"
-      ref="component_hh"><!-- bottom row -->
+      ref="pane_hh"><!-- bottom row -->
       <SplitArea
         :size="width_hh1"
         ref="hh1">
         <div
           class="container"
-          ref="container_hh1">
-        </div>
+          ref="container_hh1"></div>
       </SplitArea>
       <SplitArea
         :size="width_hh2"
         ref="hh2">
         <div
           class="container"
-          ref="container_hh2">
-        </div>
+          ref="container_hh2"></div>
       </SplitArea>
     </Split>
     <Split
       @onDrag="onDrag"
-      ref="component_v"
+      ref="pane_v"
       direction="vertical"><!-- left column -->
       <SplitArea
         :size="height_v1"
         ref="v1">
         <div
           class="container"
-          ref="container_v1">
-        </div>
+          ref="container_v1"></div>
       </SplitArea>
       <SplitArea
         :size="height_v2"
         ref="v2">
         <div
           class="container"
-          ref="container_v2">
-        </div>
+          ref="container_v2"></div>
       </SplitArea>
     </Split>
     <Split
       @onDrag="onDrag"
-      ref="component_vv"
+      ref="pane_vv"
       direction="vertical"><!-- right column -->
       <SplitArea
         :size="height_vv1"
         ref="vv1">
         <div
           class="container"
-          ref="container_vv1">
-        </div>
+          ref="container_vv1"></div>
       </SplitArea>
       <SplitArea
         :size="height_vv2"
         ref="vv2">
         <div
           class="container"
-          ref="container_vv2">
-        </div>
+          ref="container_vv2"></div>
       </SplitArea>
     </Split>
     <div
@@ -122,6 +114,8 @@
 </template>
 
 <script>
+  import {layoutcfg} from '@@/../store/modules/Layout'
+  
   import {mapState, mapMutations} from 'vuex'
 
   import BlockToolbar from '@@/Toolbar/Block'
@@ -157,54 +151,104 @@
         'toolbarBlockVisible'
       ]),
       ...mapState('Layout', [
-        'paneLayout',
-        'where_console',
-        'where_turtle',
-        'where_workspace',
-        'what_f',
-        'what_h1',
-        'what_h2',
-        'what_hh1',
-        'what_hh2',
-        'what_v1',
-        'what_v2',
-        'what_vv1',
-        'what_vv2',
-        'width_h1',
-        'width_h2',
-        'width_hh1',
-        'width_hh2',
-        'height_v1',
-        'height_v2',
-        'height_vv1',
-        'height_vv2'
-      ])
+        'paneLayout'
+      ]),
+      ...mapState('Layout', layoutcfg.where_whats),
+      ...mapState('Layout', layoutcfg.what_wheres),
+      ...mapState('Layout', layoutcfg.width_wheres),
+      ...mapState('Layout', layoutcfg.height_wheres)
     },
     methods: {
       onDrag (size) {
         eYo.$$.bus.$emit('size-did-change')
       },
       ...mapMutations('Layout', [
-        'setPaneLayout',
-        'setWhat_f',
-        'setWhat_h1',
-        'setWhat_h2',
-        'setWhat_hh1',
-        'setWhat_hh2',
-        'setWhat_v1',
-        'setWhat_v2',
-        'setWhat_vv1',
-        'setWhat_vv2'
+        'setPaneLayout'
       ]),
+      ...mapMutations('Layout', layoutcfg.setWhere_whats),
+      ...mapMutations('Layout', layoutcfg.setWhat_wheres),
+      where (what) {
+        return this[`where_${what}`]
+      },
+      what (where) {
+        return this[`what_${where}`]
+      },
+      setWhere (what, where) {
+        this[`setWhere_${what}`](where)
+      },
+      setWhat (where, what) {
+        this[`setWhat_${where}`](what)
+      },
+      container (where) {
+        return this.$refs[`container_${where}`]
+      },
+      pane (what) { // pane is one of 'console', 'workspace', 'turtle', 'h', 'v', 'hh', 'vv'
+        return this.$refs[`pane_${what}`]
+      },
       changeLayout (opt) {
-        var k = `setWhat_${opt.where}`
-        var f = this[k]
-        console.error('changeLayout', opt, k, f)
-        if (goog.isFunction(f)) {
-          f(opt.what)
+        if (opt.how === 'F' && opt.what) {
+          this.place(opt.what, 'f')
         }
         if (opt.how) {
           this.setPaneLayout(opt.how)
+        }
+        if (opt.where) {
+          this.place(opt.what, opt.where)
+        }
+      },
+      place (what, where) {
+        // we move the `what` component to the `where` location
+        console.error('bind', where, what)
+        // start by unbinding before binding
+        if (what) {
+          var old_where = this.where(what)
+          // unbind `what` from its previous location
+          if (old_where) {
+            // `what` was somewhere else, we will move it
+            var cont_old_where = this.container(old_where)
+            if (cont_old_where) {
+              var el = cont_old_where
+              while (el.firstChild) {
+                el.removeChild(el.firstChild)
+              }
+              this.setWhat(old_where, null)
+              this.setWhere(what, null)
+            }
+          }
+        }
+        // idem for the other side
+        if (where) {
+          var old_what = this.what(where)
+          if (old_what) {
+            // there was something where we plan to move `what`
+            var comp_old_what = this.pane(old_what)
+            if (comp_old_what) {
+              el = comp_old_what.$el
+              var parent = el.parentNode
+              parent && parent.removeChild(el)
+            }
+            this.setWhere(old_what, null)
+            this.setWhat(where, null)
+          }
+        }
+        // Time to establish a new link
+        if (what) {
+          var pane_what = this.pane(what)
+          if (pane_what) {
+            var cont_where = this.container(where)
+            if (cont_where) {
+              el = pane_what.$el
+              cont_where.appendChild(el)
+              el.style.display = ''
+              this.setWhere(what, where)
+              this.setWhat(where, what)
+              eYo.$$.bus.$emit('size-did-change')
+            } else {
+              console.error('UNKNON location:', where)
+            }
+          } else {
+            console.error('UNKNON pane/layout:', what)
+          }
         }
       }
     },
@@ -218,20 +262,15 @@
       f(this.$refs.transporter_tr)
       f(this.$refs.transporter_bl)
       f(this.$refs.transporter_br)
-      f = (component) => {
-        var parent = component.$el.parentNode
-        parent.removeChild(component.$el)
-      }
-      f(this.$refs.component_h)
-      f(this.$refs.component_hh)
-      f(this.$refs.component_v)
-      f(this.$refs.component_vv)
       // We must keep them in the dom because we really need the elements
-      this.$refs.pane_workspace.$el.style.display = 'none'
-      this.$refs.pane_console.$el.style.display = 'none'
-      this.$refs.pane_turtle.$el.style.display = 'none'
-      console.error('setWhat_f', 'workspace')
-      this.setWhat_f('workspace')
+      this.$nextTick(() => {
+        layoutcfg.whats.map(s => 'pane_' + s).forEach(p => {
+          var el = this.$refs[p].$el
+          var parent = el.parentNode
+          parent && parent.removeChild(el)
+        })
+        this.changeLayout({how: 'F', what: 'workspace'})
+      })
     },
     watch: {
       toolbarBlockVisible (newValue, oldValue) {
@@ -243,71 +282,71 @@
           }
         })
       },
-      panelLayout (newValue, oldValue) {
-        console.error('panelLayout', newValue, oldValue)
-        if (newValue === 'h') {
-          var div = this.$refs.container_f
-          var component = this.$refs[`component_${newValue}`]
-          if (component) {
-            if (div.firstChild === component.$el) {
-              // nothing to do
-              return
+      paneLayout (newValue, oldValue) {
+        // console.error('paneLayout', newValue, oldValue)
+        if (oldValue === newValue) {
+          return
+        }
+        // switching to full pane mode is straightforward
+        var panes = layoutcfg.panes
+        if (oldValue === 'F') {
+          var f = (hv) => {
+            var what_old = this.what('f')
+            if (panes.indexOf(what_old) < 0) {
+              what_old = null
             }
-            while (div.firstChild) {
-              div.removeChild(div.firstChild)
+            this.place(hv, 'f')
+            var hv1 = `${hv}1`
+            var what1 = this.what(hv1)
+            if (panes.indexOf(what1) < 0) {
+              this.place(what_old, hv1)
+              what1 = null
+              what_old = null
             }
-            div.appendChild(component.$el)
-            component.$el.style.display = ''
-            var div1 = this.$refs.container_h1
-            if (!div1.firstChild) {
-              if (!this.whereConsole) {
-                div1.appendChild(this.pane_console.$el)
-              } else if (!this.whereWorkspace) {
-                div1.appendChild(this.pane_workspace.$el)
-              } else if (!this.whereTurtle) {
-                div1.appendChild(this.pane_turtle.$el)
-              } else {
-                var div2 = this.$refs.container_hh1
-                if (div2.firstChild) {
-                  div1.appendChild(div2.firstChild)
-                  this.what_h1 = this.what_hh1
-                  this.what_hh1 = null
-                  this[`setWhere_${this.what_h1}`]('h1')
-                }
+            var hv2 = `${hv}2`
+            var what2 = this.what(hv2)
+            if (panes.indexOf(what2) < 0) {
+              this.place(what_old, hv2)
+              what2 = null
+              what_old = null
+            }
+            if (!what1) {
+              var what11 = this.what(`${hv}${hv}1`)
+              if (panes.indexOf(what11) < 0) {
+                what11 = panes.filter(s => s !== what2)[0]
               }
+              this.place(what11, hv1)
+              what1 = what11
             }
-            div1 = this.$refs.container_h2
-            if (!div1.firstChild) {
-              if (!this.whereConsole) {
-                div1.appendChild(this.pane_console.$el)
-              } else if (!this.whereWorkspace) {
-                div1.appendChild(this.pane_workspace.$el)
-              } else if (!this.whereTurtle) {
-                div1.appendChild(this.pane_turtle.$el)
-              } else {
-                div2 = this.$refs.container_hh2
-                if (div2.firstChild) {
-                  div1.appendChild(div2.firstChild)
-                  this.what_h2 = this.what_hh2
-                  this.what_hh2 = null
-                  this[`setWhere_${this.what_h2}`]('h2')
-                }
+            if (!what2) {
+              var what22 = this.what(`${hv}${hv}2`)
+              if (panes.indexOf(what22) < 0) {
+                what22 = panes.filter(s => s !== what2)[0]
               }
+              this.place(what22, hv2)
+              what2 = what22
             }
           }
+          if (newValue === 'H') {
+            f('h')
+          } else if (newValue === 'V') {
+            f('v')
+          }
+        } else {
+
         }
       },
       what_f (newValue, oldValue) {
-        console.error('what_f', newValue, oldValue)
+        console.error('WHATCHED what_f', newValue, oldValue)
         if (newValue !== oldValue) {
-          var component = this.$refs[`pane_${newValue}`]
-          if (component) {
+          var comp_new = this.$refs[`pane_${newValue}`]
+          if (comp_new) {
             var div = this.$refs.container_f
             while (div.firstChild) {
               div.removeChild(div.firstChild)
             }
-            div.appendChild(component.$el)
-            component.$el.style.display = ''
+            div.appendChild(comp_new.$el)
+            comp_new.$el.style.display = ''
           } else {
             console.error('UNKNOWN', newValue)
           }

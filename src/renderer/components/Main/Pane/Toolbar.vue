@@ -49,13 +49,14 @@
   import IconMenu from '@@/Icon/IconMenu.vue'
 
   import {mapState} from 'vuex'
+  import {layoutcfg} from '@@/../store/modules/Layout'
 
   export default {
     name: 'eyo-workspace-management-toolbar',
     data: function () {
       return {
         selectedPane_: 'console',
-        selectedLayout_: 'f',
+        selectedLayout_: 'F',
         chosen_: 'A'
       }
     },
@@ -68,11 +69,11 @@
       /** This is where the toolbar is located */
       where: {
         type: String,
-        default: 'f' /* One of 'f', 'v1', 'v2', 'vv1', 'vv2', 'h1', 'h2', 'hh1', 'hh2' */
+        default: 'f' /* One of layoutcfg.wheres */
       },
       what: {
         type: String,
-        default: undefined
+        default: undefined /* One of layoutcfg.panes */
       }
     },
     computed: {
@@ -91,6 +92,10 @@
           }[this.where] // this is reactive ?
         },
         set (newValue) {
+          console.error('setSelectedPane', {
+            what: newValue,
+            where: this.where
+          })
           this.$emit('change-layout', {
             what: newValue,
             where: this.where
@@ -98,32 +103,18 @@
         }
       },
       panes () {
-        return [
-          'console',
-          'workspace',
-          'turtle'
-        ].filter(s => s !== this.what)
+        return layoutcfg.panes.filter(s => s !== this.what)
       },
       selectedLayout: {
         get () {
           return this.paneLayout
         },
         set (newValue) {
-          this.$emit('change-layout', {how: newValue})
+          this.$emit('change-layout', {what: newValue, how: newValue})
         }
       },
       layouts () {
-        return [
-          'f',
-          'h',
-          'v' /*,
-          'fh',
-          'hf',
-          'vf',
-          'fv',
-          'hh',
-          'vv' */
-        ].filter(s => s !== this.paneLayout)
+        return layoutcfg.layouts.filter(s => s !== this.paneLayout)
       },
       chosen: {
         get () {
@@ -139,17 +130,9 @@
         ]
       },
       ...mapState('Layout', [
-        'paneLayout',
-        'what_f',
-        'what_h1',
-        'what_h2',
-        'what_hh1',
-        'what_hh2',
-        'what_v1',
-        'what_v2',
-        'what_vv1',
-        'what_vv2'
-      ])
+        'paneLayout'
+      ]),
+      ...mapState('Layout', layoutcfg.where_whats)
     },
     methods: {
       localized (s) {

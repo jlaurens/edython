@@ -334,16 +334,16 @@ export default {
   },
   methods: {
     restartConsole () {
-      this.$$.eYo.console.__class__.restart(this.$$.eYo.console)
+      this.$$.eYo.console && this.$$.eYo.console.__class__.restart(this.$$.eYo.console)
     },
     restartTurtle () {
-      this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleRestart()')
+      this.$$.eYo.console && this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleRestart()')
     },
     eraseConsole () {
-      this.$$.eYo.console.__class__.erase(this.$$.eYo.console)
+      this.$$.eYo.console && this.$$.eYo.console.__class__.erase(this.$$.eYo.console)
     },
     replayTurtle () {
-      this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleReplayScene()')
+      this.$$.eYo.console && this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.restartTurtle()
@@ -355,7 +355,7 @@ eYo.DelegateSvg.prototype.runScript = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  window.eYo.console.__class__.runScript(window.eYo.console, code)
+  this.$$.eYo.console && window.eYo.console.__class__.runScript(window.eYo.console, code)
 }
 </script>
 

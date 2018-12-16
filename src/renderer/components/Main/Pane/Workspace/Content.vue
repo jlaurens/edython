@@ -11,9 +11,11 @@
       id="eyo-flyout-toolbar-switcher"
       ref="switcher">
       <b-btn-group
-        id="eyo-flyout-switcher">
+        id="eyo-flyout-switcher"
+        >
         <b-dd
           id="eyo-flyout-dropdown-general"
+          variant="secondary"
           class="eyo-dropdown">
           <template
             slot="button-content">Blocs</template>
@@ -32,6 +34,7 @@
         </b-dd>
         <b-dd
           id="eyo-flyout-dropdown-module"
+          variant="secondary"
           class="eyo-dropdown">
           <template
             slot="button-content">Module&nbsp;</template>
@@ -222,6 +225,7 @@
       }
     },
     mounted () {
+      console.error('CONTENT IS MOUNTED')
       // the workspace
       // there is only one workspace
       if (eYo.App.workspace) {
@@ -324,6 +328,7 @@
   .eyo-flyout-toolbar {
     padding: 0;
     padding-right: 0.25rem;
+    line-height: 1.2;
   }
   #eyo-flyout-toolbar-switcher {
     position: relative;
@@ -359,6 +364,7 @@
   }
   #eyo-flyout-toolbar-label .item {
     display: inline-block;
+    height:2rem;
   }
   #eyo-flyout-toolbar-label-check {
     vertical-align: middle;
