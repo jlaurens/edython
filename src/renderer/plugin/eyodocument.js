@@ -135,25 +135,7 @@ eYoDocument.install = function (Vue, options) {
   }
   eYo.App.Document.getDeflate = function () {
     var dom = eYo.App.workspace.eyo.toDom({noId: true})
-    var prefs = {}
-    prefs.flyoutClosed = store.state.UI.flyoutClosed
-    var value = store.state.UI.flyoutCategory
-    if (value) {
-      prefs.flyoutCategory = value
-    }
-    value = store.state.UI.flyoutModule
-    if (value) {
-      prefs.flyoutModule = value
-    }
-    value = store.state.Layout.cfg.prefs
-    if (value) {
-      prefs.paneLayout = value
-    }
-
-    var str = JSON.stringify(prefs)
-    dom.insertBefore(goog.dom.createDom('prefs', null,
-      goog.dom.createTextNode(str)
-    ), dom.firstChild)
+    eYo.App.doPrefToDom(dom)
     let oSerializer = new XMLSerializer()
     var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
     let deflate = store.state.Document.ecoSave ? pako.gzip(content) : content // use gzip to ungzip from the CLI
@@ -169,12 +151,18 @@ eYoDocument.install = function (Vue, options) {
     store.commit('DOC_SET_PATH', undefined)
   }
   eYo.App.Document.readString = function (str) {
+    var d = new Date()
+    var t0 = d.getTime()
     var parser = new DOMParser()
     var dom = parser.parseFromString(str, 'application/xml')
     eYo.App.workspace.eyo.fromDom(dom)
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
+    d = new Date()
+    console.error('t:', (d.getTime() - t0) / 1000)
     eYo.App.doDomToPref(dom)
+    d = new Date()
+    console.error('t:', (d.getTime() - t0) / 1000)
   }
   eYo.App.Document.readDeflate = function (deflate, fileName) {
     var inflate
@@ -198,11 +186,11 @@ eYoDocument.install = function (Vue, options) {
       console.error('ERROR:', err)
     }
   }
-  eYo.$$.bus.$on('webUploadDidStart', function (file) {
+  eYo.$$.bus.$on('webUploadDidStart', file => {
     eYo.App.Document.fileName_ = file
     console.log(file)
   })
-  eYo.$$.bus.$on('webUploadEnd', function (result) {
+  eYo.$$.bus.$on('webUploadEnd', result => {
     var content = new Uint8Array(result)
     eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
     eYo.App.Document.fileName_ = undefined
