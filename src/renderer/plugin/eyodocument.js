@@ -136,12 +136,8 @@ eYoDocument.install = function (Vue, options) {
   eYo.App.Document.getDeflate = function () {
     var dom = eYo.App.workspace.eyo.toDom({noId: true})
     var prefs = {}
-    var value = store.state.UI.selectedPanel
-    if (value) {
-      prefs.selectedPanel = value
-    }
     prefs.flyoutClosed = store.state.UI.flyoutClosed
-    value = store.state.UI.flyoutCategory
+    var value = store.state.UI.flyoutCategory
     if (value) {
       prefs.flyoutCategory = value
     }
@@ -149,6 +145,11 @@ eYoDocument.install = function (Vue, options) {
     if (value) {
       prefs.flyoutModule = value
     }
+    value = store.state.Layout.cfg.prefs
+    if (value) {
+      prefs.paneLayout = value
+    }
+
     var str = JSON.stringify(prefs)
     dom.insertBefore(goog.dom.createDom('prefs', null,
       goog.dom.createTextNode(str)
