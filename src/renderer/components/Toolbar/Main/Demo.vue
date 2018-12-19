@@ -118,7 +118,7 @@
       doSelect (index) {
         var demo = this.demos[index]
         if (demo) {
-          eYo.$$.bus.$emit('make-pane-workspace-visible')
+          eYo.$$.bus.$emit('pane-workspace-visible')
           this.$nextTick(() => {
             var str = demo.xml
             var parser = new DOMParser()
