@@ -19,10 +19,7 @@ const state = {
   blockClipboard: undefined,
   displayMode: undefined,
   panelsWidth: '100%',
-  selectedPanel: eYo.App.CONSOLE,
   selectedMode: eYo.App.NORMAL,
-  flyoutClosed: false,
-  flyoutCategory: undefined,
   toolbarBlockVisible: true,
   toolbarRyVisible: false,
   toolbarInfoDebug: false,
@@ -31,17 +28,6 @@ const state = {
 }
 
 const mutations = {
-  setSelectedPanel (state, key) {
-    state.selectedPanel = key
-  },
-  setFlyoutCategory (state, category) {
-    if (goog.isString(category)) {
-      state.flyoutCategory = category
-    }
-  },
-  setFlyoutClosed (state, yorn) {
-    state.flyoutClosed = !!yorn
-  },
   setUndoCount (state, n) {
     state.undoCount = n
   },
