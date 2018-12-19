@@ -631,3 +631,29 @@ eYo.BlockSvg.prototype.bringToFront = function() {
     console.error(err)
   }
 };
+
+
+/**
+ * Enable or disable a block.
+ * Remove the reference to the svgPath_
+ */
+Blockly.BlockSvg.prototype.updateDisabled = function() {
+  if (this.disabled || this.getInheritedDisabled()) {
+    var added = Blockly.utils.addClass(
+        /** @type {!Element} */ (this.svgGroup_), 'blocklyDisabled');
+    // if (added) {
+    //   this.svgPath_.setAttribute('fill',
+    //       'url(#' + this.workspace.options.disabledPatternId + ')');
+    // }
+  } else {
+    var removed = Blockly.utils.removeClass(
+        /** @type {!Element} */ (this.svgGroup_), 'blocklyDisabled');
+    if (removed) {
+      this.updateColour();
+    }
+  }
+  var children = this.getChildren();
+  for (var i = 0, child; child = children[i]; i++) {
+    child.updateDisabled();
+  }
+};

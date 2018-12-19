@@ -236,8 +236,9 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
     return
   }
   var block = this.block_
-  goog.dom.removeNode(block.svgPath_)
-  delete block.svgPath_
+  // We still need those paths
+  // goog.dom.removeNode(block.svgPath_)
+  // delete block.svgPath_
   goog.dom.removeNode(block.svgPathLight_)
   delete block.svgPathLight_
   goog.dom.removeNode(block.svgPathDark_)

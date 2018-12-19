@@ -2028,9 +2028,8 @@ eYo.Delegate.prototype.setDisabled = function (yorn) {
     // nothing to do the block is already in the good state
     return
   }
-  eYo.Events.setGroup(true)
-  var previous, next
-  try {
+  eYo.Events.groupWrap(() => {
+    var previous, next
     if (yorn) {
       block.setDisabled(true)
       // Does it break next connections
@@ -2121,13 +2120,10 @@ eYo.Delegate.prototype.setDisabled = function (yorn) {
         }
       }
     }
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
+  }, () => {
+    this.incrementChangeCount()
     this.render()
-    eYo.Events.setGroup(false)
-  }
+  })
 }
 
 /**

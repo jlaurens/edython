@@ -42,9 +42,11 @@ eYo.PythonExporter.indent = '    '
 /**
  * Indent, must be balanced by a dedent.
  */
-eYo.PythonExporter.prototype.indent_ = function () {
+eYo.PythonExporter.prototype.indent_ = function (str) {
   this.indents.push(this.indent)
-  this.indent += this.oneIndent
+  console.log('IN  indent_: this.indent<' + this.indent +'>')
+  this.indent += str || this.oneIndent
+  console.log('OUT indent_: this.indent<' + this.indent +'>')
 }
 
 /**
@@ -60,6 +62,7 @@ eYo.PythonExporter.prototype.dedent_ = function () {
 eYo.PythonExporter.prototype.newline_ = function () {
   this.line && this.lines.push(this.line.join(''))
   this.line = [this.indent]
+  console.log('in newline_: this.indent<' + this.indent + '>')
   this.isFirst = true
   this.shouldSeparateField = false
   this.wasSeparatorField = false
@@ -117,6 +120,13 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
       ++this.depth
       this.expression = []
       var input, target
+      if (!block.outputConnection) {
+        if (block.disabled) {
+          this.indent_('# ')
+          console.log('this.indent<' + this.indent + '>')
+          this.line.push('# ')
+        }
+      }
       this.exportExpression_(block, opt)
       if ((input = eyo.inputSuite)) {
         var f = () => {
@@ -140,6 +150,11 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
           }, () => {
             this.dedent_()
           })(f)
+        }
+      }
+      if (!block.outputConnection) {
+        if (block.disabled) {
+          this.dedent_()
         }
       }
       if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
