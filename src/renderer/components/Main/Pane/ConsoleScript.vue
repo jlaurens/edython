@@ -89,10 +89,11 @@ except:
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
                         console_js.error('Pliz, show turtle panel')
-                        window.eYo.makeTurtleVisible()
+                        window.eYo.makeTurtlePaneVisible()
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() this won't work either
+                    # window.eYo.eraseTurtlePane()
                     console_js.log('Turtle available...', panel.clientWidth, panel.clientHeight)
                 except KeyError as e:
                     print(f'Build error: Missing #{e}')
