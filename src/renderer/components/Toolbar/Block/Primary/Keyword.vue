@@ -46,20 +46,16 @@
       choices () {
         this.$$synchronize(this.step)
         return this.choices_
+      },
+      knownKeys () {
+        return [ // used to order keys
+          'sep',
+          'end',
+          'flush',
+          'file',
+          'maxsplit'
+        ]
       }
-    },
-    created () {
-      this.knownKeys = [ // used to order keys
-        'sep',
-        'end',
-        'flush',
-        'file',
-        'maxsplit'
-      ]
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
     },
     methods: {
       $$doSynchronize (eyo) {
