@@ -6,7 +6,7 @@
       v-on:click="doBack()"
       :title="$$t('block.tooltip.selection.send_to_back')"
       v-tippy
-      :disabled="!eyo">
+      :disabled="!selectedBlockId">
       <icon-base
         :width="24"
         :height="24"
@@ -20,7 +20,7 @@
       v-on:click="doFocus()"
       :title="$$t('block.tooltip.selection.show')"
       v-tippy
-      :disabled="!eyo">
+      :disabled="!selectedBlockId">
       <icon-base
         :width="24"
         :height="24"
@@ -47,7 +47,7 @@
     },
     computed: {
       ...mapState('UI', {
-        eyo: state => state.selectedBlockEyo
+        selectedBlockId: state => state.selectedBlockId
       })
     },
     methods: {

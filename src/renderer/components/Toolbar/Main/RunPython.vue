@@ -38,9 +38,9 @@
       canDoIt () {
         return !!this.selectedBlockId
       },
-      ...mapState('UI', {
-        selectedBlockId: state => state.selectedBlockId
-      })
+      ...mapState('UI', [
+        'selectedBlockId'
+      ])
     },
     components: {
       IconBase,
@@ -48,11 +48,10 @@
     },
     methods: {
       doIt () {
-        var block = eYo.$$.Blockly.selected
-        if (block) {
+        var eyo = eYo.selected
+        if (eyo) {
           // get the root
-          var root = block.eyo.rootControl
-          root.eyo.runScript()
+          eyo.rootControl.runScript()
         }
       }
     }

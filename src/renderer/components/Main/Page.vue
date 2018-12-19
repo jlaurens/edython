@@ -7,109 +7,113 @@
       :style="style"
       ref="container_f">
     </div>
-    <Split
-      @onDrag="onDrag"
-      ref="pane_h"><!-- top row -->
-      <SplitArea
-        :size="width_h1"
-        ref="h1">
-        <div
-          class="container"
-          ref="container_h1"></div>
-      </SplitArea>
-      <SplitArea
-        :size="width_h2"
-        ref="h2">
-        <div
-          class="container"
-          ref="container_h2"></div>
-      </SplitArea>
-    </Split>
-    <Split
-      @onDrag="onDrag"
-      ref="pane_hh"><!-- bottom row -->
-      <SplitArea
-        :size="width_hh1"
-        ref="hh1">
-        <div
-          class="container"
-          ref="container_hh1"></div>
-      </SplitArea>
-      <SplitArea
-        :size="width_hh2"
-        ref="hh2">
-        <div
-          class="container"
-          ref="container_hh2"></div>
-      </SplitArea>
-    </Split>
-    <Split
-      @onDrag="onDrag"
-      ref="pane_v"
-      direction="vertical"><!-- left column -->
-      <SplitArea
-        :size="height_v1"
-        ref="v1">
-        <div
-          class="container"
-          ref="container_v1"></div>
-      </SplitArea>
-      <SplitArea
-        :size="height_v2"
-        ref="v2">
-        <div
-          class="container"
-          ref="container_v2"></div>
-      </SplitArea>
-    </Split>
-    <Split
-      @onDrag="onDrag"
-      ref="pane_vv"
-      direction="vertical"><!-- right column -->
-      <SplitArea
-        :size="height_vv1"
-        ref="vv1">
-        <div
-          class="container"
-          ref="container_vv1"></div>
-      </SplitArea>
-      <SplitArea
-        :size="height_vv2"
-        ref="vv2">
-        <div
-          class="container"
-          ref="container_vv2"></div>
-      </SplitArea>
-    </Split>
-    <div
-      class="transporter"
-      ref="transporter_tl">
+    <div 
+      v-show="false"
+      ref="backstage">
+      <Split
+        @onDrag="onDrag"
+        ref="pane_h"><!-- top row -->
+        <SplitArea
+          :size="width_h1"
+          ref="h1">
+          <div
+            class="container"
+            ref="container_h1"></div>
+        </SplitArea>
+        <SplitArea
+          :size="width_h2"
+          ref="h2">
+          <div
+            class="container"
+            ref="container_h2"></div>
+        </SplitArea>
+      </Split>
+      <Split
+        @onDrag="onDrag"
+        ref="pane_hh"><!-- bottom row -->
+        <SplitArea
+          :size="width_hh1"
+          ref="hh1">
+          <div
+            class="container"
+            ref="container_hh1"></div>
+        </SplitArea>
+        <SplitArea
+          :size="width_hh2"
+          ref="hh2">
+          <div
+            class="container"
+            ref="container_hh2"></div>
+        </SplitArea>
+      </Split>
+      <Split
+        @onDrag="onDrag"
+        ref="pane_v"
+        direction="vertical"><!-- left column -->
+        <SplitArea
+          :size="height_v1"
+          ref="v1">
+          <div
+            class="container"
+            ref="container_v1"></div>
+        </SplitArea>
+        <SplitArea
+          :size="height_v2"
+          ref="v2">
+          <div
+            class="container"
+            ref="container_v2"></div>
+        </SplitArea>
+      </Split>
+      <Split
+        @onDrag="onDrag"
+        ref="pane_vv"
+        direction="vertical"><!-- right column -->
+        <SplitArea
+          :size="height_vv1"
+          ref="vv1">
+          <div
+            class="container"
+            ref="container_vv1"></div>
+        </SplitArea>
+        <SplitArea
+          :size="height_vv2"
+          ref="vv2">
+          <div
+            class="container"
+            ref="container_vv2"></div>
+        </SplitArea>
+      </Split>
+      <div
+        class="transporter"
+        ref="transporter_tl">
+      </div>
+      <div
+        class="transporter"
+        ref="transporter_tr">
+      </div>
+      <div
+        class="transporter"
+        ref="transporter_bl">
+      </div>
+      <div
+        class="transporter"
+        ref="transporter_br">
+      </div>
+      <pane-workspace
+        ref="pane_workspace"
+        :where="where_workspace"
+        @change-layout="changeLayout"></pane-workspace>
+      <pane-console
+        ref="pane_console"
+        :where="where_console"
+        @change-layout="changeLayout"></pane-console>
+      <pane-turtle
+        ref="pane_turtle"
+        :where="where_turtle"
+        @change-layout="changeLayout"></pane-turtle>
+      <console-script></console-script>
     </div>
-    <div
-      class="transporter"
-      ref="transporter_tr">
-    </div>
-    <div
-      class="transporter"
-      ref="transporter_bl">
-    </div>
-    <div
-      class="transporter"
-      ref="transporter_br">
-    </div>
-    <pane-workspace
-      ref="pane_workspace"
-      :where="where_workspace"
-      @change-layout="changeLayout"></pane-workspace>
-    <pane-console
-      ref="pane_console"
-      :where="where_console"
-      @change-layout="changeLayout"></pane-console>
-    <pane-turtle
-      ref="pane_turtle"
-      :where="where_turtle"
-      @change-layout="changeLayout"></pane-turtle>
-    <console-script></console-script>
   </div>
 </template>
 
@@ -122,7 +126,6 @@
   import PaneWorkspace from './Pane/Workspace'
   import PaneConsole from './Pane/Console'
   import PaneTurtle from './Pane/Turtle'
-  import PanePanels from './Pane/Panels'
   import ConsoleScript from './Pane/ConsoleScript'
 
   export default {
@@ -138,7 +141,6 @@
       PaneWorkspace,
       PaneConsole,
       PaneTurtle,
-      PanePanels,
       ConsoleScript
     },
     computed: {
@@ -196,9 +198,24 @@
           this.place(opt.what, opt.where)
         }
       },
+      switchWhere (where1, where2) {
+        if (where1 !== where2) {
+          var what1 = this.what(where1)
+          var what2 = this.what(where2)
+          this.place(what1, where2)
+          this.place(what2, where1)
+        }
+      },
+      switchWhat (what1, what2) {
+        if (what1 !== what2) {
+          var where1 = this.where(what1)
+          var where2 = this.where(what2)
+          this.place(what1, where2)
+          this.place(what2, where1)
+        }
+      },
       place (what, where) {
         // we move the `what` component to the `where` location
-        console.error('bind', where, what)
         // start by unbinding before binding
         if (what) {
           var old_where = this.where(what)
@@ -209,7 +226,10 @@
             if (cont_old_where) {
               var el = cont_old_where
               while (el.firstChild) {
-                el.removeChild(el.firstChild)
+                // we put the pane in the backstage
+                // it is not visible but still in the dom such that
+                // it can be edited in the background
+                this.$refs.backstage.appendChild(el.firstChild)
               }
               this.setWhat(old_where, null)
               this.setWhere(what, null)
@@ -223,9 +243,7 @@
             // there was something where we plan to move `what`
             var comp_old_what = this.pane(old_what)
             if (comp_old_what) {
-              el = comp_old_what.$el
-              var parent = el.parentNode
-              parent && parent.removeChild(el)
+              this.$refs.backstage.appendChild(comp_old_what.$el)
             }
             this.setWhere(old_what, null)
             this.setWhat(where, null)
@@ -249,27 +267,79 @@
           } else {
             console.error('UNKNON pane/layout:', what)
           }
+          // is there something in the other part?
+          var buddy = {
+            h1: 'h2',
+            h2: 'h1',
+            hh1: 'hh2',
+            hh2: 'hh1',
+            v1: 'v2',
+            v2: 'v1',
+            vv1: 'vv2',
+            vv2: 'vv1'
+          }[where]
+          if (buddy && !this.what(buddy)) {
+            // there is nothing in the other pane
+            this.place(old_what, buddy)
+          }
+        }
+      },
+      makeVisible (what) {
+        var where = 'f' // where to place what
+        var actual = this.what_f
+        if (what === actual) {
+          return
+        }
+        if (actual === 'h') {
+          if (this.what_h1 === what) {
+            return
+          }
+          where = 'h1'
+          if (this.what_h1 === 'v') {
+            if (this.what_v1 === what || this.what_v2 === what) {
+              return
+            }
+            where = 'v1'
+          }
+          if (this.what_h2 === what) {
+            return
+          }
+          if (this.what_h2 === 'v') {
+            if (this.what_vv1 === what || this.what_vv2 === what) {
+              return
+            }
+          }
+          this.place(what, where)
+          return
+        }
+        if (actual === 'v') {
+          if (this.what_v1 === what) {
+            return
+          }
+          where = 'v1'
+          if (this.what_v1 === 'h') {
+            if (this.what_h1 === what || this.what_h2 === what) {
+              return
+            }
+            where = 'h1'
+          }
+          if (this.what_v2 === what) {
+            return
+          }
+          if (this.what_v2 === 'h') {
+            if (this.what_hh1 === what || this.what_hh2 === what) {
+              return
+            }
+          }
+          this.place(what, where)
         }
       }
     },
     mounted () {
       this.step = this.toolbarBlockVisible ? this.max : 0
-      var f = (child) => {
-        var parent = child.parentNode || child.$el.parentNode
-        parent && parent.removeChild(child)
-      }
-      f(this.$refs.transporter_tl)
-      f(this.$refs.transporter_tr)
-      f(this.$refs.transporter_bl)
-      f(this.$refs.transporter_br)
-      // We must keep them in the dom because we really need the elements
-      this.$nextTick(() => {
-        layoutcfg.whats.map(s => 'pane_' + s).forEach(p => {
-          var el = this.$refs[p].$el
-          var parent = el.parentNode
-          parent && parent.removeChild(el)
-        })
-        this.changeLayout({how: 'F', what: 'workspace'})
+      this.changeLayout({how: 'F', what: 'workspace'})
+      eYo.$$.bus.$on('make-pane-workspace-visible', () => {
+        this.makeVisible('workspace')
       })
     },
     watch: {
@@ -293,6 +363,7 @@
           var f = (hv) => {
             var what_old = this.what('f')
             if (panes.indexOf(what_old) < 0) {
+              // this is not a pane, merely a wrapper component
               what_old = null
             }
             this.place(hv, 'f')
@@ -300,31 +371,33 @@
             var what1 = this.what(hv1)
             if (panes.indexOf(what1) < 0) {
               this.place(what_old, hv1)
-              what1 = null
+              // now there is something in place hv1
+              what1 = what_old
+              // and nothing to eventually place somewhere
               what_old = null
             }
             var hv2 = `${hv}2`
             var what2 = this.what(hv2)
             if (panes.indexOf(what2) < 0) {
               this.place(what_old, hv2)
-              what2 = null
+              // now there is something in place hv2
+              what2 = what_old
+              // and nothing to eventually place somewhere
               what_old = null
             }
             if (!what1) {
-              var what11 = this.what(`${hv}${hv}1`)
-              if (panes.indexOf(what11) < 0) {
-                what11 = panes.filter(s => s !== what2)[0]
+              what1 = this.what(`${hv}${hv}1`)
+              if (panes.indexOf(what1) < 0) {
+                what1 = panes.filter(s => s !== what2)[0]
               }
-              this.place(what11, hv1)
-              what1 = what11
+              this.place(what1, hv1)
             }
             if (!what2) {
-              var what22 = this.what(`${hv}${hv}2`)
-              if (panes.indexOf(what22) < 0) {
-                what22 = panes.filter(s => s !== what2)[0]
+              what2 = this.what(`${hv}${hv}2`)
+              if (panes.indexOf(what2) < 0) {
+                what2 = panes.filter(s => s !== what1)[0]
               }
-              this.place(what22, hv2)
-              what2 = what22
+              this.place(what2, hv2)
             }
           }
           if (newValue === 'H') {
@@ -333,11 +406,32 @@
             f('v')
           }
         } else {
-
+          if (oldValue === 'H') {
+            if (newValue === 'V') {
+              // H to V: h1 to v1, h2 to v2
+              this.place('v', 'f')
+              this.switchWhere('h1', 'v1')
+              this.switchWhere('h2', 'v2')
+            } else if (newValue === 'HF') {
+              // V to H
+            } else if (newValue === 'FH') {
+              // V to H
+            }
+          } else if (oldValue === 'V') {
+            if (newValue === 'H') {
+              // H to V: h1 to v1, h2 to v2
+              this.place('h', 'f')
+              this.switchWhere('h1', 'v1')
+              this.switchWhere('h2', 'v2')
+            } else if (newValue === 'VF') {
+              // V to H
+            } else if (newValue === 'FV') {
+              // V to H
+            }
+          }
         }
       },
       what_f (newValue, oldValue) {
-        console.error('WHATCHED what_f', newValue, oldValue)
         if (newValue !== oldValue) {
           var comp_new = this.$refs[`pane_${newValue}`]
           if (comp_new) {

@@ -1,9 +1,26 @@
 <template>
-  <b-dd id="eyo-toolbar-dropdown-demo" class="eyo-dropdown" title="Démo" v-on:show="doShow()" v-on:hidden="doHidden()">
-    <template slot="button-content">
-      <icon-base :width="32" :height="32" icon-name="demo"><icon-demo :on="on" /></icon-base>
+  <b-dd
+    id="eyo-toolbar-dropdown-demo"
+    class="eyo-dropdown"
+    title="Démo"
+    v-on:show="doShow()"
+    v-on:hidden="doHidden()">
+    <template
+      slot="button-content">
+      <icon-base
+        :width="32"
+        :height="32"
+        icon-name="demo"
+      ><icon-demo
+        :on="on"
+      /></icon-base>
     </template>
-    <b-dd-item-button v-for="(demo, index) in demos" :key="demo.title" v-on:click="doSelect(index)" :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}">{{demo.title}}</b-dd-item-button>
+    <b-dd-item-button
+      v-for="(demo, index) in demos"
+      :key="demo.title"
+      v-on:click="doSelect(index)"
+      :style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight + 'px'}"
+    >{{demo.title}}</b-dd-item-button>
   </b-dd>
 </template>
 
@@ -101,20 +118,20 @@
       doSelect (index) {
         var demo = this.demos[index]
         if (demo) {
-          var str = demo.xml
-          var parser = new DOMParser()
-          var dom = parser.parseFromString(str, 'application/xml')
-          var f = () => {
-            eYo.App.workspace.eyo.fromDom(dom)
+          eYo.$$.bus.$emit('make-pane-workspace-visible')
+          this.$nextTick(() => {
+            var str = demo.xml
+            var parser = new DOMParser()
+            var dom = parser.parseFromString(str, 'application/xml')
+            var w = eYo.App.workspace
+            var ids = w.eyo.fromDom(dom)
             // problem of code reuse
             eYo.App.doDomToPref(dom)
-          }
-          if (this.displayMode === eYo.App.CONSOLE_ONLY) {
-            this.$store.commit('UI_SET_DISPLAY_MODE', null)
-            this.$nextTick(f)
-          } else {
-            f()
-          }
+            if (ids.length) {
+              var b = w.getBlockById(ids[0])
+              w.centerOnBlock(b.eyo.root.id)
+            }
+          })
         }
       },
       doShow () {

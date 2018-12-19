@@ -89,6 +89,16 @@ export default {
     Workspace: 'Établi',
     Console: 'Console',
     Turtle: 'Tortue',
-    Workbench: 'Établi'
+    Workbench: 'Établi',
+    content: {
+      console: {
+        restart: 'Redémarrer',
+        erase: 'Effacer'
+      },
+      turtle: {
+        replay: 'Rejouer',
+        erase: 'Effacer'
+      }
+    }
   }
 }

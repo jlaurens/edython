@@ -5,11 +5,23 @@
     aria-label="Main toolbar"
     justify>
     <b-btn-group>
-      <b-btn id="toolbar-site" v-on:click=" doSite('http://edython.eu')" title="Aller au site Edython" v-tippy>
-        <img src="static/icon_light.svg" height="32" alt="Edython"/>
+      <b-btn
+        id="toolbar-site"
+        v-on:click=" doSite('http://edython.eu')"
+        title="Aller au site Edython"
+        v-tippy>
+        <img
+          src="static/icon_light.svg"
+          height="32"
+          alt="Edython"/>
       </b-btn>
-      <b-btn id="main-toolbar-debug" v-on:click="doSite('https://github.com/jlaurens/edython/issues')" title="Demander une correction, une amélioration" v-tippy>
-        <icon-base icon-name="bug"><icon-bug /></icon-base>
+      <b-btn
+        id="main-toolbar-debug"
+        v-on:click="doSite('https://github.com/jlaurens/edython/issues')"
+        title="Demander une correction, une amélioration"
+        v-tippy>
+        <icon-base
+          icon-name="bug"><icon-bug /></icon-base>
       </b-btn>
       <main-demo/>
       <main-mode />
@@ -22,8 +34,10 @@
     <copy-paste />
     <block-layout />    
     <b-btn-group>
-      <main-undo-redo :redo="false" />
-      <main-undo-redo :redo="true" />
+      <main-undo-redo
+        :redo="false" />
+      <main-undo-redo
+        :redo="true" />
     </b-btn-group>
     <main-menu />
   </b-btn-toolbar>

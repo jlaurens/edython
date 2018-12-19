@@ -34,9 +34,9 @@
     </g>
     <g
       v-if="keyx === 'FV'">
-      <path d="M 4,4 h24 v10 h-24 z"/>
-      <path d="M 4,18 h8 v10 h-8 z"/>
-      <path d="M 4,18 m 12,0 h12 v10 h-12 z"/>
+      <path d="M 4,4 h12 v24 h-12 z"/>
+      <path d="M 4,4 m 16,0 h8 v10 h-8 z"/>
+      <path d="M 4,4 m 16,14 h8 v10 h-8 z"/>
     </g>
     <g
       v-if="keyx === 'VV'">

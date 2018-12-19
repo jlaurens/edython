@@ -608,28 +608,6 @@ eYo.BlockSvg.prototype.setDragging = function(adding) {
 };
 
 /**
- * Bump unconnected blocks out of alignment.  Two blocks which aren't actually
- * connected should not coincidentally line up on screen.
- * @private
- */
-eYo.BlockSvg.prototype.bumpNeighbours_ = function() {
-  if (!this.workspace) {
-    return;  // Deleted block.
-  }
-  if (this.workspace.isDragging()) {
-    return;  // Don't bump blocks during a drag.
-  }
-  var rootBlock = this.getRootBlock();
-  if (rootBlock.isInFlyout) {
-    return;  // Don't move blocks around in a flyout.
-  }
-  eYo.BlockSvg.superClass_.bumpNeighbours_.call(this)
-  if (Blockly.selectedBlock) {
-    Blockly.selectedBlock.eyo.scrollToVisible(Blockly.selectedBlock)
-  }
-}
-
-/**
  * Move this block to the front of the visible workspace.
  * <g> tags do not respect z-index so SVG renders them in the
  * order that they are in the DOM.  By placing this block first within the

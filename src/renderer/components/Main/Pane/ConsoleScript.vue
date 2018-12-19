@@ -79,6 +79,8 @@ except:
         el = None
 
         def turtleSetup(self):
+            console_js.error("CONSOLE TURTLE turtleSetup")
+            sys.stderr.write("TURTLE turtleSetup")
             if 'turtle' in sys.modules:
                 try:
                     import turtle
@@ -91,8 +93,8 @@ except:
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() this won't work either
                     console_js.log('Turtle available...')
-                except KeyError:
-                    print('Build error: Missing #eyo-turtle-canvas-wrapper')
+                except KeyError as e:
+                    print(f'Build error: Missing #{e}')
             else:
                 print('import turtle module first', )
 
@@ -137,7 +139,10 @@ except:
             self.restart()
     
         def write(self, data):
-            self.el.value += str(data)
+            if self.el is not None:
+                self.el.value += str(data)
+            else:
+                console_js.error(data)
     
         def erase(self):
             self.flush()
@@ -328,22 +333,22 @@ export default {
   mounted: function () {
     eYo.$$.bus.$on('erase-console', this.eraseConsole)
     eYo.$$.bus.$on('restart-console', this.restartConsole)
-    eYo.$$.bus.$on('restart-turtle', this.restartTurtle)
+    eYo.$$.bus.$on('replay-turtle', this.restartTurtle)
     eYo.$$.bus.$on('erase-turtle', this.replayTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
     restartConsole () {
-      this.$$.eYo.console && this.$$.eYo.console.__class__.restart(this.$$.eYo.console)
+      eYo.console && eYo.console.__class__.restart(eYo.console)
     },
     restartTurtle () {
-      this.$$.eYo.console && this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleRestart()')
+      eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleRestart()')
     },
     eraseConsole () {
-      this.$$.eYo.console && this.$$.eYo.console.__class__.erase(this.$$.eYo.console)
+      eYo.console && eYo.console.__class__.erase(eYo.console)
     },
     replayTurtle () {
-      this.$$.eYo.console && this.$$.eYo.console.__class__.runScript(this.$$.eYo.console, 'edython.turtleReplayScene()')
+      eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.restartTurtle()
@@ -355,7 +360,7 @@ eYo.DelegateSvg.prototype.runScript = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  this.$$.eYo.console && window.eYo.console.__class__.runScript(window.eYo.console, code)
+  eYo.console && eYo.console.__class__.runScript(window.eYo.console, code)
 }
 </script>
 

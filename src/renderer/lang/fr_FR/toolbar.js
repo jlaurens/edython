@@ -38,7 +38,12 @@ export default {
       on: 'Afficher les informations de débogage',
       off: 'Cacher les informations de débogage'
     },
-    menu: 'Options et actions'
+    menu: 'Options et actions',
+    copy_block_deep: 'Copier le bloc sélectionné et les suivants',
+    copy_block_shallow: 'Copier le bloc sélectionné',
+    duplicate_block_deep: 'Dupliquer le bloc sélectionné et les suivants',
+    duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
+    paste_bock: 'Coller le block du presse-papier'
   },
   content: {
     mode: {
@@ -56,6 +61,11 @@ export default {
       on: 'Afficher la barre d\'édition',
       off: 'Cacher la barre d\'édition'
     },
-    debug: 'Mode débogage'
+    debug: 'Mode débogage',
+    copy_block_deep: 'Copier avec les suivants',
+    copy_block_shallow: 'Copier',
+    duplicate_block_deep: 'Dupliquer avec les suivants',
+    duplicate_block_shallow: 'Dupliquer',
+    paste_block: 'Paste'
   }
 }

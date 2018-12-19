@@ -28,7 +28,38 @@ const layoutcfg = {
     'FV',
     'HH',
     'VV' */
-  ]
+  ],
+  fromLayout: {
+    F: ['H', 'V'],
+    H: {
+      h1: ['F', 'VF', 'V'],
+      h2: ['F', 'FV', 'V']
+    },
+    V: {
+      v1: ['F', 'HF', 'H'],
+      v2: ['F', 'FH', 'H']
+    },
+    HF: {
+      h1: ['F', 'H', 'V'],
+      h2: ['F', 'H', 'V'],
+      f: ['F']
+    },
+    FH: {
+      f: ['F'],
+      hh1: ['F', 'H', 'V'],
+      hh2: ['F', 'H', 'V']
+    },
+    VF: {
+      v1: ['F', 'H', 'V'],
+      v2: ['F', 'H', 'V'],
+      f: ['F']
+    },
+    FV: {
+      f: ['F'],
+      vv1: ['F', 'H', 'V'],
+      vv2: ['F', 'H', 'V']
+    }
+  }
 }
 
 Object.defineProperties(layoutcfg, {
@@ -89,11 +120,6 @@ layoutcfg.wheres.forEach(k => {
 layoutcfg.whats.forEach(k => {
   state[`where_${k}`] = null
 })
-// where is layout
-// NB: where_h might be useless
-layoutcfg.layouts.forEach(k => {
-  state[`where_${k}`] = null
-})
 
 const mutations = {
   setPaneLayout (state, layout) {
@@ -105,21 +131,12 @@ const mutations = {
 layoutcfg.wheres.forEach(k => {
   mutations[`setWhat_${k}`] = (() => {
     return (state, payload) => {
-      console.error(`STORE what_${k}`, payload)
       state[`what_${k}`] = payload
     }
   })()
 })
 
 layoutcfg.whats.forEach(k => {
-  mutations[`setWhere_${k}`] = (() => {
-    return (state, payload) => {
-      state[`where_${k}`] = payload
-    }
-  })()
-})
-
-layoutcfg.layouts.forEach(k => {
   mutations[`setWhere_${k}`] = (() => {
     return (state, payload) => {
       state[`where_${k}`] = payload

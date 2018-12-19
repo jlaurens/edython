@@ -291,9 +291,23 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   },
   /**
+   * Return the topmost enclosing block in this block's tree.
+   * @return {!eYo.Delegate} The root block.
+   */
+  root: {
+    get () {
+      var eyo = this
+      var parent
+      while ((parent = eyo.parent)) {
+        eyo = parent
+      }
+      return eyo
+    }
+  },
+  /**
    * Return the enclosing block in this block's tree
-   * which is a control.
-   * @return {!Blockly.Block} The root block.
+   * which is a control. May be null.
+   * @return {?eYo.Delegate} The root block.
    */
   rootControl: {
     get () {

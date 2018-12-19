@@ -23,21 +23,27 @@
           <icon-layout :keyx="layout"/></icon-base></b-dd-item-button>
       </b-dd>
     </b-btn-group>
+    <b-btn-group
+      v-if="what === 'workspace'"
+    >&nbsp;</b-btn-group>
     <b-dd
-    class="eyo-dropdown-tools">
-    <template>
-      <icon-base
-      :width="24"
-      :height="24"
-      icon-name="tools"
-      slot="button-content">
-      <icon-menu/></icon-base>
-    </template>
-    <b-dd-item-button
-      v-for="choice in choices"
-      v-on:click="chosen = choice"
-      :key="choice"
-      class="eyo-code">{{choice}}</b-dd-item-button>
+      v-else
+      class="eyo-dropdown-tools"
+      right>
+      <template>
+        <icon-base
+        :width="24"
+        :height="24"
+        icon-name="tools"
+        slot="button-content">
+        <icon-menu/></icon-base>
+      </template>
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="choose(choice)"
+        :key="choice"
+        class="eyo-code"
+      >{{title(choice)}}</b-dd-item-button>
     </b-dd>
   </b-btn-toolbar>
 </template>
@@ -92,13 +98,11 @@
           }[this.where] // this is reactive ?
         },
         set (newValue) {
-          console.error('setSelectedPane', {
-            what: newValue,
-            where: this.where
-          })
-          this.$emit('change-layout', {
-            what: newValue,
-            where: this.where
+          this.$nextTick(() => {
+            this.$emit('change-layout', {
+              what: newValue,
+              where: this.where
+            })
           })
         }
       },
@@ -110,24 +114,38 @@
           return this.paneLayout
         },
         set (newValue) {
-          this.$emit('change-layout', {what: newValue, how: newValue})
+          this.$nextTick(() => {
+            this.$emit('change-layout', {what: this.what, how: newValue})
+          })
         }
       },
       layouts () {
-        return layoutcfg.layouts.filter(s => s !== this.paneLayout)
-      },
-      chosen: {
-        get () {
-          return this.chosen_
-        },
-        set (newValue) {
-          this.chosen_ = newValue
+        if (this.where) {
+          var Ls = layoutcfg.fromLayout[this.paneLayout]
+          if (!Ls) {
+            console.error('NO CFG for', this.paneLayout)
+          }
+          if (goog.isArray(Ls[this.where])) {
+            return Ls[this.where]
+          }
+          if (goog.isArray(Ls)) {
+            return Ls
+          }
+          console.error('NO CFG for position', this.where, Ls)
         }
+        return []
       },
       choices () {
-        return [
-          'A', 'B', 'C'
-        ]
+        return {
+          console: [
+            'console.restart',
+            'console.erase'
+          ],
+          turtle: [
+            'turtle.replay',
+            'turtle.erase'
+          ]
+        }[this.what]
       },
       ...mapState('Layout', [
         'paneLayout'
@@ -137,6 +155,26 @@
     methods: {
       localized (s) {
         return this.$$t(`block.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
+      },
+      choose (choice) {
+        var do_it = {
+          'console.restart': () => {
+            eYo.$$.bus.$emit('restart-console')
+          },
+          'console.erase': () => {
+            eYo.$$.bus.$emit('erase-console')
+          },
+          'turtle.replay': () => {
+            eYo.$$.bus.$emit('replay-turtle')
+          },
+          'turtle.erase': () => {
+            eYo.$$.bus.$emit('erase-turtle')
+          }
+        }[choice]
+        do_it()
+      },
+      title (choice) {
+        return this.$$t(`block.pane.content.${choice}`)
       }
     }
   }

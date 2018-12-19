@@ -44,11 +44,11 @@
         var element = wrapper
         var x = 0
         var y = 0
-        do {
+        while (element) {
           x += element.offsetLeft
           y += element.offsetTop
           element = element.offsetParent
-        } while (element)
+        }
         // Position workspace over wrapper.
         var workspace = this.$refs.workspace
         workspace.style.left = `${x}px`

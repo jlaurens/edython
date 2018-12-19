@@ -1,10 +1,26 @@
 <template>
-  <b-btn :id="id" v-on:click="doIt()" :disabled="!canDoIt" :title="title" v-tippy :variant="variant">
-    <icon-base :width="width" :height="height" :icon-name="name"><icon-copy-paste :copy="copy" :duplicate="duplicate" :deep="deep" :theta="theta"/></icon-base>
+  <b-btn
+    :id="id"
+    v-on:click="doIt()"
+    :disabled="!canDoIt"
+    :title="title"
+    v-tippy
+    :variant="variant">
+    <icon-base
+      :width="width"
+      :height="height"
+      :icon-name="name"
+      ><icon-copy-paste
+        :copy="copy"
+        :duplicate="duplicate"
+        :deep="deep"
+        :theta="theta"/></icon-base>
   </b-btn>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   import IconBase from '@@/Icon/IconBase.vue'
   import IconCopyPaste from '@@/Icon/IconCopyPaste.vue'
 
@@ -61,30 +77,34 @@
       title () {
         return this.copy
           ? this.deep
-            ? 'Copier le bloc sélectionné et les suivants'
-            : 'Copier le bloc sélectionné'
+            ? this.$$t(`toolbar.tooltip.copy_block_deep`)
+            : this.$$t(`toolbar.tooltip.copy_block_shallow`)
           : this.duplicate
             ? this.deep
-              ? 'Dupliquer le bloc sélectionné et les suivants'
-              : 'Dupliquer le bloc sélectionné'
-            : 'Coller le block du presse-papier'
+              ? this.$$t(`toolbar.tooltip.duplicate_block_deep`)
+              : this.$$t(`toolbar.tooltip.duplicate_block_shallow`)
+            : this.$$t(`toolbar.tooltip.paste_block`)
       },
       name () {
         return this.copy
           ? this.deep
-            ? 'Copier avec les suivants'
-            : 'Copier'
+            ? this.$$t(`toolbar.content.copy_block_deep`)
+            : this.$$t(`toolbar.content.copy_block_shallow`)
           : this.duplicate
             ? this.deep
-              ? 'Dupliquer avec les suivants'
-              : 'Dupliquer'
-            : 'Coller'
+              ? this.$$t(`toolbar.content.duplicate_block_deep`)
+              : this.$$t(`toolbar.content.duplicate_block_shallow`)
+            : this.$$t(`toolbar.content.paste_block`)
       },
       canDoIt () {
         return this.copy || this.duplicate
-          ? !!this.$store.state.UI.selectedBlockId
-          : !!this.$store.state.UI.blockClipboard
-      }
+          ? !!this.selectedBlockId
+          : !!this.blockClipboard
+      },
+      ...mapState('UI', [
+        'selectedBlockId',
+        'blockClipboard'
+      ])
     },
     methods: {
       doIt () {

@@ -1,5 +1,5 @@
 <template>
-    <div
+  <div
     class="eyo-wrapper"
     ref="wrapper">
     <toolbar
@@ -7,6 +7,7 @@
       what="turtle"
       v-on="$listeners"></toolbar>
     <div
+      id="eyo-panel-turtle"
       class="content eyo-panel-turtle">
       <div id="eyo-turtle-canvas-wrapper"></div>
     </div>
