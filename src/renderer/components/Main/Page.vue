@@ -190,13 +190,265 @@
       changeLayout (opt) {
         if (opt.how === 'F' && opt.what) {
           this.place(opt.what, 'f')
-        }
-        if (opt.how) {
           this.setPaneLayout(opt.how)
+          return
         }
-        if (opt.where) {
+        if (!opt.how) {
           this.place(opt.what, opt.where)
+          return
         }
+        var newValue = opt.how
+        var oldValue = this.paneLayout
+        // console.error('paneLayout', newValue, oldValue)
+        if (oldValue === newValue) {
+          return
+        }
+        // switching from full pane mode is quite straightforward
+        var panes = this.layoutcfg.panes
+        if (oldValue === 'F') {
+          // F -> H or F -> V
+          var f = (hv) => {
+            var what_old = this.what('f')
+            if (panes.indexOf(what_old) < 0) {
+              // this is not a pane, merely a wrapper component
+              what_old = null
+            }
+            this.place(hv, 'f')
+            var hv1 = `${hv}1`
+            var what1 = this.what(hv1)
+            if (panes.indexOf(what1) < 0) {
+              this.place(what_old, hv1)
+              // now there is something in place hv1
+              what1 = what_old
+              // and nothing to eventually place somewhere
+              what_old = null
+            }
+            var hv2 = `${hv}2`
+            var what2 = this.what(hv2)
+            if (panes.indexOf(what2) < 0) {
+              this.place(what_old, hv2)
+              // now there is something in place hv2
+              what2 = what_old
+              // and nothing to eventually place somewhere
+              what_old = null
+            }
+            if (!what1) {
+              what1 = this.what(`${hv}${hv}1`)
+              if (panes.indexOf(what1) < 0) {
+                what1 = panes.filter(s => s !== what2)[0]
+              }
+              this.place(what1, hv1)
+            }
+            if (!what2) {
+              what2 = this.what(`${hv}${hv}2`)
+              if (panes.indexOf(what2) < 0) {
+                what2 = panes.filter(s => s !== what1)[0]
+              }
+              this.place(what2, hv2)
+            }
+          }
+          if (newValue === 'H') {
+            f('h')
+            this.setPaneLayout(newValue)
+          } else if (newValue === 'V') {
+            f('v')
+            this.setPaneLayout(newValue)
+          }
+          return
+        }
+        f = (where, wheres) => {
+          if (!this[`what_${where}`]) {
+            this.layoutcfg.panes.some((what) => {
+              if (wheres.indexOf(this[`where_${what}`]) < 0) {
+                this.place(what, where)
+                return true
+              }
+            })
+          }
+        }
+        if (oldValue === 'H') {
+          if (newValue === 'V') {
+            // H -> V: (h1, h2) => (v1 / v2) correspondance in position
+            this.switchWhere('h1', 'v1')
+            this.switchWhere('h2', 'v2')
+            this.place('v', 'f')
+          } else if (newValue === 'HF') {
+            // H -> HF: (h1, h2) => ((h1, h2) / v2)
+            this.place('v', 'f')
+            this.place('h', 'v1')
+            f('v2', ['h1', 'h2'])
+          } else if (newValue === 'FH') {
+            // H -> FH: (h1, h2) -> (v1 / (h1, h2))
+            this.place('v', 'f')
+            this.switchWhere('h1', 'hh1')
+            this.switchWhere('h2', 'hh2')
+            this.place('hh', 'v2')
+            f('v1', ['hh1', 'hh2'])
+          } else if (newValue === 'VF') {
+            // H -> VF: (h1, h2) -> ((h1 / v2) | (v1 / h1), h2)
+            if (!this.what_v1 || this.what_v2) {
+              this.place(this.what_h1, 'v1')
+              f('v2', ['v1', 'h2'])
+            } else {
+              this.place(this.what_h1, 'v2')
+              f('v1', ['v2', 'h2'])
+            }
+            this.place('v', 'h1')
+          } else if (newValue === 'FV') {
+            // H -> FV: (h1, h2) -> (h1, (h2 / vv2) | (vv1 / h2))
+            if (!this.what_vv1 || this.what_vv2) {
+              this.place(this.what_h2, 'vv1')
+              f('vv2', ['h1', 'vv1'])
+            } else {
+              this.place(this.what_h2, 'vv2')
+              f('vv1', ['h1', 'vv2'])
+            }
+            this.place('vv', 'h2')
+          } else {
+            return
+          }
+        } else if (oldValue === 'V') {
+          if (newValue === 'H') {
+            // V -> H: (v1 / v2) => (h1, h2)
+            this.place('h', 'f')
+            this.switchWhere('h1', 'v1')
+            this.switchWhere('h2', 'v2')
+          } else if (newValue === 'HF') {
+            // V -> HF: (v1 / v2) -> ((v1, h2) | (h1, v2) / v2)
+            if (!this.what_h1 || this.what_h2) {
+              this.place(this.what_v1, 'h1')
+              f('h2', ['h1', 'v2'])
+            } else {
+              this.place(this.what_v1, 'h2')
+              f('h1', ['h2', 'v2'])
+            }
+            this.place('h', 'v1')
+          } else if (newValue === 'FH') {
+            // V -> FH: (v1 / v2) -> (v1 / (v2, hh2))
+            if (!this.what_h1 || this.what_h2) {
+              this.place(this.what_v2, 'hh1')
+              f('hh2', ['hh1', 'v1'])
+            } else {
+              this.place(this.what_v2, 'hh2')
+              f('hh1', ['hh2', 'v1'])
+            }
+            this.place('hh', 'v2')
+          } else if (newValue === 'VF') {
+            // V -> VF: (v1 / v2) -> ((v1 / v2), h2)
+            this.place('h', 'f')
+            this.place('v', 'h1')
+            f('h2', ['v1', 'v2'])
+          } else if (newValue === 'FV') {
+            // V -> FV: (v1 / v2) -> (h1, (v1 / v2))
+            this.switchWhere('v1', 'vv1')
+            this.switchWhere('v2', 'vv2')
+            this.place('vv', 'h2')
+            f('h1', ['vv1', 'vv2'])
+          } else {
+            return
+          }
+        } else if (oldValue === 'HF') {
+          if (newValue === 'FH') {
+            // HF -> FH: ((h1, h2)/ v2) -> (v2/ (h1, h2))
+            this.switchWhere('v1', 'v2')
+            this.switchWhere('h1', 'hh1')
+            this.switchWhere('h2', 'hh2')
+            this.place('hh', 'v2')
+          } else if (newValue === 'VF') {
+            // HF -> VF: ((h1, h2)/ v2) => ((v1 / v2), h2) correspondance in positions
+            this.switchWhere('h1', 'v1')
+            this.switchWhere('h2', 'v2')
+            this.place('v', 'h1')
+            this.place('h', 'f')
+          } else if (newValue === 'H') {
+            // HF -> H: ((h1, h2)/ v2) -> (h1, h2)
+            this.place('h', 'f')
+          } else if (newValue === 'V') {
+            // HF -> V: ((h1, h2)/ v2) -> (h1 | h2 / v2)
+            // opt.what is one of what_h1 or what_h2
+            this.place(opt.what, 'v1')
+          } else {
+            return
+          }
+        } else if (oldValue === 'FH') {
+          if (newValue === 'HF') {
+            // FH -> FH: (v1 /(hh1, hh2)) -> ((hh1, hh2) / v1)
+            this.switchWhere('v1', 'v2')
+            this.switchWhere('h1', 'hh1')
+            this.switchWhere('h2', 'hh2')
+            this.place('h', 'v1')
+          } else if (newValue === 'FV') {
+            // FH -> FV: (v1 /(hh1, hh2)) -> (v1, (hh1, hh2))
+            this.switchWhere('v1', 'h1')
+            this.switchWhere('hh1', 'vv1')
+            this.switchWhere('hh2', 'vv2')
+            this.place('vv', 'h2')
+            this.place('h', 'f')
+          } else if (newValue === 'H') {
+            // FH -> H: (v1 /(hh1, hh2)) -> (hh1, hh2)
+            this.switchWhere('h1', 'hh1')
+            this.switchWhere('h2', 'hh2')
+            this.place('h', 'f')
+          } else if (newValue === 'V') {
+            // FH -> V: (v1 /(hh1, hh2)) -> (v1, hh1 | hh2)
+            // opt.what is one of what_hh1 or what_hh2
+            this.place(opt.what, 'v2')
+          } else {
+            return
+          }
+        } else if (oldValue === 'VF') {
+          if (newValue === 'FV') {
+            // VF -> FV: ((v1, v2), h2) -> (h2, (v1, v2))
+            this.switchWhere('h1', 'h2')
+            this.switchWhere('v1', 'vv1')
+            this.switchWhere('v2', 'vv2')
+            this.place('vv', 'h2')
+          } else if (newValue === 'H') {
+            // VF -> H: ((v1, v2), h2) -> ((v1 | v2), h2)
+            // opt.what is one of what_v1 or what_v2
+            this.place(opt.what, 'h1')
+          } else if (newValue === 'V') {
+            // VF -> V: ((v1, v2), h2) -> (v1, v2)
+            this.place('v', 'f')
+          } else {
+            return
+          }
+        } else if (oldValue === 'FV') {
+          if (newValue === 'VF') {
+            // FV -> VF: (h1, (vv1 / vv2)) -> ((vv1 / vv2), h1)
+            this.switchWhere('h1', 'h2')
+            this.switchWhere('v1', 'vv1')
+            this.switchWhere('v2', 'vv2')
+            this.place('v', 'h1')
+          } else if (newValue === 'H') {
+            // FV -> H: (h1, (vv1 / vv2)) -> (h1, (vv1 | vv2))
+            // opt.what is one of what_vv1 or what_vv2
+            this.place(opt.what, 'h2')
+          } else if (newValue === 'V') {
+            // FV -> V: (h1, (vv1 / vv2)) -> (vv1 / vv2)
+            this.place('v', 'f')
+            this.switchWhere('v1', 'vv1')
+            this.switchWhere('v2', 'vv2')
+          } else {
+            return
+          }
+        }
+        var available = new Set([this.where_workspace, this.where_turtle, this.where_console])
+        var expected = {
+          F: ['f'],
+          H: ['h1', 'h2'],
+          V: ['v1', 'v2'],
+          HF: ['h1', 'h2', 'v2'],
+          FH: ['v1', 'hh1', 'hh2'],
+          VF: ['v1', 'v2', 'h2'],
+          FV: ['h1', 'vv1', 'vv2'],
+          HH: ['h1', 'h2', 'hh1', 'hh2'],
+          VV: ['v1', 'v2', 'vv1', 'vv2']
+        }[newValue]
+        if (expected.some((layout) => !available.has(layout))) {
+          console.error('UNEXPECTED location:', newValue, expected, available)
+        }
+        this.setPaneLayout(newValue)
       },
       switchWhere (where1, where2) {
         if (where1 !== where2) {
@@ -249,7 +501,7 @@
             this.setWhat(where, null)
           }
         }
-        // Time to establish a new link
+        // Time -> establish a new link
         if (what) {
           var pane_what = this.pane(what)
           if (pane_what) {
@@ -285,7 +537,7 @@
         }
       },
       makeVisible (what) {
-        var where = 'f' // where to place what
+        var where = 'f' // where -> place what
         var actual = this.what_f
         if (what === actual) {
           return
@@ -335,8 +587,7 @@
     mounted () {
       this.step = this.toolbarBlockVisible ? this.max : 0
       this.changeLayout({how: 'F', what: 'workspace'})
-      eYo.makeTurtleVisible = () => {
-        console.error('Trying hard...')
+      eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
       eYo.$$.bus.$on('make-pane-workspace-visible', () => {
@@ -352,182 +603,6 @@
             eYo.$$.bus.$emit('size-did-change')
           }
         })
-      },
-      paneLayout (newValue, oldValue) {
-        // console.error('paneLayout', newValue, oldValue)
-        if (oldValue === newValue) {
-          return
-        }
-        // switching to full pane mode is straightforward
-        var panes = layoutcfg.panes
-        if (oldValue === 'F') {
-          var f = (hv) => {
-            var what_old = this.what('f')
-            if (panes.indexOf(what_old) < 0) {
-              // this is not a pane, merely a wrapper component
-              what_old = null
-            }
-            this.place(hv, 'f')
-            var hv1 = `${hv}1`
-            var what1 = this.what(hv1)
-            if (panes.indexOf(what1) < 0) {
-              this.place(what_old, hv1)
-              // now there is something in place hv1
-              what1 = what_old
-              // and nothing to eventually place somewhere
-              what_old = null
-            }
-            var hv2 = `${hv}2`
-            var what2 = this.what(hv2)
-            if (panes.indexOf(what2) < 0) {
-              this.place(what_old, hv2)
-              // now there is something in place hv2
-              what2 = what_old
-              // and nothing to eventually place somewhere
-              what_old = null
-            }
-            if (!what1) {
-              what1 = this.what(`${hv}${hv}1`)
-              if (panes.indexOf(what1) < 0) {
-                what1 = panes.filter(s => s !== what2)[0]
-              }
-              this.place(what1, hv1)
-            }
-            if (!what2) {
-              what2 = this.what(`${hv}${hv}2`)
-              if (panes.indexOf(what2) < 0) {
-                what2 = panes.filter(s => s !== what1)[0]
-              }
-              this.place(what2, hv2)
-            }
-          }
-          if (newValue === 'H') {
-            f('h')
-          } else if (newValue === 'V') {
-            f('v')
-          }
-        } else {
-          var current
-          if (oldValue === 'H') {
-            if (newValue === 'V') {
-              // H to V: h1 to v1, h2 to v2
-              this.place('v', 'f')
-              this.switchWhere('h1', 'v1')
-              this.switchWhere('h2', 'v2')
-            } else if (newValue === 'HF') {
-              // H to HF
-              this.place('v', 'f')
-              this.place('h', 'v1')
-              if (!this.what_v2) {
-                layoutcfg.panes.some((what) => {
-                  if (['h1', 'h2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'v2')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'FH') {
-              // H to FH
-              this.place('v', 'f')
-              this.switchWhere('h1', 'hh1')
-              this.switchWhere('h2', 'hh2')
-              this.place('hh', 'v2')
-              if (!this.what_v1) {
-                layoutcfg.panes.some((what) => {
-                  if (['hh1', 'hh2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'v1')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'VF') {
-              // H to HF
-              current = this.what_h1
-              this.place('v', 'h1')
-              this.place(current, 'v1')
-              if (!this.what_v2) {
-                layoutcfg.panes.some((what) => {
-                  if (['v1', 'h2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'v2')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'FV') {
-              // H to FH
-              current = this.what_h2
-              this.place('vv', 'h2')
-              this.place(current, 'vv1')
-              if (!this.what_vv2) {
-                layoutcfg.panes.some((what) => {
-                  if (['h1', 'vv1'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'vv2')
-                    return true
-                  }
-                })
-              }
-            }
-          } else if (oldValue === 'V') {
-            if (newValue === 'H') {
-              // H to V: h1 to v1, h2 to v2
-              this.place('h', 'f')
-              this.switchWhere('h1', 'v1')
-              this.switchWhere('h2', 'v2')
-            } else if (newValue === 'HF') {
-              // V to HF
-              current = this.what_v1
-              this.place('h', 'v1')
-              this.place(current, 'h1')
-              if (!this.what_h2) {
-                layoutcfg.panes.some((what) => {
-                  if (['h1', 'v2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'h2')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'FH') {
-              // V to FH
-              current = this.what_v2
-              this.place('hh', 'v2')
-              this.place(current, 'hh1')
-              if (!this.what_hh2) {
-                layoutcfg.panes.some((what) => {
-                  if (['hh1', 'v1'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'hh2')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'VF') {
-              // V to VF
-              this.place('h', 'f')
-              this.place('v', 'h1')
-              if (!this.what_h2) {
-                layoutcfg.panes.some((what) => {
-                  if (['v1', 'v2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'h2')
-                    return true
-                  }
-                })
-              }
-            } else if (newValue === 'FV') {
-              // V to FV
-              this.place('h', 'f')
-              this.place('vv', 'h2')
-              this.switchWhere('v1', 'vv1')
-              this.switchWhere('v2', 'vv2')
-              if (!this.what_h1) {
-                layoutcfg.panes.some((what) => {
-                  if (['vv1', 'vv2'].indexOf(this[`where_${what}`]) < 0) {
-                    this.place(what, 'h1')
-                    return true
-                  }
-                })
-              }
-            }
-          }
-        }
       },
       what_f (newValue, oldValue) {
         if (newValue !== oldValue) {
