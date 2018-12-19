@@ -21,13 +21,13 @@ const layoutcfg = {
   layouts: [
     'F',
     'H',
-    'V' /*,
+    'V',
     'FH',
     'HF',
     'VF',
     'FV',
     'HH',
-    'VV' */
+    'VV'
   ],
   fromLayout: {
     F: ['H', 'V'],
@@ -40,9 +40,9 @@ const layoutcfg = {
       v2: ['F', 'FH', 'H']
     },
     HF: {
+      f: ['F'],
       h1: ['F', 'H', 'V'],
-      h2: ['F', 'H', 'V'],
-      f: ['F']
+      h2: ['F', 'H', 'V']
     },
     FH: {
       f: ['F'],
@@ -50,9 +50,9 @@ const layoutcfg = {
       hh2: ['F', 'H', 'V']
     },
     VF: {
+      f: ['F'],
       v1: ['F', 'H', 'V'],
-      v2: ['F', 'H', 'V'],
-      f: ['F']
+      v2: ['F', 'H', 'V']
     },
     FV: {
       f: ['F'],

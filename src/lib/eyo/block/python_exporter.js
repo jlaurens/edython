@@ -44,9 +44,7 @@ eYo.PythonExporter.indent = '    '
  */
 eYo.PythonExporter.prototype.indent_ = function (str) {
   this.indents.push(this.indent)
-  console.log('IN  indent_: this.indent<' + this.indent +'>')
   this.indent += str || this.oneIndent
-  console.log('OUT indent_: this.indent<' + this.indent +'>')
 }
 
 /**
@@ -62,7 +60,6 @@ eYo.PythonExporter.prototype.dedent_ = function () {
 eYo.PythonExporter.prototype.newline_ = function () {
   this.line && this.lines.push(this.line.join(''))
   this.line = [this.indent]
-  console.log('in newline_: this.indent<' + this.indent + '>')
   this.isFirst = true
   this.shouldSeparateField = false
   this.wasSeparatorField = false
@@ -123,7 +120,6 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
       if (!block.outputConnection) {
         if (block.disabled) {
           this.indent_('# ')
-          console.log('this.indent<' + this.indent + '>')
           this.line.push('# ')
         }
       }

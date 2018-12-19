@@ -79,20 +79,21 @@ except:
         el = None
 
         def turtleSetup(self):
-            console_js.error("CONSOLE TURTLE turtleSetup")
-            sys.stderr.write("TURTLE turtleSetup")
             if 'turtle' in sys.modules:
                 try:
                     import turtle
-                    panel = document['eyo-panel-turtle']
                     if Edython.el is None:
                         Edython.el = document['eyo-turtle-canvas-wrapper']
                     # turtle.restart() this won't work
-                        turtle.set_defaults(turtle_canvas_wrapper=el)
+                    turtle.set_defaults(turtle_canvas_wrapper=Edython.el)
+                    panel = document['eyo-panel-turtle']
+                    if panel.clientWidth == 0:
+                        console_js.error('Pliz, show turtle panel')
+                        window.eYo.makeTurtleVisible()
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() this won't work either
-                    console_js.log('Turtle available...')
+                    console_js.log('Turtle available...', panel.clientWidth, panel.clientHeight)
                 except KeyError as e:
                     print(f'Build error: Missing #{e}')
             else:
@@ -117,7 +118,7 @@ except:
         _status = Status.MAIN  # or Status.BLOCK if typing inside a block
         history = []
         current = 0
-        el = None
+        elmt = None
         ns = {
             'credits':credits,
             'copyright':copyright,
@@ -127,27 +128,27 @@ except:
         }
         # execution namespace
         
-        def __init__(self, el, callback = None):
-            self.el = el
-            assert self.el is not None, 'No element for id '+id
+        def __init__(self, elmt, callback = None):
+            self.elmt = elmt
+            assert self.elmt is not None, 'No element for id '+id
             self.callback = callback
             sys.stdout.write = sys.stderr.write = lambda data: self.write(data)
-            self.el.bind('keypress', lambda e: self._myKeyPress(e))
-            self.el.bind('keydown', lambda e: self._myKeyDown(e))
-            self.el.bind('click', lambda e: self._cursorToEnd(e))
+            self.elmt.bind('keypress', lambda e: self._myKeyPress(e))
+            self.elmt.bind('keydown', lambda e: self._myKeyDown(e))
+            self.elmt.bind('click', lambda e: self._cursorToEnd(e))
             console_js.log('Console available...')
             self.restart()
     
         def write(self, data):
-            if self.el is not None:
-                self.el.value += str(data)
+            if self.elmt is not None:
+                self.elmt.value += str(data)
             else:
                 console_js.error(data)
     
         def erase(self):
             self.flush()
             self._prompt()
-            self.el.focus()
+            self.elmt.focus()
             self._cursorToEnd()
     
         def restart(self):
@@ -163,7 +164,7 @@ except:
             #self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
             self.write('Type "copyright", "credits" or "license" for more information.\n')
             self._prompt()
-            self.el.focus()
+            self.elmt.focus()
             self._cursorToEnd()
 
         def _prompt(self):
@@ -176,17 +177,17 @@ except:
             self.write('\n')
     
         def flush(self):
-            self.el.value = ''
+            self.elmt.value = ''
     
         def _cursorToEnd(self, *args):
-            pos = len(self.el.value)
-            self.el.setSelectionRange(pos, pos)
-            self.el.scrollTop = self.el.scrollHeight
+            pos = len(self.elmt.value)
+            self.elmt.setSelectionRange(pos, pos)
+            self.elmt.scrollTop = self.elmt.scrollHeight
     
         def _get_col(self):
             # returns the column num of cursor
-            sel = self.el.selectionStart
-            lines = self.el.value.split('\n')
+            sel = self.elmt.selectionStart
+            lines = self.elmt.value.split('\n')
             for line in lines[:-1]:
                 sel -= len(line) + 1
             return sel
@@ -196,7 +197,7 @@ except:
                 event.preventDefault()
                 self.write('    ')
             elif event.keyCode == 13:  # return
-                src = self.el.value
+                src = self.elmt.value
                 if self._status == Status.MAIN:
                     currentLine = src[src.rfind('>>>') + 4:]
                 elif self._status == Status.STRING3:
@@ -270,30 +271,30 @@ except:
                     event.preventDefault()
                     event.stopPropagation()
             elif event.keyCode == 36:  # line start
-                pos = self.el.selectionStart
+                pos = self.elmt.selectionStart
                 col = self._get_col()
-                self.el.setSelectionRange(pos - col + 4, pos - col + 4)
+                self.elmt.setSelectionRange(pos - col + 4, pos - col + 4)
                 event.preventDefault()
             elif event.keyCode == 38:  # up
                 if self.current > 0:
-                    pos = self.el.selectionStart
+                    pos = self.elmt.selectionStart
                     col = self._get_col()
                     # remove self.current line
-                    self.el.value = self.el.value[:pos - col + 4]
+                    self.elmt.value = self.elmt.value[:pos - col + 4]
                     self.current -= 1
                     self.write(self.history[self.current])
                 event.preventDefault()
             elif event.keyCode == 40:  # down
                 if self.current < len(self.history) - 1:
-                    pos = self.el.selectionStart
+                    pos = self.elmt.selectionStart
                     col = self._get_col()
                     # remove self.current line
-                    self.el.value = self.el.value[:pos - col + 4]
+                    self.elmt.value = self.elmt.value[:pos - col + 4]
                     self.current += 1
                     self.write(self.history[self.current])
                 event.preventDefault()
             elif event.keyCode == 8:  # backspace
-                src = self.el.value
+                src = self.elmt.value
                 lstart = src.rfind('\n')
                 if (lstart == -1 and len(src) < 5) or (len(src) - lstart < 6):
                     event.preventDefault()
@@ -333,15 +334,15 @@ export default {
   mounted: function () {
     eYo.$$.bus.$on('erase-console', this.eraseConsole)
     eYo.$$.bus.$on('restart-console', this.restartConsole)
-    eYo.$$.bus.$on('replay-turtle', this.restartTurtle)
-    eYo.$$.bus.$on('erase-turtle', this.replayTurtle)
+    eYo.$$.bus.$on('replay-turtle', this.replayTurtle)
+    eYo.$$.bus.$on('erase-turtle', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
     restartConsole () {
       eYo.console && eYo.console.__class__.restart(eYo.console)
     },
-    restartTurtle () {
+    eraseTurtle () {
       eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleRestart()')
     },
     eraseConsole () {
@@ -351,7 +352,7 @@ export default {
       eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleReplayScene()')
     },
     restartAll () {
-      this.restartTurtle()
+      this.eraseTurtle()
       this.restartConsole() // this must be last
     }
   }

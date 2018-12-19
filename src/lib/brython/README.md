@@ -1,1497 +1,2132 @@
 # Brython
 
-Version 3.5.1 is used as of may 2018.
+Version 3.6.2 is used as of december 2018.
 
 ## Content of this directory
-`ls -1R` output as of june 2018.
-
-    README.md
-    README.txt
-    brython.js
-    brython_stdlib.js
-    demo.html
-    unicode.txt
-    www
-
-    ./www:
-    brython.css
-    brython.png
-    brython.svg
-    brython_tp.png
-    brython_white.png
-    console.css
-    console.html
-    console.py
-    src
-
-    ./www/src:
-    Lib
-    async.js
-    brython.js
-    brython_builtins.js
-    brython_dist.js
-    brython_loader.js
-    brython_stdlib.js
-    builtin_modules.js
-    builtins_docstrings.js
-    js_objects.js
-    libs
-    local_storage_fs.js
-    py2js.js
-    py_VFS.js
-    py_builtin_functions.js
-    py_bytes.js
-    py_complex.js
-    py_dict.js
-    py_dom.js
-    py_exceptions.js
-    py_float.js
-    py_generator.js
-    py_import.js
-    py_import_hooks.js
-    py_int.js
-    py_list.js
-    py_long_int.js
-    py_object.js
-    py_range_slice.js
-    py_set.js
-    py_sort.js
-    py_string.js
-    py_type.js
-    py_utils.js
-    stdlib_paths.js
-    unicode.min.js
-    unicode.txt
-    version_info.js
-    web_workers
-
-    ./www/src/Lib:
-    VFS_import.py
-    __future__.py
-    _abcoll.py
-    _codecs.py
-    _collections.py
-    _csv.py
-    _dummy_thread.py
-    _functools.py
-    _imp.py
-    _io.py
-    _markupbase.py
-    _random.py
-    _socket.py
-    _sre.py
-    _string.py
-    _strptime.py
-    _struct.py
-    _sysconfigdata.py
-    _testcapi.py
-    _thread.py
-    _threading_local.py
-    _warnings.py
-    _weakref.py
-    _weakrefset.py
-    abc.py
-    antigravity.py
-    argparse.py
-    asyncio
-    atexit.py
-    base64.py
-    bdb.py
-    binascii.py
-    bisect.py
-    browser
-    calendar.py
-    cmath.py
-    cmd.py
-    code.py
-    codecs.py
-    codeop.py
-    collections
-    colorsys.py
-    concurrent
-    configparser.py
-    contextlib.py
-    copy.py
-    copyreg.py
-    csv.py
-    datetime.py
-    decimal.py
-    difflib.py
-    doctest.py
-    encodings
-    errno.py
-    external_import.py
-    fnmatch.py
-    formatter.py
-    fractions.py
-    functools.py
-    gc.py
-    genericpath.py
-    getopt.py
-    gettext.py
-    glob.py
-    heapq.py
-    html
-    http
-    imp.py
-    importlib
-    inspect.py
-    io.py
-    itertools.py
-    jqueryui
-    keyword.py
-    linecache.py
-    locale.py
-    logging
-    marshal.py
-    multiprocessing
-    numbers.py
-    opcode.py
-    operator.py
-    optparse.py
-    os.py
-    pdb.py
-    pickle.py
-    platform.py
-    posix.py
-    posixpath.py
-    pprint.py
-    profile.py
-    pwd.py
-    pydoc.py
-    pydoc_data
-    queue.py
-    re.py
-    reprlib.py
-    select.py
-    shutil.py
-    signal.py
-    site-packages
-    site.py
-    socket.py
-    sre_compile.py
-    sre_constants.py
-    sre_parse.py
-    stat.py
-    string.py
-    struct.py
-    subprocess.py
-    sys.py
-    sysconfig.py
-    tarfile.py
-    tempfile.py
-    test
-    textwrap.py
-    this.py
-    threading.py
-    time.py
-    timeit.py
-    token.py
-    tokenize.py
-    traceback.py
-    turtle.py
-    types.py
-    unittest
-    urllib
-    uuid.py
-    warnings.py
-    weakref.py
-    webbrowser.py
-    xml
-    zipfile.py
-    zlib.py
-
-    ./www/src/Lib/asyncio:
-    __init__.py
-    _utils.py
-    coroutines.py
-    events.py
-    fs.py
-    futures.py
-    http.py
-    locks.py
-    objects.py
-    queues.py
-
-    ./www/src/Lib/browser:
-    __init__.py
-    ajax.py
-    highlight.py
-    html.py
-    indexed_db.py
-    local_storage.py
-    markdown.py
-    object_storage.py
-    session_storage.py
-    svg.py
-    template.py
-    timer.py
-    websocket.py
-    webworker.py
-
-    ./www/src/Lib/collections:
-    __init__.py
-    abc.py
-
-    ./www/src/Lib/concurrent:
-    __init__.py
-    futures
-
-    ./www/src/Lib/concurrent/futures:
-    __init__.py
-    _base.py
-    process.py
-    thread.py
-    webworker.py
-
-    ./www/src/Lib/encodings:
-    __init__.py
-    aliases.py
-    cp037.py
-    cp1006.py
-    cp1026.py
-    cp1125.py
-    cp1140.py
-    cp1250.py
-    cp1251.py
-    cp1252.py
-    cp1253.py
-    cp1254.py
-    cp1255.py
-    cp1256.py
-    cp1257.py
-    cp1258.py
-    cp273.py
-    cp424.py
-    cp437.py
-    cp500.py
-    cp720.py
-    cp737.py
-    cp775.py
-    cp850.py
-    cp852.py
-    cp855.py
-    cp856.py
-    cp857.py
-    cp858.py
-    cp860.py
-    cp861.py
-    cp862.py
-    cp863.py
-    cp864.py
-    cp865.py
-    cp866.py
-    cp869.py
-    cp874.py
-    cp875.py
-    hp_roman8.py
-    iso8859_1.py
-    iso8859_10.py
-    iso8859_11.py
-    iso8859_13.py
-    iso8859_14.py
-    iso8859_15.py
-    iso8859_16.py
-    iso8859_2.py
-    iso8859_3.py
-    iso8859_4.py
-    iso8859_5.py
-    iso8859_6.py
-    iso8859_7.py
-    iso8859_8.py
-    iso8859_9.py
-    koi8_r.py
-    koi8_u.py
-    mac_arabic.py
-    mac_centeuro.py
-    mac_croatian.py
-    mac_cyrillic.py
-    mac_farsi.py
-    mac_greek.py
-    mac_iceland.py
-    mac_latin2.py
-    mac_roman.py
-    mac_romanian.py
-    mac_turkish.py
-    palmos.py
-    ptcp154.py
-    tis_620.py
-
-    ./www/src/Lib/html:
-    __init__.py
-    entities.py
-    parser.py
-
-    ./www/src/Lib/http:
-    __init__.py
-    cookies.py
-
-    ./www/src/Lib/importlib:
-    __init__.py
-    _bootstrap.py
-    abc.py
-    basehook.py
-    machinery.py
-    util.py
-
-    ./www/src/Lib/jqueryui:
-    __init__.py
-    css
-    jquery-1.11.2.min.js
-    jquery-ui.min.js
-
-    ./www/src/Lib/jqueryui/css:
-    smoothness
-
-    ./www/src/Lib/jqueryui/css/smoothness:
-    images
-    jquery-ui-1.10.3.custom.css
-    jquery-ui-1.10.3.custom.min.css
-    jquery-ui.css
-
-    ./www/src/Lib/jqueryui/css/smoothness/images:
-    animated-overlay.gif
-    ui-bg_flat_0_aaaaaa_40x100.png
-    ui-bg_flat_75_ffffff_40x100.png
-    ui-bg_glass_55_fbf9ee_1x400.png
-    ui-bg_glass_65_ffffff_1x400.png
-    ui-bg_glass_75_dadada_1x400.png
-    ui-bg_glass_75_e6e6e6_1x400.png
-    ui-bg_glass_95_fef1ec_1x400.png
-    ui-bg_highlight-soft_75_cccccc_1x100.png
-    ui-icons_222222_256x240.png
-    ui-icons_2e83ff_256x240.png
-    ui-icons_454545_256x240.png
-    ui-icons_888888_256x240.png
-    ui-icons_cd0a0a_256x240.png
-
-    ./www/src/Lib/logging:
-    __init__.py
-    brython_handlers.py
-    config.py
-    handlers.py
-
-    ./www/src/Lib/multiprocessing:
-    __init__.py
-    connection.py
-    dummy
-    pool.py
-    process.py
-    util.py
-
-    ./www/src/Lib/multiprocessing/dummy:
-    __init__.py
-    connection.py
-
-    ./www/src/Lib/pydoc_data:
-    __init__.py
-    _pydoc.css
-    topics.py
-
-    ./www/src/Lib/site-packages:
-    __future__.py
-    docs.py
-    header.py
-    simpleaio
-    test_sp.py
-    ui
-
-    ./www/src/Lib/site-packages/simpleaio:
-    __init__.py
-    coroutines.py
-    events.py
-    futures.py
-    helpers.py
-    http.py
-    tasks.py
-
-    ./www/src/Lib/site-packages/ui:
-    __init__.py
-    dialog.py
-    menu.py
-    progressbar.py
-    slider.py
-    widget.py
-
-    ./www/src/Lib/test:
-    Sine-1000Hz-300ms.aif
-    ___simplified_test_int.py
-    __init__.py
-    __main__.py
-    audiodata
-    audiotest.au
-    audiotests.py
-    autotest.py
-    bad_coding.py
-    bad_coding2.py
-    badcert.pem
-    badkey.pem
-    badsyntax_3131.py
-    badsyntax_future3.py
-    badsyntax_future4.py
-    badsyntax_future5.py
-    badsyntax_future6.py
-    badsyntax_future7.py
-    badsyntax_future8.py
-    badsyntax_future9.py
-    badsyntax_pep3120.py
-    buffer_tests.py
-    capath
-    cfgparser.1
-    cfgparser.2
-    cfgparser.3
-    check_soundcard.vbs
-    cjkencodings
-    cmath_testcases.txt
-    crashers
-    curses_tests.py
-    data
-    datetimetester.py
-    decimaltestdata
-    dh512.pem
-    dis_module.py
-    doctest_aliases.py
-    double_const.py
-    empty.vbs
-    encoded_modules
-    fork_wait.py
-    future_test1.py
-    future_test2.py
-    gdb_sample.py
-    https_svn_python_org_root.pem
-    inspect_fodder.py
-    inspect_fodder2.py
-    keycert.passwd.pem
-    keycert.pem
-    keycert2.pem
-    leakers
-    list_tests.py
-    lock_tests.py
-    make_ssl_certs.py
-    mapping_tests.py
-    memory_watchdog.py
-    mime.types
-    mock_socket.py
-    module3.py
-    module4.txt
-    mp_fork_bomb.py
-    multibytecodec_support.py
-    namespace_pkgs
-    nokia.pem
-    nullbytecert.pem
-    nullcert.pem
-    outstanding_bugs.py
-    pickletester.py
-    profilee.py
-    pstats.pck
-    pyclbr_input.py
-    pydoc_mod.py
-    pydocfodder.py
-    pystone.py
-    randv2_32.pck
-    randv2_64.pck
-    randv3.pck
-    re_tests.py
-    regrtest.py
-    relimport.py
-    reperf.py
-    sample_doctest.py
-    sample_doctest_no_docstrings.py
-    sample_doctest_no_doctests.py
-    script_helper.py
-    seq_tests.py
-    sgml_input.html
-    sha256.pem
-    sndhdrdata
-    sortperf.py
-    ssl_cert.pem
-    ssl_key.passwd.pem
-    ssl_key.pem
-    ssl_servers.py
-    string_tests.py
-    subprocessdata
-    support
-    test___all__.py
-    test___future__.py
-    test__locale.py
-    test__osx_support.py
-    test_abc.py
-    test_abstract_numbers.py
-    test_aifc.py
-    test_argparse.py
-    test_array.py
-    test_ast.py
-    test_asynchat.py
-    test_asyncore.py
-    test_atexit.py
-    test_audioop.py
-    test_augassign.py
-    test_base64.py
-    test_bigaddrspace.py
-    test_bigmem.py
-    test_binascii.py
-    test_binhex.py
-    test_binop.py
-    test_bisect.py
-    test_bool.py
-    test_buffer.py
-    test_bufio.py
-    test_builtin.py
-    test_bytes.py
-    test_bz2.py
-    test_calendar.py
-    test_call.py
-    test_capi.py
-    test_cgi.py
-    test_cgitb.py
-    test_charmapcodec.py
-    test_class.py
-    test_cmath.py
-    test_cmd.py
-    test_cmd_line.py
-    test_cmd_line_script.py
-    test_code.py
-    test_code_module.py
-    test_codeccallbacks.py
-    test_codecencodings_cn.py
-    test_codecencodings_hk.py
-    test_codecencodings_iso2022.py
-    test_codecencodings_jp.py
-    test_codecencodings_kr.py
-    test_codecencodings_tw.py
-    test_codecmaps_cn.py
-    test_codecmaps_hk.py
-    test_codecmaps_jp.py
-    test_codecmaps_kr.py
-    test_codecmaps_tw.py
-    test_codecs.py
-    test_codeop.py
-    test_coding.py
-    test_collections.py
-    test_colorsys.py
-    test_compare.py
-    test_compile.py
-    test_compileall.py
-    test_complex.py
-    test_concurrent_futures.py
-    test_configparser.py
-    test_contains.py
-    test_contextlib.py
-    test_copy.py
-    test_copyreg.py
-    test_cprofile.py
-    test_crashers.py
-    test_crypt.py
-    test_csv.py
-    test_ctypes.py
-    test_curses.py
-    test_datetime.py
-    test_dbm.py
-    test_dbm_dumb.py
-    test_dbm_gnu.py
-    test_dbm_ndbm.py
-    test_decimal.py
-    test_decorators.py
-    test_defaultdict.py
-    test_deque.py
-    test_descr.py
-    test_descrtut.py
-    test_devpoll.py
-    test_dict.py
-    test_dictcomps.py
-    test_dictviews.py
-    test_difflib.py
-    test_difflib_expect.html
-    test_dis.py
-    test_distutils.py
-    test_doctest.py
-    test_doctest2.py
-    test_docxmlrpc.py
-    test_dummy_thread.py
-    test_dummy_threading.py
-    test_dynamic.py
-    test_email
-    test_enumerate.py
-    test_eof.py
-    test_epoll.py
-    test_errno.py
-    test_exception_variations.py
-    test_exceptions.py
-    test_extcall.py
-    test_faulthandler.py
-    test_fcntl.py
-    test_file.py
-    test_file_eintr.py
-    test_filecmp.py
-    test_fileinput.py
-    test_fileio.py
-    test_float.py
-    test_flufl.py
-    test_fnmatch.py
-    test_fork1.py
-    test_format.py
-    test_fractions.py
-    test_frozen.py
-    test_ftplib.py
-    test_funcattrs.py
-    test_functools.py
-    test_future.py
-    test_future3.py
-    test_future4.py
-    test_future5.py
-    test_gc.py
-    test_gdb.py
-    test_generators.py
-    test_genericpath.py
-    test_genexps.py
-    test_getargs2.py
-    test_getopt.py
-    test_gettext.py
-    test_glob.py
-    test_global.py
-    test_grammar.py
-    test_grp.py
-    test_gzip.py
-    test_hash.py
-    test_hashlib.py
-    test_heapq.py
-    test_hmac.py
-    test_html.py
-    test_htmlparser.py
-    test_http_cookiejar.py
-    test_http_cookies.py
-    test_httplib.py
-    test_httpservers.py
-    test_idle.py
-    test_imaplib.py
-    test_imp.py
-    test_import.py
-    test_importhooks.py
-    test_importlib
-    test_index.py
-    test_inspect.py
-    test_int.py
-    test_int_literal.py
-    test_io.py
-    test_ioctl.py
-    test_ipaddress.py
-    test_isinstance.py
-    test_iter.py
-    test_iterlen.py
-    test_itertools.py
-    test_json
-    test_keywordonlyarg.py
-    test_kqueue.py
-    test_largefile.py
-    test_lib2to3.py
-    test_linecache.py
-    test_list.py
-    test_listcomps.py
-    test_locale.py
-    test_logging.py
-    test_long.py
-    test_longexp.py
-    test_lzma.py
-    test_macpath.py
-    test_macurl2path.py
-    test_mailbox.py
-    test_mailcap.py
-    test_marshal.py
-    test_math.py
-    test_memoryio.py
-    test_memoryview.py
-    test_metaclass.py
-    test_mimetypes.py
-    test_minidom.py
-    test_mmap.py
-    test_module.py
-    test_modulefinder.py
-    test_msilib.py
-    test_multibytecodec.py
-    test_multiprocessing.py
-    test_namespace_pkgs.py
-    test_netrc.py
-    test_nis.py
-    test_nntplib.py
-    test_normalization.py
-    test_ntpath.py
-    test_numeric_tower.py
-    test_opcodes.py
-    test_openpty.py
-    test_operator.py
-    test_optparse.py
-    test_os.py
-    test_ossaudiodev.py
-    test_osx_env.py
-    test_parser.py
-    test_pdb.py
-    test_peepholer.py
-    test_pep247.py
-    test_pep263.py
-    test_pep277.py
-    test_pep292.py
-    test_pep3120.py
-    test_pep3131.py
-    test_pep3151.py
-    test_pep352.py
-    test_pep380.py
-    test_pickle.py
-    test_pickletools.py
-    test_pipes.py
-    test_pkg.py
-    test_pkgimport.py
-    test_pkgutil.py
-    test_platform.py
-    test_plistlib.py
-    test_poll.py
-    test_popen.py
-    test_poplib.py
-    test_posix.py
-    test_posixpath.py
-    test_pow.py
-    test_pprint.py
-    test_print.py
-    test_profile.py
-    test_property.py
-    test_pstats.py
-    test_pty.py
-    test_pulldom.py
-    test_pwd.py
-    test_py_compile.py
-    test_pyclbr.py
-    test_pydoc.py
-    test_pyexpat.py
-    test_queue.py
-    test_quopri.py
-    test_raise.py
-    test_random.py
-    test_range.py
-    test_re.py
-    test_readline.py
-    test_reprlib.py
-    test_resource.py
-    test_richcmp.py
-    test_rlcompleter.py
-    test_robotparser.py
-    test_runpy.py
-    test_sax.py
-    test_sched.py
-    test_scope.py
-    test_select.py
-    test_set.py
-    test_setcomps.py
-    test_shelve.py
-    test_shlex.py
-    test_shutil.py
-    test_signal.py
-    test_site.py
-    test_slice.py
-    test_smtpd.py
-    test_smtplib.py
-    test_smtpnet.py
-    test_sndhdr.py
-    test_socket.py
-    test_socketserver.py
-    test_sort.py
-    test_sqlite.py
-    test_ssl.py
-    test_startfile.py
-    test_stat.py
-    test_strftime.py
-    test_string.py
-    test_stringprep.py
-    test_strlit.py
-    test_strptime.py
-    test_strtod.py
-    test_struct.py
-    test_structmembers.py
-    test_structseq.py
-    test_subprocess.py
-    test_sunau.py
-    test_sundry.py
-    test_super.py
-    test_support.py
-    test_symtable.py
-    test_syntax.py
-    test_sys.py
-    test_sys_setprofile.py
-    test_sys_settrace.py
-    test_sysconfig.py
-    test_syslog.py
-    test_tarfile.py
-    test_tcl.py
-    test_telnetlib.py
-    test_tempfile.py
-    test_textwrap.py
-    test_thread.py
-    test_threaded_import.py
-    test_threadedtempfile.py
-    test_threading.py
-    test_threading_local.py
-    test_threadsignals.py
-    test_time.py
-    test_timeit.py
-    test_timeout.py
-    test_tk.py
-    test_tokenize.py
-    test_tools.py
-    test_trace.py
-    test_traceback.py
-    test_ttk_guionly.py
-    test_ttk_textonly.py
-    test_tuple.py
-    test_typechecks.py
-    test_types.py
-    test_ucn.py
-    test_unary.py
-    test_unicode.py
-    test_unicode_file.py
-    test_unicodedata.py
-    test_unittest.py
-    test_univnewlines.py
-    test_unpack.py
-    test_unpack_ex.py
-    test_urllib.py
-    test_urllib2.py
-    test_urllib2_localnet.py
-    test_urllib2net.py
-    test_urllib_response.py
-    test_urllibnet.py
-    test_urlparse.py
-    test_userdict.py
-    test_userlist.py
-    test_userstring.py
-    test_uu.py
-    test_uuid.py
-    test_venv.py
-    test_wait3.py
-    test_wait4.py
-    test_warnings.py
-    test_wave.py
-    test_weakref.py
-    test_weakset.py
-    test_webbrowser.py
-    test_winreg.py
-    test_winsound.py
-    test_with.py
-    test_wsgiref.py
-    test_xdrlib.py
-    test_xml_dom_minicompat.py
-    test_xml_etree.py
-    test_xml_etree_c.py
-    test_xmlrpc.py
-    test_xmlrpc_net.py
-    test_zipfile.py
-    test_zipfile64.py
-    test_zipimport.py
-    test_zipimport_support.py
-    test_zlib.py
-    testcodec.py
-    tf_inherit_check.py
-    threaded_import_hangers.py
-    time_hashlib.py
-    tracedmodules
-    warning_tests.py
-    win_console_handler.py
-    xmltestdata
-    xmltests.py
-
-    ./www/src/Lib/test/audiodata:
-    pluck-alaw.aifc
-    pluck-pcm16.aiff
-    pluck-pcm16.au
-    pluck-pcm16.wav
-    pluck-pcm24.aiff
-    pluck-pcm24.wav
-    pluck-pcm32.aiff
-    pluck-pcm32.au
-    pluck-pcm32.wav
-    pluck-pcm8.aiff
-    pluck-pcm8.au
-    pluck-pcm8.wav
-    pluck-ulaw.aifc
-    pluck-ulaw.au
-
-    ./www/src/Lib/test/capath:
-    4e1295a3.0
-    5ed36f99.0
-    6e88d7b8.0
-    99d0fa06.0
-
-    ./www/src/Lib/test/cjkencodings:
-    big5-utf8.txt
-    big5.txt
-    big5hkscs-utf8.txt
-    big5hkscs.txt
-    cp949-utf8.txt
-    cp949.txt
-    euc_jisx0213-utf8.txt
-    euc_jisx0213.txt
-    euc_jp-utf8.txt
-    euc_jp.txt
-    euc_kr-utf8.txt
-    euc_kr.txt
-    gb18030-utf8.txt
-    gb18030.txt
-    gb2312-utf8.txt
-    gb2312.txt
-    gbk-utf8.txt
-    gbk.txt
-    hz-utf8.txt
-    hz.txt
-    iso2022_jp-utf8.txt
-    iso2022_jp.txt
-    iso2022_kr-utf8.txt
-    iso2022_kr.txt
-    johab-utf8.txt
-    johab.txt
-    shift_jis-utf8.txt
-    shift_jis.txt
-    shift_jisx0213-utf8.txt
-    shift_jisx0213.txt
-
-    ./www/src/Lib/test/crashers:
-    README
-    bogus_code_obj.py
-    gc_inspection.py
-    infinite_loop_re.py
-    mutation_inside_cyclegc.py
-    recursive_call.py
-    trace_at_recursion_limit.py
-    underlying_dict.py
-
-    ./www/src/Lib/test/data:
-    README
-
-    ./www/src/Lib/test/decimaltestdata:
-    abs.decTest
-    add.decTest
-    and.decTest
-    base.decTest
-    clamp.decTest
-    class.decTest
-    compare.decTest
-    comparetotal.decTest
-    comparetotmag.decTest
-    copy.decTest
-    copyabs.decTest
-    copynegate.decTest
-    copysign.decTest
-    ddAbs.decTest
-    ddAdd.decTest
-    ddAnd.decTest
-    ddBase.decTest
-    ddCanonical.decTest
-    ddClass.decTest
-    ddCompare.decTest
-    ddCompareSig.decTest
-    ddCompareTotal.decTest
-    ddCompareTotalMag.decTest
-    ddCopy.decTest
-    ddCopyAbs.decTest
-    ddCopyNegate.decTest
-    ddCopySign.decTest
-    ddDivide.decTest
-    ddDivideInt.decTest
-    ddEncode.decTest
-    ddFMA.decTest
-    ddInvert.decTest
-    ddLogB.decTest
-    ddMax.decTest
-    ddMaxMag.decTest
-    ddMin.decTest
-    ddMinMag.decTest
-    ddMinus.decTest
-    ddMultiply.decTest
-    ddNextMinus.decTest
-    ddNextPlus.decTest
-    ddNextToward.decTest
-    ddOr.decTest
-    ddPlus.decTest
-    ddQuantize.decTest
-    ddReduce.decTest
-    ddRemainder.decTest
-    ddRemainderNear.decTest
-    ddRotate.decTest
-    ddSameQuantum.decTest
-    ddScaleB.decTest
-    ddShift.decTest
-    ddSubtract.decTest
-    ddToIntegral.decTest
-    ddXor.decTest
-    decDouble.decTest
-    decQuad.decTest
-    decSingle.decTest
-    divide.decTest
-    divideint.decTest
-    dqAbs.decTest
-    dqAdd.decTest
-    dqAnd.decTest
-    dqBase.decTest
-    dqCanonical.decTest
-    dqClass.decTest
-    dqCompare.decTest
-    dqCompareSig.decTest
-    dqCompareTotal.decTest
-    dqCompareTotalMag.decTest
-    dqCopy.decTest
-    dqCopyAbs.decTest
-    dqCopyNegate.decTest
-    dqCopySign.decTest
-    dqDivide.decTest
-    dqDivideInt.decTest
-    dqEncode.decTest
-    dqFMA.decTest
-    dqInvert.decTest
-    dqLogB.decTest
-    dqMax.decTest
-    dqMaxMag.decTest
-    dqMin.decTest
-    dqMinMag.decTest
-    dqMinus.decTest
-    dqMultiply.decTest
-    dqNextMinus.decTest
-    dqNextPlus.decTest
-    dqNextToward.decTest
-    dqOr.decTest
-    dqPlus.decTest
-    dqQuantize.decTest
-    dqReduce.decTest
-    dqRemainder.decTest
-    dqRemainderNear.decTest
-    dqRotate.decTest
-    dqSameQuantum.decTest
-    dqScaleB.decTest
-    dqShift.decTest
-    dqSubtract.decTest
-    dqToIntegral.decTest
-    dqXor.decTest
-    dsBase.decTest
-    dsEncode.decTest
-    exp.decTest
-    extra.decTest
-    fma.decTest
-    inexact.decTest
-    invert.decTest
-    ln.decTest
-    log10.decTest
-    logb.decTest
-    max.decTest
-    maxmag.decTest
-    min.decTest
-    minmag.decTest
-    minus.decTest
-    multiply.decTest
-    nextminus.decTest
-    nextplus.decTest
-    nexttoward.decTest
-    or.decTest
-    plus.decTest
-    power.decTest
-    powersqrt.decTest
-    quantize.decTest
-    randomBound32.decTest
-    randoms.decTest
-    reduce.decTest
-    remainder.decTest
-    remainderNear.decTest
-    rescale.decTest
-    rotate.decTest
-    rounding.decTest
-    samequantum.decTest
-    scaleb.decTest
-    shift.decTest
-    squareroot.decTest
-    subtract.decTest
-    testall.decTest
-    tointegral.decTest
-    tointegralx.decTest
-    xor.decTest
-
-    ./www/src/Lib/test/encoded_modules:
-    __init__.py
-    module_iso_8859_1.py
-    module_koi8_r.py
-
-    ./www/src/Lib/test/leakers:
-    README.txt
-    __init__.py
-    test_ctypes.py
-    test_gestalt.py
-    test_selftype.py
-
-    ./www/src/Lib/test/namespace_pkgs:
-    both_portions
-    module_and_namespace_package
-    not_a_namespace_pkg
-    portion1
-    portion2
-    project1
-    project2
-    project3
-
-    ./www/src/Lib/test/namespace_pkgs/both_portions:
-    foo
-
-    ./www/src/Lib/test/namespace_pkgs/both_portions/foo:
-    one.py
-    two.py
-
-    ./www/src/Lib/test/namespace_pkgs/module_and_namespace_package:
-    a_test
-    a_test.py
-
-    ./www/src/Lib/test/namespace_pkgs/module_and_namespace_package/a_test:
-    empty
-
-    ./www/src/Lib/test/namespace_pkgs/not_a_namespace_pkg:
-    foo
-
-    ./www/src/Lib/test/namespace_pkgs/not_a_namespace_pkg/foo:
-    __init__.py
-    one.py
-
-    ./www/src/Lib/test/namespace_pkgs/portion1:
-    foo
-
-    ./www/src/Lib/test/namespace_pkgs/portion1/foo:
-    one.py
-
-    ./www/src/Lib/test/namespace_pkgs/portion2:
-    foo
-
-    ./www/src/Lib/test/namespace_pkgs/portion2/foo:
-    two.py
-
-    ./www/src/Lib/test/namespace_pkgs/project1:
-    parent
-
-    ./www/src/Lib/test/namespace_pkgs/project1/parent:
-    child
-
-    ./www/src/Lib/test/namespace_pkgs/project1/parent/child:
-    one.py
-
-    ./www/src/Lib/test/namespace_pkgs/project2:
-    parent
-
-    ./www/src/Lib/test/namespace_pkgs/project2/parent:
-    child
-
-    ./www/src/Lib/test/namespace_pkgs/project2/parent/child:
-    two.py
-
-    ./www/src/Lib/test/namespace_pkgs/project3:
-    parent
-
-    ./www/src/Lib/test/namespace_pkgs/project3/parent:
-    child
-
-    ./www/src/Lib/test/namespace_pkgs/project3/parent/child:
-    three.py
-
-    ./www/src/Lib/test/sndhdrdata:
-    README
-    sndhdr.8svx
-    sndhdr.aifc
-    sndhdr.aiff
-    sndhdr.au
-    sndhdr.hcom
-    sndhdr.sndt
-    sndhdr.voc
-    sndhdr.wav
-
-    ./www/src/Lib/test/subprocessdata:
-    fd_status.py
-    input_reader.py
-    qcat.py
-    qgrep.py
-    sigchild_ignore.py
-
-    ./www/src/Lib/test/support:
-    __init__.py
-
-    ./www/src/Lib/test/test_email:
-    __init__.py
-    __main__.py
-    data
-    test__encoded_words.py
-    test__header_value_parser.py
-    test_asian_codecs.py
-    test_defect_handling.py
-    test_email.py
-    test_generator.py
-    test_headerregistry.py
-    test_inversion.py
-    test_message.py
-    test_parser.py
-    test_pickleable.py
-    test_policy.py
-    test_utils.py
-    torture_test.py
-
-    ./www/src/Lib/test/test_email/data:
-    PyBanner048.gif
-    audiotest.au
-    msg_01.txt
-    msg_02.txt
-    msg_03.txt
-    msg_04.txt
-    msg_05.txt
-    msg_06.txt
-    msg_07.txt
-    msg_08.txt
-    msg_09.txt
-    msg_10.txt
-    msg_11.txt
-    msg_12.txt
-    msg_12a.txt
-    msg_13.txt
-    msg_14.txt
-    msg_15.txt
-    msg_16.txt
-    msg_17.txt
-    msg_18.txt
-    msg_19.txt
-    msg_20.txt
-    msg_21.txt
-    msg_22.txt
-    msg_23.txt
-    msg_24.txt
-    msg_25.txt
-    msg_26.txt
-    msg_27.txt
-    msg_28.txt
-    msg_29.txt
-    msg_30.txt
-    msg_31.txt
-    msg_32.txt
-    msg_33.txt
-    msg_34.txt
-    msg_35.txt
-    msg_36.txt
-    msg_37.txt
-    msg_38.txt
-    msg_39.txt
-    msg_40.txt
-    msg_41.txt
-    msg_42.txt
-    msg_43.txt
-    msg_44.txt
-    msg_45.txt
-    msg_46.txt
-
-    ./www/src/Lib/test/test_importlib:
-    __init__.py
-    __main__.py
-    abc.py
-    builtin
-    extension
-    frozen
-    import_
-    regrtest.py
-    source
-    test_abc.py
-    test_api.py
-    test_locks.py
-    test_util.py
-    util.py
-
-    ./www/src/Lib/test/test_importlib/builtin:
-    __init__.py
-    test_finder.py
-    test_loader.py
-    util.py
-
-    ./www/src/Lib/test/test_importlib/extension:
-    __init__.py
-    test_case_sensitivity.py
-    test_finder.py
-    test_loader.py
-    test_path_hook.py
-    util.py
-
-    ./www/src/Lib/test/test_importlib/frozen:
-    __init__.py
-    test_finder.py
-    test_loader.py
-
-    ./www/src/Lib/test/test_importlib/import_:
-    __init__.py
-    test___package__.py
-    test_api.py
-    test_caching.py
-    test_fromlist.py
-    test_meta_path.py
-    test_packages.py
-    test_path.py
-    test_relative_imports.py
-    util.py
-
-    ./www/src/Lib/test/test_importlib/source:
-    __init__.py
-    test_abc_loader.py
-    test_case_sensitivity.py
-    test_file_loader.py
-    test_finder.py
-    test_path_hook.py
-    test_source_encoding.py
-    util.py
-
-    ./www/src/Lib/test/test_json:
-    __init__.py
-    __main__.py
-    test_decode.py
-    test_default.py
-    test_dump.py
-    test_encode_basestring_ascii.py
-    test_fail.py
-    test_float.py
-    test_indent.py
-    test_pass1.py
-    test_pass2.py
-    test_pass3.py
-    test_recursion.py
-    test_scanstring.py
-    test_separators.py
-    test_speedups.py
-    test_tool.py
-    test_unicode.py
-
-    ./www/src/Lib/test/tracedmodules:
-    __init__.py
-    testmod.py
-
-    ./www/src/Lib/test/xmltestdata:
-    simple-ns.xml
-    simple.xml
-    test.xml
-    test.xml.out
-
-    ./www/src/Lib/unittest:
-    __init__.py
-    __main__.py
-    case.py
-    loader.py
-    main.py
-    mock.py
-    result.py
-    runner.py
-    signals.py
-    suite.py
-    test
-    util.py
-
-    ./www/src/Lib/unittest/test:
-    __init__.py
-    _test_warnings.py
-    dummy.py
-    support.py
-    test_assertions.py
-    test_break.py
-    test_case.py
-    test_discovery.py
-    test_functiontestcase.py
-    test_loader.py
-    test_program.py
-    test_result.py
-    test_runner.py
-    test_setups.py
-    test_skipping.py
-    test_suite.py
-    testmock
-
-    ./www/src/Lib/unittest/test/testmock:
-    __init__.py
-    support.py
-    testcallable.py
-    testhelpers.py
-    testmagicmethods.py
-    testmock.py
-    testpatch.py
-    testsentinel.py
-    testwith.py
-
-    ./www/src/Lib/urllib:
-    __init__.py
-    error.py
-    parse.py
-    request.py
-
-    ./www/src/Lib/xml:
-    __init__.py
-    etree
-    parsers
-    sax
-
-    ./www/src/Lib/xml/etree:
-    ElementInclude.py
-    ElementPath.py
-    ElementTree.py
-    __init__.py
-    cElementTree.py
-
-    ./www/src/Lib/xml/parsers:
-    __init__.py
-    expat.py
-
-    ./www/src/Lib/xml/sax:
-    __init__.py
-    _exceptions.py
-    expatreader.py
-    handler.py
-    saxutils.py
-    xmlreader.py
-
-    ./www/src/libs:
-    _ajax.js
-    _base64.js
-    _jsre.js
-    _multiprocessing.js
-    _posixsubprocess.js
-    _profile.js
-    _svg.js
-    _sys.js
-    builtins.js
-    crypto_js
-    dis.js
-    hashlib.js
-    json.js
-    long_int.js
-    math.js
-    modulefinder.js
-    random.js
-
-    ./www/src/libs/crypto_js:
-    rollups
-
-    ./www/src/libs/crypto_js/rollups:
-    aes.js
-    hmac-md5.js
-    hmac-ripemd160.js
-    hmac-sha1.js
-    hmac-sha224.js
-    hmac-sha256.js
-    hmac-sha3.js
-    hmac-sha384.js
-    hmac-sha512.js
-    md5.js
-    pbkdf2.js
-    rabbit-legacy.js
-    rabbit.js
-    rc4.js
-    ripemd160.js
-    sha1.js
-    sha224.js
-    sha256.js
-    sha3.js
-    sha384.js
-    sha512.js
-    tripledes.js
-
-    ./www/src/web_workers:
-    import.js
-    test_rpc.py
-    test_worker.py
-    worker.js
-
+`ls -1R` output as of december 2018.
+
+```
+README.md
+README.txt
+brython.js
+brython_stdlib.js
+demo.html
+unicode.txt
+www
+
+./www:
+app
+benchmarks
+brython.css
+brython.png
+brython.svg
+brython_tp.png
+brython_white.png
+code_coverage
+console.html
+demo.html
+doc
+favicon.png
+gallery
+groups.html
+index.html
+mkdocs.yml
+slideshow
+speed
+src
+tests
+
+./www/app:
+index.html
+
+./www/benchmarks:
+index.html
+performance
+
+./www/benchmarks/performance:
+bm_ai.py
+bm_call_simple.py
+bm_html5lib.py
+bm_nbody.py
+bm_regex_compile.py
+bm_regex_effbot.py
+bm_regex_v8.py
+data
+testlist.py
+util.py
+
+./www/benchmarks/performance/data:
+html5lib_spec.html
+
+./www/code_coverage:
+blanket.min.js
+index.html
+usage-blanket.js
+
+./www/doc:
+doc_brython.css
+docs.py
+en
+es
+fr
+header.py
+images
+index.md
+run.png
+
+./www/doc/en:
+access.md
+ajax.md
+asyncfs.md
+asyncio.md
+attributes.md
+browser.md
+cookbook
+create.md
+deploy.md
+dev_env.md
+dom_api.md
+drag_events.md
+events.md
+examples
+faq.md
+firefox_os_intro.md
+firefox_os_tuto1.md
+firefox_os_tuto2.md
+focus_events.md
+html.md
+implem.md
+import.md
+index_static.html
+install.md
+intro.md
+javascript.md
+jsobjects.md
+keyboard_events.md
+local_storage.md
+markdown.md
+modele.md
+mouse_events.md
+object_storage.md
+options.md
+pydom.md
+query.md
+svg.md
+syntax.md
+template.md
+test.md
+timer.md
+websockets.md
+webworker.md
+
+./www/doc/en/cookbook:
+basic_markup.md
+bind_unbind.md
+content_in_div.md
+drag_drop.md
+echo.html
+file.txt
+get_content.md
+hello_world.md
+local_storage.md
+read_file.md
+read_text_from_imagemap.md
+select_checkbox.md
+table.md
+validate_form.md
+
+./www/doc/en/examples:
+local_storage
+
+./www/doc/en/examples/local_storage:
+done.png
+local-storage-example.html
+
+./www/doc/es:
+access.md
+ajax.md
+asyncio.md
+attributes.md
+browser.md
+cookbook
+create.md
+deploy.md
+dev_env.md
+dom_api.md
+drag_events.md
+events.md
+faq.md
+firefox_os_intro.md
+firefox_os_tuto1.md
+firefox_os_tuto2.md
+focus_events.md
+html.md
+implem.md
+import.md
+index_static.html
+install.md
+intro.md
+javascript.md
+jsobjects.md
+keyboard_events.md
+local_storage.md
+markdown.md
+modele.md
+mouse_events.md
+object_storage.md
+options.md
+pydom.md
+query.md
+svg.md
+syntax.md
+test.md
+timer.md
+websockets.md
+
+./www/doc/es/cookbook:
+basic_markup.md
+bind_unbind.md
+content_in_div.md
+drag_drop.md
+echo.html
+file.txt
+get_content.md
+hello_world.md
+local_storage.md
+read_file.md
+read_text_from_imagemap.md
+select_checkbox.md
+table.md
+validate_form.md
+
+./www/doc/fr:
+access.md
+ajax.md
+asyncio.md
+attributes.md
+browser.md
+cookbook
+create.md
+deploy.md
+dev_env.md
+dom_api.md
+drag_events.md
+events.md
+faq.md
+focus_events.md
+html.md
+implem.md
+import.md
+index_static.html
+install.md
+integr.md
+intro.md
+javascript.md
+jsobjects.md
+keyboard_events.md
+local_storage.md
+locstor.md
+markdown.md
+modele.md
+mouse_events.md
+object_storage.md
+options.md
+query.md
+svg.md
+syntax.md
+template.md
+test.md
+timer.md
+websockets.md
+webworker.md
+
+./www/doc/fr/cookbook:
+basic_markup.md
+bind_unbind.md
+content_in_div.md
+drag_drop.md
+echo.html
+file.txt
+get_content.md
+hello_world.md
+local_storage.md
+read_file.md
+read_text_from_imagemap.md
+select_checkbox.md
+table.md
+validate_form.md
+
+./www/doc/images:
+imagemap_example.png
+noir-1.png
+noir-2.png
+
+./www/gallery:
+3Dwalker.css
+3Dwalker.html
+ajax.html
+ajax_data.txt
+barcode.html
+battery.html
+bokeh.html
+canvas_plot.html
+clock.html
+compass.html
+compass.svg
+compiler.html
+default.css
+draw.html
+draw.py
+drop_files.html
+editor.html
+editor.py
+eraser.png
+europe.html
+file.html
+gallery_en.html
+gallery_es.html
+gallery_fr.html
+gallery_pt.html
+geo.html
+hello.html
+highcharts
+icon.png
+img
+import_test.py
+jqui
+jsobject_example.html
+kanban.html
+kanban.py
+library.html
+navi.css
+navi.py
+new_brython.js
+pen.png
+pygame
+raphael
+ruskey.html
+sheet.html
+sheet.py
+sidebar.py
+solitaire.html
+sort_table.html
+sort_table_template.html
+sudoku.html
+sudoku.json
+sudoku.py
+sudoku_grids.txt
+svg.html
+svg_pie_chart.html
+taquin.html
+template_home.html
+test_import.html
+test_markdown.html
+test_select.html
+test_template.html
+test_vue.html
+test_websql.html
+thickness.png
+three.html
+three.min.js
+turtle.html
+ui_menu.py
+unbind.html
+vibration.html
+
+./www/gallery/highcharts:
+examples
+index.htm
+js
+
+./www/gallery/highcharts/examples:
+3d-column-interactive
+area-stacked
+bar-stacked
+gauge-clock
+line-basic
+pie-basic
+scatter
+
+./www/gallery/highcharts/examples/3d-column-interactive:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/area-stacked:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/bar-stacked:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/gauge-clock:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/line-basic:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/pie-basic:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/examples/scatter:
+chart.py
+index.htm
+index_py.htm
+
+./www/gallery/highcharts/js:
+highcharts-3d.js
+highcharts-more.js
+highcharts.js
+modules
+
+./www/gallery/highcharts/js/modules:
+canvas-tools.js
+data.js
+drilldown.js
+exporting.js
+funnel.js
+heatmap.js
+no-data-to-display.js
+solid-gauge.js
+
+./www/gallery/img:
+bg.png
+europa.gif
+floor.png
+overlay.gif
+preview_canvascape.png
+sky.jpg
+
+./www/gallery/jqui:
+accordion.html
+autocomplete.html
+button.html
+datepicker.html
+dialog.html
+draggable.html
+droppable.html
+menu.html
+resizable.html
+resize.html
+selectable.html
+selectmenu.html
+slider.html
+sortable.html
+spinner.html
+tabs.html
+tabs1.html
+tooltips.html
+
+./www/gallery/pygame:
+chimp.html
+
+./www/gallery/raphael:
+basic.html
+colorpicker.js
+colorwheel.js
+demo-print.css
+demo.css
+index.html
+picker.css
+picker.py
+picker_py.html
+playground_py.html
+raphael-min.js
+
+./www/slideshow:
+en
+
+./www/slideshow/en:
+bench1.png
+bench2.png
+console.png
+editor.png
+gallery.png
+google_python_browser.png
+guido.png
+index.html
+pyschool.png
+slideshow.css
+slideshow.py
+slideshow_en.pss
+
+./www/speed:
+agg_speed_results.html
+automate_test.py
+benchmarks
+console.css
+editor.py
+index.html
+perf_bookkeeping.py
+pystone_old_versions.html
+show_speed_results.html
+test_report.py
+upload_speed_results.html
+
+./www/speed/benchmarks:
+add_dict.py
+add_integers.py
+add_strings.py
+assignment.py
+assignment_float.py
+augm_assign.py
+b.py
+bm_ai.py
+build_dict.py
+build_list.py
+call_instance_method.py
+create_class_simple.py
+create_class_with_init.py
+create_function.py
+create_function_complex_args.py
+create_function_no_arg.py
+create_function_single_pos_arg.py
+create_instance_simple_class.py
+create_instance_with_init.py
+fib.py
+float.py
+function_call.py
+function_call_complex.py
+header.py
+primes.py
+pystone.py
+pystone_proc8.py
+set_dict_item.py
+set_list_item.py
+spectral-norm.py
+str_of_int.py
+util.py
+
+./www/src:
+Lib
+async.js
+brython.js
+brython_builtins.js
+brython_dist.js
+brython_loader.js
+brython_stdlib.js
+builtin_modules.js
+builtins_docstrings.js
+js_objects.js
+libs
+local_storage_fs.js
+py2js.js
+py_VFS.js
+py_builtin_functions.js
+py_bytes.js
+py_complex.js
+py_dict.js
+py_dom.js
+py_exceptions.js
+py_float.js
+py_generator.js
+py_import.js
+py_import_hooks.js
+py_int.js
+py_list.js
+py_long_int.js
+py_object.js
+py_range_slice.js
+py_set.js
+py_sort.js
+py_string.js
+py_type.js
+py_utils.js
+stdlib_paths.js
+unicode.min.js
+unicode.txt
+version_info.js
+web_workers
+
+./www/src/Lib:
+VFS_import.py
+__future__.py
+_abcoll.py
+_codecs.py
+_collections.py
+_csv.py
+_dummy_thread.py
+_functools.py
+_imp.py
+_io.py
+_markupbase.py
+_random.py
+_socket.py
+_sre.py
+_string.py
+_strptime.py
+_struct.py
+_sysconfigdata.py
+_testcapi.py
+_thread.py
+_threading_local.py
+_warnings.py
+_weakref.py
+_weakrefset.py
+abc.py
+antigravity.py
+argparse.py
+asyncio
+atexit.py
+base64.py
+bdb.py
+binascii.py
+bisect.py
+browser
+calendar.py
+cmath.py
+cmd.py
+code.py
+codecs.py
+codeop.py
+collections
+colorsys.py
+concurrent
+configparser.py
+contextlib.py
+copy.py
+copyreg.py
+csv.py
+datetime.py
+decimal.py
+difflib.py
+doctest.py
+encodings
+errno.py
+external_import.py
+fnmatch.py
+formatter.py
+fractions.py
+functools.py
+gc.py
+genericpath.py
+getopt.py
+gettext.py
+glob.py
+heapq.py
+html
+http
+imp.py
+importlib
+inspect.py
+io.py
+ipaddress.py
+itertools.py
+jqueryui
+keyword.py
+linecache.py
+locale.py
+logging
+marshal.py
+multiprocessing
+numbers.py
+opcode.py
+operator.py
+optparse.py
+os.py
+pdb.py
+pickle.py
+platform.py
+posix.py
+posixpath.py
+pprint.py
+profile.py
+pwd.py
+pydoc.py
+pydoc_data
+queue.py
+re.py
+reprlib.py
+select.py
+shutil.py
+signal.py
+site-packages
+site.py
+socket.py
+sre_compile.py
+sre_constants.py
+sre_parse.py
+stat.py
+string.py
+struct.py
+subprocess.py
+sys.py
+sysconfig.py
+tarfile.py
+tempfile.py
+test
+textwrap.py
+this.py
+threading.py
+time.py
+timeit.py
+token.py
+tokenize.py
+traceback.py
+turtle.py
+types.py
+unittest
+urllib
+uuid.py
+warnings.py
+weakref.py
+webbrowser.py
+xml
+zipfile.py
+zlib.py
+
+./www/src/Lib/asyncio:
+__init__.py
+_utils.py
+coroutines.py
+events.py
+filereader.py
+fs.py
+futures.py
+http.py
+locks.py
+objects.py
+queues.py
+
+./www/src/Lib/browser:
+__init__.py
+ajax.py
+highlight.py
+html.py
+indexed_db.py
+local_storage.py
+markdown.py
+object_storage.py
+session_storage.py
+svg.py
+template.py
+timer.py
+websocket.py
+webworker.py
+
+./www/src/Lib/collections:
+__init__.py
+abc.py
+
+./www/src/Lib/concurrent:
+__init__.py
+futures
+
+./www/src/Lib/concurrent/futures:
+__init__.py
+_base.py
+process.py
+thread.py
+webworker.py
+
+./www/src/Lib/encodings:
+__init__.py
+aliases.py
+cp037.py
+cp1006.py
+cp1026.py
+cp1125.py
+cp1140.py
+cp1250.py
+cp1251.py
+cp1252.py
+cp1253.py
+cp1254.py
+cp1255.py
+cp1256.py
+cp1257.py
+cp1258.py
+cp273.py
+cp424.py
+cp437.py
+cp500.py
+cp720.py
+cp737.py
+cp775.py
+cp850.py
+cp852.py
+cp855.py
+cp856.py
+cp857.py
+cp858.py
+cp860.py
+cp861.py
+cp862.py
+cp863.py
+cp864.py
+cp865.py
+cp866.py
+cp869.py
+cp874.py
+cp875.py
+hp_roman8.py
+iso8859_1.py
+iso8859_10.py
+iso8859_11.py
+iso8859_13.py
+iso8859_14.py
+iso8859_15.py
+iso8859_16.py
+iso8859_2.py
+iso8859_3.py
+iso8859_4.py
+iso8859_5.py
+iso8859_6.py
+iso8859_7.py
+iso8859_8.py
+iso8859_9.py
+koi8_r.py
+koi8_u.py
+mac_arabic.py
+mac_centeuro.py
+mac_croatian.py
+mac_cyrillic.py
+mac_farsi.py
+mac_greek.py
+mac_iceland.py
+mac_latin2.py
+mac_roman.py
+mac_romanian.py
+mac_turkish.py
+palmos.py
+ptcp154.py
+tis_620.py
+
+./www/src/Lib/html:
+__init__.py
+entities.py
+parser.py
+
+./www/src/Lib/http:
+__init__.py
+cookies.py
+
+./www/src/Lib/importlib:
+__init__.py
+_bootstrap.py
+abc.py
+basehook.py
+machinery.py
+util.py
+
+./www/src/Lib/jqueryui:
+__init__.py
+css
+jquery-1.11.2.min.js
+jquery-ui.min.js
+
+./www/src/Lib/jqueryui/css:
+smoothness
+
+./www/src/Lib/jqueryui/css/smoothness:
+images
+jquery-ui-1.10.3.custom.css
+jquery-ui-1.10.3.custom.min.css
+jquery-ui.css
+
+./www/src/Lib/jqueryui/css/smoothness/images:
+animated-overlay.gif
+ui-bg_flat_0_aaaaaa_40x100.png
+ui-bg_flat_75_ffffff_40x100.png
+ui-bg_glass_55_fbf9ee_1x400.png
+ui-bg_glass_65_ffffff_1x400.png
+ui-bg_glass_75_dadada_1x400.png
+ui-bg_glass_75_e6e6e6_1x400.png
+ui-bg_glass_95_fef1ec_1x400.png
+ui-bg_highlight-soft_75_cccccc_1x100.png
+ui-icons_222222_256x240.png
+ui-icons_2e83ff_256x240.png
+ui-icons_454545_256x240.png
+ui-icons_888888_256x240.png
+ui-icons_cd0a0a_256x240.png
+
+./www/src/Lib/logging:
+__init__.py
+brython_handlers.py
+config.py
+handlers.py
+
+./www/src/Lib/multiprocessing:
+__init__.py
+connection.py
+dummy
+pool.py
+process.py
+util.py
+
+./www/src/Lib/multiprocessing/dummy:
+__init__.py
+connection.py
+
+./www/src/Lib/pydoc_data:
+__init__.py
+_pydoc.css
+topics.py
+
+./www/src/Lib/site-packages:
+__future__.py
+docs.py
+header.py
+simpleaio
+test_sp.py
+ui
+
+./www/src/Lib/site-packages/simpleaio:
+__init__.py
+coroutines.py
+events.py
+futures.py
+helpers.py
+http.py
+tasks.py
+
+./www/src/Lib/site-packages/ui:
+__init__.py
+dialog.py
+menu.py
+progressbar.py
+slider.py
+widget.py
+
+./www/src/Lib/test:
+Sine-1000Hz-300ms.aif
+___simplified_test_int.py
+__init__.py
+__main__.py
+audiodata
+audiotest.au
+audiotests.py
+autotest.py
+bad_coding.py
+bad_coding2.py
+badcert.pem
+badkey.pem
+badsyntax_3131.py
+badsyntax_future3.py
+badsyntax_future4.py
+badsyntax_future5.py
+badsyntax_future6.py
+badsyntax_future7.py
+badsyntax_future8.py
+badsyntax_future9.py
+badsyntax_pep3120.py
+buffer_tests.py
+capath
+cfgparser.1
+cfgparser.2
+cfgparser.3
+check_soundcard.vbs
+cjkencodings
+cmath_testcases.txt
+crashers
+curses_tests.py
+data
+datetimetester.py
+decimaltestdata
+dh512.pem
+dis_module.py
+doctest_aliases.py
+double_const.py
+empty.vbs
+encoded_modules
+fork_wait.py
+future_test1.py
+future_test2.py
+gdb_sample.py
+https_svn_python_org_root.pem
+inspect_fodder.py
+inspect_fodder2.py
+keycert.passwd.pem
+keycert.pem
+keycert2.pem
+leakers
+list_tests.py
+lock_tests.py
+make_ssl_certs.py
+mapping_tests.py
+memory_watchdog.py
+mime.types
+mock_socket.py
+module3.py
+module4.txt
+mp_fork_bomb.py
+multibytecodec_support.py
+namespace_pkgs
+nokia.pem
+nullbytecert.pem
+nullcert.pem
+outstanding_bugs.py
+pickletester.py
+profilee.py
+pstats.pck
+pyclbr_input.py
+pydoc_mod.py
+pydocfodder.py
+pystone.py
+randv2_32.pck
+randv2_64.pck
+randv3.pck
+re_tests.py
+regrtest.py
+relimport.py
+reperf.py
+sample_doctest.py
+sample_doctest_no_docstrings.py
+sample_doctest_no_doctests.py
+script_helper.py
+seq_tests.py
+sgml_input.html
+sha256.pem
+sndhdrdata
+sortperf.py
+ssl_cert.pem
+ssl_key.passwd.pem
+ssl_key.pem
+ssl_servers.py
+string_tests.py
+subprocessdata
+support
+test___all__.py
+test___future__.py
+test__locale.py
+test__osx_support.py
+test_abc.py
+test_abstract_numbers.py
+test_aifc.py
+test_argparse.py
+test_array.py
+test_ast.py
+test_asynchat.py
+test_asyncore.py
+test_atexit.py
+test_audioop.py
+test_augassign.py
+test_base64.py
+test_bigaddrspace.py
+test_bigmem.py
+test_binascii.py
+test_binhex.py
+test_binop.py
+test_bisect.py
+test_bool.py
+test_buffer.py
+test_bufio.py
+test_builtin.py
+test_bytes.py
+test_bz2.py
+test_calendar.py
+test_call.py
+test_capi.py
+test_cgi.py
+test_cgitb.py
+test_charmapcodec.py
+test_class.py
+test_cmath.py
+test_cmd.py
+test_cmd_line.py
+test_cmd_line_script.py
+test_code.py
+test_code_module.py
+test_codeccallbacks.py
+test_codecencodings_cn.py
+test_codecencodings_hk.py
+test_codecencodings_iso2022.py
+test_codecencodings_jp.py
+test_codecencodings_kr.py
+test_codecencodings_tw.py
+test_codecmaps_cn.py
+test_codecmaps_hk.py
+test_codecmaps_jp.py
+test_codecmaps_kr.py
+test_codecmaps_tw.py
+test_codecs.py
+test_codeop.py
+test_coding.py
+test_collections.py
+test_colorsys.py
+test_compare.py
+test_compile.py
+test_compileall.py
+test_complex.py
+test_concurrent_futures.py
+test_configparser.py
+test_contains.py
+test_contextlib.py
+test_copy.py
+test_copyreg.py
+test_cprofile.py
+test_crashers.py
+test_crypt.py
+test_csv.py
+test_ctypes.py
+test_curses.py
+test_datetime.py
+test_dbm.py
+test_dbm_dumb.py
+test_dbm_gnu.py
+test_dbm_ndbm.py
+test_decimal.py
+test_decorators.py
+test_defaultdict.py
+test_deque.py
+test_descr.py
+test_descrtut.py
+test_devpoll.py
+test_dict.py
+test_dictcomps.py
+test_dictviews.py
+test_difflib.py
+test_difflib_expect.html
+test_dis.py
+test_distutils.py
+test_doctest.py
+test_doctest2.py
+test_docxmlrpc.py
+test_dummy_thread.py
+test_dummy_threading.py
+test_dynamic.py
+test_email
+test_enumerate.py
+test_eof.py
+test_epoll.py
+test_errno.py
+test_exception_variations.py
+test_exceptions.py
+test_extcall.py
+test_faulthandler.py
+test_fcntl.py
+test_file.py
+test_file_eintr.py
+test_filecmp.py
+test_fileinput.py
+test_fileio.py
+test_float.py
+test_flufl.py
+test_fnmatch.py
+test_fork1.py
+test_format.py
+test_fractions.py
+test_frozen.py
+test_ftplib.py
+test_funcattrs.py
+test_functools.py
+test_future.py
+test_future3.py
+test_future4.py
+test_future5.py
+test_gc.py
+test_gdb.py
+test_generators.py
+test_genericpath.py
+test_genexps.py
+test_getargs2.py
+test_getopt.py
+test_gettext.py
+test_glob.py
+test_global.py
+test_grammar.py
+test_grp.py
+test_gzip.py
+test_hash.py
+test_hashlib.py
+test_heapq.py
+test_hmac.py
+test_html.py
+test_htmlparser.py
+test_http_cookiejar.py
+test_http_cookies.py
+test_httplib.py
+test_httpservers.py
+test_idle.py
+test_imaplib.py
+test_imp.py
+test_import.py
+test_importhooks.py
+test_importlib
+test_index.py
+test_inspect.py
+test_int.py
+test_int_literal.py
+test_io.py
+test_ioctl.py
+test_ipaddress.py
+test_isinstance.py
+test_iter.py
+test_iterlen.py
+test_itertools.py
+test_json
+test_keywordonlyarg.py
+test_kqueue.py
+test_largefile.py
+test_lib2to3.py
+test_linecache.py
+test_list.py
+test_listcomps.py
+test_locale.py
+test_logging.py
+test_long.py
+test_longexp.py
+test_lzma.py
+test_macpath.py
+test_macurl2path.py
+test_mailbox.py
+test_mailcap.py
+test_marshal.py
+test_math.py
+test_memoryio.py
+test_memoryview.py
+test_metaclass.py
+test_mimetypes.py
+test_minidom.py
+test_mmap.py
+test_module.py
+test_modulefinder.py
+test_msilib.py
+test_multibytecodec.py
+test_multiprocessing.py
+test_namespace_pkgs.py
+test_netrc.py
+test_nis.py
+test_nntplib.py
+test_normalization.py
+test_ntpath.py
+test_numeric_tower.py
+test_opcodes.py
+test_openpty.py
+test_operator.py
+test_optparse.py
+test_os.py
+test_ossaudiodev.py
+test_osx_env.py
+test_parser.py
+test_pdb.py
+test_peepholer.py
+test_pep247.py
+test_pep263.py
+test_pep277.py
+test_pep292.py
+test_pep3120.py
+test_pep3131.py
+test_pep3151.py
+test_pep352.py
+test_pep380.py
+test_pickle.py
+test_pickletools.py
+test_pipes.py
+test_pkg.py
+test_pkgimport.py
+test_pkgutil.py
+test_platform.py
+test_plistlib.py
+test_poll.py
+test_popen.py
+test_poplib.py
+test_posix.py
+test_posixpath.py
+test_pow.py
+test_pprint.py
+test_print.py
+test_profile.py
+test_property.py
+test_pstats.py
+test_pty.py
+test_pulldom.py
+test_pwd.py
+test_py_compile.py
+test_pyclbr.py
+test_pydoc.py
+test_pyexpat.py
+test_queue.py
+test_quopri.py
+test_raise.py
+test_random.py
+test_range.py
+test_re.py
+test_readline.py
+test_reprlib.py
+test_resource.py
+test_richcmp.py
+test_rlcompleter.py
+test_robotparser.py
+test_runpy.py
+test_sax.py
+test_sched.py
+test_scope.py
+test_select.py
+test_set.py
+test_setcomps.py
+test_shelve.py
+test_shlex.py
+test_shutil.py
+test_signal.py
+test_site.py
+test_slice.py
+test_smtpd.py
+test_smtplib.py
+test_smtpnet.py
+test_sndhdr.py
+test_socket.py
+test_socketserver.py
+test_sort.py
+test_sqlite.py
+test_ssl.py
+test_startfile.py
+test_stat.py
+test_strftime.py
+test_string.py
+test_stringprep.py
+test_strlit.py
+test_strptime.py
+test_strtod.py
+test_struct.py
+test_structmembers.py
+test_structseq.py
+test_subprocess.py
+test_sunau.py
+test_sundry.py
+test_super.py
+test_support.py
+test_symtable.py
+test_syntax.py
+test_sys.py
+test_sys_setprofile.py
+test_sys_settrace.py
+test_sysconfig.py
+test_syslog.py
+test_tarfile.py
+test_tcl.py
+test_telnetlib.py
+test_tempfile.py
+test_textwrap.py
+test_thread.py
+test_threaded_import.py
+test_threadedtempfile.py
+test_threading.py
+test_threading_local.py
+test_threadsignals.py
+test_time.py
+test_timeit.py
+test_timeout.py
+test_tk.py
+test_tokenize.py
+test_tools.py
+test_trace.py
+test_traceback.py
+test_ttk_guionly.py
+test_ttk_textonly.py
+test_tuple.py
+test_typechecks.py
+test_types.py
+test_ucn.py
+test_unary.py
+test_unicode.py
+test_unicode_file.py
+test_unicodedata.py
+test_unittest.py
+test_univnewlines.py
+test_unpack.py
+test_unpack_ex.py
+test_urllib.py
+test_urllib2.py
+test_urllib2_localnet.py
+test_urllib2net.py
+test_urllib_response.py
+test_urllibnet.py
+test_urlparse.py
+test_userdict.py
+test_userlist.py
+test_userstring.py
+test_uu.py
+test_uuid.py
+test_venv.py
+test_wait3.py
+test_wait4.py
+test_warnings.py
+test_wave.py
+test_weakref.py
+test_weakset.py
+test_webbrowser.py
+test_winreg.py
+test_winsound.py
+test_with.py
+test_wsgiref.py
+test_xdrlib.py
+test_xml_dom_minicompat.py
+test_xml_etree.py
+test_xml_etree_c.py
+test_xmlrpc.py
+test_xmlrpc_net.py
+test_zipfile.py
+test_zipfile64.py
+test_zipimport.py
+test_zipimport_support.py
+test_zlib.py
+testcodec.py
+tf_inherit_check.py
+threaded_import_hangers.py
+time_hashlib.py
+tracedmodules
+warning_tests.py
+win_console_handler.py
+xmltestdata
+xmltests.py
+
+./www/src/Lib/test/audiodata:
+pluck-alaw.aifc
+pluck-pcm16.aiff
+pluck-pcm16.au
+pluck-pcm16.wav
+pluck-pcm24.aiff
+pluck-pcm24.wav
+pluck-pcm32.aiff
+pluck-pcm32.au
+pluck-pcm32.wav
+pluck-pcm8.aiff
+pluck-pcm8.au
+pluck-pcm8.wav
+pluck-ulaw.aifc
+pluck-ulaw.au
+
+./www/src/Lib/test/capath:
+4e1295a3.0
+5ed36f99.0
+6e88d7b8.0
+99d0fa06.0
+
+./www/src/Lib/test/cjkencodings:
+big5-utf8.txt
+big5.txt
+big5hkscs-utf8.txt
+big5hkscs.txt
+cp949-utf8.txt
+cp949.txt
+euc_jisx0213-utf8.txt
+euc_jisx0213.txt
+euc_jp-utf8.txt
+euc_jp.txt
+euc_kr-utf8.txt
+euc_kr.txt
+gb18030-utf8.txt
+gb18030.txt
+gb2312-utf8.txt
+gb2312.txt
+gbk-utf8.txt
+gbk.txt
+hz-utf8.txt
+hz.txt
+iso2022_jp-utf8.txt
+iso2022_jp.txt
+iso2022_kr-utf8.txt
+iso2022_kr.txt
+johab-utf8.txt
+johab.txt
+shift_jis-utf8.txt
+shift_jis.txt
+shift_jisx0213-utf8.txt
+shift_jisx0213.txt
+
+./www/src/Lib/test/crashers:
+README
+bogus_code_obj.py
+gc_inspection.py
+infinite_loop_re.py
+mutation_inside_cyclegc.py
+recursive_call.py
+trace_at_recursion_limit.py
+underlying_dict.py
+
+./www/src/Lib/test/data:
+README
+
+./www/src/Lib/test/decimaltestdata:
+abs.decTest
+add.decTest
+and.decTest
+base.decTest
+clamp.decTest
+class.decTest
+compare.decTest
+comparetotal.decTest
+comparetotmag.decTest
+copy.decTest
+copyabs.decTest
+copynegate.decTest
+copysign.decTest
+ddAbs.decTest
+ddAdd.decTest
+ddAnd.decTest
+ddBase.decTest
+ddCanonical.decTest
+ddClass.decTest
+ddCompare.decTest
+ddCompareSig.decTest
+ddCompareTotal.decTest
+ddCompareTotalMag.decTest
+ddCopy.decTest
+ddCopyAbs.decTest
+ddCopyNegate.decTest
+ddCopySign.decTest
+ddDivide.decTest
+ddDivideInt.decTest
+ddEncode.decTest
+ddFMA.decTest
+ddInvert.decTest
+ddLogB.decTest
+ddMax.decTest
+ddMaxMag.decTest
+ddMin.decTest
+ddMinMag.decTest
+ddMinus.decTest
+ddMultiply.decTest
+ddNextMinus.decTest
+ddNextPlus.decTest
+ddNextToward.decTest
+ddOr.decTest
+ddPlus.decTest
+ddQuantize.decTest
+ddReduce.decTest
+ddRemainder.decTest
+ddRemainderNear.decTest
+ddRotate.decTest
+ddSameQuantum.decTest
+ddScaleB.decTest
+ddShift.decTest
+ddSubtract.decTest
+ddToIntegral.decTest
+ddXor.decTest
+decDouble.decTest
+decQuad.decTest
+decSingle.decTest
+divide.decTest
+divideint.decTest
+dqAbs.decTest
+dqAdd.decTest
+dqAnd.decTest
+dqBase.decTest
+dqCanonical.decTest
+dqClass.decTest
+dqCompare.decTest
+dqCompareSig.decTest
+dqCompareTotal.decTest
+dqCompareTotalMag.decTest
+dqCopy.decTest
+dqCopyAbs.decTest
+dqCopyNegate.decTest
+dqCopySign.decTest
+dqDivide.decTest
+dqDivideInt.decTest
+dqEncode.decTest
+dqFMA.decTest
+dqInvert.decTest
+dqLogB.decTest
+dqMax.decTest
+dqMaxMag.decTest
+dqMin.decTest
+dqMinMag.decTest
+dqMinus.decTest
+dqMultiply.decTest
+dqNextMinus.decTest
+dqNextPlus.decTest
+dqNextToward.decTest
+dqOr.decTest
+dqPlus.decTest
+dqQuantize.decTest
+dqReduce.decTest
+dqRemainder.decTest
+dqRemainderNear.decTest
+dqRotate.decTest
+dqSameQuantum.decTest
+dqScaleB.decTest
+dqShift.decTest
+dqSubtract.decTest
+dqToIntegral.decTest
+dqXor.decTest
+dsBase.decTest
+dsEncode.decTest
+exp.decTest
+extra.decTest
+fma.decTest
+inexact.decTest
+invert.decTest
+ln.decTest
+log10.decTest
+logb.decTest
+max.decTest
+maxmag.decTest
+min.decTest
+minmag.decTest
+minus.decTest
+multiply.decTest
+nextminus.decTest
+nextplus.decTest
+nexttoward.decTest
+or.decTest
+plus.decTest
+power.decTest
+powersqrt.decTest
+quantize.decTest
+randomBound32.decTest
+randoms.decTest
+reduce.decTest
+remainder.decTest
+remainderNear.decTest
+rescale.decTest
+rotate.decTest
+rounding.decTest
+samequantum.decTest
+scaleb.decTest
+shift.decTest
+squareroot.decTest
+subtract.decTest
+testall.decTest
+tointegral.decTest
+tointegralx.decTest
+xor.decTest
+
+./www/src/Lib/test/encoded_modules:
+__init__.py
+module_iso_8859_1.py
+module_koi8_r.py
+
+./www/src/Lib/test/leakers:
+README.txt
+__init__.py
+test_ctypes.py
+test_gestalt.py
+test_selftype.py
+
+./www/src/Lib/test/namespace_pkgs:
+both_portions
+module_and_namespace_package
+not_a_namespace_pkg
+portion1
+portion2
+project1
+project2
+project3
+
+./www/src/Lib/test/namespace_pkgs/both_portions:
+foo
+
+./www/src/Lib/test/namespace_pkgs/both_portions/foo:
+one.py
+two.py
+
+./www/src/Lib/test/namespace_pkgs/module_and_namespace_package:
+a_test
+a_test.py
+
+./www/src/Lib/test/namespace_pkgs/module_and_namespace_package/a_test:
+empty
+
+./www/src/Lib/test/namespace_pkgs/not_a_namespace_pkg:
+foo
+
+./www/src/Lib/test/namespace_pkgs/not_a_namespace_pkg/foo:
+__init__.py
+one.py
+
+./www/src/Lib/test/namespace_pkgs/portion1:
+foo
+
+./www/src/Lib/test/namespace_pkgs/portion1/foo:
+one.py
+
+./www/src/Lib/test/namespace_pkgs/portion2:
+foo
+
+./www/src/Lib/test/namespace_pkgs/portion2/foo:
+two.py
+
+./www/src/Lib/test/namespace_pkgs/project1:
+parent
+
+./www/src/Lib/test/namespace_pkgs/project1/parent:
+child
+
+./www/src/Lib/test/namespace_pkgs/project1/parent/child:
+one.py
+
+./www/src/Lib/test/namespace_pkgs/project2:
+parent
+
+./www/src/Lib/test/namespace_pkgs/project2/parent:
+child
+
+./www/src/Lib/test/namespace_pkgs/project2/parent/child:
+two.py
+
+./www/src/Lib/test/namespace_pkgs/project3:
+parent
+
+./www/src/Lib/test/namespace_pkgs/project3/parent:
+child
+
+./www/src/Lib/test/namespace_pkgs/project3/parent/child:
+three.py
+
+./www/src/Lib/test/sndhdrdata:
+README
+sndhdr.8svx
+sndhdr.aifc
+sndhdr.aiff
+sndhdr.au
+sndhdr.hcom
+sndhdr.sndt
+sndhdr.voc
+sndhdr.wav
+
+./www/src/Lib/test/subprocessdata:
+fd_status.py
+input_reader.py
+qcat.py
+qgrep.py
+sigchild_ignore.py
+
+./www/src/Lib/test/support:
+__init__.py
+
+./www/src/Lib/test/test_email:
+__init__.py
+__main__.py
+data
+test__encoded_words.py
+test__header_value_parser.py
+test_asian_codecs.py
+test_defect_handling.py
+test_email.py
+test_generator.py
+test_headerregistry.py
+test_inversion.py
+test_message.py
+test_parser.py
+test_pickleable.py
+test_policy.py
+test_utils.py
+torture_test.py
+
+./www/src/Lib/test/test_email/data:
+PyBanner048.gif
+audiotest.au
+msg_01.txt
+msg_02.txt
+msg_03.txt
+msg_04.txt
+msg_05.txt
+msg_06.txt
+msg_07.txt
+msg_08.txt
+msg_09.txt
+msg_10.txt
+msg_11.txt
+msg_12.txt
+msg_12a.txt
+msg_13.txt
+msg_14.txt
+msg_15.txt
+msg_16.txt
+msg_17.txt
+msg_18.txt
+msg_19.txt
+msg_20.txt
+msg_21.txt
+msg_22.txt
+msg_23.txt
+msg_24.txt
+msg_25.txt
+msg_26.txt
+msg_27.txt
+msg_28.txt
+msg_29.txt
+msg_30.txt
+msg_31.txt
+msg_32.txt
+msg_33.txt
+msg_34.txt
+msg_35.txt
+msg_36.txt
+msg_37.txt
+msg_38.txt
+msg_39.txt
+msg_40.txt
+msg_41.txt
+msg_42.txt
+msg_43.txt
+msg_44.txt
+msg_45.txt
+msg_46.txt
+
+./www/src/Lib/test/test_importlib:
+__init__.py
+__main__.py
+abc.py
+builtin
+extension
+frozen
+import_
+regrtest.py
+source
+test_abc.py
+test_api.py
+test_locks.py
+test_util.py
+util.py
+
+./www/src/Lib/test/test_importlib/builtin:
+__init__.py
+test_finder.py
+test_loader.py
+util.py
+
+./www/src/Lib/test/test_importlib/extension:
+__init__.py
+test_case_sensitivity.py
+test_finder.py
+test_loader.py
+test_path_hook.py
+util.py
+
+./www/src/Lib/test/test_importlib/frozen:
+__init__.py
+test_finder.py
+test_loader.py
+
+./www/src/Lib/test/test_importlib/import_:
+__init__.py
+test___package__.py
+test_api.py
+test_caching.py
+test_fromlist.py
+test_meta_path.py
+test_packages.py
+test_path.py
+test_relative_imports.py
+util.py
+
+./www/src/Lib/test/test_importlib/source:
+__init__.py
+test_abc_loader.py
+test_case_sensitivity.py
+test_file_loader.py
+test_finder.py
+test_path_hook.py
+test_source_encoding.py
+util.py
+
+./www/src/Lib/test/test_json:
+__init__.py
+__main__.py
+test_decode.py
+test_default.py
+test_dump.py
+test_encode_basestring_ascii.py
+test_fail.py
+test_float.py
+test_indent.py
+test_pass1.py
+test_pass2.py
+test_pass3.py
+test_recursion.py
+test_scanstring.py
+test_separators.py
+test_speedups.py
+test_tool.py
+test_unicode.py
+
+./www/src/Lib/test/tracedmodules:
+__init__.py
+testmod.py
+
+./www/src/Lib/test/xmltestdata:
+simple-ns.xml
+simple.xml
+test.xml
+test.xml.out
+
+./www/src/Lib/unittest:
+__init__.py
+__main__.py
+case.py
+loader.py
+main.py
+mock.py
+result.py
+runner.py
+signals.py
+suite.py
+test
+util.py
+
+./www/src/Lib/unittest/test:
+__init__.py
+_test_warnings.py
+dummy.py
+support.py
+test_assertions.py
+test_break.py
+test_case.py
+test_discovery.py
+test_functiontestcase.py
+test_loader.py
+test_program.py
+test_result.py
+test_runner.py
+test_setups.py
+test_skipping.py
+test_suite.py
+testmock
+
+./www/src/Lib/unittest/test/testmock:
+__init__.py
+support.py
+testcallable.py
+testhelpers.py
+testmagicmethods.py
+testmock.py
+testpatch.py
+testsentinel.py
+testwith.py
+
+./www/src/Lib/urllib:
+__init__.py
+error.py
+parse.py
+request.py
+
+./www/src/Lib/xml:
+__init__.py
+etree
+parsers
+sax
+
+./www/src/Lib/xml/etree:
+ElementInclude.py
+ElementPath.py
+ElementTree.py
+__init__.py
+cElementTree.py
+
+./www/src/Lib/xml/parsers:
+__init__.py
+expat.py
+
+./www/src/Lib/xml/sax:
+__init__.py
+_exceptions.py
+expatreader.py
+handler.py
+saxutils.py
+xmlreader.py
+
+./www/src/libs:
+_ajax.js
+_base64.js
+_jsre.js
+_multiprocessing.js
+_posixsubprocess.js
+_profile.js
+_svg.js
+_sys.js
+builtins.js
+crypto_js
+dis.js
+hashlib.js
+json.js
+long_int.js
+math.js
+modulefinder.js
+random.js
+
+./www/src/libs/crypto_js:
+rollups
+
+./www/src/libs/crypto_js/rollups:
+aes.js
+hmac-md5.js
+hmac-ripemd160.js
+hmac-sha1.js
+hmac-sha224.js
+hmac-sha256.js
+hmac-sha3.js
+hmac-sha384.js
+hmac-sha512.js
+md5.js
+pbkdf2.js
+rabbit-legacy.js
+rabbit.js
+rc4.js
+ripemd160.js
+sha1.js
+sha224.js
+sha256.js
+sha3.js
+sha384.js
+sha512.js
+tripledes.js
+
+./www/src/web_workers:
+import.js
+test_rpc.py
+test_worker.py
+worker.js
+
+./www/tests:
+a.py
+ace
+brython_test_utils
+build_patterns.py
+console.css
+console.html
+console.py
+debugger
+debugger.html
+delegator.py
+dev_env.html
+dev_env.py
+dom.py
+dom_js_tests.js
+dom_objects.py
+editor.html
+editor.py
+from_import_test
+global_in_imported.py
+import_test.html
+index.html
+index_VFS.html
+index_dist.html
+inject_name_in_module.py
+issues.py
+issues_bb.py
+issues_gc.py
+js_console.html
+jsobj_tests.js
+loader_test.html
+modtest
+packed_arguments.py
+precompile.html
+pycache
+qunit
+recursive_import.py
+simple.py
+test.empty.vfs.js
+test.vfs.js
+test_aio.py
+test_bisect.py
+test_bytes.py
+test_classes.py
+test_collections.py
+test_datetime.py
+test_decimals.py
+test_decorators.py
+test_descriptors.py
+test_dict.py
+test_dom.html
+test_exec.py
+test_from_import.py
+test_fstrings.py
+test_functools.py
+test_generators.py
+test_hashlib.py
+test_import.py
+test_indexedDB.py
+test_iterators.py
+test_itertools.py
+test_json.py
+test_list.py
+test_list_methods.py
+test_markdown.html
+test_markdown.py
+test_math.py
+test_memoryview.py
+test_null.py
+test_numbers.py
+test_print.py
+test_pyc.vfs.js
+test_random.py
+test_re.py
+test_rmethods.py
+test_set.py
+test_sp.py
+test_storage.py
+test_string_format.py
+test_string_methods.py
+test_strings.py
+test_struct.py
+test_suite.py
+test_time.py
+test_timeit.py
+test_types.py
+test_unittest.py
+test_urllib.py
+tester.py
+unittests
+web_worker_tests.html
+
+./www/tests/ace:
+ace.js
+ext-language_tools.js
+mode-python3.js
+snippets
+
+./www/tests/ace/snippets:
+python.js
+
+./www/tests/brython_test_utils:
+__init__.py
+unittest.py
+
+./www/tests/debugger:
+__init__.py
+acorn.js
+acorn_interpreter.js
+interpreter.js
+main.js
+python_expressions.py
+
+./www/tests/from_import_test:
+__init__.py
+a.py
+b.py
+c.py
+relimport.py
+relimport2.py
+
+./www/tests/modtest:
+__init__.py
+bye
+hello.py
+
+./www/tests/modtest/bye:
+__init__.py
+
+./www/tests/pycache:
+foo_pyc2.pyc.js
+hello_pyc2
+test_issue7_pyc2.pyc.js
+
+./www/tests/pycache/hello_pyc2:
+__init__.pyc.js
+world.pyc.js
+
+./www/tests/qunit:
+run_tests.html
+
+./www/tests/unittests:
+HTMLTestRunner.py
+index.html
+show.html
+test
+
+./www/tests/unittests/test:
+pystone.py
+test_int.py
+```

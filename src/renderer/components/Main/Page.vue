@@ -309,10 +309,7 @@
               return
             }
           }
-          this.place(what, where)
-          return
-        }
-        if (actual === 'v') {
+        } else if (actual === 'v') {
           if (this.what_v1 === what) {
             return
           }
@@ -331,13 +328,17 @@
               return
             }
           }
-          this.place(what, where)
         }
+        this.place(what, where)
       }
     },
     mounted () {
       this.step = this.toolbarBlockVisible ? this.max : 0
       this.changeLayout({how: 'F', what: 'workspace'})
+      eYo.makeTurtleVisible = () => {
+        console.error('Trying hard...')
+        this.makeVisible('turtle')
+      }
       eYo.$$.bus.$on('make-pane-workspace-visible', () => {
         this.makeVisible('workspace')
       })
@@ -406,6 +407,7 @@
             f('v')
           }
         } else {
+          var current
           if (oldValue === 'H') {
             if (newValue === 'V') {
               // H to V: h1 to v1, h2 to v2
@@ -413,9 +415,57 @@
               this.switchWhere('h1', 'v1')
               this.switchWhere('h2', 'v2')
             } else if (newValue === 'HF') {
-              // V to H
+              // H to HF
+              this.place('v', 'f')
+              this.place('h', 'v1')
+              if (!this.what_v2) {
+                layoutcfg.panes.some((what) => {
+                  if (['h1', 'h2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'v2')
+                    return true
+                  }
+                })
+              }
             } else if (newValue === 'FH') {
-              // V to H
+              // H to FH
+              this.place('v', 'f')
+              this.switchWhere('h1', 'hh1')
+              this.switchWhere('h2', 'hh2')
+              this.place('hh', 'v2')
+              if (!this.what_v1) {
+                layoutcfg.panes.some((what) => {
+                  if (['hh1', 'hh2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'v1')
+                    return true
+                  }
+                })
+              }
+            } else if (newValue === 'VF') {
+              // H to HF
+              current = this.what_h1
+              this.place('v', 'h1')
+              this.place(current, 'v1')
+              if (!this.what_v2) {
+                layoutcfg.panes.some((what) => {
+                  if (['v1', 'h2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'v2')
+                    return true
+                  }
+                })
+              }
+            } else if (newValue === 'FV') {
+              // H to FH
+              current = this.what_h2
+              this.place('vv', 'h2')
+              this.place(current, 'vv1')
+              if (!this.what_vv2) {
+                layoutcfg.panes.some((what) => {
+                  if (['h1', 'vv1'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'vv2')
+                    return true
+                  }
+                })
+              }
             }
           } else if (oldValue === 'V') {
             if (newValue === 'H') {
@@ -423,10 +473,58 @@
               this.place('h', 'f')
               this.switchWhere('h1', 'v1')
               this.switchWhere('h2', 'v2')
+            } else if (newValue === 'HF') {
+              // V to HF
+              current = this.what_v1
+              this.place('h', 'v1')
+              this.place(current, 'h1')
+              if (!this.what_h2) {
+                layoutcfg.panes.some((what) => {
+                  if (['h1', 'v2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'h2')
+                    return true
+                  }
+                })
+              }
+            } else if (newValue === 'FH') {
+              // V to FH
+              current = this.what_v2
+              this.place('hh', 'v2')
+              this.place(current, 'hh1')
+              if (!this.what_hh2) {
+                layoutcfg.panes.some((what) => {
+                  if (['hh1', 'v1'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'hh2')
+                    return true
+                  }
+                })
+              }
             } else if (newValue === 'VF') {
-              // V to H
+              // V to VF
+              this.place('h', 'f')
+              this.place('v', 'h1')
+              if (!this.what_h2) {
+                layoutcfg.panes.some((what) => {
+                  if (['v1', 'v2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'h2')
+                    return true
+                  }
+                })
+              }
             } else if (newValue === 'FV') {
-              // V to H
+              // V to FV
+              this.place('h', 'f')
+              this.place('vv', 'h2')
+              this.switchWhere('v1', 'vv1')
+              this.switchWhere('v2', 'vv2')
+              if (!this.what_h1) {
+                layoutcfg.panes.some((what) => {
+                  if (['vv1', 'vv2'].indexOf(this[`where_${what}`]) < 0) {
+                    this.place(what, 'h1')
+                    return true
+                  }
+                })
+              }
             }
           }
         }

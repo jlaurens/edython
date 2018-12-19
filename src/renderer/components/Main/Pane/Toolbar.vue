@@ -131,7 +131,7 @@
           if (goog.isArray(Ls)) {
             return Ls
           }
-          console.error('NO CFG for position', this.where, Ls)
+          console.error('NO CFG for position', this.paneLayout, this.where, Ls)
         }
         return []
       },
