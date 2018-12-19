@@ -3,10 +3,13 @@
     id="eyo-workspace-content"
     class="content"
     ref="content">
-    <icon-base
-      id="svg-control-image-v"
-      icon-name="triangle"
-    ><icon-triangle /></icon-base>
+    <div
+      v-show="false">
+      <icon-base
+        ref="svg_control_image_v"
+        icon-name="triangle"
+      ><icon-triangle /></icon-base>
+    </div>
     <div
       id="eyo-flyout-toolbar-switcher"
       ref="switcher">
@@ -22,8 +25,9 @@
           <b-dd-item-button
             v-for="item in levels"
             @click="selectCategory(item)"
-            :style="{fontFamily: $$.eYo.Font.familySans}" :key="item.content"
-            >{{item.content}}</b-dd-item-button>
+            :style="{fontFamily: $$.eYo.Font.familySans}"
+            :key="item.content"
+          >{{item.content}}</b-dd-item-button>
           <b-dd-divider></b-dd-divider>
           <b-dd-item-button
             v-for="item in categories"
@@ -211,10 +215,10 @@
       }
     },
     methods: {
-      ...mapMutations('UI', {
-        setFlyoutCategory: 'setFlyoutCategory',
-        setFlyoutClosed: 'setFlyoutClosed'
-      }),
+      ...mapMutations('UI', [
+        'setFlyoutCategory',
+        'setFlyoutClosed'
+      ]),
       selectCategory (item) {
         if (this.isBasic && item.basic) {
           item = item.basic
@@ -292,7 +296,7 @@
         this.$nextTick(() => {
           // sometimes the `oldSvg` is not found
           var oldSvg = document.getElementById('svg-control-image')
-          var newSvg = document.getElementById('svg-control-image-v')
+          var newSvg = this.$refs.svg_control_image_v.$el
           if (oldSvg && newSvg) {
             oldSvg.parentNode.appendChild(newSvg)
             newSvg.parentNode.removeChild(oldSvg)
