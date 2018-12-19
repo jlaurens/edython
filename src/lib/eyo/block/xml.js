@@ -133,18 +133,18 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
     )
   );
   var xml = root.firstChild.firstChild
-  workspace.getTopBlocks(true).forEach((block) => {
+  workspace.getTopBlocks(true).forEach(block => {
     var dom = eYo.Xml.blockToDomWithXY(block, opt)
-    var p = new eYo.PythonExporter()
-    try {
-      var code = p.export(block, {is_deep: true})
-      if (code.length) {
-        var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
-        goog.dom.insertChildAt(dom, py_dom, 0)
-        goog.dom.appendChild(py_dom, goog.dom.createTextNode(code))
-      }
-    } finally {
-      xml.appendChild(dom);
+    if (!block.eyo.isControl) {
+      var p = new eYo.PythonExporter()
+      eYo.Do.tryFinally(() => {
+        var code = p.export(block, {is_deep: true})
+        if (code.length) {
+          var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+          goog.dom.insertChildAt(dom, py_dom, 0)
+          goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+        }
+      })
     }
   })
   root.setAttribute('xmlns', eYo.Xml.XMLNS) // default namespace
@@ -686,6 +686,17 @@ eYo.Xml.Data.fromDom = function (block, element) {
  */
 eYo.Xml.toDom = function (block, element, opt) {
   var eyo = block.eyo
+  if (eyo.isControl) {
+    var p = new eYo.PythonExporter()
+    eYo.Do.tryFinally(() => {
+      var code = p.export(block, {is_deep: true})
+      if (code.length) {
+        var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+        goog.dom.insertChildAt(element, py_dom, 0)
+        goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+      }
+    })
+  }
   var controller = eyo
   if ((controller && goog.isFunction(controller.toDom)) ||
     ((controller = eyo.xml) && goog.isFunction(controller.toDom)) ||
@@ -709,7 +720,7 @@ eYo.Xml.toDom = function (block, element, opt) {
       }
     }
     // the list blocks have no slots yet
-    block.inputList.forEach((input) => {
+    block.inputList.forEach(input => {
       if (!input.eyo.slot && input !== eyo.inputSuite) {
         targetBlockToDom(input.connection, eYo.Xml.SLOT, input.name)
       }
