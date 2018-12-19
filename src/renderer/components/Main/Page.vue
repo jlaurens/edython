@@ -177,9 +177,11 @@
       },
       setWhere (what, where) {
         this[`setWhere_${what}`](where)
+        return this
       },
       setWhat (where, what) {
         this[`setWhat_${where}`](what)
+        return this
       },
       container (where) {
         return this.$refs[`container_${where}`]
@@ -188,9 +190,17 @@
         return this.$refs[`pane_${what}`]
       },
       changeLayout (opt) {
+        if (opt.layout) {
+          opt.how = opt.layout
+        }
         if (opt.how === 'F' && opt.what) {
           this.place(opt.what, 'f')
           this.setPaneLayout(opt.how)
+          Object.keys(opt).forEach(where => {
+            if (layoutcfg.wheres.indexOf(where) >= 0) {
+              this.place(opt[where], where)
+            }
+          })
           return
         }
         if (!opt.how) {
@@ -201,6 +211,11 @@
         var oldValue = this.paneLayout
         // console.error('paneLayout', newValue, oldValue)
         if (oldValue === newValue) {
+          Object.keys(opt).forEach(where => {
+            if (layoutcfg.wheres.indexOf(where) >= 0) {
+              this.place(opt[where], where)
+            }
+          })
           return
         }
         // switching from full pane mode is quite straightforward
@@ -249,11 +264,27 @@
           }
           if (newValue === 'H') {
             f('h')
-            this.setPaneLayout(newValue)
           } else if (newValue === 'V') {
             f('v')
-            this.setPaneLayout(newValue)
+          } else if (newValue === 'HF') {
+            this.place('v', 'f').place('h', 'v1')
+          } else if (newValue === 'FH') {
+            this.place('v', 'f').place('hh', 'v2')
+          } else if (newValue === 'VF') {
+            this.place('h', 'f').place('v', 'h1')
+          } else if (newValue === 'FV') {
+            this.place('h', 'f').place('vv', 'h2')
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
+          Object.keys(opt).forEach(where => {
+            if (layoutcfg.wheres.indexOf(where) >= 0) {
+              this.place(opt[where], where)
+            }
+          })
+          this.setPaneLayout(newValue)
           return
         }
         f = (where, wheres) => {
@@ -269,19 +300,16 @@
         if (oldValue === 'H') {
           if (newValue === 'V') {
             // H -> V: (h1, h2) => (v1 / v2) correspondance in position
-            this.switchWhere('h1', 'v1')
-            this.switchWhere('h2', 'v2')
+            this.switchWhere('h1', 'v1').switchWhere('h2', 'v2')
             this.place('v', 'f')
           } else if (newValue === 'HF') {
             // H -> HF: (h1, h2) => ((h1, h2) / v2)
-            this.place('v', 'f')
-            this.place('h', 'v1')
+            this.place('v', 'f').place('h', 'v1')
             f('v2', ['h1', 'h2'])
           } else if (newValue === 'FH') {
             // H -> FH: (h1, h2) -> (v1 / (h1, h2))
             this.place('v', 'f')
-            this.switchWhere('h1', 'hh1')
-            this.switchWhere('h2', 'hh2')
+            this.switchWhere('h1', 'hh1').switchWhere('h2', 'hh2')
             this.place('hh', 'v2')
             f('v1', ['hh1', 'hh2'])
           } else if (newValue === 'VF') {
@@ -304,15 +332,16 @@
               f('vv1', ['h1', 'vv2'])
             }
             this.place('vv', 'h2')
-          } else {
-            return
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         } else if (oldValue === 'V') {
           if (newValue === 'H') {
             // V -> H: (v1 / v2) => (h1, h2)
             this.place('h', 'f')
-            this.switchWhere('h1', 'v1')
-            this.switchWhere('h2', 'v2')
+            this.switchWhere('h1', 'v1').switchWhere('h2', 'v2')
           } else if (newValue === 'HF') {
             // V -> HF: (v1 / v2) -> ((v1, h2) | (h1, v2) / v2)
             if (!this.what_h1 || this.what_h2) {
@@ -335,31 +364,28 @@
             this.place('hh', 'v2')
           } else if (newValue === 'VF') {
             // V -> VF: (v1 / v2) -> ((v1 / v2), h2)
-            this.place('h', 'f')
-            this.place('v', 'h1')
+            this.place('h', 'f').place('v', 'h1')
             f('h2', ['v1', 'v2'])
           } else if (newValue === 'FV') {
             // V -> FV: (v1 / v2) -> (h1, (v1 / v2))
-            this.switchWhere('v1', 'vv1')
-            this.switchWhere('v2', 'vv2')
+            this.switchWhere('v1', 'vv1').switchWhere('v2', 'vv2')
             this.place('vv', 'h2')
             f('h1', ['vv1', 'vv2'])
-          } else {
-            return
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         } else if (oldValue === 'HF') {
           if (newValue === 'FH') {
             // HF -> FH: ((h1, h2)/ v2) -> (v2/ (h1, h2))
             this.switchWhere('v1', 'v2')
-            this.switchWhere('h1', 'hh1')
-            this.switchWhere('h2', 'hh2')
+            this.switchWhere('h1', 'hh1').switchWhere('h2', 'hh2')
             this.place('hh', 'v2')
           } else if (newValue === 'VF') {
             // HF -> VF: ((h1, h2)/ v2) => ((v1 / v2), h2) correspondance in positions
-            this.switchWhere('h1', 'v1')
-            this.switchWhere('h2', 'v2')
-            this.place('v', 'h1')
-            this.place('h', 'f')
+            this.switchWhere('h1', 'v1').switchWhere('h2', 'v2')
+            this.place('v', 'h1').place('h', 'f')
           } else if (newValue === 'H') {
             // HF -> H: ((h1, h2)/ v2) -> (h1, h2)
             this.place('h', 'f')
@@ -367,51 +393,63 @@
             // HF -> V: ((h1, h2)/ v2) -> (h1 | h2 / v2)
             // opt.what is one of what_h1 or what_h2
             this.place(opt.what, 'v1')
-          } else {
-            return
+          } else if (newValue === 'FV') {
+            this.place('h', 'f').place('vv', 'h2')
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         } else if (oldValue === 'FH') {
           if (newValue === 'HF') {
             // FH -> FH: (v1 /(hh1, hh2)) -> ((hh1, hh2) / v1)
             this.switchWhere('v1', 'v2')
-            this.switchWhere('h1', 'hh1')
-            this.switchWhere('h2', 'hh2')
+            this.switchWhere('h1', 'hh1').switchWhere('h2', 'hh2')
             this.place('h', 'v1')
           } else if (newValue === 'FV') {
             // FH -> FV: (v1 /(hh1, hh2)) -> (v1, (hh1, hh2))
             this.switchWhere('v1', 'h1')
-            this.switchWhere('hh1', 'vv1')
-            this.switchWhere('hh2', 'vv2')
-            this.place('vv', 'h2')
-            this.place('h', 'f')
+            this.switchWhere('hh1', 'vv1').switchWhere('hh2', 'vv2')
+            this.place('vv', 'h2').place('h', 'f')
           } else if (newValue === 'H') {
             // FH -> H: (v1 /(hh1, hh2)) -> (hh1, hh2)
-            this.switchWhere('h1', 'hh1')
-            this.switchWhere('h2', 'hh2')
+            this.switchWhere('h1', 'hh1').switchWhere('h2', 'hh2')
             this.place('h', 'f')
           } else if (newValue === 'V') {
             // FH -> V: (v1 /(hh1, hh2)) -> (v1, hh1 | hh2)
             // opt.what is one of what_hh1 or what_hh2
             this.place(opt.what, 'v2')
-          } else {
-            return
+          } else if (newValue === 'VF') {
+            this.place('h', 'f').place('v', 'h1')
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         } else if (oldValue === 'VF') {
           if (newValue === 'FV') {
-            // VF -> FV: ((v1, v2), h2) -> (h2, (v1, v2))
+            // VF -> FV: ((v1 / v2), h2) -> (h2, (v1, v2))
             this.switchWhere('h1', 'h2')
-            this.switchWhere('v1', 'vv1')
-            this.switchWhere('v2', 'vv2')
+            this.switchWhere('v1', 'vv1').switchWhere('v2', 'vv2')
             this.place('vv', 'h2')
           } else if (newValue === 'H') {
-            // VF -> H: ((v1, v2), h2) -> ((v1 | v2), h2)
+            // VF -> H: ((v1 / v2), h2) -> ((v1 | v2), h2)
             // opt.what is one of what_v1 or what_v2
             this.place(opt.what, 'h1')
           } else if (newValue === 'V') {
-            // VF -> V: ((v1, v2), h2) -> (v1, v2)
+            // VF -> V: ((v1 / v2), h2) -> (v1, v2)
             this.place('v', 'f')
-          } else {
-            return
+          } else if (newValue === 'HF') {
+            // VF -> HF: ((v1 / v2), h2) -> ((v1 , v2) / h2)
+            this.switchWhere('v1', 'h1')
+            this.switchWhere('v2', 'h2')
+            this.place('v', 'f').place('h', 'v1')
+          } else if (newValue === 'FH') {
+            this.place('v', 'f').place('hh', 'v2')
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         } else if (oldValue === 'FV') {
           if (newValue === 'VF') {
@@ -429,8 +467,18 @@
             this.place('v', 'f')
             this.switchWhere('v1', 'vv1')
             this.switchWhere('v2', 'vv2')
-          } else {
-            return
+          } else if (newValue === 'FH') {
+            // FV -> FH: (h1, (vv1 / vv2))-> (h1 / (vv1, vv2)
+            this.place('v', 'f')
+            this.switchWhere('h1', 'v1')
+            this.switchWhere('hh1', 'vv1').switchWhere('hh2', 'vv2')
+            this.place('hh', 'v2')
+          } else if (newValue === 'HF') {
+            this.place('v', 'f').place('h', 'v1')
+          } else if (newValue === 'HH') {
+            this.place('v', 'f').place('h', 'v1').place('hh', 'v2')
+          } else if (newValue === 'VV') {
+            this.place('h', 'f').place('v', 'h1').place('vv', 'h2')
           }
         }
         var available = new Set([this.where_workspace, this.where_turtle, this.where_console])
@@ -448,23 +496,28 @@
         if (expected.some((layout) => !available.has(layout))) {
           console.error('UNEXPECTED location:', newValue, expected, available)
         }
+        Object.keys(opt).forEach(where => {
+          if (layoutcfg.wheres.indexOf(where) >= 0) {
+            this.place(opt[where], where)
+          }
+        })
         this.setPaneLayout(newValue)
       },
       switchWhere (where1, where2) {
         if (where1 !== where2) {
           var what1 = this.what(where1)
           var what2 = this.what(where2)
-          this.place(what1, where2)
-          this.place(what2, where1)
+          this.place(what1, where2).place(what2, where1)
         }
+        return this
       },
       switchWhat (what1, what2) {
         if (what1 !== what2) {
           var where1 = this.where(what1)
           var where2 = this.where(what2)
-          this.place(what1, where2)
-          this.place(what2, where1)
+          this.place(what1, where2).place(what2, where1)
         }
+        return this
       },
       place (what, where) {
         // we move the `what` component to the `where` location
@@ -535,6 +588,7 @@
             this.place(old_what, buddy)
           }
         }
+        return this
       },
       makeVisible (what) {
         var where = 'f' // where -> place what
@@ -590,8 +644,11 @@
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
-      eYo.$$.bus.$on('make-pane-workspace-visible', () => {
+      eYo.$$.bus.$on('pane-workspace-visible', () => {
         this.makeVisible('workspace')
+      })
+      eYo.$$.bus.$on('pane-change-layout', opt => {
+        this.changeLayout(opt)
       })
     },
     watch: {
