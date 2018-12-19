@@ -8,10 +8,9 @@
 export default {
   name: 'webLoadAlert',
   mounted: function () {
-    var self = this
-    eYo.$$.bus.$on('webUploadStart', function (ev) {
-      self.showAlert = false
-      self.$refs.input.click(ev)
+    eYo.$$.bus.$on('webUploadStart', () => {
+      this.showAlert = false
+      this.$refs.input.click()
     })
   },
   methods: {
