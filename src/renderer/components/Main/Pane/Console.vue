@@ -39,8 +39,8 @@
     font-family: monospace;
     font-size:1.2rem;
     overflow:auto;
-    width:100%;
-    height: 100%;
+    width: 100%;
+    height: calc(100% - 2px); /* include border */
   }
   #eyo-console-area:focus {
     outline: none;
