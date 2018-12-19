@@ -2048,13 +2048,12 @@ eYo.DelegateSvg.prototype.beReady = function () {
       var block = this.block_
       block.initSvg()
       // install all the fields and slots in the DOM
-      for (var k in this.fields) {
-        var field = this.fields[k]
+      Object.values(this.fields).forEach(field => {
         if (!field.sourceBlock_) {
           field.setSourceBlock(block)
           field.init()
         }
-      }
+      })
       this.foreachSlot((slot) => {
         slot.beReady()
       })
