@@ -1,13 +1,41 @@
 <template>
-  <b-btn-group id="block-import">
-    <b-dd class="item eyo-with-slotholder">
-      <b-dd-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dd-item-button>
+  <b-btn-group
+    id="block-import">
+    <b-dd
+      class="item eyo-with-slotholder">
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="chosen = choice"
+        :key="choice.key"
+        class="eyo-code"
+        v-html="choice.title"
+      ></b-dd-item-button>
     </b-dd>
-    <div class="item text eyo-code-reserved" v-if="isFromInput">from</div>
-    <div class="item text eyo-code-reserved" v-html="$fromSlot" v-if="isFromSlot"></div>
-    <b-input :class="$$class" v-model="from" v-if="isFromInput" :placeholder="$$placeholder"></b-input>
-    <div class="item text eyo-code-reserved" v-html="$import" v-if="!isImportStar"></div>
-    <div class="item text eyo-code-reserved" v-html="$importStar" v-if="isImportStar"></div>
+    <div
+      v-if="isFromInput"
+      class="item text eyo-code-reserved"
+    >from</div>
+    <div
+      v-if="isFromSlot"
+      class="item text eyo-code-reserved"
+      v-html="$fromSlot"
+    ></div>
+    <b-input
+      v-if="isFromInput"
+      :class="$$class"
+      v-model="from"
+      :placeholder="$$placeholder"
+    ></b-input>
+    <div
+      v-if="!isImportStar"
+      class="item text eyo-code-reserved"
+      v-html="$import"
+    ></div>
+    <div
+      v-if="isImportStar"
+      class="item text eyo-code-reserved"
+      v-html="$importStar"
+    ></div>
   </b-btn-group>
 </template>
 
@@ -86,32 +114,36 @@
         set (newValue) {
           this.eyo.from_p = newValue
         }
-      }
-    },
-    created () {
-      this.choices_by_key = {
-        [eYo.Key.IMPORT]: {
-          key: eYo.Key.IMPORT,
-          title: this.formatted('import {{slotholder}}')
-        },
-        [eYo.Key.FROM_MODULE_IMPORT]: {
-          key: eYo.Key.FROM_MODULE_IMPORT,
-          title: this.formatted('from … import {{slotholder}}')
-        },
-        [eYo.Key.FROM_MODULE_IMPORT_STAR]: {
-          key: eYo.Key.FROM_MODULE_IMPORT_STAR,
-          title: 'from … import *'
+      },
+      choices_by_key () {
+        if (!this.choices_by_key_) {
+          this.choices_by_key_ = {
+            [eYo.Key.IMPORT]: {
+              key: eYo.Key.IMPORT,
+              title: this.formatted('import {{slotholder}}')
+            },
+            [eYo.Key.FROM_MODULE_IMPORT]: {
+              key: eYo.Key.FROM_MODULE_IMPORT,
+              title: this.formatted('from … import {{slotholder}}')
+            },
+            [eYo.Key.FROM_MODULE_IMPORT_STAR]: {
+              key: eYo.Key.FROM_MODULE_IMPORT_STAR,
+              title: 'from … import *'
+            }
+          }
         }
+        return this.choices_by_key_
+      },
+      choices () {
+        if (!this.choices_) {
+          this.choices_ = [
+            this.choices_by_key[eYo.Key.IMPORT],
+            this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT],
+            this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT_STAR]
+          ]
+        }
+        return this.choices_
       }
-      this.choices = [
-        this.choices_by_key[eYo.Key.IMPORT],
-        this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT],
-        this.choices_by_key[eYo.Key.FROM_MODULE_IMPORT_STAR]
-      ]
-      this.$$synchronize(this.step)
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
     },
     methods: {
       $$doSynchronize (eyo) {
