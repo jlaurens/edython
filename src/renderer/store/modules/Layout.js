@@ -1,4 +1,4 @@
-const layoutcfg = {
+const cfg = {
   // these are the panes identifier
   // either atomic or split vues
   panes: [
@@ -32,37 +32,62 @@ const layoutcfg = {
   fromLayout: {
     F: ['H', 'V'],
     H: {
-      h1: ['F', 'VF', 'V'],
-      h2: ['F', 'FV', 'V']
+      h1: ['F', 'VF', 'V', 'FH'],
+      h2: ['F', 'FV', 'V', 'FH']
     },
     V: {
-      v1: ['F', 'HF', 'H'],
-      v2: ['F', 'FH', 'H']
+      v1: ['F', 'HF', 'H', 'FV'],
+      v2: ['F', 'FH', 'H', 'FV']
     },
     HF: {
-      f: ['F'],
-      h1: ['F', 'H', 'V'],
-      h2: ['F', 'H', 'V']
+      v2: ['F', 'FH', 'H'],
+      h1: ['F', 'H', 'V', 'FH'],
+      h2: ['F', 'H', 'V', 'FH']
     },
     FH: {
-      f: ['F'],
-      hh1: ['F', 'H', 'V'],
-      hh2: ['F', 'H', 'V']
+      v1: ['F', 'HF', 'H'],
+      hh1: ['F', 'H', 'V', 'HF'],
+      hh2: ['F', 'H', 'V', 'HF']
     },
     VF: {
-      f: ['F'],
-      v1: ['F', 'H', 'V'],
-      v2: ['F', 'H', 'V']
+      h2: ['F', 'FV', 'V'],
+      v1: ['F', 'H', 'V', 'FV'],
+      v2: ['F', 'H', 'V', 'FV']
     },
     FV: {
-      f: ['F'],
-      vv1: ['F', 'H', 'V'],
-      vv2: ['F', 'H', 'V']
+      h1: ['F', 'VF', 'V'],
+      vv1: ['F', 'H', 'V', 'VF'],
+      vv2: ['F', 'H', 'V', 'VF']
+    },
+    HH: {
+      h1: ['F', 'H', 'FH'],
+      h2: ['F', 'H', 'FH'],
+      hh1: ['F', 'H', 'HF'],
+      hh2: ['F', 'H', 'HF']
+    },
+    VV: {
+      v1: ['F', 'V', 'FV'],
+      v2: ['F', 'V', 'FV'],
+      vv1: ['F', 'V', 'VF'],
+      vv2: ['F', 'V', 'VF']
     }
   }
 }
 
-Object.defineProperties(layoutcfg, {
+const state = {
+  paneLayout: undefined, /* One of layouts */
+  width_h1: 66,
+  width_h2: 34,
+  width_hh1: 50,
+  width_hh2: 50,
+  height_v1: 66,
+  height_v2: 34,
+  height_vv1: 50,
+  height_vv2: 50,
+  cfg: cfg
+}
+
+Object.defineProperties(cfg, {
   whats: {
     get () {
       return this.whats_ || (this.whats_ = ['h', 'v', 'hh', 'vv'].concat(this.panes))
@@ -97,27 +122,30 @@ Object.defineProperties(layoutcfg, {
     get () {
       return this.wheres.filter(s => s.startsWith('v')).map(s => 'height_' + s)
     }
+  },
+  prefs: {
+    get () {
+      var prefs = {
+        layout: state.paneLayout
+      }
+      var wheres = this.fromLayout[prefs.layout]
+      wheres && wheres.forEach(where => {
+        var what = state[`what_${where}`]
+        if (what) {
+          prefs[where] = what
+        }
+      })
+      return prefs
+    }
   }
 })
-const state = {
-  paneLayout: undefined, /* One of layouts */
-  width_h1: 66,
-  width_h2: 34,
-  width_hh1: 50,
-  width_hh2: 50,
-  height_v1: 66,
-  height_v2: 34,
-  height_vv1: 50,
-  height_vv2: 50
-}
-
 // declare the state variables
 // what is in position `where`
-layoutcfg.wheres.forEach(k => {
+cfg.wheres.forEach(k => {
   state[`what_${k}`] = null
 })
 // where is pane `what`
-layoutcfg.whats.forEach(k => {
+cfg.whats.forEach(k => {
   state[`where_${k}`] = null
 })
 
@@ -128,7 +156,7 @@ const mutations = {
 }
 
 // create mutations
-layoutcfg.wheres.forEach(k => {
+cfg.wheres.forEach(k => {
   mutations[`setWhat_${k}`] = (() => {
     return (state, payload) => {
       state[`what_${k}`] = payload
@@ -136,7 +164,7 @@ layoutcfg.wheres.forEach(k => {
   })()
 })
 
-layoutcfg.whats.forEach(k => {
+cfg.whats.forEach(k => {
   mutations[`setWhere_${k}`] = (() => {
     return (state, payload) => {
       state[`where_${k}`] = payload
@@ -158,4 +186,4 @@ const model = {
   getters
 }
 
-export {model as default, layoutcfg}
+export {model as default, cfg as layoutcfg}
