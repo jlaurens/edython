@@ -168,9 +168,11 @@
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
       },
-      ...mapState('UI', {
+      ...mapState('Workspace', {
         flyoutCategory: state => state.flyoutCategory,
-        flyoutClosed: state => state.flyoutClosed,
+        flyoutClosed: state => state.flyoutClosed
+      }),
+      ...mapState('UI', {
         selectedMode: state => state.selectedMode
       })
     },
@@ -215,7 +217,7 @@
       }
     },
     methods: {
-      ...mapMutations('UI', [
+      ...mapMutations('Workspace', [
         'setFlyoutCategory',
         'setFlyoutClosed'
       ]),
