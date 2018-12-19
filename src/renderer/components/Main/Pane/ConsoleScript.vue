@@ -93,7 +93,6 @@ except:
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() this won't work either
-                    # window.eYo.eraseTurtlePane()
                     console_js.log('Turtle available...', panel.clientWidth, panel.clientHeight)
                 except KeyError as e:
                     print(f'Build error: Missing #{e}')
