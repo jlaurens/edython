@@ -68,7 +68,7 @@ eYo.FlyoutCategory = {
     },
     /*
     <s eyo="assignment" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="binary"><x eyo="input" slot="O"></x></x></x></x></s>
-    <s eyo="assignment" variant="name_value" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="arguments"><x eyo="call" name="input" slot="O"><x eyo="list" slot="arguments"><x eyo="literal" subtype="eyo:shortstringliteral" slot="O">''</x></x></x></x></x></x></s>
+    <s eyo="assignment" variant="name_value" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="assigned"><x eyo="call" name="int" slot="O"><x eyo="list" slot="n_ary"><x eyo="call" name="input" slot="O"><x eyo="list" slot="n_ary"><x eyo="literal" subtype="eyo:shortstringliteral" slot="O">''</x></x></x></x></x></x></s>
     */
     {
       type: eYo.T3.Stmt.assignment_stmt,
