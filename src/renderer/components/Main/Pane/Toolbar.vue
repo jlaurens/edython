@@ -122,16 +122,16 @@
       layouts () {
         if (this.where) {
           var Ls = layoutcfg.fromLayout[this.paneLayout]
-          if (!Ls) {
-            console.error('NO CFG for', this.paneLayout)
+          if (Ls) {
+            if (goog.isArray(Ls[this.where])) {
+              return Ls[this.where]
+            }
+            if (goog.isArray(Ls)) {
+              return Ls
+            }
           }
-          if (goog.isArray(Ls[this.where])) {
-            return Ls[this.where]
-          }
-          if (goog.isArray(Ls)) {
-            return Ls
-          }
-          console.error('NO CFG for position', this.paneLayout, this.where, Ls)
+          // Problem of synchronization : `this.paneLayout` may not be consistent
+          // console.error('NO CFG for position', this.paneLayout, this.where, Ls)
         }
         return []
       },
