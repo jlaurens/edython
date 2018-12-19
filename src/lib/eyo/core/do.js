@@ -562,7 +562,7 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
     console.error(err)
     throw err
   } finally {
-    finally_f()
+    finally_f && finally_f()
   }
 }
 
