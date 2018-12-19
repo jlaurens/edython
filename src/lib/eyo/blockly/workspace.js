@@ -92,7 +92,7 @@ eYo.WorkspaceDelegate.prototype.fromString = function (str) {
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
  */
 eYo.WorkspaceDelegate.prototype.toDom = function (opt) {
-  return eYo.Xml.workspaceToDom(this.workspace_, opt && opt.noId)
+  return eYo.Xml.workspaceToDom(this.workspace_, opt)
 }
 
 /**
