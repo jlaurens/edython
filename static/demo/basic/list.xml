@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?><edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><prefs>{"selectedPanel":"console","flyoutClosed":true,"flyoutCategory":"list"}</prefs><workspace><content><s eyo="start" comment="Avec des listes" x="45" y="-241"><python># Avec des listes
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{
+    "workspace":{
+        "closed":true,
+        "category":"basic_string__module"
+    },
+    "paneLayout":{
+        "layout":"H",
+        "h1":"workspace",
+        "h2":"console"
+    }
+}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Avec des listes" x="45" y="-241">
+<python>
+# Avec des listes
 # Une liste est une collection ordonnée d’objets
 liste =[1,'+',1,'=',2]
 print('La liste est',liste)

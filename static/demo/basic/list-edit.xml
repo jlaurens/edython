@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <prefs>{
-"selectedPanel":"console",
-"flyoutCategory":"list"
+  "workspace":{
+    "closed":true,
+    "category":"basic_string__module"
+  },
+  "paneLayout":{
+    "layout":"H",
+    "h1":"workspace",
+    "h2":"console"
+  }
 }</prefs>
 <workspace>
 <content>

@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <prefs>{
-"selectedPanel":"console",
-"flyoutClosed":true
+  "workspace":{
+    "closed":true,
+    "category":"basic_string__module"
+  },
+  "paneLayout":{
+    "layout":"H",
+    "h1":"workspace",
+    "h2":"console"
+  }
 }</prefs><workspace>
 <content>
 <s eyo="start" x="300" y="280" comment="Calculer 1+2+3+...">
+<python>
+# Calculer 1+2+3+...
+# 1) Demander un nombre à l'utilisateur
+réponse = input('Donner un nombre entier positif (pas trop grand.…')
+# 2) Convertir la réponse en nombre entier
+n = int(réponse)
+# 3) Initialiser la somme à 0
+somme = 0
+# 4) Calculer la somme
+for i in range(n + 1):
+    somme = somme + i
+# 5) Afficher le résultat
+print('La somme des',n,'premiers entiers est',somme)
+</python>
 <s eyo="stmt" comment="1) Demander un nombre à l'utilisateur" flow="suite">
 <s eyo="assignment" name="réponse" flow="next">
 <x eyo="list" slot="rhs">

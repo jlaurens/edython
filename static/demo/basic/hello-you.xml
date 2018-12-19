@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
-<prefs>{"selectedPanel":"console",
-"flyoutClosed":true,
-"flyoutCategory":"basic"}</prefs>
+<prefs>{"workspace":{"closed":true,"category":"basic"},"paneLayout":{"layout":"H","h1":"workspace","h2":"console"}}</prefs>
 <workspace>
 <content>
 <s eyo="start" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
+<python># Cliquer sur le bouton "marche" à gauche
+prénom = input('Quel est votre prénom ?')
+print('Bonjour',prénom)</python>
 <s eyo="assignment" name="prénom" flow="suite">
-<x eyo="list" slot="assigned">
+<x eyo="list" slot="rhs">
 <x eyo="call" name="input" slot="O">
-<x eyo="list" slot="arguments">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">'Quel est votre prénom ?'</x>
 </x>
 </x>
 </x>
 <s eyo="print" flow="next">
-<x eyo="list" slot="arguments">
+<x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">'Bonjour'</x>
 <x eyo="identifier" name="prénom" slot="f">
 </x>
