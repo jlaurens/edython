@@ -187,7 +187,6 @@
       })
     },
     created () {
-      this.$$synchronize(this.step)
       var dotted = this.dotted
       var candidate = this.dottedItems[dotted]
       if (dotted === 1) {
@@ -199,9 +198,6 @@
         }
       }
       this.selectedItem_ = candidate || this.dottedItems[0]
-    },
-    beforeUpdate () {
-      this.$$synchronize(this.step)
     },
     methods: {
       $$doSynchronize (eyo) {
