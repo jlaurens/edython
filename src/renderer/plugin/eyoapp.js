@@ -12,7 +12,25 @@ eYoApp.install = function (Vue, options) {
     WORKSPACE_ONLY: 'workspace only',
     CONSOLE_ONLY: 'console only'
   })
-  eYo.App.doDomToPref = function (dom) {
+  eYo.App.doPrefToDom = (dom) => {
+    var prefs = {}
+    var value
+    var state = eYo.$$.app.$store.state
+    value = state.Workspace.cfg.prefs
+    if (value) {
+      prefs.workspace = value
+    }
+    value = state.Layout.cfg.prefs
+    if (value) {
+      prefs.paneLayout = value
+    }
+    var str = JSON.stringify(prefs)
+    dom.insertBefore(goog.dom.createDom('prefs', null,
+      goog.dom.createTextNode(str)
+    ), dom.firstChild)
+    return dom
+  }
+  eYo.App.doDomToPref = (dom) => {
     var children = dom.childNodes
     var i = 0
     while (i < children.length) {
@@ -30,22 +48,11 @@ eYoApp.install = function (Vue, options) {
             if (str) {
               var prefs = JSON.parse(str)
               if (prefs) {
-                try {
-                  if (prefs.selectedPanel) {
-                    store.commit('UI/setSelectedPanel', prefs.selectedPanel)
-                  }
-                  if (goog.isString(prefs.flyoutCategory)) {
-                    store.commit('UI/setFlyoutCategory', prefs.flyoutCategory)
-                  }
-                  // close at last because it is an animation
-                  if (goog.isDef(prefs.flyoutClosed)) {
-                    Vue.nextTick(() => {
-                      store.commit('UI/setFlyoutClosed', prefs.flyoutClosed)
-                    })
-                  }
-                } catch (err) {
-                  console.error(err)
-                }
+                var state = eYo.$$.app.$store.state
+                eYo.Do.tryFinally(() => {
+                  state.Workspace.cfg.prefs = prefs.workspace
+                  state.Layout.cfg.prefs = prefs.paneLayout
+                })
                 return
               }
             }
