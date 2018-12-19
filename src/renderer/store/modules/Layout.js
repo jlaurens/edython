@@ -30,7 +30,9 @@ const cfg = {
     'VV'
   ],
   fromLayout: {
-    F: ['H', 'V'],
+    F: {
+      f: ['H', 'V']
+    },
     H: {
       h1: ['F', 'VF', 'V', 'FH'],
       h2: ['F', 'FV', 'V', 'FH']
@@ -129,13 +131,18 @@ Object.defineProperties(cfg, {
         layout: state.paneLayout
       }
       var wheres = this.fromLayout[prefs.layout]
-      wheres && wheres.forEach(where => {
+      wheres && Object.keys(wheres).forEach(where => {
         var what = state[`what_${where}`]
         if (what) {
           prefs[where] = what
         }
       })
       return prefs
+    },
+    set (newValue) {
+      if (newValue) {
+        eYo.$$.bus.$emit('pane-change-layout', newValue)
+      }
     }
   }
 })
