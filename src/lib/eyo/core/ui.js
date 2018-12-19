@@ -345,7 +345,7 @@ eYo.setup.register(() => {
     `.eyo-path-shape {
       stroke: none;
       fill: white;
-      fill-opacity:0.85
+      fill-opacity:0.92
     }`
   )
   eYo.Style.insertCssRuleAt(
@@ -357,7 +357,7 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-stmt.eyo-inner .eyo-path-shape {
       stroke: none;
-      fill-opacity:0.85;
+      fill-opacity:0.92;
     }`
   )
   eYo.Style.insertCssRuleAt(
