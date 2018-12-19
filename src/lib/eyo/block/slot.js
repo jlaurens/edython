@@ -173,9 +173,7 @@ eYo.Slot.prototype.beReady = function () {
       field.init()// installs in the owner's group, not the block group
     }
   }
-  for (var k in this.fields) {
-    f(this.fields[k])
-  }
+  Object.values(this.fields).forEach(f)
   this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
   this.beReady = eYo.Do.nothing // one shot function
