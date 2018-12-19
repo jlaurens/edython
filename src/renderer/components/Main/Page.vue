@@ -204,7 +204,7 @@
           return
         }
         // switching from full pane mode is quite straightforward
-        var panes = this.layoutcfg.panes
+        var panes = layoutcfg.panes
         if (oldValue === 'F') {
           // F -> H or F -> V
           var f = (hv) => {
@@ -258,7 +258,7 @@
         }
         f = (where, wheres) => {
           if (!this[`what_${where}`]) {
-            this.layoutcfg.panes.some((what) => {
+            layoutcfg.panes.some((what) => {
               if (wheres.indexOf(this[`where_${what}`]) < 0) {
                 this.place(what, where)
                 return true
