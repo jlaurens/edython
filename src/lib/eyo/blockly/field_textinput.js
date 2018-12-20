@@ -442,7 +442,7 @@ goog.inherits(eYo.FieldVariable, eYo.FieldInput)
  * @suppress{accessControls}
  */
 eYo.FieldVariable.prototype.getPythonText_ = function () {
-  var candidate = eYo.FieldInput.superClass_.getDisplayText_.call(this) // beware: jump over the direct ancestor
+  var candidate = this.text_? this.text_ : ''
   return !XRegExp.match(candidate, /\s/) && candidate || 'MISSING NAME'
 }
 
@@ -508,6 +508,6 @@ eYo.FieldTextInput.prototype.getPythonText_ = function () {
     this.eyo.data && this.eyo.data.change(t)
     return t
   }
-  return eYo.FieldTextInput.superClass_.getDisplayText_.call(this)
+  return eYo.FieldTextInput.superClass_.getPythonText_.call(this)
 }
 

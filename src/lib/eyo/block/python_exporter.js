@@ -73,7 +73,7 @@ eYo.PythonExporter.prototype.newline_ = function () {
  * @return some python code
  */
 eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
-  var field, input, slot
+  var field, slot
   var eyo = block.eyo
   if ((field = eyo.fromStartField)) {
     do {
@@ -250,3 +250,13 @@ eYo.PythonExporter.prototype.exportSlot_ = function (slot) {
     } while ((field = field.eyo.nextField))
   }
 }
+
+/**
+ * Get the text from this field as displayed on screen.  May differ from getText
+ * due to ellipsis, and other formatting.
+ * @return {string} Currently displayed text.
+ * @private
+ * @suppress{accessControls}
+ */
+Blockly.Field.prototype.getPythonText_ = Blockly.Field.prototype.getText
+

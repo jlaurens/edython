@@ -86,8 +86,7 @@ except:
                     self.setup = True
                 try:
                     import turtle
-                    if Edython.el is None:
-                        Edython.el = document['eyo-turtle-canvas-wrapper']
+                    Edython.el = document['eyo-turtle-canvas-wrapper']
                     # turtle.restart() this won't work
                     turtle.set_defaults(turtle_canvas_wrapper=Edython.el)
                     panel = document['eyo-panel-turtle']
@@ -337,10 +336,10 @@ except:
 export default {
   name: 'panel-console-script',
   mounted: function () {
-    eYo.$$.bus.$on('erase-console', this.eraseConsole)
-    eYo.$$.bus.$on('restart-console', this.restartConsole)
-    eYo.$$.bus.$on('replay-turtle', this.replayTurtle)
-    eYo.$$.bus.$on('erase-turtle', this.eraseTurtle)
+    eYo.$$.bus.$on('console-erase', this.eraseConsole)
+    eYo.$$.bus.$on('console-restart', this.restartConsole)
+    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
+    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {

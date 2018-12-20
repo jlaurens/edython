@@ -142,17 +142,12 @@ Object.defineProperties(cfg, {
   }
 })
 
-state.cfg.setPrefs = newValue => {
-  if (newValue) {
-    eYo.$$.bus.$emit('pane-change-layout', newValue)
-  }
-}
-
 // declare the state variables
 // what is in position `where`
 cfg.wheres.forEach(k => {
   state[`what_${k}`] = null
 })
+
 // where is pane `what`
 cfg.whats.forEach(k => {
   state[`where_${k}`] = null
@@ -182,6 +177,9 @@ cfg.whats.forEach(k => {
 })
 
 const actions = {
+  setPrefs (context, newValue) {
+    newValue && eYo.$$.bus.$emit('pane-change-layout', newValue)
+  }
 }
 
 const getters = {

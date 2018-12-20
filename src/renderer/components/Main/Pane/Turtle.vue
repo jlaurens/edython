@@ -13,7 +13,9 @@
         id="eyo-panel-turtle"
         class="eyo-panel-turtle"
         ref="elInner">
-        <div id="eyo-turtle-canvas-wrapper"></div>
+        <div
+          id="eyo-turtle-canvas-wrapper"
+          ref="elCanvas"></div>
       </div>
     </div>
   </div>
@@ -67,6 +69,12 @@
           style.transform = `scale(${this.scaleFactor})`
         }
       },
+      willUnplace () { // this is necessary due to the scale feature
+        if (this.resizeSensor) {
+          this.resizeSensor.detach()
+          this.resizeSensor = null
+        }
+      },
       didPlace () {
         this.resizeSensor && this.resizeSensor.detach()
         this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
@@ -74,6 +82,37 @@
           this.$$resize()
         })
         this.$$resize()
+      },
+      scrollToVisible () {
+        var canvas = this.$refs.elCanvas
+        // find an svg element inside
+        var nodes = canvas.getElementsByTagName('svg')
+        if (nodes.length) {
+          var svg = nodes[0]
+          nodes = svg.getElementsByTagName('g')
+          if (nodes.length) {
+            var transform = nodes[0].getAttribute('transform')
+            var m = /translate\s*\(\s*([^\s,)]+)[ ,]+([^\s,)]+)/.exec(transform)
+            if (m) {
+              var x0 = parseInt(m[1])
+              if (!isNaN(x0)) {
+                var y0 = parseInt(m[2])
+                if (isNaN(y0)) {
+                  y0 = x0
+                }
+                var x1 = canvas.offsetWidth / 2
+                var y1 = canvas.offsetHeight / 2
+                var inner = this.$refs.elInner
+                if (x1 < x0) {
+                  inner.scrollLeft = x0 - x1
+                }
+                if (y1 < y0) {
+                  inner.strollTop = y0 - y1
+                }
+              }
+            }
+          }
+        }
       }
     },
     mounted () {
@@ -84,6 +123,7 @@
           this.$$resize()
         })
       })
+      eYo.$$.bus.$on('turtle-scroll', this.scrollToVisible)
     }
   }
 </script>

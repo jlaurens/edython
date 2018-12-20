@@ -5,6 +5,16 @@ const state = {
   cfg: {}
 }
 
+Object.defineProperties(state.cfg, {
+  prefs: {
+    get () {
+      return {
+        closed: state.flyoutClosed,
+        category: state.flyoutCategory
+      }
+    }
+  }
+})
 const mutations = {
   setFlyoutCategory (state, category) {
     if (goog.isString(category)) {
@@ -39,14 +49,7 @@ const actions = {
 }
 
 const getters = {
-  scaleFactor: state => 1.1 ** state.scale,
-  prefs (state) {
-    var prefs = {
-      closed: state.flyoutClosed,
-      category: state.flyoutCategory
-    }
-    return prefs
-  }
+  scaleFactor: state => 1.1 ** state.scale
 }
 
 export default {

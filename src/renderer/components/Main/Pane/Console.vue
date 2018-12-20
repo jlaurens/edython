@@ -66,9 +66,14 @@
           style.transform = `scale(${this.scaleFactor})`
         }
       },
+      willUnplace () { // this is necessary due to the scale feature
+        if (this.resizeSensor) {
+          this.resizeSensor.detach()
+          this.resizeSensor = null
+        }
+      },
       didPlace () { // this is necessary due to the scale feature
-        // eslint-disable-next-line no-new
-        new ResizeSensor(this.$refs.elContent, () => {
+        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
           console.log('CONSOLE', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
           this.$$resize()
         })

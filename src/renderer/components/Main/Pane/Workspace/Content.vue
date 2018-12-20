@@ -225,6 +225,12 @@
       }
     },
     methods: {
+      willUnplace () { // this is necessary due to the scale feature
+        if (this.resizeSensor) {
+          this.resizeSensor.detach()
+          this.resizeSensor = null
+        }
+      },
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor && this.resizeSensor.detach()
         this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {

@@ -147,7 +147,8 @@
           ],
           turtle: [
             'turtle.replay',
-            'turtle.erase'
+            'turtle.erase',
+            'turtle.scrollToVisible'
           ],
           workspace: [
           ]
@@ -184,16 +185,19 @@
       choose (choice) {
         var do_it = {
           'console.restart': () => {
-            eYo.$$.bus.$emit('restart-console')
+            eYo.$$.bus.$emit('console-restart')
           },
           'console.erase': () => {
-            eYo.$$.bus.$emit('erase-console')
+            eYo.$$.bus.$emit('console-erase')
           },
           'turtle.replay': () => {
-            eYo.$$.bus.$emit('replay-turtle')
+            eYo.$$.bus.$emit('turtle-replay')
           },
           'turtle.erase': () => {
-            eYo.$$.bus.$emit('erase-turtle')
+            eYo.$$.bus.$emit('turtle-erase')
+          },
+          'turtle.scrollToVisible': () => {
+            eYo.$$.bus.$emit('turtle-scroll')
           },
           'workspace.scaleReset': this.workspaceScaleReset,
           'workspace.scaleUp': this.workspaceScaleUp,

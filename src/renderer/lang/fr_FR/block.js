@@ -97,7 +97,8 @@ export default {
       },
       turtle: {
         replay: 'Rejouer',
-        erase: 'Effacer'
+        erase: 'Effacer',
+        scrollToVisible: 'Centrer le dessin'
       },
       scaleReset: 'Taille normale',
       scaleUp: 'Plus grand',

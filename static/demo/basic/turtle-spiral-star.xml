@@ -1,1 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?><edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><prefs>{"selectedPanel":"turtle","flyoutClosed":true,"flyoutCategory":"basic_turtle__module"}</prefs><workspace><content><s eyo="start" comment="Turtle star" x="79" y="82"><s eyo="import" from="turtle" star="true" flow="suite"><s eyo="turtle__setup_stmt" flow="next"><s eyo="call" name="speed" ary="1" from="true" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">'fast'</x></x><s eyo="for" flow="next"><x eyo="list" slot="for"><x eyo="identifier" name="i" slot="O"></x></x><x eyo="list" slot="in"><x eyo="call" name="range" ary="3" slot="O"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">20</x></x></x></x><s eyo="call" name="forward" ary="1" from="true" flow="suite"><x eyo="m_expr" operator="*" slot="n_ary"><x eyo="identifier" name="i" slot="lhs"></x><x eyo="literal" slot="rhs">10</x></x><s eyo="call" name="right" ary="1" from="true" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="n_ary">144</x></x></s></s><s eyo="call" name="done" ary="0" from="true" flow="next"></s></s></s></s></s></s><s eyo="start" comment="Turtle star (Effacer si besoin)" x="444" y="255"><s eyo="import" from="turtle" star="true" flow="next"><s eyo="turtle__setup_stmt" flow="next"><s eyo="call" name="speed" ary="1" from="true" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="n_ary">'fast'</x></x><s eyo="assignment" name="côté" flow="next"><x eyo="list" slot="rhs"><x eyo="literal" slot="O">10</x></x><s eyo="for" flow="next"><x eyo="list" slot="for"><x eyo="identifier" name="i" slot="O"></x></x><x eyo="list" slot="in"><x eyo="call" name="range" ary="3" slot="O"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">20</x></x></x></x><s eyo="call" name="forward" ary="1" from="true" flow="suite"><x eyo="list" slot="n_ary"><x eyo="identifier" name="côté" slot="O"></x></x><s eyo="call" name="right" ary="1" from="true" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">144</x></x><s eyo="assignment" name="côté" flow="next"><x eyo="list" slot="rhs"><x eyo="a_expr" operator="+" slot="O"><x eyo="identifier" name="côté" slot="lhs"></x><x eyo="literal" slot="rhs">10</x></x></x></s></s></s><s eyo="call" name="done" ary="0" from="true" flow="next"></s></s></s></s></s></s></s></content></workspace></edython>
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{
+  "workspace": {
+    "closed":true,
+    "category":"basic"
+  },
+  "paneLayout": {
+    "layout":"FV",
+    "h1":"workspace",
+    "vv1":"console",
+    "vv2":"turtle"
+  }
+}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Turtle star (Effacer si besoin)" x="100" y="50">
+<python>
+from turtle import *
+edython.turtleSetup()
+speed('fast')
+côté = 10
+for i in range(20):
+    forward(côté)
+    right(144)
+    côté = côté + 10
+done()
+</python>
+<s eyo="import" from="turtle" star="true" flow="suite">
+<s eyo="turtle__setup_stmt" flow="next">
+<s eyo="call" name="speed" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'fast'</x>
+</x>
+<s eyo="assignment" name="côté" flow="next">
+<x eyo="list" slot="rhs">
+<x eyo="literal" slot="O">10</x>
+</x>
+<s eyo="for" flow="next">
+<x eyo="list" slot="for">
+<x eyo="identifier" name="i" slot="O">
+</x>
+</x>
+<x eyo="list" slot="in">
+<x eyo="call" name="range" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">20</x>
+</x>
+</x>
+</x>
+<s eyo="call" name="forward" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="côté" slot="O">
+</x>
+</x>
+<s eyo="call" name="right" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">144</x>
+</x>
+<s eyo="assignment" name="côté" flow="next">
+<x eyo="list" slot="rhs">
+<x eyo="a_expr" operator="+" slot="O" rhs="10">
+<x eyo="identifier" name="côté" slot="lhs">
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="call" name="done" flow="next">
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>
