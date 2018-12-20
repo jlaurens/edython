@@ -73,6 +73,7 @@
 
 <script>
   import {mapState, mapGetters, mapMutations} from 'vuex'
+  import ResizeSensor from 'css-element-queries/src/ResizeSensor'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconTriangle from '@@/Icon/IconTriangle.vue'
@@ -90,7 +91,8 @@
         items: {},
         label: '...',
         isBasic: true,
-        selectedCategory: undefined
+        selectedCategory: undefined,
+        resizeSensor: null
       }
       var Msg = eYo.Msg
       var F = (name) => {
@@ -223,6 +225,13 @@
       }
     },
     methods: {
+      didPlace () { // this is necessary due to the scale feature
+        this.resizeSensor && this.resizeSensor.detach()
+        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
+          this.$$resize()
+        })
+        this.$$resize()
+      },
       $$resize: function (e) {
         var content = this.$refs.elContent
         var w = content.offsetWidth
@@ -342,13 +351,12 @@
         this.selectedCategory = this.items.basic
         eYo.App.workspace.render()
         this.$nextTick(eYo.App.Document.doNew)
-        window.addEventListener('resize', this.$$resize, false)
+        // window.addEventListener('resize', this.$$resize, false)
         this.$nextTick(() => {
-          eYo.$$.bus.$on('size-did-change', this.$$resize)
+          // eYo.$$.bus.$on('size-did-change', this.$$resize)
           this.$$resize()
         })
       }
-      console.error('MOUNTED', this.scaleFactor, `transform: scale(${this.scaleFactor * 100}%)`)
     }
   }
 </script>

@@ -162,7 +162,7 @@
     },
     methods: {
       onDrag (size) {
-        eYo.$$.bus.$emit('size-did-change')
+        // eYo.$$.bus.$emit('size-did-change')
       },
       ...mapMutations('Layout', [
         'setPaneLayout'
@@ -176,11 +176,19 @@
         return this[`what_${where}`]
       },
       setWhere (what, where) {
-        this[`setWhere_${what}`](where)
+        var pane = this.pane(what)
+        if (pane) {
+          this[`setWhere_${what}`](where)
+          if (where) {
+            pane.didPlace && pane.didPlace()
+          } else {
+            pane.didUnplace && pane.didUnplace()
+          }
+        }
         return this
       },
       setWhat (where, what) {
-        this[`setWhat_${where}`](what)
+        where && this[`setWhat_${where}`](what)
         return this
       },
       container (where) {
@@ -554,7 +562,7 @@
             this.setWhat(where, null)
           }
         }
-        // Time -> establish a new link
+        // Time to establish a new link
         if (what) {
           var pane_what = this.pane(what)
           if (pane_what) {
@@ -565,7 +573,7 @@
               el.style.display = ''
               this.setWhere(what, where)
               this.setWhat(where, what)
-              eYo.$$.bus.$emit('size-did-change')
+              // eYo.$$.bus.$emit('size-did-change')
             } else if (where) {
               console.error('UNKNON location:', where)
             }
@@ -588,7 +596,7 @@
             this.place(old_what, buddy)
           }
           // if old_what has no where, move it to the old_where
-          if (!this.where(old_what) && !this.what(old_where)) {
+          if (layoutcfg.panes.indexOf(old_what) >= 0 && !this.where(old_what) && old_where && !this.what(old_where)) {
             // recursive call, only once
             this.place(old_what, old_where)
           }

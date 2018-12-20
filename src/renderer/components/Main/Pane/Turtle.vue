@@ -28,6 +28,11 @@
     components: {
       Toolbar
     },
+    data: function () {
+      return {
+        resizeSensor: null
+      }
+    },
     props: {
       where: {
         type: String,
@@ -61,6 +66,14 @@
           style.overflow = 'hidden'
           style.transform = `scale(${this.scaleFactor})`
         }
+      },
+      didPlace () {
+        this.resizeSensor && this.resizeSensor.detach()
+        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
+          console.log('TURTLE', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
+          this.$$resize()
+        })
+        this.$$resize()
       }
     },
     mounted () {

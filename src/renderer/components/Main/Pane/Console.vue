@@ -27,6 +27,11 @@
     components: {
       Toolbar
     },
+    data: function () {
+      return {
+        resizeSensor: null
+      }
+    },
     props: {
       where: {
         type: String,
@@ -60,16 +65,19 @@
           style.overflow = 'hidden'
           style.transform = `scale(${this.scaleFactor})`
         }
-      }
-    },
-    mounted () {
-      this.$nextTick(() => {
-        this.$$resize()
+      },
+      didPlace () { // this is necessary due to the scale feature
         // eslint-disable-next-line no-new
         new ResizeSensor(this.$refs.elContent, () => {
           console.log('CONSOLE', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
           this.$$resize()
         })
+        this.$$resize()
+      }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        this.$$resize()
       })
     }
   }

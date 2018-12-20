@@ -9,7 +9,8 @@
         :where="where"
         what="workspace"
         v-on="$listeners"></toolbar>
-      <workspace-content></workspace-content>  
+      <workspace-content
+        ref="content"></workspace-content>  
     </div>
   </div>
 </template>
@@ -28,6 +29,11 @@
       where: {
         type: String,
         default: undefined
+      }
+    },
+    methods: {
+      didPlace () {
+        this.$refs.content.didPlace()
       }
     }
   }
