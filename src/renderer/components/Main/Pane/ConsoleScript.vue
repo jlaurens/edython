@@ -77,9 +77,13 @@ except:
     
     class Edython:
         el = None
+        setup = None
 
         def turtleSetup(self):
             if 'turtle' in sys.modules:
+                if self.setup is none:
+                    print('Initializing turtle...')
+                    self.setup = True
                 try:
                     import turtle
                     if Edython.el is None:
