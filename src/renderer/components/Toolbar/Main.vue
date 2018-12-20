@@ -86,9 +86,9 @@
     mounted () {
       // offsetHeight
       // jQuery(window).on('resize', _.debounce(calculateLayout, 150));
-      window.addEventListener('resize', (event) => {
-        console.log('RESIZER', this.$el.offsetHeight, this.$store)
-      })
+      // window.addEventListener('resize', (event) => {
+      //   console.log('RESIZER', this.$el.offsetHeight, this.$store)
+      // })
     },
     methods: {
       doSite (url) {
