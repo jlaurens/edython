@@ -29,36 +29,6 @@
         type: String,
         default: undefined
       }
-    },
-    mounted: function () {
-      window.addEventListener('resize', this.$$resize, false)
-      this.$nextTick(() => {
-        eYo.$$.bus.$on('size-did-change', this.$$resize)
-        this.$$resize()
-      })
-    },
-    methods: {
-      $$resize: function (e) {
-        // Compute the absolute coordinates and dimensions of wrapper.
-        var wrapper = this.$refs.wrapper
-        var element = wrapper
-        var x = 0
-        var y = 0
-        while (element) {
-          x += element.offsetLeft
-          y += element.offsetTop
-          element = element.offsetParent
-        }
-        // Position workspace over wrapper.
-        var workspace = this.$refs.workspace
-        workspace.style.left = `${x}px`
-        workspace.style.top = `${y}px`
-        workspace.style.width = `${wrapper.offsetWidth}px`
-        workspace.style.height = `${wrapper.offsetHeight}px`
-        if (Blockly && eYo.App.workspace) {
-          Blockly.svgResize(eYo.App.workspace)
-        }
-      }
     }
   }
 </script>
@@ -74,5 +44,9 @@
     padding: 0;
     border-radius: 0px;
     padding-top: 0.25rem;
+  }
+  .eyo-workspace {
+    width: 100%;
+    height: 100%;
   }
 </style>

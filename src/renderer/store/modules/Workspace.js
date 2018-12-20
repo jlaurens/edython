@@ -1,6 +1,7 @@
 const state = {
   flyoutClosed: false,
   flyoutCategory: undefined,
+  scale: 0,
   cfg: {}
 }
 
@@ -12,36 +13,40 @@ const mutations = {
   },
   setFlyoutClosed (state, yorn) {
     state.flyoutClosed = !!yorn
+  },
+  scaleUp (state) {
+    state.scale += 1
+  },
+  scaleDown (state) {
+    state.scale -= 1
+  },
+  scaleReset (state) {
+    state.scale = 0
   }
 }
 
 const actions = {
-}
-
-Object.defineProperties(state.cfg, {
-  prefs: {
-    get () {
-      var prefs = {
-        closed: state.flyoutClosed,
-        category: state.flyoutCategory
+  setPrefs ({ commit }, newValue) {
+    if (newValue) {
+      if (goog.isDef(newValue.closed)) {
+        commit('setFlyoutClosed', newValue.closed)
       }
-      return prefs
-    }
-  }
-})
-
-state.cfg.setPrefs = newValue => {
-  if (newValue) {
-    if (goog.isDef(newValue.closed)) {
-      state.flyoutClosed = newValue.closed
-    }
-    if (goog.isDef(newValue.category)) {
-      state.flyoutCategory = newValue.category
+      if (goog.isDef(newValue.category)) {
+        commit('setFlyoutCategory', newValue.category)
+      }
     }
   }
 }
 
 const getters = {
+  scaleFactor: state => 1.1 ** state.scale,
+  prefs (state) {
+    var prefs = {
+      closed: state.flyoutClosed,
+      category: state.flyoutCategory
+    }
+    return prefs
+  }
 }
 
 export default {

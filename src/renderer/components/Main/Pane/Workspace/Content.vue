@@ -1,67 +1,70 @@
 <template>
   <div
-    id="eyo-workspace-content"
     class="content"
-    ref="content">
+    ref="elContent">
     <div
-      v-show="false">
-      <icon-base
-        ref="svg_control_image_v"
-        icon-name="triangle"
-      ><icon-triangle /></icon-base>
-    </div>
-    <div
-      id="eyo-flyout-toolbar-switcher"
-      ref="switcher">
-      <b-btn-group
-        id="eyo-flyout-switcher"
-        >
-        <b-dd
-          id="eyo-flyout-dropdown-general"
-          variant="secondary"
-          class="eyo-dropdown">
-          <template
-            slot="button-content">Blocs</template>
-          <b-dd-item-button
-            v-for="item in levels"
-            @click="selectCategory(item)"
-            :style="{fontFamily: $$.eYo.Font.familySans}"
-            :key="item.content"
-          >{{item.content}}</b-dd-item-button>
-          <b-dd-divider></b-dd-divider>
-          <b-dd-item-button
-            v-for="item in categories"
-            @click="selectCategory(item)"
-            :style="{fontFamily: $$.eYo.Font.familySans}"
-            :key="item.content"
-            >{{item.content}}</b-dd-item-button>
-        </b-dd>
-        <b-dd
-          id="eyo-flyout-dropdown-module"
-          variant="secondary"
-          class="eyo-dropdown">
-          <template
-            slot="button-content">Module&nbsp;</template>
-          <b-dd-item-button
-            v-for="item in modules"
-            @click="selectCategory(item)"
-            :style="{fontFamily: $$.eYo.Font.familySans}"
-            :key="item.content"
-            >{{item.content}}</b-dd-item-button>
-        </b-dd>
-      </b-btn-group>
+      id="eyo-workspace-content"
+      ref="elInner">
       <div
-        id="eyo-flyout-toolbar-label">
+        v-show="false">
+        <icon-base
+          ref="svg_control_image_v"
+          icon-name="triangle"
+        ><icon-triangle /></icon-base>
+      </div>
+      <div
+        id="eyo-flyout-toolbar-switcher"
+        ref="switcher">
+        <b-btn-group
+          id="eyo-flyout-switcher"
+          >
+          <b-dd
+            id="eyo-flyout-dropdown-general"
+            variant="secondary"
+            class="eyo-dropdown">
+            <template
+              slot="button-content">Blocs</template>
+            <b-dd-item-button
+              v-for="item in levels"
+              @click="selectCategory(item)"
+              :style="{fontFamily: $$.eYo.Font.familySans}"
+              :key="item.content"
+            >{{item.content}}</b-dd-item-button>
+            <b-dd-divider></b-dd-divider>
+            <b-dd-item-button
+              v-for="item in categories"
+              @click="selectCategory(item)"
+              :style="{fontFamily: $$.eYo.Font.familySans}"
+              :key="item.content"
+              >{{item.content}}</b-dd-item-button>
+          </b-dd>
+          <b-dd
+            id="eyo-flyout-dropdown-module"
+            variant="secondary"
+            class="eyo-dropdown">
+            <template
+              slot="button-content">Module&nbsp;</template>
+            <b-dd-item-button
+              v-for="item in modules"
+              @click="selectCategory(item)"
+              :style="{fontFamily: $$.eYo.Font.familySans}"
+              :key="item.content"
+              >{{item.content}}</b-dd-item-button>
+          </b-dd>
+        </b-btn-group>
         <div
-          class="item">{{label}}</div>
-        <div
-          v-if="canBasic"
-          class="item">
-          <input
-            type="checkbox"
-            id="eyo-flyout-toolbar-label-check"
-            v-model="isBasic">
-          {{$$t('message.flyout.basic')}}
+          id="eyo-flyout-toolbar-label">
+          <div
+            class="item">{{label}}</div>
+          <div
+            v-if="canBasic"
+            class="item">
+            <input
+              type="checkbox"
+              id="eyo-flyout-toolbar-label-check"
+              v-model="isBasic">
+            {{$$t('message.flyout.basic')}}
+          </div>
         </div>
       </div>
     </div>
@@ -69,7 +72,7 @@
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex'
+  import {mapState, mapGetters, mapMutations} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconTriangle from '@@/Icon/IconTriangle.vue'
@@ -168,17 +171,20 @@
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
       },
-      ...mapState('Workspace', {
-        flyoutCategory: state => state.flyoutCategory,
-        flyoutClosed: state => state.flyoutClosed
-      }),
+      ...mapState('Workspace', [
+        'flyoutCategory',
+        'flyoutClosed'
+      ]),
+      ...mapGetters('Workspace', [
+        'scaleFactor'
+      ]),
       ...mapState('UI', {
         selectedMode: state => state.selectedMode
       })
     },
     watch: {
-      selectedMode (newValue, oldValue) {
-        console.warn(newValue, oldValue)
+      scaleFactor (newValue, oldValue) {
+        this.$$resize()
       },
       flyoutClosed (newValue, oldValue) {
         eYo.App.flyout && eYo.App.flyout.eyo.doSlide(newValue)
@@ -197,7 +203,7 @@
       // whenever `selectedCategory` changes, this function will run
       selectedCategory: function (newValue, oldValue) {
         if (!oldValue || (newValue !== oldValue)) {
-          var content = this.$refs.content
+          var content = this.$refs.elInner
           if (content) {
             var el = content.getElementsByClassName('eyo-flyout')[0]
             eYo.Tooltip.hideAll(el)
@@ -217,6 +223,24 @@
       }
     },
     methods: {
+      $$resize: function (e) {
+        var content = this.$refs.elContent
+        var w = content.offsetWidth
+        var h = content.offsetHeight
+        var newW = w / this.scaleFactor
+        var newH = h / this.scaleFactor
+        var inner = this.$refs.elInner
+        inner.style.position = 'relative'
+        inner.style.width = `${newW}px`
+        inner.style.height = `${newH}px`
+        inner.style.left = `${(w - newW) / 2}px`
+        inner.style.top = `${(h - newH) / 2}px`
+        inner.style.overflow = 'hidden'
+        this.$refs.elInner.style.transform = `scale(${this.scaleFactor})`
+        if (Blockly && eYo.App.workspace) {
+          Blockly.svgResize(eYo.App.workspace)
+        }
+      },
       ...mapMutations('Workspace', [
         'setFlyoutCategory',
         'setFlyoutClosed'
@@ -231,7 +255,6 @@
       }
     },
     mounted () {
-      console.error('CONTENT IS MOUNTED')
       // the workspace
       // there is only one workspace
       if (eYo.App.workspace) {
@@ -319,7 +342,13 @@
         this.selectedCategory = this.items.basic
         eYo.App.workspace.render()
         this.$nextTick(eYo.App.Document.doNew)
+        window.addEventListener('resize', this.$$resize, false)
+        this.$nextTick(() => {
+          eYo.$$.bus.$on('size-did-change', this.$$resize)
+          this.$$resize()
+        })
       }
+      console.error('MOUNTED', this.scaleFactor, `transform: scale(${this.scaleFactor * 100}%)`)
     }
   }
 </script>
@@ -376,5 +405,9 @@
     vertical-align: middle;
     position: relative;
     bottom: 0.125rem;
+  }
+  #eyo-workspace-content {
+    width: 100%;
+    height: 100%;
   }
 </style>

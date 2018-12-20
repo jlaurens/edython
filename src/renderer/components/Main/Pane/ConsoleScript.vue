@@ -81,7 +81,7 @@ except:
 
         def turtleSetup(self):
             if 'turtle' in sys.modules:
-                if self.setup is none:
+                if self.setup is None:
                     print('Initializing turtle...')
                     self.setup = True
                 try:

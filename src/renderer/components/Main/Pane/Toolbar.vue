@@ -23,11 +23,7 @@
           <icon-layout :keyx="layout"/></icon-base></b-dd-item-button>
       </b-dd>
     </b-btn-group>
-    <b-btn-group
-      v-if="what === 'workspace'"
-    >&nbsp;</b-btn-group>
     <b-dd
-      v-else
       class="eyo-dropdown-tools"
       right>
       <template>
@@ -44,6 +40,14 @@
         :key="choice"
         class="eyo-code"
       >{{title(choice)}}</b-dd-item-button>
+      <b-dd-divider
+        v-if="choices.length"></b-dd-divider>
+      <b-dd-item-button
+        v-for="choice in scaleChoices"
+        v-on:click="choose(choice)"
+        :key="choice"
+        class="eyo-code"
+      >{{title(choice)}}</b-dd-item-button>
     </b-dd>
   </b-btn-toolbar>
 </template>
@@ -54,7 +58,7 @@
   import IconLayout from '@@/Icon/IconLayout.vue'
   import IconMenu from '@@/Icon/IconMenu.vue'
 
-  import {mapState} from 'vuex'
+  import {mapState, mapMutations} from 'vuex'
   import {layoutcfg} from '@@/../store/modules/Layout'
 
   export default {
@@ -144,6 +148,27 @@
           turtle: [
             'turtle.replay',
             'turtle.erase'
+          ],
+          workspace: [
+          ]
+        }[this.what]
+      },
+      scaleChoices () {
+        return {
+          console: [
+            'console.scaleReset',
+            'console.scaleUp',
+            'console.scaleDown'
+          ],
+          turtle: [
+            'turtle.scaleReset',
+            'turtle.scaleUp',
+            'turtle.scaleDown'
+          ],
+          workspace: [
+            'workspace.scaleReset',
+            'workspace.scaleUp',
+            'workspace.scaleDown'
           ]
         }[this.what]
       },
@@ -169,13 +194,37 @@
           },
           'turtle.erase': () => {
             eYo.$$.bus.$emit('erase-turtle')
-          }
+          },
+          'workspace.scaleReset': this.workspaceScaleReset,
+          'workspace.scaleUp': this.workspaceScaleUp,
+          'workspace.scaleDown': this.workspaceScaleDown,
+          'console.scaleReset': this.consoleScaleReset,
+          'console.scaleUp': this.consoleScaleUp,
+          'console.scaleDown': this.consoleScaleDown,
+          'turtle.scaleReset': this.turtleScaleReset,
+          'turtle.scaleUp': this.turtleScaleUp,
+          'turtle.scaleDown': this.turtleScaleDown
         }[choice]
         do_it()
       },
       title (choice) {
-        return this.$$t(`block.pane.content.${choice}`)
-      }
+        return this.$$t(`block.pane.content.${choice}`) || this.$$t(`block.pane.content.${choice.split('.').pop()}`)
+      },
+      ...mapMutations('Workspace', {
+        workspaceScaleUp: 'scaleUp',
+        workspaceScaleDown: 'scaleDown',
+        workspaceScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Console', {
+        consoleScaleUp: 'scaleUp',
+        consoleScaleDown: 'scaleDown',
+        consoleScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Turtle', {
+        turtleScaleUp: 'scaleUp',
+        turtleScaleDown: 'scaleDown',
+        turtleScaleReset: 'scaleReset'
+      })
     }
   }
 </script>

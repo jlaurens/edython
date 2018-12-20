@@ -7,14 +7,20 @@
       what="turtle"
       v-on="$listeners"></toolbar>
     <div
-      id="eyo-panel-turtle"
-      class="content eyo-panel-turtle">
-      <div id="eyo-turtle-canvas-wrapper"></div>
+      class="content"
+      ref="elContent">
+      <div
+        id="eyo-panel-turtle"
+        class="eyo-panel-turtle"
+        ref="elInner">
+        <div id="eyo-turtle-canvas-wrapper"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import Toolbar from './Toolbar'
   export default {
     name: 'panel-turtle',
@@ -26,19 +32,62 @@
         type: String,
         default: undefined
       }
+    },
+    computed: {
+      ...mapGetters('Turtle', [
+        'scaleFactor'
+      ])
+    },
+    watch: {
+      scaleFactor (newValue, oldValue) {
+        this.$$resize()
+      }
+    },
+    methods: {
+      $$resize: function (e) {
+        var content = this.$refs.elContent
+        var w = content.offsetWidth
+        var h = content.offsetHeight
+        if (h && w) {
+          var newW = w / this.scaleFactor
+          var newH = h / this.scaleFactor
+          var style = this.$refs.elInner.style
+          style.position = 'relative'
+          style.width = `${newW}px`
+          style.height = `${newH}px`
+          style.left = `${(w - newW) / 2}px`
+          style.top = `${(h - newH) / 2}px`
+          style.overflow = 'hidden'
+          style.transform = `scale(${this.scaleFactor})`
+        }
+      }
+    },
+    mounted () {
+      window.addEventListener('resize', this.$$resize, false)
+      this.$nextTick(() => {
+        this.$$resize()
+      })
     }
   }
 </script>
 
 <style>
-  .eyo-wrapper .content.eyo-panel-turtle {
-    background-color: aliceblue;
+  .eyo-wrapper .content {
     margin-top: 0.25rem;
     padding: 0;
     height: calc(100% - 2rem);
   }
+  .eyo-wrapper .eyo-panel-turtle {
+    background-color: aliceblue;
+    margin-top: 0.25rem;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+  }
   #eyo-turtle-canvas-wrapper {
     width: 100%;
     height: 100%;
+    min-width: 1000px;
+    min-height: 1000px;
   }
 </style>

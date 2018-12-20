@@ -98,7 +98,10 @@ export default {
       turtle: {
         replay: 'Rejouer',
         erase: 'Effacer'
-      }
+      },
+      scaleReset: 'Taille normale',
+      scaleUp: 'Plus grand',
+      scaleDown: 'Plus petit'
     }
   }
 }
