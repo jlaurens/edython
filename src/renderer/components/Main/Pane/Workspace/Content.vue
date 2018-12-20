@@ -244,7 +244,7 @@
         inner.style.height = `${newH}px`
         inner.style.left = `${(w - newW) / 2}px`
         inner.style.top = `${(h - newH) / 2}px`
-        inner.style.overflow = 'hidden'
+        inner.style.overflow = 'auto'
         this.$refs.elInner.style.transform = `scale(${this.scaleFactor})`
         if (Blockly && eYo.App.workspace) {
           Blockly.svgResize(eYo.App.workspace)

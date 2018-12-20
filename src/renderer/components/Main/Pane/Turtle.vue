@@ -63,7 +63,7 @@
           style.height = `${newH}px`
           style.left = `${(w - newW) / 2}px`
           style.top = `${(h - newH) / 2}px`
-          style.overflow = 'hidden'
+          style.overflow = 'auto'
           style.transform = `scale(${this.scaleFactor})`
         }
       },
