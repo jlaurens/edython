@@ -21,6 +21,7 @@
 <script>
   import {mapGetters} from 'vuex'
   import Toolbar from './Toolbar'
+  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
   export default {
     name: 'panel-console',
     components: {
@@ -62,10 +63,13 @@
       }
     },
     mounted () {
-      window.addEventListener('resize', this.$$resize, false)
-      console.error(this.scaleFactor)
       this.$nextTick(() => {
         this.$$resize()
+        // eslint-disable-next-line no-new
+        new ResizeSensor(this.$refs.elContent, () => {
+          console.log('CONSOLE', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
+          this.$$resize()
+        })
       })
     }
   }

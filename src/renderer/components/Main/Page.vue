@@ -566,10 +566,10 @@
               this.setWhere(what, where)
               this.setWhat(where, what)
               eYo.$$.bus.$emit('size-did-change')
-            } else {
+            } else if (where) {
               console.error('UNKNON location:', where)
             }
-          } else {
+          } else if (what) {
             console.error('UNKNON pane/layout:', what)
           }
           // is there something in the other part?
@@ -586,6 +586,11 @@
           if (buddy && !this.what(buddy)) {
             // there is nothing in the other pane
             this.place(old_what, buddy)
+          }
+          // if old_what has no where, move it to the old_where
+          if (!this.where(old_what) && !this.what(old_where)) {
+            // recursive call, only once
+            this.place(old_what, old_where)
           }
         }
         return this

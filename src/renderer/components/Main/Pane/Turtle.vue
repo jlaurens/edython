@@ -22,6 +22,7 @@
 <script>
   import {mapGetters} from 'vuex'
   import Toolbar from './Toolbar'
+  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
   export default {
     name: 'panel-turtle',
     components: {
@@ -63,9 +64,12 @@
       }
     },
     mounted () {
-      window.addEventListener('resize', this.$$resize, false)
       this.$nextTick(() => {
         this.$$resize()
+        // eslint-disable-next-line no-new
+        new ResizeSensor(this.$refs.elContent, () => {
+          this.$$resize()
+        })
       })
     }
   }
