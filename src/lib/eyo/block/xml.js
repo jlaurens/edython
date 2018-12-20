@@ -135,17 +135,19 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
   var xml = root.firstChild.firstChild
   workspace.getTopBlocks(true).forEach(block => {
     var dom = eYo.Xml.blockToDomWithXY(block, opt)
-    if (!block.eyo.isControl) {
       var p = new eYo.PythonExporter()
       eYo.Do.tryFinally(() => {
-        var code = p.export(block, {is_deep: true})
-        if (code.length) {
-          var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
-          goog.dom.insertChildAt(dom, py_dom, 0)
-          goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+        if (!block.eyo.isControl) {
+          var code = p.export(block, {is_deep: true})
+          if (code.length) {
+            var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+            goog.dom.insertChildAt(dom, py_dom, 0)
+            goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+          }
         }
+      }, () => {
+        goog.dom.appendChild(xml, dom)
       })
-    }
   })
   root.setAttribute('xmlns', eYo.Xml.XMLNS) // default namespace
   root.setAttribute('xmlns:eyo', eYo.Xml.XMLNS) // global namespace declaration
