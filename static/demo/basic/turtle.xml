@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <prefs>{
-  "selectedPanel":"turtle",
-  "flyoutClosed":true,
-  "flyoutCategory":"basic_turtle__module"
+  "workspace": {
+    "closed":true,
+    "category":"basic"
+  },
+  "paneLayout": {
+    "layout":"FV",
+    "h1":"workspace",
+    "vv1":"console",
+    "vv2":"turtle"
+  }
 }</prefs>
 <workspace>
 <content>
 <s eyo="start" comment="Cliquez sur &quot;marche&quot; et soyez patient (20'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<python>
+# Cliquez sur "marche" et soyez patient (20'')
+from turtle import *
+edython.turtleSetup()
+pensize(1)
+for c in['red','#00ff00','#fa0','rgb(0,0,200)']:
+    pencolor(c)
+    forward(30)
+    left(90)
+done()
+</python>
 <s eyo="import" from="turtle" star="true" flow="suite">
 <s eyo="turtle__setup_stmt" flow="next">
 <s eyo="call" name="pensize" flow="next">
