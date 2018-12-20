@@ -159,17 +159,23 @@
           console: [
             'console.scaleReset',
             'console.scaleUp',
-            'console.scaleDown'
+            'console.scaleDown',
+            'console.scaleUpBig',
+            'console.scaleDownBig'
           ],
           turtle: [
             'turtle.scaleReset',
             'turtle.scaleUp',
-            'turtle.scaleDown'
+            'turtle.scaleDown',
+            'turtle.scaleUpBig',
+            'turtle.scaleDownBig'
           ],
           workspace: [
             'workspace.scaleReset',
             'workspace.scaleUp',
-            'workspace.scaleDown'
+            'workspace.scaleDown',
+            'workspace.scaleUpBig',
+            'workspace.scaleDownBig'
           ]
         }[this.what]
       },
@@ -201,13 +207,19 @@
           },
           'workspace.scaleReset': this.workspaceScaleReset,
           'workspace.scaleUp': this.workspaceScaleUp,
+          'workspace.scaleUpBig': this.workspaceScaleUpBig,
           'workspace.scaleDown': this.workspaceScaleDown,
+          'workspace.scaleDownBig': this.workspaceScaleDownBig,
           'console.scaleReset': this.consoleScaleReset,
           'console.scaleUp': this.consoleScaleUp,
+          'console.scaleUpBig': this.consoleScaleUpBig,
           'console.scaleDown': this.consoleScaleDown,
+          'console.scaleDownBig': this.consoleScaleDownBig,
           'turtle.scaleReset': this.turtleScaleReset,
           'turtle.scaleUp': this.turtleScaleUp,
-          'turtle.scaleDown': this.turtleScaleDown
+          'turtle.scaleUpBig': this.turtleScaleUpBig,
+          'turtle.scaleDown': this.turtleScaleDown,
+          'turtle.scaleDownBig': this.turtleScaleDownBig
         }[choice]
         do_it()
       },
@@ -216,17 +228,23 @@
       },
       ...mapMutations('Workspace', {
         workspaceScaleUp: 'scaleUp',
+        workspaceScaleUpBig: 'scaleUpBig',
         workspaceScaleDown: 'scaleDown',
+        workspaceScaleDownBig: 'scaleDownBig',
         workspaceScaleReset: 'scaleReset'
       }),
       ...mapMutations('Console', {
         consoleScaleUp: 'scaleUp',
+        consoleScaleUpBig: 'scaleUpBig',
         consoleScaleDown: 'scaleDown',
+        consoleScaleDownBig: 'scaleDownBig',
         consoleScaleReset: 'scaleReset'
       }),
       ...mapMutations('Turtle', {
         turtleScaleUp: 'scaleUp',
+        turtleScaleUpBig: 'scaleUpBig',
         turtleScaleDown: 'scaleDown',
+        turtleScaleDownBig: 'scaleDownBig',
         turtleScaleReset: 'scaleReset'
       })
     }

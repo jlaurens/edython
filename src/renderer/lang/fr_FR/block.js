@@ -86,7 +86,7 @@ export default {
     }
   },
   pane: {
-    Workspace: 'Établi',
+    Workspace: 'Atelier',
     Console: 'Console',
     Turtle: 'Tortue',
     Workbench: 'Établi',
@@ -102,7 +102,9 @@ export default {
       },
       scaleReset: 'Taille normale',
       scaleUp: 'Plus grand',
-      scaleDown: 'Plus petit'
+      scaleDown: 'Plus petit',
+      scaleUpBig: 'Bien plus grand',
+      scaleDownBig: 'Bien plus petit'
     }
   }
 }

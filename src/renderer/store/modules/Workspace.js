@@ -30,6 +30,12 @@ const mutations = {
   scaleDown (state) {
     state.scale -= 1
   },
+  scaleUpBig (state) {
+    state.scale += 3
+  },
+  scaleDownBig (state) {
+    state.scale -= 3
+  },
   scaleReset (state) {
     state.scale = 0
   }
