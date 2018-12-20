@@ -26,19 +26,20 @@ Object.defineProperties(state.cfg, {
         category: state.flyoutCategory
       }
       return prefs
-    },
-    set (newValue) {
-      if (newValue) {
-        if (goog.isDef(newValue.closed)) {
-          state.flyoutClosed = newValue.closed
-        }
-        if (goog.isDef(newValue.category)) {
-          state.flyoutCategory = newValue.category
-        }
-      }
     }
   }
 })
+
+state.cfg.setPrefs = newValue => {
+  if (newValue) {
+    if (goog.isDef(newValue.closed)) {
+      state.flyoutClosed = newValue.closed
+    }
+    if (goog.isDef(newValue.category)) {
+      state.flyoutCategory = newValue.category
+    }
+  }
+}
 
 const getters = {
 }

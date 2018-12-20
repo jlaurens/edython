@@ -138,14 +138,16 @@ Object.defineProperties(cfg, {
         }
       })
       return prefs
-    },
-    set (newValue) {
-      if (newValue) {
-        eYo.$$.bus.$emit('pane-change-layout', newValue)
-      }
     }
   }
 })
+
+state.cfg.setPrefs = newValue => {
+  if (newValue) {
+    eYo.$$.bus.$emit('pane-change-layout', newValue)
+  }
+}
+
 // declare the state variables
 // what is in position `where`
 cfg.wheres.forEach(k => {

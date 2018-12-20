@@ -50,8 +50,8 @@ eYoApp.install = function (Vue, options) {
               if (prefs) {
                 var state = eYo.$$.app.$store.state
                 eYo.Do.tryFinally(() => {
-                  state.Workspace.cfg.prefs = prefs.workspace
-                  state.Layout.cfg.prefs = prefs.paneLayout
+                  state.Workspace.cfg.setPrefs(prefs.workspace)
+                  state.Layout.cfg.setPrefs(prefs.paneLayout)
                 })
                 return
               }
