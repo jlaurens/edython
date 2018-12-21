@@ -48,11 +48,11 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.data.comment.required = newValue === eYo.Key.COMMENT
-        this.data.comment.setIncog()
+        this.comment_d.required = newValue === eYo.Key.COMMENT
+        this.comment_d.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.data.comment.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
+        this.set(this.comment_d.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
       }
     }
   },
@@ -300,11 +300,11 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
  */
 eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
   var block = this.block_
-  var show = !this.data.comment.isIncog()
+  var show = !this.comment_d.isIncog()
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
   var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender( function () {
-    this.data.comment.setIncog(show)
+    this.comment_d.setIncog(show)
   }))
   mgr.addChild(menuItem, true)
   return true
@@ -443,7 +443,7 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.xmlAttr = function () {
 eYo.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var current = this.variant_p
-  var variants = this.data.variant.getAll()
+  var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
@@ -516,12 +516,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.afterChange(oldValue, newValue)
-        var data = this.data.expression
+        var data = this.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.data.comment.isIncog()) {
+        if (this.comment_d.isIncog()) {
           this.change(eYo.Key.EXPRESSION)
         }
       }
@@ -561,7 +561,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         this.required = false
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.data.expression.isIncog()) {
+        if (this.expression_d.isIncog()) {
           this.setIncog(false)
         }
       }
@@ -602,7 +602,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  * @return None
  */
 eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
-  return this.data.variant.get() === this.data.variant.model.COMMENT
+  return this.variant_d.get() === eYo.Key.COMMENT
 }
 
 /**
@@ -613,10 +613,10 @@ eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
  */
 eYo.DelegateSvg.Stmt.expression_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   if (this.comment_variant_p === eYo.Key.COMMENT) {
-    var data = this.data.variant
+    var data = this.variant_d
     var current = data.get()
-    var comment = this.data.comment.toText()
-    var code = this.data.expression.toText()
+    var comment = this.comment_d.toText()
+    var code = this.expression_d.toText()
     if (code.length > 32) {
       var short_code = code.substring(0, 31) + '…'
     }
