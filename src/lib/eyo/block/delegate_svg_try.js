@@ -44,10 +44,10 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.data.expression
+        var d = this.expression_d
         d.required = (newValue !== eYo.Key.NONE)
         d.setIncog()
-        d = this.data.alias
+        d = this.alias_d
         d.required = (newValue === eYo.Key.ALIASED)
         d.setIncog()
       },
@@ -235,10 +235,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.data.expression
+        var d = this.expression_d
         d.required = (newValue !== eYo.Key.NONE)
         d.setIncog()
-        d = this.data.from
+        d = this.from_d
         d.required = (newValue === eYo.Key.FROM)
         d.setIncog()
       },
@@ -434,7 +434,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  * @private
  */
 eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var variant_d = this.data.variant
+  var variant_d = this.variant_d
   var current = this.variant_p
   var F = function (content, key) {
     var menuItem = mgr.newMenuItem(content, function () {
