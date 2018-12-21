@@ -119,7 +119,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
@@ -138,7 +138,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
@@ -157,7 +157,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    lhs_s: {
+    targets_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.attributeref,
@@ -171,7 +171,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
         }
       }
     },
-    rhs_s: {
+    value_s: {
       slots: {
         O: 50
       }

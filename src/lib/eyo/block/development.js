@@ -335,7 +335,7 @@ eYo.DelegateSvg.Expr.target_list.workspaceBlocks = eYo.Do.arraysMerged([
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression
 ],
-eYo.T3.Expr.Check.assigned_list,
+eYo.T3.Expr.Check.value_list,
 eYo.T3.Expr.Check.target_unstar,
 eYo.T3.Expr.Check.target,
 eYo.T3.Expr.Check.slice_item,

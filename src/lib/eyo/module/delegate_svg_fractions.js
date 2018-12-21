@@ -69,7 +69,7 @@ eYo.FlyoutCategory.basic_fractions__module = [
   F('Fraction', 'Créer une fraction à partir d\'un ou deux nombres'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: F('Fraction')
       }

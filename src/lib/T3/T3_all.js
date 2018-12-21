@@ -123,7 +123,7 @@ eYo.T3.All.wrappers = [ // count 47
     eYo.T3.Expr.and_test_all,
     eYo.T3.Expr.argument_any,
     eYo.T3.Expr.argument_list_comprehensive,
-    eYo.T3.Expr.assigned_list,
+    eYo.T3.Expr.value_list,
     eYo.T3.Expr.atom,
     eYo.T3.Expr.augassigned_list,
     eYo.T3.Expr.augtarget,

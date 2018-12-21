@@ -90,7 +90,7 @@ eYo.FlyoutCategory.basic_string__module = [
   F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
@@ -163,7 +163,7 @@ eYo.FlyoutCategory.string__module = [
   F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,

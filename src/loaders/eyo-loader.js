@@ -78,7 +78,7 @@ module.exports = function (content, map, meta) {
   //   // '</x>',
   //   // '<x eyo="list" slot="slice">',
   //   // '<x eyo="a_expr" operator="-" slot="O">',
-  //   // '<x eyo="call" name="len" ary="1" slot="lhs">',
+  //   // '<x eyo="call" name="len" slot="lhs">',
   //   // '<x eyo="identifier" name="liste" slot="unary">',
   //   // '</x>',
   //   // '</x>',

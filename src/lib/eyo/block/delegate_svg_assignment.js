@@ -285,14 +285,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     variant: {
       all: [
         eYo.Key.NAME,
-        eYo.Key.TARGET
+        eYo.Key.TARGETS
       ],
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.name.setIncog(newValue === eYo.Key.TARGET)
-        var slot = this.owner.lhs_s
-        slot.required = newValue === eYo.Key.TARGET
+        this.data.name.setIncog(newValue === eYo.Key.TARGETS)
+        var slot = this.owner.targets_s
+        slot.required = newValue === eYo.Key.TARGETS
         slot.setIncog()
       },
       xml: false
@@ -332,16 +332,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       }
     },
-    lhs: {
+    targets: {
       order: 2,
       wrap: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.TARGET
+          this.owner.variant_p = eYo.Key.TARGETS
         }
       }
     },
-    rhs: {
+    value: {
       order: 4,
       fields: {
         operator: {
@@ -349,7 +349,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           css: 'reserved'
         },
       },
-      wrap: eYo.T3.Expr.assigned_list
+      wrap: eYo.T3.Expr.value_list
     }
   }
 }, true)
@@ -377,9 +377,9 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   )
   F(content, eYo.Key.NAME)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
-  F(content, eYo.Key.TARGET)
+  F(content, eYo.Key.TARGETS)
   mgr.shouldSeparate()
-  if (variant_p !== eYo.Key.TARGET) {
+  if (variant_p !== eYo.Key.TARGETS) {
     var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, () => {
       this.name_d.field.showEditor()
     })
@@ -390,7 +390,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   return true
 }
 
-eYo.DelegateSvg.List.makeSubclass('assigned_list', function () {
+eYo.DelegateSvg.List.makeSubclass('value_list', function () {
   var D = {
     check: eYo.T3.Expr.Check.starred_item,
     unique: eYo.T3.Expr.yield_expression,
@@ -569,7 +569,7 @@ eYo.DelegateSvg.Assignment.T3s = [
   eYo.T3.Expr.parenth_target_list,
   eYo.T3.Expr.bracket_target_list,
   eYo.T3.Stmt.assignment_stmt,
-  eYo.T3.Expr.assigned_list,
+  eYo.T3.Expr.value_list,
   eYo.T3.Expr.augassigned_list,
   eYo.T3.Stmt.augmented_assignment_stmt
 ]

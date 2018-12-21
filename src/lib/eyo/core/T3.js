@@ -43,7 +43,7 @@ eYo.T3.Stmt = {
   classdef_part            : /*   ::= "class" classname ['(' argument_list ')'] ':'      (Class definitions) */ "eyo:classdef_part",
 // other simple statements
   expression_stmt          : /*   ::= any statement of nothing                           (Expression statements) */ "eyo:expression_stmt",
-  assignment_stmt          : /*   ::= target_list_list "=" assigned_list                 (Assignment statements) */ "eyo:assignment_stmt",
+  assignment_stmt          : /*   ::= target_list_list "=" value_list                 (Assignment statements) */ "eyo:assignment_stmt",
   augmented_assignment_stmt: /*   ::= augtarget augop augassigned_list                   (Assignment statements) */ "eyo:augmented_assignment_stmt",
   annotated_assignment_stmt: /*   ::= augtarget ":" expression ["=" expression]          (Assignment statements) */ "eyo:annotated_assignment_stmt",
   assert_stmt              : /*   ::= "assert" expression ["," expression]               (The assert statement) */ "eyo:assert_stmt",
@@ -260,7 +260,7 @@ eYo.T3.Expr = {
   augtarget                 : /*   ::= identifier | attributeref | subscription | slicing (Assignment statements) */ "eyo:augtarget",
   module                    : /*   ::= dotted_name | identifier                           (The import statement) */ "eyo:module",
   relative_module           : /*   ::= module | parent_module                             (The import statement) */ "eyo:relative_module",
-  assigned_list             : /*   ::= starred_item | yield_expression                    (Assignment statements) */ "eyo:assigned_list",
+  value_list             : /*   ::= starred_item | yield_expression                    (Assignment statements) */ "eyo:value_list",
   augassigned_list          : /*   ::= expression | yield_expression                      (Assignment statements) */ "eyo:augassigned_list",
   target_unstar             : /*   ::= identifier | parenth_target_list | bracket_target_list | attributeref | subscription | slicing | named_attributeref | named_subscription | named_slicing (Assignment statements) */ "eyo:target_unstar",
   module_as                 : /*   ::= module | identifier_as | dotted_name_as            (The import statement) */ "eyo:module_as",
@@ -1157,7 +1157,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.dotted_name,
     eYo.T3.Expr.any,
   ],
-  assigned_list: [ // count 41
+  value_list: [ // count 41
     eYo.T3.Expr.longformattedliteral,
     eYo.T3.Expr.shortformattedliteral,
     eYo.T3.Expr.parenth_form,

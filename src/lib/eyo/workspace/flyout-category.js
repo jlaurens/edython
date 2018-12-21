@@ -52,7 +52,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      rhs_s: {
+      value_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
@@ -72,7 +72,7 @@ eYo.FlyoutCategory = {
     */
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      rhs_s: {
+      value_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
@@ -91,7 +91,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      rhs_s: {
+      value_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
@@ -264,7 +264,7 @@ eYo.FlyoutCategory = {
   list: [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      rhs_s: {
+      value_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.list_display,
@@ -414,7 +414,7 @@ eYo.FlyoutCategory = {
   text: [
     {
       type: eYo.T3.Stmt.assignment_stmt,
-      rhs_s: {
+      value_s: {
         slots: {
           O: "'...'", 
         },

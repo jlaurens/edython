@@ -145,7 +145,7 @@ eYo.FlyoutCategory.turtle__module = [
   eYo.T3.Stmt.turtle__setup_stmt,
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
@@ -183,7 +183,7 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('stamp', 'Reproduit l\'image de la tortue.'),
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    rhs_s: {
+    value_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,

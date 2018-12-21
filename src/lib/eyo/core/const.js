@@ -51,7 +51,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
-  TARGET: 'target',
+  TARGETS: 'targets',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
   EXPRESSIONS: 'expressions', // = ANY? NO!
@@ -205,6 +205,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   CODE_COMMENT: 'code_comment',
   
   /*
-"LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGET", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
+"LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGETS", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
 })
