@@ -140,7 +140,49 @@ var F_k = function (name, title) {
 }
 
 eYo.FlyoutCategory.string__module = [
-
+  {
+    type: eYo.T3.Stmt.import_stmt,
+    variant_d: eYo.Key.IMPORT,
+    import_module_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.identifier,
+          name_d: 'string'
+        }
+      }
+    },
+    title: 'string__import_stmt'
+  },
+  F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
+  F_k('ascii_lowercase', '\'abcdefghijklmnopqrstuvwxyz\''),
+  F_k('ascii_uppercase', '\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\''),
+  F_k('hexdigits', '0123456789abcdefABCDEF\''),
+  F_k('octdigits', '01234567\''),
+  F_k('punctuation', 'Une chaîne composée des caractères de ponctuation'),
+  F_k('printable', 'Une chaîne composée des caractères imprimables'),
+  F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
+  {
+    type: eYo.T3.Stmt.assignment_stmt,
+    rhs_s: {
+      slots: {
+        O: {
+          type: eYo.T3.Expr.call_expr,
+          name_d: 'Formatter',
+          holder_d: 'string',
+          dotted_d: 1
+        }
+      },
+    },
+    title: 'string__assigned_from_formatter'
+  },
+  F('format', ''),
+  F('vformat', ''),
+  F('parse', ''),
+  F('get_field', ''),
+  F('get_value', ''),
+  F('check_unused_args', ''),
+  F('format_field', ''),
+  F('convert_field', '')
 ]
 
 goog.mixin(eYo.Tooltip.Title, {
