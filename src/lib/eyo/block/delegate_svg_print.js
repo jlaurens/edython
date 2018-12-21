@@ -135,8 +135,8 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       eYo.T3.Expr.keyword_item
     ]))) {
       var target = input.connection.targetBlock()
-      if (target && target.eyo.data.name) {
-        has[target.eyo.data.name.get()] = target
+      if (target && target.eyo.name_d) {
+        has[target.eyo.name_d.get()] = target
       }
     }
     var insert = function (key) {
