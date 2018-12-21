@@ -290,7 +290,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.data.name.setIncog(newValue === eYo.Key.TARGETS)
+        this.name_d.setIncog(newValue === eYo.Key.TARGETS)
         var slot = this.owner.targets_s
         slot.required = newValue === eYo.Key.TARGETS
         slot.setIncog()
@@ -361,7 +361,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * @private
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var name_p = this.data.name_p
+  var name_p = this.name_p
   var variant_p = this.variant_p
   var F = (content, newVariant) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -452,8 +452,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       synchronize: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.data.numberOperator.set(newValue)
-        this.data.bitwiseOperator.set(newValue)
+        this.numberOperator_d.set(newValue)
+        this.bitwiseOperator_d.set(newValue)
       },
       validate: false
     },
@@ -464,8 +464,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if (oldValue && (newValue !== oldValue)) {
           this.didChange(oldValue, newValue)
-          this.data.operator.set(newValue)
-          this.data.operator.bitwise = (this.data.operator.get() !== this.get())
+          this.operator_d.set(newValue)
+          this.operator_d.bitwise = (this.operator_d.get() !== this.get())
         }
       },
       validate: true
@@ -477,8 +477,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
-          this.data.operator.set(newValue)
-          this.data.operator.bitwise = (this.data.operator.get() === this.get())
+          this.operator_d.set(newValue)
+          this.operator_d.bitwise = (this.operator_d.get() === this.get())
         }
       },
       validate: true
@@ -521,11 +521,11 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var block = this.block_
   var withTarget = this.name_t
   var name = this.name_p
-  var operator = this.data.operator.get()
-  var withBitwise = this.data.operator.bitwise
+  var operator = this.operator_d.get()
+  var withBitwise = this.operator_d.bitwise
   var operators = withBitwise
-    ? this.data.bitwiseOperator.getAll()
-    : this.data.numberOperator.getAll()
+    ? this.bitwiseOperator_d.getAll()
+    : this.numberOperator_d.getAll()
   var F = function (i) {
     var op = operators[i]
     if (op !== operator) {
@@ -538,7 +538,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
       )
       var menuItem = mgr.newMenuItem(content, function () {
         console.log('Change', withBitwise ? 'bitwise' : 'number', 'operator to', op)
-        withBitwise ? block.eyo.data.bitwiseOperator.set(op) : block.eyo.data.numberOperator.set(op)
+        withBitwise ? block.eyo.bitwiseOperator_d.set(op) : block.eyo.numberOperator_d.set(op)
       })
       mgr.addChild(menuItem, true)
     }
@@ -551,8 +551,8 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
   var menuItem = (function (eyo) {
     return mgr.newMenuItem(content, function () {
-      eyo.data.operator.set(withBitwise
-        ? eyo.data.numberOperator.get() : eyo.data.bitwiseOperator.get())
+      eyo.operator_d.set(withBitwise
+        ? eyo.numberOperator_d.get() : eyo.bitwiseOperator_d.get())
     })
   }(this))
   mgr.addChild(menuItem, true)
