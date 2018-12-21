@@ -540,7 +540,7 @@ goog.provide('eYo.Xml.Text')
  * @return a dom element
  */
 eYo.Xml.Text.toDom = function (block, element) {
-  var text = block.eyo.data.value.get()
+  var text = block.eyo.value_d.get()
   if (text && text.length) {
     var child = goog.dom.createTextNode(text)
     goog.dom.appendChild(element, child)
@@ -557,7 +557,7 @@ eYo.Xml.Text.toDom = function (block, element) {
  */
 eYo.Xml.Text.fromDom = function (block, element) {
   return eYo.Do.someChild(element, (child) => {
-    return child.nodeType === Node.TEXT_NODE && block.eyo.data.value.set(child.nodeValue)
+    return child.nodeType === Node.TEXT_NODE && block.eyo.value_d.set(child.nodeValue)
   })
 }
 
