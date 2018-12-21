@@ -2205,8 +2205,8 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
               } else {
                 B = eYo.DelegateSvg.newBlockReady(workspace, data.type)
                 if (data.value) {
-                  (B.eyo.data.phantom && B.eyo.data.phantom.set(data.value)) ||
-                  (B.eyo.data.value && B.eyo.data.value.set(data.value))
+                  (B.eyo.phantom_d && B.eyo.phantom_d.set(data.value)) ||
+                  (B.eyo.value_d && B.eyo.value_d.set(data.value))
                 }
                 B.render()
               }
