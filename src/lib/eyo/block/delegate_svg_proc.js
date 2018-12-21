@@ -458,11 +458,11 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
  */
 eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var variants = this.data.variant.getAll()
-  var variant = block.eyo.data.variant.get()
+  var variants = this.variant_d.getAll()
+  var variant = block.eyo.variant_d.get()
   var F = function (content, key) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(key)
+      block.eyo.variant_d.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
@@ -550,11 +550,11 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
  */
 eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var variants = this.data.variant.getAll()
-  var variant = block.eyo.data.variant.get()
+  var variants = this.variant_d.getAll()
+  var variant = block.eyo.variant_d.get()
   var F = function (content, key) {
     var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.data.variant.set(key)
+      block.eyo.variant_d.set(key)
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
