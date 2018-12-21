@@ -378,7 +378,7 @@ eYo.DelegateSvg.Expr.unary.getOperatorModelForType = function (type) {
  * @return a dictionary
  */
 eYo.DelegateSvg.Expr.unary.prototype.getOperatorModel = function () {
-  var op = this.data.operator.get()
+  var op = this.operator_d.get()
   return eYo.DelegateSvg.Expr.unary.getOperatorModel(op)
 }
 
