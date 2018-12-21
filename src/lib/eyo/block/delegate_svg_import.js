@@ -82,7 +82,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         var slot = this.owner.import_module_s
         slot.required = newValue === eYo.Key.IMPORT
         slot.setIncog()
-        this.data.from.setIncog(newValue === eYo.Key.IMPORT)
+        this.from_d.setIncog(newValue === eYo.Key.IMPORT)
         slot = this.owner.import_s
         slot.required = newValue === eYo.Key.FROM_MODULE_IMPORT
         slot.setIncog()
@@ -200,17 +200,17 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
  */
 eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var current = block.eyo.data.variant.get()
+  var current = block.eyo.variant_d.get()
   var F = function (content, variant) {
     if (variant !== current) {
       var menuItem = mgr.newMenuItem(content, function () {
-        block.eyo.data.variant.set(variant)
+        block.eyo.variant_d.set(variant)
       })
       mgr.addChild(menuItem, true)
       menuItem.setEnabled(variant !== current)  
     }
   }
-  var from = block.eyo.data.from.get()
+  var from = block.eyo.from_d.get()
   var module = from ? from : 'module'
   var style = from ? 'eyo-code' : 'eyo-code-placeholder'
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
