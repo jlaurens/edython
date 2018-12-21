@@ -19,6 +19,7 @@ goog.require('eYo.DelegateSvg')
 goog.require('goog.dom');
 goog.require('Blockly.BlockSvg')
 goog.forwardDeclare('eYo.MenuManager')
+goog.require('eYo.BlockDragger')
 
 eYo.Do.inherits(Blockly.BlockSvg, eYo.Block)
 

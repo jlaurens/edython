@@ -14,6 +14,7 @@
 goog.provide('eYo.Do')
 
 goog.require('goog.dom')
+goog.require('goog.math.AffineTransform')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
@@ -615,5 +616,60 @@ eYo.Do.readOnlyMixin = function(object, props) {
       key,
       prop
     )
+  }
+}
+
+/**
+ * Get the cumulated affine transform of an element.
+ * @param {*} element
+ */
+eYo.Do.getAffineTransform = (() => {
+  var getAffineTransform = (str) => {
+    var values = str.split(/\s*,\s*|\)\s*|.*\(/)
+    if (values.length > 8) {
+      values = str.split(/\s*,\s+|\)\s*|.*\(/)
+    }
+    if (values.length > 6) {
+      values.pop()
+      values.shift()
+      return new goog.math.AffineTransform(...values.map(m => parseFloat(m.replace(',', '.'))))
+    }
+  }
+  return (element) => {
+    var A
+    var parent
+    while ((parent = element.parentNode)) {
+      var style = window.getComputedStyle(element, null)
+      var transform = style.getPropertyValue("transform") ||
+        style.getPropertyValue("-webkit-transform") ||
+        style.getPropertyValue("-moz-transform") ||
+        style.getPropertyValue("-ms-transform") ||
+        style.getPropertyValue("-o-transform")
+      var B = getAffineTransform(transform)
+      if (B) {
+        A = A ? B.concatenate(A) : B
+      }
+      element = parent
+    }
+    return A
+  }
+})()
+
+/**
+ * Get the cumulated affine transform of an element.
+ * @param {*} element
+ */
+eYo.Do.getTransformCorrection = (element) => {
+  var A = eYo.Do.getAffineTransform(element)
+  if (A) {
+    var B = A.createInverse()
+    if (B) {
+      return (xy) => {
+        return {
+          x: B.m00_ * xy.x + B.m01_ * xy.y + B.m02_,
+          y: B.m10_ * xy.x + B.m11_ * xy.y + B.m12_
+        }
+      }
+    }
   }
 }

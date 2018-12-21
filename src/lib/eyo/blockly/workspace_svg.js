@@ -20,6 +20,7 @@ goog.require('eYo.Msg')
 goog.require('eYo.BlockSvg')
 goog.require('eYo.Workspace')
 goog.require('goog.dom');
+goog.require('eYo.WorkspaceDragger');
 
 eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
 
@@ -407,4 +408,3 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     }
   )
 }
-

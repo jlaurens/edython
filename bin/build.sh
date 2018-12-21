@@ -41,6 +41,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/i18n/datetimepatterns.js" \
 --js "src/lib/closure-library/closure/goog/i18n/datetimesymbols.js" \
 --js "src/lib/closure-library/closure/goog/i18n/bidi.js" \
+--js "src/lib/closure-library/closure/goog/math/affinetransform.js" \
 --js "src/lib/closure-library/closure/goog/math/irect.js" \
 --js "src/lib/closure-library/closure/goog/math/size.js" \
 --js "src/lib/closure-library/closure/goog/object/object.js" \
@@ -254,6 +255,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/block/helper.js" \
 --js "src/lib/eyo/core/T3_all.js" \
+--js "src/lib/eyo/blockly/workspace_dragger.js" \
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/core/Field.js" \
@@ -267,6 +269,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
 --js "src/lib/eyo/core/shape.js" \
+--js "src/lib/eyo/blockly/block_dragger.js" \
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/protocol/change_count.js" \

@@ -66,7 +66,7 @@
           style.left = `${(w - newW) / 2}px`
           style.top = `${(h - newH) / 2}px`
           style.overflow = 'auto'
-          style.transform = `scale(${this.scaleFactor})`
+          style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
         }
       },
       willUnplace () { // this is necessary due to the scale feature
