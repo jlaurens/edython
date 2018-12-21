@@ -32,7 +32,7 @@ goog.require('eYo.FlyoutCategory')
 //   var block = this.block_
 //   var eyo = block.eyo
 //   // populate the menu with the functions in the same category
-//   var name_get = eyo.data.name.get()
+//   var name_get = eyo.name_d.get()
 //   var model = eYo.Model.cmath__module
 //   var item_get = model.getItem(name_get)
 //   var items = model.getItemsInCategory(item_get.category)
@@ -49,7 +49,7 @@ goog.require('eYo.FlyoutCategory')
 //         args
 //       )
 //       var menuItem = mgr.newMenuItem(content, function () {
-//         eyo.data.name.set(item.names[0])
+//         eyo.name_d.set(item.names[0])
 //       })
 //       mgr.addChild(menuItem, true)
 //     }
@@ -72,7 +72,7 @@ goog.require('eYo.FlyoutCategory')
 //       var menuItem = mgr.newMenuItem(contents[category] || category, function () {
 //         var items = eYo.Model.cmath__module.getItemsInCategory(i)
 //         var item = eYo.Model.cmath__module.getItem(items[0])
-//         eyo.data.name.set(item.names[0])
+//         eyo.name_d.set(item.names[0])
 //       })
 //       mgr.addChild(menuItem, true)
 //     }
