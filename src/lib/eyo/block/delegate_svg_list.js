@@ -191,7 +191,7 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
 eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'name'
   }
@@ -206,7 +206,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
   list: {
     check: eYo.T3.Expr.Check.starred_item,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'name'
   }
@@ -250,7 +250,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'name'
   }
@@ -304,7 +304,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', fu
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: eYo.T3.Expr.comprehension,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'name'
   }
@@ -372,7 +372,7 @@ eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
 eYo.DelegateSvg.List.makeSubclass('slice_list', {
   list: {
     check: eYo.T3.Expr.Check.slice_item,
-    empty: false,
+    mandatory: 1,
     presep: ','
   }
 })
@@ -386,7 +386,7 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
 eYo.DelegateSvg.List.makeSubclass('with_item_list', {
   list: {
     check: eYo.T3.Expr.Check.with_item,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'nom'
   }

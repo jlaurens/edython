@@ -40,7 +40,7 @@ module_name ::= identifier
 eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_module_as_list,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'module'
   }
@@ -55,7 +55,7 @@ eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
 eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
-    empty: false,
+    mandatory: 1,
     presep: ',',
     hole_value: 'name'
   }

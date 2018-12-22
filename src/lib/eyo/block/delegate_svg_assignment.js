@@ -57,14 +57,14 @@ goog.inherits(eYo.Consolidator.List.Target, eYo.Consolidator.List)
 eYo.Consolidator.List.Target.model = {
   hole_value: 'name',
   check: null,
-  empty: false,
+  mandatory: 1,
   presep: ','
 }
 
 eYo.Consolidator.List.makeSubclass('Target', {
   hole_value: 'name',
   check: null,
-  empty: false,
+  mandatory: 1,
   presep: ','
 })
 
@@ -271,7 +271,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 eYo.DelegateSvg.List.makeSubclass('target_list_list', {
   list: {
     check: eYo.T3.Expr.target_list,
-    empty: false,
+    mandatory: 1,
     postsep: '='
   }
 }, true)
@@ -411,7 +411,7 @@ eYo.DelegateSvg.List.makeSubclass('augassigned_list', function () {
     check: eYo.T3.Expr.Check.expression,
     unique: eYo.T3.Expr.yield_expression,
     consolidator: eYo.Consolidator.List.Singled,
-    empty: false,
+    mandatory: 1,
     presep: ','
   }
   var RA = goog.array.concat(D.check, D.unique)
