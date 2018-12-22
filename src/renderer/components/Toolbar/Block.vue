@@ -362,12 +362,12 @@
 <style>
   #toolbar-block {
     position: relative;
-    padding: 0.25rem;
+    padding: 0.25rem 0;
     text-align:center;
     height: 2.25rem;
     font-size: 1rem;
     display: flex;
-    max-width: calc(100% -204px);
+    max-width: calc(100%);
   }
   #toolbar-block .input-group {
     padding: 0;

@@ -208,7 +208,8 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
 eYo.DelegateSvg.List.makeSubclass('target_list', {
   list: {
     consolidator: eYo.Consolidator.List.Target,
-    hole_value: 'name'
+    hole_value: 'name',
+    mandatory: 1
   }
 })
 
@@ -396,7 +397,8 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
     check: eYo.T3.Expr.Check.starred_item,
     unique: eYo.T3.Expr.yield_expression,
     consolidator: eYo.Consolidator.List.Singled,
-    presep: ','
+    presep: ',',
+    mandatory: 1
   }
   var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)

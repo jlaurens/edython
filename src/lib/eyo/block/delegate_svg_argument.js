@@ -25,7 +25,8 @@ goog.require('eYo.DelegateSvg.List')
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
-  presep: ','
+  presep: ',',
+  mandatory: 0
 }, eYo.Consolidator.List, eYo.Consolidator)
 
 /**

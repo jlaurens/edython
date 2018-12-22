@@ -320,8 +320,8 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
 eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.T3.Expr.Check.non_void_identifier_list,
-    mandatory: 1,
-    presep: ','
+    presep: ',',
+    mandatory: 1
   }
 })
 

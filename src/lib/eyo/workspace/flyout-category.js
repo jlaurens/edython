@@ -507,9 +507,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'splitlines',
-        dotted: 1,
-        ary: 1,
-        mandatory: 0
+        dotted: 1
       },
       title: 'text_splitlines'
     },
@@ -517,8 +515,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       data: {
         name: 'index',
-        dotted: 1,
-        ary: 3
+        dotted: 1
       },
       title: 'text_index'
     }
