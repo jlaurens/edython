@@ -54,7 +54,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   TARGETS: 'targets',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
-  EXPRESSIONS: 'expressions', // = ANY? NO!
   ARGUMENT: 'argument',
   POWER: 'power',
   FOR: 'for',
@@ -196,9 +195,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   UNARY: 'unary',
   BINARY: 'binary',
   
-  NAME_EXPRESSIONS: 'name_expressions',
-  TARGET_EXPRESSIONS: 'target_expressions',
-
   DOTTED_NAME: 'dotted_name',
   
   CODE: 'code',
