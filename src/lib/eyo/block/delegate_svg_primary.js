@@ -628,7 +628,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           variable: true,
           willRender: /** @suppress {globalThis} */ function () {
             this.willRender()
-            var item = this.owner.item_p
+            var item = this.data.owner.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
             if (reserved) {
               goog.dom.classlist.add(this.textElement, 'eyo-code-reserved')
