@@ -403,10 +403,10 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first connection that can accept block
-    var findC8n = function (B) {
+    var findC8n = (B) => {
       var foundC8n, target
       // start by the slots
-      if (model.slot && B.eyo.someSlot(function() {
+      if (model.slot && B.eyo.someSlot(() => {
         return foundC8n = (this.key === model.slot) && this.input.connection
       })) {
         return foundC8n

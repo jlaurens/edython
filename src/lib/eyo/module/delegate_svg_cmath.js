@@ -37,7 +37,7 @@ goog.require('eYo.FlyoutCategory')
 //   var item_get = model.getItem(name_get)
 //   var items = model.getItemsInCategory(item_get.category)
 //   var module = eyo.data.fromFlag.get() ? '' : 'cmath.'
-//   var F = function (i) {
+//   var F = (i) => {
 //     var item = model.getItem(items[i])
 //     var type = model.data.types[item.type]
 //     var args = type === 'data' ? '' : '(...)'
@@ -123,7 +123,7 @@ goog.require('eYo.FlyoutCategory')
 //   }
 // })
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -136,7 +136,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -199,7 +199,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
   F_k('tau', 'τ (≅ 2π)'),
 ]
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -212,7 +212,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

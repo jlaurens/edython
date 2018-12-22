@@ -104,7 +104,7 @@ eYo.Consolidator.List.Target.prototype.getIO = function (block) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
+eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the first_starred input
   var Type = {
@@ -117,7 +117,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = function (io) {
+  var getCheckType = (io) => {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.UNCONNECTED
@@ -140,7 +140,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (function () {
     io.first_starred = io.last = -1
     this.setupIO(io, 0)
     while (io.eyo) {
-      if ((io.eyo.parameter_type_ = getCheckType.call(this, io)) === Type.STARRED) {
+      if ((io.eyo.parameter_type_ = getCheckType(io)) === Type.STARRED) {
         if (io.first_starred < 0) {
           io.first_starred = io.i
         }
@@ -529,7 +529,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   var operators = withBitwise
     ? this.bitwiseOperator_d.getAll()
     : this.numberOperator_d.getAll()
-  var F = function (i) {
+  var F = (i) => {
     var op = operators[i]
     if (op !== operator) {
       var content =
@@ -552,12 +552,10 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
   mgr.shouldSeparate()
   var content =
   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
-  var menuItem = (function (eyo) {
-    return mgr.newMenuItem(content, function () {
-      eyo.operator_d.set(withBitwise
-        ? eyo.numberOperator_d.get() : eyo.bitwiseOperator_d.get())
-    })
-  }(this))
+  var menuItem = mgr.newMenuItem(content, () => {
+    this.operator_p = withBitwise
+      ? this.numberOperator_p : this.bitwiseOperator_p
+  })
   mgr.addChild(menuItem, true)
   mgr.shouldSeparate()
   return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)

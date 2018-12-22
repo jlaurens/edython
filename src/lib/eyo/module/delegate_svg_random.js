@@ -134,7 +134,7 @@ eYo.DelegateSvg.Expr.random__randrange.prototype.xmlAttr = function () {
 }
 
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -147,7 +147,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_s = function (name, title) {
+var F_s = (name, title) => {
   var key = 'random__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

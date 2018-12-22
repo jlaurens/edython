@@ -48,7 +48,7 @@ eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
  * For edython.
  * @param {!constructor} constructor is either a constructor or the name of a constructor.
  */
-eYo.KeyHandler = (function () {
+eYo.KeyHandler = (() => {
   var me = {
     MAX_CHILD_COUNT: 20
   }
@@ -214,7 +214,7 @@ eYo.KeyHandler = (function () {
    */
   me.insertShortcutInArray_ = function (shortcut, current_) {
     var lhs = shortcut.components
-    var compare = function (As, Bs) {
+    var compare = (As, Bs) => {
       // put in front strings when there is a full match
       // For example "module as name" should come before "assert" for "as"
       // if As[0] is void or does not end with a letter
@@ -645,8 +645,8 @@ for (K in Ks) {
   eYo.KeyHandler.register(K, Ks[K])
 }
 
-Ks = function () {
-  var F = function (key, op) {
+Ks = (() => {
+  var F = (key, op) => {
     var B = Blockly.selected
     if (B) {
       var parent = B.getSurroundParent()
@@ -673,7 +673,7 @@ Ks = function () {
       return F(key, '~')
     }
   }
-} ()
+})()
 
 for (K in Ks) {
   eYo.KeyHandler.register(K + '…', Ks[K])

@@ -31,7 +31,7 @@ goog.require('eYo.Model.decimal__module')
  * @private
  */
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -42,7 +42,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -180,7 +180,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   }
 ]
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -193,7 +193,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

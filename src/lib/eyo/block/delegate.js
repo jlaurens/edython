@@ -606,7 +606,7 @@ eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
  * Create one if it does not exist.
  * Closure used.
  */
-eYo.Delegate.getC9rEyO = (function () {
+eYo.Delegate.getC9rEyO = (() => {
   // one (almost hidden) shared constructor
   var EyOC9r = function (key, owner) {
     owner.eyo = this
@@ -626,7 +626,7 @@ eYo.Delegate.getC9rEyO = (function () {
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
  */
-eYo.Delegate.Manager = (function () {
+eYo.Delegate.Manager = (() => {
   var me = {}
   var C9rs = Object.create(null)
   /**
@@ -661,7 +661,7 @@ eYo.Delegate.Manager = (function () {
    * @param {!Object} to  destination.
    * @param {!Object} from  source.
    */
-  var merger = function (to, from, ignore) {
+  var merger = (to, from, ignore) => {
     var from_d
     if ((from.check)) {
       from.check = eYo.Do.ensureArrayFunction(from.check)
@@ -705,7 +705,7 @@ eYo.Delegate.Manager = (function () {
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
-  var modeller = function (delegateC9r, insertModel) {
+  var modeller = (delegateC9r, insertModel) => {
     var eyo = delegateC9r.eyo
     goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
     if (eyo.model_) {
@@ -751,7 +751,7 @@ eYo.Delegate.Manager = (function () {
    * because they are not meant to really exist yet.
    @return the constructor created
    */
-  me.makeSubclass = (function () {
+  me.makeSubclass = (() => {
     var defineDataProperty = function (k) {
       var key = k + '_p'
       // make a closure to catch the value of k
@@ -2151,7 +2151,7 @@ eYo.Delegate.prototype.setIncog = function (incog) {
   this.foreachSlot((slot) => {
     slot.setIncog(incog) // with incog validator
   })
-  var setupIncog = function (input) {
+  var setupIncog = (input) => {
     var c8n = input && input.connection
     c8n && c8n.eyo.setIncog(incog) // without incog validator
   }

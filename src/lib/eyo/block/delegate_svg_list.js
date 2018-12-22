@@ -93,7 +93,7 @@ eYo.DelegateSvg.List.prototype.didConnect = function (connection, oldTargetC8n, 
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.doConsolidate = (function () {
+eYo.DelegateSvg.List.prototype.doConsolidate = (() => {
   // this is a closure
   /**
    * Consolidate the input.

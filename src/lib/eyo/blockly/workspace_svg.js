@@ -54,7 +54,7 @@ goog.provide('eYo.Gesture')
  * @package
  * @suppress{accessControls}
  */
-Blockly.Gesture.prototype.handleWsStart = (function () {
+Blockly.Gesture.prototype.handleWsStart = (() => {
   var handleWsStart = Blockly.Gesture.prototype.handleWsStart
   return function (e, ws) {
     if (Blockly.WidgetDiv.DIV.childNodes.length) {
@@ -148,7 +148,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
      * @param {boolean} shouldCollapse Whether a block should collapse.
      * @private
      */
-    var toggleOption = function (shouldCollapse) {
+    var toggleOption = (shouldCollapse) => {
       var ms = 0
       for (var i = 0; i < topBlocks.length; i++) {
         var block = topBlocks[i]
@@ -163,7 +163,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     // Option to collapse top blocks.
     var collapseOption = {enabled: hasExpandedBlocks}
     collapseOption.text = eYo.Msg.COLLAPSE_ALL
-    collapseOption.callback = function () {
+    collapseOption.callback = () => {
       toggleOption(true)
     }
     menuOptions.push(collapseOption)
@@ -171,7 +171,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     // Option to expand top blocks.
     var expandOption = {enabled: hasCollapsedBlocks}
     expandOption.text = eYo.Msg.EXPAND_ALL
-    expandOption.callback = function () {
+    expandOption.callback = () => {
       toggleOption(false)
     }
     menuOptions.push(expandOption)

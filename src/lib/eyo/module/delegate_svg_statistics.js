@@ -36,14 +36,14 @@ goog.require('eYo.FlyoutCategory')
     'mean': 0,
     'harmonic_mean': 1
  */
-var F = function(key) {
+var F = (key) => {
   return {
     type: eYo.T3.Expr.call_expr,
     data: key
   }
 }
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'statistics__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -78,7 +78,7 @@ eYo.FlyoutCategory.basic_statistics__module = [
   F('StatisticsError', 'Exception spécifique au module `statistics`')
 ]
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'statistics__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

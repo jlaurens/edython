@@ -216,14 +216,14 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var data = this.data
-        var F = function (xre, type) {
+        var O = this.owner
+        var F = (xre, type) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            prefix_d.set(m.prefix || '')
-            delimiter_d.set(m.delimiter || "'")
-            content_d.set(m.content || '')
-            subtype_d.set(type)
+            O.prefix_p = m.prefix || ''
+            O.delimiter_p = m.delimiter || "'"
+            O.content_p = m.content || ''
+            O.subtype_p = type
             return true
           }
           return false
@@ -320,14 +320,14 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
   var subtype_d = this.subtype_d
   var can_b = !!subtype_d.model.getPossible.call(subtype_d, 'b', content)
   var can_f = !!subtype_d.model.getPossible.call(subtype_d, 'f', content)
-  var item = function (msg, prefix) {
+  var item = (msg, prefix) => {
     if (prefix !== current) {
       var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
         eYo.Do.createSPAN(msg, 'eyo-code'),
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
-      return mgr.newMenuItem(title, function () {
-        block.eyo.prefix_d.set(prefix)
+      return mgr.newMenuItem(title, () => {
+        this.prefix_p = prefix
       })
     }
   }
@@ -398,14 +398,14 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       init: "''''''",
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var data = this.data
-        var F = function (xre, type) {
+        var O = this.owner
+        var F = (xre, type) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            prefix_d.set(m.prefix || '')
-            delimiter_d.set(m.delimiter || "'''")
-            content_d.set(m.content || '')
-            subtype_d.set(type)
+            O.prefix_p = m.prefix || ''
+            O.delimiter_p = m.delimiter || "'''"
+            O.content_p = m.content || ''
+            O.subtype_p = type
             return true
           }
           return false

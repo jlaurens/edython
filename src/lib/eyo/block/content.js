@@ -127,7 +127,7 @@ eYo.Content.feed = function () {
     // 2) It has no previous nor next content, meaning that
     // ...eyo.next and ...eyo.previous are false.
     // contents with a .previous cannot have a ._last_ because they are not the head of the chain.
-    var chain = function (/* variable argument list */) {
+    var chain = (/* variable argument list */) => {
       // We first loop to find the first content that can be the
       // start of a chain. Every content before is ignored.
       var start, next

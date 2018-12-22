@@ -321,7 +321,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
       io.input.fieldRow.shift().dispose()
     }
   } else if (!io.input.fieldRow.length) {
-    var f = function (sep, suffix) {
+    var f = (sep, suffix) => {
       var field = new eYo.FieldLabel(null, sep)
       io.input.fieldRow.splice(0, 0, field)
       field.setSourceBlock(io.block)

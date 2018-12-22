@@ -34,7 +34,7 @@ goog.require('eYo.FlyoutCategory')
     '__round__': 8,
  */
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'fractions__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -46,7 +46,7 @@ var F = function (name, title) {
   }
 }
 
-var F_instance = function (name, type, title) {
+var F_instance = (name, type, title) => {
   var key = 'fractions__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

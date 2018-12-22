@@ -42,7 +42,7 @@ eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
 /**
  * 
  */
-eYo.WorkspaceDelegate.prototype.getRecover = (function () {
+eYo.WorkspaceDelegate.prototype.getRecover = (() => {
   var get = function () {
     return this.recover_
   }
@@ -255,7 +255,7 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
  * @param {string} id ID of block to find.
  * @return {?Blockly.Block} The sought after block or null if not found.
  */
-Blockly.Workspace.prototype.getBlockById = (function () {
+Blockly.Workspace.prototype.getBlockById = (() => {
   var getBlockById = Blockly.Workspace.prototype.getBlockById
   return function (id) {
     var block = getBlockById.call(this, id)
@@ -473,7 +473,7 @@ eYo.copyBlock = function(block, deep) {
  * @param {Blockly.BlockSvg} block The block the gesture started on.
  * @package
  */
-Blockly.Gesture.prototype.setStartBlock = (function () {
+Blockly.Gesture.prototype.setStartBlock = (() => {
   var setStartBlock = Blockly.Gesture.prototype.setStartBlock
   return function(block) {
     var candidate = block

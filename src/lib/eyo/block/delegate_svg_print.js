@@ -139,7 +139,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
         has[target.eyo.name_d.get()] = target
       }
     }
-    var insert = function (key) {
+    var insert = (key) => {
       eYo.Events.groupWrap(
         () => {
           var B = eYo.DelegateSvg.newBlockReady(block.workspace, {
@@ -152,7 +152,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
         }
       )
     }
-    var remove = function (key) {
+    var remove = (key) => {
       eYo.Events.groupWrap(
         () => {
           var B = has[key]
@@ -161,7 +161,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
         }
       )
     }
-    var F = function (candidate) {
+    var F = (candidate) => {
       var menuItem = mgr.newMenuItem(
         eYo.Do.createSPAN(candidate + ' = …', 'eyo-code'),
         has[candidate] ? function () {

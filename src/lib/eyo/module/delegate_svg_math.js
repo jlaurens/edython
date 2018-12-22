@@ -24,7 +24,7 @@ goog.require('eYo.FlyoutCategory')
 
 goog.require('eYo.Model.math__module')
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -37,7 +37,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -108,7 +108,7 @@ eYo.FlyoutCategory.basic_math__module = [
   // F('lgamma', 'Logarithme népérien de la fonction Gamma')
 ]
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -121,7 +121,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

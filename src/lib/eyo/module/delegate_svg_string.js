@@ -26,7 +26,7 @@ goog.require('eYo.FlyoutCategory')
  * @private
  */
 
-var F = function (name, title, holder = 'formatter') {
+var F = (name, title, holder = 'formatter') => {
   var key = 'string__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -37,7 +37,7 @@ var F = function (name, title, holder = 'formatter') {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'string__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -112,7 +112,7 @@ eYo.FlyoutCategory.basic_string__module = [
   F('convert_field', '')
 ]
 
-var F = function (name, title) {
+var F = (name, title) => {
   var key = 'string__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -125,7 +125,7 @@ var F = function (name, title) {
     title: key
   }
 }
-var F_k = function (name, title) {
+var F_k = (name, title) => {
   var key = 'string__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

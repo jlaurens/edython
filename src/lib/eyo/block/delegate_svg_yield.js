@@ -104,7 +104,7 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (mgr)
     return
   }
   var current = this.variant_p
-  var F = function (content, k) {
+  var F = (content, k) => {
     var menuItem = mgr.newMenuItem(content, () => {
       this.variant_p = k
     })

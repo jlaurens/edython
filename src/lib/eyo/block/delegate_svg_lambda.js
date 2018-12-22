@@ -84,7 +84,7 @@ eYo.Consolidator.Parameter.prototype.getIO = function (block) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
+eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -99,7 +99,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = function (io) {
+  var getCheckType = (io) => {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.unconnected
@@ -247,7 +247,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (function () {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.Parameter.prototype.getCheck = (function () {
+eYo.Consolidator.Parameter.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3 > io.list.length) ||
@@ -311,7 +311,7 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
 eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var e8r = block.eyo.inputEnumerator()
-  var F = function (modifier, flags, msg) {
+  var F = (modifier, flags, msg) => {
     var BB
     eYo.Events.disableWrap(() => {
       BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)

@@ -44,7 +44,7 @@ eYo.Consolidator.Arguments.prototype.getIO = function (block) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
+eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -58,7 +58,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = function (io) {
+  var getCheckType = (io) => {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.UNCONNECTED
@@ -150,7 +150,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (function () {
  * This does not suppose that the list of input has been completely consolidated
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.Arguments.prototype.getCheck = (function () {
+eYo.Consolidator.Arguments.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_positional, can_keyword, can_comprehension

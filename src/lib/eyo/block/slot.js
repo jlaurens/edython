@@ -61,7 +61,7 @@ eYo.Slot = function (owner, key, model) {
   this.owner = owner
   this.key = key
   this.reentrant = {}
-  var setupModel = function(model) {
+  var setupModel = (model) => {
     if (!model.setup_) {
       model.setup_ = true
       if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
@@ -219,7 +219,7 @@ goog.require('eYo.FieldInput')
  * @param {!Object} owner
  * @param {!Object} fieldsModel
  */
-eYo.Slot.makeFields = (function () {
+eYo.Slot.makeFields = (() => {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
@@ -240,7 +240,7 @@ eYo.Slot.makeFields = (function () {
     }
   }
   // Change some `... = true,` entries to real functions
-  var setupModel = function (model) {
+  var setupModel = (model) => {
     // no need to setup the model each time we create a new block
     if (model.setup_) {
       return
@@ -277,7 +277,7 @@ eYo.Slot.makeFields = (function () {
       }
     }
   }
-  var makeField = function (fieldName, model) {
+  var makeField = (fieldName, model) => {
     var field
     if (goog.isString(model)) {
       if (model.startsWith('css')) {
@@ -380,7 +380,7 @@ eYo.Slot.makeFields = (function () {
     // 2) It has no previous nor next field, meaning that
     // ...eyo.nextField and ...eyo.previousField are false.
     // fields with a ...eyo.previousField cannot have a ...eyo.eyoLast_ bacuse they are not the head of the chain.
-    var chain = function (/* variable argument list */) {
+    var chain = (/* variable argument list */) => {
       // We first loop to find the first field that can be the
       // start of a chain. Every field before is ignored.
       var startField, nextField
@@ -449,9 +449,9 @@ eYo.Slot.makeFields = (function () {
       }
       return startField
     }
-    owner.fromStartField = chain.apply(this, fromStart)
+    owner.fromStartField = chain(fromStart)
     owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartField)
-    owner.toEndField = chain.apply(this, toEnd)
+    owner.toEndField = chain(toEnd)
     owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
@@ -748,7 +748,7 @@ eYo.Slot.prototype.save = function (element, opt) {
       return
     }
   }
-  var out = (function () {
+  var out = (() => {
     var target = this.targetBlock()
     if (target) { // otherwise, there is nothing to remember
       if (target.eyo.wrapped_) {

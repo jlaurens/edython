@@ -180,11 +180,10 @@ eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
  * @private
  */
 eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
   var current = this.variant_p
-  var F = function (content, k) {
-    var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.variant_p = k
+  var F = (content, k) => {
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = k
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -435,7 +434,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  */
 eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
-  var F = function (content, key) {
+  var F = (content, key) => {
     var menuItem = mgr.newMenuItem(content, () => {
       this.variant_p = key
     })

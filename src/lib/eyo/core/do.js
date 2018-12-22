@@ -63,7 +63,7 @@ eYo.Do.inherits = function (childC9r, parentC9r) {
 //   }
 // }
 
-eYo.Do.Name = (function () {
+eYo.Do.Name = (() => {
   // characters are in ]MIN, MAX[
   var MIN = 32
   var MAX = 127
@@ -385,27 +385,27 @@ eYo.Do.Enumerator = function (list, filter) {
   }
   var i = 0
   var me = {here: undefined}
-  me.start = function () {
+  me.start = () => {
     i = 0
     me.here = undefined
   }
-  me.end = function () {
+  me.end = () => {
     i = list.length
     me.here = undefined
   }
-  me.isAtStart = function () {
+  me.isAtStart = () => {
     return i === 0
   }
-  me.isAtEnd = function () {
+  me.isAtEnd = () => {
     return i < list.length
   }
-  var next_ = function () {
+  var next_ = () => {
     return i < list.length ? list[i++] : undefined
   }
-  var previous_ = function () {
+  var previous_ = () => {
     return i > 0 ? list[--i] : undefined
   }
-  me.next = function () {
+  me.next = () => {
     while ((me.here = next_())) {
       if (!goog.isFunction(filter) || filter(me.here)) {
         break
@@ -413,7 +413,7 @@ eYo.Do.Enumerator = function (list, filter) {
     }
     return me.here
   }
-  me.previous = function () {
+  me.previous = () => {
     while ((me.here = previous_())) {
       if (!filter || filter(me.here)) {
         break

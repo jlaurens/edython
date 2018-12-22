@@ -509,7 +509,7 @@ eYo.DelegateSvg.prototype.renderSuite_ = function () {
  */
 // deleted blocks are rendered during deletion
 // this should be avoided
-eYo.DelegateSvg.prototype.render = (function () {
+eYo.DelegateSvg.prototype.render = (() => {
   // this is a closure
   /**
    * Render the parent block, if relevant.
@@ -745,7 +745,7 @@ eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
     var F = this.locked_ && block.outputConnection && block.getSurroundParent()
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
-    var FF = function (elt, classname) {
+    var FF = (elt, classname) => {
       if (/** @type {!Element} */(elt)) {
         F(elt, classname)
       }
@@ -1920,7 +1920,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  */
 eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
   var workspace = owner.workspace || owner
-  var processModel = function(block, model, id) {
+  var processModel = (block, model, id) => {
     var dataModel = model
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
@@ -2160,7 +2160,7 @@ eYo.HoleFiller.getData = function (check, value) {
  */
 eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
   var H = holes || []
-  var getDeepHoles = function (c8n) {
+  var getDeepHoles = (c8n) => {
     if (c8n && c8n.type === Blockly.INPUT_VALUE && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
@@ -2317,7 +2317,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     target.eyo.selectBlockLeft()
     return
   }
-  var doLast = function (B) {
+  var doLast = (B) => {
     var e8r = B.eyo.inputEnumerator()
     e8r.end()
     while (e8r.previous()) {
@@ -2332,7 +2332,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     return null
   }
   var parent, c8n
-  var selectTarget = function (c8n) {
+  var selectTarget = (c8n) => {
     var target = c8n.targetBlock()
     if (!target) {
       return false
@@ -2353,7 +2353,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     }
     return false
   }
-  var selectConnection = function (c8n) {
+  var selectConnection = (c8n) => {
     if (selectTarget(c8n)) {
       return true
     }
@@ -2471,7 +2471,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     return target.eyo.selectBlockRight()
   }
   var parent, c8n
-  var selectTarget = function (c8n) {
+  var selectTarget = (c8n) => {
     if ((target = c8n.targetBlock())) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectBlockRight()
@@ -2483,7 +2483,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     }
     return false
   }
-  var selectConnection = function (c8n) {
+  var selectConnection = (c8n) => {
     if (c8n.hidden_ && !c8n.eyo.wrapped_) {
       return false
     }
@@ -2498,7 +2498,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     }
     return true
   }
-  var selectSlot = function (slot) {
+  var selectSlot = (slot) => {
     if (!slot.isIncog()) {
       var c8n = slot.connection
       if (c8n) {

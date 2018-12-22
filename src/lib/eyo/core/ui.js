@@ -204,9 +204,9 @@ eYo.Style.Edit = {
   width: 0.5
 }
 
-eYo.Style.insertCssRuleAt = (function () {
+eYo.Style.insertCssRuleAt = (() => {
   var style, sheet
-  var getSheet = function() {
+  var getSheet = () => {
     if (!sheet) {
       // style = document.createElement('style')
       // //document.head.appendChild(style)// only once

@@ -42,7 +42,7 @@ goog.require('eYo.XRE')
  * @param {boolean} forward True if run forward, false if run backward (undo).
  * @suppress{accessControls}
  */
-Blockly.Events.Change.prototype.run = (function () {
+Blockly.Events.Change.prototype.run = (() => {
   var run = Blockly.Events.Change.prototype.run
   return function (forward) {
     if (!this.element.startsWith('eyo:')) {
@@ -85,7 +85,7 @@ Blockly.Events.Change.prototype.run = (function () {
  * @param {boolean|string} state True to start new group, false to end group.
  *   String to set group explicitly.
  */
-eYo.Events.setGroup = (function () {
+eYo.Events.setGroup = (() => {
   var level = 0
   return function (state) {
     if (goog.isString(state)) {

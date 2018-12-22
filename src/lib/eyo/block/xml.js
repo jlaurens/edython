@@ -197,7 +197,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   }
 
   // This part is a custom part for edython
-  var newBlock = function (xmlChild) {
+  var newBlock = (xmlChild) => {
     var block
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((block = eYo.Xml.domToBlock(xmlChild, owner))) {
@@ -321,7 +321,7 @@ goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
  * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-Blockly.Xml.blockToDom = (function () {
+Blockly.Xml.blockToDom = (() => {
   var blockToDom = Blockly.Xml.blockToDom
   return function (block, optNoId) {
     if (block.type.indexOf('eyo:') < 0) {
@@ -378,7 +378,7 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @param {?string} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = (function () {
+eYo.DelegateSvg.newBlockComplete = (() => {
   var newBlockComplete = eYo.DelegateSvg.newBlockComplete
   return function (owner, model, id) {
     if (goog.isString(model)) {
@@ -402,7 +402,7 @@ eYo.DelegateSvg.newBlockComplete = (function () {
  * @return {!Blockly.Block} The root block created.
  * @private
  */
-Blockly.Xml.domToBlockHeadless_ = (function () {
+Blockly.Xml.domToBlockHeadless_ = (() => {
   var domToBlockHeadless = Blockly.Xml.domToBlockHeadless_
   return function (xmlBlock, workspace) {
     var block = null
@@ -460,7 +460,7 @@ Blockly.Xml.domToBlockHeadless_ = (function () {
  * @param {?Object} opt  Options `noId` is True if the encoder should skip the block id, `noNext` is True if the encoder should skip the next block.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-eYo.Xml.blockToDom = (function () {
+eYo.Xml.blockToDom = (() => {
   var blockToDom = function (block, opt) {
     var eyo = block.eyo
     if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
@@ -570,8 +570,8 @@ goog.provide('eYo.Xml.Literal')
  * @param {!*} owner  The workspace or the parent block.
  * @override
  */
-eYo.Xml.Literal.domToBlockComplete = (function () {
-  var newBlock = function (workspace, text, id, stmt_expected) {
+eYo.Xml.Literal.domToBlockComplete = (() => {
+  var newBlock = (workspace, text, id, stmt_expected) => {
     if (text && text.length) {
       var type = eYo.T3.Profile.get(text, null).expr
       switch (type) {
@@ -708,7 +708,7 @@ eYo.Xml.toDom = function (block, element, opt) {
   } else {
     eyo.saveData(element, opt)
     eyo.saveSlots(element, opt)
-    var targetBlockToDom = function (c8n, name, key) {
+    var targetBlockToDom = (c8n, name, key) => {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
         var target = c8n.targetBlock()
@@ -742,7 +742,7 @@ eYo.Xml.toDom = function (block, element, opt) {
  */
 eYo.Xml.registerAllTags = function () {
   // mode is one of 'Expr' or 'Stmt'
-  var register = function (mode) {
+  var register = (mode) => {
     var where = eYo.T3[mode]
     for (var key in where) {
       if (!eYo.Do.hasOwnProperty(where, key)) {
@@ -1020,7 +1020,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
  * @param {*} owner The workspace or the owning block.
  * @return {!Blockly.Block} The root block created.
  */
-eYo.Xml.domToBlock = (function () {
+eYo.Xml.domToBlock = (() => {
   var domToBlock = function (dom, owner) {
     if (!goog.isFunction(dom.getAttribute)) {
       return undefined
@@ -1053,7 +1053,7 @@ eYo.Xml.domToBlock = (function () {
           if (goog.isArray(prototypeName)) {
             if (prototypeName.length === 1) {
               prototypeName = prototypeName[0]
-            } else if (!(prototypeName = (function () {
+            } else if (!(prototypeName = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
@@ -1184,7 +1184,7 @@ eYo.Xml.fromDom = function (block, element) {
         }
       }
       // read flow and suite
-      var statement = function (c8n, key) {
+      var statement = (c8n, key) => {
         if (c8n) {
           return eYo.Do.someElementChild(element, (child) => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {

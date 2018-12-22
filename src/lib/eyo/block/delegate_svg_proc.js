@@ -460,7 +460,7 @@ eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function
   var block = this.block_
   var variants = this.variant_d.getAll()
   var variant = this.variant_p
-  var F = function (content, key) {
+  var F = (content, key) => {
     var menuItem = mgr.newMenuItem(content, () => {
       this.variant_p = key
     })
@@ -552,9 +552,9 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
   var block = this.block_
   var variants = this.variant_d.getAll()
   var variant = block.eyo.variant_d.get()
-  var F = function (content, key) {
-    var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.variant_d.set(key)
+  var F = (content, key) => {
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = key
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)

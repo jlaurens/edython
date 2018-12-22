@@ -264,7 +264,7 @@ eYo.T3.Profiles = function (identifier) {
 }
 
 
-var setup = (function () {
+var setup = (() => {
 
   var byIdentifier = {}
 

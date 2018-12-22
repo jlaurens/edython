@@ -37,7 +37,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('turtle__setup_stmt', {
   }
 }, true)
 
-var F_expr = function (name, title) {
+var F_expr = (name, title) => {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -50,7 +50,7 @@ var F_expr = function (name, title) {
     title: key
   }
 }
-var F_stmt = function (name, title) {
+var F_stmt = (name, title) => {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -106,7 +106,7 @@ eYo.FlyoutCategory.basic_turtle__module = [
   F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).')
 ]
 
-var F_expr = function (name, title) {
+var F_expr = (name, title) => {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -117,7 +117,7 @@ var F_expr = function (name, title) {
     title: key
   }
 }
-var F_stmt = function (name, title) {
+var F_stmt = (name, title) => {
   var key = 'turtle__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {

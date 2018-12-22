@@ -48,7 +48,7 @@ eYo.Version.GIT_HEAD = ''
 /**
  * Setup.
  */
-eYo.setup = (function () {
+eYo.setup = (() => {
   var i11rsHead = []
   var i11rsTail = []
   var me = function (workspace) {

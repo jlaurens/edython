@@ -401,7 +401,7 @@ eYo.Shape.definitionWithBlock = function(eyo, opt) {
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  */
-eYo.Shape.prototype.initWithBlock = (function () {
+eYo.Shape.prototype.initWithBlock = (() => {
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate

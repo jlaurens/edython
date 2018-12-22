@@ -450,7 +450,7 @@ eYo.FieldVariable.prototype.getPythonText_ = function () {
  * Setup the model.
  * Overrides the original method appending edition related stuff.
  */
-eYo.Content.prototype.setupModel = (function () {
+eYo.Content.prototype.setupModel = (() => {
   var setupModel = eYo.Content.prototype.setupModel
   // This is a closure
   // default helper functions for an editable field bound to a data object

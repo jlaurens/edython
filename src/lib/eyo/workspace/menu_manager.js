@@ -56,7 +56,7 @@ eYo.MenuManager = function () {
   this.shouldSeparateRemove_ = false
 }
 
-eYo.MenuManager.shared = (function () {
+eYo.MenuManager.shared = (() => {
   var out
   return function () {
     return out || (out = new eYo.MenuManager())
@@ -713,14 +713,14 @@ eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.MenuManager.p
  * @private
  */
 eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
-  var Stmt1 = function (key) {
+  var Stmt1 = (key) => {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(key, 'eyo-code-reserved'),
       eYo.Do.createSPAN(' … ', 'eyo-code-placeholder'),
       eYo.Do.createSPAN(':', 'eyo-code-reserved')
     )
   }
-  var Stmt2 = function (key) {
+  var Stmt2 = (key) => {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(key + ':', 'eyo-code-reserved')
     )
@@ -921,8 +921,8 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
   // if the block which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
-  var self = this
-    var F = function (K) {
+    var self = this
+    var F = (K) => {
       var d = D[K]
       // d is a slotModel for a block with type model.type
       if ((d && d.key && ((!model.input && !d.wrap) || d.key === model.input))) {
@@ -944,22 +944,22 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
           }
         }
         var key = d.key
-        var content = self.get_menuitem_content(model.type, key)
-        var MI = self.newMenuItem(content, function () {
-          block.eyo.insertParentWithModel(model, key)
+        var content = this.get_menuitem_content(model.type, key)
+        var MI = this.newMenuItem(content, () => {
+          this.insertParentWithModel(model, key)
         })
-        self.addInsertChild(MI)
+        this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
         var list = eYo.Delegate.Manager.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
-            content = self.get_menuitem_content(parent_type, key)
-            MI = self.newMenuItem(content, function () {
-              block.eyo.insertParentWithModel(model, key)
+            content = this.get_menuitem_content(parent_type, key)
+            MI = this.newMenuItem(content, () => {
+              this.insertParentWithModel(model, key)
             })
-            self.addInsertChild(MI)
+            this.addInsertChild(MI)
             return true
           }
           return false
@@ -982,11 +982,11 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             return false
           }
         }
-        content = self.get_menuitem_content(model.type)
-        MI = self.newMenuItem(content, function () {
-          block.eyo.insertParentWithModel(model)
+        content = this.get_menuitem_content(model.type)
+        MI = this.newMenuItem(content, () => {
+          this.insertParentWithModel(model)
         })
-        self.addInsertChild(MI)
+        this.addInsertChild(MI)
         return true
       }
       return false
@@ -1088,14 +1088,6 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     eYo.T3.Stmt.print_stmt, // JL defined?
     eYo.T3.Stmt.builtin__input_stmt// JL defined?
   ]
-  var F = function (action, self, type) {
-    return (function () {
-      // create a closure that catches the value of the loop variable
-      return function () {
-        action.call(self, type)
-      }
-    }) ()
-  }
   var /** !eYo.Connection */ c8n, sep
   var F_after = /** @suppress{accessControls} */ (targetC8n, type) => {
     var B = block.workspace.newBlock(type)
@@ -1105,7 +1097,9 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = this.newMenuItem(content, F(block.eyo.insertBlockAfter, block.eyo, type))
+      var MI = this.newMenuItem(content, () => {
+        this.insertBlockAfter(type)
+      })
       this.addInsertAfterChild(MI)
       return true
     }
@@ -1119,7 +1113,9 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
-      var MI = this.newMenuItem(content, F(block.eyo.insertParentWithModel, block.eyo, type))
+      var MI = this.newMenuItem(content, () => {
+        this.insertParentWithModel(type)
+      })
       this.addInsertBeforeChild(MI)
       return true
     }
@@ -1158,7 +1154,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
  * @private
  */
 eYo.MenuManager.prototype.populate_movable_parent = function (block) {
-  var F = function (movable, yorn = false) {
+  var F = (movable, yorn = false) => {
     for (var _ = 0, type; (type = movable[_++]);) {
       var model = {}
       if (goog.isArray(type)) {
@@ -1171,7 +1167,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
       this.populate_replace_parent(block, model)
     }
   }
-  F.call(this, [
+  F([
     eYo.T3.Expr.u_expr,
     [eYo.T3.Expr.call_expr, eYo.Key.ROOT],
     eYo.T3.Expr.slicing,
@@ -1180,20 +1176,20 @@ eYo.MenuManager.prototype.populate_movable_parent = function (block) {
     [eYo.T3.Expr.decorator_call_expr, eYo.Key.NAME],
     eYo.T3.Expr.imagnumber
   ], true)
-  F.call(this, [
+  F([
     [eYo.T3.Expr.expression_as_name, eYo.Key.AS],
     [eYo.T3.Expr.expression_as_name, eYo.Key.EXPRESSION]
   ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
-  F.call(this, [
+  F([
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,
     eYo.T3.Expr.dict_display,
     [eYo.T3.Expr.funcdef_part, eYo.Key.DEFINITION]
   ], true)
-  F.call(this, [
+  F([
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.identifier_as,
@@ -1218,7 +1214,7 @@ eYo.MenuManager.prototype.populateProperties = function (block, key) {
   var properties = data.getAll()
   if (properties && properties.length > 1) {
     var current = data.get()
-    var F = function (property) {
+    var F = (property) => {
       var menuItem = this.newMenuItem(eyo.makeTitle(property, key), function () {
         data.set(property)
       })
@@ -1227,7 +1223,7 @@ eYo.MenuManager.prototype.populateProperties = function (block, key) {
       goog.dom.classlist.add(/** Element */(menuItem.getElement().firstChild), 'eyo-code')
     }
     for (var i = 0; i < properties.length; i++) {
-      F.call(this, properties[i])
+      F(properties[i])
     }
     return true
   }

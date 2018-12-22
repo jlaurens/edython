@@ -392,22 +392,16 @@ eYo.ConnectionDelegate.prototype.getConnectionBelow = function () {
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getBlackConnection = function (F) {
-  F = F || function (B) {
-    return !B.eyo.isWhite()
-  }
+  F = F || (B => !B.eyo.isWhite())
   var c8n = this.connection
   var block = c8n.getSourceBlock()
   if (F(block)) {
     return c8n
   }
   if (this.isPrevious) {
-    var otherConnection = function (B) {
-      return B.nextConnection
-    }
+    var otherConnection = (B) => B.nextConnection
   } else if (this.isNext) {
-    otherConnection = function (B) {
-      return B.previousConnection
-    }
+    otherConnection = (B) => B.previousConnection
   } else {
     // this is a 'do' statement input connection
     // whether the surrounding block is disabled or not has no importance
@@ -433,11 +427,11 @@ eYo.ConnectionDelegate.prototype.getBlackTargetConnection = function () {
     return c8n
   }
   if (c8n.eyo.isPrevious) {
-    var F = function(B) {
+    var F = (B) => {
       return B.nextConnection
     }
   } else if (c8n.eyo.isNext) {
-    F = function (B) {
+    F = (B) => {
       return B.previousConnection
     }
   } else {
@@ -857,7 +851,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
  * @private
  * @suppress {accessControls}
  */
-Blockly.RenderedConnection.prototype.connect_ = (function () {
+Blockly.RenderedConnection.prototype.connect_ = (() => {
   // this is a closure
   var connect_ = Blockly.RenderedConnection.prototype.connect_
   return function (childC8n) {
@@ -1073,7 +1067,7 @@ Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
  * In fact we bypass the real method if the connection is not epected to show.
  * @param {boolean} hidden True if connection is hidden.
  */
-Blockly.RenderedConnection.prototype.setHidden = (function () {
+Blockly.RenderedConnection.prototype.setHidden = (() => {
   // this is a closure
   var setHidden = Blockly.RenderedConnection.prototype.setHidden
   return function (hidden) {

@@ -579,8 +579,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
     }
   },
   didLoad: /** @suppress {globalThis} */ function () {
-    var requiredExpression = this.owner.expression_s.isRequiredFromSaved() || this.owner.expression_d.isRequiredFromSaved()
-    var requiredComment = this.owner.comment_d.isRequiredFromSaved()
+    var requiredExpression = this.expression_s.isRequiredFromSaved() || this.expression_d.isRequiredFromSaved()
+    var requiredComment = this.comment_d.isRequiredFromSaved()
     if (requiredComment || requiredExpression) {
       this.variant_p = requiredExpression
         ? eYo.Key.EXPRESSION
@@ -627,7 +627,7 @@ eYo.DelegateSvg.Stmt.expression_stmt.prototype.populateContextMenuFirst_ = funct
       var short_code_all = code.substring(0, Math.floor(30 * code.length / total) + 2) + '…'
       var short_comment_all = comment.substring(0, Math.floor(30 * comment.length / total) + 2) + '…'
     }
-    var F = function (content, variant) {
+    var F = (content, variant) => {
       if (variant !== current) {
         var menuItem = mgr.newMenuItem(content, () => {
           this.variant_p = variant

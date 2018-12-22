@@ -200,18 +200,17 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
  * @private
  */
 eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
-  var current = block.eyo.variant_d.get()
-  var F = function (content, variant) {
+  var current = this.variant_p
+  var F = (content, variant) => {
     if (variant !== current) {
-      var menuItem = mgr.newMenuItem(content, function () {
-        block.eyo.variant_d.set(variant)
+      var menuItem = mgr.newMenuItem(content, () => {
+        this.variant_p = variant
       })
       mgr.addChild(menuItem, true)
       menuItem.setEnabled(variant !== current)  
     }
   }
-  var from = block.eyo.from_d.get()
+  var from = this.from_p
   var module = from ? from : 'module'
   var style = from ? 'eyo-code' : 'eyo-code-placeholder'
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
