@@ -164,7 +164,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
               return 'eyo-code'
             }
         }
-        this.field.eyo.set_css_class(f(this.owner.name_p))
+        this.field.eyo.set_css_class(f(newValue))
       },
       xml: false
     },
