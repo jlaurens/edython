@@ -520,7 +520,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       validate: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var d = this.stride_d
+        var d = this.owner.stride_d
         d.required = newValue === eYo.Key.STRIDE
         d.setIncog()
       },

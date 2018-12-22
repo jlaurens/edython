@@ -1,7 +1,20 @@
 <template>
-  <b-dd id="block-operator" class="eyo-dropdown" v-if="operators.length">
-    <template slot="button-content" ><span class="block-operator">{{formatter(operator)}}</span></template>
-    <b-dd-item-button v-for="item in operators" v-on:click="operator = item" v-bind:style="{fontFamily: $$.eYo.Font.familySans}" :key="item">{{formatter(item)}}</b-dd-item-button>
+  <b-dd
+    v-if="operators.length"
+    id="block-operator"
+    class="eyo-dropdown">
+    <template
+      slot="button-content"
+      ><span
+        class="block-operator"
+      >{{formatter(operator)}}</span>
+    </template>
+    <b-dd-item-button
+      v-for="item in operators"
+      v-on:click="operator = item"
+      v-bind:style="{fontFamily: $$.eYo.Font.familySans}"
+      :key="item"
+    >{{formatter(item)}}</b-dd-item-button>
   </b-dd>
 </template>
 
@@ -36,7 +49,7 @@
       operator: {
         get () {
           this.$$synchronize(this.step)
-          return this.operator_d
+          return this.operator_
         },
         set (newValue) {
           this.eyo.operator_p = newValue

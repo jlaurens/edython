@@ -204,9 +204,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         this.required = newValue > 0
         this.setIncog()
-        var holder_d = this.holder_d
-        holder_d.required = newValue === 1
-        holder_d.setIncog()
+        var d = this.owner.holder_d
+        d.required = newValue === 1
+        d.setIncog()
         this.owner.updateProfile()
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -628,7 +628,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           variable: true,
           willRender: /** @suppress {globalThis} */ function () {
             this.willRender()
-            var item = this.owner_d.item_p
+            var item = this.owner.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
             if (reserved) {
               goog.dom.classlist.add(this.textElement, 'eyo-code-reserved')

@@ -48,11 +48,11 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.comment_d.required = newValue === eYo.Key.COMMENT
-        this.comment_d.setIncog()
+        this.owner.comment_d.required = newValue === eYo.Key.COMMENT
+        this.owner.comment_d.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.comment_d.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
+        this.set(this.owner.comment_d.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
       }
     }
   },
@@ -516,12 +516,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.afterChange(oldValue, newValue)
-        var data = this.expression_d
+        var data = this.owner.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.comment_d.isIncog()) {
+        if (this.owner.comment_d.isIncog()) {
           this.change(eYo.Key.EXPRESSION)
         }
       }
@@ -561,7 +561,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         this.required = false
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.expression_d.isIncog()) {
+        if (this.owner.expression_d.isIncog()) {
           this.setIncog(false)
         }
       }
@@ -579,8 +579,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
     }
   },
   didLoad: /** @suppress {globalThis} */ function () {
-    var requiredExpression = this.expression_s.isRequiredFromSaved() || this.expression_d.isRequiredFromSaved()
-    var requiredComment = this.comment_d.isRequiredFromSaved()
+    var requiredExpression = this.owner.expression_s.isRequiredFromSaved() || this.owner.expression_d.isRequiredFromSaved()
+    var requiredComment = this.owner.comment_d.isRequiredFromSaved()
     if (requiredComment || requiredExpression) {
       this.variant_p = requiredExpression
         ? eYo.Key.EXPRESSION
@@ -602,7 +602,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  * @return None
  */
 eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
-  return this.variant_d.get() === eYo.Key.COMMENT
+  return this.variant_p === eYo.Key.COMMENT
 }
 
 /**
@@ -613,8 +613,7 @@ eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
  */
 eYo.DelegateSvg.Stmt.expression_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   if (this.comment_variant_p === eYo.Key.COMMENT) {
-    var data = this.variant_d
-    var current = data.get()
+    var current = this.variant_p
     var comment = this.comment_d.toText()
     var code = this.expression_d.toText()
     if (code.length > 32) {
@@ -630,8 +629,8 @@ eYo.DelegateSvg.Stmt.expression_stmt.prototype.populateContextMenuFirst_ = funct
     }
     var F = function (content, variant) {
       if (variant !== current) {
-        var menuItem = mgr.newMenuItem(content, function () {
-          data.change(variant)
+        var menuItem = mgr.newMenuItem(content, () => {
+          this.variant_p = variant
         })
         mgr.addChild(menuItem)
       }

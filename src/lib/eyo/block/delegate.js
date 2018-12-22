@@ -1227,7 +1227,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
     function () {
       var data_in = model.data
       if (goog.isString(data_in) || goog.isNumber(data_in)) {
-        var d = this.main_d
+        var d = this.data.main
         if (d && !d.isIncog() && d.validate(data_in)) {
           d.change(data_in)
           d.setRequiredFromModel(true)

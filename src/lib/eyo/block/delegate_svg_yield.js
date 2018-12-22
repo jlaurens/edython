@@ -38,7 +38,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expression', {
         var slot = this.owner.expression_s
         slot.required = (newValue === eYo.Key.EXPRESSION)
         slot.setIncog()
-        var d = this.from_d
+        var d = this.owner.from_d
         d.required = (newValue === eYo.Key.FROM)
         d.setIncog()
       },
@@ -103,11 +103,10 @@ eYo.DelegateSvg.Expr.yield_expression.populateContextMenuFirst_ = function (mgr)
   if (block.eyo.locked_) {
     return
   }
-  var D = this.variant_d
-  var current = D.get()
+  var current = this.variant_p
   var F = function (content, k) {
-    var menuItem = mgr.newMenuItem(content, function () {
-      block.eyo.variant_d.set(k)
+    var menuItem = mgr.newMenuItem(content, () => {
+      this.variant_p = k
     })
     mgr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)

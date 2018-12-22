@@ -79,14 +79,15 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.import_module_s
+        var O = this.owner
+        var slot = O.import_module_s
         slot.required = newValue === eYo.Key.IMPORT
         slot.setIncog()
-        this.from_d.setIncog(newValue === eYo.Key.IMPORT)
-        slot = this.owner.import_s
+        O.from_d.setIncog(newValue === eYo.Key.IMPORT)
+        slot = O.import_s
         slot.required = newValue === eYo.Key.FROM_MODULE_IMPORT
         slot.setIncog()
-        slot = this.owner.import_star_s
+        slot = O.import_star_s
         slot.required = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
         slot.setIncog()
       }

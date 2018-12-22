@@ -290,8 +290,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       init: eYo.Key.NAME,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.name_d.setIncog(newValue === eYo.Key.TARGETS)
-        var slot = this.owner.targets_s
+        var O = this.owner
+        O.name_d.setIncog(newValue === eYo.Key.TARGETS)
+        var slot = O.targets_s
         slot.required = newValue === eYo.Key.TARGETS
         slot.setIncog()
       },
@@ -432,7 +433,7 @@ goog.provide('eYo.DelegateSvg.AugAssign')
  */
 eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
   data: {
-    name: {
+    target: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -464,8 +465,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         if (oldValue && (newValue !== oldValue)) {
           this.didChange(oldValue, newValue)
-          this.operator_d.set(newValue)
-          this.operator_d.bitwise = (this.operator_d.get() !== this.get())
+          var O = this.owner
+          O.operator_p = newValue
+          O.operator_d.bitwise = (O.operator_p !== this.get())
         }
       },
       validate: true
@@ -477,15 +479,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
-          this.operator_d.set(newValue)
-          this.operator_d.bitwise = (this.operator_d.get() === this.get())
+          var O = this.owner
+          O.operator_p = newValue
+          O.operator_d.bitwise = (O.operator_p === this.get())
         }
       },
       validate: true
     }
   },
   slots: {
-    name: {
+    target: {
       order: 1,
       fields: {
         bind: {
@@ -504,7 +507,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
         }
       }
     },
-    expressions: {
+    value: {
       order: 3,
       wrap: eYo.T3.Expr.augassigned_list
     }
@@ -519,9 +522,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
  */
 eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var withTarget = this.name_t
-  var name = this.name_p
-  var operator = this.operator_d.get()
+  var withTarget = this.target_t
+  var target = this.target_p
+  var operator = this.operator_p
   var withBitwise = this.operator_d.bitwise
   var operators = withBitwise
     ? this.bitwiseOperator_d.getAll()
@@ -532,7 +535,7 @@ eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirs
       var content =
       goog.dom.createDom(goog.dom.TagName.SPAN, null,
         withTarget ? eYo.Do.createSPAN('…', 'eyo-code')
-          : eYo.Do.createSPAN(name || eYo.Msg.Placeholder.IDENTIFIER, name ? 'eyo-code' : 'eyo-code-placeholder'),
+          : eYo.Do.createSPAN(target || eYo.Msg.Placeholder.IDENTIFIER, target ? 'eyo-code' : 'eyo-code-placeholder'),
         eYo.Do.createSPAN(' ' + op + ' ', 'eyo-code'),
         eYo.Do.createSPAN('…', 'eyo-code')
       )
