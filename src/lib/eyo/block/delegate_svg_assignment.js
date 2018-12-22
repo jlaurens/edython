@@ -453,8 +453,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('augmented_assignment_stmt', {
       synchronize: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.numberOperator_d.set(newValue)
-        this.bitwiseOperator_d.set(newValue)
+        this.owner.numberOperator_p = newValue
+        this.owner.bitwiseOperator_p = newValue
       },
       validate: false
     },
