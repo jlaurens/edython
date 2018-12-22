@@ -10,9 +10,6 @@ const temp = {
 }
 
 const state = {
-  undoCount: 0,
-  redoCount: 0,
-  undoStage: 0,
   selectedBlockId: undefined, // the selected block id
   selectedBlockType: undefined, // the selected block type
   selectedBlockStep: 0, // the selected block type
@@ -28,18 +25,6 @@ const state = {
 }
 
 const mutations = {
-  setUndoCount (state, n) {
-    state.undoCount = n
-  },
-  setRedoCount (state, n) {
-    state.redoCount = n
-  },
-  setUndoStage (state, n) {
-    state.undoStage = n
-  },
-  stageUndo (state) {
-    state.undoCount = eYo.App.workspace.undoStack_.length
-  },
   setSelectedBlock (state, block) {
     if (block) {
       if (block.isInFlyout || (block.id === state.selectedBlockId)) {
@@ -112,9 +97,6 @@ const actions = {
 }
 
 const getters = {
-  isDocumentEdited: state => {
-    return state.undoCount === state.undoStage
-  }
 }
 
 export default {

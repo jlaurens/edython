@@ -101,7 +101,7 @@ eYoDocument.install = function (Vue, options) {
         if (err) {
           alert('An error ocurred creating the file ' + err.message)
         } else {
-          store.commit('UI/stageUndo')
+          store.commit('Undo/stageUndo')
           eYo.App.workspace.eyo.resetChangeCount()
           eYo.$$.bus.$emit('saveDidSucceed')
           callback && callback(path)
@@ -146,7 +146,7 @@ eYoDocument.install = function (Vue, options) {
     eYo.$$.bus.$emit('new-document')
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
-    store.commit('UI/stageUndo')
+    store.commit('Undo/stageUndo')
     store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
     store.commit('DOC_SET_PATH', undefined)
   }

@@ -62,28 +62,28 @@ eYoApp.install = function (Vue, options) {
   }
   eYo.App.didClearUndo = () => {
     // console.log('didClearUndo')
-    store.commit('UI/setUndoCount', 0)
-    store.commit('UI/setRedoCount', 0)
-    if (store.state.UI.undoStage > 0) {
+    store.commit('Undo/setUndoCount', 0)
+    store.commit('Undo/setRedoCount', 0)
+    if (store.state.Undo.undoStage > 0) {
       // the last saved state won't ever be reached
-      store.commit('UI/setUndoStage', -1)
+      store.commit('Undo/setUndoStage', -1)
     }
   }
   eYo.App.didProcessUndo = () => {
     // console.log('didProcessUndo')
-    store.commit('UI/setUndoCount', eYo.App.workspace.undoStack_.length)
-    store.commit('UI/setRedoCount', eYo.App.workspace.redoStack_.length)
+    store.commit('Undo/setUndoCount', eYo.App.workspace.undoStack_.length)
+    store.commit('Undo/setRedoCount', eYo.App.workspace.redoStack_.length)
   }
   eYo.App.didUnshiftUndo = () => {
-    store.commit('UI/setUndoStage', store.state.UI.undoStage - 1) // negative values make sense
+    store.commit('Undo/setUndoStage', store.state.Undo.undoStage - 1) // negative values make sense
   }
   eYo.App.didPushUndo = () => {
-    // console.log('didPushUndo')
+    console.log('didPushUndo')
     var count = eYo.App.workspace.undoStack_.length
-    store.commit('UI/setUndoCount', count)
-    if (store.state.UI.undoStage >= count) {
+    store.commit('Undo/setUndoCount', count)
+    if (store.state.Undo.undoStage >= count) {
       // the last saved state won't ever be reached
-      store.commit('UI/setUndoStage', -1)
+      store.commit('Undo/setUndoStage', -1)
     }
   }
   // eYo.App.didTouchBlock = function (block) {
