@@ -380,14 +380,17 @@ eYo.Slot.makeFields = (() => {
     // 2) It has no previous nor next field, meaning that
     // ...eyo.nextField and ...eyo.previousField are false.
     // fields with a ...eyo.previousField cannot have a ...eyo.eyoLast_ bacuse they are not the head of the chain.
-    var chain = (/* variable argument list */) => {
+    var chain = function (/* variable argument list */) {
       // We first loop to find the first field that can be the
       // start of a chain. Every field before is ignored.
       var startField, nextField
       for (var i = 0; i < arguments.length; i++) {
-        var fieldName = arguments[i]
-        if ((startField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
+        var name = arguments[i]
+        if ((startField = goog.isString(name) ? owner.fields[name] : name)) {
           // remove this field from the list of unordered fields
+          if (!startField.eyo) {
+            console.error('NO EYO startField', startField)
+          }
           if (startField.eyo.previousField) {
             // this field already belongs to a chain
             // but it is not the first one
@@ -398,8 +401,8 @@ eYo.Slot.makeFields = (() => {
           var eyo = startField.eyo.eyoLast_ || startField.eyo
           // Now scan the next argument fields, if any
           while (++i < arguments.length) {
-            fieldName = arguments[i]
-            if ((nextField = goog.isString(fieldName) ? owner.fields[fieldName] : fieldName)) {
+            name = arguments[i]
+            if ((nextField = goog.isString(name) ? owner.fields[name] : name)) {
               if (nextField.eyo.previousField) {
                 // this was not a starting point
                 continue
@@ -449,9 +452,9 @@ eYo.Slot.makeFields = (() => {
       }
       return startField
     }
-    owner.fromStartField = chain(fromStart)
+    owner.fromStartField = chain.apply(this, fromStart)
     owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartField)
-    owner.toEndField = chain(toEnd)
+    owner.toEndField = chain.apply(this, toEnd)
     owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
@@ -779,7 +782,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         }
       }
     }
-  }.call(this))
+  })()
   if (!out && this.isRequiredToModel()) {
     var child = goog.dom.createDom(eYo.Xml.EXPR)
     child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)

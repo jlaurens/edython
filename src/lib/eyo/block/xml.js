@@ -1062,7 +1062,7 @@ eYo.Xml.domToBlock = (() => {
                     return candidate
                   }
                 }
-              } ()))) {
+              }) ())) {
               // no prototype found, bail out.
               return
             }

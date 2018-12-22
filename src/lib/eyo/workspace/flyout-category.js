@@ -329,13 +329,11 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Expr.call_expr,
       name_d: 'pop',
       dotted_d: 1,
-      slots: {
-        n_ary: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.integer,
-              placeholder: -1
-            }
+      n_ary_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.integer,
+            placeholder: -1
           }
         }
       },
@@ -376,11 +374,9 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.call_expr,
       name_d: 'list',
-      slots: {
-        n_ary: {
-          slots: {
-            O: "'...'"
-          }
+      n_ary_s: {
+        slots: {
+          O: "'...'"
         }
       }
     },
@@ -398,13 +394,11 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.call_stmt,
       name_d: 'pop',
       dotted_d: 1,
-      slots: {
-        n_ary: {
-          slots: {
-            O: {
-              type: eYo.T3.Expr.integer,
-              placeholder: -1
-            }
+      n_ary_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.integer,
+            placeholder: -1
           }
         }
       },

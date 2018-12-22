@@ -37,7 +37,7 @@ eYo.Content = function (owner, key, model) {
   this.model = model
   this.field = undefined
   this.next = undefined
-  if (!model.setupp_) {
+  if (!model.setup_) {
     this.setupModel()
   }
 }
@@ -48,7 +48,7 @@ eYo.Content = function (owner, key, model) {
  * @param {!Object} owner
  * @param {!Object} contentsModel
  */
-eYo.Content.feed = function () {
+eYo.Content.feed = (() => {
   // Change some `... = true,` entries to real functions
   return function (owner, contentsModel) {
     owner.contents || (owner.contents = Object.create(null))
@@ -127,13 +127,13 @@ eYo.Content.feed = function () {
     // 2) It has no previous nor next content, meaning that
     // ...eyo.next and ...eyo.previous are false.
     // contents with a .previous cannot have a ._last_ because they are not the head of the chain.
-    var chain = (/* variable argument list */) => {
+    var chain = function (/* variable argument list */) {
       // We first loop to find the first content that can be the
       // start of a chain. Every content before is ignored.
       var start, next
       for (var i = 0; i < arguments.length; i++) {
-        var name = arguments[i]
-        if ((start = goog.isString(name) ? owner.contents[name] : name)) {
+        var nom = arguments[i]
+        if ((start = goog.isString(nom) ? owner.contents[nom] : nom)) {
           // remove this content from the list of unordered contents
           if (start.previous) {
             // this content already belongs to a chain
@@ -145,8 +145,8 @@ eYo.Content.feed = function () {
           var content = start._last_ || start
           // Now scan the next argument contents, if any
           while (++i < arguments.length) {
-            name = arguments[i]
-            if ((next = goog.isString(name) ? owner.contents[name] : name)) {
+            nom = arguments[i]
+            if ((next = goog.isString(nom) ? owner.contents[nom] : nom)) {
               if (next.previous) {
                 // this was not a starting point
                 continue
@@ -172,9 +172,9 @@ eYo.Content.feed = function () {
       }
       return start
     }
-    owner.fromStartContent = chain.apply(this, fromStart)
+    owner.fromStartContent = chain(fromStart)
     owner.fromStartContent = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartContent)
-    owner.toEndContent = chain.apply(this, toEnd)
+    owner.toEndContent = chain(toEnd)
     owner.toEndContent = chain(owner.toEndContent, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the contents that are already ordered
     // either explicitely or not
@@ -192,7 +192,7 @@ eYo.Content.feed = function () {
     owner.toEndContent && delete owner.toEndContent._last_
     owner.contents.comment && (owner.contents.comment.isComment = true)
   }
-} ()
+}) ()
 
 /**
  * Make the field.
