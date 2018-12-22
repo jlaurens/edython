@@ -194,18 +194,28 @@
           if (opt.layout) {
             opt.how = opt.layout
           }
+          if (opt.how === 'revert') {
+            this.revertLayout && this.revertLayout()
+            return
+          }
           var newValue = opt.how
+          var oldValue = this.paneLayout
+          // console.error('paneLayout', newValue, oldValue)
+          if (oldValue === newValue) {
+            return
+          }
           if (newValue === 'F' && opt.what) {
+            this.revertLayout = ((what, where, layout) => {
+              return () => {
+                this.place(what, where)
+                this.changeLayout({how: layout})
+              }
+            })(opt.what, this.where(opt.what), oldValue)
             this.place(opt.what, 'f')
             return
           }
           if (!newValue) {
             this.place(opt.what, opt.where)
-            return
-          }
-          var oldValue = this.paneLayout
-          // console.error('paneLayout', newValue, oldValue)
-          if (oldValue === newValue) {
             return
           }
           // switching from full pane mode is quite straightforward
@@ -666,7 +676,7 @@
             }
             div.appendChild(comp_new.$el)
             comp_new.$el.style.display = ''
-          } else {
+          } else if (newValue) {
             console.error('UNKNOWN', newValue)
           }
         }

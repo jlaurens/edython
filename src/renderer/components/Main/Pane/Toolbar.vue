@@ -21,6 +21,16 @@
           :height="24"
           :icon-name="layout">
           <icon-layout :keyx="layout"/></icon-base></b-dd-item-button>
+        <b-dd-divider
+          v-if="revertLayout"></b-dd-divider>
+        <b-dd-item-button
+          v-if="revertLayout"
+          v-on:click="selectedLayout = 'revert'">
+          <icon-base
+          :width="24"
+          :height="24"
+          icon-name="revertLayout">
+          <icon-layout :keyx="revertLayout"/></icon-base></b-dd-item-button>
       </b-dd>
     </b-btn-group>
     <b-dd
@@ -67,7 +77,8 @@
       return {
         selectedPane_: 'console',
         selectedLayout_: 'F',
-        chosen_: 'A'
+        chosen_: 'A',
+        revertLayout: undefined
       }
     },
     components: {
@@ -121,6 +132,7 @@
           this.$nextTick(() => {
             this.$emit('change-layout', {what: this.what, how: newValue})
           })
+          this.revertLayout = (newValue === 'F') && this.paneLayout
         }
       },
       layouts () {
