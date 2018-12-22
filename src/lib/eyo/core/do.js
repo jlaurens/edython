@@ -325,7 +325,7 @@ eYo.Do.Name = (() => {
   }
   me.middle_name = me.getBetween(me.min_name, me.max_name, 0.5)
   return me
-}())
+})()
 
 eYo.Do.ensureArray = eYo.Do.ensureFunctionOrArray = function (object) {
   return goog.isArray(object) || goog.isFunction(object) ? object : (object ? [object] : object)

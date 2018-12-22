@@ -61,7 +61,7 @@ eYo.MenuManager.shared = (() => {
   return function () {
     return out || (out = new eYo.MenuManager())
   }
-}())
+})()
 
 /**
  * Get the menu, in case clients may want to populate it directly.

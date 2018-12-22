@@ -237,7 +237,7 @@ eYo.Style.insertCssRuleAt = (() => {
       goog.cssom.addCssRule(sheet, rule.join(''), at)
     }
   }
-}())
+})()
 
 eYo.setup.register(-1, function () {
   eYo.Style.insertCssRuleAt('body {background: orange;}')

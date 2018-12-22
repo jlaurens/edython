@@ -536,7 +536,7 @@ eYo.KeyHandler = (() => {
     }
   }
   return me
-}())
+})()
 
 /**
  * Separate key in 2 parts: what is before the first occurrence of sep and what is after.

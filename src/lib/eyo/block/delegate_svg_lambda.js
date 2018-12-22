@@ -240,7 +240,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
       setupFirst.call(this)
     }
   }
-}())
+})()
 
 /**
  * Returns the required types for the current input.
@@ -288,7 +288,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
     }
     return (cache[K] = out)
   }
-}())
+})()
 
 /**
  * Class for a DelegateSvg, parameter_list block.

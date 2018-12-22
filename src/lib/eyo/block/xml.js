@@ -1104,7 +1104,7 @@ eYo.Xml.domToBlock = (() => {
     eYo.Xml.domToBlock = domToBlock
     return domToBlock(dom, owner)
   }
-}())
+})()
 
 goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
 

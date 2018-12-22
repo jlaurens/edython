@@ -143,7 +143,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
       }
     }
   }
-}())
+})()
 
 /**
  * Returns the required types for the current input.
@@ -193,7 +193,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
     }
     return (cache[K] = out)
   }
-}())
+})()
 
 /**
  * Class for a DelegateSvg, argument_list block.

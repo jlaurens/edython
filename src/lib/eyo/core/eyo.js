@@ -92,4 +92,4 @@ eYo.setup = (() => {
     i11r.eyo_register_key = key
   }
   return me
-}())
+})()

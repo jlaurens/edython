@@ -104,7 +104,7 @@ eYo.Events.setGroup = (() => {
       }
     }
   }
-}())
+})()
 
 /**
  * Event disabler.

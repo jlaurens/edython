@@ -86,7 +86,7 @@ eYo.Style.setControlRendererCssClass = (() => {
       }
     }
   }
-}())
+})()
 
 /**
  * Renderer for menu items separators.

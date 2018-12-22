@@ -620,7 +620,7 @@ eYo.Delegate.getC9rEyO = (() => {
     }
     return new EyOC9r(key, delegateC9r)
   }
-}())
+})()
 
 /**
  * Delegate manager.
@@ -1032,7 +1032,7 @@ eYo.Delegate.Manager = (() => {
     }
   }
   return me
-}())
+})()
 
 // register this delegate for all the T3 types
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate)

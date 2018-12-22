@@ -170,7 +170,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
       }
     }
   }
-}())
+})()
 
 /**
  * Returns the required types for the current input.
