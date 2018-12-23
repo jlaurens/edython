@@ -7,7 +7,7 @@
     <b-btn-group>
       <b-btn
         id="toolbar-site"
-        v-on:click=" doSite('http://edython.eu')"
+        v-on:click=" doSite('https://edython.eu')"
         title="Aller au site Edython"
         v-tippy>
         <img

@@ -338,11 +338,11 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
   // For newly created events, update the change count
   if (event.recordUndo) {
     this.eyo.updateChangeCount(event, true)
-  }
-  if (before === this.undoStack_.length) {
-    eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
-  } else {
-    eYo.App.didPushUndo && eYo.App.didPushUndo()
+    if (before === this.undoStack_.length) {
+      eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
+    } else {
+      eYo.App.didPushUndo && eYo.App.didPushUndo()
+    }
   }
 }
 

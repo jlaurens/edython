@@ -169,7 +169,7 @@ eYo.setup.register(function () {
 
 eYo.Style.Path = {
   Selected: {
-    colour: '#fc3',
+    colour: '#f9951b', // #fc3
     width: 2.675, // px
   },
   Error: {

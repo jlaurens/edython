@@ -60,31 +60,21 @@ eYoApp.install = function (Vue, options) {
       }
     }
   }
+  /** Sent when the undo stack is cleared out. */
   eYo.App.didClearUndo = () => {
     // console.log('didClearUndo')
-    store.commit('Undo/setUndoCount', 0)
-    store.commit('Undo/setRedoCount', 0)
-    if (store.state.Undo.undoStage > 0) {
-      // the last saved state won't ever be reached
-      store.commit('Undo/setUndoStage', -1)
-    }
+    store.commit('Undo/didClearUndo')
   }
   eYo.App.didProcessUndo = () => {
     // console.log('didProcessUndo')
-    store.commit('Undo/setUndoCount', eYo.App.workspace.undoStack_.length)
-    store.commit('Undo/setRedoCount', eYo.App.workspace.redoStack_.length)
+    store.commit('Undo/didProcessUndo')
   }
   eYo.App.didUnshiftUndo = () => {
-    store.commit('Undo/setUndoStage', store.state.Undo.undoStage - 1) // negative values make sense
+    store.commit('Undo/didUnshiftUndo')
   }
+  /** Sent when a new undo operation has been created */
   eYo.App.didPushUndo = () => {
-    console.log('didPushUndo')
-    var count = eYo.App.workspace.undoStack_.length
-    store.commit('Undo/setUndoCount', count)
-    if (store.state.Undo.undoStage >= count) {
-      // the last saved state won't ever be reached
-      store.commit('Undo/setUndoStage', -1)
-    }
+    store.commit('Undo/didPushUndo')
   }
   // eYo.App.didTouchBlock = function (block) {
   //   console.log('didTouchBlock', block)

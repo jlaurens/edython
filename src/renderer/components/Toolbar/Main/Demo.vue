@@ -88,9 +88,8 @@
       var el = document.getElementById('eyo-toolbar-dropdown-demo')
       el._tippy || window.tippy(el, eYo.Tooltip.options)
       goog.asserts.assert(el._tippy)
-      var self = this
-      this.flashInterval = setInterval(function () {
-        self.flash()
+      this.flashInterval = setInterval(() => {
+        this.flash()
       }, 2000)
     },
     methods: {
