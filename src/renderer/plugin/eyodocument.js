@@ -151,18 +151,18 @@ eYoDocument.install = function (Vue, options) {
     store.commit('DOC_SET_PATH', undefined)
   }
   eYo.App.Document.readString = function (str) {
-    var d = new Date()
-    var t0 = d.getTime()
+    // var d = new Date()
+    // var t0 = d.getTime()
     var parser = new DOMParser()
     var dom = parser.parseFromString(str, 'application/xml')
     eYo.App.workspace.eyo.fromDom(dom)
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
-    d = new Date()
-    console.error('t:', (d.getTime() - t0) / 1000)
+    // d = new Date()
+    // console.error('t:', (d.getTime() - t0) / 1000)
     eYo.App.doDomToPref(dom)
-    d = new Date()
-    console.error('t:', (d.getTime() - t0) / 1000)
+    // d = new Date()
+    // console.error('t:', (d.getTime() - t0) / 1000)
   }
   eYo.App.Document.readDeflate = function (deflate, fileName) {
     var inflate
