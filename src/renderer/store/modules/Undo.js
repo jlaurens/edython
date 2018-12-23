@@ -22,7 +22,7 @@ const mutations = {
    * @param {*} state
    */
   stageUndo (state) {
-    console.log('UNDO/stageUndo', eYo.App.workspace.undoStack_.length, eYo.App.workspace.redoStack_.length)
+    // console.log('UNDO/stageUndo', eYo.App.workspace.undoStack_.length, eYo.App.workspace.redoStack_.length)
     state.undoStage = state.undoCount = eYo.App.workspace.undoStack_.length
     state.redoCount = eYo.App.workspace.redoStack_.length
   },
@@ -31,7 +31,7 @@ const mutations = {
    * @param {*} state
    */
   didClearUndo (state) {
-    console.log('UNDO/didClearUndo')
+    // console.log('UNDO/didClearUndo')
     state.undoCount = 0
     state.redoCount = 0
     if (state.undoStage > 0) {
@@ -44,7 +44,7 @@ const mutations = {
    * @param {*} state
    */
   didProcessUndo (state) {
-    console.log('UNDO/didProcessUndo')
+    // console.log('UNDO/didProcessUndo')
     state.undoCount = eYo.App.workspace.undoStack_.length
     state.redoCount = eYo.App.workspace.redoStack_.length
   },
@@ -56,7 +56,7 @@ const mutations = {
    * @param {*} state
    */
   didUnshiftUndo (state) {
-    console.log('UNDO/didUnshiftUndo')
+    // console.log('UNDO/didUnshiftUndo')
     state.undoStage -= 1 // negative values make sense
     state.redoCount = 0
   },
@@ -66,7 +66,7 @@ const mutations = {
    * @param {*} state
    */
   didPushUndo (state) {
-    console.log('UNDO/didPushUndo')
+    // console.log('UNDO/didPushUndo')
     var count = eYo.App.workspace.undoStack_.length
     state.undoCount = count
     state.redoCount = 0
@@ -82,7 +82,7 @@ const actions = {
 
 const getters = {
   isDocumentEdited: state => {
-    console.warn('UNDO/isDocumentEdited', state.undoCount, state.undoStage)
+    // console.warn('UNDO/isDocumentEdited', state.undoCount, state.undoStage)
     return state.undoCount !== state.undoStage
   },
   canRevert: (state) => (redo) => (redo ? state.redoCount : state.undoCount) > 0
