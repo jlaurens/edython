@@ -108,11 +108,15 @@
         ref="pane_console"
         :where="where_console"
         @change-layout="changeLayout"></pane-console>
+      <pane-console2
+        ref="pane_console2"
+        :where="where_console2"
+        @change-layout="changeLayout"></pane-console2>
       <pane-turtle
         ref="pane_turtle"
         :where="where_turtle"
         @change-layout="changeLayout"></pane-turtle>
-      <console-script></console-script>
+      <console2-script></console2-script>
     </div>
   </div>
 </template>
@@ -125,8 +129,9 @@
   import BlockToolbar from '@@/Toolbar/Block'
   import PaneWorkspace from './Pane/Workspace'
   import PaneConsole from './Pane/Console'
+  import PaneConsole2 from './Pane/Console2'
   import PaneTurtle from './Pane/Turtle'
-  import ConsoleScript from './Pane/ConsoleScript'
+  import Console2Script from './Pane/Console2Script'
 
   export default {
     name: 'pane-content',
@@ -140,8 +145,9 @@
       BlockToolbar,
       PaneWorkspace,
       PaneConsole,
+      PaneConsole2,
       PaneTurtle,
-      ConsoleScript
+      Console2Script
     },
     computed: {
       style () {

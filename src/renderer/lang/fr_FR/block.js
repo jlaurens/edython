@@ -88,6 +88,7 @@ export default {
   pane: {
     Workspace: 'Atelier',
     Console: 'Console',
+    Console2: 'Console2',
     Turtle: 'Tortue',
     Workbench: 'Établi',
     content: {

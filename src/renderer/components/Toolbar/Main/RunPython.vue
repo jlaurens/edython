@@ -51,7 +51,7 @@
         var eyo = eYo.selected
         if (eyo) {
           // get the root
-          eyo.rootControl.runScript()
+          eyo.rootControl.runScript2()
         }
       }
     }

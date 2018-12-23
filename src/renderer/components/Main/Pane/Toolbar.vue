@@ -157,6 +157,10 @@
             'console.restart',
             'console.erase'
           ],
+          console2: [
+            'console2.restart',
+            'console2.erase'
+          ],
           turtle: [
             'turtle.replay',
             'turtle.erase',
@@ -174,6 +178,13 @@
             'console.scaleDown',
             'console.scaleUpBig',
             'console.scaleDownBig'
+          ],
+          console2: [
+            'console2.scaleReset',
+            'console2.scaleUp',
+            'console2.scaleDown',
+            'console2.scaleUpBig',
+            'console2.scaleDownBig'
           ],
           turtle: [
             'turtle.scaleReset',
@@ -208,6 +219,12 @@
           'console.erase': () => {
             eYo.$$.bus.$emit('console-erase')
           },
+          'console2.restart': () => {
+            eYo.$$.bus.$emit('console2-restart')
+          },
+          'console2.erase': () => {
+            eYo.$$.bus.$emit('console2-erase')
+          },
           'turtle.replay': () => {
             eYo.$$.bus.$emit('turtle-replay')
           },
@@ -227,6 +244,11 @@
           'console.scaleUpBig': this.consoleScaleUpBig,
           'console.scaleDown': this.consoleScaleDown,
           'console.scaleDownBig': this.consoleScaleDownBig,
+          'console2.scaleReset': this.console2ScaleReset,
+          'console2.scaleUp': this.console2ScaleUp,
+          'console2.scaleUpBig': this.console2ScaleUpBig,
+          'console2.scaleDown': this.console2ScaleDown,
+          'console2.scaleDownBig': this.console2ScaleDownBig,
           'turtle.scaleReset': this.turtleScaleReset,
           'turtle.scaleUp': this.turtleScaleUp,
           'turtle.scaleUpBig': this.turtleScaleUpBig,
@@ -251,6 +273,13 @@
         consoleScaleDown: 'scaleDown',
         consoleScaleDownBig: 'scaleDownBig',
         consoleScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Console2', {
+        console2ScaleUp: 'scaleUp',
+        console2ScaleUpBig: 'scaleUpBig',
+        console2ScaleDown: 'scaleDown',
+        console2ScaleDownBig: 'scaleDownBig',
+        console2ScaleReset: 'scaleReset'
       }),
       ...mapMutations('Turtle', {
         turtleScaleUp: 'scaleUp',
