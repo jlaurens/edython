@@ -651,7 +651,11 @@
     },
     mounted () {
       this.step = this.toolbarBlockVisible ? this.max : 0
-      this.changeLayout({how: 'F', what: 'workspace'})
+      // this.changeLayout({how: 'F', what: 'workspace'})
+      this.changeLayout({
+        how: 'F',
+        what: 'console'
+      })
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
