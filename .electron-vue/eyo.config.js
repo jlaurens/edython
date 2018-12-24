@@ -156,7 +156,7 @@ ConfigEyo.prototype.getConfig = function () {
           }
         }
       },
-      function () {
+      (function () {
         var model = {
           test: /\.js$/,
           use: 'babel-loader',
@@ -166,7 +166,7 @@ ConfigEyo.prototype.getConfig = function () {
           model.include = [ path.join(this.srcPath, 'renderer') ]
         }
         return model
-      } (),
+      }) (),
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: {
@@ -247,7 +247,7 @@ ConfigEyo.prototype.getConfig = function () {
       '@@': this.componentsPath,
       // '@@@@': path.resolve(this.rootPath, 'static/')
     },
-    extensions: ['.js', '.vue', '.json', '.css', '.node', '.txt', '.xml', '.eyo']
+    extensions: ['.js', '.vue', '.json', '.css', '.node', '.txt', '.xml', '.eyo', '.py']
   }
   config.node = this.env === 'web' ? { // web
     fs: 'empty'
@@ -401,6 +401,10 @@ ConfigEyo.prototype.enableResources = function (config) {
         {
           from: path.join(this.rootPath, 'gfx/icon_light.svg'),
           to: path.join(this.distPath, 'static/icon_light.svg')
+        },
+        {
+          from: path.join(this.rootPath, 'src/lib/eyo/web_workers/**'),
+          to: path.join(this.distPath, 'web_workers/')
         }
       ],
       {

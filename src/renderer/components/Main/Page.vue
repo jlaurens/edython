@@ -488,7 +488,12 @@
           })
           if (newValue) {
             this.setPaneLayout(newValue)
-            var available = new Set([this.where_workspace, this.where_turtle, this.where_console])
+            var available = new Set([
+              this.where_workspace,
+              this.where_turtle,
+              this.where_console,
+              this.where_console2
+            ])
             var expected = {
               F: ['f'],
               H: ['h1', 'h2'],
@@ -654,7 +659,7 @@
       // this.changeLayout({how: 'F', what: 'workspace'})
       this.changeLayout({
         how: 'F',
-        what: 'console'
+        what: 'console2'
       })
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
