@@ -17,10 +17,11 @@
           v-for="layout in layouts"
           v-on:click="selectedLayout = layout">
           <icon-base
-          :width="24"
-          :height="24"
-          :icon-name="layout">
-          <icon-layout :keyx="layout"/></icon-base></b-dd-item-button>
+            :width="24"
+            :height="24"
+            :icon-name="layout">
+            <icon-layout
+              :keyx="layout"/></icon-base></b-dd-item-button>
         <b-dd-divider
           v-if="revertLayout"></b-dd-divider>
         <b-dd-item-button
@@ -75,7 +76,7 @@
     name: 'eyo-workspace-management-toolbar',
     data: function () {
       return {
-        selectedPane_: 'console2',
+        selectedPane_: 'console1',
         selectedLayout_: 'F',
         chosen_: 'A',
         revertLayout: undefined
@@ -153,13 +154,13 @@
       },
       choices () {
         return {
+          console1: [
+            'console1.restart',
+            'console1.erase'
+          ],
           console2: [
             'console2.restart',
             'console2.erase'
-          ],
-          console3: [
-            'console3.restart',
-            'console3.erase'
           ],
           turtle: [
             'turtle.replay',
@@ -172,19 +173,19 @@
       },
       scaleChoices () {
         return {
+          console1: [
+            'console1.scaleReset',
+            'console1.scaleUp',
+            'console1.scaleDown',
+            'console1.scaleUpBig',
+            'console1.scaleDownBig'
+          ],
           console2: [
             'console2.scaleReset',
             'console2.scaleUp',
             'console2.scaleDown',
             'console2.scaleUpBig',
             'console2.scaleDownBig'
-          ],
-          console3: [
-            'console3.scaleReset',
-            'console3.scaleUp',
-            'console3.scaleDown',
-            'console3.scaleUpBig',
-            'console3.scaleDownBig'
           ],
           turtle: [
             'turtle.scaleReset',
@@ -213,17 +214,17 @@
       },
       choose (choice) {
         var do_it = {
+          'console1.restart': () => {
+            eYo.$$.bus.$emit('console1-restart')
+          },
+          'console1.erase': () => {
+            eYo.$$.bus.$emit('console1-erase')
+          },
           'console2.restart': () => {
             eYo.$$.bus.$emit('console2-restart')
           },
           'console2.erase': () => {
             eYo.$$.bus.$emit('console2-erase')
-          },
-          'console3.restart': () => {
-            eYo.$$.bus.$emit('console3-restart')
-          },
-          'console3.erase': () => {
-            eYo.$$.bus.$emit('console3-erase')
           },
           'turtle.replay': () => {
             eYo.$$.bus.$emit('turtle-replay')
@@ -244,11 +245,11 @@
           'console2.scaleUpBig': this.console2ScaleUpBig,
           'console2.scaleDown': this.console2ScaleDown,
           'console2.scaleDownBig': this.console2ScaleDownBig,
-          'console3.scaleReset': this.console3ScaleReset,
-          'console3.scaleUp': this.console3ScaleUp,
-          'console3.scaleUpBig': this.console3ScaleUpBig,
-          'console3.scaleDown': this.console3ScaleDown,
-          'console3.scaleDownBig': this.console3ScaleDownBig,
+          'console1.scaleReset': this.console1ScaleReset,
+          'console1.scaleUp': this.console1ScaleUp,
+          'console1.scaleUpBig': this.console1ScaleUpBig,
+          'console1.scaleDown': this.console1ScaleDown,
+          'console1.scaleDownBig': this.console1ScaleDownBig,
           'turtle.scaleReset': this.turtleScaleReset,
           'turtle.scaleUp': this.turtleScaleUp,
           'turtle.scaleUpBig': this.turtleScaleUpBig,
@@ -267,19 +268,19 @@
         workspaceScaleDownBig: 'scaleDownBig',
         workspaceScaleReset: 'scaleReset'
       }),
+      ...mapMutations('Console1', {
+        console1ScaleUp: 'scaleUp',
+        console1ScaleUpBig: 'scaleUpBig',
+        console1ScaleDown: 'scaleDown',
+        console1ScaleDownBig: 'scaleDownBig',
+        console1ScaleReset: 'scaleReset'
+      }),
       ...mapMutations('Console2', {
         console2ScaleUp: 'scaleUp',
         console2ScaleUpBig: 'scaleUpBig',
         console2ScaleDown: 'scaleDown',
         console2ScaleDownBig: 'scaleDownBig',
         console2ScaleReset: 'scaleReset'
-      }),
-      ...mapMutations('Console3', {
-        console3ScaleUp: 'scaleUp',
-        console3ScaleUpBig: 'scaleUpBig',
-        console3ScaleDown: 'scaleDown',
-        console3ScaleDownBig: 'scaleDownBig',
-        console3ScaleReset: 'scaleReset'
       }),
       ...mapMutations('Turtle', {
         turtleScaleUp: 'scaleUp',

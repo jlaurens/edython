@@ -326,7 +326,7 @@ except:
                     self.callback(self)
         print('INLINE really done')
     
-    window.eYo.console3 = Console(document['eyo-console3-area'])
+    window.eYo.console1 = Console(document['eyo-console1-area'])
     console_js.log('%%% importing console module: done')
 
 </script>
@@ -334,30 +334,30 @@ except:
 
 <script>
 export default {
-  name: 'panel-console3-script',
+  name: 'panel-console1-script',
   mounted: function () {
-    eYo.$$.bus.$on('console3-erase', this.eraseConsole)
-    eYo.$$.bus.$on('console3-restart', this.restartConsole)
+    eYo.$$.bus.$on('console1-erase', this.eraseConsole)
+    eYo.$$.bus.$on('console1-restart', this.restartConsole)
     eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
     eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
-    restartConsole3 () {
-      eYo.console3 && eYo.console3.__class__.restart(eYo.console3)
+    restartConsole1 () {
+      eYo.console1 && eYo.console1.__class__.restart(eYo.console1)
     },
     eraseTurtle2 () {
-      eYo.console3 && eYo.console3.__class__.runScript(eYo.console3, 'edython.turtleRestart()')
+      eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleRestart()')
     },
-    eraseConsole3 () {
-      eYo.console3 && eYo.console3.__class__.erase(eYo.console3)
+    eraseConsole1 () {
+      eYo.console1 && eYo.console1.__class__.erase(eYo.console1)
     },
     replayTurtle2 () {
-      eYo.console3 && eYo.console3.__class__.runScript(eYo.console3, 'edython.turtleReplayScene()')
+      eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.eraseTurtle2()
-      this.restartConsole3() // this must be last, once
+      this.restartConsole1() // this must be last, once
     }
   }
 }
@@ -365,7 +365,7 @@ eYo.DelegateSvg.prototype.runScript2 = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  eYo.console3 && eYo.console3.__class__.runScript(window.eYo.console3, code)
+  eYo.console1 && eYo.console1.__class__.runScript(window.eYo.console1, code)
 }
 </script>
 

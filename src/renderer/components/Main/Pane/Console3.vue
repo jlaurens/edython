@@ -4,13 +4,13 @@
     ref="wrapper">
     <toolbar
       :where="where"
-      what="console3"
+      what="console1"
       v-on="$listeners"></toolbar>
     <div
       class="content"
       ref="elContent">
       <textarea
-        id="eyo-console3-area"
+        id="eyo-console1-area"
         ref="elInner"
         rows=20
         v-bind:style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"></textarea>
@@ -23,7 +23,7 @@
   import Toolbar from './Toolbar'
   var ResizeSensor = require('css-element-queries/src/ResizeSensor')
   export default {
-    name: 'panel-console3',
+    name: 'panel-console1',
     components: {
       Toolbar
     },
@@ -39,7 +39,7 @@
       }
     },
     computed: {
-      ...mapGetters('Console3', [
+      ...mapGetters('Console1', [
         'scaleFactor'
       ])
     },
@@ -74,7 +74,7 @@
       },
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          console.log('console3', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
+          console.log('console1', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
           this.$$resize()
         })
         this.$$resize()
@@ -89,7 +89,7 @@
 </script>
 
 <style>
-  #eyo-console3-area {
+  #eyo-console1-area {
     background-color:#000;
     color:#fff;
     font-family: monospace;
@@ -98,7 +98,7 @@
     width: 100%;
     height: calc(100% - 2px); /* include border */
   }
-  #eyo-console3-area:focus {
+  #eyo-console1-area:focus {
     outline: none;
   }
   

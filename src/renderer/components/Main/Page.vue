@@ -104,10 +104,10 @@
         ref="pane_workspace"
         :where="where_workspace"
         @change-layout="changeLayout"></pane-workspace>
-        <pane-console3
-        ref="pane_console3"
-        :where="where_console3"
-        @change-layout="changeLayout"></pane-console3>
+      <pane-console1
+        ref="pane_console1"
+        :where="where_console1"
+        @change-layout="changeLayout"></pane-console1>
       <pane-console2
         ref="pane_console2"
         :where="where_console2"
@@ -116,7 +116,8 @@
         ref="pane_turtle"
         :where="where_turtle"
         @change-layout="changeLayout"></pane-turtle>
-      <console3-script></console3-script>
+      <console1-script></console1-script>
+      <console2-script></console2-script>
     </div>
   </div>
 </template>
@@ -129,10 +130,10 @@
   import BlockToolbar from '@@/Toolbar/Block'
   import PaneWorkspace from './Pane/Workspace'
   import PaneConsole2 from './Pane/Console2'
-  import PaneConsole3 from './Pane/Console3'
+  import PaneConsole1 from './Pane/Console1'
   import PaneTurtle from './Pane/Turtle'
   import Console2Script from './Pane/Console2Script'
-  import Console3Script from './Pane/Console3Script'
+  import Console1Script from './Pane/Console1Script'
 
   export default {
     name: 'pane-content',
@@ -146,10 +147,10 @@
       BlockToolbar,
       PaneWorkspace,
       PaneConsole2,
-      PaneConsole3,
+      PaneConsole1,
       PaneTurtle,
       Console2Script,
-      Console3Script
+      Console1Script
     },
     computed: {
       style () {
@@ -194,7 +195,7 @@
       container (where) {
         return this.$refs[`container_${where}`]
       },
-      pane (what) { // pane is one of 'console3' 'console2', 'workspace', 'turtle', 'h', 'v', 'hh', 'vv'
+      pane (what) { // pane is one of 'console1' 'console2', 'workspace', 'turtle', 'h', 'v', 'hh', 'vv'
         return this.$refs[`pane_${what}`]
       },
       changeLayout (opt) {
@@ -494,7 +495,7 @@
               this.where_workspace,
               this.where_turtle,
               this.where_console2,
-              this.where_console3
+              this.where_console1
             ])
             var expected = {
               F: ['f'],
@@ -661,7 +662,7 @@
       // this.changeLayout({how: 'F', what: 'workspace'})
       this.changeLayout({
         how: 'F',
-        what: 'console3'
+        what: 'console1'
       })
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
