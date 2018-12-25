@@ -75,7 +75,7 @@
     name: 'eyo-workspace-management-toolbar',
     data: function () {
       return {
-        selectedPane_: 'console',
+        selectedPane_: 'console2',
         selectedLayout_: 'F',
         chosen_: 'A',
         revertLayout: undefined
@@ -153,13 +153,13 @@
       },
       choices () {
         return {
-          console: [
-            'console.restart',
-            'console.erase'
-          ],
           console2: [
             'console2.restart',
             'console2.erase'
+          ],
+          console3: [
+            'console3.restart',
+            'console3.erase'
           ],
           turtle: [
             'turtle.replay',
@@ -172,19 +172,19 @@
       },
       scaleChoices () {
         return {
-          console: [
-            'console.scaleReset',
-            'console.scaleUp',
-            'console.scaleDown',
-            'console.scaleUpBig',
-            'console.scaleDownBig'
-          ],
           console2: [
             'console2.scaleReset',
             'console2.scaleUp',
             'console2.scaleDown',
             'console2.scaleUpBig',
             'console2.scaleDownBig'
+          ],
+          console3: [
+            'console3.scaleReset',
+            'console3.scaleUp',
+            'console3.scaleDown',
+            'console3.scaleUpBig',
+            'console3.scaleDownBig'
           ],
           turtle: [
             'turtle.scaleReset',
@@ -213,17 +213,17 @@
       },
       choose (choice) {
         var do_it = {
-          'console.restart': () => {
-            eYo.$$.bus.$emit('console-restart')
-          },
-          'console.erase': () => {
-            eYo.$$.bus.$emit('console-erase')
-          },
           'console2.restart': () => {
             eYo.$$.bus.$emit('console2-restart')
           },
           'console2.erase': () => {
             eYo.$$.bus.$emit('console2-erase')
+          },
+          'console3.restart': () => {
+            eYo.$$.bus.$emit('console3-restart')
+          },
+          'console3.erase': () => {
+            eYo.$$.bus.$emit('console3-erase')
           },
           'turtle.replay': () => {
             eYo.$$.bus.$emit('turtle-replay')
@@ -239,16 +239,16 @@
           'workspace.scaleUpBig': this.workspaceScaleUpBig,
           'workspace.scaleDown': this.workspaceScaleDown,
           'workspace.scaleDownBig': this.workspaceScaleDownBig,
-          'console.scaleReset': this.consoleScaleReset,
-          'console.scaleUp': this.consoleScaleUp,
-          'console.scaleUpBig': this.consoleScaleUpBig,
-          'console.scaleDown': this.consoleScaleDown,
-          'console.scaleDownBig': this.consoleScaleDownBig,
           'console2.scaleReset': this.console2ScaleReset,
           'console2.scaleUp': this.console2ScaleUp,
           'console2.scaleUpBig': this.console2ScaleUpBig,
           'console2.scaleDown': this.console2ScaleDown,
           'console2.scaleDownBig': this.console2ScaleDownBig,
+          'console3.scaleReset': this.console3ScaleReset,
+          'console3.scaleUp': this.console3ScaleUp,
+          'console3.scaleUpBig': this.console3ScaleUpBig,
+          'console3.scaleDown': this.console3ScaleDown,
+          'console3.scaleDownBig': this.console3ScaleDownBig,
           'turtle.scaleReset': this.turtleScaleReset,
           'turtle.scaleUp': this.turtleScaleUp,
           'turtle.scaleUpBig': this.turtleScaleUpBig,
@@ -267,19 +267,19 @@
         workspaceScaleDownBig: 'scaleDownBig',
         workspaceScaleReset: 'scaleReset'
       }),
-      ...mapMutations('Console', {
-        consoleScaleUp: 'scaleUp',
-        consoleScaleUpBig: 'scaleUpBig',
-        consoleScaleDown: 'scaleDown',
-        consoleScaleDownBig: 'scaleDownBig',
-        consoleScaleReset: 'scaleReset'
-      }),
       ...mapMutations('Console2', {
         console2ScaleUp: 'scaleUp',
         console2ScaleUpBig: 'scaleUpBig',
         console2ScaleDown: 'scaleDown',
         console2ScaleDownBig: 'scaleDownBig',
         console2ScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Console3', {
+        console3ScaleUp: 'scaleUp',
+        console3ScaleUpBig: 'scaleUpBig',
+        console3ScaleDown: 'scaleDown',
+        console3ScaleDownBig: 'scaleDownBig',
+        console3ScaleReset: 'scaleReset'
       }),
       ...mapMutations('Turtle', {
         turtleScaleUp: 'scaleUp',
