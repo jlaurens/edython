@@ -3,8 +3,8 @@ const cfg = {
   // either atomic or split vues
   panes: [
     'workspace',
-    'console',
-    'console2',
+    'console1',
+    'console3',
     'turtle'
   ],
   // these are the locations where panes can go
