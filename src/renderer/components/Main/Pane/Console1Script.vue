@@ -361,7 +361,7 @@ export default {
     }
   }
 }
-eYo.DelegateSvg.prototype.runScript2 = function () {
+eYo.DelegateSvg.prototype.runScript = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)

@@ -325,7 +325,7 @@ except:
                 if self.callback is not None:
                     self.callback(self)
         print('INLINE really done')
-    ml
+    
     window.eYo.console2 = Console(document['eyo-console2-area'])
     console_js.log('%%% importing console module: done')
 
@@ -338,8 +338,8 @@ export default {
   mounted: function () {
     eYo.$$.bus.$on('console2-erase', this.eraseConsole)
     eYo.$$.bus.$on('console2-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle2-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle2-erase', this.eraseTurtle)
+    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
+    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
