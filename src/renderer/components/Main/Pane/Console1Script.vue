@@ -1,7 +1,7 @@
 <template>
   <script type="text/python3">
 from browser import console as console_js
-print('%%% importing console module ???')
+# console_js.log('%%% importing console module ???')
 try:
     import consoleJL
     console_js('SUCCESS')
@@ -324,7 +324,7 @@ except:
                 self._cursorToEnd()
                 if self.callback is not None:
                     self.callback(self)
-        print('INLINE really done')
+        console_js.log('INLINE really done')
     
     window.eYo.console1 = Console(document['eyo-console1-area'])
     console_js.log('%%% importing console module: done')
@@ -338,26 +338,26 @@ export default {
   mounted: function () {
     eYo.$$.bus.$on('console1-erase', this.eraseConsole)
     eYo.$$.bus.$on('console1-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
+    eYo.$$.bus.$on('turtle1-replay', this.replayTurtle)
+    eYo.$$.bus.$on('turtle1-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
-    restartConsole1 () {
+    restartConsole () {
       eYo.console1 && eYo.console1.__class__.restart(eYo.console1)
     },
-    eraseTurtle2 () {
+    eraseTurtle () {
       eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleRestart()')
     },
-    eraseConsole1 () {
+    eraseConsole () {
       eYo.console1 && eYo.console1.__class__.erase(eYo.console1)
     },
-    replayTurtle2 () {
+    replayTurtle1 () {
       eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleReplayScene()')
     },
     restartAll () {
-      this.eraseTurtle2()
-      this.restartConsole1() // this must be last, once
+      this.eraseTurtle()
+      this.restartConsole() // this must be last, once
     }
   }
 }

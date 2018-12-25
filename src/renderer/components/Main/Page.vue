@@ -117,7 +117,7 @@
         :where="where_turtle"
         @change-layout="changeLayout"></pane-turtle>
       <console1-script></console1-script>
-      <console2-script></console2-script>
+      <!-->console2-script></console2-script-->
     </div>
   </div>
 </template>

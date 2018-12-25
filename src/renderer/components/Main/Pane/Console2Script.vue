@@ -325,8 +325,8 @@ except:
                 if self.callback is not None:
                     self.callback(self)
         print('INLINE really done')
-    
-    window.eYo.console = Console(document['eyo-console-area'])
+    ml
+    window.eYo.console2 = Console(document['eyo-console2-area'])
     console_js.log('%%% importing console module: done')
 
 </script>
@@ -334,26 +334,26 @@ except:
 
 <script>
 export default {
-  name: 'panel-console-script',
+  name: 'panel-console2-script',
   mounted: function () {
-    eYo.$$.bus.$on('console-erase', this.eraseConsole)
-    eYo.$$.bus.$on('console-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
+    eYo.$$.bus.$on('console2-erase', this.eraseConsole)
+    eYo.$$.bus.$on('console2-restart', this.restartConsole)
+    eYo.$$.bus.$on('turtle2-replay', this.replayTurtle)
+    eYo.$$.bus.$on('turtle2-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
     restartConsole () {
-      eYo.console && eYo.console.__class__.restart(eYo.console)
-    },
-    eraseTurtle () {
-      eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleRestart()')
+      eYo.console2 && eYo.console2.__class__.restart(eYo.console2)
     },
     eraseConsole () {
-      eYo.console && eYo.console.__class__.erase(eYo.console)
+      eYo.console2 && eYo.console2.__class__.erase(eYo.console2)
+    },
+    eraseTurtle () {
+      eYo.console2 && eYo.console2.__class__.runScript(eYo.console2, 'edython.turtleRestart()')
     },
     replayTurtle () {
-      eYo.console && eYo.console.__class__.runScript(eYo.console, 'edython.turtleReplayScene()')
+      eYo.console2 && eYo.console2.__class__.runScript(eYo.console2, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.eraseTurtle()
@@ -361,11 +361,11 @@ export default {
     }
   }
 }
-eYo.DelegateSvg.prototype.runScript = function () {
+eYo.DelegateSvg.prototype.runScript2 = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  eYo.console && eYo.console.__class__.runScript(window.eYo.console, code)
+  eYo.console2 && eYo.console2.__class__.runScript(window.eYo.console2, code)
 }
 </script>
 
