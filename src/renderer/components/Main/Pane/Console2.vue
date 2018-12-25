@@ -74,7 +74,7 @@
       },
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          console.log('console2', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
+          this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
           this.$$resize()
         })
         this.$$resize()
