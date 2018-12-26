@@ -123,7 +123,7 @@
         }
       },
       panes () {
-        return layoutcfg.panes.filter(s => s !== this.what)
+        return layoutcfg.panes.filter(s => s !== this.what && s !== 'console2')
       },
       selectedLayout: {
         get () {
