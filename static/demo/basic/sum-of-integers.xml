@@ -8,7 +8,7 @@
   "paneLayout":{
     "layout":"H",
     "h1":"workspace",
-    "h2":"console"
+    "h2":"console1"
   }
 }</prefs><workspace>
 <content>
@@ -29,7 +29,7 @@ print('La somme des',n,'premiers entiers est',somme)
 </python>
 <s eyo="stmt" comment="1) Demander un nombre à l'utilisateur" flow="suite">
 <s eyo="assignment" name="réponse" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="call" name="input" slot="O">
 <x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">'Donner un nombre entier positif (pas trop grand...)'</x>
@@ -38,7 +38,7 @@ print('La somme des',n,'premiers entiers est',somme)
 </x>
 <s eyo="stmt" comment="2) Convertir la réponse en nombre entier" flow="next">
 <s eyo="assignment" name="n" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="call" name="int" slot="O">
 <x eyo="list" slot="n_ary">
 <x eyo="identifier" name="réponse" slot="O"></x>
@@ -47,7 +47,7 @@ print('La somme des',n,'premiers entiers est',somme)
 </x>
 <s eyo="stmt" comment="3) Initialiser la somme à 0" flow="next">
 <s eyo="assignment" name="somme" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="literal" slot="O">0</x>
 </x>
 <s eyo="stmt" comment="4) Calculer la somme" flow="next">
@@ -66,7 +66,7 @@ print('La somme des',n,'premiers entiers est',somme)
 </x>
 </x>
 <s eyo="assignment" name="somme" flow="suite">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="a_expr" operator="+" slot="O">
 <x eyo="identifier" name="somme" slot="lhs"></x>
 <x eyo="identifier" name="i" slot="rhs"></x>

@@ -8,7 +8,7 @@
     "paneLayout":{
         "layout":"H",
         "h1":"workspace",
-        "h2":"console"
+        "h2":"console1"
     }
 }</prefs>
 <workspace>
@@ -40,7 +40,7 @@ print('Le nombre de',1,'est',liste.count(1))
 print('Le nombre de','1','est',liste.count('1'))</python>
 <s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="suite">
 <s eyo="assignment" name="liste" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="[]" slot="O">
 <x eyo="literal" slot="O">1</x>
 <x eyo="literal" slot="f">'+'</x>

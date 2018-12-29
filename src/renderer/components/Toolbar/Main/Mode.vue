@@ -7,7 +7,7 @@
     >
     <b-dd-item-button
       v-for="choice in choices"
-      v-on:click="setSelectedMode(choice)"
+      v-on:click="choose(choice)"
       :key="choice"
       class="block-variant eyo-code"
       v-html="$$t(`toolbar.content.mode.${choice}`)"
@@ -37,9 +37,15 @@
       })
     },
     methods: {
-      ...mapMutations('UI', {
-        setSelectedMode: 'setSelectedMode'
-      })
+      choose (choice) {
+        this.setSelectedMode(choice)
+        this.$nextTick(() => {
+          this.$$.bus.$emit('toolbar-resize')
+        })
+      },
+      ...mapMutations('UI', [
+        'setSelectedMode'
+      ])
     }
   }
 </script>

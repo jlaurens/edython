@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
-<prefs>{"workspace":{"closed":true,"category":"basic"},"paneLayout":{"layout":"H","h1":"workspace","h2":"console"}}</prefs>
+<prefs>{
+  "workspace":{
+    "closed":true,
+    "category":"basic"
+  },
+  "paneLayout":{
+    "layout":"H",
+    "h1":"workspace",
+    "h2":"console1"
+  }
+}</prefs>
 <workspace>
 <content>
 <s eyo="start" comment="Cliquer sur le bouton &quot;marche&quot; à gauche" x="300" y="120">

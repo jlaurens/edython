@@ -6,7 +6,7 @@
   "paneLayout": {
     "layout":"FV",
     "h1":"workspace",
-    "vv1":"console",
+    "vv1":"console1",
     "vv2":"turtle"
   }
 }</prefs><workspace><content><s eyo="start" comment="Turtle star" x="251" y="85"><s eyo="import" from="turtle" star="true" flow="suite"><s eyo="turtle__setup_stmt" flow="next"><s eyo="call" name="pencolor" ary="1" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">'red'</x></x><s eyo="call" name="fillcolor" ary="1" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">'yellow'</x></x><s eyo="call" name="speed" ary="1" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">'fast'</x></x><s eyo="call" name="begin_fill" flow="next"><s eyo="while" flow="next"><x eyo="builtin__object" value="True" slot="if"></x><s eyo="call" name="forward" ary="1" flow="suite"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">100</x></x><s eyo="call" name="left" ary="1" flow="next"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">170</x></x><s eyo="if" flow="next"><x eyo="binary" operator="&lt;" slot="if"><x eyo="call" name="distance" slot="lhs"><x eyo="list" slot="n_ary"><x eyo="literal" slot="O">0</x><x eyo="literal" slot="f">0</x></x></x><x eyo="literal" slot="rhs">2</x></x><s eyo="break" flow="suite"></s></s></s></s><s eyo="call" name="end_fill" flow="next"><s eyo="call" name="done" flow="next"></s></s></s></s></s></s></s></s></s></s></content></workspace></edython>

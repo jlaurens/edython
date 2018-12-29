@@ -8,7 +8,7 @@
   "paneLayout":{
     "layout":"H",
     "h1":"workspace",
-    "h2":"console"
+    "h2":"console1"
   }
 }</prefs>
 <workspace>
@@ -16,7 +16,7 @@
 <s eyo="start" comment="Avec des listes" x="200" y="60">
   <s eyo="stmt" comment="Une liste est une collection ordonnée d’objets" flow="suite">
     <s eyo="assignment" name="liste" flow="next">
-      <x eyo="list" slot="rhs">
+      <x eyo="list" slot="value">
         <x eyo="[]" slot="O">
           <x eyo="literal" slot="O">1</x>
           <x eyo="literal" slot="f">'+'</x>
@@ -35,7 +35,7 @@
   </s>
   <s eyo="start" comment="Pour extraire d'une liste, utiliser &quot;:&quot;" flow="next">
     <s eyo="assignment" name="liste1" flow="suite">
-      <x eyo="list" slot="rhs">
+      <x eyo="list" slot="value">
         <x eyo="slicing" slot="O">
           <x eyo="identifier" name="liste" slot="name"></x>
           <x eyo="list" slot="slicing">

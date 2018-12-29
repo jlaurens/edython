@@ -1,10 +1,11 @@
 <template>
-  <div id="pane-content">
+  <div
+    id="pane-content">
     <block-toolbar></block-toolbar>
     <div
       id="working-area"
       class="eyo-workbench"
-      :style="style"
+      :style="workingStyle"
       ref="container_f">
     </div>
     <div 
@@ -153,7 +154,7 @@
       Console1Script
     },
     computed: {
-      style () {
+      workingStyle () {
         return `top: ${this.step}rem;
         height: calc(100% - ${this.step}rem)`
       },
@@ -162,7 +163,8 @@
         'toolbarBlockVisible'
       ]),
       ...mapState('Layout', [
-        'paneLayout'
+        'paneLayout',
+        'toolbarMainHeight'
       ]),
       ...mapState('Layout', layoutcfg.where_whats),
       ...mapState('Layout', layoutcfg.what_wheres),
@@ -705,44 +707,17 @@
 
 <style>
   #pane-content {
-    position: absolute;
     top: 3rem;
-    height: calc(100% - 3rem);
-    width: calc(100% - 0.5rem);
+    height: 100%;
+    width: 100%;
     padding: 0;
-  }
-  /* tablets and desktop */
-  #pane-content {
-    top: 3rem;
-    height: calc(100% - 3rem);
     min-width: 300px;
   }
-  @media only screen and (max-width: 890px) {
-    /* tablets and desktop */
-      #pane-content {
-      top: calc(3rem + 1 * 2.5rem);
-      height: calc(100% - (3rem + 1 * 2.5rem));
-    }
-  }
-  @media only screen and (max-width: 495px) {
-    /* tablets and desktop */
-      #pane-content {
-      top: calc(3rem + 2 * 2.5rem);
-      height: calc(100% - (3rem + 2 * 2.5rem));
-    }
-  }
-  @media only screen and (max-width: 340px) {
-    /* tablets and desktop */
-      #pane-content {
-      top: calc(3rem + 3 * 2.5rem);
-      height: calc(100% - (3rem + 3 * 2.5rem));
-    }
-  }
-
+  
   #working-area {
-    position: absolute;
     width: 100%;
-    padding: 0.25rem 0;
+    padding: 0.25rem;
+    padding-bottom: 0;
   }
   .gutter {
     background-color:transparent;

@@ -1,7 +1,17 @@
 <template>
-  <b-container id="Main" class="m-0 px-1 h-100 fluid">
-    <main-toolbar></main-toolbar>
-    <main-Page></main-Page>
+  <b-container
+    id="Main"
+    class="h-100 fluid">
+    <div
+      id="MainToolbar"
+      ref="elToolbar">
+        <main-toolbar></main-toolbar>
+    </div>
+    <div
+      id="MainPage"
+      ref="elPage">
+        <main-page></main-page>
+    </div>
     <main-web-load></main-web-load>
     <main-modal></main-modal>
   </b-container>
@@ -9,7 +19,7 @@
 
 <script>
   import {mapState} from 'vuex'
-
+  
   import MainToolbar from '@@/Toolbar/Main'
   import MainPage from './Main/Page'
   import MainWebLoad from './Main/WebLoad'
@@ -24,11 +34,22 @@
       MainModal
     },
     computed: {
-      ...mapState('Pref', {
-        tipsDisabled: state => state.tipsDisabled
-      })
+      ...mapState('Pref', [
+        'tipsDisabled'
+      ]),
+      ...mapState('Layout', [
+        'toolbarMainHeight'
+      ])
     },
     watch: {
+      toolbarMainHeight (newValue, oldValue) {
+        console.error('WATCH toolbarMainHeight', newValue, oldValue)
+        var div = this.$refs.elToolbar
+        div.style.height = `calc(${newValue}px)`
+        div = this.$refs.elPage
+        div.style.top = `calc(${newValue}px)`
+        div.style.height = `calc(100% - ${newValue}px)`
+      },
       tipsDisabled (newValue, oldValue) {
         var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
         var i = 0
@@ -54,6 +75,8 @@
     position: absolute;
     left: 0px;
     top: 0px;
+    margin: 0;
+    padding: 0;
   }
   .eyo-dropdown .btn {
     white-space: nowrap;

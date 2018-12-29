@@ -10,6 +10,7 @@
 <template>
   <b-btn-toolbar
     id="toolbar-block"
+    ref="toolbar"
     key-nav
     aria-label="Block toolbar"
     justify
@@ -233,7 +234,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapMutations} from 'vuex'
 
   import BlockCommon from './Block/Common.vue'
   import BlockComment from './Block/Comment.vue'
@@ -266,12 +267,15 @@
   import BlockRange from './Block/Range.vue'
   import BlockBranch from './Block/Branch.vue'
 
+  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+
   export default {
     name: 'toolbar-block',
     data: function () {
       return {
         saved_step: 0,
-        theta: 0
+        theta: 0,
+        resizeSensor: undefined
       }
     },
     components: {
@@ -306,9 +310,6 @@
       BlockRange,
       BlockBranch
     },
-    mounted () {
-      this.theta = this.$store.state.UI.toolbarBlockVisible ? 1 : 0
-    },
     computed: {
       slotholder () {
         var d = eYo.Shape.definitionWithConnection()
@@ -318,7 +319,7 @@
         }
       },
       selectedBlock () {
-        var id = this.$store.state.UI.selectedBlockId
+        var id = this.selectedBlockId
         var block = id && eYo.App.workspace.blockDB_[id]
         return block
       },
@@ -331,12 +332,21 @@
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
       },
+      ...mapState('UI', [
+        'toolbarBlockVisible',
+        'selectedBlockId',
+        'selectedBlockType'
+      ]),
       ...mapState('UI', {
-        toolbarBlockVisible: state => state.toolbarBlockVisible,
-        selectedBlockId: state => state.selectedBlockId,
-        step: state => state.selectedBlockStep,
-        selectedBlockType: state => state.selectedBlockType
+        step: state => state.selectedBlockStep
       })
+    },
+    mounted () {
+      this.theta = this.toolbarBlockVisible ? 1 : 0
+      if (!this.resizeSensor) {
+        this.resizeSensor = new ResizeSensor(this.$refs.toolbar.$el, this.$$didResize)
+      }
+      this.$$didResize()
     },
     watch: {
       toolbarBlockVisible (newValue, oldValue) {
@@ -345,24 +355,32 @@
       }
     },
     methods: {
+      $$didResize () {
+        var top = this.$$top()
+        var bottom = this.$$bottom()
+        this.setToolbarBlockHeight(bottom - top)
+      },
       isSelected (type) {
         if (goog.isArray(type)) {
           for (var i = 0, t; (t = type[i++]) ;) {
-            if (t === this.$store.state.UI.selectedBlockType) {
+            if (t === this.selectedBlockType) {
               return true
             }
           }
         } else {
-          return type === this.$store.state.UI.selectedBlockType
+          return type === this.selectedBlockType
         }
-      }
+      },
+      ...mapMutations('Layout', [
+        'setToolbarBlockHeight'
+      ])
     }
   }
 </script>
 <style>
   #toolbar-block {
     position: relative;
-    padding: 0.25rem 0;
+    padding: 0;
     text-align:center;
     height: 2.25rem;
     font-size: 1rem;
@@ -408,12 +426,8 @@
     border-color: inherit;
     box-shadow: none;
   }
-  #toolbar-block .btn-group:first-child,
   #toolbar-block .btn-group .btn-group {
     padding-left:0;
-  }
-  #toolbar-block .btn-group:last-child {
-    padding-right:0;
   }
   #toolbar-block .btn-group .btn-group {
     margin: 0;
@@ -437,7 +451,10 @@
     top: -0.17rem;
   }
   .b3k-edit.btn-group {
+    display: flex;
     flex-wrap: wrap;
+    padding: 0.25rem;
+    padding-bottom: 0;
   }
   .b3k-edit,
   .b3k-edit .btn-group {
@@ -581,6 +598,7 @@
   .b3k-edit .eyo-with-slotholder .dropdown-item {
     height: 2.5rem;
     line-height: 2.5rem;
+    padding: 0.25rem;
   }
   #toolbar-block .dropdown>.btn {
     padding-right: 1rem;

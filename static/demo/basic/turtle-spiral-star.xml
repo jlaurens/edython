@@ -8,7 +8,7 @@
   "paneLayout": {
     "layout":"FV",
     "h1":"workspace",
-    "vv1":"console",
+    "vv1":"console1",
     "vv2":"turtle"
   }
 }</prefs>
@@ -33,7 +33,7 @@ done()
 <x eyo="literal" slot="O">'fast'</x>
 </x>
 <s eyo="assignment" name="côté" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="literal" slot="O">10</x>
 </x>
 <s eyo="for" flow="next">
@@ -58,7 +58,7 @@ done()
 <x eyo="literal" slot="O">144</x>
 </x>
 <s eyo="assignment" name="côté" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="a_expr" operator="+" slot="O" rhs="10">
 <x eyo="identifier" name="côté" slot="lhs">
 </x>

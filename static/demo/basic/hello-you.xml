@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
-<prefs>{"workspace":{"closed":true,"category":"basic"},"paneLayout":{"layout":"H","h1":"workspace","h2":"console"}}</prefs>
+<prefs>{
+  "workspace":{
+    "closed":true,
+    "category":"basic"
+  },
+  "paneLayout":{
+    "layout":"H",
+    "h1":"workspace",
+    "h2":"console1"
+  }
+}</prefs>
 <workspace>
 <content>
 <s eyo="start" x="300" y="200" comment="Cliquer sur le bouton &quot;marche&quot; à gauche">
@@ -8,7 +18,7 @@
 prénom = input('Quel est votre prénom ?')
 print('Bonjour',prénom)</python>
 <s eyo="assignment" name="prénom" flow="suite">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="call" name="input" slot="O">
 <x eyo="list" slot="n_ary">
 <x eyo="literal" slot="O">'Quel est votre prénom ?'</x>

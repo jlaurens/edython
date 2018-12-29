@@ -1,50 +1,52 @@
 <template>
-  <b-dd
-    class="eyo-toolbar-menu eyo-dropdown mx-1"
-    right>
-    <template
-      slot="button-content">
-      <icon-base
-        :width="32"
-        :height="32"
-        icon-name="menu"
-        ><icon-menu /></icon-base>
-    </template>
-    <b-dd-item-button
-      v-on:click="doToggleToolbarBlockVisible()"
-      v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
-      :title="titleToolbarBlockVisible"
-      v-tippy
-      >
-      <check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dd-item-button>
-    <b-dd-item-button
-      v-if="toolbarBlockVisible"
-      v-on:click="doToggleToolbarBlockDebug()"
-      v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
-      :title="titleToolbarBlockDebug"
-      v-tippy
-      >
-      <check-mark
-    :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
-    <b-dd-item-button
-      v-on:click="doToggleEcoSave()"
-      v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
-      :title="titleEcoSave"
-      v-tippy
-      >
-      <check-mark
-        :checked="ecoSave"
-        />{{contentEcoSave}}</b-dd-item-button>
-    <b-dd-item-button
-      v-on:click="toggleTipsDisabled()"
-      v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
-      :title="titleTipsDisabled"
-      v-tippy
-      >
-      <check-mark
-      :checked="false"
+  <b-btn-group>
+      <b-dd
+      class="eyo-toolbar-menu eyo-dropdown"
+      right>
+      <template
+        slot="button-content">
+        <icon-base
+          :width="32"
+          :height="32"
+          icon-name="menu"
+          ><icon-menu /></icon-base>
+      </template>
+      <b-dd-item-button
+        v-on:click="doToggleToolbarBlockVisible()"
+        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :title="titleToolbarBlockVisible"
+        v-tippy
+        >
+        <check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dd-item-button>
+      <b-dd-item-button
+        v-if="toolbarBlockVisible"
+        v-on:click="doToggleToolbarBlockDebug()"
+        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :title="titleToolbarBlockDebug"
+        v-tippy
+        >
+        <check-mark
+      :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
+      <b-dd-item-button
+        v-on:click="doToggleEcoSave()"
+        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :title="titleEcoSave"
+        v-tippy
+        >
+        <check-mark
+          :checked="ecoSave"
+          />{{contentEcoSave}}</b-dd-item-button>
+      <b-dd-item-button
+        v-on:click="toggleTipsDisabled()"
+        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :title="titleTipsDisabled"
+        v-tippy
+        >
+        <check-mark
+        :checked="false"
       />{{contentTipsDisabled}}</b-dd-item-button>
-  </b-dd>
+    </b-dd>
+  </b-btn-group>
 </template>
 
 <script>

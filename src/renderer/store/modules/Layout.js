@@ -87,7 +87,9 @@ const state = {
   height_v2: 34,
   height_vv1: 50,
   height_vv2: 50,
-  cfg: cfg
+  cfg: cfg,
+  toolbarMainHeight: 0,
+  toolbarBlockHeight: 0
 }
 
 Object.defineProperties(cfg, {
@@ -157,6 +159,14 @@ cfg.whats.forEach(k => {
 const mutations = {
   setPaneLayout (state, layout) {
     state.paneLayout = layout
+  },
+  setToolbarMainHeight (state, height) {
+    console.error('STATE setToolbarMainHeight', height)
+    state.toolbarMainHeight = height
+  },
+  setToolbarBlockHeight (state, height) {
+    console.error('STATE setToolbarBlockHeight', height)
+    state.toolbarBlockHeight = height
   }
 }
 

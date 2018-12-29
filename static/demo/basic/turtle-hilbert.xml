@@ -8,7 +8,7 @@
   "paneLayout": {
     "layout":"FV",
     "h1":"workspace",
-    "vv1":"console",
+    "vv1":"console1",
     "vv2":"turtle"
   }
 }</prefs>
@@ -18,21 +18,21 @@
 <s eyo="import" from="turtle" star="true" flow="suite">
 <s eyo="turtle__setup_stmt" flow="next">
 <s eyo="assignment" name="angle" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="literal" slot="O">90</x>
 </x>
 <s eyo="assignment" name="step" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="literal" slot="O">4</x>
 </x>
 <s eyo="call_stmt" name="speed" flow="next">
 <x eyo="list" slot="n_ary"><x eyo="literal" slot="O">'fast'</x></x>
 <s eyo="assignment" comment="Pas trop grand!" name="depth" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="literal" slot="O">5</x>
 </x>
 <s eyo="assignment" name="l" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="lambda" slot="O">
 <x eyo="call" name="left" slot="expression">
 <x eyo="list" slot="n_ary">
@@ -43,7 +43,7 @@
 </x>
 </x>
 <s eyo="assignment" name="r" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="lambda" slot="O">
 <x eyo="call" name="right" slot="expression">
 <x eyo="list" slot="n_ary">
@@ -54,7 +54,7 @@
 </x>
 </x>
 <s eyo="assignment" name="f" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="lambda" slot="O">
 <x eyo="call" name="forward" slot="expression">
 <x eyo="list" slot="n_ary">
@@ -78,7 +78,7 @@
 <x eyo="literal" slot="rhs">0</x>
 </x>
 <s eyo="assignment" name="a" flow="suite">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="lambda" slot="O">
 <x eyo="call" name="hilbert2" slot="expression">
 <x eyo="list" slot="n_ary">
@@ -94,7 +94,7 @@
 </x>
 </x>
 <s eyo="assignment" name="b" flow="next">
-<x eyo="list" slot="rhs">
+<x eyo="list" slot="value">
 <x eyo="lambda" slot="O">
 <x eyo="call" name="hilbert2" slot="expression">
 <x eyo="list" slot="n_ary">

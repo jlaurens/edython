@@ -1,6 +1,7 @@
 <template>
   <b-btn-toolbar
     id="main-toolbar"
+    ref="toolbar"
     key-nav
     aria-label="Main toolbar"
     justify>
@@ -39,11 +40,14 @@
       <main-undo-redo
         :redo="true" />
     </b-btn-group>
-    <main-menu />
+    <main-menu
+      ref="menu" />
   </b-btn-toolbar>
 </template>
 
 <script>
+  import {mapMutations} from 'vuex'
+
   import MainMenu from './Main/Menu.vue'
   import MainUndoRedo from './Main/UndoRedo.vue'
   import MainDemo from './Main/Demo.vue'
@@ -58,6 +62,8 @@
   import IconBug from '@@/Icon/IconBug.vue'
   import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
 
+  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+
   export default {
     name: 'main-toolbar',
     data: function () {
@@ -66,7 +72,8 @@
         titles: {
           console: eYo.$$.eYo.App.CONSOLE,
           turtle: eYo.$$.eYo.App.Turtle
-        }
+        },
+        resizeSensor: undefined
       }
     },
     components: {
@@ -84,22 +91,31 @@
       MainMode
     },
     mounted () {
-      // offsetHeight
-      // jQuery(window).on('resize', _.debounce(calculateLayout, 150));
-      // window.addEventListener('resize', (event) => {
-      //   console.log('RESIZER', this.$el.offsetHeight, this.$store)
-      // })
+      if (!this.resizeSensor) {
+        this.resizeSensor = new ResizeSensor(this.$refs.toolbar.$el, this.$$didResize)
+      }
+      this.$$.bus.$on('toolbar-resize', this.$$didResize)
+      this.$$didResize()
     },
     methods: {
+      $$didResize () {
+        this.setToolbarMainHeight(
+          this.$refs.menu.$el.offsetTop +
+          this.$refs.menu.$el.clientHeight
+        )
+      },
       doSite (url) {
         if (eYo.$$.electron && eYo.$$.electron.shell) {
-          // we *are i electron
+          // we *are in electron
           eYo.$$.electron.shell.openExternal(url)
         } else {
           var win = window.open(url, '_blank')
           win.focus()
         }
-      }
+      },
+      ...mapMutations('Layout', [
+        'setToolbarMainHeight'
+      ])
     }
   }
 </script>
@@ -107,7 +123,7 @@
   #main-toolbar {
     text-align: center;
     height: 3rem;
-    padding: 0.25rem 0;
+    padding: 0;
     min-width: 300px!important;
   }
   #main-toolbar .btn {
@@ -118,13 +134,10 @@
 
   #main-toolbar .btn-group {
     margin: 0 0.25rem;
+    margin-top: 0.25rem;
   }
-  #main-toolbar .btn-group:first-child {
-    margin-left: 0;
-  }
-  #main-toolbar .btn-group:last-child {
-    margin-right: 0;
-  }
+  /*The size sensor adds a hidden div after the last child*/
+
   #main-toolbar .btn-group .btn-group {
     margin: 0;
   }

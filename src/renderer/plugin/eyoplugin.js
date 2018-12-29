@@ -42,5 +42,49 @@ eYoPlugin.install = function (Vue, options) {
     this.saved_step = step
     this.$$doSynchronize && this.$$doSynchronize(eyo)
   }
+
+  /**
+   * Get the top.
+   */
+  Vue.prototype.$$top = function () {
+    var top = +Infinity
+    if (this.$el) {
+      top = this.$el.offestTop
+    }
+    this.$children.forEach(el => {
+      if (el.$$top) {
+        var candidate = el.$$top()
+        if (candidate < top) {
+          top = candidate
+        }
+      } else if (el.offestTop < top) {
+        top = el.offestTop
+      }
+    })
+    console.error(top)
+    return top
+  }
+
+  /**
+   * Get the bottom.
+   */
+  Vue.prototype.$$bottom = function () {
+    var bottom = -Infinity
+    if (this.$el) {
+      bottom = this.$el.offestTop + this.$el.offsetHeight
+    }
+    this.$children.forEach(el => {
+      if (el.$$bottom) {
+        var candidate = el.$$bottom()
+        if (candidate > bottom) {
+          bottom = candidate
+        }
+      } else if (el.offestTop + el.offsetHeight > bottom) {
+        bottom = el.offestTop + el.offsetHeight
+      }
+    })
+    console.error(bottom)
+    return bottom
+  }
 }
 export default eYoPlugin
