@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'block-stmt-expression',
@@ -39,14 +39,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: (item) => {
@@ -55,6 +47,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       $$class () {
         this.$$synchronize(this.step)
         return `eyo-code item${this.hasExpression ? ' text' : ''} w-16rem`

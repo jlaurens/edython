@@ -6,6 +6,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'block-literal-quote',
     data () {
@@ -15,17 +17,11 @@
         other_delimiter_: undefined
       }
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       choices: {
         get () {
           this.$$synchronize(this.step)

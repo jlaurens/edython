@@ -31,6 +31,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-branch',
     data: function () {
@@ -41,14 +43,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        branch: undefined
-      },
-      step: {
-        type: Number,
-        branch: 0
-      },
       slotholder: {
         type: Function,
         branch: function (item) {
@@ -57,6 +51,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       canIf () {
         this.$$synchronize(this.step)
         var variant = this.eyo.variant_p

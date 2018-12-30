@@ -88,11 +88,11 @@ export default {
   pane: {
     Workspace: 'Atelier',
     Console1: 'Console',
-    Console2: 'Console2',
     Turtle: 'Tortue',
+    Console2: 'Console2',
     Workbench: 'Établi',
     content: {
-      console: {
+      console1: {
         restart: 'Redémarrer',
         erase: 'Effacer'
       },
@@ -100,6 +100,10 @@ export default {
         replay: 'Rejouer',
         erase: 'Effacer',
         scrollToVisible: 'Centrer le dessin'
+      },
+      console2: {
+        restart: 'Redémarrer',
+        erase: 'Effacer'
       },
       scaleReset: 'Taille normale',
       scaleUp: 'Plus grand',

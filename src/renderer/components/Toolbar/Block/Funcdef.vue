@@ -1,15 +1,36 @@
 <template>
-  <b-btn-group id="block-funcdef" key-nav  aria-label="Block decorator" justify>
+  <b-btn-group
+    id="block-funcdef"
+    key-nav
+    aria-label="Block decorator"
+    justify>
     <b-btn-group>
-      <label for="block-funcdef-name"" class="btn-outline-secondary"><span :style="{fontFamily: $$.eYo.Font.familyMono}" class="eyo-code-reserved">def</span></label>
-      <b-form-input id="block-funcdef-name" v-model="name" type="text" class="btn-outline-secondary w-30rem" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-      <label class="btn-outline-secondary" :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span  class="eyo-code-reserved">:</span> </label>  
+      <label
+        for="block-funcdef-name"
+        class="btn-outline-secondary">
+        <span
+          :style="{fontFamily: $$.eYo.Font.familyMono}"
+          class="eyo-code-reserved"
+        >def</span></label>
+      <b-form-input
+        id="block-funcdef-name"
+        v-model="name"
+        type="text"
+        class="btn-outline-secondary w-30rem"
+        :style='{fontFamily: $$.eYo.Font.familyMono}'
+        :title="title"
+        v-tippy ></b-form-input>
+      <label
+        class="btn-outline-secondary"
+        :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span
+          class="eyo-code-reserved">:</span> </label>  
     </b-btn-group>
-    <comment :eyo="eyo" :step="step"></comment>
+    <comment></comment>
   </b-btn-group>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import Comment from './Comment.vue'
 
   export default {
@@ -23,17 +44,11 @@
     components: {
       Comment
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       title () {
         return this.$$t('block.tooltip.funcdef.name')
       },

@@ -7,6 +7,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-modifier',
     data () {
@@ -15,17 +17,11 @@
         modifier_: undefined
       }
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       modifier: {
         get () {
           this.$$synchronize(this.step)

@@ -22,6 +22,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-decorator',
     data: function () {
@@ -35,14 +37,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: null
@@ -61,6 +55,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       canSlot () {
         this.$$synchronize(this.step)
         console.warn(this.variants_, this.variant, this.variants_.indexOf(this.variant) < 0)

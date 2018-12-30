@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-starred',
     data: function () {
@@ -17,14 +19,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -33,6 +27,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       my_slot () {
         return this.slotholder('eyo-slotholder')
       },

@@ -66,6 +66,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-raise',
     data: function () {
@@ -77,14 +79,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -93,6 +87,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       showExpression: {
         get () {
           return this.variant !== eYo.Key.NONE

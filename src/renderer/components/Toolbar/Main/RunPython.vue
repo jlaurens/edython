@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapGetters} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconRun from '@@/Icon/IconRun.vue'
@@ -36,11 +36,14 @@
         return 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné'
       },
       canDoIt () {
-        return !!this.selectedBlockId
+        return !!this.rootControl
       },
-      ...mapState('UI', [
-        'selectedBlockId'
-      ])
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
+      rootControl () {
+        return this.eyo && this.eyo.rootControl
+      }
     },
     components: {
       IconBase,
@@ -48,10 +51,10 @@
     },
     methods: {
       doIt () {
-        var eyo = eYo.selected
-        if (eyo) {
-          // get the root
-          eyo.rootControl.runScript()
+        var root = this.rootControl
+        if (root) {
+          this.$$.bus.$emit('will-run-script')
+          root.runScript()
         }
       }
     }

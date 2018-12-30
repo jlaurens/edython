@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     data () {
@@ -61,14 +61,6 @@
     },
     name: 'info-primary-dotted',
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -184,7 +176,11 @@
       },
       ...mapState({
         blockEditShowDotted: state => state.UI.blockEditShowDotted
-      })
+      }),
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     created () {
       var dotted = this.dotted

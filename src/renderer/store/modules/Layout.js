@@ -4,8 +4,8 @@ const cfg = {
   panes: [
     'workspace',
     'console1',
-    'console2',
-    'turtle'
+    'turtle',
+    'console2'
   ],
   // these are the locations where panes can go
   wheres: [

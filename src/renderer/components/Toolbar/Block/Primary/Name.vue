@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-primary-name',
     data () {
@@ -16,16 +18,6 @@
         name_: undefined,
         variant_: undefined,
         module_: undefined
-      }
-    },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
       }
     },
     computed: {
@@ -64,7 +56,11 @@
           })
           return ra
         }
-      }
+      },
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

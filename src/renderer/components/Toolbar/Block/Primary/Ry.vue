@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'block-primary-ry',
@@ -59,14 +59,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       ismethod: {
         type: Boolean,
         default: false
@@ -114,7 +106,11 @@
       },
       ...mapState('UI', {
         blockEditShowRy: state => state.blockEditShowRy
-      })
+      }),
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

@@ -611,6 +611,9 @@
         }
         return this
       },
+      isVisible (what) {
+        return layoutcfg[this.paneLayout].some(el => this.what(el) === what)
+      },
       makeVisible (what) {
         var where = 'f' // where -> place what
         var actual = this.what_f
@@ -661,10 +664,9 @@
     },
     mounted () {
       this.step = this.toolbarBlockVisible ? this.max : 0
-      // this.changeLayout({how: 'F', what: 'workspace'})
       this.changeLayout({
         how: 'F',
-        what: 'console1'
+        what: 'workspace'
       })
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
@@ -674,6 +676,9 @@
       })
       eYo.$$.bus.$on('pane-change-layout', opt => {
         this.changeLayout(opt)
+      })
+      this.$$.bus.$on('will-run-script', () => {
+        this.isVisible('turtle') || this.isVisible('console2') || this.makeVisible('console1')
       })
     },
     watch: {

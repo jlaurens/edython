@@ -5,23 +5,21 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-common',
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       locked: {
         type: Boolean,
         default: false
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       toolbarInfoDebug () {
         return this.$store.state.UI.toolbarInfoDebug
       },

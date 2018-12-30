@@ -19,6 +19,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-operator',
     data: function () {
@@ -27,14 +29,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       formatter: {
         type: Function,
         default: function (item) {
@@ -43,6 +37,10 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       unary () {
         return this.eyo.block_.type === eYo.T3.Expr.u_expr
       },

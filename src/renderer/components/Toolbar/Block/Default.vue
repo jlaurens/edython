@@ -1,18 +1,8 @@
 <template>
   <b-btn-group id="block-default" key-nav  aria-label="Block default" justify>
-    <value
-      :eyo="eyo"
-      :step="step"
-      >
-    </value>
-    <operator
-      :eyo="eyo"
-      :step="step"
-      >
-    </operator>
+    <value></value>
+    <operator></operator>
     <variant
-      :eyo="eyo"
-      :step="step"
       :slotholder="slotholder"
       >
     </variant>
@@ -20,6 +10,7 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import Operator from './Operator.vue'
   import Value from './Value.vue'
   import Variant from './Variant.vue'
@@ -32,14 +23,6 @@
       Variant
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {

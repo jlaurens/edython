@@ -6,7 +6,7 @@
       v-on:click="doBack()"
       :title="$$t('block.tooltip.selection.send_to_back')"
       v-tippy
-      :disabled="!selectedBlockId">
+      :disabled="!eyo">
       <icon-base
         :width="24"
         :height="24"
@@ -20,7 +20,7 @@
       v-on:click="doFocus()"
       :title="$$t('block.tooltip.selection.show')"
       v-tippy
-      :disabled="!selectedBlockId">
+      :disabled="!eyo">
       <icon-base
         :width="24"
         :height="24"
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapGetters} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconFrontBack from '@@/Icon/IconFrontBack.vue'
@@ -46,9 +46,9 @@
       IconFocus
     },
     computed: {
-      ...mapState('UI', {
-        selectedBlockId: state => state.selectedBlockId
-      })
+      ...mapGetters('Selected', [
+        'eyo'
+      ])
     },
     methods: {
       doFront () {

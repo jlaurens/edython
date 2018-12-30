@@ -1,24 +1,60 @@
 <template>
-  <b-btn-group id="block-literal" key-nav  aria-label="Block toolbar literal" class="b3k-edit-content">
-    <div class="item">
-      <input type="checkbox" v-model="r" :disabled="!can_r" :title="title_r" v-tippy>
+  <b-btn-group
+    id="block-literal"
+      key-nav
+      aria-label="Block toolbar literal"
+      class="b3k-edit-content">
+    <div
+      class="item">
+      <input
+        type="checkbox"
+        v-model="r"
+        :disabled="!can_r"
+        :title="title_r"
+        v-tippy>
     </div>
-    <div class="item text eyo-code-reserved">r</div>
-    <div class="item">
-      <input type="checkbox" v-model="b" :disabled="!can_b" :title="title_b" v-tippy>
+    <div
+      class="item text eyo-code-reserved"
+      >r</div>
+    <div
+      class="item">
+      <input
+        type="checkbox"
+        v-model="b"
+        :disabled="!can_b"
+        :title="title_b"
+        v-tippy>
     </div>
-    <div class="item text eyo-code-reserved">b</div>
-    <div class="item">
-      <input type="checkbox" v-model="f" :disabled="!can_f" :title="title_f" v-tippy>
+    <div
+      class="item text eyo-code-reserved"
+    >b</div>
+    <div
+      class="item">
+      <input
+        type="checkbox"
+        v-model="f"
+        :disabled="!can_f"
+        :title="title_f"
+        v-tippy>
     </div>
-    <div class="item text eyo-code-reserved">f</div>
-    <literal-quote :eyo="eyo" :step="step"></literal-quote>
-    <b-input v-model="content" type="text" class="item text" size="20" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title_content" v-tippy></b-input>
-    <literal-quote :eyo="eyo" :step="step"></literal-quote>
+    <div
+      class="item text eyo-code-reserved"
+    >f</div>
+    <literal-quote></literal-quote>
+    <b-input
+      v-model="content"
+      type="text"
+      class="item text"
+      size="20"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :title="title_content"
+      v-tippy></b-input>
+    <literal-quote></literal-quote>
   </b-btn-group>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import LiteralQuote from './Literal/Quote.vue'
 
   export default {
@@ -33,27 +69,18 @@
     components: {
       LiteralQuote
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       prefix: {
         get () {
-          var id = this.$store.state.UI.selectedBlockId
-          if (id) {
-            this.$$synchronize(this.step)
-          }
+          this.$$synchronize(this.step)
           return this.prefix_
         },
         set (newValue) {
-          this.prefix_ = this.eyo.prefix_p = newValue
+          this.eyo.prefix_p = newValue
         }
       },
       r: {
@@ -124,7 +151,7 @@
           return this.content_
         },
         set (newValue) {
-          this.content_ = this.eyo.content_p = newValue
+          this.eyo.content_p = newValue
         }
       },
       title_content () {

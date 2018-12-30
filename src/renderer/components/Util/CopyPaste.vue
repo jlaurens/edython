@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconCopyPaste from '@@/Icon/IconCopyPaste.vue'
@@ -98,11 +98,13 @@
       },
       canDoIt () {
         return this.copy || this.duplicate
-          ? !!this.selectedBlockId
+          ? !!this.eyo
           : !!this.blockClipboard
       },
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       ...mapState('UI', [
-        'selectedBlockId',
         'blockClipboard'
       ])
     },

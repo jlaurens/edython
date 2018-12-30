@@ -10,6 +10,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-stmt-comment',
     data: function () {
@@ -21,17 +23,11 @@
         commentVariant_: undefined
       }
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       $$class: {
         get () {
           return `eyo-code and item${this.hasComment ? ' text' : ''}${this.comment.length ? '' : ' placeholder'} w-16rem`

@@ -1,23 +1,59 @@
 <template>
-  <b-btn-group id="b3k-primary-variant">
-    <b-dd variant="outline-secondary" class="eyo-code item text eyo-with-slotholder mw-6rem">
-      <template slot="button-content"><span class="eyo-code" v-html="selected.title || selected.content"></span></template>
-      <b-dd-item-button v-for="choice in choices" v-on:click="selected = choice" :key="choice.key" class="eyo-code" v-html="choice.content"></b-dd-item-button>
+  <b-btn-group
+    id="b3k-primary-variant">
+    <b-dd
+      variant="outline-secondary"
+      class="eyo-code item text eyo-with-slotholder mw-6rem">
+      <template
+        slot="button-content"
+      ><span
+        class="eyo-code"
+        v-html="selected.title || selected.content"></span></template>
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="selected = choice"
+        :key="choice.key"
+        class="eyo-code" v-html="choice.content"
+      ></b-dd-item-button>
     </b-dd>
-    <b-input v-if="selected.key === $$.eYo.Key.ALIASED" v-model="alias" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
-    <b-btn-group v-if="showAnnotation">
-      <div class="eyo-code-reserved item text">:</div>
-      <b-input v-model="annotation" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
+    <b-input
+      v-if="selected.key === $$.eYo.Key.ALIASED"
+      v-model="alias"
+      type="text"
+      class="item text"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+    ></b-input>
+    <b-btn-group
+      v-if="showAnnotation">
+      <div
+        class="eyo-code-reserved item text">:</div>
+      <b-input
+        v-model="annotation"
+        type="text"
+        class="item text"
+        :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
     </b-btn-group>
-    <b-btn-group v-if="showDefinition">
-      <div class="eyo-code-reserved item text">=</div>
-      <b-input v-model="definition" type="text" class="item text" :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
+    <b-btn-group
+      v-if="showDefinition">
+      <div
+        class="eyo-code-reserved item text">=</div>
+      <b-input
+        v-model="definition"
+        type="text"
+        class="item text"
+        :style='{fontFamily: $$.eYo.Font.familyMono}'
+      ></b-input>
     </b-btn-group>
-    <keyword v-if="showKeyword" :eyo="eyo" :step="step" :slotholder="slotholder"></keyword>
+    <keyword
+      v-if="showKeyword"
+      :slotholder="slotholder"
+    ></keyword>
   </b-btn-group>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import Keyword from './Keyword.vue'
 
   export default {
@@ -38,14 +74,6 @@
       Keyword
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -198,7 +226,11 @@
                 this.by_key[eYo.Key.SLICING],
                 this.by_key[eYo.Key.ALIASED]
               ]
-      }
+      },
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

@@ -78,11 +78,11 @@ eYoApp.install = function (Vue, options) {
   }
   // eYo.App.didTouchBlock = function (block) {
   //   console.log('didTouchBlock', block)
-  //   // store.commit('UI/setSelectedBlock', block) once broke everything when uncommented
+  //   // store.commit('Selected/setSelectedBlock', block) once broke everything when uncommented
   // }
   eYo.App.didAddSelect = function (block) {
     Vue.nextTick(() => {
-      store.commit('UI/setSelectedBlock', Blockly.selected)
+      store.commit('Selected/setSelectedBlock', Blockly.selected)
     })
   }
   eYo.App.selectedBlockUpdate = (eyo) => {
@@ -106,7 +106,7 @@ eYoApp.install = function (Vue, options) {
   })
   eYo.App.didRemoveSelect = function (block) {
     Vue.nextTick(() => {
-      store.commit('UI/setSelectedBlock', Blockly.selected)
+      store.commit('Selected/setSelectedBlock', Blockly.selected)
     })
   }
   eYo.App.didCopyBlock = function (block, xml) {

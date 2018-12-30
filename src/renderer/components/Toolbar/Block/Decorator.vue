@@ -1,17 +1,37 @@
 <template>
-  <b-btn-toolbar id="block-decorator" key-nav  aria-label="Block decorator" justify>
+  <b-btn-toolbar
+    id="block-decorator"
+    key-nav
+    aria-label="Block decorator"
+    justify>
     <b-btn-group>
-      <b-form-input v-model="name" type="text" class="item text w-30rem" :style='{fontFamily: $$.eYo.Font.familyMono}' :title="title" v-tippy ></b-form-input>
-      <b-dd id="block-variant" class="eyo-dropdown" variant="outline-secondary">
-        <b-dd-item-button v-for="choice in choices" v-on:click="choose(choice)" :key="choice" class="block-variant eyo-code" v-html="content(choice)"></b-dd-item-button>
+      <b-form-input
+        v-model="name"
+        type="text"
+        class="item text w-30rem"
+        :style='{fontFamily: $$.eYo.Font.familyMono}'
+        :title="title"
+        v-tippy ></b-form-input>
+      <b-dd
+        id="block-variant"
+        class="eyo-dropdown"
+        variant="outline-secondary">
+        <b-dd-item-button
+          v-for="choice in choices"
+          v-on:click="choose(choice)"
+          :key="choice"
+          class="block-variant eyo-code" v-html="content(choice)"></b-dd-item-button>
       </b-dd>    
-      <span v-if="property !== $$.eYo.Key.GETTER" class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
+      <span
+        v-if="property !== $$.eYo.Key.GETTER"
+        class="eyo-code-reserved btn btn-outline-secondary">.{{property}}</span>
     </b-btn-group>
-    <comment :eyo="eyo" :step="step"></comment>
+    <comment></comment>
   </b-btn-toolbar>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import Comment from './Comment.vue'
 
   export default {
@@ -26,17 +46,11 @@
     components: {
       Comment
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       name () {
         this.$$synchronize(this.step)
         return this.name_

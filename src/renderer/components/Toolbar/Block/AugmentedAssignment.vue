@@ -37,6 +37,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'info-augmented-assignment',
     data: function () {
@@ -48,20 +50,16 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: null
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       $$class: {
         get () {
           return `eyo-code and item text${this.name.length ? '' : ' placeholder'}`

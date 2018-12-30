@@ -12,6 +12,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'block-assignment',
     data () {
@@ -22,14 +24,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: null
@@ -88,7 +82,11 @@
       },
       selected_item () {
         return this.items_by_key[this.variant]
-      }
+      },
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

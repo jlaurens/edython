@@ -18,10 +18,8 @@
     <b-btn-group class="b3k-edit">
       <block-primary
         v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types) || isSelected([$$.eYo.T3.Stmt.call_stmt])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-primary>
+      />
       <block-literal
         v-else-if="isSelected([
           $$.eYo.T3.Expr.shortliteral,
@@ -31,27 +29,21 @@
           $$.eYo.T3.Expr.shortstringliteral, $$.eYo.T3.Expr.longstringliteral,
           $$.eYo.T3.Stmt.docstring_stmt
         ])"
-        :eyo="eyo"
-        :step="step"
         :modifiable="modifiable"
-        ></block-literal>
+      />
       <block-number
         v-else-if="isSelected([
           $$.eYo.T3.Expr.integer,
           $$.eYo.T3.Expr.floatnumber,
           $$.eYo.T3.Expr.imagnumber
         ])"
-        :eyo="eyo"
-        :step="step"
         :modifiable="modifiable"
-        ></block-number>
+      />
       <block-unary
         v-else-if="isSelected($$.eYo.T3.Expr.u_expr)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"
-        ></block-unary>
+      />
       <block-binary
         v-else-if="isSelected([
           $$.eYo.T3.Expr.binary,
@@ -63,62 +55,46 @@
           $$.eYo.T3.Expr.or_expr,
           $$.eYo.T3.Expr.power
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"
-      ></block-binary>
+      />
       <block-comparison
         v-else-if="isSelected([
           $$.eYo.T3.Expr.comparison,
           $$.eYo.T3.Expr.number_comparison,
           $$.eYo.T3.Expr.object_comparison
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"
-        ></block-comparison>
+      />
       <block-test
         v-else-if="isSelected([
           $$.eYo.T3.Expr.or_test,
           $$.eYo.T3.Expr.and_test
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"
-        ></block-test>
+      />
       <block-assignment
         v-else-if="isSelected($$.eYo.T3.Stmt.assignment_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-assignment>
+      />
       <block-builtin
         v-else-if="isSelected($$.eYo.T3.Expr.builtin__object)"
-        :eyo="eyo"
-        :step="step"
         :modifiable="modifiable"
-        ></block-builtin>
+      />
       <block-augmented-assignment
         v-else-if="isSelected($$.eYo.T3.Stmt.augmented_assignment_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-augmented-assignment>
+      />
       <block-expression-statement
         v-else-if="isSelected($$.eYo.T3.Stmt.expression_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-expression-statement>
+      />
       <block-decorator
         v-else-if="isSelected($$.eYo.T3.Stmt.decorator_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-decorator>
+      />
       <block-starred
         v-else-if="isSelected([
           $$.eYo.T3.Expr.star_expr,
@@ -129,29 +105,22 @@
           $$.eYo.T3.Expr.parameter_star,
           $$.eYo.T3.Expr.parameter_star_star
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-starred>
+      />
       <block-except
         v-else-if="isSelected([
           $$.eYo.T3.Stmt.except_part,
           $$.eYo.T3.Stmt.void_except_part
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-except>
+      />
       <block-funcdef
         v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)"
-        :eyo="eyo"
-        :step="step"></block-funcdef>
+      />
       <block-import
         v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-import>
+      />
       <block-pcb-gnd-r
         v-else-if="isSelected([
           $$.eYo.T3.Stmt.pass_stmt,
@@ -161,48 +130,38 @@
           $$.eYo.T3.Stmt.nonlocal_stmt,
           $$.eYo.T3.Stmt.del_stmt,$$.eYo.T3.Stmt.return_stmt
         ])"
-        :eyo="eyo"
-        :step="step"
-        :slotholder="slotholder"></block-pcb-gnd-r>
+        :slotholder="slotholder"
+      />
       <block-proper-slice
         v-else-if="isSelected($$.eYo.T3.Expr.proper_slice)"
-        :eyo="eyo"
-        :step="step"
-        :slotholder="slotholder"></block-proper-slice>
+        :slotholder="slotholder"
+      />
       <block-range
         v-else-if="isSelected([
           $$.eYo.T3.Expr.builtin__range_expr,
           $$.eYo.T3.Expr.random__randrange
         ])"
-        :eyo="eyo"
-        :step="step"
-        :slotholder="slotholder"></block-range>
+        :slotholder="slotholder"
+      />
       <block-any-expression
         v-else-if="isSelected($$.eYo.T3.Expr.any)"
-        :eyo="eyo"
-        :step="step"
-        :slotholder="slotholder"></block-any-expression>
+        :slotholder="slotholder"
+      />
       <block-assert
         v-else-if="isSelected($$.eYo.T3.Stmt.assert_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-assert>
+      />
       <block-raise
         v-else-if="isSelected($$.eYo.T3.Stmt.raise_stmt)"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-raise>
+      />
       <block-yield
         v-else-if="isSelected([
           $$.eYo.T3.Expr.yield_expression,
           $$.eYo.T3.Stmt.yield_stmt
         ])"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
-        ></block-yield>
+      />
       <block-branch
         v-else-if="isSelected([
           $$.eYo.T3.Stmt.if_part,
@@ -212,29 +171,20 @@
           $$.eYo.T3.Stmt.try_else_part,
           $$.eYo.T3.Stmt.while_part
         ])"
-        :eyo="eyo"
-        :step="step"
-        :slotholder="slotholder"
-        ></block-branch>
+        :slotholder="slotholder" />
       <block-default
         v-else-if="eyo"
-        :eyo="eyo"
-        :step="step"
         :slotholder="slotholder"
         :modifiable="modifiable"></block-default>
       <span v-else class="info">{{this.$$t('block.no_selection')}}</span>
-      <block-comment
-        :eyo="eyo"
-        :step="step" ></block-comment>
+      <block-comment />
     </b-btn-group>
-    <block-common
-      :eyo="eyo"
-      :step="step" />
+    <block-common />
   </b-btn-toolbar>
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex'
+  import {mapState, mapMutations, mapGetters} from 'vuex'
 
   import BlockCommon from './Block/Common.vue'
   import BlockComment from './Block/Comment.vue'
@@ -318,14 +268,6 @@
           return `<div class="eyo-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
         }
       },
-      selectedBlock () {
-        var id = this.selectedBlockId
-        var block = id && eYo.App.workspace.blockDB_[id]
-        return block
-      },
-      eyo () {
-        return this.selectedBlock && this.selectedBlock.eyo
-      },
       style () {
         return `right: ${100 * (1 - this.theta)}%;`
       },
@@ -333,13 +275,15 @@
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
       },
       ...mapState('UI', [
-        'toolbarBlockVisible',
-        'selectedBlockId',
-        'selectedBlockType'
+        'toolbarBlockVisible'
       ]),
-      ...mapState('UI', {
-        step: state => state.selectedBlockStep
-      })
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo',
+        'type'
+      ])
     },
     mounted () {
       this.theta = this.toolbarBlockVisible ? 1 : 0
@@ -361,14 +305,12 @@
         this.setToolbarBlockHeight(bottom - top)
       },
       isSelected (type) {
+        console.error(this.type, type)
         if (goog.isArray(type)) {
-          for (var i = 0, t; (t = type[i++]) ;) {
-            if (t === this.selectedBlockType) {
-              return true
-            }
-          }
+          console.error(type.some(t => t === this.type))
+          return type.some(t => t === this.type)
         } else {
-          return type === this.selectedBlockType
+          return type === this.type
         }
       },
       ...mapMutations('Layout', [

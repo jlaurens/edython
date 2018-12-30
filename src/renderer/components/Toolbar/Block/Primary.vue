@@ -1,32 +1,23 @@
 <template>
   <b-btn-group id="block-primary" key-nav  aria-label="Block group primary">
     <dotted
-      :eyo="eyo"
-      :step="step"
       :slotholder="slotholder"
       :ismethod="isMethod">
     </dotted>
-    <name
-      :eyo="eyo"
-      :step="step">
-    </name>
+    <name></name>
     <variant
-      :eyo="eyo"
-      :step="step"
       :slotholder="slotholder"
       :ismethod="isMethod">
     </variant>
     <ry
       v-if="showRy"
-      :eyo="eyo"
-      :step="step"
       :ismethod="isMethod">
     </ry>
   </b-btn-group>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   import Dotted from './Primary/Dotted.vue'
   import Name from './Primary/Name.vue'
@@ -48,14 +39,6 @@
       Ry
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -70,7 +53,11 @@
       },
       ...mapState('UI', {
         showRy: state => state.toolbarRyVisible
-      })
+      }),
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

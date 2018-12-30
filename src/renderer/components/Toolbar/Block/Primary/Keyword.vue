@@ -10,6 +10,8 @@
 </template>
 
 <script>
+  import {mapGetters} form 'vuex'
+
   export default {
     name: 'block-primary-keyword',
     data () {
@@ -20,14 +22,6 @@
       }
     },
     props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      },
       slotholder: {
         type: Function,
         default: function (item) {
@@ -55,7 +49,11 @@
           'file',
           'maxsplit'
         ]
-      }
+      },
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ])
     },
     methods: {
       $$doSynchronize (eyo) {

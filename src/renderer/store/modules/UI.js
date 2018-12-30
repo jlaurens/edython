@@ -1,61 +1,16 @@
-eYo.Do.readOnlyMixin(eYo.App, {
-  TUTORIAL: 'tutorial',
-  BASIC: 'basic',
-  NORMAL: 'normal',
-  TEACHER: 'teacher'
-})
-
-const temp = {
-  eyo: undefined
-}
-
 const state = {
-  selectedBlockId: undefined, // the selected block id
-  selectedBlockType: undefined, // the selected block type
-  selectedBlockStep: 0, // the selected block type
   blockClipboard: undefined,
+  panelsWidth: 0,
   displayMode: undefined,
-  panelsWidth: '100%',
-  selectedMode: eYo.App.NORMAL,
-  toolbarBlockVisible: true,
-  toolbarRyVisible: false,
-  toolbarInfoDebug: false,
-  blockEditShowRy: true,
-  blockEditShowDotted: true
+  selectedMode: undefined,
+  toolbarBlockVisible: undefined,
+  toolbarRyVisible: undefined,
+  toolbarInfoDebug: undefined,
+  blockEditShowRy: undefined,
+  blockEditShowDotted: undefined
 }
 
 const mutations = {
-  setSelectedBlock (state, block) {
-    if (block) {
-      if (block.isInFlyout || (block.id === state.selectedBlockId)) {
-        return
-      }
-      temp.eyo && (temp.eyo.didChangeEnd = null)
-      temp.eyo = block.eyo
-      temp.eyo.didChangeEnd = (eyo) => {
-        if (eyo) {
-          if (eyo.id === state.selectedBlockId) {
-            this.commit('UI/selectedBlockUpdate', eyo.block_)
-          }
-        }
-      }
-      state.selectedBlockId = block.id
-      state.selectedBlockType = block.type
-      state.selectedBlockStep = block.eyo.change.step
-    } else {
-      if (!state.selectedBlockId) {
-        return
-      }
-      temp.eyo && (temp.eyo.didChangeEnd = null)
-      state.selectedBlockId = state.selectedBlockType = null
-      state.selectedBlockStep = 0
-    }
-  },
-  selectedBlockUpdate (state, block) {
-    // var old = state.selectedBlockStep
-    state.selectedBlockStep = block ? block.eyo.change.step : 0
-    // console.warn('step', old, '=>', state.selectedBlockStep)
-  },
   didCopyBlock (state, ctxt) {
     state.blockClipboard = ctxt.xml
   },

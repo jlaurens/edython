@@ -33,6 +33,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'block-proper-slice',
     data: function () {
@@ -44,17 +46,11 @@
         variant_: undefined
       }
     },
-    props: {
-      eyo: {
-        type: Object,
-        default: undefined
-      },
-      step: {
-        type: Number,
-        default: 0
-      }
-    },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo',
+        'step'
+      ]),
       lower: {
         get () {
           this.$$synchronize(this.step)
