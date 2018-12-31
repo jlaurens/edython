@@ -98,6 +98,9 @@
       this.$$didResize()
     },
     methods: {
+      ...mapMutations('Page', [
+        'setToolbarMainHeight'
+      ]),
       $$didResize () {
         this.setToolbarMainHeight(
           this.$refs.menu.$el.offsetTop +
@@ -112,10 +115,7 @@
           var win = window.open(url, '_blank')
           win.focus()
         }
-      },
-      ...mapMutations('Layout', [
-        'setToolbarMainHeight'
-      ])
+      }
     }
   }
 </script>

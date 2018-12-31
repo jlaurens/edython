@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-common',
@@ -16,16 +16,18 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'id'
+      ]),
       ...mapGetters('Selected', [
-        'eyo',
-        'step'
+        'type'
       ]),
       toolbarInfoDebug () {
         return this.$store.state.UI.toolbarInfoDebug
       },
       info () {
-        var type = this.eyo.type
-        var id = this.eyo.block_.id
+        var type = this.type
+        var id = this.id
         return type ? [type.substring(4), id].join('/') : '…'
       }
     }

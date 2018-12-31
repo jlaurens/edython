@@ -83,6 +83,7 @@
     "vue-router": "^3.0.1",
     "vue-split-panel": "^1.0.4",
     "vuex": "^3.0.1",
+    "vuex-persist": "^2.0.0",
     "xregexp": "^4.1.1"
   },
   "devDependencies": {

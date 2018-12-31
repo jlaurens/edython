@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import Modifier from './Modifier.vue'
 
   export default {
@@ -25,6 +25,12 @@
       Modifier
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       title () {
         return this.$$t('block.enter_any_valid_expression')
       },
@@ -36,11 +42,7 @@
         set (newValue) {
           this.eyo.expression_p = newValue
         }
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

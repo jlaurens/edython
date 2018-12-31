@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-operator',
@@ -37,9 +37,11 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       unary () {
         return this.eyo.block_.type === eYo.T3.Expr.u_expr

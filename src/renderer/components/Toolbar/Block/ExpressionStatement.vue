@@ -47,10 +47,15 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
       ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
+      ...mapState('UI', {
+        selectedMode: state => state.selectedMode
+      }),
       $$class () {
         this.$$synchronize(this.step)
         return `eyo-code item${this.hasExpression ? ' text' : ''} w-16rem`
@@ -104,10 +109,7 @@
       },
       canCheck () {
         return (this.selectedMode !== eYo.App.TUTORIAL) && (this.selectedMode !== eYo.App.BASIC)
-      },
-      ...mapState('UI', {
-        selectedMode: state => state.selectedMode
-      })
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

@@ -261,6 +261,16 @@
       BlockBranch
     },
     computed: {
+      ...mapState('UI', [
+        'toolbarBlockVisible'
+      ]),
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo',
+        'type'
+      ]),
       slotholder () {
         var d = eYo.Shape.definitionWithConnection()
         var one_rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
@@ -273,17 +283,7 @@
       },
       modifiable () {
         return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
-      },
-      ...mapState('UI', [
-        'toolbarBlockVisible'
-      ]),
-      ...mapState('Selected', [
-        'step'
-      ]),
-      ...mapGetters('Selected', [
-        'eyo',
-        'type'
-      ])
+      }
     },
     mounted () {
       this.theta = this.toolbarBlockVisible ? 1 : 0
@@ -299,23 +299,23 @@
       }
     },
     methods: {
+      ...mapMutations('Page', [
+        'setToolbarBlockHeight'
+      ]),
       $$didResize () {
         var top = this.$$top()
         var bottom = this.$$bottom()
-        this.setToolbarBlockHeight(bottom - top)
+        if (bottom - top < Infinity) {
+          this.setToolbarBlockHeight(bottom - top)
+        }
       },
       isSelected (type) {
-        console.error(this.type, type)
         if (goog.isArray(type)) {
-          console.error(type.some(t => t === this.type))
           return type.some(t => t === this.type)
         } else {
           return type === this.type
         }
-      },
-      ...mapMutations('Layout', [
-        'setToolbarBlockHeight'
-      ])
+      }
     }
   }
 </script>

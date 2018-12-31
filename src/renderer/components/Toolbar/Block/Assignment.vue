@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'block-assignment',
@@ -44,6 +44,12 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       variant: {
         get () {
           this.$$synchronize(this.step)
@@ -82,11 +88,7 @@
       },
       selected_item () {
         return this.items_by_key[this.variant]
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

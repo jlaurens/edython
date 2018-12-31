@@ -10,7 +10,6 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
   import Operator from './Operator.vue'
   import Value from './Value.vue'
   import Variant from './Variant.vue'

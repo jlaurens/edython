@@ -92,7 +92,7 @@ eYoDocument.install = function (Vue, options) {
         if (!fs.existsSync(dirname)) {
           fs.mkdirSync(dirname)
         }
-        store.commit('DOC_SET_PATH', filePath)
+        store.commit('Document/setPath', filePath)
         eYo.App.Document.writeContentToFile(filePath, deflate, callback)
       })
     },
@@ -147,8 +147,8 @@ eYoDocument.install = function (Vue, options) {
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
     store.commit('Undo/stageUndo')
-    store.commit('DOC_SET_ECO_SAVE', store.state.Config.ecoSave)
-    store.commit('DOC_SET_PATH', undefined)
+    store.commit('Document/setEcoSave', store.state.Config.ecoSave)
+    store.commit('Document/setPath', undefined)
   }
   eYo.App.Document.readString = function (str) {
     // var d = new Date()
@@ -178,10 +178,10 @@ eYoDocument.install = function (Vue, options) {
     }
     try {
       eYo.App.Document.doClear()
-      store.commit('DOC_SET_ECO_SAVE', ecoSave)
+      store.commit('Document/setEcoSave', ecoSave)
       var str = goog.crypt.utf8ByteArrayToString(inflate)
       eYo.App.Document.readString(str)
-      store.commit('DOC_SET_PATH', fileName)
+      store.commit('Document/setPath', fileName)
     } catch (err) {
       console.error('ERROR:', err)
     }

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-starred',
@@ -27,9 +27,11 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       my_slot () {
         return this.slotholder('eyo-slotholder')

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-compare-operator',
@@ -61,9 +61,11 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       lhs: {
         get () {

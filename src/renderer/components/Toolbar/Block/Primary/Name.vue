@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-primary-name',
@@ -21,6 +21,12 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       $$class: {
         get () {
           return `eyo-code and item text${this.name.length ? '' : ' placeholder'}`
@@ -56,11 +62,7 @@
           })
           return ra
         }
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

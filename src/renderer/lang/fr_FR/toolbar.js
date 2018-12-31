@@ -43,7 +43,8 @@ export default {
     copy_block_shallow: 'Copier le bloc sélectionné',
     duplicate_block_deep: 'Dupliquer le bloc sélectionné et les suivants',
     duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
-    paste_bock: 'Coller le block du presse-papier'
+    paste_bock: 'Coller le block du presse-papier',
+    copy_python: 'Copier le code python dans le presse-papier'
   },
   content: {
     mode: {
@@ -67,5 +68,8 @@ export default {
     duplicate_block_deep: 'Dupliquer avec les suivants',
     duplicate_block_shallow: 'Dupliquer',
     paste_block: 'Paste'
+  },
+  name: {
+    copy_python: 'Copier le code python'
   }
 }

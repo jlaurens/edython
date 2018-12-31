@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import {mapGetters} form 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'block-primary-keyword',
@@ -30,6 +30,12 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       list () {
         return this.eyo.n_ary_s.connection.targetBlock()
       },
@@ -49,11 +55,7 @@
           'file',
           'maxsplit'
         ]
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

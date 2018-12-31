@@ -86,16 +86,13 @@ const state = {
   height_v1: 66,
   height_v2: 34,
   height_vv1: 50,
-  height_vv2: 50,
-  cfg: cfg,
-  toolbarMainHeight: 0,
-  toolbarBlockHeight: 0
+  height_vv2: 50
 }
 
 Object.defineProperties(cfg, {
   whats: {
     get () {
-      return this.whats_ || (this.whats_ = ['h', 'v', 'hh', 'vv'].concat(this.panes))
+      return this.whats_ || (this.whats_ = ['h', 'hh', 'v', 'vv'].concat(this.panes))
     }
   },
   where_whats: {
@@ -158,15 +155,11 @@ cfg.whats.forEach(k => {
 
 const mutations = {
   setPaneLayout (state, layout) {
+    console.error('setPaneLayout', layout)
+    if (layout === 'F') {
+      console.error('STOP HERE PLEASE')
+    }
     state.paneLayout = layout
-  },
-  setToolbarMainHeight (state, height) {
-    console.error('STATE setToolbarMainHeight', height)
-    state.toolbarMainHeight = height
-  },
-  setToolbarBlockHeight (state, height) {
-    console.error('STATE setToolbarBlockHeight', height)
-    state.toolbarBlockHeight = height
   }
 }
 

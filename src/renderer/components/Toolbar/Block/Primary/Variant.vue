@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   import Keyword from './Keyword.vue'
 
@@ -86,6 +86,12 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       showAnnotation () {
         if (this.can_andef) {
           var v = this.variant
@@ -226,11 +232,7 @@
                 this.by_key[eYo.Key.SLICING],
                 this.by_key[eYo.Key.ALIASED]
               ]
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

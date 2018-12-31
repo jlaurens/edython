@@ -65,6 +65,15 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
+      ...mapState('UI', {
+        blockEditShowRy: state => state.blockEditShowRy
+      }),
       variant () {
         this.$$synchronize(this.step)
         return this.variant_
@@ -103,14 +112,7 @@
             this.eyo.mandatory_p = filtered
           }
         }
-      },
-      ...mapState('UI', {
-        blockEditShowRy: state => state.blockEditShowRy
-      }),
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

@@ -130,18 +130,18 @@
 
   import BlockToolbar from '@@/Toolbar/Block'
   import PaneWorkspace from './Pane/Workspace'
-  import PaneConsole2 from './Pane/Console2'
   import PaneConsole1 from './Pane/Console1'
+  import PaneConsole2 from './Pane/Console2'
   import PaneTurtle from './Pane/Turtle'
-  import Console2Script from './Pane/Console2Script'
   import Console1Script from './Pane/Console1Script'
-
+  import Console2Script from './Pane/Console2Script'
+  
   export default {
     name: 'pane-content',
     data: function () {
       return {
-        step: 0,
-        max: 2.25
+        footstep: 0,
+        maxstep: 2.25
       }
     },
     components: {
@@ -154,32 +154,34 @@
       Console1Script
     },
     computed: {
-      workingStyle () {
-        return `top: ${this.step}rem;
-        height: calc(100% - ${this.step}rem)`
-      },
       ...mapState('UI', [
         'displayMode',
         'toolbarBlockVisible'
       ]),
-      ...mapState('Layout', [
-        'paneLayout',
+      ...mapState('Page', [
         'toolbarMainHeight'
+      ]),
+      ...mapState('Layout', [
+        'paneLayout'
       ]),
       ...mapState('Layout', layoutcfg.where_whats),
       ...mapState('Layout', layoutcfg.what_wheres),
       ...mapState('Layout', layoutcfg.width_wheres),
-      ...mapState('Layout', layoutcfg.height_wheres)
+      ...mapState('Layout', layoutcfg.height_wheres),
+      workingStyle () {
+        return `top: ${this.footstep - this.maxstep}rem;
+        height: calc(100% - ${this.footstep}rem)`
+      }
     },
     methods: {
-      onDrag (size) {
-        // eYo.$$.bus.$emit('size-did-change')
-      },
       ...mapMutations('Layout', [
         'setPaneLayout'
       ]),
       ...mapMutations('Layout', layoutcfg.setWhere_whats),
       ...mapMutations('Layout', layoutcfg.setWhat_wheres),
+      onDrag (size) {
+        // eYo.$$.bus.$emit('size-did-change')
+      },
       where (what) {
         return this[`where_${what}`]
       },
@@ -201,6 +203,7 @@
         return this.$refs[`pane_${what}`]
       },
       changeLayout (opt) {
+        console.error('changeLayout', opt)
         try {
           if (opt.layout) {
             opt.how = opt.layout
@@ -496,8 +499,8 @@
             var available = new Set([
               this.where_workspace,
               this.where_turtle,
-              this.where_console2,
-              this.where_console1
+              this.where_console1,
+              this.where_console2
             ])
             var expected = {
               F: ['f'],
@@ -510,8 +513,15 @@
               HH: ['h1', 'h2', 'hh1', 'hh2'],
               VV: ['v1', 'v2', 'vv1', 'vv2']
             }[newValue]
-            if (expected.some((layout) => !available.has(layout))) {
-              console.error('UNEXPECTED location:', newValue, expected, available)
+            if (expected.some(where => !available.has(where))) {
+              expected.filter(where => !available.has(where)).forEach((where) => {
+                layoutcfg.panes.some(what => {
+                  if (!this.isVisible(what)) {
+                    this.place(what, where)
+                    return true
+                  }
+                })
+              })
             }
           }
         }
@@ -531,6 +541,18 @@
           this.place(what1, where2).place(what2, where1)
         }
         return this
+      },
+      buddy (where) {
+        return {
+          h1: 'h2',
+          h2: 'h1',
+          hh1: 'hh2',
+          hh2: 'hh1',
+          v1: 'v2',
+          v2: 'v1',
+          vv1: 'vv2',
+          vv2: 'vv1'
+        }[where]
       },
       place (what, where) {
         // we move the `what` component to the `where` location
@@ -589,16 +611,7 @@
             console.error('UNKNON pane/layout:', what)
           }
           // is there something in the other part?
-          var buddy = {
-            h1: 'h2',
-            h2: 'h1',
-            hh1: 'hh2',
-            hh2: 'hh1',
-            v1: 'v2',
-            v2: 'v1',
-            vv1: 'vv2',
-            vv2: 'vv1'
-          }[where]
+          var buddy = this.buddy(where)
           if (buddy && !this.what(buddy)) {
             // there is nothing in the other pane
             this.place(old_what, buddy)
@@ -612,62 +625,81 @@
         return this
       },
       isVisible (what) {
-        return layoutcfg[this.paneLayout].some(el => this.what(el) === what)
+        var where = this[`where_${what}`]
+        if (where === 'f') {
+          return true
+        }
+        if (!where) {
+          return false
+        }
+        var x = where.substring(0, 2)
+        if (x === 'hh' || x === 'vv') {
+          return this.isVisible(x)
+        }
+        return this.isVisible(x.substring(0, 1))
       },
-      makeVisible (what) {
-        var where = 'f' // where -> place what
-        var actual = this.what_f
-        if (what === actual) {
+      makeConsoleVisible () {
+        if (this.isVisible('console1') || this.isVisible('console2')) {
           return
         }
+        this.makeVisible('console1', true)
+      },
+      makeVisible (what, second = false) {
+        if (this.isVisible(what)) {
+          return
+        }
+        var where = 'f' // where -> place what
+        var actual = this.what_f
+        var suffix = second ? '2' : '1'
         if (actual === 'h') {
-          if (this.what_h1 === what) {
-            return
-          }
-          where = 'h1'
-          if (this.what_h1 === 'v') {
-            if (this.what_v1 === what || this.what_v2 === what) {
-              return
-            }
-            where = 'v1'
-          }
-          if (this.what_h2 === what) {
-            return
-          }
-          if (this.what_h2 === 'v') {
-            if (this.what_vv1 === what || this.what_vv2 === what) {
-              return
-            }
+          where = actual + suffix
+          actual = this.what(where)
+          if (actual === 'v' || actual === 'vv') {
+            where = actual + suffix
+          } else if (second) {
+            this.place(where, 'vv1')
+            this.place(what, 'vv2')
+            what = 'vv'
           }
         } else if (actual === 'v') {
-          if (this.what_v1 === what) {
-            return
+          where = actual + suffix
+          actual = this.what(where)
+          if (actual === 'h' || actual === 'hh') {
+            where = actual + suffix
+          } else if (second) {
+            this.place(where, 'hh1')
+            this.place(what, 'hh2')
+            what = 'hh'
           }
-          where = 'v1'
-          if (this.what_v1 === 'h') {
-            if (this.what_h1 === what || this.what_h2 === what) {
-              return
-            }
-            where = 'h1'
-          }
-          if (this.what_v2 === what) {
-            return
-          }
-          if (this.what_v2 === 'h') {
-            if (this.what_hh1 === what || this.what_hh2 === what) {
-              return
-            }
-          }
+        } else if (second) {
+          this.switchWhere('f', 'v1')
+          this.place('v', 'f')
+          where = 'v2'
         }
         this.place(what, where)
       }
     },
     mounted () {
-      this.step = this.toolbarBlockVisible ? this.max : 0
-      this.changeLayout({
-        how: 'F',
-        what: 'workspace'
-      })
+      this.footstep = this.toolbarBlockVisible ? this.maxstep : 0
+      if (this.paneLayout) {
+        // this is not the first time we run the application
+        this.changeLayout({
+          how: this.paneLayout
+        })
+        // now we should place the correct stuff at the right place
+        layoutcfg.whats.forEach(what => {
+          var where = this[`where_${what}`]
+          if (where) {
+            this.place(what, where)
+          }
+        })
+      }
+      if (!layoutcfg.whats.some(what => this.isVisible(what))) {
+        this.changeLayout({
+          how: 'F',
+          what: 'workspace'
+        })
+      }
       eYo.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
@@ -678,14 +710,14 @@
         this.changeLayout(opt)
       })
       this.$$.bus.$on('will-run-script', () => {
-        this.isVisible('turtle') || this.isVisible('console2') || this.makeVisible('console1')
+        this.isVisible('turtle') || this.makeConsoleVisible()
       })
     },
     watch: {
       toolbarBlockVisible (newValue, oldValue) {
-        this.step = newValue ? 0 : this.max
+        this.footstep = newValue ? 0 : this.maxstep
         eYo.$$.TweenLite.to(this, 1, {
-          step: this.max - this.step,
+          footstep: this.maxstep - this.footstep,
           onUpdate: () => {
             eYo.$$.bus.$emit('size-did-change')
           }
@@ -712,7 +744,6 @@
 
 <style>
   #pane-content {
-    top: 3rem;
     height: 100%;
     width: 100%;
     padding: 0;
@@ -720,10 +751,12 @@
   }
   
   #working-area {
+    position: relative;
     width: 100%;
     padding: 0.25rem;
     padding-bottom: 0;
   }
+
   .gutter {
     background-color:transparent;
   }

@@ -73,6 +73,15 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
+      ...mapState({
+        blockEditShowDotted: state => state.UI.blockEditShowDotted
+      }),
       show_dotted () {
         return this.ismethod || this.blockEditShowDotted
       },
@@ -173,14 +182,7 @@
           'cmath',
           'string'
         ]
-      },
-      ...mapState({
-        blockEditShowDotted: state => state.UI.blockEditShowDotted
-      }),
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     created () {
       var dotted = this.dotted

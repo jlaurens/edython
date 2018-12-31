@@ -47,17 +47,19 @@
       }
     },
     computed: {
-      isMethod () {
-        this.$$synchronize(this.step)
-        return this.isMethod_
-      },
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       ...mapState('UI', {
         showRy: state => state.toolbarRyVisible
       }),
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      isMethod () {
+        this.$$synchronize(this.step)
+        return this.isMethod_
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

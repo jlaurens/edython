@@ -1,12 +1,17 @@
 <template>
-    <path :transform="transform" id="p-icon-triangle" :d="d" title="Afficher ou masquer le tiroir des blocs" v-tippy/>
+    <path
+      :transform="transform"
+      id="p-icon-triangle"
+      :d="d"
+      title="Afficher ou masquer le tiroir des blocs"
+      v-tippy/>
   </template>
 
 <script>
   export default {
     data: function () {
       return {
-        step: 0
+        footstep: 0
       }
     },
     props: {
@@ -25,12 +30,12 @@
         return `M 0,16 l${radius * 1.5},${radius * 0.866} l 0,${-radius * 1.732} z`
       },
       transform: function () {
-        return `rotate(${-540 * this.step},${2 * this.width / 5},16)`
+        return `rotate(${-540 * this.footstep},${2 * this.width / 5},16)`
       }
     },
     mounted: function () {
       var self = this
-      eYo.FlyoutDelegate.prototype.oneStep = function (step) {
+      eYo.FlyoutDelegate.prototype.oneStep = function (footstep) {
         // next loop to disable tooltips while scrolling
         for (const popper of document.querySelectorAll('.tippy-popper')) {
           const instance = popper._tippy
@@ -39,7 +44,7 @@
             instance.hide()
           }
         }
-        self.step = step
+        self.footstep = footstep
       }
     }
   }

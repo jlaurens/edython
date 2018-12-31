@@ -13,7 +13,7 @@
         id="eyo-console1-area"
         ref="elInner"
         rows=20
-        v-bind:style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"></textarea>
+        :style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"></textarea>
     </div>
   </div>
 </template>
@@ -51,8 +51,8 @@
     methods: {
       $$resize: function (e) {
         var content = this.$refs.elContent
-        var w = content.offsetWidth
-        var h = content.offsetHeight
+        var w = content.clientWidth
+        var h = content.clientHeight
         if (w && h) {
           var newW = w / this.scaleFactor
           var newH = h / this.scaleFactor
@@ -73,10 +73,7 @@
         }
       },
       didPlace () { // this is necessary due to the scale feature
-        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          console.log('console1', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
-          this.$$resize()
-        })
+        this.resizeSensor = new ResizeSensor(this.$refs.elContent, this.$$resize)
         this.$$resize()
       }
     },

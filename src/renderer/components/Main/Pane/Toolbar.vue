@@ -99,6 +99,10 @@
       }
     },
     computed: {
+      ...mapState('Layout', [
+        'paneLayout'
+      ]),
+      ...mapState('Layout', layoutcfg.where_whats),
       selectedPane: {
         get () {
           return {
@@ -137,6 +141,7 @@
         }
       },
       layouts () {
+        console.error('layouts', this.paneLayout, this.where)
         if (this.where) {
           var Ls = layoutcfg.fromLayout[this.paneLayout]
           if (Ls) {
@@ -202,13 +207,37 @@
             'workspace.scaleDownBig'
           ]
         }[this.what]
-      },
-      ...mapState('Layout', [
-        'paneLayout'
-      ]),
-      ...mapState('Layout', layoutcfg.where_whats)
+      }
     },
     methods: {
+      ...mapMutations('Workspace', {
+        workspaceScaleUp: 'scaleUp',
+        workspaceScaleUpBig: 'scaleUpBig',
+        workspaceScaleDown: 'scaleDown',
+        workspaceScaleDownBig: 'scaleDownBig',
+        workspaceScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Console1', {
+        console1ScaleUp: 'scaleUp',
+        console1ScaleUpBig: 'scaleUpBig',
+        console1ScaleDown: 'scaleDown',
+        console1ScaleDownBig: 'scaleDownBig',
+        console1ScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Console2', {
+        console2ScaleUp: 'scaleUp',
+        console2ScaleUpBig: 'scaleUpBig',
+        console2ScaleDown: 'scaleDown',
+        console2ScaleDownBig: 'scaleDownBig',
+        console2ScaleReset: 'scaleReset'
+      }),
+      ...mapMutations('Turtle', {
+        turtleScaleUp: 'scaleUp',
+        turtleScaleUpBig: 'scaleUpBig',
+        turtleScaleDown: 'scaleDown',
+        turtleScaleDownBig: 'scaleDownBig',
+        turtleScaleReset: 'scaleReset'
+      }),
       localized (s) {
         return this.$$t(`block.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
       },
@@ -260,35 +289,7 @@
       },
       title (choice) {
         return this.$$t(`block.pane.content.${choice}`) || this.$$t(`block.pane.content.${choice.split('.').pop()}`)
-      },
-      ...mapMutations('Workspace', {
-        workspaceScaleUp: 'scaleUp',
-        workspaceScaleUpBig: 'scaleUpBig',
-        workspaceScaleDown: 'scaleDown',
-        workspaceScaleDownBig: 'scaleDownBig',
-        workspaceScaleReset: 'scaleReset'
-      }),
-      ...mapMutations('Console1', {
-        console1ScaleUp: 'scaleUp',
-        console1ScaleUpBig: 'scaleUpBig',
-        console1ScaleDown: 'scaleDown',
-        console1ScaleDownBig: 'scaleDownBig',
-        console1ScaleReset: 'scaleReset'
-      }),
-      ...mapMutations('Console2', {
-        console2ScaleUp: 'scaleUp',
-        console2ScaleUpBig: 'scaleUpBig',
-        console2ScaleDown: 'scaleDown',
-        console2ScaleDownBig: 'scaleDownBig',
-        console2ScaleReset: 'scaleReset'
-      }),
-      ...mapMutations('Turtle', {
-        turtleScaleUp: 'scaleUp',
-        turtleScaleUpBig: 'scaleUpBig',
-        turtleScaleDown: 'scaleDown',
-        turtleScaleDownBig: 'scaleDownBig',
-        turtleScaleReset: 'scaleReset'
-      })
+      }
     }
   }
 </script>

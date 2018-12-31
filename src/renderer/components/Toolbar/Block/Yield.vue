@@ -51,7 +51,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-yield',
@@ -72,9 +72,11 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       showExpression () {
         return this.variant === eYo.Key.EXPRESSION

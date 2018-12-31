@@ -4,13 +4,13 @@
     class="h-100 fluid">
     <div
       id="MainToolbar"
-      ref="elToolbar">
+      ref="elMainToolbar">
         <main-toolbar></main-toolbar>
     </div>
     <div
       id="MainPage"
-      ref="elPage">
-        <main-page></main-page>
+      ref="elMainPage">
+      <main-page></main-page>
     </div>
     <main-web-load></main-web-load>
     <main-modal></main-modal>
@@ -37,18 +37,19 @@
       ...mapState('Pref', [
         'tipsDisabled'
       ]),
-      ...mapState('Layout', [
+      ...mapState('Page', [
         'toolbarMainHeight'
       ])
     },
     watch: {
       toolbarMainHeight (newValue, oldValue) {
         console.error('WATCH toolbarMainHeight', newValue, oldValue)
-        var div = this.$refs.elToolbar
-        div.style.height = `calc(${newValue}px)`
-        div = this.$refs.elPage
-        div.style.top = `calc(${newValue}px)`
+        var div = this.$refs.elMainToolbar
+        div.style.height = `${newValue}px`
+        div = this.$refs.elMainPage
+        div.style.top = `${newValue}px`
         div.style.height = `calc(100% - ${newValue}px)`
+        console.log('div.style.height', div.style.height)
       },
       tipsDisabled (newValue, oldValue) {
         var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
@@ -72,11 +73,14 @@
 </script>
 <style>
   #Main {
-    position: absolute;
+    position: relative;
     left: 0px;
     top: 0px;
     margin: 0;
     padding: 0;
+  }
+  #MainPage {
+    width: 100%;
   }
   .eyo-dropdown .btn {
     white-space: nowrap;

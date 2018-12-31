@@ -32,8 +32,12 @@ export default {
     height: 100vh;
     min-width: 300px!important;
   }
-  .app .container {
+  .app {
     background-color:rgba(221, 221, 221, 0.8);
+    padding: 0;
+    height: 100%;
+  }
+  .app .container {
     max-width: 100%; /* override B */
   }
 </style>

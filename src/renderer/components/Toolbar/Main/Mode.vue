@@ -9,7 +9,7 @@
       v-for="choice in choices"
       v-on:click="choose(choice)"
       :key="choice"
-      class="block-variant eyo-code"
+      class="block-variant"
       v-html="$$t(`toolbar.content.mode.${choice}`)"
       :title="$$t(`toolbar.tooltip.mode.${choice}`)"
       v-tippy
@@ -24,6 +24,9 @@
   export default {
     name: 'main-mode',
     computed: {
+      ...mapState('UI', [
+        'selectedMode'
+      ]),
       choices () {
         return [
           eYo.App.TUTORIAL,
@@ -31,21 +34,23 @@
           eYo.App.NORMAL,
           eYo.App.TEACHER
         ]
-      },
-      ...mapState('UI', {
-        selectedMode: state => state.selectedMode
+      }
+    },
+    mounted () {
+      this.choices.forEach(el => {
+        console.log('CHOICE', el, this.$$t(`toolbar.tooltip.mode.${el}`))
       })
     },
     methods: {
+      ...mapMutations('UI', [
+        'selectMode'
+      ]),
       choose (choice) {
-        this.setSelectedMode(choice)
+        this.selectMode(choice)
         this.$nextTick(() => {
           this.$$.bus.$emit('toolbar-resize')
         })
-      },
-      ...mapMutations('UI', [
-        'setSelectedMode'
-      ])
+      }
     }
   }
 </script>

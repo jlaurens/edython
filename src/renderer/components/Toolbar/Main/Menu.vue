@@ -68,6 +68,17 @@
       CheckMark
     },
     computed: {
+      ...mapState('Document', [
+        'ecoSave'
+      ]),
+      ...mapState('Pref', [
+        'tipsDisabled'
+      ]),
+      ...mapState('UI', [
+        'toolbarBlockVisible',
+        'toolbarRyVisible',
+        'toolbarInfoDebug'
+      ]),
       titleEcoSave () {
         return this.$$t('toolbar.tooltip.eco_save')
       },
@@ -104,30 +115,19 @@
       },
       titleMenu () {
         return this.$$t('toolbar.tooltip.menu')
-      },
-      ...mapState({
-        ecoSave: state => state.Document.ecoSave
-      }),
-      ...mapState('Pref', {
-        tipsDisabled: state => state.tipsDisabled
-      }),
-      ...mapState('UI', {
-        toolbarBlockVisible: state => state.toolbarBlockVisible,
-        toolbarRyVisible: state => state.toolbarRyVisible,
-        toolbarInfoDebug: state => state.toolbarInfoDebug
-      })
+      }
     },
     methods: {
-      ...mapMutations('UI', {
-        setToolbarBlockVisible: 'setToolbarBlockVisible',
-        setToolbarBlockDebug: 'setToolbarBlockDebug'
-      }),
-      ...mapMutations('Pref', {
-        toggleTipsDisabled: 'toggleTipsDisabled'
-      }),
-      ...mapMutations({
-        setEcoSave: 'DOC_SET_ECO_SAVE'
-      }),
+      ...mapMutations('UI', [
+        'setToolbarBlockVisible',
+        'setToolbarBlockDebug'
+      ]),
+      ...mapMutations('Pref', [
+        'toggleTipsDisabled'
+      ]),
+      ...mapMutations('Document', [
+        'setEcoSave'
+      ]),
       doToggleToolbarBlockVisible () {
         this.setToolbarBlockVisible(!this.toolbarBlockVisible)
       },

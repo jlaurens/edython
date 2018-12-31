@@ -1,10 +1,12 @@
 <template>
   <b-btn id="toolbar-btn-copy-python" v-on:click="doIt()" :title="title" v-tippy :disabled="!canDoIt">
-    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-python :theta="theta"/></icon-base>
+    <icon-base :width="32" :height="32" :icon-name="name"><icon-copy-python :footstep="footstep"/></icon-base>
   </b-btn>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import IconBase from '@@/Icon/IconBase.vue'
   import IconCopyPython from '@@/Icon/IconCopyPython.vue'
 
@@ -12,18 +14,21 @@
     name: 'copy-python',
     data: function () {
       return {
-        theta: 1
+        footstep: 1
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       name () {
-        return 'Copier en python'
+        return this.$$t('toolbar.name.copy_python')
       },
       title () {
-        return 'Copier le code python dans le presse-papier'
+        return this.$$t('toolbar.tooltip.copy_python')
       },
       canDoIt () {
-        return !!this.$store.state.UI.selectedBlockId
+        return !!this.eyo
       }
     },
     props: {
@@ -42,13 +47,13 @@
     },
     methods: {
       doIt () {
-        var block = eYo.$$.Blockly.selected
+        var block = this.eyo && this.eyo.block_
         if (block) {
           var p = new eYo.PythonExporter()
           var code = p.export(block, {is_deep: true})
           eYo.App.copyTextToClipboard(code)
-          this.theta = 0
-          eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
+          this.footstep = 0
+          eYo.$$.TweenLite.to(this, 0.5, {footstep: 1})
         }
       }
     }

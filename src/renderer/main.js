@@ -18,11 +18,11 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import tippy from 'tippy.js/dist/tippy.js' // eslint-disable-line no-unused-vars
+import tippy from 'tippy.js/dist/tippy.js'
 
 import VueTippy from 'vue-tippy'
 
-import {TweenLite} from 'gsap/TweenMax' // eslint-disable-line no-unused-vars
+import {TweenLite} from 'gsap/TweenMax'
 
 import eYoPlugin from './plugin/eyoplugin'
 import eYoApp from './plugin/eyoapp'
@@ -39,6 +39,7 @@ eYo.$$ = Vue.prototype.$$ = {
   _: lodash,
   TweenLite,
   process,
+  tippy,
   http: axios,
   bus: new Vue()
 }

@@ -170,9 +170,6 @@
       return model
     },
     computed: {
-      canBasic () {
-        return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
-      },
       ...mapState('Workspace', [
         'flyoutCategory',
         'flyoutClosed'
@@ -182,7 +179,10 @@
       ]),
       ...mapState('UI', {
         selectedMode: state => state.selectedMode
-      })
+      }),
+      canBasic () {
+        return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
+      }
     },
     watch: {
       scaleFactor (newValue, oldValue) {
@@ -225,6 +225,10 @@
       }
     },
     methods: {
+      ...mapMutations('Workspace', [
+        'setFlyoutCategory',
+        'setFlyoutClosed'
+      ]),
       willUnplace () { // this is necessary due to the scale feature
         if (this.resizeSensor) {
           this.resizeSensor.detach()
@@ -256,10 +260,6 @@
           Blockly.svgResize(eYo.App.workspace)
         }
       },
-      ...mapMutations('Workspace', [
-        'setFlyoutCategory',
-        'setFlyoutClosed'
-      ]),
       selectCategory (item) {
         if (this.isBasic && item.basic) {
           item = item.basic

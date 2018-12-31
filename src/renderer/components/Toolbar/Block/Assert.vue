@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-decorator',
@@ -64,6 +64,12 @@
       }
     },
     computed: {
+      ...mapState('Selected', [
+        'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       showExpression2: {
         get () {
           return this.variant === eYo.Key.BINARY
@@ -98,11 +104,7 @@
         set (newValue) {
           this.eyo.expression2_p = newValue
         }
-      },
-      ...mapGetters('Selected', [
-        'eyo',
-        'step'
-      ])
+      }
     },
     methods: {
       $$doSynchronize (eyo) {

@@ -29,6 +29,9 @@
       }
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
       name () {
         return 'Exécuter'
       },
@@ -38,9 +41,6 @@
       canDoIt () {
         return !!this.rootControl
       },
-      ...mapGetters('Selected', [
-        'eyo'
-      ]),
       rootControl () {
         return this.eyo && this.eyo.rootControl
       }

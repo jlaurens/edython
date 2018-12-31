@@ -44,24 +44,30 @@ eYoPlugin.install = function (Vue, options) {
   }
 
   /**
-   * Get the top.
+   * Get the top. We have `top < bottom`.
+   * We count from top to bottom.
    */
   Vue.prototype.$$top = function () {
-    var top = +Infinity
+    var top = -Infinity
     if (this.$el) {
-      top = this.$el.offestTop
+      var candidate = this.$el.offsetTop
+      if (candidate > top) {
+        top = candidate
+      }
     }
     this.$children.forEach(el => {
       if (el.$$top) {
         var candidate = el.$$top()
-        if (candidate < top) {
+        if (candidate > top) {
           top = candidate
         }
-      } else if (el.offestTop < top) {
-        top = el.offestTop
+      } else {
+        candidate = el.offsetTop
+        if (candidate > top) {
+          top = candidate
+        }
       }
     })
-    console.error(top)
     return top
   }
 
@@ -69,18 +75,24 @@ eYoPlugin.install = function (Vue, options) {
    * Get the bottom.
    */
   Vue.prototype.$$bottom = function () {
-    var bottom = -Infinity
+    var bottom = +Infinity
     if (this.$el) {
-      bottom = this.$el.offestTop + this.$el.offsetHeight
+      var candidate = this.$el.offsetTop + this.$el.clientHeight
+      if (candidate < bottom) {
+        candidate = bottom
+      }
     }
     this.$children.forEach(el => {
       if (el.$$bottom) {
-        var candidate = el.$$bottom()
-        if (candidate > bottom) {
+        candidate = el.$$bottom()
+        if (candidate < bottom) {
           bottom = candidate
         }
-      } else if (el.offestTop + el.offsetHeight > bottom) {
-        bottom = el.offestTop + el.offsetHeight
+      } else {
+        candidate = el.offsetTop + el.clientHeight
+        if (candidate < bottom) {
+          bottom = candidate
+        }
       }
     })
     console.error(bottom)

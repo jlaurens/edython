@@ -1,8 +1,15 @@
+eYo.Do.readOnlyMixin(eYo.App, {
+  TUTORIAL: 'tutorial',
+  BASIC: 'basic',
+  NORMAL: 'normal',
+  TEACHER: 'teacher'
+})
+
 const state = {
   blockClipboard: undefined,
   panelsWidth: 0,
   displayMode: undefined,
-  selectedMode: undefined,
+  selectedMode: eYo.App.TUTORIAL,
   toolbarBlockVisible: undefined,
   toolbarRyVisible: undefined,
   toolbarInfoDebug: undefined,
@@ -24,7 +31,7 @@ const mutations = {
       state.displayMode = mode
     }
   },
-  setSelectedMode (state, mode) {
+  selectMode (state, mode) {
     state.selectedMode = mode
     this.commit('UI/setToolbarBlockVisible', mode !== eYo.App.TUTORIAL)
     var yorn = mode !== eYo.App.TUTORIAL && mode !== eYo.App.BASIC

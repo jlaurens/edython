@@ -78,7 +78,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     name: 'info-range',
@@ -100,9 +100,11 @@
       }
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       choices () {
         return [

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import Comment from './Comment.vue'
 
   export default {
@@ -47,9 +47,11 @@
       Comment
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       name () {
         this.$$synchronize(this.step)

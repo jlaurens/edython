@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import LiteralQuote from './Literal/Quote.vue'
 
   export default {
@@ -70,9 +70,11 @@
       LiteralQuote
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo',
+      ...mapState('Selected', [
         'step'
+      ]),
+      ...mapGetters('Selected', [
+        'eyo'
       ]),
       prefix: {
         get () {
