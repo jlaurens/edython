@@ -132,7 +132,7 @@
   .eyo-wrapper .content {
     margin-top: 0.25rem;
     padding: 0;
-    height: calc(100% - 2rem);
+    height: calc(100% - 2.25rem);
   }
   .eyo-wrapper .eyo-panel-turtle {
     background-color: aliceblue;

@@ -95,7 +95,7 @@
     font-size:1.0rem;
     overflow:auto;
     width: 100%;
-    height: calc(100% - 2px); /* include border */
+    height: 100%;
   }
   #eyo-console2-area:focus {
     outline: none;
