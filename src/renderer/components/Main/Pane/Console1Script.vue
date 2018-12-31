@@ -139,7 +139,9 @@ except:
             sys.stdout.write = sys.stderr.write = lambda data: self.write(data)
             self.elmt.bind('keypress', lambda e: self._myKeyPress(e))
             self.elmt.bind('keydown', lambda e: self._myKeyDown(e))
-            self.elmt.bind('click', lambda e: self._cursorToEnd(e))
+            self.elmt.bind('click', lambda e: self._myClick(e))
+            self.elmt.bind('paste', lambda e: self._myPaste(e))
+            self.elmt.bind('cut', lambda e: self._myCut(e))
             console_js.log('Console available...')
             self.restart()
     
@@ -196,6 +198,25 @@ except:
                 sel -= len(line) + 1
             return sel
     
+        def _myClick(self, event):
+            if self.elmt.selectionStart < self.elmt.selectionEnd:
+                return
+            self._cursorToEnd()
+
+        def _beforeKeyEvent(self, event):
+            if self.elmt.selectionStart <= self.elmt.value.rfind('>>>') + 4:
+                self._cursorToEnd()
+    
+        def _myPaste(self, event):
+            if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
+                event.preventDefault()
+                event.stopPropagation()
+    
+        def _myCut(self, event):
+            if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
+                event.preventDefault()
+                event.stopPropagation()
+
         def _myKeyPress(self, event):
             if event.keyCode == 9:  # tab key
                 event.preventDefault()
@@ -267,6 +288,10 @@ except:
     
                 self._cursorToEnd(event)
                 event.preventDefault()
+            else:
+                if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
+                    self._cursorToEnd()
+           
     
         def _myKeyDown(self, event):
             if event.keyCode == 37:  # left arrow
