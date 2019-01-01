@@ -772,4 +772,7 @@
     border-radius: 0.25rem 0.25rem 0 0;
     background-color: #6c757d;
   }
+  .dropdown .dropdown-item {
+    padding: 0.25rem;
+  }
 </style>
