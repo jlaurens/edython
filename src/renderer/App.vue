@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
   name: 'app',
   created () {
@@ -21,6 +23,24 @@ export default {
         })
       }
     }
+  },
+  computed: {
+    ...mapState('UI', [
+      'deepCopy'
+    ])
+  },
+  mounted () {
+    /**
+     * Copy a block onto the local clipboard.
+     * @param {!Blockly.Block} block Block to be copied.
+     * @private
+     */
+    eYo.copyBlock = (() => {
+      var copyBlock = eYo.copyBlock
+      return function (block, deep) {
+        return copyBlock.call(this, block, !this.deepCopy === !deep)
+      }
+    })()
   }
 }
 </script>
