@@ -203,7 +203,6 @@
         return this.$refs[`pane_${what}`]
       },
       changeLayout (opt) {
-        console.error('changeLayout', opt)
         try {
           if (opt.layout) {
             opt.how = opt.layout
