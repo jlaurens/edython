@@ -728,9 +728,8 @@ eYo.Xml.toDom = function (block, element, opt) {
       }
     })
     // the suite and the flow
-    var optNoNext = opt && opt.noNext
-    opt && (opt.noNext = false)
     targetBlockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    var optNoNext = opt && opt.noNext
     !optNoNext && targetBlockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
