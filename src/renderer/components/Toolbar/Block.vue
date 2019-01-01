@@ -116,6 +116,7 @@
       />
       <block-funcdef
         v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)"
+        :slotholder="slotholder"
       />
       <block-import
         v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)"

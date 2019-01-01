@@ -23,5 +23,8 @@ export default {
     basic: 'basic',
     module: 'Module {{key}}',
     blocks: 'Blocs {{key}}'
+  },
+  document: {
+    Untitled: 'Sans Titre'
   }
 }

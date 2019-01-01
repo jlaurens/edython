@@ -2987,7 +2987,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {
         // very special management for tuple input
-        if ((otherC8n = eYo.SelectedConnection)) {
+        if ((otherC8n = eYo.SelectedConnection) && goog.isString(model)) {
           var otherSource = otherC8n.getSourceBlock()
           if (otherSource.eyo instanceof eYo.DelegateSvg.List && otherC8n.type === Blockly.INPUT_VALUE) {
             eYo.Events.groupWrap(() => {

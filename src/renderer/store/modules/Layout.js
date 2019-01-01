@@ -155,10 +155,6 @@ cfg.whats.forEach(k => {
 
 const mutations = {
   setPaneLayout (state, layout) {
-    console.error('setPaneLayout', layout)
-    if (layout === 'F') {
-      console.error('STOP HERE PLEASE')
-    }
     state.paneLayout = layout
   }
 }

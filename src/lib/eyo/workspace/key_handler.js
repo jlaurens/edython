@@ -458,13 +458,13 @@ eYo.KeyHandler = (() => {
         if (!me.alreadyListening_) {
           me.alreadyListening_ = true
           me.alreadyListened = false
-          goog.events.listenOnce(menu_, 'action', function (event) {
+          goog.events.listenOnce(menu_, 'action', (event) => {
             me.alreadyListening_ = false
             var target = event.target
             if (target) {
               var targetModel = target.model_
               if (targetModel) {
-                setTimeout(function () { // try/finally?
+                setTimeout(() => { // try/finally?
                   if (me.alreadyListened_) {
                     console.log('************* I have already listened!')
                     return

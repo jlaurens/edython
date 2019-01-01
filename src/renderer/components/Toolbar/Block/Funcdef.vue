@@ -1,38 +1,27 @@
 <template>
-  <b-btn-group
-    id="block-funcdef"
-    key-nav
-    aria-label="Block decorator"
-    justify>
-    <b-btn-group>
-      <label
-        for="block-funcdef-name"
-        class="btn-outline-secondary">
-        <span
-          :style="{fontFamily: $$.eYo.Font.familyMono}"
-          class="eyo-code-reserved"
-        >def</span></label>
-      <b-form-input
-        id="block-funcdef-name"
-        v-model="name"
-        type="text"
-        class="btn-outline-secondary w-30rem"
-        :style='{fontFamily: $$.eYo.Font.familyMono}'
-        :title="title"
-        v-tippy ></b-form-input>
-      <label
-        class="btn-outline-secondary"
-        :style="{fontFamily: $$.eYo.Font.familyMono}">(…)<span
-          class="eyo-code-reserved">:</span> </label>  
-    </b-btn-group>
-    <comment></comment>
+  <b-btn-group>
+    <div
+      class="item text eyo-code-reserved"
+      :style="{fontFamily: $$.eYo.Font.familyMono}"
+      >def</div>
+    <b-form-input
+      id="block-funcdef-name"
+      v-model="name"
+      type="text"
+      :class="$$class(name)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :title="title"
+      v-tippy ></b-form-input>
+    <div
+      class="item text"
+      v-html="ry"
+      ></div>
   </b-btn-group>
 </template>
 
 <script>
   import {mapState, mapGetters} from 'vuex'
-  import Comment from './Comment.vue'
-
+  
   export default {
     name: 'block-funcdef',
     data: function () {
@@ -41,8 +30,13 @@
         name_: undefined
       }
     },
-    components: {
-      Comment
+    props: {
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
+      }
     },
     computed: {
       ...mapState('Selected', [
@@ -51,6 +45,9 @@
       ...mapGetters('Selected', [
         'eyo'
       ]),
+      ry () {
+        return `(${this.slotholder('eyo-slotholder-inline')}):`
+      },
       title () {
         return this.$$t('block.tooltip.funcdef.name')
       },
@@ -67,6 +64,9 @@
     methods: {
       $$doSynchronize (eyo) {
         this.name_ = eyo.name_p
+      },
+      $$class (key) {
+        return `eyo-code and item text${key.length ? '' : ' placeholder'} w-30rem`
       }
     }
   }

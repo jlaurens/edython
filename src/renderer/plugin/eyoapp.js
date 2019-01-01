@@ -1,3 +1,5 @@
+import {layoutcfg} from '@@/../store/modules/Layout'
+
 var eYoApp = {}
 
 eYoApp.test = function () {
@@ -16,11 +18,11 @@ eYoApp.install = function (Vue, options) {
     var prefs = {}
     var value
     var state = eYo.$$.app.$store.state
-    value = state.Workspace.cfg.prefs
+    value = layoutcfg.prefs
     if (value) {
       prefs.workspace = value
     }
-    value = state.Layout.cfg.prefs
+    value = state.Layout.paneLayout
     if (value) {
       prefs.paneLayout = value
     }

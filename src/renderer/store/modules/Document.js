@@ -7,8 +7,8 @@ const state = {
 }
 
 const mutations = {
-  setPath (state, new_path) {
-    state.path = new_path
+  setPath (state, path) {
+    state.path = path
   },
   setEcoSave (state, yorn) {
     state.ecoSave = !!yorn

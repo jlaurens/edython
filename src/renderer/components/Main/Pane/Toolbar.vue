@@ -6,7 +6,7 @@
     <b-btn-group>
         <b-dd
         class="eyo-dropdown"
-        :text="localized(what)">
+        :text="toolbarTitle">
         <b-dd-item-button
           v-for="pane in panes"
           v-on:click="selectedPane = pane"
@@ -99,10 +99,30 @@
       }
     },
     computed: {
+      ...mapState('Document', [
+        'path'
+      ]),
       ...mapState('Layout', [
         'paneLayout'
       ]),
       ...mapState('Layout', layoutcfg.where_whats),
+      baseName () {
+        var x = this.path
+        if (this.path) {
+          x = x.split('/')
+          x = x[x.length - 1]
+          x = x.split('.')
+          return x[0]
+        }
+        return this.$$t('message.document.Untitled')
+      },
+      toolbarTitle () {
+        if (this.what === 'workspace') {
+          return `${this.localized(this.what)} - ${this.baseName}`
+        } else {
+          return this.localized(this.what)
+        }
+      },
       selectedPane: {
         get () {
           return {
@@ -141,7 +161,6 @@
         }
       },
       layouts () {
-        console.error('layouts', this.paneLayout, this.where)
         if (this.where) {
           var Ls = layoutcfg.fromLayout[this.paneLayout]
           if (Ls) {
