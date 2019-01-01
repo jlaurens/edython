@@ -158,7 +158,7 @@ eYo.KeyHandler = (() => {
     var B = Blockly.selected
     if (B) {
       var c8n = eYo.SelectedConnection
-      var newB = model.parent
+      var newB = model.parent || model.slot
       ? B.eyo.insertParentWithModel(model) || B.eyo.insertBlockWithModel(model, c8n)
       : B.eyo.insertBlockWithModel(model, c8n) || B.eyo.insertParentWithModel(model)
       if (newB) {

@@ -2968,22 +2968,6 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   eYo.Events.disableWrap(
     () => {
       var c8n, otherC8n
-      var fin = (prepare) => {
-        eYo.Events.groupWrap(() => {
-          eYo.Events.enableWrap(() => {
-            eYo.Do.tryFinally(() => {
-              eYo.Events.fireBlockCreate(candidate)
-              prepare && prepare()
-              otherC8n.connect(c8n)
-            }, () => {
-              candidate.eyo.render()
-              candidate.select()
-              candidate.bumpNeighbours_()
-            })
-          })
-        })
-        return candidate
-      }
       candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
       if (!candidate) {
         // very special management for tuple input
@@ -3026,6 +3010,22 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
           }
         }
         return
+      }
+      var fin = (prepare) => {
+        eYo.Events.groupWrap(() => {
+          eYo.Events.enableWrap(() => {
+            eYo.Do.tryFinally(() => {
+              eYo.Events.fireBlockCreate(candidate)
+              prepare && prepare()
+              otherC8n.connect(c8n)
+            }, () => {
+              candidate.eyo.render()
+              candidate.select()
+              candidate.bumpNeighbours_()
+            })
+          })
+        })
+        return candidate
       }
       if ((otherC8n = eYo.SelectedConnection)) {
         otherSource = otherC8n.getSourceBlock()
@@ -3104,7 +3104,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       }
       if ((c8n = candidate.previousConnection)) {
         if ((otherC8n = this.nextConnection) && c8n.checkType_(otherC8n)) {
-          return fin(function () {
+          return fin(() => {
             if ((targetC8n = otherC8n.targetConnection)) {
               // connected to something, beware of orphans
               otherC8n.disconnect()
@@ -3123,11 +3123,11 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       if ((c8n = candidate.nextConnection)) {
         if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
           if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
-            return fin(function () {
+            return fin(() => {
               candidate.previousConnection.connect(targetC8n)
             })
           } else {
-            return fin(function () {
+            return fin(() => {
               var its_xy = block.getRelativeToSurfaceXY()
               var my_xy = candidate.getRelativeToSurfaceXY()
               var HW = candidate.getHeightWidth()
@@ -3136,9 +3136,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
           }
         }
       }
-      if (candidate) {
-        candidate.dispose(true)
-      }
+      candidate.dispose(true)
+      candidate = null
     }
   )
   return candidate
