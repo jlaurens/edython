@@ -12,7 +12,7 @@
       v-html="slotholder('eyo-slotholder-inline')"></div>
     <b-dd
       id="block-binary-operator"
-      class="eyo-code item text mw-4rem"
+      class="eyo-code item text mw-4rem block-binary-operator"
       variant="outline-secondary"
       :text="operator">
       <b-dd-item-button
@@ -120,14 +120,14 @@
         this.rhs_ = eyo.rhs_p
       },
       $$class (key) {
-        return `eyo-code and item text${key.length ? '' : ' placeholder'}`
+        return `eyo-code and item text${key.toString().length ? '' : ' placeholder'}`
       }
     }
   }
 </script>
 <style>
-  .info-binary-operator {
-    padding-right: 0.75rem;
+  .block-binary-operator {
+    text-align: center;
   }
 </style>
   
