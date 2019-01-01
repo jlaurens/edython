@@ -363,8 +363,8 @@ export default {
   mounted: function () {
     eYo.$$.bus.$on('console1-erase', this.eraseConsole)
     eYo.$$.bus.$on('console1-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle1-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle1-erase', this.eraseTurtle)
+    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
+    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
