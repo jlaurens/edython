@@ -26,6 +26,7 @@ export default {
       show: 'Montrer la sélection'
     },
     eco_save: 'Sauvegarde au format compressé avec gzip si coché',
+    deep_copy: 'Copier le bloc et les suivants si coché',
     tooltip: {
       on: 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet',
       off: 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
@@ -54,6 +55,7 @@ export default {
       teacher: 'Professeur'
     },
     eco_save: 'Eco save',
+    deep_copy: 'Copie profonde',
     tooltip: {
       on: 'Activer les bulles d\'aide',
       off: 'Désactiver les bulles d\'aide'

@@ -17,7 +17,8 @@ const vuexLocalStorage = new VuexPersist({
   // Function that passes the state and returns the state with only the objects you want to store.
   reducer: (state) => ({
     UI: state.UI,
-    Layout: state.Layout
+    Layout: state.Layout,
+    Pref: state.Pref
   })
   // Function that passes a mutation and lets you decide if it should update the state in localStorage.
   // filter: mutation => (whiteMutations.indexOf(mutation.type) >= 0) // Boolean

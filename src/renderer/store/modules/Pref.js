@@ -9,28 +9,30 @@
 // import namespace from '../util/namespace'
 
 const state = {
-  tipsDisabled: false
+  tipsDisabled: false,
+  deepCopy: false
 }
-
-// const _types = {
-//   getters: [
-//   ],
-//   mutations: [
-//     'toggleTipsDisabled'
-//   ]
-// }
 
 // const types = namespace('Pref', _types)
 
 const mutations = {
-/**
- * Toggles the tips.
- * The main vue watches this value to turn on and off the tips.
- * The menu vue uses this mutator.
- * @param {*} state
- */
+  /**
+   * Toggles the tips.
+   * The main vue watches this value to turn on and off the tips.
+   * The menu vue uses this mutator.
+   * @param {*} state
+   */
   toggleTipsDisabled (state) {
     state.tipsDisabled = !state.tipsDisabled
+  },
+  /**
+   * Toggles the tips.
+   * The main vue watches this value to turn on and off the tips.
+   * The menu vue uses this mutator.
+   * @param {*} state
+   */
+  toggleDeepCopy (state) {
+    state.deepCopy = !state.deepCopy
   }
 }
 

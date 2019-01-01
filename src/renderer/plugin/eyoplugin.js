@@ -95,7 +95,6 @@ eYoPlugin.install = function (Vue, options) {
         }
       }
     })
-    console.error(bottom)
     return bottom
   }
 }

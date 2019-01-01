@@ -12,6 +12,11 @@ import {mapState} from 'vuex'
 
 export default {
   name: 'app',
+  data: function () {
+    return {
+      copyBlock: 0
+    }
+  },
   created () {
     // put this preload for main-window to give it prompt()
     const ipcRenderer = require('electron').ipcRenderer
@@ -25,22 +30,26 @@ export default {
     }
   },
   computed: {
-    ...mapState('UI', [
+    ...mapState('Pref', [
       'deepCopy'
     ])
   },
   mounted () {
-    /**
-     * Copy a block onto the local clipboard.
-     * @param {!Blockly.Block} block Block to be copied.
-     * @private
-     */
-    eYo.copyBlock = (() => {
-      var copyBlock = eYo.copyBlock
+    this.copyBlock = eYo.copyBlock
+    eYo.copyBlock = this.getCopyBlock(this.deepCopy)
+  },
+  methods: {
+    getCopyBlock (value) {
+      var copyBlock = this.copyBlock
       return function (block, deep) {
-        return copyBlock.call(this, block, !this.deepCopy === !deep)
+        return copyBlock.call(this, block, !value === !!deep)
       }
-    })()
+    }
+  },
+  watch: {
+    deepCopy (newValue, oldValue) {
+      eYo.copyBlock = this.getCopyBlock(newValue)
+    }
   }
 }
 </script>

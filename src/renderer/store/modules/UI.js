@@ -14,16 +14,12 @@ const state = {
   toolbarRyVisible: undefined,
   toolbarInfoDebug: undefined,
   blockEditShowRy: undefined,
-  blockEditShowDotted: undefined,
-  deepCopy: false
+  blockEditShowDotted: undefined
 }
 
 const mutations = {
   didCopyBlock (state, ctxt) {
     state.blockClipboard = ctxt.xml
-  },
-  setDeepCopy (state, yorn) {
-    state.deepCopy = !!yorn
   },
   setPanelsWidth (state, newWidth) {
     state.panelsWidth = newWidth

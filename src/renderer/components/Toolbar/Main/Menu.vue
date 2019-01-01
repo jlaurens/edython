@@ -13,7 +13,7 @@
       </template>
       <b-dd-item-button
         v-on:click="doToggleToolbarBlockVisible()"
-        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :style="style"
         :title="titleToolbarBlockVisible"
         v-tippy
         >
@@ -21,7 +21,7 @@
       <b-dd-item-button
         v-if="toolbarBlockVisible"
         v-on:click="doToggleToolbarBlockDebug()"
-        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :style="style"
         :title="titleToolbarBlockDebug"
         v-tippy
         >
@@ -29,7 +29,7 @@
       :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
       <b-dd-item-button
         v-on:click="doToggleEcoSave()"
-        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :style="style"
         :title="titleEcoSave"
         v-tippy
         >
@@ -38,13 +38,22 @@
           />{{contentEcoSave}}</b-dd-item-button>
       <b-dd-item-button
         v-on:click="toggleTipsDisabled()"
-        v-bind:style="{fontFamily: $$.eYo.Font.familySans, fontSize: $$.eYo.Font.totalHeight}"
+        :style="style"
         :title="titleTipsDisabled"
         v-tippy
         >
         <check-mark
-        :checked="false"
+        :checked="tipsDisabled"
       />{{contentTipsDisabled}}</b-dd-item-button>
+      <b-dd-item-button
+        v-on:click="toggleDeepCopy()"
+        :style="style"
+        :title="titleDeepCopy"
+        v-tippy
+        >
+        <check-mark
+        :checked="deepCopy"
+      />{{contentDeepCopy}}</b-dd-item-button>
     </b-dd>
   </b-btn-group>
 </template>
@@ -72,18 +81,31 @@
         'ecoSave'
       ]),
       ...mapState('Pref', [
-        'tipsDisabled'
+        'tipsDisabled',
+        'deepCopy'
       ]),
       ...mapState('UI', [
         'toolbarBlockVisible',
         'toolbarRyVisible',
         'toolbarInfoDebug'
       ]),
+      style () {
+        return {
+          fontFamily: this.$$.eYo.Font.familySans,
+          fontSize: this.$$.eYo.Font.totalHeight
+        }
+      },
       titleEcoSave () {
         return this.$$t('toolbar.tooltip.eco_save')
       },
       contentEcoSave () {
         return this.$$t('toolbar.content.eco_save')
+      },
+      titleDeepCopy () {
+        return this.$$t('toolbar.tooltip.deep_copy')
+      },
+      contentDeepCopy () {
+        return this.$$t('toolbar.content.deep_copy')
       },
       titleTipsDisabled () {
         return this.tipsDisabled
@@ -123,7 +145,8 @@
         'setToolbarBlockDebug'
       ]),
       ...mapMutations('Pref', [
-        'toggleTipsDisabled'
+        'toggleTipsDisabled',
+        'toggleDeepCopy'
       ]),
       ...mapMutations('Document', [
         'setEcoSave'
