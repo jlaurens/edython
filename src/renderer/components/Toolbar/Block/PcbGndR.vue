@@ -63,7 +63,6 @@
       ]),
       canSlot () {
         this.$$synchronize(this.step)
-        console.warn(this.variants_, this.variant, this.variants_.indexOf(this.variant) < 0)
         return this.variants_.indexOf(this.variant) < 0
       },
       variant: {
