@@ -354,6 +354,14 @@ eYo.FieldInput = function (owner, text, optValidator, key) {
 }
 goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
 
+Object.defineProperties(eYo.FieldInput.prototype, {
+  b_eyo: {
+    get () {
+      return this.sourceBlock_.eyo
+    }
+  }
+})
+
 /**
  * Get the text from this field as displayed on screen.  May differ from getText
  * due to ellipsis, and other formatting.

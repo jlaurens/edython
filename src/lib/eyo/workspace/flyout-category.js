@@ -196,6 +196,12 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.yield_stmt
   ],
   branching: [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+    },
+    {
+      type: eYo.T3.Expr.identifier,
+    },
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
@@ -212,6 +218,12 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.conditional_expression,
   ],
   looping: [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+    },
+    {
+      type: eYo.T3.Expr.identifier,
+    },
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
@@ -227,6 +239,12 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.continue_stmt,
   ],
   function: [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+    },
+    {
+      type: eYo.T3.Expr.identifier,
+    },
     {
       type: eYo.T3.Expr.call_expr,
       name_d: ''
@@ -416,6 +434,9 @@ eYo.FlyoutCategory = {
       title: 'text_assignment'
     },
     {
+      type: eYo.T3.Expr.identifier,
+    },
+    {
       type: eYo.T3.Expr.call_expr,
       name_d: 'print',
       n_ary_s: {
@@ -521,6 +542,17 @@ eYo.FlyoutCategory = {
     }
   ],
   math: [
+    {
+      type: eYo.T3.Stmt.assignment_stmt,
+      value_s: {
+        slots: {
+          O: 0, 
+        },
+      },
+    },
+    {
+      type: eYo.T3.Expr.identifier,
+    },
     {
       type: eYo.T3.Expr.integer
     },

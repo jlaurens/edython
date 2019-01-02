@@ -556,6 +556,10 @@
     color: #212529;
     background: white;
   }
+  .b3k-edit .item.text.invalid,
+  .eyo-code-reserved.invalid {
+    color: crimson !important;
+  }
   .b3k-edit .disabled>.item.text,
   .b3k-edit .disabled.item.text {
     color: inherit;

@@ -40,11 +40,13 @@
     <div
       class="item text eyo-code-reserved"
     >f</div>
-    <literal-quote></literal-quote>
+    <literal-quote
+      ref="quote"
+    ></literal-quote>
     <b-input
       v-model="content"
       type="text"
-      class="item text"
+      :class="$$class"
       size="20"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
       :title="title_content"
@@ -63,7 +65,8 @@
       return {
         saved_step: undefined,
         prefix_: undefined,
-        content_: undefined
+        content_: undefined,
+        invalid: false
       }
     },
     components: {
@@ -76,6 +79,9 @@
       ...mapGetters('Selected', [
         'eyo'
       ]),
+      $$class () {
+        return `item text${this.invalid ? ' invalid' : ''}`
+      },
       prefix: {
         get () {
           this.$$synchronize(this.step)
@@ -153,7 +159,11 @@
           return this.content_
         },
         set (newValue) {
-          this.eyo.content_p = newValue
+          this.eyo.changeWrap(() => {
+            this.eyo.content_p = newValue
+            this.invalid = newValue !== this.eyo.content_p
+            this.$refs.quote.$$contentDidChange()
+          })
         }
       },
       title_content () {

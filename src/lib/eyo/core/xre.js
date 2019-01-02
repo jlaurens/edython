@@ -69,13 +69,17 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
 // strings:
 
 eYo.Do.readOnlyMixin(eYo.Key, {
-  _CHARACTER: '.character',
-  _LONG_CHARACTER: '.long_character'
+  _CHARACTER_SINGLE: '.character_single',
+  _LONG_CHARACTER_SINGLE: '.long_character_single',
+  _CHARACTER_DOUBLE: '.character_double',
+  _LONG_CHARACTER_DOUBLE: '.long_character_double'
 })
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
-  [eYo.Key._CHARACTER]: '[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
-  [eYo.Key._LONG_CHARACTER]: '[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]\\\\[\\x0A\\x0D\\x20-\\uFFFF]'
+  [eYo.Key._CHARACTER_SINGLE]: '[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
+  [eYo.Key._LONG_CHARACTER_SINGLE]: '[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
+  [eYo.Key._CHARACTER_DOUBLE]: '[\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
+  [eYo.Key._LONG_CHARACTER_DOUBLE]: '[\\x0A\\x0D\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]\\\\[\\x0A\\x0D\\x20-\\uFFFF]'
 })
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
@@ -83,28 +87,28 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
     (?<delimiter> ')
     (?<content>
-      (?:${eYo.XRE[eYo.Key._CHARACTER]})*
+      (?:${eYo.XRE[eYo.Key._CHARACTER_SINGLE]})*
     )
     \\k<delimiter>$`, 'x'),
   shortstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
     (?<delimiter> ")
     (?<content>
-      (?:${eYo.XRE[eYo.Key._CHARACTER]})*
+      (?:${eYo.XRE[eYo.Key._CHARACTER_DOUBLE]})*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralSingle: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
     (?<delimiter> '{3})
     (?<content>
-      (?:${eYo.XRE[eYo.Key._LONG_CHARACTER]})*
+      (?:${eYo.XRE[eYo.Key._LONG_CHARACTER_SINGLE]})*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
     (?<delimiter> "{3})
     (?<content>
-      (?:${eYo.XRE[eYo.Key._LONG_CHARACTER]})*
+      (?:${eYo.XRE[eYo.Key._LONG_CHARACTER_DOUBLE]})*
     )
     \\k<delimiter>$`, 'x')
 })

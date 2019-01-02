@@ -140,14 +140,6 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all: [eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
-      getPossible: /** @suppress {globalThis} */ function (prefix, content) {
-        var delimiter = this.owner.delimiter_p
-        var value = `${prefix}${delimiter}${content}${delimiter}`
-        return (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.T3.Expr.shortbytesliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.T3.Expr.shortstringliteral)
-      },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
         var p = this.content_p
@@ -179,8 +171,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.owner.value_d.consolidate()
       },
       validate: /** @this{eYo.Data} */ function (newValue) {
-        var content = this.owner.content_p
-        return (!goog.isDef(content) || this.owner.subtype_d.model.getPossible.call(this, newValue, content)) && {validated: newValue}
+        return (!goog.isDef(this.owner.content_p) || this.owner.validateComponents({
+          prefix: newValue}
+        )) && {validated: newValue}
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.setIncog(!newValue || !newValue.length)
@@ -188,15 +181,12 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       },
       xml: false,
     },
-    content: {
-      init: '',
+    content: { // not saved
       placeholder: /** @suppress {globalThis} */ function () {
-        var block = this.sourceBlock_
-        var eyo = block.eyo
         if (this.placeholderText_) {
           return this.placeholderText_
         }
-        var subtype = eyo.subtype_d.get()
+        var subtype = this.b_eyo.subtype_p
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
@@ -205,8 +195,9 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         this.owner.value_d.consolidate()
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var prefix = this.owner.prefix_p
-        return ((!goog.isDef(prefix) || this.owner.subtype_d.model.getPossible.call(this, prefix, newValue)) && {validated: newValue}) || null
+        return ((!goog.isDef(this.owner.content_p) || this.owner.validateComponents({
+          content: newValue
+        })) && {validated: newValue}) || null
       },
       synchronize: true
     },
@@ -290,10 +281,27 @@ eYo.DelegateSvg.Manager.register('shortbytesliteral')
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
- * @constructor
  */
 eYo.DelegateSvg.Expr.shortliteral.prototype.getBaseType = function () {
   return this.subtype_p
+}
+
+/**
+ * Validate the components.
+ * For edython.
+ * @param {?kvargs} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
+  var prefix = kvargs.prefix || this.prefix_p
+  var delimiter = kvargs.delimiter || this.delimiter_p
+  var content = kvargs.content || this.content_p
+  var value = `${prefix}${delimiter}${content}${delimiter}`
+  return (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.T3.Expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.T3.Expr.shortstringliteral)
 }
 
 /**
@@ -318,10 +326,12 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
   var current = this.prefix_p
-  var content = this.content_p
-  var subtype_d = this.subtype_d
-  var can_b = !!subtype_d.model.getPossible.call(subtype_d, 'b', content)
-  var can_f = !!subtype_d.model.getPossible.call(subtype_d, 'f', content)
+  var can_b = this.validateComponents({
+    prefix: 'b'
+  })
+  var can_f = this.validateComponents({
+    prefix: 'f'
+  })
   var item = (msg, prefix) => {
     if (prefix !== current) {
       var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -383,15 +393,7 @@ goog.provide('eYo.DelegateSvg.Expr.longliteral')
 eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
-      all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral],
-      getPossible: /** @suppress {globalThis} */ function (prefix, content) {
-        var delimiter = this.owner.delimiter_p
-        var value = `${prefix}${delimiter}${content}${delimiter}`
-        return (!!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.T3.Expr.longbytesliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.longbytesliteralDouble) && eYo.T3.Expr.longbytesliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.longstringliteralSingle) && eYo.T3.Expr.longstringliteral) ||
-        (!!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.T3.Expr.longstringliteral)
-      }
+      all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral]
     },
     delimiter: {
       all: ["'''", '"""']
@@ -429,6 +431,24 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     check: eYo.T3.Expr.longstringliteral
   }
 })
+
+/**
+ * Validate the components.
+ * For edython.
+ * @param {?kvargs} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @constructor
+ */
+eYo.DelegateSvg.Expr.longliteral.prototype.validateComponents = function(kvargs) {
+  var prefix = kvargs.prefix || this.prefix_p
+  var delimiter = kvargs.delimiter || this.delimiter_p
+  var content = kvargs.content || this.content_p
+  var value = `${prefix}${delimiter}${content}${delimiter}`
+  return (!!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.T3.Expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longbytesliteralDouble) && eYo.T3.Expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longstringliteralSingle) && eYo.T3.Expr.longstringliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.T3.Expr.longstringliteral)
+}
 
 eYo.DelegateSvg.Expr.longstringliteral = eYo.DelegateSvg.Expr.longbytesliteral = eYo.DelegateSvg.Expr.longliteral
 eYo.DelegateSvg.Manager.register('longstringliteral')
