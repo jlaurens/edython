@@ -30,10 +30,12 @@
   
   import demoBasicHello from '@static/demo/basic/hello.xml'
   import demoBasicHelloYou from '@static/demo/basic/hello-you.xml'
+  import demoBasicTestingAndBranching from '@static/demo/basic/testing_and_branching.xml'
   import demoBasicTurtle from '@static/demo/basic/turtle.xml'
   import demoBasicTurtleStar from '@static/demo/basic/turtle-star.xml'
   import demoBasicTurtleSpiralStar from '@static/demo/basic/turtle-spiral-star.xml'
   import demoBasicTurtleHilbert from '@static/demo/basic/turtle-hilbert.xml'
+  import demoBasicTurtlePythagorasTree from '@static/demo/basic/turtle-pythagoras-tree.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
@@ -46,34 +48,40 @@
         on: 0.5,
         demos: [
           {
-            title: 'Bonjour le monde!',
+            title: this.$$t('toolbar.demo.basic.hello_world'),
             xml: demoBasicHello
           }, {
-            title: 'Bonjour ...',
+            title: this.$$t('toolbar.demo.basic.hello_you'),
             xml: demoBasicHelloYou
           }, {
-            title: 'Tortue',
+            title: this.$$t('toolbar.demo.basic.testing_and_branching'),
+            xml: demoBasicTestingAndBranching
+          }, {
+            title: this.$$t('toolbar.demo.basic.turtle'),
             xml: demoBasicTurtle
           }, {
-            title: 'Tortue star',
+            title: this.$$t('toolbar.demo.basic.turtle_star'),
             xml: demoBasicTurtleStar
           }, {
-            title: 'Tortue spiral star',
+            title: this.$$t('toolbar.demo.basic.turtle_spiral_star'),
             xml: demoBasicTurtleSpiralStar
           }, {
-            title: 'Tortue Hilbert',
+            title: this.$$t('toolbar.demo.basic.turtle_Hilbert'),
             xml: demoBasicTurtleHilbert
           }, {
-            title: 'Somme des entiers',
+            title: this.$$t('toolbar.demo.basic.turtle_Pythagoras_tree'),
+            xml: demoBasicTurtlePythagorasTree
+          }, {
+            title: this.$$t('toolbar.demo.basic.sum_of_integers'),
             xml: demoBasicSumOfIntegers
           }, {
-            title: '50 dés',
+            title: this.$$t('toolbar.demo.basic.fifty_dices'),
             xml: demoBasicFiftyDices
           }, {
-            title: 'Liste',
+            title: this.$$t('toolbar.demo.basic.list'),
             xml: demoBasicList
           }, {
-            title: 'Liste (Édition)',
+            title: this.$$t('toolbar.demo.basic.list_edit'),
             xml: demoBasicListEdit
           }
         ]

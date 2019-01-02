@@ -1,0 +1,54 @@
+<s eyo="start" comment="L'instruction &quot;if&quot; est un branchement" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+  <python>
+# L'instruction "if" est un branchement
+réponse = input('Quel est ton âge ?')
+# à la variable `réponse` est affectée une chaîne de caractères 
+âge = int(réponse)
+# à la variable `âge` est affectée un entier 
+if âge &gt;= 18:
+    print("Tu es majeur")
+else:
+    print("Tu es mineur")
+</python>
+    <s eyo="assignment" name="réponse" flow="suite">
+      <x eyo="list" slot="value">
+        <x eyo="call" name="input" slot="O">
+        <x eyo="list" slot="n_ary">
+          <x eyo="literal" slot="O">'Quel est ton âge ?'</x>
+        </x>
+      </x>
+    </x>
+    <s eyo="stmt" comment="à la variable `réponse` est affectée une chaîne de caractères " flow="next">
+      <s eyo="assignment" name="âge" flow="next">
+        <x eyo="list" slot="value">
+          <x eyo="call" name="int" slot="O">
+            <x eyo="list" slot="n_ary">
+              <x eyo="identifier" name="réponse" slot="O">
+              </x>
+            </x>
+          </x>
+        </x>
+        <s eyo="stmt" comment="à la variable `âge` est affectée un entier " flow="next">
+          <s eyo="if" flow="next">
+            <x eyo="comparison" operator="&gt;=" rhs="18" slot="if">
+              <x eyo="identifier" name="âge" slot="lhs">
+              </x>
+            </x>
+            <s eyo="call" name="print" flow="suite">
+              <x eyo="list" slot="n_ary">
+                <x eyo="literal" slot="O">"Tu es majeur"</x>
+              </x>
+            </s>
+            <s eyo="else" flow="next">
+              <s eyo="call" name="print" flow="suite">
+                <x eyo="list" slot="n_ary">
+                  <x eyo="literal" slot="O">"Tu es mineur"</x>
+                </x>
+              </s>
+            </s>
+          </s>
+        </s>
+      </s>
+    </s>
+  </s>
+</s>

@@ -708,6 +708,8 @@ eYo.Xml.toDom = function (block, element, opt) {
   } else {
     eyo.saveData(element, opt)
     eyo.saveSlots(element, opt)
+    var optNoNext = opt && opt.noNext
+    opt.noNext = false
     var targetBlockToDom = (c8n, name, key) => {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
@@ -729,7 +731,6 @@ eYo.Xml.toDom = function (block, element, opt) {
     })
     // the suite and the flow
     targetBlockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    var optNoNext = opt && opt.noNext
     !optNoNext && targetBlockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }

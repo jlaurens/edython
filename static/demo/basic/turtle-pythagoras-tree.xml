@@ -1,0 +1,206 @@
+<s eyo="start" comment="Cliquez sur &quot;marche&quot; et soyez patient (20'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+  <python>
+  # Cliquez sur "marche" et soyez patient (20'')
+  from turtle import *
+  from math import *
+  edython.turtleSetup()
+  limit = 5
+  pensize(1)
+  fillcolor('red')
+  left(90)
+  def dessine_carré(côté):
+      pendown()
+      begin_fill()
+      for i in range(4):
+          forward(côté)
+          left(90)
+      end_fill()
+      penup()
+  def dessine_arbre(côté):
+      if côté &gt; limit:
+          dessine_carré(côté)
+          forward(côté)
+          right(45)
+          dessine_arbre(côté / sqrt(2))
+          left(90)
+          forward(côté / sqrt(2))
+          dessine_arbre(côté / sqrt(2))
+          left(90)
+          forward(côté / sqrt(2))
+          left(45)
+          forward(côté)
+          left(90)
+          forward(côté)
+          left(90)
+  dessine_arbre(50)
+  done()
+  </python>
+  <s eyo="import" variant="from_module_import_star" from="turtle" star="true" flow="suite">
+    <s eyo="import" variant="from_module_import_star" from="math" star="true" flow="next">
+      <s eyo="turtle__setup_stmt" flow="next">
+        <s eyo="assignment" name="limit" flow="next">
+          <x eyo="list" slot="value">
+            <x eyo="literal" slot="O">5</x>
+          </x>
+          <s eyo="call" name="pensize" ary="1" flow="next">
+            <x eyo="list" slot="n_ary">
+              <x eyo="literal" slot="O">1</x>
+            </x>
+            <s eyo="call" holder="turtle" name="fillcolor" flow="next">
+              <x eyo="list" slot="n_ary">
+                <x eyo="literal" slot="O">'red'</x>
+              </x>
+              <s eyo="call" holder="turtle" name="left" flow="next">
+                <x eyo="list" slot="n_ary">
+                  <x eyo="literal" slot="O">90</x>
+                </x>
+                <s eyo="function" name="dessine_carré" flow="next">
+                  <x eyo="list" slot="parameters">
+                    <x eyo="identifier" name="côté" slot="O">
+                    </x>
+                  </x>
+                  <s eyo="call" holder="turtle" name="pendown" flow="suite">
+                    <s eyo="call" holder="turtle" name="begin_fill" flow="next">
+                      <s eyo="for" flow="next">
+                        <x eyo="list" slot="for">
+                          <x eyo="identifier" name="i" slot="O">
+                          </x>
+                        </x>
+                        <x eyo="list" slot="in">
+                          <x eyo="range" stop="4" slot="O">
+                          </x>
+                        </x>
+                        <s eyo="call" holder="turtle" name="forward" flow="suite">
+                          <x eyo="list" slot="n_ary">
+                            <x eyo="identifier" name="côté" slot="O">
+                            </x>
+                          </x>
+                          <s eyo="call" holder="turtle" name="left" flow="next">
+                            <x eyo="list" slot="n_ary">
+                              <x eyo="literal" slot="O">90</x>
+                            </x>
+                          </s>
+                        </s>
+                        <s eyo="call" holder="turtle" name="end_fill" flow="next">
+                          <s eyo="call" holder="turtle" name="penup" flow="next">
+                          </s>
+                        </s>
+                      </s>
+                    </s>
+                  </s>
+                  <s eyo="function" name="dessine_arbre" flow="next">
+                    <x eyo="list" slot="parameters">
+                      <x eyo="identifier" name="côté" slot="O">
+                      </x>
+                    </x>
+                    <s eyo="if" flow="suite">
+                      <x eyo="comparison" operator="&gt;" slot="if">
+                        <x eyo="identifier" name="côté" slot="lhs">
+                        </x>
+                        <x eyo="identifier" name="limit" slot="rhs">
+                        </x>
+                      </x>
+                      <s eyo="call" name="dessine_carré" flow="suite">
+                        <x eyo="list" slot="n_ary">
+                          <x eyo="identifier" name="côté" slot="O">
+                          </x>
+                        </x>
+                        <s eyo="call" holder="turtle" name="forward" flow="next">
+                          <x eyo="list" slot="n_ary">
+                            <x eyo="identifier" name="côté" slot="O">
+                            </x>
+                          </x>
+                          <s eyo="call" holder="turtle" name="right" flow="next">
+                            <x eyo="list" slot="n_ary">
+                              <x eyo="literal" slot="O">45</x>
+                            </x>
+                            <s eyo="call" name="dessine_arbre" flow="next">
+                              <x eyo="list" slot="n_ary">
+                                <x eyo="m_expr" operator="/" rhs="sqrt(2)" slot="O">
+                                  <x eyo="identifier" name="côté" slot="lhs">
+                                  </x>
+                                </x>
+                              </x>
+                              <s eyo="call" holder="turtle" name="left" flow="next">
+                                <x eyo="list" slot="n_ary">
+                                  <x eyo="literal" slot="O">90</x>
+                                </x>
+                                <s eyo="call" holder="turtle" name="forward" flow="next">
+                                  <x eyo="list" slot="n_ary">
+                                    <x eyo="m_expr" operator="/" rhs="sqrt(2)" slot="O">
+                                      <x eyo="identifier" name="côté" slot="lhs">
+                                      </x>
+                                    </x>
+                                  </x>
+                                  <s eyo="call" name="dessine_arbre" flow="next">
+                                    <x eyo="list" slot="n_ary">
+                                      <x eyo="m_expr" operator="/" rhs="sqrt(2)" slot="O">
+                                        <x eyo="identifier" name="côté" slot="lhs">
+                                        </x>
+                                      </x>
+                                    </x>
+                                    <s eyo="call" holder="turtle" name="left" flow="next">
+                                      <x eyo="list" slot="n_ary">
+                                        <x eyo="literal" slot="O">90</x>
+                                      </x>
+                                      <s eyo="call" holder="turtle" name="forward" flow="next">
+                                        <x eyo="list" slot="n_ary">
+                                          <x eyo="m_expr" operator="/" rhs="sqrt(2)" slot="O">
+                                            <x eyo="identifier" name="côté" slot="lhs">
+                                            </x>
+                                          </x>
+                                        </x>
+                                        <s eyo="call" holder="turtle" name="left" flow="next">
+                                          <x eyo="list" slot="n_ary">
+                                            <x eyo="literal" slot="O">45</x>
+                                          </x>
+                                          <s eyo="call" holder="turtle" name="forward" flow="next">
+                                            <x eyo="list" slot="n_ary">
+                                              <x eyo="identifier" name="côté" slot="O">
+                                              </x>
+                                            </x>
+                                            <s eyo="call" holder="turtle" name="left" flow="next">
+                                              <x eyo="list" slot="n_ary">
+                                                <x eyo="literal" slot="O">90</x>
+                                              </x>
+                                              <s eyo="call" holder="turtle" name="forward" flow="next">
+                                                <x eyo="list" slot="n_ary">
+                                                  <x eyo="identifier" name="côté" slot="O">
+                                                  </x>
+                                                </x>
+                                                <s eyo="call" holder="turtle" name="left" flow="next">
+                                                  <x eyo="list" slot="n_ary">
+                                                    <x eyo="literal" slot="O">90</x>
+                                                  </x>
+                                                </s>
+                                              </s>
+                                            </s>
+                                          </s>
+                                        </s>
+                                      </s>
+                                    </s>
+                                  </s>
+                                </s>
+                              </s>
+                            </s>
+                          </s>
+                        </s>
+                      </s>
+                    </s>
+                    <s eyo="call" name="dessine_arbre" flow="next">
+                      <x eyo="list" slot="n_ary">
+                        <x eyo="literal" slot="O">50</x>
+                      </x>
+                      <s eyo="call" holder="turtle" name="done" flow="next">
+                      </s>
+                    </s>
+                  </s>
+                </s>
+              </s>
+            </s>
+          </s>
+        </s>
+      </s>
+    </s>
+  </s>
+</s>

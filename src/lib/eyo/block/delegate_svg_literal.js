@@ -66,6 +66,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
     },
     value: {
       init: '',
+      main: true,
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.owner.type_d.getAll()
@@ -211,6 +212,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     value: {
       init: "''",
+      main: true,
       validate: /** @this{eYo.Data} */ function (newValue) {
         return goog.isString(newValue)? {validated: newValue}: null
       },
@@ -396,6 +398,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
     },
     value: {
       init: "''''''",
+      main: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner

@@ -73,5 +73,21 @@ export default {
   },
   name: {
     copy_python: 'Copier le code python'
+  },
+  demo: {
+    basic: {
+      hello_world: 'Bonjour le monde!',
+      hello_you: 'Bonjour …',
+      testing_and_branching: 'Tests et branchements',
+      turtle: 'Tortue',
+      turtle_star: 'Tortue étoile',
+      turtle_spiral_star: 'Tortue étoile spirale',
+      turtle_Hilbert: 'Tortue Hilbert',
+      turtle_Pythagoras_tree: 'Tortue Arbre de Pythagore',
+      sum_of_integers: 'Somme des entiers',
+      fifty_dices: '50 dés',
+      list: 'Liste',
+      list_edit: 'Liste(Édition)'
+    }
   }
 }
