@@ -345,8 +345,8 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.identifiers_s.setIncog(newValue !== eYo.Key.DEL)
-        O.del_s.setIncog(newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL)
+        O.identifiers_s.setIncog(newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL)
+        O.del_s.setIncog(newValue !== eYo.Key.DEL)
         O.ans_s.setIncog(newValue !== eYo.Key.RETURN)
       },
       xml: {
