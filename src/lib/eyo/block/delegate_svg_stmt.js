@@ -519,6 +519,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         var data = this.owner.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
+        this.owner.updateEnclosingBlackCount()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         if (this.owner.comment_d.isIncog()) {

@@ -410,7 +410,7 @@ var initWithStatementBlock = function(eyo, opt) {
   // standard statement
   var width = eyo.block_.width
   this.M(true, width - eYo.Unit.x / 2)
-  this.v(opt && opt.dido ? 1 + eyo.suiteCount + eyo.nextCount : 1)
+  this.v(opt && opt.dido ? eyo.headCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.headCount + eyo.blackCount)
   var r = this.stmt_radius
   if (eyo.hasNextStatement_()) {
     this.H(1 / 2)     

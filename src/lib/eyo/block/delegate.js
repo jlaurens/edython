@@ -66,7 +66,8 @@ eYo.Delegate = function (block) {
   }
   // to manage reentrency
   this.reentrant = {}
-  this.nextCount_ = this.suiteCount_ = 0
+  this.headCount_ = this.blackCount_ = this.suiteCount_ = this.nextCount_ = 0
+  this.updateHeadCount()
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -110,6 +111,18 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return parent && parent.eyo
     }
   },
+  enclosingGroup: {
+    get () {
+      var eyo = this
+      var c8n
+      while ((c8n = eyo.previousConnection) && (c8n = c8n.targetConnection)) {
+        eyo = c8n.sourceBlock_.eyo
+        if (c8n.eyo.isSuite) {
+          return eyo
+        }
+      }
+    }
+  },
   wrapper: {
     get () {
       var ans = this
@@ -145,12 +158,54 @@ Object.defineProperties(eYo.Delegate.prototype, {
       this.nextCount_ = newValue
       if (d) {
         this.incrementChangeCount()
-        var parent = this.block_.getParent()
+        var parent = this.parent
         if (parent) {
-          if (parent.eyo.next === this) {
-            parent.eyo.nextCount += d
+          if (parent.next === this) {
+            parent.nextCount += d
           } else {
-            parent.eyo.suiteCount += d
+            parent.suiteCount += d
+          }
+        }
+      }
+    }
+  },
+  headCount: {
+    get () {
+      return this.headCount_ // 1 or more
+    },
+    set (newValue) {
+      var d = newValue - this.headCount_
+      if (d) {
+        this.incrementChangeCount()
+        this.headCount_ = newValue
+        var parent = this.parent
+        if (parent) {
+          if (parent.next === this) {
+            parent.nextCount += d
+          } else {
+            parent.suiteCount += d
+          }
+        }
+      }
+    }
+  },
+  blackCount: {
+    get () {
+      return this.blackCount_ // 0 or 1
+    },
+    set (newValue) {
+      var d = newValue - this.blackCount_
+      if (d) {
+        this.incrementChangeCount()
+        this.blackCount_ = newValue
+        var parent = this.parent
+        if (parent) {
+          // next is not a good design
+          // because blackCount_ has not a straightforward definition
+          if (parent.next === this) {
+            parent.nextCount += d
+          } else {
+            parent.suiteCount += d
           }
         }
       }
@@ -158,29 +213,21 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   suiteCount: {
     get () {
-      return this.getSuiteCount_()
+      return this.suiteCount_
     },
     set (newValue) {
       var d = newValue - this.suiteCount_
       if (d) {
         this.incrementChangeCount()
         this.suiteCount_ = newValue
-        var parent = this.block_.getParent()
+        var parent = this.parent
         if (parent) {
           // next is not a good design
           // because suiteCount_ has not a straightforward definition
-          if (parent.eyo.next === this) {
-            if (newValue === d) {
-              // a gap was filled
-              parent.eyo.nextCount += d - 1
-            } else if (newValue === 0) {
-              // we keep a gap
-              parent.eyo.nextCount += d + 1
-            } else {
-              parent.eyo.nextCount += d
-            }
+          if (parent.next === this) {
+            parent.nextCount += d
           } else {
-            parent.eyo.suiteCount += d
+            parent.suiteCount += d
           }
         }
       }
@@ -255,42 +302,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   },
   /**
-   * Get the next connection of this block.
-   * Comment and disabled blocks are transparent with respect to connection checking.
-   * UNUSED.
-   */
-  nextBlackConnection: {
-    get () {
-      var block = this.block_
-      while (block.eyo.isWhite()) {
-        var c8n
-        if (!(c8n = block.previousConnection) || !(block = c8n.targetBlock())) {
-          return undefined
-        }
-      }
-      return block.nextConnection      
-    }
-  },
-  /**
-   * Get the previous connection of this block.
-   * Comment and disabled blocks are transparent with respect to connection checking.
-   * For edython.
-   * @param {!Blockly.Block} block The owner of the receiver.
-   * @return None
-   */
-  previousBlackConnection: {
-    get () {
-      var block = this.block_
-      while (block.eyo.isWhite()) {
-        var c8n
-        if (!(c8n = block.nextConnection) || !(block = c8n.targetBlock())) {
-          return undefined
-        }
-      }
-      return block.previousConnection
-    }
-  },
-  /**
    * Return the topmost enclosing block in this block's tree.
    * @return {!eYo.Delegate} The root block.
    */
@@ -317,17 +328,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   }
 })
-
-/**
- * Get the suite count.
- * Default implementation returns the suite count,
- * as is. Subclassers (see group) return a filtered value.
- * For edython.
- * @param {boolean} newValue
- */
-eYo.Delegate.prototype.getSuiteCount_ = function () {
-  return this.suiteCount_
-}
 
 /**
  * Get the block.
@@ -1456,6 +1456,7 @@ eYo.Delegate.prototype.makeConnections = function () {
       this.suiteConnection.eyo.model = D
     }
   }
+  this.updateBlackCount()
 }
 
 /**
@@ -1656,7 +1657,7 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * The underlying model is not expected to change while running.
  * Call's the model's `init` method if any.
  * This is always called at creation time such that it must
- * be executed outised of any undo management.
+ * be executed outside of any undo management.
  */
 eYo.Delegate.prototype.init = function () {
   eYo.Events.disableWrap(() => {
@@ -1866,6 +1867,28 @@ eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
 }
 
 /**
+ * Update the black count.
+ */
+eYo.Delegate.prototype.updateHeadCount = function () {
+  this.headCount = 1
+}
+
+/**
+ * Update the black count.
+ */
+eYo.Delegate.prototype.updateBlackCount = function () {
+  this.blackCount = 0
+}
+
+/**
+ * Update the black count of the enclosing group.
+ */
+eYo.Delegate.prototype.updateEnclosingBlackCount = function () {
+  var eyo = this.enclosingGroup
+  eyo && eyo.updateBlackCount()
+}
+
+/**
  * Did connect this block's connection to another connection.
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
@@ -1873,12 +1896,16 @@ eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
  */
 eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   // how many blocks did I add ?
-  if (connection.eyo.isNext) {
-    var target = connection.targetBlock()
-    this.nextCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
-  } else if (connection.eyo.isSuite) {
-    var target = connection.targetBlock()
-    this.suiteCount = 1 + target.eyo.nextCount + target.eyo.suiteCount
+  var eyo = connection.eyo
+  if (!eyo.isOutput) {
+    this.updateEnclosingBlackCount()
+  }
+  if (eyo.isNext) {
+    var target = connection.targetBlock().eyo
+    this.nextCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
+  } else if (eyo.isSuite) {
+    target = connection.targetBlock().eyo
+    this.suiteCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
   }
 }
 
@@ -1895,11 +1922,13 @@ eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
 eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
-  // how many blocks did I remove ?
-  if (connection.eyo.isNext) {
+  this.updateEnclosingBlackCount()
+  // how many blocks did I add ?
+  var eyo = connection.eyo
+  if (eyo.isNext) {
     this.nextCount = 0
     this.incrementChangeCount()
-  } else if (connection.eyo.isSuite) {
+  } else if (eyo.isSuite) {
     this.suiteCount = 0
     this.incrementChangeCount()
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {

@@ -84,15 +84,6 @@ eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
       eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
 
 /**
- * Get the suite count.
- * For edython.
- * @param {boolean} newValue
- */
-eYo.DelegateSvg.BaseGroup.prototype.getSuiteCount_ = function () {
-  return Math.max(1, this.suiteCount_)
-}
-
-/**
  * Render the suite block, if relevant.
  * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
@@ -194,6 +185,13 @@ eYo.DelegateSvg.BaseGroup.prototype.highlightConnection = function (c8n) {
       'd': steps,
       transform: 'translate(' + x + ',' + y + ')'},
     c8n.sourceBlock_.getSvgRoot())
+}
+
+/**
+ * Update the black count.
+ */
+eYo.DelegateSvg.Group.prototype.updateBlackCount = function () {
+  this.blackCount = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection() ? 0 : 1
 }
 
 /**

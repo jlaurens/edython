@@ -728,7 +728,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  */
 eYo.DelegateSvg.prototype.willShortRender_ = function (recorder) {
   if (this.inputSuite) {
-    this.size.h = this.suiteCount + 1
+    this.size.h = this.headCount + this.blackCount + this.suiteCount
   }
   return this.newDrawRecorder(recorder)
 }
