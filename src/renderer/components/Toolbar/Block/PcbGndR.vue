@@ -1,6 +1,6 @@
 <template>
   <b-btn-group id="b3k-gnd" key-nav  aria-label="Block global, nonlocal or del">
-    <b-dd variant="outline-secondary" class="eyo-code-reserved item text mw-6rem" :text="chosen.variant">
+    <b-dd variant="outline-secondary" class="eyo-code-reserved item text mw-10rem" :text="chosen.variant">
       <b-dd-item-button
         v-for="choice in choices"
         v-on:click="chosen = choice"
