@@ -593,6 +593,10 @@
     width: calc(0.75 * 8rem); /**/
     min-width: calc(0.75 * 8rem);
   }
+  .b3k-edit .mw-10rem>.dropdown-menu {
+    width: calc(0.75 * 10rem); /**/
+    min-width: calc(0.75 * 10rem);
+  }
   .b3k-edit .item.w-10rem {
     width: calc(0.75 * 10rem);
   }
