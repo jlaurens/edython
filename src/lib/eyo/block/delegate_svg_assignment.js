@@ -208,8 +208,8 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
 eYo.DelegateSvg.List.makeSubclass('target_list', {
   list: {
     consolidator: eYo.Consolidator.List.Target,
-    hole_value: 'name',
-    mandatory: 1
+    mandatory: 1,
+    hole_value: 'name'
   }
 })
 
