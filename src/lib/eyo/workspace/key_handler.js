@@ -782,7 +782,10 @@ Ks = {
   },
   // 'from future import …': eYo.T3.Stmt.future_statement,
   'import …': eYo.T3.Stmt.import_stmt,
-  '# comment': eYo.T3.Stmt.expression_stmt,
+  '# comment': {
+    type: eYo.T3.Stmt.expression_stmt,
+    comment_variant_d: eYo.Key.COMMENT
+  },
   'global …': {
     type: eYo.T3.Stmt.global_stmt
   },
