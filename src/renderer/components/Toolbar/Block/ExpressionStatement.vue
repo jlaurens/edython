@@ -58,11 +58,7 @@
       }),
       $$class () {
         this.$$synchronize(this.step)
-        return `eyo-code item${this.hasExpression ? ' text' : ''} w-16rem`
-      },
-      commentVariant () {
-        this.$$synchronize(this.step)
-        return this.commentVariant_ === eYo.Key.NONE
+        return `eyo-code item${this.hasExpression ? ' text' : ''} w-24rem`
       },
       noCheck () {
         this.$$synchronize(this.step)
@@ -78,7 +74,6 @@
           return this.variant === eYo.Key.EXPRESSION
         },
         set (newValue) {
-          this.hasExpression_ = newValue
           this.eyo.variant_p = newValue
             ? eYo.Key.EXPRESSION
             : eYo.Key.NONE
