@@ -164,129 +164,129 @@ eYo.Flyout.prototype.show = function(model) {
   this.hide();
   eYo.Events.disableWrap(() => {
     this.clearOldBlocks_()
-  })
 
-  // Handle dynamic categories, represented by a name instead of a list of XML.
-  // Look up the correct category generation function and call that to get a
-  // valid XML list.
-  if (typeof model == 'string') {
-    var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
-        model);
-    goog.asserts.assert(goog.isFunction(fnToApply),
-        'Couldn\'t find a callback function when opening a toolbox category.');
-    model = fnToApply(this.workspace_.targetWorkspace);
-    goog.asserts.assert(goog.isArray(model),
-        'The result of a toolbox category callback must be an array.');
-  }
+    // Handle dynamic categories, represented by a name instead of a list of XML.
+    // Look up the correct category generation function and call that to get a
+    // valid XML list.
+    if (typeof model == 'string') {
+      var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
+          model);
+      goog.asserts.assert(goog.isFunction(fnToApply),
+          'Couldn\'t find a callback function when opening a toolbox category.');
+      model = fnToApply(this.workspace_.targetWorkspace);
+      goog.asserts.assert(goog.isArray(model),
+          'The result of a toolbox category callback must be an array.');
+    }
 
-  this.setVisible(true);
-  // Create the blocks to be shown in this flyout.
-  var contents = [];
-  var gaps = [];
-  var default_gap = eYo.Font.lineHeight/4;
- 
-  this.permanentlyDisabled_.length = 0;
-  model.forEach((xml) => {
-    if (xml.tagName) {
-      var tagName = xml.tagName.toUpperCase();
-      if (tagName == 'BLOCK') {
-        var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
-        if (curBlock.disabled) {
-          // Record blocks that were initially disabled.
-          // Do not enable these blocks as a result of capacity filtering.
-          this.permanentlyDisabled_.push(curBlock);
-        }
-        contents.push({type: 'block', block: curBlock});
-        var gap = parseInt(xml.getAttribute('gap'), 10);
-        gaps.push(isNaN(gap) ? default_gap : gap);
-      } else if (tagName == 'SEP') {
-        // Change the gap between two blocks.
-        // <sep gap="36"></sep>
-        // The default gap is 24, can be set larger or smaller.
-        // This overwrites the gap attribute on the previous block.
-        // Note that a deprecated method is to add a gap to a block.
-        // <block type="math_arithmetic" gap="8"></block>
-        var newGap = parseInt(xml.getAttribute('gap'), 10);
-        // Ignore gaps before the first block.
-        if (!isNaN(newGap) && gaps.length > 0) {
-          gaps[gaps.length - 1] = newGap;
-        } else {
+    this.setVisible(true);
+    // Create the blocks to be shown in this flyout.
+    var contents = [];
+    var gaps = [];
+    var default_gap = eYo.Font.lineHeight/4;
+  
+    this.permanentlyDisabled_.length = 0;
+    model.forEach((xml) => {
+      if (xml.tagName) {
+        var tagName = xml.tagName.toUpperCase();
+        if (tagName == 'BLOCK') {
+          var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
+          if (curBlock.disabled) {
+            // Record blocks that were initially disabled.
+            // Do not enable these blocks as a result of capacity filtering.
+            this.permanentlyDisabled_.push(curBlock);
+          }
+          contents.push({type: 'block', block: curBlock});
+          var gap = parseInt(xml.getAttribute('gap'), 10);
+          gaps.push(isNaN(gap) ? default_gap : gap);
+        } else if (tagName == 'SEP') {
+          // Change the gap between two blocks.
+          // <sep gap="36"></sep>
+          // The default gap is 24, can be set larger or smaller.
+          // This overwrites the gap attribute on the previous block.
+          // Note that a deprecated method is to add a gap to a block.
+          // <block type="math_arithmetic" gap="8"></block>
+          var newGap = parseInt(xml.getAttribute('gap'), 10);
+          // Ignore gaps before the first block.
+          if (!isNaN(newGap) && gaps.length > 0) {
+            gaps[gaps.length - 1] = newGap;
+          } else {
+            gaps.push(default_gap);
+          }
+        } else if (tagName == 'BUTTON' || tagName == 'LABEL') {
+          // Labels behave the same as buttons, but are styled differently.
+          var isLabel = tagName == 'LABEL';
+          var curButton = new Blockly.FlyoutButton(this.workspace_,
+              this.targetWorkspace_, xml, isLabel);
+          contents.push({type: 'button', button: curButton});
           gaps.push(default_gap);
-        }
-      } else if (tagName == 'BUTTON' || tagName == 'LABEL') {
-        // Labels behave the same as buttons, but are styled differently.
-        var isLabel = tagName == 'LABEL';
-        var curButton = new Blockly.FlyoutButton(this.workspace_,
-            this.targetWorkspace_, xml, isLabel);
-        contents.push({type: 'button', button: curButton});
-        gaps.push(default_gap);
-      } else if (tagName.startsWith('EYO:')) {
-        var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
-        if (curBlock.disabled) {
-          // Record blocks that were initially disabled.
-          // Do not enable these blocks as a result of capacity filtering.
-          this.permanentlyDisabled_.push(curBlock);
-        }
-        contents.push({type: 'block', block: curBlock});
-        var gap = parseInt(xml.getAttribute('gap'), 10);
-        gaps.push(isNaN(gap) ? default_gap : gap);
-      }
-    } else {
-      var createOneBlock = (xml) => {
-        try {
-          var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
-          contents.push({type: 'block', block: block})
-          block.render()
-          block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
-          gaps.push(default_gap)
-        } catch (err) {
-          console.error(xml, err)
-          // throw err: catch the error here definitely
-        } finally {
-          // pass
-        }  
-      }
-      // this is the part specific to edython
-      if (goog.isFunction(xml)) {
-        // xml is either a function that returns an array of objects
-        // or a function that creates block.
-        var ra = xml(createOneBlock)
-        if (ra && ra.forEach) {
-          ra.forEach(createOneBlock)
+        } else if (tagName.startsWith('EYO:')) {
+          var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
+          if (curBlock.disabled) {
+            // Record blocks that were initially disabled.
+            // Do not enable these blocks as a result of capacity filtering.
+            this.permanentlyDisabled_.push(curBlock);
+          }
+          contents.push({type: 'block', block: curBlock});
+          var gap = parseInt(xml.getAttribute('gap'), 10);
+          gaps.push(isNaN(gap) ? default_gap : gap);
         }
       } else {
-        createOneBlock(xml)
+        var createOneBlock = (xml) => {
+          try {
+            var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
+            contents.push({type: 'block', block: block})
+            block.render()
+            block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
+            gaps.push(default_gap)
+          } catch (err) {
+            console.error(xml, err)
+            // throw err: catch the error here definitely
+          } finally {
+            // pass
+          }  
+        }
+        // this is the part specific to edython
+        if (goog.isFunction(xml)) {
+          // xml is either a function that returns an array of objects
+          // or a function that creates block.
+          var ra = xml(createOneBlock)
+          if (ra && ra.forEach) {
+            ra.forEach(createOneBlock)
+          }
+        } else {
+          createOneBlock(xml)
+        }
       }
-    }
-  })
-  
-  this.layout_(contents, gaps);
-
-  // IE 11 is an incompetent browser that fails to fire mouseout events.
-  // When the mouse is over the background, deselect all blocks.
-  var deselectAll = function() {
-    this.workspace_.getTopBlocks(false).forEach((block) => {
-      block.removeSelect()
     })
-  };
+    
+    this.layout_(contents, gaps);
 
-  this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
-      'mouseover', this, deselectAll));
+    // IE 11 is an incompetent browser that fails to fire mouseout events.
+    // When the mouse is over the background, deselect all blocks.
+    var deselectAll = function() {
+      this.workspace_.getTopBlocks(false).forEach((block) => {
+        block.removeSelect()
+      })
+    };
 
-  if (this.horizontalLayout_) {
-    this.height_ = 0;
-  } else {
-    this.width_ = 0;
-  }
-  this.workspace_.setResizesEnabled(true);
-  this.reflow();
+    this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
+        'mouseover', this, deselectAll));
 
-  this.filterForCapacity_();
+    if (this.horizontalLayout_) {
+      this.height_ = 0;
+    } else {
+      this.width_ = 0;
+    }
+    this.workspace_.setResizesEnabled(true);
+    this.reflow();
 
-  // Correctly position the flyout's scrollbar when it opens.
-  this.position();
-  this.reflowWrapper_ = this.reflow.bind(this);
-  this.workspace_.addChangeListener(this.reflowWrapper_);
+    this.filterForCapacity_();
+
+    // Correctly position the flyout's scrollbar when it opens.
+    this.position();
+    this.reflowWrapper_ = this.reflow.bind(this);
+    this.workspace_.addChangeListener(this.reflowWrapper_);
+  })
 }
 
 /**
