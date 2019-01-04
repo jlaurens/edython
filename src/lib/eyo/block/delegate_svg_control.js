@@ -61,7 +61,7 @@ eYo.DelegateSvg.Control.prototype.isControl = true
  * May be called very early.
  */
 eYo.DelegateSvg.Control.prototype.updateBlackCount = function () {
-  this.blackCount = this.suiteConnection && this.suiteConnection.nextConnection ? 0 : 1
+  this.blackCount = this.suiteConnection && this.suiteConnection.targetConnection ? 0 : 1
 }
 
 
