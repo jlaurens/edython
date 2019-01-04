@@ -46,6 +46,9 @@ export default {
     funcdef: { // OK
       name: 'Un identifiant pour nommer la fonction'
     },
+    classdef: { // OK
+      name: 'Un identifiant pour nommer la classe'
+    },
     quote: { // OK
       single: 'Utiliser des guillemets droits simples',
       double: 'Utiliser des guillemets droits doubles'
