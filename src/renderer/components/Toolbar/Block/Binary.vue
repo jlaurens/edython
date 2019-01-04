@@ -6,10 +6,12 @@
       type="text"
       :class="$$class(lhs)"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.number')"></b-input>
+      :placeholder="$$t('block.placeholder.number')"
+    ></b-input>
     <div
       v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      v-html="slotholder('eyo-slotholder-inline')"
+    ></div>
     <b-dd
       id="block-binary-operator"
       class="eyo-code item text mw-4rem block-binary-operator"
