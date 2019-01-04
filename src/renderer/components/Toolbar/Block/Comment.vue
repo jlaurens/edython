@@ -1,11 +1,27 @@
 <template>
-  <b-btn-group id="block-stmt-comment" class="b3k-edit-comment" v-if="canComment">
-    <div class="item">
-      <input type="checkbox" aria-label="Checkbox to enable comment" v-model="hasComment" :disabled="mustComment">
-      <span class="pl-2 eyo-code-reserved">#</span>
+  <b-btn-group
+    v-if="canComment"
+    id="block-stmt-comment"
+    class="b3k-edit-comment">
+    <div
+      class="item">
+      <input
+        type="checkbox"
+        aria-label="Checkbox to enable comment"
+        v-model="hasComment"
+        :disabled="mustComment"
+      ><span
+        class="pl-2 eyo-code-reserved"
+      >#</span>
     </div>
-    <b-input type="text"
-      :class="$$class" v-model="comment" :disabled="!hasComment" aria-label="Comment input" :placeholder="$$t('block.placeholder.comment')"></b-input>
+    <b-input
+      type="text"
+      :class="$$class"
+      v-model="comment"
+      :disabled="!hasComment"
+      aria-label="Comment input"
+      :placeholder="$$t('block.placeholder.comment')"
+    ></b-input>
   </b-btn-group>
 </template>
 
@@ -32,7 +48,7 @@
       ]),
       $$class: {
         get () {
-          return `eyo-code and item${this.hasComment ? ' text' : ''}${this.comment.length ? '' : ' placeholder'} w-16rem`
+          return `eyo-code and item${this.hasComment ? ' text' : ''}${this.comment.length ? '' : ' placeholder'} w-24rem`
         }
       },
       canComment () {
