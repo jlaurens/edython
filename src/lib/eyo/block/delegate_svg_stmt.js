@@ -36,7 +36,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       synchronize: true,
       placeholderText: eYo.Msg.Placeholder.COMMENT,
       didLoad: /** @suppress {globalThis} */ function () {
-        this.owner.comment_variant_p = this.isRequiredFromSaved() ? eYo.Key.COMMENT : eYo.Key.NONE
+        this.whenRequiredFromSaved(() => this.owner.comment_variant_p = eYo.Key.COMMENT)
       }
     },
     comment_variant: { // variant are very useful with undo/redo
