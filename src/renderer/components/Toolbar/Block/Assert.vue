@@ -1,9 +1,12 @@
 <template>
-  <b-btn-group id="block-assert" key-nav  aria-label="Block assertion">
+  <b-btn-group
+    id="block-assert"
+    key-nav 
+    aria-label="Block assertion">
     <div
       class="item text eyo-code-reserved"
       :style="{fontFamily: $$.eYo.Font.familyMono}"
-      >except</div>
+    >assert</div>
     <div
       v-if="eyo.expression_t"
       class="item text"
@@ -20,9 +23,13 @@
       :style="{fontFamily: $$.eYo.Font.familyMono}"
         ></b-form-input>
     <div class="item">
-        <input  type="checkbox"
-                aria-label="Checkbox to activate the expression2 field"
-                v-model="showExpression2" >
+        <input
+          type="checkbox"
+          aria-label="Checkbox to activate the expression2 field"
+          v-model="showExpression2"
+        >
+        <span
+          class="eyo-code pl-2">,</span>
     </div>
     <div
       v-if="eyo.expression2_t"
@@ -30,7 +37,7 @@
       v-html="slotholder('eyo-slotholder-inline')"
       ></div>
     <b-form-input
-    v-else
+      v-else
       v-model="expression2"
       type="text"
       :class="$$class(expression2, {no_text: !showExpression2})"
