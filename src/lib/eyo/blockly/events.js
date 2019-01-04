@@ -107,7 +107,7 @@ eYo.Events.setGroup = (() => {
 })()
 
 /**
- * Event disabler.
+ * Event enabler.
  * Use the arrow definition of functions to catch `this`.
  * @param {!Function} try_f
  * @param {?Function} finally_f
