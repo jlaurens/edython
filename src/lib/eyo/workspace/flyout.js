@@ -162,7 +162,9 @@ eYo.Flyout.prototype.show = function(model) {
   this.workspace_.setResizesEnabled(false);
   eYo.Tooltip.hideAll(this.svgGroup_)
   this.hide();
-  this.clearOldBlocks_();
+  eYo.Events.disableWrap(() => {
+    this.clearOldBlocks_()
+  })
 
   // Handle dynamic categories, represented by a name instead of a list of XML.
   // Look up the correct category generation function and call that to get a
