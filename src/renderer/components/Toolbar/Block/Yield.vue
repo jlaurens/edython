@@ -118,11 +118,11 @@
       },
       $$content (variant) {
         if (variant === eYo.Key.EXPRESSION) {
-          return `<span class="eyo-code-reserved">yield</span>${this.slotholder('eyo-slotholder-inline')}`
+          return `${this.slotholder('eyo-slotholder-inline')}`
         } else if (variant === eYo.Key.FROM) {
-          return '<span class="eyo-code-reserved">yield from …</span>'
+          return '<span class="eyo-code-reserved">from …</span>'
         } else {
-          return '<span class="eyo-code-reserved">yield</span>'
+          return ''
         }
       },
       $$class (key) {
