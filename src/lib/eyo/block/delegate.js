@@ -1897,7 +1897,9 @@ eYo.Delegate.prototype.updateEnclosingBlackCount = function () {
 eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   // how many blocks did I add ?
   var eyo = connection.eyo
-  if (!eyo.isOutput) {
+  if (eyo.isSuite) {
+    eyo.b_eyo.updateBlackCount()
+  } else if (!eyo.isOutput) {
     this.updateEnclosingBlackCount()
   }
   if (eyo.isNext) {
@@ -1922,9 +1924,13 @@ eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
 eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
-  this.updateEnclosingBlackCount()
   // how many blocks did I add ?
   var eyo = connection.eyo
+  if (eyo.isSuite) {
+    eyo.b_eyo.updateBlackCount()
+  } else if (!eyo.isOutput) {
+    this.updateEnclosingBlackCount()
+  }
   if (eyo.isNext) {
     this.nextCount = 0
     this.incrementChangeCount()
