@@ -308,6 +308,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     annotation: {
       order: 1000,
       init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
