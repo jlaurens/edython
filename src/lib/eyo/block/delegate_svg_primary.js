@@ -402,6 +402,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.change(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated) {
           this.change(eYo.Key.ANNOTATED)
+        } else if (type === eYo.T3.Expr.key_datum) {
+          this.change(eYo.Key.ANNOTATED)
         } else if (type === eYo.T3.Expr.identifier_defined || type === eYo.T3.Expr.keyword_item) {
           this.change(eYo.Key.DEFINED)
         } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
