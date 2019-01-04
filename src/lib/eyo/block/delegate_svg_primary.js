@@ -392,6 +392,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.isChanging(oldValue, newValue)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
+        this.owner.annotation_d.required_from_type = false
+        this.owner.definition_d.required_from_type = false
         if (type === eYo.T3.Expr.call_expr) {
           this.change(eYo.Key.CALL_EXPR)
         } else if (type === eYo.T3.Stmt.call_stmt) {
@@ -402,12 +404,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.change(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated) {
           this.change(eYo.Key.ANNOTATED)
+          this.owner.annotation_d.required_from_type = true
         } else if (type === eYo.T3.Expr.key_datum) {
           this.change(eYo.Key.ANNOTATED)
+          this.owner.annotation_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_defined || type === eYo.T3.Expr.keyword_item) {
           this.change(eYo.Key.DEFINED)
+          this.owner.definition_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
           this.change(eYo.Key.ANNOTATED_DEFINED)
+          this.owner.annotation_d.required_from_type = true
+          this.owner.definition_d.required_from_type = true
         } else {
           this.change(eYo.Key.NONE)
         }
