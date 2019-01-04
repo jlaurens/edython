@@ -7,47 +7,47 @@
     <div
       class="item text eyo-code-reserved"
       :style="{fontFamily: $$.eYo.Font.familyMono}"
-      >yield</div>
-      <b-dd
-        class="eyo-dropdown eyo-with-slotholder"
-        variant="outline-secondary"
-        text=""
-        >
-        <b-dd-item-button
-          v-for="choice in choices"
-          v-on:click="$$choose(choice)" :key="choice"
-          class="eyo-code"
-          v-html="$$content(choice)"
-          ></b-dd-item-button>
-      </b-dd>
+    >yield</div>
+    <b-dd
+      class="eyo-dropdown eyo-with-slotholder"
+      variant="outline-secondary"
+      text=""
+      >
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="$$choose(choice)" :key="choice"
+        class="eyo-code"
+        v-html="$$content(choice)"
+      ></b-dd-item-button>
+    </b-dd>
     <b-btn-group
-      v-if="showFrom">
-      <div
-        class="item text eyo-code-reserved"
-        :style="{fontFamily: $$.eYo.Font.familyMono}"
-        >from</div>
-      <div
-        v-if="eyo.from_t"
-        class="item text"
-        v-html="slotholder('eyo-slotholder-inline')"
-        ></div>
-      <b-form-input
-        v-else
-        v-model="from"
-        type="text"
-        :class="$$class(from)"
-        :placeholder="$$t('block.placeholder.expression')"
-        :title="$$t('block.except.expression')"
-        v-tippy
-        :style="{fontFamily: $$.eYo.Font.familyMono}"
-        ></b-form-input>
-    </b-btn-group>
-    <div
+      v-if="showFrom"
+    ><div
+      class="item text eyo-code-reserved"
+      :style="{fontFamily: $$.eYo.Font.familyMono}"
+      >from</div
+    ><div
+      v-if="eyo.from_t"
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"
+    ></div
+    ><b-form-input
+      v-else
+      v-model="from"
+      type="text"
+      :class="$$class(from)"
+      :placeholder="$$t('block.placeholder.expression')"
+      :title="$$t('block.except.expression')"
+      v-tippy
+      :style="{fontFamily: $$.eYo.Font.familyMono}"
+    ></b-form-input
+    ></b-btn-group
+    ><div
       v-else-if="showExpression"
       class="item text"
       v-html="slotholder('eyo-slotholder-inline')"
-    ></div>
-</b-btn-group>
+    ></div
+  ></b-btn-group>
 </template>
 
 <script>
