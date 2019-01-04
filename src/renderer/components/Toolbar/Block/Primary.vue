@@ -4,7 +4,9 @@
       :slotholder="slotholder"
       :ismethod="isMethod">
     </dotted>
-    <name></name>
+    <name
+    :slotholder="slotholder"
+    ></name>
     <variant
       :slotholder="slotholder"
       :ismethod="isMethod">
