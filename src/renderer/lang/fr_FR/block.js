@@ -95,6 +95,9 @@ export default {
     Console2: 'Console2',
     Workbench: 'Établi',
     content: {
+      workspace: {
+        clean: 'Nettoyer'
+      },
       console1: {
         restart: 'Redémarrer',
         erase: 'Effacer'

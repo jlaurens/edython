@@ -192,6 +192,7 @@
             'turtle.scrollToVisible'
           ],
           workspace: [
+            'workspace.clean'
           ]
         }[this.what]
       },
@@ -282,6 +283,9 @@
           },
           'turtle.scrollToVisible': () => {
             eYo.$$.bus.$emit('turtle-scroll')
+          },
+          'workspace.clean': () => {
+            eYo.$$.bus.$emit('workspace-clean')
           },
           'workspace.scaleReset': this.workspaceScaleReset,
           'workspace.scaleUp': this.workspaceScaleUp,

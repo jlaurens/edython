@@ -435,17 +435,17 @@ Blockly.onKeyDown_ = function(e) {
  */
 eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
-    Blockly.Events.setGroup(true);
-    Blockly.hideChaff();
-    if (deep) {
-      do {
-        var next = block.nextConnection && block.nextConnection.targetBlock()
-        block.dispose(false, true)
-      } while ((block = next))
-    } else {
-      block.dispose(true, true)
-    }
-    Blockly.Events.setGroup(false);
+    eYo.Events.groupWrap(() => {
+      Blockly.hideChaff()
+      if (deep) {
+        do {
+          var next = block.eyo.nextBlock
+          block.dispose(false, true)
+        } while ((block = next))
+      } else {
+        block.dispose(true, true)
+      }
+    })
   }
 }
 

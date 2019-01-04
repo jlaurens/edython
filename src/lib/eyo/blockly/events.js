@@ -251,17 +251,16 @@ Blockly.Events.filter = function(queueIn, forward) {
 
 
 /**
- * Filter the queued events and merge duplicates.
- * Use the arrow definition of functions to catch `this`.
+ * Wrap the given function into a single undo group.
  * @param {!Function} try_f 
  * @param {?Function} finally_f 
  */
 eYo.Events.groupWrap = eYo.Do.makeWrapper(
-  function () {
+  () => {
     eYo.Events.setGroup(true)
   },
   null,
-  function () {
+  () => {
     eYo.Events.setGroup(false)
   }
 )

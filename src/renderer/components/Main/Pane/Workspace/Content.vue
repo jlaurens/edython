@@ -354,6 +354,16 @@
         eYo.$$.bus.$on('new-document', () => {
           eYo.App.workspace.clear()
         })
+        eYo.$$.bus.$on('workspace-clean', () => {
+          var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
+          eYo.Events.groupWrap(() => {
+            eYo.Do.tryFinally(() => {
+              tops.forEach(block => {
+                !block.eyo.isControl && eYo.deleteBlock(block, true)
+              })
+            })
+          })
+        })
         this.selectedCategory = this.items.basic
         eYo.App.workspace.render()
         this.$nextTick(eYo.App.Document.doNew)

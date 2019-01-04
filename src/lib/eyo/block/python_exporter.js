@@ -153,7 +153,7 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
           this.dedent_()
         }
       }
-      if (is_deep && block.nextConnection && (target = block.nextConnection.targetBlock())) {
+      if (is_deep && (target = block.eyo.nextBlock)) {
         this.export(target, opt)
       }  
     }, () => {

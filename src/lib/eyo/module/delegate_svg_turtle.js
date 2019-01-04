@@ -165,6 +165,9 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('speed', 'Régler la vitesse du tracé'),
   F_stmt('degrees', 'Angles mesurés en degrés'),
   F_stmt('radians', 'Angles mesurés en radians'),
+  F_stmt('pendown', 'Abaisser le crayon'),
+  F_expr('isdown', 'Le crayon est baissé ?'),// beware: NO BREAK SPACE before '?'
+  F_stmt('penup', 'Lever le crayon'),
   F_expr('xcor', 'Obtenir l\'abscisse de la tortue.'),
   F_expr('ycor', 'Obtenir l\'ordonnée de la tortue.'),
   F_expr('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
