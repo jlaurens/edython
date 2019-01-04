@@ -92,7 +92,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   LOWER_BOUND: 'lower_bound',
   UPPER_BOUND: 'upper_bound',
   STRIDE: 'stride',
-  ANNOTATED: 'annotated',
   LHS: 'lhs',
   RHS: 'rhs',
   ASSERT: 'assert',
