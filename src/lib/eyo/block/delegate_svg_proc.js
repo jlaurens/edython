@@ -51,13 +51,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
  */
 eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
   xml: {
-    attr: '@',
-    didLoad: /** @suppress {globalThis} */ function (element) {
-      var target = this.n_ary_t
-      if (target.childBlocks_.length) {
-        this.variant_p = eYo.Key.N_ARY
-      }
-    }
+    attr: '@'
   },
   data: {
     property: {
@@ -66,19 +60,23 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         eYo.Key.SETTER,
         eYo.Key.DELETER
       ],
-      init: eYo.Key.GETTER,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
+      init: null,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        // the property change may echo into a decorator change
+        this.didChange(oldValue, newValue)
         if (newValue === eYo.Key.GETTER) {
           var variant = this.owner.variant_p
           if (variant === eYo.Key.NONE || variant === eYo.Key.N_ARY) {
-            this.owner.decorator_p = this.owner.saved_p
+            this.owner.decorator_p = this.owner.saved_p || ''
           } else {
-            this.owner.decorator_p = variant
+            this.owner.decorator_p = variant || ''
           }
         } else if (newValue) {
           this.owner.decorator_p = this.owner.saved_p + '.' + newValue
         }
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
         this.setIncog(newValue === eYo.Key.GETTER)
         // update the placeholder for the name field.
         this.owner.name_d.field.placeholderText(true)
@@ -87,22 +85,28 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
     },
     variant: {
       all: [
-        eYo.Key.NONE, // custom name with no arguments
+        eYo.Key.NONE, // custom name with no arguments, possibly attributes
         eYo.Key.STATICMETHOD, // @staticmethod
         eYo.Key.CLASSMETHOD, // @classmethod
         eYo.Key.PROPERTY, // @property
         eYo.Key.N_ARY // custom name with arguments
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
-        this.setIncog(newValue !== eYo.Key.N_ARY)
-        this.synchronize(newValue)
-      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue !== eYo.Key.PROPERTY) {
           this.owner.property_p = eYo.Key.GETTER
         }
+        if (newValue === eYo.Key.N_ARY) {
+          this.owner.chooser_p = eYo.Key.N_ARY
+          this.owner.mainChooser_p = eYo.Key.NONE
+        } else {
+          this.owner.mainChooser_p = newValue
+        }
+      },
+      synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
+        this.setIncog(newValue !== eYo.Key.N_ARY)
+        this.synchronize(newValue)
         this.owner.n_ary_s.setIncog(newValue !== eYo.Key.N_ARY)
       },
       xml: {
@@ -148,7 +152,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         if (p && p !== eYo.Key.GETTER) {
           newValue = newValue + '.' + p
         }
-        O.decorator_p = newValue
+        O.decorator_p = newValue || ''
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
@@ -162,7 +166,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
               return 'eyo-code-builtin'
             default:
               return 'eyo-code'
-            }
+          }
         }
         this.field.eyo.set_css_class(f(newValue))
       },
@@ -184,49 +188,79 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
+        var O = this.owner
         var m = XRegExp.exec(newValue, eYo.XRE.decorator)
         if (m) {
           if (m.setter) {
-            this.owner.name_p = this.owner.saved_p = m.property_name
-            if (this.owner.variant_p === eYo.Key.N_ARY) {
-              this.owner.variant_p = eYo.Key.NONE
+            O.name_p = O.saved_p = m.property_name
+            if (O.variant_p === eYo.Key.N_ARY) {
+              O.variant_p = eYo.Key.NONE
             }
-            this.owner.property_p = eYo.Key.SETTER
+            O.property_p = eYo.Key.SETTER
+            O.mainChooser_p = eYo.Key.NONE
+            O.chooser_p = eYo.Key.SETTER
           } else if(m.deleter) {
-            this.owner.name_p = this.owner.saved_p = m.property_name
-            if (this.owner.variant_p === eYo.Key.N_ARY) {
-              this.owner.variant_p = eYo.Key.NONE
+            O.name_p = O.saved_p = m.property_name
+            if (O.variant_p === eYo.Key.N_ARY) {
+              O.variant_p = eYo.Key.NONE
             }
-            this.owner.property_p = eYo.Key.DELETER
+            O.property_p = eYo.Key.DELETER
+            O.mainChooser_p = eYo.Key.NONE
+            O.chooser_p = eYo.Key.DELETER
           } else {
-            this.owner.property_p = eYo.Key.GETTER
+            O.property_p = eYo.Key.GETTER
+            O.chooser_p = eYo.Key.NONE
             if (m.property) {
-              this.owner.variant_p = this.owner.name_p = eYo.Key.PROPERTY
+              O.variant_p = O.name_p = eYo.Key.PROPERTY
+              O.mainChooser_p = eYo.Key.PROPERTY
             } else if (m.staticmethod) {
-              this.owner.variant_p = this.owner.name_p = eYo.Key.STATICMETHOD
+              O.variant_p = O.name_p = eYo.Key.STATICMETHOD
+              O.mainChooser_p = eYo.Key.STATICMETHOD
             } else if (m.classmethod) {
-              this.owner.variant_p = this.owner.name_p = eYo.Key.CLASSMETHOD
+              O.variant_p = O.name_p = eYo.Key.CLASSMETHOD
+              O.mainChooser_p = eYo.Key.CLASSMETHOD
             } else {
-              if (this.owner.variant_p !== eYo.Key.N_ARY) {
-                this.owner.variant_p = eYo.Key.NONE
+              if (O.variant_p !== eYo.Key.N_ARY) {
+                O.variant_p = eYo.Key.NONE
               }
-              this.owner.name_p = this.owner.saved_p = newValue
+              O.name_p = O.saved_p = newValue
+              O.mainChooser_p = eYo.Key.NONE
             }
           }
         } else {
-          this.owner.name_p = newValue
-          this.owner.property_p = eYo.Key.GETTER
+          O.name_p = newValue
+          O.property_p = eYo.Key.GETTER
+          O.mainChooser_p = eYo.Key.NONE
+          O.chooser_p = eYo.Key.NONE
         }
       },
       synchronize: true,
       xml: true
     },
-    chooser: {
+    mainChooser: {
       all: [
         eYo.Key.NONE, // custom name with no arguments
         eYo.Key.STATICMETHOD, // @staticmethod
         eYo.Key.CLASSMETHOD, // @classmethod
-        eYo.Key.PROPERTY, // @property
+        eYo.Key.PROPERTY // @property
+      ],
+      init: null,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue === eYo.Key.NONE) {
+          this.owner.variant_p = eYo.Key.NONE
+          this.owner.decorator_p = this.owner.saved_p || ''
+        } else {
+          this.owner.chooser_p = eYo.Key.NONE
+          this.owner.decorator_p = newValue || ''
+        }
+      },
+      synchronize: false,
+      xml: false
+    },
+    chooser: {
+      all: [
+        eYo.Key.NONE, // custom name with no arguments
         eYo.Key.N_ARY, // custom name with arguments
         // eYo.Key.GETTER,
         eYo.Key.SETTER,
@@ -238,25 +272,21 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         switch(newValue) {
           case eYo.Key.NONE:
           this.owner.variant_p = eYo.Key.NONE
-          this.owner.decorator_p = this.owner.saved_p
-          break
-          case eYo.Key.STATICMETHOD:
-          case eYo.Key.CLASSMETHOD:
-          case eYo.Key.PROPERTY:
-          this.owner.decorator_p = newValue
+          this.owner.decorator_p = this.owner.saved_p || ''
           break
           case eYo.Key.N_ARY:
           if(this.owner.variant_p !== eYo.Key.NONE) {
-            this.owner.decorator_p = this.owner.saved_p
+            this.owner.decorator_p = this.owner.saved_p || ''
           }
           this.owner.variant_p = eYo.Key.N_ARY
+          this.owner.mainChooser_p = eYo.Key.NONE
           break
           case eYo.Key.SETTER:
           case eYo.Key.DELETER:
+          this.owner.mainChooser_p = eYo.Key.NONE
           this.owner.decorator_p = this.owner.saved_p + '.' + newValue
           break
         }
-        this.value_ = null // trick to force a `didChange`
       },
       synchronize: false,
       xml: false
