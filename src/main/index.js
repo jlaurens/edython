@@ -149,7 +149,7 @@ if (process.env.BABEL_ENV !== 'web') {
     }, {
       label: 'Enregistrer',
       accelerator: 'CmdOrCtrl+S',
-      click: function (item, focusedWindow, event) {
+      click: (item, focusedWindow, event) => {
         if (focusedWindow) {
           focusedWindow.webContents.send('save')
         }
@@ -157,7 +157,7 @@ if (process.env.BABEL_ENV !== 'web') {
     }, {
       label: 'Enregistrer sous...',
       accelerator: 'ALt+CmdOrCtrl+S',
-      click: function (item, focusedWindow, event) {
+      click: (item, focusedWindow, event) => {
         if (focusedWindow) {
           focusedWindow.webContents.send('saveas')
         }
