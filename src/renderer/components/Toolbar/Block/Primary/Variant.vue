@@ -28,10 +28,17 @@
       <div
         class="eyo-code-reserved item text">:</div>
       <b-input
+        v-if="!eyo.annotation_t"
         v-model="annotation"
         type="text"
         class="item text"
-        :style='{fontFamily: $$.eYo.Font.familyMono}'></b-input>
+        :style='{fontFamily: $$.eYo.Font.familyMono}'
+      ></b-input>
+      <div
+        v-else
+        class="item text"
+        v-html="slotholder('eyo-slotholder-inline')"
+      ></div>
     </b-btn-group>
     <b-btn-group
       v-if="showDefinition">
