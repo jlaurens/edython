@@ -376,10 +376,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       }
     },
     expression: {
-      init: ''
+      init: '',
+      synchronize: true
     },
     expression2: {
       init: '',
+      synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p === eYo.Key.BINARY
@@ -416,7 +418,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: eYo.Msg.Placeholder.EXPRESSION,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.BINARY
