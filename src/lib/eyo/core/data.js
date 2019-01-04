@@ -656,11 +656,16 @@ eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Dat
  * change it to a key.
  * If the value is a number, change to the corresponding item
  * in the `getAll()` array.
+ * If there is a model function with that name, use it instead.
  * @param {Object} newValue
  */
 eYo.Data.prototype.filter = function (newValue) {
   // tricky argument management
   // Used when newValue is an uppercase string
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_filter',this.model.filter)
+  if (f) {
+    return eYo.Decorate.whenAns(f.apply(this, arguments))
+  }
   if (goog.isString(newValue)) {
     if (newValue === newValue.toUpperCase()) {
       var x = eYo.Key[newValue]
@@ -971,7 +976,7 @@ eYo.Data.prototype.load = function (element) {
  * For edython.
  */
 eYo.Data.prototype.willLoad = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'modelWillLoad',this.model.willLoad)
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_willLoad',this.model.willLoad)
   if (f) {
     f.apply(this, arguments)
     return
@@ -983,7 +988,7 @@ eYo.Data.prototype.willLoad = function () {
  * For edython.
  */
 eYo.Data.prototype.didLoad = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'modelDidLoad',this.model.didLoad)
+  var f = eYo.Decorate.reentrant_method.call(this, 'model_didLoad',this.model.didLoad)
   if (f) {
     f.apply(this, arguments)
     return
