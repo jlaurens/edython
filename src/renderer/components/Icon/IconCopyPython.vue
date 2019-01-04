@@ -26,14 +26,14 @@
         type: String,
         default: 'currentColor'
       },
-      theta: {
+      footstep: {
         type: Number,
         default: 1
       }
     },
     computed: {
       transform () {
-        return this.theta ? `rotate(${this.theta * 180},16,16)` : null
+        return this.footstep ? `rotate(${this.footstep * 180},16,16)` : null
       }
     }
   }

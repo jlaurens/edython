@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{"workspace":{},"paneLayout":"H"}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Préparation des tortues" x="547" y="-278">
+<python>
+# Préparation des tortues
+import turtle
+r = 100
+pas = 2
+edython.turtleSetup()
+def tortue(x,y,couleur):
+    T = turtle.Turtle()
+    T.penup()
+    T.setposition(x,y)
+    T.pendown()
+    T.color(couleur)
+    return T
+T1 = tortue(- r,- r,'red')
+T2 = tortue(+ r,- r,'blue')
+T3 = tortue(+ r,+ r,'orange')
+T4 = tortue(- r,+ r,'green')
+def orienter(de,vers):
+    de.setheading(de.towards(vers.position()))
+def orienter_tout():
+    orienter(T1,T2)
+    orienter(T2,T3)
+    orienter(T3,T4)
+    orienter(T4,T1)
+def avancer():
+    T1.forward(pas)
+    T2.forward(pas)
+    T3.forward(pas)
+    T4.forward(pas)
+while pas &lt; T1.distance(T2.position()):
+    orienter_tout()
+    avancer()
+turtle.done()
+</python>
+<s eyo="import" variant="import" flow="suite">
+<x eyo="list" slot="import_module">
+<x eyo="identifier" name="turtle" slot="O">
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="r" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">100</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="pas" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">2</x>
+</x>
+<s eyo="turtle__setup_stmt" flow="next">
+<s eyo="function" name="tortue" flow="next">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="x" slot="O">
+</x>
+<x eyo="identifier" name="y" slot="f">
+</x>
+<x eyo="identifier" name="couleur" slot="r">
+</x>
+</x>
+<s eyo="assignment" flow="suite">
+<x eyo="identifier" name="T" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="call" dotted="1" holder="turtle" name="Turtle" slot="O">
+</x>
+</x>
+<s eyo="call" dotted="1" name="penup" ary="0" flow="next">
+<x eyo="identifier" name="T" slot="holder">
+</x>
+<s eyo="call" dotted="1" name="setposition" ary="2" mandatory="1" flow="next">
+<x eyo="identifier" name="T" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="x" slot="O">
+</x>
+<x eyo="identifier" name="y" slot="f">
+</x>
+</x>
+<s eyo="call" dotted="1" name="pendown" ary="0" flow="next">
+<x eyo="identifier" name="T" slot="holder">
+</x>
+<s eyo="call" dotted="1" name="color" ary="3" flow="next">
+<x eyo="identifier" name="T" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="couleur" slot="O">
+</x>
+</x>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="T" slot="O">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="T1" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="call" name="tortue" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="unary" operator="-" slot="f">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="unary" operator="-" slot="r">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="x">'red'</x>
+</x>
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="T2" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="call" name="tortue" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="unary" operator="+" slot="u">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="unary" operator="-" slot="x">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="{">'blue'</x>
+</x>
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="T3" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="call" name="tortue" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="unary" operator="+" slot="f">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="unary" operator="+" slot="r">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="x">'orange'</x>
+</x>
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="T4" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="call" name="tortue" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="unary" operator="-" slot="u">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="unary" operator="+" slot="x">
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="{">'green'</x>
+</x>
+</x>
+</x>
+<s eyo="function" name="orienter" flow="next">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="de" slot="O">
+</x>
+<x eyo="identifier" name="vers" slot="f">
+</x>
+</x>
+<s eyo="call" dotted="1" name="setheading" ary="1" mandatory="1" flow="suite">
+<x eyo="identifier" name="de" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="call" dotted="1" holder="de" name="towards" ary="1" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="call" dotted="1" name="position" ary="0" slot="O">
+<x eyo="identifier" name="vers" slot="holder">
+</x>
+</x>
+</x>
+</x>
+</x>
+</s>
+<s eyo="function" name="orienter_tout" flow="next">
+<s eyo="call" name="orienter" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="T1" slot="O">
+</x>
+<x eyo="identifier" name="T2" slot="f">
+</x>
+</x>
+<s eyo="call" name="orienter" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="T2" slot="O">
+</x>
+<x eyo="identifier" name="T3" slot="f">
+</x>
+</x>
+<s eyo="call" name="orienter" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="T3" slot="O">
+</x>
+<x eyo="identifier" name="T4" slot="f">
+</x>
+</x>
+<s eyo="call" name="orienter" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="T4" slot="O">
+</x>
+<x eyo="identifier" name="T1" slot="f">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="function" name="avancer" flow="next">
+<s eyo="call" dotted="1" name="forward" ary="1" mandatory="1" flow="suite">
+<x eyo="identifier" name="T1" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="pas" slot="O">
+</x>
+</x>
+<s eyo="call" dotted="1" name="forward" ary="1" mandatory="1" flow="next">
+<x eyo="identifier" name="T2" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="pas" slot="O">
+</x>
+</x>
+<s eyo="call" dotted="1" name="forward" ary="1" mandatory="1" flow="next">
+<x eyo="identifier" name="T3" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="pas" slot="O">
+</x>
+</x>
+<s eyo="call" dotted="1" name="forward" ary="1" mandatory="1" flow="next">
+<x eyo="identifier" name="T4" slot="holder">
+</x>
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="pas" slot="O">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="while" flow="next">
+<x eyo="comparison" lhs="pas" slot="if">
+<x eyo="call" dotted="1" holder="T1" name="distance" slot="rhs">
+<x eyo="list" slot="n_ary">
+<x eyo="call" dotted="1" holder="T2" name="position" slot="O">
+</x>
+</x>
+</x>
+</x>
+<s eyo="call" name="orienter_tout" flow="suite">
+<s eyo="call" name="avancer" flow="next">
+</s>
+</s>
+<s eyo="call" dotted="1" holder="turtle" name="done" flow="next">
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

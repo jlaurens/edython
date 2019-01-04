@@ -82,6 +82,7 @@ export default {
       turtle: 'Tortue',
       turtle_star: 'Tortue étoile',
       turtle_spiral_star: 'Tortue étoile spirale',
+      turtle_four: 'Tortue poursuite',
       turtle_Hilbert: 'Tortue Hilbert',
       turtle_Pythagoras_tree: 'Tortue Arbre de Pythagore',
       sum_of_integers: 'Somme des entiers',

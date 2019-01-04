@@ -70,7 +70,7 @@ eYo.FlyoutCategory.basic_turtle__module = [
     from_d: 'turtle'
   },
   eYo.T3.Stmt.turtle__setup_stmt,
-  F_stmt('done', 'Avancer de la distance donnée'),
+  F_stmt('done', 'Terminer'),
   F_stmt('forward', 'Avancer de la distance donnée'),
   F_stmt('backward', 'Reculer de la distance donnée'),
   F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
@@ -158,6 +158,13 @@ eYo.FlyoutCategory.turtle__module = [
       },
     },
   },
+  {
+    type: eYo.T3.Stmt.call_stmt,
+    name_d: 'done',
+    holder_d: 'turtle',
+    dotted_d: 1,
+    title: 'Terminer'
+  },
   F_stmt('forward', 'Avancer de la distance donnée'),
   F_stmt('back', 'Reculer de la distance donnée'),
   F_stmt('right', 'Tourner à droite d\'un angle de mesure donnée (en degrés par défaut)'),
@@ -176,6 +183,7 @@ eYo.FlyoutCategory.turtle__module = [
   F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
   F_stmt('setposition', 'Déplace la tortue à l\'endroit spécifié sans changer d\'orientation. Trace un segment si le stylo est baissé.'),
   F_stmt('setheading', 'Oriente la tortue dans la direction donnée par l\'angle selon le repère choisi (mode standard et trigonométrique ou mode logo et géographique).'),
+  F_expr('towards', 'Obtenir l\'angle vers le point de coordonnées (x, y) ou la position.'),
   F_stmt('pensize', 'Changer l\'épaisseur du trait.'),
   F_stmt('pencolor', 'Changer la couleur du trait.'),
   F_stmt('fillcolor', 'Changer la couleur de remplissage.'),

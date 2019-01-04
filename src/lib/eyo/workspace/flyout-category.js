@@ -222,12 +222,8 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.conditional_expression,
   ],
   looping: [
-    {
-      type: eYo.T3.Stmt.assignment_stmt,
-    },
-    {
-      type: eYo.T3.Expr.identifier,
-    },
+    eYo.T3.Stmt.assignment_stmt,
+    eYo.T3.Expr.identifier,
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.not_test,
     eYo.T3.Expr.number_comparison,
@@ -236,7 +232,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.and_test,
     eYo.T3.Stmt.while_part,
     eYo.T3.Stmt.for_part,
-    eYo.T3.Expr.identifier,
+    eYo.T3.Expr.numberliteral,
     eYo.T3.Expr.builtin__range_expr,
     eYo.T3.Stmt.else_part,
     eYo.T3.Stmt.break_stmt,

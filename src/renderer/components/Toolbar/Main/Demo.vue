@@ -34,6 +34,7 @@
   import demoBasicTurtle from '@static/demo/basic/turtle.xml'
   import demoBasicTurtleStar from '@static/demo/basic/turtle-star.xml'
   import demoBasicTurtleSpiralStar from '@static/demo/basic/turtle-spiral-star.xml'
+  import demoBasicTurtleFour from '@static/demo/basic/turtle-four.xml'
   import demoBasicTurtleHilbert from '@static/demo/basic/turtle-hilbert.xml'
   import demoBasicTurtlePythagorasTree from '@static/demo/basic/turtle-pythagoras-tree.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
@@ -65,6 +66,9 @@
           }, {
             title: this.$$t('toolbar.demo.basic.turtle_spiral_star'),
             xml: demoBasicTurtleSpiralStar
+          }, {
+            title: this.$$t('toolbar.demo.basic.turtle_four'),
+            xml: demoBasicTurtleFour
           }, {
             title: this.$$t('toolbar.demo.basic.turtle_Hilbert'),
             xml: demoBasicTurtleHilbert

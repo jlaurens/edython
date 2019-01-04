@@ -527,7 +527,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       order: 20002,
       init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        // returns a `Number` or `Infinity`
+        // returns a `Number` or `0`
         var validated
         var item = this.owner.item_p
         if (item) {
@@ -839,6 +839,9 @@ eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_me
     if (item) {
       this.ary_p = item.aryMax
       this.mandatory_p = item.mandatoryMin
+    } else {
+      this.ary_p = Infinity
+      this.mandatory_p = 0
     }
   }
 )

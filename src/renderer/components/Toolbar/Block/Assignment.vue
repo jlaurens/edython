@@ -71,7 +71,7 @@
       items () {
         return [
           this.items_by_key[eYo.Key.NAME],
-          this.items_by_key[eYo.Key.TARGET]
+          this.items_by_key[eYo.Key.TARGETS]
         ]
       },
       items_by_key () {
@@ -80,8 +80,8 @@
             key: eYo.Key.NAME,
             title: this.$$t('block.placeholder.name')
           },
-          [eYo.Key.TARGET]: {
-            key: eYo.Key.TARGET,
+          [eYo.Key.TARGETS]: {
+            key: eYo.Key.TARGETS,
             title: `${this.slotholder('eyo-slotholder-inline')},…`
           }
         }
