@@ -66,7 +66,7 @@
         this.name_ = eyo.name_p
       },
       $$class (key) {
-        return `eyo-code and item text${key.length ? '' : ' placeholder'} w-30rem`
+        return `eyo-code and item text${key.length ? '' : ' placeholder'} w-24rem`
       }
     }
   }
