@@ -118,6 +118,10 @@
         v-else-if="isSelected($$.eYo.T3.Stmt.funcdef_part)"
         :slotholder="slotholder"
       />
+      <block-classdef
+        v-else-if="isSelected($$.eYo.T3.Stmt.classdef_part)"
+        :slotholder="slotholder"
+      />
       <block-import
         v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)"
         :slotholder="slotholder"
@@ -209,6 +213,7 @@
   import BlockStarred from './Block/Starred.vue'
   import BlockExcept from './Block/Except.vue'
   import BlockFuncdef from './Block/Funcdef.vue'
+  import BlockClassdef from './Block/Classdef.vue'
   import BlockImport from './Block/Import.vue'
   import BlockProperSlice from './Block/ProperSlice.vue'
   import BlockPcbGndR from './Block/PcbGndR.vue'
@@ -252,6 +257,7 @@
       BlockStarred,
       BlockExcept,
       BlockFuncdef,
+      BlockClassdef,
       BlockImport,
       BlockProperSlice,
       BlockPcbGndR,
@@ -611,6 +617,9 @@
   }
   .b3k-edit input.item.w-30rem {
     width: calc(0.75 * 30rem);
+  }
+  .b3k-edit input.item.w-24rem {
+    width: calc(0.75 * 24rem);
   }
   .b3k-edit .item.placeholder {
     font-style: oblique;
