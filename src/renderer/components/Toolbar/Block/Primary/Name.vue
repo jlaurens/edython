@@ -1,8 +1,28 @@
 <template>
-  <b-btn-group id="b3k-primary-name">
-    <b-input v-model="name" type="text" :class="$$class" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$$t('block.placeholder.name')"></b-input>
-    <b-dd class="eyo-code item text" v-if="module" variant="outline-secondary">
-      <b-dd-item-button v-for="method in methods" v-on:click="name = method" :key="method" class="eyo-code">{{method}}</b-dd-item-button>
+  <b-btn-group
+    id="b3k-primary-name">
+    <b-input
+      v-if="!eyo.name_t"
+      v-model="name"
+      type="text"
+      :class="$$class"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.name')"
+    ></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"
+    ></div>
+    <b-dd
+      class="eyo-code item text"
+      v-if="module"
+      variant="outline-secondary">
+      <b-dd-item-button
+        v-for="method in methods"
+        v-on:click="name = method"
+        :key="method"
+        class="eyo-code"
+      >{{method}}</b-dd-item-button>
     </b-dd>
   </b-btn-group>
 </template>
@@ -18,6 +38,14 @@
         name_: undefined,
         variant_: undefined,
         module_: undefined
+      }
+    },
+    props: {
+      slotholder: {
+        type: Function,
+        default: function (item) {
+          return item
+        }
       }
     },
     computed: {
