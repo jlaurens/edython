@@ -135,11 +135,11 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.power,
   ],
   intermediate: [
+    eYo.T3.Stmt.expression_stmt,
     {
       type: eYo.T3.Stmt.expression_stmt,
-      comment_variant_d: eYo.Key.COMMENT
+      comment_variant_d: eYo.Key.NONE
     },
-    eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,
