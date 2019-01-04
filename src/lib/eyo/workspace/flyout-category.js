@@ -246,9 +246,7 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Stmt.assignment_stmt,
     },
-    {
-      type: eYo.T3.Expr.identifier,
-    },
+    eYo.T3.Expr.identifier,
     {
       type: eYo.T3.Expr.call_expr,
       name_d: ''
@@ -259,7 +257,6 @@ eYo.FlyoutCategory = {
     },
     eYo.T3.Expr.lambda,
     eYo.T3.Stmt.funcdef_part,
-    eYo.T3.Expr.primary,
     eYo.T3.Expr.parameter_star,
     eYo.T3.Expr.parameter_star_star,
     eYo.T3.Stmt.return_stmt,
