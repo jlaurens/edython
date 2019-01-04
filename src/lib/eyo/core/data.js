@@ -257,7 +257,7 @@ eYo.Data.prototype.setWithType = function (type) {
     this.model.fromType
   )
   f && eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
-    this.intechangernalSet(ans)
+    this.internalSet(ans)
   })
 }
 
@@ -1017,7 +1017,7 @@ eYo.Data.prototype.isRequiredFromModel = function () {
  * For edython.
  */
 eYo.Data.prototype.isRequiredFromSaved = function () {
-  return this.isRequiredFromModel() || this.get().length
+  return this.isRequiredFromModel() || this.get().length || this.required_from_type
 }
 
 /**
