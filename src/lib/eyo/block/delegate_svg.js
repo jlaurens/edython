@@ -2161,7 +2161,7 @@ eYo.HoleFiller.getData = function (check, value) {
 eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
   var H = holes || []
   var getDeepHoles = (c8n) => {
-    if (c8n && c8n.type === Blockly.INPUT_VALUE && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
+    if (c8n && c8n.eyo.isInput && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
       var target = c8n.targetBlock()
       if (target) {
         eYo.HoleFiller.getDeepHoles(target, H)
@@ -2196,7 +2196,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
     () => {
       for (; i < holes.length; ++i) {
         var c8n = holes[i]
-        if (c8n && c8n.type === Blockly.INPUT_VALUE && !c8n.isConnected()) {
+        if (c8n && c8n.eyo.isInput && !c8n.isConnected()) {
           var data = c8n.eyo.hole_data
           if (data) {
             try {
@@ -2763,7 +2763,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   var R
   var c8n = this.someInputConnection((c8n) => {
     if (!c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
-      if (c8n.type === Blockly.INPUT_VALUE) {
+      if (c8n.eyo.isInput) {
         var target = c8n.targetBlock()
         if (target) {
           var targetC8n = target.eyo.getConnectionForEvent(e)
@@ -2973,7 +2973,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
         // very special management for tuple input
         if ((otherC8n = eYo.SelectedConnection) && goog.isString(model)) {
           var otherSource = otherC8n.getSourceBlock()
-          if (otherSource.eyo instanceof eYo.DelegateSvg.List && otherC8n.type === Blockly.INPUT_VALUE) {
+          if (otherSource.eyo instanceof eYo.DelegateSvg.List && otherC8n.eyo.isInput) {
             eYo.Events.groupWrap(() => {
               var blocks = model.split(',').map(x => {
                 var model = x.trim()
@@ -3029,7 +3029,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       }
       if ((otherC8n = eYo.SelectedConnection)) {
         otherSource = otherC8n.getSourceBlock()
-        if (otherC8n.type === Blockly.INPUT_VALUE) {
+        if (otherC8n.eyo.isInput) {
           if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
             return fin()
           }
@@ -3071,7 +3071,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
         var findC8n = (block) => {
           var otherC8n, target
           otherC8n = block.eyo.someInputConnection((foundC8n) => {
-            if (foundC8n.type === Blockly.INPUT_VALUE) {
+            if (foundC8n.eyo.isInput) {
               if ((target = foundC8n.targetBlock())) {
                 if (!(foundC8n = findC8n(target))) {
                   return
@@ -3215,7 +3215,7 @@ eYo.DelegateSvg.prototype.lock = function () {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
       }
-      if (c8n.type === Blockly.INPUT_VALUE) {
+      if (c8n.eyo.isInput) {
         c8n.setHidden(true)
       }
     }
@@ -3226,7 +3226,7 @@ eYo.DelegateSvg.prototype.lock = function () {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
       }
-      if (c8n.type === Blockly.INPUT_VALUE) {
+      if (c8n.eyo.isInput) {
         c8n.setHidden(true)
       }      
     }
@@ -3267,7 +3267,7 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
   var c8n, target
   this.forEachInput((input) => {
     if ((c8n = input.connection)) {
-      if ((!shallow || c8n.type === Blockly.INPUT_VALUE) && (target = c8n.targetBlock())) {
+      if ((!shallow || c8n.eyo.isInput) && (target = c8n.targetBlock())) {
         ans += target.eyo.unlock(shallow)
       }
       c8n.setHidden(false)
