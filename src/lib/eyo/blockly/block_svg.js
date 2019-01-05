@@ -461,20 +461,21 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   }
   // unfortunately, the mouse events do not find there way to the proper block
   var c8n = this.eyo.getConnectionForEvent(e)
-  if (c8n === true) {
-    c8n = this.eyo.getConnectionForEvent(e)
-  }
-  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  var target = c8n
+  ? c8n.eyo.isInput
+    ? c8n.targetBlock() || c8n.sourceBlock_
+    : c8n.sourceBlock_
+  : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
   // console.log('MOUSE DOWN', target)
   // Next trick because of the the dual event binding
   // reentrant management
-  if (!target || target.eyo.lastMouseDownEvent_ === e) {
+  if (!target || target.eyo.alreadyMouseDownEvent_ === e) {
     return
   }
-  target.eyo.lastMouseDownEvent_ = e
+  target.eyo.alreadyMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
@@ -494,30 +495,40 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
  */
 eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
   var c8n = this.eyo.getConnectionForEvent(e)
-  var target = c8n ? c8n.targetBlock() || c8n.sourceBlock_ : this
+  var target = c8n
+  ? c8n.eyo.isInput
+    ? c8n.targetBlock() || c8n.sourceBlock_
+    : c8n.sourceBlock_
+  : this
   while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
     target = target.getParent()
   }
   // reentrancy filter
-  if (!target || target.eyo.lastMouseUpEvent_ === e) {
+  if (!target || target.eyo.alreadyMouseUpEvent_ === e) {
     return
   }
-  target.eyo.lastMouseUpEvent_ = e
+  target.eyo.alreadyMouseUpEvent_ = e
   var ee = target.eyo.lastMouseDownEvent
   if (ee) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (target === Blockly.selected) {
-        // if the block was already selected,
-        // try to select an input connection
-        var field = c8n && c8n.eyo.bindField
-        field && (field.eyo.doNotEdit = false)
-        if (c8n && c8n === eYo.SelectedConnection) {
+      if (target === Blockly.selected && c8n) {
+        // the block was already selected,
+        // and there is a candidate selection
+        if (c8n === eYo.SelectedConnection) {
+          // unselect
           eYo.SelectedConnection = null
-        } else if (c8n && !c8n.targetConnection && c8n !== target.eyo.lastSelectedConnection) {
-          field && (field.eyo.doNotEdit = true)
-          eYo.SelectedConnection = c8n    
+        } else if (c8n !== target.eyo.lastSelectedConnection) {
+          if (c8n.eyo.isInput) {
+            if (!c8n.targetConnection) {
+              var field = c8n.eyo.bindField
+              field && (field.eyo.doNotEdit = true)
+              eYo.SelectedConnection = c8n
+            }
+          } else {
+            eYo.SelectedConnection = c8n
+          }
         } else {
           eYo.SelectedConnection = null
         }
