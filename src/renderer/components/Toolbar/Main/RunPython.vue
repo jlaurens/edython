@@ -31,7 +31,7 @@
       }
     },
     computed: {
-      ...mapState('UI', {
+      ...mapState('Py', {
         'running1': state => {
           console.log('state.running1', state.running1)
           return state.running1
@@ -54,14 +54,26 @@
       IconBase,
       IconRun
     },
+    watch: {
+      running1 (newValue, oldValue) {
+        if (newValue) {
+          var root = this.rootControl
+          if (root) {
+            this.$nextTick(() => {
+              root.runScript()
+            })
+          }
+        }
+      }
+    },
     methods: {
       doIt () {
         var root = this.rootControl
         if (root) {
           this.$$.bus.$emit('will-run-script')
-          this.$nextTick(() => {
-            root.runScript()
-          })
+          // this.$nextTick(() => {
+          //   root.runScript()
+          // })
         }
       }
     }

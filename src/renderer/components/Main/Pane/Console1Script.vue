@@ -372,6 +372,7 @@ export default {
     eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
     eYo.$$.bus.$on('will-run-script', () => {
+      this.setRunning1(false)
       this.setRunning1(true)
     })
     eYo.Py.endRunScript1 = () => {
@@ -388,7 +389,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('UI', [
+    ...mapMutations('Py', [
       'setRunning1'
     ]),
     restartConsole () {

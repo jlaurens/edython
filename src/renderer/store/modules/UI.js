@@ -14,8 +14,7 @@ const state = {
   toolbarRyVisible: undefined,
   toolbarInfoDebug: undefined,
   blockEditShowRy: undefined,
-  blockEditShowDotted: undefined,
-  running1: undefined
+  blockEditShowDotted: undefined
 }
 
 const mutations = {
@@ -53,9 +52,6 @@ const mutations = {
   },
   setBlockEditShowDotted (state, yorn) {
     state.blockEditShowDotted = !!yorn
-  },
-  setRunning1 (state, yorn) {
-    state.running1 = !!yorn
   }
 }
 

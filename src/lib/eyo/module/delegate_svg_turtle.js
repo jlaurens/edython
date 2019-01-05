@@ -98,6 +98,7 @@ eYo.FlyoutCategory.basic_turtle__module = [
   F_expr('xcor', 'Obtenir l\'abscisse de la tortue.'),
   F_expr('ycor', 'Obtenir l\'ordonnée de la tortue.'),
   F_expr('position', 'Obtenir les coordonnées (x, y) de la tortue.'),
+  F_expr('heading', 'Obtenir la direction de la tortue.'),
   F_expr('distance', 'Obtenir la distance au point de coordonnées (x, y).'),
   F_stmt('setx', 'Déplace la tortue à l\'endroit spécifié sans changer d\'ordonnée ni d\'orientation. Trace un segment horizontal si le stylo est baissé.'),
   F_stmt('sety', 'Déplace la tortue à l\'endroit spécifié sans changer d\'abscisse ni d\'orientation. Trace un segment vertical si le stylo est baissé.'),
