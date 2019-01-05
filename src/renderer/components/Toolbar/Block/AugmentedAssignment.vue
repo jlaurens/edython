@@ -6,7 +6,8 @@
       type="text"
       :class="$$class"
       :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('block.placeholder.name')"></b-input>
+      :placeholder="$$t('block.placeholder.name')"
+    ></b-input>
     <div
       v-else class="item text"
       v-html="slotholder('eyo-slotholder-inline')"></div>
@@ -26,7 +27,7 @@
         v-for="item in operatorsB"
         v-on:click="operator = item"
         :key="item"
-        class="eyo-code"
+        class="block-binary-operator eyo-code"
         v-html="item">
       </b-dd-item-button>          
     </b-dd>
@@ -64,7 +65,7 @@
       ]),
       $$class: {
         get () {
-          return `eyo-code and item text${this.name.length ? '' : ' placeholder'}`
+          return `eyo-code and item text${this.name && this.name.length ? '' : ' placeholder'}`
         }
       },
       name: {
@@ -97,8 +98,10 @@
       }
     },
     created () {
+      console.log('CREATED', this.operators)
       this.operators.num = this.eyo.numberOperator_d.getAll()
       this.operators.bin = this.eyo.bitwiseOperator_d.getAll()
+      console.log(this.operators)
     },
     methods: {
       $$doSynchronize (eyo) {
