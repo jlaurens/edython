@@ -137,6 +137,11 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         return eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type).rhs
       }
     }
+  },
+  output: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return type
+    }
   }
 })
 
