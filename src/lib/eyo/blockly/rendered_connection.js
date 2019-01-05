@@ -95,6 +95,15 @@ Object.defineProperties(
       }
     },
     /**
+     * Is it a next or suite connection.
+     * @return {boolean} True if the connection is the block's next or suite one.
+     */
+    isNextLike: {
+      get () {
+        return this.connection.type === Blockly.NEXT_STATEMENT
+      }
+    },
+    /**
      * Is it a previous connection.
      * @return {boolean} True if the connection is the block's previous one.
      */
@@ -781,8 +790,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
         return c8nA.targetConnection === c8nB
       }
       // connections are inline
-      if (c8nA.type === Blockly.NEXT_STATEMENT) {
-        if (c8nB.type === Blockly.PREVIOUS_STATEMENT) {
+      if (c8nA.eyo.isNextLike) {
+        if (c8nB.eyo.isPrevious) {
           if (checkB) {
             // B cannot be a root statement
             return false
@@ -814,8 +823,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
         return c8nA === c8nB.targetConnection
       }
       // connections are inline
-      if (c8nB.type === Blockly.NEXT_STATEMENT) {
-        if (c8nA.type === Blockly.PREVIOUS_STATEMENT) {
+      if (c8nB.eyo.isNextLike) {
+        if (c8nA.eyo.isPrevious) {
           if (checkA) {
             // A cannot be a root statement
             return false
