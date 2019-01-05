@@ -526,7 +526,7 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
     return
   }
   var steps = ''
-  if (c8n.type === Blockly.INPUT_VALUE) {
+  if (c8n.eyo.isInput) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else if (!this.disabled_ && (this.s7r_ || this.optional_)) {
@@ -568,7 +568,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
     return
   }
   var steps
-  if (c8n.type === Blockly.INPUT_VALUE) {
+  if (c8n.eyo.isInput) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
@@ -1060,7 +1060,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
  */
 Blockly.Connection.uniqueConnection_ = function (block, orphanBlock) {
   return block.eyo.someInputConnection((c8n) => {
-    if (c8n.type === Blockly.INPUT_VALUE &&
+    if (c8n.eyo.isInput &&
       orphanBlock.outputConnection.checkType_(c8n)) {
       if (!c8n.isConnected()) {
         return c8n
@@ -1150,9 +1150,9 @@ Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
   var c8nB = otherConnection
   var xDiff = c8nA.x_ - c8nB.x_
   var yDiff = c8nA.y_ - c8nB.y_
-  if (c8nA.type === Blockly.INPUT_VALUE) {
+  if (c8nA.eyo.isInput) {
     yDiff += eYo.Padding.h
-  } else if (c8nB.type === Blockly.INPUT_VALUE) {
+  } else if (c8nB.eyo.isInput) {
     yDiff -= eYo.Padding.h
   }
   return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -1205,13 +1205,13 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
 Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
   var connection = null
   for (var i = 0; i < block.inputList.length; i++) {
-    var thisConnection = block.inputList[i].connection
-    if (thisConnection && thisConnection.type === Blockly.INPUT_VALUE &&
-        orphanBlock.outputConnection.checkType_(thisConnection) && !thisConnection.eyo.bindField) {
+    var c8n = block.inputList[i].connection
+    if (c8n && c8n.eyo.isInput &&
+        orphanBlock.outputConnection.checkType_(c8n) && !c8n.eyo.bindField) {
       if (connection) {
         return null // More than one connection.
       }
-      connection = thisConnection
+      connection = c8n
     }
   }
   return connection
