@@ -1,9 +1,25 @@
 <template>
   <g>
-    <rect x="1" y="20" width="30" height="11" rx="3" ry="3" />
-    <rect x="23" y="24.5" width="4" height="2" :stroke="color"/>
-    <g :transform="arrowTransform" :stroke="color" >
-      <path :d="d" /> 
+    <rect
+      x="1"
+      y="20"
+      width="30"
+      height="11"
+      rx="3"
+      ry="3"></rect
+    >
+    <rect
+      x="23"
+      y="24.5"
+      width="4"
+      height="2"
+      :stroke="color"></rect
+    >
+    <g
+      :transform="arrowTransform"
+      :stroke="color"
+    >
+      <path :d="d"></path>
     </g>
   </g>
 </template>

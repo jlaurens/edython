@@ -2,21 +2,23 @@
   <b-btn
     id="toolbar-btn-run-python"
     v-on:click="doIt()"
-    :title="title"
+    :title="$$t(`toolbar.tooltip.run_python`)"
     v-tippy
     :disabled="!canDoIt">
     <icon-base
       :width="32"
       :height="32"
       :icon-name="name"
-      >
-      <icon-run/>
+    >
+      <icon-run
+        :running="running1"
+      ></icon-run>
     </icon-base>
   </b-btn>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconRun from '@@/Icon/IconRun.vue'
@@ -29,14 +31,17 @@
       }
     },
     computed: {
+      ...mapState('UI', {
+        'running1': state => {
+          console.log('state.running1', state.running1)
+          return state.running1
+        }
+      }),
       ...mapGetters('Selected', [
         'eyo'
       ]),
       name () {
         return 'Exécuter'
-      },
-      title () {
-        return 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné'
       },
       canDoIt () {
         return !!this.rootControl
@@ -54,7 +59,9 @@
         var root = this.rootControl
         if (root) {
           this.$$.bus.$emit('will-run-script')
-          root.runScript()
+          this.$nextTick(() => {
+            root.runScript()
+          })
         }
       }
     }

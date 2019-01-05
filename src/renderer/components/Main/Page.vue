@@ -699,7 +699,7 @@
           what: 'workspace'
         })
       }
-      eYo.makeTurtlePaneVisible = () => {
+      eYo.Do.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
       eYo.$$.bus.$on('pane-workspace-visible', () => {

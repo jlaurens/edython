@@ -92,7 +92,7 @@ except:
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
                         console_js.error('Pliz, show turtle panel')
-                        window.eYo.makeTurtlePaneVisible()
+                        window.eYo.Do.makeTurtlePaneVisible()
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() # this won't work either
@@ -326,7 +326,7 @@ except:
                     self.callback(self)
         print('INLINE really done')
     
-    window.eYo.console2 = Console(document['eyo-console2-area'])
+    window.eYo.Py.console2 = Console(document['eyo-console2-area'])
     console_js.log('%%% importing console module: done')
 
 </script>
@@ -344,16 +344,16 @@ export default {
   },
   methods: {
     restartConsole () {
-      eYo.console2 && eYo.console2.__class__.restart(eYo.console2)
+      eYo.Py.console2 && eYo.Py.console2.__class__.restart(eYo.Py.console2)
     },
     eraseConsole () {
-      eYo.console2 && eYo.console2.__class__.erase(eYo.console2)
+      eYo.Py.console2 && eYo.Py.console2.__class__.erase(eYo.Py.console2)
     },
     eraseTurtle () {
-      eYo.console2 && eYo.console2.__class__.runScript(eYo.console2, 'edython.turtleRestart()')
+      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, 'edython.turtleRestart()')
     },
     replayTurtle () {
-      eYo.console2 && eYo.console2.__class__.runScript(eYo.console2, 'edython.turtleReplayScene()')
+      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.eraseTurtle()
@@ -365,7 +365,7 @@ eYo.DelegateSvg.prototype.runScript2 = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  eYo.console2 && eYo.console2.__class__.runScript(window.eYo.console2, code)
+  eYo.Py.console2 && eYo.Py.console2.__class__.runScript(window.eYo.Py.console2, code)
 }
 </script>
 

@@ -45,7 +45,8 @@ export default {
     duplicate_block_deep: 'Dupliquer le bloc sélectionné et les suivants',
     duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
     paste_bock: 'Coller le block du presse-papier',
-    copy_python: 'Copier le code python dans le presse-papier'
+    copy_python: 'Copier le code python dans le presse-papier',
+    run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné'
   },
   content: {
     mode: {

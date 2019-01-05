@@ -81,6 +81,8 @@ except:
 
         def turtleSetup(self):
             if 'turtle' in sys.modules:
+                if not window.eYo.Py.canRunTurtleScript():
+                    raise Exception('Erase turtle panel first')
                 if self.setup is None:
                     print('Initializing turtle...')
                     self.setup = True
@@ -92,7 +94,7 @@ except:
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
                         console_js.error('Pliz, show turtle panel')
-                        window.eYo.makeTurtlePaneVisible()
+                        window.eYo.Do.makeTurtlePaneVisible()
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() # this won't work either
@@ -347,17 +349,20 @@ except:
                 self.write('Terminé en ' + str(round(self.time * 100000)/100) + ' ms\n')
                 self._prompt()
                 self._cursorToEnd()
+                window.eYo.Py.endRunScript1()
                 if self.callback is not None:
                     self.callback(self)
         console_js.log('INLINE really done')
     
-    window.eYo.console1 = Console(document['eyo-console1-area'])
+    window.eYo.Py.console1 = Console(document['eyo-console1-area'])
     console_js.log('%%% importing console module: done')
 
 </script>
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
+
 export default {
   name: 'panel-console1-script',
   mounted: function () {
@@ -366,19 +371,37 @@ export default {
     eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
     eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
+    eYo.$$.bus.$on('will-run-script', () => {
+      this.setRunning1(true)
+    })
+    eYo.Py.endRunScript1 = () => {
+      this.setRunning1(false)
+    }
+    eYo.Py.canRunTurtleScript = () => {
+      var el = document.getElementById('eyo-turtle-canvas-wrapper')
+      //   if (el) {
+      //     while (el.firstChild) {
+      //       el.removeChild(el.firstChild)
+      //     }
+      //   }
+      return !el || !el.children.length
+    }
   },
   methods: {
+    ...mapMutations('UI', [
+      'setRunning1'
+    ]),
     restartConsole () {
-      eYo.console1 && eYo.console1.__class__.restart(eYo.console1)
+      eYo.Py.console1 && eYo.Py.console1.__class__.restart(eYo.Py.console1)
     },
     eraseTurtle () {
-      eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleRestart()')
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, 'edython.turtleRestart()')
     },
     eraseConsole () {
-      eYo.console1 && eYo.console1.__class__.erase(eYo.console1)
+      eYo.Py.console1 && eYo.Py.console1.__class__.erase(eYo.Py.console1)
     },
     replayTurtle () {
-      eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleReplayScene()')
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, 'edython.turtleReplayScene()')
     },
     restartAll () {
       this.eraseTurtle()
@@ -390,7 +413,9 @@ eYo.DelegateSvg.prototype.runScript = function () {
   var p = new window.eYo.PythonExporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  eYo.console1 && eYo.console1.__class__.runScript(window.eYo.console1, code)
+  if (eYo.Py.console1) {
+    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, code)
+  }
 }
 </script>
 

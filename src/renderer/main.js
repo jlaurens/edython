@@ -29,7 +29,7 @@ import eYoApp from './plugin/eyoapp'
 import eYoDocument from './plugin/eyodocument'
 import eYoI18n from './lang/eyoi18n'
 
-eYo.App.Stacktrace = Stacktrace
+eYo.Py = {}
 
 eYo.$$ = Vue.prototype.$$ = {
   goog,
@@ -41,6 +41,7 @@ eYo.$$ = Vue.prototype.$$ = {
   process,
   tippy,
   http: axios,
+  Stacktrace,
   bus: new Vue()
 }
 
