@@ -2019,7 +2019,7 @@ eYo.Delegate.prototype.getStatementCount = function () {
   var hasNext = false
   if (this.inputSuite) {
     var c8n = this.inputSuite.connection
-    if (c8n && c8n.type === Blockly.NEXT_STATEMENT) {
+    if (c8n && c8n.eyo.isNextLike) {
       hasNext = true
       if (c8n.isConnected()) {
         var target = c8n.targetBlock()
