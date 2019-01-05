@@ -131,23 +131,23 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
     goog.dom.createDom(eYo.Xml.WORKSPACE, null,
       goog.dom.createDom(eYo.Xml.CONTENT)
     )
-  );
+  )
   var xml = root.firstChild.firstChild
   workspace.getTopBlocks(true).forEach(block => {
     var dom = eYo.Xml.blockToDomWithXY(block, opt)
-      var p = new eYo.PythonExporter()
-      eYo.Do.tryFinally(() => {
-        if (!block.eyo.isControl) {
-          var code = p.export(block, {is_deep: true})
-          if (code.length) {
-            var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
-            goog.dom.insertChildAt(dom, py_dom, 0)
-            goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
-          }
+    var p = new eYo.PythonExporter()
+    eYo.Do.tryFinally(() => {
+      if (!block.eyo.isControl) {
+        var code = p.export(block, {is_deep: true})
+        if (code.length) {
+          var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
+          goog.dom.insertChildAt(dom, py_dom, 0)
+          goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
         }
-      }, () => {
-        goog.dom.appendChild(xml, dom)
-      })
+      }
+    }, () => {
+      goog.dom.appendChild(xml, dom)
+    })
   })
   root.setAttribute('xmlns', eYo.Xml.XMLNS) // default namespace
   root.setAttribute('xmlns:eyo', eYo.Xml.XMLNS) // global namespace declaration
@@ -303,12 +303,12 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   } finally {
     eYo.Events.setGroup(false)
     Blockly.Field.stopCache()
+    // Re-enable workspace resizing.
+    if (workspace.setResizesEnabled) {
+      workspace.setResizesEnabled(true)
+    }
+    workspace.eyo.recover.whenRecovered(null)
   }
-  // Re-enable workspace resizing.
-  if (workspace.setResizesEnabled) {
-    workspace.setResizesEnabled(true)
-  }
-  workspace.eyo.recover.whenRecovered(null)
   return newBlockIds
 }
 
@@ -709,7 +709,7 @@ eYo.Xml.toDom = function (block, element, opt) {
     eyo.saveData(element, opt)
     eyo.saveSlots(element, opt)
     var optNoNext = opt && opt.noNext
-    opt.noNext = false
+    opt && (opt.noNext = false)
     var targetBlockToDom = (c8n, name, key) => {
       if (c8n && !c8n.eyo.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
