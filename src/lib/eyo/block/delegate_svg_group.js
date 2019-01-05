@@ -142,7 +142,7 @@ eYo.DelegateSvg.BaseGroup.prototype.highlightConnection = function (c8n) {
     return
   }
   var steps
-  if (c8n.type === Blockly.INPUT_VALUE) {
+  if (c8n.eyo.isInput) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
