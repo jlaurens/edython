@@ -417,14 +417,14 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       var targetC8n = c8nIn.targetConnection
       if (targetC8n) {
         cond_in = false
-        for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
+        for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[i++]);) {
           if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
             cond_in = true
             break
           }
         }
         nocond_in = false
-        for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
+        for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[i++]);) {
           if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
             nocond_in = true
             break
@@ -435,6 +435,16 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
     }
   }
 }, true)
+
+var names = [
+  // 'if',
+  'lambda_expr',
+  'lambda_expr_nocond'
+]
+names.forEach((key) => {
+  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.lambda
+  eYo.DelegateSvg.Manager.register(key)
+})
 
 /**
  * The output check may change depending on the content.
