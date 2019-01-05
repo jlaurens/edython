@@ -310,7 +310,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     eYo.Events.groupWrap(
       () => {
         block = Blockly.Xml.domToBlock(xmlBlock, this)
-        if (c8n.type === Blockly.INPUT_VALUE) {
+        if (c8n.eyo.isInput) {
           targetC8n = block.outputConnection
         } else if (c8n.type === Blockly.NEXT_STATEMENT) {
           targetC8n = block.previousConnection
