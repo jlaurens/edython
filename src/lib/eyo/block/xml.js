@@ -636,7 +636,7 @@ eYo.Delegate.prototype.saveData = function (element, opt) {
  * @param {?Object} opt
  */
 eYo.Delegate.prototype.saveSlots = function (element, opt) {
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.save(element, opt)
   })
 }
@@ -1153,7 +1153,7 @@ eYo.Xml.fromDom = function (block, element) {
     } else {
       eYo.Xml.Data.fromDom(block, element)
       // read slot
-      eyo.foreachSlot((slot) => {
+      eyo.forEachSlot((slot) => {
         slot.load(element)
       })
       if (eyo instanceof eYo.DelegateSvg.List) {
