@@ -377,7 +377,7 @@ export default {
     eraseConsole () {
       eYo.console1 && eYo.console1.__class__.erase(eYo.console1)
     },
-    replayTurtle1 () {
+    replayTurtle () {
       eYo.console1 && eYo.console1.__class__.runScript(eYo.console1, 'edython.turtleReplayScene()')
     },
     restartAll () {
