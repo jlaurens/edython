@@ -120,6 +120,15 @@ Object.defineProperties(
       get () {
         return this.connection === this.b_eyo.suiteConnection
       }
+    },
+    /**
+     * Is it an input connection.
+     * @return {boolean} True if the connection is one of the block's input connections.
+     */
+    isInput: {
+      get () {
+        return this.connection.type === Blockly.INPUT_VALUE
+      }
     }
   }
 )
