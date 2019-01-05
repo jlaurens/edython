@@ -362,7 +362,7 @@ eYo.BlockSvg.prototype.setCollapsed = function (collapsed) {
   // Show/hide the next statement inputs.
   for (var i = 0, input; (input = this.inputList[i]); i++) {
     renderList.push.apply(renderList, input)
-    if (input.type === Blockly.NEXT_STATEMENT) {
+    if (input.eyo.isNextLike) {
       input.setVisible(!collapsed)
     }
   }
