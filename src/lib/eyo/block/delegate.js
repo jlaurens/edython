@@ -473,7 +473,7 @@ eYo.Delegate.prototype.willLoad = function () {
   this.foreachData((data) => {
     data.willLoad()
   })
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.willLoad()
   })
   var willLoad = this.model.willLoad
@@ -489,7 +489,7 @@ eYo.Delegate.prototype.didLoad = function () {
   this.foreachData((data) => {
     data.didLoad()
   })
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.didLoad()
   })
   var didLoad = this.model.didLoad
@@ -514,7 +514,7 @@ eYo.Delegate.prototype.equals = function (rhs) {
       return equals // breaks if false
     })
     if (equals) {
-      this.foreachSlot((slot) => {
+      this.forEachSlot((slot) => {
         var r_slot = rhs.slots[slot.key]
         if (slot.isIncog()) {
           equals = !r_slot || r_slot.isIncog()
@@ -576,7 +576,7 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
   this.synchronizeSlots()
   // first the type
   this.consolidateType()
-  // first the in state
+  // then the in state
   this.consolidateData()
   this.consolidateSlots(deep, force)
   this.consolidateInputs(deep, force)
@@ -587,7 +587,6 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
 
 /**
  * Wraps `doConsolidate` into a reentrant and `change.count` aware method.
- 
  * 
  * 
  */
@@ -1099,7 +1098,7 @@ eYo.Delegate.prototype.someSlot = function (helper) {
  * @param {!function} helper
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
-eYo.Delegate.prototype.foreachSlot = function (helper) {
+eYo.Delegate.prototype.forEachSlot = function (helper) {
   var slot = this.headSlot
   if (slot && goog.isFunction(helper)) {
     var last
@@ -1563,7 +1562,7 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
  * For edython.
  */
 eYo.Delegate.prototype.synchronizeSlots = function () {
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.synchronize()
   })
 }
@@ -1592,7 +1591,7 @@ eYo.Delegate.prototype.consolidateData = function () {
  * @param {?Boolean} force
  */
 eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     // some child blocks may be disconnected as side effect
     slot.consolidate(deep, force)
   })
@@ -1641,7 +1640,7 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   var f = c8n => {
     c8n && c8n.eyo.updateCheck(t, st)
   }
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     f(slot.connection)
   })
   f(b.outputConnection)
@@ -1667,7 +1666,7 @@ eYo.Delegate.prototype.init = function () {
       this.foreachData((data) => {
         data.init()
       })
-      this.foreachSlot((slot) => {
+      this.forEachSlot((slot) => {
         slot.init()
       })
       // At this point the state value may not be consistent
@@ -2183,7 +2182,7 @@ eYo.Delegate.prototype.setIncog = function (incog) {
     return false
   }
   this.incog_ = incog
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.setIncog(incog) // with incog validator
   })
   var setupIncog = (input) => {
@@ -2321,7 +2320,7 @@ eYo.Delegate.prototype.removeError = function (key) {
  */
 eYo.Delegate.prototype.getSlotConnections = function () {
   var ra = []
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     var c8n = slot.input && slot.input.connection
     c8n && ra.push(c8n)
   })
