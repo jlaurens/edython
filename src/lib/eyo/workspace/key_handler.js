@@ -192,7 +192,7 @@ eYo.KeyHandler = (() => {
         var parent = B
         do {
           if (parent.eyo.someInputConnection((c8n) => {
-            if (c8n.type === Blockly.INPUT_VALUE && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
+            if (c8n.eyo.isInput && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
               eYo.SelectedConnection = c8n
               return true
             }
