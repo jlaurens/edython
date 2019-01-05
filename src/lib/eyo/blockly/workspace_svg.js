@@ -312,13 +312,13 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         block = Blockly.Xml.domToBlock(xmlBlock, this)
         if (c8n.eyo.isInput) {
           targetC8n = block.outputConnection
-        } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+        } else if (c8n.eyo.isNextLike) {
           targetC8n = block.previousConnection
-        } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+        } else if (c8n.eyo.isPrevious) {
           targetC8n = block.nextConnection
         }
         if (targetC8n && c8n.checkType_(targetC8n)) {
-          if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+          if (c8n.eyo.isPrevious) {
             // the pasted block must move before it is connected
             // otherwise the newly created block will attract the old one
             // resulting in a move of the existing connection
@@ -337,7 +337,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
             targetC8n.getSourceBlock().moveBy(xy.x, xy.y)
           }
           c8n.connect(targetC8n)
-          if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+          if (c8n.eyo.isPrevious) {
             targetC8n = block.nextConnection
           }
           block.select()
