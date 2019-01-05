@@ -159,7 +159,7 @@ eYo.DelegateSvg.BaseGroup.prototype.highlightConnection = function (c8n) {
     }
   } else if (c8n.type === Blockly.OUTPUT_VALUE) {
     steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5'
-  } else if (c8n.type === Blockly.NEXT_STATEMENT) {
+  } else if (c8n.eyo.isNextLike) {
     var r = eYo.Style.Path.Selected.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
@@ -167,7 +167,7 @@ eYo.DelegateSvg.BaseGroup.prototype.highlightConnection = function (c8n) {
     } else {
       steps = 'm ' + eYo.Unit.x / 2 + ',' + (-r) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + a + (-2 * r) + ' z'
     }
-  } else if (c8n.type === Blockly.PREVIOUS_STATEMENT) {
+  } else if (c8n.eyo.isPrevious) {
     r = eYo.Style.Path.Selected.width / 2
     a = ' a ' + r + ',' + r + ' 0 0 0 0,'
     if (c8n.offsetInBlock_.x > 0) {
