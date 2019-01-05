@@ -3033,7 +3033,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
           if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
             return fin()
           }
-        } else if (otherC8n === otherSource.previousConnection) {
+        } else if (otherC8n.eyo.isPrevious) {
           if ((c8n = candidate.nextConnection) && c8n.checkType_(otherC8n)) {
             var targetC8n = otherC8n.targetConnection
             if (targetC8n && candidate.previousConnection &&
@@ -3056,7 +3056,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
             if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection &&
               targetC8n.checkType_(candidate.nextConnection)) {
               return fin(() => {
-                targetC8n.connect(candidate.previousConnection)
+                targetC8n.connect(candidate.nextConnection)
               })
             } else {
               return fin()
