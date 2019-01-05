@@ -419,7 +419,7 @@ eYo.DelegateSvg.prototype.getField = function (name) {
  * May be used at the end of an initialization process.
  */
 eYo.DelegateSvg.prototype.synchronizeSlots = function () {
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     slot.synchronize()
   })
 }
@@ -706,8 +706,9 @@ eYo.DelegateSvg.prototype.render = (() => {
       this.updateAllPaths_()
       renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
       return
-    }  
+    }
     longRender.call(this, optBubble, recorder)
+    this.alignRightEdges_(io)
     this.change.save.render = this.change.count
   }
 }) ()
@@ -785,7 +786,7 @@ eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
   var block = this.block_
   block.renderMoveConnections_()
   // var blockTL = block.getRelativeToSurfaceXY()
-  // this.foreachSlot((slot) => {
+  // this.forEachSlot((slot) => {
   //   var input = slot.input
   //   if(input) {
   //     var c8n = input.connection
@@ -910,7 +911,7 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
  * @protected
  */
 eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
-  if (this.parent || !this.isStmt || !this.block_.workspace) {
+  if (this.parent || !this.isStmt || !this.block_.rendered || !this.block_.workspace || !this.isReady) {
     return
   }
   var right = 0
@@ -920,14 +921,16 @@ eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
       right = Math.max(right, eyo.minWidth + t * depth)
     }
   })
-  this.forEachStatement((eyo, depth) => {
-    var width = right - t * depth
-    var b = eyo.block_
-    if (b.width !== width) {
-      b.width = width
-      eyo.updateAllPaths_()
-    }
-  })
+  if (right) {
+    this.forEachStatement((eyo, depth) => {
+      var width = right - t * depth
+      var b = eyo.block_
+      if (b.width !== width) {
+        b.width = width
+        eyo.updateAllPaths_()
+      }
+    })
+  }
 }
 
 /**
@@ -1750,7 +1753,7 @@ eYo.Delegate.prototype.statementEnumerator = function () {
     while ((eyo = eyos.shift())) {
       e8r = e8rs.shift()
       while (e8r.next()) {
-        if (e8r.here.eyo.isNextLike) {
+        if (e8r.here.type === Blockly.NEXT_STATEMENT) {
           if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
             next = next.eyo
             eyos.unshift(eyo)
@@ -1981,7 +1984,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         }
         Vs = model
-        this.foreachSlot((slot) => {
+        this.forEachSlot((slot) => {
           var input = slot.input
           if (!input || !input.connection) {
             return
@@ -2054,7 +2057,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
           field.init()
         }
       })
-      this.foreachSlot((slot) => {
+      this.forEachSlot((slot) => {
         slot.beReady()
       })
       for (var i = 0, input; (input = block.inputList[i++]);) {
@@ -2081,7 +2084,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
       this.foreachData((data) => {
         data.synchronize() // data is not headless
       })
-      this.beReady = eYo.Do.nothing // one shot function  
+      this.beReady = eYo.Do.nothing // one shot function
     }
   )
 }
@@ -3221,7 +3224,7 @@ eYo.DelegateSvg.prototype.lock = function () {
     }
   })
   // maybe redundant calls here
-  this.foreachSlot((slot) => {
+  this.forEachSlot((slot) => {
     if (slot.input && (c8n = slot.input.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
