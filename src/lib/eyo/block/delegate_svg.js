@@ -2325,7 +2325,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     e8r.end()
     while (e8r.previous()) {
       var c8n = e8r.here.connection
-      if (c8n && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+      if (c8n && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
         var target = c8n.targetBlock()
         if (!target || (!target.eyo.wrapped_ && !target.eyo.locked_) || (c8n = doLast(target))) {
           return c8n
@@ -2372,8 +2372,11 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     return true
   }
   if ((c8n = this.selectedConnection)) {
-    if (c8n === block.nextStatement) {
-    } else if (c8n.type !== Blockly.NEXT_STATEMENT) {
+    if (c8n.eyo.isNextLike || c8n.eyo.isOutput) {
+      eYo.SelectedConnection = null
+      block.select()
+      return true
+    } else if (c8n.eyo.isOutput) {
       // select the previous non statement input if any
       var e8r = block.eyo.inputEnumerator()
       while (e8r.next()) {
@@ -2381,7 +2384,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
               if (selectConnection(c8n)) {
                 return true
               }
@@ -2396,7 +2399,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
           // found it, step down
           e8r.previous()
           while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
               if (selectConnection(c8n)) {
                 return true
               }
@@ -2419,7 +2422,7 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
         // found it, step down
         e8r.previous()
         while (e8r.previous()) {
-          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
             if (selectConnection(c8n)) {
               return true
             }
@@ -2505,20 +2508,29 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     if (!slot.isIncog()) {
       var c8n = slot.connection
       if (c8n) {
-        return (c8n.type !== Blockly.NEXT_STATEMENT) && selectConnection(c8n)
+        return (c8n.eyo.isOutput) && selectConnection(c8n)
       }
     }
   }
   if ((c8n = this.selectedConnection)) {
-    if (c8n.eyo.isNextLike) {
-      if (c8n === this.nextConnection) {
-        // select the target block (if any) when the nextConnection is in horizontal mode
-        if (c8n.eyo.isAtRight) {
-          if (selectTarget(c8n)) {
-            return true
-          }
+    if (c8n === this.nextConnection) {
+      // select the target block (if any) when the nextConnection is in horizontal mode
+      if (c8n.eyo.isAtRight) {
+        if (selectTarget(c8n)) {
+          return true
         }
-      } else if (selectTarget(c8n)) {
+      } else if (this.suiteConnection) {
+        if ((target = this.suiteConnection.targetBlock())) {
+          var eyo = target.eyo
+          var next
+          while ((next = eyo.next)) {
+            eyo = next
+          }
+          selectConnection(eyo.nextConnection)
+        }
+      }
+    } else if (c8n.eyo.isNextLike) {
+      if (selectTarget(c8n)) {
         return true
       }
     } else if (selectTarget(c8n)) {
@@ -2550,7 +2562,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
       return true
     }
     if (this.someInputConnection((c8n) => {
-      if (c8n.type !== Blockly.NEXT_STATEMENT && selectConnection(c8n)) {
+      if (c8n.eyo.isOutput && selectConnection(c8n)) {
         return true
       }
     })) {
@@ -2566,7 +2578,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
       return true
     }
   }
-  if (!(c8n = this.selectedConnection) || (c8n.type !== Blockly.NEXT_STATEMENT)) {
+  if (!(c8n = this.selectedConnection) || (c8n.eyo.isOutput)) {
     // try to select the next connection of a surrounding block
     // only when a value input is connected to the block
     target = block
@@ -2701,7 +2713,7 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function () {
       eYo.SelectedConnection = null
       block.select()
       return
-    } else if (c8n === this.nextConnection) {
+    } else if (c8n.eyo.isNextLike) {
       if ((target = c8n.targetBlock())) {
         eYo.SelectedConnection = null
         target.select()
@@ -2712,6 +2724,10 @@ eYo.DelegateSvg.prototype.selectBlockBelow = function () {
       eYo.SelectedConnection = this.nextConnection
       return
     }
+  } else if (this.suiteConnection) {
+    block.select()
+    eYo.SelectedConnection = this.suiteConnection
+    return
   } else if (this.nextConnection) {
     block.select()
     eYo.SelectedConnection = this.nextConnection
