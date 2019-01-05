@@ -967,7 +967,7 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
           // found it
           while (e8r.next()) {
             var c8n
-            if ((c8n = e8r.here.connection) && (c8n.type !== Blockly.NEXT_STATEMENT)) {
+            if ((c8n = e8r.here.connection) && (c8n.eyo.isOutput)) {
               return c8n
             }
           }
