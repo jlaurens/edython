@@ -408,3 +408,99 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     }
   )
 }
+
+/**
+ * Tidy up the nodes.
+ * @param {?Object} kvargs  key value arguments
+ */
+eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
+  // x + y < O / x + y > 0
+  var x_plus_y = (l, r) => {
+    var dx = r.xy.x - l.xy.x
+    var dy = r.xy.y - l.xy.y
+    return dx + dy
+  }
+  // x - y < O \ x - y > 0
+  var x_minus_y = (l, r) => {
+    var dx = r.xy.x - l.xy.x
+    var dy = r.xy.y - l.xy.y
+    return dx - dy
+  }
+  var lowest = (tops, helper, x) => {
+    var leaf
+    var distance = Infinity
+    tops.forEach(top => {
+      var candidate = helper(top, x)
+      if (candidate < distance) {
+        distance = candidate
+        leaf = top
+      }
+    })
+    return {leaf, distance}
+  }
+  var topleft = (tops) => {
+    return lowest(tops, (top) => top.xy.x + top.xy.y)
+  }
+  var topright = (tops) => {
+    return lowest(tops, (top) => top.xy.y - top.xy.x)
+  }
+  var tops = this.workspace_.topBlocks_.filter(block => {
+    return {
+      block,
+      xy: block.getRelativeToSurfaceXY()
+    }
+  })
+  var ordered = {}
+  var distances = []
+  while (tops.length) {
+    var tl = topleft(tops)
+    if (tl.leaf) {
+      distances.push(tl.distance)
+      var l = ordered[tl.distance]
+      if (l) {
+        l.push(tl.leaf)
+      } else {
+        ordered[tl.distance] = [tl.leaf]
+      }
+    }
+    tops.splice(tops.indexOf(tl), 1)
+  }
+  distances.forEach(d => {
+    var l = ordered[d]
+    var ll = []
+    while (l.length) {
+      var tr = topright(l)
+      ll.push(tr.leaf)
+      l.splice(l.indexOf(tl), 1)
+    }
+    ordered[d] = ll
+  })
+  tops = [].concat(...distances.map(d => ordered[d]))
+  
+  var order = (l, r) => {
+    var dx = r.xy.x - l.xy.x
+    var dy = r.xy.y - l.xy.y
+    if (dy > dx) { // bottom left
+      if (dy > -dx) { // bottom
+        return 'b'
+      } else { // left
+        return 'l'
+      }
+    } else { // top right
+      if (dy > -dx) { // right
+        return 'r'
+      } else { // top
+        return 't'
+      }
+    }
+  }
+  var insert = (start, leaf) => {
+    var o = order(start, leaf)
+    if (o === 'l') {
+      if (start.l) {
+
+      }
+    }
+  }
+}
+

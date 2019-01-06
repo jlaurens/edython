@@ -362,6 +362,13 @@
             })
           })
         })
+        eYo.$$.bus.$on('workspace-tidy-up', (kvargs) => {
+          eYo.Events.groupWrap(() => {
+            eYo.Do.tryFinally(() => {
+              eYo.App.workspace.eyo.tidyUp(kvargs)
+            })
+          })
+        })
         this.selectedCategory = this.items.basic
         eYo.App.workspace.render()
         this.$nextTick(eYo.App.Document.doNew)
