@@ -387,6 +387,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     return parentBlock
   }
   if (model.slot) {
+    // start by the slots
     var slot = parentBlock.eyo.slots[model.slot]
     var parentInput = slot && slot.input
     goog.asserts.assert(parentInput, 'No input named ' + model.slot)
@@ -405,12 +406,6 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     // find the first connection that can accept block
     var findC8n = (B) => {
       var foundC8n, target
-      // start by the slots
-      if (model.slot && B.eyo.someSlot(() => {
-        return foundC8n = (this.key === model.slot) && this.input.connection
-      })) {
-        return foundC8n
-      }
       B.eyo.someInput((input) => {
         var c8n = input.connection
         if (c8n) {
