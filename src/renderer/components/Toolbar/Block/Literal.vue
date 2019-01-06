@@ -80,7 +80,7 @@
         'eyo'
       ]),
       $$class () {
-        return `item text${this.invalid ? ' invalid' : ''}`
+        return `item text w-24rem${this.invalid ? ' invalid' : ''}`
       },
       prefix: {
         get () {

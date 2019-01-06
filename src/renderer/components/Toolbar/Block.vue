@@ -40,7 +40,7 @@
         :modifiable="modifiable"
       />
       <block-unary
-        v-else-if="isSelected($$.eYo.T3.Expr.u_expr)"
+        v-else-if="isSelected([$$.eYo.T3.Expr.u_expr, $$.eYo.T3.Expr.not_test])"
         :slotholder="slotholder"
         :modifiable="modifiable"
       />

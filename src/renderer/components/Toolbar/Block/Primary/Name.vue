@@ -57,7 +57,7 @@
       ]),
       $$class: {
         get () {
-          return `eyo-code and item text${this.name.length ? '' : ' placeholder'}`
+          return `eyo-code and item text w-16rem${this.name.length ? '' : ' placeholder'}`
         }
       },
       name: {

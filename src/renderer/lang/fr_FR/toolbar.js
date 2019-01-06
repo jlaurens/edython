@@ -87,6 +87,7 @@ export default {
       turtle_Hilbert: 'Tortue Hilbert',
       turtle_Pythagoras_tree: 'Tortue Arbre de Pythagore',
       sum_of_integers: 'Somme des entiers',
+      primes: 'Nombres premiers',
       fifty_dices: '50 dés',
       list: 'Liste',
       list_edit: 'Liste(Édition)'

@@ -38,6 +38,7 @@
   import demoBasicTurtleHilbert from '@static/demo/basic/turtle-hilbert.xml'
   import demoBasicTurtlePythagorasTree from '@static/demo/basic/turtle-pythagoras-tree.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
+  import demoBasicPrimes from '@static/demo/basic/primes.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
   import demoBasicListEdit from '@static/demo/basic/list-edit.xml'
@@ -78,6 +79,9 @@
           }, {
             title: this.$$t('toolbar.demo.basic.sum_of_integers'),
             xml: demoBasicSumOfIntegers
+          }, {
+            title: this.$$t('toolbar.demo.basic.primes'),
+            xml: demoBasicPrimes
           }, {
             title: this.$$t('toolbar.demo.basic.fifty_dices'),
             xml: demoBasicFiftyDices

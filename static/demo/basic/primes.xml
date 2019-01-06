@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{"workspace":{},"paneLayout":"V"}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="plus petit diviseur excepté 1" x="3974" y="4307">
+<python>
+# plus petit diviseur excepté 1
+def plus_petit_diviseur(n):
+    if n % 2 == 0:
+        return 2
+    d = 3
+    while d ** 2 &lt;= n:
+        if n % d == 0:
+            return d
+        d += 2
+    return n
+for n in range(101):
+    print(plus_petit_diviseur(n),'|',n)
+</python>
+<s eyo="function" name="plus_petit_diviseur" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="comparison" operator="==" rhs="0" slot="if">
+<x eyo="m_expr" operator="%" slot="lhs">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="literal" slot="O">2</x>
+</x>
+</s>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="d" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">3</x>
+</x>
+<s eyo="while" flow="next">
+<x eyo="comparison" operator="&lt;=" slot="if">
+<x eyo="power" operator="**" rhs="2" slot="lhs">
+<x eyo="identifier" name="d" slot="lhs">
+</x>
+</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="comparison" operator="==" rhs="0" slot="if">
+<x eyo="m_expr" operator="%" slot="lhs">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="identifier" name="d" slot="rhs">
+</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="d" slot="O">
+</x>
+</x>
+</s>
+<s eyo="augmented_assignment" operator="+=" flow="next">
+<x eyo="identifier" name="d" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">2</x>
+</x>
+</s>
+</s>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="for" flow="next">
+<x eyo="list" slot="for">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<x eyo="list" slot="in">
+<x eyo="call" name="range" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="f">101</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="plus_petit_diviseur" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="f">'|'</x>
+<x eyo="identifier" name="n" slot="r">
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="start" comment="nombres premiers plus petits que 100" flow="next">
+<python>
+# nombres premiers plus petits que 100
+def est_premier(n):
+    return n &gt;= 1 and plus_petit_diviseur(n)== n
+for n in range(1,101):
+    print(n,'est premier'if est_premier(n)else"n'est pas premier")
+</python>
+<s eyo="function" name="est_premier" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="and_test" operator="and" slot="O">
+<x eyo="comparison" operator="&gt;=" rhs="1" slot="lhs">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+</x>
+<x eyo="comparison" operator="==" slot="rhs">
+<x eyo="call" name="plus_petit_diviseur" slot="lhs">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+</s>
+<s eyo="for" flow="next">
+<x eyo="list" slot="for">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<x eyo="list" slot="in">
+<x eyo="call" name="range" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">1</x>
+<x eyo="literal" slot="f">101</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="r">
+</x>
+<x eyo="conditional_expression" slot="x">
+<x eyo="literal" slot="expression">'est premier'</x>
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="else">"n'est pas premier"</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="start" comment="nombres de Fermat" flow="next">
+<python>
+# nombres de Fermat
+Fermat = lambda n: 2 **(2 ** n)+ 1
+n = 1
+while est_premier(Fermat(n)):
+    n += 1
+print(f"F({n}) n'est pas premier")
+</python>
+<s eyo="assignment" flow="suite">
+<x eyo="identifier" name="Fermat" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="lambda" slot="O">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<x eyo="a_expr" operator="+" slot="expression">
+<x eyo="power" operator="**" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="()" slot="rhs">
+<x eyo="power" operator="**" slot="O">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">1</x>
+</x>
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="n" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">1</x>
+</x>
+<s eyo="while" flow="next">
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="Fermat" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+</x>
+</x>
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">1</x>
+</x>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="r">f"F({n}) n'est pas premier"</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start" comment="Vers les jumeaux" flow="next">
+<python>
+# Vers les jumeaux
+def nombre_premier_après(n):
+    n += 2 if n % 2 else 1
+    while not est_premier(n):
+        n += 2
+    return n
+print(f"premier après 100000 : {nombre_premier_après(100000)}")
+</python>
+<s eyo="function" name="nombre_premier_après" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="conditional_expression" slot="O">
+<x eyo="literal" slot="expression">2</x>
+<x eyo="m_expr" operator="%" slot="if">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+<x eyo="literal" slot="else">1</x>
+</x>
+</x>
+<s eyo="while" flow="next">
+<x eyo="unary" operator="not" slot="if">
+<x eyo="call" name="est_premier" slot="rhs">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+</x>
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">2</x>
+</x>
+</s>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="r">f"premier après 100000 : {nombre_premier_après(100000)}"</x>
+</x>
+</s>
+</s>
+<s eyo="start" comment="Nombres premiers jumeaux" flow="next">
+<python>
+# Nombres premiers jumeaux
+def nombres_premiers_jumeaux_après(n):
+    n += 2 if n % 2 else 1
+    while True:
+        if est_premier(n):
+            if est_premier(n + 2):
+                return n,n + 2
+            else:
+                n += 4
+        else:
+            n += 2
+print(f"premiers jumeaux après 100000 : {nombres_premiers_jumeaux_après(100000)}")
+</python>
+<s eyo="function" name="nombres_premiers_jumeaux_après" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="conditional_expression" slot="O">
+<x eyo="literal" slot="expression">2</x>
+<x eyo="m_expr" operator="%" slot="if">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+<x eyo="literal" slot="else">1</x>
+</x>
+</x>
+<s eyo="while" flow="next">
+<x eyo="builtin__object" value="True" slot="if">
+</x>
+<s eyo="if" flow="suite">
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="n" slot="O">
+</x>
+<x eyo="a_expr" operator="+" slot="f">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+</x>
+</s>
+<s eyo="else" flow="next">
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">4</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="else" flow="next">
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">2</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="r">f"premiers jumeaux après 100000 : {nombres_premiers_jumeaux_après(100000)}"</x>
+</x>
+</s>
+</s>
+<s eyo="start" comment="Nombres premiers de Germain" flow="next">
+<python>
+# Nombres premiers de Germain
+def premiers_de_Germain_après(n):
+    n += 2 if n % 2 else 1
+    while True:
+        if est_premier(n):
+            if est_premier(2 * n + 1):
+                return n,2 * n + 1
+        n += 2
+print(f"premiers de Germain après 100000 : {premiers_de_Germain_après(100000)}")
+</python>
+<s eyo="function" name="premiers_de_Germain_après" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+<s eyo="augmented_assignment" operator="+=" flow="suite">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="conditional_expression" slot="O">
+<x eyo="literal" slot="expression">2</x>
+<x eyo="m_expr" operator="%" slot="if">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">2</x>
+</x>
+<x eyo="literal" slot="else">1</x>
+</x>
+</x>
+<s eyo="while" flow="next">
+<x eyo="builtin__object" value="True" slot="if">
+</x>
+<s eyo="if" flow="suite">
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="n" slot="O">
+</x>
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="call" name="est_premier" slot="if">
+<x eyo="list" slot="n_ary">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="rhs">1</x>
+</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="n" slot="O">
+</x>
+<x eyo="a_expr" operator="+" slot="f">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+<x eyo="literal" slot="rhs">1</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="augmented_assignment" operator="+=" flow="next">
+<x eyo="identifier" name="n" slot="target">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">2</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="r">f"premiers de Germain après 100000 : {premiers_de_Germain_après(100000)}"</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

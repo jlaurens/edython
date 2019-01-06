@@ -177,9 +177,9 @@
       ...mapGetters('Workspace', [
         'scaleFactor'
       ]),
-      ...mapState('UI', {
-        selectedMode: state => state.selectedMode
-      }),
+      ...mapState('UI', [
+        'selectedMode'
+      ]),
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
       }

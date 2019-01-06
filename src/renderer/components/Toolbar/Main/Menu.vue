@@ -28,6 +28,7 @@
         <check-mark
       :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
       <b-dd-item-button
+        v-if="selectedMode == $$.eYo.App.TEACHER"
         v-on:click="doToggleEcoSave()"
         :style="style"
         :title="titleEcoSave"
@@ -85,6 +86,7 @@
         'deepCopy'
       ]),
       ...mapState('UI', [
+        'selectedMode',
         'toolbarBlockVisible',
         'toolbarRyVisible',
         'toolbarInfoDebug'
