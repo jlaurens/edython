@@ -406,7 +406,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     // find the first connection that can accept block
     var findC8n = (B) => {
       var foundC8n, target
-      B.eyo.someInput((input) => {
+      B.eyo.someInput(input => {
         var c8n = input.connection
         if (c8n) {
           var candidate
@@ -418,7 +418,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
           if (candidate) {
             if (candidate.eyo.name === parentSlotName) {
               foundC8n = candidate
-              return true
+              return input
             }
             if (!foundC8n) {
               foundC8n = candidate
