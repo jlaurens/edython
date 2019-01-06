@@ -134,6 +134,12 @@ eYoDocument.install = function (Vue, options) {
     }
   }
   eYo.App.Document.getDeflate = function () {
+    eYo.Events.groupWrap(() => {
+      eYo.Do.tryFinally(() => {
+        var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isReady)
+        tops.forEach(block => block.eyo.beReady())
+      })
+    })
     var dom = eYo.App.workspace.eyo.toDom({noId: true})
     eYo.App.doPrefToDom(dom)
     let oSerializer = new XMLSerializer()
