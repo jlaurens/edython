@@ -127,23 +127,13 @@ eYo.FieldHelper.prototype.set_css_class = function (class_name) {
 }
 
 /**
- * Synchronize the value of the property with the UI.
- * Called once when the model has been made,
- * and called each time the value changes,
- * whether doing, undoing or redoing.
- * May be overriden by the model.
- * When not overriden by the model, updates the field and slot state.
- * We can call `this.synchronize()` from the model.
- * `synchronize: true`, and
- * synchronize: function() { this.synchronize()} are equivalent.
- * Raises when not bound to some field or slot, in the non model variant.
- * @param {Object} newValue
+ * Will render the field.
+ * We can call `this.willRender()` from the model.
  */
 eYo.FieldHelper.prototype.willRender = function () {
   var f = this.model && eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender)
   if (f) {
     f.call(this)
-    return
   } else {
     var field = this.field_
     var root = field.getSvgRoot()
