@@ -1543,9 +1543,11 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
 }
 
 /**
- * For edython.
+ * Synchronize the slots with the UI.
+ * Sends a `synchronize` message to all slots.
+ * May be used at the end of an initialization process.
  */
-eYo.Delegate.prototype.synchronizeSlots = function () {
+eYo.DelegateSvg.prototype.synchronizeSlots = function () {
   this.forEachSlot(slot => slot.synchronize())
 }
 
