@@ -2246,14 +2246,14 @@ eYo.DelegateSvg.prototype.getBoundingBox = function () {
 eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity
   var best
-  for (var i = 0, top; (top = workspace.topBlocks_[i++]);) {
+  workspace.topBlocks_.forEach(top => {
     var box = top.eyo.getBoundingRect()
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
       best = top
     }
-  }
+  })
   return best
 }
 
@@ -2269,25 +2269,24 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
   const a = this.getBoundingBox()
   var smallest = {}
   var best
-  for (var i = 0, top; (top = block.workspace.topBlocks_[i++]);) {
-    if (top === block) {
-      continue
+  block.workspace.topBlocks_.forEach(top => {
+    if (top !== block) {
+      var b = top.eyo.getBoundingBox()
+      var target = top
+      var c8n
+      while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
+        b.expandToInclude(target.eyo.getBoundingBox())
+      }
+      var d = distance(a, b)
+      if (d.major && (!smallest.major || d.major < smallest.major)) {
+        smallest = d
+        best = top
+      } else if (d.minor && (!smallest.major && (!smallest.minor || d.minor < smallest.minor))) {
+        smallest = d
+        best = top
+      }
     }
-    var b = top.eyo.getBoundingBox()
-    var target = top
-    var c8n
-    while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
-      b.expandToInclude(target.eyo.getBoundingBox())
-    }
-    var d = distance(a, b)
-    if (d.major && (!smallest.major || d.major < smallest.major)) {
-      smallest = d
-      best = top
-    } else if (d.minor && (!smallest.major && (!smallest.minor || d.minor < smallest.minor))) {
-      smallest = d
-      best = top
-    }
-  }
+  })
   return best
 }
 
