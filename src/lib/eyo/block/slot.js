@@ -941,7 +941,7 @@ eYo.Slot.prototype.forEach = function (helper) {
   var slot = this
   if (goog.isFunction(helper)) {
     do {
-      helper.call(slot)
+      helper(slot)
     } while ((slot = slot.next))
   }
 }
