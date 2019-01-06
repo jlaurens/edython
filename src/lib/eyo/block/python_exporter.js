@@ -177,7 +177,14 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
     var eyo = field.eyo
     if (!text.length) {
-      text = eyo.data && goog.isDef(eyo.data.model.placeholder) && eYo.Do.valueOf(eyo.data.model.placeholder, field) || ''
+      var d = eyo.data
+      if (d) {
+        if (goog.isDef(d.model.python)) {
+          text = eYo.Do.valueOf(d.model.python, d) || ''
+        } else if (goog.isDef(d.model.placeholder)) {
+          text = eYo.Do.valueOf(d.model.placeholder, d) || ''
+        }
+      }
     }
     if (text.length) {
       this.isSeparatorField = field.name === 'separator' || (eyo.model && eyo.model.separator)
