@@ -916,7 +916,7 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
  * then it was the last iteration and the loop breaks.
  * For edython.
  * @param {!function} helper
- * @return {?eYo.Slot} The first slot for whch `helper` returns a true like value
+ * @return {?eYo.Slot} The first slot for which `helper` returns a truthy value 
  */
 eYo.Slot.prototype.some = function (helper) {
   if (goog.isFunction(helper)) {
@@ -925,7 +925,7 @@ eYo.Slot.prototype.some = function (helper) {
     do {
       last = helper(slot)
     } while (!last && (slot = slot.next))
-    return slot
+    return last === true ? slot : last
   }
 }
 
