@@ -525,17 +525,26 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
     lower_bound: {
       init: '',
       synchronize: true,
-      placeholder: 'min'
+      placeholder: 'min',
+      python: /** @suppress {globalThis} */ function () {
+        return this.get()
+      }
     },
     upper_bound: {
       init: '',
       synchronize: true,
-      placeholder: 'end'
+      placeholder: 'end',
+      python: /** @suppress {globalThis} */ function () {
+        return this.get()
+      }
     },
     stride: {
       init: '',
       synchronize: true,
       placeholder: 'step',
+      python: /** @suppress {globalThis} */ function () {
+        return this.get()
+      },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.variant_p === eYo.Key.STRIDE) {
@@ -581,7 +590,8 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       fields: {
         start: ':',
         bind: {
-          endEditing: true
+          endEditing: true,
+          canEmpty: true
         }
       },
       check: eYo.T3.Expr.Check.expression,
