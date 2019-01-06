@@ -90,7 +90,8 @@ export default {
       primes: 'Nombres premiers',
       fifty_dices: '50 dés',
       list: 'Liste',
-      list_edit: 'Liste(Édition)'
+      list_edit: 'Liste(Édition)',
+      plural: 'Pluriel'
     }
   }
 }

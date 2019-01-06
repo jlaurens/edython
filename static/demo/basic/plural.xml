@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{"workspace":{},"paneLayout":"H"}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Pluriels simples" x="323" y="95">
+<python>
+# Pluriels simples
+def met_au_pluriel(mot):
+    return mot +'s'
+print(met_au_pluriel('chat'))
+</python>
+<s eyo="function" name="met_au_pluriel" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="identifier" name="mot" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">'s'</x>
+</x>
+</x>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'chat'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="start" comment="Pluriels moins simples" flow="next">
+<python>
+# Pluriels moins simples
+def met_au_pluriel(mot):
+    if mot[-1]=='s':
+        return mot
+    return mot +'s'
+print(met_au_pluriel('chat'))
+print(met_au_pluriel('souris'))
+</python>
+<s eyo="function" name="met_au_pluriel" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="comparison" operator="==" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="literal" slot="O">-1</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'s'</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+</s>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="identifier" name="mot" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">'s'</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'chat'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'souris'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="start" comment="Pluriels encore moins simples" flow="next">
+<python>
+# Pluriels encore moins simples
+def met_au_pluriel(mot):
+    if mot[-1]in['s','x','z']:
+        return mot
+    elif mot[-2:]=='al':
+        return mot[:-1]+'ux'
+    return mot +'s'
+print(met_au_pluriel('chat'))
+print(met_au_pluriel('souris'))
+print(met_au_pluriel('cheval'))
+</python>
+<s eyo="function" name="met_au_pluriel" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="comparison" operator="in" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="literal" slot="O">-1</x>
+</x>
+</x>
+<x eyo="[]" slot="rhs">
+<x eyo="literal" slot="O">'s'</x>
+<x eyo="literal" slot="f">'x'</x>
+<x eyo="literal" slot="r">'z'</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+</s>
+<s eyo="elif" flow="next">
+<x eyo="comparison" operator="==" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression="-2:" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'al'</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression=":-1" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'ux'</x>
+</x>
+</x>
+</s>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="identifier" name="mot" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">'s'</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'chat'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'souris'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'cheval'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="start" comment="Pluriels toujours moins simples" flow="next">
+<python>
+# Pluriels toujours moins simples
+def met_au_pluriel(mot):
+    if mot[-1]in['s','x','z']:
+        return mot
+    elif mot[-2:]=='al':
+        return mot[:-1]+'ux'
+    elif mot[-3:]=='ail':
+        return mot[:-2]+'ux'
+    return mot +'s'
+print(met_au_pluriel('chat'))
+print(met_au_pluriel('souris'))
+print(met_au_pluriel('nez'))
+print(met_au_pluriel('cheval'))
+print(met_au_pluriel('travail'))
+</python>
+<s eyo="function" name="met_au_pluriel" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="if" flow="suite">
+<x eyo="comparison" operator="in" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="literal" slot="O">-1</x>
+</x>
+</x>
+<x eyo="[]" slot="rhs">
+<x eyo="literal" slot="O">'s'</x>
+<x eyo="literal" slot="f">'x'</x>
+<x eyo="literal" slot="r">'z'</x>
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+</s>
+<s eyo="elif" flow="next">
+<x eyo="comparison" operator="==" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression="-2:" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'al'</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression=":-1" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'ux'</x>
+</x>
+</x>
+</s>
+<s eyo="elif" flow="next">
+<x eyo="comparison" operator="==" slot="if">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression="-3:" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'ail'</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression=":-2" slot="O">
+</x>
+</x>
+</x>
+<x eyo="literal" slot="rhs">'ux'</x>
+</x>
+</x>
+</s>
+<s eyo="return" flow="next">
+<x eyo="list" slot="ans">
+<x eyo="a_expr" operator="+" slot="O">
+<x eyo="identifier" name="mot" slot="lhs">
+</x>
+<x eyo="literal" slot="rhs">'s'</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'chat'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'souris'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'nez'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'cheval'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="met_au_pluriel" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'travail'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

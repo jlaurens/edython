@@ -42,6 +42,7 @@
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
   import demoBasicList from '@static/demo/basic/list.xml'
   import demoBasicListEdit from '@static/demo/basic/list-edit.xml'
+  import demoBasicPlural from '@static/demo/basic/plural.xml'
   
   export default {
     name: 'page-toolbar-demo',
@@ -91,6 +92,9 @@
           }, {
             title: this.$$t('toolbar.demo.basic.list_edit'),
             xml: demoBasicListEdit
+          }, {
+            title: this.$$t('toolbar.demo.basic.plural'),
+            xml: demoBasicPlural
           }
         ]
       }
