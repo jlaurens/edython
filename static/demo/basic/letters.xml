@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{"workspace":{},"paneLayout":"H"}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="Verlan" x="321" y="25">
+<python>
+# Verlan
+def verlan(mot):
+    return mot[::-1]
+print(verlan('Supercalifragilisticexpialidocious'))
+</python>
+<s eyo="function" name="verlan" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="slicing" name="mot" slot="O">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression="::-1" slot="O">
+</x>
+</x>
+</x>
+</x>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="verlan" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Supercalifragilisticexpialidocious'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="start" comment="Palindrome" flow="next">
+<python>
+# Palindrome
+def est_un_palindrome(mot):
+    return mot[::-1]== mot
+print(est_un_palindrome('Supercalifragilisticexpialidocious'))
+print(est_un_palindrome('kayak'))
+print(est_un_palindrome('Kayak'))
+</python>
+<s eyo="function" name="est_un_palindrome" flow="suite">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="mot" slot="O">
+</x>
+</x>
+<s eyo="return" flow="suite">
+<x eyo="list" slot="ans">
+<x eyo="comparison" operator="==" slot="O">
+<x eyo="slicing" name="mot" slot="lhs">
+<x eyo="list" slot="slicing">
+<x eyo="any" expression="::-1" slot="O">
+</x>
+</x>
+</x>
+<x eyo="identifier" name="mot" slot="rhs">
+</x>
+</x>
+</x>
+</s>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="est_un_palindrome" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Supercalifragilisticexpialidocious'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="est_un_palindrome" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'kayak'</x>
+</x>
+</x>
+</x>
+<s eyo="print" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="est_un_palindrome" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Kayak'</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>

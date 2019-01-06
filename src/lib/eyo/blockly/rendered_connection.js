@@ -929,15 +929,42 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                       // another chance to reconnect the orphan
                       // just in case the check_ has changed in between
                       // which might be the case for the else_part blocks
-                      P = child
-                      var c8n
-                      while ((c8n = P.nextConnection)) {
-                        if ((P = c8n.targetBlock())) {
-                          continue
-                        } else if (c8n.checkType_(oldChildC8n)) {
-                          c8n.connect(oldChildC8n)
+                      if (oldChildC8n.eyo.isOutput) {
+                        var do_it = x => {
+                          if (!x.isIncog || !x.isIncog()) {
+                            var c8n, target
+                            if ((c8n = x.connection)) {
+                              if (c8n.eyo.hidden_ && !c8n.eyo.wrapped_) {
+                                return
+                              }
+                              if ((target = c8n.targetBlock())) {
+                                if (plug(target.eyo)) {
+                                  return true
+                                }
+                              } else if (c8n.checkType_(oldChildC8n)) {
+                                c8n.connect(oldChildC8n)
+                                return true
+                              }
+                            }
+                          }
                         }
-                        break
+                        var plug = (eyo) => {
+                          return eyo instanceof eYo.DelegateSvg.List
+                          ? eyo.someInput(do_it)
+                          : eyo.someSlot(do_it)
+                        }
+                        plug(child.eyo)
+                      } else {
+                        P = child
+                        var c8n
+                        while ((c8n = P.nextConnection)) {
+                          if ((P = c8n.targetBlock())) {
+                            continue
+                          } else if (c8n.checkType_(oldChildC8n)) {
+                            c8n.connect(oldChildC8n)
+                          }
+                          break
+                        }
                       }
                     }
                   }

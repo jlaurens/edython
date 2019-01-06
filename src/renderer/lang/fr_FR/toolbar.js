@@ -91,7 +91,8 @@ export default {
       fifty_dices: '50 dés',
       list: 'Liste',
       list_edit: 'Liste(Édition)',
-      plural: 'Pluriel'
+      plural: 'Pluriel',
+      letters: 'Lettres'
     }
   }
 }
