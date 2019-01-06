@@ -146,7 +146,8 @@ eYo.Slot.prototype.init = function () {
  * Forwards to the connection.
  */
 eYo.Slot.prototype.targetBlock = function () {
-  return this.input && this.input.connection && this.input.connection.targetBlock()
+  var c8n = this.connection
+  return c8n && c8n.targetBlock()
 }
 
 /**
@@ -518,7 +519,7 @@ eYo.Slot.prototype.getBlock = function () {
  * @param {!Blockly.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.getConnection = function () {
-  return this.input && this.input.connection
+  return this.connection
 }
 
 /**
@@ -556,7 +557,7 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   if (change) {
     this.incog = newValue
     // forward to the connection
-    var c8n = this.input && this.input.connection
+    var c8n = this.connection
     if (c8n && c8n.eyo.isIncog() !== newValue) {
       change = true 
       c8n.eyo.setIncog(newValue)
@@ -619,7 +620,7 @@ eYo.Slot.prototype.isRequiredFromSaved = function () {
   if (target) {
     if (target.eyo.wrapped_) {
       // return true if one of the inputs is connected
-      return target.inputList.some((input) => {
+      return target.inputList.some(input => {
         if (input.connection && input.connection.targetBlock()) {
           return true
         }
@@ -871,7 +872,7 @@ eYo.Slot.prototype.load = function (element) {
         } else if ((target = eYo.Xml.domToBlock(child, this.block))) {
           // we could create a block from that child element
           // then connect it
-          var c8n = this.input && this.input.connection
+          var c8n = this.connection
           if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
             c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
             this.setRequiredFromModel(true)
@@ -915,18 +916,17 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
  * then it was the last iteration and the loop breaks.
  * For edython.
  * @param {!function} helper
- * @return {boolean} whether there was an slot to act upon or no helper given
+ * @return {?eYo.Slot} The first slot for whch `helper` returns a true like value
  */
 eYo.Slot.prototype.some = function (helper) {
-  var slot = this
   if (goog.isFunction(helper)) {
+    var slot = this
     var last
     do {
-      last = helper.call(slot)
+      last = helper(slot)
     } while (!last && (slot = slot.next))
     return slot
   }
-  return true
 }
 
 /**
@@ -937,7 +937,7 @@ eYo.Slot.prototype.some = function (helper) {
  * @param {!function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.Slot.prototype.each = function (helper) {
+eYo.Slot.prototype.forEach = function (helper) {
   var slot = this
   if (goog.isFunction(helper)) {
     do {
@@ -953,8 +953,8 @@ eYo.Slot.prototype.each = function (helper) {
 eYo.ConnectionDelegate.prototype.rightConnection = function() {
   var slot = this.slot
   if (slot) {
-    if ((slot = slot.next) && (slot = slot.some (function () {
-      return !this.isIncog() && this.input && this.input.connection && !this.input.connection.hidden_
+    if ((slot = slot.next) && (slot = slot.some (slot => {
+      return !slot.isIncog() && slot.connection && !slot.input.connection.hidden_
     }))) {
       return slot.input.connection
     }
