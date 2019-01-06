@@ -1547,7 +1547,7 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
  * Sends a `synchronize` message to all slots.
  * May be used at the end of an initialization process.
  */
-eYo.DelegateSvg.prototype.synchronizeSlots = function () {
+eYo.Delegate.prototype.synchronizeSlots = function () {
   this.forEachSlot(slot => slot.synchronize())
 }
 
