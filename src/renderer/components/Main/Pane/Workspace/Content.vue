@@ -355,12 +355,10 @@
           eYo.App.workspace.clear()
         })
         eYo.$$.bus.$on('workspace-clean', () => {
-          var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
           eYo.Events.groupWrap(() => {
             eYo.Do.tryFinally(() => {
-              tops.forEach(block => {
-                !block.eyo.isControl && eYo.deleteBlock(block, true)
-              })
+              var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
+              tops.forEach(block => eYo.deleteBlock(block, true))
             })
           })
         })
