@@ -445,6 +445,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
           B = undefined
           targetC8n = undefined
         }
+        // the old parent connection
         targetC8n = outputC8n.targetConnection
         var bumper
         if (targetC8n) {
