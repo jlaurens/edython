@@ -362,7 +362,7 @@ export default {
   }
 }
 eYo.DelegateSvg.prototype.runScript2 = function () {
-  var p = new window.eYo.PythonExporter()
+  var p = new window.eYo.Py.Exporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
   eYo.Py.console2 && eYo.Py.console2.__class__.runScript(window.eYo.Py.console2, code)

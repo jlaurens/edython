@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.PythonExporter')
+goog.provide('eYo.Py.Exporter')
 
 goog.require('eYo')
 goog.require('eYo.XRE')
@@ -25,7 +25,7 @@ goog.require('eYo.FieldTextInput')
  * @param {?string} One indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.PythonExporter = function (oneIndent) {
+eYo.Py.Exporter = function (oneIndent) {
   this.lines = []
   this.indents = []
   this.indent = ''
@@ -37,12 +37,12 @@ eYo.PythonExporter = function (oneIndent) {
  * Default indentation.
  * For edython.
  */
-eYo.PythonExporter.indent = '    '
+eYo.Py.Exporter.indent = '    '
 
 /**
  * Indent, must be balanced by a dedent.
  */
-eYo.PythonExporter.prototype.indent_ = function (str) {
+eYo.Py.Exporter.prototype.indent_ = function (str) {
   this.indents.push(this.indent)
   this.indent += str || this.oneIndent
 }
@@ -50,14 +50,14 @@ eYo.PythonExporter.prototype.indent_ = function (str) {
 /**
  * dedent, must be balanced by an indent.
  */
-eYo.PythonExporter.prototype.dedent_ = function () {
+eYo.Py.Exporter.prototype.dedent_ = function () {
   this.indent = this.indents.pop()
 }
 
 /**
  * Insert a newline_ array.
  */
-eYo.PythonExporter.prototype.newline_ = function () {
+eYo.Py.Exporter.prototype.newline_ = function () {
   this.line && this.lines.push(this.line.join(''))
   this.line = [this.indent]
   this.isFirst = true
@@ -72,7 +72,7 @@ eYo.PythonExporter.prototype.newline_ = function () {
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBlock`.
  * @return some python code
  */
-eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
+eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
   var field, slot
   var eyo = block.eyo
   if ((field = eyo.fromStartField)) {
@@ -107,7 +107,7 @@ eYo.PythonExporter.prototype.exportExpression_ = function (block, opt) {
  * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
-eYo.PythonExporter.prototype.export = function (block, opt) {
+eYo.Py.Exporter.prototype.export = function (block, opt) {
   opt = opt || {}
   var eyo = block.eyo
   var is_deep = !eyo.isControl && opt.is_deep
@@ -172,7 +172,7 @@ eYo.PythonExporter.prototype.export = function (block, opt) {
  * @param {!Blockly.Field}
  * @private
  */
-eYo.PythonExporter.prototype.exportField_ = function (field) {
+eYo.Py.Exporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
     var eyo = field.eyo
@@ -206,7 +206,7 @@ eYo.PythonExporter.prototype.exportField_ = function (field) {
  * @param {Blockly.Field} input
  * @private
  */
-eYo.PythonExporter.prototype.exportInput_ = function (input, bindField) {
+eYo.Py.Exporter.prototype.exportInput_ = function (input, bindField) {
   if (input && input.isVisible() && input.connection) {
     var c8n = input.connection
     var target = c8n.targetBlock()
@@ -228,7 +228,7 @@ eYo.PythonExporter.prototype.exportInput_ = function (input, bindField) {
  * @param {eYo.Slot} slot
  * @private
  */
-eYo.PythonExporter.prototype.exportSlot_ = function (slot) {
+eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   if (slot.isIncog()) {
     return
   }

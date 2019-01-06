@@ -135,7 +135,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
   var xml = root.firstChild.firstChild
   workspace.getTopBlocks(true).forEach(block => {
     var dom = eYo.Xml.blockToDomWithXY(block, opt)
-    var p = new eYo.PythonExporter()
+    var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
       if (!block.eyo.isControl) {
         var code = p.export(block, {is_deep: true})
@@ -687,7 +687,7 @@ eYo.Xml.Data.fromDom = function (block, element) {
 eYo.Xml.toDom = function (block, element, opt) {
   var eyo = block.eyo
   if (eyo.isControl) {
-    var p = new eYo.PythonExporter()
+    var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
       var code = p.export(block, {is_deep: true})
       if (code.length) {

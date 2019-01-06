@@ -19,7 +19,7 @@ goog.require('eYo.DelegateSvg')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
 goog.require('goog.dom');
-goog.require('eYo.PythonExporter')
+goog.require('eYo.Py.Exporter')
 
 /**
  * The block that handles the context menu is not always the one
@@ -534,7 +534,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     block.eyo.getPythonType() + ' python code',
     function (b, e) {
       console.log('Python code for', block.type)
-      var p = new eYo.PythonExporter()
+      var p = new eYo.Py.Exporter()
       console.log(p.export(block))
     })
   menuItem.setEnabled(true)
@@ -544,7 +544,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     block.eyo.getPythonType() + ' python code (deep)',
     function (b, e) {
       console.log('Python code for', block.type)
-      var p = new eYo.PythonExporter()
+      var p = new eYo.Py.Exporter()
       console.log(p.export(block, {is_deep: true}))
       block.eyo.runScript()
     })

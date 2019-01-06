@@ -49,7 +49,7 @@
       doIt () {
         var block = this.eyo && this.eyo.block_
         if (block) {
-          var p = new eYo.PythonExporter()
+          var p = new eYo.Py.Exporter()
           var code = p.export(block, {is_deep: true})
           eYo.App.copyTextToClipboard(code)
           this.footstep = 0

@@ -29,8 +29,6 @@ import eYoApp from './plugin/eyoapp'
 import eYoDocument from './plugin/eyodocument'
 import eYoI18n from './lang/eyoi18n'
 
-eYo.Py = {}
-
 eYo.$$ = Vue.prototype.$$ = {
   goog,
   eYo,
