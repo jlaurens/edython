@@ -1709,11 +1709,7 @@ eYo.DelegateSvg.prototype.valuePathDef_ = function () {
  * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
 eYo.DelegateSvg.prototype.getInput = function (name, dontCreate) {
-  return this.someInput((input) => {
-    if (input.name === name) {
-      return input
-    }
-  })
+  return this.someInput(input => input.name === name)
 }
 
 /**
@@ -1789,7 +1785,7 @@ eYo.Delegate.prototype.someStatement = function (helper) {
   var ans
   while ((eyo = e8r.next())) {
     if ((ans = helper(eyo, e8r.depth()))) {
-      return ans
+      return ans === true ? eyo : ans
     }
   }
 }
@@ -2533,11 +2529,9 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
         }
         c8n = rightC8n
       }
-      if (this.someInputConnection((c8n) => {
-        if (c8n.eyo.isNextLike && selectConnection(c8n)) {
-          return true
-        }
-      })) {
+      if (this.someInputConnection(
+        c8n => c8n.eyo.isNextLike && selectConnection(c8n))
+      ) {
         return true
       }
     }
@@ -2573,7 +2567,7 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
       block = target
       target = c8n.sourceBlock_
     }
-    if (this.someInputConnection((c8n) => {
+    if (this.someInputConnection(c8n => {
       if ((c8n.eyo.isNextLike) && (target = c8n.targetBlock()) && (target !== block)) {
         eYo.SelectedConnection = null
         target.select()
@@ -2761,7 +2755,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
-  var c8n = this.someInputConnection((c8n) => {
+  var c8n = this.someInputConnection(c8n => {
     if (!c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
       if (c8n.eyo.isInput) {
         var target = c8n.targetBlock()
@@ -3154,7 +3148,7 @@ eYo.DelegateSvg.prototype.canLock = function () {
   }
   // list all the input for a non optional connection with no target
   var c8n, target
-  return !this.someInput((input) => {
+  return !this.someInput(input => {
     if ((c8n = input.connection) && !c8n.eyo.disabled_) {
       if ((target = c8n.targetBlock())) {
         if (!target.eyo.canLock()) {
@@ -3177,7 +3171,7 @@ eYo.DelegateSvg.prototype.canUnlock = function () {
   }
   // list all the input for a non optional connection with no target
   var c8n, target
-  return this.someInput((input) => {
+  return this.someInput(input => {
     if ((c8n = input.connection)) {
       if ((target = c8n.targetBlock())) {
         if (target.eyo.canUnlock()) {
