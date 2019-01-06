@@ -419,9 +419,7 @@ eYo.DelegateSvg.prototype.getField = function (name) {
  * May be used at the end of an initialization process.
  */
 eYo.DelegateSvg.prototype.synchronizeSlots = function () {
-  this.forEachSlot((slot) => {
-    slot.synchronize()
-  })
+  this.forEachSlot(slot => slot.synchronize())
 }
 
 /**
@@ -1984,7 +1982,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           }
         }
         Vs = model
-        this.forEachSlot((slot) => {
+        this.forEachSlot(slot => {
           var input = slot.input
           if (!input || !input.connection) {
             return
@@ -2057,9 +2055,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
           field.init()
         }
       })
-      this.forEachSlot((slot) => {
-        slot.beReady()
-      })
+      this.forEachSlot(slot => slot.beReady())
       for (var i = 0, input; (input = block.inputList[i++]);) {
         input.eyo.beReady()
       }
@@ -2556,25 +2552,19 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
     }
   } else {
     // select the first non statement connection
-    if (block.eyo.someSlot(function () {
-      return selectSlot(this)
-    })) {
+    if (block.eyo.someSlot(slot => selectSlot(slot))) {
       return true
     }
-    if (this.someInputConnection((c8n) => {
-      if (c8n.eyo.isOutput && selectConnection(c8n)) {
-        return true
-      }
-    })) {
+    if (this.someInputConnection(
+      c8n => c8n.eyo.isOutput && selectConnection(c8n)
+    )) {
       return true
     }
     // all the input connections are either dummy or statement connections
     // select the first statement connection (there is an only one for the moment)
-    if (this.someInputConnection((c8n) => {
-      if (c8n.eyo.isNextLike && selectConnection(c8n)) {
-        return true
-      }
-    })) {
+    if (this.someInputConnection(
+      c8n => c8n.eyo.isNextLike && selectConnection(c8n)
+    )) {
       return true
     }
   }
@@ -3240,7 +3230,7 @@ eYo.DelegateSvg.prototype.lock = function () {
     }
   })
   // maybe redundant calls here
-  this.forEachSlot((slot) => {
+  this.forEachSlot(slot => {
     if (slot.input && (c8n = slot.input.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
