@@ -414,15 +414,6 @@ eYo.DelegateSvg.prototype.getField = function (name) {
 }
 
 /**
- * Synchronize the slots with the UI.
- * Sends a `synchronize` message to all slots.
- * May be used at the end of an initialization process.
- */
-eYo.DelegateSvg.prototype.synchronizeSlots = function () {
-  this.forEachSlot(slot => slot.synchronize())
-}
-
-/**
  * When the block is just a wrapper, returns the wrapped target.
  */
 eYo.DelegateSvg.prototype.getMenuTarget = function () {
