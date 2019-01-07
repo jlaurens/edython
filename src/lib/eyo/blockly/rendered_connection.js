@@ -532,33 +532,31 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
   var c8n = this.connection
   var block = c8n.sourceBlock_
   if (!block.workspace) {
-    return
+    return ''
   }
   var steps = ''
   if (c8n.eyo.isInput) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
-    } else if (!this.disabled_ && (this.s7r_ || this.optional_)) {
-      steps = this.caretPathWidthDef_().d
-    } else {
-      steps = this.placeHolderPathWidthDef_().d
+    } else if (!this.disabled_) {
+      steps = eYo.Shape.definitionWithConnection(this)
     }
-  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
-    steps = block.eyo.valuePathDef_()
+  } else if (c8n.eyo.isOutput) {
+    steps = block.eyo.valuePathDef_(c8n.offsetInBlock_)
   } else { // statement connection
     var r = eYo.Style.Path.Selected.width / 2
-    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
+    var a = ` a ${r},${r} 0 0 1 0,`
     var w = block.width - eYo.Unit.x / 2
     if (this.isPrevious) {
-      steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+      steps = `m ${w},${-r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
     } else if (this.isNext) {
       if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
-        steps = 'm ' + (eYo.Font.tabWidth + eYo.Style.Path.r) + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = `m ${eYo.Font.tabWidth + eYo.Style.Path.r},${block.eyo.size.height - r}${a}${2 * r} h ${-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
       } else {
-        steps = 'm ' + w + ',' + (block.eyo.size.height - r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
+        steps = `m ${w},${block.eyo.size.height - r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
       }
     } else /* if (this.isSuite) */ {
-      steps = 'm ' + w + ',' + (-r + eYo.Unit.y) + a + (2 * r) + ' h ' + (eYo.Font.tabWidth - w + eYo.Unit.x / 2) + a + (-2 * r) + ' z'
+      steps = `m ${w},${-r + eYo.Unit.y}${a}${2 * r} h ${eYo.Font.tabWidth - w + eYo.Unit.x / 2}${a}${-2 * r} z`
     }
   }
   return steps
