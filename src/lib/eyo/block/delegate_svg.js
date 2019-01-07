@@ -1853,7 +1853,7 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
 eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
   eYo.DelegateSvg.superClass_.doMakeBlockWrapped.call(this)
   var block = this.block_
-  goog.asserts.assert(!this.hasSelect(block), 'Deselect block before')
+  goog.asserts.assert(!this.hasSelect(), 'Deselect block before')
   block.initSvg()
   this.svgPathShape_.setAttribute('display', 'none')
   this.svgPathContour_.setAttribute('display', 'none')
@@ -2249,8 +2249,9 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
   var c8n = this.someInputConnection(c8n => {
-    if (!c8n.eyo.disabled_ && (!c8n.hidden_ || c8n.eyo.wrapped_)) {
-      if (c8n.eyo.isInput) {
+    var c_eyo = c8n.eyo
+    if (!c_eyo.disabled_ && (!c8n.hidden_ || c_eyo.wrapped_)) {
+      if (c_eyo.isInput) {
         var target = c8n.targetBlock()
         if (target) {
           var targetC8n = target.eyo.getConnectionForEvent(e)
@@ -2267,14 +2268,14 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
             return c8n
           }
         }
-        if (c8n.eyo.slot && c8n.eyo.slot.bindField) {
+        if (c_eyo.slot && c_eyo.slot.bindField) {
           R = new goog.math.Rect(
             c8n.offsetInBlock_.x,
             c8n.offsetInBlock_.y + eYo.Padding.t,
-            c8n.eyo.w * eYo.Unit.x,
+            c_eyo.w * eYo.Unit.x,
             eYo.Font.height
           )
-        } else if (c8n.eyo.optional_ || c8n.eyo.s7r_) {
+        } else if (c_eyo.optional_ || c_eyo.s7r_) {
           R = new goog.math.Rect(
             c8n.offsetInBlock_.x - eYo.Unit.x / 4,
             c8n.offsetInBlock_.y + eYo.Padding.t,
@@ -2285,14 +2286,14 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
           R = new goog.math.Rect(
             c8n.offsetInBlock_.x + eYo.Unit.x / 4,
             c8n.offsetInBlock_.y + eYo.Padding.t,
-            (c8n.eyo.w - 1 / 2) * eYo.Unit.x,
+            (c_eyo.w - 1 / 2) * eYo.Unit.x,
             eYo.Font.height
           )
         }
         if (R.contains(where)) {
           return c8n
         }
-      } else if (c8n.eyo.isNextLike) {
+      } else if (c_eyo.isNextLike) {
         R = new goog.math.Rect(
           c8n.offsetInBlock_.x,
           c8n.offsetInBlock_.y - eYo.Style.Path.width,
