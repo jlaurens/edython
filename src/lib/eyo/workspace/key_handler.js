@@ -614,7 +614,7 @@ var Ks = {
         B.eyo.replaceBlock(parent)
         return
       }
-      if (eYo.Selected.connection =) {
+      if (eYo.Selected.connection) {
         B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
       } else {
         B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
@@ -632,7 +632,7 @@ var Ks = {
         type: eYo.T3.Expr.u_expr,
         operator_d: '+'
       }
-      if (eYo.Selected.connection =) {
+      if (eYo.Selected.connection) {
         B.eyo.insertBlockWithModel(model)
       } else {
         B.eyo.insertParentWithModel(model)
@@ -658,7 +658,7 @@ Ks = (() => {
         type: eYo.T3.Expr.u_expr,
         operator_d: op
       }
-      if (eYo.Selected.connection =) {
+      if (eYo.Selected.connection) {
         B.eyo.insertBlockWithModel(model)
       } else {
         B.eyo.insertParentWithModel(model)
