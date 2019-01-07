@@ -1873,16 +1873,6 @@ eYo.DelegateSvg.prototype.makeBlockUnwrapped = function () {
 }
 
 /**
- * Whether the block is selected.
- * Subclassers will override this but won't call it.
- * @param {!Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.hasSelect = function (block) {
-  return goog.dom.classlist.contains(block.svgGroup_, 'eyo-select')
-}
-
-/**
  * Create a new block, with full contents.
  * This is the expected way to create a block 
  * to be displayed immediately.
