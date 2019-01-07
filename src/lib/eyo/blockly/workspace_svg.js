@@ -306,7 +306,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
   var c8n, targetC8n, block
-  if ((c8n = eYo.SelectedConnection)) {
+  if ((c8n = eYo.Selected.connection)) {
     eYo.Events.groupWrap(
       () => {
         block = Blockly.Xml.domToBlock(xmlBlock, this)
