@@ -182,7 +182,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   var deleteList = []
   function addDeletableBlocks (block) {
     if (block.isDeletable()) {
-      deleteList = deleteList.concat(block.eyo.getWrappedDescendants(block))
+      deleteList = deleteList.concat(block.eyo.getWrappedDescendants())
     } else {
       var children = block.getChildren()
       for (var i = 0; i < children.length; i++) {
