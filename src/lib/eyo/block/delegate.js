@@ -1724,17 +1724,16 @@ eYo.Delegate.prototype.getVars = function (block) {
 /**
  * Same as Block's getDescendants except that it
  * includes this block in the list only when not sealed.
- * @param {!Blockly.Block} block
  * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
  */
-eYo.Delegate.prototype.getWrappedDescendants = function (block) {
+eYo.Delegate.prototype.getWrappedDescendants = function () {
   var blocks = []
   if (!this.wrapped_) {
-    blocks.push(block)
+    blocks.push(this.block_)
   }
-  for (var child, x = 0; (child = block.childBlocks_[x]); x++) {
-    blocks.push.apply(blocks, child.eyo.getWrappedDescendants(child))
-  }
+  this.block_.childBlocks_.forEach(child => {
+    blocks = blocks.concat(child.eyo.getWrappedDescendants())
+  })
   return blocks
 }
 
