@@ -24,16 +24,17 @@ goog.require('eYo.DelegateSvg')
 eYo.Selected = (() => {
   var me = {}
   var eyo_
+  var block_
   var c8n_
   Object.defineProperties(
     me,
     {
       block: {
         get () {
-          return eyo_ && eyo_.block_
+          return block_
         },
         set (newValue) {
-          eyo_ = newValue && newValue.eyo
+          this.eyo = newValue && newValue.eyo
         }
       },
       eyo: {
@@ -41,27 +42,30 @@ eYo.Selected = (() => {
           return eyo_
         },
         set (newValue) {
-          eyo_ = newValue
+          if (eyo_ !== newValue) {
+            eyo_ = newValue
+            block_ = eyo_ && eyo_.block_
+          }
         }
       },
       connection: {
         get () {
           return c8n_
         },
-        set (connection) {
+        set (c8n) {
           var B
-          if (connection) {
-            if (connection.hidden_) {
+          if (c8n) {
+            if (c8n.hidden_) {
               console.error('Do not select a hidden connection')
             }
-            var block = connection.getSourceBlock()
+            var block = c8n.getSourceBlock()
             if (block) {
               if (block.eyo.locked_) {
                 return
               }
-              if (connection === block.previousConnection && connection.targetConnection) {
-                connection = connection.targetConnection
-                var unwrapped = block = connection.getSourceBlock()
+              if (c8n === block.previousConnection && c8n.targetConnection) {
+                c8n = c8n.targetConnection
+                var unwrapped = block = c8n.getSourceBlock()
                 do {
                   if (!unwrapped.eyo.wrapped_) {
                     unwrapped.select()
@@ -72,17 +76,17 @@ eYo.Selected = (() => {
               }
             }
           }
-          if (connection !== c8n_) {
+          if (c8n !== c8n_) {
             if (c8n_) {
               var oldBlock = c8n_.getSourceBlock()
               if (oldBlock) {
                 oldBlock.eyo.selectedConnection = null
                 oldBlock.eyo.selectedConnectionSource_ = null
                 oldBlock.removeSelect()
-                if (oldBlock === Blockly.selected) {
+                if (oldBlock === block_) {
                   oldBlock.eyo.updateAllPaths_()
                   oldBlock.addSelect()
-                } else if ((B = Blockly.selected)) {
+                } else if ((B = block_)) {
                   B.eyo.selectedConnectionSource_ = null
                   B.removeSelect()
                   B.addSelect()
@@ -90,15 +94,15 @@ eYo.Selected = (() => {
               }
               c8n_ = null
             }
-            if (connection) {
-              if ((block = connection.getSourceBlock())) {
+            if (c8n) {
+              if ((block = c8n.getSourceBlock())) {
                 unwrapped = block
                 while (unwrapped.eyo.wrapped_) {
                   if (!(unwrapped = unwrapped.getSurroundParent())) {
                     return
                   }
                 }
-                block.eyo.selectedConnection = c8n_ = connection
+                block.eyo.selectedConnection = c8n_ = c8n
                 unwrapped.eyo.selectedConnectionSource_ = block
                 unwrapped.select()
                 block.removeSelect()
@@ -111,12 +115,6 @@ eYo.Selected = (() => {
       }
     }
   ),
-  // usage: eYo.Selected.isEyo(block)
-  me.isEyo = eyo => eyo_ === eyo
-  // usage: eYo.Selected.isBlock(block)
-  me.isBlock = block => block && (block.eyo === eyo_)
-  // usage: eYo.Selected.isConnection(block)
-  me.isConnection = c8n => c8n === c8n_
   return me
 })()
 
@@ -153,3 +151,14 @@ Object.defineProperties(
     }
   }
 )
+
+/**
+ * Whether the block is selected.
+ * Subclassers will override this but won't call it.
+ * @param {!Block} block
+ * @private
+ */
+eYo.DelegateSvg.prototype.hasSelect = function () {
+  return goog.dom.classlist.contains(this.block_.svgGroup_, 'eyo-select')
+}
+
