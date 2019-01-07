@@ -118,7 +118,6 @@ eYo.KeyHandler = (() => {
     var c8n = eYo.Selected.connection
     if (B && !c8n) {
       var D = model.data
-      var done = false
       if (D && B.eyo.setDataWithModel(D)) {
         // yes it does
         return
