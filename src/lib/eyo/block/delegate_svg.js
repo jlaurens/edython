@@ -1489,19 +1489,18 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
         if (c_eyo) {
           c_eyo.side = eYo.Key.RIGHT
           c_eyo.shape = eYo.Key.NONE
-          var wd = c_eyo.caretPathWidthDef_() // depends on the shape and the side
+          var d = eYo.Shape.definitionWithConnection(c_eyo) // depends on the shape and the side
           var block = c_eyo.sourceBlock_
           if (io.block === block) {
             // we are lucky, this is the block we are currently rendering
-            io.steps.push(wd.d)
+            io.steps.push(d)
           } else {
             // bad luck, block has already been rendered
             // we must append the definition to the path
             // this may happen for blocks with no left or right end,
             // eg locked or wrapped blocks.
             var path = block.eyo.svgPathInner_
-            var d = path.getAttribute('d')
-            path.setAttribute('d', `${d} ${wd.d}`)
+            path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
           }
         }
       })
@@ -1519,28 +1518,27 @@ eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inSt
  */
 eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
   if (io) {
-    var eyo = io.common.pending
-    if (eyo) {
-      eyo.side = side
-      eyo.shape = io.isLastInStatement ? eYo.Key.Right : shape
-      var wd = eyo.caretPathWidthDef_() // depends on the shape and the side
-      var block = eyo.sourceBlock_
+    var c_eyo = io.common.pending
+    if (c_eyo) {
+      c_eyo.side = side
+      c_eyo.shape = io.isLastInStatement ? eYo.Key.Right : shape
+      var shp = eYo.Shape.newWithConnection(c_eyo)
+      var block = c_eyo.sourceBlock_
       if (io.block === block) {
         // we are lucky, this is the block we are currently rendering
-        io.steps.push(wd.d)
+        io.steps.push(shp.definition)
       } else {
         // bad luck, block has already been rendered
         // we must append the definition to the path
         // this may happen for blocks with no left or right end,
         // eg locked or wrapped blocks.
         var path = block.eyo.svgPathInner_
-        var d = path.getAttribute('d')
-        path.setAttribute('d', d + ' ' + wd.d)
+        path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
       }
-      if (wd.w) {
+      if (shp.width) {
         // should we advance the cursor?
-        if (eyo.side === eYo.Key.NONE) {
-          io.cursor.advance(wd.w)
+        if (c_eyo.side === eYo.Key.NONE) {
+          io.cursor.advance(shp.width)
         }
         // a space was added as a visual separator anyway
         io.common.field.shouldSeparate = false
@@ -1549,7 +1547,7 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
         io.common.field.beforeIsBlack = false // do not step back
         io.common.field.beforeIsCaret = true // do not step back
       }
-      return wd
+      return shp
     }
   }
 }
