@@ -686,7 +686,7 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
     reverse = true
   }
   // Raise it to the top for extra visibility.
-  var selected = Blockly.selected === rootBlock
+  var selected = eYo.Selected.block === rootBlock
   selected || rootBlock.addSelect()
   var dx = (staticConnection.x_ + Blockly.SNAP_RADIUS) - this.x_
   var dy = (staticConnection.y_ + Blockly.SNAP_RADIUS) - this.y_
@@ -895,14 +895,11 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.hasSelect(child)) { // Blockly.selected === child
+                  if (child.eyo.hasSelect()) {
                     child.unselect()
-                    var P = child
-                    while ((P = P.getSurroundParent())) {
-                      if (!P.eyo.wrapped_) {
-                        P.select()
-                        break
-                      }
+                    var P = parent.eyo.wrapper
+                    if (P) {
+                      P.block_.select()
                     }
                   }
                   child.eyo.makeBlockWrapped()
@@ -1043,7 +1040,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                         // this occurs while removing the parent
                         // if the parent was selected, select the child
                         child.eyo.makeBlockUnwrapped_()
-                        if (parent.eyo.hasSelect(parent)) {
+                        if (parent.eyo.hasSelect()) {
                           parent.unselect()
                           child.select()
                         }
