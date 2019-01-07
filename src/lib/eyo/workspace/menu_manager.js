@@ -484,23 +484,17 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   }
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
     // Count the number of blocks that are nested in this block.
-    var unwrapped = block
-    var parent
-    while (unwrapped.eyo.wrapped_ && (parent = unwrapped.getParent())) {
-      // parent is not '', it may be undefined
-      unwrapped = parent
-      // replace the parent test with an assertion
-    }
-    // unwrapped is the topmost block or the first unwrapped parent
-    var descendantCount = unwrapped.eyo.getWrappedDescendants(unwrapped).length
+
+    var wrapper = block.eyo.wrapper
+    var descendantCount = wrapper.getWrappedDescendants().length
     if (parent === null) {
-      // the topmost is itself sealed, this should not occur
+      // the topmost is itself sealed, this should never occur
       ++descendantCount
     }
-    var nextBlock = unwrapped.getNextBlock()
-    if (nextBlock) {
+    var next = wrapper.next
+    if (next) {
       // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= nextBlock.eyo.getWrappedDescendants(nextBlock).length
+      descendantCount -= next.getWrappedDescendants().length
     }
     menuItem = this.newMenuItem(
       descendantCount === 1 ? eYo.Msg.DELETE_BLOCK
@@ -521,7 +515,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
   this.separate()
 
   menuItem = this.newMenuItem(
-    block.eyo.getPythonType(), function (event) {
+    block.eyo.getPythonType(), (event) => {
       var xmlDom = Blockly.Xml.blockToDom(block, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
