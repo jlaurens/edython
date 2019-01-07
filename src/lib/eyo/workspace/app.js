@@ -22,6 +22,7 @@ goog.provide('eYo.App')
 goog.require('Blockly')
 goog.require('eYo.Xml')
 goog.require('eYo.App')
+goog.require('eYo.KeyHandler')
 
 eYo.App = Object.create(null)
 
