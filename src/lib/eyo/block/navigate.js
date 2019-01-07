@@ -182,9 +182,9 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
     }
     // do not select a connection
     // if there is no unwrapped surround parent
-    var parent = c8n.sourceBlock_
-    while (parent.eyo.wrapped_ || parent.eyo.locked_) {
-      if (!(parent = parent.getSurroundParent())) {
+    var parent = c8n.eyo.b_eyo
+    while (parent.wrapped_ || parent.locked_) {
+      if (!(parent = parent.surrounder)) {
         return false
       }
     }
@@ -314,9 +314,9 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
       return false
     }
     if (!selectTarget(c8n)) {
-      parent = block
-      while (parent.eyo.wrapped_ || parent.eyo.locked_) {
-        if (!(parent = parent.getSurroundParent())) {
+      parent = block.eyo
+      while (parent.wrapped_ || parent.locked_) {
+        if (!(parent = parent.surrounder)) {
           return false
         }
       }
