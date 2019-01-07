@@ -908,7 +908,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.makeBlockWrapped()
                 } else {
                   // if this connection was selected, the newly connected block should be selected too
-                  if (parentC8n === eYo.SelectedConnection) {
+                  if (eYo.Selected.isConnection(parentC8n)) {
                     P = parent
                     do {
                       if (P === Blockly.selected) {
@@ -1202,7 +1202,7 @@ Blockly.Connection.prototype.dispose = function () {
   // this is a closure
   var dispose = Blockly.Connection.prototype.dispose
   return function () {
-    if (this === eYo.SelectedConnection) {
+    if (eYo.Selected.isConnection(this)) {
       eYo.SelectedConnection = null
     }
     dispose.call(this)
