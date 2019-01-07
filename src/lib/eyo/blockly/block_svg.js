@@ -511,7 +511,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
       if (target === Blockly.selected && c8n) {
         // the block was already selected,
         // and there is a candidate selection
-        if (c8n === eYo.SelectedConnection) {
+        if (eYo.Selected.isConnection(c8n)) {
           // unselect
           eYo.SelectedConnection = null
         } else if (c8n !== target.eyo.lastSelectedConnection) {
