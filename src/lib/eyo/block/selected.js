@@ -114,7 +114,7 @@ eYo.Selected = (() => {
         }
       }
     }
-  ),
+  )
   return me
 })()
 
