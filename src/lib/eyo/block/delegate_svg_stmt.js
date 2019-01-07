@@ -253,7 +253,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
                 eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
                 parentBlock.render()
                 c8n.connect(parentC8n)
-                if (Blockly.selected === block) {
+                if (eYo.Selected.block === block) {
                   parentBlock.select()
                 }
               }
@@ -297,7 +297,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
       eYo.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
       blockAfter.render()
       block.nextConnection.connect(blockAfter.previousConnection)
-      if (Blockly.selected === block) {
+      if (eYo.Selected.block === block) {
         blockAfter.select()
       }
       return blockAfter
