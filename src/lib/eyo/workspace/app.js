@@ -23,23 +23,6 @@ goog.require('Blockly')
 goog.require('eYo.Xml')
 goog.require('eYo.App')
 
-/**
- * Convenient property
- */
-Object.defineProperties(
-  eYo,
-  {
-    selected: {
-      get () {
-        return Blockly.selected && Blockly.selected.eyo
-      },
-      set (newValue) {
-        Blockly.selected = newValue && newValue.block_
-      }
-    }
-  }
-)
-
 eYo.App = Object.create(null)
 
 /**
