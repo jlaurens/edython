@@ -13,7 +13,6 @@
 
 goog.provide('eYo.DelegateSvg')
 goog.provide('eYo.HoleFiller')
-goog.provide('eYo.Selected')
 
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
@@ -25,6 +24,7 @@ goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
 goog.forwardDeclare('eYo.DelegateSvg.Expr')
 goog.forwardDeclare('eYo.DelegateSvg.Stmt')
+goog.forwardDeclare('eYo.Selected')
 goog.require('goog.dom')
 
 /**
