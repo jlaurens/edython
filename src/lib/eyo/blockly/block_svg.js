@@ -474,8 +474,8 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  target.eyo.lastSelectedConnection = eYo.SelectedConnection
-  eYo.SelectedConnection = null
+  target.eyo.lastSelectedConnection = eYo.Selected.connection
+  eYo.Selected.connection = null
   target.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
   target.eyo.lastMouseDownEvent = target === Blockly.selected ? e : null
@@ -513,24 +513,24 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
         // and there is a candidate selection
         if (eYo.Selected.isConnection(c8n)) {
           // unselect
-          eYo.SelectedConnection = null
+          eYo.Selected.connection = null
         } else if (c8n !== target.eyo.lastSelectedConnection) {
           if (c8n.eyo.isInput) {
             if (!c8n.targetConnection) {
               var field = c8n.eyo.bindField
               field && (field.eyo.doNotEdit = true)
-              eYo.SelectedConnection = c8n
+              eYo.Selected.connection = c8n
             }
           } else {
-            eYo.SelectedConnection = c8n
+            eYo.Selected.connection = c8n
           }
         } else {
-          eYo.SelectedConnection = null
+          eYo.Selected.connection = null
         }
       }
     } else {
       // a drag move
-      eYo.SelectedConnection = null
+      eYo.Selected.connection = null
     }
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
@@ -556,7 +556,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
         } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
           target = c8n.sourceBlock_
           target.select()
-          eYo.SelectedConnection = c8n
+          eYo.Selected.connection = c8n
         }
       }
       eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
