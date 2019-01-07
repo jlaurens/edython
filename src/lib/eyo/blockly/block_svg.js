@@ -441,11 +441,6 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @private
  */
 eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
-  if (this.eyo.wrapped_) {
-    // mouse down on a wrapped block means dragging
-    // but dragging is not allowed for that blocks
-    return
-  }
   if (this.eyo.locked_) {
     var parent = this.getParent()
     if (parent) {
@@ -669,3 +664,10 @@ Blockly.BlockSvg.prototype.updateDisabled = function() {
     child.updateDisabled();
   }
 };
+
+/**
+ * Whether the receiver is movable.
+ */
+eYo.BlockSvg.prototype.isMovable = function() {
+  return !this.eyo.wrapped_ && eYo.BlockSvg.superClass_.isMovable.call(this)
+}
