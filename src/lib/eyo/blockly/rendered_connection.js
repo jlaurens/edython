@@ -969,8 +969,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                     }
                   }
                 }
-                var c8n = eYo.Selected.connection
-                if (c8n === childC8n || c8n === parentC8n) {
+                if (eYo.Selected.isConnection(childC8n) || eYo.Selected.isConnection(parentC8n)) {
                   eYo.Selected.connection = null
                 }
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
