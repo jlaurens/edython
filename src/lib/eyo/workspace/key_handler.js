@@ -115,7 +115,7 @@ eYo.KeyHandler = (() => {
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected block can handle the model
     var B = Blockly.selected
-    var c8n = eYo.SelectedConnection
+    var c8n = eYo.Selected.connection
     if (B && !c8n) {
       var D = model.data
       var done = false
@@ -157,7 +157,7 @@ eYo.KeyHandler = (() => {
     }
     var B = Blockly.selected
     if (B) {
-      var c8n = eYo.SelectedConnection
+      var c8n = eYo.Selected.connection
       var newB = model.parent || model.slot
       ? B.eyo.insertParentWithModel(model) || B.eyo.insertBlockWithModel(model, c8n)
       : B.eyo.insertBlockWithModel(model, c8n) || B.eyo.insertParentWithModel(model)
@@ -170,7 +170,7 @@ eYo.KeyHandler = (() => {
             return block.eyo.someInputConnection((c8n) => {
               if (c8n.type === type) {
                 if (!c8n.hidden_ && !c8n.targetConnection && (!c8n.eyo.source || !c8n.eyo.source.bindField)) {
-                  eYo.SelectedConnection = c8n
+                  eYo.Selected.connection = c8n
                   return true
                 } else if (c8n.targetConnection) {
                   return doFirst(c8n.targetBlock(), type)
@@ -181,10 +181,10 @@ eYo.KeyHandler = (() => {
           if (doFirst(newB, Blockly.INPUT_VALUE)) {
             return true
           } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
-            eYo.SelectedConnection = c8n
+            eYo.Selected.connection = c8n
             return true
           }
-          eYo.SelectedConnection = null
+          eYo.Selected.connection = null
           newB.select()
           return true
         }
@@ -193,14 +193,14 @@ eYo.KeyHandler = (() => {
         do {
           if (parent.eyo.someInputConnection((c8n) => {
             if (c8n.eyo.isInput && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
-              eYo.SelectedConnection = c8n
+              eYo.Selected.connection = c8n
               return true
             }
           })) {
             return true
           }
         } while ((parent = parent.getSurroundParent(parent)))
-        eYo.SelectedConnection = null
+        eYo.Selected.connection = null
         newB.select()
         return true
       }
@@ -488,7 +488,7 @@ eYo.KeyHandler = (() => {
           })
         }
         var scaledHeight = eYo.Font.lineHeight * B.workspace.scale
-        var c8n = eYo.SelectedConnection
+        var c8n = eYo.Selected.connection
         if (c8n && c8n.sourceBlock_) {
           var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)
           var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
@@ -614,7 +614,7 @@ var Ks = {
         B.eyo.replaceBlock(parent)
         return
       }
-      if (eYo.SelectedConnection) {
+      if (eYo.Selected.connection =) {
         B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
       } else {
         B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
@@ -632,7 +632,7 @@ var Ks = {
         type: eYo.T3.Expr.u_expr,
         operator_d: '+'
       }
-      if (eYo.SelectedConnection) {
+      if (eYo.Selected.connection =) {
         B.eyo.insertBlockWithModel(model)
       } else {
         B.eyo.insertParentWithModel(model)
@@ -658,7 +658,7 @@ Ks = (() => {
         type: eYo.T3.Expr.u_expr,
         operator_d: op
       }
-      if (eYo.SelectedConnection) {
+      if (eYo.Selected.connection =) {
         B.eyo.insertBlockWithModel(model)
       } else {
         B.eyo.insertParentWithModel(model)
