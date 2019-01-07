@@ -489,7 +489,7 @@ Blockly.Gesture.prototype.setStartBlock = (() => {
     var eyo = block.eyo
     do {
       if (eyo.isStmt) {
-        candidate = eYo.selected === eyo || (eYo.selected && eYo.selected.stmtAncestor === eyo)
+        candidate = eYo.Selected.eyo === eyo || (eYo.Selected.eyo && eYo.Selected.eyo.stmtParent === eyo)
           ? block
           : eyo.block_
         break
