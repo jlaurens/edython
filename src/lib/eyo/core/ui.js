@@ -287,38 +287,6 @@ eYo.setup.register(() => {
       stroke-width: ${eYo.Style.Path.Selected.width}px;
     }`
   )
-  // When the selected block is a statement
-  // only the following and suite statements are highlighted
-  // the expression statements are selected only when the parent
-  // is a selected statement, or the parent is an highlighted expression
-  // eyo-expr selector for expressions
-  // eyo-stmt selector for statements
-  // eyo-inner when there is a parent or not
-  // Find the proper selectors
-  // When an expression is selected
-  eYo.Style.insertCssRuleAt(
-    `.eyo-select.eyo-expr .eyo-path-contour,
-    .eyo-select.eyo-expr .eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
-    }`
-  )
-  // When a statement is selected, select only statements
-  eYo.Style.insertCssRuleAt(
-    `.eyo-select.eyo-stmt>.eyo-path-contour,
-    .eyo-select.eyo-stmt>.eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
-    }`
-  )
-  //, .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
-  // .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-inner
-  
-  // When a statement is selected, select only expressions of that statement
-  eYo.Style.insertCssRuleAt(
-    `.eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
-    .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
-    }`
-  )
   eYo.Style.insertCssRuleAt(
     `.eyo-select .eyo-path-contour.eyo-error,
     .eyo-select .eyo-path-inner.eyo-error {
@@ -383,6 +351,38 @@ eYo.setup.register(() => {
       stroke: ${eYo.Style.Path.inner_colour};
     }`
   )
+   // When the selected block is a statement
+  // only the following and suite statements are highlighted
+  // the expression statements are selected only when the parent
+  // is a selected statement, or the parent is an highlighted expression
+  // eyo-expr selector for expressions
+  // eyo-stmt selector for statements
+  // eyo-inner when there is a parent or not
+  // Find the proper selectors
+  // When an expression is selected
+  eYo.Style.insertCssRuleAt(
+    `.eyo-select.eyo-expr .eyo-path-contour,
+    .eyo-select.eyo-expr .eyo-path-inner {
+      stroke: ${eYo.Style.Path.Selected.colour};
+    }`
+  )
+  // When a statement is selected, select only statements
+  eYo.Style.insertCssRuleAt(
+    `.eyo-select.eyo-stmt>.eyo-path-contour,
+    .eyo-select.eyo-stmt>.eyo-path-inner {
+      stroke: ${eYo.Style.Path.Selected.colour};
+    }`
+  )
+  //, .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
+  // .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-inner
+  
+  // When a statement is selected, select only expressions of that statement
+  eYo.Style.insertCssRuleAt(
+    `.eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
+    .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
+      stroke: ${eYo.Style.Path.Selected.colour};
+    }`
+  ) 
   eYo.Style.insertCssRuleAt(
     `.eyo-start-path {
       fill: rgba(240, 240, 240, 0.97);
