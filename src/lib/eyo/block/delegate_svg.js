@@ -1565,9 +1565,9 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   }
   // this is one of the reasons why we allways render from the start of a statement
   io.input.eyo.inputRight = undefined
-  io.input.eyo.inputLeft = io.inputDone
-  io.inputDone && (io.inputDone.eyo.inputRight = io.input)
-  io.inputDone = io.input
+  io.input.eyo.inputLeft = io.common.inputDone
+  io.common.inputDone && (io.common.inputDone.eyo.inputRight = io.input)
+  io.common.inputDone = io.input
   this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
@@ -3423,58 +3423,3 @@ eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
 eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
   this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
 }
-
-/**
- * Tab navigation.
- * @param {?Object} opt Optional key value arguments.
- */
-eYo.DelegateSvg.prototype.doTab = (() => {
-  var c8n
-  var f = x => {
-    var c_eyo = x.connection && x.connection.eyo
-    if (c_eyo && c_eyo.isInput && !c_eyo.isIncog()) {
-      return (c8n = x.connection)
-    }
-  }
-  var doLeft = (eyo) => {
-    if ((c8n = eYo.selectedConnection) && !c8n.eyo.isIncog()) {
-      var input = c8n.eyo.input
-      if (input) {
-        while ((input = input.eyo.inputLeft)) {
-          if ((c8n = input.connection) && c8n.eyo.isInput) {
-            eYo.selectedConnection = c8n
-            break
-          }
-        }
-      }
-    } else {
-      eyo.forEachSlot(f)
-      if (!c8n) {
-        eyo.forEachInput(f)  
-      }
-      eYo.selectedConnection = c8n
-    }
-  }
-  var doRight = (eyo) => {
-    if ((c8n = eYo.selectedConnection) && !c8n.eyo.isIncog()) {
-      var input = c8n.eyo.input
-      if (input) {
-        while ((input = input.eyo.inputRight)) {
-          if ((c8n = input.connection) && c8n.eyo.isInput) {
-            eYo.selectedConnection = c8n
-            break
-          }
-        }
-      }
-    } else if (eyo.someSlot(f) || eyo.someInput(f)) {
-      eYo.selectedConnection = c8n
-    }
-  }
-  return function(opt) {
-    var f = opt && opt.left ? doLeft : doRight
-    var n = opt && opt.fast ? 4 : 1
-    while (n--) {
-      f(this)
-    }
-  }
-})()
