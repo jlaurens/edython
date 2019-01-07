@@ -209,11 +209,9 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
  */
 eYo.DelegateSvg.Expr.prototype.didConnect = function (connection, oldTargetC8n, oldC8n) {
   eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, connection, oldTargetC8n, oldC8n)
-  var block = this.block_
-  if (connection.type === Blockly.OUTPUT_VALUE) {
-    var parent = connection.targetBlock()
-    if (block === Blockly.selected && this.locked_) {
-      parent.select()
+  if (connection.eyo.isOutput) {
+    if (this === eYo.Selected.eyo && this.locked_) {
+      connection.targetBlock().select()
     }
     goog.dom.classlist.remove(block.svgGroup_, 'eyo-top')
   }
@@ -221,7 +219,7 @@ eYo.DelegateSvg.Expr.prototype.didConnect = function (connection, oldTargetC8n, 
 
 /**
  * Did connect this block's connection to another connection.
- * When conecting locked blocks, select the receiver.
+ * When connecting locked blocks, select the receiver.
  * @param {!Blockly.Block} block
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
@@ -229,8 +227,7 @@ eYo.DelegateSvg.Expr.prototype.didConnect = function (connection, oldTargetC8n, 
  */
 eYo.DelegateSvg.Expr.prototype.didDisconnect = function (connection, oldTargetC8n) {
   eYo.DelegateSvg.Expr.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
-  var block = this.block_
-  if (connection.type === Blockly.OUTPUT_VALUE) {
+  if (connection.eyo.isOutput) {
     goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
   }
 }
@@ -267,37 +264,29 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
  */
 eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
   if (this.workspace && other && other.workspace) {
-    eYo.Events.groupWrap(
-      () => { // this is catched
-        try {
-          var block = this.block_
-          console.log('**** replaceBlock', block, other)
-          var c8n = other.outputConnection
-          var its_xy = other.getRelativeToSurfaceXY()
-          var my_xy = block.getRelativeToSurfaceXY()
-          block.outputConnection.disconnect()
-          if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(block.outputConnection)) {
-            // the other block has an output connection that can connect to the block's one
-            var source = c8n.sourceBlock_
-            var selected = source.eyo.hasSelect()
-            // next operations may unselect the block
-            var old = source.eyo.consolidating_
-            c8n.connect(block.outputConnection)
-            source.eyo.consolidating_ = old
-            if (selected) {
-              source.select()
-            }
-          } else {
-            block.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+    eYo.Events.groupWrap(() => {
+      eYo.Do.tryFinally(() => {
+        console.log('**** replaceBlock', this.block_, other)
+        var c8n = other.outputConnection
+        var its_xy = other.getRelativeToSurfaceXY()
+        var my_xy = this.block_.getRelativeToSurfaceXY()
+        this.outputConnection.disconnect()
+        if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
+          // the other block has an output connection that can connect to the block's one
+          var source = c8n.sourceBlock_
+          var selected = source.eyo.hasSelect()
+          // next operations may unselect the block
+          var old = source.eyo.consolidating_
+          c8n.connect(this.outputConnection)
+          source.eyo.consolidating_ = old
+          if (selected) {
+            source.select()
           }
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          other.dispose(true)
+        } else {
+          this.block_.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
-      }
-    )
+      })
+    })
   }
 }
 
