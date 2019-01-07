@@ -134,7 +134,7 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
           dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
           dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
           dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk())
-          goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, function (e) {})
+          goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, e => {})
           dialogModal.setVisible(true)
         }
         console.log('Start executing ' + this.block_.id)
