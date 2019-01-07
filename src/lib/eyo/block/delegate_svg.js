@@ -877,7 +877,6 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
     // the parent's `renderDrawValueInput_` method.
     var io = this.renderDrawModelBegin_(recorder)
     try {
-      // chain the tiles to properly manage spaces between tiles
       d = this.renderDrawModel_(io)
       this.svgPathInner_.setAttribute('d', d)
     } catch (err) {
@@ -1213,14 +1212,15 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (slot, io) {
     return
   }
   var root = slot.getSvgRoot()
-  goog.asserts.assert(root, 'Slot with no root', io.block.type, slot.key)
   if (slot.isIncog()) {
-    root.setAttribute('display', 'none')
+    root && root.setAttribute('display', 'none')
     return
+  } else {
+    goog.asserts.assert(root, 'Slot with no root', io.block.type, slot.key)
+    root.removeAttribute('display')
   }
   // move the slot to the correct location
   slot.where.set(io.cursor)
-  root.removeAttribute('display')
   // Now reset the cursor relative to the slot
   io.cursor.set()
   this.renderDrawFieldFrom_(slot.fromStartField, io)
@@ -1563,6 +1563,11 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (io.input.type !== Blockly.INPUT_VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
+  // this is one of the reasons why we allways render from the start of a statement
+  io.input.eyo.inputRight = undefined
+  io.input.eyo.inputLeft = io.inputDone
+  io.inputDone && (io.inputDone.eyo.inputRight = io.input)
+  io.inputDone = io.input
   this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
@@ -2773,18 +2778,18 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
             return c8n
           }
         }
-        if (c8n.eyo.optional_ || c8n.eyo.s7r_) {
-          R = new goog.math.Rect(
-            c8n.offsetInBlock_.x - eYo.Unit.x / 4,
-            c8n.offsetInBlock_.y + eYo.Padding.t,
-            1.5 * eYo.Unit.x,
-            eYo.Font.height
-          )
-        } else if (c8n.eyo.slot && c8n.eyo.slot.bindField) {
+        if (c8n.eyo.slot && c8n.eyo.slot.bindField) {
           R = new goog.math.Rect(
             c8n.offsetInBlock_.x,
             c8n.offsetInBlock_.y + eYo.Padding.t,
             c8n.eyo.w * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else if (c8n.eyo.optional_ || c8n.eyo.s7r_) {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x - eYo.Unit.x / 4,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            1.5 * eYo.Unit.x,
             eYo.Font.height
           )
         } else {
@@ -3418,3 +3423,58 @@ eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
 eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
   this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
 }
+
+/**
+ * Tab navigation.
+ * @param {?Object} opt Optional key value arguments.
+ */
+eYo.DelegateSvg.prototype.doTab = (() => {
+  var c8n
+  var f = x => {
+    var c_eyo = x.connection && x.connection.eyo
+    if (c_eyo && c_eyo.isInput && !c_eyo.isIncog()) {
+      return (c8n = x.connection)
+    }
+  }
+  var doLeft = (eyo) => {
+    if ((c8n = eYo.selectedConnection) && !c8n.eyo.isIncog()) {
+      var input = c8n.eyo.input
+      if (input) {
+        while ((input = input.eyo.inputLeft)) {
+          if ((c8n = input.connection) && c8n.eyo.isInput) {
+            eYo.selectedConnection = c8n
+            break
+          }
+        }
+      }
+    } else {
+      eyo.forEachSlot(f)
+      if (!c8n) {
+        eyo.forEachInput(f)  
+      }
+      eYo.selectedConnection = c8n
+    }
+  }
+  var doRight = (eyo) => {
+    if ((c8n = eYo.selectedConnection) && !c8n.eyo.isIncog()) {
+      var input = c8n.eyo.input
+      if (input) {
+        while ((input = input.eyo.inputRight)) {
+          if ((c8n = input.connection) && c8n.eyo.isInput) {
+            eYo.selectedConnection = c8n
+            break
+          }
+        }
+      }
+    } else if (eyo.someSlot(f) || eyo.someInput(f)) {
+      eYo.selectedConnection = c8n
+    }
+  }
+  return function(opt) {
+    var f = opt && opt.left ? doLeft : doRight
+    var n = opt && opt.fast ? 4 : 1
+    while (n--) {
+      f(this)
+    }
+  }
+})()

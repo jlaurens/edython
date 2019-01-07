@@ -134,7 +134,19 @@ eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
  */
 eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ = function () {
   return eYo.Shape.definitionWithBlock(this, {dido: true})
-} /* eslint-enable indent */
+}
+
+/**
+ * Prepare rendering.
+ * @param {?Object} recorder  When null, this is not the start of a statement
+ * @return {!Object} a local recorder
+ * @private
+ */
+eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
+  eYo.DelegateSvg.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
+  recorder.inputDone = undefined
+}
+
 
 /**
  * Render the leading # character for disabled statement blocks.
@@ -347,7 +359,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
         var O = this.owner
         O.identifiers_s.setIncog(newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL)
         O.del_s.setIncog(newValue !== eYo.Key.DEL)
-        O.ans_s.setIncog(newValue !== eYo.Key.RETURN)
+        O.return_s.setIncog(newValue !== eYo.Key.RETURN)
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
@@ -380,11 +392,17 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
     },
     del: {
       order: 2,
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.T3.Expr.target_list,
+      xml: {
+        key: 'list'
+      }
     },
-    ans: {
+    return: {
       order: 3,
-      wrap: eYo.T3.Expr.optional_expression_list
+      wrap: eYo.T3.Expr.optional_expression_list,
+      xml: {
+        key: 'list'
+      }
     }
   }
 })

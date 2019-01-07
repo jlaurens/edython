@@ -129,6 +129,11 @@ Object.defineProperties(
       get () {
         return this.owner.block_.workspace.eyo.recover
       }
+    },
+    xmlKey: {
+      get () {
+        return (this.model.xml && this.model.xml.key) || this.key
+      }
     }
   }
 )
@@ -762,7 +767,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         if (target.eyo instanceof eYo.DelegateSvg.List) {
           var child = eYo.Xml.blockToDom(target, opt)
           if (child.firstElementChild) {
-            child.setAttribute(eYo.Xml.SLOT, this.key)
+            child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
             return child
           }
@@ -774,9 +779,9 @@ eYo.Slot.prototype.save = function (element, opt) {
         child = eYo.Xml.blockToDom(target, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           if (this.inputType === Blockly.INPUT_VALUE) {
-            child.setAttribute(eYo.Xml.SLOT, this.key)
+            child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-            child.setAttribute(eYo.Xml.FLOW, this.key)
+            child.setAttribute(eYo.Xml.FLOW, this.xmlKey)
           }
           goog.dom.appendChild(element, child)
           return child
@@ -787,14 +792,14 @@ eYo.Slot.prototype.save = function (element, opt) {
   if (!out && this.isRequiredToModel()) {
     var child = goog.dom.createDom(eYo.Xml.EXPR)
     child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
-    child.setAttribute(eYo.Xml.SLOT, this.key)
+    child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
     goog.dom.appendChild(element, child)
   }
 }
 
 /**
  * Initialize the receiver from a dom element.
- * Given an input and an element, initialize the input target
+ * Given an element, initialize the slot target
  * block with data from the given element.
  * The given element was created by the input's source block
  * in a blockToDom method. If it contains a child element
@@ -833,7 +838,7 @@ eYo.Slot.prototype.load = function (element) {
       } else if (this.inputType === Blockly.NEXT_STATEMENT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
-      if (attribute === this.key) {
+      if (attribute && (attribute === this.xmlKey || attribute === this.key)) {
         this.block.workspace.eyo.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.setRequiredFromModel(true)

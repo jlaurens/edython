@@ -359,7 +359,16 @@ Blockly.onKeyDown_ = function(e) {
     return;
   }
   // var deleteBlock = false;
-  if (e.keyCode == 27) {
+  if (e.keyCode == 9) {
+    if (Blockly.selected) {
+      Blockly.selected.eyo.doTab({
+        left: e.shiftKey,
+        fast: e.altKey || e.ctrlKey || e.metaKey
+      })
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  } else if (e.keyCode == 27) {
     // Pressing esc closes the context menu.
     Blockly.hideChaff();
   } else if (e.keyCode == 8 || e.keyCode == 46) {

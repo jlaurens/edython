@@ -902,6 +902,10 @@ Ks = {
     type: eYo.T3.Expr.list_display,
     parent: true
   },
+  '…:…': {
+    type: eYo.T3.Expr.proper_slice,
+    parent: true
+  },
   '{…:…}': {
     type: eYo.T3.Expr.dict_display,
     parent: true

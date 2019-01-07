@@ -300,6 +300,7 @@ eYo.FlyoutCategory = {
         }
       }
     },
+    eYo.T3.Expr.proper_slice,
     {
       type: eYo.T3.Expr.list_display,
       slots: {
@@ -395,11 +396,10 @@ eYo.FlyoutCategory = {
         }
       }
     },
-    eYo.T3.Expr.proper_slice,
     eYo.T3.Stmt.del_stmt,
     {
       type: eYo.T3.Stmt.del_stmt,
-      n_ary_s: {
+      del_s: {
         slots: {
           O: eYo.T3.Expr.slicing
         }

@@ -83,6 +83,7 @@ Blockly.Input.prototype.setVisible = function (visible) {
 eYo.Input.setupEyO = function (input) {
   if (!input.eyo) {
     input.eyo = new eYo.InputDelegate(input)
+    input.connection && (input.connection.eyo.input = input)
   }
 }
 
