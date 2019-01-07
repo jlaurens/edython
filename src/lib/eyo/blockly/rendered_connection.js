@@ -15,7 +15,7 @@
 goog.provide('eYo.RenderedConnection')
 goog.provide('eYo.ConnectionDelegate')
 
-goog.forwardDeclare('eYo.SelectedConnection')
+goog.forwardDeclare('eYo.Selected')
 
 goog.require('Blockly.RenderedConnection')
 goog.require('Blockly.Connection')
@@ -969,9 +969,9 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                     }
                   }
                 }
-                var c8n = eYo.SelectedConnection
+                var c8n = eYo.Selected.connection
                 if (c8n === childC8n || c8n === parentC8n) {
-                  eYo.SelectedConnection = null
+                  eYo.Selected.connection = null
                 }
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
               }, () => { // finally
@@ -1203,7 +1203,7 @@ Blockly.Connection.prototype.dispose = function () {
   var dispose = Blockly.Connection.prototype.dispose
   return function () {
     if (eYo.Selected.isConnection(this)) {
-      eYo.SelectedConnection = null
+      eYo.Selected.connection = null
     }
     dispose.call(this)
   }
