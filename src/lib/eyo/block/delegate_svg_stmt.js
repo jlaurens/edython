@@ -143,8 +143,9 @@ eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ = function () {
  * @private
  */
 eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
-  eYo.DelegateSvg.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
-  recorder.inputDone = undefined
+  var  io = eYo.DelegateSvg.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
+  io.common.inputDone = undefined
+  return io
 }
 
 
