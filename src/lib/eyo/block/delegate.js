@@ -137,7 +137,13 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
-  stmtAncestor: {
+  surrounder: {
+    get () {
+      var ans = this.block_.getSurroundParent()
+      return ans && ans.eyo
+    }
+  },
+  stmtParent: {
     get () {
       var eyo = this
       do {
