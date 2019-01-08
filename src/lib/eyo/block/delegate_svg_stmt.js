@@ -124,15 +124,15 @@ eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
 
 eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
   eYo.DelegateSvg.Stmt.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Stmt.prototype.selectPathDef_ =
+    eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ =
       eYo.DelegateSvg.Stmt.prototype.statementPathDef_
 
 /**
- * Path definition for a statement block highlight.
+ * Path definition for a statement block selection.
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ = function () {
+eYo.DelegateSvg.Stmt.prototype.selectPathDef_ = function () {
   return eYo.Shape.definitionWithBlock(this, {dido: true})
 }
 
@@ -538,7 +538,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         var data = this.owner.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
-        this.owner.updateEnclosingBlackCount()
+        this.owner.updateGroupBlackCount()
       },
       consolidate: /** @suppress {globalThis} */ function () {
         if (this.owner.comment_d.isIncog()) {

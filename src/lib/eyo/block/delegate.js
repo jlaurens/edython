@@ -111,7 +111,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return parent && parent.eyo
     }
   },
-  enclosingGroup: {
+  group: {
     get () {
       var eyo = this
       var c8n
@@ -135,12 +135,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
         }
       }
       return ans
-    }
-  },
-  group: {
-    get () {
-      var ans = this.block_.getSurroundParent()
-      return ans && ans.eyo
     }
   },
   topGroup: {
@@ -343,8 +337,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
       while (!eyo.isControl && (eyo = eyo.parent));
       return eyo
     }
+  },
+  isGroup: {
+    get () {
+      return false
+    }
   }
 })
+
 
 /**
  * Get the block.
@@ -1701,14 +1701,6 @@ eYo.Delegate.prototype.hasNextStatement_ = function () {
 }
 
 /**
- * Whether the block has a suite statement.
- * @private
- */
-eYo.Delegate.prototype.hasSuiteStatement_ = function () {
-  return false
-}
-
-/**
  * The default implementation does nothing.
  * @param {!Blockly.Block} block
  * @param {boolean} hidden True if connections are hidden.
@@ -1876,8 +1868,8 @@ eYo.Delegate.prototype.updateBlackCount = function () {
 /**
  * Update the black count of the enclosing group.
  */
-eYo.Delegate.prototype.updateEnclosingBlackCount = function () {
-  var eyo = this.enclosingGroup
+eYo.Delegate.prototype.updateGroupBlackCount = function () {
+  var eyo = this.group
   eyo && eyo.updateBlackCount()
 }
 
@@ -1893,7 +1885,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
   if (eyo.isSuite) {
     eyo.b_eyo.updateBlackCount()
   } else if (!eyo.isOutput) {
-    this.updateEnclosingBlackCount()
+    this.updateGroupBlackCount()
   }
   if (eyo.isNext) {
     var target = connection.targetBlock().eyo
@@ -1923,7 +1915,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   if (eyo.isSuite) {
     eyo.b_eyo.updateBlackCount()
   } else if (!eyo.isOutput) {
-    this.updateEnclosingBlackCount()
+    this.updateGroupBlackCount()
   }
   if (eyo.isNext) {
     this.nextCount = 0

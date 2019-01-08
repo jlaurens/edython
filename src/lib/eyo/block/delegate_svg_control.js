@@ -94,7 +94,7 @@ eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
 
 eYo.DelegateSvg.Control.prototype.shapePathDef_ =
   eYo.DelegateSvg.Control.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Control.prototype.selectPathDef_ =
+    eYo.DelegateSvg.Control.prototype.hilightPathDef_ =
       eYo.DelegateSvg.Control.prototype.controlPathDef_
 
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {

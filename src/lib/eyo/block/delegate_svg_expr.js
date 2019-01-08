@@ -178,7 +178,7 @@ eYo.DelegateSvg.prototype.contourAboveParent = false
 
 eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
   eYo.DelegateSvg.Expr.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Expr.prototype.selectPathDef_ =
+    eYo.DelegateSvg.Expr.prototype.hilightPathDef_ =
       eYo.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**

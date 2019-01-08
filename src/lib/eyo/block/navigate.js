@@ -268,7 +268,7 @@ eYo.DelegateSvg.prototype.selectLeft = function () {
       }
     } while ((parent = parent.getSurroundParent()))
   }
-  target = this.topGroup.getBestBlock((a, b) => {
+  target = this.root.getBestBlock((a, b) => {
     if (a.left <= b.left) {
       return {}
     }
@@ -420,7 +420,7 @@ eYo.DelegateSvg.prototype.selectRight = function () {
     }
   }
   // now try to select a top block
-  target = this.topGroup.getBestBlock(function (a, b) {
+  target = this.root.getBestBlock((a, b) => {
     if (a.right >= b.right) {
       return {}
     }
@@ -483,10 +483,10 @@ eYo.DelegateSvg.prototype.selectAbove = function () {
   do {
     parent = target
     if ((c8n = parent.previousConnection) && (target = c8n.eyo.t_eyo)) {
-      target.select()
+      eYo.Selected.eyo = target
       return
     }
-  } while ((target = parent.group))
+  } while ((target = parent.parent))
   target = parent.getBestBlock((a, b) => {
     if (a.top <= b.top) {
       return {}
@@ -550,10 +550,10 @@ eYo.DelegateSvg.prototype.selectBelow = function () {
   do {
     parent = target
     if ((c8n = parent.nextConnection) && (target = c8n.eyo.t_eyo)) {
-      target.select()
+      eYo.Selected.eyo = target
       return
     }
-  } while ((target = parent.group))
+  } while ((target = parent.parent))
   target = parent.getBestBlock((a, b) => {
     if (a.bottom >= b.bottom) {
       return {}

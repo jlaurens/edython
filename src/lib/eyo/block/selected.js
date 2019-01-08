@@ -42,13 +42,38 @@ eYo.Selected = (() => {
           return eyo_
         },
         set (newValue) {
+          this.connection = null
           if (eyo_ !== newValue) {
-            eyo_ = newValue
-            block_ = eyo_ && eyo_.block_
-            this.connection = null
             if (eyo_) {
-              block_.select()
+              // unselect/unhilight the previous block
+              eYo.Draw.removeBlockSelect_(eyo_)
+              eYo.Draw.removeBlockHilight_(eyo_)
+              eYo.Draw.removeStatusSelect_(eyo_)
+              this.connection = null
+              eyo_ = block_ = null
+            }
+            if (newValue) {
+              if (newValue.wrapped_) {
+                var parent = newValue.wrapper
+                // Wrapped blocks should not be selected.
+                if(parent) {
+                  this.eyo = parent
+                  return
+                }
+              }
+              eyo_ = newValue
+              block_ = eyo_.block_
+              eYo.Draw.addBlockSelect_(eyo_)
+              eYo.Draw.addBlockHilight_(eyo_)
+              eYo.Draw.addStatusSelect_(eyo_)
+              if (!eyo_.canEdit_) {
+                setTimeout(() => {
+                  eyo_.canEdit_ = true
+                }, 10)
+              }
               block_.bringToFront()
+            } else {
+              block_
             }
           }
         }
@@ -62,54 +87,48 @@ eYo.Selected = (() => {
             if (c8n.hidden_) {
               console.error('Do not select a hidden connection')
             }
-            var block = c8n.getSourceBlock()
-            if (block) {
-              if (block.eyo.locked_) {
+            var b_eyo = c8n.eyo.b_eyo
+            if (b_eyo) {
+              if (b_eyo.locked_) {
                 return
               }
-              if (c8n === block.previousConnection && c8n.targetConnection) {
-                c8n = c8n.targetConnection
-                var wrapper = c8n.getSourceBlock().eyo.wrapper
-                if (!wrapper.wrapped_) {
-                  wrapper.block_.select()
-                  wrapper.block_.bringToFront()
-                }
+              if (c8n === b_eyo.previousConnection && c8n.targetConnection) {
+                var wrapper = c8n.eyo.t_eyo.wrapper
+                wrapper && (this.eyo = wrapper)
               }
             }
           }
           if (c8n !== c8n_) {
             if (c8n_) {
-              var oldBlock = c8n_.getSourceBlock()
-              if (oldBlock) {
-                oldBlock.eyo.selectedConnection = null
-                oldBlock.eyo.selectedConnectionSource_ = null
-                oldBlock.eyo.removeSelect()
-                if (oldBlock === block_) {
-                  oldBlock.eyo.updateAllPaths_()
-                  oldBlock.removeSelect()
-                } else if (eyo_) {
-                  eyo_.selectedConnectionSource_ = null
-                  block_.removeSelect()
-                }
-              }
+              eYo.Draw.removeBlockConnection_(eyo_)
+              eyo_.selectedConnection = null
+              eyo_.selectedConnectionSource_ = null
               c8n_ = null
             }
             if (c8n) {
-              var target = c8n.targetBlock()
-              if (target) {
-                eYo.Selected.block =  target
-                return
+              var c_eyo = c8n.eyo
+              var b_eyo = c_eyo.b_eyo
+              if (b_eyo) {
+                // Do not select a connection with a target, select the target instead
+                var t_eyo = c_eyo.t_eyo
+                if (t_eyo) {
+                  eYo.Selected.eyo =  t_eyo
+                  return
+                }
+                wrapper = b_eyo.wrapper
+                if (wrapper === eyo_) {
+                  wrapper.selectedConnection = c8n_ = c8n
+                  wrapper.selectedConnectionSource_ = b_eyo
+                  wrapper.updateAllPaths_()
+                  eYo.Draw.addBlockConnection_(wrapper)
+                  eYo.Draw.addBlockSelect_(eyo_)
+                  eYo.Draw.removeBlockHilight_(eyo_)
+                } else if (wrapper) {
+                  this.eyo = wrapper
+                }
               }
-              var eyo = c8n.eyo.b_eyo
-              if (eyo) {
-                wrapper = eyo.wrapper
-                wrapper.selectedConnection = c8n_ = c8n
-                wrapper.selectedConnectionSource_ = eyo
-                wrapper.block_.select()
-                wrapper.block_.removeSelect()
-                wrapper.updateAllPaths_()
-                wrapper.block_.addSelect()
-              }
+            } else if (eyo_) {
+              eYo.Draw.addBlockHilight_(eyo_)
             }
           }
         }
@@ -162,39 +181,7 @@ eYo.DelegateSvg.prototype.select = function () {
   if (!this.workspace) {
     return
   }
-  if (this.wrapped_) {
-    var parent = this.wrapper
-    // Wrapped blocks should not be selected.
-    if(parent) {
-      parent.select()
-      return
-    }
-  }
-  if (!this.selectedConnection) {
-    if ((parent = this.group)) {
-      if (parent.isShort
-          && parent !== eYo.Selected.eyo
-          && this !== eYo.Selected.eyo) {
-        parent.select()
-        return
-      }
-    }
-  }
-  this.block_.bringToFront()
-  if (this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection)) {
-    if (this.svgPathSelect_ && this.svgPathSelect_.parentNode) {
-      goog.dom.removeNode(this.svgPathSelect_)
-      goog.dom.removeNode(this.svgPathHilight_)
-    }
-  } else if (this.svgPathSelect_ && !this.svgPathSelect_.parentNode) {
-    this.svgGroup_.appendChild(this.svgPathSelect_)
-    this.svgGroup_.appendChild(this.svgPathHilight_)
-  }
-  if (!this.canEdit_) {
-    setTimeout(() => {
-      this.canEdit_ = true
-    }, 10)
-  }
+  eYo.Selected.eyo = this
 }
 
 /**
@@ -247,7 +234,7 @@ eYo.BlockSvg.prototype.addSelect = function () {
  */
 eYo.DelegateSvg.prototype.addSelect = function () {
   var g = this.svgGroup_
-  if (this.selectedConnection) {
+  if (this.selectedConnection && this.selectedConnection === eYo.Selected.connection) {
     // guard or rentrant
     if (!this.svgPathConnection_ || this.svgPathConnection_.parentNode) {
       return
@@ -255,6 +242,10 @@ eYo.DelegateSvg.prototype.addSelect = function () {
     g.appendChild(this.svgPathConnection_)
   } else if (!this.wrapped_) {
     var hasSelectedConnection = this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection
+    if (hasSelectedConnection) {
+      eYo.Draw.removeBlockSelect_(this)
+      eYo.Draw.removeBlockHilight_(this)
+    }
     if (this.svgPathSelect_.parentNode && hasSelectedConnection) {
       goog.dom.removeNode(this.svgPathSelect_)
       goog.dom.removeNode(this.svgPathHilight_)

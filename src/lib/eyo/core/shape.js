@@ -29,7 +29,7 @@ eYo.Shape = function () {
 eYo.Shape.shared = new eYo.Shape()
 
 eYo.Shape.Style = {
-  Selected: {
+  Hilighted: {
     colour: '#fc3',
     width: 2.675, // px
   },

@@ -34,7 +34,7 @@ eYo.Draw.hasSelect = function (eyo) {
  * Add the hilight path_.
  * @param {!Object} eyo Block delegate.
  */
-eYo.Draw.addBlockHilight = eyo => {
+eYo.Draw.addBlockHilight_ = eyo => {
   eyo.svgPathHilight_.parentNode || eyo.svgGroup_.appendChild(eyo.svgPathHilight_)
 }
 
@@ -46,10 +46,20 @@ eYo.Draw.addBlockSelect_ = eyo => {
   if (!eyo.svgPathSelect_.parentNode) {
     if (eyo.svgPathHilight_.parentNode) {
       eyo.svgGroup_.insertBefore(eyo.svgPathSelect_, eyo.svgPathHilight_)
+    } else if (eyo.svgPathConnection_.parentNode) {
+      eyo.svgGroup_.insertBefore(eyo.svgPathSelect_, eyo.svgPathConnection_)
     } else {
       eyo.svgGroup_.appendChild(eyo.svgPathSelect_)
     }
   }
+}
+
+/**
+ * Add the hilight path_.
+ * @param {!Object} eyo Block delegate.
+ */
+eYo.Draw.addBlockConnection_ = eyo => {
+  eyo.svgPathConnection_.parentNode || eyo.svgGroup_.appendChild(eyo.svgPathConnection_)
 }
 
 /**
@@ -66,6 +76,14 @@ eYo.Draw.removeBlockHilight_ = eyo => {
  */
 eYo.Draw.removeBlockSelect_ = eyo => {
   goog.dom.removeNode(eyo.svgPathSelect_)
+}
+
+/**
+ * Remove the select path.
+ * @param {!Object} eyo Block delegate.
+ */
+eYo.Draw.removeBlockConnection_ = eyo => {
+  goog.dom.removeNode(eyo.svgPathConnection_)
 }
 
 /**

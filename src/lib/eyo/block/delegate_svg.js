@@ -291,7 +291,7 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
     'class': 'eyo-path-hilighted'
   }, null)
   this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-selected DEBUG'
+    'class': 'eyo-path-connection eyo-path-hilighted'
   }, null)
   if (this.outputConnection && this.outputConnection.targetBlock()) {
     console.log('CREATING path while ALREADY connected')
@@ -858,7 +858,7 @@ eYo.DelegateSvg.prototype.contourPathDef_ = eYo.DelegateSvg.prototype.shapePathD
  * Highlighted block outline. Default implementation forwards to shapePathDef_.
  * @private
  */
-eYo.DelegateSvg.prototype.selectPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
+eYo.DelegateSvg.prototype.hilightPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
 
 /**
  * Highlighted block outline. Default implementation does nothing.
@@ -876,9 +876,7 @@ eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
-  return this.selectedConnection && this.selectedConnection === eYo.Selected.connection
-    ? this.selectedConnection.eyo.highlightPathDef()
-    : ''
+  return this.selectedConnection && this.selectedConnection.eyo.highlightPathDef() || ''
 }
 
 /**

@@ -168,7 +168,7 @@ eYo.setup.register(function () {
 }, 'Editor offset')
 
 eYo.Style.Path = {
-  Selected: {
+  Hilighted: {
     colour: '#f9951b', // #fc3
     width: 2.675, // px
   },
@@ -269,6 +269,7 @@ eYo.setup.register(() => {
   )
   eYo.Style.insertCssRuleAt(
     `.eyo-error.eyo-path-selected,
+    .eyo-error.eyo-path-hilighted,
     .eyo-error.eyo-path-shape,
     .eyo-error.eyo-path-contour,
     .eyo-error.eyo-path-inner {
@@ -278,13 +279,13 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-path-selected,
     .eyo-path-hilighted {
-      stroke: ${eYo.Style.Path.Selected.colour};
+      stroke: ${eYo.Style.Path.Hilighted.colour};
       fill: none;
     }`
   )
   eYo.Style.insertCssRuleAt(
-    `.eyo-path-selected {
-      stroke-width: ${eYo.Style.Path.Selected.width}px;
+    `.eyo-path-hilighted {
+      stroke-width: ${eYo.Style.Path.Hilighted.width}px;
     }`
   )
   eYo.Style.insertCssRuleAt(
@@ -363,14 +364,14 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-expr .eyo-path-contour,
     .eyo-select.eyo-expr .eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
+      stroke: ${eYo.Style.Path.Hilighted.colour};
     }`
   )
   // When a statement is selected, select only statements
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-stmt>.eyo-path-contour,
     .eyo-select.eyo-stmt>.eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
+      stroke: ${eYo.Style.Path.Hilighted.colour};
     }`
   )
   //, .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
@@ -380,7 +381,7 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
     .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
-      stroke: ${eYo.Style.Path.Selected.colour};
+      stroke: ${eYo.Style.Path.Hilighted.colour};
     }`
   ) 
   eYo.Style.insertCssRuleAt(
@@ -512,14 +513,14 @@ eYo.setup.register(() => {
   )
   eYo.Style.insertCssRuleAt(
     `.blocklyHighlightedConnectionPath{
-      stroke: ${eYo.Style.Path.Selected.colour};
-      stroke-width: ${eYo.Style.Path.Selected.width}px;
+      stroke: ${eYo.Style.Path.Hilighted.colour};
+      stroke-width: ${eYo.Style.Path.Hilighted.width}px;
       fill: none;
     }`
   )
   eYo.Style.insertCssRuleAt(
       `.blocklyHighlightedConnectionPathH{
-        fill: ${eYo.Style.Path.Selected.colour};
+        fill: ${eYo.Style.Path.Hilighted.colour};
         stroke: none;
     }`
   )

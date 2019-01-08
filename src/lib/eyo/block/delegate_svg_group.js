@@ -29,6 +29,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   }
 }, eYo.DelegateSvg)
 
+Object.defineProperties(eYo.DelegateSvg.BaseGroup.prototype, {
+  isGroup: {
+    get () {
+      return true
+    }
+  }
+})
+
 /**
  * Class for a DelegateSvg, statement block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
@@ -39,14 +47,6 @@ eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {
     suffix: ':'
   }
 }, eYo.DelegateSvg)
-
-/**
- * Whether the block has a suite statement.
- * @private
- */
-eYo.DelegateSvg.BaseGroup.prototype.hasSuiteStatement_ = function () {
-  return true
-}
 
 /**
  * Block path.
@@ -80,7 +80,7 @@ eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
 
 eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
   eYo.DelegateSvg.BaseGroup.prototype.contourPathDef_ =
-    eYo.DelegateSvg.BaseGroup.prototype.selectPathDef_ =
+    eYo.DelegateSvg.BaseGroup.prototype.hilightPathDef_ =
       eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
 
 /**

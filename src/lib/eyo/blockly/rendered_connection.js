@@ -523,7 +523,7 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
   } else if (c8n.eyo.isOutput) {
     steps = block.eyo.valuePathDef_(c8n.offsetInBlock_)
   } else { // statement connection
-    var r = eYo.Style.Path.Selected.width / 2
+    var r = eYo.Style.Path.Hilighted.width / 2
     var a = ` a ${r},${r} 0 0 1 0,`
     var w = block.width - eYo.Unit.x / 2
     if (this.isPrevious) {
@@ -582,7 +582,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
         w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
       }
     }
-    var r = eYo.Style.Path.Selected.width / 2
+    var r = eYo.Style.Path.Hilighted.width / 2
     var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
     steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
   }
