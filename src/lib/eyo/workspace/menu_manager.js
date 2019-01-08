@@ -302,13 +302,13 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
   parent = target
-  sep = parent.eyo.populateContextMenuMiddle_(parent, this)
+  sep = parent.eyo.populateContextMenuMiddle_(this)
   while (parent !== block) {
     parent = parent.getParent()
-    sep = parent.eyo.populateContextMenuMiddle_(parent, this) || sep
+    sep = parent.eyo.populateContextMenuMiddle_(this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
-  block.eyo.populateContextMenuLast_(block, this)
+  block.eyo.populateContextMenuLast_(this)
   this.insertSubmenu.setEnabled(this.insertSubmenu.getMenu().getChildCount() > 0)
   this.removeSubmenu.setEnabled(this.removeSubmenu.getMenu().getChildCount() > 0)
   goog.events.listenOnce(this.menu, 'action', function (event) {
@@ -322,12 +322,12 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       if (goog.isFunction(model)) {
         model(event)
       } else {
-        target.eyo.handleMenuItemActionFirst(target, me, event) ||
-        target.eyo.handleMenuItemActionMiddle(target, me, event) ||
-        target.eyo.handleMenuItemActionLast(target, me, event)
+        target.eyo.handleMenuItemActionFirst(me, event) ||
+        target.eyo.handleMenuItemActionMiddle(me, event) ||
+        target.eyo.handleMenuItemActionLast(me, event)
       }
       me.init()
-    }, 10)// TODO be sure that this 100 is suffisant
+    }, 10)// TODO be sure that this 10 is suffisant
   })
   var bBox = block.eyo.svgPathShape_.getBBox()
   var scaledHeight = bBox.height * block.workspace.scale
@@ -357,11 +357,10 @@ eYo.Delegate.prototype.populateContextMenuFirst_ = function (mgr) {
 
 /**
  * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Delegate.prototype.populateContextMenuMiddle_ = function (block, mgr) {
+eYo.Delegate.prototype.populateContextMenuMiddle_ = function (mgr) {
   return false
 }
 
@@ -371,8 +370,8 @@ eYo.Delegate.prototype.populateContextMenuMiddle_ = function (block, mgr) {
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Delegate.prototype.populateContextMenuLast_ = function (block, mgr) {
-  return mgr.populateLast(block)
+eYo.Delegate.prototype.populateContextMenuLast_ = function (mgr) {
+  return mgr.populateLast(this.block_)
 }
 
 /**
@@ -565,22 +564,20 @@ eYo.MenuManager.prototype.populateLast = function (block) {
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {!Blockly.Block} block
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionFirst = function (block, mgr, event) {
-  return mgr.handleAction_movable_parent(block, event)
+eYo.DelegateSvg.prototype.handleMenuItemActionFirst = function (mgr, event) {
+  return mgr.handleAction_movable_parent(this.block_, event)
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {!Blockly.Block} block
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (block, mgr, event) {
+eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (mgr, event) {
   return false
 }
 
@@ -591,14 +588,15 @@ eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (block, mgr, eve
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionLast = function (block, mgr, event) {
-  return mgr.handleActionLast(block, event)
+eYo.DelegateSvg.prototype.handleMenuItemActionLast = function (mgr, event) {
+  return mgr.handleActionLast(this.block_, event)
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
+ * @param {!Blockly.Block} block
  * @param {!goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
