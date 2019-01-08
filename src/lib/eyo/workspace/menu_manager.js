@@ -262,7 +262,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   if (ee) {
     // this block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (block === Blockly.selected) {
+      if (block === eYo.Selected.block) {
         // if the block was already selected,
         // try to select an input connection
         eYo.Selected.connection = block.eyo.lastSelectedConnection
@@ -640,7 +640,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (target === Blockly.selected && target !== unwrapped) {
+      if (target === eYo.Selected.block && target !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var c8n
         if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
