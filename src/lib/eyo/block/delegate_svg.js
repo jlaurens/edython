@@ -148,6 +148,9 @@ eYo.DelegateSvg.prototype.svgPathInner_ = undefined
 
 /**
  * This is the shape used to draw an highlighted block contour when selected.
+ * When a block is hilighted,
+ * the outer line stroke width is bigger and the color is different,
+ * the inner line have the same width, only the color changes.
  * @type {SVGPathElement}
  * @private
  */
@@ -161,7 +164,7 @@ eYo.DelegateSvg.prototype.svgPathSelect_ = undefined
 eYo.DelegateSvg.prototype.svgPathHilight_ = undefined
 
 /**
- * This is the shape used to draw an highlighted connection contour. NOT ANY LONGER.
+ * This is the shape used to draw an highlighted connection contour.
  * @type {SVGPathElement}
  * @private
  */
@@ -1186,11 +1189,12 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
   }
   this.renderDrawPending_(io)
   if (io.n < 2) {
+    // this is a short block, special management of selection
+    this.isShort = true
     var c8n = io.forc && io.forc.connection
     var target = c8n && c8n.targetBlock()
     if (target) {
       target.eyo.parentIsShort = true
-      this.isShort = true
       // always add a space to the right
       target.eyo.isLastInStatement = false
       target.eyo.updateAllPaths_()
