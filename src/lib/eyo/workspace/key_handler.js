@@ -507,10 +507,10 @@ eYo.KeyHandler = (() => {
           }
         }
         switch (k) {
-        case 'arrowdown': return F(B.eyo.selectBlockBelow)
-        case 'arrowup': return F(B.eyo.selectBlockAbove)
-        case 'arrowleft': return F(B.eyo.selectBlockLeft)
-        case 'arrowright': return F(B.eyo.selectBlockRight)
+        case 'arrowdown': return F(B.eyo.selectBelow)
+        case 'arrowup': return F(B.eyo.selectAbove)
+        case 'arrowleft': return F(B.eyo.selectLeft)
+        case 'arrowright': return F(B.eyo.selectRight)
         }
       }
     } else {

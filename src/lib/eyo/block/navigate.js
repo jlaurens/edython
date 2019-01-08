@@ -141,11 +141,11 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectBlockLeft = function () {
+eYo.DelegateSvg.prototype.selectLeft = function () {
   var block = this.block_
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.eyo.selectBlockLeft()
+    target.eyo.selectLeft()
     return
   }
   var doLast = (B) => {
@@ -298,17 +298,17 @@ eYo.DelegateSvg.prototype.selectBlockLeft = function () {
  * For edython.
  * @return yorn
  */
-eYo.DelegateSvg.prototype.selectBlockRight = function () {
+eYo.DelegateSvg.prototype.selectRight = function () {
   var block = this.block_
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    return target.eyo.selectBlockRight()
+    return target.eyo.selectRight()
   }
   var parent, c8n
   var selectTarget = (c8n) => {
     if ((target = c8n.targetBlock())) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
-        return target.eyo.selectBlockRight()
+        return target.eyo.selectRight()
       } else {
         eYo.Selected.connection = null
         target.select()
@@ -460,11 +460,11 @@ eYo.DelegateSvg.prototype.selectBlockRight = function () {
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectBlockAbove = function () {
+eYo.DelegateSvg.prototype.selectAbove = function () {
   var block = this.block_
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.eyo.selectBlockAbove()
+    target.eyo.selectAbove()
     return
   }
   var c8n
@@ -520,11 +520,11 @@ eYo.DelegateSvg.prototype.selectBlockAbove = function () {
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectBlockBelow = function () {
+eYo.DelegateSvg.prototype.selectBelow = function () {
   var block = this.block_
   var target = this.selectedConnectionSource_
   if (target && target !== block) {
-    target.eyo.selectBlockBelow()
+    target.eyo.selectBelow()
     return
   }
   var parent, c8n
