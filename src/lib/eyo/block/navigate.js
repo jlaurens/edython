@@ -24,10 +24,12 @@ eYo.DelegateSvg.prototype.doTab = (() => {
   var input
   var ff = x => {
     var c = x.connection
-    if (c && !c.hidden_) {
+    if (c) {
       var c_eyo = c.eyo
-      if (c_eyo && c_eyo.isInput && !c_eyo.isIncog()) {
-        return (input = x.input || x)
+      if(c_eyo.wrapped_ || !c.hidden_) {
+        if (c_eyo && c_eyo.isInput && !c_eyo.isIncog()) {
+          return (input = x.input || x)
+        }
       }
     }
   }
@@ -55,6 +57,11 @@ eYo.DelegateSvg.prototype.doTab = (() => {
       }
     }
     if (!input) {
+      if ((c8n = eyo.outputConnection) && (c8n = c8n.targetConnection) && c8n.isInput) {
+        input = c8n.eyo.input
+      }
+    }
+    if (!input) {
       eyo.someSlot(ff) || eyo.someInput(ff)
     }
     while (input) {
@@ -68,6 +75,7 @@ eYo.DelegateSvg.prototype.doTab = (() => {
   return function(opt) {
     var f = opt && opt.left ? doLeft : doRight
     var n = opt && opt.fast ? 4 : 1
+    input = undefined
     while (n--) {
       f(this)
     }
