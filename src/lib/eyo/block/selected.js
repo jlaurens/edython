@@ -19,7 +19,7 @@
 
 goog.provide('eYo.Selected')
 
-goog.require('eYo.DelegateSvg')
+goog.require('eYo.Draw')
 
 eYo.Selected = (() => {
   var me = {}
@@ -143,7 +143,7 @@ Object.defineProperties(
  * @private
  */
 eYo.DelegateSvg.prototype.hasSelect = function () {
-  return goog.dom.classlist.contains(this.block_.svgGroup_, 'eyo-select')
+  return eYo.Draw.hasSelect(this)
 }
 
 /**
@@ -241,47 +241,6 @@ eYo.BlockSvg.prototype.addSelect = function () {
 }
 
 /**
- * The svg group has as `eyo-select` class, the fields as well.
- */
-eYo.DelegateSvg.prototype.addBlockSelect_ = function () {
-  var g = this.svgGroup_
-  if (goog.dom.classlist.contains(g, 'eyo-select')) {
-    return
-  }
-  goog.dom.classlist.add(g, 'eyo-select')
-  if ((g = this.svgContourGroup_)) {
-    // maybe that block has not been rendered yet
-    goog.dom.classlist.add(g, 'eyo-select')
-  }
-  this.forEachInput((input) => {
-    input.fieldRow.forEach((field) => {
-      if (goog.isFunction(field.addSelect)) {
-        field.addSelect()
-      }
-    })
-  })
-}
-
-/**
- * Reverse `addBlockSelect_`
- */
-eYo.DelegateSvg.prototype.removeBockSelect_ = function () {
-  if (this.svgGroup_) {
-    goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
-  }
-  if (this.svgContourGroup_) {
-    goog.dom.classlist.remove(this.svgContourGroup_, 'eyo-select')
-  }
-  this.forEachInput(input => {
-    input.fieldRow.forEach(field => {
-      if (goog.isFunction(field.removeSelect)) {
-        field.removeSelect()
-      }
-    })
-  })
-}
-
-/**
  * Select this block.  Highlight it visually.
  * If there is a selected connection, this connection will be highlighted.
  * The Blockly method has been completely replaced.
@@ -306,7 +265,7 @@ eYo.DelegateSvg.prototype.addSelect = function () {
       g.appendChild(this.svgPathSelect_)
     }
   }
-  this.addBlockSelect_()
+  eYo.Draw.addStatusSelect_(this)
   eYo.App.didAddSelect && eYo.App.didAddSelect(this.block_)
 }
 
@@ -348,7 +307,7 @@ eYo.DelegateSvg.prototype.removeSelect = function () {
   if (!this.selectedConnection || ((eyo = eYo.Selected.eyo) && eyo.selectedConnectionSource_ !== this)) {
     goog.dom.removeNode(this.svgPathConnection_)
   }
-  this.removeBockSelect_()
+  eYo.Draw.removeStatusSelect_(this)
   eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this.block_)
 }
 
@@ -402,7 +361,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
-  // unfortunately, the mouse events do not find there way to the proper block
+  // unfortunately, the mouse events sometimes do not find there way to the proper block
   var c8n = this.getConnectionForEvent(e)
   var c_eyo = c8n && c8n.eyo
   var target = c_eyo
@@ -424,7 +383,6 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
   // remove any selected connection, if any
   // but remember it for a contextual menu
   target.lastSelectedConnection = eYo.Selected.connection
-  eYo.Selected.connection = null
   target.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
   target.lastMouseDownEvent = target === eYo.Selected.eyo ? e : null
@@ -478,9 +436,6 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
           eYo.Selected.connection = null
         }
       }
-    } else {
-      // a drag move
-      eYo.Selected.connection = null
     }
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(eYo.Selected.block)
