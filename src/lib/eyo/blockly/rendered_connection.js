@@ -310,9 +310,8 @@ eYo.ConnectionDelegate.prototype.willConnect = function (targetC8n) {
  *     what was previously connected to the actual connection.targetConnection
  */
 eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC8n) {
-  var eyo =  this.connection.sourceBlock_.eyo
   if (this.beReady === eYo.Do.nothing) {
-    this.connection.targetBlock().eyo.beReady()
+    this.t_eyo.beReady()
   }
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
@@ -320,8 +319,9 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
   if (this.model && goog.isFunction(this.model.didConnect)) {
     this.model.didConnect.call(this, oldTargetC8n, targetOldC8n)
   } else {
-    eyo.incrementChangeCount()
-    eyo.consolidate()
+    var b_eyo = this.b_eyo
+    b_eyo.incrementChangeCount()
+    b_eyo.consolidate()
   }
 }
 
@@ -342,11 +342,10 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
  * @param {Blockly.Connection} oldTargetC8n  what was previously connected to connection
  */
 eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
-  var eyo = this.connection.sourceBlock_.eyo
   if (this.model && goog.isFunction(this.model.didDisconnect)) {
     this.model.didDisconnect.call(this, oldTargetC8n)
   } else {
-    eyo.incrementChangeCount()
+    this.b_eyo.incrementChangeCount()
   }
 }
 
@@ -377,11 +376,12 @@ eYo.ConnectionDelegate.prototype.getCheck = function () {
  * @return a connection, possibly undefined
  */
 eYo.ConnectionDelegate.prototype.getConnectionAbove = function () {
-  var previous = this.connection.getSourceBlock().previousConnection
-  if (previous && !previous.eyo.name_ && (previous = previous.targetBlock())) {
-    switch (this.connection.type) {
-    case Blockly.NEXT_STATEMENT: return previous.nextConnection
-    case Blockly.PREVIOUS_STATEMENT: return previous.previousConnection
+  var previous = this.eyo.b_eyo.previous
+  if (previous && !previous.name_ && (previous = previous.targetBlock())) {
+    if (this.isNext) {
+      return previous.nextConnection
+    } else if (this.isPrevious) {
+      return previous.previousConnection
     }
   }
   return undefined
