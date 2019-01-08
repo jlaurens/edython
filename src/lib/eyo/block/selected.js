@@ -244,6 +244,8 @@ eYo.BlockSvg.prototype.addSelect = function () {
  * Select this block.  Highlight it visually.
  * If there is a selected connection, this connection will be highlighted.
  * The Blockly method has been completely replaced.
+ * The svg group has as `eyo-select` class,
+ * a path is added to show either the block shape or the selection.
  */
 eYo.DelegateSvg.prototype.addSelect = function () {
   var g = this.svgGroup_
@@ -293,7 +295,7 @@ eYo.BlockSvg.prototype.removeSelect = function () {
 /**
  * Unselect this block.  Remove its highlighting.
  */
-eYo.BlockSvg.prototype.removeSelect = function () {
+eYo.DelegateSvg.prototype.removeSelect = function () {
   if (this.wrapped_) {
     if (!this.svgPathConnection_ || !this.svgPathConnection_.parentNode) {
       return
