@@ -200,38 +200,6 @@ eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Did connect this block's connection to another connection.
- * When connecting locked blocks, select the receiver.
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
- * @param {!Blockly.Connection} oldC8n what was previously connected to the new targetConnection
- */
-eYo.DelegateSvg.Expr.prototype.didConnect = function (connection, oldTargetC8n, oldC8n) {
-  eYo.DelegateSvg.Expr.superClass_.didConnect.call(this, connection, oldTargetC8n, oldC8n)
-  if (connection.eyo.isOutput) {
-    if (this === eYo.Selected.eyo && this.locked_) {
-      connection.targetBlock().select()
-    }
-    goog.dom.classlist.remove(this.block_.svgGroup_, 'eyo-top')
-  }
-}
-
-/**
- * Did connect this block's connection to another connection.
- * When connecting locked blocks, select the receiver.
- * @param {!Blockly.Block} block
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
- * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection
- */
-eYo.DelegateSvg.Expr.prototype.didDisconnect = function (connection, oldTargetC8n) {
-  eYo.DelegateSvg.Expr.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
-  if (connection.eyo.isOutput) {
-    goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
-  }
-}
-
-/**
  * Can remove and bypass the parent?
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
@@ -272,14 +240,14 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
         this.outputConnection.disconnect()
         if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
           // the other block has an output connection that can connect to the block's one
-          var source = c8n.sourceBlock_
-          var selected = source.eyo.hasSelect()
+          var b_eyo = c8n.eyo.b_eyo
+          var selected = b_eyo.hasSelect()
           // next operations may unselect the block
-          var old = source.eyo.consolidating_
+          var old = b_eyo.consolidating_
           c8n.connect(this.outputConnection)
-          source.eyo.consolidating_ = old
+          b_eyo.consolidating_ = old
           if (selected) {
-            source.select()
+            b_eyo.select()
           }
         } else {
           this.block_.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
