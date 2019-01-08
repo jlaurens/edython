@@ -128,7 +128,7 @@ eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
       eYo.DelegateSvg.Stmt.prototype.statementPathDef_
 
 /**
- * Statement block path.
+ * Path definition for a statement block highlight.
  * @param {!Blockly.Block} block
  * @private
  */
