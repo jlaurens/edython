@@ -876,7 +876,7 @@ eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
-  return this.selectedConnection === eYo.Selected.connection
+  return this.selectedConnection && this.selectedConnection === eYo.Selected.connection
     ? this.selectedConnection.eyo.highlightPathDef()
     : ''
 }
