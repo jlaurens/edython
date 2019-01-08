@@ -108,6 +108,8 @@ eYo.BlockSvg.prototype.select = function () {
     return
   }
   if (!this.eyo.selectedConnection) {
+    var wrapper = this.eyo.wrapper
+    
     var parent = this.getSurroundParent()
     if (parent) {
       if (this.eyo.wrapped_) {
@@ -169,6 +171,7 @@ eYo.BlockSvg.prototype.unselect = function () {
  * If there is a selected connection, this connection will be highlighted.
  * If the block is wrapped, the first parent which is not wrapped will be
  * selected.
+ * The Blockly method has been completely replaced.
  */
 eYo.BlockSvg.prototype.addSelect = function () {
   if (this.eyo.selectedConnection) {
