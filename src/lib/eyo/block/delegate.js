@@ -1934,7 +1934,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()
   }
-  eYo.Draw.didDisconnect(connection, oldTargetC8n, targetOldC8n)
+  eYo.Draw.didDisconnect(connection, oldTargetC8n)
 }
 
 /**
