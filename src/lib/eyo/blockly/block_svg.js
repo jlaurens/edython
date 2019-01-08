@@ -100,165 +100,6 @@ eYo.BlockSvg.prototype.getInput = function (name) {
 }
 
 /**
- * Select this block.  Highlight it visually.
- * Wrapped blocks are not selectable.
- */
-eYo.BlockSvg.prototype.select = function () {
-  if (!this.workspace) {
-    return
-  }
-  if (!this.eyo.selectedConnection) {
-    var wrapper = this.eyo.wrapper
-    
-    var parent = this.getSurroundParent()
-    if (parent) {
-      if (this.eyo.wrapped_) {
-        // Wrapped blocks should not be selected.
-        parent.select()
-        return
-      }
-      if (parent.eyo.isShort
-          && parent !== Blockly.selected
-          && this !== Blockly.selected) {
-        parent.select()
-        return
-      }
-    }
-  }
-  // if the parent is short and not connected, select it
-  var more = this.eyo.selectedConnection || (this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection)
-  eYo.BlockSvg.superClass_.select.call(this)
-  if (more) {
-    if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
-      goog.dom.removeNode(this.eyo.svgPathSelect_)
-      goog.dom.removeNode(this.eyo.svgPathHilight_)
-    }
-  } else if (this.eyo.svgPathSelect_ && !this.eyo.svgPathSelect_.parentNode) {
-    this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
-    this.svgGroup_.appendChild(this.eyo.svgPathHilight_)
-  }
-  if (!this.eyo.canEdit_) {
-    var block = this
-    setTimeout(function () {
-      block.eyo.canEdit_ = true
-    }, 10)
-  }
-}
-
-/**
- * Unselect this block.
- * If there is a selected connection, it is removed.
- * Unselect is used from click handling methods.
- */
-eYo.BlockSvg.prototype.unselect = function () {
-  eYo.BlockSvg.superClass_.unselect.call(this)
-  this.eyo.canEdit_ = false
-  var B = this.eyo.selectedConnectionSource_
-  if (B) {
-    B.removeSelect()
-    B.eyo.selectedConnection = null
-    this.eyo.selectedConnectionSource_ = null
-  }
-  this.removeSelect()
-  if (this.eyo.wrapped_) {
-    var parent = this.getSurroundParent()
-    parent && parent.unselect()
-  }
-}
-
-/**
- * Select this block.  Highlight it visually.
- * If there is a selected connection, this connection will be highlighted.
- * If the block is wrapped, the first parent which is not wrapped will be
- * selected.
- * The Blockly method has been completely replaced.
- */
-eYo.BlockSvg.prototype.addSelect = function () {
-  if (this.eyo.selectedConnection) {
-    if (!this.eyo.svgPathConnection_ || this.eyo.svgPathConnection_.parentNode) {
-      return
-    }
-    this.svgGroup_.appendChild(this.eyo.svgPathConnection_)
-  } else if (!this.eyo.wrapped_) {
-    var hasSelectedConnection = this.eyo.selectedConnectionSource_ && this.eyo.selectedConnectionSource_.eyo.selectedConnection
-    if (this.eyo.svgPathSelect_) {
-      if (this.eyo.svgPathSelect_.parentNode && hasSelectedConnection) {
-        goog.dom.removeNode(this.eyo.svgPathSelect_)
-        goog.dom.removeNode(this.eyo.svgPathHilight_)
-      } else if (!this.eyo.svgPathSelect_.parentNode && !hasSelectedConnection) {
-        this.svgGroup_.appendChild(this.eyo.svgPathSelect_)
-        this.svgGroup_.appendChild(this.eyo.svgPathHilight_)
-      }
-    }
-  }
-  if (goog.dom.classlist.contains(this.svgGroup_, 'eyo-select')) {
-    return
-  }
-  goog.dom.classlist.add(this.svgGroup_, 'eyo-select')
-  if (this.eyo.svgContourGroup_) {
-    // maybe that block has not been rendered yet
-    goog.dom.classlist.add(this.eyo.svgContourGroup_, 'eyo-select')
-  }
-  // ensure that the svgGroup is the last in the list
-  this.bringToFront()
-  this.eyo.forEachInput((input) => {
-    input.fieldRow.forEach((field) => {
-      if (goog.isFunction(field.addSelect)) {
-        field.addSelect()
-      }
-    })
-  })
-  eYo.App.didAddSelect && eYo.App.didAddSelect(this)
-}
-
-/**
- * Unselect this block.  Remove its highlighting.
- */
-eYo.BlockSvg.prototype.removeSelect = function () {
-  if (this.eyo.wrapped_) {
-    if (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode) {
-      return
-    }
-  } else {
-    if ((!this.eyo.svgPathSelect_ || !this.eyo.svgPathSelect_.parentNode) &&
-      (!this.eyo.svgPathConnection_ || !this.eyo.svgPathConnection_.parentNode)) {
-      if (this.svgGroup_) { // how come that we must test that?
-        goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
-      }
-      if (this.eyo.svgContourGroup_) { // how come that we must test that? because some beReady message was not sent to the correct target
-        goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
-      }
-      return
-    }
-  }
-  if (this.svgGroup_) {
-    goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
-  }
-  if (this.eyo.svgContourGroup_) {
-    goog.dom.classlist.remove(this.eyo.svgContourGroup_, 'eyo-select')
-  }
-  if (this.eyo.svgPathSelect_ && this.eyo.svgPathSelect_.parentNode) {
-    goog.dom.removeNode(this.eyo.svgPathHilight_)
-    goog.dom.removeNode(this.eyo.svgPathSelect_)
-  }
-  if (this.eyo.svgPathConnection_ && this.eyo.svgPathConnection_.parentNode) {
-    goog.dom.removeNode(this.eyo.svgPathConnection_)
-  }
-  var B
-  if (!this.eyo.selectedConnection || ((B = Blockly.selected) && B.selectedConnectionSource_ !== this)) {
-    goog.dom.removeNode(this.eyo.svgPathConnection_)
-  }
-  this.eyo.forEachInput((input) => {
-    input.fieldRow.forEach((field) => {
-      if (goog.isFunction(field.removeSelect)) {
-        field.removeSelect()
-      }
-    })
-  })
-  eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this)
-}
-
-/**
  * Set parent of this block to be a new block or null.
  * Place the highlighting path at the end.
  * @param {Blockly.BlockSvg} newParent New parent block.
@@ -450,9 +291,9 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
-  if (this.eyo.parentIsShort && Blockly.selected !== this) {
+  if (this.eyo.parentIsShort && eYo.Selected.block !== this) {
     var parent = this.getParent()
-    if (Blockly.selected !== parent) {
+    if (eYo.Selected.block !== parent) {
       eYo.BlockSvg.superClass_.onMouseDown_.call(parent, e)
       return
     }
@@ -481,7 +322,7 @@ eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
   eYo.Selected.connection = null
   target.eyo.selectedConnectionSource_ = null
   // Prepare the mouseUp event for an eventual connection selection
-  target.eyo.lastMouseDownEvent = target === Blockly.selected ? e : null
+  target.eyo.lastMouseDownEvent = target === eYo.Selected.block ? e : null
   eYo.BlockSvg.superClass_.onMouseDown_.call(target, e)
 }
 
@@ -511,7 +352,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (target === Blockly.selected && c8n) {
+      if (target === eYo.Selected.block && c8n) {
         // the block was already selected,
         // and there is a candidate selection
         if (eYo.Selected.connection === c8n) {
@@ -536,7 +377,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
       eYo.Selected.connection = null
     }
   }
-  eYo.App.didTouchBlock && eYo.App.didTouchBlock(Blockly.selected)
+  eYo.App.didTouchBlock && eYo.App.didTouchBlock(eYo.Selected.block)
 }
 
 /**
@@ -551,7 +392,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
   eYo.Events.groupWrap(
     () => {
-      if (this === Blockly.selected) {
+      if (this === eYo.Selected.block) {
         // this block was selected, select the block below or above before deletion
         var c8n, target
         if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
@@ -579,7 +420,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
  * @override
  */
 eYo.BlockSvg.prototype.bringToFront = function () {
-  if (this === Blockly.selected) {
+  if (this === eYo.Selected.block) {
     eYo.BlockSvg.superClass_.bringToFront.call(this)
   }
 }
