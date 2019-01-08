@@ -137,7 +137,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
-  surrounder: {
+  group: {
     get () {
       var ans = this.block_.getSurroundParent()
       return ans && ans.eyo
