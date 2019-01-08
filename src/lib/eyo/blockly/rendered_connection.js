@@ -499,33 +499,6 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
 }
 
 /**
- * Block path for an optional connection.
- * This path is in block coordinates, it will be inserted
- * into the block's svg group.
- * When absent, `shape` is set to `side`.
- * All combinations of shape and side won't perhaps make sense.
- * For example, a sided `shape` should correspond to a left or right side.
- * Statement blocks will have a left shaped caret at its right end,
- * whereas expression blocks will have a right shaped caret at
- * its right end.
- * @return a `{width: ..., d: ...}` dictionary. The width attribute in font space unit.
- * @private
- */
-eYo.ConnectionDelegate.prototype.caretPathWidthDef_ = function () {
-  var shape = eYo.Shape.newWithConnection(this)
-  return {w: shape.width, d: shape.definition}
-}
-
-/**
- * Placeholder path.
- * @private
- */
-eYo.ConnectionDelegate.prototype.placeHolderPathWidthDef_ = function () {
-  var shape = eYo.Shape.newWithConnection(this)
-  return {w: shape.width, d: shape.definition}
-}
-
-/**
  * Path definition for an hilighted connection
  */
 eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
@@ -579,11 +552,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
-      if (!this.disabled_ && (this.s7r_ || this.optional_)) {
-        steps = this.caretPathWidthDef_().d
-      } else {
-        steps = this.placeHolderPathWidthDef_().d
-      }
+      steps = eYo.Shape.definitionWithConnection(this)
       Blockly.Connection.highlightedPath_ =
       Blockly.utils.createSvgElement('path',
         {
