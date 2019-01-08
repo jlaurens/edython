@@ -142,13 +142,13 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
  * @return None
  */
 eYo.DelegateSvg.prototype.selectLeft = function () {
-  var block = this.block_
   var target = this.selectedConnectionSource_
-  if (target && target !== block) {
-    target.eyo.selectLeft()
+  if (target && target !== this) {
+    target.selectLeft()
     return
   }
-  var doLast = (B) => {
+  var block = this.block_
+  var doLast = B => {
     var e8r = B.eyo.inputEnumerator()
     e8r.end()
     while (e8r.previous()) {
@@ -163,7 +163,7 @@ eYo.DelegateSvg.prototype.selectLeft = function () {
     return null
   }
   var parent, c8n
-  var selectTarget = (c8n) => {
+  var selectTarget = c8n => {
     var target = c8n.targetBlock()
     if (!target) {
       return false
@@ -184,7 +184,7 @@ eYo.DelegateSvg.prototype.selectLeft = function () {
     }
     return false
   }
-  var selectConnection = (c8n) => {
+  var selectConnection = c8n => {
     if (selectTarget(c8n)) {
       return true
     }
@@ -271,7 +271,7 @@ eYo.DelegateSvg.prototype.selectLeft = function () {
   do {
     parent = target
   } while ((target = parent.getSurroundParent()))
-  target = parent.eyo.getBestBlock(function (a, b) {
+  target = parent.eyo.getBestBlock((a, b) => {
     if (a.left <= b.left) {
       return {}
     }
@@ -299,13 +299,13 @@ eYo.DelegateSvg.prototype.selectLeft = function () {
  * @return yorn
  */
 eYo.DelegateSvg.prototype.selectRight = function () {
-  var block = this.block_
   var target = this.selectedConnectionSource_
-  if (target && target !== block) {
-    return target.eyo.selectRight()
+  if (target && target !== this) {
+    return target.selectRight()
   }
+  var block = this.block_
   var parent, c8n
-  var selectTarget = (c8n) => {
+  var selectTarget = c8n => {
     if ((target = c8n.targetBlock())) {
       if (target.eyo.wrapped_ || target.eyo.locked_) {
         return target.eyo.selectRight()
@@ -461,12 +461,12 @@ eYo.DelegateSvg.prototype.selectRight = function () {
  * @return None
  */
 eYo.DelegateSvg.prototype.selectAbove = function () {
-  var block = this.block_
   var target = this.selectedConnectionSource_
-  if (target && target !== block) {
-    target.eyo.selectAbove()
+  if (target && target !== this) {
+    target.selectAbove()
     return
   }
+  var block = this.block_
   var c8n
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
@@ -521,12 +521,12 @@ eYo.DelegateSvg.prototype.selectAbove = function () {
  * @return None
  */
 eYo.DelegateSvg.prototype.selectBelow = function () {
-  var block = this.block_
   var target = this.selectedConnectionSource_
-  if (target && target !== block) {
-    target.eyo.selectBelow()
+  if (target && target !== this) {
+    target.selectBelow()
     return
   }
+  var block = this.block_
   var parent, c8n
   if ((c8n = this.selectedConnection)) {
     if (c8n === block.previousConnection) {
