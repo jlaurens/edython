@@ -328,6 +328,116 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
 }
 
 /**
+ * Get the input for the given event.
+ * The block is already rendered once.
+ *
+ * For edython.
+ * @param {Object} e in general a mouse down event
+ * @return {Object|undefined|null}
+ */
+eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
+  var block = this.block_
+  var where = Blockly.utils.mouseToSvg(e, block.workspace.getParentSvg(),
+  block.workspace.getInverseScreenCTM());
+  where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
+  where.scale(1 / block.workspace.scale)
+  var rect = this.getBoundingRect()
+  where = goog.math.Coordinate.difference(where, rect.getTopLeft())
+  var R
+  var c8n = this.someInputConnection(c8n => {
+    var c_eyo = c8n.eyo
+    if (!c_eyo.disabled_ && (!c8n.hidden_ || c_eyo.wrapped_)) {
+      if (c_eyo.isInput) {
+        var target = c8n.targetBlock()
+        if (target) {
+          var targetC8n = target.eyo.getConnectionForEvent(e)
+          if (targetC8n) {
+            return targetC8n
+          }
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x + eYo.Unit.x / 2,
+            c8n.offsetInBlock_.y,
+            target.width - eYo.Unit.x,
+            target.height
+          )
+          if (R.contains(where)) {
+            return c8n
+          }
+        }
+        if (c_eyo.slot && c_eyo.slot.bindField) {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            c_eyo.w * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else if (c_eyo.optional_ || c_eyo.s7r_) {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x - eYo.Unit.x / 4,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            1.5 * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else {
+          R = new goog.math.Rect(
+            c8n.offsetInBlock_.x + eYo.Unit.x / 4,
+            c8n.offsetInBlock_.y + eYo.Padding.t,
+            (c_eyo.w - 1 / 2) * eYo.Unit.x,
+            eYo.Font.height
+          )
+        }
+        if (R.contains(where)) {
+          return c8n
+        }
+      } else if (c_eyo.isNextLike) {
+        R = new goog.math.Rect(
+          c8n.offsetInBlock_.x,
+          c8n.offsetInBlock_.y - eYo.Style.Path.width,
+          eYo.Font.tabWidth,
+          1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+        )
+        if (R.contains(where)) {
+          return c8n
+        }
+      }
+    }
+  })
+  if (c8n) {
+    return c8n
+  } else if ((c8n = block.previousConnection) && !c8n.hidden) {
+    R = new goog.math.Rect(
+      c8n.offsetInBlock_.x,
+      c8n.offsetInBlock_.y - 2 * eYo.Style.Path.width,
+      rect.width,
+      1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+    )
+    if (R.contains(where)) {
+      return c8n
+    }
+  }
+  if ((c8n = this.nextConnection) && !c8n.hidden) {
+    if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
+      R = new goog.math.Rect(
+        c8n.offsetInBlock_.x,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+      )
+    } else {
+      R = new goog.math.Rect(
+        c8n.offsetInBlock_.x,
+        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        rect.width,
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+      )
+    }
+    if (R.contains(where)) {
+      return c8n
+    }
+  }
+}
+
+/**
  * Handle a mouse-down on an SVG block.
  * If the block is sealed to its parent, forwards to the parent.
  * This is used to prevent a dragging operation on a sealed block.
