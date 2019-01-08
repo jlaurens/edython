@@ -1679,10 +1679,10 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             }
             c_eyo.setOffset(io.cursor)
           }
-          var wd = c_eyo.placeHolderPathWidthDef_()
-          io.steps.push(wd.d)
-          if (wd.w) {
-            io.cursor.c += wd.w
+          var shape = eYo.Shape.newWithConnection(c_eyo)
+          io.steps.push(shape.definition)
+          if (shape.width) {
+            io.cursor.c += shape.width
             // a space was added as a visual separator anyway
           }
           io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
