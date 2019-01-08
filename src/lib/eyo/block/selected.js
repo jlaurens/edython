@@ -181,6 +181,7 @@ eYo.DelegateSvg.prototype.select = function () {
       }
     }
   }
+  this.block_.bringToFront()
   var more = this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.eyo.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this.block_)
   if (more) {
@@ -241,6 +242,47 @@ eYo.BlockSvg.prototype.addSelect = function () {
 }
 
 /**
+ * The svg group has as `eyo-select` class, the fields as well.
+ */
+eYo.DelegateSvg.prototype.addBlockSelect_ = function () {
+  var g = this.svgGroup_
+  if (goog.dom.classlist.contains(g, 'eyo-select')) {
+    return
+  }
+  goog.dom.classlist.add(g, 'eyo-select')
+  if ((g = this.svgContourGroup_)) {
+    // maybe that block has not been rendered yet
+    goog.dom.classlist.add(g, 'eyo-select')
+  }
+  this.forEachInput((input) => {
+    input.fieldRow.forEach((field) => {
+      if (goog.isFunction(field.addSelect)) {
+        field.addSelect()
+      }
+    })
+  })
+}
+
+/**
+ * Reverse `addBlockSelect_`
+ */
+eYo.DelegateSvg.prototype.removeBockSelect_ = function () {
+  if (this.svgGroup_) {
+    goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
+  }
+  if (this.svgContourGroup_) {
+    goog.dom.classlist.remove(this.svgContourGroup_, 'eyo-select')
+  }
+  this.forEachInput(input => {
+    input.fieldRow.forEach(field => {
+      if (goog.isFunction(field.removeSelect)) {
+        field.removeSelect()
+      }
+    })
+  })
+}
+
+/**
  * Select this block.  Highlight it visually.
  * If there is a selected connection, this connection will be highlighted.
  * The Blockly method has been completely replaced.
@@ -265,23 +307,7 @@ eYo.DelegateSvg.prototype.addSelect = function () {
       g.appendChild(this.svgPathHilight_)
     }
   }
-  if (goog.dom.classlist.contains(g, 'eyo-select')) {
-    return
-  }
-  goog.dom.classlist.add(g, 'eyo-select')
-  if ((g = this.svgContourGroup_)) {
-    // maybe that block has not been rendered yet
-    goog.dom.classlist.add(g, 'eyo-select')
-  }
-  // ensure that the svgGroup is the last in the list
-  this.block_.bringToFront()
-  this.forEachInput((input) => {
-    input.fieldRow.forEach((field) => {
-      if (goog.isFunction(field.addSelect)) {
-        field.addSelect()
-      }
-    })
-  })
+  this.addBlockSelect_()
   eYo.App.didAddSelect && eYo.App.didAddSelect(this.block_)
 }
 
@@ -312,12 +338,6 @@ eYo.DelegateSvg.prototype.removeSelect = function () {
       return
     }
   }
-  if (this.svgGroup_) {
-    goog.dom.classlist.remove(this.svgGroup_, 'eyo-select')
-  }
-  if (this.svgContourGroup_) {
-    goog.dom.classlist.remove(this.svgContourGroup_, 'eyo-select')
-  }
   if (this.svgPathSelect_ && this.svgPathSelect_.parentNode) {
     goog.dom.removeNode(this.svgPathHilight_)
     goog.dom.removeNode(this.svgPathSelect_)
@@ -329,12 +349,6 @@ eYo.DelegateSvg.prototype.removeSelect = function () {
   if (!this.selectedConnection || ((eyo = eYo.Selected.eyo) && eyo.selectedConnectionSource_ !== this)) {
     goog.dom.removeNode(this.svgPathConnection_)
   }
-  this.forEachInput(input => {
-    input.fieldRow.forEach(field => {
-      if (goog.isFunction(field.removeSelect)) {
-        field.removeSelect()
-      }
-    })
-  })
+  this.removeBockSelect_()
   eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this.block_)
 }
