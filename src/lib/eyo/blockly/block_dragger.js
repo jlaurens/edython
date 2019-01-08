@@ -25,6 +25,7 @@ goog.require('Blockly.BlockDragger')
 Blockly.BlockDragger.prototype.startBlockDrag = (() => {
   var startBlockDrag = Blockly.BlockDragger.prototype.startBlockDrag
   return function(currentDragDeltaXY, healStack) {
+    eYo.Selected.connection = null
     var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
     this.eyo_transformCorrection = eYo.Do.getTransformCorrection(element)
     return startBlockDrag.call(this, currentDragDeltaXY, healStack)
