@@ -297,14 +297,14 @@ eYo.DelegateSvg.prototype.addSelect = function () {
       return
     }
     g.appendChild(this.svgPathConnection_)
-  } else if (!this.wrapped_ && this.svgPathSelect_) {
+  } else if (!this.wrapped_) {
     var hasSelectedConnection = this.selectedConnectionSource_ && this.selectedConnectionSource_.eyo.selectedConnection
     if (this.svgPathSelect_.parentNode && hasSelectedConnection) {
       goog.dom.removeNode(this.svgPathSelect_)
       goog.dom.removeNode(this.svgPathHilight_)
     } else if (!this.svgPathSelect_.parentNode && !hasSelectedConnection) {
-      g.appendChild(this.svgPathSelect_)
       g.appendChild(this.svgPathHilight_)
+      g.appendChild(this.svgPathSelect_)
     }
   }
   this.addBlockSelect_()
