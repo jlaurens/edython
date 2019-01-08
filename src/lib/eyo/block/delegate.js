@@ -143,6 +143,17 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans && ans.eyo
     }
   },
+  topGroup: {
+    get () {
+      var ans
+      var group = this.group
+      while (group) {
+        ans = group
+        group = ans.group
+      }
+      return ans
+    }
+  },
   stmtParent: {
     get () {
       var eyo = this
