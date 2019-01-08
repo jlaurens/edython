@@ -303,11 +303,10 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
   this.listeners_.push(Blockly.bindEventWithChecks_(root, 'mousedown', null,
   this.blockMouseDown_(block)
   ));
-  var catched = this
-  this.listeners_.push(Blockly.bindEvent_(root, 'mouseover', block,
-  function(e) {
-    if (!catched.isDown) {
-      this.addSelect(e)
+  this.listeners_.push(Blockly.bindEvent_(root, 'mouseover', null,
+  e => {
+    if (!this.isDown) {
+      block.addSelect(e)
     }
   }));
   this.listeners_.push(Blockly.bindEvent_(root, 'mouseleave', block,
