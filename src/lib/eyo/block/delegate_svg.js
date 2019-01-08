@@ -151,6 +151,8 @@ eYo.DelegateSvg.prototype.svgPathInner_ = undefined
  * When a block is hilighted,
  * the outer line stroke width is bigger and the color is different,
  * the inner line have the same width, only the color changes.
+ * In general, this is a duplicate of svgPathShape_,
+ * but this is not (yet) a requiremenent
  * @type {SVGPathElement}
  * @private
  */
@@ -860,6 +862,8 @@ eYo.DelegateSvg.prototype.selectPathDef_ = eYo.DelegateSvg.prototype.shapePathDe
 
 /**
  * Highlighted block outline. Default implementation does nothing.
+ * Groups will have a special definition because this wider stroke
+ * does not enclose the child blocks.
  * @private
  */
 eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
