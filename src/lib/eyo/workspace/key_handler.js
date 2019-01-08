@@ -190,7 +190,7 @@ eYo.KeyHandler = (() => {
         // no selected connection
         var parent = eyo
         do {
-          if (parent.eyo.someInputConnection((c8n) => {
+          if (parent.someInputConnection((c8n) => {
             if (c8n.eyo.isInput && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
               eYo.Selected.connection = c8n
               return true
