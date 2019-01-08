@@ -873,13 +873,13 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 } else {
                   // if this connection was selected, the newly connected block should be selected too
                   if (eYo.Selected.connection === parentC8n) {
-                    P = parent
+                    P = parent.eyo
                     do {
-                      if (P === Blockly.selected) {
+                      if (P === eYo.Selected.eyo) {
                         child.select()
                         break
                       }
-                    } while ((P = P.getSurroundParent()))
+                    } while ((P = P.group))
                   }
                 }
                 if (oldChildC8n && childC8n !== oldChildC8n) {
