@@ -58,7 +58,6 @@ eYo.Selected = (() => {
           return c8n_
         },
         set (c8n) {
-          var B
           if (c8n) {
             if (c8n.hidden_) {
               console.error('Do not select a hidden connection')
@@ -105,7 +104,7 @@ eYo.Selected = (() => {
               if (eyo) {
                 wrapper = eyo.wrapper
                 wrapper.selectedConnection = c8n_ = c8n
-                wrapper.selectedConnectionSource_ = block
+                wrapper.selectedConnectionSource_ = eyo
                 wrapper.block_.select()
                 wrapper.block_.removeSelect()
                 wrapper.updateAllPaths_()
@@ -182,7 +181,7 @@ eYo.DelegateSvg.prototype.select = function () {
     }
   }
   this.block_.bringToFront()
-  var more = this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.eyo.selectedConnection)
+  var more = this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection)
   eYo.BlockSvg.superClass_.select.call(this.block_)
   if (more) {
     if (this.svgPathSelect_ && this.svgPathSelect_.parentNode) {
@@ -217,10 +216,10 @@ eYo.BlockSvg.prototype.unselect = function () {
  */
 eYo.DelegateSvg.prototype.unselect = function () {
   this.canEdit_ = false
-  var B = this.selectedConnectionSource_
-  if (B) {
-    B.removeSelect()
-    B.eyo.selectedConnection = null
+  var eyo = this.selectedConnectionSource_
+  if (eyo) {
+    eyo.block_.removeSelect()
+    eyo.selectedConnection = null
     this.selectedConnectionSource_ = null
   }
   this.block_.removeSelect()
@@ -298,7 +297,7 @@ eYo.DelegateSvg.prototype.addSelect = function () {
     }
     g.appendChild(this.svgPathConnection_)
   } else if (!this.wrapped_) {
-    var hasSelectedConnection = this.selectedConnectionSource_ && this.selectedConnectionSource_.eyo.selectedConnection
+    var hasSelectedConnection = this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection
     if (this.svgPathSelect_.parentNode && hasSelectedConnection) {
       goog.dom.removeNode(this.svgPathSelect_)
       goog.dom.removeNode(this.svgPathHilight_)
@@ -351,4 +350,136 @@ eYo.DelegateSvg.prototype.removeSelect = function () {
   }
   this.removeBockSelect_()
   eYo.App.didRemoveSelect && eYo.App.didRemoveSelect(this.block_)
+}
+
+/**
+ * Forwards to the delegate.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
+  this.eyo.onMouseDown_(e)
+}
+
+/**
+ * Forwards to the delegate.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
+  this.eyo.onMouseUp_(e)
+}
+
+/**
+ * Handle a mouse-down on an SVG block.
+ * If the block is sealed to its parent, forwards to the parent.
+ * This is used to prevent a dragging operation on a sealed block.
+ * However, this will manage the selection of an input connection.
+ * onMouseDown_ message is sent multiple times for one mouse click
+ * because blocks may lay on above the other (when connected for example)
+ * Considering the selection of a connection, we manage the onMouseDown_ calls
+ * independantly. Whatever node is answering to a mousDown event,
+ * a connection will be activated if relevant.
+ * There is a problem due to the shape of the blocks.
+ * Depending on the block, the coutour path ou the whole svg group
+ * is better suited to listed to mouse events.
+ * Actually, both are registered which implies that
+ * handlers must filter out reentrancy.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
+  if (this.locked_) {
+    var parent = this.parent
+    if (parent) {
+      return
+    }
+  }
+  if (this.parentIsShort && eYo.Selected.eyo !== this) {
+    parent = this.parent
+    if (eYo.Selected.eyo !== parent) {
+      eYo.BlockSvg.superClass_.onMouseDown_.call(parent.block_, e)
+      return
+    }
+  }
+  // unfortunately, the mouse events do not find there way to the proper block
+  var c8n = this.getConnectionForEvent(e)
+  var target = c8n
+  ? c8n.eyo.isInput
+    ? c8n.targetBlock() || c8n.sourceBlock_
+    : c8n.sourceBlock_
+  : this
+  while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
+    target = target.getParent()
+  }
+  // console.log('MOUSE DOWN', target)
+  // Next trick because of the the dual event binding
+  // reentrant management
+  if (!target || target.eyo.alreadyMouseDownEvent_ === e) {
+    return
+  }
+  target.eyo.alreadyMouseDownEvent_ = e
+  // Next is not good design
+  // remove any selected connection, if any
+  // but remember it for a contextual menu
+  target.eyo.lastSelectedConnection = eYo.Selected.connection
+  eYo.Selected.connection = null
+  target.eyo.selectedConnectionSource_ = null
+  // Prepare the mouseUp event for an eventual connection selection
+  target.eyo.lastMouseDownEvent = target === eYo.Selected.block ? e : null
+  eYo.BlockSvg.superClass_.onMouseDown_.call(target, e)
+}
+
+/**
+ * The selected connection is used to insert blocks with the keyboard.
+ * When a connection is selected, one of the ancestor blocks is also selected.
+ * Then, the higlighted path of the source blocks is not the outline of the block
+ * but the shape of the connection as it shows when blocks are moved close enough.
+ */
+eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
+  var c8n = this.eyo.getConnectionForEvent(e)
+  var target = c8n
+  ? c8n.eyo.isInput
+    ? c8n.targetBlock() || c8n.sourceBlock_
+    : c8n.sourceBlock_
+  : this
+  while (target && (target.eyo.wrapped_ || target.eyo.locked_)) {
+    target = target.getParent()
+  }
+  // reentrancy filter
+  if (!target || target.eyo.alreadyMouseUpEvent_ === e) {
+    return
+  }
+  target.eyo.alreadyMouseUpEvent_ = e
+  var ee = target.eyo.lastMouseDownEvent
+  if (ee) {
+    // a block was selected when the mouse down event was sent
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      // not a drag move
+      if (target === eYo.Selected.block && c8n) {
+        // the block was already selected,
+        // and there is a candidate selection
+        if (eYo.Selected.connection === c8n) {
+          // unselect
+          eYo.Selected.connection = null
+        } else if (c8n !== target.eyo.lastSelectedConnection) {
+          if (c8n.eyo.isInput) {
+            if (!c8n.targetConnection) {
+              var field = c8n.eyo.bindField
+              field && (field.eyo.doNotEdit = true)
+              eYo.Selected.connection = c8n
+            }
+          } else {
+            eYo.Selected.connection = c8n
+          }
+        } else {
+          eYo.Selected.connection = null
+        }
+      }
+    } else {
+      // a drag move
+      eYo.Selected.connection = null
+    }
+  }
+  eYo.App.didTouchBlock && eYo.App.didTouchBlock(eYo.Selected.block)
 }
