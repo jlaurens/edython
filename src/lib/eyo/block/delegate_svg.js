@@ -211,6 +211,16 @@ console.warn('implement async and await, see above awaitable and asyncable')
  * Revert operation of init.
  */
 eYo.DelegateSvg.prototype.deinit = function () {
+  if (this === eYo.Selected.eyo) {
+    // this block was selected, select the block below or above before deletion
+    // this does not work most probably because it is the wrong place
+    var target
+    if ((target = this.next) || (target = this.previous) || (target = this.output)) {
+      setTimeout(() => {
+        target.eyo.select()
+      })// broken for outputConnection ?
+    }
+  }
   goog.dom.removeNode(this.svgRoot_)
   this.svgRoot_ = undefined
   // just in case the path were not already removed as child or a removed parent
