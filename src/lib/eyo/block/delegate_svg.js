@@ -690,7 +690,7 @@ eYo.DelegateSvg.prototype.render = (() => {
         while (parent.outputConnection && (next = parent.parent)) {
           parent = next
         }
-        // parent has no output connection
+        // parent has no output connection or has no parent
         // which means that it is an expression block's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.downRendering) {
@@ -722,7 +722,6 @@ eYo.DelegateSvg.prototype.render = (() => {
       return
     }
     longRender.call(this, optBubble, recorder)
-    this.alignRightEdges_(io)
     this.change.save.render = this.change.count
   }
 }) ()
