@@ -220,7 +220,7 @@ eYo.DelegateSvg.prototype.unselect = function () {
   if (B) {
     B.removeSelect()
     B.eyo.selectedConnection = null
-    this.eyo.selectedConnectionSource_ = null
+    this.selectedConnectionSource_ = null
   }
   this.block_.removeSelect()
   if (this.wrapped_) {
