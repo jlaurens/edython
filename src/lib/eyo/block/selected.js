@@ -83,7 +83,7 @@ eYo.Selected = (() => {
               if (oldBlock) {
                 oldBlock.eyo.selectedConnection = null
                 oldBlock.eyo.selectedConnectionSource_ = null
-                oldBlock.removeSelect()
+                oldBlock.eyo.removeSelect()
                 if (oldBlock === block_) {
                   oldBlock.eyo.updateAllPaths_()
                   oldBlock.removeSelect()
@@ -181,9 +181,7 @@ eYo.DelegateSvg.prototype.select = function () {
     }
   }
   this.block_.bringToFront()
-  var more = this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection)
-  eYo.BlockSvg.superClass_.select.call(this.block_)
-  if (more) {
+  if (this.selectedConnection || (this.selectedConnectionSource_ && this.selectedConnectionSource_.selectedConnection)) {
     if (this.svgPathSelect_ && this.svgPathSelect_.parentNode) {
       goog.dom.removeNode(this.svgPathSelect_)
       goog.dom.removeNode(this.svgPathHilight_)
@@ -218,14 +216,14 @@ eYo.DelegateSvg.prototype.unselect = function () {
   this.canEdit_ = false
   var eyo = this.selectedConnectionSource_
   if (eyo) {
-    eyo.block_.removeSelect()
+    eyo.removeSelect()
     eyo.selectedConnection = null
-    this.selectedConnectionSource_ = null
+    eyo.selectedConnectionSource_ = null
   }
-  this.block_.removeSelect()
+  this.removeSelect()
   if (this.wrapped_) {
     var parent = this.wrapper
-    parent && parent.eyo.unselect()
+    parent && parent.unselect()
   }
 }
 
