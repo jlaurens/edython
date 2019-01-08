@@ -124,22 +124,21 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
   this.svgPathPlayContour_.setAttribute('d', this.playPathContourDef_(0))
   this.svgPathPlayIcon_.setAttribute('d', this.playPathIconDef_(0))
   this.mouseDownWrapper_ =
-    Blockly.bindEventWithChecks_(this.svgPathPlayIcon_, 'mousedown', this,
-      function (event) {
-        if (this.block_.isInFlyout) {
-          return
-        }
-        if (!this.suiteConnection.isConnected()) {
-          var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
-          dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
-          dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
-          dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk())
-          goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, e => {})
-          dialogModal.setVisible(true)
-        }
-        console.log('Start executing ' + this.block_.id)
-        this.runScript && this.runScript()
-      })
+    Blockly.bindEventWithChecks_(this.svgPathPlayIcon_, 'mousedown', null, e => {
+    if (this.block_.isInFlyout) {
+      return
+    }
+    if (!this.suiteConnection.isConnected()) {
+      var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
+      dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
+      dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
+      dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk())
+      goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, e => {})
+      dialogModal.setVisible(true)
+    }
+    console.log('Start executing ' + this.block_.id)
+    this.runScript && this.runScript()
+  })
   goog.dom.classlist.add(this.svgPathShape_, 'eyo-start-path')
   goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathHilight_)
   goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
