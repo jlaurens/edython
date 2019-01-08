@@ -114,7 +114,7 @@ eYo.KeyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected block can handle the model
-    var B = Blockly.selected
+    var B = eYo.Selected.block
     var c8n = eYo.Selected.connection
     if (B && !c8n) {
       var D = model.data
@@ -154,12 +154,12 @@ eYo.KeyHandler = (() => {
       model.action.call(me, model.model)
       return
     }
-    var B = Blockly.selected
-    if (B) {
+    var eyo = eYo.Selected.eyo
+    if (eyo) {
       var c8n = eYo.Selected.connection
       var newB = model.parent || model.slot
-      ? B.eyo.insertParentWithModel(model) || B.eyo.insertBlockWithModel(model, c8n)
-      : B.eyo.insertBlockWithModel(model, c8n) || B.eyo.insertParentWithModel(model)
+      ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, c8n)
+      : eyo.insertBlockWithModel(model, c8n) || eyo.insertParentWithModel(model)
       if (newB) {
         if (c8n) {
           // There was a selected connection,
@@ -179,7 +179,7 @@ eYo.KeyHandler = (() => {
           }
           if (doFirst(newB, Blockly.INPUT_VALUE)) {
             return true
-          } else if ((c8n === B.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
+          } else if ((c8n === eyo.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
             eYo.Selected.connection = c8n
             return true
           }
@@ -188,7 +188,7 @@ eYo.KeyHandler = (() => {
           return true
         }
         // no selected connection
-        var parent = B
+        var parent = eyo
         do {
           if (parent.eyo.someInputConnection((c8n) => {
             if (c8n.eyo.isInput && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
@@ -198,7 +198,7 @@ eYo.KeyHandler = (() => {
           })) {
             return true
           }
-        } while ((parent = parent.getSurroundParent(parent)))
+        } while ((parent = parent.group))
         eYo.Selected.connection = null
         newB.select()
         return true
@@ -432,14 +432,14 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((B = Blockly.selected) && B.eyo.showEditor) {
+      if ((B = eYo.Selected.block) && B.eyo.showEditor) {
         event.preventDefault()
         event.stopPropagation()
         B.eyo.showEditor(B)
         return
       }
     }
-    if ((B = Blockly.selected)) {
+    if ((B = eYo.Selected.block)) {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
@@ -606,7 +606,7 @@ var Ks = {
   'identifier': eYo.T3.Expr.identifier,
   'name': eYo.T3.Expr.identifier,
   'not …': function (key) {
-    var B = Blockly.selected
+    var B = eYo.Selected.block
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
@@ -621,7 +621,7 @@ var Ks = {
     }
   },
   '+…': function (key) {
-    var B = Blockly.selected
+    var B = eYo.Selected.block
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_p === '+') {
@@ -646,7 +646,7 @@ for (K in Ks) {
 
 Ks = (() => {
   var F = (key, op) => {
-    var B = Blockly.selected
+    var B = eYo.Selected.block
     if (B) {
       var parent = B.getSurroundParent()
       if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_ === op) {
