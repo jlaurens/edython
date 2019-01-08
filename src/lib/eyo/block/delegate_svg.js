@@ -2651,7 +2651,7 @@ eYo.DelegateSvg.prototype.lock = function () {
       ans += target.eyo.lock()
     }
   }
-  if (block === Blockly.selected) {
+  if (block === eYo.Selected.block) {
     var parent = block
     while ((parent = parent.getSurroundParent())) {
       if (!parent.eyo.wrapped_ && !parent.eyo.locked_) {
