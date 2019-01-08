@@ -360,8 +360,8 @@ Blockly.onKeyDown_ = function(e) {
   }
   // var deleteBlock = false;
   if (e.keyCode == 9) {
-    if (Blockly.selected) {
-      Blockly.selected.eyo.doTab({
+    if (eYo.Selected.eyo) {
+      eYo.Selected.eyo.doTab({
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })
@@ -381,16 +381,16 @@ Blockly.onKeyDown_ = function(e) {
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (Blockly.selected && Blockly.selected.isDeletable()) {
-      eYo.deleteBlock(Blockly.selected, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.Selected.block && eYo.Selected.block.isDeletable()) {
+      eYo.deleteBlock(eYo.Selected.block, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (Blockly.selected &&
-        Blockly.selected.isDeletable() && Blockly.selected.isMovable()) {
+    if (eYo.Selected.block &&
+        eYo.Selected.block.isDeletable() && eYo.Selected.block.isMovable()) {
       // Eyo:
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
@@ -399,12 +399,12 @@ Blockly.onKeyDown_ = function(e) {
       if (e.keyCode == 67) {
         // 'c' for copy.
         Blockly.hideChaff();
-        eYo.copyBlock(Blockly.selected, deep);
-      } else if (e.keyCode == 88 && !Blockly.selected.workspace.isFlyout) {
+        eYo.copyBlock(eYo.Selected.block, deep);
+      } else if (e.keyCode == 88 && !eYo.Selected.block.workspace.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.copyBlock(Blockly.selected, deep);
-        eYo.deleteBlock(Blockly.selected, deep);
+        eYo.copyBlock(eYo.Selected.block, deep);
+        eYo.deleteBlock(eYo.Selected.block, deep);
       }
     }
     if (e.keyCode == 86) {
@@ -428,10 +428,10 @@ Blockly.onKeyDown_ = function(e) {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBlock && !Blockly.selected.workspace.isFlyout) {
+  // if (deleteBlock && !eYo.Selected.block.workspace.isFlyout) {
   //   Blockly.Events.setGroup(true);
   //   Blockly.hideChaff();
-  //   Blockly.selected.eyo.dispose(/* heal */ true, true);
+  //   eYo.Selected.eyo.dispose(/* heal */ true, true);
   //   Blockly.Events.setGroup(false);
   // }
 };
