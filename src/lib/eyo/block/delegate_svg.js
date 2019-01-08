@@ -43,6 +43,16 @@ eYo.DelegateSvg.prototype.packedBrackets = true
 Object.defineProperties(
   eYo.DelegateSvg.prototype,
   {
+    workspace: {
+      get () {
+        return this.block_.workspace
+      }
+    },
+    svgGroup_: {
+      get () {
+        return this.block_.svgGroup_
+      }
+    },
     hasLeftEdge: {
       get () {
         return !this.wrapped_ && !this.locked_
