@@ -33,7 +33,7 @@ eYo.App = Object.create(null)
  * @return {Boolean} true if copied, false otherwise
  */
 eYo.App.doCopy = function(optNoNext) {
-  var block = Blockly.selected
+  var block = eYo.Selected.block
   if (block) {
     var xmlBlock = eYo.Xml.blockToDom(block, {noId: true, noNext: optNoNext});
     // Encode start position in XML.
@@ -50,7 +50,7 @@ eYo.App.doCopy = function(optNoNext) {
  * Send the selected block to the front.
  */
 eYo.App.doFront = function() {
-  var block = Blockly.selected
+  var block = eYo.Selected.block
   if (block) {
     var parent
     while ((parent = block.getSurroundParent())) {
@@ -68,7 +68,7 @@ eYo.App.doFront = function() {
  * Send the selected block to the back.
  */
 eYo.App.doBack = function() {
-  var block = Blockly.selected
+  var block = eYo.Selected.block
   if (block) {
     var parent
     while ((parent = block.getSurroundParent())) {
@@ -86,7 +86,7 @@ eYo.App.doBack = function() {
  * Scroll the workspace to show the selected block.
  */
 eYo.App.doFocus = function() {
-  var block = Blockly.selected
+  var block = eYo.Selected.block
   if (block) {
     block.workspace.centerOnBlock(block.id)
   }
