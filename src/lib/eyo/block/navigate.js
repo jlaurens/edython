@@ -17,9 +17,10 @@ goog.require('eYo.Selected')
 
 /**
  * Tab navigation.
+ * @param {?Object} eyo Block delegate.
  * @param {?Object} opt Optional key value arguments.
  */
-eYo.DelegateSvg.prototype.doTab = (() => {
+eYo.Navigate.doTab = (() => {
   var c8n
   var input
   var ff = x => {
@@ -33,27 +34,61 @@ eYo.DelegateSvg.prototype.doTab = (() => {
       }
     }
   }
-  var doLeft = (eyo) => {
+  var accept = input => {
+    var c8n = input.connection
+    return c8n && !c8n.eyo.isIncog() && !c8n.hidden_ && c8n.eyo.isInput
+  }
+  var doLeft = eyo => { // !eyo
     if ((c8n = eYo.Selected.connection) && !c8n.eyo.isIncog()) {
-      if ((input = c8n.eyo.input)) {
-        input = input.eyo.inputLeft
-      }
+      input = c8n.eyo.input
     }
     if (!input) {
-      eyo.forEachSlot(ff) || eyo.forEachInput(ff)
-    }
-    while (input) {
-      if ((c8n = input.connection) && !c8n.hidden_ && c8n.eyo.isInput) {
-        eYo.Selected.connection = c8n
-        break
+      if ((c8n = eyo.outputConnection)) {
+        input = c8n.eyo.target.input
       }
-      input = input.eyo.inputLeft
+      if (!input) {
+        eyo.forEachSlot(ff) || eyo.forEachInput(ff)
+      }
     }
+    var candidate = input.eyo.inputLeft
+    while (candidate) {
+      if (accept(candidate)) {
+        eYo.Selected.connection = candidate.connection
+        return
+      }
+      candidate = candidate.eyo.inputLeft
+    }
+    candidate = input
+    while ((candidate = candidate.eyo.inputLeft)) {
+      if (accept(candidate)) {
+        eYo.Selected.connection = candidate.connection
+        return
+      }
+    }
+    candidate = input
+    while ((candidate = candidate.eyo.inputRight)) {
+      input = candidate
+    }
+    do {
+      if (accept(input)) {
+        eYo.Selected.connection = input.connection
+        return
+      }
+    } while ((input = input.eyo.inputLeft))
   }
-  var doRight = (eyo) => {
+  var doRight = eyo => {
     if ((c8n = eYo.Selected.connection) && !c8n.eyo.isIncog()) {
       if ((input = c8n.eyo.input)) {
-        input = input.eyo.inputRight
+        var candidate = input.eyo.inputRight
+        if(candidate) {
+          input = candidate
+        } else {
+          // seek the left most input
+          candidate = input
+          while ((candidate = candidate.eyo.inputLeft)) {
+            input = candidate
+          }
+        }
       }
     }
     if (!input) {
@@ -72,12 +107,15 @@ eYo.DelegateSvg.prototype.doTab = (() => {
       input = input.eyo.inputRight
     }
   }
-  return function(opt) {
-    var f = opt && opt.left ? doLeft : doRight
-    var n = opt && opt.fast ? 4 : 1
-    input = undefined
-    while (n--) {
-      f(this)
+  return (eyo, opt) => {
+    if (eyo) {
+      var f = opt && opt.left ? doLeft : doRight
+      var n = opt && opt.fast ? 4 : 1
+      input = undefined
+      while (n--) {
+        f(eyo)
+      }
+      return true
     }
   }
 })()
