@@ -562,11 +562,11 @@ eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
     }
     var shape = eyo.shape || eyo.side || eYo.Key.NONE
     var b_eyo = eyo.b_eyo
-    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute) {
-      var where = eYo.Where(eyo)
-      var c8n = b_eyo.outputConnection
+    var c8n
+    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (c8n = b_eyo.outputConnection)) {
+      var where = new eYo.Where(eyo)
       do {
-        var c_eyo = c8n.eyo
+        var c_eyo = c8n.eyo.target
         where.advance(c_eyo)
         b_eyo = c_eyo.b_eyo
       } while(b_eyo && b_eyo.wrapped_ && (c8n = b_eyo.outputConnection))
