@@ -391,7 +391,7 @@ Blockly.onKeyDown_ = function(e) {
     }
     if (eYo.Selected.block &&
         eYo.Selected.block.isDeletable() && eYo.Selected.block.isMovable()) {
-      // Eyo:
+      // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
       // would be to paste, which would create additional undeletable/immovable
