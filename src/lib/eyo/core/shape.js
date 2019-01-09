@@ -540,18 +540,20 @@ eYo.Shape.newWithConnection = function(eyo) {
 /**
  * Create a path definition with the given connection delegate.
  * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @param {?Object} opt  Optional kv arguments
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithConnection = function(eyo) {
-  eYo.Shape.shared.initWithConnection(eyo)
+eYo.Shape.definitionWithConnection = function(eyo, opt) {
+  eYo.Shape.shared.initWithConnection(eyo, opt)
   return eYo.Shape.shared.definition
 }
 
 /**
  * create a shape with the given connection delegate.
  * @param {?eYo.ConnectionDelegateSvg} eyo  Connection delegate
+ * @param {?Object} opt  Optional kv arguments
  */
-eYo.Shape.prototype.initWithConnection = function(eyo) {
+eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
   this.begin()
   var dd = this.caret_extra
   if (eyo) {
@@ -559,8 +561,20 @@ eYo.Shape.prototype.initWithConnection = function(eyo) {
       eyo.shape = eYo.Key.LEFT
     }
     var shape = eyo.shape || eyo.side || eYo.Key.NONE
-    var x = eyo.x
-    var y = eyo.y
+    var b_eyo = eyo.b_eyo
+    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute) {
+      var where = eYo.Where(eyo)
+      var c8n = b_eyo.outputConnection
+      do {
+        var c_eyo = c8n.eyo
+        where.advance(c_eyo)
+        b_eyo = c_eyo.b_eyo
+      } while(b_eyo && b_eyo.wrapped_ && (c8n = b_eyo.outputConnection))
+    } else {
+      where = eyo
+    }
+    var x = where.x
+    var y = where.y
     this.width = eyo.w
   } else {
     x = 0
