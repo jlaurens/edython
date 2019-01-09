@@ -547,6 +547,7 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
   }
   return steps
 }
+
 /**
  * Highlight the receiver's connection
  */
