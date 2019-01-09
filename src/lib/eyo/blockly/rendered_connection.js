@@ -80,10 +80,16 @@ Object.defineProperties(
         return this.sourceBlock_.eyo
       }
     },
-    t_eyo: {
+    target: {
       get () {
-        var target = this.connection.targetBlock()
-        return target && target.eyo
+        var c8n = this.connection.targetConnection
+        return c8n && c8n.eyo
+      }
+    },
+    t_eyo: { // === this.target.b_eyo
+      get () {
+        var t = this.connection.targetBlock()
+        return t && t.eyo
       }
     },
     bindField: {
