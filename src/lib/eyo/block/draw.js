@@ -35,7 +35,10 @@ eYo.Draw.hasSelect = function (eyo) {
  * @param {!Object} eyo Block delegate.
  */
 eYo.Draw.addBlockHilight_ = eyo => {
-  eyo.svgPathHilight_.parentNode || eyo.svgGroup_.appendChild(eyo.svgPathHilight_)
+  if (!eyo.svgPathHilight_.parentNode) {
+    eyo.updatePath_(eyo.svgPathHilight_, eyo.hilightPathDef_)
+    eyo.svgGroup_.appendChild(eyo.svgPathHilight_)
+  }
 }
 
 /**
@@ -44,6 +47,7 @@ eYo.Draw.addBlockHilight_ = eyo => {
  */
 eYo.Draw.addBlockSelect_ = eyo => {
   if (!eyo.svgPathSelect_.parentNode) {
+    eyo.updatePath_(eyo.svgPathSelect_, eyo.selectPathDef_)
     if (eyo.svgPathHilight_.parentNode) {
       eyo.svgGroup_.insertBefore(eyo.svgPathSelect_, eyo.svgPathHilight_)
     } else if (eyo.svgPathConnection_.parentNode) {
@@ -59,7 +63,10 @@ eYo.Draw.addBlockSelect_ = eyo => {
  * @param {!Object} eyo Block delegate.
  */
 eYo.Draw.addBlockConnection_ = eyo => {
-  eyo.svgPathConnection_.parentNode || eyo.svgGroup_.appendChild(eyo.svgPathConnection_)
+  if (!eyo.svgPathConnection_.parentNode) {
+    eyo.updatePath_(eyo.svgPathConnection_, eyo.connectionPathDef_)
+    eyo.svgGroup_.appendChild(eyo.svgPathConnection_)
+  }
 }
 
 /**
