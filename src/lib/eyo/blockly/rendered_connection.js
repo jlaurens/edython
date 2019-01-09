@@ -51,12 +51,12 @@ Object.defineProperties(
         return this.slot ? this.where.l + this.slot.where.l : this.where.l
       }
     },
-    x: { // in block text coordinates
+    x: { // in block coordinates
       get () {
         return this.slot ? this.where.x + this.slot.where.x : this.where.x
       }
     },
-    y: { // in block text coordinates
+    y: { // in block coordinates
       get () {
         return this.slot ? this.where.y + this.slot.where.y : this.where.y
       }
@@ -514,13 +514,14 @@ eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
     return ''
   }
   var steps = ''
-  if (c8n.eyo.isInput) {
+  var c_eyo = c8n.eyo
+  if (c_eyo.isInput) {
     if (c8n.isConnected()) {
-      steps = c8n.targetBlock().eyo.valuePathDef_()
+      steps = c_eyo.t_eyo.valuePathDef_()
     } else if (!this.disabled_) {
-      steps = eYo.Shape.definitionWithConnection(this)
+      steps = eYo.Shape.definitionWithConnection(this, {absolute: true})
     }
-  } else if (c8n.eyo.isOutput) {
+  } else if (c_eyo.isOutput) {
     steps = block.eyo.valuePathDef_(c8n.offsetInBlock_)
   } else { // statement connection
     var r = eYo.Style.Path.Hilighted.width / 2
