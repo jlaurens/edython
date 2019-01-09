@@ -18,6 +18,7 @@ goog.require('Blockly.Workspace')
 goog.require('eYo.XRE')
 goog.require('eYo.Helper')
 goog.require('eYo.Block')
+goog.require('eYo.Navigate')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
 goog.require('eYo.Xml.Recover')
@@ -360,11 +361,10 @@ Blockly.onKeyDown_ = function(e) {
   }
   // var deleteBlock = false;
   if (e.keyCode == 9) {
-    if (eYo.Selected.eyo) {
-      eYo.Selected.eyo.doTab({
+    if (eYo.Navigate.doTab(eYo.Selected.eyo, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
-      })
+      })) {
       e.preventDefault()
       e.stopPropagation()
     }
