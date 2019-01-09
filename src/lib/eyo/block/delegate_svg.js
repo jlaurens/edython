@@ -722,6 +722,7 @@ eYo.DelegateSvg.prototype.render = (() => {
       return
     }
     longRender.call(this, optBubble, recorder)
+    this.alignRightEdges_(io)
     this.change.save.render = this.change.count
   }
 }) ()
@@ -922,28 +923,31 @@ eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.DelegateSvg.prototype.alignRightEdges_ = function (recorder) {
-  if (this.parent || !this.isStmt || !this.block_.rendered || !this.block_.workspace || !this.isReady) {
-    return
-  }
-  var right = 0
-  var t = eYo.Font.tabWidth
-  this.forEachStatement((eyo, depth) => {
-    if (eyo.minWidth) {
-      right = Math.max(right, eyo.minWidth + t * depth)
+eYo.DelegateSvg.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
+  'alignRightEdges_',
+  function (recorder) {
+    if (this.parent || !this.isStmt || !this.block_.rendered || !this.block_.workspace || !this.isReady) {
+      return
     }
-  })
-  if (right) {
+    var right = 0
+    var t = eYo.Font.tabWidth
     this.forEachStatement((eyo, depth) => {
-      var width = right - t * depth
-      var b = eyo.block_
-      if (b.width !== width) {
-        b.width = width
-        eyo.updateAllPaths_()
+      if (eyo.minWidth) {
+        right = Math.max(right, eyo.minWidth + t * depth)
       }
     })
+    if (right) {
+      this.forEachStatement((eyo, depth) => {
+        var width = right - t * depth
+        var b = eyo.block_
+        if (b.width !== width) {
+          b.width = width
+          eyo.updateAllPaths_()
+        }
+      })
+    }
   }
-}
+)
 
 /**
  * Compute the paths of the block depending on its size.
