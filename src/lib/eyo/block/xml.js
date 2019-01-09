@@ -704,9 +704,9 @@ eYo.Xml.toDom = function (block, element, opt) {
     ((controller = eyo.constructor) && goog.isFunction(controller.toDom))) {
     return controller.toDom.call(eyo, block, element, opt)
   } else {
+    var optNoNext = opt && opt.noNext
     eyo.saveData(element, opt)
     eyo.saveSlots(element, opt)
-    var optNoNext = opt && opt.noNext
     opt && (opt.noNext = false)
     var targetBlockToDom = (c8n, name, key) => {
       if (c8n && !c8n.eyo.wrapped_) {
