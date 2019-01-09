@@ -982,16 +982,10 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
   if (this.wrapped_) {
     this.updatePath_(this.svgPathContour_)
     this.updatePath_(this.svgPathShape_)
-    this.updatePath_(this.svgPathSelect_)
-    this.updatePath_(this.svgPathHilight_)
-    this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_)
   } else {
     this.updatePath_(this.svgPathContour_, this.contourPathDef_)
     this.updatePath_(this.svgPathShape_, this.shapePathDef_)
-    this.updatePath_(this.svgPathSelect_, this.selectPathDef_)
-    this.updatePath_(this.svgPathHilight_, this.hilightPathDef_)
-    this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
     this.updatePath_(this.svgPathCollapsed_, this.collapsedPathDef_)
   }
 }
