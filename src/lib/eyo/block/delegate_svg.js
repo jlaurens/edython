@@ -875,7 +875,7 @@ eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
  * @private
  */
 eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
-  return this.selectedConnection && this.selectedConnection.eyo.highlightPathDef() || ''
+  return eYo.Selected.connectionPathDef()
 }
 
 /**
@@ -988,6 +988,9 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
     this.updatePath_(this.svgPathShape_, this.shapePathDef_)
     this.updatePath_(this.svgPathCollapsed_, this.collapsedPathDef_)
   }
+  this.updatePath_(this.svgPathHilight_, this.hilightPathDef_)
+  this.updatePath_(this.svgPathSelect_, this.selectPathDef_)
+  this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
 }
 
 /**
