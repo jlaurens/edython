@@ -78,9 +78,12 @@ eYo.Selected = (() => {
               eyo__ = newValue
               block__ = eyo__.block_
               if (!eyo__.canEdit_) {
-                setTimeout(() => {
-                  eyo__.canEdit_ = true
-                }, 10)
+                // catch eyo__
+                setTimeout(((eyo) => {
+                  return () => {
+                    eyo.canEdit_ = true
+                  }
+                })(eyo__), 10)
               }
               if (c8n__) {
                 var b_eyo = c8n__.eyo.b_eyo
