@@ -64,6 +64,27 @@ eYo.DelegateSvg.Control.prototype.updateBlackCount = function () {
   this.blackCount = this.suiteConnection && this.suiteConnection.targetConnection ? 0 : 1
 }
 
+/**
+ * Update the creation number.
+ */
+eYo.DelegateSvg.Control.prototype.updateCreation = (() => {
+  var creation
+  return function () {
+    if (goog.isDef(creation)) {
+      this.creation__ = ++ creation
+    } else {
+      this.creation__ = creation = 0
+    }
+  }
+})()
+
+Object.defineProperties (eYo.DelegateSvg.Control.prototype, {
+  creation: {
+    get() {
+      return this.creation__
+    }
+  }
+})
 
 /**
  * Control block path.
@@ -72,7 +93,7 @@ eYo.DelegateSvg.Control.prototype.updateBlackCount = function () {
  */
 eYo.DelegateSvg.Control.prototype.playPathContourDef_ = function (cursorX) {
   return eYo.Shape.definitionForPlayContour({x: cursorX, y: 0})
-} /* eslint-enable indent */
+}
 
 /**
  * Control block path.
@@ -81,7 +102,7 @@ eYo.DelegateSvg.Control.prototype.playPathContourDef_ = function (cursorX) {
  */
 eYo.DelegateSvg.Control.prototype.playPathIconDef_ = function (cursorX) {
   return eYo.Shape.definitionForPlayIcon({x: cursorX, y: 0})
-} /* eslint-enable indent */
+}
 
 /**
  * Control block path.

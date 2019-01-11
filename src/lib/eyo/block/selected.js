@@ -38,7 +38,12 @@ eYo.Selected = (() => {
         eYo.Draw.addBlockHilight_(eyo__)
       }
     }
-}
+  }
+  me.scrollToVisible = () => {
+    if (eyo__ && !eyo__.inVisibleArea()) {
+      eyo__.workspace.centerOnBlock(eyo__.id)
+    }  
+  }  
   Object.defineProperties(
     me,
     {
@@ -92,8 +97,10 @@ eYo.Selected = (() => {
                 }
               }
               block__.bringToFront()
+              this.didAdd()
             } else {
               c8n__ = null
+              this.didRemove()
             }
           }
         }
@@ -110,8 +117,9 @@ eYo.Selected = (() => {
               if (b_eyo) {
                 var wrapper
                 // if the connection visually belongs to 2 blocks, select the top left most
-                if (c8n === b_eyo.previousConnection && c8n.targetConnection) {
-                  wrapper = c8n.eyo.t_eyo.wrapper
+                if (c_eyo.isPrevious && c8n.targetConnection) {
+                  wrapper = c_eyo.t_eyo.wrapper
+                  c8n = c_eyo.target.connection
                 } else {
                   wrapper = b_eyo.wrapper
                 }
@@ -169,11 +177,13 @@ eYo.Selected = (() => {
               if (b_eyo.locked_) {
                 return
               }
-              // Do not select a connection with a target, select the target instead
-              var t_eyo = c_eyo.t_eyo
-              if (t_eyo) {
-                this.eyo =  t_eyo
-                return
+              if (c_eyo.isInput) {
+                // Do not select a connection with a target, select the target instead
+                var t_eyo = c_eyo.t_eyo
+                if (t_eyo) {
+                  this.eyo =  t_eyo
+                  return
+                }
               }
             }
           }
@@ -183,6 +193,8 @@ eYo.Selected = (() => {
       }
     }
   )
+  me.didAdd = eYo.Do.nothing
+  me.didRemove = eYo.Do.nothing
   return me
 })()
 
@@ -525,9 +537,9 @@ eYo.Selected.connectionPathDef = function () {
     var r = eYo.Style.Path.Hilighted.width / 2
     var a = ` a ${r},${r} 0 0 1 0,`
     var w = block.width - eYo.Unit.x / 2
-    if (this.isPrevious) {
+    if (c_eyo.isPrevious) {
       steps = `m ${w},${-r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
-    } else if (this.isNext) {
+    } else if (c_eyo.isNext) {
       if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
         steps = `m ${eYo.Font.tabWidth + eYo.Style.Path.r},${block.eyo.size.height - r}${a}${2 * r} h ${-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
       } else {

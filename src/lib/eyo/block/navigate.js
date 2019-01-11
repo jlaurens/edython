@@ -125,7 +125,7 @@ eYo.Navigate.doTab = (() => {
  * For edython.
  * @param {!Blockly.Workspace} workspace The owner of the receiver.
  * @param {function(point): number} weight is a function.
- * @return None
+ * @return {?Blockly.Block}
  */
 eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity
@@ -175,290 +175,76 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
 }
 
 /**
- * Select the block to the left of the owner.
+ * Select the block to the left of the selection.
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectLeft = function () {
-  var target = this.selectedConnectionSource_
-  if (target && target !== this) {
-    target.selectLeft()
+eYo.Selected.chooseLeft = () => {
+  const eyo = eYo.Selected.eyo
+  if (!eyo) {
     return
   }
-  var block = this.block_
-  var doLast = B => {
-    var e8r = B.eyo.inputEnumerator()
-    e8r.end()
-    while (e8r.previous()) {
-      var c8n = e8r.here.connection
-      if (c8n && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
-        var target = c8n.targetBlock()
-        if (!target || (!target.eyo.wrapped_ && !target.eyo.locked_) || (c8n = doLast(target))) {
-          return c8n
-        }
-      }
-    }
-    return null
-  }
-  var parent, c8n
-  var selectTarget = c8n => {
-    var target = c8n.targetBlock()
-    if (!target) {
-      return false
-    }
-    if (!target.eyo.wrapped_ && !target.eyo.locked_) {
-      eYo.Selected.connection = null
-      target.select()
-      return true
-    }
-    if ((c8n = doLast(target))) {
-      if ((target = c8n.targetBlock())) {
-        eYo.Selected.connection = null
-        target.select()
-      } else {
-        eYo.Selected.connection = c8n
-      }
-      return true
-    }
-    return false
-  }
-  var selectConnection = c8n => {
-    if (selectTarget(c8n)) {
-      return true
-    }
-    // do not select a connection
-    // if there is no unwrapped surround parent
-    var parent = c8n.eyo.b_eyo
-    while (parent.wrapped_ || parent.locked_) {
-      if (!(parent = parent.group)) {
-        return false
-      }
-    }
-    eYo.Selected.connection = c8n
-    return true
-  }
-  if ((c8n = this.selectedConnection)) {
+  var c8n = eYo.Selected.connection
+  if (c8n) {
     var c_eyo = c8n.eyo
-    if (c_eyo.isNextLike || c_eyo.isOutput) {
+    if (c_eyo.isInput || c_eyo.isOutput) {
+      eYo.Selected.eyo = eyo.wrapper
       eYo.Selected.connection = null
-      block.select()
-      return true
-    } else if (c_eyo.isOutput) {
-      // select the previous non statement input if any
-      var e8r = block.eyo.inputEnumerator()
-      while (e8r.next()) {
-        if (e8r.here.connection && c8n === e8r.here.connection) {
-          // found it, step down
-          e8r.previous()
-          while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c_eyo.wrapped_) && (c_eyo.isOutput)) {
-              if (selectConnection(c8n)) {
-                return true
-              }
-            }
-          }
-          break
-        }
-      }
-      e8r.start(block)
-      while (e8r.next()) {
-        if (e8r.here.connection && c8n === e8r.here.connection) {
-          // found it, step down
-          e8r.previous()
-          while (e8r.previous()) {
-            if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
-              if (selectConnection(c8n)) {
-                return true
-              }
-            }
-          }
-          break
-        }
-      }
-    } else if (!block.eyo.wrapped_ && !block.eyo.locked_) {
+      eYo.Selected.scrollToVisible()
+      return
+    } else if (c_eyo.isSuite) {
       eYo.Selected.connection = null
-      block.select()
-      return true
+      eYo.Selected.scrollToVisible()
+      return
+    } else {
+      eYo.Selected.eyo = eyo.group || eyo.root
+      eYo.Selected.connection = null
+      eYo.Selected.scrollToVisible()
+      return
     }
-  }
-  if ((parent = block.getSurroundParent())) {
-    // select the previous non statement input if any
-    e8r = parent.eyo.inputEnumerator()
-    while (e8r.next()) {
-      if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && block === c8n.targetBlock()) {
-        // found it, step down
-        e8r.previous()
-        while (e8r.previous()) {
-          if ((c8n = e8r.here.connection) && (!c8n.hidden_ || c8n.eyo.wrapped_) && (c8n.eyo.isOutput)) {
-            if (selectConnection(c8n)) {
-              return true
-            }
-          }
-        }
-        break
-      }
-    }
-    do {
-      if (!parent.eyo.wrapped_ && !parent.eyo.locked_) {
-        eYo.Selected.connection = null
-        parent.select()
-        return true
-      }
-    } while ((parent = parent.getSurroundParent()))
-  }
-  target = this.root.getBestBlock((a, b) => {
-    if (a.left <= b.left) {
-      return {}
-    }
-    // b.left < a.left
-    if (a.top - b.bottom > a.left - b.left) {
-      return {minor: a.left - b.left + a.top - b.bottom}
-    }
-    if (b.top - a.bottom > a.left - b.left) {
-      return {minor: a.left - b.left + b.top - a.bottom}
-    }
-    return {
-      major: a.left - b.left + Math.abs(a.bottom + a.top - b.bottom - b.top) / 3,
-      minor: b.bottom - b.top
-    }
-  })
-  if (target) {
-    target.select()
-    return true
+  } else if (eyo.isStmt) {
+    eYo.Selected.eyo = eyo.group || eyo.root
+    eYo.Selected.scrollToVisible()
+    return
+  } else {
+    eYo.Selected.connection = null
   }
 }
 /**
- * Select the block to the right of the owner.
+ * Select the block to the right of the selection.
  * The owner is either a selected block or wrapped into a selected block.
  * For edython.
  * @return yorn
  */
-eYo.DelegateSvg.prototype.selectRight = function () {
-  var target = this.selectedConnectionSource_
-  if (target && target !== this) {
-    return target.selectRight()
+eYo.Selected.chooseRight = function () {
+  const eyo = eYo.Selected.eyo
+  if (!eyo) {
+    return
   }
-  var block = this.block_
-  var parent, c8n
-  var selectTarget = c8n => {
-    if ((target = c8n.targetBlock())) {
-      if (target.eyo.wrapped_ || target.eyo.locked_) {
-        return target.eyo.selectRight()
-      } else {
-        eYo.Selected.connection = null
-        target.select()
-        return true
-      }
-    }
-    return false
-  }
-  var selectConnection = (c8n) => {
-    if (c8n.hidden_ && !c8n.eyo.wrapped_) {
-      return false
-    }
-    if (!selectTarget(c8n)) {
-      parent = block.eyo
-      while (parent.wrapped_ || parent.locked_) {
-        if (!(parent = parent.group)) {
-          return false
+  var c8n = eYo.Selected.connection
+  if (c8n) {
+    var c_eyo = c8n.eyo
+    if (c_eyo.isInput || c_eyo.isOutput) {
+      eYo.Selected.connection = null
+      return
+    } else if (c_eyo.isNext) {
+      if (eyo.isGroup) {
+        c8n = eyo.suiteConnection
+        var t_eyo
+        var next
+        while ((t_eyo = c8n.eyo.t_eyo) && (next = t_eyo.nextConnection)) {
+          c8n = next
         }
+        eYo.Selected.connection = c8n
       }
-      eYo.Selected.connection = c8n
-    }
-    return true
-  }
-  var selectSlot = (slot) => {
-    if (!slot.isIncog()) {
-      var c8n = slot.connection
-      if (c8n) {
-        return (c8n.eyo.isOutput) && selectConnection(c8n)
-      }
-    }
-  }
-  if ((c8n = this.selectedConnection)) {
-    if (c8n === this.nextConnection) {
-      // select the target block (if any) when the nextConnection is in horizontal mode
-      if (c8n.eyo.isAtRight) {
-        if (selectTarget(c8n)) {
-          return true
-        }
-      } else if (this.suiteConnection) {
-        if ((target = this.suiteConnection.targetBlock())) {
-          var eyo = target.eyo
-          var next
-          while ((next = eyo.next)) {
-            eyo = next
-          }
-          selectConnection(eyo.nextConnection)
-        }
-      }
-    } else if (c8n.eyo.isNextLike) {
-      if (selectTarget(c8n)) {
-        return true
-      }
-    } else if (selectTarget(c8n)) {
-      // the connection was selected, now it is its target
-      return true
     } else {
-      // select the connection following `this.selectedConnection`
-      // which is not a NEXT_STATEMENT one, if any
-      var rightC8n
-      while ((rightC8n = c8n.eyo.rightConnection())) {
-        if (selectConnection(rightC8n)) {
-          return
-        }
-        c8n = rightC8n
-      }
-      if (this.someInputConnection(
-        c8n => c8n.eyo.isNextLike && selectConnection(c8n))
-      ) {
-        return true
-      }
-    }
-  } else {
-    // select the first non statement connection
-    if (block.eyo.someSlot(slot => selectSlot(slot))) {
-      return true
-    }
-    if (this.someInputConnection(
-      c8n => c8n.eyo.isOutput && selectConnection(c8n)
-    )) {
-      return true
-    }
-    // all the input connections are either dummy or statement connections
-    // select the first statement connection (there is an only one for the moment)
-    if (this.someInputConnection(
-      c8n => c8n.eyo.isNextLike && selectConnection(c8n)
-    )) {
-      return true
-    }
-  }
-  if (!(c8n = this.selectedConnection) || (c8n.eyo.isOutput)) {
-    // try to select the next connection of a surrounding block
-    // only when a value input is connected to the block
-    target = block
-    while (target && (c8n = target.outputConnection) && (c8n = c8n.targetConnection)) {
-      rightC8n = c8n
-      while ((rightC8n = rightC8n.eyo.rightConnection())) {
-        if (selectConnection(rightC8n)) {
-          return true
-        }
-      }
-      block = target
-      target = c8n.sourceBlock_
-    }
-    if (this.someInputConnection(c8n => {
-      if ((c8n.eyo.isNextLike) && (target = c8n.targetBlock()) && (target !== block)) {
-        eYo.Selected.connection = null
-        target.select()
-        return true
-      }
-    })) {
-      return true
+      eYo.Selected.connection = null
+      return
     }
   }
   // now try to select a top block
-  target = this.root.getBestBlock((a, b) => {
+  var root = eyo.root
+  var target = root.getBestBlock((a, b) => {
     if (a.right >= b.right) {
       return {}
     }
@@ -474,16 +260,9 @@ eYo.DelegateSvg.prototype.selectRight = function () {
       minor: b.bottom - b.top
     }
   })
-  if (target) {
-    eYo.Selected.connection = null
-    target.select()
-    return true
-  }
-  if (parent) {
-    eYo.Selected.connection = null
-    parent.select()
-    return true
-  }
+  eYo.Selected.connection = null
+  eYo.Selected.block = target || root
+  eYo.Selected.scrollToVisible()
 }
 
 /**
@@ -491,41 +270,40 @@ eYo.DelegateSvg.prototype.selectRight = function () {
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectAbove = function () {
-  var target = this.selectedConnectionSource_
-  if (target && target !== this) {
-    target.selectAbove()
+eYo.Selected.chooseAbove = function () {
+  const eyo = eYo.Selected.eyo
+  if (!eyo) {
     return
   }
-  var block = this.block_
-  var c8n
-  if ((c8n = this.selectedConnection)) {
-    if (c8n === block.previousConnection) {
-      if ((target = c8n.targetBlock())) {
-        eYo.Selected.connection = null
-        target.select()
+  var c8n = eYo.Selected.connection
+  if (c8n) {
+    var c_eyo = c8n.eyo
+    if (c_eyo.isPrevious) {
+      var t_eyo = c_eyo.t_eyo
+      if (t_eyo) {
+        eYo.Selected.eyo = t_eyo
+        eYo.Selected.scrollToVisible()
         return
       }
-    } else {
-      eYo.Selected.connection = null
-      block.select()
-      return
+    } else if (c_eyo.isNextLike) {
+      var b_eyo = c_eyo.b_eyo
+      if (b_eyo) {
+        eYo.Selected.eyo = b_eyo
+        eYo.Selected.scrollToVisible()
+        return
+      }
     }
-  } else if ((c8n = block.previousConnection)) {
-    block.select()
-    eYo.Selected.connection = block.previousConnection
+  } else if ((c8n = eyo.previousConnection)) {
+    eYo.Selected.connection = c8n
+    eYo.Selected.scrollToVisible()
     return
   }
-  var parent
-  target = this
-  do {
-    parent = target
-    if ((c8n = parent.previousConnection) && (target = c8n.eyo.t_eyo)) {
-      eYo.Selected.eyo = target
-      return
-    }
-  } while ((target = parent.parent))
-  target = parent.getBestBlock((a, b) => {
+  if ((b_eyo = eyo.stmtParent) || (b_eyo = eyo.root)) {
+    eYo.Selected.eyo = b_eyo
+    eYo.Selected.scrollToVisible()
+    return
+  }
+  var block = eyo.root.getBestBlock((a, b) => {
     if (a.top <= b.top) {
       return {}
     }
@@ -541,8 +319,8 @@ eYo.DelegateSvg.prototype.selectAbove = function () {
       minor: b.right - b.left
     }
   })
-  if (target) {
-    target.select()
+  if (block) {
+    eYo.Selected.block = eYo.Selected.scrollToVisible()
   }
 }
 
@@ -551,48 +329,40 @@ eYo.DelegateSvg.prototype.selectAbove = function () {
  * For edython.
  * @return None
  */
-eYo.DelegateSvg.prototype.selectBelow = function () {
-  var target = this.selectedConnectionSource_
-  if (target && target !== this) {
-    target.selectBelow()
+eYo.Selected.chooseBelow = () => {
+  var eyo = eYo.Selected.eyo
+  if (!eyo) {
     return
   }
-  var block = this.block_
-  var parent, c8n
-  if ((c8n = this.selectedConnection)) {
-    if (c8n === block.previousConnection) {
-      eYo.Selected.connection = null
-      block.select()
-      return
-    } else if (c8n.eyo.isNextLike) {
-      if ((target = c8n.targetBlock())) {
-        eYo.Selected.connection = null
-        target.select()
+  var c8n = eYo.Selected.connection
+  if (c8n) {
+    var c_eyo = c8n.eyo
+    if (c_eyo.isNext) {
+      var t_eyo = c_eyo.t_eyo
+      if (t_eyo) {
+        eYo.Selected.eyo = t_eyo
+        if (!t_eyo.inVisibleArea()) {
+          t_eyo.workspace.centerOnBlock(t_eyo.id)
+        }
+        return
+      } else if ((t_eyo = eyo.group) && (c8n = t_eyo.nextConnection)) {
+        eYo.Selected.connection = c8n
+        eyo = eYo.Selected.eyo
+        if (!eyo.inVisibleArea()) {
+          eyo.workspace.centerOnBlock(eyo.id)
+        }
         return
       }
-    } else if (this.nextConnection) {
-      block.select()
-      eYo.Selected.connection = this.nextConnection
-      return
     }
-  } else if (this.suiteConnection) {
-    block.select()
-    eYo.Selected.connection = this.suiteConnection
-    return
-  } else if (this.nextConnection) {
-    block.select()
-    eYo.Selected.connection = this.nextConnection
+  }
+  if ((c8n = eyo.nextConnection) || ((eyo = eyo.stmtParent) && (c8n = eyo.nextConnection))) {
+    eYo.Selected.connection = c8n
+    eyo = eYo.Selected.eyo
+    eYo.Selected.scrollToVisible()
     return
   }
-  target = this
-  do {
-    parent = target
-    if ((c8n = parent.nextConnection) && (target = c8n.eyo.t_eyo)) {
-      eYo.Selected.eyo = target
-      return
-    }
-  } while ((target = parent.parent))
-  target = parent.getBestBlock((a, b) => {
+  eyo = eYo.Selected.eyo
+  var block = eyo.root.getBestBlock((a, b) => {
     if (a.bottom >= b.bottom) {
       return {}
     }
@@ -608,7 +378,24 @@ eYo.DelegateSvg.prototype.selectBelow = function () {
       minor: b.right - b.left
     }
   })
-  if (target) {
-    target.select()
+  if (block) {
+    eYo.Selected.block = block
+    eYo.Selected.scrollToVisible()
+  }
+}
+
+/**
+ * Select the next block.
+ * For edython.
+ * @return None
+ */
+eYo.Selected.chooseNext = () => {
+  var eyo = eYo.Selected.eyo
+  if (!eyo) {
+    return
+  }
+  if ((eyo === eyo.next)) {
+    eYo.Selected.eyo = eyo.next
+    eYo.Selected.scrollToVisible()
   }
 }

@@ -77,6 +77,14 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
 })
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
 
+Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
+  isStatement: {
+    get () {
+      return false
+    }
+  }
+})
+
 /**
  * Initialize a block.
  * @param {!Blockly.Block} block to be initialized..

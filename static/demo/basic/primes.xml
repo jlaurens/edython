@@ -32,7 +32,7 @@ for n in range(101):
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="literal" slot="O">2</x>
 </x>
 </s>
@@ -61,7 +61,7 @@ for n in range(101):
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="d" slot="O">
 </x>
 </x>
@@ -75,7 +75,7 @@ for n in range(101):
 </s>
 </s>
 <s eyo="return" flow="next">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="n" slot="O">
 </x>
 </x>
@@ -124,7 +124,7 @@ for n in range(1,101):
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="and_test" operator="and" slot="O">
 <x eyo="comparison" operator="&gt;=" rhs="1" slot="lhs">
 <x eyo="identifier" name="n" slot="lhs">
@@ -285,7 +285,7 @@ print(f"premier après 100000 : {nombre_premier_après(100000)}")
 </x>
 </s>
 <s eyo="return" flow="next">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="n" slot="O">
 </x>
 </x>
@@ -353,7 +353,7 @@ print(f"premiers jumeaux après 100000 : {nombres_premiers_jumeaux_après(100000
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="n" slot="O">
 </x>
 <x eyo="a_expr" operator="+" slot="f">
@@ -446,7 +446,7 @@ print(f"premiers de Germain après 100000 : {premiers_de_Germain_après(100000)}
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="n" slot="O">
 </x>
 <x eyo="a_expr" operator="+" slot="f">

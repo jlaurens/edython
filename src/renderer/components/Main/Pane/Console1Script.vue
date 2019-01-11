@@ -331,7 +331,7 @@ except:
                     event.preventDefault()
                     event.stopPropagation()
                     
-        def runScript(self, src, flush = False):
+        def runScript(self, id, src, flush = False):
             if flush:
                 self.flush()
             else:
@@ -349,9 +349,9 @@ except:
                 self.write('Terminé en ' + str(round(self.time * 100000)/100) + ' ms\n')
                 self._prompt()
                 self._cursorToEnd()
-                window.eYo.Py.endRunScript1()
+                window.eYo.Py.endRunScript1(id)
                 if self.callback is not None:
-                    self.callback(self)
+                    self.callback(self, id)
         console_js.log('INLINE really done')
     
     window.eYo.Py.console1 = Console(document['eyo-console1-area'])
@@ -375,8 +375,12 @@ export default {
       this.setRunning1(false)
       this.setRunning1(true)
     })
-    eYo.Py.endRunScript1 = () => {
+    eYo.Py.endRunScript1 = (id) => {
       this.setRunning1(false)
+      var eyo = eYo.Selected.eyo
+      if (eyo && eyo.id === id) {
+        eYo.Selected.chooseNext()
+      }
     }
     eYo.Py.canRunTurtleScript = () => {
       var el = document.getElementById('eyo-turtle-canvas-wrapper')
@@ -415,7 +419,7 @@ eYo.DelegateSvg.prototype.runScript = function () {
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
   if (eYo.Py.console1) {
-    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, code)
+    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, this.id, code)
   }
 }
 </script>

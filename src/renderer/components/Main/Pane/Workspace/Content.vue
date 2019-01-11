@@ -258,6 +258,7 @@
         this.$refs.elInner.style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
         if (Blockly && eYo.App.workspace) {
           Blockly.svgResize(eYo.App.workspace)
+          eYo.App.flyout.reflow()
         }
       },
       selectCategory (item) {

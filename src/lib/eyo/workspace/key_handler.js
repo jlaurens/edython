@@ -501,16 +501,13 @@ eYo.KeyHandler = (() => {
         var F = (f) => {
           event.preventDefault()
           event.stopPropagation()
-          f.call(B.eyo)
-          if (!B.eyo.inVisibleArea()) {
-            B.workspace.centerOnBlock(B.id)
-          }
+          f()
         }
         switch (k) {
-        case 'arrowdown': return F(B.eyo.selectBelow)
-        case 'arrowup': return F(B.eyo.selectAbove)
-        case 'arrowleft': return F(B.eyo.selectLeft)
-        case 'arrowright': return F(B.eyo.selectRight)
+        case 'arrowdown': return F(eYo.Selected.chooseBelow)
+        case 'arrowup': return F(eYo.Selected.chooseAbove)
+        case 'arrowleft': return F(eYo.Selected.chooseLeft)
+        case 'arrowright': return F(eYo.Selected.chooseRight)
         }
       }
     } else {

@@ -342,6 +342,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return false
     }
+  },
+  isStatement: {
+    get () {
+      return false
+    }
   }
 })
 

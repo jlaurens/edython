@@ -95,7 +95,7 @@ turtle.done()
 </x>
 </x>
 <s eyo="return" flow="next">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="identifier" name="T" slot="O">
 </x>
 </x>

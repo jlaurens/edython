@@ -16,10 +16,10 @@ print(verlan('Supercalifragilisticexpialidocious'))
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="slicing" name="mot" slot="O">
 <x eyo="list" slot="slicing">
-<x eyo="any" expression="::-1" slot="O">
+<x eyo="proper_slice" stride="-1" slot="O">
 </x>
 </x>
 </x>
@@ -50,11 +50,11 @@ print(est_un_palindrome('Kayak'))
 </x>
 </x>
 <s eyo="return" flow="suite">
-<x eyo="list" slot="ans">
+<x eyo="list" slot="return">
 <x eyo="comparison" operator="==" slot="O">
 <x eyo="slicing" name="mot" slot="lhs">
 <x eyo="list" slot="slicing">
-<x eyo="any" expression="::-1" slot="O">
+<x eyo="proper_slice" stride="-1" slot="O">
 </x>
 </x>
 </x>

@@ -304,7 +304,7 @@ except:
                     event.preventDefault()
                     event.stopPropagation()
                     
-        def runScript(self, src, flush = False):
+        def runScript(self, id, src, flush = False):
             if flush:
                 self.flush()
             else:

@@ -82,9 +82,14 @@ eYoApp.install = function (Vue, options) {
   //   console.log('didTouchBlock', block)
   //   // store.commit('Selected/selectBlock', block) once broke everything when uncommented
   // }
-  eYo.App.didAddSelect = function (block) {
+  eYo.Selected.didAdd = () => {
     Vue.nextTick(() => {
-      store.commit('Selected/selectBlock', Blockly.selected)
+      store.commit('Selected/selectBlock', eYo.Selected.block)
+    })
+  }
+  eYo.Selected.didRemove = () => {
+    Vue.nextTick(() => {
+      store.commit('Selected/selectBlock', eYo.Selected.block)
     })
   }
   eYo.App.selectedBlockUpdate = (eyo) => {

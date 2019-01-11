@@ -504,3 +504,52 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
   }
 }
 
+/**
+ * Scroll the workspace to center on the given block.
+ * @param {?string} id ID of block center on.
+ * @public
+ */
+eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
+  if (!this.workspace_.scrollbar) {
+    console.warn('Tried to scroll a non-scrollable workspace.');
+    return;
+  }
+
+  var block = this.workspace_.getBlockById(id);
+  if (!block) {
+    return;
+  }
+
+  // XY is in workspace coordinates.
+  var xy = block.getRelativeToSurfaceXY();
+  
+  // Find the enter of the block in workspace units.
+  var blockCenterY = xy.y - eYo.Unit.y / 2 // + heightWidth.height / 2;
+
+  // In RTL the block's position is the top right of the block, not top left.
+  var multiplier = this.workspace_.RTL ? -1 : 1;
+  var blockCenterX = xy.x - eYo.Unit.x / 2 // + (multiplier * heightWidth.width / 2);
+
+  // Workspace scale, used to convert from workspace coordinates to pixels.
+  var scale = this.workspace_.scale;
+
+  // Center in pixels.  0, 0 is at the workspace origin.  These numbers may
+  // be negative.
+  var pixelX = blockCenterX * scale;
+  var pixelY = blockCenterY * scale;
+
+  var metrics = this.workspace_.getMetrics();
+
+  // Scrolling to here will put the block in the top-left corner of the
+  // visible workspace.
+  var scrollToBlockX = pixelX - metrics.contentLeft;
+  var scrollToBlockY = pixelY - metrics.contentTop;
+
+  // Put the block in the center of the visible workspace instead.
+  var scrollToCenterX = scrollToBlockX// - halfViewWidth;
+  var scrollToCenterY = scrollToBlockY// - halfViewHeight;
+
+  Blockly.hideChaff();
+  this.workspace_.scrollbar.set(scrollToCenterX, scrollToCenterY);
+};
+
