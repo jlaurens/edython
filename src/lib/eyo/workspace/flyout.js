@@ -613,3 +613,35 @@ eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
 eYo.FlyoutDelegate.prototype.getList = function (category) {
   return eYo.FlyoutCategory[category] || []
 }
+
+/**
+ * Return the deletion rectangle for this flyout in viewport coordinates.
+ * Edython : add management of the 0 width rectange
+ * @return {goog.math.Rect} Rectangle in which to delete.
+ */
+eYo.Flyout.prototype.getClientRect = function() {
+  if (!this.svgGroup_) {
+    return null;
+  }
+
+  var flyoutRect = this.svgGroup_.getBoundingClientRect();
+  // BIG_NUM is offscreen padding so that blocks dragged beyond the shown flyout
+  // area are still deleted.  Must be larger than the largest screen size,
+  // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
+  var BIG_NUM = 1000000000;
+  var x = flyoutRect.left;
+  var width = flyoutRect.width;
+
+  if (!width) {
+    var xy = this.eyo.flyoutPosition
+    if (xy) {
+      x = xy.x
+    }
+  }
+  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_LEFT) {
+    return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
+        BIG_NUM * 2);
+  } else {  // Right
+    return new goog.math.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
+  }
+};
