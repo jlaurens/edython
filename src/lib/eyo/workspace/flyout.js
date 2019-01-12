@@ -100,7 +100,10 @@ eYo.Flyout.prototype.createDom = function(tagName) {
   </svg>
   */
   this.svgGroup_ = Blockly.utils.createSvgElement(tagName,
-      {'class': 'eyo-flyout', 'style': 'display: none'}, null);
+      {
+        class: 'eyo-flyout',
+        style: 'display: none'
+      }, null);
   this.svgBackground_ = Blockly.utils.createSvgElement('path',
       {'class': 'eyo-flyout-background'}, this.svgGroup_);
   // Bad design: code reuse: options
@@ -134,11 +137,21 @@ eYo.Flyout.prototype.createDom = function(tagName) {
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout { position: absolute; z-index: 20; }')
+    `.eyo-flyout {
+        position: absolute;
+        z-index: 20;
+      }`)
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-background { fill: #ddd; fill-opacity: .8; }')
+    `.eyo-flyout-background {
+      fill: #ddd;
+      fill-opacity: .8;
+    }`
+  )
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-scrollbar { z-index: 30; }')
+    `.eyo-flyout-scrollbar {
+      z-index: 30;
+    }`
+  )
 })
 
 /**
