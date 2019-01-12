@@ -611,12 +611,14 @@ Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   var flyout = workspace.eyo.flyout_
   if (flyout) {
     var atRight = flyout.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT
-    if (atRight) {
-      var xy = flyout.eyo.flyoutPosition
-      var yOffset = flyout.eyo.TOP_OFFSET
-      viewSize -= yOffset
-    }
   }
+  if (atRight) {
+    var xy = flyout.eyo.flyoutPosition
+    var yOffset = flyout.eyo.TOP_OFFSET
+  } else {
+    yOffset = 1 * eYo.Unit.rem
+  }
+  viewSize -= yOffset
   this.setScrollViewSize_(Math.max(0, viewSize));
 
   if (xy) {
@@ -629,9 +631,7 @@ Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
     }
   }
   var yCoordinate = hostMetrics.absoluteTop + 0.5;
-  if (atRight) {
-    yCoordinate += yOffset
-  }
+  yCoordinate += yOffset
   this.setPosition_(xCoordinate, yCoordinate);
 
   // If the view has been resized, a content resize will also be necessary.  The
