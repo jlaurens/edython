@@ -186,73 +186,99 @@ eYo.FlyoutToolbar.prototype.BUTTON_RADIUS = eYo.FlyoutToolbar.prototype.HEIGHT /
 // left margin
 eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS / 8
 
-eYo.setup.register(function () {
+eYo.setup.register(() => {
   var height = eYo.FlyoutToolbar.prototype.HEIGHT
   var margin = eYo.FlyoutToolbar.prototype.MARGIN
   var radius = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS
   var controlWidth = margin + radius
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar {',
-    'position: absolute; z-index: 30; pointer-events: all;',
-    'height: 4rem;',
-    'padding: 0.25rem;',
-    'margin: 0;',
-    'background: rgba(221,221,221,0.8);',
-    'z-index: 100;',
-  '}')
+    `.eyo-flyout-toolbar {
+      position: absolute;
+      z-index: 30;
+      pointer-events: all;
+      height: 4rem;
+      padding: 0.25rem;
+      margin: 0;
+      background: rgba(221,221,221,0.8);
+      z-index: 100;
+    }`
+  )
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-general {',
-    'position: absolute; pointer-events: all;',
-    'height: 2rem;',
-    'padding: 0.125rem;',
-    'width: 100%;',
-    'margin: 0;',
-  '}')
+    `.eyo-flyout-toolbar-general {
+      position: absolute;
+      pointer-events: all;
+      height: 2rem;
+      padding: 0.125rem;
+      width: 100%;
+      margin: 0;
+    }`
+  )
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-toolbar-module {',
-    'position: absolute; pointer-events: all;',
-    'height: 1.75rem;',
-    'padding: 0.125rem;',
-    'margin: 0;',
-    'margin-top: 2.25rem;',
-    'width: 100%;',
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-select-general, .eyo-flyout-select-module {',
-    'height: 100%;',
-    'width: 100%;',
-    'padding-left: 0.25rem;',
-    'padding-right:0.25rem;',
-    'margin: 0',
-  '}')
+    `.eyo-flyout-toolbar-module {
+      position: absolute;
+      pointer-events: all;
+      height: 1.75rem;
+      padding: 0.125rem;
+      margin: 0;
+      margin-top: 2.25rem;
+      width: 100%;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-select-general,
+    .eyo-flyout-select-module {
+      height: 100%;
+      width: 100%;
+      padding-left: 0.25rem;
+      padding-right:0.25rem;
+      margin: 0
+    }`
+  )
 
   var radius = '1.125rem;'
-  eYo.Style.insertCssRuleAt('.eyo-flyout-control {',
-    'background: #ddd; opacity: 0.79;',
-    'border-top-right-radius:', radius,
-    'border-bottom-right-radius:', radius,
-    '-webkit-border-top-right-radius:', radius,
-    '-webkit-border-bottom-right-radius:', radius,
-    '-moz-border-radius-topright:', radius,
-    '-moz-border-radius-bottomright:', radius,
-    'border-top-right-radius:', radius,
-    'border-bottom-right-radius:', radius,
-    'height: 50%;',
-    'width: 1.25rem;',
-    'position: absolute;',
-    'top: 0px;',   
-    'right: -1.25rem;',   
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-control-image {',
-    'width: 1.125rem;',
-    'height: 2.25rem;',
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-control-image path {',
-    'fill: white;',
-  '}')
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-control-image path:hover {fill:black;  fill-opacity: 0.075;}')
+    `.eyo-flyout-control {
+      background: #ddd;
+      opacity: 0.79;
+      border-top-right-radius:${radius};
+      border-bottom-right-radius:${radius};
+      -webkit-border-top-right-radius:${radius};
+      -webkit-border-bottom-right-radius:${radius};
+      -moz-border-radius-topright:${radius};
+      -moz-border-radius-bottomright:${radius};
+      border-top-right-radius:${radius};
+      border-bottom-right-radius:${radius};
+      height: 50%;
+      width: 1.25rem;
+      position: absolute;
+      top: 0px;
+      right: -1.25rem;
+    }`
+  )
   eYo.Style.insertCssRuleAt(
-  '.eyo-flash .eyo-flyout-control-image path, .eyo-flash .eyo-flyout-control-image path:hover { fill:black;  fill-opacity: 0.2;}')
+    `.eyo-flyout-control-image {
+      width: 1.125rem;
+      height: 2.25rem;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control-image path {
+      fill: white;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control-image path:hover {
+      fill:black;
+      fill-opacity: 0.075;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flash .eyo-flyout-control-image path,
+    .eyo-flash .eyo-flyout-control-image path:hover {
+      fill:black;
+      fill-opacity:0.2;
+    }`
+  )
 })
 
 /**
@@ -389,43 +415,69 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   }
 };
 
-eYo.setup.register(function () {
-  eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button {',
-      'background: #952276;',
-      'box-shadow: 0px 3px 8px #888;',
-      'border:0;',
-    '}')
-    eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button:hover {',
-    'box-shadow: 0px 2px 6px #444;',
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-outer-box {',
-    'padding-left: 10px;',
-    'width: 100%;',
-    'height: 100%;',
-    'box-sizing: border-box;',
-    '-moz-box-sizing: border-box;',
-    '-webkit-box-sizing: border-box;',
-  '}')
+/**
+ * Update the view based on coordinates calculated in position().
+ * @param {number} width The computed width of the flyout's SVG group
+ * @param {number} height The computed height of the flyout's SVG group.
+ * @param {number} x The computed x origin of the flyout's SVG group.
+ * @param {number} y The computed y origin of the flyout's SVG group.
+ * @private
+ */
+eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
+  this.div_.style.left = x + 'px'
+  this.div_.style.top = y + 'px'
+};
+
+eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
-    '.eyo-menu-button-inner-box {',
-    'width: 100%;',
-    'height: 100%;',
-    'box-sizing: border-box;',
-    '-moz-box-sizing: border-box;',
-    '-webkit-box-sizing: border-box;',
-    'padding-right: 30px;',
-    '}')
-  eYo.Style.insertCssRuleAt('.eyo-flyout-toolbar .eyo-menu-button-caption {',
-    'color: white;',
-    'vertical-align: middle;',
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown svg {',
-    'position: absolute;',
-    'top: 0px;',
-    'width: 12px;',
-    'height: 6px;',
-  '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown-image {',
-    'fill: white;',
-  '}')
+    `.eyo-flyout-toolbar .eyo-menu-button {
+      background: #952276;
+      box-shadow: 0px 3px 8px #888;
+      border:0;
+    }`
+  )
+    eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar .eyo-menu-button:hover {
+      box-shadow: 0px 2px 6px #444;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-outer-box {
+      padding-left: 10px;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-inner-box {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      padding-right: 30px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar .eyo-menu-button-caption {
+      color: white;
+      vertical-align: middle;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-dropdown svg {
+      position: absolute;
+      top: 0px;
+      width: 12px;
+      height: 6px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-dropdown-image {
+      fill: white;
+    }`
+  )
 })
