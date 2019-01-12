@@ -177,7 +177,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
 }
 
 // toolbar height
-var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+var one_rem = eYo.Unit.rem
 
 eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t
 eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
