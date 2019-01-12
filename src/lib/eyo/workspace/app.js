@@ -85,9 +85,9 @@ eYo.App.doBack = function() {
 /**
  * Scroll the workspace to show the selected block.
  */
-eYo.App.doFocus = function() {
+eYo.App.doFocus = () => {
   var block = eYo.Selected.block
   if (block) {
-    block.workspace.centerOnBlock(block.id)
+    block.workspace.eyo.scrollBlockTopLeft(block.id)
   }
 }
