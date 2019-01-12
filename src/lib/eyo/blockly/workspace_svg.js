@@ -553,3 +553,89 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   this.workspace_.scrollbar.set(scrollToCenterX, scrollToCenterY);
 };
 
+/**
+ * Recalculate a horizontal scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
+ * Edython: position and resize according to the position of the flyout.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+Blockly.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
+  var workspace = this.workspace_
+  var flyout = workspace.eyo.flyout_
+  if (flyout) {
+    var atRight = flyout.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT
+  }
+  if (atRight) {
+    var xy = flyout.eyo.flyoutPosition
+    var yOffset = flyout.eyo.TOP_OFFSET
+    var viewSize = xy.x - hostMetrics.absoluteLeft - 1
+  } else {
+    viewSize = hostMetrics.viewWidth - 1
+  }
+  if (this.pair_) {
+    // Shorten the scrollbar to make room for the corner square.
+    viewSize -= Blockly.Scrollbar.scrollbarThickness;
+  }
+  this.setScrollViewSize_(Math.max(0, viewSize));
+
+  var xCoordinate = hostMetrics.absoluteLeft + 0.5;
+  if (this.pair_ && this.workspace_.RTL) {
+    xCoordinate += Blockly.Scrollbar.scrollbarThickness;
+  }
+
+  // Horizontal toolbar should always be just above the bottom of the workspace.
+  var yCoordinate = hostMetrics.absoluteTop + hostMetrics.viewHeight -
+      Blockly.Scrollbar.scrollbarThickness - 0.5;
+  this.setPosition_(xCoordinate, yCoordinate);
+
+  // If the view has been resized, a content resize will also be necessary.  The
+  // reverse is not true.
+  this.resizeContentHorizontal(hostMetrics);
+};
+
+/**
+ * Recalculate a vertical scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
+ * Edython: position and resize according to the position of the flyout.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
+  var viewSize = hostMetrics.viewHeight - 1;
+  if (this.pair_) {
+    // Shorten the scrollbar to make room for the corner square.
+    viewSize -= Blockly.Scrollbar.scrollbarThickness;
+  }
+
+  var workspace = this.workspace_
+  var flyout = workspace.eyo.flyout_
+  if (flyout) {
+    var atRight = flyout.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT
+    if (atRight) {
+      var xy = flyout.eyo.flyoutPosition
+      var yOffset = flyout.eyo.TOP_OFFSET
+      viewSize -= yOffset
+    }
+  }
+  this.setScrollViewSize_(Math.max(0, viewSize));
+
+  if (xy) {
+    var xCoordinate = xy.x - hostMetrics.absoluteLeft -     Blockly.Scrollbar.scrollbarThickness - 0.5
+  } else {
+    xCoordinate = hostMetrics.absoluteLeft + 0.5;
+    if (!this.workspace_.RTL) {
+      xCoordinate += hostMetrics.viewWidth -
+          Blockly.Scrollbar.scrollbarThickness - 1;
+    }
+  }
+  var yCoordinate = hostMetrics.absoluteTop + 0.5;
+  if (atRight) {
+    yCoordinate += yOffset
+  }
+  this.setPosition_(xCoordinate, yCoordinate);
+
+  // If the view has been resized, a content resize will also be necessary.  The
+  // reverse is not true.
+  this.resizeContentVertical(hostMetrics);
+};
