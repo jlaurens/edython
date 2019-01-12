@@ -423,6 +423,14 @@
   }
   #eyo-workspace-content .eyo-flyout-control {
     top: -0.125rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    height: 2rem;
+  }
+  #eyo-workspace-content .eyo-flyout-control left {
+    top: -0.125rem;
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     height: 2rem;
