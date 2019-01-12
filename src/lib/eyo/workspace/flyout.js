@@ -78,7 +78,9 @@ eYo.Flyout.prototype.CORNER_RADIUS = 0
 // eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS + 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * one_rem
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 0 // 4 * one_rem
+
+eYo.FlyoutDelegate.prototype.TOP_OFFSET = 2 * eYo.Unit.y
 
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
 
@@ -104,10 +106,10 @@ eYo.Flyout.prototype.createDom = function(tagName) {
         class: 'eyo-flyout',
         style: 'display: none'
       }, null);
-  this.svgBackground_ = Blockly.utils.createSvgElement('path',
-      {'class': 'eyo-flyout-background'}, this.svgGroup_);
+  this.svgBackground_ = Blockly.utils.createSvgElement('path', {
+    class: 'eyo-flyout-background'
+  }, this.svgGroup_)
   // Bad design: code reuse: options
-  var self = this
   eYo.Tooltip.add(this.svgBackground_, eYo.Tooltip.getTitle('flyout'), {
     position: 'right',
     theme: 'light bordered',
@@ -124,8 +126,8 @@ eYo.Flyout.prototype.createDom = function(tagName) {
         }
       }
     },
-    onShow (instance) {
-      eYo.Tooltip.hideAll(self.svgBackground_)
+    onShow: (instance) => {
+      eYo.Tooltip.hideAll(this.svgBackground_)
     }
   })
   var g = this.workspace_.createDom()
@@ -155,7 +157,7 @@ eYo.setup.register(function () {
 })
 
 /**
- * Dispose of this flyout.
+ * Dispose of this delegate's flyout.
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.FlyoutDelegate.prototype.dispose = function() {
@@ -333,55 +335,65 @@ eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
  * When not given, toggle the closed state.
  */
 eYo.FlyoutDelegate.prototype.doSlide = function(close) {
+  // nothing to do if in the process of reaching the expected state
+  if (this.slide_locked) {
+    return
+  }
   if (!goog.isDef(close)) {
     close = !this.closed
   }
-  if (!close === !this.closed || this.slide_locked) {
+  // nothing to do either if already in the expected state
+  if (!close === !this.closed) {
     return
   }
-  this.slide_locked = true
   var flyout = this.flyout_
-  flyout.setVisible(true);
   var targetWorkspaceMetrics = flyout.targetWorkspace_.getMetrics();
   if (!targetWorkspaceMetrics) {
     // Hidden components will return null.
     return;
   }
+  this.slide_locked = true
+  var atRight = flyout.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
+  flyout.setVisible(true);
   eYo.Tooltip.hideAll(flyout.svgGroup_)
-  var id = setInterval(frame, 20);
-  var x = targetWorkspaceMetrics.absoluteLeft;
+  var left = targetWorkspaceMetrics.absoluteLeft
+  var right = targetWorkspaceMetrics.absoluteRight
   var n_steps = 50
   var n = 0
   var steps = []
   var positions = []
-  var x_min = close? x: x - flyout.width_
-  var x_max = close? x - flyout.width_: x
+  if (atRight) {
+    var x_start = close? right - flyout.width_: right
+    var x_end = close? right: right - flyout.width_
+  } else {
+    x_start = close? left: left - flyout.width_
+    x_end = close? left - flyout.width_: left
+  }
   steps[0] = close? 0: 1
-  positions[0] = x_min
+  positions[0] = x_start
   for (n = 1; n < n_steps; n++) {
     var step = Math.sin(n*Math.PI/n_steps/2)**2
     steps[n] = close? step: 1-step
-    positions[n] = x_min + step * (x_max - x_min)
+    positions[n] = x_start + step * (x_end - x_start)
   }
   steps[n] = close? 1: 0
-  positions[n] = x_max
+  positions[n] = x_end
   var y = targetWorkspaceMetrics.absoluteTop;
-  var self = this
   n = 0
-  function frame() {
+  var id = setInterval(() => {
     if (n >= n_steps) {
       clearInterval(id);
-      if ((self.closed = close)) {
+      if ((this.closed = close)) {
         flyout.setVisible(false)
       }
       flyout.setBackgroundPath_(flyout.width_, flyout.height_)
-      delete self.slide_locked
+      delete this.slide_locked
       flyout.targetWorkspace_.recordDeleteAreas()
-      self.oneStep(steps[n_steps])
-      self.didSlide(close)
+      this.oneStep(steps[n_steps])
+      this.didSlide(close)
     } else {
       flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
-      self.oneStep(steps[n])
+      this.oneStep(steps[n])
       // the scrollbar won't resize because the metrics of the workspace did not change
       var hostMetrics = flyout.workspace_.getMetrics()
       if (hostMetrics) {
@@ -389,7 +401,7 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
       }
       ++n
     }
-  }
+  }, 20);
 };
 
 /**
@@ -418,6 +430,36 @@ eYo.FlyoutDelegate.prototype.didSlide = function(closed) {
 };
 
 /**
+ * Move the flyout to the edge of the workspace.
+ */
+eYo.Flyout.prototype.position = function() {
+  if (!this.isVisible()) {
+    return;
+  }
+  var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics();
+  if (!targetWorkspaceMetrics) {
+    // Hidden components will return null.
+    return;
+  }
+  // Record the height for Blockly.Flyout.getMetrics_
+  this.height_ = targetWorkspaceMetrics.viewHeight - this.eyo.TOP_OFFSET
+
+  var edgeWidth = this.width_ - this.CORNER_RADIUS;
+  var edgeHeight = targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
+  this.setBackgroundPath_(edgeWidth, edgeHeight);
+
+  var y = targetWorkspaceMetrics.absoluteTop;
+  var x = targetWorkspaceMetrics.absoluteLeft;
+  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT) {
+    x += (targetWorkspaceMetrics.viewWidth - this.width_);
+    // Save the location of the left edge of the flyout, for use when Firefox
+    // gets the bounding client rect wrong.
+    this.leftEdge_ = x;
+  }
+  this.positionAt_(this.width_, this.height_, x, y);
+};
+
+/**
  * Update the view based on coordinates calculated in position().
  * @param {number} width The computed width of the flyout's SVG group
  * @param {number} height The computed height of the flyout's SVG group.
@@ -426,9 +468,10 @@ eYo.FlyoutDelegate.prototype.didSlide = function(closed) {
  * @private
  */
 eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
-  eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
-  this.eyo.toolbar_.div_.style.left = x + 'px'
-  this.eyo.toolbar_.div_.style.top = y + 'px'
+  eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y + this.eyo.TOP_OFFSET)
+  if (this.eyo.toolbar_) {
+    this.eyo.toolbar_.positionAt_(width, height, x, y)
+  }
 };
 
 /**
@@ -497,28 +540,14 @@ eYo.Flyout.prototype.getMetrics_ = function() {
  * @private
  */
 eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
-
   var top_margin = this.eyo.TOP_MARGIN
-  
   var atRight = this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
-  var totalWidth = width + this.CORNER_RADIUS;
-
   // Decide whether to start on the left or right.
-  var path = ['M ' + (atRight ? totalWidth : 0) + ',' + top_margin + ''];
+  var path = [`M ${atRight ? width : 0},${top_margin}`];
   // Top.
   path.push('h', atRight ? -width : width);
-  // Rounded corner.
-  path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0,
-      atRight ? 0 : 1,
-      atRight ? -this.CORNER_RADIUS : this.CORNER_RADIUS,
-      this.CORNER_RADIUS);
   // Side closest to workspace.
   path.push('v', Math.max(0, height - top_margin));
-  // Rounded corner.
-  path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0,
-      atRight ? 0 : 1,
-      atRight ? this.CORNER_RADIUS : -this.CORNER_RADIUS,
-      this.CORNER_RADIUS);
   // Bottom.
   path.push('h', atRight ? width : -width);
   path.push('z');
@@ -527,7 +556,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   if (!this.eyo.toolbar_) {
     this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
     var div = this.eyo.toolbar_.createDom()
-    goog.dom.insertSiblingAfter(div, this.svgGroup_)
+    goog.dom.insertSiblingBefore(div, this.svgGroup_)
     this.eyo.toolbar_.doSelectGeneral(null)
   }
   this.eyo.toolbar_.resize(width, height)
