@@ -64,12 +64,23 @@ eYo.FlyoutDelegate.prototype.getCssClass = function() {
  */
 eYo.Flyout = function(workspace) {
   eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
-  this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
+  this.toolboxPosition_ = Blockly.TOOLBOX_AT_RIGHT
   workspace.flyout_ = this
   this.eyo = new eYo.FlyoutDelegate(this)
   this.workspace_.eyo.options = workspace.eyo.options
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
+
+/**
+ * Initializes the flyout.
+ * Edython: adds a hook to the flyout in the workspace delegate.
+ * @param {!Blockly.Workspace} targetWorkspace The workspace in which to create
+ *     new blocks.
+ */
+eYo.Flyout.prototype.init = function(targetWorkspace) {
+  eYo.Flyout.superClass_.init.call(this, targetWorkspace)
+  targetWorkspace.eyo.flyout_ = this
+}
 
 var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
@@ -78,7 +89,8 @@ eYo.Flyout.prototype.CORNER_RADIUS = 0
 // eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS + 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
 eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
 
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * one_rem
+eYo.FlyoutDelegate.prototype.TOP_MARGIN = 0 // 4 * one_rem
+eYo.FlyoutDelegate.prototype.TOP_PADDING = 4 * one_rem
 
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
 
@@ -134,11 +146,19 @@ eYo.Flyout.prototype.createDom = function(tagName) {
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout { position: absolute; z-index: 20; }')
+    `.eyo-flyout {
+      position: absolute;
+      z-index: 20;
+    }`)
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-background { fill: #ddd; fill-opacity: .8; }')
+    `.eyo-flyout-background { 
+      fill: #ddd;
+      fill-opacity: .8;
+    }`)
   eYo.Style.insertCssRuleAt(
-    '.eyo-flyout-scrollbar { z-index: 30; }')
+    `.eyo-flyout-scrollbar {
+      z-index: 30;
+    }`)
 })
 
 /**
@@ -392,7 +412,7 @@ eYo.FlyoutDelegate.prototype.slide = function(close) {
 
 /**
  * Subclassers will add there stuff here.
- * @param {number} step betwwen 0 and 1.
+ * @param {number} step between 0 and 1.
  */
 eYo.FlyoutDelegate.prototype.oneStep = function(step) {
 };
@@ -416,6 +436,7 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y)
   this.eyo.toolbar_.div_.style.left = x + 'px'
   this.eyo.toolbar_.div_.style.top = y + 'px'
+  this.targetWorkspace_.eyo.flyoutDidPositionAt(width, height, x, y) // scroll bars should update
 };
 
 /**
@@ -448,10 +469,10 @@ eYo.Flyout.prototype.getMetrics_ = function() {
   }
 
   // Padding for the end of the scrollbar.
-  var absoluteTop = this.SCROLLBAR_PADDING + this.eyo.TOP_MARGIN;
+  var absoluteTop = this.SCROLLBAR_PADDING + this.eyo.TOP_PADDING;
   var absoluteLeft = 0;
 
-  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.eyo.TOP_MARGIN - this.eyo.BOTTOM_MARGIN;
+  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.eyo.TOP_PADDING - this.eyo.BOTTOM_MARGIN;
   if (viewHeight < 0) {
     viewHeight = 0
   }
@@ -467,7 +488,7 @@ eYo.Flyout.prototype.getMetrics_ = function() {
     contentWidth: optionBox.width * this.workspace_.scale + 2 * this.MARGIN,
     viewTop: -this.workspace_.scrollY + optionBox.y + this.eyo.TOP_MARGIN,
     viewLeft: -this.workspace_.scrollX,
-    contentTop: optionBox.y + this.eyo.TOP_MARGIN,
+    contentTop: optionBox.y + this.eyo.TOP_PADDING,
     contentLeft: optionBox.x,
     absoluteTop: absoluteTop,
     absoluteLeft: absoluteLeft
@@ -488,24 +509,15 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   var top_margin = this.eyo.TOP_MARGIN
   
   var atRight = this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
-  var totalWidth = width + this.CORNER_RADIUS;
+  var totalWidth = width;
 
   // Decide whether to start on the left or right.
-  var path = ['M ' + (atRight ? totalWidth : 0) + ',' + top_margin + ''];
+  var path = [`M ${atRight ? totalWidth : 0},${top_margin}`];
   // Top.
   path.push('h', atRight ? -width : width);
-  // Rounded corner.
-  path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0,
-      atRight ? 0 : 1,
-      atRight ? -this.CORNER_RADIUS : this.CORNER_RADIUS,
-      this.CORNER_RADIUS);
+  
   // Side closest to workspace.
   path.push('v', Math.max(0, height - top_margin));
-  // Rounded corner.
-  path.push('a', this.CORNER_RADIUS, this.CORNER_RADIUS, 0, 0,
-      atRight ? 0 : 1,
-      atRight ? this.CORNER_RADIUS : -this.CORNER_RADIUS,
-      this.CORNER_RADIUS);
   // Bottom.
   path.push('h', atRight ? width : -width);
   path.push('z');

@@ -553,3 +553,99 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   this.workspace_.scrollbar.set(scrollToCenterX, scrollToCenterY);
 };
 
+/**
+ * Recalculate a vertical scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
+ * CHANGE for edython: keep room for flyout button.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+eYo.WorkspaceDelegate.prototype.flyoutDidPositionAt = function (width, height, x, y) {
+  this.flyoutPosition = {
+    x: x,
+    y: y
+  }
+  var workspace = this.workspace_
+  var scrollbar = workspace.scrollbar
+  if (scrollbar) {
+    scrollbar.oldHostMetrics_ = null
+    scrollbar.hScroll & (scrollbar.hScroll.oldHostMetrics_ = null)
+    scrollbar.vScroll & (scrollbar.vScroll.oldHostMetrics_ = null)
+  }
+  workspace.resizeContents()
+}
+
+/**
+ * Recalculate a vertical scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
+ * CHANGE for edython: keep room for flyout button.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
+  var workspace = this.workspace_
+  var flyout = workspace.eyo.flyout_
+  var atRight = flyout && flyout.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
+  var xy = workspace.eyo.flyoutPosition
+  var extra = flyout ? 1.75 * eYo.Unit.y : 0
+  var viewSize = hostMetrics.viewHeight - 1 - extra;
+  if (this.pair_) {
+    // Shorten the scrollbar to make room for the corner square.
+    viewSize -= Blockly.Scrollbar.scrollbarThickness;
+  }
+  this.setScrollViewSize_(Math.max(0, viewSize));
+
+  if (atRight && xy) {
+    var xCoordinate = xy.x - Blockly.Scrollbar.scrollbarThickness - 1;
+  } else {
+    xCoordinate = hostMetrics.absoluteLeft + 0.5;
+    if (!this.workspace_.RTL) {
+      xCoordinate += hostMetrics.viewWidth -
+          Blockly.Scrollbar.scrollbarThickness - 1;
+    }
+  }
+  var yCoordinate = hostMetrics.absoluteTop + 0.5 + extra;
+  this.setPosition_(xCoordinate, yCoordinate);
+
+  // If the view has been resized, a content resize will also be necessary.  The
+  // reverse is not true.
+  this.resizeContentVertical(hostMetrics);
+};
+
+/**
+ * Recalculate a horizontal scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
+ * CHANGE for edython: keep room for flyout button.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+Blockly.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
+  var workspace = this.workspace_
+  var flyout = workspace.eyo.flyout_
+  var atRight = flyout && flyout.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
+  var xy = workspace.eyo.flyoutPosition
+  if (atRight && xy) {
+    var viewSize = xy.x - hostMetrics.absoluteLeft - 1
+  } else {
+    viewSize = hostMetrics.viewWidth - 1;
+  }
+  if (this.pair_) {
+    // Shorten the scrollbar to make room for the corner square.
+    viewSize -= Blockly.Scrollbar.scrollbarThickness;
+  }
+  this.setScrollViewSize_(Math.max(0, viewSize));
+
+  var xCoordinate = hostMetrics.absoluteLeft + 0.5;
+  if (this.pair_ && this.workspace_.RTL) {
+    xCoordinate += Blockly.Scrollbar.scrollbarThickness;
+  }
+
+  // Horizontal toolbar should always be just above the bottom of the workspace.
+  var yCoordinate = hostMetrics.absoluteTop + hostMetrics.viewHeight -
+      Blockly.Scrollbar.scrollbarThickness - 0.5;
+  this.setPosition_(xCoordinate, yCoordinate);
+
+  // If the view has been resized, a content resize will also be necessary.  The
+  // reverse is not true.
+  this.resizeContentHorizontal(hostMetrics);
+};
