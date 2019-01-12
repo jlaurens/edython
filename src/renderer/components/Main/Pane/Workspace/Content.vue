@@ -317,6 +317,8 @@
         )
         // Then create the flyout
         flyout.init(eYo.App.workspace)
+        flyout.eyo.TOP_OFFSET = 3.5 * eYo.Unit.rem
+        // also change it in the css style
         flyout.autoClose = false
         // Blockly.Events.disable()
         // try {
@@ -392,8 +394,13 @@
   }
   .eyo-flyout-toolbar {
     padding: 0;
-    padding-right: 0.25rem;
+    padding-left: 0.25rem;
     line-height: 1.2;
+    height: 3.5rem;
+  }
+  .eyo-flyout-toolbar left {
+    padding-left: 0;
+    padding-right: 0.25rem;
   }
   #eyo-flyout-toolbar-switcher {
     position: relative;
