@@ -565,10 +565,9 @@ Blockly.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   var flyout = workspace.eyo.flyout_
   if (flyout) {
     var atRight = flyout.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT
-  }
-  if (atRight) {
     var xy = flyout.eyo.flyoutPosition
-    var yOffset = flyout.eyo.TOP_OFFSET
+  }
+  if (atRight && xy) {
     var viewSize = xy.x - hostMetrics.absoluteLeft - 1
   } else {
     viewSize = hostMetrics.viewWidth - 1
