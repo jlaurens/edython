@@ -64,7 +64,7 @@ eYo.FlyoutDelegate.prototype.getCssClass = function() {
  */
 eYo.Flyout = function(workspace) {
   eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
-  this.toolboxPosition_ = Blockly.TOOLBOX_AT_LEFT
+  this.toolboxPosition_ = Blockly.TOOLBOX_AT_RIGHT
   workspace.flyout_ = this
   this.eyo = new eYo.FlyoutDelegate(this)
   this.workspace_.eyo.options = workspace.eyo.options
@@ -357,7 +357,7 @@ eYo.FlyoutDelegate.prototype.doSlide = function(close) {
   flyout.setVisible(true);
   eYo.Tooltip.hideAll(flyout.svgGroup_)
   var left = targetWorkspaceMetrics.absoluteLeft
-  var right = targetWorkspaceMetrics.absoluteRight
+  var right = left + targetWorkspaceMetrics.viewWidth
   var n_steps = 50
   var n = 0
   var steps = []

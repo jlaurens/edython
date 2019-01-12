@@ -240,6 +240,14 @@ eYo.setup.register(() => {
     `.eyo-flyout-control {
       background: #ddd;
       opacity: 0.79;
+      height: 50%;
+      width: 1.25rem;
+      position: absolute;
+      top: 0px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control left {
       border-top-right-radius:${radius};
       border-bottom-right-radius:${radius};
       -webkit-border-top-right-radius:${radius};
@@ -248,11 +256,20 @@ eYo.setup.register(() => {
       -moz-border-radius-bottomright:${radius};
       border-top-right-radius:${radius};
       border-bottom-right-radius:${radius};
-      height: 50%;
-      width: 1.25rem;
-      position: absolute;
-      top: 0px;
       right: -1.25rem;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control {
+      border-top-left-radius:${radius};
+      border-bottom-left-radius:${radius};
+      -webkit-border-top-left-radius:${radius};
+      -webkit-border-bottom-left-radius:${radius};
+      -moz-border-radius-topleft:${radius};
+      -moz-border-radius-bottomleft:${radius};
+      border-top-left-radius:${radius};
+      border-bottom-left-radius:${radius};
+      left: -1.25rem;
     }`
   )
   eYo.Style.insertCssRuleAt(
