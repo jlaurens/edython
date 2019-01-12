@@ -71,6 +71,17 @@ eYo.Flyout = function(workspace) {
 }
 goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 
+/**
+ * Initializes the flyout.
+ * Edython: Add a hook in the target workspace.
+ * @param {!Blockly.Workspace} targetWorkspace The workspace in which to create
+ *     new blocks.
+ */
+eYo.Flyout.prototype.init = function(targetWorkspace) {
+  eYo.Flyout.superClass_.init.call(this, targetWorkspace)
+  targetWorkspace.eyo.flyout_ = this
+}
+
 var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
 
 eYo.Flyout.prototype.CORNER_RADIUS = 0
@@ -469,8 +480,26 @@ eYo.Flyout.prototype.position = function() {
  */
 eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y + this.eyo.TOP_OFFSET)
+  this.eyo.flyoutPosition = {
+    x: x,
+    y: y
+  }
   if (this.eyo.toolbar_) {
     this.eyo.toolbar_.positionAt_(width, height, x, y)
+  }
+  var workspace = this.targetWorkspace_
+  if (workspace) {
+    var scrollbar = workspace.scrollbar
+    if (scrollbar) {
+      scrollbar.oldHostMetrics_ = null
+      if (scrollbar.hScroll) {
+        scrollbar.hScroll.oldHostMetrics_ = null
+      }
+      if (scrollbar.vScroll) {
+        scrollbar.vScroll.oldHostMetrics_ = null
+      }
+    }
+    workspace.resizeContents()
   }
 };
 
