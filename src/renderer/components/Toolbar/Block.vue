@@ -280,7 +280,7 @@
       ]),
       slotholder () {
         var d = eYo.Shape.definitionWithConnection()
-        var one_rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
+        var one_rem = eYo.Unit.rem
         return function (className) {
           return `<div class="eyo-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
         }
