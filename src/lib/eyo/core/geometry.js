@@ -34,6 +34,11 @@ Object.defineProperties(
       get () {
         return eYo.Font.lineHeight
       }
+    },
+    rem: {
+      get () {
+        return parseFloat(getComputedStyle(document.documentElement).fontSize)
+      }
     }
   }
 )
