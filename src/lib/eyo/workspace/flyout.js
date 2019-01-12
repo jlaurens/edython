@@ -82,7 +82,7 @@ eYo.Flyout.prototype.init = function(targetWorkspace) {
   targetWorkspace.eyo.flyout_ = this
 }
 
-var one_rem = parseInt(getComputedStyle(document.documentElement).fontSize)
+var one_rem = eYo.Unit.rem
 
 eYo.Flyout.prototype.CORNER_RADIUS = 0
 
