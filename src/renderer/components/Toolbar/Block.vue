@@ -645,4 +645,10 @@
   .b3k-edit dropdown-item {
     padding: 0 0.25rem;
   }
+  .b3k-edit .dropdown-menu {
+    height: auto;
+    max-height: 400px;
+    overflow: auto;
+    overflow-x: hidden;
+  }
 </style>
