@@ -80,6 +80,15 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 eYo.Flyout.prototype.init = function(targetWorkspace) {
   eYo.Flyout.superClass_.init.call(this, targetWorkspace)
   targetWorkspace.eyo.flyout_ = this
+  this.svgGroup_ = this.createDom('svg')
+  goog.dom.insertSiblingAfter(
+    this.svgGroup_,
+    targetWorkspace.getParentSvg()
+  )
+  this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
+  var div = this.eyo.toolbar_.createDom()
+  goog.dom.insertSiblingBefore(div, this.svgGroup_)
+  this.eyo.toolbar_.doSelectGeneral(null) // is it necessary ?
 }
 
 var one_rem = eYo.Unit.rem
@@ -455,8 +464,8 @@ eYo.Flyout.prototype.position = function() {
   // Record the height for Blockly.Flyout.getMetrics_
   this.height_ = targetWorkspaceMetrics.viewHeight - this.eyo.TOP_OFFSET
 
-  var edgeWidth = this.width_ - this.CORNER_RADIUS;
-  var edgeHeight = targetWorkspaceMetrics.viewHeight - 2 * this.CORNER_RADIUS;
+  var edgeWidth = this.width_;
+  var edgeHeight = targetWorkspaceMetrics.viewHeight;
   this.setBackgroundPath_(edgeWidth, edgeHeight);
 
   var y = targetWorkspaceMetrics.absoluteTop;
@@ -479,6 +488,9 @@ eYo.Flyout.prototype.position = function() {
  * @private
  */
 eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
+  if (width<0 || height<0) {
+    console.error(width, height, x, y)
+  }
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y + this.eyo.TOP_OFFSET)
   this.eyo.flyoutPosition = {
     x: x,
@@ -487,6 +499,7 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
   if (this.eyo.toolbar_) {
     this.eyo.toolbar_.positionAt_(width, height, x, y)
   }
+  this.workspace_.resizeContents()
   var workspace = this.targetWorkspace_
   if (workspace) {
     var scrollbar = workspace.scrollbar
@@ -582,12 +595,6 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   path.push('z');
   this.svgBackground_.setAttribute('d', path.join(' '));
 
-  if (!this.eyo.toolbar_) {
-    this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
-    var div = this.eyo.toolbar_.createDom()
-    goog.dom.insertSiblingBefore(div, this.svgGroup_)
-    this.eyo.toolbar_.doSelectGeneral(null)
-  }
   this.eyo.toolbar_.resize(width, height)
 };
 
