@@ -64,7 +64,7 @@ eYo.FlyoutDelegate.prototype.getCssClass = function() {
  */
 eYo.Flyout = function(workspace) {
   eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
-  this.toolboxPosition_ = Blockly.TOOLBOX_AT_RIGHT
+  this.toolboxPosition_ = workspace.toolboxPosition = Blockly.TOOLBOX_AT_RIGHT
   workspace.flyout_ = this
   this.eyo = new eYo.FlyoutDelegate(this)
   this.workspace_.eyo.options = workspace.eyo.options
@@ -513,6 +513,7 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
       }
     }
     workspace.resizeContents()
+    workspace.trashcan.position()
   }
 };
 
@@ -645,7 +646,7 @@ eYo.Flyout.prototype.getClientRect = function() {
       x = xy.x
     }
   }
-  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_LEFT) {
+  if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_LEFT) {
     return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
         BIG_NUM * 2);
   } else {  // Right
