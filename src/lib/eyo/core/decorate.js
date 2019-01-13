@@ -52,3 +52,23 @@ eYo.Decorate.whenAns = function(call_result, f) {
     return (f && f(call_result.ans)) || call_result.ans
   }
 }
+
+/**
+ * Calls `f` and logs the time used when gerater than 50ms.
+ * @param {!string} key
+ * @param {!function} f
+ * @return The result of the call to `f`.
+ */
+eYo.Decorate.benchmark = function (key, f) {
+  return function () {
+    const startTime = performance.now()
+    try {
+      return f.apply(this, arguments)
+    } finally {
+      const duration = performance.now() - startTime
+      if (duration > 50) {
+        console.log(`BENCHMARK: ${key} took ${duration}ms`)
+      }
+    }
+  }
+}
