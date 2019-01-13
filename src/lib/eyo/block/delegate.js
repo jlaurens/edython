@@ -347,6 +347,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return false
     }
+  },
+  depth: {
+    get () {
+      return 0
+    }
   }
 })
 
