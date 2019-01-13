@@ -157,7 +157,7 @@ eYo.setup.register(function () {
     eYo.EditorOffset = GECKO
   } else if (goog.userAgent.WEBKIT) {
     var userAgent = goog.userAgent.getNavigator().userAgent
-    if (userAgent && userAgent.search('Electron') >= 0) {
+    if (userAgent && userAgent.search('Electron/') >= 0) {
       eYo.EditorOffset = ELECTRON
     } else if (userAgent && userAgent.search('Chrome') >= 0) {
       eYo.EditorOffset = CHROME
