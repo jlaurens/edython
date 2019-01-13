@@ -520,23 +520,25 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
     return;
   }
 
+  if (!block.eyo.isStmt) {
+    block = block.eyo.stmtParent.block_ || block.eyo.root.block_ || block
+  }
   // XY is in workspace coordinates.
   var xy = block.getRelativeToSurfaceXY();
   
-  // Find the enter of the block in workspace units.
-  var blockCenterY = xy.y - eYo.Unit.y / 2 // + heightWidth.height / 2;
+  // Find the top left of the block in workspace units.
+  var y = xy.y - eYo.Unit.y / 2
 
   // In RTL the block's position is the top right of the block, not top left.
-  var multiplier = this.workspace_.RTL ? -1 : 1;
-  var blockCenterX = xy.x - eYo.Unit.x / 2 // + (multiplier * heightWidth.width / 2);
+  var x = xy.x - eYo.Unit.x / 2 - block.eyo.depth * eYo.Font.tabWidth
 
   // Workspace scale, used to convert from workspace coordinates to pixels.
   var scale = this.workspace_.scale;
 
   // Center in pixels.  0, 0 is at the workspace origin.  These numbers may
   // be negative.
-  var pixelX = blockCenterX * scale;
-  var pixelY = blockCenterY * scale;
+  var pixelX = x * scale;
+  var pixelY = y * scale;
 
   var metrics = this.workspace_.getMetrics();
 
