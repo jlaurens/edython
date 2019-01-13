@@ -632,7 +632,7 @@ eYo.Do.getAffineTransform = (() => {
     if (values.length > 6) {
       values.pop()
       values.shift()
-      return new goog.math.AffineTransform(...values.map(m => parseFloat(m.replace(',', '.'))))
+      return new goog.math.AffineTransform(...values.map(m => parseFloat(m)))
     }
   }
   return (element) => {
