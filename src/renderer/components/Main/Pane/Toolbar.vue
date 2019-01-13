@@ -341,4 +341,9 @@
   .eyo-workbench .eyo-dropdown-tools .btn {
     padding: 0 0.5rem;
   }
+  .eyo-flyout-toolbar .dropdown-menu {
+    height: auto;
+    overflow: auto;
+    overflow-x: hidden;
+  }
 </style>
