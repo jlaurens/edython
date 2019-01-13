@@ -27,6 +27,7 @@ import {TweenLite} from 'gsap/TweenMax'
 import eYoPlugin from './plugin/eyoplugin'
 import eYoApp from './plugin/eyoapp'
 import eYoDocument from './plugin/eyodocument'
+import eYoDebug from './plugin/eyodebug'
 import eYoI18n from './lang/eyoi18n'
 
 eYo.$$ = Vue.prototype.$$ = {
@@ -52,6 +53,7 @@ Vue.use(VueTippy, eYo.Tooltip.options)
 Vue.use(eYoPlugin)
 Vue.use(eYoApp, {store})
 Vue.use(eYoDocument, {store})
+Vue.use(eYoDebug)
 Vue.use(eYoI18n)
 
 if (process.env.BABEL_ENV !== 'web') {
