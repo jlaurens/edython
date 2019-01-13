@@ -26,14 +26,14 @@
               slot="button-content">Blocs</template>
             <b-dd-item-button
               v-for="item in levels"
-              @click="selectCategory(item)"
+              @click="selectedCategory = item"
               :style="{fontFamily: $$.eYo.Font.familySans}"
               :key="item.content"
             >{{item.content}}</b-dd-item-button>
             <b-dd-divider></b-dd-divider>
             <b-dd-item-button
               v-for="item in categories"
-              @click="selectCategory(item)"
+              @click="selectedCategory = item"
               :style="{fontFamily: $$.eYo.Font.familySans}"
               :key="item.content"
               >{{item.content}}</b-dd-item-button>
@@ -46,7 +46,7 @@
               slot="button-content">Module&nbsp;</template>
             <b-dd-item-button
               v-for="item in modules"
-              @click="selectCategory(item)"
+              @click="selectedCategory = item"
               :style="{fontFamily: $$.eYo.Font.familySans}"
               :key="item.content"
               >{{item.content}}</b-dd-item-button>
@@ -91,7 +91,7 @@
         items: {},
         label: '...',
         isBasic: true,
-        selectedCategory: undefined,
+        selectedCategory_: undefined,
         resizeSensor: null
       }
       var Msg = eYo.Msg
@@ -182,6 +182,29 @@
       ]),
       canBasic () {
         return this.selectedCategory && this.selectedCategory.in_module && ((this.selectedMode !== eYo.App.TUTORIAL && this.selectedMode !== eYo.App.BASIC) || !this.isBasic)
+      },
+      selectedCategory: {
+        get () {
+          return this.selectedCategory_
+        },
+        set (newValue) {
+          if (this.isBasic && newValue.basic) {
+            newValue = newValue.basic
+          } else if (newValue.full) {
+            newValue = newValue.full
+          }
+          var oldValue = this.selectedCategory_
+          this.selectedCategory_ = newValue
+          if (!oldValue || (newValue !== oldValue)) {
+            var content = this.$refs.elInner
+            if (content) {
+              var el = content.getElementsByClassName('eyo-flyout')[0]
+              eYo.Tooltip.hideAll(el)
+              this.setFlyoutCategory(newValue.key)
+              this.label = newValue.label
+            }
+          }
+        }
       }
     },
     watch: {
@@ -196,21 +219,11 @@
         if (eYo.App.workspace && eYo.App.flyout && item) { // this.workspace is necessary
           var list = eYo.App.flyout.eyo.getList(newValue)
           if (list && list.length) {
-            eYo.App.flyout.show(list)
-            eYo.App.selectedCategory = item
-            eYo.App.isBasic = !item.basic
-          }
-        }
-      },
-      // whenever `selectedCategory` changes, this function will run
-      selectedCategory: function (newValue, oldValue) {
-        if (!oldValue || (newValue !== oldValue)) {
-          var content = this.$refs.elInner
-          if (content) {
-            var el = content.getElementsByClassName('eyo-flyout')[0]
-            eYo.Tooltip.hideAll(el)
-            this.setFlyoutCategory(newValue.key)
-            this.label = newValue.label
+            this.$nextTick(() => {
+              eYo.App.flyout.show(list)
+              eYo.App.selectedCategory = item
+              eYo.App.isBasic = !item.basic
+            })
           }
         }
       },
@@ -260,14 +273,6 @@
           Blockly.svgResize(eYo.App.workspace)
           eYo.App.flyout.reflow()
         }
-      },
-      selectCategory (item) {
-        if (this.isBasic && item.basic) {
-          item = item.basic
-        } else if (item.full) {
-          item = item.full
-        }
-        this.selectedCategory = item
       }
     },
     mounted () {
@@ -276,109 +281,114 @@
       if (eYo.App.workspace) {
         // do nothing, the workspace already exists
       } else {
-        var staticOptions = {
-          collapse: true,
-          comments: false,
-          disable: true,
-          maxBlocks: Infinity,
-          trashcan: true,
-          horizontalLayout: false,
-          toolboxPosition: 'start',
-          css: true,
-          media: 'static/media/',
-          rtl: false,
-          scrollbars: true,
-          sounds: false,
-          oneBasedIndex: true
-        }
-        // var el = document.getElementById('eyo-workspace-content')
-        // if (!el) {
-        //   console.error('WHAT THE HELL?')
-        // }
-        var workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
-        if (!workspace) {
-          console.error('Injection failure')
-          return
-        }
-        // console.warn('WORKSPACE INSTALLED')
-        eYo.setup(workspace)
-        workspace.eyo.options = {
-          noLeftSeparator: true,
-          noDynamicList: false
-        }
         // Get what will replace the old flyout selector
         eYo.App.flyoutToolbarSwitcher = this.$refs.switcher
         goog.dom.removeNode(eYo.App.flyoutToolbarSwitcher)
-        // First remove the old flyout selector
-        var flyout = new eYo.Flyout(eYo.App.workspace)
-        goog.dom.insertSiblingAfter(
-          flyout.createDom('svg'),
-          eYo.App.workspace.getParentSvg()
-        )
-        // Then create the flyout
-        flyout.init(eYo.App.workspace)
-        flyout.eyo.TOP_OFFSET = 3.5 * eYo.Unit.rem
-        // also change it in the css style
-        flyout.autoClose = false
-        // Blockly.Events.disable()
-        // try {
-        //   flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
-        // } catch (err) {
-        //   console.log(err)
-        // } finally {
-        //   Blockly.Events.enable()
-        // }
-        // eYo.App.workspace.flyout_ = flyout
-        eYo.App.flyout = flyout
-        flyout.eyo.slide = (closed) => {
-          if (!goog.isDef(closed)) {
-            closed = !this.flyoutClosed
-          }
-          this.setFlyoutClosed(closed) // beware of reentrancy
-        }
         this.$nextTick(() => {
-          // sometimes the `oldSvg` is not found
-          var oldSvg = document.getElementById('svg-control-image')
-          var newSvg = this.$refs.svg_control_image_v.$el
-          if (oldSvg && newSvg) {
-            oldSvg.parentNode.appendChild(newSvg)
-            newSvg.parentNode.removeChild(oldSvg)
-            // JL: critical section of code,
-            // next instruction does not work despite what stackoverflow states
-            // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
-          } else {
-            if (newSvg) {
-              newSvg.parentNode.removeChild(newSvg)
+          var staticOptions = {
+            collapse: true,
+            comments: false,
+            disable: true,
+            maxBlocks: Infinity,
+            trashcan: true,
+            horizontalLayout: false,
+            toolboxPosition: 'start',
+            css: true,
+            media: 'static/media/',
+            rtl: false,
+            scrollbars: true,
+            sounds: false,
+            oneBasedIndex: true
+          }
+          // var el = document.getElementById('eyo-workspace-content')
+          // if (!el) {
+          //   console.error('WHAT THE HELL?')
+          // }
+          var workspace = eYo.App.workspace = Blockly.inject('eyo-workspace-content', staticOptions)
+          if (!workspace) {
+            console.error('Injection failure')
+            return
+          }
+          // console.warn('WORKSPACE INSTALLED')
+          eYo.setup(workspace)
+          workspace.eyo.options = {
+            noLeftSeparator: true,
+            noDynamicList: false
+          }
+          eYo.$$.bus.$on('new-document', () => {
+            eYo.App.workspace.clear()
+          })
+          eYo.$$.bus.$on('workspace-clean', () => {
+            eYo.Events.groupWrap(() => {
+              eYo.Do.tryFinally(() => {
+                var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
+                tops.forEach(block => eYo.deleteBlock(block, true))
+              })
+            })
+          })
+          eYo.$$.bus.$on('workspace-tidy-up', (kvargs) => {
+            eYo.Events.groupWrap(() => {
+              eYo.Do.tryFinally(() => {
+                eYo.App.workspace.eyo.tidyUp(kvargs)
+              })
+            })
+          })
+          eYo.App.workspace.render()
+          // now the flyout
+          this.$nextTick(() => {
+            var flyout = eYo.App.flyout = new eYo.Flyout(eYo.App.workspace)
+            // Then create the flyout
+            flyout.eyo.TOP_OFFSET = 3.5 * eYo.Unit.rem
+            // also change it in the css style
+            flyout.autoClose = false
+            // Blockly.Events.disable()
+            // try {
+            //   flyout.show(eYo.DelegateSvg.T3s)//, eYo.T3.Expr.key_datum, eYo.T3.Stmt.if_part
+            // } catch (err) {
+            //   console.log(err)
+            // } finally {
+            //   Blockly.Events.enable()
+            // }
+            // eYo.App.workspace.flyout_ = flyout
+            flyout.eyo.slide = (closed) => {
+              if (!goog.isDef(closed)) {
+                closed = !this.flyoutClosed
+              }
+              this.setFlyoutClosed(closed) // beware of reentrancy
             }
-            console.error('MISSING svg-control-image…')
-          }
-        })
-        eYo.KeyHandler.setup(document)
-        eYo.$$.bus.$on('new-document', () => {
-          eYo.App.workspace.clear()
-        })
-        eYo.$$.bus.$on('workspace-clean', () => {
-          eYo.Events.groupWrap(() => {
-            eYo.Do.tryFinally(() => {
-              var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
-              tops.forEach(block => eYo.deleteBlock(block, true))
+            var svg = flyout.createDom('svg')
+            console.error('SVG', svg)
+            goog.dom.insertSiblingAfter(
+              flyout.createDom('svg'),
+              eYo.App.workspace.getParentSvg()
+            )
+            flyout.init(eYo.App.workspace) // after the flyout is in dom
+            this.$nextTick(() => {
+              // sometimes the `oldSvg` is not found
+              var oldSvg = document.getElementById('eyo-flyout-control-image')
+              var newSvg = this.$refs.svg_control_image_v.$el
+              if (oldSvg && newSvg) {
+                oldSvg.parentNode.appendChild(newSvg)
+                newSvg.parentNode.removeChild(oldSvg)
+                // JL: critical section of code,
+                // next instruction does not work despite what stackoverflow states
+                // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+              } else {
+                if (newSvg) {
+                  newSvg.parentNode.removeChild(newSvg)
+                  console.error('MISSING svg-control-image…')
+                }
+              }
+              eYo.KeyHandler.setup(document)
+              this.$nextTick(eYo.App.Document.doNew)
+              // window.addEventListener('resize', this.$$resize, false)
+              this.$nextTick(() => {
+                // eYo.$$.bus.$on('size-did-change', this.$$resize)
+                this.selectedCategory = this.items.basic
+                this.$$resize()
+              })
             })
           })
-        })
-        eYo.$$.bus.$on('workspace-tidy-up', (kvargs) => {
-          eYo.Events.groupWrap(() => {
-            eYo.Do.tryFinally(() => {
-              eYo.App.workspace.eyo.tidyUp(kvargs)
-            })
-          })
-        })
-        this.selectedCategory = this.items.basic
-        eYo.App.workspace.render()
-        this.$nextTick(eYo.App.Document.doNew)
-        // window.addEventListener('resize', this.$$resize, false)
-        this.$nextTick(() => {
-          // eYo.$$.bus.$on('size-did-change', this.$$resize)
-          this.$$resize()
         })
       }
     }
