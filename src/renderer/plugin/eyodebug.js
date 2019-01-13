@@ -5,7 +5,7 @@ eYoDebug.test = function () {
 }
 
 eYoDebug.install = function (Vue, options) {
-  console.error('INSTALLING eYoDebug')
+  // console.error('INSTALLING eYoDebug')
   // 1. add global method or property
 }
 
