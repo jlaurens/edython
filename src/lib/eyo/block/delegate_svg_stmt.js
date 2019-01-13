@@ -80,10 +80,17 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
 Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
   isStatement: {
     get () {
-      return false
+      return true
+    }
+  },
+  depth: {
+    get () {
+      var group = this.group
+      return (group && (group.depth + 1)) || 0
     }
   }
 })
+
 
 /**
  * Initialize a block.
