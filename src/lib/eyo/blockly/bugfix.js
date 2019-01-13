@@ -3,6 +3,7 @@ goog.provide('Blockly.BlockDraggerFix')
 goog.require('Blockly.BlockDragger')
 goog.require('Blockly.BlockSvg.render')
 goog.require('Blockly.BlockDraggerFix')
+
 /**
  * Handle a mouse move or touch move event.
  * @param {!Event} e A mouse move or touch move event.
@@ -22,4 +23,3 @@ Blockly.Gesture.prototype.handleMove = function(e) {
   e.preventDefault();
   e.stopPropagation();
 };
-
