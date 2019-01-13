@@ -6,7 +6,7 @@ var eYoDocument = {}
 var FileSaver = require('file-saver')
 
 eYoDocument.install = function (Vue, options) {
-  console.error('INSTALLING eYoDocument', eYo, options)
+  // console.error('INSTALLING eYoDocument', eYo, options)
   var store = options.store
   eYo.App.Document = process.env.BABEL_ENV === 'web' ? {
     doSave: function (ev, callback) {
