@@ -66,6 +66,14 @@ eYo.DelegateSvg.makeSubclass('Expr', {
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
 
+Object.defineProperties(eYo.DelegateSvg.Expr.prototype, {
+  depth: {
+    get () {
+      var stmt = this.stmtParent
+      return (stmt && stmt.depth) || 0
+    }
+  }
+})
 
 /**
  * Increment the change count.
