@@ -51,24 +51,14 @@ eYo.Version.GIT_HEAD = ''
 eYo.setup = (() => {
   var i11rsHead = []
   var i11rsTail = []
-  var me = function (workspace) {
+  var me = (workspace) => {
     eYo.Session.workspace = workspace
-    for (var i11r, i = 0; (i11r = i11rsHead[i++]);) {
-      if (i11r.eyo_register_key) {
-        console.log('Head setup:', i11r.eyo_register_key)
-      }
-      i11r()
-    }
+    i11rsHead.forEach(i11r => i11r())
     i11rsHead = undefined
-    for (i = i11rsTail.length; (i11r = i11rsTail[--i]);) {
-      if (i11r.eyo_register_key) {
-        console.log('Tail setup:', i11r.eyo_register_key)
-      }
-      i11r()
-    }
+    i11rsTail.reverse().forEach(i11r => i11r())
     i11rsTail = undefined
   }
-  me.register = function (when, i11r, key) {
+  me.register = (when, i11r, key) => {
     if (goog.isFunction(when)) {
       key = i11r
       i11r = when
