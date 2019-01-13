@@ -1,6 +1,6 @@
 {
   "name": "edython",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "jlaurens <jlaurens@edython.eu>",
   "description": "Python made easy with Blockly and Brython",
   "license": "EUPL-1.2",
