@@ -21,7 +21,8 @@
           <b-dd
             id="eyo-flyout-dropdown-general"
             variant="secondary"
-            class="eyo-dropdown">
+            class="eyo-dropdown"
+            boundary="viewport">
             <template
               slot="button-content">Blocs</template>
             <b-dd-item-button
@@ -41,7 +42,8 @@
           <b-dd
             id="eyo-flyout-dropdown-module"
             variant="secondary"
-            class="eyo-dropdown">
+            class="eyo-dropdown"
+            boundary="viewport">
             <template
               slot="button-content">Module&nbsp;</template>
             <b-dd-item-button
