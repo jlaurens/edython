@@ -640,3 +640,34 @@ Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   // reverse is not true.
   this.resizeContentVertical(hostMetrics);
 };
+
+/**
+ * Move the trash can to the bottom-right corner.
+ */
+Blockly.Trashcan.prototype.position = function() {
+  var metrics = this.workspace_.getMetrics();
+  if (!metrics) {
+    // There are no metrics available (workspace is probably not visible).
+    return;
+  }
+  this.left_ = metrics.viewWidth + metrics.absoluteLeft -
+      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
+
+  if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT) {
+    var flyoutPosition = this.workspace_.eyo.flyout_.eyo.flyoutPosition
+    if (flyoutPosition) {
+      this.left_ = flyoutPosition.x -
+      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness  
+    } else {
+      this.left_ -= metrics.flyoutWidth
+    }
+  }
+  this.top_ = metrics.viewHeight + metrics.absoluteTop -
+      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
+
+  if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM) {
+    this.top_ -= metrics.flyoutHeight;
+  }
+  this.svgGroup_.setAttribute('transform',
+      'translate(' + this.left_ + ',' + this.top_ + ')');
+};
