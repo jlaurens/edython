@@ -35,13 +35,13 @@
     computed: {
       d: function () {
         var radius = this.width / 2 * 0.8
-        return `M 0,16 l${radius * 1.5},${radius * 0.866} l 0,${-radius * 1.732} z`
+        return `M 4,16 l${radius * 1.5},${radius * 0.866} l 0,${-radius * 1.732} z`
       },
       transform: function () {
         var angle = this.right
           ? 540 * this.footstep - 180
           : -540 * this.footstep
-        return `rotate(${angle},${2 * this.width / 5},16)`
+        return `rotate(${angle},${4 + 2 * this.width / 5},16)`
       }
     },
     mounted: function () {
