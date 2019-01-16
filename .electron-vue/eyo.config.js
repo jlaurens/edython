@@ -36,7 +36,7 @@ var ConfigEyo = function (target, dist, env) {
       no_brython: false,
       no_resources: false,
       no_polyfills: false,
-    }   
+    }
   } [env]
   if (!this.options) {
     console.log('BAD ENV KEY')
@@ -74,7 +74,7 @@ ConfigEyo.prototype.getConfig = function () {
   }
   config.devtool = '#cheap-module-eval-source-map'
   config.entry = {}
-  config.entry[this.env] = path.join(this.srcPath, 'renderer', 'main.js')
+  config.entry[this.env] = path.join(this.srcPath, 'renderer', 'main', this.env)
   config.module = {
     rules: [
       {

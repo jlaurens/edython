@@ -129,5 +129,29 @@ eYoApp.install = function (Vue, options) {
       }
     }
   })
+
+  // listen to connections
+  eYo.Delegate.prototype.didConnect = (() => {
+    // this is a closure
+    var didConnect = eYo.Delegate.prototype.didConnect
+    return function (connection, oldTargetC8n, targetOldC8n) {
+      didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+      Vue.nextTick(() => {
+        eYo.$$.bus.$emit('didConnect')
+      })
+    }
+  })()
+
+  // listen to connections
+  eYo.Delegate.prototype.didDisconnect = (() => {
+    // this is a closure
+    var didDisconnect = eYo.Delegate.prototype.didDisconnect
+    return function (connection, oldTargetC8n, targetOldC8n) {
+      didDisconnect.call(this, connection, oldTargetC8n)
+      Vue.nextTick(() => {
+        eYo.$$.bus.$emit('didDisconnect')
+      })
+    }
+  })()
 }
 export default eYoApp

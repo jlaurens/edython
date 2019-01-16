@@ -1,7 +1,7 @@
-import {app} from '../main'
+import eYoI18n from '../lang'
 
 export default {
   setLocale (state, payload) {
-    app.$i18n.locale = payload
+    eYoI18n.i18n.locale = payload
   }
 }

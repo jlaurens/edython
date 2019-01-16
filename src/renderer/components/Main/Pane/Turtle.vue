@@ -78,7 +78,6 @@
       didPlace () {
         this.resizeSensor && this.resizeSensor.detach()
         this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          console.log('TURTLE', this.$refs.elContent.clientWidth, this.$refs.elContent.clientHeight)
           this.$$resize()
         })
         this.$$resize()

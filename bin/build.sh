@@ -375,6 +375,7 @@ java -jar "$COMPILER"\
 # At least it "works" on both web and electron versions.
 # JL 05/17/2018. Better solution wanted.
 perl -pi -e 's/goog.global.CLOSURE_NO_DEPS;/goog.global.CLOSURE_NO_DEPS = true;/g' build/base/edython.js
+echo 'console.log("edython library available")' >> build/base/edython.js
 echo "File created:"
 ls -al build/base/edython.js
 exit 0

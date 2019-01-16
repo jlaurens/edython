@@ -26,6 +26,10 @@
       right: {
         type: Boolean,
         default: true
+      },
+      title: {
+        type: String,
+        default: ''
       }
     },
     computed: {
@@ -66,5 +70,9 @@
   #p-icon-triangle:hover {
     fill: black;
     fill-opacity: 0.2;
+  }
+  .busy #p-icon-triangle {
+    fill: #f9951b;
+    fill-opacity: 1;
   }
 </style>

@@ -12,8 +12,8 @@
       ref="elMainPage">
       <main-page></main-page>
     </div>
-    <main-web-load></main-web-load>
-    <main-modal></main-modal>
+    <!--main-web-load></main-web-load>
+    <main-modal></main-modal-->
   </b-container>
 </template>
 
@@ -78,6 +78,7 @@
     top: 0px;
     margin: 0;
     padding: 0;
+    overflow-y: hidden; /* Extra white space at the bottom, where does it come from ? This BAD VERY trick is here to ignore such space. */
   }
   #MainPage {
     width: 100%;

@@ -3,10 +3,17 @@
     id="pane-content">
     <block-toolbar></block-toolbar>
     <div
-      id="working-area"
-      class="eyo-workbench"
-      :style="workingStyle"
-      ref="container_f">
+      class="eyo-workbench">
+      <div
+        id="working-area"
+        class="eyo-workbench-content"
+        :style="workingStyle"
+        ref="container_f">
+      </div>
+      <div
+        class="eyo-workbench-toolbars"
+        ref="workbench_toolbars_div">
+      </div>
     </div>
     <div 
       v-show="false"
@@ -104,19 +111,23 @@
       <pane-workspace
         ref="pane_workspace"
         :where="where_workspace"
-        @change-layout="changeLayout"></pane-workspace>
+        @change-layout="changeLayout"
+        @install-toolbar="installToolbar"></pane-workspace>
       <pane-console1
         ref="pane_console1"
         :where="where_console1"
-        @change-layout="changeLayout"></pane-console1>
+        @change-layout="changeLayout"
+        @install-toolbar="installToolbar"></pane-console1>
       <pane-console2
         ref="pane_console2"
         :where="where_console2"
-        @change-layout="changeLayout"></pane-console2>
+        @change-layout="changeLayout"
+        @install-toolbar="installToolbar"></pane-console2>
       <pane-turtle
         ref="pane_turtle"
         :where="where_turtle"
-        @change-layout="changeLayout"></pane-turtle>
+        @change-layout="changeLayout"
+        @install-toolbar="installToolbar"></pane-turtle>
       <console1-script></console1-script>
       <!--console2-script></console2-script-->
     </div>
@@ -181,6 +192,7 @@
       ...mapMutations('Layout', layoutcfg.setWhat_wheres),
       onDrag (size) {
         // eYo.$$.bus.$emit('size-did-change')
+        this.$$.bus.$emit('updateWorkbenchToolbars')
       },
       where (what) {
         return this[`where_${what}`]
@@ -190,10 +202,16 @@
       },
       setWhere (what, where) {
         this[`setWhere_${what}`](where)
+        this.$nextTick(() => {
+          this.$$.bus.$emit('updateWorkbenchToolbars')
+        })
         return this
       },
       setWhat (where, what) {
         where && this[`setWhat_${where}`](what)
+        this.$nextTick(() => {
+          this.$$.bus.$emit('updateWorkbenchToolbars')
+        })
         return this
       },
       container (where) {
@@ -201,6 +219,36 @@
       },
       pane (what) { // pane is one of 'console1' 'console2', 'workspace', 'turtle', 'h', 'v', 'hh', 'vv'
         return this.$refs[`pane_${what}`]
+      },
+      installToolbar (toolbar, scaled) {
+        var parent = toolbar.parentNode
+        var div = this.$refs.workbench_toolbars_div
+        if (parent === div) {
+          // already installed, unscaled case
+          div.removeChild(toolbar)
+          return
+        } else if (parent) {
+          var grand_parent = parent.parentNode
+          if (grand_parent === div) {
+            div.removeChild(parent)
+            parent.removeChild(toolbar)
+            return
+          }
+        }
+        // the toolbar was not installed
+        // move the toolbar element to the tollbars div.
+        if (scaled) {
+          // use a fragment
+          parent = document.createElement('div')
+          goog.dom.classlist.add(parent, 'scaled')
+          parent.style.width = '0'
+          parent.style.height = '0'
+          parent.style.position = 'absolute'
+          parent.appendChild(toolbar)
+          div.appendChild(parent)
+        } else {
+          div.appendChild(toolbar)
+        }
       },
       changeLayout (opt) {
         try {
@@ -760,12 +808,39 @@
     background-color:transparent;
   }
 
-  .eyo-workbench .container {
+  .eyo-workbench {
+    width: 100%;
+    height: 100%;
+  }
+
+  .eyo-workbench-toolbars {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 0;
+    z-index: 10;
+  }
+
+  .eyo-workbench-toolbars .management {
+    position: absolute;
+  }
+
+  .eyo-workbench-toolbars .scaled {
+    z-index: 100;
+  }
+
+  .eyo-workbench-content .container {
     padding: 0;
     margin:0;
     width: 100%;
     height: 100%;
     background-color: transparent;
+  }
+  .eyo-workbench-content .management {
+    position: relative;
+    left: 0;
+    top: 0;
   }
   .eyo-workbench .management {
     border-radius: 0.25rem 0.25rem 0 0;

@@ -8,8 +8,10 @@
       <toolbar
         :where="where"
         what="workspace"
-        v-on="$listeners"></toolbar>
+        v-on="$listeners"
+        ref="toolbar"></toolbar>
       <workspace-content
+        v-on="$listeners"
         ref="content"></workspace-content>  
     </div>
   </div>

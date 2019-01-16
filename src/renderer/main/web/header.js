@@ -1,0 +1,1 @@
+eYo.App.env = 'web'

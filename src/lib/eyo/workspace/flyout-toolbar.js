@@ -23,8 +23,12 @@ goog.require('goog.ui.Select');
  * Class for a flyout toolbar.
  * @constructor
  */
-eYo.FlyoutToolbar = function(flyout) {
+eYo.FlyoutToolbar = function(flyout, switcher) {
   this.flyout_ = flyout
+  this.switcher_ = switcher || eYo.App.flyoutToolbarSwitcher
+  if (this.switcher_) {
+    goog.dom.removeNode(this.switcher_)
+  }
 }
 
 /**
@@ -32,7 +36,7 @@ eYo.FlyoutToolbar = function(flyout) {
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
-eYo.FlyoutToolbar.prototype.doSelectGeneral = function(e) {
+eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
   var workspace = this.flyout_.targetWorkspace_
   if (workspace && this.selectControl_) {
     var category = this.selectControl_.getValue()
@@ -78,31 +82,31 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     class: goog.getCssName(cssClass, 'control-image')
   }, this.control_)
   this.controlPath_ = Blockly.utils.createSvgElement('path', {
-    id: "p-flyout-control"
+    id: 'p-flyout-control'
   }, svg)
   if (eYo.App && eYo.App.flyoutDropDown) {
     this.select_general_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select'),
       eYo.App.flyoutDropDown
-    )  
+    )
   } else if (eYo.App && eYo.App.flyoutDropDownGeneral && eYo.App.flyoutDropDownModule) {
     this.select_general_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select-general'),
       eYo.App.flyoutDropDownGeneral
-    )  
+    )
     this.select_module_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select-module'),
       eYo.App.flyoutDropDownModule
-    )  
+    )
   } else {
     this.select_general_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select-general')
     )
-    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+    select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
     // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
     // select.addItem(new eYo.Separator())
     select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
@@ -155,20 +159,22 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     goog.getCssName(cssClass, 'toolbar-module'),
     this.select_module_
   )
-  this.div_ = eYo.App.flyoutToolbarSwitcher
-  ? goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar'),
-    eYo.App.flyoutToolbarSwitcher,
-    this.control_
-  )
-  : goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar'),
-    div_general,
-    div_module,
-    this.control_
-  )
+  this.div_ = this.switcher_
+    ? goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'toolbar'),
+      this.switcher_,
+      this.control_
+    )
+    : goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'toolbar'),
+      div_general,
+      div_module,
+      this.control_
+    )
+  this.switcher_.style.left = '0px'
+  this.switcher_.style.top = '0px'
   this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
   this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
   this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
@@ -190,17 +196,15 @@ eYo.setup.register(() => {
   var height = eYo.FlyoutToolbar.prototype.HEIGHT
   var margin = eYo.FlyoutToolbar.prototype.MARGIN
   var radius = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS
-  var controlWidth = margin + radius
   eYo.Style.insertCssRuleAt(
     `.eyo-flyout-toolbar {
       position: absolute;
-      z-index: 30;
       pointer-events: all;
-      height: 4rem;
-      padding: 0.25rem;
+      height: 3.5rem;
+      padding: 0;
+      padding-left: 0.25rem;
       margin: 0;
       background: rgba(221,221,221,0.8);
-      z-index: 100;
     }`
   )
   eYo.Style.insertCssRuleAt(
@@ -402,11 +406,11 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
 
 /**
  * Resize.
- * @param {!Event} e Mouse up event.
+ * @param {!Float} width.
+ * @param {!Float} height.
  * @private
  */
 eYo.FlyoutToolbar.prototype.resize = function(width, height) {
-  // do nothing if there is no control path
   var height = this.HEIGHT
   var margin = this.MARGIN
   var big_radius = 1.25 * one_rem
@@ -418,17 +422,13 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
 
   var path = this.controlPath_
   if (this.flyout_.eyo.closed) {
-    path.setAttribute('d', [
-      'M', margin + h + this.flyout_.CORNER_RADIUS, radius,
-      'l', -h, - radius/2,
-      'l 0', radius, 'z'
-    ].join(' '))
+    path.setAttribute('d',
+      `M${margin + h + this.flyout_.CORNER_RADIUS},${radius} l${-h},${-radius/2} l 0,${radius} z`
+    )
   } else {
-    path.setAttribute('d', [
-      'M', this.flyout_.CORNER_RADIUS, radius,
-      'l', h, - radius/2,
-      'l 0', radius, 'z'
-    ].join(' '))
+    path.setAttribute('d',
+      `M ${this.flyout_.CORNER_RADIUS},${radius} l${h},${-radius/2} l 0,${radius} z`
+    )
   }
 };
 

@@ -8,8 +8,6 @@ const webpack = require('webpack')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const eYoConfig = require('./eyo.config.js')
 
@@ -39,6 +37,12 @@ if (process.env.NODE_ENV === 'production') {
       {
         minimize: true
       }
+    // ),
+    // new webpack.optimize.UglifyJsPlugin(
+    //   { // JL true
+    //     compress: false,
+    //     mangle: false,
+    //   }
     )
   )
 }

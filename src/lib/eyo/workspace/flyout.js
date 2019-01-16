@@ -58,6 +58,7 @@ eYo.FlyoutDelegate.prototype.getCssClass = function() {
 
 /**
  * Class for a flyout.
+ * This is not well designed because the workspace is a parameter of the init method below.
  * @param {!Object} workspaceOptions Dictionary of options for the workspace.
  * @extends {Blockly.Flyout}
  * @constructor
@@ -77,7 +78,7 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
  * @param {!Blockly.Workspace} targetWorkspace The workspace in which to create
  *     new blocks.
  */
-eYo.Flyout.prototype.init = function(targetWorkspace) {
+eYo.Flyout.prototype.init = function(targetWorkspace, switcher) {
   eYo.Flyout.superClass_.init.call(this, targetWorkspace)
   targetWorkspace.eyo.flyout_ = this
   this.svgGroup_ = this.createDom('svg')
@@ -85,7 +86,7 @@ eYo.Flyout.prototype.init = function(targetWorkspace) {
     this.svgGroup_,
     targetWorkspace.getParentSvg()
   )
-  this.eyo.toolbar_ = new eYo.FlyoutToolbar(this)
+  this.eyo.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
   var div = this.eyo.toolbar_.createDom()
   goog.dom.insertSiblingBefore(div, this.svgGroup_)
   this.eyo.toolbar_.doSelectGeneral(null) // is it necessary ?
@@ -452,32 +453,39 @@ eYo.FlyoutDelegate.prototype.didSlide = function(closed) {
 /**
  * Move the flyout to the edge of the workspace.
  */
-eYo.Flyout.prototype.position = function() {
-  if (!this.isVisible()) {
-    return;
-  }
-  var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics();
-  if (!targetWorkspaceMetrics) {
+eYo.Flyout.prototype.position = function () {
+  var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics()
+  if (!targetWorkspaceMetrics || targetWorkspaceMetrics.viewHeight <= 0) {
     // Hidden components will return null.
     return;
   }
   // Record the height for Blockly.Flyout.getMetrics_
   this.height_ = targetWorkspaceMetrics.viewHeight - this.eyo.TOP_OFFSET
 
-  var edgeWidth = this.width_;
-  var edgeHeight = targetWorkspaceMetrics.viewHeight;
-  this.setBackgroundPath_(edgeWidth, edgeHeight);
+  var edgeWidth = this.width_
+  var edgeHeight = targetWorkspaceMetrics.viewHeight
+  this.setBackgroundPath_(edgeWidth, edgeHeight)
 
-  var y = targetWorkspaceMetrics.absoluteTop;
-  var x = targetWorkspaceMetrics.absoluteLeft;
-  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT) {
-    x += (targetWorkspaceMetrics.viewWidth - this.width_);
+  var y = targetWorkspaceMetrics.absoluteTop
+  var x = targetWorkspaceMetrics.absoluteLeft
+  if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT) {
+    x += (targetWorkspaceMetrics.viewWidth - this.width_)
+    if (this.eyo.closed) {
+      x += this.width_
+    }
+     // Save the location of the left edge of the flyout, for use when Firefox
+    // gets the bounding client rect wrong.
+    this.leftEdge_ = x
+  } else if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_LEFT) {
+    if (this.eyo.closed) {
+      x -= this.width_
+    }
     // Save the location of the left edge of the flyout, for use when Firefox
     // gets the bounding client rect wrong.
-    this.leftEdge_ = x;
+    this.leftEdge_ = x
   }
-  this.positionAt_(this.width_, this.height_, x, y);
-};
+  this.positionAt_(this.width_, this.height_, x, y)
+}
 
 /**
  * Update the view based on coordinates calculated in position().
@@ -487,9 +495,17 @@ eYo.Flyout.prototype.position = function() {
  * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
-  if (width<0 || height<0) {
+eYo.Flyout.prototype.positionAt_ = function (width, height, x, y) {
+  if (width < 0 || height < 0) {
     console.error(width, height, x, y)
+    return
+  }
+  // Always update the scrollbar (if one exists).
+  if (this.scrollbar_) {
+    // Set the scrollbars origin to be the top left of the flyout.
+    this.scrollbar_.setOrigin(x, y + this.eyo.TOP_OFFSET)
+    this.scrollbar_.oldHostMetrics_ = null
+    this.scrollbar_.resize()
   }
   eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y + this.eyo.TOP_OFFSET)
   this.eyo.flyoutPosition = {
@@ -515,7 +531,7 @@ eYo.Flyout.prototype.positionAt_ = function(width, height, x, y) {
     workspace.resizeContents()
     workspace.trashcan.position()
   }
-};
+}
 
 /**
  * Return an object with all the metrics required to size scrollbars for the

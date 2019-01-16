@@ -400,13 +400,19 @@ export default {
       eYo.Py.console1 && eYo.Py.console1.__class__.restart(eYo.Py.console1)
     },
     eraseTurtle () {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, 'edython.turtleRestart()')
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, `if edython is not None:
+  edython.turtleRestart()
+else:
+  print('Nothing to do...')`)
     },
     eraseConsole () {
       eYo.Py.console1 && eYo.Py.console1.__class__.erase(eYo.Py.console1)
     },
     replayTurtle () {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, 'edython.turtleReplayScene()')
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, `if edython is not None:
+  edython.turtleReplayScene()
+else:
+  print('Nothing to do...')`)
     },
     restartAll () {
       this.eraseTurtle()

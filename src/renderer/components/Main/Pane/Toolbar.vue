@@ -1,9 +1,14 @@
 <template>
   <b-btn-toolbar
     class="management"
+    ref="phantom"
     justify>
-    <b-btn-group>&nbsp;</b-btn-group>
-    <b-btn-group>
+    <b-btn-toolbar
+      class="management"
+      ref="toolbar"
+      justify>
+      <b-btn-group>&nbsp;</b-btn-group>
+      <b-btn-group>
         <b-dd
         class="eyo-dropdown"
         :text="toolbarTitle">
@@ -32,34 +37,35 @@
           :height="24"
           icon-name="revertLayout">
           <icon-layout :keyx="revertLayout"/></icon-base></b-dd-item-button>
+        </b-dd>
+      </b-btn-group>
+      <b-dd
+        class="eyo-dropdown-tools"
+        right>
+        <template>
+          <icon-base
+          :width="24"
+          :height="24"
+          icon-name="tools"
+          slot="button-content">
+          <icon-menu/></icon-base>
+        </template>
+        <b-dd-item-button
+          v-for="choice in choices"
+          v-on:click="choose(choice)"
+          :key="choice"
+          class="eyo-code"
+        >{{title(choice)}}</b-dd-item-button>
+        <b-dd-divider
+          v-if="choices.length"></b-dd-divider>
+        <b-dd-item-button
+          v-for="choice in scaleChoices"
+          v-on:click="choose(choice)"
+          :key="choice"
+          class="eyo-code"
+        >{{title(choice)}}</b-dd-item-button>
       </b-dd>
-    </b-btn-group>
-    <b-dd
-      class="eyo-dropdown-tools"
-      right>
-      <template>
-        <icon-base
-        :width="24"
-        :height="24"
-        icon-name="tools"
-        slot="button-content">
-        <icon-menu/></icon-base>
-      </template>
-      <b-dd-item-button
-        v-for="choice in choices"
-        v-on:click="choose(choice)"
-        :key="choice"
-        class="eyo-code"
-      >{{title(choice)}}</b-dd-item-button>
-      <b-dd-divider
-        v-if="choices.length"></b-dd-divider>
-      <b-dd-item-button
-        v-for="choice in scaleChoices"
-        v-on:click="choose(choice)"
-        :key="choice"
-        class="eyo-code"
-      >{{title(choice)}}</b-dd-item-button>
-    </b-dd>
+    </b-btn-toolbar>
   </b-btn-toolbar>
 </template>
 
@@ -72,6 +78,8 @@
   import {mapState, mapMutations} from 'vuex'
   import {layoutcfg} from '@@/../store/modules/Layout'
 
+  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+
   export default {
     name: 'eyo-workspace-management-toolbar',
     data: function () {
@@ -79,7 +87,8 @@
         selectedPane_: 'console1',
         selectedLayout_: 'F',
         chosen_: 'A',
-        revertLayout: undefined
+        revertLayout: undefined,
+        resizeSensor: undefined
       }
     },
     components: {
@@ -96,6 +105,10 @@
       what: {
         type: String,
         default: undefined /* One of layoutcfg.panes */
+      },
+      phantom: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -156,6 +169,7 @@
         set (newValue) {
           this.$nextTick(() => {
             this.$emit('change-layout', {what: this.what, how: newValue})
+            this.$$.bus.$emit('updateWorkbenchToolbars')
           })
           this.revertLayout = (newValue === 'F') && this.paneLayout
         }
@@ -229,6 +243,14 @@
         }[this.what]
       }
     },
+    mounted () {
+      this.$nextTick(() => {
+        this.resizeSensor = new ResizeSensor(this.$refs.phantom.$el, this.$$update)
+        this.$emit('install-toolbar', this.$refs.toolbar.$el)
+        this.$$update()
+      })
+      this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
+    },
     methods: {
       ...mapMutations('Workspace', {
         workspaceScaleUp: 'scaleUp',
@@ -287,11 +309,36 @@
           'workspace.clean': () => {
             eYo.$$.bus.$emit('workspace-clean')
           },
-          'workspace.scaleReset': this.workspaceScaleReset,
-          'workspace.scaleUp': this.workspaceScaleUp,
-          'workspace.scaleUpBig': this.workspaceScaleUpBig,
-          'workspace.scaleDown': this.workspaceScaleDown,
-          'workspace.scaleDownBig': this.workspaceScaleDownBig,
+          'workspace.scaleReset': () => {
+            this.workspaceScaleReset()
+            this.$nextTick(() => {
+              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+            })
+          },
+          'workspace.scaleUp': () => {
+            this.workspaceScaleUp()
+            this.$nextTick(() => {
+              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+            })
+          },
+          'workspace.scaleUpBig': () => {
+            this.workspaceScaleUpBig()
+            this.$nextTick(() => {
+              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+            })
+          },
+          'workspace.scaleDown': () => {
+            this.workspaceScaleDown()
+            this.$nextTick(() => {
+              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+            })
+          },
+          'workspace.scaleDownBig': () => {
+            this.workspaceScaleDownBig()
+            this.$nextTick(() => {
+              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+            })
+          },
           'console2.scaleReset': this.console2ScaleReset,
           'console2.scaleUp': this.console2ScaleUp,
           'console2.scaleUpBig': this.console2ScaleUpBig,
@@ -312,6 +359,43 @@
       },
       title (choice) {
         return this.$$t(`block.pane.content.${choice}`) || this.$$t(`block.pane.content.${choice.split('.').pop()}`)
+      },
+      $$update () {
+        var phantom = this.$refs.phantom.$el
+        var invisible = !(phantom.offsetWidth || phantom.offsetHeight || phantom.getClientRects().length)
+        var toolbar = this.$refs.toolbar.$el
+        toolbar.style.display = invisible ? 'none' : ''
+        if (!invisible) {
+          var rect = phantom.getBoundingClientRect()
+          var change = 0
+          var oldValue = toolbar.offsetWidth
+          var newValue = phantom.offsetWidth
+          var delta = newValue - oldValue
+          if (delta) {
+            toolbar.style.width = `${newValue}px`
+            change += Math.abs(delta)
+          }
+          oldValue = toolbar.offsetLeft
+          newValue = rect.left
+          delta = newValue - oldValue
+          if (delta) {
+            toolbar.style.left = `${newValue}px`
+            change += Math.abs(delta)
+          }
+          oldValue = toolbar.offsetTop
+          newValue = rect.top
+          delta = newValue - oldValue
+          if (delta) {
+            toolbar.style.top = `${newValue}px`
+            change += Math.abs(delta)
+          }
+          var bigChange = change > 0.01
+          var more = bigChange || this.wasBigChange
+          this.wasBigChange = bigChange
+          if (more) {
+            this.$emit('updateWorkbenchToolbars')
+          }
+        }
       }
     }
   }

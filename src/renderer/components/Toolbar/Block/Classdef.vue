@@ -92,7 +92,7 @@
       },
       $$content (variant) {
         if (variant === eYo.Key.N_ARY) {
-          return `${this.slotholder('eyo-slotholder-inline')}`
+          return `(${this.slotholder('eyo-slotholder-inline')})`
         } else {
           return '&nbsp;'
         }

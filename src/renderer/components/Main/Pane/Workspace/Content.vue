@@ -15,45 +15,55 @@
       <div
         id="eyo-flyout-toolbar-switcher"
         ref="switcher">
-        <b-btn-group
+        <b-btn-toolbar
           id="eyo-flyout-switcher"
+          class="phantom"
+          ref="phantom"
+          justify
           >
-          <b-dd
-            id="eyo-flyout-dropdown-general"
-            variant="secondary"
-            class="eyo-dropdown"
-            boundary="viewport">
-            <template
-              slot="button-content">Blocs</template>
-            <b-dd-item-button
-              v-for="item in levels"
-              @click="selectedCategory = item"
-              :style="{fontFamily: $$.eYo.Font.familySans}"
-              :key="item.content"
-            >{{item.content}}</b-dd-item-button>
-            <b-dd-divider></b-dd-divider>
-            <b-dd-item-button
-              v-for="item in categories"
-              @click="selectedCategory = item"
-              :style="{fontFamily: $$.eYo.Font.familySans}"
-              :key="item.content"
+          <b-btn-group>&nbsp;</b-btn-group>
+        </b-btn-toolbar>
+        <b-btn-toolbar
+          class="eyo-flyout-toolbar-inner"
+          ref="toolbar">
+          <b-btn-group>
+            <b-dd
+              id="eyo-flyout-dropdown-general"
+              variant="secondary"
+              class="eyo-dropdown"
+              boundary="viewport">
+              <template
+                slot="button-content">Blocs</template>
+              <b-dd-item-button
+                v-for="item in levels"
+                @click="selectedCategory = item"
+                :style="{fontFamily: $$.eYo.Font.familySans}"
+                :key="item.content"
               >{{item.content}}</b-dd-item-button>
-          </b-dd>
-          <b-dd
-            id="eyo-flyout-dropdown-module"
-            variant="secondary"
-            class="eyo-dropdown"
-            boundary="viewport">
-            <template
-              slot="button-content">Module&nbsp;</template>
-            <b-dd-item-button
-              v-for="item in modules"
-              @click="selectedCategory = item"
-              :style="{fontFamily: $$.eYo.Font.familySans}"
-              :key="item.content"
-              >{{item.content}}</b-dd-item-button>
-          </b-dd>
-        </b-btn-group>
+              <b-dd-divider></b-dd-divider>
+              <b-dd-item-button
+                v-for="item in categories"
+                @click="selectedCategory = item"
+                :style="{fontFamily: $$.eYo.Font.familySans}"
+                :key="item.content"
+                >{{item.content}}</b-dd-item-button>
+            </b-dd>
+            <b-dd
+              id="eyo-flyout-dropdown-module"
+              variant="secondary"
+              class="eyo-dropdown"
+              boundary="viewport">
+              <template
+                slot="button-content">Module&nbsp;</template>
+              <b-dd-item-button
+                v-for="item in modules"
+                @click="selectedCategory = item"
+                :style="{fontFamily: $$.eYo.Font.familySans}"
+                :key="item.content"
+                >{{item.content}}</b-dd-item-button>
+            </b-dd>
+          </b-btn-group>
+        </b-btn-toolbar>
         <div
           id="eyo-flyout-toolbar-label">
           <div
@@ -94,7 +104,9 @@
         label: '...',
         isBasic: true,
         selectedCategory_: undefined,
-        resizeSensor: null
+        resizeSensor: null,
+        resizeSensorTB: null,
+        sliding: false
       }
       var Msg = eYo.Msg
       var F = (name) => {
@@ -207,9 +219,22 @@
             }
           }
         }
+      },
+      controlDiv () {
+        return this.controlDiv_
       }
     },
     watch: {
+      sliding (newValue, oldValue) {
+        var div = this.controlDiv
+        if (div) {
+          if (newValue) {
+            goog.dom.classlist.add(div, 'busy')
+          } else {
+            goog.dom.classlist.remove(div, 'busy')
+          }
+        }
+      },
       scaleFactor (newValue, oldValue) {
         this.$$resize()
       },
@@ -230,7 +255,7 @@
         }
       },
       // whenever `isBasic` changes, this function will run
-      isBasic: function (newValue, oldValue) {
+      isBasic (newValue, oldValue) {
         var item = this.selectedCategory
         if (newValue && item.basic) {
           this.selectedCategory = item.basic
@@ -244,6 +269,15 @@
         'setFlyoutCategory',
         'setFlyoutClosed'
       ]),
+      changeFlyoutClosed (newValue) {
+        this.sliding = true
+        if (newValue) {
+          this.$$uninstallToolbar()
+        }
+        this.$nextTick(() => {
+          this.setFlyoutClosed(newValue)
+        })
+      },
       willUnplace () { // this is necessary due to the scale feature
         if (this.resizeSensor) {
           this.resizeSensor.detach()
@@ -252,28 +286,98 @@
       },
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor && this.resizeSensor.detach()
-        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          this.$$resize()
-        })
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.elContent,
+          this.$$resize.bind(this)
+        )
         this.$$resize()
       },
-      $$resize: function (e) {
+      $$update (e) {
+        var phantom = this.$refs.phantom.$el
+        var toolbar = this.$refs.toolbar.$el
+        var rect = phantom.getBoundingClientRect()
+        if (!toolbar) {
+          console.error('NO TOOLBAR ?')
+        }
+        toolbar.setAttribute('style',
+          `width:${phantom.offsetWidth}px;left:0px;top:0px`
+        )
+        var parent = toolbar.parentNode
+        parent.style.left = `${rect.left}px`
+        parent.style.top = `${rect.top}px`
+        var scaleX = Math.floor(0.5 + 1000 * (rect.right - rect.left) / phantom.offsetWidth) / 1000
+        if (scaleX !== 1) {
+          parent.style.transform = `scale(${scaleX})`
+        } else {
+          parent.style.transform = ''
+        }
+        this.$nextTick(() => {
+          this.$$resize(e)
+        })
+      },
+      $$resize (e) {
         var content = this.$refs.elContent
+        var top = content.offsetTop
+        var left = content.offsetLeft
         var w = content.offsetWidth
         var h = content.offsetHeight
         var newW = w / this.scaleFactor
         var newH = h / this.scaleFactor
-        var inner = this.$refs.elInner
-        inner.style.position = 'relative'
-        inner.style.width = `${newW}px`
-        inner.style.height = `${newH}px`
-        inner.style.left = `${(w - newW) / 2}px`
-        inner.style.top = `${(h - newH) / 2}px`
-        inner.style.overflow = 'auto'
-        this.$refs.elInner.style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
-        if (Blockly && eYo.App.workspace) {
-          Blockly.svgResize(eYo.App.workspace)
-          eYo.App.flyout.reflow()
+        var delta = Math.abs(this.oldRect.top - top) + Math.abs(this.oldRect.left - left) + Math.abs(this.oldRect.width - newW) + Math.abs(this.oldRect.height - newH)
+        if (delta > 0.005) {
+          this.oldRect.top = top
+          this.oldRect.left = left
+          this.oldRect.width = newW
+          this.oldRect.height = newH
+          var inner = this.$refs.elInner
+          inner.style.position = 'relative'
+          inner.style.width = `${newW}px`
+          inner.style.height = `${newH}px`
+          inner.style.left = `${(w - newW) / 2}px`
+          inner.style.top = `${(h - newH) / 2}px`
+          inner.style.overflow = 'auto'
+          this.$refs.elInner.style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
+          if (Blockly && eYo.App.workspace) {
+            Blockly.svgResize(eYo.App.workspace)
+            if (eYo.App.flyout) {
+              eYo.App.flyout.reflow() // flyout may not exist while debugging
+            }
+          }
+          this.$$update(e)
+        }
+      },
+      $$installToolbar () {
+        var toolbar = this.$refs.toolbar.$el
+        var phantom = this.$refs.phantom.$el
+        if (toolbar.parentNode === phantom.parentNode) {
+          this.$emit('install-toolbar', toolbar, true)
+          phantom.style.display = ''
+        }
+      },
+      $$uninstallToolbar () {
+        var toolbar = this.$refs.toolbar.$el
+        var phantom = this.$refs.phantom.$el
+        if (toolbar.parentNode !== phantom.parentNode) {
+          this.$emit('install-toolbar', toolbar, true)
+          phantom.style.display = 'none'
+          phantom.parentNode.insertBefore(toolbar, phantom)
+        }
+      },
+      $$installControl () {
+        var oldSvg = document.getElementById('eyo-flyout-control-image')
+        var newSvg = this.$refs.svg_control_image_v.$el
+        if (oldSvg && newSvg) {
+          this.controlDiv_ = oldSvg.parentNode
+          this.controlDiv_.appendChild(newSvg)
+          this.controlDiv_.removeChild(oldSvg)
+          // JL: critical section of code,
+          // next instruction does not work despite what stackoverflow states
+          // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
+        } else {
+          if (newSvg) {
+            newSvg.parentNode.removeChild(newSvg)
+            console.error('MISSING svg-control-image…')
+          }
         }
       }
     },
@@ -283,9 +387,12 @@
       if (eYo.App.workspace) {
         // do nothing, the workspace already exists
       } else {
-        // Get what will replace the old flyout selector
-        eYo.App.flyoutToolbarSwitcher = this.$refs.switcher
-        goog.dom.removeNode(eYo.App.flyoutToolbarSwitcher)
+        this.oldRect = {
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0
+        } // not a reactive property
         this.$nextTick(() => {
           var staticOptions = {
             collapse: true,
@@ -356,43 +463,44 @@
               if (!goog.isDef(closed)) {
                 closed = !this.flyoutClosed
               }
-              this.setFlyoutClosed(closed) // beware of reentrancy
+              this.changeFlyoutClosed(closed) // beware of reentrancy
+            }
+            flyout.eyo.didSlide = (closed) => {
+              flyout.eyo.constructor.prototype.didSlide.call(flyout.eyo, closed)
+              this.sliding = false
+              if (!closed) {
+                this.$$installToolbar()
+                this.$$update()
+              }
             }
             var svg = flyout.createDom('svg')
-            console.error('SVG', svg)
             goog.dom.insertSiblingAfter(
-              flyout.createDom('svg'),
+              svg,
               eYo.App.workspace.getParentSvg()
             )
-            flyout.init(eYo.App.workspace) // after the flyout is in dom
             this.$nextTick(() => {
-              // sometimes the `oldSvg` is not found
-              var oldSvg = document.getElementById('eyo-flyout-control-image')
-              var newSvg = this.$refs.svg_control_image_v.$el
-              if (oldSvg && newSvg) {
-                oldSvg.parentNode.appendChild(newSvg)
-                newSvg.parentNode.removeChild(oldSvg)
-                // JL: critical section of code,
-                // next instruction does not work despite what stackoverflow states
-                // oldSvg && newSvg && oldSvg.parentNode.replaceChild(oldSvg, newSvg)
-              } else {
-                if (newSvg) {
-                  newSvg.parentNode.removeChild(newSvg)
-                  console.error('MISSING svg-control-image…')
-                }
-              }
-              eYo.KeyHandler.setup(document)
-              this.$nextTick(eYo.App.Document.doNew)
-              // window.addEventListener('resize', this.$$resize, false)
+              flyout.init(eYo.App.workspace, this.$refs.switcher) // after the flyout is in dom
               this.$nextTick(() => {
-                // eYo.$$.bus.$on('size-did-change', this.$$resize)
-                this.selectedCategory = this.items.basic
-                this.$$resize()
+                this.$$installControl()
+                eYo.KeyHandler.setup(document)
+                this.$nextTick(eYo.App.Document.doNew)
+                // window.addEventListener('resize', this.$$resize, false)
+                this.$nextTick(() => {
+                  // eYo.$$.bus.$on('size-did-change', this.$$resize)
+                  this.selectedCategory = this.items.basic
+                  this.$$resize()
+                })
               })
             })
           })
         })
       }
+      this.$nextTick(() => {
+        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, this.$$update.bind(this))
+        this.$$installToolbar()
+        this.$$update()
+      })
+      this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
     }
   }
 </script>
@@ -403,16 +511,6 @@
   }
   .eyo-flyout-control {
     vertical-align: middle;
-  }
-  .eyo-flyout-toolbar {
-    padding: 0;
-    padding-left: 0.25rem;
-    line-height: 1.2;
-    height: 3.5rem;
-  }
-  .eyo-flyout-toolbar left {
-    padding-left: 0;
-    padding-right: 0.25rem;
   }
   #eyo-flyout-toolbar-switcher {
     position: relative;
@@ -428,14 +526,40 @@
   }
   #eyo-flyout-toolbar-label {
     width: 100%;
-    padding: 0.25rem;
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
     background: #e3e3e3;
     font-style: italic;
     color: #666666;
     text-align: center;
   }
-  #eyo-flyout-switcher .eyo-dropdown.btn-group.b-dropdown.dropdown {
+  #eyo-flyout-toolbar-label .item {
+    display: inline-block;
+  }
+  #eyo-flyout-toolbar-label-check {
+    vertical-align: middle;
+    position: relative;
+    bottom: 0.125rem;
+  }
+  .eyo-flyout-toolbar {
+    padding: 0;
+    padding-left: 0.25rem;
+  }
+  .eyo-flyout-toolbar.btn-toolbar {
+    padding: 0;
+  }
+  .eyo-flyout-toolbar-inner .btn-group {
+    width: 100%;
+  }
+  .eyo-flyout-toolbar-inner .eyo-dropdown.btn-group.b-dropdown.dropdown {
     width: 50%;
+  }
+  .eyo-flyout-toolbar-inner .eyo-dropdown .btn {
+    width: 100%;
+    height: 1.75rem;
+  }
+  #eyo-flyout-toolbar-switcher .phantom {
+    height: 1.75rem;
   }
   #eyo-flyout-toolbar-switcher .eyo-round-btn {
     top: 0;
@@ -453,15 +577,6 @@
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     height: 2rem;
-  }
-  #eyo-flyout-toolbar-label .item {
-    display: inline-block;
-    height:2rem;
-  }
-  #eyo-flyout-toolbar-label-check {
-    vertical-align: middle;
-    position: relative;
-    bottom: 0.125rem;
   }
   #eyo-workspace-content {
     width: 100%;

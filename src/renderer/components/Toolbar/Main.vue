@@ -108,9 +108,9 @@
         )
       },
       doSite (url) {
-        if (eYo.$$.electron && eYo.$$.electron.shell) {
+        if (this.$electron && this.$electron.shell) {
           // we *are in electron
-          eYo.$$.electron.shell.openExternal(url)
+          this.$electron.shell.openExternal(url)
         } else {
           var win = window.open(url, '_blank')
           win.focus()

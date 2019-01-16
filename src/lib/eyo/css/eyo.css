@@ -202,7 +202,7 @@ body {
   padding: 4px;
   position: absolute;
   font-family: arial, sans-serif;
-  z-index: 100;
+  z-index: 100000;
 }
 
 .eyo-modal-dialog a,

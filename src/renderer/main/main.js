@@ -1,28 +1,36 @@
-goog.provide('Blockly.BlockDraggerFix')
+import 'babel-polyfill'
+import Vue from 'vue'
+import axios from 'axios'
+import lodash from 'lodash'
+import pako from 'pako'
 
-goog.require('Blockly.BlockDragger')
-goog.require('Blockly.BlockSvg.render')
-goog.require('Blockly.BlockDraggerFix')
+import Stacktrace from 'stack-trace'
 
-/**
- * Handle a mouse move or touch move event.
- * @param {!Event} e A mouse move or touch move event.
- * @package
- */
-Blockly.Gesture.prototype.handleMove = function(e) {
-  this.updateFromEvent_(e);
-  if (this.isDraggingWorkspace_) {
-    this.workspaceDragger_.drag(this.currentDragDeltaXY_);
-  } else if (this.isDraggingBlock_) {
-    this.blockDragger_ && this.blockDragger_.dragBlock(this.mostRecentEvent_,
-        this.currentDragDeltaXY_); // sometimes it fails
-  } else if (this.isDraggingBubble_) {
-    this.bubbleDragger_ && this.bubbleDragger_.dragBubble(this.mostRecentEvent_,
-        this.currentDragDeltaXY_);
-  }
-  e.preventDefault();
-  e.stopPropagation();
-};
+import App from '../App'
+import router from '../router'
+
+import store from '../store'
+
+import VueSplit from 'vue-split-panel'
+
+import BootstrapVue from 'bootstrap-vue'
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import tippy from 'tippy.js/dist/tippy.js'
+
+import VueTippy from 'vue-tippy'
+
+import {TweenLite} from 'gsap/TweenMax'
+
+import eYoPlugin from '../plugin/eyoplugin'
+import eYoApp from '../plugin/eyoapp'
+import eYoDocument from '../plugin/eyodocument'
+import eYoDebug from '../plugin/eyodebug'
+import eYoI18n from '../lang'
+
+// Bug fix until electron 4 and chrome ...
 
 /**
  * For some reason, the string given by `element.style.transform` seems localized
@@ -76,3 +84,59 @@ Blockly.utils.getRelativeXY.XY_3D_REGEX_ =
  */
 Blockly.utils.getRelativeXY.XY_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
+
+eYo.$$ = Vue.prototype.$$ = {
+  goog,
+  eYo,
+  Blockly,
+  pako,
+  _: lodash,
+  TweenLite,
+  process,
+  tippy,
+  http: axios,
+  Stacktrace,
+  bus: new Vue()
+}
+
+Vue.config.productionTip = false
+
+Vue.use(BootstrapVue)
+Vue.use(VueSplit)
+Vue.use(VueTippy, eYo.Tooltip.options)
+
+Vue.use(eYoPlugin)
+Vue.use(eYoApp, {store})
+Vue.use(eYoDocument, {store})
+Vue.use(eYoDebug)
+Vue.use(eYoI18n)
+
+if (eYo.App.env !== 'web') {
+  Vue.use(require('vue-electron'))
+}
+
+// i18n
+
+/* eslint-disable no-new */
+Object.defineProperties(eYo.$$, {
+  app: {
+    value: new Vue({
+      components: { App },
+      router,
+      store,
+      template: '<App/>',
+      i18n: eYoI18n.i18n
+    })
+  },
+  store: store
+})
+
+export const app = eYo.$$.app
+
+app.$mount('#app')
+
+console.log('Launching brython')
+brython()
+
+/* eslint-disable */
+

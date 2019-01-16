@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="web-load">
     <input ref="input" type="file" @change="loadTextFromFile" style="display:none">
   </div>
 </template>
@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'webLoadAlert',
-  mounted: function () {
+  mounted () {
     eYo.$$.bus.$on('webUploadStart', () => {
       this.showAlert = false
       this.$refs.input.click()
@@ -27,4 +27,9 @@ export default {
   }
 }
 </script>
-  
+<style>
+  #web-load {
+    width: 0;
+    display: none;
+  }
+</style>

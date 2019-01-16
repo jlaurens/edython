@@ -1,5 +1,6 @@
 <template>
-  <modal-should-save></modal-should-save>
+  <modal-should-save
+    id="modal-should-save"></modal-should-save>
 </template>
 
 <script>
@@ -13,7 +14,7 @@
   }
 </script>
 <style>
-  #modal {
+  #modal-should-save {
     display: none;
   }
 </style>
