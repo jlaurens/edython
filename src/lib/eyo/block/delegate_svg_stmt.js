@@ -637,7 +637,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
  * @return None
  */
 eYo.DelegateSvg.Stmt.expression_stmt.prototype.isWhite = function () {
-  return this.variant_p === eYo.Key.COMMENT
+  return this.variant_p !== eYo.Key.EXPRESSION
 }
 
 /**
