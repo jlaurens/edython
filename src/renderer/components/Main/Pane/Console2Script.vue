@@ -350,10 +350,10 @@ export default {
       eYo.Py.console2 && eYo.Py.console2.__class__.erase(eYo.Py.console2)
     },
     eraseTurtle () {
-      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, 'if edython is not None: edython.turtleRestart()')
+      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, '', 'if edython is not None: edython.turtleRestart()')
     },
     replayTurtle () {
-      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, 'if edython is not None: edython.turtleReplayScene()')
+      eYo.Py.console2 && eYo.Py.console2.__class__.runScript(eYo.Py.console2, '', 'if edython is not None: edython.turtleReplayScene()')
     },
     restartAll () {
       this.eraseTurtle()
@@ -365,7 +365,7 @@ eYo.DelegateSvg.prototype.runScript2 = function () {
   var p = new window.eYo.Py.Exporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
-  eYo.Py.console2 && eYo.Py.console2.__class__.runScript(window.eYo.Py.console2, code)
+  eYo.Py.console2 && eYo.Py.console2.__class__.runScript(window.eYo.Py.console2, '', code)
 }
 </script>
 

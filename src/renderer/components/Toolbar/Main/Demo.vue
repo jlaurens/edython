@@ -2,7 +2,7 @@
   <b-dd
     id="eyo-toolbar-dropdown-demo"
     class="eyo-dropdown"
-    title="Démo"
+    :title="$$t('toolbar.tooltip.demo')"
     v-on:show="doShow()"
     v-on:hidden="doHidden()">
     <template
@@ -152,7 +152,8 @@
             eYo.App.doDomToPref(dom)
             if (ids.length) {
               var b = w.getBlockById(ids[0])
-              w.centerOnBlock(b.eyo.root.id)
+              eYo.Selected.block = b
+              eYo.Selected.scrollToVisible()
             }
           })
         }

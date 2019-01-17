@@ -106,7 +106,7 @@
         selectedCategory_: undefined,
         resizeSensor: null,
         resizeSensorTB: null,
-        sliding: false
+        sliding: 0
       }
       var Msg = eYo.Msg
       var F = (name) => {
@@ -239,7 +239,14 @@
         this.$$resize()
       },
       flyoutClosed (newValue, oldValue) {
-        eYo.App.flyout && eYo.App.flyout.eyo.doSlide(newValue)
+        if (newValue !== oldValue && eYo.App.flyout) {
+          if (this.sliding) {
+            this.$nextTick(() => {
+              this.flyoutClosedDidChange_(newValue)
+            })
+          }
+          this.flyoutClosedDidChange_(newValue)
+        }
       },
       flyoutCategory (newValue, oldValue) {
         var item = this.items[newValue]
@@ -269,14 +276,21 @@
         'setFlyoutCategory',
         'setFlyoutClosed'
       ]),
-      changeFlyoutClosed (newValue) {
-        this.sliding = true
+      flyoutClosedDidChange_ (newValue) {
+        ++this.sliding
         if (newValue) {
-          this.$$uninstallToolbar()
+          if (this.$$uninstallToolbar()) {
+            this.$nextTick(() => {
+              if (this.$$uninstallToolbar()) {
+                eYo.App.flyout.eyo.doSlide(true)
+              }
+            })
+          }
+        } else {
+          this.$nextTick(() => {
+            eYo.App.flyout.eyo.doSlide(false)
+          })
         }
-        this.$nextTick(() => {
-          this.setFlyoutClosed(newValue)
-        })
       },
       willUnplace () { // this is necessary due to the scale feature
         if (this.resizeSensor) {
@@ -353,6 +367,10 @@
           this.$emit('install-toolbar', toolbar, true)
           phantom.style.display = ''
         }
+        if (toolbar.parentNode === phantom.parentNode) {
+          console.error('$$installToolbar FAILED')
+        }
+        return toolbar.parentNode !== phantom.parentNode
       },
       $$uninstallToolbar () {
         var toolbar = this.$refs.toolbar.$el
@@ -362,6 +380,10 @@
           phantom.style.display = 'none'
           phantom.parentNode.insertBefore(toolbar, phantom)
         }
+        if (toolbar.parentNode !== phantom.parentNode) {
+          console.error('$$uninstallToolbar FAILED')
+        }
+        return toolbar.parentNode === phantom.parentNode
       },
       $$installControl () {
         var oldSvg = document.getElementById('eyo-flyout-control-image')
@@ -463,11 +485,13 @@
               if (!goog.isDef(closed)) {
                 closed = !this.flyoutClosed
               }
-              this.changeFlyoutClosed(closed) // beware of reentrancy
+              this.setFlyoutClosed(closed) // beware of reentrancy
             }
             flyout.eyo.didSlide = (closed) => {
               flyout.eyo.constructor.prototype.didSlide.call(flyout.eyo, closed)
-              this.sliding = false
+              if (this.sliding) {
+                --this.sliding
+              }
               if (!closed) {
                 this.$$installToolbar()
                 this.$$update()

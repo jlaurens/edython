@@ -46,7 +46,8 @@ export default {
     duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
     paste_bock: 'Coller le block du presse-papier',
     copy_python: 'Copier le code python dans le presse-papier',
-    run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné'
+    run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné',
+    demo: 'Exemples de programmes de démonstration'
   },
   content: {
     mode: {

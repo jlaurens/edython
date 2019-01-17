@@ -415,10 +415,12 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
 Blockly.WorkspaceSvg.prototype.resizeContents = (() => {
   var resizeContents = Blockly.WorkspaceSvg.prototype.resizeContents
   return function () {
-    if (eYo.Selected.eyo && eYo.Selected.eyo.inVisibleArea()) {
-      return;
+    this.eyo.selected = eYo.Selected.eyo && eYo.Selected.eyo.inVisibleArea() && eYo.Selected.eyo
+    try {
+      resizeContents.call(this)
+    } finally {
+      this.eyo.selected = null
     }
-    resizeContents.call(this)
   }
 })()
 
@@ -527,12 +529,10 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
     console.warn('Tried to scroll a non-scrollable workspace.');
     return;
   }
-
   var block = this.workspace_.getBlockById(id);
   if (!block) {
     return;
   }
-
   if (!block.eyo.isStmt) {
     block = block.eyo.stmtParent.block_ || block.eyo.root.block_ || block
   }
@@ -557,16 +557,36 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
 
   // Scrolling to here will put the block in the top-left corner of the
   // visible workspace.
-  var scrollToBlockX = pixelX - metrics.contentLeft;
-  var scrollToBlockY = pixelY - metrics.contentTop;
-
-  // Put the block in the center of the visible workspace instead.
-  var scrollToCenterX = scrollToBlockX// - halfViewWidth;
-  var scrollToCenterY = scrollToBlockY// - halfViewHeight;
+  var scrollX = pixelX - metrics.contentLeft;
+  var scrollY = pixelY - metrics.contentTop;
 
   Blockly.hideChaff();
-  this.workspace_.scrollbar.set(scrollToCenterX, scrollToCenterY);
+  this.workspace_.scrollbar.set(scrollX, scrollY);
 };
+
+Object.defineProperties(
+  eYo.WorkspaceDelegate.prototype,
+  {
+    /**
+     * Get the visible rect of the workspace.
+     * This is the intersection of the block rectangle
+     * and the workspace view rect.
+     * For edython.
+     * @property {?eYo.Rect}
+     */
+     viewRect: {
+      get () {
+        var metrics = this.workspace_.getMetrics()
+        return new goog.math.Rect(
+          0,
+          0,
+          metrics.viewWidth,
+          metrics.viewHeight
+        )
+      }
+    }
+  }
+)
 
 /**
  * Recalculate a horizontal scrollbar's location on the screen and path length.

@@ -82,7 +82,9 @@ except:
         def turtleSetup(self):
             if 'turtle' in sys.modules:
                 if not window.eYo.Py.canRunTurtleScript():
-                    raise Exception('Erase turtle panel first')
+                    import turtle
+                    turtle.restart()
+                    print('Turtle restarted')
                 if self.setup is None:
                     print('Initializing turtle...')
                     self.setup = True
@@ -109,11 +111,16 @@ except:
             if 'turtle' in sys.modules:
                 import turtle
                 turtle.restart()
+                print('Turtle restarted')
+            else:
+                print('turtle module not imported.')
 
         def turtleReplayScene(self):
             if 'turtle' in sys.modules:
                 import turtle
                 turtle.replay_scene()
+            else:
+                print('turtle module not imported.')
 
     class Status():
         MAIN =  1
@@ -399,20 +406,22 @@ export default {
     restartConsole () {
       eYo.Py.console1 && eYo.Py.console1.__class__.restart(eYo.Py.console1)
     },
-    eraseTurtle () {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, `if edython is not None:
+    eraseTurtle (id) {
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
   edython.turtleRestart()
 else:
-  print('Nothing to do...')`)
+  print('Nothing to do...')
+`)
     },
     eraseConsole () {
       eYo.Py.console1 && eYo.Py.console1.__class__.erase(eYo.Py.console1)
     },
-    replayTurtle () {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, `if edython is not None:
+    replayTurtle (id) {
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
   edython.turtleReplayScene()
 else:
-  print('Nothing to do...')`)
+  print('Nothing to do...')
+`)
     },
     restartAll () {
       this.eraseTurtle()
@@ -420,12 +429,12 @@ else:
     }
   }
 }
-eYo.DelegateSvg.prototype.runScript = function () {
+eYo.DelegateSvg.prototype.runScript = function (id) {
   var p = new window.eYo.Py.Exporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
   if (eYo.Py.console1) {
-    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, this.id, code)
+    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, id || this.id, code)
   }
 }
 </script>

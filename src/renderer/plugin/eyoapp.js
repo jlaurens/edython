@@ -17,7 +17,7 @@ eYoApp.install = function (Vue, options) {
   eYo.App.doPrefToDom = (dom) => {
     var prefs = {}
     var value
-    var state = eYo.$$.app.$store.state
+    var state = store.state
     value = layoutcfg.prefs
     if (value) {
       prefs.workspace = value
@@ -51,8 +51,8 @@ eYoApp.install = function (Vue, options) {
               var prefs = JSON.parse(str)
               if (prefs) {
                 eYo.Do.tryFinally(() => {
-                  eYo.$$.app.$store.dispatch('Workspace/setPrefs', prefs.workspace)
-                  eYo.$$.app.$store.dispatch('Layout/setPrefs', prefs.paneLayout)
+                  store.dispatch('Workspace/setPrefs', prefs.workspace)
+                  store.dispatch('Layout/setPrefs', prefs.paneLayout)
                 })
                 return
               }
