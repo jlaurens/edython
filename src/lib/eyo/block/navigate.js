@@ -203,12 +203,36 @@ eYo.Selected.chooseLeft = () => {
       return
     }
   } else if (eyo.isStmt) {
-    eYo.Selected.eyo = eyo.group || eyo.root
-    eYo.Selected.scrollToVisible()
-    return
+    var ans = eyo.group || eyo.root
+    if (eyo !== ans) {
+      eYo.Selected.eyo = ans
+      eYo.Selected.scrollToVisible()
+      return
+    }
   } else {
     eYo.Selected.connection = null
   }
+  // now try to select a top block
+  var root = eyo.root
+  var target = root.getBestBlock((b, a) => {
+    if (a.left >= b.left) {
+      return {}
+    }
+    // b.left > a.left
+    if (a.top - b.bottom > b.left - a.left) {
+      return {minor: b.left - a.left + a.top - b.bottom}
+    }
+    if (b.top - a.bottom > b.left - a.left) {
+      return {minor: b.left - a.left + b.top - a.bottom}
+    }
+    return {
+      major: b.left - a.left + Math.abs(a.bottom + a.top - b.bottom - b.top) / 3,
+      minor: b.bottom - b.top
+    }
+  })
+  eYo.Selected.connection = null
+  eYo.Selected.block = target || root.block_
+  eYo.Selected.scrollToVisible()
 }
 /**
  * Select the block to the right of the selection.
@@ -226,6 +250,7 @@ eYo.Selected.chooseRight = function () {
     var c_eyo = c8n.eyo
     if (c_eyo.isInput || c_eyo.isOutput) {
       eYo.Selected.connection = null
+      eYo.Selected.scrollToVisible()
       return
     } else if (c_eyo.isNext) {
       if (eyo.isGroup) {
@@ -236,11 +261,18 @@ eYo.Selected.chooseRight = function () {
           c8n = next
         }
         eYo.Selected.connection = c8n
+        eYo.Selected.scrollToVisible()
+        return
       }
     } else {
       eYo.Selected.connection = null
+      eYo.Selected.scrollToVisible()
       return
     }
+  } else if ((c8n = eyo.suiteConnection)) {
+    eYo.Selected.connection = c8n
+    eYo.Selected.scrollToVisible()
+    return
   }
   // now try to select a top block
   var root = eyo.root
@@ -261,7 +293,7 @@ eYo.Selected.chooseRight = function () {
     }
   })
   eYo.Selected.connection = null
-  eYo.Selected.block = target || root
+  eYo.Selected.block = target || root.block_
   eYo.Selected.scrollToVisible()
 }
 
@@ -271,7 +303,7 @@ eYo.Selected.chooseRight = function () {
  * @return None
  */
 eYo.Selected.chooseAbove = function () {
-  const eyo = eYo.Selected.eyo
+  var eyo = eYo.Selected.eyo
   if (!eyo) {
     return
   }
@@ -299,9 +331,11 @@ eYo.Selected.chooseAbove = function () {
     return
   }
   if ((b_eyo = eyo.stmtParent) || (b_eyo = eyo.root)) {
-    eYo.Selected.eyo = b_eyo
-    eYo.Selected.scrollToVisible()
-    return
+    if (eyo !== b_eyo) {
+      eYo.Selected.eyo = b_eyo
+      eYo.Selected.scrollToVisible()
+      return
+    }
   }
   var block = eyo.root.getBestBlock((a, b) => {
     if (a.top <= b.top) {
@@ -319,8 +353,13 @@ eYo.Selected.chooseAbove = function () {
       minor: b.right - b.left
     }
   })
-  if (block) {
-    eYo.Selected.block = eYo.Selected.scrollToVisible()
+  if (block && (eyo = block.eyo)) {
+    if (c_eyo && c_eyo.isPrevious && eyo.nextConnection) {
+      eYo.Selected.connection = eyo.nextConnection
+    } else {
+      eYo.Selected.eyo = eyo
+    }
+    eYo.Selected.scrollToVisible()
   }
 }
 
@@ -341,23 +380,31 @@ eYo.Selected.chooseBelow = () => {
       var t_eyo = c_eyo.t_eyo
       if (t_eyo) {
         eYo.Selected.eyo = t_eyo
-        if (!t_eyo.inVisibleArea()) {
-          t_eyo.workspace.centerOnBlock(t_eyo.id)
-        }
+        eYo.Selected.scrollToVisible()
         return
       } else if ((t_eyo = eyo.group) && (c8n = t_eyo.nextConnection)) {
         eYo.Selected.connection = c8n
-        eyo = eYo.Selected.eyo
-        if (!eyo.inVisibleArea()) {
-          eyo.workspace.centerOnBlock(eyo.id)
-        }
+        eYo.Selected.scrollToVisible()
         return
       }
+    } else if (c_eyo.isSuite) {
+      var t_eyo = c_eyo.t_eyo
+      if (t_eyo) {
+        eYo.Selected.eyo = t_eyo
+        eYo.Selected.scrollToVisible()
+        return
+      } else if ((t_eyo = eyo.group) && (t_eyo !== eyo) && (c8n = t_eyo.nextConnection)) {
+        eYo.Selected.connection = c8n
+        eYo.Selected.scrollToVisible()
+        return
+      }
+    } else if (c_eyo.isPrevious) {
+      eYo.Selected.connection = null
+      eYo.Selected.scrollToVisible()
+      return
     }
-  }
-  if ((c8n = eyo.nextConnection) || ((eyo = eyo.stmtParent) && (c8n = eyo.nextConnection))) {
+  } else if ((c8n = eyo.nextConnection) || ((eyo = eyo.stmtParent) && (c8n = eyo.nextConnection))) {
     eYo.Selected.connection = c8n
-    eyo = eYo.Selected.eyo
     eYo.Selected.scrollToVisible()
     return
   }
@@ -378,8 +425,12 @@ eYo.Selected.chooseBelow = () => {
       minor: b.right - b.left
     }
   })
-  if (block) {
-    eYo.Selected.block = block
+  if (block && (eyo = block.eyo)) {
+    if (c_eyo && c_eyo.isNext && eyo.previousConnection) {
+      eYo.Selected.connection = eyo.previousConnection
+    } else {
+      eYo.Selected.eyo = eyo
+    }
     eYo.Selected.scrollToVisible()
   }
 }
