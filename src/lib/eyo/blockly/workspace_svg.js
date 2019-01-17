@@ -400,14 +400,27 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           avoidCollision()
         }
         block.moveBy(blockX, blockY)
-        if (!inVisibleArea()) {
-          this.centerOnBlock(block.id)
-        }
       }
       block.select()
+      eYo.Selected.scrollToVisible()
     }
   )
 }
+/**
+ * If enabled, resize the parts of the workspace that change when the workspace
+ * contents (e.g. block positions) change.  This will also scroll the
+ * workspace contents if needed.
+ * @package
+ */
+Blockly.WorkspaceSvg.prototype.resizeContents = (() => {
+  var resizeContents = Blockly.WorkspaceSvg.prototype.resizeContents
+  return function () {
+    if (eYo.Selected.eyo && eYo.Selected.eyo.inVisibleArea()) {
+      return;
+    }
+    resizeContents.call(this)
+  }
+})()
 
 /**
  * Tidy up the nodes.
