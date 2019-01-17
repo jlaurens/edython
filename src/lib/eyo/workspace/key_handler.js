@@ -518,9 +518,7 @@ eYo.KeyHandler = (() => {
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
         if (block) {
           block.select()
-          if (!block.eyo.inVisibleArea()) {
-            block.workspace.centerOnBlock(block.id)
-          }
+          eYo.Selected.scrollToVisible()
         }
       }
       switch (k) {
