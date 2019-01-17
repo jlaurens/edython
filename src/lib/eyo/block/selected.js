@@ -41,8 +41,8 @@ eYo.Selected = (() => {
   }
   me.scrollToVisible = () => {
     if (eyo__ && !eyo__.inVisibleArea()) {
-      eyo__.workspace.centerOnBlock(eyo__.id)
-    }  
+      eyo__.workspace.eyo.scrollBlockTopLeft(eyo__.id)
+    }
   }  
   Object.defineProperties(
     me,
