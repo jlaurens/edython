@@ -6,4 +6,5 @@ import '../lib/bugfix'
 import libapp from '../lib/app'
 import '../lib/brython'
 import './footer'
-export const app = libapp
+const app = libapp
+export default app

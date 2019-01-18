@@ -9,13 +9,17 @@ eYoAppDocument.install = function (Vue, options) {
   eYo.App.Document || (eYo.App.Document = {})
   eYo.App.Document.doNew = (ev) => {
     console.log('doNew')
-    if (eYo.App.workspace && eYo.App.workspace.eyo.changeCount) {
-      console.log('will bv::show::modal')
+    var w = eYo.App.workspace
+    if (w && w.eyo.changeCount) {
+      // console.log('will bv::show::modal')
       eYo.$$.app.$emit('bv::show::modal', 'page-modal-should-save')
     } else {
-      console.log('will doClear')
+      // console.log('will doClear')
       eYo.App.Document.doClear()
       eYo.App.Document.readString(blank)
+      Vue.nextTick(() => {
+        eYo.Selected.selectOneBlockOf(w.topBlocks_, true)
+      })
     }
   }
   eYo.App.Document.getDeflate = () => {

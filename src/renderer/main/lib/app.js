@@ -18,6 +18,6 @@ Object.defineProperties(eYo.$$, {
   store: store
 })
 
-export const app = eYo.$$.app
-
+const app = eYo.$$.app
 app.$mount('#app')
+export default app

@@ -39,8 +39,8 @@ eYo.Selected = (() => {
       }
     }
   }
-  me.scrollToVisible = () => {
-    if (eyo__ && !eyo__.inVisibleArea()) {
+  me.scrollToVisible = (force) => {
+    if (eyo__ && (!eyo__.inVisibleArea() || force)) {
       eyo__.workspace.eyo.scrollBlockTopLeft(eyo__.id)
     }
   }  
@@ -197,6 +197,23 @@ eYo.Selected = (() => {
   me.didRemove = eYo.Do.nothing
   return me
 })()
+
+eYo.Selected.selectOneBlockOf = (blocks, force) => {
+  console.error('eYo.Selected.selectOneBlockOf', blocks)
+  blocks = blocks.filter(block => block)
+  var f = (block) => {
+    var eyo = block.eyo
+    if (eyo.isControl) {
+      eYo.Selected.eyo = eyo
+      eYo.Selected.scrollToVisible(force)
+      return true
+    }
+  }
+  if (blocks.length && !blocks.some(f)) {
+    eYo.Selected.block = blocks[0]
+    eYo.Selected.scrollToVisible(force)
+  }
+}
 
 /**
  * Convenient property

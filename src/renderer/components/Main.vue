@@ -43,13 +43,11 @@
     },
     watch: {
       toolbarMainHeight (newValue, oldValue) {
-        console.error('WATCH toolbarMainHeight', newValue, oldValue)
         var div = this.$refs.elMainToolbar
         div.style.height = `${newValue}px`
         div = this.$refs.elMainPage
         div.style.top = `${newValue}px`
         div.style.height = `calc(100% - ${newValue}px)`
-        console.log('div.style.height', div.style.height)
       },
       tipsDisabled (newValue, oldValue) {
         var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)

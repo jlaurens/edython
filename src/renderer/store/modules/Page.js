@@ -5,11 +5,9 @@ const state = {
 
 const mutations = {
   setToolbarMainHeight (state, height) {
-    console.error('STATE setToolbarMainHeight', height)
     state.toolbarMainHeight = height
   },
   setToolbarBlockHeight (state, height) {
-    console.error('STATE setToolbarBlockHeight', height)
     state.toolbarBlockHeight = height
   }
 }

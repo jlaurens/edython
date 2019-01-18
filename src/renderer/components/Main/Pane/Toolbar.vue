@@ -20,6 +20,7 @@
         <b-dd-divider></b-dd-divider>
         <b-dd-item-button
           v-for="layout in layouts"
+          :key="layout"
           v-on:click="selectedLayout = layout">
           <icon-base
             :width="24"

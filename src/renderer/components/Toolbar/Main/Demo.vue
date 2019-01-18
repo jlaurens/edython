@@ -150,11 +150,10 @@
             var ids = w.eyo.fromDom(dom)
             // problem of code reuse
             eYo.App.doDomToPref(dom)
-            if (ids.length) {
-              var b = w.getBlockById(ids[0])
-              eYo.Selected.block = b
-              eYo.Selected.scrollToVisible()
-            }
+            // select the first created block that is a control
+            this.$nextTick(() => {
+              eYo.Selected.selectOneBlockOf(ids.map(id => w.getBlockById(id)), true)
+            })
           })
         }
       },
