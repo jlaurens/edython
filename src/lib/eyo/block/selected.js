@@ -200,7 +200,7 @@ eYo.Selected = (() => {
 
 eYo.Selected.selectOneBlockOf = (blocks, force) => {
   var select
-  var eyos = blocks.filter(block => block && block.eyo)
+  var eyos = blocks.filter(block => block).map(block => block.eyo)
   var f = (eyo) => {
     if (eyo.isControl && eyo.suiteCount) {
       select = eyo
