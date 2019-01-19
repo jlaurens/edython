@@ -13,7 +13,13 @@ eYoDocument.install = function (Vue, options) {
       }
       eYo.App.Document.readDeflate(content, fileName)
       eYo.App.workspace.eyo.resetChangeCount()
-      callback && callback()
+      if (callback) {
+        callback()
+      } else {
+        eYo.$$.app.$nextTick(() => {
+          eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+        })
+      }
     })
   }
   eYo.App.Document.getDocumentPath = () => {

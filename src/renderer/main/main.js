@@ -104,16 +104,15 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueSplit)
 Vue.use(VueTippy, eYo.Tooltip.options)
+if (eYo.App.env !== 'web') {
+  Vue.use(require('vue-electron'))
+}
 
 Vue.use(eYoPlugin)
 Vue.use(eYoApp, {store})
 Vue.use(eYoDocument, {store})
 Vue.use(eYoDebug)
 Vue.use(eYoI18n)
-
-if (eYo.App.env !== 'web') {
-  Vue.use(require('vue-electron'))
-}
 
 // i18n
 

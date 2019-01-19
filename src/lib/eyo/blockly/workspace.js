@@ -444,17 +444,30 @@ Blockly.onKeyDown_ = function(e) {
  */
 eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
+    var eyo = block.eyo
+    if (eYo.Selected.block === block) {
+      // prepare a connection to be selected
+      var c8n
+      if ((c8n = eyo.outputConnection)) {
+        c8n = c8n.targetConnection
+      } else if (!(c8n = eyo.previousConnection) || !(c8n = c8n.targetConnection)) {
+        (c8n = eyo.nextConnection) && (c8n = c8n.targetConnection)
+      }
+    }
     eYo.Events.groupWrap(() => {
       Blockly.hideChaff()
       if (deep) {
         do {
-          var next = block.eyo.nextBlock
-          block.dispose(false, true)
-        } while ((block = next))
+          var next = eyo.next
+          eyo.block_.dispose(false, true)
+        } while ((eyo = next))
       } else {
         block.dispose(true, true)
       }
     })
+    if (c8n && c8n.eyo.b_eyo.workspace) {
+      eYo.Selected.connection = c8n
+    }
   }
 }
 

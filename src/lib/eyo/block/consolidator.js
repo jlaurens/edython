@@ -297,7 +297,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.c8n.eyo.plugged_ = this.plugged
   if (!io.connected && !this.getMandatory(io) && !io.c8n.isConnected()) {
     var value = eYo.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
-    io.c8n.eyo.hole_data = eYo.HoleFiller.getData(check, value)
+    io.c8n.eyo.hole_data = check && eYo.HoleFiller.getData(check, value)
   }
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()

@@ -682,7 +682,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     if ((v = this.model.check)) {
       var check = v.call(c_eyo, c8n.sourceBlock_.type)
       c8n.setCheck(check)
-      if (!this.model.wrap) {
+      if (check && !this.model.wrap) {
         c_eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
       }
     }

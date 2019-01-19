@@ -2,7 +2,7 @@ var eYoDocument = {}
 const FileSaver = require('file-saver')
 
 eYoDocument.install = function (Vue, options) {
-  console.error('INSTALLING eYoDocument', process.env.BABEL_ENV, eYo, options)
+  process.env.BABEL_ENV, eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
   eYo.App.Document.doSave = (ev, callback) => {
@@ -31,6 +31,9 @@ eYoDocument.install = function (Vue, options) {
   eYo.$$.bus.$on('webUploadEnd', result => {
     var content = new Uint8Array(result)
     eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
+    eYo.$$.app.$nextTick(() => {
+      eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+    })
     eYo.App.Document.fileName_ = undefined
   })
 }

@@ -25,6 +25,12 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var m = eYo.DelegateSvg.Expr.binary.getTypeForOperator(newValue)
+        return m !== eYo.T3.Expr.unset
+          ? {validated: newValue}
+          : null
+      },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var root = this.field && this.field.getSvgRoot()
@@ -101,7 +107,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         if (!m) {
           console.error('NO MODEL FOR', type)
         }
-        return eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type).lhs
+        return m && m.lhs
       }
     },
     rhs: {
@@ -134,7 +140,8 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       },
       hole_value: 'name',
       check: /** @suppress {globalThis} */ function (type) {
-        return eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type).rhs
+        var m = eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type)
+        return m && m.rhs
       }
     }
   },
@@ -258,7 +265,6 @@ eYo.DelegateSvg.Expr.binary.getTypeForOperator = function (op) {
   if ('|' === op) {
     return eYo.T3.Expr.or_expr
   }
-  console.error("UNKNOWN OPERATOR", op)
   return eYo.T3.Expr.unset
 }
 
@@ -299,6 +305,12 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   data: {
     operator: {
       all: ['-', '+', '~', 'not'],
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var m = eYo.DelegateSvg.Expr.unary.getTypeForOperator(newValue)
+        return m !== eYo.T3.Expr.unset
+          ? {validated: newValue}
+          : null
+      },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var root = this.field && this.field.getSvgRoot()
@@ -341,7 +353,8 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        return eYo.DelegateSvg.Expr.unary.getOperatorModelForType(type).rhs
+        var m = eYo.DelegateSvg.Expr.unary.getOperatorModelForType(type)
+        return m && m.rhs
       }
     }
   },
@@ -408,7 +421,6 @@ eYo.DelegateSvg.Expr.unary.getTypeForOperator = function (op) {
   if ('not' === op) {
     return eYo.T3.Expr.not_test
   }
-  console.error("UNKNOWN OPERATOR", op)
   return eYo.T3.Expr.unset
 }
 

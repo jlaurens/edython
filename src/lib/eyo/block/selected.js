@@ -199,18 +199,25 @@ eYo.Selected = (() => {
 })()
 
 eYo.Selected.selectOneBlockOf = (blocks, force) => {
-  console.error('eYo.Selected.selectOneBlockOf', blocks)
-  blocks = blocks.filter(block => block)
-  var f = (block) => {
-    var eyo = block.eyo
-    if (eyo.isControl) {
-      eYo.Selected.eyo = eyo
-      eYo.Selected.scrollToVisible(force)
+  var select
+  var eyos = blocks.filter(block => block && block.eyo)
+  var f = (eyo) => {
+    if (eyo.isControl && eyo.suiteCount) {
+      select = eyo
       return true
     }
   }
-  if (blocks.length && !blocks.some(f)) {
-    eYo.Selected.block = blocks[0]
+  var g = (eyo) => {
+    if (eyo.isControl) {
+      select = eyo
+      return true
+    }
+  }
+  if (eyos.length && !eyos.some(f) && !eyos.some(g)) {
+    select = eyos[0]
+  }
+  if (select) {
+    eYo.Selected.eyo = select
     eYo.Selected.scrollToVisible(force)
   }
 }
