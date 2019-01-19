@@ -128,13 +128,13 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the block delegate
-      var eyo = this.b_eyo
-      if (eyo.variant_p === eYo.Key.STAR) {
+      var b_eyo = this.b_eyo
+      if (b_eyo.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
-      var t = eyo.modified_t
+      var t = b_eyo.modified_t
       var types = []
-      if (eyo.modifier_p === '*') {
+      if (b_eyo.modifier_p === '*') {
         if (t) {
           if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all)) {
             types.push(eYo.T3.Expr.star_expr)
