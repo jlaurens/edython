@@ -157,9 +157,10 @@ eYo.KeyHandler = (() => {
     var eyo = eYo.Selected.eyo
     if (eyo) {
       var c8n = eYo.Selected.connection
-      var newB = model.parent || model.slot
-      ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, c8n)
-      : eyo.insertBlockWithModel(model, c8n) || eyo.insertParentWithModel(model)
+      var newB = c8n && eyo.insertBlockWithModel(model, c8n)
+        || (model.parent || model.slot
+          ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, c8n)
+          : eyo.insertBlockWithModel(model, c8n) || eyo.insertParentWithModel(model))
       if (newB) {
         if (c8n) {
           // There was a selected connection,
