@@ -382,7 +382,7 @@ export default {
       this.setRunning1(false)
       this.setRunning1(true)
     })
-    eYo.Py.endRunScript1 = (id) => {
+    eYo.Py.endRunScript1 = id => {
       this.setRunning1(false)
       var eyo = eYo.Selected.eyo
       if (eyo && eyo.id === id) {

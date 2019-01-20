@@ -250,10 +250,6 @@
         var item = this.eyo.item_p
         this.can_call_ = !item || (item.type !== 'attribute' && item.type !== 'data' && item.type !== 'first last data') // that would let functions and methods
         this.can_andef_ = !item
-        // any keyword argument?
-        this.hasKeyword_ = item && item.arguments && item.arguments.some((arg) => {
-          return goog.isDef(arg.default)
-        })
       }
     }
   }

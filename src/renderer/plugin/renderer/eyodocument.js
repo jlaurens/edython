@@ -18,6 +18,7 @@ eYoDocument.install = function (Vue, options) {
       } else {
         eYo.$$.app.$nextTick(() => {
           eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+          eYo.$$.bus.$emit('pane-workspace-visible')
         })
       }
     })

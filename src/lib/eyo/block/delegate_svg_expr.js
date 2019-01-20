@@ -374,7 +374,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
         var c8n = input.connection
         if (c8n) {
           var candidate
-          if (c8n.checkType_(block.outputConnection)) {
+          if (c8n.checkType_(block.outputConnection) && (!c8n.eyo.bindField || !c8n.eyo.bindField.getText().length)) {
             candidate = c8n
           } else if ((target = c8n.targetBlock())) {
             candidate = findC8n(target)

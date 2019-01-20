@@ -77,16 +77,23 @@
       })
     },
     methods: {
-      doNew: function (ev) {
+      before () {
+        eYo.$$.bus.$emit('pane-workspace-visible')
+      },
+      doNew (ev) {
+        this.before()
         eYo.App.Document.doNew(ev)
       },
-      doOpen: function (ev) {
+      doOpen (ev) {
+        this.before()
         eYo.App.Document.doOpen(ev)
       },
-      doSave: function (ev) {
+      doSave (ev) {
+        this.before()
         eYo.App.Document.doSave(ev)
       },
-      doSaveAs: function (ev) {
+      doSaveAs (ev) {
+        this.before()
         eYo.App.Document.doSaveAs(ev)
       }
     }

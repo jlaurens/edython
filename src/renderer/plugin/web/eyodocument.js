@@ -33,6 +33,8 @@ eYoDocument.install = function (Vue, options) {
     eYo.App.Document.readDeflate(content, eYo.App.Document.fileName_)
     eYo.$$.app.$nextTick(() => {
       eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+      eYo.$$.bus.$emit('pane-workspace-visible')
+
     })
     eYo.App.Document.fileName_ = undefined
   })

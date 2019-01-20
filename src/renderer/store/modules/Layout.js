@@ -155,6 +155,7 @@ cfg.whats.forEach(k => {
 
 const mutations = {
   setPaneLayout (state, layout) {
+    console.warn('setPaneLayout', layout)
     state.paneLayout = layout
   }
 }

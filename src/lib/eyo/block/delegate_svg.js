@@ -2708,6 +2708,14 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
   }
   // is the block in the visible area ?
   var metrics = workspace.getMetrics()
+  if (!metrics) {
+    // sometimes undefined is returned
+    metrics = workspace.getMetrics() // break here to debug
+    return {
+      x: 0,
+      y: 0
+    }
+  }
   var scale = workspace.scale || 1
   var heightWidth = block.getHeightWidth()
   // the block is in the visible area if we see its center

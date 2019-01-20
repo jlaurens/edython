@@ -187,8 +187,9 @@
             }
           }
           // Problem of synchronization : `this.paneLayout` may not be consistent
-          // console.error('NO CFG for position', this.paneLayout, this.where, Ls)
+          console.error('NO CFG...', this.where, Ls)
         }
+        console.error('For paneLayout', this.paneLayout)
         return []
       },
       choices () {

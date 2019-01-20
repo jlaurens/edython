@@ -1,10 +1,10 @@
 <template>
   <div
     class="content"
-    ref="elContent">
+    ref="el_content">
     <div
       id="eyo-workspace-content"
-      ref="elInner">
+      ref="el_inner">
       <div
         v-show="false">
         <icon-base
@@ -210,7 +210,7 @@
           var oldValue = this.selectedCategory_
           this.selectedCategory_ = newValue
           if (!oldValue || (newValue !== oldValue)) {
-            var content = this.$refs.elInner
+            var content = this.$refs.el_inner
             if (content) {
               var el = content.getElementsByClassName('eyo-flyout')[0]
               eYo.Tooltip.hideAll(el)
@@ -218,6 +218,7 @@
               this.label = newValue.label
             }
           }
+          this.$$update()
         }
       },
       controlDiv () {
@@ -301,7 +302,7 @@
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor && this.resizeSensor.detach()
         this.resizeSensor = new ResizeSensor(
-          this.$refs.elContent,
+          this.$refs.el_content,
           this.$$resize.bind(this)
         )
         this.$$resize()
@@ -309,17 +310,27 @@
       $$update (e) {
         var phantom = this.$refs.phantom.$el
         var toolbar = this.$refs.toolbar.$el
-        var rect = phantom.getBoundingClientRect()
         if (!toolbar) {
           console.error('NO TOOLBAR ?')
+          return
         }
-        toolbar.setAttribute('style',
-          `width:${phantom.offsetWidth}px;left:0px;top:0px`
-        )
+        var rect = phantom.getBoundingClientRect()
+        var width = phantom.offsetWidth
+        // toolbar.style.width = `${phantom.offsetWidth}px`
+        // toolbar.style.left = `0px`
+        // toolbar.style.top = `0px`
+        // toolbar.style.display = rect.width ? '' : 'none'
+        var style = `
+          width:${width}px;
+          left:0px;
+          top:0px;
+        `
+        toolbar.setAttribute('style', style)
+        toolbar.style.display = rect.width ? '' : 'none'
         var parent = toolbar.parentNode
         parent.style.left = `${rect.left}px`
         parent.style.top = `${rect.top}px`
-        var scaleX = Math.floor(0.5 + 1000 * (rect.right - rect.left) / phantom.offsetWidth) / 1000
+        var scaleX = Math.floor(0.5 + 1000 * (rect.right - rect.left) / width) / 1000
         if (scaleX !== 1) {
           parent.style.transform = `scale(${scaleX})`
         } else {
@@ -330,7 +341,7 @@
         })
       },
       $$resize (e) {
-        var content = this.$refs.elContent
+        var content = this.$refs.el_content
         var top = content.offsetTop
         var left = content.offsetLeft
         var w = content.offsetWidth
@@ -343,14 +354,14 @@
           this.oldRect.left = left
           this.oldRect.width = newW
           this.oldRect.height = newH
-          var inner = this.$refs.elInner
+          var inner = this.$refs.el_inner
           inner.style.position = 'relative'
           inner.style.width = `${newW}px`
           inner.style.height = `${newH}px`
           inner.style.left = `${(w - newW) / 2}px`
           inner.style.top = `${(h - newH) / 2}px`
           inner.style.overflow = 'auto'
-          this.$refs.elInner.style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
+          this.$refs.el_inner.style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
           if (Blockly && eYo.App.workspace) {
             Blockly.svgResize(eYo.App.workspace)
             if (eYo.App.flyout) {
@@ -366,6 +377,7 @@
         if (toolbar.parentNode === phantom.parentNode) {
           this.$emit('install-toolbar', toolbar, true)
           phantom.style.display = ''
+          toolbar.style.display = 'none'
         }
         if (toolbar.parentNode === phantom.parentNode) {
           console.error('$$installToolbar FAILED')
@@ -379,6 +391,7 @@
           this.$emit('install-toolbar', toolbar, true)
           phantom.style.display = 'none'
           phantom.parentNode.insertBefore(toolbar, phantom)
+          toolbar.style.display = ''
         }
         if (toolbar.parentNode !== phantom.parentNode) {
           console.error('$$uninstallToolbar FAILED')
@@ -512,7 +525,6 @@
                 this.$nextTick(() => {
                   // eYo.$$.bus.$on('size-did-change', this.$$resize)
                   this.selectedCategory = this.items.basic
-                  this.$$resize()
                 })
               })
             })
