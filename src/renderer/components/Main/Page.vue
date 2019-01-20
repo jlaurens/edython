@@ -720,7 +720,8 @@
           }
         } else if (second) {
           this.switchWhere('f', 'v1')
-          this.place('v', 'f')
+          // this is the only case where the layout changes
+          this.changeLayout('V')
           where = 'v2'
         }
         this.place(what, where)
