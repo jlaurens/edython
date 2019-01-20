@@ -2,7 +2,6 @@ var eYoDocument = {}
 const FileSaver = require('file-saver')
 
 eYoDocument.install = function (Vue, options) {
-  process.env.BABEL_ENV, eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
   eYo.App.Document.doSave = (ev, callback) => {
