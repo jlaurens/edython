@@ -12,8 +12,8 @@
       ref="elMainPage">
       <main-page></main-page>
     </div>
-    <!--main-web-load></main-web-load>
-    <main-modal></main-modal-->
+    <main-web-load></main-web-load>
+    <main-modal></main-modal>
   </b-container>
 </template>
 
