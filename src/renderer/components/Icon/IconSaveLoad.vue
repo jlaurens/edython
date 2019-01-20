@@ -1,5 +1,5 @@
 <template>
-  <g>
+  <g transform="rotate(180,16,16)">
     <rect
       x="1"
       y="20"
@@ -9,7 +9,7 @@
       ry="3"></rect
     >
     <rect
-      x="23"
+      x="5"
       y="24.5"
       width="4"
       height="2"
