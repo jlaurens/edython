@@ -446,12 +446,12 @@ eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
     var eyo = block.eyo
     if (eYo.Selected.block === block) {
-      // prepare a connection to be selected
+      // prepare a connection or a block to be selected
       var c8n
       if ((c8n = eyo.outputConnection)) {
         c8n = c8n.targetConnection
-      } else if (!(c8n = eyo.previousConnection) || !(c8n = c8n.targetConnection)) {
-        (c8n = eyo.nextConnection) && (c8n = c8n.targetConnection)
+      } else if ((c8n = eyo.nextConnection)) {
+        var t_eyo = c8n.eyo.t_eyo
       }
     }
     eYo.Events.groupWrap(() => {
@@ -467,6 +467,8 @@ eYo.deleteBlock = function (block, deep) {
     })
     if (c8n && c8n.eyo.b_eyo.workspace) {
       eYo.Selected.connection = c8n
+    } else if (t_eyo) {
+      eYo.Selected.eyo = t_eyo
     }
   }
 }
