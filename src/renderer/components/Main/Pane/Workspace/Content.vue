@@ -298,6 +298,10 @@
           this.resizeSensor.detach()
           this.resizeSensor = null
         }
+        if (this.resizeSensorTB) {
+          this.resizeSensorTB.detach()
+          this.resizeSensorTB = null
+        }
       },
       didPlace () { // this is necessary due to the scale feature
         this.resizeSensor && this.resizeSensor.detach()
@@ -305,7 +309,12 @@
           this.$refs.el_content,
           this.$$resize.bind(this)
         )
-        this.$$resize()
+        this.resizeSensorTB && this.resizeSensorTB.detach()
+        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, () => {
+          console.error('CONTENT PHANTOM')
+          this.$$update()
+        })
+        this.$$update()
       },
       $$update (e) {
         var phantom = this.$refs.phantom.$el
@@ -532,7 +541,10 @@
         })
       }
       this.$nextTick(() => {
-        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, this.$$update.bind(this))
+        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, () => {
+          console.error('CONTENT PHANTOM')
+          this.$$update()
+        })
         this.$$installToolbar()
         this.$$update()
       })
