@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edython xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<prefs>{"workspace":{},"paneLayout":"F"}</prefs>
+<workspace>
+<content>
+<s eyo="start" comment="cercle x 2" x="383" y="83">
+<python>
+# cercle x 2
+from turtle import *
+from math import *
+edython.turtleSetup()
+try:
+    n = int(input('Entrer un entier entre 1 et 240'))
+    assert n &gt;= 1 and n &lt;= 240
+except:
+    print(f"{n} n'est pas un entier entre 1 et 200 !")
+    return
+r = 150
+speed('fast')
+x = lambda k: cos(2 * k * pi / n)* r
+y = lambda k: sin(2 * k * pi / n)* r
+def ligne(i,j):
+    penup()
+    goto(x(i),y(i))
+    pendown()
+    goto(x(j),y(j))
+for k in range(n // 2):
+    ligne(2 * k + 1,4 * k + 2)
+    ligne(4 * k + 4,2 * k + 2)
+done()
+</python>
+<s eyo="import" variant="from_module_import_star" from="turtle" star="true" flow="suite">
+<s eyo="import" variant="from_module_import_star" from="math" star="true" flow="next">
+<s eyo="turtle__setup_stmt" flow="next">
+<s eyo="try" flow="next">
+<s eyo="assignment" name="n" flow="suite">
+<x eyo="list" slot="value">
+<x eyo="call" name="int" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="input" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'Entrer un entier entre 1 et 240'</x>
+</x>
+</x>
+</x>
+</x>
+</x>
+<s eyo="assert_stmt" variant="unary" flow="next">
+<x eyo="and_test" operator="and" slot="expression">
+<x eyo="comparison" operator="&gt;=" lhs="n" rhs="1" slot="lhs">
+</x>
+<x eyo="comparison" operator="&lt;=" lhs="n" rhs="240" slot="rhs">
+</x>
+</x>
+</s>
+</s>
+<s eyo="except" flow="next">
+<s eyo="print" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">f"{n} n'est pas un entier entre 1 et 200 !"</x>
+</x>
+<s eyo="return" flow="next">
+</s>
+</s>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="r" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="literal" slot="O">150</x>
+</x>
+<s eyo="call" holder="turtle" name="speed" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="literal" slot="O">'fast'</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="x" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="lambda" slot="O">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="k" slot="O">
+</x>
+</x>
+<x eyo="m_expr" operator="*" slot="expression">
+<x eyo="call" name="cos" slot="lhs">
+<x eyo="list" slot="n_ary">
+<x eyo="m_expr" operator="/" slot="O">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+<x eyo="identifier" name="pi" slot="rhs">
+</x>
+</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<s eyo="assignment" flow="next">
+<x eyo="identifier" name="y" slot="name">
+</x>
+<x eyo="list" slot="value">
+<x eyo="lambda" slot="O">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="k" slot="O">
+</x>
+</x>
+<x eyo="m_expr" operator="*" slot="expression">
+<x eyo="call" name="sin" slot="lhs">
+<x eyo="list" slot="n_ary">
+<x eyo="m_expr" operator="/" slot="O">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+<x eyo="identifier" name="pi" slot="rhs">
+</x>
+</x>
+<x eyo="identifier" name="n" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<x eyo="identifier" name="r" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<s eyo="function" name="ligne" flow="next">
+<x eyo="list" slot="parameters">
+<x eyo="identifier" name="i" slot="O">
+</x>
+<x eyo="identifier" name="j" slot="f">
+</x>
+</x>
+<s eyo="call" holder="turtle" name="penup" flow="suite">
+<s eyo="call" holder="turtle" name="goto" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="x" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="i" slot="O">
+</x>
+</x>
+</x>
+<x eyo="call" name="y" slot="f">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="i" slot="O">
+</x>
+</x>
+</x>
+</x>
+<s eyo="call" holder="turtle" name="pendown" flow="next">
+<s eyo="call" holder="turtle" name="goto" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="call" name="x" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="j" slot="O">
+</x>
+</x>
+</x>
+<x eyo="call" name="y" slot="f">
+<x eyo="list" slot="n_ary">
+<x eyo="identifier" name="j" slot="O">
+</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+</s>
+</s>
+<s eyo="for" flow="next">
+<x eyo="list" slot="for">
+<x eyo="identifier" name="k" slot="O">
+</x>
+</x>
+<x eyo="list" slot="in">
+<x eyo="call" name="range" slot="O">
+<x eyo="list" slot="n_ary">
+<x eyo="m_expr" operator="//" rhs="2" slot="O">
+<x eyo="identifier" name="n" slot="lhs">
+</x>
+</x>
+</x>
+</x>
+</x>
+<s eyo="call" name="ligne" flow="suite">
+<x eyo="list" slot="n_ary">
+<x eyo="a_expr" operator="+" rhs="1" slot="O">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+</x>
+<x eyo="a_expr" operator="+" rhs="2" slot="r">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">4</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+<s eyo="call" name="ligne" flow="next">
+<x eyo="list" slot="n_ary">
+<x eyo="a_expr" operator="+" rhs="4" slot="O">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">4</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+</x>
+<x eyo="a_expr" operator="+" rhs="2" slot="r">
+<x eyo="m_expr" operator="*" slot="lhs">
+<x eyo="literal" slot="lhs">2</x>
+<x eyo="identifier" name="k" slot="rhs">
+</x>
+</x>
+</x>
+</x>
+</s>
+</s>
+<s eyo="call" holder="turtle" name="done" flow="next">
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</s>
+</content>
+</workspace>
+</edython>
