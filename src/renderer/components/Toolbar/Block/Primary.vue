@@ -9,7 +9,8 @@
     ></name>
     <variant
       :slotholder="slotholder"
-      :ismethod="isMethod">
+      :ismethod="isMethod"
+      :keyword="eyo.name_p ==='print'">
     </variant>
     <ry
       v-if="showRy"
