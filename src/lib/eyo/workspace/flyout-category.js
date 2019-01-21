@@ -206,19 +206,19 @@ eYo.FlyoutCategory = {
     {
       type: eYo.T3.Expr.identifier,
     },
-    eYo.T3.Expr.builtin__object,
-    eYo.T3.Expr.not_test,
+    eYo.T3.Stmt.if_part,
     eYo.T3.Expr.number_comparison,
+    eYo.T3.Expr.or_test,
+    eYo.T3.Expr.and_test,
+    eYo.T3.Stmt.elif_part,
+    eYo.T3.Stmt.else_part,
+    eYo.T3.Expr.not_test,
     eYo.T3.Expr.object_comparison,
     {
       type: eYo.T3.Expr.builtin__object,
       value_d: 'None'
     },
-    eYo.T3.Expr.or_test,
-    eYo.T3.Expr.and_test,
-    eYo.T3.Stmt.if_part,
-    eYo.T3.Stmt.elif_part,
-    eYo.T3.Stmt.else_part,
+    eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.conditional_expression,
   ],
   looping: [
