@@ -411,7 +411,7 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
     return new eYo.T3.Profile(null, {
       raw: m.dots || m.holder
         ? eYo.T3.Expr.custom_parent_module
-        : eYo.T3.Expr.custom_identifier,
+        : (ans && ans.raw) || eYo.T3.Expr.custom_identifier,
       expr: m.dots || m.holder
         ? eYo.T3.Expr.parent_module
         : eYo.T3.Expr.identifier,
@@ -568,7 +568,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
     'random',
     'cmath',
     'string'
-  ].some((module) => {
+  ].some(module => {
     var M = eYo.Model[module + '__module']
     ans = M && M.getProfile(identifier)
     if (ans && !ans.isVoid) {
