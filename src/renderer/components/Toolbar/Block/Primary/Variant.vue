@@ -90,6 +90,10 @@
       ismethod: {
         type: Boolean,
         default: false
+      },
+      keyword: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -112,7 +116,7 @@
         }
       },
       showKeyword () {
-        return this.variant === eYo.Key.CALL_EXPR && this.hasKeyword_
+        return this.variant === eYo.Key.CALL_EXPR && (this.keyword || this.hasKeyword_)
       },
       keywordArguments () {
         this.$$synchronize(this.step)
