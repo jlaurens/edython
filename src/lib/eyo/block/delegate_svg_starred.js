@@ -107,6 +107,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       },
       synchronize: true,
       xml: false
+    },
+    modified: {
+      init: '',
+      synchronize: true
     }
   },
   fields: {
@@ -118,6 +122,11 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
   slots: {
     modified: {
       order: 10,
+      fields: {
+        bind: {
+          endEditing: true
+        }
+      },
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.modifier_p === '*'
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
