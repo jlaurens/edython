@@ -310,10 +310,10 @@
           this.$$resize.bind(this)
         )
         this.resizeSensorTB && this.resizeSensorTB.detach()
-        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, () => {
-          console.error('CONTENT PHANTOM')
-          this.$$update()
-        })
+        this.resizeSensorTB = new ResizeSensor(
+          this.$refs.phantom.$el,
+          this.$$update.bind(this)
+        )
         this.$$update()
       },
       $$update (e) {
