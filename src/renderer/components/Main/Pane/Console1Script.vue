@@ -338,8 +338,10 @@ except:
                     event.preventDefault()
                     event.stopPropagation()
                     
-        def runScript(self, id, src, flush = False):
-            if flush:
+        def runScript(self, id, src, restart = False, flush = False):
+            if restart:
+                self.restart()
+            elif flush:
                 self.flush()
             else:
                 self._newline()
@@ -429,12 +431,16 @@ else:
     }
   }
 }
-eYo.DelegateSvg.prototype.runScript = function (id) {
+/**
+ * @param {!String} id
+ * @param {?Boolean} restart
+ */
+eYo.DelegateSvg.prototype.runScript = function (id, restart) {
   var p = new window.eYo.Py.Exporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
   if (eYo.Py.console1) {
-    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, id || this.id, code)
+    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, id || this.id, code, restart)
   }
 }
 </script>
