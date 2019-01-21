@@ -439,6 +439,9 @@ eYo.DelegateSvg.prototype.runScript = function (id, restart) {
   var p = new window.eYo.Py.Exporter()
   var code = p.export(this.block_, {is_deep: true})
   console.log('CODE', code)
+  if (!goog.isDef(restart) && this === this.root) {
+    restart = !this.previous
+  }
   if (eYo.Py.console1) {
     eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, id || this.id, code, restart)
   }
