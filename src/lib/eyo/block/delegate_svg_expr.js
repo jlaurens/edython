@@ -24,44 +24,7 @@ goog.require('goog.dom');
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.makeSubclass('Expr', {
-  data: {
-    modifier: {
-      order: 99,
-      all: ['', '*', '**'],
-      init: '',
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.setIncog(!newValue || !newValue.length)
-      },
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.star) {
-          this.set('*')
-        } else if (type === eYo.T3.Expr.target_star) {
-          this.set('*')
-        } else if (type === eYo.T3.Expr.parameter_star) {
-          this.set('*')
-        } else if (type === eYo.T3.Expr.star_expr) {
-          this.set('*')
-        } else if (type === eYo.T3.Expr.parameter_star_star) {
-          this.set('**')
-        } else if (type === eYo.T3.Expr.expression_star_star) {
-          this.set('**')
-        } else if (type === eYo.T3.Expr.or_expr_star_star) {
-          this.set('**')
-        }
-        // this.set()
-      },
-      synchronize: true,
-    }
-  },
-  fields: {
-    modifier: {
-      value: '',
-      css: 'reserved'
-    }
-  }
-})
+eYo.DelegateSvg.makeSubclass('Expr')
 
 // Default delegate for all expression blocks
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
