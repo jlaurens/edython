@@ -142,7 +142,7 @@ eYo.DelegateSvg.Group.prototype.updateBlackCount = function () {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('if_part', {
+eYo.DelegateSvg.Group.makeSubclass('Branch', {
   data: {
     variant: {
       all: [
@@ -219,14 +219,14 @@ eYo.DelegateSvg.Group.makeSubclass('if_part', {
       }
     }
   }
-}, true)
+})
 
 /**
  * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
- * @return true if the given value is accepted, false otherwise
+ * @return {String}
  */
-eYo.DelegateSvg.Stmt.if_part.prototype.xmlAttr = function () {
+eYo.DelegateSvg.Group.Branch.prototype.xmlAttr = function () {
   return this.variant_p
 }
 
@@ -239,7 +239,7 @@ eYo.DelegateSvg.Stmt.if_part.prototype.xmlAttr = function () {
  * Each type change may imply a disconnection.
  * At least, the type may change to a value when no connection is connected.
  */
-eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
+eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
   var T3 = eYo.T3.Stmt
   var type = {
     [eYo.Key.IF]: T3.if_part,
@@ -280,8 +280,7 @@ eYo.DelegateSvg.Stmt.if_part.prototype.getBaseType = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.if_part.prototype.populateContextMenuFirst_ = function (mgr) {
-  var block = this.block_
+eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -365,7 +364,7 @@ eYo.DelegateSvg.Stmt.if_part.prototype.populateContextMenuFirst_ = function (mgr
 // }, true)
 
 var names = [
-  // 'if',
+  'if',
   'elif',
   'else',
   'while',
@@ -374,7 +373,7 @@ var names = [
 ]
 names.forEach((name) => {
   var key = name + '_part'
-  eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Stmt.if_part
+  eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Group.Branch
   eYo.DelegateSvg.Manager.register(key)
 })
 
