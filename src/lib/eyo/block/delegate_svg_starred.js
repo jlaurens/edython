@@ -52,6 +52,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       eYo.T3.Expr.star_expr,
       eYo.T3.Expr.expression_star,
       eYo.T3.Expr.expression_star_star,
+      eYo.T3.Expr.or_expr_star_star,
       eYo.T3.Expr.target_star,
       eYo.T3.Expr.star,
       eYo.T3.Expr.parameter_star,
@@ -72,8 +73,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
         this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner.modified_s.setIncog(newValue === eYo.Key.STAR)
-      }
+        this.synchronize(newValue)
+        this.owner.modified_d.setIncog(newValue === eYo.Key.STAR)
+      },
+      xml: false
     },
     modifier: {
       order: 99,
@@ -81,7 +84,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       init: '*',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (newValue !== '*' && this.owner.variant_p === eYo.Key.STAR) {
+        if (newValue !== '*') {
           this.owner.variant_p = eYo.Key.NONE
         }
       },
@@ -110,7 +113,28 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
     },
     modified: {
       init: '',
-      synchronize: true
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue.length) {
+          this.owner.variant_p = eYo.Key.NONE
+        }
+      },
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          this.required = this.owner.variant_p !== eYo.Key.STAR
+          this.save(element, opt)
+        },
+        load: /** @suppress {globalThis} */ function (element, opt) {
+          this.load(element, opt)
+        }
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        this.owner.variant_p = this.isRequiredFromModel()
+          ? eYo.Key.NONE
+          : eYo.Key.STAR
+      }
     }
   },
   fields: {
@@ -145,16 +169,16 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       var types = []
       if (b_eyo.modifier_p === '*') {
         if (t) {
-          if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all)) {
+          if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, t)) {
             types.push(eYo.T3.Expr.star_expr)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.expression)) {
+          if (goog.array.contains(eYo.T3.Expr.Check.expression, t)) {
             types.push(eYo.T3.Expr.expression_star)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.target)) {
+          if (goog.array.contains(eYo.T3.Expr.Check.target, t)) {
             types.push(eYo.T3.Expr.target_star)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.parameter)) {
+          if (goog.array.contains(eYo.T3.Expr.Check.parameter, t)) {
             types.push(eYo.T3.Expr.parameter_star)
           }
           return types
@@ -162,18 +186,50 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
         return [eYo.T3.Expr.star_expr,
           eYo.T3.Expr.expression_star,
           eYo.T3.Expr.target_star,
-          eYo.T3.Expr.parameter_star]
+          eYo.T3.Expr.parameter_star
+        ]
       }
-      if (goog.array.contains(eYo.T3.Expr.Check.expression)) {
-        types.push(eYo.T3.Expr.expression_star_star)
+      if(t) {
+        if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, t)) {
+          types.push(eYo.T3.Expr.or_expr_star_star)
+        }
+        if (goog.array.contains(eYo.T3.Expr.Check.expression, t)) {
+          types.push(eYo.T3.Expr.expression_star_star)
+        }
+        if (goog.array.contains(eYo.T3.Expr.Check.parameter, t)) {
+          types.push(eYo.T3.Expr.parameter_star_star)
+        }
+        return types
       }
-      if (goog.array.contains(eYo.T3.Expr.Check.parameter)) {
-        types.push(eYo.T3.Expr.parameter_star_star)
-      }
-      return types
+      return [eYo.T3.Expr.star_expr,
+        eYo.T3.Expr.expression_star,
+        eYo.T3.Expr.target_star,
+        eYo.T3.Expr.parameter_star
+      ]
     }
   }
 })
+
+/**
+ * The type and connection depend on the properties modifier, value and variant.
+ * For edython.
+ */
+eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
+  'getType',
+  function () {
+    var check = this.outputConnection.check_
+    return check && check[0]
+  }
+)
+
+/**
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * For edython.
+ * @return {String}
+ */
+eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
+  return this.modifier_p
+}
 
 var ra = [
   'star_expr',
@@ -187,6 +243,6 @@ var ra = [
 ra.forEach(
     key => {
       eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.Starred
-      eYo.DelegateSvg.Manager.register(key)    
+      eYo.DelegateSvg.Manager.register(key)
     }
   )
