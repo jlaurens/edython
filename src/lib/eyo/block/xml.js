@@ -1036,6 +1036,7 @@ eYo.Xml.domToBlock = (() => {
         // is it a literal or something else special ?
         if ((block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Starred.domToBlockComplete(dom, owner)) ||
         // (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Call.domToBlockComplete(dom, owner))) {
           eYo.Xml.fromDom(block, dom)
@@ -1292,6 +1293,26 @@ eYo.Xml.Comparison.domToBlockComplete = function (element, owner) {
     }
     return block
   }
+}
+
+/**
+ * Try to create a starred block from the given element.
+ * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
+ * @override
+ */
+eYo.Xml.Starred.domToBlockComplete = function (element, owner) {
+  var block
+  var prototypeName = element.getAttribute(eYo.Key.EYO)
+  var id = element.getAttribute('id')
+  if (prototypeName === "*") {
+    var workspace = owner.workspace || owner
+    block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.star_expr, id)
+  } else if (prototypeName === "**") {
+    var workspace = owner.workspace || owner
+    block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.or_expr_star_star, id)
+  }
+  return block
 }
 
 goog.require('eYo.DelegateSvg.Group')
