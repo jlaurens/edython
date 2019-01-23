@@ -178,6 +178,9 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
         return this.b_eyo.modifier_p === '*'
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        this.owner.variant_p = eYo.Key.NONE
       }
     }
   },
