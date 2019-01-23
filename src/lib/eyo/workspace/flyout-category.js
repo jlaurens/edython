@@ -308,6 +308,19 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
+      name_d: 'print',
+      n_ary_s: {
+        slots: {
+          O: {
+            type: eYo.T3.Expr.star_expr,
+            modifier_d: '*',
+            modified_d: ''
+          }
+        }
+      }
+    },
+    {
+      type: eYo.T3.Expr.call_expr,
       name_d: 'len'
     },
     {
