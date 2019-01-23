@@ -294,7 +294,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentSlotName)
   } else {
-    // find the first connection that can accept block
+    // find the first parent's connection that can accept block
     var findC8n = (B) => {
       var foundC8n, target
       B.eyo.someInput(input => {
@@ -340,10 +340,12 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
         targetC8n = outputC8n.targetConnection
         var bumper
         if (targetC8n) {
-          targetC8n.disconnect()
           if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
+            // do not disconnect here because it causes a consolidation
+            // and a connection mangling
             targetC8n.connect(parentBlock.outputConnection)
           } else {
+            targetC8n.disconnect()
             bumper = targetC8n.sourceBlock_
             var its_xy = bumper.getRelativeToSurfaceXY()
             var my_xy = parentBlock.getRelativeToSurfaceXY()
