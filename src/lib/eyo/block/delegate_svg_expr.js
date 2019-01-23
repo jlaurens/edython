@@ -60,44 +60,8 @@ eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function (deep) {
 eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
-    var t = this.getBaseType()
-    var modifier = this.modifier_p
-    if (!modifier) {
-      return {
-        ans: t
-      }
-    }
-    var types = []
-    if (modifier === '**') {
-      if (eYo.T3.Expr.Check.parameter.indexOf(t)) {
-        types.push(eYo.T3.Expr.parameter_star_star)
-      }
-      if (eYo.T3.Expr.Check.or_expr_all.indexOf(t)) {
-        types.push(eYo.T3.Expr.or_expr_star_star)
-      }
-      types.push(eYo.T3.Expr.expression_star_star)
-    } else if (modifier === '*') {
-      if (t === eYo.T3.Expr.identifier && this.getBaseType() === eYo.T3.Expr.unset) {
-        types.push(eYo.T3.Expr.star)
-      }
-      if (eYo.T3.Expr.Check.target.indexOf(t)) {
-        types.push(eYo.T3.Expr.target_start)
-      }
-      if (eYo.T3.Expr.Check.parameter.indexOf(t)) {
-        types.push(eYo.T3.Expr.parameter_star)
-      }
-      if (eYo.T3.Expr.Check.or_expr_all.indexOf(t)) {
-        types.push(eYo.T3.Expr.star_expr)
-      }
-      types.push(eYo.T3.Expr.expression_star)
-    } else {
-      return {
-        ans: t
-      }
-    }
-    this.types = types
     return {
-      ans: types[0]
+      ans: this.getBaseType()
     }
   }
 )
