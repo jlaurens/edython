@@ -168,6 +168,7 @@ eYo.setup.register(function () {
     `.eyo-flyout-background {
       fill: #ddd;
       fill-opacity: .8;
+      pointer-events: all;
     }`
   )
   eYo.Style.insertCssRuleAt(
@@ -606,7 +607,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   // Top.
   path.push('h', atRight ? -width : width);
   // Side closest to workspace.
-  path.push('v', Math.max(0, height - top_margin));
+  path.push('v', Math.max(0, height - top_margin - this.eyo.TOP_OFFSET));
   // Bottom.
   path.push('h', atRight ? width : -width);
   path.push('z');
