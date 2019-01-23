@@ -1,9 +1,45 @@
 <template>
-  <b-btn-group id="block-starred" key-nav  aria-label="Block decorator">
-    <b-dd class="item text eyo-with-slotholder mw-6rem" variant="outline-secondary">
-      <template slot="button-content"><span class="eyo-code-reserved" v-html="chosen.title"></span></template>
-      <b-dd-item-button v-for="choice in choices" v-on:click="chosen = choice" :key="choice.key" class="eyo-code" v-html="choice.title"></b-dd-item-button>
+  <b-btn-group
+    id="block-starred"
+    key-nav 
+    aria-label="Block '*' decorator">
+    <b-dd
+      class="item text mw-4rem"
+      variant="outline-secondary">
+      <template
+        slot="button-content"
+        ><span
+          class="eyo-code-reserved"
+          v-html="chosen"></span
+        ></template
+      >
+      <b-dd-item-button
+        v-for="choice in choices"
+        v-on:click="chosen = choice"
+        :key="choice"
+        class="eyo-code"
+        v-html="choice"></b-dd-item-button
+      >
     </b-dd>
+    <div
+      v-if="chosen === '*'"
+      class="item">
+      <input
+        type="checkbox"
+        v-model="not_only_star">
+    </div>
+    <b-input
+      v-if="!eyo.modified_t"
+      v-model="modified"
+      type="text"
+      :class="$$class(modified)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.expression')"
+      :disabled="!canModified"
+    ></b-input>
+    <div
+      v-else class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"></div>
   </b-btn-group>
 </template>
 
@@ -15,15 +51,15 @@
     data: function () {
       return {
         saved_step: undefined,
-        chosen_: undefined
+        chosen_: undefined,
+        not_only_star_: undefined,
+        modified_: undefined
       }
     },
     props: {
       slotholder: {
         type: Function,
-        default: function (item) {
-          return item
-        }
+        default: item => item
       }
     },
     computed: {
@@ -36,40 +72,8 @@
       my_slot () {
         return this.slotholder('eyo-slotholder')
       },
-      choices_by_key () {
-        return {
-          [eYo.Key.STAR]: {
-            key: eYo.Key.STAR,
-            title: '<span class="eyo-code-reserved">*&nbsp;</span>',
-            action (eyo) {
-              eyo.modifier_p = '*'
-              eyo.variant_p = eYo.Key.STAR
-            }
-          },
-          [eYo.Key.STAR_NAME]: {
-            key: eYo.Key.STAR_NAME,
-            title: '<span class="eyo-code-reserved">*</span>' + this.my_slot,
-            action (eyo) {
-              eyo.modifier_p = '*'
-              eyo.variant_p = eYo.Key.NONE
-            }
-          },
-          [eYo.Key.STAR_STAR_NAME]: {
-            key: eYo.Key.STAR_STAR_NAME,
-            title: '<span class="eyo-code-reserved">**</span>' + this.my_slot,
-            action (eyo) {
-              eyo.modifier_p = '**'
-              eyo.variant_p = eYo.Key.NONE
-            }
-          }
-        }
-      },
       choices () {
-        return [
-          this.choices_by_key[eYo.Key.STAR],
-          this.choices_by_key[eYo.Key.STAR_NAME],
-          this.choices_by_key[eYo.Key.STAR_STAR_NAME]
-        ]
+        return ['*', '**']
       },
       chosen: {
         get () {
@@ -77,20 +81,47 @@
           return this.chosen_
         },
         set (newValue) {
-          newValue.action(this.eyo)
-          this.$$synchronize(this.step)
+          this.eyo.modifier_p = newValue
+          this.eyo.variant_p = !this.not_only_star_ && newValue === '*'
+            ? eYo.Key.STAR
+            : eYo.Key.NONE
         }
+      },
+      not_only_star: {
+        get () {
+          this.$$synchronize(this.step)
+          return this.not_only_star_
+        },
+        set (newValue) {
+          this.eyo.variant_p = !newValue && this.eyo.modifier_p === '*'
+            ? eYo.Key.STAR
+            : eYo.Key.NONE
+        }
+      },
+      modified: {
+        get () {
+          this.$$synchronize(this.step)
+          return this.modified_
+        },
+        set (newValue) {
+          this.eyo.modified_p = newValue
+        }
+      },
+      canModified () {
+        this.$$synchronize(this.step)
+        return this.chosen_ !== '*' || this.not_only_star
       }
     },
     methods: {
       $$doSynchronize (eyo) {
-        if (eyo.modifier_p === '**') {
-          this.chosen_ = this.choices_by_key[eYo.Key.STAR_STAR_NAME]
-        } else if (eyo.variant_p === eYo.Key.STAR) {
-          this.chosen_ = this.choices_by_key[eYo.Key.STAR]
-        } else /* if (eyo.variant_p === eYo.Key.STAR) */ {
-          this.chosen_ = this.choices_by_key[eYo.Key.STAR_NAME]
+        this.chosen_ = eyo.modifier_p
+        if (eyo.modifier_p === '*') {
+          this.not_only_star_ = eyo.variant_p !== eYo.Key.STAR
         }
+        this.modified_ = eyo.modified_p
+      },
+      $$class (key) {
+        return `eyo-code and item${this.not_only_star ? ' text' : ''}${key.length ? '' : ' placeholder'}`
       }
     }
   }
