@@ -224,8 +224,6 @@ eYo.DelegateSvg.Stmt.prototype.minBlockW = function () {
   return eYo.Font.tabW
 }
 
-console.error('workspace cancel last gesture?')
-
 /**
  * Insert a block above.
  * If the block's previous connection is connected,
