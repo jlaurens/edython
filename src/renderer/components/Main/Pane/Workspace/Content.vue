@@ -42,12 +42,19 @@
               >{{item.content}}</b-dd-item-button>
               <b-dd-divider></b-dd-divider>
               <b-dd-item-button
-                v-for="item in categories"
+                v-for="item in data_categories"
                 @click="selectedCategory = item"
                 :style="{fontFamily: $$.eYo.Font.familySans}"
                 :key="item.content"
-                >{{item.content}}</b-dd-item-button>
-            </b-dd>
+              >{{item.content}}</b-dd-item-button>
+              <b-dd-divider></b-dd-divider>
+              <b-dd-item-button
+                v-for="item in code_categories"
+                @click="selectedCategory = item"
+                :style="{fontFamily: $$.eYo.Font.familySans}"
+                :key="item.content"
+              >{{item.content}}</b-dd-item-button>
+              </b-dd>
             <b-dd
               id="eyo-flyout-dropdown-module"
               variant="secondary"
@@ -167,6 +174,16 @@
         model.items.math,
         model.items.text,
         model.items.list,
+        model.items.branching,
+        model.items.looping,
+        model.items.function
+      ]
+      model.data_categories = [
+        model.items.math,
+        model.items.text,
+        model.items.list
+      ]
+      model.code_categories = [
         model.items.branching,
         model.items.looping,
         model.items.function
@@ -541,14 +558,17 @@
         })
       }
       this.$nextTick(() => {
-        this.resizeSensorTB = new ResizeSensor(this.$refs.phantom.$el, () => {
-          console.error('CONTENT PHANTOM')
-          this.$$update()
-        })
+        this.resizeSensorTB = new ResizeSensor(
+          this.$refs.phantom.$el,
+          this.$$update.bind(this)
+        )
         this.$$installToolbar()
         this.$$update()
       })
-      this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
+      this.$$.bus.$on(
+        'updateWorkbenchToolbars',
+        this.$$update.bind(this)
+      )
     }
   }
 </script>
