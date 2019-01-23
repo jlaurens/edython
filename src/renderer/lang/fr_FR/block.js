@@ -94,6 +94,11 @@ export default {
     Turtle: 'Tortue',
     Console2: 'Console2',
     Workbench: 'Établi',
+    tooltip: {
+      workspace: {
+        clean: 'Supprimer les blocs inutilisés'
+      }
+    },
     content: {
       workspace: {
         clean: 'Nettoyer'
