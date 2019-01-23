@@ -70,7 +70,14 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           : {validated: newValue}
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
+        // the `didLoad` will be performed afterwards.
+        if (type === eYo.T3.Expr.star) {
+          this.set(eYo.Key.STAR)
+          this.owner.modified_d.required_from_type = false
+        } else {
+          this.set(eYo.Key.NONE)
+          this.owner.modified_d.required_from_type = true
+        }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
@@ -123,7 +130,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p !== eYo.Key.STAR
+          this.required = this.owner.variant_p !== eYo.Key.STAR && this.owner.modifier_p === '*'
           this.save(element, opt)
         },
         load: /** @suppress {globalThis} */ function (element, opt) {
@@ -131,9 +138,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        this.owner.variant_p = this.isRequiredFromModel()
+        this.owner.variant_p = this.required_from_type || this.isRequiredFromModel()
           ? eYo.Key.NONE
           : eYo.Key.STAR
+        this.required_from_type = false
       }
     }
   },
@@ -238,7 +246,8 @@ var ra = [
   'target_star',
   'star',
   'parameter_star',
-  'parameter_star_star'
+  'parameter_star_star',
+  'or_expr_star_star'
 ]
 ra.forEach(
     key => {
