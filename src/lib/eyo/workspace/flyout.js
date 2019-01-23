@@ -607,7 +607,7 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
   // Top.
   path.push('h', atRight ? -width : width);
   // Side closest to workspace.
-  path.push('v', Math.max(0, height - top_margin - this.eyo.TOP_OFFSET));
+  path.push('v', Math.max(0, height - top_margin));
   // Bottom.
   path.push('h', atRight ? width : -width);
   path.push('z');
