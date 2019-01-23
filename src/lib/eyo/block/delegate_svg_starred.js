@@ -120,7 +120,14 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
     },
     modified: {
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: /** @suppress {globalThis} */ function () {
+        var t = this.owner && this.owner.type
+        if (t === eYo.T3.Expr.parameter_star || t === eYo.T3.Expr.parameter_star_star || t === eYo.T3.Expr.target_star) {
+          return eYo.Msg.Placeholder.NAME
+        } else {
+          return eYo.Msg.Placeholder.EXPRESSION
+        }
+      },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue.length) {
