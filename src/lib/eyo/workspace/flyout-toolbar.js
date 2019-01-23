@@ -173,8 +173,10 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
       div_module,
       this.control_
     )
-  this.switcher_.style.left = '0px'
-  this.switcher_.style.top = '0px'
+  if (this.switcher_) {
+    this.switcher_.style.left = '0px'
+    this.switcher_.style.top = '0px'
+  }
   this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
   this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
   this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
