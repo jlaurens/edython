@@ -198,6 +198,8 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       this.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length - 1]) ||
       eYo.XRE.operator.test(text[text.length - 1]) ||
       text[text.length - 1] === ':' ||
+      text[text.length - 1] === ';' ||
+      text[text.length - 1] === ',' ||
       (text[text.length - 1] === '.' && !(field instanceof eYo.FieldTextInput))
       this.starSymbol = (this.isFirst && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
       this.isFirst = false
