@@ -56,6 +56,8 @@
           v-on:click="choose(choice)"
           :key="choice"
           class="eyo-code"
+          :title="$$t(`block.pane.tooltip.workspace.${choice}`)"
+          v-tippy
         >{{title(choice)}}</b-dd-item-button>
         <b-dd-divider
           v-if="choices.length"></b-dd-divider>
@@ -252,6 +254,7 @@
         this.$$update()
       })
       this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
+      console.error(this.$$t(`block.pane.tooltip.workspace.clean`))
     },
     methods: {
       ...mapMutations('Workspace', {
