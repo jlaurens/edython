@@ -27,7 +27,7 @@ eYo.Selected = (() => {
   var block__
   var c8n__
   me.updateDraw = () => {
-    if (eyo__) {
+    if (eyo__ && eyo__.isReady) {
       eyo__.updateAllPaths_()
       eYo.Draw.addBlockSelect_(eyo__)
       eYo.Draw.addStatusSelect_(eyo__)
