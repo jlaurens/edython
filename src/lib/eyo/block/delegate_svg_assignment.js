@@ -21,25 +21,25 @@ goog.require('goog.dom');
 
 // ["eyo:attributeref", "eyo:subscription", "eyo:slicing", "eyo:parenth_target_list", "eyo:bracket_target_list", "eyo:target_star", "eyo:identifier", "eyo:any"]
 
-/**
- * Class for a DelegateSvg, '*...' block.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('target_star', {
-  slots: {
-    expression: {
-      order: 1,
-      fields: {
-        label: {
-          value: '*',
-          css_class: 'eyo-code-reserved'
-        }
-      },
-      check: eYo.T3.Expr.Check.target,
-      hole_value: 'target'
-    }
-  }
-}, true)
+// /**
+//  * Class for a DelegateSvg, '*...' block.
+//  * For edython.
+//  */
+// eYo.DelegateSvg.Expr.makeSubclass('target_star', {
+//   slots: {
+//     expression: {
+//       order: 1,
+//       fields: {
+//         label: {
+//           value: '*',
+//           css_class: 'eyo-code-reserved'
+//         }
+//       },
+//       check: eYo.T3.Expr.Check.target,
+//       hole_value: 'target'
+//     }
+//   }
+// }, true)
 
 /**
  * List consolidator for target list. Used is assignment.
