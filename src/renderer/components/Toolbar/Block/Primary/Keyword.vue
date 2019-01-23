@@ -1,10 +1,20 @@
 <template>
-  <b-btn-group id="block-primary-keyword">
-    <b-btn-group v-for="choice in choices" :key="choice.key" class="eyo-code">
-      <div class="item">
-        <input type="checkbox" v-model="choice.model">
+  <b-btn-group
+    id="block-primary-keyword">
+    <b-btn-group
+      v-for="choice in choices"
+      :key="choice.key"
+      class="eyo-code">
+      <div
+        class="item">
+        <input
+          type="checkbox"
+          v-model="choice.model">
       </div>
-      <div class="eyo-label eyo-code item text" :title="choice.title" v-tippy >{{choice.content}}</div>
+      <div
+        class="eyo-label eyo-code item text"
+        :title="choice.title"
+        v-tippy >{{choice.content}}</div>
     </b-btn-group>
   </b-btn-group>
 </template>
