@@ -307,7 +307,7 @@ eYo.FlyoutCategory = {
       }
     },
     {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_stmt,
       name_d: 'print',
       n_ary_s: {
         slots: {
