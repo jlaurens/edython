@@ -4,7 +4,7 @@ import blank from '@static/template/blank.xml'
 var eYoAppDocument = {}
 
 eYoAppDocument.install = function (Vue, options) {
-  console.error('INSTALLING eYoAppDocument', process.env.BABEL_ENV, eYo, options)
+  // console.error('INSTALLING eYoAppDocument', process.env.BABEL_ENV, eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
   eYo.App.Document.doNew = (ev) => {
