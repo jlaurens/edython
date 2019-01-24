@@ -54,6 +54,7 @@ var ConfigEyo = function (target, dist, env) {
   this.componentsPath = path.join(this.rendererPath, 'components')
   this.utilPath = path.join(this.componentsPath, 'Util')
   this.iconPath = path.join(this.componentsPath, 'Icon')
+  console.log('\neyo.config.js:\n==============')
   console.log('this.rootPath:', this.rootPath)
   console.log('this.distPath :', this.distPath)
   console.log('this.staticPath :', this.staticPath)
