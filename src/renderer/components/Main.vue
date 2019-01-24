@@ -12,8 +12,8 @@
       ref="elMainPage">
       <main-page></main-page>
     </div>
-    <main-web-load></main-web-load>
-    <main-modal></main-modal>
+    <dialog-web-load></dialog-web-load>
+    <dialog-modal></dialog-modal>
   </b-container>
 </template>
 
@@ -22,16 +22,16 @@
   
   import MainToolbar from '@@/Toolbar/Main'
   import MainPage from './Main/Page'
-  import MainWebLoad from './Main/WebLoad'
-  import MainModal from './Main/Modal'
+  import DialogWebLoad from './Dialog/WebLoad'
+  import DialogModal from './Dialog/Modal'
   
   export default {
     name: 'Main',
     components: {
       MainToolbar,
-      MainWebLoad,
+      DialogWebLoad,
       MainPage,
-      MainModal
+      DialogModal
     },
     computed: {
       ...mapState('Pref', [

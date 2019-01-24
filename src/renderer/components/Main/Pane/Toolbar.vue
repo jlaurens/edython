@@ -56,7 +56,7 @@
           v-on:click="choose(choice)"
           :key="choice"
           class="eyo-code"
-          :title="$$t(`block.pane.tooltip.workspace.${choice}`)"
+          :title="localizedTooltip(choice)"
           v-tippy
         >{{title(choice)}}</b-dd-item-button>
         <b-dd-divider
@@ -254,7 +254,6 @@
         this.$$update()
       })
       this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
-      console.error(this.$$t(`block.pane.tooltip.workspace.clean`))
     },
     methods: {
       ...mapMutations('Workspace', {
@@ -286,7 +285,12 @@
         turtleScaleReset: 'scaleReset'
       }),
       localized (s) {
+        console.log(s)
         return this.$$t(`block.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
+      },
+      localizedTooltip (s) {
+        // console.log(s) BUG: never called
+        return this.$$t(`block.pane.tooltip.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
       },
       choose (choice) {
         var do_it = {
