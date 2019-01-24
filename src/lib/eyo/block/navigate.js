@@ -93,7 +93,16 @@ eYo.Navigate.doTab = (() => {
     }
     if (!input) {
       if ((c8n = eyo.outputConnection) && (c8n = c8n.targetConnection) && c8n.isInput) {
-        input = c8n.eyo.input
+        candidate = c8n.eyo.input
+        if (candidate) {
+          input = candidate
+        } else {
+          // seek the left most input
+          candidate = input
+          while ((candidate = candidate.eyo.inputLeft)) {
+            input = candidate
+          }
+        }
       }
     }
     if (!input) {
@@ -209,10 +218,11 @@ eYo.Selected.chooseLeft = () => {
       eYo.Selected.scrollToVisible()
       return
     }
-  } else {
-    eYo.Selected.connection = null
-  }
-  // now try to select a top block
+  } else if ((ans = eyo.stmtParent)) {
+    eYo.Selected.eyo = ans
+    eYo.Selected.scrollToVisible()
+    return
+  }  // now try to select a top block
   var root = eyo.root
   var target = root.getBestBlock((b, a) => {
     if (a.left >= b.left) {
@@ -264,6 +274,8 @@ eYo.Selected.chooseRight = function () {
         eYo.Selected.scrollToVisible()
         return
       }
+    } else if (c_eyo.isSuite) {
+      // select a top block
     } else {
       eYo.Selected.connection = null
       eYo.Selected.scrollToVisible()
