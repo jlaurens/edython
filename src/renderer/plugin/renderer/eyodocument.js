@@ -1,7 +1,7 @@
 var eYoDocument = {}
 
 eYoDocument.install = function (Vue, options) {
-  console.error('INSTALLING eYoDocument', eYo, options)
+  // console.error('INSTALLING eYoDocument', eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
   eYo.App.Document.readFile = (fileName, callback) => {
