@@ -266,7 +266,6 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-console.error('insertParentWithModel: newBlockReady may create more than one block, Why not using a Delete event instead ?')
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_holes) {
   var block = this.block_
   var parentSlotName = model.slot || model.input
