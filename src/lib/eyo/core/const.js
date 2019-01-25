@@ -199,6 +199,11 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
   
+  RESTART: 'restart', // attribute name
+  
+  TRUE: 'true', // attribute value
+  FALSE: 'false', // attribute value
+  
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGETS", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */
