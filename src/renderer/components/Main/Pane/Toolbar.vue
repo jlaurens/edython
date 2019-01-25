@@ -13,6 +13,14 @@
         class="eyo-dropdown"
         :text="toolbarTitle">
         <b-dd-item-button
+          v-if="isWorkspace"
+          v-on:click="$root.$emit('document-rename')"
+          class="eyo-code"
+          :title="$$t('block.pane.tooltip.document-rename')"
+          v-tippy>{{$$t('block.pane.content.document-rename')}}</b-dd-item-button>
+        <b-dd-divider
+          v-if="isWorkspace"></b-dd-divider>
+        <b-dd-item-button
           v-for="pane in panes"
           v-on:click="selectedPane = pane"
           :key="pane"
@@ -122,6 +130,9 @@
         'paneLayout'
       ]),
       ...mapState('Layout', layoutcfg.where_whats),
+      isWorkspace () {
+        return this.what === 'workspace'
+      },
       baseName () {
         var x = this.path
         if (this.path) {
@@ -133,7 +144,7 @@
         return this.$$t('message.document.Untitled')
       },
       toolbarTitle () {
-        if (this.what === 'workspace') {
+        if (this.isWorkspace) {
           return `${this.localized(this.what)} - ${this.baseName}`
         } else {
           return this.localized(this.what)

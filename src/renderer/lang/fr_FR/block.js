@@ -97,7 +97,8 @@ export default {
     tooltip: {
       workspace: {
         clean: 'Supprimer les blocs inutilisés'
-      }
+      },
+      'document-rename': 'Renommer le document'
     },
     content: {
       workspace: {
@@ -120,7 +121,9 @@ export default {
       scaleUp: 'Plus grand',
       scaleDown: 'Plus petit',
       scaleUpBig: 'Bien plus grand',
-      scaleDownBig: 'Bien plus petit'
+      scaleDownBig: 'Bien plus petit',
+      'document-rename': 'Renommer'
+
     }
   }
 }
