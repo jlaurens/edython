@@ -81,7 +81,7 @@ eYoDocument.install = function (Vue, options) {
   }
   eYo.App.Document.writeContentToFile = (path, deflate, callback) => {
     const fs = window.require('fs')
-    fs.writeFile(path, deflate, function (err) {
+    fs.writeFile(path, deflate, err => {
       if (err) {
         alert('An error ocurred creating the file ' + err.message)
       } else {

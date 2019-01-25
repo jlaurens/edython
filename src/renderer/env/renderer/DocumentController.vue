@@ -37,7 +37,16 @@
       }
     },
     mounted () {
-      console.error('MOUNTED')
+      const ipcRenderer = require('electron').ipcRenderer
+      if (ipcRenderer) {
+        // we *are* in electron
+        ipcRenderer.on('new', eYo.App.Document.doNew)
+        ipcRenderer.on('open', this.$$doOpen.bind(this))
+        ipcRenderer.on('save', this.$$doSave.bind(this))
+        ipcRenderer.on('saveas', this.$$doSaveAs.bind(this))
+      } else {
+        console.error('NO ipcRenderer')
+      }
       this.$root.$on('document-open', this.$$doOpen.bind(this))
       this.$root.$on('document-save', this.$$doSave.bind(this))
       this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
@@ -64,16 +73,19 @@
           } else {
             this.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
-              eYo.$$.bus.$emit('pane-workspace-visible')
+              this.before()
             })
           }
         })
       },
+      before () {
+        eYo.$$.bus.$emit('pane-workspace-visible')
+      },
       $$doOpen (ev, callback) {
-        var defaultPath = this.documentPath
+        this.before()
         const {dialog} = require('electron').remote
         dialog.showOpenDialog({
-          defaultPath: defaultPath,
+          defaultPath: this.documentPath,
           filters: [{
             name: 'Edython', extensions: ['eyo']
           }],
@@ -90,8 +102,9 @@
         })
       },
       $$doSaveAs (ev, callback) {
+        this.before()
         const path = require('path')
-        var defaultPath = path.join(eYo.App.Document.getDocumentPath(), this.$$t('message.document.Untitled') + '.eyo')
+        var defaultPath = path.join(this.documentPath, this.$$t('message.document.Untitled') + '.eyo')
         const {dialog} = require('electron').remote
         dialog.showSaveDialog({
           defaultPath: defaultPath,
@@ -115,6 +128,7 @@
         })
       },
       $$doSave (ev, callback) {
+        this.before()
         if (this.path) {
           this.$$writeContentToFile(this.path, callback)
         } else {
@@ -124,7 +138,7 @@
       $$writeContentToFile (path, callback) {
         const fs = window.require('fs')
         let deflate = eYo.App.Document.getDeflate()
-        fs.writeFile(path, deflate, function (err) {
+        fs.writeFile(path, deflate, err => {
           if (err) {
             alert('An error ocurred creating the file ' + err.message)
             eYo.$$.bus.$emit('document-save-fail')
