@@ -229,7 +229,6 @@
     name: 'toolbar-block',
     data: function () {
       return {
-        saved_step: 0,
         theta: 0,
         resizeSensor: undefined
       }
@@ -270,9 +269,6 @@
     computed: {
       ...mapState('UI', [
         'toolbarBlockVisible'
-      ]),
-      ...mapState('Selected', [
-        'step'
       ]),
       ...mapGetters('Selected', [
         'eyo',

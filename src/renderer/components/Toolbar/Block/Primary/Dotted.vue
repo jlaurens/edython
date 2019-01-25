@@ -51,6 +51,7 @@
   import {mapState, mapGetters} from 'vuex'
 
   export default {
+    name: 'info-primary-dotted',
     data () {
       return {
         saved_step: undefined,
@@ -59,7 +60,6 @@
         dotted_: undefined
       }
     },
-    name: 'info-primary-dotted',
     props: {
       slotholder: {
         type: Function,

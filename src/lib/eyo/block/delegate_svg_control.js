@@ -25,25 +25,18 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.BaseGroup.makeSubclass('Control', {
   data: {
-    flags: {
-      init: Object.create(null),
-      willLoad: /** @suppress{globalThis} */ function () {
-        if (Object.keys(this.get()).length) {
-          this.set(Object.create(null)) // reset the dictionary of flags
-        }
-      },
+    restart: {
+      init: false,
       xml: {
         save: /** @suppress{globalThis} */ function (element) {
-          var flags = this.get()
-          if (flags.hasNext) {
-            element.setAttribute(eYo.Key.HAS_NEXT, eYo.Key.TRUE)
+          if (this.get()) {
+            element.setAttribute(eYo.Key.RESTART, eYo.Key.TRUE)
           }
         },
         load: /** @suppress{globalThis} */ function (element) {
-          var flags = this.get()
-          var attr = element.getAttribute(eYo.Key.HAS_NEXT)
+          var attr = element.getAttribute(eYo.Key.RESTART)
           if (attr === eYo.Key.TRUE) {
-            flags.hasNext = true
+            this.set(true)
           }
         }
       }
