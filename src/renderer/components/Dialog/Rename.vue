@@ -59,22 +59,17 @@
         this.handleSubmit()
       },
       handleSubmit () {
-        try {
-          if (this.callback) {
-            this.callback(this.name)
-          } else {
-            const path = require('path')
-            if (!path.isAbsolute(this.name)) {
-              if (this.path) {
-                this.setPath(path.join(path.dirname(this.path), this.name))
-                return
-              }
-            }
-            this.setPath(this.name)
+        const path = require('path')
+        var newName = this.name
+        if (!path.isAbsolute(newName)) {
+          if (this.path) {
+            newName = path.join(path.dirname(newName), this.name)
           }
-        } finally {
-          this.$refs.modal.hide() // after
         }
+        this.setPath(newName)
+        var callback = this.callback
+        this.$refs.modal.hide()
+        callback && callback(newName)
       }
     }
   }
