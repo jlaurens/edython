@@ -317,11 +317,7 @@
         }
       },
       isSelected (type) {
-        if (goog.isArray(type)) {
-          return type.some(t => t === this.type)
-        } else {
-          return type === this.type
-        }
+        return (type.some && type.some(t => t === this.type)) || type === this.type
       }
     }
   }
