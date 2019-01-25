@@ -71,7 +71,7 @@
       ])
     },
     created: function () {
-      eYo.$$.bus.$on('saveDidSucceed', () => {
+      eYo.$$.bus.$on('document-save-complete', () => {
         this.theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
       })
@@ -86,15 +86,15 @@
       },
       doOpen (ev) {
         this.before()
-        eYo.App.Document.doOpen(ev)
+        this.$root.$emit('document-open', ev)
       },
       doSave (ev) {
         this.before()
-        eYo.App.Document.doSave(ev)
+        this.$root.$emit('document-save', ev)
       },
       doSaveAs (ev) {
         this.before()
-        eYo.App.Document.doSaveAs(ev)
+        this.$root.$emit('document-save-as', ev)
       }
     }
   }

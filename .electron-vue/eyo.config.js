@@ -51,6 +51,7 @@ var ConfigEyo = function (target, dist, env) {
   this.srcPath = path.join(this.rootPath, 'src')
   this.rendererPath = path.join(this.srcPath, 'renderer')
   this.langPath = path.join(this.rendererPath, 'lang')
+  this.envPath = path.join(this.rendererPath, 'env', this.env)
   this.componentsPath = path.join(this.rendererPath, 'components')
   this.utilPath = path.join(this.componentsPath, 'Util')
   this.iconPath = path.join(this.componentsPath, 'Icon')
@@ -61,6 +62,7 @@ var ConfigEyo = function (target, dist, env) {
   console.log('this.srcPath :', this.srcPath)
   console.log('this.rendererPath :', this.rendererPath)
   console.log('this.langPath :', this.langPath)
+  console.log('this.envPath :', this.envPath)
   console.log('this.componentsPath :', this.componentsPath)
   console.log('this.utilPath :', this.utilPath)
   console.log('this.iconPath :', this.iconPath)
@@ -75,7 +77,7 @@ ConfigEyo.prototype.getConfig = function () {
   }
   config.devtool = '#cheap-module-eval-source-map'
   config.entry = {}
-  config.entry[this.env] = path.join(this.srcPath, 'renderer', 'main', this.env)
+  config.entry[this.env] = this.envPath
   config.module = {
     rules: [
       {
@@ -157,7 +159,7 @@ ConfigEyo.prototype.getConfig = function () {
           }
         }
       },
-      (function () {
+      (() => {
         var model = {
           test: /\.js$/,
           use: 'babel-loader',
@@ -244,6 +246,7 @@ ConfigEyo.prototype.getConfig = function () {
       '@src': this.srcPath,
       '@static': this.staticPath,
       '@lang': this.langPath,
+      '@env': this.envPath,
       '@': this.rendererPath,
       '@@': this.componentsPath,
       // '@@@@': path.resolve(this.rootPath, 'static/')

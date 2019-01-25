@@ -26,7 +26,12 @@ eYoDocument.install = function (Vue, options) {
       if (documentPath && documentPath.lastIndexOf) {
         do_it(ev, callback)
       } else {
-        eYo.$$.bus.$emit('get-document-path', () => {
+        eYo.$$.bus.$emit('document-rename', (name) => {
+          var documentPath = store.state.Document.path
+          var basename = documentPath && documentPath.lastIndexOf
+            ? documentPath.substr(documentPath.lastIndexOf('/') + 1)
+            : 'Sans titre'
+    
           do_it(ev, callback)
         })
       }

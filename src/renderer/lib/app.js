@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import App from '../../App'
-import router from '../../router'
-import store from '../../store'
-import eYoI18n from '../../lang'
+import App from '../App'
+import router from '../router'
+import store from '../store'
+import eYoI18n from '../lang'
 
 /* eslint-disable no-new */
 Object.defineProperties(eYo.$$, {

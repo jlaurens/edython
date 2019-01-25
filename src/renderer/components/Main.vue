@@ -12,6 +12,7 @@
       ref="elMainPage">
       <main-page></main-page>
     </div>
+    <document-controller></document-controller>
     <dialog-web-load></dialog-web-load>
     <dialog-modal></dialog-modal>
   </b-container>
@@ -23,14 +24,16 @@
   import MainToolbar from '@@/Toolbar/Main'
   import MainPage from './Main/Page'
   import DialogWebLoad from './Dialog/WebLoad'
+  import DocumentController from '@env/DocumentController'
   import DialogModal from './Dialog/Modal'
-  
+
   export default {
     name: 'Main',
     components: {
       MainToolbar,
       DialogWebLoad,
       MainPage,
+      DocumentController,
       DialogModal
     },
     computed: {

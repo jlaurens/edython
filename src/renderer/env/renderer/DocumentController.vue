@@ -1,0 +1,155 @@
+<template>
+  <document-rename @renamed="$$renamed"></document-rename>
+</template>
+<script>
+  import {mapState, mapMutations} from 'vuex'
+
+  import DocumentRename from '@/components/Dialog/Rename'
+
+  export default {
+    name: 'document-controller',
+    data: function () {
+      return {
+        name: undefined,
+        documentPath_: undefined
+      }
+    },
+    components: {
+      DocumentRename
+    },
+    computed: {
+      ...mapState('Document', [
+        'path'
+      ]),
+      documentPath () {
+        const fs = window.require('fs')
+        if (!this.documentPath_) {
+          // const {dialog} = require('electron').remote
+          const remote = window.require('electron').remote
+          const app = remote.app
+          let documentsFolder = app.getPath('documents')
+          this.documentPath_ = require('path').join(documentsFolder, 'Edython')
+        }
+        if (!fs.existsSync(this.documentPath_)) {
+          fs.mkdirSync(this.documentPath_)
+        }
+        return this.documentPath_
+      }
+    },
+    mounted () {
+      console.error('MOUNTED')
+      this.$root.$on('document-open', this.$$doOpen.bind(this))
+      this.$root.$on('document-save', this.$$doSave.bind(this))
+      this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
+    },
+    methods: {
+      ...mapMutations('Document', [
+        'setPath'
+      ]),
+      ...mapMutations('Undo', [
+        'stageUndo'
+      ]),
+      $$readFile (fileName, callback) {
+        const fs = window.require('fs')
+        fs.readFile(fileName, (err, content) => {
+          if (err) {
+            alert('An error ocurred reading the file ' + err.message)
+            return
+          }
+          this.setPath(fileName)
+          eYo.App.Document.readDeflate(content, fileName) // setPath here instead ?
+          eYo.App.workspace.eyo.resetChangeCount()
+          if (callback) {
+            callback()
+          } else {
+            this.$nextTick(() => {
+              eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+              eYo.$$.bus.$emit('pane-workspace-visible')
+            })
+          }
+        })
+      },
+      $$doOpen (ev, callback) {
+        var defaultPath = this.documentPath
+        const {dialog} = require('electron').remote
+        dialog.showOpenDialog({
+          defaultPath: defaultPath,
+          filters: [{
+            name: 'Edython', extensions: ['eyo']
+          }],
+          properties: [
+            'openFile'
+          ]
+        }, (fileNames) => {
+          var fileName = fileNames && fileNames[0]
+          if (fileName) {
+            this.$$readFile(fileName, callback)
+          } else {
+            console.log('Opération annulée')
+          }
+        })
+      },
+      $$doSaveAs (ev, callback) {
+        const path = require('path')
+        var defaultPath = path.join(eYo.App.Document.getDocumentPath(), this.$$t('message.document.Untitled') + '.eyo')
+        const {dialog} = require('electron').remote
+        dialog.showSaveDialog({
+          defaultPath: defaultPath,
+          filters: [{
+            name: 'Edython', extensions: ['eyo']
+          }]
+        }, filePath => {
+          if (filePath === undefined) {
+            console.log('Opération annulée')
+            eYo.$$.bus.$emit('document-save-cancel')
+            callback && callback(filePath)
+            return
+          }
+          var dirname = path.dirname(filePath)
+          const fs = window.require('fs')
+          if (!fs.existsSync(dirname)) {
+            fs.mkdirSync(dirname)
+          }
+          this.setPath(filePath)
+          this.$$writeContentToFile(filePath, callback)
+        })
+      },
+      $$doSave (ev, callback) {
+        if (this.path) {
+          this.$$writeContentToFile(this.path, callback)
+        } else {
+          this.$$doSaveAs(ev, callback)
+        }
+      },
+      $$writeContentToFile (path, callback) {
+        const fs = window.require('fs')
+        let deflate = eYo.App.Document.getDeflate()
+        fs.writeFile(path, deflate, function (err) {
+          if (err) {
+            alert('An error ocurred creating the file ' + err.message)
+            eYo.$$.bus.$emit('document-save-fail')
+          } else {
+            this.stageUndo()
+            eYo.App.workspace.eyo.resetChangeCount()
+            eYo.$$.bus.$emit('document-save-complete')
+            callback && callback(path)
+          }
+        })
+      },
+      $$renamed (newName) {
+        const path = require('path')
+        if (!path.isAbsolute(newName)) {
+          if (this.path) {
+            newName = path.join(path.dirname(this.path), newName)
+          }
+        }
+        this.setPath(newName)
+      }
+    }
+  }
+</script>
+<style>
+</style>
+
+
+

@@ -22,7 +22,7 @@ const mutations = {
    * @param {*} state
    */
   stageUndo (state) {
-    // console.log('UNDO/stageUndo', eYo.App.workspace.undoStack_.length, eYo.App.workspace.redoStack_.length)
+    // console.log('Undo/stageUndo', eYo.App.workspace.undoStack_.length, eYo.App.workspace.redoStack_.length)
     state.undoStage = state.undoCount = eYo.App.workspace.undoStack_.length
     state.redoCount = eYo.App.workspace.redoStack_.length
   },

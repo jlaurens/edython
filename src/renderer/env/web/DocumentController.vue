@@ -1,28 +1,57 @@
+<template>
+  <document-rename @renamed="renamed"></document-rename>
+</template>
+<script>
+  import {mapState, mapMutations} from 'vuex'
+
+  import DocumentRename from "../Dialog/Rename"
+
+  export default {
+    name: 'document-controller',
+    data: function () {
+      return {
+        name: undefined
+      }
+    },
+    components: {
+      DocumentRename
+    },
+    computed: {
+
+    },
+    methods: {
+      renamed (newName) {
+
+      },
+      readFile (fileName, callback) {
+        const fs = window.require('fs')
+        fs.readFile(fileName, (err, content) => {
+          if (err) {
+            alert(`An error ocurred reading the file ${err.message}`)
+            return
+          }
+          eYo.App.Document.readDeflate(content, fileName)
+          eYo.App.workspace.eyo.resetChangeCount()
+          if (callback) {
+            callback()
+          } else {
+            eYo.$$.app.$nextTick(() => {
+              eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+              eYo.$$.bus.$emit('pane-workspace-visible')
+            })
+          }
+        })
+      }
+    }
+  }
+
 var eYoDocument = {}
 
 eYoDocument.install = function (Vue, options) {
   // console.error('INSTALLING eYoDocument', eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
-  eYo.App.Document.readFile = (fileName, callback) => {
-    const fs = window.require('fs')
-    fs.readFile(fileName, (err, content) => {
-      if (err) {
-        alert('An error ocurred reading the file ' + err.message)
-        return
-      }
-      eYo.App.Document.readDeflate(content, fileName)
-      eYo.App.workspace.eyo.resetChangeCount()
-      if (callback) {
-        callback()
-      } else {
-        eYo.$$.app.$nextTick(() => {
-          eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
-          eYo.$$.bus.$emit('pane-workspace-visible')
-        })
-      }
-    })
-  }
+  eYo.App.Document.x
   eYo.App.Document.getDocumentPath = () => {
     // const {dialog} = require('electron').remote
     const remote = window.require('electron').remote
@@ -107,3 +136,6 @@ eYoDocument.install = function (Vue, options) {
   }
 }
 export default eYoDocument
+</script>
+<style>
+</style>
