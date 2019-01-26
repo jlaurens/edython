@@ -622,7 +622,7 @@ goog.provide('eYo.Xml.Data')
  * @param {?Object} opt
  */
 eYo.Delegate.prototype.saveData = function (element, opt) {
-  this.foreachData(data => data.save(element, opt))
+  this.forEachData(data => data.save(element, opt))
 }
 
 /**
@@ -648,7 +648,7 @@ eYo.Xml.Data.fromDom = function (block, element) {
   var eyo = block.eyo
   eyo.changeWrap(
     function () { // `this` is `eyo`
-      this.foreachData(data => {
+      this.forEachData(data => {
         data.load(element)
         // Consistency section, to be removed
         var xml = data.model.xml
@@ -874,7 +874,7 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
           this.recovered.length = 0
           var dom
           while ((dom = this.to_resit.shift())) {
-            var b = eYo.Xml.domToBlock(dom, this.workspace, this)
+            var b = eYo.Xml.domToBlock(dom, this.workspace)
             if (b) {
               b.eyo.beReady()
               this.recovered.push(b)
@@ -1116,7 +1116,7 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
  * @param {!Blockly.Block} block The root block to encode.
  * @param {element} dom element to encode in
  * @param {boolean} optNoId True if the encoder should skip the block id.
- * @return {!Element} Tree of XML elements, possibly null.
+ * @return {?Boolean} Used?
  */
 eYo.Xml.fromDom = function (block, element) {
   var eyo = block.eyo
@@ -1125,7 +1125,7 @@ eYo.Xml.fromDom = function (block, element) {
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
   // then fill it based on the xml data
     eyo.willLoad()
-    var conclude // will run after `didLoad` is called
+    var conclude // will run at the end if any
     var controller = eyo
     if (!eyo.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
@@ -1151,20 +1151,22 @@ eYo.Xml.fromDom = function (block, element) {
       // read slot
       eyo.forEachSlot(slot => slot.load(element))
       if (eyo instanceof eYo.DelegateSvg.List) {
-        eYo.Do.forEachElementChild(element, (child) => {
+        eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input && input.connection) {
             var target = input.connection.targetBlock()
             if (target) {
-              block.workspace.eyo.recover.dontResit(child)
+              slot.recover.dontResit(child)
               eYo.Xml.fromDom(target, child)
             } else if ((target = eYo.Xml.domToBlock(child, block))) {
-              block.workspace.eyo.recover.dontResit(child)
+              slot.recover.dontResit(child)
               var targetC8n = target.outputConnection
               if (targetC8n && targetC8n.checkType_(input.connection)) {
                 targetC8n.connect(input.connection)
               }
+            } else {
+              console.error('eYo.Xml.fromDom: Ignoring', child)
             }
           } else if (input) {
             console.error('Missing connection')
@@ -1177,11 +1179,11 @@ eYo.Xml.fromDom = function (block, element) {
           eyo.consolidate()
         }
       }
-      eyo.didLoad()
+      eyo.didLoad() // before the next and suite connections will connect
       // read flow and suite
       const statement = (c8n, key) => {
         if (c8n) {
-          return eYo.Do.someElementChild(element, (child) => {
+          return eYo.Do.someElementChild(element, child => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               block.workspace.eyo.recover.dontResit(child)
               var target = eYo.Xml.domToBlock(child, block)
