@@ -533,9 +533,9 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   if (!block) {
     return;
   }
-  if (!block.eyo.isStmt) {
-    var eyo = block.eyo
-    (eyo = eyo.stmtParent || eyo.root) && (block = eyo.block_)
+  var eyo = block.eyo
+  if (!eyo.isStmt) {
+    (eyo = (eyo.stmtParent || eyo.root)) && (block = eyo.block_)
   }
   // XY is in workspace coordinates.
   var xy = block.getRelativeToSurfaceXY();
