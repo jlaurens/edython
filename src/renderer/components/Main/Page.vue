@@ -192,7 +192,7 @@
       ...mapMutations('Layout', layoutcfg.setWhat_wheres),
       onDrag (size) {
         // eYo.$$.bus.$emit('size-did-change')
-        this.$$.bus.$emit('updateWorkbenchToolbars')
+        this.$root.$emit('workbench-toolbars-update')
       },
       where (what) {
         return this[`where_${what}`]
@@ -203,14 +203,15 @@
       setWhere (what, where) {
         this[`setWhere_${what}`](where)
         this.$nextTick(() => {
-          this.$$.bus.$emit('updateWorkbenchToolbars')
+          this.$root.$emit('workbench-toolbars-update')
         })
         return this
       },
       setWhat (where, what) {
+        eYo.App.workspace && Blockly.hideChaff()
         where && this[`setWhat_${where}`](what)
         this.$nextTick(() => {
-          this.$$.bus.$emit('updateWorkbenchToolbars')
+          this.$root.$emit('workbench-toolbars-update')
         })
         return this
       },
