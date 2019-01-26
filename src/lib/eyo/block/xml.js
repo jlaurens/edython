@@ -622,9 +622,7 @@ goog.provide('eYo.Xml.Data')
  * @param {?Object} opt
  */
 eYo.Delegate.prototype.saveData = function (element, opt) {
-  this.foreachData((data) => {
-    data.save(element, opt)
-  })
+  this.foreachData(data => data.save(element, opt))
 }
 
 /**
@@ -650,7 +648,7 @@ eYo.Xml.Data.fromDom = function (block, element) {
   var eyo = block.eyo
   eyo.changeWrap(
     function () { // `this` is `eyo`
-      this.foreachData((data) => {
+      this.foreachData(data => {
         data.load(element)
         // Consistency section, to be removed
         var xml = data.model.xml
@@ -846,7 +844,7 @@ eYo.Xml.Recover.prototype.dontResit = function (dom) {
  * Create blocks with elements that were not used during the normal flow.
  * Uses `domToBlock`.
  * @param {!*} dom 
- * @param {!*} try_f  Use the 
+ * @param {!*} try_f
  * @param {?*} finally_f 
  * @param {?*} recovered_f 
  */
@@ -854,9 +852,10 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
-  eYo.Do.forEachElementChild(dom, (child) => {
-    this.to_resit.push(child)
-  }, this)
+  eYo.Do.forEachElementChild(
+    dom,
+    child => this.to_resit.push(child)
+  )
   return eYo.Events.groupWrap(
     () => {
       var ans
@@ -1178,8 +1177,9 @@ eYo.Xml.fromDom = function (block, element) {
           eyo.consolidate()
         }
       }
+      eyo.didLoad()
       // read flow and suite
-      var statement = (c8n, key) => {
+      const statement = (c8n, key) => {
         if (c8n) {
           return eYo.Do.someElementChild(element, (child) => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
@@ -1188,8 +1188,20 @@ eYo.Xml.fromDom = function (block, element) {
               if (target) { // still headless!
                 // we could create a block from that child element
                 // then connect it to
-                if (target.previousConnection && c8n.checkType_(target.previousConnection)) {
-                  c8n.connect(target.previousConnection)
+                if (target.previousConnection) {
+                  if (c8n.checkType_(target.previousConnection)) {
+                    c8n.connect(target.previousConnection)
+                  } else {
+                    // we could not connect possibly because the
+                    // type is not yet properly set
+                    eyo.incrementChangeCount() // force new type
+                    eyo.consolidateType()
+                    eyo.consolidateConnections()
+                    eyo.consolidate()
+                    if (c8n.checkType_(target.previousConnection)) {
+                      c8n.connect(target.previousConnection)
+                    }            
+                  }
                 }
                 return true
               }
@@ -1204,7 +1216,6 @@ eYo.Xml.fromDom = function (block, element) {
         eyo.lock()
       }
     }
-    eyo.didLoad()
     conclude && conclude()
     return out
   })
