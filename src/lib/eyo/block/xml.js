@@ -186,9 +186,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   // looping pattern of checking the index for an object.
   
   workspace.eyo.recover.whenRecovered(
-    (block) => {
-      newBlockIds.push(block.id)   
-    }
+    block => newBlockIds.push(block.id)
   )
 
   // Disable workspace resizes as an optimization.

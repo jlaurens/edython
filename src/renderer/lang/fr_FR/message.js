@@ -13,6 +13,7 @@
 // var nom = placeholder('nom')
 
 export default {
+  OK: 'Ok',
   YES: 'Oui',
   NO: 'Non',
   hello: 'Bonjour monde',

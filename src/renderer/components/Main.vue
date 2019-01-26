@@ -12,8 +12,10 @@
       ref="elMainPage">
       <main-page></main-page>
     </div>
-    <document-controller></document-controller>
-    <dialog></dialog>
+    <document-controller
+      ref="documentController"></document-controller>
+    <dialog-library
+      ref="dialogLibrary"></dialog-library>
   </b-container>
 </template>
 
@@ -23,7 +25,7 @@
   import MainToolbar from '@@/Toolbar/Main'
   import MainPage from './Main/Page'
   import DocumentController from '@env/DocumentController'
-  import Dialog from './Dialog'
+  import DialogLibrary from './DialogLibrary'
 
   export default {
     name: 'Main',
@@ -31,7 +33,7 @@
       MainToolbar,
       MainPage,
       DocumentController,
-      Dialog
+      DialogLibrary
     },
     computed: {
       ...mapState('Pref', [

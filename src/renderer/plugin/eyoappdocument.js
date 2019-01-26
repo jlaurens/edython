@@ -50,9 +50,15 @@ eYoAppDocument.install = function (Vue, options) {
     // var t0 = d.getTime()
     var parser = new DOMParser()
     var dom = parser.parseFromString(str, 'application/xml')
-    eYo.App.workspace.eyo.fromDom(dom)
-    eYo.App.workspace.clearUndo()
-    eYo.App.workspace.eyo.resetChangeCount()
+    var workspace = eYo.App.workspace
+    workspace.eyo.fromDom(dom)
+    workspace.clearUndo()
+    workspace.eyo.resetChangeCount()
+    if (workspace.topBlocks_.some(b => !b.eyo.isReady)) {
+      console.error('SOME BLOCKS WERE RECOVERED')
+      workspace.topBlocks_.forEach(b => b.eyo.beReady())
+      eYo.$$.bus.$emit('document-read-string-recovered')
+    }
     // d = new Date()
     // console.error('t:', (d.getTime() - t0) / 1000)
     eYo.App.doDomToPref(dom)
