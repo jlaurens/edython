@@ -129,7 +129,7 @@ eYo.KeyHandler = (() => {
         main.set(model)
         return
       }
-      if (B.eyo.foreachData(d => {
+      if (B.eyo.forEachData(d => {
         if (!d.isIncog() && d.validate(model)) {
           d.change(model)
           return true
