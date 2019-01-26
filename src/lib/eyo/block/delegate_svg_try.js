@@ -293,8 +293,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       check: eYo.T3.Expr.Check.expression,
       hole_value: eYo.Msg.Placeholder.EXPRESSION,
       xml: {
-        load: /** @suppress {globalThis} */ function (element) {
-          this.load(element)
+        load: /** @suppress {globalThis} */ function (element, opt) {
+          this.load(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
