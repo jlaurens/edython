@@ -1965,8 +1965,8 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
     }
     block && block.eyo.changeWrap(
       function () { // `this` is `block.eyo`
-      this.willLoad()
-      this.setDataWithModel(dataModel)
+        this.willLoad()
+        this.setDataWithModel(dataModel)
         var Vs = model.slots
         for (var k in Vs) {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
@@ -2049,9 +2049,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
 eYo.DelegateSvg.prototype.beReady = function () {
   this.changeWrap(
     function () {
-      this.foreachData((data) => {
-        data.beReady() // data is headless
-      })
+      this.foreachData(data => data.beReady()) // data was headless
       var block = this.block_
       block.initSvg()
       // install all the fields and slots in the DOM
@@ -2083,9 +2081,7 @@ eYo.DelegateSvg.prototype.beReady = function () {
         goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
           'eyo-inner')
       }
-      this.foreachData((data) => {
-        data.synchronize() // data is not headless
-      })
+      this.foreachData(data => data.synchronize()) // data is not headless
       this.beReady = eYo.Do.nothing // one shot function
     }
   )
