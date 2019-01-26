@@ -497,7 +497,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * then use the model's method if any.
  */
 eYo.Delegate.prototype.willLoad = function () {
-  this.foreachData(data => data.willLoad())
+  this.forEachData(data => data.willLoad())
   this.forEachSlot(slot => slot.willLoad())
   var willLoad = this.model.willLoad
   if (goog.isFunction(willLoad)) {
@@ -509,7 +509,7 @@ eYo.Delegate.prototype.willLoad = function () {
  * Called when data and slots have loaded.
  */
 eYo.Delegate.prototype.didLoad = function () {
-  this.foreachData(data => data.didLoad())
+  this.forEachData(data => data.didLoad())
   this.forEachSlot(slot => slot.didLoad())
   var didLoad = this.model.didLoad
   if (goog.isFunction(didLoad)) {
@@ -527,7 +527,7 @@ eYo.Delegate.prototype.didLoad = function () {
 eYo.Delegate.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
   if (equals) {
-    this.foreachData(data => {
+    this.forEachData(data => {
       var r_data = rhs.data[data.key]
       equals = r_data && (data.get() == r_data.get() || (data.isIncog() && r_data.isIncog()))
       return equals // breaks if false
@@ -1123,7 +1123,7 @@ eYo.Delegate.prototype.forEachSlot = function (helper) {
  * @param {!function} helper
  * @return {boolean} whether there was a data to act upon or a valid helper
  */
-eYo.Delegate.prototype.foreachData = function (helper) {
+eYo.Delegate.prototype.forEachData = function (helper) {
   var data = this.headData
   if (data && goog.isFunction(helper)) {
     var last
@@ -1197,7 +1197,7 @@ eYo.Delegate.prototype.makeBounds = function () {
  */
 eYo.Delegate.prototype.consolidateData = function () {
   this.changeWrap(function () {
-    this.foreachData(data => data.consolidate())
+    this.forEachData(data => data.consolidate())
   })
 }
 
@@ -1205,23 +1205,20 @@ eYo.Delegate.prototype.consolidateData = function () {
  * Set the data values from the type.
  * One block implementation may correspond to different types,
  * For example, there is one implementation for all the primaries.
- * @param {!Blockly.Block} block to be initialized.
  * @param {!String} type
- * @return {boolean} whether the model was really used.
  */
 eYo.Delegate.prototype.setDataWithType = function (type) {
-  this.foreachData(data => data.setWithType(type))
+  this.forEachData(data => data.setWithType(type))
 }
 
 /**
  * Set the data values from the model.
- * @param {!Blockly.Block} block to be modified.
  * @param {!Object} model
  * @return {boolean} whether the model was really used.
  */
 eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
-  this.foreachData(data => data.setRequiredFromModel(false))
+  this.forEachData(data => data.setRequiredFromModel(false))
   this.changeWrap(() => {
     var data_in = model.data
     if (goog.isString(data_in) || goog.isNumber(data_in)) {
@@ -1231,11 +1228,11 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
         d.setRequiredFromModel(true)
         done = true
       } else {
-        this.foreachData(d => {
+        this.forEachData(d => {
           if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
             // if (done) {
             //   console.error('Ambiguous model', this.type, data_in)
-            //   this.foreachData(d => {
+            //   this.forEachData(d => {
             //     if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
             //       console.log('candidate:', d.key)
             //     }
@@ -1249,7 +1246,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
         })
       }
     } else if (goog.isDef(data_in)) {
-      this.foreachData(data => {
+      this.forEachData(data => {
         var k = data.key
         if (eYo.Do.hasOwnProperty(data_in, k)) {
           data.set(data_in[k])
@@ -1279,7 +1276,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
         }
       }
     }
-    this.foreachData(data => {
+    this.forEachData(data => {
       var k = data.key + '_d'
       if (eYo.Do.hasOwnProperty(model, k)) {
         data.set(model[k])
@@ -1315,7 +1312,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
  * This is why the one shot.
  */
 eYo.Delegate.prototype.synchronizeData = function () {
-  this.foreachData(data => data.synchronize())
+  this.forEachData(data => data.synchronize())
   this.synchronizeData = eYo.Do.nothing
 }
 
@@ -1388,8 +1385,8 @@ eYo.Delegate.prototype.makeData = function () {
     }
   }
   this.data = data
-  // now we can use `foreachData`
-  this.foreachData(d => {
+  // now we can use `forEachData`
+  this.forEachData(d => {
     Object.defineProperty(d.owner, d.key + '_d', { value: d })
     if (d.model.main === true) {
       goog.asserts.assert(!data.main, 'Only one main data please')
@@ -1572,7 +1569,7 @@ eYo.Delegate.prototype.synchronizeSlots = function () {
  * @param {?string} type Name of the new type.
  */
 eYo.Delegate.prototype.consolidateData = function () {
-  this.foreachData(data => data.consolidate())
+  this.forEachData(data => data.consolidate())
 }
 
 /**
@@ -1653,7 +1650,7 @@ eYo.Delegate.prototype.init = function () {
     this.changeWrap(() => {
       this.makeState()
       // initialize the data
-      this.foreachData(data => data.init())
+      this.forEachData(data => data.init())
       this.forEachSlot(slot => slot.init())
       // At this point the state value may not be consistent
       this.consolidate()
