@@ -402,20 +402,55 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   slots: {
     identifiers: {
       order: 1,
-      wrap: eYo.T3.Expr.non_void_identifier_list
+      wrap: eYo.T3.Expr.non_void_identifier_list,
+      xml: {
+        key: 'list',
+        save: /** @suppress {globalThis} */ function (element) {
+          var variant = this.owner.variant_p
+          if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
+            this.save(element)
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          var variant = this.owner.variant_p
+          if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
+            this.load(element)
+          }
+        }
+      }
     },
     del: {
       order: 2,
       wrap: eYo.T3.Expr.target_list,
       xml: {
-        key: 'list'
+        key: 'list',
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.owner.variant_p === eYo.Key.DEL) {
+            this.save(element)
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          if (this.owner.variant_p === eYo.Key.DEL) {
+            this.load(element)
+          }
+        }
       }
     },
     return: {
       order: 3,
       wrap: eYo.T3.Expr.optional_expression_list,
       xml: {
-        key: 'list'
+        key: 'list',
+        save: /** @suppress {globalThis} */ function (element) {
+          if (this.owner.variant_p === eYo.Key.RETURN) {
+            this.save(element)
+          }
+        },
+        load: /** @suppress {globalThis} */ function (element) {
+          if (this.owner.variant_p === eYo.Key.RETURN) {
+            this.load(element)
+          }
+        }
       }
     }
   }
