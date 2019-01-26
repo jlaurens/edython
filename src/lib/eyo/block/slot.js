@@ -809,7 +809,7 @@ eYo.Slot.prototype.save = function (element, opt) {
  * No consistency test is made however.
  * For edython.
  * @param {Element} element a dom element in which to save the input
- * @return the added child, if any
+ * @return true if this is loaded
  */
 eYo.Slot.prototype.load = function (element) {
   this.loaded_ = false
@@ -830,53 +830,54 @@ eYo.Slot.prototype.load = function (element) {
   if (target && target.eyo.wrapped_ && !(target.eyo instanceof eYo.DelegateSvg.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(target, element)
+    this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
-    eYo.Do.someElementChild(element, (child) => {
+    eYo.Do.someElementChild(element, child => {
       if (this.inputType === Blockly.INPUT_VALUE) {
         var attribute = child.getAttribute(eYo.Xml.SLOT)
       } else if (this.inputType === Blockly.NEXT_STATEMENT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
       if (attribute && (attribute === this.xmlKey || attribute === this.key)) {
-        this.block.workspace.eyo.recover.dontResit(child)
+        this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.setRequiredFromModel(true)
           out = true
         } else if (target) {
           if (target.eyo instanceof eYo.DelegateSvg.List) {
             var grandChildren = Array.prototype.slice.call(child.childNodes)
-            var ii = 0
-            while (ii < grandChildren.length) {
-              var grandChild = grandChildren[ii++]
-              if (grandChild.nodeType === Node.ELEMENT_NODE) {
-                var name = grandChild.getAttribute(eYo.Xml.SLOT)
-                var input = target.getInput(name)
-                if (input) {
-                  if (input.connection) {
-                    var grandTarget = input.connection.targetBlock()
-                    if ((grandTarget)) {
-                      eYo.Xml.fromDom(grandTarget, grandChild)
-                    } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
-                      var targetC8n = grandTarget.outputConnection
-                      if (targetC8n && targetC8n.checkType_(input.connection, true)) {
-                        targetC8n.connect(input.connection)
-                        this.setRequiredFromModel(true)
-                      }
+            eYo.Do.forEachElementChild(child, grandChild => {
+              var name = grandChild.getAttribute(eYo.Xml.SLOT)
+              var input = target.getInput(name)
+              if (input) {
+                if (input.connection) {
+                  var grandTarget = input.connection.targetBlock()
+                  if ((grandTarget)) {
+                    eYo.Xml.fromDom(grandTarget, grandChild)
+                    this.recover.dontResit(grandChild)
+                  } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
+                    var targetC8n = grandTarget.outputConnection
+                    if (targetC8n && targetC8n.checkType_(input.connection, true)) {
+                      targetC8n.connect(input.connection)
+                      this.setRequiredFromModel(true)
                     }
-                  } else {
-                    console.error('Missing connection')
+                    this.recover.dontResit(grandChild)
                   }
+                } else {
+                  console.error('Missing connection')
                 }
               }
-            }
+            })
             out = true
           } else {
             out = eYo.Xml.fromDom(target, child)
           }
+          this.recover.dontResit(child)
         } else if ((target = eYo.Xml.domToBlock(child, this.block))) {
           // we could create a block from that child element
           // then connect it
+          this.recover.dontResit(child)
           var c8n = this.connection
           if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
             c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
