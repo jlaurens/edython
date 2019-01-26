@@ -7,7 +7,8 @@
     :title="$$t('panel.document-read-string-recovered.title')"
     >
     <div
-      class="d-block">{{$$t('panel.document-read-string-recovered.content')}}</div>
+      class="d-block"
+      v-html="$$t('panel.document-read-string-recovered.content')"></div>
     <div
       slot="modal-footer"
       class="w-100">
