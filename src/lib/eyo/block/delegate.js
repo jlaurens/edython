@@ -497,9 +497,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * then use the model's method if any.
  */
 eYo.Delegate.prototype.willLoad = function () {
-  this.foreachData((data) => {
-    data.willLoad()
-  })
+  this.foreachData(data => data.willLoad())
   this.forEachSlot(slot => slot.willLoad())
   var willLoad = this.model.willLoad
   if (goog.isFunction(willLoad)) {
@@ -511,9 +509,7 @@ eYo.Delegate.prototype.willLoad = function () {
  * Called when data and slots have loaded.
  */
 eYo.Delegate.prototype.didLoad = function () {
-  this.foreachData((data) => {
-    data.didLoad()
-  })
+  this.foreachData(data => data.didLoad())
   this.forEachSlot(slot => slot.didLoad())
   var didLoad = this.model.didLoad
   if (goog.isFunction(didLoad)) {
@@ -531,7 +527,7 @@ eYo.Delegate.prototype.didLoad = function () {
 eYo.Delegate.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
   if (equals) {
-    this.foreachData((data) => {
+    this.foreachData(data => {
       var r_data = rhs.data[data.key]
       equals = r_data && (data.get() == r_data.get() || (data.isIncog() && r_data.isIncog()))
       return equals // breaks if false
@@ -1201,9 +1197,7 @@ eYo.Delegate.prototype.makeBounds = function () {
  */
 eYo.Delegate.prototype.consolidateData = function () {
   this.changeWrap(function () {
-    this.foreachData((data) => {
-      data.consolidate()
-    })
+    this.foreachData(data => data.consolidate())
   })
 }
 
@@ -1216,9 +1210,7 @@ eYo.Delegate.prototype.consolidateData = function () {
  * @return {boolean} whether the model was really used.
  */
 eYo.Delegate.prototype.setDataWithType = function (type) {
-  this.foreachData((data) => {
-    data.setWithType(type)
-  })
+  this.foreachData(data => data.setWithType(type))
 }
 
 /**
@@ -1229,89 +1221,84 @@ eYo.Delegate.prototype.setDataWithType = function (type) {
  */
 eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
-  this.foreachData((data) => {
-      data.setRequiredFromModel(false)
-    }
-  )
-  this.changeWrap(
-    function () {
-      var data_in = model.data
-      if (goog.isString(data_in) || goog.isNumber(data_in)) {
-        var d = this.main_d
-        if (d && !d.isIncog() && d.validate(data_in)) {
-          d.change(data_in)
-          d.setRequiredFromModel(true)
-          done = true
-        } else {
-          this.foreachData((d) => {
-            if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
-              // if (done) {
-              //   console.error('Ambiguous model', this.type, data_in)
-              //   this.foreachData((d) => {
-              //     if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
-              //       console.log('candidate:', d.key)
-              //     }
-              //   })
-              // }
-              goog.asserts.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
-              d.change(data_in)
-              d.setRequiredFromModel(true)
-              done = d.key
-            }
-          })
-        }
-      } else if (goog.isDef(data_in)) {
-        this.foreachData((data) => {
-          var k = data.key
-          if (eYo.Do.hasOwnProperty(data_in, k)) {
-            data.set(data_in[k])
-            data.setRequiredFromModel(true)
-            done = true
-          } else {
-            k = k + '_placeholder'
-            if (eYo.Do.hasOwnProperty(data_in, k)) {
-              data.setRequiredFromModel(true)
-              // change the place holder in the objects's model
-              var m = {}
-              goog.mixin(m, data.model)
-              m.placeholder = data_in[k]
-              data.model = m
-              done = true
-            }
+  this.foreachData(data => data.setRequiredFromModel(false))
+  this.changeWrap(() => {
+    var data_in = model.data
+    if (goog.isString(data_in) || goog.isNumber(data_in)) {
+      var d = this.main_d
+      if (d && !d.isIncog() && d.validate(data_in)) {
+        d.change(data_in)
+        d.setRequiredFromModel(true)
+        done = true
+      } else {
+        this.foreachData(d => {
+          if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+            // if (done) {
+            //   console.error('Ambiguous model', this.type, data_in)
+            //   this.foreachData(d => {
+            //     if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+            //       console.log('candidate:', d.key)
+            //     }
+            //   })
+            // }
+            goog.asserts.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
+            d.change(data_in)
+            d.setRequiredFromModel(true)
+            done = d.key
           }
         })
-        if (!noCheck) {
-          for (var k in data_in) {
-            if (eYo.Do.hasOwnProperty(data_in, k)) {
-              var D = this.data[k]
-              if (!D) {
-                console.warn('Unused data:', this.block_.type, k, data_in[k])
-              }
+      }
+    } else if (goog.isDef(data_in)) {
+      this.foreachData(data => {
+        var k = data.key
+        if (eYo.Do.hasOwnProperty(data_in, k)) {
+          data.set(data_in[k])
+          data.setRequiredFromModel(true)
+          done = true
+        } else {
+          k = k + '_placeholder'
+          if (eYo.Do.hasOwnProperty(data_in, k)) {
+            data.setRequiredFromModel(true)
+            // change the place holder in the objects's model
+            var m = {}
+            goog.mixin(m, data.model)
+            m.placeholder = data_in[k]
+            data.model = m
+            done = true
+          }
+        }
+      })
+      if (!noCheck) {
+        for (var k in data_in) {
+          if (eYo.Do.hasOwnProperty(data_in, k)) {
+            var D = this.data[k]
+            if (!D) {
+              console.warn('Unused data:', this.block_.type, k, data_in[k])
             }
           }
         }
       }
-      this.foreachData((data) => {
-        var k = data.key + '_d'
+    }
+    this.foreachData(data => {
+      var k = data.key + '_d'
+      if (eYo.Do.hasOwnProperty(model, k)) {
+        data.set(model[k])
+        done = true
+        data.setRequiredFromModel(true)
+      } else {
+        k = data.key + '_p'
         if (eYo.Do.hasOwnProperty(model, k)) {
           data.set(model[k])
           done = true
           data.setRequiredFromModel(true)
-        } else {
-          k = data.key + '_p'
-          if (eYo.Do.hasOwnProperty(model, k)) {
-            data.set(model[k])
-            done = true
-            data.setRequiredFromModel(true)
-          }
         }
-        k = data.key + '_placeholder'
-        if (eYo.Do.hasOwnProperty(model, k)) {
-          data.customizePlaceholder(model[k])
-        }
-      })
-    }
-  )
+      }
+      k = data.key + '_placeholder'
+      if (eYo.Do.hasOwnProperty(model, k)) {
+        data.customizePlaceholder(model[k])
+      }
+    })
+  })
   return done
 }
 
@@ -1328,9 +1315,7 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
  * This is why the one shot.
  */
 eYo.Delegate.prototype.synchronizeData = function () {
-  this.foreachData((data) => {
-    data.synchronize()
-  })
+  this.foreachData(data => data.synchronize())
   this.synchronizeData = eYo.Do.nothing
 }
 
@@ -1404,7 +1389,7 @@ eYo.Delegate.prototype.makeData = function () {
   }
   this.data = data
   // now we can use `foreachData`
-  this.foreachData((d) => {
+  this.foreachData(d => {
     Object.defineProperty(d.owner, d.key + '_d', { value: d })
     if (d.model.main === true) {
       goog.asserts.assert(!data.main, 'Only one main data please')
@@ -1587,9 +1572,7 @@ eYo.Delegate.prototype.synchronizeSlots = function () {
  * @param {?string} type Name of the new type.
  */
 eYo.Delegate.prototype.consolidateData = function () {
-  this.foreachData((data) => {
-    data.consolidate()
-  })
+  this.foreachData(data => data.consolidate())
 }
 
 /**
@@ -1670,9 +1653,7 @@ eYo.Delegate.prototype.init = function () {
     this.changeWrap(() => {
       this.makeState()
       // initialize the data
-      this.foreachData((data) => {
-        data.init()
-      })
+      this.foreachData(data => data.init())
       this.forEachSlot(slot => slot.init())
       // At this point the state value may not be consistent
       this.consolidate()
