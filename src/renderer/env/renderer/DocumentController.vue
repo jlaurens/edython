@@ -1,21 +1,14 @@
 <template>
-  <document-rename @renamed="$$renamed"></document-rename>
 </template>
 <script>
   import {mapState, mapMutations} from 'vuex'
-
-  import DocumentRename from '@/components/Dialog/Rename'
 
   export default {
     name: 'document-controller',
     data: function () {
       return {
-        name: undefined,
         documentPath_: undefined
       }
-    },
-    components: {
-      DocumentRename
     },
     computed: {
       ...mapState('Document', [
@@ -149,15 +142,6 @@
             callback && callback(path)
           }
         })
-      },
-      $$renamed (newName) {
-        const path = require('path')
-        if (!path.isAbsolute(newName)) {
-          if (this.path) {
-            newName = path.join(path.dirname(this.path), newName)
-          }
-        }
-        this.setPath(newName)
       }
     }
   }

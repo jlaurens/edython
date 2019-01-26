@@ -1,141 +1,86 @@
 <template>
-  <document-rename @renamed="renamed"></document-rename>
+  <div
+    id="web-load">
+    <input
+      ref="input"
+      type="file"
+      @change="loadTextFromFile"
+      style="display:none">
+  </div>
 </template>
 <script>
   import {mapState, mapMutations} from 'vuex'
-
-  import DocumentRename from "../Dialog/Rename"
 
   export default {
     name: 'document-controller',
     data: function () {
       return {
-        name: undefined
       }
     },
-    components: {
-      DocumentRename
-    },
     computed: {
-
+      ...mapState('Document', [
+        'path'
+      ])
+    },
+    mounted () {
+      this.$root.$on('document-open', () => {
+        this.showAlert = false
+        this.$refs.input.click()
+      })
+      this.$root.$on('document-save', this.$$doSaveAs.bind(this))
+      this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
     },
     methods: {
-      renamed (newName) {
-
-      },
-      readFile (fileName, callback) {
-        const fs = window.require('fs')
-        fs.readFile(fileName, (err, content) => {
-          if (err) {
-            alert(`An error ocurred reading the file ${err.message}`)
-            return
-          }
-          eYo.App.Document.readDeflate(content, fileName)
-          eYo.App.workspace.eyo.resetChangeCount()
-          if (callback) {
-            callback()
-          } else {
+      ...mapMutations('Document', [
+        'setPath'
+      ]),
+      ...mapMutations('Undo', [
+        'stageUndo'
+      ]),
+      loadTextFromFile (ev) {
+        const file = ev.target.files[0]
+        if (file) {
+          const reader = new FileReader()
+          reader.onload = e => {
+            var result = e.target.result
+            var content = new Uint8Array(result)
+            eYo.App.Document.readDeflate(content, file)
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
               eYo.$$.bus.$emit('pane-workspace-visible')
             })
           }
-        })
-      }
+          // console.log(file)
+          reader.readAsArrayBuffer(file)
+        }
+      },
+      doSaveAs: (() => {
+        var do_it = (ev, callback) => {
+          var p = this.path
+          var basename = p && p.lastIndexOf
+            ? p.substr(p.lastIndexOf('/') + 1)
+            : this.$$t('message.document.Untitled')
+          if (!basename.endsWith('.eyo')) {
+            basename = basename + '.eyo'
+          }
+          let deflate = eYo.App.Document.getDeflate()
+          var file = new File([deflate], basename, {type: 'application/octet-stream'})
+          FileSaver.saveAs(file)
+          callback && callback()
+        }
+        return (ev, callback) => {
+          var p = this.path
+          if (p && p.lastIndexOf) {
+            do_it(ev, callback)
+          } else {
+            this.$root.$emit('document-rename', name => {
+              do_it(ev, callback)
+            })
+          }
+        }
+      })()
     }
   }
-
-var eYoDocument = {}
-
-eYoDocument.install = function (Vue, options) {
-  // console.error('INSTALLING eYoDocument', eYo, options)
-  var store = options.store
-  eYo.App.Document || (eYo.App.Document = {})
-  eYo.App.Document.x
-  eYo.App.Document.getDocumentPath = () => {
-    // const {dialog} = require('electron').remote
-    const remote = window.require('electron').remote
-    const app = remote.app
-    let documentsFolder = app.getPath('documents')
-    const defaultPath = require('path').join(documentsFolder, 'Edython')
-    const fs = window.require('fs')
-    if (!fs.existsSync(defaultPath)) {
-      fs.mkdirSync(defaultPath)
-    }
-    return defaultPath
-  }
-  eYo.App.Document.doOpen = (ev, callback) => {
-    var defaultPath = eYo.App.Document.getDocumentPath()
-    const {dialog} = require('electron').remote
-    dialog.showOpenDialog({
-      defaultPath: defaultPath,
-      filters: [{
-        name: 'Edython', extensions: ['eyo']
-      }],
-      properties: [
-        'openFile'
-      ]
-    }, (fileNames) => {
-      var fileName = fileNames && fileNames[0]
-      if (fileName) {
-        eYo.App.Document.readFile(fileName, callback)
-      } else {
-        console.log('Opération annulée')
-      }
-    })
-  }
-  eYo.App.Document.doWriteContent = (deflate, callback) => {
-    const path = require('path')
-    var defaultPath = path.join(eYo.App.Document.getDocumentPath(), 'Sans titre.eyo')
-    const {dialog} = require('electron').remote
-    dialog.showSaveDialog({
-      defaultPath: defaultPath,
-      filters: [{
-        name: 'Edython', extensions: ['eyo']
-      }]
-    }, function (filePath) {
-      if (filePath === undefined) {
-        console.log('Opération annulée')
-        callback && callback()
-        return
-      }
-      var dirname = path.dirname(filePath)
-      const fs = window.require('fs')
-      if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname)
-      }
-      store.commit('Document/setPath', filePath)
-      eYo.App.Document.writeContentToFile(filePath, deflate, callback)
-    })
-  }
-  eYo.App.Document.writeContentToFile = (path, deflate, callback) => {
-    const fs = window.require('fs')
-    fs.writeFile(path, deflate, err => {
-      if (err) {
-        alert('An error ocurred creating the file ' + err.message)
-      } else {
-        store.commit('Undo/stageUndo')
-        eYo.App.workspace.eyo.resetChangeCount()
-        eYo.$$.bus.$emit('document-save-complete')
-        callback && callback(path)
-      }
-    })
-  }
-  eYo.App.Document.doSave = (ev, callback) => {
-    let deflate = eYo.App.Document.getDeflate()
-    var documentPath = store.state.Document.path
-    if (documentPath) {
-      eYo.App.Document.writeContentToFile(documentPath, deflate, callback)
-    } else {
-      eYo.App.Document.doWriteContent(deflate, callback)
-    }
-  }
-  eYo.App.Document.doSaveAs = (ev, callback) => {
-    let deflate = eYo.App.Document.getDeflate()
-    eYo.App.Document.doWriteContent(deflate, callback)
-  }
-}
-export default eYoDocument
 </script>
 <style>
 </style>

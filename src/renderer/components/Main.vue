@@ -13,8 +13,7 @@
       <main-page></main-page>
     </div>
     <document-controller></document-controller>
-    <dialog-web-load></dialog-web-load>
-    <dialog-modal></dialog-modal>
+    <dialog></dialog>
   </b-container>
 </template>
 
@@ -23,18 +22,16 @@
   
   import MainToolbar from '@@/Toolbar/Main'
   import MainPage from './Main/Page'
-  import DialogWebLoad from './Dialog/WebLoad'
   import DocumentController from '@env/DocumentController'
-  import DialogModal from './Dialog/Modal'
+  import Dialog from './Dialog'
 
   export default {
     name: 'Main',
     components: {
       MainToolbar,
-      DialogWebLoad,
       MainPage,
       DocumentController,
-      DialogModal
+      Dialog
     },
     computed: {
       ...mapState('Pref', [

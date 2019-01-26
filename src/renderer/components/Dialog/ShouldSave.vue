@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    ref='shouldSaveModalRef'
+    ref='dialog'
     id="page-modal-should-save"
     lazy
     @ok="doOk()"
@@ -29,13 +29,13 @@
     name: 'should-save',
     methods: {
       doYes () {
-        this.$refs.shouldSaveModalRef.hide()
-        eYo.App.Document.doSave(null, function () {
+        this.$refs.dialog.hide()
+        this.$root.$emit('document-save', () => {
           eYo.App.Document.doNew()
         })
       },
       doNo () {
-        this.$refs.shouldSaveModalRef.hide()
+        this.$refs.dialog.hide()
         eYo.App.workspace.eyo.resetChangeCount()
         eYo.App.Document.doNew()
       }
