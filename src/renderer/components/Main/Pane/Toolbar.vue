@@ -183,7 +183,7 @@
         set (newValue) {
           this.$nextTick(() => {
             this.$emit('change-layout', {what: this.what, how: newValue})
-            this.$$.bus.$emit('updateWorkbenchToolbars')
+            this.$root.$emit('workbench-toolbars-update')
           })
           this.revertLayout = (newValue === 'F') && this.paneLayout
         }
@@ -264,7 +264,7 @@
         this.$emit('install-toolbar', this.$refs.toolbar.$el)
         this.$$update()
       })
-      this.$$.bus.$on('updateWorkbenchToolbars', this.$$update.bind(this))
+      this.$root.$on('workbench-toolbars-update', this.$$update.bind(this))
     },
     methods: {
       ...mapMutations('Workspace', {
@@ -332,31 +332,31 @@
           'workspace.scaleReset': () => {
             this.workspaceScaleReset()
             this.$nextTick(() => {
-              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+              this.$root.$emit('workbench-toolbars-update')
             })
           },
           'workspace.scaleUp': () => {
             this.workspaceScaleUp()
             this.$nextTick(() => {
-              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+              this.$root.$emit('workbench-toolbars-update')
             })
           },
           'workspace.scaleUpBig': () => {
             this.workspaceScaleUpBig()
             this.$nextTick(() => {
-              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+              this.$root.$emit('workbench-toolbars-update')
             })
           },
           'workspace.scaleDown': () => {
             this.workspaceScaleDown()
             this.$nextTick(() => {
-              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+              this.$root.$emit('workbench-toolbars-update')
             })
           },
           'workspace.scaleDownBig': () => {
             this.workspaceScaleDownBig()
             this.$nextTick(() => {
-              eYo.$$.bus.$emit('updateWorkbenchToolbars')
+              this.$root.$emit('workbench-toolbars-update')
             })
           },
           'console2.scaleReset': this.console2ScaleReset,
