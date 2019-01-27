@@ -1,0 +1,16 @@
+import store from '@@/../store'
+
+// https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+eYo.App.copyTextToClipboard = function (text) {
+  const { clipboard } = require('electron')
+  clipboard.writeText(text)
+}
+
+eYo.App.didCopyBlock = function (block, xml) {
+  const { clipboard } = require('electron')
+  const p = new eYo.Py.Exporter()
+  const code = p.export(block, {is_deep: true})
+  clipboard.write({ text: code, html: xml })
+  console.error('didCopyBlock', xml)
+  store.commit('UI/didCopyBlock', xml)
+}
