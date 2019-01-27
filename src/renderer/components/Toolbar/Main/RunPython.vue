@@ -77,7 +77,7 @@
       doIt () {
         var root = this.rootControl
         if (root) {
-          this.$$.bus.$emit('will-run-script')
+          this.$root.$emit('will-run-script')
           // this.$nextTick(() => {
           //   root.runScript()
           // })

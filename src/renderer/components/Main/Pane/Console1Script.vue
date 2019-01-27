@@ -380,7 +380,7 @@ export default {
     eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
     eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
-    eYo.$$.bus.$on('will-run-script', () => {
+    this.$root.$on('will-run-script', () => {
       this.setRunning1(false)
       this.setRunning1(true)
     })

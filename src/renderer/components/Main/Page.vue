@@ -758,7 +758,7 @@
       eYo.$$.bus.$on('pane-change-layout', opt => {
         this.changeLayout(opt)
       })
-      this.$$.bus.$on('will-run-script', () => {
+      this.$root.$on('will-run-script', () => {
         this.isVisible('turtle') || this.makeConsoleVisible()
       })
     },
