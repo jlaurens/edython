@@ -6,7 +6,7 @@ eYo.Do.readOnlyMixin(eYo.App, {
 })
 
 const state = {
-  blockClipboard: undefined,
+  blockClipboard: '',
   panelsWidth: 0,
   displayMode: undefined,
   selectedMode: eYo.App.TUTORIAL,
@@ -18,8 +18,9 @@ const state = {
 }
 
 const mutations = {
-  didCopyBlock (state, ctxt) {
-    state.blockClipboard = ctxt.xml
+  didCopyBlock (state, xml) {
+    state.blockClipboard = xml
+    console.error('xml', xml)
   },
   setPanelsWidth (state, newWidth) {
     state.panelsWidth = newWidth
