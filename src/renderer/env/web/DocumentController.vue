@@ -64,9 +64,6 @@
       this.$root.$on('document-save-as', doSave)
     },
     methods: {
-      ...mapMutations('Document', [
-        'setPath'
-      ]),
       ...mapMutations('Undo', [
         'stageUndo'
       ]),
@@ -77,7 +74,7 @@
           reader.onload = e => {
             var result = e.target.result
             var content = new Uint8Array(result)
-            eYo.App.Document.readDeflate(content, file)
+            eYo.App.Document.readDeflate(content, file.name)
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
               eYo.$$.bus.$emit('pane-workspace-visible')
