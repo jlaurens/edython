@@ -9,11 +9,9 @@
       :width="32"
       :height="32"
       :icon-name="name"
+      :icon-color="color"
     >
-      <icon-run
-        :running="running1"
-        :active="canDoIt"
-      ></icon-run>
+      <icon-run></icon-run>
     </icon-base>
   </b-btn>
 </template>
@@ -55,6 +53,13 @@
       },
       rootControl () {
         return this.eyo && this.eyo.rootControl
+      },
+      color () {
+        return this.running1
+          ? '#f9951b'
+          : this.canDoIt
+            ? '#8dee3f'
+            : 'white'
       }
     },
     components: {
@@ -66,9 +71,12 @@
         if (newValue) {
           var root = this.rootControl
           if (root) {
-            this.$nextTick(() => {
+            // this.$nextTick(() => {
+            //   root.runScript()
+            // })
+            setTimeout(() => {
               root.runScript()
-            })
+            }, 250)
           }
         }
       }
