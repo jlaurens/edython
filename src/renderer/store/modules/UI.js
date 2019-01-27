@@ -20,7 +20,6 @@ const state = {
 const mutations = {
   didCopyBlock (state, xml) {
     state.blockClipboard = xml
-    console.error('xml', xml)
   },
   setPanelsWidth (state, newWidth) {
     state.panelsWidth = newWidth
