@@ -28,9 +28,7 @@
     name: 'copy-paste',
     data: function () {
       return {
-        theta: 1,
-        name: '',
-        title: ''
+        theta: 1
       }
     },
     props: {
@@ -64,6 +62,12 @@
       IconCopyPaste
     },
     computed: {
+      ...mapGetters('Selected', [
+        'eyo'
+      ]),
+      ...mapState('UI', [
+        'blockClipboard'
+      ]),
       id () {
         return 'toolbar-btn-' + (this.copy
           ? this.deep
@@ -81,12 +85,25 @@
           ? !!this.eyo
           : !!this.blockClipboard
       },
-      ...mapGetters('Selected', [
-        'eyo'
-      ]),
-      ...mapState('UI', [
-        'blockClipboard'
-      ])
+      locale () {
+        return this.$i18n.locale
+      },
+      name () {
+        var deep_or_shallow = this.deep ? 'deep' : 'shallow'
+        return this.copy
+          ? this.$$t(`toolbar.content.copy_block_${deep_or_shallow}`)
+          : this.duplicate
+            ? this.$$t(`toolbar.content.duplicate_block_${deep_or_shallow}`)
+            : this.$$t(`toolbar.content.paste_block`)
+      },
+      title () {
+        var deep_or_shallow = this.deep ? 'deep' : 'shallow'
+        return this.copy
+          ? this.$$t(`toolbar.tooltip.copy_block_${deep_or_shallow}`, this.locale)
+          : this.duplicate
+            ? this.$$t(`toolbar.tooltip.duplicate_block_${deep_or_shallow}`)
+            : this.$$t(`toolbar.tooltip.paste_block`)
+      }
     },
     methods: {
       doIt () {
@@ -100,24 +117,7 @@
         } else {
           Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)
         }
-      },
-      localize () {
-        var deep_or_shallow = this.deep ? 'deep' : 'shallow'
-        this.title = this.copy
-          ? this.$$t(`toolbar.tooltip.copy_block_${deep_or_shallow}`)
-          : this.duplicate
-            ? this.$$t(`toolbar.tooltip.duplicate_block_${deep_or_shallow}`)
-            : this.$$t(`toolbar.tooltip.paste_block`)
-        this.name = this.copy
-          ? this.$$t(`toolbar.content.copy_block_${deep_or_shallow}`)
-          : this.duplicate
-            ? this.$$t(`toolbar.content.duplicate_block_${deep_or_shallow}`)
-            : this.$$t(`toolbar.content.paste_block`)
       }
-    },
-    mounted () {
-      this.localize()
-      this.$root.$on('localize', this.localize.bind(this))
     }
   }
 </script>
