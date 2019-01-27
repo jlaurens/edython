@@ -13,8 +13,6 @@ const state = {
   deepCopy: false
 }
 
-// const types = namespace('Pref', _types)
-
 const mutations = {
   /**
    * Toggles the tips.
