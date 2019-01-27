@@ -1157,10 +1157,10 @@ eYo.Xml.fromDom = function (block, element) {
           if (input && input.connection) {
             var target = input.connection.targetBlock()
             if (target) {
-              slot.recover.dontResit(child)
+              target.eyo.recover.dontResit(child)
               eYo.Xml.fromDom(target, child)
             } else if ((target = eYo.Xml.domToBlock(child, block))) {
-              slot.recover.dontResit(child)
+              target.eyo.recover.dontResit(child)
               var targetC8n = target.outputConnection
               if (targetC8n && targetC8n.checkType_(input.connection)) {
                 targetC8n.connect(input.connection)
