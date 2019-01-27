@@ -5,6 +5,10 @@
   "description": "Python made easy with Blockly and Brython",
   "license": "EUPL-1.2",
   "main": "./dist/electron/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jlaurens/edython.git"
+  },
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
