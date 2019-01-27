@@ -2,7 +2,7 @@ import store from '@@/../store'
 
 // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
 eYo.App.copyTextToClipboard = function (text) {
-  var textArea = document.createElement("textarea")
+  var textArea = document.createElement('textarea')
 
   //
   // *** This styling is an extra step which is likely not required. ***
@@ -30,7 +30,7 @@ eYo.App.copyTextToClipboard = function (text) {
   textArea.style.height = '2em'
 
   // We don't need padding, reducing the size if it does flash render.
-  textArea.style.padding = 0;
+  textArea.style.padding = 0
 
   // Clean up any borders.
   textArea.style.border = 'none'
