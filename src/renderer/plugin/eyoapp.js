@@ -116,9 +116,6 @@ eYoApp.install = function (Vue, options) {
       store.commit('Selected/selectBlock', Blockly.selected)
     })
   }
-  eYo.App.didCopyBlock = function (block, xml) {
-    store.commit('UI/didCopyBlock', {block: block, xml: xml})
-  }
   Object.defineProperties(eYo.App, {
     selectedMode: {
       get () {
