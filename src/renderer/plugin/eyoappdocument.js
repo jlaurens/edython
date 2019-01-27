@@ -47,7 +47,7 @@ eYoAppDocument.install = function (Vue, options) {
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
     store.commit('Undo/stageUndo')
-    store.commit('Document/setEcoSave', store.state.Config.ecoSave)
+    store.commit('Document/setEcoSave', true)
     store.commit('Document/setPath', undefined)
   }
   eYo.App.Document.readString = (str) => {
