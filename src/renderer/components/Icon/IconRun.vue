@@ -1,8 +1,8 @@
 <template>
   <g>
     <path
-      d="M 16,16 m 12,0 l-18,-10 0,20 z"
-      :stroke="color"
+      d="M 5,29 l0,-25 c 12,-3 10,3 21,0 l0,15 c -12,3 -10,-3 -22,0"
+      :stroke="stroke"
     ></path>
   </g>
 </template>
@@ -13,12 +13,38 @@
       running: {
         type: Boolean,
         default: false
+      },
+      active: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
-      color () {
-        return this.running ? '#f9951b' : ''
+      stroke () {
+        return this.running
+          ? '#f9951b'
+          : this.active
+            ? '#8dee3f'
+            : 'white'
+      // },
+      // pathClass () {
+      //   return this.running
+      //     ? 'orange'
+      //     : this.active
+      //       ? 'green'
+      //       : 'white'
       }
     }
   }
 </script>
+<style>
+  path.orange {
+    stroke: #f9951b;
+  }
+  path.green {
+    stroke: #8dee3f;
+  }
+  path.white {
+    stroke: white;
+  }
+</style>
