@@ -44,7 +44,7 @@ export default {
     copy_block_shallow: 'Copier le bloc sélectionné',
     duplicate_block_deep: 'Dupliquer le bloc sélectionné et les suivants',
     duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
-    paste_bock: 'Coller le bloc du presse-papier',
+    paste_block: 'Coller le bloc du presse-papier',
     copy_python: 'Copier le code python dans le presse-papier',
     run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné',
     demo: 'Exemples de programmes de démonstration',
@@ -72,7 +72,8 @@ export default {
     copy_block_shallow: 'Copier',
     duplicate_block_deep: 'Dupliquer avec les suivants',
     duplicate_block_shallow: 'Dupliquer',
-    paste_block: 'Paste',
+    paste_block: 'Coller',
+    run_python: 'Exécuter',
     restart: 'Redémarrer'
   },
   name: {
