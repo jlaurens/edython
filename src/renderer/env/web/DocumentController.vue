@@ -43,8 +43,11 @@
           basename = basename + '.eyo'
         }
         let deflate = eYo.App.Document.getDeflate()
-        var file = new File([deflate], basename, {type: 'application/octet-stream'})
-        FileSaver.saveAs(file)
+        var FileSaver = require('file-saver')
+        // var file = new File([deflate], basename, {type: 'application/octet-stream'})
+        // FileSaver.saveAs(file)
+        var blob = new Blob([deflate], {type: 'text/plain;charset=utf-8'})
+        FileSaver.saveAs(blob, basename)
         callback && callback(basename)
       }
       var doSave = (evt, callback) => { // callback: (path) -> ()
