@@ -78,7 +78,6 @@ eYoI18n.install = function (Vue) {
   Vue.use(VueI18n)
 
   Vue.prototype.$$t = function (key, locale, value) {
-    // NB: eYo.$$.bus is a vue that is completely created when this function executes
     return this.$te(key, locale) && this.$t(key, locale, value)
   }
   Vue.prototype.$$tc = function (key, choice, locale, value) {
