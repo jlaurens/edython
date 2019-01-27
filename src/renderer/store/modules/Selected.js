@@ -4,7 +4,7 @@ const temp = {
 
 const state = {
   id: undefined, // the selected block id
-  step: 0 // the selected block type
+  step: 0 // the selected block change step
 }
 
 const mutations = {
