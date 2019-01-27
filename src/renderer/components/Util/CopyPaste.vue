@@ -28,7 +28,9 @@
     name: 'copy-paste',
     data: function () {
       return {
-        theta: 1
+        theta: 1,
+        name: '',
+        title: ''
       }
     },
     props: {
@@ -74,28 +76,6 @@
             : 'paste'
         )
       },
-      title () {
-        return this.copy
-          ? this.deep
-            ? this.$$t(`toolbar.tooltip.copy_block_deep`)
-            : this.$$t(`toolbar.tooltip.copy_block_shallow`)
-          : this.duplicate
-            ? this.deep
-              ? this.$$t(`toolbar.tooltip.duplicate_block_deep`)
-              : this.$$t(`toolbar.tooltip.duplicate_block_shallow`)
-            : this.$$t(`toolbar.tooltip.paste_block`)
-      },
-      name () {
-        return this.copy
-          ? this.deep
-            ? this.$$t(`toolbar.content.copy_block_deep`)
-            : this.$$t(`toolbar.content.copy_block_shallow`)
-          : this.duplicate
-            ? this.deep
-              ? this.$$t(`toolbar.content.duplicate_block_deep`)
-              : this.$$t(`toolbar.content.duplicate_block_shallow`)
-            : this.$$t(`toolbar.content.paste_block`)
-      },
       canDoIt () {
         return this.copy || this.duplicate
           ? !!this.eyo
@@ -120,7 +100,24 @@
         } else {
           Blockly.clipboardXml_ && eYo.App.workspace.paste(Blockly.clipboardXml_)
         }
+      },
+      localize () {
+        var deep_or_shallow = this.deep ? 'deep' : 'shallow'
+        this.title = this.copy
+          ? this.$$t(`toolbar.tooltip.copy_block_${deep_or_shallow}`)
+          : this.duplicate
+            ? this.$$t(`toolbar.tooltip.duplicate_block_${deep_or_shallow}`)
+            : this.$$t(`toolbar.tooltip.paste_block`)
+        this.name = this.copy
+          ? this.$$t(`toolbar.content.copy_block_${deep_or_shallow}`)
+          : this.duplicate
+            ? this.$$t(`toolbar.content.duplicate_block_${deep_or_shallow}`)
+            : this.$$t(`toolbar.content.paste_block`)
       }
+    },
+    mounted () {
+      this.localize()
+      this.$root.$on('localize', this.localize.bind(this))
     }
   }
 </script>
