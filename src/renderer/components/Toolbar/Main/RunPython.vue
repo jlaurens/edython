@@ -2,7 +2,7 @@
   <b-btn
     id="toolbar-btn-run-python"
     v-on:click="doIt()"
-    :title="$$t(`toolbar.tooltip.run_python`)"
+    :title="title"
     v-tippy
     :disabled="!canDoIt">
     <icon-base
@@ -12,6 +12,7 @@
     >
       <icon-run
         :running="running1"
+        :active="canDoIt"
       ></icon-run>
     </icon-base>
   </b-btn>
@@ -40,8 +41,14 @@
       ...mapGetters('Selected', [
         'eyo'
       ]),
+      locale () {
+        return this.$i18n.locale
+      },
       name () {
-        return 'Exécuter'
+        return this.$$t('toolbar.content.run_python', this.locale)
+      },
+      title () {
+        return this.$$t('toolbar.tooltip.run_python', this.locale)
       },
       canDoIt () {
         return !!this.rootControl
