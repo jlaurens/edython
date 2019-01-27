@@ -1,9 +1,9 @@
 const state = {
   path: undefined,
-  ecoSave: undefined,
-  noLeftSeparator: undefined,
-  noDynamicList: undefined,
-  smartUnary: undefined
+  ecoSave: false,
+  noLeftSeparator: false,
+  noDynamicList: false,
+  smartUnary: false
 }
 
 const mutations = {
