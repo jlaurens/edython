@@ -352,9 +352,13 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return 0
     }
+  },
+  recover: {
+    get () {
+      return this.block_.workspace.eyo.recover
+    }
   }
 })
-
 
 /**
  * Get the block.
