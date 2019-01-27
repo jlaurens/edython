@@ -30,7 +30,6 @@
     <main-storage />
     <b-btn-group>
       <run-python />
-      <copy-python />
     </b-btn-group>
     <copy-paste />
     <block-layout />    
@@ -54,7 +53,6 @@
   import RunPython from './Main/RunPython.vue'
   import CopyPaste from './Main/CopyPaste.vue'
   import BlockLayout from './Main/BlockLayout.vue'
-  import CopyPython from './Main/CopyPython.vue'
   import MainStorage from './Main/Storage.vue'
   import MainMode from './Main/Mode.vue'
   
@@ -86,7 +84,6 @@
       RunPython,
       CopyPaste,
       BlockLayout,
-      CopyPython,
       MainStorage,
       MainMode
     },
