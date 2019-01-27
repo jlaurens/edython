@@ -127,7 +127,7 @@ Object.defineProperties(
     },
     recover: {
       get () {
-        return this.owner.block_.workspace.eyo.recover
+        return this.owner.recover
       }
     },
     xmlKey: {
