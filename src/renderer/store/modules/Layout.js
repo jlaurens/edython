@@ -78,7 +78,6 @@ const cfg = {
 }
 
 const state = {
-  paneLayout: undefined, /* One of layouts */
   width_h1: 66,
   width_h2: 34,
   width_hh1: 50,
@@ -142,6 +141,9 @@ Object.defineProperties(cfg, {
   }
 })
 
+// Default layout
+state.paneLayout = 'F'
+
 // declare the state variables
 // what is in position `where`
 cfg.wheres.forEach(k => {
@@ -153,9 +155,11 @@ cfg.whats.forEach(k => {
   state[`where_${k}`] = null
 })
 
+state.what_f = 'workspace'
+state.where_workspace = 'f'
+
 const mutations = {
   setPaneLayout (state, layout) {
-    console.warn('setPaneLayout', layout)
     state.paneLayout = layout
   }
 }
