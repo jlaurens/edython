@@ -35,13 +35,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var block = eYo.Selected.block
   if (block) {
-    var xmlBlock = eYo.Xml.blockToDom(block, {noId: true, noNext: optNoNext});
-    // Encode start position in XML.
-    var xy = block.getRelativeToSurfaceXY();
-    xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);
-    xmlBlock.setAttribute('y', xy.y);
-    Blockly.clipboardXml_ = xmlBlock;
-    Blockly.clipboardSource_ = block.workspace;
+    eYo.copyBlock(block, !optNoNext)
     return true
   }
 };
