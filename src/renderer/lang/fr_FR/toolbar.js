@@ -90,7 +90,7 @@ export default {
       turtle_four: 'Tortue poursuite',
       turtle_Hilbert: 'Tortue Hilbert',
       turtle_Pythagoras_tree: 'Tortue Arbre de Pythagore',
-      turtle_times_two: 'Tortue duplication',
+      turtle_cardioid: 'Tortue cardioïde',
       sum_of_integers: 'Somme des entiers',
       primes: 'Nombres premiers',
       fifty_dices: '50 dés',
