@@ -135,7 +135,7 @@
       },
       baseName () {
         var x = this.path
-        if (this.path) {
+        if (x) {
           x = x.split('/')
           x = x[x.length - 1]
           x = x.split('.')
