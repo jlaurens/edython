@@ -4,7 +4,7 @@
     <b-btn
       id="toolbar-back"
       v-on:click="doBack()"
-      :title="$$t('block.tooltip.selection.send_to_back')"
+      :title="titleBack"
       v-tippy
       :disabled="!eyo">
       <icon-base
@@ -16,16 +16,16 @@
       </icon-base>
     </b-btn>
     <b-btn
-      id="toolbar-focus"
-      v-on:click="doFocus()"
-      :title="$$t('block.tooltip.selection.show')"
+      id="toolbar-show"
+      v-on:click="doShow()"
+      :title="titleShow"
       v-tippy
       :disabled="!eyo">
       <icon-base
         :width="24"
         :height="24"
-        icon-name="focus">
-        <icon-focus/>
+        icon-name="show">
+        <icon-show/>
       </icon-base>
     </b-btn>
   </b-btn-group>
@@ -36,19 +36,28 @@
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconFrontBack from '@@/Icon/IconFrontBack.vue'
-  import IconFocus from '@@/Icon/IconFocus.vue'
+  import IconShow from '@@/Icon/IconShow.vue'
 
   export default {
     name: 'page-toolbar-layout',
     components: {
       IconBase,
       IconFrontBack,
-      IconFocus
+      IconShow
     },
     computed: {
       ...mapGetters('Selected', [
         'eyo'
-      ])
+      ]),
+      locale () {
+        return this.$i18n.locale
+      },
+      titleBack () {
+        return this.$$t('toolbar.tooltip.selection.send_to_back', this.locale)
+      },
+      titleShow () {
+        return this.$$t('toolbar.tooltip.selection.show', this.locale)
+      }
     },
     methods: {
       doFront () {
@@ -57,8 +66,8 @@
       doBack () {
         eYo.App.doBack()
       },
-      doFocus () {
-        eYo.App.doFocus()
+      doShow () {
+        eYo.App.doShow()
       }
     }
   }
