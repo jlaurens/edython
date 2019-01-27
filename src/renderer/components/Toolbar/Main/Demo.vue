@@ -37,7 +37,7 @@
   import demoBasicTurtleFour from '@static/demo/basic/turtle-four.xml'
   import demoBasicTurtleHilbert from '@static/demo/basic/turtle-hilbert.xml'
   import demoBasicTurtlePythagorasTree from '@static/demo/basic/turtle-pythagoras-tree.xml'
-  import demoBasicTurtleTimesTwo from '@static/demo/basic/turtle-times-two.xml'
+  import demoBasicTurtleCardioid from '@static/demo/basic/turtle-cardioid.xml'
   import demoBasicSumOfIntegers from '@static/demo/basic/sum-of-integers.xml'
   import demoBasicPrimes from '@static/demo/basic/primes.xml'
   import demoBasicFiftyDices from '@static/demo/basic/fifty-dices.xml'
@@ -80,8 +80,8 @@
             title: this.$$t('toolbar.demo.basic.turtle_Pythagoras_tree'),
             xml: demoBasicTurtlePythagorasTree
           }, {
-            title: this.$$t('toolbar.demo.basic.turtle_times_two'),
-            xml: demoBasicTurtleTimesTwo
+            title: this.$$t('toolbar.demo.basic.turtle_cardioid'),
+            xml: demoBasicTurtleCardioid
           }, {
             title: this.$$t('toolbar.demo.basic.sum_of_integers'),
             xml: demoBasicSumOfIntegers
