@@ -1,11 +1,15 @@
 <template>
-  <div
-    id="web-load">
+  <b-modal
+    id="document-open"
+    ref="dialog"
+    @hidden="doHidden">
     <input
       ref="input"
       type="file"
-      @change="loadTextFromFile"
-      style="display:none">
+      @change="loadTextFromFile">
+  </b-modal>
+  <div
+    id="web-load">
   </div>
 </template>
 <script>
@@ -23,12 +27,38 @@
       ])
     },
     mounted () {
-      this.$root.$on('document-open', () => {
-        this.showAlert = false
-        this.$refs.input.click()
+      this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+        eYo.App.Document.shouldSave(() => {
+          this.callback = callback
+          this.$refs.dialog.show()
+          this.$refs.input.click()
+        })
       })
-      this.$root.$on('document-save', this.$$doSaveAs.bind(this))
-      this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
+      var do_it = (evt, callback) => { // callback: (path) -> ()
+        var p = this.path
+        var basename = p && p.lastIndexOf
+          ? p.substr(p.lastIndexOf('/') + 1)
+          : this.$$t('message.document.Untitled')
+        if (!basename.endsWith('.eyo')) {
+          basename = basename + '.eyo'
+        }
+        let deflate = eYo.App.Document.getDeflate()
+        var file = new File([deflate], basename, {type: 'application/octet-stream'})
+        FileSaver.saveAs(file)
+        callback && callback(basename)
+      }
+      var doSave = (evt, callback) => { // callback: (path) -> ()
+        var p = this.path
+        if (p && p.lastIndexOf) {
+          do_it(evt, callback)
+        } else {
+          this.$root.$emit('document-rename', name => {
+            do_it(evt, callback)
+          })
+        }
+      }
+      this.$root.$on('document-save', doSave)
+      this.$root.$on('document-save-as', doSave)
     },
     methods: {
       ...mapMutations('Document', [
@@ -37,8 +67,8 @@
       ...mapMutations('Undo', [
         'stageUndo'
       ]),
-      loadTextFromFile (ev) {
-        const file = ev.target.files[0]
+      loadTextFromFile (evt) {
+        const file = evt.target.files[0]
         if (file) {
           const reader = new FileReader()
           reader.onload = e => {
@@ -52,33 +82,14 @@
           }
           // console.log(file)
           reader.readAsArrayBuffer(file)
+          this.callback && this.callback()
         }
       },
-      doSaveAs: (() => {
-        var do_it = (ev, callback) => {
-          var p = this.path
-          var basename = p && p.lastIndexOf
-            ? p.substr(p.lastIndexOf('/') + 1)
-            : this.$$t('message.document.Untitled')
-          if (!basename.endsWith('.eyo')) {
-            basename = basename + '.eyo'
-          }
-          let deflate = eYo.App.Document.getDeflate()
-          var file = new File([deflate], basename, {type: 'application/octet-stream'})
-          FileSaver.saveAs(file)
-          callback && callback()
-        }
-        return (ev, callback) => {
-          var p = this.path
-          if (p && p.lastIndexOf) {
-            do_it(ev, callback)
-          } else {
-            this.$root.$emit('document-rename', name => {
-              do_it(ev, callback)
-            })
-          }
-        }
-      })()
+      doHidden () {
+        this.$nextTick(() => {
+          this.callback = undefined
+        })
+      }
     }
   }
 </script>

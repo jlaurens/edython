@@ -7,20 +7,23 @@ eYoAppDocument.install = function (Vue, options) {
   // console.error('INSTALLING eYoAppDocument', process.env.BABEL_ENV, eYo, options)
   var store = options.store
   eYo.App.Document || (eYo.App.Document = {})
-  eYo.App.Document.doNew = (ev) => {
-    console.log('doNew')
+  eYo.App.Document.shouldSave = (callback) => { // callback: () -> ()
     var w = eYo.App.workspace
     if (w && w.eyo.changeCount) {
-      // console.log('will bv::show::modal')
-      eYo.$$.app.$emit('bv::show::modal', 'page-modal-should-save')
+      eYo.$$.app.$emit('document-should-save', callback)
     } else {
-      // console.log('will doClear')
+      callback()
+    }
+  }
+  eYo.App.Document.doNew = evt => {
+    console.log('doNew')
+    eYo.App.Document.shouldSave(() => {
       eYo.App.Document.doClear()
       eYo.App.Document.readString(blank)
       Vue.nextTick(() => {
-        eYo.Selected.selectOneBlockOf(w.topBlocks_, true)
+        eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
       })
-    }
+    })
   }
   eYo.App.Document.getDeflate = () => {
     eYo.Events.groupWrap(() => {
@@ -33,7 +36,9 @@ eYoAppDocument.install = function (Vue, options) {
     eYo.App.doPrefToDom(dom)
     let oSerializer = new XMLSerializer()
     var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-    let deflate = store.state.Document.ecoSave ? pako.gzip(content) : content // use gzip to ungzip from the CLI
+    let deflate = store.state.Document.ecoSave
+      ? pako.gzip(content)
+      : content // use gzip to ungzip from the CLI
     return deflate
   }
   eYo.App.Document.doClear = () => {
@@ -57,7 +62,7 @@ eYoAppDocument.install = function (Vue, options) {
     if (workspace.topBlocks_.some(b => !b.eyo.isReady)) {
       console.error('SOME BLOCKS WERE RECOVERED')
       workspace.topBlocks_.forEach(b => b.eyo.beReady())
-      eYo.$$.bus.$emit('document-read-string-recovered')
+      eYo.$$.app.$emit('document-read-string-recovered')
     }
     // d = new Date()
     // console.error('t:', (d.getTime() - t0) / 1000)

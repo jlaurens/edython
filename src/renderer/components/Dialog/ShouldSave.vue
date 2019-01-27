@@ -1,9 +1,10 @@
 <template>
   <b-modal
-    ref='dialog'
-    id="page-modal-should-save"
+    ref="dialog"
+    id="dialog-should-save"
     lazy
     @ok="doOk()"
+    @hidden="doHidden()"
     :title='$$t("panel.should_save.title")'>
     <div
       class="d-block">{{$$t("panel.should_save.content")}}</div>
@@ -26,18 +27,25 @@
 
 <script>
   export default {
-    name: 'should-save',
+    name: 'document-should-save',
     methods: {
-      doYes () {
-        this.$refs.dialog.hide()
-        this.$root.$emit('document-save', () => {
-          eYo.App.Document.doNew()
-        })
+      show (callback) { // callback: () -> ()
+        this.callback = callback
+        this.$refs.dialog.show()
       },
-      doNo () {
+      doYes (evt) {
         this.$refs.dialog.hide()
-        eYo.App.workspace.eyo.resetChangeCount()
-        eYo.App.Document.doNew()
+        this.$root.$emit('document-save', evt, this.callback) // callback needed when just hidden
+      },
+      doNo (evt) {
+        this.$refs.dialog.hide()
+        console.log('doNo', this.callback)
+        this.callback && this.callback()
+      },
+      doHidden (evt) {
+        this.callback && this.$nextTick(() => {
+          this.callback = undefined
+        })
       }
     }
   }

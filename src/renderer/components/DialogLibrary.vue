@@ -28,10 +28,16 @@
       DialogRecovered
     },
     mounted () {
-      this.$$.bus.$on('document-read-string-recovered', () => {
-        console.error('$on document-read-string-recovered')
-        this.$refs.recovered.show()
-      })
+      var z = this.$refs.recovered
+      this.$$.bus.$on(
+        'document-read-string-recovered',
+        z.show.bind(z)
+      )
+      z = this.$refs.shouldSave
+      this.$root.$on(
+        'document-should-save',
+        z.show.bind(z)
+      )
     }
   }
 </script>

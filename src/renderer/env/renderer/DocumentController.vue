@@ -40,7 +40,11 @@
       } else {
         console.error('NO ipcRenderer')
       }
-      this.$root.$on('document-open', this.$$doOpen.bind(this))
+      this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+        eYo.App.Document.shouldSave(() => {
+          this.$$doOpen(evt, callback)
+        })
+      })
       this.$root.$on('document-save', this.$$doSave.bind(this))
       this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
     },
@@ -51,30 +55,10 @@
       ...mapMutations('Undo', [
         'stageUndo'
       ]),
-      $$readFile (fileName, callback) {
-        const fs = window.require('fs')
-        fs.readFile(fileName, (err, content) => {
-          if (err) {
-            alert('An error ocurred reading the file ' + err.message)
-            return
-          }
-          this.setPath(fileName)
-          eYo.App.Document.readDeflate(content, fileName) // setPath here instead ?
-          eYo.App.workspace.eyo.resetChangeCount()
-          if (callback) {
-            callback()
-          } else {
-            this.$nextTick(() => {
-              eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
-              this.before()
-            })
-          }
-        })
-      },
       before () {
         eYo.$$.bus.$emit('pane-workspace-visible')
       },
-      $$doOpen (ev, callback) {
+      $$doOpen (evt, callback) { // callback: (path) -> undefined
         this.before()
         const {dialog} = require('electron').remote
         dialog.showOpenDialog({
@@ -88,13 +72,30 @@
         }, (fileNames) => {
           var fileName = fileNames && fileNames[0]
           if (fileName) {
-            this.$$readFile(fileName, callback)
+            const fs = window.require('fs')
+            fs.readFile(fileName, (err, content) => {
+              if (err) {
+                alert('An error ocurred reading the file ' + err.message)
+                return
+              }
+              this.setPath(fileName)
+              eYo.App.Document.readDeflate(content, fileName) // setPath here instead ?
+              eYo.App.workspace.eyo.resetChangeCount()
+              if (callback) {
+                callback(fileName)
+              } else {
+                this.$nextTick(() => {
+                  eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+                  this.before()
+                })
+              }
+            })
           } else {
-            console.log('Opération annulée')
+            console.log('Operation canceled')
           }
         })
       },
-      $$doSaveAs (ev, callback) {
+      $$doSaveAs (evt, callback) { // callback: evt, path -> undefined
         this.before()
         const path = require('path')
         var defaultPath = path.join(this.documentPath, this.$$t('message.document.Untitled') + '.eyo')
@@ -106,9 +107,9 @@
           }]
         }, filePath => {
           if (filePath === undefined) {
-            console.log('Opération annulée')
+            console.log('Operation canceled')
             eYo.$$.bus.$emit('document-save-cancel')
-            callback && callback(filePath)
+            callback && callback(evt, filePath)
             return
           }
           var dirname = path.dirname(filePath)
@@ -117,18 +118,24 @@
             fs.mkdirSync(dirname)
           }
           this.setPath(filePath)
-          this.$$writeContentToFile(filePath, callback)
+          this.$$writeContentToFile(
+            filePath,
+            callback && ((path) => callback(evt, path))
+          )
         })
       },
-      $$doSave (ev, callback) {
+      $$doSave (evt, callback) { // callback: evt, path -> undefined
         this.before()
         if (this.path) {
-          this.$$writeContentToFile(this.path, callback)
+          this.$$writeContentToFile(
+            this.path,
+            callback && (path => callback(evt, path))
+          )
         } else {
-          this.$$doSaveAs(ev, callback)
+          this.$$doSaveAs(evt, callback)
         }
       },
-      $$writeContentToFile (path, callback) {
+      $$writeContentToFile (path, callback) { // callback: path -> undefined
         const fs = window.require('fs')
         let deflate = eYo.App.Document.getDeflate()
         fs.writeFile(path, deflate, err => {

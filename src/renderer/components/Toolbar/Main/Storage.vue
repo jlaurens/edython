@@ -77,17 +77,17 @@
       })
     },
     methods: {
-      doNew (ev) {
-        eYo.App.Document.doNew(ev)
+      doNew (evt) {
+        eYo.App.Document.doNew(evt)
       },
-      doOpen (ev) {
-        this.$root.$emit('document-open', ev)
+      doOpen (evt) {
+        this.$root.$emit('document-open', evt)
       },
-      doSave (ev) {
-        this.$root.$emit('document-save', ev)
+      doSave (evt) {
+        this.$root.$emit('document-save', evt)
       },
-      doSaveAs (ev) {
-        this.$root.$emit('document-save-as', ev)
+      doSaveAs (evt) {
+        this.$root.$emit('document-save-as', evt)
       }
     }
   }
