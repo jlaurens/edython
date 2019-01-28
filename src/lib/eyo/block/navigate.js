@@ -457,8 +457,8 @@ eYo.Selected.chooseNext = () => {
   if (!eyo) {
     return
   }
-  if ((eyo === eyo.next)) {
-    eYo.Selected.eyo = eyo.next
+  if ((eyo = eyo.next)) {
+    eYo.Selected.eyo = eyo
     eYo.Selected.scrollToVisible()
   }
 }
