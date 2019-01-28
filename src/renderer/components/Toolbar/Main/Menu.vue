@@ -55,12 +55,21 @@
         <check-mark
         :checked="deepCopy"
       />{{contentDeepCopy}}</b-dd-item-button>
+      <b-dd-divider></b-dd-divider>
+      <b-dd-item-button
+        v-on:click="resetFactoryDefaults()"
+        :style="style"
+        :title="titleFactoryDefaults"
+        v-tippy
+        ><check-mark
+        :checked="false"
+        />{{contentFactoryDefaults}}</b-dd-item-button>
     </b-dd>
   </b-btn-group>
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex'
+  import {mapState, mapMutations, mapActions} from 'vuex'
 
   import IconBase from '@@/Icon/IconBase.vue'
   import IconMenu from '@@/Icon/IconMenu.vue'
@@ -97,48 +106,47 @@
           fontSize: this.$$.eYo.Font.totalHeight
         }
       },
+      locale () {
+        return this.$i18n.locale
+      },
       titleEcoSave () {
-        return this.$$t('toolbar.tooltip.eco_save')
+        return this.$$t('toolbar.tooltip.eco_save', this.locale)
       },
       contentEcoSave () {
-        return this.$$t('toolbar.content.eco_save')
+        return this.$$t('toolbar.content.eco_save', this.locale)
       },
       titleDeepCopy () {
-        return this.$$t('toolbar.tooltip.deep_copy')
+        return this.$$t('toolbar.tooltip.deep_copy', this.locale)
       },
       contentDeepCopy () {
-        return this.$$t('toolbar.content.deep_copy')
+        return this.$$t('toolbar.content.deep_copy', this.locale)
       },
       titleTipsDisabled () {
-        return this.tipsDisabled
-          ? this.$$t('toolbar.tooltip.tooltip.on')
-          : this.$$t('toolbar.tooltip.tooltip.off')
+        return this.$$t(`toolbar.tooltip.tooltip.${this.tipsDisabled ? 'off' : 'on'}`, this.locale)
       },
       contentTipsDisabled () {
-        return this.tipsDisabled
-          ? this.$$t('toolbar.content.tooltip.on')
-          : this.$$t('toolbar.content.tooltip.off')
+        return this.$$t(`toolbar.content.tooltip.${this.tipsDisabled ? 'off' : 'on'}`, this.locale)
       },
       titleToolbarBlockVisible () {
-        return this.toolbarBlockVisible
-          ? this.$$t('toolbar.tooltip.block.off')
-          : this.$$t('toolbar.tooltip.block.on')
+        return this.$$t(`toolbar.tooltip.block.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
       },
       contentToolbarBlockVisible () {
-        return this.toolbarBlockVisible
-          ? this.$$t('toolbar.content.block.off')
-          : this.$$t('toolbar.content.block.on')
+        return this.$$t(`toolbar.content.block.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
       },
       titleToolbarBlockDebug () {
-        return this.toolbarInfoDebug
-          ? this.$$t('toolbar.tooltip.debug.off')
-          : this.$$t('toolbar.tooltip.debug.on')
+        return this.$$t(`toolbar.tooltip.debug.${this.toolbarInfoDebug ? 'off' : 'on'}`, this.locale)
       },
       contentToolbarBlockDebug () {
-        return this.$$t('toolbar.content.debug')
+        return this.$$t('toolbar.content.debug', this.locale)
       },
       titleMenu () {
-        return this.$$t('toolbar.tooltip.menu')
+        return this.$$t('toolbar.tooltip.menu', this.locale)
+      },
+      contentFactoryDefaults () {
+        return this.$$t('toolbar.content.factoryDefaults', this.locale)
+      },
+      titleFactoryDefaults () {
+        return this.$$t('toolbar.tooltip.factoryDefaults', this.locale)
       }
     },
     methods: {
@@ -153,6 +161,15 @@
       ...mapMutations('Document', [
         'setEcoSave'
       ]),
+      ...mapActions('UI', {
+        resetUI: 'reset'
+      }),
+      ...mapActions('Prefs', {
+        resetPrefs: 'reset'
+      }),
+      ...mapActions('Layout', {
+        resetLayout: 'reset'
+      }),
       doToggleToolbarBlockVisible () {
         this.setToolbarBlockVisible(!this.toolbarBlockVisible)
       },
@@ -161,6 +178,11 @@
       },
       doToggleEcoSave () {
         this.setEcoSave(!this.ecoSave)
+      },
+      resetFatoryDefaults () {
+        this.resetUI()
+        this.resetLayout()
+        this.resetPrefs()
       }
     }
   }
