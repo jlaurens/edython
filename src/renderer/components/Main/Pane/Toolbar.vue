@@ -306,28 +306,28 @@
       choose (choice) {
         var do_it = {
           'console1.restart': () => {
-            eYo.$$.bus.$emit('console1-restart')
+            this.$root.$emit('console1-restart')
           },
           'console1.erase': () => {
-            eYo.$$.bus.$emit('console1-erase')
+            this.$root.$emit('console1-erase')
           },
           'console2.restart': () => {
-            eYo.$$.bus.$emit('console2-restart')
+            this.$root.$emit('console2-restart')
           },
           'console2.erase': () => {
-            eYo.$$.bus.$emit('console2-erase')
+            this.$root.$emit('console2-erase')
           },
           'turtle.replay': () => {
-            eYo.$$.bus.$emit('turtle-replay')
+            this.$root.$emit('turtle-replay')
           },
           'turtle.erase': () => {
-            eYo.$$.bus.$emit('turtle-erase')
+            this.$root.$emit('turtle-erase')
           },
           'turtle.scrollToVisible': () => {
             eYo.$$.bus.$emit('turtle-scroll')
           },
           'workspace.clean': () => {
-            eYo.$$.bus.$emit('workspace-clean')
+            this.$root.$emit('workspace-clean')
           },
           'workspace.scaleReset': () => {
             this.workspaceScaleReset()
