@@ -48,7 +48,8 @@ export default {
     copy_python: 'Copier le code python dans le presse-papier',
     run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné',
     demo: 'Exemples de programmes de démonstration',
-    restart: 'Redémarrer la console à chaque exécution'
+    restart: 'Redémarrer la console à chaque exécution',
+    factoryDefaults: 'Revenir à des réglages initiaux.'
   },
   content: {
     mode: {
@@ -74,7 +75,8 @@ export default {
     duplicate_block_shallow: 'Dupliquer',
     paste_block: 'Coller',
     run_python: 'Exécuter',
-    restart: 'Redémarrer'
+    restart: 'Redémarrer',
+    factoryDefaults: 'Réglages usine'
   },
   name: {
     copy_python: 'Copier le code python'
