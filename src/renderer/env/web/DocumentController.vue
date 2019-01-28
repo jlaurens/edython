@@ -1,15 +1,12 @@
 <template>
-  <b-modal
+  <div
     id="document-open"
     ref="dialog"
-    @hidden="doHidden">
+    style="display:none;">
     <input
       ref="input"
       type="file"
       @change="loadTextFromFile">
-  </b-modal>
-  <div
-    id="web-load">
   </div>
 </template>
 <script>
@@ -84,11 +81,7 @@
           reader.readAsArrayBuffer(file)
           this.callback && this.callback()
         }
-      },
-      doHidden () {
-        this.$nextTick(() => {
-          this.callback = undefined
-        })
+        this.callback = undefined
       }
     }
   }
