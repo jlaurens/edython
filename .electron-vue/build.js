@@ -84,7 +84,6 @@ function pack (config) {
       if (err) reject(err.stack || err)
       else if (stats.hasErrors()) {
         let err = ''
-
         stats.toString({
           chunks: false,
           colors: true
@@ -93,7 +92,6 @@ function pack (config) {
         .forEach(line => {
           err += `    ${line}\n`
         })
-
         reject(err)
       } else {
         resolve(stats.toString({
@@ -106,17 +104,17 @@ function pack (config) {
 }
 
 function web () {
+  console.log('Building web:\n=============')
   del.sync(['dist/web/*', '!.gitkeep'])
   webpack(webConfig, (err, stats) => {
-    if (err || stats.hasErrors()) console.log(err)
-
+    if (err || stats.hasErrors())
+      console.log(err)
     console.log(stats.toString({
       chunks: false,
       colors: true
     }))
-
     process.exit()
   })
 }
 
-console.log('build.js... DONE')
+console.log('build.js... READ\n\n')
