@@ -35,6 +35,14 @@ const mutations = {
 }
 
 const actions = {
+  reset (context) {
+    if (context.state.tipsDisabled) {
+      context.commit('toggleTipsDisabled')
+    }
+    if (context.state.deepCopy) {
+      context.commit('toggleDeepCopy')
+    }
+  }
 }
 
 const getters = {
