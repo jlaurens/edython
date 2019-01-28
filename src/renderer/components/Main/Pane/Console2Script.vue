@@ -337,9 +337,9 @@ export default {
   name: 'panel-console2-script',
   mounted: function () {
     eYo.$$.bus.$on('console2-erase', this.eraseConsole)
-    eYo.$$.bus.$on('console2-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
+    this.$root.$on('console2-restart', this.restartConsole)
+    this.$root.$on('turtle-replay', this.replayTurtle)
+    this.$root.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
   },
   methods: {
