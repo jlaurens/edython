@@ -488,7 +488,7 @@
           eYo.$$.bus.$on('new-document', () => {
             eYo.App.workspace.clear()
           })
-          eYo.$$.bus.$on('workspace-clean', () => {
+          this.$root.$on('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
               eYo.Do.tryFinally(() => {
                 var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
