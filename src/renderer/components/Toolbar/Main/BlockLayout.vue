@@ -67,7 +67,7 @@
         eYo.App.doBack()
       },
       doShow () {
-        eYo.App.doShow()
+        eYo.App.doFocus()
       }
     }
   }
