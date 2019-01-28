@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin(
       {
-        minimize: true
+        minimize: false
       }
     // ),
     // new webpack.optimize.UglifyJsPlugin(
