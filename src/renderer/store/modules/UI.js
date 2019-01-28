@@ -6,7 +6,6 @@ eYo.Do.readOnlyMixin(eYo.App, {
 })
 
 const state = {
-  blockClipboard: '',
   panelsWidth: 0,
   displayMode: undefined,
   selectedMode: eYo.App.TUTORIAL,
@@ -18,9 +17,6 @@ const state = {
 }
 
 const mutations = {
-  didCopyBlock (state, xml) {
-    state.blockClipboard = xml
-  },
   setPanelsWidth (state, newWidth) {
     state.panelsWidth = newWidth
   },
@@ -52,6 +48,16 @@ const mutations = {
   },
   setBlockEditShowDotted (state, yorn) {
     state.blockEditShowDotted = !!yorn
+  },
+  reset (state) {
+    this.commit('UI/setPanelsWidth', 0)
+    this.commit('UI/setDisplayMode', false)
+    this.commit('UI/selectMode', eYo.App.TUTORIAL)
+    this.commit('UI/setToolbarBlockVisible', false)
+    this.commit('UI/setToolbarRyVisible', false)
+    this.commit('UI/setToolbarBlockDebug', false)
+    this.commit('UI/setBlockEditShowRy', false)
+    this.commit('UI/setBlockEditShowDotted', false)
   }
 }
 
