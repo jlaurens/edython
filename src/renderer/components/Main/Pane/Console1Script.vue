@@ -375,10 +375,10 @@ import {mapMutations} from 'vuex'
 export default {
   name: 'panel-console1-script',
   mounted: function () {
-    eYo.$$.bus.$on('console1-erase', this.eraseConsole)
-    eYo.$$.bus.$on('console1-restart', this.restartConsole)
-    eYo.$$.bus.$on('turtle-replay', this.replayTurtle)
-    eYo.$$.bus.$on('turtle-erase', this.eraseTurtle)
+    this.$root.$on('console1-erase', this.eraseConsole)
+    this.$root.$on('console1-restart', this.restartConsole)
+    this.$root.$on('turtle-replay', this.replayTurtle)
+    this.$root.$on('turtle-erase', this.eraseTurtle)
     eYo.$$.bus.$on('new-document', this.restartAll)
     this.$root.$on('will-run-script', () => {
       this.setRunning1(false)
@@ -388,7 +388,7 @@ export default {
       this.setRunning1(false)
       var eyo = eYo.Selected.eyo
       if (eyo && eyo.id === id) {
-        eYo.Selected.chooseNext()
+        this.$nextTick(eYo.Selected.chooseNext)
       }
     }
     eYo.Py.canRunTurtleScript = () => {
