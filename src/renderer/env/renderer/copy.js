@@ -12,5 +12,5 @@ eYo.App.didCopyBlock = function (block, xml) {
   const code = p.export(block, {is_deep: true})
   clipboard.write({ text: code, html: xml })
   console.error('didCopyBlock', xml)
-  store.commit('UI/didCopyBlock', xml)
+  store.commit('Clipboard/didCopyBlock', xml)
 }
