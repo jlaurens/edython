@@ -59,5 +59,5 @@ eYo.App.didCopyBlock = function (block, xml) {
   const p = new eYo.Py.Exporter()
   const code = p.export(block, {is_deep: true})
   eYo.App.copyTextToClipboard(code)
-  store.commit('UI/didCopyBlock', xml)
+  store.commit('Clipboard/didCopyBlock', xml)
 }
