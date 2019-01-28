@@ -104,7 +104,9 @@ function pack (config) {
 }
 
 function web () {
-  console.log('Building web:\n=============')
+  console.log('>')
+  console.log('> web config')
+  console.log('> ----------')
   del.sync(['dist/web/*', '!.gitkeep'])
   webpack(webConfig, (err, stats) => {
     if (err || stats.hasErrors())
