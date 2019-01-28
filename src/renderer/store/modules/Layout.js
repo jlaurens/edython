@@ -184,6 +184,10 @@ cfg.whats.forEach(k => {
 const actions = {
   setPrefs (context, newValue) {
     newValue && eYo.$$.bus.$emit('pane-change-layout', newValue)
+  },
+  reset (context) {
+    context.commit('setWhat_f', 'workspace')
+    context.commit('setWhere_workspace', 'f')
   }
 }
 
