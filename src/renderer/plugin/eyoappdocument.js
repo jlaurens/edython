@@ -57,7 +57,6 @@ eYoAppDocument.install = function (Vue, options) {
     // var t0 = d.getTime()
     var parser = new DOMParser()
     var dom = parser.parseFromString(str, 'application/xml')
-    console.error('eYo.App.Document.readString', str)
     var workspace = eYo.App.workspace
     workspace.eyo.fromDom(dom)
     workspace.clearUndo()
