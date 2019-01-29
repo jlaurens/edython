@@ -30,7 +30,6 @@
           return this.modifier_
         },
         set (newValue) {
-          console.log('set (newValue)', newValue, '!')
           this.modifier_ = newValue
           this.eyo.modifier_p = newValue || undefined
         }
