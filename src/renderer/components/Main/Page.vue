@@ -750,7 +750,7 @@
       eYo.Do.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
-      eYo.$$.bus.$on('pane-workspace-visible', () => {
+      this.$root.$on('pane-workspace-visible', () => {
         this.makeVisible('workspace')
       })
       eYo.$$.bus.$on('pane-change-layout', opt => {
@@ -766,7 +766,6 @@
         eYo.$$.TweenLite.to(this, 1, {
           footstep: this.maxstep - this.footstep,
           onUpdate: () => {
-            console.log('emit toolbar-follow-phantom')
             this.$root.$emit('toolbar-follow-phantom')
           }
         })
