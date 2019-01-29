@@ -175,7 +175,7 @@
       doToggleEcoSave () {
         this.setEcoSave(!this.ecoSave)
       },
-      resetFatoryDefaults () {
+      resetFactoryDefaults () {
         this.resetUI()
         this.resetLayout()
         this.resetPrefs()
