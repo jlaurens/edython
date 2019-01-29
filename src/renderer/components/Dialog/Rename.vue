@@ -28,7 +28,9 @@
       }
     },
     mounted () {
-      this.$root.$on('document-rename', this.rename.bind(this))
+      this.$root.$on('document-rename',
+        this.rename.bind(this)
+      )
     },
     computed: {
       ...mapState('Document', [
