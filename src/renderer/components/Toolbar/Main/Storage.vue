@@ -34,7 +34,7 @@
         icon-name="save"
       ><icon-save-load
         variant="save"
-        :theta="theta"
+        :theta="save_theta"
         :active="isDocumentEdited" /></icon-base>
     </b-btn>
   </b-btn-group>
@@ -51,7 +51,8 @@
     name: 'page-toolbar-new-load-save',
     data: function () {
       return {
-        theta: 1,
+        open_theta: 1,
+        save_theta: 1,
         flashInterval: undefined
       }
     },
@@ -71,9 +72,13 @@
       ])
     },
     created: function () {
-      eYo.$$.bus.$on('document-save-complete', () => {
-        this.theta = 0
-        eYo.$$.TweenLite.to(this, 0.5, {theta: 1})
+      eYo.$$.bus.$on('document-open-complete', () => {
+        this.open_theta = 0
+        eYo.$$.TweenLite.to(this, 0.5, {open_theta: 1})
+      })
+      this.$root.$on('document-save-complete', () => {
+        this.save_theta = 0
+        eYo.$$.TweenLite.to(this, 0.5, {save_theta: 1})
       })
     },
     methods: {
@@ -81,12 +86,15 @@
         eYo.App.Document.doNew(evt)
       },
       doOpen (evt) {
+        this.open_theta = 0.5
         this.$root.$emit('document-open', evt)
       },
       doSave (evt) {
+        this.save_theta = 0.5
         this.$root.$emit('document-save', evt)
       },
       doSaveAs (evt) {
+        this.save_theta = 0
         this.$root.$emit('document-save-as', evt)
       }
     }
