@@ -45,6 +45,9 @@
         // FileSaver.saveAs(file)
         var blob = new Blob([deflate], {type: 'text/plain;charset=utf-8'})
         FileSaver.saveAs(blob, basename)
+        this.stageUndo()
+        eYo.App.workspace.eyo.resetChangeCount()
+        eYo.$$.bus.$emit('document-save-complete')
         callback && callback(basename)
       }
       var doSave = (evt, callback) => { // callback: (path) -> ()
