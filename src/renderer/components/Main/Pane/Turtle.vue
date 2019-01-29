@@ -77,9 +77,10 @@
       },
       didPlace () {
         this.resizeSensor && this.resizeSensor.detach()
-        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          this.$$resize()
-        })
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.elContent,
+          this.$$resize.bind(this)
+        )
         this.$$resize()
       },
       scrollToVisible () {
@@ -122,7 +123,8 @@
           this.$$resize()
         })
       })
-      eYo.$$.bus.$on('turtle-scroll', this.scrollToVisible)
+      eYo.$$.bus.$on('turtle-scroll', this.scrollToVisible.bind(this)
+      )
     }
   }
 </script>
