@@ -490,7 +490,7 @@
           }
           eYo.$$.bus.$on('new-document', () => {
             eYo.App.workspace.clear()
-          }
+          })
           this.$root.$on('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
               eYo.Do.tryFinally(() => {
