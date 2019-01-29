@@ -39,7 +39,6 @@
       },
       doNo (evt) {
         this.$refs.dialog.hide()
-        console.log('doNo', this.callback)
         this.callback && this.callback()
       },
       doHidden (evt) {
