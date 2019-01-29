@@ -149,7 +149,7 @@
           } else {
             this.stageUndo()
             eYo.App.workspace.eyo.resetChangeCount()
-            eYo.$$.bus.$emit('document-save-complete')
+            this.$root.$emit('document-save-complete')
             callback && callback(path)
           }
         })
