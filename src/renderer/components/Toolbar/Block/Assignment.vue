@@ -31,7 +31,6 @@
       formatter: {
         type: Function,
         default: function (item) {
-          console.log('default ', item)
           return item.length
             ? this.$$t(`block.${{
               '*': 'star',
