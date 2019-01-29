@@ -307,7 +307,6 @@
         turtleScaleReset: 'scaleReset'
       }),
       localized (s) {
-        console.log(s)
         return this.$$t(`block.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
       },
       localizedTooltip (s) {
