@@ -273,8 +273,7 @@
         )
         this.$$update()
       })
-      this.$root.$on(
-        'toolbar-follow-phantom',
+      this.$root.$on('toolbar-follow-phantom',
         this.$$update.bind(this)
       )
     },
