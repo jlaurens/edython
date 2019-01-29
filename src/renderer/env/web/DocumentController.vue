@@ -24,7 +24,9 @@
       ])
     },
     mounted () {
+      // console.error('WEB DOCUMENT CONTROLLER MOUNT')
       this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+        console.error('document-open')
         this.callback = callback
         eYo.App.Document.shouldSave(() => {
           this.$refs.input.click()
@@ -67,16 +69,20 @@
         'stageUndo'
       ]),
       loadTextFromFile (evt) {
+        console.error('loadTextFromFile')
         const file = evt.target.files[0]
         if (file) {
+          console.error('loadTextFromFile', file)
           const reader = new FileReader()
           reader.onload = e => {
+            console.error('onload loadTextFromFile', file)
             var result = e.target.result
             var content = new Uint8Array(result)
             eYo.App.Document.readDeflate(content, file.name)
+            console.error('readDeflate', content)
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
-              eYo.$$.bus.$emit('pane-workspace-visible')
+              this.$root.$emit('pane-workspace-visible')
             })
           }
           // console.log(file)
