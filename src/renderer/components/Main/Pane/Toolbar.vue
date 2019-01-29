@@ -431,7 +431,6 @@
           this.wasBigChange = bigChange
           if (more) {
             this.$nextTick(() => {
-              console.log('bigChange', change)
               this.$root.$emit('toolbar-follow-phantom')
             })
           }
