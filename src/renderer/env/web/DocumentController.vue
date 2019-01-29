@@ -48,7 +48,7 @@
         FileSaver.saveAs(blob, basename)
         this.stageUndo()
         eYo.App.workspace.eyo.resetChangeCount()
-        eYo.$$.bus.$emit('document-save-complete')
+        this.$root.$emit('document-save-complete')
         callback && callback(basename)
       }
       var doSave = (evt, callback) => { // callback: (path) -> ()
@@ -79,6 +79,7 @@
             var result = e.target.result
             var content = new Uint8Array(result)
             eYo.App.Document.readDeflate(content, file.name)
+            this.$root.$emit('document-open-complete')
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
               this.$root.$emit('pane-workspace-visible')
