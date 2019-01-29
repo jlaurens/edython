@@ -73,9 +73,10 @@
         }
       },
       didPlace () { // this is necessary due to the scale feature
-        this.resizeSensor = new ResizeSensor(this.$refs.elContent, () => {
-          this.$$resize()
-        })
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.elContent,
+          this.$$resize.bind(this)
+        )
         this.$$resize()
       }
     },
