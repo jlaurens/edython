@@ -25,8 +25,8 @@
     },
     mounted () {
       this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+        this.callback = callback
         eYo.App.Document.shouldSave(() => {
-          this.callback = callback
           this.$refs.input.click()
         })
       })
