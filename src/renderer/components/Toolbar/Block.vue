@@ -291,7 +291,10 @@
     mounted () {
       this.theta = this.toolbarBlockVisible ? 1 : 0
       if (!this.resizeSensor) {
-        this.resizeSensor = new ResizeSensor(this.$refs.toolbar.$el, this.$$didResize)
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.toolbar.$el,
+          this.$$didResize.bind(this)
+        )
       }
       this.$$didResize()
     },
