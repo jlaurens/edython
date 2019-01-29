@@ -36,20 +36,12 @@
         ]
       }
     },
-    mounted () {
-      this.choices.forEach(el => {
-        console.log('CHOICE', el, this.$$t(`toolbar.tooltip.mode.${el}`))
-      })
-    },
     methods: {
       ...mapMutations('UI', [
         'selectMode'
       ]),
       choose (choice) {
         this.selectMode(choice)
-        this.$nextTick(() => {
-          this.$$.bus.$emit('toolbar-resize')
-        })
       }
     }
   }
