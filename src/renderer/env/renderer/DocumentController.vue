@@ -45,8 +45,12 @@
           this.$$doOpen(evt, callback)
         })
       })
-      this.$root.$on('document-save', this.$$doSave.bind(this))
-      this.$root.$on('document-save-as', this.$$doSaveAs.bind(this))
+      this.$root.$on('document-save',
+        this.$$doSave.bind(this)
+      )
+      this.$root.$on('document-save-as',
+        this.$$doSaveAs.bind(this)
+      )
     },
     methods: {
       ...mapMutations('Document', [
