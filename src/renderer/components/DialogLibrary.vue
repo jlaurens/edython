@@ -29,13 +29,11 @@
     },
     mounted () {
       var z = this.$refs.recovered
-      this.$$.bus.$on(
-        'document-read-string-recovered',
+      this.$$.bus.$on('document-read-string-recovered',
         z.show.bind(z)
       )
       z = this.$refs.shouldSave
-      this.$root.$on(
-        'document-should-save',
+      this.$root.$on('document-should-save',
         z.show.bind(z)
       )
     }
