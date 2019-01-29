@@ -31,7 +31,6 @@
     methods: {
       show (callback) { // callback: () -> ()
         this.callback = callback
-        this.$refs.dialog.show()
       },
       doYes (evt) {
         this.$refs.dialog.hide()
