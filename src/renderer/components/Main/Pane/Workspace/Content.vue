@@ -374,8 +374,11 @@
         var h = content.offsetHeight
         var newW = w / this.scaleFactor
         var newH = h / this.scaleFactor
-        var delta = Math.abs(this.oldRect.top - top) + Math.abs(this.oldRect.left - left) + Math.abs(this.oldRect.width - newW) + Math.abs(this.oldRect.height - newH)
+        var delta = this.oldRect ? Math.abs(this.oldRect.top - top) + Math.abs(this.oldRect.left - left) + Math.abs(this.oldRect.width - newW) + Math.abs(this.oldRect.height - newH) : 1
         if (delta > 0.005) {
+          if (!this.oldRect) {
+            this.oldRect = {} // webpack reload
+          }
           this.oldRect.top = top
           this.oldRect.left = left
           this.oldRect.width = newW
@@ -487,7 +490,7 @@
           }
           eYo.$$.bus.$on('new-document', () => {
             eYo.App.workspace.clear()
-          })
+          }
           this.$root.$on('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
               eYo.Do.tryFinally(() => {
@@ -549,7 +552,6 @@
                 this.$nextTick(eYo.App.Document.doNew)
                 // window.addEventListener('resize', this.$$resize, false)
                 this.$nextTick(() => {
-                  // eYo.$$.bus.$on('size-did-change', this.$$resize)
                   this.selectedCategory = this.items.basic
                 })
               })
@@ -565,8 +567,7 @@
         this.$$installToolbar()
         this.$$update()
       })
-      this.$$.bus.$on(
-        'updateWorkbenchToolbars',
+      this.$root.$on('toolbar-follow-phantom',
         this.$$update.bind(this)
       )
     }
