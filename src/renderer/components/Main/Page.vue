@@ -19,7 +19,7 @@
       v-show="false"
       ref="backstage">
       <Split
-        @onDrag="onDrag"
+        @onDrag="onDragSplit"
         ref="pane_h"><!-- top row -->
         <SplitArea
           :size="width_h1"
@@ -37,7 +37,7 @@
         </SplitArea>
       </Split>
       <Split
-        @onDrag="onDrag"
+        @onDrag="onDragSplit"
         ref="pane_hh"><!-- bottom row -->
         <SplitArea
           :size="width_hh1"
@@ -55,7 +55,7 @@
         </SplitArea>
       </Split>
       <Split
-        @onDrag="onDrag"
+        @onDrag="onDragSplit"
         ref="pane_v"
         direction="vertical"><!-- left column -->
         <SplitArea
@@ -74,7 +74,7 @@
         </SplitArea>
       </Split>
       <Split
-        @onDrag="onDrag"
+        @onDrag="onDragSplit"
         ref="pane_vv"
         direction="vertical"><!-- right column -->
         <SplitArea
@@ -190,9 +190,8 @@
       ]),
       ...mapMutations('Layout', layoutcfg.setWhere_whats),
       ...mapMutations('Layout', layoutcfg.setWhat_wheres),
-      onDrag (size) {
-        // eYo.$$.bus.$emit('size-did-change')
-        this.$root.$emit('workbench-toolbars-update')
+      onDragSplit (size) {
+        this.$root.$emit('toolbar-follow-phantom')
       },
       where (what) {
         return this[`where_${what}`]
@@ -203,7 +202,7 @@
       setWhere (what, where) {
         this[`setWhere_${what}`](where)
         this.$nextTick(() => {
-          this.$root.$emit('workbench-toolbars-update')
+          this.$root.$emit('toolbar-follow-phantom')
         })
         return this
       },
@@ -211,7 +210,7 @@
         eYo.App.workspace && Blockly.hideChaff()
         where && this[`setWhat_${where}`](what)
         this.$nextTick(() => {
-          this.$root.$emit('workbench-toolbars-update')
+          this.$root.$emit('toolbar-follow-phantom')
         })
         return this
       },
@@ -651,7 +650,6 @@
               this.setWhere(what, where)
               this.setWhat(where, what)
               pane_what.didPlace && pane_what.didPlace()
-              // eYo.$$.bus.$emit('size-did-change')
             } else if (where) {
               console.error('UNKNON location:', where)
             }
@@ -768,7 +766,8 @@
         eYo.$$.TweenLite.to(this, 1, {
           footstep: this.maxstep - this.footstep,
           onUpdate: () => {
-            eYo.$$.bus.$emit('size-did-change')
+            console.log('emit toolbar-follow-phantom')
+            this.$root.$emit('toolbar-follow-phantom')
           }
         })
       },
