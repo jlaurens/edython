@@ -16,7 +16,6 @@ eYoAppDocument.install = function (Vue, options) {
     }
   }
   eYo.App.Document.doNew = evt => {
-    console.log('doNew')
     eYo.App.Document.shouldSave(() => {
       eYo.App.Document.doClear()
       eYo.App.Document.readString(blank)
@@ -42,7 +41,6 @@ eYoAppDocument.install = function (Vue, options) {
     return deflate
   }
   eYo.App.Document.doClear = () => {
-    console.log('doClear')
     eYo.$$.bus.$emit('new-document')
     eYo.App.workspace.clearUndo()
     eYo.App.workspace.eyo.resetChangeCount()
