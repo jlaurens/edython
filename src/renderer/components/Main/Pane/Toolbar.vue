@@ -166,7 +166,7 @@
         },
         set (newValue) {
           this.$nextTick(() => {
-            this.$emit('change-layout', {
+            this.changeLayout({
               what: newValue,
               where: this.where
             })
@@ -182,8 +182,11 @@
         },
         set (newValue) {
           this.$nextTick(() => {
-            this.$emit('change-layout', {what: this.what, how: newValue})
-            this.$root.$emit('workbench-toolbars-update')
+            this.changeLayout({
+              what: this.what,
+              how: newValue
+            })
+            this.$root.$emit('toolbar-follow-phantom')
           })
           this.revertLayout = (newValue === 'F') && this.paneLayout
         }
@@ -260,11 +263,20 @@
     },
     mounted () {
       this.$nextTick(() => {
-        this.resizeSensor = new ResizeSensor(this.$refs.phantom.$el, this.$$update)
-        this.$emit('install-toolbar', this.$refs.toolbar.$el)
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.phantom.$el,
+          this.$$update.bind(this)
+        )
+        this.$emit(
+          'install-toolbar',
+          this.$refs.toolbar.$el
+        )
         this.$$update()
       })
-      this.$root.$on('workbench-toolbars-update', this.$$update.bind(this))
+      this.$root.$on(
+        'toolbar-follow-phantom',
+        this.$$update.bind(this)
+      )
     },
     methods: {
       ...mapMutations('Workspace', {
@@ -332,31 +344,31 @@
           'workspace.scaleReset': () => {
             this.workspaceScaleReset()
             this.$nextTick(() => {
-              this.$root.$emit('workbench-toolbars-update')
+              this.$root.$emit('toolbar-follow-phantom')
             })
           },
           'workspace.scaleUp': () => {
             this.workspaceScaleUp()
             this.$nextTick(() => {
-              this.$root.$emit('workbench-toolbars-update')
+              this.$root.$emit('toolbar-follow-phantom')
             })
           },
           'workspace.scaleUpBig': () => {
             this.workspaceScaleUpBig()
             this.$nextTick(() => {
-              this.$root.$emit('workbench-toolbars-update')
+              this.$root.$emit('toolbar-follow-phantom')
             })
           },
           'workspace.scaleDown': () => {
             this.workspaceScaleDown()
             this.$nextTick(() => {
-              this.$root.$emit('workbench-toolbars-update')
+              this.$root.$emit('toolbar-follow-phantom')
             })
           },
           'workspace.scaleDownBig': () => {
             this.workspaceScaleDownBig()
             this.$nextTick(() => {
-              this.$root.$emit('workbench-toolbars-update')
+              this.$root.$emit('toolbar-follow-phantom')
             })
           },
           'console2.scaleReset': this.console2ScaleReset,
@@ -380,40 +392,49 @@
       title (choice) {
         return this.$$t(`block.pane.content.${choice}`) || this.$$t(`block.pane.content.${choice.split('.').pop()}`)
       },
+      changeLayout (args) {
+        this.$emit('change-layout', args)
+      },
       $$update () {
         var phantom = this.$refs.phantom.$el
         var invisible = !(phantom.offsetWidth || phantom.offsetHeight || phantom.getClientRects().length)
         var toolbar = this.$refs.toolbar.$el
         toolbar.style.display = invisible ? 'none' : ''
         if (!invisible) {
-          var rect = phantom.getBoundingClientRect()
+          var rect = phantom.getBoundingClientRect() // in viewport coordinates, may be fractional
           var change = 0
-          var oldValue = toolbar.offsetWidth
+          var oldValue = toolbar.offsetWidth // in viewport coordinates, must be integer ?
           var newValue = phantom.offsetWidth
           var delta = newValue - oldValue
           if (delta) {
             toolbar.style.width = `${newValue}px`
-            change += Math.abs(delta)
+            // console.log(`width: ${oldValue} -> ${newValue}`, toolbar.style.width)
+            change = Math.max(Math.round(Math.abs(delta)), change)
           }
           oldValue = toolbar.offsetLeft
           newValue = rect.left
           delta = newValue - oldValue
           if (delta) {
             toolbar.style.left = `${newValue}px`
-            change += Math.abs(delta)
+            // console.log(`left: ${oldValue} -> ${newValue}`, toolbar.style.left, toolbar.offsetLeft)
+            change = Math.max(Math.round(Math.abs(delta)), change)
           }
           oldValue = toolbar.offsetTop
           newValue = rect.top
           delta = newValue - oldValue
           if (delta) {
             toolbar.style.top = `${newValue}px`
-            change += Math.abs(delta)
+            // console.log(`top: ${oldValue} -> ${newValue}`, toolbar.style.top, toolbar.offsetTop)
+            change = Math.max(Math.round(Math.abs(delta)), change)
           }
-          var bigChange = change > 0.01
+          var bigChange = change > 1 // 1 can come out from rounding ±0.5
           var more = bigChange || this.wasBigChange
           this.wasBigChange = bigChange
           if (more) {
-            this.$emit('updateWorkbenchToolbars')
+            this.$nextTick(() => {
+              console.log('bigChange', change)
+              this.$root.$emit('toolbar-follow-phantom')
+            })
           }
         }
       }
