@@ -390,7 +390,7 @@ export default {
     eYo.$$.bus.$on('new-document',
       this.restartAll.bind(this)
     )
-    this.$root.$on('will-run-script',() => {
+    this.$root.$on('will-run-script', () => {
       this.setRunning1(false)
       this.setRunning1(true)
     })
