@@ -89,9 +89,14 @@
     },
     mounted () {
       if (!this.resizeSensor) {
-        this.resizeSensor = new ResizeSensor(this.$refs.toolbar.$el, this.$$didResize)
+        this.resizeSensor = new ResizeSensor(
+          this.$refs.toolbar.$el,
+          this.$$didResize.bind(this)
+        )
       }
-      this.$$.bus.$on('toolbar-resize', this.$$didResize)
+      this.$$.bus.$on('toolbar-resize',
+        this.$$didResize.bind(this)
+      )
       this.$$didResize()
     },
     methods: {
