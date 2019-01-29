@@ -60,7 +60,7 @@
         'stageUndo'
       ]),
       before () {
-        eYo.$$.bus.$emit('pane-workspace-visible')
+        this.$root.$emit('pane-workspace-visible')
       },
       $$doOpen (evt, callback) { // callback: (path) -> undefined
         this.before()
