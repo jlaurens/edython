@@ -30,6 +30,7 @@
     name: 'document-should-save',
     methods: {
       show (callback) { // callback: () -> ()
+        this.$refs.dialog.show()
         this.callback = callback
       },
       doYes (evt) {
