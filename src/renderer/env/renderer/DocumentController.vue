@@ -141,7 +141,7 @@
       },
       $$writeContentToFile (path, callback) { // callback: path -> undefined
         const fs = window.require('fs')
-        let deflate = eYo.App.Document.getDeflate()
+        let deflate = eYo.App.Document.getDeflate().deflate
         fs.writeFile(path, deflate, err => {
           if (err) {
             alert('An error ocurred creating the file ' + err.message)
