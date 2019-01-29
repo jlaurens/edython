@@ -98,10 +98,8 @@
       }
     },
     created () {
-      console.log('CREATED', this.operators)
       this.operators.num = this.eyo.numberOperator_d.getAll()
       this.operators.bin = this.eyo.bitwiseOperator_d.getAll()
-      console.log(this.operators)
     },
     methods: {
       $$doSynchronize (eyo) {
