@@ -35,10 +35,14 @@ eYoAppDocument.install = function (Vue, options) {
     eYo.App.doPrefToDom(dom)
     let oSerializer = new XMLSerializer()
     var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-    let deflate = store.state.Document.ecoSave
+    let ecoSave = store.state.Document.ecoSave
+    let deflate = ecoSave
       ? pako.gzip(content)
       : content // use gzip to ungzip from the CLI
-    return deflate
+    return {
+      deflate,
+      ecoSave
+    }
   }
   eYo.App.Document.doClear = () => {
     eYo.$$.bus.$emit('new-document')
@@ -53,6 +57,7 @@ eYoAppDocument.install = function (Vue, options) {
     // var t0 = d.getTime()
     var parser = new DOMParser()
     var dom = parser.parseFromString(str, 'application/xml')
+    console.error('eYo.App.Document.readString', str)
     var workspace = eYo.App.workspace
     workspace.eyo.fromDom(dom)
     workspace.clearUndo()
