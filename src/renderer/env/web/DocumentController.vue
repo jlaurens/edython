@@ -44,7 +44,7 @@
         var FileSaver = require('file-saver')
         // var file = new File([deflate], basename, {type: 'application/octet-stream'})
         // FileSaver.saveAs(file)
-        var blob = new Blob([deflate], {type: 'text/plain;charset=utf-8'})
+        var blob = new Blob([deflate.deflate], {type: deflate.ecoSave ? 'application/octet-stream' : 'text/plain;charset=utf-8'})
         FileSaver.saveAs(blob, basename)
         this.stageUndo()
         eYo.App.workspace.eyo.resetChangeCount()
@@ -79,7 +79,6 @@
             var result = e.target.result
             var content = new Uint8Array(result)
             eYo.App.Document.readDeflate(content, file.name)
-            console.error('readDeflate', content)
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
               this.$root.$emit('pane-workspace-visible')
