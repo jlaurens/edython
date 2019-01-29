@@ -16,36 +16,33 @@
         :style="style"
         :title="titleToolbarBlockVisible"
         v-tippy
-        >
-        <check-mark></check-mark>{{contentToolbarBlockVisible}}</b-dd-item-button>
+        ><check-mark
+        />{{contentToolbarBlockVisible}}</b-dd-item-button>
       <b-dd-item-button
         v-if="toolbarBlockVisible"
         v-on:click="doToggleToolbarBlockDebug()"
         :style="style"
         :title="titleToolbarBlockDebug"
         v-tippy
-        >
-        <check-mark
-      :checked="toolbarInfoDebug" />{{contentToolbarBlockDebug}}</b-dd-item-button>
+        ><check-mark
+          :checked="toolbarInfoDebug"
+        />{{contentToolbarBlockDebug}}</b-dd-item-button>
       <b-dd-item-button
         v-if="selectedMode == $$.eYo.App.TEACHER"
         v-on:click="doToggleEcoSave()"
         :style="style"
         :title="titleEcoSave"
         v-tippy
-        >
-        <check-mark
+        ><check-mark
           :checked="ecoSave"
-          />{{contentEcoSave}}</b-dd-item-button>
+        />{{contentEcoSave}}</b-dd-item-button>
       <b-dd-item-button
         v-on:click="toggleTipsDisabled()"
         :style="style"
         :title="titleTipsDisabled"
         v-tippy
-        >
-        <check-mark
-        :checked="tipsDisabled"
-      />{{contentTipsDisabled}}</b-dd-item-button>
+        ><check-mark
+        />{{contentTipsDisabled}}</b-dd-item-button>
       <b-dd-item-button
         v-on:click="toggleDeepCopy()"
         :style="style"
@@ -53,8 +50,8 @@
         v-tippy
         >
         <check-mark
-        :checked="deepCopy"
-      />{{contentDeepCopy}}</b-dd-item-button>
+          :checked="deepCopy"
+        />{{contentDeepCopy}}</b-dd-item-button>
       <b-dd-divider></b-dd-divider>
       <b-dd-item-button
         v-on:click="resetFactoryDefaults()"
@@ -62,7 +59,6 @@
         :title="titleFactoryDefaults"
         v-tippy
         ><check-mark
-        :checked="false"
         />{{contentFactoryDefaults}}</b-dd-item-button>
     </b-dd>
   </b-btn-group>
@@ -122,10 +118,10 @@
         return this.$$t('toolbar.content.deep_copy', this.locale)
       },
       titleTipsDisabled () {
-        return this.$$t(`toolbar.tooltip.tooltip.${this.tipsDisabled ? 'off' : 'on'}`, this.locale)
+        return this.$$t(`toolbar.tooltip.tooltip.${this.tipsDisabled ? 'on' : 'off'}`, this.locale)
       },
       contentTipsDisabled () {
-        return this.$$t(`toolbar.content.tooltip.${this.tipsDisabled ? 'off' : 'on'}`, this.locale)
+        return this.$$t(`toolbar.content.tooltip.${this.tipsDisabled ? 'on' : 'off'}`, this.locale)
       },
       titleToolbarBlockVisible () {
         return this.$$t(`toolbar.tooltip.block.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
@@ -183,6 +179,15 @@
         this.resetUI()
         this.resetLayout()
         this.resetPrefs()
+        this.setEcoSave(true)
+        this.setToolbarBlockDebug(false)
+        this.setToolbarBlockVisible(true)
+        if (this.deepCopy) {
+          this.toggleDeepCopy()
+        }
+        if (this.tipsDisabled) {
+          this.toggleTipsDisabled()
+        }
       }
     }
   }
