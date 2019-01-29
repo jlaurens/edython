@@ -12,7 +12,7 @@ eYoAppDocument.install = function (Vue, options) {
     if (w && w.eyo.changeCount) {
       eYo.$$.app.$emit('document-should-save', callback)
     } else {
-      callback()
+      callback && callback()
     }
   }
   eYo.App.Document.doNew = evt => {
