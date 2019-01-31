@@ -114,6 +114,8 @@ eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function () {
           }
         }
       }
+    } else if (this.suiteConnection) {
+      this.someTargetIsMissing = true
     }
     this.size.l = this.getStatementCount()
     return true
