@@ -3,8 +3,7 @@
     ref="dialog"
     id="dialog-should-save"
     lazy
-    @ok="doOk()"
-    @hidden="doHidden()"
+    @hidden="doHidden"
     :title='$$t("panel.should_save.title")'>
     <div
       class="d-block">{{$$t("panel.should_save.content")}}</div>
@@ -15,12 +14,12 @@
         size="sm"
         class="float-right eyo-far-left"
         variant="primary"
-        @click="doYes()">{{$$t('message.YES')}}</b-btn>
+        @click="doYes">{{$$t('message.YES')}}</b-btn>
       <b-btn
         size="sm"
         class="float-right"
         variant="secondary"
-        @click="doNo()">{{$$t('message.NO')}}</b-btn>
+        @click="doNo">{{$$t('message.NO')}}</b-btn>
     </div>
   </b-modal>
 </template>
@@ -39,6 +38,7 @@
       },
       doNo (evt) {
         this.$refs.dialog.hide()
+        this.$root.$emit('document-save-abort')
         this.callback && this.callback()
       },
       doHidden (evt) {
