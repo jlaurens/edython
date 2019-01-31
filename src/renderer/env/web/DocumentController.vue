@@ -26,7 +26,6 @@
     mounted () {
       // console.error('WEB DOCUMENT CONTROLLER MOUNT')
       this.$$onOnly('document-open', (evt, callback) => { // callback: (path) -> ()
-        console.error('document-open')
         this.callback = callback
         eYo.App.Document.shouldSave(() => {
           this.$refs.input.click()
@@ -90,6 +89,8 @@
           // console.log(file)
           reader.readAsArrayBuffer(file)
           this.callback && this.callback()
+        } else {
+          this.$root.$emit('document-open-abort')
         }
         this.callback = undefined
       }
