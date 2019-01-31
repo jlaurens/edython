@@ -122,8 +122,7 @@ export default {
       scaleDown: 'Plus petit',
       scaleUpBig: 'Bien plus grand',
       scaleDownBig: 'Bien plus petit',
-      'document-rename': 'Renommer'
-
+      'document-rename': 'Renommer…'
     }
   }
 }
