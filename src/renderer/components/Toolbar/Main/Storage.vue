@@ -72,11 +72,11 @@
       ])
     },
     created: function () {
-      this.$root.$on('document-open-complete', () => {
+      this.$$onOnly('document-open-complete', () => {
         this.open_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {open_theta: 1})
       })
-      this.$root.$on('document-save-complete', () => {
+      this.$$onOnly('document-save-complete', () => {
         this.save_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {save_theta: 1})
       })
