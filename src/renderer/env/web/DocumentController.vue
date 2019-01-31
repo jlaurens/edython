@@ -25,7 +25,7 @@
     },
     mounted () {
       // console.error('WEB DOCUMENT CONTROLLER MOUNT')
-      this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+      this.$$onOnly('document-open', (evt, callback) => { // callback: (path) -> ()
         console.error('document-open')
         this.callback = callback
         eYo.App.Document.shouldSave(() => {
@@ -61,8 +61,8 @@
           })
         }
       }
-      this.$root.$on('document-save', doSave)
-      this.$root.$on('document-save-as', doSave)
+      this.$$onOnly('document-save', doSave)
+      this.$$onOnly('document-save-as', doSave)
     },
     methods: {
       ...mapMutations('Undo', [
