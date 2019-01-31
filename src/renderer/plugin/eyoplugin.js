@@ -96,5 +96,19 @@ eYoPlugin.install = function (Vue, options) {
     })
     return bottom
   }
+  /**
+   * Ensure that there is only one callback for this event, for this component only.
+   * @param {String} event
+   * @param {Function} callback
+   */
+  Vue.prototype.$$onOnly = function (event, callback) {
+    var callbacks = this.callbacks || (this.callbacks = {})
+    var previous = callbacks[event]
+    if (previous) {
+      this.$root.$off(event, previous)
+    }
+    callbacks[event] = callback
+    this.$root.$on(event, callback)
+  }
 }
 export default eYoPlugin
