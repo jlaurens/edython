@@ -33,7 +33,7 @@
         z.show.bind(z)
       )
       z = this.$refs.shouldSave
-      this.$root.$on('document-should-save',
+      this.$$onOnly('document-should-save',
         z.show.bind(z)
       )
     }
