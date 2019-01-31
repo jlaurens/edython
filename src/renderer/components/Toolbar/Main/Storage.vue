@@ -23,6 +23,7 @@
       ><icon-save-load
         variant="load"
         :theta="open_theta"
+        :active="open_active"
       /></icon-base>
     </b-btn>
     <b-btn
@@ -37,7 +38,8 @@
       ><icon-save-load
         variant="save"
         :theta="save_theta"
-        :active="isDocumentEdited" /></icon-base>
+        :active="isDocumentEdited || save_active"
+      /></icon-base>
     </b-btn>
   </b-btn-group>
 </template>
@@ -55,6 +57,8 @@
       return {
         open_theta: 1,
         save_theta: 1,
+        open_active: false,
+        save_active: false,
         flashInterval: undefined
       }
     },
@@ -77,16 +81,18 @@
       this.$$onOnly('document-open-complete', () => {
         this.open_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {open_theta: 1})
+        this.open_active = false
       })
       this.$$onOnly('document-open-abort', () => {
-        this.open_theta = 1
+        this.open_active = false
       })
       this.$$onOnly('document-save-complete', () => {
         this.save_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {save_theta: 1})
+        this.save_active = false
       })
       this.$$onOnly('document-save-abort', () => {
-        this.save_theta = 1
+        this.save_active = false
       })
     },
     methods: {
@@ -94,19 +100,19 @@
         eYo.App.Document.doNew(evt)
       },
       doOpen (evt) {
-        this.open_theta = 0.99
+        this.open_active = true
         this.$nextTick(() => {
           this.$root.$emit('document-open', evt)
         })
       },
       doSave (evt) {
-        this.save_theta = 0.99
+        this.save_active = true
         this.$nextTick(() => {
           this.$root.$emit('document-save', evt)
         })
       },
       doSaveAs (evt) {
-        this.save_theta = 0.99
+        this.save_active = true
         this.$nextTick(() => {
           this.$root.$emit('document-save-as', evt)
         })
