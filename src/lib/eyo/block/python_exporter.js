@@ -111,6 +111,8 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
   opt = opt || {}
   var eyo = block.eyo
   var is_deep = !eyo.isControl && opt.is_deep
+  this.missing_statements = []
+  this.missing_expressions = []
   this.newline_()
   eYo.Events.groupWrap(() => {
     eYo.Do.tryFinally(() => {
@@ -136,6 +138,7 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
           } else {
             this.newline_()
             this.line.push('MISSING STATEMENT')
+            this.missing_statements.push(input.connection)
           }
         }
         if (eyo.isControl) {
@@ -224,6 +227,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, bindField) {
     } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !bindField) {
       this.line.push('<MISSING EXPRESSION>')
       // NEWLINE
+      this.missing_expressions.push(input.connection)
     } else {
       for (var j = 0, field; (field = input.fieldRow[j++]);) {
         this.exportField_(field)
