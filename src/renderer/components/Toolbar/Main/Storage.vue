@@ -21,7 +21,9 @@
         :height="32"
         icon-name="load"
       ><icon-save-load
-        variant="load" /></icon-base>
+        variant="load"
+        :theta="open_theta"
+      /></icon-base>
     </b-btn>
     <b-btn
       id="toolbar-save"
@@ -76,9 +78,15 @@
         this.open_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {open_theta: 1})
       })
+      this.$$onOnly('document-open-abort', () => {
+        this.open_theta = 1
+      })
       this.$$onOnly('document-save-complete', () => {
         this.save_theta = 0
         eYo.$$.TweenLite.to(this, 0.5, {save_theta: 1})
+      })
+      this.$$onOnly('document-save-abort', () => {
+        this.save_theta = 1
       })
     },
     methods: {
