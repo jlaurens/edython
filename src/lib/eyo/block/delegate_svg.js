@@ -994,7 +994,7 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
   this.updatePath_(this.svgPathHilight_, this.hilightPathDef_)
   this.updatePath_(this.svgPathSelect_, this.selectPathDef_)
   this.updatePath_(this.svgPathConnection_, this.connectionPathDef_)
-  if (this.someTargetIsMissing) {
+  if (this.someTargetIsMissing && !this.block_.isInFlyout) {
     goog.dom.classlist.add(this.svgPathContour_, 'eyo-error')
   } else {
     goog.dom.classlist.remove(this.svgPathContour_, 'eyo-error')
