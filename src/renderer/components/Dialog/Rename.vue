@@ -28,7 +28,7 @@
       }
     },
     mounted () {
-      this.$root.$on('document-rename',
+      this.$$onOnly('document-rename',
         this.rename.bind(this)
       )
     },
