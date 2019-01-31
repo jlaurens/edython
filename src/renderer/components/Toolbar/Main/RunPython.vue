@@ -26,8 +26,13 @@
     name: 'run-python',
     data: function () {
       return {
-        step: 1
+        saved_step: undefined,
+        rootControl_: undefined
       }
+    },
+    components: {
+      IconBase,
+      IconRun
     },
     computed: {
       ...mapState('Py', {
@@ -52,6 +57,7 @@
         return !!this.rootControl
       },
       rootControl () {
+        this.$$synchronize(this.step)
         return this.eyo && this.eyo.rootControl
       },
       color () {
@@ -62,9 +68,13 @@
             : 'white'
       }
     },
-    components: {
-      IconBase,
-      IconRun
+    mounted () {
+      // listen on (dis)connection to update the color of the icon
+      var back = () => {
+        --this.saved_step
+      }
+      this.$$.bus.$on('did-connect', back)
+      this.$$.bus.$on('did-disconnect', back)
     },
     watch: {
       running1 (newValue, oldValue) {
