@@ -79,6 +79,8 @@
             var result = e.target.result
             var content = new Uint8Array(result)
             eYo.App.Document.readDeflate(content, file.name)
+            this.stageUndo()
+            eYo.App.workspace.eyo.resetChangeCount()
             this.$root.$emit('document-open-complete')
             eYo.$$.app.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
