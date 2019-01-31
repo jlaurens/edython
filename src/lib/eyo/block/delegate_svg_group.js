@@ -99,6 +99,7 @@ eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function () {
     c8n.eyo.setOffset(eYo.Font.tabW, 1)
     var target = c8n.targetBlock()
     if (target) {
+      this.someTargetIsMissing = false
       var root = target.getSvgRoot()
       if (root) {
         c8n.tighten_()
