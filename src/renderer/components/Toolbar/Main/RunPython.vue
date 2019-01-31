@@ -26,8 +26,7 @@
     name: 'run-python',
     data: function () {
       return {
-        saved_step: undefined,
-        rootControl_: undefined
+        saved_step: undefined
       }
     },
     components: {
@@ -54,7 +53,7 @@
         return this.$$t('toolbar.tooltip.run_python', this.locale)
       },
       canDoIt () {
-        return !!this.rootControl
+        return !!this.rootControl && !this.rootControl.someTargetIsMissing
       },
       rootControl () {
         this.$$synchronize(this.step)
