@@ -40,15 +40,15 @@
       } else {
         console.error('NO ipcRenderer')
       }
-      this.$root.$on('document-open', (evt, callback) => { // callback: (path) -> ()
+      this.$$onOnly('document-open', (evt, callback) => { // callback: (path) -> ()
         eYo.App.Document.shouldSave(() => {
           this.$$doOpen(evt, callback)
         })
       })
-      this.$root.$on('document-save',
+      this.$$onOnly('document-save',
         this.$$doSave.bind(this)
       )
-      this.$root.$on('document-save-as',
+      this.$$onOnly('document-save-as',
         this.$$doSaveAs.bind(this)
       )
     },
