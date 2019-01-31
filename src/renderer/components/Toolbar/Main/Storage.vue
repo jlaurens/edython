@@ -86,16 +86,22 @@
         eYo.App.Document.doNew(evt)
       },
       doOpen (evt) {
-        this.open_theta = 0.5
-        this.$root.$emit('document-open', evt)
+        this.open_theta = 0.99
+        this.$nextTick(() => {
+          this.$root.$emit('document-open', evt)
+        })
       },
       doSave (evt) {
-        this.save_theta = 0.5
-        this.$root.$emit('document-save', evt)
+        this.save_theta = 0.99
+        this.$nextTick(() => {
+          this.$root.$emit('document-save', evt)
+        })
       },
       doSaveAs (evt) {
-        this.save_theta = 0
-        this.$root.$emit('document-save-as', evt)
+        this.save_theta = 0.99
+        this.$nextTick(() => {
+          this.$root.$emit('document-save-as', evt)
+        })
       }
     }
   }
