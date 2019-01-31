@@ -97,7 +97,7 @@
               }
             })
           } else {
-            console.log('Operation canceled')
+            this.$root.$emit('document-open-abort')
           }
         })
       },
