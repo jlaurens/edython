@@ -317,10 +317,14 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  */
 eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   var block = this.block_
-  var where = Blockly.utils.mouseToSvg(e, block.workspace.getParentSvg(),
-  block.workspace.getInverseScreenCTM());
-  where = goog.math.Coordinate.difference(where, block.workspace.getOriginOffsetInPixels())
-  where.scale(1 / block.workspace.scale)
+  var ws = block.workspace
+  if (!ws) {
+    return
+  }
+  var where = Blockly.utils.mouseToSvg(e, ws.getParentSvg(),
+  ws.getInverseScreenCTM());
+  where = goog.math.Coordinate.difference(where, ws.getOriginOffsetInPixels())
+  where.scale(1 / ws.scale)
   var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
