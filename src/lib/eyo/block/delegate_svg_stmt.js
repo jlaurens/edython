@@ -103,7 +103,6 @@ eYo.DelegateSvg.Stmt.prototype.postInitSvg = function () {
     return
   }
   eYo.DelegateSvg.Stmt.superClass_.postInitSvg.call(this)
-  var block = this.block_
   goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
   this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
     {'class': 'eyo-sharp-group'}, null)
