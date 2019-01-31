@@ -173,7 +173,8 @@ eYo.Style.Path = {
     width: 2.675, // px
   },
   Error: {
-    colour: '#c33'
+    colour: '#c33', // #fc3
+    width: 2, // px
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
@@ -274,6 +275,7 @@ eYo.setup.register(() => {
     .eyo-error.eyo-path-contour,
     .eyo-error.eyo-path-inner {
       stroke:${eYo.Style.Path.Error.colour};
+      stroke-width: ${eYo.Style.Path.Error.width}px;
     }`
   )
   eYo.Style.insertCssRuleAt(
