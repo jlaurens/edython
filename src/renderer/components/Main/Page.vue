@@ -750,13 +750,13 @@
       eYo.Do.makeTurtlePaneVisible = () => {
         this.makeVisible('turtle')
       }
-      this.$root.$on('pane-workspace-visible', () => {
+      this.$$onOnly('pane-workspace-visible', () => {
         this.makeVisible('workspace')
       })
       eYo.$$.bus.$on('pane-change-layout', opt => {
         this.changeLayout(opt)
       })
-      this.$root.$on('will-run-script', () => {
+      this.$$onOnly('will-run-script', () => {
         this.isVisible('turtle') || this.makeConsoleVisible()
       })
     },
