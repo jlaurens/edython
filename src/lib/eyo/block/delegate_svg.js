@@ -975,11 +975,11 @@ eYo.DelegateSvg.prototype.updatePath_ = function (path, def) {
 
 /**
  * Compute the paths of the block depending on its size.
- * @param {!eYo.Block} block
+ * This may be called too early, when the path do not exist yet
  * @private
  */
 eYo.DelegateSvg.prototype.updateAllPaths_ = function () {
-  if (this.mayBeLast) {
+  if (this.mayBeLast || !this.svgPathContour_) {
     return
   }
   if (this.wrapped_) {
