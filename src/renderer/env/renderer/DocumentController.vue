@@ -84,6 +84,7 @@
               }
               this.setPath(fileName)
               eYo.App.Document.readDeflate(content, fileName) // setPath here instead ?
+              this.stageUndo()
               eYo.App.workspace.eyo.resetChangeCount()
               this.$root.$emit('document-open-complete')
               if (callback) {
