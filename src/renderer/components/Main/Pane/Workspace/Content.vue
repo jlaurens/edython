@@ -491,7 +491,7 @@
           eYo.$$.bus.$on('new-document', () => {
             eYo.App.workspace.clear()
           })
-          this.$root.$on('workspace-clean', () => {
+          this.$$onOnly('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
               eYo.Do.tryFinally(() => {
                 var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
@@ -567,7 +567,7 @@
         this.$$installToolbar()
         this.$$update()
       })
-      this.$root.$on('toolbar-follow-phantom',
+      this.$$onOnly('toolbar-follow-phantom',
         this.$$update.bind(this)
       )
     }
