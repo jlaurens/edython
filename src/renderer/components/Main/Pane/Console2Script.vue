@@ -336,16 +336,16 @@ except:
 export default {
   name: 'panel-console2-script',
   mounted: function () {
-    this.$root.$on('console2-erase',
+    this.$$onOnly('console2-erase',
       this.eraseConsole.bind(this)
     )
-    this.$root.$on('console2-restart',
+    this.$$onOnly('console2-restart',
       this.restartConsole.bind(this)
     )
-    this.$root.$on('turtle-replay',
+    this.$$onOnly('turtle-replay',
       this.replayTurtle.bind(this)
     )
-    this.$root.$on('turtle-erase',
+    this.$$onOnly('turtle-erase',
       this.eraseTurtle.bind(this)
     )
     eYo.$$.bus.$on('new-document',
