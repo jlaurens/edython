@@ -114,7 +114,7 @@
         }, filePath => {
           if (filePath === undefined) {
             console.log('Operation canceled')
-            eYo.$$.bus.$emit('document-save-cancel')
+            this.$root.$emit('document-save-abort')
             callback && callback(evt, filePath)
             return
           }
@@ -147,7 +147,7 @@
         fs.writeFile(path, deflate, err => {
           if (err) {
             alert('An error ocurred creating the file ' + err.message)
-            eYo.$$.bus.$emit('document-save-fail')
+            this.$root.$emit('document-save-abort')
           } else {
             this.stageUndo()
             eYo.App.workspace.eyo.resetChangeCount()
