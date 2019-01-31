@@ -36,6 +36,7 @@ eYo.ConnectionDelegate = function (connection) {
   this.where = new eYo.Where()
   this.slot = undefined // except when the connection belongs to a slot
   this.reentrant = {}
+  this.targetIsMissing = false
 }
 
 Object.defineProperties(
@@ -319,6 +320,7 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
   if (this.beReady === eYo.Do.nothing) {
     this.t_eyo.beReady()
   }
+  this.targetIsMissing = false
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
