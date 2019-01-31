@@ -134,7 +134,7 @@ eYoApp.install = function (Vue, options) {
     return function (connection, oldTargetC8n, targetOldC8n) {
       didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
       Vue.nextTick(() => {
-        eYo.$$.bus.$emit('didConnect')
+        eYo.$$.bus.$emit('did-connect')
       })
     }
   })()
@@ -144,9 +144,9 @@ eYoApp.install = function (Vue, options) {
     // this is a closure
     var didDisconnect = eYo.Delegate.prototype.didDisconnect
     return function (connection, oldTargetC8n, targetOldC8n) {
-      didDisconnect.call(this, connection, oldTargetC8n)
+      didDisconnect.call(this, connection, oldTargetC8n, targetOldC8n)
       Vue.nextTick(() => {
-        eYo.$$.bus.$emit('didDisconnect')
+        eYo.$$.bus.$emit('did-disconnect')
       })
     }
   })()
