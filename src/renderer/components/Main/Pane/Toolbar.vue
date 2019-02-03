@@ -368,21 +368,21 @@
               this.$root.$emit('toolbar-follow-phantom')
             })
           },
-          'console2.scaleReset': this.console2ScaleReset,
-          'console2.scaleUp': this.console2ScaleUp,
-          'console2.scaleUpBig': this.console2ScaleUpBig,
-          'console2.scaleDown': this.console2ScaleDown,
-          'console2.scaleDownBig': this.console2ScaleDownBig,
-          'console1.scaleReset': this.console1ScaleReset,
-          'console1.scaleUp': this.console1ScaleUp,
-          'console1.scaleUpBig': this.console1ScaleUpBig,
-          'console1.scaleDown': this.console1ScaleDown,
-          'console1.scaleDownBig': this.console1ScaleDownBig,
-          'turtle.scaleReset': this.turtleScaleReset,
-          'turtle.scaleUp': this.turtleScaleUp,
-          'turtle.scaleUpBig': this.turtleScaleUpBig,
-          'turtle.scaleDown': this.turtleScaleDown,
-          'turtle.scaleDownBig': this.turtleScaleDownBig
+          'console2.scaleReset': this.console2ScaleReset.bind(this),
+          'console2.scaleUp': this.console2ScaleUp.bind(this),
+          'console2.scaleUpBig': this.console2ScaleUpBig.bind(this),
+          'console2.scaleDown': this.console2ScaleDown.bind(this),
+          'console2.scaleDownBig': this.console2ScaleDownBig.bind(this),
+          'console1.scaleReset': this.console1ScaleReset.bind(this),
+          'console1.scaleUp': this.console1ScaleUp.bind(this),
+          'console1.scaleUpBig': this.console1ScaleUpBig.bind(this),
+          'console1.scaleDown': this.console1ScaleDown.bind(this),
+          'console1.scaleDownBig': this.console1ScaleDownBig.bind(this),
+          'turtle.scaleReset': this.turtleScaleReset.bind(this),
+          'turtle.scaleUp': this.turtleScaleUp.bind(this),
+          'turtle.scaleUpBig': this.turtleScaleUpBig.bind(this),
+          'turtle.scaleDown': this.turtleScaleDown.bind(this),
+          'turtle.scaleDownBig': this.turtleScaleDownBig.bind(this)
         }[choice]
         do_it()
       },

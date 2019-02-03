@@ -218,14 +218,14 @@ export default {
       eYo.Py.console1 && eYo.Py.console1.__class__.restart(eYo.Py.console1)
     },
     eraseTurtle (id) {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
-edython.turtleRestart()
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id || '', `if edython is not None:
+    edython.turtleRestart()
 else:
-print('Nothing to do...')
+    print('Nothing to do...')
 `)
     },
     replayTurtle (id) {
-      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
+      eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id || '', `if edython is not None:
   edython.turtleReplayScene()
 else:
   print('Nothing to do...')
@@ -240,7 +240,7 @@ else:
     },
     asyncRunScript (id, code) {
       this.$nextTick(() => {
-        eYo.Py.console1.__class__.execute(eYo.Py.console1, id, code)
+        eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, code)
       })
     }
   }

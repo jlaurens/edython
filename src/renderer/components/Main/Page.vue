@@ -131,8 +131,10 @@
       <!--console2-script></console2-script-->
     </div>
     <b-modal
+      id="panel-launch"
       ref="elStarting"
       :title="$$t('panel.launch.title')"
+      :ok-disabled="!started1"
       lazy>
       <div><div
         style="display:inline-block;width:calc(64px + 1rem);vertical-align:top;"><img
@@ -140,8 +142,6 @@
         height="64"
         alt="Edython"/></div><div
           style="display:inline-block;width:calc(100% - 64px - 1rem);">{{$$t('panel.launch.content')}}</div></div>
-      <div
-        slot="modal-footer"></div>
     </b-modal>
   </div>
 </template>
@@ -798,9 +798,6 @@
             console.error('UNKNOWN', newValue)
           }
         }
-      },
-      started1 (newValue, oldValue) {
-        this.$refs.elStarting[newValue ? 'hide' : 'show']()
       }
     }
   }
@@ -865,5 +862,8 @@
   }
   .dropdown .dropdown-item {
     padding: 0.25rem;
+  }
+  #panel-launch .btn-secondary {
+    display: none;
   }
 </style>

@@ -4,42 +4,39 @@
       key-nav
       aria-label="Block toolbar literal"
       class="b3k-edit-content">
-    <div
-      class="item">
-      <input
-        type="checkbox"
-        v-model="r"
-        :disabled="!can_r"
-        :title="title_r"
-        v-tippy>
-    </div>
-    <div
-      class="item text eyo-code-reserved"
-      >r</div>
-    <div
-      class="item">
-      <input
-        type="checkbox"
-        v-model="b"
-        :disabled="!can_b"
-        :title="title_b"
-        v-tippy>
-    </div>
-    <div
-      class="item text eyo-code-reserved"
-    >b</div>
-    <div
-      class="item">
-      <input
-        type="checkbox"
-        v-model="f"
-        :disabled="!can_f"
-        :title="title_f"
-        v-tippy>
-    </div>
-    <div
-      class="item text eyo-code-reserved"
-    >f</div>
+    <b-btn-group
+      v-if="selectedMode > $$.eYo.App.BASIC"
+      ><div
+        class="item"
+        ><input
+          type="checkbox"
+          v-model="r"
+          :disabled="!can_r"
+          :title="title_r"
+          v-tippy
+      ></div><div
+        class="item text eyo-code-reserved"
+      >r</div><div
+        class="item"><input
+          type="checkbox"
+          v-model="b"
+          :disabled="!can_b"
+          :title="title_b"
+          v-tippy>
+      </div><div
+        class="item text eyo-code-reserved"
+      >b</div><div
+        class="item">
+        <input
+          type="checkbox"
+          v-model="f"
+          :disabled="!can_f"
+          :title="title_f"
+          v-tippy
+        ></div><div
+        class="item text eyo-code-reserved"
+      >f</div>
+    </b-btn-group>
     <literal-quote
       ref="quote"
     ></literal-quote>
@@ -73,6 +70,9 @@
       LiteralQuote
     },
     computed: {
+      ...mapState('UI', [
+        'selectedMode'
+      ]),
       ...mapState('Selected', [
         'step'
       ]),

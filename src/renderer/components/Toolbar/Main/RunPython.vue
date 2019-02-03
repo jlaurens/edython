@@ -2,13 +2,13 @@
   <b-btn
     id="toolbar-btn-run-python"
     v-on:click="doIt()"
-    :title="title"
+    :title="$$t('toolbar.tooltip.run_python')"
     v-tippy
     :disabled="!canDoIt">
     <icon-base
       :width="32"
       :height="32"
-      :icon-name="name"
+      :icon-name="$$t('toolbar.content.run_python')"
       :icon-color="color"
     >
       <icon-run></icon-run>
@@ -43,15 +43,6 @@
       ...mapGetters('Selected', [
         'eyo'
       ]),
-      locale () {
-        return this.$i18n.locale
-      },
-      name () {
-        return this.$$t('toolbar.content.run_python', this.locale)
-      },
-      title () {
-        return this.$$t('toolbar.tooltip.run_python', this.locale)
-      },
       canDoIt () {
         return !!this.rootControl && !this.rootControl.someTargetIsMissing
       },
@@ -80,12 +71,11 @@
         if (newValue) {
           var root = this.rootControl
           if (root) {
-            // this.$nextTick(() => {
-            //   root.runScript()
-            // })
-            setTimeout(() => {
-              root.runScript()
-            }, 250)
+            this.$nextTick(() => {
+              this.$nextTick(() => {
+                root.runScript()
+              })
+            })
           }
         }
       }
@@ -95,9 +85,6 @@
         var root = this.rootControl
         if (root) {
           this.$root.$emit('will-run-script')
-          // this.$nextTick(() => {
-          //   root.runScript()
-          // })
         }
       }
     }

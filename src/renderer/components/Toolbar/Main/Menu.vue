@@ -28,7 +28,7 @@
           :checked="toolbarInfoDebug"
         />{{contentToolbarBlockDebug}}</b-dd-item-button>
       <b-dd-item-button
-        v-if="selectedMode == $$.eYo.App.TEACHER"
+        v-if="selectedMode === $$.eYo.App.TEACHER"
         v-on:click="doToggleEcoSave()"
         :style="style"
         :title="titleEcoSave"

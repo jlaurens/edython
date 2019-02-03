@@ -1,8 +1,8 @@
 eYo.Do.readOnlyMixin(eYo.App, {
-  TUTORIAL: 'tutorial',
-  BASIC: 'basic',
-  NORMAL: 'normal',
-  TEACHER: 'teacher'
+  TUTORIAL: '0-tutorial',
+  BASIC: '1-basic',
+  NORMAL: '2-normal',
+  TEACHER: '3-teacher'
 })
 
 const state = {

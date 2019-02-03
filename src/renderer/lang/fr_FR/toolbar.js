@@ -16,10 +16,10 @@ export default {
   tooltip: {
     mode: {
       group: 'Choisir une interface adaptée',
-      tutorial: 'Interface minimale pour débuter',
-      basic: 'Interface pour une utilisation simplifiée',
-      normal: 'Interface pour une utilisation normale',
-      teacher: 'Interface étendue à l\'usage des professeurs'
+      '0-tutorial': 'Interface minimale pour débuter',
+      '1-basic': 'Interface pour une utilisation simplifiée',
+      '2-normal': 'Interface pour une utilisation normale',
+      '3-teacher': 'Interface étendue à l\'usage des professeurs'
     },
     selection: {
       send_to_back: 'Sélection à l\'arrière plan',
@@ -53,10 +53,10 @@ export default {
   },
   content: {
     mode: {
-      tutorial: 'Tutoriel',
-      basic: 'Simple',
-      normal: 'Normal',
-      teacher: 'Professeur'
+      '0-tutorial': 'Tutoriel',
+      '1-basic': 'Simple',
+      '2-normal': 'Normal',
+      '3-teacher': 'Professeur'
     },
     eco_save: 'Eco save',
     deep_copy: 'Copie profonde',

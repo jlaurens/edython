@@ -12,7 +12,7 @@ export default {
     content: 'Soit les données lues ne sont pas conformes, soit le programme comporte une erreur. Vous pouvez déclarer un bug.<br>Notez que le fichier contient le code python original si vous souhaitez le récupérer.'
   },
   launch: {
-    content: 'Veuillez patienter pendant le lancement de l\'environnement de programmation par blocs pour Python...',
+    content: 'Veuillez patienter quelques secondes pendant le lancement de l\'environnement de programmation par blocs pour Python...',
     title: 'Bienvenue dans Edython'
   }
 }

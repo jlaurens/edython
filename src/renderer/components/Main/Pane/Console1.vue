@@ -310,7 +310,25 @@
       })
       this.$$onOnly('will-run-script', () => {
         this.setRunning1(false)
+        this.$nextTick(() => {
+          this.setRunning1(true)
+        })
+      })
+      this.$$onOnly('console1-write', (str) => {
+        this.$$write(str)
+      })
+      this.$$onOnly('console1-complete', (id, code, restart) => {
+        this.setRunning1(false)
+        this.$$prompt()
+      })
+      this.$$onOnly('console1-run-script', (id, code, restart) => {
         this.setRunning1(true)
+        if (restart) {
+          this.restartOutput()
+        } else {
+          this.$$newline()
+        }
+        this.$refs.console.asyncRunScript(id, code)
       })
       eYo.$$.bus.$on('new-document',
         this.restartAll.bind(this)
@@ -340,11 +358,9 @@
     if (!goog.isDef(restart) && this === this.root && this.restart_p) {
       restart = !this.previous
     }
-    eYo.asyncEmit(`console1-${restart ? 'restart' : 'newline'}`)
     var p = new eYo.Py.Exporter()
     var code = p.export(this.block_, {is_deep: true})
-    console.log('CODE', code)
-    this.$refs.console.asyncRunScript(id || this.id, code)
+    eYo.asyncEmit('console1-run-script', id || this.id, code, restart)
   }
 </script>
 
