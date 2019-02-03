@@ -25,7 +25,7 @@
 <script>
   import Console1Script from './Console1Script'
 
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapState, mapGetters, mapMutations} from 'vuex'
   import Toolbar from './Toolbar'
   var ResizeSensor = require('css-element-queries/src/ResizeSensor')
   export default {
@@ -49,8 +49,8 @@
       ...mapGetters('Console1', [
         'scaleFactor'
       ]),
-      ...mapGetters('Py', [
-        'started1'
+      ...mapState('Py', [
+        'running1'
       ])
     },
     watch: {
@@ -250,7 +250,8 @@
         this.$$write('\n')
       },
       complete (id, time) {
-        this.$$write(`Terminé en ${time} ms\n`)
+        console.log('complete', this.running1)
+        this.$$write(this.$$t('message.complete_in_ms').replace('%%%time%%%', String(time)) + '\n')
         this.$$prompt()
         this.$$cursorToEnd()
         this.setRunning1(false)
@@ -308,19 +309,15 @@
         this.setStarted1(true)
         this.restartOutput()
       })
-      this.$$onOnly('will-run-script', () => {
-        this.setRunning1(false)
+      this.$$onOnly('will-run-script', (root) => {
         this.$nextTick(() => {
-          this.setRunning1(true)
+          root.runScript()
         })
       })
       this.$$onOnly('console1-write', (str) => {
         this.$$write(str)
       })
-      this.$$onOnly('console1-complete', (id, code, restart) => {
-        this.setRunning1(false)
-        this.$$prompt()
-      })
+      this.$$onOnly('console1-complete', this.complete.bind(this))
       this.$$onOnly('console1-run-script', (id, code, restart) => {
         this.setRunning1(true)
         if (restart) {
@@ -328,7 +325,9 @@
         } else {
           this.$$newline()
         }
-        this.$refs.console.asyncRunScript(id, code)
+        window.setTimeout(() => {
+          this.$refs.console.asyncRunScript(id, code)
+        }, 200) // $nextTick is too rapid
       })
       eYo.$$.bus.$on('new-document',
         this.restartAll.bind(this)

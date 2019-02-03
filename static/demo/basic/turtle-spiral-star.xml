@@ -14,7 +14,7 @@
 }</prefs>
 <workspace>
 <content>
-<s eyo="start" comment="Turtle star (Effacer si besoin)" x="100" y="50">
+<s eyo="start" comment="Turtle star" x="100" y="50">
 <python>
 from turtle import *
 edython.turtleSetup()

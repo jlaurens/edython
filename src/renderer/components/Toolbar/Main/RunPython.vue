@@ -34,12 +34,9 @@
       IconRun
     },
     computed: {
-      ...mapState('Py', {
-        'running1': state => {
-          console.log('state.running1', state.running1)
-          return state.running1
-        }
-      }),
+      ...mapState('Py', [
+        'running1'
+      ]),
       ...mapGetters('Selected', [
         'eyo'
       ]),
@@ -51,6 +48,7 @@
         return this.eyo && this.eyo.rootControl
       },
       color () {
+        console.log('RunPython.vue:', this.running1)
         return this.running1
           ? '#f9951b'
           : this.canDoIt
@@ -66,25 +64,11 @@
       this.$$.bus.$on('did-connect', back)
       this.$$.bus.$on('did-disconnect', back)
     },
-    watch: {
-      running1 (newValue, oldValue) {
-        if (newValue) {
-          var root = this.rootControl
-          if (root) {
-            this.$nextTick(() => {
-              this.$nextTick(() => {
-                root.runScript()
-              })
-            })
-          }
-        }
-      }
-    },
     methods: {
       doIt () {
         var root = this.rootControl
         if (root) {
-          this.$root.$emit('will-run-script')
+          this.$root.$emit('will-run-script', root)
         }
       }
     }

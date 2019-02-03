@@ -3,19 +3,19 @@
 <prefs>{"workspace":{},"paneLayout":"H"}</prefs>
 <workspace>
 <content>
-<s eyo="start" comment="Préparation des tortues" x="547" y="-278">
+<s eyo="start" comment="Courbes de poursuite" x="547" y="-278">
 <python>
-# Préparation des tortues
+# Courbes de poursuite
 import turtle
 r = 100
 pas = 2
 edython.turtleSetup()
 def tortue(x,y,couleur):
     T = turtle.Turtle()
+    T.color(couleur)
     T.penup()
     T.setposition(x,y)
     T.pendown()
-    T.color(couleur)
     return T
 T1 = tortue(- r,- r,'red')
 T2 = tortue(+ r,- r,'blue')

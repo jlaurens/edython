@@ -866,4 +866,7 @@
   #panel-launch .btn-secondary {
     display: none;
   }
+  #panel-launch .modal-header .close {
+    display: none;
+  }
 </style>

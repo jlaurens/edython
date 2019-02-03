@@ -1,4 +1,4 @@
-<s eyo="start" comment="Cliquez sur &quot;marche&quot; et soyez patient (20'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<s eyo="start" comment="Arbre de Pythagore" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
   <python>
   # Cliquez sur "marche" et soyez patient (20'')
   from turtle import *

@@ -27,5 +27,6 @@ export default {
   },
   document: {
     Untitled: 'Sans Titre'
-  }
+  },
+  complete_in_ms: 'Terminé en %%%time%%% ms'
 }

@@ -14,7 +14,7 @@
 }</prefs>
 <workspace>
 <content>
-<s eyo="start" comment="Cliquez sur &quot;marche&quot; et soyez patient (20'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+<s eyo="start" comment="Cliquez sur le drapeau et soyez patient (10'')" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
 <python>
 # Cliquez sur "marche" et soyez patient (20'')
 from turtle import *

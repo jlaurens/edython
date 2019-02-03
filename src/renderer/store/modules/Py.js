@@ -8,6 +8,7 @@ const mutations = {
     state.started1 = !!yorn
   },
   setRunning1 (state, yorn) {
+    console.log('setRunning1', yorn)
     state.running1 = !!yorn
   }
 }
