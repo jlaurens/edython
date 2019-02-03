@@ -91,7 +91,6 @@ except:
                 try:
                     import turtle
                     Edython.el = document['eyo-turtle-canvas-wrapper']
-                    # turtle.restart() this won't work
                     turtle.set_defaults(turtle_canvas_wrapper=Edython.el)
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
@@ -99,7 +98,6 @@ except:
                         window.eYo.Do.makeTurtlePaneVisible()
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
-                    # turtle.restart() # this won't work either
                     print('Turtle available and set up...')
                     console_js.log('Turtle available...', panel.clientWidth, panel.clientHeight)
                 except KeyError as e:
@@ -141,7 +139,7 @@ except:
             sys.stdout.write = sys.stderr.write = lambda data: self.write(data)
     
         def write(self, data):
-            window.eYo.asyncEmit('console1-write', str(data))
+            window.eYo.emit('console1-write', str(data))
     
         def restart(self):
             self.ns = {
@@ -161,8 +159,10 @@ except:
                 if _ is not None:
                     ans.append(repr(_) + '\n')
             except IndentationError:
+                console_js.log('IndentationError')
                 ans[0] = K.BLOCK
             except SyntaxError as msg:
+                console_js.log('SyntaxError')
                 s = str(msg)
                 if s == 'invalid syntax : triple string end not found' or \
                     s.startswith('Unbalanced bracket'):
@@ -177,6 +177,7 @@ except:
                 else:
                     traceback.print_exc()
             except:
+                console_js.log('Other error')
                 traceback.print_exc()
             finally:
                 return ans
@@ -233,9 +234,10 @@ else:
     },
     $$execute (currentLine) {
       var ans = eYo.Py.console1.__class__.execute(eYo.Py.console1, currentLine)
+      console.log('$$execute', ans)
       return {
-        ans: ans[0],
-        _: (ans.length && ans[1]) || null
+        status: ans[0],
+        _: (ans[1]) || null
       }
     },
     asyncRunScript (id, code) {

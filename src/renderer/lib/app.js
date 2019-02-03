@@ -21,6 +21,9 @@ Object.defineProperties(eYo.$$, {
 const app = eYo.$$.app
 app.$mount('#app')
 
+eYo.emit = (...args) => {
+  app.$emit.apply(app, args)
+}
 eYo.asyncEmit = (...args) => {
   app.$nextTick(() => {
     app.$emit.apply(app, args)

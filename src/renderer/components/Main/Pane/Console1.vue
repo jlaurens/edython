@@ -70,8 +70,8 @@
           if (i < 0) {
             break
           }
-          this.lastSuiteIndex_ = i
-          i = str.indexOf('\n...', i + 4)
+          this.lastSuiteIndex_ = i + 1
+          i = str.indexOf('\n...', i + 5)
         }
         return this.lastSuiteIndex_
       },
@@ -82,8 +82,8 @@
           if (i < 0) {
             break
           }
-          this.lastPromptIndex_ = i
-          i = str.indexOf('\n>>>', i + 4)
+          this.lastPromptIndex_ = i + 1
+          i = str.indexOf('\n>>>', i + 5)
         }
         return this.lastPromptIndex_
       },
@@ -154,12 +154,14 @@
             i = this.getLastSuiteIndex() + 4
             currentLine = src.substring(i)
           }
+          console.error('currentLine', currentLine)
           if (this.status_ === eYo.Key.MAIN && !currentLine.trim()) {
             this.$$write('\n>>> ')
             event.preventDefault()
             return
           }
           this.$$newline()
+          console.log('this.history_.push', currentLine)
           this.history_.push(currentLine)
           this.current_ = this.history_.length
           if (this.status_ === eYo.Key.MAIN || this.status_ === eYo.Key.STRING3) {
@@ -196,7 +198,7 @@
       $$get_col () {
         // returns the column num of the insertion caret
         var output = this.$refs.output
-        var i = output.value.lastIndexOf('\n')
+        var i = output.value.lastIndexOf('\n') + 1
         return output.selectionStart - i
       },
       $$keydown (event) {
@@ -238,7 +240,9 @@
         }
       },
       $$write (data) {
-        this.$refs.output.value += String(data)
+        this.$root.$nextTick(() => {
+          this.$refs.output.value += String(data)
+        })
       },
       $$suite () {
         this.$$write('... ')
