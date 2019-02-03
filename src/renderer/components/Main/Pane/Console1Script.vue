@@ -128,10 +128,6 @@ except:
         STRING3 = 3
     
     class Console():
-        _status = Status.MAIN  # or Status.BLOCK if typing inside a block
-        history = []
-        current = 0
-        elmt = None
         ns = {
             'credits':credits,
             'copyright':copyright,
@@ -141,30 +137,11 @@ except:
         }
         # execution namespace
         
-        def __init__(self, elmt, callback = None):
-            self.elmt = elmt
-            assert self.elmt is not None, 'No element for id '+id
-            self.callback = callback
+        def __init__(self):
             sys.stdout.write = sys.stderr.write = lambda data: self.write(data)
-            self.elmt.bind('keypress', lambda e: self._myKeyPress(e))
-            self.elmt.bind('keydown', lambda e: self._myKeyDown(e))
-            self.elmt.bind('click', lambda e: self._myClick(e))
-            self.elmt.bind('paste', lambda e: self._myPaste(e))
-            self.elmt.bind('cut', lambda e: self._myCut(e))
-            console_js.log('Console available...')
-            self.restart()
     
         def write(self, data):
-            if self.elmt is not None:
-                self.elmt.value += str(data)
-            else:
-                console_js.error(data)
-    
-        def erase(self):
-            self.flush()
-            self._prompt()
-            self.elmt.focus()
-            self._cursorToEnd()
+            window.eYo.asyncEmit('console1-write', str(data))
     
         def restart(self):
             self.ns = {
@@ -174,179 +151,38 @@ except:
                 '__name__':'__main__',
                 'edython': Edython()
             }
-            self.flush()
-            #v = sys.implementation.version
-            #self.write("Edython uses Brython %s.%s.%s on %s %s\n" % ( v[0], v[1], v[2], window.navigator.appName, window.navigator.appVersion))
-            self.write('Type "copyright", "credits" or "license" for more information.\n')
-            self._prompt()
-            self.elmt.focus()
-            self._cursorToEnd()
+            window.eYo.asyncEmit('console1-restarted')
 
-        def _prompt(self):
-            self.write('>>> ')
-    
-        def _suite(self):
-            self.write('... ')
-    
-        def _newline(self):
-            self.write('\n')
-    
-        def flush(self):
-            self.elmt.value = ''
-    
-        def _cursorToEnd(self, *args):
-            pos = len(self.elmt.value)
-            self.elmt.setSelectionRange(pos, pos)
-            self.elmt.scrollTop = self.elmt.scrollHeight
-    
-        def _get_col(self):
-            # returns the column num of cursor
-            sel = self.elmt.selectionStart
-            lines = self.elmt.value.split('\n')
-            for line in lines[:-1]:
-                sel -= len(line) + 1
-            return sel
-    
-        def _myClick(self, event):
-            if self.elmt.selectionStart < self.elmt.selectionEnd:
-                return
-            self._cursorToEnd()
-
-        def _beforeKeyEvent(self, event):
-            if self.elmt.selectionStart <= self.elmt.value.rfind('>>>') + 4:
-                self._cursorToEnd()
-    
-        def _myPaste(self, event):
-            if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
-                event.preventDefault()
-                event.stopPropagation()
-    
-        def _myCut(self, event):
-            if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
-                event.preventDefault()
-                event.stopPropagation()
-
-        def _myKeyPress(self, event):
-            if event.keyCode == 9:  # tab key
-                event.preventDefault()
-                self.write('    ')
-            elif event.keyCode == 13:  # return
-                src = self.elmt.value
-                if self._status == Status.MAIN:
-                    currentLine = src[src.rfind('>>>') + 4:]
-                elif self._status == Status.STRING3:
-                    currentLine = src[src.rfind('>>>') + 4:]
-                    currentLine = currentLine.replace('\n... ', '\n')
-                else:
-                    currentLine = src[src.rfind('...') + 4:]
-                if self._status == Status.MAIN and not currentLine.strip():
-                    self.write('\n>>> ')
-                    event.preventDefault()
-                    return
-                self.write('\n')
-                self.history.append(currentLine)
-                self.current = len(self.history)
-                if self._status == Status.MAIN or self._status == Status.STRING3:
+        def execute(self, currentLine):
+            K = window.eYo.Key
+            ans = [K.MAIN]
+            try:
+                _ = self.ns['_'] = eval(currentLine, self.ns)
+                if _ is not None:
+                    ans.append(repr(_) + '\n')
+            except IndentationError:
+                ans[0] = K.BLOCK
+            except SyntaxError as msg:
+                s = str(msg)
+                if s == 'invalid syntax : triple string end not found' or \
+                    s.startswith('Unbalanced bracket'):
+                    ans[0] = K.STRING3
+                elif s == 'eval() argument must be an expression':
                     try:
-                        _ = self.ns['_'] = eval(currentLine, self.ns)
-                        if _ is not None:
-                            self.write(repr(_)+'\n')
-                        self._prompt()
-                        self._status = Status.MAIN
-                    except IndentationError:
-                        self._suite()
-                        self._status = Status.BLOCK
-                    except SyntaxError as msg:
-                        if str(msg) == 'invalid syntax : triple string end not found' or \
-                            str(msg).startswith('Unbalanced bracket'):
-                            self._suite()
-                            self._status = Status.STRING3
-                        elif str(msg) == 'eval() argument must be an expression':
-                            try:
-                                exec(currentLine, self.ns)
-                            except:
-                                traceback.print_exc()
-                            self._prompt()
-                            self._status = Status.MAIN
-                        elif str(msg) == 'decorator expects function':
-                            self._suite()
-                            self._status = Status.BLOCK
-                        else:
-                            traceback.print_exc()
-                            self._prompt()
-                            self._status = Status.MAIN
+                        exec(currentLine, self.ns)
                     except:
                         traceback.print_exc()
-                        self._prompt()
-                        self._status = Status.MAIN
-                elif currentLine == "":  # end of block
-                    block = src[src.rfind('>>>') + 4:].splitlines()
-                    block = [block[0]] + [b[4:] for b in block[1:]]
-                    block_src = '\n'.join(block)
-                    # status must be set before executing code in globals()
-                    self._status = Status.MAIN
-                    try:
-                        _ = exec(block_src, self.ns)
-                        if _ is not None:
-                            print(repr(_))
-                    except:
-                        traceback.print_exc()
-                    self._prompt()
+                elif s == 'decorator expects function':
+                    ans[0] = K.BLOCK
                 else:
-                    self._suite()
-    
-                self._cursorToEnd(event)
-                event.preventDefault()
-            else:
-                if self.elmt.selectionStart < self.elmt.value.rfind('>>>') + 4:
-                    self._cursorToEnd()
-           
-    
-        def _myKeyDown(self, event):
-            if event.keyCode == 37:  # left arrow
-                sel = self._get_col()
-                if sel < 5:
-                    event.preventDefault()
-                    event.stopPropagation()
-            elif event.keyCode == 36:  # line start
-                pos = self.elmt.selectionStart
-                col = self._get_col()
-                self.elmt.setSelectionRange(pos - col + 4, pos - col + 4)
-                event.preventDefault()
-            elif event.keyCode == 38:  # up
-                if self.current > 0:
-                    pos = self.elmt.selectionStart
-                    col = self._get_col()
-                    # remove self.current line
-                    self.elmt.value = self.elmt.value[:pos - col + 4]
-                    self.current -= 1
-                    self.write(self.history[self.current])
-                event.preventDefault()
-            elif event.keyCode == 40:  # down
-                if self.current < len(self.history) - 1:
-                    pos = self.elmt.selectionStart
-                    col = self._get_col()
-                    # remove self.current line
-                    self.elmt.value = self.elmt.value[:pos - col + 4]
-                    self.current += 1
-                    self.write(self.history[self.current])
-                event.preventDefault()
-            elif event.keyCode == 8:  # backspace
-                src = self.elmt.value
-                lstart = src.rfind('\n')
-                if (lstart == -1 and len(src) < 5) or (len(src) - lstart < 6):
-                    event.preventDefault()
-                    event.stopPropagation()
-                    
-        def runScript(self, id, src, restart = False, flush = False):
-            if restart:
-                self.restart()
-            elif flush:
-                self.flush()
-            else:
-                self._newline()
-            self.time = 0
-            t0 = time.perf_counter()
+                    traceback.print_exc()
+            except:
+                traceback.print_exc()
+            finally:
+                return ans
+
+        def runScript(self, id, src):
+            t = time.perf_counter()
             try:
                 exec(src, self.ns)
                 self.state = 1
@@ -354,53 +190,19 @@ except:
                 traceback.print_exc(file=sys.stderr)
                 self.state = 0
             finally:
-                self.time = time.perf_counter() - t0
-                self.write('Terminé en ' + str(round(self.time * 100000)/100) + ' ms\n')
-                self._prompt()
-                self._cursorToEnd()
-                window.eYo.Py.endRunScript1(id)
-                if self.callback is not None:
-                    self.callback(self, id)
+                t = time.perf_counter() - t
+                window.eYo.asyncEmit('console1-complete', id, round(t * 100000)/100)
         console_js.log('INLINE really done')
     
-    window.eYo.Py.console1 = Console(document['eyo-console1-area'])
-    console_js.log('%%% importing console module: done')
-
+    window.eYo.Py.console1 = Console()
+    window.eYo.asyncEmit('console1-started')
 </script>
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
-
 export default {
   name: 'panel-console1-script',
   mounted: function () {
-    this.$$onOnly('console1-erase',
-      this.eraseConsole.bind(this)
-    )
-    this.$$onOnly('console1-restart',
-      this.restartConsole.bind(this)
-    )
-    this.$$onOnly('turtle-replay',
-      this.replayTurtle.bind(this)
-    )
-    this.$$onOnly('turtle-erase',
-      this.eraseTurtle.bind(this)
-    )
-    eYo.$$.bus.$on('new-document',
-      this.restartAll.bind(this)
-    )
-    this.$$onOnly('will-run-script', () => {
-      this.setRunning1(false)
-      this.setRunning1(true)
-    })
-    eYo.Py.endRunScript1 = id => {
-      this.setRunning1(false)
-      var eyo = eYo.Selected.eyo
-      if (eyo && eyo.id === id) {
-        this.$nextTick(eYo.Selected.chooseNext)
-      }
-    }
     eYo.Py.canRunTurtleScript = () => {
       var el = document.getElementById('eyo-turtle-canvas-wrapper')
       //   if (el) {
@@ -412,21 +214,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('Py', [
-      'setRunning1'
-    ]),
-    restartConsole () {
+    restart () {
       eYo.Py.console1 && eYo.Py.console1.__class__.restart(eYo.Py.console1)
     },
     eraseTurtle (id) {
       eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
-  edython.turtleRestart()
+edython.turtleRestart()
 else:
-  print('Nothing to do...')
+print('Nothing to do...')
 `)
-    },
-    eraseConsole () {
-      eYo.Py.console1 && eYo.Py.console1.__class__.erase(eYo.Py.console1)
     },
     replayTurtle (id) {
       eYo.Py.console1 && eYo.Py.console1.__class__.runScript(eYo.Py.console1, id, `if edython is not None:
@@ -435,25 +231,18 @@ else:
   print('Nothing to do...')
 `)
     },
-    restartAll () {
-      this.eraseTurtle()
-      this.restartConsole() // this must be last, once
+    $$execute (currentLine) {
+      var ans = eYo.Py.console1.__class__.execute(eYo.Py.console1, currentLine)
+      return {
+        ans: ans[0],
+        _: (ans.length && ans[1]) || null
+      }
+    },
+    asyncRunScript (id, code) {
+      this.$nextTick(() => {
+        eYo.Py.console1.__class__.execute(eYo.Py.console1, id, code)
+      })
     }
-  }
-}
-/**
- * @param {!String} id
- * @param {?Boolean} restart
- */
-eYo.DelegateSvg.prototype.runScript = function (id, restart) {
-  var p = new window.eYo.Py.Exporter()
-  var code = p.export(this.block_, {is_deep: true})
-  console.log('CODE', code)
-  if (!goog.isDef(restart) && this === this.root && this.restart_p) {
-    restart = !this.previous
-  }
-  if (eYo.Py.console1) {
-    eYo.Py.console1.__class__.runScript(window.eYo.Py.console1, id || this.id, code, restart)
   }
 }
 </script>

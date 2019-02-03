@@ -128,9 +128,21 @@
         :where="where_turtle"
         @change-layout="changeLayout"
         @install-toolbar="installToolbar"></pane-turtle>
-      <console1-script></console1-script>
       <!--console2-script></console2-script-->
     </div>
+    <b-modal
+      ref="elStarting"
+      :title="$$t('panel.launch.title')"
+      lazy>
+      <div><div
+        style="display:inline-block;width:calc(64px + 1rem);vertical-align:top;"><img
+        src="static/icon_light.svg"
+        height="64"
+        alt="Edython"/></div><div
+          style="display:inline-block;width:calc(100% - 64px - 1rem);">{{$$t('panel.launch.content')}}</div></div>
+      <div
+        slot="modal-footer"></div>
+    </b-modal>
   </div>
 </template>
 
@@ -144,7 +156,6 @@
   import PaneConsole1 from './Pane/Console1'
   import PaneConsole2 from './Pane/Console2'
   import PaneTurtle from './Pane/Turtle'
-  import Console1Script from './Pane/Console1Script'
   import Console2Script from './Pane/Console2Script'
   
   export default {
@@ -161,8 +172,7 @@
       PaneConsole2,
       PaneConsole1,
       PaneTurtle,
-      Console2Script,
-      Console1Script
+      Console2Script
     },
     computed: {
       ...mapState('UI', [
@@ -179,6 +189,9 @@
       ...mapState('Layout', layoutcfg.what_wheres),
       ...mapState('Layout', layoutcfg.width_wheres),
       ...mapState('Layout', layoutcfg.height_wheres),
+      ...mapState('Py', [
+        'started1'
+      ]),
       workingStyle () {
         return `top: ${this.footstep - this.maxstep}rem;
         height: calc(100% - ${this.footstep}rem)`
@@ -727,6 +740,7 @@
       }
     },
     mounted () {
+      this.$refs.elStarting.show()
       this.footstep = this.toolbarBlockVisible ? this.maxstep : 0
       if (this.paneLayout) {
         // this is not the first time we run the application
@@ -784,6 +798,9 @@
             console.error('UNKNOWN', newValue)
           }
         }
+      },
+      started1 (newValue, oldValue) {
+        this.$refs.elStarting[newValue ? 'hide' : 'show']()
       }
     }
   }

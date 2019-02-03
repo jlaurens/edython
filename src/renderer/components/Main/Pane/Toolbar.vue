@@ -267,8 +267,7 @@
           this.$refs.phantom.$el,
           this.$$update.bind(this)
         )
-        this.$emit(
-          'install-toolbar',
+        this.$emit('install-toolbar',
           this.$refs.toolbar.$el
         )
         this.$$update()
@@ -334,7 +333,7 @@
             this.$root.$emit('turtle-erase')
           },
           'turtle.scrollToVisible': () => {
-            eYo.$$.bus.$emit('turtle-scroll')
+            this.$root.$emit('turtle-scroll')
           },
           'workspace.clean': () => {
             this.$root.$emit('workspace-clean')

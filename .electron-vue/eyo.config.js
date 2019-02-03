@@ -10,7 +10,7 @@ var ConfigEyo = function (target, dist, env) {
     web: {
       no_tippy: false,
       brython_debug: false,
-      no_brython_sources: false,
+      no_brython_sources: true,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -20,7 +20,7 @@ var ConfigEyo = function (target, dist, env) {
     renderer: {
       no_tippy: false,
       brython_debug: false,
-      no_brython_sources: false,
+      no_brython_sources: true,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -30,7 +30,7 @@ var ConfigEyo = function (target, dist, env) {
     test: {
       no_tippy: false,
       brython_debug: false,
-      brython_sources: false,
+      no_brython_sources: true,
       no_edython: false,
       no_xregexp: false,
       no_brython: false,
@@ -338,6 +338,17 @@ ConfigEyo.prototype.enableBrythonSources = function (config) {
   /**
    * this one is for embedding brython sources
    */
+  config.plugins.push(
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
+          to: path.join(this.distPath, '[1]'),
+          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
+        }
+      ], {debug: 'debug'}
+    )
+  )
 }
 
 ConfigEyo.prototype.enableEdython = function (config) {

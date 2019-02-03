@@ -110,6 +110,8 @@
                   inner.strollTop = y0 - y1
                 }
               }
+            } else {
+              console.error('UNABLE TO PARSE', transform)
             }
           }
         }
@@ -123,7 +125,7 @@
           this.$$resize()
         })
       })
-      eYo.$$.bus.$on('turtle-scroll', this.scrollToVisible.bind(this)
+      this.$$onOnly('turtle-scroll', this.scrollToVisible.bind(this)
       )
     }
   }

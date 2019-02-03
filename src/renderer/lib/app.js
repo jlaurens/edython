@@ -20,4 +20,10 @@ Object.defineProperties(eYo.$$, {
 
 const app = eYo.$$.app
 app.$mount('#app')
+
+eYo.asyncEmit = (...args) => {
+  app.$nextTick(() => {
+    app.$emit.apply(app, args)
+  })
+}
 export default app

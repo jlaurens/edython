@@ -1,2 +1,3 @@
-console.log('Launching brython')
+console.log('Launching brython...')
 brython()
+console.log('Done')

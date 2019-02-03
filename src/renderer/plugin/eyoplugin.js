@@ -110,5 +110,19 @@ eYoPlugin.install = function (Vue, options) {
     callbacks[event] = callback
     this.$root.$on(event, callback)
   }
+  /**
+   * Ensure that there is only one callback for this event, for this component only.
+   */
+  Object.defineProperties(eYo.Key, {
+    MAIN: {
+      get: () => 'MAIN'
+    },
+    BLOCK: {
+      get: () => 'BLOCK'
+    },
+    STRING3: {
+      get: () => 'STRING3'
+    }
+  })
 }
 export default eYoPlugin
