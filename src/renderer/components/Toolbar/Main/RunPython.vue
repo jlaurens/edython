@@ -48,7 +48,6 @@
         return this.eyo && this.eyo.rootControl
       },
       color () {
-        console.log('RunPython.vue:', this.running1)
         return this.running1
           ? '#f9951b'
           : this.canDoIt
