@@ -268,7 +268,7 @@
         this.$refs.console.restart()
       },
       restartOutput () {
-        this.eraseConsole('Type "copyright", "credits" or "license" for more information.')
+        this.eraseConsole(this.$$t('message.console_output_heading'))
       },
       eraseConsole (message) {
         this.$$flush()
@@ -278,7 +278,9 @@
         this.$$cursorToEnd()
       },
       $$flush (self) {
-        this.$refs.output.value = ''
+        this.$nextTick(() => {
+          this.$refs.output.value = ''
+        })
       },
       restartAll () {
         this.eraseTurtle()
