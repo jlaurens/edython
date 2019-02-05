@@ -20,6 +20,7 @@ export default {
   bytes: 'octets',
   console: 'console',
   turtle: 'tortue',
+  console_output_heading: 'Entrer "copyright", "credits" ou "license" pour plus d\'informations.',
   flyout: {
     basic: 'basic',
     module: 'Module {{key}}',
