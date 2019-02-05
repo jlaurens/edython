@@ -266,10 +266,8 @@
       },
       restartConsole () {
         this.$refs.console.restart()
-        this.restartOutput()
       },
       restartOutput () {
-        this.$$flush()
         this.eraseConsole('Type "copyright", "credits" or "license" for more information.')
       },
       eraseConsole (message) {
@@ -307,7 +305,7 @@
         this.$$newline.bind(this)
       )
       this.$$onOnly('console1-restarted',
-        this.eraseConsole.bind(this)
+        this.restartOutput.bind(this)
       )
       this.$$onOnly('console1-started', () => {
         this.setStarted1(true)
