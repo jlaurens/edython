@@ -135,6 +135,7 @@
       ref="elStarting"
       :title="$$t('panel.launch.title')"
       :ok-disabled="!started1"
+      @keyup.enter.native="hide()"
       lazy>
       <div><div
         style="display:inline-block;width:calc(64px + 1rem);vertical-align:top;"><img
