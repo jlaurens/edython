@@ -3,6 +3,10 @@ export default {
     title: 'Sauvegarder d\'abord ?',
     content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.'
   },
+  'document-open': {
+    title: 'Ouvrir...',
+    placeholder: 'Choisir un fichier...'
+  },
   'document-rename': {
     title: 'Renommer le document',
     placeholder: 'Entrer un nom'
