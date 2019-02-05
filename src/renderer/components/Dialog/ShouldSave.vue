@@ -4,7 +4,8 @@
     id="dialog-should-save"
     lazy
     @hidden="doHidden"
-    :title='$$t("panel.should_save.title")'>
+    :title='$$t("panel.should_save.title")'
+    @keyup.esc.native="doEsc">
     <div
       class="d-block">{{$$t("panel.should_save.content")}}</div>
     <div
@@ -37,6 +38,11 @@
         this.$root.$emit('document-save', evt, this.callback) // callback needed when just hidden
       },
       doNo (evt) {
+        this.$refs.dialog.hide()
+        this.$root.$emit('document-save-abort')
+        this.callback && this.callback()
+      },
+      doEsc (evt) {
         this.$refs.dialog.hide()
         this.$root.$emit('document-save-abort')
         this.callback && this.callback()
