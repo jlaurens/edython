@@ -370,8 +370,14 @@
     if (!goog.isDef(restart) && this === this.root && this.restart_p) {
       restart = !this.previous
     }
+    // Does this block need the console or the turtle ?
     var p = new eYo.Py.Exporter()
     var code = p.export(this.block_, {is_deep: true})
+    if (p.use_turtle) {
+      eYo.emit('pane-turtle-show')
+    } else if (p.use_print) {
+      eYo.emit('pane-console1-show')
+    }
     eYo.asyncEmit('console1-run-script', id || this.id, code, restart)
   }
 </script>
