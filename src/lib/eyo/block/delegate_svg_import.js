@@ -186,8 +186,41 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import', function (delegat
 })
 
 /**
+ * Returns a dictionary of modules imported by this block, when not disabled.
+ */
+eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
+  if (this.disabled) {
+    return
+  }
+  var modules = {}
+  var v = this.variant_p
+  if (v === eYo.Key.IMPORT) {
+    var t = this.import_s.target // non_void_import_identifier_as_list
+    for (var i = 0 ; i < t.inputList.length ; ++1) {
+      var t_eyo = t.inputList[i].eyo.t_eyo
+      if (t_eyo.type === eYo.T3.Expr.identifier) {
+        modules[t_eyo.name_p] = t_eyo.name_p
+      } else if (t_eyo.type === eYo.T3.Expr.identifier_as) {
+        modules[t_eyo.name_p] = t_eyo.alias_p
+      } else {
+        var x = t_eyo.expression
+        var components = x.split(/\s*,\s*/)
+        for (var j = 0 ; j < components.length ; j++) {
+          var ased = components[j].split(/\s*as\s*/)
+          var name = ased[0]
+          name && (modules[name] = ased[1] || name)
+        }
+      }
+    }
+  } else /* if (v === eYo.Key.FROM_MODULE_IMPORT[_STAR]) */ {
+    var p = this.from_p
+    modules[p] = p
+  }
+  return modules
+}
+
+/**
  * When the block is just a wrapper, returns the wrapped target.
- * @param {!Blockly.Block} block owning the delegate.
  */
 eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
   return this.block_
