@@ -4,7 +4,7 @@ export default {
     content: 'Des changements sont en cours, ils seront définitivement perdus s\'ils ne sont pas sauvegardés.'
   },
   'document-open': {
-    title: 'Ouvrir...',
+    title: 'Ouvrir un document existant',
     placeholder: 'Choisir un fichier...'
   },
   'document-rename': {
