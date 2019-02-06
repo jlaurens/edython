@@ -126,10 +126,14 @@
         }
       },
       $$cursorToEnd () {
-        var output = this.$refs.output
-        var pos = output.value.length
-        output.setSelectionRange(pos, pos)
-        output.scrollTop = output.scrollHeight
+        this.$nextTick(() => {
+          var output = this.$refs.output
+          var pos = output.value.length
+          output.setSelectionRange(pos, pos)
+          output.scrollTop = output.scrollHeight
+          output.blur()
+          output.focus()
+        })
       },
       $$click (event) {
         var output = this.$refs.output
@@ -239,10 +243,16 @@
           }
         }
       },
+      $$writeWaiting () {
+        this.$refs.output.value += this.waitingData.join('')
+        this.waitingData = []
+        this.$$cursorToEnd()
+      },
       $$write (data) {
-        this.$root.$nextTick(() => {
-          this.$refs.output.value += String(data)
-        })
+        if (!this.waitingData.length) {
+          this.$root.$nextTick(this.$$writeWaiting.bind(this))
+        }
+        this.waitingData.push(String(data))
       },
       $$suite () {
         this.$$write('... ')
@@ -271,15 +281,13 @@
         this.eraseConsole(this.$$t('message.console_output_heading'))
       },
       eraseConsole (message) {
-        this.$$flush()
-        message && this.$$write(message + '\n')
-        this.$$prompt()
-        this.$refs.output.focus()
-        this.$$cursorToEnd()
-      },
-      $$flush (self) {
+        this.waitingData = []
         this.$nextTick(() => {
-          this.$refs.output.value = ''
+          this.$refs.output.value = message
+            ? message + '\n'
+            : ''
+          this.$$prompt()
+          this.$$cursorToEnd()
         })
       },
       restartAll () {
@@ -294,6 +302,7 @@
       }
     },
     mounted () {
+      this.waitingData = []
       this.$nextTick(() => {
         this.$$resize()
       })
