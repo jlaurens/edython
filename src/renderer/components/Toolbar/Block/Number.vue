@@ -43,6 +43,9 @@
       }
     },
     computed: {
+      ...mapState('UI', [
+        'selectedMode'
+      ]),
       ...mapState('Selected', [
         'step'
       ]),
