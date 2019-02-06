@@ -88,6 +88,22 @@ eYoAppDocument.install = function (Vue, options) {
       eYo.App.Document.doClear()
       store.commit('Document/setEcoSave', ecoSave)
       var str = goog.crypt.utf8ByteArrayToString(inflate)
+      // I know that this string must start with a '<xml?'
+      // and end wit a '>'
+      // just in case there is an unexpected (pre|post)amble
+      // due to some kind of corruption (it occured me once)
+      var begin = 0
+      var end = str.length - 1
+      while (str[begin] !== '<') {
+        ++begin
+      }
+      while (str[end] !== '>') {
+        --end
+      }
+      ++end
+      if (end - begin < str.length) {
+        str = str.substring(begin, end)
+      }
       eYo.App.Document.readString(str)
       store.commit('Document/setPath', fileName)
     } catch (err) {
