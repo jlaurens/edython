@@ -95,48 +95,51 @@ eYo.Slot = function (owner, key, model) {
   this.where = new eYo.Where()
 }
 
-Object.defineProperties(
-  eYo.Slot.prototype,
-  {
-    block: {
-      get () {
-        return this.owner.block_
-      }
+Object.defineProperties(eYo.Slot.prototype, {
+  block: {
+    get () {
+      return this.owner.block_
+    }
+  },
+  connection: {
+    get () {
+      return this.input && this.input.connection
+    }
+  },
+  sourceBlock_: {
+    get () {
+      return this.owner.block_
+    }
+  },
+  incog_p: {
+    get () {
+      return this.isIncog()
     },
-    connection: {
-      get () {
-        return this.input && this.input.connection
-      }
-    },
-    sourceBlock_: {
-      get () {
-        return this.owner.block_
-      }
-    },
-    incog_p: {
-      get () {
-        return this.isIncog()
-      },
-      set (newValue) {
-        this.owner.changeWrap(
-          this.setIncog,
-          this,
-          newValue
-        )
-      }
-    },
-    recover: {
-      get () {
-        return this.owner.recover
-      }
-    },
-    xmlKey: {
-      get () {
-        return (this.model.xml && this.model.xml.key) || this.key
-      }
+    set (newValue) {
+      this.owner.changeWrap(
+        this.setIncog,
+        this,
+        newValue
+      )
+    }
+  },
+  recover: {
+    get () {
+      return this.owner.recover
+    }
+  },
+  xmlKey: {
+    get () {
+      return (this.model.xml && this.model.xml.key) || this.key
+    }
+  },
+  target: {
+    get () {
+      var c8n = this.connection
+      return c8n && c8n.eyo.t_eyo
     }
   }
-)
+})
 
 /**
  * Init the slot.
