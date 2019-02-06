@@ -84,6 +84,16 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     if (eyo.dotted_p === 0 && eyo.name_p === 'print') {
       this.use_print = true
     }
+  } else if (eyo instanceof eYo.DelegateSvg.Stmt.builtin__print_stmt) {
+    this.use_print = true
+  } else if (eyo instanceof eYo.DelegateSvg.Expr.builtin__print_expr) {
+    this.use_print = true
+  }
+  if (block.type === eYo.T3.Stmt.import_stmt && !block.disabled) {
+    var importedModules = eyo.importedModules
+    if (importedModules && importedModules['turtle']) {
+      this.use_turtle = true
+    }
   }
   var field, slot
   if ((field = eyo.fromStartField)) {
@@ -121,12 +131,6 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
 eYo.Py.Exporter.prototype.export = function (block, opt) {
   opt = opt || {}
   var eyo = block.eyo
-  if (block.type === eYo.T3.Stmt.import_stmt && !block.disabled) {
-    var importedModules = this.importedModules
-    if (importedModules && importedModules['turtle']) {
-      this.use_turtle = true
-    }
-  }
   var is_deep = !eyo.isControl && opt.is_deep
   this.missing_statements = []
   this.missing_expressions = []
