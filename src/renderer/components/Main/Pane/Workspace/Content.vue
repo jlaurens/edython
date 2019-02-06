@@ -191,7 +191,7 @@
       model.modules = [
         model.items.turtle__module,
         model.items.math__module,
-        // model.items.decimal__module,
+        model.items.decimal__module,
         model.items.fractions__module,
         model.items.statistics__module,
         model.items.random__module,
