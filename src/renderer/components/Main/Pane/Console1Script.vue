@@ -94,8 +94,7 @@ except:
                     turtle.set_defaults(turtle_canvas_wrapper=Edython.el)
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
-                        console_js.error('Pliz, show turtle panel')
-                        window.eYo.Do.makeTurtlePaneVisible()
+                        window.eYo.emit('pane-turtle-show')
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     print('Turtle available and set up...')
