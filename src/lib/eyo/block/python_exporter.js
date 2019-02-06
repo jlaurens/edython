@@ -80,6 +80,10 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     if (eyo.dotted_p === 0 && eyo.name_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
+  } else if (eyo instanceof eYo.DelegateSvg.Stmt.call_stmt) {
+    if (eyo.dotted_p === 0 && eyo.name_p === 'print') {
+      this.use_print = true
+    }
   }
   var field, slot
   if ((field = eyo.fromStartField)) {
