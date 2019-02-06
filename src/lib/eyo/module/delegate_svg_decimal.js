@@ -91,29 +91,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     from_d: 'decimal',
-    import_s: {
-      slots: {
-        O: {
-          type: eYo.T3.Expr.identifier_as,
-          name_d: 'Decimal',
-          alias_d: 'D'
-        }
-      }
-    },
-    title: 'decimal__import_stmt'
-  },
-  {
-    type: eYo.T3.Stmt.import_stmt,
-    from_d: 'decimal',
-    import_s: {
-      slots: {
-        O: {
-          type: eYo.T3.Expr.identifier_as,
-          name_d: 'getContext',
-          alias_d: 'D'
-        }
-      }
-    },
+    star_d: true,
     title: 'decimal__import_stmt'
   },
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
@@ -128,7 +106,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
           dotted_d: 0,
           n_ary_s: {
             slots: {
-              O: '"0.1"'
+              O: 0.1
             }
           }
         }
