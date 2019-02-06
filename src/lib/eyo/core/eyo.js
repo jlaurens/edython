@@ -83,3 +83,9 @@ eYo.setup = (() => {
   }
   return me
 })()
+
+/**
+ * Removed character ` for convenience.
+ */
+Blockly.utils.genUid.soup_ = '!#$%()*+,-./:;=?@[]^_{|}~' +
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
