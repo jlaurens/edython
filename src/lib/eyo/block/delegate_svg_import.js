@@ -196,7 +196,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
   var v = this.variant_p
   if (v === eYo.Key.IMPORT) {
     var t = this.import_s.target // non_void_import_identifier_as_list
-    for (var i = 0 ; i < t.inputList.length ; ++1) {
+    for (var i = 0 ; i < t.inputList.length ; ++i) {
       var t_eyo = t.inputList[i].eyo.t_eyo
       if (t_eyo.type === eYo.T3.Expr.identifier) {
         modules[t_eyo.name_p] = t_eyo.name_p
