@@ -21,6 +21,7 @@ export default {
   console: 'console',
   turtle: 'tortue',
   console_output_heading: 'Entrer "copyright", "credits" ou "license" pour plus d\'informations.',
+  complete_in_ms: 'Terminé en %%%time%%% ms',
   flyout: {
     basic: 'basic',
     module: 'Module {{key}}',
@@ -29,5 +30,5 @@ export default {
   document: {
     Untitled: 'Sans Titre'
   },
-  complete_in_ms: 'Terminé en %%%time%%% ms'
+  browse: 'Explorer...'
 }
