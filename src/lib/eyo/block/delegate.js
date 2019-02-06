@@ -327,6 +327,25 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   },
   /**
+   * Return the statement after the receiver.
+   * @return {!eYo.Delegate} The root block.
+   */
+  after: {
+    get () {
+      var eyo = this.isStmt ? this : this.stmtParent
+      var after = eyo.suite || eyo.next
+      if (after) {
+        return after
+      }
+      while ((eyo = eyo.parent)) {
+        if ((after = eyo.next)) {
+          break
+        }
+      }
+      return after
+    }
+  },
+  /**
    * Return the enclosing block in this block's tree
    * which is a control. May be null.
    * @return {?eYo.Delegate} The root block.
