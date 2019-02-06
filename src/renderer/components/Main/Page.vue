@@ -117,7 +117,9 @@
         ref="pane_console1"
         :where="where_console1"
         @change-layout="changeLayout"
-        @install-toolbar="installToolbar"></pane-console1>
+        @install-toolbar="installToolbar"
+        @pane-console1-show="makeConsoleVisible"
+        @pane-turtle-show="makeVisible('turtle')"></pane-console1>
       <pane-console2
         ref="pane_console2"
         :where="where_console2"
@@ -732,10 +734,13 @@
             what = 'hh'
           }
         } else if (second) {
-          this.switchWhere('f', 'v1')
+          this.switchWhere('f', 'h1')
           // this is the only case where the layout changes
-          this.changeLayout('V')
-          where = 'v2'
+          this.changeLayout({
+            how: 'H',
+            where: 'f'
+          })
+          where = 'h2'
         }
         this.place(what, where)
       }
@@ -762,17 +767,15 @@
           what: 'workspace'
         })
       }
-      eYo.Do.makeTurtlePaneVisible = () => {
+      this.$$onOnly('pane-turtle-show', () => {
         this.makeVisible('turtle')
-      }
+      })
+      this.$$onOnly('pane-console1-show', this.makeConsoleVisible.bind(this))
       this.$$onOnly('pane-workspace-visible', () => {
         this.makeVisible('workspace')
       })
       eYo.$$.bus.$on('pane-change-layout', opt => {
         this.changeLayout(opt)
-      })
-      this.$$onOnly('will-run-script', () => {
-        this.isVisible('turtle') || this.makeConsoleVisible()
       })
     },
     watch: {
