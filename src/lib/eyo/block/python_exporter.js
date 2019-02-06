@@ -31,6 +31,8 @@ eYo.Py.Exporter = function (oneIndent) {
   this.indent = ''
   this.oneIndent = oneIndent || this.constructor.indent
   this.depth = 0
+  this.use_print = false
+  this.use_turtle = false
 }
 
 /**
@@ -73,8 +75,13 @@ eYo.Py.Exporter.prototype.newline_ = function () {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
-  var field, slot
   var eyo = block.eyo
+  if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
+    if (eyo.dotted_p === 0 && eyo.name_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
+      this.use_print = true
+    }
+  }
+  var field, slot
   if ((field = eyo.fromStartField)) {
     do {
       this.exportField_(field, opt)
@@ -110,6 +117,12 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
 eYo.Py.Exporter.prototype.export = function (block, opt) {
   opt = opt || {}
   var eyo = block.eyo
+  if (block.type === eYo.T3.Stmt.import_stmt && !block.disabled) {
+    var importedModules = this.importedModules
+    if (importedModules && importedModules['turtle']) {
+      this.use_turtle = true
+    }
+  }
   var is_deep = !eyo.isControl && opt.is_deep
   this.missing_statements = []
   this.missing_expressions = []
