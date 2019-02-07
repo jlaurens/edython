@@ -142,6 +142,8 @@ Object.defineProperties(cfg, {
 })
 
 // Default layout
+// Layout is the base property
+// the locations of the panes are a consequence
 state.paneLayout = 'F'
 
 // declare the state variables
