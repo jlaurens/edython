@@ -117,9 +117,7 @@
         ref="pane_console1"
         :where="where_console1"
         @change-layout="changeLayout"
-        @install-toolbar="installToolbar"
-        @pane-console1-show="makeConsoleVisible"
-        @pane-turtle-show="makeVisible('turtle')"></pane-console1>
+        @install-toolbar="installToolbar"></pane-console1>
       <pane-console2
         ref="pane_console2"
         :where="where_console2"
@@ -266,6 +264,11 @@
           div.appendChild(toolbar)
         }
       },
+      /**
+       * This is a central method
+       * opt.how is the new layout, one of 'F', 'FH', 'VV'...
+       * @param opt  a dictionary.
+       **/
       changeLayout (opt) {
         try {
           if (opt.layout) {
@@ -620,6 +623,7 @@
       place (what, where) {
         // we move the `what` component to the `where` location
         // start by unbinding before binding
+        // do not change the layout in any way
         if (what) {
           var pane_what = this.pane(what)
           var old_where = this.where(what)
@@ -710,39 +714,70 @@
         if (this.isVisible(what)) {
           return
         }
-        var where = 'f' // where -> place what
-        var actual = this.what_f
-        var suffix = second ? '2' : '1'
-        if (actual === 'h') {
-          where = actual + suffix
-          actual = this.what(where)
-          if (actual === 'v' || actual === 'vv') {
-            where = actual + suffix
-          } else if (second) {
-            this.place(where, 'vv1')
-            this.place(what, 'vv2')
-            what = 'vv'
+        if (this.paneLayout === 'F') {
+          if (second) {
+            this.changeLayout({
+              how: 'H',
+              what: what
+            })
+          } else {
+            this.place(what, 'f')
           }
-        } else if (actual === 'v') {
-          where = actual + suffix
-          actual = this.what(where)
-          if (actual === 'h' || actual === 'hh') {
-            where = actual + suffix
-          } else if (second) {
-            this.place(where, 'hh1')
+        } else if (this.paneLayout === 'H') {
+          if (second) {
+            this.changeLayout({
+              how: 'FV',
+              what: what
+            })
+          } else {
+            this.place(what, 'h2')
+          }
+        } else if (this.paneLayout === 'V') {
+          if (second) {
+            this.changeLayout({
+              how: 'FH',
+              what: what
+            })
+          } else {
+            this.place(what, 'v2')
+          }
+        } else if (this.paneLayout === 'FH') {
+          if (second) {
             this.place(what, 'hh2')
-            what = 'hh'
+          } else {
+            this.place(what, 'hh1')
           }
-        } else if (second) {
-          this.switchWhere('f', 'h1')
-          // this is the only case where the layout changes
-          this.changeLayout({
-            how: 'H',
-            where: 'f'
-          })
-          where = 'h2'
+        } else if (this.paneLayout === 'FV') {
+          if (second) {
+            this.place(what, 'vv2')
+          } else {
+            this.place(what, 'vv1')
+          }
+        } else if (this.paneLayout === 'HF') {
+          if (second) {
+            this.place(what, 'v2')
+          } else {
+            this.place(what, 'h2')
+          }
+        } else if (this.paneLayout === 'VF') {
+          if (second) {
+            this.place(what, 'h2')
+          } else {
+            this.place(what, 'v2')
+          }
+        } else if (this.paneLayout === 'HH') {
+          if (second) {
+            this.place(what, 'hh2')
+          } else {
+            this.place(what, 'h2')
+          }
+        } else if (this.paneLayout === 'VV') {
+          if (second) {
+            this.place(what, 'vv2')
+          } else {
+            this.place(what, 'v2')
+          }
         }
-        this.place(what, where)
       }
     },
     mounted () {
@@ -767,8 +802,11 @@
           what: 'workspace'
         })
       }
+      this.$$onOnly('pane-visible', (pane, second) => {
+        this.makeVisible(pane, second)
+      })
       this.$$onOnly('pane-turtle-show', () => {
-        this.makeVisible('turtle')
+        this.makeVisible('turtle', true)
       })
       this.$$onOnly('pane-console1-show', this.makeConsoleVisible.bind(this))
       this.$$onOnly('pane-workspace-visible', () => {
