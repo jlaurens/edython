@@ -122,7 +122,7 @@
   }
 </script>
 <style>
-  #block-assignment .eyo-dropdown .btn {
+  #toolbar-block #block-assignment .eyo-dropdown>.btn {
     vertical-align: top;
   }
 </style>
