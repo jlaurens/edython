@@ -96,7 +96,7 @@ except:
                     panel = document['eyo-panel-turtle']
                     if panel.clientWidth == 0:
                         console_js.error('Pliz, show turtle panel')
-                        window.eYo.Do.makeTurtlePaneVisible()
+                        window.eYo.asyncEmit('pane-turtle-show')
                     turtle.set_defaults(canvwidth=panel.clientWidth)
                     turtle.set_defaults(canvheight=panel.clientHeight)
                     # turtle.restart() # this won't work either
