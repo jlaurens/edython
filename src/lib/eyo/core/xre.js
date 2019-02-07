@@ -77,9 +77,9 @@ eYo.Do.readOnlyMixin(eYo.Key, {
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
   [eYo.Key._CHARACTER_SINGLE]: '[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
-  [eYo.Key._LONG_CHARACTER_SINGLE]: '[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
+  [eYo.Key._LONG_CHARACTER_SINGLE]: '[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
   [eYo.Key._CHARACTER_DOUBLE]: '[\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]',
-  [eYo.Key._LONG_CHARACTER_DOUBLE]: '[\\x0A\\x0D\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]\\\\[\\x0A\\x0D\\x20-\\uFFFF]'
+  [eYo.Key._LONG_CHARACTER_DOUBLE]: '[\\x0A\\x0D\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF]'
 })
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
