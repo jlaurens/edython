@@ -32,7 +32,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
     delimiter: XRegExp(`^[.,;:\\(\\)\\[\\]\\{\\}\\[\\]'"]$`),
     comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
     upper: XRegExp(`^[A-Z_]*$`),
-    white_space: XRegExp('\\p{Zl}')
+    white_space: XRegExp('\\t|\\p{Zs}|\\p{Zl}')
   })
   
 eYo.Do.readOnlyMixin(eYo.XRE, {
