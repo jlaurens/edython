@@ -1,13 +1,34 @@
 <template>
   <b-btn-group id="block-assignment">
-    <div v-if="variant === $$.eYo.Key.TARGET" class="item text" v-html="`${slotholder('eyo-slotholder-inline')},…`"></div>
-    <div v-else-if="!!eyo.name_t" class="item text" v-html="`${slotholder('eyo-slotholder-inline')}`"></div>
-    <b-input v-else v-model="name" type="text" :class="$$class(name)" :style='{fontFamily: $$.eYo.Font.familyMono}' :placeholder="$$t('block.placeholder.name')"></b-input>
-    <b-dd class="eyo-dropdown item text eyo-with-slotholder bl-" text="" right>
-      <b-dd-item-button v-for="item in items" v-on:click="variant = item.key" :key="item.key" class="eyo-code placeholder" v-html="item.title"></b-dd-item-button>
+    <div
+      v-if="variant === $$.eYo.Key.TARGETS"
+      class="item text"
+      v-html="`${slotholder('eyo-slotholder-inline')},…`"></div>
+    <div
+      v-else-if="!!eyo.name_t"
+      class="item text"
+      v-html="`${slotholder('eyo-slotholder-inline')}`"></div>
+    <b-input
+      v-else
+      v-model="name"
+      type="text"
+      :class="$$class(name)"
+      :style='{fontFamily: $$.eYo.Font.familyMono}'
+      :placeholder="$$t('block.placeholder.name')"></b-input>
+    <b-dd
+      class="eyo-dropdown item text eyo-with-slotholder bl-"
+      text=""
+      right>
+      <b-dd-item-button
+        v-for="item in items"
+        v-on:click="variant = item.key"
+        :key="item.key"
+        class="eyo-code placeholder" v-html="item.title"></b-dd-item-button>
       </b-dd-item-button>
     </b-dd>
-    <div class="item text" v-html="`=${slotholder('eyo-slotholder-inline')},…`"></div>
+    <div
+      class="item text"
+      v-html="`=${slotholder('eyo-slotholder-inline')},…`"></div>
   </b-btn-group>
 </template>
 
@@ -101,4 +122,7 @@
   }
 </script>
 <style>
+  #toolbar-block #block-assignment .eyo-dropdown>.btn {
+    vertical-align: top;
+  }
 </style>
