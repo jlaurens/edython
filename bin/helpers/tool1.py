@@ -17,6 +17,7 @@ def buildDeps(library, library_name):
     print('Scanning folder\n    ', pathInput, '\nfor `*.js` files:')
     files = [x for x in pathInput.glob('**/*')
              if x.is_file() and x.suffix == '.js'
+             if os.path.basename(x) != 'test.js'
              if '/dev/' not in x.as_posix()]
     print(*files, sep='\n')
 
