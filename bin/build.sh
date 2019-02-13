@@ -265,6 +265,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/xre.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/core/geometry.js" \
+--js "src/lib/eyo/parser/tokenizer.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/core/data-test.js" \
 --js "src/lib/eyo/blockly/events.js" \
