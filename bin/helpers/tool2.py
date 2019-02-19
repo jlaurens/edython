@@ -306,4 +306,6 @@ Cascaded required:
     export('deps-build.txt', lambda r: '--js "' + r + '" \\\n')
     export('deps-vue.txt', lambda r: '      <script src="' + pathlib.Path(r).relative_to('src').as_posix()+'"></script>\n')
     export('deps-web-dev.txt', lambda r: '      <script src="../../src/'+pathlib.Path(r).relative_to('src').as_posix() + '"></script>\n')
+    export('deps-web-test.txt', lambda r: '      <script src="PATH_ROOT/src/'+pathlib.Path(r).relative_to('src').as_posix() + '"></script>\n')
+    export('deps-test-import.txt', lambda r: 'import_file("src/'+pathlib.Path(r).relative_to('src').as_posix() + '")\n')
     
