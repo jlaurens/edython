@@ -30,8 +30,27 @@ eYo.Token = function (scan, type, subtype) {
   this.col_no = scan.col_no
 }
 
-eYo.Scan.prototype.init = function (str) {
+/**
+ * Create a scan object, then send this message.
+ * When verbose is true, all the white spaces and eol's, comments are reported
+ * @param {String}
+ * @param {Boolean} verbose 
+ */
+eYo.Scan.prototype.tokenize = function (str, verbose = false) {
+  this.init(str, verbose)
+  while (this.nextToken()) {}
+  return this.first
+}
+
+/**
+ * Init the scan with the given string.
+ * When verbose is true, also returns spaces, eols and comment tokens.
+ * @param {String} str
+ * @param {Boolean} verbose
+ */
+eYo.Scan.prototype.init = function (str, verbose = false) {
   this.str = str
+  this.verbose = verbose
   this.atbol = true
   this.end = 0
   this.c = this.str[this.end] || null
@@ -107,8 +126,51 @@ eYo.Do.readOnlyMixin(eYo.Scan, {
   _WHITE_SPACE: '<WHITE_SPACE>',
   _ERROR: '<ERROR>',
   _CONTINUED: '<CONTINUED>',
+  _KEYWORD: '<KEYWORD>',
   _E: {},
-  _XRE: {}
+  _XRE: {},
+  _KW: {}
+})
+
+/**
+ * Langage keywords
+ */
+eYo.Do.readOnlyMixin(eYo.Scan._KW, {
+  FALSE: 'False',
+  NONE: 'None',
+  TRUE: 'True',
+  AWAIT: 'await',
+  AND: 'and',
+  AS: 'as',
+  ASSERT: 'assert',
+  ASYNC: 'async',
+  BREAK: 'break',
+  CLASS: 'class',
+  CONTINUE: 'continue',
+  DEF: 'def',
+  DEL: 'del',
+  ELIF: 'elif',
+  ELSE: 'else',
+  EXCEPT: 'except',
+  FINALLY: 'finally',
+  FOR: 'for',
+  FROM: 'from',
+  GLOBAL: 'global',
+  IF: 'if',
+  IMPORT: 'import',
+  IN: 'in',
+  IS: 'is',
+  LAMBDA: 'lambda',
+  NONLOCAL: 'nonlocal',
+  NOT: 'not',
+  OR: 'or',
+  PASS: 'pass',
+  RAISE: 'raise',
+  RETURN: 'return',
+  TRY: 'try',
+  WHILE: 'while',
+  WITH: 'with',
+  YIELD: 'yield',
 })
 
 eYo.Do.readOnlyMixin(eYo.Scan._E, {
@@ -177,7 +239,8 @@ Object.defineProperties(eYo.Token.prototype, {
   }
 })
 
-
+/**
+ */
 eYo.Scan.prototype.nextToken = function () {
   var d
   /**
@@ -327,6 +390,20 @@ eYo.Scan.prototype.nextToken = function () {
   }
 
   /**
+   * Create an NAME token and push it.
+   * Scans the id_continue characters first.
+   */
+  var pushNAME = () => {
+    var m = exec(eYo.Scan._XRE.id_continue)
+    if (m) {
+      forward(m[0].length)
+    }
+    var t = pushToken(eYo.Scan.NAME)
+    read_space()
+    return t
+  }
+
+  /**
    * Create an NEWLINE token and push it.
    * Updates line and column numbers
    */
@@ -344,7 +421,10 @@ eYo.Scan.prototype.nextToken = function () {
     this.atbol = true
     this.col_no = 0
     ++this.line_no
-    return pushToken(eYo.Scan._EOL)
+    if (this.verbose) {
+      return pushToken(eYo.Scan._EOL)
+    }
+    this.start = this.end
   }
 
   /**
@@ -476,10 +556,22 @@ eYo.Scan.prototype.nextToken = function () {
       return true
     }
   }
+  var pushComment = () => {
+    if (this.verbose) {
+      return pushToken(eYo.Scan._COMMENT)
+    }
+    this.start = this.end
+  }
+  var pushSpace = () => {
+    if (this.verbose) {
+      return pushToken(eYo.Scan._WHITE_SPACE)
+    }
+    this.start = this.end
+  }
   var read_space = () => {
     if (scan(' ') || scan('\t') || scan(0o14)) {
       while (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {}
-      pushToken(eYo.Scan._WHITE_SPACE)
+      pushSpace()
     }
   }
   /**
@@ -498,7 +590,6 @@ eYo.Scan.prototype.nextToken = function () {
       while (true) {
         if (reader()) {
           while (reader()) {}
-          var d = this.end
           if (scan_s('_')) {
             continue
           }
@@ -537,6 +628,49 @@ eYo.Scan.prototype.nextToken = function () {
     }
     else if (scan('j') || scan('J')) {
       return pushToken(eYo.Scan.NUMBER, 'imagnumber')
+    }
+  }
+
+  /**
+   * Try to scan a given word.
+   * Sends `forward` on success.
+   * @param {String} w  w is a keyword.
+   * @param {Integer} start  The first index to test.
+   * @return {Boolean} true on success.
+   */
+  var scan_w = (w, start = 0) => {
+    var i = start
+    if(i < w.length) {
+      if (this.end - start + w.length <= this.str.length) {
+        do {
+          if (this.str[this.end + i - start] !== w[i]) {
+            return
+          }
+        } while (++i < w.length)
+        forward(i - start)
+        return true
+      }
+    }
+  }
+
+  /**
+   * Try to scan a given keyword or
+   * a name starting with the given keyword.
+   * Sends `forward` on success.
+   * @param {String} kw  kw is the keyword to scan.
+   * @param {Integer} start  the start index.
+   * @return {String} subtype on success.
+   */
+  var pushKeyWord = (kw, start = 0) => {
+    if (scan_w(kw, start)) {
+      var m = exec(eYo.Scan._XRE.id_continue)
+      if (m) {
+        forward(m[0].length)
+        pushToken(eYo.Scan.NAME)
+      } else {
+        pushToken(eYo.Scan._KEYWORD, kw)
+      }
+      return true
     }
   }
   
@@ -639,24 +773,24 @@ eYo.Scan.prototype.nextToken = function () {
     }
     if (is('#')) {
       // this is not an indentation
-      col && pushToken(eYo.Scan._WHITE_SPACE)
+      col && pushSpace()
       forward()
       while (true) {
         if (is('\r')) {
-          pushToken(eYo.Scan._COMMENT)
+          pushComment()
           forward()
           scan('\n')
           pushEOL()
           return shift()
         } else if (is('\n')) {
-          pushToken(eYo.Scan._COMMENT)
+          pushComment()
           forward()
           pushEOL()
           return shift()
         } else if (forward()) {
           continue
         } else {
-          pushToken(eYo.Scan._COMMENT)
+          pushComment()
           pushEOF()
           return shift()
         }
@@ -665,20 +799,20 @@ eYo.Scan.prototype.nextToken = function () {
       // unreachable
     } else if (is('\r')) {
       // this is not an indentation either
-      col && pushToken(eYo.Scan._WHITE_SPACE)
+      col && pushSpace()
       forward()
       scan('\n')
       pushEOL()
       return shift()
     } else if (is('\n')) {
       // this is not an indentation either
-      col && pushToken(eYo.Scan._WHITE_SPACE)
+      col && pushSpace()
       forward()
       pushEOL()
       return shift()
     }
     if (this.level) {
-      col && pushToken(eYo.Scan._WHITE_SPACE)
+      col && pushSpace()
     } else {
       if (this.indent_stack.length) {
         var indent = this.indent_stack[this.indent_stack.length - 1]
@@ -687,7 +821,7 @@ eYo.Scan.prototype.nextToken = function () {
           if (altcol != indent.altcol) {
             pushError(eYo.Scan._E.INCONSISTENT_INDENTATION)
           }
-          pushToken(eYo.Scan._WHITE_SPACE)
+          pushSpace()
         } else if (col > indent.col) {
           /* Indent -- always one */
           if (altcol <= indent.altcol) {
@@ -746,10 +880,107 @@ eYo.Scan.prototype.nextToken = function () {
     /* Set start of current token */
     this.start = this.end // usefull ?
 
+    /* Keywords */
+    if (pushKeyWord('False')
+      || pushKeyWord('None')
+      || pushKeyWord('True')
+      || pushKeyWord('break')
+      || pushKeyWord('global')
+      || pushKeyWord('lambda')
+      || pushKeyWord('or')
+      || pushKeyWord('pass')
+      || pushKeyWord('try')
+      || pushKeyWord('yield')) {
+      return shift()
+    } else if (scan('a')) {
+      if (pushKeyWord('await', 1) ||
+        pushKeyWord('and', 1)) {
+        return shift()
+      } else if (scan('s')) {
+        if (pushKeyWord('assert', 2) ||
+          pushKeyWord('async', 2)) {
+        } else {
+          var m = exec(eYo.Scan._XRE.id_continue)
+          if (m) {
+            forward(m[0].length)
+            pushToken(eYo.Scan.NAME)
+          } else {
+            pushToken(eYo.Scan._KEYWORD, 'as')
+          }
+        }
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan('c')) {
+      if (pushKeyWord('class', 1) ||
+        pushKeyWord('continue', 1)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan_w('de')) {
+      if (pushKeyWord('def', 2) ||
+        pushKeyWord('del', 2)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan('e')) {
+      if (scan('l')) {
+        if (pushKeyWord('elif', 2) ||
+          pushKeyWord('else', 2)) {
+          return shift()
+        }
+      } else if (pushKeyWord('except', 1)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan('i')) {
+      if (pushKeyWord('if', 1)
+        || pushKeyWord('import', 1)
+        || pushKeyWord('in', 1)
+        || pushKeyWord('is', 1)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan_w('no')) {
+      if (pushKeyWord('nonlocal', 2)
+        || pushKeyWord('not', 2)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    } else if (scan('w')) {
+      if (pushKeyWord('while', 1)
+        || pushKeyWord('with', 1)) {
+        return shift()
+      }
+      pushNAME()
+      return shift()
+    }
+/*
+    RAISE: 'raise',
+    RETURN: 'return',
+*/
+
     /* Check for a string or bytes literal */
-    var m = exec(eYo.Scan._XRE.prefix)
-    if (m) {
+    if ((m = exec(eYo.Scan._XRE.prefix))) {
       forward(m[0].length)
+      if (m[0] === 'r') {
+        if (pushKeyWord('raise', 1)
+          || pushKeyWord('return', 1)) {
+          return shift()
+        }
+      } else if (m[0] === 'f') {
+        if (pushKeyWord('finally', 1)
+          || pushKeyWord('for', 1)
+          || pushKeyWord('from', 1)) {
+          return shift()
+        }
+      }
       // this is a possible string | bytes literal
       if (!anchor_letter_quote()) {
         if ((m = exec(eYo.Scan._XRE.id_continue))) {

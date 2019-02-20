@@ -120,9 +120,9 @@ var Tester = function (...args) {
   }
   this.string = strs.join('')
 }
-Tester.prototype.test = function (do_it) {
+Tester.prototype.test = function (verbose = false, do_it = null) {
   var scan = new eYo.Scan()
-  scan.init(this.string)
+  scan.init(this.string, true)
   var key
   while ((key = this.nextKey)) {
     scan.nextToken()
@@ -153,112 +153,112 @@ Object.defineProperties(Tester.prototype, {
 describe('Scan(ENDMARKER)', function() {
   var tester = new Tester('ENDMARKER')
   it('ENDMARKER', function() {
-    tester.test()
+    tester.test(true)
   });
 });
 
 describe('Scan(NAME)', function() {
   it('abc', function() {
     var tester = new Tester('NAME', 'abc', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('a1\u09B2\uff4d', function() {
     var tester = new Tester('NAME', 'a1\u09B2\uff4d', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('__a1', function() {
     var tester = new Tester('NAME', '__a1', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
 describe('Scan(NUMBER)', function() {
   it('7', function() {
     var tester = new Tester('NUMBER', '7', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('2147483647', function() {
     var tester = new Tester('NUMBER', '2147483647', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0o177', function() {
     var tester = new Tester('NUMBER', '0o177', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0b100110111', function() {
     var tester = new Tester('NUMBER', '0b100110111', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('79228162514264337593543950336', function() {
     var tester = new Tester('NUMBER', '79228162514264337593543950336', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0o377', function() {
     var tester = new Tester('NUMBER', '0o377', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0xdeadbeef', function() {
     var tester = new Tester('NUMBER', '0xdeadbeef', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('100_000_000_000', function() {
     var tester = new Tester('NUMBER', '100_000_000_000', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0b_1110_0101', function() {
     var tester = new Tester('NUMBER', '0b_1110_0101', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('3.14', function() {
     var tester = new Tester('NUMBER', '3.14', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('10.', function() {
     var tester = new Tester('NUMBER', '10.', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('.001', function() {
     var tester = new Tester('NUMBER', '.001', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('1e100', function() {
     var tester = new Tester('NUMBER', '1e100', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('3.14e-10', function() {
     var tester = new Tester('NUMBER', '3.14e-10', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('0e0', function() {
     var tester = new Tester('NUMBER', '0e0', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('3.14_15_93', function() {
     var tester = new Tester('NUMBER', '3.14_15_93', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
 describe('Scan(STRING)', function() {
   it(`''`, function() {
     var tester = new Tester('STRING', `''`, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`''''''`, function() {
     var tester = new Tester('STRING', `''''''`, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('""', function() {
     var tester = new Tester('STRING', '""', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('""""""', function() {
     var tester = new Tester('STRING', '""""""', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`'abc'`, function() {
     var tester = new Tester('STRING', `'abc'`, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`"""
   dfg
@@ -268,7 +268,7 @@ describe('Scan(STRING)', function() {
     dfg
     klm
     """`, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`"""
   dfg
@@ -278,7 +278,7 @@ describe('Scan(STRING)', function() {
     dfg
     klm
     """`, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
@@ -289,19 +289,19 @@ describe('Scan(NEWLINE)', function() {
     klm
     """`, 'NEWLINE', `
 `, 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`NEWLINE`, function() {
     var tester = new Tester('STRING', `'abc'`, 'NEWLINE', '\n', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`NEWLINE`, function() {
     var tester = new Tester('STRING', `'abc'`, 'NEWLINE', '\r', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it(`NEWLINE`, function() {
     var tester = new Tester('STRING', `'abc'`, 'NEWLINE', '\r\n', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
@@ -312,7 +312,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT_…^$', function() {
     var tester = new Tester(
@@ -321,7 +321,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT_…=…^$', function() {
     var tester = new Tester(
@@ -332,7 +332,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'y',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…_…^^$', function() {
     var tester = new Tester(
@@ -346,7 +346,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…^…$', function() {
     var tester = new Tester(
@@ -358,7 +358,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 'y',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…_…^…^$', function() {
     var tester = new Tester(
@@ -374,7 +374,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'y',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…_…^…^…$', function() {
     var tester = new Tester(
@@ -392,7 +392,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 't',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…^…_…^$', function() {
     var tester = new Tester(
@@ -410,7 +410,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 't',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…_…^^…$', function() {
     var tester = new Tester(
@@ -426,7 +426,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 't',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…^$', function() {
     var tester = new Tester(
@@ -439,7 +439,7 @@ describe('Scan(INDENT)', function() {
       '_EOL', '\n',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…^…$', function() {
     var tester = new Tester(
@@ -453,7 +453,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…=…^…$', function() {
     var tester = new Tester(
@@ -470,7 +470,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…#^$', function() {
     var tester = new Tester(
@@ -483,7 +483,7 @@ describe('Scan(INDENT)', function() {
       '_COMMENT', '#',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…#^$', function() {
     var tester = new Tester(
@@ -497,7 +497,7 @@ describe('Scan(INDENT)', function() {
       '_EOL', '\n',
       'DEDENT', '',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…#^…$', function() {
     var tester = new Tester(
@@ -512,7 +512,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
   it('INDENT=…_…#=…^…$', function() {
     var tester = new Tester(
@@ -530,7 +530,7 @@ describe('Scan(INDENT)', function() {
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
@@ -554,7 +554,7 @@ describe('Scan(OP)', function() {
       'GREATER', eYo.Scan.GREATER, // : '>',
       'ENDMARKER'
     )
-    tester.test()
+    tester.test(true)
   });
   it('ALL OPS 2/2', function() {
     var tester = new Tester(
@@ -592,13 +592,64 @@ describe('Scan(OP)', function() {
       'COLONEQUAL', eYo.Scan.COLONEQUAL, // : ':='
       'ENDMARKER'
     )
-    tester.test()
+    tester.test(true)
   });
   it('LESS', function() {
     var tester = new Tester('NOTEQUAL', '<>', 'ENDMARKER')
-    tester.test()
+    tester.test(true)
   });
 });
 
+describe('Scan(_KEYWORD)', function() {
+  var kws = [
+    'False',
+    'None',
+    'True',
+    'await',
+    'and',
+    'as',
+    'assert',
+    'async',
+    'break',
+    'class',
+    'continue',
+    'def',
+    'del',
+    'elif',
+    'else',
+    'except',
+    'finally',
+    'for',
+    'from',
+    'global',
+    'if',
+    'import',
+    'in',
+    'is',
+    'lambda',
+    'nonlocal',
+    'not',
+    'or',
+    'pass',
+    'raise',
+    'return',
+    'try',
+    'while',
+    'with',
+    'yield'
+  ]
+  var i = 0
+  for (i = 0 ; i < kws.length ; ++i) {
+    var f = kw => {
+      return function() {
+        var tester = new Tester('_KEYWORD', kw, 'ENDMARKER')
+        tester.test(true, function (scan) {
+          assert(scan.first.subtype === kw, `${scan.first.subtype} !== ${kw}`)
+        })
+      }
+    }
+    it(kws[i], f(kws[i])) 
+  }
+});
 
 console.log('DONE')
