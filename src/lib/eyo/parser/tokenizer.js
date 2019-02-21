@@ -929,8 +929,8 @@ eYo.Scan.prototype.nextToken = function () {
         return shift()
       } else if (scan('e')) {
         if (scan('l')) {
-          if (newKeyWord('elif', 2) ||
-            newKeyWord('else', 2)) {
+          if (newKeyWord('else', 2) ||
+            newKeyWord('elif', 2)) {
             return shift()
           }
         } else if (newKeyWord('except', 1)) {
@@ -976,9 +976,9 @@ eYo.Scan.prototype.nextToken = function () {
             return shift()
           }
         } else if (m[0] === 'f') {
-          if (newKeyWord('finally', 1)
-            || newKeyWord('for', 1)
-            || newKeyWord('from', 1)) {
+          if (newKeyWord('for', 1)
+            || newKeyWord('from', 1)
+            || newKeyWord('finally', 1)) {
             return shift()
           }
         }
