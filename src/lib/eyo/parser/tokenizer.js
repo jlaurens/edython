@@ -229,16 +229,6 @@ Object.defineProperties(eYo.Scan.prototype, {
     get () {
       return this.paren_stack.length
     }
-  },
-  first: {
-    get () {
-      return this.tokens[0]
-    }
-  },
-  last: {
-    get () {
-      return this.tokens[this.tokens.length - 1]
-    }
   }
 })
 
@@ -616,6 +606,7 @@ eYo.Scan.prototype.nextToken = function () {
   /**
    * Create an ENDMARKER token and push it.
    * First, push a dedent token for each stacked indent.
+   * Only one end marker.
    */
   var newEOF = () => {
     var indent
