@@ -66,6 +66,13 @@ Tester.prototype.test = function (verbose = false, do_it = null) {
   assert(scan.string === scan.str, `<${scan.string}> === <${scan.str}>`)
   assert(!scan.nextToken(), `Unexpected last token <${scan.last}>`)
 }
+Tester.testSrc = function (src, verbose = false) {
+  var scan = new eYo.Scan()
+  scan.init(src, verbose)
+  while (scan.nextToken()) {}
+  assert(!scan.errorCount, `errorCount: <${scan.errorCount}>`)
+  assert(scan.last.type === eYo.Scan.ENDMARKER, `${scan.last.type} === eYo.Scan.ENDMARKER`)
+}
 Object.defineProperties(Tester.prototype, {
   nextKey: {
     get () {
@@ -641,6 +648,25 @@ describe('Scan(TEST)', function() {
       )
     tester.test(true)
   });
+});
+
+describe('Scan(tokenize_tests)', function() {
+  it('tokenize_tests-…', function() {
+    var src =
+`# IMPORTANT: this file has the utf-8 BOM signature '\xef\xbb\xbf'
+# at the start of it.  Make sure this is preserved if any changes
+# are made!
+
+# Arbitrary encoded utf-8 text (stolen from test_doctest2.py).
+x = 'ЉЊЈЁЂ'
+def y():
+    """
+    And again in a comment.  ЉЊЈЁЂ
+    """
+    pass
+`
+    Tester.testSrc(src)
+  })
 });
 
 describe('Scan(setup.py)', function() {
@@ -3020,15 +3046,10 @@ def main():
                      "Tools/scripts/2to3"]
         )
 
-`
-src1 = `
 # --install-platlib
 if __name__ == '__main__':
     main()`
-    var scan = new eYo.Scan()
-    scan.tokenize(src)
-    assert(!scan.errorCount, `errorCount: <${scan.errorCount}>`)
-    assert(scan.last.type === eYo.Scan.ENDMARKER, `${scan.last.type} === eYo.Scan.ENDMARKER`)
+    Tester.testSrc(src)
   });
 });
 
