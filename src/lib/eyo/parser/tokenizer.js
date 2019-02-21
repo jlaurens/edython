@@ -556,9 +556,12 @@ eYo.Scan.prototype.nextToken = function () {
       do {
         newDedent(indent)
       } while ((indent = this.indent_stack.pop()))
+      this.at_eof = true
       return newToken(eYo.Scan.ENDMARKER)
     }
     if (!this.last || this.last.type !== eYo.Scan.ENDMARKER) {
+    if (!this.at_eof) {
+      this.at_eof = true
       return newToken(eYo.Scan.ENDMARKER)
     }
   }
