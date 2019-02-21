@@ -1009,9 +1009,6 @@ eYo.Scan.prototype.nextToken = function () {
       /* Number */
       if (scan('0')) {
         /* Hex, octal or binary -- maybe. */
-        if (new_box_literal('x', 'X', scan_xdigit, 'hexinteger', eYo.Scan._E.INVALID_HEXADECIMAL)
-          || new_box_literal('o', 'O', scan_odigit, 'octalinteger', eYo.Scan._E.INVALID_OCTAL_INTEGER)
-          || new_box_literal('b', 'B', scan_bdigit, 'bininteger', eYo.Scan._E.INVALID_BINARY_INTEGER)) {
         if (new_box_literal('x', 'X', () => {
           if (this.c && (this.c >= '0' && this.c <= '9' || (this.c >= 'a' && this.c <= 'f') || (this.c >= 'A' && this.c <= 'F'))) {
             forward()
