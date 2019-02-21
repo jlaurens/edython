@@ -555,7 +555,6 @@ eYo.Scan.prototype.nextToken = function () {
       this.at_eof = true
       return newToken(eYo.Scan.ENDMARKER)
     }
-    if (!this.last || this.last.type !== eYo.Scan.ENDMARKER) {
     if (!this.at_eof) {
       this.at_eof = true
       return newToken(eYo.Scan.ENDMARKER)
@@ -726,7 +725,6 @@ eYo.Scan.prototype.nextToken = function () {
   /* Begin */
   bol: while(true) {
 
-    if (can_shift()) {
     if (this.list.length > 0) {
       return shift()
     }
