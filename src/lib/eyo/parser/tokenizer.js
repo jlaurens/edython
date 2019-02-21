@@ -42,7 +42,7 @@ eYo.Scan.prototype.tokenize = function (str, verbose = false) {
   while ((t = this.nextToken())) {
     // console.log(t.string, t.type, t.subtype)
   }
-  return this.first
+  return this.last
 }
 
 /**
