@@ -301,10 +301,6 @@ eYo.Scan.prototype.nextToken = function () {
     return token
   }
 
-  var can_shift = () => {
-    return this.list.length > 0
-  }
-
   var is_digit = c => {
     return c && c >= '0' && c <= '9'
   }
@@ -731,6 +727,7 @@ eYo.Scan.prototype.nextToken = function () {
   bol: while(true) {
 
     if (can_shift()) {
+    if (this.list.length > 0) {
       return shift()
     }
 
