@@ -88,6 +88,13 @@ describe('Scan(ENDMARKER)', function() {
   });
 });
 
+describe('Scan(COMMENT)', function() {
+  var tester = new Tester('COMMENT', '#', 'ENDMARKER')
+  it('COMMENT', function() {
+    tester.test(true)
+  });
+});
+
 describe('Scan(NAME)', function() {
   it('abc', function() {
     var tester = new Tester('NAME', 'abc', 'ENDMARKER')
@@ -411,7 +418,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_COMMENT', '#',
+      'COMMENT', '#',
       'DEDENT', '',
       'ENDMARKER')
     tester.test(true)
@@ -424,7 +431,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_COMMENT', '#',
+      'COMMENT', '#',
       'NL', '\n',
       'DEDENT', '',
       'ENDMARKER')
@@ -438,7 +445,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_COMMENT', '#',
+      'COMMENT', '#',
       'NL', '\n',
       'DEDENT', '',
       'NAME', 'z',
@@ -453,7 +460,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_COMMENT', '#',
+      'COMMENT', '#',
       'NL', '\n',
       '_WHITE_SPACE', ' ',
       'NAME', 'y',
