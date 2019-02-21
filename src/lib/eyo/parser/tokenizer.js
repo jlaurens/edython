@@ -222,13 +222,7 @@ eYo.Do.readOnlyMixin(eYo.Scan._XRE, {
 Object.defineProperties(eYo.Scan.prototype, {
   string: {
     get () {
-      var ra = []
-      var token = this.first
-      while (token) {
-        ra.push(token.string)
-        token = token.next
-      }
-      return ra.join('')
+      return this.tokens.map(x => x.string).join('')
     }
   },
   level: {
