@@ -122,12 +122,16 @@ eYo.Do.readOnlyMixin(eYo.Scan, {
   RARROW: '->',
   ELLIPSIS: '...',
   COLONEQUAL: ':=',
+  OP: 54,
   TYPE_IGNORE: 'TYPE_IGNORE',
   TYPE_COMMENT: 'TYPE_COMMENT',
-  _EOL: '<EOL>',
-  _COMMENT: '<COMMENT>',
+  ERRORTOKEN: 57,
+  COMMENT: 58,
+  NL: 59,
+  ENCODING: 60,
+  N_TOKENS: 61,
+  NT_OFFSET: 256,
   _WHITE_SPACE: '<WHITE_SPACE>',
-  _ERROR: '<ERROR>',
   _CONTINUED: '<CONTINUED>',
   _KEYWORD: '<KEYWORD>',
   _E: {},
@@ -334,7 +338,7 @@ eYo.Scan.prototype.nextToken = function () {
    * @param {*} subtype 
    */
   var pushError = (subtype) => {
-    var token = pushToken(eYo.Scan._ERROR, subtype)
+    var token = pushToken(eYo.Scan.ERRORTOKEN, subtype)
     this.error = token
     ++ this.errorCount
     return token
@@ -437,7 +441,7 @@ eYo.Scan.prototype.nextToken = function () {
     this.col_no = 0
     ++this.line_no
     if (this.verbose) {
-      return pushToken(eYo.Scan._EOL)
+      return pushToken(eYo.Scan.NL)
     }
     this.start = this.end
   }

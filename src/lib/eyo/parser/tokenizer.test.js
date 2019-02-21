@@ -2,75 +2,6 @@ var assert = chai.assert;
 
 console.log('RUNNING TOKENIZER TESTS')
 
-/*
-eYo.Do.readOnlyMixin(eYo.Scan, {
-  ENDMARKER: 'ENDMARKER',
-  NAME: 'NAME',
-  NUMBER: 'NUMBER',
-  STRING: 'STRING',
-  NEWLINE: 'NEWLINE',
-  INDENT: 'INDENT',
-  DEDENT: 'DEDENT',
-  LPAR: '(',
-  RPAR: ')',
-  LSQB: '[',
-  RSQB: ']',
-  COLON: ':',
-  COMMA: ',',
-  SEMI: ';',
-  PLUS: '+',
-  MINUS: '-',
-  STAR: '*',
-  SLASH: '/',
-  VBAR: '|',
-  AMPER: '&',
-  LESS: '<',
-  GREATER: '>',
-  EQUAL: '=',
-  DOT: '.',
-  PERCENT: '%',
-  LBRACE: '{',
-  RBRACE: '}',
-  EQEQUAL: '==',
-  NOTEQUAL: '!=',
-  LESSEQUAL: '<=',
-  GREATEREQUAL: '>=',
-  TILDE: '~',
-  CIRCUMFLEX: '^',
-  LEFTSHIFT: '<<',
-  RIGHTSHIFT: '>>',
-  DOUBLESTAR: '**',
-  PLUSEQUAL: '+=',
-  MINEQUAL: '-=',
-  STAREQUAL: '*=',
-  SLASHEQUAL: '/=',
-  PERCENTEQUAL: '%=',
-  AMPEREQUAL: '&=',
-  VBAREQUAL: '|=',
-  CIRCUMFLEXEQUAL: '^=',
-  LEFTSHIFTEQUAL: '<<=',
-  RIGHTSHIFTEQUAL: '>>=',
-  DOUBLESTAREQUAL: '**=',
-  DOUBLESLASH: '//',
-  DOUBLESLASHEQUAL: '//=',
-  AT: '@',
-  ATEQUAL: '@=',
-  RARROW: '->',
-  ELLIPSIS: '...',
-  COLONEQUAL: ':=',
-  TYPE_IGNORE: 'TYPE_IGNORE',
-  TYPE_COMMENT: 'TYPE_COMMENT',
-  _EOL: '<EOL>',
-  _COMMENT: '<COMMENT>',
-  _WHITE_SPACE: '<WHITE_SPACE>',
-  _ERROR: '<ERROR>',
-  _CONTINUED: '<CONTINUED>',
-  _E: {},
-  _XRE: {}
-})
-
-*/
-
 describe('Scan', function() {
   it('goog should be available', function() {
     assert(goog);
@@ -436,7 +367,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_EOL', '\n',
+      'NL', '\n',
       'DEDENT', '',
       'ENDMARKER')
     tester.test(true)
@@ -449,7 +380,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_EOL', '\n',
+      'NL', '\n',
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
@@ -463,7 +394,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
-      '_EOL', '\n',
+      'NL', '\n',
       '_WHITE_SPACE', ' ',
       'NAME', 'y',
       'NEWLINE', '\n',
@@ -494,7 +425,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
       '_COMMENT', '#',
-      '_EOL', '\n',
+      'NL', '\n',
       'DEDENT', '',
       'ENDMARKER')
     tester.test(true)
@@ -508,7 +439,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
       '_COMMENT', '#',
-      '_EOL', '\n',
+      'NL', '\n',
       'DEDENT', '',
       'NAME', 'z',
       'ENDMARKER')
@@ -523,7 +454,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       '_WHITE_SPACE', '  ',
       '_COMMENT', '#',
-      '_EOL', '\n',
+      'NL', '\n',
       '_WHITE_SPACE', ' ',
       'NAME', 'y',
       'NEWLINE', '\n',
@@ -604,7 +535,7 @@ describe('Scan(PAREN)', function() {
   it('(⏎)', function() {
     var tester = new Tester(
       'LPAR', '(',
-      '_EOL', '\n',
+      'NL', '\n',
       'RPAR', ')',
       'ENDMARKER'
       )
@@ -615,7 +546,7 @@ describe('Scan(PAREN)', function() {
       'LPAR', '(',
       'LPAR', '(',
       'RPAR', ')',
-      '_EOL', '\n',
+      'NL', '\n',
       'RPAR', ')',
       'ENDMARKER'
       )
@@ -626,7 +557,7 @@ describe('Scan(PAREN)', function() {
       'LPAR', '(',
       'LPAR', '(',
       'RPAR', ')',
-      '_EOL', '\n',
+      'NL', '\n',
       'RPAR', ')',
       'NEWLINE', '\n',
       'ENDMARKER'
