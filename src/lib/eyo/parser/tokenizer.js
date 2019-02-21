@@ -301,10 +301,6 @@ eYo.Scan.prototype.nextToken = function () {
     return token
   }
 
-  var is_digit = c => {
-    return c && c >= '0' && c <= '9'
-  }
-
   /**
    * Scans a digit part and possible erroneous trailing underscores.
    * Returns `null` if no digit nor underscore has been scanned.
