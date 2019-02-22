@@ -251,6 +251,8 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/ast.js" \
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
+--js "src/lib/eyo/parser/errcode.js" \
+--js "src/lib/eyo/parser/token.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/core/font.js" \
@@ -262,10 +264,11 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/protocol/protocol.js" \
+--js "src/lib/eyo/parser/tokenizer.js" \
 --js "src/lib/eyo/core/xre.js" \
+--js "src/lib/eyo/parser/parser.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/core/geometry.js" \
---js "src/lib/eyo/parser/tokenizer.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \

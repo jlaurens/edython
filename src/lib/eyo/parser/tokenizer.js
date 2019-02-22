@@ -12,32 +12,22 @@
 'use strict'
 
 goog.provide('eYo.Scan')
-goog.provide('eYo.Token')
+
+goog.require('eYo.Do')
+goog.require('eYo.E')
+goog.require('eYo.Token')
 
 /* Scan implementation */
 
 eYo.Scan = function () {
 }
 
-eYo.Token = function (scan, type, subtype) {
-  this.type = type
-  this.subtype = subtype
-  this.str = scan.str
-  this.start = scan.start
-  this.end = scan.start = scan.end
-  this.first_line_no = scan.first_line_no
-  this.line_no = scan.line_no
-  this.col_no = scan.col_no
-}
-
 /**
  * Create a scan object, then send this message.
- * When verbose is true, all the white spaces and eol's, comments are reported
  * @param {String}
- * @param {Boolean} verbose 
  */
-eYo.Scan.prototype.tokenize = function (str, verbose = false) {
-  this.init(str, verbose)
+eYo.Scan.prototype.tokenize = function (str) {
+  this.init(str)
   var t
   while ((t = this.nextToken())) {
     // console.log(t.string, t.type, t.subtype)
@@ -47,14 +37,11 @@ eYo.Scan.prototype.tokenize = function (str, verbose = false) {
 
 /**
  * Init the scan with the given string.
- * When verbose is true, also returns spaces, eols and comment tokens.
  * @param {String} str
- * @param {Boolean} verbose
  */
-eYo.Scan.prototype.init = function (str, verbose = false) {
+eYo.Scan.prototype.init = function (str) {
   this.str = str
-  this.verbose = verbose
-  this.atbol = true
+  this.at_bol = true
   this.end = 0
   this.c = this.str[this.end] || null
   this.errorCount = 0
@@ -68,81 +55,15 @@ eYo.Scan.prototype.init = function (str, verbose = false) {
 }
 
 eYo.Do.readOnlyMixin(eYo.Scan, {
-  ENDMARKER: 'ENDMARKER',
-  NAME: 'NAME',
-  NUMBER: 'NUMBER',
-  STRING: 'STRING',
-  NEWLINE: 'NEWLINE',
-  INDENT: 'INDENT',
-  DEDENT: 'DEDENT',
-  LPAR: '(',
-  RPAR: ')',
-  LSQB: '[',
-  RSQB: ']',
-  COLON: ':',
-  COMMA: ',',
-  SEMI: ';',
-  PLUS: '+',
-  MINUS: '-',
-  STAR: '*',
-  SLASH: '/',
-  VBAR: '|',
-  AMPER: '&',
-  LESS: '<',
-  GREATER: '>',
-  EQUAL: '=',
-  DOT: '.',
-  PERCENT: '%',
-  LBRACE: '{',
-  RBRACE: '}',
-  EQEQUAL: '==',
-  NOTEQUAL: '!=',
-  LESSEQUAL: '<=',
-  GREATEREQUAL: '>=',
-  TILDE: '~',
-  CIRCUMFLEX: '^',
-  LEFTSHIFT: '<<',
-  RIGHTSHIFT: '>>',
-  DOUBLESTAR: '**',
-  PLUSEQUAL: '+=',
-  MINEQUAL: '-=',
-  STAREQUAL: '*=',
-  SLASHEQUAL: '/=',
-  PERCENTEQUAL: '%=',
-  AMPEREQUAL: '&=',
-  VBAREQUAL: '|=',
-  CIRCUMFLEXEQUAL: '^=',
-  LEFTSHIFTEQUAL: '<<=',
-  RIGHTSHIFTEQUAL: '>>=',
-  DOUBLESTAREQUAL: '**=',
-  DOUBLESLASH: '//',
-  DOUBLESLASHEQUAL: '//=',
-  AT: '@',
-  ATEQUAL: '@=',
-  RARROW: '->',
-  ELLIPSIS: '...',
-  COLONEQUAL: ':=',
-  OP: 54,
-  TYPE_IGNORE: 'TYPE_IGNORE',
-  TYPE_COMMENT: 'TYPE_COMMENT',
-  ERRORTOKEN: '<ERRORTOKEN>',
-  COMMENT: '<COMMENT>',
-  NL: '<NL>',
-  ENCODING: '<ENCODING>',
-  N_TOKENS: '<N_TOKENS>',
-  NT_OFFSET: 256,
-  _WHITE_SPACE: '<WHITE_SPACE>',
-  _CONTINUED: '<CONTINUED>',
-  _KEYWORD: '<KEYWORD>',
-  _E: {},
-  _XRE: {},
-  _KW: {}
+  E: {},
+  XRE: {},
+  KW: {}
 })
 
 /**
  * Langage keywords
  */
-eYo.Do.readOnlyMixin(eYo.Scan._KW, {
+eYo.Do.readOnlyMixin(eYo.Scan.KW, {
   FALSE: 'False',
   NONE: 'None',
   TRUE: 'True',
@@ -180,7 +101,7 @@ eYo.Do.readOnlyMixin(eYo.Scan._KW, {
   YIELD: 'yield',
 })
 
-eYo.Do.readOnlyMixin(eYo.Scan._E, {
+eYo.Do.readOnlyMixin(eYo.Scan.E, {
   DEDENT_AUGMENTED: 'DEDENT_AUGMENTED',
   INCONSISTENT_INDENTATION: 'INCONSISTENT_INDENTATION',
   EOLS: 'EOLS',
@@ -200,7 +121,7 @@ eYo.Do.readOnlyMixin(eYo.Scan._E, {
 })
 
 /* NO sign, all are called in sticky mode so no ^ at start */
-eYo.Do.readOnlyMixin(eYo.Scan._XRE, {
+eYo.Do.readOnlyMixin(eYo.Scan.XRE, {
   prefix: XRegExp(
     '(?<string>r|u|f|fr|rf)|(?<bytes>b|br|rb)', 'i'),
   string: {
@@ -216,7 +137,8 @@ eYo.Do.readOnlyMixin(eYo.Scan._XRE, {
      '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+')
   },
   id_start: XRegExp('_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C', 'A'),
-  id_continue: XRegExp('(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C|\\u00B7|\\u0387|\\u1369|\\u136A|\\u136B|\\u136C|\\u136D|\\u136E|\\u136F|\\u1370|\\u1371|\\u19DA)+', 'A')
+  id_continue: XRegExp('(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C|\\u00B7|\\u0387|\\u1369|\\u136A|\\u136B|\\u136C|\\u136D|\\u136E|\\u136F|\\u1370|\\u1371|\\u19DA)+', 'A'),
+  type_comment: XRegExp('\\s*type:\\s*(?<ignore>ignore)?.*')
 })
 
 Object.defineProperties(eYo.Scan.prototype, {
@@ -240,7 +162,7 @@ Object.defineProperties(eYo.Token, {
         "NAME",
         "NUMBER",
         "STRING",
-        "NEWLINE",
+        "new_LINE",
         "INDENT",
         "DEDENT",
         "LPAR",
@@ -299,14 +221,6 @@ Object.defineProperties(eYo.Token, {
         "<ENCODING>",
         "<N_TOKENS>",
       ]
-    }
-  }
-})
-
-Object.defineProperties(eYo.Token.prototype, {
-  string: {
-    get () {
-      return this.str.substring(this.start, this.end)
     }
   }
 })
@@ -448,23 +362,11 @@ eYo.Scan.prototype.nextToken = function () {
   }
 
   /**
-   * Whether the next character will be the given one.
-   * Do not send `forward` on success.
-   * Return true on success.
-   * @param {*} c 
-   */
-  var future = c => {
-    if (this.str[this.end + 1] === c) {
-      return true
-    }
-  }
-
-  /**
    * Create a regular token and push it.
    * @param {*} type 
    * @param {*} subtype 
    */
-  var newToken = (type, subtype) => {
+  var new_Token = (type, subtype = null) => {
     var token = new eYo.Token(this, type, subtype)
     this.list.push(token)
     if (this.error) {
@@ -481,34 +383,21 @@ eYo.Scan.prototype.nextToken = function () {
    * @param {?Character} c1 
    * @param {?Character} c2 
    */
-  var newTokenIf = (type, c1, c2) => {
+  var new_TokenIf = (type, c1, c2) => {
     if (c1) {
       if (this.c === c1) {
         if (c2) {
           if (c2 === this.str[this.end + 1]) {
             forward(2)
-            return newToken(type)
+            return new_Token(type)
           }
         } else {
           forward(1)
-          return newToken(type)
+          return new_Token(type)
         }
       }
     } else {
-      return newToken(type)
-    }
-  }
-
-  /**
-   * Create a paren(thesis) token and push it.
-   * @param {*} type type is one of the closing paren. characters.
-   * @param {*} open
-   */
-  var newClose = (type, open) => {
-    var tkn = newToken(type)
-    if (open) {
-      tkn.open = open
-      open.close = tkn
+      return new_Token(type)
     }
   }
 
@@ -519,8 +408,8 @@ eYo.Scan.prototype.nextToken = function () {
    * token attached to this error token.
    * @param {*} subtype 
    */
-  var newError = (subtype) => {
-    var token = newToken(eYo.Scan.ERRORTOKEN, subtype)
+  var new_Error = (subtype) => {
+    var token = new_Token(eYo.Token.ERRORTOKEN, subtype)
     this.error = token
     ++ this.errorCount
     return token
@@ -531,8 +420,8 @@ eYo.Scan.prototype.nextToken = function () {
    * @param {*} col 
    * @param {*} altcol 
    */
-  var newIndent = (col, altcol) => {
-    var token = newToken(eYo.Scan.INDENT)
+  var new_Indent = (col, altcol) => {
+    var token = new_Token(eYo.Token.INDENT)
     token.col = col
     token.altcol = altcol
     this.indent_stack.push(token)
@@ -545,8 +434,8 @@ eYo.Scan.prototype.nextToken = function () {
    * dedent and indent tokens.
    * @param {*} indent Corresponding indent token
    */
-  var newDedent = (indent) => {
-    var tkn = newToken(eYo.Scan.DEDENT)
+  var new_Dedent = (indent) => {
+    var tkn = new_Token(eYo.Token.DEDENT)
     if (indent) {
       tkn.indent = indent
       indent.dedent = tkn
@@ -557,11 +446,11 @@ eYo.Scan.prototype.nextToken = function () {
    * Create an NAME token and push it.
    * Scans the id_continue characters first.
    */
-  var newNAME_ = () => {
-    var t = newToken(eYo.Scan.NAME)
+  var new_NAME_ = () => {
+    var t = new_Token(eYo.Token.NAME)
     if (this.c >= 128) {
       forward()
-      newError(eYo.Scan._E.UNEXPECTED_CHARACTER)
+      new_Error(eYo.Scan.E.UNEXPECTED_CHARACTER)
     }
     read_space()
     return t
@@ -571,34 +460,49 @@ eYo.Scan.prototype.nextToken = function () {
    * Create an NAME token and push it.
    * Scans the id_continue characters first.
    */
-  var newNAME = () => {
-    var m = exec(eYo.Scan._XRE.id_continue)
+  var new_NAME = () => {
+    var m = exec(eYo.Scan.XRE.id_continue)
     if (m) {
       forward(m[0].length)
     }
-    return newNAME_()
+    return new_NAME_()
   }
 
   /**
-   * Create an NEWLINE token and push it.
+   * Create an new_LINE token and push it.
    * Updates line and column numbers
    */
-  var newNEWLINE = () => {
-    this.atbol = true
+  var new_NEWLINE = () => {
+    this.at_bol = true
     this.col_no = 0
     ++this.line_no
-    return newToken(eYo.Scan.NEWLINE)
+    return new_Token(eYo.Token.NEWLINE)
   }
 
   /**
    * Create an EOL token and push it.
    */
-  var newEOL = () => {
-    this.atbol = true
+  var do_EOL = () => {
+    this.at_bol = true
     this.col_no = 0
     ++this.line_no
-    if (this.verbose) {
-      return newToken(eYo.Scan.NL)
+    if (this.end > this.start) {
+      if (this.start_string === undefined) {
+        this.start_string = this.start
+      }
+    }
+    this.start = this.end
+  }
+
+  /**
+   * Updates the `start_continue` property.
+   */
+  var do_continue = () => {
+    this.at_bol = true
+    this.col_no = 0
+    ++this.line_no
+    if (this.start_string === undefined) {
+      this.start_string = this.start
     }
     this.start = this.end
   }
@@ -608,31 +512,39 @@ eYo.Scan.prototype.nextToken = function () {
    * First, push a dedent token for each stacked indent.
    * Only one end marker.
    */
-  var newEOF = () => {
+  var new_EOF = () => {
     var indent
     if ((indent = this.indent_stack.pop())) {
       do {
-        newDedent(indent)
+        new_Dedent(indent)
       } while ((indent = this.indent_stack.pop()))
       this.at_eof = true
-      return newToken(eYo.Scan.ENDMARKER)
+      return new_Token(eYo.Token.ENDMARKER)
     }
     if (!this.at_eof) {
       this.at_eof = true
-      return newToken(eYo.Scan.ENDMARKER)
+      return new_Token(eYo.Token.ENDMARKER)
     }
   }
   
-  var newCOMMENT = () => {
-    if (this.verbose) {
-      return newToken(eYo.Scan.COMMENT)
+  var do_comment = () => {
+    if (this.end > this.start) {
+      if (this.start_string === undefined) {
+        this.start_string = this.start
+      }
+      this.start = this.end
     }
-    this.start = this.end
   }
 
-  var newSpace = () => {
-    if (this.verbose) {
-      return newToken(eYo.Scan._WHITE_SPACE)
+  /**
+   * Records space trailers.
+   * Extra spaces that are not indents always occur after a
+   * non indent|dedent token has been created,
+   * on a non blank line.
+   */
+  var do_space = () => {
+    if (this.end > this.start && this.start_string === undefined) {
+      this.start_string = this.start
     }
     this.start = this.end
   }
@@ -640,7 +552,7 @@ eYo.Scan.prototype.nextToken = function () {
   var read_space = () => {
     if (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {
       while (scan_s(' ') || scan_s('\t') || scan_s(0o14)) {}
-      newSpace()
+      do_space()
       return true
     }
   }
@@ -665,9 +577,9 @@ eYo.Scan.prototype.nextToken = function () {
             continue
           }
         } else {
-          newError(MSG)
+          new_Error(MSG)
         }
-        return newToken(eYo.Scan.NUMBER, subtype)
+        return new_Token(eYo.Token.NUMBER, subtype)
       }
     }
   }
@@ -682,22 +594,22 @@ eYo.Scan.prototype.nextToken = function () {
       /* Exponent part */
       if (scan('+') || scan('-')) {
         if ((d = scan_digitpart()) && d < this.end) {
-          newError(eYo.Scan._E.INVALID_EXPONENT)
+          new_Error(eYo.Scan.E.INVALID_EXPONENT)
         }
       } else if ((d = scan_digitpart())) {
         if (d < this.end) {
-          newError(eYo.Scan._E.INVALID_EXPONENT)
+          new_Error(eYo.Scan.E.INVALID_EXPONENT)
         }
       } else {
         backward()
       }
-      return newToken(eYo.Scan.NUMBER,
+      return new_Token(eYo.Token.NUMBER,
         scan('j') || scan('J')
         ? 'imagnumber'
         : 'floatnumber')
     }
     else if (scan('j') || scan('J')) {
-      return newToken(eYo.Scan.NUMBER, 'imagnumber')
+      return new_Token(eYo.Token.NUMBER, 'imagnumber')
     }
   }
 
@@ -707,20 +619,60 @@ eYo.Scan.prototype.nextToken = function () {
    * @param {Integer} start  the start index.
    * @return {String} subtype on success.
    */
-  var newKeyWord = (kw, start = 0) => {
+  var new_KeyWord = (kw, start = 0) => {
     if (scan_w(kw, start)) {
-      var m = exec(eYo.Scan._XRE.id_continue)
+      var m = exec(eYo.Scan.XRE.id_continue)
       if (m) {
         forward(m[0].length)
-        newNAME_()
+        new_NAME_()
       } else {
-        newToken(eYo.Scan._KEYWORD, kw)
+        new_Token(eYo.Token.NAME, kw).be_keyword()
         read_space()
       }
       return true
     }
   }
-  
+
+  var scan_Comment = (col) => {
+    if (scan('#')) {
+      // this is not an indentation
+      col && do_space()
+      var m = exec(eYo.Scan.XRE.type_comment)
+      if (m) {
+        forward(m[0].length)
+        if (m.ignore) {
+          new_Token(eYo.Token.TYPE_IGNORE)
+         } else {
+          new_Token(eYo.Token.TYPE_COMMENT)
+        }
+        if (scan('\r')) {
+          scan('\n')
+          do_EOL()
+        } else if (scan('\n')) {
+          do_EOL()
+        } else {
+          new_EOF()
+        }
+        return true
+      }
+      while (true) {
+        if (scan('\r')) {
+          do_comment()
+          scan('\n')
+          do_EOL()
+        } else if (scan('\n')) {
+          do_comment()
+          do_EOL()
+        } else if (forward()) {
+          continue
+        } else {
+          do_comment()
+          new_EOF()
+        }
+        return true
+      }
+    }
+  }
  /**
    * Reads a literal string, since the quote.
    */
@@ -754,31 +706,31 @@ eYo.Scan.prototype.nextToken = function () {
         if (quote_size === 1) {
           if (scan('\r')) {
             scan('\n')
-            newError(eYo.Scan._E.EOLS)
+            new_Error(eYo.Scan.E.EOLS)
             break
           } else if (scan('\n')) {
-            newError(eYo.Scan._E.EOLS)
+            new_Error(eYo.Scan.E.EOLS)
             break
           }
         }
         if (scan('\\')) {
           if (!forward()) {
-            newError(eYo.Scan._E.EOFS)
+            new_Error(eYo.Scan.E.EOFS)
             break
           }
         } else if (!forward()) {
           if (quote_size === 1) {
-            newError(eYo.Scan._E.EOLS)
+            new_Error(eYo.Scan.E.EOLS)
           } else {
-            newError(eYo.Scan._E.EOFS)
+            new_Error(eYo.Scan.E.EOFS)
           }
           var end = true
           break
         }
       }
-      newToken(eYo.Scan.STRING)
+      new_Token(eYo.Token.STRING)
       if (end) {
-        newEOF()
+        new_EOF()
       }
       return true
     }
@@ -794,10 +746,10 @@ eYo.Scan.prototype.nextToken = function () {
     this.start = this.end
 
     /* Get indentation level */
-    if (this.atbol) {
+    if (this.at_bol) {
       var col = 0
       var altcol = 0
-      this.atbol = false
+      this.at_bol = false
       while (true) {
         if (scan(' ')) {
           col++ , altcol++
@@ -813,61 +765,40 @@ eYo.Scan.prototype.nextToken = function () {
           break
         }
       }
-      if (this.c === '#') {
-        // this is not an indentation
-        col && newSpace()
-        forward()
-        while (true) {
-          if (this.c === '\r') {
-            newCOMMENT()
-            forward()
-            scan('\n')
-            newEOL()
-            continue bol
-          } else if (this.c === '\n') {
-            newCOMMENT()
-            forward()
-            newEOL()
-            continue bol
-          } else if (forward()) {
-            continue
-          } else {
-            newCOMMENT()
-            newEOF()
-            continue bol
-          }
+      if (scan_Comment(col)) {
+        if (this.list.length) {
+          return shift()
         }
-      } else if (this.c === '\r') {
-        // this is not an indentation either
-        col && newSpace()
-        forward()
-        scan('\n')
-        newEOL()
         continue bol
-      } else if (this.c === '\n') {
+      } else if (scan('\r')) {
         // this is not an indentation either
-        col && newSpace()
-        forward()
-        newEOL()
+        col && do_space()
+        scan('\n')
+        do_EOL()
+        continue bol
+      } else if (scan('\n')) {
+        // this is not an indentation either
+        col && do_space()
+        do_EOL()
         continue bol
       }
       if (this.level) {
-        col && newSpace()
+        col && do_space()
       } else {
         if (this.indent_stack.length) {
           var indent = this.indent_stack[this.indent_stack.length - 1]
           if (col === indent.col) {
             /* No change */
             if (altcol != indent.altcol) {
-              newError(eYo.Scan._E.INCONSISTENT_INDENTATION)
+              new_Error(eYo.Scan.E.INCONSISTENT_INDENTATION)
             }
-            newSpace()
+            do_space()
           } else if (col > indent.col) {
             /* Indent -- always one */
             if (altcol <= indent.altcol) {
-              newError(eYo.Scan._E.INCONSISTENT_INDENTATION)
+              new_Error(eYo.Scan.E.INCONSISTENT_INDENTATION)
             }
-            newIndent(col, altcol)
+            new_Indent(col, altcol)
             // continue
           } else {
             /* Dedent -- any number, must be consistent */
@@ -877,27 +808,27 @@ eYo.Scan.prototype.nextToken = function () {
                 indent = this.indent_stack[this.indent_stack.length - 2]
                 if (col === indent.col) {
                   // we found it
-                  newDedent(indent2)
+                  new_Dedent(indent2)
                   this.indent_stack.pop()
                 } else if (col < indent.col) {
-                  newDedent(indent2)
+                  new_Dedent(indent2)
                   this.indent_stack.pop()
                   indent2 = indent
                   continue
                 } else {
                   // for the sake of recovery,
                   // this is not considered as a dedent ()
-                  newError(eYo.Scan._E.DEDENT_AUGMENTED)
+                  new_Error(eYo.Scan.E.DEDENT_AUGMENTED)
                 }
                 break
               } else {
                 /* this.indent_stack.length === 1 */
                 if (col) {
-                  newError(eYo.Scan._E.DEDENT_AUGMENTED)
+                  new_Error(eYo.Scan.E.DEDENT_AUGMENTED)
                 } else if (altcol) {
-                  newError(eYo.Scan._E.INCONSISTENT_INDENTATION)
+                  new_Error(eYo.Scan.E.INCONSISTENT_INDENTATION)
                 }
-                newDedent(indent2)
+                new_Dedent(indent2)
                 this.indent_stack.pop()
               }
               break
@@ -905,7 +836,7 @@ eYo.Scan.prototype.nextToken = function () {
           }
         } else if (col) {
           /* First indentation */
-          newIndent(col, altcol)   
+          new_Indent(col, altcol)   
         }
       }
     }
@@ -914,91 +845,91 @@ eYo.Scan.prototype.nextToken = function () {
       
       /* Check for EOF and errors now */
       if (!this.c) {
-        newEOF()
+        new_EOF()
         return shift()
       }
       /* Set start of current token */
       this.start = this.end // usefull ?
 
       /* Keywords */
-      if (newKeyWord('False')
-        || newKeyWord('None')
-        || newKeyWord('True')
-        || newKeyWord('break')
-        || newKeyWord('global')
-        || newKeyWord('lambda')
-        || newKeyWord('or')
-        || newKeyWord('pass')
-        || newKeyWord('try')
-        || newKeyWord('yield')) {
+      if (new_KeyWord('False')
+        || new_KeyWord('None')
+        || new_KeyWord('True')
+        || new_KeyWord('break')
+        || new_KeyWord('global')
+        || new_KeyWord('lambda')
+        || new_KeyWord('or')
+        || new_KeyWord('pass')
+        || new_KeyWord('try')
+        || new_KeyWord('yield')) {
         return shift()
       } else if (scan('a')) {
-        if (newKeyWord('await', 1) ||
-          newKeyWord('and', 1)) {
+        if (new_KeyWord('await', 1) ||
+          new_KeyWord('and', 1)) {
           return shift()
         } else if (scan('s')) {
-          if (newKeyWord('assert', 2) ||
-            newKeyWord('async', 2)) {
+          if (new_KeyWord('assert', 2) ||
+            new_KeyWord('async', 2)) {
           } else {
-            var m = exec(eYo.Scan._XRE.id_continue)
+            var m = exec(eYo.Scan.XRE.id_continue)
             if (m) {
               forward(m[0].length)
-              newNAME_()
+              new_NAME_()
             } else {
-              newToken(eYo.Scan._KEYWORD, 'as')
+              new_NAME_().be_keyword()
             }
           }
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan('c')) {
-        if (newKeyWord('class', 1) ||
-          newKeyWord('continue', 1)) {
+        if (new_KeyWord('class', 1) ||
+          new_KeyWord('continue', 1)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan_w('de')) {
-        if (newKeyWord('def', 2) ||
-          newKeyWord('del', 2)) {
+        if (new_KeyWord('def', 2) ||
+          new_KeyWord('del', 2)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan('e')) {
         if (scan('l')) {
-          if (newKeyWord('else', 2) ||
-            newKeyWord('elif', 2)) {
+          if (new_KeyWord('else', 2) ||
+            new_KeyWord('elif', 2)) {
             return shift()
           }
-        } else if (newKeyWord('except', 1)) {
+        } else if (new_KeyWord('except', 1)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan('i')) {
-        if (newKeyWord('if', 1)
-          || newKeyWord('import', 1)
-          || newKeyWord('in', 1)
-          || newKeyWord('is', 1)) {
+        if (new_KeyWord('if', 1)
+          || new_KeyWord('import', 1)
+          || new_KeyWord('in', 1)
+          || new_KeyWord('is', 1)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan_w('no')) {
-        if (newKeyWord('nonlocal', 2)
-          || newKeyWord('not', 2)) {
+        if (new_KeyWord('nonlocal', 2)
+          || new_KeyWord('not', 2)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       } else if (scan('w')) {
-        if (newKeyWord('while', 1)
-          || newKeyWord('with', 1)) {
+        if (new_KeyWord('while', 1)
+          || new_KeyWord('with', 1)) {
           return shift()
         }
-        newNAME()
+        new_NAME()
         return shift()
       }
       /*
@@ -1007,46 +938,46 @@ eYo.Scan.prototype.nextToken = function () {
       */
 
       /* Check for a string or bytes literal */
-      if ((m = exec(eYo.Scan._XRE.prefix))) {
+      if ((m = exec(eYo.Scan.XRE.prefix))) {
         forward(m[0].length)
         if (m[0] === 'r') {
-          if (newKeyWord('raise', 1)
-            || newKeyWord('return', 1)) {
+          if (new_KeyWord('raise', 1)
+            || new_KeyWord('return', 1)) {
             return shift()
           }
         } else if (m[0] === 'f') {
-          if (newKeyWord('for', 1)
-            || newKeyWord('from', 1)
-            || newKeyWord('finally', 1)) {
+          if (new_KeyWord('for', 1)
+            || new_KeyWord('from', 1)
+            || new_KeyWord('finally', 1)) {
             return shift()
           }
         }
         // this is a possible string | bytes literal
         if (!anchor_letter_quote()) {
-          newNAME()
+          new_NAME()
         }
         return shift()
-      } else if ((m = exec(eYo.Scan._XRE.id_start))) {
+      } else if ((m = exec(eYo.Scan.XRE.id_start))) {
         // this is an identifier
         forward(m[0].length)
-        newNAME()
+        new_NAME()
         return shift()
       }
-      /* Newline */
+      /* new_line */
       if (scan('\r')) {
         scan('\n')
         if (this.level > 0) {
-          newEOL()
+          do_EOL()
         } else {
-          newNEWLINE()
+          new_NEWLINE()
         }
         continue bol
       }
       if (scan('\n')) {
         if (this.level > 0) {
-          newEOL()
+          do_EOL()
         } else {
-          newNEWLINE()
+          new_NEWLINE()
         }
         continue bol
       }
@@ -1054,20 +985,20 @@ eYo.Scan.prototype.nextToken = function () {
       if (scan('.')) {
         if ((d = scan_digitpart())) {
           if (d < this.end) {
-            newError(eYo.Scan._E.NO_TRAILING_UNDERSCORE)
+            new_Error(eYo.Scan.E.NO_TRAILING_UNDERSCORE)
           }
-          new_exponent_j() || newToken(eYo.Scan.NUMBER, 'floatnumber')
+          new_exponent_j() || new_Token(eYo.Token.NUMBER, 'floatnumber')
         } else {
           if (scan('.')) {
             if (scan('.')) {
-              newToken(eYo.Scan.ELLIPSIS)
+              new_Token(eYo.Token.ELLIPSIS)
               return shift()
             } else {
               backward()
             }
             backward()
           }
-          newToken(eYo.Scan.DOT)
+          new_Token(eYo.Token.DOT)
         }
         return shift()
       }
@@ -1080,19 +1011,19 @@ eYo.Scan.prototype.nextToken = function () {
             forward()
             return true
           }
-        }, 'hexinteger', eYo.Scan._E.INVALID_HEXADECIMAL)
+        }, 'hexinteger', eYo.Scan.E.INVALID_HEXADECIMAL)
           || new_box_literal('o', 'O', () => {
             if ((this.c && this.c >= '0' && this.c <= '7')) {
               forward()
               return true
             }
-          }, 'octalinteger', eYo.Scan._E.INVALID_OCTAL_INTEGER)
+          }, 'octalinteger', eYo.Scan.E.INVALID_OCTAL_INTEGER)
           || new_box_literal('b', 'B', () => {
             if(this.c === '0' || this.c === '1') {
               forward()
               return true
             }
-          }, 'bininteger', eYo.Scan._E.INVALID_BINARY_INTEGER)) {
+          }, 'bininteger', eYo.Scan.E.INVALID_BINARY_INTEGER)) {
           return shift()
         }
         this.subtype = 'integer'
@@ -1108,7 +1039,7 @@ eYo.Scan.prototype.nextToken = function () {
             }
             if ((d = scan_digitpart())) {
               if (d < this.end) {
-                newError(eYo.Scan._E.NO_TRAILING_UNDERSCORE)
+                new_Error(eYo.Scan.E.NO_TRAILING_UNDERSCORE)
               }
               nonzero = true
             }
@@ -1117,37 +1048,37 @@ eYo.Scan.prototype.nextToken = function () {
         }
         if (scan('.')) {
           if (( d = scan_digitpart()) && d < this.end) {
-            newError(eYo.Scan._E.NO_TRAILING_UNDERSCORE)
+            new_Error(eYo.Scan.E.NO_TRAILING_UNDERSCORE)
           }
-          new_exponent_j() || newToken(eYo.Scan.NUMBER, 'floatnumber')
+          new_exponent_j() || new_Token(eYo.Token.NUMBER, 'floatnumber')
         } else if (!new_exponent_j()) {
           if (nonzero) {
             /* Old-style octal: now disallowed. */
-            newError(eYo.Scan._E.NO_LEADING_ZERO)
+            new_Error(eYo.Scan.E.NO_LEADING_ZERO)
             // return syntaxerror(tok,
             //   "leading zeros in decimal integer " +
             //   "literals are not permitted " +
             //   "use an 0o prefix for octal integers")
           }
-          newToken(eYo.Scan.NUMBER, 'integer')
+          new_Token(eYo.Token.NUMBER, 'integer')
         }
         return shift()
       }
       else if ((d = scan_digitpart())) {
         /* Decimal ? */
         if (d < this.end) {
-          newError(eYo.Scan._E.NO_TRAILING_UNDERSCORE)
+          new_Error(eYo.Scan.E.NO_TRAILING_UNDERSCORE)
         }
         this.subtype = 'integer'
         /* Accept floating point numbers. */
         if (scan('.')) {
           /* Fraction, possibly reduced to a dot */
           if ((d = scan_digitpart()) && d < this.end) {
-            newError(eYo.Scan._E.NO_TRAILING_UNDERSCORE)
+            new_Error(eYo.Scan.E.NO_TRAILING_UNDERSCORE)
           }
           this.subtype = 'floatnumber'
         }
-        new_exponent_j() || newToken(eYo.Scan.NUMBER, this.subtype)
+        new_exponent_j() || new_Token(eYo.Token.NUMBER, this.subtype)
         return shift()
       }
       /* String with no prefix */
@@ -1158,47 +1089,30 @@ eYo.Scan.prototype.nextToken = function () {
       if (scan('\\')) {
         if (scan('\r')) {
           scan('\n')
-          newToken(eYo.Scan._CONTINUED)
+          do_continue()
           read_space()
           continue again
         } else if (scan('\n')) {
-          newToken(eYo.Scan._CONTINUED)
+          do_continue()
           read_space()
           continue again
         } else if (this.c) {
           this.forward
-          newError(eYo.Scan._E.UNEXPECTED_ESCAPE)
+          new_Error(eYo.Scan.E.UNEXPECTED_ESCAPE)
         } else {
-          newEOF()
+          new_EOF()
           return shift()
         }
       }    
     } while (read_space())
     
     /* Comments */
-    if (this.c === '#') {
-      while (true) {
-        if (future('\r')) {
-          newCOMMENT()
-          forward()
-          scan('\n')
-          newEOL()
-        } else if (future('\n')) {
-          newCOMMENT()
-          forward()
-          newEOL()
-        } else if (forward()) {
-          continue
-        } else /* if (!forward()) */ {
-          newCOMMENT()
-          newEOF()
-          return shift()
-        }
-        break
+    if (scan_Comment()) {
+      if (this.list.length) {
+        return shift()
       }
       continue bol
     }
-
     /* Check for two-character token */
     /* Keep track of parentheses nesting level */
     /* Punctuation character */
@@ -1208,9 +1122,15 @@ eYo.Scan.prototype.nextToken = function () {
     forward()
     switch (c) {
       case '(':
+      ++i
       case '[':
+      ++i
       case '{':
-        this.paren_stack.push(newToken(c))
+        this.paren_stack.push(new_Token([
+          eYo.Token.LBRACE,
+          eYo.Token.LSQB,
+          eYo.Token.LPAR
+        ][i]))
         break
       case ')':
         ++i
@@ -1219,15 +1139,23 @@ eYo.Scan.prototype.nextToken = function () {
       case '}':
         var opening = this.paren_stack.pop()
         if (!opening) {
-          newError([
-            eYo.Scan._E.UNEXPECTED_RBRACE,
-            eYo.Scan._E.UNEXPECTED_RSQB,
-            eYo.Scan._E.UNEXPECTED_RPAR
+          new_Error([
+            eYo.Scan.E.UNEXPECTED_RBRACE,
+            eYo.Scan.E.UNEXPECTED_RSQB,
+            eYo.Scan.E.UNEXPECTED_RPAR
           ][i])
-        } else if (opening.type !== '{[('[i]) {
-          newError(eYo.Scan._E.UNMATCHED_PAREN)
+        } else if (opening.type !== [
+          eYo.Token.LBRACE,
+          eYo.Token.LSQB,
+          eYo.Token.LPAR
+        ][i]) {
+          new_Error(eYo.Scan.E.UNMATCHED_PAREN)
         }
-        newClose(c, opening)
+        new_Token([
+          eYo.Token.RBRACE,
+          eYo.Token.RSQB,
+          eYo.Token.RPAR
+        ][i]).be_close(opening)
         break
       // case '%':
       // case '&':
@@ -1236,11 +1164,15 @@ eYo.Scan.prototype.nextToken = function () {
       // case '*':
       // case '+':
       case ',':
+        new_Token(eYo.Token.COMMA)
+        break    
       // case '-':
       // case '.':
       // case '/':
       // case ':':
       case ';':
+        new_Token(eYo.Token.SEMI)
+        break    
       // case '<':
       // case '=':
       // case '>':
@@ -1252,92 +1184,87 @@ eYo.Scan.prototype.nextToken = function () {
       // case '|':
       // case '}':
       case '~':
-        newToken(c)
+        new_Token(eYo.Token.TILDE)
         break    
       case '!':
-        newTokenIf(eYo.Scan.NOTEQUAL, '=')
-          || newError(eYo.Scan._E.UNEXPECTED_CHARACTER)
+        new_TokenIf(eYo.Token.NOTEQUAL, '=')
+          || new_Error(eYo.Scan.E.UNEXPECTED_CHARACTER)
         break;
       case '%':
-        newTokenIf(eYo.Scan.PERCENTEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.PERCENTEQUAL, '=')
+          || new_Token(eYo.Token.PERCENT)
         break;
       case '&':
-        newTokenIf(eYo.Scan.AMPEREQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.AMPEREQUAL, '=')
+          || new_Token(eYo.Token.AMPER)
         break;
       case '*':
-        newTokenIf(eYo.Scan.STAREQUAL, '=')
-          || newTokenIf(eYo.Scan.DOUBLESTAREQUAL, '*', '=')
-          || newTokenIf(eYo.Scan.DOUBLESTAR, '*')
-          || newToken(c)
+        new_TokenIf(eYo.Token.STAREQUAL, '=')
+          || new_TokenIf(eYo.Token.DOUBLESTAREQUAL, '*', '=')
+          || new_TokenIf(eYo.Token.DOUBLESTAR, '*')
+          || new_Token(eYo.Token.STAR)
         break;
       case '+':
-        newTokenIf(eYo.Scan.PLUSEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.PLUSEQUAL, '=')
+          || new_Token(eYo.Token.PLUS)
         break;
       case '-':
-        newTokenIf(eYo.Scan.MINEQUAL, '=')
-          || newTokenIf(eYo.Scan.RARROW, '>')
-          || newToken(c)
+        new_TokenIf(eYo.Token.MINEQUAL, '=')
+          || new_TokenIf(eYo.Token.RARROW, '>')
+          || new_Token(eYo.Token.MINUS)
         break;
       case '/':
-        newTokenIf(eYo.Scan.SLASHEQUAL, '=')
-          || newTokenIf(eYo.Scan.DOUBLESLASHEQUAL, '/', '=')
-          || newTokenIf(eYo.Scan.DOUBLESLASH, '/')
-          || newToken(c)
+        new_TokenIf(eYo.Token.SLASHEQUAL, '=')
+          || new_TokenIf(eYo.Token.DOUBLESLASHEQUAL, '/', '=')
+          || new_TokenIf(eYo.Token.DOUBLESLASH, '/')
+          || new_Token(eYo.Token.SLASH)
         break;
       case ':':
-        newTokenIf(eYo.Scan.COLONEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.COLONEQUAL, '=')
+          || new_Token(eYo.Token.COLON)
         break;
       case '<':
-        newTokenIf(eYo.Scan.LESSEQUAL, '=')
-          || newTokenIf(eYo.Scan.LEFTSHIFTEQUAL, '<', '=')
-          || newTokenIf(eYo.Scan.LEFTSHIFT, '<')
-          || newTokenIf(eYo.Scan.NOTEQUAL, '>')
-          || newToken(c)
+        new_TokenIf(eYo.Token.LESSEQUAL, '=')
+          || new_TokenIf(eYo.Token.LEFTSHIFTEQUAL, '<', '=')
+          || new_TokenIf(eYo.Token.LEFTSHIFT, '<')
+          || new_TokenIf(eYo.Token.NOTEQUAL, '>')
+          || new_Token(eYo.Token.LESS)
         break;
       case '=':
-        newTokenIf(eYo.Scan.EQEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.EQEQUAL, '=')
+          || new_Token(eYo.Token.EQUAL)
         break;
       case '>':
-        newTokenIf(eYo.Scan.GREATEREQUAL, '=')
-          || newTokenIf(eYo.Scan.RIGHTSHIFTEQUAL, '>', '=')
-          || newTokenIf(eYo.Scan.RIGHTSHIFT, '>')
-          || newToken(c)
+        new_TokenIf(eYo.Token.GREATEREQUAL, '=')
+          || new_TokenIf(eYo.Token.RIGHTSHIFTEQUAL, '>', '=')
+          || new_TokenIf(eYo.Token.RIGHTSHIFT, '>')
+          || new_Token(eYo.Token.GREATER)
         break;
       case '@':
-        newTokenIf(eYo.Scan.ATEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.ATEQUAL, '=')
+          || new_Token(eYo.Token.AT)
         break;
       case '^':
-        newTokenIf(eYo.Scan.CIRCUMFLEXEQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.CIRCUMFLEXEQUAL, '=')
+          || new_Token(eYo.Token.CIRCUMFLEX)
         break;
       case '|':
-        newTokenIf(eYo.Scan.VBAREQUAL, '=')
-          || newToken(c)
+        new_TokenIf(eYo.Token.VBAREQUAL, '=')
+          || new_Token(eYo.Token.VBAR)
         break;
       case '.':
-        newTokenIf(eYo.Scan.ELLIPSIS, '.', '.')
-          || newToken(c)
+        new_TokenIf(eYo.Token.ELLIPSIS, '.', '.')
+          || new_Token(eYo.Token.DOT)
         break;
       // case '#':
-      case '\\':
-        newTokenIf(eYo.Scan._CONTINUED, '\n')
-          || newTokenIf(eYo.Scan._CONTINUED, '\r', '\n')
-          || newTokenIf(eYo.Scan._CONTINUED, '\r')
-          || newError(eYo.Scan._E.UNEXPECTED_ESCAPE)
-        break
+      // case '\\':
       // case '\r':
       // case '\n':
       case undefined:
-        newEOF()
+        new_EOF()
         break
       default:
-        newError(eYo.Scan._E.UNEXPECTED_CHARACTER)
+        new_Error(eYo.Scan.E.UNEXPECTED_CHARACTER)
     }
     break
   }
