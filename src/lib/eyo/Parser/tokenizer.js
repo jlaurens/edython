@@ -16,6 +16,7 @@ goog.provide('eYo.Scan')
 goog.require('eYo.Do')
 goog.require('eYo.E')
 goog.require('eYo.Token')
+goog.require('eYo.Node')
 
 /* Scan implementation */
 
@@ -50,7 +51,7 @@ eYo.Scan.prototype.init = function (str) {
   this.paren_stack = []
   this.indent_stack = []
   this.first = this.last = null
-  this.line_no = this.col_no = 0
+  this.lineno = this.col_offset = 0
   return this
 }
 
@@ -135,10 +136,11 @@ eYo.Do.readOnlyMixin(eYo.Scan.XRE, {
       '(?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+'),
     '"': XRegExp(
      '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\x09\\x0B\\x0C\\x0E-\\xFF])+')
-  },
-  id_start: XRegExp('_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C', 'A'),
-  id_continue: XRegExp('(?:_|\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C|\\u00B7|\\u0387|\\u1369|\\u136A|\\u136B|\\u136C|\\u136D|\\u136E|\\u136F|\\u1370|\\u1371|\\u19DA)+', 'A'),
-  type_comment: XRegExp('\\s*type:\\s*(?<ignore>ignore)?.*')
+  },// Ll | Lm | Lo | Lt | Lu
+  id_start: XRegExp('_|\\p{L}|\\p{Nl}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C', 'A'),
+  id_continue: XRegExp('(?:_|\\p{L}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}|\\u1885|\\u1886|\\u2118|\\u212E|\\u309B|\\u309C|\\u00B7|\\u0387|\\u1369|\\u136A|\\u136B|\\u136C|\\u136D|\\u136E|\\u136F|\\u1370|\\u1371|\\u19DA)+', 'A'),
+  type_comment: XRegExp('\\s*type:\\s*(?<ignore>ignore)?.*'),
+  letter: XRegExp('\\p{L}', 'A')
 })
 
 Object.defineProperties(eYo.Scan.prototype, {
@@ -150,77 +152,6 @@ Object.defineProperties(eYo.Scan.prototype, {
   level: {
     get () {
       return this.paren_stack.length
-    }
-  }
-})
-
-Object.defineProperties(eYo.Token, {
-  NAMES: {
-    get () {
-      return [
-        "ENDMARKER",
-        "NAME",
-        "NUMBER",
-        "STRING",
-        "new_LINE",
-        "INDENT",
-        "DEDENT",
-        "LPAR",
-        "RPAR",
-        "LSQB",
-        "RSQB",
-        "COLON",
-        "COMMA",
-        "SEMI",
-        "PLUS",
-        "MINUS",
-        "STAR",
-        "SLASH",
-        "VBAR",
-        "AMPER",
-        "LESS",
-        "GREATER",
-        "EQUAL",
-        "DOT",
-        "PERCENT",
-        "LBRACE",
-        "RBRACE",
-        "EQEQUAL",
-        "NOTEQUAL",
-        "LESSEQUAL",
-        "GREATEREQUAL",
-        "TILDE",
-        "CIRCUMFLEX",
-        "LEFTSHIFT",
-        "RIGHTSHIFT",
-        "DOUBLESTAR",
-        "PLUSEQUAL",
-        "MINEQUAL",
-        "STAREQUAL",
-        "SLASHEQUAL",
-        "PERCENTEQUAL",
-        "AMPEREQUAL",
-        "VBAREQUAL",
-        "CIRCUMFLEXEQUAL",
-        "LEFTSHIFTEQUAL",
-        "RIGHTSHIFTEQUAL",
-        "DOUBLESTAREQUAL",
-        "DOUBLESLASH",
-        "DOUBLESLASHEQUAL",
-        "AT",
-        "ATEQUAL",
-        "RARROW",
-        "ELLIPSIS",
-        "COLONEQUAL",
-        "OP",
-        "TYPE_IGNORE",
-        "TYPE_COMMENT",
-        "<ERRORTOKEN>",
-        "<COMMENT>",
-        "<NL>",
-        "<ENCODING>",
-        "<N_TOKENS>",
-      ]
     }
   }
 })
@@ -367,7 +298,7 @@ eYo.Scan.prototype.nextToken = function () {
    * @param {*} subtype 
    */
   var new_Token = (type, subtype = null) => {
-    var token = new eYo.Token(this, type, subtype)
+    var token = new eYo.Node(this, type, subtype)
     this.list.push(token)
     if (this.error) {
       this.error.recovery = token
@@ -474,8 +405,8 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var new_NEWLINE = () => {
     this.at_bol = true
-    this.col_no = 0
-    ++this.line_no
+    this.col_offset = 0
+    ++this.lineno
     return new_Token(eYo.Token.NEWLINE)
   }
 
@@ -484,8 +415,8 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var do_EOL = () => {
     this.at_bol = true
-    this.col_no = 0
-    ++this.line_no
+    this.col_offset = 0
+    ++this.lineno
     if (this.end > this.start) {
       if (this.start_string === undefined) {
         this.start_string = this.start
@@ -499,8 +430,8 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var do_continue = () => {
     this.at_bol = true
-    this.col_no = 0
-    ++this.line_no
+    this.col_offset = 0
+    ++this.lineno
     if (this.start_string === undefined) {
       this.start_string = this.start
     }
@@ -515,6 +446,10 @@ eYo.Scan.prototype.nextToken = function () {
   var new_EOF = () => {
     var indent
     if ((indent = this.indent_stack.pop())) {
+      // ensure there is a newline
+      if (this.last.type != eYo.Token.NEWLINE) {
+        new_Token(eYo.Token.NEWLINE)
+      }
       do {
         new_Dedent(indent)
       } while ((indent = this.indent_stack.pop()))
@@ -685,13 +620,14 @@ eYo.Scan.prototype.nextToken = function () {
          must be handled differently in order to get both
          the starting line number and the column offset right.
          (cf. issue 16806) */
-      this.line_start = this.line_no
-      this.first_line_no = null
+      this.line_start = this.lineno
+      this.first_lineno = null
       /* Find the quote size and start of string */
       if (scan(quote)) {
         if (scan(quote)) {
           quote_size = 3
-          this.first_line_no = this.line_no
+          this.first_lineno = this.lineno
+          this.first_col_offset = this.col_offset - 3
         } else {
           end_quote_size = 1     /* empty string found */
         }
@@ -712,6 +648,13 @@ eYo.Scan.prototype.nextToken = function () {
             new_Error(eYo.Scan.E.EOLS)
             break
           }
+        } else if (scan('\r')) {
+          scan('\n')
+          ++this.lineno
+          continue
+        } else if (scan('\n')) {
+          ++this.lineno
+          continue
         }
         if (scan('\\')) {
           if (!forward()) {
@@ -728,7 +671,7 @@ eYo.Scan.prototype.nextToken = function () {
           break
         }
       }
-      new_Token(eYo.Token.STRING)
+      new_Token(eYo.Token.STRING).first_lineno = this.first_lineno
       if (end) {
         new_EOF()
       }

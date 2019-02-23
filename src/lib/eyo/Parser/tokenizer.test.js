@@ -288,6 +288,7 @@ describe('Scan(INDENT)', function() {
     var tester = new Tester(
       'INDENT', ' ',
       'NAME', 'x',
+      'NEWLINE', '',
       'DEDENT', '',
       'ENDMARKER')
     tester.test()
@@ -307,6 +308,7 @@ describe('Scan(INDENT)', function() {
       'NAME', 'x',
       'NEWLINE', '\n',
       'NAME', ' y',
+      'NEWLINE', '',
       'DEDENT', '',
       'ENDMARKER')
     tester.test()
@@ -320,6 +322,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       'INDENT', '  ',
       'NAME', 'y',
+      'NEWLINE', '',
       'DEDENT', '',
       'DEDENT', '',
       'ENDMARKER')
@@ -349,6 +352,7 @@ describe('Scan(INDENT)', function() {
       'NEWLINE', '\n',
       'DEDENT', ' ',
       'NAME', 'y',
+      'NEWLINE', '',
       'DEDENT', '',
       'ENDMARKER')
     tester.test()
@@ -642,6 +646,14 @@ describe('Scan(_KEYWORD)', function() {
   }
 });
 
+describe('Scan(LINE/COL NO)', function() {
+  it('fx', function() {
+    var tester = new Tester(
+      'ENDMARKER'
+    )
+  })
+});
+
 describe('Scan(TEST)', function() {
   it('fx', function() {
     var tester = new Tester(
@@ -653,6 +665,7 @@ describe('Scan(TEST)', function() {
       'NUMBER', '0',
       'COMMA', ',',
       'RPAR', ')',
+      'NEWLINE', '',
       'DEDENT', '',
       'ENDMARKER'
       )

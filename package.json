@@ -33,7 +33,8 @@
     "eyo:T3": "python3 \"./src/lib/T3/python types.py\" && python3 ./src/lib/T3/installT3.py",
     "eyo:model": "python3 ./bin/helpers/modulebot.py --no-suffix functions stdtypes datastructures datamodel && python3 ./bin/helpers/modulebot.py string turtle math cmath decimal fractions random statistics datetime calendar collections collections.abc heapq  bisect array weakref types copy pprint reprlib enum",
     "eyo:prepare": "python3 ./bin/helpers/tool1.py && python3 ./bin/helpers/tool2.py && python3 ./bin/helpers/tool3.py",
-    "eyo:build": "bash ./bin/build.sh"
+    "eyo:build": "bash ./bin/build.sh",
+    "eyo:asdl": "python3 ./src/lib/eyo/parser/asdl_js.py"
   },
   "build": {
     "productName": "Edython",
