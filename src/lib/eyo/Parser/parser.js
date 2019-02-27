@@ -188,9 +188,7 @@ eYo.Parser.PyParser_AddToken = (/* parser_state * */ps, tkn) =>
   var ans = {}
 
   /* Find out which label this token is */
-  var ilabel = tkn.n_type === eYo.TKN.ENDMARKER
-    ? 0
-    : classify(ps, tkn.n_type, tkn.n_str)
+  var ilabel = classify(ps, tkn.n_type, tkn.n_str)
   if (ilabel < 0) {
     ans.error = eYo.E.SYNTAX
     return ans
@@ -202,8 +200,7 @@ eYo.Parser.PyParser_AddToken = (/* parser_state * */ps, tkn) =>
     var /* dfa * */ d = ps.p_stack.s_top.s_dfa
     var /* state * */ s = d.d_state[ps.p_stack.s_top.s_state]
     if (eYo.Const.Py_DEBUG) {
-      console.log(" DFA '%s', state %d, label, tkn:",
-      d.d_name, ps.p_stack.s_top.s_state, ilabel, eYo.TKN._NAMES[tkn.n_type])
+      console.log(` DFA '${d.d_name}', state ${ps.p_stack.s_top.s_state}, label ${ilabel}, tkn ${eYo.TKN._NAMES[tkn.n_type]}`)
     }
 
     /* Check accelerator */

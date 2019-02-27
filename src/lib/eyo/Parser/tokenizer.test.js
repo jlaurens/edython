@@ -26,6 +26,9 @@ describe('Scan(XRegExp)', function() {
     str = 'ᢅ·'
     m = XRegExp.exec(str, eYo.Scan.XRE.id_continue, 0, true)
     assert(m && (m[0] === str), `id_continue ${str}`)
+    str = 'br'
+    m = XRegExp.exec(str, eYo.Scan.XRE.prefix, 0, true)
+    assert(m && (m[0] === str), `prefix ${str}`)
   });
 });
 

@@ -104,7 +104,7 @@ Object.defineProperties(eYo.Node.prototype, {
   },
   n_str: {
     get () {
-      return this.type === eYo.TKN.ENDMARKER ? "EMPTY" : this.content
+      return this.content
     }
   },
   n_lineno: {

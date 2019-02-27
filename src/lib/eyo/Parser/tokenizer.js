@@ -126,7 +126,7 @@ eYo.Do.readOnlyMixin(eYo.Scan.E, {
 /* NO sign, all are called in sticky mode so no ^ at start */
 eYo.Do.readOnlyMixin(eYo.Scan.XRE, {
   prefix: XRegExp(
-    '(?<string>r|u|f|fr|rf)|(?<bytes>b|br|rb)', 'i'),
+    'u|r(?:f|b)?|(?:f|b)r?', 'i'),
   string: {
     "'": XRegExp(
       '(?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x20-\\uFFFF])+', 'A'),
@@ -595,9 +595,9 @@ eYo.Scan.prototype.nextToken = function () {
         }
         if (scan('\r')) {
           scan('\n')
-          do_EOL()
+          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else if (scan('\n')) {
-          do_EOL()
+          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else {
           new_EOF()
         }
@@ -607,10 +607,10 @@ eYo.Scan.prototype.nextToken = function () {
         if (scan('\r')) {
           do_comment()
           scan('\n')
-          do_EOL()
+          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else if (scan('\n')) {
           do_comment()
-          do_EOL()
+          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else if (forward()) {
           continue
         } else {
