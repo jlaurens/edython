@@ -11,12 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo.Grammar')
+goog.require('eYo.GMR.Init')
 goog.require('eYo.Parser')
 goog.require('eYo.Scan')
 goog.require('eYo.E')
 
 goog.provide('eYo.ParseTok')
+
+;(function(){
 
 /* Parser-tokenizer link implementation *-/
 
@@ -30,45 +32,67 @@ goog.provide('eYo.ParseTok')
 #include "graminit.h"
 
 /* Forward *-/
-static node *parsetok(struct tok_state *, grammar *, int, perrdetail *, int *);
+static node *parsetok(struct tok_state *, grammar *, int, perrdetail *, int *); // NO flags
 static int initerr(perrdetail *err_ret, PyObject * filename);
 
 /* Parse input coming from a string.  Return error code, print some errors. *-/
 node * */
 eYo.Parser.PyParser_ParseString = (/* const char * */s, /* grammar * */g, /* int */ start, /* perrdetail * */ err_ret) =>
 {
-    return eYo.Parser.PyParser_ParseStringFlagsFilename(s, null, g, start, err_ret, 0)
-}
-
-/* node * */
-eYo.Parser.PyParser_ParseStringFlags = (/* const char * */ s, /* grammar * */ g, /* int */ start,
-                          /* perrdetail * */ err_ret, /* int */ flags) =>
-{
-    return oYo.Do.PyParser_ParseStringFlagsFilename(s, null,
-                                             g, start, err_ret, flags)
-}
-
-/* node * */
-eYo.Parser.PyParser_ParseStringFlagsFilename = (/* const char * */ s, /* const char * */ filename,
-                          /* grammar * */ g, /* int */ start,
-                          /* perrdetail * */ err_ret, /* int */ flags) =>
-{
-    var ans = eYo.Parser.PyParser_ParseStringFlagsFilenameEx(s, filename, g, start, err_ret, flags);
-    return ans.return
-}
-
-/*
-node * */
-eYo.Parser.PyParser_ParseStringObject = (/* const char * */s, /* PyObject * */filename,
-                           /* grammar * */g, /*int*/ start,
-                           /* perrdetail * */err_ret, /* int * */flags) =>
-{
   var scan = new eYo.Scan()
   initerr(err_ret)
-  scan.init(s)
-  return eYo.ParseTok.parsetok(scan.first, g, start, err_ret, flags)
+  scan.init(s, start)
+  return parsetok(scan, g, start, err_ret)
 }
-/*
+
+/* node *
+PyParser_ParseStringFlags(const char *s, grammar *g, int start,
+  perrdetail *err_ret, int flags)
+{
+return PyParser_ParseStringFlagsFilename(s, NULL,
+                     g, start, err_ret, flags);
+}
+
+node *
+PyParser_ParseStringFlagsFilename(const char *s, const char *filename,
+  grammar *g, int start,
+  perrdetail *err_ret, int flags)
+{
+int iflags = flags;
+return PyParser_ParseStringFlagsFilenameEx(s, filename, g, start,
+                       err_ret, &iflags);
+}
+
+/* node *
+PyParser_ParseStringObject(const char *s, PyObject *filename,
+                           grammar *g, int start,
+                           perrdetail *err_ret, int *flags)
+{
+    struct tok_state *tok;
+    int exec_input = start == file_input;
+
+    if (initerr(err_ret, filename) < 0)
+        return NULL;
+
+    if (*flags & PyPARSE_IGNORE_COOKIE)
+        tok = PyTokenizer_FromUTF8(s, exec_input);
+    else
+        tok = PyTokenizer_FromString(s, exec_input);
+    if (tok == NULL) {
+        err_ret->error = PyErr_Occurred() ? E_DECODE : E_NOMEM;
+        return NULL;
+    }
+    if (*flags & PyPARSE_TYPE_COMMENTS) {
+        tok->type_comments = 1;
+    }
+
+#ifndef PGEN
+    Py_INCREF(err_ret->filename);
+    tok->filename = err_ret->filename;
+#endif
+    return parsetok(tok, g, start, err_ret, flags);
+}
+
 node *
 PyParser_ParseStringFlagsFilenameEx(const char *s, const char *filename_str,
                           grammar *g, int start,
@@ -93,25 +117,25 @@ PyParser_ParseStringFlagsFilenameEx(const char *s, const char *filename_str,
 }
 
 /* Parse input coming from the given tokenizer structure.
-   Return error code. *-/
+   Return error code. */
 
-static node *
-*/
-eYo.ParseTok.parsetok = (/*struct tok_state **/tkn, /*grammar * */g, /*int*/ start, /*perrdetail * */err_ret,
-         /*int **/flags) =>
+/* static node * */
+var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*perrdetail * */err_ret/*,
+         int *flags*/) =>
 {
-  var /*parser_state * */ ps = eYo.Parser.PyParser_New(g, start);
-  var /* node * */ n;
-  var /*growable_int_array*/ type_ignores;
+  var /*parser_state * */ ps = eYo.Parser.PyParser_New(scan, g, start)
+  var /* node * */ n
+  var /*growable_int_array*/ type_ignores = []
+  var tkn = scan.first
 
   for (;;) {
     
-    if (tkn.type === eYo.Token.ERRORTOKEN) {
+    if (tkn.type === eYo.TKN.ERRORTOKEN) {
         err_ret.error = tkn.error;
         break;
     }
 
-    if (tkn.type === TYPE_IGNORE) {
+    if (tkn.type === eYo.TKN.TYPE_IGNORE) {
       type_ignores.push(tkn.lineno)
       continue;
     }
@@ -124,21 +148,24 @@ eYo.ParseTok.parsetok = (/*struct tok_state **/tkn, /*grammar * */g, /*int*/ sta
       if (err_ret.error != eYo.E.DONE) {
         err_ret.token = tkn.type
       }
-      break;
+      break
     }
-    tkn = tkn.next
+    if((tkn = tkn.next)) {
+      continue
+    }
+    break
   }
   if (err_ret.error === eYo.E.DONE) {
     n = ps.p_tree;
     ps.p_tree = null
-    if (n.n_type === file_input) {
+    if (n.n_type === eYo.TKN.file_input) {
       /* Put type_ignore nodes in the ENDMARKER of file_input. */
       var /* int */ num = n.n_nchildren
       var /* node * */ ch = n.n_child[num - 1]
-      eYo.Do.goog.asserts.assert(ch.n_type === eYo.Token.ENDMARKER);
+      goog.asserts.assert(ch.n_type === eYo.TKN.ENDMARKER);
 
       for (var i = 0; i < type_ignores.length; i++) {
-          eYo.Do.PyNode_AddChild(ch, eYo.Token.TYPE_IGNORE, null,
+          eYo.Do.PyNode_AddChild(ch, eYo.TKN.TYPE_IGNORE, null,
           type_ignores[i], 0,
           type_ignores[i], 0);
       }
@@ -147,39 +174,42 @@ eYo.ParseTok.parsetok = (/*struct tok_state **/tkn, /*grammar * */g, /*int*/ sta
         is a single statement by looking at what is left in the
         buffer after parsing.  Trailing whitespace and comments
         are OK.  */
-    if (start === eYo.Grammar.single_input) {
-      var t = tkn
-      while ((t = tkn.next)) {
-        if (t.type !== eYo.Token.COMMENT && t.type !== eYo.Token.NEWLINE && t.type !== eYo.Token.ENDMARKER) {
+    if (start === eYo.TKN.single_input) {
+      var t = scan.nextToken()
+      while (t) {
+        if (t.type !== eYo.TKN.COMMENT && t.type !== eYo.TKN.NEWLINE && t.type !== eYo.TKN.ENDMARKER) {
           err_ret.error = eYo.E.BADSINGLE
+          console.error('UNEXPECTED', t.type, eYo.TKN._NAMES[t.type])
+          break
         }
+        t = t.next
       }
     }
   }
   else
-    n = NULL;
+    n = null
   // PyParser_Delete(ps);
 
   if (!n) {
-    if (tkn.done == eYo.E.EOF)
+    if (scan.done === eYo.E.EOF)
       err_ret.error = eYo.E.EOF // logically unreachable
-    err_ret.lineno = tkn.lineno
-    err_ret.text = tkn.content
+    err_ret.lineno = scan.last.lineno
+    err_ret.text = scan.last.content
   }
 
-  if (n != NULL) {
-    eYo.Do._PyNode_FinalizeEndPos(n);
+  if (n != null) {
+    eYo.Node._PyNode_FinalizeEndPos(n)
   }
-  return n;
+  return n
 }
 
 /* static int */
-eYo.ParseTok.initerr = (/*perrdetail **/err_ret) =>
+var initerr = (/*perrdetail **/err_ret) =>
 {
   err_ret.error = eYo.E.OK;
   err_ret.lineno = 0;
   err_ret.offset = 0;
-  err_ret.text = NULL;
+  err_ret.text = null;
   err_ret.token = -1;
   err_ret.expected = -1;
   err_ret.filename = '<string>'
@@ -189,3 +219,4 @@ eYo.ParseTok.initerr = (/*perrdetail **/err_ret) =>
   }
   return 0;
 }
+})()

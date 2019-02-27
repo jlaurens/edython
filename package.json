@@ -34,7 +34,7 @@
     "eyo:model": "python3 ./bin/helpers/modulebot.py --no-suffix functions stdtypes datastructures datamodel && python3 ./bin/helpers/modulebot.py string turtle math cmath decimal fractions random statistics datetime calendar collections collections.abc heapq  bisect array weakref types copy pprint reprlib enum",
     "eyo:prepare": "python3 ./bin/helpers/tool1.py && python3 ./bin/helpers/tool2.py && python3 ./bin/helpers/tool3.py",
     "eyo:build": "bash ./bin/build.sh",
-    "eyo:asdl": "python3 ./src/lib/eyo/parser/asdl_js.py"
+    "eyo:graminit": "python3 ./src/lib/eyo/Python/graminit.py"
   },
   "build": {
     "productName": "Edython",

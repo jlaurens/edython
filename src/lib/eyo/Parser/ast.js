@@ -12,9 +12,9 @@
 'use strict'
 
 goog.require('eYo.E')
-goog.require('eYo.Token')
+goog.require('eYo.TKN')
 
-goog.provide('eYo.Grammar')
+goog.provide('eYo.AST')
 /*
  * This file includes functions to transform a concrete syntax tree (CST) to
  * an abstract syntax tree (AST). The main function is PyAST_FromNode().

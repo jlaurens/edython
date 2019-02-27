@@ -20,40 +20,44 @@ goog.provide('eYo.BitSet')
 
 bitset */
 
+eYo.BitSet = function(nbits) {
+  this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
+}
+
 eYo.BitSet.newbitset = (nbits) =>
 {
-  var ss = new Array(nbits / 53).fill(0) // JL: needs a polyfill ?
+  var ss = new eYo.BitSet(nbits)
   return ss;
 }
 
-eYo.BitSet.delbitset(ss)
+eYo.BitSet.delbitset = (ss) =>
 {
-  raise('DO NOT CALL THIS')
+  throw 'DO NOT CALL THIS'
 }
 
 // int
 eYo.BitSet.addbit = (ss, ibit) =>
 {
-  var i = ss[ibit / 53]
-  var mask = 1 << ibit % 53
+  var i = ss.ra[Math.floor(ibit / 8)]
+  var mask = 1 << (ibit % 8)
   if (i & mask) {
     return
   }
-  ss[q] = i | mask
+  ss.ra[q] = i | mask
   return true
 }
 
 eYo.BitSet.testbit = (ss, ibit) =>
 {
-  var i = ss[ibit / 53]
-  var mask = 1 << ibit % 53
-  return !!i & mask
+  var i = ss.ra[Math.floor(ibit / 8)]
+  var mask = 1 << (ibit % 8)
+  return !!(i & mask)
 }
 
 eYo.BitSet.samebitset = (ss1, ss2, nbits) =>
 {
-    for (var i = nbits / 53; --i >= 0; ) {
-      if (ss1[i] !== ss2[i]) {
+    for (var i = nbits / 8; --i >= 0; ) {
+      if (ss1.ra[i] !== ss2.ra[i]) {
         return 0
       }
     }
@@ -62,7 +66,7 @@ eYo.BitSet.samebitset = (ss1, ss2, nbits) =>
 
 eYo.BitSet.mergebitset = (ss1, ss2, nbits) =>
 {
-  for (var i = nbits / 53; --i >= 0; ) {
-    ss1[i] = ss1[i] | ss2[i]
+  for (var i = nbits / 8; --i >= 0; ) {
+    ss1.ra[i] = ss1.ra[i] | ss2.ra[i]
   }
 }

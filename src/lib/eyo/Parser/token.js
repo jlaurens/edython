@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.Token')
+goog.provide('eYo.TKN')
 
-eYo.Token.ISTERMINAL = x => x < eYo.Token.NT_OFFSET
-eYo.Token.ISNONTERMINAL = x => x >= eYo.Token.NT_OFFSET
-eYo.Token.ISEOF = x => x === eYo.Token.ENDMARKER
+eYo.TKN.ISTERMINAL = x => x < eYo.TKN.NT_OFFSET
+eYo.TKN.ISNONTERMINAL = x => x >= eYo.TKN.NT_OFFSET
+eYo.TKN.ISEOF = x => x === eYo.TKN.ENDMARKER
 
-Object.defineProperties(eYo.Token, {
+Object.defineProperties(eYo.TKN, {
   ENDMARKER: {get () {return 0}},
   NAME: {get () {return 1}},
   NUMBER: {get () {return 2}},
@@ -80,7 +80,7 @@ Object.defineProperties(eYo.Token, {
   NT_OFFSET: {get () {return 256}}
 })
 
-Object.defineProperties(eYo.Token, {
+Object.defineProperties(eYo.TKN, {
   _NAMES: {
     get () {
       return [
@@ -151,127 +151,127 @@ Object.defineProperties(eYo.Token, {
   }
 })
 
-eYo.Token.PyToken_OneChar = (c1) =>
+eYo.TKN.PyToken_OneChar = (c1) =>
 {
     switch (c1) {
-    case '%': return eYo.Token.PERCENT
-    case '&': return eYo.Token.AMPER
-    case '(': return eYo.Token.LPAR
-    case ')': return eYo.Token.RPAR
-    case '*': return eYo.Token.STAR
-    case '+': return eYo.Token.PLUS
-    case ',': return eYo.Token.COMMA
-    case '-': return eYo.Token.MINUS
-    case '.': return eYo.Token.DOT
-    case '/': return eYo.Token.SLASH
-    case ':': return eYo.Token.COLON
-    case '': return eYo.Token.SEMI
-    case '<': return eYo.Token.LESS
-    case '=': return eYo.Token.EQUAL
-    case '>': return eYo.Token.GREATER
-    case '@': return eYo.Token.AT
-    case '[': return eYo.Token.LSQB
-    case ']': return eYo.Token.RSQB
-    case '^': return eYo.Token.CIRCUMFLEX
-    case '{': return eYo.Token.LBRACE
-    case '|': return eYo.Token.VBAR
-    case '}': return eYo.Token.RBRACE
-    case '~': return eYo.Token.TILDE
+    case '%': return eYo.TKN.PERCENT
+    case '&': return eYo.TKN.AMPER
+    case '(': return eYo.TKN.LPAR
+    case ')': return eYo.TKN.RPAR
+    case '*': return eYo.TKN.STAR
+    case '+': return eYo.TKN.PLUS
+    case ',': return eYo.TKN.COMMA
+    case '-': return eYo.TKN.MINUS
+    case '.': return eYo.TKN.DOT
+    case '/': return eYo.TKN.SLASH
+    case ':': return eYo.TKN.COLON
+    case '': return eYo.TKN.SEMI
+    case '<': return eYo.TKN.LESS
+    case '=': return eYo.TKN.EQUAL
+    case '>': return eYo.TKN.GREATER
+    case '@': return eYo.TKN.AT
+    case '[': return eYo.TKN.LSQB
+    case ']': return eYo.TKN.RSQB
+    case '^': return eYo.TKN.CIRCUMFLEX
+    case '{': return eYo.TKN.LBRACE
+    case '|': return eYo.TKN.VBAR
+    case '}': return eYo.TKN.RBRACE
+    case '~': return eYo.TKN.TILDE
     }
-    return eYo.Token.OP
+    return eYo.TKN.OP
 }
 
-eYo.Token.PyToken_TwoChars = (c1, c2) =>
+eYo.TKN.PyToken_TwoChars = (c1, c2) =>
 {
     switch (c1) {
     case '!':
         switch (c2) {
-        case '=': return eYo.Token.NOTEQUAL
+        case '=': return eYo.TKN.NOTEQUAL
         }
         break
     case '%':
         switch (c2) {
-        case '=': return eYo.Token.PERCENTEQUAL
+        case '=': return eYo.TKN.PERCENTEQUAL
         }
         break
     case '&':
         switch (c2) {
-        case '=': return eYo.Token.AMPEREQUAL
+        case '=': return eYo.TKN.AMPEREQUAL
         }
         break
     case '*':
         switch (c2) {
-        case '*': return eYo.Token.DOUBLESTAR
-        case '=': return eYo.Token.STAREQUAL
+        case '*': return eYo.TKN.DOUBLESTAR
+        case '=': return eYo.TKN.STAREQUAL
         }
         break
     case '+':
         switch (c2) {
-        case '=': return eYo.Token.PLUSEQUAL
+        case '=': return eYo.TKN.PLUSEQUAL
         }
         break
     case '-':
         switch (c2) {
-        case '=': return eYo.Token.MINEQUAL
-        case '>': return eYo.Token.RARROW
+        case '=': return eYo.TKN.MINEQUAL
+        case '>': return eYo.TKN.RARROW
         }
         break
     case '/':
         switch (c2) {
-        case '/': return eYo.Token.DOUBLESLASH
-        case '=': return eYo.Token.SLASHEQUAL
+        case '/': return eYo.TKN.DOUBLESLASH
+        case '=': return eYo.TKN.SLASHEQUAL
         }
         break
     case ':':
         switch (c2) {
-        case '=': return eYo.Token.COLONEQUAL
+        case '=': return eYo.TKN.COLONEQUAL
         }
         break
     case '<':
         switch (c2) {
-        case '<': return eYo.Token.LEFTSHIFT
-        case '=': return eYo.Token.LESSEQUAL
-        case '>': return eYo.Token.NOTEQUAL
+        case '<': return eYo.TKN.LEFTSHIFT
+        case '=': return eYo.TKN.LESSEQUAL
+        case '>': return eYo.TKN.NOTEQUAL
         }
         break
     case '=':
         switch (c2) {
-        case '=': return eYo.Token.EQEQUAL
+        case '=': return eYo.TKN.EQEQUAL
         }
         break
     case '>':
         switch (c2) {
-        case '=': return eYo.Token.GREATEREQUAL
-        case '>': return eYo.Token.RIGHTSHIFT
+        case '=': return eYo.TKN.GREATEREQUAL
+        case '>': return eYo.TKN.RIGHTSHIFT
         }
         break
     case '@':
         switch (c2) {
-        case '=': return eYo.Token.ATEQUAL
+        case '=': return eYo.TKN.ATEQUAL
         }
         break
     case '^':
         switch (c2) {
-        case '=': return eYo.Token.CIRCUMFLEXEQUAL
+        case '=': return eYo.TKN.CIRCUMFLEXEQUAL
         }
         break
     case '|':
         switch (c2) {
-        case '=': return eYo.Token.VBAREQUAL
+        case '=': return eYo.TKN.VBAREQUAL
         }
         break
     }
-    return eYo.Token.OP
+    return eYo.TKN.OP
 }
 
-eYo.Token.PyToken_ThreeChars(c1, c2, c3)
+eYo.TKN.PyToken_ThreeChars = (c1, c2, c3) =>
 {
     switch (c1) {
     case '*':
         switch (c2) {
         case '*':
             switch (c3) {
-            case '=': return eYo.Token.DOUBLESTAREQUAL
+            case '=': return eYo.TKN.DOUBLESTAREQUAL
             }
             break
         }
@@ -280,7 +280,7 @@ eYo.Token.PyToken_ThreeChars(c1, c2, c3)
         switch (c2) {
         case '.':
             switch (c3) {
-            case '.': return eYo.Token.ELLIPSIS
+            case '.': return eYo.TKN.ELLIPSIS
             }
             break
         }
@@ -289,7 +289,7 @@ eYo.Token.PyToken_ThreeChars(c1, c2, c3)
         switch (c2) {
         case '/':
             switch (c3) {
-            case '=': return eYo.Token.DOUBLESLASHEQUAL
+            case '=': return eYo.TKN.DOUBLESLASHEQUAL
             }
             break
         }
@@ -298,7 +298,7 @@ eYo.Token.PyToken_ThreeChars(c1, c2, c3)
         switch (c2) {
         case '<':
             switch (c3) {
-            case '=': return eYo.Token.LEFTSHIFTEQUAL
+            case '=': return eYo.TKN.LEFTSHIFTEQUAL
             }
             break
         }
@@ -307,11 +307,11 @@ eYo.Token.PyToken_ThreeChars(c1, c2, c3)
         switch (c2) {
         case '>':
             switch (c3) {
-            case '=': return eYo.Token.RIGHTSHIFTEQUAL
+            case '=': return eYo.TKN.RIGHTSHIFTEQUAL
             }
             break
         }
         break
     }
-    return eYo.Token.OP
+    return eYo.TKN.OP
 }
