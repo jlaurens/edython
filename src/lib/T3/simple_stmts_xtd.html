@@ -20,8 +20,9 @@ target          ::=  identifier
                      | slicing
                      | "*" target
 <pre>
-assignment_stmt/assignment ::= target_list_list "=" value_list
-target_list_list ::= (target_list "=")* target_list
+assignment_stmt/assignment ::= target_list "=" assignment_value_list
+assignment_value_list ::= assignment_expr | value_list
+assignment_expr ::= target_list "=" value_list
 value_list ::= starred_item | yield_expression
 augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
 augassigned_list ::= expression | yield_expression

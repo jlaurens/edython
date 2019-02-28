@@ -1,13 +1,14 @@
 var assert = chai.assert
 
 var g = eYo.GMR._PyParser_Grammar
+var workspace = Blockly.mainWorkspace
 
 console.log('RUNNING NODE/BLOCK TESTS')
 
 describe('PREPARE', function() {
   it('Blockly', function() {
     assert(Blockly, `MISSING Blockly`)
-    assert(Blockly.mainWorkspace, `MISSING workspace`)
+    assert(workspace, `MISSING workspace`)
     assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
   })
 })  
@@ -16,7 +17,7 @@ describe('NAME', function() {
   it('NAME', function() {
     var err_ret = {}
     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
-    var b = n.toBlock(Blockly.mainWorkspace)
+    var b = n.toBlock(workspace)
     assert(b, 'MISSING BLOCK')
   })
 })
@@ -34,7 +35,7 @@ var ra_test = (name, str_s) => {
         return function() {
           var err_ret = {}
           var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.file_input, err_ret)
-          var b = n.toBlock(Blockly.mainWorkspace)
+          var b = n.toBlock(workspace)
           assert(b)
   // eYo.GMR.dumptree(g, n)
         }

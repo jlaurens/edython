@@ -21,25 +21,6 @@ goog.require('goog.dom');
 
 // ["eyo:attributeref", "eyo:subscription", "eyo:slicing", "eyo:parenth_target_list", "eyo:bracket_target_list", "eyo:target_star", "eyo:identifier", "eyo:any"]
 
-// /**
-//  * Class for a DelegateSvg, '*...' block.
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Expr.makeSubclass('target_star', {
-//   slots: {
-//     expression: {
-//       order: 1,
-//       fields: {
-//         label: {
-//           value: '*',
-//           css_class: 'eyo-code-reserved'
-//         }
-//       },
-//       check: eYo.T3.Expr.Check.target,
-//       hole_value: 'target'
-//     }
-//   }
-// }, true)
 
 /**
  * List consolidator for target list. Used is assignment.
@@ -264,16 +245,81 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
- * Class for a DelegateSvg, target_list_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a DelegateSvg, assignment_stmt.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('target_list_list', {
-  list: {
-    check: eYo.T3.Expr.target_list,
-    mandatory: 1,
-    postsep: '='
+eYo.DelegateSvg.Expr.makeSubclass('assignment_expr', {
+  data: {
+    variant: {
+      all: [
+        eYo.Key.NAME,
+        eYo.Key.TARGETS
+      ],
+      init: eYo.Key.NAME,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var O = this.owner
+        O.name_d.setIncog(newValue === eYo.Key.TARGETS)
+        var slot = O.targets_s
+        slot.required = newValue === eYo.Key.TARGETS
+        slot.setIncog()
+      },
+      xml: false
+    },
+    name: {
+      init: '',
+      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
+      subtypes: [
+        eYo.T3.Expr.unset,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.dotted_name
+      ],
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return this.model.subtypes.indexOf(p5e.expr) >= 0
+        ? {validated: newValue}
+        : null
+      },
+      synchronize: true,
+      allwaysBoundField: true
+    }
+  },
+  slots: {
+    name: {
+      order: 1,
+      fields: {
+        bind: {
+          validate: true,
+          endEditing: true,
+          variable: true
+        }
+      },
+      check: eYo.T3.Expr.Check.target,
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFromSaved()) {
+          this.owner.variant_p = eYo.Key.NAME
+        }
+      }
+    },
+    targets: {
+      order: 2,
+      wrap: eYo.T3.Expr.target_list,
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFromSaved()) {
+          this.owner.variant_p = eYo.Key.TARGETS
+        }
+      }
+    },
+    value: {
+      order: 4,
+      fields: {
+        operator: {
+          value: '=',
+          css: 'reserved'
+        },
+      },
+      wrap: eYo.T3.Expr.value_list
+    }
   }
 }, true)
 
@@ -351,7 +397,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           css: 'reserved'
         },
       },
-      wrap: eYo.T3.Expr.value_list
+      wrap: eYo.T3.Expr.assignment_value_list
     }
   }
 }, true)
@@ -396,6 +442,22 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
   var D = {
     check: eYo.T3.Expr.Check.starred_item,
     unique: eYo.T3.Expr.yield_expression,
+    consolidator: eYo.Consolidator.List.Singled,
+    presep: ',',
+    mandatory: 1
+  }
+  var RA = goog.array.concat(D.check, D.unique)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  return {
+    list: D
+  }
+})
+
+eYo.DelegateSvg.List.makeSubclass('assignment_value_list', function () {
+  var D = {
+    check: eYo.T3.Expr.Check.starred_item,
+    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.assignment_expr],
     consolidator: eYo.Consolidator.List.Singled,
     presep: ',',
     mandatory: 1
@@ -567,7 +629,6 @@ eYo.DelegateSvg.Assignment.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Expr.target_list,
-  eYo.T3.Expr.target_list_list,
   eYo.T3.Expr.void_target_list,
   eYo.T3.Expr.parenth_target_list,
   eYo.T3.Expr.bracket_target_list,

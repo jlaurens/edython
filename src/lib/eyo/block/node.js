@@ -95,7 +95,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
           root.eyo.variant_p = eYo.Key.TARGETS
           t = root.eyo.targets_s.target
           t.lastInput.connection.connect(b1.outputConnection)
-          for (i = 3 ; i < this.n_child.length - 2 ; i += 2) {
+          for (i = 3 ; i < this.n_child.length - 2 ; i -= 2) {
             b1 = this.n_child[i].toBlock(workspace)
             t.lastInput.connection.connect(b1.outputConnection)
           }
