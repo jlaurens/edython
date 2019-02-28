@@ -376,6 +376,12 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return this.block_.workspace.eyo.recover
     }
+  },
+  lastInput: {
+    get () {
+      var list = this.block_.inputList
+      return list[list.length - 1]
+    }
   }
 })
 
