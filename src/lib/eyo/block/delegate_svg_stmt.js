@@ -571,12 +571,11 @@ eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
 eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
   data: {
     variant: {
-      NONE: eYo.Key.NONE,
-      EXPRESSION: eYo.Key.EXPRESSION,
       order: 10000, // initialization comes last
       all: [
         eYo.Key.NONE,
         eYo.Key.EXPRESSION,
+        eYo.Key.TUPLE,
       ],
       init: eYo.Key.NONE,
       xml: false,
@@ -585,6 +584,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         var data = this.owner.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
+        this.owner.tuple_s.setIncog(newValue !== eYo.Key.TUPLE)
         this.owner.updateGroupBlackCount()
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -643,16 +643,28 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression
+    },
+    tuple: {
+      order: 2,
+      fields: {
+        bind: {
+          endEditing: true
+        }
+      },
+      wrap: eYo.T3.Expr.starred_item_list
     }
   },
   didLoad: /** @suppress {globalThis} */ function () {
     var requiredExpression = this.expression_s.isRequiredFromSaved() || this.expression_d.isRequiredFromSaved()
+    var requiredTuple = this.tuple_s.isRequiredFromSaved()
     var requiredComment = this.comment_d.isRequiredFromSaved()
-    if (requiredComment || requiredExpression) {
-      this.variant_p = requiredExpression
-        ? eYo.Key.EXPRESSION
-        : eYo.Key.NONE   
-      this.comment_variant_p = requiredComment || !requiredExpression
+    if (requiredComment || requiredExpression || requiredTuple) {
+      this.variant_p = requiredTuple
+        ? eYo.Key.TUPLE
+        : requiredExpression
+          ? eYo.Key.EXPRESSION
+          : eYo.Key.NONE   
+      this.comment_variant_p = requiredComment || (!requiredExpression && !requiredTuple)
         ? eYo.Key.COMMENT
         : eYo.Key.NONE
     } else if (this.variant_p === eYo.Key.NONE) {
