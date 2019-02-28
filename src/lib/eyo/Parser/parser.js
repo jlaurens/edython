@@ -291,9 +291,8 @@ eYo.GMR.dumptree = (/* grammar * */ g, /* node * */ n) =>
   if (!n) {
     console.log("NIL")
   } else {
-    var l = new eYo.GRM.Label(n.n_type, n.n_str)
-    console.log("%s", eYo.GMR.PyGrammar_LabelRepr(l))
     if (eYo.TKN.ISNONTERMINAL(n.n_type)) {
+      console.log(`${eYo.TKN._NT_NAMES[n.n_type - eYo.TKN.NT_OFFSET]}`)
       console.log("(")
       for (i = 0; i < n.n_nchildren; i++) {
         if (i > 0) {
@@ -302,6 +301,8 @@ eYo.GMR.dumptree = (/* grammar * */ g, /* node * */ n) =>
         eYo.GMR.dumptree(g, n.n_child[i])
       }
       console.log(")")
+    } else {
+      console.log(`${eYo.TKN._NAMES[n.n_type]}, ${n.n_str}`)
     }
   }
 }

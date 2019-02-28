@@ -164,6 +164,16 @@ Object.defineProperties(eYo.Scan.prototype, {
 })
 
 /**
+ *  Extra tokens used by python modules.
+ * We only need the first one here.
+ */
+Object.defineProperties(eYo.TKN, {
+  COMMENT: {get () {return 58}},
+  NL: {get () {return 59}},
+  ENCODING: {get () {return 60}}
+})
+
+/**
  */
 eYo.Scan.prototype.nextToken = function () {
   var d
@@ -419,7 +429,7 @@ eYo.Scan.prototype.nextToken = function () {
   }
 
   /**
-   * Create an EOL token and push it.
+   * An EOL.
    */
   var do_EOL = () => {
     this.at_bol = true
@@ -475,12 +485,12 @@ eYo.Scan.prototype.nextToken = function () {
     }
   }
   
-  var do_comment = () => {
+  var new_COMMENT = () => {
     if (this.end > this.start) {
       if (this.start_string === undefined) {
         this.start_string = this.start
       }
-      this.start = this.end
+      return new_Token(eYo.TKN.COMMENT)
     }
   }
 
@@ -605,16 +615,16 @@ eYo.Scan.prototype.nextToken = function () {
       }
       while (true) {
         if (scan('\r')) {
-          do_comment()
+          new_COMMENT()
           scan('\n')
           col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else if (scan('\n')) {
-          do_comment()
+          new_COMMENT()
           col === undefined && !this.level ? new_NEWLINE() : do_EOL()
         } else if (forward()) {
           continue
         } else {
-          do_comment()
+          new_COMMENT()
           new_EOF()
         }
         return true

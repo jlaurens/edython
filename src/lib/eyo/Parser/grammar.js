@@ -385,7 +385,7 @@ eYo.GMR.PyGrammar_LabelRepr = (/* label * */ lb) =>
       return lb.lb_str
     }
   }
-  else if (lb.lb_type < N_TOKENS) {
+  else if (lb.lb_type < eYo.TKN.N_TOKENS) {
     if (lb.lb_str === null)
       return eYo.TKN._NAMES[lb.lb_type]
     else {

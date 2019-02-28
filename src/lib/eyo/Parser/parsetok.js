@@ -139,13 +139,15 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
       type_ignores.push(tkn.lineno)
       continue;
     }
-
+    if (tkn.type === eYo.TKN.COMMENT) {
+      continue;
+    }
     var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
                             lineno, col_offset, tkn.lineno, end_col_offset*/ tkn)
     err_ret.error = ans.error
     err_ret.expected = ans.expected
-    if (err_ret.error != eYo.E.OK) {
-      if (err_ret.error != eYo.E.DONE) {
+    if (err_ret.error !== eYo.E.OK) {
+      if (err_ret.error !== eYo.E.DONE) {
         err_ret.token = tkn.type
       }
       break
@@ -185,21 +187,22 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
         t = t.next
       }
     }
+    eYo.Node._PyNode_FinalizeEndPos(n)
   }
   else
-    n = null
+    /* n = null
   // PyParser_Delete(ps);
 
-  if (!n) {
+  if (!n)*/ {
     if (scan.done === eYo.E.EOF)
       err_ret.error = eYo.E.EOF // logically unreachable
     err_ret.lineno = scan.last.lineno
     err_ret.text = scan.last.content
   }
 
-  if (n != null) {
-    eYo.Node._PyNode_FinalizeEndPos(n)
-  }
+  // if (n != null) {
+  //   eYo.Node._PyNode_FinalizeEndPos(n)
+  // }
   return n
 }
 

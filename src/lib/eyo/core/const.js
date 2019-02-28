@@ -165,6 +165,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   ANNOTATED_DEFINED: 'annotated_defined',
   
   EXPRESSION: 'expression',
+  TUPLE: 'tuple',
   
   IMPORT: 'import',
   FROM_MODULE_IMPORT: 'from_module_import',

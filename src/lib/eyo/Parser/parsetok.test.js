@@ -2,18 +2,20 @@ var assert = chai.assert
 
 var g = eYo.GMR._PyParser_Grammar
 
+console.log('RUNNING PARSETOK TESTS')
+
 var n_test = (n, type, str) => {
   assert(n, 'No node')
   assert(n.n_type === type, `${n.n_type} === ${type}`)
   assert(n.n_str === '', `${n.n_str} === '${str}'`)
 }
-console.log('RUNNING PARSETOK TESTS')
 
 describe('Test', function() {
   it('test', function() {
     assert(eYo.Parser.PyParser_ParseString)
     var err_ret = {}
     var n = eYo.Parser.PyParser_ParseString('', g, eYo.TKN.single_input, err_ret)
+    assert(err_ret.error === eYo.E.DONE, 'ERROR')
     n_test(n, eYo.TKN.single_input, null)
     n = n.n_child[0]
     n_test(n, eYo.TKN.NEWLINE, '')

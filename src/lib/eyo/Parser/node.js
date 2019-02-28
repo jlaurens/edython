@@ -40,7 +40,8 @@ eYo.Node = function (scan, type, subtype) {
   this.subtype = subtype
   this.start = scan.start
   this.start_string = scan.start_string
-  scan.start_string = undefined
+  this.start_comment = scan.start_comment
+  scan.start_string = scan.start_comment = undefined
   this.end = scan.start = scan.end
   if (scan.first_lineno) {
     this.col_offset = scan.first_col_offset
@@ -73,6 +74,11 @@ eYo.Node.prototype.be_close = function (open) {
 // eYo.Node.prototype.children = null
 
 Object.defineProperties(eYo.Node.prototype, {
+  name: {
+    get () {
+      return eYo.TKN._NT_NAMES[this.n_type - eYo.TKN.NT_OFFSET] || eYo.TKN._NAMES[this.n_type]
+    }
+  },
   str: {
     get () {
       return this.scan.str
