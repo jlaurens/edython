@@ -227,7 +227,7 @@ eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
 })
 
 /**
- * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * Class for a DelegateSvg, starred_item_list block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
@@ -242,7 +242,7 @@ eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
 })
 
 /**
- * Class for a DelegateSvg, starred_item_list_comprehensive block.
+ * Class for a DelegateSvg, non_void_starred_item_list block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.

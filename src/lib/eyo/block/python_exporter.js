@@ -26,13 +26,7 @@ goog.require('eYo.FieldTextInput')
  * @constructor
  */
 eYo.Py.Exporter = function (oneIndent) {
-  this.lines = []
-  this.indents = []
-  this.indent = ''
   this.oneIndent = oneIndent || this.constructor.indent
-  this.depth = 0
-  this.use_print = false
-  this.use_turtle = false
 }
 
 /**
@@ -129,6 +123,12 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.export = function (block, opt) {
+  this.lines = []
+  this.indents = []
+  this.indent = ''
+  this.depth = 0
+  this.use_print = false
+  this.use_turtle = false
   opt = opt || {}
   var eyo = block.eyo
   var is_deep = !eyo.isControl && opt.is_deep

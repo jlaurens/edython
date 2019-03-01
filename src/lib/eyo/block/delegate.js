@@ -382,6 +382,12 @@ Object.defineProperties(eYo.Delegate.prototype, {
       var list = this.block_.inputList
       return list[list.length - 1]
     }
+  },
+  lastConnection: {
+    get () {
+      var list = this.block_.inputList
+      return list[list.length - 1].connection
+    }
   }
 })
 
@@ -1888,6 +1894,14 @@ eYo.Delegate.prototype.updateBlackCount = function () {
 eYo.Delegate.prototype.updateGroupBlackCount = function () {
   var eyo = this.group
   eyo && eyo.updateBlackCount()
+}
+
+/**
+ * Connect the last connection to the given expression block.
+ * @param {!Blockly.Block} block
+ */
+eYo.Delegate.prototype.lastConnect = function (block) {
+  this.lastConnection.connect(block.outputConnection || block.block_.outputConnection)
 }
 
 /**

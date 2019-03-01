@@ -664,6 +664,14 @@ eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
 }
 
 /**
+ * Connect the expression block.
+ * @param {!Object} block whether to consolidate connected blocks.
+ */
+eYo.Slot.prototype.connect = function (block) {
+  this.connection.connect(block.outputConnection || block.block_.outputConnection)
+}
+
+/**
  * Consolidate the state.
  * Forwards to the connection delegate.
  * For edython.

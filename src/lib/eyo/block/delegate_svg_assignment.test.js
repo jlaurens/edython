@@ -13,6 +13,5 @@ describe('Assignment', function() {
     var input = b1.eyo.value_s.target.lastInput
     input.connection.connect(b2.outputConnection)
     assert(input.connection.targetBlock() === b2, 'MISSED CONNECTION')
-
   })
 })

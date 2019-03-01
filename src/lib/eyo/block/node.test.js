@@ -1,14 +1,14 @@
 var assert = chai.assert
 
 var g = eYo.GMR._PyParser_Grammar
-var workspace = Blockly.mainWorkspace
+var p = new eYo.Py.Exporter()
 
 console.log('RUNNING NODE/BLOCK TESTS')
 
 describe('PREPARE', function() {
   it('Blockly', function() {
     assert(Blockly, `MISSING Blockly`)
-    assert(workspace, `MISSING workspace`)
+    assert(Blockly.mainWorkspace, `MISSING Blockly.mainWorkspace`)
     assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
   })
 })  
@@ -17,7 +17,7 @@ describe('NAME', function() {
   it('NAME', function() {
     var err_ret = {}
     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
-    var b = n.toBlock(workspace)
+    var b = n.toBlock(Blockly.mainWorkspace)
     assert(b, 'MISSING BLOCK')
   })
 })
@@ -35,8 +35,11 @@ var ra_test = (name, str_s) => {
         return function() {
           var err_ret = {}
           var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.file_input, err_ret)
-          var b = n.toBlock(workspace)
+          var b = n.toBlock(Blockly.mainWorkspace)
           assert(b)
+//           var code = p.export(b, {is_deep: true})
+//           assert(str === code, `<
+// ${str}> === <${code}>`)
   // eYo.GMR.dumptree(g, n)
         }
       })()
@@ -104,10 +107,10 @@ var ra_test = (name, str_s) => {
 // ]
 // // ra_test('nonlocal_statement', ra_nonlocal_statement)
 
-// var ra_expressions = [
+var ra_expressions = [
 //   "foo(1)",
 //   "[1, 2, 3]",
-//   "[x**3 for x in range(20)]",
+  "[x**3 for x in range(20)]",
 //   "[x**3 for x in range(20) if x % 3]",
 //   "[x**3 for x in range(20) if x % 2 if x % 3]",
 //   "list(x**3 for x in range(20))",
@@ -146,8 +149,8 @@ var ra_test = (name, str_s) => {
 //   "foo(x for x in range(10))",
 //   "...",
 //   "a[...]",
-// ]
-// // ra_test('expressions', ra_expressions)
+]
+ra_test('expressions', ra_expressions)
 var ra_simple_expression = [
   "a",
 ]

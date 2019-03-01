@@ -318,7 +318,7 @@ eYo.DelegateSvg.Expr.makeSubclass('assignment_expr', {
           css: 'reserved'
         },
       },
-      wrap: eYo.T3.Expr.value_list
+      wrap: eYo.T3.Expr.assignment_value_list
     }
   }
 }, true)

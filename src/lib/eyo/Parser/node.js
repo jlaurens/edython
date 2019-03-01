@@ -140,6 +140,26 @@ Object.defineProperties(eYo.Node.prototype, {
       this.next_ = newValue || null
       newValue && (newValue.previous = this)
     }
+  },
+  n1: {
+    get () {
+      return this.n0.sibling
+    }
+  },
+  n2: {
+    get () {
+      return this.n_child[2]
+    }
+  },
+  n3: {
+    get () {
+      return this.n_child[3]
+    }
+  },
+  n4: {
+    get () {
+      return this.n_child[4]
+    }
   }
 })
 
@@ -166,7 +186,13 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
   eYo.Node.PyNode_AddChild_ = (n1, n2) =>
   {
     n1.n_child.push(n2)
-    n2.n_parent = n1
+    n2.parent = n1
+    if (n1.last_child) {
+      n1.last_child.sibling = n2
+    } else {
+      n1.n0 = n2
+    }
+    n1.last_child = n2
   }
 
   /* int */

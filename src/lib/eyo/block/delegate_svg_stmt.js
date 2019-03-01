@@ -588,7 +588,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         this.owner.updateGroupBlackCount()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.owner.comment_d.isIncog()) {
+        if (this.owner.comment_d.isIncog() && this.value_ !== eYo.Key.TUPLE) {
           this.change(eYo.Key.EXPRESSION)
         }
       }
@@ -604,7 +604,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isIncog()) {
+        if (this.isIncog() && this.owner.tuple_s.isIncog()) {
           this.owner.comment_variant_p = eYo.Key.COMMENT
         }
       },
@@ -628,7 +628,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         this.required = false
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.owner.expression_d.isIncog()) {
+        if (this.owner.expression_d.isIncog() && this.owner.tuple_s.isIncog()) {
           this.setIncog(false)
         }
       }
