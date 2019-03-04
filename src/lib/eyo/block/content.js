@@ -18,8 +18,8 @@ goog.require('eYo.Do')
 goog.require('eYo.T3.Profile')
 
 goog.forwardDeclare('eYo.Field')
-goog.forwardDeclare('eYo.Field.Label')
-goog.forwardDeclare('eYo.Field.Input')
+goog.forwardDeclare('eYo.FieldLabel')
+goog.forwardDeclare('eYo.FieldInput')
 
 /**
  * The field content contains everything needed to create a field eventually.

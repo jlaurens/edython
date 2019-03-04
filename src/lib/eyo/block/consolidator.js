@@ -119,7 +119,8 @@ eYo.Consolidator.List.prototype.init = function (d) {
   eYo.Consolidator.List.superClass_.init.call(this, d)
   goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
   if (this.model.unique) {
-    this.model.unique = eYo.Do.ensureArray(this.model.unique)
+    this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
+    this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
   }
   this.model.ary || (this.model.ary = Infinity)
 }
@@ -266,17 +267,17 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
   if (this.model.all) {
     if (io.unique >= 0 || io.list.length === 1) {
       // a single block or no block at all
-      return this.model.all
+      return this.model.all(io.block.type, io.block.eyo.variant_p)
     } else if (io.list.length === 3 && io.i === 1) {
       // there is only one item in the list
       // and it can be replaced by any kind of block
-      return this.model.all
+      return this.model.all(io.block.type, io.block.eyo.variant_p)
     } else {
       // blocks of type check are already there
-      return this.model.check(io.block.type)
+      return this.model.check(io.block.type, io.block.eyo.variant_p)
     }
   }
-  return this.model.check(io.block.type)
+  return this.model.check(io.block.type, io.block.eyo.variant_p)
 }
 
 /**
@@ -370,7 +371,7 @@ eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
 /**
  * Consolidate the first connected input
  * @param {!Object} io parameter.
- * @return yes exactly if there are more input
+ * @return true exactly if there are more input
  */
 eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
   // let subclassers catch this if they want to.
@@ -430,9 +431,7 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
       io.postsep = io.eyo.postsep || this.model.postsep
       // manage the unique input
       if (this.model.unique && io.unique < 0 &&
-        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, (x) => {
-            return this.model.unique.indexOf(x) >= 0
-          })) {
+        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, x => this.model.unique(io.block.type, io.block.eyo.variant_p).indexOf(x) >= 0)) {
         io.unique = io.i
       }
       return true
@@ -631,7 +630,8 @@ eYo.Consolidator.List.prototype.getIO = function (block) {
         !unwrapped.eyo.withDynamicList_),
     list: block.inputList,
     presep: this.model.presep,
-    postsep: this.model.postsep
+    postsep: this.model.postsep,
+    unique: -1
   }
   this.setupIO(io, 0)
   return io
@@ -793,4 +793,4 @@ eYo.Consolidator.List.prototype.hasInputForType = function (block, type) {
  * Both given types must be orthogonal.
  * There should not exist blocks that provide both types.
  */
-eYo.Consolidator.List.makeSubclass('Singled')
+eYo.Consolidator.List.makeSubclass('enclosure')

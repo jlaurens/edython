@@ -344,26 +344,15 @@ eYo.Do.ensureFunction = function (object) {
  * @param {!Object} object
  * @return A function with signature f() -> []
  */
-eYo.Do.ensureArrayFunction = function (object) {
+eYo.Do.ensureArrayFunction = object => {
   var did = goog.isFunction(object)
     ? object
     : goog.isArray(object)
-      ? function () {
-        return object
-      }
+      ? () => object
       : object
-        ? function () {
-          return [object]
-        }
-        : function () {
-        }
+        ? () => [object]
+        : () => {}
   return did
-}
-
-eYo.Do.Exec = function (f) {
-  return goog.isFunction(f)
-  ? f(Array.prototype.slice.call(arguments, 1))
-  : f
 }
 
 eYo.Do.createSPAN = function (text, css) {

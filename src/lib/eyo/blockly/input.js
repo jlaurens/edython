@@ -135,3 +135,19 @@ eYo.InputDelegate.prototype.consolidate = function () {
   var c8n = this.owner.connection
   c8n && c8n.eyo.consolidate(arguments)
 }
+
+/**
+ * Connect the owner to something.
+ * @param{!Object} something  Something is either an object with an output connection, the delegate of such an object, a connection
+ */
+eYo.InputDelegate.prototype.connect = function (something) {
+  var c8n = this.owner.connection
+  if(c8n && something) {
+    var other = something.outputConnection || (something.block_ && something.block_.outputConnection) || something
+    if (c8n.checkType_(other)) {
+      c8n.eyo.connect(other)
+      return true
+    }
+  }
+}
+

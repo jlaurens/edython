@@ -145,7 +145,7 @@ eYo.BlockSvg.prototype.connectionUiEffect = function () {
       ripple = Blockly.utils.createSvgElement('path',
         {'class': 'blocklyHighlightedConnectionPath',
           'd': steps,
-          transform: 'translate(' + xy.x + ',' + xy.y + ') scale(1,2)'},
+          transform: `translate(${xy.x},${xy.y}) scale(1,2)`},
         this.workspace.getParentSvg())
     }
     // Start the animation.

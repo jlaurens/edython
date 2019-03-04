@@ -267,7 +267,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   },
   output: {
     check: /** @suppress globalThis */ function () {
-      return [this.sourceBlock().eyo.subtype_d.get()]
+      return [this.sourceBlock().eyo.subtype_p]
     }
   }
 })

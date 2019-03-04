@@ -12,7 +12,6 @@
 'use strict'
 
 goog.provide('eYo.FieldLabel')
-goog.provide('eYo.Field.Label')
 
 goog.require('eYo.FieldHelper')
 goog.require('Blockly.FieldLabel')

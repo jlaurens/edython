@@ -77,24 +77,33 @@ generator_expression ::= REMOVE
 </pre>
 
 <pre>
+list_comprehension ::=  expression comp_for
+comprehension ::= list_comprehension | dict_comprehension
 comp_iter_list ::= (comp_iter) *
 </pre>
-list_display ::=  "[" [starred_list | comprehension] "]"
-set_display ::=  "{" (starred_list | comprehension) "}"
+list_display ::=  "[" [starred_list | list_comprehension] "]"
+set_display ::=  "{" (starred_list | list_comprehension) "}"
 <pre>
 list_display ::=  "[" starred_item_list_comprehensive "]"
-starred_item_list_comprehensive ::= starred_item | comprehension
+starred_item_list_comprehensive ::= starred_item | list_comprehension
 starred_list -> non_void_starred_item_list
 starred_list ::= non_void_starred_item_list
 set_display ::=  "{" non_void_starred_item_list_comprehensive "}"
-non_void_starred_item_list_comprehensive ::= starred_item | comprehension
+non_void_starred_item_list_comprehensive ::= starred_item | list_comprehension
 </pre>
 <pre>
 key_datum_list ::= key_datum_all ("," key_datum_all)* [","]
 key_datum_list_comprehensive ::= key_datum_all | dict_comprehension
-key_datum_all ::= or_expr_star_star | key_datum
+key_datum_all ::= or_expr_star_star | key_datum | identifier_annotated
 key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all
+</pre>
+expression_key_datum is for comprehension
+enclosure_list ::= starred_item
+enclosure_dict ::= key_datum_all
+<pre>
+expression_key_datum ::= expression | key_datum | identifier_annotated
+enclosure_list_unique ::= yield_expression | list_comprehension
 </pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
