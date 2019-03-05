@@ -198,157 +198,6 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 })
 
 /**
- * Class for a DelegateSvg, starred_item_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('starred_item_list', {
-  list: {
-    check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    mandatory: 0,
-    presep: ',',
-    hole_value: 'name'
-  }
-})
-
-/**
- * Class for a DelegateSvg, non_void_starred_item_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list', {
-  list: {
-    check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    mandatory: 1,
-    presep: ',',
-    hole_value: 'name'
-  }
-})
-
-/**
- * Class for a DelegateSvg, starred_item_list_comprehensive block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('starred_item_list_comprehensive', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    unique: eYo.T3.Expr.comprehension,
-    consolidator: eYo.Consolidator.List.enclosure,
-    mandatory: 0,
-    presep: ',',
-    hole_value: 'name'
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    list: D
-  }
-})
-
-/**
- * Class for a DelegateSvg, list_display block.
- * For edython.
- */
-eYo.DelegateSvg.Expr.starred_item_list_comprehensive.makeSubclass('list_display', {
-  xml: {
-    attr: '[]'
-  },
-  fields: {
-    prefix: '[',
-    suffix: ']'
-  }
-})
-
-/**
- * Class for a DelegateSvg, non_void_starred_item_list_comprehensive block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('non_void_starred_item_list_comprehensive', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    unique: eYo.T3.Expr.comprehension,
-    consolidator: eYo.Consolidator.List.enclosure,
-    mandatory: 1,
-    presep: ',',
-    hole_value: 'name'
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    list: D
-  }
-})
-
-/**
- * Class for a DelegateSvg, set_display block.
- * For edython.
- */
-eYo.DelegateSvg.Expr.non_void_starred_item_list_comprehensive.makeSubclass('set_display', {
-  xml: {
-    attr: '{}'
-  },
-  fields: {
-    prefix: '{',
-    suffix: '}'
-  }
-}, true)
-
-/**
- * Class for a DelegateSvg, key_datum_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('key_datum_list', {
-  list: {
-    check: eYo.T3.Expr.Check.key_datum_all,
-    mandatory: 0,
-    presep: ','
-  }
-})
-
-/**
- * Class for a DelegateSvg, key_datum_list_comprehensive block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('key_datum_list_comprehensive', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.key_datum_list,
-    unique: eYo.T3.Expr.dict_comprehension,
-    consolidator: eYo.Consolidator.List.enclosure,
-    mandatory: 0,
-    presep: ','
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    list: D
-  }
-})
-
-/**
- * Class for a DelegateSvg, dict_display block.
- * For edython.
- */
-eYo.DelegateSvg.Expr.key_datum_list_comprehensive.makeSubclass('dict_display', {
-  fields: {
-    prefix: '{',
-    suffix: '}'
-  }
-}, true)
-
-/**
  * Class for a DelegateSvg, slice_list block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
@@ -528,6 +377,10 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
 eYo.DelegateSvg.Expr.enclosure.prototype.getBaseType = function () {
   return this.profile_p
 }
+;['parenth_form', 'list_display', 'set_display', 'dict_display'].forEach(k => {
+  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.enclosure
+  eYo.DelegateSvg.Manager.register(k)
+})
 
 eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.identifier,
@@ -536,14 +389,9 @@ eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.key_datum,
   eYo.T3.Expr.optional_expression_list,
   eYo.T3.Expr.non_void_expression_list,
-  eYo.T3.Expr.starred_item_list,
   eYo.T3.Expr.parenth_form,
-  eYo.T3.Expr.key_datum_list,
-  eYo.T3.Expr.starred_item_list_comprehensive,
   eYo.T3.Expr.list_display,
-  eYo.T3.Expr.non_void_starred_item_list_comprehensive,
   eYo.T3.Expr.set_display,
-  eYo.T3.Expr.key_datum_list_comprehensive,
   eYo.T3.Expr.dict_display,
   eYo.T3.Expr.slice_list,
   eYo.T3.Expr.dict_display,

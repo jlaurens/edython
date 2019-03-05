@@ -35,12 +35,7 @@ starred_expression ::=  expression | ( starred_item "," )* [starred_item]
 starred_item       ::=  expression | "*" or_expr
 <pre>
 # starred_expression ::= expression | ( starred_item ',' )* [ starred_item ]
-#starred_expression -> starred_item_list
-#starred_expression ::= starred_item_list
-starred_item_list ::= starred_item ? ( ',' starred_item ) * [',']
 # starred_list ::=  starred_item ( "," starred_item )* [","]
-starred_list ::= non_void_starred_item_list
-non_void_starred_item_list ::= starred_item ( ',' starred_item ) * [',']
 starred_item ::=  expression | star_expr
 star_expr ::=  "*" or_expr_all
 # expression_list -> non_void_expression_list
@@ -71,7 +66,6 @@ starred_expression ::=  expression | ( starred_item "," )* [starred_item]
 starred_item       ::=  expression | "*" or_expr_all!!
 yield_atom       ::=  "(" yield_expression ")"
 <pre>
-parenth_form ::=  "(" starred_item_list | yield_expression ")"
 yield_atom ::= REMOVE
 generator_expression ::= REMOVE
 </pre>
@@ -82,16 +76,6 @@ comp_iter_list ::= (comp_iter) *
 list_display ::=  "[" [starred_list | comprehension] "]"
 set_display ::=  "{" (starred_list | comprehension) "}"
 <pre>
-list_display ::=  "[" starred_item_list_comprehensive "]"
-starred_item_list_comprehensive ::= starred_item | comprehension
-starred_list -> non_void_starred_item_list
-starred_list ::= non_void_starred_item_list
-set_display ::=  "{" non_void_starred_item_list_comprehensive "}"
-non_void_starred_item_list_comprehensive ::= starred_item | comprehension
-</pre>
-<pre>
-key_datum_list ::= key_datum_all ("," key_datum_all)* [","]
-key_datum_list_comprehensive ::= key_datum_all | dict_comprehension
 key_datum_all ::= or_expr_star_star | key_datum | identifier_annotated
 key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all
