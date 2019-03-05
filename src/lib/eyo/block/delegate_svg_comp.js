@@ -74,7 +74,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type) {
-      // this is a connection delegate
+      // `this` is a connection delegate
       // we do not take the type argument into account
       var eyo = this.b_eyo // does is always exist ?
       var t = eyo.expression_t
@@ -104,6 +104,15 @@ eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.comprehension
   eYo.DelegateSvg.Manager.register(k)
 })
+
+/**
+ * The xml tag name of this block, as it should appear in the saved data.
+ * For edython.
+ * @return attr name
+ */
+eYo.DelegateSvg.Expr.comprehension.prototype.xmlAttr = function () {
+  return 'comprehension'
+}
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -172,7 +181,8 @@ eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'key'
+      hole_value: 'key',
+      placeholder: eYo.Msg.Placeholder.KEY
     },
     datum: {
       order: 2,
@@ -180,7 +190,8 @@ eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
         label: ':'
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value'
+      hole_value: 'value',
+      placeholder: eYo.Msg.Placeholder.VALUE
     }
   }
 }, true)

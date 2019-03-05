@@ -18,7 +18,9 @@ is not resolved and left as is.
 For non shallow types, we will replace each type component that is a wrapper with the wrapped components
 and so on recursively.
 <pre>
-enclosure ::= parenth_form | list_display | dict_display | set_display # | generator_expression | yield_atom
+enclosure ::= parenth_form | list_display |  dict_display | set_display | one_set_display | one_dict_display # | generator_expression | yield_atom
+one_set_display ::= '{' starred_item '}'
+one_dict_display ::= '{' key_datum_all '}'
 </pre>
 atom      ::=  identifier | literal | enclosure
 The void type is a 0 length identifier.
@@ -75,7 +77,9 @@ comp_iter_list ::= (comp_iter) *
 </pre>
 list_display ::=  "[" [starred_list | comprehension] "]"
 set_display ::=  "{" (starred_list | comprehension) "}"
+
 <pre>
+starred_item_all ::= starred_item | key_datum_all
 key_datum_all ::= or_expr_star_star | key_datum | identifier_annotated
 key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all

@@ -109,7 +109,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
@@ -406,7 +406,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression'
+      hole_value: 'expr'
     },
     expression2: {
       order: 2,

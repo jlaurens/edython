@@ -126,6 +126,15 @@
         v-else-if="isSelected($$.eYo.T3.Stmt.import_stmt)"
         :slotholder="slotholder"
       />
+      <block-enclosure
+        v-else-if="isSelected([
+        $$.eYo.T3.Expr.parenth_form,
+        $$.eYo.T3.Expr.list_display,
+        $$.eYo.T3.Expr.set_display,
+        $$.eYo.T3.Expr.dict_display,
+        ])"
+        :slotholder="slotholder"
+      />
       <block-pcb-gnd-r
         v-else-if="isSelected([
           $$.eYo.T3.Stmt.pass_stmt,
@@ -222,6 +231,7 @@
   import BlockYield from './Block/Yield.vue'
   import BlockRange from './Block/Range.vue'
   import BlockBranch from './Block/Branch.vue'
+  import BlockEnclosure from './Block/Enclosure.vue'
 
   var ResizeSensor = require('css-element-queries/src/ResizeSensor')
 
@@ -264,7 +274,8 @@
       BlockRaise,
       BlockYield,
       BlockRange,
-      BlockBranch
+      BlockBranch,
+      BlockEnclosure
     },
     computed: {
       ...mapState('UI', [

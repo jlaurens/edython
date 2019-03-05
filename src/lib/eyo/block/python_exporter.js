@@ -149,7 +149,7 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
       this.exportExpression_(block, opt)
       if ((input = eyo.inputSuite)) {
         var f = () => {
-          if ((target = input.connection.targetBlock())) {
+          if ((target = input.eyo.target)) {
             eYo.Do.tryFinally(() => {
               opt.is_deep = true
               this.export(target, opt)

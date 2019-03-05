@@ -284,7 +284,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
     var parentInputC8n = parentInput.connection
     goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.slot+ ' in ' + parentBlock.type)
   } else if ((parentInput = parentBlock.eyo.getInput(eYo.Key.LIST, true))) {
-    var list = parentInput.connection.targetBlock()
+    var list = parentInput.eyo.target
     goog.asserts.assert(list, 'Missing list block inside ' + block.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh

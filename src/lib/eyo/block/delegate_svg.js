@@ -443,7 +443,7 @@ eYo.DelegateSvg.prototype.getField = function (name) {
  */
 eYo.DelegateSvg.prototype.getMenuTarget = function () {
   var wrapped
-  if (this.wrap && (wrapped = this.wrap.input.connection.targetBlock())) {
+  if (this.wrap && (wrapped = this.wrap.input.eyo.target)) {
     return wrapped.eyo.getMenuTarget()
   }
   if (this.wrappedC8nDlgt_ && this.wrappedC8nDlgt_.length === 1 &&
@@ -1985,7 +1985,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var input = this.getInput(k)
             if (input && input.connection) {
-              var target = input.connection.targetBlock()
+              var target = input.eyo.target
               var V = Vs[k]
               var B = processModel(target, V)
               if (!target && B && B.outputConnection) {
@@ -2014,7 +2014,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
           } else {
             return
           }
-          var target = input.connection.targetBlock()
+          var target = input.eyo.target
           var B = processModel(target, V)
           if (!target && B && B.outputConnection) {
             B.eyo.changeWrap(

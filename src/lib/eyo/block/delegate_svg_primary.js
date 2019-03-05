@@ -308,7 +308,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     annotation: {
       order: 1000,
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.Msg.Placeholder.EXPR,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
@@ -630,7 +630,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         this.connection.sourceBlock_.eyo.updateProfile()
       },
       plugged: eYo.T3.Expr.primary,
-      hole_value: 'expression',
+      hole_value: 'expr',
       fields: {
         bind: {
           validate: true,
@@ -680,7 +680,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
           this.owner.variant_p = eYo.Key.ANNOTATED
@@ -699,7 +699,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression',
+      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
           this.owner.variant_p = eYo.Key.DEFINED

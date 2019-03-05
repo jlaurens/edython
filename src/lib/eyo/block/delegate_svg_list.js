@@ -148,7 +148,6 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   )
 }
 
-
 /**
  * Increment the change count.
  * Force to recompute the chain tile.
@@ -166,6 +165,16 @@ eYo.DelegateSvg.List.prototype.incrementInputChangeCount = function () {
   }
   this.incrementChangeCount()
 }
+
+Object.defineProperties(eYo.DelegateSvg.List.prototype, {
+  firstTarget: {
+    get () {
+      var t
+      this.block_.inputList.some(input => (t = input.eyo.target))
+      return t
+    }
+  }
+})
 
 /**
  * Class for a DelegateSvg, optional expression_list block.
@@ -252,6 +261,11 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
  * What are the checks for all the connections, when not unique
  * '()' and '{}': starred_item
  * '{}': key_datum_all
+ * What are the possibilities with braces.
+ * 1) void :
+ * what can be connected: comprehension, dict_comprehension, star_item, key_datum_all
+ * 2) singleton set_display: replacement for the unique connection: same as above
+ * 3) singleton dict_display: replacement for the unique connection: same as above
  */
 eYo.DelegateSvg.List.makeSubclass('enclosure', {
   data: {
@@ -267,6 +281,19 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
         var o = this.owner
         o.fields.prefix.setValue(newValue[0])
         o.fields.suffix.setValue(newValue[1])
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.parenth_form) {
+          this.set(eYo.Key.PAR)
+        } else if (type === eYo.T3.Expr.list_display) {
+          this.set(eYo.Key.SQB)
+        } else if (type === eYo.T3.Expr.set_display) {
+          this.set(eYo.Key.BRACE)
+        } else if (type === eYo.T3.Expr.dict_display) {
+          this.set(eYo.Key.BRACE)
+        } else {
+          this.set(eYo.Key.PAR)
+        }
       }
     }
   },
@@ -276,41 +303,63 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
   },
   list: (() => {
     var me = {
-      unique: (type, variant) => {
+      unique: (type) => {
         return {
-          [eYo.Key.PAR]: eYo.T3.Expr.Check.enclosure_list_unique,
-          [eYo.Key.SQB]: [eYo.T3.Expr.comprehension],
-          [eYo.Key.BRACE]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
-        } [variant]
+          [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.enclosure_list_unique,
+          [eYo.T3.Expr.list_display]: [eYo.T3.Expr.comprehension],
+          [eYo.T3.Expr.one_set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
+          [eYo.T3.Expr.set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
+          [eYo.T3.Expr.one_dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
+          [eYo.T3.Expr.dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
+        } [type]
       },
-      check: (type, variant) => {
+      check: (type) => {
         return {
-          [eYo.Key.PAR]: eYo.T3.Expr.Check.starred_item,
-          [eYo.Key.SQB]: eYo.T3.Expr.Check.starred_item,
-          [eYo.Key.BRACE]: eYo.T3.Expr.Check.key_datum_all
-        } [variant]
+          [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Expr.list_display]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Expr.one_set_display]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Expr.set_display]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Expr.one_dict_display]: eYo.T3.Expr.Check.key_datum_all,
+          [eYo.T3.Expr.dict_display]: eYo.T3.Expr.Check.key_datum_all
+        } [type]
       },
       mandatory: 0,
       presep: ','
     }
     var all = {}
-    ;[eYo.Key.PAR, eYo.Key.SQB, eYo.Key.BRACE].forEach(k => {
-      all[k] = goog.array.concat(me.unique(undefined, k), me.check(undefined, k))
+    ;[eYo.T3.Expr.parenth_form,
+      eYo.T3.Expr.list_display,
+      eYo.T3.Expr.set_display,
+      eYo.T3.Expr.dict_display].forEach(k => {
+      all[k] = goog.array.concat(me.unique(k), me.check(k))
     })
-    me.all = (type, variant) => {
-      return all [variant]
+    all[eYo.T3.Expr.one_set_display] = all[eYo.T3.Expr.one_dict_display] = goog.array.concat(
+      me.unique(eYo.T3.Expr.one_set_display),
+      me.check(eYo.T3.Expr.dict_display),
+      me.check(eYo.T3.Expr.set_display))
+    me.all = (type) => {
+      return all [type]
     }
     return me
   }) (),
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the block delegate
-      return [this.b_eyo.profile_p]
+      var b_eyo = this.b_eyo
+      var target = b_eyo.firstTarget
+      var p5e = b_eyo.profile_p
+      if (target) {
+        return [p5e]
+      }
+      if (p5e === eYo.T3.Expr.set_display || p5e === eYo.T3.Expr.dict_display ) {
+        return [eYo.T3.Expr.set_display, eYo.T3.Expr.dict_display]
+      }
+      return [p5e]
     }
   }
 })
 
-Object.defineProperties( eYo.DelegateSvg.Expr.enclosure.prototype, {
+Object.defineProperties(eYo.DelegateSvg.Expr.enclosure.prototype, {
   profile_p : {
     get () {
       var p = this.getProfile()
@@ -341,20 +390,25 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
       if (variant === eYo.Key.SQB) {
         return {ans: eYo.T3.Expr.list_display}
       }
-      // get the first target
-      var t = eYo.T3.Expr.dict_display
-      this.block_.inputList.some(input => {
-        var target = input.eyo.target
-        if (target) {
-          if (target.type === eYo.T3.Expr.comprehension) {
-            t = eYo.T3.Expr.set_display
-          } else if (this.model.list.check(type, variant).indexOf(target.type) >= 0) {
-            t = eYo.T3.Expr.set_display
-          }
-          return true
+      var target = this.firstTarget
+      if (target) {
+        if (target.type === eYo.T3.Expr.comprehension) {
+          return {ans: eYo.T3.Expr.set_display}
+        } else if (target.type === eYo.T3.Expr.dict_comprehension) {
+          return {ans: eYo.T3.Expr.dict_display}
+        } else if (this.block_.inputList.length < 4) {
+            if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
+              return {ans: eYo.T3.Expr.one_set_display}
+            } else {
+              return {ans: eYo.T3.Expr.one_dict_display}
+            }
+        } else if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
+          return {ans: eYo.T3.Expr.set_display}
+        } else {
+          return {ans: eYo.T3.Expr.dict_display}
         }
-      })
-      return {ans: t}
+      }
+      return {ans: eYo.T3.Expr.one_dict_display}
     }
     return {ans: eYo.T3.Expr.parenth_form}
   }
@@ -377,7 +431,7 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
 eYo.DelegateSvg.Expr.enclosure.prototype.getBaseType = function () {
   return this.profile_p
 }
-;['parenth_form', 'list_display', 'set_display', 'dict_display'].forEach(k => {
+;['parenth_form', 'list_display', 'set_display', 'dict_display', 'one_set_display', 'one_dict_display'].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.enclosure
   eYo.DelegateSvg.Manager.register(k)
 })

@@ -1158,7 +1158,7 @@ eYo.Xml.fromDom = function (block, element) {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = eyo.getInput(name)
           if (input && input.connection) {
-            var target = input.connection.targetBlock()
+            var target = input.eyo.target
             if (target) {
               target.eyo.recover.dontResit(child)
               eYo.Xml.fromDom(target, child)

@@ -358,7 +358,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/module/delegate_svg_stdtypes.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
 --js "src/lib/eyo/module/delegate_svg_turtle.js" \
---js "src/lib/eyo/block/development.js" \
 --js "src/lib/eyo/block/xml.js" \
 --js "src/lib/eyo/workspace/app.js" \
 --js "src/lib/eyo/workspace/demo.js" \

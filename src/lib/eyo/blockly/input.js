@@ -44,7 +44,7 @@ Blockly.Input.prototype.setVisible = function (visible) {
     } else {
       this.connection.hideAll()
     }
-    var child = this.connection.targetBlock()
+    var child = this.eyo.target
     if (child) {
       if (visible) {
         child.getSvgRoot().removeAttribute('display')
@@ -100,24 +100,26 @@ eYo.InputDelegate = function (input) {
   input.eyo = this
 }
 
-Object.defineProperties(
-  eYo.InputDelegate.prototype,
-  {
-    tile: {
-      get () {
-        if (!this.tile_) {
-          this.updateTile()
-        }
-        return this.tile_
+Object.defineProperties(eYo.InputDelegate.prototype, {
+  tile: {
+    get () {
+      if (!this.tile_) {
+        this.updateTile()
       }
-    },
-    connection: {
-      get () {
-        return this.owner.connection
-      }
+      return this.tile_
+    }
+  },
+  connection: {
+    get () {
+      return this.owner.connection
+    }
+  },
+  target: {
+    get () {
+      return this.connection && this.connection.targetBlock()
     }
   }
-)
+})
 
 /**
  * be ready the delegate.

@@ -44,7 +44,7 @@ eYo.Consolidator.PrintArguments.prototype.doFinalize = function (io) {
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
     ]))) {
-      var target = input.connection.targetBlock()
+      var target = input.eyo.target
       if (target) {
         if (io.i-- && this.setupIO(io)) {
           if (!io.c8n.targetConnection) {
@@ -123,7 +123,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.prototype.getMenuTarget = function () {
  */
 eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var list = block.getInput(eYo.Key.N_ARY).connection.targetBlock()
+  var list = block.getInput(eYo.Key.N_ARY).eyo.target
   var c10r = list.eyo.consolidator
   var yorn = false
   if (!c10r.hasInputForType(list, eYo.T3.Expr.comprehension)) {
@@ -134,7 +134,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
     ]))) {
-      var target = input.connection.targetBlock()
+      var target = input.eyo.target
       if (target && target.eyo.name_d) {
         has[target.eyo.name_d.get()] = target
       }
