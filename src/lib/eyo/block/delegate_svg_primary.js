@@ -845,6 +845,7 @@ eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_me
     }
   }
 )
+
 /**
  * getProfile.
  * What are the types of holder and name?
@@ -1067,7 +1068,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function (profile) {
       eYo.T3.Expr.expression_as
     ]
   } else if (profile.variant === eYo.Key.ANNOTATED) {
-    return profile.name.type === eYo.T3.Expr.identifier
+    return profile.name.type === eYo.T3.Expr.identifier || profile.name.type === eYo.T3.Expr.unset
       ? [
         eYo.T3.Expr.identifier_annotated,
         eYo.T3.Expr.key_datum

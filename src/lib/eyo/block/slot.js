@@ -691,7 +691,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     c_eyo.wrapped_ && c8n.setHidden(true) // Don't ever connect any block to this
     var v
     if ((v = this.model.check)) {
-      var check = v.call(c_eyo, c8n.sourceBlock_.type)
+      var check = v.call(c_eyo, c8n.sourceBlock_.type, c8n.sourceBlock_.eyo.variant_p)
       c8n.setCheck(check)
       if (check && !this.model.wrap) {
         c_eyo.hole_data = eYo.HoleFiller.getData(check, this.model.hole_value)        
@@ -960,6 +960,23 @@ eYo.Slot.prototype.forEach = function (helper) {
     do {
       helper(slot)
     } while ((slot = slot.next))
+  }
+}
+
+/**
+ * Connect to the target.
+ * For edython.
+ * @param {!Object} target (Block, delegate of connection)
+ * @return {Boolean} true when connected
+ */
+eYo.Slot.prototype.connect = function (something) {
+  var c8n = this.connection
+  if(c8n && something) {
+    var other = something.outputConnection || (something.block_ && something.block_.outputConnection) || something
+    if (c8n.checkType_(other)) {
+      c8n.eyo.connect(other)
+      return true
+    }
   }
 }
 

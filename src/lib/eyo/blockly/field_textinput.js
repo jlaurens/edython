@@ -17,7 +17,6 @@ goog.provide('eYo.FieldVariable')
 
 goog.provide('eYo.Field.TextInput')
 goog.provide('eYo.Field.Variable')
-goog.provide('eYo.Field.Input')
 
 goog.require('eYo.FieldHelper')
 goog.require('eYo.Msg')

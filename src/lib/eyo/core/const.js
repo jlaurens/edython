@@ -205,6 +205,10 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   TRUE: 'true', // attribute value
   FALSE: 'false', // attribute value
   
+  PAR: '()', // also used in xml eyo attribute
+  SQB: '[]', // also used in xml eyo attribute
+  BRACE: '{}', // also used in xml eyo attribute
+  
   /*
 "LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGETS", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
 */

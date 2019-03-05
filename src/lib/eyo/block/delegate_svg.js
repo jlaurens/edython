@@ -1315,6 +1315,9 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
       f_eyo.size.set(text.length, 1)
       field.updateWidth()
       if (text.length) {
+        if (text === '>') {
+          console.error(io)
+        }
         this.renderDrawEnding_(io)
         this.renderDrawPending_(io)
         io.common.startOfStatement = false

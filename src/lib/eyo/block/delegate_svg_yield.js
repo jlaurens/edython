@@ -150,7 +150,7 @@ eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
   var D = {
     check: eYo.T3.Expr.Check.non_void_starred_item_list,
     unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.comprehension],
-    consolidator: eYo.Consolidator.List.Singled,
+    consolidator: eYo.Consolidator.List.enclosure,
     mandatory: 0,
     presep: ',',
     hole_value: 'name'

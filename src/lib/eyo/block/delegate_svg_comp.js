@@ -21,11 +21,36 @@ goog.require('eYo.DelegateSvg.List')
  * For edython.
  */
 eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
+  data: {
+    expression: {
+      order: 1,
+      init: '',
+      placeholder: eYo.Msg.Placeholder.TERM,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var type = eYo.T3.Profile.get(newValue)
+        return type.expr === eYo.T3.Expr.identifier
+        ? {validated: newValue} : null
+      },
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (!this.owner.expression_t) {
+            this.save(element, opt)
+          }
+        }
+      }
+    },
+  },
   slots: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'name'
+      check: eYo.T3.Expr.Check.expression_key_datum,
+      fields: {
+        bind: {
+          validate: true,
+          endEditing: true,
+        }
+      }
     },
     for: {
       order: 2,
@@ -46,8 +71,39 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
       order: 4,
       wrap: eYo.T3.Expr.comp_iter_list
     }
+  },
+  output: {
+    check: /** @suppress {globalThis} */ function (type) {
+      // this is a connection delegate
+      // we do not take the type argument into account
+      var eyo = this.b_eyo // does is always exist ?
+      var t = eyo.expression_t
+      if (t) {
+        if (t.type === eYo.T3.Expr.key_datum || t.type === eYo.T3.Expr.identifier_annotated) {
+          return [eYo.T3.Expr.dict_comprehension]
+        }
+      } else if (!eyo.expression_p.length) {
+        return [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
+      }
+      return [eYo.T3.Expr.comprehension]
+    }
   }
 }, true)
+
+/**
+ * getBaseType.
+ * The type depends on the variant and the modifiers.
+ * As side effect, the subtype is set.
+ */
+eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
+  var check = this.outputConnection.check_
+  return (check && check[0]) || eYo.T3.Expr.comprehension
+}
+
+;['dict_comprehension'].forEach(k => {
+  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.comprehension
+  eYo.DelegateSvg.Manager.register(k)
+})
 
 /**
  * Class for a DelegateSvg, comp_for block.
@@ -105,48 +161,6 @@ eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
     presep: ','
   }
 })
-
-/**
- * Class for a DelegateSvg, dict comprehension value block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('dict_comprehension', {
-  slots: {
-    key: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'key'
-    },
-    datum: {
-      order: 2,
-      fields: {
-        label: ':'
-      },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value'
-    },
-    for: {
-      order: 3,
-      fields: {
-        label: 'for'
-      },
-      wrap: eYo.T3.Expr.target_list
-    },
-    in: {
-      order: 4,
-      fields: {
-        label: 'in'
-      },
-      check: eYo.T3.Expr.Check.or_test_all,
-      hole_value: 'name'
-    },
-    for_if: { // that name is so ugly
-      order: 5,
-      wrap: eYo.T3.Expr.comp_iter_list
-    }
-  }
-}, true)
 
 /**
  * Class for a DelegateSvg, key_datum block.

@@ -410,7 +410,7 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type) {
-      var eyo = this.b_eyo // does is always exist ?
+      var eyo = this.b_eyo // does it always exist ?
       var c8nIn = eyo.expression_s.connection
       var cond_in = true // cond are accepted by default
       var nocond_in = true // nocond are accepted by default

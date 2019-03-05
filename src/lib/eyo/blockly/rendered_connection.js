@@ -194,6 +194,9 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
  * `beReady` the target block.
  */
 eYo.ConnectionDelegate.prototype.beReady = function () {
+  if (!this.connection.inDB_ &&!this.connection.hidden_) {
+
+  }
   var target = this.connection.targetBlock()
   if (target) {
     target.eyo.beReady()
@@ -600,7 +603,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
   Blockly.utils.createSvgElement('path',
     {'class': 'blocklyHighlightedConnectionPath',
       'd': steps,
-      transform: 'translate(' + this.x + ',' + this.y + ')'},
+      transform: `translate(${this.x || 0}, ${this.y || 0})`},
     block.getSvgRoot())
 }
 
@@ -1116,7 +1119,7 @@ Blockly.RenderedConnection.prototype.setHidden = (() => {
  */
 Blockly.RenderedConnection.prototype.moveTo = function (x, y) {
   // ADDED by JL: do nothing when the connection did not move
-  if (this.x_ !== x || this.y_ !== y) {
+  if (this.x_ !== x || this.y_ !== y || (!x && !y)) {
     // Remove it from its old location in the database (if already present)
     if (this.inDB_) {
       this.db_.removeConnection_(this)

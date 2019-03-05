@@ -92,9 +92,16 @@ non_void_starred_item_list_comprehensive ::= starred_item | comprehension
 <pre>
 key_datum_list ::= key_datum_all ("," key_datum_all)* [","]
 key_datum_list_comprehensive ::= key_datum_all | dict_comprehension
-key_datum_all ::= or_expr_star_star | key_datum
+key_datum_all ::= or_expr_star_star | key_datum | identifier_annotated
 key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all
+</pre>
+expression_key_datum is for comprehension
+enclosure_list ::= starred_item
+enclosure_dict ::= key_datum_all
+<pre>
+expression_key_datum ::= expression | key_datum | identifier_annotated
+enclosure_list_unique ::= yield_expression | comprehension
 </pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word

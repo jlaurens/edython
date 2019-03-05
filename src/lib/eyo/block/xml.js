@@ -384,6 +384,8 @@ eYo.DelegateSvg.newBlockComplete = (() => {
       if (model.startsWith('<')) {
         var B = eYo.Xml.stringToBlock(model, owner)
       }
+    } else if (model.getAttribute) {
+      B = eYo.Xml.domToBlock(model, owner)
     }
     if (!B) {
       B = newBlockComplete.call(this, owner, model, id)
@@ -1035,7 +1037,8 @@ eYo.Xml.domToBlock = (() => {
         (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Starred.domToBlockComplete(dom, owner)) ||
         // (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
-        (block = eYo.Xml.Call.domToBlockComplete(dom, owner))) {
+        (block = eYo.Xml.Call.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Compatibility.domToBlockComplete(dom, owner))) {
           eYo.Xml.fromDom(block, dom)
           return block
         }
@@ -1345,6 +1348,41 @@ goog.provide('eYo.Xml.Group')
 //     return block
 //   }
 // }
+
+goog.provide('eYo.Xml.Compatibility')
+
+/**
+ * .
+ * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block
+ * @override
+ */
+eYo.Xml.Compatibility.domToBlockComplete = function (element, owner) {
+  var name = element.getAttribute(eYo.Key.EYO)
+  // deprecated since v0.3.0
+  if (name === 'dict_comprehension') {
+    // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
+    var workspace = owner.workspace || owner
+    var id = element.getAttribute('id')
+    var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.comprehension, id)
+    if (block) {
+      var kd = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.key_datum)
+      // the 'key' slot
+      eYo.Do.forEachElementChild(element, child => {
+        var name = child.getAttribute(eYo.Xml.SLOT)
+        if (name === 'key') {
+          var bb = eYo.DelegateSvg.newBlockComplete(workspace, child)
+          kd.eyo.name_s.connect(bb)
+        } else if (name === 'datum') {
+          var bb = eYo.DelegateSvg.newBlockComplete(workspace, child)
+          kd.eyo.annotation_s.connect(bb)
+        }
+      })
+      block.eyo.expression_s.connect(kd)
+      return block
+    }
+  }
+}
 
 goog.provide('eYo.Xml.Call')
 
