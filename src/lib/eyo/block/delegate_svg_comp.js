@@ -83,9 +83,9 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
           return [eYo.T3.Expr.dict_comprehension]
         }
       } else if (!eyo.expression_p.length) {
-        return [eYo.T3.Expr.list_comprehension, eYo.T3.Expr.dict_comprehension]
+        return [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
       }
-      return [eYo.T3.Expr.list_comprehension]
+      return [eYo.T3.Expr.comprehension]
     }
   }
 }, true)
@@ -97,10 +97,10 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
  */
 eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
   var check = this.outputConnection.check_
-  return (check && check[0]) || eYo.T3.Expr.list_comprehension
+  return (check && check[0]) || eYo.T3.Expr.comprehension
 }
 
-;['list_comprehension', 'dict_comprehension'].forEach(k => {
+;['dict_comprehension'].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.comprehension
   eYo.DelegateSvg.Manager.register(k)
 })

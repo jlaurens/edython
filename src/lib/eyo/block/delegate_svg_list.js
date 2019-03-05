@@ -430,8 +430,8 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
       unique: (type, variant) => {
         return {
           [eYo.Key.PAR]: eYo.T3.Expr.Check.enclosure_list_unique,
-          [eYo.Key.SQB]: [eYo.T3.Expr.list_comprehension],
-          [eYo.Key.BRACE]: [eYo.T3.Expr.list_comprehension, eYo.T3.Expr.dict_comprehension]
+          [eYo.Key.SQB]: [eYo.T3.Expr.comprehension],
+          [eYo.Key.BRACE]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
         } [variant]
       },
       check: (type, variant) => {
@@ -497,7 +497,7 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
       this.block_.inputList.some(input => {
         var target = input.eyo.target
         if (target) {
-          if (target.type === eYo.T3.Expr.list_comprehension) {
+          if (target.type === eYo.T3.Expr.comprehension) {
             t = eYo.T3.Expr.set_display
           } else if (this.model.list.check(type, variant).indexOf(target.type) >= 0) {
             t = eYo.T3.Expr.set_display
