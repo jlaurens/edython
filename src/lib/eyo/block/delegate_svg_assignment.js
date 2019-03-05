@@ -458,7 +458,7 @@ eYo.DelegateSvg.List.makeSubclass('assignment_value_list', function () {
   var D = {
     check: eYo.T3.Expr.Check.starred_item,
     unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.assignment_expr],
-    consolidator: eYo.Consolidator.List.Singled,
+    consolidator: eYo.Consolidator.List,
     presep: ',',
     mandatory: 1
   }
