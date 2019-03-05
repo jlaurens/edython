@@ -1994,7 +1994,7 @@ eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
   if (input.block === block) {
     if (input.connection && input.connection.isConnected()) {
       input.connection.setShadowDom(null)
-      block = input.connection.targetBlock()
+      block = input.eyo.target
       block.unplug()
     }
     goog.array.remove(this.inputList, input)

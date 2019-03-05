@@ -629,7 +629,7 @@ eYo.Slot.prototype.isRequiredFromSaved = function () {
     if (target.eyo.wrapped_) {
       // return true if one of the inputs is connected
       return target.inputList.some(input => {
-        if (input.connection && input.connection.targetBlock()) {
+        if (input.eyo.target) {
           return true
         }
       })
@@ -863,7 +863,7 @@ eYo.Slot.prototype.load = function (element) {
               var input = target.getInput(name)
               if (input) {
                 if (input.connection) {
-                  var grandTarget = input.connection.targetBlock()
+                  var grandTarget = input.eyo.target
                   if ((grandTarget)) {
                     eYo.Xml.fromDom(grandTarget, grandChild)
                     this.recover.dontResit(grandChild)

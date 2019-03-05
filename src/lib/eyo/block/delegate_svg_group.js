@@ -533,7 +533,7 @@ eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
     expression: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expression'
+      hole_value: 'expr'
     },
     target: {
       order: 3,

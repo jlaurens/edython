@@ -141,36 +141,6 @@ eYo.DelegateSvg.Expr.yield_expression.prototype.populateContextMenuFirst_ = func
 }
 
 /**
- * Class for a DelegateSvg, starred_item_list_or_yield block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('parenth_form', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.non_void_starred_item_list,
-    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.comprehension],
-    consolidator: eYo.Consolidator.List.enclosure,
-    mandatory: 0,
-    presep: ',',
-    hole_value: 'name'
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    xml: {
-      attr: '()'
-    },
-    list: D,
-    fields: {
-      prefix: '(',
-      suffix: ')'
-    }
-  }
-})
-
-/**
  * Class for a DelegateSvg, yield_stmt.
  * For edython.
  */

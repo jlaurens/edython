@@ -173,8 +173,10 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.comprehension,
     eYo.T3.Expr.comp_for,
     eYo.T3.Expr.comp_if,
-    eYo.T3.Expr.dict_comprehension,
-    eYo.T3.Expr.key_datum,
+    {
+      type: eYo.T3.Expr.comprehension,
+      expression_s: eYo.T3.Expr.key_datum
+    },
   ],
   expert: [
     eYo.T3.Stmt.with_part,

@@ -397,7 +397,7 @@ class Types:
          Of course Any such list contains at least the type of the owner.
         :return: None
         '''
-        print('====> MAKE SIMILAR PREOVIDERS')
+        print('====> MAKE SIMILAR PROVIDERS')
         for t in self.get_expressions():
             t.temp_ = set()
         for t in self.get_expressions():
