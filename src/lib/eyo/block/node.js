@@ -11,8 +11,6 @@
  */
 'use strict'
 
-import { truncate } from "fs";
-
 goog.provide('eYo.Node.Block')
 
 goog.require('eYo.Node')

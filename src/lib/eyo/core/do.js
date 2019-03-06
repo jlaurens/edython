@@ -351,7 +351,7 @@ eYo.Do.ensureArrayFunction = object => {
       ? () => object
       : object
         ? () => [object]
-        : () => {}
+        : () => []
   return did
 }
 

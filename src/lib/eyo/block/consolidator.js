@@ -433,7 +433,13 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
       io.postsep = io.eyo.postsep || this.model.postsep
       // manage the unique input
       if (this.model.unique && io.unique < 0 &&
-        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, x => this.model.unique(io.block.type, io.block.eyo.variant_p).indexOf(x) >= 0)) {
+        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, x => {
+          var unique = this.model.unique(io.block.type, io.block.eyo.variant_p)
+          if (!unique) {
+            console.error('MISSING UNIQUE', this.model.unique(io.block.type, io.block.eyo.variant_p))
+          }
+          return unique.indexOf(x) >= 0
+        })) {
         io.unique = io.i
       }
       return true
