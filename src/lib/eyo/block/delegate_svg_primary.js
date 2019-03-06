@@ -90,7 +90,7 @@ goog.require('goog.dom');
  * identifier_annotated ::= identifier ":" expression
  * key_datum ::= expression ":" expression
  * identifier_defined ::= parameter "=" expression
- * identifier_anotated_defined ::= parameter "=" expression
+ * identifier_anotated_defined ::= parameter ":" expression "=" expression
  * keyword_item ::= identifier "=" expression
  * identifier_as ::= identifier "as" identifier
  * dotted_name_as ::= module "as" identifier
@@ -698,7 +698,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression, // yield_expr|testlist_star_expr
       hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {

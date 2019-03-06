@@ -1472,7 +1472,7 @@ eYo.Delegate.prototype.makeConnections = function () {
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.previous && D.previous.check !== null) {
       block.setPreviousStatement(true)
-      block.previousConnection.eyo.model = D.previous
+      this.previousConnection.eyo.model = D.previous
     }
     if (D.next && D.next.check !== null) {
       block.setNextStatement(true)
@@ -1665,10 +1665,13 @@ eYo.Delegate.prototype.consolidateConnections = function () {
     c8n && c8n.eyo.updateCheck(t, st)
   }
   this.forEachSlot(slot => f(slot.connection))
-  f(b.outputConnection)
-  f(b.previousConnection)
-  f(b.nextConnection)
-  f(this.inputSuite && this.inputSuite.connection)
+  if (b.outputConnection) {
+    f(b.outputConnection)
+  } else {
+    f(b.previousConnection)
+    f(b.nextConnection)
+    f(this.inputSuite && this.inputSuite.connection)
+  }
 }
 
 /**
@@ -1898,10 +1901,10 @@ eYo.Delegate.prototype.updateGroupBlackCount = function () {
 
 /**
  * Connect the last connection to the given expression block.
- * @param {!Blockly.Block} block
+ * @param {!Object} bdc  block, delegate or connection
  */
-eYo.Delegate.prototype.lastConnect = function (block) {
-  this.lastConnection.connect(block.outputConnection || block.block_.outputConnection)
+eYo.Delegate.prototype.lastConnect = function (bdc) {
+  this.lastConnection.connect(bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc)
 }
 
 /**

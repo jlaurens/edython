@@ -575,7 +575,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       all: [
         eYo.Key.NONE,
         eYo.Key.EXPRESSION,
-        eYo.Key.TUPLE,
+        eYo.Key.LIST,
       ],
       init: eYo.Key.NONE,
       xml: false,
@@ -584,11 +584,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         var data = this.owner.expression_d
         data.required = newValue === eYo.Key.EXPRESSION
         data.setIncog()
-        this.owner.tuple_s.setIncog(newValue !== eYo.Key.TUPLE)
+        this.owner.list_s.setIncog(newValue !== eYo.Key.LIST)
         this.owner.updateGroupBlackCount()
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.owner.comment_d.isIncog() && this.value_ !== eYo.Key.TUPLE) {
+        if (this.owner.comment_d.isIncog() && this.value_ !== eYo.Key.LIST) {
           this.change(eYo.Key.EXPRESSION)
         }
       }
@@ -604,7 +604,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        if (this.isIncog() && this.owner.tuple_s.isIncog()) {
+        if (this.isIncog() && this.owner.list_s.isIncog()) {
           this.owner.comment_variant_p = eYo.Key.COMMENT
         }
       },
@@ -628,7 +628,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
         this.required = false
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        if (this.owner.expression_d.isIncog() && this.owner.tuple_s.isIncog()) {
+        if (this.owner.expression_d.isIncog() && this.owner.list_s.isIncog()) {
           this.setIncog(false)
         }
       }
@@ -644,23 +644,23 @@ eYo.DelegateSvg.Stmt.makeSubclass('expression_stmt', {
       },
       check: eYo.T3.Expr.Check.expression
     },
-    tuple: {
+    list: {
       order: 2,
       fields: {
         bind: {
           endEditing: true
         }
       },
-      wrap: eYo.T3.Expr.starred_item_list
+      wrap: eYo.T3.Expr.expression_list
     }
   },
   didLoad: /** @suppress {globalThis} */ function () {
     var requiredExpression = this.expression_s.isRequiredFromSaved() || this.expression_d.isRequiredFromSaved()
-    var requiredTuple = this.tuple_s.isRequiredFromSaved()
+    var requiredTuple = this.list_s.isRequiredFromSaved()
     var requiredComment = this.comment_d.isRequiredFromSaved()
     if (requiredComment || requiredExpression || requiredTuple) {
       this.variant_p = requiredTuple
-        ? eYo.Key.TUPLE
+        ? eYo.Key.LIST
         : requiredExpression
           ? eYo.Key.EXPRESSION
           : eYo.Key.NONE   

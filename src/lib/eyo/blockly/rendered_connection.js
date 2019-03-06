@@ -366,7 +366,8 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
   if (this.model.check) {
-    this.connection.setCheck(this.model.check.apply(this, arguments))
+    var check = this.model.check.apply(this, arguments)
+    this.connection.setCheck(check)
   }
 }
 
@@ -715,7 +716,6 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
  *     (to allow chaining).
  */
 eYo.Connection.prototype.setCheck = function(check) {
-  var old = this.check_
   if (check === eYo.T3.Stmt.Previous.try_else_part) {
     console.error('ERROR!!!!')
   }

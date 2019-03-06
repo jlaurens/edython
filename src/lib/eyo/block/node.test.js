@@ -108,10 +108,10 @@ var ra_test = (name, str_s) => {
 // // ra_test('nonlocal_statement', ra_nonlocal_statement)
 
 var ra_expressions = [
-//   "foo(1)",
-//   "[1, 2, 3]",
-  "[x**3 for x in range(20)]",
-//   "[x**3 for x in range(20) if x % 3]",
+  // "foo(1)",
+  // "[1, 2, 3]",
+  // "[x**3 for x in range(20)]",
+  "[x**3 for x in range(20) if x % 3]",
 //   "[x**3 for x in range(20) if x % 2 if x % 3]",
 //   "list(x**3 for x in range(20))",
 //   "list(x**3 for x in range(20) if x % 3)",

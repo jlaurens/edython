@@ -341,8 +341,12 @@ eYo.Do.ensureFunction = function (object) {
 
 /**
  * Used only by the model's checking.
- * @param {!Object} object
- * @return A function with signature f() -> []
+ * If the object is a faulthy value,
+ * it means that to check array will be defined.
+ * This is used to indicate that any block is accepted for a connection.
+ * If object is a void array, no connection will be possible.
+ * @param {?Object} object
+ * @return A function with signature f() -> []?
  */
 eYo.Do.ensureArrayFunction = object => {
   var did = goog.isFunction(object)
@@ -351,7 +355,7 @@ eYo.Do.ensureArrayFunction = object => {
       ? () => object
       : object
         ? () => [object]
-        : () => []
+        : () => object
   return did
 }
 

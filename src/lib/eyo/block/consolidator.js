@@ -53,8 +53,10 @@ eYo.Consolidator.prototype.init = function(d) {
   }
   goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
   this.model.check = eYo.Do.ensureArrayFunction(this.model.check)
-  this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
-  this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
+  if (this.model.unique) {
+    this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
+    this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
+  }
 }
 
 /**

@@ -141,9 +141,14 @@ Object.defineProperties(eYo.Node.prototype, {
       newValue && (newValue.previous = this)
     }
   },
+  n0: {
+    get () {
+      return this.n0_
+    }
+  },
   n1: {
     get () {
-      return this.n0.sibling
+      return this.n0_.sibling
     }
   },
   n2: {
@@ -190,7 +195,7 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
     if (n1.last_child) {
       n1.last_child.sibling = n2
     } else {
-      n1.n0 = n2
+      n1.n0_ = n2
     }
     n1.last_child = n2
   }
