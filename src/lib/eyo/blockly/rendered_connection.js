@@ -95,7 +95,20 @@ Object.defineProperties(
     },
     bindField: {
       get () {
-        return this.slot && this.slot.bindField
+        if (this.slot) {
+          return this.slot.bindField
+        }
+        // in a void wrapped list
+        var b = this.sourceBlock_
+        var input = b.inputList[0]
+        if (input.connection === this.connection) {
+          var c8n = b.outputConnection
+          if (c8n) {
+            if (c8n = c8n.targetConnection) {
+              return c8n.eyo.bindField
+            }
+          }
+        }
       }
     },
     /**
@@ -150,6 +163,23 @@ Object.defineProperties(
     isInput: {
       get () {
         return this.connection.type === Blockly.INPUT_VALUE
+      }
+    },
+    /**
+     * Returns an unwrapped target block
+     */
+    unwrappedTargetBlock: {
+      get () {
+        var t
+        var f = b => {
+          return b && b.inputList.some(i => {
+            t = i.connection && i.connection.targetBlock()
+            if (f(t)) {
+              return true
+            }
+          })
+        }
+        return f(this.connection.targetBlock()) && t
       }
     }
   }
@@ -245,6 +275,9 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
     this.b_eyo.incrementChangeCount()
   }
   var c8n = this.connection
+  if (!incog && this.promised_) {
+    this.completePromised()
+  }
   if (incog || !this.wrapped_) {
     // We cannot disable wrapped connections
     this.incog_ = incog
@@ -253,19 +286,12 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
       change = true
     }
   }
-  if (this.isIncog()) {
-    var target = c8n.targetBlock()
-
-  } else {
-    var target = c8n.targetBlock()
-    if (target) {
-      var c_eyo = target.eyo
-      c_eyo.setIncog(this.isIncog())
+  var t_eyo = this.t_eyo
+  if (t_eyo) {
+    if (!this.isIncog()) {
+      t_eyo.setIncog(false)
     }
-  }
-  if (c8n.isConnected()) {
-    var target = c8n.targetBlock()
-    if (target.eyo.setIncog(incog)) {
+    if (t_eyo.setIncog(incog)) {
       change = true
     }
   }
@@ -274,7 +300,9 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
 
 /**
  * Complete with a wrapped block.
+ * Reentrant method.
  * @param {String} prototypeName
+ * @return {Object} Object with an `ans` property.
  */
 eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method(
   'completeWrapped',
@@ -285,6 +313,7 @@ eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method
     var c8n = this.connection
     var target = c8n.targetBlock()
     if (!target) {
+      var ans
       eYo.Events.disableWrap(
         () => {
           var block = c8n.sourceBlock_
@@ -294,12 +323,24 @@ eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method
           target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
           goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
           goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
-          c8n.connect(target.outputConnection)
+          ans = this.connect(target.outputConnection)
         }
       )
+      return ans // true when connected
     }
   }
 )
+
+/**
+ * Complete with a promised block.
+ */
+eYo.ConnectionDelegate.prototype.completePromised = function () {
+  if (this.promised_) {
+    this.wrapped_ = this.promised_
+    var ans = this.completeWrapped()
+    return ans && ans.ans
+  }
+}
 
 /**
  * Will connect.
@@ -957,8 +998,8 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 }
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
               }, () => { // finally
-                parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
-                childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
+                !parentC8n.eyo.wrapped_ && parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
+                !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
                 if (parentC8n.eyo.startOfStatement) {
                   child.eyo.incrementChangeCount()
                 }
@@ -1304,8 +1345,8 @@ eYo.Connection.prototype.targetBlock = function() {
     this.eyo.completeWrapped()
     target = eYo.Connection.superClass_.targetBlock.call(this)
   }
-  return target;
-};
+  return target
+}
 
 /**
  * Change a connection's compatibility.

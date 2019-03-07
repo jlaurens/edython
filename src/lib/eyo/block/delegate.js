@@ -1776,19 +1776,43 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
   return input
 }
 
+
+/**
+ * Shortcut for appending a sealed value input row.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * @param {string} name Language-neutral identifier which may used to find this
+ *     input again.  Should be unique to this block.
+ * This is the only way to create a wrapped block.
+ * @return {!Blockly.Input} The input object created.
+ */
+eYo.Delegate.prototype.appendPromiseValueInput = function (name, prototypeName, optional, hidden) {
+  var input = this.appendWrapValueInput(name, prototypeName, optional, hidden)
+  var c_eyo = input.connection.eyo
+  c_eyo.promised_ = prototypeName
+  c_eyo.wrapped_ = undefined
+  return input
+}
+
 /**
  * If the sealed connections are not connected,
  * create a node for it.
  * The default implementation connects all the blocks from the wrappedC8nDlgt_ list.
- * Subclassers will evntually create appropriate new nodes
+ * Subclassers will eventually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.completeWrapped_ = function () {
   if (this.wrappedC8nDlgt_) {
-    for (var i = 0; i < this.wrappedC8nDlgt_.length; i++) {
-      this.wrappedC8nDlgt_[i].completeWrapped()
+    var i = 0
+    while (i < this.wrappedC8nDlgt_.length) {
+      var d = this.wrappedC8nDlgt_[i]
+      var ans = d.completeWrapped()
+      if (ans && ans.ans) {
+        this.wrappedC8nDlgt_.splice(i)
+      } else {
+        ++i
+      }
     }
   }
 }

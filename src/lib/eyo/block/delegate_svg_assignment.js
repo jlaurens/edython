@@ -264,21 +264,15 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
- * Class for a DelegateSvg, target_list_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.List.makeSubclass('target_list_list', {
-  list: {
-    check: eYo.T3.Expr.target_list,
-    mandatory: 1,
-    postsep: '='
-  }
-}, true)
-
-/**
  * Class for a DelegateSvg, assignment_stmt.
+ * This is for a single assignment `a = b`.
+ * The lhs is either a field name or a target, or a targets list.
+ * How would I code for `a, b = c, d = e, f`.
+ * The problem is that `a = b` is also a block for primaries
+ * such that in a … = … statement block, it must be possible to connect
+ * some … = … expression block. It makes sense to connect in the
+ * rhs position because assignment is evaluated from right to left.
+ * 
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
@@ -567,7 +561,6 @@ eYo.DelegateSvg.Assignment.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Expr.target_list,
-  eYo.T3.Expr.target_list_list,
   eYo.T3.Expr.void_target_list,
   eYo.T3.Expr.parenth_target_list,
   eYo.T3.Expr.bracket_target_list,
