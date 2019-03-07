@@ -3,7 +3,9 @@ var expect = chai.expect
 
 describe('Primary', function() {
   it('types', function() {
-    var ctor = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier).constructor
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
+    var ctor = b.constructor
+    b.dispose(true)
     var f = (k1, k2) => {
       var t1 = eYo.T3.Expr[k1]
       assert(t1, `UNKNOWN ${k1}`)
@@ -38,18 +40,38 @@ describe('Primary', function() {
   })
 })
 
+describe('Primary(Defined)', function() {
+  it('basic', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
+    b.moveBy(20, 20)
+  })
+})
+
 describe('Primary(Assignment)', function() {
   it('basic', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
     assert(b.type === eYo.T3.Expr.identifier_defined, `MISSED TYPE ${b.type} === ${eYo.T3.Expr.identifier_defined}`)
     // targets is a promise
     assert(!b.eyo.targets_t, 'UNEXPECTED TARGETS')
-    b.eyo.variant_p = eYo.Key.TARGETS
-    assert(b.type === eYo.T3.Expr.assignment_expr, `MISSED TYPE ${b.type} === ${eYo.T3.Expr.identifier_defined}`)
+    assert(!b.eyo.definition_d.isIncog(), 'UNEXPECTED INCOG')
+    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    assert(!b.eyo.definition_d.isIncog(), 'UNEXPECTED INCOG (2)')
+    var f = (k, b1 = b) => {
+      assert(b1.type === eYo.T3.Expr[k], `MISSED TYPE ${b1.type} === ${eYo.T3.Expr[k]}`)
+    }
+    f('identifier_defined')
     var t = b.eyo.targets_t
     assert(t, 'MISSING TARGETS')
-    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
-    t.eyo.lastInput.eyo.connect(bb)
+    t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
+    f('identifier_defined')
+    t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b'))
+    f('assignment_expr')
+    var dom = eYo.Xml.blockToDom(b)
+    console.log(dom)
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    f('assignment_expr', b2)
     b.dispose(true)
+    b2.moveBy(50, 10)
+    // b.dispose(true)
   })
 })

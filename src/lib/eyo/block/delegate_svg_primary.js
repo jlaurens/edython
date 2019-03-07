@@ -323,6 +323,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.DEFINED) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
+          } else if (this.owner.variant_p === eYo.Key.TARGETS_DEFINED) {
+            this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
           } else {
             this.owner.variant_p = eYo.Key.ANNOTATED
           }
@@ -348,7 +350,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
-          if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED) {
+          if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED || v === eYo.Key.TARGETS_DEFINED) {
             this.required = true
             this.save(element, opt)
           }
@@ -365,7 +367,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.ANNOTATED) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
-          } else {
+          } else if (this.owner.variant_p !== eYo.Key.TARGETS_DEFINED) {
             this.owner.variant_p = eYo.Key.DEFINED
           }
         }
@@ -373,7 +375,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       synchronize: true,
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         var v = this.owner.variant_p
-        return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED
+        return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED && v !== eYo.Key.TARGETS_DEFINED
       }
     },
     variant: {
@@ -435,14 +437,18 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (newValue === eYo.Key.TARGETS_DEFINED) {
           O.targets_s.completePromised()
         }
-        O.updateProfile()
+        O.targets_s.setIncog(newValue !== eYo.Key.TARGETS_DEFINED)
+        if (!O.targets_s.isIncog()) {
+          O.targets_t.eyo.createConsolidator(true) // unique is special
+        }
         O.n_ary_s.setIncog(newValue !== eYo.Key.CALL_EXPR)
         if (!O.n_ary_s.isIncog()) {
           O.n_ary_t.eyo.createConsolidator(true)
         }
+        O.name_d.setIncog(newValue === eYo.Key.TARGETS_DEFINED)
         O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
         O.alias_d.setIncog(newValue !== eYo.Key.ALIASED)
-        O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED)
+        O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED && newValue !== eYo.Key.TARGETS_DEFINED)
         O.annotation_d.setIncog(newValue !== eYo.Key.ANNOTATED && newValue !== eYo.Key.ANNOTATED_DEFINED)
       },
       xml: false
@@ -706,6 +712,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.TARGETS_DEFINED
         }
+      },
+      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+        return this.owner.variant_p !== eYo.Key.TARGETS_DEFINED
       }
     },
     definition: {
@@ -861,6 +870,7 @@ eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_me
  * getProfile.
  * What are the types of holder and name?
  * Problem : this is not recursive!
+ * This has not been tested despite it is essential.
  * @return {!Object}.
  */
 eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
@@ -1001,6 +1011,12 @@ eYo.DelegateSvg.Expr.primary.prototype.consolidateConnections = function () {
  */
 eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
   var check = this.getOutCheck()
+  if (!check.length) {
+    console.error('BIG PROBLEM', this.getOutCheck())
+  }
+  if (!check[0]) {
+    console.error('BIG PROBLEM', this.getOutCheck())
+  }
   return check[0]
 }
 
@@ -1108,12 +1124,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     ]
   } else if (profile.variant === eYo.Key.TARGETS_DEFINED) {
     // how many targets are connected
-    var b = this.targets_t.block_
-    if (b.inputList.length > 3) {
-      // at least 2 connections
-      return [
-        eYo.T3.Expr.assignment_expr
-      ]  
+    var t = this.targets_t
+    if (t) { // may not exist yet
+      if (t.inputList.length > 3) {
+        // at least 2 connections
+        return [
+          eYo.T3.Expr.assignment_expr
+        ]  
+      }
     }
     return [
       eYo.T3.Expr.identifier_defined,

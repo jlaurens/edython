@@ -376,6 +376,18 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return this.block_.workspace.eyo.recover
     }
+  },
+  lastInput: {
+    get () {
+      var list = this.block_.inputList
+      return list[list.length - 1]
+    }
+  },
+  lastConnection: {
+    get () {
+      var list = this.block_.inputList
+      return list[list.length - 1].connection
+    }
   }
 })
 
@@ -538,6 +550,7 @@ eYo.Delegate.prototype.didLoad = function () {
   if (goog.isFunction(didLoad)) {
     didLoad.call(this)
   }
+  this.incrementChangeCount()
 }
 
 /**
@@ -814,7 +827,7 @@ eYo.Delegate.Manager = (() => {
         }
       }
     }
-    var defineSlotProperty = function (k) {
+    var defineSlotProperty = k => {
       var key_s = k + '_s'
       var key_t = k + '_t'
       // make a closure to catch the value of k
@@ -838,7 +851,8 @@ eYo.Delegate.Manager = (() => {
             key_t,
             {
               get () {
-                return this.slots[k].targetBlock()
+                var s = this.slots[k] // early call
+                return s && s.targetBlock()
               }
             }
           )
@@ -1440,7 +1454,7 @@ eYo.Delegate.prototype.makeContents = function () {
  * For edython.
  */
 eYo.Delegate.prototype.makeSlots = function () {
-  this.slots = Object.create(null)
+  this.slots = Object.create(null) // hard to create all the slots at once.
   this.headSlot = this.feedSlots(this.model.slots)
 }
 

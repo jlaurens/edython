@@ -26,6 +26,8 @@ goog.require('eYo.FlyoutCategory')
  * @private
  */
 
+var doit = (() => {
+
 var F = (name, title, holder = 'formatter') => {
   var key = 'string__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -184,6 +186,8 @@ eYo.FlyoutCategory.string__module = [
   F('format_field', ''),
   F('convert_field', '')
 ]
+
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   string__import_stmt: 'Importer le module string.',

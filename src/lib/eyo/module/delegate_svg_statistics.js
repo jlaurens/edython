@@ -36,12 +36,8 @@ goog.require('eYo.FlyoutCategory')
     'mean': 0,
     'harmonic_mean': 1
  */
-var F = (key) => {
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: key
-  }
-}
+
+var doit = (() => {
 
 var F = (name, title) => {
   var key = 'statistics__'+name
@@ -118,6 +114,8 @@ eYo.FlyoutCategory.statistics__module = [
   F('variance'),
   F('StatisticsError')
 ]
+
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',

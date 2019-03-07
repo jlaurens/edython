@@ -622,6 +622,8 @@ eYo.Model.{{key}}.Item = function (model) {
   eYo.Model.{{key}}.Item.superClass_.constructor.call(this, model)
 }
 
+var doit = (() => {
+
 var Item = eYo.Model.{{key}}.Item
 
 goog.inherits(Item, eYo.Model.Item)
@@ -645,6 +647,8 @@ Object.defineProperties(
 )
 """
         suffix_ = """
+
+})()
 
 """
         def __init__(self, path_root, key):

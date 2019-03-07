@@ -31,6 +31,8 @@ goog.require('eYo.Model.decimal__module')
  * @private
  */
 
+var doit = (() => {
+
 var F = (name, title) => {
   var key = 'decimal__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -254,6 +256,7 @@ eYo.FlyoutCategory.decimal__module = [
     })
   }
 ]
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   decimal__import_stmt: 'Importer le module decimal',

@@ -34,6 +34,8 @@ goog.require('eYo.FlyoutCategory')
     '__round__': 8,
  */
 
+var doit = (() => {
+
 var F = (name, title) => {
   var key = 'fractions__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -123,6 +125,7 @@ eYo.FlyoutCategory.fractions__module = [
   F_instance('limit_denominator', eYo.T3.Expr.call_expr)
 ]
 
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',

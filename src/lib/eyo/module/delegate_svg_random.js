@@ -133,6 +133,7 @@ eYo.DelegateSvg.Expr.random__randrange.prototype.xmlAttr = function () {
   return this.model.xml.attr
 }
 
+var doit = (() => {
 
 var F = (name, title) => {
   var key = 'random__'+name
@@ -302,6 +303,8 @@ eYo.FlyoutCategory.random__module = [
   F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
   F_s('setstate', 'Ramener le générateur de nombres (pseudo-)aléatoires dans un état antérieur')
 ]
+
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   random__import_stmt: 'Importer le module random',
