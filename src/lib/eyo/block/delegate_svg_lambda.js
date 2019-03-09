@@ -47,7 +47,7 @@ goog.require('goog.dom');
 // }
 
 eYo.Consolidator.List.makeSubclass('Parameter', {
-  check: eYo.T3.Expr.Check.primary,
+  check: null,
   mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
@@ -99,7 +99,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = (io) => {
+  var getCheckType = io => {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.unconnected
@@ -278,6 +278,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
     }
     if (can_default) {
       out.push(eYo.T3.Expr.identifier_defined)
+      out.push(eYo.T3.Expr.identifier_annotated_defined)
     }
     if (can_star) {
       out.push(eYo.T3.Expr.star)
