@@ -1,10 +1,10 @@
 var assert = chai.assert
 
-var g = eYo.GMR._PyParser_Grammar
-
-describe('Rendering, IN PROGRESS', function() {
-  it('Assignment expression', function() {
-    var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
-    assert(b1, `MISSING assignment expression`)
+describe('Create', function() {
+  it(`Basic`, function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
+    assert(b, 'MISSED 1')
+    assert(b.eyo, 'MISSED 2')
+    assert(b.eyo.change.count !== undefined, 'MISSED 3')
   })
 })

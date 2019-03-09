@@ -163,6 +163,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   ANNOTATED: 'annotated',
   DEFINED: 'defined',
   ANNOTATED_DEFINED: 'annotated_defined',
+  TARGETS_DEFINED: 'targets_defined',
   
   EXPRESSION: 'expression',
   

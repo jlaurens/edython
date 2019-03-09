@@ -613,7 +613,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         field.setValue(this.toField())
         if (this.slot && this.slot.data === this) {
           this.slot.setIncog(this.incog_p)
-          field.setVisible(!this.slot.targetBlock() && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
+          field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
         } else {
           field.setVisible(!this.incog_p)
         }
@@ -826,7 +826,7 @@ eYo.Data.prototype.save = function (element, opt) {
     return
   }
   // do not save if there is an associate slot with a target block.
-  if (this.slot && this.slot.bindField === this.field && this.slot.targetBlock()) {
+  if (this.slot && this.slot.bindField === this.field && this.slot.unwrappedTarget) {
     return
   }
   if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {

@@ -571,364 +571,367 @@ eYo.KeyHandler.makeSlicing = function (model) {
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
-var Ks = {
-  'start': eYo.T3.Stmt.start_stmt,
-  'if': eYo.T3.Stmt.if_part,
-  'elif': eYo.T3.Stmt.elif_part,
-  'else': eYo.T3.Stmt.else_part,
-  'class': eYo.T3.Stmt.classdef_part,
-  'except': {
-    type: eYo.T3.Stmt.except_part,
-    variant_d: eYo.Key.NONE
-  },
-  'except …': {
-    type: eYo.T3.Stmt.except_part,
-    variant_d: eYo.Key.EXPRESSION
-  },
-  'except … as …': {
-    type: eYo.T3.Stmt.except_part,
-    variant_d: eYo.Key.ALIASED
-  },
-  'finally': eYo.T3.Stmt.finally_part,
-  'for': eYo.T3.Stmt.for_part,
-  '@': eYo.T3.Stmt.decorator_stmt,
-  'def': eYo.T3.Stmt.funcdef_part,
-  'import': eYo.T3.Stmt.import_stmt,
-  'try': eYo.T3.Stmt.try_part,
-  'while': eYo.T3.Stmt.while_part,
-  'with': eYo.T3.Stmt.with_part,
-  'lambda': eYo.T3.Expr.lambda,
-  '… if … else …': eYo.T3.Expr.conditional_expression,
-  'identifier': eYo.T3.Expr.identifier,
-  'name': eYo.T3.Expr.identifier,
-  'not …': function (key) {
-    var B = eYo.Selected.block
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-        B.eyo.replaceBlock(parent)
-        return
-      }
-      if (eYo.Selected.connection) {
-        B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
-      } else {
-        B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
-      }
-    }
-  },
-  '+…': function (key) {
-    var B = eYo.Selected.block
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_p === '+') {
-        return
-      }
-      var model = {
-        type: eYo.T3.Expr.u_expr,
-        operator_d: '+'
-      }
-      if (eYo.Selected.connection) {
-        B.eyo.insertBlockWithModel(model)
-      } else {
-        B.eyo.insertParentWithModel(model)
-      }
-    }
-  }
-}
-var K
-for (K in Ks) {
-  eYo.KeyHandler.register(K, Ks[K])
-}
+var doit = (() => {
 
-Ks = (() => {
-  var F = (key, op) => {
-    var B = eYo.Selected.block
-    if (B) {
-      var parent = B.getSurroundParent()
-      if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_ === op) {
-        B.eyo.replaceBlock(parent)
-        return
-      }
-      var model = {
-        type: eYo.T3.Expr.u_expr,
-        operator_d: op
-      }
-      if (eYo.Selected.connection) {
-        B.eyo.insertBlockWithModel(model)
-      } else {
-        B.eyo.insertParentWithModel(model)
-      }
-    }
-  }
-  return {
-    '-': function (key) {
-      return F(key, '-')
+  var Ks = {
+    'start': eYo.T3.Stmt.start_stmt,
+    'if': eYo.T3.Stmt.if_part,
+    'elif': eYo.T3.Stmt.elif_part,
+    'else': eYo.T3.Stmt.else_part,
+    'class': eYo.T3.Stmt.classdef_part,
+    'except': {
+      type: eYo.T3.Stmt.except_part,
+      variant_d: eYo.Key.NONE
     },
-    '~': function (key) {
-      return F(key, '~')
+    'except …': {
+      type: eYo.T3.Stmt.except_part,
+      variant_d: eYo.Key.EXPRESSION
+    },
+    'except … as …': {
+      type: eYo.T3.Stmt.except_part,
+      variant_d: eYo.Key.ALIASED
+    },
+    'finally': eYo.T3.Stmt.finally_part,
+    'for': eYo.T3.Stmt.for_part,
+    '@': eYo.T3.Stmt.decorator_stmt,
+    'def': eYo.T3.Stmt.funcdef_part,
+    'import': eYo.T3.Stmt.import_stmt,
+    'try': eYo.T3.Stmt.try_part,
+    'while': eYo.T3.Stmt.while_part,
+    'with': eYo.T3.Stmt.with_part,
+    'lambda': eYo.T3.Expr.lambda,
+    '… if … else …': eYo.T3.Expr.conditional_expression,
+    'identifier': eYo.T3.Expr.identifier,
+    'name': eYo.T3.Expr.identifier,
+    'not …': function (key) {
+      var B = eYo.Selected.block
+      if (B) {
+        var parent = B.getSurroundParent()
+        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
+          B.eyo.replaceBlock(parent)
+          return
+        }
+        if (eYo.Selected.connection) {
+          B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
+        } else {
+          B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
+        }
+      }
+    },
+    '+…': function (key) {
+      var B = eYo.Selected.block
+      if (B) {
+        var parent = B.getSurroundParent()
+        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_p === '+') {
+          return
+        }
+        var model = {
+          type: eYo.T3.Expr.u_expr,
+          operator_d: '+'
+        }
+        if (eYo.Selected.connection) {
+          B.eyo.insertBlockWithModel(model)
+        } else {
+          B.eyo.insertParentWithModel(model)
+        }
+      }
     }
   }
-})()
+  var K
+  for (K in Ks) {
+    eYo.KeyHandler.register(K, Ks[K])
+  }
 
-for (K in Ks) {
-  eYo.KeyHandler.register(K + '…', Ks[K])
-}
-
-Ks = {
-  '+': {
-    type: eYo.T3.Expr.a_expr,
-    operator_d: '+',
-    slot: eYo.Key.LHS
-  },
-  '-': {
-    type: eYo.T3.Expr.a_expr,
-    operator_d: '-',
-    slot: eYo.Key.LHS
-  },
-  '*': {
-    type: eYo.T3.Expr.m_expr,
-    operator_d: '*',
-    slot: eYo.Key.LHS
-  },
-  '//': {
-    type: eYo.T3.Expr.m_expr,
-    operator_d: '//',
-    slot: eYo.Key.LHS
-  },
-  '/': {
-    type: eYo.T3.Expr.m_expr,
-    operator_d: '/',
-    slot: eYo.Key.LHS
-  },
-  '%': {
-    type: eYo.T3.Expr.m_expr,
-    operator_d: '%',
-    slot: eYo.Key.LHS
-  },
-  '@': {
-    type: eYo.T3.Expr.m_expr,
-    operator_d: '@',
-    slot: eYo.Key.LHS
-  },
-  '**': {
-    type: eYo.T3.Expr.power,
-    slot: eYo.Key.LHS
-  },
-  '<<': {
-    type: eYo.T3.Expr.shift_expr,
-    operator_d: '<<',
-    slot: eYo.Key.LHS
-  },
-  '>>': {
-    type: eYo.T3.Expr.shift_expr,
-    operator_d: '>>',
-    slot: eYo.Key.LHS
-  },
-  '&': eYo.T3.Expr.and_expr,
-  '^': eYo.T3.Expr.xor_expr,
-  '|': eYo.T3.Expr.or_expr,
-  'or': eYo.T3.Expr.or_test,
-  'and': eYo.T3.Expr.and_test
-}
-for (K in Ks) {
-  eYo.KeyHandler.register('… ' + K + ' …', Ks[K])
-}
-Ks = ['True', 'False', 'None', '...']
-for (var i = 0; (K = Ks[i++]);) {
-  eYo.KeyHandler.register(K, {
-    type: eYo.T3.Expr.builtin__object,
-    data: K
-  })
-}
-Ks = ['is', 'is not', 'in', 'not in']
-for (i = 0; (K = Ks[i++]);) {
-  eYo.KeyHandler.register('… ' + K + ' …', {
-    type: eYo.T3.Expr.object_comparison,
-    operator_d: K
-  })
-}
-Ks = ['<', '>', '==', '>=', '<=', '!=']
-for (i = 0; (K = Ks[i++]);) {
-  eYo.KeyHandler.register('… ' + K + ' …', {
-    type: eYo.T3.Expr.number_comparison,
-    operator_d: K
-  })
-}
-
-Ks = {
-  '… = …': eYo.T3.Stmt.assignment_stmt,
-  '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
-  'start': eYo.T3.Stmt.start_stmt,
-  'assert …': eYo.T3.Stmt.assert_stmt,
-  'pass': eYo.T3.Stmt.pass_stmt,
-  'break': eYo.T3.Stmt.break_stmt,
-  'continue': eYo.T3.Stmt.continue_stmt,
-  'del …': eYo.T3.Stmt.del_stmt,
-  'return …': eYo.T3.Stmt.return_stmt,
-  'yield …': eYo.T3.Stmt.yield_stmt,
-  'raise': eYo.T3.Stmt.raise_stmt,
-  'raise …': {
-    type: eYo.T3.Stmt.raise_stmt,
-    variant_d: eYo.Key.EXPRESSION
-  },
-  'raise … from …': {
-    type: eYo.T3.Stmt.raise_stmt,
-    variant_d: eYo.Key.FROM
-  },
-  // 'from future import …': eYo.T3.Stmt.future_statement,
-  'import …': eYo.T3.Stmt.import_stmt,
-  '# comment': {
-    type: eYo.T3.Stmt.expression_stmt,
-    comment_variant_d: eYo.Key.COMMENT
-  },
-  'global …': {
-    type: eYo.T3.Stmt.global_stmt
-  },
-  'nonlocal …': {
-    type: eYo.T3.Stmt.nonlocal_stmt
-  },
-  '@decorator': eYo.T3.Stmt.decorator_stmt,
-  '"""…"""(stmt)': {
-    type: eYo.T3.Stmt.docstring_stmt,
-    delimiter_d: '"""'
-  },
-  "'''…'''(stmt)": {
-    type: eYo.T3.Stmt.docstring_stmt,
-    delimiter_d: "'''"
-  },
-  '"""…"""': {
-    type: eYo.T3.Expr.longliteral,
-    delimiter_d: '"""'
-  },
-  "'''…'''": {
-    type: eYo.T3.Expr.longliteral,
-    delimiter_d: "'''"
-  },
-  "'…'": {
-    type: eYo.T3.Expr.shortliteral,
-    delimiter_d: "'"
-  },
-  '"…"': {
-    type: eYo.T3.Expr.shortliteral,
-    delimiter_d: '"'
-  },
-  'print(…)': eYo.T3.Stmt.builtin__print_stmt,
-  'input(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'input'
-  },
-  'range(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'range'
-  },
-  'int(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'int'
-  },
-  'float(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'float'
-  },
-  'complex(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'complex'
-  },
-  'list(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'list'
-  },
-  'set(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'set'
-  },
-  'len(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'len'
-  },
-  'min(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'min'
-  },
-  'max(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'max'
-  },
-  'sum(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'sum'
-  },
-  'pow(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'pow'
-  },
-  'trunc(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'trunc'
-  },
-  'abs(…)': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'abs'
-  },
-  '….conjugate()': {
-    type: eYo.T3.Expr.call_expr,
-    name_d: 'conjugate',
-    dotted_d: 1
-  },
-  'f(…)': {
-    action: eYo.KeyHandler.makeCall,
-    model: {
-      type: eYo.T3.Expr.call_expr,
-      name_d: '' 
+  Ks = (() => {
+    var F = (key, op) => {
+      var B = eYo.Selected.block
+      if (B) {
+        var parent = B.getSurroundParent()
+        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_ === op) {
+          B.eyo.replaceBlock(parent)
+          return
+        }
+        var model = {
+          type: eYo.T3.Expr.u_expr,
+          operator_d: op
+        }
+        if (eYo.Selected.connection) {
+          B.eyo.insertBlockWithModel(model)
+        } else {
+          B.eyo.insertParentWithModel(model)
+        }
+      }
     }
-  },
-  'x[…]': {
-    action: eYo.KeyHandler.makeSlicing,
-    model: {
-      type: eYo.T3.Expr.slicing,
+    return {
+      '-': function (key) {
+        return F(key, '-')
+      },
+      '~': function (key) {
+        return F(key, '~')
+      }
+    }
+  })()
+
+  for (K in Ks) {
+    eYo.KeyHandler.register(K + '…', Ks[K])
+  }
+
+  Ks = {
+    '+': {
+      type: eYo.T3.Expr.a_expr,
+      operator_d: '+',
+      slot: eYo.Key.LHS
+    },
+    '-': {
+      type: eYo.T3.Expr.a_expr,
+      operator_d: '-',
+      slot: eYo.Key.LHS
+    },
+    '*': {
+      type: eYo.T3.Expr.m_expr,
+      operator_d: '*',
+      slot: eYo.Key.LHS
+    },
+    '//': {
+      type: eYo.T3.Expr.m_expr,
+      operator_d: '//',
+      slot: eYo.Key.LHS
+    },
+    '/': {
+      type: eYo.T3.Expr.m_expr,
+      operator_d: '/',
+      slot: eYo.Key.LHS
+    },
+    '%': {
+      type: eYo.T3.Expr.m_expr,
+      operator_d: '%',
+      slot: eYo.Key.LHS
+    },
+    '@': {
+      type: eYo.T3.Expr.m_expr,
+      operator_d: '@',
+      slot: eYo.Key.LHS
+    },
+    '**': {
+      type: eYo.T3.Expr.power,
+      slot: eYo.Key.LHS
+    },
+    '<<': {
+      type: eYo.T3.Expr.shift_expr,
+      operator_d: '<<',
+      slot: eYo.Key.LHS
+    },
+    '>>': {
+      type: eYo.T3.Expr.shift_expr,
+      operator_d: '>>',
+      slot: eYo.Key.LHS
+    },
+    '&': eYo.T3.Expr.and_expr,
+    '^': eYo.T3.Expr.xor_expr,
+    '|': eYo.T3.Expr.or_expr,
+    'or': eYo.T3.Expr.or_test,
+    'and': eYo.T3.Expr.and_test
+  }
+  for (K in Ks) {
+    eYo.KeyHandler.register('… ' + K + ' …', Ks[K])
+  }
+  Ks = ['True', 'False', 'None', '...']
+  for (var i = 0; (K = Ks[i++]);) {
+    eYo.KeyHandler.register(K, {
+      type: eYo.T3.Expr.builtin__object,
+      data: K
+    })
+  }
+  Ks = ['is', 'is not', 'in', 'not in']
+  for (i = 0; (K = Ks[i++]);) {
+    eYo.KeyHandler.register('… ' + K + ' …', {
+      type: eYo.T3.Expr.object_comparison,
+      operator_d: K
+    })
+  }
+  Ks = ['<', '>', '==', '>=', '<=', '!=']
+  for (i = 0; (K = Ks[i++]);) {
+    eYo.KeyHandler.register('… ' + K + ' …', {
+      type: eYo.T3.Expr.number_comparison,
+      operator_d: K
+    })
+  }
+
+  Ks = {
+    '… = …': eYo.T3.Stmt.assignment_stmt,
+    '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
+    'start': eYo.T3.Stmt.start_stmt,
+    'assert …': eYo.T3.Stmt.assert_stmt,
+    'pass': eYo.T3.Stmt.pass_stmt,
+    'break': eYo.T3.Stmt.break_stmt,
+    'continue': eYo.T3.Stmt.continue_stmt,
+    'del …': eYo.T3.Stmt.del_stmt,
+    'return …': eYo.T3.Stmt.return_stmt,
+    'yield …': eYo.T3.Stmt.yield_stmt,
+    'raise': eYo.T3.Stmt.raise_stmt,
+    'raise …': {
+      type: eYo.T3.Stmt.raise_stmt,
+      variant_d: eYo.Key.EXPRESSION
+    },
+    'raise … from …': {
+      type: eYo.T3.Stmt.raise_stmt,
+      variant_d: eYo.Key.FROM
+    },
+    // 'from future import …': eYo.T3.Stmt.future_statement,
+    'import …': eYo.T3.Stmt.import_stmt,
+    '# comment': {
+      type: eYo.T3.Stmt.expression_stmt,
+      comment_variant_d: eYo.Key.COMMENT
+    },
+    'global …': {
+      type: eYo.T3.Stmt.global_stmt
+    },
+    'nonlocal …': {
+      type: eYo.T3.Stmt.nonlocal_stmt
+    },
+    '@decorator': eYo.T3.Stmt.decorator_stmt,
+    '"""…"""(stmt)': {
+      type: eYo.T3.Stmt.docstring_stmt,
+      delimiter_d: '"""'
+    },
+    "'''…'''(stmt)": {
+      type: eYo.T3.Stmt.docstring_stmt,
+      delimiter_d: "'''"
+    },
+    '"""…"""': {
+      type: eYo.T3.Expr.longliteral,
+      delimiter_d: '"""'
+    },
+    "'''…'''": {
+      type: eYo.T3.Expr.longliteral,
+      delimiter_d: "'''"
+    },
+    "'…'": {
+      type: eYo.T3.Expr.shortliteral,
+      delimiter_d: "'"
+    },
+    '"…"': {
+      type: eYo.T3.Expr.shortliteral,
+      delimiter_d: '"'
+    },
+    'print(…)': eYo.T3.Stmt.builtin__print_stmt,
+    'input(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'input'
+    },
+    'range(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'range'
+    },
+    'int(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'int'
+    },
+    'float(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'float'
+    },
+    'complex(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'complex'
+    },
+    'list(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'list'
+    },
+    'set(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'set'
+    },
+    'len(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'len'
+    },
+    'min(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'min'
+    },
+    'max(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'max'
+    },
+    'sum(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'sum'
+    },
+    'pow(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'pow'
+    },
+    'trunc(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'trunc'
+    },
+    'abs(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'abs'
+    },
+    '….conjugate()': {
+      type: eYo.T3.Expr.call_expr,
+      name_d: 'conjugate',
+      dotted_d: 1
+    },
+    'f(…)': {
+      action: eYo.KeyHandler.makeCall,
+      model: {
+        type: eYo.T3.Expr.call_expr,
+        name_d: '' 
+      }
+    },
+    'x[…]': {
+      action: eYo.KeyHandler.makeSlicing,
+      model: {
+        type: eYo.T3.Expr.slicing,
+        parent: true
+      }
+    },
+    'module as alias': eYo.T3.Expr.dotted_name_as,
+    '(…)': {
+      type: eYo.T3.Expr.parenth_form,
+      parent: true
+    },
+    '[…]': {
+      type: eYo.T3.Expr.list_display,
+      parent: true
+    },
+    '…:…': {
+      type: eYo.T3.Expr.proper_slice,
+      parent: true
+    },
+    '{…:…}': {
+      type: eYo.T3.Expr.dict_display,
+      parent: true
+    },
+    '{…}': {
+      type: eYo.T3.Expr.set_display,
       parent: true
     }
-  },
-  'module as alias': eYo.T3.Expr.dotted_name_as,
-  '(…)': {
-    type: eYo.T3.Expr.parenth_form,
-    parent: true
-  },
-  '[…]': {
-    type: eYo.T3.Expr.list_display,
-    parent: true
-  },
-  '…:…': {
-    type: eYo.T3.Expr.proper_slice,
-    parent: true
-  },
-  '{…:…}': {
-    type: eYo.T3.Expr.dict_display,
-    parent: true
-  },
-  '{…}': {
-    type: eYo.T3.Expr.set_display,
-    parent: true
   }
-}
-console.warn('Implement support for `key` in range above')
-console.warn('Problem when there can be both a statement and an expression for the same shortcut')
-for (K in Ks) {
-  eYo.KeyHandler.register(K, Ks[K])
-}
+  console.warn('Implement support for `key` in range above')
+  console.warn('Problem when there can be both a statement and an expression for the same shortcut')
+  for (K in Ks) {
+    eYo.KeyHandler.register(K, Ks[K])
+  }
 
-Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|=']
-for (i = 0; (K = Ks[i++]);) {
-  eYo.KeyHandler.register('… ' + K + ' …', {
-    type: eYo.T3.Stmt.augmented_assignment_stmt,
-    operator: K
-  })
-}
+  Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|=']
+  for (i = 0; (K = Ks[i++]);) {
+    eYo.KeyHandler.register('… ' + K + ' …', {
+      type: eYo.T3.Stmt.augmented_assignment_stmt,
+      operator: K
+    })
+  }
 
-// cmath
-Ks = ['real', 'imag']
-for (i = 0; (K = Ks[i++]);) {
-  eYo.KeyHandler.register('… ' + K + ' …', {
-    type: eYo.T3.Expr.call_expr,
-    name_d: K
-  })
-}
+  // cmath
+  Ks = ['real', 'imag']
+  for (i = 0; (K = Ks[i++]);) {
+    eYo.KeyHandler.register('… ' + K + ' …', {
+      type: eYo.T3.Expr.call_expr,
+      name_d: K
+    })
+  }
+})

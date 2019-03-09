@@ -304,8 +304,8 @@ Cascaded required:
         p_out.write_text(''.join(map(mapper, final)))
    
     export('deps-build.txt', lambda r: f'--js "{r}" \\\n')
-    export('deps-vue.txt', lambda r: f'      <script src="{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n')
-    export('deps-web-dev.txt', lambda r: f'      <script src="../../src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n')
-    export('deps-web-test.txt', lambda r: f'      <script src="PATH_ROOT/src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n')
-    export('deps-test-import.txt', lambda r: f'import_file("src/{pathlib.Path(r).relative_to('src').as_posix()}")\n')
+    export('deps-vue.txt', lambda r: f'''      <script src="{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
+    export('deps-web-dev.txt', lambda r: f'''      <script src="../../src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
+    export('deps-web-test.txt', lambda r: f'''      <script src="PATH_ROOT/src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
+    export('deps-test-import.txt', lambda r: f'''import_file("src/{pathlib.Path(r).relative_to('src').as_posix()}")\n''')
     

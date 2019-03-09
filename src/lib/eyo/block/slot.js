@@ -85,6 +85,10 @@ eYo.Slot = function (owner, key, model) {
   if (model.wrap) {
     this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
     f()
+  } else if (model.promise) {
+    this.setInput(owner.appendPromiseValueInput(key, model.promise, model.optional, model.hidden))
+    f()
+    this.setIncog(true)
   } else if (goog.isDefAndNotNull(model.check)) {
     this.setInput(block.appendValueInput(key))
     f()
@@ -137,6 +141,13 @@ Object.defineProperties(eYo.Slot.prototype, {
     get () {
       var c8n = this.connection
       return c8n && c8n.eyo.t_eyo
+    }
+  },
+  unwrappedTarget: {
+    get () {
+      var c8n = this.connection
+      var b = c8n && c8n.eyo.unwrappedTargetBlock
+      return b && b.eyo
     }
   }
 })
@@ -557,8 +568,8 @@ eYo.Slot.prototype.setIncog = function (newValue) {
   if (this.owner.isReady) {
     
   }
-  var validator = this.model.validateIncog
-  if (validator) {
+  var validator = this.slots && this.model.validateIncog
+  if (validator) { // if !this.slots, the receiver is not yet ready
     newValue = validator.call(this, newValue)
   }
   var change = this.incog !== newValue
@@ -699,7 +710,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     }
   }
 }
-
+console.error('Change the variant for the subtype in c8n.sourceBlock_.eyo.variant_p above')
 /**
  * Init the slot.
  * For edython.
@@ -709,7 +720,7 @@ eYo.Slot.prototype.init = function () {
 
 /**
  * Set the UI state.
- * Called only by `setIncog`.
+ * Called only by `synchronizeSlots`.
  * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
@@ -720,7 +731,7 @@ eYo.Slot.prototype.synchronize = function () {
   var newValue = this.incog
   input.setVisible(!newValue)
   if (input.isVisible()) {
-    for (var __ = 0, field; (field = input.fieldRow[__]); ++__) {
+    input.fieldRow.forEach(field => {
       if (field.getText().length > 0) {
         var root = field.getSvgRoot()
         if (root) {
@@ -729,10 +740,10 @@ eYo.Slot.prototype.synchronize = function () {
           console.log('Field with no root: did you ...initSvg()?')
         }
       }
-    }
+    })
     var target = this.targetBlock()
     if (target) {
-      root = target.getSvgRoot()
+      var root = target.getSvgRoot()
       if (root) {
         root.removeAttribute('display')
       } else {
@@ -748,7 +759,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * Convert the slot's connected target into the given xml element.
  * List all the available data and converts them to xml.
  * For edython.
- * @param {Element} xml the persistent element.
+ * @param {Element} element the persistent element.
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
  * @return a dom element, void lists may return nothing
  * @this a block delegate
@@ -855,48 +866,54 @@ eYo.Slot.prototype.load = function (element) {
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.setRequiredFromModel(true)
           out = true
-        } else if (target) {
-          if (target.eyo instanceof eYo.DelegateSvg.List) {
-            var grandChildren = Array.prototype.slice.call(child.childNodes)
-            eYo.Do.forEachElementChild(child, grandChild => {
-              var name = grandChild.getAttribute(eYo.Xml.SLOT)
-              var input = target.getInput(name)
-              if (input) {
-                if (input.connection) {
-                  var grandTarget = input.eyo.target
-                  if ((grandTarget)) {
-                    eYo.Xml.fromDom(grandTarget, grandChild)
-                    this.recover.dontResit(grandChild)
-                  } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
-                    var targetC8n = grandTarget.outputConnection
-                    if (targetC8n && targetC8n.checkType_(input.connection, true)) {
-                      targetC8n.connect(input.connection)
-                      this.setRequiredFromModel(true)
+        } else {
+          if (!target && this.model.promise) {
+            this.completePromised()
+            target = this.targetBlock()
+          } 
+          if (target) {
+            if (target.eyo instanceof eYo.DelegateSvg.List) {
+              var grandChildren = Array.prototype.slice.call(child.childNodes)
+              eYo.Do.forEachElementChild(child, grandChild => {
+                var name = grandChild.getAttribute(eYo.Xml.SLOT)
+                var input = target.getInput(name)
+                if (input) {
+                  if (input.connection) {
+                    var grandTarget = input.eyo.target
+                    if ((grandTarget)) {
+                      eYo.Xml.fromDom(grandTarget, grandChild)
+                      this.recover.dontResit(grandChild)
+                    } else if ((grandTarget = eYo.Xml.domToBlock(grandChild, this.block))) {
+                      var targetC8n = grandTarget.outputConnection
+                      if (targetC8n && targetC8n.checkType_(input.connection, true)) {
+                        targetC8n.connect(input.connection)
+                        this.setRequiredFromModel(true)
+                      }
+                      this.recover.dontResit(grandChild)
                     }
-                    this.recover.dontResit(grandChild)
+                  } else {
+                    console.error('Missing connection')
                   }
-                } else {
-                  console.error('Missing connection')
                 }
-              }
-            })
-            out = true
-          } else {
-            out = eYo.Xml.fromDom(target, child)
+              })
+              out = true
+            } else {
+              out = eYo.Xml.fromDom(target, child)
+            }
+            this.recover.dontResit(child)
+          } else if ((target = eYo.Xml.domToBlock(child, this.block))) {
+            // we could create a block from that child element
+            // then connect it
+            this.recover.dontResit(child)
+            var c8n = this.connection
+            if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
+              c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
+              this.setRequiredFromModel(true)
+            } else if (target.previousConnection && c8n.checkType_(target.previousConnection, true)) {
+              c8n.eyo.connect(target.previousConnection) // Notice the `.eyo`
+            }
+            out = target
           }
-          this.recover.dontResit(child)
-        } else if ((target = eYo.Xml.domToBlock(child, this.block))) {
-          // we could create a block from that child element
-          // then connect it
-          this.recover.dontResit(child)
-          var c8n = this.connection
-          if (c8n && target.outputConnection && c8n.checkType_(target.outputConnection, true)) {
-            c8n.eyo.connect(target.outputConnection) // Notice the `.eyo`
-            this.setRequiredFromModel(true)
-          } else if (target.previousConnection && c8n.checkType_(target.previousConnection, true)) {
-            c8n.eyo.connect(target.previousConnection) // Notice the `.eyo`
-          }
-          out = target
         }
         return true // the element was found
       }
@@ -1013,3 +1030,17 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
     return c8n.eyo.rightConnection()
   }
 }
+
+/**
+ * Complete with a promised block.
+ * Forwards to the receiver's connection's delegate.
+ * One shot in case of success.
+ */
+eYo.Slot.prototype.completePromised = function () {
+  var c8n = this.connection
+  if (c8n && c8n.eyo.completePromised()) {
+    this.completePromised = eYo.Do.Nothing
+    return true
+  }
+}
+

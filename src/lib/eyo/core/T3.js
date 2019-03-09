@@ -281,6 +281,7 @@ eYo.T3.Expr.stride = eYo.T3.Expr.expression
 eYo.T3.Expr.expression_list = eYo.T3.Expr.non_void_expression_list
 eYo.T3.Expr.await_or_primary = eYo.T3.Expr.primary
 eYo.T3.Expr.feature = eYo.T3.Expr.identifier
+eYo.T3.Expr.expr_value_list = eYo.T3.Expr.value_list
 eYo.T3.Expr.funcname = eYo.T3.Expr.identifier
 eYo.T3.Expr.classname = eYo.T3.Expr.identifier
 
@@ -1464,6 +1465,7 @@ eYo.T3.Expr.Check.stride = eYo.T3.Expr.Check.expression
 eYo.T3.Expr.Check.expression_list = eYo.T3.Expr.Check.non_void_expression_list
 eYo.T3.Expr.Check.await_or_primary = eYo.T3.Expr.Check.primary
 eYo.T3.Expr.Check.feature = eYo.T3.Expr.Check.identifier
+eYo.T3.Expr.Check.expr_value_list = eYo.T3.Expr.Check.value_list
 eYo.T3.Expr.Check.funcname = eYo.T3.Expr.Check.identifier
 eYo.T3.Expr.Check.classname = eYo.T3.Expr.Check.identifier
 

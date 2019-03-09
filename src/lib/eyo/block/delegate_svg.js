@@ -1614,6 +1614,15 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
     // if there is a slot or only an input.
     var target = c8n.targetBlock()
     if (target) {
+      if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
+        c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
+        // The `bind` field hides the connection.
+        // The bind field is always the last field before the connection.
+        // if the connection has a bindField, then rendering the placeholder
+        // for that connection is a bit different.
+        // Don't display anything for that connection
+        io.common.field.beforeIsCaret = false
+      }
       var root = target.getSvgRoot()
       if (root) {
         var t_eyo = target.eyo
@@ -1635,7 +1644,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           }
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
-            if (!target.eyo.wrapped_) {
+            if (!t_eyo.wrapped_) {
               io.common.field.shouldSeparate = false
               io.common.field.beforeIsSeparator = true
             }

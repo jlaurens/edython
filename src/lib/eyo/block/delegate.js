@@ -550,6 +550,7 @@ eYo.Delegate.prototype.didLoad = function () {
   if (goog.isFunction(didLoad)) {
     didLoad.call(this)
   }
+  this.incrementChangeCount()
 }
 
 /**
@@ -826,7 +827,7 @@ eYo.Delegate.Manager = (() => {
         }
       }
     }
-    var defineSlotProperty = function (k) {
+    var defineSlotProperty = k => {
       var key_s = k + '_s'
       var key_t = k + '_t'
       // make a closure to catch the value of k
@@ -850,7 +851,8 @@ eYo.Delegate.Manager = (() => {
             key_t,
             {
               get () {
-                return this.slots[k].targetBlock()
+                var s = this.slots[k] // early call
+                return s && s.targetBlock()
               }
             }
           )
@@ -1452,7 +1454,7 @@ eYo.Delegate.prototype.makeContents = function () {
  * For edython.
  */
 eYo.Delegate.prototype.makeSlots = function () {
-  this.slots = Object.create(null)
+  this.slots = Object.create(null) // hard to create all the slots at once.
   this.headSlot = this.feedSlots(this.model.slots)
 }
 
@@ -1642,10 +1644,14 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
 /**
  * Some blocks may change when their properties change.
  * For edython.
- * @param {?string} type Name of the new type.
+ * This is one of the main methods.
+ * The type depends on both the properties of the block and the connections.
+ * There might be problems when a parent block depends on the child
+ * and vice versa. This is something that we must avoid.
+ * See assignment_expr.
  */
-eYo.Delegate.prototype.consolidateType = function (type) {
-  this.setupType(type || this.getType())
+eYo.Delegate.prototype.consolidateType = function () {
+  this.setupType(this.getType())
 }
 
 /**
@@ -1654,15 +1660,17 @@ eYo.Delegate.prototype.consolidateType = function (type) {
  * This method may disconnect blocks as side effect,
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
- * the block type has changed.
+ * the block type/subtype may have changed.
+ * Disconnecting block may imply a further type change, which then implies a connection consolidation.
+ * This looping process will end when the type does not change,
+ * which occurs at least when no connections
+ * is connected.
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrapped_()
   var b = this.block_
-  var t = this.type
-  var st = this.subtype
   var f = c8n => {
-    c8n && c8n.eyo.updateCheck(t, st)
+    c8n && c8n.eyo.updateCheck()
   }
   this.forEachSlot(slot => f(slot.connection))
   if (b.outputConnection) {
@@ -1791,19 +1799,43 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
   return input
 }
 
+
+/**
+ * Shortcut for appending a sealed value input row.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * @param {string} name Language-neutral identifier which may used to find this
+ *     input again.  Should be unique to this block.
+ * This is the only way to create a wrapped block.
+ * @return {!Blockly.Input} The input object created.
+ */
+eYo.Delegate.prototype.appendPromiseValueInput = function (name, prototypeName, optional, hidden) {
+  var input = this.appendWrapValueInput(name, prototypeName, optional, hidden)
+  var c_eyo = input.connection.eyo
+  c_eyo.promised_ = prototypeName
+  c_eyo.wrapped_ = undefined
+  return input
+}
+
 /**
  * If the sealed connections are not connected,
  * create a node for it.
  * The default implementation connects all the blocks from the wrappedC8nDlgt_ list.
- * Subclassers will evntually create appropriate new nodes
+ * Subclassers will eventually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.completeWrapped_ = function () {
   if (this.wrappedC8nDlgt_) {
-    for (var i = 0; i < this.wrappedC8nDlgt_.length; i++) {
-      this.wrappedC8nDlgt_[i].completeWrapped()
+    var i = 0
+    while (i < this.wrappedC8nDlgt_.length) {
+      var d = this.wrappedC8nDlgt_[i]
+      var ans = d.completeWrapped()
+      if (ans && ans.ans) {
+        this.wrappedC8nDlgt_.splice(i)
+      } else {
+        ++i
+      }
     }
   }
 }
@@ -1929,6 +1961,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
     this.suiteCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
   }
   eYo.Draw.didConnect(connection, oldTargetC8n, targetOldC8n)
+  this.consolidateType()
 }
 
 /**

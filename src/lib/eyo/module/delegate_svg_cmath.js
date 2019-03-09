@@ -123,6 +123,8 @@ goog.require('eYo.FlyoutCategory')
 //   }
 // })
 
+var doit = (() => {
+
 var F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -199,7 +201,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
   F_k('tau', 'τ (≅ 2π)'),
 ]
 
-var F = (name, title) => {
+F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -212,7 +214,7 @@ var F = (name, title) => {
     title: key
   }
 }
-var F_k = (name, title) => {
+F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
@@ -308,6 +310,8 @@ eYo.FlyoutCategory.cmath__module = [
   F_k('nan', 'nan (not a number)'),
   F_k('nanj', 'nan imaginaire pur')
 ]
+
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',

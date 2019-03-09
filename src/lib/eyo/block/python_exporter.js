@@ -268,7 +268,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
   var bindField
   if ((bindField = slot.bindField)) {
-    var c8n = slot.input && slot.input.connection
+    var c8n = slot.connection
     bindField.setVisible(!c8n || !c8n.targetBlock())
   }
   var field

@@ -87,6 +87,7 @@ def updateWebTests(path_root, path_deps):
             if x.is_file()
             if os.path.basename(x).endswith('.test.html')]
     for path_in in files:
+        print(f'Updating {path_in}')
         head = []
         tail = []
         fill = head

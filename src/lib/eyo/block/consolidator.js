@@ -51,7 +51,7 @@ eYo.Consolidator.prototype.init = function(d) {
   if (d) {
     goog.mixin(this.model, d)
   }
-  goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
+  goog.asserts.assert(goog.isDef(this.model.check), 'Consolidators must check their objects')
   this.model.check = eYo.Do.ensureArrayFunction(this.model.check)
   if (this.model.unique) {
     this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
@@ -121,9 +121,10 @@ eYo.Consolidator.makeSubclass('List')
  */
 eYo.Consolidator.List.prototype.init = function (d) {
   eYo.Consolidator.List.superClass_.init.call(this, d)
-  goog.asserts.assert(goog.isDef(this.model.check), 'List consolidators must check their objects')
   if (this.model.unique) {
     this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
+  }
+  if (this.model.all) {
     this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
   }
   this.model.ary || (this.model.ary = Infinity)

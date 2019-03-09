@@ -47,7 +47,7 @@ goog.require('goog.dom');
 // }
 
 eYo.Consolidator.List.makeSubclass('Parameter', {
-  check: eYo.T3.Expr.Check.primary,
+  check: null,
   mandatory: 0,
   presep: ','
 }, eYo.Consolidator.List, eYo.Consolidator)
@@ -99,7 +99,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
    * Called when io.input is connected.
    * @param {Object} io, parameters....
    */
-  var getCheckType = (io) => {
+  var getCheckType = io => {
     var target = io.c8n.targetConnection
     if (!target) {
       return Type.unconnected
@@ -278,6 +278,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
     }
     if (can_default) {
       out.push(eYo.T3.Expr.identifier_defined)
+      out.push(eYo.T3.Expr.identifier_annotated_defined)
     }
     if (can_star) {
       out.push(eYo.T3.Expr.star)
@@ -437,10 +438,9 @@ names.forEach((key) => {
 /**
  * The output check may change depending on the content.
  * For edython.
- * @param {!String} type
  */
-eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
-  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, type)
+eYo.ConnectionDelegate.prototype.consolidateType = function () {
+  eYo.ConnectionDelegate.superClass_.consolidateType.call(this)
   var block = this.connection.sourceBlock_
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
@@ -470,6 +470,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
       }
     }
   }
+  // better design if we use the subtype ?
   c8nIn.setCheck(nocond_only_out
     ? eYo.T3.Expr.Check.expression_nocond
     : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond))

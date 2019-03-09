@@ -24,6 +24,8 @@ goog.require('eYo.FlyoutCategory')
 
 goog.require('eYo.Model.math__module')
 
+var doit = (() => {
+
 var F = (name, title) => {
   var key = 'math__'+name
   title && (eYo.Tooltip.Title[key] = title)
@@ -202,6 +204,8 @@ eYo.FlyoutCategory.math__module = [
   F('gamma', 'Fonction Gamma d\'Euler'),
   F('lgamma', 'Logarithme népérien de la fonction Gamma')
 ]
+
+})()
 
 goog.mixin(eYo.Tooltip.Title, {
   math__import_stmt: 'Importer le module math',

@@ -346,7 +346,7 @@ eYo.Do.ensureFunction = function (object) {
  * This is used to indicate that any block is accepted for a connection.
  * If object is a void array, no connection will be possible.
  * @param {?Object} object
- * @return A function with signature f() -> []?
+ * @return object when a function else a function with signature f() -> []
  */
 eYo.Do.ensureArrayFunction = object => {
   var did = goog.isFunction(object)
