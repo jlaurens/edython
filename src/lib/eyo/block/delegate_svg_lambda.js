@@ -437,10 +437,9 @@ names.forEach((key) => {
 /**
  * The output check may change depending on the content.
  * For edython.
- * @param {!String} type
  */
-eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
-  eYo.ConnectionDelegate.superClass_.consolidateType.call(this, type)
+eYo.ConnectionDelegate.prototype.consolidateType = function () {
+  eYo.ConnectionDelegate.superClass_.consolidateType.call(this)
   var block = this.connection.sourceBlock_
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)
@@ -470,6 +469,7 @@ eYo.ConnectionDelegate.prototype.consolidateType = function (type) {
       }
     }
   }
+  // better design if we use the subtype ?
   c8nIn.setCheck(nocond_only_out
     ? eYo.T3.Expr.Check.expression_nocond
     : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond))

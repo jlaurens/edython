@@ -170,16 +170,15 @@ Object.defineProperties(
      */
     unwrappedTargetBlock: {
       get () {
-        var t
+        var t = this.connection.targetBlock()
         var f = b => {
-          return b && b.inputList.some(i => {
-            t = i.connection && i.connection.targetBlock()
-            if (f(t)) {
+          return b && (!b.eyo.wrapped_ || b.inputList.some(i => {
+            if (f(t = i.connection && i.connection.targetBlock())) {
               return true
             }
-          })
+          }))
         }
-        return f(this.connection.targetBlock()) && t
+        return f(t) && t
       }
     }
   }
@@ -404,10 +403,16 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
 /**
  * Set the receiver's connection's check_ array according to the given type.
  * The defaults implements asks the model then sets the check_ property.
+ * Called by consolidateConnections
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
+  var eyo = this.connection.sourceBlock_.eyo
+  if(this.changeCount === eyo.change.count) {
+    return
+  }
+  this.changeCount = eyo.change.count
   if (this.model.check) {
-    this.connection.setCheck(this.model.check.apply(this, arguments))
+    this.connection.setCheck(this.model.check.call(this, eyo.type, eyo.subtype))
   }
 }
 
@@ -1231,6 +1236,20 @@ Blockly.Connection.prototype.dispose = function () {
     dispose.call(this)
   }
 } ()
+
+/**
+ * Function to be called when this connection's compatible types have changed.
+ * @private
+ */
+Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
+  // The new value type may not be compatible with the existing connection.
+  if (this.isConnected() && !this.checkType_(this.targetConnection)) {
+    var child = this.isSuperior() ? this.targetBlock() : this.sourceBlock_;
+    child.unplug();
+    // Bump away.
+    this.sourceBlock_.bumpNeighbours_();
+  }
+};
 
 /**
  * Function to be called when this connection's compatible types have changed.

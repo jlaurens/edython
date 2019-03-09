@@ -303,7 +303,7 @@ Cascaded required:
         print('Exporting to', p_out)
         p_out.write_text(''.join(map(mapper, final)))
    
-    export('deps-build.txt', lambda r: '--js "' + r + '" \\\n')
-    export('deps-vue.txt', lambda r: '      <script src="' + pathlib.Path(r).relative_to('src').as_posix()+'"></script>\n')
-    export('deps-web-dev.txt', lambda r: '      <script src="../../src/'+pathlib.Path(r).relative_to('src').as_posix() + '"></script>\n')
+    export('deps-build.txt', lambda r: f'--js {r} \\\n')
+    export('deps-vue.txt', lambda r: f'      <script src="{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n')
+    export('deps-web-dev.txt', lambda r: f'      <script src="../../src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n')
     

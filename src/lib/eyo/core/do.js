@@ -342,7 +342,7 @@ eYo.Do.ensureFunction = function (object) {
 /**
  * Used only by the model's checking.
  * @param {!Object} object
- * @return A function with signature f() -> []
+ * @return object when a function else a function with signature f() -> []
  */
 eYo.Do.ensureArrayFunction = object => {
   var did = goog.isFunction(object)

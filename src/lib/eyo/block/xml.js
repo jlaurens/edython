@@ -1033,7 +1033,8 @@ eYo.Xml.domToBlock = (() => {
       () => {
         var block
         // is it a literal or something else special ?
-        if ((block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
+        if ((block = eYo.Xml.Primary.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Starred.domToBlockComplete(dom, owner)) ||
         // (block = eYo.Xml.Group.domToBlockComplete(dom, owner)) ||
@@ -1236,6 +1237,13 @@ goog.require('eYo.DelegateSvg.Primary')
 eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
   if ([
+    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.keyword_item,
+    eYo.T3.Expr.assignment_expr
+  ].indexOf(type) >= 0) {
+    return '='
+  }
+  if ([
     eYo.T3.Expr.parent_module,
     eYo.T3.Expr.identifier_defined,
     eYo.T3.Expr.dotted_name,
@@ -1325,6 +1333,25 @@ eYo.Xml.Starred.domToBlockComplete = function (element, owner) {
   } else if (prototypeName === "**") {
     var workspace = owner.workspace || owner
     block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.or_expr_star_star, id)
+  }
+  return block
+}
+
+goog.provide('eYo.Xml.Primary')
+
+/**
+ * Try to create a primary block from the given element.
+ * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
+ * @override
+ */
+eYo.Xml.Primary.domToBlockComplete = function (element, owner) {
+  var block
+  var prototypeName = element.getAttribute(eYo.Key.EYO)
+  var id = element.getAttribute('id')
+  if (prototypeName === '=') {
+    var workspace = owner.workspace || owner
+    block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.identifier_defined, id)
   }
   return block
 }

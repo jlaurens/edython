@@ -42,7 +42,7 @@ eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
 }
 
 /**
- * Create a consolidator..
+ * Create a consolidator.
  *
  * @param {boolean} force
  */

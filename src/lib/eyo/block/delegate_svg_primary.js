@@ -434,10 +434,21 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
+        if (oldValue === eYo.Key.TARGETS_DEFINED && !O.name_t) {
+          var t_eyo = O.targets_s.unwrappedTarget
+          if (t_eyo) {
+            O.name_s.connect(t_eyo.block_) // only connects if it can
+          }
+        }
         if (newValue === eYo.Key.TARGETS_DEFINED) {
           O.targets_s.completePromised()
+          t_eyo = O.name_t
+          if (t_eyo) {
+            O.targets_t.inputList[0].eyo.connect(t_eyo)
+          }
         }
-        O.targets_s.setIncog(newValue !== eYo.Key.TARGETS_DEFINED)
+        O.targets_s.required = newValue === eYo.Key.TARGETS_DEFINED
+        O.targets_s.setIncog()
         if (!O.targets_s.isIncog()) {
           O.targets_t.eyo.createConsolidator(true) // unique is special
         }
@@ -715,6 +726,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.owner.variant_p !== eYo.Key.TARGETS_DEFINED
+      },
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (this.owner.variant_p = eYo.Key.TARGETS_DEFINED) {
+            this.save(element, opt)
+          }
+        }
       }
     },
     definition: {
@@ -729,10 +747,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       // check: eYo.T3.Expr.expression,
-      wrap: eYo.T3.Expr.value_list,
+      wrap: eYo.T3.Expr.expr_value_list,
       hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED) {
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED && this.owner.variant_p !== eYo.Key.TARGETS_DEFINED) {
           this.owner.variant_p = eYo.Key.DEFINED
         }
       }
@@ -1114,7 +1132,28 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         eYo.T3.Expr.key_datum
       ]
   } else if (profile.variant === eYo.Key.DEFINED) {
+    // if the first value is connected to a defined primary
+    var eyo = this.definition_s.unwrappedTarget
+    if (eyo && !eyo.definition_s.isIncog()) {
+      return [
+        eYo.T3.Expr.assignment_expr
+      ]
+    }
+    // if the parent is a [expr_]value_list
+    if ((eyo = this.output)) {
+      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
+        return [
+          eYo.T3.Expr.assignment_expr
+        ]
+      }
+      return [
+        eYo.T3.Expr.identifier_defined,
+        eYo.T3.Expr.keyword_item
+      ]  
+    }
+    // standalone block
     return [
+      eYo.T3.Expr.assignment_expr, // allways first
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
     ]
@@ -1133,12 +1172,32 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         ]  
       }
     }
+    // if the first value is connected to a defined primary
+    eyo = this.definition_s.unwrappedTarget
+    if (eyo && !eyo.definition_s.isIncog()) {
+      return [
+        eYo.T3.Expr.assignment_expr
+      ]
+    }
+    // if the parent is a value list
+    if ((eyo = this.output)) {
+      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
+        return [
+          eYo.T3.Expr.assignment_expr
+        ]
+      }
+      return [
+        eYo.T3.Expr.identifier_defined,
+        eYo.T3.Expr.keyword_item
+      ]
+    }
+    // standalone block
     return [
+      eYo.T3.Expr.assignment_expr, // allways first
       eYo.T3.Expr.identifier_defined,
-      eYo.T3.Expr.keyword_item,
-      eYo.T3.Expr.assignment_expr
+      eYo.T3.Expr.keyword_item
     ]
-}
+  }
   // if this is just a wrapper, forwards the check array
   if (!profile.dotted) {
     return profile.name.target
@@ -1215,11 +1274,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       }
       return [
         eYo.T3.Expr.attributeref
-      ]  
+      ]
     }
     return [
       eYo.T3.Expr.dotted_name
-    ]  
+    ]
   }
   if (profile.name.type === eYo.T3.Expr.named_attributeRef) {
     if (!profile.dotted
@@ -1301,6 +1360,26 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
   }
   return input
 }
+
+eYo.DelegateSvg.List.makeSubclass('value_list', function () {
+  var D = {
+    check: eYo.T3.Expr.Check.starred_item,
+    unique: [
+      eYo.T3.Expr.yield_expression,
+      eYo.T3.Expr.identifier_defined,
+      eYo.T3.Expr.keyword_item,
+      eYo.T3.Expr.assignment_expr],
+    consolidator: eYo.Consolidator.List,
+    presep: ',',
+    mandatory: 1
+  }
+  var RA = goog.array.concat(D.check, D.unique)
+  goog.array.removeDuplicates(RA)
+  D.all = RA
+  return {
+    list: D
+  }
+})
 
 /**
  * Class for a DelegateSvg, base call statement block.

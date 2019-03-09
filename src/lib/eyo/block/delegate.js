@@ -1644,10 +1644,14 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
 /**
  * Some blocks may change when their properties change.
  * For edython.
- * @param {?string} type Name of the new type.
+ * This is one of the main methods.
+ * The type depends on both the properties of the block and the connections.
+ * There might be problems when a parent block depends on the child
+ * and vice versa. This is something that we must avoid.
+ * See assignment_expr.
  */
-eYo.Delegate.prototype.consolidateType = function (type) {
-  this.setupType(type || this.getType())
+eYo.Delegate.prototype.consolidateType = function () {
+  this.setupType(this.getType())
 }
 
 /**
@@ -1656,15 +1660,17 @@ eYo.Delegate.prototype.consolidateType = function (type) {
  * This method may disconnect blocks as side effect,
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
- * the block type has changed.
+ * the block type/subtype may have changed.
+ * Disconnecting block may imply a further type change, which then implies a connection consolidation.
+ * This looping process will end when the type does not change,
+ * which occurs at least when no connections
+ * is connected.
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrapped_()
   var b = this.block_
-  var t = this.type
-  var st = this.subtype
   var f = c8n => {
-    c8n && c8n.eyo.updateCheck(t, st)
+    c8n && c8n.eyo.updateCheck()
   }
   this.forEachSlot(slot => f(slot.connection))
   f(b.outputConnection)
@@ -1944,6 +1950,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
     this.suiteCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
   }
   eYo.Draw.didConnect(connection, oldTargetC8n, targetOldC8n)
+  this.consolidateType()
 }
 
 /**

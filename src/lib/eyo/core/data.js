@@ -826,7 +826,7 @@ eYo.Data.prototype.save = function (element, opt) {
     return
   }
   // do not save if there is an associate slot with a target block.
-  if (this.slot && this.slot.bindField === this.field && this.slot.targetBlock()) {
+  if (this.slot && this.slot.bindField === this.field && this.slot.unwrappedTarget) {
     return
   }
   if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {

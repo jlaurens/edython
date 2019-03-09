@@ -261,6 +261,7 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   }
 }, true)
 
+
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
@@ -385,22 +386,6 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
-
-eYo.DelegateSvg.List.makeSubclass('value_list', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.starred_item,
-    unique: eYo.T3.Expr.yield_expression,
-    consolidator: eYo.Consolidator.List,
-    presep: ',',
-    mandatory: 1
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    list: D
-  }
-})
 
 eYo.DelegateSvg.List.makeSubclass('augassigned_list', function () {
   var D = {
