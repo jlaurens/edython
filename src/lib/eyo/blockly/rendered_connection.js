@@ -101,7 +101,7 @@ Object.defineProperties(
         // in a void wrapped list
         var b = this.sourceBlock_
         var input = b.inputList[0]
-        if (input.connection === this.connection) {
+        if (input && (input.connection === this.connection)) {
           var c8n = b.outputConnection
           if (c8n) {
             if (c8n = c8n.targetConnection) {

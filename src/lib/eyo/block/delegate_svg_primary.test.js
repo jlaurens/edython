@@ -264,12 +264,20 @@ describe('Primary(Assignment)', function() {
     assert(b.eyo.name_t === a, `MISSING ${b.eyo.name_t} === ${a}`)
     b.dispose()
   })
-  it('values', function() {
+  it('…=(…=…) unique value', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
+    var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
+    assert(b.eyo.definition_t.eyo.lastInput.eyo.connect(a), 'MISSED 1')
+    assert(b.eyo.definition_t.inputList.length === 1, 'BAD 1')
+    assert(expect(a.eyo).equals(b.eyo.definition_s.unwrappedTarget), 'BAD 2')
+    b.dispose()
+  })
+  it('b=rhs (dom)', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
     b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
     var s = b.eyo.definition_s
     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'rhs')
-    b.eyo.definition_t.eyo.lastInput.eyo.connect(a)
+    assert(b.eyo.definition_t.eyo.lastInput.eyo.connect(a), 'MISSED 1')
     assert(s.unwrappedTarget === a.eyo, `MISSED ${s.unwrappedTarget} === ${a.eyo}`)
     var dom = eYo.Xml.blockToDom(b)
     b.dispose()
