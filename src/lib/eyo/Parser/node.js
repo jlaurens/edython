@@ -54,7 +54,6 @@ eYo.Node = function (scan, type, subtype) {
     this.col_offset = scan.col_offset
   }
   this.n_child = [];
-  return n;
 }
 
 eYo.Node.prototype.be_keyword = function () {

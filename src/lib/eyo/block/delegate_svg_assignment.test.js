@@ -8,7 +8,7 @@ describe('Assignment', function() {
   it('Test', function() {
     var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
     assert(b1, `MISSING assignment statement`)
-    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
     assert(b2, `MISSING assignment expression`)
     var input = b1.eyo.value_s.target.lastInput
     input.connection.connect(b2.outputConnection)

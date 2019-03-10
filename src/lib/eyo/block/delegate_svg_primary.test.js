@@ -20,8 +20,8 @@ describe('Primary', function() {
     f('identifier')
     f('identifier_annotated')
     f('key_datum', 'identifier_annotated')
-    f('identifier_defined', 'assignment_expr')
-    f('keyword_item', 'assignment_expr')
+    f('identifier_defined', 'assignment_chain')
+    f('keyword_item', 'assignment_chain')
     f('identifier_annotated_defined')
     f('attributeref', 'parent_module')
     f('named_attributeref')
@@ -36,31 +36,43 @@ describe('Primary', function() {
     f('named_slicing')
     f('call_expr', 'named_call_expr')
     f('named_call_expr')
-    f('assignment_expr')
+    f('assignment_chain')
   })
 })
 
 describe('Primary(Compatibility)', function() {
   it('0.2.0', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
+    assert(b.type === eYo.T3.Expr.assignment_chain, `BAD TYPE 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
     var rhs = 'rhs'
     b.eyo.definition_p = rhs
+    assert(b.eyo.definition_p === rhs, `BAD ${b.eyo.definition_p} === ${rhs}`)
     var dom = eYo.Xml.blockToDom(b)
     b.dispose()
-    f = t => {
+    console.error(dom)
+    f = (t, expected) => {
       dom.setAttribute(eYo.Key.EYO, t)
+      expected = eYo.T3.Expr[expected] || eYo.T3.Expr.assignment_chain
       var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-      assert(b2.type === eYo.T3.Expr.assignment_expr)
+      assert(b2.type === expected, `BAD TYPE (${t}): ${b2.type} === ${expected}`)
+      assert(b2.eyo.definition_s, `MISSING DEFINITION SLOT ${t}`)
+      assert(!b2.eyo.definition_s.isIncog(), `UNEXPECTED INCOG ${t}`)
       assert(b2.eyo.definition_p === rhs, `MISSED ${b2.eyo.definition_p} === ${rhs}`)
       b2.dispose()
     }
-    f('identifier_defined')
-    f('keyword_item')
-    f('assignment_expr')
+    // f('identifier_defined')
+    // f('keyword_item')
+    // f('assignment_chain')
+    f('assignment_expr', 'assignment_expr')
   })
 })
 
 describe('Primary(value_list)', function() {
+  it('basic', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
+    assert(b, 'MISSED')
+    b.dispose()
+  })
   it('void unwrapped', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
     assert(b, 'MISSED')
@@ -73,14 +85,16 @@ describe('Primary(value_list)', function() {
     assert(expect(check).equal(model.all()), `MISMATCH 1`)
     assert(expect(check).not.equal(model.check()), `MISMATCH 2`)
     assert(expect(check).not.equal(model.unique()), `MISMATCH 3`)
-    assert(expect(model.all()).contains(eYo.T3.Expr.assignment_expr), `MISMATCH 4`)
+    assert(expect(model.all()).contains(eYo.T3.Expr.assignment_chain), `MISMATCH 4`)
     b.dispose()
   })
   it('void wrapped', function() {
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
     assert(bb, 'MISSED')
+    assert(bb.eyo.constructor.eyo.key === 'primary', `UNEXPECTED CTOR ${bb.eyo.constructor.eyo.key} !=== primary`)
     var b = bb.eyo.definition_t
-    assert(b.inputList.length === 1)
+    assert(b, 'MISSING DEFINITION TARGET')
+    assert(b.inputList.length === 1, 'BAD INPUT COUNT')
     var model = b.eyo.consolidator.model
     var check = b.inputList[0].connection.check_
     assert(expect(check).to.equal(model.all()),`MISMATCH 1`)
@@ -185,8 +199,8 @@ describe('Primary(Defined)', function() {
     eYo.STOP = 0
     assert(bb.eyo.definition_t.eyo.lastInput.eyo.connect(b), 'BAD 2')
     assert(bb.eyo.definition_s.unwrappedTarget === b.eyo, `BAD 3 ${bb.eyo.definition_s.unwrappedTarget} === ${b.eyo}`)
-    assert(b.type === eYo.T3.Expr.assignment_expr, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_expr}`)
-    assert(bb.type === eYo.T3.Expr.assignment_expr, `MISSED 2: ${bb.type} === ${eYo.T3.Expr.assignment_expr}`)
+    assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
+    assert(bb.type === eYo.T3.Expr.assignment_chain, `MISSED 2: ${bb.type} === ${eYo.T3.Expr.assignment_chain}`)
     bb.dispose()
     b.dispose()
   })
@@ -196,8 +210,9 @@ describe('Primary(Defined)', function() {
     assert(b.eyo.definition_t.eyo.lastInput.eyo.connect
     (eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a)), 'BAD 1')
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
+    assert(bb.eyo.value_t, 'MISSING value_t')
     assert(bb.eyo.value_t.eyo.lastInput.eyo.connect(b), 'BAD 2')
-    assert(b.type === eYo.T3.Expr.assignment_expr, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_expr}`)
+    assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
     assert(bb.type === eYo.T3.Stmt.assignment_stmt, `MISSED 2: ${bb.type} === ${eYo.T3.Stmt.assignment_stmt}`)
     bb.dispose()
   })
@@ -206,26 +221,26 @@ describe('Primary(Defined)', function() {
 describe('Primary(Assignment)', function() {
   it('basic', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
-    assert(b.type === eYo.T3.Expr.assignment_expr, `MISSED TYPE ${b.type} === ${eYo.T3.Expr.assignment_expr}`)
+    assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED TYPE ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
     // targets is a promise
     assert(!b.eyo.targets_t, 'UNEXPECTED TARGETS')
     assert(!b.eyo.definition_d.isIncog(), 'UNEXPECTED INCOG')
-    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    b.eyo.variant_p = eYo.Key.TARGETS
     assert(!b.eyo.definition_d.isIncog(), 'UNEXPECTED INCOG (2)')
     var f = (k, b1 = b) => {
       assert(b1.type === eYo.T3.Expr[k], `MISSED TYPE ${b1.type} === ${eYo.T3.Expr[k]}`)
     }
-    f('assignment_expr')
+    f('assignment_chain')
     var t = b.eyo.targets_t
     assert(t, 'MISSING TARGETS')
     t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
-    f('assignment_expr')
+    f('assignment_chain')
     t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b'))
-    f('assignment_expr')
+    f('assignment_chain')
     var dom = eYo.Xml.blockToDom(b)
     // console.log(dom)
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    f('assignment_expr', b2)
+    f('assignment_chain', b2)
     b2.moveBy(50, 10)
     b.dispose(true)
     b2.dispose(true)
@@ -235,7 +250,7 @@ describe('Primary(Assignment)', function() {
      var f = (k, b1 = b) => {
       assert(b1.type === eYo.T3.Expr[k], `MISSED TYPE ${b1.type} === ${eYo.T3.Expr[k]}`)
     }
-    f('assignment_expr')
+    f('assignment_chain')
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.call_expr)
     var t = bb.eyo.n_ary_t
     assert(t.eyo.lastInput.eyo.connect(b), 'BAD')
@@ -244,21 +259,21 @@ describe('Primary(Assignment)', function() {
   })
   it('xfer name <-> targets', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
-    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    b.eyo.variant_p = eYo.Key.TARGETS
     var t = b.eyo.targets_t
     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
     t.eyo.lastInput.eyo.connect(a)
     assert(!b.eyo.name_t, 'UNEXPECTED NAME')
     b.eyo.variant_p = eYo.Key.NONE
     assert(b.eyo.name_t === a, `MISSING ${b.eyo.name_t} === ${a}`)
-    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    b.eyo.variant_p = eYo.Key.TARGETS
     assert(!b.eyo.name_t, 'UNEXPECTED NAME')
     b.dispose()
     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
     a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
     b.eyo.name_s.connect(a)
     assert(b.eyo.name_t === a, `MISSING ${b.eyo.name_t} === ${a}`)
-    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    b.eyo.variant_p = eYo.Key.TARGETS
     assert(!b.eyo.name_t, 'UNEXPECTED NAME')
     b.eyo.variant_p = eYo.Key.NONE
     assert(b.eyo.name_t === a, `MISSING ${b.eyo.name_t} === ${a}`)
@@ -274,7 +289,7 @@ describe('Primary(Assignment)', function() {
   })
   it('b=rhs (dom)', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_defined)
-    b.eyo.variant_p = eYo.Key.TARGETS_DEFINED
+    b.eyo.variant_p = eYo.Key.TARGETS
     var s = b.eyo.definition_s
     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'rhs')
     assert(b.eyo.definition_t.eyo.lastInput.eyo.connect(a), 'MISSED 1')
@@ -283,10 +298,18 @@ describe('Primary(Assignment)', function() {
     b.dispose()
     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
     assert(b, `MISSING ${dom}`)
-    assert(b.eyo.variant_p === eYo.Key.TARGETS_DEFINED, `MISSED ${b.eyo.variant_p} === ${eYo.Key.TARGETS_DEFINED}`)
+    assert(b.eyo.variant_p === eYo.Key.TARGETS, `MISSED ${b.eyo.variant_p} === ${eYo.Key.TARGETS}`)
     var u = b.eyo.definition_s.unwrappedTarget
     assert(u, 'MISSED value')
     assert(u.type === eYo.T3.Expr.identifier, `MISSED type: ${u.type} === ${eYo.T3.Expr.identifier}`)
     b.dispose()
+  })
+})
+
+describe('Primary(Expression Assignment)', function() {
+  it('basic', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
+    assert(b.eyo.variant_p === eYo.Key.COL_DEFINED, `FAIL VARIANT ${b.eyo.variant_p} === ${eYo.Key.COL_DEFINED}`)
+    assert(b.eyo.definition_s.fields.label.getValue() === ':=')
   })
 })

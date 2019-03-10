@@ -1648,7 +1648,7 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
  * The type depends on both the properties of the block and the connections.
  * There might be problems when a parent block depends on the child
  * and vice versa. This is something that we must avoid.
- * See assignment_expr.
+ * See assignment_chain.
  */
 eYo.Delegate.prototype.consolidateType = function () {
   this.setupType(this.getType())

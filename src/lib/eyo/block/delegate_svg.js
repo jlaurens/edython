@@ -1346,11 +1346,12 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
           if (head === '.' && !io.common.field.beforeIsBlack) {
             io.cursor.c -= 1
           } else if (io.common.field.beforeIsBlack
-            && (eYo.XRE.operator.test(head) || head === '=')) {
+            && (eYo.XRE.operator.test(head) || head === '=' || head === ':')) {
             io.cursor.c += 1
           } else if (io.common.field.shouldSeparate
               && (!f_eyo.startsWithSeparator()
-              || head === '=')) {
+              || head === '='
+              || head === ':')) {
             io.cursor.c += 1
           }
         }

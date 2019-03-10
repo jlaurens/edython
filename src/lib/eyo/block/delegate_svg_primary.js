@@ -177,7 +177,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       eYo.T3.Expr.named_slicing,
       eYo.T3.Expr.call_expr,
       eYo.T3.Expr.named_call_expr,
-      eYo.T3.Expr.assignment_expr
+      eYo.T3.Expr.assignment_chain
     ]
   },
   data: {
@@ -323,7 +323,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.DEFINED) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
-          } else if (this.owner.variant_p === eYo.Key.TARGETS_DEFINED) {
+          } else if (this.owner.variant_p === eYo.Key.TARGETS) {
             this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
           } else {
             this.owner.variant_p = eYo.Key.ANNOTATED
@@ -350,7 +350,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           var v = this.owner.variant_p
-          if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED || v === eYo.Key.TARGETS_DEFINED) {
+          if (v === eYo.Key.DEFINED || v === eYo.Key.ANNOTATED_DEFINED || v === eYo.Key.TARGETS) {
             this.required = true
             this.save(element, opt)
           }
@@ -365,17 +365,19 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.ANNOTATED) {
-            this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
-          } else if (this.owner.variant_p !== eYo.Key.TARGETS_DEFINED) {
-            this.owner.variant_p = eYo.Key.DEFINED
+          var O = this.owner
+          var v = O.variant_p
+          if (v === eYo.Key.ANNOTATED) {
+            O.variant_p = eYo.Key.ANNOTATED_DEFINED
+          } else if (v !== eYo.Key.TARGETS && v !== eYo.Key.COL_DEFINED) {
+            O.variant_p = eYo.Key.DEFINED
           }
         }
       },
       synchronize: true,
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         var v = this.owner.variant_p
-        return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED && v !== eYo.Key.TARGETS_DEFINED
+        return v !== eYo.Key.DEFINED && v !== eYo.Key.ANNOTATED_DEFINED && v !== eYo.Key.TARGETS && v !== eYo.Key.COL_DEFINED
       }
     },
     variant: {
@@ -388,7 +390,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         eYo.Key.ANNOTATED,
         eYo.Key.ANNOTATED_DEFINED,
         eYo.Key.DEFINED,
-        eYo.Key.TARGETS_DEFINED
+        eYo.Key.COL_DEFINED,
+        eYo.Key.TARGETS
       ],
       init: eYo.Key.NONE,
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -418,14 +421,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.owner.annotation_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_defined ||
             type === eYo.T3.Expr.keyword_item ||
-            type === eYo.T3.Expr.assignment_expr) {
-          if (this.get() !== eYo.Key.TARGETS_DEFINED) {
+            type === eYo.T3.Expr.assignment_chain) {
+          if (this.get() !== eYo.Key.TARGETS) {
             this.change(eYo.Key.DEFINED)
           }
           this.owner.definition_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_annotated_defined) {
           this.change(eYo.Key.ANNOTATED_DEFINED)
           this.owner.annotation_d.required_from_type = true
+          this.owner.definition_d.required_from_type = true
+        } else if (type === eYo.T3.Expr.assignment_expr) {
+          this.change(eYo.Key.COL_DEFINED)
           this.owner.definition_d.required_from_type = true
         } else {
           this.change(eYo.Key.NONE)
@@ -434,20 +440,20 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
-        if (oldValue === eYo.Key.TARGETS_DEFINED && !O.name_t) {
+        if (oldValue === eYo.Key.TARGETS && !O.name_t) {
           var t_eyo = O.targets_s.unwrappedTarget
           if (t_eyo) {
             O.name_s.connect(t_eyo.block_) // only connects if it can
           }
         }
-        if (newValue === eYo.Key.TARGETS_DEFINED) {
+        if (newValue === eYo.Key.TARGETS) {
           O.targets_s.completePromised()
           t_eyo = O.name_t
           if (t_eyo) {
             O.targets_t.inputList[0].eyo.connect(t_eyo)
           }
         }
-        O.targets_s.required = newValue === eYo.Key.TARGETS_DEFINED
+        O.targets_s.required = newValue === eYo.Key.TARGETS
         O.targets_s.setIncog()
         if (!O.targets_s.isIncog()) {
           O.targets_t.eyo.createConsolidator(true) // unique is special
@@ -456,10 +462,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (!O.n_ary_s.isIncog()) {
           O.n_ary_t.eyo.createConsolidator(true)
         }
-        O.name_d.setIncog(newValue === eYo.Key.TARGETS_DEFINED)
+        O.name_d.setIncog(newValue === eYo.Key.TARGETS)
         O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
         O.alias_d.setIncog(newValue !== eYo.Key.ALIASED)
-        O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED && newValue !== eYo.Key.TARGETS_DEFINED)
+        O.definition_d.setIncog(newValue !== eYo.Key.DEFINED && newValue !== eYo.Key.ANNOTATED_DEFINED && newValue !== eYo.Key.TARGETS && newValue !== eYo.Key.COL_DEFINED)
+        O.definition_s.fields.label.setValue(newValue === eYo.Key.COL_DEFINED ? ':=' : '=')
         O.annotation_d.setIncog(newValue !== eYo.Key.ANNOTATED && newValue !== eYo.Key.ANNOTATED_DEFINED)
       },
       xml: false
@@ -632,6 +639,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (variant_p === eYo.Key.ALIASED) {
           return eYo.T3.Expr.Check.expression
         }
+        if (variant_p === eYo.Key.COL_DEFINED) {
+          return eYo.T3.Expr.Check.expression
+        }
         if (variant_p === eYo.Key.CALL_EXPR
           || variant_p === eYo.Key.SLICING) {
           return eYo.T3.Expr.Check.primary
@@ -721,15 +731,15 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       promise: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.TARGETS_DEFINED
+          this.owner.variant_p = eYo.Key.TARGETS
         }
       },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
-        return this.owner.variant_p !== eYo.Key.TARGETS_DEFINED
+        return this.owner.variant_p !== eYo.Key.TARGETS
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (this.owner.variant_p = eYo.Key.TARGETS_DEFINED) {
+          if (this.owner.variant_p = eYo.Key.TARGETS) {
             this.save(element, opt)
           }
         }
@@ -749,7 +759,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       wrap: eYo.T3.Expr.expr_value_list,
       hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED && this.owner.variant_p !== eYo.Key.TARGETS_DEFINED) {
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED && this.owner.variant_p !== eYo.Key.TARGETS) {
           this.owner.variant_p = eYo.Key.DEFINED
         }
       }
@@ -809,7 +819,7 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delega
   return !delegate.block_.isInFlyout
 })
 
-for (var _ = 0, k; (k = [
+;[
   'call_expr',
   'subscription',
   'slicing',
@@ -825,11 +835,12 @@ for (var _ = 0, k; (k = [
   'identifier_as',
   'dotted_name_as',
   'expression_as',
+  'assignment_chain',
   'assignment_expr'
-][_++]);) {
+].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.primary
   eYo.DelegateSvg.Manager.register(k)
-}
+})
 
 /**
  * Initialize a block.
@@ -905,7 +916,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       var target, t_eyo, p5e
       var type
       // if the `name` slot is connected.
-      if (this.variant_p === eYo.Key.TARGETS_DEFINED) {
+      if (this.variant_p === eYo.Key.TARGETS) {
         ans.assignment = true
       } else if ((target = this.name_t)) {
         t_eyo = target.eyo
@@ -1130,19 +1141,23 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       : [
         eYo.T3.Expr.key_datum
       ]
-  } else if (profile.variant === eYo.Key.DEFINED) {
-    // if the first value is connected to a defined primary
+    } else if (profile.variant === eYo.Key.COL_DEFINED) {
+      return [
+        eYo.T3.Expr.assignment_expr
+      ]
+    } else if (profile.variant === eYo.Key.DEFINED) {
+      // if the first value is connected to a defined primary
     var eyo = this.definition_s.unwrappedTarget
     if (eyo && !eyo.definition_s.isIncog()) {
       return [
-        eYo.T3.Expr.assignment_expr
+        eYo.T3.Expr.assignment_chain
       ]
     }
     // if the parent is a [expr_]value_list
     if ((eyo = this.output)) {
       if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
         return [
-          eYo.T3.Expr.assignment_expr
+          eYo.T3.Expr.assignment_chain
         ]
       }
       return [
@@ -1152,7 +1167,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     }
     // standalone block
     return [
-      eYo.T3.Expr.assignment_expr, // allways first
+      eYo.T3.Expr.assignment_chain, // allways first
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
     ]
@@ -1160,14 +1175,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     return [
       eYo.T3.Expr.identifier_annotated_defined
     ]
-  } else if (profile.variant === eYo.Key.TARGETS_DEFINED) {
+  } else if (profile.variant === eYo.Key.TARGETS) {
     // how many targets are connected
     var t = this.targets_t
     if (t) { // may not exist yet
       if (t.inputList.length > 3) {
         // at least 2 connections
         return [
-          eYo.T3.Expr.assignment_expr
+          eYo.T3.Expr.assignment_chain
         ]  
       }
     }
@@ -1175,14 +1190,14 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     eyo = this.definition_s.unwrappedTarget
     if (eyo && !eyo.definition_s.isIncog()) {
       return [
-        eYo.T3.Expr.assignment_expr
+        eYo.T3.Expr.assignment_chain
       ]
     }
     // if the parent is a value list
     if ((eyo = this.output)) {
       if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
         return [
-          eYo.T3.Expr.assignment_expr
+          eYo.T3.Expr.assignment_chain
         ]
       }
       return [
@@ -1192,7 +1207,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     }
     // standalone block
     return [
-      eYo.T3.Expr.assignment_expr, // allways first
+      eYo.T3.Expr.assignment_chain, // allways first
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item
     ]
@@ -1367,7 +1382,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
       eYo.T3.Expr.yield_expression,
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item,
-      eYo.T3.Expr.assignment_expr],
+      eYo.T3.Expr.assignment_chain],
     consolidator: eYo.Consolidator.List,
     presep: ',',
     mandatory: 1
@@ -1378,6 +1393,13 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
   return {
     list: D
   }
+})
+
+;[
+  'expr_value_list'
+].forEach(k => {
+  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.value_list
+  eYo.DelegateSvg.Manager.register(k)
 })
 
 /**

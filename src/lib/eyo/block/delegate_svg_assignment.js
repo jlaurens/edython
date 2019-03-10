@@ -242,85 +242,6 @@ eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
   }
 }, true)
 
-/**
- * Class for a DelegateSvg, assignment_stmt.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('assignment_expr', {
-  data: {
-    variant: {
-      all: [
-        eYo.Key.NAME,
-        eYo.Key.TARGETS
-      ],
-      init: eYo.Key.NAME,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        var O = this.owner
-        O.name_d.setIncog(newValue === eYo.Key.TARGETS)
-        var slot = O.targets_s
-        slot.required = newValue === eYo.Key.TARGETS
-        slot.setIncog()
-      },
-      xml: false
-    },
-    name: {
-      init: '',
-      placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      subtypes: [
-        eYo.T3.Expr.unset,
-        eYo.T3.Expr.identifier,
-        eYo.T3.Expr.dotted_name
-      ],
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return this.model.subtypes.indexOf(p5e.expr) >= 0
-        ? {validated: newValue}
-        : null
-      },
-      synchronize: true,
-      allwaysBoundField: true
-    }
-  },
-  slots: {
-    name: {
-      order: 1,
-      fields: {
-        bind: {
-          validate: true,
-          endEditing: true,
-          variable: true
-        }
-      },
-      check: eYo.T3.Expr.Check.target,
-      didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.NAME
-        }
-      }
-    },
-    targets: {
-      order: 2,
-      wrap: eYo.T3.Expr.target_list,
-      didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.TARGETS
-        }
-      }
-    },
-    value: {
-      order: 4,
-      fields: {
-        operator: {
-          value: '=',
-          css: 'reserved'
-        },
-      },
-      wrap: eYo.T3.Expr.assignment_value_list
-    }
-  }
-}, true)
-
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
@@ -449,7 +370,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
 eYo.DelegateSvg.List.makeSubclass('assignment_value_list', function () {
   var D = {
     check: eYo.T3.Expr.Check.starred_item,
-    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.assignment_expr],
+    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.assignment_chain],
     consolidator: eYo.Consolidator.List,
     presep: ',',
     mandatory: 1
