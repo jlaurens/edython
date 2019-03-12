@@ -1205,18 +1205,26 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
     this.renderDrawEnding_(io, true)
   }
   this.renderDrawPending_(io)
-  if (io.n < 2) {
-    // this is a short block, special management of selection
-    this.isShort = true
+  if (!this.wrapped_) {
     var c8n = io.forc && io.forc.connection
     var target = c8n && c8n.targetBlock()
-    if (target) {
-      target.eyo.parentIsShort = true
-      // always add a space to the right
-      target.eyo.isLastInStatement = false
-      target.eyo.updateAllPaths_()
-      io.cursor.c += 1
+    if (io.n < 2 && !this.wrapped_) {
+      // this is a short block, special management of selection
+      this.isShort = true
+      if (target) {
+        target.eyo.parentIsShort = true
+        // always add a space to the right
+        target.eyo.isLastInStatement = false
+        target.eyo.updateAllPaths_()
+        io.cursor.c += 1
+      }
+    } else {
+      this.isShort = false
+      if (target) {
+        target.eyo.parentIsShort = false
+      }
     }
+
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
   this.size.setFromWhere(io.cursor)

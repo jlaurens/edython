@@ -70,6 +70,7 @@ yield_atom       ::=  "(" yield_expression ")"
 <pre>
 yield_atom ::= REMOVE
 generator_expression ::= REMOVE
+starred_item_38 ::= assignment_expr | expression | "*" or_expr_all
 </pre>
 
 <pre>
@@ -80,7 +81,7 @@ set_display ::=  "{" (starred_list | comprehension) "}"
 
 <pre>
 starred_item_all ::= starred_item | key_datum_all
-key_datum_all ::= or_expr_star_star | key_datum | identifier_annotated
+key_datum_all ::= or_expr_star_star | key_datum | augtarget_annotated | identifier_annotated
 key_datum ::=  expression ":" expression
 or_expr_star_star ::=  "**" or_expr_all
 </pre>
@@ -88,7 +89,7 @@ expression_key_datum is for comprehension
 enclosure_list ::= starred_item
 enclosure_dict ::= key_datum_all
 <pre>
-expression_key_datum ::= expression | key_datum | identifier_annotated
+expression_key_datum ::= expression | key_datum | augtarget_annotated | identifier_annotated
 enclosure_list_unique ::= yield_expression | comprehension
 </pre>
 The argument list is managed by the consolidator
@@ -114,15 +115,15 @@ named_primary ::= identifier | dotted_name | builtin__object | named_attributere
 named_attributeref ::= named_primary "." identifier
 named_slicing ::= named_primary "[" slice_list "]"
 named_subscription ::= named_primary "[" expression_list "]"
-named_call_expr ::= named_primary "(" argument_list_comprehensive ")"
+named_call_expr ::= named_primary "(" argument_list ")"
 
 call -> call_expr
-call_expr/call ::=  primary "(" argument_list_comprehensive ")"
+call_expr/call ::=  primary "(" argument_list ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item
-argument_list_comprehensive ::= argument_list | comprehension
 argument_list ::=  argument_any *
+argument_list_comprehensive ::= argument_any | comprehension
 positional_arguments ::=  REMOVE
 starred_and_keywords ::=  REMOVE
 keywords_arguments   ::=  REMOVE
@@ -172,6 +173,10 @@ or_test      ::=  or_test_all "or" and_test_all
 expression             ::=  or_test_all | conditional_expression | lambda_expr
 expression_nocond      ::=  or_test_all | lambda_expr_nocond
 conditional_expression ::=  or_test_all "if" or_test_all "else" expression
+</pre>
+3.8 support: namedexpr_test may change
+<pre>
+namedexpr_test ::=  assignment_expr | or_test_all | conditional_expression | lambda_expr
 </pre>
 <pre>
 lambda ::= "lambda" [parameter_list]: (expression | expression_no_cond)

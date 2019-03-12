@@ -74,7 +74,7 @@ eYo.Slot = function (owner, key, model) {
   this.input = undefined
   var block = this.sourceBlock_
   goog.asserts.assert(block,
-    eYo.Do.format('block must exist {0}/{1}', key))
+    `block must exist ${key}`)
   eYo.Slot.makeFields(this, model.fields)
   eYo.Content.feed(this, model.contents || model.fields)
   var f = () => {
@@ -486,7 +486,7 @@ eYo.Slot.makeFields = (() => {
       }
     }
     goog.asserts.assert(unordered.length < 2,
-      eYo.Do.format('Too many unordered fields in {0}/{1}', key, JSON.stringify(model)))
+      `Too many unordered fields in ${key}/${JSON.stringify(model)}`)
     unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
     owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
@@ -812,11 +812,21 @@ eYo.Slot.prototype.save = function (element, opt) {
     }
   })()
   if (!out && this.isRequiredToModel()) {
-    var child = goog.dom.createDom(eYo.Xml.EXPR)
-    child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
-    child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
-    goog.dom.appendChild(element, child)
+    this.saveRequired(element, opt)
   }
+}
+
+/**
+ * Save a placeholder.
+ * For edython.
+ * @param {Element} element a dom element in which to save the input
+ * @param {!Object} opt
+ */
+eYo.Slot.prototype.saveRequired = function (element) {
+  var child = goog.dom.createDom(eYo.Xml.EXPR)
+  child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
+  child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
+  goog.dom.appendChild(element, child)
 }
 
 /**

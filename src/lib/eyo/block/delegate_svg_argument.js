@@ -17,11 +17,26 @@ goog.require('eYo.DelegateSvg.List')
 
 /**
  * List consolidator for argument list.
- * Rules are a bit stronger than python requires originally
- * 1) If there is a comprehension, it must be alone.
- * 2) positional arguments come first, id est expression and starred expressions
- * 3) then come keyword items or double starred expressions
  * Main entry: consolidate
+ * argument_list        ::=  positional_arguments ["," starred_and_keywords]
+                            ["," keywords_arguments]
+                          | starred_and_keywords ["," keywords_arguments]
+                          | keywords_arguments
+positional_arguments ::=  ["*"] expression ("," ["*"] expression)*
+starred_and_keywords ::=  ("*" expression | keyword_item)
+                          ("," "*" expression | "," keyword_item)*
+keywords_arguments   ::=  (keyword_item | "**" expression)
+                          ("," keyword_item | "," "**" expression)*
+keyword_item         ::=  identifier "=" expression
+ * We rephrase it as
+ * argument_list_1 ::= ["*"] expression ("," ["*"] expression)* ["," keyword_item ["," starred_and_keywords]] ["," "**" expression ["," keywords_arguments]]
+ * argument_list_2 ::= keyword_item ["," starred_and_keywords] ["," "**" expression ["," keywords_arguments]]
+ * argument_list_3 ::= "**" expression ["," keywords_arguments]
+ * argument_list ::=  argument_list_1 | argument_list_2 | argument_list_3
+ * We have 4 kinds of objects, which make 24 ordering possibilities
+ * RULE 1 : expression << keyword_item
+ * RULE 2 : expression << "**" expression
+ * RULE 3 : "*" expression << "**" expression
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
   check: null,
@@ -36,7 +51,8 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
  */
 eYo.Consolidator.Arguments.prototype.getIO = function (block) {
   var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, block)
-  io.first_keyword = io.last_positional = io.unique = -1
+  io.last_expression = io.last_positional = io.unique = -Infinity
+  io.first_keyword_star_star = io.first_star_star = Infinity
   return io
 }
 
@@ -51,8 +67,10 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
   var Type = {
     UNCONNECTED: 0,
     ARGUMENT: 1,
-    KEYWORD: 2,
-    COMPREHENSION: 3
+    STAR: 2,
+    STAR_STAR: 3,
+    KEYWORD: 4,
+    COMPREHENSION: 5
   }
   /**
    * Whether the input corresponds to an identifier...
@@ -67,30 +85,40 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     var check = target.check_
     if (check) {
       if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
-        io.unique = io.i
         return Type.COMPREHENSION
-      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star) || goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
+      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star)) {
+        return Type.STAR_STAR
+      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star)) {
+        return Type.STAR
+      } else if (goog.array.contains(check, eYo.T3.Expr.keyword_item)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
       }
     } else {
-      // this is for 'any' expression
+      // this is for 'any' expression (blank expression)
       // bad answer because we should check for the type of the block
       return Type.ARGUMENT
     }
   }
   var setupFirst = function (io) {
-    io.first_keyword = io.last_positional = io.unique = -1
+    io.last_expression = io.last_positional = io.unique = -Infinity
+    io.first_keyword_star_star = io.first_star_star = Infinity
     this.setupIO(io, 0)
-    while (!!io.eyo && io.unique < 1) {
+    while (!!io.eyo && io.unique < 0) {
       switch ((io.eyo.parameter_type_ = getCheckType(io))) {
       case Type.ARGUMENT:
+        io.last_expression = io.i
+      case Type.STAR:
         io.last_positional = io.i
         break
+      case Type.STAR_STAR:
+        if (io.first_star_star === Infinity) {
+          io.first_star_star = io.i
+        }
       case Type.KEYWORD:
-        if (io.first_keyword < 0) {
-          io.first_keyword = io.i
+        if (io.first_keyword_star_star === Infinity) {
+          io.first_keyword_star_star = io.i
         }
         break
       case Type.COMPREHENSION:
@@ -102,7 +130,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
   return function (io) {
     eYo.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
-    if (io.unique >= 0) {
+    if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
       this.setupIO(io, 0)
       while (io.i < io.unique--) {
@@ -113,34 +141,6 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
       while (io.i < io.list.length) {
         this.disposeAtI(io)
         this.setupIO(io)
-      }
-    } else
-    // move parameters that are not placed correctly (in eYo sense)
-    if (io.first_keyword >= 0) {
-      while (io.first_keyword < io.last_positional) {
-        this.setupIO(io, io.first_keyword + 2)
-        while (io.i <= io.last_positional) {
-          if (io.eyo.parameter_type_ === Type.ARGUMENT) {
-            // move this to io.first_keyword
-            var c8n = io.c8n
-            var target = c8n.targetConnection
-            c8n.disconnect()
-            while (io.i > io.first_keyword) {
-              this.setupIO(io, io.i - 2)
-              var t = io.c8n.targetConnection
-              io.c8n.disconnect()
-              c8n.connect(t)
-              c8n = io.c8n
-            }
-            c8n.connect(target)
-            io.first_keyword += 2
-            this.setupIO(io, io.first_keyword + 2)
-          } else {
-            this.setupIO(io, io.i + 2)
-          }
-        }
-        // io.last_positional = io.first_keyword - 2
-        setupFirst.call(this, io)
       }
     }
   }
@@ -154,39 +154,47 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
 eYo.Consolidator.Arguments.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
-    var can_positional, can_keyword, can_comprehension
-    if (io.unique >= 0 || io.list.length === 1 || (io.list.length === 3 && io.i === 1)) {
-      can_positional = can_keyword = can_comprehension = true
+    var can_expression, can_expression_star, can_expression_star_star, can_keyword, can_comprehension
+    if (this.model.can_comprehension && (io.unique >= 0 || io.list.length === 1 || (io.list.length === 3 && io.i === 1))) {
+      can_expression = can_expression_star = can_expression_star_star = can_keyword = can_comprehension = true
     } else {
       can_comprehension = false
-      if (io.first_keyword < 0 || io.i <= io.first_keyword) {
-        can_positional = true
-      }
-      if (io.i >= io.last_positional) {
-        can_keyword = true
-      }
+      can_expression = io.i <= io.first_keyword_star_star
+      can_expression_star = io.i <= io.first_star_star
+      can_keyword = io.i >= io.last_expression
+      can_expression_star_star = io.i >= io.last_positional
     }
     var K = 0
-    if (can_positional) {
+    if (can_expression) {
       K += 1
     }
-    if (can_keyword) {
+    if (can_expression_star) {
       K += 2
     }
-    if (can_comprehension) {
+    if (can_expression_star_star) {
       K += 4
+    }
+    if (can_keyword) {
+      K += 8
+    }
+    if (can_comprehension) {
+      K += 16
     }
     var out = cache[K]
     if (out) {
       return out
     }
     out = []
-    if (can_positional) {
+    if (can_expression) {
       out = eYo.T3.Expr.Check.expression.slice()
+    }
+    if (can_expression_star) {
       out.push(eYo.T3.Expr.expression_star)
     }
     if (can_keyword) {
       out.push(eYo.T3.Expr.keyword_item)
+    }
+    if (can_expression_star_star) {
       out.push(eYo.T3.Expr.expression_star_star)
     }
     if (can_comprehension) {
@@ -237,8 +245,7 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
     }
   },
   list: {
-    check: eYo.T3.Expr.Check.argument_any,
-    consolidator: eYo.Consolidator.List,
+    consolidator: eYo.Consolidator.Arguments,
     presep: ',',
     hole_value: 'name'
   }
@@ -251,18 +258,8 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
  * For edython.
  */
 eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
-  data: {
-    ary: {
-      init: 3
-    },
-    mandatory: {
-      init: 1
-    }
-  },
   list: {
-    consolidator: eYo.Consolidator.Arguments,
-    presep: ',',
-    hole_value: 'name'
+    can_comprehension: true
   }
 })
 

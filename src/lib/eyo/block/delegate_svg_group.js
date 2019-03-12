@@ -207,7 +207,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.T3.Expr.Check.namedexpr_test
     }
   },
   statement: {

@@ -20,37 +20,48 @@ target          ::=  identifier
                      | slicing
                      | "*" target
 assignment expressions in 3.8?
-<pre>
-assignment_stmt/assignment ::= target_list "=" value_list
-assignment_chain ::= target_list "=" expr_value_list
-assignment_expr ::= expression ":=" expression
-value_list ::= starred_item | yield_expression
-expr_value_list ::= value_list
-assignment_value_list ::= value_list
-augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
-augassigned_list ::= expression | yield_expression
-</pre>
+
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
 augtarget                 ::=  identifier | attributeref | subscription | slicing
 augop                     ::=  "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**="
                                | ">>=" | "<<=" | "&=" | "^=" | "|="
 
+We merge all assignment statements into only one visual block.
+The visual block has 3 types and more variants.
+
+annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
+augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
+assignment_stmt ::= target_list "=" assignment_value_list
+assignment_value_list ::= value_list | assignment_chain
+
+Does augtarget belong to target_list ? Yes it is a subset.
 <pre>
+assignment_stmt/assignment ::= target_list "=" assignment_value_list
+assignment_chain ::= target_list "=" assignment_value_list
+assignment_expr ::= expression ":=" expression
+value_list ::= starred_item | yield_expression
+assignment_value_list ::= value_list | assignment_chain
+augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
+augtarget ::=  identifier | attributeref | subscription | slicing | dotted_name
+augassigned_list ::= expression | yield_expression
 target ::= target_unstar | target_star
 target_unstar ::=  identifier
                      | parenth_target_list
                      | bracket_target_list
                      | attributeref
+                     | dotted_name
                      | subscription
                      | slicing
                      | named_attributeref
                      | named_subscription
                      | named_slicing
+target_annotated ::= target || identifier_annotated
 parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
 bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
 void_target_list ::= [target_list]
 target_star ::= "*" target
 expression_star ::= "*" expression
+augtarget_annotated ::= augtarget ":" expression
 </pre>
 import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
                      | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*

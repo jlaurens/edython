@@ -59,7 +59,7 @@ Object.defineProperties(
     },
     expr_radius: {
       get () {
-        return this.min_expr_radius * 2.5
+        return this.min_expr_radius * 2
       }
     },
     caret_width: {

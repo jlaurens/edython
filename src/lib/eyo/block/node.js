@@ -30,15 +30,18 @@ eYo.Node.prototype.intoDelegate = function (target) {
   switch (this.n_type) {
     case eYo.TKN.exprlist:
     case eYo.TKN.arglist:
+    case eYo.TKN.subscriptlist:
+    case eYo.TKN.testlist_star_expr:
       n0 = this.n0
       do {
         target.lastConnect(n0.toBlock(target.workspace))
-      } while ((n0 = n0.sibling))
+      } while ((n0 = n0.sibling) && (n0 = n0.sibling)) // gobble comma
       return
     case eYo.TKN.comp_for: // ['async'] sync_comp_for
       this.last_child.intoDelegate(target)
       if (this.n1) {
         target.async = true
+        console.error('async is not supported')
       }
       return
     case eYo.TKN.sync_comp_for: // 'for' exprlist 'in' or_test [comp_iter]
@@ -52,10 +55,57 @@ eYo.Node.prototype.intoDelegate = function (target) {
         target.comp_iter = n0.toBlock(target.workspace)
       }
       return
+    case eYo.TKN.varargslist: /* (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
+        '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+      | '**' vfpdef [',']]]
+  | '*' [vfpdef] (',' vfpdef ['=' test])* [',' ['**' vfpdef [',']]]
+  | '**' vfpdef [',']*/
+      // We do not check any consistency here
+      n0 = this.n0
+      while (n0) {
+        if (n0.type === eYo.TKN.STAR) {
+          b0 = eYo.DelegateSvg.newBlockReady(target.workspace, eYo.T3.Expr.parameter_star)
+          target.lastConnect(b0)
+          if ((n0 = n0.sibling)) {
+            b0.eyo.modified_s.connect(n0.toBlock(target.workspace))
+            if ((n0 = n0.sibling)) { // comma
+              n0 = n0.sibling
+              continue
+            }
+          }
+        } else if (n0.type === eYo.TKN.DOUBLESTAR) {
+          b0 = eYo.DelegateSvg.newBlockReady(target.workspace, eYo.T3.Expr.parameter_star_star)
+          target.lastConnect(b0)
+          n0 = n0.sibling
+          b0.eyo.modified_s.connect(n0.toBlock(target.workspace))
+          if ((n0 = n0.sibling)) { // comma
+            n0 = n0.sibling
+            continue
+          }
+        } else {
+          b0 = n0.toBlock(target.workspace)
+          target.lastConnect(b0)
+          if ((n0 = n0.sibling)) {
+            if (n0.type === eYo.TKN.EQUAL) {
+              b0.eyo.variant_p = eYo.Key.DEFINED
+              n0 = n0.sibling
+              b0.eyo.definition_t.eyo.lastConnect(n0.toBlock(target.workspace))
+              if (!(n0 = n0.sibling)) {
+                break
+              }
+            }
+            n0 = n0.sibling
+            continue
+          }
+        }
+        break
+      }
+      return
     default:
-      console.error(`NOTHING TO DO WITH ${this.name}`)
+      throw `NOTHING TO DO WITH ${this.name}`
   }
 }
+
 /**
  * Converts the node `n` to a visual block.
  * @param {!Object} workspace A workspace.
@@ -101,7 +151,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
         // simple expression statement: only a testlist_star_expr
         root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.expression_stmt)
         if (n0.n_nchildren > 1) {
-          n0.intoDelegate(root.eyo.list_t)
+          n0.intoDelegate(root.eyo.list_t.eyo)
           root.eyo.variant_p = eYo.Key.LIST
         } else {
           root.eyo.expression_s.connect(this.n0.toBlock(workspace))
@@ -113,30 +163,48 @@ eYo.Node.prototype.toBlock = function (workspace) {
       if (n1.n_type === eYo.TKN.EQUAL) {
         // assignment,
         root = b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.assignment_stmt)
-        i = 0
         while (true) {
           // targets
           if (n0.n_nchildren > 1) {
             b1.eyo.variant_p = eYo.Key.TARGETS
-            n0.intoDelegate(b1.eyo.targets_t)
+            n0.intoDelegate(b1.eyo.targets_t.eyo)
           } else {
             b1.eyo.name_s.connect(n0.toBlock(workspace))
           }
           // values
-          n2 = n1.sibling
-          n0 = n2
+          n0 = n1.sibling
           if ((n1 = n0.sibling)) {
             if (n1.n_type === eYo.TKN.EQUAL) {
-              b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.assignment_chain)
+              b2 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.assignment_chain)
+              if ((t = b1.eyo.value_t)) {
+                t.eyo.lastConnect(b2)
+              } else if ((t = b1.eyo.definition_t)) {
+                t.eyo.lastConnect(b2)
+              } else {
+                console.error('ERROR')
+              }
+              b1 = b2
               continue
             } else {
               root.eyo.type_comment_node = n1
             }
           }
-          n0.intoDelegate(b1.eyo.value_t || b1.eyo.definition_t)
+          n0.intoDelegate((b1.eyo.value_t || b1.eyo.definition_t).eyo)
           break
         }
-        return root
+      } else if (n1.type === eYo.TKN.augassign) { // augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' | '<<=' | '>>=' | '**=' | '//=')
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.augmented_assignment_stmt)
+        root.eyo.operator_p = n1.n_str
+        n2 = n1.sibling
+        t = root.eyo.value_t.eyo
+        if (n2.type === eYo.TKN.yield_expr) {
+          b2 = n2.toBlock(workspace)
+          t.lastConnect(b2)
+        } else {
+          n2.intoDelegate(t)
+        }
+      } else if (n1.type === eYo.TKN.anassign) { // ':' test ['=' (yield_expr|testlist)]
+        
       }
       return root
     case eYo.TKN.atom_expr: // ['await'] atom trailer*
@@ -193,13 +261,35 @@ eYo.Node.prototype.toBlock = function (workspace) {
         }
       }
       return root
-      case eYo.TKN.sync_comp_for: // 'for' exprlist 'in' or_test [comp_iter]
+    case eYo.TKN.subscript: // test | [test] ':' [test] [sliceop] // sliceop: ':' [test]
+      n0 = this.n0
+      if (n0.type === eYo.TKN.test) {
+        b0 = n0.toBlock(workspace)
+        if (!(n0 = n0.sibling)) {
+          return b0
+        }
+      }
+      root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.proper_slice)
+      b0 && root.eyo.lower_bound_s.connect(b0)
+      // n0.type === eYo.TKN.COLON
+      if ((n0 = n0.sibling)) {
+        if (n0.type === eYo.TKN.test) {
+          root.eyo.upper_bound_s.connect(n0.toBlock(workspace))
+          if (!(n0 = n0.sibling)) {
+            return root
+          }
+        }
+        root.eyo.variant_p = eYo.Key.STRIDE
+        n0.n1 && root.eyo.stride_s.connect(n0.n1.toBlock(workspace))
+      }
+      return root
+    case eYo.TKN.sync_comp_for: // 'for' exprlist 'in' or_test [comp_iter]
       /* comp_iter: comp_for | comp_if
       sync_comp_for: 'for' exprlist 'in' or_test [comp_iter]
       comp_for: ['async'] sync_comp_for
       comp_if: 'if' test_nocond [comp_iter] */
         root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.comp_for)
-        this.intoDelegate(root)
+        this.intoDelegate(root.eyo)
         root.eyo.comp_iter = (n0 = this.n4) && n0.toBlock(workspace)
         return root
     // case eYo.TKN.comp_iter: 
@@ -209,25 +299,27 @@ eYo.Node.prototype.toBlock = function (workspace) {
       root.eyo.comp_iter = (n2 = this.n2) && n2.toBlock(workspace)
       return root
     case eYo.TKN.testlist_comp: // (namedexpr_test|star_expr) ( comp_for | (',' (namedexpr_test|star_expr))* [','] )
-      if (this.n1.n_type === eYo.TKN.comp_for) {
-        // this is a comprehension
-        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.comprehension)
-        root.eyo.expression_s.connect(this.n0.toBlock(workspace))
-        this.n1.intoDelegate(root.eyo)
-        t = root.eyo.for_if_t.eyo
-        b0 = root
-        while ((b1 = b0.eyo.comp_iter)) {
-          b0.eyo.comp_iter = undefined
-          t.lastConnect((b0 = b1))
+      n0 = this.n0
+      if ((n1 = this.n1)) {
+        if (n1.n_type === eYo.TKN.comp_for) {
+          // this is a comprehension
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.comprehension)
+          root.eyo.expression_s.connect(n0.toBlock(workspace))
+          n1.intoDelegate(root.eyo)
+          t = root.eyo.for_if_t.eyo
+          b0 = root
+          while ((b1 = b0.eyo.comp_iter)) {
+            b0.eyo.comp_iter = undefined
+            t.lastConnect((b0 = b1))
+          }
+        } else /* if (this.n_nchildren > 1) */ { // this is a tuple with no delimiter
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.enclosure)
+          do {
+            root.eyo.lastConnect(n0.toBlock(workspace))
+          } while ((n0 = n0.sibling) /* skip COMMA */ && (n0 = n0.sibling))
         }
-      } else if (this.n_nchildren > 1) { // this is a tuple with no delimiter
-        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.enclosure)
-        n0 = this.n0
-        do {
-          root.eyo.lastConnect(n0.toBlock(workspace))
-        } while ((n0 = n0.sibling) /* skip COMMA */ && (n0 = n0.sibling))
       } else {
-        root = this.n0.toBlock(workspace)
+        root = n0.toBlock(workspace)
       }
       return root
     case eYo.TKN.dictorsetmaker: // ...
@@ -313,12 +405,12 @@ eYo.Node.prototype.toBlock = function (workspace) {
       } else if (this.n_nchildren === 2) {
         root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.enclosure)
       } else /* if (this.n_nchildren === 3) */ {
-        n1 = this.n1
-        if (n1.n_type === eYo.TKN.yield_expr) {
-          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.enclosure)
-          root.eyo.lastConnect(n1.toBlock(workspace))
+        b1 = this.n1.toBlock(workspace)
+        if (b1.type === eYo.T3.Expr.enclosure) {
+          root = b1
         } else {
-          root = n1.toBlock(workspace)
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.enclosure)
+          root.eyo.lastConnect(b1)
         }
       }
       root.eyo.variant_p = {
@@ -336,6 +428,12 @@ eYo.Node.prototype.toBlock = function (workspace) {
         type: eYo.T3.Expr.numberliteral,
         value_d: this.n_str
       })
+    case eYo.TKN.ELLIPSIS:
+      root = eYo.DelegateSvg.newBlockReady(workspace, {
+        type: eYo.T3.Expr.builtin__object,
+        value_d: this.n_str
+      })
+      return root
     /*
     star_expr: '*' expr
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*
@@ -384,28 +482,69 @@ factor: ('+'|'-'|'~') factor | power
       '*' test )*/
       n0 = this.n0
       if (n0.n_type === eYo.TKN.STAR) {
-        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.Starred)
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.expression_star)
         root.eyo.modifier_p = '*'
-        root.eyo.modified_t.eyo.connect(n0.sibling.toBlock(workspace))
+        root.eyo.modified_s.connect(n0.sibling.toBlock(workspace))
       } else if (n0.n_type === eYo.TKN.DOUBLESTAR) {
-        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.Starred)
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.expression_star_star)
         root.eyo.modifier_p = '**'
-        root.eyo.modified_t.eyo.connect(n0.sibling.toBlock(workspace))
+        root.eyo.modified_s.connect(n0.sibling.toBlock(workspace))
       } else if ((n1 = n0.sibling)) {
-        if (n0.n_type === eYo.TKN.COLONEQUAL) {
-          console.error()
+        if (n1.n_type === eYo.TKN.COLONEQUAL) {
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.assignment_expr)
+          root.eyo.name_s.connect(n0.toBlock(workspace))
+          root.eyo.definition_t.eyo.lastConnect(n1.sibling.toBlock(workspace))
+        } else if (n1.n_type === eYo.TKN.EQUAL) {
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.keyword_item)
+          root.eyo.name_s.connect(n0.toBlock(workspace))
+          root.eyo.definition_t.eyo.lastConnect(n1.sibling.toBlock(workspace))
+        } else {
+          // code duplicate (see above)
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.comprehension)
+          root.eyo.expression_s.connect(n0.toBlock(workspace))
+          n1.intoDelegate(root.eyo)
+          t = root.eyo.for_if_t.eyo
+          b0 = root
+          while ((b1 = b0.eyo.comp_iter)) {
+            b0.eyo.comp_iter = undefined
+            t.lastConnect((b0 = b1))
+          }
         }
+      } else {
+        root = n0.toBlock(workspace)
       }
+      return root
+    case eYo.TKN.namedexpr_test: // test [':=' test]
       b0 = this.n0.toBlock(workspace)
       if ((n2 = this.n2)) {
-        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.power)
-        root.eyo.lhs_s.connect(b0)
-        root.eyo.rhs_s.connect(n2.toBlock(workspace))
-        return root
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.assignment_expr)
+        root.eyo.name_s.connect(b0)
+        root.eyo.definition_t.eyo.lastConnect(n2.toBlock(workspace))
       } else {
-        return b0
+        root = b0
       }
-    // case eYo.TKN.ENDMARKER: break
+      return root
+    case eYo.TKN.lambdef: // 'lambda' [varargslist] ':' test
+      root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.lambda_expr)
+      n1 = this.n1
+      if (n1.type !== eYo.TKN.COLON) {
+        n1.intoDelegate(root.eyo.parameters_t.eyo)
+        n1 = n1.sibling
+      }
+      n1 = n1.sibling
+      root.eyo.expression_s.connect(n1.toBlock(workspace))
+      return root
+    case eYo.TKN.lambdef_nocond: // 'lambda' [varargslist] ':' test_nocond
+      root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.lambda_expr_nocond)
+      n1 = this.n1
+      if (n1.type !== eYo.TKN.COLON) {
+        n1.intoDelegate(root.eyo.parameters_t.eyo)
+        n1 = n1.sibling
+      }
+      n1 = n1.sibling
+      root.eyo.expression_s.connect(n1.toBlock(workspace))
+      return root
+  // case eYo.TKN.ENDMARKER: break
     // case eYo.TKN.NUMBER: break
     // case eYo.TKN.STRING: break
     // case eYo.TKN.NEWLINE: break
@@ -557,13 +696,13 @@ factor: ('+'|'-'|'~') factor | power
     // case eYo.TKN.typelist: break
     default:
       if (!this.n0) {
-        console.error(`NOTHING TO DO WITH ${this.name}`)
+        throw `NOTHING TO DO WITH ${this.name}`
       } else if (!this.n0.sibling) {
         return this.n0.toBlock(workspace)
       } else {
-        console.error(`NOTHING TO DO WITH ${this.name}`)
         // eYo.GMR.dumptree(eYo.GMR._PyParser_Grammar, this)
         console.error(this.n_child)
+        throw `NOTHING TO DO WITH ${this.name}`
       }
   }
 }

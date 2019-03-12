@@ -863,8 +863,11 @@ eYo.Data.prototype.save = function (element, opt) {
     } else if (this.required) {
       if (this.model.custom_placeholder) {
         element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
+      } else if (this.slot && this.slot.bindField === this.field) {
+        // let the slot do it
+        this.slot.saveRequired(element, opt)
       } else {
-        element.setAttribute(this.attributeName, txt)
+        element.setAttribute(this.attributeName + '_placeholder', txt)
       }
     }
   }

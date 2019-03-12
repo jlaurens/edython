@@ -294,7 +294,7 @@ eYo.GMR.dumptree = (/* grammar * */ g, /* node * */ n) =>
     if (eYo.TKN.ISNONTERMINAL(n.n_type)) {
       console.log(`${eYo.TKN._NT_NAMES[n.n_type - eYo.TKN.NT_OFFSET]}`)
       console.log("(")
-      for (i = 0; i < n.n_nchildren; i++) {
+      for (var i = 0; i < n.n_nchildren; i++) {
         if (i > 0) {
           console.log(",")
         }

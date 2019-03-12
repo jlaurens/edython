@@ -36,11 +36,17 @@ var ra_test = (name, str_s) => {
           var err_ret = {}
           var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.file_input, err_ret)
           var b = n.toBlock(Blockly.mainWorkspace)
-          assert(b)
-//           var code = p.export(b, {is_deep: true})
-//           assert(str === code, `<
-// ${str}> === <${code}>`)
-  // eYo.GMR.dumptree(g, n)
+          assert(b, 'WHERE IS THE BLOCK', n.type)
+          var code = p.export(b, {is_deep: true})
+          var code1 = code.replace(/ /g, '')
+          var str1 = str.replace(/ /g, '')
+          if (str1 !== code1) {
+            console.error(str1)
+            console.error(code1)
+            // eYo.GMR.dumptree(g, n)
+          }
+          assert(str1 === code1, `<
+${str1}> === <${code1}>`)
         }
       })()
       it(str, f)
@@ -107,50 +113,66 @@ var ra_test = (name, str_s) => {
 // ]
 // // ra_test('nonlocal_statement', ra_nonlocal_statement)
 
-var ra_expressions = [
+// var ra_expressions = [
   // "foo(1)",
   // "[1, 2, 3]",
   // "[x**3 for x in range(20)]",
   // "[x**3 for x in range(20) if x % 3]",
-  "[x**3 for x in range(20) if x % 2 if x % 3]",
-  "list(x**3 for x in range(20))",
-//   "list(x**3 for x in range(20) if x % 3)",
-//   "list(x**3 for x in range(20) if x % 2 if x % 3)",
-//   "foo(*args)",
-//   "foo(*args, **kw)",
-//   "foo(**kw)",
-//   "foo(key=value)",
-//   "foo(key=value, *args)",
-//   "foo(key=value, *args, **kw)",
-//   "foo(key=value, **kw)",
-//   "foo(a, b, c, *args)",
-//   "foo(a, b, c, *args, **kw)",
-//   "foo(a, b, c, **kw)",
-//   "foo(a, *args, keyword=23)",
-//   "foo + bar",
-//   "foo - bar",
-//   "foo * bar",
-//   "foo / bar",
-//   "foo // bar",
-//   "(foo := 1)",
-//   "lambda: 0",
-//   "lambda x: 0",
-//   "lambda *y: 0",
-//   "lambda *y, **z: 0",
-//   "lambda **z: 0",
-//   "lambda x, y: 0",
-//   "lambda foo=bar: 0",
-//   "lambda foo=bar, spaz=nifty+spit: 0",
-//   "lambda foo=bar, **z: 0",
-//   "lambda foo=bar, blaz=blat+2, **z: 0",
-//   "lambda foo=bar, blaz=blat+2, *y, **z: 0",
-//   "lambda x, *y, **z: 0",
-//   "(x for x in range(10))",
-//   "foo(x for x in range(10))",
+  // "[x**3 for x in range(20) if x % 2 if x % 3]",
+  // "list(x**3 for x in range(20))",
+  // "list(x**3 for x in range(20) if x % 3)",
+  // "list(x**3 for x in range(20) if x % 2 if x % 3)",
+  // "foo(*args)",
+  // "foo(*args, **kw)",
+  // "foo(**kw)",
+  // "foo(key=value)",
+  // "foo(key=value, *args)",
+  // "foo(key=value, *args, **kw)",
+  // "foo(key=value, **kw)",
+  // "foo(a, b, c, *args)",
+  // "foo(a, b, c, *args, **kw)",
+  // "foo(a, b, c, **kw)",
+  // "foo(a, *args, keyword=23)",
+  // "foo + bar",
+  // "foo - bar",
+  // "foo * bar",
+  // "foo / bar",
+  // "foo // bar",
+  // "(foo := 1)",
+  // "lambda: 0",
+  // "lambda x: 0",
+  // "lambda *y: 0",
+  // "lambda *y, **z: 0",
+  // "lambda **z: 0",
+  // "lambda x, y: 0",
+  // "lambda foo=bar: 0",
+  // "lambda foo=bar, spaz=nifty+spit: 0",
+  // "lambda foo=bar, **z: 0",
+  // "lambda foo=bar, blaz=blat+2, **z: 0",
+  // "lambda foo=bar, blaz=blat+2, *y, **z: 0",
+  // "lambda x, *y, **z: 0",
+  // "(x for x in range(10))",
+  // "foo(x for x in range(10))",
 //   "...",
 //   "a[...]",
+// ]
+// ra_test('expressions', ra_expressions)
+var ra_missing_expression = [
+  "a[...]",
+  "a[:]",
+  "a[1:]",
+  "a[:2]",
+  "a[1:2]",
+  "a[::]",
+  "a[1::]",
+  "a[:2:]",
+  "a[::3]",
+  "a[1:2:]",
+  "a[:1:2]",
+  "a[0::2]",
+  "a[0:1:2]",
 ]
-ra_test('expressions', ra_expressions)
+ra_test('missing_expression', ra_missing_expression)
 var ra_simple_expression = [
   "a",
 ]
@@ -162,25 +184,25 @@ var ra_simple_assignments = [
   "a = b = c = d = e",
 ]
 ra_test('simple_assignments', ra_simple_assignments)
-// var ra_var_annot = [
-//   "x: int = 5",
-//   "y: List[T] = []; z: [list] = fun()",
-//   "x: tuple = (1, 2)",
-//   "d[f()]: int = 42",
-//   "f(d[x]): str = 'abc'",
-//   "x.y.z.w: complex = 42j",
-//   "x: int",
-//   "def f():\n" +
-//   "    x: str\n" +
-//   "    y: int = 5\n",
-//   "class C:\n" +
-//   "    x: str\n" +
-//   "    y: int = 5\n",
-//   "class C:\n" +
-//   "    def __init__(self, x: int) -> None:\n" +
-//   "        self.x: int = x\n"
-// ]
-// // ra_test('var_annot', ra_var_annot)
+var ra_var_annot = [
+  "x: int = 5",
+  "y: List[T] = []; z: [list] = fun()",
+  "x: tuple = (1, 2)",
+  "d[f()]: int = 42",
+  "f(d[x]): str = 'abc'",
+  "x.y.z.w: complex = 42j",
+  "x: int",
+  "def f():\n" +
+  "    x: str\n" +
+  "    y: int = 5\n",
+  "class C:\n" +
+  "    x: str\n" +
+  "    y: int = 5\n",
+  "class C:\n" +
+  "    def __init__(self, x: int) -> None:\n" +
+  "        self.x: int = x\n"
+]
+ra_test('var_annot', ra_var_annot)
 // /*
 //         # double check for nonsense
 //         with self.assertRaises(SyntaxError):

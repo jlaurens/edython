@@ -186,7 +186,7 @@ eYo.Content.feed = (() => {
       }
     }
     goog.asserts.assert(unordered.length < 2,
-      eYo.Do.format('Too many unordered contents in {0}/{1}', key, JSON.stringify(model)))
+      `Too many unordered contents in ${key}/${JSON.stringify(model)}`)
     unordered[0] && (owner.fromStartContent = chain(owner.fromStartContent, unordered[0]))
     owner.fromStartContent && delete owner.fromStartContent._last_
     owner.toEndContent && delete owner.toEndContent._last_

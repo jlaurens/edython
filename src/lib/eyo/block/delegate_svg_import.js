@@ -124,11 +124,20 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           variable: true // change this to/with a `module` data
         }
       },
-      check: [
-        eYo.T3.Expr.unset,
-        eYo.T3.Expr.identifier,
-        eYo.T3.Expr.dotted_name
-      ],
+      check: /** @suppress {globalThis} */ function (type) {
+        var v = this.owner.variant_p
+        return v === eYo.Key.eYo.Key.FROM_MODULE_IMPORT_STAR
+        ? [
+          eYo.T3.Expr.unset,
+          eYo.T3.Expr.identifier,
+          eYo.T3.Expr.dotted_name,
+          eYo.T3.Expr.parent_module
+        ] : [
+          eYo.T3.Expr.unset,
+          eYo.T3.Expr.identifier,
+          eYo.T3.Expr.dotted_name
+        ]
+      },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.IMPORT) {

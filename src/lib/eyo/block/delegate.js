@@ -1105,13 +1105,16 @@ eYo.Delegate.prototype.getType = function () {
 
 /**
  * getSubtype.
- * The default implementation just returns `undefined`.
+ * The default implementation just returns the variant,
+ * when it exists.
  * Subclassers will use it to return the correct type
  * depending on their actual inner state.
  * This should be used instead of direct block querying.
- * @return {String} The type of the receiver's block.
+ * @return {String} The subtype of the receiver's block.
  */
-eYo.Delegate.prototype.getSubtype = eYo.Do.nothing
+eYo.Delegate.prototype.getSubtype = function () {
+  return this.variant_p
+}
 
 /**
  * getBaseType.
@@ -1204,7 +1207,7 @@ eYo.Delegate.prototype.makeBounds = function () {
       for (kk in this.slots) {
         slot = this.slots[kk]
         if ((data.field = slot.fields[k])) {
-          goog.asserts.assert(!slot.data, 'Ambiguous slot <-> data bound')
+          goog.asserts.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
           data.slot = slot
           slot.data = data
           break
@@ -1224,18 +1227,6 @@ eYo.Delegate.prototype.makeBounds = function () {
   if (this.name_d && this.name_d.field !== theField) {
     console.error('ERROR')
   }
-}
-
-/**
- * Consolidate the data by sending a `consolidate` message to
- * all the data controllers.
- * Called only once at
- * 
- */
-eYo.Delegate.prototype.consolidateData = function () {
-  this.changeWrap(function () {
-    this.forEachData(data => data.consolidate())
-  })
 }
 
 /**
@@ -1522,7 +1513,7 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
       }
     } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
       goog.asserts.assert(!goog.isDef(slots[k]),
-        eYo.Do.format('Duplicate slot key {0}/{1}', k, this.block_.type))
+        `Duplicate slot key ${k}/${this.block_.type}`)
       slots[k] = slot
       slot.slots = slots
     } else {
@@ -1532,7 +1523,7 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
     for (var i = 0; i < ordered.length; i++) {
       // we must not find an aleady existing entry.
       goog.asserts.assert(i !== slot.order,
-        eYo.Do.format('Same order slot {0}/{1}', i, this.block_.type))
+        `Same order slot ${i}/${this.block_.type}`)
       if (ordered[i].model.order > slot.model.order) {
         break
       }
@@ -2265,7 +2256,7 @@ eYo.Delegate.prototype.isIncog = function () {
  * Input enumerator
  * For edython.
  * @param {!Boolean} all  Retrieve all the inputs, or just the ones with a slot.
- * @return true if the given value is accepted, false otherwise
+ * @return !String
  */
 eYo.Delegate.prototype.inputEnumerator = function (all) {
   return eYo.Do.Enumerator(this.block_.inputList, all ? undefined : function (x) {

@@ -522,7 +522,7 @@ goog.require('eYo.DelegateSvg.List')
  * The xml tag name of this block, as it should appear in the saved data.
  * Default implementation just returns the block type.
  * For edython.
- * @return true if the given value is accepted, false otherwise
+ * @return !String
  */
 eYo.DelegateSvg.List.prototype.xmlAttr = function () {
   return this.block_.eyo.wrapped_
@@ -655,8 +655,7 @@ eYo.Xml.Data.fromDom = function (block, element) {
         // Consistency section, to be removed
         var xml = data.model.xml
         if (hasText && xml && xml.text) {
-          console.log(eYo.Do.format('Only one text node {0}/{1}',
-            data.key, block.type))
+          console.log(`Only one text node ${data.key}/${block.type}`)
         }
         hasText = hasText || (xml && xml.text)
       })
@@ -1034,6 +1033,7 @@ eYo.Xml.domToBlock = (() => {
         var block
         // is it a literal or something else special ?
         if ((block = eYo.Xml.Primary.domToBlockComplete(dom, owner)) ||
+        (block = eYo.Xml.Assignment.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Literal.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Comparison.domToBlockComplete(dom, owner)) ||
         (block = eYo.Xml.Starred.domToBlockComplete(dom, owner)) ||
@@ -1232,7 +1232,7 @@ goog.require('eYo.DelegateSvg.Primary')
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
- * @return true if the given value is accepted, false otherwise
+ * @return !String
  */
 eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
@@ -1273,6 +1273,39 @@ eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
     return eYo.T3.Expr.identifier.substring(4)
   }
   return type.substring(4)
+}
+
+goog.require('eYo.DelegateSvg.Assignment')
+
+/**
+ * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xmlAttr = function () {
+  return this.type === eYo.T3.Stmt.assignment_stmt ? '=' : ':'
+}
+
+goog.provide('eYo.Xml.Assignment')
+
+/**
+ * Try to create a primary block from the given element.
+ * @param {!Element} element dom element to be completed.
+ * @param {!*} owner  The workspace or the parent block.
+ * @override
+ */
+eYo.Xml.Assignment.domToBlockComplete = function (element, owner) {
+  if (element.tagName.toLowerCase() === 's') {
+    var prototypeName = element.getAttribute(eYo.Key.EYO)
+    var workspace = owner.workspace || owner
+    var id = element.getAttribute('id')
+    if (prototypeName === '=') {
+      return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
+    } else if (prototypeName === ':') {
+      var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
+      block.eyo.variant_p = eYo.Key.ANNOTATED
+      return block
+    }
+  }
 }
 
 goog.provide('eYo.Xml.Starred')
@@ -1346,14 +1379,16 @@ goog.provide('eYo.Xml.Primary')
  * @override
  */
 eYo.Xml.Primary.domToBlockComplete = function (element, owner) {
-  var block
   var prototypeName = element.getAttribute(eYo.Key.EYO)
-  var id = element.getAttribute('id')
   if (prototypeName === '=') {
+    var id = element.getAttribute('id')
     var workspace = owner.workspace || owner
-    block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.identifier_defined, id)
+    if (element.tagName.toLowerCase() === 'x') {
+      var block
+      block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.identifier_defined, id)
+      return block  
+    }
   }
-  return block
 }
 
 goog.require('eYo.DelegateSvg.Group')

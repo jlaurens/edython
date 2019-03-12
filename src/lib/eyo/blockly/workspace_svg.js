@@ -60,6 +60,9 @@ Blockly.Gesture.prototype.handleWsStart = (() => {
     if (Blockly.WidgetDiv.DIV.childNodes.length) {
       Blockly.WidgetDiv.hide()
     } else {
+      if ((eYo.Selected.eyo)) {
+        eYo.Selected.eyo.selectMouseDownEvent = e
+      }
       handleWsStart.call(this, e, ws)
     }
   }

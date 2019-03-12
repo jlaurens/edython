@@ -36,6 +36,7 @@ goog.require('goog.dom');
  * dotted_name ::= identifier ("." identifier)*
  * parent_module ::= '.'+ [module]
  * identifier_annotated ::= identifier ":" expression
+ * augtarget_annotated ::= augtarget ":" expression
  * key_datum ::= expression ":" expression
  * identifier_defined ::= parameter "=" expression
  * identifier_anotated_defined ::= parameter "=" expression
@@ -60,6 +61,7 @@ goog.require('goog.dom');
  * 3) the annotation
  * This is used for parameter annotation, appears in both
  * identifier_annotated ::= identifier ":" expression
+ * augtarget_annotated ::= augtarget ":" expression
  * key_datum ::= expression ":" expression
  * This may be used in annotated assignments.
  * 4) the definition
@@ -88,6 +90,7 @@ goog.require('goog.dom');
  * dotted_name ::= identifier ("." identifier)*
  * parent_module ::= '.'+ [module]
  * identifier_annotated ::= identifier ":" expression
+ * augtarget_annotated ::= augtarget ":" expression
  * key_datum ::= expression ":" expression
  * identifier_defined ::= parameter "=" expression
  * identifier_anotated_defined ::= parameter ":" expression "=" expression
@@ -103,6 +106,7 @@ goog.require('goog.dom');
  |d.|dd|  |  |  | dotted_name ::= identifier ("." identifier)*
  |  |pm|  |  |  | parent_module ::= '.'+ [module]
  |  |id|:x|  |  | identifier_annotated ::= identifier ":" expression
+ |  |*x|:x|  |  | augtarget_annotated ::= augtarget ":" expression
  |  | x|:x|  |  | key_datum ::= expression ":" expression
  |  |id|  |=x|  | identifier_defined ::= identifier "=" expression
  |  |id|:x|=x|  | identifier_annotated_defined ::= ...
@@ -160,6 +164,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     types: [
       eYo.T3.Expr.identifier,
       eYo.T3.Expr.identifier_annotated,
+      eYo.T3.Expr.augtarget_annotated,
       eYo.T3.Expr.key_datum,
       eYo.T3.Expr.identifier_defined,
       eYo.T3.Expr.keyword_item,
@@ -416,7 +421,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             type === eYo.T3.Expr.expression_as) {
           this.change(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated ||
-            type === eYo.T3.Expr.key_datum) {
+          type === eYo.T3.Expr.augtarget_annotated ||
+          type === eYo.T3.Expr.key_datum) {
           this.change(eYo.Key.ANNOTATED)
           this.owner.annotation_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_defined ||
@@ -756,7 +762,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           endEditing: true
         }
       },
-      wrap: eYo.T3.Expr.expr_value_list,
+      wrap: eYo.T3.Expr.assignment_value_list,
       hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED_DEFINED && this.owner.variant_p !== eYo.Key.TARGETS) {
@@ -829,6 +835,7 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delega
   'parent_module',
   'identifier_defined',
   'key_datum',
+  'augtarget_annotated',
   'identifier_annotated',
   'keyword_item',
   'identifier_annotated_defined',
@@ -934,6 +941,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           type = eYo.T3.Expr.primary
         } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
           type = eYo.T3.Expr.expression
+        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.augtarget)) {
+          type = eYo.T3.Expr.augtarget
         } else {
           type = eYo.T3.Expr.error // this block should not be connected
         }
@@ -1136,26 +1145,38 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     return profile.name.type === eYo.T3.Expr.identifier || profile.name.type === eYo.T3.Expr.unset
       ? [
         eYo.T3.Expr.identifier_annotated,
+        eYo.T3.Expr.augtarget_annotated,
         eYo.T3.Expr.key_datum
       ]
-      : [
-        eYo.T3.Expr.key_datum
-      ]
-    } else if (profile.variant === eYo.Key.COL_DEFINED) {
-      return [
-        eYo.T3.Expr.assignment_expr
-      ]
-    } else if (profile.variant === eYo.Key.DEFINED) {
-      // if the first value is connected to a defined primary
+      : profile.name.type === eYo.T3.Expr.dotted_name
+      || profile.name.type === eYo.T3.Expr.augtarget
+        ? [
+          eYo.T3.Expr.augtarget_annotated,
+          eYo.T3.Expr.key_datum
+        ]
+        : [
+          eYo.T3.Expr.key_datum
+        ]
+  } else if (profile.variant === eYo.Key.COL_DEFINED) {
+    return [
+      eYo.T3.Expr.assignment_expr
+    ]
+  } else if (profile.variant === eYo.Key.DEFINED) {
+    // if the first value is connected to a defined primary
     var eyo = this.definition_s.unwrappedTarget
-    if (eyo && !eyo.definition_s.isIncog()) {
-      return [
+    if (eyo && !this.definition_s.isIncog()) {
+      // if the definition is not a list
+      return this.definition_t.inputList.length < 4 ? [
+        eYo.T3.Expr.assignment_chain,
+        eYo.T3.Expr.identifier_defined,
+        eYo.T3.Expr.keyword_item
+      ] :[
         eYo.T3.Expr.assignment_chain
       ]
     }
     // if the parent is a [expr_]value_list
     if ((eyo = this.output)) {
-      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
+      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.assignment_value_list || eyo.type === eYo.T3.Expr.assignment_value_list) {
         return [
           eYo.T3.Expr.assignment_chain
         ]
@@ -1195,7 +1216,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     }
     // if the parent is a value list
     if ((eyo = this.output)) {
-      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.expr_value_list) {
+      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.assignment_value_list) {
         return [
           eYo.T3.Expr.assignment_chain
         ]
@@ -1385,7 +1406,18 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
       eYo.T3.Expr.assignment_chain],
     consolidator: eYo.Consolidator.List,
     presep: ',',
-    mandatory: 1
+    mandatory: 1,
+    makeUnique: /** @suppress {globalThis} */ function (io) {
+      if (io.block.outputConnection.isConnected()) {
+        var parent = io.block.eyo.parent
+        if (parent && (parent = parent.parent)) {
+          if (parent.type === eYo.T3.Expr.argument_list || parent.type === eYo.T3.Expr.argument_list_comprehensive) {
+            return true
+          }
+        }
+      }
+      this.makeUnique(io)
+    }
   }
   var RA = goog.array.concat(D.check, D.unique)
   goog.array.removeDuplicates(RA)
@@ -1396,7 +1428,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
 })
 
 ;[
-  'expr_value_list'
+  'assignment_value_list'
 ].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.value_list
   eYo.DelegateSvg.Manager.register(k)

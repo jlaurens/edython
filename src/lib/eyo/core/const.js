@@ -163,6 +163,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   ANNOTATED: 'annotated',
   DEFINED: 'defined',
   COL_DEFINED: 'col_defined', // ':=' assignment expression in 3.8
+  NAME_DEFINED: 'name_defined',
   ANNOTATED_DEFINED: 'annotated_defined',
   
   EXPRESSION: 'expression',

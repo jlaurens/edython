@@ -123,6 +123,7 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.export = function (block, opt) {
+  this.line = undefined
   this.lines = []
   this.indents = []
   this.indent = ''

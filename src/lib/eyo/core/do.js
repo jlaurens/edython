@@ -430,20 +430,6 @@ eYo.Do.hasOwnProperty = function (object, key) {
 }
 
 /**
- * Convenient format
- * For edython.
- * @param {!string} format
- * @param {...} args
- * @return {string}
- */
-eYo.Do.format = function (format) {
-  var args = Array.prototype.slice.call(arguments, 1)
-  return format.replace(/{(\d+)}/g, function (match, number) {
-    return goog.isDef(args[number]) ? args[number] : match
-  })
-}
-
-/**
  * Convenient converter.
  * Throws an error for bad input.
  * See https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross

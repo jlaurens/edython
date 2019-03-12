@@ -254,16 +254,28 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * some … = … expression block. It makes sense to connect in the
  * rhs position because assignment is evaluated from right to left.
  * 
+ * We merge all assignment statements into only one visual block.
+ * The visual block has 3 types and more variants.
+ * annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
+ * augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
+ * assignment_stmt ::= target_list "=" assignment_value_list
+ * assignment_value_list ::= value_list | assignment_chain | assignment_expr
+ * The target_list is only used here.
+ * The target_list may also accept an identifier_annotated block
+ * or a augtarget_annotated which is a particular case of key_datum
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
       all: [
-        eYo.Key.NAME,
-        eYo.Key.TARGETS
+        eYo.Key.NAME, // only a name
+        eYo.Key.NAME_DEFINED,
+        eYo.Key.TARGETS,
+        eYo.Key.ANNOTATED,
+        eYo.Key.ANNOTATED_DEFINED
       ],
-      init: eYo.Key.NAME,
+      init: eYo.Key.NAME_DEFINED,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
@@ -271,8 +283,45 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         var slot = O.targets_s
         slot.required = newValue === eYo.Key.TARGETS
         slot.setIncog()
+        slot = O.value_s
+        slot.required === newValue !== eYo.Key.ANNOTATED
+        slot.setIncog()
+        var d = O.annotation_d
+        d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_DEFINED
+        d.setIncog()
       },
-      xml: false
+      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.owner.consolidateType()
+        this.isChanging(oldValue, newValue)
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Stmt.annotated_assignment_stmt) {
+          if (this.get() !== eYo.Key.ANNOTATED) {
+            this.set(eYo.Key.ANNOTATED_DEFINED)
+          }
+        } else if (this.get() !== eYo.Key.NAME_DEFINED) {
+          this.set(eYo.Key.TARGETS)
+        }
+      },
+      xml: false,
+      consolidate: /** @suppress {globalThis} */ function () {
+        var O = this.owner
+        if (O.variant_p !== eYo.Key.TARGETS) {
+          var t = O.name_t
+          if (t && t.type === eYo.T3.Expr.identifier_annotated) {
+            if (O.variant_p === eYo.Key.ANNOTATED || O.variant_p === eYo.Key.ANNOTATED_DEFINED) {
+
+            }
+          }
+
+        }
+        var prefix = this.owner.prefix_p
+        var delimiter = this.owner.delimiter_p
+        var content = this.owner.content_p
+        if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
+          this.set('' + prefix + delimiter + content + delimiter)
+        }
+      }
     },
     name: {
       init: '',
@@ -290,6 +339,58 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       synchronize: true,
       allwaysBoundField: true
+    },
+    annotation: {
+      init: '',
+      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return {validated: newValue}
+      },
+      synchronize: true,
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED) {
+          this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
+        }
+      }
+    },
+    operator: {
+      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
+      init: '+=',
+      synchronize: true,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        this.owner.numberOperator_p = newValue
+        this.owner.bitwiseOperator_p = newValue
+      },
+      validate: false
+    },
+    numberOperator: {
+      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],
+      noUndo: true,
+      xml: false,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        if (oldValue && (newValue !== oldValue)) {
+          this.didChange(oldValue, newValue)
+          var O = this.owner
+          O.operator_p = newValue
+          O.operator_d.bitwise = (O.operator_p !== this.get())
+        }
+      },
+      validate: true
+    },
+    bitwiseOperator: {
+      all: ['<<=', '>>=', '&=', '^=', '|='],
+      noUndo: true,
+      xml: false,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (oldValue && (newValue !== oldValue)) {
+          var O = this.owner
+          O.operator_p = newValue
+          O.operator_d.bitwise = (O.operator_p === this.get())
+        }
+      },
+      validate: true
     }
   },
   slots: {
@@ -302,19 +403,44 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           variable: true
         }
       },
-      check: eYo.T3.Expr.Check.target,
+      check: eYo.T3.Expr.Check.target_annotated,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.NAME
+        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED) {
+          this.owner.variant_p = eYo.Key.NAME_DEFINED
         }
       }
     },
     targets: {
       order: 2,
-      wrap: eYo.T3.Expr.target_list,
+      promise: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.TARGETS
+        }
+      }
+    },
+    annotation: {
+      order: 3,
+      fields: {
+        delimiter: {
+          order: 1,
+          value: ':',
+          css: 'reserved'
+        },
+        bind: {
+          order: 2,
+          validate: true,
+          endEditing: true,
+          variable: true
+        }
+      },
+      check: eYo.T3.Expr.Check.expression,
+      xml: {
+        attr: ':'
+      },
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFromSaved()) {
+          this.owner.variant_p = eYo.Key.ANNOTATED
         }
       }
     },
@@ -326,10 +452,36 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           css: 'reserved'
         },
       },
-      wrap: eYo.T3.Expr.assignment_value_list
+      wrap: eYo.T3.Expr.assignment_value_list,
+      didLoad: /** @suppress {globalThis} */ function () {
+        if (this.isRequiredFromSaved() && this.owner.variant_p === eYo.Key.ANNOTATED) {
+          this.owner.variant_p = eYo.Key.ANNOTATED_DEFINED
+        }
+      }
     }
-  }
+  },
 }, true)
+
+;['annotated_assignment_stmt'].forEach(k => {
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.assignment_stmt
+  eYo.DelegateSvg.Manager.register(k)
+})
+
+/**
+ * getType.
+ * @return {String} The type of the receiver's block.
+ */
+eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
+  var x = this.variant_p
+  if (x === eYo.Key.ANNOTATED || x === eYo.Key.ANNOTATED_DEFINED) {
+    return eYo.T3.Stmt.annotated_assignment_stmt
+  }
+  x = this.name_t
+  if (x && x.type === eYo.T3.Expr.identifier_annotated) {
+    return eYo.T3.Stmt.annotated_assignment_stmt
+  }
+  return eYo.T3.Stmt.assignment_stmt
+}
 
 /**
  * Populate the context menu for the given block.
@@ -352,7 +504,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     eYo.Do.createSPAN(name_p || eYo.Msg.Placeholder.IDENTIFIER, name_p ? 'eyo-code' : 'eyo-code-placeholder'),
     eYo.Do.createSPAN(' = …', 'eyo-code')
   )
-  F(content, eYo.Key.NAME)
+  F(content, eYo.Key.NAME_DEFINED)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, eYo.Key.TARGETS)
   mgr.shouldSeparate()
@@ -367,20 +519,41 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
   return true
 }
 
-eYo.DelegateSvg.List.makeSubclass('assignment_value_list', function () {
-  var D = {
-    check: eYo.T3.Expr.Check.starred_item,
-    unique: [eYo.T3.Expr.yield_expression, eYo.T3.Expr.assignment_chain],
-    consolidator: eYo.Consolidator.List,
-    presep: ',',
-    mandatory: 1
-  }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
-  D.all = RA
-  return {
-    list: D
-  }
+eYo.DelegateSvg.List.makeSubclass('assignment_value_list', {
+  list: (() => {
+    var me = {
+      unique: (type, subtype) => {
+        return {
+          [eYo.T3.Stmt.assignment_stmt]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain],
+          [eYo.T3.Expr.augmented_assignment_stmt]: [eYo.T3.Expr.yield_expr],
+          [eYo.T3.Expr.annotated_assignment_stmt]: [eYo.T3.Expr.yield_expr]
+        } [subtype]
+      },
+      check: (type, subtype) => {
+        return {
+          [eYo.T3.Stmt.assignment_stmt]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Stmt.augmented_assignment_stmt]: eYo.T3.Expr.Check.expression,
+          [eYo.T3.Stmt.annotated_assignment_stmt]: eYo.T3.Expr.Check.expression
+        } [subtype]
+      },
+      mandatory: 0,
+      presep: ','
+    }
+    var all = Object.create(null)
+    ;[eYo.T3.Stmt.assignment_stmt,
+      eYo.T3.Stmt.augmented_assignment_stmt,
+      eYo.T3.Stmt.annotated_assignment_stmt].forEach(k => {
+      all[k] = goog.array.concat(me.unique(null, k), me.check(null, k))
+    })
+    all[eYo.T3.Expr.one_set_display] = all[eYo.T3.Expr.one_dict_display] = goog.array.concat(
+      me.unique(eYo.T3.Expr.one_set_display),
+      me.check(eYo.T3.Expr.dict_display),
+      me.check(eYo.T3.Expr.set_display))
+    me.all = (type, subtype) => {
+      return all [subtype]
+    }
+    return me
+  }) ()
 })
 
 eYo.DelegateSvg.List.makeSubclass('augassigned_list', function () {

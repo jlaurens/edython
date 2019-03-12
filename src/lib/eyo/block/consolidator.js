@@ -43,7 +43,7 @@ eYo.Consolidator.eyo = {}
  * Init. Not implemented. No parameter, no return.
  */
 eYo.Consolidator.prototype.init = function(d) {
-  this.model = {}
+  this.model = Object.create(null)
   var D = this.constructor.eyo && this.constructor.eyo.model_
   if (D) {
     goog.mixin(this.model, D)
@@ -53,10 +53,6 @@ eYo.Consolidator.prototype.init = function(d) {
   }
   goog.asserts.assert(goog.isDef(this.model.check), 'Consolidators must check their objects')
   this.model.check = eYo.Do.ensureArrayFunction(this.model.check)
-  if (this.model.unique) {
-    this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
-    this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
-  }
 }
 
 /**
@@ -272,17 +268,17 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
   if (this.model.all) {
     if (io.unique >= 0 || io.list.length === 1) {
       // a single block or no block at all
-      return this.model.all(io.block.type, io.block.eyo.variant_p)
+      return this.model.all(io.block.type, io.block.eyo.subtype)
     } else if (io.list.length === 3 && io.i === 1) {
       // there is only one item in the list
       // and it can be replaced by any kind of block
-      return this.model.all(io.block.type, io.block.eyo.variant_p)
+      return this.model.all(io.block.type, io.block.eyo.subtype)
     } else {
       // blocks of type check are already there
-      return this.model.check(io.block.type, io.block.eyo.variant_p)
+      return this.model.check(io.block.type, io.block.eyo.subtype)
     }
   }
-  return this.model.check(io.block.type, io.block.eyo.variant_p)
+  return this.model.check(io.block.type, io.block.eyo.subtype)
 }
 
 /**
@@ -426,6 +422,32 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
 /**
  * Find the next connected input.
  * @param {!Object} io parameter.
+ */
+eYo.Consolidator.List.prototype.makeUnique = function (io) {
+  if (!this.reentrant.makeUnique) {
+    var f = this.model.makeUnique
+    if (goog.isFunction(f)) {
+      this.reentrant.makeUnique = true
+      if (f.call(this, io)) {
+        io.unique = io.i
+      }
+      this.reentrant.makeUnique = false
+      return
+    }
+  }
+  if (this.model.unique && io.c8n.targetConnection) {
+    var unique = this.model.unique(io.block.type, io.block.eyo.subtype)
+    if (!unique) {
+      throw `MISSING UNIQUE ${this.model.unique(io.block.type, io.block.eyo.subtype)}`
+    } else if (io.c8n.targetConnection.check_.some(x => unique && unique.indexOf(x) >= 0)) {
+      io.unique = io.i
+    }
+  }
+}
+
+/**
+ * Find the next connected input.
+ * @param {!Object} io parameter.
  * @param {!boolean} gobble whether to gobble intermediate inputs.
  */
 eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
@@ -435,16 +457,10 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
       io.presep = io.eyo.presep || this.model.presep
       io.postsep = io.eyo.postsep || this.model.postsep
       // manage the unique input
-      if (this.model.unique && io.unique < 0 &&
-        io.c8n.targetConnection && goog.array.find(io.c8n.targetConnection.check_, x => {
-          var unique = this.model.unique(io.block.type, io.block.eyo.variant_p)
-          if (!unique) {
-            console.error('MISSING UNIQUE', this.model.unique(io.block.type, io.block.eyo.variant_p))
-          }
-          return unique.indexOf(x) >= 0
-        })) {
-        io.unique = io.i
+      if (io.unique < 0) {
+
       }
+      this.makeUnique(io)
       return true
     }
     if (gobble) {

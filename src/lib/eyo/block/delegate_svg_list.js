@@ -49,17 +49,17 @@ eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
 eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
-  var block = this.block_
-  if (!block.type) {
+  var type = this.type
+  if (!type) {
     console.error('unexpected void type')
   }
-  var D = eYo.DelegateSvg.Manager.getModel(block.type).list
-  goog.asserts.assert(D, 'inputModel__.list is missing in ' + block.type)
+  var D = eYo.DelegateSvg.Manager.getModel(type).list
+  goog.asserts.assert(D, 'inputModel__.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
     if (this.consolidator.constructor !== C10r) {
       this.consolidator = new C10r(D)
-      goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+      goog.asserts.assert(this.consolidator, `Could not create the consolidator ${type}`)
     } else {
       this.consolidator.init(D)
     }
@@ -68,7 +68,7 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
     }
   } else {
     this.consolidator = new C10r(D)
-    goog.asserts.assert(this.consolidator, eYo.Do.format('Could not create the consolidator {0}', block.type))
+    goog.asserts.assert(this.consolidator, `Could not create the consolidator ${type}`)
     this.consolidate()
   }
 })
@@ -315,8 +315,8 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
       },
       check: (type) => {
         return {
-          [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.starred_item,
-          [eYo.T3.Expr.list_display]: eYo.T3.Expr.Check.starred_item,
+          [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.starred_item_38,
+          [eYo.T3.Expr.list_display]: eYo.T3.Expr.Check.starred_item_38,
           [eYo.T3.Expr.one_set_display]: eYo.T3.Expr.Check.starred_item,
           [eYo.T3.Expr.set_display]: eYo.T3.Expr.Check.starred_item,
           [eYo.T3.Expr.one_dict_display]: eYo.T3.Expr.Check.key_datum_all,

@@ -64,7 +64,7 @@ eYo.Selected = (() => {
             var wrapper = newValue.wrapper
             if (wrapper && newValue !== wrapper) {
               // Wrapped blocks should not be selected.
-              this.eyo_ = wrapper
+              this.eyo_ = wrapper // recursive call but not reentrant
               return
             }
           }
@@ -528,8 +528,28 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
           } else {
             eYo.Selected.connection = null
           }
-        } else {
+        } else if (eYo.Selected.connection) {
           eYo.Selected.connection = null
+        } else if (target.selectMouseDownEvent) {
+          eYo.Selected.eyo = target.stmtParent || target.root
+          target.selectMouseDownEvent = null
+        }
+      }
+    }
+  } else if (eYo.Selected.eyo && (ee = eYo.Selected.eyo.selectMouseDownEvent)) {
+    eYo.Selected.eyo.selectMouseDownEvent = null
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      // not a drag move
+      // select the block which is an ancestor of the target
+      // which parent is the selected block
+      var parent = target
+      while ((parent = parent.parent)) {
+        console.log('ancestor', parent.type)
+        if ((parent === eYo.Selected.eyo)) {
+          eYo.Selected.eyo = target
+          break
+        } else if (!parent.wrapped_) {
+          target = parent
         }
       }
     }

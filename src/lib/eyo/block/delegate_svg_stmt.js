@@ -494,7 +494,7 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
 /**
  * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
- * @return true if the given value is accepted, false otherwise
+ * @return !String
  */
 eYo.DelegateSvg.Stmt.global_stmt.prototype.xmlAttr = function () {
   return this.variant_p
