@@ -42,26 +42,20 @@ assignment_expr ::= expression ":=" expression
 value_list ::= starred_item | yield_expression
 assignment_value_list ::= value_list | assignment_chain
 augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
-augtarget ::=  identifier | attributeref | subscription | slicing | dotted_name
+augtarget ::=  identifier | attributeref | subscription | slicing | dotted_name | named_attributeref | named_subscription | named_slicing
 augassigned_list ::= expression | yield_expression
 target ::= target_unstar | target_star
-target_unstar ::=  identifier
+target_unstar ::=  augtarget
                      | parenth_target_list
                      | bracket_target_list
-                     | attributeref
-                     | dotted_name
-                     | subscription
-                     | slicing
-                     | named_attributeref
-                     | named_subscription
-                     | named_slicing
-target_annotated ::= target || identifier_annotated
-parenth_target_list ::= &quot;(&quot; void_target_list &quot;)&quot;
-bracket_target_list ::= &quot;[&quot; void_target_list &quot;]&quot;
-void_target_list ::= [target_list]
+target_annotated ::= target | identifier_annotated | augtarget_annotated
+parenth_target_list ::= "(" [target_list] ")"
+bracket_target_list ::= "[" [target_list] "]"
 target_star ::= "*" target
 expression_star ::= "*" expression
 augtarget_annotated ::= augtarget ":" expression
+annotated_stmt ::=  augtarget ":" expression
+annotated_assignment_stmt ::=  augtarget ":" expression "=" expression
 </pre>
 import_stmt     ::=  "import" module ["as" name] ( "," module ["as" name] )*
                      | "from" relative_module "import" identifier ["as" name] ( "," identifier ["as" name] )*

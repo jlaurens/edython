@@ -306,7 +306,9 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
       unique: (type) => {
         return {
           [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.enclosure_list_unique,
+          [eYo.T3.Expr.parenth_target_list]: eYo.T3.Expr.Check.enclosure_list_unique,
           [eYo.T3.Expr.list_display]: [eYo.T3.Expr.comprehension],
+          [eYo.T3.Expr.bracket_target_list]: [eYo.T3.Expr.comprehension],
           [eYo.T3.Expr.one_set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
           [eYo.T3.Expr.set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
           [eYo.T3.Expr.one_dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
@@ -317,6 +319,8 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
         return {
           [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.starred_item_38,
           [eYo.T3.Expr.list_display]: eYo.T3.Expr.Check.starred_item_38,
+          [eYo.T3.Expr.parenth_target_list]: eYo.T3.Expr.Check.starred_item_38,
+          [eYo.T3.Expr.bracket_target_list]: eYo.T3.Expr.Check.starred_item_38,
           [eYo.T3.Expr.one_set_display]: eYo.T3.Expr.Check.starred_item,
           [eYo.T3.Expr.set_display]: eYo.T3.Expr.Check.starred_item,
           [eYo.T3.Expr.one_dict_display]: eYo.T3.Expr.Check.key_datum_all,
@@ -328,7 +332,9 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
     }
     var all = {}
     ;[eYo.T3.Expr.parenth_form,
+      eYo.T3.Expr.parenth_target_list,
       eYo.T3.Expr.list_display,
+      eYo.T3.Expr.bracket_target_list,
       eYo.T3.Expr.set_display,
       eYo.T3.Expr.dict_display].forEach(k => {
       all[k] = goog.array.concat(me.unique(k), me.check(k))
@@ -385,10 +391,27 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
     if (this.data && this.slots) {
       var variant = this.variant_p
       if (variant === eYo.Key.PAR) {
-        return {ans: eYo.T3.Expr.parenth_form}
+        // eYo.T3.Expr.parenth_form || eYo.T3.Expr.parenth_target_list
+        return {ans: this.someInput(input => {
+            var t = (t = input.connection) && t.targetBlock()
+            t = (t = t && t.outputConnection) && t.check_
+            return t.check_.some(x => eYo.T3.Expr.Check.target.indexOf(x) < 0)
+          })
+          ? eYo.T3.Expr.parenth_form
+          : eYo.T3.Expr.parenth_target_list
+          
+        }
       }
       if (variant === eYo.Key.SQB) {
-        return {ans: eYo.T3.Expr.list_display}
+        // eYo.T3.Expr.list_display || eYo.T3.Expr.bracket_target_list
+        return {ans: this.someInput(input => {
+            var t = (t = input.connection) && t.targetBlock()
+            t = (t = t && t.outputConnection) && t.check_
+            return t.check_.some(x => eYo.T3.Expr.Check.targe.indexOf(x) < 0)
+          })
+          ? eYo.T3.Expr.list_display
+          : eYo.T3.Expr.bracket_target_list
+        }
       }
       var target = this.firstTarget
       if (target) {
@@ -420,7 +443,13 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
  * @param {!Object} profile
  */
 eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
-  return [profile]
+  if (profile === eYo.T3.Expr.parenth_target_list) {
+    return [eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form]
+  } else if (profile === eYo.T3.Expr.bracket_target_list) {
+    return [eYo.T3.Expr.bracket_target_list, eYo.T3.Expr.list_display]
+  } else {
+    return [profile]
+  }
 }
 
 /**
@@ -431,7 +460,14 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
 eYo.DelegateSvg.Expr.enclosure.prototype.getBaseType = function () {
   return this.profile_p
 }
-;['parenth_form', 'list_display', 'set_display', 'dict_display', 'one_set_display', 'one_dict_display'].forEach(k => {
+;['parenth_form',
+'list_display',
+'set_display',
+'dict_display',
+'one_set_display',
+'one_dict_display',
+'bracket_target_list',
+'parenth_target_list'].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.enclosure
   eYo.DelegateSvg.Manager.register(k)
 })

@@ -213,6 +213,20 @@ eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
   return parent && parent.type
 }
 
+/**
+ * Did disconnect this block's connection from another connection.
+ * @param {!Blockly.Connection} blockConnection
+ * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
+ */
+eYo.DelegateSvg.Expr.target_list.prototype.didDisconnect = function (connection, oldTargetC8n) {
+  eYo.DelegateSvg.Expr.target_list.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
+  if (this.block_.inputList.some(input => input.connection && input.connection.targetConnection)) {
+    return
+  }
+  var p = this.parent
+  p && p.target_s.bindField.setVisible(true)
+}
+
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
 /**
@@ -287,6 +301,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
+        console.error('CONSOLIDATE')
         var O = this.owner
         if (O.comment_variant_p === eYo.Key.NONE && this.value_ === eYo.Key.NONE) {
           this.change(eYo.Key.VALUED)
@@ -356,7 +371,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         this.owner.numberOperator_p = newValue
         this.owner.bitwiseOperator_p = newValue
       },
-      validate: true
+      validate: true,
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Stmt.augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
+          this.change('+=')
+        }
+      }
     },
     bitwiseOperator: {
       all: ['<<=', '>>=', '&=', '^=', '|='],

@@ -1,4 +1,5 @@
 var assert = chai.assert
+var expect = chai.expect
 
 var g = eYo.GMR._PyParser_Grammar
 
@@ -39,6 +40,7 @@ describe('Assignment', function() {
   f('expression_stmt', true, true, true, false, eYo.Key.NONE, eYo.Key.COMMENT)
   f('assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
   f('augmented_assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
+  f('annotated_stmt', false, false, true, true, eYo.Key.ANNOTATED, eYo.Key.NONE)
   f('annotated_assignment_stmt', false, false, false, true, eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
   it('comment variant change', function() {
     var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.expression_stmt)
@@ -153,9 +155,36 @@ describe('Assignment', function() {
   // })
 })
 
-describe('Draw', function() {
-  it('comment variant change', function() {
-    var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<s eyo="x" operator="=" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="target"><x eyo="identifier" name="de" slot="O"></x></x></s>`)
+describe('assignment_stmt', function() {
+  it('target', function() {
+    var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
+    assert(b1, `MISSING ${eYo.T3.Stmt.assignment_stmt}`)
+    assert_type(b1, 'assignment_stmt',)
+    assert(b1.eyo.constructor.eyo.key === 'assignment_stmt', `MISSED KEY ${b1.eyo.constructor.eyo.key}`)
+    b1.eyo.comment_variant_p = eYo.Key.NONE
+    b1.eyo.variant_p = eYo.Key.TARGET
+    assert_variant(b1, eYo.Key.TARGET, '1')
+    assert_incog(b1, false, true, true, true)
+    // connect all the possible targets
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
+    b1.eyo.target_t.eyo.lastConnect(b2)
+    assert(b1.eyo.target_t.inputList.length === 3, `MISSED C8N 1`)
+    assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
+    var b3 =  eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    assert(b3, `MISSING …+…`)
+    expect(() => b1.eyo.target_t.eyo.lastConnect(b3)).to.throw('Connection checks failed.');
+    assert(b1.eyo.target_t.inputList.length === 3, `MISSED C8N 3`)
+    
+    // b1.eyo.variant_p = eYo.Key.TARGET
+    // b1.eyo.target_p = 'abc'
+    // assert(b1.eyo.target_p === 'abc', `MISSED ${b1.eyo.target_p} === 'abc'`)
+    // assert(b1.eyo.target_t, 'MISSING TARGET')
+    // var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'de')
+    // b1.eyo.target_t.eyo.lastConnect(b2)
+    // assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION')
+    // assert(b1.eyo.target_t.inputList.length === 3, `BAD ${b1.eyo.target_t.inputList.length} === 3`)
+    
+    // b1.dispose()
   })
 })
 
