@@ -1022,6 +1022,7 @@ eYo.DelegateSvg.prototype.newDrawRecorder = function (recorder) {
     cursor: new eYo.Where(),
     forc: undefined // rendered file or connection
   }
+  this.firstRenderedInput = this.lastRenderedInput = undefined
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -1094,8 +1095,10 @@ eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
     // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.size.w
-  this.startOfStatement = io.common.startOfStatement
-  if (!this.outputConnection) {
+  if (this.outputConnection) {
+    this.startOfStatement = io.common.startOfStatement
+    this.startOfLine = io.common.startOfLine
+  } else {
     this.startOfStatement = io.common.startOfStatement = true
     this.renderDrawSharp_(io)
   }
@@ -1237,6 +1240,9 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
   }
+  if (io.block === this.block_) {
+    this.lastRenderedInput = io.common.inputDone
+  }
 }
 
 /**
@@ -1327,7 +1333,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
         }
         this.renderDrawEnding_(io)
         this.renderDrawPending_(io)
-        io.common.startOfStatement = false
+        io.common.startOfLine = io.common.startOfStatement = false
         ++ io.n
         var textNode = document.createTextNode(text)
         field.textElement_.appendChild(textNode)
@@ -1581,6 +1587,7 @@ eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE
         // should we advance the cursor?
         if (c_eyo.side === eYo.Key.NONE) {
           io.cursor.advance(shp.width)
+          io.common.startOfLine = io.common.startOfStatement = false
         }
         // a space was added as a visual separator anyway
         io.common.field.shouldSeparate = false
@@ -1606,13 +1613,19 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   // this is one of the reasons why we allways render from the start of a statement
   io.input.eyo.inputRight = undefined
   io.input.eyo.inputLeft = io.common.inputDone
-  io.common.inputDone && (io.common.inputDone.eyo.inputRight = io.input)
+  if (io.common.inputDone) {
+    io.common.inputDone.eyo.inputRight = io.input
+  } else {
+    this.firstRenderedInput = io.input
+  }
   io.common.inputDone = io.input
   this.renderDrawFields_(io, true)
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
     ++ io.n
     var c_eyo = c8n.eyo
+    c_eyo.startOfLine = io.common.startOfLine
+    c_eyo.startOfStatement = io.common.startOfStatement
     io.forc = c_eyo
     c_eyo.side = c_eyo.shape = undefined
     io.common.field.canStarLike = false
@@ -1635,6 +1648,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
       if (root) {
         var t_eyo = target.eyo
         try {
+          t_eyo.startOfLine = io.common.startOfLine
           t_eyo.startOfStatement = io.common.startOfStatement
           t_eyo.mayBeLast = t_eyo.hasRightEdge
           t_eyo.downRendering = true
@@ -1649,6 +1663,10 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
           if (c_eyo.c === 1 && !io.common.field.beforeIsBlack && c_eyo.slot) {
             c_eyo.slot.where.c -= 1
             c_eyo.setOffset(io.cursor)
+            if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
+              t_eyo.startOfLine = t_eyo.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
+          
+            }
           }
           if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
             t_eyo.render(false, io)
@@ -1693,6 +1711,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
         // (input with no target)
         if (!c_eyo.disabled_) {
           c_eyo.setOffset(io.cursor)
+          c_eyo.startOfLine = io.common.startOfLine
           c_eyo.startOfStatement = io.common.startOfStatement
           if (c_eyo.s7r_) {
             c_eyo.side = eYo.Key.NONE
@@ -1744,7 +1763,6 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
             io.common.field.shouldSeparate = false
           }
           io.common.beforeIsRightEdge = true
-          io.common.startOfStatement = false
         }
       }
     }

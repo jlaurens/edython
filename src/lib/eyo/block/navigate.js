@@ -23,17 +23,6 @@ goog.require('eYo.Selected')
 eYo.Navigate.doTab = (() => {
   var c8n
   var input
-  var ff = x => {
-    var c = x.connection
-    if (c) {
-      var c_eyo = c.eyo
-      if(c_eyo.wrapped_ || !c.hidden_) {
-        if (c_eyo && c_eyo.isInput && !c_eyo.isIncog()) {
-          return (input = x.input || x)
-        }
-      }
-    }
-  }
   var accept = input => {
     var c8n = input.connection
     return c8n && !c8n.eyo.isIncog() && !c8n.hidden_ && c8n.eyo.isInput
@@ -47,7 +36,13 @@ eYo.Navigate.doTab = (() => {
         input = c8n.eyo.target.input
       }
       if (!input) {
-        eyo.forEachSlot(ff) || eyo.forEachInput(ff)
+        input = eyo.lastRenderedInput
+      }
+      if (!input) {
+        input = (eyo.stmtParent || eyo.root).lastRenderedInput
+      }
+      if (!input) {
+        return
       }
     }
     var candidate = input.eyo.inputLeft
@@ -85,7 +80,13 @@ eYo.Navigate.doTab = (() => {
         input = c8n.eyo.target.input
       }
       if (!input) {
-        eyo.forEachSlot(ff) || eyo.forEachInput(ff)
+        input = eyo.firstRenderedInput
+      }
+      if (!input) {
+        input = (eyo.stmtParent || eyo.root).firstRenderedInput
+      }
+      if (!input) {
+        return
       }
     }
     var candidate = input.eyo.inputRight

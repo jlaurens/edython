@@ -1157,6 +1157,17 @@ eYo.Delegate.prototype.forEachSlot = function (helper) {
 }
 
 /**
+ * execute the given function for the head slot of the receiver and its next sibling. Stops as soon as the helper returns a truthy value.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was an slot to act upon or a valid helper
+ */
+eYo.Delegate.prototype.someSlot = function (helper) {
+  var slot = this.headSlot
+  return slot && slot.some(helper)
+}
+
+/**
  * execute the given function for the head data of the receiver and its next sibling.
  * Ends the loop as soon as the helper returns true.
  * For edython.
@@ -2274,7 +2285,7 @@ eYo.Delegate.prototype.forEachInput = function (helper) {
 }
 
 /**
- * Runs the helper function for some input, until it responds true
+ * Runs the helper function for some input, until it responds a truthy value.
  * For edython.
  * @param {!Function} helper
  * @return {Object} returns the first input for which the helper returns a truthy value
@@ -2285,7 +2296,7 @@ eYo.Delegate.prototype.someInput = function (helper) {
   for (var i = 0 ; i < list.length ; i++) {
     var input = list[i]
     if ((ans = helper(input))) {
-      return ans == true ? input : ans
+      return ans === true ? input : ans
     }
   }
 }

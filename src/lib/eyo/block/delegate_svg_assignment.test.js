@@ -153,6 +153,12 @@ describe('Assignment', function() {
   // })
 })
 
+describe('Draw', function() {
+  it('comment variant change', function() {
+    var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<s eyo="x" operator="=" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="list" slot="target"><x eyo="identifier" name="de" slot="O"></x></x></s>`)
+  })
+})
+
 describe('assignment_expr', function() {
   it('target', function() {
     var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.expression_stmt)

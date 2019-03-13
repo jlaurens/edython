@@ -975,8 +975,6 @@ eYo.Slot.prototype.some = function (helper) {
 
 /**
  * execute the given function for the receiver and its next siblings.
- * If the return value of the given function is true,
- * then it was the last iteration and the loop breaks.
  * For edython.
  * @param {!function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
@@ -986,6 +984,25 @@ eYo.Slot.prototype.forEach = function (helper) {
   if (goog.isFunction(helper)) {
     do {
       helper(slot)
+    } while ((slot = slot.next))
+  }
+}
+
+/**
+ * execute the given function for the receiver and its next siblings.
+ * If the return value of the given function is true,
+ * then it was the last iteration and the loop breaks.
+ * For edython.
+ * @param {!function} helper
+ * @return {?Object} The slot that returned true, eventually.
+ */
+eYo.Slot.prototype.some = function (helper) {
+  var slot = this
+  if (goog.isFunction(helper)) {
+    do {
+      if (helper(slot)) {
+        return slot
+      }
     } while ((slot = slot.next))
   }
 }

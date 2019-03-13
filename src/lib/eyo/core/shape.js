@@ -581,7 +581,7 @@ eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
     y = 0
     this.width = 3
   }
-  if (eyo && eyo.bindField) {
+  if (eyo && eyo.bindField && !eyo.ignoreBindField) {
     this.width = 1 + (eyo.bindField.isVisible()
       ? Math.max(this.width, 1)
       : 2)

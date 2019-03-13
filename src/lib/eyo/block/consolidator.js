@@ -339,15 +339,17 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   }
   io.input.setCheck(this.getCheck(io))
   io.c8n.eyo.plugged_ = this.model.plugged
+  io.c8n.eyo.hidden_ = undefined
   if (io.block.eyo.locked_) {
-    io.c8n.setHidden(true)
+    io.c8n.setHidden((io.c8n.eyo.hidden_ = true))
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
-    io.c8n.setHidden(true)
+    io.c8n.setHidden((io.c8n.eyo.hidden_ = true))
   } else if (io.i === 2 && io.list.length === 3 && io.noDynamicList) {
-    io.c8n.setHidden(true)
+    io.c8n.setHidden((io.c8n.eyo.hidden_ = true))
   } else if (!io.block.eyo.isIncog()) {
     io.c8n.setHidden(false)
   }
+  io.c8n.eyo.ignoreBindField = io.i === 0 && io.list.length > 1
 }
 
 /**
