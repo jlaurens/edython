@@ -23,51 +23,61 @@ goog.require('goog.dom');
 
 
 /**
- * List consolidator for target list. Used is assignment.
+ * List consolidator for target list. Used in assignment, only.
+ * There are different situations depending on the type of the
+ * block enclosing the list.
+ * 1) expression_stmt:
+ * expression_stmt ::=  starred_expression
+ * starred_expression ::=  expression | (starred_item ",")* [starred_item]
+ * starred_item       ::=  expression | "*" or_expr
+ * 2) augmented_assignment_stmt:
+ * augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
+ * augtarget ::=  identifier | attributeref | subscription | slicing | dotted_name | named_attributeref | named_subscription | named_slicing
+ * augop ::=  "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**="
+ *                               | ">>=" | "<<=" | "&=" | "^=" | "|="
+ * 3) annotated_assignment_stmt:
+ * annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
+ * 4) assignment_stmt:
+ * assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
+ * target_list     ::=  target ("," target)* [","]
+ * target ::= target_unstar | target_star
+ * target_unstar ::=  augtarget
+ *                      | parenth_target_list
+ *                      | bracket_target_list
+ * target_annotated ::= target | identifier_annotated
+ * parenth_target_list ::= "(" [target_list] ")"
+ * bracket_target_list ::= "[" [target_list] "]"
+ * target_star ::= "*" target
  * Main entry: consolidate
  * @param {!String} single, the required type for a single element....
  */
-eYo.Consolidator.List.Target = function (D) {
-  var d = {}
-  goog.mixin(d, eYo.Consolidator.List.Target.model)
-  goog.mixin(d, D)
-  eYo.Consolidator.List.Target.superClass_.constructor.call(this, d)
-}
-goog.inherits(eYo.Consolidator.List.Target, eYo.Consolidator.List)
-
-eYo.Consolidator.List.Target.model = {
-  hole_value: 'name',
-  check: null,
-  mandatory: 1,
-  presep: ','
-}
-
 eYo.Consolidator.List.makeSubclass('Target', {
   hole_value: 'name',
   check: null,
   mandatory: 1,
-  presep: ','
+  presep: ',',
+  check: /** @suppress {globalThis} */ (type, subtype) => {
+    if (subtype === eYo.T3.Stmt.annotated_stmt || subtype === eYo.T3.Stmt.annotated_assignment_stmt) {
+      return eYo.T3.Expr.Check.augtarget_annotated
+    }
+    if (io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
+      return eYo.T3.Expr.Check.augtarget
+    }
+    if (io.subtype === eYo.T3.Stmt.assignment_stmt) {
+      return eYo.T3.Expr.Check.target
+    }
+  },
+  /**
+   * Annotated assignment and augmented assignments must take only one target.
+   * @param {!Object} io input/output parameter
+   */
+  makeUnique: /** @suppress {globalThis} */ function (io) {
+    if (io.subtype === eYo.T3.Stmt.annotated_assignment_stmt || io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
+      return true
+    }
+    this.makeUnique(io)
+  }
 })
-
-/**
- * List consolidator for target list.
- * Main entry: consolidate
- * @param {!String} single, the required type for a single element....
- */
-eYo.Consolidator.List.Target.Void = function (D) {
-  var d = {}
-  goog.mixin(d, eYo.Consolidator.List.Target.Void.model)
-  goog.mixin(d, D)
-  eYo.Consolidator.List.Target.Void.superClass_.constructor.call(this, d)
-}
-goog.inherits(eYo.Consolidator.List.Target.Void, eYo.Consolidator.List.Target)
-
-eYo.Consolidator.List.Target.Void.model = {
-  hole_value: 'name',
-  check: null,
-  mandatory: 0,
-  presep: ','
-}
 
 /**
  * Prepare io, just before walking through the input list.
@@ -76,7 +86,8 @@ eYo.Consolidator.List.Target.Void.model = {
  */
 eYo.Consolidator.List.Target.prototype.getIO = function (block) {
   var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, block)
-  io.first_starred = io.last = -1
+  io.first_starred = io.last = io.annotated = -1
+  io.subtype = block.eyo.subtype
   return io
 }
 
@@ -91,7 +102,8 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
   var Type = {
     UNCONNECTED: 0,
     STARRED: 1,
-    OTHER: 2
+    ANNOTATED: 2,
+    OTHER: 3
   }
   /**
    * Whether the input corresponds to an identifier...
@@ -118,7 +130,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     }
   }
   var setupFirst = function (io) {
-    io.first_starred = io.last = -1
+    io.first_starred = io.last = io.annotated = -1
     this.setupIO(io, 0)
     while (io.eyo) {
       if ((io.eyo.parameter_type_ = getCheckType(io)) === Type.STARRED) {
@@ -188,59 +200,18 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  */
 eYo.DelegateSvg.List.makeSubclass('target_list', {
   list: {
-    consolidator: eYo.Consolidator.List.Target,
-    mandatory: 1,
-    hole_value: 'name'
+    consolidator: eYo.Consolidator.List.Target
   }
 })
 
 /**
- * Class for a DelegateSvg, void_target_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
+ * The subtype is the type of the enclosing block.
+ * @return {String} The subtype of the receiver's block.
  */
-eYo.DelegateSvg.List.makeSubclass('void_target_list', {
-  list: {
-    consolidator: eYo.Consolidator.List.Target,
-    mandatory: 0,
-    hole_value: 'name'
-  }
-})
-
-/**
- * Class for a DelegateSvg, parenth_target_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.void_target_list.makeSubclass('parenth_target_list', {
-  fields: {
-    prefix: {
-      value: '('
-    },
-    suffix: {
-      value: ')'
-    }
-  }
-}, true)
-
-/**
- * Class for a DelegateSvg, bracket_target_list block.
- * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.void_target_list.makeSubclass('bracket_target_list', {
-  fields: {
-    prefix: {
-      value: '['
-    },
-    suffix: {
-      value: ']'
-    }
-  }
-}, true)
+eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
+  var parent = this.parent
+  return parent && parent.type
+}
 
 goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
 
@@ -257,6 +228,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * We merge all assignment statements into only one visual block.
  * The visual block has 4 types and more variants.
  * expression_stmt ::= target_list
+ * annotated_stmt ::=  augtarget ":" expression
  * annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
  * augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
  * assignment_stmt ::= target_list "=" assignment_value_list
@@ -272,6 +244,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       all: [
         eYo.Key.NONE, // only a comment
         eYo.Key.TARGET, // only a name, possibly a comment
+        eYo.Key.VALUED, // values, possibly a comment
         eYo.Key.TARGET_VALUED, // assignement
         eYo.Key.ANNOTATED, // only annotation
         eYo.Key.ANNOTATED_VALUED // assignement and annotation
@@ -280,10 +253,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.target_d.setIncog(newValue === eYo.Key.NONE)
+        var d = O.target_d
+        d.required = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
+        O.target_d.setIncog()
         var slot
         slot = O.value_s
-        slot.required = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED
+        slot.required = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED
         slot.setIncog()
         var d = O.annotation_d
         d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
@@ -293,6 +268,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         var O = this.owner
         if (newValue === eYo.Key.NONE) {
           O.comment_variant_p = eYo.Key.COMMENT
+          O.operator_p = ''
+        } else if (newValue === eYo.Key.VALUED) {
+          O.operator_p = ''
         }
         O.consolidateType()
         this.isChanging(oldValue, newValue)
@@ -300,19 +278,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.expression_stmt) {
           this.change(eYo.Key.NONE)
+        } else if (type === eYo.T3.Stmt.annotated_stmt) {
+          this.change(eYo.Key.ANNOTATED)
         } else if (type === eYo.T3.Stmt.annotated_assignment_stmt) {
-          if (this.value_ !== eYo.Key.ANNOTATED) {
-            this.change(eYo.Key.ANNOTATED_VALUED)
-          }
+          this.change(eYo.Key.ANNOTATED_VALUED)
         } else if (this.value_ !== eYo.Key.TARGET_VALUED) {
           this.change(eYo.Key.TARGET_VALUED)
         }
       },
-      xml: false,
       consolidate: /** @suppress {globalThis} */ function () {
         var O = this.owner
-        if (O.comment_p === eYo.Key.NONE && this.value_ === eYo.Key.NONE) {
-          this.change(eYo.Key.TARGET)
+        if (O.comment_variant_p === eYo.Key.NONE && this.value_ === eYo.Key.NONE) {
+          this.change(eYo.Key.VALUED)
         }
         var t = O.target_s.unwrappedTarget
         if (t && (t.type === eYo.T3.Expr.identifier_annotated || t.type === eYo.T3.Expr.augtarget_annotated)) {
@@ -347,10 +324,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p === eYo.Key.NONE) {
+        if (this.isRequiredFromSaved() && (this.owner.variant_p === eYo.Key.NONE || this.owner.variant_p === eYo.Key.VALUED)) {
           this.owner.variant_p = eYo.Key.TARGET
         }
-      }
+      },
     },
     annotation: {
       init: '',
@@ -360,15 +337,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       synchronize: true,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED) {
-          this.owner.variant_p = eYo.Key.ANNOTATED_VALUED
-          this.owner.operator_p = '='
+        var O = this.owner
+        if (this.isRequiredFromSaved() && O.variant_p !== eYo.Key.ANNOTATED_VALUED) {
+          O.variant_p = eYo.Key.ANNOTATED
+          O.operator_p = '='
         }
       }
     },
     operator: {
-      all: ['=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
+      /* Visual studio code gobbles this line */
       init: '=',
+      all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.owner.value_s.fields.op.setValue(newValue)
       },
@@ -376,25 +355,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         this.didChange(oldValue, newValue)
         this.owner.numberOperator_p = newValue
         this.owner.bitwiseOperator_p = newValue
-      },
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Stmt.augmented_assignment_stmt && this.value_ === '=') {
-          this.change('+=')
-        }
-      },
-      validate: false
-    },
-    numberOperator: {
-      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],
-      noUndo: true,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        if (oldValue && (newValue !== oldValue)) {
-          this.didChange(oldValue, newValue)
-          var O = this.owner
-          O.operator_p = newValue
-          O.operator_d.bitwise = (O.operator_p !== this.get())
-        }
       },
       validate: true
     },
@@ -407,10 +367,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (oldValue && (newValue !== oldValue)) {
           var O = this.owner
           O.operator_p = newValue
-          O.operator_d.bitwise = (O.operator_p === this.get())
+          O.operator_d.bitwise = (O.operator_p === this.value_)
         }
       },
-      validate: true
     },
     comment: {
       init: /** @suppress {globalThis} */ function () {
@@ -423,7 +382,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var O = this.owner
-        if (O.target_d.isIncog() && O.value_s.isIncog()) {
+        if (O.target_d.isIncog() && O.value_s.isIncog() && O.annotation_d.isIncog()) {
           this.setIncog(false)
         }
       }
@@ -524,6 +483,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
 }, true)
 
 ;['expression_stmt',
+'annotated_stmt',
 'annotated_assignment_stmt',
 'augmented_assignment_stmt'].forEach(k => {
   eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.assignment_stmt
@@ -546,12 +506,14 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.isWhite = function () {
  * @return {String} The type of the receiver's block.
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
-  if (this.operator_p === '=') { // not an augmented assigment
-    var x = this.variant_p
-    if (x === eYo.Key.NONE || x === eYo.Key.TARGET) {
-      return eYo.T3.Stmt.expression_stmt
+  var x = this.variant_p
+  if (x === eYo.Key.NONE || x === eYo.Key.VALUED ) {
+    return eYo.T3.Stmt.expression_stmt
+  } else if (this.operator_p === '=') { // not an augmented assigment
+    if (x === eYo.Key.ANNOTATED) {
+      return eYo.T3.Stmt.annotated_stmt
     }
-    if (x === eYo.Key.ANNOTATED || x === eYo.Key.ANNOTATED_VALUED) {
+    if (x === eYo.Key.ANNOTATED_VALUED) {
       return eYo.T3.Stmt.annotated_assignment_stmt
     }
     x = this.target_t
@@ -721,7 +683,6 @@ eYo.DelegateSvg.Assignment.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expression,
   eYo.T3.Expr.target_list,
-  eYo.T3.Expr.void_target_list,
   eYo.T3.Expr.parenth_target_list,
   eYo.T3.Expr.bracket_target_list,
   eYo.T3.Stmt.assignment_stmt,
