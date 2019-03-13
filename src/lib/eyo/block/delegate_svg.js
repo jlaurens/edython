@@ -1616,7 +1616,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
   if (io.common.inputDone) {
     io.common.inputDone.eyo.inputRight = io.input
   } else {
-    this.firstRenderedInput = io.input
+    io.block.eyo.firstRenderedInput = io.input
   }
   io.common.inputDone = io.input
   this.renderDrawFields_(io, true)

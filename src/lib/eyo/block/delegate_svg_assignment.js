@@ -72,7 +72,8 @@ eYo.Consolidator.List.makeSubclass('Target', {
    * @param {!Object} io input/output parameter
    */
   makeUnique: /** @suppress {globalThis} */ function (io) {
-    if (io.subtype === eYo.T3.Stmt.annotated_assignment_stmt || io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
+    if (io.subtype === eYo.T3.Stmt.annotated_stmt || io.subtype === eYo.T3.Stmt.annotated_assignment_stmt || io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
+      console.error('UNIK', io.subtype)
       return true
     }
     this.makeUnique(io)
@@ -285,6 +286,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           O.operator_p = ''
         } else if (newValue === eYo.Key.VALUED) {
           O.operator_p = ''
+        } else if (O.operator_p === '') {
+          O.operator_p = '='
         }
         O.consolidateType()
         this.isChanging(oldValue, newValue)
@@ -301,7 +304,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        console.error('CONSOLIDATE')
         var O = this.owner
         if (O.comment_variant_p === eYo.Key.NONE && this.value_ === eYo.Key.NONE) {
           this.change(eYo.Key.VALUED)
@@ -527,7 +529,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.isWhite = function () {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
   var x = this.variant_p
-  if (x === eYo.Key.NONE || x === eYo.Key.VALUED ) {
+  if (x === eYo.Key.NONE || x === eYo.Key.VALUED || this.operator_p === '') { // not yet consolidated
     return eYo.T3.Stmt.expression_stmt
   } else if (this.operator_p === '=') { // not an augmented assigment
     if (x === eYo.Key.ANNOTATED) {

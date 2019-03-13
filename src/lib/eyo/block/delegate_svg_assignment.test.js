@@ -174,7 +174,8 @@ describe('assignment_stmt', function() {
     assert(b3, `MISSING …+…`)
     expect(() => b1.eyo.target_t.eyo.lastConnect(b3)).to.throw('Connection checks failed.');
     assert(b1.eyo.target_t.inputList.length === 3, `MISSED C8N 3`)
-    
+    b3.dispose()
+
     // b1.eyo.variant_p = eYo.Key.TARGET
     // b1.eyo.target_p = 'abc'
     // assert(b1.eyo.target_p === 'abc', `MISSED ${b1.eyo.target_p} === 'abc'`)
@@ -184,24 +185,27 @@ describe('assignment_stmt', function() {
     // assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION')
     // assert(b1.eyo.target_t.inputList.length === 3, `BAD ${b1.eyo.target_t.inputList.length} === 3`)
     
-    // b1.dispose()
+    b1.dispose()
   })
 })
 
-describe('assignment_expr', function() {
+describe('expression_stmt', function() {
   it('target', function() {
     var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.expression_stmt)
     assert(b1, `MISSING ${eYo.T3.Stmt.expression_stmt}`)
     assert(b1.eyo.constructor.eyo.key === 'assignment_stmt', `MISSED KEY ${b1.eyo.constructor.eyo.key}`)
-    assert_type(b1, 'expression_stmt',)
+    assert_type(b1, 'expression_stmt')
+    assert(b1.eyo.operator_p === '', `MISSED ${b1.eyo.operator_p}`)
     b1.eyo.comment_variant_p = eYo.Key.NONE
     b1.eyo.variant_p = eYo.Key.TARGET
     assert_variant(b1, eYo.Key.TARGET, '1')
     assert_incog(b1, false, true, true, true)
+    assert_type(b1, 'assignment_stmt')
     b1.eyo.target_p = 'abc'
     assert(b1.eyo.target_p === 'abc', `MISSED ${b1.eyo.target_p} === 'abc'`)
     assert(b1.eyo.target_t, 'MISSING TARGET')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'de')
+    assert(b1.eyo.target_t.inputList.length === 1, `BAD ${b1.eyo.target_t.inputList.length} === 1`)
     b1.eyo.target_t.eyo.lastConnect(b2)
     assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION')
     assert(b1.eyo.target_t.inputList.length === 3, `BAD ${b1.eyo.target_t.inputList.length} === 3`)
