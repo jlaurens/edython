@@ -163,6 +163,9 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
     this.owner.changeBegin()
     this.beforeChange(oldValue, newValue)
     try {
+      if (newValue === eYo.Key.Comment) {
+        console.error('BACK TO COMMENT')
+      }
       this.value_ = newValue
       this.duringChange(oldValue, newValue)
     } catch (err) {
@@ -935,7 +938,8 @@ eYo.Data.prototype.load = function (element) {
         }
       }
     } else {
-      txt = element.getAttribute(this.attributeName)
+      txt = (this.model.xml && goog.isFunction(this.model.xml.getAttribute)
+        && this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName)
       if (!goog.isDefAndNotNull(txt)) {
         txt = element.getAttribute(`${this.attributeName}_${eYo.Key.PLACEHOLDER}`)
         if (goog.isDefAndNotNull(txt)) {

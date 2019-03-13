@@ -15,9 +15,9 @@ describe('parameter_list', function() {
       assert(u.name_p === 'a', `MISSED: ${v}`)
     }
     ;[eYo.Key.NONE,
-      eYo.Key.DEFINED,
+      eYo.Key.VALUED,
       eYo.Key.ANNOTATED,
-      eYo.Key.ANNOTATED_DEFINED,
+      eYo.Key.ANNOTATED_VALUED,
       eYo.Key.NONE].forEach(v => {
         f(v)
       })
@@ -32,26 +32,26 @@ describe('parameter_list', function() {
 
   })
   ;[eYo.Key.NONE,
-    eYo.Key.DEFINED,
+    eYo.Key.VALUED,
     eYo.Key.ANNOTATED,
-    eYo.Key.ANNOTATED_DEFINED,
+    eYo.Key.ANNOTATED_VALUED,
     eYo.Key.NONE].forEach(v1 => {
       [eYo.Key.NONE,
-        eYo.Key.DEFINED,
+        eYo.Key.VALUED,
         eYo.Key.ANNOTATED,
-        eYo.Key.ANNOTATED_DEFINED,
+        eYo.Key.ANNOTATED_VALUED,
         eYo.Key.NONE].forEach(v2 => {
           [eYo.Key.NONE,
-            eYo.Key.DEFINED,
+            eYo.Key.VALUED,
             eYo.Key.ANNOTATED,
-            eYo.Key.ANNOTATED_DEFINED,
+            eYo.Key.ANNOTATED_VALUED,
             eYo.Key.NONE].forEach(v3 => {
               var parameter = v => {
                 return {
                   [eYo.Key.NONE]: '',
-                  [eYo.Key.DEFINED]: '=…',
+                  [eYo.Key.VALUED]: '=…',
                   [eYo.Key.ANNOTATED]: ':…',
-                  [eYo.Key.ANNOTATED_DEFINED]: ':…=…',
+                  [eYo.Key.ANNOTATED_VALUED]: ':…=…',
                 }[v]
               }
               it (`f(a${parameter(v1)}, b${parameter(v2)}, c${parameter(v3)})`, function () {

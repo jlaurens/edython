@@ -51,7 +51,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
-  TARGETS: 'targets',
   ASSIGNED: 'assigned',
   IDENTIFIER: 'identifier',
   ARGUMENT: 'argument',
@@ -109,6 +108,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   CALL: 'call',
   CALL_EXPR: 'call_expr',
   SLICING: 'slicing',
+  TARGET: 'target',
 
   ROOT: 'root',
   EXPR: 'expr',
@@ -161,10 +161,10 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   STAR_STAR_NAME: 'star_star_name',
   ALIASED: 'as_alias',
   ANNOTATED: 'annotated',
-  DEFINED: 'defined',
-  COL_DEFINED: 'col_defined', // ':=' assignment expression in 3.8
-  NAME_DEFINED: 'name_defined',
-  ANNOTATED_DEFINED: 'annotated_defined',
+  VALUED: 'valued',
+  COL_VALUED: 'col_valued', // ':=' assignment expression in 3.8
+  TARGET_VALUED: 'target_valued',
+  ANNOTATED_VALUED: 'annotated_valued',
   
   EXPRESSION: 'expression',
   
@@ -209,8 +209,5 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   PAR: '()', // also used in xml eyo attribute
   SQB: '[]', // also used in xml eyo attribute
   BRACE: '{}', // also used in xml eyo attribute
-  
-  /*
-"LIST", "EXPRESSION", "FOR", "ITER", "IN", "IF", "COMP", "BLOCK", "ATTRIBUTE", "LOWER_BOUND", "UPPER_BOUND", "STRIDE", "KEY", "VALUE", "ARGUMENT", "POWER", "RHS", "LHS", "ELSE", "DATUM", "IMPORT", "SOURCE", "AS", "FROM", "MODULE", "NAME", "DEFINITION", "TYPE", "PARENT", "DO", "COND", "WRAP", "TARGETS", "ANNOTATED", "ASSIGNED", "ASSERT", "RAISE"
-*/
+
 })

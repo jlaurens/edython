@@ -78,43 +78,41 @@ eYo.Navigate.doTab = (() => {
   }
   var doRight = eyo => {
     if ((c8n = eYo.Selected.connection) && !c8n.eyo.isIncog()) {
-      if ((input = c8n.eyo.input)) {
-        var candidate = input.eyo.inputRight
-        if(candidate) {
-          input = candidate
-        } else {
-          // seek the left most input
-          candidate = input
-          while ((candidate = candidate.eyo.inputLeft)) {
-            input = candidate
-          }
-        }
-      }
+      input = c8n.eyo.input
     }
     if (!input) {
-      if ((c8n = eyo.outputConnection) && (c8n = c8n.targetConnection) && c8n.isInput) {
-        candidate = c8n.eyo.input
-        if (candidate) {
-          input = candidate
-        } else {
-          // seek the left most input
-          candidate = input
-          while ((candidate = candidate.eyo.inputLeft)) {
-            input = candidate
-          }
-        }
+      if ((c8n = eyo.outputConnection)) {
+        input = c8n.eyo.target.input
+      }
+      if (!input) {
+        eyo.forEachSlot(ff) || eyo.forEachInput(ff)
       }
     }
-    if (!input) {
-      eyo.someSlot(ff) || eyo.someInput(ff)
-    }
-    while (input) {
-      if ((c8n = input.connection) && !c8n.hidden_ && c8n.eyo.isInput) {
-        eYo.Selected.connection = c8n
-        break
+    var candidate = input.eyo.inputRight
+    while (candidate) {
+      if (accept(candidate)) {
+        eYo.Selected.connection = candidate.connection
+        return
       }
-      input = input.eyo.inputRight
+      candidate = candidate.eyo.inputRight
     }
+    candidate = input
+    while ((candidate = candidate.eyo.inputRight)) {
+      if (accept(candidate)) {
+        eYo.Selected.connection = candidate.connection
+        return
+      }
+    }
+    candidate = input
+    while ((candidate = candidate.eyo.inputLeft)) {
+      input = candidate
+    }
+    do {
+      if (accept(input)) {
+        eYo.Selected.connection = input.connection
+        return
+      }
+    } while ((input = input.eyo.inputRight))
   }
   return (eyo, opt) => {
     if (eyo) {

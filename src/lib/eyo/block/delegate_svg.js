@@ -1224,7 +1224,6 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
         target.eyo.parentIsShort = false
       }
     }
-
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
   this.size.setFromWhere(io.cursor)

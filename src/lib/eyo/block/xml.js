@@ -1282,7 +1282,13 @@ goog.require('eYo.DelegateSvg.Assignment')
  * For edython.
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xmlAttr = function () {
-  return this.type === eYo.T3.Stmt.assignment_stmt ? '=' : ':'
+  return this.type === eYo.T3.Stmt.augmented_assignment_stmt
+  ? this.operator_p
+  : this.type === eYo.T3.Stmt.annotated_assignment_stmt
+    ? ':'
+    : this.variant_p === eYo.Key.TARGET
+      ? 'x'
+      : '='
 }
 
 goog.provide('eYo.Xml.Assignment')
@@ -1298,11 +1304,17 @@ eYo.Xml.Assignment.domToBlockComplete = function (element, owner) {
     var prototypeName = element.getAttribute(eYo.Key.EYO)
     var workspace = owner.workspace || owner
     var id = element.getAttribute('id')
-    if (prototypeName === '=') {
-      return eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
-    } else if (prototypeName === ':') {
+    if (prototypeName === ':') {
       var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
       block.eyo.variant_p = eYo.Key.ANNOTATED
+      return block
+    } else if (prototypeName === 'x') {
+      var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
+      block.eyo.variant_p = eYo.Key.TARGET
+      return block
+    } else if (['=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
+      block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)
+      block.eyo.operator_p = prototypeName
       return block
     }
   }
@@ -1310,7 +1322,6 @@ eYo.Xml.Assignment.domToBlockComplete = function (element, owner) {
 
 goog.provide('eYo.Xml.Starred')
 goog.require('eYo.DelegateSvg.Starred')
-
 
 goog.provide('eYo.Xml.Comparison')
 goog.require('eYo.DelegateSvg.Operator')

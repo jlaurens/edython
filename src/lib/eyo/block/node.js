@@ -87,7 +87,7 @@ eYo.Node.prototype.intoDelegate = function (target) {
           target.lastConnect(b0)
           if ((n0 = n0.sibling)) {
             if (n0.type === eYo.TKN.EQUAL) {
-              b0.eyo.variant_p = eYo.Key.DEFINED
+              b0.eyo.variant_p = eYo.Key.VALUED
               n0 = n0.sibling
               b0.eyo.definition_t.eyo.lastConnect(n0.toBlock(target.workspace))
               if (!(n0 = n0.sibling)) {
@@ -166,7 +166,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
         while (true) {
           // targets
           if (n0.n_nchildren > 1) {
-            b1.eyo.variant_p = eYo.Key.TARGETS
+            b1.eyo.variant_p = eYo.Key.TARGET
             n0.intoDelegate(b1.eyo.targets_t.eyo)
           } else {
             b1.eyo.name_s.connect(n0.toBlock(workspace))

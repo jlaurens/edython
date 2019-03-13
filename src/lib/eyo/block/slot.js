@@ -871,7 +871,7 @@ eYo.Slot.prototype.load = function (element) {
       } else if (this.inputType === Blockly.NEXT_STATEMENT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
-      if (attribute && (attribute === this.xmlKey || attribute === this.key)) {
+      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.setRequiredFromModel(true)
@@ -883,7 +883,7 @@ eYo.Slot.prototype.load = function (element) {
           } 
           if (target) {
             if (target.eyo instanceof eYo.DelegateSvg.List) {
-              var grandChildren = Array.prototype.slice.call(child.childNodes)
+              // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
                 var input = target.getInput(name)
