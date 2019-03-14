@@ -1283,11 +1283,9 @@ goog.require('eYo.DelegateSvg.Assignment')
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xmlAttr = function () {
   return this.type === eYo.T3.Stmt.augmented_assignment_stmt
   ? this.operator_p
-  : this.type === eYo.T3.Stmt.annotated_assignment_stmt
-    ? ':'
-    : this.variant_p === eYo.Key.TARGET
-      ? 'x'
-      : '='
+  : this.type === eYo.T3.Stmt.annotated_stmt || this.variant_p === eYo.Key.NONE || this.variant_p === eYo.Key.VALUED
+    ? 'x'
+    : '='
 }
 
 goog.provide('eYo.Xml.Assignment')
@@ -1303,15 +1301,14 @@ eYo.Xml.Assignment.domToBlockComplete = function (element, owner) {
     var prototypeName = element.getAttribute(eYo.Key.EYO)
     var workspace = owner.workspace || owner
     var id = element.getAttribute('id')
-    if (prototypeName === ':') {
-      var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
-      block.eyo.variant_p = eYo.Key.ANNOTATED
+    if (prototypeName === 'x') {
+      var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.expression_stmt, id)  
       return block
-    } else if (prototypeName === 'x') {
-      var block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)  
-      block.eyo.variant_p = eYo.Key.TARGET
+    } else if (['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
+      block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.augmented_assignment_stmt, id)
+      block.eyo.operator_p = prototypeName
       return block
-    } else if (['=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
+    } else if (prototypeName === '=') {
       block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt, id)
       block.eyo.operator_p = prototypeName
       return block

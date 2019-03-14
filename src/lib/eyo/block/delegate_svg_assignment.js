@@ -64,7 +64,6 @@ eYo.Consolidator.List.makeSubclass('Target', {
     if (io.subtype === eYo.T3.Stmt.annotated_stmt || io.subtype === eYo.T3.Stmt.annotated_assignment_stmt || io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
       return true
     }
-    console.error(`NOT UNIQUE?`, io)
     this.makeUnique(io)
   }
 })
@@ -312,19 +311,20 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         eYo.Key.ANNOTATED_VALUED // assignement and annotation
       ],
       init: eYo.Key.TARGET_VALUED,
+      xml: false,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
         var d = O.target_d
         d.required = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
         O.target_d.setIncog()
+        d = O.annotation_d
+        d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
+        d.setIncog()
         var slot
         slot = O.value_s
         slot.required = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED
         slot.setIncog()
-        var d = O.annotation_d
-        d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
-        d.setIncog()
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // variant change from 'NONE' has greater priority over comment change
@@ -393,8 +393,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && (this.owner.variant_p === eYo.Key.NONE || this.owner.variant_p === eYo.Key.VALUED)) {
-          this.owner.variant_p = eYo.Key.TARGET
+        if (this.isRequiredFromSaved()) {
+          if (this.owner.variant_p === eYo.Key.NONE) {
+            this.owner.variant_p = eYo.Key.TARGET
+          } else if (this.owner.variant_p === eYo.Key.VALUED) {
+            this.owner.variant_p = eYo.Key.TARGET_VALUED
+          }
         }
       },
     },
@@ -430,7 +434,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (type === eYo.T3.Stmt.augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
           this.change('+=')
         }
-      }
+      },
+      xml: false
     },
     bitwiseOperator: {
       all: ['<<=', '>>=', '&=', '^=', '|='],
@@ -495,9 +500,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       wrap: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p === eYo.Key.NONE) {
-          this.owner.variant_p = eYo.Key.TARGET
-        }
+        if (this.isRequiredFromSaved()) {
+          if (this.owner.variant_p === eYo.Key.NONE) {
+            this.owner.variant_p = eYo.Key.TARGET
+          } else if (this.owner.variant_p === eYo.Key.VALUED) {
+            this.owner.variant_p = eYo.Key.TARGET_VALUED
+          }
+        } 
       },
       xml: {
         accept: /** @suppress {globalThis} */ function (attribute) {
@@ -525,9 +534,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         attr: ':'
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p !== eYo.Key.ANNOTATED) {
-          this.owner.variant_p = eYo.Key.ANNOTATED_VALUED
-        }
+        if (this.isRequiredFromSaved()) {
+          var v = this.owner.variant_p
+          if (v === eYo.Key.TARGET || v === eYo.Key.NONE) {
+            this.owner.variant_p = eYo.Key.ANNOTATED
+          } else if (v !== eYo.Key.ANNOTATED) {
+            this.owner.variant_p = eYo.Key.ANNOTATED_VALUED
+          }
+        } 
       }
     },
     value: {

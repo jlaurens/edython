@@ -258,6 +258,9 @@ eYo.BlockSvg.prototype.showContextMenu_ = function (e) {
  * @override
  */
 eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
+  if (!this.workspace) {
+    return
+  }
   eYo.Events.groupWrap(
     () => {
       if (this === eYo.Selected.block) {

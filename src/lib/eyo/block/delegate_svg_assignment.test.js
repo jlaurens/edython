@@ -78,60 +78,60 @@ describe('Assignment', function() {
       b.dispose()
     })  
   }
-  // f('expression_stmt', true, true, true, false, eYo.Key.VALUED, eYo.Key.COMMENT)
-  // f('assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
-  // f('augmented_assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
-  // f('annotated_stmt', false, false, true, true, eYo.Key.ANNOTATED, eYo.Key.NONE)
-  // f('annotated_assignment_stmt', false, false, false, true, eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
-  // it('comment variant change', function() {
-  //   var b1 = new_block('expression_stmt')
-  //   assert_ctor(b1, 'assignment_stmt')
-  //   assert_variant(b1, 'NONE', '1')
-  //   assert_comment_variant(b1, 'COMMENT', '1')
-  //   assert_incog(b1, true, true, true, false)
-  //   b1.eyo.comment_variant_p = eYo.Key.NONE
-  //   assert_comment_variant(b1, 'NONE', '2')
-  //   assert_variant(b1, 'TARGET', '2')
-  //   assert_incog(b1, false, true, true, true)
-  //   b1.eyo.variant_p = eYo.Key.NONE
-  //   assert_variant(b1, 'NONE', '3')
-  //   assert_comment_variant(b1, 'COMMENT', '3')
-  //   assert_incog(b1, true, true, true, false)
-  //   b1.dispose()
-  // })  
-  // it('variant change', function() {
-  //   var b1 = new_block('expression_stmt')
-  //   assert_ctor(b1, 'assignment_stmt')
-  //   assert_type(b1, 'expression_stmt')
-  //   assert_variant(b1, 'NONE', '1')
-  //   assert_comment_variant(b1, 'COMMENT', '1')
-  //   assert_incog(b1, true, true, true, false)
-  //   b1.eyo.comment_variant_p = eYo.Key.NONE
-  //   assert_comment_variant(b1, 'NONE', '2')
-  //   assert_variant(b1, 'TARGET', '2')
-  //   assert_incog(b1, false, true, true, true)
-  //   var f = (v, target, annotation, value, comment, str) => {
-  //     b1.eyo.variant_p = eYo.Key[v]
-  //     assert_variant(b1, v, str)
-  //     assert_incog(b1, target, annotation, value, comment)
-  //   }
-  //   f('TARGET', false, true, true, true, 4)
-  //   f('TARGET_VALUED', false, true, false, true, 4)
-  //   f('ANNOTATED', false, false, true, true, 4)
-  //   f('ANNOTATED_VALUED', false, false, false, true, 4)
-  //   b1.dispose()
-  // })  
+  f('expression_stmt', true, true, true, false, eYo.Key.VALUED, eYo.Key.COMMENT)
+  f('assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
+  f('augmented_assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
+  f('annotated_stmt', false, false, true, true, eYo.Key.ANNOTATED, eYo.Key.NONE)
+  f('annotated_assignment_stmt', false, false, false, true, eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
+  it('comment variant change', function() {
+    var b1 = new_block('expression_stmt')
+    assert_ctor(b1, 'assignment_stmt')
+    assert_variant(b1, 'NONE', '1')
+    assert_comment_variant(b1, 'COMMENT', '1')
+    assert_incog(b1, true, true, true, false)
+    b1.eyo.comment_variant_p = eYo.Key.NONE
+    assert_comment_variant(b1, 'NONE', '2')
+    assert_variant(b1, 'TARGET', '2')
+    assert_incog(b1, false, true, true, true)
+    b1.eyo.variant_p = eYo.Key.NONE
+    assert_variant(b1, 'NONE', '3')
+    assert_comment_variant(b1, 'COMMENT', '3')
+    assert_incog(b1, true, true, true, false)
+    b1.dispose()
+  })  
+  it('variant change', function() {
+    var b1 = new_block('expression_stmt')
+    assert_ctor(b1, 'assignment_stmt')
+    assert_type(b1, 'expression_stmt')
+    assert_variant(b1, 'NONE', '1')
+    assert_comment_variant(b1, 'COMMENT', '1')
+    assert_incog(b1, true, true, true, false)
+    b1.eyo.comment_variant_p = eYo.Key.NONE
+    assert_comment_variant(b1, 'NONE', '2')
+    assert_variant(b1, 'TARGET', '2')
+    assert_incog(b1, false, true, true, true)
+    var f = (v, target, annotation, value, comment, str) => {
+      b1.eyo.variant_p = eYo.Key[v]
+      assert_variant(b1, v, str)
+      assert_incog(b1, target, annotation, value, comment)
+    }
+    f('TARGET', false, true, true, true, 4)
+    f('TARGET_VALUED', false, true, false, true, 4)
+    f('ANNOTATED', false, false, true, true, 4)
+    f('ANNOTATED_VALUED', false, false, false, true, 4)
+    b1.dispose()
+  })  
 
-  // it('Expression only', function() {
-  //   var b1 = new_block('assignment_stmt')
-  //   assert_variant(b1, 'TARGET_VALUED')
-  //   var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
-  //   assert_block(b2, 'identifier_defined')
-  //   var input = b1.eyo.value_t.eyo.lastInput
-  //   assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
-  //   assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
-  //   b1.dispose()
-  // })
+  it('Expression only', function() {
+    var b1 = new_block('assignment_stmt')
+    assert_variant(b1, 'TARGET_VALUED')
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
+    assert_block(b2, 'identifier_defined')
+    var input = b1.eyo.value_t.eyo.lastInput
+    assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
+    assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
+    b1.dispose()
+  })
   it('connect an identifier_defined', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
@@ -143,41 +143,163 @@ describe('Assignment', function() {
     assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
   })
-  // it ('Annotated defined and dom', function () {
-  //   var b1 = new_block('annotated_assignment_stmt')
-  //   var dom = eYo.Xml.blockToDom(b1)
-  //   // console.error(dom)
-  //   b1.dispose()
-  //   b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-  //   assert_block(b1, 'annotated_assignment_stmt', `dom: ${dom}`)
-  //   b1.dispose()
-  // })
-  // it ('Annotated alone', function () {
-  //   var b1 = new_block('annotated_stmt')
-  //   assert_variant(b1, 'ANNOTATED')    
-  //   var dom = eYo.Xml.blockToDom(b1)
-  //   // console.error(dom)
-  //   b1.dispose()
-  //   b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-  //   assert_block(b1, 'annotated_stmt', `dom: ${dom}`)
-  //   assert(b1.eyo.value_s.isIncog(), 'UNEXPECTED VALUE SLOT')
-  //   b1.dispose()
-  // })
-  // it ('identifier_annotated in name', function () {
-  //   var b1 = new_block('assignment_stmt')
-  //   var b2 = new_block('identifier_annotated')
-  //   assert(b1.eyo.target_t.eyo.lastConnect(b2), `MISSED C8N 1`)
-  //   assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
-  //   assert_type(b1, 'annotated_assignment_stmt')
-  //   assert_variant(b1, 'ANNOTATED_VALUED')
-  //   var dom = eYo.Xml.blockToDom(b1)
-  //   // console.error(dom)
-  //   b1.dispose()
-  //   b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-  //   assert_block(b1, 'annotated_assignment_stmt', `dom: BLOCK ${dom}`)
-  //   assert(!b1.eyo.value_s.isIncog(), 'MISSING SLOT')
-  //   b1.dispose()
-  // })
+  it ('Annotated defined and dom', function () {
+    var b1 = new_block('annotated_assignment_stmt')
+    var dom = eYo.Xml.blockToDom(b1)
+    // console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_assignment_stmt', `dom: ${dom}`)
+    b1.dispose()
+  })
+  it ('Annotated alone', function () {
+    var b1 = new_block('annotated_stmt')
+    assert_variant(b1, 'ANNOTATED')    
+    dom = eYo.Xml.blockToDom(b1)
+    console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_stmt', 'dom')
+    assert(b1.eyo.value_s.isIncog(), 'UNEXPECTED VALUE SLOT')
+    b1.dispose()
+  })
+  it ('identifier_annotated in name', function () {
+    var b1 = new_block('assignment_stmt')
+    var b2 = new_block('identifier_annotated')
+    assert(b1.eyo.target_t.eyo.lastConnect(b2), `MISSED C8N 1`)
+    assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
+    assert_type(b1, 'annotated_assignment_stmt')
+    assert_variant(b1, 'ANNOTATED_VALUED')
+    var dom = eYo.Xml.blockToDom(b1)
+    // console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_assignment_stmt', `dom: BLOCK ${dom}`)
+    assert(!b1.eyo.value_s.isIncog(), 'MISSING SLOT')
+    b1.dispose()
+  })
+})
+
+describe('Copy/Paste', function() {
+  var f = (t, target, annotation, value, comment, variant, comment_variant) => {
+    it(t, function() {
+      var b = new_block(t)
+      assert_ctor(b, 'assignment_stmt')
+      assert_type(b, t)
+      assert_variant(b, variant)
+      assert_comment_variant(b, comment_variant)
+      assert_incog(b, target, annotation, value, comment)
+      var dom = eYo.Xml.blockToDom(b)
+      b.dispose()
+      b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+      assert_ctor(b, 'assignment_stmt')
+      assert_type(b, t)
+      assert_variant(b, variant)
+      assert_comment_variant(b, comment_variant)
+      assert_incog(b, target, annotation, value, comment)
+      b.dispose()
+    })  
+  }
+  f('expression_stmt', true, true, true, false, eYo.Key.VALUED, eYo.Key.COMMENT)
+  f('assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
+  f('augmented_assignment_stmt', false, true, false, true, eYo.Key.TARGET_VALUED, eYo.Key.NONE)
+  f('annotated_stmt', false, false, true, true, eYo.Key.ANNOTATED, eYo.Key.NONE)
+  f('annotated_assignment_stmt', false, false, false, true, eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
+  it('comment variant change', function() {
+    var b1 = new_block('expression_stmt')
+    assert_ctor(b1, 'assignment_stmt')
+    assert_variant(b1, 'NONE', '1')
+    assert_comment_variant(b1, 'COMMENT', '1')
+    assert_incog(b1, true, true, true, false)
+    b1.eyo.comment_variant_p = eYo.Key.NONE
+    assert_comment_variant(b1, 'NONE', '2')
+    assert_variant(b1, 'TARGET', '2')
+    assert_incog(b1, false, true, true, true)
+    b1.eyo.variant_p = eYo.Key.NONE
+    assert_variant(b1, 'NONE', '3')
+    assert_comment_variant(b1, 'COMMENT', '3')
+    assert_incog(b1, true, true, true, false)
+    b1.dispose()
+  })  
+  it('variant change', function() {
+    var b1 = new_block('expression_stmt')
+    assert_ctor(b1, 'assignment_stmt')
+    assert_type(b1, 'expression_stmt')
+    assert_variant(b1, 'NONE', '1')
+    assert_comment_variant(b1, 'COMMENT', '1')
+    assert_incog(b1, true, true, true, false)
+    b1.eyo.comment_variant_p = eYo.Key.NONE
+    assert_comment_variant(b1, 'NONE', '2')
+    assert_variant(b1, 'TARGET', '2')
+    assert_incog(b1, false, true, true, true)
+    var f = (v, target, annotation, value, comment, str) => {
+      b1.eyo.variant_p = eYo.Key[v]
+      assert_variant(b1, v, str)
+      assert_incog(b1, target, annotation, value, comment)
+    }
+    f('TARGET', false, true, true, true, 4)
+    f('TARGET_VALUED', false, true, false, true, 4)
+    f('ANNOTATED', false, false, true, true, 4)
+    f('ANNOTATED_VALUED', false, false, false, true, 4)
+    b1.dispose()
+  })  
+
+  it('Expression only', function() {
+    var b1 = new_block('assignment_stmt')
+    assert_variant(b1, 'TARGET_VALUED')
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
+    assert_block(b2, 'identifier_defined')
+    var input = b1.eyo.value_t.eyo.lastInput
+    assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
+    assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
+    b1.dispose()
+  })
+  it('connect an identifier_defined', function() {
+    var b1 = new_block('assignment_stmt')
+    assert_variant(b1, 'TARGET_VALUED')
+    var b2 = new_block('identifier_defined')
+    b2.eyo.name_p = 'NOM'
+    b2.eyo.value_p = 'EXPR'
+    var input = b1.eyo.value_t.eyo.lastInput
+    assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
+    assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
+    b1.dispose()
+  })
+  it ('Annotated defined and dom', function () {
+    var b1 = new_block('annotated_assignment_stmt')
+    var dom = eYo.Xml.blockToDom(b1)
+    // console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_assignment_stmt', `dom: ${dom}`)
+    b1.dispose()
+  })
+  it ('Annotated alone', function () {
+    var b1 = new_block('annotated_stmt')
+    assert_variant(b1, 'ANNOTATED')    
+    var dom = eYo.Xml.blockToDom(b1)
+    // console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_stmt', `dom: ${dom}`)
+    assert(b1.eyo.value_s.isIncog(), 'UNEXPECTED VALUE SLOT')
+    b1.dispose()
+  })
+  it ('identifier_annotated in name', function () {
+    var b1 = new_block('assignment_stmt')
+    var b2 = new_block('identifier_annotated')
+    assert(b1.eyo.target_t.eyo.lastConnect(b2), `MISSED C8N 1`)
+    assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
+    assert_type(b1, 'annotated_assignment_stmt')
+    assert_variant(b1, 'ANNOTATED_VALUED')
+    var dom = eYo.Xml.blockToDom(b1)
+    // console.error(dom)
+    b1.dispose()
+    b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    assert_block(b1, 'annotated_assignment_stmt', `dom: BLOCK ${dom}`)
+    assert(!b1.eyo.value_s.isIncog(), 'MISSING SLOT')
+    b1.dispose()
+  })
 })
 
 describe('One block: assignment_stmt', function() {
@@ -195,8 +317,11 @@ describe('One block: assignment_stmt', function() {
     assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
     var b3 =  eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     assert(b3, `MISSING …+…`)
-    assert(!b1.eyo.target_t.eyo.lastConnect(b3), 'Connection should failed.')
+    b3.eyo.will_remain = true
+    eYo.STOP = true
+    assert(!b1.eyo.target_t.eyo.lastConnect(b3), 'Connection is expected failed.')
     assert_input_length(b1.eyo.target_t, 3, `MISSED C8N 2`)
+    b3.dispose()
     b1.dispose()
   })
 })
@@ -300,7 +425,7 @@ describe('One block: annotated_assignment_stmt', function() {
     assert_input_length(b1.eyo.target_t, 1, `MISSED C8N 5`)
     var eyo = b1.eyo.target_s.unwrappedTarget
     assert(eyo === b3.eyo, 'MISSED C8N 7')
-    console.error(b1.toLinearString)
+    console.error(b1.eyo.toLinearString)
     assert_code(b3, 'xxx:abcd+cdef')
     b3.eyo.name_t.dispose() // orphan recovery: the old b2 block has been reconnected into b3
     assert_code(b1, 'Z:abcd+cdef=')
@@ -308,4 +433,76 @@ describe('One block: annotated_assignment_stmt', function() {
   })
 })
 
+describe('XML representation', function() {
+  var f = (t, k, do_it) => {
+    it(`basic ${t}+${k}`, function() {
+      var b = new_block(t)
+      do_it && do_it(b)
+      var dom = eYo.Xml.blockToDom(b)
+      // console.log(dom)
+      assert(dom.tagName.toLowerCase() === 's')
+      assert(dom.getAttribute(eYo.Key.EYO) === k)
+      b.dispose()  
+    })
+  }
+  f('expression_stmt', 'x')
+  f('assignment_stmt', '=')
+  f('annotated_stmt', 'x')
+  f('annotated_assignment_stmt', '=')
+  f('augmented_assignment_stmt', '+=')
+})
+
+describe('Copy/Paste with value', function() {
+  var f = t => {
+    it(`basic ${t}`, function() {
+      var b = new_block(t)
+      var bb = new_block('identifier')
+      assert(b.eyo.value_t.eyo.lastConnect(bb))
+      var dom = eYo.Xml.blockToDom(b)
+      // console.log(dom)
+      assert(dom.tagName.toLowerCase() === 's')
+      bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+      assert_type(b, bb.type)
+      assert_variant(b, bb.eyo.variant_p)
+      assert_comment_variant(b, bb.eyo.comment_variant_p)
+      assert_code(b, bb.eyo.toLinearString)
+      b.dispose()
+      bb.dispose()
+    })
+  }
+  f('expression_stmt')
+  f('assignment_stmt')
+})
+
+describe('Copy/Paste with data test', function() {
+  var f = (t, do_it, test) => {
+    it(`basic ${t}`, function() {
+      var b = new_block(t)
+      do_it && do_it(b)
+      var dom = eYo.Xml.blockToDom(b)
+      // console.log(dom)
+      assert(dom.tagName.toLowerCase() === 's')
+      var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+      assert_type(b, bb.type)
+      assert_variant(b, bb.eyo.variant_p)
+      assert_comment_variant(b, bb.eyo.comment_variant_p)
+      assert_code(b, bb.eyo.toLinearString)
+      b.dispose()
+      bb.dispose()
+    })
+  }
+  f('expression_stmt')
+  f('assignment_stmt')
+  f('annotated_stmt', b => {
+    b.eyo.annotation_p = 'ANNOTATED'
+  }, (b, bb) => {
+    assert(b.eyo.annotation_p === 'ANNOTATED')
+  })
+  f('annotated_assignment_stmt')
+  f('augmented_assignment_stmt', b => {
+    b.eyo.operator_p = '**='
+  }, (b, bb) => {
+    assert(b.eyo.operator_p === '**p')
+  })
+})
 
