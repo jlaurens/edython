@@ -563,6 +563,9 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
 
 /**
  * During change the value of the property.
+ * The new value has just been recorded,
+ * but all the consequences are not yet managed.
+ * In particular, no undo management has been recorded.
  * Branch to `isChanging` or `isUnchanging`.
  * @param {Object} oldValue
  * @param {Object} newValue
@@ -669,15 +672,17 @@ eYo.Data.prototype.filter = function (newValue) {
   if (f) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
-  if (goog.isString(newValue)) {
-    if (newValue === newValue.toUpperCase()) {
-      var x = eYo.Key[newValue]
-      !x || (newValue = x)
-    }
-  } else if (goog.isNumber(newValue)) {
-    x = this.getAll()
-    if (x && goog.isDefAndNotNull((x = x[newValue]))) {
-      newValue = x
+  if (this.model.filter === true) {
+    if (goog.isString(newValue)) {
+      if (newValue === newValue.toUpperCase()) {
+        var x = eYo.Key[newValue]
+        !x || (newValue = x)
+      }
+    } else if (goog.isNumber(newValue)) {
+      x = this.getAll()
+      if (x && goog.isDefAndNotNull((x = x[newValue]))) {
+        newValue = x
+      }
     }
   }
   return newValue

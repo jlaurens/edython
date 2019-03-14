@@ -495,7 +495,7 @@ factor: ('+'|'-'|'~') factor | power
           root.eyo.name_s.connect(n0.toBlock(workspace))
           root.eyo.definition_t.eyo.lastConnect(n1.sibling.toBlock(workspace))
         } else if (n1.n_type === eYo.TKN.EQUAL) {
-          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.keyword_item)
+          root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier_defined)
           root.eyo.name_s.connect(n0.toBlock(workspace))
           root.eyo.definition_t.eyo.lastConnect(n1.sibling.toBlock(workspace))
         } else {

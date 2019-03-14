@@ -91,6 +91,7 @@ enclosure_dict ::= key_datum_all
 <pre>
 expression_key_datum ::= expression | key_datum | augtarget_annotated | identifier_annotated
 enclosure_list_unique ::= yield_expression | comprehension
+yield_expression -> yield_expr
 </pre>
 The argument list is managed by the consolidator
 'call' is not acceptable for a name because it is a reserved javascript word
@@ -122,6 +123,7 @@ call_expr/call ::=  primary "(" argument_list ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item
+keyword_item -> identifier_defined
 argument_list ::=  argument_any *
 argument_list_comprehensive ::= argument_any | comprehension
 positional_arguments ::=  REMOVE

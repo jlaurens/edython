@@ -537,6 +537,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
+      init: 'True',
       synchronize: true
     }
   },

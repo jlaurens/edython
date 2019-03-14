@@ -295,3 +295,15 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
  */
 Blockly.Field.prototype.getPythonText_ = Blockly.Field.prototype.getText
 
+Object.defineProperties(eYo.DelegateSvg.prototype, {
+  toString: {
+    get () {
+      return new eYo.Py.Exporter().export(this.block_, {is_deep: true})
+    }
+  },
+  toLinearString: {
+    get () {
+      return this.toString.replace(/[\s\r\n]+/g, '')
+    }
+  }
+})

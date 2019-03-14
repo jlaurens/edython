@@ -61,6 +61,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
         eYo.T3.Expr.floatnumber,
         eYo.T3.Expr.imagnumber
       ],
+      init: eYo.T3.Expr.integer,
       noUndo: true,
       xml: false
     },
@@ -140,6 +141,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all: [eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
+      init: eYo.T3.Expr.shortstringliteral,
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
         var p = this.content_p
@@ -151,6 +153,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
     },
     delimiter: {
       all: ["'", '"'],
+      init: '"',
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.value_d.consolidate()
@@ -166,6 +169,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       all: ['', 'r', 'u', 'R', 'U', 'f', 'F',
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
+      init: '',
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.value_d.consolidate()
@@ -393,10 +397,12 @@ goog.provide('eYo.DelegateSvg.Expr.longliteral')
 eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
-      all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral]
+      all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral],
+      init: eYo.T3.Expr.longstringliteral
     },
     delimiter: {
-      all: ["'''", '"""']
+      all: ["'''", '"""'],
+      init: '"""'
     },
     value: {
       init: "''''''",

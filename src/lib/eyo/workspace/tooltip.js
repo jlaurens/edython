@@ -145,7 +145,7 @@ eYo.Tooltip.Title = {
   finally_part: 'Clause finally, suit une clause try ou une clause except, instructions toujours exécutées, ceci après le traitement de la clause try et des clauses except',
   assert_stmt: 'Lève une exception si une assertion n\'est pas avérée',
   raise_stmt: 'Lève une exception, pour signaler une situation exceptionnelle',
-  yield_expression: 'Expression yield, pour les itérateurs',
+  yield_expr: 'Expression yield, pour les itérateurs',
   yield_stmt: 'Instruction yield, pour les itérateurs',
   if_part: 'Clause if (si), exécute les instructions de la clause si la condition est réalisé, ignoré sinon',
   elif_part: 'Clause elif (sinon si), suit une clause if ou une autre clause elif, exécute les instructions de la clause si la condition est réalisé et si les clauses précédentes n\'ont pas été exécutées, ignoré sinon',

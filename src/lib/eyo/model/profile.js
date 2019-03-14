@@ -608,7 +608,7 @@ eYo.T3.Profile.getReserved = function (identifier) {
       stmt: eYo.T3.Stmt.for_part
     },
     from: {
-      expr: eYo.T3.Expr.yield_expression,
+      expr: eYo.T3.Expr.yield_expr,
       stmt: eYo.T3.Stmt.import_stmt
     },
     nonlocal: {

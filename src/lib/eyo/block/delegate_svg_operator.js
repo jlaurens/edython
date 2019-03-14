@@ -305,6 +305,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   data: {
     operator: {
       all: ['-', '+', '~', 'not'],
+      init: '-',
       validate: /** @suppress {globalThis} */ function (newValue) {
         var m = eYo.DelegateSvg.Expr.unary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset

@@ -49,6 +49,22 @@ eYo.Block.prototype.init = function () {
  * @param {Boolean} healStack.
  */
 eYo.Block.prototype.dispose = function (healStack) {
+  if (!this.workspace) {
+    return
+  }
+  if (this.eyo.wrapped_) {
+    // dispose of child blocks before calling super
+    Blockly.Events.disable()
+    try {
+      // First, dispose of all my children.
+      // This must be done before unplugged
+      for (var i = this.childBlocks_.length - 1; i >= 0; i--) {
+        this.childBlocks_[i].dispose(false)
+      }
+    } finally {
+      Blockly.Events.enable()
+    }  
+  }
   this.eyo.deinit()
   eYo.Block.superClass_.dispose.call(this, healStack)
 }

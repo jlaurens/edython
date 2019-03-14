@@ -291,6 +291,9 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.eyo.postsep = io.postsep
   io.c8n.eyo.s7r_ = false
   var check = this.getCheck(io)
+  if (check && check.length === 0) {
+    console.error('CONNECTIONS FORBIDDEN ?', this.getCheck(io)) // DEBUG
+  }
   if (name && name.length) {
     io.input.name = name
   }

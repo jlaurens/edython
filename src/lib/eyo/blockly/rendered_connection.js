@@ -39,150 +39,160 @@ eYo.ConnectionDelegate = function (connection) {
   this.targetIsMissing = false
 }
 
-Object.defineProperties(
-  eYo.ConnectionDelegate.prototype,
-  {
-    c: { // in block text coordinates
-      get () {
-        return this.slot ? this.where.c + this.slot.where.c : this.where.c
+Object.defineProperties(eYo.ConnectionDelegate.prototype, {
+  c: { // in block text coordinates
+    get () {
+      return this.slot ? this.where.c + this.slot.where.c : this.where.c
+    }
+  },
+  l: { // in block text coordinates
+    get () {
+      return this.slot ? this.where.l + this.slot.where.l : this.where.l
+    }
+  },
+  x: { // in block coordinates
+    get () {
+      return this.slot ? this.where.x + this.slot.where.x : this.where.x
+    }
+  },
+  y: { // in block coordinates
+    get () {
+      return this.slot ? this.where.y + this.slot.where.y : this.where.y
+    }
+  },
+  w: {
+    get () {
+      return this.bindField
+        ? this.bindField.eyo.size.w + 1
+        : this.optional_ || this.s7r_
+          ? 1
+          : 3
+    }
+  },
+  sourceBlock_: {
+    get () {
+      return this.connection.sourceBlock_
+    }
+  },
+  b_eyo: {
+    get () {
+      return this.sourceBlock_.eyo
+    }
+  },
+  target: {
+    get () {
+      var c8n = this.connection.targetConnection
+      return c8n && c8n.eyo
+    }
+  },
+  t_eyo: { // === this.target.b_eyo
+    get () {
+      var t = this.connection.targetBlock()
+      return t && t.eyo
+    }
+  },
+  bindField: {
+    get () {
+      if (this.slot) {
+        return this.slot.bindField
       }
-    },
-    l: { // in block text coordinates
-      get () {
-        return this.slot ? this.where.l + this.slot.where.l : this.where.l
-      }
-    },
-    x: { // in block coordinates
-      get () {
-        return this.slot ? this.where.x + this.slot.where.x : this.where.x
-      }
-    },
-    y: { // in block coordinates
-      get () {
-        return this.slot ? this.where.y + this.slot.where.y : this.where.y
-      }
-    },
-    w: {
-      get () {
-        return this.bindField
-          ? this.bindField.eyo.size.w + 1
-          : this.optional_ || this.s7r_
-            ? 1
-            : 3
-      }
-    },
-    sourceBlock_: {
-      get () {
-        return this.connection.sourceBlock_
-      }
-    },
-    b_eyo: {
-      get () {
-        return this.sourceBlock_.eyo
-      }
-    },
-    target: {
-      get () {
-        var c8n = this.connection.targetConnection
-        return c8n && c8n.eyo
-      }
-    },
-    t_eyo: { // === this.target.b_eyo
-      get () {
-        var t = this.connection.targetBlock()
-        return t && t.eyo
-      }
-    },
-    bindField: {
-      get () {
-        if (this.slot) {
-          return this.slot.bindField
-        }
-        // in a void wrapped list
-        var b = this.sourceBlock_
-        var input = b.inputList[0]
-        if (input && (input.connection === this.connection)) {
-          var c8n = b.outputConnection
-          if (c8n) {
-            if (c8n = c8n.targetConnection) {
-              return c8n.eyo.bindField
-            }
+      // in a void wrapped list
+      var b = this.sourceBlock_
+      var input = b.inputList[0]
+      if (input && (input.connection === this.connection)) {
+        var c8n = b.outputConnection
+        if (c8n) {
+          if (c8n = c8n.targetConnection) {
+            return c8n.eyo.bindField
           }
         }
       }
-    },
-    /**
-     * Is it a next connection.
-     * @return {boolean} True if the connection is the block's next one.
-     */
-    isNext: {
-      get () {
-        return this.connection === this.connection.sourceBlock_.nextConnection
-      }
-    },
-    /**
-     * Is it a next or suite connection.
-     * @return {boolean} True if the connection is the block's next or suite one.
-     */
-    isNextLike: {
-      get () {
-        return this.connection.type === Blockly.NEXT_STATEMENT
-      }
-    },
-    /**
-     * Is it a previous connection.
-     * @return {boolean} True if the connection is the block's previous one.
-     */
-    isPrevious: {
-      get () {
-        return this.connection === this.connection.sourceBlock_.previousConnection
-      }
-    },
-    /**
-     * Is it an output connection.
-     * @return {boolean} True if the connection is the block's output one.
-     */
-    isOutput: {
-      get () {
-        return this.connection === this.connection.sourceBlock_.outputConnection
-      }
-    },
-    /**
-     * Is it a suite connection.
-     * @return {boolean} True if the connection is the block's suite one.
-     */
-    isSuite: {
-      get () {
-        return this.connection === this.b_eyo.suiteConnection
-      }
-    },
-    /**
-     * Is it an input connection.
-     * @return {boolean} True if the connection is one of the block's input connections.
-     */
-    isInput: {
-      get () {
-        return this.connection.type === Blockly.INPUT_VALUE
-      }
-    },
-    /**
-     * Returns an unwrapped target block
-     */
-    unwrappedTargetBlock: {
-      get () {
-        var t = this.connection.targetBlock()
-        var f = b => {
-          return b && (!b.eyo.wrapped_ || b.inputList.some(i => {
-            if (f(t = i.connection && i.connection.targetBlock())) {
-              return true
-            }
-          }))
-        }
-        return f(t) && t
-      }
     }
+  },
+  /**
+   * Is it a next connection.
+   * @return {boolean} True if the connection is the block's next one.
+   */
+  isNext: {
+    get () {
+      return this.connection === this.connection.sourceBlock_.nextConnection
+    }
+  },
+  /**
+   * Is it a next or suite connection.
+   * @return {boolean} True if the connection is the block's next or suite one.
+   */
+  isNextLike: {
+    get () {
+      return this.connection.type === Blockly.NEXT_STATEMENT
+    }
+  },
+  /**
+   * Is it a previous connection.
+   * @return {boolean} True if the connection is the block's previous one.
+   */
+  isPrevious: {
+    get () {
+      return this.connection === this.connection.sourceBlock_.previousConnection
+    }
+  },
+  /**
+   * Is it an output connection.
+   * @return {boolean} True if the connection is the block's output one.
+   */
+  isOutput: {
+    get () {
+      return this.connection === this.connection.sourceBlock_.outputConnection
+    }
+  },
+  /**
+   * Is it a suite connection.
+   * @return {boolean} True if the connection is the block's suite one.
+   */
+  isSuite: {
+    get () {
+      return this.connection === this.b_eyo.suiteConnection
+    }
+  },
+  /**
+   * Is it an input connection.
+   * @return {boolean} True if the connection is one of the block's input connections.
+   */
+  isInput: {
+    get () {
+      return this.connection.type === Blockly.INPUT_VALUE
+    }
+  },
+  /**
+   * Returns an unwrapped target block
+   */
+  unwrappedTargetBlock: {
+    get () {
+      var t = this.connection.targetBlock()
+      var f = b => {
+        return b && (!b.eyo.wrapped_ || b.inputList.some(i => {
+          if (f(t = i.connection && i.connection.targetBlock())) {
+            return true
+          }
+        }))
+      }
+      return f(t) && t
+    }
+  // },
+  // model: {
+  //   get () {
+  //     if (this.model_) {
+  //       return this.model_
+  //     }
+  //     // do not cache, unless you know what you do
+  //     var b_eyo = this.b_eyo
+  //     if (b_eyo.wrapped_ && b_eyo instanceof eYo.DelegateSvg.List) {
+  //       var x = b_eyo.outputConnection.targetConnection
+  //       return x && (x = x.eyo.slot) && slot.model
+  //     }
+  //   }
   }
-)
+})
 
 /**
  * Whether the connection is a separator.
@@ -367,13 +377,18 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
-  if (this.model && goog.isFunction(this.model.didConnect)) {
-    this.model.didConnect.call(this, oldTargetC8n, targetOldC8n)
-  } else {
-    var b_eyo = this.b_eyo
-    b_eyo.incrementChangeCount()
-    b_eyo.consolidate()
+  if (!this.reentrant.didConnect) {
+    var f = this.model.didConnect
+    if (goog.isFunction(f)) {
+      this.reentrant.didConnect = true
+      f.call(this, oldTargetC8n, targetOldC8n)
+      this.reentrant.didConnect = false
+      return
+    }
   }
+  var b_eyo = this.b_eyo
+  b_eyo.incrementChangeCount()
+  b_eyo.consolidate()
 }
 
 /**
@@ -387,17 +402,28 @@ eYo.ConnectionDelegate.prototype.willDisconnect = function () {
 
 /**
  * Did disconnect.
- * Default implementation does nothing.
- * This can be overriden at block creation time.
- * @param {Blockly.Connection} connection  the connection owning the delegate
- * @param {Blockly.Connection} oldTargetC8n  what was previously connected to connection
+ * Increment the block step.
+ * @param {Blockly.Connection} oldTargetC8n
+ *     what was previously connected to connection
+ * @param {Blockly.Connection} targetOldConnection
+ *     what was previously connected to the actual connection.targetConnection
  */
-eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n) {
-  if (this.model && goog.isFunction(this.model.didDisconnect)) {
-    this.model.didDisconnect.call(this, oldTargetC8n)
-  } else {
-    this.b_eyo.incrementChangeCount()
+eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n, targetOldC8n) {
+  // No need to increment step for the old connections because
+  // if any, they were already disconnected and
+  // the step has already been incremented then.
+  if (!this.reentrant.didDisconnect) {
+    var f = this.model && this.model.didDisconnect
+    if (goog.isFunction(f)) {
+      this.reentrant.didDisconnect = true
+      f.call(this, oldTargetC8n, targetOldC8n)
+      this.reentrant.didDisconnect = false
+      return
+    }
   }
+  var b_eyo = this.b_eyo
+  b_eyo.incrementChangeCount()
+  b_eyo.consolidate()
 }
 
 /**
@@ -835,10 +861,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
         return false
       } else if (checkA) {
         if (checkB) {
-          for (var i = 0, t; (t = checkA[i++]);) {
-            if (checkB.indexOf(t) >= 0) {
-              return true
-            }
+          if (checkA.some(t => checkB.indexOf(t) >= 0)) {
+            return true
           }
         } else if (checkA.indexOf(typeB) < 0) {
           return false
@@ -868,10 +892,8 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
         return false
       } else if (checkB) {
         if (checkA) {
-          for (i = 0; (t = checkB[i++]);) {
-            if (checkA.indexOf(t) >= 0) {
-              return true
-            }
+          if (checkB.some(t => checkA.indexOf(t) >= 0)) {
+            return true
           }
         } else if (checkB.indexOf(typeA) < 0) {
           return false
@@ -1003,7 +1025,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
               }, () => { // finally
                 !parentC8n.eyo.wrapped_ && parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
-                !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false)
+                !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
                 if (parentC8n.eyo.startOfStatement) {
                   child.eyo.incrementChangeCount()
                 }
@@ -1086,8 +1108,8 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                       eYo.Connection.disconnectedParentC8n = undefined
                       eYo.Connection.disconnectedChildC8n = undefined
                       parent.eyo.incrementInputChangeCount && parent.eyo.incrementInputChangeCount() // list are special
-                      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true)
-                      childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true)
+                      parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(true) // no wrapped test
+                      childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(true) // unreachable ?
                     })
                   }, () => { // finally
                     child.eyo.didDisconnect(childC8n, parentC8n)

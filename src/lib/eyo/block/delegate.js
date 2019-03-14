@@ -1936,9 +1936,15 @@ eYo.Delegate.prototype.updateGroupBlackCount = function () {
 /**
  * Connect the last connection to the given expression block.
  * @param {!Object} bdc  block, delegate or connection
+ * @return {Boolean}  whether the connection is established
  */
 eYo.Delegate.prototype.lastConnect = function (bdc) {
-  this.lastConnection.connect(bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc)
+  var other = bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc
+  var c8n = this.lastConnection
+  if (c8n.checkType_(other)) {
+    c8n.connect(other)
+    return c8n.targetConnection === other
+  }
 }
 
 /**

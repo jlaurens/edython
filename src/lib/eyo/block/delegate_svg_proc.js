@@ -432,12 +432,12 @@ eYo.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = functi
 eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
-      TYPE: eYo.Key.Type,
       all: [null, eYo.Key.TYPE],
+      init: null,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var slot = this.owner.type_s
-        slot.required = newValue === this.TYPE
+        slot.required = newValue === eYo.Key.TYPE
         slot.setIncog()
       }
     },
@@ -523,6 +523,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
+      init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
         var slot = this.owner.n_ary_s

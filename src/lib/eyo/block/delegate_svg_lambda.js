@@ -416,9 +416,9 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
       var cond_in = true // cond are accepted by default
       var nocond_in = true // nocond are accepted by default
       var targetC8n = c8nIn.targetConnection
-      if (targetC8n) {
-        cond_in = !targetC8n.check_ || eYo.T3.Expr.Check.expression.some(t => targetC8n.check_.indexOf(t) >= 0)
-        nocond_in = !targetC8n.check_ || eYo.T3.Expr.Check.expression_nocond.some(t => targetC8n.check_.indexOf(t) >= 0)
+      if (targetC8n && targetC8n.check_) {
+        cond_in = eYo.T3.Expr.Check.expression.some(t => targetC8n.check_.indexOf(t) >= 0)
+        nocond_in = eYo.T3.Expr.Check.expression_nocond.some(t => targetC8n.check_.indexOf(t) >= 0)
       }
       return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
     }

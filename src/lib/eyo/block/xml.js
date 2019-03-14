@@ -1238,7 +1238,6 @@ eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
   if ([
     eYo.T3.Expr.identifier_defined,
-    eYo.T3.Expr.keyword_item,
     eYo.T3.Expr.assignment_chain
   ].indexOf(type) >= 0) {
     return '='

@@ -20,7 +20,7 @@ describe('Enclosure', function() {
     assert(input.eyo.connect(bb1), 'MISSING connection')
     // this is a unique object:
     assert(b.inputList.length === 1, `MISSED Unique 1 ${b.inputList.length}`)
-    var bb2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.yield_expression)
+    var bb2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.yield_expr)
     assert(input.eyo.connect(bb2), 'MISSING connection')
     assert(b.inputList.length === 1, `MISSED Unique 2 ${b.inputList.length}`)
     bb1.dispose()
