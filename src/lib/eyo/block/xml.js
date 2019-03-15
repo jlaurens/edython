@@ -1441,10 +1441,10 @@ eYo.Xml.Compatibility.domToBlockComplete = function (element, owner) {
         var name = child.getAttribute(eYo.Xml.SLOT)
         if (name === 'key') {
           var bb = eYo.DelegateSvg.newBlockComplete(workspace, child)
-          kd.eyo.name_s.connect(bb)
+          kd.eyo.target_t.eyo.lastConnect(bb)
         } else if (name === 'datum') {
           var bb = eYo.DelegateSvg.newBlockComplete(workspace, child)
-          kd.eyo.annotation_s.connect(bb)
+          kd.eyo.annotated_s.connect(bb)
         }
       })
       block.eyo.expression_s.connect(kd)

@@ -318,7 +318,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         var d = O.target_d
         d.required = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
         O.target_d.setIncog()
-        d = O.annotation_d
+        d = O.annotated_d
         d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
         d.setIncog()
         var slot
@@ -402,7 +402,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         }
       },
     },
-    annotation: {
+    annotated: {
       init: '',
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       validate: /** @suppress {globalThis} */ function (newValue) {
@@ -426,8 +426,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.numberOperator_p = newValue
-        this.owner.bitwiseOperator_p = newValue
+        var O = this.owner
+        O.numberOperator_p = newValue
+        O.bitwiseOperator_p = newValue
+        if (this.number || this.bitwise) {
+          O.variant_p = eYo.Key.TARGET_VALUED
+        }
       },
       validate: true,
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -437,8 +441,23 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       xml: false
     },
+    numberOperator: {
+      all: ['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@='],
+      init: '',
+      noUndo: true,
+      xml: false,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (oldValue && (newValue !== oldValue)) {
+          var O = this.owner
+          O.operator_p = newValue
+          O.operator_d.number = (O.operator_p === this.value_)
+        }
+      },
+    },
     bitwiseOperator: {
       all: ['<<=', '>>=', '&=', '^=', '|='],
+      init: '',
       noUndo: true,
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -461,7 +480,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var O = this.owner
-        if (O.target_d.isIncog() && O.value_s.isIncog() && O.annotation_d.isIncog()) {
+        if (O.target_d.isIncog() && O.value_s.isIncog() && O.annotated_d.isIncog()) {
           this.setIncog(false)
         }
       }
@@ -514,7 +533,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         } // for old name
       }
     },
-    annotation: {
+    annotated: {
       order: 2,
       fields: {
         delimiter: {

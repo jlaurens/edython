@@ -192,7 +192,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         var m = XRegExp.exec(newValue, eYo.XRE.decorator)
         if (m) {
           if (m.setter) {
-            O.name_p = O.saved_p = m.property_name
+            O.target_p = O.saved_p = m.property_name
             if (O.variant_p === eYo.Key.N_ARY) {
               O.variant_p = eYo.Key.NONE
             }
@@ -200,7 +200,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
             O.mainChooser_p = eYo.Key.NONE
             O.chooser_p = eYo.Key.SETTER
           } else if(m.deleter) {
-            O.name_p = O.saved_p = m.property_name
+            O.target_p = O.saved_p = m.property_name
             if (O.variant_p === eYo.Key.N_ARY) {
               O.variant_p = eYo.Key.NONE
             }
@@ -211,24 +211,24 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
             O.property_p = eYo.Key.GETTER
             O.chooser_p = eYo.Key.NONE
             if (m.property) {
-              O.variant_p = O.name_p = eYo.Key.PROPERTY
+              O.variant_p = O.target_p = eYo.Key.PROPERTY
               O.mainChooser_p = eYo.Key.PROPERTY
             } else if (m.staticmethod) {
-              O.variant_p = O.name_p = eYo.Key.STATICMETHOD
+              O.variant_p = O.target_p = eYo.Key.STATICMETHOD
               O.mainChooser_p = eYo.Key.STATICMETHOD
             } else if (m.classmethod) {
-              O.variant_p = O.name_p = eYo.Key.CLASSMETHOD
+              O.variant_p = O.target_p = eYo.Key.CLASSMETHOD
               O.mainChooser_p = eYo.Key.CLASSMETHOD
             } else {
               if (O.variant_p !== eYo.Key.N_ARY) {
                 O.variant_p = eYo.Key.NONE
               }
-              O.name_p = O.saved_p = newValue
+              O.target_p = O.saved_p = newValue
               O.mainChooser_p = eYo.Key.NONE
             }
           }
         } else {
-          O.name_p = newValue
+          O.target_p = newValue
           O.property_p = eYo.Key.GETTER
           O.mainChooser_p = eYo.Key.NONE
           O.chooser_p = eYo.Key.NONE
@@ -384,7 +384,7 @@ eYo.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = functi
     eYo.Key.PROPERTY
   ]
   builtins.forEach((builtin) => {
-    if (builtin !== this.name_p) {
+    if (builtin !== this.target_p) {
       var content = eYo.Do.createSPAN('@' + builtin, 'eyo-code-reserved')
       mgr.addChild(mgr.newMenuItem(content, () => {
           this.chooser_p = builtin

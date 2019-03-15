@@ -137,7 +137,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
   },
   {
     type: eYo.T3.Stmt.assignment_stmt,
-    targets_s: {
+    target_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.attributeref,

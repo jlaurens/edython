@@ -12,7 +12,7 @@ describe('parameter_list', function() {
     var f = v => {
       a.eyo.variant_p = v
       var u = l.eyo.parameters_s.unwrappedTarget
-      assert(u.name_p === 'a', `MISSED: ${v}`)
+      assert(u.target_p === 'a', `MISSED: ${v}`)
     }
     ;[eYo.Key.NONE,
       eYo.Key.VALUED,
@@ -69,7 +69,7 @@ describe('parameter_list', function() {
                 assert(t.inputList.length === 7, 'MISSED 1')
                 var f = (n, i) => {
                   var u = l.eyo.parameters_t.inputList[i].connection.eyo.t_eyo
-                  assert(u.name_p === n, `MISSED: ${n} at ${i}`)
+                  assert(u.target_p === n, `MISSED: ${n} at ${i}`)
                 }
                 f('a', 1)
                 f('b', 3)

@@ -7,7 +7,7 @@ console.log('RUNNING NODE/BLOCK TESTS')
 
 var assert_incog = (b, target, annotation, value, comment) => {
   assert(b.eyo.target_s.isIncog() === !!target, 'MISSING TARGET INCOG')
-  assert(b.eyo.annotation_s.isIncog() === !!annotation, 'MISSING ANNOTATION INCOG')
+  assert(b.eyo.annotated_s.isIncog() === !!annotation, 'MISSING ANNOTATION INCOG')
   assert(b.eyo.value_s.isIncog() === !!value, 'MISSING VALUE INCOG')
   assert(b.eyo.comment_s.isIncog() === !!comment, 'UNEXPECTED COMMENT INCOG')
 }
@@ -136,7 +136,7 @@ describe('Assignment', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
     var b2 = new_block('identifier_defined')
-    b2.eyo.name_p = 'NOM'
+    b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
     var input = b1.eyo.value_t.eyo.lastInput
     assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
@@ -258,7 +258,7 @@ describe('Copy/Paste', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
     var b2 = new_block('identifier_defined')
-    b2.eyo.name_p = 'NOM'
+    b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
     var input = b1.eyo.value_t.eyo.lastInput
     assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
@@ -373,16 +373,16 @@ describe('One block: annotated_stmt', function() {
     assert_type(b2, 'identifier')
     b1.eyo.target_t.eyo.lastConnect(b2)
     assert_input_length(b1.eyo.target_t, 1, `1`)
-    b1.eyo.annotation_p = 'fou+bar'
-    assert(b1.eyo.annotation_p === 'fou+bar', 'MISSED ANNOTATION')
-    assert(b1.eyo.annotation_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    assert(b1.eyo.annotation_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
+    b1.eyo.annotated_p = 'fou+bar'
+    assert(b1.eyo.annotated_p === 'fou+bar', 'MISSED ANNOTATION')
+    assert(b1.eyo.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
+    assert(b1.eyo.annotated_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
     assert_code(b1, 'x:fou+bar')
     var b3 =  eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     assert_code(b3, 'abc+bcd')
-    b1.eyo.annotation_s.connect(b3)
-    assert(b1.eyo.annotation_t === b3, 'MISSED C8N')
-    assert(!b1.eyo.annotation_s.bindField.visible_, 'UNEXPECTED VISIBLE')
+    b1.eyo.annotated_s.connect(b3)
+    assert(b1.eyo.annotated_t === b3, 'MISSED C8N')
+    assert(!b1.eyo.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
     assert_code(b1, 'x:abc+bcd')
     b1.dispose()
   })
@@ -396,27 +396,27 @@ describe('One block: annotated_assignment_stmt', function() {
     assert_comment_variant(b1, 'NONE')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
     assert_type(b2, 'identifier')
-    assert(b2.eyo.name_p === 'x', 'MISSED 1')
+    assert(b2.eyotarget_p === 'x', 'MISSED 1')
     b1.eyo.target_t.eyo.lastConnect(b2)
     assert_input_length(b1.eyo.target_t, 1, `MISSED C8N 1`)
-    b1.eyo.annotation_p = 'fou+bar'
-    assert(b1.eyo.annotation_p === 'fou+bar', 'MISSED ANNOTATION')
-    assert(b1.eyo.annotation_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    assert(b1.eyo.annotation_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
+    b1.eyo.annotated_p = 'fou+bar'
+    assert(b1.eyo.annotated_p === 'fou+bar', 'MISSED ANNOTATION')
+    assert(b1.eyo.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
+    assert(b1.eyo.annotated_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
     assert_code(b1, 'x:fou+bar=')
-    b2.eyo.name_p = 'xxx'
-    assert(b2.eyo.name_p === 'xxx', 'MISSED 2')
+    b2.eyotarget_p = 'xxx'
+    assert(b2.eyotarget_p === 'xxx', 'MISSED 2')
     assert_code(b1, 'xxx:fou+bar=')
     var b3 =  eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     assert_code(b3, 'abc+bcd')
-    b1.eyo.annotation_s.connect(b3)
-    assert(b1.eyo.annotation_t === b3, 'MISSED C8N')
-    assert(!b1.eyo.annotation_s.bindField.visible_, 'UNEXPECTED VISIBLE')
+    b1.eyo.annotated_s.connect(b3)
+    assert(b1.eyo.annotated_t === b3, 'MISSED C8N')
+    assert(!b1.eyo.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
     assert_code(b1, 'xxx:abc+bcd=')
     // then replace the target block with an annotated identifier
     b3 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'Z')
     b3.eyo.variant_p = eYo.Key.ANNOTATED
-    b3.eyo.annotation_p = 'abcd + cdef'
+    b3.eyo.annotated_p = 'abcd + cdef'
     assert_code(b3, 'Z:abcd+cdef')
     assert_type(b3, 'identifier_annotated')
     // it's a unique target
@@ -487,22 +487,26 @@ describe('Copy/Paste with data test', function() {
       assert_variant(b, bb.eyo.variant_p)
       assert_comment_variant(b, bb.eyo.comment_variant_p)
       assert_code(b, bb.eyo.toLinearString)
+      test && test(b, bb)
       b.dispose()
       bb.dispose()
     })
   }
   f('expression_stmt')
-  f('assignment_stmt')
-  f('annotated_stmt', b => {
-    b.eyo.annotation_p = 'ANNOTATED'
+  f('assignment_stmt', b => {
+    b.eyo.operator_p = '**='
   }, (b, bb) => {
-    assert(b.eyo.annotation_p === 'ANNOTATED')
+    assert(b.eyo.operator_p === '**=')
+  })
+  f('annotated_stmt', b => {
+    b.eyo.annotated_p = 'ANNOTATED'
+  }, (b, bb) => {
+    assert(b.eyo.annotated_p === 'ANNOTATED')
   })
   f('annotated_assignment_stmt')
   f('augmented_assignment_stmt', b => {
     b.eyo.operator_p = '**='
   }, (b, bb) => {
-    assert(b.eyo.operator_p === '**p')
+    assert(b.eyo.operator_p === '**=')
   })
 })
-

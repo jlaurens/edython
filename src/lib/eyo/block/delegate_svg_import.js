@@ -208,9 +208,9 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
     for (var i = 0 ; i < t.inputList.length ; ++i) {
       var t_eyo = t.inputList[i].eyo.t_eyo
       if (t_eyo.type === eYo.T3.Expr.identifier) {
-        modules[t_eyo.name_p] = t_eyo.name_p
+        modules[t_eyotarget_p] = t_eyotarget_p
       } else if (t_eyo.type === eYo.T3.Expr.identifier_as) {
-        modules[t_eyo.name_p] = t_eyo.alias_p
+        modules[t_eyo.target_p] = t_eyo.alias_p
       } else {
         var x = t_eyo.expression
         var components = x.split(/\s*,\s*/)
