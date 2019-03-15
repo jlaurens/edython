@@ -154,8 +154,8 @@ eYo.Node.prototype.toBlock = function (workspace) {
           n0.intoDelegate(root.eyo.list_t.eyo)
           root.eyo.variant_p = eYo.Key.LIST
         } else {
-          root.eyo.expression_s.connect(this.n0.toBlock(workspace))
-          root.eyo.variant_p = eYo.Key.EXPRESSION
+          root.eyo.value_t.eyo.lastConnect(this.n0.toBlock(workspace))
+          root.eyo.variant_p = eYo.Key.VALUED
         }
         root.eyo.comment_variant_p = eYo.Key.NONE
         return root
@@ -166,10 +166,9 @@ eYo.Node.prototype.toBlock = function (workspace) {
         while (true) {
           // targets
           if (n0.n_nchildren > 1) {
-            b1.eyo.variant_p = eYo.Key.TARGET
-            n0.intoDelegate(b1.eyo.targets_t.eyo)
+            n0.intoDelegate(b1.eyo.target_t.eyo)
           } else {
-            b1.eyo.name_s.connect(n0.toBlock(workspace))
+            b1.eyo.target_t.eyo.lastConnect(n0.toBlock(workspace))
           }
           // values
           n0 = n1.sibling
@@ -178,8 +177,10 @@ eYo.Node.prototype.toBlock = function (workspace) {
               b2 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.assignment_chain)
               if ((t = b1.eyo.value_t)) {
                 t.eyo.lastConnect(b2)
+                b1.eyo.variant_p = eYo.Key.TARGET_VALUED // necessary ?
               } else if ((t = b1.eyo.definition_t)) {
                 t.eyo.lastConnect(b2)
+                b1.eyo.variant_p = eYo.Key.TARGET_VALUED // necessary ?
               } else {
                 console.error('ERROR')
               }

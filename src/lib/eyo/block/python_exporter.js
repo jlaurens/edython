@@ -71,11 +71,11 @@ eYo.Py.Exporter.prototype.newline_ = function () {
 eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
   var eyo = block.eyo
   if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
-    if (eyo.dotted_p === 0 && eyo.name_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
+    if (eyo.dotted_p === 0 && eyo.target_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
   } else if (eyo instanceof eYo.DelegateSvg.Stmt.call_stmt) {
-    if (eyo.dotted_p === 0 && eyo.name_p === 'print') {
+    if (eyo.dotted_p === 0 && eyo.target_p === 'print') {
       this.use_print = true
     }
   } else if (eyo instanceof eYo.DelegateSvg.Stmt.builtin__print_stmt) {

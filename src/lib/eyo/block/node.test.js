@@ -19,15 +19,16 @@ describe('NAME', function() {
     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
     var b = n.toBlock(Blockly.mainWorkspace)
     assert(b, 'MISSING BLOCK')
+    b.dispose()
   })
 })
 
 var n_test = (n, type, str) => {
-    assert(n, 'No node')
-    assert(n.n_type === type, `${n.n_type} === ${type}`)
-    assert(n.n_str === '', `${n.n_str} === '${str}'`)
-  }
-  
+  assert(n, 'No node')
+  assert(n.n_type === type, `${n.n_type} === ${type}`)
+  assert(n.n_str === '', `${n.n_str} === '${str}'`)
+}
+
 var ra_test = (name, str_s) => {
   describe(name, function() {
     str_s.forEach(str => {
@@ -47,6 +48,7 @@ var ra_test = (name, str_s) => {
           }
           assert(str1 === code1, `<
 ${str1}> === <${code1}>`)
+          b.dispose()
         }
       })()
       it(str, f)
@@ -178,10 +180,10 @@ var ra_simple_expression = [
 ]
 ra_test('simple_expression', ra_simple_expression)
 var ra_simple_assignments = [
-  "a = b",
-  "a = b, c",
+  // "a = b",
+  // "a = b, c",
   "a, b = c, d",
-  "a = b = c = d = e",
+  // "a = b = c = d = e",
 ]
 ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
