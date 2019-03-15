@@ -1180,7 +1180,7 @@ eYo.Xml.fromDom = function (block, element) {
           eyo.incrementChangeCount() // force new type
           eyo.consolidateType()
           eyo.consolidateConnections()
-          eyo.consolidate()
+          eyo.consolidate() // too many consolidation !!!
         }
       }
       eyo.didLoad() // before the next and suite connections will connect
@@ -1237,41 +1237,53 @@ goog.require('eYo.DelegateSvg.Primary')
 eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
   if ([
-    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.identifier_valued,
+    eYo.T3.Expr.identifier_annotated_valued,
     eYo.T3.Expr.assignment_chain
   ].indexOf(type) >= 0) {
     return '='
   }
+  if (type === eYo.T3.Expr.assignment_expr) {
+    return ':=' // 0.3
+  }
   if ([
     eYo.T3.Expr.parent_module,
-    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.identifier_valued,
     eYo.T3.Expr.dotted_name,
     eYo.T3.Expr.dotted_name_as,
     eYo.T3.Expr.attributeref
   ].indexOf(type) >= 0) {
-    return eYo.T3.Expr.primary.substring(4)
+    return '.' // >=v0.3, eYo.T3.Expr.primary.substring(4)
   }
-  if (type === eYo.T3.Expr.call_expr) {
-    return eYo.Key.CALL
+  if ([
+    eYo.T3.Expr.named_call_expr,
+    eYo.T3.Expr.call_expr
+  ].indexOf(type) >= 0) {
+    return '…()' // >=v0.3, eYo.Key.CALL
   }
-  if (type === eYo.T3.Expr.named_call_expr) {
-    return eYo.Key.CALL
+  if ([
+    eYo.T3.Expr.named_slicing,
+    eYo.T3.Expr.slicing,
+    eYo.T3.Expr.named_subscription,
+    eYo.T3.Expr.subscription
+  ].indexOf(type) >= 0) {
+    return '…[]' // >=v0.3, eYo.T3.Expr.slicing.substring(4)
   }
-  if (type === eYo.T3.Expr.named_slicing) {
-    return eYo.T3.Expr.slicing.substring(4)
-  }
-  if (type === eYo.T3.Expr.named_subscription) {
-    return eYo.T3.Expr.subscription.substring(4)
+  if ([
+    eYo.T3.Expr.identifier_annotated,
+    eYo.T3.Expr.augtarget_annotated,
+    eYo.T3.Expr.key_datum
+  ].indexOf(type) >= 0) {
+    return ':' // >=v0.3, eYo.T3.Expr.identifier.substring(4)
   }
   if ([
     eYo.T3.Expr.identifier_as,
-    eYo.T3.Expr.identifier_annotated,
-    eYo.T3.Expr.identifier_annotated_defined,
-    eYo.T3.Expr.identifier_defined
+    eYo.T3.Expr.expression_as,
+    eYo.T3.Expr.dotted_name_as
   ].indexOf(type) >= 0) {
-    return eYo.T3.Expr.identifier.substring(4)
+    return '~' // eYo.T3.Expr.identifier.substring(4)
   }
-  return type.substring(4)
+  return '…'
 }
 
 goog.require('eYo.DelegateSvg.Assignment')
@@ -1386,13 +1398,23 @@ goog.provide('eYo.Xml.Primary')
  * @override
  */
 eYo.Xml.Primary.domToBlockComplete = function (element, owner) {
-  var prototypeName = element.getAttribute(eYo.Key.EYO)
-  if (prototypeName === '=') {
-    var id = element.getAttribute('id')
-    var workspace = owner.workspace || owner
-    if (element.tagName.toLowerCase() === 'x') {
+  if (element.tagName.toLowerCase() === 'x') {
+    var prototypeName = element.getAttribute(eYo.Key.EYO)
+    var t = {
+      '=': eYo.T3.Expr.identifier_valued,
+      ':=': eYo.T3.Expr.assignment_expr,
+      '.': eYo.T3.Expr.parent_module,
+      '…()': eYo.T3.Expr.named_call_expr,
+      '…[]': eYo.T3.Expr.named_subscription,
+      ':': eYo.T3.Expr.identifier_annotated,
+      '~': eYo.T3.Expr.identifier_as,
+      '…': eYo.T3.Expr.identifier
+    } [prototypeName]
+    if (t) {
+      var id = element.getAttribute('id')
+      var workspace = owner.workspace || owner
       var block
-      block = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.identifier_defined, id)
+      block = eYo.DelegateSvg.newBlockComplete(workspace, t, id)
       return block  
     }
   }

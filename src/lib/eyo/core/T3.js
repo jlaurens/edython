@@ -210,8 +210,8 @@ eYo.T3.Expr = {
   parameter_star            : /*   ::= "*" parameter                                      (Function definitions) */ "eyo:parameter_star",
   parameter_star_star       : /*   ::= "**" parameter                                     (Function definitions) */ "eyo:parameter_star_star",
   identifier_annotated      : /*   ::= identifier ":" expression                          (Function definitions) */ "eyo:identifier_annotated",
-  identifier_defined        : /*   ::= identifier "=" expression                          (Function definitions) */ "eyo:identifier_defined",
-  identifier_annotated_defined : /*   ::= identifier_annotated "=" expression                (Function definitions) */ "eyo:identifier_annotated_defined",
+  identifier_valued        : /*   ::= identifier "=" expression                          (Function definitions) */ "eyo:identifier_valued",
+  identifier_annotated_valued : /*   ::= identifier_annotated "=" expression                (Function definitions) */ "eyo:identifier_annotated_valued",
   builtin__print_expr       : /*   ::= "print(" argument_list ")"                         (Expression statements) */ "eyo:builtin__print_expr",
   print_argument_list_comprehensive : /*   ::= subclass of argument_list_comprehensive            (Expression statements) */ "eyo:print_argument_list_comprehensive",
 // lists
@@ -266,7 +266,7 @@ eYo.T3.Expr = {
   module                    : /*   ::= dotted_name | identifier                           (The import statement) */ "eyo:module",
   relative_module           : /*   ::= module | parent_module                             (The import statement) */ "eyo:relative_module",
   value_list                : /*   ::= starred_item | yield_expression                    (Assignment statements) */ "eyo:value_list",
-  assignment_value_list     : /*   ::= value_list | assignment_chain | identifier_defined (Assignment statements) */ "eyo:assignment_value_list",
+  assignment_value_list     : /*   ::= value_list | assignment_chain | identifier_valued (Assignment statements) */ "eyo:assignment_value_list",
   augassigned_list          : /*   ::= expression | yield_expression                      (Assignment statements) */ "eyo:augassigned_list",
   target_unstar             : /*   ::= augtarget | parenth_target_list | bracket_target_list (Assignment statements) */ "eyo:target_unstar",
   target_annotated          : /*   ::= target | identifier_annotated | augtarget_annotated (Assignment statements) */ "eyo:target_annotated",
@@ -274,7 +274,7 @@ eYo.T3.Expr = {
   import_identifier_as      : /*   ::= identifier | identifier_as                         (default) */ "eyo:import_identifier_as",
   with_item                 : /*   ::= expression | expression_as                         (The with statement) */ "eyo:with_item",
   parameter                 : /*   ::= identifier | identifier_annotated                  (Function definitions) */ "eyo:parameter",
-  defparameter              : /*   ::= parameter | identifier_defined | identifier_annotated_defined (Function definitions) */ "eyo:defparameter",
+  defparameter              : /*   ::= parameter | identifier_valued | identifier_annotated_valued (Function definitions) */ "eyo:defparameter",
   parameter_any             : /*   ::= parameter | defparameter | star | parameter_star | parameter_star_star (Function definitions) */ "eyo:parameter_any",
 // wrappers, like module_name ::= identifier because module_name is used in some Check array
 }
@@ -789,7 +789,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.attributeref,
     eYo.T3.Expr.subscription,
     eYo.T3.Expr.slicing,
-    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.identifier_valued,
     eYo.T3.Expr.power,
     eYo.T3.Expr.u_expr,
     eYo.T3.Expr.m_expr,
@@ -837,7 +837,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.attributeref,
     eYo.T3.Expr.subscription,
     eYo.T3.Expr.slicing,
-    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.identifier_valued,
     eYo.T3.Expr.power,
     eYo.T3.Expr.u_expr,
     eYo.T3.Expr.m_expr,
@@ -1446,7 +1446,7 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.assignment_chain,
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.dotted_name,
-    eYo.T3.Expr.identifier_defined,
+    eYo.T3.Expr.identifier_valued,
     eYo.T3.Expr.any,
   ],
   augassigned_list: [ // count 42
@@ -1551,8 +1551,8 @@ eYo.T3.Expr.Check = {
   defparameter: [ // count 4
     eYo.T3.Expr.identifier,
     eYo.T3.Expr.identifier_annotated,
-    eYo.T3.Expr.identifier_defined,
-    eYo.T3.Expr.identifier_annotated_defined,
+    eYo.T3.Expr.identifier_valued,
+    eYo.T3.Expr.identifier_annotated_valued,
     eYo.T3.Expr.any,
   ],
   with_item_list: [ // count 42
@@ -1606,8 +1606,8 @@ eYo.T3.Expr.Check = {
     eYo.T3.Expr.parameter_star,
     eYo.T3.Expr.parameter_star_star,
     eYo.T3.Expr.identifier_annotated,
-    eYo.T3.Expr.identifier_defined,
-    eYo.T3.Expr.identifier_annotated_defined,
+    eYo.T3.Expr.identifier_valued,
+    eYo.T3.Expr.identifier_annotated_valued,
     eYo.T3.Expr.any,
   ],
 }

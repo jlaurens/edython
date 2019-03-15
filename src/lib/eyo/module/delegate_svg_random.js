@@ -58,8 +58,7 @@ eYo.DelegateSvg.Expr.builtin__range_expr.makeSubclass('random__randrange', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.required = newValue > 0
-        this.setIncog()
+        this.requiredIncog = newValue > 0
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         var p = this.owner.profile_p

@@ -1637,7 +1637,7 @@ eYo.Delegate.prototype.consolidateSlots = function (deep, force) {
 eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
     // Consolidate the child blocks that are still connected
-    this.forEachInput((input) => {
+    this.forEachInput(input => {
       input.eyo.consolidate(deep, force)
     })
   }
@@ -1658,7 +1658,7 @@ eYo.Delegate.prototype.consolidateType = function () {
 
 /**
  * Set the connection check array.
- * The connections are supposed to be configured once.
+ * The connections are supposed to be configured only once.
  * This method may disconnect blocks as side effect,
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
@@ -1667,6 +1667,10 @@ eYo.Delegate.prototype.consolidateType = function () {
  * This looping process will end when the type does not change,
  * which occurs at least when no connections
  * is connected.
+ * Starts by completing the wrapped connections.
+ * The wrapped connections are known at initialization time,
+ * but that may not be always the case.
+ * Sent by `doConsolidate` and various `isChanging` methods.
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrapped_()
@@ -1778,7 +1782,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later when the `completeWrapped_` message is sent.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * This is the only way to create a wrapped block.
@@ -2246,7 +2250,7 @@ eYo.Delegate.prototype.setIncog = function (incog) {
   }
   this.incog_ = incog
   this.forEachSlot(slot => slot.setIncog(incog)) // with incog validator
-  var setupIncog = (input) => {
+  var setupIncog = input => {
     var c8n = input && input.connection
     c8n && c8n.eyo.setIncog(incog) // without incog validator
   }
@@ -2313,7 +2317,7 @@ eYo.Delegate.prototype.someInput = function (helper) {
  * @param {!Function} helper
  */
 eYo.Delegate.prototype.forEachInputConnection = function (helper) {
-  this.block_.inputList.forEach((input) => {
+  this.block_.inputList.forEach(input => {
     var c8n = input.connection
     if (c8n) {
       helper(c8n)

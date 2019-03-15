@@ -53,6 +53,11 @@ eYo.Block.prototype.dispose = function (healStack) {
     return
   }
   if (this.eyo.wrapped_) {
+    var c8n = this.outputConnection.targetConnection
+    if (c8n) {
+      c8n.eyo.wrapped_ = false
+      c8n.eyo.slot && (c8n.eyo.slot.wrapped_ = false)
+    }
     // dispose of child blocks before calling super
     Blockly.Events.disable()
     try {

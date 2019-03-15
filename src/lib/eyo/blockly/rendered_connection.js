@@ -429,7 +429,7 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n, targetO
 /**
  * Set the receiver's connection's check_ array according to the given type.
  * The defaults implements asks the model then sets the check_ property.
- * Called by consolidateConnections
+ * Called by `consolidateConnections`.
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
   var eyo = this.connection.sourceBlock_.eyo
@@ -1377,6 +1377,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
 
 /**
  * Returns the block that this connection connects to.
+ * Creates the block when should wrapped.
  * @return {Blockly.Block} The connected block or null if none is connected.
  */
 eYo.Connection.prototype.targetBlock = function() {

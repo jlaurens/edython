@@ -376,40 +376,15 @@
     <script src="../../../../node_modules/mocha/mocha.js"></script>
     <script src="../../../../node_modules/chai/chai.js"></script>
     <script>mocha.setup('bdd')</script>
-    <script src="./delegate_svg.test.js" charset="utf-8"></script>
 
     <!-- load code you want to test here -->
 
     <!-- load your test files here -->
+    <script src="../test/common.test.js"></script>
+    <script src="./delegate_svg.test.js" charset="utf-8"></script>
+    <script src="../debugging.js"></script>
 
     <script>
-      eYo.temp = (() => {
-        var options = {
-          collapse : true,
-          comments : false,
-          disable : true,
-          maxBlocks : Infinity,
-          trashcan : false,
-          horizontalLayout : false,
-          // toolboxPosition : 'end',
-          css : true,
-          media : '../../src/lib/blockly/media/',
-          rtl : false,
-          scrollbars : true,
-          sounds : false,
-          oneBasedIndex : true,
-        };
-        /* Inject your workspace */
-        var workspace = Blockly.inject('eyoDiv', options);
-        eYo.setup(workspace)
-        workspace.eyo.options = {
-          noLeftSeparator: true,
-          noDynamicList: false,
-          smartUnary: true,
-        }
-        
-        workspace.clearUndo()
-      })()
       mocha.run();
     </script>
   </body>

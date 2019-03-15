@@ -99,34 +99,37 @@ eYo.Data = function (owner, key, model) {
   }
 }
 
-Object.defineProperties(
-  eYo.Data.prototype,
-  {
-    block: {
-      get () {
-        return this.owner.block_
-      }
+Object.defineProperties(eYo.Data.prototype, {
+  block: {
+    get () {
+      return this.owner.block_
+    }
+  },
+  blockType: {
+    get  () {
+      return this.owner.block_.type
+    }
+  },
+  data: {
+    get  () {
+      return this.owner.data
+    }
+  },
+  incog_p: {
+    get () {
+      return this.incog_
     },
-    blockType: {
-      get  () {
-        return this.owner.block_.type
-      }
-    },
-    data: {
-      get  () {
-        return this.owner.data
-      }
-    },
-    incog_p: {
-      get () {
-        return this.incog_
-      },
-      set (newValue) {
-        this.changeIncog(newValue)
-      }
+    set (newValue) {
+      this.changeIncog(newValue)
+    }
+  },
+  requiredIncog: {
+    set (newValue) {
+      this.required = newValue
+      this.setIncog()
     }
   }
-)
+})
 
 /**
  * Get the owner of the data.
@@ -708,7 +711,7 @@ eYo.Data.prototype.set = function (newValue, validate = true) {
 
 /**
  * Disabled data correspond to disabled input.
- * Changing this value will cause an UI synchronization.
+ * Changing this value will cause an UI synchronization but no change count.
  * @param {Object} newValue  When not defined, replaced by `!this.required`
  * @return {boolean} whether changes have been made
  */
@@ -723,9 +726,6 @@ eYo.Data.prototype.setIncog = function (newValue) {
     newValue = validator.call(this, newValue)
   }
   if (this.incog_ !== newValue) {
-    // if (this.key === 'comment') {
-    //   console.error('comment data incog', newValue)
-    // }
     this.incog_ = newValue
     if (this.slot) {
       this.slot.setIncog(newValue)
@@ -738,7 +738,7 @@ eYo.Data.prototype.setIncog = function (newValue) {
 }
 /**
  * Disabled data correspond to disabled input.
- * Changing this value will cause an UI synchronization.
+ * Changing this value will cause an UI synchronization and a change count.
  * @param {Object} newValue  When not defined, replaced by `!this.required`
  * @return {boolean} whether changes have been made
  */

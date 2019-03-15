@@ -102,7 +102,7 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
   } else {
     // list blocks
     block.eyo.consolidate()
-    block.eyo.forEachInput((input) => {
+    block.eyo.forEachInput(input => {
       if (input !== eyo.inputSuite) {
         this.exportInput_(input, opt)
       }

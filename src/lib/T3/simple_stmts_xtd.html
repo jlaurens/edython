@@ -32,7 +32,7 @@ The visual block has 3 types and more variants.
 annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)
 assignment_stmt ::= target_list "=" assignment_value_list
-assignment_value_list ::= value_list | assignment_chain | identifier_defined
+assignment_value_list ::= value_list | assignment_chain | identifier_valued
 
 Does augtarget belong to target_list ? Yes it is a subset.
 <pre>
@@ -41,7 +41,7 @@ assignment_chain ::= assignment_target_list "=" assignment_value_list
 assignment_target_list ::= 'some stuff'
 assignment_expr ::= expression ":=" expression
 value_list ::= starred_item | yield_expression
-assignment_value_list ::= value_list | assignment_chain | identifier_defined
+assignment_value_list ::= value_list | assignment_chain | identifier_valued
 augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
 augtarget ::=  identifier | attributeref | subscription | slicing | dotted_name | named_attributeref | named_subscription | named_slicing
 augassigned_list ::= expression | yield_expression

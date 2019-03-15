@@ -1124,7 +1124,7 @@ eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
       }
     } while ((io.slot = io.slot.next))
   } else {
-    block.inputList.forEach((input) => {
+    block.inputList.forEach(input => {
       goog.asserts.assert(input.eyo, `Input with no eyo ${input.name} in block ${this.type}`)
       io.input = input
       if (input.isVisible()) {
@@ -2575,7 +2575,7 @@ eYo.DelegateSvg.prototype.lock = function () {
   }
   // list all the input for connections with a target
   var target
-  this.forEachInput((input) => {
+  this.forEachInput(input => {
     if ((c8n = input.connection)) {
       if ((target = c8n.targetBlock())) {
         ans += target.eyo.lock()
@@ -2630,7 +2630,7 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
   this.locked_ = false
   // list all the input for connections with a target
   var c8n, target
-  this.forEachInput((input) => {
+  this.forEachInput(input => {
     if ((c8n = input.connection)) {
       if ((!shallow || c8n.eyo.isInput) && (target = c8n.targetBlock())) {
         ans += target.eyo.unlock(shallow)

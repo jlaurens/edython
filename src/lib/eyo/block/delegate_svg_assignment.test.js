@@ -126,16 +126,16 @@ describe('Assignment', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
-    assert_block(b2, 'identifier_defined')
+    assert_block(b2, 'identifier_valued')
     var input = b1.eyo.value_t.eyo.lastInput
     assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
     assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
   })
-  it('connect an identifier_defined', function() {
+  it('connect an identifier_valued', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
-    var b2 = new_block('identifier_defined')
+    var b2 = new_block('identifier_valued')
     b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
     var input = b1.eyo.value_t.eyo.lastInput
@@ -248,16 +248,16 @@ describe('Copy/Paste', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
-    assert_block(b2, 'identifier_defined')
+    assert_block(b2, 'identifier_valued')
     var input = b1.eyo.value_t.eyo.lastInput
     assert(b1.eyo.value_t.eyo.lastConnect(b2), 'MISSED C8N 1')
     assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
   })
-  it('connect an identifier_defined', function() {
+  it('connect an identifier_valued', function() {
     var b1 = new_block('assignment_stmt')
     assert_variant(b1, 'TARGET_VALUED')
-    var b2 = new_block('identifier_defined')
+    var b2 = new_block('identifier_valued')
     b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
     var input = b1.eyo.value_t.eyo.lastInput

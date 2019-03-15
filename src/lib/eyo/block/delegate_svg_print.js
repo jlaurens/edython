@@ -41,7 +41,7 @@ eYo.Consolidator.PrintArguments.prototype.doFinalize = function (io) {
     this.setupIO(io, 0)
     var input
     while ((input = this.nextInputForType(io, [
-      eYo.T3.Expr.identifier_defined
+      eYo.T3.Expr.identifier_valued
     ]))) {
       var target = input.eyo.target
       if (target) {
@@ -130,7 +130,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
     var io = c10r.getIO(list)
     var input
     while ((input = c10r.nextInputForType(io, [
-      eYo.T3.Expr.identifier_defined
+      eYo.T3.Expr.identifier_valued
     ]))) {
       var target = input.eyo.target
       if (target && target.eyo.name_d) {
@@ -141,7 +141,7 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       eYo.Events.groupWrap(
         () => {
           var B = eYo.DelegateSvg.newBlockReady(block.workspace, {
-            type: eYo.T3.Expr.identifier_defined,
+            type: eYo.T3.Expr.identifier_valued,
             data: key
           })
           // we assume that inputList is not void

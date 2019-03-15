@@ -436,9 +436,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       init: null,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var slot = this.owner.type_s
-        slot.required = newValue === eYo.Key.TYPE
-        slot.setIncog()
+        this.owner.type_s.requiredIncog = newValue === eYo.Key.TYPE
       }
     },
     name: {
@@ -526,9 +524,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        var slot = this.owner.n_ary_s
-        slot.required = newValue === eYo.Key.N_ARY
-        slot.setIncog()
+        this.owner.n_ary_s.requiredIncog = newValue === eYo.Key.N_ARY
       },
       xml: false
     },

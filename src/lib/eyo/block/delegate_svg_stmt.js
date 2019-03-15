@@ -48,8 +48,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       xml: false,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.comment_d.required = newValue === eYo.Key.COMMENT
-        this.owner.comment_d.setIncog()
+        this.owner.comment_d.requiredIncog = newValue === eYo.Key.COMMENT
       },
       consolidate: /** @suppress {globalThis} */ function () {
         this.set(this.owner.comment_d.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)

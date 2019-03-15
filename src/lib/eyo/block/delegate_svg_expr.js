@@ -76,16 +76,14 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
 eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
   var c8n = this.block_.outputConnection
   if (c8n.check_) {
-    if (goog.isArray(type)) {
-      for (var i = 0; (i < type.length); ++i) {
-        if (c8n.check_.indexOf(type[i]) >= 0) {
-          return true
-        }
+    if (type.indexOf) {
+      if (c8n.check_.some(t => type.indexOf(t) >= 0)) {
+        return true
       }
     } else {
       return c8n.check_.indexOf(type) >= 0
     }  
-  } else {
+  } else /* if (c8n.check_ === null) */ {
     return true
   }
 }
@@ -408,9 +406,7 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
       validate: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var d = this.owner.stride_d
-        d.required = newValue === eYo.Key.STRIDE
-        d.setIncog()
+        this.owner.stride_d.requiredIncog = newValue === eYo.Key.STRIDE
       },
       xml: false
     },

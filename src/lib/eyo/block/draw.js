@@ -120,7 +120,7 @@ eYo.Draw.addStatusSelect_ = function (eyo) {
     // maybe that block has not been rendered yet
     goog.dom.classlist.add(g, 'eyo-select')
   }
-  eyo.forEachInput((input) => {
+  eyo.forEachInput(input => {
     input.fieldRow.forEach((field) => {
       if (goog.isFunction(field.addSelect)) {
         field.addSelect()

@@ -44,12 +44,9 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.owner.expression_d
-        d.required = (newValue !== eYo.Key.NONE)
-        d.setIncog()
-        d = this.owner.alias_d
-        d.required = (newValue === eYo.Key.ALIASED)
-        d.setIncog()
+        var O = this.owner
+        OfflineAudioContext.expression_d.requiredIncog = newValue !== eYo.Key.NONE
+        O.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
       },
       xml: false
     },
@@ -234,12 +231,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.owner.expression_d
-        d.required = (newValue !== eYo.Key.NONE)
-        d.setIncog()
-        d = this.owner.from_d
-        d.required = (newValue === eYo.Key.FROM)
-        d.setIncog()
+        var O = this.owner
+        O.expression_d.requiredIncog = newValue !== eYo.Key.NONE
+        O.from_d.requiredIncog = newValue === eYo.Key.FROM
       },
       xml: false
     },

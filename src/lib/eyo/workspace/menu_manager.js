@@ -745,7 +745,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.identifier_defined:
+  case eYo.T3.Expr.identifier_valued:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('= ', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),

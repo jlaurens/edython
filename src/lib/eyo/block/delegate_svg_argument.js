@@ -90,7 +90,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
         return Type.STAR_STAR
       } else if (goog.array.contains(check, eYo.T3.Expr.expression_star)) {
         return Type.STAR
-      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
+      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_valued)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
@@ -192,7 +192,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
       out.push(eYo.T3.Expr.expression_star)
     }
     if (can_keyword) {
-      out.push(eYo.T3.Expr.identifier_defined)
+      out.push(eYo.T3.Expr.identifier_valued)
     }
     if (can_expression_star_star) {
       out.push(eYo.T3.Expr.expression_star_star)
@@ -264,7 +264,7 @@ eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
 })
 
 eYo.DelegateSvg.Argument.T3s = [
-  // eYo.T3.Expr.identifier_defined,
+  // eYo.T3.Expr.identifier_valued,
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive
 ]

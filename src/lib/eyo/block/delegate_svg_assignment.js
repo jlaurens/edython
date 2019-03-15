@@ -315,16 +315,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        var d = O.target_d
-        d.required = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
-        O.target_d.setIncog()
-        d = O.annotated_d
-        d.required = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
-        d.setIncog()
-        var slot
-        slot = O.value_s
-        slot.required = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED
-        slot.setIncog()
+        O.target_d.requiredIncog = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
+        O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
+        O.value_s.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // variant change from 'NONE' has greater priority over comment change
@@ -679,11 +672,11 @@ eYo.DelegateSvg.List.makeSubclass('assignment_value_list', {
       unique: (type, subtype) => {
         return subtype
         && {
-          [eYo.T3.Stmt.assignment_stmt]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_defined],
+          [eYo.T3.Stmt.assignment_stmt]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
           [eYo.T3.Expr.augmented_stmt]: [eYo.T3.Expr.yield_expr],
           [eYo.T3.Expr.augmented_assignment_stmt]: [eYo.T3.Expr.yield_expr],
           [eYo.T3.Expr.annotated_assignment_stmt]: [eYo.T3.Expr.yield_expr],
-          [eYo.T3.Expr.assignment_chain]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_defined]
+          [eYo.T3.Expr.assignment_chain]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued]
         } [subtype] || []
       },
       check: (type, subtype) => {

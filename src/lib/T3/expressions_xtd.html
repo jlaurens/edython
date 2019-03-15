@@ -109,6 +109,9 @@ keywords_arguments   ::=  (keyword_item | "**" expression)
 keyword_item         ::=  identifier "=" expression
 
 named_... are primaries which left atom is an identifier (or unset)
+A subscription is a slicing, but the converse is not true.
+As they do not aparate separately, we could simply ignore slice lists.
+But the documentation makes the difference...
 <pre>
 primary ::= atom | dotted_name | builtin__object | attributeref | subscription | slicing | call_expr | named_primary
 
@@ -123,7 +126,7 @@ call_expr/call ::=  primary "(" argument_list ")"
 expression_star ::= "*" expression
 expression_star_star ::= "**" expression
 argument_any ::= expression | expression_star | expression_star_star | keyword_item
-keyword_item -> identifier_defined
+keyword_item -> identifier_valued
 argument_list ::=  argument_any *
 argument_list_comprehensive ::= argument_any | comprehension
 positional_arguments ::=  REMOVE

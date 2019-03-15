@@ -149,6 +149,12 @@ Object.defineProperties(eYo.Slot.prototype, {
       var b = c8n && c8n.eyo.unwrappedTargetBlock
       return b && b.eyo
     }
+  },
+  requiredIncog: {
+    set (newValue) {
+      this.required = newValue
+      this.setIncog()
+    }
   }
 })
 

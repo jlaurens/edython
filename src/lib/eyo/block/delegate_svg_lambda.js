@@ -112,7 +112,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
         return Type.star
       } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
         return Type.star_star
-      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_defined)) {
+      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_valued)) {
         return Type.default
       } else {
         return Type.parameter
@@ -277,8 +277,8 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
       out = eYo.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(eYo.T3.Expr.identifier_defined)
-      out.push(eYo.T3.Expr.identifier_annotated_defined)
+      out.push(eYo.T3.Expr.identifier_valued)
+      out.push(eYo.T3.Expr.identifier_annotated_valued)
     }
     if (can_star) {
       out.push(eYo.T3.Expr.star)
