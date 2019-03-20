@@ -473,17 +473,18 @@ eYo.T3.Profile.getLiteral = function (candidate) {
       type: eYo.T3.Expr.doubleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.shortstringliteralSingle)) {
+  var m
+  if ((m = XRegExp.exec(candidate, eYo.XRE.shortstringliteralSingle))) {
     return {
-      raw: eYo.T3.Expr.shortstringliteral,
-      expr: eYo.T3.Expr.shortliteral,
+      raw: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
+      expr: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
       type: eYo.T3.Expr.singleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.shortstringliteralDouble)) {
+  if ((m = XRegExp.exec(candidate, eYo.XRE.shortstringliteralDouble))) {
     return {
-      raw: eYo.T3.Expr.shortstringliteral,
-      expr: eYo.T3.Expr.shortliteral,
+      raw: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
+      expr: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
       type: eYo.T3.Expr.doubleQuoted
     }
   }
@@ -501,17 +502,17 @@ eYo.T3.Profile.getLiteral = function (candidate) {
       type: eYo.T3.Expr.doubleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.longstringliteralSingle)) {
+  if ((m = XRegExp.exec(candidate, eYo.XRE.longstringliteralSingle))) {
     return {
-      raw: eYo.T3.Expr.longstringliteral,
-      expr: eYo.T3.Expr.longliteral,
+      raw: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
+      expr: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
       type: eYo.T3.Expr.singleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.longstringliteralDouble)) {
+  if ((m = XRegExp.exec(candidate, eYo.XRE.longstringliteralDouble))) {
     return {
-      raw: eYo.T3.Expr.longstringliteral,
-      expr: eYo.T3.Expr.longliteral,
+      raw: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
+      expr: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
       type: eYo.T3.Expr.doubleQuoted
     }
   }

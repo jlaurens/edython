@@ -155,10 +155,13 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
     if (d) {
       return d.get()
     }
+    if (goog.isFunction(this.model.mandatory)) {
+      return this.model.mandatory(io.block.type, io.block.eyo.subtype)
+    }
   }
   return goog.isDef(this.model.mandatory)
-    ? this.model.mandatory
-    : this.model.mandatory = 0
+  ? this.model.mandatory
+  : this.model.mandatory = 0
 }
 
 /**

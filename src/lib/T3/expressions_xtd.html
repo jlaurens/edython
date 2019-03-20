@@ -18,10 +18,16 @@ is not resolved and left as is.
 For non shallow types, we will replace each type component that is a wrapper with the wrapped components
 and so on recursively.
 <pre>
-enclosure ::= parenth_form | list_display |  dict_display | set_display | one_set_display | one_dict_display # | generator_expression | yield_atom
+enclosure ::= parenth_form | list_display |  dict_display | set_display | one_set_display | one_dict_display | void_dict_display # | generator_expression | yield_atom
+void_dict_display ::= '{' '}'
 one_set_display ::= '{' starred_item '}'
 one_dict_display ::= '{' key_datum_all '}'
 </pre>
+void_dict_display is for '{}' where you can put almost everything a dist_display and a set_display will accept. As it actually contains nothing, we can turn it into either a set or a dict.
+
+one_set_display and one_dict_display are also used for mutation.
+We can replace the starred_item in the one_set_display and it becomes a one_dict_display. Then the other inputs will accept blocks of different kinds (the check_ array changes).
+
 atom      ::=  identifier | literal | enclosure
 The void type is a 0 length identifier.
 This is used when the identifier is not yet set, or is allowed to be void.

@@ -1,54 +1,55 @@
-var assert = chai.assert
-var expect = chai.expect
-
+describe('Comprehension (Basic)', function () {
+  ;[
+    ['comprehension'],
+    ['dict_comprehension', 'comprehension']
+  ].forEach(args => {
+    it (`${args[0]}/${args[1] || args[0]}`, function () {
+      eYo.Test.new_block(args[0], args[1] || args[0]).dispose()
+    })
+  })
+})
 describe('Comprehension', function() {
   it('comprehension || dict_comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
-    assert(b.outputConnection.check_.length === 2, 'BAD OUTPUT CHECK')
-    expect(b.outputConnection.check_.sort()).to.deep.equal([eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension].sort())
-    assert(b.type === eYo.T3.Expr.comprehension, `BAD TYPE: ${b.type}`)
+    var b = eYo.Test.new_block('comprehension')
+    chai.assert(b.outputConnection.check_.length === 2, 'BAD OUTPUT CHECK')
+    eYo.Test.expect_out_check(b, [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension])
+    b.dispose()
   })
   it('comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
+    var b = eYo.Test.new_block('comprehension')
     b.eyo.expression_p = 'x'
-    expect(b.outputConnection.check_).to.deep.equal([eYo.T3.Expr.comprehension])
-    assert(b.type === eYo.T3.Expr.comprehension, `BAD TYPE: ${b.type}`)
+    eYo.Test.expect_out_check(b, eYo.T3.Expr.comprehension)
+    eYo.Test.assert_block(b, 'comprehension')
+    b.dispose()
   })
   it('comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
+    var b = eYo.Test.new_block('comprehension')
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
-    assert(bb, `MISSING bb`)
-    assert(b.eyo.expression_s.connect(bb), 'MISSING connection')
-    expect(b.outputConnection.check_).to.deep.equal([eYo.T3.Expr.comprehension])
-    assert(b.type === eYo.T3.Expr.comprehension, `BAD TYPE: ${b.type}`)
+    eYo.Test.assert_block(bb, `identifier`)
+    chai.assert(b.eyo.expression_s.connect(bb), 'MISSING connection')
+    eYo.Test.expect_out_check(b, eYo.T3.Expr.comprehension)
+    eYo.Test.assert_block(b, 'comprehension')
   })
   it('dict_comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
-    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.key_datum)
-    assert(bb, `MISSING bb`)
-    assert(b.eyo.expression_s.connect(bb), 'MISSING connection')
-    expect(b.outputConnection.check_).to.deep.equal([eYo.T3.Expr.dict_comprehension])
-    assert(b.type === eYo.T3.Expr.dict_comprehension, `BAD TYPE: ${b.type}`)
+    var b = eYo.Test.new_block('comprehension')
+    var bb = eYo.Test.new_block('key_datum')
+    chai.assert(b.eyo.expression_s.connect(bb), 'MISSING connection')
+    eYo.Test.expect_out_check(b, eYo.T3.Expr.dict_comprehension)
+    eYo.Test.assert_block(b, 'dict_comprehension')
   })
   it('export comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
+    var b = eYo.Test.new_block('comprehension')
     var d = eYo.Xml.blockToDom(b)
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, d)
-    assert(b.type === bb.type, `Type mismatch ${b.type} === ${bb.type}`)
+    eYo.Test.assert_same(b, bb)
   })
   it('export dict comprehension', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    assert(b, `MISSING comprehension`)
-    var b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.key_datum)
-    b.inputList[0].eyo.connect(b1)
-    assert(b.type === eYo.T3.Expr.dict_comprehension, `Type mismatch ${b.type} === ${eYo.T3.Expr.dict_comprehension}`)
+    var b = eYo.Test.new_block('comprehension')
+    var bb = eYo.Test.new_block('key_datum')
+    chai.assert(b.eyo.expression_s.connect(bb), 'MISSING connection')
+    eYo.Test.assert_block(b, 'dict_comprehension')
     var d = eYo.Xml.blockToDom(b)
     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, d)
-    assert(b.type === bb.type, `Type mismatch ${b.type} === ${bb.type}`)
+    eYo.Test.assert_same(b, bb)
   })
 })

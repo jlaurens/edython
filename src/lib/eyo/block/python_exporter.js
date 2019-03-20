@@ -206,7 +206,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       if (d) {
         if (goog.isDef(d.model.python)) {
           text = eYo.Do.valueOf(d.model.python, d) || ''
-        } else if (goog.isDef(d.model.placeholder)) {
+        } else if (!eyo.optional_ && goog.isDef(d.model.placeholder)) {
           text = eYo.Do.valueOf(d.model.placeholder, d) || ''
         }
       }
@@ -237,25 +237,25 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
 /**
  * Export the given slot in.
  * @param {Blockly.Input} input
- * @param {Blockly.Field} input
+ * @param {Object} input
  * @private
  */
-eYo.Py.Exporter.prototype.exportInput_ = function (input, bindField) {
-  if (input && input.isVisible() && input.connection) {
+eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
+  if (input && input.isVisible()) {
     var c8n = input.connection
-    var target = c8n.targetBlock()
-    if (target) {
-      this.exportExpression_(target)
-    } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !bindField) {
-      this.line.push('<MISSING EXPRESSION>')
-      // NEWLINE
-      this.missing_expressions.push(input.connection)
-    } else {
-      for (var j = 0, field; (field = input.fieldRow[j++]);) {
-        this.exportField_(field)
+    if (input.connection) {
+      var target = c8n.targetBlock()
+      if (target) {
+        this.exportExpression_(target)
+      } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
+        this.line.push('<MISSING EXPRESSION>')
+        // NEWLINE
+        this.missing_expressions.push(input.connection)
+      } else {
+        input.fieldRow.forEach(f => this.exportField_(f))
       }
     }
-  }
+  } 
 }
 
 /**
@@ -270,7 +270,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   var bindField
   if ((bindField = slot.bindField)) {
     var c8n = slot.connection
-    bindField.setVisible(!c8n || !c8n.targetBlock())
+    bindField.setVisible(!c8n || !c8n.eyo.unwrappedTargetBlock)
   }
   var field
   if ((field = slot.fromStartField)) {
@@ -278,7 +278,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))
   }
-  this.exportInput_(slot.input, bindField)
+  this.exportInput_(slot.input)
   if ((field = slot.toEndField)) {
     do {
       this.exportField_(field)

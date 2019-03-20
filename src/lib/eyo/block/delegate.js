@@ -1654,6 +1654,10 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
  */
 eYo.Delegate.prototype.consolidateType = function () {
   this.setupType(this.getType())
+  if (this.wrapped_) {
+    var p = this.parent
+    p && p.consolidateType()
+  }
 }
 
 /**

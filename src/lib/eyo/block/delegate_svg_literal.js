@@ -95,7 +95,7 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type) {
-      return type
+      return [type]
     }
   }
 })
@@ -140,7 +140,11 @@ goog.provide('eYo.DelegateSvg.Expr.shortliteral')
 eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
-      all: [eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral],
+      all: [
+        eYo.T3.Expr.shortstringliteral,
+        eYo.T3.Expr.shortformattedliteral,
+        eYo.T3.Expr.shortbytesliteral
+      ],
       init: eYo.T3.Expr.shortstringliteral,
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
@@ -214,19 +218,19 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
-        var F = (xre, type) => {
+        var F = (xre, type, formatted) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
             O.prefix_p = m.prefix || ''
             O.delimiter_p = m.delimiter || "'"
             O.content_p = m.content || ''
-            O.subtype_p = type
+            O.subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
         }
-        if (F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral) ||
-        F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral) ||
+        if (F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortformattedliteral) ||
+        F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortformattedliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
           this.owner.removeError(eYo.Key.VALUE)
@@ -241,6 +245,13 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         var content = this.owner.content_p
         if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
           this.set('' + prefix + delimiter + content + delimiter)
+        }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.shortformattedliteral) {
+          this.change(`f''`)
+        } else {
+          this.change(`''`)
         }
       },
       xml: {
@@ -276,9 +287,14 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   }
 })
 
-eYo.DelegateSvg.Expr.shortstringliteral = eYo.DelegateSvg.Expr.shortbytesliteral = eYo.DelegateSvg.Expr.shortliteral
-eYo.DelegateSvg.Manager.register('shortstringliteral')
-eYo.DelegateSvg.Manager.register('shortbytesliteral')
+;[
+  'shortstringliteral',
+  'shortformattedliteral',
+  'shortbytesliteral',
+].forEach(t => {
+  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.shortliteral
+  eYo.DelegateSvg.Manager.register(t)
+})
 
 /**
  * The type and connection depend on the properties prefix, value and variant.
@@ -397,7 +413,11 @@ goog.provide('eYo.DelegateSvg.Expr.longliteral')
 eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
-      all: [eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral],
+      all: [
+        eYo.T3.Expr.longstringliteral,
+        eYo.T3.Expr.longformattedliteral,
+        eYo.T3.Expr.longbytesliteral
+      ],
       init: eYo.T3.Expr.longstringliteral
     },
     delimiter: {
@@ -410,19 +430,19 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
-        var F = (xre, type) => {
+        var F = (xre, type, formatted) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
             O.prefix_p = m.prefix || ''
             O.delimiter_p = m.delimiter || "'''"
             O.content_p = m.content || ''
-            O.subtype_p = type
+            O.subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
         }
-        if (F(eYo.XRE.longstringliteralSingle, eYo.T3.Expr.longstringliteral) ||
-        F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral) ||
+        if (F(eYo.XRE.longstringliteralSingle, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longformattedliteral) ||
+        F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longformattedliteral) ||
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
           this.owner.removeError(eYo.Key.VALUE)
@@ -430,11 +450,20 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
           this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Expr.longformattedliteral) {
+          this.change(`f''''''`)
+        } else {
+          this.change(`''''''`)
+        }
       }
     }
   },
   output: {
-    check: eYo.T3.Expr.longstringliteral
+    check: /** @suppress globalThis */ function () {
+      return [this.b_eyo.subtype_p]
+    }
   }
 })
 
@@ -456,9 +485,14 @@ eYo.DelegateSvg.Expr.longliteral.prototype.validateComponents = function(kvargs)
   (!!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.T3.Expr.longstringliteral)
 }
 
-eYo.DelegateSvg.Expr.longstringliteral = eYo.DelegateSvg.Expr.longbytesliteral = eYo.DelegateSvg.Expr.longliteral
-eYo.DelegateSvg.Manager.register('longstringliteral')
-eYo.DelegateSvg.Manager.register('longbytesliteral')
+;[
+  'longstringliteral',
+  'longformattedliteral',
+  'longbytesliteral',
+].forEach(t => {
+  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.longliteral
+  eYo.DelegateSvg.Manager.register(t)
+})
 
 eYo.DelegateSvg.Literal.T3s = [
   eYo.T3.Expr.shortliteral,

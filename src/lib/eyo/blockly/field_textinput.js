@@ -450,7 +450,7 @@ goog.inherits(eYo.FieldVariable, eYo.FieldInput)
  */
 eYo.FieldVariable.prototype.getPythonText_ = function () {
   var candidate = this.text_? this.text_ : ''
-  return !XRegExp.match(candidate, /\s/) && candidate || 'MISSING NAME'
+  return !XRegExp.match(candidate, /\s/) && candidate || (!this.eyo.optional_ && 'MISSING NAME')
 }
 
 /**

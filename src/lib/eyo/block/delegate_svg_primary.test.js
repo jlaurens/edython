@@ -157,6 +157,391 @@ describe('Basic slots incog', function() {
     })  
   })
 })
+/*
+NONE, // identifier alone
+        eYo.Key., // foo(…)
+        eYo.Key., // foo[…]
+        eYo.Key., // foo as bar
+        eYo.Key., // foo : bar
+        eYo.Key., // foo : bar = …
+        eYo.Key.
+        */
+
+describe('Basic variants and slot incogs', function() {
+  [
+    ['NONE', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
+    ['CALL_EXPR', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'n_ary', 'Nslicing', 'Nalias'],
+    ['SLICING', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias'],
+    ['ALIASED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'alias'],
+    ['ANNOTATED', 'target', 'Nholder', 'Ndotted', 'annotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
+    ['ANNOTATED_VALUED', 'target', 'Nholder', 'Ndotted', 'annotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
+    ['TARGET_VALUED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
+    ['COL_VALUED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias']
+  ].some(Ts => {
+    it(`Slots incog status by variant ${Ts[0]}`, function() {
+      var b = eYo.Test.new_block('identifier')
+      b.eyo.variant_p = eYo.Key[Ts[0]]
+      eYo.Test.assert_incog(b, Ts)
+      b.dispose()
+    })  
+  })
+})
+
+describe('Copy/Paste by data', function() {
+  it('data: dotted', function() {
+    var b = eYo.Test.new_block('identifier')
+    chai.assert(b.eyo.dotted_p === 0, `BAD DEFAULT DOTTED ${b.eyo.dotted_p}`)
+    console.error(eYo.Xml.blockToDom(b))
+    eYo.Test.assert_incog(b, ['target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    b.eyo.dotted_p = 1
+    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_data_save(b, 'dotted', 0)
+    eYo.Test.assert_data_save(b, 'dotted', 1)
+    eYo.Test.assert_data_save(b, 'dotted', 2)
+    eYo.Test.assert_data_save(b, 'dotted', 3)
+    b.dispose()
+  })
+  it('data: holder', function() {
+    var b = eYo.Test.new_block('identifier')
+    b.eyo.holder_p = 'TEST'
+    eYo.Test.assert_incog(b, ['target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_data_save(b, 'holder', 'TEST2', true)
+    b.eyo.dotted_p = 1
+    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_data_save(b, 'holder', 'TEST3')
+    eYo.Test.assert_data_save(b, 'holder', '')
+    b.dispose()
+  })
+  var f = (k, variant, values) => {
+    it(`data: ${k}`, function() {
+      var b = eYo.Test.new_block('identifier')
+      eYo.Test.assert_data_save(b, k, values[0], true)
+      b.eyo.variant_p = eYo.Key[variant] || variant
+      values.forEach(v => {
+        eYo.Test.assert_data_save(b, k, v)
+      })
+      b.dispose()
+    })  
+  }
+  f('alias', 'ALIASED', ['TEST', 'TEST2', ''])
+  f('annotated', 'ANNOTATED', ['TEST', 'TEST2', ''])
+  f('ary', 'CALL_EXPR', [0, 1, 2, 3, Infinity])
+  f('mandatory', 'CALL_EXPR', [0, 1, 2, 3, Infinity])
+})
+
+describe('Primary bind fields', function() {
+  // depending what you connect, the type may change
+  // we do not manage the data content here
+  [
+    'holder',
+    'dotted',
+    'target',
+    'value',
+    'annotated',
+    'alias'
+  ].forEach(k => {
+    it(`bind field: ${k}`, function() {
+      eYo.Test.assert_bind_field('identifier', k)
+    })  
+  })
+  ;[
+    'n_ary',
+    'slicing'
+  ].forEach(k => {
+    it(`bind field: ${k}`, function() {
+      eYo.Test.assert_bind_field('identifier', k, true)
+    })  
+  })
+})
+
+/*
+    holder,
+    dotted,
+    target,
+    annotated,
+    value,
+    n_ary,
+    slicing,
+    alias
+*/
+describe('Primary slots', function() {
+  // depending what you connect, the type may change
+  // we do not manage the data content here
+  // it('Slot: holder/dotted', function() {
+  //   var b = eYo.Test.new_block('identifier')
+  //   var a = eYo.Test.new_block('identifier')
+  //   eYo.Test.assert_slot_connect(b, 'holder', a)
+  //   eYo.Test.assert_block(b, 'identifier')
+  //   eYo.Test.assert_block(a, 'identifier')
+  //   a.eyo.target_p = 'a'
+  //   chai.assert(a.eyo.target_s.fields.bind.getText() === 'a', `SYNCHRONIZE FAILED for target bind field in ${a.type}`)
+  //   chai.assert(a.eyo.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
+  //   chai.assert(a.eyo.data.target.get() === 'a', 'FAILED')
+  //   eYo.Test.assert_code(a, 'a')
+  //   b.eyo.target_p = 'b'
+  //   eYo.Test.assert_code(b, 'b')
+  //   b.eyo.dotted_p = 1
+  //   eYo.Test.assert_code(b, 'a.b')
+  //   eYo.Test.assert_block(b, 'dotted_name')
+  //   b.eyo.dotted_p = 2
+  //   eYo.Test.assert_code(b, '..b')
+  //   eYo.Test.assert_block(b, 'parent_module')
+  //   eYo.Test.assert_data_key(b, 'target', '')
+  //   eYo.Test.assert_code(b, '..b')
+  //   b.eyo.target_p = ''
+  //   eYo.Test.assert_code(b, '..')
+  //   eYo.Test.assert_block(b, 'parent_module')
+  //   b.eyo.target_p = 'b'
+  //   b.eyo.dotted_p = 1
+  //   eYo.Test.assert_code(b, 'a.b')
+  //   eYo.Test.assert_block(b, 'dotted_name')
+  //   a.eyo.variant_p = eYo.Key.CALL_EXPR
+  //   eYo.Test.assert_code(b, 'a().b')
+  //   eYo.Test.assert_block(b, 'attributeref')
+  //   b.dispose()
+  // })
+  // it ('Slot target', function () {
+  //   var a = eYo.Test.new_block('identifier')
+  //   var b = eYo.Test.new_block('identifier')
+  //   a.eyo.target_p = 'a'
+  //   eYo.Test.assert_code(a, 'a')
+  //   b.eyo.target_p = 'b'
+  //   a.eyo.target_t.eyo.lastConnect(b)
+  //   eYo.Test.assert_code(a, 'b')
+  //   var c = eYo.Test.new_block('identifier')
+  //   c.eyo.target_p = 'c'
+  //   a.eyo.target_t.eyo.lastConnect(c)
+  //   eYo.Test.assert_code(a, 'b,c')
+  //   b.dispose()
+  //   eYo.Test.assert_code(a, 'c')
+  //   c.dispose()
+  //   eYo.Test.assert_code(a, 'a')
+  //   a.dispose()
+  // })
+  // it('Slot annotated', function () {
+  //   var a = eYo.Test.new_block('identifier')
+  //   a.eyo.target_p = 'a'
+  //   eYo.Test.assert_code(a, 'a')
+  //   eYo.Test.assert_data_key(a, 'variant', eYo.Key.ANNOTATED)
+  //   a.eyo.variant_p = eYo.Key.ANNOTATED
+  //   eYo.Test.assert_code(a, 'a:expr')
+  //   a.eyo.annotated_p = 'fal ba la'
+  //   eYo.Test.assert_code(a, 'a:falbala')
+  //   var b = eYo.Test.new_block('a_expr')
+  //   b.eyo.lhs_p = 'lhs'
+  //   b.eyo.rhs_p = 'rhs'
+  //   eYo.Test.assert_code(b, 'lhs+rhs')
+  //   a.eyo.annotated_s.connect(b)
+  //   eYo.Test.assert_code(a, 'a:lhs+rhs')
+  //   b.unplug()
+  //   eYo.Test.assert_code(a, 'a:falbala')
+  //   b.dispose()
+  //   a.dispose()
+  // })
+  ;[
+  // 'assignment_stmt',
+  // 'augmented_assignment_stmt',
+  // 'annotated_assignment_stmt',
+  // 'assignment_chain',
+  // 'identifier_valued',
+  // 'assignment_expr',
+  // 'identifier',
+  // 'identifier_annotated',
+  // 'augtarget_annotated',
+  // 'key_datum',
+  // 'identifier_valued',
+  // 'assignment_chain',
+  // 'assignment_expr',
+  // 'identifier_annotated_valued',
+  // 'attributeref',
+  // 'named_attributeref',
+  // 'dotted_name',
+  // 'parent_module',
+  // 'identifier_as',
+  // 'dotted_name_as',
+  // 'expression_as',
+  // 'subscription',
+  // 'named_subscription',
+  // 'slicing',
+  // 'named_slicing',
+  // 'call_expr',
+  // 'named_call_expr'
+  ].forEach(t => {
+    it(`assignment_value_list checks 1/2: ${t}`, function () {
+      var a = eYo.Test.new_block(t)
+      var m = a.eyo.value_t.eyo.model.list
+      var unique = m.unique(eYo.T3.Expr.assignment_value_list, a.type)
+      var check = m.check(eYo.T3.Expr.assignment_value_list, a.type)
+      var all = m.all(eYo.T3.Expr.assignment_value_list, a.type)
+      if(a.eyo.value_s.isIncog()) {
+        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
+        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
+        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
+      } else {
+        var f = (ra, str) => {
+          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str || ''}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra !== null, `UNEXPECTED NULL ${str || ''}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra.length !== 0, `MISSING ${str || ''}: ${a.type}, ${a.subtype}`)
+        }
+        f(unique, 'unique')
+        f(check, 'check')
+        f(all, 'all')
+        chai.assert(chai.expect(a.eyo.value_t.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
+        unique.forEach(tt => {
+          var b = eYo.Test.new_block(tt)
+          if (tt === eYo.T3.Expr.assignment_chain) {
+            var c = eYo.Test.new_block(tt)
+            c.eyo.variant_p = eYo.Key.SLICING
+            chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+          }
+          if (b.type === tt) {
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            b.dispose()
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+          } else {
+            // console.error('NO TEST FOR', tt)
+            b.dispose()
+          }
+        })
+        // check.forEach(tt => {
+        //   var b = eYo.Test.new_block(tt)
+        //   if (tt === eYo.T3.Expr.assignment_chain) {
+        //     var c = eYo.Test.new_block(tt)
+        //     c.eyo.variant_p = eYo.Key.SLICING
+        //     chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+        //   }
+        //   if (b.type === tt) {
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
+        //     chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 3)
+        //     b.dispose()
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
+        //   } else {
+        //     // console.error('NO TEST FOR', tt)
+        //     b.dispose()
+        //   }
+        // })
+      }
+      a.dispose()
+    })
+    it(`assignment_value_list checks 2/2: ${t}`, function () {
+      var a = eYo.Test.new_block(t)
+      var m = a.eyo.value_t.eyo.model.list
+      var unique = m.unique(eYo.T3.Expr.assignment_value_list, a.type)
+      var check = m.check(eYo.T3.Expr.assignment_value_list, a.type)
+      var all = m.all(eYo.T3.Expr.assignment_value_list, a.type)
+      if(a.eyo.value_s.isIncog()) {
+        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
+        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
+        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
+      } else {
+        // var f = (ra, str) => {
+        //   chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${a.type}, ${a.subtype}`)
+        //   chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${a.type}, ${a.subtype}`)
+        //   chai.assert(ra.length !== 0, `MISSING ${str}: ${a.type}, ${a.subtype}`)
+        // }
+        // f(unique, 'unique')
+        // f(check, 'check')
+        // f(all, 'all')
+        // chai.assert(chai.expect(a.eyo.value_t.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
+        // chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
+        // unique.forEach(tt => {
+        //   var b = eYo.Test.new_block(tt)
+        //   if (tt === eYo.T3.Expr.assignment_chain) {
+        //     var c = eYo.Test.new_block(tt)
+        //     c.eyo.variant_p = eYo.Key.SLICING
+        //     chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+        //   }
+        //   if (b.type === tt) {
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
+        //     chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
+        //     b.dispose()
+        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
+        //   } else {
+        //     // console.error('NO TEST FOR', tt)
+        //     b.dispose()
+        //   }
+        // })
+        check.forEach(tt => {
+          var b = eYo.Test.new_block(tt)
+          if (tt === eYo.T3.Expr.assignment_chain) {
+            var c = eYo.Test.new_block(tt)
+            c.eyo.variant_p = eYo.Key.SLICING
+            chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+          }
+          if (b.type === tt) {
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+            eYo.Test.assert_input_length(a.eyo.value_t, 3)
+            b.dispose()
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+          } else {
+            // console.error('NO TEST FOR', tt)
+            b.dispose()
+          }
+        })
+      }
+      a.dispose()
+    })
+  })
+  // it('Slot value', function () {
+  //   var a = eYo.Test.new_block('identifier')
+  //   a.eyo.target_p = 'a'
+  //   eYo.Test.assert_code(a, 'a')
+  //   eYo.Test.assert_data_key(a, 'variant', eYo.Key.TARGET_VALUED)
+  //   a.eyo.variant_p = eYo.Key.TARGET_VALUED
+  //   eYo.Test.assert_block(a, 'identifier_valued')
+  //   eYo.Test.assert_code(a, 'a=expression')
+  //   a.eyo.value_p = 'value'
+  //   eYo.Test.assert_code(a, 'a=value')
+  //   var b = eYo.Test.new_block('identifier')
+  //   b.eyo.target_p = 'b'
+  //   eYo.Test.assert_code(b, 'b')
+  //   a.eyo.value_t.eyo.lastConnect(b)
+  //   eYo.Test.assert_code(a, 'a=b')
+  //   var c = eYo.Test.new_block('identifier')
+  //   c.eyo.target_p = 'c'
+  //   eYo.Test.assert_code(c, 'c')
+  //   // console.error(a.eyo.value_t.inputList[0].connection.check_)
+  //   // console.error(a.eyo.value_t.inputList[1].connection.check_)
+  //   // console.error(a.eyo.value_t.inputList[2].connection.check_)
+  //   chai.assert(a.eyo.value_t.eyo.lastConnect(c), 'MISSED')
+  //   eYo.Test.assert_code(a, 'a=b,c')
+  //   a.eyo.variant_p = eYo.Key.ANNOTATED
+  //   eYo.Test.assert_code(a, 'a:expr')
+  //   a.eyo.variant_p = eYo.Key.ANNOTATED_VALUED
+  //   eYo.Test.assert_code(a, 'a:expr=b,c')
+  //   a.eyo.variant_p = eYo.Key.TARGET_VALUED
+  //   eYo.Test.assert_code(a, 'a=b,c')
+  //   b.unplug()
+  //   eYo.Test.assert_code(a, 'a=c')
+  //   c.eyo.variant_p = eYo.Key.TARGET_VALUED
+  //   eYo.Test.assert_block(c, 'identifier_valued') // c is unique
+  //   eYo.Test.assert_code(a, 'a=c=expression')
+  //   eYo.Test.assert_input_length(a.eyo.value_t, 1)
+  //   c.eyo.variant_p = eYo.Key.SLICING // c is no longer unique
+  //   eYo.Test.assert_block(c, 'named_subscription')
+  //   eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>]')
+  //   eYo.Test.assert_input_length(a.eyo.value_t, 3)
+  //   chai.assert(a.eyo.value_t.eyo.lastConnect(b), 'MISSED')
+  //   eYo.Test.assert_input_length(a.eyo.value_t, 5)
+  //   eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>],b')
+  //   chai.assert(a.eyo.value_t.inputList[4].eyo.connect(c), 'MISSED')
+  //   eYo.Test.assert_code(a, 'a=b,c[<MISSINGEXPRESSION>]')
+  //   eYo.Test.assert_input_length(a.eyo.value_t, 5)    
+  //   b.dispose()
+  //   b = eYo.Test.new_block('yield_expr')
+  //   chai.assert(a.eyo.value_t.inputList[1].eyo.connect(b), 'MISSED')
+  //   eYo.Test.assert_input_length(a.eyo.value_t, 1)
+  //   chai.assert(!c.outputConnection.eyo.t_eyo)
+  //   c.dispose()
+  //   a.dispose()
+  // })
+})
 
 // describe('Primary', function() {
 //   it('types', function() {
@@ -222,14 +607,14 @@ describe('Basic slots incog', function() {
 //   })
 // })
 
-// describe('Primary(value_list)', function() {
+// describe('Primary(assignment_value_list)', function() {
 //   // it('basic', function() {
-//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
+//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_value_list)
 //   //   assert(b, 'MISSED')
 //   //   b.dispose()
 //   // })
 //   // it('void unwrapped', function() {
-//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
+//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_value_list)
 //   //   assert(b, 'MISSED')
 //   //   assert(b.inputList.length === 1)
 //   //   var check = b.inputList[0].connection.check_
@@ -472,53 +857,58 @@ describe('Basic slots incog', function() {
 //   })
 // })
 
-// describe('Primary(annotated)', function() {
-//   it('basic', function() {
-//     var f = t => {
-//       var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr[t])
-//       assert(b, `MISSED ${eYo.T3.Expr[t]}`)
-//       assert(b.type === eYo.T3.Expr.identifier_annotated, `MISSED ${eYo.T3.Expr[t]} === eYo.T3.Expr.identifier_annotated`)
-//       assert(b.eyo.variant_p === eYo.Key.ANNOTATED, `FAIL VARIANT ${b.eyo.variant_p} === ${eYo.Key.ANNOTATED}`)
-//       b.dispose()
-//     }
-//     f('identifier_annotated')
-//     f('augtarget_annotated')
-//     f('key_datum')
-//   })
-//   it('basic', function() {
-//     var f = (t, bb, ttt) => {
-//       var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr[t])
-//       assert(b, `MISSED ${eYo.T3.Expr[t]}`)
-//       assert(b.eyo.variant_p === eYo.Key.ANNOTATED, `FAIL VARIANT ${b.eyo.variant_p} === ${eYo.Key.ANNOTATED}`)
-//       b.eyo.target_s.connect(bb)
-//       assert(b.eyo.target_t === bb, `MISSED CONNECTION`)
-//       assert(b.type === eYo.T3.Expr[ttt || t], `MISSED ${b.type} === ${eYo.T3.Expr[ttt || t]} (${ttt || t})`)
-//       b.dispose()
-//     }
-//     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     assert(bb, `MISSED ${eYo.T3.Expr.identifier}`)
-//     f('identifier_annotated', bb, 'identifier_annotated')
-//     bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     assert(bb, `MISSED ${eYo.T3.Expr.identifier}`)
-//     f('augtarget_annotated', bb, 'identifier_annotated')
-//     bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     assert(bb, `MISSED ${eYo.T3.Expr.identifier}`)
-//     f('key_datum', bb, 'identifier_annotated')
-//     bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     assert(bb, `MISSED ${eYo.T3.Expr.identifier}`)
-//     bb.eyo.name_d.set('y')
-//     assert(bb.eyo.name_d.get() === 'y', `MISSED NAME 1`)
-//     assert(bb.eyo.target_p === 'y', `MISSED NAME 2`)
-//     bb.eyo.dotted_d.set(1)
-//     assert(bb.eyo.dotted_d.get() === 1, `MISSED DOTTED 1`)
-//     assert(bb.eyo.dotted_p === 1, `MISSED DOTTED 2`)
-//     bb.eyo.holder_d.set('x')
-//     assert(bb.eyo.holder_d.get() === 'x', `MISSED HOLDER 1`)
-//     assert(bb.eyo.holder_p === 'x', `MISSED HOLDER 2`)
-//     assert(bb.type === eYo.T3.Expr.dotted_name, `MISSED ${bb.type} === ${eYo.T3.Expr.dotted_name}`)
-//     assert(eYo.T3.Expr.Check.augtarget.indexOf(bb.type) >= 0, 'MISSED AUGTARGET')
-//     f('identifier_annotated', bb, 'augtarget_annotated')
-//     bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
-//     f('identifier_annotated', bb, 'key_datum')
-//   })
-// })
+describe('Primary(annotated)', function() {
+  ;[
+    'identifier_annotated',
+    'augtarget_annotated',
+    'key_datum'
+  ].forEach(t => {
+    it(`basic annotated ${t}`, function() {
+      var b = eYo.Test.new_block(t)
+      eYo.Test.assert_variant(b, 'ANNOTATED')
+      b.dispose()
+    })
+  })
+  it('basic connections', function() {
+    var f = (t, bb, ttt, cant_connect) => {
+      var b = eYo.Test.new_block(t)
+      if (cant_connect) {
+        chai.assert(!b.eyo.target_t.eyo.lastConnect(bb))
+      } else {
+        chai.assert(b.eyo.target_t.eyo.lastConnect(bb))
+        chai.assert(b.eyo.target_s.unwrappedTarget === bb.eyo, `MISSED CONNECTION`)
+        eYo.Test.assert_block(b, ttt || t)
+        bb.unplug()
+      }
+      b.dispose()
+    }
+    var bb = eYo.Test.new_block('identifier')
+    f('identifier_annotated', bb, 'identifier_annotated')
+    f('augtarget_annotated', bb, 'identifier_annotated')
+    f('key_datum', bb, 'identifier_annotated')
+    bb.eyo.target_d.set('y')
+    bb.eyo.dotted_d.set(1)
+    bb.eyo.holder_d.set('x')
+    eYo.Test.assert_block(bb, 'dotted_name')
+    chai.assert(eYo.T3.Expr.Check.augtarget.indexOf(bb.type) >= 0, 'MISSED AUGTARGET')
+    f('identifier_annotated', bb, 'augtarget_annotated')
+    bb.dispose()
+    bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
+    f('identifier_annotated', bb, 'key_datum', true)
+    bb.dispose()
+  })
+})
+
+describe ('Primary data by key', function () {
+  ;[
+    ['target', 'y'],
+    ['dotted', 2],
+    ['holder', 'x'],
+  ].forEach(args => {
+    it (`${args[0]} -> ${args[1]}`, function () {
+      var b = eYo.Test.new_block('identifier')
+      eYo.Test.assert_data_key(b, args[0], args[1])
+      b.dispose()
+    })
+  })
+})

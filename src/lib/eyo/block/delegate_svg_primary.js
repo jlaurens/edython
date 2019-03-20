@@ -219,18 +219,30 @@ eYo.DelegateSvg.Expr.assignment_target_list.prototype.getSubtype = function () {
 }
 
 /**
+ * Did connect this block's connection to another connection.
+ * @param {!Blockly.Connection} connection what has been connected in the block
+ * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
+ * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
+ */
+eYo.DelegateSvg.Expr.assignment_target_list.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+  eYo.DelegateSvg.Expr.assignment_target_list.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+  var c8n = this.outputConnection.targetConnection
+  var s = c8n && c8n.eyo.slot
+  s && s.bindField.setVisible(!s.unwrappedTarget)
+}
+
+/**
  * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
 eYo.DelegateSvg.Expr.assignment_target_list.prototype.didDisconnect = function (connection, oldTargetC8n) {
   eYo.DelegateSvg.Expr.assignment_target_list.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
-  if (this.block_.inputList.some(input => input.connection && input.connection.targetConnection)) {
-    // there is another connected block
-    return
-  }
-  var x = this.parent
-  x && (x = x.target_s) && x.bindField.setVisible(true)
+  var eyo = this.parent
+  eyo && eyo.updateProfile()
+  var c8n = this.outputConnection.targetConnection
+  var s = c8n && c8n.eyo.slot
+  s && s.bindField.setVisible(!s.unwrappedTarget)
 }
 
 /**
@@ -421,8 +433,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.requiredIncog = newValue > 0
-        this.owner.holder_d.requiredIncog = newValue === 1
-        this.owner.updateProfile()
+        var O = this.owner
+        O.holder_d.requiredIncog = newValue === 1
+        O.updateProfile()
+        O.target_s.bindField.eyo.optional_ = newValue > 0
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         var p = this.owner.profile_p
@@ -681,7 +695,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var type = eYo.T3.Profile.get(newValue)
-        return type.raw === eYo.T3.Expr.builtin__name
+        return type === eYo.T3.Profile.void
+        || type.raw === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.parent_module
         || type.expr === eYo.T3.Expr.dotted_name
@@ -755,7 +770,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
-            if (this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
+            var profile = this.owner.profile_p
+            if (profile && profile.p5e && (profile.p5e.raw === eYo.T3.Expr.known_identifier)) {
               return
             }
             this.save(element, opt)
@@ -796,7 +812,8 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.owner.profile_p && this.owner.variant_p === eYo.Key.CALL_EXPR && this.get()) {
-            if (this.owner.profile_p && this.owner.profile_p.p5e.raw === eYo.T3.Expr.known_identifier) {
+            var profile = this.owner.profile_p
+            if (profile && profile.p5e && (profile.p5e.raw === eYo.T3.Expr.known_identifier)) {
               return
             }
             this.save(element, opt)
@@ -870,12 +887,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         accept: /** @suppress {globalThis} */ function (attribute) {
           return attribute === 'targets'
         } // for old name
-      },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        this.connection.sourceBlock_.eyo.updateProfile()
-      },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        this.connection.sourceBlock_.eyo.updateProfile()
       },
       plugged: eYo.T3.Expr.primary,
       hole_value: 'expr',
@@ -1373,32 +1384,37 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       eYo.T3.Expr.assignment_expr
     ]
   } else if (profile.variant === eYo.Key.TARGET_VALUED) {
+    // Is the target connected to something that is not an identifier ?
+    if (this.target_t.inputList.length < 4 && !this.target_s.isIncog()) {
+      // only one connected input
+      var eyo = this.target_s.unwrappedTarget
+      return !eyo || eyo.type === eYo.T3.Expr.identifier
+      ? [eYo.T3.Expr.identifier_valued]
+      : [eYo.T3.Expr.assignment_chain]
+    }
     // if the first value is connected to a defined primary
     var eyo = this.value_s.unwrappedTarget
     if (eyo && !this.value_s.isIncog()) {
-      // if the definition is not a list
-      return this.value_t.inputList.length < 4 ? [
+      if ([
         eYo.T3.Expr.identifier_valued,
+        eYo.T3.Expr.identifier_anotated_valued,
         eYo.T3.Expr.assignment_chain
-      ] :[
-        eYo.T3.Expr.assignment_chain
-      ]
-    }
-    // if the parent is a [expr_]value_list
-    if ((eyo = this.output)) {
-      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.assignment_value_list || eyo.type === eYo.T3.Expr.assignment_value_list) {
+      ].indexOf(eyo.type) >= 0) {
         return [
           eYo.T3.Expr.assignment_chain
         ]
       }
-      return [
-        eYo.T3.Expr.identifier_valued
-      ]  
     }
-    // standalone block
+    // if the parent is a value_list
+    if ((eyo = this.output)) {
+      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.assignment_value_list) {
+        return [
+          eYo.T3.Expr.assignment_chain
+        ]
+      }
+    }
     return [
-      eYo.T3.Expr.identifier_valued,
-      eYo.T3.Expr.assignment_chain
+      eYo.T3.Expr.identifier_valued
     ]
   } else if (profile.variant === eYo.Key.ANNOTATED_VALUED) {
     return [
@@ -1632,12 +1648,66 @@ eYo.DelegateSvg.List.makeSubclass('value_list', function () {
   }
 })
 
-;[
-  'assignment_value_list'
-].forEach(k => {
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.value_list
-  eYo.DelegateSvg.Manager.register(k)
-})
+
+// /**
+//  * expression_value_list
+//  */
+// eYo.DelegateSvg.List.makeSubclass('expression_value_list', {
+//   list: (() => {
+//     var me = {
+//       mandatory: 1,
+//       unique: (type, subtype) => {
+//         return subtype
+//         && {
+//           [eYo.T3.Stmt.assignment_stmt]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
+//           [eYo.T3.Expr.augmented_assignment_stmt]: [eYo.T3.Expr.yield_expr],
+//           [eYo.T3.Expr.annotated_assignment_stmt]: [eYo.T3.Expr.yield_expr],
+//           [eYo.T3.Expr.assignment_chain]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued]
+//         } [subtype] || []
+//       },
+//       check: (type, subtype) => {
+//         return subtype
+//         && {
+//           [eYo.T3.Stmt.assignment_stmt]: eYo.T3.Expr.Check.starred_item,
+//           [eYo.T3.Expr.assignment_chain]: eYo.T3.Expr.Check.starred_item,
+//           [eYo.T3.Stmt.augmented_assignment_stmt]: eYo.T3.Expr.Check.expression,
+//           [eYo.T3.Stmt.annotated_stmt]: eYo.T3.Expr.Check.expression,
+//           [eYo.T3.Stmt.annotated_assignment_stmt]: eYo.T3.Expr.Check.expression
+//         } [subtype] || []
+//       },
+//       consolidator: eYo.Consolidator.List,
+//       mandatory: 0,
+//       presep: ','
+//     }
+//     var all = Object.create(null)
+//     ;[eYo.T3.Stmt.assignment_stmt,
+//       eYo.T3.Expr.assignment_chain,
+//       eYo.T3.Stmt.augmented_assignment_stmt,
+//       eYo.T3.Stmt.annotated_stmt,
+//       eYo.T3.Stmt.annotated_assignment_stmt].forEach(k => {
+//       var ra = goog.array.concat(me.unique(null, k), me.check(null, k))
+//       all[k] = ra.length ? ra : null
+//     })
+//     me.all = (type, subtype) => {
+//       return (subtype && all[subtype]) || null
+//     }
+//     return me
+//   }) ()
+// })
+
+// /**
+//  * getSubtype.
+//  * The default implementation just returns the variant,
+//  * when it exists.
+//  * Subclassers will use it to return the correct type
+//  * depending on their actual inner state.
+//  * This should be used instead of direct block querying.
+//  * @return {String} The subtype of the receiver's block.
+//  */
+// eYo.DelegateSvg.Expr.value_list.prototype.getSubtype = function () {
+//   var t = this.block_.outputConnection.targetBlock()
+//   return (t && (this.subtype_ = t.type)) || this.subtype_
+// }
 
 /**
  * Class for a DelegateSvg, base call statement block.

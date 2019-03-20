@@ -91,6 +91,23 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return t && t.eyo
     }
   },
+  unwrappedConnection: {
+    get () {
+      // scheme:
+      // this = output <- input <- wrapped source block <- output <- input
+      var ans = this.connection
+      var t
+      while ((t = ans.eyo.t_eyo) && t.wrapped_) {
+        var c8n = t.outputConnection
+        if (c8n) {
+          ans = c8n
+        } else {
+          break
+        }
+      }
+      return ans
+    }
+  },
   bindField: {
     get () {
       if (this.slot) {
@@ -721,8 +738,9 @@ Blockly.RenderedConnection.prototype.highlight = (() => {
  * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection) {
-  if (this.sourceBlock_.workspace.isDragging()) {
-    // Don't move blocks around while the user is doing the same.
+  if (!this.sourceBlock_.workspace || this.sourceBlock_.workspace.isDragging()) {
+    // Don't move blocks around while the user is doing the same
+    // or when they have been removed.
     return
   }
   // Move the root block.
@@ -731,12 +749,17 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
     // Don't move blocks around in a flyout.
     return
   }
+  if (!rootBlock.workspace) {
+    // Well we are in the process of deleting a block.
+    // Beware of undo redo management.
+    return
+  }
   var reverse = false
   if (!rootBlock.isMovable()) {
     // Can't bump an uneditable block away.
     // Check to see if the other block is movable.
     rootBlock = staticConnection.getSourceBlock().getRootBlock()
-    if (!rootBlock.isMovable()) {
+    if (!rootBlock.workspace || !rootBlock.isMovable()) {
       return
     }
     // Swap the connections and move the 'static' connection instead.
@@ -938,7 +961,8 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
         eYo.Do.tryFinally(() => {
           childC8n.eyo.willConnect(parentC8n)
           eYo.Do.tryFinally(() => {
-            parent.eyo.willConnect(parentC8n, childC8n)
+            var wrapper = parent.eyo // .wrapper
+            wrapper.willConnect(parentC8n, childC8n)
             eYo.Do.tryFinally(() => {
               child.eyo.willConnect(childC8n, parentC8n)
               eYo.Do.tryFinally(() => {
@@ -950,10 +974,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 if (parentC8n.eyo.wrapped_) {
                   if (child.eyo.hasSelect()) {
                     child.unselect()
-                    var P = parent.eyo.wrapper
-                    if (P) {
-                      P.block_.select()
-                    }
+                    parent.eyo.block_.select()
                   }
                   child.eyo.makeBlockWrapped()
                 } else {
@@ -1024,8 +1045,6 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 }
                 child.eyo.setIncog(parentC8n.eyo.isIncog())
               }, () => { // finally
-                !parentC8n.eyo.wrapped_ && parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
-                !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
                 if (parentC8n.eyo.startOfStatement) {
                   child.eyo.incrementChangeCount()
                 }
@@ -1035,15 +1054,17 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
               })
             }, () => { // finally
               // next must absolutely run because of possible undo management
-              parent.eyo.didConnect(parentC8n, oldChildC8n, oldParentC8n)
+              wrapper.didConnect(parentC8n, oldChildC8n, oldParentC8n)
             })
           }, () => { // finally
+            !parentC8n.eyo.wrapped_ && parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
             // next must absolutely run because of possible undo management
             parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
           })
         }, () => { // finally
           childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
           eYo.Connection.connectedParentC8n = undefined
+          !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
           if (parent.eyo.isReady) {
             child.eyo.beReady()
           }
@@ -1061,7 +1082,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
  * @private
  * @suppress {accessControls}
  */
-Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
+Blockly.RenderedConnection.prototype.disconnectInternal_ = (() => {
   // Closure
   var disconnectInternal_ = Blockly.RenderedConnection.prototype.disconnectInternal_
 
@@ -1076,14 +1097,15 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
     }
     child.eyo.changeWrap(
       () => { // `this` is catched
-        parent.eyo.wrapper.changeWrap( // the parent may be a wrapped block
+        var wrapper = parent.eyo // .wrapper
+        wrapper.changeWrap( // the parent may be a wrapped block
           () => { // `this` is catched
             eYo.Do.tryFinally(() => {
               parentC8n.eyo.willDisconnect()
               eYo.Do.tryFinally(() => {
                 childC8n.eyo.willDisconnect()
                 eYo.Do.tryFinally(() => {
-                  parent.eyo.willDisconnect(parentC8n)
+                  wrapper.willDisconnect(parentC8n)
                   eYo.Do.tryFinally(() => {
                     child.eyo.willDisconnect(childC8n)
                     eYo.Do.tryFinally(() => {
@@ -1115,20 +1137,20 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function () {
                     child.eyo.didDisconnect(childC8n, parentC8n)
                   })
                 }, () => { // finally
-                  parent.eyo.didDisconnect(parentC8n, childC8n)
+                  wrapper.didDisconnect(parentC8n, childC8n)
                 })
               }, () => { // finally
                 childC8n.eyo.didDisconnect(parentC8n)
               })
             }, () => { // finally
-              parentC8n.eyo.didDisconnect(childC8n)
+              parentC8n.eyo.unwrappedConnection.eyo.didDisconnect(childC8n)
             })
           }
         )
       }
     )
   }
-} ()
+}) ()
 
 /**
  * Does the given block have one and only one connection point that will accept

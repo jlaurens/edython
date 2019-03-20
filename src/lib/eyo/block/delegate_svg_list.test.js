@@ -1,107 +1,134 @@
-var assert = chai.assert
+describe('Enclosure(Basic)', function () {
+  it(`Prepare`, function() {
+    chai.assert(eYo.Key.PAR !== undefined, `MISSING eYo.Key.PAR`)
+    chai.assert(eYo.Key.SQB !== undefined, `MISSING eYo.Key.SQB`)
+    chai.assert(eYo.Key.BRACE !== undefined, `MISSING eYo.Key.BRACE`)
+  })
+  ;[
+    ['enclosure', 'PAR', 'parenth_form'],
+    ['parenth_form', 'PAR'],
+    ['list_display', 'SQB'],
+    ['void_dict_display', 'BRACE'],
+    ['set_display', 'BRACE', 'void_dict_display'],
+    ['dict_display', 'BRACE', 'void_dict_display'],
+    ['one_set_display', 'BRACE', 'void_dict_display'],
+    ['one_dict_display', 'BRACE', 'void_dict_display'],
+    ['bracket_target_list', 'SQB', 'list_display'],
+    ['parenth_target_list', 'PAR', 'parenth_form']
+  ].forEach(args => {
+    it(`${args[0]}/${args[1]}`, function() {
+      var b = eYo.Test.new_block(args[0], args[2] || args[0])
+      eYo.Test.assert_variant(b, args[1])
+      b.dispose()
+    })
+  })
+  ;[
+    ['parenth_form', 'PAR'],
+    ['list_display', 'SQB'],
+    ['void_dict_display', 'BRACE']
+  ].forEach(args => {
+    it(`${args[1]}/${args[0]}`, function() {
+      var b = eYo.Test.new_block('enclosure')
+      b.eyo.variant_p = eYo.Key[args[1]]
+      eYo.Test.assert_variant(b, args[1])
+      eYo.Test.assert_block(b, args[0])
+      b.dispose()
+    })
+  })
+})
 
-describe('Enclosure', function() {
-  it(`Enclosure: prepare`, function() {
-    assert(eYo.Key.PAR !== undefined, `MISSING eYo.Key.PAR`)
-    assert(eYo.Key.SQB !== undefined, `MISSING eYo.Key.SQB`)
-    assert(eYo.Key.BRACE !== undefined, `MISSING eYo.Key.BRACE`)
-  })
-  it(`Enclosure: '()'`, function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.parenth_form)
-    assert(b, `MISSING enclosure`)
-    assert(b.eyo.variant_p === eYo.Key.PAR, `MISSING ${b.eyo.variant_p} === ${eYo.Key.PAR}`)
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.enclosure)
-    assert(b, `MISSING enclosure`)
-    assert(b.eyo.variant_p === eYo.Key.PAR, `MISSING ${b.eyo.variant_p} === ${eYo.Key.PAR}`)
-    assert(b.type === eYo.T3.Expr.parenth_form, `MISSING ${b.type} === ${eYo.T3.Expr.parenth_form}`)
-    // can I connection a comprehension block ?
-    var bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    var input = b.inputList[0]
-    assert(input.eyo.connect(bb1), 'MISSING connection')
+describe('Enclosure connections', function() {
+  it(`'()'`, function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.enclosure)
+    console.error('TYPE', b.type)
+    eYo.Test.assert_block(b, `parenth_form`) // default type
+    eYo.Test.assert_variant(b, 'PAR')
+    // can I connect a comprehension block ?
+    eYo.Test.assert_input_length(b, 1)
+    var bb1 = eYo.Test.new_block('comprehension')
+    chai.assert(b.eyo.lastConnect(bb1))
     // this is a unique object:
-    assert(b.inputList.length === 1, `MISSED Unique 1 ${b.inputList.length}`)
-    var bb2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.yield_expr)
-    assert(input.eyo.connect(bb2), 'MISSING connection')
-    assert(b.inputList.length === 1, `MISSED Unique 2 ${b.inputList.length}`)
+    eYo.Test.assert_input_length(b, 1)
+    // replace with another unique object:
+    var bb2 = eYo.Test.new_block('yield_expr')
+    chai.assert(b.eyo.lastConnect(bb2))
+    eYo.Test.assert_input_length(b, 1)
+    chai.assert(!bb1.outputConnection.t_eyo)
     bb1.dispose()
+    // replace with a non unique object:
     var bb3 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
-    assert(input.eyo.connect(bb3), 'MISSING connection')
-    assert(b.inputList.length === 3, `MISSED NON Unique ${b.inputList.length}`)
-    assert(input.eyo.connect(bb2), 'MISSING connection')
-    assert(b.inputList.length === 1, `MISSED Unique 3 ${b.inputList.length}`)
-    assert(input.eyo.connect(bb3), 'MISSING connection')
-    assert(b.inputList.length === 3, `MISSED NON Unique ${b.inputList.length}`)
-    assert(!b.inputList[0].eyo.connect(bb2), 'UNEXPECTED connection')
-    assert(!b.inputList[2].eyo.connect(bb2), 'UNEXPECTED connection')
+    eYo.Test.assert_block(bb3, 'integer')
+    chai.assert(b.eyo.lastConnect(bb3))
+    eYo.Test.assert_input_length(b, 3)
+    chai.assert(!bb2.outputConnection.t_eyo)
+    chai.assert(!b.inputList[0].eyo.connect(bb2), 'UNEXPECTED connection')
+    chai.assert(!b.inputList[2].eyo.connect(bb2), 'UNEXPECTED connection')
+    bb2.dispose()
     bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 124)
-    assert(b.inputList[2].eyo.connect(bb1), 'MISSING connection')
+    eYo.Test.assert_block(bb1, 'integer')
+    chai.assert(b.eyo.lastConnect(bb1))
+    eYo.Test.assert_input_length(b, 5)
     bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 241)
-    assert(b.inputList[0].eyo.connect(bb1), 'MISSING connection')
+    eYo.Test.assert_block(bb1, 'integer')
+    chai.assert(b.inputList[0].eyo.connect(bb1), 'MISSING connection')
+    eYo.Test.assert_input_length(b, 7)
+    b.dispose()
   })
-  it(`Enclosure: '[]'`, function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.list_display)
-    assert(b, `MISSING enclosure`)
-    assert(b.eyo.variant_p === eYo.Key.SQB, `MISSING ${b.eyo.variant_p} === ${eYo.Key.SQB}`)
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.enclosure)
-    assert(b, `MISSING enclosure`)
-    b.eyo.variant_p = eYo.Key.SQB
-    assert(b.eyo.variant_p === eYo.Key.SQB, `MISSING ${b.eyo.variant_p} === ${eYo.Key.SQB}`)
-    assert(b.type === eYo.T3.Expr.list_display, `MISSING ${b.type} === ${eYo.T3.Expr.list_display}`)
+  it(`'[]'`, function() {
+    
   })
-  it(`Enclosure: '{}'`, function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.set_display)
-    assert(b, `MISSING enclosure`)
-    assert(b.type === eYo.T3.Expr.one_dict_display, `MISSING ${b.type} === ${eYo.T3.Expr.one_dict_display}`)
-    assert(b.eyo.variant_p === eYo.Key.BRACE, `MISSING ${b.eyo.variant_p} === ${eYo.Key.BRACE}`)
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.dict_display)
-    assert(b, `MISSING enclosure`)
-    assert(b.type === eYo.T3.Expr.one_dict_display, `MISSING ${b.type} === ${eYo.T3.Expr.one_dict_display}`)
-    assert(b.eyo.variant_p === eYo.Key.BRACE, `MISSING ${b.eyo.variant_p} === ${eYo.Key.BRACE}`)
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.enclosure)
-    assert(b, `MISSING enclosure`)
-    b.eyo.variant_p = eYo.Key.BRACE
-    assert(b.eyo.variant_p === eYo.Key.BRACE, `MISSING ${b.eyo.variant_p} === ${eYo.Key.BRACE}`)
-    assert(b.type === eYo.T3.Expr.one_dict_display, `MISSING ${b.type} === ${eYo.T3.Expr.one_dict_display}`)
-    var bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
-    var input = b.inputList[0]
-    assert(input.eyo.connect(bb1), 'MISSING connection')
-    assert(b.type === eYo.T3.Expr.set_display, `MISSING ${b.type} === ${eYo.T3.Expr.set_display}`)
-    // this is a unique object:
-    assert(b.inputList.length === 1, `MISSED Unique 1 ${b.inputList.length}`)
-    var bb2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.dict_comprehension)
-    assert(bb2.type === eYo.T3.Expr.comprehension, `MISSING ${bb2.type} === ${eYo.T3.Expr.comprehension}`)
-    assert(input.eyo.connect(bb2), 'MISSING connection')
-    assert(b.inputList.length === 1, `MISSED Unique 2 ${b.inputList.length}`)
-    assert(b.type === eYo.T3.Expr.set_display, `MISSING ${b.type} === ${eYo.T3.Expr.dict_display}`)
+  it(`'{}'`, function() {
+    var b = eYo.Test.new_block('void_dict_display')
+    // connect a unique block
+    var bb1 = eYo.Test.new_block('comprehension')
+    eYo.Test.assert_input_length(b, 1)
+    chai.assert(b.eyo.lastConnect(bb1))
+    eYo.Test.assert_input_length(b, 1)
+    eYo.Test.assert_block(b, 'set_display')
+    // replace by any other unique
+    var list = b.eyo.model.list
+    var unique = list.unique(b.type)
+    unique.forEach(t => {
+      var bb2 = eYo.Test.new_block(t)
+      chai.assert(b.eyo.lastConnect(bb2))
+      eYo.Test.assert_input_length(b, 1)
+      chai.assert(!bb1.outputConnection.t_eyo)
+      bb1.dispose()
+      bb1 = bb2
+    })
+    var bb2 = eYo.Test.new_block('dict_comprehension')
+    chai.assert(bb2.eyo.expression_s.connect(eYo.Test.new_block('key_datum')))
+    b.eyo.lastConnect(bb2)
+    bb1.dispose()
+    eYo.Test.assert_block(b, 'dict_display')
+    b.dispose()
   })
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.parenth_form)
-    assert(b, `MISSING enclosure`)
-    assert(b.eyo.variant_p === eYo.Key.PAR, `MISSING ${b.eyo.variant_p} === ${eYo.Key.PAR}`)
-    var bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.comprehension)
+    var b = eYo.Test.new_block('parenth_form')
+    var bb1 = eYo.Test.new_block('comprehension')
     var input = b.inputList[0]
-    assert(input.eyo.connect(bb1), 'MISSING connection')
+    chai.assert(input.eyo.connect(bb1), 'MISSING connection')
     b.eyo.variant_p === eYo.Key.SQB
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
     b.eyo.variant_p === eYo.Key.BRACE
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
     b.eyo.variant_p === eYo.Key.PAR
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
     b.eyo.variant_p === eYo.Key.BRACE
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
     b.eyo.variant_p === eYo.Key.SQB
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
     b.eyo.variant_p === eYo.Key.PAR
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    b.dispose()
   })
   it(`Enclosure: '() -> {}'`, function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.parenth_form)
-    assert(b, `MISSING enclosure`)
-    assert(b.eyo.variant_p === eYo.Key.PAR, `MISSING ${b.eyo.variant_p} === ${eYo.Key.PAR}`)
+    var b = eYo.Test.new_block('parenth_form')
     var bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
     var input = b.inputList[0]
-    assert(input.eyo.connect(bb1), 'MISSING connection')
+    chai.assert(input.eyo.connect(bb1), 'MISSING connection')
     b.eyo.variant_p === eYo.Key.BRACE
-    assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    chai.assert(input.eyo.target === bb1, 'LOST CONNECTION')
+    b.dispose()
   })
 })

@@ -84,28 +84,28 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
   shortstringliteralSingle: XRegExp(
-    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> ')
     (?<content>
       (?:${eYo.XRE[eYo.Key._CHARACTER_SINGLE]})*
     )
     \\k<delimiter>$`, 'x'),
   shortstringliteralDouble: XRegExp(
-    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> ")
     (?<content>
       (?:${eYo.XRE[eYo.Key._CHARACTER_DOUBLE]})*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralSingle: XRegExp(
-    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> '{3})
     (?<content>
       (?:${eYo.XRE[eYo.Key._LONG_CHARACTER_SINGLE]})*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralDouble: XRegExp(
-    `^(?<prefix> r|u|R|U|f|F|fr|Fr|fR|FR|rf|rF|Rf|RF)?
+    `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> "{3})
     (?<content>
       (?:${eYo.XRE[eYo.Key._LONG_CHARACTER_DOUBLE]})*
