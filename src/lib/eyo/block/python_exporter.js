@@ -53,9 +53,13 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
 /**
  * Insert a newline_ array.
  */
-eYo.Py.Exporter.prototype.newline_ = function () {
-  this.line && this.lines.push(this.line.join(''))
-  this.line = [this.indent]
+eYo.Py.Exporter.prototype.newline_ = function (block) {
+  if (block && block.eyo.isRightStatement) {
+    this.line.push(';')
+  } else {
+    this.line && this.lines.push(this.line.join(''))
+    this.line = [this.indent]
+  }
   this.isFirst = true
   this.shouldSeparateField = false
   this.wasSeparatorField = false
@@ -122,6 +126,61 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
  * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
+eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
+  var input, target
+  var eyo = block.eyo
+  var is_deep = !eyo.isControl && opt.is_deep
+  if (!block.outputConnection) {
+    if (block.disabled) {
+      this.indent_('# ')
+      this.line.push('# ')
+    }
+  }
+  this.exportExpression_(block, opt)
+  if ((input = eyo.inputSuite)) {
+    var f = () => {
+      if ((target = input.eyo.target)) {
+        eYo.Do.tryFinally(() => {
+          opt.is_deep = true
+          this.newline_(target)
+          this.exportBlock_(target, opt)
+        }, () => {
+          opt.is_deep = is_deep
+        })
+      } else {
+        this.newline_()
+        this.line.push('MISSING STATEMENT')
+        this.missing_statements.push(input.connection)
+      }
+    }
+    if (block.eyo.isControl) {
+      f()
+    } else {
+      eYo.Do.makeWrapper(() => {
+        this.indent_()
+      }, () => {
+        this.dedent_()
+      })(f)
+    }
+  }
+  if (!block.outputConnection) {
+    if (block.disabled) {
+      this.dedent_()
+    }
+  }
+  if (is_deep && (target = block.eyo.nextBlock)) {
+    this.newline_(target)
+    this.exportBlock_(target, opt)
+  }  
+}
+
+/**
+ * Convert the block to python code.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
+ * @return some python code
+ */
 eYo.Py.Exporter.prototype.export = function (block, opt) {
   this.line = undefined
   this.lines = []
@@ -131,8 +190,6 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
   this.use_print = false
   this.use_turtle = false
   opt = opt || {}
-  var eyo = block.eyo
-  var is_deep = !eyo.isControl && opt.is_deep
   this.missing_statements = []
   this.missing_expressions = []
   this.newline_()
@@ -140,47 +197,7 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
     eYo.Do.tryFinally(() => {
       ++this.depth
       this.expression = []
-      var input, target
-      if (!block.outputConnection) {
-        if (block.disabled) {
-          this.indent_('# ')
-          this.line.push('# ')
-        }
-      }
-      this.exportExpression_(block, opt)
-      if ((input = eyo.inputSuite)) {
-        var f = () => {
-          if ((target = input.eyo.target)) {
-            eYo.Do.tryFinally(() => {
-              opt.is_deep = true
-              this.export(target, opt)
-            }, () => {
-              opt.is_deep = is_deep
-            })
-          } else {
-            this.newline_()
-            this.line.push('MISSING STATEMENT')
-            this.missing_statements.push(input.connection)
-          }
-        }
-        if (eyo.isControl) {
-          f()
-        } else {
-          eYo.Do.makeWrapper(() => {
-            this.indent_()
-          }, () => {
-            this.dedent_()
-          })(f)
-        }
-      }
-      if (!block.outputConnection) {
-        if (block.disabled) {
-          this.dedent_()
-        }
-      }
-      if (is_deep && (target = block.eyo.nextBlock)) {
-        this.export(target, opt)
-      }  
+      this.exportBlock_(block, opt)
     }, () => {
       --this.depth
     })
@@ -188,6 +205,8 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
   if (!this.depth) {
     this.newline_()
     return this.lines.join('\n')
+  } else {
+    console.error('UNEXPECTED DEPTH', this.depth)
   }
 }
 
@@ -287,15 +306,14 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
 }
 
 /**
- * Get the text from this field as displayed on screen.  May differ from getText
- * due to ellipsis, and other formatting.
- * @return {string} Currently displayed text.
+ * Get the text from this field for use in python code.
+ * @return {string} text.
  * @private
  * @suppress{accessControls}
  */
 Blockly.Field.prototype.getPythonText_ = Blockly.Field.prototype.getText
 
-Object.defineProperties(eYo.DelegateSvg.prototype, {
+Object.defineProperties(eYo.Delegate.prototype, {
   toString: {
     get () {
       return new eYo.Py.Exporter().export(this.block_, {is_deep: true})
@@ -303,7 +321,8 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
   },
   toLinearString: {
     get () {
-      return this.toString.replace(/[\s\r\n]+/g, '')
+      var s = this.toString
+      return s.replace(/(?:\r\n|\r|\n)/g, ';').replace(/\s+/g, '')
     }
   }
 })

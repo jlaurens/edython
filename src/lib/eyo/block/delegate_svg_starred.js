@@ -257,8 +257,7 @@ eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
 eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
   return this.modifier_p
 }
-
-var ra = [
+;[
   'star_expr',
   'expression_star',
   'expression_star_star',
@@ -267,10 +266,7 @@ var ra = [
   'parameter_star',
   'parameter_star_star',
   'or_expr_star_star'
-]
-ra.forEach(
-    key => {
-      eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.Starred
-      eYo.DelegateSvg.Manager.register(key)
-    }
-  )
+].forEach(key => {
+  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.Starred
+  eYo.DelegateSvg.Manager.register(key)
+})

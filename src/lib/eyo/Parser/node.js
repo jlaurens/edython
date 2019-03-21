@@ -164,6 +164,16 @@ Object.defineProperties(eYo.Node.prototype, {
     get () {
       return this.n_child[4]
     }
+  },
+  n5: {
+    get () {
+      return this.n_child[5]
+    }
+  },
+  n6: {
+    get () {
+      return this.n_child[6]
+    }
   }
 })
 

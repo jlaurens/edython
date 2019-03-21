@@ -349,18 +349,11 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
     return me
   }) (),
   output: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check: /** @suppress {globalThis} */ function (type, subtype) {
       // retrieve the block delegate
       var b_eyo = this.b_eyo
-      var target = b_eyo.firstTarget
       var p5e = b_eyo.profile_p
-      if (target) {
-        return [p5e]
-      }
-      if (p5e === eYo.T3.Expr.set_display || p5e === eYo.T3.Expr.dict_display ) {
-        return [eYo.T3.Expr.set_display, eYo.T3.Expr.dict_display]
-      }
-      return [p5e]
+      return b_eyo.getOutCheck(p5e)
     }
   }
 })
@@ -441,6 +434,12 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
     return [eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form]
   } else if (profile === eYo.T3.Expr.bracket_target_list) {
     return [eYo.T3.Expr.bracket_target_list, eYo.T3.Expr.list_display]
+  } else if (profile === eYo.T3.Expr.void_dict_display) {
+    return [profile, eYo.T3.Expr.dict_display]
+  } else if (profile === eYo.T3.Expr.one_dict_display) {
+    return [profile, eYo.T3.Expr.dict_display]
+  } else if (profile === eYo.T3.Expr.one_set_display) {
+    return [profile, eYo.T3.Expr.set_display]
   } else {
     return [profile]
   }

@@ -502,17 +502,16 @@ eYo.Content.prototype.setupModel = (() => {
 }) ()
 
 /**
- * Get the text from this field as displayed on screen.  May differ from getText
- * due to ellipsis, and other formatting.
- * @return {string} Currently displayed text.
+ * Get the text from this field to be use in python code.
+ * @return {string} text.
  * @private
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.getPythonText_ = function () {
   var eyo = this.eyo
   if (!eyo.model.canEmpty && (this.eyo.placeholder || (this.eyo.data && this.eyo.data.placeholder))) {
-    var t = this.placeholderText().trim()
-    this.eyo.data && this.eyo.data.change(t)
+    var t = `missing ${this.placeholderText().trim()}`.toUpperCase()
+    // this.eyo.data && this.eyo.data.change(t)
     return t
   }
   return eYo.FieldTextInput.superClass_.getPythonText_.call(this)

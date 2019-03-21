@@ -20,6 +20,14 @@
  * Care must be taken to be sure that there is indeed a change,
  * to avoid infinite loops.
  * For that purpose, reentrancy is managed with a lock.
+ * There is a very interesting improvement concerning data.
+ * It consists in separating the values from the methods.
+ * The owner will just propose a value storage and the data
+ * object is just a set of methods that apply to this value storage.
+ * That way, we can change the data object at runtime,
+ * for example, we can have different data objects before and
+ * after initialization time. There would be no didChange nor consolidate
+ * before initialization time, only at the end.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -192,7 +200,7 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
 eYo.Data.prototype.internalSet = function (newValue) {
   if (goog.isString(newValue)) {
     var x = this.model[newValue]
-    !x || (newValue = x)
+    !x || !goog.isFucntion(newValue) || (newValue = x)
   }
   if (goog.isNumber(newValue)) {
     x = this.getAll()
@@ -448,40 +456,34 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
  * @return undefined
  */
 eYo.Data.decorateChange = function (key, do_it) {
+  var model_lock = 'model_' + key
   return function(before, after) {
-    var lock = key + '_lock'
-    if (this[lock]) {
-      if (goog.isFunction(do_it)) {
-        do_it.apply(this, arguments)
-      }
-      return
-    }
-    this[lock] = true
-    var model_lock = 'model_' + lock
-    if (this[model_lock]) {
-      // no built in behaviour yet
-      return
-    }
-    try {
+    if (!this.reentrant[model_lock]) {
       var model_do_it = this.model[key]
       if (goog.isFunction(model_do_it)) {
         try {
-          this[model_lock] = true
+          this.reentrant[model_lock] = true
           model_do_it.apply(this, arguments)
         } catch (err) {
           console.error(err)
           throw err
         } finally {
-          delete this[model_lock]
+          delete this.reentrant[model_lock]
         }
         return
       }
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      delete this[lock]
-    }  
+    }
+    if (!this.reentrant[key] && goog.isFunction(do_it)) {
+      try {
+        this.reentrant[key] = true
+        do_it.apply(this, arguments)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        delete this.reentrant[key]
+      }
+    }
   }
 }
 

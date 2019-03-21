@@ -428,7 +428,7 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
 }
 
 /**
- * Find the next connected input.
+ * Make the current index unique.
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.makeUnique = function (io) {

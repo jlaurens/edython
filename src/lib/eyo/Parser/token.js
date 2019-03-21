@@ -88,7 +88,7 @@ Object.defineProperties(eYo.TKN, {
         "NAME",
         "NUMBER",
         "STRING",
-        "new_LINE",
+        "NEWLINE",
         "INDENT",
         "DEDENT",
         "LPAR",

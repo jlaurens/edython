@@ -1,6 +1,6 @@
 console.log('RUNNING PRIMARY BLOCK TESTS')
 
-describe('Each primary block type', function() {
+describe('Each Primary block type', function() {
   [
     ['identifier', 'identifier', 'NONE'],
     ['identifier_annotated', 'identifier_annotated', 'ANNOTATED'],
@@ -67,10 +67,49 @@ describe('Primary dom', function() {
   })
 })
 
+describe ('XML', function () {
+  it ('identifier', function () {
+    var dom = `<x eyo="identifier" target="a"></x>`
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    eYo.Test.assert_block(b, 'identifier')
+    eYo.Test.assert_code(b, 'a')
+    b.dispose()
+  })
+  it ('…', function () {
+    var dom = `<x eyo="…" target="a"></x>`
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    eYo.Test.assert_block(b, 'identifier')
+    eYo.Test.assert_code(b, 'a')
+    b.dispose()
+  })
+  it ('data: name -> target', function() {
+    var dom = `<x eyo="identifier" name="abc"></x>`
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    eYo.Test.assert_block(b, 'identifier')
+    eYo.Test.assert_code(b, 'abc')
+    b.dispose()
+  })
+  it ('slot: targets -> target', function() {
+    // var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'abc')
+    // var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
+    // eYo.Test.assert_list_connect(b, 'target', bb)
+    // bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b')
+    // eYo.Test.assert_list_connect(b, 'target', bb)
+    // bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'c')
+    // eYo.Test.assert_list_connect(b, 'target', bb)
+    // console.error(eYo.Xml.blockToDom(b).outerHTML)
+    // b.dispose()
+    var dom = `<x eyo="…"><x eyo="list" slot="targets"><x eyo="…" slot="O" target="a"></x><x eyo="…" slot="f" target="b"></x><x eyo="…" slot="r" target="c"></x></x></x>`
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    eYo.Test.assert_block(b, 'assignment_chain')
+    eYo.Test.assert_code(b, 'a,b,c=MISSINGEXPRESSION')
+    b.dispose()
+  })
+})
 
 /*
  */
-describe('Basic copy/paste', function() {
+describe('Copy/Paste', function() {
   [
     'identifier',
     'identifier_annotated',
@@ -94,7 +133,7 @@ describe('Basic copy/paste', function() {
     'named_subscription',
     'named_slicing'
   ].some(t => {
-    it(`Copy/paste ${t}`, function() {
+    it(`Basic Copy/paste ${t}`, function() {
       var b = eYo.Test.new_block(t)
       var dom = eYo.Xml.blockToDom(b)
       var bb = eYo.DelegateSvg.newBlockReady(b.workspace, dom)
@@ -102,6 +141,42 @@ describe('Basic copy/paste', function() {
       bb.dispose()
       b.dispose()
     })  
+  })
+  var md = eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.identifier).data
+  var f = (k) => {
+    var w = {
+      holder: ['NONE', ['abc']],
+      dotted: ['NONE', [5]],
+      target: ['NONE', ['bcd']],
+      annotated: ['ANNOTATED', ['str']],
+      alias: ['ALIASED', ['Alias']],
+      value: ['TARGET_VALUED', ['Value']],
+      target: ['NONE', ['Target']],
+      ary: ['CALL_EXPR', [1]],
+      mandatory: ['CALL_EXPR', [2]]
+    }[k]
+    var b = eYo.Test.new_block('identifier')
+    b.eyo.variant_p = eYo.Key[w[0]]
+    eYo.Test.assert_data_key(b, k)
+    if (k === 'holder') {
+      b.eyo.dotted_p = 1
+    }
+    w[1].forEach(v => {
+      var d = b.eyo.data[k]
+      d.set(v)
+      var dom = eYo.Xml.blockToDom(b)
+      var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+      chai.assert(bb.eyo.data[k].get() === d.get(), `MISSED ${k} data ${bb.eyo.data[k].get()} === ${d.get()}`)
+      bb.dispose()
+    })
+    b.dispose()
+  }
+  Object.keys(md).forEach(k => {
+    if (md[k].xml !== false) {
+      it(`Copy/Paste data ${k}`, function () {
+        f(k)
+      })
+    }
   })
 })
 
@@ -128,27 +203,27 @@ describe('Primary variant', function() {
 // 
 describe('Basic slots incog', function() {
   [
-    ['identifier', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['identifier_annotated', 'target', 'Nholder', 'Ndotted', 'annotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['augtarget_annotated', 'target', 'Nholder', 'Ndotted', 'annotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['key_datum', 'target', 'Nholder', 'Ndotted', 'annotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['identifier_valued', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['assignment_chain', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['assignment_expr', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['identifier_annotated_valued', 'target', 'Nholder', 'Ndotted', 'annotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['attributeref', 'target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['named_attributeref', 'target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['dotted_name', 'target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['parent_module', 'target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['identifier_as', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'alias'],
-    ['dotted_name_as', 'target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'alias'],
-    ['expression_as', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'alias'],
-    ['call_expr', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'n_ary', 'Nslicing', 'Nalias'],
-    ['named_call_expr', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'n_ary', 'Nslicing', 'Nalias'],
-    ['named_subscription', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias'],
-    ['subscription', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias'],
-    ['named_slicing', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias'],
-    ['slicing', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias']
+    ['identifier', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['identifier_annotated', 'target', 'Xholder', 'Xdotted', 'annotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['augtarget_annotated', 'target', 'Xholder', 'Xdotted', 'annotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['key_datum', 'target', 'Xholder', 'Xdotted', 'annotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['identifier_valued', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['assignment_chain', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['assignment_expr', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['identifier_annotated_valued', 'target', 'Xholder', 'Xdotted', 'annotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['attributeref', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['named_attributeref', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['dotted_name', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['parent_module', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['identifier_as', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'alias'],
+    ['dotted_name_as', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'alias'],
+    ['expression_as', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'alias'],
+    ['call_expr', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'],
+    ['named_call_expr', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'],
+    ['named_subscription', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'],
+    ['subscription', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'],
+    ['named_slicing', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'],
+    ['slicing', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias']
   ].some(Ts => {
     it(`Slots incog status ${Ts[0]}`, function() {
       var b = eYo.Test.new_block(Ts[0])
@@ -169,14 +244,14 @@ NONE, // identifier alone
 
 describe('Basic variants and slot incogs', function() {
   [
-    ['NONE', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['CALL_EXPR', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'n_ary', 'Nslicing', 'Nalias'],
-    ['SLICING', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'slicing', 'Nalias'],
-    ['ALIASED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'alias'],
-    ['ANNOTATED', 'target', 'Nholder', 'Ndotted', 'annotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['ANNOTATED_VALUED', 'target', 'Nholder', 'Ndotted', 'annotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['TARGET_VALUED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias'],
-    ['COL_VALUED', 'target', 'Nholder', 'Ndotted', 'Nannotated', 'value', 'Nn_ary', 'Nslicing', 'Nalias']
+    ['NONE', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['CALL_EXPR', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'],
+    ['SLICING', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'],
+    ['ALIASED', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'alias'],
+    ['ANNOTATED', 'target', 'Xholder', 'Xdotted', 'annotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['ANNOTATED_VALUED', 'target', 'Xholder', 'Xdotted', 'annotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['TARGET_VALUED', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['COL_VALUED', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias']
   ].some(Ts => {
     it(`Slots incog status by variant ${Ts[0]}`, function() {
       var b = eYo.Test.new_block('identifier')
@@ -191,10 +266,9 @@ describe('Copy/Paste by data', function() {
   it('data: dotted', function() {
     var b = eYo.Test.new_block('identifier')
     chai.assert(b.eyo.dotted_p === 0, `BAD DEFAULT DOTTED ${b.eyo.dotted_p}`)
-    console.error(eYo.Xml.blockToDom(b))
-    eYo.Test.assert_incog(b, ['target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     b.eyo.dotted_p = 1
-    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     eYo.Test.assert_data_save(b, 'dotted', 0)
     eYo.Test.assert_data_save(b, 'dotted', 1)
     eYo.Test.assert_data_save(b, 'dotted', 2)
@@ -204,10 +278,10 @@ describe('Copy/Paste by data', function() {
   it('data: holder', function() {
     var b = eYo.Test.new_block('identifier')
     b.eyo.holder_p = 'TEST'
-    eYo.Test.assert_incog(b, ['target', 'Nholder', 'Ndotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     eYo.Test.assert_data_save(b, 'holder', 'TEST2', true)
     b.eyo.dotted_p = 1
-    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Nannotated', 'Nvalue', 'Nn_ary', 'Nslicing', 'Nalias'])
+    eYo.Test.assert_incog(b, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     eYo.Test.assert_data_save(b, 'holder', 'TEST3')
     eYo.Test.assert_data_save(b, 'holder', '')
     b.dispose()
@@ -265,114 +339,119 @@ describe('Primary bind fields', function() {
     alias
 */
 describe('Primary slots', function() {
+  this.timeout(5000)
   // depending what you connect, the type may change
   // we do not manage the data content here
-  // it('Slot: holder/dotted', function() {
-  //   var b = eYo.Test.new_block('identifier')
-  //   var a = eYo.Test.new_block('identifier')
-  //   eYo.Test.assert_slot_connect(b, 'holder', a)
-  //   eYo.Test.assert_block(b, 'identifier')
-  //   eYo.Test.assert_block(a, 'identifier')
-  //   a.eyo.target_p = 'a'
-  //   chai.assert(a.eyo.target_s.fields.bind.getText() === 'a', `SYNCHRONIZE FAILED for target bind field in ${a.type}`)
-  //   chai.assert(a.eyo.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
-  //   chai.assert(a.eyo.data.target.get() === 'a', 'FAILED')
-  //   eYo.Test.assert_code(a, 'a')
-  //   b.eyo.target_p = 'b'
-  //   eYo.Test.assert_code(b, 'b')
-  //   b.eyo.dotted_p = 1
-  //   eYo.Test.assert_code(b, 'a.b')
-  //   eYo.Test.assert_block(b, 'dotted_name')
-  //   b.eyo.dotted_p = 2
-  //   eYo.Test.assert_code(b, '..b')
-  //   eYo.Test.assert_block(b, 'parent_module')
-  //   eYo.Test.assert_data_key(b, 'target', '')
-  //   eYo.Test.assert_code(b, '..b')
-  //   b.eyo.target_p = ''
-  //   eYo.Test.assert_code(b, '..')
-  //   eYo.Test.assert_block(b, 'parent_module')
-  //   b.eyo.target_p = 'b'
-  //   b.eyo.dotted_p = 1
-  //   eYo.Test.assert_code(b, 'a.b')
-  //   eYo.Test.assert_block(b, 'dotted_name')
-  //   a.eyo.variant_p = eYo.Key.CALL_EXPR
-  //   eYo.Test.assert_code(b, 'a().b')
-  //   eYo.Test.assert_block(b, 'attributeref')
-  //   b.dispose()
-  // })
-  // it ('Slot target', function () {
-  //   var a = eYo.Test.new_block('identifier')
-  //   var b = eYo.Test.new_block('identifier')
-  //   a.eyo.target_p = 'a'
-  //   eYo.Test.assert_code(a, 'a')
-  //   b.eyo.target_p = 'b'
-  //   a.eyo.target_t.eyo.lastConnect(b)
-  //   eYo.Test.assert_code(a, 'b')
-  //   var c = eYo.Test.new_block('identifier')
-  //   c.eyo.target_p = 'c'
-  //   a.eyo.target_t.eyo.lastConnect(c)
-  //   eYo.Test.assert_code(a, 'b,c')
-  //   b.dispose()
-  //   eYo.Test.assert_code(a, 'c')
-  //   c.dispose()
-  //   eYo.Test.assert_code(a, 'a')
-  //   a.dispose()
-  // })
-  // it('Slot annotated', function () {
-  //   var a = eYo.Test.new_block('identifier')
-  //   a.eyo.target_p = 'a'
-  //   eYo.Test.assert_code(a, 'a')
-  //   eYo.Test.assert_data_key(a, 'variant', eYo.Key.ANNOTATED)
-  //   a.eyo.variant_p = eYo.Key.ANNOTATED
-  //   eYo.Test.assert_code(a, 'a:expr')
-  //   a.eyo.annotated_p = 'fal ba la'
-  //   eYo.Test.assert_code(a, 'a:falbala')
-  //   var b = eYo.Test.new_block('a_expr')
-  //   b.eyo.lhs_p = 'lhs'
-  //   b.eyo.rhs_p = 'rhs'
-  //   eYo.Test.assert_code(b, 'lhs+rhs')
-  //   a.eyo.annotated_s.connect(b)
-  //   eYo.Test.assert_code(a, 'a:lhs+rhs')
-  //   b.unplug()
-  //   eYo.Test.assert_code(a, 'a:falbala')
-  //   b.dispose()
-  //   a.dispose()
-  // })
+  it('Slot: holder/dotted', function() {
+    // as long as the dotted_p is 0, holder is ignored
+    var main = eYo.Test.new_block('identifier')
+    eYo.Test.assert_code(main, 'MISSINGNAME')
+    var hldr = eYo.Test.new_block('identifier')
+    eYo.Test.assert_slot_connect(main, 'holder', hldr)
+    eYo.Test.assert_block(hldr, 'identifier')
+    eYo.Test.assert_block(main, 'identifier')
+    hldr.eyo.target_p = 'a'
+    eYo.Test.assert_code(hldr, 'a')
+    chai.assert(hldr.eyo.target_p === 'a', 'FAILED')
+    chai.assert(hldr.eyo.target_s.fields.bind.getText() === 'a', `SYNCHRONIZE FAILED for target bind field in ${hldr.type}`)
+    chai.assert(hldr.eyo.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
+    main.eyo.target_p = 'b'
+    eYo.Test.assert_code(main, 'b')
+    main.eyo.dotted_p = 1 // things change here
+    eYo.Test.assert_block(main, 'dotted_name')
+    eYo.Test.assert_code(main, 'a.b')
+    main.eyo.dotted_p = 2
+    eYo.Test.assert_code(main, '..b')
+    eYo.Test.assert_block(main, 'parent_module')
+    eYo.Test.assert_data_key(main, 'target', '')
+    eYo.Test.assert_code(main, '..b')
+    main.eyo.target_p = ''
+    eYo.Test.assert_code(main, '..')
+    eYo.Test.assert_block(main, 'parent_module')
+    main.eyo.target_p = 'b'
+    main.eyo.dotted_p = 1
+    eYo.Test.assert_code(main, 'a.b')
+    eYo.Test.assert_block(main, 'dotted_name')
+    hldr.eyo.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.assert_code(main, 'a().b')
+    eYo.Test.assert_block(main, 'attributeref')
+    main.dispose()
+  })
+  it ('Slot target', function () {
+    var a = eYo.Test.new_block('identifier')
+    a.eyo.target_p = 'a'
+    eYo.Test.assert_code(a, 'a')
+    var b = eYo.Test.new_block('identifier')
+    b.eyo.target_p = 'b'
+    eYo.Test.assert_code(b, 'b')
+    eYo.Test.assert_list_connect(a, 'target', b)
+    eYo.Test.assert_block(a, 'identifier_valued')
+    eYo.Test.assert_code(a, 'b=MISSINGEXPRESSION')
+    var c = eYo.Test.new_block('identifier')
+    c.eyo.target_p = 'c'
+    a.eyo.target_t.eyo.lastConnect(c)
+    eYo.Test.assert_code(a, 'b,c=MISSINGEXPRESSION')
+    b.dispose()
+    eYo.Test.assert_code(a, 'c=MISSINGEXPRESSION')
+    c.dispose()
+    eYo.Test.assert_code(a, 'a=MISSINGEXPRESSION')
+    a.dispose()
+  })
+  it('Slot annotated', function () {
+    var a = eYo.Test.new_block('identifier')
+    a.eyo.target_p = 'a'
+    eYo.Test.assert_code(a, 'a')
+    eYo.Test.assert_data_key(a, 'variant', eYo.Key.ANNOTATED)
+    a.eyo.variant_p = eYo.Key.ANNOTATED
+    eYo.Test.assert_code(a, 'a:MISSINGEXPR')
+    a.eyo.annotated_p = 'fal ba la'
+    eYo.Test.assert_code(a, 'a:falbala')
+    var b = eYo.Test.new_block('a_expr')
+    b.eyo.lhs_p = 'lhs'
+    b.eyo.rhs_p = 'rhs'
+    eYo.Test.assert_code(b, 'lhs+rhs')
+    a.eyo.annotated_s.connect(b)
+    eYo.Test.assert_code(a, 'a:lhs+rhs')
+    b.unplug()
+    eYo.Test.assert_code(a, 'a:falbala')
+    b.dispose()
+    a.dispose()
+  })
   ;[
-  // 'assignment_stmt',
-  // 'augmented_assignment_stmt',
-  // 'annotated_assignment_stmt',
-  // 'assignment_chain',
-  // 'identifier_valued',
-  // 'assignment_expr',
-  // 'identifier',
-  // 'identifier_annotated',
-  // 'augtarget_annotated',
-  // 'key_datum',
-  // 'identifier_valued',
-  // 'assignment_chain',
-  // 'assignment_expr',
-  // 'identifier_annotated_valued',
-  // 'attributeref',
-  // 'named_attributeref',
-  // 'dotted_name',
-  // 'parent_module',
-  // 'identifier_as',
-  // 'dotted_name_as',
-  // 'expression_as',
-  // 'subscription',
-  // 'named_subscription',
-  // 'slicing',
-  // 'named_slicing',
-  // 'call_expr',
-  // 'named_call_expr'
+  'assignment_stmt',
+  'augmented_assignment_stmt',
+  'annotated_assignment_stmt',
+  'assignment_chain',
+  'identifier_valued',
+  'assignment_expr',
+  'identifier',
+  'identifier_annotated',
+  'augtarget_annotated',
+  'key_datum',
+  'identifier_valued',
+  'assignment_chain',
+  'assignment_expr',
+  'identifier_annotated_valued',
+  'attributeref',
+  'named_attributeref',
+  'dotted_name',
+  'parent_module',
+  'identifier_as',
+  'dotted_name_as',
+  'expression_as',
+  'subscription',
+  'named_subscription',
+  'slicing',
+  'named_slicing',
+  'call_expr',
+  'named_call_expr'
   ].forEach(t => {
-    it(`assignment_value_list checks 1/2: ${t}`, function () {
+    it(`value_list checks 1/2: ${t}`, function () {
       var a = eYo.Test.new_block(t)
       var m = a.eyo.value_t.eyo.model.list
-      var unique = m.unique(eYo.T3.Expr.assignment_value_list, a.type)
-      var check = m.check(eYo.T3.Expr.assignment_value_list, a.type)
-      var all = m.all(eYo.T3.Expr.assignment_value_list, a.type)
+      var unique = m.unique(eYo.T3.Expr.value_list, a.type)
+      var check = m.check(eYo.T3.Expr.value_list, a.type)
+      var all = m.all(eYo.T3.Expr.value_list, a.type)
       if(a.eyo.value_s.isIncog()) {
         chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
         chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
@@ -402,70 +481,10 @@ describe('Primary slots', function() {
             b.dispose()
             eYo.Test.assert_input_length(a.eyo.value_t, 1)
           } else {
-            // console.error('NO TEST FOR', tt)
+            // console.error('XO TEST FOR', tt)
             b.dispose()
           }
         })
-        // check.forEach(tt => {
-        //   var b = eYo.Test.new_block(tt)
-        //   if (tt === eYo.T3.Expr.assignment_chain) {
-        //     var c = eYo.Test.new_block(tt)
-        //     c.eyo.variant_p = eYo.Key.SLICING
-        //     chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
-        //   }
-        //   if (b.type === tt) {
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
-        //     chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 3)
-        //     b.dispose()
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
-        //   } else {
-        //     // console.error('NO TEST FOR', tt)
-        //     b.dispose()
-        //   }
-        // })
-      }
-      a.dispose()
-    })
-    it(`assignment_value_list checks 2/2: ${t}`, function () {
-      var a = eYo.Test.new_block(t)
-      var m = a.eyo.value_t.eyo.model.list
-      var unique = m.unique(eYo.T3.Expr.assignment_value_list, a.type)
-      var check = m.check(eYo.T3.Expr.assignment_value_list, a.type)
-      var all = m.all(eYo.T3.Expr.assignment_value_list, a.type)
-      if(a.eyo.value_s.isIncog()) {
-        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
-        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
-        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
-      } else {
-        // var f = (ra, str) => {
-        //   chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${a.type}, ${a.subtype}`)
-        //   chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${a.type}, ${a.subtype}`)
-        //   chai.assert(ra.length !== 0, `MISSING ${str}: ${a.type}, ${a.subtype}`)
-        // }
-        // f(unique, 'unique')
-        // f(check, 'check')
-        // f(all, 'all')
-        // chai.assert(chai.expect(a.eyo.value_t.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
-        // chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
-        // unique.forEach(tt => {
-        //   var b = eYo.Test.new_block(tt)
-        //   if (tt === eYo.T3.Expr.assignment_chain) {
-        //     var c = eYo.Test.new_block(tt)
-        //     c.eyo.variant_p = eYo.Key.SLICING
-        //     chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
-        //   }
-        //   if (b.type === tt) {
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
-        //     chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
-        //     b.dispose()
-        //     eYo.Test.assert_input_length(a.eyo.value_t, 1)
-        //   } else {
-        //     // console.error('NO TEST FOR', tt)
-        //     b.dispose()
-        //   }
-        // })
         check.forEach(tt => {
           var b = eYo.Test.new_block(tt)
           if (tt === eYo.T3.Expr.assignment_chain) {
@@ -480,7 +499,67 @@ describe('Primary slots', function() {
             b.dispose()
             eYo.Test.assert_input_length(a.eyo.value_t, 1)
           } else {
+            // console.error('XO TEST FOR', tt)
+            b.dispose()
+          }
+        })
+      }
+      a.dispose()
+    })
+    it(`value_list checks 2/2: ${t}`, function () {
+      var a = eYo.Test.new_block(t)
+      var m = a.eyo.value_t.eyo.model.list
+      var unique = m.unique(eYo.T3.Expr.value_list, a.type)
+      var check = m.check(eYo.T3.Expr.value_list, a.type)
+      var all = m.all(eYo.T3.Expr.value_list, a.type)
+      if(a.eyo.value_s.isIncog()) {
+        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
+        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
+        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
+      } else {
+        var f = (ra, str) => {
+          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra.length !== 0, `MISSING ${str}: ${a.type}, ${a.subtype}`)
+        }
+        f(unique, 'unique')
+        f(check, 'check')
+        f(all, 'all')
+        chai.assert(chai.expect(a.eyo.value_t.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
+        unique.forEach(tt => {
+          var b = eYo.Test.new_block(tt)
+          if (tt === eYo.T3.Expr.assignment_chain) {
+            var c = eYo.Test.new_block(tt)
+            c.eyo.variant_p = eYo.Key.SLICING
+            chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+          }
+          if (b.type === tt) {
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            b.dispose()
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+          } else {
             // console.error('NO TEST FOR', tt)
+            b.dispose()
+          }
+        })
+        check.forEach(tt => {
+          var b = eYo.Test.new_block(tt)
+          if (tt === eYo.T3.Expr.assignment_chain) {
+            var c = eYo.Test.new_block(tt)
+            c.eyo.variant_p = eYo.Key.SLICING
+            chai.assert(b.eyo.target_t.eyo.lastConnect(c), `MISSED TARGET ${tt}`)
+          }
+          if (b.type === tt) {
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+            chai.assert(a.eyo.value_t.eyo.lastConnect(b), `MISSED VALUE ${tt}`)
+            eYo.Test.assert_input_length(a.eyo.value_t, 3)
+            b.dispose()
+            eYo.Test.assert_input_length(a.eyo.value_t, 1)
+          } else {
+            // console.error('XO TEST FOR', tt)
             b.dispose()
           }
         })
@@ -488,376 +567,338 @@ describe('Primary slots', function() {
       a.dispose()
     })
   })
-  // it('Slot value', function () {
-  //   var a = eYo.Test.new_block('identifier')
-  //   a.eyo.target_p = 'a'
-  //   eYo.Test.assert_code(a, 'a')
-  //   eYo.Test.assert_data_key(a, 'variant', eYo.Key.TARGET_VALUED)
-  //   a.eyo.variant_p = eYo.Key.TARGET_VALUED
-  //   eYo.Test.assert_block(a, 'identifier_valued')
-  //   eYo.Test.assert_code(a, 'a=expression')
-  //   a.eyo.value_p = 'value'
-  //   eYo.Test.assert_code(a, 'a=value')
-  //   var b = eYo.Test.new_block('identifier')
-  //   b.eyo.target_p = 'b'
-  //   eYo.Test.assert_code(b, 'b')
-  //   a.eyo.value_t.eyo.lastConnect(b)
-  //   eYo.Test.assert_code(a, 'a=b')
-  //   var c = eYo.Test.new_block('identifier')
-  //   c.eyo.target_p = 'c'
-  //   eYo.Test.assert_code(c, 'c')
-  //   // console.error(a.eyo.value_t.inputList[0].connection.check_)
-  //   // console.error(a.eyo.value_t.inputList[1].connection.check_)
-  //   // console.error(a.eyo.value_t.inputList[2].connection.check_)
-  //   chai.assert(a.eyo.value_t.eyo.lastConnect(c), 'MISSED')
-  //   eYo.Test.assert_code(a, 'a=b,c')
-  //   a.eyo.variant_p = eYo.Key.ANNOTATED
-  //   eYo.Test.assert_code(a, 'a:expr')
-  //   a.eyo.variant_p = eYo.Key.ANNOTATED_VALUED
-  //   eYo.Test.assert_code(a, 'a:expr=b,c')
-  //   a.eyo.variant_p = eYo.Key.TARGET_VALUED
-  //   eYo.Test.assert_code(a, 'a=b,c')
-  //   b.unplug()
-  //   eYo.Test.assert_code(a, 'a=c')
-  //   c.eyo.variant_p = eYo.Key.TARGET_VALUED
-  //   eYo.Test.assert_block(c, 'identifier_valued') // c is unique
-  //   eYo.Test.assert_code(a, 'a=c=expression')
-  //   eYo.Test.assert_input_length(a.eyo.value_t, 1)
-  //   c.eyo.variant_p = eYo.Key.SLICING // c is no longer unique
-  //   eYo.Test.assert_block(c, 'named_subscription')
-  //   eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>]')
-  //   eYo.Test.assert_input_length(a.eyo.value_t, 3)
-  //   chai.assert(a.eyo.value_t.eyo.lastConnect(b), 'MISSED')
-  //   eYo.Test.assert_input_length(a.eyo.value_t, 5)
-  //   eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>],b')
-  //   chai.assert(a.eyo.value_t.inputList[4].eyo.connect(c), 'MISSED')
-  //   eYo.Test.assert_code(a, 'a=b,c[<MISSINGEXPRESSION>]')
-  //   eYo.Test.assert_input_length(a.eyo.value_t, 5)    
-  //   b.dispose()
-  //   b = eYo.Test.new_block('yield_expr')
-  //   chai.assert(a.eyo.value_t.inputList[1].eyo.connect(b), 'MISSED')
-  //   eYo.Test.assert_input_length(a.eyo.value_t, 1)
-  //   chai.assert(!c.outputConnection.eyo.t_eyo)
-  //   c.dispose()
-  //   a.dispose()
-  // })
+  it('Slot value', function () {
+    var a = eYo.Test.new_block('identifier')
+    a.eyo.target_p = 'a'
+    eYo.Test.assert_code(a, 'a')
+    eYo.Test.assert_data_key(a, 'variant', eYo.Key.TARGET_VALUED)
+    a.eyo.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.assert_block(a, 'identifier_valued')
+    eYo.Test.assert_code(a, 'a=MISSING EXPRESSION')
+    a.eyo.value_p = 'value'
+    eYo.Test.assert_code(a, 'a=value')
+    var b = eYo.Test.new_block('identifier')
+    b.eyo.target_p = 'b'
+    eYo.Test.assert_code(b, 'b')
+    a.eyo.value_t.eyo.lastConnect(b)
+    eYo.Test.assert_code(a, 'a=b')
+    var c = eYo.Test.new_block('identifier')
+    c.eyo.target_p = 'c'
+    eYo.Test.assert_code(c, 'c')
+    // console.error(a.eyo.value_t.inputList[0].connection.check_)
+    // console.error(a.eyo.value_t.inputList[1].connection.check_)
+    // console.error(a.eyo.value_t.inputList[2].connection.check_)
+    chai.assert(a.eyo.value_t.eyo.lastConnect(c), 'MISSED')
+    eYo.Test.assert_code(a, 'a=b,c')
+    a.eyo.variant_p = eYo.Key.ANNOTATED
+    eYo.Test.assert_code(a, 'a:MISSINGEXPR')
+    a.eyo.variant_p = eYo.Key.ANNOTATED_VALUED
+    eYo.Test.assert_code(a, 'a:MISSINGEXPR=b,c')
+    a.eyo.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.assert_code(a, 'a=b,c')
+    b.unplug()
+    eYo.Test.assert_code(a, 'a=c')
+    c.eyo.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.assert_block(c, 'assignment_chain') // c is unique and connect
+    eYo.Test.assert_code(a, 'a=c=MISSINGEXPRESSION')
+    eYo.Test.assert_input_length(a.eyo.value_t, 1)
+    c.eyo.variant_p = eYo.Key.SLICING // c is no longer unique
+    eYo.Test.assert_block(c, 'named_subscription')
+    eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>]')
+    eYo.Test.assert_input_length(a.eyo.value_t, 3)
+    chai.assert(a.eyo.value_t.eyo.lastConnect(b), 'MISSED')
+    eYo.Test.assert_input_length(a.eyo.value_t, 5)
+    eYo.Test.assert_code(a, 'a=c[<MISSINGEXPRESSION>],b')
+    chai.assert(a.eyo.value_t.inputList[4].eyo.connect(c), 'MISSED')
+    eYo.Test.assert_code(a, 'a=b,c[<MISSINGEXPRESSION>]')
+    eYo.Test.assert_input_length(a.eyo.value_t, 5)    
+    b.dispose()
+    b = eYo.Test.new_block('yield_expr')
+    chai.assert(a.eyo.value_t.inputList[1].eyo.connect(b), 'MISSED')
+    eYo.Test.assert_input_length(a.eyo.value_t, 1)
+    chai.assert(!c.outputConnection.eyo.t_eyo)
+    c.dispose()
+    a.dispose()
+  })
 })
 
-// describe('Primary', function() {
-//   it('types', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     var ctor = b.constructor
-//     b.dispose()
-//     var f = (k1, k2) => {
-//       var t1 = eYo.T3.Expr[k1]
-//       assert(t1, `UNKNOWN ${k1}`)
-//       var t2 = eYo.T3.Expr[k2 || k1]
-//       assert(t2, `UNKNOWN ${k2}`)
-//       var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, t1)
-//       assert(b, `MISSING ${t1}`)
-//       assert(b.constructor === ctor, `MISSED CTOR ${b.constructor.key}`)
-//       assert(b.type === t2, `MISSED TYPE ${b.type} === ${t2}`)
-//       b.dispose()
-//     }
-//     f('identifier')
-//     f('identifier_annotated')
-//     f('key_datum', 'identifier_annotated')
-//     f('identifier_valued', 'assignment_chain')
-//     f('identifier_annotated_valued')
-//     f('attributeref', 'parent_module')
-//     f('named_attributeref')
-//     f('dotted_name', 'parent_module')
-//     f('parent_module')
-//     f('identifier_as')
-//     f('dotted_name_as', 'identifier_as')
-//     f('expression_as', 'identifier_as')
-//     f('subscription', 'named_slicing')
-//     f('named_subscription')
-//     f('slicing', 'named_slicing')
-//     f('named_slicing')
-//     f('call_expr', 'named_call_expr')
-//     f('named_call_expr')
-//     f('assignment_chain')
-//   })
-// })
+describe('Primary types', function() {
+  var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
+  var ctor_key = b.eyo.constructor.eyo.key
+  b.dispose()
+  var f = (k1, k2) => {
+    it(`types ${k1}/${k2 || k1}`, function() {
+      var t1 = eYo.T3.Expr[k1]
+      chai.assert(t1, `UNKNOWN ${k1}`)
+      var t2 = eYo.T3.Expr[k2 || k1]
+      chai.assert(t2, `UNKNOWN ${k2}`)
+      var b = eYo.Test.new_block(t1, t2)
+      chai.assert(b, `MISSING ${t1}`)
+      eYo.Test.assert_ctor(b, ctor_key)
+      b.dispose()
+    })
+  }
+  f('identifier')
+  f('identifier_annotated')
+  f('key_datum', 'identifier_annotated')
+  f('identifier_valued')
+  f('identifier_annotated_valued')
+  f('attributeref', 'parent_module')
+  f('named_attributeref', 'parent_module')
+  f('dotted_name', 'parent_module')
+  f('parent_module')
+  f('identifier_as')
+  f('dotted_name_as', 'identifier_as')
+  f('expression_as', 'identifier_as')
+  f('subscription', 'named_subscription')
+  f('named_subscription', 'named_subscription')
+  f('slicing', 'named_subscription')
+  f('named_slicing', 'named_subscription')
+  f('call_expr', 'named_call_expr')
+  f('named_call_expr')
+  f('assignment_chain', 'identifier_valued')
+})
 
-// describe('Primary(Compatibility)', function() {
-//   it('0.2.0', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     assert(b.type === eYo.T3.Expr.assignment_chain, `BAD TYPE 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
-//     var rhs = 'rhs'
-//     b.eyo.value_p = rhs
-//     assert(b.eyo.value_p === rhs, `BAD ${b.eyo.value_p} === ${rhs}`)
-//     var dom = eYo.Xml.blockToDom(b)
-//     b.dispose()
-//     console.error(dom)
-//     f = (t, expected) => {
-//       dom.setAttribute(eYo.Key.EYO, t)
-//       expected = eYo.T3.Expr[expected] || eYo.T3.Expr.assignment_chain
-//       var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//       assert(b2.type === expected, `BAD TYPE (${t}): ${b2.type} === ${expected}`)
-//       assert(b2.eyo.value_s, `MISSING DEFINITION SLOT ${t}`)
-//       assert(!b2.eyo.value_s.isIncog(), `UNEXPECTED INCOG ${t}`)
-//       assert(b2.eyo.value_p === rhs, `MISSED ${b2.eyo.value_p} === ${rhs}`)
-//       b2.dispose()
-//     }
-//     f('identifier_valued')
-//     f('assignment_chain')
-//     f('assignment_expr', 'assignment_expr')
-//   })
-// })
+describe('Primary(Compatibility)', function() {
+  it('0.2.0', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs = 'rhs'
+    b.eyo.value_p = rhs
+    chai.assert(b.eyo.value_p === rhs, `BAD ${b.eyo.value_p} === ${rhs}`)
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    console.error(dom)
+    f = (t, expected) => {
+      dom.setAttribute(eYo.Key.EYO, t)
+      expected = eYo.T3.Expr[expected] || eYo.T3.Expr.identifier_valued
+      var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+      eYo.Test.assert_block(b2, expected)
+      chai.assert(b2.eyo.value_s, `MISSING VALUE SLOT ${t}`)
+      chai.assert(!b2.eyo.value_s.isIncog(), `UNEXPECTED VALUE INCOG ${t}`)
+      chai.assert(b2.eyo.value_p === rhs, `MISSED VALUE ${b2.eyo.value_p} === ${rhs}`)
+      b2.dispose()
+    }
+    f('identifier_valued')
+    f('assignment_chain')
+    f('assignment_expr', 'assignment_expr')
+  })
+})
 
-// describe('Primary(assignment_value_list)', function() {
-//   // it('basic', function() {
-//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_value_list)
-//   //   assert(b, 'MISSED')
-//   //   b.dispose()
-//   // })
-//   // it('void unwrapped', function() {
-//   //   var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_value_list)
-//   //   assert(b, 'MISSED')
-//   //   assert(b.inputList.length === 1)
-//   //   var check = b.inputList[0].connection.check_
-//   //   assert(expect(check).to.be.an('array'), 'BAD 1')
-//   //   var model = b.eyo.consolidator.model
-//   //   var check = b.inputList[0].connection.check_
-//   //   // expect(model).to.have.all.keys('unique', 'all', 'check')
-//   //   assert(expect(check).equal(model.all()), `MISMATCH 1`)
-//   //   assert(expect(check).not.equal(model.check()), `MISMATCH 2`)
-//   //   assert(expect(check).not.equal(model.unique()), `MISMATCH 3`)
-//   //   assert(expect(model.all()).contains(eYo.T3.Expr.assignment_chain), `MISMATCH 4`)
-//   //   b.dispose()
-//   // })
-//   it('void wrapped', function() {
-//     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     assert(bb, `MISSED ${eYo.T3.Expr.identifier_valued}`)
-//     assert(bb.eyo.constructor.eyo.key === 'primary', `UNEXPECTED CTOR ${bb.eyo.constructor.eyo.key} !== primary`)
-//     var b = bb.eyo.value_t
-//     assert(b, 'MISSING DEFINITION TARGET')
-//     assert(b.inputList.length === 1, 'BAD INPUT COUNT')
-//     var model = b.eyo.consolidator.model
-//     var check = b.inputList[0].connection.check_
-//     assert(b.type === eYo.T3.Expr.assignment_value_list)
-//     assert(b.eyo.subtype === eYo.T3.Expr.assignment_chain, `${b.eyo.subtype} === ${eYo.T3.Expr.assignment_chain}`)
-//     assert(expect(check).to.equal(model.all(b.type, b.eyo.subtype)),`MISMATCH 1`)
-//     assert(expect(check).to.not.equal(model.check(b.type, b.eyo.subtype)),`MISMATCH 2`)
-//     assert(expect(check).to.not.equal(model.unique(b.type, b.eyo.subtype)),`MISMATCH 3`)
-//     bb.dispose()
-//   })
-//   // it('non void wrapped', function() {
-//   //   var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//   //   assert(bb, 'MISSED')
-//   //   var b = bb.eyo.value_t
-//   //   b.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
-//   //   assert(b.inputList.length === 3)
-//   //   var model = b.eyo.consolidator.model
-//   //   var check = b.inputList[0].connection.check_
-//   //   assert(expect(check).to.equal(model.check()), `MISMATCH 01`)
-//   //   assert(expect(check).to.not.equal(model.all()), `MISMATCH 02`)
-//   //   assert(expect(check).to.not.equal(model.unique()), `MISMATCH 03`)
-//   //   check = b.inputList[1].connection.check_
-//   //   assert(expect(check).to.equal(model.all()), `MISMATCH 11`)
-//   //   assert(expect(check).to.not.equal(model.check()), `MISMATCH 12`)
-//   //   assert(expect(check).to.not.equal(model.unique()), `MISMATCH 13`)
-//   //   check = b.inputList[2].connection.check_
-//   //   assert(expect(check).to.equal(model.check()), `MISMATCH 21`)
-//   //   assert(expect(check).to.not.equal(model.all()), `MISMATCH 22`)
-//   //   assert(expect(check).to.not.equal(model.unique()), `MISMATCH 23`)
-//   //   bb.dispose()
-//   // })
-//   // it('non void (=) wrapped', function() {
-//   //   var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//   //   assert(bb, 'MISSED')
-//   //   var b = bb.eyo.value_t
-//   //   b.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued))
-//   //   assert(b.inputList.length === 1)
-//   //   var model = b.eyo.consolidator.model
-//   //   var check = b.inputList[0].connection.check_
-//   //   assert(expect(check).to.equal(model.all()), `MISMATCH 01`)
-//   //   assert(expect(check).to.not.equal(model.check()), `MISMATCH 02`)
-//   //   assert(expect(check).to.not.equal(model.unique()), `MISMATCH 03`)
-//   //   bb.dispose()
-//   // })
-// })
+describe('Primary(value_list)', function() {
+  it('basic', function() {
+    var bb = eYo.Test.new_block('value_list', 'value_list')
+    eYo.Test.assert_input_length(bb, 1)
+    bb.dispose()
+    bb = eYo.Test.new_block('identifier', 'identifier')
+    var b = bb.eyo.value_t
+    eYo.Test.assert_block(b, 'value_list')
+    eYo.Test.assert_input_length(b, 1)
+    bb.dispose()
+  })
+  it('void unwrapped', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
+    chai.assert(b, 'MISSED')
+    chai.assert(b.inputList.length === 1)
+    var model = b.eyo.consolidator.model
+    console.error('ALL', b.eyo.type, b.eyo.subtype, model.all(b.eyo.type, b.eyo.subtype))
+    var check = b.inputList[0].connection.check_
+    chai.assert(check === null, 'BAD 1')
+    // expect(model).to.have.all.keys('unique', 'all', 'check')
+    chai.assert(chai.expect(check).equal(model.all(b.eyo.type, b.eyo.subtype)), `MISMATCH 1`)
+    chai.assert(chai.expect(null).equal(model.all(b.eyo.type, b.eyo.subtype)), `MISMATCH 1`)
+    chai.assert(chai.expect(null).equal(model.check(b.eyo.type, b.eyo.subtype)), `MISMATCH 2`)
+    chai.assert(chai.expect(null).equal(model.unique(b.eyo.type, b.eyo.subtype)), `MISMATCH 3`)
+    b.dispose()
+  })
+  it('void wrapped', function() {
+    var bb = eYo.Test.new_block('identifier_valued')
+    eYo.Test.assert_ctor(bb, 'primary')
+    var b = bb.eyo.value_t
+    eYo.Test.assert_block(b, 'value_list')
+    eYo.Test.assert_input_length(b, 1)
+    var model = b.eyo.consolidator.model
+    var check = b.inputList[0].connection.check_
+    chai.assert(chai.expect(check).to.equal(model.all(b.type, b.eyo.subtype)),`MISMATCH 1`)
+    chai.assert(chai.expect(check).to.not.equal(model.check(b.type, b.eyo.subtype)),`MISMATCH 2`)
+    chai.assert(chai.expect(check).to.not.equal(model.unique(b.type, b.eyo.subtype)),`MISMATCH 3`)
+    bb.dispose()
+  })
+  it('non void wrapped', function() {
+    var bb = eYo.Test.new_block('identifier_valued')
+    var b = bb.eyo.value_t
+    eYo.Test.assert_subtype(b, 'identifier_valued')
+    b.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
+    eYo.Test.assert_input_length(b, 3)
+    var model = b.eyo.consolidator.model
+    var check = b.inputList[0].connection.check_
+    var model_check = model.check(b.eyo.type, b.eyo.subtype)
+    var model_all = model.all(b.eyo.type, b.eyo.subtype)
+    var model_unique = model.unique(b.eyo.type, b.eyo.subtype)
+    chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 01`)
+    chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 02`)
+    chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
+    check = b.inputList[1].connection.check_
+    chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 11`)
+    chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 12`)
+    chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 13`)
+    check = b.inputList[2].connection.check_
+    chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 21`)
+    chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 22`)
+    chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 23`)
+    bb.dispose()
+  })
+  it('non void (=) wrapped', function() {
+    var bb = eYo.Test.new_block('identifier_valued')
+    var b = bb.eyo.value_t
+    b.eyo.lastInput.eyo.connect(eYo.Test.new_block('identifier_valued'))
+    chai.assert(b.inputList.length === 1)
+    var model = b.eyo.consolidator.model
+    var check = b.inputList[0].connection.check_
+    var model_check = model.check(b.eyo.type, b.eyo.subtype)
+    var model_all = model.all(b.eyo.type, b.eyo.subtype)
+    var model_unique = model.unique(b.eyo.type, b.eyo.subtype)
+    chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 01`)
+    chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 02`)
+    chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
+    bb.dispose()
+  })
+})
 
-// describe('Primary(Defined)', function() {
-//   it('basic', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     // b.moveBy(20, 20)
-//     b.dispose()
-//   })
-//   it('rhs data', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var rhs = 'rhs'
-//     b.eyo.value_p = rhs
-//     assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
-//     // b.moveBy(20, 20)
-//     var dom = eYo.Xml.blockToDom(b)
-//     b.dispose()
-//     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//     assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
-//     b.dispose()
-//   })
-//   it('… = rhs', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var rhs = 'rhs'
-//     b.eyo.value_t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs))
-//     var u = b.eyo.value_s.unwrappedTarget
-//     assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
-//     // b.moveBy(20, 20)
-//     var dom = eYo.Xml.blockToDom(b)
-//     b.dispose()
-//     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//     u = b.eyo.value_s.unwrappedTarget
-//     assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
-//     b.dispose()
-//   })
-//   it('… = a, b', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var rhs_a = 'a'
-//     b.eyo.value_t.eyo.lastInput.eyo.connect
-//     (eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
-//     var rhs_b = 'b'
-//     b.eyo.value_t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_b))
-//     var u = b.eyo.value_s.unwrappedTarget
-//     assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
-//     // b.moveBy(20, 20)
-//     var dom = eYo.Xml.blockToDom(b)
-//     b.dispose()
-//     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//     u = b.eyo.value_s.unwrappedTarget
-//     assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
-//     assert(b.eyo.value_t.inputList.length === 5, `BAD ${b.eyo.value_t.inputList.length} === ${5}`)
-//     var name = b.eyo.value_t.inputList[3].connection.targetBlock().eyo.target_p
-//     assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
-//     b.dispose()
-//   })
-//   it('… = (… = …)', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var rhs_a = 'a'
-//     assert(b.eyo.value_t.eyo.lastInput.eyo.connect
-//     (eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a)), 'BAD 1')
-//     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     eYo.STOP = 0
-//     assert(bb.eyo.value_t.eyo.lastInput.eyo.connect(b), 'BAD 2')
-//     assert(bb.eyo.value_s.unwrappedTarget === b.eyo, `BAD 3 ${bb.eyo.value_s.unwrappedTarget} === ${b.eyo}`)
-//     assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
-//     assert(bb.type === eYo.T3.Expr.assignment_chain, `MISSED 2: ${bb.type} === ${eYo.T3.Expr.assignment_chain}`)
-//     bb.dispose()
-//     b.dispose()
-//   })
-//   it('… = (… = …)', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var rhs_a = 'a'
-//     assert(b.eyo.value_t.eyo.lastInput.eyo.connect
-//     (eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a)), 'BAD 1')
-//     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
-//     assert(bb.eyo.value_t, 'MISSING value_t')
-//     assert(bb.eyo.value_t.eyo.lastInput.eyo.connect(b), 'BAD 2')
-//     assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED 1: ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
-//     assert(bb.type === eYo.T3.Stmt.assignment_stmt, `MISSED 2: ${bb.type} === ${eYo.T3.Stmt.assignment_stmt}`)
-//     bb.dispose()
-//   })
-// })
+describe('Primary(DEFINED)', function() {
+  it('value data', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs = 'rhs'
+    b.eyo.value_p = rhs
+    chai.assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    chai.assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
+    b.dispose()
+  })
+  it('… = rhs', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs = 'rhs'
+    eYo.Test.assert_list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs))
+    var u = b.eyo.value_s.unwrappedTarget
+    chai.assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
+    // b.moveBy(20, 20)
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    u = b.eyo.value_s.unwrappedTarget
+    chai.assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
+    b.dispose()
+  })
+  it('… = a, b', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs_a = 'a'
+    eYo.Test.assert_list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
+    var rhs_b = 'b'
+    eYo.Test.assert_list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_b))
+    var u = b.eyo.value_s.unwrappedTarget
+    chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
+    // b.moveBy(20, 20)
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    u = b.eyo.value_s.unwrappedTarget
+    chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
+    eYo.Test.assert_input_length(b.eyo.value_t, 5)
+    var name = b.eyo.value_t.inputList[3].connection.targetBlock().eyo.target_p
+    chai.assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
+    b.dispose()
+  })
+  it('… = (… = …)', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs_a = 'a'
+    eYo.Test.assert_list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
+    var bb = eYo.Test.new_block('identifier_valued')
+    eYo.STOP = 0
+    eYo.Test.assert_list_connect(bb, 'value', b)
+    eYo.Test.assert_block(b, 'assignment_chain')
+    console.log(bb.eyo.getProfile())
+    eYo.Test.assert_block(bb, 'assignment_chain')
+    bb.dispose()
+  })
+  it('… = (… = …)', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var rhs_a = 'a'
+    eYo.Test.assert_list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
+    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
+    eYo.Test.assert_list_connect(bb, 'value', b)
+    eYo.Test.assert_block(b, 'assignment_chain')
+    eYo.Test.assert_block(bb, 'assignment_stmt')
+    bb.dispose()
+  })
+})
 
-// describe('Primary(Assignment)', function() {
-//   it('basic', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     assert(b.type === eYo.T3.Expr.assignment_chain, `MISSED TYPE ${b.type} === ${eYo.T3.Expr.assignment_chain}`)
-//     // targets is a promise
-//     assert(!b.eyo.target_t, 'UNEXPECTED TARGETS')
-//     assert(!b.eyo.value_d.isIncog(), 'UNEXPECTED INCOG')
-//     b.eyo.variant_p = eYo.Key.TARGET
-//     assert(!b.eyo.value_d.isIncog(), 'UNEXPECTED INCOG (2)')
-//     var f = (k, b1 = b) => {
-//       assert(b1.type === eYo.T3.Expr[k], `MISSED TYPE ${b1.type} === ${eYo.T3.Expr[k]}`)
-//     }
-//     f('assignment_chain')
-//     var t = b.eyo.target_t
-//     assert(t, 'MISSING TARGETS')
-//     t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
-//     f('assignment_chain')
-//     t.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b'))
-//     f('assignment_chain')
-//     var dom = eYo.Xml.blockToDom(b)
-//     // console.log(dom)
-//     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//     f('assignment_chain', b2)
-//     b2.moveBy(50, 10)
-//     b.dispose(true)
-//     b2.dispose(true)
-//   })
-//   it('f(… = …)', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//      var f = (k, b1 = b) => {
-//       assert(b1.type === eYo.T3.Expr[k], `MISSED TYPE ${b1.type} === ${eYo.T3.Expr[k]}`)
-//     }
-//     f('assignment_chain')
-//     var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.call_expr)
-//     var t = bb.eyo.n_ary_t
-//     assert(t.eyo.lastInput.eyo.connect(b), 'BAD')
-//     f('identifier_valued')
-//     bb.dispose(true)
-//   })
-//   it('xfer name <-> targets', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     b.eyo.variant_p = eYo.Key.TARGET
-//     var t = b.eyo.target_t
-//     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
-//     t.eyo.lastInput.eyo.connect(a)
-//     assert(!b.eyo.target_t, 'UNEXPECTED NAME')
-//     b.eyo.variant_p = eYo.Key.NONE
-//     assert(b.eyo.target_t === a, `MISSING ${b.eyo.target_t} === ${a}`)
-//     b.eyo.variant_p = eYo.Key.TARGET
-//     assert(!b.eyo.target_t, 'UNEXPECTED NAME')
-//     b.dispose()
-//     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-//     a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
-//     b.eyo.target_s.connect(a)
-//     assert(b.eyo.target_t === a, `MISSING ${b.eyo.target_t} === ${a}`)
-//     b.eyo.variant_p = eYo.Key.TARGET
-//     assert(!b.eyo.target_t, 'UNEXPECTED NAME')
-//     b.eyo.variant_p = eYo.Key.NONE
-//     assert(b.eyo.target_t === a, `MISSING ${b.eyo.target_t} === ${a}`)
-//     b.dispose()
-//   })
-//   it('…=(…=…) unique value', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     assert(b.eyo.value_t.eyo.lastInput.eyo.connect(a), 'MISSED 1')
-//     assert(b.eyo.value_t.inputList.length === 1, 'BAD 1')
-//     assert(expect(a.eyo).equals(b.eyo.value_s.unwrappedTarget), 'BAD 2')
-//     b.dispose()
-//   })
-//   it('b=rhs (dom)', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier_valued)
-//     b.eyo.variant_p = eYo.Key.TARGET
-//     var s = b.eyo.value_s
-//     var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'rhs')
-//     assert(b.eyo.value_t.eyo.lastInput.eyo.connect(a), 'MISSED 1')
-//     assert(s.unwrappedTarget === a.eyo, `MISSED ${s.unwrappedTarget} === ${a.eyo}`)
-//     var dom = eYo.Xml.blockToDom(b)
-//     b.dispose()
-//     b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-//     assert(b, `MISSING ${dom}`)
-//     assert(b.eyo.variant_p === eYo.Key.TARGET, `MISSED ${b.eyo.variant_p} === ${eYo.Key.TARGET}`)
-//     var u = b.eyo.value_s.unwrappedTarget
-//     assert(u, 'MISSED value')
-//     assert(u.type === eYo.T3.Expr.identifier, `MISSED type: ${u.type} === ${eYo.T3.Expr.identifier}`)
-//     b.dispose()
-//   })
-// })
+describe('Primary(Assignment)', function() {
+  it('basic', function() {
+    var b = eYo.Test.new_block('identifier_valued', 'identifier_valued')
+    eYo.Test.assert_incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'])
+    var f = (k, b1 = b) => {
+      eYo.Test.assert_block(b1, k)
+    }
+    f('identifier_valued')
+    eYo.Test.assert_list_connect(b, 'target', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
+    var t = b.eyo.target_t
+    f('identifier_valued')
+    eYo.Test.assert_list_connect(b, 'target', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b')) // 2nd target
+    f('assignment_chain')
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    // console.log(dom)
+    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    f('assignment_chain', b2)
+    b2.moveBy(50, 10)
+    b2.dispose()
+  })
+  it('f(… = …)', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+     var f = (k, b1 = b) => {
+      eYo.Test.assert_block(b1, k)
+    }
+    f('identifier_valued')
+    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.call_expr)
+    eYo.Test.assert_list_connect(bb, 'n_ary', b)
+    f('identifier_valued')
+    bb.dispose(true)
+  })
+  it('…=(…=…) unique value', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    var a = eYo.Test.new_block('identifier_valued')
+    eYo.Test.assert_list_connect(b, 'value', a)
+    eYo.Test.assert_input_length(b.eyo.value_t, 1)
+    b.dispose()
+  })
+  it('b=rhs (dom)', function() {
+    var b = eYo.Test.new_block('identifier_valued')
+    b.eyo.variant_p = eYo.Key.TARGET_VALUED
+    var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'rhs')
+    eYo.Test.assert_list_connect(b, 'value', a)
+    var dom = eYo.Xml.blockToDom(b)
+    b.dispose()
+    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
+    chai.assert(b, `MISSING ${dom}`)
+    eYo.Test.assert_variant(b, 'TARGET_VALUED')
+    var u = b.eyo.value_s.unwrappedTarget
+    chai.assert(u, 'MISSED value')
+    eYo.Test.assert_block(u, 'identifier')
+    b.dispose()
+  })
+})
 
-// describe('Primary(Expression Assignment)', function() {
-//   it('basic', function() {
-//     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
-//     assert(b.eyo.variant_p === eYo.Key.COL_VALUED, `FAIL VARIANT ${b.eyo.variant_p} === ${eYo.Key.COL_VALUED}`)
-//     assert(b.eyo.value_s.fields.label.getValue() === ':=')
-//     b.dispose()
-//   })
-// })
+describe('Primary(Expression Assignment)', function() {
+  it('basic', function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
+    eYo.Test.assert_variant(b, 'COL_VALUED')
+    chai.assert(b.eyo.value_s.fields.label.getValue() === ':=')
+    b.dispose()
+  })
+})
 
-describe('Primary(annotated)', function() {
+describe('Primary(ANNOTATED)', function() {
   ;[
     'identifier_annotated',
     'augtarget_annotated',
@@ -875,8 +916,7 @@ describe('Primary(annotated)', function() {
       if (cant_connect) {
         chai.assert(!b.eyo.target_t.eyo.lastConnect(bb))
       } else {
-        chai.assert(b.eyo.target_t.eyo.lastConnect(bb))
-        chai.assert(b.eyo.target_s.unwrappedTarget === bb.eyo, `MISSED CONNECTION`)
+        eYo.Test.assert_list_connect(b, 'target', bb)
         eYo.Test.assert_block(b, ttt || t)
         bb.unplug()
       }
@@ -896,6 +936,41 @@ describe('Primary(annotated)', function() {
     bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
     f('identifier_annotated', bb, 'key_datum', true)
     bb.dispose()
+  })
+  it('type change', function() {
+    var b = eYo.Test.new_block('identifier_annotated')
+    var bb = eYo.Test.new_block('identifier')
+    bb.eyo.target_p = 'x'
+    eYo.Test.assert_list_connect(b, 'target', bb)
+    eYo.Test.assert_variant(b, b.eyo.variant_p = eYo.Key.ANNOTATED)
+    b.eyo.annotated_p = 'str'
+    eYo.Test.assert_block(b, 'identifier_annotated')
+    eYo.Test.assert_code(b, 'x:str')
+    bb.eyo.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.assert_code(b, 'x():str')
+    eYo.Test.assert_block(b, 'key_datum')
+    bb.eyo.variant_p = eYo.Key.SLICING
+    eYo.Test.assert_incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
+    eYo.Test.assert_list_connect(bb, 'slicing', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421))
+    eYo.Test.assert_code(b, 'x[421]:str')
+    eYo.Test.assert_block(b, 'augtarget_annotated')
+    bb.eyo.variant_p = eYo.Key.NONE
+    eYo.Test.assert_incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.assert_code(b, 'x:str')
+    eYo.Test.assert_block(b, 'identifier_annotated')
+    bb.eyo.variant_p = eYo.Key.SLICING
+    eYo.Test.assert_incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
+    eYo.Test.assert_code(b, 'x[421]:str')
+    eYo.Test.assert_block(b, 'augtarget_annotated')
+    bb.eyo.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.assert_incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.assert_code(b, 'x():str')
+    eYo.Test.assert_block(b, 'key_datum')
+    bb.eyo.variant_p = eYo.Key.NONE
+    eYo.Test.assert_incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.assert_code(b, 'x:str')
+    eYo.Test.assert_block(b, 'identifier_annotated')
+    b.dispose()
   })
 })
 

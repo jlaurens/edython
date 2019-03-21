@@ -70,10 +70,11 @@ eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
     var line = eYo.Font.lineHeight
     var t = eYo.Font.tabWidth
     var r = eYo.Style.Path.r
-    return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
-    ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r) +
-    ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
-    ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
+    return `m {block.width},${line} v ${(line - r) / 2} m ${-r},${r / 2} l ${2 * r},${-r} M ${t + r},${2 * line} H ${block.width} v ${(r - line) / 2} m ${-r},${r / 2} l ${2 * r},${-r}`
+    // return 'm ' + block.width + ',' + line + ' v ' + (line - r) / 2 +
+    // ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r) +
+    // ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
+    // ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
   return eYo.DelegateSvg.BaseGroup.superClass_.collapsedPathDef_.call(this)
 } /* eslint-enable indent */
@@ -184,7 +185,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) { // same code for primary blocks
         this.owner.consolidateType()
         this.owner.consolidateConnections()
-        this.isChanging(oldValue, newValue)
+        this.duringChange(oldValue, newValue)
       },
     },
     if: {

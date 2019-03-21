@@ -452,16 +452,19 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       synchronize: true
     }
   },
-  fields: {
-    prefix: 'def',
-    name: {
-      validate: true,
-      endEditing: true
-    }
-  },
   slots: {
-    parameters: {
+    name: {
       order: 1,
+      fields: {
+        prefix: 'def',
+        bind: {
+          validate: true,
+          endEditing: true
+        }
+      }
+    },
+    parameters: {
+      order: 2,
       fields: {
         start: '(',
         end: ')'
@@ -469,7 +472,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       wrap: eYo.T3.Expr.parameter_list
     },
     type: {
-      order: 2,
+      order: 3,
       fields: {
         label: '->'
       },

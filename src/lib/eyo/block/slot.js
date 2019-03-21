@@ -143,6 +143,12 @@ Object.defineProperties(eYo.Slot.prototype, {
       return c8n && c8n.eyo.t_eyo
     }
   },
+  t_eyo: {
+    get () {
+      var c8n = this.connection
+      return c8n && c8n.eyo.t_eyo
+    }
+  },
   unwrappedTarget: {
     get () {
       var c8n = this.connection
@@ -681,11 +687,11 @@ eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
 }
 
 /**
- * Connect the expression block.
- * @param {!Object} block whether to consolidate connected blocks.
+ * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
+ * @param {!Object} bdc a block/delegate/connection.
  */
-eYo.Slot.prototype.connect = function (block) {
-  this.connection.connect(block.outputConnection || block.block_.outputConnection)
+eYo.Slot.prototype.connect = function (bdc) {
+  this.connection.connect(bdc.outputConnection || bdc.block_.outputConnection | bdc)
 }
 
 /**

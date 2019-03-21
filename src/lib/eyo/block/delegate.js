@@ -343,6 +343,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
         }
       }
       return after
+    },
+    inutList: {
+      get () {
+        return this.block_.inputList
+      }
     }
   },
   /**
@@ -375,6 +380,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
   recover: {
     get () {
       return this.block_.workspace.eyo.recover
+    }
+  },
+  inputList: {
+    get () {
+      return this.block_.inputList
     }
   },
   lastInput: {
@@ -2390,4 +2400,13 @@ eYo.Delegate.prototype.getSlotConnections = function () {
     c8n && ra.push(c8n)
   })
   return ra
+}
+
+/**
+ * get the slot connections, mainly for debugging purposes.
+ * For edython.
+ * @return An array of all the connections
+ */
+eYo.Delegate.prototype.nextConnect = function (block) {
+  this.block_.nextConnection.connect(block.previousConnection)
 }

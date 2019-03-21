@@ -1,3 +1,13 @@
+setTimeout(() => {
+  describe('PREPARE', function() {
+    it('Blockly', function() {
+      chai.assert(Blockly, `MISSING Blockly`)
+      chai.assert(Blockly.mainWorkspace, `MISSING Blockly.mainWorkspace`)
+      chai.assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
+    })
+  })
+}, 0)
+
 eYo.Test = Object.create(null)
 
 eYo.temp = (() => {
@@ -78,7 +88,13 @@ eYo.Test.assert_comment_variant = (b, comment_variant, str) => {
 }
 
 eYo.Test.assert_code = (b, str) => {
-  chai.assert(b.eyo.toLinearString === str, `MISSED: ${b.eyo.toLinearString} === ${str}`)
+  var str1 = str.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, '')
+  if (str1.endsWith('\n')) {
+    str1 = str1.substring(0, str.length - 1)
+  }
+  var s = b.eyo.toString
+  var s1 = s.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, '')
+  chai.assert(s1 === str1, `MISSED: ${s} === ${str}`)
 }
 
 eYo.Test.assert_input_length = (t, k, str) => {
@@ -167,14 +183,17 @@ eYo.Test.assert_bind_field = (type, key, no) => {
 }
 
 /**
- * Slot connection test.
+ * Slot [connection] test.
  */
 eYo.Test.assert_slot_connect = (b, key, target) => {
   chai.assert(b, 'MISSING b')
   var s = b.eyo.slots[key]
-  s.connect(target)
-  chai.assert(s.target == target.eyo, `MISSED CONNECTION for ${key} in ${b.type}`)
   chai.assert(s === b.eyo[`${key}_s`], `MISSED SLOT SHORTCUT for ${key} in ${b.type}`)
+  if (target) {
+    s.connect(target)
+    chai.assert(s.target === target.eyo, `MISSED CONNECTION for ${key} in ${b.type}`)
+    chai.assert(target === b.eyo[`${key}_t`], `MISSED TARGET SHORTCUT for ${key} in ${b.type}`)
+  }
 }
 
 eYo.Test.expect_out_check = (b, check, str) => {
@@ -182,4 +201,25 @@ eYo.Test.expect_out_check = (b, check, str) => {
     check = [check]
   }
   chai.assert(chai.expect(b.outputConnection.check_).to.deep.equal(check), `MISSED output check for ${b.type}: ${b.outputConnection.check_} !== ${check}`)
+}
+
+/**
+ * Dynamic list connection test.
+ */
+eYo.Test.assert_list_connect = (b, key, target) => {
+  chai.assert(b, 'MISSING b')
+  chai.assert(target, 'MISSING ')
+  var s = b.eyo.slots[key]
+  s.t_eyo.lastConnect(target)
+  chai.assert(s.t_eyo.inputList.some(input => input.connection && input.connection.eyo.t_eyo === target.eyo), `MISSED CONNECTION for ${key} in ${b.type}`)
+}
+
+/**
+ * Subtype.
+ */
+eYo.Test.assert_subtype = (b, t) => {
+  chai.assert(b, 'MISSING b')
+  t = eYo.T3.Expr[t] || eYo.T3.Stmt[t] || t
+  chai.assert(t, 'UNKNOWN subtype')
+  chai.assert(b.eyo.subtype === t, `MISSED subtype ${b.type}: ${b.eyo.subtype} === ${t}`)
 }

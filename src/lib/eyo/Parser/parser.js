@@ -318,7 +318,7 @@ eYo.GMR.showtree = (/* grammar * */ g, /* node * */ n) =>
       eYo.GMR.showtree(g, n.n_child[i])
     }
   } else if (eYo.TKN.ISTERMINAL(n.n_type)) {
-    console.log("%s", _PyParser_TokenNames[n.n_type])
+    console.log("%s", eYo.TKN._NAMES[n.n_type])
     if (n.n_type === eYo.TKN.NUMBER || n.n_type === eYo.TKN.NAME) {
       console.log("(%s)", n.n_str)
     }

@@ -198,23 +198,22 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
   var modules = {}
   var v = this.variant_p
   if (v === eYo.Key.IMPORT) {
-    var t = this.import_s.target // non_void_import_identifier_as_list
-    for (var i = 0 ; i < t.inputList.length ; ++i) {
-      var t_eyo = t.inputList[i].eyo.t_eyo
+    var t = this.import_s.t_eyo.block_ // non_void_import_identifier_as_list
+    t.inputList.forEach(input => {
+      var t_eyo = input.eyo.t_eyo
       if (t_eyo.type === eYo.T3.Expr.identifier) {
-        modules[t_eyotarget_p] = t_eyotarget_p
+        modules[t_eyo.target_p] = t_eyo.target_p
       } else if (t_eyo.type === eYo.T3.Expr.identifier_as) {
         modules[t_eyo.target_p] = t_eyo.alias_p
-      } else {
-        var x = t_eyo.expression
-        var components = x.split(/\s*,\s*/)
-        for (var j = 0 ; j < components.length ; j++) {
-          var ased = components[j].split(/\s*as\s*/)
+      } else { // when connected to an 'any' block
+        var any = t_eyo.expression_p
+        any && any.split(/\s*,\s*/).forEach(c => {
+          var ased = c.split(/\s*as\s*/)
           var name = ased[0]
           name && (modules[name] = ased[1] || name)
-        }
+        })
       }
-    }
+    })
   } else /* if (v === eYo.Key.FROM_MODULE_IMPORT[_STAR]) */ {
     var p = this.from_p
     modules[p] = p

@@ -1,53 +1,38 @@
-var assert = chai.assert
-
 var g = eYo.GMR._PyParser_Grammar
 var p = new eYo.Py.Exporter()
 
 console.log('RUNNING NODE/BLOCK TESTS')
-
-describe('PREPARE', function() {
-  it('Blockly', function() {
-    assert(Blockly, `MISSING Blockly`)
-    assert(Blockly.mainWorkspace, `MISSING Blockly.mainWorkspace`)
-    assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
-  })
-})  
 
 describe('NAME', function() {
   it('NAME', function() {
     var err_ret = {}
     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
     var b = n.toBlock(Blockly.mainWorkspace)
-    assert(b, 'MISSING BLOCK')
+    chai.assert(b, 'MISSING BLOCK')
     b.dispose()
   })
 })
 
 var n_test = (n, type, str) => {
-  assert(n, 'No node')
-  assert(n.n_type === type, `${n.n_type} === ${type}`)
-  assert(n.n_str === '', `${n.n_str} === '${str}'`)
+  chai.assert(n, 'No node')
+  chai.assert(n.n_type === type, `${n.n_type} === ${type}`)
+  chai.assert(n.n_str === '', `${n.n_str} === '${str}'`)
 }
 
 var ra_test = (name, str_s) => {
   describe(name, function() {
+    this.timeout(15000)
     str_s.forEach(str => {
       var f = (() => {
         return function() {
           var err_ret = {}
           var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.file_input, err_ret)
           var b = n.toBlock(Blockly.mainWorkspace)
-          assert(b, 'WHERE IS THE BLOCK', n.type)
-          var code = p.export(b, {is_deep: true})
-          var code1 = code.replace(/ /g, '')
-          var str1 = str.replace(/ /g, '')
-          if (str1 !== code1) {
-            console.error(str1)
-            console.error(code1)
-            // eYo.GMR.dumptree(g, n)
+          if (!b) {
+            eYo.GMR.showtree(g, n)
           }
-          assert(str1 === code1, `<
-${str1}> === <${code1}>`)
+          chai.assert(b, `WHERE IS THE BLOCK ${n.type}`)
+          eYo.Test.assert_code(b, str)
           b.dispose()
         }
       })()
@@ -115,50 +100,50 @@ ${str1}> === <${code1}>`)
 // ]
 // // ra_test('nonlocal_statement', ra_nonlocal_statement)
 
-// var ra_expressions = [
-  // "foo(1)",
-  // "[1, 2, 3]",
-  // "[x**3 for x in range(20)]",
-  // "[x**3 for x in range(20) if x % 3]",
-  // "[x**3 for x in range(20) if x % 2 if x % 3]",
-  // "list(x**3 for x in range(20))",
-  // "list(x**3 for x in range(20) if x % 3)",
-  // "list(x**3 for x in range(20) if x % 2 if x % 3)",
-  // "foo(*args)",
-  // "foo(*args, **kw)",
-  // "foo(**kw)",
-  // "foo(key=value)",
-  // "foo(key=value, *args)",
-  // "foo(key=value, *args, **kw)",
-  // "foo(key=value, **kw)",
-  // "foo(a, b, c, *args)",
-  // "foo(a, b, c, *args, **kw)",
-  // "foo(a, b, c, **kw)",
-  // "foo(a, *args, keyword=23)",
-  // "foo + bar",
-  // "foo - bar",
-  // "foo * bar",
-  // "foo / bar",
-  // "foo // bar",
-  // "(foo := 1)",
-  // "lambda: 0",
-  // "lambda x: 0",
-  // "lambda *y: 0",
-  // "lambda *y, **z: 0",
-  // "lambda **z: 0",
-  // "lambda x, y: 0",
-  // "lambda foo=bar: 0",
-  // "lambda foo=bar, spaz=nifty+spit: 0",
-  // "lambda foo=bar, **z: 0",
-  // "lambda foo=bar, blaz=blat+2, **z: 0",
-  // "lambda foo=bar, blaz=blat+2, *y, **z: 0",
-  // "lambda x, *y, **z: 0",
-  // "(x for x in range(10))",
-  // "foo(x for x in range(10))",
-//   "...",
-//   "a[...]",
-// ]
-// ra_test('expressions', ra_expressions)
+var ra_expressions = [
+  "foo(1)",
+  "[1, 2, 3]",
+  "[x**3 for x in range(20)]",
+  "[x**3 for x in range(20) if x % 3]",
+  "[x**3 for x in range(20) if x % 2 if x % 3]",
+  "list(x**3 for x in range(20))",
+  "list(x**3 for x in range(20) if x % 3)",
+  "list(x**3 for x in range(20) if x % 2 if x % 3)",
+  "foo(*args)",
+  "foo(*args, **kw)",
+  "foo(**kw)",
+  "foo(key=value)",
+  "foo(key=value, *args)",
+  "foo(key=value, *args, **kw)",
+  "foo(key=value, **kw)",
+  "foo(a, b, c, *args)",
+  "foo(a, b, c, *args, **kw)",
+  "foo(a, b, c, **kw)",
+  "foo(a, *args, keyword=23)",
+  "foo + bar",
+  "foo - bar",
+  "foo * bar",
+  "foo / bar",
+  "foo // bar",
+  "(foo := 1)",
+  "lambda: 0",
+  "lambda x: 0",
+  "lambda *y: 0",
+  "lambda *y, **z: 0",
+  "lambda **z: 0",
+  "lambda x, y: 0",
+  "lambda foo=bar: 0",
+  "lambda foo=bar, spaz=nifty+spit: 0",
+  "lambda foo=bar, **z: 0",
+  "lambda foo=bar, blaz=blat+2, **z: 0",
+  "lambda foo=bar, blaz=blat+2, *y, **z: 0",
+  "lambda x, *y, **z: 0",
+  "(x for x in range(10))",
+  "foo(x for x in range(10))",
+  "...",
+  "a[...]",
+]
+ra_test('expressions', ra_expressions)
 var ra_missing_expression = [
   "a[...]",
   "a[:]",
@@ -180,52 +165,52 @@ var ra_simple_expression = [
 ]
 ra_test('simple_expression', ra_simple_expression)
 var ra_simple_assignments = [
-  // "a = b",
-  // "a = b, c",
+  "a = b",
+  "a = b, c",
   "a, b = c, d",
-  // "a = b = c = d = e",
+  "a = b = c = d = e",
 ]
 ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
-  "x: int = 5",
+  // "x: int = 5",
   "y: List[T] = []; z: [list] = fun()",
-  "x: tuple = (1, 2)",
-  "d[f()]: int = 42",
-  "f(d[x]): str = 'abc'",
-  "x.y.z.w: complex = 42j",
-  "x: int",
-  "def f():\n" +
-  "    x: str\n" +
-  "    y: int = 5\n",
+  // "x: tuple = (1, 2)",
+  // "d[f()]: int = 42",
+  /* "f(d[x]): str = 'abc'", SYNTAX ERROR ? */
+  // "x.y.z.w: complex = 42j",
+  // "x: int",
+  // "def f():\n" +
+  // "    x: str\n" +
+  // "    y: int = 5\n",
   "class C:\n" +
   "    x: str\n" +
   "    y: int = 5\n",
-  "class C:\n" +
-  "    def __init__(self, x: int) -> None:\n" +
-  "        self.x: int = x\n"
+  // "class C:\n" +
+  // "    def __init__(self, x: int) -> None:\n" +
+  // "        self.x: int = x\n"
 ]
 ra_test('var_annot', ra_var_annot)
 // /*
 //         # double check for nonsense
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("2+2: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("[]: int = 5", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("x, *y, z: int = range(5)", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("x: int = 1, y = 2", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("u = v: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("False: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("x.False: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("x.y,: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("[0]: int", {}, {})
-//         with self.assertRaises(SyntaxError):
+//         with self.chai.assertRaises(SyntaxError):
 //             exec("f(): int", {}, {})
 // */
 // var ra_simple_augmented_assignments = [
@@ -346,10 +331,10 @@ ra_test('var_annot', ra_var_annot)
 //   "pass\n",
 // ]
 // // ra_test('pep263', ra_pep263)
-// var ra_assert = [
-//   "assert alo < ahi and blo < bhi\n",
+// var ra_chai.assert = [
+//   "chai.assert alo < ahi and blo < bhi\n",
 // ]
-// // ra_test('assert', ra_assert)
+// // ra_test('chai.assert', ra_chai.assert)
 // var ra_with = [
 //   "with open('x'): pass\n",
 //   "with open('x') as f: pass\n",
@@ -402,20 +387,20 @@ ra_test('var_annot', ra_var_annot)
 // //             (0, '', 2, -1),
 // //         ]
 
-// //         self.assertEqual(list(walk(st.totuple(line_info=True, col_info=True))),
+// //         self.chai.assertEqual(list(walk(st.totuple(line_info=True, col_info=True))),
 // //                          expected)
-// //         self.assertEqual(list(walk(st.totuple())),
+// //         self.chai.assertEqual(list(walk(st.totuple())),
 // //                          [(t, n) for t, n, l, c in expected])
-// //         self.assertEqual(list(walk(st.totuple(line_info=True))),
+// //         self.chai.assertEqual(list(walk(st.totuple(line_info=True))),
 // //                          [(t, n, l) for t, n, l, c in expected])
-// //         self.assertEqual(list(walk(st.totuple(col_info=True))),
+// //         self.chai.assertEqual(list(walk(st.totuple(col_info=True))),
 // //                          [(t, n, c) for t, n, l, c in expected])
-// //         self.assertEqual(list(walk(st.tolist(line_info=True, col_info=True))),
+// //         self.chai.assertEqual(list(walk(st.tolist(line_info=True, col_info=True))),
 // //                          [list(x) for x in expected])
-// //         self.assertEqual(list(walk(parser.st2tuple(st, line_info=True,
+// //         self.chai.assertEqual(list(walk(parser.st2tuple(st, line_info=True,
 // //                                                    col_info=True))),
 // //                          expected)
-// //         self.assertEqual(list(walk(parser.st2list(st, line_info=True,
+// //         self.chai.assertEqual(list(walk(parser.st2list(st, line_info=True,
 // //                                                   col_info=True))),
 // //                          [list(x) for x in expected])
 
@@ -717,7 +702,7 @@ ra_test('var_annot', ra_var_annot)
 //         if p == dirname:
 //             return [p]
 //     else:
-//         assert False, "Internal error: Path not found in std_dirs or paths"
+//         chai.assert False, "Internal error: Path not found in std_dirs or paths"
 
 // def module_enabled(extlist, modname):
 //     """Returns whether the module 'modname' is present in the list
@@ -968,7 +953,7 @@ ra_test('var_annot', ra_var_annot)
 //                 self.failed_on_import.append(ext.name)
 //                 self.announce('*** WARNING: renaming "%s" since importing it'
 //                               ' failed: %s' % (ext.name, why), level=3)
-//                 assert not self.inplace
+//                 chai.assert not self.inplace
 //                 basename, tail = os.path.splitext(ext_filename)
 //                 newname = basename + "_failed" + tail
 //                 if os.path.exists(newname):
@@ -1612,7 +1597,7 @@ ra_test('var_annot', ra_var_annot)
 //             self.failed_on_import.append(ext.name)
 //             self.announce('*** WARNING: renaming "%s" since importing it'
 //                           ' failed: %s' % (ext.name, why), level=3)
-//             assert not self.inplace
+//             chai.assert not self.inplace
 //             basename, tail = os.path.splitext(ext_filename)
 //             newname = basename + "_failed" + tail
 //             if os.path.exists(newname):
@@ -3539,10 +3524,10 @@ ra_test('var_annot', ra_var_annot)
 
 // describe('File input', function() {
 //   it('setup.py', function() {
-//     assert(eYo.Parser.PyParser_ParseString)
+//     chai.assert(eYo.Parser.PyParser_ParseString)
 //     var err_ret = {}
 //     var n = eYo.Parser.PyParser_ParseString(src, g, eYo.TKN.file_input, err_ret)
-//     assert(n, `FAILURE ${err_ret.error}, ${err_ret.expected}, ${err_ret.lineno}, "${err_ret.text}"`)
+//     chai.assert(n, `FAILURE ${err_ret.error}, ${err_ret.expected}, ${err_ret.lineno}, "${err_ret.text}"`)
 //   });
 // });
     

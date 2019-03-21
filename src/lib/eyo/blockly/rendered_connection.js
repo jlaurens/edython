@@ -450,7 +450,7 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n, targetO
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
   var eyo = this.connection.sourceBlock_.eyo
-  if(this.changeCount === eyo.change.count) {
+  if(eyo.change.level > 1 || this.changeCount === eyo.change.count) {
     return
   }
   this.changeCount = eyo.change.count
