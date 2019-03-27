@@ -878,7 +878,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
           }
           n1 = n0.n1
           if (n1.n_type !== eYo.TKN.RPAR) {
-            n1.arglist2Delegate(t.eyo)
+            n1.arglist2Delegate(b.eyo)
           }
         } else if (n0.n0.n_type === eYo.TKN.LSQB) {
           b = b0.eyo.slicing_b
@@ -1148,65 +1148,87 @@ factor: ('+'|'-'|'~') factor | power
         n1.testlist_star_expr2Delegate(root.eyo.return_b.eyo)
       }
       return root
-    case eYo.TKN.import_from: //
-    /*
-    ('from' (('.' | '...')* dotted_name | ('.' | '...')+)
-              'import' ('*' | '(' import_as_names ')' | import_as_names))
-import_as_name: NAME ['as' NAME]*/
-      root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.import_stmt)
-      s = ''
-      n = this.n1
-      do {
-        if (n.type === eYo.TKN.dotted_name) {
-          s += n.n_child.map(child => child.type === eYo.TKN.NAME ? child.n_str : '.').join('')
-          root.eyo.from_p = s
-          s = ''
-          // b = n.dotted_name2Block(workspace)
-          // if (i) {
-          //   // find the topmost holder
-          //   var h
-          //   var hh = b
-          //   do {
-          //     h = hh
-          //   } while ((hh = h.eyo.holder_b))
-          //   h.eyo.dotted_p = i
-          // }
-          // root.eyo.from_s.connect(b)
-        } else if (n.type === eYo.TKN.DOT) {
-          s += '.'
-        } else if (n.type === eYo.TKN.ELLIPSIS) {
-          s += '...'
-        } else if (n.n_str.length === 6) {
-          // found the 'import'
-          if (s.length) {
-            root.eyo.from_p = s
-          }
-          break
-        }
-      } while ((n = n.sibling))
-      n = n.sibling
-      if (n.type === eYo.TKN.STAR) {
-        root.eyo.start_p = true
-      } else {
-        var eyo = root.eyo.import_b.eyo
-        if (n.type === eYo.TKN.LPAR) {
-          n = n.sibling
-          root.eyo.import_b.eyo.parenth_p = true
-        }
-        n.knownList2Delegate(eyo, function () {
-          // import_as_name: NAME ['as' NAME]
-          var n = this.n2
-          if (n) {
+    case eYo.TKN.import_stmt: // import_stmt: import_name | import_from
+      n0 = this.n0
+      if (n0.type === eYo.TKN.import_name) {
+        //import_name: 'import' dotted_as_names
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.import_stmt)
+        var eyo = root.eyo.import_module_b.eyo
+        n0.n1.knownList2Delegate(eyo, function () {
+          // dotted_as_name: dotted_name ['as' NAME]
+          // dotted_name: NAME ('.' NAME)*
+          var n
+          if ((n = this.n2)) {
             var b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier_as)
             b.eyo.alias_p = n.n_str
           } else {
             b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier)
           }
-          b.eyo.target_p = this.n0.n_str
+          var s = this.n0.n_child.map(child => child.type === eYo.TKN.NAME ? child.n_str : '.').join('')
+          b.eyo.target_p = s
           return b
         })
+        return root
+      } else {
+      /*
+      ('from' (('.' | '...')* dotted_name | ('.' | '...')+)
+                'import' ('*' | '(' import_as_names ')' | import_as_names))
+        import_as_name: NAME ['as' NAME]*/
+        root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.import_stmt)
+        s = ''
+        n = n0.n1
+        do {
+          if (n.type === eYo.TKN.dotted_name) {
+            s += n.n_child.map(child => child.type === eYo.TKN.NAME ? child.n_str : '.').join('')
+            root.eyo.from_p = s
+            s = ''
+            // b = n.dotted_name2Block(workspace)
+            // if (i) {
+            //   // find the topmost holder
+            //   var h
+            //   var hh = b
+            //   do {
+            //     h = hh
+            //   } while ((hh = h.eyo.holder_b))
+            //   h.eyo.dotted_p = i
+            // }
+            // root.eyo.from_s.connect(b)
+          } else if (n.type === eYo.TKN.DOT) {
+            s += '.'
+          } else if (n.type === eYo.TKN.ELLIPSIS) {
+            s += '...'
+          } else if (n.n_str.length === 6) {
+            // found the 'import'
+            if (s.length) {
+              root.eyo.from_p = s
+            }
+            break
+          }
+        } while ((n = n.sibling))
+        n = n.sibling
+        if (n.type === eYo.TKN.STAR) {
+          root.eyo.start_p = true
+        } else {
+          var eyo = root.eyo.import_b.eyo
+          if (n.type === eYo.TKN.LPAR) {
+            n = n.sibling
+            root.eyo.import_b.eyo.parenth_p = true
+          }
+          n.knownList2Delegate(eyo, function () {
+            // import_as_name: NAME ['as' NAME]
+            var n = this.n2
+            if (n) {
+              var b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier_as)
+              b.eyo.alias_p = n.n_str
+            } else {
+              b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier)
+            }
+            b.eyo.target_p = this.n0.n_str
+            return b
+          })
+        }
+        return root
       }
-      return root
     // case eYo.TKN.ENDMARKER: break
     // case eYo.TKN.NUMBER: break
     // case eYo.TKN.STRING: break

@@ -313,15 +313,15 @@ var ra_import_from_statement = [
   "from sys.path import (dirname, basename as my_basename,)",
   "from .bogus import x",
 ]
-ra_test('import_from_statement', ra_import_from_statement)
-// var ra_basic_import_statement = [
-//   "import sys",
-//   "import sys as system",
-//   "import sys, math",
-//   "import sys as system, math",
-//   "import sys, math as my_math",
-// ]
-// // ra_test('basic_import_statement', ra_basic_import_statement)
+// ra_test('import_from_statement', ra_import_from_statement)
+var ra_basic_import_statement = [
+  "import sys",
+  "import sys as system",
+  "import sys, math",
+  "import sys as system, math",
+  "import sys, math as my_math",
+]
+ra_test('basic_import_statement', ra_basic_import_statement)
 // var ra_relative_imports = [
 //   "from . import name",
 //   "from .. import name",
