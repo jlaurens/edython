@@ -119,6 +119,12 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
       return this.connection && this.connection.targetBlock()
     }
   },
+  t_eyo: {
+    get () {
+      var b = this.target
+      return b && b.eyo
+    }
+  },
   bindField: {
     get () {
       var block = this.owner.sourceBlock_

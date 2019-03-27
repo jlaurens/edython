@@ -163,7 +163,7 @@ eYo.Test.data_save = (b, key, value, ignore) => {
   var old = b.eyo[`${key}_p`]
   b.eyo[`${key}_p`] = value
   var dom = eYo.Xml.blockToDom(b)
-  if (ignore) {
+  if (ignore) { // do not create a block from dom
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
   } else {

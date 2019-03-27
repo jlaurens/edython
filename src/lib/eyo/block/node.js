@@ -304,14 +304,14 @@ eYo.Node.prototype.with_stmt2Block = function (workspace) {
     // with_item: test ['as' expr]
     var nn = n.n2
     if (nn) {
-      var bb = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.identifier)
+      var bb = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier)
       bb.eyo.alias_s.connect(nn.toBlock(workspace))
       bb.eyo.target_b.eyo.lastConnect(n.n0.toBlock(workspace))
     } else {
       bb = n.n0.toBlock(workspace)
     }
-    b.lastConnect(bb)
-  } while ((n = n.sibling) && n.type === eYo.TKN.COMMA)
+    b.eyo.lastConnect(bb)
+  } while ((n = n.sibling) && n.type === eYo.TKN.COMMA && (n = n.sibling))
   n.sibling.suite2Delegate(root.eyo)
   return root
 }

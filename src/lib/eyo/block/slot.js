@@ -1024,6 +1024,9 @@ eYo.Slot.prototype.listConnect = function (bdc, key) {
       return false
     }
   }
+  if (!key) {
+    return t_eyo.lastConnect(bdc)
+  }
   var input = t_eyo.block_.getInput(key)
   if (input) {
     var c8n = input.connection
@@ -1032,8 +1035,6 @@ eYo.Slot.prototype.listConnect = function (bdc, key) {
       c8n.connect(other)
       return c8n.targetConnection === other
     }
-  } else {
-    return t_eyo.lastConnect(bdc)
   }
 }
 

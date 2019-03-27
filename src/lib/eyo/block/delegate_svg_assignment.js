@@ -488,7 +488,29 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
     var me = {
       unique: (type, subtype) => {
         return (subtype
-        && unique [subtype]) || []
+        && unique [subtype]) || (subtype && [
+          eYo.T3.Expr.identifier,
+          eYo.T3.Expr.identifier_annotated,
+          eYo.T3.Expr.augtarget_annotated,
+          //eYo.T3.Expr.key_datum,
+          //eYo.T3.Expr.identifier_valued,
+          //eYo.T3.Expr.assignment_chain,
+          //eYo.T3.Expr.assignment_expr,
+          //eYo.T3.Expr.identifier_annotated_valued,
+          eYo.T3.Expr.attributeref,
+          eYo.T3.Expr.named_attributeref,
+          eYo.T3.Expr.dotted_name,
+          eYo.T3.Expr.parent_module,
+          eYo.T3.Expr.identifier_as,
+          eYo.T3.Expr.dotted_name_as,
+          eYo.T3.Expr.expression_as,
+          eYo.T3.Expr.subscription,
+          eYo.T3.Expr.named_subscription,
+          eYo.T3.Expr.slicing,
+          eYo.T3.Expr.named_slicing,
+          eYo.T3.Expr.call_expr,
+          eYo.T3.Expr.named_call_expr
+        ].indexOf(subtype) < 0 ? [] : null)
       },
       check: (type, subtype) => {
         return subtype

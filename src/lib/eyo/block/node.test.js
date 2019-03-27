@@ -332,7 +332,7 @@ var ra_relative_imports = [
   "from ...pkg import name",
   "from ....pkg import name",
 ]
-ra_test('relative_imports', ra_relative_imports)
+// ra_test('relative_imports', ra_relative_imports)
 // var ra_pep263 = [
 //   "# -*- coding: iso-8859-1 -*-\n" +
 //   "pass\n",
@@ -342,12 +342,12 @@ ra_test('relative_imports', ra_relative_imports)
 //   "chai.assert alo < ahi and blo < bhi\n",
 // ]
 // // ra_test('chai.assert', ra_chai.assert)
-// var ra_with = [
-//   "with open('x'): pass\n",
-//   "with open('x') as f: pass\n",
-//   "with open('x') as f, open('y') as g: pass\n",
-// ]
-// // ra_test('with', ra_with)
+var ra_with = [
+  "with open('x'): pass\n",
+  "with open('x') as f: pass\n",
+  "with open('x') as f, open('y') as g: pass\n",
+]
+ra_test('with', ra_with)
 // var ra_try_stmt = [
 //   "try: pass\nexcept: pass\n",
 //   "try: pass\nfinally: pass\n",
