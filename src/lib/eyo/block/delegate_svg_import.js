@@ -120,11 +120,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
+        console.error(newValue, p5e)
         var variant = this.owner.variant_p
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
-        || ((variant === eYo.Key.FROM_MODULE_IMPORT)
+        || ((variant !== eYo.Key.FROM_MODULE_IMPORT_STAR)
           && (p5e.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },
@@ -280,6 +281,20 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import', function (delegat
   return !delegate.block_.isInFlyout
 })
 
+Object.defineProperties(eYo.DelegateSvg.Stmt.import_stmt.prototype, {
+  star_p: {
+    get () {
+      return this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR
+    },
+    set(newValue) {
+      if (newValue) {
+        this.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
+      } else if (this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
+        this.variant_p = eYo.Key.FROM_MODULE_IMPORT
+      }
+    }
+  }
+})
 /**
  * Returns a dictionary of modules imported by this block, when not disabled.
  */
@@ -290,8 +305,8 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
   var modules = {}
   var v = this.variant_p
   if (v === eYo.Key.IMPORT) {
-    var t = this.import_s.t_eyo.block_ // non_void_import_identifier_as_list
-    t.inputList.forEach(input => {
+    // non_void_import_identifier_as_list
+    this.import_b.inputList.forEach(input => {
       var t_eyo = input.eyo.t_eyo
       if (t_eyo.type === eYo.T3.Expr.identifier) {
         modules[t_eyo.target_p] = t_eyo.target_p
@@ -307,8 +322,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
       }
     })
   } else /* if (v === eYo.Key.FROM_MODULE_IMPORT[_STAR]) */ {
-    var p = this.from_p
-    modules[p] = p
+    modules[p] = this.from_p
   }
   return modules
 }

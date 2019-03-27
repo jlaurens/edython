@@ -57,6 +57,13 @@ describe('Import statement (BASIC)', function() {
   })
 })
 describe('from module import …', function() {
+  this.timeout(5000)
+  it(`from foo.bar import *`, function () {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
+    b.eyo.from_p = 'foo.bar'
+    eYo.Test.data_value(b, 'from', 'foo.bar')
+    b.dispose()
+  })
   it(`… -> from ? import abc`, function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
     ;[
@@ -237,10 +244,42 @@ describe('Copy/Paste', function () {
       b = bb.eyo.import_s.unwrappedTarget.block_
       eYo.Test.data_value(b, 'target', 'cde')
     },
-  filter: t_eyo => t_eyo.target_p})
+    filter: t_eyo => t_eyo.target_p})
     b.dispose()
   })
-  it(`from ? import *`, function () {
+  it(`from … import ?`, function () {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
+    eYo.Test.set_variant(b, 'FROM_MODULE_IMPORT')
+    eYo.Test.copy_paste(b)
+    b.eyo.from_p = 'abc'
+    eYo.Test.copy_paste(b, (b, bb) => {
+      eYo.Test.data_value(bb, 'from', b.eyo.from_p)
+    })
+    eYo.Test.slot_connect(b, 'from', eYo.Test.newIdentifier('bcd'))
+    eYo.Test.copy_paste(b, {test: (b, bb) => {
+      eYo.Test.data_value(bb, 'from', '')
+      eYo.Test.data_value(bb.eyo.from_b, 'target', 'bcd')
+    }})
+    b.dispose()
+  })
+  it(`from ? import …`, function () {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
+    eYo.Test.set_variant(b, 'FROM_MODULE_IMPORT')
+    eYo.Test.copy_paste(b)
+    b.eyo.import_p = 'abc'
+    eYo.Test.copy_paste(b, (b, bb) => {
+      eYo.Test.data_value(bb, 'import', b.eyo.import_p)
+    })
+    eYo.Test.list_connect(b, 'import', eYo.Test.newIdentifier('bcd'))
+    eYo.Test.copy_paste(b, {
+      test: (b, bb) => {
+        eYo.Test.data_value(bb, 'from', '')
+      },
+      filter: eyo => eyo.target_p
+    })
+    b.dispose()
+  })
+  it(`from … import *`, function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
     eYo.Test.set_variant(b, 'FROM_MODULE_IMPORT_STAR')
     eYo.Test.copy_paste(b)
@@ -255,17 +294,4 @@ describe('Copy/Paste', function () {
     }})
     b.dispose()
   })
-
-  // ;[
-  //   ['IMPORT'],
-  //   ['FROM_MODULE_IMPORT', 'FROM_MODULE_IMPORT', '<MISSING NAME>'],
-  //   ['FROM_MODULE_IMPORT_STAR']
-  // ].forEach(args => {
-  //   it(`same variant ${args[0]}`, function () {
-  //     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
-  //     eYo.Test.set_variant(b, args[0])
-  //     eYo.Test.copy_paste(b)
-  //     b.dispose()
-  //   })
-  // })
 })

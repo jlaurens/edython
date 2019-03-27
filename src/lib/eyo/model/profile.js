@@ -400,12 +400,16 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
     var mdl = item && item.module
     mdl = mdl && mdl.name.split('__')[0]
     return new eYo.T3.Profile(null, {
-      raw: m.dots || m.holder
+      raw: m.dots
         ? eYo.T3.Expr.custom_parent_module
-        : (ans && ans.raw) || eYo.T3.Expr.custom_identifier,
-      expr: m.dots || m.holder
+        : m.holder
+          ? eYo.T3.Expr.custom_dotted_name
+          : (ans && ans.raw) || eYo.T3.Expr.custom_identifier,
+      expr: m.dots
         ? eYo.T3.Expr.parent_module
-        : eYo.T3.Expr.identifier,
+        : m.holder
+          ? eYo.T3.Expr.dotted_name
+          : eYo.T3.Expr.identifier,
       prefixDots: first,
       base: base,
       name: candidate,

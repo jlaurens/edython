@@ -78,6 +78,8 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     this.line.push('async ')
   } else if (eyo.await) {
     this.line.push('await ')
+  } else if (eyo.parenth_p) {
+    this.line.push('(')
   }
   if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
     if (eyo.dotted_p === 0 && eyo.target_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
@@ -121,6 +123,12 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
+  }
+  if (eyo.orphan_comma_p) {
+    this.line.push(',')
+  }
+  if (eyo.parenth_p) {
+    this.line.push(')')
   }
 }
 

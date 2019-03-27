@@ -83,11 +83,33 @@ eYo.Node.prototype.NAME2Block = function (workspace) {
 }
 
 /**
+ * `this` is the dotted_name node.
+ * @param {!Object} a block delegate
+ */
+eYo.Node.prototype.dotted_name2Block = function (workspace) {
+  // dotted_name: NAME ('.' NAME)*
+  var n = this.n0
+  var root = eYo.DelegateSvg.newBlockReady(workspace, {
+    type: eYo.T3.Expr.identifier,
+    target_d: n.n_str
+  })
+  while ((n = n.sibling) && (n = n.sibling)) {
+    var b = eYo.DelegateSvg.newBlockReady(workspace, {
+      type: eYo.T3.Expr.identifier,
+      target_d: n.n_str
+    })
+    b.eyo.holder_s.connect(root)
+    root = b
+  }
+  return root
+}
+
+/**
  * `this` is the comp_iter node.
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.comp_iter2Block = function (workspace) {
-  // comp_for | comp_if
+  // comp_iter: comp_for | comp_if
   var n = this.n0
   if (n.type === eYo.TKN.comp_if) {
     return n.comp_if2Block(workspace)
@@ -110,6 +132,7 @@ eYo.Node.prototype.comp_iter2Block = function (workspace) {
  * @param {!Object} a block delegate with a 'for' slot.
  */
 eYo.Node.prototype.comp_for2Delegate = function (target) {
+  // comp_for: ['async'] sync_comp_for
   this.last_child.sync_comp_for2Delegate(target)
   if (this.n1) {
     target.async = true
@@ -478,6 +501,29 @@ eYo.Node.prototype.typedargslist2Delegate = function (target) {
 
 /**
  * `this` is the first node of a typedargslist.
+ * You'd better not call this twice on the same target.
+ * @param {!Object} a block delegate
+ */
+eYo.Node.prototype.knownList2Delegate = function (target, toBlock) {
+  var n = this.n0
+  while (true) {
+    var b = toBlock.call(n, target.workspace)
+    if (!b) {
+      console.error('MISSING BLOCK', toBlock.call(n, target.workspace))
+    }
+    target.lastConnect(b)
+    if ((n = n.sibling)) {
+      if ((n = n.sibling)) {
+        continue
+      }
+      target.orphan_comma_p = true
+    } // gobble comma
+    break
+  }
+}
+
+/**
+ * `this` is the first node of a typedargslist.
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.do_list = function (target) {
@@ -707,7 +753,7 @@ eYo.Node.prototype.testlist_comp2Delegate = function (target) {
  */
 eYo.Node.prototype.toBlock = function (workspace) {
   // console.log(`node type: ${this.name}`)
-  var root, b, b0, b1, b2, n0, n1, n2, i, s, t
+  var root, b, b0, b1, b2, n, n0, n1, n2, i, s, t
   switch (this.n_type) {
     case eYo.TKN.file_input: // (NEWLINE | stmt)* ENDMARKER
       var blocks = this.n_child.map(child => child.n_type === eYo.TKN.stmt ? child.toBlock(workspace) : null)
@@ -1108,9 +1154,59 @@ factor: ('+'|'-'|'~') factor | power
               'import' ('*' | '(' import_as_names ')' | import_as_names))
 import_as_name: NAME ['as' NAME]*/
       root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.import_stmt)
-
+      s = ''
+      n = this.n1
+      do {
+        if (n.type === eYo.TKN.dotted_name) {
+          s += n.n_child.map(child => child.type === eYo.TKN.NAME ? child.n_str : '.').join('')
+          root.eyo.from_p = s
+          s = ''
+          // b = n.dotted_name2Block(workspace)
+          // if (i) {
+          //   // find the topmost holder
+          //   var h
+          //   var hh = b
+          //   do {
+          //     h = hh
+          //   } while ((hh = h.eyo.holder_b))
+          //   h.eyo.dotted_p = i
+          // }
+          // root.eyo.from_s.connect(b)
+        } else if (n.type === eYo.TKN.DOT) {
+          s += '.'
+        } else if (n.type === eYo.TKN.ELLIPSIS) {
+          s += '...'
+        } else if (n.n_str.length === 6) {
+          // found the 'import'
+          if (s.length) {
+            root.eyo.from_p = s
+          }
+          break
+        }
+      } while ((n = n.sibling))
+      n = n.sibling
+      if (n.type === eYo.TKN.STAR) {
+        root.eyo.start_p = true
+      } else {
+        var eyo = root.eyo.import_b.eyo
+        if (n.type === eYo.TKN.LPAR) {
+          n = n.sibling
+          root.eyo.import_b.eyo.parenth_p = true
+        }
+        n.knownList2Delegate(eyo, function () {
+          // import_as_name: NAME ['as' NAME]
+          var n = this.n2
+          if (n) {
+            var b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier_as)
+            b.eyo.alias_p = n.n_str
+          } else {
+            b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.identifier)
+          }
+          b.eyo.target_p = this.n0.n_str
+          return b
+        })
+      }
       return root
-
     // case eYo.TKN.ENDMARKER: break
     // case eYo.TKN.NUMBER: break
     // case eYo.TKN.STRING: break
