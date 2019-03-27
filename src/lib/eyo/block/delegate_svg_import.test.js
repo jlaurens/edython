@@ -64,6 +64,12 @@ describe('from module import …', function() {
     eYo.Test.data_value(b, 'from', 'foo.bar')
     b.dispose()
   })
+  it(`from ... import ?`, function () {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
+    b.eyo.from_p = '...'
+    eYo.Test.data_value(b, 'from', '...')
+    b.dispose()
+  })
   it(`… -> from ? import abc`, function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.import_stmt)
     ;[

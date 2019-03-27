@@ -321,18 +321,18 @@ var ra_basic_import_statement = [
   "import sys as system, math",
   "import sys, math as my_math",
 ]
-ra_test('basic_import_statement', ra_basic_import_statement)
-// var ra_relative_imports = [
-//   "from . import name",
-//   "from .. import name",
-//   "from ... import name",
-//   "from .... import name",
-//   "from .pkg import name",
-//   "from ..pkg import name",
-//   "from ...pkg import name",
-//   "from ....pkg import name",
-// ]
-// // ra_test('relative_imports', ra_relative_imports)
+// ra_test('basic_import_statement', ra_basic_import_statement)
+var ra_relative_imports = [
+  "from . import name",
+  "from .. import name",
+  "from ... import name",
+  "from .... import name",
+  "from .pkg import name",
+  "from ..pkg import name",
+  "from ...pkg import name",
+  "from ....pkg import name",
+]
+ra_test('relative_imports', ra_relative_imports)
 // var ra_pep263 = [
 //   "# -*- coding: iso-8859-1 -*-\n" +
 //   "pass\n",
