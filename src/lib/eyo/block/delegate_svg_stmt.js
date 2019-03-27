@@ -464,15 +464,14 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   }
 })
 
-var names = [
+;[
   'pass',
   'continue',
   'break',
   'nonlocal',
   'del',
   'return'
-]
-names.forEach((k) => {
+].forEach((k) => {
   k = k + '_stmt'
   eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
   eYo.DelegateSvg.Manager.register(k)  

@@ -34,7 +34,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.expression_t) {
+          if (!this.owner.expression_b) {
             this.save(element, opt)
           }
         }
@@ -77,9 +77,9 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
       // `this` is a connection delegate
       // we do not take the type argument into account
       var eyo = this.b_eyo // does is always exist ?
-      var t = eyo.expression_t
-      if (t) {
-        if (t.type === eYo.T3.Expr.key_datum || t.type === eYo.T3.Expr.identifier_annotated) {
+      var b = eyo.expression_b
+      if (b) {
+        if (b.type === eYo.T3.Expr.key_datum || b.type === eYo.T3.Expr.identifier_annotated) {
           return [eYo.T3.Expr.dict_comprehension]
         }
       } else if (!eyo.expression_p.length) {

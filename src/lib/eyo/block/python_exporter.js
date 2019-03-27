@@ -74,6 +74,11 @@ eYo.Py.Exporter.prototype.newline_ = function (block) {
  */
 eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
   var eyo = block.eyo
+  if (eyo.async) {
+    this.line.push('async ')
+  } else if (eyo.await) {
+    this.line.push('await ')
+  }
   if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
     if (eyo.dotted_p === 0 && eyo.target_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
@@ -149,7 +154,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
         })
       } else {
         this.newline_()
-        this.line.push('MISSING STATEMENT')
+        this.line.push('<MISSING STATEMENT>')
         this.missing_statements.push(input.connection)
       }
     }
@@ -267,7 +272,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
       if (target) {
         this.exportExpression_(target)
       } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
-        this.line.push('<MISSING EXPRESSION>')
+        this.line.push('<MISSING INPUT>')
         // NEWLINE
         this.missing_expressions.push(input.connection)
       } else {

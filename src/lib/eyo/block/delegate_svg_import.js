@@ -57,7 +57,8 @@ eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
     presep: ',',
-    hole_value: 'name'
+    hole_value: 'name',
+    placeholder: eYo.Msg.Placeholder.IDENTIFIER
   }
 })
 
@@ -80,10 +81,38 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.from_d.setIncog(newValue === eYo.Key.IMPORT)
-        O.import_module_s.requiredIncoog = newValue === eYo.Key.IMPORT
-        O.import_s.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT
+        O.import_module_d.requiredIncog = newValue === eYo.Key.IMPORT
+        O.from_d.requiredIncog = newValue !== eYo.Key.IMPORT
+        O.import_d.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT
         O.import_star_s.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
+      }
+    },
+    import_module: {
+      init: '',
+      placeholder: eYo.Msg.Placeholder.TERM,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var p5e = eYo.T3.Profile.get(newValue)
+        return p5e === eYo.T3.Profile.void
+        || p5e.raw === eYo.T3.Expr.builtin__name
+        || p5e.expr === eYo.T3.Expr.identifier
+        || p5e.expr === eYo.T3.Expr.parent_module
+        || p5e.expr === eYo.T3.Expr.dotted_name
+        ? {validated: newValue} : null
+        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue) {
+          this.owner.variant_p = eYo.Key.IMPORT
+        }
+      },
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (!this.owner.import_module_s.unwrappedTarget) {
+            this.save(element, opt)
+          }
+        }
       }
     },
     from: {
@@ -92,22 +121,67 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
         var variant = this.owner.variant_p
-        return p5e.expr === eYo.T3.Expr.identifier
+        return p5e === eYo.T3.Profile.void
+        || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
         || ((variant === eYo.Key.FROM_MODULE_IMPORT)
           && (p5e.expr === eYo.T3.Expr.parent_module))
             ? {validated: newValue} : null
       },
-      synchronize: true
+      synchronize: true,
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue) {
+          var O = this.owner
+          if (O.variant_p === eYo.Key.IMPORT) {
+            // STAR of not ?
+            O.variant_p = O.import_s.unwrappedTarget
+            ? eYo.Key.FROM_MODULE_IMPORT
+            : eYo.Key.FROM_MODULE_IMPORT_STAR
+          }
+        }
+      }
+    },
+    import: {
+      init: '',
+      placeholder: eYo.Msg.Placeholder.TERM,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        var p5e = eYo.T3.Profile.get(newValue)
+        return p5e === eYo.T3.Profile.void
+        || p5e.expr === eYo.T3.Expr.identifier
+        ? {validated: newValue} : null
+        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        if (newValue) {
+          this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
+        }
+      },
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (!this.owner.import_s.unwrappedTarget) {
+            this.save(element, opt)
+          }
+        }
+      }
     }
   },
   slots: {
     import_module: {
       order: 1,
       fields: {
-        label: 'import'
+        label: 'import',
+        bind: {
+          endEditing: true
+        }
       },
-      wrap: eYo.T3.Expr.non_void_module_as_list
+      promise: eYo.T3.Expr.non_void_module_as_list,
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        var parent = this.b_eyo.parent
+        parent && (parent.variant_p = eYo.Key.IMPORT)
+      }
     },
     from: {
       order: 2,
@@ -119,39 +193,57 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var v = this.owner.variant_p
-        return v === eYo.Key.eYo.Key.FROM_MODULE_IMPORT_STAR
+        var v = this.b_eyo.variant_p
+        return v === eYo.Key.FROM_MODULE_IMPORT_STAR
         ? [
+          eYo.T3.Expr.unset,
+          eYo.T3.Expr.identifier,
+          eYo.T3.Expr.dotted_name
+        ] : [
           eYo.T3.Expr.unset,
           eYo.T3.Expr.identifier,
           eYo.T3.Expr.dotted_name,
           eYo.T3.Expr.parent_module
-        ] : [
-          eYo.T3.Expr.unset,
-          eYo.T3.Expr.identifier,
-          eYo.T3.Expr.dotted_name
         ]
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.IMPORT) {
-            this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
+          var O = this.owner
+          if (O.variant_p === eYo.Key.IMPORT) {
+            // STAR of not ?
+            O.variant_p = O.import_s.unwrappedTarget
+            ? eYo.Key.FROM_MODULE_IMPORT
+            : eYo.Key.FROM_MODULE_IMPORT_STAR
           }
+        }
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        var O = this.b_eyo
+        if (O.variant_p === eYo.Key.IMPORT) {
+          // STAR of not ?
+          O.variant_p = O.import_s.unwrappedTarget
+          ? eYo.Key.FROM_MODULE_IMPORT
+          : eYo.Key.FROM_MODULE_IMPORT_STAR
         }
       }
     },
     import: {
       order: 3,
       fields: {
-        label: 'import'
+        label: 'import',
+        bind: {
+          endEditing: true
+        }
       },
-      wrap: eYo.T3.Expr.non_void_import_identifier_as_list,
+      promise: eYo.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          var v = this.owner.variant_p
-          if (v !== eYo.Key.FROM_MODULE_IMPORT && v !== eYo.Key.FROM_MODULE_IMPORT_STAR)
           this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        var parent = this.b_eyo.parent
+        parent && (parent.variant_p = eYo.Key.FROM_MODULE_IMPORT)
       }
     },
     import_star: {

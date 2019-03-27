@@ -554,15 +554,6 @@ eYo.Slot.prototype.getConnection = function () {
 }
 
 /**
- * The target.
- * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
- */
-eYo.Slot.prototype.targetBlock = function () {
-  return this.connection && this.connection.targetBlock()
-}
-
-/**
  * Set the disable state.
  * Synchronize when the incog state did change.
  * For edython.
@@ -589,9 +580,8 @@ eYo.Slot.prototype.setIncog = function (newValue) {
     this.incog = newValue
     // forward to the connection
     var c8n = this.connection
-    if (c8n && c8n.eyo.isIncog() !== newValue) {
-      change = true 
-      c8n.eyo.setIncog(newValue)
+    if (c8n) {
+      change = c8n.eyo.setIncog(newValue)
     }
   }
   return change
@@ -684,14 +674,6 @@ eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
     }
     return true
   }
-}
-
-/**
- * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
- * @param {!Object} bdc a block/delegate/connection.
- */
-eYo.Slot.prototype.connect = function (bdc) {
-  this.connection.connect(bdc.outputConnection || bdc.block_.outputConnection | bdc)
 }
 
 /**
@@ -890,7 +872,7 @@ eYo.Slot.prototype.load = function (element) {
           out = true
         } else {
           if (!target && this.model.promise) {
-            this.completePromised()
+            this.completePromise()
             target = this.targetBlock()
           } 
           if (target) {
@@ -1020,18 +1002,54 @@ eYo.Slot.prototype.some = function (helper) {
 }
 
 /**
+ * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
+ * @param {!Object} bdc a block/delegate/connection.
+ */
+eYo.Slot.prototype.connect = function (bdc) {
+  this.connection.connect(bdc.outputConnection || bdc.block_.outputConnection | bdc)
+}
+
+/**
+ * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
+ * The slot corresponds to a wrapped list bloc.
+ * @param {!Object} bdc a block/delegate/connection.
+ * @param {?String} key an input key. When not given the last free input is connected.
+ * @return {Boolean} whether the connection has been established.
+ */
+eYo.Slot.prototype.listConnect = function (bdc, key) {
+  var t_eyo = this.connection.eyo.t_eyo
+  if (!t_eyo) {
+    this.completePromise()
+    if (!(t_eyo = this.connection.eyo.t_eyo)) {
+      return false
+    }
+  }
+  var input = t_eyo.block_.getInput(key)
+  if (input) {
+    var c8n = input.connection
+    if (c8n) {
+      var other = bdc.outputConnection || bdc.block_.outputConnection | bdc
+      c8n.connect(other)
+      return c8n.targetConnection === other
+    }
+  } else {
+    return t_eyo.lastConnect(bdc)
+  }
+}
+
+/**
  * Connect to the target.
  * For edython.
  * @param {!Object} target (Block, delegate of connection)
  * @return {Boolean} true when connected
  */
-eYo.Slot.prototype.connect = function (something) {
+eYo.Slot.prototype.connect = function (bdc) {
   var c8n = this.connection
-  if(c8n && something) {
-    var other = something.outputConnection || (something.block_ && something.block_.outputConnection) || something
+  if(c8n && bdc) {
+    var other = bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc
     if (c8n.checkType_(other)) {
       c8n.eyo.connect(other)
-      return true
+      return other.eyo.b_eyo
     }
   }
 }
@@ -1075,10 +1093,10 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
  * Forwards to the receiver's connection's delegate.
  * One shot in case of success.
  */
-eYo.Slot.prototype.completePromised = function () {
+eYo.Slot.prototype.completePromise = function () {
   var c8n = this.connection
-  if (c8n && c8n.eyo.completePromised()) {
-    this.completePromised = eYo.Do.Nothing
+  if (c8n && c8n.eyo.completePromise()) {
+    this.completePromise = eYo.Do.Nothing
     return true
   }
 }

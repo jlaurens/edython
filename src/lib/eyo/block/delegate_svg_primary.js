@@ -574,7 +574,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           return this.owner.variant_p === eYo.Key.CALL_EXPR
         },
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.holder_t) {
+          if (!this.owner.holder_b) {
             if (this.get()) {
               this.save(element, opt)
             }
@@ -667,7 +667,6 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.didChange(oldValue, newValue)
          if (newValue === eYo.Key.NONE) {
            console.error('UNEXPECTED')
          }
@@ -755,13 +754,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         s && s.fields.label.setValue(newValue === eYo.Key.COL_VALUED ? ':=' : '=')
         O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
 
-        var t = O.target_t // t_eyo may not yet exist
-        if (t) {
-          t.eyo.createConsolidator(true) // unique is special
+        var b = O.target_b // t_eyo may not yet exist
+        if (b) {
+          b.eyo.createConsolidator(true) // unique is special
         }
         O.n_ary_s.setIncog(newValue !== eYo.Key.CALL_EXPR)
-        if (!O.n_ary_s.isIncog() && (t = O.n_ary_t)) {
-          t.eyo.createConsolidator(true)
+        if (!O.n_ary_s.isIncog() && (b = O.n_ary_b)) {
+          b.eyo.createConsolidator(true)
         }
         O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
       },
@@ -843,7 +842,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_t
+        var target = this.owner.n_ary_b
         if (target) {
           target.eyo.ary_p = newValue
         }
@@ -885,7 +884,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_t
+        var target = this.owner.n_ary_b
         if (target) {
           target.eyo.mandatory_p = newValue
         }
@@ -915,10 +914,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       check: eYo.T3.Expr.Check.primary,
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        this.connection.sourceBlock_.eyo.updateProfile()
+        this.b_eyo.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        this.connection.sourceBlock_.eyo.updateProfile()
+        this.b_eyo.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: true
@@ -1178,7 +1177,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
       var target, t_eyo, p5e
       var type
       // if the `target` slot is connected.
-      if (this.target_t && this.target_t.inputList.length > 3) {
+      if (this.target_b && this.target_b.inputList.length > 3) {
         type = eYo.T3.Expr.assignment_chain
       } else if ((t_eyo = this.target_s.unwrappedTarget)) {
         if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
@@ -1222,7 +1221,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.module = p5e.holder
       }
       if (ans.dotted === 1) {
-        if ((target = this.holder_t)) {
+        if ((target = this.holder_b)) {
           t_eyo = target.eyo
           if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
             type = eYo.T3.Expr.identifier
@@ -1443,10 +1442,10 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
     ]
   } else if (profile.variant === eYo.Key.TARGET_VALUED) {
     // Is the target connected to something that is not an identifier ?
-    if (this.target_t.inputList.length > 3) {
+    if (this.target_b.inputList.length > 3) {
       return [eYo.T3.Expr.assignment_chain]
     }
-    if (this.target_t.inputList.length > 1) {
+    if (this.target_b.inputList.length > 1) {
       // only one connected input
       var eyo = this.target_s.unwrappedTarget
       if (eyo && eyo.type !== eYo.T3.Expr.identifier) {

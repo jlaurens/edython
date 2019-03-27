@@ -207,6 +207,9 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
   //       var x = b_eyo.outputConnection.targetConnection
   //       return x && (x = x.eyo.slot) && slot.model
   //     }
+  //   },
+  //   set (newValue) {
+  //     this.model_ = newValue
   //   }
   }
 })
@@ -300,13 +303,13 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
   if (change) {
     this.b_eyo.incrementChangeCount()
   }
-  var c8n = this.connection
   if (!incog && this.promised_) {
-    this.completePromised()
+    this.completePromise()
   }
   if (incog || !this.wrapped_) {
     // We cannot disable wrapped connections
     this.incog_ = incog
+    var c8n = this.connection
     if (c8n.hidden_ !== incog) {
       c8n.setHidden(incog)
       change = true
@@ -330,8 +333,8 @@ eYo.ConnectionDelegate.prototype.setIncog = function (incog) {
  * @param {String} prototypeName
  * @return {Object} Object with an `ans` property.
  */
-eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method(
-  'completeWrapped',
+eYo.ConnectionDelegate.prototype.completeWrap = eYo.Decorate.reentrant_method(
+  'completeWrap',
   function () {
     if (!this.wrapped_) {
       return
@@ -347,7 +350,7 @@ eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method
           ? eYo.DelegateSvg.newBlockReady
           : eYo.DelegateSvg.newBlockComplete
           target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
-          goog.asserts.assert(target, 'completeWrapped failed: ' + this.wrapped_)
+          goog.asserts.assert(target, 'completeWrap failed: ' + this.wrapped_)
           goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
           ans = this.connect(target.outputConnection)
         }
@@ -360,10 +363,11 @@ eYo.ConnectionDelegate.prototype.completeWrapped = eYo.Decorate.reentrant_method
 /**
  * Complete with a promised block.
  */
-eYo.ConnectionDelegate.prototype.completePromised = function () {
+eYo.ConnectionDelegate.prototype.completePromise = function () {
   if (this.promised_) {
+    // console.error('PROMISE CLOSED')
     this.wrapped_ = this.promised_
-    var ans = this.completeWrapped()
+    var ans = this.completeWrap()
     return ans && ans.ans
   }
 }
@@ -1057,14 +1061,18 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
               wrapper.didConnect(parentC8n, oldChildC8n, oldParentC8n)
             })
           }, () => { // finally
-            !parentC8n.eyo.wrapped_ && parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
-            // next must absolutely run because of possible undo management
-            parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+            if (!parentC8n.eyo.wrapped_) {
+              parentC8n.eyo.bindField && parentC8n.eyo.bindField.setVisible(false)
+              // next must absolutely run because of possible undo management
+              parentC8n.eyo.didConnect(oldParentC8n, oldChildC8n)
+            }
           })
         }, () => { // finally
-          childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
-          eYo.Connection.connectedParentC8n = undefined
-          !childC8n.eyo.wrapped_ && childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
+          if (!childC8n.eyo.wrapped_) {
+            childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
+            eYo.Connection.connectedParentC8n = undefined
+            childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
+          }
           if (parent.eyo.isReady) {
             child.eyo.beReady()
           }
@@ -1405,7 +1413,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
 eYo.Connection.prototype.targetBlock = function() {
   var target = eYo.Connection.superClass_.targetBlock.call(this)
   if (!target && this.eyo.wrapped_) {
-    this.eyo.completeWrapped()
+    this.eyo.completeWrap()
     target = eYo.Connection.superClass_.targetBlock.call(this)
   }
   return target

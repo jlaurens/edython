@@ -524,35 +524,11 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
   }
 }, true)
 
-/**
- * Class for a DelegateSvg, expression_as block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
- */
-eYo.DelegateSvg.Expr.makeSubclass('expression_as', {
-  slots: {
-    expression: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expr'
-    },
-    target: {
-      order: 3,
-      fields: {
-        label: 'as'
-      },
-      check: eYo.T3.Expr.Check.target,
-      hole_value: 'target'
-    }
-  }
-}, true)
-
 eYo.DelegateSvg.Group.T3s = [
   eYo.T3.Stmt.if_part,
   eYo.T3.Stmt.elif_part,
   eYo.T3.Stmt.else_part,
   eYo.T3.Stmt.while_part,
   eYo.T3.Stmt.with_part,
-  eYo.T3.Stmt.for_part,
-  eYo.T3.Expr.expression_as
+  eYo.T3.Stmt.for_part
 ]

@@ -225,7 +225,12 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
       \\.
     )?
   )
-  (?<name> ${eYo.XRE[eYo.Key._IDENTIFIER]})?  # must matches 'foo.bar.' for partial validation, hence the '?'
+  (?<name> ${eYo.XRE[eYo.Key._IDENTIFIER]})?  # must match 'foo.bar.' for partial validation, hence the '?'
+  $`, 'x'),
+  identifier_annotated_valued: XRegExp(`^
+    (?<name> ${eYo.XRE[eYo.Key._IDENTIFIER]})
+    (?:\\s*[:]\\s*(?<annotated> ${eYo.XRE[eYo.Key._IDENTIFIER]}))?
+    (?:\\s*=\\s*(?<valued> ${eYo.XRE[eYo.Key._IDENTIFIER]}))?
   $`, 'x')
 })
 

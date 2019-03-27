@@ -18,7 +18,7 @@ describe('Enclosure(Basic)', function () {
   ].forEach(args => {
     it(`${args[0]}/${args[1]}`, function() {
       var b = eYo.Test.new_block(args[0], args[2] || args[0])
-      eYo.Test.assert_variant(b, args[1])
+      eYo.Test.variant(b, args[1])
       b.dispose()
     })
   })
@@ -30,8 +30,8 @@ describe('Enclosure(Basic)', function () {
     it(`${args[1]}/${args[0]}`, function() {
       var b = eYo.Test.new_block('enclosure')
       b.eyo.variant_p = eYo.Key[args[1]]
-      eYo.Test.assert_variant(b, args[1])
-      eYo.Test.assert_block(b, args[0])
+      eYo.Test.variant(b, args[1])
+      eYo.Test.block(b, args[0])
       b.dispose()
     })
   })
@@ -41,37 +41,37 @@ describe('Enclosure connections', function() {
   it(`'()'`, function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.enclosure)
     console.error('TYPE', b.type)
-    eYo.Test.assert_block(b, `parenth_form`) // default type
-    eYo.Test.assert_variant(b, 'PAR')
+    eYo.Test.block(b, `parenth_form`) // default type
+    eYo.Test.variant(b, 'PAR')
     // can I connect a comprehension block ?
-    eYo.Test.assert_input_length(b, 1)
+    eYo.Test.input_length(b, 1)
     var bb1 = eYo.Test.new_block('comprehension')
     chai.assert(b.eyo.lastConnect(bb1))
     // this is a unique object:
-    eYo.Test.assert_input_length(b, 1)
+    eYo.Test.input_length(b, 1)
     // replace with another unique object:
     var bb2 = eYo.Test.new_block('yield_expr')
     chai.assert(b.eyo.lastConnect(bb2))
-    eYo.Test.assert_input_length(b, 1)
+    eYo.Test.input_length(b, 1)
     chai.assert(!bb1.outputConnection.t_eyo)
     bb1.dispose()
     // replace with a non unique object:
     var bb3 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
-    eYo.Test.assert_block(bb3, 'integer')
+    eYo.Test.block(bb3, 'integer')
     chai.assert(b.eyo.lastConnect(bb3))
-    eYo.Test.assert_input_length(b, 3)
+    eYo.Test.input_length(b, 3)
     chai.assert(!bb2.outputConnection.t_eyo)
     chai.assert(!b.inputList[0].eyo.connect(bb2), 'UNEXPECTED connection')
     chai.assert(!b.inputList[2].eyo.connect(bb2), 'UNEXPECTED connection')
     bb2.dispose()
     bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 124)
-    eYo.Test.assert_block(bb1, 'integer')
+    eYo.Test.block(bb1, 'integer')
     chai.assert(b.eyo.lastConnect(bb1))
-    eYo.Test.assert_input_length(b, 5)
+    eYo.Test.input_length(b, 5)
     bb1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 241)
-    eYo.Test.assert_block(bb1, 'integer')
+    eYo.Test.block(bb1, 'integer')
     chai.assert(b.inputList[0].eyo.connect(bb1), 'MISSING connection')
-    eYo.Test.assert_input_length(b, 7)
+    eYo.Test.input_length(b, 7)
     b.dispose()
   })
   it(`'[]'`, function() {
@@ -81,17 +81,17 @@ describe('Enclosure connections', function() {
     var b = eYo.Test.new_block('void_dict_display')
     // connect a unique block
     var bb1 = eYo.Test.new_block('comprehension')
-    eYo.Test.assert_input_length(b, 1)
+    eYo.Test.input_length(b, 1)
     chai.assert(b.eyo.lastConnect(bb1))
-    eYo.Test.assert_input_length(b, 1)
-    eYo.Test.assert_block(b, 'set_display')
+    eYo.Test.input_length(b, 1)
+    eYo.Test.block(b, 'set_display')
     // replace by any other unique
     var list = b.eyo.model.list
     var unique = list.unique(b.type)
     unique.forEach(t => {
       var bb2 = eYo.Test.new_block(t)
       chai.assert(b.eyo.lastConnect(bb2))
-      eYo.Test.assert_input_length(b, 1)
+      eYo.Test.input_length(b, 1)
       chai.assert(!bb1.outputConnection.t_eyo)
       bb1.dispose()
       bb1 = bb2
@@ -100,7 +100,7 @@ describe('Enclosure connections', function() {
     chai.assert(bb2.eyo.expression_s.connect(eYo.Test.new_block('key_datum')))
     b.eyo.lastConnect(bb2)
     bb1.dispose()
-    eYo.Test.assert_block(b, 'dict_display')
+    eYo.Test.block(b, 'dict_display')
     b.dispose()
   })
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {

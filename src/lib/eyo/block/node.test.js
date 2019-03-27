@@ -32,7 +32,7 @@ var ra_test = (name, str_s) => {
             eYo.GMR.showtree(g, n)
           }
           chai.assert(b, `WHERE IS THE BLOCK ${n.type}`)
-          eYo.Test.assert_code(b, str)
+          eYo.Test.code(b, str)
           b.dispose()
         }
       })()
@@ -41,64 +41,72 @@ var ra_test = (name, str_s) => {
   })  
 }
 
+var ra_prepare_yield_statement = [
+  "yield",
+  "yield 1",
+  "yield 1, 2",
+  "yield from 1"
+]
+// ra_test('prepare_yield_statement', ra_prepare_yield_statement)
+
 // /*
 // Based on data in https://raw.githubusercontent.com/python/cpython/master/Lib/test/test_parser.py
 // */
 // eYo.Const.Py_DEBUG = false
-// var ra_yield_statement = [
-//   "def f(): yield 1",
-//   "def f(): yield",
-//   "def f(): x += yield",
-//   "def f(): x = yield 1",
-//   "def f(): x = y = yield 1",
-//   "def f(): x = yield",
-//   "def f(): x = y = yield",
-//   "def f(): 1 + (yield)*2",
-//   "def f(): (yield 1)*2",
-//   "def f(): return; yield 1",
-//   "def f(): yield 1; return",
-//   "def f(): yield from 1",
-//   "def f(): x = yield from 1",
-//   "def f(): f((yield from 1))",
-//   "def f(): yield 1; return 1",
-//   "def f():\n" +
-//   "    for x in range(30):\n" +
-//   "        yield x\n",
-//   "def f():\n" +
-//   "    if (yield):\n" +
-//   "        yield x\n"
-// ]
-// // ra_test('yield_statement', ra_yield_statement)
-// var ra_await_statement = [
-//   "async def f():\n await smth()",
-//   "async def f():\n foo = await smth()",
-//   "async def f():\n foo, bar = await smth()",
-//   "async def f():\n (await smth())",
-//   "async def f():\n foo((await smth()))",
-//   "async def f():\n await foo(); return 42",
-// ]
-// // ra_test('await_statement', ra_await_statement)
-// var ra_async_with_statement = [
-//   "async def f():\n async with 1: pass",
-//   "async def f():\n async with a as b, c as d: pass",
-// ]
-// // ra_test('async_with_statement', ra_async_with_statement)
-// var ra_async_for_statement = [
-//   "async def f():\n async for i in (): pass",
-//   "async def f():\n async for i, b in (): pass",
-// ]
-// // ra_test('async_for_statement', ra_async_for_statement)
-// var ra_nonlocal_statement = [
-//   "def f():\n" +
-//   "    x = 0\n" +
-//   "    def g():\n" +
-//   "        nonlocal x\n",
-//   "def f():\n" +
-//   "    x = y = 0\n" +
-//   "    def g():\n" +
-//   "        nonlocal x, y\n"
-// ]
-// // ra_test('nonlocal_statement', ra_nonlocal_statement)
+var ra_yield_statement = [
+  "def f(): yield 1",
+  "def f(): yield",
+  "def f(): x += yield",
+  "def f(): x = yield 1",
+  "def f(): x = y = yield 1",
+  "def f(): x = yield",
+  "def f(): x = y = yield",
+  "def f(): 1 + (yield)*2",
+  "def f(): (yield 1)*2",
+  "def f(): return; yield 1",
+  "def f(): yield 1; return",
+  "def f(): yield from 1",
+  "def f(): x = yield from 1",
+  "def f(): f((yield from 1))",
+  "def f(): yield 1; return 1",
+  "def f():\n" +
+  "    for x in range(30):\n" +
+  "        yield x\n",
+  "def f():\n" +
+  "    if (yield):\n" +
+  "        yield x\n"
+]
+// ra_test('yield_statement', ra_yield_statement)
+var ra_await_statement = [
+  "async def f():\n await smth()",
+  "async def f():\n foo = await smth()",
+  "async def f():\n foo, bar = await smth()",
+  "async def f():\n (await smth())",
+  "async def f():\n foo((await smth()))",
+  "async def f():\n await foo(); return 42",
+]
+ra_test('await_statement', ra_await_statement)
+var ra_async_with_statement = [
+  "async def f():\n async with 1: pass",
+  "async def f():\n async with a as b, c as d: pass",
+]
+// ra_test('async_with_statement', ra_async_with_statement)
+var ra_async_for_statement = [
+  "async def f():\n async for i in (): pass",
+  "async def f():\n async for i, b in (): pass",
+]
+// ra_test('async_for_statement', ra_async_for_statement)
+var ra_nonlocal_statement = [
+  "def f():\n" +
+  "    x = 0\n" +
+  "    def g():\n" +
+  "        nonlocal x\n",
+  "def f():\n" +
+  "    x = y = 0\n" +
+  "    def g():\n" +
+  "        nonlocal x, y\n"
+]
+// ra_test('nonlocal_statement', ra_nonlocal_statement)
 
 var ra_expressions = [
   "foo(1)",
@@ -172,22 +180,23 @@ var ra_simple_assignments = [
 ]
 ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
-  // "x: int = 5",
+  "x: int = 5",
   "y: List[T] = []; z: [list] = fun()",
-  // "x: tuple = (1, 2)",
-  // "d[f()]: int = 42",
+  "x: tuple = (1, 2)",
+  "d[f()]: int = 42",
   /* "f(d[x]): str = 'abc'", SYNTAX ERROR ? */
-  // "x.y.z.w: complex = 42j",
-  // "x: int",
-  // "def f():\n" +
-  // "    x: str\n" +
-  // "    y: int = 5\n",
+  "x.y.z.w: complex = 42j",
+  "x: int",
+  "def f():\n" +
+  "    x: str\n" +
+  "    y: int = 5\n",
   "class C:\n" +
   "    x: str\n" +
   "    y: int = 5\n",
-  // "class C:\n" +
-  // "    def __init__(self, x: int) -> None:\n" +
-  // "        self.x: int = x\n"
+  "def f() -> None: pass",
+  "class C:\n" +
+  "    def __init__(self, x: int) -> None:\n" +
+  "        self.x: int = x\n"
 ]
 ra_test('var_annot', ra_var_annot)
 // /*
@@ -213,100 +222,98 @@ ra_test('var_annot', ra_var_annot)
 //         with self.chai.assertRaises(SyntaxError):
 //             exec("f(): int", {}, {})
 // */
-// var ra_simple_augmented_assignments = [
-//   "a += b",
-//   "a -= b",
-//   "a *= b",
-//   "a /= b",
-//   "a //= b",
-//   "a %= b",
-//   "a &= b",
-//   "a |= b",
-//   "a ^= b",
-//   "a <<= b",
-//   "a >>= b",
-//   "a **= b",
-// ]
-// // ra_test('simple_augmented_assignments', ra_simple_augmented_assignments)
-// var ra_function_defs = [
-//   "def f(): pass",
-//   "def f(*args): pass",
-//   "def f(*args, **kw): pass",
-//   "def f(**kw): pass",
-//   "def f(foo=bar): pass",
-//   "def f(foo=bar, *args): pass",
-//   "def f(foo=bar, *args, **kw): pass",
-//   "def f(foo=bar, **kw): pass",
-//   "def f(a, b): pass",
-//   "def f(a, b, *args): pass",
-//   "def f(a, b, *args, **kw): pass",
-//   "def f(a, b, **kw): pass",
-//   "def f(a, b, foo=bar): pass",
-//   "def f(a, b, foo=bar, *args): pass",
-//   "def f(a, b, foo=bar, *args, **kw): pass",
-//   "def f(a, b, foo=bar, **kw): pass",
-//   "@staticmethod\n" +
-//   "def f(): pass",
-//   "@staticmethod\n" +
-//   "@funcattrs(x, y)\n" +
-//   "def f(): pass",
-//   "@funcattrs()\n" +
-//   "def f(): pass",
-
-//   //      # keyword-only arguments
-//   "def f(*, a): pass",
-//   "def f(*, a = 5): pass",
-//   "def f(*, a = 5, b): pass",
-//   "def f(*, a, b = 5): pass",
-//   "def f(*, a, b = 5, **kwds): pass",
-//   "def f(*args, a): pass",
-//   "def f(*args, a = 5): pass",
-//   "def f(*args, a = 5, b): pass",
-//   "def f(*args, a, b = 5): pass",
-//   "def f(*args, a, b = 5, **kwds): pass",
-
-//   //      # function annotations
-//   "def f(a: int): pass",
-//   "def f(a: int = 5): pass",
-//   "def f(*args: list): pass",
-//   "def f(**kwds: dict): pass",
-//   "def f(*, a: int): pass",
-//   "def f(*, a: int = 5): pass",
-//   "def f() -> int: pass",
-// ]
-// // ra_test('function_defs', ra_function_defs)
-// var ra_class_defs = [
-//   "class foo():pass",
-//   "class foo(object):pass",
-//   "@class_decorator\n" +
-//   "class foo():pass",
-//   "@class_decorator(arg)\n" +
-//   "class foo():pass",
-//   "@decorator1\n" +
-//   "@decorator2\n" +
-//   "class foo():pass",
-// ]
-// // ra_test('class_defs', ra_class_defs)
-// var ra_import_from_statement = [
-//   "from sys.path import *",
-//   "from sys.path import dirname",
-//   "from sys.path import (dirname)",
-//   "from sys.path import (dirname,)",
-//   "from sys.path import dirname as my_dirname",
-//   "from sys.path import (dirname as my_dirname)",
-//   "from sys.path import (dirname as my_dirname,)",
-//   "from sys.path import dirname, basename",
-//   "from sys.path import (dirname, basename)",
-//   "from sys.path import (dirname, basename,)",
-//   "from sys.path import dirname as my_dirname, basename",
-//   "from sys.path import (dirname as my_dirname, basename)",
-//   "from sys.path import (dirname as my_dirname, basename,)",
-//   "from sys.path import dirname, basename as my_basename",
-//   "from sys.path import (dirname, basename as my_basename)",
-//   "from sys.path import (dirname, basename as my_basename,)",
-//   "from .bogus import x",
-// ]
-// // ra_test('import_from_statement', ra_import_from_statement)
+var ra_simple_augmented_assignments = [
+  "a += b",
+  "a -= b",
+  "a *= b",
+  "a /= b",
+  "a //= b",
+  "a %= b",
+  "a &= b",
+  "a |= b",
+  "a ^= b",
+  "a <<= b",
+  "a >>= b",
+  "a **= b",
+]
+// ra_test('simple_augmented_assignments', ra_simple_augmented_assignments)
+var ra_function_defs = [
+  "def f(): pass",
+  "def f(*args): pass",
+  "def f(*args, **kw): pass",
+  "def f(**kw): pass",
+  "def f(foo=bar): pass",
+  "def f(foo=bar, *args): pass",
+  "def f(foo=bar, *args, **kw): pass",
+  "def f(foo=bar, **kw): pass",
+  "def f(a, b): pass",
+  "def f(a, b, *args): pass",
+  "def f(a, b, *args, **kw): pass",
+  "def f(a, b, **kw): pass",
+  "def f(a, b, foo=bar): pass",
+  "def f(a, b, foo=bar, *args): pass",
+  "def f(a, b, foo=bar, *args, **kw): pass",
+  "def f(a, b, foo=bar, **kw): pass",
+  "@staticmethod\n" +
+  "def f(): pass",
+  "@staticmethod\n" +
+  "@funcattrs(x, y)\n" +
+  "def f(): pass",
+  "@funcattrs()\n" +
+  "def f(): pass",
+  //      # keyword-only arguments
+  "def f(*, a): pass",
+  "def f(*, a = 5): pass",
+  "def f(*, a = 5, b): pass",
+  "def f(*, a, b = 5): pass",
+  "def f(*, a, b = 5, **kwds): pass",
+  "def f(*args, a): pass",
+  "def f(*args, a = 5): pass",
+  "def f(*args, a = 5, b): pass",
+  "def f(*args, a, b = 5): pass",
+  "def f(*args, a, b = 5, **kwds): pass",
+  //      # function annotations
+  "def f(a: int): pass",
+  "def f(a: int = 5): pass",
+  "def f(*args: list): pass",
+  "def f(**kwds: dict): pass",
+  "def f(*, a: int): pass",
+  "def f(*, a: int = 5): pass",
+  "def f() -> int: pass",
+]
+// ra_test('function_defs', ra_function_defs)
+var ra_class_defs = [
+  "class foo():pass",
+  "class foo(object):pass",
+  "@class_decorator\n" +
+  "class foo():pass",
+  "@class_decorator(arg)\n" +
+  "class foo():pass",
+  "@decorator1\n" +
+  "@decorator2\n" +
+  "class foo():pass",
+]
+// ra_test('class_defs', ra_class_defs)
+var ra_import_from_statement = [
+  "from sys.path import *",
+  "from sys.path import dirname",
+  "from sys.path import (dirname)",
+  "from sys.path import (dirname,)",
+  "from sys.path import dirname as my_dirname",
+  "from sys.path import (dirname as my_dirname)",
+  "from sys.path import (dirname as my_dirname,)",
+  "from sys.path import dirname, basename",
+  "from sys.path import (dirname, basename)",
+  "from sys.path import (dirname, basename,)",
+  "from sys.path import dirname as my_dirname, basename",
+  "from sys.path import (dirname as my_dirname, basename)",
+  "from sys.path import (dirname as my_dirname, basename,)",
+  "from sys.path import dirname, basename as my_basename",
+  "from sys.path import (dirname, basename as my_basename)",
+  "from sys.path import (dirname, basename as my_basename,)",
+  "from .bogus import x",
+]
+ra_test('import_from_statement', ra_import_from_statement)
 // var ra_basic_import_statement = [
 //   "import sys",
 //   "import sys as system",

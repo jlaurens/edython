@@ -75,9 +75,9 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
 
 /**
  * Fetches the named input object, getInput.
- * @param {String} name The name of the input.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ * @param {!Blockly.Connection} connection.
+ * @param {!Blockly.Connection} oldTargetC8n.
+ * @param {!Blockly.Connection} targetOldC8n
  */
 eYo.DelegateSvg.List.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   eYo.DelegateSvg.List.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
@@ -192,7 +192,7 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
 })
 
 /**
- * Class for a DelegateSvg, expression_list block.
+ * Class for a DelegateSvg, non_void_expression_list block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
@@ -472,7 +472,6 @@ eYo.DelegateSvg.List.T3s = [
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.key_datum,
   eYo.T3.Expr.optional_expression_list,
-  eYo.T3.Expr.non_void_expression_list,
   eYo.T3.Expr.parenth_form,
   eYo.T3.Expr.parenth_target_list,
   eYo.T3.Expr.list_display,

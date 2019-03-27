@@ -620,24 +620,32 @@ eYo.Data.prototype.synchronize = function (newValue) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {
-      eYo.Events.disableWrap(() => {
-        field.setValue(this.toField())
+      if (this.incog_p) {
         if (this.slot && this.slot.data === this) {
-          this.slot.setIncog(this.incog_p)
-          field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
+          this.slot.setIncog(true)
         } else {
-          field.setVisible(!this.incog_p)
+          field.setVisible(false)
         }
-        var element = field.textElement_
-        if (element) {
-          if (this.error) {
-            goog.dom.classlist.add(element, 'eyo-code-error')
+      } else {
+        eYo.Events.disableWrap(() => {
+          field.setValue(this.toField())
+          if (this.slot && this.slot.data === this) {
+            this.slot.setIncog(false)
+            field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
           } else {
-            goog.dom.classlist.remove(element, 'eyo-code-error')
+            field.setVisible(true)
           }
-        }
-      })
-    }
+          var element = field.textElement_
+          if (element) {
+            if (this.error) {
+              goog.dom.classlist.add(element, 'eyo-code-error')
+            } else {
+              goog.dom.classlist.remove(element, 'eyo-code-error')
+            }
+          }
+        })
+      }
+  }
   } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
     f && f.call(this, newValue)

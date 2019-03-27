@@ -35,6 +35,7 @@ eYo.Delegate = function (block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
   this.block_ = block
+  this.registerDisposable(block)
   block.eyo = this
   this.change = {
     // the count is incremented each time a change occurs,
@@ -398,8 +399,19 @@ Object.defineProperties(eYo.Delegate.prototype, {
       var list = this.block_.inputList
       return list[list.length - 1].connection
     }
+  },
+  bottomMostConnection: {
+    get () {
+      var eyo = this
+      var next
+      while ((next = eyo.next)) {
+        eyo = next
+      }
+      return eyo.nextConnection
+    }
   }
 })
+
 
 /**
  * Get the block.
@@ -839,7 +851,7 @@ eYo.Delegate.Manager = (() => {
     }
     var defineSlotProperty = k => {
       var key_s = k + '_s'
-      var key_t = k + '_t'
+      var key_b = k + '_b'
       // make a closure to catch the value of k
       return function () {
         if (!(key_s in this)) {
@@ -854,15 +866,23 @@ eYo.Delegate.Manager = (() => {
             }
           )
         }
-        if (!(key_t in this)) {
+        if (!(key_b in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
           Object.defineProperty(
             this,
-            key_t,
+            key_b,
             {
               get () {
                 var s = this.slots[k] // early call
-                return s && s.targetBlock()
+                if (s) {
+                  var c8n = s.connection
+                  if (c8n) {
+                    if (c8n.eyo.promised_) {
+                      c8n.eyo.completePromise()
+                    }
+                    return s.targetBlock()
+                  }
+                }
               }
             }
           )
@@ -1663,10 +1683,12 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
  * See assignment_chain.
  */
 eYo.Delegate.prototype.consolidateType = function () {
-  this.setupType(this.getType())
-  if (this.wrapped_) {
-    var p = this.parent
-    p && p.consolidateType()
+  if (this.workspace) {
+    this.setupType(this.getType())
+    if (this.wrapped_) {
+      var p = this.parent
+      p && p.consolidateType()
+    }
   }
 }
 
@@ -1687,7 +1709,7 @@ eYo.Delegate.prototype.consolidateType = function () {
  * Sent by `doConsolidate` and various `isChanging` methods.
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
-  this.completeWrapped_()
+  this.completeWrap_()
   var b = this.block_
   var f = c8n => {
     c8n && c8n.eyo.updateCheck()
@@ -1796,7 +1818,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
 
 /**
  * Shortcut for appending a sealed value input row.
- * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later when the `completeWrapped_` message is sent.
+ * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later when the `completeWrap_` message is sent.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * This is the only way to create a wrapped block.
@@ -1845,12 +1867,12 @@ eYo.Delegate.prototype.appendPromiseValueInput = function (name, prototypeName, 
  * @param {!Block} block
  * @private
  */
-eYo.Delegate.prototype.completeWrapped_ = function () {
+eYo.Delegate.prototype.completeWrap_ = function () {
   if (this.wrappedC8nDlgt_) {
     var i = 0
     while (i < this.wrappedC8nDlgt_.length) {
       var d = this.wrappedC8nDlgt_[i]
-      var ans = d.completeWrapped()
+      var ans = d.completeWrap()
       if (ans && ans.ans) {
         this.wrappedC8nDlgt_.splice(i)
       } else {
@@ -1961,7 +1983,7 @@ eYo.Delegate.prototype.lastConnect = function (bdc) {
   var c8n = this.lastConnection
   if (c8n.checkType_(other)) {
     c8n.connect(other)
-    return c8n.targetConnection === other
+    return c8n.targetConnection === other ? c8n.eyo.t_eyo : undefined
   }
 }
 
@@ -2405,8 +2427,19 @@ eYo.Delegate.prototype.getSlotConnections = function () {
 /**
  * get the slot connections, mainly for debugging purposes.
  * For edython.
- * @return An array of all the connections
+ * @param {!Bockly.Block} block_
+ * @return the given block
  */
 eYo.Delegate.prototype.nextConnect = function (block) {
   this.block_.nextConnection.connect(block.previousConnection)
+  return block
+}
+
+/**
+ * get the slot connections, mainly for debugging purposes.
+ * For edython.
+ * @return An array of all the connections
+ */
+eYo.Delegate.prototype.bottomMostConnect = function (block) {
+  this.bottomMostConnection.connect(block.previousConnection)
 }

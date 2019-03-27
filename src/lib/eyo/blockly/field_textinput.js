@@ -389,7 +389,7 @@ eYo.FieldInput.prototype.placeholderText = function (clear) {
     return this.placeholderText_
   }
   if (this.sourceBlock_) {
-    var ph = (model) => {
+    var ph = model => {
       var placeholder = model && model.placeholder
       if (goog.isNumber(placeholder)) {
         return placeholder.toString()
@@ -450,7 +450,7 @@ goog.inherits(eYo.FieldVariable, eYo.FieldInput)
  */
 eYo.FieldVariable.prototype.getPythonText_ = function () {
   var candidate = this.text_? this.text_ : ''
-  return !XRegExp.match(candidate, /\s/) && candidate || (!this.eyo.optional_ && 'MISSING NAME')
+  return !XRegExp.match(candidate, /\s/) && candidate || (!this.eyo.optional_ && '<MISSING NAME>')
 }
 
 /**
@@ -509,11 +509,14 @@ eYo.Content.prototype.setupModel = (() => {
  */
 eYo.FieldTextInput.prototype.getPythonText_ = function () {
   var eyo = this.eyo
-  if (!eyo.model.canEmpty && (this.eyo.placeholder || (this.eyo.data && this.eyo.data.placeholder))) {
-    var t = `missing ${this.placeholderText().trim()}`.toUpperCase()
-    // this.eyo.data && this.eyo.data.change(t)
-    return t
+  var t = eYo.FieldTextInput.superClass_.getPythonText_.call(this)
+  if (!t.length && !this.eyo.optional_) {
+    if (!eyo.model.canEmpty && (this.eyo.placeholder || (this.eyo.data && this.eyo.data.placeholder))) {
+      var t = `<missing ${this.placeholderText().trim()}>`.toUpperCase()
+      // this.eyo.data && this.eyo.data.change(t)
+      return t
+    }
   }
-  return eYo.FieldTextInput.superClass_.getPythonText_.call(this)
+  return t
 }
 

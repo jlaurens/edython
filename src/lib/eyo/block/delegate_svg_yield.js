@@ -38,16 +38,50 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
         this.synchronize(newValue)
         var O = this.owner
         O.from_d.requiredIncog = newValue === eYo.Key.FROM
-        O.expression_s.requiredIncog = newValue === eYo.Key.EXPRESSION
+        O.expression_d.requiredIncog = newValue === eYo.Key.EXPRESSION
       },
       xml: false
     },
-    from: {
+    expression: {
+      order: 10000,
+      main: true,
       init: '',
+      placeholder: eYo.Msg.Placeholder.EXPR,
+      synchronize: true,
+      xml: {
+        save: /** @suppress {globalThis} */ function (element, opt) {
+          if (!this.owner.expression_s.unwrappedTarget) {
+            this.save(element, opt)
+          }
+        }
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        var O = this.owner
+        if (newValue) {
+          O.variant_p = eYo.Key.EXPRESSION
+        } else if (!O.expression_s.unwrappedTarget) {
+          O.variant_p = eYo.Key.NONE
+        }
+      }
+    },
+    from: {
+      order: 20000,
+      init: '',
+      synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           this.required = this.owner.variant_p !== eYo.Key.NONE
           this.save(element, opt)
+        }
+      },
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        var O = this.owner
+        if (newValue || O.from_b) {
+          O.variant_p = eYo.Key.FROM
+        } else if (O.expression_p || O.expression_b.eyo.unwrappedTarget) {
+          O.variant_p = eYo.Key.EXPRESSION
+        } else {
+          O.variant_p = eYo.Key.NONE
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -63,10 +97,28 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
   slots: {
     expression: {
       order: 1,
+      fields: {
+        bind: {
+          endEditing: true,
+          placeholder: eYo.Msg.Placeholder.EXPRESSION
+        }
+      },
       wrap: eYo.T3.Expr.non_void_expression_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
+        }
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        if (this.connection.eyo.isInput) {
+          var parent = this.b_eyo.parent
+          parent && (parent.variant_p = eYo.Key.EXPRESSION)
+        }
+      },
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+        if (this.connection.eyo.isInput) {
+          var parent = this.b_eyo.parent
+          parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.Key.EXPRESSION : eYo.Key.NONE)
         }
       }
     },
@@ -83,6 +135,19 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.FROM
+        }
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        this.b_eyo.variant_p = eYo.Key.FROM
+      },
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+        var O = this.b_eyo
+        if (O.from_p) {
+          O.variant_p = eYo.Key.FROM
+        } else if (O.expression_p || O.expression_b.eyo.unwrappedTarget) {
+          O.variant_p = eYo.Key.EXPRESSION
+        } else {
+          O.variant_p = eYo.Key.NONE
         }
       }
     }
@@ -160,7 +225,5 @@ eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (
 
 eYo.DelegateSvg.Yield.T3s = [
   eYo.T3.Expr.yield_expr,
-  eYo.T3.Stmt.yield_stmt,
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.parenth_form
+  eYo.T3.Stmt.yield_stmt
 ]

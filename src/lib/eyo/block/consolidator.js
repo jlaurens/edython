@@ -227,6 +227,20 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
     var block = this.connection.sourceBlock_
     var eyo = block.eyo
     eyo.will_connect_ = false
+    var c8n = block.outputConnection.targetConnection
+    var model = c8n && c8n.eyo.model
+    if (model && goog.isFunction(model.didConnect)) {
+      model.didConnect.call(this, oldTargetC8n, targetOldC8n)
+    }
+    me.consolidate(block, true)
+  }
+  c8n.eyo.didDisconnect = function (oldTargetC8n) {
+    var block = this.connection.sourceBlock_
+    var c8n = block.outputConnection.targetConnection
+    var model = c8n && c8n.eyo.model
+    if (model && goog.isFunction(model.didDisconnect)) {
+      model.didDisconnect.call(this, oldTargetC8n)
+    }
     me.consolidate(block, true)
   }
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)

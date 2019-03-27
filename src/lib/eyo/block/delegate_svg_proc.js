@@ -112,8 +112,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.get() === eYo.Key.N_ARY) {
-            var target = this.owner.n_ary_t
-            if (!target.childBlocks_.length) {
+            var b = this.owner.n_ary_b
+            if (b && !b.childBlocks_.length) {
               this.save(element, opt)
             }
           }
@@ -335,9 +335,10 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list,
+      promise: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.targetBlock().childBlocks_.length) {
+        var b = this.targetBlock() // may be null ?
+        if (b && b.childBlocks_.length) {
           this.owner.variant_p = eYo.Key.N_ARY
         }
       }

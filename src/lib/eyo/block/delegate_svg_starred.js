@@ -64,24 +64,17 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       order: 98,
       all: [eYo.Key.NONE, eYo.Key.STAR],
       init: eYo.Key.NONE, // not a lonely '*'
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return newValue === eYo.Key.STAR && this.owner.modifier_p !== '*'
-          ? {}
-          : {validated: newValue}
+      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        this.didChange(oldValue, newValue)
+        var O = this.owner
+        O.modified_d.setIncog(newValue === eYo.Key.STAR)
+        if (newValue === eYo.Key.STAR) {
+          O.modifier_p = '*'
+        }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         // the `didLoad` will be performed afterwards.
-        if (type === eYo.T3.Expr.star) {
-          this.set(eYo.Key.STAR)
-          this.owner.modified_d.required_from_type = false
-        } else {
-          this.set(eYo.Key.NONE)
-          this.owner.modified_d.required_from_type = true
-        }
-      },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.synchronize(newValue)
-        this.owner.modified_d.setIncog(newValue === eYo.Key.STAR)
+        this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
       },
       xml: false
     },
@@ -91,8 +84,9 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       init: '*',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
+        var O = this.owner
         if (newValue !== '*') {
-          this.owner.variant_p = eYo.Key.NONE
+          O.variant_p = eYo.Key.NONE
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -152,6 +146,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           this.load(element, opt)
         }
       },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        // the `didLoad` will be performed afterwards.
+        this.required_from_type = type !== eYo.T3.Expr.star
+      },
       didLoad: /** @suppress {globalThis} */ function () {
         this.owner.variant_p = this.required_from_type || this.isRequiredFromModel()
           ? eYo.Key.NONE
@@ -179,8 +177,10 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
       },
-      didLoad: /** @suppress {globalThis} */ function () {
-        this.owner.variant_p = eYo.Key.NONE
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        if (Blockly.Events.recordUndo) {
+          this.slot.owner.variant_p = eYo.Key.NONE
+        }
       }
     }
   },
@@ -191,11 +191,11 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       if (b_eyo.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
-      var target = b_eyo.modified_t
+      var b = b_eyo.modified_b
       var types = []
       if (b_eyo.modifier_p === '*') {
-        if (target) {
-          var tt = target.type
+        if (b) {
+          var tt = b.type
           if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, tt)) {
             types.push(eYo.T3.Expr.star_expr)
           }
@@ -216,8 +216,8 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           eYo.T3.Expr.parameter_star
         ]
       }
-      if(target) {
-        tt = target.type
+      if(b) {
+        tt = b.type
         if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, tt)) {
           types.push(eYo.T3.Expr.or_expr_star_star)
         }
@@ -257,6 +257,29 @@ eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
 eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
   return this.modifier_p
 }
+
+// /**
+//  * Did connect this block's connection from another connection.
+//  * @param {!Blockly.Connection} connection
+//  * @param {!Blockly.Connection} oldTargetC8n that was connected to connection
+//  * @param {!Blockly.Connection} targetOldC8n that was connected to the old target connection.
+//  */
+// eYo.DelegateSvg.Expr.Starred.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+//   eYo.DelegateSvg.Expr.Starred.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+//   if (connection === this.modified_s.connection) {
+
+//   }
+// }
+
+// /**
+//  * Did disconnect this block's connection from another connection.
+//  * @param {!Blockly.Connection} blockConnection
+//  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
+//  */
+// eYo.DelegateSvg.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetC8n) {
+//   eYo.DelegateSvg.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
+// }
+
 ;[
   'star_expr',
   'expression_star',

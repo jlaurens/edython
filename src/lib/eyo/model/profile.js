@@ -292,10 +292,7 @@ var setup = (() => {
     if ((ans = eYo.T3.Profile.getLiteral(candidate))) {
       return ans
     }
-    var profiles = byIdentifier[candidate]
-    if (!profiles) {
-      profiles = byIdentifier[candidate] = {}
-    }
+    var profiles = byIdentifier[candidate] || (byIdentifier[candidate] = {})
     if (module) {
       if ((ans = profiles[module])) {
         return ans
@@ -321,13 +318,7 @@ var setup = (() => {
     if ((ans = eYo.T3.Profile.getDotted(candidate, module)) && !ans.isVoid) {
       return ans
     }
-    if (!!XRegExp.exec(candidate, eYo.XRE.identifier)) {
-      ans = new eYo.T3.Profile(null, {
-        raw: eYo.T3.Expr.custom_identifier,
-        expr: eYo.T3.Expr.identifier,
-        name: candidate,
-        holder: module
-      })
+    if ((ans = eYo.T3.Profile.getIdentifier(candidate, module)) && !ans.isVoid) {
       return ans
     }
     return eYo.T3.Profile.void
@@ -421,6 +412,66 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
       holder: holder,
       module: mdl,
       item: item
+    })
+  }
+}
+
+/**
+ * Returns a profile if `candidate` is an identifier,
+ * possibly with an named attribute or a named value.
+ * For edython.
+ * @param {!String} candidate
+ * @return {!eYo.T3} the profile of this candidate.
+ */
+eYo.T3.Profile.getIdentifier = function (candidate, module) {
+  var m = XRegExp.exec(candidate, eYo.XRE.identifier_annotated_valued)
+  if (m) {
+    var r = m.annotated
+    ? m.valued
+      ? eYo.T3.Expr.identifier_annotated_valued
+      : eYo.T3.Expr.identifier_annotated
+    : m.valued
+      ? eYo.T3.Expr.identifier_valued
+      : eYo.T3.Expr.custom_identifier
+    var x = m.annotated
+      ? m.valued
+        ? eYo.T3.Expr.identifier_annotated_valued
+        : eYo.T3.Expr.identifier_annotated
+      : m.valued
+        ? eYo.T3.Expr.identifier_valued
+        : eYo.T3.Expr.identifier
+    return new eYo.T3.Profile(null, {
+      raw: r,
+      expr: x,
+      name: m.name,
+      annotated: m.annotated,
+      valued: m.valued,
+      holder: module
+    })
+  }
+}
+
+/**
+ * Returns a profile if `candidate` is a name with a name annotation or a name definition
+ * For edython.
+ * @param {!String} candidate
+ * @return {!eYo.T3} the profile of this candidate.
+ */
+eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
+  var m = XRegExp.exec(candidate, eYo.XRE.name_annotated_valued)
+  if (m) {
+    var valued = m.valued_a || m.valued
+    var t = valued
+    ? m.annotated
+      ? eYo.T3.Expr.identifier_annotated_valued
+      : eYo.T3.Expr.identifier_annotated
+    : eYo.T3.Expr.identifier_valued
+    return new eYo.T3.Profile(null, {
+      raw: t,
+      expr: t,
+      name: m.name,
+      annotated: m.annotated,
+      valued: valued
     })
   }
 }

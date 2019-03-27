@@ -1,0 +1,15 @@
+describe('for_part', function() {
+  it(`for_part + else_part`, function() {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.for_part)
+    eYo.Test.block(b, 'for_part')
+    eYo.Test.code(b, 'for<MISSING EXPRESSION>in<MISSING EXPRESSION>:<MISSING STATEMENT>')
+    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.else_part)
+    eYo.Test.block(bb, 'else_part')
+    eYo.Test.code(bb, 'else:<MISSING STATEMENT>')
+    chai.assert(b.eyo.nextConnect(bb))
+    eYo.Test.code(b, 'for<MISSING EXPRESSION>in<MISSING EXPRESSION>:<MISSING STATEMENT>else:<MISSING STATEMENT>')
+    bb.dispose()
+    eYo.Test.code(b, 'for<MISSING EXPRESSION>in<MISSING EXPRESSION>:<MISSING STATEMENT>')
+    b.dispose()
+  })
+})
