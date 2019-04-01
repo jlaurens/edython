@@ -55,7 +55,7 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
  */
 eYo.Py.Exporter.prototype.newline_ = function (block) {
   if (block && block.eyo.isRightStatement) {
-    this.line.push(';')
+    this.line.push('; ')
   } else {
     this.line && this.lines.push(this.line.join(''))
     this.line = [this.indent]
@@ -75,9 +75,19 @@ eYo.Py.Exporter.prototype.newline_ = function (block) {
 eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
   var eyo = block.eyo
   if (eyo.async) {
+    if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
+      // add a separation
+      this.line.push(' ')
+    }
     this.line.push('async ')
+    this.shouldSeparateField = false
   } else if (eyo.await) {
+    if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
+      // add a separation
+      this.line.push(' ')
+    }
     this.line.push('await ')
+    this.shouldSeparateField = false
   } else if (eyo.parenth_p) {
     this.line.push('(')
   }
@@ -247,21 +257,29 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       this.isSeparatorField = field.name === 'separator' || (eyo.model && eyo.model.separator)
       // if the text is void, it can not change whether
       // the last character was a letter or not
-      if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && (eYo.XRE.operator.test(text[0]) || text[0] === '.' || eYo.XRE.id_continue.test(text[0]) || eyo.isEditing)) {
+      var head = text[0]
+      if (this.wasRightParenth) {
+        // do not always add white space
+        if (head === ')' && eYo.XRE.id_start.test(head)) {
+          this.line.push(' ')
+        }
+      } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_start.test(head) || eyo.isEditing)) {
         // add a separation
         this.line.push(' ')
       }
       this.line.push(text)
-      this.shouldSeparateField = eYo.XRE.id_continue.test(text[text.length - 1]) ||
-      eYo.XRE.operator.test(text[text.length - 1]) ||
-      text[text.length - 1] === ':' ||
-      text[text.length - 1] === ';' ||
-      text[text.length - 1] === ',' ||
-      (text[text.length - 1] === '.' && !(field instanceof eYo.FieldTextInput))
-      this.starSymbol = (this.isFirst && (['*', '@', '+', '-', '~', '.'].indexOf(text[text.length - 1]) >= 0))
+      var tail = text[text.length - 1]
+      this.shouldSeparateField = eYo.XRE.id_continue.test(tail) ||
+      eYo.XRE.operator.test(tail) ||
+      tail === ':' ||
+      tail === ';' ||
+      tail === ',' ||
+      (tail === '.' && !(field instanceof eYo.FieldTextInput))
+      this.starSymbol = (this.isFirst && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
       this.isSeparatorField = false
+      this.wasRightParenth = tail === ')'
     }
   }
 }

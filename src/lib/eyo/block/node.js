@@ -76,10 +76,12 @@ eYo.Node.prototype.func_body_suite2Delegate = function (target) {
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.NAME2Block = function (workspace) {
-  return eYo.DelegateSvg.newBlockReady(workspace, {
+  var b = eYo.DelegateSvg.newBlockReady(workspace, {
     type: eYo.T3.Expr.identifier,
     target_d: this.n_str
   })
+  b.eyo.variant_p = eYo.Key.NONE
+  return b
 }
 
 /**

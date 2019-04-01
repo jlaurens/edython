@@ -256,7 +256,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.DelegateSvg.Expr.target_list.prototype.didDisconnect = function (connection, oldTargetC8n) {
+eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (connection, oldTargetC8n) {
   if (connection.eyo.isInput) {
     var other = false
     if (this.block_.inputList.some(input => {
@@ -295,7 +295,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.didDisconnect = function (connection,
  * @param {!Blockly.Connection} oldTargetC8n.
  * @param {!Blockly.Connection} targetOldC8n
  */
-eYo.DelegateSvg.Expr.target_list.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, oldTargetC8n, targetOldC8n) {
   eYo.DelegateSvg.Expr.target_list.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
   // BEWARE: the block is NOT consolidated
   if (connection.eyo.isInput) {
@@ -984,6 +984,36 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       accept: /** @suppress {globalThis} */ function (attribute) {
         return attribute === 'name'
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        // the block is not yet consolidated
+        if (this.isInput) {
+          var parent = this.parent
+          if (parent) {
+            parent.target_s.bindField.setVisible(false)
+            if (this.b_eyo.inputList.length > 1) {
+              // this is the second block we connect
+              parent.variant_p = eYo.Key.TARGET_VALUED
+            } else {
+              var v = parent.variant_p
+              if (v === eYo.Key.ANNOTATED) {
+                var t = this.t_eyo
+                if ([eYo.T3.Expr.identifier_annotated,
+                  eYo.T3.Expr.augtarget_annotated,
+                  eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
+                  parent.variant_p = eYo.Key.NONE // no 2 annotations
+                }
+              } else if (v === eYo.Key.ANNOTATED_VALUED) {
+                var t = this.t_eyo
+                if ([eYo.T3.Expr.identifier_annotated,
+                  eYo.T3.Expr.augtarget_annotated,
+                  eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
+                  parent.variant_p = eYo.Key.TARGET_VALUED // no 2 annotations
+                }
+              }
+            }
+          }
+        }      
       }
     },
     annotated: {
@@ -1079,6 +1109,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.ALIASED         
         }
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+        this.slot.bindField.setVisible(false)
+        this.b_eyo.variant_p = eYo.Key.ALIASED
+      },
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+        this.slot.bindField.setVisible(true)
       }
     }
   },
@@ -1142,9 +1179,10 @@ eYo.DelegateSvg.Expr.primary.prototype.init = function () {
 Object.defineProperties( eYo.DelegateSvg.Expr.primary.prototype, {
   profile_p : {
     get () {
-      return this.profile_ === this.getProfile()
+      var p5e = this.getProfile()
+      return this.profile_ === p5e
         ? this.profile_
-        : (this.profile_ = this.getProfile()) // this should never happen
+        : (this.profile_ = p5e) // this should never happen
     },
     set (newValue) {
       this.profile_ = newValue
@@ -1207,6 +1245,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           slot: type
         }
       } else if ((t_eyo = this.target_s.unwrappedTarget)) {
+        var check
         if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
         } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
@@ -1219,8 +1258,10 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           type = eYo.T3.Expr.augtarget
         } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
           type = eYo.T3.Expr.named_primary
+          check = eYo.T3.Expr.Check.named_primary
         } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
           type = eYo.T3.Expr.primary
+          check = eYo.T3.Expr.Check.primary
         } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
           type = eYo.T3.Expr.expression
         } else {
@@ -1228,6 +1269,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         }
         ans.name = {
           type: type,
+          check: check,
           slot: type
         }
         var p = t_eyo.profile_p
@@ -1521,7 +1563,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         ? [
           eYo.T3.Expr.identifier
         ]
-        : [
+        : profile.name.check || [
           profile.name.type
         ]
   }

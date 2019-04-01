@@ -8,3 +8,14 @@ describe('Create', function() {
     assert(b.eyo.change.count !== undefined, 'MISSED 3')
   })
 })
+
+describe('One block (ALIASED)', function () {
+  it (`white space before 'as'`, function () {
+    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+      type: eYo.T3.Expr.identifier,
+      target_d: 'abc',
+      alias_d: 'cde'
+    })
+    console.error(b.eyo.toString)
+  })
+})

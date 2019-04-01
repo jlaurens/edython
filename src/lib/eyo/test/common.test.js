@@ -94,12 +94,12 @@ eYo.Test.comment_variant = (b, comment_variant, str) => {
 }
 
 eYo.Test.code = (b, str) => {
-  var str1 = str.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, '')
+  var str1 = str.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(' ** ', '**')
   if (str1.endsWith('\n')) {
     str1 = str1.substring(0, str.length - 1)
   }
   var s = b.eyo.toString.replace(/\bNOM\b/g, 'NAME')
-  var s1 = s.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, '')
+  var s1 = s.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(' ** ', '**')
   chai.assert(s1 === str1, `MISSED: ${s} === ${str}`)
 }
 

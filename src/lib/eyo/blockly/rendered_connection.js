@@ -108,6 +108,15 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return ans
     }
   },
+  parent: {
+    get () {
+      var b = this.sourceBlock_
+      var c8n = this.sourceBlock_.outputConnection
+      if (c8n && (c8n = c8n.targetConnection)) {
+        return c8n.sourceBlock_.eyo
+      }
+    }
+  },
   bindField: {
     get () {
       if (this.slot) {

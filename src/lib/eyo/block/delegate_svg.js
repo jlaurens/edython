@@ -1234,7 +1234,7 @@ eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
   if (io.recorder) {
     // We ended a block. The right edge is generally a separator.
     // No need to add a separator if the block is wrapped or locked
-    io.common.field.shouldSeparate && (io.common.field.shouldSeparate = this.hasRightEdge)
+    io.common.field.shouldSeparate && (io.common.field.shouldSeparate = !this.hasRightEdge)
     // if the block is wrapped or locked, there won't be any 
     // right edge where a caret could be placed.
     // But may be we just rendered blocks in cascade such that
@@ -1259,10 +1259,9 @@ eYo.DelegateSvg.prototype.renderDrawSlot_ = function (slot, io) {
   if (slot.isIncog()) {
     root && root.setAttribute('display', 'none')
     return
-  } else {
-    goog.asserts.assert(root, 'Slot with no root', io.block.type, slot.key)
-    root.removeAttribute('display')
   }
+  goog.asserts.assert(root, 'Slot with no root', io.block.type, slot.key)
+  root.removeAttribute('display')
   // move the slot to the correct location
   slot.where.set(io.cursor)
   // Now reset the cursor relative to the slot
@@ -1355,8 +1354,7 @@ eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
             } else if (this.packedParenthesis && head === "(") {
               io.cursor.c -= 1
             }
-          }
-          if (head === '.' && !io.common.field.beforeIsBlack) {
+          } else if (head === '.' && !io.common.field.beforeIsBlack) {
             io.cursor.c -= 1
           } else if (io.common.field.beforeIsBlack
             && (eYo.XRE.operator.test(head) || head === '=' || head === ':')) {
