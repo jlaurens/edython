@@ -55,7 +55,7 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
  */
 eYo.Py.Exporter.prototype.newline_ = function (block) {
   if (block && block.eyo.isRightStatement) {
-    this.line.push('; ')
+    this.line.push(this.wasColon ? ' ' : '; ')
   } else {
     this.line && this.lines.push(this.line.join(''))
     this.line = [this.indent]
@@ -63,6 +63,10 @@ eYo.Py.Exporter.prototype.newline_ = function (block) {
   this.isFirst = true
   this.shouldSeparateField = false
   this.wasSeparatorField = false
+  this.wasColon = false
+  this.wasContinue = false
+  this.wasLeftParenth = false
+  this.wasRightParenth = false
 }
 
 /**
@@ -258,28 +262,36 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       // if the text is void, it can not change whether
       // the last character was a letter or not
       var head = text[0]
-      if (this.wasRightParenth) {
+      if (text === ':=') {
+        this.line.push(' ')
+      } else if (this.wasRightParenth) {
         // do not always add white space
-        if (head === ')' && eYo.XRE.id_start.test(head)) {
+        if (eYo.XRE.id_continue.test(head)) {
           this.line.push(' ')
         }
-      } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_start.test(head) || eyo.isEditing)) {
+      } else if (this.wasColon && (eYo.XRE.id_continue.test(head) || head === '[')) {
+        // add a separation
+        this.line.push(' ')
+      } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_continue.test(head))) {
         // add a separation
         this.line.push(' ')
       }
       this.line.push(text)
+      var isContinue = eYo.XRE.tail_continue.test(text) // what about surrogate pairs ?
       var tail = text[text.length - 1]
-      this.shouldSeparateField = eYo.XRE.id_continue.test(tail) ||
+      this.wasColon = tail === ':'
+      this.shouldSeparateField = isContinue ||
       eYo.XRE.operator.test(tail) ||
-      tail === ':' ||
       tail === ';' ||
       tail === ',' ||
       (tail === '.' && !(field instanceof eYo.FieldTextInput))
-      this.starSymbol = (this.isFirst && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0)) || text === '**'
+      this.starSymbol = ((this.isFirst || !this.wasContinue || this.wasLeftParenth) && (['*', '@', '+', '-', '~', '.'].indexOf(text) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
       this.isSeparatorField = false
       this.wasRightParenth = tail === ')'
+      this.wasLeftParenth = tail === '('
+      this.wasContinue = isContinue
     }
   }
 }

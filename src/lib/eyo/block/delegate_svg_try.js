@@ -45,7 +45,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        OfflineAudioContext.expression_d.requiredIncog = newValue !== eYo.Key.NONE
+        O.expression_d.requiredIncog = newValue !== eYo.Key.NONE
         O.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
       },
       xml: false
@@ -57,13 +57,14 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p === eYo.Key.EXPRESSION
+          this.required = this.owner.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.EXPRESSION
+        var O = this.owner
+        if (this.isRequiredFromSaved() && O.variant_p !== eYo.Key.ALIASED) {
+          O.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
@@ -111,6 +112,10 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
+      },
+      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
+        var O = this.b_eyo
+        O.variant_p === eYo.Key.ALIASED || (O.variant_p = eYo.Key.EXPRESSION)
       }
     },
     alias: {
@@ -132,6 +137,10 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.ALIASED
         }
+      },
+      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
+        var O = this.b_eyo
+        O.variant_p = eYo.Key.ALIASED
       }
     }
   },
@@ -153,6 +162,12 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
   }
 }, true)
 
+;[
+  'void_except_part'
+].forEach(k => {
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.except_part
+  eYo.DelegateSvg.Manager.register(k)
+})
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
@@ -454,6 +469,7 @@ eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function 
 eYo.DelegateSvg.Try.T3s = [
   eYo.T3.Stmt.try_part,
   eYo.T3.Stmt.except_part,
+  eYo.T3.Stmt.void_except_part,
   eYo.T3.Stmt.finally_part,
   eYo.T3.Stmt.raise_stmt,
   eYo.T3.Stmt.assert_stmt

@@ -823,9 +823,9 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
  *     (to allow chaining).
  */
 eYo.Connection.prototype.setCheck = function(check) {
-  if (check === eYo.T3.Stmt.Previous.try_else_part) {
-    console.error('ERROR!!!!')
-  }
+  // if (check === eYo.T3.Stmt.Previous.try_else_part) {
+  //   console.error('ERROR!!!!')
+  // }
   eYo.Connection.superClass_.setCheck.call(this, check)
   if (!check) {
     // This was not called on original Blockly

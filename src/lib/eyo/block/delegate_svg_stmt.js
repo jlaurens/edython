@@ -35,13 +35,14 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       },
       synchronize: true,
       placeholderText: eYo.Msg.Placeholder.COMMENT,
+      willLoad: /** @suppress {globalThis} */ function () {
+        this.required = this.owner.comment_variant_p === eYo.Key.COMMENT
+      },
       didLoad: /** @suppress {globalThis} */ function () {
         this.whenRequiredFromSaved(() => this.owner.comment_variant_p = eYo.Key.COMMENT)
       }
     },
     comment_variant: { // variant are very useful with undo/redo
-      NONE: eYo.Key.NONE,
-      COMMENT: eYo.Key.COMMENT,
       order: 1000001, // initialization comes last
       all: [eYo.Key.NONE, eYo.Key.COMMENT],
       init: eYo.Key.NONE,
@@ -49,9 +50,6 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         this.owner.comment_d.requiredIncog = newValue === eYo.Key.COMMENT
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        this.set(this.owner.comment_d.isIncog() ? eYo.Key.NONE : eYo.Key.COMMENT)
       }
     }
   },

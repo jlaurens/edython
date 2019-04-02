@@ -84,7 +84,7 @@ var ra_await_statement = [
   "async def f():\n foo((await smth()))",
   "async def f():\n await foo(); return 42",
 ]
-ra_test('await_statement', ra_await_statement)
+// ra_test('await_statement', ra_await_statement)
 var ra_async_with_statement = [
   "async def f():\n async with 1: pass",
   "async def f():\n async with a as b, c as d: pass",
@@ -108,50 +108,54 @@ var ra_nonlocal_statement = [
 // ra_test('nonlocal_statement', ra_nonlocal_statement)
 
 var ra_expressions = [
-  //  "foo(1)",
+   "foo(1)",
   "[1, 2, 3]",
-  // "[x**3 for x in range(20)]",
-  // "[x**3 for x in range(20) if x % 3]",
-  // "[x**3 for x in range(20) if x % 2 if x % 3]",
-  // "list(x**3 for x in range(20))",
-  // "list(x**3 for x in range(20) if x % 3)",
-  // "list(x**3 for x in range(20) if x % 2 if x % 3)",
-  // "foo(*args)",
-  // "foo(*args, **kw)",
-  // "foo(**kw)",
-  // "foo(key=value)",
-  // "foo(key=value, *args)",
-  // "foo(key=value, *args, **kw)",
-  // "foo(key=value, **kw)",
-  // "foo(a, b, c, *args)",
-  // "foo(a, b, c, *args, **kw)",
-  // "foo(a, b, c, **kw)",
-  // "foo(a, *args, keyword=23)",
-  // "foo + bar",
-  // "foo - bar",
-  // "foo * bar",
-  // "foo / bar",
-  // "foo // bar",
-  // "(foo := 1)",
-  // "lambda: 0",
-  // "lambda x: 0",
-  // "lambda *y: 0",
-  // "lambda *y, **z: 0",
-  // "lambda **z: 0",
-  // "lambda x, y: 0",
-  // "lambda foo=bar: 0",
-  // "lambda foo=bar, spaz=nifty+spit: 0",
-  // "lambda foo=bar, **z: 0",
-  // "lambda foo=bar, blaz=blat+2, **z: 0",
-  // "lambda foo=bar, blaz=blat+2, *y, **z: 0",
-  // "lambda x, *y, **z: 0",
-  // "(x for x in range(10))",
-  // "foo(x for x in range(10))",
-  // "...",
-  // "a[...]",
+  "[x**3 for x in range(20)]",
+  "[x**3 for x in range(20) if x % 3]",
+  "[x**3 for x in range(20) if x % 2 if x % 3]",
+  "list(x**3 for x in range(20))",
+  "list(x**3 for x in range(20) if x % 3)",
+  "list(x**3 for x in range(20) if x % 2 if x % 3)",
+  "foo(*args)",
+  "foo(*args, **kw)",
+  "foo(**kw)",
+  "foo(key=value)",
+  "foo(key=value, *args)",
+  "foo(key=value, *args, **kw)",
+  "foo(key=value, **kw)",
+  "foo(a, b, c, *args)",
+  "foo(a, b, c, *args, **kw)",
+  "foo(a, b, c, **kw)",
+  "foo(a, *args, keyword=23)",
+  "foo + bar",
+  "foo - bar",
+  "foo * bar",
+  "foo / bar",
+  "foo // bar",
+  "(foo := 1)",
+  "lambda: 0",
+  "lambda x: 0",
+  "lambda *y: 0",
+  "lambda *y, **z: 0",
+  "lambda **z: 0",
+  "lambda x, y: 0",
+  "lambda foo=bar: 0",
+  "lambda foo=bar, spaz=nifty+spit: 0",
+  "lambda foo=bar, **z: 0",
+  "lambda foo=bar, blaz=blat+2, **z: 0",
+  "lambda foo=bar, blaz=blat+2, *y, **z: 0",
+  "lambda x, *y, **z: 0",
+  "(x for x in range(10))",
+  "foo(x for x in range(10))",
+  "...",
+  "a[...]",
 ]
-ra_test('expressions', ra_expressions)
+// ra_test('expressions', ra_expressions)
 var ra_missing_expression = [
+  "x",
+  "x.y",
+  "x.y.z",
+  "x.y.z.w",
   "a[...]",
   "a[:]",
   "a[1:]",
@@ -166,18 +170,18 @@ var ra_missing_expression = [
   "a[0::2]",
   "a[0:1:2]",
 ]
-ra_test('missing_expression', ra_missing_expression)
+// ra_test('missing_expression', ra_missing_expression)
 var ra_simple_expression = [
   "a",
 ]
-ra_test('simple_expression', ra_simple_expression)
+// ra_test('simple_expression', ra_simple_expression)
 var ra_simple_assignments = [
   "a = b",
   "a = b, c",
   "a, b = c, d",
   "a = b = c = d = e",
 ]
-ra_test('simple_assignments', ra_simple_assignments)
+// ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
   "x: int = 5",
   "y: List[T] = []; z: [list] = fun()",
@@ -197,7 +201,7 @@ var ra_var_annot = [
   "    def __init__(self, x: int) -> None:\n" +
   "        self.x: int = x\n"
 ]
-ra_test('var_annot', ra_var_annot)
+// ra_test('var_annot', ra_var_annot)
 // /*
 //         # double check for nonsense
 //         with self.chai.assertRaises(SyntaxError):
@@ -342,22 +346,22 @@ var ra_relative_imports = [
 // ]
 // // ra_test('chai.assert', ra_chai.assert)
 var ra_with = [
-  // "with open('x'): pass\n",
+  "with open('x'): pass\n",
   "with open('x') as f: pass\n",
-  // "with open('x') as f, open('y') as g: pass\n",
+  "with open('x') as f, open('y') as g: pass\n",
 ]
-ra_test('with', ra_with)
-// var ra_try_stmt = [
-//   "try: pass\nexcept: pass\n",
-//   "try: pass\nfinally: pass\n",
-//   "try: pass\nexcept A: pass\nfinally: pass\n",
-//   "try: pass\nexcept A: pass\nexcept: pass\n" +
-//   "finally: pass\n",
-//   "try: pass\nexcept: pass\nelse: pass\n",
-//   "try: pass\nexcept: pass\nelse: pass\n" +
-//   "finally: pass\n",
-// ]
-// // ra_test('try_stmt', ra_try_stmt)
+// ra_test('with', ra_with)
+var ra_try_stmt = [
+  "try: pass\nexcept: pass\n",
+  "try: pass\nfinally: pass\n",
+  "try: pass\nexcept A: pass\nfinally: pass\n",
+  "try: pass\nexcept A: pass\nexcept: pass\n" +
+  "finally: pass\n",
+  "try: pass\nexcept: pass\nelse: pass\n",
+  "try: pass\nexcept: pass\nelse: pass\n" +
+  "finally: pass\n",
+]
+// ra_test('try_stmt', ra_try_stmt)
 // // va ra_position = [
 // //         // # An absolutely minimal test of position information.  Better
 // //         // # tests would be a big project.
@@ -410,13 +414,13 @@ ra_test('with', ra_with)
 // //                                                   col_info=True))),
 // //                          [list(x) for x in expected])
 
-// var ra_extended_unpacking = [
-//   "*a = y",
-//   "x, *b, = m",
-//   "[*a, *b] = y",
-//   "for [*x, b] in x: pass",
-// ]
-// // ra_test('extended_unpacking', ra_extended_unpacking)
+var ra_extended_unpacking = [
+  "*a = y",
+  // "x, *b, = m",
+  // "[*a, *b] = y",
+  // "for [*x, b] in x: pass",
+]
+ra_test('extended_unpacking', ra_extended_unpacking)
 // var ra_raise_statement = [
 //   "raise\n",
 //   "raise e\n",

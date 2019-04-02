@@ -620,7 +620,7 @@ eYo.Delegate.prototype.equals = function (rhs) {
  * A primary data change or a primary connection change has just occurred.
  * (Primary meaning that no other change has been performed
  * that has caused the so called primary change).
- * At return type, the block is in a consistent state.
+ * At return time, the block is in a consistent state.
  * All the connections and components are consolidated
  * and are in a consistent state.
  * This method is sent from a `changeEnd` method only.
@@ -635,7 +635,7 @@ eYo.Delegate.prototype.equals = function (rhs) {
  * - when an argument list changes its `ary` or `mandatory`
  * - in the changeEnd method
  * Consolidation will not occur when no change has been
- * preformed since the last consolidation.
+ * performed since the last consolidation.
  * 
  * The return value may be cached.
  * 
@@ -664,8 +664,6 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
 
 /**
  * Wraps `doConsolidate` into a reentrant and `change.count` aware method.
- * 
- * 
  */
 eYo.Delegate.prototype.consolidate = eYo.Decorate.reentrant_method(
   'consolidate',

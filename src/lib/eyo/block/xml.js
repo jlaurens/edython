@@ -1295,7 +1295,7 @@ goog.require('eYo.DelegateSvg.Assignment')
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xmlAttr = function () {
   return this.type === eYo.T3.Stmt.augmented_assignment_stmt
   ? this.operator_p
-  : this.type === eYo.T3.Stmt.annotated_stmt || this.variant_p === eYo.Key.NONE || this.variant_p === eYo.Key.VALUED
+  : this.type === eYo.T3.Stmt.annotated_stmt || this.variant_p === eYo.Key.NONE || this.variant_p === eYo.Key.VALUED || this.variant_p === eYo.Key.EXPRESSION
     ? 'x'
     : '='
 }

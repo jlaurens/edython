@@ -54,16 +54,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         eYo.Key.VALUED, // values, possibly a comment
         eYo.Key.TARGET_VALUED, // assignement
         eYo.Key.ANNOTATED, // only annotation
-        eYo.Key.ANNOTATED_VALUED // assignement and annotation
+        eYo.Key.ANNOTATED_VALUED, // assignement and annotation
+        eYo.Key.EXPRESSION // starting point, for weak valued
       ],
-      init: eYo.Key.TARGET_VALUED,
+      init: eYo.Key.EXPRESSION,
       xml: false,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.target_d.requiredIncog = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED
+        O.target_d.requiredIncog = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED && newValue !== eYo.Key.EXPRESSION
         O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
-        O.value_s.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED
+        O.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED || newValue === eYo.Key.EXPRESSION
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // variant change from 'NONE' has greater priority over comment change
@@ -84,9 +85,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (type === eYo.T3.Stmt.expression_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
-          this.change(eYo.Key.NONE)
-        } else if (type === eYo.T3.Stmt.comment_stmt) {
-          this.change(eYo.Key.NONE)
+          this.change(eYo.Key.EXPRESSION)
         } else if (type === eYo.T3.Stmt.comment_stmt) {
           // expression statement defaults to a python comment line
           this.change(eYo.Key.NONE)
@@ -137,7 +136,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.NONE) {
+          if (this.owner.variant_p === eYo.Key.NONE || this.owner.variant_p === eYo.Key.EXPRESSION) {
             this.owner.variant_p = eYo.Key.TARGET
           } else if (this.owner.variant_p === eYo.Key.VALUED) {
             this.owner.variant_p = eYo.Key.TARGET_VALUED
@@ -154,15 +153,21 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: true,
       didLoad: /** @suppress {globalThis} */ function () {
         var O = this.owner
-        if (this.isRequiredFromSaved() && O.variant_p !== eYo.Key.ANNOTATED_VALUED) {
-          O.variant_p = eYo.Key.ANNOTATED
-          O.operator_p = '='
+        var v = O.variant_p
+        if (this.isRequiredFromSaved()) {
+          if (v === eYo.Key.VALUED || v === eYo.Key.TARGET_VALUED) {
+            O.variant_p = eYo.Key.ANNOTATED_VALUED
+            O.operator_p = '='  
+          } else {
+            O.variant_p = eYo.Key.ANNOTATED
+            O.operator_p = ''
+          }
         }
       }
     },
     operator: {
       /* One of Visual Studio Code extensions gobbles this line */
-      init: '=',
+      init: '',
       all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.owner.value_s.fields.label.setValue(newValue)
@@ -237,7 +242,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           var v = O.variant_p
           if (v === eYo.Key.ANNOTATED) {
             O.variant_p = eYo.Key.ANNOTATED_VALUED
-          } else if (v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.COL_VALUED) {
+          } else if (v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.VALUED) {
             O.variant_p = eYo.Key.TARGET_VALUED
           }
         }
@@ -245,7 +250,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       synchronize: true,
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         var v = this.owner.variant_p
-        return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.COL_VALUED
+        return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.VALUED && v !== eYo.Key.EXPRESSION
       }
     },
     comment: {
@@ -253,9 +258,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         this.owner.comment_variant_p = eYo.Key.COMMENT
         this.setIncog(false)
         return ''
-      },
-      willLoad: /** @suppress {globalThis} */ function () {
-        this.required = false
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var O = this.owner
@@ -266,9 +268,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
     },
     comment_variant: {
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Stmt.expression_stmt) {
-          this.change(eYo.Key.COMMENT)
-        } else if (type === eYo.T3.Stmt.comment_stmt) {
+        if (type === eYo.T3.Stmt.comment_stmt) {
           this.change(eYo.Key.COMMENT)
         } else {
           this.change(eYo.Key.NONE)
@@ -283,8 +283,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           }
         }
         this.duringChange(oldValue, newValue)
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
       }
     }
   },
@@ -301,9 +299,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       wrap: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.NONE) {
+          var O = this.owner
+          var v = O.variant_p
+          if (v === eYo.Key.NONE || v === eYo.Key.EXPRESSION) {
             this.owner.variant_p = eYo.Key.TARGET
-          } else if (this.owner.variant_p === eYo.Key.VALUED) {
+          } else if (v === eYo.Key.VALUED) {
             this.owner.variant_p = eYo.Key.TARGET_VALUED
           }
         } 
@@ -335,11 +335,14 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          var v = this.owner.variant_p
-          if (v === eYo.Key.TARGET || v === eYo.Key.NONE) {
-            this.owner.variant_p = eYo.Key.ANNOTATED
-          } else if (v !== eYo.Key.ANNOTATED) {
-            this.owner.variant_p = eYo.Key.ANNOTATED_VALUED
+          var O = this.owner
+          var v = O.variant_p
+          if (v === eYo.Key.TARGET || v === eYo.Key.NONE || v === eYo.Key.EXPRESSION) {
+            O.variant_p = eYo.Key.ANNOTATED
+          } else if (v === eYo.Key.VALUED || v === eYo.Key.TARGET_VALUED) {
+            O.variant_p = eYo.Key.ANNOTATED_VALUED
+          } else if (v !== eYo.Key.ANNOTATED_VALUED) {
+            O.variant_p = eYo.Key.ANNOTATED
           }
         } 
       }
@@ -358,10 +361,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       wrap: eYo.T3.Expr.value_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.ANNOTATED) {
-            this.owner.variant_p = eYo.Key.ANNOTATED_VALUED
+          var O = this.owner
+          var v = O.variant_p
+          if (v === eYo.Key.ANNOTATED) {
+            O.variant_p = eYo.Key.ANNOTATED_VALUED
           } else {
-            this.owner.variant_p = eYo.Key.TARGET_VALUED
+            O.variant_p = eYo.Key.TARGET_VALUED
           }
         }
       }
@@ -402,7 +407,9 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.isWhite = function () {
  */
 eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
   var x = this.variant_p
-  if (x === eYo.Key.NONE || x === eYo.Key.VALUED || this.operator_p === '') { // not yet consolidated
+  if (x === eYo.Key.VALUED || x === eYo.Key.EXPRESSION) { // not yet consolidated
+    return eYo.T3.Stmt.expression_stmt
+  } else if (x === eYo.Key.NONE || this.operator_p === '') { // not yet consolidated
     if (!this.value_p && !this.value_b.eyo.unwrappedTarget && !this.target_p && !this.target_b.eyo.unwrappedTarget) {
       return eYo.T3.Stmt.comment_stmt
     }

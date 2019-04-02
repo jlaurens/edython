@@ -24,25 +24,26 @@ goog.require('eYo.DelegateSvg.Primary')
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.suite2Delegate = function (target) {
-  var b0
-  var n0 = this.n0
+  var b
+  var n = this.n0
   var c8n = target.suiteConnection
   // suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
-  if (n0.n_type === eYo.TKN.NEWLINE) {
-    n0 = n0.sibling.sibling // skip NEWLINE INDENT
+  if (n.n_type === eYo.TKN.NEWLINE) {
+    n = n.sibling.sibling // skip NEWLINE INDENT
     do {
-      b0 = n0.toBlock(target.workspace)
-      c8n && c8n.connect(b0.previousConnection)
-      c8n = b0.bottomMostConnection
-    } while ((n0 = n0.sibling) && n0.n_type !== eYo.TKN.DEDENT)
+      b = n.toBlock(target.workspace)
+      c8n && c8n.connect(b.previousConnection)
+      c8n = b.eyo.bottomMostConnection
+    } while ((n = n.sibling) && n.n_type !== eYo.TKN.DEDENT)
   } else {
-    b0 = n0.toBlock(target.workspace)
-    c8n && c8n.connect(b0.previousConnection)
+    b = n.simple_stmt2Block(target.workspace)
+    b.eyo.isRightStatement = true
+    c8n && c8n.connect(b.previousConnection)
   }
 }
 
 /**
- * `this` is the NAME node.
+ * `this` is the function body node.
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.func_body_suite2Delegate = function (target) {
@@ -56,19 +57,38 @@ eYo.Node.prototype.func_body_suite2Delegate = function (target) {
       b = eYo.DelegateSvg.newBlockReady(target.workspace, eYo.T3.Stmt.comment_stmt)
       b.eyo.comment_p = n.n_str
       c8n && c8n.connect(b.previousConnection)
-      c8n = b.bottomMostConnection
+      c8n = b.eyo.bottomMostConnection
       n = n.sibling
     }
     n = n.sibling // skip INDENT
     do {
       b = n.toBlock(target.workspace)
       c8n && c8n.connect(b.previousConnection)
-      c8n = b.bottomMostConnection
+      c8n = b.eyo.bottomMostConnection
     } while ((n = n.sibling) && n.n_type !== eYo.TKN.DEDENT)
   } else {
     b = n.toBlock(target.workspace)
+    b.eyo.isRightStatement = true
     c8n && c8n.connect(b.previousConnection)
   }
+}
+
+/**
+ * `this` is the simple statement node.
+ * @param {!Object} a block delegate
+ */
+eYo.Node.prototype.simple_stmt2Block = function (workspace) {
+  // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
+  var n = this.n0
+  var root = n.toBlock(workspace)
+  var b = root
+  while ((n = n.sibling.sibling) && (n.n_type === eYo.TKN.small_stmt)) {
+    var bb = n.toBlock(workspace)
+    bb.eyo.isRightStatement = true
+    b.eyo.bottomMostConnect(bb)
+    b = bb
+  }
+  return root
 }
 
 /**
@@ -246,10 +266,10 @@ eYo.Node.prototype.if_stmt2Block = function (workspace) {
 }
 
 /**
- * `this` is the try node.
+ * `this` is the try_stmt node.
  * @param {!Object} a block delegate
  */
-eYo.Node.prototype.try2Block = function (workspace) {
+eYo.Node.prototype.try_stmt2Block = function (workspace) {
   /*try_stmt: ('try' ':' suite
            ((except_clause ':' suite)+
             ['else' ':' suite]
@@ -259,35 +279,28 @@ eYo.Node.prototype.try2Block = function (workspace) {
   var b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.try_part)
   var n = this.n2
   n.suite2Delegate(b.eyo)
-  n = n.sibling
   var b0 = b
-  while (n.type === eYo.TKN.except_clause) {
-    // 'except' [test ['as' NAME]]
-    var b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.except_part)
-    var nn = n.n1
-    if (nn) {
-      b1.eyo.expression_s.connect(nn.toBlock(workspace))
+  while ((n = n.sibling)) {
+    if (n.type === eYo.TKN.except_clause) {
+      // 'except' [test ['as' NAME]]
+      var b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.except_part)
+      var nn = n.n1
+      if (nn) {
+        b1.eyo.expression_s.connect(nn.toBlock(workspace))
+      }
+      if ((nn = n.n3)) {
+        b1.eyo.alias_s.connect(nn.NAME2Block(workspace))
+      }
+    } else if (n.n_str === 'else') {
+      b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.else_part)
+    } else if (n.n_str === 'finally') {
+      b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.finally_part)
+    } else {
+      console.error(`Unknown node type: {n.name}`)
+      break
     }
-    if ((nn = n.n3)) {
-      b1.eyo.alias_s.connect(nn.NAME2Block(workspace))
-    }
     n = n.sibling.sibling
     n.suite2Delegate(b1.eyo)
-    n = n.sibling
-    b0 = b0.eyo.nextConnect(b1)
-  }
-  if (n.n_str === 'else') {
-    b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.else_part)
-    n = n.sibling.sibling
-    n.suite2Delegate(b1.eyo)
-    n = n.sibling
-    b0 = b0.eyo.nextConnect(b1)
-  }
-  if (n.n_str === 'finally') {
-    b1 = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.finally_part)
-    n = n.sibling.sibling
-    n.suite2Delegate(b1.eyo)
-    n = n.sibling
     b0 = b0.eyo.nextConnect(b1)
   }
   return b
@@ -772,25 +785,8 @@ eYo.Node.prototype.toBlock = function (workspace) {
         }
       }
       return root
-    case eYo.TKN.simple_stmt: // small_stmt (';' small_stmt)* [';'] NEWLINE
-      var blocks = this.n_child.map(child => child.n_type === eYo.TKN.small_stmt ? child.toBlock(workspace) : null)
-      while (blocks.length) {
-        if ((root = blocks.shift())) {
-          b0 = root
-          blocks.forEach(bb => {
-            if (bb) {
-              if (!b0.eyo.bottomMostConnection) {
-                console.error('WTF')
-              }
-              bb.eyo.isRightStatement = true
-              b0.eyo.bottomMostConnect(bb)
-              b0 = bb
-            }
-          })
-          break
-        }
-      }
-      return root
+    case eYo.TKN.simple_stmt:
+      return this.simple_stmt2Block(workspace)
     case eYo.TKN.expr_stmt: // testlist_star_expr (annassign | augassign (yield_expr|testlist) | [('=' (yield_expr|testlist_star_expr))+ [TYPE_COMMENT]] )
       n0 = this.n0
       if (!(n1 = this.n1)) {
@@ -848,6 +844,9 @@ eYo.Node.prototype.toBlock = function (workspace) {
           root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.annotated_stmt)
           n0.testlist_star_expr2Delegate(root.eyo.target_b.eyo)
           b1 = n1.n1.toBlock(workspace)
+          if (b1.eyo.toString === 'str') {
+            console.error('STOP HERE')
+          }
           root.eyo.annotated_s.connect(b1)
         }
       }
@@ -903,14 +902,16 @@ eYo.Node.prototype.toBlock = function (workspace) {
             b0 = root
             b0.eyo.dotted_p = 1
           } else {
-            if ((b = b0.eyo.target_s.unwrappedTarget)) {
-              b0.eyo.holder_s.connect(t)
-            } else {
-              b0.eyo.holder_p = b0.eyo.target_p
-              b0.eyo.target_p = ''
-            }
-            b0.eyo.dotted_p = 1
-            b0.eyo.target_b.eyo.lastConnect(n0.n1.NAME2Block(workspace))
+            b0.eyo.changeWrap(() => {
+              if ((b = b0.eyo.target_s.unwrappedTarget)) {
+                b0.eyo.holder_s.connect(b)
+              } else {
+                b0.eyo.holder_p = b0.eyo.target_p
+                b0.eyo.target_p = ''
+              }
+              b0.eyo.dotted_p = 1
+              b0.eyo.target_b.eyo.lastConnect(n0.n1.NAME2Block(workspace))  
+            })
           }
         }
       }
@@ -993,8 +994,12 @@ eYo.Node.prototype.toBlock = function (workspace) {
           value_d: s
         })
       }
+    case eYo.TKN.star_expr: // star_expr: '*' expr
+      root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Expr.expression_star)
+      root.eyo.modifier_p = '*'
+      root.eyo.modified_s.connect(this.n1.toBlock(workspace))
+    return root
     /*
-    star_expr: '*' expr
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*
 factor: ('+'|'-'|'~') factor | power
 */
@@ -1385,7 +1390,7 @@ factor: ('+'|'-'|'~') factor | power
       if (!this.n0) {
         throw `2) NOTHING TO DO WITH ${this.name}`
       } else if (!this.n1) {
-        console.log(`PASSED ${this.name} to ${this.n0.name}`, )
+        // console.log(`PASSED ${this.name} to ${this.n0.name}`, )
         return this.n0.toBlock(workspace)
       } else {
         // eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, this)

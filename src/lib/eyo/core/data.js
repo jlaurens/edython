@@ -645,7 +645,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
           }
         })
       }
-  }
+    }
   } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
     f && f.call(this, newValue)

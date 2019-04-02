@@ -182,13 +182,13 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
       if (io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
         return eYo.T3.Expr.Check.augtarget
       }
-      return eYo.T3.Expr.Check.expression
+      return eYo.T3.Expr.Check.expression_key_datum
     }
     if (io.i === 1 && io.list.length === 3) {
       return eYo.T3.Expr.Check.expression
     }
     if (io.i === 0 && io.list.length === 1) {
-      return eYo.T3.Expr.Check.expression
+      return eYo.T3.Expr.Check.expression_key_datum
     }
     if (io.first_starred < 0 || io.i === io.first_starred) {
       return eYo.T3.Expr.Check.target
@@ -555,6 +555,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     holder: {
       order: 201,
       init: '', // will be saved only when not built in
+      synchronize: true,
       placeholder: eYo.Msg.Placeholder.UNSET,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
@@ -569,10 +570,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+        // first change the dotted data to unincog the holder
+        if (newValue) {
+          this.owner.dotted_p = 1
+        }
         this.didChange(oldValue, newValue)
         this.owner.updateProfile()
       },
-      synchronize: true,
       xml: {
         force: /** @suppress {globalThis} */ function () {
           return this.owner.variant_p === eYo.Key.CALL_EXPR
@@ -645,7 +649,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           }
         } else {
           if (v === eYo.Key.ANNOTATED_VALUED) {
-            Object.variant_p = eYo.Key.TARGET_VALUED
+            O.variant_p = eYo.Key.TARGET_VALUED
           } else if (v === eYo.Key.ANNOTATED) {
             O.variant_p = eYo.Key.NONE
           }
@@ -1129,7 +1133,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   },
   deinit: /** @suppress {globalThis} */ function () {
     eYo.DelegateSvg.Expr.unregisterPrimary(this)
-  }
+  },
 }, true)
 
 eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delegate) {

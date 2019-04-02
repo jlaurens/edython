@@ -88,19 +88,33 @@ eYo.Test.set_variant = (b, variant, str) => {
   chai.assert(b.eyo.variant_p === variant, `MISSED VARIANT ${str || ''} ${b.eyo.variant_p} === ${variant}`)
 }
 
+/**
+ * Test all the possible variants
+ */
+eYo.Test.all_variants = (b, required) => {
+  eYo.Test.block(b)
+  var d = b.eyo.variant_d
+  var all = d && d.getAll()
+  chai.assert(all || !required, `MISSING all in model ${b.type}`)
+  all && all.forEach(v => {
+    eYo.Test.set_variant(b, v)
+  })
+}
+
 eYo.Test.comment_variant = (b, comment_variant, str) => {
   comment_variant = eYo.Key[comment_variant] || comment_variant
   chai.assert(b.eyo.comment_variant_p === comment_variant, `MISSED COMMENT VARIANT ${str || ''} ${b.eyo.comment_variant_p} === ${comment_variant}`)
 }
 
 eYo.Test.code = (b, str) => {
-  var str1 = str.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(' ** ', '**')
-  if (str1.endsWith('\n')) {
-    str1 = str1.substring(0, str.length - 1)
-  }
   var s = b.eyo.toString.replace(/\bNOM\b/g, 'NAME')
-  var s1 = s.replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(' ** ', '**')
-  chai.assert(s1 === str1, `MISSED: ${s} === ${str}`)
+  if (s !== str) {
+    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/ \*\*/g, '**').replace(/\*\* /g, '**').replace(/\* /g, '*').replace(/: /g, ':').replace(/ ->/g, '->').replace(/\s+$/, '')
+    var str1 = f(str)
+    var s1 = f(s)
+    // console.error(s1, str1)
+    chai.assert(s1 === str1, `MISSED: ${s} === ${str}`)
+  }
 }
 
 eYo.Test.input_length = (b, k, str) => {
@@ -279,7 +293,7 @@ eYo.Test.copy_paste = (b, opts) => {
 }
 
 /**
- * Whether both blocks have the same type and variant.
+ * Whether both blocks have the same list length.
  */
 eYo.Test.same_list_length = (b, bb, key) => {
   chai.assert(b, 'MISSING b')
