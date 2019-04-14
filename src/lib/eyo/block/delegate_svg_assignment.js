@@ -276,8 +276,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         bind: {
           order: 2,
           validate: true,
-          endEditing: true,
-          variable: true
+          endEditing: true
         }
       },
       check: eYo.T3.Expr.Check.expression,

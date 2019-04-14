@@ -351,7 +351,7 @@ describe('One block: annotated_assignment_stmt', function() {
   it('target', function() {
     var main = eYo.Test.new_block('annotated_assignment_stmt')
     chai.assert(main.eyo.operator_p === '=', `MISSED ${main.eyo.operator_p}`)
-    eYo.Test.code(main, '<MISSING NAME>:<MISSING NAME>=<MISSING EXPRESSION>')
+    eYo.Test.code(main, '<MISSING NAME>:<MISSING EXPRESSION>=<MISSING EXPRESSION>')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
     eYo.Test.block(b2, 'identifier')
     chai.assert(b2.eyo.target_p === 'x', 'MISSED 1')
@@ -361,6 +361,7 @@ describe('One block: annotated_assignment_stmt', function() {
     chai.assert(main.eyo.annotated_p === 'fou + bar', 'MISSED ANNOTATION')
     chai.assert(main.eyo.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
     chai.assert(main.eyo.annotated_s.bindField.getText() === 'fou + bar', 'MISSED VALUE')
+    console.error(main.eyo.annotated_s)
     eYo.Test.code(main, 'x: fou + bar = <MISSING EXPRESSION>')
     b2.eyo.target_p = 'xxx'
     chai.assert(b2.eyo.target_p === 'xxx', 'MISSED 2')
