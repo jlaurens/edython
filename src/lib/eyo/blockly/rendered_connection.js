@@ -40,6 +40,11 @@ eYo.ConnectionDelegate = function (connection) {
 }
 
 Object.defineProperties(eYo.ConnectionDelegate.prototype, {
+  type: {
+    get () {
+      return this.connection.type
+    }
+  },
   c: { // in block text coordinates
     get () {
       return this.slot ? this.where.c + this.slot.where.c : this.where.c
@@ -178,6 +183,24 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
   isSuite: {
     get () {
       return this.connection === this.b_eyo.suiteConnection
+    }
+  },
+  /**
+   * Is it a left connection.
+   * @return {boolean} True if the connection is the block's left one.
+   */
+  isLeft: {
+    get () {
+      return this.connection === this.b_eyo.leftStmtConnection
+    }
+  },
+  /**
+   * Is it a right connection.
+   * @return {boolean} True if the connection is the block's right one.
+   */
+  isRight: {
+    get () {
+      return this.connection === this.b_eyo.rightStmtConnection
     }
   },
   /**
@@ -462,7 +485,7 @@ eYo.ConnectionDelegate.prototype.didDisconnect = function (oldTargetC8n, targetO
  * Called by `consolidateConnections`.
  */
 eYo.ConnectionDelegate.prototype.updateCheck = function () {
-  var eyo = this.connection.sourceBlock_.eyo
+  var eyo = this.b_eyo
   if(eyo.change.level > 1 || this.changeCount === eyo.change.count) {
     return
   }
@@ -502,7 +525,7 @@ eYo.ConnectionDelegate.prototype.getConnectionAbove = function () {
 
 /**
  * Get the connection of the same kind on the block below.
- * If the connection is named, returns the connection, whatever ist source block
+ * If the connection is named, returns the connection, whatever its source block
  * status may be.
  * @return a connection, possibly undefined
  */
@@ -618,44 +641,6 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
 }
 
 /**
- * Path definition for an hilighted connection
- */
-eYo.ConnectionDelegate.prototype.highlightPathDef = function () {
-  var c8n = this.connection
-  var block = c8n.sourceBlock_
-  if (!block.workspace) {
-    return ''
-  }
-  var steps = ''
-  var c_eyo = c8n.eyo
-  if (c_eyo.isInput) {
-    if (c8n.isConnected()) {
-      steps = c_eyo.t_eyo.valuePathDef_()
-    } else if (!this.disabled_) {
-      steps = eYo.Shape.definitionWithConnection(this, {absolute: true})
-    }
-  } else if (c_eyo.isOutput) {
-    steps = block.eyo.valuePathDef_(c8n.offsetInBlock_)
-  } else { // statement connection
-    var r = eYo.Style.Path.Hilighted.width / 2
-    var a = ` a ${r},${r} 0 0 1 0,`
-    var w = block.width - eYo.Unit.x / 2
-    if (this.isPrevious) {
-      steps = `m ${w},${-r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
-    } else if (this.isNext) {
-      if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
-        steps = `m ${eYo.Font.tabWidth + eYo.Style.Path.r},${block.eyo.size.height - r}${a}${2 * r} h ${-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
-      } else {
-        steps = `m ${w},${block.eyo.size.height - r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
-      }
-    } else /* if (this.isSuite) */ {
-      steps = `m ${w},${-r + eYo.Unit.y}${a}${2 * r} h ${eYo.Font.tabWidth - w + eYo.Unit.x / 2}${a}${-2 * r} z`
-    }
-  }
-  return steps
-}
-
-/**
  * Highlight the receiver's connection
  */
 eYo.ConnectionDelegate.prototype.highlight = function () {
@@ -664,16 +649,13 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
   if (!block.workspace) {
     return
   }
-  if (block.eyo.higlightConnection) {
-    block.eyo.higlightConnection(c8n)
-    return
-  }
+  var c_eyo = c8n.eyo
   var steps
-  if (c8n.eyo.isInput) {
+  if (c_eyo.isInput) {
     if (c8n.isConnected()) {
       steps = c8n.targetBlock().eyo.valuePathDef_()
     } else {
-      steps = eYo.Shape.definitionWithConnection(this)
+      steps = eYo.Shape.definitionWithConnectionDlgt(this)
       Blockly.Connection.highlightedPath_ =
       Blockly.utils.createSvgElement('path',
         {
@@ -684,28 +666,36 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
       )
       return
     }
-  } else if (c8n.type === Blockly.OUTPUT_VALUE) {
+  } else if (c_eyo.isOutput) {
     steps = block.eyo.valuePathDef_()
   } else {
-    // this is a statement connection
-    var w = block.width - eYo.Unit.x / 2
-    if (block.eyo.inputSuite) {
-      // this is a group
-      if (block.eyo.suiteConnection === c8n) {
-        w -= eYo.Font.tabWidth
-      } else if (block.nextConnection === c8n) {
-        w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
+    if (c_eyo.isLeft) {
+      console.log('isLeft')
+      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo)
+    } else if (c_eyo.isRight) {
+      console.log('isRight')
+      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo)
+    } else {
+      // this is a statement connection
+      var w = block.width - eYo.Unit.x / 2
+      var r = eYo.Style.Path.Hilighted.width / 2
+      var a = `a ${r},${r} 0 0 1`
+      if (block.eyo.inputSuite) {
+        // this is a group
+        if (c_eyo.isSuite) {
+          w -= eYo.Font.tabWidth
+        } else if (c_eyo.isNext) {
+          w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
+        }
       }
+      steps = `m ${w},${-r} ${a} 0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l} ${a} 0,${-2 * r} z`
     }
-    var r = eYo.Style.Path.Hilighted.width / 2
-    var a = ' a ' + r + ',' + r + ' 0 0 1 0,'
-    steps = 'm ' + w + ',' + (-r) + a + (2 * r) + ' h ' + (-w + eYo.Unit.x - eYo.Padding.l) + a + (-2 * r) + ' z'
   }
   Blockly.Connection.highlightedPath_ =
   Blockly.utils.createSvgElement('path',
     {'class': 'blocklyHighlightedConnectionPath',
       'd': steps,
-      transform: `translate(${this.x || 0}, ${this.y || 0})`},
+      transform: `translate(${this.x || 0},${this.y || 0})`},
     block.getSvgRoot())
 }
 
@@ -799,6 +789,29 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
   selected || rootBlock.removeSelect()
 }
 
+// Object.defineProperties(eYo.Connection.prototype, {
+//   inDB_: {
+//     get () {
+//       return this.inDB__
+//     },
+//     set (newValue) {
+//       if (this.type === eYo.Const.RIGHT_STATEMENT) {
+//         console.error('inDB_ =', newValue)
+//       }
+//       this.inDB__ = newValue
+//     }
+//   }
+// })
+
+/**
+ * Check if the two connections can be dragged to connect to each other.
+ * A sealed connection is never allowed.
+ * @param {!Blockly.Connection} candidate A nearby connection to check.
+ * @return {boolean} True if the connection is allowed, false otherwise.
+ */
+eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
+}
+
 /**
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
@@ -811,6 +824,20 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
   }
   var yorn = eYo.Connection.superClass_.isConnectionAllowed.call(this,
     candidate)
+  // if (yorn) {
+  //   if (candidate.type == eYo.Const.LEFT_STATEMENT) {
+  //     if (candidate.isConnected() || this.isConnected()) {
+  //       return false;
+  //     }
+  //   }
+  //   // Blocks may be terminal, like the return statement.
+  //   if (this.type == eYo.Const.LEFT_STATEMENT &&
+  //     !this.sourceBlock_.eyo.rightConnection &&
+  //     candidate.isConnected() &&
+  //     candidate.targetBlock().eyo.rightConnection) {
+  //     return false;
+  //   }
+  // }
   return yorn
 }
 
@@ -850,6 +877,12 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
     // we will most certainly reach a state that was valid
     // some time ago
     return true
+  }
+  if (this.check_ && !this.check_.length) {
+    return false
+  }
+  if (otherConnection.check_ && !otherConnection.check_.length) {
+    return false
   }
   var c8nA = this.eyo.getBlackConnection()
   var c8nB = otherConnection.eyo.getBlackConnection()
@@ -1447,4 +1480,15 @@ Blockly.Connection.prototype.setCheck = function(check) {
     this.check_ = null;
   }
   return this;
+};
+
+
+/**
+ * Does the connection belong to a superior block (higher in the source stack)?
+ * @return {boolean} True if connection faces down or right.
+ */
+eYo.Connection.prototype.isSuperior = function() {
+  return this.type == Blockly.INPUT_VALUE ||
+  this.type == Blockly.NEXT_STATEMENT ||
+  this.type == Blockly.RIGHT_STATEMENT
 };

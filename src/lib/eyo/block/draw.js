@@ -22,7 +22,6 @@ goog.require('eYo.DelegateSvg')
 
  /**
  * Whether the block is selected.
- * Subclassers will override this but won't call it.
  * @param {!Object} eyo
  * @private
  */
@@ -167,8 +166,7 @@ eYo.Draw.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
 
 
 /**
- * Did some block's connection.
- * When connecting locked blocks, select the receiver.
+ * Converse of the preceeding.
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} oldConnection what was previously connected to the new targetConnection

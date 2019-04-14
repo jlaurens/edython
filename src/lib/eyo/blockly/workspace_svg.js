@@ -68,31 +68,6 @@ Blockly.Gesture.prototype.handleWsStart = (() => {
   }
 }) ()
 
-Blockly.Workspace.prototype.logAllConnections = function (comment) {
-  comment = comment || ''
-  var dbList = this.connectionDBList
-  console.log(comment + '> Blockly.INPUT_VALUE connections')
-  var db = dbList[Blockly.INPUT_VALUE]
-  for (var i = 0, c8n; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.OUTPUT_VALUE connections')
-  db = dbList[Blockly.OUTPUT_VALUE]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.NEXT_STATEMENT connections')
-  db = dbList[Blockly.NEXT_STATEMENT]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.PREVIOUS_STATEMENT connections')
-  db = dbList[Blockly.PREVIOUS_STATEMENT]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
-  }
-}
-
 /**
  * Show the context menu for the workspace.
  * @param {!Event} e Mouse event.

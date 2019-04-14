@@ -2,7 +2,7 @@ setTimeout(() => {
   describe('PREPARE', function() {
     it('Blockly', function() {
       chai.assert(Blockly, `MISSING Blockly`)
-      chai.assert(Blockly.mainWorkspace, `MISSING Blockly.mainWorkspace`)
+      chai.assert(eYo.App.workspace, `MISSING eYo.App.workspace`)
       chai.assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
     })
   })
@@ -26,17 +26,25 @@ eYo.temp = (() => {
     oneBasedIndex : true,
   };
   /* Inject your workspace */
-  var workspace = Blockly.inject('eyoDiv', options);
-  eYo.setup(workspace)
-  workspace.eyo.options = {
+  eYo.App.workspace = Blockly.inject('eyoDiv', options);
+  eYo.setup(eYo.App.workspace)
+  eYo.App.workspace.eyo.options = {
     noLeftSeparator: true,
     noDynamicList: false,
     smartUnary: true,
   }
-  workspace.clearUndo()
+  eYo.App.workspace.clearUndo()
 })()
 
-chai.assert(Blockly.mainWorkspace, 'NO MAIN WORKSPACE')
+chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
+
+eYo.Test.setItUp = () => {
+  eYo.App.workspace.clearUndo()
+}
+
+eYo.Test.tearItDown = () => {
+  eYo.App.workspace.clearUndo()
+}
 
 eYo.Test.g = eYo.GMR._PyParser_Grammar
 
@@ -51,11 +59,38 @@ eYo.Test.block = (b, t, str) => {
 }
 
 eYo.Test.new_block = (t, tt, str) => {
-  t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, t)
+  var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
+  var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, type)
   eYo.Test.block(b, tt, str)
   return b
 }
+
+/**
+ * Basic test for block creation.
+ * The argument is a array of `[t, tt, k]` arrays.
+ * `t` is the type of the node to be created.
+ * `tt` is the type of the created block.
+ * `k` is the key of the constructor of that block.
+ * When `tt` or `k` is undefined, no corresponding test is performed.
+ * When `tt` or `k` is null, it is replaced by `t` before the test is performed.
+ * 
+ * @param{Array} ra
+ * @param{String} str
+ */
+eYo.Test.basic = (ra, str) => {
+  describe(`Basic: ${str}`, function () {
+    ra.forEach(args => {
+      var t = args[0]
+      var tt = args[1] || ((args[1] === null) && args[0])
+      var k = args[2] || ((args[2] === null) && args[0])
+      it (`${t}${tt ? `/${tt}` : ''}${k ? `/ctor: ${k}` : ''}`, function () {
+        var b = eYo.Test.new_block(args[0], args[1] || args[0])
+        args[2] && eYo.Test.ctor(b, args[2])
+        b.dispose()
+      })
+    })
+  })
+  }
 
 /** Usage
   eYo.Test.incog(block,
@@ -99,11 +134,6 @@ eYo.Test.all_variants = (b, required) => {
   all && all.forEach(v => {
     eYo.Test.set_variant(b, v)
   })
-}
-
-eYo.Test.comment_variant = (b, comment_variant, str) => {
-  comment_variant = eYo.Key[comment_variant] || comment_variant
-  chai.assert(b.eyo.comment_variant_p === comment_variant, `MISSED COMMENT VARIANT ${str || ''} ${b.eyo.comment_variant_p} === ${comment_variant}`)
 }
 
 eYo.Test.code = (b, str) => {
@@ -263,7 +293,7 @@ eYo.Test.subtype = (b, t) => {
 eYo.Test.copy_paste = (b, opts) => {
   chai.assert(b, 'MISSING b')
   var d = eYo.Xml.blockToDom(b)
-  var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, d)
+  var bb = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, d)
   eYo.Test.same(b, bb)
   var M = eYo.Delegate.Manager.getModel(b.type)
   Object.keys(M.slots).forEach(k => {
@@ -313,7 +343,7 @@ eYo.Test.same_list_length = (b, bb, key) => {
  * copy/paste.
  */
 eYo.Test.newIdentifier = (str) => {
-  var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
+  var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, eYo.T3.Expr.identifier)
   b.eyo.target_p = str
   eYo.Test.block(b, 'identifier')
   eYo.Test.data_value(b, 'target', str)

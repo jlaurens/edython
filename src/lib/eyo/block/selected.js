@@ -84,7 +84,7 @@ eYo.Selected = (() => {
               block__ = eyo__.block_
               if (!eyo__.canEdit_) {
                 // catch eyo__
-                setTimeout(((eyo) => {
+                setTimeout((eyo => {
                   return () => {
                     eyo.canEdit_ = true
                   }
@@ -321,6 +321,11 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   if (!ws) {
     return
   }
+  // if we clicked on a field, no connection returned
+  var gesture = ws.getGesture(e)
+  if (gesture && gesture.startField_) {
+    return
+  }
   var where = Blockly.utils.mouseToSvg(e, ws.getParentSvg(),
   ws.getInverseScreenCTM());
   where = goog.math.Coordinate.difference(where, ws.getOriginOffsetInPixels())
@@ -415,6 +420,41 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
+    if (R.contains(where)) {
+      return c8n
+    }
+  }
+  if ((c8n = this.suiteConnection) && !c8n.hidden) {
+    var r = eYo.Style.Path.Hilighted.width
+    R = new goog.math.Rect(
+      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      c8n.offsetInBlock_.y + r,
+      2 * r,
+      eYo.Unit.y - 2 * r // R U sure?
+    )
+    if (R.contains(where)) {
+      return c8n
+    }
+  }
+  if ((c8n = this.leftStmtConnection) && !c8n.hidden) {
+    var r = eYo.Style.Path.Hilighted.width
+    R = new goog.math.Rect(
+      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      c8n.offsetInBlock_.y + r,
+      2 * r,
+      eYo.Unit.y - 2 * r // R U sure?
+    )
+    if (R.contains(where)) {
+      return c8n
+    }
+  }
+  if ((c8n = this.rightStmtConnection) && !c8n.hidden) {
+    R = new goog.math.Rect(
+      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      c8n.offsetInBlock_.y + r,
+      2 * r,
+      eYo.Font.lineHeight - 2 * r // R U sure?
+    )
     if (R.contains(where)) {
       return c8n
     }
@@ -531,7 +571,7 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
         } else if (eYo.Selected.connection) {
           eYo.Selected.connection = null
         } else if (target.selectMouseDownEvent) {
-          eYo.Selected.eyo = target.stmtParent || target.root
+          eYo.Selected.eyo = (this.isStmt ? this : this.stmtParent) || target.root
           target.selectMouseDownEvent = null
         }
       }
@@ -577,24 +617,28 @@ eYo.Selected.connectionPathDef = function () {
     if (c8n.isConnected()) {
       steps = c_eyo.t_eyo.valuePathDef_()
     } else if (!b_eyo.disabled_) {
-      steps = eYo.Shape.definitionWithConnection(c_eyo, {absolute: true})
+      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo, {absolute: true})
     }
   } else if (c_eyo.isOutput) {
-    steps = block.eyo.valuePathDef_(c8n.offsetInBlock_)
+    steps = b_eyo.valuePathDef_(c8n.offsetInBlock_)
   } else { // statement connection
     var r = eYo.Style.Path.Hilighted.width / 2
-    var a = ` a ${r},${r} 0 0 1 0,`
+    var a = `a ${r},${r} 0 0 1 `
     var w = block.width - eYo.Unit.x / 2
     if (c_eyo.isPrevious) {
-      steps = `m ${w},${-r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
+      steps = `m ${w - 4 * r},${-r} ${a}0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l + 8 * r} ${a}0,${-2 * r} z`
     } else if (c_eyo.isNext) {
-      if (block.eyo.size.height > eYo.Unit.y) { // this is not clean design
-        steps = `m ${eYo.Font.tabWidth + eYo.Style.Path.r},${block.eyo.size.height - r}${a}${2 * r} h ${-eYo.Font.tabWidth - eYo.Style.Path.r + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
+      if (b_eyo.size.height > eYo.Unit.y) { // this is not clean design
+        steps = `m ${eYo.Font.tabWidth},${b_eyo.size.height - r} ${a}0,${2 * r} h ${-eYo.Font.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l} ${a}0,${-2 * r} z`
       } else {
-        steps = `m ${w},${block.eyo.size.height - r}${a}${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l}${a}${-2 * r} z`
+        steps = `m ${w - 4 * r},${eYo.Unit.y - r} ${a}0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l + 8 * r} ${a}0,${-2 * r} z`
       }
-    } else /* if (this.isSuite) */ {
-      steps = `m ${w},${-r + eYo.Unit.y}${a}${2 * r} h ${eYo.Font.tabWidth - w + eYo.Unit.x / 2}${a}${-2 * r} z`
+    } else if (c_eyo.isSuite) {
+      steps = `m ${w - 4 * r},${-r + eYo.Unit.y} ${a}0,${2 * r} h ${eYo.Font.tabWidth - w + eYo.Unit.x / 2 + 8 * r} ${a}0,${-2 * r} z`
+    } else if (c_eyo.isLeft) {
+      steps = `M ${eYo.Unit.x / 2 + r},${eYo.Unit.y - 4 * r}  ${a}${-2 * r},0 v ${- eYo.Unit.y + 8 * r}  ${a}${2 * r},0 z`
+    } else /* if (c_eyo.isRight) */ {
+      steps = `M ${w + r},${eYo.Unit.y - 4 * r}  ${a}${-2 * r},0 v ${- eYo.Unit.y + 8 * r}  ${a}${2 * r},0 z`
     }
   }
   return steps

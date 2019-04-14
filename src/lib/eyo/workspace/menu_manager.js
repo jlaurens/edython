@@ -274,12 +274,12 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   var me = this
   me.alreadyListened = false
   var parent, sep
-  parent = target
+  parent = target.eyo
   this.populate_before_after(block)
-  sep = parent.eyo.populateContextMenuFirst_(this)
-  while (parent !== block) {
-    parent = parent.getParent()
-    sep = parent.eyo.populateContextMenuFirst_(this) || sep
+  sep = parent.populateContextMenuFirst_(this)
+  while (parent !== block.eyo) {
+    parent = parent.parent
+    sep = parent.populateContextMenuFirst_(this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
   if (this.insertSubmenu.getItemCount()) {
@@ -301,11 +301,11 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
     sep = true
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
-  parent = target
-  sep = parent.eyo.populateContextMenuMiddle_(this)
-  while (parent !== block) {
-    parent = parent.getParent()
-    sep = parent.eyo.populateContextMenuMiddle_(this) || sep
+  parent = target.eyo
+  sep = parent.populateContextMenuMiddle_(this)
+  while (parent !== block.eyo) {
+    parent = parent.parent
+    sep = parent.populateContextMenuMiddle_(this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
   block.eyo.populateContextMenuLast_(this)
@@ -1026,7 +1026,7 @@ eYo.MenuManager.prototype.populate_insert_parent = function (block, model, top) 
  * @return true if an item were added to the remove menu
  */
 eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
-  var parent = block.getParent()
+  var parent = block.eyo.parent
   if (parent && parent.type === model.type) {
     var eyo = block.eyo
     var input = eyo.getParentInput()
@@ -1034,11 +1034,11 @@ eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
       return false
     }
     if (!eyo.wrapped_ || eyo.canUnwrap()) {
-      if (eyo.canReplaceBlock(parent)) {
+      if (eyo.canReplaceBlock(parent.block_)) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
-            eyo.replaceBlock(parent)
+            eyo.replaceBlock(parent.block_)
           })
           this.addRemoveChild(MI)
           console.log(block.type, ' replace ', parent.type)

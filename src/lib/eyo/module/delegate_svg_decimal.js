@@ -38,9 +38,9 @@ var F = (name, title) => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    name_d: name,
-    holder_d: 'decimal',
-    dotted_d: 0,
+    name_p: name,
+    holder_p: 'decimal',
+    dotted_p: 0,
     title: key
   }
 }
@@ -49,9 +49,9 @@ var F_k = (name, title) => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.identifier,
-    name_d: name,
-    holder_d: 'decimal',
-    dotted_d: 0,
+    name_p: name,
+    holder_p: 'decimal',
+    dotted_p: 0,
     title: key
   }
 }
@@ -92,8 +92,8 @@ var F_k = (name, title) => {
 eYo.FlyoutCategory.basic_decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    from_d: 'decimal',
-    star_d: true,
+    from_p: 'decimal',
+    star_p: true,
     title: 'decimal__import_stmt'
   },
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
@@ -103,9 +103,9 @@ eYo.FlyoutCategory.basic_decimal__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
-          name_d: 'Decimal',
-          holder_d: 'decimal',
-          dotted_d: 0,
+          name_p: 'Decimal',
+          holder_p: 'decimal',
+          dotted_p: 0,
           n_ary_s: {
             slots: {
               O: 0.1
@@ -122,9 +122,9 @@ eYo.FlyoutCategory.basic_decimal__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
-          name_d: 'Decimal',
-          holder_d: 'decimal',
-          dotted_d: 0,
+          name_p: 'Decimal',
+          holder_p: 'decimal',
+          dotted_p: 0,
           n_ary_s: {
             slots: {
               O: 0.1
@@ -143,11 +143,11 @@ eYo.FlyoutCategory.basic_decimal__module = [
           type: eYo.T3.Expr.attributeref,
           holder_s: {
             type: eYo.T3.Expr.call_expr,
-            name_d: 'getcontext',
-            dotted_d: 0
+            name_p: 'getcontext',
+            dotted_p: 0
           },
-          dotted_d: 1,
-          name_d: 'prec'
+          dotted_p: 1,
+          name_p: 'prec'
         }
       }
     },
@@ -194,20 +194,20 @@ eYo.FlyoutCategory.decimal__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.identifier,
-          name_d: 'decimal'
+          name_p: 'decimal'
         }
       }
     }
   },
   {
     type: eYo.T3.Stmt.import_stmt,
-    from_d: 'decimal',
+    from_p: 'decimal',
     import_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.identifier_as,
-          name_d: 'Decimal',
-          alias_d: 'D'
+          name_p: 'Decimal',
+          alias_p: 'D'
         }
       }
     }
@@ -248,9 +248,9 @@ eYo.FlyoutCategory.decimal__module = [
     ].forEach((key) => {
       createOneBlock({
         type: eYo.T3.Expr.identifier,
-        name_d: key,
-        holder_d: 'decimal',
-        dotted_d: 1,
+        name_p: key,
+        holder_p: 'decimal',
+        dotted_p: 1,
         title: eYo.Msg[key] // to be changed to a tooltip key
       })
     })

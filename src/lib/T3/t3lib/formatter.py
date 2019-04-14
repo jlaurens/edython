@@ -303,15 +303,16 @@ class Formatter:
             if t.same_checks:
                 self.append('eYo.T3.Expr.Check.{} = eYo.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
 
-    def feed_statement_previous(self):
-        self.append('eYo.T3.Stmt.Previous = {')
+    def feed_statement_pnlr(self, label, attr):
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
         template = '    eYo.T3.Stmt.{},'
         template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
         for t in self.get_statements():
             try:
-                if len(t.is_below):
-                    self.append('  {}: [ // count {}'.format(t.name, len(t.is_below)))
-                    for tt in sorted((tt for tt in t.is_below), key=lambda t: (t[0].n, t[0].name)):
+                ts = getattr(t, attr)
+                if len(ts):
+                    self.append('  {}: [ // count {}'.format(t.name, len(ts)))
+                    for tt in sorted((tt for tt in ts), key=lambda t: (t[0].n, t[0].name)):
                         if tt[1]:
                             self.append(template_name.format(tt[0].name, tt[1].upper()))
                         else:
@@ -321,22 +322,48 @@ class Formatter:
                 pass
         self.append('}\n')
 
+    def feed_statement_previous(self):
+        self.feed_statement_pnlr('Previous', 'is_below')
+
     def feed_statement_next(self):
-        self.append('eYo.T3.Stmt.Next = {')
+        self.feed_statement_pnlr('Next', 'is_above')
+
+    def feed_statement_left(self):
+        # Only for the simple_stmt
+        attr = 'is_right'
+        label = 'Left'
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
         template = '    eYo.T3.Stmt.{},'
         template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
-        for t in self.get_statements():
-            try:
-                if len(t.is_above):
-                    self.append('  {}: [ // count {}'.format(t.name, len(t.is_above)))
-                    for tt in sorted((tt for tt in t.is_above), key=lambda t: (t[0].n, t[0].name)):
-                        if tt[1]:
-                            self.append(template_name.format(tt[0].name, tt[1].upper()))
-                        else:
-                            self.append(template.format(tt[0].name))
-                    self.append('  ],')
-            except:
-                pass
+        t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
+        try:
+            ts = getattr(t, attr)
+            if len(ts):
+                self.append('  {}: [ // count {}'.format(t.name, len(ts)))
+                for tt in sorted((tt for tt in ts), key=lambda t: (t.n, t.name)):
+                    self.append(template.format(tt.name))
+                self.append('  ],')
+        except:
+            pass
+        self.append('}\n')
+
+    def feed_statement_right(self):
+        # Only for the simple_stmt
+        attr = 'is_left'
+        label = 'Right'
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
+        template = '    eYo.T3.Stmt.{},'
+        template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
+        t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
+        try:
+            ts = getattr(t, attr)
+            if len(ts):
+                self.append('  {}: [ // count {}'.format(t.name, len(ts)))
+                for tt in sorted((tt for tt in ts), key=lambda t: (t.n, t.name)):
+                    self.append(template.format(tt.name))
+                self.append('  ],')
+        except:
+            pass
         self.append('}\n')
 
     def feed_statement_any(self):
@@ -412,6 +439,10 @@ goog.provide('eYo.T3.Stmt')
         self.feed_statement_previous()
         self.append('')
         self.feed_statement_next()
+        self.append('')
+        self.feed_statement_left()
+        self.append('')
+        self.feed_statement_right()
         self.append('')
         self.feed_statement_available()
         self.append('')

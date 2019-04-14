@@ -67,8 +67,8 @@ var doit = (() => {
   eYo.FlyoutCategory.basic_turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
-      variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
-      from_d: 'turtle'
+      variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+      from_p: 'turtle'
     },
     eYo.T3.Stmt.turtle__setup_stmt,
     F_stmt('done', 'Terminer'),
@@ -115,9 +115,9 @@ var doit = (() => {
     title && (eYo.Tooltip.Title[key] = title)
     return {
       type: eYo.T3.Expr.call_expr,
-      name_d: name,
+      name_p: name,
       holder_placeholder: 'T',
-      dotted_d: 1,
+      dotted_p: 1,
       title: key
     }
   }
@@ -126,21 +126,21 @@ var doit = (() => {
     title && (eYo.Tooltip.Title[key] = title)
     return {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: name,
+      name_p: name,
       holder_placeholder: 'T',
-      dotted_d: 1,
+      dotted_p: 1,
       title: key
     }
   }
   eYo.FlyoutCategory.turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
-      variant_d: eYo.Key.IMPORT,
+      variant_p: eYo.Key.IMPORT,
       import_module_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.identifier_as,
-            name_d: 'turtle',
+            name_p: 'turtle',
             alias_placeholder: 'T'
           }
         }
@@ -153,18 +153,18 @@ var doit = (() => {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
-            name_d: 'Turtle',
-            holder_d: 'turtle',
-            dotted_d: 1
+            name_p: 'Turtle',
+            holder_p: 'turtle',
+            dotted_p: 1
           },
         },
       },
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'done',
-      holder_d: 'turtle',
-      dotted_d: 1,
+      name_p: 'done',
+      holder_p: 'turtle',
+      dotted_p: 1,
       title: 'Terminer'
     },
     F_stmt('forward', 'Avancer de la distance donnée'),

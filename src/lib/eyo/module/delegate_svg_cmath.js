@@ -162,24 +162,24 @@ eYo.FlyoutCategory.basic_cmath__module = [
   },
   {
     type: eYo.T3.Expr.attributeref,
-    name_d: 'real',
-    dotted_d: 1
+    name_p: 'real',
+    dotted_p: 1
   },
   {
     type: eYo.T3.Expr.attributeref,
-    name_d: 'imag',
-    dotted_d: 1
+    name_p: 'imag',
+    dotted_p: 1
   },
   {
     type: eYo.T3.Expr.call_expr,
-    name_d: 'conjugate',
-    ary_d: 0,
+    name_p: 'conjugate',
+    ary_p: 0,
     dotted: 1
   },
   {
     type: eYo.T3.Stmt.import_stmt,
-    from_d: 'cmath',
-    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR
+    from_p: 'cmath',
+    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR
   },
 
   F('phase', ''),

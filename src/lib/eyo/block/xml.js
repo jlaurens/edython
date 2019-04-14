@@ -58,6 +58,7 @@ eYo.Xml = {
   FLOW: 'flow', // attribute name
   NEXT: 'next', // attribute content
   SUITE: 'suite', // attribute content
+  RIGHT: 'right', // attribute content
   DOTTED_NAME: 'dotted_name', // attribute name
   NAME: 'name', // attribute name
   MODIFIER: 'modifier', // attribute name

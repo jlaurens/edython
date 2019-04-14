@@ -19,12 +19,29 @@ goog.require('eYo.DelegateSvg.Stmt')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a DelegateSvg, base group statement block.
+ * Base group is subclassed into Group and Control.
  * For edython.
  */
 eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   statement: {
+    right: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return this.b_eyo.suite
+        ? null
+        : eYo.T3.Stmt.Right.simple_stmt
+      }
+    },
+    previous: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return null
+      }
+    },
+    next: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return null
+      }
+    },
     suite: {}
   }
 }, eYo.DelegateSvg)
@@ -88,7 +105,7 @@ eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
  * Render the suite block, if relevant.
  * @return {boolean=} true if a rendering message was sent, false othrwise.
  */
-eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function (io) {
   if (!this.inputSuite) {
     return
   }
@@ -125,13 +142,48 @@ eYo.DelegateSvg.BaseGroup.prototype.renderSuite_ = function () {
 }
 
 /**
+ * Render the right blocks, if relevant.
+ * @return {boolean=} true if a rendering message was sent, false othrwise.
+ */
+eYo.DelegateSvg.BaseGroup.prototype.renderStmtRight_ = function () {
+  if (!this.inputRight) {
+    return
+  }
+  var c8n = this.rightStmtConnection
+  if (c8n) {
+    var target = c8n.targetBlock()
+    if (target) {
+      this.someTargetIsMissing = false
+      var root = target.getSvgRoot()
+      if (root) {
+        c8n.tighten_()
+        if (!target.rendered || !target.eyo.upRendering) {
+          try {
+            target.eyo.downRendering = true
+            target.eyo.render(false)
+          } catch (err) {
+            console.error(err)
+            throw err
+          } finally {
+            target.eyo.downRendering = false
+          }
+        }
+      }
+    } else if (this.rightStmtConnection) {
+      this.someTargetIsMissing = true
+    }
+    this.size.l = this.getStatementCount()
+    return true
+  }
+}
+
+/**
  * Render one input of value block.
  * @param io
  * @private
  */
 eYo.DelegateSvg.BaseGroup.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawValueInput_(io) ||
-      this.renderDrawSuiteInput_(io)
+  this.renderDrawValueInput_(io)
 }
 
 /**
@@ -306,67 +358,6 @@ eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr
   return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
-// /**
-//  * Class for a DelegateSvg, elif_part block.
-//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Group.makeSubclass('elif_part', {
-//   fields: {
-//     label: 'elif'
-//   },
-//   slots: {
-//     elif: {
-//       order: 1,
-//       check: eYo.T3.Expr.Check.expression,
-//       hole_value: 'condition'
-//     }
-//   }
-// }, true)
-
-// /**
-//  * Class for a DelegateSvg, else_part block.
-//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
-//  * The else block connection model is more complex than for other blocks.
-//  * Where can this block appear?
-//  * - after an if or an elif
-//  * - after a for
-//  * - after a while
-//  * - after and except
-//  * - before a finally
-//  * It is always the last box of the sequence, except when before a finally
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Group.makeSubclass('else_part', {
-//   fields: {
-//     label: 'else'
-//   },
-//   statement: {
-//     previous: {
-//       check: /** @suppress {globalThis} */ function (type) {
-//         return [
-//           type === eYo.T3.Stmt.else_part
-//           ? eYo.T3.Stmt.Previous.else_part
-//           : type === eYo.T3.Stmt.try_else_part
-//             ? eYo.T3.Stmt.Previous.try_else_part
-//             : eYo.T3.Stmt.Previous.last_else_part
-//         ]
-//       }
-//     },
-//     next: {
-//       check: /** @suppress {globalThis} */ function (type) {
-//         return [
-//           type === eYo.T3.Stmt.else_part
-//           ? eYo.T3.Stmt.Next.else_part
-//           : type === eYo.T3.Stmt.try_else_part
-//             ? eYo.T3.Stmt.Next.try_else_part
-//             : eYo.T3.Stmt.Next.last_else_part
-//         ]
-//       }
-//     }
-//   }
-// }, true)
-
 var names = [
   'if',
   'elif',
@@ -380,64 +371,6 @@ names.forEach((name) => {
   eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Group.Branch
   eYo.DelegateSvg.Manager.register(key)
 })
-
-// /**
-//  * This block may have one of 3 types: else_part, last_else_part, try_else_part.
-//  * else_part covers both last_else_part and try_else_part.
-//  * If the block cannot be of type last_else_part, then its type is try_else_part
-//  * and conversely. If the block can be of both types, then it is of type else_part.
-//  * First the previous connection tries to constrain the type,
-//  * then the next connection.
-//  * @param {!Blockly.Block} block Name of the language object containing
-//  *     type-specific functions for this block.
-//  * @constructor
-//  */
-// eYo.DelegateSvg.Stmt.else_part.prototype.getType = eYo.Decorate.onChangeCount(
-//   'getType',
-//   function () {
-//     var block = this.block_
-//     var T3 = eYo.T3.Stmt
-//     var type = T3.else_part
-//     var targetC8n
-//     if ((targetC8n = block.previousConnection.targetConnection)) {
-//       var target = targetC8n.getSourceBlock()
-//       if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.type) < 0)) {
-//         type = T3.try_else_part
-//       } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.type) < 0)) {
-//         type = T3.last_else_part
-//       }
-//     } else if ((targetC8n = this.nextConnection.targetConnection)) {
-//       // the previous connection did not add any constrain
-//       // may be the next connection will?
-//       target = targetC8n.getSourceBlock()
-//       if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.type) < 0)) {
-//         type = T3.try_else_part
-//       } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.type) < 0)) {
-//         type = T3.last_else_part
-//       }
-//     }  
-//     this.setupType(type) // bad smell, the code has changed
-//     return block.type
-//   }
-// )
-
-// /**
-//  * Class for a DelegateSvg, while_part block.
-//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
-//  * For edython.
-//  */
-// eYo.DelegateSvg.Group.makeSubclass('while_part', {
-//   fields: {
-//     label: 'while'
-//   },
-//   slots: {
-//     while: {
-//       order: 1,
-//       check: eYo.T3.Expr.Check.expression,
-//       hole_value: 'condition'
-//     }
-//   }
-// }, true)
 
 /**
  * Will draw the block. Default implementation does nothing.

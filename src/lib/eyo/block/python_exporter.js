@@ -310,7 +310,9 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
       if (target) {
         this.exportExpression_(target)
       } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
+        this.shouldSeparateField && this.line.push(' ')
         this.line.push('<MISSING INPUT>')
+        this.shouldSeparateField = true
         // NEWLINE
         this.missing_expressions.push(input.connection)
       } else {
@@ -365,7 +367,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
   toLinearString: {
     get () {
       var s = this.toString
-      return s.replace(/(?:\r\n|\r|\n)/g, ';').replace(/\s+/g, '')
+      return s.replace(/(?:\r\n|\r|\n)/g, ';')
     }
   }
 })

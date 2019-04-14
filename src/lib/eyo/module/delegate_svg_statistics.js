@@ -56,8 +56,8 @@ var F = (name, title) => {
 eYo.FlyoutCategory.basic_statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    from_d: 'statistics',
-    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    from_p: 'statistics',
+    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
     title: 'statistics__import_stmt'
   },
   F('mode', 'Mode de l\'argument, une séquence ou un itérateur, en tant que valeur représentative.'),
@@ -91,7 +91,7 @@ var F = (name, title) => {
 eYo.FlyoutCategory.statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.IMPORT,
+    variant_p: eYo.Key.IMPORT,
     import_module_s: {
       slots: {
         O: {

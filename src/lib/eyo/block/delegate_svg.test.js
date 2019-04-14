@@ -6,6 +6,7 @@ describe('Create', function() {
     assert(b, 'MISSED 1')
     assert(b.eyo, 'MISSED 2')
     assert(b.eyo.change.count !== undefined, 'MISSED 3')
+    b.dispose()
   })
 })
 
@@ -13,9 +14,10 @@ describe('One block (ALIASED)', function () {
   it (`white space before 'as'`, function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.identifier,
-      target_d: 'abc',
-      alias_d: 'cde'
+      target_p: 'abc',
+      alias_p: 'cde'
     })
-    console.error(b.eyo.toString)
+    eYo.Test.code(b, 'abc as cde')
+    b.dispose()
   })
 })

@@ -152,9 +152,9 @@ var F_s = (name, title) => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Stmt.call_stmt,
-    name_d: name,
-    holder_d: 'random',
-    dotted_d: 0,
+    name_p: name,
+    holder_p: 'random',
+    dotted_p: 0,
     title: key
   }
 }
@@ -169,8 +169,8 @@ eYo.FlyoutCategory.basic_random__module = [
   },
   {
     type: eYo.T3.Expr.call_expr,
-    name_d: 'randint',
-    holder_d: 'random',
+    name_p: 'randint',
+    holder_p: 'random',
     binary_s: { // implement 'main' instead of 'binary'
       fstart_s: 1,
       rend_s: 6
@@ -255,7 +255,7 @@ F_s = function (name, title) {
 eYo.FlyoutCategory.random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.IMPORT,
+    variant_p: eYo.Key.IMPORT,
     import_module_s: {
       slots: {
         O: {
@@ -268,8 +268,8 @@ eYo.FlyoutCategory.random__module = [
   },
   {
     type: eYo.T3.Expr.call_expr,
-    name_d: 'randint',
-    holder_d: 'random',
+    name_p: 'randint',
+    holder_p: 'random',
     binary_s: {
       fstart_s: 1,
       rend_s: 6
@@ -293,7 +293,7 @@ eYo.FlyoutCategory.random__module = [
   F('weibullvariate', 'Distribution de Weibull'),
   {
     type: eYo.T3.Expr.random__randrange,
-    dotted_d: 1,
+    dotted_p: 1,
     title: 'random__randrange'
   },
   F('sample', 'Obtenir un échantillon de taille donnée dans une population donnée sans répétition'),

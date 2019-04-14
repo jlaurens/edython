@@ -32,8 +32,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * rhs position because assignment is evaluated from right to left.
  * 
  * We merge all assignment statements into only one visual block.
- * The visual block has 4 types and more variants.
- * comment_stmt ::= '#' ...
+ * The visual block has 3 types and more variants.
  * expression_stmt ::= target_list
  * annotated_stmt ::=  augtarget ":" expression
  * annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
@@ -49,33 +48,27 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
       all: [
-        eYo.Key.NONE, // only a comment
-        eYo.Key.TARGET, // only a name, possibly a comment
-        eYo.Key.VALUED, // values, possibly a comment
+        eYo.Key.EXPRESSION, // starting point, for weak valued
+        eYo.Key.TARGET, // only a name
+        eYo.Key.VALUED, // values
         eYo.Key.TARGET_VALUED, // assignement
         eYo.Key.ANNOTATED, // only annotation
-        eYo.Key.ANNOTATED_VALUED, // assignement and annotation
-        eYo.Key.EXPRESSION // starting point, for weak valued
+        eYo.Key.ANNOTATED_VALUED // assignement and annotation
       ],
       init: eYo.Key.EXPRESSION,
       xml: false,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.target_d.requiredIncog = newValue !== eYo.Key.NONE && newValue !== eYo.Key.VALUED && newValue !== eYo.Key.EXPRESSION
+        O.target_d.requiredIncog = newValue !== eYo.Key.VALUED && newValue !== eYo.Key.EXPRESSION
         O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
         O.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED || newValue === eYo.Key.EXPRESSION
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        // variant change from 'NONE' has greater priority over comment change
         var O = this.owner
-        if (newValue === eYo.Key.NONE) {
-          O.comment_variant_p = eYo.Key.COMMENT
-          O.operator_p = ''
-        } else if (newValue === eYo.Key.VALUED) {
+        if (newValue === eYo.Key.VALUED) {
             O.operator_p = ''
         } else if (O.operator_p === '') {
-          O.comment_variant_p = eYo.Key.NONE
           O.operator_p = '='
         }
         O.consolidateType()
@@ -86,9 +79,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
           this.change(eYo.Key.EXPRESSION)
-        } else if (type === eYo.T3.Stmt.comment_stmt) {
-          // expression statement defaults to a python comment line
-          this.change(eYo.Key.NONE)
         } else if (type === eYo.T3.Stmt.annotated_stmt) {
           this.change(eYo.Key.ANNOTATED)
         } else if (type === eYo.T3.Stmt.annotated_assignment_stmt) {
@@ -99,9 +89,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       consolidate: /** @suppress {globalThis} */ function () {
         var O = this.owner
-        if (O.comment_variant_p === eYo.Key.NONE && this.value_ === eYo.Key.NONE) {
-          this.change(eYo.Key.VALUED)
-        }
         var t = O.target_s.unwrappedTarget
         if (t && (t.type === eYo.T3.Expr.identifier_annotated || t.type === eYo.T3.Expr.augtarget_annotated)) {
           // no 2 annotations
@@ -136,10 +123,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          if (this.owner.variant_p === eYo.Key.NONE || this.owner.variant_p === eYo.Key.EXPRESSION) {
-            this.owner.variant_p = eYo.Key.TARGET
-          } else if (this.owner.variant_p === eYo.Key.VALUED) {
-            this.owner.variant_p = eYo.Key.TARGET_VALUED
+          var O = this.owner
+          var v = O.variant_p
+          if (v === eYo.Key.EXPRESSION) {
+            O.variant_p = eYo.Key.TARGET
+          } else if (v === eYo.Key.VALUED) {
+            O.variant_p = eYo.Key.TARGET_VALUED
           }
         }
       },
@@ -230,12 +219,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           }
         }
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        if (newValue === eYo.Key.NONE) {
-          console.error('UNEXPECTED')
-        }
-      },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           var O = this.owner
@@ -251,38 +234,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         var v = this.owner.variant_p
         return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.VALUED && v !== eYo.Key.EXPRESSION
-      }
-    },
-    comment: {
-      init: /** @suppress {globalThis} */ function () {
-        this.owner.comment_variant_p = eYo.Key.COMMENT
-        this.setIncog(false)
-        return ''
-      },
-      consolidate: /** @suppress {globalThis} */ function () {
-        var O = this.owner
-        if (O.target_d.isIncog() && O.value_s.isIncog() && O.annotated_d.isIncog()) {
-          this.setIncog(false)
-        }
-      }
-    },
-    comment_variant: {
-      fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Stmt.comment_stmt) {
-          this.change(eYo.Key.COMMENT)
-        } else {
-          this.change(eYo.Key.NONE)
-        }
-      },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        // beware, there is a circular dependency with the variant
-        if ((newValue === eYo.Key.NONE)) {
-          var O = this.owner
-          if (O.variant_p === eYo.Key.NONE) {
-            O.variant_p = eYo.Key.VALUED
-          }
-        }
-        this.duringChange(oldValue, newValue)
       }
     }
   },
@@ -301,7 +252,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (this.isRequiredFromSaved()) {
           var O = this.owner
           var v = O.variant_p
-          if (v === eYo.Key.NONE || v === eYo.Key.EXPRESSION) {
+          if (v === eYo.Key.EXPRESSION) {
             this.owner.variant_p = eYo.Key.TARGET
           } else if (v === eYo.Key.VALUED) {
             this.owner.variant_p = eYo.Key.TARGET_VALUED
@@ -337,7 +288,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (this.isRequiredFromSaved()) {
           var O = this.owner
           var v = O.variant_p
-          if (v === eYo.Key.TARGET || v === eYo.Key.NONE || v === eYo.Key.EXPRESSION) {
+          if (v === eYo.Key.TARGET || v === eYo.Key.EXPRESSION) {
             O.variant_p = eYo.Key.ANNOTATED
           } else if (v === eYo.Key.VALUED || v === eYo.Key.TARGET_VALUED) {
             O.variant_p = eYo.Key.ANNOTATED_VALUED
@@ -365,22 +316,16 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           var v = O.variant_p
           if (v === eYo.Key.ANNOTATED) {
             O.variant_p = eYo.Key.ANNOTATED_VALUED
-          } else {
+          } else if (v !== eYo.Key.EXPRESSION) {
             O.variant_p = eYo.Key.TARGET_VALUED
           }
         }
       }
     }
-  },
-  didLoad: /** @suppress {globalThis} */ function () {
-    if (this.variant_p === eYo.Key.NONE) {
-      this.comment_variant_p = eYo.Key.COMMENT
-    }
   }
 }, true)
 
 ;[
-  'comment_stmt',
   'expression_stmt',
   'annotated_stmt',
   'annotated_assignment_stmt',
@@ -390,16 +335,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   eYo.DelegateSvg.Manager.register(k)
 })
 
-/**
- * comment blocks are white.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.isWhite = function () {
-  return this.variant_p === eYo.Key.NONE
-}
 
 /**
  * getType.
@@ -410,9 +345,6 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
   if (x === eYo.Key.VALUED || x === eYo.Key.EXPRESSION) { // not yet consolidated
     return eYo.T3.Stmt.expression_stmt
   } else if (x === eYo.Key.NONE || this.operator_p === '') { // not yet consolidated
-    if (!this.value_p && !this.value_b.eyo.unwrappedTarget && !this.target_p && !this.target_b.eyo.unwrappedTarget) {
-      return eYo.T3.Stmt.comment_stmt
-    }
     return eYo.T3.Stmt.expression_stmt
   } else if (this.operator_p === '=') { // not an augmented assigment
     if (x === eYo.Key.ANNOTATED) {

@@ -34,6 +34,21 @@ eYo.Block = function (workspace, prototypeName, optId) {
 }
 goog.inherits(eYo.Block, Blockly.Block)
 
+Object.defineProperties(eYo.Block.prototype, {
+  width: {
+    get () {
+      return this.width__
+    },
+    set (newValue) {
+      if (isNaN(newValue)) {
+        console.error('NAN FAILED')
+      }
+      this.width__ = newValue
+    }
+  }
+}
+
+)
 /**
  * Initialize the block.
  * Let the delegate do the job.
@@ -86,6 +101,10 @@ eYo.Block.prototype.dispose = function (healStack) {
  */
 eYo.Block.prototype.appendInput_ = function (type, name) {
   var input = eYo.Block.superClass_.appendInput_.call(this, type, name)
+  // inherited method does not manage left and right connections
+  if (type === eYo.Const.RIGHT_STATEMENT) {
+    input.connection = this.makeConnection_(type)
+  }
   eYo.Input.setupEyO(input)
   return input
 }
@@ -168,3 +187,21 @@ eYo.Block.prototype.setOutput = function (newBoolean, opt_check) {
   }
   eYo.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
 }
+
+/**
+ * Unplug this block from its superior block.
+ * If this block is a *next* statement,
+ * optionally reconnect the block underneath with the block on top.
+ * @param {boolean=} opt_healStack Disconnect child statement and reconnect
+ *   stack.  Defaults to false.
+ */
+Blockly.Block.prototype.unplug = (() => {
+  var unplug = Blockly.Block.prototype.unplug
+  return function(opt_healStack) {
+    if (this.eyo.left) {
+      this.eyo.leftStmtConnection.disconnect();
+    } else {
+      unplug.call(this, opt_healStack)
+    }
+  }
+})()

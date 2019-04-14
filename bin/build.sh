@@ -262,6 +262,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/Parser/listnode.js" \
 --js "src/lib/eyo/core/T3_all.js" \
 --js "src/lib/eyo/blockly/workspace_dragger.js" \
+--js "src/lib/eyo/blockly/block_events.js" \
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/core/const.js" \
 --js "src/lib/eyo/core/Field.js" \
@@ -270,6 +271,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/protocol/protocol.js" \
 --js "src/lib/eyo/Parser/tokenizer.js" \
 --js "src/lib/eyo/core/xre.js" \
+--js "src/lib/eyo/blockly/connection_db.js" \
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/Parser/acceler.js" \
 --js "src/lib/eyo/Python/graminit.js" \

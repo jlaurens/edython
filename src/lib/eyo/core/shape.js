@@ -91,6 +91,11 @@ Object.defineProperties(
         return (eYo.Unit.y - this.caret_height) / 2
       }
     },
+    highlighted_width: {
+      get () {
+        return eYo.Style.Path.Hilighted.width / 2
+      }
+    },
     definition: {
       get () {
         return this.steps.join(' ')
@@ -117,11 +122,13 @@ eYo.Shape.prototype.z = eYo.Shape.prototype.Z = function () {
 
 /**
  * end
+ * @return {!Object} The receiver.
  */
 eYo.Shape.prototype.end = function (noClose = false) {
   if (!noClose && this.steps.length) {
     this.z()
   }
+  return this
 }
 
 /**
@@ -336,23 +343,79 @@ eYo.Shape.prototype.V = function (is_block, l) {
 }
 
 /**
- * 1/4 circle
+ * 1/4 circle.
+ * We start drawing from the right edge.
+ * When counter clockwise,
+ * part = 0 -> 0° ≤ angle ≤ 0° + 90°
+ * part = 1 -> 90° ≤ angle ≤ 90° + 90°
+ * part = 2 -> 180° ≤ angle ≤ 180° + 90°
+ * part = 3 -> 270° ≤ angle ≤ 270° + 90°
+ * When clockwise,
+ * part = 0 -> 0° ≤ -angle ≤ 0° + 90°
+ * part = 1 -> 90° ≤ -angle ≤ 90° + 90°
+ * part = 2 -> 180° ≤ -angle ≤ 180° + 90°
+ * part = 3 -> 270° ≤ -angle ≤ 270° + 90°
  * 
- * @param {Number} r  optional radius
- * @param {Boolean} left 
- * @param {Boolean} down 
+ * @param {?Number} r  optional radius.
+ * @param {?Boolean} clockwise  Drawing direction.
+ * @param {?Number} part  part is in [[0, 3]].
  */
-eYo.Shape.prototype.quarter_circle = function (r = true, left = true, down = true) {
+eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
   if (r === true || r === false) {
-    down = left
-    left = r
-    r = this.stmt_radius
+    part = clockwise
+    clockwise = r
+    r = this.highlighted_width
   }
-  var dx = left ? -r : r
-  var dy = down ? r : -r
-  var r = this.stmt_radius
-  var a = 'a ' + this.format(r) + ', ' + this.format(r) + ' 0 0 ' + (down ? 0 : 1) + ' '
-  this.push(a, dx, ',', dy)
+  this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0} `)
+  var dx = 0
+  var dy = 0
+  switch (part) {
+    case 0: dx = -r; dy = r; break;
+    case 1: dx = -r; dy = -r; break;
+    case 2: dx = r; dy = -r; break;
+    default: dx = r; dy = r; break;
+  }
+  if (!clockwise) {
+    dy = -dy
+  }
+  this.push(dx, ',', dy)
+  this.cursor.advance(dx, dy)
+}
+
+/**
+ * 1/2 circle.
+ * We start drawing from the right edge.
+ * When counter clockwise,
+ * part = 0 -> 0° ≤ angle ≤ 0° + 180°
+ * part = 1 -> 90° ≤ angle ≤ 90° + 180°
+ * part = 2 -> 180° ≤ angle ≤ 180° + 180°
+ * part = 3 -> 270° ≤ angle ≤ 270° + 180°
+ * When clockwise,
+ * part = 0 -> 0° ≤ -angle ≤ 0° + 180°
+ * part = 1 -> 90° ≤ -angle ≤ 90° + 180°
+ * part = 2 -> 180° ≤ -angle ≤ 180° + 180°
+ * part = 3 -> 270° ≤ -angle ≤ 270° + 180°
+ * 
+ * @param {?Number} r  optional radius. At least 2 arguments are required.
+ * @param {?Boolean} part  part is in [[0, 3]].
+ * @param {?Boolean} clockwise  Drawing direction.
+ */
+eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
+  if (part === true || part === false) {
+    part = clockwise
+    clockwise = r
+    r = this.highlighted_width
+  }
+  this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0} `)
+  var dx = 0
+  var dy = 0
+  switch (part) {
+    case 0: dx = -2 * r; break
+    case 1: dy = 2 * r; break
+    case 2: dx = 2 * r; break
+    default: dy = -2 * r; break
+  }
+  this.push(dx, ',', dy)
   this.cursor.advance(dx, dy)
 }
 
@@ -381,9 +444,7 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  */
 eYo.Shape.newWithBlock = function(eyo) {
-  var ans = new eYo.Shape()
-  ans.initWithBlock(eyo)
-  return ans
+  return new eYo.Shape().initWithBlock(eyo)
 }
 
 /**
@@ -393,8 +454,7 @@ eYo.Shape.newWithBlock = function(eyo) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionWithBlock = function(eyo, opt) {
-  eYo.Shape.shared.initWithBlock(eyo, opt)
-  return eYo.Shape.shared.definition
+  return eYo.Shape.shared.initWithBlock(eyo, opt).definition
 }
 
 /**
@@ -405,59 +465,79 @@ eYo.Shape.prototype.initWithBlock = (() => {
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @return {!Object} The receiver.
  */
 var initWithStatementBlock = function(eyo, opt) {
   // standard statement
   var width = eyo.block_.width
-  this.M(true, width - eYo.Unit.x / 2)
-  this.v(opt && opt.dido ? eyo.headCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.headCount + eyo.blackCount)
   var r = this.stmt_radius
-  if (eyo.hasNextStatement_()) {
+  if (eyo.right) {
+    this.M(true, width - eYo.Unit.x / 2 + r)
+    this.quarter_circle(r, false, 1)
+    this.V(true, eYo.Unit.y - r)
+    this.quarter_circle(r, false, 2)
+  } else {
+    this.M(true, width - eYo.Unit.x / 2)
+    this.v(opt && opt.dido ? eyo.headCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.headCount + eyo.blackCount)
+  }
+  if (eyo.next) {
     this.H(1 / 2)     
   } else {
     this.H(true, eYo.Unit.x / 2 + r)
-    this.quarter_circle(true, false)
+    this.quarter_circle(r, true, 1)
   }
-  if (eyo.hasPreviousStatement_()) {
+  if (eyo.previous) {
     this.V(0)
   } else {
     this.V(true, r)
-    this.quarter_circle(false, false)
+    this.quarter_circle(r, true, 2)
   }
+  return this
 }
 
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @return {!Object} The receiver.
  */
 var initWithGroupBlock = function(eyo) {
   // this is a group
   var block = eyo.block_
   var width = block.width
   var r = this.stmt_radius
-  this.M(true, width - eYo.Unit.x / 2, 0)
-  this.v(1)
-  this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
-  this.quarter_circle(true, true)
-  this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
-  this.quarter_circle(false, true)
-  if (eyo.hasNextStatement_()) {
+  if (eyo.right) {
+    // simple statement
+    this.M(true, width - eYo.Unit.x / 2 + r, 0)
+    this.quarter_circle(r, false, 2)
+    this.V(eYo.Unit.y - 2 * r)
+    this.quarter_circle(r, false, 3)
+  } else {
+    this.M(true, width - eYo.Unit.x / 2, 0)
+    this.v(1)
+    this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
+    this.quarter_circle(r, false, 1)
+    this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
+    this.quarter_circle(r, false, 2)
+  }
+  if (eyo.next) {
     this.H(1/2)
   } else {
     this.H(true, eYo.Unit.x / 2 + r)
-    this.quarter_circle(true, false)
+    this.quarter_circle(r, true, 1)
   }
-  if (eyo.hasPreviousStatement_()) {
+  if (eyo.previous) {
     this.V(0)
   } else {
     this.V(true, r)
-    this.quarter_circle(false, false)
+    this.quarter_circle(r, true, 2)
   }
+  return this
 }
 
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @return {!Object} The receiver.
  */
 var initWithExpressionBlock = function(eyo) {
   var block = eyo.block_
@@ -470,28 +550,19 @@ var initWithExpressionBlock = function(eyo) {
   this.V(eyo.size.l - 1)
   this.arc(eYo.Unit.y, false, true)
   var parent
-  if (eyo.startOfStatement && (parent = block.getParent())) {
-    while (parent && parent.outputConnection) {
-      parent = parent.getParent()
-    }
-    if (parent) {
-      if (parent.eyo.hasNextStatement_()) {
+  if (eyo.startOfStatement && (parent = eyo.parent)) {
+    if ((parent = eyo.stmtParent)) {
+      if (parent.next) {
         this.H(1/2)
-        if (parent.eyo.hasPreviousStatement_()) {
-          this.V(0)
-        } else {
-          this.V(true, this.stmt_radius)
-          this.quarter_circle(false, false)
-        }
       } else {
         this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
-        this.quarter_circle(true, false)
-        if (parent.eyo.hasPreviousStatement_()) {
-          this.V(0)
-        } else {
-          this.V(true, this.stmt_radius)
-          this.quarter_circle(false, false)
-        }
+        this.quarter_circle(this.stmt_radius, true, 2)
+      }
+      if (parent.previous) {
+        this.V(0)
+      } else {
+        this.V(true, this.stmt_radius)
+        this.quarter_circle(this.stmt_radius, true, 3)
       }
     } else {
       this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
@@ -502,11 +573,11 @@ var initWithExpressionBlock = function(eyo) {
     this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
     this.arc(eYo.Unit.y, true, false)
   }
+  return this
 }
 
 var initWithControlBlock = function (eyo) {
-  var ans = initWithGroupBlock.call(this, eyo)
-  return ans // no close
+  return initWithGroupBlock.call(this, eyo)
 } /* eslint-enable indent */
 
 return function(eyo, opt) {
@@ -523,7 +594,8 @@ return function(eyo, opt) {
     } else {
       ans = initWithStatementBlock.call(this, eyo, opt)
     }
-    this.end(ans)
+    this.end(opt && opt.noClose)
+    return this
   }
 }) ()
 
@@ -531,10 +603,8 @@ return function(eyo, opt) {
  * Create a shape with the given connection delegate.
  * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
  */
-eYo.Shape.newWithConnection = function(eyo) {
-  var ans = new eYo.Shape()
-  ans.initWithConnection(eyo)
-  return ans
+eYo.Shape.newWithConnectionDlgt = function(eyo) {
+  return new eYo.Shape().initWithConnectionDlgt(eyo)
 }
 
 /**
@@ -543,53 +613,66 @@ eYo.Shape.newWithConnection = function(eyo) {
  * @param {?Object} opt  Optional kv arguments
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithConnection = function(eyo, opt) {
-  eYo.Shape.shared.initWithConnection(eyo, opt)
-  return eYo.Shape.shared.definition
+eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
+  return eYo.Shape.shared.initWithConnectionDlgt(eyo, opt).definition
 }
 
 /**
  * create a shape with the given connection delegate.
  * @param {?eYo.ConnectionDelegateSvg} eyo  Connection delegate
  * @param {?Object} opt  Optional kv arguments
+ * @return {!Object} The receiver.
  */
-eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
+eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
   this.begin()
   var dd = this.caret_extra
-  if (eyo) {
-    if (eyo.startOfStatement) {
-      eyo.shape = eYo.Key.LEFT
+  if (c_eyo) {
+    if (c_eyo.startOfStatement) {
+      c_eyo.shape = eYo.Key.LEFT
     }
-    var shape = eyo.shape || eyo.side || eYo.Key.NONE
-    var b_eyo = eyo.b_eyo
+    var shape = c_eyo.shape || c_eyo.side || eYo.Key.NONE
+    var b_eyo = c_eyo.b_eyo
     var c8n
     if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (c8n = b_eyo.outputConnection)) {
-      var where = new eYo.Where(eyo)
+      var where = new eYo.Where(c_eyo)
       do {
-        var c_eyo = c8n.eyo.target
-        where.advance(c_eyo)
-        b_eyo = c_eyo.b_eyo
-      } while(b_eyo && b_eyo.wrapped_ && (c8n = b_eyo.outputConnection))
+        var t_eyo = c8n.eyo.target
+        where.advance(t_eyo)
+        var eyo = t_eyo.b_eyo
+      } while(eyo && eyo.wrapped_ && (c8n = eyo.outputConnection))
     } else {
-      where = eyo
+      where = c_eyo
     }
     var x = where.x
     var y = where.y
-    this.width = eyo.w
+    this.width = c_eyo.w
   } else {
     x = 0
     y = 0
     this.width = 3
   }
-  if (eyo && eyo.bindField && !eyo.ignoreBindField) {
-    this.width = 1 + (eyo.bindField.isVisible()
+  var r = this.highlighted_width
+  if (c_eyo && c_eyo.isLeft) {
+    this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
+    this.half_circle(r, true, 0)
+    this.v(true, - eYo.Unit.y + 8 * r)
+    this.half_circle(r, true, 2)
+    this.z()
+  } else if (c_eyo && c_eyo.isRight) {
+    this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
+    this.half_circle(r, true, 0)
+    this.v(true, - eYo.Unit.y + 8 * r)
+    this.half_circle(r, true, 2)
+    this.z()
+  } else if (c_eyo && c_eyo.bindField && !c_eyo.ignoreBindField) {
+    this.width = 1 + (c_eyo.bindField.isVisible()
       ? Math.max(this.width, 1)
       : 2)
     var w = this.width - 1
     this.M(true, x + (w + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, - w * eYo.Unit.x + 2 * dd)
-    if (eyo && eyo.startOfStatement) {
+    if (c_eyo && c_eyo.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
       this.arc(this.caret_height, true, false)
@@ -600,7 +683,7 @@ eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x + dd)
-    if (eyo && eyo.startOfStatement) {
+    if (c_eyo && c_eyo.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
       this.arc(this.caret_height, true, false)
@@ -620,15 +703,17 @@ eYo.Shape.prototype.initWithConnection = function(eyo, opt) {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x - dd)
-    this.arc(this.caret_height, !eyo || !eyo.isAfterRightEdge, false)
+    this.arc(this.caret_height, !c_eyo || !c_eyo.isAfterRightEdge, false)
   }
   this.end()
+  return this
 }
 
 /**
- * initPlayIcon
+ * initForPlay
  * @param {*} cursor
  * @param {*} isContour
+ * @return {!Object} The receiver.
  */
 eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
   this.begin()
@@ -651,6 +736,7 @@ eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
     this.l(true, 0, -2 * y)
   }
   this.end()
+  return this
 }
 
 /**

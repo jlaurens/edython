@@ -201,27 +201,21 @@ eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
 
 eYo.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
-  var dbList = this.connectionDBList
-  console.log(comment + '> Blockly.INPUT_VALUE connections')
-  var db = dbList[Blockly.INPUT_VALUE]
-  for (var i = 0, c8n; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.OUTPUT_VALUE connections')
-  db = dbList[Blockly.OUTPUT_VALUE]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.NEXT_STATEMENT connections')
-  db = dbList[Blockly.NEXT_STATEMENT]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
-  }
-  console.log(comment + '> Blockly.PREVIOUS_STATEMENT connections')
-  db = dbList[Blockly.PREVIOUS_STATEMENT]
-  for (i = 0; (c8n = db[i]); ++i) {
-    console.log(i + ':' + [c8n.x_, c8n.y_, c8n.sourceBlock_.type])
-  }
+  ;[
+    'INPUT_VALUE',
+    'OUTPUT_VALUE',
+    'NEXT_STATEMENT',
+    'PREVIOUS_STATEMENT',
+    'LEFT_STATEMENT',
+    'RIGHT_STATEMENT'
+  ].forEach(k => {
+    var dbList = this.connectionDBList
+    console.log(`${comment} > ${k} connections`)
+    var db = dbList[Blockly[k] || eYo.Const[k]]
+    for (var i = 0, c8n; (c8n = db[i]); ++i) {
+      console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
+    }
+  })
 }
 
 /**

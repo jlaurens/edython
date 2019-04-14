@@ -42,6 +42,8 @@ class Type:
         self.list_require = []
         self.alias = None
         self.same_checks = None
+        self.same_left = None
+        self.same_right = None
         self.is_group = None
         self.is_part = None
         self.is_compound = None
@@ -107,5 +109,15 @@ class Type:
             L = self.require
         return sorted([t for t in L if not t.is_wrapper], key=lambda t: (t.n, t.name))
 
+    def get_left(self):
+        L = self.require
+        return sorted([t for t in L if not t.is_wrapper], key=lambda t: (t.n, t.name))
+
+    def get_right(self):
+        L = self.require
+        return sorted([t for t in L if not t.is_wrapper], key=lambda t: (t.n, t.name))
+
     def __repr__(self):
         return repr(self.__dict__)
+
+Type.get_right = Type.get_left

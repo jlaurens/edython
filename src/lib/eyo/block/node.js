@@ -43,19 +43,28 @@ eYo.Node.prototype.suite2Delegate = function (target) {
 }
 
 /**
+ * `this` is the comment node.
+ * @param {!Object} a block delegate
+ */
+eYo.Node.prototype.comment2Block = function (workspace) {
+  var b = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.comment_stmt)
+  b.eyo.comment_p = this.n0.n_str
+  return b
+}
+
+/**
  * `this` is the function body node.
  * @param {!Object} a block delegate
  */
 eYo.Node.prototype.func_body_suite2Delegate = function (target) {
   var b
   var n = this.n0
-  var c8n = target.suiteConnection
   // func_body_suite: simple_stmt | NEWLINE [TYPE_COMMENT NEWLINE] INDENT stmt+ DEDENT
   if (n.n_type === eYo.TKN.NEWLINE) {
+    var c8n = target.suiteConnection
     n = n.sibling
     if (n.n_type === eYo.TKN.TYPE_COMMENT) {
-      b = eYo.DelegateSvg.newBlockReady(target.workspace, eYo.T3.Stmt.comment_stmt)
-      b.eyo.comment_p = n.n_str
+      b = n.comment2Block(workpace)
       c8n && c8n.connect(b.previousConnection)
       c8n = b.eyo.bottomMostConnection
       n = n.sibling
@@ -68,8 +77,7 @@ eYo.Node.prototype.func_body_suite2Delegate = function (target) {
     } while ((n = n.sibling) && n.n_type !== eYo.TKN.DEDENT)
   } else {
     b = n.toBlock(target.workspace)
-    b.eyo.isRightStatement = true
-    c8n && c8n.connect(b.previousConnection)
+    target.rightStmtConnection.connect(b.eyo.leftStmtConnection)
   }
 }
 
@@ -98,7 +106,7 @@ eYo.Node.prototype.simple_stmt2Block = function (workspace) {
 eYo.Node.prototype.NAME2Block = function (workspace) {
   var b = eYo.DelegateSvg.newBlockReady(workspace, {
     type: eYo.T3.Expr.identifier,
-    target_d: this.n_str
+    target_p: this.n_str
   })
   b.eyo.variant_p = eYo.Key.NONE
   return b
@@ -113,12 +121,12 @@ eYo.Node.prototype.dotted_name2Block = function (workspace) {
   var n = this.n0
   var root = eYo.DelegateSvg.newBlockReady(workspace, {
     type: eYo.T3.Expr.identifier,
-    target_d: n.n_str
+    target_p: n.n_str
   })
   while ((n = n.sibling) && (n = n.sibling)) {
     var b = eYo.DelegateSvg.newBlockReady(workspace, {
       type: eYo.T3.Expr.identifier,
-      target_d: n.n_str
+      target_p: n.n_str
     })
     b.eyo.holder_s.connect(root)
     root = b
@@ -351,8 +359,9 @@ eYo.Node.prototype.funcdef2Block = function (workspace) {
     n = n.sibling.sibling
   }
   if (n.type === eYo.TKN.TYPE_COMMENT) {
-    root.eyo.comment_variant_p = eYo.Key.COMMENT
-    root.eyo.comment_p = n.n_str
+    var b = n.comment2Block(workspace)
+    root.eyo.rightStmtConnection.connect(b)
+    n = n.sibling
   }
   n.func_body_suite2Delegate(root.eyo)
   return root
@@ -793,7 +802,6 @@ eYo.Node.prototype.toBlock = function (workspace) {
         // simple expression statement: only a testlist_star_expr
         root = eYo.DelegateSvg.newBlockReady(workspace, eYo.T3.Stmt.expression_stmt)
         n0.testlist_star_expr2Delegate(root.eyo.value_b.eyo)
-        root.eyo.comment_variant_p = eYo.Key.NONE
         return root
       }
       if (n1.n_type === eYo.TKN.EQUAL) {
@@ -828,7 +836,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
       } else if (n1.type === eYo.TKN.augassign) { // augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' | '<<=' | '>>=' | '**=' | '//=')
         root = eYo.DelegateSvg.newBlockReady(workspace, {
           type: eYo.T3.Stmt.augmented_assignment_stmt,
-          operator_d: n1.n0.n_str
+          operator_p: n1.n0.n_str
         })
         n0.testlist_star_expr2Delegate(root.eyo.target_b.eyo)
         n2 = n1.sibling
@@ -973,17 +981,17 @@ eYo.Node.prototype.toBlock = function (workspace) {
         } else if (n0.type === eYo.TKN.NUMBER) {
           return eYo.DelegateSvg.newBlockReady(workspace, {
             type: eYo.T3.Expr.numberliteral,
-            value_d: s
+            value_p: s
           })
         } else /* STRING+ */ {
           b0 = root = eYo.DelegateSvg.newBlockReady(workspace, {
             type: s.endsWith('"""') || s.endsWith("'''") ? eYo.T3.Expr.longliteral : eYo.T3.Expr.shortliteral,
-            value_d: s
+            value_p: s
           })
           while ((n0 = n0.sibling)) {
             b0 = b0.eyo.next_string_block = eYo.DelegateSvg.newBlockReady(workspace, {
               type: s.endsWith('"""') || s.endsWith("'''") ? eYo.T3.Expr.longliteral : eYo.T3.Expr.shortliteral,
-              value_d: n0.n_str
+              value_p: n0.n_str
             })
           }
         }
@@ -991,7 +999,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
       } else {
         return eYo.DelegateSvg.newBlockReady(workspace, {
           type: eYo.T3.Expr.builtin__object,
-          value_d: s
+          value_p: s
         })
       }
     case eYo.TKN.star_expr: // star_expr: '*' expr

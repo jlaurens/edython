@@ -41,9 +41,9 @@ var F = (name, title) => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    name_d: name,
-    holder_d: 'fractions',
-    dotted_d: 0,
+    name_p: name,
+    holder_p: 'fractions',
+    dotted_p: 0,
     title: key
   }
 }
@@ -64,8 +64,8 @@ var F_instance = (name, type, title) => {
 eYo.FlyoutCategory.basic_fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
-    from_d: 'fractions',
+    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    from_p: 'fractions',
     title: 'fractions__import_stmt'
   },
   F('Fraction', 'Créer une fraction à partir d\'un ou deux nombres'),
@@ -91,9 +91,9 @@ F = function (name, title) {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    name_d: name,
-    holder_d: 'fractions',
-    dotted_d: 1,
+    name_p: name,
+    holder_p: 'fractions',
+    dotted_p: 1,
     title: key
   }
 }
@@ -101,7 +101,7 @@ F = function (name, title) {
 eYo.FlyoutCategory.fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.IMPORT,
+    variant_p: eYo.Key.IMPORT,
     import_module_s: {
       slots: {
         O: {

@@ -115,15 +115,6 @@ eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
       eYo.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**
- * Render one input of value block.
- * @param io
- * @private
- */
-eYo.DelegateSvg.Expr.prototype.renderDrawInput_ = function (io) {
-  return this.renderDrawValueInput_(io)
-}
-
-/**
  * Render the leading # character for collapsed statement blocks.
  * Statement subclasses must override it.
  * @param io
@@ -207,22 +198,21 @@ eYo.DelegateSvg.Expr.prototype.willRender_ = function (recorder) {
  * Whether the block can have an 'await' prefix.
  * Only blocks that are top block or that are directy inside function definitions
  * are awaitable
- * @param {!Blockly.Block} block The block owning the receiver.
  * @return yes or no
  */
 eYo.DelegateSvg.Expr.prototype.awaitable = function () {
   if (!this.fields.await) {
     return false
   }
-  var parent = this.block_.getParent()
+  var parent = this.parent
   if (!parent) {
     return true
   }
   do {
     if (parent.type === eYo.T3.Stmt.funcdef_part) {
-      return !!parent.eyo.async_
+      return !!parent.async_
     }
-  } while ((parent = parent.getParent()))
+  } while ((parent = parent.parent))
   return false
 }
 
@@ -385,8 +375,8 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
  */
 eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
   if (eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)) {
-    var parent = this.block_.getParent()
-    return (parent && parent.eyo.consolidate()) || true  
+    var parent = this.parent
+    return (parent && parent.consolidate()) || true  
   }
 }
 

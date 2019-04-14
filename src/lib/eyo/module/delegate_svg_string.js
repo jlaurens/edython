@@ -33,9 +33,9 @@ var F = (name, title, holder = 'formatter') => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.call_expr,
-    name_d: name,
-    holder_d: holder,
-    dotted_d: 1,
+    name_p: name,
+    holder_p: holder,
+    dotted_p: 1,
     title: key
   }
 }
@@ -44,9 +44,9 @@ var F_k = (name, title) => {
   title && (eYo.Tooltip.Title[key] = title)
   return {
     type: eYo.T3.Expr.identifier,
-    name_d: name,
-    holder_d: 'string',
-    dotted_d: 0,
+    name_p: name,
+    holder_p: 'string',
+    dotted_p: 0,
     title: key
   }
 }
@@ -78,8 +78,8 @@ var F_k = (name, title) => {
 eYo.FlyoutCategory.basic_string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.FROM_MODULE_IMPORT_STAR,
-    from_d: 'string',
+    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    from_p: 'string',
     title: 'string__import_stmt'
   },
   F_k('ascii_letters', '\'ascii_lowercase\' et \'ascii_uppercase\' concaténées.'),
@@ -96,9 +96,9 @@ eYo.FlyoutCategory.basic_string__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
-          name_d: 'Formatter',
-          holder_d: 'string',
-          dotted_d: 0
+          name_p: 'Formatter',
+          holder_p: 'string',
+          dotted_p: 0
         }
       },
     },
@@ -144,12 +144,12 @@ var F_k = (name, title) => {
 eYo.FlyoutCategory.string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
-    variant_d: eYo.Key.IMPORT,
+    variant_p: eYo.Key.IMPORT,
     import_module_s: {
       slots: {
         O: {
           type: eYo.T3.Expr.identifier,
-          name_d: 'string'
+          name_p: 'string'
         }
       }
     },
@@ -169,9 +169,9 @@ eYo.FlyoutCategory.string__module = [
       slots: {
         O: {
           type: eYo.T3.Expr.call_expr,
-          name_d: 'Formatter',
-          holder_d: 'string',
-          dotted_d: 1
+          name_p: 'Formatter',
+          holder_p: 'string',
+          dotted_p: 1
         }
       },
     },

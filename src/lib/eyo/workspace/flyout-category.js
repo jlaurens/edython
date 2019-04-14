@@ -41,7 +41,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.start_stmt,
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'print',
+      name_p: 'print',
       n_ary_s: {
         slots: {
           O: "'...'"
@@ -56,7 +56,7 @@ eYo.FlyoutCategory = {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
-            name_d: 'input',
+            name_p: 'input',
             n_ary_s: {
               slots: {
                 O: "'...'"
@@ -72,12 +72,12 @@ eYo.FlyoutCategory = {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
-            name_d: 'int',
+            name_p: 'int',
             n_ary_s: {
               slots: {
                 O: {
                   type: eYo.T3.Expr.call_expr,
-                  name_d: 'input'
+                  name_p: 'input'
                 }
               }
             },
@@ -91,12 +91,12 @@ eYo.FlyoutCategory = {
         slots: {
           O: {
             type: eYo.T3.Expr.call_expr,
-            name_d: 'float',
+            name_p: 'float',
             n_ary_s: {
               slots: {
                 O: {
                   type: eYo.T3.Expr.call_expr,
-                  name_d: 'input'
+                  name_p: 'input'
                 }
               }
             },
@@ -109,32 +109,29 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.u_expr,
     {
       type: eYo.T3.Expr.a_expr,
-      operator_d: '+'
+      operator_p: '+'
     },
     {
       type: eYo.T3.Expr.a_expr,
-      operator_d: '-'
+      operator_p: '-'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '*'
+      operator_p: '*'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '/'
+      operator_p: '/'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '//'
+      operator_p: '//'
     },
     eYo.T3.Expr.power,
   ],
   intermediate: [
     eYo.T3.Stmt.expression_stmt,
-    {
-      type: eYo.T3.Stmt.expression_stmt,
-      comment_variant_d: eYo.Key.NONE
-    },
+    eYo.T3.Stmt.expression_stmt,
     eYo.T3.Expr.parenth_form,
     eYo.T3.Expr.list_display,
     eYo.T3.Expr.set_display,
@@ -150,7 +147,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.identifier,
-      variant_d: eYo.Key.ALIASED
+      variant_p: eYo.Key.ALIASED
     },
     eYo.T3.Stmt.docstring_stmt,
     eYo.T3.Expr.longliteral,
@@ -184,11 +181,11 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.except_part,
     {
       type: eYo.T3.Stmt.except_part,
-      expression_d: 'IndexError'
+      expression_p: 'IndexError'
     },
     {
       type: eYo.T3.Stmt.except_part,
-      expression_d: 'KeyError'
+      expression_p: 'KeyError'
     },
     eYo.T3.Stmt.finally_part,
     eYo.T3.Stmt.assert_stmt,
@@ -213,7 +210,7 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.object_comparison,
     {
       type: eYo.T3.Expr.builtin__object,
-      value_d: 'None'
+      value_p: 'None'
     },
     eYo.T3.Expr.builtin__object,
     eYo.T3.Expr.conditional_expression,
@@ -242,11 +239,11 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.identifier,
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: ''
+      name_p: ''
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: ''
+      name_p: ''
     },
     eYo.T3.Expr.lambda,
     eYo.T3.Stmt.funcdef_part,
@@ -260,15 +257,15 @@ eYo.FlyoutCategory = {
     eYo.T3.Stmt.nonlocal_stmt,
     {
       type: eYo.T3.Stmt.decorator_stmt,
-      name_d: eYo.Key.STATICMETHOD
+      name_p: eYo.Key.STATICMETHOD
     },
     {
       type: eYo.T3.Stmt.decorator_stmt,
-      name_d: eYo.Key.CLASSMETHOD
+      name_p: eYo.Key.CLASSMETHOD
     },
     {
       type: eYo.T3.Stmt.decorator_stmt,
-      name_d: eYo.Key.PROPERTY
+      name_p: eYo.Key.PROPERTY
     },
     eYo.T3.Stmt.decorator_stmt
   ],
@@ -289,7 +286,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.slicing,
-      variant_d: eYo.Key.NAME,
+      variant_p: eYo.Key.NAME,
       slice_s: {
         slots: {
           O: 0
@@ -305,55 +302,55 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'print',
+      name_p: 'print',
       n_ary_s: {
         slots: {
           O: {
             type: eYo.T3.Expr.star_expr,
-            modifier_d: '*',
-            modified_d: ''
+            modifier_p: '*',
+            modified_p: ''
           }
         }
       }
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'len'
+      name_p: 'len'
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'insert',
-      dotted_d: 1,
+      name_p: 'insert',
+      dotted_p: 1,
       title: 'list_insert'
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'append',
-      dotted_d: 1,
+      name_p: 'append',
+      dotted_p: 1,
       title: 'list_append'
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'remove',
-      dotted_d: 1,
+      name_p: 'remove',
+      dotted_p: 1,
       title: 'list_remove'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'index',
-      dotted_d: 1,
+      name_p: 'index',
+      dotted_p: 1,
       title: 'list_index'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'count',
-      dotted_d: 1,
+      name_p: 'count',
+      dotted_p: 1,
       title: 'list_count'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'pop',
-      dotted_d: 1,
+      name_p: 'pop',
+      dotted_p: 1,
       n_ary_s: {
         slots: {
           O: {
@@ -366,39 +363,39 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'reverse',
-      dotted_d: 1,
+      name_p: 'reverse',
+      dotted_p: 1,
       title: 'list_reverse'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'copy',
-      dotted_d: 1,
+      name_p: 'copy',
+      dotted_p: 1,
       title: 'list_copy'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'min'
+      name_p: 'min'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'max'
+      name_p: 'max'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'sum'
+      name_p: 'sum'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'all'
+      name_p: 'all'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'any'
+      name_p: 'any'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'list',
+      name_p: 'list',
       n_ary_s: {
         slots: {
           O: "'...'"
@@ -416,8 +413,8 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Stmt.call_stmt,
-      name_d: 'pop',
-      dotted_d: 1,
+      name_p: 'pop',
+      dotted_p: 1,
       n_ary_s: {
         slots: {
           O: {
@@ -444,7 +441,7 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'print',
+      name_p: 'print',
       n_ary_s: {
         slots: {
           O: "'...'"
@@ -453,25 +450,25 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'len',
+      name_p: 'len',
       title: 'text_len'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'startswith',
-      dotted_d: 1,
+      name_p: 'startswith',
+      dotted_p: 1,
       title: 'text_startswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'endswith',
-      dotted_d: 1,
+      name_p: 'endswith',
+      dotted_p: 1,
       title: 'text_endswith'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'find',
-      dotted_d: 1,
+      name_p: 'find',
+      dotted_p: 1,
       title: 'text_find'
     },
     {
@@ -565,76 +562,76 @@ eYo.FlyoutCategory = {
     eYo.T3.Expr.u_expr,
     {
       type: eYo.T3.Expr.a_expr,
-      operator_d: '+'
+      operator_p: '+'
     },
     {
       type: eYo.T3.Expr.a_expr,
-      operator_d: '-'
+      operator_p: '-'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '*'
+      operator_p: '*'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '/'
+      operator_p: '/'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '//'
+      operator_p: '//'
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '%'
+      operator_p: '%'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'divmod'
+      name_p: 'divmod'
     },
     eYo.T3.Expr.power,
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'pow'
+      name_p: 'pow'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'min'
+      name_p: 'min'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'max'
+      name_p: 'max'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'sum'
+      name_p: 'sum'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'abs',
+      name_p: 'abs',
     },
     {
       type: eYo.T3.Expr.m_expr,
-      operator_d: '@'
+      operator_p: '@'
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'int',
+      name_p: 'int',
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'float',
+      name_p: 'float',
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'round',
+      name_p: 'round',
     },
     '1j',
     {
       type: eYo.T3.Expr.a_expr,
-      operator_d: '+',
+      operator_p: '+',
       rhs_s: {
         type: eYo.T3.Expr.m_expr,
-        operator_d: '*',
+        operator_p: '*',
         rhs_s: '1j'
       }
     },
@@ -647,19 +644,19 @@ eYo.FlyoutCategory = {
     },
     {
       type: eYo.T3.Expr.call_expr,
-      name_d: 'conjugate',
-      ary_d: 0,
-      dotted_d: 1
+      name_p: 'conjugate',
+      ary_p: 0,
+      dotted_p: 1
     },
     {
       type: eYo.T3.Expr.attributeref,
-      name_d: 'real',
-      dotted_d: 1
+      name_p: 'real',
+      dotted_p: 1
     },
     {
       type: eYo.T3.Expr.attributeref,
-      name_d: 'imag',
-      dotted_d: 1
+      name_p: 'imag',
+      dotted_p: 1
     }
   ]
 }

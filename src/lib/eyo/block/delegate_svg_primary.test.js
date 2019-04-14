@@ -4,7 +4,7 @@ describe('Initialize from models', function () {
   it ('identifier: custom', function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.identifier,
-      target_d: 'abc'
+      target_p: 'abc'
     })
     eYo.Test.block(b, 'identifier')
     b.dispose()
@@ -12,7 +12,7 @@ describe('Initialize from models', function () {
   it ('identifier: open', function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.identifier,
-      target_d: 'open'
+      target_p: 'open'
     })
     eYo.Test.block(b, 'named_call_expr')
     b.dispose()
@@ -27,7 +27,7 @@ describe('Initialize from models', function () {
   it ('identifier: open', function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.identifier,
-      target_d: 'abc'
+      target_p: 'abc'
     })
     b.eyo.alias_p = 'alias'
     eYo.Test.code(b, 'abc as alias')
@@ -36,8 +36,8 @@ describe('Initialize from models', function () {
   it ('annotated', function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.primary,
-      target_d: 'x',
-      annotated_d: 'str'
+      target_p: 'x',
+      annotated_p: 'str'
     })
     eYo.Test.code(b, 'x: str')
     b.dispose()
@@ -45,8 +45,8 @@ describe('Initialize from models', function () {
   it ('aliased', function () {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.primary,
-      target_d: 'x',
-      alias_d: 'alias'
+      target_p: 'x',
+      alias_p: 'alias'
     })
     eYo.Test.code(b, 'x as alias')
     b.dispose()

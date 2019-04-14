@@ -25,57 +25,53 @@ goog.require('goog.dom');
  * For edython.
  */
 eYo.DelegateSvg.makeSubclass('Stmt', {
-  data: {
-    comment: {
-      order: 1000000,
-      init: '',
-      placeholder: eYo.Msg.Placeholder.COMMENT,
-      validate: /** @suppress {globalThis} */ function (newValue) {
-        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
-      },
-      synchronize: true,
-      placeholderText: eYo.Msg.Placeholder.COMMENT,
-      willLoad: /** @suppress {globalThis} */ function () {
-        this.required = this.owner.comment_variant_p === eYo.Key.COMMENT
-      },
-      didLoad: /** @suppress {globalThis} */ function () {
-        this.whenRequiredFromSaved(() => this.owner.comment_variant_p = eYo.Key.COMMENT)
+  statement: {
+    left: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return this.b_eyo.previous || this.b_eyo.next
+        ? []
+        : eYo.T3.Stmt.Left.simple_stmt
       }
     },
-    comment_variant: { // variant are very useful with undo/redo
-      order: 1000001, // initialization comes last
-      all: [eYo.Key.NONE, eYo.Key.COMMENT],
-      init: eYo.Key.NONE,
-      xml: false,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
-        this.owner.comment_d.requiredIncog = newValue === eYo.Key.COMMENT
-      }
-    }
-  },
-  slots: {
-    comment: {
-      order: 1000001,
+    right: {
       fields: {
-        label: {
-          order: 0,
-          value: '#',
-          css: 'reserved'
-        },
-        bind: {
-          order: 1,
-          validate: true,
-          endEditing: true,
-          css: 'comment'
+        label: { // don't call it 'operator'
+          value: ';',
+          css: 'reserved',
+          hidden: true
         }
-      }    
+      },
+      check: /** @suppress {globalThis} */ function (type) {
+        return eYo.T3.Stmt.Right.simple_stmt
+      },
+      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
+        var b_eyo = this.b_eyo
+        b_eyo.isGroup || b_eyo.inputRight.eyo.fields.label.setVisible(true)
+      },
+      didDisconnect: /** @suppress {globalThis} */ function  (oldTargetC8n) {
+        this.b_eyo.inputRight.eyo.fields.label.setVisible(false)
+      }
+    },
+    previous: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return this.b_eyo.left
+        ? []
+        : null
+      }
+    },
+    next: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return this.b_eyo.left
+        ? []
+        : null
+      }
     }
   }
 })
 eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
 
 Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
-  isStatement: {
+  isStmt: {
     get () {
       return true
     }
@@ -87,7 +83,6 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
     }
   }
 })
-
 
 /**
  * Initialize a block.
@@ -118,11 +113,6 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
   this.svgSharpGroup_ = undefined
   eYo.DelegateSvg.superClass_.disposeInternal.call(this)
 }
-
-/**
- * True for statement blocks only.
- */
-eYo.DelegateSvg.Stmt.prototype.isStmt = true
 
 /**
  * Statement block path.
@@ -203,12 +193,71 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
 }
 
 /**
- * Render one input of value block.
- * @param io
- * @private
+ * Render the right statement connection and its target block, if relevant.
+ * @param {!Object} io the input/output argument.
+ * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.DelegateSvg.Stmt.prototype.renderDrawInput_ = function (io) {
-  this.renderDrawValueInput_(io)
+eYo.DelegateSvg.Stmt.prototype.renderDrawInputRight_ = function (io) {
+  // adding a ';' or not.
+  var c8n = this.rightStmtConnection
+  if (c8n) {
+    this.renderDrawFieldFrom_(io.input.eyo.fromStartField, io)
+    c8n.eyo.setOffset(io.cursor)
+  }
+}
+
+/**
+ * Render the suite block, if relevant.
+ * @return {boolean=} true if a rendering message was sent, false othrwise.
+ */
+eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
+  var c8n = this.rightStmtConnection
+  if (c8n) {
+    var c_eyo = c8n.eyo
+    var target = c8n.targetBlock()
+    if (target) {
+      var t_eyo = target.eyo
+      try {
+        t_eyo.startOfLine = io.common.startOfLine
+        t_eyo.startOfStatement = io.common.startOfStatement
+        t_eyo.mayBeLast = t_eyo.hasRightEdge
+        t_eyo.downRendering = true
+        if (eYo.DelegateSvg.debugStartTrackingRender) {
+          console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
+        }
+        if (t_eyo.wrapped_) {
+          // force target rendering
+          t_eyo.incrementChangeCount()
+        }
+        if (!t_eyo.upRendering) {
+          t_eyo.render(false, io)
+          if (!t_eyo.wrapped_) {
+            io.common.field.shouldSeparate = false
+            io.common.field.beforeIsSeparator = true
+          }
+        }
+        io.cursor.c = c_eyo.where.c
+      } catch(err) {
+        console.error(err)
+        throw err
+      } finally {
+        t_eyo.downRendering = false
+        var size = t_eyo.size
+        if (size.w) {
+          io.cursor.advance(size.w, size.h - 1)
+          // We just rendered a block
+          // it is potentially the rightmost object inside its parent.
+          if (t_eyo.hasRightEdge || io.common.shouldPack) {
+            io.common.ending.push(t_eyo)
+            t_eyo.rightCaret = undefined
+            io.common.field.shouldSeparate = false
+          }
+          io.common.field.beforeIsCaret = false
+        }
+      }
+      return true
+    }
+  }
 }
 
 /**
@@ -332,16 +381,61 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
  */
 eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
   var block = this.block_
-  var show = !this.comment_d.isIncog()
+  var show = false
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender( function () {
-    this.comment_d.setIncog(show)
-  }))
+  var menuItem = mgr.newMenuItem(content, block.eyo.doAndRender())
   mgr.addChild(menuItem, true)
   return true
 }
 
+/**
+ * Class for a DelegateSvg, comment_stmt.
+ * For edython.
+ */
+eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
+  data: {
+    comment: {
+      order: 1000000,
+      init: '',
+      placeholder: eYo.Msg.Placeholder.COMMENT,
+      validate: /** @suppress {globalThis} */ function (newValue) {
+        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
+      },
+      synchronize: true,
+      placeholderText: eYo.Msg.Placeholder.COMMENT
+    }
+  },
+  slots: {
+    comment: {
+      order: 1000001,
+      fields: {
+        label: {
+          order: 0,
+          value: '#',
+          css: 'reserved'
+        },
+        bind: {
+          order: 1,
+          validate: true,
+          endEditing: true,
+          css: 'comment'
+        }
+      }    
+    }
+  },
+})
+
+/**
+ * comment blocks are white.
+ * For edython.
+ * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!array} components the array of python code strings, will be joined to make the code.
+ * @return None
+ */
+eYo.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function () {
+  return true
+}
 /// /////// gobal/nonlocal statement
 /**
  * Class for a DelegateSvg, non_void_identifier_list block.
@@ -571,6 +665,7 @@ eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
 }
 
 eYo.DelegateSvg.Stmt.T3s = [
+  eYo.T3.Stmt.comment_stmt,
   eYo.T3.Stmt.pass_stmt,
   eYo.T3.Stmt.break_stmt,
   eYo.T3.Stmt.continue_stmt,

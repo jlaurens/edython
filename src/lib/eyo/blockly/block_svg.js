@@ -145,7 +145,7 @@ eYo.BlockSvg.prototype.connectionUiEffect = function () {
       ripple = Blockly.utils.createSvgElement('path',
         {'class': 'blocklyHighlightedConnectionPath',
           'd': steps,
-          transform: `translate(${xy.x},${xy.y}) scale(1,2)`},
+          transform: `translate(${xy.x},${xy.y})`},
         this.workspace.getParentSvg())
     }
     // Start the animation.
@@ -386,3 +386,61 @@ Blockly.BlockSvg.prototype.updateDisabled = function() {
 eYo.BlockSvg.prototype.isMovable = function() {
   return !this.eyo.wrapped_ && eYo.BlockSvg.superClass_.isMovable.call(this)
 }
+
+/**
+ * Returns connections originating from this block.
+ * @param {boolean} all If true, return all connections even hidden ones.
+ *     Otherwise, for a non-rendered block return an empty list, and for a
+ *     collapsed block don't return inputs connections.
+ * @return {!Array.<!Blockly.Connection>} Array of connections.
+ * @package
+ */
+eYo.BlockSvg.prototype.getConnections_ = function(all) {
+  var myConnections = eYo.BlockSvg.superClass_.getConnections_.call(this, all)
+  if (all || this.rendered) {
+    if (this.eyo.leftStmtConnection) {
+      myConnections.push(this.eyo.leftStmtConnection)
+    }
+  }
+  return myConnections
+}
+
+
+/**
+ * Update all of the connections on this block with the new locations calculated
+ * in renderCompute.  Also move all of the connected blocks based on the new
+ * connection locations.
+ * @private
+ */
+eYo.BlockSvg.prototype.renderMoveConnections_ = function() {
+  var blockTL = this.getRelativeToSurfaceXY();
+  // Don't tighten previous or output connections because they are inferior
+  // connections.
+  if (this.eyo.leftStmtConnection) {
+    this.eyo.leftStmtConnection.moveToOffset(blockTL);
+  }
+  if (this.previousConnection) {
+    this.previousConnection.moveToOffset(blockTL);
+  }
+  if (this.outputConnection) {
+    this.outputConnection.moveToOffset(blockTL);
+  }
+
+  for (var i = 0; i < this.inputList.length; i++) {
+    var conn = this.inputList[i].connection;
+    if (conn) {
+      conn.moveToOffset(blockTL);
+      if (conn.isConnected()) {
+        conn.tighten_();
+      }
+    }
+  }
+
+  if (this.nextConnection) {
+    this.nextConnection.moveToOffset(blockTL);
+    if (this.nextConnection.isConnected()) {
+      this.nextConnection.tighten_();
+    }
+  }
+
+};

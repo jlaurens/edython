@@ -141,9 +141,23 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
  * be ready the delegate.
  */
 eYo.InputDelegate.prototype.beReady = function () {
+  var block = this.getBlock()
+  this.fields && Object.values(this.fields).forEach(field => {
+    if (!field.sourceBlock_) {
+      field.setSourceBlock(block)
+      field.init()
+    }
+  })
   var c8n = this.owner.connection
   c8n && c8n.eyo.beReady()
   this.beReady = eYo.Do.nothing // one shot function
+}
+
+/**
+ * consolidate the delegate.
+ */
+eYo.InputDelegate.prototype.getBlock = function () {
+  return this.owner.sourceBlock_
 }
 
 /**

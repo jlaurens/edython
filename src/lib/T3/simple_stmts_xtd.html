@@ -6,10 +6,27 @@
 <head>
 </head>
 <body>
+The last line means that a comment statement comes just before another comment_stmt
 <pre>
 start_stmt/start ::= green flag statement
-simple_stmt ::= REMOVE
 comment_stmt ::= '#' 'blah blah blah'
+simple_stmt ::=  expression_stmt
+                 | assert_stmt
+                 | assignment_stmt
+                 | augmented_assignment_stmt
+                 | annotated_assignment_stmt
+                 | pass_stmt
+                 | del_stmt
+                 | return_stmt
+                 | yield_stmt
+                 | raise_stmt
+                 | break_stmt
+                 | continue_stmt
+                 | import_stmt
+                 | future_stmt
+                 | global_stmt
+                 | nonlocal_stmt
+                 | comment_stmt
 </pre>
 assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
 target_list     ::=  target ("," target)* [","]
@@ -100,7 +117,7 @@ non_void_identifier_list ::= identifier ("," identifier)*
 
 <pre>
 </pre>
-This is no a good idea
+This is no good idea
 future_statement >>> future_statement | expression_stmt | docstring_top_stmt | start_stmt | import_stmt
 import_stmt >>> future_statement
 

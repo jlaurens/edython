@@ -365,6 +365,7 @@ eYo.setup.register(() => {
   // When an expression is selected
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-expr .eyo-path-contour,
+    .eyo-select.eyo-stmt .eyo-path-contour,
     .eyo-select.eyo-expr .eyo-path-inner {
       stroke: ${eYo.Style.Path.Hilighted.colour};
     }`

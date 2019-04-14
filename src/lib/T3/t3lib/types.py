@@ -30,6 +30,8 @@ class Types:
     all = {}
     is_above = {}
     is_below = {}
+    is_left = {}
+    is_right = {}
     links = {}
     n = 0
     current_category = 'default'
@@ -42,6 +44,7 @@ class Types:
         self.make_ignore()
         self.make_lists()
         self.make_before_after()
+        self.make_left_right()
         self.make_shallow()
         self.make_alias()
         self.make_deep()
@@ -51,6 +54,8 @@ class Types:
         self.make_link()
         self.make_similar_providers()
         self.make_same_check()
+        self.make_same_left()
+        self.make_same_right()
 
     def __repr__(self):
         return repr(self.__dict__)
@@ -129,7 +134,8 @@ class Types:
             m = self.re_stmt_order.match(l)
             if m:
                 name = m.group('name')
-                where = self.is_above if m.group('order') == '<<<' else self.is_below
+                order = m.group('order')
+                where = self.is_above if order == '<<<' else self.is_below
                 if not name in where:
                     where[name] = set()
                 already = where[name]
@@ -173,29 +179,58 @@ class Types:
 
     def make_before_after(self):
         print('====> MAKE BEFORE AFTER')
-        for k, v in self.is_above.items():
-            try:
-                print('k:', k)
-                t = self.all[k]
-                print(k, t.name)
-                t.is_above = []
-                for tt in v:
-                    m = self.re_type_name.match(tt)
-                    if m and m.group('type') in self.all:
-                        t.is_above.append((self.all[m.group('type')], m.group('name')))
-            except KeyError as e:
-                print('**** DANGER: unknown type', e)
+        def f(attr):
+            items = getattr(self, attr).items()
+            for k, v in items:
+                try:
+                    t = self.all[k]
+                    print(k, t.name)
+                    ts = []
+                    setattr(t, attr, ts)
+                    for tt in v:
+                        m = self.re_type_name.match(tt)
+                        if m and m.group('type') in self.all:
+                            ts.append((self.all[m.group('type')], m.group('name')))
+                except KeyError as e:
+                    print('**** DANGER: unknown type', e)
 
-        for k, v in self.is_below.items():
-            try:
-                t = self.all[k]
-                t.is_below = []
-                for tt in v:
-                    m = self.re_type_name.match(tt)
-                    if m and m.group('type') in self.all:
-                        t.is_below.append((self.all[m.group('type')], m.group('name')))
-            except KeyError as e:
-                print('**** DANGER: unknown type', e)
+        f('is_above')
+        f('is_below')
+
+    def make_left_right(self):
+        print('====> MAKE LEFT RIGHT')
+        # based only on the simple_stmt definition
+        more_t = {}
+        t = self.all['simple_stmt']
+        t.is_wrapper = True
+        require = set()
+        definition = t.get_shortenized_definition()
+        cs = Types.re_pipe.split(definition)
+        tts = [t]
+        for c in cs:
+            if 'OPTIONAL' in c:
+                t.is_wrapper = False
+                t.one_shot = False
+            else:
+                c = Formatter.get_identifier(c)
+                if c:
+                    try:
+                        tt = self.all[c]
+                    except:
+                        try:
+                            tt = more_t[c]
+                        except:
+                            tt = more_t[c] = Type(-len(self.all)-len(more_t), c, '', category = t.category)
+                            tt.require = []
+                    require.add(tt)
+                    tts.append(tt)
+                else:
+                    t.is_wrapper = False
+                    t.one_shot = False
+        t.require = sorted(list(require), key = lambda x: (x.n, x.name))
+        self.all.update(more_t)
+        for tt in tts:
+            tt.is_left = tt.is_right = t.require
 
     def make_lists(self):
         if self.lists_made:
@@ -388,6 +423,28 @@ class Types:
                     for tt in self.get_expressions():
                         if t != tt and not tt.same_checks and checks == tt.get_checks():
                             tt.same_checks = t
+
+    def make_same_left(self):
+        print('====> MAKE SAME LEFT')
+        ts = self.get_statements()
+        for t in ts:
+            if t.is_list:
+                original = t.get_left()
+                if len(original)>1:
+                    for tt in ts:
+                        if t != tt and not tt.same_left and original == tt.get_left():
+                            tt.same_left = t
+
+    def make_same_right(self):
+        print('====> MAKE SAME RIGHT')
+        ts = self.get_statements()
+        for t in ts:
+            if t.is_list:
+                original = t.get_right()
+                if len(original)>1:
+                    for tt in ts:
+                        if t != tt and not tt.same_right and original == tt.v():
+                            tt.same_right = t
 
     def make_similar_providers(self):
         '''

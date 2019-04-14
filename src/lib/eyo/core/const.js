@@ -23,8 +23,13 @@ goog.asserts.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
   ABOVE: 'ABOVE', // not for block definition
-  BELOW: 'BELOW'
+  BELOW: 'BELOW',
+  LEFT_STATEMENT: 5, // new type for a connection
+  RIGHT_STATEMENT: 6
 }
+
+Blockly.OPPOSITE_TYPE[eYo.Const.RIGHT_STATEMENT] = eYo.Const.LEFT_STATEMENT;
+Blockly.OPPOSITE_TYPE[eYo.Const.LEFT_STATEMENT] = eYo.Const.RIGHT_STATEMENT;
 
 eYo.Const.Field = {
   // IN PROGRESS
@@ -74,7 +79,11 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   ASYNC: 'async',
   AWAIT: 'await',
 
+  // names of inputs, may conflict with data models, bad design
   SUITE: 'suite', // this MUST be in lower case
+  LEFT: 'left',
+  RIGHT: 'right',
+
   COMP_FOR: 'comp_for',
 
   IF: 'if',
@@ -140,9 +149,6 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase
-
-  LEFT: 'left',
-  RIGHT: 'right',
 
   // IN PROGRESS
   ANY: 'ANY',

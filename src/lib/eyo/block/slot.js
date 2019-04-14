@@ -334,6 +334,9 @@ eYo.Slot.makeFields = (() => {
       }
       field.eyo.css_style = model.css_style
       field.eyo.order = model.order
+      if (model.hidden) {
+        field.setVisible(false)
+      }
     } else {
       return
     }
@@ -798,6 +801,8 @@ eYo.Slot.prototype.save = function (element, opt) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           } else if (this.inputType === Blockly.NEXT_STATEMENT) {
             child.setAttribute(eYo.Xml.FLOW, this.xmlKey)
+          } else if (this.inputType === eYo.Const.RIGHT_STATEMENT) {
+            child.setAttribute(eYo.Xml.FLOW, eYo.Xml.RIGHT) // only one right statement
           }
           goog.dom.appendChild(element, child)
           return child
@@ -862,10 +867,10 @@ eYo.Slot.prototype.load = function (element) {
     eYo.Do.someElementChild(element, child => {
       if (this.inputType === Blockly.INPUT_VALUE) {
         var attribute = child.getAttribute(eYo.Xml.SLOT)
-      } else if (this.inputType === Blockly.NEXT_STATEMENT) {
+      } else if (this.inputType === Blockly.NEXT_STATEMENT || this.inputType === eYo.Const.RIGHT_STATEMENT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
-      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
+      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute))) || (this.inputType === eYo.Const.RIGHT_STATEMENT && attribute === eYo.Xml.RIGHT)) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.setRequiredFromModel(true)

@@ -149,6 +149,10 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
+  /**
+   * Return the parent which is a statement, if any.
+   * Never returns `this`. 
+   */
   stmtParent: {
     get () {
       var eyo = this
@@ -313,8 +317,43 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return b && b.eyo
     }
   },
+  leftStmtConnection: {
+    get () {
+      return this.leftStmtConnection_
+    }
+  },
+  leftBlock: {
+    get () {
+      var c8n = this.leftStmtConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  left: {
+    get () {
+      var b = this.leftBlock
+      return b && b.eyo
+    }
+  },
+  rightStmtConnection: {
+    get () {
+      return this.inputRight && this.inputRight.connection
+    }
+  },
+  rightBlock: {
+    get () {
+      var c8n = this.rightStmtConnection
+      return c8n && c8n.targetBlock()
+    }
+  },
+  right: {
+    get () {
+      var b = this.rightBlock
+      return b && b.eyo
+    }
+  },
   /**
    * Return the topmost enclosing block in this block's tree.
+   * May return `this`.
    * @return {!eYo.Delegate} The root block.
    */
   root: {
@@ -334,7 +373,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
   after: {
     get () {
       var eyo = this.isStmt ? this : this.stmtParent
-      var after = eyo.suite || eyo.next
+      var after = eyo.right || eyo.suite || eyo.next
       if (after) {
         return after
       }
@@ -345,15 +384,10 @@ Object.defineProperties(eYo.Delegate.prototype, {
       }
       return after
     },
-    inutList: {
-      get () {
-        return this.block_.inputList
-      }
-    }
   },
   /**
    * Return the enclosing block in this block's tree
-   * which is a control. May be null.
+   * which is a control. May be null. May be different from the `root`.
    * @return {?eYo.Delegate} The root block.
    */
   rootControl: {
@@ -368,7 +402,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return false
     }
   },
-  isStatement: {
+  isStmt: {
     get () {
       return false
     }
@@ -712,9 +746,9 @@ eYo.Delegate.Manager = (() => {
   me.prepareDelegate = function (delegateC9r, key) {
     var eyo = eYo.Delegate.getC9rEyO(delegateC9r, key || '')
     if (!eyo.getModel) {
-      eyo.getModel || (eyo.getModel = function () {
+      eyo.getModel = function () {
         return modeller(delegateC9r)
-      })
+      }
       Object.defineProperties(
         eyo,
         {
@@ -773,7 +807,6 @@ eYo.Delegate.Manager = (() => {
       to.check = eYo.Do.ensureArrayFunction(to_d)
     }
   }
-  me.merger = merger
   /**
    * Private modeller to provide the constructor with a complete `model` property.
    * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
@@ -803,6 +836,7 @@ eYo.Delegate.Manager = (() => {
       insertModel.heads && merger(model.heads, insertModel.heads)
       insertModel.slots && merger(model.slots, insertModel.slots)
       insertModel.tails && merger(model.tails, insertModel.tails)
+      insertModel.statement && merger(model.statement, insertModel.statement)
     }
     // store that object permanently
     delegateC9r.eyo.model_ = model
@@ -925,7 +959,7 @@ eYo.Delegate.Manager = (() => {
             }
           } while ((link = model.link))
           model = {}
-          linkModel && me.merger(model, linkModel)
+          linkModel && merger(model, linkModel)
         }
         // manage the inherits key, uncomplete management,
         var inherits = model.inherits
@@ -939,7 +973,6 @@ eYo.Delegate.Manager = (() => {
             model = m
           }
         }
-        var inherits
         var t = eYo.T3.Expr[key]
         if (t) {
           if (!model.output) {
@@ -949,22 +982,25 @@ eYo.Delegate.Manager = (() => {
           model.statement && (model.statement = undefined)
         } else if ((t = eYo.T3.Stmt[key])) {
           var statement = model.statement || (model.statement = Object.create(null))
-          if (!statement.previous) {
-            statement.previous = Object.create(null)
+          var f = (k, type) => {
+            var s = statement[k]
+            if (goog.isNull(s)) {
+              s = statement[k] = Object.create(null)
+            } else if (s) {
+              if (s.check || goog.isNull(s.check)) {
+                s.check = eYo.Do.ensureArrayFunction(s.check)
+              } else {
+                var ch = eYo.T3.Stmt[type][key]
+                if (ch) {
+                  s.check = eYo.Do.ensureArrayFunction()
+                }
+              }
+            }
           }
-          if (statement.previous.check) {
-            statement.previous.check = eYo.Do.ensureArrayFunction(statement.previous.check)
-          } else if (!goog.isNull(statement.previous.check)) {
-            statement.previous.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Previous[key])
-          }
-          if (!statement.next) {
-            statement.next = Object.create(null)
-          }
-          if (statement.next.check) {
-            statement.next.check = eYo.Do.ensureArrayFunction(statement.next.check)
-          } else if (!goog.isNull(statement.next.check)) {
-            statement.next.check = eYo.Do.ensureArrayFunction(eYo.T3.Stmt.Next[key])
-          }
+          f('previous', 'Previous')
+          f('next', 'Next')
+          f('left', 'Left')
+          f('right', 'Right')
           // this is a statement, remove the irrelevant output info
           model.output && (model.output = undefined)
         }
@@ -1344,18 +1380,11 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
       }
     }
     this.forEachData(data => {
-      var k = data.key + '_d'
+      var k = data.key + '_p'
       if (eYo.Do.hasOwnProperty(model, k)) {
         data.set(model[k])
         done = true
         data.setRequiredFromModel(true)
-      } else {
-        k = data.key + '_p'
-        if (eYo.Do.hasOwnProperty(model, k)) {
-          data.set(model[k])
-          done = true
-          data.setRequiredFromModel(true)
-        }
       }
       k = data.key + '_placeholder'
       if (eYo.Do.hasOwnProperty(model, k)) {
@@ -1502,17 +1531,26 @@ eYo.Delegate.prototype.makeConnections = function () {
     block.setOutput(true) // check is setup in the consolidateConnections
     block.outputConnection.eyo.model = D
   } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.previous && D.previous.check !== null) {
+    if (D.previous && goog.isDefAndNotNull(D.previous.check)) {
       block.setPreviousStatement(true)
       this.previousConnection.eyo.model = D.previous
     }
-    if (D.next && D.next.check !== null) {
+    if (D.next && goog.isDefAndNotNull(D.next.check)) {
       block.setNextStatement(true)
       this.nextConnection.eyo.model = D.next
     }
-    if (D.suite) {
+    if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
       this.inputSuite = block.appendStatementInput(eYo.Key.SUITE)
-      this.suiteConnection.eyo.model = D
+      this.suiteConnection.eyo.model = D.suite
+    }
+    if (D.left && goog.isDefAndNotNull(D.left.check)) {
+      this.leftStmtConnection_ = this.block_.makeConnection_(eYo.Const.LEFT_STATEMENT)
+      this.leftStmtConnection_.eyo.model = D.left
+    }
+    if (D.right && goog.isDefAndNotNull(D.right.check)) {
+      var input = this.inputRight = block.appendInput_(eYo.Const.RIGHT_STATEMENT, eYo.Key.RIGHT)
+      this.rightStmtConnection.eyo.model = D.right
+      eYo.Slot.makeFields(input.eyo, D.right.fields)
     }
   }
   this.updateBlackCount()
@@ -1521,7 +1559,7 @@ eYo.Delegate.prototype.makeConnections = function () {
 /**
  * Feed the owner with slots built from the model.
  * For edython.
- * @param {!Blockly.Input} input
+ * @param {!Object} input
  */
 eYo.Delegate.prototype.feedSlots = function (slotsModel) {
   var slots = this.slots
@@ -1576,6 +1614,7 @@ eYo.Delegate.prototype.feedSlots = function (slotsModel) {
       next.previous = slot
       slot = next
     }
+    ordered[0].last = slot
   }
   return ordered[0]
 }
@@ -1718,7 +1757,9 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   } else {
     f(b.previousConnection)
     f(b.nextConnection)
-    f(this.inputSuite && this.inputSuite.connection)
+    f(this.suiteConnection)
+    f(this.leftStmtConnection)
+    f(this.rightStmtConnection)
   }
 }
 
@@ -1752,26 +1793,10 @@ eYo.Delegate.prototype.init = function () {
 */
 eYo.Delegate.prototype.deinit = function () {
   this.model.deinit && this.model.deinit.call(this)
-}
-
-/**
- * Whether the block has a previous statement.
- * @param {!Block} block
- * @private
- */
-eYo.Delegate.prototype.hasPreviousStatement_ = function () {
-  var c8n = this.block_.previousConnection
-  return c8n && c8n.isConnected() &&
-    c8n.targetBlock().nextConnection === c8n.targetConnection
-}
-
-/**
- * Whether the block has a next statement.
- * @private
- */
-eYo.Delegate.prototype.hasNextStatement_ = function () {
-  var c8n = this.nextConnection
-  return c8n && c8n.isConnected()
+  if (this.leftStmtConnection_) {
+    this.leftStmtConnection_.dispose()
+    this.leftStmtConnection_ = undefined
+  }
 }
 
 /**
@@ -1996,7 +2021,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
   var eyo = connection.eyo
   if (eyo.isSuite) {
     eyo.b_eyo.updateBlackCount()
-  } else if (!eyo.isOutput) {
+  } else if (!eyo.isOutput && !connection.eyo.isLeft && !connection.eyo.isRight) {
     this.updateGroupBlackCount()
   }
   if (eyo.isNext) {
@@ -2110,6 +2135,7 @@ eYo.Delegate.prototype.getParentInput = function () {
 /**
  * Returns the total number of code lines for that node and the node below.
  * One atomic instruction is one line.
+ * In terms of grammar, it counts the number of simple statements.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return {Number}.
  */
@@ -2139,7 +2165,6 @@ eYo.Delegate.prototype.getStatementCount = function () {
  * White blocks are comment statements, disabled blocks
  * and maybe other kinds of blocks to be found...
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @param {!array} components the array of python code strings, will be joined to make the code.
  * @return None
  */
@@ -2154,7 +2179,7 @@ eYo.Delegate.prototype.isWhite = function () {
  * For example, if I disable an if block, I should also disable
  * an elif/else following block, but only if it would make an elif/else orphan.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
+ * @param {Boolean} yorn  true to disable, false to enable.
  * @return None
  */
 eYo.Delegate.prototype.setDisabled = function (yorn) {

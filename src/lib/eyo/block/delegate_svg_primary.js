@@ -1018,6 +1018,17 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             }
           }
         }      
+      },
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+        // the block is not yet consolidated
+        // when there is no connected block, we display the field
+        var parent = this.parent
+        if (parent) {
+          if (this.b_eyo.inputList.length < 4) { // bad design
+            // this is the last block we disconnected
+            parent.target_s.bindField.setVisible(true)
+          }
+        }
       }
     },
     annotated: {

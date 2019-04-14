@@ -203,6 +203,8 @@ eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
     attr: 'start'
   },
   statement: {
+    left: undefined, // override inherited
+    right: undefined, // override inherited
     previous: {
       check: eYo.T3.Stmt.start_stmt
     },
