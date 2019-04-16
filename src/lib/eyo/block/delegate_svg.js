@@ -750,7 +750,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  */
 eYo.DelegateSvg.prototype.willShortRender_ = function (recorder) {
   if (this.inputSuite) {
-    this.size.h = this.headCount + this.blackCount + this.suiteCount
+    this.size.h = this.mainCount + this.blackCount + this.suiteCount
   }
   return this.newDrawRecorder(recorder)
 }
@@ -855,21 +855,21 @@ eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
  * Subclasses must override it. Used in renderDraw_.
  * @private
  */
-eYo.DelegateSvg.prototype.shapePathDef_ = function () {
-  goog.asserts.assert(false, 'shapePathDef_ must be overriden by ' + this)
+eYo.DelegateSvg.prototype.pathShapeDef_ = function () {
+  goog.asserts.assert(false, 'pathShapeDef_ must be overriden by ' + this)
 }
 
 /**
- * Block outline. Default implementation forwards to shapePathDef_.
+ * Block outline. Default implementation forwards to pathShapeDef_.
  * @private
  */
-eYo.DelegateSvg.prototype.contourPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
+eYo.DelegateSvg.prototype.pathContourDef_ = eYo.DelegateSvg.prototype.pathShapeDef_
 
 /**
- * Highlighted block outline. Default implementation forwards to shapePathDef_.
+ * Highlighted block outline. Default implementation forwards to pathShapeDef_.
  * @private
  */
-eYo.DelegateSvg.prototype.hilightPathDef_ = eYo.DelegateSvg.prototype.shapePathDef_
+eYo.DelegateSvg.prototype.pathHilightDef_ = eYo.DelegateSvg.prototype.pathShapeDef_
 
 /**
  * Highlighted block outline. Default implementation does nothing.
@@ -877,7 +877,7 @@ eYo.DelegateSvg.prototype.hilightPathDef_ = eYo.DelegateSvg.prototype.shapePathD
  * does not enclose the child blocks.
  * @private
  */
-eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
+eYo.DelegateSvg.prototype.pathHilightDef_ = undefined
 
 /**
  * Highlighted connection outline.
@@ -886,15 +886,15 @@ eYo.DelegateSvg.prototype.hilightPathDef_ = undefined
  * the selected connection may belong to a wrapped block.
  * @private
  */
-eYo.DelegateSvg.prototype.connectionPathDef_ = function () {
-  return eYo.Selected.connectionPathDef()
+eYo.DelegateSvg.prototype.pathConnectionDef_ = function () {
+  return eYo.Selected.pathConnectionDef()
 }
 
 /**
  * Extra disabled block outline. Default implementation return a void string.
  * @private
  */
-eYo.DelegateSvg.prototype.collapsedPathDef_ = function () {
+eYo.DelegateSvg.prototype.pathCollapsedDef_ = function () {
   return ''
 }
 
@@ -1011,13 +1011,13 @@ eYo.DelegateSvg.prototype.updateAllPaths_ = (() => {
       update.call(this, this.svgPathShape_)
       update.call(this, this.svgPathCollapsed_)
     } else {
-      update.call(this, this.svgPathContour_, this.contourPathDef_)
-      update.call(this, this.svgPathShape_, this.shapePathDef_)
-      update.call(this, this.svgPathCollapsed_, this.collapsedPathDef_)
+      update.call(this, this.svgPathContour_, this.pathContourDef_)
+      update.call(this, this.svgPathShape_, this.pathShapeDef_)
+      update.call(this, this.svgPathCollapsed_, this.pathCollapsedDef_)
     }
-    update.call(this, this.svgPathHilight_, this.hilightPathDef_)
-    update.call(this, this.svgPathSelect_, this.selectPathDef_)
-    update.call(this, this.svgPathConnection_, this.connectionPathDef_)
+    update.call(this, this.svgPathHilight_, this.pathHilightDef_)
+    update.call(this, this.svgPathSelect_, this.pathSelectDef_)
+    update.call(this, this.svgPathConnection_, this.pathConnectionDef_)
     if (this.someTargetIsMissing && !this.block_.isInFlyout) {
       goog.dom.classlist.add(this.svgPathContour_, 'eyo-error')
     } else {

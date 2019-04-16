@@ -42,7 +42,11 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
         return null
       }
     },
-    suite: {}
+    suite: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return null
+      }
+    }
   }
 }, eYo.DelegateSvg)
 
@@ -80,7 +84,7 @@ eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_ = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.pathCollapsedDef_ = function () {
   /* eslint-disable indent */
   var block = this.block_
   if (block.isCollapsed()) {
@@ -93,12 +97,12 @@ eYo.DelegateSvg.BaseGroup.prototype.collapsedPathDef_ = function () {
     // ' M ' + (t + r) + ',' + (2 * line) + ' H ' + block.width + ' v ' + (r - line) / 2 +
     // ' m -' + r + ',' + r / 2 + ' l ' + 2 * r + ',' + (-r)
   }
-  return eYo.DelegateSvg.BaseGroup.superClass_.collapsedPathDef_.call(this)
+  return eYo.DelegateSvg.BaseGroup.superClass_.pathCollapsedDef_.call(this)
 } /* eslint-enable indent */
 
-eYo.DelegateSvg.BaseGroup.prototype.shapePathDef_ =
-  eYo.DelegateSvg.BaseGroup.prototype.contourPathDef_ =
-    eYo.DelegateSvg.BaseGroup.prototype.hilightPathDef_ =
+eYo.DelegateSvg.BaseGroup.prototype.pathShapeDef_ =
+  eYo.DelegateSvg.BaseGroup.prototype.pathContourDef_ =
+    eYo.DelegateSvg.BaseGroup.prototype.pathHilightDef_ =
       eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
 
 /**
@@ -190,7 +194,9 @@ eYo.DelegateSvg.BaseGroup.prototype.renderDrawInput_ = function (io) {
  * Update the black count.
  */
 eYo.DelegateSvg.Group.prototype.updateBlackCount = function () {
-  this.blackCount = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection() ? 0 : 1
+  this.blackCount = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection()
+  ? 0
+  : this.left || this.right ? 0 : 1
 }
 
 /**

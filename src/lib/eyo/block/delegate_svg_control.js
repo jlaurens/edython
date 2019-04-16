@@ -106,9 +106,9 @@ eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
-eYo.DelegateSvg.Control.prototype.shapePathDef_ =
-  eYo.DelegateSvg.Control.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Control.prototype.hilightPathDef_ =
+eYo.DelegateSvg.Control.prototype.pathShapeDef_ =
+  eYo.DelegateSvg.Control.prototype.pathContourDef_ =
+    eYo.DelegateSvg.Control.prototype.pathHilightDef_ =
       eYo.DelegateSvg.Control.prototype.controlPathDef_
 
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {

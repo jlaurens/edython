@@ -149,7 +149,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
             O.operator_p = '='  
           } else {
             O.variant_p = eYo.Key.ANNOTATED
-            O.operator_p = ''
           }
         }
       }

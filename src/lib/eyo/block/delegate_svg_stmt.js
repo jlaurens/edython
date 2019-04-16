@@ -123,9 +123,9 @@ eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
-eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
-  eYo.DelegateSvg.Stmt.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Stmt.prototype.hilightPathDef_ =
+eYo.DelegateSvg.Stmt.prototype.pathShapeDef_ =
+  eYo.DelegateSvg.Stmt.prototype.pathContourDef_ =
+    eYo.DelegateSvg.Stmt.prototype.pathHilightDef_ =
       eYo.DelegateSvg.Stmt.prototype.statementPathDef_
 
 /**
@@ -133,7 +133,7 @@ eYo.DelegateSvg.Stmt.prototype.shapePathDef_ =
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.selectPathDef_ = function () {
+eYo.DelegateSvg.Stmt.prototype.pathSelectDef_ = function () {
   return eYo.Shape.definitionWithBlock(this, {dido: true})
 }
 

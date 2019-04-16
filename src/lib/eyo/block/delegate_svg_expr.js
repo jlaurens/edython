@@ -109,9 +109,9 @@ eYo.DelegateSvg.Expr.prototype.postInitSvg = function () {
 eYo.DelegateSvg.prototype.contourAboveParent = false
 
 
-eYo.DelegateSvg.Expr.prototype.shapePathDef_ =
-  eYo.DelegateSvg.Expr.prototype.contourPathDef_ =
-    eYo.DelegateSvg.Expr.prototype.hilightPathDef_ =
+eYo.DelegateSvg.Expr.prototype.pathShapeDef_ =
+  eYo.DelegateSvg.Expr.prototype.pathContourDef_ =
+    eYo.DelegateSvg.Expr.prototype.pathHilightDef_ =
       eYo.DelegateSvg.Expr.prototype.valuePathDef_
 
 /**

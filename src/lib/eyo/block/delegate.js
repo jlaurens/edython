@@ -67,8 +67,8 @@ eYo.Delegate = function (block) {
   }
   // to manage reentrency
   this.reentrant = {}
-  this.headCount_ = this.blackCount_ = this.suiteCount_ = this.nextCount_ = 0
-  this.updateHeadCount()
+  this.mainCount_ = this.blackCount_ = this.suiteCount_ = this.nextCount_ = this.headCount_ = this.footCount_ = 0
+  this.updateMainCount()
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -171,8 +171,8 @@ Object.defineProperties(eYo.Delegate.prototype, {
     },
     set (newValue) {
       var d = newValue - this.nextCount_
-      this.nextCount_ = newValue
       if (d) {
+        this.nextCount_ = newValue
         this.incrementChangeCount()
         var parent = this.parent
         if (parent) {
@@ -185,19 +185,94 @@ Object.defineProperties(eYo.Delegate.prototype, {
       }
     }
   },
+  /**
+   * This is not yet used.
+   * When we have support for doc strings,
+   * we may have the following situation:
+   * ```
+   * print('''foo
+   *         |bar'''); print('''foo
+   *                         |bar'''); print('''foo
+   *                                           |bar''')
+   * ```
+   * Both print statements have 2 main lines.
+   * The first print has 0 head line, 2 foot lines.
+   * The second print has 1 head line, 1 foot line.
+   * The third print has 2 head lines, 0 foot line.
+   */
   headCount: {
     get () {
-      return this.headCount_ // 1 or more
+      return this.headCount_
     },
     set (newValue) {
       var d = newValue - this.headCount_
       if (d) {
         this.incrementChangeCount()
         this.headCount_ = newValue
+        var right = this.right
+        if (right) {
+          // cascade to the right most statement
+          right.headCount += d
+        }
+      }
+    }
+  },
+  footCount: {
+    get () {
+      return this.footCount_
+    },
+    set (newValue) {
+      var d = newValue - this.footCount_
+      if (d) {
+        this.incrementChangeCount()
+        this.footCount_ = newValue
+        var left = this.left
+        if (left) {
+          // cascade to the left most statement
+          left.footCount += d
+        }
+      }
+    }
+  },
+  /**
+   * The main count is the number of main lines in statements.
+   * A statement has one main line in general.
+   * When there is a doc string inside the statement,
+   * the main line might be bigger:
+   * ```
+   * print('abc')
+   * ```
+   * has exactly one main line whereas
+   * ```
+   * print('''foo
+   * bar''')
+   * ```
+   * has exactly two main lines.
+   * When there is more than one main line,
+   * the horizontal siblings may have head and foot counts.
+   */
+  mainCount: {
+    get () {
+      return this.mainCount_ // 1 or more
+    },
+    set (newValue) {
+      var d = newValue - this.mainCount_
+      if (d) {
+        this.incrementChangeCount()
+        var old = this.mainCount_
+        this.mainCount_ = newValue
+        var right = this.right
+        if (right) {
+          // if this is the first time, initialize this part with d - 1
+          right.headCount += old ? d : d - 1
+        }
         var parent = this.parent
         if (parent) {
           if (parent.next === this) {
             parent.nextCount += d
+          } else if (parent.right === this) {
+            // parent is a left node
+            parent.footCount += old ? d : d - 1
           } else {
             parent.suiteCount += d
           }
@@ -205,6 +280,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
       }
     }
   },
+  /**
+   * Groups need a suite, but may not be provided with one.
+   * The black count is used to display a hole,
+   * where blocks should be connected.
+   */
   blackCount: {
     get () {
       return this.blackCount_ // 0 or 1
@@ -1975,10 +2055,10 @@ eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
 }
 
 /**
- * Update the black count.
+ * Update the head count.
  */
-eYo.Delegate.prototype.updateHeadCount = function () {
-  this.headCount = 1
+eYo.Delegate.prototype.updateMainCount = function () {
+  this.mainCount = 1
 }
 
 /**
@@ -2026,10 +2106,10 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
   }
   if (eyo.isNext) {
     var target = connection.targetBlock().eyo
-    this.nextCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
+    this.nextCount = target.mainCount + target.blackCount + target.suiteCount + target.nextCount
   } else if (eyo.isSuite) {
     target = connection.targetBlock().eyo
-    this.suiteCount = target.headCount + target.blackCount + target.suiteCount + target.nextCount
+    this.suiteCount = target.mainCount + target.blackCount + target.suiteCount + target.nextCount
   }
   eYo.Draw.didConnect(connection, oldTargetC8n, targetOldC8n)
   this.consolidateType()

@@ -478,7 +478,7 @@ var initWithStatementBlock = function(eyo, opt) {
     this.quarter_circle(r, false, 2)
   } else {
     this.M(true, width - eYo.Unit.x / 2)
-    this.v(opt && opt.dido ? eyo.headCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.headCount + eyo.blackCount)
+    this.v(opt && opt.dido ? eyo.mainCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.mainCount + eyo.blackCount)
   }
   if (eyo.next) {
     this.H(1 / 2)     
@@ -500,24 +500,32 @@ var initWithStatementBlock = function(eyo, opt) {
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithGroupBlock = function(eyo) {
+var initWithGroupBlock = function(eyo, opt) {
   // this is a group
   var block = eyo.block_
   var width = block.width
   var r = this.stmt_radius
   if (eyo.right) {
-    // simple statement
+    // simple statement with a right block
     this.M(true, width - eYo.Unit.x / 2 + r, 0)
+    this.quarter_circle(r, false, 1)
+    this.V(true, eyo.mainCount * eYo.Unit.y - r)
     this.quarter_circle(r, false, 2)
-    this.V(eYo.Unit.y - 2 * r)
-    this.quarter_circle(r, false, 3)
+  } else if (eyo.left) {
+    // simple statement with no right block
+    this.M(true, width - eYo.Unit.x / 2, 0)
+    this.V(eyo.mainCount)
   } else {
     this.M(true, width - eYo.Unit.x / 2, 0)
-    this.v(1)
-    this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
-    this.quarter_circle(r, false, 1)
-    this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
-    this.quarter_circle(r, false, 2)
+    if (opt && opt.dido) {
+      this.v(eyo.mainCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount)
+    } else {
+      this.v(eyo.mainCount)
+      this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
+      this.quarter_circle(r, false, 1)
+      this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
+      this.quarter_circle(r, false, 2)
+    }
   }
   if (eyo.next) {
     this.H(1/2)

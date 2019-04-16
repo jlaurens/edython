@@ -439,8 +439,8 @@ describe('Copy/Paste with data test', function() {
       var b = eYo.Test.new_block(t)
       do_it && do_it(b)
       var dom = eYo.Xml.blockToDom(b)
-      console.log(dom)
       chai.assert(dom.tagName.toLowerCase() === 's')
+      console.error(t, dom)
       var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
       eYo.Test.block(b, bb.type)
       eYo.Test.variant(b, bb.eyo.variant_p)
@@ -450,23 +450,23 @@ describe('Copy/Paste with data test', function() {
       bb.dispose()
     })
   }
-  f('expression_stmt')
-  f('assignment_stmt', b => {
-    b.eyo.operator_p = '**='
-  }, (b, bb) => {
-    chai.assert(b.eyo.operator_p === '**=')
-  })
+  // f('expression_stmt')
+  // f('assignment_stmt', b => {
+  //   b.eyo.operator_p = '**='
+  // }, (b, bb) => {
+  //   chai.assert(b.eyo.operator_p === '**=')
+  // })
   f('annotated_stmt', b => {
     b.eyo.annotated_p = 'ANNOTATED'
   }, (b, bb) => {
     chai.assert(b.eyo.annotated_p === 'ANNOTATED')
   })
-  f('annotated_assignment_stmt')
-  f('augmented_assignment_stmt', b => {
-    b.eyo.operator_p = '**='
-  }, (b, bb) => {
-    chai.assert(b.eyo.operator_p === '**=')
-  })
+  // f('annotated_assignment_stmt')
+  // f('augmented_assignment_stmt', b => {
+  //   b.eyo.operator_p = '**='
+  // }, (b, bb) => {
+  //   chai.assert(b.eyo.operator_p === '**=')
+  // })
 })
 
 describe('Initalize with model', function() {

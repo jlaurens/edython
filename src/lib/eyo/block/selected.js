@@ -601,7 +601,7 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
 /**
  * Path definition for an hilighted connection
  */
-eYo.Selected.connectionPathDef = function () {
+eYo.Selected.pathConnectionDef = function () {
   var c8n = this.connection
   if (!c8n) {
     return ''

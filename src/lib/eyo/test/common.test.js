@@ -147,6 +147,62 @@ eYo.Test.code = (b, str) => {
   }
 }
 
+/**
+ * Test the various block line counts.
+ * Expected is a map, keys are strings for the type of the line count.
+ * Values are integers.
+ * Possible types are: 'head', 'foot', 'main', suite', 'black', 'next'
+ * @param {!Blockly.Block}  block to be tested.
+ * @param {?Object} cfg  cfg is a map file.
+ */
+eYo.Test.line_counts = (b, cfg) => {
+  var failed
+  var expected, available
+  ;['head', 'foot', 'main', 'suite', 'black', 'next'].some(k => {
+    expected = (cfg && cfg[k]) || (k === 'main' ? 1 : 0)
+    available = {
+      head: b.eyo.headCount,
+      foot: b.eyo.footCount,
+      main: b.eyo.mainCount,
+      suite: b.eyo.suiteCount,
+      black: b.eyo.blackCount,
+      next: b.eyo.nextCount
+    }[k]
+    if (expected !== available) {
+      failed = k
+      return true
+    }
+  })
+  chai.assert(!failed, `Bad ${failed} line count: ${expected} === ${available}`)
+}
+
+/**
+ * Test if the connections are the expected ones.
+ * Expected is a map, keys are strings for the type of the connections,
+ * values are `true` for an expected connection for that type,
+ * `false` otherwise.
+ * Possible types are: 'previous', 'next', 'left', right', 'suite'
+ */
+eYo.Test.connections = (b, cfg) => {
+  var failed
+  var expected, available
+  ;['left', 'right', 'previous', 'next', 'suite'].some(k => {
+    expected = !!cfg[k]
+    available = !!{
+      left: b.eyo.leftStmtConnection,
+      right: b.eyo.rightStmtConnection,
+      previous: b.eyo.previousConnection,
+      next: b.eyo.nextConnection,
+      suite: b.eyo.suiteConnection
+    }[k]
+    if (expected !== available) {
+      failed = k
+      return true
+    }
+  })
+  chai.assert(!failed, `${available? 'Unexpected' :  'Missing'} connection ${failed}`)
+}
+
 eYo.Test.input_length = (b, k, str) => {
   chai.assert(b.inputList.length === k, `BAD INPUT LENGTH ${str || ''} ${b.inputList.length} === ${k}`)
 }
