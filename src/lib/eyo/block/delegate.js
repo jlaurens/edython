@@ -1633,7 +1633,7 @@ eYo.Delegate.prototype.makeConnections = function () {
       eYo.Slot.makeFields(input.eyo, D.right.fields)
     }
   }
-  this.updateBlackCount()
+  this.updateBlackHeight()
 }
 
 /**
@@ -2064,16 +2064,16 @@ eYo.Delegate.prototype.updateMainCount = function () {
 /**
  * Update the black count.
  */
-eYo.Delegate.prototype.updateBlackCount = function () {
+eYo.Delegate.prototype.updateBlackHeight = function () {
   this.blackHeight = 0
 }
 
 /**
  * Update the black count of the enclosing group.
  */
-eYo.Delegate.prototype.updateGroupBlackCount = function () {
+eYo.Delegate.prototype.updateGroupBlackHeight = function () {
   var eyo = this.group
-  eyo && eyo.updateBlackCount()
+  eyo && eyo.updateBlackHeight()
 }
 
 /**
@@ -2100,9 +2100,9 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
   // how many blocks did I add ?
   var eyo = connection.eyo
   if (eyo.isSuite) {
-    eyo.b_eyo.updateBlackCount()
+    eyo.b_eyo.updateBlackHeight()
   } else if (!eyo.isOutput && !connection.eyo.isLeft && !connection.eyo.isRight) {
-    this.updateGroupBlackCount()
+    this.updateGroupBlackHeight()
   }
   if (eyo.isNext) {
     var target = connection.targetBlock().eyo
@@ -2131,9 +2131,9 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   // how many blocks did I add ?
   var eyo = connection.eyo
   if (eyo.isSuite) {
-    eyo.b_eyo.updateBlackCount()
+    eyo.b_eyo.updateBlackHeight()
   } else if (!eyo.isOutput) {
-    this.updateGroupBlackCount()
+    this.updateGroupBlackHeight()
   }
   if (eyo.isNext) {
     this.nextHeight = 0

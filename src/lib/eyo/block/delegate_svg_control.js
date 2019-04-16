@@ -53,7 +53,7 @@ eYo.DelegateSvg.Control.prototype.isControl = true
  * Update the black count.
  * May be called very early.
  */
-eYo.DelegateSvg.Control.prototype.updateBlackCount = function () {
+eYo.DelegateSvg.Control.prototype.updateBlackHeight = function () {
   this.blackHeight = this.suiteConnection && this.suiteConnection.targetConnection ? 0 : 1
 }
 

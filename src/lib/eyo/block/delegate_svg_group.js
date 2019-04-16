@@ -193,7 +193,7 @@ eYo.DelegateSvg.BaseGroup.prototype.renderDrawInput_ = function (io) {
 /**
  * Update the black count.
  */
-eYo.DelegateSvg.Group.prototype.updateBlackCount = function () {
+eYo.DelegateSvg.Group.prototype.updateBlackHeight = function () {
   this.blackHeight = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection()
   ? 0
   : this.left || this.right ? 0 : 1
