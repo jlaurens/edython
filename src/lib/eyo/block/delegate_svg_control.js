@@ -54,7 +54,7 @@ eYo.DelegateSvg.Control.prototype.isControl = true
  * May be called very early.
  */
 eYo.DelegateSvg.Control.prototype.updateBlackCount = function () {
-  this.blackCount = this.suiteConnection && this.suiteConnection.targetConnection ? 0 : 1
+  this.blackHeight = this.suiteConnection && this.suiteConnection.targetConnection ? 0 : 1
 }
 
 /**
@@ -102,14 +102,14 @@ eYo.DelegateSvg.Control.prototype.playPathIconDef_ = function (cursorX) {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Control.prototype.controlPathDef_ = function () {
+eYo.DelegateSvg.Control.prototype.pathControlDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Control.prototype.pathShapeDef_ =
   eYo.DelegateSvg.Control.prototype.pathContourDef_ =
     eYo.DelegateSvg.Control.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Control.prototype.controlPathDef_
+      eYo.DelegateSvg.Control.prototype.pathControlDef_
 
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
   eYo.DelegateSvg.Control.superClass_.willRender_.call(this, recorder)

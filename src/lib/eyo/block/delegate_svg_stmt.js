@@ -119,14 +119,14 @@ eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.statementPathDef_ = function () {
+eYo.DelegateSvg.Stmt.prototype.pathStatementDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
 
 eYo.DelegateSvg.Stmt.prototype.pathShapeDef_ =
   eYo.DelegateSvg.Stmt.prototype.pathContourDef_ =
     eYo.DelegateSvg.Stmt.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Stmt.prototype.statementPathDef_
+      eYo.DelegateSvg.Stmt.prototype.pathStatementDef_
 
 /**
  * Path definition for a statement block selection.

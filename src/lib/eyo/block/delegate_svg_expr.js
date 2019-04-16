@@ -112,7 +112,7 @@ eYo.DelegateSvg.prototype.contourAboveParent = false
 eYo.DelegateSvg.Expr.prototype.pathShapeDef_ =
   eYo.DelegateSvg.Expr.prototype.pathContourDef_ =
     eYo.DelegateSvg.Expr.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Expr.prototype.valuePathDef_
+      eYo.DelegateSvg.Expr.prototype.pathValueDef_
 
 /**
  * Render the leading # character for collapsed statement blocks.

@@ -750,7 +750,7 @@ eYo.DelegateSvg.prototype.wrapped_ = undefined
  */
 eYo.DelegateSvg.prototype.willShortRender_ = function (recorder) {
   if (this.inputSuite) {
-    this.size.h = this.mainCount + this.blackCount + this.suiteCount
+    this.size.h = this.mainHeight + this.blackHeight + this.suiteHeight
   }
   return this.newDrawRecorder(recorder)
 }
@@ -1806,7 +1806,7 @@ eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
  * Block path.
  * @private
  */
-eYo.DelegateSvg.prototype.valuePathDef_ = function () {
+eYo.DelegateSvg.prototype.pathValueDef_ = function () {
   return eYo.Shape.definitionWithBlock(this)
 }
 

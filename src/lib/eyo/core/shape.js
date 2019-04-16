@@ -171,7 +171,7 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
       l = c.y
       c = c.x
     }
-    this.push('m', c, ',', l)
+    this.push('m', `${this.format(c)},${this.format(l)}`)
     this.cursor.advance({x: c, y: l})
     return
   } else if (is_block !== false) {
@@ -182,7 +182,7 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
     l = c.y
     c = c.x
   }
-  this.push('m', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.push('m', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
   this.cursor.advance(c, l)
 }
 
@@ -199,7 +199,7 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
       c = c.x
     }
     this.cursor.set({x: c, y: l})    
-    this.push('M', c, ',', l)
+    this.push('M', `${this.format(c)},${this.format(l)}`)
     return
   } else if (is_block !== false) {
     l = c
@@ -209,7 +209,7 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
     l = c.y
     c = c.x
   }
-  this.push('M', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.push('M', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
   this.cursor.set(c, l)
 }
 
@@ -225,14 +225,14 @@ eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
       l = c.y
       c = c.x
     }
-    this.push('l', c, ',', l)
+    this.push('l', `${this.format(c)},${this.format(l)}`)
     this.cursor.advance({x: c, y: l})
     return
   } else if (is_block !== false) {
     l = c
     c = is_block
   }
-  this.push('l', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.push('l', `${c * eYo.Unit.x},'${l * eYo.Unit.y}`)
   this.cursor.advance(c, l)
 }
 
@@ -255,7 +255,7 @@ eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
     l = c
     c = is_block
   }
-  this.push('L', c * eYo.Unit.x, ',', l * eYo.Unit.y)
+  this.push('L', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
   this.cursor.set(c, l)
 }
 
@@ -366,7 +366,7 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
     clockwise = r
     r = this.highlighted_width
   }
-  this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0} `)
+  this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0}`)
   var dx = 0
   var dy = 0
   switch (part) {
@@ -378,7 +378,7 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
   if (!clockwise) {
     dy = -dy
   }
-  this.push(dx, ',', dy)
+  this.push(`${this.format(dx)},${this.format(dy)}`)
   this.cursor.advance(dx, dy)
 }
 
@@ -415,7 +415,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
     case 2: dx = 2 * r; break
     default: dy = -2 * r; break
   }
-  this.push(dx, ',', dy)
+  this.push(`${this.format(dx)},${this.format(dy)}`)
   this.cursor.advance(dx, dy)
 }
 
@@ -435,7 +435,8 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
   var dx = goog.isDef(h.x) ? h.x : 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
-  this.push('a ', r, ',', r, '0 0', (left === down? 0 : 1), dx, ',', dy)
+  console.error(`${this.format(dx)},${this.format(dy)}`)
+  this.push('a', `${this.format(r)},${this.format(r)}`, '0 0', (left === down? 0 : 1), `${this.format(dx)},${this.format(dy)}`)
   this.cursor.advance(dx, dy)
 }
 
@@ -478,7 +479,7 @@ var initWithStatementBlock = function(eyo, opt) {
     this.quarter_circle(r, false, 2)
   } else {
     this.M(true, width - eYo.Unit.x / 2)
-    this.v(opt && opt.dido ? eyo.mainCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount : eyo.mainCount + eyo.blackCount)
+    this.v(opt && opt.dido ? eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight : eyo.mainHeight + eyo.blackHeight)
   }
   if (eyo.next) {
     this.H(1 / 2)     
@@ -509,18 +510,18 @@ var initWithGroupBlock = function(eyo, opt) {
     // simple statement with a right block
     this.M(true, width - eYo.Unit.x / 2 + r, 0)
     this.quarter_circle(r, false, 1)
-    this.V(true, eyo.mainCount * eYo.Unit.y - r)
+    this.V(true, eyo.mainHeight * eYo.Unit.y - r)
     this.quarter_circle(r, false, 2)
   } else if (eyo.left) {
     // simple statement with no right block
     this.M(true, width - eYo.Unit.x / 2, 0)
-    this.V(eyo.mainCount)
+    this.V(eyo.mainHeight)
   } else {
     this.M(true, width - eYo.Unit.x / 2, 0)
     if (opt && opt.dido) {
-      this.v(eyo.mainCount + eyo.blackCount + eyo.suiteCount + eyo.nextCount)
+      this.v(eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight)
     } else {
-      this.v(eyo.mainCount)
+      this.v(eyo.mainHeight)
       this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
       this.quarter_circle(r, false, 1)
       this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)

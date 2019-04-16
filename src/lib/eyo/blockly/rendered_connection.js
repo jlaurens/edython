@@ -653,7 +653,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
   var steps
   if (c_eyo.isInput) {
     if (c8n.isConnected()) {
-      steps = c8n.targetBlock().eyo.valuePathDef_()
+      steps = c8n.targetBlock().eyo.pathValueDef_()
     } else {
       steps = eYo.Shape.definitionWithConnectionDlgt(this)
       Blockly.Connection.highlightedPath_ =
@@ -667,7 +667,7 @@ eYo.ConnectionDelegate.prototype.highlight = function () {
       return
     }
   } else if (c_eyo.isOutput) {
-    steps = block.eyo.valuePathDef_()
+    steps = block.eyo.pathValueDef_()
   } else {
     if (c_eyo.isLeft) {
       console.log('isLeft')

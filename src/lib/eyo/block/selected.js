@@ -202,7 +202,7 @@ eYo.Selected.selectOneBlockOf = (blocks, force) => {
   var select
   var eyos = blocks.filter(block => block).map(block => block.eyo)
   var f = (eyo) => {
-    if (eyo.isControl && eyo.suiteCount) {
+    if (eyo.isControl && eyo.suiteHeight) {
       select = eyo
       return true
     }
@@ -615,12 +615,12 @@ eYo.Selected.pathConnectionDef = function () {
   var b_eyo = c_eyo.b_eyo
   if (c_eyo.isInput) {
     if (c8n.isConnected()) {
-      steps = c_eyo.t_eyo.valuePathDef_()
+      steps = c_eyo.t_eyo.pathValueDef_()
     } else if (!b_eyo.disabled_) {
       steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo, {absolute: true})
     }
   } else if (c_eyo.isOutput) {
-    steps = b_eyo.valuePathDef_(c8n.offsetInBlock_)
+    steps = b_eyo.pathValueDef_(c8n.offsetInBlock_)
   } else { // statement connection
     var r = eYo.Style.Path.Hilighted.width / 2
     var a = `a ${r},${r} 0 0 1 `

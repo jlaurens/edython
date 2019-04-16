@@ -81,7 +81,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     id: 'eyo-flyout-control-image',
     class: goog.getCssName(cssClass, 'control-image')
   }, this.control_)
-  this.controlPath_ = Blockly.utils.createSvgElement('path', {
+  this.pathControl_ = Blockly.utils.createSvgElement('path', {
     id: 'p-flyout-control'
   }, svg)
   if (eYo.App && eYo.App.flyoutDropDown) {
@@ -422,7 +422,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   this.div_.style.width = width + 'px'
   // this.div_.style.height = height + 'px'
 
-  var path = this.controlPath_
+  var path = this.pathControl_
   if (this.flyout_.eyo.closed) {
     path.setAttribute('d',
       `M${margin + h + this.flyout_.CORNER_RADIUS},${radius} l${-h},${-radius/2} l 0,${radius} z`

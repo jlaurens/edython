@@ -161,12 +161,12 @@ eYo.Test.line_counts = (b, cfg) => {
   ;['head', 'foot', 'main', 'suite', 'black', 'next'].some(k => {
     expected = (cfg && cfg[k]) || (k === 'main' ? 1 : 0)
     available = {
-      head: b.eyo.headCount,
-      foot: b.eyo.footCount,
-      main: b.eyo.mainCount,
-      suite: b.eyo.suiteCount,
-      black: b.eyo.blackCount,
-      next: b.eyo.nextCount
+      head: b.eyo.headHeight,
+      foot: b.eyo.footHeight,
+      main: b.eyo.mainHeight,
+      suite: b.eyo.suiteHeight,
+      black: b.eyo.blackHeight,
+      next: b.eyo.nextHeight
     }[k]
     if (expected !== available) {
       failed = k

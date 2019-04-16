@@ -67,7 +67,7 @@ eYo.Delegate = function (block) {
   }
   // to manage reentrency
   this.reentrant = {}
-  this.mainCount_ = this.blackCount_ = this.suiteCount_ = this.nextCount_ = this.headCount_ = this.footCount_ = 0
+  this.mainHeight_ = this.blackHeight_ = this.suiteHeight_ = this.nextHeight_ = this.headHeight_ = this.footHeight_ = 0
   this.updateMainCount()
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
@@ -165,21 +165,21 @@ Object.defineProperties(eYo.Delegate.prototype, {
   // next are not relevant for expression blocks
   // this may illustrates a bad design choice.
   // To be enhanced.
-  nextCount: {
+  nextHeight: {
     get () {
-      return this.nextCount_
+      return this.nextHeight_
     },
     set (newValue) {
-      var d = newValue - this.nextCount_
+      var d = newValue - this.nextHeight_
       if (d) {
-        this.nextCount_ = newValue
+        this.nextHeight_ = newValue
         this.incrementChangeCount()
         var parent = this.parent
         if (parent) {
           if (parent.next === this) {
-            parent.nextCount += d
+            parent.nextHeight += d
           } else {
-            parent.suiteCount += d
+            parent.suiteHeight += d
           }
         }
       }
@@ -200,36 +200,36 @@ Object.defineProperties(eYo.Delegate.prototype, {
    * The second print has 1 head line, 1 foot line.
    * The third print has 2 head lines, 0 foot line.
    */
-  headCount: {
+  headHeight: {
     get () {
-      return this.headCount_
+      return this.headHeight_
     },
     set (newValue) {
-      var d = newValue - this.headCount_
+      var d = newValue - this.headHeight_
       if (d) {
         this.incrementChangeCount()
-        this.headCount_ = newValue
+        this.headHeight_ = newValue
         var right = this.right
         if (right) {
           // cascade to the right most statement
-          right.headCount += d
+          right.headHeight += d
         }
       }
     }
   },
-  footCount: {
+  footHeight: {
     get () {
-      return this.footCount_
+      return this.footHeight_
     },
     set (newValue) {
-      var d = newValue - this.footCount_
+      var d = newValue - this.footHeight_
       if (d) {
         this.incrementChangeCount()
-        this.footCount_ = newValue
+        this.footHeight_ = newValue
         var left = this.left
         if (left) {
           // cascade to the left most statement
-          left.footCount += d
+          left.footHeight += d
         }
       }
     }
@@ -251,30 +251,30 @@ Object.defineProperties(eYo.Delegate.prototype, {
    * When there is more than one main line,
    * the horizontal siblings may have head and foot counts.
    */
-  mainCount: {
+  mainHeight: {
     get () {
-      return this.mainCount_ // 1 or more
+      return this.mainHeight_ // 1 or more
     },
     set (newValue) {
-      var d = newValue - this.mainCount_
+      var d = newValue - this.mainHeight_
       if (d) {
         this.incrementChangeCount()
-        var old = this.mainCount_
-        this.mainCount_ = newValue
+        var old = this.mainHeight_
+        this.mainHeight_ = newValue
         var right = this.right
         if (right) {
           // if this is the first time, initialize this part with d - 1
-          right.headCount += old ? d : d - 1
+          right.headHeight += old ? d : d - 1
         }
         var parent = this.parent
         if (parent) {
           if (parent.next === this) {
-            parent.nextCount += d
+            parent.nextHeight += d
           } else if (parent.right === this) {
             // parent is a left node
-            parent.footCount += old ? d : d - 1
+            parent.footHeight += old ? d : d - 1
           } else {
-            parent.suiteCount += d
+            parent.suiteHeight += d
           }
         }
       }
@@ -285,45 +285,45 @@ Object.defineProperties(eYo.Delegate.prototype, {
    * The black count is used to display a hole,
    * where blocks should be connected.
    */
-  blackCount: {
+  blackHeight: {
     get () {
-      return this.blackCount_ // 0 or 1
+      return this.blackHeight_ // 0 or 1
     },
     set (newValue) {
-      var d = newValue - this.blackCount_
+      var d = newValue - this.blackHeight_
       if (d) {
         this.incrementChangeCount()
-        this.blackCount_ = newValue
+        this.blackHeight_ = newValue
         var parent = this.parent
         if (parent) {
           // next is not a good design
-          // because blackCount_ has not a straightforward definition
+          // because blackHeight_ has not a straightforward definition
           if (parent.next === this) {
-            parent.nextCount += d
+            parent.nextHeight += d
           } else {
-            parent.suiteCount += d
+            parent.suiteHeight += d
           }
         }
       }
     }
   },
-  suiteCount: {
+  suiteHeight: {
     get () {
-      return this.suiteCount_
+      return this.suiteHeight_
     },
     set (newValue) {
-      var d = newValue - this.suiteCount_
+      var d = newValue - this.suiteHeight_
       if (d) {
         this.incrementChangeCount()
-        this.suiteCount_ = newValue
+        this.suiteHeight_ = newValue
         var parent = this.parent
         if (parent) {
           // next is not a good design
-          // because suiteCount_ has not a straightforward definition
+          // because suiteHeight_ has not a straightforward definition
           if (parent.next === this) {
-            parent.nextCount += d
+            parent.nextHeight += d
           } else {
-            parent.suiteCount += d
+            parent.suiteHeight += d
           }
         }
       }
@@ -2058,14 +2058,14 @@ eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
  * Update the head count.
  */
 eYo.Delegate.prototype.updateMainCount = function () {
-  this.mainCount = 1
+  this.mainHeight = 1
 }
 
 /**
  * Update the black count.
  */
 eYo.Delegate.prototype.updateBlackCount = function () {
-  this.blackCount = 0
+  this.blackHeight = 0
 }
 
 /**
@@ -2106,10 +2106,10 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
   }
   if (eyo.isNext) {
     var target = connection.targetBlock().eyo
-    this.nextCount = target.mainCount + target.blackCount + target.suiteCount + target.nextCount
+    this.nextHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
   } else if (eyo.isSuite) {
     target = connection.targetBlock().eyo
-    this.suiteCount = target.mainCount + target.blackCount + target.suiteCount + target.nextCount
+    this.suiteHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
   }
   eYo.Draw.didConnect(connection, oldTargetC8n, targetOldC8n)
   this.consolidateType()
@@ -2136,10 +2136,10 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
     this.updateGroupBlackCount()
   }
   if (eyo.isNext) {
-    this.nextCount = 0
+    this.nextHeight = 0
     this.incrementChangeCount()
   } else if (eyo.isSuite) {
-    this.suiteCount = 0
+    this.suiteHeight = 0
     this.incrementChangeCount()
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()

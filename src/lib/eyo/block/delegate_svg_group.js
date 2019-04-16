@@ -74,7 +74,7 @@ eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {
  * @param {!Blockly.Block} block
  * @private
  */
-eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_ = function () {
+eYo.DelegateSvg.BaseGroup.prototype.pathGroupShapeDef_ = function () {
   /* eslint-disable indent */
   return eYo.Shape.definitionWithBlock(this)
 } /* eslint-enable indent */
@@ -103,7 +103,7 @@ eYo.DelegateSvg.BaseGroup.prototype.pathCollapsedDef_ = function () {
 eYo.DelegateSvg.BaseGroup.prototype.pathShapeDef_ =
   eYo.DelegateSvg.BaseGroup.prototype.pathContourDef_ =
     eYo.DelegateSvg.BaseGroup.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.BaseGroup.prototype.groupShapePathDef_
+      eYo.DelegateSvg.BaseGroup.prototype.pathGroupShapeDef_
 
 /**
  * Render the suite block, if relevant.
@@ -194,7 +194,7 @@ eYo.DelegateSvg.BaseGroup.prototype.renderDrawInput_ = function (io) {
  * Update the black count.
  */
 eYo.DelegateSvg.Group.prototype.updateBlackCount = function () {
-  this.blackCount = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection()
+  this.blackHeight = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection()
   ? 0
   : this.left || this.right ? 0 : 1
 }
