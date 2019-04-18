@@ -48,15 +48,15 @@ Blockly.Input.prototype.setVisible = function (visible) {
     if (child) {
       if (visible) {
         child.getSvgRoot().removeAttribute('display')
-        if (child.eyo.svgContourGroup_) {
-          child.eyo.svgContourGroup_.removeAttribute('display')
-          child.eyo.svgShapeGroup_.removeAttribute('display')
+        if (child.eyo.svgGroupContour_) {
+          child.eyo.svgGroupContour_.removeAttribute('display')
+          child.eyo.svgGroupShape_.removeAttribute('display')
         }
       } else {
         child.getSvgRoot().setAttribute('display', 'none')
-        if (child.eyo.svgContourGroup_) {
-          child.eyo.svgContourGroup_.setAttribute('display', 'none')
-          child.eyo.svgShapeGroup_.setAttribute('display', 'none')
+        if (child.eyo.svgGroupContour_) {
+          child.eyo.svgGroupContour_.setAttribute('display', 'none')
+          child.eyo.svgGroupShape_.setAttribute('display', 'none')
         }
         child.rendered = false
       }

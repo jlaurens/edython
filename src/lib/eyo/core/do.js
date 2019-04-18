@@ -525,6 +525,9 @@ eYo.Do.valueOf = function (f, thisObject) {
   return goog.isFunction(f) ? f.call(thisObject) : f
 }
 
+/**
+ * Void function frequently used.
+ */
 eYo.Do.nothing = function () {
 }
 

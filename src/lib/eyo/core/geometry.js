@@ -48,55 +48,6 @@ Object.defineProperties(
 // x, y, with, height are in pixels
 // c, l, w, h are in text units
 
-var get_c = function () {
-  return this.c_
-}
-var set_c = function (newValue) {
-  this.c_ = newValue
-}
-var get_l = function () {
-  return this.l_
-}
-var set_l = function (newValue) {
-  this.l_ = newValue
-}
-var get_x = function () {
-  return this.c * eYo.Unit.x
-}
-var set_x = function (newValue) {
-  this.c = Math.round(newValue / eYo.Unit.x)
-}
-var get_y = function () {
-  return this.l * eYo.Unit.y
-}
-var set_y = function (newValue) {
-  this.l = Math.round(newValue / eYo.Unit.y)
-}
-var get_width = function () {
-  return this.w * eYo.Unit.x
-}
-var set_width = function (newValue) {
-  this.w = Math.round(newValue / eYo.Unit.x)
-}
-var get_height = function () {
-  return this.dl * eYo.Unit.y
-}
-var set_height = function (newValue) {
-  this.h = Math.round(newValue / eYo.Unit.y)
-}
-var get_w = function () {
-  return this.w_
-}
-var set_w = function (newValue) {
-  this.w_ = newValue
-}
-var get_h = function () {
-  return this.h_
-}
-var set_h = function (newValue) {
-  this.h_ = newValue
-}
-
 /**
  * `Where` is a descendant of `goog.math.Coordinate` that stores its data in text units.
  */
@@ -106,32 +57,81 @@ eYo.Where = function(c, l) {
 
 goog.inherits(eYo.Where, goog.math.Coordinate)
 
+eYo.Where.get_c = function () {
+  return this.c_
+}
+eYo.Where.set_c = function (newValue) {
+  this.c_ = newValue
+}
+eYo.Where.get_l = function () {
+  return this.l_
+}
+eYo.Where.set_l = function (newValue) {
+  this.l_ = newValue
+}
+eYo.Where.get_x = function () {
+  return this.c * eYo.Unit.x
+}
+eYo.Where.set_x = function (newValue) {
+  this.c = Math.round(newValue / eYo.Unit.x)
+}
+eYo.Where.get_y = function () {
+  return this.l * eYo.Unit.y
+}
+eYo.Where.set_y = function (newValue) {
+  this.l = Math.round(newValue / eYo.Unit.y)
+}
+eYo.Where.get_width = function () {
+  return this.w * eYo.Unit.x
+}
+eYo.Where.set_width = function (newValue) {
+  this.w = Math.round(newValue / eYo.Unit.x)
+}
+eYo.Where.get_height = function () {
+  return this.dl * eYo.Unit.y
+}
+eYo.Where.set_height = function (newValue) {
+  this.h = Math.round(newValue / eYo.Unit.y)
+}
+eYo.Where.get_w = function () {
+  return this.w_
+}
+eYo.Where.set_w = function (newValue) {
+  this.w_ = newValue
+}
+eYo.Where.get_h = function () {
+  return this.h_
+}
+eYo.Where.set_h = function (newValue) {
+  this.h_ = newValue
+}
+
 Object.defineProperties(
   eYo.Where.prototype,
   {
     c: {
-      get: get_c,
-      set: set_c
+      get: eYo.Where.get_c,
+      set: eYo.Where.set_c
     },
     l: {
-      get: get_l,
-      set: set_l
+      get: eYo.Where.get_l,
+      set: eYo.Where.set_l
     },
     w: {
-      get: get_c,
-      set: set_c
+      get: eYo.Where.get_c,
+      set: eYo.Where.set_c
     },
     h: {
-      get: get_l,
-      set: set_l
+      get: eYo.Where.get_l,
+      set: eYo.Where.set_l
     },
     x: {
-      get: get_x,
-      set: set_x
+      get: eYo.Where.get_x,
+      set: eYo.Where.set_x
     },
     y: {
-      get: get_y,
-      set: set_y
+      get: eYo.Where.get_y,
+      set: eYo.Where.set_y
     }
   }
 )
@@ -183,7 +183,7 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
 }
 
 /**
- * `Size` is a descendant of `goog.math.Size` that stores its data in text units.
+ * `Size` is a descendant of `goog.math.Size` that stores its data in text units instead of workspace units.
  */
 eYo.Size = function (w, h) {
   this.set(w, h)
@@ -211,36 +211,36 @@ Object.defineProperties(
       }
     },
     c: {
-      get: get_c,
-      set: set_c
+      get: eYo.Where.get_c,
+      set: eYo.Where.set_c
     },
     l: {
-      get: get_l,
-      set: set_l
+      get: eYo.Where.get_l,
+      set: eYo.Where.set_l
     },
     w: {
-      get: get_c,
-      set: set_c
+      get: eYo.Where.get_c,
+      set: eYo.Where.set_c
     },
     h: {
-      get: get_l,
-      set: set_l
+      get: eYo.Where.get_l,
+      set: eYo.Where.set_l
     },
     x: {
-      get: get_x,
-      set: set_x
+      get: eYo.Where.get_x,
+      set: eYo.Where.set_x
     },
     y: {
-      get: get_y,
-      set: set_y
+      get: eYo.Where.get_y,
+      set: eYo.Where.set_y
     },
     dx: {
-      get: get_x,
-      set: set_x
+      get: eYo.Where.get_x,
+      set: eYo.Where.set_x
     },
     dy: {
-      get: get_y,
-      set: set_y
+      get: eYo.Where.get_y,
+      set: eYo.Where.set_y
     }
   }
 )
@@ -294,36 +294,36 @@ Object.defineProperties(
   eYo.TRect.prototype,
   {
     c: {
-      get: get_c,
-      set: set_c
+      get: eYo.Where.get_c,
+      set: eYo.Where.set_c
     },
     l: {
-      get: get_l,
-      set: set_l
+      get: eYo.Where.get_l,
+      set: eYo.Where.set_l
     },
     w: {
-      get: get_w,
-      set: set_w
+      get: eYo.Where.get_w,
+      set: eYo.Where.set_w
     },
     h: {
-      get: get_h,
-      set: set_h
+      get: eYo.Where.get_h,
+      set: eYo.Where.set_h
     },
     left: {
-      get: get_x,
-      set: set_x
+      get: eYo.Where.get_x,
+      set: eYo.Where.set_x
     },
     top: {
-      get: get_y,
-      set: set_y
+      get: eYo.Where.get_y,
+      set: eYo.Where.set_y
     },
     width: {
-      get: get_width,
-      set: set_width
+      get: eYo.Where.get_width,
+      set: eYo.Where.set_width
     },
     height: {
-      get: get_height,
-      set: set_height
+      get: eYo.Where.get_height,
+      set: eYo.Where.set_height
     }
   }
 )

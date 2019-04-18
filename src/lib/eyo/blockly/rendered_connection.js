@@ -28,6 +28,16 @@ goog.require('eYo.Where')
 /**
  * Class for a connection delegate.
  * @param {!Blockly.Connection} connection the connection owning the delegate
+ * @readonly
+ * @property {*} node  the node if any
+ * @property {boolean} startOfLine  whether the connection is an input connection starting a line.
+ * @property {boolean} startOfStatement  whether the connection is an input connection starting a block.
+ * @readonly
+ * @property {string} type  the type of the connection
+ * @readonly
+ * @property {boolean} targetIsMissing  whether a target is missing
+ * @readonly
+ * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
 eYo.ConnectionDelegate = function (connection) {
@@ -40,9 +50,22 @@ eYo.ConnectionDelegate = function (connection) {
 }
 
 Object.defineProperties(eYo.ConnectionDelegate.prototype, {
+  node: {
+    get () {
+      var b = this.connection.sourceBlock_
+      return b && b.eyo
+    }
+  },
   type: {
     get () {
       return this.connection.type
+    }
+  },
+  isSuperior: {
+    get () {
+      return this.type === Blockly.INPUT_VALUE ||
+       this.type === Blockly.NEXT_STATEMENT ||
+       this.type === Blockly.RIGHT_STATEMENT
     }
   },
   c: { // in block text coordinates
@@ -641,65 +664,6 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
 }
 
 /**
- * Highlight the receiver's connection
- */
-eYo.ConnectionDelegate.prototype.highlight = function () {
-  var c8n = this.connection
-  var block = c8n.sourceBlock_
-  if (!block.workspace) {
-    return
-  }
-  var c_eyo = c8n.eyo
-  var steps
-  if (c_eyo.isInput) {
-    if (c8n.isConnected()) {
-      steps = c8n.targetBlock().eyo.pathValueDef_()
-    } else {
-      steps = eYo.Shape.definitionWithConnectionDlgt(this)
-      Blockly.Connection.highlightedPath_ =
-      Blockly.utils.createSvgElement('path',
-        {
-          class: 'blocklyHighlightedConnectionPath',
-          d: steps
-        },
-        block.getSvgRoot()
-      )
-      return
-    }
-  } else if (c_eyo.isOutput) {
-    steps = block.eyo.pathValueDef_()
-  } else {
-    if (c_eyo.isLeft) {
-      console.log('isLeft')
-      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo)
-    } else if (c_eyo.isRight) {
-      console.log('isRight')
-      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo)
-    } else {
-      // this is a statement connection
-      var w = block.width - eYo.Unit.x / 2
-      var r = eYo.Style.Path.Hilighted.width / 2
-      var a = `a ${r},${r} 0 0 1`
-      if (block.eyo.inputSuite) {
-        // this is a group
-        if (c_eyo.isSuite) {
-          w -= eYo.Font.tabWidth
-        } else if (c_eyo.isNext) {
-          w = eYo.Font.tabWidth + 2 * eYo.Shape.shared.stmt_radius
-        }
-      }
-      steps = `m ${w},${-r} ${a} 0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l} ${a} 0,${-2 * r} z`
-    }
-  }
-  Blockly.Connection.highlightedPath_ =
-  Blockly.utils.createSvgElement('path',
-    {'class': 'blocklyHighlightedConnectionPath',
-      'd': steps,
-      transform: `translate(${this.x || 0},${this.y || 0})`},
-    block.getSvgRoot())
-}
-
-/**
  * Class for a connection between blocks that may be rendered on screen.
  * @param {!Blockly.Block} source The block establishing this connection.
  * @param {number} type The type of the connection.
@@ -725,7 +689,7 @@ Blockly.RenderedConnection.prototype.highlight = (() => {
   var highlight = Blockly.RenderedConnection.prototype.highlight
   return function () {
     if (this.eyo) {
-      this.eyo.highlight()
+      this.eyo.b_eyo.renderer.highlightConnection(this.eyo)
       return
     }
     highlight.call(this)
@@ -1018,11 +982,11 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.hasSelect()) {
+                  if (child.eyo.renderer.hasSelect {
                     child.unselect()
                     parent.eyo.block_.select()
                   }
-                  child.eyo.makeBlockWrapped()
+                  child.eyo.wrapped_ = true
                 } else {
                   // if this connection was selected, the newly connected block should be selected too
                   if (eYo.Selected.connection === parentC8n) {
@@ -1164,8 +1128,8 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = (() => {
                         // currently unwrapping a block,
                         // this occurs while removing the parent
                         // if the parent was selected, select the child
-                        child.eyo.makeBlockUnwrapped_()
-                        if (parent.eyo.hasSelect()) {
+                        child.eyo.wrapped_ = false
+                        if (parent.eyo.renderer.hasSelect) {
                           parent.unselect()
                           child.select()
                         }
@@ -1480,8 +1444,7 @@ Blockly.Connection.prototype.setCheck = function(check) {
     this.check_ = null;
   }
   return this;
-};
-
+}
 
 /**
  * Does the connection belong to a superior block (higher in the source stack)?
@@ -1491,4 +1454,4 @@ eYo.Connection.prototype.isSuperior = function() {
   return this.type == Blockly.INPUT_VALUE ||
   this.type == Blockly.NEXT_STATEMENT ||
   this.type == Blockly.RIGHT_STATEMENT
-};
+}

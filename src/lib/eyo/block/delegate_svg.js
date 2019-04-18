@@ -18,7 +18,7 @@ goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Data')
 goog.require('eYo.Slot')
-goog.require('eYo.Shape')
+goog.require('eYo.Renderer')
 goog.require('eYo.Where')
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
@@ -48,24 +48,19 @@ Object.defineProperties(
         return this.block_.workspace
       }
     },
-    svgGroup_: {
-      get () {
-        return this.block_.svgGroup_
-      }
-    },
-    hasLeftEdge: {
-      get () {
-        return !this.wrapped_ && !this.locked_
-      }
-    },
-    hasRightEdge: {
-      get () {
-        return !this.wrapped_ && !this.locked_
-      }
-    },
     isCollapsed: {
       get () {
         return this.block_.isCollapsed()
+      }
+    },
+    span: {
+      get () {
+        return this.span_
+      }
+    },
+    renderer: {
+      get () {
+        return this.renderer_
       }
     }
   }
@@ -83,22 +78,12 @@ eYo.DelegateSvg.prototype.changeEnd = function () {
   return yorn
 }
 
-/**
- * Increment the change count.
- * Force to recompute the chain tile.
- * For edython.
-* @param {*} deep  Whether to propagate the message to children.
-  */
-eYo.DelegateSvg.prototype.incrementChangeCount = function (deep) {
-  // force to compute a new chain tile
-  eYo.DelegateSvg.superClass_.incrementChangeCount.call(this, deep)
-}
-
 eYo.DelegateSvg.Manager = eYo.Delegate.Manager
 
 /**
  * Method to register an expression or a statement block.
  * The delegate is searched as a DelegateSvg element
+ * @param{!string} key  key is the last component of the block type as a dotted name.
  */
 eYo.DelegateSvg.Manager.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
@@ -117,60 +102,137 @@ eYo.DelegateSvg.Manager.register = function (key) {
   available.push(prototypeName)
 }
 
-/**
- * This is the shape used to draw the outline of a block
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathShape_ = undefined
-
-/**
- * This is the shape used to draw the background of a block
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathContour_ = undefined
-
-/**
- * This is the shape used to draw a collapsed block.
- * Background or outline ?
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathCollapsed_ = undefined
-
-/**
- * This is the shape used to draw a block...
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathInner_ = undefined
-
-/**
- * This is the shape used to draw an highlighted block contour when selected.
- * When a block is hilighted,
- * the outer line stroke width is bigger and the color is different,
- * the inner line have the same width, only the color changes.
- * In general, this is a duplicate of svgPathShape_,
- * but this is not (yet) a requiremenent
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathSelect_ = undefined
-
-/**
- * This is the shape used to draw an highlighted block contour when a parent is selected.
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathHilight_ = undefined
-
-/**
- * This is the shape used to draw an highlighted connection contour.
- * @type {SVGPathElement}
- * @private
- */
-eYo.DelegateSvg.prototype.svgPathConnection_ = undefined
+// TRANSITION, next is aimed to be removed
+Object.defineProperties(eYo.DelegateSvg.prototype, {
+  svgGroup_: {
+    get () {
+      return this.block_.svgGroup_
+    }
+  },
+    /**
+   * This is the contour group.
+   * @type {SVGGroupElement}
+   * @private
+   */
+  svgGroupShape_: {
+    get () {
+      return this.renderer.driver.groupShape_
+    },
+    set (newValue) {
+      this.renderer.driver.groupShape_ = newValue
+    }
+  },
+  /**
+   * This is the contour group.
+   * @type {SVGGroupElement}
+   * @private
+   */
+  svgGroupContour_: {
+    get () {
+      return this.renderer.driver.groupContour_
+    },
+    set (newValue) {
+      this.renderer.driver.groupContour_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw the outline of a block
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathShape_: {
+    get () {
+      return this.renderer.driver.pathShape_
+    },
+    set (newValue) {
+      this.renderer.driver.pathShape_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw the background of a block
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathContour_: {
+    get () {
+      return this.renderer.driver.pathContour_
+    },
+    set (newValue) {
+      this.renderer.driver.pathContour_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw a collapsed block.
+   * Background or outline ?
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathCollapsed_: {
+    get () {
+      return this.renderer.driver.pathCollapsed_
+    },
+    set (newValue) {
+      this.renderer.driver.pathCollapsed_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw a block...
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathInner_: {
+    get () {
+      return this.renderer.driver.pathInner_
+    },
+    set (newValue) {
+      this.renderer.driver.pathInner_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw an highlighted block contour when selected.
+   * When a block is hilighted,
+   * the outer line stroke width is bigger and the color is different,
+   * the inner line have the same width, only the color changes.
+   * In general, this is a duplicate of svgPathShape_,
+   * but this is not (yet) a requiremenent
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathSelect_: {
+    get () {
+      return this.renderer.driver.pathSelect_
+    },
+    set (newValue) {
+      this.renderer.driver.pathSelect_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw an highlighted block contour when a parent is selected.
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathHilight_: {
+    get () {
+      return this.renderer.driver.pathHilight_
+    },
+    set (newValue) {
+      this.renderer.driver.pathHilight_ = newValue
+    }
+  },
+  /**
+   * This is the shape used to draw an highlighted connection contour.
+   * @type {SVGPathElement}
+   * @private
+   */
+  svgPathConnection_: {
+    get () {
+      return this.renderer.driver.pathConnection_
+    },
+    set (newValue) {
+      this.renderer.driver.pathConnection_ = newValue
+    }
+  }
+})
 
 /**
  * When set, used to create an input value.
@@ -198,7 +260,7 @@ eYo.DelegateSvg.prototype.init = eYo.Decorate.reentrant_method(
   function () {
     this.changeWrap(
       function () {
-        this.size = new eYo.Size()
+        this.span_ = new eYo.Span(this)
         eYo.DelegateSvg.superClass_.init.call(this)
         var block = this.block_
         block.setTooltip('')
@@ -216,30 +278,14 @@ eYo.DelegateSvg.prototype.deinit = function () {
   if (this === eYo.Selected.eyo) {
     // this block was selected, select the block below or above before deletion
     // this does not work most probably because it is the wrong place
-    var target
-    if ((target = this.next) || (target = this.previous) || (target = this.output)) {
+    var t_eyo
+    if ((t_eyo = this.next) || (t_eyo = this.previous) || (t_eyo = this.output)) {
       setTimeout(() => {
-        target.eyo.select()
+        t_eyo.select()
       })// broken for outputConnection ?
     }
   }
-  goog.dom.removeNode(this.svgRoot_)
-  this.svgRoot_ = undefined
-  // just in case the path were not already removed as child or a removed parent
-  goog.dom.removeNode(this.svgPathShape_)
-  this.svgPathShape_ = undefined
-  goog.dom.removeNode(this.svgPathContour_)
-  this.svgPathContour_ = undefined
-  goog.dom.removeNode(this.svgPathCollapsed_)
-  this.svgPathCollapsed_ = undefined
-  goog.dom.removeNode(this.svgPathInner_)
-  this.svgPathInner_ = undefined
-  goog.dom.removeNode(this.svgPathSelect_)
-  this.svgPathSelect_ = undefined
-  goog.dom.removeNode(this.svgPathHilight_)
-  this.svgPathHilight_ = undefined
-  goog.dom.removeNode(this.svgPathConnection_)
-  this.svgPathConnection_ = undefined
+  this.renderer_ && this.renderer_.dispose() && (this.renderer_ = null)
   eYo.DelegateSvg.superClass_.deinit.call(this)
 }
 
@@ -257,68 +303,10 @@ eYo.DelegateSvg.prototype.preInitSvg = function () {
  * No rendering.
  */
 eYo.DelegateSvg.prototype.postInitSvg = function () {
-  if (this.svgPathContour_) {
+  if (this.renderer_) {
     return
   }
-  var block = this.block_
-  // We still need those paths
-  // goog.dom.removeNode(block.svgPath_)
-  // delete block.svgPath_
-  goog.dom.removeNode(block.svgPathLight_)
-  delete block.svgPathLight_
-  goog.dom.removeNode(block.svgPathDark_)
-  delete block.svgPathDark_
-  // this.svgRoot_ = block.svgGroup_
-  // block.svgGroup_ = Blockly.utils.createSvgElement('g',
-  //   {'class': 'eyo-root'}, null)
-  // goog.dom.insertChildAt(this.svgRoot_, block.svgGroup_, 0)
-  this.svgPathInner_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-inner'
-  }, null)
-  this.svgPathCollapsed_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-collapsed'
-  }, null)
-  this.svgPathContour_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-contour'
-  }, null)
-  this.svgPathShape_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-shape'
-  }, null)
-  this.svgPathSelect_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-selected'
-  }, null)
-  this.svgPathHilight_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-hilighted'
-  }, null)
-  this.svgPathConnection_ = Blockly.utils.createSvgElement('path', {
-    'class': 'eyo-path-connection eyo-path-hilighted'
-  }, null)
-  if (this.outputConnection && this.outputConnection.targetBlock()) {
-    console.log('CREATING path while ALREADY connected')
-  }
-  this.svgContourGroup_ = Blockly.utils.createSvgElement('g',
-    {'class': 'eyo-contour'}, null)
-  goog.dom.appendChild(this.svgContourGroup_, this.svgPathInner_)
-  goog.dom.appendChild(this.svgContourGroup_, this.svgPathCollapsed_)
-  goog.dom.appendChild(this.svgContourGroup_, this.svgPathContour_)
-  this.svgShapeGroup_ = Blockly.utils.createSvgElement('g',
-    {'class': 'eyo-shape'}, null)
-  goog.dom.appendChild(this.svgShapeGroup_, this.svgPathShape_)
-  goog.dom.classlist.add(/** @type {!Element} */ (block.svgGroup_),
-    'eyo-block')
-  if (!block.workspace.options.readOnly && !this.eventsInit_) {
-    Blockly.bindEventWithChecks_(
-      block.getSvgRoot(), 'mousedown', block, block.onMouseDown_);
-    Blockly.bindEventWithChecks_(
-      block.getSvgRoot(), 'mouseup', block, block.onMouseUp_);
-    // I could not achieve to use only one binding
-    // With 2 bindings all the mouse events are catched,
-    // but some, not all?, are catched twice.
-    Blockly.bindEventWithChecks_(
-      this.svgPathContour_, 'mousedown', block, block.onMouseDown_);
-    Blockly.bindEventWithChecks_(
-      this.svgPathContour_, 'mouseup', block, block.onMouseUp_);
-    }
+  this.renderer_ = new eYo.renderer(this)
   this.eventsInit_ = true
 }
 
@@ -329,84 +317,16 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
-  var block = this.block_
-  if (block.parentBlock_) {
-    // this block was connected, so its paths were located in the parents
-    // groups.
-    // First step, remove the relationship between the receiver
-    // and the old parent, then link the receiver with the new parent.
-    // this second step is performed in the `parentDidChange` method.
-    var svgRoot = block.getSvgRoot()
-    if (svgRoot) {
-      // Move this block up the DOM.  Keep track of x/y translations.
-      var xy = block.getRelativeToSurfaceXY()
-      block.workspace.getCanvas().appendChild(svgRoot)
-      svgRoot.setAttribute('transform', 'translate(' + xy.x + ',' + xy.y + ')')
-      if (this.svgContourGroup_) {
-        goog.dom.insertChildAt(svgRoot, this.svgContourGroup_, 0)
-        this.svgContourGroup_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
-          'eyo-inner')
-        goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
-        this.svgShapeGroup_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
-          'eyo-inner')
-      }
-    }
-  }
+  this.renderer.parentWillChange(newParent)
 }
-
-/**
- * Whether the contour of the receiver is above or below
- * the parent's one.
- * Suitable for statements.
- * Subclassed for expressions
- */
-eYo.DelegateSvg.prototype.contourAboveParent = true
 
 /**
  * Called when the parent did just change.
- * Side effect, if the chid block has been `Svg` inited
- * then the parent block will be.
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentDidChange = function (newParent) {
-  // This is the original code found in
-  // `Blockly.BlockSvg.prototype.setParent`
-  if (newParent) {
-    var block = this.block_
-    var svgRoot = block.getSvgRoot()
-    var oldXY = block.getRelativeToSurfaceXY()
-    newParent.getSvgRoot().appendChild(svgRoot)
-    var newXY = block.getRelativeToSurfaceXY()
-    // Move the connections to match the child's new position.
-    block.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y)
-    if (this.svgContourGroup_ && newParent.eyo.svgContourGroup_) {
-      if (this.contourAboveParent) {
-        goog.dom.appendChild(newParent.eyo.svgContourGroup_,
-          this.svgContourGroup_)
-      } else {
-        goog.dom.insertChildAt(newParent.eyo.svgContourGroup_,
-          this.svgContourGroup_, 0)
-      }
-      goog.dom.appendChild(newParent.eyo.svgShapeGroup_,
-        this.svgShapeGroup_)
-      goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
-        'eyo-inner')
-      goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
-        'eyo-inner')
-    }
-  }
-}
-
-/**
- * Insert the svg root of the head slot in the svg group of the receiver
- * at the exact location where it belongs.
- */
-eYo.DelegateSvg.prototype.svgInsertHeadSlot = function () {
-  if (this.headSlot) {
-    goog.dom.appendChild(this.block_.getSvgRoot(), this.headSlot.getSvgRoot())
-  }
+  eYo.DelegateSvg.superClass_.parentDidChange.call(this, newParent)
+  this.renderer && this.renderer.parentDidChange(newParent)
 }
 
 /**
@@ -473,19 +393,19 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
     c8n.tighten_()
   }
   var do_it = !target.rendered ||
-  (!this.upRendering &&
+  (!this.renderer.up &&
     !eYo.Connection.disconnectedParentC8n &&
     !eYo.Connection.disconnectedChildC8n&&
     !eYo.Connection.connectedParentC8n)
   if (do_it) {
     try {
-      target.eyo.downRendering = true
+      target.eyo.renderer.down = true
       target.eyo.render(false, recorder)
     } catch (err) {
       console.error(err)
       throw err
     } finally {
-      target.eyo.downRendering = false
+      target.eyo.renderer.down = false
     }
     return true
   }
@@ -531,208 +451,9 @@ eYo.DelegateSvg.prototype.renderSuite_ = function (io) {
  */
 // deleted blocks are rendered during deletion
 // this should be avoided
-eYo.DelegateSvg.prototype.render = (() => {
-  // this is a closure
-  /**
-   * Render the parent block, if relevant.
-   * @param {Object} recorder  A recorder object.
-   * @param {boolean=} optBubble If false, just render this block.
-   *   If true, also render block's parent, grandparent, etc.  Defaults to true.
-   * @return {boolean=} true if an rendering message was sent, false otherwise.
-   */
-  var renderDrawParent = function (recorder, optBubble) {
-    // `this` is a block delegate
-    if (optBubble === false || this.downRendering) {
-      return
-    }
-    // Render all blocks above this one (propagate a reflow).
-    // Only when the render message did not come from above!
-    var parent = this.parent
-    if (parent) {
-      var justConnected = eYo.Connection.connectedParentC8n && this.outputConnection === eYo.Connection.connectedParentC8n.targetConnection
-      if (!parent.downRendering) {
-        try {
-          parent.upRendering = true
-          var old = this.upRendering
-          this.upRendering = true
-          if (eYo.DelegateSvg.debugStartTrackingRender) {
-            console.log(eYo.DelegateSvg.debugPrefix, 'UP')
-          }
-          parent.render(!justConnected, recorder)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          parent.upRendering = false
-          this.upRendering = old
-        }
-        if (justConnected) {
-          if (parent.parent) {
-            parent = parent.root
-            try {
-              parent.upRendering = true
-              if (eYo.DelegateSvg.debugStartTrackingRender) {
-                console.log(eYo.DelegateSvg.debugPrefix, 'UP')
-              }
-              parent.render(false, recorder)
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
-              parent.upRendering = false
-            }
-          }
-        }
-        return true
-      }
-    } else {
-      // Top-most block.  Fire an event to allow scrollbars to resize.
-      this.workspace.resizeContents()
-    }
-  }
-  var longRender = eYo.Decorate.reentrant_method(
-    'longRender',
-    function (optBubble, recorder) {
-      if (eYo.DelegateSvg.debugStartTrackingRender) {
-        var n = eYo.DelegateSvg.debugCount[block.id]
-        eYo.DelegateSvg.debugCount[block.id] = (n||0)+1
-        if (!eYo.DelegateSvg.debugPrefix.length) {
-          console.log('>>>>>>>>>>')
-        }
-        eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix + '.'
-        console.log(eYo.DelegateSvg.debugPrefix, block.type, n, block.id)
-        if (n > 1) {
-          n = n + 0
-        }
-      }
-      try {
-        Blockly.Field.startCache()
-        var block = this.block_
-        this.minWidth = block.width = 0
-        this.consolidate()
-        this.willRender_(recorder)
-        var io = this.renderDraw_(recorder)
-        this.layoutConnections_(io)
-        this.renderDrawNext_(io)
-        this.renderMove_(io)
-        this.updateAllPaths_()
-        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        block.rendered = true
-        this.didRender_(io)
-        if (eYo.traceOutputConnection && block.outputConnection) {
-          console.log('block.outputConnection', block.outputConnection.x_, block.outputConnection.y_)
-        }
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        Blockly.Field.stopCache()  
-        if (eYo.DelegateSvg.debugStartTrackingRender &&  eYo.DelegateSvg.debugPrefix.length) {
-          eYo.DelegateSvg.debugPrefix = eYo.DelegateSvg.debugPrefix.substring(1)
-        }
-      }    
-    }
-  )
-  return function (optBubble, recorder) {
-    if (!this.isReady) {
-      return
-    }
-    var block = this.block_
-    if (!this.isEditing && (this.isDragging_ || this.change.level || !this.workspace)) {
-      return
-    }
-    recorder && this.renderDrawPending_(recorder, !this.wrapped_ && eYo.Key.LEFT)
-    // rendering is very special when this is just a matter of
-    // statement connection
-    if (block.rendered) {
-      if (eYo.Connection.disconnectedChildC8n && this.previousConnection === eYo.Connection.disconnectedChildC8n) {
-        // this block is the top one
-        var io = this.willShortRender_(recorder)
-        this.layoutConnections_(io)
-        this.renderDrawNext_(io)
-        this.renderMove_(io)
-        this.updateAllPaths_()
-        this.change.save.render = this.change.count
-        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        return
-      } else if (eYo.Connection.disconnectedParentC8n && this.nextConnection === eYo.Connection.disconnectedParentC8n) {
-        // this block is the bottom one
-        // but it may belong to a suite
-        var io = this.willShortRender_(recorder)
-        this.layoutConnections_(io)
-        this.renderDrawNext_(io)
-        this.renderMove_(io)
-        this.updateAllPaths_()
-        this.change.save.render = this.change.count
-        renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        return
-      } else if (eYo.Connection.connectedParentC8n) {
-        if (this.outputConnection && eYo.Connection.connectedParentC8n === this.outputConnection.targetConnection) {
-          // this is not a statement connection
-          // no shortcut
-        } else if (this.previousConnection && eYo.Connection.connectedParentC8n === this.previousConnection.targetConnection) {
-          var io = this.willShortRender_(recorder)
-          this.layoutConnections_(io)
-          this.renderDrawNext_(io)
-          this.renderMove_(io)
-          this.updateAllPaths_()
-          this.change.save.render = this.change.count
-          renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        } else if (this.nextConnection && eYo.Connection.connectedParentC8n === this.nextConnection) {
-          var io = this.willShortRender_(recorder)
-          this.layoutConnections_(io)
-          this.renderDrawNext_(io)
-          this.renderMove_(io)
-          this.updateAllPaths_()
-          this.change.save.render = this.change.count
-          renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        }
-      }
-    }
-    if (!this.downRendering && this.outputConnection) {
-      // always render from a line start id est
-      // an orphan block or a statement block
-      var parent
-      if ((parent = this.parent)) {
-        var next
-        while (parent.outputConnection && (next = parent.parent)) {
-          parent = next
-        }
-        // parent has no output connection or has no parent
-        // which means that it is an expression block's delegate.
-        recorder && (recorder.field.last = undefined)
-        if (!parent.downRendering) {
-          if (!parent.upRendering && this.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.eyo.b_eyo === this) {
-            try {
-              parent.upRendering = true
-              parent.render(optBubble, recorder)
-            } catch (err) {
-              console.error(err)
-              throw err
-            } finally {
-              parent.upRendering = false
-            }
-          } else {
-            parent.render(optBubble, recorder)
-          }
-        }
-        return
-      }
-    }
-    if (this.change.save.render === this.change.count) {
-      // minimal rendering
-      var io = this.willShortRender_(recorder)
-      this.layoutConnections_(io)
-      this.renderDrawNext_(io)
-      this.renderMove_(io)
-      this.updateAllPaths_()
-      renderDrawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-      return
-    }
-    longRender.call(this, optBubble, recorder)
-    this.change.save.render = this.change.count
-  }
-}) ()
+eYo.DelegateSvg.prototype.render = function () {
+  this.renderer.render()
+}
 
 /**
  * Whether the block is sealed to its parent.
@@ -741,1074 +462,6 @@ eYo.DelegateSvg.prototype.render = (() => {
  * @private
  */
 eYo.DelegateSvg.prototype.wrapped_ = undefined
-
-/**
- * Will draw the block, short version.
- * The print statement needs some preparation before drawing.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.willShortRender_ = function (recorder) {
-  if (this.inputSuite) {
-    this.size.h = this.mainHeight + this.blackHeight + this.suiteHeight
-  }
-  return this.newDrawRecorder(recorder)
-}
-
-/**
- * Will draw the block. Default implementation does nothing.
- * The print statement needs some preparation before drawing.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.willRender_ = function (recorder) {
-  var block = this.block_
-  if (block.svgGroup_) {
-    var F = this.locked_ && block.outputConnection && block.getSurroundParent()
-      ? goog.dom.classlist.add
-      : goog.dom.classlist.remove
-    var FF = (elt, classname) => {
-      if (/** @type {!Element} */(elt)) {
-        F(elt, classname)
-      }
-    }
-    FF(block.svgGroup_, 'eyo-locked')
-    FF(this.svgPathShape_, 'eyo-locked')
-    FF(this.svgPathContour_, 'eyo-locked')
-    FF(this.svgPathCollapsed_, 'eyo-locked')
-    FF(this.svgPathSelect_, 'eyo-locked')
-    FF(this.svgPathHilight_, 'eyo-locked')
-    // change the class of the shape on error
-    F = Object.keys(this.errors).length
-      ? goog.dom.classlist.add
-      : goog.dom.classlist.remove
-    FF(this.svgPathShape_, 'eyo-error')
-    FF(this.svgPathContour_, 'eyo-error')
-    FF(this.svgPathCollapsed_, 'eyo-error')
-    FF(this.svgPathSelect_, 'eyo-error')
-    FF(this.svgPathHilight_, 'eyo-error')
-  }
-}
-
-/**
- * Did draw the block. Default implementation does nothing.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.didRender_ = function (recorder) {
-}
-
-/**
- * Layout previous, next and output block connections.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.renderMove_ = function (recorder) {
-  var block = this.block_
-  block.renderMoveConnections_()
-  // var blockTL = block.getRelativeToSurfaceXY()
-  // this.forEachSlot((slot) => {
-  //   var input = slot.input
-  //   if(input) {
-  //     var c8n = input.connection
-  //     if (c8n) {
-  //       c8n.moveToOffset(blockTL)
-  //       if (c8n.isConnected()) {
-  //         c8n.tighten_();
-  //       }
-  //     }
-  //   }
-  // })
-}
-
-/**
- * Layout previous, next and output block connections.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.layoutConnections_ = function (recorder) {
-  var c8n = this.outputConnection
-  if (c8n) {
-    c8n.eyo.setOffset()
-  } else {
-    c8n = this.previousConnection
-    if (c8n) {
-      c8n.eyo.setOffset()
-    }
-    c8n = this.nextConnection
-    if (c8n) {
-      if (this.isCollapsed) {
-        c8n.eyo.setOffset(0, 2)
-      } else {
-        c8n.eyo.setOffset(0, this.size.h)
-      }
-    }
-    c8n = this.leftStmtConnection
-    if (c8n) {
-      c8n.eyo.setOffset()
-    }
-  }
-}
-
-/**
- * Block shape. Default implementation throws.
- * Subclasses must override it. Used in renderDraw_.
- * @private
- */
-eYo.DelegateSvg.prototype.pathShapeDef_ = function () {
-  goog.asserts.assert(false, 'pathShapeDef_ must be overriden by ' + this)
-}
-
-/**
- * Block outline. Default implementation forwards to pathShapeDef_.
- * @private
- */
-eYo.DelegateSvg.prototype.pathContourDef_ = eYo.DelegateSvg.prototype.pathShapeDef_
-
-/**
- * Highlighted block outline. Default implementation forwards to pathShapeDef_.
- * @private
- */
-eYo.DelegateSvg.prototype.pathHilightDef_ = eYo.DelegateSvg.prototype.pathShapeDef_
-
-/**
- * Highlighted block outline. Default implementation does nothing.
- * Groups will have a special definition because this wider stroke
- * does not enclose the child blocks.
- * @private
- */
-eYo.DelegateSvg.prototype.pathHilightDef_ = undefined
-
-/**
- * Highlighted connection outline.
- * When a block is selected and one of its connection is also selected
- * the ui displays a bold line on the connection. When the block has wrapped input,
- * the selected connection may belong to a wrapped block.
- * @private
- */
-eYo.DelegateSvg.prototype.pathConnectionDef_ = function () {
-  return eYo.Selected.pathConnectionDef()
-}
-
-/**
- * Extra disabled block outline. Default implementation return a void string.
- * @private
- */
-eYo.DelegateSvg.prototype.pathCollapsedDef_ = function () {
-  return ''
-}
-
-/**
- * Draw the path of the block.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.renderDraw_ = function (recorder) {
-  if (this.svgPathInner_) {
-    // if the above path does not exist
-    // the block is not yet ready for rendering
-    var block = this.block_
-    var d
-    // when defined, `recorder` comes from
-    // the parent's `renderDrawValueInput_` method.
-    var io = this.renderDrawModelBegin_(recorder)
-    try {
-      d = this.renderDrawModel_(io)
-      this.svgPathInner_.setAttribute('d', d)
-    } catch (err) {
-      console.error (err)
-      throw err
-    } finally {
-      this.renderRight_(io) || this.renderSuite_(io)
-      block.height = this.size.height
-      this.updateAllPaths_()
-    }
-  }
-  return io
-}
-
-/**
- * Align the right edges by changing the size of all the connected statement blocks.
- * The default implementation does nothing.
- * @param {*} recorder
- * @protected
- */
-eYo.DelegateSvg.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
-  'alignRightEdges_',
-  function (recorder) {
-    if (this.parent || !this.isStmt || !this.block_.rendered || !this.block_.workspace || !this.isReady) {
-      return
-    }
-    var right = 0
-    var t = eYo.Font.tabWidth
-    this.forEachStatement((eyo, depth) => {
-      if (eyo.minWidth) {
-        var w = t * depth + eyo.minWidth
-        // all the right blocks now
-        var r = eyo
-        while ((r = r.right)) {
-          w += r.minWidth - eYo.Unit.x // - eYo.Unit.x because blocks will overlap one space for the vertical boundaries
-        }
-        right = Math.max(right, w)
-      }
-    })
-    if (right) {
-      this.forEachStatement((eyo, depth) => {
-        var width = right - t * depth
-        // find the last right block and 
-        var r = eyo
-        var b = r.block_
-        while ((r = r.right)) {
-          width -= (eyo.minWidth - eYo.Unit.x) // see comment above
-          eyo = r
-          b = r.block_
-        }
-        if (b.width !== width) {
-          b.width = width
-          eyo.updateAllPaths_()
-        }
-      })
-    }
-  }
-)
-
-/**
- * Compute the paths of the block depending on its size.
- * This may be called too early, when the path do not exist yet
- * @private
- */
-eYo.DelegateSvg.prototype.updateAllPaths_ = (() => {
-  /**
-   * Compute the paths of the block depending on its size.
-   * @param {*} path 
-   * @param {*} def 
-   */
-  var update = function (path, def) {
-    if (path) {
-      if (def) {
-        try {
-          var d = def.call(this)
-          if (d.indexOf('NaN') >= 0) {
-            d = def.call(this)
-            console.log('d', d)
-          }
-          path.setAttribute('d', d)
-        } catch (err) {
-          console.error('d', d, '\ndef', def)
-          throw err
-        }
-      } else {
-        path.removeAttribute('d')
-      }
-    }
-  }
-  return function () {
-    if (this.mayBeLast || !this.svgPathContour_) {
-      return
-    }
-    if (this.wrapped_) {
-      update.call(this, this.svgPathContour_)
-      update.call(this, this.svgPathShape_)
-      update.call(this, this.svgPathCollapsed_)
-    } else {
-      update.call(this, this.svgPathContour_, this.pathContourDef_)
-      update.call(this, this.svgPathShape_, this.pathShapeDef_)
-      update.call(this, this.svgPathCollapsed_, this.pathCollapsedDef_)
-    }
-    update.call(this, this.svgPathHilight_, this.pathHilightDef_)
-    update.call(this, this.svgPathSelect_, this.pathSelectDef_)
-    update.call(this, this.svgPathConnection_, this.pathConnectionDef_)
-    if (this.someTargetIsMissing && !this.block_.isInFlyout) {
-      goog.dom.classlist.add(this.svgPathContour_, 'eyo-error')
-    } else {
-      goog.dom.classlist.remove(this.svgPathContour_, 'eyo-error')
-    }
-  }
-})()
-/**
- * Render the inputs of the block.
- * @protected
- */
-eYo.DelegateSvg.prototype.minBlockW = function () {
-  return 0
-}
-
-/**
- * Get a new draw recorder.
- * @param {*} recorder
- * @private
- */
-eYo.DelegateSvg.prototype.newDrawRecorder = function (recorder) {
-  var io = {
-    block: this.block_,
-    steps: [],
-    n: 0, // count of rendered objects (fields, slots and inputs)
-    cursor: new eYo.Where(),
-    forc: undefined // rendered file or connection
-  }
-  this.firstRenderedInput = this.lastRenderedInput = undefined
-  if (recorder) {
-    // io inherits some values from the given recorder
-    io.recorder = recorder
-    io.common = recorder.common // It is always defined
-  } else {
-    io.common = {
-      pending: undefined,
-      ending: [],
-      shouldSeparate: false,
-      beforeIsRightEdge: false,
-      shouldPack: false,
-      startOfStatement: false,
-      startOfLine: !this.outputConnection || !this.parent, // statement | orphan block
-      field: {
-        beforeIsBlack: false, // true if the position before the cursor contains a black character
-        beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
-        beforeIsCaret: false, // true if the position before the cursor contains a caret
-        shouldSeparate: false // and other properties...
-      }
-    }
-  }
-  return io
-}
-
-/**
- * Prepare rendering.
- * @param {?Object} recorder  When null, this is not the start of a statement
- * @return {!Object} a local recorder
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawModelBegin_ = function (recorder) {
-  this.parentIsShort = false
-  this.isShort = false
-  this.someTargetIsMissing = false
-  // we define the `io` named recorder which is specific to this block.
-  var io = this.newDrawRecorder(recorder)
-  // A "star like" field's text is one of '*', '+', '-', '~'...
-  // This field is the very first of the block.
-  // Once we have rendered a field with a positive length,
-  // we cannot have a start like field.
-  io.common.field.canStarLike = true
-  // By default, we restart from scratch,
-  // set the size to 0 for the width and 1 for the height
-  this.size.set(0, 1)
-  // And reset properties
-  this.mayBeLast = false
-  this.isLastInExpression = false
-  this.isLastInStatement = false
-  // Do we need some room for the left side of the block?
-  // no for wrapped blocks
-  if (!this.wrapped_) {
-    if (!this.outputConnection || !this.locked_ || !recorder) {
-      // statement or unlocked,
-      // one space for the left edge of the block
-      // (even for locked statements, this is to avoid a
-      // display shift when locking/unlocking)
-      this.size.w = 1
-      io.common.field.beforeIsBlack = false
-    }
-  }
-  if (this.hasLeftEdge || !recorder || !this.outputConnection) {
-    // statement or unlocked,
-    // one space for the left edge of the block
-    // (even for locked statements, this is to avoid a
-    // display shift when locking/unlocking)
-    this.size.w = 1
-    io.common.field.beforeIsBlack = false
-    io.common.field.beforeIsSeparator = true
-    io.common.field.shouldSeparate = false
-    // Do not change io.common.field.shouldSeparate ?
-  }
-  io.cursor.c = this.size.w
-  if (this.outputConnection) {
-    this.startOfStatement = io.common.startOfStatement
-    this.startOfLine = io.common.startOfLine
-  } else {
-    this.startOfStatement = io.common.startOfStatement = true
-    this.renderDrawSharp_(io)
-  }
-  return io
-}
-
-/**
- * Render the inputs, the fields and the slots of the block.
- * The `recorder` is an object that keeps track of some
- * rendering information. It is the argument of various methods.
- * This method is executed at least once for any rendered block.
- * Since then, it won't be executed as long as the block has not been edited.
- * @param {?Object} io 
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawModel_ = function (io) {
-  var block = this.block_
-  this.renderDrawFieldFrom_(this.fromStartField, io)
-  if ((io.slot = this.headSlot)) {
-    do {
-      this.renderDrawSlot_(io.slot, io)
-    } while ((io.slot = io.slot.next))
-  } else {
-    // for dynamic lists
-    block.inputList.forEach(input => {
-      goog.asserts.assert(input.eyo, `Input with no eyo ${input.name} in block ${this.type}`)
-      io.input = input
-      if (input.isVisible()) {
-        this.renderDrawInput_(io)
-      } else {
-        input.fieldRow.forEach((field) => {
-          if (field.getText().length > 0) {
-            var root = field.getSvgRoot()
-            if (root) {
-              root.setAttribute('display', 'none')
-            }
-          }
-        })
-        if ((io.c8n = input.connection)) {
-          if ((io.target = io.c8n.targetBlock())) {
-            if ((root = io.target.getSvgRoot())) {
-              root.setAttribute('display', 'none')
-              if (io.target.eyo.svgContourGroup_) {
-                io.target.eyo.svgContourGroup_.setAttribute('display', 'none')
-                io.target.eyo.svgShapeGroup_.setAttribute('display', 'none')
-              }
-            } else {
-              console.log('Block with no root: did you ...initSvg()?')
-            }
-          }
-        }
-      }
-    })
-  }
-  this.renderDrawFieldFrom_(this.toEndField, io)
-  if ((io.input = this.inputRight)) {
-    this.renderDrawInputRight_(io)
-  }
-  this.renderDrawModelEnd_(io)
-  return io.steps.join(' ')
-}
-
-/**
- * Terminate to render the model.
- * @param {?Object} recorder 
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawModelEnd_ = function (io) {
-  // and now some space for the right edge, if any
-  if (!this.wrapped_) {
-    if (this.outputConnection) {
-      if (io.common.field.last && io.common.field.last.eyo.isEditing) {
-        io.cursor.c += 1
-        io.common.field.beforeIsSeparator = false
-        io.common.field.beforeIsBlack = false
-      } else if (!io.recorder || io.common.field.didPack) {
-        io.cursor.c += 1
-        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
-        io.common.field.shouldSeparate = false
-        io.common.field.beforeIsBlack = false
-      } else if (io.common.field.shouldSeparate) {
-        if (!io.recorder) {
-          io.cursor.c += 1
-          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
-          io.common.field.shouldSeparate = false
-          io.common.field.beforeIsBlack = false
-        } else if (!this.locked_ && !io.common.ending.length) {
-          io.cursor.c += 1
-          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
-          io.common.field.shouldSeparate = false
-          io.common.field.beforeIsBlack = false
-        }
-      } else {
-        io.cursor.c += 1
-        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
-        io.common.field.shouldSeparate = false
-        io.common.field.beforeIsBlack = false
-      }
-    } else {
-      io.cursor.c += 1
-      io.common.field.beforeIsSeparator = false
-      io.common.field.beforeIsBlack = false
-    }
-  }
-  if (!this.outputConnection) {
-    this.renderDrawEnding_(io, true, true)
-  } else if (!io.recorder) {
-    this.renderDrawEnding_(io, true)
-  }
-  this.renderDrawPending_(io)
-  if (!this.wrapped_) {
-    var c8n = io.forc && io.forc.connection
-    var target = c8n && c8n.targetBlock()
-    if (io.n < 2 && !this.wrapped_) {
-      // this is a short block, special management of selection
-      this.isShort = true
-      if (target) {
-        target.eyo.parentIsShort = true
-        // always add a space to the right
-        target.eyo.isLastInStatement = false
-        target.eyo.updateAllPaths_()
-        io.cursor.c += 1
-      }
-    } else {
-      this.isShort = false
-      if (target) {
-        target.eyo.parentIsShort = false
-      }
-    }
-  }
-  io.cursor.c = Math.max(io.cursor.c, this.minBlockW())
-  this.size.setFromWhere(io.cursor)
-  this.minWidth = this.block_.width = Math.max(this.block_.width, this.size.x)
-  if (io.recorder) {
-    // We ended a block. The right edge is generally a separator.
-    // No need to add a separator if the block is wrapped or locked
-    io.common.field.shouldSeparate && (io.common.field.shouldSeparate = !this.hasRightEdge)
-    // if the block is wrapped or locked, there won't be any 
-    // right edge where a caret could be placed.
-    // But may be we just rendered blocks in cascade such that
-    // there might be some right edge already.
-  }
-  if (io.block === this.block_) {
-    this.lastRenderedInput = io.common.inputDone
-  }
-}
-
-/**
- * Render the the givent slot.
- * @param slot
- * @param io
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawSlot_ = function (slot, io) {
-  if (!slot) {
-    return
-  }
-  var root = slot.getSvgRoot()
-  if (slot.isIncog()) {
-    root && root.setAttribute('display', 'none')
-    return
-  }
-  goog.asserts.assert(root, 'Slot with no root', io.block.type, slot.key)
-  root.removeAttribute('display')
-  // move the slot to the correct location
-  slot.where.set(io.cursor)
-  // Now reset the cursor relative to the slot
-  io.cursor.set()
-  this.renderDrawFieldFrom_(slot.fromStartField, io)
-  if ((io.input = slot.input)) {
-    this.renderDrawInput_(io)
-  }
-  this.renderDrawFieldFrom_(slot.toEndField, io)
-  // come back to the block coordinates
-  io.cursor.advance(slot.where)
-  // translate at the end because `slot.where` may change
-  // due to the shrink process
-  root.setAttribute('transform',
-    `translate(${slot.where.x}, ${slot.where.y})`)
-}
-
-/**
- * Render the leading # character for collapsed statement blocks.
- * Statement subclasses must override it.
- * @param io
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawSharp_ = function (io) {
-  goog.asserts.assert(false, 'renderDrawSharp_ must be overriden by ' + io.block.type)
-}
-
-/**
- * Render one input of value block.
- * @param io
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawInput_ = function (io) {
-  return this.renderDrawValueInput_(io)
-}
-
-/**
- * Render the given field, when defined.
- *
- * @param {!Object} field A field.
- * @param {!Object} io An input/output recorder.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawField_ = function (field, io) {
-  var c = io.cursor.c
-  var root = field && field.getSvgRoot()
-  if (root) {
-    if (!field.isVisible()) {
-      root.setAttribute('display', 'none')
-    } else {
-      root.removeAttribute('display')
-      // Actually, io.cursor points to the location where the field
-      // is expected. It is relative to the enclosing `SVG` group,
-      // which is either a block or a slot.
-      // If there is a pending caret, draw it and advance the cursor.
-      var f_eyo = field.eyo
-      io.forc = f_eyo
-      f_eyo.willRender()
-      var text = field.getDisplayText_()
-      // Replace the text.
-      goog.dom.removeChildren(/** @type {!Element} */ (field.textElement_));
-      f_eyo.size.set(text.length, 1)
-      field.updateWidth()
-      if (text.length) {
-        if (text === '>') {
-          console.error(io)
-        }
-        this.renderDrawEnding_(io)
-        this.renderDrawPending_(io)
-        io.common.startOfLine = io.common.startOfStatement = false
-        ++ io.n
-        var textNode = document.createTextNode(text)
-        field.textElement_.appendChild(textNode)
-        var head = text[0]
-        var tail = text[text.length - 1]
-        if (f_eyo.model.literal) {
-          io.common.field.didPack = 0
-        } else {
-          if (!io.common.field.shouldSeparate
-            && !io.common.field.beforeIsSeparator
-            && !io.common.field.beforeIsBlack
-            && !io.common.startOfLine
-            && !io.common.field.beforeIsCaret) {
-            if (this.packedQuotes && (head === "'" || head === '"')) {
-              io.cursor.c -= 1
-            } else if (this.packedBrackets && head === "[") {
-              io.cursor.c -= 1
-            } else if (this.packedBraces && head === "{") {
-              io.cursor.c -= 1
-            } else if (this.packedParenthesis && head === "(") {
-              io.cursor.c -= 1
-            }
-          } else if (head === '.' && !io.common.field.beforeIsBlack) {
-            io.cursor.c -= 1
-          } else if (io.common.field.beforeIsBlack
-            && (eYo.XRE.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
-            io.cursor.c += 1
-          } else if (io.common.field.shouldSeparate
-              && (!f_eyo.startsWithSeparator()
-              || head === '='
-              || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
-            io.cursor.c += 1
-          }
-        }
-        io.common.field.wasStarLike = (io.common.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
-        io.common.field.canStarLike = false
-        io.common.field.shouldSeparate = !io.common.field.wasStarLike
-          && (eYo.XRE.id_continue.test(tail)
-            || eYo.XRE.operator.test(tail)
-            || tail === ':'
-            || tail === '='
-            || tail === '#'
-            || tail === ','
-            || (tail === '.'
-              && !(field instanceof eYo.FieldLabel)))
-        io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
-        io.common.field.beforeIsCaret = false
-        // place the field at the right position:
-        root.setAttribute('transform',
-          `translate(${io.cursor.x}, ${(io.cursor.y + eYo.Padding.t)})`)
-        // then advance the cursor after the field.
-        if (f_eyo.size.w) {
-          io.cursor.c += f_eyo.size.w
-          // now that I have rendered something
-          io.common.startOfLine = io.common.startOfStatement = false
-        }
-        if (io.cursor.c > 2) {
-          if ((tail === '"' || tail === "'") && this.packedQuotes) {
-            io.common.shouldPack = null // this
-          } else if (tail === ']' && this.packedBrackets) {
-            io.common.shouldPack = this
-          } else if ((tail === '}') && this.packedBraces) {
-            io.common.shouldPack = this
-          } else if ((tail === ')') && this.packedParenthesis) {
-            io.common.shouldPack = this
-          }
-        }
-      }
-      if (f_eyo.isEditing) {
-        // This is a trick to avoid some bad geometry while editing
-        // this is useful for widget only.
-        io.cursor.c += 1
-        io.common.field.shouldSeparate =
-        io.common.field.beforeIsBlack = false
-      }
-      io.common.field.last = field
-      io.common.beforeIsRightEdge = false
-    }
-  } else if (field) {
-    console.error('Field with no root: did you ...initSvg()?', io.block.type, field.name)
-  }
-  return io.cursor.c - c
-}
-
-/**
- * Render the given field, when defined.
- *
- * @param {!Object} field A field.
- * @param {!Object} io An input/output recorder.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawFieldFrom_ = function (field, io) {
-  if (field) {
-    do {
-      this.renderDrawField_(field, io)
-    } while ((field = field.eyo.nextField))
-  }
-}
-
-/**
- * Render the fields of a block input/slot.
- * Fields are either before or after the connection.
- * If `only_prefix` is true, only fields before the
- * connection are rendered.
- * @param {!Object} io An input/output record.
- * @param {?Boolean} only_prefix
- * @return {Number}  The advance of the cursor (in columns)
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawFields_ = function (io, only_prefix) {
-  var current = io.cursor.c
-  io.input.fieldRow.forEach((field) => {
-    if (!!only_prefix === !field.eyo.suffix) {
-      this.renderDrawField_(field, io)
-    }
-  })
-  return io.cursor.c - current
-}
-
-/**
- * Render the ending blocks.
- * 
- * In order to save space, we put caret at the end of blocks
- * and we shrink blocks to the minimum.
- * 
- * When expression blocks are stacked, there is no need to
- * spend space just to draw the edges.
- * We can save space by drawing the block edges on top of each others.
- * 
- * When we start rendering a new block,
- * `io.common.field.shouldSeparate` is set to `false`.
- * If we enter a child block, with no field nor splot before,
- * then we should decrease `cursor`.
- * This is why the right end of expression blocks
- * may be a straight line instead of a curved one
- * when at the end of a statement block.
- * This situation depends of information given after a block is
- * rendered. One solution is to scan all the blocks to prepare
- * rendering, then scan again to render.
- * We assume that only one loop is more efficient.
- * In that case, we must wait until a statement block is rendered
- * to properly locate and display connection,
- * and to properly display the last block.
- * In order to display a caret connection properly,
- * we attach to each block ending with a one character spaced
- * right edge a pending connection that might be displayed
- * over that right edge.
- * we consider the first fullfilled of these conditions:
- *
- * 1) we just rendered an expression block
- * that ends with a white space (not wrapped nor locked)
- * but have no pending connection attached
- *
- * 2) we won't render any field until the end of the block
- * and the block ends with a white space
- *
- * This message is sent at the end of statement block rendering.
- * It is also sent each time we have rendered a field or a slot.
- * @param {?Object} io the input/output argument.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawEnding_ = function (io, isLast = false, inStatement = false) {
-  if (io) {
-    var isLastInExpression = isLast && !inStatement
-    var isLastInStatement = isLast && inStatement
-    if (io.common.ending.length) {
-      // should we shrink after a quote or a bracket?
-      if (io.common.shouldPack && (!isLast || io.common.shouldPack.wrapped_)) {
-        // first loop to see if there is a pending rightCaret
-        // BTW, there can be an only one right caret
-        if (io.common.ending.some(eyo => !!eyo.rightCaret)) {
-          io.common.shouldPack = undefined
-        } else {
-          // there is no following right caret, we can pack
-          var pack = false
-          io.common.ending.forEach((eyo) => {
-            if (eyo === io.common.shouldPack) {
-              io.common.shouldPack = undefined
-              pack = true
-              io.cursor.c -= 1
-              // from now on, we pack just one character width
-            }
-            if (pack) {
-              eyo.size.c = Math.max(this.minBlockW(), eyo.size.c - 1)
-              eyo.minWidth = eyo.block_.width = eyo.size.x
-              io.common.field.didPack = true
-              io.common.field.beforeIsBlack = true
-            }
-          })
-        }
-      }
-      io.common.ending.forEach((eyo) => {
-        eyo.mayBeLast = false
-        eyo.isLastInExpression = isLastInExpression
-        eyo.isLastInStatement = isLastInStatement
-      })
-      io.common.ending.forEach((eyo) => {
-        eyo.updateAllPaths_()
-        var c_eyo = eyo.rightCaret
-        if (c_eyo) {
-          c_eyo.side = eYo.Key.RIGHT
-          c_eyo.shape = eYo.Key.NONE
-          var d = eYo.Shape.definitionWithConnectionDlgt(c_eyo) // depends on the shape and the side
-          var block = c_eyo.sourceBlock_
-          if (io.block === block) {
-            // we are lucky, this is the block we are currently rendering
-            io.steps.push(d)
-          } else {
-            // bad luck, block has already been rendered
-            // we must append the definition to the path
-            // this may happen for blocks with no left or right end,
-            // eg locked or wrapped blocks.
-            var path = block.eyo.svgPathInner_
-            path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
-          }
-        }
-      })
-      io.common.ending.length = 0
-    }
-  }
-}
-
-/**
- * Render a pending caret, if relevant.
- * @param {?Object} io the input/output argument.
- * @param {?String} side On which side of a block.
- * @param {?String} shape Which is the shape.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
-  if (io) {
-    var c_eyo = io.common.pending
-    if (c_eyo) {
-      c_eyo.side = side
-      c_eyo.shape = io.isLastInStatement ? eYo.Key.Right : shape
-      var shp = eYo.Shape.newWithConnectionDlgt(c_eyo)
-      var block = c_eyo.sourceBlock_
-      if (io.block === block) {
-        // we are lucky, this is the block we are currently rendering
-        io.steps.push(shp.definition)
-      } else {
-        // bad luck, block has already been rendered
-        // we must append the definition to the path
-        // this may happen for blocks with no left or right end,
-        // eg locked or wrapped blocks.
-        var path = block.eyo.svgPathInner_
-        path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
-      }
-      if (shp.width) {
-        // should we advance the cursor?
-        if (c_eyo.side === eYo.Key.NONE) {
-          io.cursor.advance(shp.width)
-          io.common.startOfLine = io.common.startOfStatement = false
-        }
-        // a space was added as a visual separator anyway
-        io.common.field.shouldSeparate = false
-        // all done
-        io.common.pending = undefined
-        io.common.field.beforeIsBlack = false // do not step back
-        io.common.field.beforeIsCaret = true // do not step back
-      }
-      return shp
-    }
-  }
-}
-
-/**
- * Render the suite block, if relevant.
- * @param {!Object} io the input/output argument.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.prototype.renderDrawInputRight_ = function (io) {
-  return
-}
-
-/**
- * Render the fields of a value input, if relevant.
- * @param {!Object} io the input/output argument.
- * @private
- */
-eYo.DelegateSvg.prototype.renderDrawValueInput_ = function (io) {
-  if (io.input.type !== Blockly.INPUT_VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
-    return false
-  }
-  // this is one of the reasons why we allways render from the start of a statement
-  io.input.eyo.inputRight = undefined
-  io.input.eyo.inputLeft = io.common.inputDone
-  if (io.common.inputDone) {
-    io.common.inputDone.eyo.inputRight = io.input
-  } else {
-    io.block.eyo.firstRenderedInput = io.input
-  }
-  io.common.inputDone = io.input
-  this.renderDrawFields_(io, true)
-  var c8n = io.input.connection
-  if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
-    ++ io.n
-    var c_eyo = c8n.eyo
-    c_eyo.startOfLine = io.common.startOfLine
-    c_eyo.startOfStatement = io.common.startOfStatement
-    io.forc = c_eyo
-    c_eyo.side = c_eyo.shape = undefined
-    io.common.field.canStarLike = false
-    // io.cursor is relative to the block or the slot
-    // but the connection must be located relative to the block
-    // the connection delegate will take care of that because it knows
-    // if there is a slot or only an input.
-    var target = c8n.targetBlock()
-    if (target) {
-      if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
-        c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
-        // The `bind` field hides the connection.
-        // The bind field is always the last field before the connection.
-        // if the connection has a bindField, then rendering the placeholder
-        // for that connection is a bit different.
-        // Don't display anything for that connection
-        io.common.field.beforeIsCaret = false
-      }
-      var root = target.getSvgRoot()
-      if (root) {
-        var t_eyo = target.eyo
-        try {
-          t_eyo.startOfLine = io.common.startOfLine
-          t_eyo.startOfStatement = io.common.startOfStatement
-          t_eyo.mayBeLast = t_eyo.hasRightEdge
-          t_eyo.downRendering = true
-          if (eYo.DelegateSvg.debugStartTrackingRender) {
-            console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
-          }
-          if (t_eyo.wrapped_) {
-            // force target rendering
-            t_eyo.incrementChangeCount()
-          }
-          c_eyo.setOffset(io.cursor)
-          if (c_eyo.c === 1 && !io.common.field.beforeIsBlack && c_eyo.slot) {
-            c_eyo.slot.where.c -= 1
-            c_eyo.setOffset(io.cursor)
-            if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
-              t_eyo.startOfLine = t_eyo.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
-          
-            }
-          }
-          if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.upRendering) {
-            t_eyo.render(false, io)
-            if (!t_eyo.wrapped_) {
-              io.common.field.shouldSeparate = false
-              io.common.field.beforeIsSeparator = true
-            }
-          }      
-        } catch(err) {
-           console.error(err)
-           throw err
-        } finally {
-          t_eyo.downRendering = false
-          var size = t_eyo.size
-          if (size.w) {
-            io.cursor.advance(size.w, size.h - 1)
-            // We just rendered a block
-            // it is potentially the rightmost object inside its parent.
-            if (t_eyo.hasRightEdge || io.common.shouldPack) {
-              io.common.ending.push(t_eyo)
-              t_eyo.rightCaret = undefined
-              io.common.field.shouldSeparate = false
-            }
-            io.common.field.beforeIsCaret = false
-          }
-        }
-      }
-    } else {
-      if (c_eyo.targetIsMissing) {
-        this.someTargetIsMissing = true
-      }  
-      if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
-        c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
-        // The `bind` field hides the connection.
-        // The bind field is always the last field before the connection.
-        // if the connection has a bindField, then rendering the placeholder
-        // for that connection is a bit different.
-        // Don't display anything for that connection
-        io.common.field.beforeIsCaret = false
-      } else if (!this.locked_ && !c8n.hidden_) {
-        // locked blocks won't display any placeholder
-        // (input with no target)
-        if (!c_eyo.disabled_) {
-          c_eyo.setOffset(io.cursor)
-          c_eyo.startOfLine = io.common.startOfLine
-          c_eyo.startOfStatement = io.common.startOfStatement
-          if (c_eyo.s7r_) {
-            c_eyo.side = eYo.Key.NONE
-            var ending = io.common.ending.slice(-1)[0]
-            if (ending && !ending.rightCaret) {
-              // an expression block with a right end has been rendered
-              // we put the caret on that end to save space,
-              // we move the connection one character to the left
-              io.cursor.c -= 1
-              c_eyo.setOffset(io.cursor)
-              io.cursor.c += 1
-              ending.rightCaret = c_eyo
-              c_eyo.isAfterRightEdge = io.beforeIsRightEdge
-              io.common.field.beforeIsCaret = true
-            } else {
-              // we might want this caret not to advance the cursor
-              // If the next rendered object is a field, then
-              // this caret should be rendered normally
-              // and the cursor should advance.
-              // If the next rendered object is an expression block
-              // with a left end, then this caret shoud be rendered
-              // with a left shape and the cursor should not advance.
-              // If the caret is the last rendered object of the block,
-              // then it should be rendered with special shape and
-              // the cursor should not advance.
-              io.common.pending = c_eyo
-            }
-            io.common.field.shouldSeparate = false
-          } else if (c_eyo.optional_) {
-            this.renderDrawPending_(io)
-            io.common.pending = c_eyo
-          } else {
-            this.renderDrawPending_(io)
-            if (c_eyo.c === 1) {
-              if (c_eyo.slot) {
-                c_eyo.slot.where.c -= 1
-              } else {
-                io.cursor.c = c_eyo.where.c = 0
-              }
-              c_eyo.setOffset(io.cursor)
-            }
-            var shape = eYo.Shape.newWithConnectionDlgt(c_eyo)
-            io.steps.push(shape.definition)
-            if (shape.width) {
-              io.cursor.c += shape.width
-              // a space was added as a visual separator anyway
-            }
-            io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
-            io.common.field.shouldSeparate = false
-          }
-          io.common.beforeIsRightEdge = true
-        }
-      }
-    }
-  }
-  this.renderDrawFields_(io, false)
-  return true
-}
-
-/**
- * Block path.
- * @private
- */
-eYo.DelegateSvg.prototype.pathValueDef_ = function () {
-  return eYo.Shape.definitionWithBlock(this)
-}
 
 /**
  * Fetches the named input object.
@@ -1949,17 +602,15 @@ eYo.DelegateSvg.prototype.nextStatementCheck = undefined
 eYo.DelegateSvg.prototype.previousStatementCheck = undefined
 
 /**
- * The default implementation does nothing.
- * Subclassers will override this but won't call it.
+ * Subclassers will override this but won't call it directly,
+ * except form the overriding function.
  * @private
  */
-eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
-  eYo.DelegateSvg.superClass_.doMakeBlockWrapped.call(this)
-  var block = this.block_
-  goog.asserts.assert(!this.hasSelect(), 'Deselect block before')
-  block.initSvg()
-  this.svgPathShape_.setAttribute('display', 'none')
-  this.svgPathContour_.setAttribute('display', 'none')
+eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
+  eYo.DelegateSvg.superClass_.duringBlockWrapped.call(this)
+  goog.asserts.assert(!this.renderer.hasSelect, 'Deselect block before')
+  this.block_.initSvg() // is it necessary ?
+  this.renderer.makeBlockWrapped()
 }
 
 /**
@@ -1967,12 +618,9 @@ eYo.DelegateSvg.prototype.doMakeBlockWrapped = function () {
  * Does nothing if this contour already exists.
  * @private
  */
-eYo.DelegateSvg.prototype.makeBlockUnwrapped = function () {
-  if (this.svgPathContour_) {
-    eYo.DelegateSvg.superClass_.makeBlockUnwrapped.call(this)
-    this.svgPathContour_.removeAttribute('display')
-    this.svgPathShape_.removeAttribute('display')
-  }
+eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
+  eYo.DelegateSvg.superClass_.duringBlockUnwrapped.call(this)
+  this.renderer.duringBlockUnwrapped()
 }
 
 /**
@@ -2146,19 +794,19 @@ eYo.DelegateSvg.prototype.beReady = function () {
       this.inputRight && this.inputRight.eyo.beReady()
       this.nextConnection && this.nextConnection.eyo.beReady()
       var parent = block.outputConnection && block.outputConnection.targetBlock()
-      if (parent && parent.eyo.svgContourGroup_) {
-        goog.dom.insertChildAt(parent.eyo.svgContourGroup_, this.svgContourGroup_, 0)
-        goog.dom.classlist.add(/** @type {!Element} */(this.svgContourGroup_),
+      if (parent && parent.eyo.svgGroupContour_) {
+        goog.dom.insertChildAt(parent.eyo.svgGroupContour_, this.svgGroupContour_, 0)
+        goog.dom.classlist.add(/** @type {!Element} */(this.svgGroupContour_),
           'eyo-inner')
-        goog.dom.appendChild(parent.eyo.svgShapeGroup_, this.svgShapeGroup_)
-        goog.dom.classlist.add(/** @type {!Element} */(this.svgShapeGroup_),
+        goog.dom.appendChild(parent.eyo.svgGroupShape_, this.svgGroupShape_)
+        goog.dom.classlist.add(/** @type {!Element} */(this.svgGroupShape_),
           'eyo-inner')
       } else {
-        goog.dom.insertChildAt(block.svgGroup_, this.svgContourGroup_, 0)
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgContourGroup_),
+        goog.dom.insertChildAt(block.svgGroup_, this.svgGroupContour_, 0)
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgGroupContour_),
           'eyo-inner')
-        goog.dom.insertSiblingBefore(this.svgShapeGroup_, this.svgContourGroup_)
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgShapeGroup_),
+        goog.dom.insertSiblingBefore(this.svgGroupShape_, this.svgGroupContour_)
+        goog.dom.classlist.remove(/** @type {!Element} */(this.svgGroupShape_),
           'eyo-inner')
       }
       this.forEachData(data => data.synchronize()) // data is not headless
@@ -2587,29 +1235,28 @@ eYo.DelegateSvg.prototype.canUnlock = function () {
 /**
  * Lock the given block.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @return {number} the number of blocks locked
  */
 eYo.DelegateSvg.prototype.lock = function () {
   var ans = 0
-  if (this.locked_ || !block.eyo.canLock()) {
+  if (this.locked_ || !this.canLock()) {
     return ans
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, eYo.Const.Event.locked, null, this.locked_, true))
+      this.block_, eYo.Const.Event.locked, null, this.locked_, true))
   }
   this.locked_ = true
-  var c8n
-  if ((c8n = eYo.Selected.connection) && (block === c8n.getSourceBlock())) {
+  if (this === eYo.Selected.eyo) {
     eYo.Selected.connection = null
   }
   // list all the input for connections with a target
-  var target
+  var c8n
+  var t_eyo
   this.forEachInput(input => {
     if ((c8n = input.connection)) {
-      if ((target = c8n.targetBlock())) {
-        ans += target.eyo.lock()
+      if ((t_eyo = c8n.eyo.t_eyo)) {
+        ans += t_eyo.lock()
       }
       if (c8n.eyo.isInput) {
         c8n.setHidden(true)
@@ -2619,8 +1266,8 @@ eYo.DelegateSvg.prototype.lock = function () {
   // maybe redundant calls here
   this.forEachSlot(slot => {
     if (slot.input && (c8n = slot.input.connection)) {
-      if ((target = c8n.targetBlock())) {
-        ans += target.eyo.lock()
+      if ((t_eyo = c8n.eyo.t_eyo)) {
+        ans += t_eyo.lock()
       }
       if (c8n.eyo.isInput) {
         c8n.setHidden(true)
@@ -2628,20 +1275,20 @@ eYo.DelegateSvg.prototype.lock = function () {
     }
   })
   if ((c8n = this.nextConnection)) {
-    if ((target = c8n.targetBlock())) {
-      ans += target.eyo.lock()
+    if ((t_eyo = c8n.eyo.t_eyo)) {
+      ans += t_eyo.lock()
     }
   }
-  if (block === eYo.Selected.block) {
-    var parent = block
-    while ((parent = parent.getSurroundParent())) {
-      if (!parent.eyo.wrapped_ && !parent.eyo.locked_) {
+  if (this === eYo.Selected.eyo) {
+    var parent = this
+    while ((parent = parent.surround)) {
+      if (!parent.wrapped_ && !parent.locked_) {
         parent.select()
         break
       }
     }
   }
-  (block.getSurroundParent() || block).render()
+  (this.surround || this).render()
   return ans
 }
 /**
@@ -2656,25 +1303,25 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
   var ans = 0
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(
-      block, eYo.Const.Event.locked, null, this.locked_, false))
+      this.block_, eYo.Const.Event.locked, null, this.locked_, false))
   }
   this.locked_ = false
   // list all the input for connections with a target
-  var c8n, target
+  var c8n, t_eyo
   this.forEachInput(input => {
     if ((c8n = input.connection)) {
-      if ((!shallow || c8n.eyo.isInput) && (target = c8n.targetBlock())) {
-        ans += target.eyo.unlock(shallow)
+      if ((!shallow || c8n.eyo.isInput) && (t_eyo = c8n.eyo.t_eyo)) {
+        ans += t_eyo.unlock(shallow)
       }
       c8n.setHidden(false)
     }
   })
   if (!shallow && (c8n = block.nextConnection)) {
-    if ((target = c8n.targetBlock())) {
-      ans += target.eyo.unlock()
+    if ((t_eyo = c8n.eyo.t_eyo)) {
+      ans += t_eyo.unlock()
     }
   }
-  (block.getSurroundParent() || block).render()
+  (this.surround || this).render()
   return ans
 }
 
@@ -2688,6 +1335,7 @@ eYo.DelegateSvg.prototype.inVisibleArea = function () {
   var area = this.getDistanceFromVisible()
   return area && !area.x && !area.y
 }
+console.error('viewRect must go to the renderer')
 
 Object.defineProperties(
   eYo.DelegateSvg.prototype,
@@ -2815,7 +1463,7 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
 eYo.DelegateSvg.prototype.setOffset = function (dc, dl) {
   // Workspace coordinates.
   var block = this.block_
-  if (!this.svgShapeGroup_) {
+  if (!this.svgGroupShape_) {
     throw 'block is not inited '+this.type
   }
   var dx = dc * eYo.Unit.x
@@ -2823,23 +1471,23 @@ eYo.DelegateSvg.prototype.setOffset = function (dc, dl) {
   var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
   var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
   block.getSvgRoot().setAttribute('transform', transform);
-  this.svgShapeGroup_.setAttribute('transform', transform);
-  this.svgContourGroup_.setAttribute('transform', transform);
+  this.svgGroupShape_.setAttribute('transform', transform);
+  this.svgGroupContour_.setAttribute('transform', transform);
   block.moveConnections_(dx, dy);
 }
 eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
   // Workspace coordinates.
   var block = this.block_
-  if (!this.svgShapeGroup_) {
+  if (!this.svgGroupShape_) {
     throw 'block is not inited '+this.type
   }
   var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
   var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
   block.getSvgRoot().setAttribute('transform', transform);
-  var xy1 = Blockly.utils.getRelativeXY(this.svgShapeGroup_);
-  this.svgShapeGroup_.setAttribute('transform', transform);
-  var xy2 = Blockly.utils.getRelativeXY(this.svgContourGroup_);
-  this.svgContourGroup_.setAttribute('transform', transform);
+  var xy1 = Blockly.utils.getRelativeXY(this.svgGroupShape_);
+  this.svgGroupShape_.setAttribute('transform', transform);
+  var xy2 = Blockly.utils.getRelativeXY(this.svgGroupContour_);
+  this.svgGroupContour_.setAttribute('transform', transform);
   if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
     console.error('WEIRD A', xy1, xy2)
   }
@@ -2900,4 +1548,12 @@ eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
  */
 eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
   this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
+}
+
+console.error('TODO: this.block_.select -> this.select()')
+/**
+ * Select the block.
+ */
+eYo.DelegateSvg.prototype.select = function() {
+  this.block_.select()
 }

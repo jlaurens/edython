@@ -43,19 +43,12 @@ eYo.App.doCopy = function(optNoNext) {
 
 /**
  * Send the selected block to the front.
+ * This is a job for the renderer.
  */
 eYo.App.doFront = function() {
-  var block = eYo.Selected.block
-  if (block) {
-    var parent
-    while ((parent = block.getSurroundParent())) {
-      block = parent
-    }
-    var g = block.getSvgRoot()
-    if (g.nextSibling && (parent = g.parentNode)) {
-      parent.removeChild(g)
-      parent.appendChild(g)
-    }
+  var eyo = eYo.Selected.eyo
+  if (eyo) {
+    eyo.renderer.sendToFront()
   }
 }
 
@@ -63,17 +56,9 @@ eYo.App.doFront = function() {
  * Send the selected block to the back.
  */
 eYo.App.doBack = function() {
-  var block = eYo.Selected.block
-  if (block) {
-    var parent
-    while ((parent = block.getSurroundParent())) {
-      block = parent
-    }
-    var g = block.getSvgRoot()
-    if (g.previousSibling && (parent = g.parentNode)) {
-      parent.removeChild(g)
-      parent.insertBefore(g, parent.firstChild)
-    }
+  var eyo = eYo.Selected.eyo
+  if (eyo) {
+    eyo.renderer.sendToBack()
   }
 }
 

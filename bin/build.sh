@@ -252,6 +252,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/Include/errcode.js" \
+--js "src/lib/eyo/block/span.js" \
 --js "src/lib/eyo/Parser/token.js" \
 --js "src/lib/eyo/Parser/ast.js" \
 --js "src/lib/eyo/msg/js/base.js" \
@@ -289,6 +290,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/protocol/register.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/model/model.js" \
+--js "src/lib/eyo/block/renderer.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
 --js "src/lib/eyo/model/array_model.js" \
 --js "src/lib/eyo/model/bisect_model.js" \

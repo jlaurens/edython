@@ -79,85 +79,10 @@ Object.defineProperties (eYo.DelegateSvg.Control.prototype, {
   }
 })
 
-/**
- * Control block path.
- * @param {Number} cursorX
- * @private
- */
-eYo.DelegateSvg.Control.prototype.playPathContourDef_ = function (cursorX) {
-  return eYo.Shape.definitionForPlayContour({x: cursorX, y: 0})
-}
-
-/**
- * Control block path.
- * @param {Number} cursorX
- * @private
- */
-eYo.DelegateSvg.Control.prototype.playPathIconDef_ = function (cursorX) {
-  return eYo.Shape.definitionForPlayIcon({x: cursorX, y: 0})
-}
-
-/**
- * Control block path.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.Control.prototype.pathControlDef_ = function () {
-  return eYo.Shape.definitionWithBlock(this)
-} /* eslint-enable indent */
-
-eYo.DelegateSvg.Control.prototype.pathShapeDef_ =
-  eYo.DelegateSvg.Control.prototype.pathContourDef_ =
-    eYo.DelegateSvg.Control.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Control.prototype.pathControlDef_
-
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
   eYo.DelegateSvg.Control.superClass_.willRender_.call(this, recorder)
   this.minWidth = this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
 }
-
-/**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
- */
-eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
-  if (this.svgSharpGroup_) {
-    return
-  }
-  var block = this.block_
-  eYo.DelegateSvg.Control.superClass_.postInitSvg.call(this)
-
-  this.svgPlay_ = Blockly.utils.createSvgElement('g',
-    {'class': 'eyo-play'}, block.svgGroup_)
-  this.svgPathPlayContour_ = Blockly.utils.createSvgElement('path',
-  {'class': 'eyo-path-play-contour'}, this.svgPlay_)
-  this.svgPathPlayIcon_ = Blockly.utils.createSvgElement('path',
-  {'class': 'eyo-path-play-icon'}, this.svgPlay_)
-  this.svgPathPlayContour_.setAttribute('d', this.playPathContourDef_(0))
-  this.svgPathPlayIcon_.setAttribute('d', this.playPathIconDef_(0))
-  this.mouseDownWrapper_ =
-    Blockly.bindEventWithChecks_(this.svgPathPlayIcon_, 'mousedown', null, e => {
-    if (this.block_.isInFlyout) {
-      return
-    }
-    if (!this.suiteConnection.isConnected()) {
-      var dialogModal = new goog.ui.Dialog('eyo-modal-dialog', true)
-      dialogModal.setTextContent(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_CONTENT)
-      dialogModal.setTitle(eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TITLE)
-      dialogModal.setButtonSet(goog.ui.Dialog.ButtonSet.createOk())
-      goog.events.listen(dialogModal, goog.ui.Dialog.EventType.SELECT, e => {})
-      dialogModal.setVisible(true)
-    }
-    console.log('Start executing ' + this.block_.id)
-    this.runScript && this.runScript()
-  })
-  goog.dom.classlist.add(this.svgPathShape_, 'eyo-start-path')
-  goog.dom.insertSiblingAfter(this.svgPlay_, this.svgPathHilight_)
-  goog.dom.classlist.add(block.svgGroup_, 'eyo-start')
-}
-
 
 /**
  * Run the script exported from the block.
@@ -165,32 +90,6 @@ eYo.DelegateSvg.Control.prototype.postInitSvg = function () {
  */
 eYo.DelegateSvg.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
-}
-
-/**
- * Deletes or nulls out any references to COM objects, DOM nodes, or other
- * disposable objects...
- * @protected
- */
-eYo.DelegateSvg.Control.prototype.disposeInternal = function () {
-  goog.dom.removeNode(this.svgPlay_)
-  this.svgPlay_ = undefined
-  this.svgPathPlayIcon_ = undefined
-  this.svgPathPlayContour_ = undefined
-  if (this.mouseDownWrapper_) {
-    Blockly.unbindEvent_(this.mouseDownWrapper_)
-    this.mouseDownWrapper_ = null
-  }
-  eYo.DelegateSvg.superClass_.disposeInternal.call(this)
-}
-
-/**
- * Not very clean, used as hook before rendering the comment fields.
- * @param io
- * @private
- */
-eYo.DelegateSvg.Control.prototype.renderDrawSharp_ = function (io) {
-  io.cursor.c += 4
 }
 
 /**

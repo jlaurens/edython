@@ -91,7 +91,7 @@ Object.defineProperties(
         return (eYo.Unit.y - this.caret_height) / 2
       }
     },
-    highlighted_width: {
+    hilighted_width: {
       get () {
         return eYo.Style.Path.Hilighted.width / 2
       }
@@ -364,7 +364,7 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
   if (r === true || r === false) {
     part = clockwise
     clockwise = r
-    r = this.highlighted_width
+    r = this.hilighted_width
   }
   this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0}`)
   var dx = 0
@@ -404,7 +404,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
   if (part === true || part === false) {
     part = clockwise
     clockwise = r
-    r = this.highlighted_width
+    r = this.hilighted_width
   }
   this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0} `)
   var dx = 0
@@ -435,7 +435,6 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
   var dx = goog.isDef(h.x) ? h.x : 0
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
-  console.error(`${this.format(dx)},${this.format(dy)}`)
   this.push('a', `${this.format(r)},${this.format(r)}`, '0 0', (left === down? 0 : 1), `${this.format(dx)},${this.format(dy)}`)
   this.cursor.advance(dx, dy)
 }
@@ -503,28 +502,27 @@ var initWithStatementBlock = function(eyo, opt) {
  */
 var initWithGroupBlock = function(eyo, opt) {
   // this is a group
-  var block = eyo.block_
-  var width = block.width
+  var w = eyo.span.width
   var r = this.stmt_radius
   if (eyo.right) {
     // simple statement with a right block
-    this.M(true, width - eYo.Unit.x / 2 + r, 0)
+    this.M(true, w - eYo.Unit.x / 2 + r, 0)
     this.quarter_circle(r, false, 1)
     this.V(true, eyo.mainHeight * eYo.Unit.y - r)
     this.quarter_circle(r, false, 2)
   } else if (eyo.left) {
     // simple statement with no right block
-    this.M(true, width - eYo.Unit.x / 2, 0)
+    this.M(true, w - eYo.Unit.x / 2, 0)
     this.V(eyo.mainHeight)
   } else {
-    this.M(true, width - eYo.Unit.x / 2, 0)
+    this.M(true, w - eYo.Unit.x / 2, 0)
     if (opt && opt.dido) {
       this.v(eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight)
     } else {
       this.v(eyo.mainHeight)
       this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
       this.quarter_circle(r, false, 1)
-      this.v(true, (block.isCollapsed() ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
+      this.v(true, (eyo.isCollapsed ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
       this.quarter_circle(r, false, 2)
     }
   }
@@ -587,7 +585,7 @@ var initWithExpressionBlock = function(eyo) {
 
 var initWithControlBlock = function (eyo) {
   return initWithGroupBlock.call(this, eyo)
-} /* eslint-enable indent */
+}
 
 return function(eyo, opt) {
     this.begin()
@@ -633,13 +631,8 @@ eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
  * @return {!Object} The receiver.
  */
 eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
-  this.begin()
   var dd = this.caret_extra
   if (c_eyo) {
-    if (c_eyo.startOfStatement) {
-      c_eyo.shape = eYo.Key.LEFT
-    }
-    var shape = c_eyo.shape || c_eyo.side || eYo.Key.NONE
     var b_eyo = c_eyo.b_eyo
     var c8n
     if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (c8n = b_eyo.outputConnection)) {
@@ -655,13 +648,58 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
     var x = where.x
     var y = where.y
     this.width = c_eyo.w
+    if (c_eyo.startOfStatement) {
+      c_eyo.shape = eYo.Key.LEFT
+    }
+    var shape = c_eyo.shape || c_eyo.side || eYo.Key.NONE
   } else {
     x = 0
     y = 0
     this.width = 3
   }
-  var r = this.highlighted_width
-  if (c_eyo && c_eyo.isLeft) {
+  var r = this.hilighted_width
+  this.begin()
+  if (c_eyo && opt && opt.hilight) {
+    if (c_eyo.isInput) {
+      if (c8n.t_eyo) {
+        this.push(c_eyo.t_eyo.renderer.driver.pathValueDef_())
+      } else if (!b_eyo.disabled_) {
+        this.initWithConnectionDlgt(c_eyo, {absolute: true})
+      }
+    } else if (c_eyo.isOutput) {
+      this.push(b_eyo.renderer.driver.pathValueDef_(c_eyo))
+    } else { // statement connection
+      var w = b_eyo.span.width - eYo.Unit.x / 2
+      if (c_eyo.isPrevious) {
+        this.m(true, w - 4 * r, -r)
+        this.half_circle(r, true, 3)
+        this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
+        this.half_circle(r, true, 1)
+      } else if (c_eyo.isNext) {
+        if (b_eyo.span.l > 1) { // this is not clean design, really?
+          this.m(true, eYo.Font.tabWidth, b_eyo.span.height - r)
+          this.half_circle(r, true, 3)
+          this.h(true, -eYo.Font.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l)
+          this.half_circle(r, true, 1)
+        } else {
+          this.m(true, w - 4 * r, eYo.Unit.y - r)
+          this.half_circle(r, true, 3)
+          this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
+          this.half_circle(r, true, 1)
+        }
+      } else if (c_eyo.isSuite) {
+        this.m(true, w - 4 * r, -r + eYo.Unit.y)
+        this.half_circle(r, true, 3)
+        this.h(true, eYo.Font.tabWidth - w + eYo.Unit.x / 2 + 8 * r)
+        this.half_circle(r, true, 1)
+      } else {
+        this.M(true, (c_eyo.isLeft ? eYo.Unit.x / 2 : w) + r, eYo.Unit.y - 4 * r)
+        this.half_circle(r, false, 0)
+        this.v(true, - eYo.Unit.y + 8 * r)
+        this.half_circle(r, false, 2)
+      }
+    }
+  } else if (c_eyo && c_eyo.isLeft) {
     this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
     this.half_circle(r, true, 0)
     this.v(true, - eYo.Unit.y + 8 * r)

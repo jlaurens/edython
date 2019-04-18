@@ -85,59 +85,6 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
 })
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
- */
-eYo.DelegateSvg.Stmt.prototype.postInitSvg = function () {
-  if (this.svgSharpGroup_) {
-    return
-  }
-  eYo.DelegateSvg.Stmt.superClass_.postInitSvg.call(this)
-  goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
-  this.svgSharpGroup_ = Blockly.utils.createSvgElement('g',
-    {'class': 'eyo-sharp-group'}, null)
-  goog.dom.insertSiblingAfter(this.svgSharpGroup_, this.svgPathContour_)
-  goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-stmt')
-  goog.dom.classlist.add(this.svgContourGroup_, 'eyo-stmt')
-}
-
-/**
- * Deletes or nulls out any references to COM objects, DOM nodes, or other
- * disposable objects...
- * @protected
- */
-eYo.DelegateSvg.Stmt.prototype.disposeInternal = function () {
-  goog.dom.removeNode(this.svgSharpGroup_)
-  this.svgSharpGroup_ = undefined
-  eYo.DelegateSvg.superClass_.disposeInternal.call(this)
-}
-
-/**
- * Statement block path.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.Stmt.prototype.pathStatementDef_ = function () {
-  return eYo.Shape.definitionWithBlock(this)
-} /* eslint-enable indent */
-
-eYo.DelegateSvg.Stmt.prototype.pathShapeDef_ =
-  eYo.DelegateSvg.Stmt.prototype.pathContourDef_ =
-    eYo.DelegateSvg.Stmt.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Stmt.prototype.pathStatementDef_
-
-/**
- * Path definition for a statement block selection.
- * @param {!Blockly.Block} block
- * @private
- */
-eYo.DelegateSvg.Stmt.prototype.pathSelectDef_ = function () {
-  return eYo.Shape.definitionWithBlock(this, {dido: true})
-}
-
-/**
  * Prepare rendering.
  * @param {?Object} recorder  When null, this is not the start of a statement
  * @return {!Object} a local recorder
@@ -149,66 +96,9 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
   return io
 }
 
-
-/**
- * Render the leading # character for disabled statement blocks.
- * @param io
- * @private
- * @override
- */
-eYo.DelegateSvg.Stmt.prototype.renderDrawSharp_ = function (io) {
-  if (io.block.disabled) {
-    var children = goog.dom.getChildren(this.svgSharpGroup_)
-    var length = children.length
-    if (!length) {
-      var y = eYo.Font.totalAscent
-      var text = Blockly.utils.createSvgElement('text',
-        {'x': 0, 'y': y},
-        this.svgSharpGroup_)
-      this.svgSharpGroup_.appendChild(text)
-      text.appendChild(document.createTextNode('#'))
-      length = 1
-    }
-    var expected = io.block.eyo.getStatementCount()
-    while (length < expected) {
-      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
-      text = Blockly.utils.createSvgElement('text',
-        {'x': 0, 'y': y},
-        this.svgSharpGroup_)
-      this.svgSharpGroup_.appendChild(text)
-      text.appendChild(document.createTextNode('#'))
-      ++length
-    }
-    while (length > expected) {
-      text = children[--length]
-      this.svgSharpGroup_.removeChild(text)
-    }
-    this.svgSharpGroup_.setAttribute('transform', 'translate(' + (io.cursor.x) +
-        ', ' + eYo.Padding.t + ')')
-    io.cursor.c += 2
-    io.common.startOfLine = io.common.startOfStatement = false
-  } else {
-    goog.dom.removeChildren(this.svgSharpGroup_)
-  }
-}
-
-/**
- * Render the right statement connection and its target block, if relevant.
- * @param {!Object} io the input/output argument.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.Stmt.prototype.renderDrawInputRight_ = function (io) {
-  // adding a ';' or not.
-  var c8n = this.rightStmtConnection
-  if (c8n) {
-    this.renderDrawFieldFrom_(io.input.eyo.fromStartField, io)
-    c8n.eyo.setOffset(io.cursor)
-  }
-}
-
 /**
  * Render the suite block, if relevant.
- * @return {boolean=} true if a rendering message was sent, false othrwise.
+ * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
   var c8n = this.rightStmtConnection
@@ -218,10 +108,10 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
     if (target) {
       var t_eyo = target.eyo
       try {
-        t_eyo.startOfLine = io.common.startOfLine
-        t_eyo.startOfStatement = io.common.startOfStatement
-        t_eyo.mayBeLast = t_eyo.hasRightEdge
-        t_eyo.downRendering = true
+        t_eyo.renderer.startOfLine = io.common.startOfLine
+        t_eyo.renderer.startOfStatement = io.common.startOfStatement
+        t_eyo.renderer.mayBeLast = t_eyo.renderer.hasRightEdge
+        t_eyo.renderer.down = true
         if (eYo.DelegateSvg.debugStartTrackingRender) {
           console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
         }
@@ -229,7 +119,7 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
           // force target rendering
           t_eyo.incrementChangeCount()
         }
-        if (!t_eyo.upRendering) {
+        if (!t_eyo.renderer.up) {
           t_eyo.render(false, io)
           if (!t_eyo.wrapped_) {
             io.common.field.shouldSeparate = false
@@ -241,13 +131,13 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
         console.error(err)
         throw err
       } finally {
-        t_eyo.downRendering = false
+        t_eyo.renderer.down = false
         var size = t_eyo.size
         if (size.w) {
           io.cursor.advance(size.w, size.h - 1)
           // We just rendered a block
           // it is potentially the rightmost object inside its parent.
-          if (t_eyo.hasRightEdge || io.common.shouldPack) {
+          if (t_eyo.renderer.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t_eyo)
             t_eyo.rightCaret = undefined
             io.common.field.shouldSeparate = false
@@ -258,15 +148,6 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
       return true
     }
   }
-}
-
-/**
- * Render the inputs of the block.
- * @param {!Blockly.Block} block
- * @protected
- */
-eYo.DelegateSvg.Stmt.prototype.minBlockW = function () {
-  return eYo.Font.tabW
 }
 
 /**

@@ -33,14 +33,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var root = this.field && this.field.getSvgRoot()
-        if (root) {
-          if (['in', 'or', 'and'].indexOf(newValue) >= 0) {
-            goog.dom.classlist.add(root, 'eyo-code-reserved')
-          } else {
-            goog.dom.classlist.remove(root, 'eyo-code-reserved')
-          }
-        }
+        this.owner.renderer.makeFieldReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.m_expr) {
@@ -314,14 +307,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var root = this.field && this.field.getSvgRoot()
-        if (root) {
-          if (newValue === 'not') {
-            goog.dom.classlist.add(root, 'eyo-code-reserved')
-          } else {
-            goog.dom.classlist.remove(root, 'eyo-code-reserved')
-          }
-        }
+        this.owner.renderer.makeFieldReserved(this.field, newValue === 'not')
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.not_test) {

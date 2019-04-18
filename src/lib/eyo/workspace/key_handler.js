@@ -604,25 +604,25 @@ var doit = (() => {
     'identifier': eYo.T3.Expr.identifier,
     'name': eYo.T3.Expr.identifier,
     'not …': function (key) {
-      var B = eYo.Selected.block
-      if (B) {
-        var parent = B.getSurroundParent()
+      var eyo = eYo.Selected.eyo
+      if (eyo) {
+        var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-          B.eyo.replaceBlock(parent)
+          eyo.replaceBlock(parent.block_)
           return
         }
         if (eYo.Selected.connection) {
-          B.eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
+          eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
         } else {
-          B.eyo.insertParentWithModel(eYo.T3.Expr.not_test)
+          eyo.insertParentWithModel(eYo.T3.Expr.not_test)
         }
       }
     },
     '+…': function (key) {
-      var B = eYo.Selected.block
-      if (B) {
-        var parent = B.getSurroundParent()
-        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_p === '+') {
+      var eyo = eYo.Selected.block
+      if (eyo) {
+        var parent = eyo.surround
+        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
           return
         }
         var model = {
@@ -630,9 +630,9 @@ var doit = (() => {
           operator_p: '+'
         }
         if (eYo.Selected.connection) {
-          B.eyo.insertBlockWithModel(model)
+          eyo.insertBlockWithModel(model)
         } else {
-          B.eyo.insertParentWithModel(model)
+          eyo.insertParentWithModel(model)
         }
       }
     }
@@ -644,11 +644,11 @@ var doit = (() => {
 
   Ks = (() => {
     var F = (key, op) => {
-      var B = eYo.Selected.block
-      if (B) {
-        var parent = B.getSurroundParent()
-        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.eyo.operator_ === op) {
-          B.eyo.replaceBlock(parent)
+      var eyo = eYo.Selected.eyo
+      if (eyo) {
+        var parent = eyo.surround
+        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
+          eyo.replaceBlock(parent.block_)
           return
         }
         var model = {
@@ -656,9 +656,9 @@ var doit = (() => {
           operator_p: op
         }
         if (eYo.Selected.connection) {
-          B.eyo.insertBlockWithModel(model)
+          eyo.insertBlockWithModel(model)
         } else {
-          B.eyo.insertParentWithModel(model)
+          eyo.insertParentWithModel(model)
         }
       }
     }

@@ -182,20 +182,10 @@ eYo.Slot.prototype.targetBlock = function () {
 }
 
 /**
- * Install this slot on a block.
+ * Install this slot and its associate fields on a block.
  * No data change.
  */
 eYo.Slot.prototype.beReady = function () {
-  // Build the DOM.
-  this.svgGroup_ = Blockly.utils.createSvgElement('g', {
-    class: 'eyo-slot'
-  }, null)
-  if (this.previous) {
-    goog.dom.insertSiblingAfter(this.svgGroup_, this.previous.svgGroup_)
-  } else {
-    this.owner.svgInsertHeadSlot()
-  }
-  //  this.getBlock().getSvgRoot().appendChild(this.svgGroup_)
   this.init()
   // init all the fields
   var f = (field) => {
@@ -1102,7 +1092,7 @@ eYo.ConnectionDelegate.prototype.rightConnection = function() {
 eYo.Slot.prototype.completePromise = function () {
   var c8n = this.connection
   if (c8n && c8n.eyo.completePromise()) {
-    this.completePromise = eYo.Do.Nothing
+    this.completePromise = eYo.Do.nothing
     return true
   }
 }

@@ -16,6 +16,7 @@ goog.provide('eYo.Delegate')
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
 goog.require('eYo.Events')
+goog.require('eYo.Span')
 goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')
@@ -30,11 +31,18 @@ goog.require('eYo.Data')
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @constructor
+ * @readonly
+ * @property {object} span - Contains the various extents of the receiver.
+ * @readonly
+ * @property {object} surroundParent - Get the surround parent.
+ * @readonly
+ * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
 eYo.Delegate = function (block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
   this.block_ = block
+  this.span = new eYo.Span(this)
   this.registerDisposable(block)
   block.eyo = this
   this.change = {
@@ -91,6 +99,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return this.block_.workspace
     }
   },
+  isInFlyout: {
+    get () {
+      return this.block_.isInFlyout
+    }
+  },
   type: {
     get () {
       return this.getBaseType()
@@ -110,6 +123,32 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var parent = this.block_.getParent()
       return parent && parent.eyo
+    }
+  },
+  surround: {
+    get () {
+      var ans
+      if ((ans = this.output)) {
+        return ans
+      } else if (!this.outputConnection) {
+        var eyo = this
+        while ((ans = eyo.left)) {
+          eyo = ans
+        }
+        while ((ans = eyo.previous)) {
+          if (ans.suite === eyo) {
+            return ans
+          }
+          eyo = ans
+        }
+      }
+      return null
+    }
+  },
+  surroundParent: {
+    get () {
+      var ans = this.surround
+      return ans && ans.block_
     }
   },
   group: {
@@ -138,6 +177,19 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
+  wrapped_: {
+    get () {
+      return this.wrapped__
+    },
+    set (newValue) {
+      if (newValue && !this.wrapped__) {
+        this.duringBlockWrapped()
+      } else if (!newValue && this.wrapped__) {
+        this.duringBlockUnwrapped()
+      }
+      this.wrapped__ = newValue
+    }
+  },
   topGroup: {
     get () {
       var ans
@@ -162,171 +214,52 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return eyo
     }
   },
-  // next are not relevant for expression blocks
-  // this may illustrates a bad design choice.
-  // To be enhanced.
-  nextHeight: {
-    get () {
-      return this.nextHeight_
-    },
-    set (newValue) {
-      var d = newValue - this.nextHeight_
-      if (d) {
-        this.nextHeight_ = newValue
-        this.incrementChangeCount()
-        var parent = this.parent
-        if (parent) {
-          if (parent.next === this) {
-            parent.nextHeight += d
-          } else {
-            parent.suiteHeight += d
-          }
-        }
-      }
-    }
-  },
-  /**
-   * This is not yet used.
-   * When we have support for doc strings,
-   * we may have the following situation:
-   * ```
-   * print('''foo
-   *         |bar'''); print('''foo
-   *                         |bar'''); print('''foo
-   *                                           |bar''')
-   * ```
-   * Both print statements have 2 main lines.
-   * The first print has 0 head line, 2 foot lines.
-   * The second print has 1 head line, 1 foot line.
-   * The third print has 2 head lines, 0 foot line.
-   */
-  headHeight: {
-    get () {
-      return this.headHeight_
-    },
-    set (newValue) {
-      var d = newValue - this.headHeight_
-      if (d) {
-        this.incrementChangeCount()
-        this.headHeight_ = newValue
-        var right = this.right
-        if (right) {
-          // cascade to the right most statement
-          right.headHeight += d
-        }
-      }
-    }
-  },
-  footHeight: {
-    get () {
-      return this.footHeight_
-    },
-    set (newValue) {
-      var d = newValue - this.footHeight_
-      if (d) {
-        this.incrementChangeCount()
-        this.footHeight_ = newValue
-        var left = this.left
-        if (left) {
-          // cascade to the left most statement
-          left.footHeight += d
-        }
-      }
-    }
-  },
-  /**
-   * The main count is the number of main lines in statements.
-   * A statement has one main line in general.
-   * When there is a doc string inside the statement,
-   * the main line might be bigger:
-   * ```
-   * print('abc')
-   * ```
-   * has exactly one main line whereas
-   * ```
-   * print('''foo
-   * bar''')
-   * ```
-   * has exactly two main lines.
-   * When there is more than one main line,
-   * the horizontal siblings may have head and foot counts.
-   */
   mainHeight: {
     get () {
-      return this.mainHeight_ // 1 or more
+      return this.span.main
     },
     set (newValue) {
-      var d = newValue - this.mainHeight_
-      if (d) {
-        this.incrementChangeCount()
-        var old = this.mainHeight_
-        this.mainHeight_ = newValue
-        var right = this.right
-        if (right) {
-          // if this is the first time, initialize this part with d - 1
-          right.headHeight += old ? d : d - 1
-        }
-        var parent = this.parent
-        if (parent) {
-          if (parent.next === this) {
-            parent.nextHeight += d
-          } else if (parent.right === this) {
-            // parent is a left node
-            parent.footHeight += old ? d : d - 1
-          } else {
-            parent.suiteHeight += d
-          }
-        }
-      }
+      this.span.main = newValue
     }
   },
-  /**
-   * Groups need a suite, but may not be provided with one.
-   * The black count is used to display a hole,
-   * where blocks should be connected.
-   */
   blackHeight: {
     get () {
-      return this.blackHeight_ // 0 or 1
+      return this.span.black
     },
     set (newValue) {
-      var d = newValue - this.blackHeight_
-      if (d) {
-        this.incrementChangeCount()
-        this.blackHeight_ = newValue
-        var parent = this.parent
-        if (parent) {
-          // next is not a good design
-          // because blackHeight_ has not a straightforward definition
-          if (parent.next === this) {
-            parent.nextHeight += d
-          } else {
-            parent.suiteHeight += d
-          }
-        }
-      }
+      this.span.black = newValue
     }
   },
   suiteHeight: {
     get () {
-      return this.suiteHeight_
+      return this.span.suite
     },
     set (newValue) {
-      var d = newValue - this.suiteHeight_
-      if (d) {
-        this.incrementChangeCount()
-        this.suiteHeight_ = newValue
-        var parent = this.parent
-        if (parent) {
-          // next is not a good design
-          // because suiteHeight_ has not a straightforward definition
-          if (parent.next === this) {
-            parent.nextHeight += d
-          } else {
-            parent.suiteHeight += d
-          }
-        }
-      }
+      this.span.suite = newValue
+    }
+  },
+  nextHeight: {
+    get () {
+      return this.span.next
+    },
+    set (newValue) {
+      this.span.next = newValue
+    }
+  },
+  headHeight: {
+    get () {
+      return this.span.head
+    },
+    set (newValue) {
+      this.span.head = newValue
+    }
+  },
+  footHeight: {
+    get () {
+      return this.span.foot
+    },
+    set (newValue) {
+      this.span.foot = newValue
     }
   },
   previousConnection: {
@@ -477,12 +410,17 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return eyo
     }
   },
-  isGroup: {
+  isExpr: {
     get () {
       return false
     }
   },
   isStmt: {
+    get () {
+      return false
+    }
+  },
+  isGroup: {
     get () {
       return false
     }
@@ -1990,7 +1928,7 @@ eYo.Delegate.prototype.completeWrap_ = function () {
  * Subclassers will override this but no one will call it.
  * @private
  */
-eYo.Delegate.prototype.doMakeBlockWrapped = function () {
+eYo.Delegate.prototype.duringBlockWrapped = function () {
 }
 
 /**
@@ -2006,44 +1944,18 @@ eYo.Delegate.prototype.canUnwrap = function () {
  * Subclassers will override this but won't call it.
  * @private
  */
-eYo.Delegate.prototype.makeBlockUnwrapped = function () {
+eYo.Delegate.prototype.duringBlockUnwrapped = function () {
 }
-
-/**
- * The wrapped blocks are special.
- * Do not override.
- * @private
- */
-eYo.Delegate.prototype.makeBlockWrapped = function () {
-  if (!this.wrapped_) {
-    this.doMakeBlockWrapped()
-    this.wrapped_ = true
-  }
-}
-
-/**
- * The wrapped blocks are special.
- * @private
- */
-eYo.Delegate.prototype.makeBlockUnwrapped_ = function () {
-  if (this.wrapped_) {
-    this.makeBlockUnwrapped()
-    this.wrapped_ = false
-  }
-}
-
+console.error('getUnwrapped should not be a block, consider the wrapper')
 /**
  * Get the first enclosing unwrapped block.
  * @private
  */
 eYo.Delegate.prototype.getUnwrapped = function () {
-  var parent = this.block_
+  var parent = this
   do {
-    if (!parent.eyo.wrapped_) {
-      break
-    }
-  } while ((parent = parent.getSurroundParent()))
-  return parent
+  } while (parent.wrapped_ && (parent = parent.surround))
+  return parent.block_
 }
 
 /**

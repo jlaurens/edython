@@ -30,6 +30,11 @@ eYo.DelegateSvg.makeSubclass('Expr')
 eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
 
 Object.defineProperties(eYo.DelegateSvg.Expr.prototype, {
+  isExpr: {
+    get () {
+      return true
+    }
+  },
   depth: {
     get () {
       var stmt = this.stmtParent
@@ -89,41 +94,6 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
 }
 
 /**
- * Initialize a block.
- * @param {!Blockly.Block} block to be initialized..
- * @extends {Blockly.Block}
- * @constructor
- */
-eYo.DelegateSvg.Expr.prototype.postInitSvg = function () {
-  eYo.DelegateSvg.Expr.superClass_.postInitSvg.call(this)
-  var block = this.block_
-  goog.asserts.assert(this.svgPathContour_, 'Missing svgPathContour_')
-  goog.dom.classlist.add(this.svgShapeGroup_, 'eyo-expr')
-  goog.dom.classlist.add(this.svgContourGroup_, 'eyo-expr')
-  goog.dom.classlist.add(block.svgGroup_, 'eyo-top')
-}
-
-/**
- * The contour of the receiver is below the parent's one.
- */
-eYo.DelegateSvg.prototype.contourAboveParent = false
-
-
-eYo.DelegateSvg.Expr.prototype.pathShapeDef_ =
-  eYo.DelegateSvg.Expr.prototype.pathContourDef_ =
-    eYo.DelegateSvg.Expr.prototype.pathHilightDef_ =
-      eYo.DelegateSvg.Expr.prototype.pathValueDef_
-
-/**
- * Render the leading # character for collapsed statement blocks.
- * Statement subclasses must override it.
- * @param io
- * @private
- */
-eYo.DelegateSvg.Expr.prototype.renderDrawSharp_ = function (io) {
-}
-
-/**
  * Can remove and bypass the parent?
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
@@ -165,7 +135,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
         if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
           // the other block has an output connection that can connect to the block's one
           var b_eyo = c8n.eyo.b_eyo
-          var selected = b_eyo.hasSelect()
+          var selected = b_eyo.renderer.hasSelect
           // next operations may unselect the block
           var old = b_eyo.consolidating_
           c8n.connect(this.outputConnection)

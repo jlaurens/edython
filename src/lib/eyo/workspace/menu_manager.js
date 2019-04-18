@@ -329,10 +329,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       me.init()
     }, 10)// TODO be sure that this 10 is suffisant
   })
-  var bBox = block.eyo.svgPathShape_.getBBox()
-  var scaledHeight = bBox.height * block.workspace.scale
-  var xy = goog.style.getPageOffset(block.svgGroup_)
-  this.menu.showMenu(block.svgGroup_, xy.x, xy.y + scaledHeight + 2)
+  block.eyo.renderer.showMenu(this.menu)
 }
 
 eYo.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
@@ -629,16 +626,16 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     target.eyo.setDisabled(!target.disabled)
     return true
   case eYo.ID.DELETE_BLOCK:
-    var unwrapped = target
+    var unwrapped = target.eyo
     var parent
-    while (unwrapped.eyo.wrapped_ && (parent = unwrapped.getSurroundParent())) {
+    while (unwrapped.wrapped_ && (parent = unwrapped.surround)) {
       unwrapped = parent
     }
     // unwrapped is the topmost block or the first unwrapped parent
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (target === eYo.Selected.block && target !== unwrapped) {
+      if (target === eYo.Selected.block && target.eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var c8n
         if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
@@ -649,7 +646,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
           eYo.Selected.connection = c8n
         }
       }
-      unwrapped.dispose(true, true)
+      unwrapped.block_.dispose(true, true)
       returnState = true
     } catch (err) {
       console.error(err)

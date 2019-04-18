@@ -111,45 +111,19 @@ eYo.BlockSvg.prototype.setParent = function (newParent) {
   this.eyo.parentWillChange(newParent)
   eYo.BlockSvg.superClass_.setParent.call(this, newParent)
   this.eyo.parentDidChange(newParent)
-  if ((this.eyo.svgPathSelect_ &&
-      this.svgGroup_ === this.eyo.svgPathSelect_.parentElement) || (this.eyo.svgPathConnection_ &&
-        this.svgGroup_ === this.eyo.svgPathConnection_.parentElement)) {
-    this.removeSelect()
-    this.addSelect()
-  } else if (newParent && ((newParent.eyo.svgPathSelect_ &&
-      newParent.svgGroup_ === newParent.eyo.svgPathSelect_.parentElement) || (newParent.eyo.svgPathConnection_ &&
-      newParent.svgGroup_ === newParent.eyo.svgPathConnection_.parentElement))) {
-    newParent.removeSelect()
-    newParent.addSelect()
-  }
 }
 
 /**
  * Play some UI effects (sound, ripple) after a connection has been established.
  */
 eYo.BlockSvg.prototype.connectionUiEffect = function () {
-  if (this.eyo) {
-    this.workspace.getAudioManager().play('click')
-    if (this.workspace.scale < 1) {
-      return // Too small to care about visual effects.
-    }
-    var xy = this.workspace.getSvgXY(/** @type {!Element} */ (this.svgGroup_))
-    if (this.outputConnection) {
-      var h = this.height * this.workspace.scale / 2
-      var ripple = Blockly.utils.createSvgElement('circle',
-        {'class': 'blocklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
-        this.workspace.getParentSvg())
-    } else {
-    // Determine the absolute coordinates of the inferior block.
-      var steps = Blockly.Connection.highlightedPath_.attributes['d'].value
-      ripple = Blockly.utils.createSvgElement('path',
-        {'class': 'blocklyHighlightedConnectionPath',
-          'd': steps,
-          transform: `translate(${xy.x},${xy.y})`},
-        this.workspace.getParentSvg())
-    }
-    // Start the animation.
-    eYo.BlockSvg.connectionUiStep_(ripple, new Date(), this.workspace.scale)
+  this.workspace.getAudioManager().play('click')
+  if (this.workspace.scale < 1) {
+    return // Too small to care about visual effects.
+  }
+  var r = this.eyo.renderer
+  if (r) {
+    r.connectionUiEffect()
     return
   }
   eYo.BlockSvg.superClass_.connectionUiEffect.call(this)
@@ -352,34 +326,18 @@ eYo.BlockSvg.prototype.bringToFront = function() {
   } catch (err) {
     console.error(err)
   }
-};
-
+}
 
 /**
- * Enable or disable a block.
- * Remove the reference to the svgPath_
+ * Update the visual effect for disabled/enabled blocks.
  */
 Blockly.BlockSvg.prototype.updateDisabled = function() {
-  if (this.disabled || this.getInheritedDisabled()) {
-    var added = Blockly.utils.addClass(
-        /** @type {!Element} */ (this.svgGroup_), 'blocklyDisabled');
-    // if (added) {
-    //   this.svgPath_.setAttribute('fill',
-    //       'url(#' + this.workspace.options.disabledPatternId + ')');
-    // }
-  } else {
-    var removed = Blockly.utils.removeClass(
-        /** @type {!Element} */ (this.svgGroup_), 'blocklyDisabled');
-    if (removed) {
-      this.updateColour();
-    }
+  var r = this.eyo.renderer
+  if (r) {
+    r.updateDisabled()
+    this.getChildren().forEach(child => child.updateDisabled())
   }
-  var children = this.getChildren();
-  for (var i = 0, child; child = children[i]; i++) {
-    child.updateDisabled();
-  }
-};
-
+}
 /**
  * Whether the receiver is movable.
  */

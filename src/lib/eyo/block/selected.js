@@ -28,7 +28,7 @@ eYo.Selected = (() => {
   var c8n__
   me.updateDraw = () => {
     if (eyo__ && eyo__.isReady) {
-      eyo__.updateAllPaths_()
+      eyo__.renderer.updateShape()
       eYo.Draw.addBlockSelect_(eyo__)
       eYo.Draw.addStatusSelect_(eyo__)
       if (c8n__) {
@@ -238,16 +238,6 @@ Object.defineProperties(
     }
   }
 )
-
-/**
- * Whether the block is selected.
- * Subclassers will override this but won't call it.
- * @param {!Block} block
- * @private
- */
-eYo.DelegateSvg.prototype.hasSelect = function () {
-  return eYo.Draw.hasSelect(this)
-}
 
 /**
  * Select this block.  Highlight it visually.
@@ -486,7 +476,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
-  if (this.parentIsShort && eYo.Selected.eyo !== this) {
+  if (this.renderer.parentIsShort && eYo.Selected.eyo !== this) {
     parent = this.parent
     if (eYo.Selected.eyo !== parent) {
       eYo.BlockSvg.superClass_.onMouseDown_.call(parent.block_, e)
@@ -595,51 +585,4 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
     }
   }
   eYo.App.didTouchBlock && eYo.App.didTouchBlock(eYo.Selected.block)
-}
-
-
-/**
- * Path definition for an hilighted connection
- */
-eYo.Selected.pathConnectionDef = function () {
-  var c8n = this.connection
-  if (!c8n) {
-    return ''
-  }
-  var block = c8n.sourceBlock_
-  if (!block.workspace) {
-    return ''
-  }
-  var steps = ''
-  var c_eyo = c8n.eyo
-  var b_eyo = c_eyo.b_eyo
-  if (c_eyo.isInput) {
-    if (c8n.isConnected()) {
-      steps = c_eyo.t_eyo.pathValueDef_()
-    } else if (!b_eyo.disabled_) {
-      steps = eYo.Shape.definitionWithConnectionDlgt(c_eyo, {absolute: true})
-    }
-  } else if (c_eyo.isOutput) {
-    steps = b_eyo.pathValueDef_(c8n.offsetInBlock_)
-  } else { // statement connection
-    var r = eYo.Style.Path.Hilighted.width / 2
-    var a = `a ${r},${r} 0 0 1 `
-    var w = block.width - eYo.Unit.x / 2
-    if (c_eyo.isPrevious) {
-      steps = `m ${w - 4 * r},${-r} ${a}0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l + 8 * r} ${a}0,${-2 * r} z`
-    } else if (c_eyo.isNext) {
-      if (b_eyo.size.height > eYo.Unit.y) { // this is not clean design
-        steps = `m ${eYo.Font.tabWidth},${b_eyo.size.height - r} ${a}0,${2 * r} h ${-eYo.Font.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l} ${a}0,${-2 * r} z`
-      } else {
-        steps = `m ${w - 4 * r},${eYo.Unit.y - r} ${a}0,${2 * r} h ${-w + eYo.Unit.x - eYo.Padding.l + 8 * r} ${a}0,${-2 * r} z`
-      }
-    } else if (c_eyo.isSuite) {
-      steps = `m ${w - 4 * r},${-r + eYo.Unit.y} ${a}0,${2 * r} h ${eYo.Font.tabWidth - w + eYo.Unit.x / 2 + 8 * r} ${a}0,${-2 * r} z`
-    } else if (c_eyo.isLeft) {
-      steps = `M ${eYo.Unit.x / 2 + r},${eYo.Unit.y - 4 * r}  ${a}${-2 * r},0 v ${- eYo.Unit.y + 8 * r}  ${a}${2 * r},0 z`
-    } else /* if (c_eyo.isRight) */ {
-      steps = `M ${w + r},${eYo.Unit.y - 4 * r}  ${a}${-2 * r},0 v ${- eYo.Unit.y + 8 * r}  ${a}${2 * r},0 z`
-    }
-  }
-  return steps
 }
