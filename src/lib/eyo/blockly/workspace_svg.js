@@ -543,30 +543,6 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   this.workspace_.scrollbar.set(scrollX, scrollY);
 };
 
-Object.defineProperties(
-  eYo.WorkspaceDelegate.prototype,
-  {
-    /**
-     * Get the visible rect of the workspace.
-     * This is the intersection of the block rectangle
-     * and the workspace view rect.
-     * For edython.
-     * @property {?eYo.Rect}
-     */
-     viewRect: {
-      get () {
-        var metrics = this.workspace_.getMetrics()
-        return new goog.math.Rect(
-          0,
-          0,
-          metrics.viewWidth,
-          metrics.viewHeight
-        )
-      }
-    }
-  }
-)
-
 /**
  * Recalculate a horizontal scrollbar's location on the screen and path length.
  * This should be called when the layout or size of the window has changed.

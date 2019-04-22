@@ -1335,78 +1335,6 @@ eYo.DelegateSvg.prototype.inVisibleArea = function () {
   var area = this.getDistanceFromVisible()
   return area && !area.x && !area.y
 }
-console.error('viewRect must go to the renderer')
-
-Object.defineProperties(
-  eYo.DelegateSvg.prototype,
-  {
-    /**
-     * Get the visible block area.
-     * This is the intersection of the block rectangle
-     * and the workspace view rect.
-     * For edython.
-     * @property {?eYo.Rect}
-     */
-    viewRect: {
-      get () {
-        var block = this.block_
-        var workspace = block.workspace
-        if (!workspace) {
-          return undefined
-        }
-        // Workspace scale, used to convert from workspace coordinates to pixels.
-        var scale = workspace.scale;
-        // XY is in workspace coordinates.
-        var xy = block.getRelativeToSurfaceXY();
-        // Height/width is in workspace units.
-        var heightWidth = block.getHeightWidth();
-        var metrics = workspace.getMetrics()
-        return new goog.math.Rect(
-          xy.x * scale - metrics.viewLeft,
-          xy.y * scale - metrics.viewTop,
-          heightWidth.width * scale,
-          heightWidth.height * scale
-        )
-      }
-    },
-    /**
-     * Get the visible block area.
-     * This is the intersection of the block rectangle
-     * and the workspace view rect.
-     * For edython.
-     * @property {?eYo.Rect}
-     */
-    visibleRect: {
-      get () {
-        var block = this.block_
-        var workspace = block.workspace
-        if (!workspace) {
-          return undefined
-        }
-        var metrics = workspace.getMetrics()
-        var a = new goog.math.Rect(
-          0,
-          0,
-          metrics.viewWidth,
-          metrics.viewHeight
-        )
-        // Workspace scale, used to convert from workspace coordinates to pixels.
-        var scale = workspace.scale;
-        // XY is in workspace coordinates.
-        var xy = block.getRelativeToSurfaceXY();
-        // Height/width is in workspace units.
-        var heightWidth = block.getHeightWidth();
-        var b = new goog.math.Rect(
-          xy.x * scale - metrics.viewLeft,
-          xy.y * scale - metrics.viewTop,
-          heightWidth.width * scale,
-          heightWidth.height * scale
-        )
-        return eYo.Rect.intersection(a, b)  
-      }
-    }
-  }
-)
 
 /**
  * Get the position of receiver's block relative to
@@ -1420,12 +1348,12 @@ Object.defineProperties(
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the workspace
  * 15 units to the right and the block is visible.
  * For edython.
- * @param {!Object} newLoc The owner of the receiver.
+ * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
  * @return {{x: number, y: number}|undefined}
  */
 eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
   var block = this.block_
-  var workspace = block.workspace
+  var workspace = this.workspace
   if (!workspace) {
     return undefined
   }

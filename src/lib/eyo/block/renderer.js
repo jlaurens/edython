@@ -68,18 +68,6 @@ Object.defineProperties(eYo.Renderer.prototype, {
       return this.node_.change
     }
   },
-  driver: {
-    get() {
-      return this.driver_
-    },
-    set (newValue) {
-      if (newValue !== this.driver_) {
-        this.driver_ && this.driver_.dispose(this.node_)
-        this.driver_ = driver
-        this.driver_ && this.driver_.init(this.node)
-      }
-    }
-  },
   span: {
     get() {
       return this.node_.span
@@ -102,12 +90,12 @@ Object.defineProperties(eYo.Renderer.prototype, {
   },
   bBox: {
     get () {
-      return this.driver.getBBox(this.node_)
+      return this.driver.nodeGetBBox(this.node_)
     }
   },
   hasSelect: {
     get () {
-      return this.driver.hasSelect(this.node_)
+      return this.driver.nodeHasSelect(this.node_)
     }
   }
 })
@@ -118,7 +106,7 @@ Object.defineProperties(eYo.Renderer.prototype, {
  * @param {*} c8n 
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Renderer.prototype.drawC8n_ = function (recorder, c8n) {
+eYo.Renderer.prototype.drawC8n_ = function (c8n, recorder) {
   if (!c8n) {
     return
   }
@@ -155,7 +143,7 @@ eYo.Renderer.prototype.drawC8n_ = function (recorder, c8n) {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.Renderer.prototype.drawNext_ = function (recorder) {
-  return this.drawC8n_(recorder, this.node.nextConnection)
+  return this.drawC8n_(this.node.nextConnection, recorder)
 }
 
 /**
