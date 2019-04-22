@@ -183,3 +183,39 @@ eYo.InputDelegate.prototype.connect = function (something) {
   }
 }
 
+/**
+ * Sets whether this input is visible or not.
+ * Used to collapse/uncollapse a block.
+ * @param {boolean} visible True if visible.
+ * @return {!Array.<!Blockly.Block>} List of blocks to render.
+ */
+Blockly.Input.prototype.setVisible = (() => {
+  var setVisible = Blockly.Input.prototype.setVisible
+  return function(visible) {
+    if (this.eyo) {
+      if (this.visible_ == visible) {
+        return []
+      }
+      this.visible_ = visible
+      this.fieldRow.forEach(f => f.setVisible(visible))
+      if (this.connection) {
+        // Has a connection.
+        if (visible) {
+          var renderList = this.connection.unhideAll()
+        } else {
+          this.connection.hideAll()
+        }
+        var t_eyo = this.connection.c_eyo.t_eyo
+        if (t_eyo) {
+          t_eyo.renderer.setVisible(visible)
+          if (!visible) {
+            t_eyo.block_.rendered = false
+          }
+        }
+      }
+      return renderList
+    }
+    return setVisible.call(this, visible)
+  }
+})()
+

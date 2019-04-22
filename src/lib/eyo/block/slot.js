@@ -61,7 +61,7 @@ eYo.Slot = function (owner, key, model) {
   this.owner = owner
   this.key = key
   this.reentrant = {}
-  var setupModel = (model) => {
+  var setupModel = model => {
     if (!model.setup_) {
       model.setup_ = true
       if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
@@ -96,7 +96,7 @@ eYo.Slot = function (owner, key, model) {
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
-  this.where = new eYo.Where()
+  this.where = new eYo.Where() // for rendering only
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
@@ -188,7 +188,7 @@ eYo.Slot.prototype.targetBlock = function () {
 eYo.Slot.prototype.beReady = function () {
   this.init()
   // init all the fields
-  var f = (field) => {
+  var f = field => {
     if (!field.sourceBlock_) {
       field.setSourceBlock(this.sourceBlock_)
       field.eyo.slot = this
@@ -200,6 +200,21 @@ eYo.Slot.prototype.beReady = function () {
   this.input && this.input.eyo.beReady()
   this.beReady = eYo.Do.nothing // one shot function
 }
+
+/**
+ * Prepare this slot for rendering.
+ * No data change.
+ */
+eYo.Slot.prototype.beRenderReady = function () {
+  this.owner.renderer.slotPrepare(this)()
+  // init all the fields
+  var f = field => field.beRenderReady()
+  Object.values(this.fields).forEach(f)
+  this.bindField && f(this.bindField)
+  this.input && this.input.eyo.beRenderReady()
+  this.beRenderReady = eYo.Do.nothing // one shot function
+}
+
 /**
  * The DOM SVG group representing this slot.
  */
@@ -208,28 +223,17 @@ eYo.Slot.prototype.getSvgRoot = function () {
 }
 
 /**
- * Transitional: when a block is connected, its svg root is installed
- * in another block's one. Here we move it to an slot svg root, if relevant.
- * @param {!Blockly.Block} block to be initialized.
- */
-eYo.Slot.prototype.takeSvgOwnership = function (block) {
-  var root = block.getSvgRoot()
-  if (root) {
-    console.log('MOVE IT TO THE TAIL ?')
-  }
-}
-
-/**
- * Dispose of all DOM objects belonging to this slot.
+ * Dispose of all attributes.
+ * Asks the owner's renderer to do the same.
  */
 eYo.Slot.prototype.dispose = function () {
-  goog.dom.removeNode(this.svgGroup_)
-  this.svgGroup_ = null
+  var r = this.owner.renderer
+  r && r.slotDispose(this)
+  this.sourceBlock_ = null
   this.owner = null
   this.key = null
   this.model = null
   this.input = null
-  this.sourceBlock_ = null
 }
 
 goog.require('eYo.FieldLabel')
@@ -477,8 +481,8 @@ eYo.Slot.makeFields = (() => {
       }
       return startField
     }
-    owner.fromStartField = chain.apply(this, fromStart)
-    owner.fromStartField = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fromStartField)
+    owner.fieldAtStart = chain.apply(this, fromStart)
+    owner.fieldAtStart = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fieldAtStart)
     owner.toEndField = chain.apply(this, toEnd)
     owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
     // we have exhausted all the fields that are already ordered
@@ -492,8 +496,8 @@ eYo.Slot.makeFields = (() => {
     }
     goog.asserts.assert(unordered.length < 2,
       `Too many unordered fields in ${key}/${JSON.stringify(model)}`)
-    unordered[0] && (owner.fromStartField = chain(owner.fromStartField, unordered[0]))
-    owner.fromStartField && delete owner.fromStartField.eyo.eyoLast_
+    unordered[0] && (owner.fieldAtStart = chain(owner.fieldAtStart, unordered[0]))
+    owner.fieldAtStart && delete owner.fieldAtStart.eyo.eyoLast_
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
   }
 }) ()
@@ -720,12 +724,7 @@ eYo.Slot.prototype.synchronize = function () {
   if (input.isVisible()) {
     input.fieldRow.forEach(field => {
       if (field.getText().length > 0) {
-        var root = field.getSvgRoot()
-        if (root) {
-          root.removeAttribute('display')
-        } else {
-          console.log('Field with no root: did you ...initSvg()?')
-        }
+        field.eyo.visible = true
       }
     })
     var target = this.targetBlock()

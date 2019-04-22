@@ -635,14 +635,8 @@ eYo.Data.prototype.synchronize = function (newValue) {
           } else {
             field.setVisible(true)
           }
-          var element = field.textElement_
-          if (element) {
-            if (this.error) {
-              goog.dom.classlist.add(element, 'eyo-code-error')
-            } else {
-              goog.dom.classlist.remove(element, 'eyo-code-error')
-            }
-          }
+          var r = field.eyo.renderer
+          r && r.fieldMakeError(field)
         })
       }
     }

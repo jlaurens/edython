@@ -19,8 +19,6 @@
 
 goog.provide('eYo.Selected')
 
-goog.require('eYo.Draw')
-
 eYo.Selected = (() => {
   var me = {}
   var eyo__
@@ -29,13 +27,13 @@ eYo.Selected = (() => {
   me.updateDraw = () => {
     if (eyo__ && eyo__.isReady) {
       eyo__.renderer.updateShape()
-      eYo.Draw.addBlockSelect_(eyo__)
-      eYo.Draw.addStatusSelect_(eyo__)
+      eyo__.renderer.addBlockSelect_()
+      eyo__.renderer.addStatusSelect_()
       if (c8n__) {
-        eYo.Draw.addBlockConnection_(eyo__)
-        eYo.Draw.removeBlockHilight_(eyo__)
+        eyo__.renderer.addBlockConnection_()
+        eyo__.renderer.removeBlockHilight_()
       } else {
-        eYo.Draw.addBlockHilight_(eyo__)
+        eyo__.renderer.addBlockHilight_()
       }
     }
   }
@@ -71,10 +69,10 @@ eYo.Selected = (() => {
           if (eyo__ !== newValue) {
             if (eyo__) {
               // unselect/unhilight the previous block
-              eYo.Draw.removeBlockSelect_(eyo__)
-              eYo.Draw.removeBlockHilight_(eyo__)
-              eYo.Draw.removeBlockConnection_(eyo__)
-              eYo.Draw.removeStatusSelect_(eyo__)
+              eyo__.renderer.removeBlockSelect_()
+              eyo__.renderer.removeBlockHilight_()
+              eyo__.renderer.removeBlockConnection_()
+              eyo__.renderer.removeStatusSelect_()
               eyo__.selectedConnection = null
               eyo__.selectedConnectionSource_ = null
               eyo__ = block__ = null
@@ -135,7 +133,7 @@ eYo.Selected = (() => {
               }
             } else {
               if (eyo__) {
-                eYo.Draw.removeBlockConnection_(eyo__)
+                eyo__.renderer.removeBlockConnection_()
                 eyo__.selectedConnection = null
                 eyo__.selectedConnectionSource_ = null
               }

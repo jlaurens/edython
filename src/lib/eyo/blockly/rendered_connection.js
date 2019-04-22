@@ -689,7 +689,7 @@ Blockly.RenderedConnection.prototype.highlight = (() => {
   var highlight = Blockly.RenderedConnection.prototype.highlight
   return function () {
     if (this.eyo) {
-      this.eyo.b_eyo.renderer.highlightConnection(this.eyo)
+      this.eyo.renderer.highlightConnection(this.eyo)
       return
     }
     highlight.call(this)
@@ -1399,7 +1399,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dl = target_where.l - where.l
   if (dc != 0 || dl != 0) {
     var block = this.targetBlock();
-    block.eyo.setOffset(-dc, -dl);
+    block.eyo.renderer.setOffset(-dc, -dl);
   }
 };
 Blockly.RenderedConnection.prototype.tighten_ = function() {
@@ -1407,7 +1407,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
     var block = this.targetBlock();
-    block.eyo.setOffset(-dx, -dy);
+    block.eyo.renderer.setOffset(-dx, -dy);
   }
 };
 

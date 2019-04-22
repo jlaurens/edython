@@ -20,6 +20,13 @@ goog.require('eYo.Field')
 /**
  * Class for an editable text field helper.
  * @param {eYo.TextInputField} owner  The owner of the field.
+ * @property {boolean} isLabel
+ * @readonly
+ * @property {boolean} isTextInput
+ * @readonly
+ * @property {Object} workspace
+ * @readonly
+ * @property {Object} renderer
  * @constructor
  */
 eYo.FieldHelper = function (field) {
@@ -38,13 +45,42 @@ Object.defineProperties(
         return this.field_.sourceBlock_.eyo
       }
     },
-    textElement: {
+    workspace: {
       get () {
-        return this.field_.textElement_
+        return this.b_eyo.workspace
+      }
+    },
+    renderer: {
+      get () {
+        return this.b_eyo.renderer
+      }
+    },
+    visible: {
+      get () {
+        return this.renderer.fieldDisplayed(this)
+      },
+      set (newValue) {
+        this.renderer.fieldMakeVisible(this, newValue)
       }
     }
   }
 )
+/**
+ * Whether the field of the receiver starts with a separator.
+ */
+eYo.FieldHelper.prototype.renderInit = function () {
+  var r = this.renderer
+  r && r.fieldInit(this.field_)
+}
+
+/**
+ * Whether the field of the receiver starts with a separator.
+ */
+eYo.FieldHelper.prototype.renderDispose = function () {
+  var r = this.renderer
+  r && r.fieldDispose(this.field_)
+}
+
 /**
  * Whether the field of the receiver starts with a separator.
  */
@@ -115,18 +151,6 @@ eYo.FieldHelper.prototype.validateIfData = function (txt) {
 }
 
 /**
- * Set the entire dom class list.
- * @param {!String} class_name
- */
-eYo.FieldHelper.prototype.set_css_class = function (class_name) {
-  var e = this.field_.textElement_
-  if (e) {
-    goog.dom.classlist.removeAll(e, goog.dom.classlist.get(e))
-    goog.dom.classlist.add(e, class_name)
-  }
-}
-
-/**
  * Will render the field.
  * We can call `this.willRender()` from the model.
  */
@@ -135,19 +159,7 @@ eYo.FieldHelper.prototype.willRender = function () {
   if (f) {
     f.call(this)
   } else {
-    var field = this.field_
-    var root = field.getSvgRoot()
-    if (root && field.isVisible()) {
-      if (field.eyo.placeholder) {
-        goog.dom.classlist.add(field.textElement_, 'eyo-code-placeholder')
-      } else {
-        goog.dom.classlist.remove(field.textElement_, 'eyo-code-placeholder')
-      }
-      if (field.eyo.isComment) {
-        goog.dom.classlist.add(field.textElement_, 'eyo-code-comment')
-      } else {
-        goog.dom.classlist.remove(field.textElement_, 'eyo-code-comment')
-      }
-    }
+    this.renderer.fieldMakePlaceholder(this.placeholder)
+    this.renderer.fieldMakeComment(this.isComment)
   }
 }

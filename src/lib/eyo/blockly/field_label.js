@@ -34,6 +34,7 @@ eYo.FieldLabel = function (owner, text, optClass) {
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
+  this.eyo.isLabel = true
   eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
@@ -57,43 +58,15 @@ Object.defineProperties(
  * @suppress{accessControls}
  */
 eYo.FieldLabel.prototype.init = function () {
-  if (this.textElement_) {
-    // Text has already been initialized once.
-    return
-  }
-  // Build the DOM.
-  this.textElement_ = Blockly.utils.createSvgElement('text',
-    {'class': 'eyo-label', 'y': eYo.Font.totalAscent}, null)
-  if (this.class_) {
-    goog.dom.classlist.add(this.textElement_, this.class_)
-  }
-  if (this.eyo.css_class) {
-    goog.dom.classlist.add(this.textElement_, eYo.Do.valueOf(this.eyo.css_class, this.eyo))
-  }
-  if (this.eyo.slot) {
-    this.eyo.slot.getSvgRoot().appendChild(this.textElement_)
-  } else {
-    this.sourceBlock_.getSvgRoot().appendChild(this.textElement_)
-  }
-  // Configure the field to be transparent with respect to tooltips.
-  this.textElement_.tooltip = this.sourceBlock_
-  Blockly.Tooltip.bindMouseEvents(this.textElement_)
+  this.eyo.renderInit()
 }
 
 /**
- * Updates the width of the field. This calls getCachedWidth which won't cache
- * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
- * it eventually does succeed, the result will be cached.
- * @suppress{accessControls}
+ * Dispose of all DOM objects belonging to this field.
  */
-Blockly.Field.prototype.updateWidth = function () {
-  var width = this.eyo
-  ? this.eyo.size.width
-  : Blockly.Field.getCachedWidth(this.textElement_)
-  if (this.borderRect_) {
-    this.borderRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h)
-  }
-  this.size_.width = width
+eYo.FieldLabel.prototype.dispose = function () {
+  eYo.FieldLabel.superClass_.dispose.call(this)
+  this.eyo.renderDispose()
 }
 
 /**
@@ -105,9 +78,9 @@ eYo.FieldLabel.prototype.setValue = function (newValue) {
   var oldValue = this.getText()
   eYo.FieldLabel.superClass_.setValue.call(this, newValue)
   if (this.name) {
-    var block = this.sourceBlock_
-    if (block && block.eyo.fieldValueDidChange) {
-      block.eyo.fieldValueDidChange(this.name, oldValue)
+    var b_eyo = this.eyo.b_eyo
+    if (b_eyo && b_eyo.fieldValueDidChange) {
+      b_eyo.fieldValueDidChange(this.name, oldValue)
     }
   }
 }

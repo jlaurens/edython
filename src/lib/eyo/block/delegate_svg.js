@@ -344,7 +344,7 @@ eYo.DelegateSvg.prototype.getField = function (name) {
     }
   }
   var slot
-  if ((slot = this.headSlot)) {
+  if ((slot = this.slotAtHead)) {
     do {
       var fields = slot.fields
       for (var key in fields) {
@@ -1454,51 +1454,7 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
 }
 
 /**
- * Whether the block of the receiver is in the visible area.
- * For edython.
- * @param {*} dx 
- * @param {*} dy 
- * @return {boolean}
- */
-eYo.DelegateSvg.prototype.setOffset = function (dc, dl) {
-  // Workspace coordinates.
-  var block = this.block_
-  if (!this.svgGroupShape_) {
-    throw 'block is not inited '+this.type
-  }
-  var dx = dc * eYo.Unit.x
-  var dy = dl * eYo.Unit.y
-  var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
-  var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
-  block.getSvgRoot().setAttribute('transform', transform);
-  this.svgGroupShape_.setAttribute('transform', transform);
-  this.svgGroupContour_.setAttribute('transform', transform);
-  block.moveConnections_(dx, dy);
-}
-eYo.DelegateSvg.prototype.setOffset = function (dx, dy) {
-  // Workspace coordinates.
-  var block = this.block_
-  if (!this.svgGroupShape_) {
-    throw 'block is not inited '+this.type
-  }
-  var xy = Blockly.utils.getRelativeXY(block.getSvgRoot());
-  var transform = 'translate(' + (xy.x + dx) + ',' + (xy.y + dy) + ')';
-  block.getSvgRoot().setAttribute('transform', transform);
-  var xy1 = Blockly.utils.getRelativeXY(this.svgGroupShape_);
-  this.svgGroupShape_.setAttribute('transform', transform);
-  var xy2 = Blockly.utils.getRelativeXY(this.svgGroupContour_);
-  this.svgGroupContour_.setAttribute('transform', transform);
-  if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
-    console.error('WEIRD A', xy1, xy2)
-  }
-  if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
-    console.error('WEIRD B', xy, xy1)
-  }
-  block.moveConnections_(dx, dy);
-}
-
-/**
- * Renders the block when connections are no longer hidden.
+ * Side effect: renders the block when connections are no longer hidden.
  * @param {boolean} hidden True to hide connections.
  */
 eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {

@@ -43,24 +43,28 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
+  eyo.isTextInput = true
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }
 goog.inherits(eYo.FieldTextInput, Blockly.FieldTextInput)
 
-Object.defineProperties(
-  eYo.FieldTextInput.prototype,
-  {
-    size_: {
-      get () {
-        return this.eyo.size
-      },
-      set (newValue) {
-        this.eyo.size.set(newValue)
-      }
+Object.defineProperties(eYo.FieldTextInput.prototype, {
+  size_: {
+    get () {
+      return this.eyo.size
     },
+    set (newValue) {
+      this.eyo.size.set(newValue)
+    }
+  },
+  b_eyo: {
+    get () {
+      return this.sourceBlock_.eyo
+    }
   }
-)
+})
+
 
 /**
  * The HTML input element for the user to type, or null if no FieldTextInput
@@ -75,62 +79,22 @@ eYo.FieldTextInput.htmlInput_ = null
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.init = function () {
-  if (this.fieldGroup_) {
-    // Field has already been initialized once.
-    return
-  }
-  // Build the DOM.
-  this.fieldGroup_ = Blockly.utils.createSvgElement('g', {}, null)
-  if (this.eyo.slot) {
-    this.eyo.slot.getSvgRoot().appendChild(this.fieldGroup_)
-  } else {
-    this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_)
-  }
-  this.borderRect_ = Blockly.utils.createSvgElement('rect',
-    { class: 'eyo-none',
-      rx: 0,
-      ry: 0,
-      x: -eYo.Style.Edit.padding_h,
-      y: -eYo.Style.Edit.padding_v,
-      height: eYo.Font.height + 2 * eYo.Style.Edit.padding_v},
-    this.fieldGroup_, this.sourceBlock_.workspace)
-
-  this.editRect_ = Blockly.utils.createSvgElement('rect',
-    { class: 'eyo-edit',
-      'rx': eYo.Style.Edit.radius,
-      'ry': eYo.Style.Edit.radius,
-      'x': -eYo.Style.Edit.padding_h - (this.eyo.left_space ? eYo.Unit.x : 0),
-      'y': -eYo.Style.Edit.padding_v,
-      'height': eYo.Font.height + 2 * eYo.Style.Edit.padding_v},
-    this.fieldGroup_, this.sourceBlock_.workspace)
-
-  /** @type {!Element} */
-  this.textElement_ = Blockly.utils.createSvgElement('text',
-    {'class': this.cssClass, 'y': eYo.Font.totalAscent},
-    this.fieldGroup_)
-  this.updateEditable()
-  this.fieldGroup_.appendChild(this.textElement_)
-  this.mouseDownWrapper_ =
-  Blockly.bindEventWithChecks_(this.fieldGroup_, 'mousedown', this, this.onMouseDown_
-  )
-  if (this.eyo.css_class) {
-    goog.dom.classlist.add(this.textElement_, eYo.Do.valueOf(this.eyo.css_class, this.eyo))
-  }
+  this.eyo.renderer.fieldTextInputInit(this)
 }
 
 /**
  * The block must be selected before the text field would become editable.
  **/
 eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
-  if (eYo.Selected.block === this.sourceBlock_) {
+  if (eYo.Selected.eyo === this.eyo.b_eyo) {
     eYo.FieldTextInput.superClass_.onMouseDown_.call(this, e)
   }
 }
 
 /**
  * Updates the width of the field. This calls getCachedWidth which won't cache
- * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
- * it eventually does succeed, the result will be cached.
+ * the approximated width on IE/Edge when `getComputedTextLength` fails.
+ * Once it eventually does succeed, the result will be cached.
  **/
 eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
@@ -145,7 +109,7 @@ eYo.FieldTextInput.prototype.updateWidth = function () {
  */
 eYo.FieldTextInput.prototype.dispose = function () {
   eYo.FieldTextInput.superClass_.dispose.call(this)
-  this.editRect_ = null
+  this.eyo.renderer.fieldTextInputDispose(this)
 }
 
 /**
@@ -166,11 +130,12 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
+  var b_eyo = this.eyo.b_eyo
   var block = this.sourceBlock_
-  if (this.eyo.doNotEdit || block.eyo.locked_ || !block.eyo.canEdit_ || block.isInFlyout) {
+  if (this.eyo.doNotEdit || b_eyo.locked_ || !b_eyo.canEdit_ || block.isInFlyout) {
     return
   }
-  block.eyo.isEditing = this.eyo.isEditing = true
+  b_eyo.isEditing = this.eyo.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'eyo-editing')
   eYo.Events.setGroup(true)
   this.eyo.grouper_ = Blockly.Events.getGroup()
@@ -184,7 +149,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
       this.eyo.constructor.onStartEditing.call(this)
     }
   }
-  block.eyo.startEditingField && block.eyo.startEditingField(this)
+  b_eyo.startEditingField && b_eyo.startEditingField(this)
   this.render_()
   block.render()
   this.workspace_ = block.workspace
@@ -221,32 +186,7 @@ eYo.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
-  var dispose = this.widgetDispose_()
-  Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, dispose)
-  var div = Blockly.WidgetDiv.DIV
-  // Create the input.
-  var htmlInput =
-      goog.dom.createDom(goog.dom.TagName.INPUT, 'eyo-html-input')
-  htmlInput.setAttribute('spellcheck', this.spellcheck_)
-
-  goog.dom.classlist.add(div, this.cssClass)
-  goog.dom.classlist.add(htmlInput, this.cssClass)
-  if (this.eyo.isComment) {
-    goog.dom.classlist.remove(htmlInput, 'eyo-code')
-    goog.dom.classlist.add(htmlInput, 'eyo-code-comment')
-  }
-  eYo.FieldTextInput.htmlInput_ = Blockly.FieldTextInput.htmlInput_ = htmlInput
-  div.appendChild(htmlInput)
-
-  htmlInput.value = htmlInput.defaultValue = this.text_
-  htmlInput.oldValue_ = null
-  this.validate_()
-  this.resizeEditor_()
-  if (!quietInput) {
-    htmlInput.focus()
-    htmlInput.select()
-  }
-  this.bindEvents_(htmlInput)
+  this.eyo.renderer.fieldEditorInlineShow(this, quietInput)
 }
 
 /**
@@ -254,45 +194,15 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  * text field's elements.
  * @return {!Function} Closure to call on destruction of the WidgetDiv.
  * @private
- * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
-  var field = this
-  return function () {
-    var block = field.sourceBlock_
-    block.eyo.isEditing = field.eyo.isEditing = false
-    field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
-    field.callValidator()
-    block.eyo.changeWrap(
-      function () { // `this` is `block.eyo``
-        field.onEndEditing_ && field.onEndEditing_()
-        field.eyo.onEndEditing_ && field.eyo.onEndEditing_.call(field)
-        var model = field.eyo.model
-        if (model) {
-          if (goog.isFunction(model.endEditing)) {
-            model.endEditing.call(field)
-          } else if (model.endEditing) {
-            field.eyo.constructor.onEndEditing.call(field)
-          }
-        }
-        this.endEditingField && this.endEditingField(field)
-        if (field.eyo.grouper_) {
-          eYo.Events.setGroup(false)
-          delete field.eyo.grouper_
-        }
-        field.render_()
-      }
-    )
-    eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
-    Blockly.WidgetDiv.DIV.style.fontFamily = ''
-  }
+  return this.eyo.renderer.fieldWidgetDisposeCallback(this)
 }
 
 /**
  * Override to noop.
  */
-eYo.FieldTextInput.prototype.updateEditable = function () {
-}
+eYo.FieldTextInput.prototype.updateEditable = eYo.Do.nothing
 
 /**
  * Check to see if the contents of the editor validates.
@@ -300,17 +210,7 @@ eYo.FieldTextInput.prototype.updateEditable = function () {
  * @private
  */
 eYo.FieldTextInput.prototype.validate_ = function () {
-  var valid = true
-  goog.asserts.assertObject(eYo.FieldTextInput.htmlInput_)
-  var htmlInput = eYo.FieldTextInput.htmlInput_
-  if (this.sourceBlock_) {
-    valid = this.callValidator(htmlInput.value)
-  }
-  if (valid === null) {
-    goog.dom.classlist.add(eYo.FieldTextInput.htmlInput_, 'eyo-code-error')
-  } else {
-    goog.dom.classlist.remove(eYo.FieldTextInput.htmlInput_, 'eyo-code-error')
-  }
+  this.eyo.renderer.fieldEditorInlineValidate(this)
 }
 
 /**
@@ -319,18 +219,7 @@ eYo.FieldTextInput.prototype.validate_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
-  if (this.fieldGroup_) {
-    var div = Blockly.WidgetDiv.DIV
-    if (div.style.display !== 'none') {
-      var bBox = this.fieldGroup_.getBBox()
-      div.style.width = (bBox.width + eYo.Unit.x - (this.eyo.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * this.workspace_.scale + 'px'
-      div.style.height = bBox.height * this.workspace_.scale + 'px'
-      var xy = this.getAbsoluteXY_()
-      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      this.sourceBlock_.eyo.changeWrap() // force rendering 
-    }
-  }
+  this.eyo.renderer.fieldEditorResize_(this)
 }
 
 /**
@@ -352,14 +241,6 @@ eYo.FieldInput = function (owner, text, optValidator, key) {
   key && (this.eyo.key = key)
 }
 goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
-
-Object.defineProperties(eYo.FieldInput.prototype, {
-  b_eyo: {
-    get () {
-      return this.sourceBlock_.eyo
-    }
-  }
-})
 
 /**
  * Get the text from this field as displayed on screen.  May differ from getText

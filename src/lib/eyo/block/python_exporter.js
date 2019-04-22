@@ -115,12 +115,12 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     }
   }
   var field, slot
-  if ((field = eyo.fromStartField)) {
+  if ((field = eyo.fieldAtStart)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
-  if ((slot = eyo.headSlot)) {
+  if ((slot = eyo.slotAtHead)) {
     do {
       this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
@@ -337,7 +337,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
     bindField.setVisible(!c8n || !c8n.eyo.unwrappedTargetBlock)
   }
   var field
-  if ((field = slot.fromStartField)) {
+  if ((field = slot.fieldAtStart)) {
     do {
       this.exportField_(field)
     } while ((field = field.eyo.nextField))

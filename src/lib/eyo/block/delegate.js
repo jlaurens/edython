@@ -12,6 +12,7 @@
 'use strict'
 
 goog.provide('eYo.Delegate')
+goog.provide('eYo.Node')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
@@ -38,7 +39,7 @@ goog.require('eYo.Data')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.Delegate = function (block) {
+eYo.Node = eYo.Delegate = function (block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
   this.block_ = block
@@ -1223,7 +1224,7 @@ eYo.Delegate.prototype.getBaseType = function () {
  * @return {Object} The first slot for which helper returns true
  */
 eYo.Delegate.prototype.someSlot = function (helper) {
-  var slot = this.headSlot
+  var slot = this.slotAtHead
   return slot && slot.some(helper)
 }
 
@@ -1234,7 +1235,7 @@ eYo.Delegate.prototype.someSlot = function (helper) {
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
 eYo.Delegate.prototype.forEachSlot = function (helper) {
-  var slot = this.headSlot
+  var slot = this.slotAtHead
   slot && slot.forEach(helper)
 }
 
@@ -1245,7 +1246,7 @@ eYo.Delegate.prototype.forEachSlot = function (helper) {
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
 eYo.Delegate.prototype.someSlot = function (helper) {
-  var slot = this.headSlot
+  var slot = this.slotAtHead
   return slot && slot.some(helper)
 }
 
@@ -1532,7 +1533,7 @@ eYo.Delegate.prototype.makeContents = function () {
  */
 eYo.Delegate.prototype.makeSlots = function () {
   this.slots = Object.create(null) // hard to create all the slots at once.
-  this.headSlot = this.feedSlots(this.model.slots)
+  this.slotAtHead = this.feedSlots(this.model.slots)
 }
 
 /**
@@ -2023,7 +2024,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
     target = connection.targetBlock().eyo
     this.suiteHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
   }
-  eYo.Draw.didConnect(connection, oldTargetC8n, targetOldC8n)
+  eYo.Renderer.didConnect(connection, oldTargetC8n, targetOldC8n)
   this.consolidateType()
 }
 
@@ -2056,7 +2057,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()
   }
-  eYo.Draw.didDisconnect(connection, oldTargetC8n)
+  eYo.Renderer.didDisconnect(connection, oldTargetC8n)
 }
 
 /**

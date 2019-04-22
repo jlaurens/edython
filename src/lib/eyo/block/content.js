@@ -198,7 +198,7 @@ eYo.Content.feed = (() => {
  * Make the field.
  * @return {?eYo.Field}
  */
-eYo.Content.prototype.makeField = function () {
+eYo.Content.prototype.fieldMake = function () {
   var fieldName = this.key
   var model = this.model
   var field

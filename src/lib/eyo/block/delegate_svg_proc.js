@@ -156,19 +156,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var f = (txt) => {
-          switch (eYo.T3.Profile.get(txt, null).raw) {
-            case eYo.T3.Expr.reserved_identifier:
-            case eYo.T3.Expr.reserved_keyword:
-            case eYo.T3.Expr.known_identifier:
-              return 'eyo-code-reserved'
-            case eYo.T3.Expr.builtin__name:
-              return 'eyo-code-builtin'
-            default:
-              return 'eyo-code'
-          }
-        }
-        this.field.eyo.set_css_class(f(newValue))
+        this.field.eyo.renderer.fieldSetVisualAttribute(this.field, newValue)
       },
       xml: false
     },
