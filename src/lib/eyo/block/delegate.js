@@ -12,7 +12,6 @@
 'use strict'
 
 goog.provide('eYo.Delegate')
-goog.provide('eYo.Node')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
@@ -39,7 +38,7 @@ goog.require('eYo.Data')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.Node = eYo.Delegate = function (block) {
+eYo.Delegate = function (block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
   this.block_ = block
@@ -1947,17 +1946,6 @@ eYo.Delegate.prototype.canUnwrap = function () {
  */
 eYo.Delegate.prototype.duringBlockUnwrapped = function () {
 }
-console.error('getUnwrapped should not be a block, consider the wrapper')
-/**
- * Get the first enclosing unwrapped block.
- * @private
- */
-eYo.Delegate.prototype.getUnwrapped = function () {
-  var parent = this
-  do {
-  } while (parent.wrapped_ && (parent = parent.surround))
-  return parent.block_
-}
 
 /**
  * Will connect this block's connection to another connection.
@@ -2024,7 +2012,7 @@ eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOl
     target = connection.targetBlock().eyo
     this.suiteHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
   }
-  eYo.Renderer.didConnect(connection, oldTargetC8n, targetOldC8n)
+  this.renderer.didConnect(connection, oldTargetC8n, targetOldC8n)
   this.consolidateType()
 }
 
@@ -2057,7 +2045,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()
   }
-  eYo.Renderer.didDisconnect(connection, oldTargetC8n)
+  this.renderer.didDisconnect(connection, oldTargetC8n)
 }
 
 /**

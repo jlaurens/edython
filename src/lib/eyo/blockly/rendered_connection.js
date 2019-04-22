@@ -982,9 +982,9 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.renderer.hasSelect {
+                  if (child.eyo.renderer.hasSelect) {
                     child.unselect()
-                    parent.eyo.block_.select()
+                    parent.eyo.select()
                   }
                   child.eyo.wrapped_ = true
                 } else {

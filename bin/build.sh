@@ -252,7 +252,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/block/delegate_svg_final.js" \
 --js "src/lib/eyo/Include/errcode.js" \
---js "src/lib/eyo/block/span.js" \
 --js "src/lib/eyo/Parser/token.js" \
 --js "src/lib/eyo/Parser/ast.js" \
 --js "src/lib/eyo/msg/js/base.js" \
@@ -269,6 +268,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/Field.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/Parser/grammar.js" \
+--js "src/lib/eyo/block/node_driver.js" \
 --js "src/lib/eyo/protocol/protocol.js" \
 --js "src/lib/eyo/Parser/tokenizer.js" \
 --js "src/lib/eyo/core/xre.js" \
@@ -277,12 +277,14 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/Parser/acceler.js" \
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/core/geometry.js" \
+--js "src/lib/eyo/block/node_driver_svg.js" \
 --js "src/lib/eyo/Parser/parser.js" \
 --js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
 --js "src/lib/eyo/Parser/parsetok.js" \
 --js "src/lib/eyo/core/shape.js" \
+--js "src/lib/eyo/block/span.js" \
 --js "src/lib/eyo/blockly/block_dragger.js" \
 --js "src/lib/eyo/block/delegate.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
@@ -336,7 +338,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/block/consolidator.js" \
 --js "src/lib/eyo/block/delegate_svg_expr.js" \
 --js "src/lib/eyo/block/delegate_svg_starred.js" \
---js "src/lib/eyo/block/draw.js" \
 --js "src/lib/eyo/block/python_exporter.js" \
 --js "src/lib/eyo/workspace/tooltip.js" \
 --js "src/lib/eyo/block/delegate_svg_literal.js" \
@@ -372,7 +373,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/module/delegate_svg_stdtypes.js" \
 --js "src/lib/eyo/block/delegate_svg_try.js" \
 --js "src/lib/eyo/module/delegate_svg_turtle.js" \
---js "src/lib/eyo/block/node.js" \
+--js "src/lib/eyo/block/node_block.js" \
 --js "src/lib/eyo/block/xml.js" \
 --js "src/lib/eyo/workspace/app.js" \
 --js "src/lib/eyo/workspace/demo.js" \

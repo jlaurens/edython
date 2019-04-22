@@ -206,7 +206,7 @@ eYo.Slot.prototype.beReady = function () {
  * No data change.
  */
 eYo.Slot.prototype.beRenderReady = function () {
-  this.owner.renderer.slotPrepare(this)()
+  this.owner.renderer.slotInit(this)()
   // init all the fields
   var f = field => field.beRenderReady()
   Object.values(this.fields).forEach(f)

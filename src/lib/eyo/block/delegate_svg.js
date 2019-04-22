@@ -1506,10 +1506,3 @@ eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
   this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
 }
 
-console.error('TODO: this.block_.select -> this.select()')
-/**
- * Select the block.
- */
-eYo.DelegateSvg.prototype.select = function() {
-  this.block_.select()
-}

@@ -217,16 +217,10 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   c8n.eyo.willConnect = function (targetC8n) {
-    this.will_connect_ = true
-    var block = this.connection.sourceBlock_
-    var eyo = block.eyo
-    eyo.will_connect_ = true
+    this.will_connect_ = this.connection.eyo.b_eyo.will_connect_ = true
   }
   c8n.eyo.didConnect = function (oldTargetC8n, targetOldC8n) {
-    this.will_connect_ = false
-    var block = this.connection.sourceBlock_
-    var eyo = block.eyo
-    eyo.will_connect_ = false
+    this.will_connect_ = this.connection.eyo.b_eyo.will_connect_ = false
     var c8n = block.outputConnection.targetConnection
     var model = c8n && c8n.eyo.model
     if (model && goog.isFunction(model.didConnect)) {
@@ -667,7 +661,7 @@ eYo.Consolidator.List.prototype.doLink = function (io) {
  * @param {Object} io, parameters....
  */
 eYo.Consolidator.List.prototype.getIO = function (block) {
-  var unwrapped = block.eyo.getUnwrapped()
+  var unwrapped = block.eyo.wrapper.block_
   var io = {
     block: block,
     noLeftSeparator: block.workspace && (block.workspace.eyo.options.noLeftSeparator ||

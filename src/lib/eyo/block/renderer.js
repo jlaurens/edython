@@ -14,7 +14,7 @@
 goog.provide('eYo.Renderer')
 
 goog.require('eYo.Delegate')
-goog.require('eYo.Driver')
+goog.require('eYo.Node.Driver')
 
 /**
  * Class for a Render.
@@ -49,7 +49,7 @@ eYo.Renderer = function(node) {
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.dispose = function () {
-  this.driver.dispose(this.node_)
+  this.driver.nodeDispose(this.node_)
 }
 
 Object.defineProperties(eYo.Renderer.prototype, {
@@ -782,7 +782,7 @@ eYo.Renderer.prototype.hide = function (io) {
  * @private
  */
 eYo.Renderer.prototype.fieldHide = function (field) {
-  this.driver.fieldSetVisible(field, false)
+  this.driver.fieldDisplayedSet(field, false)
 }
 
 /**
@@ -793,16 +793,6 @@ eYo.Renderer.prototype.fieldHide = function (field) {
  */
 eYo.Renderer.prototype.fieldDisplayed = function (field) {
   return this.driver.fieldDisplayed(field)
-}
-
-ERROR below
-/**
- * Whether the field is displayed.
- * @param {!Object} field  the field to query about
- */
-eYo.Node.Driver.Svg.fieldDisplayed = function (field) {
-  var g = field.eyo.svg.group_
-  return g.style.display !== 'none'
 }
 
 /**
@@ -989,9 +979,9 @@ console.error('Move to the driver')
 eYo.Renderer.prototype.drawField_ = function (field, io) {
   var c = io.cursor.c
   if (!field.isVisible()) {
-    this.fieldSetVisible(false)
+    this.fieldDisplayedSet(false)
   } else {
-    this.fieldSetVisible(true)
+    this.fieldDisplayedSet(true)
     // Actually, io.cursor points to the location where the field
     // is expected. It is relative to the enclosing `SVG` group,
     // which is either a block or a slot.
@@ -1482,8 +1472,8 @@ eYo.Renderer.prototype.setVisible = function (node, visible) {
  * Forwards to the driver.
  * @param {!eYo.Slot} slot  slot to be prepared.
  */
-eYo.Renderer.prototype.slotPrepare = function (slot) {
-  this.driver.slotPrepare(slot)
+eYo.Renderer.prototype.slotInit = function (slot) {
+  this.driver.slotInit(slot)
 }
 
 /**
@@ -1594,7 +1584,7 @@ eYo.Renderer.prototype.fieldWidgetDisposeCallback = function (field) {
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.updateDisabled = function () {
-  this.driver.updateDisabled(this.node_)
+  this.driver.nodeUpdateDisabled(this.node_)
 }
 
 /**
@@ -1607,9 +1597,10 @@ eYo.Renderer.prototype.connectionUIEffect = function () {
 /**
  * Show the given menu.
  * The default implementation forwards to the driver.
+ * @param {*} menu
  */
 eYo.Renderer.prototype.showMenu = function (menu) {
-  this.driver.showMenu(menu)
+  this.driver.nodeMenuShow(this.node_, menu)
 }
 
 /**
@@ -1617,8 +1608,8 @@ eYo.Renderer.prototype.showMenu = function (menu) {
  * The default implementation forwards to the driver.
  * @param {*} c_eyo
  */
-eYo.Renderer.prototype.highlightConnection = function (c_eyo) {
-  this.driver.highlightConnection(c_eyo)
+eYo.Renderer.prototype.connectionHilight = function (c_eyo) {
+  this.driver.connectionHilight(c_eyo)
 }
 
 /**
@@ -1626,28 +1617,28 @@ eYo.Renderer.prototype.highlightConnection = function (c_eyo) {
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.makeBlockWrapped = function () {
-  this.driver.makeBlockWrapped(this.node_)
+  this.driver.nodeMakeWrapped(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.duringBlockUnwrapped = function () {
-  this.driver.duringBlockUnwrapped(this.node_)
+  this.driver.nodeDuringUnwrapped(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.sendToFront = function () {
-  this.driver.sendToFront(this.node_)
+  this.driver.nodeSendToFront(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Renderer.prototype.sendToBack = function () {
-  this.driver.sendToFront(this.node_)
+  this.driver.nodeSendToFront(this.node_)
 }
 
 /**
@@ -1658,15 +1649,15 @@ eYo.Renderer.prototype.sendToBack = function () {
  * @param {*} dl
  * @return {boolean}
  */
-eYo.Renderer.prototype.setOffset = function (dc, dl) {
+eYo.Renderer.prototype.nodeSetOffset = function (dc, dl) {
   // Workspace coordinates.
-  if (!this.driver.canDraw(this.node)) {
+  if (!this.driver.nodeCanDraw(this.node)) {
     throw `block is not inited ${this.node.type}`
   }
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
-  this.driver.setOffset(dx, dy)
-  this.moveConnections_(dx, dy)
+  this.driver.nodeSetOffset(this.node_, dx, dy)
+  this.moveConnections_(this.node_, dx, dy)
 }
 
 /**
@@ -1680,7 +1671,7 @@ eYo.Renderer.prototype.setOffset = function (dx, dy) {
   if (!this.driver.canDraw(this.node)) {
     throw `block is not inited ${this.node.type}`
   }
-  this.driver.setOffset(dx, dy)
+  this.driver.nodeSetOffset(this.node_, dx, dy)
   this.moveConnections_(dx, dy)
 }
 
@@ -1703,7 +1694,7 @@ eYo.Renderer.prototype.moveConnections_ = function (dx, dy) {
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.Renderer.prototype.parentDidChange = function (newParent) {
-  this.driver.parentDidChange(this.node_, newParent)
+  this.driver.nodeParentDidChange(this.node_, newParent)
 }
 
 /**
@@ -1711,7 +1702,7 @@ eYo.Renderer.prototype.parentDidChange = function (newParent) {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.addBlockHilight_ = function () {
-  this.driver.addBlockHilight_(this.node_)
+  this.driver.nodeHilightAdd(this.node_)
 }
 
 /**
@@ -1719,7 +1710,7 @@ eYo.Renderer.prototype.addBlockHilight_ = function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.removeBlockHilight_ =function () {
-  this.driver.removeBlockHilight_(this.node_)
+  this.driver.nodeHilightRemove(this.node_)
 }
 
 /**
@@ -1727,7 +1718,7 @@ eYo.Renderer.prototype.removeBlockHilight_ =function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.addBlockSelect_ = function () {
-  this.driver.addBlockSelect_(this.node_)
+  this.driver.nodeSelectAdd(this.node_)
 }
 
 /**
@@ -1735,7 +1726,7 @@ eYo.Renderer.prototype.addBlockSelect_ = function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.removeBlockSelect_ = function () {
-  this.driver.removeBlockSelect_(this.node_)
+  this.driver.nodeSelectRemove(this.node_)
 }
 
 /**
@@ -1743,7 +1734,7 @@ eYo.Renderer.prototype.removeBlockSelect_ = function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.addBlockConnection_ = function () {
-  this.driver.addBlockConnection_(this.node_)
+  this.driver.nodeConnectionAdd(this.node_)
 }
 
 /**
@@ -1751,14 +1742,14 @@ eYo.Renderer.prototype.addBlockConnection_ = function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.removeBlockConnection_ = function () {
-  this.driver.removeBlockConnection_(this.node_)
+  this.driver.nodeConnectionRemove(this.node_)
 }
 
 /**
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.addStatusTop_ = function () {
-  this.driver.addStatusTop_(this.node_)
+  this.driver.nodeStatusTopAdd(this.node_)
 }
 
 
@@ -1767,14 +1758,14 @@ eYo.Renderer.prototype.addStatusTop_ = function () {
  * Forwards to the driver.
  */
 eYo.Renderer.prototype.removeStatusTop_ = function (eyo) {
-  this.driver.removeStatusTop_(this.node_)
+  this.driver.nodeStatusTopRemove(this.node_)
 }
 
 /**
  * Forwards to the driver and `addSelect` to each field.
  */
 eYo.Renderer.prototype.addStatusSelect_ = function () {
-  this.driver.addStatusSelect_(this.node_)
+  this.driver.nodeStatusSelectAdd(this.node_)
   eyo.forEachInput(input => {
     input.fieldRow.forEach(field => {
       if (goog.isFunction(field.addSelect)) {
@@ -1788,7 +1779,7 @@ eYo.Renderer.prototype.addStatusSelect_ = function () {
  * Reverse `addStatusSelect_`. Forwards to the driver and various fields.
  */
 eYo.Renderer.prototype.removeStatusSelect_ = function () {
-  this.driver.removeStatusSelect_(this.node_)
+  this.driver.nodeStatusSelectRemove(this.node_)
   this.node.forEachInput(input => {
     input.fieldRow.forEach(field => {
       goog.isFunction(field.removeSelect) && field.removeSelect()
@@ -1803,7 +1794,7 @@ eYo.Renderer.prototype.removeStatusSelect_ = function () {
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
-eYo.Renderer.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+eYo.Renderer.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   if (connection.eyo.isOutput) {
     if (this === eYo.Selected.eyo && this.locked_) {
       eYo.Selected.eyo = connection.eyo.t_eyo
@@ -1817,7 +1808,7 @@ eYo.Renderer.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  */
-eYo.Renderer.didDisconnect = function (connection, oldTargetC8n) {
+eYo.Renderer.prototype.didDisconnect = function (connection, oldTargetC8n) {
   if (connection.eyo.isOutput) {
     connection.eyo.renderer.addStatusTop_()
   }

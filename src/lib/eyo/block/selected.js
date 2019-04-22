@@ -19,6 +19,9 @@
 
 goog.provide('eYo.Selected')
 
+goog.require('eYo.BlockSvg')
+goog.require('eYo.Do')
+
 eYo.Selected = (() => {
   var me = {}
   var eyo__
@@ -275,6 +278,14 @@ eYo.DelegateSvg.prototype.unselect = function () {
   if (eYo.Selected.eyo === this) {
     eYo.Selected.eyo = null
   }
+}
+
+/**
+ * Select the block.
+ * BEWARE inconsistent design.
+ */
+eYo.DelegateSvg.prototype.select = function() {
+  this.block_.select()
 }
 
 /**
