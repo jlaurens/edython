@@ -52,33 +52,35 @@ Object.defineProperties(
     },
     renderer: {
       get () {
-        return this.b_eyo.renderer
+        return this.b_eyo.ui
       }
     },
     visible: {
       get () {
-        return this.renderer.fieldDisplayed(this)
+        return this.ui.fieldDisplayed(this)
       },
       set (newValue) {
-        this.renderer.fieldMakeVisible(this, newValue)
+        this.ui.fieldMakeVisible(this, newValue)
       }
     }
   }
 )
+
 /**
  * Whether the field of the receiver starts with a separator.
  */
-eYo.FieldHelper.prototype.renderInit = function () {
-  var r = this.renderer
-  r && r.fieldInit(this.field_)
+eYo.FieldHelper.prototype.renderBeReady = function () {
+  this.renderBeReady = eYo.Do.nothing
+  var ui = this.ui
+  ui && ui.fieldInit(this.field_)
 }
 
 /**
  * Whether the field of the receiver starts with a separator.
  */
 eYo.FieldHelper.prototype.renderDispose = function () {
-  var r = this.renderer
-  r && r.fieldDispose(this.field_)
+  var ui = this.ui
+  ui && ui.fieldDispose(this.field_)
 }
 
 /**
@@ -159,7 +161,7 @@ eYo.FieldHelper.prototype.willRender = function () {
   if (f) {
     f.call(this)
   } else {
-    this.renderer.fieldMakePlaceholder(this.placeholder)
-    this.renderer.fieldMakeComment(this.isComment)
+    this.ui.fieldMakePlaceholder(this.placeholder)
+    this.ui.fieldMakeComment(this.isComment)
   }
 }

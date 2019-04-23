@@ -29,6 +29,8 @@ goog.require('goog.crypt')
  * Class for a workspace delegate.
  * Extends the workspace with minimum interference.
  * @param {Blockly.Workspace} workspace
+ * @readonly
+ * @property {eYo.Driver} driver
  * @constructor
  */
 eYo.WorkspaceDelegate = function (workspace) {
@@ -55,16 +57,27 @@ eYo.WorkspaceDelegate.prototype.getRecover = (() => {
   }
 }) ()
 
-Object.defineProperties(
-  eYo.WorkspaceDelegate.prototype,
-  {
-    recover: {
-      get () {
-        return this.getRecover()
-      }
+Object.defineProperties(eYo.WorkspaceDelegate.prototype, {
+  recover: {
+    get () {
+      return this.getRecover()
+    }
+  },
+  driver: {
+    get () {
+      return this.driver_ || (this.driver_ = this.driverCreate())
+    },
+    set (newValue) {
+      this.driver_ = newValue
     }
   }
-)
+})
+
+/**
+ * Create a driver for rendering.
+ * @return {eYo.Driver}
+*/
+eYo.WorkspaceDelegate.prototype.driverCreate = eYo.Do.nothing
 
 // Dependency ordering?
 /**

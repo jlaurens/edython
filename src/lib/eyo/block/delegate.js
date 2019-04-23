@@ -42,7 +42,7 @@ eYo.Delegate = function (block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.errors = Object.create(null) // just a hash
   this.block_ = block
-  this.span = new eYo.Span(this)
+  this.span_ = new eYo.Span(this)
   this.registerDisposable(block)
   block.eyo = this
   this.change = {
@@ -212,6 +212,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
         eyo = eyo.parent
       } while (eyo && !eyo.isStmt)
       return eyo
+    }
+  },
+  span: {
+    get () {
+      return this.span_
     }
   },
   mainHeight: {
@@ -1999,21 +2004,27 @@ eYo.Delegate.prototype.lastConnect = function (bdc) {
  */
 eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   // how many blocks did I add ?
-  var eyo = connection.eyo
-  if (eyo.isSuite) {
-    eyo.b_eyo.updateBlackHeight()
-  } else if (!eyo.isOutput && !connection.eyo.isLeft && !connection.eyo.isRight) {
+  var c_eyo = connection.eyo
+  if (c_eyo.isSuite) {
+    c_eyo.b_eyo.updateBlackHeight()
+  } else if (!c_eyo.isOutput && !c_eyo.isLeft && !c_eyo.isRight) {
     this.updateGroupBlackHeight()
   }
-  if (eyo.isNext) {
-    var target = connection.targetBlock().eyo
-    this.nextHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
-  } else if (eyo.isSuite) {
-    target = connection.targetBlock().eyo
-    this.suiteHeight = target.mainHeight + target.blackHeight + target.suiteHeight + target.nextHeight
+  var t_eyo = c_eyo.t_eyo
+  if (c_eyo.isNext) {
+    this.nextHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
+  } else if (c_eyo.isSuite) {
+    t_eyo = c_eyo.t_eyo
+    this.suiteHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
   }
-  this.renderer.didConnect(connection, oldTargetC8n, targetOldC8n)
   this.consolidateType()
+  if (c_eyo.isOutput) {
+    if (this === eYo.Selected.eyo && this.locked_) {
+      eYo.Selected.eyo = t_eyo
+    }
+  }
+  var ui = this.ui
+  ui && ui.didConnect(connection, oldTargetC8n, targetOldC8n)
 }
 
 /**
@@ -2045,7 +2056,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
     this.incrementChangeCount()
   }
-  this.renderer.didDisconnect(connection, oldTargetC8n)
+  this.ui && this.ui.didDisconnect(connection, oldTargetC8n)
 }
 
 /**

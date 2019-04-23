@@ -247,7 +247,25 @@ Object.defineProperties(eYo.Span.prototype, {
   }
 })
 
-eYo.Span.prototype.init = function (c = 0, l = 1) {
+/**
+ * Sets from the given location (`Where`).
+ * @param {Number | Object!} c  Number or object with `c` and `l` number properties.
+ * @param {Number} l  Number, when `c` is also a number, defaults to 1.
+ */
+eYo.Span.prototype.init = function (c = 0, l = 0) {
+  if (goog.isDef(c.c)) {
+    l = c.l
+    c = c.c
+  }
   this.c = c
-  this.main = l
+  this.main = l + 1
 }
+
+/**
+ * Sets from the given location (`Where`).
+ * @param {Object!} w  Object with `c` and `l` number properties.
+ */
+eYo.Size.prototype.setFromWhere = function (w) {
+  this.set(w.c, w.l + 1)
+}
+

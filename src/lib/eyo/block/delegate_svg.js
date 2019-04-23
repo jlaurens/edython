@@ -18,7 +18,7 @@ goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Data')
 goog.require('eYo.Slot')
-goog.require('eYo.Renderer')
+goog.require('eYo.UI')
 goog.require('eYo.Where')
 goog.require('eYo.Delegate')
 goog.forwardDeclare('eYo.BlockSvg')
@@ -53,14 +53,9 @@ Object.defineProperties(
         return this.block_.isCollapsed()
       }
     },
-    span: {
-      get () {
-        return this.span_
-      }
-    },
     renderer: {
       get () {
-        return this.renderer_
+        return this.ui_
       }
     }
   }
@@ -116,10 +111,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgGroupShape_: {
     get () {
-      return this.renderer.driver.groupShape_
+      return this.ui.driver.groupShape_
     },
     set (newValue) {
-      this.renderer.driver.groupShape_ = newValue
+      this.ui.driver.groupShape_ = newValue
     }
   },
   /**
@@ -129,10 +124,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgGroupContour_: {
     get () {
-      return this.renderer.driver.groupContour_
+      return this.ui.driver.groupContour_
     },
     set (newValue) {
-      this.renderer.driver.groupContour_ = newValue
+      this.ui.driver.groupContour_ = newValue
     }
   },
   /**
@@ -142,10 +137,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathShape_: {
     get () {
-      return this.renderer.driver.pathShape_
+      return this.ui.driver.pathShape_
     },
     set (newValue) {
-      this.renderer.driver.pathShape_ = newValue
+      this.ui.driver.pathShape_ = newValue
     }
   },
   /**
@@ -155,10 +150,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathContour_: {
     get () {
-      return this.renderer.driver.pathContour_
+      return this.ui.driver.pathContour_
     },
     set (newValue) {
-      this.renderer.driver.pathContour_ = newValue
+      this.ui.driver.pathContour_ = newValue
     }
   },
   /**
@@ -169,10 +164,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathCollapsed_: {
     get () {
-      return this.renderer.driver.pathCollapsed_
+      return this.ui.driver.pathCollapsed_
     },
     set (newValue) {
-      this.renderer.driver.pathCollapsed_ = newValue
+      this.ui.driver.pathCollapsed_ = newValue
     }
   },
   /**
@@ -182,10 +177,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathInner_: {
     get () {
-      return this.renderer.driver.pathInner_
+      return this.ui.driver.pathInner_
     },
     set (newValue) {
-      this.renderer.driver.pathInner_ = newValue
+      this.ui.driver.pathInner_ = newValue
     }
   },
   /**
@@ -200,10 +195,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathSelect_: {
     get () {
-      return this.renderer.driver.pathSelect_
+      return this.ui.driver.pathSelect_
     },
     set (newValue) {
-      this.renderer.driver.pathSelect_ = newValue
+      this.ui.driver.pathSelect_ = newValue
     }
   },
   /**
@@ -213,10 +208,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathHilight_: {
     get () {
-      return this.renderer.driver.pathHilight_
+      return this.ui.driver.pathHilight_
     },
     set (newValue) {
-      this.renderer.driver.pathHilight_ = newValue
+      this.ui.driver.pathHilight_ = newValue
     }
   },
   /**
@@ -226,10 +221,10 @@ Object.defineProperties(eYo.DelegateSvg.prototype, {
    */
   svgPathConnection_: {
     get () {
-      return this.renderer.driver.pathConnection_
+      return this.ui.driver.pathConnection_
     },
     set (newValue) {
-      this.renderer.driver.pathConnection_ = newValue
+      this.ui.driver.pathConnection_ = newValue
     }
   }
 })
@@ -285,29 +280,8 @@ eYo.DelegateSvg.prototype.deinit = function () {
       })// broken for outputConnection ?
     }
   }
-  this.renderer_ && this.renderer_.dispose() && (this.renderer_ = null)
+  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
   eYo.DelegateSvg.superClass_.deinit.call(this)
-}
-
-/**
- * Create and initialize the SVG representation of the block.
- * May be called more than once.
- */
-eYo.DelegateSvg.prototype.preInitSvg = function () {
-}
-
-/**
- * Create and initialize the SVG representation of the block.
- * Called by `initSvg`.
- * May be called more than once along with `initSvg`.
- * No rendering.
- */
-eYo.DelegateSvg.prototype.postInitSvg = function () {
-  if (this.renderer_) {
-    return
-  }
-  this.renderer_ = new eYo.renderer(this)
-  this.eventsInit_ = true
 }
 
 /**
@@ -317,16 +291,6 @@ eYo.DelegateSvg.prototype.postInitSvg = function () {
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
-  this.renderer.parentWillChange(newParent)
-}
-
-/**
- * Called when the parent did just change.
- * @param {!Blockly.Block} newParent to be connected.
- */
-eYo.DelegateSvg.prototype.parentDidChange = function (newParent) {
-  eYo.DelegateSvg.superClass_.parentDidChange.call(this, newParent)
-  this.renderer && this.renderer.parentDidChange(newParent)
 }
 
 /**
@@ -393,19 +357,19 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
     c8n.tighten_()
   }
   var do_it = !target.rendered ||
-  (!this.renderer.up &&
+  (!this.ui.up &&
     !eYo.Connection.disconnectedParentC8n &&
     !eYo.Connection.disconnectedChildC8n&&
     !eYo.Connection.connectedParentC8n)
   if (do_it) {
     try {
-      target.eyo.renderer.down = true
+      target.eyo.ui.down = true
       target.eyo.render(false, recorder)
     } catch (err) {
       console.error(err)
       throw err
     } finally {
-      target.eyo.renderer.down = false
+      target.eyo.ui.down = false
     }
     return true
   }
@@ -452,7 +416,11 @@ eYo.DelegateSvg.prototype.renderSuite_ = function (io) {
 // deleted blocks are rendered during deletion
 // this should be avoided
 eYo.DelegateSvg.prototype.render = function () {
-  this.renderer.render()
+  if (!this.ui_ && this.workspace) {
+    this.ui_ = new eYo.UI(this)
+    this.renderBeReady()
+  }
+  this.ui.render()
 }
 
 /**
@@ -608,9 +576,9 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
  */
 eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
   eYo.DelegateSvg.superClass_.duringBlockWrapped.call(this)
-  goog.asserts.assert(!this.renderer.hasSelect, 'Deselect block before')
+  goog.asserts.assert(!this.ui.hasSelect, 'Deselect block before')
   this.block_.initSvg() // is it necessary ?
-  this.renderer.makeBlockWrapped()
+  this.ui.makeBlockWrapped()
 }
 
 /**
@@ -620,7 +588,7 @@ eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
  */
 eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
   eYo.DelegateSvg.superClass_.duringBlockUnwrapped.call(this)
-  this.renderer.duringBlockUnwrapped()
+  this.ui.duringBlockUnwrapped()
 }
 
 /**
@@ -770,15 +738,14 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
 /**
  * When setup is finish.
  * The state has been created, some expected connections are created
- * This is the final step before the first rendering.
  * This is a one shot function.
  */
 eYo.DelegateSvg.prototype.beReady = function () {
   this.changeWrap(
     function () {
+      this.beReady = eYo.Do.nothing // one shot function
       this.forEachData(data => data.beReady()) // data was headless
       var block = this.block_
-      block.initSvg()
       // install all the fields and slots in the DOM
       Object.values(this.fields).forEach(field => {
         if (!field.sourceBlock_) {
@@ -793,24 +760,39 @@ eYo.DelegateSvg.prototype.beReady = function () {
       this.inputSuite && this.inputSuite.eyo.beReady()
       this.inputRight && this.inputRight.eyo.beReady()
       this.nextConnection && this.nextConnection.eyo.beReady()
-      var parent = block.outputConnection && block.outputConnection.targetBlock()
-      if (parent && parent.eyo.svgGroupContour_) {
-        goog.dom.insertChildAt(parent.eyo.svgGroupContour_, this.svgGroupContour_, 0)
-        goog.dom.classlist.add(/** @type {!Element} */(this.svgGroupContour_),
-          'eyo-inner')
-        goog.dom.appendChild(parent.eyo.svgGroupShape_, this.svgGroupShape_)
-        goog.dom.classlist.add(/** @type {!Element} */(this.svgGroupShape_),
-          'eyo-inner')
-      } else {
-        goog.dom.insertChildAt(block.svgGroup_, this.svgGroupContour_, 0)
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgGroupContour_),
-          'eyo-inner')
-        goog.dom.insertSiblingBefore(this.svgGroupShape_, this.svgGroupContour_)
-        goog.dom.classlist.remove(/** @type {!Element} */(this.svgGroupShape_),
-          'eyo-inner')
-      }
       this.forEachData(data => data.synchronize()) // data is not headless
-      this.beReady = eYo.Do.nothing // one shot function
+    }
+  )
+}
+/**
+ * This is the final step before the first rendering.
+ * This is a one shot function.
+ */
+eYo.DelegateSvg.prototype.renderBeReady = function () {
+  this.changeWrap(
+    function () {
+      this.renderBeReady = eYo.Do.nothing // one shot function
+      var svg = this.ui.svg
+      var block = this.block_
+      for (var i = 0, input; (input = this.inputList[i]); i++) {
+        input.eyo.renderBeReady()
+      }
+      this.eventsInit_ = true
+    // install all the fields and slots in the DOM
+      Object.values(this.fields).forEach(field => {
+        field.eyo.renderBeReady()
+      })
+      this.forEachSlot(slot => slot.renderBeReady())
+      for (var i = 0, input; (input = block.inputList[i++]);) {
+        input.eyo.renderBeReady()
+      }
+      this.inputSuite && this.inputSuite.eyo.renderBeReady()
+      this.inputRight && this.inputRight.eyo.renderBeReady()
+      this.nextConnection && this.nextConnection.eyo.renderBeReady()
+      this.forEachData(data => data.synchronize()) // data is not headless
+      if (!r.svg.group_.parentNode) {
+        this.workspace.getCanvas().appendChild(r.svg.group_)
+      }
     }
   )
 }

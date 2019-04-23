@@ -108,10 +108,10 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
     if (target) {
       var t_eyo = target.eyo
       try {
-        t_eyo.renderer.startOfLine = io.common.startOfLine
-        t_eyo.renderer.startOfStatement = io.common.startOfStatement
-        t_eyo.renderer.mayBeLast = t_eyo.renderer.hasRightEdge
-        t_eyo.renderer.down = true
+        t_eyo.ui.startOfLine = io.common.startOfLine
+        t_eyo.ui.startOfStatement = io.common.startOfStatement
+        t_eyo.ui.mayBeLast = t_eyo.ui.hasRightEdge
+        t_eyo.ui.down = true
         if (eYo.DelegateSvg.debugStartTrackingRender) {
           console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
         }
@@ -119,7 +119,7 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
           // force target rendering
           t_eyo.incrementChangeCount()
         }
-        if (!t_eyo.renderer.up) {
+        if (!t_eyo.ui.up) {
           t_eyo.render(false, io)
           if (!t_eyo.wrapped_) {
             io.common.field.shouldSeparate = false
@@ -131,13 +131,13 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
         console.error(err)
         throw err
       } finally {
-        t_eyo.renderer.down = false
+        t_eyo.ui.down = false
         var size = t_eyo.size
         if (size.w) {
           io.cursor.advance(size.w, size.h - 1)
           // We just rendered a block
           // it is potentially the rightmost object inside its parent.
-          if (t_eyo.renderer.hasRightEdge || io.common.shouldPack) {
+          if (t_eyo.ui.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t_eyo)
             t_eyo.rightCaret = undefined
             io.common.field.shouldSeparate = false

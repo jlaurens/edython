@@ -107,6 +107,11 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return this.sourceBlock_.eyo
     }
   },
+  renderer: {
+    get () {
+      return this.b_eyo.ui
+    }
+  },
   target: {
     get () {
       var c8n = this.connection.targetConnection
@@ -308,15 +313,19 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
  * `beReady` the target block.
  */
 eYo.ConnectionDelegate.prototype.beReady = function () {
-  if (!this.connection.inDB_ &&!this.connection.hidden_) {
-
-  }
-  var target = this.connection.targetBlock()
-  if (target) {
-    target.eyo.beReady()
-    target.eyo.parentDidChange(this.connection.getSourceBlock())
-  }
   this.beReady = eYo.Do.nothing // one shot function
+  var t_eyo = this.t_eyo
+  if (t_eyo) {
+    t_eyo.beReady()
+  }
+}
+
+/**
+ * `beReady` the target block.
+ */
+eYo.ConnectionDelegate.prototype.renderBeReady = function () {
+  var t_eyo = this.t_eyo
+  t_eyo && t_eyo.renderBeReady()
 }
 
 /**
@@ -689,7 +698,7 @@ Blockly.RenderedConnection.prototype.highlight = (() => {
   var highlight = Blockly.RenderedConnection.prototype.highlight
   return function () {
     if (this.eyo) {
-      this.eyo.renderer.highlightConnection(this.eyo)
+      this.eyo.ui.highlightConnection(this.eyo)
       return
     }
     highlight.call(this)
@@ -982,7 +991,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.renderer.hasSelect) {
+                  if (child.eyo.ui.hasSelect) {
                     child.unselect()
                     parent.eyo.select()
                   }
@@ -1129,7 +1138,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = (() => {
                         // this occurs while removing the parent
                         // if the parent was selected, select the child
                         child.eyo.wrapped_ = false
-                        if (parent.eyo.renderer.hasSelect) {
+                        if (parent.eyo.ui.hasSelect) {
                           parent.unselect()
                           child.select()
                         }
@@ -1399,7 +1408,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dl = target_where.l - where.l
   if (dc != 0 || dl != 0) {
     var block = this.targetBlock();
-    block.eyo.renderer.setOffset(-dc, -dl);
+    block.eyo.ui.setOffset(-dc, -dl);
   }
 };
 Blockly.RenderedConnection.prototype.tighten_ = function() {
@@ -1407,7 +1416,7 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
     var block = this.targetBlock();
-    block.eyo.renderer.setOffset(-dx, -dy);
+    block.eyo.ui.setOffset(-dx, -dy);
   }
 };
 

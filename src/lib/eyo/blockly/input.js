@@ -33,10 +33,8 @@ Blockly.Input.prototype.setVisible = function (visible) {
     return renderList
   }
   this.visible_ = visible
+  this.fieldRow.forEach(f => f.setVisible(visible))
 
-  for (var y = 0, field; (field = this.fieldRow[y]); y++) {
-    field.setVisible(visible)
-  }
   if (this.connection) {
     // Has a connection.
     if (visible) {
@@ -44,29 +42,8 @@ Blockly.Input.prototype.setVisible = function (visible) {
     } else {
       this.connection.hideAll()
     }
-    var child = this.eyo.target
-    if (child) {
-      if (visible) {
-        child.getSvgRoot().removeAttribute('display')
-        if (child.eyo.svgGroupContour_) {
-          child.eyo.svgGroupContour_.removeAttribute('display')
-          child.eyo.svgGroupShape_.removeAttribute('display')
-        }
-      } else {
-        child.getSvgRoot().setAttribute('display', 'none')
-        if (child.eyo.svgGroupContour_) {
-          child.eyo.svgGroupContour_.setAttribute('display', 'none')
-          child.eyo.svgGroupShape_.setAttribute('display', 'none')
-        }
-        child.rendered = false
-      }
-      // JL: Almost original code.
-      // var display = visible ? 'block' : 'none';
-      // child.getSvgRoot().style.display = display;
-      // if (!visible) {
-      //   child.rendered = false;
-      // }
-    }
+    var t_eyo = this.eyo.t_eyo
+    t_eyo && t_eyo.ui.setVisible(visible)
   }
   return renderList
 }
@@ -141,6 +118,7 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
  * be ready the delegate.
  */
 eYo.InputDelegate.prototype.beReady = function () {
+  this.beReady = eYo.Do.nothing // one shot function
   var block = this.getBlock()
   this.fields && Object.values(this.fields).forEach(field => {
     if (!field.sourceBlock_) {
@@ -150,7 +128,6 @@ eYo.InputDelegate.prototype.beReady = function () {
   })
   var c8n = this.owner.connection
   c8n && c8n.eyo.beReady()
-  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**
@@ -207,7 +184,7 @@ Blockly.Input.prototype.setVisible = (() => {
         }
         var t_eyo = this.connection.c_eyo.t_eyo
         if (t_eyo) {
-          t_eyo.renderer.setVisible(visible)
+          t_eyo.ui.setVisible(visible)
           if (!visible) {
             t_eyo.block_.rendered = false
           }
@@ -219,3 +196,11 @@ Blockly.Input.prototype.setVisible = (() => {
   }
 })()
 
+/**
+ * Prepare this slot for rendering.
+ * No data change.
+ */
+eYo.InputDelegate.prototype.renderBeReady = function () {
+  this.renderBeReady = eYo.Do.nothing // one shot function
+  this.connection.eyo.renderBeReady()
+}

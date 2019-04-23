@@ -662,12 +662,12 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
   if (c_eyo && opt && opt.hilight) {
     if (c_eyo.isInput) {
       if (c8n.t_eyo) {
-        this.push(c_eyo.t_eyo.renderer.driver.pathValueDef_())
+        this.push(c_eyo.t_eyo.ui.driver.pathValueDef_())
       } else if (!b_eyo.disabled_) {
         this.initWithConnectionDlgt(c_eyo, {absolute: true})
       }
     } else if (c_eyo.isOutput) {
-      this.push(b_eyo.renderer.driver.pathValueDef_(c_eyo))
+      this.push(b_eyo.ui.driver.pathValueDef_(c_eyo))
     } else { // statement connection
       var w = b_eyo.span.width - eYo.Unit.x / 2
       if (c_eyo.isPrevious) {

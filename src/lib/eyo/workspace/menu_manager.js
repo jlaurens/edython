@@ -329,7 +329,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       me.init()
     }, 10)// TODO be sure that this 10 is suffisant
   })
-  block.eyo.renderer.showMenu(this.menu)
+  block.eyo.ui.showMenu(this.menu)
 }
 
 eYo.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'

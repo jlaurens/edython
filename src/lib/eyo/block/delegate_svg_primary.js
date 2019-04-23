@@ -979,7 +979,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
             var O = this.data.owner
             var item = O.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
-            O.renderer.fieldMakeReserved(this, reserved)
+            O.ui.fieldMakeReserved(this, reserved)
           }
         }
       },

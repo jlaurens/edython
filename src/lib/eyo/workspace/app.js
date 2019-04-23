@@ -48,7 +48,7 @@ eYo.App.doCopy = function(optNoNext) {
 eYo.App.doFront = function() {
   var eyo = eYo.Selected.eyo
   if (eyo) {
-    eyo.renderer.sendToFront()
+    eyo.ui.sendToFront()
   }
 }
 
@@ -58,7 +58,7 @@ eYo.App.doFront = function() {
 eYo.App.doBack = function() {
   var eyo = eYo.Selected.eyo
   if (eyo) {
-    eyo.renderer.sendToBack()
+    eyo.ui.sendToBack()
   }
 }
 

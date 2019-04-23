@@ -135,7 +135,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
         if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
           // the other block has an output connection that can connect to the block's one
           var b_eyo = c8n.eyo.b_eyo
-          var selected = b_eyo.renderer.hasSelect
+          var selected = b_eyo.ui.hasSelect
           // next operations may unselect the block
           var old = b_eyo.consolidating_
           c8n.connect(this.outputConnection)

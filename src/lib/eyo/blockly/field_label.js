@@ -58,7 +58,6 @@ Object.defineProperties(
  * @suppress{accessControls}
  */
 eYo.FieldLabel.prototype.init = function () {
-  this.eyo.renderInit()
 }
 
 /**

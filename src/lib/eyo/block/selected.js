@@ -29,14 +29,14 @@ eYo.Selected = (() => {
   var c8n__
   me.updateDraw = () => {
     if (eyo__ && eyo__.isReady) {
-      eyo__.renderer.updateShape()
-      eyo__.renderer.addBlockSelect_()
-      eyo__.renderer.addStatusSelect_()
+      eyo__.ui.updateShape()
+      eyo__.ui.addBlockSelect_()
+      eyo__.ui.addStatusSelect_()
       if (c8n__) {
-        eyo__.renderer.addBlockConnection_()
-        eyo__.renderer.removeBlockHilight_()
+        eyo__.ui.addBlockConnection_()
+        eyo__.ui.removeBlockHilight_()
       } else {
-        eyo__.renderer.addBlockHilight_()
+        eyo__.ui.addBlockHilight_()
       }
     }
   }
@@ -72,10 +72,10 @@ eYo.Selected = (() => {
           if (eyo__ !== newValue) {
             if (eyo__) {
               // unselect/unhilight the previous block
-              eyo__.renderer.removeBlockSelect_()
-              eyo__.renderer.removeBlockHilight_()
-              eyo__.renderer.removeBlockConnection_()
-              eyo__.renderer.removeStatusSelect_()
+              eyo__.ui.removeBlockSelect_()
+              eyo__.ui.removeBlockHilight_()
+              eyo__.ui.removeBlockConnection_()
+              eyo__.ui.removeStatusSelect_()
               eyo__.selectedConnection = null
               eyo__.selectedConnectionSource_ = null
               eyo__ = block__ = null
@@ -136,7 +136,7 @@ eYo.Selected = (() => {
               }
             } else {
               if (eyo__) {
-                eyo__.renderer.removeBlockConnection_()
+                eyo__.ui.removeBlockConnection_()
                 eyo__.selectedConnection = null
                 eyo__.selectedConnectionSource_ = null
               }
@@ -485,7 +485,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
       return
     }
   }
-  if (this.renderer.parentIsShort && eYo.Selected.eyo !== this) {
+  if (this.ui.parentIsShort && eYo.Selected.eyo !== this) {
     parent = this.parent
     if (eYo.Selected.eyo !== parent) {
       eYo.BlockSvg.superClass_.onMouseDown_.call(parent.block_, e)

@@ -635,8 +635,8 @@ eYo.Data.prototype.synchronize = function (newValue) {
           } else {
             field.setVisible(true)
           }
-          var r = field.eyo.renderer
-          r && r.fieldMakeError(field)
+          var ui = field.eyo.ui
+          ui && ui.fieldMakeError(field)
         })
       }
     }

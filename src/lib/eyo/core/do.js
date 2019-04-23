@@ -278,14 +278,14 @@ eYo.Do.Name = (() => {
     var carry = 0
     var half = []
     for (var i = 0; i < D.delta.length; i++) {
-      var r = (D.delta[i] + carry * BASE) * weight
-      var h = Math.floor(r)
+      var x = (D.delta[i] + carry * BASE) * weight
+      var h = Math.floor(x)
       half.push(h)
       if (h > 1) {
         carry = 0
         break
       }
-      carry = r - h
+      carry = x - h
     }
     if (carry) {
       half.push(Math.floor(BASE * weight))
@@ -302,8 +302,8 @@ eYo.Do.Name = (() => {
       if (isNaN(l)) {
         l = 0
       }
-      r = half[i]
-      var d = l + r + carry
+      x = half[i]
+      var d = l + x + carry
       if (d > BASE) {
         d -= BASE
         carry = 1

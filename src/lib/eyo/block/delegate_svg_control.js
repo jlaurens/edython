@@ -81,7 +81,7 @@ Object.defineProperties (eYo.DelegateSvg.Control.prototype, {
 
 eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
   eYo.DelegateSvg.Control.superClass_.willRender_.call(this, recorder)
-  this.minWidth = this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
+  this.span.minWidth = this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
 }
 
 /**

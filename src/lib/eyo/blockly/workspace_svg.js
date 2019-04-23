@@ -18,6 +18,7 @@ goog.require('Blockly.WorkspaceSvg')
 goog.require('eYo.Do')
 goog.require('eYo.Msg')
 goog.require('eYo.BlockSvg')
+goog.require('eYo.Driver.Svg')
 goog.require('eYo.Workspace')
 goog.require('goog.dom');
 goog.require('eYo.WorkspaceDragger');
@@ -41,6 +42,15 @@ Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
     return new Blockly.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
   }
 }
+
+/**
+ * Create a driver for rendering.
+ * @return {eYo.Driver}
+*/
+eYo.WorkspaceDelegate.prototype.driverCreate = function () {
+  return new eYo.Driver.Svg()
+}
+
 
 goog.provide('eYo.Gesture')
 

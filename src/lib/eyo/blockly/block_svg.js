@@ -42,20 +42,9 @@ eYo.BlockSvg = function (workspace, prototypeName, optId) {
 goog.inherits(eYo.BlockSvg, Blockly.BlockSvg)
 
 /**
- * Create and initialize the SVG representation of the block.
- * May be called more than once.
- * Called by the `beReady` method.
+ * Noop. Override blockly's behaviour.
  */
 eYo.BlockSvg.prototype.initSvg = function () {
-  this.eyo.preInitSvg(this)
-  goog.asserts.assert(this.workspace.rendered, 'Workspace is headless.')
-  for (var i = 0, input; (input = this.inputList[i]); i++) {
-    input.init()
-  }
-  if (!this.getSvgRoot().parentNode) {
-    this.workspace.getCanvas().appendChild(this.getSvgRoot())
-  }
-  this.eyo.postInitSvg(this)
 }
 
 /**
@@ -101,17 +90,13 @@ eYo.BlockSvg.prototype.getInput = function (name) {
 
 /**
  * Set parent of this block to be a new block or null.
- * Place the highlighting path at the end.
+ * This is noop.
  * @param {Blockly.BlockSvg} newParent New parent block.
  */
-eYo.BlockSvg.prototype.setParent = function (newParent) {
-  if (newParent === this.parentBlock_) {
-    return
-  }
-  this.eyo.parentWillChange(newParent)
-  eYo.BlockSvg.superClass_.setParent.call(this, newParent)
-  this.eyo.parentDidChange(newParent)
-}
+Blockly.BlockSvg.prototype.setParent = function(newParent) {
+  Blockly.BlockSvg.superClass_.setParent.call(this, newParent);
+};
+
 
 /**
  * Play some UI effects (sound, ripple) after a connection has been established.
@@ -121,9 +106,9 @@ eYo.BlockSvg.prototype.connectionUiEffect = function () {
   if (this.workspace.scale < 1) {
     return // Too small to care about visual effects.
   }
-  var r = this.eyo.renderer
-  if (r) {
-    r.connectionUiEffect()
+  var ui = this.eyo.ui
+  if (ui) {
+    ui.connectionUiEffect()
     return
   }
   eYo.BlockSvg.superClass_.connectionUiEffect.call(this)
@@ -332,9 +317,9 @@ eYo.BlockSvg.prototype.bringToFront = function() {
  * Update the visual effect for disabled/enabled blocks.
  */
 Blockly.BlockSvg.prototype.updateDisabled = function() {
-  var r = this.eyo.renderer
-  if (r) {
-    r.updateDisabled()
+  var ui = this.eyo.ui
+  if (ui) {
+    ui.updateDisabled()
     this.getChildren().forEach(child => child.updateDisabled())
   }
 }
@@ -401,4 +386,18 @@ eYo.BlockSvg.prototype.renderMoveConnections_ = function() {
     }
   }
 
-};
+}
+
+/**
+ * Return the coordinates of the top-left corner of this block relative to the
+ * drawing surface's origin (0,0), in workspace units.
+ * If the block is on the workspace, (0, 0) is the origin of the workspace
+ * coordinate system.
+ * This does not change with workspace scale.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     workspace coordinates.
+ */
+eYo.BlockSvg.prototype.getRelativeToSurfaceXY = function() {
+  return this.eyo.ui.xyRelativeToSurface
+}
+

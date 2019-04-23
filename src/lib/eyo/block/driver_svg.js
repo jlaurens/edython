@@ -11,8 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Node.Driver.Svg.prototype')
-goog.require('eYo.Node.Driver')
+goog.provide('eYo.Driver.Svg')
+
+goog.require('eYo.Driver')
 
 /**
  * A namespace.
@@ -35,10 +36,10 @@ goog.require('eYo.Node.Driver')
  */
 
 console.warn('move onMouseDown_ and onMouseUp_ to eyo')
-eYo.Node.Driver.Svg.prototype = function () {
-  eYo.Node.Driver.Svg.prototype.superClass_.constructor.call(this)
+eYo.Driver.Svg = function () {
+  eYo.Driver.Svg.superClass_.constructor.call(this)
 }
-goog.inherits(eYo.Node.Driver.Svg.prototype, eYo.Node.Driver)
+goog.inherits(eYo.Driver.Svg, eYo.Driver)
 
 /**
  * Initialize the given node.
@@ -46,8 +47,8 @@ goog.inherits(eYo.Node.Driver.Svg.prototype, eYo.Node.Driver)
  * The svg 
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeInit = function (node) {
-  var svg = node.renderer.svg = {}
+eYo.Driver.Svg.prototype.nodeInit = function (node) {
+  var svg = node.ui.svg = {}
   var block = node.block_
   // We still need those paths
   // goog.dom.removeNode(block.svgPath_)
@@ -136,6 +137,25 @@ eYo.Node.Driver.Svg.prototype.nodeInit = function (node) {
       goog.dom.insertSiblingAfter(svg.groupPlay_, svg.pathHilight_)
     }
   }
+  var parent = node.outputConnection && node.outputConnection.eyo.t_eyo
+  if (parent) {
+    var p_svg = parent.ui.svg
+    if (p_svg.groupContour_) {
+      goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
+        'eyo-inner')
+      goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
+        'eyo-inner')
+    } else {
+      goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
+      goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
+        'eyo-inner')
+      goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+      goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
+        'eyo-inner')
+    }
+  }
 }
 
 /**
@@ -143,8 +163,8 @@ eYo.Node.Driver.Svg.prototype.nodeInit = function (node) {
  * This must be called just when changing the driver in the renderer.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeDispose = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeDispose = function (node) {
+  var svg = node.ui.svg
   // goog.dom.removeNode(svg.group_) only once the block_ design is removed
   svg.group_ = undefined
   // just in case the path were not already removed as child or a removed parent
@@ -176,7 +196,7 @@ eYo.Node.Driver.Svg.prototype.nodeDispose = function (node) {
       svg.mouseDownWrapper_ = null
     }
   }
-  node.renderer.svg = undefined
+  node.ui.svg = undefined
 }
 
 /**
@@ -184,8 +204,8 @@ eYo.Node.Driver.Svg.prototype.nodeDispose = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeCanDraw = function (node) {
-  return !!node.renderer.svg.pathInner_
+eYo.Driver.Svg.prototype.nodeCanDraw = function (node) {
+  return !!node.ui.svg.pathInner_
 }
 
 /**
@@ -194,7 +214,7 @@ eYo.Node.Driver.Svg.prototype.nodeCanDraw = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.contourAboveParent_ = function (node) {
+eYo.Driver.Svg.prototype.contourAboveParent_ = function (node) {
   return !node instanceof eYo.DelegateSvg.Expr
 }
 
@@ -204,8 +224,8 @@ eYo.Node.Driver.Svg.prototype.contourAboveParent_ = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeGetBBox = function (node) {
-  return node.renderer.svg.pathShape_.getBBox()
+eYo.Driver.Svg.prototype.nodeGetBBox = function (node) {
+  return node.ui.svg.pathShape_.getBBox()
 }
 
 /**
@@ -213,8 +233,8 @@ eYo.Node.Driver.Svg.prototype.nodeGetBBox = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeHasSelect = function (node) {
-  return goog.dom.classlist.contains(node.renderer.svg.group_, 'eyo-select')
+eYo.Driver.Svg.prototype.nodeHasSelect = function (node) {
+  return goog.dom.classlist.contains(node.ui.svg.group_, 'eyo-select')
 }
 
 /**
@@ -222,7 +242,7 @@ eYo.Node.Driver.Svg.prototype.nodeHasSelect = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathSelectDef_ = function (node) {
+eYo.Driver.Svg.prototype.pathSelectDef_ = function (node) {
   return eYo.Shape.definitionWithNode(node, {dido: true})
 }
 
@@ -231,7 +251,7 @@ eYo.Node.Driver.Svg.prototype.pathSelectDef_ = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathDef_ = function (node) {
+eYo.Driver.Svg.prototype.pathDef_ = function (node) {
   return eYo.Shape.definitionWithNode(node)
 }
 
@@ -240,28 +260,28 @@ eYo.Node.Driver.Svg.prototype.pathDef_ = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathControlDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathControlDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Statement block path.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathStatementDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathStatementDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Block path.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathGroupShapeDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathGroupShapeDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Block path.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathValueDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathValueDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 
 /**
@@ -269,28 +289,28 @@ eYo.Node.Driver.Svg.prototype.pathValueDef_ = eYo.Node.Driver.Svg.prototype.path
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathContourDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathContourDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Highlighted block outline. Default implementation forwards to pathDef_.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathHilightDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathHilightDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Block outline. Default implementation forwards to pathDef_.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathShapeDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathShapeDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Block path when collapsed.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathCollapsedDef_ = eYo.Node.Driver.Svg.prototype.pathDef_
+eYo.Driver.Svg.prototype.pathCollapsedDef_ = eYo.Driver.Svg.prototype.pathDef_
 
 /**
  * Highlighted connection outline.
@@ -300,7 +320,7 @@ eYo.Node.Driver.Svg.prototype.pathCollapsedDef_ = eYo.Node.Driver.Svg.prototype.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.pathConnectionDef_ = function (node) {
+eYo.Driver.Svg.prototype.pathConnectionDef_ = function (node) {
   return eYo.Shape.definitionWithConnectionDlgt(eYo.Selected.connection.delegate, {hilight: true})
 }
 
@@ -310,9 +330,8 @@ eYo.Node.Driver.Svg.prototype.pathConnectionDef_ = function (node) {
  * @param {*} recorder
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeWillRender = function (node, recorder) {
-  eYo.Node.Driver.Svg.prototype.superClass_.willRender.call(this, recorder)
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeWillRender = function (node, recorder) {
+  var svg = node.ui.svg
   if (svg.group_) {
     var F = node.locked_ && node.output
       ? goog.dom.classlist.add
@@ -341,12 +360,21 @@ eYo.Node.Driver.Svg.prototype.nodeWillRender = function (node, recorder) {
 }
 
 /**
+ * Prepares the various paths.
+ * @param {!Object} node  the node the driver acts on
+ * @param {*} recorder
+ * @private
+ */
+eYo.Driver.Svg.prototype.nodeDidRender = function (node, recorder) {
+}
+
+/**
  * Compute the paths of the block depending on its size.
  * @param {!Object} node  the node the driver acts on
  * @param {*} path 
  * @param {*} def 
  */
-eYo.Node.Driver.Svg.prototype.updatePath_ = function (node, path, def) {
+eYo.Driver.Svg.prototype.updatePath_ = function (node, path, def) {
   if (path) {
     if (def) {
       try {
@@ -371,24 +399,24 @@ eYo.Node.Driver.Svg.prototype.updatePath_ = function (node, path, def) {
  * This may be called too early, when the path do not exist yet
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeUpdateShape = function (node) {
-  var svg = node.renderer.svg
-  if (node.renderer.mayBeLast || !svg.pathContour_) {
+eYo.Driver.Svg.prototype.nodeUpdateShape = function (node) {
+  var svg = node.ui.svg
+  if (node.ui.mayBeLast || !svg.pathContour_) {
     return
   }
   if (node.wrapped_) {
-    svg.updatePath_(svg.pathContour_)
-    svg.updatePath_(svg.pathShape_)
-    svg.updatePath_(svg.pathCollapsed_)
+    this.updatePath_(node, svg.pathContour_)
+    this.updatePath_(node, svg.pathShape_)
+    this.updatePath_(node, svg.pathCollapsed_)
   } else {
-    svg.updatePath_(svg.pathContour_, svg.pathContourDef_)
-    svg.updatePath_(svg.pathShape_, svg.pathShapeDef_)
-    svg.updatePath_(svg.pathCollapsed_, svg.pathCollapsedDef_)
+    this.updatePath_(node, svg.pathContour_, svg.pathContourDef_)
+    this.updatePath_(node, svg.pathShape_, svg.pathShapeDef_)
+    this.updatePath_(node, svg.pathCollapsed_, svg.pathCollapsedDef_)
   }
-  svg.updatePath_(svg.pathHilight_, svg.pathHilightDef_)
-  svg.updatePath_(svg.pathSelect_, node.pathSelectDef_)
-  svg.updatePath_(svg.pathConnection_, svg.pathConnectionDef_)
-  if (node.renderer.someTargetIsMissing && !node.isInFlyout) {
+  this.updatePath_(node, svg.pathHilight_, svg.pathHilightDef_)
+  this.updatePath_(node, svg.pathSelect_, node.pathSelectDef_)
+  this.updatePath_(node, svg.pathConnection_, svg.pathConnectionDef_)
+  if (node.ui.someTargetIsMissing && !node.isInFlyout) {
     goog.dom.classlist.add(svg.pathContour_, 'eyo-error')
   } else {
     goog.dom.classlist.remove(svg.pathContour_, 'eyo-error')
@@ -401,28 +429,19 @@ eYo.Node.Driver.Svg.prototype.nodeUpdateShape = function (node) {
  * @param {?Object} io 
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeDrawModelEnd = function (node, io) {
-  var d = io.steps.join(' ')
-  node.renderer.svg.pathInner_.setAttribute('d', d)
+eYo.Driver.Svg.prototype.nodeDrawModelBegin = function (node, io) {
+  io.steps = []
 }
 
 /**
- * Hide the block. Default implementation does nothing.
+ * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
+ * @param {?Object} io 
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeHide = function (node) {
-  var svg = node.renderer.svg
-  var root = svg.group_
-  if (root) {
-    root.setAttribute('display', 'none')
-    if (svg.groupContour_) {
-      svg.groupContour_.setAttribute('display', 'none')
-      svg.groupShape_.setAttribute('display', 'none')
-    }
-  } else {
-    console.log('Block with no root: did you ...initSvg()?')
-  }
+eYo.Driver.Svg.prototype.nodeDrawModelEnd = function (node, io) {
+  var d = io.steps.join(' ')
+  node.ui.svg.pathInner_.setAttribute('d', d)
 }
 
 /**
@@ -431,7 +450,7 @@ eYo.Node.Driver.Svg.prototype.nodeHide = function (node) {
  * @param {?Object} recorder 
  * @private
  */
-eYo.Node.Driver.Svg.prototype.fieldHide = function (field, io) {
+eYo.Driver.Svg.prototype.fieldHide = function (field, io) {
   if (field.getText().length > 0) {
     var g = field.eyo.svg.group_
     if (g) {
@@ -444,7 +463,7 @@ eYo.Node.Driver.Svg.prototype.fieldHide = function (field, io) {
  * Whether the field is displayed.
  * @param {!Object} field  the field to query about
  */
-eYo.Node.Driver.Svg.prototype.fieldDisplayed = function (field) {
+eYo.Driver.Svg.prototype.fieldDisplayed = function (field) {
   var g = field.eyo.svg.group_
   return g.style.display !== 'none'
 }
@@ -454,7 +473,7 @@ eYo.Node.Driver.Svg.prototype.fieldDisplayed = function (field) {
  * @param {!Object} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.Node.Driver.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
+eYo.Driver.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
   var root = field.eyo.svg.group_
   if (yorn) {
     root.removeAttribute('display')
@@ -469,8 +488,8 @@ eYo.Node.Driver.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
  * in the proper domain of the dom tree.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.Node.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
+  var svg = node.ui.svg
   if (node.parent) {
     // this block was connected, so its paths were located in the parents
     // groups.
@@ -499,10 +518,55 @@ eYo.Node.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) 
 }
 
 /**
+ * Called when the parent did just change.
+ * This code is responsible to place the various path
+ * in the proper domain of the dom tree.
+ * @param {!Blockly.Block} oldParent replaced.
+ */
+eYo.Driver.Svg.prototype.nodeParentDidChange = function (node, oldParent) {
+  if (node.parent) {
+    var ui = node.ui
+    var svg = ui.svg
+    var g = svg.group_
+    var oldXY = ui.xyRelativeToSurface
+    node.parent.ui.svg.group_.appendChild(g)
+    var newXY = ui.xyRelativeToSurface
+    // Move the connections to match the child's new position.
+    ui.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y)
+    var p_svg = newParent.ui.svg
+    if (svg.groupContour_ && p_svg.groupContour_) {
+      if (this.contourAboveParent_(node)) {
+        goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
+      } else {
+        goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+      }
+      goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
+        'eyo-inner')
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
+        'eyo-inner')
+    }
+    // manage the selection,
+    // this seems tricky? Is there any undocumented side effect?
+    if ((svg.pathSelect_ &&
+      svg.group_ === svg.pathSelect_.parentElement) || (svg.pathConnection_ &&
+          svg.group_ === svg.pathConnection_.parentElement)) {
+      this.nodeSelectRemove(node)
+      this.nodeSelectAdd(node)
+    } else if ((p_svg.pathSelect_ &&
+        p_svg.group_ === p_svg.pathSelect_.parentNode) || (p_svg.pathConnection_ &&
+          p_svg.group_ === newParent.pathConnection_.parentNode)) {
+      this.nodeSelectRemove(newParent)
+      this.nodeSelectRemove(newParent)
+    }
+  }
+}
+
+/**
  * Prepare the given slot.
  * @param {!eYo.Slot} slot to be prepared.
  */
-eYo.Node.Driver.Svg.prototype.slotInit = function (slot) {
+eYo.Driver.Svg.prototype.slotInit = function (slot) {
   var svg = slot.svg = {}
   svg.group_ = Blockly.utils.createSvgElement('g', {
     class: 'eyo-slot'
@@ -512,7 +576,7 @@ eYo.Node.Driver.Svg.prototype.slotInit = function (slot) {
   } else {
     var s = slot.owner.slotAtHead
     if (s) {
-      goog.dom.appendChild(svg.group_, slot.owner.renderer.svg.group_)
+      goog.dom.appendChild(svg.group_, slot.owner.ui.svg.group_)
     }
   }
 }
@@ -521,7 +585,7 @@ eYo.Node.Driver.Svg.prototype.slotInit = function (slot) {
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Slot} slot
  */
-eYo.Node.Driver.Svg.prototype.slotDispose = function (slot) {
+eYo.Driver.Svg.prototype.slotDispose = function (slot) {
   goog.dom.removeNode(slot.svg.group_)
   slot.svg.group_ = null
   slot.svg = undefined
@@ -532,15 +596,14 @@ eYo.Node.Driver.Svg.prototype.slotDispose = function (slot) {
  * Prepare the given label field.
  * @param {!eYo.FieldLabel} field  Label field to be prepared.
  */
-eYo.Node.Driver.Svg.prototype.fieldInit = function (field) {
+eYo.Driver.Svg.prototype.fieldInit = function (field) {
   var eyo = field.eyo
   if (eyo.svg) {
     return
   }
   var svg = eyo.svg = {}
   // Build the DOM.
-  svg.group_ = Blockly.utils.createSvgElement('g', {}, eyo.slot ? eyo.slot : eyo.b_eyo)
-  (svg.group_)
+  svg.group_ = Blockly.utils.createSvgElement('g', {}, (eyo.slot ||eyo.b_eyo.ui).svg.group_)
   if (eyo.isTextInput) {
     svg.borderRect_ = Blockly.utils.createSvgElement('rect',
       { class: 'eyo-none',
@@ -582,7 +645,7 @@ eYo.Node.Driver.Svg.prototype.fieldInit = function (field) {
  * Dispose of the given field's rendering resources.
  * @param {!Object} field
  */
-eYo.Node.Driver.Svg.prototype.fieldDispose = function (field) {
+eYo.Driver.Svg.prototype.fieldDispose = function (field) {
   field.eyo.svg && goog.dom.removeNode(field.eyo.svg.group_)
   field.eyo.svg = undefined
 }
@@ -592,7 +655,7 @@ eYo.Node.Driver.Svg.prototype.fieldDispose = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Node.Driver.Svg.prototype.fieldMakeError = function (field, yorn) {
+eYo.Driver.Svg.prototype.fieldMakeError = function (field, yorn) {
   var root = field.eyo.svg.group_
   if (root) {
     (yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
@@ -604,7 +667,7 @@ eYo.Node.Driver.Svg.prototype.fieldMakeError = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Node.Driver.Svg.prototype.fieldMakeReserved = function (field, yorn) {
+eYo.Driver.Svg.prototype.fieldMakeReserved = function (field, yorn) {
   var root = field.eyo.svg.group_
   if (root) {
     if (yorn) {
@@ -620,7 +683,7 @@ eYo.Node.Driver.Svg.prototype.fieldMakeReserved = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Node.Driver.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
+eYo.Driver.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
   var root = field.eyo.svg.group_
   if (root) {
     if (yorn) {
@@ -636,7 +699,7 @@ eYo.Node.Driver.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Node.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
+eYo.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
   var root = field.eyo.svg.group_
   root && (yorn ? goog.dom.classlist.add: goog.dom.classlist.remove)(root, 'eyo-code-comment')
 }
@@ -645,9 +708,9 @@ eYo.Node.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
  * Make the given field disabled eventually.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
+eYo.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
   var b = node.block_
-  var svg = node.renderer.svg
+  var svg = node.ui.svg
   if (b.disabled || b.getInheritedDisabled()) {
     Blockly.utils.addClass(
         /** @type {!Element} */ (svg.group_), 'eyo-disabled')
@@ -661,8 +724,8 @@ eYo.Node.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
  * Make the given field reserved or not, to emphasize reserved keywords.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeConnectionUIEffect = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeConnectionUIEffect = function (node) {
+  var svg = node.ui.svg
   var w = node.workspace
   var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
   if (svg.outputConnection) {
@@ -689,9 +752,9 @@ eYo.Node.Driver.Svg.prototype.nodeConnectionUIEffect = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @param {!Object} menu  the menu to be displayed
  */
-eYo.Node.Driver.Svg.prototype.nodeMenuShow = function (node, menu) {
-  var svg = node.renderer.svg
-  var bBox = eYo.Node.Driver.Svg.prototype.getBBox(node)
+eYo.Driver.Svg.prototype.nodeMenuShow = function (node, menu) {
+  var svg = node.ui.svg
+  var bBox = eYo.Driver.Svg.prototype.getBBox(node)
   var scaledHeight = bBox.height * node.workspace.scale
   var xy = goog.style.getPageOffset(svg.group_)
   menu.showMenu(svg.group_, xy.x, xy.y + scaledHeight + 2)
@@ -701,7 +764,7 @@ eYo.Node.Driver.Svg.prototype.nodeMenuShow = function (node, menu) {
  * Hilight the given connection.
  * @param {!Object} c_eyo
  */
-eYo.Node.Driver.Svg.prototype.connectionHilight = function (c_eyo) {
+eYo.Driver.Svg.prototype.connectionHilight = function (c_eyo) {
   var c_eyo
   var c8n = c_eyo.connection
   var node = c_eyo.node
@@ -709,7 +772,7 @@ eYo.Node.Driver.Svg.prototype.connectionHilight = function (c_eyo) {
   if (!node.workspace) {
     return
   }
-  var d = node.renderer.driver
+  var d = node.ui.driver
   var steps
   if (c_eyo.isInput) {
     if (c8n.isConnected()) {
@@ -743,10 +806,10 @@ eYo.Node.Driver.Svg.prototype.connectionHilight = function (c_eyo) {
  * Make the given block wrapped.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeMakeWrapped = function (node) {
-  var svg = node.renderer.svg
-  node.pathShape_.setAttribute('display', 'none')
-  node.pathContour_.setAttribute('display', 'none')
+eYo.Driver.Svg.prototype.nodeMakeWrapped = function (node) {
+  var svg = node.ui.svg
+  svg.pathShape_.setAttribute('display', 'none')
+  svg.pathContour_.setAttribute('display', 'none')
 }
 
 /**
@@ -754,8 +817,8 @@ eYo.Node.Driver.Svg.prototype.nodeMakeWrapped = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeDuringUnwrapped = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeDuringUnwrapped = function (node) {
+  var svg = node.ui.svg
   svg.pathContour_.removeAttribute('display')
   svg.pathShape_.removeAttribute('display')
 }
@@ -765,13 +828,13 @@ eYo.Node.Driver.Svg.prototype.nodeDuringUnwrapped = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeSendToFront = function (node) {
+eYo.Driver.Svg.prototype.nodeSendToFront = function (node) {
   var eyo = node
   var parent
   while ((parent = eyo.surround)) {
     eyo = parent
   }
-  var g = eyo.renderer.driver.group_
+  var g = eyo.ui.driver.group_
   if (g.nextSibling && (parent = g.parentNode)) {
     parent.removeChild(g)
     parent.appendChild(g)
@@ -783,13 +846,13 @@ eYo.Node.Driver.Svg.prototype.nodeSendToFront = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Node.Driver.Svg.prototype.nodeSendToBack = function (node) {
+eYo.Driver.Svg.prototype.nodeSendToBack = function (node) {
   var eyo = node
   var parent
   while ((parent = eyo.surround)) {
     eyo = parent
   }
-  var g = eyo.renderer.driver.group_
+  var g = eyo.ui.driver.group_
   if (g.previousSibling && (parent = g.parentNode)) {
     parent.removeChild(g)
     parent.insertBefore(g, parent.firstChild)
@@ -804,12 +867,12 @@ eYo.Node.Driver.Svg.prototype.nodeSendToBack = function (node) {
  * @param {*} dl
  * @return {boolean}
  */
-eYo.Node.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
+  var svg = node.ui.svg
   // Workspace coordinates.
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
-  var svg = node.renderer.svg
+  var svg = node.ui.svg
   var xy = Blockly.utils.getRelativeXY(svg.group_)
   var transform = `translate ${xy.x + dx},${xy.y + dy})`
   ;[svg.group_, svg.groupShape_, svg.groupContour_].forEach(g => {
@@ -825,9 +888,9 @@ eYo.Node.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
  * @param {*} dy 
  * @return {boolean}
  */
-eYo.Node.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
-  var svg = node.renderer.svg
-  if (!eYo.Node.Driver.Svg.prototype.canDraw(node)) {
+eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
+  var svg = node.ui.svg
+  if (!this.nodeCanDraw(node)) {
     throw `block is not inited ${node.type}`
   }
   // Workspace coordinates.
@@ -856,56 +919,11 @@ eYo.Node.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
 }
 
 /**
- * Called when the parent did just change.
- * @param {!Object} node  the node the driver acts on
- * Side effect, if the child block has been `Svg` inited
- * then the parent block will be, really ?
- * @param {!Blockly.Block} newParent to be connected.
- */
-eYo.Node.Driver.Svg.prototype.nodeParentDidChange = function (node, newParent) {
-  if (newParent) {
-    var svg = node.renderer.svg
-    var block = node.block_
-    var g = svg.group_
-    var oldXY = block.getRelativeToSurfaceXY()
-    newParent.eyo.svg.group_.appendChild(g)
-    var newXY = block.getRelativeToSurfaceXY()
-    // Move the connections to match the child's new position.
-    node.renderer.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y)
-    var d = newParent.eyo.renderer.driver
-    if (svg.groupContour_ && d.groupContour_) {
-      if (eYo.Node.Driver.Svg.prototype.contourAboveParent_(node)) {
-        goog.dom.appendChild(d.groupContour_, svg.groupContour_)
-      } else {
-        goog.dom.insertChildAt(d.groupContour_, svg.groupContour_, 0)
-      }
-      goog.dom.appendChild(d.groupShape_, svg.groupShape_)
-      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
-        'eyo-inner')
-      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
-        'eyo-inner')
-    }
-    // manage the selection,
-    // this seems tricky? Is there any undocumented side effect?
-    if ((svg.pathSelect_ &&
-      svg.svgGroup_ === svg.pathSelect_.parentElement) || (svg.pathConnection_ &&
-          svg.svgGroup_ === svg.pathConnection_.parentElement)) {
-      eYo.Node.Driver.Svg.prototype.removeSelect(node)
-      eYo.Node.Driver.Svg.prototype.addSelect(node)
-    } else if (newParent && ((newParent.pathSelect_ &&
-        newParent.svgGroup_ === newParent.pathSelect_.parentElement) || (newParent.pathConnection_ &&
-        newParent.svgGroup_ === newParent.pathConnection_.parentElement))) {
-      eYo.Node.Driver.Svg.prototype.removeSelect(newParent.eyo)
-      eYo.Node.Driver.Svg.prototype.addSelect(newParent.eyo)
-    }
-  }
-}
-/**
  * Add the hilight path_.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeHilightAdd = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeHilightAdd = function (node) {
+  var svg = node.ui.svg
   if (!svg.pathHilight_.parentNode) {
     svg.group_.appendChild(svg.pathHilight_)
   }
@@ -915,16 +933,16 @@ eYo.Node.Driver.Svg.prototype.nodeHilightAdd = function (node) {
  * Remove the hilight path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeHilightRemove = function (node) {
-  goog.dom.removeNode(node.renderer.svg.pathHilight_)
+eYo.Driver.Svg.prototype.nodeHilightRemove = function (node) {
+  goog.dom.removeNode(node.ui.svg.pathHilight_)
 }
 
 /**
  * Add the select path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeSelectAdd = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeSelectAdd = function (node) {
+  var svg = node.ui.svg
   if (!svg.pathSelect_.parentNode) {
     if (svg.pathHilight_.parentNode) {
       svg.group_.insertBefore(svg.pathSelect_, svg.pathHilight_)
@@ -940,16 +958,16 @@ eYo.Node.Driver.Svg.prototype.nodeSelectAdd = function (node) {
  * Remove the select path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeSelectRemove = function (node) {
-  goog.dom.removeNode(node.renderer.svg.pathSelect_)
+eYo.Driver.Svg.prototype.nodeSelectRemove = function (node) {
+  goog.dom.removeNode(node.ui.svg.pathSelect_)
 }
 
 /**
  * Add the hilight path_ to the dom.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeConnectionAdd = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeConnectionAdd = function (node) {
+  var svg = node.ui.svg
   if (!svg.pathConnection_.parentNode) {
     svg.group_.appendChild(svg.pathConnection_)
   }
@@ -959,32 +977,32 @@ eYo.Node.Driver.Svg.prototype.nodeConnectionAdd = function (node) {
  * Remove the select path from the dom.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeConnectionRemove = function (node) {
-  goog.dom.removeNode(node.renderer.svg.pathConnection_)
+eYo.Driver.Svg.prototype.nodeConnectionRemove = function (node) {
+  goog.dom.removeNode(node.ui.svg.pathConnection_)
 }
 
 /**
  * The svg group has an `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeStatusTopAdd = function (node) {
-  goog.dom.classlist.add(node.renderer.svg.group_, 'eyo-top')
+eYo.Driver.Svg.prototype.nodeStatusTopAdd = function (node) {
+  goog.dom.classlist.add(node.ui.svg.group_, 'eyo-top')
 }
 
 /**
  * The svg group has no `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeStatusTopRemove = function (node) {
-  goog.dom.classlist.remove(node.renderer.svg.group_, 'eyo-top')
+eYo.Driver.Svg.prototype.nodeStatusTopRemove = function (node) {
+  goog.dom.classlist.remove(node.ui.svg.group_, 'eyo-top')
 }
 
 /**
  * The svg group has an `eyo-select` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.nodeStatusSelectAdd = function (node) {
-  var svg = node.renderer.svg
+eYo.Driver.Svg.prototype.nodeStatusSelectAdd = function (node) {
+  var svg = node.ui.svg
   var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {
     return
@@ -997,14 +1015,87 @@ eYo.Node.Driver.Svg.prototype.nodeStatusSelectAdd = function (node) {
 }
 
 /**
+ * Get the displayed status of the given node.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Svg.prototype.nodeDisplayedGet = function (node) {
+  var g =  node.ui.svg.group_
+  if (g) {
+    return g.style.display !== 'none'
+  }
+}
+
+/**
  * Set the displayed status of the given node.
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Node.Driver.Svg.prototype.nodeDisplayedSet = function (node, visible) {
-  var svg = node.renderer.svg
-  if (svg.group_) {
-    svg.group_.style.display = visible ? 'block' : 'none'
+eYo.Driver.Svg.prototype.nodeDisplayedSet = function (node, visible) {
+  var svg =  node.ui.svg
+  var g =  svg.group_
+  if (g) {
+    var d = visible ? 'block' : 'none'
+    g.style.display = d
+    if ((g = svg.groupContour_)) {
+      g.style.display = svg.groupShape_.style.display = d
+    }
+  }
+}
+
+/**
+ * Hide the block. Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ * @private
+ */
+eYo.Driver.Svg.prototype.nodeHide = function (node) {
+  var svg = node.ui.svg
+  var root = svg.group_
+  if (root) {
+    root.setAttribute('display', 'none')
+    if (svg.groupContour_) {
+      svg.groupContour_.setAttribute('display', 'none')
+      svg.groupShape_.setAttribute('display', 'none')
+    }
+  } else {
+    console.log('Block with no root: did you ...initSvg()?')
+  }
+}
+
+
+/**
+ * Draw/hide the sharp.
+ * @param {!Object} node  the node the driver acts on
+ * @private
+ */
+eYo.Driver.Svg.prototype.nodeDrawSharp = function (node, visible) {
+  var g = node.ui.svg.groupSharp_
+  if (visible) {
+    var children = goog.dom.getChildren(g)
+    var length = children.length
+    if (!length) {
+      var y = eYo.Font.totalAscent
+      var text = Blockly.utils.createSvgElement('text',
+        {'x': 0, 'y': y},
+        g)
+      text.appendChild(document.createTextNode('#'))
+      length = 1
+    }
+    var expected = node.eyo.getStatementCount()
+    while (length < expected) {
+      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
+      text = Blockly.utils.createSvgElement('text',
+        {'x': 0, 'y': y},
+        g)
+      text.appendChild(document.createTextNode('#'))
+      ++length
+    }
+    while (length > expected) {
+      text = children[--length]
+      g.removeChild(text)
+    }
+    g.setAttribute('transform', `translate(${io.cursor.x},${eYo.Padding.t})`)
+  } else {
+    goog.dom.removeChildren(g)
   }
 }
 
@@ -1013,7 +1104,7 @@ eYo.Node.Driver.Svg.prototype.nodeDisplayedSet = function (node, visible) {
  * Remove the children of the text element.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.fieldTextErase = function (field) {
+eYo.Driver.Svg.prototype.fieldTextErase = function (field) {
   goog.dom.removeChildren(/** @type {!Element} */ (field.eyo.svg.textElement_))
 }
 
@@ -1022,7 +1113,7 @@ eYo.Node.Driver.Svg.prototype.fieldTextErase = function (field) {
  * Remove the children of the text element.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Node.Driver.Svg.prototype.fieldTextDisplay = function (field) {
+eYo.Driver.Svg.prototype.fieldTextDisplay = function (field) {
   var textNode = document.createTextNode(field.getText())
   field.eyo.svg.textElement_.appendChild(textNode)
 }
@@ -1031,7 +1122,7 @@ eYo.Node.Driver.Svg.prototype.fieldTextDisplay = function (field) {
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.Node.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
+eYo.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
   var e = field_.textElement_
   if (e) {
     var f = txt => {
@@ -1056,7 +1147,7 @@ eYo.Node.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
  * @param {*} field
  * @param {boolean} quietInput
  */
-eYo.Node.Driver.Svg.prototype.fieldInlineEditorShow = function (field, quietInput) {
+eYo.Driver.Svg.prototype.fieldInlineEditorShow = function (field, quietInput) {
   var dispose = field.widgetDispose_()
   Blockly.WidgetDiv.show(field, field.sourceBlock_.RTL, dispose)
   var div = Blockly.WidgetDiv.DIV
@@ -1090,7 +1181,7 @@ eYo.Node.Driver.Svg.prototype.fieldInlineEditorShow = function (field, quietInpu
  * @param {*} field
  * @return {*} called when disposing of the widget
  */
-eYo.Node.Driver.Svg.prototype.fieldWidgetDisposeCallback = function (field) {
+eYo.Driver.Svg.prototype.fieldWidgetDisposeCallback = function (field) {
   return function () {
     var f_eyo = field.eyo
     f_eyo.b_eyo.isEditing = f_eyo.isEditing = false
@@ -1126,7 +1217,7 @@ eYo.Node.Driver.Svg.prototype.fieldWidgetDisposeCallback = function (field) {
  * @param {*} field
  * @private
  */
-eYo.Node.Driver.Svg.prototype.fieldEditorInlineValidate = function (field) {
+eYo.Driver.Svg.prototype.fieldEditorInlineValidate = function (field) {
   goog.asserts.assertObject(htmlInput)
   var htmlInput = eYo.FieldTextInput.htmlInput_
   goog.asserts.assertObject(htmlInput)
@@ -1139,7 +1230,7 @@ eYo.Node.Driver.Svg.prototype.fieldEditorInlineValidate = function (field) {
  * Update the inline editor.
  * @param {*} field
  */
-eYo.Node.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
+eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
   var node = field.eyo
   var svg = node.svg
   var g = svg && svg.group_
@@ -1163,6 +1254,6 @@ eYo.Node.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
  * @return {!goog.math.Coordinate} Object with `.x` and `.y` properties.
  * @private
  */
-eYo.Node.Driver.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
+eYo.Driver.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
   return goog.style.getPageOffset(field.eyo.svg.borderRect_);
 };

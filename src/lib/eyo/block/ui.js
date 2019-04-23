@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Renderer')
+goog.provide('eYo.UI')
 
 goog.require('eYo.Delegate')
-goog.require('eYo.Node.Driver')
+goog.require('eYo.Driver')
 
 /**
  * Class for a Render.
@@ -22,6 +22,10 @@ goog.require('eYo.Node.Driver')
  * @param {!Object} node  node is the owning node.
  * @readony
  * @property {object} node - The node owning of the render object.
+ * @readony
+ * @property {object} change - The change property of the node.
+ * @readony
+ * @property {object} reentrant - The reentrant property of the node.
  * @readony
  * @property {object} span - The span of the owning node.
  * @readony
@@ -37,22 +41,27 @@ goog.require('eYo.Node.Driver')
  * @property {boolean} startOfLine - Whether the node is at the start of a line. (Statements may not start a line)
  * @property {boolean} startOfStatement - Whether the node is at the start of a statement.
  * @readony
- * @property {boolean} hasLeftEdge  whether the block has a left edge. When blocks are embedded, we might want to shorten things because the boudaries may add too much horizontal space.
+ * @property {boolean} hasLeftEdge  whether the block has a left edge. When blocks are embedded, we might want to shorten things because the boundaries may add too much horizontal space.
+ * @readonly
  * @property {boolean} hasRightEdge  whether the block has a right edge.
+ * @readonly
+ * @property {Object}  xyRelativeToSurface  the coordinates relative to the surface.
  */
-eYo.Renderer = function(node) {
+eYo.UI = function(node) {
   this.node_ = node
+  node.ui_ = this
   this.down = this.up = false
+  this.driver.nodeInit(node)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.dispose = function () {
+eYo.UI.prototype.dispose = function () {
   this.driver.nodeDispose(this.node_)
 }
 
-Object.defineProperties(eYo.Renderer.prototype, {
+Object.defineProperties(eYo.UI.prototype, {
   node: {
     get() {
       return this.node_
@@ -60,12 +69,17 @@ Object.defineProperties(eYo.Renderer.prototype, {
   },
   driver: {
     get() {
-      return this.node_.workspace.eyo.driver.Node
+      return this.node_.workspace.eyo.driver
     }
   },
   change: {
     get() {
       return this.node_.change
+    }
+  },
+  reentrant: {
+    get() {
+      return this.node_.reentrant
     }
   },
   span: {
@@ -106,7 +120,7 @@ Object.defineProperties(eYo.Renderer.prototype, {
  * @param {*} c8n 
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Renderer.prototype.drawC8n_ = function (c8n, recorder) {
+eYo.UI.prototype.drawC8n_ = function (c8n, recorder) {
   if (!c8n) {
     return
   }
@@ -123,15 +137,15 @@ eYo.Renderer.prototype.drawC8n_ = function (c8n, recorder) {
     !eYo.Connection.disconnectedChildC8n&&
     !eYo.Connection.connectedParentC8n)
   if (do_it) {
-    var r = target.eyo.renderer
+    var ui = target.eyo.ui
     try {
-      r.down = true
-      r.render(false, recorder)
+      ui.down = true
+      ui.render(false, recorder)
     } catch (err) {
       console.error(err)
       throw err
     } finally {
-      r.down = false
+      ui.down = false
     }
     return true
   }
@@ -142,7 +156,7 @@ eYo.Renderer.prototype.drawC8n_ = function (c8n, recorder) {
  * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.Renderer.prototype.drawNext_ = function (recorder) {
+eYo.UI.prototype.drawNext_ = function (recorder) {
   return this.drawC8n_(this.node.nextConnection, recorder)
 }
 
@@ -150,18 +164,18 @@ eYo.Renderer.prototype.drawNext_ = function (recorder) {
  * Render the right block, if relevant.
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Renderer.prototype.renderRight_ = function () {
+eYo.UI.prototype.renderRight_ = function () {
   var c8n = this.node.rightStmtConnection
   if (c8n) {
     var c_eyo = c8n.eyo
     var t_eyo = c_eyo.t_eyo
     if (t_eyo) {
-      var r = t_eyo.renderer
+      var ui = t_eyo.ui
       try {
-        r.startOfLine = io.common.startOfLine
-        r.startOfStatement = io.common.startOfStatement
-        r.mayBeLast = r.hasRightEdge
-        r.down = true
+        ui.startOfLine = io.common.startOfLine
+        ui.startOfStatement = io.common.startOfStatement
+        ui.mayBeLast = ui.hasRightEdge
+        ui.down = true
         if (eYo.DelegateSvg.debugStartTrackingRender) {
           console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
         }
@@ -169,7 +183,7 @@ eYo.Renderer.prototype.renderRight_ = function () {
           // force target rendering
           t_eyo.incrementChangeCount()
         }
-        if (!r.up) {
+        if (!ui.up) {
           t_eyo.render(false, io)
           if (!t_eyo.wrapped_) {
             io.common.field.shouldSeparate = false
@@ -181,15 +195,15 @@ eYo.Renderer.prototype.renderRight_ = function () {
         console.error(err)
         throw err
       } finally {
-        r.down = false
+        ui.down = false
         var span = t_eyo.span
         if (span.width) {
           io.cursor.advance(span.width, span.height - 1)
           // We just rendered a block
           // it is potentially the rightmost object inside its parent.
-          if (r.hasRightEdge || io.common.shouldPack) {
+          if (ui.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t_eyo)
-            t_eyo.renderer.rightCaret = undefined
+            t_eyo.ui.rightCaret = undefined
             io.common.field.shouldSeparate = false
           }
           io.common.field.beforeIsCaret = false
@@ -205,7 +219,7 @@ console.error('rendered property should move to the renderer')
  * Render the suite block, if relevant.
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Renderer.prototype.renderSuite_ = function (io) {
+eYo.UI.prototype.renderSuite_ = function (io) {
   if (!this.inputSuite) {
     return
   }
@@ -219,17 +233,17 @@ eYo.Renderer.prototype.renderSuite_ = function (io) {
     var t_eyo = c_eyo.t_eyo
     if (t_eyo) {
       this.someTargetIsMissing = false
-      if (t_eyo.renderer.canRender) {
+      if (t_eyo.ui.canDraw) {
         c8n.tighten_()
-        if (!t_eyo.rendered || !t_eyo.renderer.up) {
+        if (!t_eyo.rendered || !t_eyo.ui.up) {
           try {
-            t_eyo.renderer.down = true
+            t_eyo.ui.down = true
             t_eyo.render(false)
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            t_eyo.renderer.down = false
+            t_eyo.ui.down = false
           }
         }
       }
@@ -250,7 +264,7 @@ eYo.Renderer.prototype.renderSuite_ = function (io) {
  */
 // deleted blocks are rendered during deletion
 // this.node should be avoided
-eYo.Renderer.prototype.render = (() => {
+eYo.UI.prototype.render = (() => {
   // this is a closure
   /**
    * Render the parent block, if relevant.
@@ -261,7 +275,7 @@ eYo.Renderer.prototype.render = (() => {
    */
   var drawParent = function (recorder, optBubble) {
     // `this.node` is a block delegate
-    if (optBubble === false || this.node.renderer.down) {
+    if (optBubble === false || this.node.ui.down) {
       return
     }
     // Render all blocks above this.node one (propagate a reflow).
@@ -269,36 +283,36 @@ eYo.Renderer.prototype.render = (() => {
     var parent = this.node.parent
     if (parent) {
       var justConnected = eYo.Connection.connectedParentC8n && this.node.outputConnection === eYo.Connection.connectedParentC8n.targetConnection
-      if (!parent.renderer.down) {
+      if (!parent.ui.down) {
         try {
-          parent.renderer.up = true
-          var old = this.node.renderer.up
-          this.node.renderer.up = true
-          if (eYo.Renderer.debugStartTrackingRender) {
-            console.log(eYo.Renderer.debugPrefix, 'UP')
+          parent.ui.up = true
+          var old = this.node.ui.up
+          this.node.ui.up = true
+          if (eYo.UI.debugStartTrackingRender) {
+            console.log(eYo.UI.debugPrefix, 'UP')
           }
           parent.render(!justConnected, recorder)
         } catch (err) {
           console.error(err)
           throw err
         } finally {
-          parent.renderer.up = false
-          this.node.renderer.up = old
+          parent.ui.up = false
+          this.node.ui.up = old
         }
         if (justConnected) {
           if (parent.parent) {
             parent = parent.root
             try {
-              parent.renderer.up = true
-              if (eYo.Renderer.debugStartTrackingRender) {
-                console.log(eYo.Renderer.debugPrefix, 'UP')
+              parent.ui.up = true
+              if (eYo.UI.debugStartTrackingRender) {
+                console.log(eYo.UI.debugPrefix, 'UP')
               }
               parent.render(false, recorder)
             } catch (err) {
               console.error(err)
               throw err
             } finally {
-              parent.renderer.up = false
+              parent.ui.up = false
             }
           }
         }
@@ -312,20 +326,20 @@ eYo.Renderer.prototype.render = (() => {
   var longRender = eYo.Decorate.reentrant_method(
     'longRender',
     function (optBubble, recorder) {
-      if (eYo.Renderer.debugStartTrackingRender) {
-        var n = eYo.Renderer.debugCount[block.id]
-        eYo.Renderer.debugCount[block.id] = (n||0)+1
-        if (!eYo.Renderer.debugPrefix.length) {
+      if (eYo.UI.debugStartTrackingRender) {
+        var n = eYo.UI.debugCount[block.id]
+        eYo.UI.debugCount[block.id] = (n||0)+1
+        if (!eYo.UI.debugPrefix.length) {
           console.log('>>>>>>>>>>')
         }
-        eYo.Renderer.debugPrefix = eYo.Renderer.debugPrefix + '.'
-        console.log(eYo.Renderer.debugPrefix, block.type, n, block.id)
+        eYo.UI.debugPrefix = eYo.UI.debugPrefix + '.'
+        console.log(eYo.UI.debugPrefix, block.type, n, block.id)
         if (n > 1) {
           n = n + 0
         }
       }
       try {
-        this.node.minWidth = block.width = 0
+        this.node.span.minWidth = this.node.span.c = 0
         this.node.consolidate()
         this.willRender_(recorder)
         var io = this.draw_(recorder)
@@ -333,15 +347,15 @@ eYo.Renderer.prototype.render = (() => {
         this.drawNext_(io)
         this.renderMove_(io)
         this.updateShape()
-        drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
-        this.node.block.rendered = true
+        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+        this.node.block_.rendered = true
         this.didRender_(io)
       } catch (err) {
         console.error(err)
         throw err
       } finally {
-        if (eYo.Renderer.debugStartTrackingRender &&  eYo.Renderer.debugPrefix.length) {
-          eYo.Renderer.debugPrefix = eYo.Renderer.debugPrefix.substring(1)
+        if (eYo.UI.debugStartTrackingRender &&  eYo.UI.debugPrefix.length) {
+          eYo.UI.debugPrefix = eYo.UI.debugPrefix.substring(1)
         }
       }    
     }
@@ -366,7 +380,7 @@ eYo.Renderer.prototype.render = (() => {
         this.renderMove_(io)
         this.updateShape()
         this.node.change.save.render = this.node.change.count
-        drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
+        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Connection.disconnectedParentC8n && this.node.nextConnection === eYo.Connection.disconnectedParentC8n) {
         // this.node block is the bottom one
@@ -377,7 +391,7 @@ eYo.Renderer.prototype.render = (() => {
         this.renderMove_(io)
         this.updateShape()
         this.node.change.save.render = this.node.change.count
-        drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
+        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Connection.connectedParentC8n) {
         if (this.node.outputConnection && eYo.Connection.connectedParentC8n === this.node.outputConnection.targetConnection) {
@@ -390,7 +404,7 @@ eYo.Renderer.prototype.render = (() => {
           this.renderMove_(io)
           this.updateShape()
           this.node.change.save.render = this.node.change.count
-          drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
+          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         } else if (this.node.nextConnection && eYo.Connection.connectedParentC8n === this.node.nextConnection) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
@@ -398,11 +412,11 @@ eYo.Renderer.prototype.render = (() => {
           this.renderMove_(io)
           this.updateShape()
           this.node.change.save.render = this.node.change.count
-          drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
+          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         }
       }
     }
-    if (!this.node.renderer.down && this.node.outputConnection) {
+    if (!this.node.ui.down && this.node.outputConnection) {
       // always render from a line start id est
       // an orphan block or a statement block
       var parent
@@ -414,16 +428,16 @@ eYo.Renderer.prototype.render = (() => {
         // parent has no output connection or has no parent
         // which means that it is an expression block's delegate.
         recorder && (recorder.field.last = undefined)
-        if (!parent.renderer.down) {
-          if (!parent.renderer.up && this.node.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.eyo.b_eyo === this.node) {
+        if (!parent.ui.down) {
+          if (!parent.ui.up && this.node.outputConnection === eYo.Connection.connectedParentC8n || eYo.Connection.connectedParentC8n && eYo.Connection.connectedParentC8n.eyo.b_eyo === this.node) {
             try {
-              parent.renderer.up = true
+              parent.ui.up = true
               parent.render(optBubble, recorder)
             } catch (err) {
               console.error(err)
               throw err
             } finally {
-              parent.renderer.up = false
+              parent.ui.up = false
             }
           } else {
             parent.render(optBubble, recorder)
@@ -439,10 +453,10 @@ eYo.Renderer.prototype.render = (() => {
       this.drawNext_(io)
       this.renderMove_(io)
       this.updateShape()
-      drawParent.call(this.node, io, optBubble) || this.alignRightEdges_(io)
+      drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
       return
     }
-    longRender.call(this.node, optBubble, recorder)
+    longRender.call(this, optBubble, recorder)
     this.node.change.save.render = this.node.change.count
   }
 }) ()
@@ -453,7 +467,7 @@ eYo.Renderer.prototype.render = (() => {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.willShortRender_ = function (recorder) {
+eYo.UI.prototype.willShortRender_ = function (recorder) {
   if (this.node.inputSuite) {
     this.node.size.h = this.main + this.black + this.suite
   }
@@ -467,8 +481,8 @@ goog.require('goog.dom')
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.willRender_ = function (recorder) {
-  this.driver.willRender(recorder)
+eYo.UI.prototype.willRender_ = function (recorder) {
+  this.driver.nodeWillRender(this.node_, recorder)
 }
 
 /**
@@ -476,8 +490,8 @@ eYo.Renderer.prototype.willRender_ = function (recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.didRender_ = function (recorder) {
-  this.driver.didRender(recorder)
+eYo.UI.prototype.didRender_ = function (recorder) {
+  this.driver.nodeDidRender(this.node_, recorder)
 }
 
 /**
@@ -485,7 +499,7 @@ eYo.Renderer.prototype.didRender_ = function (recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.renderMove_ = function (recorder) {
+eYo.UI.prototype.renderMove_ = function (recorder) {
   var block = this.node.block_
   block.renderMoveConnections_()
   // var blockTL = block.getRelativeToSurfaceXY()
@@ -496,7 +510,7 @@ eYo.Renderer.prototype.renderMove_ = function (recorder) {
   //     if (c8n) {
   //       c8n.moveToOffset(blockTL)
   //       if (c8n.isConnected()) {
-  //         c8n.tighten_();
+  //         c8n.tighten_()
   //       }
   //     }
   //   }
@@ -508,7 +522,7 @@ eYo.Renderer.prototype.renderMove_ = function (recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.layoutConnections_ = function (recorder) {
+eYo.UI.prototype.layoutConnections_ = function (recorder) {
   var c8n = this.node.outputConnection
   if (c8n) {
     c8n.eyo.setOffset()
@@ -541,8 +555,8 @@ eYo.Renderer.prototype.layoutConnections_ = function (recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.draw_ = function (recorder) {
-  if (this.driver.canDraw(this.node)) {
+eYo.UI.prototype.draw_ = function (recorder) {
+  if (this.driver.nodeCanDraw(this.node_)) {
     // if the above path does not exist
     // the block is not yet ready for rendering
     // when defined, `recorder` comes from
@@ -554,7 +568,7 @@ eYo.Renderer.prototype.draw_ = function (recorder) {
       console.error (err)
       throw err
     } finally {
-      this.node.renderer.renderRight_(io) || this.node.renderer.renderSuite_(io)
+      this.node.ui.renderRight_(io) || this.node.ui.renderSuite_(io)
       this.node.block_.height = this.span.height
       this.updateShape()
     }
@@ -567,7 +581,7 @@ eYo.Renderer.prototype.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.Renderer.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
+eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
   'alignRightEdges_',
   function (recorder) {
     if (this.node.parent || !this.node.isStmt || !this.node.block_.rendered || !this.node.block_.workspace || !this.node.isReady) {
@@ -576,12 +590,12 @@ eYo.Renderer.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
     var right = 0
     var t = eYo.Font.tabWidth
     this.node.forEachStatement((eyo, depth) => {
-      if (eyo.minWidth) {
-        var w = t * depth + eyo.minWidth
+      if (eyo.span.minWidth) {
+        var w = t * depth + eyo.span.minWidth
         // all the right blocks now
-        var r = eyo
-        while ((r = r.right)) {
-          w += r.minWidth - eYo.Unit.x // - eYo.Unit.x because blocks will overlap one space for the vertical boundaries
+        var x = eyo
+        while ((x = x.right)) {
+          w += x.span.minWidth - eYo.Unit.x // - eYo.Unit.x because blocks will overlap one space for the vertical boundaries
         }
         right = Math.max(right, w)
       }
@@ -590,12 +604,12 @@ eYo.Renderer.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
       this.node.forEachStatement((eyo, depth) => {
         var width = right - t * depth
         // find the last right block and 
-        var r = eyo
-        var b = r.block_
-        while ((r = r.right)) {
-          width -= (eyo.minWidth - eYo.Unit.x) // see comment above
-          eyo = r
-          b = r.block_
+        var x = eyo
+        var b = x.block_
+        while ((x = x.right)) {
+          width -= (eyo.span.minWidth - eYo.Unit.x) // see comment above
+          eyo = x
+          b = x.block_
         }
         if (b.width !== width) {
           b.width = width
@@ -611,8 +625,8 @@ eYo.Renderer.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
  * Forwards to the driver.
  * @protected
  */
-eYo.Renderer.prototype.updateShape = function () {
-  this.driver.updateShape(this.node_)
+eYo.UI.prototype.updateShape = function () {
+  this.driver.nodeUpdateShape(this.node_)
   return 0
 }
 
@@ -621,7 +635,7 @@ eYo.Renderer.prototype.updateShape = function () {
  * @param {*} recorder
  * @private
  */
-eYo.Renderer.prototype.newDrawRecorder = function (recorder) {
+eYo.UI.prototype.newDrawRecorder = function (recorder) {
   var io = {
     block: this.node.block_,
     steps: [],
@@ -660,7 +674,7 @@ eYo.Renderer.prototype.newDrawRecorder = function (recorder) {
  * @return {!Object} a local recorder
  * @private
  */
-eYo.Renderer.prototype.drawModelBegin_ = function (recorder) {
+eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   this.parentIsShort = false
   this.isShort = false
   this.someTargetIsMissing = false
@@ -709,7 +723,7 @@ eYo.Renderer.prototype.drawModelBegin_ = function (recorder) {
     this.startOfStatement = io.common.startOfStatement = true
     this.drawSharp_(io)
   }
-  this.driver.drawModelBegin(io)
+  this.driver.nodeDrawModelBegin(this.node_, io)
   return io
 }
 
@@ -722,7 +736,7 @@ eYo.Renderer.prototype.drawModelBegin_ = function (recorder) {
  * @param {?Object} io 
  * @private
  */
-eYo.Renderer.prototype.drawModel_ = function (io) {
+eYo.UI.prototype.drawModel_ = function (io) {
   this.fieldDrawFrom_(this.node.fieldAtStart, io)
   if ((io.slot = this.node.slotAtHead)) {
     do {
@@ -741,7 +755,7 @@ eYo.Renderer.prototype.drawModel_ = function (io) {
         })
         if ((io.c8n = input.connection)) {
           if ((io.target = io.c8n.targetBlock())) {
-            io.target.eyo.renderer.hide()
+            io.target.eyo.ui.hide()
           }
         }
       }
@@ -749,18 +763,16 @@ eYo.Renderer.prototype.drawModel_ = function (io) {
   }
   this.fieldDrawFrom_(this.node.toEndField, io)
   this.drawModelEnd_(io)
-  this.driver.drawModelEnd(io)
+  this.driver.nodeDrawModelEnd(this.node_, io)
   return
 }
 
 /**
  * Hide the block.
  * Forwards to the driver.
- * @param {?Object} recorder 
- * @private
  */
-eYo.Renderer.prototype.hide = function (io) {
-  this.driver.hide(this.node_)
+eYo.UI.prototype.hide = function () {
+  this.driver.nodeDisplayedSet(this.node_, false)
 }
 
 /**
@@ -769,7 +781,7 @@ eYo.Renderer.prototype.hide = function (io) {
  * @param {?Object} field 
  * @private
  */
-eYo.Renderer.prototype.fieldHide = function (field) {
+eYo.UI.prototype.fieldHide = function (field) {
   this.driver.fieldDisplayedSet(field, false)
 }
 
@@ -779,7 +791,7 @@ eYo.Renderer.prototype.fieldHide = function (field) {
  * @param {!Object} field 
  * @private
  */
-eYo.Renderer.prototype.fieldDisplayed = function (field) {
+eYo.UI.prototype.fieldDisplayed = function (field) {
   return this.driver.fieldDisplayed(field)
 }
 
@@ -788,7 +800,7 @@ eYo.Renderer.prototype.fieldDisplayed = function (field) {
  * @param {?Object} recorder 
  * @private
  */
-eYo.Renderer.prototype.drawModelEnd_ = function (io) {
+eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
   if (!this.node.wrapped_) {
     if (this.node.outputConnection) {
@@ -838,22 +850,22 @@ eYo.Renderer.prototype.drawModelEnd_ = function (io) {
       // this.node is a short block, special management of selection
       this.isShort = true
       if (target) {
-        target.eyo.renderer.parentIsShort = true
+        target.eyo.ui.parentIsShort = true
         // always add a space to the right
-        target.eyo.renderer.isLastInStatement = false
+        target.eyo.ui.isLastInStatement = false
         target.eyo.updateShape()
         io.cursor.c += 1
       }
     } else {
       this.isShort = false
       if (target) {
-        target.eyo.renderer.parentIsShort = false
+        target.eyo.ui.parentIsShort = false
       }
     }
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW)
-  this.node.size.setFromWhere(io.cursor)
-  this.node.minWidth = this.node.block_.width = Math.max(this.node.block_.width, this.node.size.x)
+  this.node.span.init(io.cursor)
+  this.node.span.minWidth = this.node.block_.width = Math.max(this.node.block_.width, this.node.span.width)
   if (io.recorder) {
     // We ended a block. The right edge is generally a separator.
     // No need to add a separator if the block is wrapped or locked
@@ -874,7 +886,7 @@ eYo.Renderer.prototype.drawModelEnd_ = function (io) {
  * @param io
  * @private
  */
-eYo.Renderer.prototype.drawSlot_ = function (slot, io) {
+eYo.UI.prototype.drawSlot_ = function (slot, io) {
   if (!slot) {
     return
   }
@@ -902,48 +914,22 @@ eYo.Renderer.prototype.drawSlot_ = function (slot, io) {
     `translate(${slot.where.x}, ${slot.where.y})`)
 }
 
+console.error('move disabled property to the delegate')
+
 /**
  * Render the leading # character for collapsed statement blocks.
  * Statement subclasses must override it.
  * @param io
  * @private
  */
-eYo.Renderer.prototype.drawSharp_ = function (io) {
+eYo.UI.prototype.drawSharp_ = function (io) {
   if (this.node.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
   } else if (this.node.isStmt) {
+    this.driver.nodeDrawSharp(this.node_, io.block.disabled)
     if (io.block.disabled) {
-      var children = goog.dom.getChildren(this.groupSharp_)
-      var length = children.length
-      if (!length) {
-        var y = eYo.Font.totalAscent
-        var text = Blockly.utils.createSvgElement('text',
-          {'x': 0, 'y': y},
-          this.groupSharp_)
-        this.groupSharp_.appendChild(text)
-        text.appendChild(document.createTextNode('#'))
-        length = 1
-      }
-      var expected = io.block.eyo.getStatementCount()
-      while (length < expected) {
-        y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
-        text = Blockly.utils.createSvgElement('text',
-          {'x': 0, 'y': y},
-          this.groupSharp_)
-        this.groupSharp_.appendChild(text)
-        text.appendChild(document.createTextNode('#'))
-        ++length
-      }
-      while (length > expected) {
-        text = children[--length]
-        this.groupSharp_.removeChild(text)
-      }
-      this.groupSharp_.setAttribute('transform', 'translate(' + (io.cursor.x) +
-          ', ' + eYo.Padding.t + ')')
       io.cursor.c += 2
-      io.common.startOfLine = io.common.startOfStatement = false
-    } else {
-      goog.dom.removeChildren(this.groupSharp_)
+      io.common.startOfLine = io.common.startOfStatement = false  
     }
   }
 }
@@ -953,7 +939,7 @@ eYo.Renderer.prototype.drawSharp_ = function (io) {
  * @param io
  * @private
  */
-eYo.Renderer.prototype.drawInput_ = function (io) {
+eYo.UI.prototype.drawInput_ = function (io) {
   return this.drawValueInput_(io)
 }
 console.error('Move to the driver')
@@ -964,7 +950,7 @@ console.error('Move to the driver')
  * @param {!Object} io An input/output recorder.
  * @private
  */
-eYo.Renderer.prototype.drawField_ = function (field, io) {
+eYo.UI.prototype.drawField_ = function (field, io) {
   var c = io.cursor.c
   if (!field.isVisible()) {
     this.fieldDisplayedSet(false)
@@ -1076,7 +1062,7 @@ eYo.Renderer.prototype.drawField_ = function (field, io) {
  * @param {!Object} io An input/output recorder.
  * @private
  */
-eYo.Renderer.prototype.fieldDrawFrom_ = function (field, io) {
+eYo.UI.prototype.fieldDrawFrom_ = function (field, io) {
   if (field) {
     do {
       this.drawField_(field, io)
@@ -1094,7 +1080,7 @@ eYo.Renderer.prototype.fieldDrawFrom_ = function (field, io) {
  * @return {Number}  The advance of the cursor (in columns)
  * @private
  */
-eYo.Renderer.prototype.drawFields_ = function (io, only_prefix) {
+eYo.UI.prototype.drawFields_ = function (io, only_prefix) {
   var current = io.cursor.c
   io.input.fieldRow.forEach((field) => {
     if (!!only_prefix === !field.eyo.suffix) {
@@ -1146,7 +1132,7 @@ eYo.Renderer.prototype.drawFields_ = function (io, only_prefix) {
  * @param {?Object} io the input/output argument.
  * @private
  */
-eYo.Renderer.prototype.drawEnding_ = function (io, isLast = false, inStatement = false) {
+eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false) {
   if (io) {
     var isLastInExpression = isLast && !inStatement
     var isLastInStatement = isLast && inStatement
@@ -1155,7 +1141,7 @@ eYo.Renderer.prototype.drawEnding_ = function (io, isLast = false, inStatement =
       if (io.common.shouldPack && (!isLast || io.common.shouldPack.wrapped_)) {
         // first loop to see if there is a pending rightCaret
         // BTW, there can be an only one right caret
-        if (io.common.ending.some(eyo => !!eyo.renderer.rightCaret)) {
+        if (io.common.ending.some(eyo => !!eyo.ui.rightCaret)) {
           io.common.shouldPack = undefined
         } else {
           // there is no following right caret, we can pack
@@ -1169,7 +1155,7 @@ eYo.Renderer.prototype.drawEnding_ = function (io, isLast = false, inStatement =
             }
             if (pack) {
               eyo.size.c = Math.max(this.minBlockW, eyo.size.c - 1)
-              eyo.minWidth = eyo.block_.width = eyo.size.x
+              eyo.span.minWidth = eyo.block_.width = eyo.size.x
               io.common.field.didPack = true
               io.common.field.beforeIsBlack = true
             }
@@ -1177,13 +1163,13 @@ eYo.Renderer.prototype.drawEnding_ = function (io, isLast = false, inStatement =
         }
       }
       io.common.ending.forEach((eyo) => {
-        eyo.renderer.mayBeLast = false
-        eyo.renderer.isLastInExpression = isLastInExpression
-        eyo.renderer.isLastInStatement = isLastInStatement
+        eyo.ui.mayBeLast = false
+        eyo.ui.isLastInExpression = isLastInExpression
+        eyo.ui.isLastInStatement = isLastInStatement
       })
       io.common.ending.forEach((eyo) => {
         eyo.updateShape()
-        var c_eyo = eyo.renderer.rightCaret
+        var c_eyo = eyo.ui.rightCaret
         if (c_eyo) {
           c_eyo.side = eYo.Key.RIGHT
           c_eyo.shape = eYo.Key.NONE
@@ -1216,7 +1202,7 @@ eYo.Renderer.prototype.drawEnding_ = function (io, isLast = false, inStatement =
  * @private
  */
 console.error('BUG: io.isLastInStatement below is always undefined')
-eYo.Renderer.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
+eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
   if (io) {
     var c_eyo = io.common.pending
     if (c_eyo) {
@@ -1258,7 +1244,7 @@ eYo.Renderer.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
  * @param {!Object} io the input/output argument.
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Renderer.prototype.drawInputRight_ = function (io) {
+eYo.UI.prototype.drawInputRight_ = function (io) {
   // adding a ';' or not.
   var c8n = this.rightStmtConnection
   if (c8n) {
@@ -1272,7 +1258,7 @@ eYo.Renderer.prototype.drawInputRight_ = function (io) {
  * @param {!Object} io the input/output argument.
  * @private
  */
-eYo.Renderer.prototype.drawValueInput_ = function (io) {
+eYo.UI.prototype.drawValueInput_ = function (io) {
   if (io.input.type !== Blockly.INPUT_VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
@@ -1314,12 +1300,12 @@ eYo.Renderer.prototype.drawValueInput_ = function (io) {
       if (root) {
         var t_eyo = target.eyo
         try {
-          t_eyo.renderer.startOfLine = io.common.startOfLine
-          t_eyo.renderer.startOfStatement = io.common.startOfStatement
-          t_eyo.renderer.mayBeLast = t_eyo.renderer.hasRightEdge
-          t_eyo.renderer.down = true
-          if (eYo.Renderer.debugStartTrackingRender) {
-            console.log(eYo.Renderer.debugPrefix, 'DOWN')
+          t_eyo.ui.startOfLine = io.common.startOfLine
+          t_eyo.ui.startOfStatement = io.common.startOfStatement
+          t_eyo.ui.mayBeLast = t_eyo.ui.hasRightEdge
+          t_eyo.ui.down = true
+          if (eYo.UI.debugStartTrackingRender) {
+            console.log(eYo.UI.debugPrefix, 'DOWN')
           }
           if (t_eyo.wrapped_) {
             // force target rendering
@@ -1330,11 +1316,11 @@ eYo.Renderer.prototype.drawValueInput_ = function (io) {
             c_eyo.slot.where.c -= 1
             c_eyo.setOffset(io.cursor)
             if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
-              t_eyo.renderer.startOfLine = t_eyo.renderer.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
+              t_eyo.ui.startOfLine = t_eyo.ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
           
             }
           }
-          if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.renderer.up) {
+          if (io.block.outputConnection !== eYo.Connection.disconnectedChildC8n && !t_eyo.ui.up) {
             t_eyo.render(false, io)
             if (!t_eyo.wrapped_) {
               io.common.field.shouldSeparate = false
@@ -1345,15 +1331,15 @@ eYo.Renderer.prototype.drawValueInput_ = function (io) {
            console.error(err)
            throw err
         } finally {
-          t_eyo.renderer.down = false
+          t_eyo.ui.down = false
           var size = t_eyo.size
           if (size.w) {
             io.cursor.advance(size.w, size.h - 1)
             // We just rendered a block
             // it is potentially the rightmost object inside its parent.
-            if (t_eyo.renderer.hasRightEdge || io.common.shouldPack) {
+            if (t_eyo.ui.hasRightEdge || io.common.shouldPack) {
               io.common.ending.push(t_eyo)
-              t_eyo.renderer.rightCaret = undefined
+              t_eyo.ui.rightCaret = undefined
               io.common.field.shouldSeparate = false
             }
             io.common.field.beforeIsCaret = false
@@ -1382,14 +1368,14 @@ eYo.Renderer.prototype.drawValueInput_ = function (io) {
           if (c_eyo.s7r_) {
             c_eyo.side = eYo.Key.NONE
             var ending = io.common.ending.slice(-1)[0]
-            if (ending && !ending.renderer.rightCaret) {
+            if (ending && !ending.ui.rightCaret) {
               // an expression block with a right end has been rendered
               // we put the caret on that end to save space,
               // we move the connection one character to the left
               io.cursor.c -= 1
               c_eyo.setOffset(io.cursor)
               io.cursor.c += 1
-              ending.renderer.rightCaret = c_eyo
+              ending.ui.rightCaret = c_eyo
               c_eyo.isAfterRightEdge = io.beforeIsRightEdge
               io.common.field.beforeIsCaret = true
             } else {
@@ -1441,18 +1427,33 @@ eYo.Renderer.prototype.drawValueInput_ = function (io) {
  * The default implementation forwards to the driver.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.Renderer.prototype.parentWillChange = function (newParent) {
-  this.driver.parentWillChange(this.node_, newParent)
+eYo.UI.prototype.parentWillChange = function (newParent) {
+  this.driver.nodeParentWillChange(this.node_, newParent)
+}
+
+/**
+ * The default implementation forwards to the driver.
+ * @param {!Blockly.Block} oldParent replaced.
+ */
+eYo.UI.prototype.parentDidChange = function (oldParent) {
+  this.driver.nodeParentDidChange(this.node_, oldParent)
+}
+
+/**
+ * Set the display status of the receiver's node.
+ * Forwards to the driver.
+ */
+eYo.UI.prototype.isVisible = function () {
+  this.driver.nodeDisplayedGet(this.node_)
 }
 
 /**
  * Set the display status of the receiver's node.
  * Forwards to the driver.
  * @param {boolean} visible 
- * @private
  */
-eYo.Renderer.prototype.setVisible = function (node, visible) {
-  this.driver.nodeSetVisible(this.node_, visible)
+eYo.UI.prototype.setVisible = function (visible) {
+  this.driver.nodeDisplayedSet(this.node_, visible)
 }
 
 /**
@@ -1460,7 +1461,7 @@ eYo.Renderer.prototype.setVisible = function (node, visible) {
  * Forwards to the driver.
  * @param {!eYo.Slot} slot  slot to be prepared.
  */
-eYo.Renderer.prototype.slotInit = function (slot) {
+eYo.UI.prototype.slotInit = function (slot) {
   this.driver.slotInit(slot)
 }
 
@@ -1469,7 +1470,7 @@ eYo.Renderer.prototype.slotInit = function (slot) {
  * Forwards to the driver.
  * @param {eYo.Slot} slot
  */
-eYo.Renderer.prototype.slotDispose = function (slot) {
+eYo.UI.prototype.slotDispose = function (slot) {
   this.driver.slotDispose(slot)
 }
 
@@ -1478,7 +1479,7 @@ eYo.Renderer.prototype.slotDispose = function (slot) {
  * Forwards to the driver.
  * @param {!eYo.FieldLabel} field  field to be prepared.
  */
-eYo.Renderer.prototype.fieldInit = function (field) {
+eYo.UI.prototype.fieldInit = function (field) {
   this.driver.fieldInit(field)
 }
 
@@ -1487,7 +1488,7 @@ eYo.Renderer.prototype.fieldInit = function (field) {
  * Forwards to the driver.
  * @param {!eYo.FieldLabel} field  field to be prepared.
  */
-eYo.Renderer.prototype.fieldDispose = function (field) {
+eYo.UI.prototype.fieldDispose = function (field) {
   this.driver.fieldDispose(field)
 }
 
@@ -1497,7 +1498,7 @@ eYo.Renderer.prototype.fieldDispose = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Renderer.prototype.fieldMakeError = function (field, yorn) {
+eYo.UI.prototype.fieldMakeError = function (field, yorn) {
   this.driver.fieldMakeError(field, yorn)
 }
 
@@ -1507,7 +1508,7 @@ eYo.Renderer.prototype.fieldMakeError = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Renderer.prototype.fieldMakeReserved = function (field, yorn) {
+eYo.UI.prototype.fieldMakeReserved = function (field, yorn) {
   this.driver.fieldMakeReserved(field, yorn)
 }
 
@@ -1517,7 +1518,7 @@ eYo.Renderer.prototype.fieldMakeReserved = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Renderer.prototype.fieldMakePlaceholder = function (field, yorn) {
+eYo.UI.prototype.fieldMakePlaceholder = function (field, yorn) {
   this.driver.fieldMakePlaceholder(field, yorn)
 }
 
@@ -1527,7 +1528,7 @@ eYo.Renderer.prototype.fieldMakePlaceholder = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Renderer.prototype.fieldMakeComment = function (field, yorn) {
+eYo.UI.prototype.fieldMakeComment = function (field, yorn) {
   this.driver.fieldMakeComment(field, yorn)
 }
 
@@ -1536,7 +1537,7 @@ eYo.Renderer.prototype.fieldMakeComment = function (field, yorn) {
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.Renderer.prototype.fieldSetVisualAttribute = function (field) {
+eYo.UI.prototype.fieldSetVisualAttribute = function (field) {
   this.driver.fieldSetVisualAttribute(field)
 }
 
@@ -1546,7 +1547,7 @@ eYo.Renderer.prototype.fieldSetVisualAttribute = function (field) {
  * @param {*} field
  * @param {boolean} quietInput
  */
-eYo.Renderer.prototype.fieldEditorInlineShow = function (field, quietInput) {
+eYo.UI.prototype.fieldEditorInlineShow = function (field, quietInput) {
   this.driver.fieldEditorInlineShow(field, quietInput)
 }
 
@@ -1555,7 +1556,7 @@ eYo.Renderer.prototype.fieldEditorInlineShow = function (field, quietInput) {
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.Renderer.prototype.fieldEditorInlineUpdate = function (field) {
+eYo.UI.prototype.fieldEditorInlineUpdate = function (field) {
   this.driver.fieldEditorInlineUpdate(field)
 }
 
@@ -1564,22 +1565,22 @@ eYo.Renderer.prototype.fieldEditorInlineUpdate = function (field) {
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.Renderer.prototype.fieldWidgetDisposeCallback = function (field) {
+eYo.UI.prototype.fieldWidgetDisposeCallback = function (field) {
   this.driver.fieldWidgetDisposeCallback(field)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.updateDisabled = function () {
+eYo.UI.prototype.updateDisabled = function () {
   this.driver.nodeUpdateDisabled(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.connectionUIEffect = function () {
-  this.driver.connectionUIEffect(this.node_)
+eYo.UI.prototype.connectionUIEffect = function () {
+  this.driver.nodeConnectionUIEffect(this.node_)
 }
 
 /**
@@ -1587,7 +1588,7 @@ eYo.Renderer.prototype.connectionUIEffect = function () {
  * The default implementation forwards to the driver.
  * @param {*} menu
  */
-eYo.Renderer.prototype.showMenu = function (menu) {
+eYo.UI.prototype.showMenu = function (menu) {
   this.driver.nodeMenuShow(this.node_, menu)
 }
 
@@ -1596,7 +1597,7 @@ eYo.Renderer.prototype.showMenu = function (menu) {
  * The default implementation forwards to the driver.
  * @param {*} c_eyo
  */
-eYo.Renderer.prototype.connectionHilight = function (c_eyo) {
+eYo.UI.prototype.connectionHilight = function (c_eyo) {
   this.driver.connectionHilight(c_eyo)
 }
 
@@ -1604,28 +1605,28 @@ eYo.Renderer.prototype.connectionHilight = function (c_eyo) {
  * Make the given block wrapped.
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.makeBlockWrapped = function () {
+eYo.UI.prototype.makeBlockWrapped = function () {
   this.driver.nodeMakeWrapped(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.duringBlockUnwrapped = function () {
+eYo.UI.prototype.duringBlockUnwrapped = function () {
   this.driver.nodeDuringUnwrapped(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.sendToFront = function () {
+eYo.UI.prototype.sendToFront = function () {
   this.driver.nodeSendToFront(this.node_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Renderer.prototype.sendToBack = function () {
+eYo.UI.prototype.sendToBack = function () {
   this.driver.nodeSendToFront(this.node_)
 }
 
@@ -1637,7 +1638,7 @@ eYo.Renderer.prototype.sendToBack = function () {
  * @param {*} dl
  * @return {boolean}
  */
-eYo.Renderer.prototype.nodeSetOffset = function (dc, dl) {
+eYo.UI.prototype.nodeSetOffset = function (dc, dl) {
   // Workspace coordinates.
   if (!this.driver.nodeCanDraw(this.node)) {
     throw `block is not inited ${this.node.type}`
@@ -1645,7 +1646,7 @@ eYo.Renderer.prototype.nodeSetOffset = function (dc, dl) {
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
   this.driver.nodeSetOffset(this.node_, dx, dy)
-  this.moveConnections_(this.node_, dx, dy)
+  this.moveConnections_(dx, dy)
 }
 
 /**
@@ -1655,9 +1656,9 @@ eYo.Renderer.prototype.nodeSetOffset = function (dc, dl) {
  * @param {*} dy 
  * @return {boolean}
  */
-eYo.Renderer.prototype.setOffset = function (dx, dy) {
-  if (!this.driver.canDraw(this.node)) {
-    throw `block is not inited ${this.node.type}`
+eYo.UI.prototype.setOffset = function (dx, dy) {
+  if (!this.driver.nodeCanDraw(this.node_)) {
+    throw `block is not inited ${this.node_.type}`
   }
   this.driver.nodeSetOffset(this.node_, dx, dy)
   this.moveConnections_(dx, dy)
@@ -1669,27 +1670,17 @@ eYo.Renderer.prototype.setOffset = function (dx, dy) {
  * @param {Number} dy
  * @private
  */
-eYo.Renderer.prototype.moveConnections_ = function (dx, dy) {
+eYo.UI.prototype.moveConnections_ = function (dx, dy) {
   this.node.block_.moveConnections_(dx, dy)
 }
 
 //////////////////
 
 /**
- * Called when the parent did just change.
- * Side effect, if the child block has been `Svg` inited
- * then the parent block will be, really ?
- * @param {!Blockly.Block} newParent to be connected.
- */
-eYo.Renderer.prototype.parentDidChange = function (newParent) {
-  this.driver.nodeParentDidChange(this.node_, newParent)
-}
-
-/**
  * Add the hilight path_.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.addBlockHilight_ = function () {
+eYo.UI.prototype.addBlockHilight_ = function () {
   this.driver.nodeHilightAdd(this.node_)
 }
 
@@ -1697,7 +1688,7 @@ eYo.Renderer.prototype.addBlockHilight_ = function () {
  * Remove the hilight path.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.removeBlockHilight_ =function () {
+eYo.UI.prototype.removeBlockHilight_ =function () {
   this.driver.nodeHilightRemove(this.node_)
 }
 
@@ -1705,7 +1696,7 @@ eYo.Renderer.prototype.removeBlockHilight_ =function () {
  * Add the select path.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.addBlockSelect_ = function () {
+eYo.UI.prototype.addBlockSelect_ = function () {
   this.driver.nodeSelectAdd(this.node_)
 }
 
@@ -1713,7 +1704,7 @@ eYo.Renderer.prototype.addBlockSelect_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.removeBlockSelect_ = function () {
+eYo.UI.prototype.removeBlockSelect_ = function () {
   this.driver.nodeSelectRemove(this.node_)
 }
 
@@ -1721,7 +1712,7 @@ eYo.Renderer.prototype.removeBlockSelect_ = function () {
  * Add the hilight connection path_.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.addBlockConnection_ = function () {
+eYo.UI.prototype.addBlockConnection_ = function () {
   this.driver.nodeConnectionAdd(this.node_)
 }
 
@@ -1729,14 +1720,14 @@ eYo.Renderer.prototype.addBlockConnection_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.removeBlockConnection_ = function () {
+eYo.UI.prototype.removeBlockConnection_ = function () {
   this.driver.nodeConnectionRemove(this.node_)
 }
 
 /**
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.addStatusTop_ = function () {
+eYo.UI.prototype.addStatusTop_ = function () {
   this.driver.nodeStatusTopAdd(this.node_)
 }
 
@@ -1745,14 +1736,14 @@ eYo.Renderer.prototype.addStatusTop_ = function () {
  * Remove the `top` status.
  * Forwards to the driver.
  */
-eYo.Renderer.prototype.removeStatusTop_ = function (eyo) {
+eYo.UI.prototype.removeStatusTop_ = function (eyo) {
   this.driver.nodeStatusTopRemove(this.node_)
 }
 
 /**
  * Forwards to the driver and `addSelect` to each field.
  */
-eYo.Renderer.prototype.addStatusSelect_ = function () {
+eYo.UI.prototype.addStatusSelect_ = function () {
   this.driver.nodeStatusSelectAdd(this.node_)
   eyo.forEachInput(input => {
     input.fieldRow.forEach(field => {
@@ -1766,7 +1757,7 @@ eYo.Renderer.prototype.addStatusSelect_ = function () {
 /**
  * Reverse `addStatusSelect_`. Forwards to the driver and various fields.
  */
-eYo.Renderer.prototype.removeStatusSelect_ = function () {
+eYo.UI.prototype.removeStatusSelect_ = function () {
   this.driver.nodeStatusSelectRemove(this.node_)
   this.node.forEachInput(input => {
     input.fieldRow.forEach(field => {
@@ -1782,12 +1773,9 @@ eYo.Renderer.prototype.removeStatusSelect_ = function () {
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
-eYo.Renderer.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+eYo.UI.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
   if (connection.eyo.isOutput) {
-    if (this === eYo.Selected.eyo && this.locked_) {
-      eYo.Selected.eyo = connection.eyo.t_eyo
-    }
-    connection.eyo.renderer.removeStatusTop_()
+    connection.eyo.ui.removeStatusTop_()
   }
 }
 
@@ -1796,8 +1784,52 @@ eYo.Renderer.prototype.didConnect = function (connection, oldTargetC8n, targetOl
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  */
-eYo.Renderer.prototype.didDisconnect = function (connection, oldTargetC8n) {
+eYo.UI.prototype.didDisconnect = function (connection, oldTargetC8n) {
   if (connection.eyo.isOutput) {
-    connection.eyo.renderer.addStatusTop_()
+    connection.eyo.ui.addStatusTop_()
   }
 }
+
+/**
+ * Return the coordinates of the top-left corner of this block relative to the
+ * drawing surface's origin (0,0), in workspace units.
+ * If the block is on the workspace, (0, 0) is the origin of the workspace
+ * coordinate system.
+ * This does not change with workspace scale.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     workspace coordinates.
+ */
+Object.defineProperties(eYo.UI.prototype, {
+  xyRelativeToSurface: {
+    get () {
+      var x = 0
+      var y = 0
+    
+      var block = this.node_.block_
+      var dragSurfaceGroup = block.useDragSurface_
+        ? block.workspace.blockDragSurface_.getGroup()
+        : null
+    
+      var element = this.group_
+      if (element) {
+        do {
+          // Loop through this block and every parent.
+          var xy = Blockly.utils.getRelativeXY(element)
+          x += xy.x
+          y += xy.y
+          // If this element is the current element on the drag surface, include
+          // the translation of the drag surface itself.
+          if (block.useDragSurface_ &&
+            block.workspace.blockDragSurface_.getCurrentBlock() == element) {
+            var surfaceTranslation = block.workspace.blockDragSurface_.getSurfaceTranslation()
+            x += surfaceTranslation.x
+            y += surfaceTranslation.y
+          }
+          element = element.parentNode
+        } while (element && element != block.workspace.getCanvas() &&
+            element != dragSurfaceGroup)
+      }
+      return new goog.math.Coordinate(x, y)    
+    }
+  }
+})

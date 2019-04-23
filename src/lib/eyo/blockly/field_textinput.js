@@ -79,7 +79,7 @@ eYo.FieldTextInput.htmlInput_ = null
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.init = function () {
-  this.eyo.renderer.fieldTextInputInit(this)
+  this.eyo.ui.fieldTextInputInit(this)
 }
 
 /**
@@ -109,7 +109,7 @@ eYo.FieldTextInput.prototype.updateWidth = function () {
  */
 eYo.FieldTextInput.prototype.dispose = function () {
   eYo.FieldTextInput.superClass_.dispose.call(this)
-  this.eyo.renderer.fieldTextInputDispose(this)
+  this.eyo.ui.fieldTextInputDispose(this)
 }
 
 /**
@@ -186,7 +186,7 @@ eYo.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
-  this.eyo.renderer.fieldEditorInlineShow(this, quietInput)
+  this.eyo.ui.fieldEditorInlineShow(this, quietInput)
 }
 
 /**
@@ -196,7 +196,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  * @private
  */
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
-  return this.eyo.renderer.fieldWidgetDisposeCallback(this)
+  return this.eyo.ui.fieldWidgetDisposeCallback(this)
 }
 
 /**
@@ -210,7 +210,7 @@ eYo.FieldTextInput.prototype.updateEditable = eYo.Do.nothing
  * @private
  */
 eYo.FieldTextInput.prototype.validate_ = function () {
-  this.eyo.renderer.fieldEditorInlineValidate(this)
+  this.eyo.ui.fieldEditorInlineValidate(this)
 }
 
 /**
@@ -219,7 +219,7 @@ eYo.FieldTextInput.prototype.validate_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
-  this.eyo.renderer.fieldEditorResize_(this)
+  this.eyo.ui.fieldEditorResize_(this)
 }
 
 /**

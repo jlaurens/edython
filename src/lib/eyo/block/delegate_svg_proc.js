@@ -156,7 +156,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.field.eyo.renderer.fieldSetVisualAttribute(this.field, newValue)
+        this.field.eyo.ui.fieldSetVisualAttribute(this.field, newValue)
       },
       xml: false
     },

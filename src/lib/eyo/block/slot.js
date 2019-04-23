@@ -99,6 +99,14 @@ eYo.Slot = function (owner, key, model) {
   this.where = new eYo.Where() // for rendering only
 }
 
+/**
+ * Init the slot.
+ */
+eYo.Slot.prototype.init = function () {
+  var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
+  f && f.call(this)
+}
+
 Object.defineProperties(eYo.Slot.prototype, {
   block: {
     get () {
@@ -165,14 +173,6 @@ Object.defineProperties(eYo.Slot.prototype, {
 })
 
 /**
- * Init the slot.
- */
-eYo.Slot.prototype.init = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
-  f && f.call(this)
-}
-
-/**
  * Retrieve the target block.
  * Forwards to the connection.
  */
@@ -186,6 +186,7 @@ eYo.Slot.prototype.targetBlock = function () {
  * No data change.
  */
 eYo.Slot.prototype.beReady = function () {
+  this.beReady = eYo.Do.nothing // one shot function
   this.init()
   // init all the fields
   var f = field => {
@@ -198,21 +199,23 @@ eYo.Slot.prototype.beReady = function () {
   Object.values(this.fields).forEach(f)
   this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
-  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**
  * Prepare this slot for rendering.
  * No data change.
  */
-eYo.Slot.prototype.beRenderReady = function () {
-  this.owner.renderer.slotInit(this)()
-  // init all the fields
-  var f = field => field.beRenderReady()
-  Object.values(this.fields).forEach(f)
-  this.bindField && f(this.bindField)
-  this.input && this.input.eyo.beRenderReady()
-  this.beRenderReady = eYo.Do.nothing // one shot function
+eYo.Slot.prototype.renderBeReady = function () {
+  var ui = this.owner.ui
+  if (ui) {
+    this.renderBeReady = eYo.Do.nothing // one shot function
+    ui.slotInit(this)()
+    // init all the fields
+    var f = field => field.renderBeReady()
+    Object.values(this.fields).forEach(f)
+    this.bindField && f(this.bindField)
+    this.input && this.input.eyo.renderBeReady()
+  }
 }
 
 /**
@@ -227,8 +230,8 @@ eYo.Slot.prototype.getSvgRoot = function () {
  * Asks the owner's renderer to do the same.
  */
 eYo.Slot.prototype.dispose = function () {
-  var r = this.owner.renderer
-  r && r.slotDispose(this)
+  var ui = this.owner.ui
+  ui && ui.slotDispose(this)
   this.sourceBlock_ = null
   this.owner = null
   this.key = null
@@ -702,12 +705,6 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
   }
 }
 console.error('Change the variant for the subtype in c8n.sourceBlock_.eyo.variant_p above')
-/**
- * Init the slot.
- * For edython.
- */
-eYo.Slot.prototype.init = function () {
-}
 
 /**
  * Set the UI state.

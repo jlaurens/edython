@@ -37,13 +37,30 @@ goog.inherits(eYo.Block, Blockly.Block)
 Object.defineProperties(eYo.Block.prototype, {
   width: {
     get () {
-      return this.width__
+      return this.eyo.span && this.eyo.span.width || this.width__
     },
     set (newValue) {
       if (isNaN(newValue)) {
         console.error('NAN FAILED')
       }
-      this.width__ = newValue
+      if (this.eyo.span) {
+        console.error('DO NOT SET THE WIDTH DIRECTLY, break here.')
+        this.eyo.span.width = newValue
+      } else {
+        this.width__ = newValue
+      }
+    }
+  },
+  rendered: {
+    get () {
+      var ui = this.eyo.ui
+      return ui && ui.isVisible()
+    },
+    set (newValue) {
+      if (newValue) {
+        console.error('DO NOT SET RENDERED DIRECTLY, break here.')
+      }
+      this.rendered__ = newValue
     }
   }
 }
@@ -205,3 +222,20 @@ Blockly.Block.prototype.unplug = (() => {
     }
   }
 })()
+
+/**
+ * Set parent of this block to be a new block or null.
+ * @param {Blockly.Block} newParent New parent block.
+ */
+Blockly.Block.prototype.setParent = (() => {
+  var setParent = Blockly.Block.prototype.setParent
+  return function(newParent) {
+    if (newParent !== this.parentBlock_) {
+      var ui = this.ui
+      ui && ui.parentWillChange(newParent)
+      var oldParent = this.parentBlock_
+      setParent(newParent)
+      ui && ui.parentDidChange(oldParent)
+    }
+  }
+})
