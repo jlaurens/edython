@@ -135,7 +135,7 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
         if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
           // the other block has an output connection that can connect to the block's one
           var b_eyo = c8n.eyo.b_eyo
-          var selected = b_eyo.ui.hasSelect
+          var selected = b_eyo.uiHasSelect
           // next operations may unselect the block
           var old = b_eyo.consolidating_
           c8n.connect(this.outputConnection)
@@ -229,7 +229,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
   var parentSlotName = model.slot || model.input
   var parentBlock
   eYo.Events.disableWrap(() => {
-    parentBlock = eYo.DelegateSvg.newBlockReady(block, model)
+    parentBlock = eYo.DelegateSvg.newBlockComplete(this, model)
   })
   if (!parentBlock) {
     return parentBlock
@@ -554,7 +554,6 @@ eYo.DelegateSvg.Expr.T3s = [
   eYo.T3.Expr.proper_slice,
   eYo.T3.Expr.conditional_expression,
   eYo.T3.Expr.starred_expression,
-  eYo.T3.Expr.not_test,
   eYo.T3.Expr.builtin__object,
   eYo.T3.Expr.any
 ]

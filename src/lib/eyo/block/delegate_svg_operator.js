@@ -33,7 +33,8 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.ui.fieldMakeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0)
+        var d = this.field.eyo.ui_driver
+        d && d.fieldMakeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.m_expr) {
@@ -307,7 +308,8 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.ui.fieldMakeReserved(this.field, newValue === 'not')
+        var d = this.field.eyo.ui_driver
+        d && d.fieldMakeReserved(this.field, newValue === 'not')
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.not_test) {

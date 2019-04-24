@@ -297,20 +297,7 @@ eYo.BlockSvg.prototype.setDragging = function(adding) {
  * @package
  */
 eYo.BlockSvg.prototype.bringToFront = function() {
-  var block = this;
-  try {
-    do {
-      var root = block.getSvgRoot();
-      if (root.parentNode) {
-        goog.dom.appendChild(root.parentNode, root)
-        block = block.getParent();
-      } else {
-        break
-      }
-    } while (block);
-  } catch (err) {
-    console.error(err)
-  }
+  this.eyo.ui.sendToFront()
 }
 
 /**
@@ -385,7 +372,6 @@ eYo.BlockSvg.prototype.renderMoveConnections_ = function() {
       this.nextConnection.tighten_();
     }
   }
-
 }
 
 /**
@@ -398,6 +384,24 @@ eYo.BlockSvg.prototype.renderMoveConnections_ = function() {
  *     workspace coordinates.
  */
 eYo.BlockSvg.prototype.getRelativeToSurfaceXY = function() {
-  return this.eyo.ui.xyRelativeToSurface
+  return this.eyo.ui.xyInSurface
+}
+
+/**
+ * May return nothing.
+ * @return {!Element} The group element.
+ */
+eYo.BlockSvg.prototype.getSvgRoot = function() {
+  var g = this.eyo.ui
+  return g && (g = g.driver.nodeSvgGroup) && g(this.eyo)
+}
+
+/**
+ * Translates the block, forwards to the ui driver.
+ * @param {number} x The x coordinate of the translation in workspace units.
+ * @param {number} y The y coordinate of the translation in workspace units.
+ */
+eYo.BlockSvg.prototype.translate = function(x, y) {
+  this.eyo.ui.translate(x, y)
 }
 

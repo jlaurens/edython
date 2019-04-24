@@ -39,6 +39,15 @@ eYo.FieldLabel = function (owner, text, optClass) {
 }
 goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
 
+/**
+ * Dispose of all DOM objects belonging to this field.
+ */
+eYo.FieldLabel.prototype.dispose = function () {
+  eYo.FieldLabel.superClass_.dispose.call(this)
+  this.eyo.dispose()
+  this.eyo = null
+}
+
 Object.defineProperties(
   eYo.FieldLabel.prototype,
   {
@@ -58,14 +67,6 @@ Object.defineProperties(
  * @suppress{accessControls}
  */
 eYo.FieldLabel.prototype.init = function () {
-}
-
-/**
- * Dispose of all DOM objects belonging to this field.
- */
-eYo.FieldLabel.prototype.dispose = function () {
-  eYo.FieldLabel.superClass_.dispose.call(this)
-  this.eyo.renderDispose()
 }
 
 /**

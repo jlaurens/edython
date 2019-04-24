@@ -443,8 +443,8 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
  * create a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  */
-eYo.Shape.newWithBlock = function(eyo) {
-  return new eYo.Shape().initWithBlock(eyo)
+eYo.Shape.newWithNode = function(eyo) {
+  return new eYo.Shape().initWithNode(eyo)
 }
 
 /**
@@ -453,21 +453,21 @@ eYo.Shape.newWithBlock = function(eyo) {
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithBlock = function(eyo, opt) {
-  return eYo.Shape.shared.initWithBlock(eyo, opt).definition
+eYo.Shape.definitionWithNode = function(eyo, opt) {
+  return eYo.Shape.shared.initWithNode(eyo, opt).definition
 }
 
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  */
-eYo.Shape.prototype.initWithBlock = (() => {
+eYo.Shape.prototype.initWithNode = (() => {
 /**
  * Inits a shape with the given block delegate.
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithStatementBlock = function(eyo, opt) {
+var initWithStatementNode = function(eyo, opt) {
   // standard statement
   var width = eyo.block_.width
   var r = this.stmt_radius
@@ -500,7 +500,7 @@ var initWithStatementBlock = function(eyo, opt) {
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithGroupBlock = function(eyo, opt) {
+var initWithGroupNode = function(eyo, opt) {
   // this is a group
   var w = eyo.span.width
   var r = this.stmt_radius
@@ -522,7 +522,7 @@ var initWithGroupBlock = function(eyo, opt) {
       this.v(eyo.mainHeight)
       this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
       this.quarter_circle(r, false, 1)
-      this.v(true, (eyo.isCollapsed ? eYo.Unit.y : eyo.size.height - eYo.Unit.y) - 2 * r)
+      this.v(true, (eyo.isCollapsed ? eYo.Unit.y : eyo.span.height - eYo.Unit.y) - 2 * r)
       this.quarter_circle(r, false, 2)
     }
   }
@@ -546,15 +546,23 @@ var initWithGroupBlock = function(eyo, opt) {
  * @param {eYo.DelegateSvg!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithExpressionBlock = function(eyo) {
+var initWithExpressionNode = function(eyo, opt) {
   var block = eyo.block_
-  var width = Math.max(block.width, eyo.size.x)
+  var width = Math.max(block.width, eyo.span.width)
+  if (opt && opt.bbox) {
+    this.M(true, width)
+    this.V(eyo.span.l)
+    this.H(0)
+    this.V(0)
+    this.z()
+    return this
+  }
   var dd = this.caret_extra
   var h = eYo.Unit.y / 2
   var r = this.expr_radius
   var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  this.V(eyo.size.l - 1)
+  eyo.span.l > 1 && this.V(eyo.span.l - 1)
   this.arc(eYo.Unit.y, false, true)
   var parent
   if (eyo.startOfStatement && (parent = eyo.parent)) {
@@ -583,24 +591,25 @@ var initWithExpressionBlock = function(eyo) {
   return this
 }
 
-var initWithControlBlock = function (eyo) {
-  return initWithGroupBlock.call(this, eyo)
+var initWithControlNode = function (eyo) {
+  return initWithGroupNode.call(this, eyo)
 }
 
 return function(eyo, opt) {
     this.begin()
-    var ans
+    var f
     if (eyo.outputConnection) {
-      ans = initWithExpressionBlock.call(this, eyo, opt)
+      f = initWithExpressionNode
     } else if (opt && opt.dido) {
-      ans = initWithStatementBlock.call(this, eyo, opt)
+      f = initWithStatementNode
     } else if (eyo.isControl) {
-      ans = initWithControlBlock.call(this, eyo, opt)
+      f = initWithControlNode
     } else if (eyo.inputSuite) {
-      ans = initWithGroupBlock.call(this, eyo, opt)
+      f = initWithGroupNode
     } else {
-      ans = initWithStatementBlock.call(this, eyo, opt)
+      f = initWithStatementNode
     }
+    f.call(this, eyo, opt)
     this.end(opt && opt.noClose)
     return this
   }

@@ -97,6 +97,7 @@ eYo.Slot = function (owner, key, model) {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
   this.where = new eYo.Where() // for rendering only
+  this.init()
 }
 
 /**
@@ -121,6 +122,17 @@ Object.defineProperties(eYo.Slot.prototype, {
   sourceBlock_: {
     get () {
       return this.owner.block_
+    }
+  },
+  ui: {
+    get () {
+      return this.owner.ui
+    }
+  },
+  ui_driver: {
+    get () {
+      var ui = this.ui
+      return ui && ui.driver
     }
   },
   incog_p: {
@@ -169,6 +181,14 @@ Object.defineProperties(eYo.Slot.prototype, {
       this.required = newValue
       this.setIncog()
     }
+  },
+  visible: {
+    get () {
+      return this.input && this.input.isVisible()
+    },
+    set (newValue) {
+      this.input && this.input.setVisible(newValue)
+    }
   }
 })
 
@@ -187,42 +207,12 @@ eYo.Slot.prototype.targetBlock = function () {
  */
 eYo.Slot.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  this.init()
+  this.ui_driver.slotInit(this)
   // init all the fields
-  var f = field => {
-    if (!field.sourceBlock_) {
-      field.setSourceBlock(this.sourceBlock_)
-      field.eyo.slot = this
-      field.init()// installs in the owner's group, not the block group
-    }
-  }
+  var f = field => field.eyo.beReady()// installs in the owner's group, not the block group
   Object.values(this.fields).forEach(f)
   this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
-}
-
-/**
- * Prepare this slot for rendering.
- * No data change.
- */
-eYo.Slot.prototype.renderBeReady = function () {
-  var ui = this.owner.ui
-  if (ui) {
-    this.renderBeReady = eYo.Do.nothing // one shot function
-    ui.slotInit(this)()
-    // init all the fields
-    var f = field => field.renderBeReady()
-    Object.values(this.fields).forEach(f)
-    this.bindField && f(this.bindField)
-    this.input && this.input.eyo.renderBeReady()
-  }
-}
-
-/**
- * The DOM SVG group representing this slot.
- */
-eYo.Slot.prototype.getSvgRoot = function () {
-  return this.svgGroup_
 }
 
 /**
@@ -231,7 +221,7 @@ eYo.Slot.prototype.getSvgRoot = function () {
  */
 eYo.Slot.prototype.dispose = function () {
   var ui = this.owner.ui
-  ui && ui.slotDispose(this)
+  ui && ui.driver.slotDispose(this)
   this.sourceBlock_ = null
   this.owner = null
   this.key = null
@@ -355,6 +345,8 @@ eYo.Slot.makeFields = (() => {
           owner.bindField = field
         }
         owner.fields[key] = field
+        field.setSourceBlock((owner.owner && owner.owner.sourceBlock_) || owner.block_ || owner.sourceBlock_)
+        goog.asserts.assert(field.sourceBlock_, 'Missing field sourceBlock_ while making fields')
       }
     }
     // now order
@@ -704,7 +696,6 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     }
   }
 }
-console.error('Change the variant for the subtype in c8n.sourceBlock_.eyo.variant_p above')
 
 /**
  * Set the UI state.
@@ -716,24 +707,20 @@ eYo.Slot.prototype.synchronize = function () {
   if (!input) {
     return
   }
+  var d = this.ui_driver
+  if (!d) {
+    return
+  }
   var newValue = this.incog
-  input.setVisible(!newValue)
-  if (input.isVisible()) {
+  this.visible = !newValue
+  if (this.visible) {
     input.fieldRow.forEach(field => {
       if (field.getText().length > 0) {
-        field.eyo.visible = true
+        field.eyo.visible = true // where is it used ?
       }
     })
-    var target = this.targetBlock()
-    if (target) {
-      var root = target.getSvgRoot()
-      if (root) {
-        root.removeAttribute('display')
-      } else {
-        console.log('Block with no root: did you ...initSvg()?')
-      }
-    }
   }
+  d.slotDisplayedUpdate(this)
 }
 
 goog.forwardDeclare('eYo.DelegateSvg.List')

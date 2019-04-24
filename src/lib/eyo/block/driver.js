@@ -111,12 +111,29 @@ eYo.Driver.prototype.nodeDisplayedGet = eYo.Do.nothing
 eYo.Driver.prototype.nodeDisplayedSet = eYo.Do.nothing
 
 /**
- * Hide the given field. Default implementation forwards to the driver's eponym method.
- * @param {Object} field  the field to hide.
- * @param {?Object} recorder 
- * @private
+ * Translates the block, forwards to the ui driver.
+ * @param {number} x The x coordinate of the translation in workspace units.
+ * @param {number} y The y coordinate of the translation in workspace units.
  */
-eYo.Driver.fieldHide = eYo.Do.nothing
+eYo.Driver.prototype.nodeTranslate = eYo.Do.nothing
+
+/**
+ * Return the coordinates of the top-left corner of this block relative to the
+ * drawing surface's origin (0,0), in workspace units.
+ * If the block is on the workspace, (0, 0) is the origin of the workspace
+ * coordinate system.
+ * This does not change with workspace scale.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     workspace coordinates.
+ */
+eYo.Driver.prototype.nodeXyInSurface = eYo.Do.nothing
+
+/**
+ * Set the location.
+ * @param {*} field
+ * @param {*} where
+ */
+eYo.Driver.prototype.fieldPositionSet = eYo.Do.nothing
 
 /**
  * The field text will change.
@@ -140,7 +157,40 @@ eYo.Driver.prototype.fieldSetVisualAttribute = eYo.Do.nothing
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.Driver.prototype.fieldEditorResize = eYo.Do.nothing
+eYo.Driver.prototype.fieldInlineEditorResize = eYo.Do.nothing
+
+/**
+ * Whether the field is displayed.
+ * @param {!Object} field  the field to query about
+ */
+eYo.Driver.prototype.fieldDisplayedGet = eYo.Do.nothing
+
+/**
+ * Display/hide the given field.
+ * @param {!Object} field  the field the driver acts on
+ * @param {boolean} yorn
+ */
+eYo.Driver.prototype.fieldDisplayedSet = eYo.Do.nothing
+
+/**
+ * Display/hide the given field, according to its `isVisible` status.
+ * @param {!Object} field  the field the driver acts on
+ * @param {boolean} yorn
+ */
+eYo.Driver.prototype.fieldDisplayedUpdate = eYo.Do.nothing
+
+/**
+ * Whether the slot is displayed.
+ * @param {!Object} slot  the slot to query about
+ */
+eYo.Driver.prototype.slotDisplayedGet = eYo.Do.nothing
+
+/**
+ * Display/hide the given slot.
+ * @param {!Object} slot  the slot the driver acts on
+ * @param {boolean} yorn
+ */
+eYo.Driver.prototype.slotDisplayedSet = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
@@ -274,7 +324,7 @@ eYo.Driver.nodeMakeWrapped = eYo.Do.nothing
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.nodeDuringUnwrapped = eYo.Do.nothing
+eYo.Driver.nodeMakeUnwrapped = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
@@ -371,7 +421,7 @@ eYo.Driver.nodeRemoveStatusSelect_ = eYo.Do.nothing
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Driver.nodeSetDisplayed = eYo.Do.nothing
+eYo.Driver.nodeDisplayedSet = eYo.Do.nothing
 
 /**
  * Make the given field disabled eventually.

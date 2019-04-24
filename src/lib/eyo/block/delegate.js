@@ -1233,6 +1233,20 @@ eYo.Delegate.prototype.someSlot = function (helper) {
 }
 
 /**
+ * execute the given function for the fields.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was a field to act upon or a valid helper
+ */
+eYo.Delegate.prototype.forEachField = function (helper) {
+  var ans = false
+  Object.values(this.fields).forEach(f => {
+    ans = true
+    helper(f)
+  })
+}
+
+/**
  * execute the given function for the head slot of the receiver and its next sibling.
  * For edython.
  * @param {!function} helper

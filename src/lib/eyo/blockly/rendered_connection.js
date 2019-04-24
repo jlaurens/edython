@@ -107,7 +107,7 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return this.sourceBlock_.eyo
     }
   },
-  renderer: {
+  ui: {
     get () {
       return this.b_eyo.ui
     }
@@ -315,17 +315,7 @@ eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 eYo.ConnectionDelegate.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   var t_eyo = this.t_eyo
-  if (t_eyo) {
-    t_eyo.beReady()
-  }
-}
-
-/**
- * `beReady` the target block.
- */
-eYo.ConnectionDelegate.prototype.renderBeReady = function () {
-  var t_eyo = this.t_eyo
-  t_eyo && t_eyo.renderBeReady()
+  t_eyo && t_eyo.beReady()
 }
 
 /**
@@ -409,11 +399,11 @@ eYo.ConnectionDelegate.prototype.completeWrap = eYo.Decorate.reentrant_method(
       var ans
       eYo.Events.disableWrap(
         () => {
-          var block = c8n.sourceBlock_
-          var makeNewBlock = block.eyo.beReady === eYo.Do.nothing
-          ? eYo.DelegateSvg.newBlockReady
-          : eYo.DelegateSvg.newBlockComplete
-          target = makeNewBlock.call(eYo.DelegateSvg, block.workspace, this.wrapped_, block.id + '.wrapped:' + this.name_)
+          var b_eyo = c8n.eyo.b_eyo
+          if (!b_eyo) {
+            b_eyo = c8n.eyo.b_eyo
+          }
+          target = eYo.DelegateSvg.newBlockComplete(b_eyo, this.wrapped_, b_eyo.id + '.wrapped:' + this.name_)
           goog.asserts.assert(target, 'completeWrap failed: ' + this.wrapped_)
           goog.asserts.assert(target.outputConnection, 'Did you declare an Expr block typed ' + target.type)
           ans = this.connect(target.outputConnection)
@@ -455,7 +445,7 @@ eYo.ConnectionDelegate.prototype.willConnect = function (targetC8n) {
  *     what was previously connected to the actual connection.targetConnection
  */
 eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC8n) {
-  if (this.beReady === eYo.Do.nothing) {
+  if (this.isReady) {
     this.t_eyo.beReady()
   }
   this.targetIsMissing = false
@@ -991,7 +981,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                   child.eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.ui.hasSelect) {
+                  if (child.eyo.uiHasSelect) {
                     child.unselect()
                     parent.eyo.select()
                   }
@@ -1138,7 +1128,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = (() => {
                         // this occurs while removing the parent
                         // if the parent was selected, select the child
                         child.eyo.wrapped_ = false
-                        if (parent.eyo.ui.hasSelect) {
+                        if (parent.eyo.uiHasSelect) {
                           parent.unselect()
                           child.select()
                         }

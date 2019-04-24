@@ -636,7 +636,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
             field.setVisible(true)
           }
           var ui = field.eyo.ui
-          ui && ui.fieldMakeError(field)
+          ui && ui.driver.fieldMakeError(field)
         })
       }
     }
@@ -811,13 +811,6 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
       field.setValue(newValue)
     })
   }
-}
-
-/**
- * No change is made except that this is a one shot function.
- */
-eYo.Data.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing // one shot function
 }
 
 /**

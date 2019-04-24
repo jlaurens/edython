@@ -53,9 +53,14 @@ Object.defineProperties(
         return this.block_.isCollapsed()
       }
     },
-    renderer: {
+    ui: {
       get () {
         return this.ui_
+      }
+    },
+    uiHasSelect: {
+      get () {
+        return this.ui && this.ui.hasSelect
       }
     }
   }
@@ -255,17 +260,18 @@ eYo.DelegateSvg.prototype.init = eYo.Decorate.reentrant_method(
   function () {
     this.changeWrap(
       function () {
-        this.span_ = new eYo.Span(this)
         eYo.DelegateSvg.superClass_.init.call(this)
         var block = this.block_
         block.setTooltip('')
         block.setHelpUrl('')
+        if (this.workspace.rendered) {
+          this.beReady()
+        }
       }
     )
   }
 )
 
-console.warn('implement async and await, see above awaitable and asyncable')
 /**
  * Revert operation of init.
  */
@@ -409,17 +415,15 @@ eYo.DelegateSvg.prototype.renderSuite_ = function (io) {
 /**
  * Render the block.
  * Lays out and reflows a block based on its contents and settings.
- * @param {*} recorder
- * @param {boolean=} optBubble If false, just render this block.
- *   If true, also render block's parent, grandparent, etc.  Defaults to true.
  */
 // deleted blocks are rendered during deletion
 // this should be avoided
-eYo.DelegateSvg.prototype.render = function () {
-  if (!this.ui_ && this.workspace) {
-    this.ui_ = new eYo.UI(this)
-    this.renderBeReady()
-  }
+eYo.DelegateSvg.prototype.render = eYo.Do.nothing
+
+/**
+ * Render the block. Real function.
+ */
+eYo.DelegateSvg.prototype.render_ = function () {
   this.ui.render()
 }
 
@@ -576,9 +580,8 @@ eYo.DelegateSvg.prototype.previousStatementCheck = undefined
  */
 eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
   eYo.DelegateSvg.superClass_.duringBlockWrapped.call(this)
-  goog.asserts.assert(!this.ui.hasSelect, 'Deselect block before')
-  this.block_.initSvg() // is it necessary ?
-  this.ui.makeBlockWrapped()
+  goog.asserts.assert(!this.uiHasSelect, 'Deselect block before')
+  this.ui && this.ui.updateBlockWrapped()
 }
 
 /**
@@ -588,7 +591,7 @@ eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
  */
 eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
   eYo.DelegateSvg.superClass_.duringBlockUnwrapped.call(this)
-  this.ui.duringBlockUnwrapped()
+  this.ui && this.ui.updateBlockWrapped()
 }
 
 /**
@@ -620,9 +623,8 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * @param {?String|Object} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
-  var workspace = owner.workspace || owner
-  var processModel = (block, model, id) => {
+eYo.DelegateSvg.newBlockComplete = (() => {
+  var processModel = (workspace, block, model, id) => {
     var dataModel = model
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
@@ -669,7 +671,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
             if (input && input.connection) {
               var target = input.eyo.target
               var V = Vs[k]
-              var B = processModel(target, V)
+              var B = processModel(workspace, target, V)
               if (!target && B && B.outputConnection) {
                 B.eyo.changeWrap(
                   () => {
@@ -697,7 +699,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
             return
           }
           var target = input.eyo.target
-          var B = processModel(target, V)
+          var B = processModel(workspace, target, V)
           if (!target && B && B.outputConnection) {
             B.eyo.changeWrap(
               () => {
@@ -713,7 +715,7 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
         if (block.nextConnection) {
           var nextModel = dataModel.next
           if (nextModel) {
-            B = processModel(null, nextModel)
+            B = processModel(workspace, null, nextModel)
             if (B && B.previousConnection) {
               try {
                 B.previousConnection.connect(block.nextConnection)
@@ -730,69 +732,42 @@ eYo.DelegateSvg.newBlockComplete = function (owner, model, id) {
     )
     return block
   }
-  var B = processModel(null, model, id)
-  B && B.eyo.consolidate()
-  return B
-}
+  return function (owner, model, id) {
+    var workspace = owner.workspace || owner
+    var B = processModel(workspace, null, model, id)
+    if (B) {
+      B.eyo.consolidate()
+      B.eyo.beReady(owner.isReady)
+    }
+    return B
+  }
+})()
 
 /**
  * When setup is finish.
  * The state has been created, some expected connections are created
  * This is a one shot function.
+ * @param {boolean} headless  no op when false
  */
-eYo.DelegateSvg.prototype.beReady = function () {
+eYo.DelegateSvg.prototype.beReady = function (headless) {
+  if (headless === false || !this.workspace) {
+    return
+  }
   this.changeWrap(
     function () {
       this.beReady = eYo.Do.nothing // one shot function
-      this.forEachData(data => data.beReady()) // data was headless
-      var block = this.block_
-      // install all the fields and slots in the DOM
-      Object.values(this.fields).forEach(field => {
-        if (!field.sourceBlock_) {
-          field.setSourceBlock(block)
-          field.init()
-        }
-      })
+      this.eventsInit_ = true
+      this.ui_ = new eYo.UI(this)
+      this.forEachField(field => field.eyo.beReady())
       this.forEachSlot(slot => slot.beReady())
-      for (var i = 0, input; (input = block.inputList[i++]);) {
+      this.inputList.forEach(input => {
         input.eyo.beReady()
-      }
+      })
       this.inputSuite && this.inputSuite.eyo.beReady()
       this.inputRight && this.inputRight.eyo.beReady()
       this.nextConnection && this.nextConnection.eyo.beReady()
-      this.forEachData(data => data.synchronize()) // data is not headless
-    }
-  )
-}
-/**
- * This is the final step before the first rendering.
- * This is a one shot function.
- */
-eYo.DelegateSvg.prototype.renderBeReady = function () {
-  this.changeWrap(
-    function () {
-      this.renderBeReady = eYo.Do.nothing // one shot function
-      var svg = this.ui.svg
-      var block = this.block_
-      for (var i = 0, input; (input = this.inputList[i]); i++) {
-        input.eyo.renderBeReady()
-      }
-      this.eventsInit_ = true
-    // install all the fields and slots in the DOM
-      Object.values(this.fields).forEach(field => {
-        field.eyo.renderBeReady()
-      })
-      this.forEachSlot(slot => slot.renderBeReady())
-      for (var i = 0, input; (input = block.inputList[i++]);) {
-        input.eyo.renderBeReady()
-      }
-      this.inputSuite && this.inputSuite.eyo.renderBeReady()
-      this.inputRight && this.inputRight.eyo.renderBeReady()
-      this.nextConnection && this.nextConnection.eyo.renderBeReady()
-      this.forEachData(data => data.synchronize()) // data is not headless
-      if (!r.svg.group_.parentNode) {
-        this.workspace.getCanvas().appendChild(r.svg.group_)
-      }
+      this.forEachData(data => data.synchronize()) // data is no longer headless
+      this.render = eYo.DelegateSvg.prototype.render_
     }
   )
 }
@@ -901,11 +876,9 @@ eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
  * @param {!Blockly.Block} block to be initialized..
  */
 eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
-  var i = 0
   eYo.Events.groupWrap(
     () => {
-      for (; i < holes.length; ++i) {
-        var c8n = holes[i]
+      holes.forEach(c8n => {
         if (c8n && c8n.eyo.isInput && !c8n.isConnected()) {
           var data = c8n.eyo.hole_data
           if (data) {
@@ -913,7 +886,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
               if (data.filler) {
                 var B = data.filler(workspace)
               } else {
-                B = eYo.DelegateSvg.newBlockReady(workspace, data.type)
+                B = eYo.DelegateSvg.newBlockComplete(c8n.eyo.b_eyo, data.type)
                 if (data.value) {
                   (B.eyo.phantom_d && B.eyo.phantom_d.set(data.value)) ||
                   (B.eyo.value_d && B.eyo.value_d.set(data.value))
@@ -926,7 +899,7 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
             }
           }
         }
-      }
+      })
     }
   )
 }
@@ -994,7 +967,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   eYo.Events.disableWrap(
     () => {
       var c8n, otherC8n
-      candidate = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+      candidate = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, model)
       var fin = (prepare) => {
         eYo.Events.groupWrap(() => {
           eYo.Events.enableWrap(() => {
@@ -1003,8 +976,8 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
               prepare && prepare()
               otherC8n.connect(c8n)
             }, () => {
-              candidate.eyo.render()
               candidate.select()
+              candidate.eyo.render()
               candidate.bumpNeighbours_()
             })
           })
@@ -1027,7 +1000,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
                   p5e
                 }
               }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
-                var b = eYo.DelegateSvg.newBlockReady(block.workspace, x.model)
+                var b = eYo.DelegateSvg.newBlockComplete(block.eyo, x.model)
                 b.eyo.setDataWithModel(x.model)
                 console.error('BLOCK', b)
                 return b
@@ -1168,7 +1141,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   )
   return candidate
 }
-console.warn('Use eYo.Events.setGroup(...)')
+
 /**
  * Whether the given block can lock.
  * For edython.

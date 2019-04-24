@@ -119,12 +119,8 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
  */
 eYo.InputDelegate.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  var block = this.getBlock()
   this.fields && Object.values(this.fields).forEach(field => {
-    if (!field.sourceBlock_) {
-      field.setSourceBlock(block)
-      field.init()
-    }
+    field.init()
   })
   var c8n = this.owner.connection
   c8n && c8n.eyo.beReady()
@@ -170,7 +166,7 @@ Blockly.Input.prototype.setVisible = (() => {
   var setVisible = Blockly.Input.prototype.setVisible
   return function(visible) {
     if (this.eyo) {
-      if (this.visible_ == visible) {
+      if (this.visible_ === visible) {
         return []
       }
       this.visible_ = visible
@@ -183,24 +179,10 @@ Blockly.Input.prototype.setVisible = (() => {
           this.connection.hideAll()
         }
         var t_eyo = this.connection.c_eyo.t_eyo
-        if (t_eyo) {
-          t_eyo.ui.setVisible(visible)
-          if (!visible) {
-            t_eyo.block_.rendered = false
-          }
-        }
+        t_eyo && t_eyo.ui.setVisible(visible)
       }
       return renderList
     }
     return setVisible.call(this, visible)
   }
 })()
-
-/**
- * Prepare this slot for rendering.
- * No data change.
- */
-eYo.InputDelegate.prototype.renderBeReady = function () {
-  this.renderBeReady = eYo.Do.nothing // one shot function
-  this.connection.eyo.renderBeReady()
-}

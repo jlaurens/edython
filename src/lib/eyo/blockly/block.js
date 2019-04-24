@@ -63,9 +63,8 @@ Object.defineProperties(eYo.Block.prototype, {
       this.rendered__ = newValue
     }
   }
-}
+})
 
-)
 /**
  * Initialize the block.
  * Let the delegate do the job.

@@ -371,20 +371,21 @@
       <script src="../../../../src/lib/eyo/blockly/workspace_svg.js"></script>
     <!--  DYNAMIC DEPS END  -->
     <!--  DO NOT EDIT PREVIOUS LINE  -->
-    <script src="../test/common.test.js"></script>
-    <script src="../debugging.js"></script>
     <link rel="stylesheet" href="../../../../node_modules/mocha/mocha.css">
   </head>
-  <body>
+  <body style="background-color: snow">
+    <div id="eyoDiv" style="height: 100px; width: 300px;"></div>
     <div id="mocha"></div>
     <script src="../../../../node_modules/mocha/mocha.js"></script>
     <script src="../../../../node_modules/chai/chai.js"></script>
     <script>mocha.setup('bdd')</script>
-    <script src="./bitset.test.js" charset="utf-8"></script>
 
     <!-- load code you want to test here -->
 
     <!-- load your test files here -->
+    <script src="../test/common.test.js"></script>
+    <script src="./delegate_svg_expr.test.js" charset="utf-8"></script>
+    <script src="../debugging.js"></script>
 
     <script>
       mocha.run();

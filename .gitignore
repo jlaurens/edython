@@ -23,6 +23,7 @@ thumbs.db
 /src/lib/brython*/**
 /src/lib/stacktrace*/**
 /vue-js-modal/**
+/**/work in progress.md
 !/**/README.md
 !/**/Readme.md
 /bin/compiler-latest/**

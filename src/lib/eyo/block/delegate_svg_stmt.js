@@ -178,7 +178,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
     var parentBlock
     eYo.Events.disableWrap(
       () => {
-        parentBlock = eYo.DelegateSvg.newBlockReady(block.workspace, model)
+        parentBlock = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, model)
       },
       () => {
         if (parentBlock) {
@@ -205,6 +205,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
                 if (eYo.Selected.block === block) {
                   parentBlock.select()
                 }
+                parentBlock.eyo.beReady(block.eyo.isReady)
               }
             )
           } else {
@@ -233,7 +234,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
   return eYo.Events.groupWrap(
     () => {
       var block = this.block_
-      var blockAfter = eYo.DelegateSvg.newBlockReady(block.workspace, belowPrototypeName)
+      var blockAfter = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, belowPrototypeName)
       var c8n = block.nextConnection
       var targetC8n = c8n.targetConnection
       if (targetC8n) {

@@ -58,10 +58,13 @@ eYo.Test.block = (b, t, str) => {
   chai.assert(!t || (b.type === t), `MISSED TYPE ${str || ''} ${b.type} === ${t}`)
 }
 
-eYo.Test.new_block = (t, tt, str) => {
+eYo.Test.new_block = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
   var b = eYo.DelegateSvg.newBlockReady(eYo.App.workspace, type)
   eYo.Test.block(b, tt, str)
+  if (!headless) {
+    b.eyo.render()
+  }
   return b
 }
 
@@ -147,6 +150,16 @@ eYo.Test.code = (b, str) => {
   }
 }
 
+eYo.Delegate.prototype.test_display_line_counts = function () {
+  console.log({
+    head: this.headHeight,
+    foot: this.footHeight,
+    main: this.mainHeight,
+    suite: this.suiteHeight,
+    black: this.blackHeight,
+    next: this.nextHeight
+  })
+}
 /**
  * Test the various block line counts.
  * Expected is a map, keys are strings for the type of the line count.
@@ -158,15 +171,16 @@ eYo.Test.code = (b, str) => {
 eYo.Test.line_counts = (b, cfg) => {
   var failed
   var expected, available
+  var b_eyo = b.eyo
   ;['head', 'foot', 'main', 'suite', 'black', 'next'].some(k => {
     expected = (cfg && cfg[k]) || (k === 'main' ? 1 : 0)
     available = {
-      head: b.eyo.headHeight,
-      foot: b.eyo.footHeight,
-      main: b.eyo.mainHeight,
-      suite: b.eyo.suiteHeight,
-      black: b.eyo.blackHeight,
-      next: b.eyo.nextHeight
+      head: b_eyo.headHeight,
+      foot: b_eyo.footHeight,
+      main: b_eyo.mainHeight,
+      suite: b_eyo.suiteHeight,
+      black: b_eyo.blackHeight,
+      next: b_eyo.nextHeight
     }[k]
     if (expected !== available) {
       failed = k
@@ -404,4 +418,27 @@ eYo.Test.newIdentifier = (str) => {
   eYo.Test.block(b, 'identifier')
   eYo.Test.data_value(b, 'target', str)
   return b
+}
+
+/**
+ * Test if `node` and `parent` exist, and if node's parent is parent.
+ * @param {*} svg  either a block or an svg resource object.
+ * @param {string} node  the child element is `svg[node]`
+ * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
+ */
+eYo.Test.svgNodeParent= (svg, node, parent, type) => {
+  if (svg.eyo) {
+    type = type || svg.eyo.type
+    svg = svg.eyo.ui.svg
+    chai.assert(svg, `MISSING svg in ${type}`)
+  } else {
+    type = type || 'svg'
+  }
+  chai.assert(svg[node], `MISSING svg.${node} in ${type}`)
+  if (goog.isString(parent)) {
+    chai.assert(svg[parent], `MISSING svg.${parent} in ${type}`)
+    chai.assert(svg[node].parentNode === svg[parent], `MISSING svg.${node}.parentNode === svg.${parent} in ${type}`)
+  } else if (parent) {
+    chai.assert(svg[node].parentNode === parent, `MISSING svg.${node}.parentNode === ${parent} in ${type}`)
+  }
 }

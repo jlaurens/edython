@@ -11,7 +11,6 @@
  */
 'use strict'
 
-goog.provide('eYo.UI')
 goog.provide('eYo.Style')
 goog.provide('eYo.Font')
 goog.provide('eYo.Padding')
@@ -177,6 +176,7 @@ eYo.Style.Path = {
     width: 2, // px
   },
   colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
+  bbox_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(120, 100 / 100, 50 / 100)),
   inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
   width: 0.5 // px
 }
@@ -317,6 +317,13 @@ eYo.setup.register(() => {
       stroke: none;
       fill: white;
       fill-opacity:0.92
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-path-bbox {
+      stroke: ${eYo.Style.Path.bbox_colour};
+      stroke-width: ${eYo.Style.Path.width}px;
+      fill: none;
     }`
   )
   eYo.Style.insertCssRuleAt(

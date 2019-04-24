@@ -49,6 +49,15 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
 }
 goog.inherits(eYo.FieldTextInput, Blockly.FieldTextInput)
 
+/**
+ * Dispose of the delegate.
+ */
+eYo.FieldTextInput.prototype.dispose = function () {
+  eYo.FieldTextInput.superClass_.dispose.call(this)
+  this.eyo.dispose()
+  this.eyo = null
+}
+
 Object.defineProperties(eYo.FieldTextInput.prototype, {
   size_: {
     get () {
@@ -79,7 +88,7 @@ eYo.FieldTextInput.htmlInput_ = null
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.init = function () {
-  this.eyo.ui.fieldTextInputInit(this)
+  this.eyo.ui_driver.fieldInit(this)
 }
 
 /**
@@ -98,18 +107,8 @@ eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
  **/
 eYo.FieldTextInput.prototype.updateWidth = function () {
   eYo.FieldTextInput.superClass_.updateWidth.call(this)
-  if (this.editRect_) {
-    var width = this.eyo.size.width
-    this.editRect_.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Unit.x : 0))
-  }
-}
-
-/**
- * Dispose of all DOM objects belonging to this editable field.
- */
-eYo.FieldTextInput.prototype.dispose = function () {
-  eYo.FieldTextInput.superClass_.dispose.call(this)
-  this.eyo.ui.fieldTextInputDispose(this)
+  var d = this.ui_driver
+  d && d.fieldUpdateWidth(this)
 }
 
 /**
@@ -186,7 +185,8 @@ eYo.FieldTextInput.prototype.showPromptEditor_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
-  this.eyo.ui.fieldEditorInlineShow(this, quietInput)
+  var d = this.eyo.ui_driver
+  d && d.fieldInlineEditorShow(this, quietInput)
 }
 
 /**
@@ -196,7 +196,7 @@ eYo.FieldTextInput.prototype.showInlineEditor_ = function (quietInput) {
  * @private
  */
 eYo.FieldTextInput.prototype.widgetDispose_ = function () {
-  return this.eyo.ui.fieldWidgetDisposeCallback(this)
+  return this.eyo.ui_driver.fieldWidgetDisposeCallback(this)
 }
 
 /**
@@ -210,7 +210,7 @@ eYo.FieldTextInput.prototype.updateEditable = eYo.Do.nothing
  * @private
  */
 eYo.FieldTextInput.prototype.validate_ = function () {
-  this.eyo.ui.fieldEditorInlineValidate(this)
+  this.eyo.ui_driver.fieldInlineEditorValidate(this)
 }
 
 /**
@@ -219,7 +219,7 @@ eYo.FieldTextInput.prototype.validate_ = function () {
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.resizeEditor_ = function () {
-  this.eyo.ui.fieldEditorResize_(this)
+  this.eyo.ui_driver.fieldInlineEditorUpdate(this)
 }
 
 /**

@@ -86,7 +86,6 @@ eYo.Xml = {
   EDYTHON: 'edython', // tag name
 }
 
-console.warn('No eYo.Xml.CALL !!!!')
 /**
  * Converts a DOM structure into plain text.
  * Currently the text format is fairly ugly: all one line with no whitespace.
@@ -1478,7 +1477,6 @@ eYo.Xml.Compatibility.domToBlockComplete = function (element, owner) {
 
 goog.provide('eYo.Xml.Call')
 
-console.warn('convert print statement to print expression and conversely, top blocks only')
 /**
  * Reads the given element into a block.
  * call blocks have eyo:call and tag eyo:builtin__call names

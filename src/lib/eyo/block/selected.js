@@ -252,12 +252,12 @@ eYo.BlockSvg.prototype.select = function () {
  * Select this block.  Highlight it visually.
  * Wrapped blocks are not selectable.
  */
-eYo.DelegateSvg.prototype.select = function () {
+eYo.DelegateSvg.prototype.select = eYo.Decorate.reentrant_method('select', function () {
   if (!this.workspace) {
     return
   }
   eYo.Selected.eyo = this
-}
+})
 
 /**
  * Unselect this block.
@@ -274,19 +274,11 @@ eYo.BlockSvg.prototype.unselect = function () {
  * If there is a selected connection, it is removed.
  * Unselect is used from click handling methods.
  */
-eYo.DelegateSvg.prototype.unselect = function () {
-  if (eYo.Selected.eyo === this) {
+eYo.DelegateSvg.prototype.unselect = eYo.Decorate.reentrant_method('unselect', function () {
+  if (this.workspace && eYo.Selected.eyo === this) {
     eYo.Selected.eyo = null
   }
-}
-
-/**
- * Select the block.
- * BEWARE inconsistent design.
- */
-eYo.DelegateSvg.prototype.select = function() {
-  this.block_.select()
-}
+})
 
 /**
  * Forwards to the delegate.

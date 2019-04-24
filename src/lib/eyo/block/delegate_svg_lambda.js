@@ -315,7 +315,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   var F = (modifier, flags, msg) => {
     var BB
     eYo.Events.disableWrap(() => {
-      BB = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
+      BB = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, eYo.T3.Expr.identifier)
       BB.eyo.changeWrap(
         function() { // `this` is `BB.eyo`
           this.modifier_p = modifier
@@ -336,7 +336,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(mgr.newMenuItem(
             content,
             function () {
-              var B = eYo.DelegateSvg.newBlockReady(block.workspace, eYo.T3.Expr.identifier)
+              var B = eYo.DelegateSvg.newBlockComplete(block.eyo, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(
                 () => { // `this` is catched
                   B.eyo.changeWrap(
@@ -367,8 +367,6 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
-
-console.warn('Use a modifier field for * and ** (instead of await and async too)')
 
 /**
  * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.
@@ -484,5 +482,3 @@ eYo.DelegateSvg.Lambda.T3s = [
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda
 ]
-
-console.warn('no_cond not tested.')

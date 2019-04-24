@@ -18,6 +18,12 @@ goog.require('eYo.Size')
 goog.require('eYo.Field')
 
 /**
+ * Returns nothing.
+ * @return {!Element} The group element.
+ */
+Blockly.Field.prototype.getSvgRoot = eYo.Do.nothing
+
+/**
  * Class for an editable text field helper.
  * @param {eYo.TextInputField} owner  The owner of the field.
  * @property {boolean} isLabel
@@ -37,9 +43,22 @@ eYo.FieldHelper = function (field) {
   this.model = {}
 }
 
+/**
+ * Dispose of the resources.
+ */
+eYo.FieldHelper.prototype.dispose = function () {
+  var d = this.ui_driver
+  d && d.fieldDispose(this.field)
+}
+
 Object.defineProperties(
   eYo.FieldHelper.prototype,
   {
+    field: {
+      get () {
+        return this.field_
+      }
+    },
     b_eyo: {
       get () {
         return this.field_.sourceBlock_.eyo
@@ -50,37 +69,38 @@ Object.defineProperties(
         return this.b_eyo.workspace
       }
     },
-    renderer: {
+    ui: {
       get () {
         return this.b_eyo.ui
       }
     },
+    ui_driver: {
+      get () {
+        var ui = this.ui
+        return ui && ui.driver
+      }
+    },
     visible: {
       get () {
-        return this.ui.fieldDisplayed(this)
+        return this.field.isVisible()
       },
       set (newValue) {
-        this.ui.fieldMakeVisible(this, newValue)
+        this.field.setVisible(newValue)
+        var d = this.ui_driver
+        d && d.fieldDisplayedUpdate(this.field)
       }
     }
   }
 )
 
 /**
- * Whether the field of the receiver starts with a separator.
+ * Ensure that the field is ready.
  */
-eYo.FieldHelper.prototype.renderBeReady = function () {
-  this.renderBeReady = eYo.Do.nothing
+eYo.FieldHelper.prototype.beReady = function () {
+  this.beReady = eYo.Do.nothing
+  this.field_.init()
   var ui = this.ui
-  ui && ui.fieldInit(this.field_)
-}
-
-/**
- * Whether the field of the receiver starts with a separator.
- */
-eYo.FieldHelper.prototype.renderDispose = function () {
-  var ui = this.ui
-  ui && ui.fieldDispose(this.field_)
+  ui && ui.driver.fieldInit(this.field_)
 }
 
 /**
@@ -161,7 +181,10 @@ eYo.FieldHelper.prototype.willRender = function () {
   if (f) {
     f.call(this)
   } else {
-    this.ui.fieldMakePlaceholder(this.placeholder)
-    this.ui.fieldMakeComment(this.isComment)
+    var d = this.ui_driver
+    if (d) {
+      d.fieldMakePlaceholder(this.field_, this.placeholder)
+      d.fieldMakeComment(this.field_, this.isComment)
+    }
   }
 }

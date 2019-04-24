@@ -49,7 +49,7 @@ Object.defineProperties(eYo.Span.prototype, {
   },
   width: {
     get () {
-      return this.c_ * eYo.Unit.x
+      return this.c * eYo.Unit.x
     }
   },
   l: {
