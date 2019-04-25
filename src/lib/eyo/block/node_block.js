@@ -11,6 +11,7 @@
  */
 'use strict'
 
+console.log('eYo.Node.Block', eYo.Node.Block)
 goog.provide('eYo.Node.Block')
 
 goog.require('eYo.Node')

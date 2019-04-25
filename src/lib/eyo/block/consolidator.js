@@ -217,20 +217,23 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
   c8n.eyo.willConnect = function (targetC8n) {
-    this.will_connect_ = this.connection.eyo.b_eyo.will_connect_ = true
+    this.will_connect_ = this.b_eyo.will_connect_ = true
   }
   c8n.eyo.didConnect = function (oldTargetC8n, targetOldC8n) {
-    this.will_connect_ = this.connection.eyo.b_eyo.will_connect_ = false
-    var c8n = block.outputConnection.targetConnection
+    var b_eyo = this.b_eyo
+    this.will_connect_ = b_eyo.will_connect_ = false
+    var c8n = b_eyo.outputConnection.targetConnection
+    // duplicate? The target connection's model method is called
     var model = c8n && c8n.eyo.model
     if (model && goog.isFunction(model.didConnect)) {
       model.didConnect.call(this, oldTargetC8n, targetOldC8n)
     }
-    me.consolidate(block, true)
+    me.consolidate(b_eyo.block_, true)
   }
   c8n.eyo.didDisconnect = function (oldTargetC8n) {
     var block = this.connection.sourceBlock_
     var c8n = block.outputConnection.targetConnection
+    // duplicate? The target connection's model method is called
     var model = c8n && c8n.eyo.model
     if (model && goog.isFunction(model.didDisconnect)) {
       model.didDisconnect.call(this, oldTargetC8n)

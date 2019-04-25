@@ -178,7 +178,7 @@ Blockly.Input.prototype.setVisible = (() => {
         } else {
           this.connection.hideAll()
         }
-        var t_eyo = this.connection.c_eyo.t_eyo
+        var t_eyo = this.connection.eyo.t_eyo
         t_eyo && t_eyo.ui.setVisible(visible)
       }
       return renderList
@@ -186,3 +186,26 @@ Blockly.Input.prototype.setVisible = (() => {
     return setVisible.call(this, visible)
   }
 })()
+
+/**
+ * Sever all links to this input.
+ * The wrapped_ blocks may not yet be disposed.
+ */
+Blockly.Input.prototype.dispose = function() {
+  this.fieldRow.forEach(f => f.dispose())
+  var c8n = this.connection
+  if (c8n) {
+    if (c8n.isConnected()) {
+      console.error('CONNECTED, BREAK HERE')
+      c8n.eyo.INFO = `Input connection ${c8n.eyo.b_eyo.id}`
+      c8n.targetConnection.eyo.INFO = `Target connection  ${c8n.eyo.t_eyo.id}`
+      console.error('should disconnectInternal_', c8n.eyo.INFO, c8n.targetConnection.eyo.INFO)
+
+    }
+    eYo.PARENT_C8N = c8n
+    var t_eyo = c8n.eyo.t_eyo
+    t_eyo && t_eyo.block_.dispose()
+    c8n.dispose()
+  }
+  this.sourceBlock_ = null
+}

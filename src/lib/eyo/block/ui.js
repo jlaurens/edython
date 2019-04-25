@@ -105,12 +105,12 @@ Object.defineProperties(eYo.UI.prototype, {
   },
   bBox: {
     get () {
-      return this.driver.nodeGetBBox(this.node_)
+      return this.rendered && this.driver.nodeGetBBox(this.node_)
     }
   },
   hasSelect: {
     get () {
-      return this.driver.nodeHasSelect(this.node_)
+      return this.rendered && this.driver.nodeHasSelect(this.node_)
     }
   }
 })
@@ -363,7 +363,7 @@ eYo.UI.prototype.render = (() => {
     }
   )
   return function (optBubble, recorder) {
-    if (!this.node.isReady) {
+    if (!this.node.isReady || this.rendered === false) { // this.rendered === undefined is OK
       return
     }
     if (!this.node.isEditing && (this.node.isDragging_ || this.node.change.level || !this.node.workspace)) {

@@ -233,6 +233,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
           eYo.Selected.connection = c8n
         }
       }
+      this.unplug(healStack)
       eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
     }
   )

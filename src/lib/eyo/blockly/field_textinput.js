@@ -43,7 +43,7 @@ eYo.FieldTextInput = function (owner, text, optValidator) {
   } else {
     this.eyo = new eYo.FieldHelper(this)
   }
-  eyo.isTextInput = true
+  this.eyo.isTextInput = true
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
 }

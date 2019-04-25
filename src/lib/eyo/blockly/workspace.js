@@ -527,4 +527,13 @@ Blockly.Gesture.prototype.setStartBlock = (() => {
   }
 }) ()
 
-
+/**
+ * Add a block to the list of top blocks.
+ * @param {!Blockly.Block} block Block to add.
+ */
+eYo.Workspace.prototype.addTopBlock = function(block) {
+  if (this.rendered) {
+    block.eyo.beReady()
+  }
+  this.topBlocks_.push(block)
+}

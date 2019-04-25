@@ -28,13 +28,159 @@ goog.forwardDeclare('eYo.T3.All')
  * @extends {Blockly.Block}
  * @constructor
  */
-eYo.Block = function (workspace, prototypeName, optId) {
+eYo.Block = function (workspace, prototypeName, opt_id) {
   this.eyo = eYo.Delegate.Manager.create(this, prototypeName)
-  eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
+//  eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
+  if (typeof Blockly.Generator.prototype[prototypeName] !== 'undefined') {
+    console.warn('FUTURE ERROR: Block prototypeName "' + prototypeName
+        + '" conflicts with Blockly.Generator members. Registering Generators '
+        + 'for this block type will incur errors.'
+        + '\nThis name will be DISALLOWED (throwing an error) in future '
+        + 'versions of Blockly.')
+  }
+
+  /** @type {string} */
+  this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
+      opt_id : Blockly.utils.genUid()
+  workspace.blockDB_[this.id] = this
+  /** @type {Blockly.Connection} */
+  this.outputConnection = null
+  /** @type {Blockly.Connection} */
+  this.nextConnection = null
+  /** @type {Blockly.Connection} */
+  this.previousConnection = null
+  /** @type {!Array.<!Blockly.Input>} */
+  this.inputList = []
+  /** @type {boolean|undefined} */
+  this.inputsInline = undefined
+  /** @type {boolean} */
+  this.disabled = false
+  /** @type {string|!Function} */
+  this.tooltip = ''
+  /** @type {boolean} */
+  this.contextMenu = true
+
+  /**
+   * @type {Blockly.Block}
+   * @private
+   */
+  this.parentBlock_ = null
+
+  /**
+   * @type {!Array.<!Blockly.Block>}
+   * @private
+   */
+  this.childBlocks_ = []
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.deletable_ = true
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.movable_ = true
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.editable_ = true
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.isShadow_ = false
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.collapsed_ = false
+
+  /** @type {string|Blockly.Comment} */
+  this.comment = null
+
+  /**
+   * The block's position in workspace units.  (0, 0) is at the workspace's
+   * origin scale does not change this value.
+   * @type {!goog.math.Coordinate}
+   * @private
+   */
+  this.xy_ = new goog.math.Coordinate(0, 0)
+
+  /** @type {!Blockly.Workspace} */
+  this.workspace = workspace
+  /** @type {boolean} */
+  this.isInFlyout = workspace.isFlyout
+  /** @type {boolean} */
+  this.isInMutator = workspace.isMutator
+
+  /** @type {boolean} */
+  this.RTL = workspace.RTL
+
+  // Copy the type-specific functions and data from the prototype.
+  if (prototypeName) {
+    /** @type {string} */
+    this.type = prototypeName
+    var prototype = Blockly.Blocks[prototypeName]
+    goog.asserts.assertObject(prototype,
+        'Error: Unknown block type "%s".', prototypeName)
+    goog.mixin(this, prototype)
+  }
+
+  // workspace.addTopBlock(this)
+
+  // Call an initialization function, if it exists.
+  if (goog.isFunction(this.init)) {
+    this.init()
+  }
+
+  // Record initial inline state.
+  /** @type {boolean|undefined} */
+  this.inputsInlineDefault = this.inputsInline
+
+  // Fire a create event.
+  if (Blockly.Events.isEnabled()) {
+    var existingGroup = Blockly.Events.getGroup()
+    if (!existingGroup) {
+      Blockly.Events.setGroup(true)
+    }
+    try {
+      Blockly.Events.fire(new Blockly.Events.BlockCreate(this))
+    } finally {
+      if (!existingGroup) {
+        Blockly.Events.setGroup(false)
+      }
+    }
+
+  }
+  // Bind an onchange function, if it exists.
+  if (goog.isFunction(this.onchange)) {
+    this.setOnChange(this.onchange)
+  }
+  // JL
+  workspace.addTopBlock(this)
 }
+
 goog.inherits(eYo.Block, Blockly.Block)
 
 Object.defineProperties(eYo.Block.prototype, {
+  workspace: {
+    get () {
+      return this.workspace_
+    },
+    set (newValue) {
+      if (!newValue) {
+        console.error('Removing the workspace')
+      }
+      this.workspace_ = newValue
+    }
+  },
   width: {
     get () {
       return this.eyo.span && this.eyo.span.width || this.width__
@@ -53,14 +199,12 @@ Object.defineProperties(eYo.Block.prototype, {
   },
   rendered: {
     get () {
-      var ui = this.eyo.ui
-      return ui && ui.isVisible()
+      var ui = this.eyo && this.eyo.ui
+      return ui && ui.rendered
     },
     set (newValue) {
-      if (newValue) {
-        console.error('DO NOT SET RENDERED DIRECTLY, break here.')
-      }
-      this.rendered__ = newValue
+      var ui = this.eyo && this.eyo.ui
+      ui && (ui.rendered = newValue)
     }
   }
 })
@@ -83,6 +227,7 @@ eYo.Block.prototype.dispose = function (healStack) {
   if (!this.workspace) {
     return
   }
+  this.unplug(healStack)
   if (this.eyo.wrapped_) {
     var c8n = this.outputConnection.targetConnection
     if (c8n) {
@@ -100,9 +245,18 @@ eYo.Block.prototype.dispose = function (healStack) {
     } finally {
       Blockly.Events.enable()
     }  
+  } else {
+    if (Blockly.Events.isEnabled()) {
+      Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
+    }  
   }
   this.eyo.deinit()
-  eYo.Block.superClass_.dispose.call(this, healStack)
+  Blockly.Events.disable()
+  try {
+    eYo.Block.superClass_.dispose.call(this, healStack)
+  } finally {
+    Blockly.Events.enable()
+  }
 }
 
 /**
@@ -238,3 +392,54 @@ Blockly.Block.prototype.setParent = (() => {
     }
   }
 })
+
+/**
+ * Disconnect the workspace very lately.
+ * It was not a LIFO design.
+ * Dispose of this block.
+ * @param {boolean} healStack If true, then try to heal any gap by connecting
+ *     the next statement with the previous statement.  Otherwise, dispose of
+ *     all children of this block.
+ */
+Blockly.Block.prototype.dispose = function(healStack) {
+  if (!this.workspace) {
+    // Already deleted.
+    return
+  }
+  // Terminate onchange event calls.
+  if (this.onchangeWrapper_) {
+    this.workspace.removeChangeListener(this.onchangeWrapper_)
+  }
+  this.unplug(healStack)
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
+  }
+  Blockly.Events.disable()
+
+  try {
+    // Just deleting this block from the DOM would result in a memory leak as
+    // well as corruption of the connection database.  Therefore we must
+    // methodically step through the blocks and carefully disassemble them.
+
+    // First, dispose of all my children.
+    this.childBlocks_.forEach(b => b.dispose(false))
+    // Then dispose of myself.
+    // Dispose of all inputs and their fields.
+    this.inputList.forEach(i => i.dispose())
+    this.inputList.length = 0
+    // Dispose of any remaining connections (next/previous/output).
+    this.getConnections_(true).forEach(c8n => {
+      if (c8n.isConnected()) {
+        c8n.disconnect()
+      }
+      c8n.dispose()
+    })
+    // Remove this block from the workspace's list of top-most blocks.
+    this.workspace.removeTopBlock(this)
+    // Remove from block database.
+    delete this.workspace.blockDB_[this.id]
+    this.workspace = null
+  } finally {
+    Blockly.Events.enable()
+  }
+}

@@ -112,6 +112,20 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return this.b_eyo.ui
     }
   },
+  targetConnection: {
+    get () {
+      return this.targetConnection_
+    },
+    set (newValue) {
+      if (this.targetConnection_) {
+        eYo.STOP = true
+      }
+      if (newValue && eYo.STOP) {
+        console.error('URGENT BREAK HERE')
+      }
+      this.targetConnection_ = newValue
+    }
+  },
   target: {
     get () {
       var c8n = this.connection.targetConnection
@@ -1107,6 +1121,9 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = (() => {
     } else {
       parentC8n = this.targetConnection
       childC8n = this
+    }
+    if (parentC8n === eYo.PARENT_C8N && childC8n === eYo.PARENT_C8N.targetConnection) {
+      console.error('BREAK HERE')
     }
     child.eyo.changeWrap(
       () => { // `this` is catched

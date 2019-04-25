@@ -349,14 +349,14 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         var allBlocks = this.getAllBlocks()
         var avoidCollision = () => {
           do {
-            var collide = allBlocks.some((otherBlock) => {
-              var otherXY = otherBlock.getRelativeToSurfaceXY()
-              if (Math.abs(blockX - otherXY.x) <= 10 &&
-                  Math.abs(blockY - otherXY.y) <= 10) {
+            var collide = allBlocks.some(b => {
+              var xy = b.getRelativeToSurfaceXY()
+              if (Math.abs(blockX - xy.x) <= 10 &&
+                  Math.abs(blockY - xy.y) <= 10) {
                 return true
               }
-            }) || block.getConnections_(false).some((connection) => {
-                var neighbour = connection.closest(Blockly.SNAP_RADIUS,
+            }) || block.getConnections_(false).some(c8n => {
+                var neighbour = c8n.closest(Blockly.SNAP_RADIUS,
                   new goog.math.Coordinate(blockX, blockY))
                 if (neighbour.connection) {
                   return true
@@ -669,3 +669,50 @@ Blockly.Trashcan.prototype.position = function() {
   this.svgGroup_.setAttribute('transform',
       'translate(' + this.left_ + ',' + this.top_ + ')');
 };
+
+/**
+ * CHANGE: Does not assume that all the top blocks have a UI.
+ * Calculate the bounding box for the blocks on the workspace.
+ * Coordinate system: workspace coordinates.
+ *
+ * @return {Object} Contains the position and size of the bounding box
+ *   containing the blocks on the workspace.
+ */
+Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
+  var topBlocks = this.getTopBlocks(false);
+  // Initialize boundary using the first rendered block, if any.
+  var i = 0
+  while (i < topBlocks.length) {
+    var b = topBlocks[i]
+    if (b.rendered) {
+      var bound = b.getBoundingRectangle()
+      while (++i < topBlocks.length) {
+        var b = topBlocks[i]
+        if (b.rendered) {
+          var blockBoundary = b.getBoundingRectangle()
+          if (blockBoundary.topLeft.x < bound.topLeft.x) {
+            bound.topLeft.x = blockBoundary.topLeft.x
+          }
+          if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
+            bound.bottomRight.x = blockBoundary.bottomRight.x
+          }
+          if (blockBoundary.topLeft.y < bound.topLeft.y) {
+            bound.topLeft.y = blockBoundary.topLeft.y
+          }
+          if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
+            bound.bottomRight.y = blockBoundary.bottomRight.y
+          }
+        }
+      }
+      return {
+        x: bound.topLeft.x,
+        y: bound.topLeft.y,
+        width: bound.bottomRight.x - bound.topLeft.x,
+        height: bound.bottomRight.y - bound.topLeft.y
+      }
+    }
+    ++i
+  }
+  // There are no rendered blocks, return empty rectangle.
+  return {x: 0, y: 0, width: 0, height: 0}
+}

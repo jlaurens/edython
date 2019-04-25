@@ -170,7 +170,7 @@ Object.defineProperties(eYo.DelegateSvg.List.prototype, {
   firstTarget: {
     get () {
       var t
-      this.block_.inputList.some(input => (t = input.eyo.target))
+      this.inputList.some(input => (t = input.eyo.target))
       return t
     }
   }
