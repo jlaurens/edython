@@ -40,10 +40,14 @@ chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
 
 eYo.Test.setItUp = () => {
   eYo.App.workspace.clearUndo()
+  eYo.App.workspace.topBlocks_.length = 0
 }
 
-eYo.Test.tearItDown = () => {
+eYo.Test.tearItDown = (opt) => {
   eYo.App.workspace.clearUndo()
+  if (!opt || !opt.ignoreTopBlock) {
+    chai.assert(eYo.App.workspace.topBlocks_.length === 0, `FAILED ${eYo.App.workspace.topBlocks_.length} === 0`)
+  }
 }
 
 eYo.Test.g = eYo.GMR._PyParser_Grammar
@@ -327,6 +331,19 @@ eYo.Test.slot_connect = (b, key, tb) => {
     chai.assert(s.target === tb.eyo, `MISSED CONNECTION for ${key} in ${b.type}`)
     chai.assert(tb === b.eyo[`${key}_b`], `MISSED TARGET SHORTCUT for ${key} in ${b.type}`)
   }
+}
+
+/**
+ * Test if the wrapped slot is functional.
+ * @param {*} b  a block
+ * @param {string} k  the slot key
+ */
+eYo.Test.slot_wrapped = (b, k) => {
+  var s = b.eyo.slots[k]
+  chai.assert(s, `MISSING wrapped ${k} slot`)
+  var t_eyo = s.target
+  chai.assert(t_eyo, 'MISSING target\'s target slot')
+  chai.assert(t_eyo.parent === b.eyo, 'MISSING parent')
 }
 
 eYo.Test.expect_out_check = (b, check, str) => {

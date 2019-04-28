@@ -30,7 +30,13 @@ goog.provide('eYo.Node')
 #define REQ(n, type) assert(TYPE(n) == (type))
 
 node * */
-
+/**
+ * @param {*} scan
+ * @param {*} type
+ * @param {*}subtype
+ * @readonly
+ * @property {string} name  name is the human readable type of the node.
+ */
 eYo.Node = function (scan, type, subtype) {
   if (type === undefined || type === eYo.TKN.ERRORTOKEN) {
     console.error('WTF')

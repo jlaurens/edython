@@ -170,17 +170,6 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
 goog.inherits(eYo.Block, Blockly.Block)
 
 Object.defineProperties(eYo.Block.prototype, {
-  workspace: {
-    get () {
-      return this.workspace_
-    },
-    set (newValue) {
-      if (!newValue) {
-        console.error('Removing the workspace')
-      }
-      this.workspace_ = newValue
-    }
-  },
   width: {
     get () {
       return this.eyo.span && this.eyo.span.width || this.width__
@@ -378,7 +367,7 @@ Blockly.Block.prototype.unplug = (() => {
 
 /**
  * Set parent of this block to be a new block or null.
- * @param {Blockly.Block} newParent New parent block.
+ * @param {Blockly.Block} newParent New parent block or null.
  */
 Blockly.Block.prototype.setParent = (() => {
   var setParent = Blockly.Block.prototype.setParent
@@ -387,11 +376,11 @@ Blockly.Block.prototype.setParent = (() => {
       var ui = this.ui
       ui && ui.parentWillChange(newParent)
       var oldParent = this.parentBlock_
-      setParent(newParent)
+      setParent.call(this, newParent)
       ui && ui.parentDidChange(oldParent)
     }
   }
-})
+})()
 
 /**
  * Disconnect the workspace very lately.

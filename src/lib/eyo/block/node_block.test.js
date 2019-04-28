@@ -3,12 +3,15 @@ var g = eYo.GMR._PyParser_Grammar
 console.log('RUNNING NODE/BLOCK TESTS')
 
 describe('NAME', function() {
+  this.timeout(5000)
   it('NAME', function() {
+    eYo.Test.setItUp()
     var err_ret = {}
     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
     var b = n.toBlock(Blockly.mainWorkspace)
     chai.assert(b, 'MISSING BLOCK')
     b.dispose()
+    eYo.Test.tearItDown()
   })
 })
 

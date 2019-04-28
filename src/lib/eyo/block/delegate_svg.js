@@ -737,7 +737,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
     var B = processModel(workspace, null, model, id)
     if (B) {
       B.eyo.consolidate()
-      B.eyo.beReady(owner.isReady)
+      B.eyo.beReady(owner.isReady || workspace.rendered)
     }
     return B
   }

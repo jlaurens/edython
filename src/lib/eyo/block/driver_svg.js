@@ -131,7 +131,7 @@ eYo.Driver.Svg.prototype.nodeInit = function (node) {
       svg.pathPlayIcon_ = Blockly.utils.createSvgElement('path',
       {class: 'eyo-path-play-icon'}, svg.groupPlay_)
       svg.pathPlayContour_.setAttribute('d', eYo.Shape.definitionForPlayContour({x: 0, y: 0}))
-      svg.pathPlayIcon_.setAttribute('d', svg.eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
+      svg.pathPlayIcon_.setAttribute('d', eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
       svg.mouseDownWrapper_ =
         Blockly.bindEventWithChecks_(svg.pathPlayIcon_, 'mousedown', null, e => {
         if (svg.block_.isInFlyout) {

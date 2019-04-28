@@ -447,14 +447,13 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   lastInput: {
     get () {
-      var list = this.block_.inputList
+      var list = this.inputList
       return list[list.length - 1]
     }
   },
   lastConnection: {
     get () {
-      var list = this.block_.inputList
-      return list[list.length - 1].connection
+      return this.lastInput.connection
     }
   },
   bottomMostConnection: {
@@ -907,11 +906,12 @@ eYo.Delegate.Manager = (() => {
     var defineSlotProperty = k => {
       var key_s = k + '_s'
       var key_b = k + '_b'
+      var key_t = k + '_t'
       // make a closure to catch the value of k
       return function () {
         if (!(key_s in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
+          Object.defineProperties(
             this,
             key_s,
             {
@@ -938,6 +938,18 @@ eYo.Delegate.Manager = (() => {
                     return s.targetBlock()
                   }
                 }
+              }
+            }
+          )
+        }
+        if (!(key_t in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_t,
+            {
+              get () {
+                this[key_b].eyo
               }
             }
           )

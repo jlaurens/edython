@@ -445,10 +445,13 @@ eYo.Consolidator.List.prototype.makeUnique = function (io) {
     var f = this.model.makeUnique
     if (goog.isFunction(f)) {
       this.reentrant.makeUnique = true
-      if (f.call(this, io)) {
-        io.unique = io.i
+      try {
+        if (f.call(this, io)) {
+          io.unique = io.i
+        }
+      } finally {
+        this.reentrant.makeUnique = false
       }
-      this.reentrant.makeUnique = false
       return
     }
   }

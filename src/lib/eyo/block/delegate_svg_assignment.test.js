@@ -1,3 +1,16 @@
+describe('Wrapped slots', function() {
+  ;[
+    'target',
+    'value'
+  ].forEach(k => {
+    it (`Slot ${k}`, function () {
+      var b = eYo.Test.new_block('assignment_stmt')
+      eYo.Test.slot_wrapped(b, k)
+      b.dispose()
+    })
+  })
+})
+
 describe('Each assignment block type', function() {
   [
     ['expression_stmt', null, ''],
@@ -7,23 +20,28 @@ describe('Each assignment block type', function() {
     ['augmented_assignment_stmt', null, '+=']
   ].forEach(Ts => {
     it (`basic operator: ${Ts[0]} / ${Ts[1] || Ts[0]} / ${Ts[2]}`, function () {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(Ts[0], Ts[1])
       eYo.Test.ctor(b, 'assignment_stmt')
       eYo.Test.data_value(b, 'operator', Ts[2])
       b.dispose()
+      eYo.Test.tearItDown()
     })
   })
 })
+
 //['target', 'annotated', 'value'], 
 describe('Assignment', function() {
   var f = (t, incogs, variant) => {
     it(t, function() {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       eYo.Test.ctor(b, 'assignment_stmt')
       eYo.Test.block(b, t)
       eYo.Test.variant(b, variant)
       eYo.Test.incog(b, incogs)
       b.dispose()
+      eYo.Test.tearItDown()
     })
   }
   f('expression_stmt', ['Xtarget', 'Xannotated', 'value'], eYo.Key.EXPRESSION, eYo.Key.NONE)
@@ -33,6 +51,7 @@ describe('Assignment', function() {
   f('annotated_assignment_stmt', ['target', 'annotated', 'value'], eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
 
   it('variant change', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('expression_stmt')
     eYo.Test.ctor(b1, 'assignment_stmt')
     eYo.Test.block(b1, 'expression_stmt')
@@ -50,9 +69,11 @@ describe('Assignment', function() {
     f('ANNOTATED', ['target', 'annotated', 'Xvalue'], 4)
     f('ANNOTATED_VALUED', ['target', 'annotated', 'value'], 4)
     b1.dispose()
+    eYo.Test.tearItDown()
   })  
 
   it('Expression only', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
@@ -61,8 +82,10 @@ describe('Assignment', function() {
     chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it('connect an identifier_valued', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.Test.new_block('identifier_valued')
@@ -72,8 +95,10 @@ describe('Assignment', function() {
     chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it ('Annotated defined and dom', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('annotated_assignment_stmt')
     var dom = eYo.Xml.blockToDom(b1)
     // console.error(dom)
@@ -81,10 +106,12 @@ describe('Assignment', function() {
     b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
     eYo.Test.block(b1, 'annotated_assignment_stmt', `dom: ${dom}`)
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 describe('TEST', function () {
   it ('Annotated alone', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('annotated_stmt')
     eYo.Test.variant(b1, 'ANNOTATED')    
     dom = eYo.Xml.blockToDom(b1)
@@ -94,10 +121,12 @@ describe('TEST', function () {
     eYo.Test.block(b1, 'annotated_stmt', 'dom')
     chai.assert(b1.eyo.value_s.isIncog(), 'UNEXPECTED VALUE SLOT')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 describe('T&ST', function () {
   it ('identifier_annotated in target slot', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.Test.new_block('identifier_annotated')
@@ -116,8 +145,10 @@ describe('T&ST', function () {
     eYo.Test.variant(b1, 'TARGET_VALUED') // No 2 annotations
     eYo.Test.incog(b1, ['target', 'Xannotated', 'value'])
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it ('augtarget_annotated in target slot', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.Test.new_block('augtarget_annotated')
@@ -139,11 +170,13 @@ describe('T&ST', function () {
     eYo.Test.variant(b1, 'TARGET_VALUED') // No 2 annotations
     eYo.Test.incog(b1, ['target', 'Xannotated', 'value'])
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('Comment/Variant changes', function() {
   it('variant change 1', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('expression_stmt')
     eYo.Test.ctor(b1, 'assignment_stmt')
     eYo.Test.block(b1, 'expression_stmt')
@@ -152,8 +185,10 @@ describe('Comment/Variant changes', function() {
     eYo.Test.variant(b1, 'EXPRESSION', '2')
     eYo.Test.incog(b1, ['Xtarget', 'Xannotated', 'value'])
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it('variant change 2', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('expression_stmt')
     var f = (v, target, annotation, value, str) => {
       b1.eyo.variant_p = eYo.Key[v]
@@ -165,12 +200,14 @@ describe('Comment/Variant changes', function() {
     f('ANNOTATED', ['target', 'annotated', 'Xvalue'], 4)
     f('ANNOTATED_VALUED', ['target', 'annotated', 'value'], 4)
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('Copy/Paste', function() {
   var f = (t, incogs, variant) => {
     it(t, function() {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       eYo.Test.ctor(b, 'assignment_stmt')
       eYo.Test.block(b, t)
@@ -185,6 +222,7 @@ describe('Copy/Paste', function() {
       eYo.Test.variant(b, variant)
       eYo.Test.incog(b, incogs)
       b.dispose()
+      eYo.Test.tearItDown()
     })  
   }
   f('expression_stmt', ['Xtarget', 'Xannotated', 'value'], eYo.Key.EXPRESSION, eYo.Key.NONE)
@@ -193,6 +231,7 @@ describe('Copy/Paste', function() {
   f('annotated_stmt', ['target', 'annotated', 'Xvalue'], eYo.Key.ANNOTATED, eYo.Key.NONE)
   f('annotated_assignment_stmt', ['target', 'annotated', 'value'], eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
   it('Expression only', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
@@ -201,8 +240,10 @@ describe('Copy/Paste', function() {
     chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it('connect an identifier_valued', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.Test.new_block('identifier_valued')
@@ -212,8 +253,10 @@ describe('Copy/Paste', function() {
     chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it ('Annotated defined and dom', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('annotated_assignment_stmt')
     var dom = eYo.Xml.blockToDom(b1)
     // console.error(dom)
@@ -221,8 +264,10 @@ describe('Copy/Paste', function() {
     b1 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
     eYo.Test.block(b1, 'annotated_assignment_stmt', `dom: ${dom}`)
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it ('Annotated alone', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('annotated_stmt')
     eYo.Test.variant(b1, 'ANNOTATED')    
     var dom = eYo.Xml.blockToDom(b1)
@@ -232,8 +277,10 @@ describe('Copy/Paste', function() {
     eYo.Test.block(b1, 'annotated_stmt', `dom: ${dom}`)
     chai.assert(b1.eyo.value_s.isIncog(), 'UNEXPECTED VALUE SLOT')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
   it ('identifier_annotated in name', function () {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     var b2 = eYo.Test.new_block('identifier_annotated', 'identifier_annotated')
     chai.assert(b1.eyo.target_b.eyo.lastConnect(b2), `MISSED C8N 1`)
@@ -247,11 +294,13 @@ describe('Copy/Paste', function() {
     eYo.Test.block(b1, 'annotated_assignment_stmt', `dom: BLOCK ${dom}`)
     chai.assert(!b1.eyo.value_s.isIncog(), 'MISSING SLOT')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('One block: assignment_stmt', function() {
   it('target', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.incog(b1, ['target', 'Xannotated', 'value'])
     b1.eyo.variant_p = eYo.Key.TARGET
@@ -270,11 +319,13 @@ describe('One block: assignment_stmt', function() {
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 2`)
     b3.dispose()
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('One block: expression_stmt', function() {
   it('target', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('expression_stmt')
     chai.assert(b1.eyo.operator_p === '', `MISSED ${b1.eyo.operator_p}`)
     eYo.Test.incog(b1, ['Xtarget', 'Xannotated', 'value'])
@@ -307,11 +358,13 @@ describe('One block: expression_stmt', function() {
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION 2')
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 5`)
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('One block: annotated_stmt', function() {
   it('target', function() {
+    eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('annotated_stmt')
     chai.assert(b1.eyo.operator_p === '=', `MISSED ${b1.eyo.operator_p}`)
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
@@ -330,11 +383,13 @@ describe('One block: annotated_stmt', function() {
     chai.assert(!b1.eyo.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
     eYo.Test.code(b1, 'x: abc + bcd')
     b1.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('One block: annotated_assignment_stmt', function() {
   it ('target is annotated', function () {
+    eYo.Test.setItUp()
     var main = eYo.Test.new_block('assignment_stmt')
     var annotated = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Expr.primary,
@@ -347,8 +402,10 @@ describe('One block: annotated_assignment_stmt', function() {
     annotated.dispose()
     eYo.Test.block(main, 'assignment_stmt')
     main.dispose()
+    eYo.Test.tearItDown()
   })
   it('target', function() {
+    eYo.Test.setItUp()
     var main = eYo.Test.new_block('annotated_assignment_stmt')
     chai.assert(main.eyo.operator_p === '=', `MISSED ${main.eyo.operator_p}`)
     eYo.Test.code(main, '<MISSING NAME>:<MISSING EXPRESSION>=<MISSING EXPRESSION>')
@@ -390,12 +447,14 @@ describe('One block: annotated_assignment_stmt', function() {
     eYo.Test.block(main, 'assignment_stmt')
     eYo.Test.code(main, '<MISSING NAME>=<MISSING EXPRESSION>')
     main.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('XML representation', function() {
   var f = (t, k, do_it) => {
     it(`basic ${t}+${k}`, function() {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       do_it && do_it(b)
       var dom = eYo.Xml.blockToDom(b)
@@ -403,6 +462,7 @@ describe('XML representation', function() {
       chai.assert(dom.tagName.toLowerCase() === 's')
       chai.assert(dom.getAttribute(eYo.Key.EYO) === k)
       b.dispose()  
+      eYo.Test.tearItDown()
     })
   }
   f('expression_stmt', 'x')
@@ -415,6 +475,7 @@ describe('XML representation', function() {
 describe('Copy/Paste with value', function() {
   var f = t => {
     it(`basic ${t}`, function() {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       var bb = eYo.Test.new_block('identifier')
       chai.assert(b.eyo.value_b.eyo.lastConnect(bb))
@@ -427,6 +488,7 @@ describe('Copy/Paste with value', function() {
       eYo.Test.code(b, bb.eyo.toString)
       b.dispose()
       bb.dispose()
+      eYo.Test.tearItDown()
     })
   }
   f('expression_stmt')
@@ -436,6 +498,7 @@ describe('Copy/Paste with value', function() {
 describe('Copy/Paste with data test', function() {
   var f = (t, do_it, test) => {
     it(`basic ${t}`, function() {
+      eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       do_it && do_it(b)
       var dom = eYo.Xml.blockToDom(b)
@@ -448,6 +511,7 @@ describe('Copy/Paste with data test', function() {
       test && test(b, bb)
       b.dispose()
       bb.dispose()
+      eYo.Test.tearItDown()
     })
   }
   // f('expression_stmt')
@@ -471,6 +535,7 @@ describe('Copy/Paste with data test', function() {
 
 describe('Initalize with model', function() {
   it(`basic model`, function() {
+    eYo.Test.setItUp()
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
       type: eYo.T3.Stmt.augmented_assignment_stmt,
       operator_p: '+='
@@ -478,21 +543,25 @@ describe('Initalize with model', function() {
     eYo.Test.block(b, 'augmented_assignment_stmt')
     chai.assert(b.eyo.operator_p === '+=', `MISSED '${b.eyo.operator_p}' === '+='`)
     b.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('Initalize augmented_assignment_stmt', function() {
   eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
+    eYo.Test.setItUp()
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.augmented_assignment_stmt)
     eYo.Test.data_value(b, 'operator', '+=')
     b.dispose()
+    eYo.Test.tearItDown()
   })
 })
 
 describe('Check: assignment_stmt target', function() {
   it('check target', function() {
-
+    eYo.Test.setItUp()
+    eYo.Test.tearItDown()
   })
 })
 

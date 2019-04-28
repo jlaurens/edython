@@ -112,20 +112,6 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return this.b_eyo.ui
     }
   },
-  targetConnection: {
-    get () {
-      return this.targetConnection_
-    },
-    set (newValue) {
-      if (this.targetConnection_) {
-        eYo.STOP = true
-      }
-      if (newValue && eYo.STOP) {
-        console.error('URGENT BREAK HERE')
-      }
-      this.targetConnection_ = newValue
-    }
-  },
   target: {
     get () {
       var c8n = this.connection.targetConnection
@@ -976,30 +962,36 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
     var parentC8n = this
     var parent = parentC8n.sourceBlock_
     var child = childC8n.sourceBlock_
-    var oldChildC8n = parentC8n.targetConnection
+    if (parent.workspace !== child.workspace) {
+      return
+    }
     var oldParentC8n = childC8n.targetConnection
-    child.eyo.changeWrap( // the child will cascade changes to the parent
+    var oldChildC8n = parentC8n.targetConnection
+    var p_eyo = parent.eyo // .wrapper
+    var ch_eyo = child.eyo
+    ch_eyo.changeWrap( // the child will cascade changes to the parent
       () => {
+        p_eyo.beReady(ch_eyo.isReady)
+        ch_eyo.beReady(p_eyo.isReady)
         parentC8n.eyo.willConnect(childC8n)
         eYo.Do.tryFinally(() => {
           childC8n.eyo.willConnect(parentC8n)
           eYo.Do.tryFinally(() => {
-            var wrapper = parent.eyo // .wrapper
-            wrapper.willConnect(parentC8n, childC8n)
+            p_eyo.willConnect(parentC8n, childC8n)
             eYo.Do.tryFinally(() => {
-              child.eyo.willConnect(childC8n, parentC8n)
+              ch_eyo.willConnect(childC8n, parentC8n)
               eYo.Do.tryFinally(() => {
-                child.initSvg() // too much
+                ch_eyo.beReady(parent.eyo.isReady)
                 connect_.call(parentC8n, childC8n)
                 if (parentC8n.eyo.plugged_) {
-                  child.eyo.plugged_ = parentC8n.eyo.plugged_
+                  ch_eyo.plugged_ = parentC8n.eyo.plugged_
                 }
                 if (parentC8n.eyo.wrapped_) {
-                  if (child.eyo.uiHasSelect) {
+                  if (ch_eyo.uiHasSelect) {
                     child.unselect()
                     parent.eyo.select()
                   }
-                  child.eyo.wrapped_ = true
+                  ch_eyo.wrapped_ = true
                 } else {
                   // if this connection was selected, the newly connected block should be selected too
                   if (eYo.Selected.connection === parentC8n) {
@@ -1047,7 +1039,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                           ? eyo.someInput(do_it)
                           : eyo.someSlot(do_it)
                         }
-                        plug(child.eyo)
+                        plug(ch_eyo)
                       } else {
                         P = child
                         var c8n
@@ -1066,18 +1058,18 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 if (eYo.Selected.connection === childC8n || eYo.Selected.connection === parentC8n) {
                   eYo.Selected.connection = null
                 }
-                child.eyo.setIncog(parentC8n.eyo.isIncog())
+                ch_eyo.setIncog(parentC8n.eyo.isIncog())
               }, () => { // finally
                 if (parentC8n.eyo.startOfStatement) {
-                  child.eyo.incrementChangeCount()
+                  ch_eyo.incrementChangeCount()
                 }
                 eYo.Connection.connectedParentC8n = parentC8n
                 // next must absolutely run because of possible undo management
-                child.eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)
+                ch_eyo.didConnect(childC8n, oldParentC8n, oldChildC8n)
               })
             }, () => { // finally
               // next must absolutely run because of possible undo management
-              wrapper.didConnect(parentC8n, oldChildC8n, oldParentC8n)
+              p_eyo.didConnect(parentC8n, oldChildC8n, oldParentC8n)
             })
           }, () => { // finally
             if (!parentC8n.eyo.wrapped_) {
@@ -1091,9 +1083,6 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
             childC8n.eyo.didConnect(oldChildC8n, oldParentC8n)
             eYo.Connection.connectedParentC8n = undefined
             childC8n.eyo.bindField && childC8n.eyo.bindField.setVisible(false) // unreachable ?
-          }
-          if (parent.eyo.isReady) {
-            child.eyo.beReady()
           }
         })
       }

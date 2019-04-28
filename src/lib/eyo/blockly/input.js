@@ -195,14 +195,7 @@ Blockly.Input.prototype.dispose = function() {
   this.fieldRow.forEach(f => f.dispose())
   var c8n = this.connection
   if (c8n) {
-    if (c8n.isConnected()) {
-      console.error('CONNECTED, BREAK HERE')
-      c8n.eyo.INFO = `Input connection ${c8n.eyo.b_eyo.id}`
-      c8n.targetConnection.eyo.INFO = `Target connection  ${c8n.eyo.t_eyo.id}`
-      console.error('should disconnectInternal_', c8n.eyo.INFO, c8n.targetConnection.eyo.INFO)
-
-    }
-    eYo.PARENT_C8N = c8n
+    c8n.eyo.wrapped_ = null
     var t_eyo = c8n.eyo.t_eyo
     t_eyo && t_eyo.block_.dispose()
     c8n.dispose()

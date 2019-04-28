@@ -11,7 +11,6 @@
  */
 'use strict'
 
-console.log('eYo.Node.Block', eYo.Node.Block)
 goog.provide('eYo.Node.Block')
 
 goog.require('eYo.Node')
@@ -238,11 +237,18 @@ eYo.Node.prototype.namedexpr_test2Block = function (workspace) {
     // if this is already an identifier
     if (b.type !== eYo.T3.Expr.identifier) {
       var bb = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Expr.identifier)
-      bb.eyo.target_b.eyo.lastConnect(b)
-      b = bb
+      if (bb.eyo.target_b.eyo.lastConnect(b)) {
+        b = bb
+      } else {
+        console.error('IMPOSSIBLE CONNECTION:', bb, b)
+      }
     }
-    b.eyo.value_b.eyo.lastConnect(n.toBlock(workspace))
-    b.eyo.variant_p = eYo.Key.COL_VALUED
+    bb = n.toBlock(workspace)
+    if (b.eyo.value_b.eyo.lastConnect(bb)) {
+      b.eyo.variant_p = eYo.Key.COL_VALUED
+    } else {
+      console.error('IMPOSSIBLE CONNECTION:', b, bb)
+    }
   }
   return b
 }
@@ -322,7 +328,7 @@ eYo.Node.prototype.try_stmt2Block = function (workspace) {
 eYo.Node.prototype.with_stmt2Block = function (workspace) {
   // 'with' with_item (',' with_item)*  ':' suite
   var root = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.with_part)
-  var b = root.eyo.with_b
+  var b = root.eyo.with_t
   var n = this.n1
   do {
     // with_item: test ['as' expr]
@@ -334,7 +340,7 @@ eYo.Node.prototype.with_stmt2Block = function (workspace) {
     } else {
       bb = n.n0.toBlock(workspace)
     }
-    b.eyo.lastConnect(bb)
+    b.lastConnect(bb)
   } while ((n = n.sibling) && n.type === eYo.TKN.COMMA && (n = n.sibling))
   n.sibling.suite2Delegate(root.eyo)
   return root
@@ -551,14 +557,14 @@ eYo.Node.prototype.knownList2Delegate = function (target, toBlock) {
  * `this` is the first node of a typedargslist.
  * @param {!Object} a block delegate
  */
-eYo.Node.prototype.do_list = function (target) {
+eYo.Node.prototype.do_list = function (t_eyo) {
   var n = this.n0
   do {
-    var b = n.toBlock(target.workspace)
+    var b = n.toBlock(t_eyo.workspace)
     if (!b) {
-      console.error('MISSING BLOCK', n.toBlock(target.workspace))
+      console.error('MISSING BLOCK', n.toBlock(t_eyo.workspace))
     }
-    target.lastConnect(b)
+    t_eyo.lastConnect(b)
   } while ((n = n.sibling) && (n = n.sibling)) // gobble comma
 }
 
@@ -810,7 +816,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
         root = b1 = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.assignment_stmt)
         while (true) {
           // targets
-          (n0.type === eYo.TKN.yield_expr ? n0.yield_expr2ListDelegate : n0.testlist_star_expr2Delegate).call(n0, b1.eyo.target_b.eyo)
+          (n0.type === eYo.TKN.yield_expr ? n0.yield_expr2ListDelegate : n0.testlist_star_expr2Delegate).call(n0, b1.eyo.target_b.eyo) // .call is necessary !
           // values
           n0 = n1.sibling
           if ((n1 = n0.sibling)) {

@@ -182,13 +182,13 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
       if (io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
         return eYo.T3.Expr.Check.augtarget
       }
-      return eYo.T3.Expr.Check.expression_key_datum
+      return eYo.T3.Expr.Check.target
     }
     if (io.i === 1 && io.list.length === 3) {
       return eYo.T3.Expr.Check.expression
     }
     if (io.i === 0 && io.list.length === 1) {
-      return eYo.T3.Expr.Check.expression_key_datum
+      return eYo.T3.Expr.Check.target
     }
     if (io.first_starred < 0 || io.i === io.first_starred) {
       return eYo.T3.Expr.Check.target
@@ -208,7 +208,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
       if (c8n.check_.some(t => check.indexOf(t) >= 0)) {
         //
       } else {
-        console.error('THE CONNECTION WILL BE LOST')
+        console.error('THE CONNECTION WILL BE LOST', c8n.check_, f(io))
       }
     }
     return check
