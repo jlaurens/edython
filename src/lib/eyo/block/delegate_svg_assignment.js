@@ -564,7 +564,7 @@ goog.provide('eYo.DelegateSvg.AugAssign')
 //  */
 // eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
 //   var block = this.block_
-//   var withTarget = this.target_b.eyo
+//   var withTarget = this.target_t
 //   var target = this.target_p
 //   var operator = this.operator_p
 //   var withBitwise = this.operator_d.bitwise

@@ -78,8 +78,8 @@ describe('Assignment', function() {
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
     eYo.Test.block(b2, 'identifier_valued')
-    var input = b1.eyo.value_b.eyo.lastInput
-    chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
+    var input = b1.eyo.value_t.lastInput
+    chai.assert(b1.eyo.value_t.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
     eYo.Test.tearItDown()
@@ -91,8 +91,8 @@ describe('Assignment', function() {
     var b2 = eYo.Test.new_block('identifier_valued')
     b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
-    var input = b1.eyo.value_b.eyo.lastInput
-    chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
+    var input = b1.eyo.value_t.lastInput
+    chai.assert(b1.eyo.value_t.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
     eYo.Test.tearItDown()
@@ -152,7 +152,7 @@ describe('T&ST', function () {
     var b1 = eYo.Test.new_block('assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.Test.new_block('augtarget_annotated')
-    b2.eyo.target_b.eyo.lastConnect(eYo.Test.new_block('identifier'))
+    b2.eyo.target_t.lastConnect(eYo.Test.new_block('identifier'))
     b2.eyo.target_s.unwrappedTarget.variant_p = eYo.Key.SLICING
     eYo.Test.block('augtarget_annotated')
     eYo.Test.list_connect(b1, 'target', b2)
@@ -236,8 +236,8 @@ describe('Copy/Paste', function() {
     eYo.Test.variant(b1, 'TARGET_VALUED')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_chain)
     eYo.Test.block(b2, 'identifier_valued')
-    var input = b1.eyo.value_b.eyo.lastInput
-    chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
+    var input = b1.eyo.value_t.lastInput
+    chai.assert(b1.eyo.value_t.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
     eYo.Test.tearItDown()
@@ -249,8 +249,8 @@ describe('Copy/Paste', function() {
     var b2 = eYo.Test.new_block('identifier_valued')
     b2.eyotarget_p = 'NOM'
     b2.eyo.value_p = 'EXPR'
-    var input = b1.eyo.value_b.eyo.lastInput
-    chai.assert(b1.eyo.value_b.eyo.lastConnect(b2), 'MISSED C8N 1')
+    var input = b1.eyo.value_t.lastInput
+    chai.assert(b1.eyo.value_t.lastConnect(b2), 'MISSED C8N 1')
     chai.assert(input.connection.targetBlock() === b2, 'MISSED C8N 2')
     b1.dispose()
     eYo.Test.tearItDown()
@@ -283,7 +283,7 @@ describe('Copy/Paste', function() {
     eYo.Test.setItUp()
     var b1 = eYo.Test.new_block('assignment_stmt')
     var b2 = eYo.Test.new_block('identifier_annotated', 'identifier_annotated')
-    chai.assert(b1.eyo.target_b.eyo.lastConnect(b2), `MISSED C8N 1`)
+    chai.assert(b1.eyo.target_t.lastConnect(b2), `MISSED C8N 1`)
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
     eYo.Test.block(b1, 'annotated_assignment_stmt')
     eYo.Test.variant(b1, 'TARGET_VALUED')
@@ -308,14 +308,14 @@ describe('One block: assignment_stmt', function() {
     eYo.Test.incog(b1, ['target', 'Xannotated', 'Xvalue'])
     // connect all the possible targets
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
-    b1.eyo.target_b.eyo.lastConnect(b2)
+    b1.eyo.target_t.lastConnect(b2)
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 1`)
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, `MISSED C8N 2`)
     var b3 =  eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, `<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     chai.assert(b3, `MISSING …+…`)
     b3.eyo.will_remain = true
     eYo.STOP = true
-    chai.assert(!b1.eyo.target_b.eyo.lastConnect(b3), 'Connection is expected failed.')
+    chai.assert(!b1.eyo.target_t.lastConnect(b3), 'Connection is expected failed.')
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 2`)
     b3.dispose()
     b1.dispose()
@@ -338,7 +338,7 @@ describe('One block: expression_stmt', function() {
     chai.assert(b1.eyo.target_b, 'MISSING TARGET')
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'de')
     eYo.Test.input_length(b1.eyo.target_b, 1, `MISSED C8N 1`)
-    b1.eyo.target_b.eyo.lastConnect(b2)
+    b1.eyo.target_t.lastConnect(b2)
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION 1')
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 2`)
     /*attributeref | subscription | slicing | dotted_name*/
@@ -351,10 +351,10 @@ describe('One block: expression_stmt', function() {
     eYo.Test.input_length(b1.eyo.target_b, 1, `MISSED C8N 3`)
     b2.eyo.holder_s.connect(b3)
     eYo.Test.block(b2, 'dotted_name')
-    b1.eyo.target_b.eyo.lastConnect(b2)
+    b1.eyo.target_t.lastConnect(b2)
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION 2')
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 4`)
-    chai.assert(b2.eyo.holder_b === b3, `UW ${b2.eyo.holder_b.eyo.toString} === ${b3.eyo.toString}`)
+    chai.assert(b2.eyo.holder_b === b3, `UW ${b2.eyo.holder_t.toString} === ${b3.eyo.toString}`)
     chai.assert(b1.eyo.target_s.unwrappedTarget === b2.eyo, 'MISSED CONNECTION 2')
     eYo.Test.input_length(b1.eyo.target_b, 3, `MISSED C8N 5`)
     b1.dispose()
@@ -369,7 +369,7 @@ describe('One block: annotated_stmt', function() {
     chai.assert(b1.eyo.operator_p === '=', `MISSED ${b1.eyo.operator_p}`)
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
     eYo.Test.block(b2, 'identifier')
-    b1.eyo.target_b.eyo.lastConnect(b2)
+    b1.eyo.target_t.lastConnect(b2)
     eYo.Test.input_length(b1.eyo.target_b, 1, `1`)
     b1.eyo.annotated_p = 'fou+bar'
     chai.assert(b1.eyo.annotated_p === 'fou+bar', 'MISSED ANNOTATION')
@@ -412,7 +412,7 @@ describe('One block: annotated_assignment_stmt', function() {
     var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'x')
     eYo.Test.block(b2, 'identifier')
     chai.assert(b2.eyo.target_p === 'x', 'MISSED 1')
-    main.eyo.target_b.eyo.lastConnect(b2)
+    main.eyo.target_t.lastConnect(b2)
     eYo.Test.input_length(main.eyo.target_b, 1, `MISSED C8N 1`)
     main.eyo.annotated_p = 'fou + bar'
     chai.assert(main.eyo.annotated_p === 'fou + bar', 'MISSED ANNOTATION')
@@ -478,7 +478,7 @@ describe('Copy/Paste with value', function() {
       eYo.Test.setItUp()
       var b = eYo.Test.new_block(t)
       var bb = eYo.Test.new_block('identifier')
-      chai.assert(b.eyo.value_b.eyo.lastConnect(bb))
+      chai.assert(b.eyo.value_t.lastConnect(bb))
       var dom = eYo.Xml.blockToDom(b)
       // console.log(dom)
       chai.assert(dom.tagName.toLowerCase() === 's')

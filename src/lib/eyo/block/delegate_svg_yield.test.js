@@ -48,7 +48,7 @@ describe('YIELD expression and statement', function() {
   })
   it(`yield <abc>`, function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.yield_stmt)
-    var t_eyo = b.eyo.expression_b.eyo
+    var t_eyo = b.eyo.expression_t
     t_eyo.lastConnect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)).target_p = 'abc'
     eYo.Test.code(b, 'yield abc')
     eYo.Test.input_length(b.eyo.expression_b, 3)
@@ -66,7 +66,7 @@ describe('YIELD expression and statement', function() {
     var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.yield_stmt)
     b.eyo.expression_p = 'abc'
     eYo.Test.code(b, 'yield abc')
-    var t_eyo = b.eyo.expression_b.eyo
+    var t_eyo = b.eyo.expression_t
     t_eyo.lastConnect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)).target_p = 'bcd'
     eYo.Test.code(b, 'yield bcd')
     b.eyo.expression_s.unwrappedTarget.block_.dispose()

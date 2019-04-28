@@ -911,7 +911,7 @@ eYo.Delegate.Manager = (() => {
       return function () {
         if (!(key_s in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperties(
+          Object.defineProperty(
             this,
             key_s,
             {
