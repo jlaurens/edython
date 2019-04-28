@@ -949,7 +949,7 @@ eYo.Delegate.Manager = (() => {
             key_t,
             {
               get () {
-                this[key_b].eyo
+                return this[key_b].eyo
               }
             }
           )

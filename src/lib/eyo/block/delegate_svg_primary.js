@@ -185,7 +185,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
       return eYo.T3.Expr.Check.target
     }
     if (io.i === 1 && io.list.length === 3) {
-      return eYo.T3.Expr.Check.expression
+      return eYo.T3.Expr.Check.target
     }
     if (io.i === 0 && io.list.length === 1) {
       return eYo.T3.Expr.Check.target
