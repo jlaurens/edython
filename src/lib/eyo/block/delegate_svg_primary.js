@@ -199,8 +199,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
   return function (io) {
     var check = f(io)
     if (!check) {
-      console.error('WTF')
-      check = f(io)
+      console.error('NO CHECK, BREAK HERE TO DEBUG', f(io))
     }
     var c8n = io.c8n.targetConnection
     if (c8n) {
@@ -208,7 +207,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
       if (c8n.check_.some(t => check.indexOf(t) >= 0)) {
         //
       } else {
-        console.error('THE CONNECTION WILL BE LOST', c8n.check_, f(io))
+        console.error('THE CONNECTION WILL BE LOST, BREAK HERE TO DEBUG', c8n.check_, f(io))
       }
     }
     return check
