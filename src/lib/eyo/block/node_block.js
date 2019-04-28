@@ -26,7 +26,7 @@ goog.require('eYo.DelegateSvg.Primary')
 eYo.Node.prototype.suite2Delegate = function (target) {
   var b
   var n = this.n0
-  var c8n = target.suiteConnection
+  var c8n = target.suiteStmtConnection
   // suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
   if (n.n_type === eYo.TKN.NEWLINE) {
     n = n.sibling.sibling // skip NEWLINE INDENT
@@ -61,7 +61,7 @@ eYo.Node.prototype.func_body_suite2Delegate = function (target) {
   var n = this.n0
   // func_body_suite: simple_stmt | NEWLINE [TYPE_COMMENT NEWLINE] INDENT stmt+ DEDENT
   if (n.n_type === eYo.TKN.NEWLINE) {
-    var c8n = target.suiteConnection
+    var c8n = target.suiteStmtConnection
     n = n.sibling
     if (n.n_type === eYo.TKN.TYPE_COMMENT) {
       b = n.comment2Block(workpace)
@@ -564,7 +564,9 @@ eYo.Node.prototype.do_list = function (t_eyo) {
     if (!b) {
       console.error('MISSING BLOCK', n.toBlock(t_eyo.workspace))
     }
-    t_eyo.lastConnect(b)
+    if (!t_eyo.lastConnect(b)) {
+      console.error('NO CONNECTION, BREAK HERE', t_eyo.lastConnect(b))
+    }
   } while ((n = n.sibling) && (n = n.sibling)) // gobble comma
 }
 
@@ -765,15 +767,15 @@ eYo.Node.prototype.comprehension2Block = function (workspace) {
  * Converts the node `n` to a visual block.
  * @param {!Object} a block delegate
  */
-eYo.Node.prototype.testlist_comp2Delegate = function (target) {
+eYo.Node.prototype.testlist_comp2Delegate = function (t_eyo) {
   // (namedexpr_test|star_expr) ( comp_for | (',' (namedexpr_test|star_expr))* [','] )
-  var n1 = this.n1
-  if (n1 && n1.n_type === eYo.TKN.comp_for) {
-    var b = this.comprehension2Block(target.workspace)
-    b.eyo.expression_s.connect(this.n0.toBlock(target.workspace))
-    target.lastConnect(b)
+  var n0 = this.n0
+  if (n0 && n0.n_type === eYo.TKN.comp_for) {
+    var b = this.comprehension2Block(t_eyo.workspace)
+    b.eyo.expression_s.connect(this.n0.toBlock(t_eyo.workspace))
+    t_eyo.lastConnect(b)
   } else {
-    this.testlist2Delegate(target)
+    this.testlist2Delegate(t_eyo)
   }
 }
 
@@ -973,7 +975,7 @@ eYo.Node.prototype.toBlock = function (workspace) {
             : null
             break
           case '{':
-            t = eYo.Key.BRACE
+            t = eYo.Key.LBRACE
             s = n1.type === eYo.TKN.dictorsetmaker
             ? n1.dictorsetmaker2Delegate
             : null
@@ -1251,6 +1253,18 @@ factor: ('+'|'-'|'~') factor | power
         }
         return root
       }
+    case eYo.TKN.raise_stmt: // raise_stmt: 'raise' [test ['from' test]]
+      root = eYo.DelegateSvg.newBlockComplete(workspace, eYo.T3.Stmt.raise_stmt)
+      if ((n1 = this.n0.sibling)) {
+        root.eyo.expression_s.connect(n1.toBlock(workspace))
+        root.eyo.variant_p = eYo.Key.EXPRESSION
+        if ((n1 = n1.sibling) && (n1 = n1.sibling)) {
+          root.eyo.from_s.connect(n1.toBlock(workspace))
+          root.eyo.variant_p = eYo.Key.FROM
+        }
+      }
+      return root
+    break
     // case eYo.TKN.ENDMARKER: break
     // case eYo.TKN.NUMBER: break
     // case eYo.TKN.STRING: break
@@ -1336,7 +1350,6 @@ factor: ('+'|'-'|'~') factor | power
     // case eYo.TKN.continue_stmt: break
     // case eYo.TKN.return_stmt: break
     // case eYo.TKN.yield_stmt: break
-    // case eYo.TKN.raise_stmt: break
     // case eYo.TKN.import_stmt: break
     // case eYo.TKN.import_name: break
     // case eYo.TKN.import_from: break
@@ -1378,14 +1391,12 @@ factor: ('+'|'-'|'~') factor | power
     // case eYo.TKN.factor: break
     // case eYo.TKN.power: break
     // case eYo.TKN.atom_expr: break
-    // case eYo.TKN.atom: break
     // case eYo.TKN.testlist: break
     // case eYo.TKN.trailer: break
     // case eYo.TKN.subscriptlist: break
     // case eYo.TKN.subscript: break
     // case eYo.TKN.sliceop: break
     // case eYo.TKN.exprlist: break
-    // case eYo.TKN.testlist: break
     // case eYo.TKN.dictorsetmaker: break
     // case eYo.TKN.classdef: break
     // case eYo.TKN.arglist: break
@@ -1409,7 +1420,7 @@ factor: ('+'|'-'|'~') factor | power
         return this.n0.toBlock(workspace)
       } else {
         // eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, this)
-        console.error(this.n_child)
+        console.error('BREAK HERE TO DEBUG', this.name, this.n_child)
         throw `3) NOTHING TO DO WITH ${this.name}`
       }
   }

@@ -241,7 +241,7 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  * There are 4 kinds of enclosure lists:
- * 1) parent_form
+ * 1) parent_form and generator expression
  * 2) list_display
  * 3) set_display
  * 4) dict_display

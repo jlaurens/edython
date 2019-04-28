@@ -76,7 +76,7 @@ eYo.Py.Exporter.prototype.newline_ = function (block) {
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBlock`.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
+eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
   var eyo = block.eyo
   if (eyo.async) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
@@ -128,9 +128,7 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
     // list blocks
     block.eyo.consolidate()
     block.eyo.forEachInput(input => {
-      if (input !== eyo.inputSuite) {
-        this.exportInput_(input, opt)
-      }
+      this.exportInput_(input, opt)
     })
   }
   if ((field = eyo.toEndField)) {
@@ -154,7 +152,6 @@ eYo.Py.Exporter.prototype.exportExpression_ = function (block, opt) {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
-  var input, target
   var eyo = block.eyo
   var is_deep = !eyo.isControl && opt.is_deep
   if (!block.outputConnection) {
@@ -163,10 +160,14 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
       this.line.push('# ')
     }
   }
-  this.exportExpression_(block, opt)
-  if ((input = eyo.inputSuite)) {
+  this.exportAsExpression_(block, opt)
+  var c8n, target
+  if ((c8n = eyo.rightStmtConnection)) {
+    this.exportField_(c8n.eyo.fields.label)
+  }
+  if ((c8n = eyo.suiteStmtConnection)) {
     var f = () => {
-      if ((target = input.eyo.target)) {
+      if ((target = c8n.targetBlock())) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_(target)
@@ -174,10 +175,12 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
         }, () => {
           opt.is_deep = is_deep
         })
+      } else if ((c8n = eyo.rightStmtConnection) && (target = c8n.targetBlock())) {
+        this.exportBlock_(target, opt)
       } else {
         this.newline_()
         this.line.push('<MISSING STATEMENT>')
-        this.missing_statements.push(input.connection)
+        this.missing_statements.push(c8n)
       }
     }
     if (block.eyo.isControl) {
@@ -188,6 +191,10 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
       }, () => {
         this.dedent_()
       })(f)
+    }
+  } else if ((c8n = eyo.rightStmtConnection)) {
+    if ((target = c8n.targetBlock())) {
+      this.exportBlock_(target, opt)
     }
   }
   if (!block.outputConnection) {
@@ -305,16 +312,17 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
 eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
   if (input && input.isVisible()) {
     var c8n = input.connection
-    if (input.connection) {
+    if (c8n) {
       var target = c8n.targetBlock()
       if (target) {
-        this.exportExpression_(target)
+        this.exportAsExpression_(target)
       } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
+        console.error('BREAK HERE')
         this.shouldSeparateField && this.line.push(' ')
         this.line.push('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE
-        this.missing_expressions.push(input.connection)
+        this.missing_expressions.push(c8n)
       } else {
         input.fieldRow.forEach(f => this.exportField_(f))
       }

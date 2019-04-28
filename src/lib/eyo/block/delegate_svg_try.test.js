@@ -15,3 +15,16 @@ describe('TRY statements', function() {
     })
   })
 })
+
+describe('TRY ONLY', function() {
+  ;[
+    ['try_part', null, 'try:\n    <MISSING STATEMENT>']
+  ].forEach(Ts => {
+    it(`Basic ${Ts[0]} statement`, function() {
+      var b = eYo.Test.new_block(Ts[0], Ts[1] || Ts[0])
+      eYo.Test.code(b, Ts[2])
+      eYo.Test.all_variants(b)
+      b.dispose()
+    })
+  })
+})

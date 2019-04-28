@@ -43,20 +43,13 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
       },
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.T3.Stmt.Right.simple_stmt
-      },
-      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
-        var b_eyo = this.b_eyo
-        b_eyo.isGroup || b_eyo.inputRight.eyo.fields.label.setVisible(true)
-      },
-      didDisconnect: /** @suppress {globalThis} */ function  (oldTargetC8n) {
-        this.b_eyo.inputRight.eyo.fields.label.setVisible(false)
       }
     },
     previous: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
-        : null
+        : null // except start_stmt ? connections must also have an uncheck_
       }
     },
     next: {

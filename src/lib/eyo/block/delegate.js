@@ -22,6 +22,8 @@ goog.require('Blockly.Blocks')
 goog.require('eYo.T3')
 goog.require('eYo.Do')
 goog.forwardDeclare('eYo.Block')
+goog.forwardDeclare('eYo.Slot')
+goog.forwardDeclare('eYo.FieldHelper')
 goog.require('eYo.Data')
 
 /**
@@ -301,14 +303,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return b && b.eyo
     }
   },
-  suiteConnection: {
+  suiteStmtConnection: {
     get () {
-      return this.inputSuite && this.inputSuite.connection
+      return this.suiteStmtConnection_
     }
   },
   suiteBlock: {
     get () {
-      var c8n = this.suiteConnection
+      var c8n = this.suiteStmtConnection
       return c8n && c8n.targetBlock()
     }
   },
@@ -354,12 +356,12 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   rightStmtConnection: {
     get () {
-      return this.inputRight && this.inputRight.connection
+      return this.rightStmtConnection_
     }
   },
   rightBlock: {
     get () {
-      var c8n = this.rightStmtConnection
+      var c8n = this.rightStmtConnection_
       return c8n && c8n.targetBlock()
     }
   },
@@ -1546,7 +1548,7 @@ eYo.Delegate.prototype.makeData = function () {
  * For edython.
  */
 eYo.Delegate.prototype.makeFields = function () {
-  eYo.Slot.makeFields(this, this.model.fields)
+  eYo.FieldHelper.makeFields(this, this.model.fields)
 }
 
 /**
@@ -1589,17 +1591,17 @@ eYo.Delegate.prototype.makeConnections = function () {
       this.nextConnection.eyo.model = D.next
     }
     if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.inputSuite = block.appendStatementInput(eYo.Key.SUITE)
-      this.suiteConnection.eyo.model = D.suite
+      this.suiteStmtConnection_ = block.makeConnection_(eYo.Const.NEXT_STATEMENT)
+      this.suiteStmtConnection_.eyo.model = D.suite
     }
     if (D.left && goog.isDefAndNotNull(D.left.check)) {
-      this.leftStmtConnection_ = this.block_.makeConnection_(eYo.Const.LEFT_STATEMENT)
+      this.leftStmtConnection_ = block.makeConnection_(eYo.Const.LEFT_STATEMENT)
       this.leftStmtConnection_.eyo.model = D.left
     }
     if (D.right && goog.isDefAndNotNull(D.right.check)) {
-      var input = this.inputRight = block.appendInput_(eYo.Const.RIGHT_STATEMENT, eYo.Key.RIGHT)
-      this.rightStmtConnection.eyo.model = D.right
-      eYo.Slot.makeFields(input.eyo, D.right.fields)
+      this.rightStmtConnection_ = block.makeConnection_(eYo.Const.RIGHT_STATEMENT)
+      this.rightStmtConnection_.eyo.model = D.right
+      eYo.FieldHelper.makeFields(this.rightStmtConnection_.eyo, D.right.fields)
     }
   }
   this.updateBlackHeight()
@@ -1805,10 +1807,10 @@ eYo.Delegate.prototype.consolidateConnections = function () {
     f(b.outputConnection)
   } else {
     f(b.previousConnection)
-    f(b.nextConnection)
-    f(this.suiteConnection)
     f(this.leftStmtConnection)
     f(this.rightStmtConnection)
+    f(this.suiteStmtConnection)
+    f(b.nextConnection)
   }
 }
 
@@ -1845,6 +1847,10 @@ eYo.Delegate.prototype.deinit = function () {
   if (this.leftStmtConnection_) {
     this.leftStmtConnection_.dispose()
     this.leftStmtConnection_ = undefined
+    this.rightStmtConnection_.dispose()
+    this.rightStmtConnection_ = undefined
+    this.suiteStmtConnection_ && this.suiteStmtConnection_.dispose()
+    this.suiteStmtConnection_ = undefined
   }
 }
 
@@ -2161,17 +2167,15 @@ eYo.Delegate.prototype.getStatementCount = function () {
   var n = 1
   var hasActive = false
   var hasNext = false
-  if (this.inputSuite) {
-    var c8n = this.inputSuite.connection
-    if (c8n && c8n.eyo.isNextLike) {
-      hasNext = true
-      if (c8n.isConnected()) {
-        var target = c8n.targetBlock()
-        do {
-          hasActive = hasActive || (!target.disabled && !target.eyo.isWhite())
-          n += target.eyo.getStatementCount()
-        } while ((target = target.getNextBlock()))
-      }
+  var c8n = this.suiteStmtConnection
+  if (c8n) {
+    hasNext = true
+    var t_eyo = c8n.eyo.t_eyo
+    if (t_eyo) {
+      do {
+        hasActive = hasActive || (!t_eyo.block_.disabled && !t_eyo.isWhite())
+        n += t_eyo.getStatementCount()
+      } while ((t_eyo = t_eyo.next))
     }
   }
   return n + (hasNext && !hasActive ? 1 : 0)
@@ -2327,17 +2331,14 @@ eYo.Delegate.prototype.setIncog = function (incog) {
   }
   this.incog_ = incog
   this.forEachSlot(slot => slot.setIncog(incog)) // with incog validator
-  var setupIncog = input => {
-    var c8n = input && input.connection
-    c8n && c8n.eyo.setIncog(incog) // without incog validator
-  }
-  setupIncog(this.inputSuite)
-  for (var i = 0, input; (input = this.block_.inputList[i++]);) {
-    // input may belong to a slot
-    if (!input.eyo.slot) (
-      setupIncog(input)
-    )
-  }
+  var c8n = this.suiteStmtConnection
+  c8n && c8n.eyo.setIncog(incog)
+  this.inputList.inputList.forEach(input => {
+    if (!input.eyo.slot) {
+      var c8n = input.connection
+      c8n && c8n.eyo.setIncog(incog) // without incog validator
+    }
+  })
   this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's setIncog
   return true
 }

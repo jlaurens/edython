@@ -212,6 +212,9 @@ eYo.UI.prototype.renderRight_ = function (io) {
         }
       }
       return true
+    } else if (this.node.isGroup) {
+      this.drawField_(c_eyo.fields.label, io) // only the ':' or ';' trailing field.
+      return false
     }
   }
 }
@@ -222,40 +225,38 @@ eYo.UI.prototype.renderRight_ = function (io) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderSuite_ = function (io) {
-  if (!this.inputSuite) {
+  var c8n = this.node_.suiteStmtConnection
+  if (!c8n) {
     return
   }
   if (eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
   }
-  var c8n = this.node_.suiteConnection
-  if (c8n) {
-    var c_eyo = c8n.eyo
-    c_eyo.setOffset(eYo.Font.tabW, 1)
-    var t_eyo = c_eyo.t_eyo
-    if (t_eyo) {
-      this.someTargetIsMissing = false
-      var ui = t_eyo.ui
-      if (ui.canDraw) {
-        c8n.tighten_()
-        if (!t_eyo.rendered || !ui.up) {
-          try {
-            ui.down = true
-            t_eyo.render(false)
-          } catch (err) {
-            console.error(err)
-            throw err
-          } finally {
-            ui.down = false
-          }
+  var c_eyo = c8n.eyo
+  c_eyo.setOffset(eYo.Font.tabW, 1)
+  var t_eyo = c_eyo.t_eyo
+  if (t_eyo) {
+    this.someTargetIsMissing = false
+    var ui = t_eyo.ui
+    if (ui.canDraw) {
+      c8n.tighten_()
+      if (!t_eyo.rendered || !ui.up) {
+        try {
+          ui.down = true
+          t_eyo.render(false)
+        } catch (err) {
+          console.error(err)
+          throw err
+        } finally {
+          ui.down = false
         }
       }
-    } else if (this.suiteConnection) {
-      this.someTargetIsMissing = true
     }
-    this.span.main = this.getStatementCount()
-    return true
+  } else if (this.suiteStmtConnection) {
+    this.someTargetIsMissing = true
   }
+  this.span.main = this.node.getStatementCount()
+  return true
 }
 
 /**
@@ -470,7 +471,7 @@ eYo.UI.prototype.render = (() => {
  * @private
  */
 eYo.UI.prototype.willShortRender_ = function (recorder) {
-  if (this.node.inputSuite) {
+  if (this.node.suiteStmtConnection) {
     this.node.size.h = this.main + this.black + this.suite
   }
   return this.newDrawRecorder(recorder)
@@ -1201,20 +1202,6 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       }
       return shp
     }
-  }
-}
-
-/**
- * Render the suite block, if relevant.
- * @param {!Object} io the input/output argument.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.UI.prototype.drawInputRight_ = function (io) {
-  // adding a ';' or not.
-  var c8n = this.rightStmtConnection
-  if (c8n) {
-    this.fieldDrawFrom_(io.input.eyo.fieldAtStart, io)
-    c8n.eyo.setOffset(io.cursor)
   }
 }
 

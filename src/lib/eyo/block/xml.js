@@ -720,12 +720,13 @@ eYo.Xml.toDom = function (block, element, opt) {
     }
     // the list blocks have no slots yet
     block.inputList.forEach(input => {
-      if (!input.eyo.slot && input !== eyo.inputSuite) {
+      if (!input.eyo.slot) {
         targetBlockToDom(input.connection, eYo.Xml.SLOT, input.name)
       }
     })
-    // the suite and the flow
-    targetBlockToDom(eyo.suiteConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    // the right, suite and next flows
+    targetBlockToDom(eyo.rightStmtConnection, eYo.Xml.FLOW, eYo.Xml.RIGHT)
+    targetBlockToDom(eyo.suiteStmtConnection, eYo.Xml.FLOW, eYo.Xml.SUITE)
     !optNoNext && targetBlockToDom(eyo.nextConnection, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
@@ -968,7 +969,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
         var slot_c8n = input && input.connection
         var flow = dom.getAttribute(eYo.Xml.FLOW)
         var flow_c8n = flow
-          ? owner.eyo.suiteConnection
+          ? owner.eyo.suiteStmtConnection
           : owner.nextConnection
         // return the first block that would connect to the owner
         if (!best.types.some(type => {
@@ -1215,8 +1216,9 @@ eYo.Xml.fromDom = function (block, element) {
           })
         }
       }
-      var out = statement(eyo.nextConnection, eYo.Xml.NEXT)
-      out = statement(eyo.suiteConnection, eYo.Xml.SUITE) || out
+      var out = statement(eyo.rightStmtConnection, eYo.Xml.RIGHT)
+      out = statement(eyo.suiteStmtConnection, eYo.Xml.SUITE) || out
+      out = statement(eyo.nextConnection, eYo.Xml.NEXT) || out
       var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         eyo.lock()

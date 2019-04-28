@@ -419,20 +419,21 @@ var ra_try_stmt = [
 
 var ra_extended_unpacking = [
   "*a = y",
-  // "x, *b, = m",
-  // "[*a, *b] = y",
-  // "for [*x, b] in x: pass",
+  "x, *b, = m",
+  "[*a, *b] = y",
+  "for [*x, b] in x: pass",
 ]
 ra_test('extended_unpacking', ra_extended_unpacking)
-// var ra_raise_statement = [
-//   "raise\n",
-//   "raise e\n",
-//   "try:\n" +
-//   "    suite\n" +
-//                          "except Exception as e:\n" +
-//   "    raise ValueError from e\n"
-// ]
-// // ra_test('raise_statement', ra_raise_statement)
+var ra_raise_statement = [
+  "raise\n",
+  "raise e\n",
+  "raise ValueError from e\n",
+  "try:\n" +
+  "    suite\n" +
+                         "except Exception as e:\n" +
+  "    raise ValueError from e\n"
+]
+ra_test('raise_statement', ra_raise_statement)
 // var ra_list_displays = [
 //   '[]',
 //   '[*{2}, 3, *[4]]',

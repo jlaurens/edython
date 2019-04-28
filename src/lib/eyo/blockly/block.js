@@ -260,10 +260,6 @@ eYo.Block.prototype.dispose = function (healStack) {
  */
 eYo.Block.prototype.appendInput_ = function (type, name) {
   var input = eYo.Block.superClass_.appendInput_.call(this, type, name)
-  // inherited method does not manage left and right connections
-  if (type === eYo.Const.RIGHT_STATEMENT) {
-    input.connection = this.makeConnection_(type)
-  }
   eYo.Input.setupEyO(input)
   return input
 }

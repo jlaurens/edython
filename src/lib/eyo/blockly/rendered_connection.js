@@ -210,7 +210,7 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
    */
   isSuite: {
     get () {
-      return this.connection === this.b_eyo.suiteConnection
+      return this.connection === this.b_eyo.suiteStmtConnection
     }
   },
   /**
@@ -310,12 +310,23 @@ eYo.ConnectionDelegate.prototype.optional_ = false// must change to wrapper
 eYo.ConnectionDelegate.prototype.name_ = undefined// must change to wrapper
 
 /**
+ * execute the given function for the fields.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was a field to act upon or a valid helper
+ */
+eYo.ConnectionDelegate.prototype.forEachField = function (helper) {
+  this.fields && Object.values(this.fields).forEach(f => helper(f))
+}
+
+/**
  * `beReady` the target block.
  */
 eYo.ConnectionDelegate.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   var t_eyo = this.t_eyo
   t_eyo && t_eyo.beReady()
+  this.forEachField(f => f.eyo.beReady())
 }
 
 /**
@@ -663,6 +674,21 @@ eYo.ConnectionDelegate.prototype.setOffset = function(c = 0, l = 0) {
 }
 
 /**
+ * May be useful for `didConnect` and `didDisconnect` in models.
+ */
+eYo.ConnectionDelegate.prototype.consolidateSource = function () {
+  var block = this.connection.getSourceBlock()
+  block.eyo.consolidate()
+}
+
+/**
+ * May be useful for `didConnect` and `didDisconnect` in models.
+ */
+eYo.ConnectionDelegate.prototype.getBlock = function () {
+  return this.connection.getSourceBlock()
+}
+
+/**
  * Class for a connection between blocks that may be rendered on screen.
  * @param {!Blockly.Block} source The block establishing this connection.
  * @param {number} type The type of the connection.
@@ -873,56 +899,28 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
   if (typeA.indexOf('eyo:') === 0 && typeB.indexOf('eyo:') === 0) {
     var checkA = c8nA.check_
     var checkB = c8nB.check_
-    if (c8nA.eyo.name_) {
+    if (c8nA.eyo.isInput) {
       // c8nA is the connection of an input
       if (sourceA.eyo.locked_) {
         return c8nA.targetConnection === c8nB
       }
-      // connections are inline
-      if (c8nA.eyo.isNextLike) {
-        if (c8nB.eyo.isPrevious) {
-          if (checkB) {
-            // B cannot be a root statement
-            return false
-          }
-          if (checkA && checkA.indexOf(typeB) < 0) {
-            return false
-          }
-          return true
-        }
-        return false
-      } else if (checkA) {
+      if (checkA) {
         if (checkB) {
           if (checkA.some(t => checkB.indexOf(t) >= 0)) {
             return true
           }
-        } else if (checkA.indexOf(typeB) < 0) {
-          return false
         } else {
-          return true
+          return checkA.indexOf(typeB) >= 0
         }
       }
-      return !checkA || checkA.indexOf(typeB) >= 0 || checkA.indexOf(typeB + '.' + c8nB.name_) >= 0 || checkA.indexOf('.' + c8nB.name_) >= 0
+      return true
     } /* if (c8nA.eyo.name_) */
-    if (c8nB.eyo.name_) {
+    if (c8nB.eyo.isInput) {
       // c8nB is the connection of an input
       if (sourceB.eyo.locked_) {
         return c8nA === c8nB.targetConnection
       }
-      // connections are inline
-      if (c8nB.eyo.isNextLike) {
-        if (c8nA.eyo.isPrevious) {
-          if (checkA) {
-            // A cannot be a root statement
-            return false
-          }
-          if (checkB && checkB.indexOf(typeA) < 0) {
-            return false
-          }
-          return true
-        }
-        return false
-      } else if (checkB) {
+      if (checkB) {
         if (checkA) {
           if (checkB.some(t => checkA.indexOf(t) >= 0)) {
             return true
@@ -933,7 +931,7 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
           return true
         }
       }
-      return !checkB || checkB.indexOf(typeA) >= 0 || checkB.indexOf(typeA + '.' + c8nA.name_) >= 0 || checkB.indexOf('.' + c8nA.name_) >= 0
+      return true
     } /* if (c8nB.eyo.name_) */
     if (checkA && checkA.indexOf(typeB) < 0) {
       return false
@@ -1382,14 +1380,6 @@ Blockly.Connection.lastConnectionInRow_ = function (startBlock, orphanBlock) {
     }
   }
   return null
-}
-
-/**
- * May be useful for `didConnect` and `didDisconnect` in models.
- */
-eYo.ConnectionDelegate.prototype.consolidateSource = function () {
-  var block = this.connection.getSourceBlock()
-  block.eyo.consolidate()
 }
 
 /**

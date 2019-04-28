@@ -25,24 +25,34 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   statement: {
-    right: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.suite
-        ? null
-        : eYo.T3.Stmt.Right.simple_stmt
-      }
-    },
     previous: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
     },
-    next: {
+    left: undefined,
+    right: {
       check: /** @suppress {globalThis} */ function (type) {
-        return null
+        return this.b_eyo.suite
+        ? []
+        : eYo.T3.Stmt.Right.simple_stmt
+      },
+      fields: {
+        label: { // don't call it 'operator'
+          value: ':',
+          css: 'reserved',
+          hidden: false
+        }
       }
     },
     suite: {
+      check: /** @suppress {globalThis} */ function (type) {
+        return this.b_eyo.suite
+        ? []
+        : null
+      }
+    },
+    next: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
@@ -63,17 +73,13 @@ Object.defineProperties(eYo.DelegateSvg.BaseGroup.prototype, {
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {
-  fields: {
-    suffix: ':'
-  }
-}, eYo.DelegateSvg)
+eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {}, eYo.DelegateSvg)
 
 /**
  * Update the black count.
  */
 eYo.DelegateSvg.Group.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.suiteConnection && this.suiteConnection.eyo.getBlackTargetConnection()
+  this.blackHeight = this.suiteStmtConnection && this.suiteStmtConnection.eyo.getBlackTargetConnection()
   ? 0
   : this.left || this.right ? 0 : 1
 }

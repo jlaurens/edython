@@ -604,7 +604,7 @@ return function(eyo, opt) {
       f = initWithStatementNode
     } else if (eyo.isControl) {
       f = initWithControlNode
-    } else if (eyo.inputSuite) {
+    } else if (eyo.suiteStmtConnection) {
       f = initWithGroupNode
     } else {
       f = initWithStatementNode

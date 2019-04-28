@@ -763,9 +763,10 @@ eYo.DelegateSvg.prototype.beReady = function (headless) {
       this.inputList.forEach(input => {
         input.eyo.beReady()
       })
-      this.inputSuite && this.inputSuite.eyo.beReady()
-      this.inputRight && this.inputRight.eyo.beReady()
-      this.nextConnection && this.nextConnection.eyo.beReady()
+      ;[this.suiteStmtConnection,
+        this.rightStmtConnection,
+        this.nextConnection
+      ].forEach(c8n => c8n && c8n.eyo.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
       this.render = eYo.DelegateSvg.prototype.render_
     }

@@ -146,11 +146,11 @@ eYo.Test.all_variants = (b, required) => {
 eYo.Test.code = (b, str) => {
   var s = b.eyo.toString.replace(/\bNOM\b/g, 'NAME')
   if (s !== str) {
-    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/ \*\*/g, '**').replace(/\*\* /g, '**').replace(/\* /g, '*').replace(/: /g, ':').replace(/ ->/g, '->').replace(/\s+$/, '')
+    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/ \*\*/g, '**').replace(/\*\* /g, '**').replace(/\* /g, '*').replace(/: /g, ':').replace(/ ->/g, '->').replace(/\s+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{})\s*/g, '$1')
     var str1 = f(str)
     var s1 = f(s)
     // console.error(s1, str1)
-    chai.assert(s1 === str1, `MISSED: ${s} === ${str}`)
+    chai.assert(s1 === str1, `MISSED: ${s} === ${str} (${s1} === ${str1})`)
   }
 }
 
@@ -204,14 +204,14 @@ eYo.Test.line_counts = (b, cfg) => {
 eYo.Test.connections = (b, cfg) => {
   var failed
   var expected, available
-  ;['left', 'right', 'previous', 'next', 'suite'].some(k => {
+  ;['previous', 'left', 'right', 'suite', 'next'].some(k => {
     expected = !!cfg[k]
     available = !!{
+      previous: b.eyo.previousConnection,
       left: b.eyo.leftStmtConnection,
       right: b.eyo.rightStmtConnection,
-      previous: b.eyo.previousConnection,
-      next: b.eyo.nextConnection,
-      suite: b.eyo.suiteConnection
+      suite: b.eyo.suiteStmtConnection,
+      next: b.eyo.nextConnection
     }[k]
     if (expected !== available) {
       failed = k

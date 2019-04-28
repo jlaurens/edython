@@ -263,7 +263,7 @@ eYo.Selected.chooseRight = function () {
       return
     } else if (c_eyo.isNext) {
       if (eyo.isGroup) {
-        c8n = eyo.suiteConnection
+        c8n = eyo.suiteStmtConnection
         var t_eyo
         var next
         while ((t_eyo = c8n.eyo.t_eyo) && (next = t_eyo.nextConnection)) {
@@ -280,7 +280,7 @@ eYo.Selected.chooseRight = function () {
       eYo.Selected.scrollToVisible()
       return
     }
-  } else if ((c8n = eyo.suiteConnection)) {
+  } else if ((c8n = eyo.suiteStmtConnection)) {
     eYo.Selected.connection = c8n
     eYo.Selected.scrollToVisible()
     return

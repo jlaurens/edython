@@ -415,7 +415,7 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
       return c8n
     }
   }
-  if ((c8n = this.suiteConnection) && !c8n.hidden) {
+  if ((c8n = this.suiteStmtConnection) && !c8n.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
       c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
