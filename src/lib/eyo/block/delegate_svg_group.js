@@ -249,15 +249,14 @@ eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr
   return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
-var names = [
+;[
   'if',
   'elif',
   'else',
   'while',
   'try_else',
   'last_else'
-]
-names.forEach((name) => {
+].forEach(name => {
   var key = name + '_part'
   eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Group.Branch
   eYo.DelegateSvg.Manager.register(key)

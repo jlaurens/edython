@@ -144,16 +144,6 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
 }
 
 /**
- * Did disconnect this block's connection from another connection.
- * @param {!Blockly.Connection} blockConnection
- * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
- */
-eYo.DelegateSvg.Stmt.prototype.didDisconnect = function (connection, oldTargetC8n) {
-  this.isRightStatement = false
-  eYo.DelegateSvg.Stmt.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
-}
-
-/**
  * Insert a block above.
  * If the block's previous connection is connected,
  * connects the block above to it.

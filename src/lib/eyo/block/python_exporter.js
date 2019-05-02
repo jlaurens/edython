@@ -54,7 +54,7 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
  * Insert a newline_ array.
  */
 eYo.Py.Exporter.prototype.newline_ = function (block) {
-  if (block && block.eyo.isRightStatement) {
+  if (block) {
     this.line.push(this.wasColon ? ' ' : '; ')
   } else {
     this.line && this.lines.push(this.line.join(''))

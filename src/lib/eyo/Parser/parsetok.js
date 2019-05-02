@@ -137,11 +137,13 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
 
     if (tkn.type === eYo.TKN.TYPE_IGNORE) {
       type_ignores.push(tkn.lineno)
-      continue;
+      if((tkn = tkn.next)) {
+        continue
+      }
     }
-    if (tkn.type === eYo.TKN.COMMENT) {
-      continue;
-    }
+    // if (tkn.type === eYo.TKN.COMMENT) {
+    //   continue;
+    // }
     var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
                             lineno, col_offset, tkn.lineno, end_col_offset*/ tkn)
     err_ret.error = ans.error

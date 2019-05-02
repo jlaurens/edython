@@ -61,11 +61,23 @@ Object.defineProperties(eYo.ConnectionDelegate.prototype, {
       return this.connection.type
     }
   },
+  typeName: {
+    get () {
+      return {
+        [Blockly.INPUT_VALUE]: 'input',
+        [Blockly.OUTPUT_VALUE]: 'output',
+        [Blockly.PREVIOUS_STATEMENT]: 'previous',
+        [Blockly.NEXT_STATEMENT]: 'next',
+        [eYo.Const.LEFT_STATEMENT]: 'left',
+        [eYo.Const.RIGHT_STATEMENT]: 'right'
+      } [this.type]
+    }
+  },
   isSuperior: {
     get () {
       return this.type === Blockly.INPUT_VALUE ||
        this.type === Blockly.NEXT_STATEMENT ||
-       this.type === Blockly.RIGHT_STATEMENT
+       this.type === eIo.Const.RIGHT_STATEMENT
     }
   },
   c: { // in block text coordinates
@@ -472,6 +484,9 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
       return
     }
   }
+  if (this.isRight) {
+    this.fields.label.setVisible(true)
+  }
   var b_eyo = this.b_eyo
   b_eyo.incrementChangeCount()
   b_eyo.consolidate()
@@ -484,6 +499,9 @@ eYo.ConnectionDelegate.prototype.didConnect = function (oldTargetC8n, targetOldC
  */
 eYo.ConnectionDelegate.prototype.willDisconnect = function () {
   this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this)
+  if (this.isRight) {
+    this.fields.label.setVisible(false)
+  }
 }
 
 /**
@@ -839,9 +857,6 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
  *     (to allow chaining).
  */
 eYo.Connection.prototype.setCheck = function(check) {
-  // if (check === eYo.T3.Stmt.Previous.try_else_part) {
-  //   console.error('ERROR!!!!')
-  // }
   eYo.Connection.superClass_.setCheck.call(this, check)
   if (!check) {
     // This was not called on original Blockly
@@ -1448,5 +1463,41 @@ Blockly.Connection.prototype.setCheck = function(check) {
 eYo.Connection.prototype.isSuperior = function() {
   return this.type == Blockly.INPUT_VALUE ||
   this.type == Blockly.NEXT_STATEMENT ||
-  this.type == Blockly.RIGHT_STATEMENT
+  this.type == eYo.Const.RIGHT_STATEMENT
+}
+
+/**
+ * This method returns a string describing this Connection in developer terms
+ * (English only). Intended to on be used in console logs and errors.
+ * @return {string} The description.
+ */
+Blockly.Connection.prototype.toString = function() {
+  var msg
+  var block = this.sourceBlock_
+  if (!block) {
+    return 'Orphan Connection'
+  } else if (block.outputConnection === this) {
+    msg = 'Output Connection of '
+  } else if (block.previousConnection === this) {
+    msg = 'Previous Connection of '
+  } else if (block.nextConnection === this) {
+    msg = 'Next Connection of '
+  } else if (block.eyo.suiteConnection === this) {
+    msg = 'Suite Connection of '
+  } else if (block.eyo.leftStmtConnection === this) {
+    msg = 'Left statement Connection of '
+  } else if (block.eyo.rightStmtConnection === this) {
+    msg = 'Right statement Connection of '
+  } else {
+    var parentInput = goog.array.find(block.inputList, input => {
+      return input.connection === this
+    }, this)
+    if (parentInput) {
+      msg = 'Input "' + parentInput.name + '" connection on '
+    } else {
+      console.warn('Connection not actually connected to sourceBlock_')
+      return 'Orphan Connection'
+    }
+  }
+  return msg + block.toDevString()
 }

@@ -146,25 +146,25 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
   }
 })
 
-for (var _ = 0, t;(t = eYo.T3.Expr.Check.binary[_++]);) {
+eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
     eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
     eYo.DelegateSvg.Manager.register(t)
   }
-}
+})
 
-for (var _ = 0, t;(t = [
-  eYo.T3.Expr.power,
-  eYo.T3.Expr.and_test,
-  eYo.T3.Expr.or_test,
-  eYo.T3.Expr.number_comparison,
-  eYo.T3.Expr.object_comparison
-][_++]);) {
-  t = t.substring(4)
+;[
+  'power',
+  'and_test',
+  'or_test',
+  'comparison',
+  'number_comparison',
+  'object_comparison'
+].forEach(t => {
   eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
   eYo.DelegateSvg.Manager.register(t)
-}
+})
 
 /**
  * Get the operator model.
@@ -354,11 +354,10 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   }
 })
 
-var names = [
+;[
   'u_expr',
   'not_test'
-]
-names.forEach((k) => {
+].forEach((k) => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.unary
   eYo.DelegateSvg.Manager.register(k)
 })

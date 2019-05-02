@@ -951,7 +951,8 @@ eYo.Delegate.Manager = (() => {
             key_t,
             {
               get () {
-                return this[key_b].eyo
+                var b = this[key_b]
+                return b && b.eyo
               }
             }
           )
@@ -1591,7 +1592,7 @@ eYo.Delegate.prototype.makeConnections = function () {
       this.nextConnection.eyo.model = D.next
     }
     if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suiteStmtConnection_ = block.makeConnection_(eYo.Const.NEXT_STATEMENT)
+      this.suiteStmtConnection_ = block.makeConnection_(Blockly.NEXT_STATEMENT)
       this.suiteStmtConnection_.eyo.model = D.suite
     }
     if (D.left && goog.isDefAndNotNull(D.left.check)) {
@@ -1683,10 +1684,13 @@ eYo.Delegate.prototype.pythonType_ = undefined
 eYo.Delegate.prototype.type_ = undefined
 
 /**
- * Set the [python ]type of the delegate according to the type of the block.
+ * Set the [python ]type of the delegate and its block.
+ * The only accepted types are the ones of
+ * the constructor's delegate's `type` method.
+ * NEVER call this directly, except if you are a block delegate.
  * No need to override this.
  * @param {?string} optNewType, 
- * @constructor
+ * @private
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
   var block = this.block_
@@ -1699,7 +1703,7 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (goog.isDef(optNewType) && block.type === optNewType) {
     return
   }
-  optNewType && (block.type = optNewType)
+  optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (block.type = optNewType)
   var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
   this.pythonType_ = m ? m[1] : block.type
   this.type_ = m ? 'eyo:' + m[2] : block.type
@@ -2333,7 +2337,7 @@ eYo.Delegate.prototype.setIncog = function (incog) {
   this.forEachSlot(slot => slot.setIncog(incog)) // with incog validator
   var c8n = this.suiteStmtConnection
   c8n && c8n.eyo.setIncog(incog)
-  this.inputList.inputList.forEach(input => {
+  this.inputList.forEach(input => {
     if (!input.eyo.slot) {
       var c8n = input.connection
       c8n && c8n.eyo.setIncog(incog) // without incog validator

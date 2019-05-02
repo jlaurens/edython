@@ -438,6 +438,19 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
 
 /**
  * Make the current index unique.
+ * The unique index concept is an answer to some alternation problem.
+ * For example the python `list` command can accept either a list of
+ * object or exactly one enumerator.
+ * By default, we consider that `list` may have many arguments.
+ * When we add the first argument, if it is a generator,
+ * no more argument can be added, if it is not a generator,
+ * any argument can be added, provided it is not a generator.
+ * This method is based on the `this.model.unique` function if any.
+ * This model function has signature `(type, subtype) -> [string]`.
+ * When an array is returned, the current index `io.i`
+ * is make unique when the target connection contains a type in that array.
+ * Returning a void array means that no unique object may exist in that list.
+ * `null` is deliberately returned and tested for development reasons.
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.makeUnique = function (io) {

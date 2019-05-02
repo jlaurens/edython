@@ -146,7 +146,7 @@ eYo.Test.all_variants = (b, required) => {
 eYo.Test.code = (b, str) => {
   var s = b.eyo.toString.replace(/\bNOM\b/g, 'NAME')
   if (s !== str) {
-    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/ \*\*/g, '**').replace(/\*\* /g, '**').replace(/\* /g, '*').replace(/: /g, ':').replace(/ ->/g, '->').replace(/\s+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{})\s*/g, '$1')
+    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/(\*) /g, '$1').replace(/\s+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|})\s*/g, '$1')
     var str1 = f(str)
     var s1 = f(s)
     // console.error(s1, str1)

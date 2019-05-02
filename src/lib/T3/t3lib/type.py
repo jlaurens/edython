@@ -19,17 +19,35 @@ class Type:
 
     def __init__(self, n, name, definition='', category='unknown'):
         """
-        n is the line number,
-        name is the expression or statement name: proper_slice, m_Type, and_test...
-        definition is the rhs in the ... ::= ... line
+        :param n: the line number,
+        :param name: the expression or statement name: proper_slice, m_Type, and_test...
+        :param definition: the rhs in the ... ::= ... rule line
+        :param category: the category where the definition is found
         """
         self.n = n
         self.category = category
         self.count = 0
+        """
+        The list of required types. For example foo ::= bar1 | bar2
+        is a wrapper with to required types, bar1 and bar2
+        """
         self.require = []
+        """
+        For each wrapper rule where the receiver appears in the rhs,
+        it progides the lhs. 
+        """
         self.provide = []
+        """
+        The list of similar types
+        """
         self.similar = []
+        """
+        Cascading requirements: each time `foo` (deep) requires `bar` and `bar` (deep) requires `xyz` then `foo` (deep) requires `xyz`.
+        """
         self.deep_require = []
+        """
+        Cascading provides: each time `foo` (deep) provides `bar` and `bar` (deep) provides `xyz` then `foo` (deep) provides `xyz`.
+        """
         self.deep_provide = []
         self.is_wrapper = False
         self.ignored = False

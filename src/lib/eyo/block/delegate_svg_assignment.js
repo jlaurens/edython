@@ -398,10 +398,15 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
 }
 
 /**
- * value_list
+ * value_list.
+ * Used only in assignment statement as wrapped value,
+ * and in primary as promised value.
  */
 eYo.DelegateSvg.List.makeSubclass('value_list', {
   list: (() => {
+    /*
+     * For each given type, returns the list of block types that can be unique.
+     */
     var unique = {
       [eYo.T3.Stmt.assignment_stmt]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
       [eYo.T3.Stmt.augmented_assignment_stmt]: [eYo.T3.Expr.yield_expr],
@@ -423,9 +428,17 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
       [eYo.T3.Expr.assignment_expr]: eYo.T3.Expr.Check.expression
     }
     var me = {
+      /**
+       * @param {String} type  the type of the list block eg `value_list`
+       * @param {String} subtype  the subtype of the ist block, actually the type of the wrapper (parent).
+       * If `subtype` is a key of the `unique` map,
+       * the corresponding value is returned.
+       */
       unique: (type, subtype) => {
         return (subtype
         && unique [subtype]) || (subtype && [
+          // all the concrete types for primary.
+          // For all the commented types, value_list makes no sense.
           eYo.T3.Expr.identifier,
           eYo.T3.Expr.identifier_annotated,
           eYo.T3.Expr.augtarget_annotated,

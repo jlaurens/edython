@@ -16,31 +16,37 @@ if_stmt ::=  "if" expression ":" suite
 an else:... clause may change status depending on the connection.
 When after a try:..., there can be a finally:... after
 but when after an if:..., no finally:... is allowed.
+'A B0F B' means that block A comes to the bottom of block B
+'A T0F B' means that block A comes on top of block B
+'A R0F B' means that block A comes to the right of block B
+'A L0F B' means that block A comes to the left of block B
+For example, decorations come on top of definitions,
+whereas elif comes below if or other elif.
+Rules are cumulative, which means that A T0F B and A T0F C significates that A comes just on top of B or C.
 <pre>
 if_stmt ::= IGNORE
 if_part/if ::= "if" expression ":"
 elif_part/elif ::= "elif" expression ":"
 else_part/else ::= "else" ":"
 last_else_part ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> if_part | if_part | elif_part | expression_stmt
-last_else_part >>> if_part | elif_part | expression_stmt
-elif_part >>> if_part | elif_part | expression_stmt
+else_part B0F if_part | elif_part | any_stmt
+simple_stmt R0F if_part | elif_part | else_part | last_else_part
+last_else_part B0F if_part | elif_part | any_stmt
+elif_part B0F if_part | elif_part | any_stmt
 </pre>
 <pre>
 while_stmt ::= IGNORE
 while_part/while ::=  "while" expression ":"
-else_part >>> while_part
-last_else_part >>> while_part
+else_part B0F while_part
+last_else_part B0F while_part
+simple_stmt R0F while_part
 </pre>
-The last line means: an else_part comes just after a while_part
-(its line number is just one above).
-For an <<< sign, it would read "just before".
-Rules are cumulative, which means that A <<< B and A <<< C significates that A comes just before B or C.
 <pre>
 for_stmt ::= IGNORE
 for_part/for ::=  "for" target_list "in" expression_list ":"
-else_part >>> for_part
-last_else_part >>> for_part
+else_part B0F for_part
+last_else_part B0F for_part
+simple_stmt R0F for_part
 </pre>
 try_stmt  ::=  try1_stmt | try2_stmt
 try1_stmt ::=  "try" ":" suite
@@ -57,14 +63,15 @@ try_part/try
 except_part/except
 void_except_part ::= "except" ":" # this block type is never used in a definition, only for checking
 finally_part/finally
-try_part <<< except_part | void_except_part | finally_part | expression_stmt
-void_except_part >>> except_part
-except_part >>> try_part | except_part | expression_stmt
-void_except_part >>> try_part | except_part | expression_stmt
+try_part T0F except_part | void_except_part | finally_part | any_stmt
+void_except_part B0F except_part
+except_part B0F try_part | except_part | any_stmt
+void_except_part B0F try_part | except_part | any_stmt
 try_else_part/else ::= else_part # this block type is never used in a definition, only for checking
-else_part >>> except_part | void_except_part | expression_stmt
-try_else_part >>> except_part | void_except_part | expression_stmt
-finally_part >>> try_part | except_part | void_except_part | try_else_part | else_part | expression_stmt
+else_part B0F except_part | void_except_part | any_stmt
+try_else_part B0F except_part | void_except_part | any_stmt
+finally_part B0F try_part | except_part | void_except_part | try_else_part | else_part | any_stmt
+simple_stmt R0F try_part | except_part | void_except_part | try_else_part | finally_part
 </pre>
 
 with_stmt ::=  "with" with_item ("," with_item)* ":" suite
@@ -76,6 +83,7 @@ with_part/with ::= "with" with_item_list ":"
 with_item_list ::= with_item ("," with_item)*
 with_item ::=  expression | expression_as
 expression_as ::= expression "as" target
+simple_stmt R0F with_part
 </pre>
 If a parameter has a default value, all following parameters up until the “*” must also have a default value — this is a syntactic restriction that is not expressed by the grammar.
 
@@ -87,7 +95,8 @@ funcdef_part/function ::= ["async"] "def" funcname "(" [parameter_list] ")" ["->
 decorators ::= REMOVE
 decorator ::= REMOVE
 decorator_stmt ::= "@" dotted_name ["(" [argument_list [","]] ")"] NEWLINE
-decorator_stmt <<< decorator_stmt | funcdef_part
+decorator_stmt T0F decorator_stmt | funcdef_part
+simple_stmt R0F funcdef_part
 </pre>
 
 
@@ -160,7 +169,8 @@ classname   ::=  identifier
 <pre>
 classdef ::= IGNORE
 classdef_part/class ::=  "class" classname ['(' argument_list ')'] ':'
-decorator <<< classdef_part
+decorator T0F classdef_part
+simple_stmt R0F classdef_part
 </pre>
 
 <pre>

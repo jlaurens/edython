@@ -10,7 +10,7 @@ class Types:
 
     """
     re_pipe = re.compile(r'\s*\|\s*')
-    re_filter = re.compile(r'^(?:>>>|def |for |with |class |except |async |TypeError|Traceback|None|True|False'
+    re_filter = re.compile(r'^(?:def |for |with |class |except |async |TypeError|Traceback|None|True|False'
                            r'|Execution |Don\'t |(?:expr|[\d, +*(\-)=])+$|inst[.= ]|[xi] |if |yield |\S+Error:'
                            r'|i,|print\(|raise |The |During |import |from |[a-zA-Z\d ]*=|while |else:|try:|except:'
                            r')')
@@ -21,7 +21,7 @@ class Types:
                                r"?\s*(?P<op>::=|!!=|\|\|=)?"
                                r"\s*(?P<definition>(?:[^\\]|\\.)*?)"
                                r"\s*(?:#.*)?$")
-    re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order><<<|>>>)\s*(?P<what>.*)\s*$")
+    re_stmt_order = re.compile(r"^\s*(?P<name>\S+)\s*(?P<order>T0F|B0F|L0F|R0F)\s*(?P<what>.*)\s*$")
     re_type_name = re.compile(r"^\s*(?P<type>[^\s\.]*)(?:\.(?P<name>[^\s\.]+))?\s*$")
     re_link = re.compile(r"^\s*(?P<source>\S+)\s*->\s*(?P<alias>.*)\s*$")
     re_category = re.compile(r"^\s*category\s*:[\s.\d]*(?P<category>[a-zA-Z\s_]*).*$")
@@ -30,8 +30,8 @@ class Types:
     all = {}
     is_above = {}
     is_below = {}
-    is_left = {}
-    is_right = {}
+    is_left_of = {}
+    is_right_of = {}
     links = {}
     n = 0
     current_category = 'default'
@@ -135,7 +135,7 @@ class Types:
             if m:
                 name = m.group('name')
                 order = m.group('order')
-                where = self.is_above if order == '<<<' else self.is_below
+                where = self.is_above if order == 'T0F' else (self.is_below if order == 'B0F' else (self.is_left_of if order == 'L0F' else self.is_right_of))
                 if not name in where:
                     where[name] = set()
                 already = where[name]
@@ -198,15 +198,22 @@ class Types:
         f('is_below')
 
     def make_left_right(self):
+        """ 
+        Make the left and right arrays.
+        Only simple statements have checks for left and right connections.
+        Compound statements have no left connection, but have right connections.
+        Their right connection has no constrain.
+        :return: None
+        """
         print('====> MAKE LEFT RIGHT')
-        # based only on the simple_stmt definition
+        # based on the simple_stmt definition
         more_t = {}
         t = self.all['simple_stmt']
         t.is_wrapper = True
         require = set()
         definition = t.get_shortenized_definition()
         cs = Types.re_pipe.split(definition)
-        tts = [t]
+        tts = [t] # all the types that appear as simple_stmt, no recursion
         for c in cs:
             if 'OPTIONAL' in c:
                 t.is_wrapper = False
@@ -230,7 +237,19 @@ class Types:
         t.require = sorted(list(require), key = lambda x: (x.n, x.name))
         self.all.update(more_t)
         for tt in tts:
-            tt.is_left = tt.is_right = t.require
+            tt.is_left_of = tt.is_right_of = t.require
+        items = self.is_right_of.items()
+        for k, v in items:
+            try:
+                t = self.all[k]
+                ts = set(require)
+                for tt in v:
+                    m = self.re_type_name.match(tt)
+                    if m and m.group('type') in self.all:
+                        ts.add(self.all[m.group('type')])
+                t.is_right_of = sorted(list(ts), key = lambda x: (x.n, x.name))
+            except KeyError as e:
+                print('**** DANGER: unknown type', e)
 
     def make_lists(self):
         if self.lists_made:

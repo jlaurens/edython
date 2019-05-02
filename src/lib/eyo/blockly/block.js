@@ -407,7 +407,13 @@ Blockly.Block.prototype.dispose = function(healStack) {
     // methodically step through the blocks and carefully disassemble them.
 
     // First, dispose of all my children.
-    this.childBlocks_.forEach(b => b.dispose(false))
+    this.childBlocks_.forEach(b => {
+      // disable auto creation of wrapped targets
+      var c8n = b.eyo.outputConnection
+      c8n = c8n && c8n.targetConnection
+      c8n && (c8n.eyo.wrapped_ = false)
+      b.dispose(false)
+    })
     // Then dispose of myself.
     // Dispose of all inputs and their fields.
     this.inputList.forEach(i => i.dispose())

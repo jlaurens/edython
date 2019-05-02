@@ -78,7 +78,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
         var O = this.owner
         if (newValue || O.from_b) {
           O.variant_p = eYo.Key.FROM
-        } else if (O.expression_p || O.expression_t.unwrappedTarget) {
+        } else if (O.expression_p || (O.expression_t && O.expression_t.unwrappedTarget)) {
           O.variant_p = eYo.Key.EXPRESSION
         } else {
           O.variant_p = eYo.Key.NONE
@@ -144,7 +144,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
         var O = this.b_eyo
         if (O.from_p) {
           O.variant_p = eYo.Key.FROM
-        } else if (O.expression_p || O.expression_t.unwrappedTarget) {
+        } else if (O.expression_p || (O.expression_t && O.expression_t.unwrappedTarget)) {
           O.variant_p = eYo.Key.EXPRESSION
         } else {
           O.variant_p = eYo.Key.NONE

@@ -330,7 +330,7 @@ class Formatter:
 
     def feed_statement_left(self):
         # Only for the simple_stmt
-        attr = 'is_right'
+        attr = 'is_right_of'
         label = 'Left'
         self.append('eYo.T3.Stmt.{} = {{'.format(label))
         template = '    eYo.T3.Stmt.{},'
@@ -349,7 +349,7 @@ class Formatter:
 
     def feed_statement_right(self):
         # Only for the simple_stmt
-        attr = 'is_left'
+        attr = 'is_left_of'
         label = 'Right'
         self.append('eYo.T3.Stmt.{} = {{'.format(label))
         template = '    eYo.T3.Stmt.{},'
