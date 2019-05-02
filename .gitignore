@@ -22,8 +22,9 @@ thumbs.db
 /**/xregexp-all/xregexp-all.js
 /src/lib/brython*/**
 /src/lib/stacktrace*/**
+/src/lib/eyo/debugging.js
+/src/lib/eyo/work*in*progress.md
 /vue-js-modal/**
 !/**/README.md
 !/**/Readme.md
 /bin/compiler-latest/**
-/src/lib/eyo/debugging.js
