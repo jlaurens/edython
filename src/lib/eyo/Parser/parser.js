@@ -127,14 +127,12 @@ var shift = (/* stack * */ s, child, /* int */ newstate) =>
 }
 
 /* static int */
-var push = (/* stack * */ s, tkn_src, type, /* dfa * */ d, /* int */ newstate) =>
+var push = (/* stack * */ s, tkn, type, /* dfa * */ d, /* int */ newstate) =>
 {
   // goog.asserts.assert(!s_empty(s))
-  var child = new eYo.Node(tkn_src.scan, type)
-  child.lineno = tkn_src.lineno
-  child.col_offset = tkn_src.col_offset
-  child.end_lineno = tkn_src.end_lineno
-  child.end_col_offset = tkn_src.end_col_offset
+  var child = new eYo.Node(tkn.scan, type)
+  child.lineno = tkn.lineno
+  child.end_lineno = tkn.end_lineno
   var err
   var n = s.s_top.s_parent
   if ((err = eYo.Node.PyNode_AddChild_(n, child))) {
@@ -176,7 +174,7 @@ var classify = (/* parser_state * */ ps, /* int */ type, /* const char * */ str)
       }
     }
   }
-  console.error("Illegal token")
+  console.error("Illegal token", ps, type, str)
   return -1
 }
 
@@ -186,6 +184,17 @@ eYo.Parser.PyParser_AddToken = (/* parser_state * */ps, tkn) =>
     console.log("Token %s/'%s' ... ", eYo.TKN._NAMES[tkn.n_type], tkn.n_str)
   }
   var ans = {}
+  if (tkn.n_type === eYo.TKN.COMMENT) {
+    var comment = new eYo.Node(tkn.scan, tkn.n_type)
+    comment.lineno = tkn.lineno
+    comment.end_lineno = tkn.end_lineno
+    comment.start_comment = tkn.start_comment
+    var n = ps.p_stack.s_top.s_parent
+    var comments = n.comments || (n.comments = [])
+    comments.push(comment)
+    ans.error = eYo.E.OK
+    return ans
+  }
 
   /* Find out which label this token is */
   var ilabel = classify(ps, tkn.n_type, tkn.n_str)

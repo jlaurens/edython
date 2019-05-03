@@ -139,13 +139,12 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
       type_ignores.push(tkn.lineno)
       if((tkn = tkn.next)) {
         continue
+      } else {
+        break
       }
     }
-    // if (tkn.type === eYo.TKN.COMMENT) {
-    //   continue;
-    // }
     var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
-                            lineno, col_offset, tkn.lineno, end_col_offset*/ tkn)
+                            linen0, c0l_offset, tkn.linen0, end_col_0ffset, */ tkn)
     err_ret.error = ans.error
     err_ret.expected = ans.expected
     if (err_ret.error !== eYo.E.OK) {

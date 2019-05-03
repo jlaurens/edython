@@ -53,13 +53,10 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
 /**
  * Insert a newline_ array.
  */
-eYo.Py.Exporter.prototype.newline_ = function (block) {
-  if (block) {
-    this.line.push(this.wasColon ? ' ' : '; ')
-  } else {
-    this.line && this.lines.push(this.line.join(''))
-    this.line = [this.indent]
-  }
+eYo.Py.Exporter.prototype.newline_ = function () {
+  this.line && this.lines.push(this.line.join(''))
+  this.lineShouldAddSpace = false
+  this.line = [this.indent]
   this.isFirst = true
   this.shouldSeparateField = false
   this.wasSeparatorField = false
@@ -67,6 +64,28 @@ eYo.Py.Exporter.prototype.newline_ = function (block) {
   this.wasContinue = false
   this.wasLeftParenth = false
   this.wasRightParenth = false
+}
+
+/**
+ * Add a space to the line.
+ * For edython.
+ * @param {!String} s  the string to be appended to the line.
+ */
+eYo.Py.Exporter.prototype.addSpace = function () {
+  this.line.length > 1 && (this.lineShouldAddSpace = true) // this line contains at least one indentation string
+}
+
+/**
+ * Add some string material to the line.
+ * For edython.
+ * @param {!String} s  the string to be appended to the line.
+ */
+eYo.Py.Exporter.prototype.linePush = function (s) {
+  if (this.lineShouldAddSpace) {
+    this.lineShouldAddSpace = false
+    this.line.push(' ')
+  }
+  this.line.push(s)
 }
 
 /**
@@ -81,19 +100,19 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
   if (eyo.async) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
-      this.line.push(' ')
+      this.addSpace()
     }
-    this.line.push('async ')
+    this.linePush('async ')
     this.shouldSeparateField = false
   } else if (eyo.await) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
-      this.line.push(' ')
+      this.addSpace()
     }
-    this.line.push('await ')
+    this.linePush('await ')
     this.shouldSeparateField = false
   } else if (eyo.parenth_p) {
-    this.line.push('(')
+    this.linePush('(')
   }
   if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
     if (eyo.dotted_p === 0 && eyo.target_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
@@ -137,10 +156,10 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
     } while ((field = field.eyo.nextField))
   }
   if (eyo.orphan_comma_p) {
-    this.line.push(',')
+    this.linePush(',')
   }
   if (eyo.parenth_p) {
-    this.line.push(')')
+    this.linePush(')')
   }
 }
 
@@ -157,29 +176,29 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
   if (!block.outputConnection) {
     if (block.disabled) {
       this.indent_('# ')
-      this.line.push('# ')
+      this.linePush('# ')
     }
   }
   this.exportAsExpression_(block, opt)
-  var c8n, target
-  if ((c8n = eyo.rightStmtConnection)) {
-    this.exportField_(c8n.eyo.fields.label)
-  }
-  if ((c8n = eyo.suiteStmtConnection)) {
+  var c8n, rightC8n, target
+  if ((rightC8n = eyo.rightStmtConnection) && (target = rightC8n.targetBlock())) {
+    this.exportField_(rightC8n.eyo.fields.label)
+    this.exportBlock_(target, opt)
+  } else if ((c8n = eyo.suiteStmtConnection)) {
+    // a block with a suite must also have a right connection
+    this.exportField_(rightC8n.eyo.fields.label)
     var f = () => {
       if ((target = c8n.targetBlock())) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
-          this.newline_(target)
+          this.newline_()
           this.exportBlock_(target, opt)
         }, () => {
           opt.is_deep = is_deep
         })
-      } else if ((c8n = eyo.rightStmtConnection) && (target = c8n.targetBlock())) {
-        this.exportBlock_(target, opt)
       } else {
         this.newline_()
-        this.line.push('<MISSING STATEMENT>')
+        this.linePush('<MISSING STATEMENT>')
         this.missing_statements.push(c8n)
       }
     }
@@ -194,6 +213,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
     }
   } else if ((c8n = eyo.rightStmtConnection)) {
     if ((target = c8n.targetBlock())) {
+      this.exportField_(c8n.eyo.fields.label)
       this.exportBlock_(target, opt)
     }
   }
@@ -203,7 +223,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
     }
   }
   if (is_deep && (target = block.eyo.nextBlock)) {
-    this.newline_(target)
+    this.newline_()
     this.exportBlock_(target, opt)
   }  
 }
@@ -253,37 +273,40 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
 eYo.Py.Exporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
     var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
-    var eyo = field.eyo
+    var f_eyo = field.eyo
     if (!text.length) {
-      var d = eyo.data
+      var d = f_eyo.data
       if (d) {
         if (goog.isDef(d.model.python)) {
           text = eYo.Do.valueOf(d.model.python, d) || ''
-        } else if (!eyo.optional_ && goog.isDef(d.model.placeholder)) {
+        } else if (!f_eyo.optional_ && goog.isDef(d.model.placeholder)) {
           text = eYo.Do.valueOf(d.model.placeholder, d) || ''
         }
       }
     }
     if (text.length) {
-      this.isSeparatorField = field.name === 'separator' || (eyo.model && eyo.model.separator)
+      this.isSeparatorField = field.name === 'separator' || (f_eyo.model && f_eyo.model.separator)
       // if the text is void, it can not change whether
       // the last character was a letter or not
       var head = text[0]
       if (text === ':=') {
-        this.line.push(' ')
+        this.addSpace()
       } else if (this.wasRightParenth) {
         // do not always add white space
         if (eYo.XRE.id_continue.test(head)) {
-          this.line.push(' ')
+          this.addSpace()
         }
       } else if (this.wasColon && (eYo.XRE.id_continue.test(head) || head === '[')) {
         // add a separation
-        this.line.push(' ')
+        this.addSpace()
       } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_continue.test(head))) {
         // add a separation
-        this.line.push(' ')
+        this.addSpace()
+      } else if (f_eyo.isLabel && eYo.XRE.id_continue.test(head)) {
+        // add a separation here too
+        this.addSpace()
       }
-      this.line.push(text)
+      this.linePush(text)
       var isContinue = eYo.XRE.tail_continue.test(text) // what about surrogate pairs ?
       var tail = text[text.length - 1]
       this.wasColon = tail === ':'
@@ -318,8 +341,8 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
         this.exportAsExpression_(target)
       } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
         console.error('BREAK HERE')
-        this.shouldSeparateField && this.line.push(' ')
-        this.line.push('<MISSING INPUT>')
+        this.shouldSeparateField && this.addSpace()
+        this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE
         this.missing_expressions.push(c8n)
@@ -375,7 +398,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
   toLinearString: {
     get () {
       var s = this.toString
-      return s.replace(/(?:\r\n|\r|\n)/g, ';')
+      return s.replace(/(?:\r\n|\r|\n)/g, '\\n')
     }
   }
 })

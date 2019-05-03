@@ -297,7 +297,6 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
           variable: true,
           // left_space: true,
           css_class: /** @suppress {globalThis} */ function () {
-            console.log('this.b_eyo.decorator_p', this.b_eyo.decorator_p)
             return [
               eYo.Key.PROPERTY,
               eYo.Key.STATICMETHOD,

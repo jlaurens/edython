@@ -50,14 +50,11 @@ eYo.Node = function (scan, type, subtype) {
   scan.start_string = scan.start_comment = undefined
   this.end = scan.start = scan.end
   if (scan.first_lineno) {
-    this.col_offset = scan.first_col_offset
     this.lineno = scan.first_lineno
     this.end_lineno = scan.lineno
-    this.end_col_offset = scan.col_offset
-    scan.first_lineno = scan.first_col_offset = undefined
+    scan.first_lineno = undefined
   } else {
     this.lineno = scan.lineno
-    this.col_offset = scan.col_offset
   }
   this.n_child = [];
 }
@@ -97,6 +94,14 @@ Object.defineProperties(eYo.Node.prototype, {
       return (this._content = this.str.substring(this.start, this.end))
     }
   },
+  comment: {
+    get () {
+      if (this._comment) {
+        return this._comment
+      }
+      return (this._comment = this.str.substring(this.start_comment, this.end))
+    }
+  },
   string: {
     get () {
       if (this._string) {
@@ -116,6 +121,11 @@ Object.defineProperties(eYo.Node.prototype, {
   n_str: {
     get () {
       return this.content
+    }
+  },
+  n_comment: {
+    get () {
+      return this.comment
     }
   },
   n_lineno: {
@@ -198,7 +208,6 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
     var last = n.n_child[nch - 1]
     eYo.Node._PyNode_FinalizeEndPos(last)
     n.n_end_lineno = last.n_end_lineno
-    n.n_end_col_offset = last.n_end_col_offset
   }
 
   /* int */
@@ -217,8 +226,8 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
 
   /* int */
   
-  eYo.Node.PyNode_AddChild = (n1, type, str, lineno, col_offset,
-                  end_lineno, end_col_offset) =>
+  eYo.Node.PyNode_AddChild = (n1, type, str, linen0, c0l_0ffset,
+                  end_linen0, end_c0l_0ffset) =>
   {
     throw 'DO NOT CALL THAT'
     // var nch = n1.n_nchildren
@@ -240,9 +249,9 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
     // n.n_type = type;
     // n.n_str = str;
     // n.n_lineno = lineno;
-    // n.n_col_offset = col_offset;
+    // n.n_c0l_offset = c0l_offset;
     // n.n_end_lineno = end_lineno;  // this and below will be updates after all children are added.
-    // n.n_end_col_offset = end_col_offset;
+    // n.n_end_c0l_offset = end_col_0ffset;
     // n.n_nchildren = 0;
     // n.n_child = NULL;
     // return 0;

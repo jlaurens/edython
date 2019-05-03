@@ -2,18 +2,18 @@ var g = eYo.GMR._PyParser_Grammar
 
 console.log('RUNNING NODE/BLOCK TESTS')
 
-describe('NAME', function() {
-  this.timeout(5000)
-  it('NAME', function() {
-    eYo.Test.setItUp()
-    var err_ret = {}
-    var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
-    var b = n.toBlock(Blockly.mainWorkspace)
-    chai.assert(b, 'MISSING BLOCK')
-    b.dispose()
-    eYo.Test.tearItDown()
-  })
-})
+// describe('NAME', function() {
+//   this.timeout(5000)
+//   it('NAME', function() {
+//     eYo.Test.setItUp()
+//     var err_ret = {}
+//     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
+//     var b = n.toBlock(Blockly.mainWorkspace)
+//     chai.assert(b, 'MISSING BLOCK')
+//     b.dispose()
+//     eYo.Test.tearItDown()
+//   })
+// })
 
 var n_test = (n, type, str) => {
   chai.assert(n, 'No node')
@@ -56,21 +56,21 @@ var ra_prepare_yield_statement = [
 // */
 // eYo.Const.Py_DEBUG = false
 var ra_yield_statement = [
-  // "def f(): yield 1",
-  // "def f(): yield",
-  // "def f(): x += yield",
-  // "def f(): x = yield 1",
-  // "def f(): x = y = yield 1",
-  // "def f(): x = yield",
-  // "def f(): x = y = yield",
-  // "def f(): 1 + (yield)*2",
-  // "def f(): (yield 1)*2",
-  // "def f(): return; yield 1",
-  // "def f(): yield 1; return",
-  // "def f(): yield from 1",
-  // "def f(): x = yield from 1",
-  // "def f(): f((yield from 1))",
-  // "def f(): yield 1; return 1",
+  "def f(): yield 1",
+  "def f(): yield",
+  "def f(): x += yield",
+  "def f(): x = yield 1",
+  "def f(): x = y = yield 1",
+  "def f(): x = yield",
+  "def f(): x = y = yield",
+  "def f(): 1 + (yield)*2",
+  "def f(): (yield 1)*2",
+  "def f(): return; yield 1",
+  "def f(): yield 1; return",
+  "def f(): yield from 1",
+  "def f(): x = yield from 1",
+  "def f(): f((yield from 1))",
+  "def f(): yield 1; return 1",
   "def f():\n" +
   "    for x in range(30):\n" +
   "        yield x\n",
@@ -78,7 +78,7 @@ var ra_yield_statement = [
   "    if (yield):\n" +
   "        yield x\n"
 ]
-ra_test('yield_statement', ra_yield_statement)
+// ra_test('yield_statement', ra_yield_statement)
 var ra_await_statement = [
   "async def f():\n await smth()",
   "async def f():\n foo = await smth()",
@@ -87,17 +87,17 @@ var ra_await_statement = [
   "async def f():\n foo((await smth()))",
   "async def f():\n await foo(); return 42",
 ]
-ra_test('await_statement', ra_await_statement)
+// ra_test('await_statement', ra_await_statement)
 var ra_async_with_statement = [
   "async def f():\n async with 1: pass",
   "async def f():\n async with a as b, c as d: pass",
 ]
-ra_test('async_with_statement', ra_async_with_statement)
+// ra_test('async_with_statement', ra_async_with_statement)
 var ra_async_for_statement = [
   "async def f():\n async for i in (): pass",
   "async def f():\n async for i, b in (): pass",
 ]
-ra_test('async_for_statement', ra_async_for_statement)
+// ra_test('async_for_statement', ra_async_for_statement)
 var ra_nonlocal_statement = [
   "def f():\n" +
   "    x = 0\n" +
@@ -108,7 +108,7 @@ var ra_nonlocal_statement = [
   "    def g():\n" +
   "        nonlocal x, y\n"
 ]
-ra_test('nonlocal_statement', ra_nonlocal_statement)
+// ra_test('nonlocal_statement', ra_nonlocal_statement)
 
 var ra_expressions = [
    "foo(1)",
@@ -153,7 +153,7 @@ var ra_expressions = [
   "...",
   "a[...]",
 ]
-ra_test('expressions', ra_expressions)
+// ra_test('expressions', ra_expressions)
 var ra_missing_expression = [
   "x",
   "x.y",
@@ -173,18 +173,18 @@ var ra_missing_expression = [
   "a[0::2]",
   "a[0:1:2]",
 ]
-ra_test('missing_expression', ra_missing_expression)
+// ra_test('missing_expression', ra_missing_expression)
 var ra_simple_expression = [
   "a",
 ]
-ra_test('simple_expression', ra_simple_expression)
+// ra_test('simple_expression', ra_simple_expression)
 var ra_simple_assignments = [
   "a = b",
   "a = b, c",
   "a, b = c, d",
   "a = b = c = d = e",
 ]
-ra_test('simple_assignments', ra_simple_assignments)
+// ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
   "x: int = 5",
   "y: List[T] = []; z: [list] = fun()",
@@ -242,7 +242,7 @@ var ra_simple_augmented_assignments = [
   "a >>= b",
   "a **= b",
 ]
-ra_test('simple_augmented_assignments', ra_simple_augmented_assignments)
+// ra_test('simple_augmented_assignments', ra_simple_augmented_assignments)
 var ra_function_defs = [
   "def f(): pass",
   "def f(*args): pass",
@@ -287,7 +287,7 @@ var ra_function_defs = [
   "def f(*, a: int = 5): pass",
   "def f() -> int: pass",
 ]
-ra_test('function_defs', ra_function_defs)
+// ra_test('function_defs', ra_function_defs)
 var ra_class_defs = [
   "class foo():pass",
   "class foo(object):pass",
@@ -299,7 +299,7 @@ var ra_class_defs = [
   "@decorator2\n" +
   "class foo():pass",
 ]
-ra_test('class_defs', ra_class_defs)
+// ra_test('class_defs', ra_class_defs)
 var ra_import_from_statement = [
   "from sys.path import *",
   "from sys.path import dirname",
@@ -319,7 +319,7 @@ var ra_import_from_statement = [
   "from sys.path import (dirname, basename as my_basename,)",
   "from .bogus import x",
 ]
-ra_test('import_from_statement', ra_import_from_statement)
+// ra_test('import_from_statement', ra_import_from_statement)
 var ra_basic_import_statement = [
   "import sys",
   "import sys as system",
@@ -327,7 +327,7 @@ var ra_basic_import_statement = [
   "import sys as system, math",
   "import sys, math as my_math",
 ]
-ra_test('basic_import_statement', ra_basic_import_statement)
+// ra_test('basic_import_statement', ra_basic_import_statement)
 var ra_relative_imports = [
   "from . import name",
   "from .. import name",
@@ -338,22 +338,22 @@ var ra_relative_imports = [
   "from ...pkg import name",
   "from ....pkg import name",
 ]
-ra_test('relative_imports', ra_relative_imports)
+// ra_test('relative_imports', ra_relative_imports)
 var ra_pep263 = [
   "# -*- coding: iso-8859-1 -*-\n" +
   "pass\n",
 ]
 ra_test('pep263', ra_pep263)
-var ra_chai_assert = [
-  "chai.assert alo < ahi and blo < bhi\n",
-]
-ra_test('chai.assert', ra_chai_assert)
+// var ra_chai_assert = [
+//   "chai.assert alo < ahi and blo < bhi\n",
+// ]
+// /* ra_test('chai.assert', ra_chai_assert) */
 var ra_with = [
   "with open('x'): pass\n",
   "with open('x') as f: pass\n",
   "with open('x') as f, open('y') as g: pass\n",
 ]
-ra_test('with', ra_with)
+// ra_test('with', ra_with)
 var ra_try_stmt = [
   "try: pass\nexcept: pass\n",
   "try: pass\nfinally: pass\n",
@@ -364,7 +364,7 @@ var ra_try_stmt = [
   "try: pass\nexcept: pass\nelse: pass\n" +
   "finally: pass\n",
 ]
-ra_test('try_stmt', ra_try_stmt)
+// ra_test('try_stmt', ra_try_stmt)
 // // va ra_position = [
 // //         // # An absolutely minimal test of position information.  Better
 // //         // # tests would be a big project.
@@ -423,7 +423,7 @@ var ra_extended_unpacking = [
   "[*a, *b] = y",
   "for [*x, b] in x: pass",
 ]
-ra_test('extended_unpacking', ra_extended_unpacking)
+// ra_test('extended_unpacking', ra_extended_unpacking)
 var ra_raise_statement = [
   "raise\n",
   "raise e\n",
@@ -433,12 +433,12 @@ var ra_raise_statement = [
                          "except Exception as e:\n" +
   "    raise ValueError from e\n"
 ]
-ra_test('raise_statement', ra_raise_statement)
+// ra_test('raise_statement', ra_raise_statement)
 var ra_list_displays = [
   '[]',
   '[*{2}, 3, *[4]]',
 ]
-ra_test('list_displays', ra_list_displays)
+// ra_test('list_displays', ra_list_displays)
 var ra_set_displays = [
   '{*{2}, 3, *[4]}',
   '{2}',
@@ -446,7 +446,7 @@ var ra_set_displays = [
   '{2, 3}',
   '{2, 3,}',
 ]
-ra_test('set_displays', ra_set_displays)
+// ra_test('set_displays', ra_set_displays)
 var ra_dict_displays = [
   '{}',
   '{a:b}',
@@ -456,7 +456,7 @@ var ra_dict_displays = [
   '{**{}}',
   '{**{}, 3:4, **{5:6, 7:8}}',
 ]
-ra_test('dict_displays', ra_dict_displays)
+// ra_test('dict_displays', ra_dict_displays)
 var ra_argument_unpacking = [
   "f(*a, **b)",
   'f(a, *b, *c, *d)',
@@ -464,19 +464,19 @@ var ra_argument_unpacking = [
   'f(2, *a, *b, **b, **c, **d)',
   "f(*b, *() or () and (), **{} and {}, **() or {})",
 ]
-ra_test('argument_unpacking', ra_argument_unpacking)
+// ra_test('argument_unpacking', ra_argument_unpacking)
 var ra_set_comprehensions = [
   '{x for x in seq}',
   '{f(x) for x in seq}',
   '{f(x) for x in seq if condition(x)}',
 ]
-ra_test('set_comprehensions', ra_set_comprehensions)
+// ra_test('set_comprehensions', ra_set_comprehensions)
 var ra_dict_comprehensions = [
   '{x:x for x in seq}',
   '{x**2:x[3] for x in seq if condition(x)}',
   '{x:x for x in seq1 for y in seq2 if condition(x, y)}',
 ]
-ra_test('dict_comprehensions', ra_dict_comprehensions)
+// ra_test('dict_comprehensions', ra_dict_comprehensions)
 var ra_named_expressions = [
   "(a := 1)",
   "(a := a)",
@@ -509,7 +509,7 @@ var ra_named_expressions = [
   "foo((b := 2), a=1)",
   "foo(c=(b := 2), a=1)",
 ]
-ra_test('named_expressions', ra_named_expressions)
+// ra_test('named_expressions', ra_named_expressions)
 
 // var src = ''
 

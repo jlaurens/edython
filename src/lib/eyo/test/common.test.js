@@ -143,12 +143,21 @@ eYo.Test.all_variants = (b, required) => {
   })
 }
 
+eYo.Test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
+
+Object.defineProperties(eYo.Delegate.prototype, {
+  linearizedCode: {
+    get () {
+      return eYo.Test.linearizeCode_(this.toString)
+    }
+  }
+})
+
 eYo.Test.code = (b, str) => {
   var s = b.eyo.toString.replace(/\bNOM\b/g, 'NAME')
   if (s !== str) {
-    var f = s => s.replace(/(?:\r\n|\r)$/g, '').replace(/(?:\r\n|\r)/g, '\n').replace(/\s+/g, ' ').replace(/ = /g, '=').replace(/ + /g, '+').replace(/(\*) /g, '$1').replace(/\s+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|})\s*/g, '$1')
-    var str1 = f(str)
-    var s1 = f(s)
+    var s1 = eYo.Test.linearizeCode_(s)
+    var str1 = eYo.Test.linearizeCode_(str)
     // console.error(s1, str1)
     chai.assert(s1 === str1, `MISSED: ${s} === ${str} (${s1} === ${str1})`)
   }

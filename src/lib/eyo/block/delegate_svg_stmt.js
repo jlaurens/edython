@@ -367,7 +367,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   slots: {
     identifiers: {
       order: 1,
-      wrap: eYo.T3.Expr.non_void_identifier_list,
+      promise: eYo.T3.Expr.non_void_identifier_list,
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {

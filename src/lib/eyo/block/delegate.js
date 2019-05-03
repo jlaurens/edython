@@ -284,6 +284,15 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var b = this.previousBlock
       return b && b.eyo
+    },
+    set (newValue) {
+      var c8n = this.previousConnection
+      if (c8n) {
+        c8n.eyo.break()
+        c8n.connect(newValue.nextConnection)
+      } else {
+        throw 'Previous connection is missing'
+      }     
     }
   },
   nextConnection: {
@@ -301,6 +310,15 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var b = this.nextBlock
       return b && b.eyo
+    },
+    set (newValue) {
+      var c8n = this.nextConnection
+      if (c8n) {
+        c8n.eyo.break()
+        c8n.connect(newValue.previousConnection)
+      } else {
+        throw 'Next connection is missing'
+      }     
     }
   },
   suiteStmtConnection: {
@@ -2020,11 +2038,11 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
 
 /**
  * Connect the last connection to the given expression block.
- * @param {!Object} bdc  block, delegate or connection
+ * @param {!Object} bdct  block, delegate, connection or type
  * @return {Boolean}  whether the connection is established
  */
-eYo.Delegate.prototype.lastConnect = function (bdc) {
-  var other = bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc
+eYo.Delegate.prototype.lastConnect = function (bdct) {
+  var other = bdct.outputConnection || (bdct.block_ && bdct.block_.outputConnection) || (bdct.eyo && bdct) || eYo.DelegateSvg.newBlockComplete(this.workspace, bdct).outputConnection
   var c8n = this.lastConnection
   if (c8n.checkType_(other)) {
     c8n.connect(other)

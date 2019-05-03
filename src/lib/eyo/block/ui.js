@@ -826,7 +826,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
         target.eyo.ui.parentIsShort = true
         // always add a space to the right
         target.eyo.ui.isLastInStatement = false
-        target.eyo.updateShape()
+        target.eyo.ui.updateShape()
         io.cursor.c += 1
       }
     } else {
@@ -949,6 +949,9 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       var tail = text[text.length - 1]
       if (f_eyo.model.literal) {
         io.common.field.didPack = 0
+      } else if (f_eyo.isLabel && io.common.field.beforeIsBlack) {
+        io.cursor.c += 1
+        io.common.field.beforeIsBlack = true
       } else {
         if (!io.common.field.shouldSeparate
           && !io.common.field.beforeIsSeparator

@@ -19,6 +19,7 @@ goog.require('eYo')
 goog.require('goog.cssom');
 
 goog.forwardDeclare('eYo.font-face')
+goog.forwardDeclare('eYo.Shape')
 
 /**
  * The richness of block colours, regardless of the hue.
@@ -175,10 +176,7 @@ eYo.Style.Path = {
     colour: '#c33', // #fc3
     width: 2, // px
   },
-  colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
-  bbox_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(120, 100 / 100, 50 / 100)),
-  inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 0.5 // px
+  bbox_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(120, 100 / 100, 50 / 100))
 }
 Object.defineProperty(
   eYo.Style.Path,
@@ -298,8 +296,29 @@ eYo.setup.register(() => {
   )
   eYo.Style.insertCssRuleAt(
     `.eyo-checkbox-icon-rect {
-      stroke: ${eYo.Style.Path.colour};
-      stroke-width: ${eYo.Style.Path.width}px;
+      stroke: ${eYo.Shape.Style.colour.light};
+      stroke-width: ${eYo.Shape.Style.width.light}px;
+      fill: white;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-checkbox-icon-rect {
+      stroke: ${eYo.Shape.Style.colour.light};
+      stroke-width: ${eYo.Shape.Style.width.light}px;
+      fill: white;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-medium .eyo-checkbox-icon-rect {
+      stroke: ${eYo.Shape.Style.colour.medium};
+      stroke-width: ${eYo.Shape.Style.width.medium}px;
+      fill: white;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-dark .eyo-checkbox-icon-rect {
+      stroke: ${eYo.Shape.Style.colour.dark};
+      stroke-width: ${eYo.Shape.Style.width.dark}px;
       fill: white;
     }`
   )
@@ -322,7 +341,7 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-path-bbox {
       stroke: ${eYo.Style.Path.bbox_colour};
-      stroke-width: ${eYo.Style.Path.width}px;
+      stroke-width: ${eYo.Shape.Style.width.light}px;
       fill: none;
     }`
   )
@@ -343,8 +362,32 @@ eYo.setup.register(() => {
     .eyo-path-inner,
     .eyo-path-collapsed,
     .eyo-path-play-contour {
-      stroke: ${eYo.Style.Path.colour};
-      stroke-width: ${eYo.Style.Path.width}px;
+      stroke: ${eYo.Shape.Style.colour.light};
+      stroke-width: ${eYo.Shape.Style.width.light}px;
+      fill: none;
+      pointer-events: all;
+      stroke-linejoin="round";
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-medium .eyo-path-contour,
+    .eyo-medium .eyo-path-inner,
+    .eyo-medium .eyo-path-collapsed,
+    .eyo-medium .eyo-path-play-contour {
+      stroke: ${eYo.Shape.Style.colour.medium};
+      stroke-width: ${eYo.Shape.Style.width.medium}px;
+      fill: none;
+      pointer-events: all;
+      stroke-linejoin="round";
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-dark .eyo-path-contour,
+    .eyo-dark .eyo-path-inner,
+    .eyo-dark .eyo-path-collapsed,
+    .eyo-dark .eyo-path-play-contour {
+      stroke: ${eYo.Shape.Style.colour.dark};
+      stroke-width: ${eYo.Shape.Style.width.dark}px;
       fill: none;
       pointer-events: all;
       stroke-linejoin="round";
@@ -358,7 +401,19 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-inner.eyo-expr .eyo-path-contour,
     .eyo-inner.eyo-expr .eyo-path-collapsed {
-      stroke: ${eYo.Style.Path.inner_colour};
+      stroke: ${eYo.Shape.Style.inner_colour.light};
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-medium .eyo-inner.eyo-expr .eyo-path-contour,
+    .eyo-medium .eyo-inner.eyo-expr .eyo-path-collapsed {
+      stroke: ${eYo.Shape.Style.inner_colour.medium};
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-dark .eyo-inner.eyo-expr .eyo-path-contour,
+    .eyo-dark .eyo-inner.eyo-expr .eyo-path-collapsed {
+      stroke: ${eYo.Shape.Style.inner_colour.dark};
     }`
   )
    // When the selected block is a statement
@@ -420,7 +475,19 @@ eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.eyo-select>g>g>.eyo-edit,
     .eyo-select>g>.eyo-edit {
-      stroke: ${eYo.Style.Path.colour};
+      stroke: ${eYo.Shape.Style.colour.light};
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-medium .eyo-select>g>g>.eyo-edit,
+    .eyo-select>g>.eyo-edit {
+      stroke: ${eYo.Shape.Style.colour.medium};
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-dark .eyo-select>g>g>.eyo-edit,
+    .eyo-select>g>.eyo-edit {
+      stroke: ${eYo.Shape.Style.colour.dark};
     }`
   )
   eYo.Style.insertCssRuleAt(
@@ -433,8 +500,8 @@ eYo.setup.register(() => {
   )
   eYo.Style.insertCssRuleAt(
     `.eyo-path-dotted {
-      stroke: ${eYo.Style.Path.colour};
-      stroke-width: ${(eYo.Style.Path.width * 1.5)}px;
+      stroke: ${eYo.Shape.Style.colour.light};
+      stroke-width: ${(eYo.Shape.Style.width.light * 1.5)}px;
       stroke-linecap: round;
       stroke-dasharray: 0 ${eYo.Font.space / 2};
     }`

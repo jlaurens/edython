@@ -227,7 +227,7 @@ eYo.Block.prototype.dispose = function (healStack) {
     Blockly.Events.disable()
     try {
       // First, dispose of all my children.
-      // This must be done before unplugged
+      // This must be done before unplug
       for (var i = this.childBlocks_.length - 1; i >= 0; i--) {
         this.childBlocks_[i].dispose(false)
       }

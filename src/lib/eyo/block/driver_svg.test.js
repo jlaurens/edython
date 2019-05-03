@@ -64,7 +64,7 @@ describe('SVG groups and paths', function () {
     eYo.Test.svgNodeParent(b1, 'pathSelect_')
     eYo.Test.svgNodeParent(b1, 'pathHilight_')
     eYo.Test.svgNodeParent(b1, 'pathConnection_')
-    // b1.dispose()
+    b1.dispose()
     eYo.Test.tearItDown()
   })
 })

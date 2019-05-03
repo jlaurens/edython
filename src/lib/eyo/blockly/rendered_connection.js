@@ -450,6 +450,14 @@ eYo.ConnectionDelegate.prototype.completePromise = function () {
 }
 
 /**
+ * Break the connection unplugging.
+ */
+eYo.ConnectionDelegate.prototype.break = function () {
+  var eyo = this.isSuperior ? this.t_eyo : this.b_eyo
+  eyo && eyo.block_.unplug()
+}
+
+/**
  * Will connect.
  * Forwards to the model.
  * @param {Blockly.Connection} connection the connection owning the delegate

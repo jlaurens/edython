@@ -1294,7 +1294,7 @@ eYo.Driver.Svg.prototype.fieldTextDisplay = function (field) {
  * @param {*} field
  */
 eYo.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
-  var e = field_.textElement_
+  var e = field.textElement_
   if (e) {
     var f = txt => {
       switch (eYo.T3.Profile.get(txt, null).raw) {
@@ -1480,3 +1480,16 @@ eYo.Driver.Svg.prototype.xyInParent = function(element) {
   }
   return xy
 }
+
+/**
+ * Set the dosplay mode for blocks.
+ * @param {!String} mode  The display mode for bocks.
+ */
+eYo.Driver.Svg.prototype.setBlockDisplayMode = mode => {
+  var svg = eYo.App.workspace.svgBlockCanvas_
+  this.currentBlockDisplayMode && goog.dom.classlist.remove(svg, `eyo-${this.currentBlockDisplayMode}`)
+  if ((this.currentBlockDisplayMode = mode)) {
+    goog.dom.classlist.add(svg, `eyo-${this.currentBlockDisplayMode}`)
+  }
+}
+

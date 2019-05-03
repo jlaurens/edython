@@ -53,7 +53,7 @@ eYo.Scan.prototype.init = function (str, start) {
   this.paren_stack = []
   this.indent_stack = []
   this.first_ = this.last = null
-  this.lineno = this.col_offset = 0
+  this.lineno = 0
   return this
 }
 
@@ -423,7 +423,6 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var new_NEWLINE = () => {
     this.at_bol = true
-    this.col_offset = 0
     ++this.lineno
     return new_Token(eYo.TKN.NEWLINE)
   }
@@ -433,7 +432,6 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var do_EOL = () => {
     this.at_bol = true
-    this.col_offset = 0
     ++this.lineno
     if (this.end > this.start) {
       if (this.start_string === undefined) {
@@ -448,7 +446,6 @@ eYo.Scan.prototype.nextToken = function () {
    */
   var do_continue = () => {
     this.at_bol = true
-    this.col_offset = 0
     ++this.lineno
     if (this.start_string === undefined) {
       this.start_string = this.start
@@ -592,7 +589,12 @@ eYo.Scan.prototype.nextToken = function () {
   }
 
   var scan_Comment = (col) => {
+    this.start_comment = this.end
     if (scan('#')) {
+      this.start_comment++
+      if (scan(' ')) {
+        this.start_comment++
+      }
       // this is not an indentation
       col && do_space()
       var m = exec(eYo.Scan.XRE.type_comment)
@@ -650,7 +652,6 @@ eYo.Scan.prototype.nextToken = function () {
         if (scan(quote)) {
           quote_size = 3
           this.first_lineno = this.lineno
-          this.first_col_offset = this.col_offset - 3
         } else {
           end_quote_size = 1     /* empty string found */
         }

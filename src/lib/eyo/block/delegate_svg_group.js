@@ -47,7 +47,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
     },
     suite: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.suite
+        return this.b_eyo.right
         ? []
         : null
       }

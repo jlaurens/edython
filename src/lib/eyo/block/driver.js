@@ -429,3 +429,9 @@ eYo.Driver.nodeDisplayedSet = eYo.Do.nothing
  */
 eYo.Driver.nodeUpdateDisabled = eYo.Do.nothing
 
+/**
+ * Set the display mode for blocks.
+ * @param {!String} mode  The display mode for bocks.
+ */
+eYo.Driver.setBlockDisplayMode = eYo.Do.nothing
+

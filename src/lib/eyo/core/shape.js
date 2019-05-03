@@ -36,9 +36,21 @@ eYo.Shape.Style = {
   Error: {
     colour: '#c33'
   },
-  colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
-  inner_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-  width: 1.5 // px
+  colour: {
+    light: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
+    medium: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 70 / 100)),
+    dark: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 50 / 100)),
+  },
+  inner_colour: {
+    light: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
+    medium: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
+    dark: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 75 / 100)),
+  },
+  width: {
+    light: 0.5,
+    medium: 0.75,
+    dark: 1
+  } // px
 }
 
 /**
