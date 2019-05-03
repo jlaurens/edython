@@ -29,7 +29,6 @@ goog.forwardDeclare('eYo.T3.All')
  * @constructor
  */
 eYo.Block = function (workspace, prototypeName, opt_id) {
-  this.eyo = eYo.Delegate.Manager.create(this, prototypeName)
 //  eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
   if (typeof Blockly.Generator.prototype[prototypeName] !== 'undefined') {
     console.warn('FUTURE ERROR: Block prototypeName "' + prototypeName
@@ -38,6 +37,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
         + '\nThis name will be DISALLOWED (throwing an error) in future '
         + 'versions of Blockly.')
   }
+  this.eyo = eYo.Delegate.Manager.create(workspace, this, prototypeName)
 
   /** @type {string} */
   this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
@@ -132,7 +132,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
         'Error: Unknown block type "%s".', prototypeName)
     goog.mixin(this, prototype)
   }
-
+  
   // workspace.addTopBlock(this)
 
   // Call an initialization function, if it exists.
@@ -195,6 +195,24 @@ Object.defineProperties(eYo.Block.prototype, {
       var ui = this.eyo && this.eyo.ui
       ui && (ui.rendered = newValue)
     }
+  },
+  workspace: {
+    get () {
+      return this.eyo.workspace
+    },
+    set (newValue) {
+      this.eyo.workspace = newValue
+    }
+  },
+  inputList: {
+    get () {
+      return this.eyo.inputList
+    }
+  },
+  type: {
+    get () {
+      return this.eyo.type
+    }
   }
 })
 
@@ -228,9 +246,7 @@ eYo.Block.prototype.dispose = function (healStack) {
     try {
       // First, dispose of all my children.
       // This must be done before unplug
-      for (var i = this.childBlocks_.length - 1; i >= 0; i--) {
-        this.childBlocks_[i].dispose(false)
-      }
+      this.childBlocks_.forEach(b => b.dispose(false))
     } finally {
       Blockly.Events.enable()
     }  
@@ -239,10 +255,10 @@ eYo.Block.prototype.dispose = function (healStack) {
       Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
     }  
   }
-  this.eyo.deinit()
   Blockly.Events.disable()
   try {
     eYo.Block.superClass_.dispose.call(this, healStack)
+    this.eyo.dispose()
   } finally {
     Blockly.Events.enable()
   }

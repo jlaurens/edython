@@ -248,6 +248,12 @@ Object.defineProperties(eYo.Span.prototype, {
 })
 
 /**
+ * Dispose of the receiver's resources.
+ */
+eYo.Span.prototype.dispose = function () {
+}
+
+/**
  * Sets from the given location (`Where`).
  * @param {Number | Object!} c  Number or object with `c` and `l` number properties.
  * @param {Number} l  Number, when `c` is also a number, defaults to 1.

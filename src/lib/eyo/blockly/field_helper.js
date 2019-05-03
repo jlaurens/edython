@@ -49,6 +49,8 @@ eYo.FieldHelper = function (field) {
 eYo.FieldHelper.prototype.dispose = function () {
   var d = this.ui_driver
   d && d.fieldDispose(this.field)
+  this.size.dispose()
+  this.field_ = this.size = undefined
 }
 
 Object.defineProperties(
@@ -268,10 +270,10 @@ eYo.FieldHelper.makeFields = (() => {
       setupModel(model)
       if (model.edit || model.validator || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(null, model.edit || '', model.validator, fieldName)
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(model.edit || '', model.validator, fieldName)
       } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
         // this is just a label field
-        field = new eYo.FieldLabel(null, model.value || '')
+        field = new eYo.FieldLabel(model.value || '')
       } else { // other entries are ignored
         return
       }
@@ -456,3 +458,9 @@ eYo.FieldHelper.makeFields = (() => {
     owner.toEndField && delete owner.toEndField.eyo.eyoLast_
   }
 }) ()
+
+eYo.FieldHelper.disposeFields = owner => {
+  var fields = owner.fields
+  owner.fieldAtStart = owner.toEndField = owner.bindField = owner.fields = undefined
+  Object.keys(fields).forEach(k => fields[k].dispose())
+}

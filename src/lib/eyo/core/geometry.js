@@ -55,6 +55,11 @@ eYo.Where = function(c, l) {
   this.set(c, l)
 }
 
+/**
+ * Dispose of the receive resources.
+ */
+eYo.Where.prototype.dispose = eYo.Do.nothing
+
 goog.inherits(eYo.Where, goog.math.Coordinate)
 
 eYo.Where.get_c = function () {
@@ -244,6 +249,10 @@ Object.defineProperties(
     }
   }
 )
+/**
+ * Dispose of the receiver's resources.
+ */
+eYo.Size.prototype.dispose = eYo.Do.nothing
 
 /**
  * set the `Size`.

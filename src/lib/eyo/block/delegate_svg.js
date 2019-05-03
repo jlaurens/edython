@@ -43,11 +43,6 @@ eYo.DelegateSvg.prototype.packedBrackets = true
 Object.defineProperties(
   eYo.DelegateSvg.prototype,
   {
-    workspace: {
-      get () {
-        return this.block_.workspace
-      }
-    },
     isCollapsed: {
       get () {
         return this.block_.isCollapsed()

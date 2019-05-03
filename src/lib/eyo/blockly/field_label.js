@@ -27,13 +27,8 @@ goog.require('goog.dom');
  * @extends {Blockly.FieldLabel}
  * @constructor
  */
-eYo.FieldLabel = function (owner, text, optClass) {
-  if (owner) {
-    this.eyo = owner
-    owner.field_ = this
-  } else {
-    this.eyo = new eYo.FieldHelper(this)
-  }
+eYo.FieldLabel = function (text, optClass) {
+  this.eyo = new eYo.FieldHelper(this)
   this.eyo.isLabel = true
   eYo.FieldLabel.superClass_.constructor.call(this, text, optClass)
 }
@@ -43,9 +38,9 @@ goog.inherits(eYo.FieldLabel, Blockly.FieldLabel)
  * Dispose of all DOM objects belonging to this field.
  */
 eYo.FieldLabel.prototype.dispose = function () {
-  eYo.FieldLabel.superClass_.dispose.call(this)
   this.eyo.dispose()
   this.eyo = null
+  eYo.FieldLabel.superClass_.dispose.call(this)
 }
 
 Object.defineProperties(

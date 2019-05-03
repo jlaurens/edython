@@ -107,6 +107,13 @@ eYo.Data = function (owner, key, model) {
   }
 }
 
+/**
+ * Dispose of the receiver's resources
+ */
+eYo.Data.prototype.dispose = function () {
+  this.owner = this.value_ = undefined
+}
+
 Object.defineProperties(eYo.Data.prototype, {
   block: {
     get () {

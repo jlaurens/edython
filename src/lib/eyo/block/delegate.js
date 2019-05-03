@@ -29,6 +29,12 @@ goog.require('eYo.Data')
 /**
  * Class for a Block Delegate.
  * Not normally called directly, eYo.Delegate.Manager.create(...) is preferred.
+ * Also initialize a implementation model.
+ * The underlying state and model are not expected to change while running.
+ * When done, the node has all its properties ready to use
+ * but their values are not properly setup.
+ * The block may not be in a consistent state,
+ * for what it was designed to.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
@@ -40,12 +46,13 @@ goog.require('eYo.Data')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.Delegate = function (block) {
+eYo.Delegate = function (workspace, block) {
   eYo.Delegate.superClass_.constructor.call(this)
+  this.workspace = workspace
+  this.inputList = []
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   this.span_ = new eYo.Span(this)
-  this.registerDisposable(block)
   block.eyo = this
   this.change = {
     // the count is incremented each time a change occurs,
@@ -79,9 +86,48 @@ eYo.Delegate = function (block) {
   this.reentrant = {}
   this.mainHeight_ = this.blackHeight_ = this.suiteHeight_ = this.nextHeight_ = this.headHeight_ = this.footHeight_ = 0
   this.updateMainCount()
+  // make the state
+  this.newData()
+  this.makeFields()
+  this.makeSlots()
+  this.makeConnections()
+  // now make the bounds between data and fields
+  this.makeBounds()
+  eYo.Events.disableWrap(() => {
+    this.changeWrap(() => {
+      // initialize the data
+      this.forEachData(data => data.init())
+      this.forEachSlot(slot => slot.init())
+      // At this point the state value may not be consistent
+      this.consolidate()
+      // but now it should be
+      this.model.init && this.model.init.call(this)
+    })  
+  })
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
+/**
+ * Dispose of all the resources.
+ */
+eYo.Delegate.prototype.dispose = function () {
+  this.span.dispose()
+  this.span_ = undefined
+  if (this.leftStmtConnection_) {
+    this.leftStmtConnection_.dispose()
+    this.leftStmtConnection_ = undefined
+    this.rightStmtConnection_.dispose()
+    this.rightStmtConnection_ = undefined
+    this.suiteStmtConnection_ && this.suiteStmtConnection_.dispose()
+    this.suiteStmtConnection_ = undefined
+  }
+  this.forEachSlot(slot => slot.dispose())
+  this.slots = undefined
+  eYo.FieldHelper.disposeFields(this)
+  this.forEachData(data => data.dispose())
+  this.data = undefined
+  this.inputList = undefined
+}
 
 /**
  * Model getter. Convenient shortcut.
@@ -94,11 +140,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
   id: {
     get () {
       return this.block_.id
-    }
-  },
-  workspace: {
-    get () {
-      return this.block_.workspace
     }
   },
   isInFlyout: {
@@ -460,11 +501,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return this.block_.workspace.eyo.recover
     }
   },
-  inputList: {
-    get () {
-      return this.block_.inputList
-    }
-  },
   lastInput: {
     get () {
       var list = this.inputList
@@ -517,9 +553,7 @@ eYo.Delegate.prototype.incrementChangeCount = function (deep) {
     this.change.step = this.change.count
   }
   if (deep) {
-    this.block_.childBlocks_.forEach(block => {
-      block.eyo.incrementChangeCount(deep)
-    });
+    this.block_.childBlocks_.forEach(b => b.eyo.incrementChangeCount(deep))
   }
 }
 
@@ -990,8 +1024,8 @@ eYo.Delegate.Manager = (() => {
       (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
       parent
-      var delegateC9r = owner[key] = function (block) {
-        delegateC9r.superClass_.constructor.call(this, block)
+      var delegateC9r = owner[key] = function (workspace, block) {
+        delegateC9r.superClass_.constructor.call(this, workspace, block)
       }
       goog.inherits(delegateC9r, parent)
       me.prepareDelegate(delegateC9r, key)
@@ -1114,11 +1148,11 @@ eYo.Delegate.Manager = (() => {
    * @param {!Blockly.Block} block
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (block, prototypeName) {
+  me.create = function (workspace, block, prototypeName) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
     var DelegateC9r = C9rs[prototypeName || block.type]
     goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName || block.type)
-    var d = DelegateC9r && new DelegateC9r(block)
+    var d = DelegateC9r && new DelegateC9r(workspace, block)
     d && d.setupType(prototypeName)
     return d
   }
@@ -1249,7 +1283,7 @@ eYo.Delegate.prototype.getSubtype = function () {
  * @return {?String} The type of the receiver's block.
  */
 eYo.Delegate.prototype.getBaseType = function () {
-  return this.baseType_ || this.block_.type // no this.type because of recursion
+  return this.baseType_ // no this.type because of recursion
 }
 
 /**
@@ -1493,37 +1527,13 @@ eYo.Delegate.makeSubclass = function (key, model, owner) {
   return eYo.Delegate.Manager.makeSubclass(key, model, eYo.Delegate, owner)
 }
 
-
 /**
- * Initialize a block's implementation model.
- * Called from block's creation method.
- * This should be called only once.
- * The underlying model is not expected to change while running.
- * When done, the block has all its properties ready to use
- * but their values are not proerly setup.
- * The block may not be in a consistent state,
- * for what it was designed to.
- * @param {!Blockly.Block} block to be initialized.
- * For subclassers eventually
- */
-eYo.Delegate.prototype.makeState = function () {
-  this.makeData()
-  this.makeContents()
-  this.makeFields()
-  this.makeSlots()
-  this.makeConnections()
-  // now make the bounds between data and fields
-  this.makeBounds()
-}
-
-/**
- * Make the data.
- * Called only by `makeState`.
- * Should be called only once.
+ * Make the data according to the model.
+ * Called only once during creation process.
  * No data change, no rendering.
  * For edython.
  */
-eYo.Delegate.prototype.makeData = function () {
+eYo.Delegate.prototype.newData = function () {
   var data = Object.create(null) // just a hash
   var dataModel = this.model.data
   var byOrder = []
@@ -1568,14 +1578,6 @@ eYo.Delegate.prototype.makeData = function () {
  */
 eYo.Delegate.prototype.makeFields = function () {
   eYo.FieldHelper.makeFields(this, this.model.fields)
-}
-
-/**
- * Make the contents
- * For edython.
- */
-eYo.Delegate.prototype.makeContents = function () {
-  eYo.Content.feed(this, this.model.contents || this.model.fields)
 }
 
 /**
@@ -1711,23 +1713,16 @@ eYo.Delegate.prototype.type_ = undefined
  * @private
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
-  var block = this.block_
-  if (!optNewType && !block.type) {
+  if (!optNewType && !this.type) {
     console.error('Error!')
   }
   if (optNewType === eYo.T3.Expr.unset) {
     console.error('C\'est une erreur!')
   }
-  if (goog.isDef(optNewType) && block.type === optNewType) {
+  if (goog.isDef(optNewType) && this.type === optNewType) {
     return
   }
-  optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (block.type = optNewType)
-  var m = /^eyo:((?:fake_)?((.*?)(?:)?))$/.exec(block.type)
-  this.pythonType_ = m ? m[1] : block.type
-  this.type_ = m ? 'eyo:' + m[2] : block.type
-  if (!this.pythonType_) {
-    console.error('Error! this.pythonType_')
-  } 
+  optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
 }
 
 /**
@@ -1846,18 +1841,6 @@ eYo.Delegate.prototype.consolidateConnections = function () {
  * be executed outside of any undo management.
  */
 eYo.Delegate.prototype.init = function () {
-  eYo.Events.disableWrap(() => {
-    this.changeWrap(() => {
-      this.makeState()
-      // initialize the data
-      this.forEachData(data => data.init())
-      this.forEachSlot(slot => slot.init())
-      // At this point the state value may not be consistent
-      this.consolidate()
-      // but now it should be
-      this.model.init && this.model.init.call(this)
-    })  
-  })
 }
 
 /**
@@ -1866,14 +1849,6 @@ eYo.Delegate.prototype.init = function () {
 */
 eYo.Delegate.prototype.deinit = function () {
   this.model.deinit && this.model.deinit.call(this)
-  if (this.leftStmtConnection_) {
-    this.leftStmtConnection_.dispose()
-    this.leftStmtConnection_ = undefined
-    this.rightStmtConnection_.dispose()
-    this.rightStmtConnection_ = undefined
-    this.suiteStmtConnection_ && this.suiteStmtConnection_.dispose()
-    this.suiteStmtConnection_ = undefined
-  }
 }
 
 /**
@@ -1910,9 +1885,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
   if (!this.wrapped_) {
     blocks.push(this.block_)
   }
-  this.block_.childBlocks_.forEach(child => {
-    blocks = blocks.concat(child.eyo.getWrappedDescendants())
-  })
+  this.block_.childBlocks_.forEach(b => blocks = blocks.concat(b.eyo.getWrappedDescendants()))
   return blocks
 }
 

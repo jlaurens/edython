@@ -77,21 +77,20 @@ eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(block,
     `block must exist ${key}`)
   eYo.FieldHelper.makeFields(this, model.fields)
-  eYo.Content.feed(this, model.contents || model.fields)
   var f = () => {
-    var c_eyo = this.input.connection.eyo
+    var c_eyo = this.c_eyo
     c_eyo.source = this
     c_eyo.model = model
   }
   if (model.wrap) {
-    this.setInput(owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden))
+    this.input = owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden)
     f()
   } else if (model.promise) {
-    this.setInput(owner.appendPromiseValueInput(key, model.promise, model.optional, model.hidden))
+    this.input = owner.appendPromiseValueInput(key, model.promise, model.optional, model.hidden)
     f()
     this.setIncog(true)
   } else if (goog.isDefAndNotNull(model.check)) {
-    this.setInput(block.appendValueInput(key))
+    this.input = block.appendValueInput(key)
     f()
   }
   if (key === 'comment') {
@@ -109,15 +108,78 @@ eYo.Slot.prototype.init = function () {
   f && f.call(this)
 }
 
+/**
+ * Dispose of all attributes.
+ * Asks the owner's renderer to do the same.
+ */
+eYo.Slot.prototype.dispose = function () {
+  var ui = this.owner.ui
+  ui && ui.driver.slotDispose(this)
+  this.where.dispose && this.where.dispose()
+  this.where = undefined
+  this.input && this.input.dispose()
+  this.input = undefined
+  eYo.FieldHelper.disposeFields(this)
+  this.model = undefined
+  this.reentrant = undefined
+  this.key = undefined
+  this.owner = undefined
+}
+
 Object.defineProperties(eYo.Slot.prototype, {
   block: {
     get () {
       return this.owner.block_
     }
   },
+  input: {
+    get () {
+      return this.input_
+    },
+    set (newValue) {
+      if (this.input_ !== newValue) {
+        var c_eyo = this.c_eyo
+        if (c_eyo) {
+          c_eyo.source = c_eyo.model = undefined
+        }      
+      }
+      if ((this.input_ = newValue)) {
+        newValue.eyo.slot = this
+        var c_eyo = this.c_eyo
+        if (c_eyo) {
+          c_eyo.source = c_eyo.slot = this
+          c_eyo.model = this.model
+          c_eyo.name_ = this.key
+          if (this.model.plugged) {
+            c_eyo.plugged_ = this.model.plugged
+          }
+          if (this.model.suite && Object.keys(this.model.suite).length) {
+            goog.mixin(c_eyo, this.model.suite)
+          }
+          if (this.model.optional) { // svg
+            c_eyo.optional_ = true
+          }
+          if (this.model.hidden) { // svg
+            this.incog = c_eyo.hidden_ = true
+          }
+        }
+      }
+    }
+  },
+  inputType: {
+    get () {
+      return this.input && this.input.type
+    }
+  },
   connection: {
     get () {
       return this.input && this.input.connection
+    }
+  },
+  c_eyo: {
+    get () {
+      var c8n = this.connection
+      return c8n && c8n.eyo
     }
   },
   sourceBlock_: {
@@ -214,20 +276,6 @@ eYo.Slot.prototype.beReady = function () {
   Object.values(this.fields).forEach(f)
   this.bindField && f(this.bindField)
   this.input && this.input.eyo.beReady()
-}
-
-/**
- * Dispose of all attributes.
- * Asks the owner's renderer to do the same.
- */
-eYo.Slot.prototype.dispose = function () {
-  var ui = this.owner.ui
-  ui && ui.driver.slotDispose(this)
-  this.sourceBlock_ = null
-  this.owner = null
-  this.key = null
-  this.model = null
-  this.input = null
 }
 
 /**

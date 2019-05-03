@@ -20,7 +20,6 @@ goog.provide('eYo.Field.Variable')
 
 goog.require('eYo.FieldHelper')
 goog.require('eYo.Msg')
-goog.require('eYo.Content')
 goog.require('eYo.Field')
 goog.require('goog.dom');
 goog.require('Blockly.FieldTextInput')
@@ -36,13 +35,8 @@ goog.require('Blockly.FieldTextInput')
  * @constructor
  * @suppress{accessControls}
  */
-eYo.FieldTextInput = function (owner, text, optValidator) {
-  if (owner) {
-    this.eyo = owner
-    owner.field_ = this
-  } else {
-    this.eyo = new eYo.FieldHelper(this)
-  }
+eYo.FieldTextInput = function (text, optValidator) {
+  this.eyo = new eYo.FieldHelper(this)
   this.eyo.isTextInput = true
   eYo.FieldTextInput.superClass_.constructor.call(this, text,
     optValidator)
@@ -53,9 +47,9 @@ goog.inherits(eYo.FieldTextInput, Blockly.FieldTextInput)
  * Dispose of the delegate.
  */
 eYo.FieldTextInput.prototype.dispose = function () {
-  eYo.FieldTextInput.superClass_.dispose.call(this)
   this.eyo.dispose()
   this.eyo = null
+  eYo.FieldTextInput.superClass_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.FieldTextInput.prototype, {
@@ -233,9 +227,9 @@ eYo.FieldTextInput.prototype.resizeEditor_ = function () {
  * @extends {eYo.FieldTextInput}
  * @constructor
  */
-eYo.FieldInput = function (owner, text, optValidator, key) {
+eYo.FieldInput = function (text, optValidator, key) {
   goog.asserts.assert(key, 'missing key for an editable field')
-  eYo.FieldInput.superClass_.constructor.call(this, owner, text,
+  eYo.FieldInput.superClass_.constructor.call(this, text,
     optValidator)
   this.spellcheck_ = false
   key && (this.eyo.key = key)
@@ -314,11 +308,11 @@ eYo.FieldInput.prototype.setValue = function (newValue) {
  *     text as an argument and returns either the accepted text, a replacement
  *     text, or null to abort the change.
  * @param {string=} key
- * @extends {eYo.FieldTextInput}
+ * @extends {eYo.FieldInput}
  * @constructor
  */
-eYo.FieldVariable = function (owner, text, optValidator, key) {
-  eYo.FieldVariable.superClass_.constructor.call(this, owner, text, optValidator, key)
+eYo.FieldVariable = function (text, optValidator, key) {
+  eYo.FieldVariable.superClass_.constructor.call(this, text, optValidator, key)
 }
 goog.inherits(eYo.FieldVariable, eYo.FieldInput)
 
@@ -333,54 +327,6 @@ eYo.FieldVariable.prototype.getPythonText_ = function () {
   var candidate = this.text_? this.text_ : ''
   return !XRegExp.match(candidate, /\s/) && candidate || (!this.eyo.optional_ && '<MISSING NAME>')
 }
-
-/**
- * Setup the model.
- * Overrides the original method appending edition related stuff.
- */
-eYo.Content.prototype.setupModel = (() => {
-  var setupModel = eYo.Content.prototype.setupModel
-  // This is a closure
-  // default helper functions for an editable field bound to a data object
-  // `this` is an instance of  eYo.FieldInput
-  var validate = function (txt) {
-    // `this` is a field's owner
-    return this.validate(txt)
-  }
-  var startEditing = function () {
-  }
-  var endEditing = function () {
-    var data = this.eyo.data
-    goog.asserts.assert(data, 'No data bound to content ' + this.key + '/' + this.eyo.b_eyo.type)
-    var result = this.callValidator(this.getValue())
-    if (result !== null) {
-      data.fromField(result)
-      data.synchronize(result) // would this be included in the previous method ?
-    } else {
-      this.setValue(data.toText())
-    }
-  }
-  return function () {
-    // no need to setup the model each time we create a new field master
-    setupModel.call(this)
-    var model = this.model
-    if (model.validate === true) {
-      model.validate = validate
-    } else if (model.validate && !goog.isFunction(model.validate)) {
-      delete model.validate
-    }
-    if (model.startEditing === true) {
-      model.startEditing = startEditing
-    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
-      delete model.startEditing
-    }
-    if (model.endEditing === true) {
-      model.endEditing = endEditing
-    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
-      delete model.endEditing
-    }
-  }
-}) ()
 
 /**
  * Get the text from this field to be use in python code.
