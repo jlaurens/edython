@@ -52,10 +52,12 @@ augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expressi
 assignment_stmt ::= target_list "=" value_list
 
 Does augtarget belong to target_list ? Yes it is a subset.
+
+BEWARE: named expressions are not yet included in argument list management.
 <pre>
 assignment_stmt/assignment ::= target_list "=" value_list
 assignment_chain ::= target_list "=" value_list
-assignment_expr ::= expression ":=" expression
+named_expr ::= expression ":=" expression
 value_list ::= starred_item | yield_expression | assignment_chain | identifier_valued
 augmented_assignment_stmt/augmented_assignment ::=  augtarget augop augassigned_list
 named_augtarget ::=  identifier | dotted_name | named_attributeref | named_subscription | named_slicing

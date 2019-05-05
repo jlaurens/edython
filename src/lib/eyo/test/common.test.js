@@ -452,7 +452,7 @@ eYo.Test.newIdentifier = (str) => {
  * @param {string} node  the child element is `svg[node]`
  * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
  */
-eYo.Test.svgNodeParent= (svg, node, parent, type) => {
+eYo.Test.svgNodeParent = (svg, node, parent, type) => {
   if (svg.eyo) {
     type = type || svg.eyo.type
     svg = svg.eyo.ui.svg
@@ -467,4 +467,20 @@ eYo.Test.svgNodeParent= (svg, node, parent, type) => {
   } else if (parent) {
     chai.assert(svg[node].parentNode === parent, `MISSING svg.${node}.parentNode === ${parent} in ${type}`)
   }
+}
+
+/**
+ * Test the various string as python source code
+ * @param {string} str  The source code to test.
+ */
+eYo.Test.source = (str) => {
+  var err_ret = {}
+  var n = eYo.Parser.PyParser_ParseString(str, eYo.GMR._PyParser_Grammar, eYo.TKN.file_input, err_ret)
+  var b = n.toBlock(Blockly.mainWorkspace)
+  if (!b) {
+    eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, n)
+  }
+  chai.assert(b, `WHERE IS THE BLOCK ${n.type}`)
+  eYo.Test.code(b, str)
+  b.dispose()
 }

@@ -755,7 +755,6 @@ eYo.Node.prototype.dictorsetmaker2Dlgt = function (t_eyo) {
       // set comprehension
       t_eyo.lastConnect(this.comprehension2Block(t_eyo.workspace))
       t_eyo.variant_p = eYo.Key.BRACE
-      console.error(t_eyo.variant_p, eYo.Key.BRACE)
       return t_eyo
     } else if ((n2 = n1.sibling)) {
       if (n2.n_type === eYo.TKN.comp_for) {

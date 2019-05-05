@@ -209,6 +209,10 @@ eYo.DelegateSvg.Expr.binary.getOperatorModelForType = function (type) {
       lhs: eYo.T3.Expr.Check.or_expr_all,
       rhs: eYo.T3.Expr.Check.xor_expr_all
     },
+    [eYo.T3.Expr.comparison]: {
+      lhs: eYo.T3.Expr.Check.comparison,
+      rhs: eYo.T3.Expr.Check.comparison
+    },
     [eYo.T3.Expr.number_comparison]: {
       lhs: eYo.T3.Expr.Check.comparison,
       rhs: eYo.T3.Expr.Check.comparison

@@ -264,7 +264,7 @@ eYo.FieldHelper.makeFields = (() => {
       if (model.startsWith('css')) {
         return
       }
-      field = new eYo.FieldLabel(null, model)
+      field = new eYo.FieldLabel(model)
       field.eyo.css_class = model.css_class || eYo.T3.getCssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)

@@ -218,7 +218,7 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
     }
   }
   this.setupType(type || T3.else_part) // bad smell, the code has changed
-  return this.block_.type // avoid `this.type`
+  return this.type_
 }
 
 /**

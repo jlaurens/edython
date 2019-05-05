@@ -372,7 +372,7 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * This is the expected way to create a block 
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
- * @param {!String|Object} prototypeName or xml representation.
+ * @param {!String|Object} model prototypeName or xml representation.
  * @param {?string} id
  * @private
  */

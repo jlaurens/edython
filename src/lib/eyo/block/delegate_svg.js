@@ -619,7 +619,7 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * @private
  */
 eYo.DelegateSvg.newBlockComplete = (() => {
-  var processModel = (workspace, block, model, id) => {
+  var processModel = (workspace, model, id, block) => {
     var dataModel = model
     if (!block) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
@@ -666,7 +666,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
             if (input && input.connection) {
               var target = input.eyo.target
               var V = Vs[k]
-              var B = processModel(workspace, target, V)
+              var B = processModel(workspace, V, null, target)
               if (!target && B && B.outputConnection) {
                 B.eyo.changeWrap(
                   () => {
@@ -694,7 +694,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
             return
           }
           var target = input.eyo.target
-          var B = processModel(workspace, target, V)
+          var B = processModel(workspace, V, null, target)
           if (!target && B && B.outputConnection) {
             B.eyo.changeWrap(
               () => {
@@ -710,7 +710,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
         if (block.nextConnection) {
           var nextModel = dataModel.next
           if (nextModel) {
-            B = processModel(workspace, null, nextModel)
+            B = processModel(workspace, nextModel)
             if (B && B.previousConnection) {
               try {
                 B.previousConnection.connect(block.nextConnection)
@@ -729,7 +729,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
   }
   return function (owner, model, id) {
     var workspace = owner.workspace || owner
-    var B = processModel(workspace, null, model, id)
+    var B = processModel(workspace, model, id)
     if (B) {
       B.eyo.consolidate()
       B.eyo.beReady(owner.isReady || workspace.rendered)

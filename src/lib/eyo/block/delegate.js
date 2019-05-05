@@ -45,11 +45,29 @@ goog.require('eYo.Data')
  * @property {object} surroundParent - Get the surround parent.
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
+ * @readonly
+ * @property {Blockly.Connection} outputConnection
+ * @readonly
+ * @property {Blockly.Connection} previousConnection
+ * @readonly
+ * @property {Blockly.Connection} nextConnection
  */
-eYo.Delegate = function (workspace, block) {
+eYo.Delegate = function (workspace, type, opt_id, block) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.workspace = workspace
+  this.baseType_ = type // readonly private property used by getType
+  this.getBaseType = eYo.Delegate.prototype.getBaseType // no side effect during creation.
+  /** @type {string} */
+  this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
+      opt_id : Blockly.utils.genUid()
+  /** @type {!Array.<!Blockly.Input>} */
   this.inputList = []
+  /**
+   * @type {!Array.<!Blockly.Block>}
+   * @private
+   */
+  this.childBlocks_ = []
+
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   this.span_ = new eYo.Span(this)
@@ -104,6 +122,8 @@ eYo.Delegate = function (workspace, block) {
       this.model.init && this.model.init.call(this)
     })  
   })
+  // Now we are ready to work
+  delete this.getBaseType // next call will use the overriden method if any
 }
 goog.inherits(eYo.Delegate, eYo.Helper)
 
@@ -127,6 +147,8 @@ eYo.Delegate.prototype.dispose = function () {
   this.forEachData(data => data.dispose())
   this.data = undefined
   this.inputList = undefined
+  this.childBlocks_ = undefined
+  this.workspace = undefined
 }
 
 /**
@@ -137,16 +159,12 @@ eYo.Do.getModel = function (type) {
 }
 
 Object.defineProperties(eYo.Delegate.prototype, {
-  id: {
-    get () {
-      return this.block_.id
-    }
-  },
   isInFlyout: {
     get () {
       return this.block_.isInFlyout
     }
   },
+  /** @type {string} */
   type: {
     get () {
       return this.getBaseType()
@@ -312,7 +330,10 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   previousConnection: {
     get () {
-      return this.block_.previousConnection
+      return this.previousConnection_
+    },
+    set (newValue) {
+      this.previousConnection_ = newValue
     }
   },
   previousBlock: {
@@ -339,6 +360,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
   nextConnection: {
     get () {
       return this.block_.nextConnection
+    }
+  },
+  nextConnection: {
+    get () {
+      return this.nextConnection_
+    },
+    set (newValue) {
+      this.nextConnection_ = newValue
     }
   },
   nextBlock: {
@@ -381,7 +410,10 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   outputConnection: {
     get () {
-      return this.block_.outputConnection
+      return this.outputConnection_
+    },
+    set (newValue) {
+      this.outputConnection_ = newValue
     }
   },
   outputBlock: {
@@ -553,7 +585,7 @@ eYo.Delegate.prototype.incrementChangeCount = function (deep) {
     this.change.step = this.change.count
   }
   if (deep) {
-    this.block_.childBlocks_.forEach(b => b.eyo.incrementChangeCount(deep))
+    this.forEachChild(b => b.eyo.incrementChangeCount(deep))
   }
 }
 
@@ -1024,8 +1056,8 @@ eYo.Delegate.Manager = (() => {
       (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
       parent
-      var delegateC9r = owner[key] = function (workspace, block) {
-        delegateC9r.superClass_.constructor.call(this, workspace, block)
+      var delegateC9r = owner[key] = function (workspace, type, opt_id, block) {
+        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id, block)
       }
       goog.inherits(delegateC9r, parent)
       me.prepareDelegate(delegateC9r, key)
@@ -1148,12 +1180,11 @@ eYo.Delegate.Manager = (() => {
    * @param {!Blockly.Block} block
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (workspace, block, prototypeName) {
+  me.create = function (workspace, prototypeName, opt_id, block) {
     goog.asserts.assert(!goog.isString(block), 'API DID CHANGE, update!')
-    var DelegateC9r = C9rs[prototypeName || block.type]
-    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName || block.type)
-    var d = DelegateC9r && new DelegateC9r(workspace, block)
-    d && d.setupType(prototypeName)
+    var DelegateC9r = C9rs[prototypeName]
+    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName)
+    var d = DelegateC9r && new DelegateC9r(workspace, prototypeName, opt_id, block)
     return d
   }
   /**
@@ -1254,7 +1285,7 @@ eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate)
  * @return {String} The type of the receiver's block.
  */
 eYo.Delegate.prototype.getType = function () {
-  return this.block_.type
+  return this.baseType_
 }
 
 /**
@@ -1311,6 +1342,14 @@ eYo.Delegate.prototype.forEachField = function (helper) {
     ans = true
     helper(f)
   })
+}
+
+/**
+ * Execute the helper for each child.
+ * Works on a shallow copy of `childBlocks_`.
+ */
+eYo.Delegate.prototype.forEachChild = function (helper) {
+  this.childBlocks_.slice().forEach(helper)
 }
 
 /**
@@ -1716,11 +1755,11 @@ eYo.Delegate.prototype.setupType = function (optNewType) {
   if (!optNewType && !this.type) {
     console.error('Error!')
   }
+  if (this.type_ === optNewType) {
+    return
+  }
   if (optNewType === eYo.T3.Expr.unset) {
     console.error('C\'est une erreur!')
-  }
-  if (goog.isDef(optNewType) && this.type === optNewType) {
-    return
   }
   optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
 }
@@ -1885,7 +1924,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
   if (!this.wrapped_) {
     blocks.push(this.block_)
   }
-  this.block_.childBlocks_.forEach(b => blocks = blocks.concat(b.eyo.getWrappedDescendants()))
+  this.forEachChild(b => blocks = blocks.concat(b.eyo.getWrappedDescendants()))
   return blocks
 }
 

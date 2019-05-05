@@ -35,29 +35,34 @@ eYo.Consolidator.List.makeSubclass('Target', {
   mandatory: 1,
   presep: ',',
   /**
-   * Augmented assignments, annotated assignment and expressions must take only one target.
+   * Augmented assignments, annotated assignment and expressions,
+   * except assignment chain, must take only one target.
    * @param {!Object} io input/output parameter
    */
   makeUnique: /** @suppress {globalThis} */ function (io) {
+    // types with no unique element
     if ([
-      eYo.T3.Stmt.augmented_assignment_stmt,
-      eYo.T3.Stmt.annotated_stmt,
-      eYo.T3.Stmt.annotated_assignment_stmt
+      eYo.T3.Stmt.expression_stmt,
+      eYo.T3.Stmt.assignment_stmt,
+      eYo.T3.Stmt.for_part,
+      eYo.T3.Stmt.del_stmt,
+      eYo.T3.Expr.dict_comprehension,
+      eYo.T3.Expr.comprehension,
+      eYo.T3.Expr.comp_for,
+      eYo.T3.Expr.assignment_chain,
     ].indexOf(io.subtype) >= 0) {
-      return true
-    }
-    if (io.subtype !== eYo.T3.Expr.identifier_valued
-      && io.subtype !==
-      eYo.T3.Expr.assignment_chain && eYo.Delegate.Manager.getModel(eYo.T3.Expr.identifier).xml.types.indexOf(io.subtype) >= 0) {
       return false
     }
-    /*
+    // types with unique elements
+    if ([
+      eYo.T3.Stmt.annotated_stmt,
+      eYo.T3.Stmt.annotated_assignment_stmt,
+      eYo.T3.Stmt.augmented_assignment_stmt,
       eYo.T3.Expr.identifier,
       eYo.T3.Expr.identifier_annotated,
       eYo.T3.Expr.augtarget_annotated,
       eYo.T3.Expr.key_datum,
       eYo.T3.Expr.identifier_valued,
-      eYo.T3.Expr.assignment_chain,
       eYo.T3.Expr.assignment_expr,
       eYo.T3.Expr.identifier_annotated_valued,
       eYo.T3.Expr.attributeref,
@@ -72,9 +77,11 @@ eYo.Consolidator.List.makeSubclass('Target', {
       eYo.T3.Expr.slicing,
       eYo.T3.Expr.named_slicing,
       eYo.T3.Expr.call_expr,
-      eYo.T3.Expr.named_call_expr
-      */
-    this.makeUnique(io)
+      eYo.T3.Expr.named_call_expr,
+    ].indexOf(io.subtype) >= 0) {
+      return true
+    }
+    // this.makeUnique(io) used when there is a `unique` check
   }
 })
 
@@ -173,16 +180,35 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.Target.prototype.getCheck = (() => {
-  var f = (io) => {
+  var f = io => {
     var subtype = io.subtype
     if (io.i === io.unique) {
-      if (subtype === eYo.T3.Stmt.annotated_stmt || subtype === eYo.T3.Stmt.annotated_assignment_stmt) {
-        return eYo.T3.Expr.Check.target_annotated
-      }
-      if (io.subtype === eYo.T3.Stmt.augmented_assignment_stmt) {
-        return eYo.T3.Expr.Check.augtarget
-      }
-      return eYo.T3.Expr.Check.target
+      // all subtypes with `unique` elements
+      return {
+        [eYo.T3.Stmt.annotated_stmt]: eYo.T3.Expr.Check.target_annotated,
+        [eYo.T3.Stmt.annotated_assignment_stmt]: eYo.T3.Expr.Check.target_annotated,
+        [eYo.T3.Stmt.augmented_assignment_stmt]: eYo.T3.Expr.Check.augtarget,
+        [eYo.T3.Expr.identifier]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.identifier_annotated]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.augtarget_annotated]: eYo.T3.Expr.Check.augtarget,
+        [eYo.T3.Expr.key_datum]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.identifier_valued]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.assignment_expr]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.identifier_annotated_valued]: eYo.T3.Expr.Check.target,
+        [eYo.T3.Expr.attributeref]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.named_attributeref]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.dotted_name]: eYo.T3.Expr.identifier,
+        [eYo.T3.Expr.parent_module]: eYo.T3.Expr.identifier,
+        [eYo.T3.Expr.identifier_as]: eYo.T3.Expr.identifier,
+        [eYo.T3.Expr.dotted_name_as]: eYo.T3.Expr.identifier,
+        [eYo.T3.Expr.expression_as]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.subscription]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.named_subscription]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.slicing]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.named_slicing]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.call_expr]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.named_call_expr]: eYo.T3.Expr.Check.expression,
+      } [io.subtype] || eYo.T3.Expr.Check.target
     }
     if (io.i === 1 && io.list.length === 3) {
       return eYo.T3.Expr.Check.target
@@ -233,6 +259,45 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  * Class for a DelegateSvg, target_list block.
  * This block may be wrapped.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * This block appears in
+ * - assignment's target slot, types:
+ *    - expression_stmt
+ *    - assignment_stmt
+ *    - annotated_stmt
+ *    - annotated_assignment_stmt
+ *    - augmented_assignment_stmt
+ * - comprehension's for slot, types:
+ *    - dict_comprehension
+ *    - comprehension
+ * - comp_for's for slot, types:
+ *    - comp_for
+ * - for_part's for slot, types:
+ *    - for_part
+ * - primary's target slot, types:
+ *    - identifier
+ *    - identifier_annotated
+ *    - augtarget_annotated
+ *    - key_datum
+ *    - identifier_valued
+ *    - assignment_chain
+ *    - assignment_expr
+ *    - identifier_annotated_valued
+ *    - attributeref
+ *    - named_attributeref
+ *    - dotted_name
+ *    - parent_module
+ *    - identifier_as
+ *    - dotted_name_as
+ *    - expression_as
+ *    - subscription
+ *    - named_subscription
+ *    - slicing
+ *    - named_slicing
+ *    - call_expr
+ *    - named_call_expr
+ * - del_stmt's del slot, types:
+ *    - del_stmt
+ * All the types involved are
  * For edython.
  */
 eYo.DelegateSvg.List.makeSubclass('target_list', {

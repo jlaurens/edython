@@ -52,6 +52,11 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.c * eYo.Unit.x
     }
   },
+  x: {
+    get () {
+      return this.width
+    }
+  },
   l: {
     get () {
       return this.l_
@@ -63,6 +68,11 @@ Object.defineProperties(eYo.Span.prototype, {
   height: {
     get () {
       return this.l_ * eYo.Unit.y
+    }
+  },
+  y: {
+    get () {
+      return this.height
     }
   },
   /**

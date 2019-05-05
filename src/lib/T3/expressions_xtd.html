@@ -76,7 +76,7 @@ yield_atom       ::=  "(" yield_expression ")"
 <pre>
 yield_atom ::= REMOVE
 generator_expression ::= REMOVE
-starred_item_38 ::= assignment_expr | expression | star_expr
+starred_item_38 ::= named_expr | expression | star_expr
 </pre>
 
 <pre>
@@ -187,7 +187,7 @@ conditional_expression ::=  or_test_all "if" or_test_all "else" expression
 </pre>
 3.8 support: namedexpr_test may change
 <pre>
-namedexpr_test ::=  assignment_expr | or_test_all | conditional_expression | lambda_expr
+namedexpr_test ::=  named_expr | or_test_all | conditional_expression | lambda_expr
 </pre>
 <pre>
 lambda ::= "lambda" [parameter_list]: (expression | expression_no_cond)

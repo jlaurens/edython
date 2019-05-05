@@ -37,20 +37,20 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
         + '\nThis name will be DISALLOWED (throwing an error) in future '
         + 'versions of Blockly.')
   }
-  this.eyo = eYo.Delegate.Manager.create(workspace, this, prototypeName)
+  this.eyo = eYo.Delegate.Manager.create(workspace, prototypeName, opt_id, this)
 
-  /** @type {string} */
-  this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
-      opt_id : Blockly.utils.genUid()
+  // /** @type {string} */
+  // this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
+  //     opt_id : Blockly.utils.genUid()
   workspace.blockDB_[this.id] = this
-  /** @type {Blockly.Connection} */
-  this.outputConnection = null
-  /** @type {Blockly.Connection} */
-  this.nextConnection = null
-  /** @type {Blockly.Connection} */
-  this.previousConnection = null
-  /** @type {!Array.<!Blockly.Input>} */
-  this.inputList = []
+  // /** @type {Blockly.Connection} */
+  // this.outputConnection = null
+  // /** @type {Blockly.Connection} */
+  // this.nextConnection = null
+  // /** @type {Blockly.Connection} */
+  // this.previousConnection = null
+  // /** @type {!Array.<!Blockly.Input>} */
+  // this.inputList = []
   /** @type {boolean|undefined} */
   this.inputsInline = undefined
   /** @type {boolean} */
@@ -66,11 +66,11 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
    */
   this.parentBlock_ = null
 
-  /**
-   * @type {!Array.<!Blockly.Block>}
-   * @private
-   */
-  this.childBlocks_ = []
+  // /**
+  //  * @type {!Array.<!Blockly.Block>}
+  //  * @private
+  //  */
+  // this.childBlocks_ = []
 
   /**
    * @type {boolean}
@@ -113,8 +113,8 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
    */
   this.xy_ = new goog.math.Coordinate(0, 0)
 
-  /** @type {!Blockly.Workspace} */
-  this.workspace = workspace
+  // /** @type {!Blockly.Workspace} */
+  // this.workspace = workspace
   /** @type {boolean} */
   this.isInFlyout = workspace.isFlyout
   /** @type {boolean} */
@@ -125,8 +125,8 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
 
   // Copy the type-specific functions and data from the prototype.
   if (prototypeName) {
-    /** @type {string} */
-    this.type = prototypeName
+    // /** @type {string} */
+    // this.type = prototypeName
     var prototype = Blockly.Blocks[prototypeName]
     goog.asserts.assertObject(prototype,
         'Error: Unknown block type "%s".', prototypeName)
@@ -170,6 +170,58 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
 goog.inherits(eYo.Block, Blockly.Block)
 
 Object.defineProperties(eYo.Block.prototype, {
+  workspace: {
+    get () {
+      return this.eyo.workspace
+    },
+    set (newValue) {
+      // do nothing
+    }
+  },
+  type: {
+    get () {
+      return this.eyo.type
+    }
+  },
+  id: {
+    get () {
+      return this.eyo.id
+    }
+  },
+  inputList: {
+    get () {
+      return this.eyo.inputList
+    }
+  },
+  childBlocks_: {
+    get () {
+      return this.eyo.childBlocks_
+    }
+  },
+  outputConnection: {
+    get () {
+      return this.eyo.outputConnection_
+    },
+    set (newValue) {
+      this.eyo.outputConnection_ = newValue
+    }
+  },
+  previousConnection: {
+    get () {
+      return this.eyo.previousConnection_
+    },
+    set (newValue) {
+      this.eyo.previousConnection_ = newValue
+    }
+  },
+  nextConnection: {
+    get () {
+      return this.eyo.nextConnection_
+    },
+    set (newValue) {
+      this.eyo.nextConnection_ = newValue
+    }
+  },
   width: {
     get () {
       return this.eyo.span && this.eyo.span.width || this.width__
@@ -194,24 +246,6 @@ Object.defineProperties(eYo.Block.prototype, {
     set (newValue) {
       var ui = this.eyo && this.eyo.ui
       ui && (ui.rendered = newValue)
-    }
-  },
-  workspace: {
-    get () {
-      return this.eyo.workspace
-    },
-    set (newValue) {
-      this.eyo.workspace = newValue
-    }
-  },
-  inputList: {
-    get () {
-      return this.eyo.inputList
-    }
-  },
-  type: {
-    get () {
-      return this.eyo.type
     }
   }
 })
@@ -246,7 +280,7 @@ eYo.Block.prototype.dispose = function (healStack) {
     try {
       // First, dispose of all my children.
       // This must be done before unplug
-      this.childBlocks_.forEach(b => b.dispose(false))
+      this.forEachChild(b => b.dispose(false))
     } finally {
       Blockly.Events.enable()
     }  
@@ -423,7 +457,7 @@ Blockly.Block.prototype.dispose = function(healStack) {
     // methodically step through the blocks and carefully disassemble them.
 
     // First, dispose of all my children.
-    this.childBlocks_.forEach(b => {
+    this.forEachChild(b => {
       // disable auto creation of wrapped targets
       var c8n = b.eyo.outputConnection
       c8n = c8n && c8n.targetConnection
@@ -449,4 +483,12 @@ Blockly.Block.prototype.dispose = function(healStack) {
   } finally {
     Blockly.Events.enable()
   }
+}
+
+/**
+ * Execute the helper for each child.
+ * Works on a shallow copy of `childBlocks_`.
+ */
+Blockly.Block.prototype.forEachChild = function (helper) {
+  this.eyo.forEachChild(helper)
 }

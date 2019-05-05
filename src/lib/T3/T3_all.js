@@ -31,7 +31,7 @@ eYo.T3.All.core_expressions = [ // count 81
     eYo.T3.Expr.any,
     eYo.T3.Expr.argument_list,
     eYo.T3.Expr.assignment_chain,
-    eYo.T3.Expr.assignment_expr,
+    eYo.T3.Expr.named_expr,
     eYo.T3.Expr.attributeref,
     eYo.T3.Expr.augop,
     eYo.T3.Expr.augtarget_annotated,

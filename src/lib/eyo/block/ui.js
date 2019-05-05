@@ -471,9 +471,6 @@ eYo.UI.prototype.render = (() => {
  * @private
  */
 eYo.UI.prototype.willShortRender_ = function (recorder) {
-  if (this.node.suiteStmtConnection) {
-    this.node.size.h = this.main + this.black + this.suite
-  }
   return this.newDrawRecorder(recorder)
 }
 
@@ -1116,7 +1113,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
         } else {
           // there is no following right caret, we can pack
           var pack = false
-          io.common.ending.forEach((eyo) => {
+          io.common.ending.forEach(eyo => {
             if (eyo === io.common.shouldPack) {
               io.common.shouldPack = undefined
               pack = true
@@ -1124,8 +1121,8 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
               // from now on, we pack just one character width
             }
             if (pack) {
-              eyo.size.c = Math.max(this.minBlockW, eyo.size.c - 1)
-              eyo.span.minWidth = eyo.block_.width = eyo.size.x
+              eyo.span.c = Math.max(this.minBlockW, eyo.span.c - 1)
+              eyo.span.minWidth = eyo.span.width
               io.common.field.didPack = true
               io.common.field.beforeIsBlack = true
             }
