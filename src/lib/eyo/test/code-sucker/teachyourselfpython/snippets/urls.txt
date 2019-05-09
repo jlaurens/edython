@@ -1,0 +1,267 @@
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=01-Print text to screen.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=02-Get User Input as String.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=03-Get User Input as Integer.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=04_How to set things up in a function.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=05-Chatbot task beginning.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=06-Use of Variables and defining input.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=07-Take user input as variable and print.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=08-Allow a new line to be printed.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=09-Use of Prompt to take user input.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=10-Print a single star.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=11-Printing to different lines or same line.py.py
+https://teachyourselfpython.com/show-code.php?t=00_Intro_user_input_print&s=12_Neat_formatting_string_output.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=01 -Use of Variables in a simple chatbot.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=02-Convert to Integer - alternative method.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=03-Use of Modulo Operator %.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=04-Convert to Float.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=05-Modulo Magic - alternative method.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=06-Operators example 1.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=07-Operators example 2.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=08-Operators example 3.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=09-Use of Boolean Variables.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=10-Trying to add a string and integer.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=11-Rounding up floating point numbers.py
+https://teachyourselfpython.com/show-code.php?t=01_Variables_Operators&s=12-Rounds a decimal to two places.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=01-Use of the if else statement.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=02-Use of if and else using boolean expressions.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=03-Use of if and elif example.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=04-Password checker solution.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=05-Check for age with password checker.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=06-Verify username and password.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=07-A Nested IF ELSE example.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=08-Nested IF ELIF example.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=09-Selection with and or built in.py
+https://teachyourselfpython.com/show-code.php?t=02_If_Elif_Else_Selection&s=10-Selection without ifs demo of DeMorgan's Laws.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=00_While Loop Introduction.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=01-While_Loop_Simple_Example.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=02-Demo_while_loop_for_loop_do_the_same_thing_timestableapp.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=03-Username and password checker using loops.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=04-Validation of password creation using loops.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=05-While Loops using Boolean Flags.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=06-While Loops with multiple statements.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=07-While Loop infinite loop.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=08-Use of break to end an infinite while loop.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=09-Use of continue statement in a while loop.py
+https://teachyourselfpython.com/show-code.php?t=03_While_Loops&s=10-Sentinel controlled while loop.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=01 - two lots of 10 stars.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=02 - one line of 10 stars and one line of 10 planets.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=03 - 10 x 10 matrix of stars.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=04-matrix of stars_3x20.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=05-matrix of planets_5 x 5.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=06 -similar_planets_on_same_row.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=07-similar_planets_on_same_column.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=08-Triangular Planetary Alignment.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=09 - Solution for user defined box.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=10_For_Loop_Guess_the_Number.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=11_Solution_User_input_ForLoop_Times_table.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=12- stars horizontal_use_of_default_end_statement.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=13_For_Loop_password_challenge.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=14-Break statement Example 1.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=15-Break statement Example 2.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=16-Creating a Running Total_initialisation.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=17-Fibonacci_Sequence.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=18-For_Loop_print_1_to_10_while_loop.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=19-For_Loop_with_a_list.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=20-ForLoop_Searching_a_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=21-ForLoop_Searching_Phone_directory_Lists.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=22-List, user input, For Loop Program.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=23-Loop_through_words_and_lists_for_loop.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=24-matrix of stars_20 x 20.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=25-Nested Loop Example.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=26-Nested Loop times table creator.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=27-Nested Loops_running_totals_code.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=28-Print 10 stars Vertical -default.py
+https://teachyourselfpython.com/show-code.php?t=04_For_Loops&s=29-Three times table solution.py.py
+https://teachyourselfpython.com/show-code.php?t=05_Local_Global_Variables&s=01-Function_Local_global_total_variables.py
+https://teachyourselfpython.com/show-code.php?t=05_Local_Global_Variables&s=02-Two_functions_local_global_scope_example.py
+https://teachyourselfpython.com/show-code.php?t=05_Local_Global_Variables&s=03-Score_Variable_incrementing.py
+https://teachyourselfpython.com/show-code.php?t=05_Local_Global_Variables&s=04_Demonstrating the scope of a variable.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Fahrenheit_to_celsius_using_functions_program.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Find_Factorial_using_Function_return_feature.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Find_area_of_rectangle_using_functions_inputPRompt.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Function_Local_global_total_variables.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Function_multiple_parameter_passing.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Function_pass_parameter_byRef.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Function_string_parameter_passing.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Functions_guess_password.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Pass_name_numbers_functions_return_statement.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Simple_Calculator_using_Functions.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=Two_functions_local_global_scope_example.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=afterlife_adventure_functions_loops_selection.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=lots_of_functions.py
+https://teachyourselfpython.com/show-code.php?t=06_Functions&s=with_function_username_and_password.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=1-Intro_to_Lists.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=2-Personality_Predictor_app_lists.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=3_List_of_people_given_assigned_weapon.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=3a_Solution_Nested_List_Matrix_Game.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=3b_Solution_Extension_Nested_List_Matrix_Game.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=3c_Product_search_create_basket.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Append_to_List_Example.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Contacts_New_Edit_Delete_Lists.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=List of subjects and teachers_Search_by_Index.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=List, user input, For Loop Program.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=List_timestable_solution.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=List_using_Enumerate.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Lists_ASCII_ListComphrension_vs_ForLoop.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Loop_thru_list_Subjects_search_return_Index.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Looping_through_list.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Matrix_ListComphrension_UserInput_SolutiontoChallenge.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Modulo_Magic_using_Lists_give_day_numberofdays_return_Dayofweek.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Mycontacts_slice_delete.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Random Generation from List.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Random Generation from List_Random Numbers.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Sack a teacher app_Remove_from_list_operation.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Search_list_Return_IndexNo.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Sorting_List.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=Sorting_List_2_Numbers.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=caesar_cipher_with_main_menu_decrypt_encrypt.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=find_differences_in_list.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=generate_random_item_from_list.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=loop_over_two_lists_simulatenously.py
+https://teachyourselfpython.com/show-code.php?t=07_Lists_Tuples_ListComprehension&s=remove_duplicates_from_list.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=Capitalising_first_letter.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=Check_for_upper_lower_case_in_strings.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=Join_Strings_together_concatenate.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=Return_length_of_string.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=String_formatting.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=Working_with_a_really_long_string.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=convert_strings_to_upper_case_Lowercase.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=find_certain_word_in_sentence.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=find_repeated_characters_in_string.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=is_String_decimal.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=is_String_letters_numbers_only.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=login_using_file_handling_strip_split.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=see_if_string_starts_with_letter.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=splitting_a_word_on_white_spaces.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=string_manipulation_accessing.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=string_manipulation_updating.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=strip_characters_or_blank_spaces_from_strings.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=strip_split_join_csv_method_file_read.py
+https://teachyourselfpython.com/show-code.php?t=08_String_Manipulation&s=thingswithstrings_formatting.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=01-Creating_a_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=02-Accessing_Values_in_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=03-Adding_Values_to_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=04-Updating_Editing_Values_in_Dictionaries.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=05-Deleting_elements_entries_in_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=06-Print_all_keys_in_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=07-Print_all_values_in_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=08_Dictionaries_Intro_registration_feature.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=09-Dictionaries_course_teacher_finder.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=10_Create_new_dict_from_given_keys.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=11-Print_keys_and_values_in_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=12_Find_length_of_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=13-See_if_key_exists_in_dictionary_simple.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=14_If_Key_does_not_exist.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=15-See_if_key_exists_in_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=16_Counting_values_in_a_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=17_Combine_two_lists_into_a_Dictionary].py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=18_Create_two_lists_from_a_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=19_Create_nested_dictionary_many_values.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=20_Nested_dictionary_nested_loops.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=21_Looping_over_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=22_Looping_Over_dictionary_in_order.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=23_Looping_User_Input_Dictionary_Full_Program.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=24 - Minecraft_Game_starter_Dictionaries.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=25- Minecraft_Game_crafting_options_added.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=26-Copying_a_Dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=27-Iterating_over_a_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=28-Full_Solution_Football_Club.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=29_Merging_two_dictionaries.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=30_add_multiple_values_from_list_to_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=31_Is_Dictionary_full_or_empty.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=32_Sorting_a_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=33_Copy_a_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=34_Counting_Max_Value-In_Dict.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=35-ForLoop_Searching_a_dictionary.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=36-Creating_Dictionaries_From_Lists.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=37-Dictionaries_simple_example_intro.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=38-Dictionary_example_footballclubs.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=39-Dictionary_examples_operations_super_pog.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=40-Dictionary_inside_Dictionary_example.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=41-Merging Dictionaries_update_method.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=42-Minecraft_Game_starter_Dictionaries.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=43-Print_Dictionary_plain_and_simple.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=44-Quiz feature using dictionaries.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=45-Search_for_value_in_nested_dictionary_which_contains_multiple_values.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=46-Write_a_dictionary_to_text_or_csv_file.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=47_Read_file_contents_into_dictionary_strip_split_using_regex.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=48_Read_file_contents_into_dict_alternative.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=49_Find_mean_average_of_dictionary_values.py
+https://teachyourselfpython.com/show-code.php?t=09_Dictionaries_Sets&s=50_login_with_username_password_using_dictionary_method.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=01-Open a file and read characters.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=02-Check current pointer position in file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=03_remove_white_spaces_and_newlines_when_reading_into_list.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=04-Read whole file contents in one go.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=05-Read one character from file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=06-Read all characters one by one from file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=07-Read_all_characters_one_by_one_BETTER METHOD.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=08-Reading_a_single_line_from_file.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=09-Reading_several_lines_from_file.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=10-Strip_newlines_whitespace_while_reading_in_file.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=11-Reading all lines at once.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=12-Reading particular columns from file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=13-Reading columns alternative method.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=14-Read_tell_seek_for_reading_file.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=15_Search_in_list_return_value_with_error.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=16_Search_in_list_return_value_with_error -Fixed(strip_lines_AND_spaces).py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=17-Re position the pointer at the start of file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=18_Search_for_field_return_next_column's_field.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=19_Search_using_CSV.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=20_Search_using_CSV_not_found_feature_added.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=21-Add_Write_a_new_user_to_file_solution.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=22-Quiz Program Save scores to a text file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=23_Editing_a_record_based_on_field.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=24-Deleting_a_record_based_on_user_specified_field.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=25-Creating a copy of a file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=26-Search for the existence of a file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=27-Simple writing to a file.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=28_Copy a file.py.py
+https://teachyourselfpython.com/show-code.php?t=10_File_Handling_Read_Write_Search_Edit&s=29_Simple Append text to a file.py.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Add_Pong_Bat_class.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Bat_Movement.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Change_Starting_Direction.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Class_Attributes.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Class_Methods.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Create_a_Class.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Create_a_ball_class.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Create_bouncing_ball_movement.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Make_the_ball_move_up.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Right_left_screen_collision_detection.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Set_Up_Game_Canvas.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=Setup_main_animation_loop.py
+https://teachyourselfpython.com/show-code.php?t=13_Classes_and_Objects&s=bat_ball_collision_detection.py
+https://teachyourselfpython.com/show-code.php?t=Passing_Parameters&s=Fahrenheit_to_celsius_using_functions_program.py
+https://teachyourselfpython.com/show-code.php?t=Passing_Parameters&s=Function_multiple_parameter_passing.py
+https://teachyourselfpython.com/show-code.php?t=Passing_Parameters&s=Function_pass_parameter_byRef.py
+https://teachyourselfpython.com/show-code.php?t=Passing_Parameters&s=Function_string_parameter_passing.py
+https://teachyourselfpython.com/show-code.php?t=Passing_Parameters&s=Pass_name_numbers_functions_return_statement.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 1_Create Variables_RandomQuestion_user_response.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 2_Check User's response_ask for user name.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 3_Validate User's name.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 4_Calculate_Score.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 5_Put_it_in_a_function.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=Quiz Part 6_Save_scores_to_text_file.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=gameofLife_tkinter.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=snake_game_tkinter.py
+https://teachyourselfpython.com/show-code.php?t=Program_Examples&s=webbrowser_tkinter.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=1-Connect_to_database_Create_a_table.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=10_Count_rows.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=11_Find_Max_Value.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=12_Calculate_Average.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=13_Calculate_SUM.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=14_Login_username_password.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=2-Add_Records_to_table.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=3_Fetch_and_display_records.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=4_Update_database_records.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=5_Delete_Records.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=6_Search_by_condition_where_clause.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=7_Search_for_key_phrase.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=8_Sorting_in_SQLite.py
+https://teachyourselfpython.com/show-code.php?t=Python_and_SQLite&s=9_Search_and_return_selected_fields.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Python - Recursion_Mystery_Function_Calling_with_parameters.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Python - Recursive Function example.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Python - Recursive Function example_Final Solution.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Python - Recursive Function example_solution.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Recursion.py
+https://teachyourselfpython.com/show-code.php?t=Recursion&s=Recursion2.py
+https://teachyourselfpython.com/show-code.php?t=Validation_examples&s=Validation_password_creation_solution.py

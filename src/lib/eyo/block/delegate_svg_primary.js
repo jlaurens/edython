@@ -63,7 +63,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
       eYo.T3.Expr.augtarget_annotated,
       eYo.T3.Expr.key_datum,
       eYo.T3.Expr.identifier_valued,
-      eYo.T3.Expr.assignment_expr,
+      eYo.T3.Expr.named_expr,
       eYo.T3.Expr.identifier_annotated_valued,
       eYo.T3.Expr.attributeref,
       eYo.T3.Expr.named_attributeref,
@@ -193,7 +193,7 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
         [eYo.T3.Expr.augtarget_annotated]: eYo.T3.Expr.Check.augtarget,
         [eYo.T3.Expr.key_datum]: eYo.T3.Expr.Check.expression,
         [eYo.T3.Expr.identifier_valued]: eYo.T3.Expr.Check.expression,
-        [eYo.T3.Expr.assignment_expr]: eYo.T3.Expr.Check.expression,
+        [eYo.T3.Expr.named_expr]: eYo.T3.Expr.Check.expression,
         [eYo.T3.Expr.identifier_annotated_valued]: eYo.T3.Expr.Check.target,
         [eYo.T3.Expr.attributeref]: eYo.T3.Expr.Check.expression,
         [eYo.T3.Expr.named_attributeref]: eYo.T3.Expr.Check.expression,
@@ -280,7 +280,7 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  *    - key_datum
  *    - identifier_valued
  *    - assignment_chain
- *    - assignment_expr
+ *    - named_expr
  *    - identifier_annotated_valued
  *    - attributeref
  *    - named_attributeref
@@ -473,7 +473,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, o
  * 03 |  | x|:x|  |  | key_datum ::= expression ":" expression
  * 04 |  |id|  |=x|  | identifier_valued ::= identifier "=" expression
  * 05 |  |id|  |=x|  | assignment_chain ::= target "=" expression
- * 06 |  |id|  |*x|  | assignment_expr ::= target ":=" expression
+ * 06 |  |id|  |*x|  | named_expr ::= target ":=" expression
  * 07 |  |id|:x|=x|  | identifier_annotated_valued ::= ...
  * 08 |p.|id|  |  |  | attributeref ::= primary "." identifier
  * 09 |p.|id|  |  |  | named_attributeref ::= named_primary "." identifier
@@ -538,7 +538,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       eYo.T3.Expr.key_datum,
       eYo.T3.Expr.identifier_valued,
       eYo.T3.Expr.assignment_chain,
-      eYo.T3.Expr.assignment_expr,
+      eYo.T3.Expr.named_expr,
       eYo.T3.Expr.identifier_annotated_valued,
       eYo.T3.Expr.attributeref,
       eYo.T3.Expr.named_attributeref,
@@ -823,7 +823,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
           this.change(eYo.Key.ANNOTATED_VALUED)
           O.annotated_d.required_from_type = true
           O.value_d.required_from_type = true
-        } else if (type === eYo.T3.Expr.assignment_expr) {
+        } else if (type === eYo.T3.Expr.named_expr) {
           this.change(eYo.Key.COL_VALUED)
           O.value_d.required_from_type = true
         } else {
@@ -1054,7 +1054,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
         // the block is not yet consolidated
         if (this.isInput) {
-          var parent = this.parent
+          var parent = this.b_eyo.parent
           if (parent) {
             parent.target_s.bindField.setVisible(false)
             if (this.b_eyo.inputList.length > 1) {
@@ -1198,7 +1198,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
-      return this.connection.sourceBlock_.eyo.getOutCheck()
+      return this.b_eyo.getOutCheck()
     }
   },
   init: /** @suppress {globalThis} */ function () {
@@ -1234,7 +1234,7 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delega
   'dotted_name_as',
   'expression_as',
   'assignment_chain',
-  'assignment_expr'
+  'named_expr'
 ].forEach(k => {
   eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.primary
   eYo.DelegateSvg.Manager.register(k)
@@ -1591,7 +1591,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         ]
   } else if (profile.variant === eYo.Key.COL_VALUED) {
     return [
-      eYo.T3.Expr.assignment_expr
+      eYo.T3.Expr.named_expr
     ]
   } else if (profile.variant === eYo.Key.TARGET_VALUED) {
     // Is the target connected to something that is not an identifier ?

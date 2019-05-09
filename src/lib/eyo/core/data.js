@@ -55,7 +55,7 @@ eYo.Data = function (owner, key, model) {
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
   Object.defineProperties(this, {
-    reentrant: { value: {} },
+    reentrant_: { value: {} },
     key: { value: key},
     upperKey: { value: key[0].toUpperCase() + key.slice(1) },
     model: {
@@ -476,30 +476,30 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
 eYo.Data.decorateChange = function (key, do_it) {
   var model_lock = 'model_' + key
   return function(before, after) {
-    if (!this.reentrant[model_lock]) {
+    if (!this.reentrant_[model_lock]) {
       var model_do_it = this.model[key]
       if (goog.isFunction(model_do_it)) {
         try {
-          this.reentrant[model_lock] = true
+          this.reentrant_[model_lock] = true
           model_do_it.apply(this, arguments)
         } catch (err) {
           console.error(err)
           throw err
         } finally {
-          delete this.reentrant[model_lock]
+          delete this.reentrant_[model_lock]
         }
         return
       }
     }
-    if (!this.reentrant[key] && goog.isFunction(do_it)) {
+    if (!this.reentrant_[key] && goog.isFunction(do_it)) {
       try {
-        this.reentrant[key] = true
+        this.reentrant_[key] = true
         do_it.apply(this, arguments)
       } catch (err) {
         console.error(err)
         throw err
       } finally {
-        delete this.reentrant[key]
+        delete this.reentrant_[key]
       }
     }
   }
@@ -638,7 +638,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
   if (!d) {
     return
   }
-  if (this.reentrant['model_synchronize'] || this.model.synchronize === true) {
+  if (this.reentrant_['model_synchronize'] || this.model.synchronize === true) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {

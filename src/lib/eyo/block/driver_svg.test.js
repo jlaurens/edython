@@ -1,51 +1,51 @@
 describe('SVG coordinates', function () {
   it ('xy', function () {
     eYo.Test.setItUp()
-    var b1 = eYo.Test.new_block('True')
-    var ui = b1.eyo.ui
-    var xy1 = b1.getRelativeToSurfaceXY()
+    var d1 = eYo.Test.new_dlgt('True')
+    var ui = d1.ui
+    var xy1 = d1.ui.xyInSurface
     var xy2 = ui.xyInSurface
     chai.assert(xy1.x === xy2.x)
     chai.assert(xy1.y === xy2.y)
     var dx = 246 * Math.random()
     var dy = 135 * Math.random()
-    b1.moveBy(dx, dy)
-    var xy1d = b1.getRelativeToSurfaceXY()
+    d1.moveBy(dx, dy)
+    var xy1d = d1.ui.xyInSurface
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)
     chai.assert(xy1d.y === xy1.y + dy, `FAILURE y1: ${xy1d.y} === ${xy1.y} + ${dy}`)
     var xy2d = ui.xyInSurface
     chai.assert(xy2d.x === xy2.x + dx, `FAILURE x2: ${xy2d.x} === ${xy2.x} + ${dx}`)
     chai.assert(xy2d.y === xy2.y + dy, `FAILURE y2: ${xy2d.y} === ${xy2.y} + ${dy}`)
-    b1.dispose()
+    d1.block_.dispose()
     eYo.Test.tearItDown()
   })
 })
 describe('SVG groups and paths', function () {
   it(`Field: Label`, function () {
     eYo.Test.setItUp()
-    var b1 = eYo.Test.new_block('True')
-    var field = b1.eyo.fields.value
+    var d1 = eYo.Test.new_dlgt('True')
+    var field = d1.fields.value
     var svg = field.eyo.svg
-    var type = b1.eyo.type
+    var type = d1.type
     chai.assert(svg, `MISSING svg in value field of ${type}`)
     var ui = field.eyo.ui
-    chai.assert(ui === b1.eyo.ui, `MISSING field.eyo.ui === b1.eyo.ui for value field of ${type}`)
+    chai.assert(ui === d1.ui, `MISSING field.eyo.ui === d1.ui for value field of ${type}`)
     var ui_driver = field.eyo.ui_driver
     chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
     chai.assert(svg.group_ === svg.textElement_, `FAILED svg.group_ === svg.textElement_ in value field of ${type}`)
-    b1.dispose()
-    chai.assert(!b1.eyo.svg, `FAILED SVG dispose`)
+    d1.block_.dispose()
+    chai.assert(!d1.svg, `FAILED SVG dispose`)
     eYo.Test.tearItDown()
   })
   // it(`Field: Text Input`, function () {
   //   eYo.Test.setItUp()
-  //   var b1 = eYo.Test.new_block('builtin__object')
-  //   var field = b1.eyo.fields.value
+  //   var d1 = eYo.Test.new_dlgt('builtin__object')
+  //   var field = d1.fields.value
   //   var svg = field.eyo.svg
-  //   var type = b1.eyo.type
+  //   var type = d1.type
   //   chai.assert(svg, `MISSING svg in value field of ${type}`)
   //   var ui = field.eyo.ui
-  //   chai.assert(ui === b1.eyo.ui, `MISSING field.eyo.ui === b1.eyo.ui for value field of ${type}`)
+  //   chai.assert(ui === d1.ui, `MISSING field.eyo.ui === d1.ui for value field of ${type}`)
   //   var ui_driver = field.eyo.ui_driver
   //   chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
   //   eYo.Test.svgNodeParent(svg, 'textElement_', 'group_', type)
@@ -53,18 +53,18 @@ describe('SVG groups and paths', function () {
   // })
   it(`Expression`, function () {
     eYo.Test.setItUp()
-    var b1 = eYo.Test.new_block('builtin__object')
-    eYo.Test.svgNodeParent(b1, 'group_', b1.workspace.getCanvas())
-    eYo.Test.svgNodeParent(b1, 'groupContour_', 'group_')
-    eYo.Test.svgNodeParent(b1, 'groupShape_', 'group_')
-    eYo.Test.svgNodeParent(b1, 'pathInner_', 'groupContour_')
-    eYo.Test.svgNodeParent(b1, 'pathCollapsed_', 'groupContour_')
-    eYo.Test.svgNodeParent(b1, 'pathContour_', 'groupContour_')
-    eYo.Test.svgNodeParent(b1, 'pathShape_', 'groupShape_')
-    eYo.Test.svgNodeParent(b1, 'pathSelect_')
-    eYo.Test.svgNodeParent(b1, 'pathHilight_')
-    eYo.Test.svgNodeParent(b1, 'pathConnection_')
-    b1.dispose()
+    var d1 = eYo.Test.new_dlgt('builtin__object')
+    eYo.Test.svgNodeParent(d1, 'group_', d1.workspace.getCanvas())
+    eYo.Test.svgNodeParent(d1, 'groupContour_', 'group_')
+    eYo.Test.svgNodeParent(d1, 'groupShape_', 'group_')
+    eYo.Test.svgNodeParent(d1, 'pathInner_', 'groupContour_')
+    eYo.Test.svgNodeParent(d1, 'pathCollapsed_', 'groupContour_')
+    eYo.Test.svgNodeParent(d1, 'pathContour_', 'groupContour_')
+    eYo.Test.svgNodeParent(d1, 'pathShape_', 'groupShape_')
+    eYo.Test.svgNodeParent(d1, 'pathSelect_')
+    eYo.Test.svgNodeParent(d1, 'pathHilight_')
+    eYo.Test.svgNodeParent(d1, 'pathConnection_')
+    d1.block_.dispose()
     eYo.Test.tearItDown()
   })
 })
@@ -105,10 +105,10 @@ describe('SVG groups and paths', function () {
       svg.pathPlayIcon_.setAttribute('d', svg.eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
       svg.mouseDownWrapper_ =
         Blockly.bindEventWithChecks_(svg.pathPlayIcon_, 'mousedown', null, e => {
-        if (svg.block_.isInFlyout) {
+        if (svg.isInFlyout) {
           return
         }
-        console.log('Start executing ' + svg.block_.id)
+        console.log('Start executing ' + svg.id)
         svg.runScript && svg.runScript()
       })
       goog.dom.classlist.add(svg.group_, 'eyo-start')

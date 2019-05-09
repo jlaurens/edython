@@ -124,12 +124,12 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
          int *flags*/) =>
 {
   var /*parser_state * */ ps = eYo.Parser.PyParser_New(scan, g, start)
-  var /* node * */ n
+  var /* node * */ parent
   var /*growable_int_array*/ type_ignores = []
   var tkn = scan.first
 
   for (;;) {
-    
+    console.error('ERASE ME tkn.name:', tkn.name)
     if (tkn.type === eYo.TKN.ERRORTOKEN) {
         err_ret.error = tkn.error;
         break;
@@ -143,28 +143,43 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
         break
       }
     }
-    var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
-                            linen0, c0l_offset, tkn.linen0, end_col_0ffset, */ tkn)
-    err_ret.error = ans.error
-    err_ret.expected = ans.expected
-    if (err_ret.error !== eYo.E.OK) {
-      if (err_ret.error !== eYo.E.DONE) {
-        err_ret.token = tkn.type
+    if (tkn.n_type === eYo.TKN.COMMENT) {
+      var comment = new eYo.Node(tkn.scan, tkn.n_type)
+      comment.lineno = tkn.lineno
+      comment.end_lineno = tkn.end_lineno
+      comment.start_comment = tkn.start_comment
+      // store the comment in the last token
+      ps.p_stack.last_tkn.pushComment(comment)
+      if((tkn = tkn.next)) {
+        continue
       }
       break
+    } else {
+      ps.p_stack.last_tkn = tkn
+      var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
+      linen0, c0l_offset, tkn.linen0, end_col_0ffset, */ tkn)
+      err_ret.error = ans.error
+      err_ret.expected = ans.expected
+      if (err_ret.error !== eYo.E.OK) {
+        if (err_ret.error !== eYo.E.DONE) {
+          err_ret.token = tkn.type
+        }
+        break
+      }
     }
+    // we have scanned something meaningful
     if((tkn = tkn.next)) {
       continue
     }
     break
   }
   if (err_ret.error === eYo.E.DONE) {
-    n = ps.p_tree;
+    parent = ps.p_tree;
     ps.p_tree = null
-    if (n.n_type === eYo.TKN.file_input) {
+    if (parent.n_type === eYo.TKN.file_input) {
       /* Put type_ignore nodes in the ENDMARKER of file_input. */
-      var /* int */ num = n.n_nchildren
-      var /* node * */ ch = n.n_child[num - 1]
+      var /* int */ num = parent.n_nchildren
+      var /* node * */ ch = parent.n_child[num - 1]
       goog.asserts.assert(ch.n_type === eYo.TKN.ENDMARKER);
 
       for (var i = 0; i < type_ignores.length; i++) {
@@ -188,7 +203,7 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
         t = t.next
       }
     }
-    eYo.Node._PyNode_FinalizeEndPos(n)
+    eYo.Node._PyNode_FinalizeEndPos(parent)
   }
   else
     /* n = null
@@ -204,7 +219,7 @@ var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*pe
   // if (n != null) {
   //   eYo.Node._PyNode_FinalizeEndPos(n)
   // }
-  return n
+  return parent
 }
 
 /* static int */

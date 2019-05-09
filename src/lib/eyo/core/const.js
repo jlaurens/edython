@@ -24,12 +24,8 @@ goog.asserts.assert(XRegExp, 'load XRegExp before')
 eYo.Const = {
   ABOVE: 'ABOVE', // not for block definition
   BELOW: 'BELOW',
-  LEFT_STATEMENT: 5, // new type for a connection
-  RIGHT_STATEMENT: 6
 }
 
-Blockly.OPPOSITE_TYPE[eYo.Const.RIGHT_STATEMENT] = eYo.Const.LEFT_STATEMENT;
-Blockly.OPPOSITE_TYPE[eYo.Const.LEFT_STATEMENT] = eYo.Const.RIGHT_STATEMENT;
 
 eYo.Const.Field = {
   // IN PROGRESS
@@ -145,6 +141,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
+  BLANK: 'blank', // lowercase
   COMMENT_MARK: 'comment_mark', // lowercase
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase

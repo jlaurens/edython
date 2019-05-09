@@ -3,11 +3,11 @@ var expect = chai.expect
 
 describe('parameter_list', function() {
   it(`f(a[:…][=…])`, function() {
-    var l = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.lambda)
-    var b = l.eyo.parameters_b
-    var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
-    assert(b.eyo.lastInput.eyo.connect(a), 'MISSING 1')
-    assert(b.inputList.length === 3, 'MISSED 2')
+    var l = eYo.Test.new_dlgt(eYo.T3.Expr.lambda)
+    var d = l.eyo.parameters_b
+    var a = eYo.Test.new_dlgt('a')
+    assert(d.lastInput.eyo.connect(a), 'MISSING 1')
+    assert(d.inputList.length === 3, 'MISSED 2')
     var f = v => {
       a.eyo.variant_p = v
       var u = l.eyo.parameters_s.unwrappedTarget
@@ -53,16 +53,16 @@ describe('parameter_list', function() {
                   [eYo.Key.ANNOTATED_VALUED]: ':…=…',
                 }[v]
               }
-              it (`f(a${parameter(v1)}, b${parameter(v2)}, c${parameter(v3)})`, function () {
-                var l = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.lambda)
+              it (`f(a${parameter(v1)}, d${parameter(v2)}, c${parameter(v3)})`, function () {
+                var l = eYo.Test.new_dlgt(eYo.T3.Expr.lambda)
                 var t = l.eyo.parameters_b
-                var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
+                var a = eYo.Test.new_dlgt('a')
                 assert(t.eyo.lastInput.eyo.connect(a), 'MISSING 1')
                 a.eyo.variant_p = v1
-                var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b')
-                assert(t.eyo.lastInput.eyo.connect(b), 'MISSING 2')
-                b.eyo.variant_p = v2
-                var c = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'c')
+                var d = eYo.Test.new_dlgt('d')
+                assert(t.eyo.lastInput.eyo.connect(d), 'MISSING 2')
+                d.variant_p = v2
+                var c = eYo.Test.new_dlgt('c')
                 assert(t.eyo.lastInput.eyo.connect(c), 'MISSING 3')
                 c.eyo.variant_p = v3
                 assert(t.inputList.length === 7, 'MISSED 1')
@@ -71,7 +71,7 @@ describe('parameter_list', function() {
                   assert(u.target_p === n, `MISSED: ${n} at ${i}`)
                 }
                 f('a', 1)
-                f('b', 3)
+                f('d', 3)
                 f('c', 5)
                 l.dispose()
               })

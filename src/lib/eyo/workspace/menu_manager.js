@@ -375,22 +375,7 @@ eYo.Delegate.prototype.populateContextMenuLast_ = function (mgr) {
  * Populate the context menu.
  */
 eYo.MenuManager.prototype.populateLast = function (block) {
-  var c8n = eYo.Selected.connection
-  var holes = eYo.HoleFiller.getDeepHoles(c8n || block)
-  var menuItem = this.newMenuItem(
-    eYo.Msg.FILL_DEEP_HOLES, function () {
-      eYo.Events.setGroup(true)
-      try {
-        eYo.HoleFiller.fillDeepHoles(block.workspace, holes)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        eYo.Events.setGroup(false)
-      }
-    })
-  menuItem.setEnabled(holes.length > 0)
-  this.addChild(menuItem, true)
+  var menuItem
   if (block.isMovable() && !block.isInFlyout) {
     if (block.eyo.canUnlock()) {
       menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
@@ -623,7 +608,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     target.setCollapsed(true)
     return true
   case eYo.ID.TOGGLE_ENABLE_BLOCK:
-    target.eyo.setDisabled(!target.disabled)
+    target.eyo.disabled = !target.eyo.disabled
     return true
   case eYo.ID.DELETE_BLOCK:
     var unwrapped = target.eyo

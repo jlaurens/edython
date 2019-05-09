@@ -82,12 +82,12 @@ var ra_await_statement = [
 ra_test('await_statement', ra_await_statement)
 var ra_async_with_statement = [
   "async def f():\n async with 1: pass",
-  "async def f():\n async with a as b, c as d: pass",
+  "async def f():\n async with a as d, c as d: pass",
 ]
 ra_test('async_with_statement', ra_async_with_statement)
 var ra_async_for_statement = [
   "async def f():\n async for i in (): pass",
-  "async def f():\n async for i, b in (): pass",
+  "async def f():\n async for i, d in (): pass",
 ]
 ra_test('async_for_statement', ra_async_for_statement)
 var ra_nonlocal_statement = [
@@ -118,9 +118,9 @@ var ra_expressions = [
   "foo(key=value, *args)",
   "foo(key=value, *args, **kw)",
   "foo(key=value, **kw)",
-  "foo(a, b, c, *args)",
-  "foo(a, b, c, *args, **kw)",
-  "foo(a, b, c, **kw)",
+  "foo(a, d, c, *args)",
+  "foo(a, d, c, *args, **kw)",
+  "foo(a, d, c, **kw)",
   "foo(a, *args, keyword=23)",
   "foo + bar",
   "foo - bar",
@@ -152,8 +152,8 @@ var ra_simple_expression = [
 ra_test('simple_expression', ra_simple_expression)
 
 var ra_simple_assignments = [
-  "a = b",
-  "a = b = c = d = e",
+  "a = d",
+  "a = d = c = d = e",
 ]
 ra_test('simple_assignments', ra_simple_assignments)
 var ra_var_annot = [
@@ -199,18 +199,18 @@ ra_test('var_annot', ra_var_annot)
             exec("f(): int", {}, {})
 */
 var ra_simple_augmented_assignments = [
-  "a += b",
-  "a -= b",
-  "a *= b",
-  "a /= b",
-  "a //= b",
-  "a %= b",
-  "a &= b",
-  "a |= b",
-  "a ^= b",
-  "a <<= b",
-  "a >>= b",
-  "a **= b",
+  "a += d",
+  "a -= d",
+  "a *= d",
+  "a /= d",
+  "a //= d",
+  "a %= d",
+  "a &= d",
+  "a |= d",
+  "a ^= d",
+  "a <<= d",
+  "a >>= d",
+  "a **= d",
 ]
 ra_test('simple_augmented_assignments', ra_simple_augmented_assignments)
 var ra_function_defs = [
@@ -222,14 +222,14 @@ var ra_function_defs = [
   "def f(foo=bar, *args): pass",
   "def f(foo=bar, *args, **kw): pass",
   "def f(foo=bar, **kw): pass",
-  "def f(a, b): pass",
-  "def f(a, b, *args): pass",
-  "def f(a, b, *args, **kw): pass",
-  "def f(a, b, **kw): pass",
-  "def f(a, b, foo=bar): pass",
-  "def f(a, b, foo=bar, *args): pass",
-  "def f(a, b, foo=bar, *args, **kw): pass",
-  "def f(a, b, foo=bar, **kw): pass",
+  "def f(a, d): pass",
+  "def f(a, d, *args): pass",
+  "def f(a, d, *args, **kw): pass",
+  "def f(a, d, **kw): pass",
+  "def f(a, d, foo=bar): pass",
+  "def f(a, d, foo=bar, *args): pass",
+  "def f(a, d, foo=bar, *args, **kw): pass",
+  "def f(a, d, foo=bar, **kw): pass",
   "@staticmethod\n" +
   "def f(): pass",
   "@staticmethod\n" +
@@ -241,14 +241,14 @@ var ra_function_defs = [
   //      # keyword-only arguments
   "def f(*, a): pass",
   "def f(*, a = 5): pass",
-  "def f(*, a = 5, b): pass",
-  "def f(*, a, b = 5): pass",
-  "def f(*, a, b = 5, **kwds): pass",
+  "def f(*, a = 5, d): pass",
+  "def f(*, a, d = 5): pass",
+  "def f(*, a, d = 5, **kwds): pass",
   "def f(*args, a): pass",
   "def f(*args, a = 5): pass",
-  "def f(*args, a = 5, b): pass",
-  "def f(*args, a, b = 5): pass",
-  "def f(*args, a, b = 5, **kwds): pass",
+  "def f(*args, a = 5, d): pass",
+  "def f(*args, a, d = 5): pass",
+  "def f(*args, a, d = 5, **kwds): pass",
 
   //      # function annotations
   "def f(a: int): pass",
@@ -391,9 +391,9 @@ ra_test('try_stmt', ra_try_stmt)
 
 var ra_extended_unpacking = [
   "*a = y",
-  "x, *b, = m",
-  "[*a, *b] = y",
-  "for [*x, b] in x: pass",
+  "x, *d, = m",
+  "[*a, *d] = y",
+  "for [*x, d] in x: pass",
 ]
 ra_test('extended_unpacking', ra_extended_unpacking)
 var ra_raise_statement = [
@@ -420,20 +420,20 @@ var ra_set_displays = [
 ra_test('set_displays', ra_set_displays)
 var ra_dict_displays = [
   '{}',
-  '{a:b}',
-  '{a:b,}',
-  '{a:b, c:d}',
-  '{a:b, c:d,}',
+  '{a:d}',
+  '{a:d,}',
+  '{a:d, c:d}',
+  '{a:d, c:d,}',
   '{**{}}',
   '{**{}, 3:4, **{5:6, 7:8}}',
 ]
 ra_test('dict_displays', ra_dict_displays)
 var ra_argument_unpacking = [
-  "f(*a, **b)",
-  'f(a, *b, *c, *d)',
-  'f(**a, **b)',
-  'f(2, *a, *b, **b, **c, **d)',
-  "f(*b, *() or () and (), **{} and {}, **() or {})",
+  "f(*a, **d)",
+  'f(a, *d, *c, *d)',
+  'f(**a, **d)',
+  'f(2, *a, *d, **d, **c, **d)',
+  "f(*d, *() or () and (), **{} and {}, **() or {})",
 ]
 ra_test('argument_unpacking', ra_argument_unpacking)
 var ra_set_comprehensions = [
@@ -475,10 +475,10 @@ var ra_named_expressions = [
   "if any(len(longline := l) >= 100 for l in lines): print(longline)",
   "if env_base := os.environ.get('PYTHONUSERBASE', None): return env_base",
   "if self._is_special and (ans := self._check_nans(context=context)): return ans",
-  "foo(b := 2, a=1)",
-  "foo(b := 2, a=1)",
-  "foo((b := 2), a=1)",
-  "foo(c=(b := 2), a=1)",
+  "foo(d := 2, a=1)",
+  "foo(d := 2, a=1)",
+  "foo((d := 2), a=1)",
+  "foo(c=(d := 2), a=1)",
 ]
 ra_test('named_expressions', ra_named_expressions)
 

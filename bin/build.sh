@@ -320,11 +320,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/model/types_model.js" \
 --js "src/lib/eyo/model/weakref_model.js" \
 --js "src/lib/eyo/model/profile.js" \
---js "src/lib/eyo/block/content.js" \
+--js "src/lib/eyo/blockly/field_textinput.js" \
 --js "src/lib/eyo/closure-library/menu.js" \
 --js "src/lib/eyo/block/slot.js" \
 --js "src/lib/eyo/block/delegate_svg.js" \
---js "src/lib/eyo/blockly/field_textinput.js" \
 --js "src/lib/eyo/blockly/input.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \

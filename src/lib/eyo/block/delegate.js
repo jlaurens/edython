@@ -21,10 +21,13 @@ goog.require('Blockly.Blocks')
 
 goog.require('eYo.T3')
 goog.require('eYo.Do')
+goog.require('eYo.Data')
+
 goog.forwardDeclare('eYo.Block')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.FieldHelper')
-goog.require('eYo.Data')
+goog.forwardDeclare('eYo.Magnets')
+
 
 /**
  * Class for a Block Delegate.
@@ -45,12 +48,6 @@ goog.require('eYo.Data')
  * @property {object} surroundParent - Get the surround parent.
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
- * @readonly
- * @property {Blockly.Connection} outputConnection
- * @readonly
- * @property {Blockly.Connection} previousConnection
- * @readonly
- * @property {Blockly.Connection} nextConnection
  */
 eYo.Delegate = function (workspace, type, opt_id, block) {
   eYo.Delegate.superClass_.constructor.call(this)
@@ -101,7 +98,7 @@ eYo.Delegate = function (workspace, type, opt_id, block) {
     cache: {}
   }
   // to manage reentrency
-  this.reentrant = {}
+  this.reentrant_ = {}
   this.mainHeight_ = this.blackHeight_ = this.suiteHeight_ = this.nextHeight_ = this.headHeight_ = this.footHeight_ = 0
   this.updateMainCount()
   // make the state
@@ -133,14 +130,7 @@ goog.inherits(eYo.Delegate, eYo.Helper)
 eYo.Delegate.prototype.dispose = function () {
   this.span.dispose()
   this.span_ = undefined
-  if (this.leftStmtConnection_) {
-    this.leftStmtConnection_.dispose()
-    this.leftStmtConnection_ = undefined
-    this.rightStmtConnection_.dispose()
-    this.rightStmtConnection_ = undefined
-    this.suiteStmtConnection_ && this.suiteStmtConnection_.dispose()
-    this.suiteStmtConnection_ = undefined
-  }
+  this.magnets.dispose()
   this.forEachSlot(slot => slot.dispose())
   this.slots = undefined
   eYo.FieldHelper.disposeFields(this)
@@ -159,11 +149,6 @@ eYo.Do.getModel = function (type) {
 }
 
 Object.defineProperties(eYo.Delegate.prototype, {
-  isInFlyout: {
-    get () {
-      return this.block_.isInFlyout
-    }
-  },
   /** @type {string} */
   type: {
     get () {
@@ -180,23 +165,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return this.constructor.eyo.model
     }
   },
-  parent: {
-    get () {
-      var parent = this.block_.getParent()
-      return parent && parent.eyo
-    }
-  },
   surround: {
     get () {
       var ans
       if ((ans = this.output)) {
         return ans
-      } else if (!this.outputConnection) {
-        var eyo = this
-        while ((ans = eyo.left)) {
-          eyo = ans
-        }
-        while ((ans = eyo.previous)) {
+      } else if (!this.magnets.output) {
+        var eyo = this.leftMost
+        while ((ans = eyo.top)) {
           if (ans.suite === eyo) {
             return ans
           }
@@ -215,10 +191,10 @@ Object.defineProperties(eYo.Delegate.prototype, {
   group: {
     get () {
       var eyo = this
-      var c8n
-      while ((c8n = eyo.previousConnection) && (c8n = c8n.targetConnection)) {
-        eyo = c8n.sourceBlock_.eyo
-        if (c8n.eyo.isSuite) {
+      var m4t
+      while ((m4t = eyo.magnets.top) && (m4t = m4t.target)) {
+        eyo = m4t.b_eyo
+        if (m4t.isSuite) {
           return eyo
         }
       }
@@ -328,138 +304,153 @@ Object.defineProperties(eYo.Delegate.prototype, {
       this.span.foot = newValue
     }
   },
-  previousConnection: {
-    get () {
-      return this.previousConnection_
-    },
-    set (newValue) {
-      this.previousConnection_ = newValue
-    }
+  // Magnets
+  magnets_: {
+    writable: true
   },
-  previousBlock: {
+  magnets: {
     get () {
-      var c8n = this.previousConnection
-      return c8n && c8n.targetBlock()
-    }
-  },
-  previous: {
-    get () {
-      var b = this.previousBlock
-      return b && b.eyo
-    },
-    set (newValue) {
-      var c8n = this.previousConnection
-      if (c8n) {
-        c8n.eyo.break()
-        c8n.connect(newValue.nextConnection)
-      } else {
-        throw 'Previous connection is missing'
-      }     
-    }
-  },
-  nextConnection: {
-    get () {
-      return this.block_.nextConnection
-    }
-  },
-  nextConnection: {
-    get () {
-      return this.nextConnection_
-    },
-    set (newValue) {
-      this.nextConnection_ = newValue
-    }
-  },
-  nextBlock: {
-    get () {
-      var c8n = this.nextConnection
-      return c8n && c8n.targetBlock()
-    }
-  },
-  next: {
-    get () {
-      var b = this.nextBlock
-      return b && b.eyo
-    },
-    set (newValue) {
-      var c8n = this.nextConnection
-      if (c8n) {
-        c8n.eyo.break()
-        c8n.connect(newValue.previousConnection)
-      } else {
-        throw 'Next connection is missing'
-      }     
-    }
-  },
-  suiteStmtConnection: {
-    get () {
-      return this.suiteStmtConnection_
-    }
-  },
-  suiteBlock: {
-    get () {
-      var c8n = this.suiteStmtConnection
-      return c8n && c8n.targetBlock()
-    }
-  },
-  suite: {
-    get () {
-      var b = this.suiteBlock
-      return b && b.eyo
-    },
-  },
-  outputConnection: {
-    get () {
-      return this.outputConnection_
-    },
-    set (newValue) {
-      this.outputConnection_ = newValue
-    }
-  },
-  outputBlock: {
-    get () {
-      var c8n = this.outputConnection
-      return c8n && c8n.targetBlock()
+      return this.magnets_
     }
   },
   output: {
     get () {
-      var b = this.outputBlock
-      return b && b.eyo
+      var m = this.magnets.output
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
     }
   },
-  leftStmtConnection: {
+  top: {
     get () {
-      return this.leftStmtConnection_
-    }
-  },
-  leftBlock: {
-    get () {
-      var c8n = this.leftStmtConnection
-      return c8n && c8n.targetBlock()
+      var m = this.magnets.top
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
+    },
+    set (newValue) {
+      this.magnets.top.target = newValue
     }
   },
   left: {
     get () {
-      var b = this.leftBlock
-      return b && b.eyo
-    }
-  },
-  rightStmtConnection: {
-    get () {
-      return this.rightStmtConnection_
-    }
-  },
-  rightBlock: {
-    get () {
-      var c8n = this.rightStmtConnection_
-      return c8n && c8n.targetBlock()
+      var m = this.magnets.left
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
+    },
+    set (newValue) {
+      this.magnets.left.target = newValue
     }
   },
   right: {
     get () {
-      var b = this.rightBlock
-      return b && b.eyo
+      var m = this.magnets.right
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
+    },
+    set (newValue) {
+      this.magnets.right.target = newValue
+    }
+  },
+  suite: {
+    get () {
+      var m = this.magnets.suite
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
+    },
+    set (newValue) {
+      this.magnets.suite.target = newValue
+    }
+  },
+  bottom: {
+    get () {
+      var m = this.magnets.bottom
+      if (m) {
+        var t = m.target
+        return t && t.b_eyo
+      }
+    },
+    set (newValue) {
+      this.magnets.bottom.target = newValue
+    }
+  },
+  leftMost: {
+    get () {
+      var ans = this
+      var eyo
+      while ((eyo = ans.left)) {
+        ans = eyo
+      }
+      return ans
+    }
+  },
+  topMost: {
+    get () {
+      var ans = this
+      var eyo
+      while ((eyo = ans.top)) {
+        ans = eyo
+      }
+      return ans
+    }
+  },
+  rightMost: {
+    get () {
+      var ans = this
+      var eyo
+      while ((eyo = ans.right)) {
+        ans = eyo
+      }
+      return ans
+    }
+  },
+  bottomMost: {
+    get () {
+      var ans = this
+      var eyo
+      while ((eyo = ans.bottom)) {
+        ans = eyo
+      }
+      return ans
+    }
+  },
+  previous: {
+    get () {
+      console.error("INCONSISTENCY BREAK HERE")
+      throw "FORBIDDEN"
+    }
+  },
+  next: {
+    get () {
+      console.error("INCONSISTENCY BREAK HERE")
+      throw "FORBIDDEN"
+    }
+  },
+  //
+  previousConnection: {
+    get () {
+      console.error("INCONSISTENCY BREAK HERE")
+      throw "FORBIDDEN"
+    }
+  },
+  nextConnection: {
+    get () {
+      console.error("INCONSISTENCY BREAK HERE")
+      throw "FORBIDDEN"
+    }
+  },
+  outputConnection: {
+    get () {
+      console.error("INCONSISTENCY BREAK HERE")
+      throw "FORBIDDEN"
     }
   },
   /**
@@ -496,6 +487,12 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return after
     },
   },
+  lastInput: {
+    get () {
+      var list = this.inputList
+      return list[list.length - 1]
+    }
+  },
   /**
    * Return the enclosing block in this block's tree
    * which is a control. May be null. May be different from the `root`.
@@ -506,6 +503,18 @@ Object.defineProperties(eYo.Delegate.prototype, {
       var eyo = this
       while (!eyo.isControl && (eyo = eyo.parent));
       return eyo
+    }
+  },
+  /**
+   * @readonly
+   * @property {Boolean}  Whether this block is white. White blocks have no effect,
+   * the action of the algorithm is exactly the same whether the block is here or not.
+   * White blocks are comment statements, disabled blocks
+   * and maybe other kinds of blocks to be found...
+   */
+  isWhite: {
+    get () {
+      return this.disabled
     }
   },
   isExpr: {
@@ -531,27 +540,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
   recover: {
     get () {
       return this.block_.workspace.eyo.recover
-    }
-  },
-  lastInput: {
-    get () {
-      var list = this.inputList
-      return list[list.length - 1]
-    }
-  },
-  lastConnection: {
-    get () {
-      return this.lastInput.connection
-    }
-  },
-  bottomMostConnection: {
-    get () {
-      var eyo = this
-      var next
-      while ((next = eyo.next)) {
-        eyo = next
-      }
-      return eyo.nextConnection
     }
   }
 })
@@ -1634,36 +1622,7 @@ eYo.Delegate.prototype.makeSlots = function () {
  * For subclassers eventually
  */
 eYo.Delegate.prototype.makeConnections = function () {
-  // configure the connections
-  var block = this.block_
-  var model = this.model
-  var D
-  if ((D = model.output) && Object.keys(D).length) {
-    block.setOutput(true) // check is setup in the consolidateConnections
-    block.outputConnection.eyo.model = D
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.previous && goog.isDefAndNotNull(D.previous.check)) {
-      block.setPreviousStatement(true)
-      this.previousConnection.eyo.model = D.previous
-    }
-    if (D.next && goog.isDefAndNotNull(D.next.check)) {
-      block.setNextStatement(true)
-      this.nextConnection.eyo.model = D.next
-    }
-    if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suiteStmtConnection_ = block.makeConnection_(Blockly.NEXT_STATEMENT)
-      this.suiteStmtConnection_.eyo.model = D.suite
-    }
-    if (D.left && goog.isDefAndNotNull(D.left.check)) {
-      this.leftStmtConnection_ = block.makeConnection_(eYo.Const.LEFT_STATEMENT)
-      this.leftStmtConnection_.eyo.model = D.left
-    }
-    if (D.right && goog.isDefAndNotNull(D.right.check)) {
-      this.rightStmtConnection_ = block.makeConnection_(eYo.Const.RIGHT_STATEMENT)
-      this.rightStmtConnection_.eyo.model = D.right
-      eYo.FieldHelper.makeFields(this.rightStmtConnection_.eyo, D.right.fields)
-    }
-  }
+  this.magnets = new eYo.Magnets(this)
   this.updateBlackHeight()
 }
 
@@ -1854,19 +1813,18 @@ eYo.Delegate.prototype.consolidateType = function () {
  */
 eYo.Delegate.prototype.consolidateConnections = function () {
   this.completeWrap_()
-  var b = this.block_
-  var f = c8n => {
-    c8n && c8n.eyo.updateCheck()
+  var f = m4t => {
+    m4t && m4t.updateCheck()
   }
-  this.forEachSlot(slot => f(slot.connection))
-  if (b.outputConnection) {
-    f(b.outputConnection)
+  this.forEachSlot(slot => f(slot.magnet))
+  if (this.magnets.output) {
+    f(this.magnets.output)
   } else {
-    f(b.previousConnection)
-    f(this.leftStmtConnection)
-    f(this.rightStmtConnection)
-    f(this.suiteStmtConnection)
-    f(b.nextConnection)
+    f(this.magnets.top)
+    f(this.magnets.left)
+    f(this.magnets.right)
+    f(this.magnets.suite)
+    f(this.magnets.bottom)
   }
 }
 
@@ -2050,15 +2008,17 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
 
 /**
  * Connect the last connection to the given expression block.
- * @param {!Object} bdct  block, delegate, connection or type
+ * @param {!eYo.Delegate|eYo.Magnet|String} bdct  block, delegate, connection or type
  * @return {Boolean}  whether the connection is established
  */
-eYo.Delegate.prototype.lastConnect = function (bdct) {
-  var other = bdct.outputConnection || (bdct.block_ && bdct.block_.outputConnection) || (bdct.eyo && bdct) || eYo.DelegateSvg.newBlockComplete(this.workspace, bdct).outputConnection
-  var c8n = this.lastConnection
-  if (c8n.checkType_(other)) {
-    c8n.connect(other)
-    return c8n.targetConnection === other ? c8n.eyo.t_eyo : undefined
+eYo.Delegate.prototype.lastConnect = function (dmt) {
+  var other = dmt.magnets.output || (dmt.connection && dmt) || eYo.DelegateSvg.newComplete(this.workspace, dmt).magnets.output
+  if (other.connection) {
+    var m4t = this.lastInput.eyo.magnet
+    if (m4t.checkType_(other)) {
+      m4t.connect(other)
+      return m4t.target === other ? m4t.t_eyo : undefined
+    }
   }
 }
 
@@ -2201,13 +2161,13 @@ eYo.Delegate.prototype.getStatementCount = function () {
   var n = 1
   var hasActive = false
   var hasNext = false
-  var c8n = this.suiteStmtConnection
-  if (c8n) {
+  var m4t = this.magnets.suite
+  if (m4t) {
     hasNext = true
-    var t_eyo = c8n.eyo.t_eyo
+    var t_eyo = m4t.t_eyo
     if (t_eyo) {
       do {
-        hasActive = hasActive || (!t_eyo.block_.disabled && !t_eyo.isWhite())
+        hasActive = hasActive || (!t_eyo.block_.disabled && !t_eyo.isWhite)
         n += t_eyo.getStatementCount()
       } while ((t_eyo = t_eyo.next))
     }
@@ -2215,132 +2175,126 @@ eYo.Delegate.prototype.getStatementCount = function () {
   return n + (hasNext && !hasActive ? 1 : 0)
 }
 
-/**
- * Whether this block is white. White blocks have no effect,
- * the action of the algorithm is exactly the same whether the block is here or not.
- * White blocks are comment statements, disabled blocks
- * and maybe other kinds of blocks to be found...
- * For edython.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.Delegate.prototype.isWhite = function () {
-  return this.block_.disabled
-}
-
-/**
- * Set the disable state of the block.
- * Calls the block's method but also make sure that previous blocks
- * and next blocks are in an acceptable state.
- * For example, if I disable an if block, I should also disable
- * an elif/else following block, but only if it would make an elif/else orphan.
- * For edython.
- * @param {Boolean} yorn  true to disable, false to enable.
- * @return None
- */
-eYo.Delegate.prototype.setDisabled = function (yorn) {
-  var block = this.block_
-  if (!!block.disabled === !!yorn) {
-    // nothing to do the block is already in the good state
-    return
-  }
-  eYo.Events.groupWrap(() => {
-    var previous, next
-    if (yorn) {
-      block.setDisabled(true)
-      // Does it break next connections
-      if ((previous = block.previousConnection) &&
-      (next = previous.targetConnection) &&
-      next.eyo.getBlackConnection()) {
-        while ((previous = block.nextConnection) &&
-        (previous = previous.targetConnection) &&
-        (previous = previous.eyo.getBlackConnection())) {
-          if (next.checkType_(previous)) {
-            break
-          }
-          block = previous.getSourceBlock()
-          // No recursion
-          block.setDisabled(true)
-        }
-      }
-    } else {
-      block.setDisabled(false)
-      // if the connection chain below this block is broken,
-      // try to activate some blocks
-      if ((next = block.nextConnection)) {
-        if ((previous = next.targetConnection) &&
-        (previous = previous.eyo.getBlackConnection()) &&
-        !next.checkType_(previous)) {
-          // find  white block in the below chain that can be activated
-          // stop before the black connection found just above
-          previous = next.targetConnection
-          do {
-            var target = previous.getSourceBlock()
-            if (target.disabled) {
-              target.disabled = false
-              var check = next.checkType_(previous)
-              target.disabled = true
-              if (check) {
-                target.setDisabled(false)
-                if (!(next = target.nextConnection)) {
-                  break
-                }
-              }
-            } else if (!target.eyo.isWhite()) {
-              // the black connection is reached, no need to go further
-              // but the next may have change and the checkType_ must
-              // be computed once again
-              if (!next.checkType_(previous)) {
-                target.unplug()
-                target.bumpNeighbours_()
-              }
-              break
-            }
-          } while ((previous = previous.eyo.getConnectionBelow()))
-        }
-      }
-      // now consolidate the chain above
-      if ((previous = block.previousConnection)) {
-        if ((next = previous.targetConnection) &&
-        (next = next.eyo.getBlackConnection()) &&
-        !previous.checkType_(next)) {
-          // find  white block in the above chain that can be activated
-          // stop before the black connection found just above
-          next = previous.targetConnection
-          do {
-            target = next.getSourceBlock()
-            if (target.disabled) {
-              // beware of some side effet below
-              // bad design, things have changed since then...
-              target.disabled = false
-              check = previous.checkType_(next)
-              target.disabled = true
-              if (check) {
-                target.setDisabled(false)
-                if (!(previous = target.previousConnection)) {
-                  break
-                }
-              }
-            } else if (!target.eyo.isWhite()) {
-              // the black connection is reached, no need to go further
-              // but the next may have change and the checkType_ must
-              // be computed once again
-              if (!next.checkType_(previous)) {
-                target = previous.getSourceBlock()
-                target.unplug()
-                target.bumpNeighbours_()
-              }
-              break
-            }
-          } while ((next = next.eyo.getConnectionAbove()))
-        }
-      }
+Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
+  get () {
+    return this.disabled_
+  },
+  /**
+   * Set the disable state of the block.
+   * Calls the block's method but also make sure that previous blocks
+   * and next blocks are in an acceptable state.
+   * For example, if I disable an if block, I should also disable
+   * an elif/else following block, but only if it would make an elif/else orphan.
+   * For edython.
+   * @param {Boolean} yorn  true to disable, false to enable.
+   * @return None
+   */
+  set (yorn) {
+    if (!!this.disabled_ === !!yorn) {
+      // nothing to do the block is already in the good state
+      return
     }
-  }, () => {
-    this.incrementChangeCount()
-    this.render()
-  })
-}
+    
+    eYo.Events.groupWrap(() => {
+      Blockly.Events.fire(new Blockly.Events.BlockChange(
+        this, 'disabled', null, this.disabled_, yorn))
+      var previous, next
+      if (yorn) {
+        // Does it break next connections
+        if ((previous = this.magnets.top) &&
+        (next = previous.target) &&
+        next.blackMagnet) {
+          var eyo = this
+          while ((previous = eyo.magnets.bottom) &&
+          (previous = previous.target) &&
+          (previous = previous.blackMagnet)) {
+            if (next.checkType_(previous)) {
+              break
+            }
+            eyo = previous.b_eyo
+            // No recursion
+            eyo.setDisabled(true)
+          }
+        }
+      } else {
+        // if the connection chain below this block is broken,
+        // try to activate some blocks
+        if ((next = this.magnets.bottom)) {
+          if ((previous = next.target) &&
+          (previous = previous.blackMagnet) &&
+          !next.checkType_(previous)) {
+            // find  white block in the below chain that can be activated
+            // stop before the black connection found just above
+            previous = next.target
+            do {
+              var t_eyo = previous.b_eyo
+              if (t_eyo.disabled) {
+                t_eyo.disabled = false
+                var check = next.checkType_(previous)
+                t_eyo.disabled = true
+                if (check) {
+                  t_eyo.disabled = false
+                  if (!(next = t_eyo.magnets.bottom)) {
+                    break
+                  }
+                }
+              } else if (!t_eyo.isWhite) {
+                // the black connection is reached, no need to go further
+                // but the next may have change and the checkType_ must
+                // be computed once again
+                if (!next.checkType_(previous)) {
+                  t_eyo.unplug()
+                  t_eyo.bumpNeighbours_()
+                }
+                break
+              }
+            } while ((previous = previous.getMagnetBelow()))
+          }
+        }
+        // now consolidate the chain above
+        if ((previous = this.magnets.top)) {
+          if ((next = previous.target) &&
+          (next = next.blackMagnet) &&
+          !previous.checkType_(next)) {
+            // find  white block in the above chain that can be activated
+            // stop before the black connection found just above
+            next = previous.target
+            do {
+              t_eyo = next.b_eyo
+              if (t_eyo.disabled) {
+                // beware of some side effet below
+                // bad design, things have changed since then...
+                t_eyo.disabled = false
+                check = previous.checkType_(next)
+                t_eyo.disabled = true
+                if (check) {
+                  t_eyo.setDisabled(false)
+                  if (!(previous = t_eyo.magnets.top)) {
+                    break
+                  }
+                }
+              } else if (!t_eyo.isWhite) {
+                // the black connection is reached, no need to go further
+                // but the next may have change and the checkType_ must
+                // be computed once again
+                if (!next.checkType_(previous)) {
+                  t_eyo = previous.b_eyo
+                  t_eyo.unplug()
+                  t_eyo.bumpNeighbours_()
+                }
+                break
+              }
+            } while ((next = next.eyo.getMagnetAbove()))
+          }
+        }
+      }
+    }, () => {
+      this.incrementChangeCount()
+      this.ui && this.ui.updateDisabled()
+      this.render()
+    })
+  }
+})
 
 /**
  * Change the incog status.
@@ -2365,12 +2319,12 @@ eYo.Delegate.prototype.setIncog = function (incog) {
   }
   this.incog_ = incog
   this.forEachSlot(slot => slot.setIncog(incog)) // with incog validator
-  var c8n = this.suiteStmtConnection
-  c8n && c8n.eyo.setIncog(incog)
+  var m4t = this.magnets.suite
+  m4t && m4t.setIncog(incog)
   this.inputList.forEach(input => {
     if (!input.eyo.slot) {
-      var c8n = input.connection
-      c8n && c8n.eyo.setIncog(incog) // without incog validator
+      var m4t = input.eyo.magnet
+      m4t && m4t.setIncog(incog) // without incog validator
     }
   })
   this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's setIncog
@@ -2392,9 +2346,9 @@ eYo.Delegate.prototype.isIncog = function () {
  * @return !String
  */
 eYo.Delegate.prototype.inputEnumerator = function (all) {
-  return eYo.Do.Enumerator(this.block_.inputList, all ? undefined : function (x) {
-    return !x.connection || !x.connection.eyo.slot || !x.connection.eyo.slot.isIncog()
-  })
+  return eYo.Do.Enumerator(this.block_.inputList, all || (x =>
+    !x.eyo.magnet || !x.eyo.magnet.slot || !x.eyo.magnet.slot.isIncog())
+  )
 }
 
 /**
@@ -2443,10 +2397,10 @@ eYo.Delegate.prototype.forEachInputConnection = function (helper) {
  * @param {!Function} helper
  * @return {Object} returns the first connection for which helper returns true or the helper return value 
  */
-eYo.Delegate.prototype.someInputConnection = function (helper) {
+eYo.Delegate.prototype.someInputMagnet = function (helper) {
   return this.someInput(input => {
-    var c8n = input.connection
-    return c8n && helper(c8n)
+    var m4t = input.eyo.magnet
+    return m4t && helper(m4t)
   })
 }
 
@@ -2509,13 +2463,4 @@ eYo.Delegate.prototype.getSlotConnections = function () {
 eYo.Delegate.prototype.nextConnect = function (block) {
   this.block_.nextConnection.connect(block.previousConnection)
   return block
-}
-
-/**
- * get the slot connections, mainly for debugging purposes.
- * For edython.
- * @return An array of all the connections
- */
-eYo.Delegate.prototype.bottomMostConnect = function (block) {
-  this.bottomMostConnection.connect(block.previousConnection)
 }

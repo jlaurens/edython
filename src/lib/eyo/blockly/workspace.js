@@ -272,9 +272,9 @@ Blockly.Workspace.prototype.getBlockById = (() => {
     }
     var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
     if (m && (block = getBlockById.call(this, m.id))) {
-      return block.eyo.someInputConnection((c8n) => {
-          var target = c8n.targetBlock()
-          if (target && target.id === id) {
+      return block.eyo.someInputMagnet(m4t => {
+          var target = m4t.target
+          if (target && target.t_eyo.id === id) {
             return target
           }
       })
@@ -489,7 +489,7 @@ eYo.copyBlock = function(block, deep) {
   var xmlBlock = eYo.Xml.blockToDom(block, {noId: true, noNext: !deep});
   // Copy only the selected block and internal blocks.
   // Encode start position in XML.
-  var xy = block.getRelativeToSurfaceXY();
+  var xy = block.eyo.ui.xyInSurface;
   xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);
   xmlBlock.setAttribute('y', xy.y);
   Blockly.clipboardXml_ = xmlBlock;

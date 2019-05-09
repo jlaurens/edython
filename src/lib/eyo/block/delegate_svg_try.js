@@ -145,14 +145,14 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
     }
   },
   statement: {
-    previous: {
+    top: {
       check: /** @suppress {globalThis} */ function (type) {
         return type === eYo.T3.Stmt.except_part
         ? eYo.T3.Stmt.Previous.except_part
         : eYo.T3.Stmt.Previous.void_except_part
       }
     },
-    next: {
+    bottom: {
       check: /** @suppress {globalThis} */ function (type) {
         return type === eYo.T3.Stmt.except_part
         ? eYo.T3.Stmt.Next.except_part

@@ -12,53 +12,52 @@ describe('comment statement', function () {
   it(`One block dbOpposite_`, function () {
     eYo.Test.setItUp()
     test_connection_db()
-    var b = eYo.Test.new_block('comment_stmt')
-    // b.eyo.comment_p = 'abc'
-    var db
+    var d = eYo.Test.new_dlgt('comment_stmt')
+    // d.comment_p = 'abc'
+    var m4ts = d.magnets
     ;[
-      b.previousConnection,
-      b.nextConnection,
-      b.eyo.rightStmtConnection,
-      b.eyo.leftStmtConnection
-    ].forEach(c8n => {
-      var db = c8n.db_
+      m4ts.top,
+      m4ts.bottom,
+      m4ts.left,
+      m4ts.right
+    ].forEach(m => {
+      var db = m.connection.db_
       chai.assert(db.length === 1)
-      chai.assert(db.indexOf(c8n) >= 0)
+      chai.assert(db.indexOf(m.connection) >= 0)
     })
     ;[
-      [b.previousConnection, b.nextConnection],
-      [b.nextConnection, b.previousConnection],
-      [b.eyo.rightStmtConnection, b.eyo.leftStmtConnection],
-      [b.eyo.leftStmtConnection, b.eyo.rightStmtConnection]
-    ].forEach(c8ns => {
-      var db = c8ns[0].dbOpposite_
+      [m4ts.top, m4ts.bottom],
+      [m4ts.bottom, m4ts.top],
+      [m4ts.left, m4ts.right],
+      [m4ts.right, m4ts.left]
+    ].forEach(ms => {
+      var db = ms[0].connection.dbOpposite_
       chai.assert(db.length === 1)
-      chai.assert(db.indexOf(c8ns[1]) >= 0)
+      chai.assert(db.indexOf(ms[1].connection) >= 0)
     })
-    b.dispose()
+    d.block_.dispose()
     test_connection_db()
     eYo.Test.tearItDown()
   })
   it(`Two blocks dbOpposite_`, function () {
     eYo.Test.setItUp()
     test_connection_db()
-    var b1 = eYo.Test.new_block('comment_stmt')
-    var b2 = eYo.Test.new_block('comment_stmt')
-    // b1.eyo.comment_p = 'abc'
-    // b2.eyo.comment_p = 'cde'
-    // b2.moveBy(100,20)
+    var d1 = eYo.Test.new_dlgt('comment_stmt')
+    var d2 = eYo.Test.new_dlgt('comment_stmt')
+    // d1.comment_p = 'abc'
+    // d2.comment_p = 'cde'
+    // d2.moveBy(100,20)
     ;[
-      ['previousConnection', 'nextConnection'],
-      ['leftStmtConnection', 'rightStmtConnection']
+      ['top', 'bottom'],
+      ['left', 'right']
     ].forEach(args => {
-      var c1 = b1[args[0]] || b1.eyo[args[0]]
-      var c2 = b2[args[0]] || b2.eyo[args[0]]
-      var cc1 = b1[args[1]] || b1.eyo[args[1]]
-      var cc2 = b2[args[1]] || b2.eyo[args[1]]
-      var
-      db = c1.db_
+      var c1 = d1.magnets[args[0]].connection
+      var c2 = d2.magnets[args[0]].connection
+      var cc1 = d1.magnets[args[1]].connection
+      var cc2 = d2.magnets[args[1]].connection
+      var db = c1.db_
       chai.assert(db === c2.db_)
-      var f1 = (k) => {
+      var f1 = k => {
         chai.assert(db.length === 2, `${k} 1) ${args[0]} / ${args[1]}`)
         chai.assert(db.indexOf(c1) >= 0, `${k} 2) ${args[0]} / ${args[1]}`)
         chai.assert(db.indexOf(c2) >= 0, `${k} 3) ${args[0]} / ${args[1]}`)
@@ -83,23 +82,23 @@ describe('comment statement', function () {
       chai.assert(db === cc2.dbOpposite_)
       f1('cc1 opposite')
     })
-    b1.dispose()
-    b2.dispose()
+    d1.block_.dispose()
+    d2.block_.dispose()
     test_connection_db()
     eYo.Test.tearItDown()
   })
   it(`Create from type`, function () {
     eYo.Test.setItUp()
-    var b = eYo.Test.new_block('comment_stmt')
-    eYo.Test.block(b, 'comment_stmt')
-    eYo.Test.ctor(b, 'comment_stmt')
-    var b1 = eYo.Test.new_block('comment_stmt')
-    b.eyo.comment_p = 'abc'
-    b1.eyo.comment_p = 'cde'
-    b1.moveBy(100,20)
-    eYo.Selected.connection = b1.eyo.rightStmtConnection
-    // b1.dispose()
-    // b.dispose()
+    var d = eYo.Test.new_dlgt('comment_stmt')
+    eYo.Test.dlgt(d, 'comment_stmt')
+    eYo.Test.ctor(d, 'comment_stmt')
+    var d1 = eYo.Test.new_dlgt('comment_stmt')
+    d.comment_p = 'abc'
+    d1.comment_p = 'cde'
+    d1.moveBy(100,20)
+    eYo.Selected.connection = d1.magnets.right.connection
+    // d1.block_.dispose()
+    // d.block_.dispose()
     eYo.Test.tearItDown()
   })
 })

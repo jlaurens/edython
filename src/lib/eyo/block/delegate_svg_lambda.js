@@ -16,7 +16,7 @@ goog.provide('eYo.DelegateSvg.Parameter')
 
 goog.require('eYo.DelegateSvg.List')
 goog.require('eYo.DelegateSvg.Primary')
-goog.require('eYo.ConnectionDelegate')
+goog.require('eYo.Magnet')
 goog.require('goog.dom');
 
 /**
@@ -311,13 +311,14 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
  */
 eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var e8r = block.eyo.inputEnumerator()
+  var ws = this.workspace
+  var e8r = this.inputEnumerator()
   var F = (modifier, flags, msg) => {
-    var BB
+    var y
     eYo.Events.disableWrap(() => {
-      BB = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, eYo.T3.Expr.identifier)
-      BB.eyo.changeWrap(
-        function() { // `this` is `BB.eyo`
+      y = eYo.DelegateSvg.newComplete(this, eYo.T3.Expr.identifier)
+      y.changeWrap(
+        function() { // `this` is `y`
           this.modifier_p = modifier
           this.variant_p = flags
         }
@@ -325,9 +326,9 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
     })
     e8r.end()
     while (e8r.previous()) {
-      var c8n = e8r.here.connection
-      if (c8n && !c8n.targetConnection) {
-        if (c8n.checkType_(BB.outputConnection)) {
+      var m4t = e8r.here.eyo.magnet
+      if (m4t && !m4t.target) {
+        if (m4t.checkType_(y.magnets.output)) {
           var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
             eYo.Do.createSPAN('( ', 'eyo-code-disabled'),
             eYo.Do.createSPAN(msg),
@@ -335,15 +336,15 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           )
           mgr.addInsertChild(mgr.newMenuItem(
             content,
-            function () {
-              var B = eYo.DelegateSvg.newBlockComplete(block.eyo, eYo.T3.Expr.identifier)
+            () => {
+              var y = eYo.DelegateSvg.newComplete(this, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(
                 () => { // `this` is catched
-                  B.eyo.changeWrap(
-                    function () { // `this` is `B.eyo`
+                  y.changeWrap(
+                    function () { // `this` is `y`
                       this.modifier_p = modifier
                       this.variant_p = flags
-                      c8n.connect(B.outputConnection)    
+                      m4t.connect(y.magnets.output)    
                     }
                   )
                 }
@@ -354,7 +355,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
       }
     }
     eYo.Events.disableWrap(() => {
-      BB.dispose(true)
+      y.block_.dispose(true)
     })
   }
   F('', 0, 'name')
@@ -394,12 +395,10 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
         label: ':'
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var block = this.connection.sourceBlock_
-        var c8nOut = block.outputConnection
-        var targetC8n = c8nOut.targetConnection
-        if (targetC8n) {
+        var m4t = this.b_eyo.magnets.output.target
+        if (m4t) {
           // does the target accept general expression in lambda
-          if (targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
+          if (m4t.check_ && m4t.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
             return eYo.T3.Expr.Check.expression_nocond
           } 
         }
@@ -437,8 +436,8 @@ names.forEach((key) => {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.ConnectionDelegate.prototype.consolidateType = function () {
-  eYo.ConnectionDelegate.superClass_.consolidateType.call(this)
+eYo.Magnet.prototype.consolidateType = function () {
+  eYo.Magnet.superClass_.consolidateType.call(this)
   var block = this.connection.sourceBlock_
   var c8nOut = block.outputConnection
   var input = block.getInput(eYo.Key.EXPRESSION)

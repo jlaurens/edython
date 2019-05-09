@@ -54,7 +54,7 @@ eYo.DelegateSvg.Control.prototype.isControl = true
  * May be called very early.
  */
 eYo.DelegateSvg.Control.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.suiteStmtConnection && this.suiteStmtConnection.targetConnection ? 0 : 1
+  this.blackHeight = this.magnets.suite && this.magnets.suite.target ? 0 : 1
 }
 
 /**
@@ -104,10 +104,10 @@ eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   statement: {
     left: undefined, // override inherited
     right: undefined, // override inherited
-    previous: {
+    top: {
       check: eYo.T3.Stmt.start_stmt
     },
-    next: {
+    bottom: {
       check: eYo.T3.Stmt.start_stmt
     }
   }

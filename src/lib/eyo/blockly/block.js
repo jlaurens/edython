@@ -188,6 +188,15 @@ Object.defineProperties(eYo.Block.prototype, {
       return this.eyo.id
     }
   },
+  parentBlock_: {
+    get () {
+      var p = this.eyo.parent
+      return p && p.block_
+    },
+    set (newValue) {
+      this.eyo.parent = newValue && newValue.eyo
+    }
+  },
   inputList: {
     get () {
       return this.eyo.inputList
@@ -200,26 +209,32 @@ Object.defineProperties(eYo.Block.prototype, {
   },
   outputConnection: {
     get () {
-      return this.eyo.outputConnection_
+      var m = this.eyo.magnets.output
+      return m && m.connection
     },
     set (newValue) {
-      this.eyo.outputConnection_ = newValue
+      console.error("INCONSISTENCY: BREAK HERE")
+      throw "FORBIDDEN"
     }
   },
   previousConnection: {
     get () {
-      return this.eyo.previousConnection_
+      var m = this.eyo.magnets.top
+      return m && m.connection
     },
     set (newValue) {
-      this.eyo.previousConnection_ = newValue
+      console.error("INCONSISTENCY: BREAK HERE")
+      throw "FORBIDDEN"
     }
   },
   nextConnection: {
     get () {
-      return this.eyo.nextConnection_
+      var m = this.eyo.magnets.bottom
+      return m && m.connection
     },
     set (newValue) {
-      this.eyo.nextConnection_ = newValue
+      console.error("INCONSISTENCY: BREAK HERE")
+      throw "FORBIDDEN"
     }
   },
   width: {
@@ -247,7 +262,23 @@ Object.defineProperties(eYo.Block.prototype, {
       var ui = this.eyo && this.eyo.ui
       ui && (ui.rendered = newValue)
     }
-  }
+  },
+  disabled: {
+    get () {
+      return this.eyo.disabled
+    },
+    set (newValue) {
+      this.eyo.disabled = newValue
+    }
+  },
+  isInFlyout: {
+    get () {
+      return this.eyo.isInFlyout
+    },
+    set (newValue) {
+      this.eyo.isInFlyout = newValue
+    }
+  },
 })
 
 /**
@@ -270,10 +301,10 @@ eYo.Block.prototype.dispose = function (healStack) {
   }
   this.unplug(healStack)
   if (this.eyo.wrapped_) {
-    var c8n = this.outputConnection.targetConnection
-    if (c8n) {
-      c8n.eyo.wrapped_ = false
-      c8n.eyo.slot && (c8n.eyo.slot.wrapped_ = false)
+    var t4t = this.magnets.output.target
+    if (t4t) {
+      t4t.wrapped_ = false
+      t4t.slot && (t4t.slot.wrapped_ = false)
     }
     // dispose of child blocks before calling super
     Blockly.Events.disable()
@@ -378,22 +409,6 @@ eYo.Block.prototype.replaceVarId = function (oldVarId, newVarId) {
 }
 
 /**
- * Set whether this block returns a value.
- * No null opt_check for expression blocks
- * @param {boolean} newBoolean True if there is an output.
- * @param {string|Array.<string>|null|undefined} opt_check Returned type or list
- *     of returned types.  Null or undefined if any type could be returned
- *     (e.g. variable get).
- */
-eYo.Block.prototype.setOutput = function (newBoolean, opt_check) {
-  if (newBoolean) {
-    goog.asserts.assert(!!opt_check || !this.type.startsWith('eyo:expr_') || this.type.startsWith('eyo:expr_fake'),
-      'eYo output connection must be types for ' + this.type)
-  }
-  eYo.Block.superClass_.setOutput.call(this, newBoolean, opt_check)
-}
-
-/**
  * Unplug this block from its superior block.
  * If this block is a *next* statement,
  * optionally reconnect the block underneath with the block on top.
@@ -403,8 +418,8 @@ eYo.Block.prototype.setOutput = function (newBoolean, opt_check) {
 Blockly.Block.prototype.unplug = (() => {
   var unplug = Blockly.Block.prototype.unplug
   return function(opt_healStack) {
-    if (this.eyo.left) {
-      this.eyo.leftStmtConnection.disconnect();
+    if (this.eyo.magnets.left.target) {
+      this.eyo.magnets.left.disconnect()
     } else {
       unplug.call(this, opt_healStack)
     }

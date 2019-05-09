@@ -114,22 +114,22 @@ eYo.KeyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected block can handle the model
-    var B = eYo.Selected.block
-    var c8n = eYo.Selected.connection
-    if (B && !c8n) {
+    var eyo = eYo.Selected.eyo
+    var m4t = eYo.Selected.magnet
+    if (eyo && !m4t) {
       var D = model.data
-      if (D && B.eyo.setDataWithModel(D)) {
+      if (D && eyo.setDataWithModel(D)) {
         // yes it does
         return
       }
       // Maybe the main data can handle the model
-      var main = B.eyo.main_d
+      var main = eyo.main_d
       if (main && main.validate(model)) {
         // yes it does
         main.set(model)
         return
       }
-      if (B.eyo.forEachData(d => {
+      if (eyo.forEachData(d => {
         if (!d.isIncog() && d.validate(model)) {
           d.change(model)
           return true
@@ -156,51 +156,52 @@ eYo.KeyHandler = (() => {
     }
     var eyo = eYo.Selected.eyo
     if (eyo) {
-      var c8n = eYo.Selected.connection
-      var newB = c8n && eyo.insertBlockWithModel(model, c8n)
+      var m4t = eYo.Selected.magnet
+      var newB = m4t && eyo.insertBlockWithModel(model, m4t)
         || (model.parent || model.slot
-          ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, c8n)
-          : eyo.insertBlockWithModel(model, c8n) || eyo.insertParentWithModel(model))
+          ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, m4t)
+          : eyo.insertBlockWithModel(model, m4t) || eyo.insertParentWithModel(model))
       if (newB) {
-        if (c8n) {
+        if (m4t) {
           // There was a selected connection,
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
-          var doFirst = (block, type) => {
-            return block.eyo.someInputConnection((c8n) => {
-              if (c8n.type === type) {
-                if (!c8n.hidden_ && !c8n.targetConnection && (!c8n.eyo.source || !c8n.eyo.source.bindField)) {
-                  eYo.Selected.connection = c8n
+          var doFirst = (eyo, type) => {
+            return eyo.someInputMagnet(m4t => {
+              if (m4t.type === type) {
+                var t_eyo = m4t.t_eyo
+                if (!m4t.hidden_ && !t_eyo && (!m4t.source || !m4t.source.bindField)) {
+                  eYo.Selected.magnet = m4t
                   return true
-                } else if (c8n.targetConnection) {
-                  return doFirst(c8n.targetBlock(), type)
+                } else {
+                  return t_eyo && doFirst(t_eyo, type)
                 }
               }
             })
           }
-          if (doFirst(newB, Blockly.INPUT_VALUE)) {
+          if (doFirst(newB.eyo, eYo.Magnet.INPUT)) {
             return true
-          } else if ((c8n === eyo.nextConnection) && (c8n = newB.nextConnection) && !c8n.hidden_) {
-            eYo.Selected.connection = c8n
+          } else if ((m4t === eyo.magnets.bottom) && (m4t = newB.eyo.magnets.bottom) && !m4t.hidden_) {
+            eYo.Selected.magnet = m4t
             return true
           }
-          eYo.Selected.connection = null
+          eYo.Selected.magnet = null
           newB.select()
           return true
         }
-        // no selected connection
+        // no selected magnet
         var parent = eyo
         do {
-          if (parent.someInputConnection((c8n) => {
-            if (c8n.eyo.isInput && !c8n.eyo.optional_ && !c8n.targetConnection && !c8n.hidden_) {
-              eYo.Selected.connection = c8n
+          if (parent.someInputMagnet(m4t => {
+            if (m4t.isInput && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
+              eYo.Selected.magnet = m4t
               return true
             }
           })) {
             return true
           }
         } while ((parent = parent.group))
-        eYo.Selected.connection = null
+        eYo.Selected.magnet = null
         newB.select()
         return true
       }
@@ -499,7 +500,7 @@ eYo.KeyHandler = (() => {
         menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
-        var F = (f) => {
+        var F = f => {
           event.preventDefault()
           event.stopPropagation()
           f()
@@ -513,7 +514,7 @@ eYo.KeyHandler = (() => {
       }
     } else {
       // B is not always a block!
-      F = (f) => {
+      F = f => {
         event.preventDefault()
         event.stopPropagation()
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)

@@ -65,6 +65,8 @@ import argparse
 import io
 import math
 import string
+import ast
+import sys
 
 parent_map = None
 
@@ -208,7 +210,6 @@ def do_one_module(module, **kwargs):
 
         arguments = None
         star = False
-        name = None
         mandatory_ = None
     
         def __init__(self, owner, call = None):
@@ -228,12 +229,16 @@ def do_one_module(module, **kwargs):
             return str(self.arguments)
 
         @property
+        def name(self):
+            return self.owner.name
+        
+        @property
         def ary(self):
             if self.arguments is None:
                 return None
             if len(self.arguments):
                 arg = self.arguments[0]
-                if arg.name == '*args':
+                if re.match(r'^\*[a-zA-Z0-9_]+$', arg.name, re.S) is not None:
                     signatures = self.owner.signatures
                     if len(signatures):
                         return max(map(lambda x: x.ary, signatures))
@@ -247,7 +252,7 @@ def do_one_module(module, **kwargs):
                 return None
             if len(self.arguments):
                 arg = self.arguments[0]
-                if arg.name == '*args':
+                if re.match(r'^\*[a-zA-Z0-9_]+$', arg.name, re.S) is not None:
                     signatures = self.owner.signatures
                     if len(signatures):
                         return min(map(lambda x: x.mandatory, signatures))
@@ -256,12 +261,15 @@ def do_one_module(module, **kwargs):
                 for argument in self.arguments:
                     if argument.default is None and argument.optional is not True:
                         self.mandatory_ += 1
+            # get a chance to fix bad guesses
             return Filter.mandatory(self.owner.name, self.mandatory_)
 
         def parse(self, call):
             '''
-            call is the `(…)` in `foo(…)`.
+            call is the `(…)` in `foo(…)` with possibly a trailing character.
             '''
+            # remove what follows the last closing parenthesis:
+            call = (')'.join(call.split(')')[:-1]))+')'
             m = re.match(r"""^
             (?:
                 \(
@@ -280,9 +288,29 @@ def do_one_module(module, **kwargs):
             args2 = m.group('optional')
             args3 = m.group('rest')
             # print(self.name, '===>', call, '/1:', args1, '/2:', args2, '/3:', args3, sep='')
-            # take care of the mandatory argument
+            # # take care of the mandatory argument
+            # try:
+            #     if self.name == 'print':
+            #         print(f"def foo({args1}): pass")
+            #         tree = ast.parse(f"def foo({args1}): pass")
+            #         class FuncLister(ast.NodeVisitor):
+            #             def visit_FunctionDef(self, node):
+            #                 print('print func def', node.name)
+            #                 self.generic_visit(node)
+            #             def visit_arguments(self, node):
+            #                 print('print func arguments', node)
+            #                 self.generic_visit(node)
+            #             def visit_arg(self, node):
+            #                 print('print func argument', node)
+            #                 self.generic_visit(node)
+
+            #         FuncLister().visit(tree)
+            # except:
+            #     pass
+            # finally:pass
+            # try to use python introspection possibilities.
             for arg in re.findall(r'''
-            \s*(?:\([^)]+\)|,|[^,\s]+)\s*
+            \s*(?:\([^)]+\)|,|[^,]+)\s*
             ''', args1, re.X):
                 m = re.match('(?P<name>(?:\([^)]+\)|[^=,\s]+))(?:\s*=\s*(?P<default>[^=,\s]+))?', arg)
                 if m is None:
@@ -339,9 +367,9 @@ def do_one_module(module, **kwargs):
 
         def __init__(self, owner, name):
             self.owner = owner
-            self.name = name
-            self.default = None
-            self.optional = None
+            self.name_ = name
+            self.default_ = None
+            self.optional_ = None
 
         def __eq__(self, other):
             """Overrides the default implementation"""
@@ -353,7 +381,28 @@ def do_one_module(module, **kwargs):
             return self.name
 
         def __repr__(self):
-            return '<argument: ' + self.name + '>'
+            return f'<argument: {self.name}>'
+
+        @property
+        def name(self):
+            return self.name_
+            
+        @property
+        def default(self):
+            return self.default_
+        
+        @default.setter
+        def default(self, newValue):
+            self.default_ = newValue
+            
+        @property
+        def optional(self):
+            return self.optional_
+            
+        @optional.setter
+        def optional(self, newValue):
+            if self.name == '*objects': print(f"optional of {self.name}->{newValue}")
+            self.optional_ = newValue
 
     class Item:
         """An Item represents either a function, a class, a method, a class method or an attribute.

@@ -33,7 +33,7 @@ goog.require('eYo.DelegateSvg')
  * @constructor
  */
 eYo.Consolidator = function (d) {
-  this.reentrant = {}
+  this.reentrant_ = {}
   this.init(d)
 }
 
@@ -151,6 +151,9 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
  */
 eYo.Consolidator.List.prototype.getMandatory = function (io) {
   if (io.block) {
+    if (io.block.type === eYo.T3.Expr.print_argument_list_comprehensive){
+      console.error('BREAK HERE')
+    }
     var d = io.block.eyo.mandatory_d
     if (d) {
       return d.get()
@@ -314,10 +317,6 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   io.input.setCheck(check)
   io.c8n.eyo.optional_ = optional
   io.c8n.eyo.plugged_ = this.plugged
-  if (!io.connected && !this.getMandatory(io) && !io.c8n.isConnected()) {
-    var value = eYo.DelegateSvg.Manager.getModel(io.block.type).list.hole_value
-    io.c8n.eyo.hole_data = check && eYo.HoleFiller.getData(check, value)
-  }
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
   }
@@ -454,16 +453,16 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.makeUnique = function (io) {
-  if (!this.reentrant.makeUnique) {
+  if (!this.reentrant_.makeUnique) {
     var f = this.model.makeUnique
     if (goog.isFunction(f)) {
-      this.reentrant.makeUnique = true
+      this.reentrant_.makeUnique = true
       try {
         if (f.call(this, io)) {
           io.unique = io.i
         }
       } finally {
-        this.reentrant.makeUnique = false
+        this.reentrant_.makeUnique = false
       }
       return
     }

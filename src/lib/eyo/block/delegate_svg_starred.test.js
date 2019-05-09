@@ -10,9 +10,9 @@ describe('Basic Starred', function() {
     ['or_expr_star_star', '**<MISSING EXPRESSION>']
   ].forEach(args => {
     it(`type: ${args[0]}/${args[1]}`, function() {
-      var b = eYo.Test.new_block(args[0])
-      eYo.Test.code(b, args[1])
-      b.dispose()
+      var d = eYo.Test.new_dlgt(args[0])
+      eYo.Test.code(d, args[1])
+      d.block_.dispose()
     })
   })
   ;[
@@ -26,49 +26,49 @@ describe('Basic Starred', function() {
     ['or_expr_star_star', '**abc', 'abc']
   ].forEach(args => {
     it(`modified: ${args[0]}/${args[1]}/${args[2]}`, function() {
-      var b = eYo.Test.new_block(args[0])
-      b.eyo.modified_p = args[2]
-      eYo.Test.code(b, args[1])
-      b.dispose()
+      var d = eYo.Test.new_dlgt(args[0])
+      d.modified_p = args[2]
+      eYo.Test.code(d, args[1])
+      d.block_.dispose()
     })
   })
   it(`to/from type star`, function() {
     // to and from star only
-    var b = eYo.Test.new_block(eYo.T3.Expr.star)
-    b.eyo.modified_p = 'abc'
-    eYo.Test.code(b, '*abc')
-    b.eyo.variant_p = eYo.Key.STAR
-    eYo.Test.code(b, '*')
-    b.dispose()
+    var d = eYo.Test.new_dlgt(eYo.T3.Expr.star)
+    d.modified_p = 'abc'
+    eYo.Test.code(d, '*abc')
+    d.variant_p = eYo.Key.STAR
+    eYo.Test.code(d, '*')
+    d.block_.dispose()
 
-    b = eYo.Test.new_block(eYo.T3.Expr.star)
-    b.eyo.modified_p = 'abc'
-    b.eyo.modifier_p = '**'
-    eYo.Test.code(b, '**abc')
-    b.eyo.variant_p = eYo.Key.STAR
-    eYo.Test.code(b, '*')
-    b.dispose()
+    d = eYo.Test.new_dlgt(eYo.T3.Expr.star)
+    d.modified_p = 'abc'
+    d.modifier_p = '**'
+    eYo.Test.code(d, '**abc')
+    d.variant_p = eYo.Key.STAR
+    eYo.Test.code(d, '*')
+    d.block_.dispose()
 
-    b = eYo.Test.new_block(eYo.T3.Expr.star)
-    var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-    bb.eyo.target_p = 'cba'
-    eYo.Test.code(bb, 'cba')
-    b.eyo.modified_s.connect(bb)
-    eYo.Test.code(b, '*cba')
-    b.eyo.variant_p = eYo.Key.STAR
-    eYo.Test.code(b, '*')
-    b.dispose()
+    d = eYo.Test.new_dlgt(eYo.T3.Expr.star)
+    var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+    dd.target_p = 'cba'
+    eYo.Test.code(dd, 'cba')
+    d.modified_s.connect(dd)
+    eYo.Test.code(d, '*cba')
+    d.variant_p = eYo.Key.STAR
+    eYo.Test.code(d, '*')
+    d.block_.dispose()
 
-    b = eYo.Test.new_block(eYo.T3.Expr.star)
-    var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-    bb.eyo.target_p = 'cba'
-    b.eyo.modifier_p = '**'
-    eYo.Test.code(bb, 'cba')
-    b.eyo.modified_s.connect(bb)
-    eYo.Test.code(b, '**cba')
-    b.eyo.variant_p = eYo.Key.STAR
-    eYo.Test.code(b, '*')
-    b.dispose()
+    d = eYo.Test.new_dlgt(eYo.T3.Expr.star)
+    var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+    dd.target_p = 'cba'
+    d.modifier_p = '**'
+    eYo.Test.code(dd, 'cba')
+    d.modified_s.connect(dd)
+    eYo.Test.code(d, '**cba')
+    d.variant_p = eYo.Key.STAR
+    eYo.Test.code(d, '*')
+    d.block_.dispose()
   })
   ;[
     'star_expr',
@@ -77,49 +77,49 @@ describe('Basic Starred', function() {
   ].forEach(t => {
     it(`to/from type ${t}`, function() {
       // to and from star only
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      b.eyo.variant_p = eYo.Key.STAR
-      eYo.Test.code(b, '*')
-      b.eyo.variant_p = eYo.Key.NONE
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      d.variant_p = eYo.Key.STAR
+      eYo.Test.code(d, '*')
+      d.variant_p = eYo.Key.NONE
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      b.eyo.modifier_p = '**'
-      eYo.Test.code(b, '**abc')
-      b.eyo.modifier_p = '*'
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      d.modifier_p = '**'
+      eYo.Test.code(d, '**abc')
+      d.modifier_p = '*'
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-      bb.eyo.target_p = 'cba'
-      eYo.Test.code(bb, 'cba')
-      b.eyo.modified_s.connect(bb)
-      b.eyo.variant_p = eYo.Key.STAR
-      eYo.Test.code(b, '*')
-      b.eyo.variant_p = eYo.Key.NONE
-      eYo.Test.code(b, '*cba')
-      bb.dispose()
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+      dd.target_p = 'cba'
+      eYo.Test.code(dd, 'cba')
+      d.modified_s.connect(dd)
+      d.variant_p = eYo.Key.STAR
+      eYo.Test.code(d, '*')
+      d.variant_p = eYo.Key.NONE
+      eYo.Test.code(d, '*cba')
+      dd.block_.dispose()
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-      bb.eyo.target_p = 'cba'
-      eYo.Test.code(bb, 'cba')
-      b.eyo.modified_s.connect(bb)
-      b.eyo.modifier_p = '**'
-      eYo.Test.code(b, '**cba')
-      b.eyo.modifier_p = '*'
-      eYo.Test.code(b, '*cba')
-      bb.dispose()
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+      dd.target_p = 'cba'
+      eYo.Test.code(dd, 'cba')
+      d.modified_s.connect(dd)
+      d.modifier_p = '**'
+      eYo.Test.code(d, '**cba')
+      d.modifier_p = '*'
+      eYo.Test.code(d, '*cba')
+      dd.block_.dispose()
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
     })
   })
   ;[
@@ -129,49 +129,49 @@ describe('Basic Starred', function() {
   ].forEach(t => {
     it(`to/from type ${t}`, function() {
       // to and from star only
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      b.eyo.variant_p = eYo.Key.STAR
-      eYo.Test.code(b, '*')
-      b.eyo.variant_p = eYo.Key.NONE
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      d.variant_p = eYo.Key.STAR
+      eYo.Test.code(d, '*')
+      d.variant_p = eYo.Key.NONE
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      b.eyo.modifier_p = '**'
-      eYo.Test.code(b, '**abc')
-      b.eyo.modifier_p = '*'
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      d.modifier_p = '**'
+      eYo.Test.code(d, '**abc')
+      d.modifier_p = '*'
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-      bb.eyo.target_p = 'cba'
-      eYo.Test.code(bb, 'cba')
-      b.eyo.modified_s.connect(bb)
-      b.eyo.variant_p = eYo.Key.STAR
-      eYo.Test.code(b, '*')
-      b.eyo.variant_p = eYo.Key.NONE
-      eYo.Test.code(b, '*cba')
-      bb.dispose()
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+      dd.target_p = 'cba'
+      eYo.Test.code(dd, 'cba')
+      d.modified_s.connect(dd)
+      d.variant_p = eYo.Key.STAR
+      eYo.Test.code(d, '*')
+      d.variant_p = eYo.Key.NONE
+      eYo.Test.code(d, '*cba')
+      dd.block_.dispose()
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
 
-      var b = eYo.Test.new_block(eYo.T3.Expr[t])
-      b.eyo.modified_p = 'abc'
-      var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-      bb.eyo.target_p = 'cba'
-      eYo.Test.code(bb, 'cba')
-      b.eyo.modified_s.connect(bb)
-      b.eyo.modifier_p = '**'
-      eYo.Test.code(b, '**cba')
-      b.eyo.modifier_p = '*'
-      eYo.Test.code(b, '*cba')
-      bb.dispose()
-      eYo.Test.code(b, '*abc')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(eYo.T3.Expr[t])
+      d.modified_p = 'abc'
+      var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+      dd.target_p = 'cba'
+      eYo.Test.code(dd, 'cba')
+      d.modified_s.connect(dd)
+      d.modifier_p = '**'
+      eYo.Test.code(d, '**cba')
+      d.modifier_p = '*'
+      eYo.Test.code(d, '*cba')
+      dd.block_.dispose()
+      eYo.Test.code(d, '*abc')
+      d.block_.dispose()
     })
   })
 })

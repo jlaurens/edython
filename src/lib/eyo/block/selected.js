@@ -106,6 +106,14 @@ eYo.Selected = (() => {
           }
         }
       },
+      magnet: {
+        get () {
+          return c8n__ && c8n__.eyo
+        },
+        set (newValue) {
+          me.connection = newValue && newValue.connection
+        }
+      },
       connection_: {
         get () {
           return c8n__
@@ -306,9 +314,8 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @param {Object} e in general a mouse down event
  * @return {Object|undefined|null}
  */
-eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
-  var block = this.block_
-  var ws = block.workspace
+eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
+  var ws = this.workspace
   if (!ws) {
     return
   }
@@ -324,130 +331,129 @@ eYo.DelegateSvg.prototype.getConnectionForEvent = function (e) {
   var rect = this.getBoundingRect()
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
-  var c8n = this.someInputConnection(c8n => {
-    var c_eyo = c8n.eyo
-    if (!c_eyo.disabled_ && (!c8n.hidden_ || c_eyo.wrapped_)) {
-      if (c_eyo.isInput) {
-        var target = c8n.targetBlock()
+  var m4t = this.someInputMagnet(m4t => {
+    if (!m4t.disabled_ && (!m4t.hidden_ || m4t.wrapped_)) {
+      if (m4t.isInput) {
+        var target = m4t.target
         if (target) {
-          var targetC8n = target.eyo.getConnectionForEvent(e)
-          if (targetC8n) {
-            return targetC8n
+          var targetM4t = target.b_eyo.getMagnetForEvent(e)
+          if (targetM4t) {
+            return targetM4t
           }
           R = new goog.math.Rect(
-            c8n.offsetInBlock_.x + eYo.Unit.x / 2,
-            c8n.offsetInBlock_.y,
+            m4t.offsetInBlock_.x + eYo.Unit.x / 2,
+            m4t.offsetInBlock_.y,
             target.width - eYo.Unit.x,
             target.height
           )
           if (R.contains(where)) {
-            return c8n
+            return m4t
           }
         }
-        if (c_eyo.slot && c_eyo.slot.bindField) {
+        if (m4t.slot && m4t.slot.bindField) {
           R = new goog.math.Rect(
-            c8n.offsetInBlock_.x,
-            c8n.offsetInBlock_.y + eYo.Padding.t,
-            c_eyo.w * eYo.Unit.x,
+            m4t.offsetInBlock_.x,
+            m4t.offsetInBlock_.y + eYo.Padding.t,
+            m4t.w * eYo.Unit.x,
             eYo.Font.height
           )
-        } else if (c_eyo.optional_ || c_eyo.s7r_) {
+        } else if (m4t.optional_ || m4t.s7r_) {
           R = new goog.math.Rect(
-            c8n.offsetInBlock_.x - eYo.Unit.x / 4,
-            c8n.offsetInBlock_.y + eYo.Padding.t,
+            m4t.offsetInBlock_.x - eYo.Unit.x / 4,
+            m4t.offsetInBlock_.y + eYo.Padding.t,
             1.5 * eYo.Unit.x,
             eYo.Font.height
           )
         } else {
           R = new goog.math.Rect(
-            c8n.offsetInBlock_.x + eYo.Unit.x / 4,
-            c8n.offsetInBlock_.y + eYo.Padding.t,
-            (c_eyo.w - 1 / 2) * eYo.Unit.x,
+            m4t.offsetInBlock_.x + eYo.Unit.x / 4,
+            m4t.offsetInBlock_.y + eYo.Padding.t,
+            (m4t.w - 1 / 2) * eYo.Unit.x,
             eYo.Font.height
           )
         }
         if (R.contains(where)) {
-          return c8n
+          return m4t
         }
-      } else if (c_eyo.isNextLike) {
+      } else if (m4t.isBottom || m4t.isSuite) {
         R = new goog.math.Rect(
-          c8n.offsetInBlock_.x,
-          c8n.offsetInBlock_.y - eYo.Style.Path.width,
+          m4t.offsetInBlock_.x,
+          m4t.offsetInBlock_.y - eYo.Style.Path.width,
           eYo.Font.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
         if (R.contains(where)) {
-          return c8n
+          return m4t
         }
       }
     }
   })
-  if (c8n) {
-    return c8n
-  } else if ((c8n = block.previousConnection) && !c8n.hidden) {
+  if (m4t) {
+    return m4t
+  } else if ((m4t = this.magnets.top) && !m4t.hidden) {
     R = new goog.math.Rect(
-      c8n.offsetInBlock_.x,
-      c8n.offsetInBlock_.y - 2 * eYo.Style.Path.width,
+      m4t.offsetInBlock_.x,
+      m4t.offsetInBlock_.y - 2 * eYo.Style.Path.width,
       rect.width,
       1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
     if (R.contains(where)) {
-      return c8n
+      return m4t
     }
   }
-  if ((c8n = this.nextConnection) && !c8n.hidden) {
+  if ((m4t = this.magnets.bottom) && !m4t.hidden) {
     if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
       R = new goog.math.Rect(
-        c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        m4t.offsetInBlock_.x,
+        m4t.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {
       R = new goog.math.Rect(
-        c8n.offsetInBlock_.x,
-        c8n.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        m4t.offsetInBlock_.x,
+        m4t.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         rect.width,
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
     if (R.contains(where)) {
-      return c8n
+      return m4t
     }
   }
-  if ((c8n = this.suiteStmtConnection) && !c8n.hidden) {
+  if ((m4t = this.magnets.suite) && !m4t.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      c8n.offsetInBlock_.y + r,
+      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      m4t.offsetInBlock_.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return c8n
+      return m4t
     }
   }
-  if ((c8n = this.leftStmtConnection) && !c8n.hidden) {
+  if ((m4t = this.magnets.left) && !m4t.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      c8n.offsetInBlock_.y + r,
+      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      m4t.offsetInBlock_.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return c8n
+      return m4t
     }
   }
-  if ((c8n = this.rightStmtConnection) && !c8n.hidden) {
+  if ((m4t = this.magnets.right) && !m4t.hidden) {
     R = new goog.math.Rect(
-      c8n.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      c8n.offsetInBlock_.y + r,
+      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      m4t.offsetInBlock_.y + r,
       2 * r,
       eYo.Font.lineHeight - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return c8n
+      return m4t
     }
   }
 }
@@ -485,7 +491,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
     }
   }
   // unfortunately, the mouse events sometimes do not find there way to the proper block
-  var c8n = this.getConnectionForEvent(e)
+  var c8n = this.getMagnetForEvent(e)
   var c_eyo = c8n && c8n.eyo
   var target = c_eyo
   ? c_eyo.isInput
@@ -519,7 +525,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
-  const c8n = this.getConnectionForEvent(e)
+  const c8n = this.getMagnetForEvent(e)
   const c_eyo = c8n && c8n.eyo
   var target = c_eyo
   ? c_eyo.isInput

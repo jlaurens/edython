@@ -15,26 +15,26 @@ goog.provide('eYo.Decorate')
 
 /**
  * Decorate the function to be reentrant.
- * The return function will test if `this.reentrant[key]` exists.
+ * The return function will test if `this.reentrant_[key]` exists.
  * @param {!string} key
  * @param {!function} f
  * @return An object which `ans` property is the value returned by f when called.
  */
 eYo.Decorate.reentrant_method = function(key, f) {
-  return (!this || !this.reentrant || !this.reentrant[key])
+  return (!this || !this.reentrant_ || !this.reentrant_[key])
     && goog.isFunction(f)
       && function() {
-        if (this.reentrant[key]) {
+        if (this.reentrant_[key]) {
           return {}
         }
-        this.reentrant[key] = true
+        this.reentrant_[key] = true
         try {
           return {ans: f.apply(this, arguments)}
         } catch (err) {
           console.error(err)
           throw err
         } finally {
-          this.reentrant[key] = false
+          this.reentrant_[key] = false
         }
       }
 }

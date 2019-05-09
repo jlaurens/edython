@@ -12,7 +12,6 @@
 'use strict'
 
 goog.provide('eYo.DelegateSvg')
-goog.provide('eYo.HoleFiller')
 
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
@@ -359,9 +358,9 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
   }
   var do_it = !target.rendered ||
   (!this.ui.up &&
-    !eYo.Connection.disconnectedParentC8n &&
-    !eYo.Connection.disconnectedChildC8n&&
-    !eYo.Connection.connectedParentC8n)
+    !eYo.Connection.disconnectedParentM4t &&
+    !eYo.Connection.disconnectedChildM4t&&
+    !eYo.Connection.connectedParentM4t)
   if (do_it) {
     try {
       target.eyo.ui.down = true
@@ -590,22 +589,7 @@ eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
 }
 
 /**
- * Create a new block, with full contents.
- * This is the expected way to create a block 
- * to be displayed immediately.
- * @param {!WorkspaceSvg} workspace
- * @param {!String|Object} model  prototypeName or xml representation.
- * @param {?String} id
- * @private
- */
-eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
-  var B = eYo.DelegateSvg.newBlockComplete.apply(null, arguments)
-  B && B.eyo.beReady()
-  return B
-}
-
-/**
- * Create a new block, with svg background.
+ * Create a new delegate, with svg background.
  * This is the expected way to create the block.
  * There is a caveat due to proper timing in initializing the svg.
  * Whether blocks are headless or not is not clearly designed in Blockly.
@@ -618,45 +602,63 @@ eYo.DelegateSvg.newBlockReady = function (workspace, model, id) {
  * @param {?String|Object} id
  * @private
  */
-eYo.DelegateSvg.newBlockComplete = (() => {
-  var processModel = (workspace, model, id, block) => {
+eYo.DelegateSvg.newReady = function (owner, model, id) {
+  var dlgt = eYo.DelegateSvg.newComplete.apply(null, arguments)
+  dlgt && dlgt.beReady()
+  return dlgt
+}
+
+/**
+ * Create a new Dlgt, with no ui.
+ * This is the expected way to create the Dlgt.
+ * If the model fits an identifier, then create an identifier
+ * If the model fits a number, then create a number
+ * If the model fits a string literal, then create a string literal...
+ * This is headless and should not render until a beReady message is sent.
+ * @param {!*} owner  workspace or dlgt
+ * @param {!String|Object} model
+ * @param {?String|Object} id
+ * @param {?eYo.Delegate} id
+ */
+eYo.DelegateSvg.newComplete = (() => {
+  var processModel = (workspace, model, id, eyo) => {
     var dataModel = model
-    if (!block) {
+    if (!eyo) {
       if (eYo.DelegateSvg.Manager.get(model.type)) {
-        block = workspace.newBlock(model.type, id)
-        block.eyo.setDataWithType(model.type)
+        eyo = workspace.newDlgt(model.type, id)
+        eyo.setDataWithType(model.type)
       } else if (eYo.DelegateSvg.Manager.get(model)) {
-        block = workspace.newBlock(model, id) // can undo
-        block.eyo.setDataWithType(model)
+        eyo = workspace.newDlgt(model, id) // can undo
+        eyo.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
-        var f = (p5e) => {
-          var b
-          if (p5e.expr && (b = workspace.newBlock(p5e.expr, id))) {
-            p5e.expr && b.eyo.setDataWithType(p5e.expr)
-            model && b.eyo.setDataWithModel(model)
+        var f = p5e => {
+          var y
+          if (p5e.expr && (y = workspace.newDlgt(p5e.expr, id))) {
+            p5e.expr && y.setDataWithType(p5e.expr)
+            model && y.setDataWithModel(model)
             dataModel = {data: model}
-          } else if (p5e.stmt && (b = workspace.newBlock(p5e.stmt, id))) {
-            p5e.stmt && b.eyo.setDataWithType(p5e.stmt)
+          } else if (p5e.stmt && (y = workspace.newDlgt(p5e.stmt, id))) {
+            p5e.stmt && y.setDataWithType(p5e.stmt)
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (b = workspace.newBlock(eYo.T3.Expr.numberliteral, id))) {
-            b.eyo.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (y = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
+            y.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No block for model:', model)
           }
-          return b
+          return y
         }
         if (!p5e.isVoid && !p5e.isUnset) {
-          block = f(p5e)
+          eyo = f(p5e)
         } else {
           console.warn('No block for model either:', model)
           return
         }
       }
     }
-    block && block.eyo.changeWrap(
-      function () { // `this` is `block.eyo`
+    eyo && eyo.changeWrap(
+      function () { // `this` is `eyo`
         this.willLoad()
         this.setDataWithModel(dataModel)
         var Vs = model.slots
@@ -664,15 +666,15 @@ eYo.DelegateSvg.newBlockComplete = (() => {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var input = this.getInput(k)
             if (input && input.connection) {
-              var target = input.eyo.target
+              var t_eyo = input.eyo.t_eyo
               var V = Vs[k]
-              var B = processModel(workspace, V, null, target)
-              if (!target && B && B.outputConnection) {
-                B.eyo.changeWrap(
+              var y = processModel(workspace, V, null, t_eyo)
+              if (!t_eyo && y && y.magnets.output) {
+                y.changeWrap(
                   () => {
-                    var slot = input.connection.slot
+                    var slot = input.eyo.magnet.slot
                     slot && slot.setIncog(false)
-                    B.outputConnection.connect(input.connection)
+                    y.magnets.output.connect(input.eyo.magnet)
                   }
                 )
               }
@@ -682,7 +684,7 @@ eYo.DelegateSvg.newBlockComplete = (() => {
         Vs = model
         this.forEachSlot(slot => {
           var input = slot.input
-          if (!input || !input.connection) {
+          if (!input || !input.eyo.magnet) {
             return
           }
           k = slot.key + '_s'
@@ -693,27 +695,27 @@ eYo.DelegateSvg.newBlockComplete = (() => {
           } else {
             return
           }
-          var target = input.eyo.target
-          var B = processModel(workspace, V, null, target)
-          if (!target && B && B.outputConnection) {
-            B.eyo.changeWrap(
+          var t_eyo = input.eyo.magnet.t_eyo
+          var y = processModel(workspace, V, null, t_eyo)
+          if (!t_eyo && y && y.magnets.output) {
+            y.changeWrap(
               () => {
                 // The connection can be established only when not incog
                 slot.setIncog(false)
-                B.outputConnection.connect(input.connection)
+                y.magnets.output.connect(input.eyo.magnet)
               }
             )
           }
         })
         // now blocks and slots have been set
         this.didLoad()
-        if (block.nextConnection) {
+        if (eyo.magnets.bottom) {
           var nextModel = dataModel.next
           if (nextModel) {
-            B = processModel(workspace, nextModel)
-            if (B && B.previousConnection) {
+            y = processModel(workspace, nextModel)
+            if (y && y.magnets.top) {
               try {
-                B.previousConnection.connect(block.nextConnection)
+                y.magnets.top.connectSmart(eyo)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -725,16 +727,16 @@ eYo.DelegateSvg.newBlockComplete = (() => {
         }
       }
     )
-    return block
+    return eyo
   }
   return function (owner, model, id) {
     var workspace = owner.workspace || owner
-    var B = processModel(workspace, model, id)
-    if (B) {
-      B.eyo.consolidate()
-      B.eyo.beReady(owner.isReady || workspace.rendered)
+    var eyo = processModel(workspace, model, id)
+    if (eyo) {
+      eyo.consolidate()
+      eyo.beReady(owner.isReady || workspace.rendered)
     }
-    return B
+    return eyo
   }
 })()
 
@@ -758,10 +760,10 @@ eYo.DelegateSvg.prototype.beReady = function (headless) {
       this.inputList.forEach(input => {
         input.eyo.beReady()
       })
-      ;[this.suiteStmtConnection,
-        this.rightStmtConnection,
-        this.nextConnection
-      ].forEach(c8n => c8n && c8n.eyo.beReady())
+      ;[this.magnets.suite,
+        this.magnets.right,
+        this.magnets.bottom
+      ].forEach(m => m && m.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
       this.render = eYo.DelegateSvg.prototype.render_
     }
@@ -806,101 +808,6 @@ eYo.DelegateSvg.prototype.insertParentWithModel = function (processModel) {
 }
 
 /**
- * Get the hole filler data object for the given check.
- * @param {!Array} check an array of types.
- * @param {objet} value value of the block that will fill the hole, a string for an identifier block.
- * @private
- */
-eYo.HoleFiller.getData = function (check, value) {
-  var data
-  if (goog.isFunction(value)) {
-    data = {
-      filler: value
-    }
-  } else if (check.indexOf(eYo.T3.Expr.identifier) >= 0) {
-    if (value) {
-      data = {
-        type: eYo.T3.Expr.identifier,
-        value: value
-      }
-    }
-  } else if (check.length === 1 && eYo.T3.All.core_expressions.indexOf(check[0]) >= 0) {
-    data = {
-      type: check[0],
-      value: value
-    }
-  }
-  return data
-}
-
-/**
- * Get an array of the deep connections that can be filled.
- * @param {!Block} block
- * @param {Array} holes whengiven the is the array to be filled
- * @return an array of connections, holes if given.
- */
-eYo.HoleFiller.getDeepHoles = function (block, holes = undefined) {
-  var H = holes || []
-  var getDeepHoles = (c8n) => {
-    if (c8n && c8n.eyo.isInput && ((!c8n.eyo.disabled_ && !c8n.eyo.incog_) || c8n.eyo.wrapped_)) {
-      var target = c8n.targetBlock()
-      if (target) {
-        eYo.HoleFiller.getDeepHoles(target, H)
-      } else if (c8n.eyo.hole_data) {
-        H.push(c8n)
-      }
-    }
-  }
-  if (goog.isDef(block.getSourceBlock)) { // this is a connection...
-    getDeepHoles(block)
-  } else {
-    block.eyo.forEachInputConnection((c8n) => {
-      getDeepHoles(c8n)
-    })
-  }
-  return H
-}
-
-/**
- * For each value input that is not optional and accepts an identifier,
- * create and connect an identifier block.
- * Called once at block creation time.
- * Should not be called directly
- * 
- * @param {*} workspace 
- * @param {*} holes 
- * @param {!Blockly.Block} block to be initialized..
- */
-eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
-  eYo.Events.groupWrap(
-    () => {
-      holes.forEach(c8n => {
-        if (c8n && c8n.eyo.isInput && !c8n.isConnected()) {
-          var data = c8n.eyo.hole_data
-          if (data) {
-            try {
-              if (data.filler) {
-                var B = data.filler(workspace)
-              } else {
-                B = eYo.DelegateSvg.newBlockComplete(c8n.eyo.b_eyo, data.type)
-                if (data.value) {
-                  (B.eyo.phantom_d && B.eyo.phantom_d.set(data.value)) ||
-                  (B.eyo.value_d && B.eyo.value_d.set(data.value))
-                }
-                B.render()
-              }
-              c8n.connect(B.outputConnection)
-            } catch (err) {
-              console.log(err.message)
-            }
-          }
-        }
-      })
-    }
-  )
-}
-
-/**
  * Returns the coordinates of a bounding rect describing the dimensions of this
  * block.
  * As the shape is not the same comparing to Blockly's default,
@@ -911,8 +818,8 @@ eYo.HoleFiller.fillDeepHoles = function (workspace, holes) {
  */
 eYo.DelegateSvg.prototype.getBoundingRect = function () {
   return goog.math.Rect.createFromPositionAndSize(
-    this.block_.getRelativeToSurfaceXY(),
-    this.block_.getHeightWidth()
+    this.ui.xyInSurface,
+    this.ui.getHeightWidth()
   )
 }
 
@@ -932,20 +839,19 @@ eYo.DelegateSvg.prototype.getBoundingBox = function () {
 /**
  * Insert a block of the given type.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
  * @param {Object|string} model
+ * @param {eYo.Magnet} m4t
  * @return {?Blockly.Block} the block that was inserted
  */
-eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
+eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
   if (!model) {
     return null
   }
-  var block = this.block_
   // get the type:
   var p5e = eYo.T3.Profile.get(model, null)
   if (!p5e.isVoid && !p5e.isUnset) {
-    if (connection) {
-      if (connection.eyo.isNextLike || connection.eyo.isPrevious) {
+    if (m4t) {
+      if (m4t.isTop || m4t.isLeft || m4t.isRight || m4t.isSuite || m4t.isBottom) {
         p5e.stmt && (model = {
           type: p5e.stmt,
           data: model
@@ -962,18 +868,18 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
   var candidate
   eYo.Events.disableWrap(
     () => {
-      var c8n, otherC8n
-      candidate = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, model)
-      var fin = (prepare) => {
+      var m4t, otherM4t
+      candidate = eYo.DelegateSvg.newComplete(this, model)
+      var fin = prepare => {
         eYo.Events.groupWrap(() => {
           eYo.Events.enableWrap(() => {
             eYo.Do.tryFinally(() => {
               eYo.Events.fireBlockCreate(candidate)
               prepare && prepare()
-              otherC8n.connect(c8n)
+              otherM4t.connect(m4t)
             }, () => {
-              candidate.select()
-              candidate.eyo.render()
+              eYo.Selected.eyo = candidate
+              candidate.render()
               candidate.bumpNeighbours_()
             })
           })
@@ -982,11 +888,11 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       }
       if (!candidate) {
         // very special management for tuple input
-        if ((otherC8n = eYo.Selected.connection) && goog.isString(model)) {
-          var otherSource = otherC8n.getSourceBlock()
-          if (otherSource.eyo instanceof eYo.DelegateSvg.List && otherC8n.eyo.isInput) {
+        if ((otherM4t = eYo.Selected.magnet) && goog.isString(model)) {
+          var otherDlgt = otherM4t.b_eyo
+          if (otherDlgt instanceof eYo.DelegateSvg.List && otherM4t.eyo.isInput) {
             eYo.Events.groupWrap(() => {
-              var blocks = model.split(',').map(x => {
+              var dlgts = model.split(',').map(x => {
                 var model = x.trim()
                 var p5e = eYo.T3.Profile.get(model, null)
                 console.warn('MODEL:', model)
@@ -996,62 +902,62 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
                   p5e
                 }
               }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
-                var b = eYo.DelegateSvg.newBlockComplete(block.eyo, x.model)
-                b.eyo.setDataWithModel(x.model)
-                console.error('BLOCK', b)
-                return b
+                var eyo = eYo.DelegateSvg.newComplete(this, x.model)
+                eyo.setDataWithModel(x.model)
+                console.error('DLGT', eyo)
+                return eyo
               })
-              blocks.some(b => {
-                candidate = b
-                if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
+              dlgts.some(eyo => {
+                candidate = eyo
+                if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
                   fin()
                   var next = false
-                  otherSource.eyo.someInputConnection(c8n => {
+                  otherDlgt.someInputMagnet(m4t => {
                     if (next) {
-                      otherC8n = c8n
+                      otherM4t = m4t
                       return true
-                    } else if (c8n === otherC8n) {
+                    } else if (m4t === otherM4t) {
                       next = true
                     }
                   })
                 }
               })
-              eYo.Selected.connection = otherC8n
+              eYo.Selected.magnet = otherM4t
             })
           }
         }
         return
       }
-      if ((otherC8n = eYo.Selected.connection)) {
-        otherSource = otherC8n.getSourceBlock()
-        if (otherC8n.eyo.isInput) {
-          if ((c8n = candidate.outputConnection) && c8n.checkType_(otherC8n)) {
+      if ((otherM4t = eYo.Selected.magnet)) {
+        otherDlgt = otherM4t.b_eyo
+        if (otherM4t.isInput) {
+          if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
             return fin()
           }
-        } else if (otherC8n.eyo.isPrevious) {
-          if ((c8n = candidate.nextConnection) && c8n.checkType_(otherC8n)) {
-            var targetC8n = otherC8n.targetConnection
-            if (targetC8n && candidate.previousConnection &&
-              targetC8n.checkType_(candidate.previousConnection)) {
+        } else if (otherM4t.isTop) {
+          if ((m4t = candidate.magnets.bottom) && m4t.checkType_(otherM4t)) {
+            var targetM4t = otherM4t.target
+            if (targetM4t && candidate.magnets.top &&
+              targetM4t.checkType_(candidate.magnets.top)) {
               return fin(() => {
-                targetC8n.connect(candidate.previousConnection)
+                targetM4t.connect(candidate.magnets.top)
               })
             } else {
               return fin(() => {
-                var its_xy = block.getRelativeToSurfaceXY()
-                var my_xy = candidate.getRelativeToSurfaceXY()
-                var HW = candidate.getHeightWidth()
+                var its_xy = this.ui.xyInSurface
+                var my_xy = candidate.ui.xyInSurface
+                var HW = candidate.ui.getHeightWidth()
                 candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
               })
             }
             // unreachable code
           }
-        } else if (otherC8n.eyo.isNextLike) {
-          if ((c8n = candidate.previousConnection) && c8n.checkType_(otherC8n)) {
-            if ((targetC8n = otherC8n.targetConnection) && candidate.nextConnection &&
-              targetC8n.checkType_(candidate.nextConnection)) {
+        } else if (otherM4t.isSuite || otherM4t.isBottom) {
+          if ((m4t = candidate.magnets.top) && m4t.checkType_(otherM4t)) {
+            if ((targetM4t = otherM4t.target) && candidate.magnets.bottom &&
+            targetM4t.checkType_(candidate.magnets.bottom)) {
               return fin(() => {
-                targetC8n.connect(candidate.nextConnection)
+                targetM4t.connect(candidate.magnets.bottom)
               })
             } else {
               return fin()
@@ -1060,72 +966,72 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
         }
       }
       var c8n_N = model.input
-      if ((c8n = candidate.outputConnection)) {
-        // try to find a free connection in a block
-        // When not undefined, the returned connection can connect to c8n.
-        var findC8n = (block) => {
-          var otherC8n, target
-          otherC8n = block.eyo.someInputConnection((foundC8n) => {
-            if (foundC8n.eyo.isInput) {
-              if ((target = foundC8n.targetBlock())) {
-                if (!(foundC8n = findC8n(target))) {
+      if ((m4t = candidate.magnets.output)) {
+        // try to find a free magnet in a block
+        // When not undefined, the returned magnet can connect to m4t.
+        var findM4t = eyo => {
+          var otherM4t, t_eyo
+          otherM4t = eyo.someInputMagnet(foundM4t => {
+            if (foundM4t.isInput) {
+              if ((t_eyo = foundM4t.t_eyo)) {
+                if (!(foundM4t = findM4t(t_eyo))) {
                   return
                 }
-              } else if (!c8n.checkType_(foundC8n)) {
+              } else if (!m4t.checkType_(foundM4t)) {
                 return
-              } else if (foundC8n.eyo.bindField) {
+              } else if (foundM4t.bindField) {
                 return
               }
-              if (!foundC8n.eyo.disabled_ && !foundC8n.eyo.s7r_ && (!c8n_N || foundC8n.eyo.name_ === c8n_N)) {
+              if (!foundM4t.disabled_ && !foundM4t.s7r_ && (!c8n_N || foundM4t.name_ === c8n_N)) {
                 // we have found a connection
                 // which s not a separator and
                 // with the expected name
-                return foundC8n
+                return foundM4t
               }
               // if there is no connection with the expected name,
               // then remember this connection and continue the loop
               // We remember the last separator connection
               // of the first which is not a separator
-              if (!otherC8n || (!otherC8n.eyo.disabled_ && otherC8n.eyo.s7r_)) {
-                otherC8n = foundC8n
+              if (!otherM4t || (!otherM4t.eyo.disabled_ && otherM4t.eyo.s7r_)) {
+                otherM4t = foundC8n
               }
             }
           })
-          return otherC8n
+          return otherM4t
         }
-        if ((otherC8n = findC8n(block))) {
+        if ((otherM4t = findM4t(this))) {
           return fin()
         }
       }
-      if ((c8n = candidate.previousConnection)) {
-        if ((otherC8n = this.nextConnection) && c8n.checkType_(otherC8n)) {
+      if ((m4t = candidate.magnets.top)) {
+        if ((otherM4t = this.magnets.bottom) && m4t.checkType_(otherM4t)) {
           return fin(() => {
-            if ((targetC8n = otherC8n.targetConnection)) {
+            if ((targetM4t = otherM4t.target)) {
               // connected to something, beware of orphans
-              otherC8n.disconnect()
-              if (candidate.nextConnection && candidate.nextConnection.checkType_(targetC8n)) {
-                candidate.nextConnection.connect(targetC8n)
-                targetC8n = null
+              otherM4t.disconnect()
+              if (candidate.magnets.bottom && candidate.magnets.bottom.checkType_(targetM4t)) {
+                candidate.magnets.bottom.connect(targetM4t)
+                targetM4t = null
               }
             }
-            c8n.connect(otherC8n)
-            if (targetC8n) {
-              targetC8n.getSourceBlock().bumpNeighbours_()
+            m4t.connect(otherM4t)
+            if (targetM4t) {
+              targetM4t.b_eyo.bumpNeighbours_()
             }
           })
         }
       }
-      if ((c8n = candidate.nextConnection)) {
-        if ((otherC8n = block.previousConnection) && c8n.checkType_(otherC8n)) {
-          if ((targetC8n = otherC8n.targetConnection) && candidate.previousConnection && candidate.previousConnection.checkType_(targetC8n)) {
+      if ((m4t = candidate.magnets.bottom)) {
+        if ((otherM4t = this.magnets.top) && m4t.checkType_(otherM4t)) {
+          if ((targetM4t = otherM4t.target) && (otherM4t = candidate.magnets.top) && candidate.magnets.top.checkType_(targetM4t)) {
             return fin(() => {
-              candidate.previousConnection.connect(targetC8n)
+              otherM4t.connect(targetM4t)
             })
           } else {
             return fin(() => {
-              var its_xy = block.getRelativeToSurfaceXY()
-              var my_xy = candidate.getRelativeToSurfaceXY()
-              var HW = candidate.getHeightWidth()
+              var its_xy = this.ui.xyInSurface
+              var my_xy = candidate.eyo.ui.xyInSurface
+              var HW = candidate.ui.getHeightWidth()
               candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
             })
           }
@@ -1135,7 +1041,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, connection) {
       candidate = null
     }
   )
-  return candidate
+  return candidate.block_
 }
 
 /**
@@ -1303,7 +1209,6 @@ eYo.DelegateSvg.prototype.inVisibleArea = function () {
  * @return {{x: number, y: number}|undefined}
  */
 eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
-  var block = this.block_
   var workspace = this.workspace
   if (!workspace) {
     return undefined
@@ -1319,13 +1224,13 @@ eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
     }
   }
   var scale = workspace.scale || 1
-  var heightWidth = block.getHeightWidth()
+  var heightWidth = this.ui.getHeightWidth()
   // the block is in the visible area if we see its center
   var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
   var topBound = metrics.viewTop / scale - heightWidth.height / 2
   var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
   var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-  var xy = newLoc || block.getRelativeToSurfaceXY()
+  var xy = newLoc || this.ui.xyInSurface
   return {
     x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
     y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),

@@ -164,45 +164,44 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
 }
 
 /**
- * Convert the block to python code.
+ * Convert the block delegate to python code.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!eYo.Delegate} eyo The owner of the receiver, to be converted to python.
  * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
-  var eyo = block.eyo
+eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
   var is_deep = !eyo.isControl && opt.is_deep
-  if (!block.outputConnection) {
+  if (!eyo.magnets.output) {
     if (block.disabled) {
       this.indent_('# ')
       this.linePush('# ')
     }
   }
-  this.exportAsExpression_(block, opt)
-  var c8n, rightC8n, target
-  if ((rightC8n = eyo.rightStmtConnection) && (target = rightC8n.targetBlock())) {
-    this.exportField_(rightC8n.eyo.fields.label)
-    this.exportBlock_(target, opt)
-  } else if ((c8n = eyo.suiteStmtConnection)) {
+  this.exportAsExpression_(eyo, opt)
+  var m4t, rightM4t, t_eyo
+  if ((rightM4t = eyo.magnets.right) && (t_eyo = rightM4t.t_eyo)) {
+    this.exportField_(rightM4t.fields.label)
+    this.exportBlock_(t_eyo, opt)
+  } else if ((m4t = eyo.magnets.suite)) {
     // a block with a suite must also have a right connection
-    this.exportField_(rightC8n.eyo.fields.label)
+    this.exportField_(rightM4t.fields.label)
     var f = () => {
-      if ((target = c8n.targetBlock())) {
+      if ((t_eyo = m4t.t_eyo)) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
-          this.exportBlock_(target, opt)
+          this.exportBlock_(t_eyo, opt)
         }, () => {
           opt.is_deep = is_deep
         })
       } else {
         this.newline_()
         this.linePush('<MISSING STATEMENT>')
-        this.missing_statements.push(c8n)
+        this.missing_statements.push(m4t.connection)
       }
     }
-    if (block.eyo.isControl) {
+    if (eyo.isControl) {
       f()
     } else {
       eYo.Do.makeWrapper(() => {
@@ -211,20 +210,20 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (block, opt) {
         this.dedent_()
       })(f)
     }
-  } else if ((c8n = eyo.rightStmtConnection)) {
-    if ((target = c8n.targetBlock())) {
-      this.exportField_(c8n.eyo.fields.label)
-      this.exportBlock_(target, opt)
+  } else if ((m4t = eyo.magnets.right)) {
+    if ((t_eyo = m4t.t_eyo)) {
+      this.exportField_(m4t.fields.label)
+      this.exportBlock_(t_eyo, opt)
     }
   }
-  if (!block.outputConnection) {
-    if (block.disabled) {
+  if (!eyo.magnets.output) {
+    if (eyo.disabled) {
       this.dedent_()
     }
   }
-  if (is_deep && (target = block.eyo.nextBlock)) {
+  if (is_deep && (t_eyo = eyo.bottom)) {
     this.newline_()
-    this.exportBlock_(target, opt)
+    this.exportBlock_(t_eyo, opt)
   }  
 }
 
@@ -251,7 +250,7 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
     eYo.Do.tryFinally(() => {
       ++this.depth
       this.expression = []
-      this.exportBlock_(block, opt)
+      this.exportBlock_(block.eyo, opt)
     }, () => {
       --this.depth
     })
@@ -334,18 +333,18 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
  */
 eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
   if (input && input.isVisible()) {
-    var c8n = input.connection
-    if (c8n) {
-      var target = c8n.targetBlock()
-      if (target) {
-        this.exportAsExpression_(target)
-      } else if (!c8n.eyo.optional_ && !c8n.eyo.disabled_ && !c8n.eyo.s7r_ && !input.eyo.bindField) {
+    var m4t = input.eyo.magnet
+    if (m4t) {
+      var t_eyo = m4t.t_eyo
+      if (t_eyo) {
+        this.exportAsExpression_(t_eyo)
+      } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.eyo.bindField) {
         console.error('BREAK HERE')
         this.shouldSeparateField && this.addSpace()
         this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE
-        this.missing_expressions.push(c8n)
+        this.missing_expressions.push(m4t.connection)
       } else {
         input.fieldRow.forEach(f => this.exportField_(f))
       }
@@ -364,8 +363,8 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
   var bindField
   if ((bindField = slot.bindField)) {
-    var c8n = slot.connection
-    bindField.setVisible(!c8n || !c8n.eyo.unwrappedTargetBlock)
+    var m4t = slot.magnet
+    bindField.setVisible(!m4t || !m4t.unwrappedTargetBlock)
   }
   var field
   if ((field = slot.fieldAtStart)) {

@@ -28,8 +28,8 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
   statement: {
     left: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.previous || this.b_eyo.next
-        ? []
+        return this.b_eyo.top || this.b_eyo.bottom
+        ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Left.simple_stmt
       }
     },
@@ -45,14 +45,14 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         return eYo.T3.Stmt.Right.simple_stmt
       }
     },
-    previous: {
+    top: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
         : null // except start_stmt ? connections must also have an uncheck_
       }
     },
-    next: {
+    bottom: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
@@ -94,7 +94,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
-  var c8n = this.rightStmtConnection
+  var c8n = this.magnets.right
   if (c8n) {
     var c_eyo = c8n.eyo
     var target = c8n.targetBlock()
@@ -149,91 +149,81 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
  * connects the block above to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} parentInputName, which parent's connection to use
+ * @param {Object} model
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
-  var block = this.block_
-  var c8n = block.previousConnection
-  if (c8n) {
-    var parentBlock
+  var magnet = this.magnets.top
+  if (magnet) {
+    var parent
     eYo.Events.disableWrap(
       () => {
-        parentBlock = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, model)
+        parent = eYo.DelegateSvg.newComplete(this, model)
       },
       () => {
-        if (parentBlock) {
-          var parentC8n = parentBlock.nextConnection
-          if (parentC8n && c8n.checkType_(parentC8n)) {
+        if (parent) {
+          var p_magnet = parent.magnets.bottom
+          if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(
               () => {
-                eYo.Events.fireBlockCreate(parentBlock)
-                var targetC8n = c8n.targetConnection
-                if (targetC8n) {
-                  targetC8n.disconnect()
-                  if (parentBlock.previousConnection) {
-                    targetC8n.connect(parentBlock.previousConnection)
+                eYo.Events.fireBlockCreate(parent.block_)
+                var t_magnet = magnet.target
+                if (t_magnet) {
+                  t_magnet.break()
+                  if ((t_magnet = parent.magnets.top)) {
+                    p_magnet.target = t_magnet
                   }
                 } else {
-                  var its_xy = block.getRelativeToSurfaceXY()
-                  var my_xy = parentBlock.getRelativeToSurfaceXY()
-                  parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+                  var its_xy = this.ui.xyInSurface
+                  var my_xy = parent.ui.xyInSurface
+                  parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
                 }
-                var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
-                eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-                parentBlock.render()
-                c8n.connect(parentC8n)
-                if (eYo.Selected.block === block) {
-                  parentBlock.select()
+                parent.render()
+                magnet.target = p_magnet
+                parent.beReady(this.isReady)
+                if (eYo.Selected.eyo === this) {
+                  eYo.Selected.eyo === parent
                 }
-                parentBlock.eyo.beReady(block.eyo.isReady)
               }
             )
           } else {
-            parentBlock.dispose(true)
-            parentBlock = undefined
+            parent.block_.dispose(true)
+            parent = undefined
           }
         }    
       }
     )
-    return parentBlock
+    return parent
   }
 }
 
 /**
- * Insert a block below.
- * If the block's next connection is connected,
+ * Insert a block below the receiver.
+ * If the receiver's next connection is connected,
  * connects the block below to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block
- * @param {string} prototypeName
- * @param {string} parentInputName, which parent's connection to use
+ * @param {string} belowPrototypeName
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(
     () => {
-      var block = this.block_
-      var blockAfter = eYo.DelegateSvg.newBlockComplete(block.eyo.workspace, belowPrototypeName)
-      var c8n = block.nextConnection
-      var targetC8n = c8n.targetConnection
-      if (targetC8n) {
-        targetC8n.disconnect()
-        if (targetC8n.checkType_(blockAfter.nextConnection)) {
-          targetC8n.connect(blockAfter.nextConnection)
+      var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
+      var magnet = this.magnets.bottom
+      var t_magnet = magnet.target
+      var b_m4ts = below.magnets
+      if (t_magnet) {
+        t_magnet.break()
+        if (t_magnet.checkType_(b_m4ts.bottom)) {
+          t_magnet.target = b_magnets.bottom
         }
       }
-      var holes = eYo.HoleFiller.getDeepHoles(blockAfter)
-      eYo.HoleFiller.fillDeepHoles(blockAfter.workspace, holes)
-      blockAfter.render()
-      block.nextConnection.connect(blockAfter.previousConnection)
-      if (eYo.Selected.block === block) {
-        blockAfter.select()
+      magnet.target = b_m4ts.top
+      if (eYo.Selected.eyo === this) {
+        eYo.Selected.eyo = after
       }
-      return blockAfter
+      return after.block_
     }
   )
 }
@@ -260,6 +250,28 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
  */
 eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
   data: {
+    variant: {
+      all: [
+        eYo.Key.COMMENT, // A comment only
+        eYo.Key.BLANK // blank line
+      ],
+      init: eYo.Key.COMMENT,
+      xml: false,
+      synchronize: /** @suppress {globalThis} */ function (newValue) {
+        this.synchronize(newValue)
+        var O = this.owner
+        O.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
+      },
+      fromType: /** @suppress {globalThis} */ function (type) {
+        if (type === eYo.T3.Stmt.blank_stmt) {
+          // expression statement defaults to a python comment line
+          // but it should change because of the 'comment_stmt' below
+          this.change(eYo.Key.BLANK)
+        } else {
+          this.change(eYo.Key.COMMENT)
+        }
+      }
+    },
     comment: {
       order: 1000000,
       init: '',
@@ -291,16 +303,41 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
   },
 })
 
-/**
- * comment blocks are white.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.DelegateSvg.Stmt.comment_stmt.prototype.isWhite = function () {
-  return true
-}
+;['blank_stmt'].forEach(k => {
+  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.comment_stmt
+  eYo.DelegateSvg.Manager.register(k)
+})
+
+Object.defineProperties(eYo.DelegateSvg.Stmt.comment_stmt.prototype, {
+  /**
+   * @readonly
+   * @property {Boolean} whether the receiver is a comment.
+   */
+  isComment: {
+    get () {
+      return this.type === eYo.T3.Stmt.comment_stmt
+    }
+  },
+  /**
+   * @readonly
+   * @property {Boolean} whether the receiver is a blank statement: a line consisting of only white spaces, if any.
+   */
+  isBlank: {
+    get () {
+      return this.type === eYo.T3.Stmt.blank_stmt
+    }
+  },
+  /**
+   * @readonly
+   * @property {Boolean} comment blocks are white
+   */
+  isWhite: {
+    get () {
+      return true
+    }
+  }
+})
+
 /// /////// gobal/nonlocal statement
 /**
  * Class for a DelegateSvg, non_void_identifier_list block.
@@ -518,16 +555,17 @@ eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
   link: eYo.T3.Expr.longliteral
 }, true)
 
-/**
- * docstring blocks are white, to be confirmed.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.DelegateSvg.Stmt.docstring_stmt.prototype.isWhite = function () {
-  return true
-}
+Object.defineProperties(eYo.DelegateSvg.Stmt.docstring_stmt.prototype, {
+  /**
+   * @readonly
+   * @property {Boolean}  always true
+   */
+  isWhite: {
+    get () {
+      return true
+    }
+  }
+})
 
 eYo.DelegateSvg.Stmt.T3s = [
   eYo.T3.Stmt.comment_stmt,

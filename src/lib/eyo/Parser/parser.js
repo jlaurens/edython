@@ -96,13 +96,13 @@ eYo.Parser.PyParser_New = (scan, /* grammar * */ g, /* int */ start) =>
     eYo.GMR.PyGrammar_AddAccelerators(g)
   }
   ps.p_grammar = g
-  ps.p_stack = new stack()
+  var s = ps.p_stack = new stack()
 // #ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
 //     ps.p_flags = 0
 // #endif
-  ps.p_tree = new eYo.Node(scan, start)
+ps.p_tree = s.last_tkn = new eYo.Node(scan, start)
   // s_reset(ps.p_stack)
-  s_push(ps.p_stack, eYo.GMR.PyGrammar_FindDFA(g, start), ps.p_tree)
+  s_push(s, eYo.GMR.PyGrammar_FindDFA(g, start), ps.p_tree)
   return ps
 }
 
@@ -130,7 +130,7 @@ var shift = (/* stack * */ s, child, /* int */ newstate) =>
 var push = (/* stack * */ s, tkn, type, /* dfa * */ d, /* int */ newstate) =>
 {
   // goog.asserts.assert(!s_empty(s))
-  var child = new eYo.Node(tkn.scan, type)
+  var child = s.last_tkn = new eYo.Node(tkn.scan, type)
   child.lineno = tkn.lineno
   child.end_lineno = tkn.end_lineno
   var err
@@ -184,17 +184,6 @@ eYo.Parser.PyParser_AddToken = (/* parser_state * */ps, tkn) =>
     console.log("Token %s/'%s' ... ", eYo.TKN._NAMES[tkn.n_type], tkn.n_str)
   }
   var ans = {}
-  if (tkn.n_type === eYo.TKN.COMMENT) {
-    var comment = new eYo.Node(tkn.scan, tkn.n_type)
-    comment.lineno = tkn.lineno
-    comment.end_lineno = tkn.end_lineno
-    comment.start_comment = tkn.start_comment
-    var n = ps.p_stack.s_top.s_parent
-    var comments = n.comments || (n.comments = [])
-    comments.push(comment)
-    ans.error = eYo.E.OK
-    return ans
-  }
 
   /* Find out which label this token is */
   var ilabel = classify(ps, tkn.n_type, tkn.n_str)

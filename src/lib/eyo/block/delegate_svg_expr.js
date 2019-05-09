@@ -51,8 +51,8 @@ Object.defineProperties(eYo.DelegateSvg.Expr.prototype, {
  */
 eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function (deep) {
   eYo.DelegateSvg.Expr.superClass_.incrementChangeCount.call(this, deep)
-  var parent = this.block_.parentBlock_
-  parent && parent.eyo.incrementChangeCount()
+  var parent = this.parent
+  parent && parent.incrementChangeCount()
 }
 
 /**
@@ -129,8 +129,8 @@ eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
       eYo.Do.tryFinally(() => {
         console.log('**** replaceBlock', this.block_, other)
         var c8n = other.outputConnection
-        var its_xy = other.getRelativeToSurfaceXY()
-        var my_xy = this.block_.getRelativeToSurfaceXY()
+        var its_xy = other.eyo.ui.xyInSurface
+        var my_xy = this.ui.xyInSurface
         this.outputConnection.disconnect()
         if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
           // the other block has an output connection that can connect to the block's one
@@ -227,109 +227,105 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
 eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_holes) {
   var block = this.block_
   var parentSlotName = model.slot || model.input
-  var parentBlock
+  var parent
   eYo.Events.disableWrap(() => {
-    parentBlock = eYo.DelegateSvg.newBlockComplete(this, model)
+    parent = eYo.DelegateSvg.newComplete(this, model)
   })
-  if (!parentBlock) {
-    return parentBlock
+  if (!parent) {
+    return parent
   }
   if (model.slot) {
     // start by the slots
-    var slot = parentBlock.eyo.slots[model.slot]
+    var slot = parent.slots[model.slot]
     var parentInput = slot && slot.input
     goog.asserts.assert(parentInput, 'No input named ' + model.slot)
-    var parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + model.slot+ ' in ' + parentBlock.type)
-  } else if ((parentInput = parentBlock.eyo.getInput(eYo.Key.LIST, true))) {
-    var list = parentInput.eyo.target
-    goog.asserts.assert(list, 'Missing list block inside ' + block.type)
+    var parentInputM4t = parentInput.eyo.magnet
+    goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
+  } else if ((parentInput = parent.getInput(eYo.Key.LIST, true))) {
+    var list = parentInput.eyo.magnet.t_eyo
+    goog.asserts.assert(list, 'Missing list block inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     parentInput = list.getInput(eYo.Do.Name.middle_name)
-    parentInputC8n = parentInput.connection
-    goog.asserts.assert(parentInputC8n, 'Unexpected dummy input ' + parentSlotName)
+    parentInputM4t = parentInput.eyo.magnet
+    goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first parent's connection that can accept block
-    var findC8n = (B) => {
-      var foundC8n, target
-      B.eyo.someInput(input => {
-        var c8n = input.connection
-        if (c8n) {
+    var findM4t = y => {
+      var foundM4t, t_eyo
+      y.someInput(input => {
+        var m4t = input.eyo.magnet
+        if (m4t) {
           var candidate
-          if (c8n.checkType_(block.outputConnection) && (!c8n.eyo.bindField || !c8n.eyo.bindField.getText().length)) {
-            candidate = c8n
-          } else if ((target = c8n.targetBlock())) {
-            candidate = findC8n(target)
+          if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.getText().length)) {
+            candidate = m4t
+          } else if ((t_eyo = m4t.t_eyo)) {
+            candidate = findM4t(t_eyo)
           }
           if (candidate) {
-            if (candidate.eyo.name === parentSlotName) {
-              foundC8n = candidate
+            if (candidate.name === parentSlotName) {
+              foundM4t = candidate
               return input
             }
-            if (!foundC8n) {
-              foundC8n = candidate
+            if (!foundM4t) {
+              foundM4t = candidate
             }
           }
         }
       })
-      return foundC8n
+      return foundM4t
     }
-    parentInputC8n = findC8n(parentBlock)
+    parentInputM4t = findM4t(parent)
   }
   // Next connections should be connected
-  var outputC8n = block.outputConnection
-  if (parentInputC8n && parentInputC8n.checkType_(outputC8n)) {
+  var outputM4t = this.magnets.output
+  if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
     eYo.Events.groupWrap(
       () => { // `this` is catched
-        eYo.Events.fireBlockCreate(parentBlock)
-        var targetC8n = parentInputC8n.targetConnection
-        if (targetC8n/* && targetC8n.isConnected() */) {
+        eYo.Events.fireDlgtCreate(parent)
+        var targetM4t = parentInputM4t.target
+        if (targetM4t) {
           console.log('input already connected, disconnect and dispose target')
-          var B = targetC8n.sourceBlock_
-          targetC8n.disconnect()
-          B.dispose(true)
-          B = undefined
-          targetC8n = undefined
+          var b_eyo = targetM4t.b_eyo
+          targetM4t.break()
+          b_eyo.block_.dispose(true)
+          b_eyo = undefined
+          targetM4t = undefined
         }
         // the old parent connection
-        targetC8n = outputC8n.targetConnection
+        targetM4t = outputM4t.target
         var bumper
-        if (targetC8n) {
-          if (parentBlock.outputConnection && targetC8n.checkType_(parentBlock.outputConnection)) {
+        if (targetM4t) {
+          if (parent.magnets.output && targetM4t.checkType_(parent.magnets.output)) {
             // do not disconnect here because it causes a consolidation
             // and a connection mangling
-            targetC8n.connect(parentBlock.outputConnection)
+            targetM4t.connect(parent.magnets.output)
           } else {
-            targetC8n.disconnect()
-            bumper = targetC8n.sourceBlock_
-            var its_xy = bumper.getRelativeToSurfaceXY()
-            var my_xy = parentBlock.getRelativeToSurfaceXY()
-            parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+            targetM4t.break()
+            bumper = targetM4t.b_eyo
+            var its_xy = bumper.ui.xyInSurface
+            var my_xy = parent.ui.xyInSurface
+            parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
           }
-          targetC8n = undefined
+          targetM4t = undefined
         } else {
-          its_xy = block.getRelativeToSurfaceXY()
-          my_xy = parentBlock.getRelativeToSurfaceXY()
-          parentBlock.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          its_xy = this.ui.xyInSurface
+          my_xy = parent.ui.xyInSurface
+          parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
-        parentInputC8n.connect(outputC8n)
-        if (fill_holes) {
-          var holes = eYo.HoleFiller.getDeepHoles(parentBlock)
-          eYo.HoleFiller.fillDeepHoles(parentBlock.workspace, holes)
-        }
-        parentBlock.render()
+        parentInputM4t.connect(outputM4t)
+        parent.render()
         if (bumper) {
-          bumper.bumpNeighbours_()
+          bumper.ui.bumpNeighbours_()
         }  
       }
     )
   } else {
-    parentBlock.dispose(true)
-    parentBlock = undefined
+    parent.block_.dispose(true)
+    parent = undefined
   }
-  return parentBlock
+  return parent
 }
 
 /**

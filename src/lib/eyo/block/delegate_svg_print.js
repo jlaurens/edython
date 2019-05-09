@@ -26,6 +26,7 @@ goog.require('eYo.DelegateSvg.Primary')
  * Main entry: consolidate
  */
 eYo.Consolidator.Arguments.makeSubclass('PrintArguments', {
+  mandatory: 0,
 }, eYo.Consolidator.Arguments, eYo.Consolidator)
 
 /**
@@ -103,7 +104,7 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__print_expr', {
  */
 eYo.DelegateSvg.Expr.argument_list_comprehensive.makeSubclass('print_argument_list_comprehensive', {
   list: {
-    consolidator: eYo.Consolidator.PrintArguments,
+    consolidator: eYo.Consolidator.PrintArguments
   }
 }, eYo.DelegateSvg.Expr)
 
@@ -137,16 +138,16 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
         has[target.eyo.name_d.get()] = target
       }
     }
-    var insert = (key) => {
+    var insert = key => {
       eYo.Events.groupWrap(
         () => {
-          var B = eYo.DelegateSvg.newBlockComplete(block.eyo, {
+          var y = eYo.DelegateSvg.Complete(this, {
             type: eYo.T3.Expr.identifier_valued,
             data: key
           })
           // we assume that inputList is not void
-          var c8n = list.inputList[list.inputList.length - 1].connection
-          c8n.connect(B.outputConnection)
+          var m4t = list.inputList[list.inputList.length - 1].eyo.magnet
+          m4t.connectSmart(y)
         }
       )
     }

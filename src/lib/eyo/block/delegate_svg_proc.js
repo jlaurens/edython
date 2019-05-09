@@ -333,22 +333,23 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
     }
   },
   statement: {
-    next: {
+    bottom: {
       required: true
     }
   }
 }, true)
 
-/**
- * decorator blocks are white when followed by a statement.
- * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {!array} components the array of python code strings, will be joined to make the code.
- * @return None
- */
-eYo.DelegateSvg.Stmt.decorator_stmt.prototype.isWhite = function () {
-  return this.nextConnection.isConnected()
-}
+Object.defineProperties(eYo.DelegateSvg.Stmt.decorator_stmt.prototype, {
+  /**
+   * @readonly
+   * @property {Boolean} decorator blocks are white when followed by a statement.
+   */
+  isWhite: {
+    get () {
+      return !!this.next
+    }
+  }
+})
 
 /**
  * Populate the context menu for the given block.

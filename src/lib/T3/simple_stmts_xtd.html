@@ -6,10 +6,10 @@
 <head>
 </head>
 <body>
-The last line means that a comment statement comes just before another comment_stmt
 <pre>
 start_stmt/start ::= green flag statement
 comment_stmt ::= '#' 'blah blah blah'
+blank_stmt ::= ''
 simple_stmt ::=  expression_stmt
                  | assert_stmt
                  | assignment_stmt
@@ -27,6 +27,7 @@ simple_stmt ::=  expression_stmt
                  | global_stmt
                  | nonlocal_stmt
                  | comment_stmt
+                 | blank_stmt
 </pre>
 assignment_stmt ::=  (target_list "=")+ (starred_expression | yield_expression)
 target_list     ::=  target ("," target)* [","]

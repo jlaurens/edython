@@ -2,54 +2,54 @@ console.log('RUNNING PRIMARY BLOCK TESTS')
 
 describe('Initialize from models', function () {
   it ('identifier: custom', function () {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+    var d = eYo.Test.new_dlgt({
       type: eYo.T3.Expr.identifier,
       target_p: 'abc'
     })
-    eYo.Test.block(b, 'identifier')
-    b.dispose()
+    eYo.Test.dlgt(d, 'identifier')
+    d.block_.dispose()
   })
   it ('identifier: open', function () {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+    var d = eYo.Test.new_dlgt({
       type: eYo.T3.Expr.identifier,
       target_p: 'open'
     })
-    eYo.Test.block(b, 'named_call_expr')
-    b.dispose()
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-    eYo.Test.block(b, 'identifier')
-    b.eyo.target_p = 'open'
-    eYo.Test.block(b, 'named_call_expr')
-    b.eyo.variant_p = eYo.Key.NONE
-    eYo.Test.block(b, 'identifier')
-    b.dispose()
+    eYo.Test.dlgt(d, 'named_call_expr')
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+    eYo.Test.dlgt(d, 'identifier')
+    d.target_p = 'open'
+    eYo.Test.dlgt(d, 'named_call_expr')
+    d.variant_p = eYo.Key.NONE
+    eYo.Test.dlgt(d, 'identifier')
+    d.block_.dispose()
   })
   it ('identifier: open', function () {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+    var d = eYo.Test.new_dlgt({
       type: eYo.T3.Expr.identifier,
       target_p: 'abc'
     })
-    b.eyo.alias_p = 'alias'
-    eYo.Test.code(b, 'abc as alias')
-    b.dispose()
+    d.alias_p = 'alias'
+    eYo.Test.code(d, 'abc as alias')
+    d.block_.dispose()
   })
   it ('annotated', function () {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+    var d = eYo.Test.new_dlgt({
       type: eYo.T3.Expr.primary,
       target_p: 'x',
       annotated_p: 'str'
     })
-    eYo.Test.code(b, 'x: str')
-    b.dispose()
+    eYo.Test.code(d, 'x: str')
+    d.block_.dispose()
   })
   it ('aliased', function () {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, {
+    var d = eYo.Test.new_dlgt({
       type: eYo.T3.Expr.primary,
       target_p: 'x',
       alias_p: 'alias'
     })
-    eYo.Test.code(b, 'x as alias')
-    b.dispose()
+    eYo.Test.code(d, 'x as alias')
+    d.block_.dispose()
   })
 })
 
@@ -61,7 +61,7 @@ describe('Each Primary block type', function() {
     ['key_datum', 'identifier_annotated', 'ANNOTATED'],
     ['identifier_valued', 'identifier_valued', 'TARGET_VALUED'],
     ['assignment_chain', 'identifier_valued', 'TARGET_VALUED'],
-    ['assignment_expr', 'assignment_expr', 'COL_VALUED'],
+    ['named_expr', 'named_expr', 'COL_VALUED'],
     ['identifier_annotated_valued', 'identifier_annotated_valued', 'ANNOTATED_VALUED'],
     ['attributeref', 'parent_module', 'NONE'], // Not yet a 'foo.bar', only a '.'
     ['named_attributeref', 'parent_module', 'NONE'], // Not yet a 'foo.bar', only a '.'
@@ -78,10 +78,10 @@ describe('Each Primary block type', function() {
     ['named_slicing', 'named_subscription', 'SLICING']
   ].some(Ts => {
     it (`basic type: ${Ts[0]}/${Ts[1]}/${Ts[2]}`, function () {
-      var b = eYo.Test.new_block(Ts[0], Ts[1])
-      eYo.Test.ctor(b, 'primary')
-      eYo.Test.variant(b, Ts[2])
-      b.dispose()
+      var d = eYo.Test.new_dlgt(Ts[0], Ts[1])
+      eYo.Test.ctor(d, 'primary')
+      eYo.Test.variant(d, Ts[2])
+      d.block_.dispose()
     })
   })
 })
@@ -94,7 +94,7 @@ describe('Primary dom', function() {
     ['key_datum', ':'],
     ['identifier_valued', '='],
     ['assignment_chain', '='],
-    ['assignment_expr', ':='],
+    ['named_expr', ':='],
     ['identifier_annotated_valued', '='],
     ['attributeref', '.'], // Not yet a 'foo.bar', only a '.'
     ['named_attributeref', '.'], // Not yet a 'foo.bar', only a '.'
@@ -111,11 +111,11 @@ describe('Primary dom', function() {
     ['named_slicing', '…[]']
   ].some(Ts => {
     it(`Dom eyo attribute ${Ts[1]} -> ${Ts[0]}`, function() {
-      var b = eYo.Test.new_block(Ts[0])
-      var dom = eYo.Xml.blockToDom(b)
+      var d = eYo.Test.new_dlgt(Ts[0])
+      var dom = eYo.Xml.blockToDom(d)
       var attr = dom.getAttribute(eYo.Key.EYO)
       chai.assert(attr === Ts[1], `FAILED ${attr} === ${Ts[1]}`)
-      b.dispose()
+      d.block_.dispose()
     })  
   })
 })
@@ -123,40 +123,40 @@ describe('Primary dom', function() {
 describe ('XML', function () {
   it ('identifier', function () {
     var dom = `<x eyo="identifier" target="a"></x>`
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    eYo.Test.block(b, 'identifier')
-    eYo.Test.code(b, 'a')
-    b.dispose()
+    var d = eYo.Test.new_dlgt(dom)
+    eYo.Test.dlgt(d, 'identifier')
+    eYo.Test.code(d, 'a')
+    d.block_.dispose()
   })
   it ('…', function () {
     var dom = `<x eyo="…" target="a"></x>`
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    eYo.Test.block(b, 'identifier')
-    eYo.Test.code(b, 'a')
-    b.dispose()
+    var d = eYo.Test.new_dlgt(dom)
+    eYo.Test.dlgt(d, 'identifier')
+    eYo.Test.code(d, 'a')
+    d.block_.dispose()
   })
   it ('data: name -> target', function() {
     var dom = `<x eyo="identifier" name="abc"></x>`
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    eYo.Test.block(b, 'identifier')
-    eYo.Test.code(b, 'abc')
-    b.dispose()
+    var d = eYo.Test.new_dlgt(dom)
+    eYo.Test.dlgt(d, 'identifier')
+    eYo.Test.code(d, 'abc')
+    d.block_.dispose()
   })
   it ('slot: targets -> target', function() {
-    // var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'abc')
-    // var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a')
-    // eYo.Test.list_connect(b, 'target', bb)
-    // bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b')
-    // eYo.Test.list_connect(b, 'target', bb)
-    // bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'c')
-    // eYo.Test.list_connect(b, 'target', bb)
-    // console.error(eYo.Xml.blockToDom(b).outerHTML)
-    // b.dispose()
-    var dom = `<x eyo="…"><x eyo="list" slot="targets"><x eyo="…" slot="O" target="a"></x><x eyo="…" slot="f" target="b"></x><x eyo="…" slot="r" target="c"></x></x></x>`
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    eYo.Test.block(b, 'assignment_chain')
-    eYo.Test.code(b, 'a, b, c = <MISSING EXPRESSION>')
-    b.dispose()
+    // var d = eYo.Test.new_dlgt('abc')
+    // var dd = eYo.Test.new_dlgt('a')
+    // eYo.Test.list_connect(d, 'target', dd)
+    // dd = eYo.Test.new_dlgt('d')
+    // eYo.Test.list_connect(d, 'target', dd)
+    // dd = eYo.Test.new_dlgt('c')
+    // eYo.Test.list_connect(d, 'target', dd)
+    // console.error(eYo.Xml.blockToDom(d).outerHTML)
+    // d.block_.dispose()
+    var dom = `<x eyo="…"><x eyo="list" slot="targets"><x eyo="…" slot="O" target="a"></x><x eyo="…" slot="f" target="d"></x><x eyo="…" slot="r" target="c"></x></x></x>`
+    var d = eYo.Test.new_dlgt(dom)
+    eYo.Test.dlgt(d, 'assignment_chain')
+    eYo.Test.code(d, 'a, d, c = <MISSING EXPRESSION>')
+    d.block_.dispose()
   })
 })
 
@@ -170,7 +170,7 @@ describe('Copy/Paste', function() {
     'key_datum',
     'identifier_valued',
     'assignment_chain',
-    'assignment_expr',
+    'named_expr',
     'identifier_annotated_valued',
     'attributeref',
     'named_attributeref',
@@ -187,12 +187,12 @@ describe('Copy/Paste', function() {
     'named_slicing'
   ].some(t => {
     it(`Basic Copy/paste ${t}`, function() {
-      var b = eYo.Test.new_block(t)
-      var dom = eYo.Xml.blockToDom(b)
-      var bb = eYo.DelegateSvg.newBlockReady(b.workspace, dom)
-      eYo.Test.same(bb, b)
-      bb.dispose()
-      b.dispose()
+      var d = eYo.Test.new_dlgt(t)
+      var dom = eYo.Xml.blockToDom(d)
+      var dd = eYo.Test.new_dlgt(dom)
+      eYo.Test.same(dd, d)
+      dd.block_.dispose()
+      d.block_.dispose()
     })  
   })
   var md = eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.identifier).data
@@ -208,21 +208,21 @@ describe('Copy/Paste', function() {
       ary: ['CALL_EXPR', [1]],
       mandatory: ['CALL_EXPR', [2]]
     }[k]
-    var b = eYo.Test.new_block('identifier')
-    b.eyo.variant_p = eYo.Key[w[0]]
-    eYo.Test.data_key(b, k)
+    var d = eYo.Test.new_dlgt('identifier')
+    d.variant_p = eYo.Key[w[0]]
+    eYo.Test.data_key(d, k)
     if (k === 'holder') {
-      b.eyo.dotted_p = 1
+      d.dotted_p = 1
     }
     w[1].forEach(v => {
-      var d = b.eyo.data[k]
+      var d = d.data[k]
       d.set(v)
-      var dom = eYo.Xml.blockToDom(b)
-      var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-      chai.assert(bb.eyo.data[k].get() === d.get(), `MISSED ${k} data ${bb.eyo.data[k].get()} === ${d.get()}`)
-      bb.dispose()
+      var dom = eYo.Xml.blockToDom(d)
+      var dd = eYo.Test.new_dlgt(dom)
+      chai.assert(dd.data[k].get() === d.get(), `MISSED ${k} data ${dd.data[k].get()} === ${d.get()}`)
+      dd.block_.dispose()
     })
-    b.dispose()
+    d.block_.dispose()
   }
   Object.keys(md).forEach(k => {
     if (md[k].xml !== false) {
@@ -238,18 +238,18 @@ describe('Copy/Paste', function() {
 describe('Primary variant', function() {
   var Vs = eYo.Delegate.Manager.getModel(eYo.T3.Expr.identifier).data.variant.all
   Vs.some(to => {
-    var b = eYo.Test.new_block(eYo.T3.Expr.identifier)
-    b.eyo.variant_p = to
+    var d = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+    d.variant_p = to
     Vs.some(from => {
       it(`${from} -> ${to}`, function() {
-        var bb = eYo.Test.new_block(eYo.T3.Expr.identifier)
-        bb.eyo.variant_p = from
-        bb.eyo.variant_p = to
-        eYo.Test.same(bb, b)
-        bb.dispose()
+        var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+        dd.variant_p = from
+        dd.variant_p = to
+        eYo.Test.same(dd, d)
+        dd.block_.dispose()
       })
     })
-    b.dispose()
+    d.block_.dispose()
   })
 })
 
@@ -262,7 +262,7 @@ describe('Basic slots incog', function() {
     ['key_datum', 'target', 'Xholder', 'Xdotted', 'annotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
     ['identifier_valued', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
     ['assignment_chain', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
-    ['assignment_expr', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
+    ['named_expr', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
     ['identifier_annotated_valued', 'target', 'Xholder', 'Xdotted', 'annotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'],
     ['attributeref', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
     ['named_attributeref', 'target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
@@ -279,9 +279,9 @@ describe('Basic slots incog', function() {
     ['slicing', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias']
   ].some(Ts => {
     it(`Slots incog status ${Ts[0]}`, function() {
-      var b = eYo.Test.new_block(Ts[0])
-      eYo.Test.incog(b, Ts)
-      b.dispose()
+      var d = eYo.Test.new_dlgt(Ts[0])
+      eYo.Test.incog(d, Ts)
+      d.block_.dispose()
     })  
   })
 })
@@ -307,46 +307,46 @@ describe('Basic variants and slot incogs', function() {
     ['COL_VALUED', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias']
   ].some(Ts => {
     it(`Slots incog status by variant ${Ts[0]}`, function() {
-      var b = eYo.Test.new_block('identifier')
-      b.eyo.variant_p = eYo.Key[Ts[0]]
-      eYo.Test.incog(b, Ts)
-      b.dispose()
+      var d = eYo.Test.new_dlgt('identifier')
+      d.variant_p = eYo.Key[Ts[0]]
+      eYo.Test.incog(d, Ts)
+      d.block_.dispose()
     })  
   })
 })
 
 describe('Copy/Paste by data', function() {
   it('data: dotted', function() {
-    var b = eYo.Test.new_block('identifier')
-    chai.assert(b.eyo.dotted_p === 0, `BAD DEFAULT DOTTED ${b.eyo.dotted_p}`)
-    eYo.Test.incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    b.eyo.dotted_p = 1
-    eYo.Test.incog(b, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.data_save(b, 'dotted', 0)
-    eYo.Test.data_save(b, 'dotted', 1)
-    eYo.Test.data_save(b, 'dotted', 2)
-    eYo.Test.data_save(b, 'dotted', 3)
-    b.dispose()
+    var d = eYo.Test.new_dlgt('identifier')
+    chai.assert(d.dotted_p === 0, `BAD DEFAULT DOTTED ${d.dotted_p}`)
+    eYo.Test.incog(d, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    d.dotted_p = 1
+    eYo.Test.incog(d, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.data_save(d, 'dotted', 0)
+    eYo.Test.data_save(d, 'dotted', 1)
+    eYo.Test.data_save(d, 'dotted', 2)
+    eYo.Test.data_save(d, 'dotted', 3)
+    d.block_.dispose()
   })
   it('data: holder', function() {
-    var b = eYo.Test.new_block('identifier')
-    b.eyo.holder_p = 'TEST'
-    eYo.Test.incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.data_save(b, 'holder', 'TEST2', true)
-    b.eyo.dotted_p = 1
-    eYo.Test.incog(b, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.data_save(b, 'holder', 'TEST3')
-    eYo.Test.data_save(b, 'holder', '')
-    b.dispose()
+    var d = eYo.Test.new_dlgt('identifier')
+    d.holder_p = 'TEST'
+    eYo.Test.incog(d, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.data_save(d, 'holder', 'TEST2', true)
+    d.dotted_p = 1
+    eYo.Test.incog(d, ['target', 'holder', 'dotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.data_save(d, 'holder', 'TEST3')
+    eYo.Test.data_save(d, 'holder', '')
+    d.block_.dispose()
   })
   var f = (k, variant, values, ignore) => {
     it(`data: ${k}/${variant}`, function() {
-      var b = eYo.Test.new_block('identifier')
-      b.eyo.variant_p = eYo.Key[variant] || variant
+      var d = eYo.Test.new_dlgt('identifier')
+      d.variant_p = eYo.Key[variant] || variant
       values.forEach(v => {
-        eYo.Test.data_save(b, k, v)
+        eYo.Test.data_save(d, k, v)
       })
-      b.dispose()
+      d.block_.dispose()
     })  
   }
   f('alias', 'ALIASED', ['TEST', 'TEST2', ''])
@@ -396,80 +396,80 @@ describe('Primary slots', function() {
   // we do not manage the data content here
   it('Slot: holder/dotted', function() {
     // as long as the dotted_p is 0, holder is ignored
-    var main = eYo.Test.new_block('identifier')
-    eYo.Test.code(main, '<MISSING NAME>')
-    var hldr = eYo.Test.new_block('identifier')
-    eYo.Test.slot_connect(main, 'holder', hldr)
-    eYo.Test.block(hldr, 'identifier')
-    eYo.Test.block(main, 'identifier')
-    hldr.eyo.target_p = 'a'
-    eYo.Test.code(hldr, 'a')
-    chai.assert(hldr.eyo.target_p === 'a', 'FAILED')
-    chai.assert(hldr.eyo.target_s.fields.bind.getText() === 'a', `SYNCHRONIZE FAILED for target bind field in ${hldr.type}`)
-    chai.assert(hldr.eyo.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
-    main.eyo.target_p = 'b'
-    eYo.Test.code(main, 'b')
-    main.eyo.dotted_p = 1 // things change here
-    eYo.Test.block(main, 'dotted_name')
-    eYo.Test.code(main, 'a.b')
-    main.eyo.dotted_p = 2
-    eYo.Test.code(main, '..b')
-    eYo.Test.block(main, 'parent_module')
-    eYo.Test.data_key(main, 'target', '')
-    eYo.Test.code(main, '..b')
-    main.eyo.target_p = ''
-    eYo.Test.code(main, '..')
-    eYo.Test.block(main, 'parent_module')
-    main.eyo.target_p = 'b'
-    main.eyo.dotted_p = 1
-    eYo.Test.code(main, 'a.b')
-    eYo.Test.block(main, 'dotted_name')
-    hldr.eyo.variant_p = eYo.Key.CALL_EXPR
-    eYo.Test.code(main, 'a().b')
-    eYo.Test.block(main, 'attributeref')
-    main.dispose()
+    var dmain = eYo.Test.new_dlgt('identifier')
+    eYo.Test.code(dmain, '<MISSING NAME>')
+    var dhldr = eYo.Test.new_dlgt('identifier')
+    eYo.Test.slot_connect(dmain, 'holder', dhldr)
+    eYo.Test.dlgt(dhldr, 'identifier')
+    eYo.Test.dlgt(dmain, 'identifier')
+    dhldr.target_p = 'a'
+    eYo.Test.code(dhldr, 'a')
+    chai.assert(dhldr.target_p === 'a', 'FAILED')
+    chai.assert(dhldr.target_s.fields.bind.getText() === 'a', `SYNCHRONIZE FAILED for target bind field in ${dhldr.type}`)
+    chai.assert(dhldr.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
+    dmain.target_p = 'd'
+    eYo.Test.code(dmain, 'd')
+    dmain.dotted_p = 1 // things change here
+    eYo.Test.dlgt(dmain, 'dotted_name')
+    eYo.Test.code(dmain, 'a.d')
+    dmain.dotted_p = 2
+    eYo.Test.code(dmain, '..d')
+    eYo.Test.dlgt(dmain, 'parent_module')
+    eYo.Test.data_key(dmain, 'target', '')
+    eYo.Test.code(dmain, '..d')
+    dmain.target_p = ''
+    eYo.Test.code(dmain, '..')
+    eYo.Test.dlgt(dmain, 'parent_module')
+    dmain.target_p = 'd'
+    dmain.dotted_p = 1
+    eYo.Test.code(dmain, 'a.d')
+    eYo.Test.dlgt(dmain, 'dotted_name')
+    dhldr.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.code(dmain, 'a().d')
+    eYo.Test.dlgt(dmain, 'attributeref')
+    dmain.block_.dispose()
   })
   it ('Slot target', function () {
-    var a = eYo.Test.new_block('identifier', 'identifier')
-    a.eyo.target_p = 'a'
-    eYo.Test.block(a, 'identifier')
-    eYo.Test.code(a, 'a')
-    var b = eYo.Test.new_block('identifier', 'identifier')
-    b.eyo.target_p = 'b'
-    eYo.Test.code(b, 'b')
-    eYo.Test.list_connect(a, 'target', b)
-    eYo.Test.block(a, 'identifier')
-    eYo.Test.code(a, 'b')
-    eYo.Test.input_length(a.eyo.target_b, 3, 'target')
-    var c = eYo.Test.new_block('identifier')
-    c.eyo.target_p = 'c'
-    a.eyo.target_t.lastConnect(c)
-    eYo.Test.code(a, 'b, c = <MISSING EXPRESSION>')
-    b.dispose()
-    eYo.Test.code(a, 'c = <MISSING EXPRESSION>')
-    c.dispose()
-    eYo.Test.code(a, 'a = <MISSING EXPRESSION>')
-    a.dispose()
+    var da = eYo.Test.new_dlgt('identifier', 'identifier')
+    da.target_p = 'a'
+    eYo.Test.dlgt(da, 'identifier')
+    eYo.Test.code(da, 'a')
+    var d = eYo.Test.new_dlgt('identifier', 'identifier')
+    d.target_p = 'd'
+    eYo.Test.code(d, 'd')
+    eYo.Test.list_connect(da, 'target', d)
+    eYo.Test.dlgt(da, 'identifier')
+    eYo.Test.code(da, 'd')
+    eYo.Test.input_length(da.target_b, 3, 'target')
+    var dc = eYo.Test.new_dlgt('identifier')
+    dc.target_p = 'c'
+    da.target_t.lastConnect(dc)
+    eYo.Test.code(da, 'd, c = <MISSING EXPRESSION>')
+    d.block_.dispose()
+    eYo.Test.code(da, 'c = <MISSING EXPRESSION>')
+    dc.block_.dispose()
+    eYo.Test.code(da, 'a = <MISSING EXPRESSION>')
+    da.block_.dispose()
   })
   it('Slot annotated', function () {
-    var a = eYo.Test.new_block('identifier')
-    a.eyo.target_p = 'a'
-    eYo.Test.code(a, 'a')
-    eYo.Test.data_key(a, 'variant', eYo.Key.ANNOTATED)
-    a.eyo.variant_p = eYo.Key.ANNOTATED
-    eYo.Test.code(a, 'a: <MISSING EXPR>')
-    a.eyo.annotated_p = 'fal ba la'
-    eYo.Test.code(a, 'a: fal ba la')
-    var b = eYo.Test.new_block('a_expr')
-    b.eyo.lhs_p = 'lhs'
-    b.eyo.rhs_p = 'rhs'
-    eYo.Test.code(b, 'lhs + rhs')
-    a.eyo.annotated_s.connect(b)
-    eYo.Test.code(a, 'a: lhs + rhs')
-    b.unplug()
-    eYo.Test.code(a, 'a: fal ba la')
-    b.dispose()
-    a.dispose()
+    var da = eYo.Test.new_dlgt('identifier')
+    da.target_p = 'a'
+    eYo.Test.code(da, 'a')
+    eYo.Test.data_key(da, 'variant', eYo.Key.ANNOTATED)
+    da.variant_p = eYo.Key.ANNOTATED
+    eYo.Test.code(da, 'a: <MISSING EXPR>')
+    da.annotated_p = 'fal ba la'
+    eYo.Test.code(da, 'a: fal ba la')
+    var d = eYo.Test.new_dlgt('a_expr')
+    d.lhs_p = 'lhs'
+    d.rhs_p = 'rhs'
+    eYo.Test.code(d, 'lhs + rhs')
+    da.annotated_s.connect(d)
+    eYo.Test.code(da, 'a: lhs + rhs')
+    d.unplug()
+    eYo.Test.code(da, 'a: fal ba la')
+    d.block_.dispose()
+    da.block_.dispose()
   })
   ;[
   'assignment_stmt',
@@ -477,14 +477,14 @@ describe('Primary slots', function() {
   'annotated_assignment_stmt',
   'assignment_chain',
   'identifier_valued',
-  'assignment_expr',
+  'named_expr',
   'identifier',
   'identifier_annotated',
   'augtarget_annotated',
   'key_datum',
   'identifier_valued',
   'assignment_chain',
-  'assignment_expr',
+  'named_expr',
   'identifier_annotated_valued',
   'attributeref',
   'named_attributeref',
@@ -501,198 +501,198 @@ describe('Primary slots', function() {
   'named_call_expr'
   ].forEach(t => {
     it(`value_list checks 1/2: ${t}`, function () {
-      var a = eYo.Test.new_block(t)
-      var m = a.eyo.value_t.model.list
-      var unique = m.unique(eYo.T3.Expr.value_list, a.type)
-      var check = m.check(eYo.T3.Expr.value_list, a.type)
-      var all = m.all(eYo.T3.Expr.value_list, a.type)
-      if(a.eyo.value_s.isIncog()) {
+      var da = eYo.Test.new_dlgt(t)
+      var m = da.value_t.model.list
+      var unique = m.unique(eYo.T3.Expr.value_list, da.type)
+      var check = m.check(eYo.T3.Expr.value_list, da.type)
+      var all = m.all(eYo.T3.Expr.value_list, da.type)
+      if(da.value_s.isIncog()) {
         if (unique !== null) {
           console.error('UNIK', unique)
         }
-        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
-        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
-        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
+        chai.assert(unique === null, `MISSING UNIQUE NULL ${da.type}, ${da.subtype}`)
+        chai.assert(check === null, `MISSING CHECK NULL ${da.type}, ${da.subtype}`)
+        chai.assert(all === null, `MISSING ALL NULL ${da.type}, ${da.subtype}`)
       } else {
         var f = (ra, str) => {
-          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str || ''}: ${a.type}, ${a.subtype}`)
-          chai.assert(ra !== null, `UNEXPECTED NULL ${str || ''}: ${a.type}, ${a.subtype}`)
-          chai.assert(ra.length !== 0, `MISSING ${str || ''}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str || ''}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra !== null, `UNEXPECTED NULL ${str || ''}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra.length !== 0, `MISSING ${str || ''}: ${da.type}, ${da.subtype}`)
         }
         f(unique, 'unique')
         f(check, 'check')
         f(all, 'all')
-        chai.assert(chai.expect(a.eyo.value_b.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(da.value_b.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
-          var b = eYo.Test.new_block(tt)
+          var d = eYo.Test.new_dlgt(tt)
           if (tt === eYo.T3.Expr.assignment_chain) {
-            var c = eYo.Test.new_block(tt)
-            c.eyo.variant_p = eYo.Key.SLICING
-            chai.assert(b.eyo.target_t.lastConnect(c), `MISSED TARGET ${tt}`)
+            var dc = eYo.Test.new_dlgt(tt)
+            dc.variant_p = eYo.Key.SLICING
+            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
-          if (b.type === tt) {
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            chai.assert(a.eyo.value_t.lastConnect(b), `MISSED VALUE ${tt}`)
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            b.dispose()
-            eYo.Test.input_length(a.eyo.value_b, 1)
+          if (d.type === tt) {
+            eYo.Test.input_length(da.value_b, 1)
+            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            eYo.Test.input_length(da.value_b, 1)
+            d.block_.dispose()
+            eYo.Test.input_length(da.value_b, 1)
           } else {
             // console.error('XO TEST FOR', tt)
-            b.dispose()
+            d.block_.dispose()
           }
         })
         check.forEach(tt => {
-          var b = eYo.Test.new_block(tt)
+          var d = eYo.Test.new_dlgt(tt)
           if (tt === eYo.T3.Expr.assignment_chain) {
-            var c = eYo.Test.new_block(tt)
-            c.eyo.variant_p = eYo.Key.SLICING
-            chai.assert(b.eyo.target_t.lastConnect(c), `MISSED TARGET ${tt}`)
+            var dc = eYo.Test.new_dlgt(tt)
+            dc.variant_p = eYo.Key.SLICING
+            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
-          if (b.type === tt) {
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            chai.assert(a.eyo.value_t.lastConnect(b), `MISSED VALUE ${tt}`)
-            eYo.Test.input_length(a.eyo.value_b, 3)
-            b.dispose()
-            eYo.Test.input_length(a.eyo.value_b, 1)
+          if (d.type === tt) {
+            eYo.Test.input_length(da.value_b, 1)
+            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            eYo.Test.input_length(da.value_b, 3)
+            d.block_.dispose()
+            eYo.Test.input_length(da.value_b, 1)
           } else {
             // console.error('XO TEST FOR', tt)
-            b.dispose()
+            d.block_.dispose()
           }
         })
       }
-      a.dispose()
+      da.block_.dispose()
     })
     it(`value_list checks 2/2: ${t}`, function () {
-      var a = eYo.Test.new_block(t)
-      var m = a.eyo.value_t.model.list
-      var unique = m.unique(eYo.T3.Expr.value_list, a.type)
-      var check = m.check(eYo.T3.Expr.value_list, a.type)
-      var all = m.all(eYo.T3.Expr.value_list, a.type)
-      if(a.eyo.value_s.isIncog()) {
-        chai.assert(unique === null, `MISSING UNIQUE NULL ${a.type}, ${a.subtype}`)
-        chai.assert(check === null, `MISSING CHECK NULL ${a.type}, ${a.subtype}`)
-        chai.assert(all === null, `MISSING ALL NULL ${a.type}, ${a.subtype}`)
+      var da = eYo.Test.new_dlgt(t)
+      var m = da.value_t.model.list
+      var unique = m.unique(eYo.T3.Expr.value_list, da.type)
+      var check = m.check(eYo.T3.Expr.value_list, da.type)
+      var all = m.all(eYo.T3.Expr.value_list, da.type)
+      if(da.value_s.isIncog()) {
+        chai.assert(unique === null, `MISSING UNIQUE NULL ${da.type}, ${da.subtype}`)
+        chai.assert(check === null, `MISSING CHECK NULL ${da.type}, ${da.subtype}`)
+        chai.assert(all === null, `MISSING ALL NULL ${da.type}, ${da.subtype}`)
       } else {
         var f = (ra, str) => {
-          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${a.type}, ${a.subtype}`)
-          chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${a.type}, ${a.subtype}`)
-          chai.assert(ra.length !== 0, `MISSING ${str}: ${a.type}, ${a.subtype}`)
+          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra.length !== 0, `MISSING ${str}: ${da.type}, ${da.subtype}`)
         }
         f(unique, 'unique')
         f(check, 'check')
         f(all, 'all')
-        chai.assert(chai.expect(a.eyo.value_b.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(da.value_b.inputList[0].connection.check_).equals(all), `BAD CHECK (0)`)
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
-          var b = eYo.Test.new_block(tt)
+          var d = eYo.Test.new_dlgt(tt)
           if (tt === eYo.T3.Expr.assignment_chain) {
-            var c = eYo.Test.new_block(tt)
-            c.eyo.variant_p = eYo.Key.SLICING
-            chai.assert(b.eyo.target_t.lastConnect(c), `MISSED TARGET ${tt}`)
+            var dc = eYo.Test.new_dlgt(tt)
+            dc.variant_p = eYo.Key.SLICING
+            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
-          if (b.type === tt) {
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            chai.assert(a.eyo.value_t.lastConnect(b), `MISSED VALUE ${tt}`)
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            b.dispose()
-            eYo.Test.input_length(a.eyo.value_b, 1)
+          if (d.type === tt) {
+            eYo.Test.input_length(da.value_b, 1)
+            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            eYo.Test.input_length(da.value_b, 1)
+            d.block_.dispose()
+            eYo.Test.input_length(da.value_b, 1)
           } else {
             // console.error('NO TEST FOR', tt)
-            b.dispose()
+            d.block_.dispose()
           }
         })
         check.forEach(tt => {
-          var b = eYo.Test.new_block(tt)
+          var d = eYo.Test.new_dlgt(tt)
           if (tt === eYo.T3.Expr.assignment_chain) {
-            var c = eYo.Test.new_block(tt)
-            c.eyo.variant_p = eYo.Key.SLICING
-            chai.assert(b.eyo.target_t.lastConnect(c), `MISSED TARGET ${tt}`)
+            var dc = eYo.Test.new_dlgt(tt)
+            dc.variant_p = eYo.Key.SLICING
+            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
-          if (b.type === tt) {
-            eYo.Test.input_length(a.eyo.value_b, 1)
-            chai.assert(a.eyo.value_t.lastConnect(b), `MISSED VALUE ${tt}`)
-            eYo.Test.input_length(a.eyo.value_b, 3)
-            b.dispose()
-            eYo.Test.input_length(a.eyo.value_b, 1)
+          if (d.type === tt) {
+            eYo.Test.input_length(da.value_b, 1)
+            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            eYo.Test.input_length(da.value_b, 3)
+            d.block_.dispose()
+            eYo.Test.input_length(da.value_b, 1)
           } else {
             // console.error('XO TEST FOR', tt)
-            b.dispose()
+            d.block_.dispose()
           }
         })
       }
-      a.dispose()
+      da.block_.dispose()
     })
   })
   it('Slot value', function () {
-    var a = eYo.Test.new_block('identifier')
-    a.eyo.target_p = 'a'
-    eYo.Test.code(a, 'a')
-    eYo.Test.data_key(a, 'variant', eYo.Key.TARGET_VALUED)
-    a.eyo.variant_p = eYo.Key.TARGET_VALUED
-    eYo.Test.block(a, 'identifier_valued')
-    eYo.Test.code(a, 'a = <MISSING EXPRESSION>')
-    a.eyo.value_p = 'value'
-    eYo.Test.code(a, 'a = value')
-    var b = eYo.Test.new_block('identifier')
-    b.eyo.target_p = 'b'
-    eYo.Test.code(b, 'b')
-    a.eyo.value_t.lastConnect(b)
-    eYo.Test.code(a, 'a = b')
-    var c = eYo.Test.new_block('identifier')
-    c.eyo.target_p = 'c'
-    eYo.Test.code(c, 'c')
-    // console.error(a.eyo.value_b.inputList[0].connection.check_)
-    // console.error(a.eyo.value_b.inputList[1].connection.check_)
-    // console.error(a.eyo.value_b.inputList[2].connection.check_)
-    chai.assert(a.eyo.value_t.lastConnect(c), 'MISSED')
-    eYo.Test.code(a, 'a = b, c')
-    a.eyo.variant_p = eYo.Key.ANNOTATED
-    eYo.Test.code(a, 'a: <MISSING EXPR>')
-    a.eyo.variant_p = eYo.Key.ANNOTATED_VALUED
-    eYo.Test.code(a, 'a: <MISSING EXPR> = b, c')
-    a.eyo.variant_p = eYo.Key.TARGET_VALUED
-    eYo.Test.code(a, 'a = b, c')
-    b.unplug()
-    eYo.Test.code(a, 'a = c')
-    c.eyo.variant_p = eYo.Key.TARGET_VALUED
-    eYo.Test.block(c, 'assignment_chain') // c is unique and connect
-    eYo.Test.code(a, 'a = c = <MISSING EXPRESSION>')
-    eYo.Test.input_length(a.eyo.value_b, 1)
-    c.eyo.variant_p = eYo.Key.SLICING // c is no longer unique
-    eYo.Test.block(c, 'named_subscription')
-    eYo.Test.code(a, 'a = c[<MISSING INPUT>]')
-    eYo.Test.input_length(a.eyo.value_b, 3)
-    chai.assert(a.eyo.value_t.lastConnect(b), 'MISSED')
-    eYo.Test.input_length(a.eyo.value_b, 5)
-    eYo.Test.code(a, 'a = c[<MISSING INPUT>], b')
-    chai.assert(a.eyo.value_b.inputList[4].eyo.connect(c), 'MISSED')
-    eYo.Test.code(a, 'a = b, c[<MISSING INPUT>]')
-    eYo.Test.input_length(a.eyo.value_b, 5)    
-    b.dispose()
-    b = eYo.Test.new_block('yield_expr')
-    chai.assert(a.eyo.value_b.inputList[1].eyo.connect(b), 'MISSED')
-    eYo.Test.input_length(a.eyo.value_b, 1)
-    chai.assert(!c.outputConnection.eyo.t_eyo)
-    c.dispose()
-    a.dispose()
+    var da = eYo.Test.new_dlgt('identifier')
+    da.target_p = 'a'
+    eYo.Test.code(da, 'a')
+    eYo.Test.data_key(da, 'variant', eYo.Key.TARGET_VALUED)
+    da.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.dlgt(da, 'identifier_valued')
+    eYo.Test.code(da, 'a = <MISSING EXPRESSION>')
+    da.value_p = 'value'
+    eYo.Test.code(da, 'a = value')
+    var d = eYo.Test.new_dlgt('identifier')
+    d.target_p = 'd'
+    eYo.Test.code(d, 'd')
+    da.value_t.lastConnect(d)
+    eYo.Test.code(da, 'a = d')
+    var dc = eYo.Test.new_dlgt('identifier')
+    dc.target_p = 'c'
+    eYo.Test.code(dc, 'c')
+    // console.error(da.value_b.inputList[0].connection.check_)
+    // console.error(da.value_b.inputList[1].connection.check_)
+    // console.error(da.value_b.inputList[2].connection.check_)
+    chai.assert(da.value_t.lastConnect(dc), 'MISSED')
+    eYo.Test.code(da, 'a = d, c')
+    da.variant_p = eYo.Key.ANNOTATED
+    eYo.Test.code(da, 'a: <MISSING EXPR>')
+    da.variant_p = eYo.Key.ANNOTATED_VALUED
+    eYo.Test.code(da, 'a: <MISSING EXPR> = d, c')
+    da.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.code(da, 'a = d, c')
+    d.unplug()
+    eYo.Test.code(da, 'a = c')
+    dc.variant_p = eYo.Key.TARGET_VALUED
+    eYo.Test.dlgt(dc, 'assignment_chain') // c is unique and connect
+    eYo.Test.code(da, 'a = c = <MISSING EXPRESSION>')
+    eYo.Test.input_length(da.value_b, 1)
+    dc.variant_p = eYo.Key.SLICING // c is no longer unique
+    eYo.Test.dlgt(dc, 'named_subscription')
+    eYo.Test.code(da, 'a = c[<MISSING INPUT>]')
+    eYo.Test.input_length(da.value_b, 3)
+    chai.assert(da.value_t.lastConnect(d), 'MISSED')
+    eYo.Test.input_length(da.value_b, 5)
+    eYo.Test.code(da, 'a = c[<MISSING INPUT>], d')
+    chai.assert(da.value_b.inputList[4].eyo.connect(dc), 'MISSED')
+    eYo.Test.code(da, 'a = d, c[<MISSING INPUT>]')
+    eYo.Test.input_length(da.value_b, 5)    
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt('yield_expr')
+    chai.assert(da.value_b.inputList[1].eyo.connect(d), 'MISSED')
+    eYo.Test.input_length(da.value_b, 1)
+    chai.assert(!dc.magnets.output.t_eyo)
+    dc.block_.dispose()
+    da.block_.dispose()
   })
 })
 
 describe('Primary types', function() {
-  var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)
-  var ctor_key = b.eyo.constructor.eyo.key
-  b.dispose()
+  var d = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
+  var ctor_key = d.constructor.eyo.key
+  d.block_.dispose()
   var f = (k1, k2) => {
     it(`types ${k1}/${k2 || k1}`, function() {
       var t1 = eYo.T3.Expr[k1]
       chai.assert(t1, `UNKNOWN ${k1}`)
       var t2 = eYo.T3.Expr[k2 || k1]
       chai.assert(t2, `UNKNOWN ${k2}`)
-      var b = eYo.Test.new_block(t1, t2)
-      chai.assert(b, `MISSING ${t1}`)
-      eYo.Test.ctor(b, ctor_key)
-      b.dispose()
+      var d = eYo.Test.new_dlgt(t1, t2)
+      chai.assert(d, `MISSING ${t1}`)
+      eYo.Test.ctor(d, ctor_key)
+      d.block_.dispose()
     })
   }
   f('identifier')
@@ -718,240 +718,240 @@ describe('Primary types', function() {
 
 describe('Primary(Compatibility)', function() {
   it('0.2.0', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs = 'rhs'
-    b.eyo.value_p = rhs
-    chai.assert(b.eyo.value_p === rhs, `BAD ${b.eyo.value_p} === ${rhs}`)
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
+    d.value_p = rhs
+    chai.assert(d.value_p === rhs, `BAD ${d.value_p} === ${rhs}`)
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
     console.error(dom)
     f = (t, expected) => {
       dom.setAttribute(eYo.Key.EYO, t)
       expected = eYo.T3.Expr[expected] || eYo.T3.Expr.identifier_valued
-      var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-      eYo.Test.block(b2, expected)
-      chai.assert(b2.eyo.value_s, `MISSING VALUE SLOT ${t}`)
-      chai.assert(!b2.eyo.value_s.isIncog(), `UNEXPECTED VALUE INCOG ${t}`)
-      chai.assert(b2.eyo.value_p === rhs, `MISSED VALUE ${b2.eyo.value_p} === ${rhs}`)
-      b2.dispose()
+      var d2 = eYo.Test.new_dlgt(dom)
+      eYo.Test.dlgt(d2, expected)
+      chai.assert(d2.value_s, `MISSING VALUE SLOT ${t}`)
+      chai.assert(!d2.value_s.isIncog(), `UNEXPECTED VALUE INCOG ${t}`)
+      chai.assert(d2.value_p === rhs, `MISSED VALUE ${d2.value_p} === ${rhs}`)
+      d2.block_.dispose()
     }
     f('identifier_valued')
     f('assignment_chain')
-    f('assignment_expr', 'assignment_expr')
+    f('named_expr', 'named_expr')
   })
 })
 
 describe('Primary(value_list)', function() {
   it('basic', function() {
-    var bb = eYo.Test.new_block('value_list', 'value_list')
-    eYo.Test.input_length(bb, 1)
-    bb.dispose()
-    bb = eYo.Test.new_block('identifier', 'identifier')
-    var b = bb.eyo.value_b
-    eYo.Test.block(b, 'value_list')
-    eYo.Test.input_length(b, 1)
-    bb.dispose()
+    var dd = eYo.Test.new_dlgt('value_list', 'value_list')
+    eYo.Test.input_length(dd, 1)
+    dd.block_.dispose()
+    dd = eYo.Test.new_dlgt('identifier', 'identifier')
+    var d = dd.value_b
+    eYo.Test.dlgt(d, 'value_list')
+    eYo.Test.input_length(d, 1)
+    dd.block_.dispose()
   })
   it('void unwrapped', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.value_list)
-    chai.assert(b, 'MISSED')
-    chai.assert(b.inputList.length === 1)
-    var model = b.eyo.consolidator.model
-    console.error('ALL', b.eyo.type, b.eyo.subtype, model.all(b.eyo.type, b.eyo.subtype))
-    var check = b.inputList[0].connection.check_
+    var d = eYo.Test.new_dlgt(eYo.T3.Expr.value_list)
+    chai.assert(d, 'MISSED')
+    chai.assert(d.inputList.length === 1)
+    var model = d.consolidator.model
+    console.error('ALL', d.type, d.subtype, model.all(d.type, d.subtype))
+    var check = d.inputList[0].connection.check_
     chai.assert(check === null, 'BAD 1')
     // expect(model).to.have.all.keys('unique', 'all', 'check')
-    chai.assert(chai.expect(check).equal(model.all(b.eyo.type, b.eyo.subtype)), `MISMATCH 1`)
-    chai.assert(chai.expect(null).equal(model.all(b.eyo.type, b.eyo.subtype)), `MISMATCH 1`)
-    chai.assert(chai.expect(null).equal(model.check(b.eyo.type, b.eyo.subtype)), `MISMATCH 2`)
-    chai.assert(chai.expect(null).equal(model.unique(b.eyo.type, b.eyo.subtype)), `MISMATCH 3`)
-    b.dispose()
+    chai.assert(chai.expect(check).equal(model.all(d.type, d.subtype)), `MISMATCH 1`)
+    chai.assert(chai.expect(null).equal(model.all(d.type, d.subtype)), `MISMATCH 1`)
+    chai.assert(chai.expect(null).equal(model.check(d.type, d.subtype)), `MISMATCH 2`)
+    chai.assert(chai.expect(null).equal(model.unique(d.type, d.subtype)), `MISMATCH 3`)
+    d.block_.dispose()
   })
   it('void wrapped', function() {
-    var bb = eYo.Test.new_block('identifier_valued')
-    eYo.Test.ctor(bb, 'primary')
-    var b = bb.eyo.value_b
-    eYo.Test.block(b, 'value_list')
-    eYo.Test.input_length(b, 1)
-    var model = b.eyo.consolidator.model
-    var check = b.inputList[0].connection.check_
-    chai.assert(chai.expect(check).to.equal(model.all(b.type, b.eyo.subtype)),`MISMATCH 1`)
-    chai.assert(chai.expect(check).to.not.equal(model.check(b.type, b.eyo.subtype)),`MISMATCH 2`)
-    chai.assert(chai.expect(check).to.not.equal(model.unique(b.type, b.eyo.subtype)),`MISMATCH 3`)
-    bb.dispose()
+    var dd = eYo.Test.new_dlgt('identifier_valued')
+    eYo.Test.ctor(dd, 'primary')
+    var d = dd.value_b
+    eYo.Test.dlgt(d, 'value_list')
+    eYo.Test.input_length(d, 1)
+    var model = d.consolidator.model
+    var check = d.inputList[0].connection.check_
+    chai.assert(chai.expect(check).to.equal(model.all(d.type, d.subtype)),`MISMATCH 1`)
+    chai.assert(chai.expect(check).to.not.equal(model.check(d.type, d.subtype)),`MISMATCH 2`)
+    chai.assert(chai.expect(check).to.not.equal(model.unique(d.type, d.subtype)),`MISMATCH 3`)
+    dd.block_.dispose()
   })
   it('non void wrapped', function() {
-    var bb = eYo.Test.new_block('identifier_valued')
-    var b = bb.eyo.value_b
-    eYo.Test.subtype(b, 'identifier_valued')
-    b.eyo.lastInput.eyo.connect(eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
-    eYo.Test.input_length(b, 3)
-    var model = b.eyo.consolidator.model
-    var check = b.inputList[0].connection.check_
-    var model_check = model.check(b.eyo.type, b.eyo.subtype)
-    var model_all = model.all(b.eyo.type, b.eyo.subtype)
-    var model_unique = model.unique(b.eyo.type, b.eyo.subtype)
+    var dd = eYo.Test.new_dlgt('identifier_valued')
+    var d = dd.value_b
+    eYo.Test.subtype(d, 'identifier_valued')
+    d.lastInput.eyo.connect(eYo.Test.new_dlgt('a'))
+    eYo.Test.input_length(d, 3)
+    var model = d.consolidator.model
+    var check = d.inputList[0].connection.check_
+    var model_check = model.check(d.type, d.subtype)
+    var model_all = model.all(d.type, d.subtype)
+    var model_unique = model.unique(d.type, d.subtype)
     chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
-    check = b.inputList[1].connection.check_
+    check = d.inputList[1].connection.check_
     chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 11`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 12`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 13`)
-    check = b.inputList[2].connection.check_
+    check = d.inputList[2].connection.check_
     chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 21`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 22`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 23`)
-    bb.dispose()
+    dd.block_.dispose()
   })
   it('non void (=) wrapped', function() {
-    var bb = eYo.Test.new_block('identifier_valued')
-    var b = bb.eyo.value_b
-    b.eyo.lastInput.eyo.connect(eYo.Test.new_block('identifier_valued'))
-    chai.assert(b.inputList.length === 1)
-    var model = b.eyo.consolidator.model
-    var check = b.inputList[0].connection.check_
-    var model_check = model.check(b.eyo.type, b.eyo.subtype)
-    var model_all = model.all(b.eyo.type, b.eyo.subtype)
-    var model_unique = model.unique(b.eyo.type, b.eyo.subtype)
+    var dd = eYo.Test.new_dlgt('identifier_valued')
+    var d = dd.value_b
+    d.lastInput.eyo.connect(eYo.Test.new_dlgt('identifier_valued'))
+    chai.assert(d.inputList.length === 1)
+    var model = d.consolidator.model
+    var check = d.inputList[0].connection.check_
+    var model_check = model.check(d.type, d.subtype)
+    var model_all = model.all(d.type, d.subtype)
+    var model_unique = model.unique(d.type, d.subtype)
     chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
-    bb.dispose()
+    dd.block_.dispose()
   })
 })
 
 describe('Primary(DEFINED)', function() {
   it('value data', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs = 'rhs'
-    b.eyo.value_p = rhs
-    chai.assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    chai.assert(b.eyo.value_p === rhs, `MISSED ${b.eyo.value_p} === ${rhs}`)
-    b.dispose()
+    d.value_p = rhs
+    chai.assert(d.value_p === rhs, `MISSED ${d.value_p} === ${rhs}`)
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt(dom)
+    chai.assert(d.value_p === rhs, `MISSED ${d.value_p} === ${rhs}`)
+    d.block_.dispose()
   })
   it('… = rhs', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs = 'rhs'
-    eYo.Test.list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs))
-    var u = b.eyo.value_s.unwrappedTarget
+    eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs))
+    var u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
-    // b.moveBy(20, 20)
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    u = b.eyo.value_s.unwrappedTarget
+    // d.moveBy(20, 20)
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt(dom)
+    u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
-    b.dispose()
+    d.block_.dispose()
   })
-  it('… = a, b', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+  it('… = a, d', function() {
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs_a = 'a'
-    eYo.Test.list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
-    var rhs_b = 'b'
-    eYo.Test.list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_b))
-    var u = b.eyo.value_s.unwrappedTarget
+    eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs_a))
+    var rhs_b = 'd'
+    eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs_b))
+    var u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
-    // b.moveBy(20, 20)
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    u = b.eyo.value_s.unwrappedTarget
+    // d.moveBy(20, 20)
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt(dom)
+    u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
-    eYo.Test.input_length(b.eyo.value_b, 5)
-    var name = b.eyo.value_b.inputList[3].connection.targetBlock().eyo.target_p
+    eYo.Test.input_length(d.value_b, 5)
+    var name = d.value_b.inputList[3].eyo.magnet.t_eyo.target_p
     chai.assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
-    b.dispose()
+    d.block_.dispose()
   })
   it('… = (… = …)', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs_a = 'a'
-    eYo.Test.list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
-    var bb = eYo.Test.new_block('identifier_valued')
+    eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs_a))
+    var dd = eYo.Test.new_dlgt('identifier_valued')
     eYo.STOP = 0
-    eYo.Test.list_connect(bb, 'value', b)
-    eYo.Test.block(b, 'assignment_chain')
-    console.log(bb.eyo.getProfile())
-    eYo.Test.block(bb, 'assignment_chain')
-    bb.dispose()
+    eYo.Test.list_connect(dd, 'value', d)
+    eYo.Test.dlgt(d, 'assignment_chain')
+    console.log(dd.getProfile())
+    eYo.Test.dlgt(dd, 'assignment_chain')
+    dd.block_.dispose()
   })
   it('… = (… = …)', function() {
-    var b = eYo.Test.new_block('identifier_valued')
+    var d = eYo.Test.new_dlgt('identifier_valued')
     var rhs_a = 'a'
-    eYo.Test.list_connect(b, 'value', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, rhs_a))
-    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Stmt.assignment_stmt)
-    eYo.Test.list_connect(bb, 'value', b)
-    eYo.Test.block(b, 'assignment_chain')
-    eYo.Test.block(bb, 'assignment_stmt')
-    bb.dispose()
+    eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs_a))
+    var dd = eYo.Test.new_dlgt(eYo.T3.Stmt.assignment_stmt)
+    eYo.Test.list_connect(dd, 'value', d)
+    eYo.Test.dlgt(d, 'assignment_chain')
+    eYo.Test.dlgt(dd, 'assignment_stmt')
+    dd.block_.dispose()
   })
 })
 
 describe('Primary(Assignment)', function() {
   it('basic', function() {
-    var b = eYo.Test.new_block('identifier_valued', 'identifier_valued')
-    eYo.Test.incog(b, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'])
-    var f = (k, b1 = b) => {
-      eYo.Test.block(b1, k)
+    var d = eYo.Test.new_dlgt('identifier_valued', 'identifier_valued')
+    eYo.Test.incog(d, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'value', 'Xn_ary', 'Xslicing', 'Xalias'])
+    var f = (k, d1 = d) => {
+      eYo.Test.dlgt(d1, k)
     }
     f('identifier_valued')
-    eYo.Test.list_connect(b, 'target', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'a'))
-    var t = b.eyo.target_b
+    eYo.Test.list_connect(d, 'target', eYo.Test.new_dlgt('a'))
+    var t = d.target_b
     f('identifier_valued')
-    eYo.Test.list_connect(b, 'target', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'b')) // 2nd target
+    eYo.Test.list_connect(d, 'target', eYo.Test.new_dlgt('d')) // 2nd target
     f('assignment_chain')
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
     // console.log(dom)
-    var b2 = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    f('assignment_chain', b2)
-    b2.moveBy(50, 10)
-    b2.dispose()
+    var d2 = eYo.Test.new_dlgt(dom)
+    f('assignment_chain', d2)
+    d2.moveBy(50, 10)
+    d2.block_.dispose()
   })
   it('f(… = …)', function() {
-    var b = eYo.Test.new_block('identifier_valued')
-     var f = (k, b1 = b) => {
-      eYo.Test.block(b1, k)
+    var d = eYo.Test.new_dlgt('identifier_valued')
+     var f = (k, d1 = d) => {
+      eYo.Test.dlgt(d1, k)
     }
     f('identifier_valued')
-    var bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.call_expr)
-    eYo.Test.list_connect(bb, 'n_ary', b)
+    var dd = eYo.Test.new_dlgt(eYo.T3.Expr.call_expr)
+    eYo.Test.list_connect(dd, 'n_ary', d)
     f('identifier_valued')
-    bb.dispose(true)
+    dd.block_.dispose(true)
   })
   it('…=(…=…) unique value', function() {
-    var b = eYo.Test.new_block('identifier_valued')
-    var a = eYo.Test.new_block('identifier_valued')
-    eYo.Test.list_connect(b, 'value', a)
-    eYo.Test.input_length(b.eyo.value_b, 1)
-    b.dispose()
+    var d = eYo.Test.new_dlgt('identifier_valued')
+    var a = eYo.Test.new_dlgt('identifier_valued')
+    eYo.Test.list_connect(d, 'value', a)
+    eYo.Test.input_length(d.value_b, 1)
+    d.block_.dispose()
   })
-  it('b=rhs (dom)', function() {
-    var b = eYo.Test.new_block('identifier_valued')
-    b.eyo.variant_p = eYo.Key.TARGET_VALUED
-    var a = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 'rhs')
-    eYo.Test.list_connect(b, 'value', a)
-    var dom = eYo.Xml.blockToDom(b)
-    b.dispose()
-    b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, dom)
-    chai.assert(b, `MISSING ${dom}`)
-    eYo.Test.variant(b, 'TARGET_VALUED')
-    var u = b.eyo.value_s.unwrappedTarget
-    chai.assert(u, 'MISSED value')
-    eYo.Test.block(u, 'identifier')
-    b.dispose()
+  it('d=rhs (dom)', function() {
+    var d = eYo.Test.new_dlgt('identifier_valued')
+    d.variant_p = eYo.Key.TARGET_VALUED
+    var a = eYo.Test.new_dlgt('rhs')
+    eYo.Test.list_connect(d, 'value', a)
+    var dom = eYo.Xml.blockToDom(d)
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt(dom)
+    chai.assert(d, `MISSING ${dom}`)
+    eYo.Test.variant(d, 'TARGET_VALUED')
+    var du = d.value_s.unwrappedTarget
+    chai.assert(du, 'MISSED value')
+    eYo.Test.dlgt(du.eyo, 'identifier')
+    d.block_.dispose()
   })
 })
 
 describe('Primary(Expression Assignment)', function() {
   it('basic', function() {
-    var b = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, eYo.T3.Expr.assignment_expr)
-    eYo.Test.variant(b, 'COL_VALUED')
-    chai.assert(b.eyo.value_s.fields.label.getValue() === ':=')
-    b.dispose()
+    var d = eYo.Test.new_dlgt(eYo.T3.Expr.named_expr)
+    eYo.Test.variant(d, 'COL_VALUED')
+    chai.assert(d.value_s.fields.label.getValue() === ':=')
+    d.block_.dispose()
   })
 })
 
@@ -963,96 +963,96 @@ describe('Primary(ANNOTATED)', function() {
     'key_datum'
   ].forEach(t => {
     it(`basic annotated ${t}`, function() {
-      var b = eYo.Test.new_block(t)
-      eYo.Test.variant(b, 'ANNOTATED')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(t)
+      eYo.Test.variant(d, 'ANNOTATED')
+      d.block_.dispose()
     })
   })
   it('basic connections', function() {
-    var f = (t, bb, ttt, cant_connect) => {
-      var b = eYo.Test.new_block(t)
+    var f = (t, dd, ttt, cant_connect) => {
+      var d = eYo.Test.new_dlgt(t)
       if (cant_connect) {
-        chai.assert(!b.eyo.target_s.listConnect(bb))
+        chai.assert(!d.target_s.listConnect(dd))
       } else {
-        eYo.Test.list_connect(b, 'target', bb)
-        eYo.Test.block(b, ttt || t)
-        bb.unplug()
+        eYo.Test.list_connect(d, 'target', dd)
+        eYo.Test.dlgt(d, ttt || t)
+        dd.unplug()
       }
-      b.dispose()
+      d.block_.dispose()
     }
-    var bb = eYo.Test.new_block('identifier')
-    f('identifier_annotated', bb, 'identifier_annotated')
-    f('augtarget_annotated', bb, 'identifier_annotated')
-    f('key_datum', bb, 'identifier_annotated')
-    bb.eyo.target_d.set('y')
-    bb.eyo.dotted_d.set(1)
-    bb.eyo.holder_d.set('x')
-    eYo.Test.block(bb, 'dotted_name')
-    chai.assert(eYo.T3.Expr.Check.augtarget.indexOf(bb.type) >= 0, 'MISSED AUGTARGET')
-    f('identifier_annotated', bb, 'augtarget_annotated')
-    bb.dispose()
-    bb = eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421)
-    f('identifier_annotated', bb, 'key_datum')
-    bb.dispose()
+    var dd = eYo.Test.new_dlgt('identifier')
+    f('identifier_annotated', dd, 'identifier_annotated')
+    f('augtarget_annotated', dd, 'identifier_annotated')
+    f('key_datum', dd, 'identifier_annotated')
+    dd.target_d.set('y')
+    dd.dotted_d.set(1)
+    dd.holder_d.set('x')
+    eYo.Test.dlgt(dd, 'dotted_name')
+    chai.assert(eYo.T3.Expr.Check.augtarget.indexOf(dd.type) >= 0, 'MISSED AUGTARGET')
+    f('identifier_annotated', dd, 'augtarget_annotated')
+    dd.block_.dispose()
+    dd = eYo.Test.new_dlgt(421)
+    f('identifier_annotated', dd, 'key_datum')
+    dd.block_.dispose()
   })
   it('type change', function() {
-    var b = eYo.Test.new_block('identifier_annotated')
-    b.eyo.target_p = 'abc'
-    eYo.Test.variant(b, 'ANNOTATED')
-    eYo.Test.code(b, 'abc: <MISSING EXPR>')
-    b.eyo.annotated_p = 'str'
-    eYo.Test.code(b, 'abc: str')
-    eYo.Test.input_length(b.eyo.target_b, 1)
-    var bb = eYo.Test.new_block('identifier')
-    bb.eyo.target_p = 'bb'
-    eYo.Test.code(bb, 'bb')
-    eYo.Test.list_connect(b, 'target', bb)
-    eYo.Test.input_length(b.eyo.target_b, 3)
-    eYo.Test.variant(b, b.eyo.variant_p = eYo.Key.ANNOTATED)
-    eYo.Test.code(b, 'bb: str')
+    var d = eYo.Test.new_dlgt('identifier_annotated')
+    d.target_p = 'abc'
+    eYo.Test.variant(d, 'ANNOTATED')
+    eYo.Test.code(d, 'abc: <MISSING EXPR>')
+    d.annotated_p = 'str'
+    eYo.Test.code(d, 'abc: str')
+    eYo.Test.input_length(d.target_b, 1)
+    var dd = eYo.Test.new_dlgt('identifier')
+    dd.target_p = 'dd'
+    eYo.Test.code(dd, 'dd')
+    eYo.Test.list_connect(d, 'target', dd)
+    eYo.Test.input_length(d.target_b, 3)
+    eYo.Test.variant(d, d.variant_p = eYo.Key.ANNOTATED)
+    eYo.Test.code(d, 'dd: str')
 
-    var cc = eYo.Test.new_block('identifier')
-    cc.eyo.target_p = 'cc'
+    var cc = eYo.Test.new_dlgt('identifier')
+    cc.target_p = 'cc'
     eYo.Test.code(cc, 'cc')
     
-    eYo.Test.list_connect(b, 'target', cc)
-    eYo.Test.input_length(b.eyo.target_b, 5)
-    eYo.Test.code(b, 'bb, cc = <MISSING EXPRESSION>')
+    eYo.Test.list_connect(d, 'target', cc)
+    eYo.Test.input_length(d.target_b, 5)
+    eYo.Test.code(d, 'dd, cc = <MISSING EXPRESSION>')
    
-    eYo.Test.variant(b, 'TARGET_VALUED')
+    eYo.Test.variant(d, 'TARGET_VALUED')
     cc.dispose()
-    eYo.Test.variant(b, 'TARGET_VALUED')
-    b.eyo.variant_p = eYo.Key.ANNOTATED
-    eYo.Test.variant(b, 'ANNOTATED')
+    eYo.Test.variant(d, 'TARGET_VALUED')
+    d.variant_p = eYo.Key.ANNOTATED
+    eYo.Test.variant(d, 'ANNOTATED')
 
-    b.eyo.annotated_p = 'str'
-    eYo.Test.block(b, 'identifier_annotated')
-    eYo.Test.code(b, 'bb: str')
-    bb.eyo.variant_p = eYo.Key.CALL_EXPR
-    eYo.Test.code(b, 'bb(): str')
-    eYo.Test.block(b, 'key_datum')
-    bb.eyo.variant_p = eYo.Key.SLICING
-    eYo.Test.incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
-    eYo.Test.list_connect(bb, 'slicing', eYo.DelegateSvg.newBlockReady(Blockly.mainWorkspace, 421))
-    eYo.Test.code(b, 'bb[421]: str')
-    eYo.Test.block(b, 'augtarget_annotated')
-    bb.eyo.variant_p = eYo.Key.NONE
-    eYo.Test.incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.code(b, 'bb: str')
-    eYo.Test.block(b, 'identifier_annotated')
-    bb.eyo.variant_p = eYo.Key.SLICING
-    eYo.Test.incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
-    eYo.Test.code(b, 'bb[421]: str')
-    eYo.Test.block(b, 'augtarget_annotated')
-    bb.eyo.variant_p = eYo.Key.CALL_EXPR
-    eYo.Test.incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.code(b, 'bb(): str')
-    eYo.Test.block(b, 'key_datum')
-    bb.eyo.variant_p = eYo.Key.NONE
-    eYo.Test.incog(bb, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
-    eYo.Test.code(b, 'bb: str')
-    eYo.Test.block(b, 'identifier_annotated')
-    b.dispose()
+    d.annotated_p = 'str'
+    eYo.Test.dlgt(d, 'identifier_annotated')
+    eYo.Test.code(d, 'dd: str')
+    dd.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.code(d, 'dd(): str')
+    eYo.Test.dlgt(d, 'key_datum')
+    dd.variant_p = eYo.Key.SLICING
+    eYo.Test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
+    eYo.Test.list_connect(dd, 'slicing', eYo.Test.new_dlgt(421))
+    eYo.Test.code(d, 'dd[421]: str')
+    eYo.Test.dlgt(d, 'augtarget_annotated')
+    dd.variant_p = eYo.Key.NONE
+    eYo.Test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.code(d, 'dd: str')
+    eYo.Test.dlgt(d, 'identifier_annotated')
+    dd.variant_p = eYo.Key.SLICING
+    eYo.Test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
+    eYo.Test.code(d, 'dd[421]: str')
+    eYo.Test.dlgt(d, 'augtarget_annotated')
+    dd.variant_p = eYo.Key.CALL_EXPR
+    eYo.Test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.code(d, 'dd(): str')
+    eYo.Test.dlgt(d, 'key_datum')
+    dd.variant_p = eYo.Key.NONE
+    eYo.Test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
+    eYo.Test.code(d, 'dd: str')
+    eYo.Test.dlgt(d, 'identifier_annotated')
+    d.block_.dispose()
   })
 })
 
@@ -1064,26 +1064,26 @@ describe('Primary(ALIASED)', function() {
     'expression_as'
   ].forEach(t => {
     it(`basic aliased ${t}`, function() {
-      var b = eYo.Test.new_block(t)
-      eYo.Test.variant(b, 'ALIASED')
-      b.dispose()
+      var d = eYo.Test.new_dlgt(t)
+      eYo.Test.variant(d, 'ALIASED')
+      d.block_.dispose()
     })
   })
   it ('Connections', function () {
-    var b = eYo.Test.new_block('identifier')
-    b.eyo.alias_p = 'alias'
-    eYo.Test.block(b, 'identifier_as')
-    eYo.Test.code(b, '<MISSING NAME> as alias')
-    b.dispose()
-    b = eYo.Test.new_block('identifier')
-    var bb = eYo.Test.new_block('identifier')
-    b.eyo.alias_s.connect(bb)
-    eYo.Test.block(b, 'identifier_as')
-    eYo.Test.code(b, '<MISSING NAME> as <MISSING NAME>')
-    bb.dispose()
-    eYo.Test.block(b, 'identifier_as')
-    eYo.Test.code(b, '<MISSING NAME> as <MISSING NAME>')
-    b.dispose()
+    var d = eYo.Test.new_dlgt('identifier')
+    d.alias_p = 'alias'
+    eYo.Test.dlgt(d, 'identifier_as')
+    eYo.Test.code(d, '<MISSING NAME> as alias')
+    d.block_.dispose()
+    d = eYo.Test.new_dlgt('identifier')
+    var dd = eYo.Test.new_dlgt('identifier')
+    d.alias_s.connect(dd)
+    eYo.Test.dlgt(d, 'identifier_as')
+    eYo.Test.code(d, '<MISSING NAME> as <MISSING NAME>')
+    dd.block_.dispose()
+    eYo.Test.dlgt(d, 'identifier_as')
+    eYo.Test.code(d, '<MISSING NAME> as <MISSING NAME>')
+    d.block_.dispose()
   })
 })
 
@@ -1094,9 +1094,9 @@ describe ('Primary data by key', function () {
     ['holder', 'x'],
   ].forEach(args => {
     it (`${args[0]} -> ${args[1]}`, function () {
-      var b = eYo.Test.new_block('identifier')
-      eYo.Test.data_key(b, args[0], args[1])
-      b.dispose()
+      var d = eYo.Test.new_dlgt('identifier')
+      eYo.Test.data_key(d, args[0], args[1])
+      d.block_.dispose()
     })
   })
 })

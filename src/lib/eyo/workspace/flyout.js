@@ -270,16 +270,14 @@ eYo.Flyout.prototype.show = function(model) {
       } else {
         var createOneBlock = (xml) => {
           try {
-            var block = eYo.DelegateSvg.newBlockReady(this.workspace_, xml)
-            contents.push({type: 'block', block: block})
-            block.render()
-            block.eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
+            var eyo = eYo.DelegateSvg.newReady(this.workspace_, xml)
+            contents.push({type: 'block', block: block.eyo})
+            eyo.render()
+            eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
             gaps.push(default_gap)
           } catch (err) {
             console.error(xml, err)
             // throw err: catch the error here definitely
-          } finally {
-            // pass
           }  
         }
         // this is the part specific to edython

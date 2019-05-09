@@ -571,7 +571,7 @@ eYo.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
       // Move this block up the DOM.  Keep track of x/y translations.
       var block = node.block_
       block.workspace.getCanvas().appendChild(g)
-      var xy = block.getRelativeToSurfaceXY()
+      var xy = block.eyo.ui.xyInSurface
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
       if (svg.groupContour_) {
         goog.dom.insertChildAt(g, svg.groupContour_, 0)

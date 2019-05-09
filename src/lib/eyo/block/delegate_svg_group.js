@@ -25,7 +25,7 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   statement: {
-    previous: {
+    top: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
@@ -34,7 +34,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
     right: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.suite
-        ? []
+        ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Right.simple_stmt
       },
       fields: {
@@ -52,7 +52,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
         : null
       }
     },
-    next: {
+    bottom: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
@@ -79,7 +79,7 @@ eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {}, eYo.DelegateSvg)
  * Update the black count.
  */
 eYo.DelegateSvg.Group.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.suiteStmtConnection && this.suiteStmtConnection.eyo.getBlackTargetConnection()
+  this.blackHeight = this.magnets.suite && this.magnets.suite.blackTarget
   ? 0
   : this.left || this.right ? 0 : 1
 }
@@ -155,12 +155,12 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
     }
   },
   statement: {
-    previous: {
+    top: {
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.T3.Stmt.Previous[type.substring(4)]
       }
     },
-    next: {
+    bottom: {
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.T3.Stmt.Next[type.substring(4)]
       }
@@ -195,24 +195,24 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
   } [this.variant_p]
   if (!type) {
     var block = this.block_
-    var targetC8n
-    if ((targetC8n = block.previousConnection.targetConnection)) {
-      // look at the previous connection
+    var t_magnet
+    if ((t_magnet = this.magnets.top.target)) {
+      // look at the top connection
       // 
-      var target = targetC8n.getSourceBlock()
-      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(target.eyo.type) < 0)) {
+      var t_eyo = t_magnet.b_eyo
+      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(target.eyo.type) < 0)) {
+      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.last_else_part
       }
     }
-    if (!type && (targetC8n = this.nextConnection.targetConnection)) {
-      // the previous connection did not add any constrain
-      // may be the next connection will?
-      target = targetC8n.getSourceBlock()
-      if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(target.eyo.type) < 0)) {
+    if (!type && (t_magnet = this.magnets.bottom.target)) {
+      // the top connection did not add any constrain
+      // may be the bottom connection will?
+      t_eyo = t_magnet.b_eyo
+      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetC8n.check_ && targetC8n.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(target.eyo.type) < 0)) {
+      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.last_else_part
       }
     }

@@ -140,16 +140,7 @@ eYo.BlockSvg.connectionUiStep_ = function (ripple, start, workspaceScale) {
  *    properties in workspace units.
  */
 eYo.BlockSvg.prototype.getHeightWidth = function () {
-  var height = this.height
-  var width = this.width
-  // Recursively add size of subsequent blocks.
-  var nextBlock = this.getNextBlock()
-  if (nextBlock) {
-    var nextHeightWidth = nextBlock.getHeightWidth()
-    height += nextHeightWidth.height // NO Height of tab.
-    width = Math.max(width, nextHeightWidth.width)
-  }
-  return {height: height, width: width}
+  return this.eyo.ui.getHeightWidth()
 }
 
 /**
@@ -224,13 +215,12 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
     () => {
       if (this === eYo.Selected.block) {
         // this block was selected, select the block below or above before deletion
-        var c8n, target
-        if (((c8n = this.nextConnection) && (target = c8n.targetBlock())) || ((c8n = this.previousConnection) && (target = c8n.targetBlock()))) {
-          target.select()
-        } else if ((c8n = this.outputConnection) && (c8n = c8n.targetConnection)) {
-          target = c8n.sourceBlock_
-          target.select()
-          eYo.Selected.connection = c8n
+        var m4t, target
+        var m4ts = this.eyo.targets
+        if (((m4t = m4ts.bottom) && (target = m4t.target)) || ((m4t = m4ts.top) && (target = m4t.target))) {
+          eYo.Selected.eyo = target.b_eyo
+        } else if ((m4t = m4ts.output) && (target = m4t.target)) {
+          eYo.Selected.magnet = target
         }
       }
       this.eyo.consolidate = eYo.Do.nothing
@@ -330,50 +320,11 @@ eYo.BlockSvg.prototype.isMovable = function() {
 eYo.BlockSvg.prototype.getConnections_ = function(all) {
   var myConnections = eYo.BlockSvg.superClass_.getConnections_.call(this, all)
   if (all || this.rendered) {
-    if (this.eyo.leftStmtConnection) {
-      myConnections.push(this.eyo.leftStmtConnection)
+    if (this.eyo.magnets.left) {
+      myConnections.push(this.eyo.magnets.left)
     }
   }
   return myConnections
-}
-
-
-/**
- * Update all of the connections on this block with the new locations calculated
- * in renderCompute.  Also move all of the connected blocks based on the new
- * connection locations.
- * @private
- */
-eYo.BlockSvg.prototype.renderMoveConnections_ = function() {
-  var blockTL = this.getRelativeToSurfaceXY();
-  // Don't tighten previous or output connections because they are inferior
-  // connections.
-  if (this.eyo.leftStmtConnection) {
-    this.eyo.leftStmtConnection.moveToOffset(blockTL);
-  }
-  if (this.previousConnection) {
-    this.previousConnection.moveToOffset(blockTL);
-  }
-  if (this.outputConnection) {
-    this.outputConnection.moveToOffset(blockTL);
-  }
-
-  for (var i = 0; i < this.inputList.length; i++) {
-    var conn = this.inputList[i].connection;
-    if (conn) {
-      conn.moveToOffset(blockTL);
-      if (conn.isConnected()) {
-        conn.tighten_();
-      }
-    }
-  }
-
-  if (this.nextConnection) {
-    this.nextConnection.moveToOffset(blockTL);
-    if (this.nextConnection.isConnected()) {
-      this.nextConnection.tighten_();
-    }
-  }
 }
 
 /**

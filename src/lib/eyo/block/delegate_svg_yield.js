@@ -110,7 +110,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-        if (this.connection.eyo.isInput) {
+        if (this.isInput) {
           var parent = this.b_eyo.parent
           parent && (parent.variant_p = eYo.Key.EXPRESSION)
         }

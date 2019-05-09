@@ -39,7 +39,7 @@ eYo.FieldHelper = function (field) {
   this.field_ = field
   field.eyo = this
   this.size = new eYo.Size(0, 1)
-  this.reentrant = {}
+  this.reentrant_ = {}
   this.model = {}
 }
 
@@ -197,7 +197,7 @@ goog.forwardDeclare('eYo.FieldInput')
 /**
  * Create all the fields from the given model.
  * For edython.
- * @param {!Object} owner
+ * @param {!eYo.Slot|!eYo.Magnet|!eYo.Delegate} owner  
  * @param {!Object} fieldsModel
  */
 eYo.FieldHelper.makeFields = (() => {

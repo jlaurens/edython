@@ -30,8 +30,6 @@ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions de ce bloc 
 /** @export */ eYo.Msg.ADD_AFTER = 'Ajouter après'
 /** @export */ eYo.Msg.REMOVE = 'Enlever'
 
-/** @export */ eYo.Msg.FILL_DEEP_HOLES = 'Compléter'
-
 /** @export */ eYo.Msg.AT_THE_LEFT = 'à gauche'
 /** @export */ eYo.Msg.AT_THE_RIGHT = 'à droite'
 

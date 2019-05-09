@@ -414,7 +414,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
       [eYo.T3.Expr.assignment_chain]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
       [eYo.T3.Expr.identifier_valued]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
       [eYo.T3.Expr.identifier_annotated_valued]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
-      [eYo.T3.Expr.assignment_expr]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
+      [eYo.T3.Expr.named_expr]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued],
       [eYo.T3.Expr.key_datum]: [eYo.T3.Expr.yield_expr, eYo.T3.Expr.assignment_chain, eYo.T3.Expr.identifier_valued]
     }
     var check = {
@@ -425,7 +425,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
       [eYo.T3.Expr.identifier_valued]: eYo.T3.Expr.Check.expression,
       [eYo.T3.Expr.identifier_annotated_valued]: eYo.T3.Expr.Check.expression,
       [eYo.T3.Expr.key_datum]: eYo.T3.Expr.Check.expression,
-      [eYo.T3.Expr.assignment_expr]: eYo.T3.Expr.Check.expression
+      [eYo.T3.Expr.named_expr]: eYo.T3.Expr.Check.expression
     }
     var me = {
       /**
@@ -445,7 +445,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
           //eYo.T3.Expr.key_datum,
           //eYo.T3.Expr.identifier_valued,
           //eYo.T3.Expr.assignment_chain,
-          //eYo.T3.Expr.assignment_expr,
+          //eYo.T3.Expr.named_expr,
           //eYo.T3.Expr.identifier_annotated_valued,
           eYo.T3.Expr.attributeref,
           eYo.T3.Expr.named_attributeref,
@@ -471,7 +471,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
           //eYo.T3.Expr.key_datum,
           //eYo.T3.Expr.identifier_valued,
           //eYo.T3.Expr.assignment_chain,
-          //eYo.T3.Expr.assignment_expr,
+          //eYo.T3.Expr.named_expr,
           //eYo.T3.Expr.identifier_annotated_valued,
           eYo.T3.Expr.attributeref,
           eYo.T3.Expr.named_attributeref,
@@ -504,7 +504,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
       eYo.T3.Expr.key_datum,
       eYo.T3.Expr.identifier_valued,
       eYo.T3.Expr.assignment_chain,
-      eYo.T3.Expr.assignment_expr,
+      eYo.T3.Expr.named_expr,
       eYo.T3.Expr.identifier_annotated_valued,
       eYo.T3.Expr.attributeref,
       eYo.T3.Expr.named_attributeref,

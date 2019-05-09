@@ -616,7 +616,7 @@ return function(eyo, opt) {
       f = initWithStatementNode
     } else if (eyo.isControl) {
       f = initWithControlNode
-    } else if (eyo.suiteStmtConnection) {
+    } else if (eyo.magnets.suite) {
       f = initWithGroupNode
     } else {
       f = initWithStatementNode
@@ -629,7 +629,7 @@ return function(eyo, opt) {
 
 /**
  * Create a shape with the given connection delegate.
- * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} eyo  A connection delegate.
  */
 eYo.Shape.newWithConnectionDlgt = function(eyo) {
   return new eYo.Shape().initWithConnectionDlgt(eyo)
@@ -637,7 +637,7 @@ eYo.Shape.newWithConnectionDlgt = function(eyo) {
 
 /**
  * Create a path definition with the given connection delegate.
- * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} eyo  A connection delegate.
  * @param {?Object} opt  Optional kv arguments
  * @return {String!} A path definition.
  */
@@ -647,7 +647,7 @@ eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
 
 /**
  * create a shape with the given connection delegate.
- * @param {?eYo.ConnectionDelegateSvg} eyo  Connection delegate
+ * @param {?eYo.MagnetSvg} eyo  Connection delegate
  * @param {?Object} opt  Optional kv arguments
  * @return {!Object} The receiver.
  */
@@ -809,7 +809,7 @@ eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
 
 /**
  * Create a path definition for the play icon.
- * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} eyo  A connection delegate.
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayIcon = function(cursor) {
@@ -819,7 +819,7 @@ eYo.Shape.definitionForPlayIcon = function(cursor) {
 
 /**
  * Create a path definition for the play icon.
- * @param {eYo.ConnectionDelegate!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} eyo  A connection delegate.
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayContour = function(cursor) {

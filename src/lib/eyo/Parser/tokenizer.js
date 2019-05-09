@@ -49,8 +49,8 @@ eYo.Scan.prototype.init = function (str, start) {
   this.c = this.str[this.end] || null
   this.errorCount = 0
   this.tokens = []
-  this.list = []
-  this.paren_stack = []
+  this.list = [] // list of tokens
+  this.paren_stack = [] // parenthesis stack
   this.indent_stack = []
   this.first_ = this.last = null
   this.lineno = 0
@@ -151,6 +151,11 @@ Object.defineProperties(eYo.Scan.prototype, {
       return this.tokens.map(x => x.string).join('')
     }
   },
+/**
+ * @readonly
+ * @property {Number} level  level is the depth of the parenthesis stack.
+ * This is nonnegative only if we are in a parenthesis, bracket,... group.
+ */
   level: {
     get () {
       return this.paren_stack.length
@@ -418,17 +423,24 @@ eYo.Scan.prototype.nextToken = function () {
   }
 
   /**
-   * Create an new_LINE token and push it.
-   * Updates line and column numbers
+   * A NEWLINE Token with EOL (problem with continuations).
    */
-  var new_NEWLINE = () => {
+  var new_NEWLINE = (no_EOL) => {
     this.at_bol = true
     ++this.lineno
+    if (!no_EOL) {
+      if (this.end > this.start) {
+        if (this.start_string === undefined) {
+          this.start_string = this.start
+        }
+      }
+      this.start = this.end
+    }
     return new_Token(eYo.TKN.NEWLINE)
   }
 
-  /**
-   * An EOL.
+ /**
+   * An EOL without a NEWLINE Token, for line continuation (not only?).
    */
   var do_EOL = () => {
     this.at_bol = true
@@ -493,7 +505,7 @@ eYo.Scan.prototype.nextToken = function () {
 
   /**
    * Records space trailers.
-   * Extra spaces that are not indents always occur after a
+   * Extra white spaces that are not indents always occur after a
    * non indent|dedent token has been created,
    * on a non blank line.
    */
@@ -588,7 +600,14 @@ eYo.Scan.prototype.nextToken = function () {
     }
   }
 
-  var scan_Comment = (col) => {
+/**
+ * Scan a comment.
+ * 2 situations, reading the comment from indentation lookup
+ * or reading comment after something else.
+ * @param {*} col  undefined when the comment follows something,
+ * otherwise col is the number of spaces before.
+ */
+  var scan_Comment = col => {
     this.start_comment = this.end
     if (scan('#')) {
       this.start_comment++
@@ -600,36 +619,38 @@ eYo.Scan.prototype.nextToken = function () {
       var m = exec(eYo.Scan.XRE.type_comment)
       if (m) {
         forward(m[0].length)
-        if (m.ignore) {
-          new_Token(eYo.TKN.TYPE_IGNORE)
-         } else {
-          new_Token(eYo.TKN.TYPE_COMMENT)
-        }
+        var tkn = new_Token(m.ignore
+            ? eYo.TKN.TYPE_IGNORE
+            : eYo.TKN.TYPE_COMMENT)
+        tkn.continuation = !this.level
+        tkn.blank = col !== undefined
         if (scan('\r')) {
           scan('\n')
-          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
+          do_EOL() // no NEWLINE after a comment
         } else if (scan('\n')) {
-          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
+          do_EOL() // no NEWLINE after a comment
         } else {
           new_EOF()
         }
-        return true
-      }
-      while (true) {
-        if (scan('\r')) {
-          new_COMMENT()
-          scan('\n')
-          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
-        } else if (scan('\n')) {
-          new_COMMENT()
-          col === undefined && !this.level ? new_NEWLINE() : do_EOL()
-        } else if (forward()) {
-          continue
-        } else {
-          new_COMMENT()
-          new_EOF()
+      } else {
+        // advance to the EOL
+        while (true) {
+          if (scan('\r')) {
+            scan('\n')
+            var after = do_EOL
+          } else if (scan('\n')) {
+            after = do_EOL
+          } else if (forward()) {
+            continue
+          } else {
+            after = new_EOF
+          }
+          tkn = new_COMMENT()
+          tkn.continuation = !this.level
+          tkn.blank = col !== undefined
+          after()
+          return true
         }
-        return true
       }
     }
   }
@@ -708,7 +729,7 @@ eYo.Scan.prototype.nextToken = function () {
     }
   }
 
-  /* Begin */
+  /* Begin(ning of line) */
   bol: while(true) {
 
     if (this.list.length > 0) {
@@ -744,14 +765,14 @@ eYo.Scan.prototype.nextToken = function () {
         continue bol
       } else if (scan('\r')) {
         // this is not an indentation either
-        col && do_space()
         scan('\n')
-        do_EOL()
+        col && do_space()
+        new_NEWLINE()
         continue bol
       } else if (scan('\n')) {
         // this is not an indentation either
         col && do_space()
-        do_EOL()
+        new_NEWLINE()
         continue bol
       }
       if (this.level) {
@@ -947,19 +968,12 @@ eYo.Scan.prototype.nextToken = function () {
       /* new_line */
       if (scan('\r')) {
         scan('\n')
-        if (this.level > 0) {
-          do_EOL()
-        } else {
-          new_NEWLINE()
-        }
+        var tkn = new_NEWLINE()
+        tkn.continuation = !this.level
         continue bol
-      }
-      if (scan('\n')) {
-        if (this.level > 0) {
-          do_EOL()
-        } else {
-          new_NEWLINE()
-        }
+      } else if (scan('\n')) {
+        tkn = new_NEWLINE()
+        tkn.continuation = !this.level
         continue bol
       }
       /* Period or number starting with period? */
