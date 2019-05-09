@@ -1413,7 +1413,7 @@ eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
       div.style.height = bBox.height * field.workspace_.scale + 'px'
       var xy = this.fieldGetAbsoluteXY_(field)
       div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-      div.style.high = (xy.y - eYo.EditorOffset.y) + 'px'
+      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
       f_eyo.b_eyo.changeWrap() // force rendering 
     }
   }

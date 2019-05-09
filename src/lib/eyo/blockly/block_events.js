@@ -18,7 +18,7 @@ goog.require('Blockly.Events.BlockBase')
 
 /**
  * Class for a block move event.  Created before the move.
- * The top/left management is added.
+ * The high/left management is added.
  * @param {Blockly.Block} block The moved block.  Null for a blank event.
  * @extends {Blockly.Events.BlockBase}
  * @constructor
@@ -38,7 +38,7 @@ goog.inherits(Blockly.Events.Move, Blockly.Events.BlockBase);
 
 /**
  * Class for a block move event.  Created before the move.
- * The top/left management is added.
+ * The high/left management is added.
  * @param {Blockly.Block} block The moved block.  Null for a blank event.
  * @extends {Blockly.Events.BlockBase}
  * @constructor
@@ -47,14 +47,14 @@ Blockly.Events.BlockMove = Blockly.Events.Move;
 
 /**
  * Type of this event.
- * The top/left management is added.
+ * The high/left management is added.
  * @type {string}
  */
 Blockly.Events.Move.prototype.type = Blockly.Events.MOVE;
 
 /**
  * Encode the event as JSON.
- * The top/left management is added.
+ * The high/left management is added.
  * @return {!Object} JSON representation.
  */
 Blockly.Events.Move.prototype.toJson = function() {
@@ -77,7 +77,7 @@ Blockly.Events.Move.prototype.toJson = function() {
 
 /**
  * Decode the JSON event.
- * The top/left management is added.
+ * The high/left management is added.
  * @param {!Object} json JSON representation.
  */
 Blockly.Events.Move.prototype.fromJson = function(json) {
@@ -94,7 +94,7 @@ Blockly.Events.Move.prototype.fromJson = function(json) {
 
 /**
  * Record the block's new location.  Called after the move.
- * The top/left management is added.
+ * The high/left management is added.
  */
 Blockly.Events.Move.prototype.recordNew = function() {
   var location = this.currentLocation_()
@@ -107,7 +107,7 @@ Blockly.Events.Move.prototype.recordNew = function() {
 /**
  * Returns the parentId and input if the block is connected,
  *   or the XY location if disconnected.
- * The top/left management is added.
+ * The high/left management is added.
  * @return {!Object} Collection of location info.
  * @private
  */
@@ -203,10 +203,10 @@ Blockly.Events.Move.prototype.run = function(forward) {
         if ((p_magnet = parentBlock.eyo.magnets.low)) {
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect to non-existent bottom connection: " + parentBlock.eyo)
+          console.warn("Can't connect to non-existent low connection: " + parentBlock.eyo)
         }
       } else {
-        console.warn("Can't connect to non-existent top connection: " + eyo)
+        console.warn("Can't connect to non-existent high connection: " + eyo)
       }
     }
   }

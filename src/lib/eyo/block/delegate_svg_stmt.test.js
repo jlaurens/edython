@@ -48,7 +48,7 @@ describe('comment statement', function () {
     // d2.comment_p = 'cde'
     // d2.moveBy(100,20)
     ;[
-      ['top', 'bottom'],
+      ['high', 'low'],
       ['left', 'right']
     ].forEach(args => {
       var c1 = d1.magnets[args[0]].connection

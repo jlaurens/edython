@@ -633,21 +633,21 @@ eYo.DelegateSvg.newComplete = (() => {
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
-          var y
-          if (p5e.expr && (y = workspace.newDlgt(p5e.expr, id))) {
-            p5e.expr && y.setDataWithType(p5e.expr)
-            model && y.setDataWithModel(model)
+          var dlgt
+          if (p5e.expr && (dlgt = workspace.newDlgt(p5e.expr, id))) {
+            p5e.expr && dlgt.setDataWithType(p5e.expr)
+            model && dlgt.setDataWithModel(model)
             dataModel = {data: model}
-          } else if (p5e.stmt && (y = workspace.newDlgt(p5e.stmt, id))) {
-            p5e.stmt && y.setDataWithType(p5e.stmt)
+          } else if (p5e.stmt && (dlgt = workspace.newDlgt(p5e.stmt, id))) {
+            p5e.stmt && dlgt.setDataWithType(p5e.stmt)
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (y = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
-            y.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (dlgt = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
+            dlgt.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No block for model:', model)
           }
-          return y
+          return dlgt
         }
         if (!p5e.isVoid && !p5e.isUnset) {
           eyo = f(p5e)
@@ -668,13 +668,13 @@ eYo.DelegateSvg.newComplete = (() => {
             if (input && input.connection) {
               var t_eyo = input.eyo.t_eyo
               var V = Vs[k]
-              var y = processModel(workspace, V, null, t_eyo)
-              if (!t_eyo && y && y.magnets.output) {
-                y.changeWrap(
+              var dlgt = processModel(workspace, V, null, t_eyo)
+              if (!t_eyo && dlgt && dlgt.magnets.output) {
+                dlgt.changeWrap(
                   () => {
                     var slot = input.eyo.magnet.slot
                     slot && slot.setIncog(false)
-                    y.magnets.output.connect(input.eyo.magnet)
+                    dlgt.magnets.output.connect(input.eyo.magnet)
                   }
                 )
               }
@@ -712,10 +712,10 @@ eYo.DelegateSvg.newComplete = (() => {
         if (eyo.magnets.low) {
           var nextModel = dataModel.next
           if (nextModel) {
-            y = processModel(workspace, nextModel)
-            if (y && y.magnets.high) {
+            dlgt = processModel(workspace, nextModel)
+            if (dlgt && dlgt.magnets.high) {
               try {
-                y.magnets.high.connectSmart(eyo)
+                dlgt.magnets.high.connectSmart(eyo)
               } catch (err) {
                 console.error(err)
                 throw err

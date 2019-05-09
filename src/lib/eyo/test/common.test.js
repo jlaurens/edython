@@ -208,12 +208,12 @@ eYo.Test.line_counts = (dlgt, cfg) => {
  * Expected is a map, keys are strings for the type of the connections,
  * values are `true` for an expected connection for that type,
  * `false` otherwise.
- * Possible types are: 'output', 'top', 'bottom', 'left', right', 'suite'
+ * Possible types are: 'output', 'high', 'low', 'left', right', 'suite'
  */
 eYo.Test.magnets = (d, cfg) => {
   var failed
   var expected, available
-  ;['output', 'top', 'left', 'right', 'suite', 'bottom'].some(k => {
+  ;['output', 'high', 'left', 'right', 'suite', 'low'].some(k => {
     expected = !!cfg[k]
     available = !!d.magnets[k]
     if (expected !== available) {

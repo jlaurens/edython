@@ -619,7 +619,7 @@ eYo.Slot.prototype.load = function (element) {
     eYo.Do.someElementChild(element, child => {
       if (this.inputType === eYo.Magnet.INPUT) {
         var attribute = child.getAttribute(eYo.Xml.SLOT)
-      } else if (this.inputType === eYo.Magnet.BOTTOM || this.inputType === eYo.Magnet.RIGHT) {
+      } else if (this.inputType === eYo.Magnet.LOW || this.inputType === eYo.Magnet.RIGHT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {

@@ -175,7 +175,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
     )
   if (this.switcher_) {
     this.switcher_.style.left = '0px'
-    this.switcher_.style.high = '0px'
+    this.switcher_.style.top = '0px'
   }
   this.onButtonDownWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
   this.onButtonEnterWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
@@ -444,7 +444,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
  */
 eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
   this.div_.style.left = x + 'px'
-  this.div_.style.high = y + 'px'
+  this.div_.style.top = y + 'px'
 };
 
 eYo.setup.register(() => {

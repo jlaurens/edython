@@ -382,7 +382,7 @@ eYo.UI.prototype.render = (() => {
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Connection.disconnectedParentM4t && this.node.magnets.low === eYo.Connection.disconnectedParentM4t) {
-        // this.node block is the bottom one
+        // this.node block is the low one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)

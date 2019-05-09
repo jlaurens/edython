@@ -333,7 +333,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
     }
   },
   statement: {
-    bottom: {
+    low: {
       required: true
     }
   }

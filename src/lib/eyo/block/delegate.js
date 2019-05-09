@@ -322,7 +322,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       }
     }
   },
-  top: {
+  high: {
     get () {
       var m = this.magnets.high
       if (m) {
@@ -370,7 +370,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       this.magnets.suite.target = newValue
     }
   },
-  bottom: {
+  low: {
     get () {
       var m = this.magnets.low
       if (m) {

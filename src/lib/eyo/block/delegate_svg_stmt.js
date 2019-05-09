@@ -45,14 +45,14 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         return eYo.T3.Stmt.Right.simple_stmt
       }
     },
-    top: {
+    high: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
         : null // except start_stmt ? connections must also have an uncheck_
       }
     },
-    bottom: {
+    low: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []

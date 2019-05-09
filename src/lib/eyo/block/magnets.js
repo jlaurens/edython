@@ -55,10 +55,10 @@ Object.defineProperties(eYo.Magnet, {
   OUTPUT: {
     value: Blockly.OUTPUT_VALUE
   },
-  TOP: {
+  HIGH: {
     value: Blockly.PREVIOUS_STATEMENT
   },
-  BOTTOM: {
+  LOW: {
     value: Blockly.NEXT_STATEMENT
   },
   LEFT: {
@@ -114,8 +114,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return {
         [eYo.Magnet.INPUT]: 'input',
         [eYo.Magnet.OUTPUT]: 'output',
-        [eYo.Magnet.TOP]: 'top',
-        [eYo.Magnet.BOTTOM]: 'bottom',
+        [eYo.Magnet.HIGH]: 'high',
+        [eYo.Magnet.LOW]: 'low',
         [eYo.Magnet.LEFT]: 'left',
         [eYo.Magnet.RIGHT]: 'right'
       } [this.type]
@@ -124,7 +124,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   isSuperior: {
     get () { // the source 'owns' the target
       return this.type === eYo.Magnet.INPUT ||
-       this.type === eYo.Magnet.BOTTOM ||
+       this.type === eYo.Magnet.LOW ||
        this.type === eYo.Magnet.RIGHT
     }
   },
@@ -253,16 +253,16 @@ Object.defineProperties(eYo.Magnet.prototype, {
    */
   isTop: {
     get () {
-      return this.connection.type === eYo.Magnet.TOP
+      return this.connection.type === eYo.Magnet.HIGH
     }
   },
   /**
-   * Is it a bottom connection.
+   * Is it a low connection.
    * @return {boolean} True if the connection is the block's next one.
    */
   isBottom: {
     get () {
-      return this.connection.type === eYo.Magnet.BOTTOM
+      return this.connection.type === eYo.Magnet.LOW
     }
   },
   /**
@@ -924,13 +924,13 @@ eYo.Magnets = function (eyo) {
     this.output_ = new eYo.Magnet(eyo, eYo.Magnet.OUTPUT, D)
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.high && goog.isDefAndNotNull(D.high.check)) {
-      this.high_ = new eYo.Magnet(eyo, eYo.Magnet.TOP, D.high)
+      this.high_ = new eYo.Magnet(eyo, eYo.Magnet.HIGH, D.high)
     }
     if (D.low && goog.isDefAndNotNull(D.low.check)) {
-      this.low_ = new eYo.Magnet(eyo, eYo.Magnet.isBottom, D.low)
+      this.low_ = new eYo.Magnet(eyo, eYo.Magnet.LOW, D.low)
     }
     if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suite_ = new eYo.Magnet(eyo, eYo.Magnet.BOTTOM, D.suite)
+      this.suite_ = new eYo.Magnet(eyo, eYo.Magnet.LOW, D.suite)
     }
     if (D.left && goog.isDefAndNotNull(D.left.check)) {
       this.left_ = new eYo.Magnet(eyo, eYo.Magnet.LEFT, D.left)
@@ -947,7 +947,7 @@ Object.defineProperties(eYo.Magnets.prototype, {
       return this.output_
     }
   },
-  top: {
+  high: {
     get () {
       return this.high_
     }
@@ -967,7 +967,7 @@ Object.defineProperties(eYo.Magnets.prototype, {
       return this.suite_
     }
   },
-  bottom: {
+  low: {
     get () {
       return this.low_
     }
