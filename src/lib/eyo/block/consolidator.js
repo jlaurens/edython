@@ -218,32 +218,35 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   if (goog.isNumber(i)) {
     io.i = i
   }
-  var c8n = io.block.makeConnection_(Blockly.INPUT_VALUE)
-  c8n.eyo.willConnect = function (targetC8n) {
-    this.will_connect_ = this.b_eyo.will_connect_ = true
-  }
-  c8n.eyo.didConnect = function (oldTargetC8n, targetOldC8n) {
-    var b_eyo = this.b_eyo
-    this.will_connect_ = b_eyo.will_connect_ = false
-    var c8n = b_eyo.outputConnection.targetConnection
-    // duplicate? The target connection's model method is called
-    var model = c8n && c8n.eyo.model
-    if (model && goog.isFunction(model.didConnect)) {
-      model.didConnect.call(this, oldTargetC8n, targetOldC8n)
+  var model = {
+    willConnect: /** @suppress {globalThis} */ function (targetC8n) {
+      this.will_connect_ = this.b_eyo.will_connect_ = true
+    },
+    didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      var b_eyo = this.b_eyo
+      this.will_connect_ = b_eyo.will_connect_ = false
+      var m4t = b_eyo.magnets.output.target
+      // duplicate? The target connection's model method is called
+      var model = m4t && m4t.model
+      if (model && goog.isFunction(model.didConnect)) {
+        model.didConnect.call(this, oldTargetC8n, targetOldC8n)
+      }
+      me.consolidate(b_eyo.block_, true)
+    },
+    didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+      var b_eyo = this.b_eyo
+      var m4t = b_eyo.magnets.output.target
+      // duplicate? The target connection's model method is called
+      var model = m4t && m4t.model
+      if (model && goog.isFunction(model.didDisconnect)) {
+        model.didDisconnect.call(this, oldTargetC8n)
+      }
+      me.consolidate(b_eyo.block_, true)
     }
-    me.consolidate(b_eyo.block_, true)
   }
-  c8n.eyo.didDisconnect = function (oldTargetC8n) {
-    var block = this.connection.sourceBlock_
-    var c8n = block.outputConnection.targetConnection
-    // duplicate? The target connection's model method is called
-    var model = c8n && c8n.eyo.model
-    if (model && goog.isFunction(model.didDisconnect)) {
-      model.didDisconnect.call(this, oldTargetC8n)
-    }
-    me.consolidate(block, true)
-  }
-  var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, c8n)
+  var m4t = new eYo.Magnet(io.block.eyo, eYo.Magnet.INPUT, model)
+  
+  var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, m4t.connection)
   eYo.Input.setupEyO(input)
   io.list.splice(io.i, 0, input)
   io.edited = true

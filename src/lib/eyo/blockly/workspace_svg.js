@@ -399,7 +399,7 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
   var topright = (tops) => {
     return lowest(tops, (top) => top.xy.y - top.xy.x)
   }
-  var tops = this.workspace_.highBlocks_.filter(block => {
+  var tops = this.workspace_.topBlocks_.filter(block => {
     return {
       block,
       xy: block.eyo.ui.xyInSurface

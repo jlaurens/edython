@@ -40,13 +40,13 @@ chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
 
 eYo.Test.setItUp = () => {
   eYo.App.workspace.clearUndo()
-  eYo.App.workspace.highBlocks_.length = 0
+  eYo.App.workspace.topBlocks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
   eYo.App.workspace.clearUndo()
   if (!opt || !opt.ignoreTopBlock) {
-    chai.assert(eYo.App.workspace.highBlocks_.length === 0, `FAILED ${eYo.App.workspace.highBlocks_.length} === 0`)
+    chai.assert(eYo.App.workspace.topBlocks_.length === 0, `FAILED ${eYo.App.workspace.topBlocks_.length} === 0`)
   }
 }
 
@@ -283,7 +283,7 @@ eYo.Test.data_save = (dlgt, key, value, ignore) => {
   chai.assert(d, `UNKNOWN DATA KEY: ${key}`)
   var old = dlgt[`${key}_p`]
   dlgt[`${key}_p`] = value
-  var dom = eYo\.Xml\.dlgtToDom(dlgt)
+  var dom = eYo.Xml.dlgtToDom(dlgt)
   if (ignore) { // do not create a block from dom
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
@@ -353,7 +353,7 @@ eYo.Test.expect_out_check = (dlgt, check, str) => {
   if (check !== null && !goog.isArray(check)) {
     check = [check]
   }
-  chai.assert(chai.expect(dlgt.outputConnection.check_).to.deep.equal(check), `MISSED output check for ${dlgt.type}: ${dlgt.outputConnection.check_} !== ${check}`)
+  chai.assert(chai.expect(dlgt.magnets.output.check_).to.deep.equal(check), `MISSED output check for ${dlgt.type}: ${dlgt.magnets.output.check_} !== ${check}`)
 }
 
 /**

@@ -435,13 +435,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   },
   //
-  previousConnection: {
-    get () {
-      console.error("INCONSISTENCY BREAK HERE")
-      throw "FORBIDDEN"
-    }
-  },
-  connectBottomion: {
+  nextConnection: {
     get () {
       console.error("INCONSISTENCY BREAK HERE")
       throw "FORBIDDEN"
@@ -2063,7 +2057,7 @@ eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
   } else if (eyo.isSuite) {
     this.suiteHeight = 0
     this.incrementChangeCount()
-  } else if (oldTargetC8n === oldTargetC8n.sourceBlock_.outputConnection) {
+  } else if (oldTargetC8n === oldTargetC8n.eyo.b_eyo.magnets.output.connection) {
     this.incrementChangeCount()
   }
   this.ui && this.ui.didDisconnect(connection, oldTargetC8n)
@@ -2122,16 +2116,10 @@ eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
  * @return an input.
  */
 eYo.Delegate.prototype.getParentInput = function () {
-  var c8n = this.block_.outputConnection
-  if (c8n && (c8n = c8n.targetConnection)) {
-    var list = c8n.sourceBlock_.inputList
-    for (var i = 0, input; (input = list[i++]);) {
-      if (input.connection === c8n) {
-        return input
-      }
-    }
+  var m4t = this.magnets.output
+  if (m4t && (m4t = m4t.target)) {
+    return m4t.b_eyo.inputList.some(input => (input.eyo.magnet === m4t) && input)
   }
-  return null
 }
 
 /**

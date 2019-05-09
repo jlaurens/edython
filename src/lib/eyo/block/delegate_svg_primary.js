@@ -1635,7 +1635,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
   // if this is just a wrapper, forwards the check array
   if (!profile.dotted) {
     return profile.name.target
-      ? profile.name.target.outputConnection.check_
+      ? profile.name.target.magnets.output.check_
       : profile.name.type === eYo.T3.Expr.unset
         ? [
           eYo.T3.Expr.identifier

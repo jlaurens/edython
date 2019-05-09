@@ -277,7 +277,7 @@ eYo.DelegateSvg.prototype.deinit = function () {
     if ((t_eyo = this.next) || (t_eyo = this.previous) || (t_eyo = this.output)) {
       setTimeout(() => {
         t_eyo.select()
-      })// broken for outputConnection ?
+      })// broken for output magnet ?
     }
   }
   this.ui_ && this.ui_.dispose() && (this.ui_ = null)
@@ -377,34 +377,6 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
 
 eYo.DelegateSvg.debugPrefix = ''
 eYo.DelegateSvg.debugCount = {}
-
-/**
- * Render the next block, if relevant.
- * @param {*} recorder
- * @return {boolean=} true if an rendering message was sent, false othrwise.
- */
-eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
-  if (this.connectBottomion && eYo.DelegateSvg.debugStartTrackingRender) {
-    console.log(eYo.DelegateSvg.debugPrefix, 'NEXT')
-  }
-  return this.renderDrawC8n_(recorder, this.connectBottomion)
-}
-
-/**
- * Render the right block, if relevant.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.prototype.renderRight_ = function () {
-  return
-}
-
-/**
- * Render the suite block, if relevant.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.prototype.renderSuite_ = function (io) {
-  return
-}
 
 /**
  * Render the block.
@@ -1108,39 +1080,43 @@ eYo.DelegateSvg.prototype.lock = function () {
     eYo.Selected.connection = null
   }
   // list all the input for connections with a target
-  var c8n
+  var m4t
   var t_eyo
   this.forEachInput(input => {
-    if ((c8n = input.connection)) {
-      if ((t_eyo = c8n.eyo.t_eyo)) {
+    if ((m4t = input.eyo.magnet)) {
+      if ((t_eyo = m4t.t_eyo)) {
         ans += t_eyo.lock()
       }
-      if (c8n.eyo.isInput) {
-        c8n.setHidden(true)
+      if (m4t.isInput) {
+        m4t.setHidden(true)
       }
     }
   })
   // maybe redundant calls here
   this.forEachSlot(slot => {
-    if (slot.input && (c8n = slot.input.connection)) {
-      if ((t_eyo = c8n.eyo.t_eyo)) {
+    if ((m4t = slot.magnet)) {
+      if ((t_eyo = m4t.t_eyo)) {
         ans += t_eyo.lock()
       }
-      if (c8n.eyo.isInput) {
-        c8n.setHidden(true)
+      if (m4t.isInput) {
+        m4t.setHidden(true)
       }      
     }
   })
-  if ((c8n = this.connectBottomion)) {
-    if ((t_eyo = c8n.eyo.t_eyo)) {
-      ans += t_eyo.lock()
-    }
+  if ((m4t = this.magnets.right) && (t_eyo = m4t.t_eyo)) {
+    ans += t_eyo.lock()
+  }
+  if ((m4t = this.magnets.suite) && (t_eyo = m4t.t_eyo)) {
+    ans += t_eyo.lock()
+  }
+  if ((m4t = this.magnets.low) && (t_eyo = m4t.t_eyo)) {
+    ans += t_eyo.lock()
   }
   if (this === eYo.Selected.eyo) {
     var parent = this
     while ((parent = parent.surround)) {
       if (!parent.wrapped_ && !parent.locked_) {
-        parent.select()
+        eYo.Selected.eyo = parent
         break
       }
     }
@@ -1164,17 +1140,17 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
   }
   this.locked_ = false
   // list all the input for connections with a target
-  var c8n, t_eyo
+  var m4t, t_eyo
   this.forEachInput(input => {
-    if ((c8n = input.connection)) {
-      if ((!shallow || c8n.eyo.isInput) && (t_eyo = c8n.eyo.t_eyo)) {
+    if ((m4t = input.eyo.magnet)) {
+      if ((!shallow || m4t.isInput) && (t_eyo = m4t.t_eyo)) {
         ans += t_eyo.unlock(shallow)
       }
-      c8n.setHidden(false)
+      m4t.setHidden(false)
     }
   })
-  if (!shallow && (c8n = block.connectBottomion)) {
-    if ((t_eyo = c8n.eyo.t_eyo)) {
+  if (!shallow && (m4t = block.eyo.magnets.low)) {
+    if ((t_eyo = m4t.t_eyo)) {
       ans += t_eyo.unlock()
     }
   }

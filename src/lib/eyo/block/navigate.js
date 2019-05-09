@@ -21,19 +21,19 @@ goog.require('eYo.Selected')
  * @param {?Object} opt Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {
-  var c8n
+  var m4t
   var input
   var accept = input => {
-    var c8n = input.connection
-    return c8n && !c8n.eyo.isIncog() && !c8n.hidden_ && c8n.eyo.isInput
+    var m4t = input.eyo.magnet
+    return m4t && !m4t.isIncog() && !m4t.hidden_ && m4t.isInput
   }
   var doLeft = eyo => { // !eyo
-    if ((c8n = eYo.Selected.connection) && !c8n.eyo.isIncog()) {
-      input = c8n.eyo.input
+    if ((m4t = eYo.Selected.magnet) && !m4t.isIncog()) {
+      input = m4t.input
     }
     if (!input) {
-      if ((c8n = eyo.outputConnection)) {
-        input = c8n.eyo.target.input
+      if ((m4t = eyo.magnets.output)) {
+        input = m4t.target.input
       }
       if (!input) {
         input = eyo.lastRenderedInput
@@ -48,7 +48,7 @@ eYo.Navigate.doTab = (() => {
     var candidate = input.eyo.inputLeft
     while (candidate) {
       if (accept(candidate)) {
-        eYo.Selected.connection = candidate.connection
+        eYo.Selected.magnet = candidate.eyo.magnet
         return
       }
       candidate = candidate.eyo.inputLeft
@@ -56,7 +56,7 @@ eYo.Navigate.doTab = (() => {
     candidate = input
     while ((candidate = candidate.eyo.inputLeft)) {
       if (accept(candidate)) {
-        eYo.Selected.connection = candidate.connection
+        eYo.Selected.magnet = candidate.eyo.magnet
         return
       }
     }
@@ -66,18 +66,18 @@ eYo.Navigate.doTab = (() => {
     }
     do {
       if (accept(input)) {
-        eYo.Selected.connection = input.connection
+        eYo.Selected.magnet = input.eyo.magnet
         return
       }
     } while ((input = input.eyo.inputLeft))
   }
   var doRight = eyo => {
-    if ((c8n = eYo.Selected.connection) && !c8n.eyo.isIncog()) {
-      input = c8n.eyo.input
+    if ((m4t = eYo.Selected.magnet) && !m4t.isIncog()) {
+      input = m4t.input
     }
     if (!input) {
-      if ((c8n = eyo.outputConnection)) {
-        input = c8n.eyo.target.input
+      if ((m4t = eyo.magnets.output)) {
+        input = m4t.target.input
       }
       if (!input) {
         input = eyo.firstRenderedInput
@@ -92,7 +92,7 @@ eYo.Navigate.doTab = (() => {
     var candidate = input.eyo.inputRight
     while (candidate) {
       if (accept(candidate)) {
-        eYo.Selected.connection = candidate.connection
+        eYo.Selected.magnet = candidate.eyo.magnet
         return
       }
       candidate = candidate.eyo.inputRight
@@ -100,7 +100,7 @@ eYo.Navigate.doTab = (() => {
     candidate = input
     while ((candidate = candidate.eyo.inputRight)) {
       if (accept(candidate)) {
-        eYo.Selected.connection = candidate.connection
+        eYo.Selected.magnet = candidate.eyo.magnet
         return
       }
     }
@@ -110,7 +110,7 @@ eYo.Navigate.doTab = (() => {
     }
     do {
       if (accept(input)) {
-        eYo.Selected.connection = input.connection
+        eYo.Selected.magnet = input.eyo.magnet
         return
       }
     } while ((input = input.eyo.inputRight))
@@ -138,7 +138,7 @@ eYo.Navigate.doTab = (() => {
 eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
   var smallest = Infinity
   var best
-  workspace.highBlocks_.forEach(top => {
+  workspace.topBlocks_.forEach(top => {
     var box = top.eyo.getBoundingRect()
     var w = weight(box.getCenter())
     if (w < smallest) {
@@ -161,13 +161,13 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
   const a = this.getBoundingBox()
   var smallest = {}
   var best
-  this.workspace.highBlocks_.forEach(top => {
+  this.workspace.topBlocks_.forEach(top => {
     if (top !== block) {
-      var b = top.eyo.getBoundingBox()
-      var target = top
-      var c8n
-      while ((c8n = target.connectBottomion) && (target = c8n.targetBlock())) {
-        b.expandToInclude(target.eyo.getBoundingBox())
+      var t_eyo = top.eyo
+      var b = t_eyo.getBoundingBox()
+      var m4t
+      while ((m4t = t_eyo.magnets.low) && (t_eyo = m4t.t_eyo)) {
+        b.expandToInclude(t_eyo.getBoundingBox())
       }
       var d = distance(a, b)
       if (d.major && (!smallest.major || d.major < smallest.major)) {

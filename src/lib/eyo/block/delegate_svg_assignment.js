@@ -547,7 +547,7 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
  * @return {String} The subtype of the receiver's block.
  */
 eYo.DelegateSvg.Expr.value_list.prototype.getSubtype = function () {
-  var t = this.block_.outputConnection.targetBlock()
+  var t = this.magnets.output.t_eyo
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 

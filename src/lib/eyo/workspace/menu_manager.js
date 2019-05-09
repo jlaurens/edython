@@ -435,7 +435,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
         {action: eYo.ID.ADD_COMMENT,
           target: block})
     }
-    menuItem.setEnabled(false && !goog.userAgent.IE && !block.outputConnection)
+    menuItem.setEnabled(false && !goog.userAgent.IE && !block.eyo.magnets.output)
     this.addChild(menuItem, true)
   }
   if (block.workspace.options.collapse) {
@@ -460,7 +460,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
         ? eYo.Msg.ENABLE_BLOCK : eYo.Msg.DISABLE_BLOCK,
       {action: eYo.ID.TOGGLE_ENABLE_BLOCK,
         target: block})
-    menuItem.setEnabled(!block.outputConnection)
+    menuItem.setEnabled(!block.eyo.magnets.output)
     this.addChild(menuItem, true)
   }
   if (block.isDeletable() && block.isMovable() && !block.isInFlyout) {
@@ -622,13 +622,11 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     try {
       if (target === eYo.Selected.block && target.eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
-        var c8n
-        if (((c8n = unwrapped.connectBottomion) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
-          target.select()
-        } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
-          target = c8n.sourceBlock_
-          target.select()
-          eYo.Selected.connection = c8n
+        var m4t
+        if (((m4t = unwrapped.magnets.low) && (target = m4t.t_eyo)) || ((m4t = unwrapped.magnets.high) && (target = m4t.t_eyo))) {
+          eYo.Selected.eyo = target
+        } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
+          eYo.Selected.magnet = m4t
         }
       }
       unwrapped.block_.dispose(true, true)
@@ -884,19 +882,18 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  */
 eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model) {
   // THIS IS BROKEN SINCE THE SLOT KEYS ARE NO LONGER INTEGERS
-  var c8n = block.outputConnection
-  if (!c8n) {
+  var m4t = block.eyo.magnets.output
+  if (!m4t) {
     // this is a statement block
     return false
   }
   /** @suppress {accessControls} */
-  var outCheck = c8n.check_
+  var outCheck = m4t.check_
   var D = eYo.Delegate.Manager.getModel(model.type).slots
   // if the block which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
-    var self = this
-    var F = (K) => {
+    var F = K => {
       var d = D[K]
       // d is a slotModel for a block with type model.type
       if ((d && d.key && ((!model.input && !d.wrap) || d.key === model.input))) {
@@ -981,16 +978,16 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
 eYo.MenuManager.prototype.populate_insert_parent = function (block, model, top) {
   // can we insert a block typed type between the block and
   // the target of its output connection
-  var outputC8n = block.outputConnection
-  if (outputC8n) {
-    var inputC8n = outputC8n.targetConnection
-    if (!inputC8n) {
+  var m4tOut = block.eyo.magnets.output
+  if (m4tOut) {
+    var m4tIn = m4tOut.target
+    if (!m4tIn) {
       if (top) {
         this.populate_insert_as_top_parent(block, model)
       }
       return
     }
-    var check = inputC8n.check_
+    var check = m4tIn.check_
     if (check && check.indexOf(model.type) < 0) {
       // the target connection won't accept block
       return
@@ -1062,13 +1059,13 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     eYo.T3.Stmt.print_stmt, // JL defined?
     eYo.T3.Stmt.builtin__input_stmt// JL defined?
   ]
-  var /** !eYo.Connection */ c8n, sep
-  var F_after = /** @suppress{accessControls} */ (targetC8n, type) => {
-    var B = block.workspace.newBlock(type)
-    var yorn = B.previousConnection &&
-    B.previousConnection.checkType_(c8n) &&
-    (!targetC8n || (B.connectBottomion && targetC8n.checkType_(B.connectBottomion)))
-    B.dispose(true)
+  var /** !eYo.Magnet */ m4t, sep
+  var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
+    var eyo = eYo.DelegateSvg.newComplete(block, type)
+    var yorn = eyo.magnets.high &&
+    eyo.magnets.high.checkType_(m4t) &&
+    (!targetM4t || (eyo.magnets.low && targetM4t.checkType_(eyo.magnets.low)))
+    eyo.block_.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {
@@ -1079,12 +1076,12 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     }
     return false
   }
-  var F_before = /** @suppress{accessControls} */ (targetC8n, type) => {
-    var B = block.workspace.newBlock(type)
-    var yorn = B.connectBottomion &&
-    B.connectBottomion.checkType_(c8n) &&
-    (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
-    B.dispose(true)
+  var F_before = /** @suppress{accessControls} */ (target, type) => {
+    var eyo = eYo.DelegateSvg.newComplete(block, type)
+    var yorn = eyo.magnets.low &&
+    eyo.magnets.low.checkType_(m4t) &&
+    (!target || (eyo.magnets.high && target.checkType_(eyo.magnets.high)))
+    eyo.block_.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {
@@ -1096,25 +1093,25 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     return false
   }
   eYo.Events.disableWrap(() => {
-    if ((c8n = block.connectBottomion)) {
-      var targetC8n = c8n.targetConnection
+    if ((m4t = block.eyo.magnets.low)) {
+      var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {
-        sep = F_after(targetC8n, type) || sep
+        sep = F_after(target, type) || sep
       }
       this.shouldSeparateInsertAfter(sep)
       for (_ = 0; (type = Ts[_++]);) {
-        sep = F_after(targetC8n, type) || sep
+        sep = F_after(target, type) || sep
       }
       this.shouldSeparateInsertAfter(sep)
     }
-    if ((c8n = block.previousConnection)) {
-      targetC8n = c8n.targetConnection
+    if ((m4t = block.eyo.magnets.high)) {
+      target = m4t.target
       for (_ = 0; (type = Us[_++]);) {
-        sep = F_before(targetC8n, type) || sep
+        sep = F_before(target, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
       for (_ = 0; (type = Ts[_++]);) {
-        sep = F_before(targetC8n, type) || sep
+        sep = F_before(target, type) || sep
       }
       this.shouldSeparateInsertBefore(sep)
     }

@@ -826,7 +826,7 @@ eYo.Driver.Svg.prototype.nodeConnectionUIEffect = function (node) {
   var svg = node.ui.svg
   var w = node.workspace
   var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
-  if (svg.outputConnection) {
+  if (node.magnets.output) {
     var h = svg.height * w.scale / 2
     var ripple = Blockly.utils.createSvgElement('circle',
       {class: 'blocklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},

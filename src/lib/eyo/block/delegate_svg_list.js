@@ -384,8 +384,8 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
     if (this.data && this.slots) {
       var f = (target, no_target) => {
         return {ans: this.someInput(input => {
-            var t = input.connection
-            if (t && (t = t.targetBlock()) && (t = t.outputConnection.check_)) {
+            var t = input.eyo.t_eyo
+            if (t && (t = t.magnets.output.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
             }
           })

@@ -612,7 +612,7 @@ eYo.Slot.prototype.load = function (element) {
   var t_eyo = this.t_eyo
   if (t_eyo && t_eyo.wrapped_ && !(t_eyo instanceof eYo.DelegateSvg.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
-    out = eYo.Xml.fromDom(t_eyo.block_, element)
+    out = eYo.Xml.fromDom(t_eyo, element)
     this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
@@ -659,7 +659,7 @@ eYo.Slot.prototype.load = function (element) {
               })
               out = true
             } else {
-              out = eYo.Xml.fromDom(t_eyo.block_, child)
+              out = eYo.Xml.fromDom(t_eyo, child)
             }
             this.recover.dontResit(child)
           } else if ((t_eyo = eYo.Xml.domToDlgt(child, this.owner))) {
@@ -760,38 +760,37 @@ eYo.Slot.prototype.some = function (helper) {
 }
 
 /**
- * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
- * @param {!Object} bdc a block/delegate/connection.
+ * Connect to delegate or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
+ * @param {!eYo.Delegate | eYo.Magnet} dm  a a Dlgt or magnet.
  */
 eYo.Slot.prototype.connect = function (bdc) {
-  this.connection.connect(bdc.outputConnection || bdc.block_.outputConnection | bdc)
+  this.magnet.connect(dm.magnets && dm.magnets.output) || dm)
 }
 
 /**
- * Connect the expression block/delegate/connection. When not given a connection, the output connection is used. It is natural for slots.
- * The slot corresponds to a wrapped list bloc.
- * @param {!Object} bdc a block/delegate/connection.
+ * Connect the expression Dlgt or magnet. When not given a connection, the output connection is used. It is natural for slots.
+ * The slot corresponds to a wrapped list dlgt.
+ * @param {!eYo.Delegate | eYo.Magnet} dm  either a Dlgt or a magnet.
  * @param {?String} key an input key. When not given the last free input is connected.
  * @return {Boolean} whether the connection has been established.
  */
-eYo.Slot.prototype.listConnect = function (bdc, key) {
-  var t_eyo = this.connection.eyo.t_eyo
+eYo.Slot.prototype.listConnect = function (dm, key) {
+  var t_eyo = this.t_eyo
   if (!t_eyo) {
     this.completePromise()
-    if (!(t_eyo = this.connection.eyo.t_eyo)) {
+    if (!(t_eyo = this.t_eyo)) {
       return false
     }
   }
   if (!key) {
-    return t_eyo.connectLast(bdc.eyo)
+    return t_eyo.connectLast(dm)
   }
-  var input = t_eyo.block_.getInput(key)
+  var input = t_eyo.getInput(key)
   if (input) {
-    var c8n = input.connection
-    if (c8n) {
-      var other = bdc.outputConnection || bdc.block_.outputConnection | bdc
-      c8n.connect(other)
-      return c8n.targetConnection === other
+    var m4t = input.eyo.magnet
+    if (m4t) {
+      var other = (dm.magnets && dm.magnets.output) || dm
+      return m4t.connect(other)
     }
   }
 }
@@ -799,16 +798,15 @@ eYo.Slot.prototype.listConnect = function (bdc, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {!Object} target (Block, delegate of connection)
- * @return {Boolean} true when connected
+ * @param {!eYo.Delegate | eYo.Magnet} dm (delegate of magnet)
+ * @return {?eYo.Magnet} the eventual target magnet
  */
-eYo.Slot.prototype.connect = function (bdc) {
-  var c8n = this.connection
-  if(c8n && bdc) {
-    var other = bdc.outputConnection || (bdc.block_ && bdc.block_.outputConnection) || bdc
-    if (c8n.checkType_(other)) {
-      c8n.eyo.connect(other)
-      return other.eyo.b_eyo
+eYo.Slot.prototype.connect = function (dm) {
+  var m4t = this.magnet
+  if(m4t && dm) {
+    var other = (dm.magnets && dm.magnets.output) || dm
+    if (m4t.checkType_(other)) {
+      return m4t.connect(other)
     }
   }
 }
@@ -820,30 +818,28 @@ eYo.Slot.prototype.connect = function (bdc) {
 eYo.Magnet.prototype.rightConnection = function() {
   var slot = this.slot
   if (slot) {
-    if ((slot = slot.next) && (slot = slot.some (slot => {
-      return !slot.isIncog() && slot.connection && !slot.input.connection.hidden_
-    }))) {
-      return slot.input.connection
+    if ((slot = slot.next) && (slot = slot.some (slot => !slot.isIncog() && slot.magnet && !slot.input.connection.hidden_))) {
+      return slot.magnet
     }
-    var block = this.connection.sourceBlock_
-  } else if ((block = this.connection.sourceBlock_)) {
-    var e8r = block.eyo.inputEnumerator()
+    var b_eyo = this.b_eyo
+  } else if ((b_eyo = this.b_eyo)) {
+    var e8r = b_eyo.inputEnumerator()
     if (e8r) {
       while (e8r.next()) {
         if (e8r.here.connection && this.connection === e8r.here.connection) {
           // found it
           while (e8r.next()) {
-            var c8n
-            if ((c8n = e8r.here.connection) && (c8n.eyo.isOutput)) {
-              return c8n
+            var m4t
+            if ((m4t = e8r.here.eyo.magnet) && m4t.isOutput) {
+              return m4t.connection
             }
           }
         }
       }
     }
   }
-  if (block && (c8n = block.outputConnection) && (c8n = c8n.targetConnection)) {
-    return c8n.eyo.rightConnection()
+  if (b_eyo && (m4t = b_eyo.magnets.output) && (m4t = m4t.target)) {
+    return m4t.rightConnection()
   }
 }
 

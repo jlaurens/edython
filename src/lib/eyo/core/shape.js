@@ -610,7 +610,7 @@ var initWithControlNode = function (eyo) {
 return function(eyo, opt) {
     this.begin()
     var f
-    if (eyo.outputConnection) {
+    if (eyo.magnets.output) {
       f = initWithExpressionNode
     } else if (opt && opt.dido) {
       f = initWithStatementNode
@@ -629,10 +629,10 @@ return function(eyo, opt) {
 
 /**
  * Create a shape with the given connection delegate.
- * @param {eYo.Magnet!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} magnet  A connection delegate.
  */
-eYo.Shape.newWithConnectionDlgt = function(eyo) {
-  return new eYo.Shape().initWithConnectionDlgt(eyo)
+eYo.Shape.newWithMagnet = function(magnet) {
+  return new eYo.Shape().initWithMagnet(magnet)
 }
 
 /**
@@ -642,7 +642,7 @@ eYo.Shape.newWithConnectionDlgt = function(eyo) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
-  return eYo.Shape.shared.initWithConnectionDlgt(eyo, opt).definition
+  return eYo.Shape.shared.initWithMagnet(eyo, opt).definition
 }
 
 /**
@@ -651,28 +651,28 @@ eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
  * @param {?Object} opt  Optional kv arguments
  * @return {!Object} The receiver.
  */
-eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
+eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   var dd = this.caret_extra
-  if (c_eyo) {
-    var b_eyo = c_eyo.b_eyo
-    var c8n
-    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (c8n = b_eyo.outputConnection)) {
-      var where = new eYo.Where(c_eyo)
+  if (magnet) {
+    var b_eyo = magnet.b_eyo
+    var m4t
+    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (m4t = b_eyo.magnets.output)) {
+      var where = new eYo.Where(magnet)
       do {
-        var t_eyo = c8n.eyo.target
+        var t_eyo = m4t.t_eyo
         where.advance(t_eyo)
         var eyo = t_eyo.b_eyo
-      } while(eyo && eyo.wrapped_ && (c8n = eyo.outputConnection))
+      } while(eyo && eyo.wrapped_ && (m4t = eyo.magnets.output))
     } else {
-      where = c_eyo
+      where = magnet
     }
     var x = where.x
     var y = where.y
-    this.width = c_eyo.w
-    if (c_eyo.startOfStatement) {
-      c_eyo.shape = eYo.Key.LEFT
+    this.width = magnet.w
+    if (magnet.startOfStatement) {
+      magnet.shape = eYo.Key.LEFT
     }
-    var shape = c_eyo.shape || c_eyo.side || eYo.Key.NONE
+    var shape = magnet.shape || magnet.side || eYo.Key.NONE
   } else {
     x = 0
     y = 0
@@ -680,23 +680,23 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
   }
   var r = this.hilighted_width
   this.begin()
-  if (c_eyo && opt && opt.hilight) {
-    if (c_eyo.isInput) {
-      if (c8n.t_eyo) {
-        this.push(c_eyo.t_eyo.ui.driver.pathValueDef_())
+  if (magnet && opt && opt.hilight) {
+    if (magnet.isInput) {
+      if (m4t.t_eyo) {
+        this.push(magnet.t_eyo.ui.driver.pathValueDef_())
       } else if (!b_eyo.disabled_) {
-        this.initWithConnectionDlgt(c_eyo, {absolute: true})
+        this.initWithMagnet(magnet, {absolute: true})
       }
-    } else if (c_eyo.isOutput) {
-      this.push(b_eyo.ui.driver.pathValueDef_(c_eyo))
+    } else if (magnet.isOutput) {
+      this.push(b_eyo.ui.driver.pathValueDef_(magnet))
     } else { // statement connection
       var w = b_eyo.span.width - eYo.Unit.x / 2
-      if (c_eyo.isPrevious) {
+      if (magnet.isPrevious) {
         this.m(true, w - 4 * r, -r)
         this.half_circle(r, true, 3)
         this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
         this.half_circle(r, true, 1)
-      } else if (c_eyo.isNext) {
+      } else if (magnet.isLow) {
         if (b_eyo.span.l > 1) { // this is not clean design, really?
           this.m(true, eYo.Font.tabWidth, b_eyo.span.height - r)
           this.half_circle(r, true, 3)
@@ -708,39 +708,39 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
           this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
           this.half_circle(r, true, 1)
         }
-      } else if (c_eyo.isSuite) {
+      } else if (magnet.isSuite) {
         this.m(true, w - 4 * r, -r + eYo.Unit.y)
         this.half_circle(r, true, 3)
         this.h(true, eYo.Font.tabWidth - w + eYo.Unit.x / 2 + 8 * r)
         this.half_circle(r, true, 1)
       } else {
-        this.M(true, (c_eyo.isLeft ? eYo.Unit.x / 2 : w) + r, eYo.Unit.y - 4 * r)
+        this.M(true, (magnet.isLeft ? eYo.Unit.x / 2 : w) + r, eYo.Unit.y - 4 * r)
         this.half_circle(r, false, 0)
         this.v(true, - eYo.Unit.y + 8 * r)
         this.half_circle(r, false, 2)
       }
     }
-  } else if (c_eyo && c_eyo.isLeft) {
+  } else if (magnet && magnet.isLeft) {
     this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
     this.half_circle(r, true, 0)
     this.v(true, - eYo.Unit.y + 8 * r)
     this.half_circle(r, true, 2)
     this.z()
-  } else if (c_eyo && c_eyo.isRight) {
+  } else if (magnet && magnet.isRight) {
     this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
     this.half_circle(r, true, 0)
     this.v(true, - eYo.Unit.y + 8 * r)
     this.half_circle(r, true, 2)
     this.z()
-  } else if (c_eyo && c_eyo.bindField && !c_eyo.ignoreBindField) {
-    this.width = 1 + (c_eyo.bindField.isVisible()
+  } else if (magnet && magnet.bindField && !magnet.ignoreBindField) {
+    this.width = 1 + (magnet.bindField.isVisible()
       ? Math.max(this.width, 1)
       : 2)
     var w = this.width - 1
     this.M(true, x + (w + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, - w * eYo.Unit.x + 2 * dd)
-    if (c_eyo && c_eyo.startOfStatement) {
+    if (magnet && magnet.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
       this.arc(this.caret_height, true, false)
@@ -751,7 +751,7 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x + dd)
-    if (c_eyo && c_eyo.startOfStatement) {
+    if (magnet && magnet.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
       this.arc(this.caret_height, true, false)
@@ -771,7 +771,7 @@ eYo.Shape.prototype.initWithConnectionDlgt = function(c_eyo, opt) {
     this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
     this.h(true, (1 - this.width) * eYo.Unit.x - dd)
-    this.arc(this.caret_height, !c_eyo || !c_eyo.isAfterRightEdge, false)
+    this.arc(this.caret_height, !magnet || !magnet.isAfterRightEdge, false)
   }
   this.end()
   return this

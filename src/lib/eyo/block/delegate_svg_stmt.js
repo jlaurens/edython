@@ -90,60 +90,6 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
 }
 
 /**
- * Render the suite block, if relevant.
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
-  var c8n = this.magnets.right
-  if (c8n) {
-    var c_eyo = c8n.eyo
-    var target = c8n.targetBlock()
-    if (target) {
-      var t_eyo = target.eyo
-      try {
-        t_eyo.ui.startOfLine = io.common.startOfLine
-        t_eyo.ui.startOfStatement = io.common.startOfStatement
-        t_eyo.ui.mayBeLast = t_eyo.ui.hasRightEdge
-        t_eyo.ui.down = true
-        if (eYo.DelegateSvg.debugStartTrackingRender) {
-          console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
-        }
-        if (t_eyo.wrapped_) {
-          // force target rendering
-          t_eyo.incrementChangeCount()
-        }
-        if (!t_eyo.ui.up) {
-          t_eyo.render(false, io)
-          if (!t_eyo.wrapped_) {
-            io.common.field.shouldSeparate = false
-            io.common.field.beforeIsSeparator = true
-          }
-        }
-        io.cursor.c = c_eyo.where.c
-      } catch(err) {
-        console.error(err)
-        throw err
-      } finally {
-        t_eyo.ui.down = false
-        var size = t_eyo.size
-        if (size.w) {
-          io.cursor.advance(size.w, size.h - 1)
-          // We just rendered a block
-          // it is potentially the rightmost object inside its parent.
-          if (t_eyo.ui.hasRightEdge || io.common.shouldPack) {
-            io.common.ending.push(t_eyo)
-            t_eyo.rightCaret = undefined
-            io.common.field.shouldSeparate = false
-          }
-          io.common.field.beforeIsCaret = false
-        }
-      }
-      return true
-    }
-  }
-}
-
-/**
  * Insert a block above.
  * If the block's previous connection is connected,
  * connects the block above to it.

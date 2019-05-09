@@ -438,40 +438,40 @@ names.forEach((key) => {
  */
 eYo.Magnet.prototype.consolidateType = function () {
   eYo.Magnet.superClass_.consolidateType.call(this)
-  var block = this.connection.sourceBlock_
-  var c8nOut = block.outputConnection
-  var input = block.getInput(eYo.Key.EXPRESSION)
-  var c8nIn = input.connection
+  var b_eyo = this.b_eyo
+  var m4tOut = b_eyo.magnets.output
+  var input = b_eyo.getInput(eYo.Key.EXPRESSION)
+  var m4tIn = input.eyo.magnet
   var nocond_only_out = false
-  var targetC8n = c8nOut.targetConnection
-  if (targetC8n) {
+  var target = m4tOut.target
+  if (target) {
     // does the target accept general expression in lambda
-    nocond_only_out = targetC8n.check_ && targetC8n.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = target.check_ && target.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
-  targetC8n = c8nIn.targetConnection
-  if (targetC8n) {
+  target = m4tIn.target
+  if (target) {
     cond_in = false
     for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
-      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+      if (!target.check_ || target.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
     for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
-      if (!targetC8n.check_ || targetC8n.check_.indexOf(t) >= 0) {
+      if (!target.check_ || target.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
       }
     }
   }
   // better design if we use the subtype ?
-  c8nIn.setCheck(nocond_only_out
+  m4tIn.setCheck(nocond_only_out
     ? eYo.T3.Expr.Check.expression_nocond
     : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond))
-  c8nOut.setCheck(
+  m4tOut.setCheck(
     (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
   )
 }

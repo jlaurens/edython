@@ -987,7 +987,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
   if (ans) {
     ans.errorRecover = true
     eYo.Events.fireBlockCreate(ans.block_)
-    eYo.Xml.fromDom(ans.block_, dom, this)
+    eYo.Xml.fromDom(ans, dom, this)
   }
   return ans.block_
 }
@@ -1034,7 +1034,7 @@ eYo.Xml.domToBlock = (() => {
         // (eyo = eYo.Xml.Group.domToComplete(dom, owner)) ||
         (eyo = eYo.Xml.Call.domToComplete(dom, owner)) ||
         (eyo = eYo.Xml.Compatibility.domToComplete(dom, owner))) {
-          eYo.Xml.fromDom(eyo.block_, dom)
+          eYo.Xml.fromDom(eyo, dom)
           return eyo.block
         }
         // is there a simple correspondance with a known type
@@ -1087,7 +1087,7 @@ eYo.Xml.domToBlock = (() => {
           // Now create the block, either solid or not
         }
         if (eyo) {
-          eYo.Xml.fromDom(eyo.block_, dom)
+          eYo.Xml.fromDom(eyo, dom)
           return eyo.block
         }
       }
@@ -1116,57 +1116,56 @@ goog.exportSymbol('eYo.Xml.domToBlock', eYo.Xml.domToBlock)
  * 3) block.eyo.constructor.xml (no inheritance)
  * 4) block.eyo.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
- * @param {!Blockly.Block} block The root block to encode.
+ * @param {!eYo.Delegate} dlgt  The root block to decode.
  * @param {element} dom element to encode in
- * @param {boolean} optNoId True if the encoder should skip the block id.
  * @return {?Boolean} Used?
  */
-eYo.Xml.fromDom = function (block, element) {
-  var eyo = block.eyo
+eYo.Xml.fromDom = function (dlgt, element) {
   // headless please
-  eyo.changeWrap(function () { // `this` is `eyo`
+  dlgt.changeWrap(function () { // `this` is `dlgt`
   //    console.log('Block created from dom:', xmlBlock, block.type, block.id)
   // then fill it based on the xml data
-    eyo.willLoad()
+    this.willLoad()
     var conclude // will run at the end if any
-    var controller = eyo
-    if (!eyo.controller_fromDom_locked && (controller &&
+    var controller = this
+    if (!this.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eyo.xml) &&
+        ((controller = this.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        ((controller = eYo.DelegateSvg.Manager.get(this.type)) &&
         (controller = controller.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.DelegateSvg.Manager.get(block.type)) &&
+        ((controller = eYo.DelegateSvg.Manager.get(this.type)) &&
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
-        eyo.controller_fromDom_locked = true
-        out = controller.fromDom.call(eyo, block, element)        
+        this.controller_fromDom_locked = true
+        out = controller.fromDom(this, element)        
       }, () => {
-        delete eyo.controller_fromDom_locked
+        delete this.controller_fromDom_locked
         var state = element.getAttribute(eYo.Xml.STATE)
         if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-          eyo.lock()
+          this.lock()
         }        
       })
     } else {
-      eYo.Xml.Data.fromDom(block, element)
+      eYo.Xml.Data.fromDom(this, element)
       // read slot
-      eyo.forEachSlot(slot => slot.load(element))
-      if (eyo instanceof eYo.DelegateSvg.List) {
+      this.forEachSlot(slot => slot.load(element))
+      if (this instanceof eYo.DelegateSvg.List) {
         eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)
-          var input = eyo.getInput(name)
-          if (input && input.connection) {
-            var target = input.eyo.target
-            if (target) {
-              target.eyo.recover.dontResit(child)
-              eYo.Xml.fromDom(target, child)
-            } else if ((target = eYo.Xml.domToBlock(child, block))) {
-              target.eyo.recover.dontResit(child)
-              var targetC8n = target.outputConnection
-              if (targetC8n && targetC8n.checkType_(input.connection)) {
-                targetC8n.connect(input.connection)
+          var input = this.getInput(name)
+          var m4t = input && input.eyo.magnet
+          if (m4t) {
+            var t_eyo = m4t.t_eyo
+            if (t_eyo) {
+              t_eyo.recover.dontResit(child)
+              eYo.Xml.fromDom(t_eyo, child)
+            } else if ((t_eyo = eYo.Xml.domToDlgt(child, this))) {
+              t_eyo.recover.dontResit(child)
+              var targetM4t = t_eyo.magnets.output
+              if (targetM4t && targetM4t.checkType_(m4t)) {
+                targetM4t.connect(m4t)
               }
             } else {
               console.error('eYo.Xml.fromDom: Ignoring', child)
@@ -1176,20 +1175,20 @@ eYo.Xml.fromDom = function (block, element) {
           }
         })
         conclude = () => {
-          eyo.incrementChangeCount() // force new type
-          eyo.consolidateType()
-          eyo.consolidateConnections()
-          eyo.consolidate() // too many consolidation !!!
+          this.incrementChangeCount() // force new type
+          this.consolidateType()
+          this.consolidateConnections()
+          this.consolidate() // too many consolidation !!!
         }
       }
-      eyo.didLoad() // before the next and suite connections will connect
+      this.didLoad() // before the next and suite connections will connect
       // read flow and suite
       const statement = (m4t, key) => {
         if (m4t) {
           return eYo.Do.someElementChild(element, child => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
-              block.workspace.eyo.recover.dontResit(child)
-              var t_eyo = eYo.Xml.domToDlgt(child, block)
+              this.workspace.eyo.recover.dontResit(child)
+              var t_eyo = eYo.Xml.domToDlgt(child, this)
               if (t_eyo) { // still headless!
                 // we could create a block from that child element
                 // then connect it to
@@ -1200,10 +1199,10 @@ eYo.Xml.fromDom = function (block, element) {
                   } else {
                     // we could not connect possibly because the
                     // type is not yet properly set
-                    eyo.incrementChangeCount() // force new type
-                    eyo.consolidateType()
-                    eyo.consolidateConnections()
-                    eyo.consolidate()
+                    this.incrementChangeCount() // force new type
+                    this.consolidateType()
+                    this.consolidateConnections()
+                    this.consolidate()
                     if (m4t.checkType_(m4ts.high)) {
                       m4t.connect(m4ts.high)
                     }            
@@ -1215,12 +1214,12 @@ eYo.Xml.fromDom = function (block, element) {
           })
         }
       }
-      var out = statement(eyo.magnets.right, eYo.Xml.RIGHT)
-      out = statement(eyo.magnets.suite, eYo.Xml.SUITE) || out
-      out = statement(eyo.magnets.low, eYo.Xml.NEXT) || out
+      var out = statement(this.magnets.right, eYo.Xml.RIGHT)
+      out = statement(this.magnets.suite, eYo.Xml.SUITE) || out
+      out = statement(this.magnets.low, eYo.Xml.NEXT) || out
       var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-        eyo.lock()
+        this.lock()
       }
     }
     conclude && conclude()

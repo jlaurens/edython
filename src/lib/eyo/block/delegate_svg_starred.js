@@ -244,7 +244,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
 eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
-    var check = this.outputConnection.check_
+    var check = this.magnets.output.check_
     return check && check[0]
   }
 )

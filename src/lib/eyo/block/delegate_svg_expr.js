@@ -79,16 +79,16 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
  * @return {Boolean}
  */
 eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
-  var c8n = this.block_.outputConnection
-  if (c8n.check_) {
+  var m4t = this.magnets.output
+  if (m4t.check_) {
     if (type.indexOf) {
-      if (c8n.check_.some(t => type.indexOf(t) >= 0)) {
+      if (m4t.check_.some(t => type.indexOf(t) >= 0)) {
         return true
       }
     } else {
-      return c8n.check_.indexOf(type) >= 0
+      return m4t.check_.indexOf(type) >= 0
     }  
-  } else /* if (c8n.check_ === null) */ {
+  } else /* if (m4t.check_ === null) */ {
     return true
   }
 }
@@ -98,17 +98,16 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
  * The connection cannot always establish.
- * @param {!Block} block
-* @param {!Block} other the block to be replaced
-  */
-eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
-  if (other) {
-    var c8n = other.outputConnection
-    if (!c8n) {
+ * @param {!eYo.Delegate} dlgt  the Dlgt to be replaced
+ */
+eYo.DelegateSvg.Expr.prototype.canReplaceDlgt = function (dlgt) {
+  if (dlgt) {
+    var m4t = dlgt.magnets.output
+    if (!m4t) {
       return true
     }
-    c8n = c8n.targetConnection
-    if (!c8n || c8n.checkType_(this.block_.outputConnection)) {
+    m4t = m4t.target
+    if (!m4t || m4t.checkType_(this.magnets.output)) {
       // the parent block has an output connection that can connect to the block's one
       return true
     }
@@ -121,30 +120,30 @@ eYo.DelegateSvg.Expr.prototype.canReplaceBlock = function (other) {
  * If the parent's output connection is connected,
  * connects the block's output connection to it.
  * The connection cannot always establish.
- * @param {!Blockly.Block} other
+ * @param {!eYo.Delegate} other
  */
-eYo.DelegateSvg.Expr.prototype.replaceBlock = function (other) {
-  if (this.workspace && other && other.workspace) {
+eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
+  if (this.workspace && dlgt && dlgt.workspace) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {
-        console.log('**** replaceBlock', this.block_, other)
-        var c8n = other.outputConnection
-        var its_xy = other.eyo.ui.xyInSurface
-        var my_xy = this.ui.xyInSurface
-        this.outputConnection.disconnect()
-        if (c8n && (c8n = c8n.targetConnection) && c8n.checkType_(this.outputConnection)) {
+        var my_m4t = this.magnets.output
+        my_m4t.break()
+        var its_m4t = dlgt.magnets.output
+        if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other block has an output connection that can connect to the block's one
-          var b_eyo = c8n.eyo.b_eyo
-          var selected = b_eyo.uiHasSelect
+          var b_eyo = its_m4t.b_eyo
+          var selected = eYo.Selected.eyo === b_eyo
           // next operations may unselect the block
           var old = b_eyo.consolidating_
-          c8n.connect(this.outputConnection)
+          its_m4t.connect(my_m4t)
           b_eyo.consolidating_ = old
           if (selected) {
-            b_eyo.select()
+            eYo.Selected.eyo = b_eyo
           }
         } else {
-          this.block_.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          var its_xy = dlgt.ui.xyInSurface
+          var my_xy = this.ui.xyInSurface
+          this.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
       })
     })

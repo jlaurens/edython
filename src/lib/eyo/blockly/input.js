@@ -91,28 +91,39 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
       return this.owner.connection
     }
   },
-  target: {
+  magnet: {
     get () {
-      return this.connection && this.connection.targetBlock()
+      var c8n = this.owner.connection
+      return c8n && c8n.eyo
+    }
+  },
+ b_eyo: {
+    get () {
+      return this.owner.sourceBlock_.eyo
     }
   },
   t_eyo: {
     get () {
-      var b = this.target
-      return b && b.eyo
+      var m4t = this.magnet
+      return m4t && m4t.t_eyo
     }
   },
   bindField: {
     get () {
-      var block = this.owner.sourceBlock_
-      if (block.eyo.wrapped_) {
-        return block.outputConnection.targetConnection.eyo.bindField
+      var b_eyo = this.b_eyo
+      if (b_eyo.wrapped_) {
+        return b_eyo.magnets.output.t_eyo.bindField
       }
       var s = this.slot
       return s && s.bindField
     }
+  },
+  target: { // to be REMOVED?
+    get () {
+      return this.connection && this.connection.targetBlock()
+    }
   }
-})
+ })
 
 /**
  * be ready the delegate.
@@ -143,15 +154,14 @@ eYo.InputDelegate.prototype.consolidate = function () {
 
 /**
  * Connect the owner to something.
- * @param{!Object} something  Something is either an object with an output connection, the delegate of such an object, a connection
+ * @param{!eYo.Delegate | eYo.Magnet} dm  dm is either a delegate or a magnet.
  */
-eYo.InputDelegate.prototype.connect = function (something) {
-  var c8n = this.owner.connection
-  if(c8n && something) {
-    var other = something.outputConnection || (something.block_ && something.block_.outputConnection) || something
-    if (c8n.checkType_(other)) {
-      c8n.eyo.connect(other)
-      return true
+eYo.InputDelegate.prototype.connect = function (dm) {
+  var m4t = this.magnet
+  if(m4t && dm) {
+    var other = (dm.magnets && dm.magnets.output) || dm
+    if (m4t.checkType_(other)) {
+      return m4t.connect(other)
     }
   }
 }

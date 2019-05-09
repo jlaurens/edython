@@ -96,7 +96,7 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
  * As side effect, the subtype is set.
  */
 eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
-  var check = this.outputConnection.check_
+  var check = this.magnets.output.check_
   return (check && check[0]) || eYo.T3.Expr.comprehension
 }
 

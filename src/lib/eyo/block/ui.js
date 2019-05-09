@@ -117,28 +117,28 @@ Object.defineProperties(eYo.UI.prototype, {
 
 /**
  * Render the given connection, if relevant.
+ * @param {eYo.Magnet} m4t 
  * @param {*} recorder 
- * @param {*} c8n 
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.UI.prototype.drawC8n_ = function (c8n, recorder) {
-  if (!c8n) {
+eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
+  if (!m4t) {
     return
   }
-  var target = c8n.targetBlock()
-  if (!target) {
+  var t_eyo = m4t.t_eyo
+  if (!t_eyo) {
     return
   }
-  if (c8n.eyo.isSuperior) {
-    c8n.tighten_()
+  if (m4t.isSuperior) {
+    m4t.tighten_()
   }
-  var do_it = !target.rendered ||
+  var do_it = !t_eyo.rendered ||
   (!this.up &&
     !eYo.Connection.disconnectedParentM4t &&
     !eYo.Connection.disconnectedChildM4t&&
     !eYo.Connection.connectedParentM4t)
   if (do_it) {
-    var ui = target.eyo.ui
+    var ui = t_eyo.ui
     try {
       ui.down = true
       ui.render(false, recorder)
@@ -157,8 +157,8 @@ eYo.UI.prototype.drawC8n_ = function (c8n, recorder) {
  * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.UI.prototype.drawNext_ = function (recorder) {
-  return this.drawC8n_(this.node.connectBottomion, recorder)
+eYo.UI.prototype.drawLow_ = function (recorder) {
+  return this.drawM4t_(this.node.magnets.low, recorder)
 }
 
 /**
@@ -344,7 +344,7 @@ eYo.UI.prototype.render = (() => {
         this.willRender_(recorder)
         var io = this.draw_(recorder)
         this.layoutConnections_(io)
-        this.drawNext_(io)
+        this.drawLow_(io)
         this.renderMove_(io)
         this.updateShape()
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
@@ -375,7 +375,7 @@ eYo.UI.prototype.render = (() => {
         // this.node block is the top one
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
-        this.drawNext_(io)
+        this.drawLow_(io)
         this.renderMove_(io)
         this.updateShape()
         this.node.change.save.render = this.node.change.count
@@ -386,7 +386,7 @@ eYo.UI.prototype.render = (() => {
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
-        this.drawNext_(io)
+        this.drawLow_(io)
         this.renderMove_(io)
         this.updateShape()
         this.node.change.save.render = this.node.change.count
@@ -399,7 +399,7 @@ eYo.UI.prototype.render = (() => {
         } else if (this.node.magnets.high && eYo.Connection.connectedParentM4t === this.node.magnets.high.target) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
-          this.drawNext_(io)
+          this.drawLow_(io)
           this.renderMove_(io)
           this.updateShape()
           this.node.change.save.render = this.node.change.count
@@ -407,7 +407,7 @@ eYo.UI.prototype.render = (() => {
         } else if (this.node.magnets.low && eYo.Connection.connectedParentM4t === this.node.magnets.low) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
-          this.drawNext_(io)
+          this.drawLow_(io)
           this.renderMove_(io)
           this.updateShape()
           this.node.change.save.render = this.node.change.count
@@ -415,13 +415,13 @@ eYo.UI.prototype.render = (() => {
         }
       }
     }
-    if (!this.node.ui.down && this.node.outputConnection) {
+    if (!this.node.ui.down && this.node.magnets.output) {
       // always render from a line start id est
       // an orphan block or a statement block
       var parent
       if ((parent = this.node.parent)) {
         var next
-        while (parent.outputConnection && (next = parent.parent)) {
+        while (parent.magnets.output && (next = parent.parent)) {
           parent = next
         }
         // parent has no output connection or has no parent
@@ -449,7 +449,7 @@ eYo.UI.prototype.render = (() => {
       // minimal rendering
       var io = this.willShortRender_(recorder)
       this.layoutConnections_(io)
-      this.drawNext_(io)
+      this.drawLow_(io)
       this.renderMove_(io)
       this.updateShape()
       drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
@@ -683,7 +683,7 @@ eYo.UI.prototype.newDrawRecorder = function (recorder) {
       beforeIsRightEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !this.node.outputConnection || !this.node.parent, // statement | orphan block
+      startOfLine: !this.node.magnets.output || !this.node.parent, // statement | orphan block
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
         beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
@@ -722,7 +722,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   // Do we need some room for the left side of the block?
   // no for wrapped blocks
   if (!this.node.wrapped_) {
-    if (!this.node.outputConnection || !this.node.locked_ || !recorder) {
+    if (!this.node.magnets.output || !this.node.locked_ || !recorder) {
       // statement or unlocked,
       // one space for the left edge of the block
       // (even for locked statements, this.node is to avoid a
@@ -731,7 +731,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
       io.common.field.beforeIsBlack = false
     }
   }
-  if (this.hasLeftEdge || !recorder || !this.node.outputConnection) {
+  if (this.hasLeftEdge || !recorder || !this.node.magnets.output) {
     // statement or unlocked,
     // one space for the left edge of the block
     // (even for locked statements, this.node is to avoid a
@@ -743,7 +743,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
     // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.span.c
-  if (this.node.outputConnection) {
+  if (this.node.magnets.output) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
@@ -802,7 +802,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
 eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
   if (!this.node.wrapped_) {
-    if (this.node.outputConnection) {
+    if (this.node.magnets.output) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
         io.common.field.beforeIsSeparator = false
@@ -836,7 +836,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       io.common.field.beforeIsBlack = false
     }
   }
-  if (!this.node.outputConnection) {
+  if (!this.node.magnets.output) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
@@ -1199,12 +1199,12 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
  */
 eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
   if (io) {
-    var c_eyo = io.common.pending
-    if (c_eyo) {
-      c_eyo.side = side
-      c_eyo.shape = io.isLastInStatement ? eYo.Key.Right : shape
-      var shp = eYo.Shape.newWithConnectionDlgt(c_eyo)
-      var block = c_eyo.sourceBlock_
+    var m4t = io.common.pending
+    if (m4t) {
+      m4t.side = side
+      m4t.shape = io.isLastInStatement ? eYo.Key.Right : shape
+      var shp = eYo.Shape.newWithMagnet(m4t)
+      var block = m4t.sourceBlock_
       if (io.block === block) {
         // we are lucky, this.node is the block we are currently rendering
         io.steps.push(shp.definition)
@@ -1218,7 +1218,7 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       }
       if (shp.width) {
         // should we advance the cursor?
-        if (c_eyo.side === eYo.Key.NONE) {
+        if (m4t.side === eYo.Key.NONE) {
           io.cursor.advance(shp.width)
           io.common.startOfLine = io.common.startOfStatement = false
         }
@@ -1256,11 +1256,11 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
   var c8n = io.input.connection
   if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
     ++ io.n
-    var c_eyo = c8n.eyo
-    c_eyo.startOfLine = io.common.startOfLine
-    c_eyo.startOfStatement = io.common.startOfStatement
-    io.forc = c_eyo
-    c_eyo.side = c_eyo.shape = undefined
+    var m4t = c8n.eyo
+    m4t.startOfLine = io.common.startOfLine
+    m4t.startOfStatement = io.common.startOfStatement
+    io.forc = m4t
+    m4t.side = m4t.shape = undefined
     io.common.field.canStarLike = false
     // io.cursor is relative to the block or the slot
     // but the connection must be located relative to the block
@@ -1268,8 +1268,8 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
     // if there is a slot or only an input.
     var t_eyo = c8n.eyo.t_eyo
     if (t_eyo) {
-      if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
-        c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
+      if (m4t.bindField && m4t.bindField.isVisible()) {
+        m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
         // The `bind` field hides the connection.
         // The bind field is always the last field before the connection.
         // if the connection has a bindField, then rendering the placeholder
@@ -1291,10 +1291,10 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
             // force target rendering
             t_eyo.incrementChangeCount()
           }
-          c_eyo.setOffset(io.cursor)
-          if (c_eyo.c === 1 && !io.common.field.beforeIsBlack && c_eyo.slot) {
-            c_eyo.slot.where.c -= 1
-            c_eyo.setOffset(io.cursor)
+          m4t.setOffset(io.cursor)
+          if (m4t.c === 1 && !io.common.field.beforeIsBlack && m4t.slot) {
+            m4t.slot.where.c -= 1
+            m4t.setOffset(io.cursor)
             if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
               ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
           
@@ -1327,11 +1327,11 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
         }
       }
     } else {
-      if (c_eyo.targetIsMissing) {
+      if (m4t.targetIsMissing) {
         this.someTargetIsMissing = true
       }  
-      if (c_eyo.bindField && c_eyo.bindField.isVisible()) {
-        c_eyo.setOffset(io.cursor.c - c_eyo.w, io.cursor.l)
+      if (m4t.bindField && m4t.bindField.isVisible()) {
+        m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
         // The `bind` field hides the connection.
         // The bind field is always the last field before the connection.
         // if the connection has a bindField, then rendering the placeholder
@@ -1341,22 +1341,22 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
       } else if (!this.node.locked_ && !c8n.hidden_) {
         // locked blocks won't display any placeholder
         // (input with no target)
-        if (!c_eyo.disabled_) {
-          c_eyo.setOffset(io.cursor)
-          c_eyo.startOfLine = io.common.startOfLine
-          c_eyo.startOfStatement = io.common.startOfStatement
-          if (c_eyo.s7r_) {
-            c_eyo.side = eYo.Key.NONE
+        if (!m4t.disabled_) {
+          m4t.setOffset(io.cursor)
+          m4t.startOfLine = io.common.startOfLine
+          m4t.startOfStatement = io.common.startOfStatement
+          if (m4t.s7r_) {
+            m4t.side = eYo.Key.NONE
             var ending = io.common.ending.slice(-1)[0]
             if (ending && !ending.ui.rightCaret) {
               // an expression block with a right end has been rendered
               // we put the caret on that end to save space,
               // we move the connection one character to the left
               io.cursor.c -= 1
-              c_eyo.setOffset(io.cursor)
+              m4t.setOffset(io.cursor)
               io.cursor.c += 1
-              ending.ui.rightCaret = c_eyo
-              c_eyo.isAfterRightEdge = io.beforeIsRightEdge
+              ending.ui.rightCaret = m4t
+              m4t.isAfterRightEdge = io.beforeIsRightEdge
               io.common.field.beforeIsCaret = true
             } else {
               // we might want this.node caret not to advance the cursor
@@ -1369,23 +1369,23 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
               // If the caret is the last rendered object of the block,
               // then it should be rendered with special shape and
               // the cursor should not advance.
-              io.common.pending = c_eyo
+              io.common.pending = m4t
             }
             io.common.field.shouldSeparate = false
-          } else if (c_eyo.optional_) {
+          } else if (m4t.optional_) {
             this.drawPending_(io)
-            io.common.pending = c_eyo
+            io.common.pending = m4t
           } else {
             this.drawPending_(io)
-            if (c_eyo.c === 1) {
-              if (c_eyo.slot) {
-                c_eyo.slot.where.c -= 1
+            if (m4t.c === 1) {
+              if (m4t.slot) {
+                m4t.slot.where.c -= 1
               } else {
-                io.cursor.c = c_eyo.where.c = 0
+                io.cursor.c = m4t.where.c = 0
               }
-              c_eyo.setOffset(io.cursor)
+              m4t.setOffset(io.cursor)
             }
-            var shape = eYo.Shape.newWithConnectionDlgt(c_eyo)
+            var shape = eYo.Shape.newWithMagnet(m4t)
             io.steps.push(shape.definition)
             if (shape.width) {
               io.cursor.c += shape.width

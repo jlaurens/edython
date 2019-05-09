@@ -342,7 +342,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                 } else {
                   // if this connection was selected, the newly connected block should be selected too
                   if (eYo.Selected.connection === parentC8n) {
-                    P = parent.eyo
+                    var P = parent.eyo
                     do {
                       if (P === eYo.Selected.eyo) {
                         child.select()
@@ -381,20 +381,20 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                             }
                           }
                         }
-                        var plug = (eyo) => {
+                        var plug = eyo => {
                           return eyo instanceof eYo.DelegateSvg.List
                           ? eyo.someInput(do_it)
                           : eyo.someSlot(do_it)
                         }
                         plug(ch_eyo)
                       } else {
-                        P = child
-                        var c8n
-                        while ((c8n = P.connectBottomion)) {
-                          if ((P = c8n.targetBlock())) {
+                        P = ch_eyo
+                        var m4t
+                        while ((m4t = P.magnets.low)) {
+                          if ((P = m4t.t_eyo)) {
                             continue
-                          } else if (c8n.checkType_(oldChildC8n)) {
-                            c8n.connect(oldChildC8n)
+                          } else if (m4t.checkType_(oldChildC8n.eyo)) {
+                            m4t.connect(oldChildC8n.eyo)
                           }
                           break
                         }
@@ -687,18 +687,18 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
  * @suppress{accessControls}
  */
 Blockly.Connection.singleConnection_ = function (block, orphanBlock) {
-  var connection = null
+  var foundM4t = null
   for (var i = 0; i < block.inputList.length; i++) {
-    var c8n = block.inputList[i].connection
-    if (c8n && c8n.eyo.isInput &&
-        orphanBlock.outputConnection.checkType_(c8n) && !c8n.eyo.bindField) {
-      if (connection) {
+    var m4t = block.inputList[i].eyo.magnet
+    if (m4t && m4t.isInput &&
+        orphanBlock.eyo.magnets.output.checkType_(m4t) && !m4t.bindField) {
+      if (foundM4t) {
         return null // More than one connection.
       }
-      connection = c8n
+      foundM4t = m4t
     }
   }
-  return connection
+  return foundM4t.connection
 }
 
 /**

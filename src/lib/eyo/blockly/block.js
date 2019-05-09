@@ -46,7 +46,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
   // /** @type {Blockly.Connection} */
   // this.outputConnection = null
   // /** @type {Blockly.Connection} */
-  // this.connectBottomion = null
+  // this.nextConnection = null
   // /** @type {Blockly.Connection} */
   // this.previousConnection = null
   // /** @type {!Array.<!Blockly.Input>} */
@@ -209,30 +209,18 @@ Object.defineProperties(eYo.Block.prototype, {
   },
   outputConnection: {
     get () {
-      var m = this.eyo.magnets.output
-      return m && m.connection
-    },
-    set (newValue) {
       console.error("INCONSISTENCY: BREAK HERE")
       throw "FORBIDDEN"
     }
   },
   previousConnection: {
     get () {
-      var m = this.eyo.magnets.high
-      return m && m.connection
-    },
-    set (newValue) {
       console.error("INCONSISTENCY: BREAK HERE")
       throw "FORBIDDEN"
     }
   },
-  connectBottomion: {
+  nextConnection: {
     get () {
-      var m = this.eyo.magnets.low
-      return m && m.connection
-    },
-    set (newValue) {
       console.error("INCONSISTENCY: BREAK HERE")
       throw "FORBIDDEN"
     }
@@ -474,9 +462,9 @@ Blockly.Block.prototype.dispose = function(healStack) {
     // First, dispose of all my children.
     this.forEachChild(b => {
       // disable auto creation of wrapped targets
-      var c8n = b.eyo.outputConnection
-      c8n = c8n && c8n.targetConnection
-      c8n && (c8n.eyo.wrapped_ = false)
+      var m4t = b.eyo.magnets.output
+      m4t = m4t && m4t.target
+      m4t && (m4t.wrapped_ = false)
       b.dispose(false)
     })
     // Then dispose of myself.

@@ -452,28 +452,28 @@ Blockly.onKeyDown_ = function(e) {
 eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
     var eyo = block.eyo
-    if (eYo.Selected.block === block) {
+    if (eYo.Selected.eyo === eyo) {
       // prepare a connection or a block to be selected
-      var c8n
-      if ((c8n = eyo.outputConnection)) {
-        c8n = c8n.targetConnection
-      } else if ((c8n = eyo.connectBottomion)) {
-        var t_eyo = c8n.eyo.t_eyo
+      var m4t
+      if ((m4t = eyo.magnets.output)) {
+        m4t = m4t.target
+      } else if ((m4t = eyo.magnets.low)) {
+        var t_eyo = m4t.t_eyo
       }
     }
     eYo.Events.groupWrap(() => {
       Blockly.hideChaff()
       if (deep) {
         do {
-          var next = eyo.next
+          var low = eyo.low
           eyo.block_.dispose(false, true)
-        } while ((eyo = next))
+        } while ((eyo = low))
       } else {
-        block.dispose(true, true)
+        eyo.block_.dispose(true, true)
       }
     })
-    if (c8n && c8n.eyo.b_eyo.workspace) {
-      eYo.Selected.connection = c8n
+    if (m4t && m4t.b_eyo.workspace) {
+      eYo.Selected.magnet = m4t
     } else if (t_eyo) {
       eYo.Selected.eyo = t_eyo
     }
@@ -535,5 +535,5 @@ eYo.Workspace.prototype.addTopBlock = function(block) {
   if (this.rendered) {
     block.eyo.beReady()
   }
-  this.highBlocks_.push(block)
+  this.topBlocks_.push(block)
 }

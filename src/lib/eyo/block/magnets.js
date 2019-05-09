@@ -196,24 +196,24 @@ Object.defineProperties(eYo.Magnet.prototype, {
     get () {
       // scheme:
       // this = output <- input <- wrapped source block <- output <- input
-      var ans = this.connection
-      var t
-      while ((t = ans.eyo.t_eyo) && t.wrapped_) {
-        var c8n = t.outputConnection
-        if (c8n) {
-          ans = c8n
+      var ans = this
+      var t_eyo
+      while ((t_eyo = ans.t_eyo) && t_eyo.wrapped_) {
+        var m4t = t_eyo.magnets.output
+        if (m4t) {
+          ans = m4t
         } else {
           break
         }
       }
-      return ans
+      return ans.connection
     }
   },
   parent: {
     get () {
-      var c8n = this.sourceBlock_.outputConnection
-      if (c8n && (c8n = c8n.targetConnection)) {
-        return c8n.sourceBlock_.eyo
+      var m4t = this.b_eyo.magnets.output
+      if (m4t && (m4t = m4t.target)) {
+        return m4t.b_eyo
       }
     }
   },
@@ -223,14 +223,12 @@ Object.defineProperties(eYo.Magnet.prototype, {
         return this.slot.bindField
       }
       // in a void wrapped list
-      var b = this.sourceBlock_
-      var input = b.inputList[0]
-      if (input && (input.connection === this.connection)) {
-        var c8n = b.outputConnection
-        if (c8n) {
-          if (c8n = c8n.targetConnection) {
-            return c8n.eyo.bindField
-          }
+      var b_eyo = this.b_eyo
+      var input = b_eyo.inputList[0]
+      if (input && (input.eyo.magnet === this)) {
+        var m4t = b_eyo.magnets.output
+        if (m4t && (m4t = m4t.target)) {
+          return m4t.bindField
         }
       }
     },
@@ -343,8 +341,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
   //     // do not cache, unless you know what you do
   //     var b_eyo = this.b_eyo
   //     if (b_eyo.wrapped_ && b_eyo instanceof eYo.DelegateSvg.List) {
-  //       var x = b_eyo.outputConnection.targetConnection
-  //       return x && (x = x.eyo.slot) && slot.model
+  //       var x = b_eyo.magnets.output.target
+  //       return x && (x = x.slot) && slot.model
   //     }
   //   },
   //   set (newValue) {
