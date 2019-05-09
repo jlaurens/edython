@@ -181,7 +181,7 @@ eYo.KeyHandler = (() => {
           }
           if (doFirst(newB.eyo, eYo.Magnet.INPUT)) {
             return true
-          } else if ((m4t === eyo.magnets.bottom) && (m4t = newB.eyo.magnets.bottom) && !m4t.hidden_) {
+          } else if ((m4t === eyo.magnets.low) && (m4t = newB.eyo.magnets.low) && !m4t.hidden_) {
             eYo.Selected.magnet = m4t
             return true
           }

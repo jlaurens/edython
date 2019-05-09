@@ -390,7 +390,7 @@ eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
   })
   if (m4t) {
     return m4t
-  } else if ((m4t = this.magnets.top) && !m4t.hidden) {
+  } else if ((m4t = this.magnets.high) && !m4t.hidden) {
     R = new goog.math.Rect(
       m4t.offsetInBlock_.x,
       m4t.offsetInBlock_.y - 2 * eYo.Style.Path.width,
@@ -401,7 +401,7 @@ eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
       return m4t
     }
   }
-  if ((m4t = this.magnets.bottom) && !m4t.hidden) {
+  if ((m4t = this.magnets.low) && !m4t.hidden) {
     if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
       R = new goog.math.Rect(
         m4t.offsetInBlock_.x,

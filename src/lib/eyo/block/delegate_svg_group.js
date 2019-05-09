@@ -196,7 +196,7 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
   if (!type) {
     var block = this.block_
     var t_magnet
-    if ((t_magnet = this.magnets.top.target)) {
+    if ((t_magnet = this.magnets.high.target)) {
       // look at the top connection
       // 
       var t_eyo = t_magnet.b_eyo
@@ -206,7 +206,7 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
         type = T3.last_else_part
       }
     }
-    if (!type && (t_magnet = this.magnets.bottom.target)) {
+    if (!type && (t_magnet = this.magnets.low.target)) {
       // the top connection did not add any constrain
       // may be the bottom connection will?
       t_eyo = t_magnet.b_eyo

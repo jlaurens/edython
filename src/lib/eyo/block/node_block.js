@@ -323,7 +323,7 @@ eYo.Node.prototype.if_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(dlgt)
   var dd = dlgt
   while ((n = n.sibling)) {
-    var m4t = dd.magnets.bottom
+    var m4t = dd.magnets.low
     if ((n.n_str === 'elif')) {
       dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.elif_part)
       n = n.sibling
@@ -353,7 +353,7 @@ eYo.Node.prototype.while_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(dlgt)
   var dd = dlgt
   if ((n = n.sibling)) {
-    var m4t = dd.magnets.bottom
+    var m4t = dd.magnets.low
     dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.else_part)
     n.sibling.sibling.suiteInDlgt(dd)
     m4t.connectSmart(dd)
@@ -534,7 +534,7 @@ eYo.Node.prototype.decorator2Dlgt = function (workspace) {
   }
   var comments = n.comments
   if (comments.length) {
-    var m4t = dlgt.magnets.bottomMost
+    var m4t = dlgt.magnets.lowMost
     comments.forEach(n => {
       var m = m4t.connectSmart(n.toDlgt(workspace))
       m && (m = m4t)
@@ -940,7 +940,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
       if (this.type === eYo.TKN.file_input) {
         ds.reverse().forEach(d => {
           if (d) {
-            root.top = d
+            root.high = d
             root = d
           }
         })
@@ -949,7 +949,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
         var dd = root
         ds.forEach(d => {
           if (d) {
-            dd.bottom = d
+            dd.low = d
             dd = d
           }
         })
@@ -968,7 +968,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
       var dd = root
       ds.forEach(dd => {
         if (dd) {
-          dd.bottom = dd
+          dd.low = dd
           dd = dd
         }
       })
@@ -995,7 +995,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
     case eYo.TKN.file_input: // (NEWLINE | stmt)* ENDMARKER
       var bs = this.n_child.map(n => n.toDlgt(workspace))
       if ((root = bs.shift())) {
-        m4t = root.magnets.bottomMost
+        m4t = root.magnets.lowMost
         bs.forEach(dd => {
           var m = m4t.connectSmart(dd)
           m && (m4t = m)

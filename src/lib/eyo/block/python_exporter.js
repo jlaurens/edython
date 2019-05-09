@@ -221,7 +221,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_eyo = eyo.bottom)) {
+  if (is_deep && (t_eyo = eyo.low)) {
     this.newline_()
     this.exportBlock_(t_eyo, opt)
   }  

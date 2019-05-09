@@ -720,7 +720,7 @@ eYo.Xml.toDom = function (dlgt, element, opt) {
     // the right, suite and next flows
     magnetToDom(dlgt.magnets.right, eYo.Xml.FLOW, eYo.Xml.RIGHT)
     magnetToDom(dlgt.magnets.suite, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && magnetToDom(dlgt.magnets.bottom, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    !optNoNext && magnetToDom(dlgt.magnets.low, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 
@@ -963,7 +963,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
         var slot_m4t = input && input.eyo.magnet
         var flow_m4t = dom.getAttribute(eYo.Xml.FLOW)
           ? owner.eyo.magnets.suite
-          : owner.eyo.magnets.bottom
+          : owner.eyo.magnets.low
         // return the first block that would connect to the owner
         if (!best.types.some(type => {
             var eyo = eYo.DelegateSvg.newComplete(workspace, type)
@@ -972,7 +972,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
               ans = eyo
               return true
             }
-            m4t = eyo.magnets.top
+            m4t = eyo.magnets.high
             if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
               ans = eyo
               return true
@@ -1194,9 +1194,9 @@ eYo.Xml.fromDom = function (block, element) {
                 // we could create a block from that child element
                 // then connect it to
                 var m4ts = t_eyo.magnets
-                if (m4ts.top) {
-                  if (m4t.checkType_(m4ts.top)) {
-                    m4t.connect(m4ts.top)
+                if (m4ts.high) {
+                  if (m4t.checkType_(m4ts.high)) {
+                    m4t.connect(m4ts.high)
                   } else {
                     // we could not connect possibly because the
                     // type is not yet properly set
@@ -1204,8 +1204,8 @@ eYo.Xml.fromDom = function (block, element) {
                     eyo.consolidateType()
                     eyo.consolidateConnections()
                     eyo.consolidate()
-                    if (m4t.checkType_(m4ts.top)) {
-                      m4t.connect(m4ts.top)
+                    if (m4t.checkType_(m4ts.high)) {
+                      m4t.connect(m4ts.high)
                     }            
                   }
                 }
@@ -1217,7 +1217,7 @@ eYo.Xml.fromDom = function (block, element) {
       }
       var out = statement(eyo.magnets.right, eYo.Xml.RIGHT)
       out = statement(eyo.magnets.suite, eYo.Xml.SUITE) || out
-      out = statement(eyo.magnets.bottom, eYo.Xml.NEXT) || out
+      out = statement(eyo.magnets.low, eYo.Xml.NEXT) || out
       var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         eyo.lock()

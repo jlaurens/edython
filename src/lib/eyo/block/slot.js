@@ -671,8 +671,8 @@ eYo.Slot.prototype.load = function (element) {
             if (m4t && m4ts.output && m4t.checkType_(m4ts.output, true)) {
               m4t.connect(m4ts.output) // Notice the `.eyo`
               this.setRequiredFromModel(true)
-            } else if (m4ts.top && m4t.checkType_(m4ts.top, true)) {
-              m4t.connect(m4ts.top) // Notice the `.eyo`
+            } else if (m4ts.high && m4t.checkType_(m4ts.high, true)) {
+              m4t.connect(m4ts.high) // Notice the `.eyo`
             }
             out = t_eyo.block_
           }

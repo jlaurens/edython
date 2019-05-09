@@ -535,5 +535,5 @@ eYo.Workspace.prototype.addTopBlock = function(block) {
   if (this.rendered) {
     block.eyo.beReady()
   }
-  this.topBlocks_.push(block)
+  this.highBlocks_.push(block)
 }

@@ -172,7 +172,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
         return ans
       } else if (!this.magnets.output) {
         var eyo = this.leftMost
-        while ((ans = eyo.top)) {
+        while ((ans = eyo.high)) {
           if (ans.suite === eyo) {
             return ans
           }
@@ -192,7 +192,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var eyo = this
       var m4t
-      while ((m4t = eyo.magnets.top) && (m4t = m4t.target)) {
+      while ((m4t = eyo.magnets.high) && (m4t = m4t.target)) {
         eyo = m4t.b_eyo
         if (m4t.isSuite) {
           return eyo
@@ -324,14 +324,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   top: {
     get () {
-      var m = this.magnets.top
+      var m = this.magnets.high
       if (m) {
         var t = m.target
         return t && t.b_eyo
       }
     },
     set (newValue) {
-      this.magnets.top.target = newValue
+      this.magnets.high.target = newValue
     }
   },
   left: {
@@ -372,14 +372,14 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   bottom: {
     get () {
-      var m = this.magnets.bottom
+      var m = this.magnets.low
       if (m) {
         var t = m.target
         return t && t.b_eyo
       }
     },
     set (newValue) {
-      this.magnets.bottom.target = newValue
+      this.magnets.low.target = newValue
     }
   },
   leftMost: {
@@ -396,7 +396,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var ans = this
       var eyo
-      while ((eyo = ans.top)) {
+      while ((eyo = ans.high)) {
         ans = eyo
       }
       return ans
@@ -416,7 +416,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var ans = this
       var eyo
-      while ((eyo = ans.bottom)) {
+      while ((eyo = ans.low)) {
         ans = eyo
       }
       return ans
@@ -1820,11 +1820,11 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   if (this.magnets.output) {
     f(this.magnets.output)
   } else {
-    f(this.magnets.top)
+    f(this.magnets.high)
     f(this.magnets.left)
     f(this.magnets.right)
     f(this.magnets.suite)
-    f(this.magnets.bottom)
+    f(this.magnets.low)
   }
 }
 
@@ -2185,11 +2185,11 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
       var previous, next
       if (yorn) {
         // Does it break next connections
-        if ((previous = this.magnets.top) &&
+        if ((previous = this.magnets.high) &&
         (next = previous.target) &&
         next.blackMagnet) {
           var eyo = this
-          while ((previous = eyo.magnets.bottom) &&
+          while ((previous = eyo.magnets.low) &&
           (previous = previous.target) &&
           (previous = previous.blackMagnet)) {
             if (next.checkType_(previous)) {
@@ -2203,7 +2203,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
       } else {
         // if the connection chain below this block is broken,
         // try to activate some blocks
-        if ((next = this.magnets.bottom)) {
+        if ((next = this.magnets.low)) {
           if ((previous = next.target) &&
           (previous = previous.blackMagnet) &&
           !next.checkType_(previous)) {
@@ -2218,7 +2218,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
                 t_eyo.disabled = true
                 if (check) {
                   t_eyo.disabled = false
-                  if (!(next = t_eyo.magnets.bottom)) {
+                  if (!(next = t_eyo.magnets.low)) {
                     break
                   }
                 }
@@ -2236,7 +2236,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
           }
         }
         // now consolidate the chain above
-        if ((previous = this.magnets.top)) {
+        if ((previous = this.magnets.high)) {
           if ((next = previous.target) &&
           (next = next.blackMagnet) &&
           !previous.checkType_(next)) {
@@ -2253,7 +2253,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
                 t_eyo.disabled = true
                 if (check) {
                   t_eyo.setDisabled(false)
-                  if (!(previous = t_eyo.magnets.top)) {
+                  if (!(previous = t_eyo.magnets.high)) {
                     break
                   }
                 }
@@ -2445,7 +2445,7 @@ eYo.Delegate.prototype.getSlotConnections = function () {
  * @return the given block
  */
 eYo.Delegate.prototype.connectBottom = function (dlgt) {
-  this.magnets.bottom.connect(dlgt.magnets.top)
+  this.magnets.low.connect(dlgt.magnets.high)
   return dlgt
 }
 

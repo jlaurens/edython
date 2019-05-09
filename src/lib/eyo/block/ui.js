@@ -371,7 +371,7 @@ eYo.UI.prototype.render = (() => {
     // statement connection
     var block = this.node.block_
     if (block.rendered) {
-      if (eYo.Connection.disconnectedChildM4t && this.node.magnets.top === eYo.Connection.disconnectedChildM4t) {
+      if (eYo.Connection.disconnectedChildM4t && this.node.magnets.high === eYo.Connection.disconnectedChildM4t) {
         // this.node block is the top one
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
@@ -381,7 +381,7 @@ eYo.UI.prototype.render = (() => {
         this.node.change.save.render = this.node.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
-      } else if (eYo.Connection.disconnectedParentM4t && this.node.magnets.bottom === eYo.Connection.disconnectedParentM4t) {
+      } else if (eYo.Connection.disconnectedParentM4t && this.node.magnets.low === eYo.Connection.disconnectedParentM4t) {
         // this.node block is the bottom one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
@@ -396,7 +396,7 @@ eYo.UI.prototype.render = (() => {
         if (this.node.magnets.output && eYo.Connection.connectedParentM4t === this.node.magnets.output.target) {
           // this.node is not a statement connection
           // no shortcut
-        } else if (this.node.magnets.top && eYo.Connection.connectedParentM4t === this.node.magnets.top.target) {
+        } else if (this.node.magnets.high && eYo.Connection.connectedParentM4t === this.node.magnets.high.target) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawNext_(io)
@@ -404,7 +404,7 @@ eYo.UI.prototype.render = (() => {
           this.updateShape()
           this.node.change.save.render = this.node.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        } else if (this.node.magnets.bottom && eYo.Connection.connectedParentM4t === this.node.magnets.bottom) {
+        } else if (this.node.magnets.low && eYo.Connection.connectedParentM4t === this.node.magnets.low) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawNext_(io)
@@ -512,7 +512,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
   if ((m4t = m4ts.left)) {
     m4t.moveToOffset(blockTL)
   }
-  if ((m4t = m4ts.top)) {
+  if ((m4t = m4ts.high)) {
     m4t.moveToOffset(blockTL)
   }
   if ((m4t = m4ts.output)) {
@@ -526,7 +526,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
       }
     }
   })
-  if ((m4t = m4ts.bottom)) {
+  if ((m4t = m4ts.low)) {
     m4t.moveToOffset(blockTL)
     if (m4t.target) {
       m4t.tighten_()
@@ -567,10 +567,10 @@ eYo.UI.prototype.layoutConnections_ = function (recorder) {
   if (m4t) {
     m4t.setOffset()
   } else {
-    if ((m4t = m4ts.top)) {
+    if ((m4t = m4ts.high)) {
       m4t.setOffset()
     }
-    if ((m4t = m4ts.bottom)) {
+    if ((m4t = m4ts.low)) {
       if (this.node.isCollapsed) {
         m4t.setOffset(0, 2)
       } else {
@@ -1702,7 +1702,7 @@ eYo.UI.prototype.getHeightWidth = function () {
     width += nextHeightWidth.width
     // The height of the line is managed while rendering.
   }
-  if ((nn = n.bottom)) {
+  if ((nn = n.low)) {
     var heightWidth = nn.ui.getHeightWidth()
     height += nextHeightWidth.height // NO Height of tab.
     width = Math.max(width, nextHeightWidth.width)

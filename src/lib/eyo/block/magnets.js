@@ -368,9 +368,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
         return t4t
       }
       if (t4t.isTop) {
-        var F = x => x.magnets.bottom
+        var F = x => x.magnets.low
       } else if (t4t.isBottom) {
-        F = x => x.magnets.top
+        F = x => x.magnets.high
       } else {
         return undefined
       }
@@ -402,9 +402,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
         return this
       }
       if (this.isTop) {
-        var other = eyo => eyo.magnets.bottom
+        var other = eyo => eyo.magnets.low
       } else if (this.isBottom) {
-        other = eyo => eyo.magnets.top
+        other = eyo => eyo.magnets.high
       } else {
         // this is a 'do' statement input connection
         // whether the surrounding block is disabled or not has no importance
@@ -705,13 +705,13 @@ eYo.Magnet.prototype.getCheck = function () {
  * @return a connection, possibly undefined
  */
 eYo.Magnet.prototype.getMagnetAbove = function () {
-  var ans = this.b_eyo.top
+  var ans = this.b_eyo.high
   if (ans) {
     var m4ts = ans.magnets
     if (this.isBottom) {
-      return m4ts.bottom
+      return m4ts.low
     } else if (this.isTop) {
-      return m4ts.top
+      return m4ts.high
     } else if (this.isRight) {
       return m4ts.right
     } else if (this.isLeft) {
@@ -725,13 +725,13 @@ eYo.Magnet.prototype.getMagnetAbove = function () {
  * @return a magnet, possibly undefined
  */
 eYo.Magnet.prototype.getMagnetBelow = function () {
-  var ans = this.b_eyo.bottom
+  var ans = this.b_eyo.low
   if (ans) {
     var m4ts = ans.magnets
     if (this.isBottom) {
-      return m4ts.bottom
+      return m4ts.low
     } else if (this.isTop) {
-      return m4ts.top
+      return m4ts.high
     } else if (this.isRight) {
       return m4ts.right
     } else if (this.isLeft) {
@@ -764,9 +764,9 @@ eYo.Magnet.prototype.connectSmart = (() => {
    * @return {!eYo.Magnet}
    */
   var connectToTop = function (eyo) {
-    var m = eyo.magnets.top
+    var m = eyo.magnets.high
     this.connect(m.connection)
-    return eyo.bottomMost.magnets.top
+    return eyo.lowMost.magnets.high
   }
 
   /**
@@ -777,7 +777,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
   var connectToLeft = function (eyo) {
     var m = eyo.magnets.left
     this.connect(m.connection)
-    return eyo.rightMost.magnets.top
+    return eyo.rightMost.magnets.high
   }
 
   /**
@@ -787,7 +787,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
   var connectToRight = function (eyo) {
     var m = eyo.magnets.right
     this.connect(m.connection)
-    return eyo.leftMost.magnets.top
+    return eyo.leftMost.magnets.high
   }
 
   /**
@@ -796,9 +796,9 @@ eYo.Magnet.prototype.connectSmart = (() => {
    * @return {!eYo.Magnet}
    */
   var connectToBottom = function (eyo) {
-    var m = eyo.magnets.bottom
+    var m = eyo.magnets.low
     this.connect(m.connection)
-    return eyo.topMost.magnets.top
+    return eyo.highMost.magnets.high
   }
 
   /**
@@ -921,22 +921,22 @@ eYo.Magnets = function (eyo) {
   var model = eyo.model
   var D
   if ((D = model.output) && Object.keys(D).length) {
-    this.output_ = new eYo.Magnet(eyo.block_, eYo.Magnet.OUTPUT, D)
+    this.output_ = new eYo.Magnet(eyo, eYo.Magnet.OUTPUT, D)
   } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.top && goog.isDefAndNotNull(D.top.check)) {
-      this.top_ = new eYo.Magnet(eyo.block_, eYo.Magnet.TOP, D.top)
+    if (D.high && goog.isDefAndNotNull(D.high.check)) {
+      this.high_ = new eYo.Magnet(eyo, eYo.Magnet.TOP, D.high)
     }
-    if (D.bottom && goog.isDefAndNotNull(D.bottom.check)) {
-      this.bottom_ = new eYo.Magnet(eyo.block_, eYo.Magnet.isBottom, D.bottom)
+    if (D.low && goog.isDefAndNotNull(D.low.check)) {
+      this.low_ = new eYo.Magnet(eyo, eYo.Magnet.isBottom, D.low)
     }
     if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suite_ = new eYo.Magnet(eyo.block_, eYo.Magnet.BOTTOM, D.suite)
+      this.suite_ = new eYo.Magnet(eyo, eYo.Magnet.BOTTOM, D.suite)
     }
     if (D.left && goog.isDefAndNotNull(D.left.check)) {
-      this.left_ = new eYo.Magnet(eyo.block_, eYo.Magnet.LEFT, D.left)
+      this.left_ = new eYo.Magnet(eyo, eYo.Magnet.LEFT, D.left)
     }
     if (D.right && goog.isDefAndNotNull(D.right.check)) {
-      this.right_ = new eYo.Magnet(eyo.block_, eYo.Magnet.RIGHT, D.right)
+      this.right_ = new eYo.Magnet(eyo, eYo.Magnet.RIGHT, D.right)
     }
   }  
 }
@@ -949,7 +949,7 @@ Object.defineProperties(eYo.Magnets.prototype, {
   },
   top: {
     get () {
-      return this.top_
+      return this.high_
     }
   },
   left: {
@@ -969,7 +969,7 @@ Object.defineProperties(eYo.Magnets.prototype, {
   },
   bottom: {
     get () {
-      return this.bottom_
+      return this.low_
     }
   }
 })
@@ -995,10 +995,10 @@ eYo.Magnets.prototype.predispose = function () {
  */
 eYo.Magnets.prototype.dispose = function () {
   this.predispose()
-  this.top_ && this.top_.dispose()
-  this.top_ = undefined
-  this.bottom_ && this.bottom_.dispose()
-  this.bottom_ = undefined
+  this.high_ && this.high_.dispose()
+  this.high_ = undefined
+  this.low_ && this.low_.dispose()
+  this.low_ = undefined
   this.output_ && this.suite_.dispose()
   this.output_ = undefined
 }

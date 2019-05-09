@@ -28,7 +28,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
   statement: {
     left: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.top || this.b_eyo.bottom
+        return this.b_eyo.high || this.b_eyo.low
         ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Left.simple_stmt
       }
@@ -153,7 +153,7 @@ eYo.DelegateSvg.Stmt.prototype.renderRight_ = function (io) {
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
-  var magnet = this.magnets.top
+  var magnet = this.magnets.high
   if (magnet) {
     var parent
     eYo.Events.disableWrap(
@@ -162,7 +162,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
       },
       () => {
         if (parent) {
-          var p_magnet = parent.magnets.bottom
+          var p_magnet = parent.magnets.low
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(
               () => {
@@ -170,7 +170,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
                 var t_magnet = magnet.target
                 if (t_magnet) {
                   t_magnet.break()
-                  if ((t_magnet = parent.magnets.top)) {
+                  if ((t_magnet = parent.magnets.high)) {
                     p_magnet.target = t_magnet
                   }
                 } else {
@@ -210,16 +210,16 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
   return eYo.Events.groupWrap(
     () => {
       var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
-      var magnet = this.magnets.bottom
+      var magnet = this.magnets.low
       var t_magnet = magnet.target
       var b_m4ts = below.magnets
       if (t_magnet) {
         t_magnet.break()
-        if (t_magnet.checkType_(b_m4ts.bottom)) {
-          t_magnet.target = b_magnets.bottom
+        if (t_magnet.checkType_(b_m4ts.low)) {
+          t_magnet.target = b_magnets.low
         }
       }
-      magnet.target = b_m4ts.top
+      magnet.target = b_m4ts.high
       if (eYo.Selected.eyo === this) {
         eYo.Selected.eyo = after
       }

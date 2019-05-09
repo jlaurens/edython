@@ -219,7 +219,7 @@ Object.defineProperties(eYo.Block.prototype, {
   },
   previousConnection: {
     get () {
-      var m = this.eyo.magnets.top
+      var m = this.eyo.magnets.high
       return m && m.connection
     },
     set (newValue) {
@@ -229,7 +229,7 @@ Object.defineProperties(eYo.Block.prototype, {
   },
   connectBottomion: {
     get () {
-      var m = this.eyo.magnets.bottom
+      var m = this.eyo.magnets.low
       return m && m.connection
     },
     set (newValue) {

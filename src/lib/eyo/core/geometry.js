@@ -341,9 +341,9 @@ Object.defineProperties(
  * set the `Rect`.
  */
 eYo.TRect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
-  if (goog.isDef(c.left) && goog.isDef(c.top)) {
+  if (goog.isDef(c.left) && goog.isDef(c.high)) {
     this.left = c.left
-    this.top = c.top
+    this.high = c.high
     if (goog.isDef(c.width) && goog.isDef(c.height)) {
       this.width = c.width
       this.height = c.height
@@ -360,7 +360,7 @@ eYo.TRect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
     return
   } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
     this.left = c.x
-    this.top = c.y
+    this.high = c.y
     if (goog.isDef(c.width) && goog.isDef(c.height)) {
       this.width = c.width
       this.height = c.height
@@ -418,41 +418,41 @@ eYo.TRect.prototype.clone = function () {
 eYo.Rect.difference = function(a, b) {
   var makeRect = (l, t, w, h) => {
       return goog.isDef(l.left)
-        ? new a.constructor(l.left, l.top, l.width, l.height)
+        ? new a.constructor(l.left, l.high, l.width, l.height)
         : new a.constructor(l, t, w, h)
     }
   var result = [null, null, null, null]
 
-  var top = a.top
+  var top = a.high
   var height = a.height
 
   var a_right = a.left + a.width
-  var a_bottom = a.top + a.height
+  var a_bottom = a.high + a.height
 
   var b_right = b.left + b.width
-  var b_bottom = b.top + b.height
+  var b_bottom = b.high + b.height
 
-  if (a_bottom <= b.top) { // b is entirely below a
+  if (a_bottom <= b.high) { // b is entirely below a
     result[0] = makeRect(a)
     return
   }
-  // b.top < a_bottom
-  if (b_bottom <= a.top) {
+  // b.high < a_bottom
+  if (b_bottom <= a.high) {
     result[1] = makeRect(a)
     return
   }
-  // a.top < b_bottom
+  // a.high < b_bottom
   // Subtract off any area on top where A extends past B
-  if (b.top > a.top) {
-    result[0] = makeRect(a.left, a.top, a.width, b.top - a.top)
-    top = b.top
+  if (b.high > a.high) {
+    result[0] = makeRect(a.left, a.high, a.width, b.high - a.high)
+    top = b.high
     // If we're moving the top down, we also need to subtract the height diff.
-    height -= b.top - a.top
+    height -= b.high - a.high
   }
   // Subtract off any area on bottom where A extends past B
-  // We have b.top < a_bottom and only one of
-  // b.top < b_bottom < a_bottom
-  // b.top < a_bottom <= b_bottom
+  // We have b.high < a_bottom and only one of
+  // b.high < b_bottom < a_bottom
+  // b.high < a_bottom <= b_bottom
   if (b_bottom < a_bottom) {
     result[1] = makeRect(a.left, b_bottom, a.width, a_bottom - b_bottom)
     height = b_bottom - top
@@ -502,8 +502,8 @@ eYo.Rect.intersection = function(a, b) {
   var left = Math.max(a.left, b.left)
   var right = Math.min(a.left + a.width, b.left + b.width)
   if (left <= right) {
-    var top = Math.max(a.top, b.top)
-    var bottom = Math.min(a.top + a.height, b.top + b.height)
+    var top = Math.max(a.high, b.high)
+    var bottom = Math.min(a.high + a.height, b.high + b.height)
     if (top <= bottom) {
       return new a.constructor(left, top, right - left, bottom - top)
     }

@@ -40,13 +40,13 @@ chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
 
 eYo.Test.setItUp = () => {
   eYo.App.workspace.clearUndo()
-  eYo.App.workspace.topBlocks_.length = 0
+  eYo.App.workspace.highBlocks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
   eYo.App.workspace.clearUndo()
   if (!opt || !opt.ignoreTopBlock) {
-    chai.assert(eYo.App.workspace.topBlocks_.length === 0, `FAILED ${eYo.App.workspace.topBlocks_.length} === 0`)
+    chai.assert(eYo.App.workspace.highBlocks_.length === 0, `FAILED ${eYo.App.workspace.highBlocks_.length} === 0`)
   }
 }
 

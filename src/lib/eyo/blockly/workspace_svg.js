@@ -246,9 +246,9 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           if (magnet.isInput) {
             t_magnet = eyo.magnets.out
           } else if (magnet.isBottom || magnet.isSuite) {
-            t_magnet = eyo.magnets.top
+            t_magnet = eyo.magnets.high
           } else if (magnet.isTop) {
-            t_magnet = eyo.magnets.bottom
+            t_magnet = eyo.magnets.low
           } else if (magnet.isLeft) {
             t_magnet = eyo.magnets.right
           } else if (magnet.isRight) {
@@ -275,7 +275,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
             }
             magnet.connect(t_magnet)
             if (magnet.isTop) {
-              t_magnet = eyo.magnets.bottom
+              t_magnet = eyo.magnets.low
             }
             eYo.Selected.eyo = eyo
           }
@@ -399,7 +399,7 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
   var topright = (tops) => {
     return lowest(tops, (top) => top.xy.y - top.xy.x)
   }
-  var tops = this.workspace_.topBlocks_.filter(block => {
+  var tops = this.workspace_.highBlocks_.filter(block => {
     return {
       block,
       xy: block.eyo.ui.xyInSurface
@@ -612,14 +612,14 @@ Blockly.Trashcan.prototype.position = function() {
       this.left_ -= metrics.flyoutWidth
     }
   }
-  this.top_ = metrics.viewHeight + metrics.absoluteTop -
-      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
+  this.high_ = metrics.viewHeight + metrics.absoluteTop -
+      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.low_;
 
   if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM) {
-    this.top_ -= metrics.flyoutHeight;
+    this.high_ -= metrics.flyoutHeight;
   }
   this.svgGroup_.setAttribute('transform',
-      'translate(' + this.left_ + ',' + this.top_ + ')');
+      'translate(' + this.left_ + ',' + this.high_ + ')');
 };
 
 /**
@@ -642,25 +642,25 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
         var b = topBlocks[i]
         if (b.rendered) {
           var blockBoundary = b.getBoundingRectangle()
-          if (blockBoundary.topLeft.x < bound.topLeft.x) {
-            bound.topLeft.x = blockBoundary.topLeft.x
+          if (blockBoundary.highLeft.x < bound.highLeft.x) {
+            bound.highLeft.x = blockBoundary.highLeft.x
           }
-          if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
-            bound.bottomRight.x = blockBoundary.bottomRight.x
+          if (blockBoundary.lowRight.x > bound.lowRight.x) {
+            bound.lowRight.x = blockBoundary.lowRight.x
           }
-          if (blockBoundary.topLeft.y < bound.topLeft.y) {
-            bound.topLeft.y = blockBoundary.topLeft.y
+          if (blockBoundary.highLeft.y < bound.highLeft.y) {
+            bound.highLeft.y = blockBoundary.highLeft.y
           }
-          if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
-            bound.bottomRight.y = blockBoundary.bottomRight.y
+          if (blockBoundary.lowRight.y > bound.lowRight.y) {
+            bound.lowRight.y = blockBoundary.lowRight.y
           }
         }
       }
       return {
-        x: bound.topLeft.x,
-        y: bound.topLeft.y,
-        width: bound.bottomRight.x - bound.topLeft.x,
-        height: bound.bottomRight.y - bound.topLeft.y
+        x: bound.highLeft.x,
+        y: bound.highLeft.y,
+        width: bound.lowRight.x - bound.highLeft.x,
+        height: bound.lowRight.y - bound.highLeft.y
       }
     }
     ++i

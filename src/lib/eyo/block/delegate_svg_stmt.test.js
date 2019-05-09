@@ -16,8 +16,8 @@ describe('comment statement', function () {
     // d.comment_p = 'abc'
     var m4ts = d.magnets
     ;[
-      m4ts.top,
-      m4ts.bottom,
+      m4ts.high,
+      m4ts.low,
       m4ts.left,
       m4ts.right
     ].forEach(m => {
@@ -26,8 +26,8 @@ describe('comment statement', function () {
       chai.assert(db.indexOf(m.connection) >= 0)
     })
     ;[
-      [m4ts.top, m4ts.bottom],
-      [m4ts.bottom, m4ts.top],
+      [m4ts.high, m4ts.low],
+      [m4ts.low, m4ts.high],
       [m4ts.left, m4ts.right],
       [m4ts.right, m4ts.left]
     ].forEach(ms => {

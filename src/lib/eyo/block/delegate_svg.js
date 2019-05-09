@@ -709,13 +709,13 @@ eYo.DelegateSvg.newComplete = (() => {
         })
         // now blocks and slots have been set
         this.didLoad()
-        if (eyo.magnets.bottom) {
+        if (eyo.magnets.low) {
           var nextModel = dataModel.next
           if (nextModel) {
             y = processModel(workspace, nextModel)
-            if (y && y.magnets.top) {
+            if (y && y.magnets.high) {
               try {
-                y.magnets.top.connectSmart(eyo)
+                y.magnets.high.connectSmart(eyo)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -762,7 +762,7 @@ eYo.DelegateSvg.prototype.beReady = function (headless) {
       })
       ;[this.magnets.suite,
         this.magnets.right,
-        this.magnets.bottom
+        this.magnets.low
       ].forEach(m => m && m.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
       this.render = eYo.DelegateSvg.prototype.render_
@@ -935,12 +935,12 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
             return fin()
           }
         } else if (otherM4t.isTop) {
-          if ((m4t = candidate.magnets.bottom) && m4t.checkType_(otherM4t)) {
+          if ((m4t = candidate.magnets.low) && m4t.checkType_(otherM4t)) {
             var targetM4t = otherM4t.target
-            if (targetM4t && candidate.magnets.top &&
-              targetM4t.checkType_(candidate.magnets.top)) {
+            if (targetM4t && candidate.magnets.high &&
+              targetM4t.checkType_(candidate.magnets.high)) {
               return fin(() => {
-                targetM4t.connect(candidate.magnets.top)
+                targetM4t.connect(candidate.magnets.high)
               })
             } else {
               return fin(() => {
@@ -953,11 +953,11 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
             // unreachable code
           }
         } else if (otherM4t.isSuite || otherM4t.isBottom) {
-          if ((m4t = candidate.magnets.top) && m4t.checkType_(otherM4t)) {
-            if ((targetM4t = otherM4t.target) && candidate.magnets.bottom &&
-            targetM4t.checkType_(candidate.magnets.bottom)) {
+          if ((m4t = candidate.magnets.high) && m4t.checkType_(otherM4t)) {
+            if ((targetM4t = otherM4t.target) && candidate.magnets.low &&
+            targetM4t.checkType_(candidate.magnets.low)) {
               return fin(() => {
-                targetM4t.connect(candidate.magnets.bottom)
+                targetM4t.connect(candidate.magnets.low)
               })
             } else {
               return fin()
@@ -1003,14 +1003,14 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
           return fin()
         }
       }
-      if ((m4t = candidate.magnets.top)) {
-        if ((otherM4t = this.magnets.bottom) && m4t.checkType_(otherM4t)) {
+      if ((m4t = candidate.magnets.high)) {
+        if ((otherM4t = this.magnets.low) && m4t.checkType_(otherM4t)) {
           return fin(() => {
             if ((targetM4t = otherM4t.target)) {
               // connected to something, beware of orphans
               otherM4t.disconnect()
-              if (candidate.magnets.bottom && candidate.magnets.bottom.checkType_(targetM4t)) {
-                candidate.magnets.bottom.connect(targetM4t)
+              if (candidate.magnets.low && candidate.magnets.low.checkType_(targetM4t)) {
+                candidate.magnets.low.connect(targetM4t)
                 targetM4t = null
               }
             }
@@ -1021,9 +1021,9 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
           })
         }
       }
-      if ((m4t = candidate.magnets.bottom)) {
-        if ((otherM4t = this.magnets.top) && m4t.checkType_(otherM4t)) {
-          if ((targetM4t = otherM4t.target) && (otherM4t = candidate.magnets.top) && candidate.magnets.top.checkType_(targetM4t)) {
+      if ((m4t = candidate.magnets.low)) {
+        if ((otherM4t = this.magnets.high) && m4t.checkType_(otherM4t)) {
+          if ((targetM4t = otherM4t.target) && (otherM4t = candidate.magnets.high) && candidate.magnets.high.checkType_(targetM4t)) {
             return fin(() => {
               otherM4t.connect(targetM4t)
             })

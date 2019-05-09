@@ -199,8 +199,8 @@ Blockly.Events.Move.prototype.run = function(forward) {
         } else {
           console.warn("Can't connect to non-existent left connection: " + eyo)
         }
-      } else if ((magnet = eyo.magnets.top)) {
-        if ((p_magnet = parentBlock.eyo.magnets.bottom)) {
+      } else if ((magnet = eyo.magnets.high)) {
+        if ((p_magnet = parentBlock.eyo.magnets.low)) {
           magnet.connect(p_magnet)
         } else {
           console.warn("Can't connect to non-existent bottom connection: " + parentBlock.eyo)
