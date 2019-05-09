@@ -274,9 +274,9 @@ eYo.DelegateSvg.prototype.deinit = function () {
     // this block was selected, select the block below or above before deletion
     // this does not work most probably because it is the wrong place
     var t_eyo
-    if ((t_eyo = this.next) || (t_eyo = this.previous) || (t_eyo = this.output)) {
+    if ((t_eyo = this.low) || (t_eyo = this.high) || (t_eyo = this.output)) {
       setTimeout(() => {
-        t_eyo.select()
+        eYo.Selected.eyo = t_eyo
       })// broken for output magnet ?
     }
   }
@@ -448,7 +448,7 @@ eYo.Delegate.prototype.statementEnumerator = function () {
           }
         }
       }
-      if ((eyo = eyo.next)) {
+      if ((eyo = eyo.low)) {
         eyos.unshift(eyo)
         e8rs.unshift(eyo.inputEnumerator())
         return eyo

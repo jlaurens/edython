@@ -346,7 +346,7 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.decorator_stmt.prototype, {
    */
   isWhite: {
     get () {
-      return !!this.next
+      return !!this.low
     }
   }
 })

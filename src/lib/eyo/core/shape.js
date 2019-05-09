@@ -498,7 +498,7 @@ var initWithStatementNode = function(eyo, opt) {
     this.H(true, eYo.Unit.x / 2 + r)
     this.quarter_circle(r, true, 1)
   }
-  if (eyo.previous) {
+  if (eyo.high) {
     this.V(0)
   } else {
     this.V(true, r)
@@ -544,7 +544,7 @@ var initWithGroupNode = function(eyo, opt) {
     this.H(true, eYo.Unit.x / 2 + r)
     this.quarter_circle(r, true, 1)
   }
-  if (eyo.previous) {
+  if (eyo.high) {
     this.V(0)
   } else {
     this.V(true, r)
@@ -585,7 +585,7 @@ var initWithExpressionNode = function(eyo, opt) {
         this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
         this.quarter_circle(this.stmt_radius, true, 2)
       }
-      if (parent.previous) {
+      if (parent.high) {
         this.V(0)
       } else {
         this.V(true, this.stmt_radius)
