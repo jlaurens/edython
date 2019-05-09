@@ -103,7 +103,7 @@ eYo.WorkspaceDelegate.prototype.fromString = function (str) {
 
 /**
  * Convert the workspace to string.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
+ * @param {?Object} opt  See eponym parameter in `eYo\.Xml\.dlgtToDom`.
  */
 eYo.WorkspaceDelegate.prototype.toDom = function (opt) {
   return eYo.Xml.workspaceToDom(this.workspace_, opt)
@@ -457,7 +457,7 @@ eYo.deleteBlock = function (block, deep) {
       var c8n
       if ((c8n = eyo.outputConnection)) {
         c8n = c8n.targetConnection
-      } else if ((c8n = eyo.nextConnection)) {
+      } else if ((c8n = eyo.connectBottomion)) {
         var t_eyo = c8n.eyo.t_eyo
       }
     }
@@ -486,15 +486,15 @@ eYo.deleteBlock = function (block, deep) {
  * @private
  */
 eYo.copyBlock = function(block, deep) {
-  var xmlBlock = eYo.Xml.blockToDom(block, {noId: true, noNext: !deep});
+  var xml = eYo.Xml.dlgtToDom(block.eyo, {noId: true, noNext: !deep});
   // Copy only the selected block and internal blocks.
   // Encode start position in XML.
   var xy = block.eyo.ui.xyInSurface;
-  xmlBlock.setAttribute('x', block.RTL ? -xy.x : xy.x);
-  xmlBlock.setAttribute('y', xy.y);
-  Blockly.clipboardXml_ = xmlBlock;
+  xml.setAttribute('x', block.RTL ? -xy.x : xy.x);
+  xml.setAttribute('y', xy.y);
+  Blockly.clipboardXml_ = xml;
   Blockly.clipboardSource_ = block.workspace;
-  eYo.App.didCopyBlock && eYo.App.didCopyBlock(block, xmlBlock)
+  eYo.App.didCopyBlock && eYo.App.didCopyBlock(block, xml)
 };
 
 /**

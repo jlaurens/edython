@@ -158,7 +158,7 @@ eYo.UI.prototype.drawC8n_ = function (c8n, recorder) {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.UI.prototype.drawNext_ = function (recorder) {
-  return this.drawC8n_(this.node.nextConnection, recorder)
+  return this.drawC8n_(this.node.connectBottomion, recorder)
 }
 
 /**

@@ -390,7 +390,7 @@ Blockly.RenderedConnection.prototype.connect_ = (() => {
                       } else {
                         P = child
                         var c8n
-                        while ((c8n = P.nextConnection)) {
+                        while ((c8n = P.connectBottomion)) {
                           if ((P = c8n.targetBlock())) {
                             continue
                           } else if (c8n.checkType_(oldChildC8n)) {
@@ -747,8 +747,8 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
   var dx = this.targetConnection.x_ - this.x_;
   var dy = this.targetConnection.y_ - this.y_;
   if (dx != 0 || dy != 0) {
-    var block = this.targetBlock();
-    block.eyo.ui.setOffset(-dx, -dy);
+    var t_eyo = this.eyo.t_eyo
+    t_eyo.ui.setOffset(-dx, -dy);
   }
 };
 

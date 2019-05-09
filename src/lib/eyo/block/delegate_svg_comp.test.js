@@ -40,7 +40,7 @@ describe('Comprehension', function() {
   })
   it('export comprehension', function() {
     var d = eYo.Test.new_dlgt('comprehension')
-    var d = eYo.Xml.blockToDom(d)
+    var d = eYo.Xml.dlgtToDom(d)
     var dd = eYo.Test.new_dlgt(d)
     eYo.Test.same(d, dd)
     d.block_.dispose()
@@ -51,7 +51,7 @@ describe('Comprehension', function() {
     var dd = eYo.Test.new_dlgt('key_datum')
     chai.assert(d.expression_s.connect(dd), 'MISSING connection')
     eYo.Test.dlgt(d, 'dict_comprehension')
-    var d = eYo.Xml.blockToDom(d)
+    var d = eYo.Xml.dlgtToDom(d)
     var dd = eYo.Test.new_dlgt(d)
     eYo.Test.same(d, dd)
     d.block_.dispose()

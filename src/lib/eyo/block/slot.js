@@ -509,7 +509,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.dlgtToDom`.
  * @return a dom element, void lists may return nothing
  * @this a block delegate
  */
@@ -529,14 +529,14 @@ eYo.Slot.prototype.save = function (element, opt) {
     }
   }
   var out = (() => {
-    var target = this.targetBlock()
-    if (target) { // otherwise, there is nothing to remember
-      if (target.eyo.wrapped_) {
+    var t_eyo = this.t_eyo
+    if (t_eyo) { // otherwise, there is nothing to remember
+      if (t_eyo.wrapped_) {
         // wrapped blocks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped block is a list
-        if (target.eyo instanceof eYo.DelegateSvg.List) {
-          var child = eYo.Xml.blockToDom(target, opt)
+        if (t_eyo instanceof eYo.DelegateSvg.List) {
+          var child = eYo.Xml.dlgtToDom(t_eyo, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
@@ -544,10 +544,10 @@ eYo.Slot.prototype.save = function (element, opt) {
           }
         } else {
           // let the target populate the given element
-          return eYo.Xml.toDom(target, element, opt)
+          return eYo.Xml.toDom(t_eyo, element, opt)
         }
       } else {
-        child = eYo.Xml.blockToDom(target, opt)
+        child = eYo.Xml.dlgtToDom(t_eyo, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           if (this.inputType === Blockly.INPUT_VALUE) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
@@ -585,7 +585,7 @@ eYo.Slot.prototype.saveRequired = function (element) {
  * Given an element, initialize the slot target
  * block with data from the given element.
  * The given element was created by the input's source block
- * in a blockToDom method. If it contains a child element
+ * in a dlgtToDom method. If it contains a child element
  * which input attribute is exactly the input's name,
  * then we ask the input target block to fromDom.
  * Target blocks are managed here too.
@@ -783,7 +783,7 @@ eYo.Slot.prototype.listConnect = function (bdc, key) {
     }
   }
   if (!key) {
-    return t_eyo.lastConnect(bdc.eyo)
+    return t_eyo.connectLast(bdc.eyo)
   }
   var input = t_eyo.block_.getInput(key)
   if (input) {

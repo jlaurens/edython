@@ -844,7 +844,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
  * then the data is not saved either.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.blockToDom`.
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.dlgtToDom`.
  */
 eYo.Data.prototype.save = function (element, opt) {
   var xml = this.model.xml

@@ -49,10 +49,10 @@ describe('YIELD expression and statement', function() {
   it(`yield <abc>`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.yield_stmt)
     var t_eyo = d.expression_t
-    t_eyo.lastConnect(eYo.DelegateSvg.newReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)).target_p = 'abc'
+    t_eyo.connectLast(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).target_p = 'abc'
     eYo.Test.code(d, 'yield abc')
     eYo.Test.input_length(d.expression_b, 3)
-    t_eyo.lastConnect(eYo.DelegateSvg.newReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)).target_p = 'bcd'
+    t_eyo.connectLast(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).target_p = 'bcd'
     eYo.Test.input_length(d.expression_b, 5)
     eYo.Test.code(d, 'yield abc, bcd')
     d.expression_s.unwrappedTarget.block_.dispose()
@@ -67,7 +67,7 @@ describe('YIELD expression and statement', function() {
     d.eyo.expression_p = 'abc'
     eYo.Test.code(d, 'yield abc')
     var t_eyo = d.eyo.expression_t
-    t_eyo.lastConnect(eYo.DelegateSvg.newReady(Blockly.mainWorkspace, eYo.T3.Expr.identifier)).target_p = 'bcd'
+    t_eyo.connectLast(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).target_p = 'bcd'
     eYo.Test.code(d, 'yield bcd')
     d.eyo.expression_s.unwrappedTarget.block_.dispose()
     eYo.Test.code(d, 'yield abc')

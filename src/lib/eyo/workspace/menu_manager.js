@@ -497,7 +497,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
 
   menuItem = this.newMenuItem(
     block.eyo.getPythonType(), (event) => {
-      var xmlDom = Blockly.Xml.blockToDom(block, true)
+      var xmlDom = eYo.Xml.dlgtToDom(block.eyo, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }
@@ -623,7 +623,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       if (target === eYo.Selected.block && target.eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var c8n
-        if (((c8n = unwrapped.nextConnection) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
+        if (((c8n = unwrapped.connectBottomion) && (target = c8n.targetBlock())) || ((c8n = unwrapped.previousConnection) && (target = c8n.targetBlock()))) {
           target.select()
         } else if ((c8n = unwrapped.outputConnection) && (c8n = c8n.targetConnection)) {
           target = c8n.sourceBlock_
@@ -1067,7 +1067,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     var B = block.workspace.newBlock(type)
     var yorn = B.previousConnection &&
     B.previousConnection.checkType_(c8n) &&
-    (!targetC8n || (B.nextConnection && targetC8n.checkType_(B.nextConnection)))
+    (!targetC8n || (B.connectBottomion && targetC8n.checkType_(B.connectBottomion)))
     B.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1081,8 +1081,8 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
   }
   var F_before = /** @suppress{accessControls} */ (targetC8n, type) => {
     var B = block.workspace.newBlock(type)
-    var yorn = B.nextConnection &&
-    B.nextConnection.checkType_(c8n) &&
+    var yorn = B.connectBottomion &&
+    B.connectBottomion.checkType_(c8n) &&
     (!targetC8n || (B.previousConnection && targetC8n.checkType_(B.previousConnection)))
     B.dispose(true)
     if (yorn) {
@@ -1096,7 +1096,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     return false
   }
   eYo.Events.disableWrap(() => {
-    if ((c8n = block.nextConnection)) {
+    if ((c8n = block.connectBottomion)) {
       var targetC8n = c8n.targetConnection
       for (var _ = 0, type; (type = Us[_++]);) {
         sep = F_after(targetC8n, type) || sep

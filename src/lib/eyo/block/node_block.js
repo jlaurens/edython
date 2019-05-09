@@ -274,7 +274,7 @@ eYo.Node.prototype.for_stmt2Dlgt = function (workspace) {
   if ((n = n.sibling.sibling.sibling)) {
     var dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.else_part)
     n.suiteInDlgt(dd)
-    dlgt.nextConnect(dd)
+    dlgt.connectBottom(dd)
   }
   return b
 }
@@ -292,7 +292,7 @@ eYo.Node.prototype.namedexpr_test2Dlgt = function (workspace) {
     // if this is already an identifier
     if (dlgt.type !== eYo.T3.Expr.identifier) {
       var dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.identifier)
-      if (dd.target_t.lastConnect(dlgt)) {
+      if (dd.target_t.connectLast(dlgt)) {
         dlgt = dd
       } else {
         console.error('IMPOSSIBLE CONNECTION:', dd, dlgt)
@@ -302,7 +302,7 @@ eYo.Node.prototype.namedexpr_test2Dlgt = function (workspace) {
     // before any connection
     dlgt.variant_p = eYo.Key.COL_VALUED
     dd = n.toDlgt(workspace)
-    if (!dlgt.value_t.lastConnect(dd)) {
+    if (!dlgt.value_t.connectLast(dd)) {
       console.error('IMPOSSIBLE CONNECTION:', dlgt, dd)
     }
   }
@@ -398,7 +398,7 @@ eYo.Node.prototype.try_stmt2Dlgt = function (workspace) {
     }
     n = n.sibling.sibling
     n.suiteInDlgt(dd)
-    dlgt = dlgt.nextConnect(dd)
+    dlgt = dlgt.connectBottom(dd)
   }
   return root
 }
@@ -419,11 +419,11 @@ eYo.Node.prototype.with_stmt2Dlgt = function (workspace) {
     if (nn) {
       var dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.identifier)
       dd.alias_s.connect(nn.toDlgt(workspace))
-      dd.target_t.lastConnect(n.n0.toDlgt(workspace))
+      dd.target_t.connectLast(n.n0.toDlgt(workspace))
     } else {
       dd = n.n0.toDlgt(workspace)
     }
-    with_t.lastConnect(dd)
+    with_t.connectLast(dd)
   } while ((n = n.sibling) && n.type === eYo.TKN.COMMA && (n = n.sibling))
   // n.type === eYo.TKN.COLON
   n.sibling.suiteInDlgt(root)
@@ -497,15 +497,15 @@ decorated: decorators (classdef | funcdef | async_funcdef)
   var root = n.decorator2Dlgt(workspace)
   var dlgt = root
   while ((n = n.sibling)) {
-    dlgt = dlgt.nextConnect(n.decorator2Dlgt(workspace))
+    dlgt = dlgt.connectBottom(n.decorator2Dlgt(workspace))
   }
   n = this.n1
   if (n.type === eYo.TKN.classdef) {
-    dlgt.nextConnect(n.classdef2Dlgt(workspace))
+    dlgt.connectBottom(n.classdef2Dlgt(workspace))
   } else if (n.type === eYo.TKN.funcdef) {
-    dlgt.nextConnect(n.funcdef2Dlgt(workspace))
+    dlgt.connectBottom(n.funcdef2Dlgt(workspace))
   } else if (n.type === eYo.TKN.async_funcdef) {
-    dlgt.nextConnect(n.n1.funcdef2Dlgt(workspace)).async = true
+    dlgt.connectBottom(n.n1.funcdef2Dlgt(workspace)).async = true
   } else {
     console.error(`UNEXPECTED node type: ${n.type}`)
   }
@@ -578,23 +578,23 @@ eYo.Node.prototype.typedargslistInDlgt = function (dlgt) {
     if (n.type === eYo.TKN.STAR) {
       if ((n = n.sibling)) {
         if (n.type === eYo.TKN.tfpdef) {
-          var d = dlgt.lastConnect(eYo.T3.Expr.parameter_star)
+          var d = dlgt.connectLast(eYo.T3.Expr.parameter_star)
           d.modified_s.connect(n.tfpdef2Dlgt(dlgt.workspace))
           if (!(n = n.sibling)) {
             return
           }
         } else {
-          dlgt.lastConnect(eYo.T3.Expr.star)
+          dlgt.connectLast(eYo.T3.Expr.star)
         }
         // n is the comma
         if ((n = n.sibling)) { // skip the comma
           continue
         }
       } else {
-        dlgt.lastConnect(eYo.T3.Expr.star)
+        dlgt.connectLast(eYo.T3.Expr.star)
       }
     } else if (n.type === eYo.TKN.DOUBLESTAR) {
-      d = dlgt.lastConnect(eYo.T3.Expr.parameter_star_star)
+      d = dlgt.connectLast(eYo.T3.Expr.parameter_star_star)
       n = n.sibling
       d.modified_s.connect(n.tfpdef2Dlgt(dlgt.workspace))
       if ((n = n.sibling)) { // comma
@@ -602,14 +602,14 @@ eYo.Node.prototype.typedargslistInDlgt = function (dlgt) {
         continue
       }
     } else {
-      d = dlgt.lastConnect(n.tfpdef2Dlgt(dlgt.workspace))
+      d = dlgt.connectLast(n.tfpdef2Dlgt(dlgt))
       if ((n = n.sibling)) {
         if (n.type === eYo.TKN.EQUAL) {
           d.variant_p = d.variant_p === eYo.Key.ANNOTATED
           ? eYo.Key.ANNOTATED_VALUED
           : eYo.Key.TARGET_VALUED
           n = n.sibling
-          d.value_t.lastConnect(n.toDlgt(dlgt.workspace))
+          d.value_t.connectLast(n.toDlgt(dlgt))
           if (!(n = n.sibling)) {
             return
           }
@@ -634,7 +634,7 @@ eYo.Node.prototype.knownListInDlgt = function (dlgt, toDlgt) {
     if (!d) {
       console.error('MISSING BLOCK', toDlgt.call(n, dlgt))
     }
-    dlgt.lastConnect(d)
+    dlgt.connectLast(d)
     if ((n = n.sibling)) {
       if ((n = n.sibling)) {
         continue
@@ -656,8 +656,8 @@ eYo.Node.prototype.do_list = function (dlgt) {
     if (!d) {
       console.error('MISSING BLOCK', n.toDlgt(dlgt))
     }
-    if (!dlgt.lastConnect(d)) {
-      console.error('NO CONNECTION, BREAK HERE', n.toDlgt(dlgt), dlgt.lastConnect(d))
+    if (!dlgt.connectLast(d)) {
+      console.error('NO CONNECTION, BREAK HERE', n.toDlgt(dlgt), dlgt.connectLast(d))
     }
   } while ((n = n.sibling) && (n = n.sibling)) // goddle comma
 }
@@ -723,7 +723,7 @@ eYo.Node.prototype.yield_exprInDlgt = function (dlgt) {
  * @param {!Object} dlgt  a delegate
  */
 eYo.Node.prototype.yield_exprInListDlgt = function (dlgt) {
-  dlgt.lastConnect(this.yield_expr2Dlgt(dlgt))
+  dlgt.connectLast(this.yield_expr2Dlgt(dlgt))
 }
 
 /**
@@ -743,22 +743,22 @@ eYo.Node.prototype.varargslistInDlgt = function (dlgt) {
     if (n.type === eYo.TKN.STAR) {
       if ((n = n.sibling)) {
         if (n.type !== eYo.TKN.COMMA) {
-          var d = dlgt.lastConnect(eYo.T3.Expr.parameter_star)
+          var d = dlgt.connectLast(eYo.T3.Expr.parameter_star)
           d.modified_s.connect(n.n0.NAME2Dlgt(dlgt))
           if (!(n = n.sibling)) {
             return
           }
         } else {
-          dlgt.lastConnect(eYo.T3.Expr.star)
+          dlgt.connectLast(eYo.T3.Expr.star)
         }
         if ((n = n.sibling)) { // skip the comma
           continue
         }
       } else {
-        dlgt.lastConnect(eYo.T3.Expr.star)
+        dlgt.connectLast(eYo.T3.Expr.star)
       }
     } else if (n.type === eYo.TKN.DOUBLESTAR) {
-      d = dlgt.lastConnect(eYo.T3.Expr.parameter_star_star)
+      d = dlgt.connectLast(eYo.T3.Expr.parameter_star_star)
       n = n.sibling
       d.modified_s.connect(n.n0.NAME2Dlgt(dlgt))
       if ((n = n.sibling)) { // comma
@@ -766,12 +766,12 @@ eYo.Node.prototype.varargslistInDlgt = function (dlgt) {
         continue
       }
     } else {
-      d = dlgt.lastConnect(n.n0.NAME2Dlgt(dlgt))
+      d = dlgt.connectLast(n.n0.NAME2Dlgt(dlgt))
       if ((n = n.sibling)) {
         if (n.type === eYo.TKN.EQUAL) {
           d.variant_p = eYo.Key.TARGET_VALUED
           n = n.sibling
-          d.value_t.lastConnect(n.toDlgt(dlgt))
+          d.value_t.connectLast(n.toDlgt(dlgt))
           if (!(n = n.sibling)) {
             return
           }
@@ -801,7 +801,7 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (dlgt) {
   if ((n1 = n.sibling)) {
     if (n1.n_type === eYo.TKN.comp_for) {
       // set comprehension
-      dlgt.lastConnect(this.comprehension2Dlgt(dlgt))
+      dlgt.connectLast(this.comprehension2Dlgt(dlgt))
       dlgt.variant_p = eYo.Key.BRACE
       return dlgt
     } else if ((n2 = n1.sibling)) {
@@ -817,7 +817,7 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (dlgt) {
       } else if ((n3 = n2.sibling)) {
         if (n3.n_type === eYo.TKN.comp_for) {
           // dict comprehension
-          dlgt.lastConnect(this.dict_comprehension2Dlgt(dlgt))
+          dlgt.connectLast(this.dict_comprehension2Dlgt(dlgt))
           return dlgt
         }
       }
@@ -827,7 +827,7 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (dlgt) {
   while (true) {
     if (n.n_type === eYo.TKN.DOUBLESTAR) {
       var dd = eYo.DelegateSvg.newComplete(dlgt, eYo.T3.Expr.expression_star_star)
-      dlgt.lastConnect(dd)
+      dlgt.connectLast(dd)
       if ((n1 = n.sibling)) {
         dd.modified_s.connect(n1.toDlgt(dlgt))
         if ((n1 = n1.sibling) && (n = n1.sibling)) {
@@ -839,8 +839,8 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (dlgt) {
       if ((n1 = n.sibling)) {
         if (n1.n_type === eYo.TKN.COLON) {
           var ddd = eYo.DelegateSvg.newComplete(dlgt, eYo.T3.Expr.key_datum)
-          dlgt.lastConnect(ddd)
-          ddd.target_t.lastConnect(dd)
+          dlgt.connectLast(ddd)
+          ddd.target_t.connectLast(dd)
           if ((n2 = n1.sibling)) {
             ddd.annotated_s.connect(n2.toDlgt(dlgt))
             if ((n3 = n2.sibling) && (n = n3.sibling)) {
@@ -848,13 +848,13 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (dlgt) {
             }
           }
         } else {
-          dlgt.lastConnect(dd)
+          dlgt.connectLast(dd)
           if ((n = n1.sibling)) {
             continue
           }
         }
       } else {
-        dlgt.lastConnect(dd)
+        dlgt.connectLast(dd)
       }
     }
     return dlgt
@@ -873,7 +873,7 @@ eYo.Node.prototype.comprehensionInDlgt = function (dlgt) {
   var dd
   while ((dd = d.comp_iter)) {
     d.comp_iter = undefined
-    for_if_t.lastConnect((d = dd))
+    for_if_t.connectLast((d = dd))
   }
 }
 
@@ -898,7 +898,7 @@ eYo.Node.prototype.dict_comprehension2Dlgt = function (owner) {
     */
   var dlgt = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.dict_comprehension)
   var dd = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.key_datum)
-  dd.target_t.lastConnect(this.n0.toDlgt(owner))
+  dd.target_t.connectLast(this.n0.toDlgt(owner))
   dd.annotated_s.connect(this.n2.toDlgt(owner))
   dlgt.expression_s.connect(dd)
   this.n3.comp_forInDlgt(dlgt)
@@ -907,7 +907,7 @@ eYo.Node.prototype.dict_comprehension2Dlgt = function (owner) {
   var d1
   while ((d1 = d0.comp_iter)) {
     d0.comp_iter = undefined
-    t.lastConnect((d0 = d1))
+    t.connectLast((d0 = d1))
   }
   return dlgt
 }
@@ -921,7 +921,7 @@ eYo.Node.prototype.testlist_compInDlgt = function (dlgt) {
   // (namedexpr_test|star_expr) ( comp_for | (',' (namedexpr_test|star_expr))* [','] )
   var n = this.n1
   if (n && n.n_type === eYo.TKN.comp_for) {
-    dlgt.lastConnect(this.comprehension2Dlgt(dlgt))
+    dlgt.connectLast(this.comprehension2Dlgt(dlgt))
   } else {
     this.testlistInDlgt(dlgt)
   }
@@ -1026,7 +1026,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
             if (n1.n_type === eYo.TKN.EQUAL) {
               d2 = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.assignment_chain)
               if ((d = d1.value_t)) {
-                d.lastConnect(d2)
+                d.connectLast(d2)
                 d1.variant_p = eYo.Key.TARGET_VALUED // necessary ?
               } else {
                 console.error('ERROR')
@@ -1094,7 +1094,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
             d0.variant_p = eYo.Key.CALL_EXPR            
           } else {
             root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.call_expr)
-            root.target_t.lastConnect(d0)
+            root.target_t.connectLast(d0)
             d0 = root
             d = d0.n_ary_t
           }
@@ -1108,7 +1108,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
             d0.variant_p = eYo.Key.SLICING
           } else {
             root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.slicing)
-            root.target_t.lastConnect(d0)
+            root.target_t.connectLast(d0)
             d0 = root
             d = d0.slicing_t
           }
@@ -1131,7 +1131,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
                 d0.target_p = ''
               }
               d0.dotted_p = 1
-              d0.target_t.lastConnect(n0.n1.NAME2Dlgt(workspace))  
+              d0.target_t.connectLast(n0.n1.NAME2Dlgt(workspace))  
             })
           }
         }
@@ -1284,12 +1284,12 @@ factor: ('+'|'-'|'~') factor | power
       } else if ((n1 = n0.sibling)) {
         if (n1.n_type === eYo.TKN.COLONEQUAL) {
           root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.named_expr)
-          root.target_t.lastConnect(n0.toDlgt(workspace))
-          root.value_t.lastConnect(n1.sibling.toDlgt(workspace))
+          root.target_t.connectLast(n0.toDlgt(workspace))
+          root.value_t.connectLast(n1.sibling.toDlgt(workspace))
         } else if (n1.n_type === eYo.TKN.EQUAL) {
           root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.identifier_valued)
-          root.target_t.lastConnect(n0.toDlgt(workspace))
-          root.value_t.lastConnect(n1.sibling.toDlgt(workspace))
+          root.target_t.connectLast(n0.toDlgt(workspace))
+          root.value_t.connectLast(n1.sibling.toDlgt(workspace))
         } else {
           root = this.comprehension2Dlgt(workspace)
         }
@@ -1303,8 +1303,8 @@ factor: ('+'|'-'|'~') factor | power
       d0 = this.n0.toDlgt(workspace)
       if ((n2 = this.n2)) {
         root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.named_expr)
-        root.target_t.lastConnect(d0)
-        root.value_t.lastConnect(n2.toDlgt(workspace))
+        root.target_t.connectLast(d0)
+        root.value_t.connectLast(n2.toDlgt(workspace))
       } else {
         root = d0
       }
@@ -1484,7 +1484,7 @@ factor: ('+'|'-'|'~') factor | power
       t = root.identifiers_t
       n = this.n1
       do {
-        t.lastConnect(n.toDlgt(workspace))
+        t.connectLast(n.toDlgt(workspace))
       } while ((n = n.sibling) && (n = n.sibling))
       return root
     case eYo.TKN.nonlocal_stmt:
@@ -1493,7 +1493,7 @@ factor: ('+'|'-'|'~') factor | power
       t = root.identifiers_t
       n = this.n1
       do {
-        t.lastConnect(n.toDlgt(workspace))
+        t.connectLast(n.toDlgt(workspace))
       } while ((n = n.sibling) && (n = n.sibling))
       return root
     case eYo.TKN.NEWLINE:

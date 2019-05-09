@@ -384,10 +384,10 @@ eYo.DelegateSvg.debugCount = {}
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.DelegateSvg.prototype.renderDrawNext_ = function (recorder) {
-  if (this.nextConnection && eYo.DelegateSvg.debugStartTrackingRender) {
+  if (this.connectBottomion && eYo.DelegateSvg.debugStartTrackingRender) {
     console.log(eYo.DelegateSvg.debugPrefix, 'NEXT')
   }
-  return this.renderDrawC8n_(recorder, this.nextConnection)
+  return this.renderDrawC8n_(recorder, this.connectBottomion)
 }
 
 /**
@@ -1131,7 +1131,7 @@ eYo.DelegateSvg.prototype.lock = function () {
       }      
     }
   })
-  if ((c8n = this.nextConnection)) {
+  if ((c8n = this.connectBottomion)) {
     if ((t_eyo = c8n.eyo.t_eyo)) {
       ans += t_eyo.lock()
     }
@@ -1173,7 +1173,7 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
       c8n.setHidden(false)
     }
   })
-  if (!shallow && (c8n = block.nextConnection)) {
+  if (!shallow && (c8n = block.connectBottomion)) {
     if ((t_eyo = c8n.eyo.t_eyo)) {
       ans += t_eyo.unlock()
     }

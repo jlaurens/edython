@@ -441,7 +441,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
       throw "FORBIDDEN"
     }
   },
-  nextConnection: {
+  connectBottomion: {
     get () {
       console.error("INCONSISTENCY BREAK HERE")
       throw "FORBIDDEN"
@@ -2007,22 +2007,6 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
 }
 
 /**
- * Connect the last connection to the given expression block.
- * @param {!eYo.Delegate|eYo.Magnet|String} bdct  block, delegate, connection or type
- * @return {Boolean}  whether the connection is established
- */
-eYo.Delegate.prototype.lastConnect = function (dmt) {
-  var other = dmt.magnets.output || (dmt.connection && dmt) || eYo.DelegateSvg.newComplete(this.workspace, dmt).magnets.output
-  if (other.connection) {
-    var m4t = this.lastInput.eyo.magnet
-    if (m4t.checkType_(other)) {
-      m4t.connect(other)
-      return m4t.target === other ? m4t.t_eyo : undefined
-    }
-  }
-}
-
-/**
  * Did connect this block's connection to another connection.
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
@@ -2460,7 +2444,24 @@ eYo.Delegate.prototype.getSlotConnections = function () {
  * @param {!Bockly.Block} block_
  * @return the given block
  */
-eYo.Delegate.prototype.nextConnect = function (block) {
-  this.block_.nextConnection.connect(block.previousConnection)
-  return block
+eYo.Delegate.prototype.connectBottom = function (dlgt) {
+  this.magnets.bottom.connect(dlgt.magnets.top)
+  return dlgt
+}
+
+
+/**
+ * Connect the magnet of the `lastInput`, to the given expression block/magnet/type.
+ * @param {!eYo.Delegate|eYo.Magnet|String} bdct  block, delegate, connection or type
+ * @return {?eYo.Delegate}  The connected Dlgt, if any.
+ */
+eYo.Delegate.prototype.connectLast = function (dmt) {
+  var other = (dmt.magnets && dmt.magnets.output) || (dmt.connection && dmt) || eYo.DelegateSvg.newComplete(this, dmt).magnets.output
+  if (other.connection) {
+    var m4t = this.lastInput.eyo.magnet
+    if (m4t.checkType_(other)) {
+      m4t.connect(other)
+      return m4t.target === other ? m4t.t_eyo : undefined
+    }
+  }
 }

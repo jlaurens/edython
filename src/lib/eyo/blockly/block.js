@@ -46,7 +46,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
   // /** @type {Blockly.Connection} */
   // this.outputConnection = null
   // /** @type {Blockly.Connection} */
-  // this.nextConnection = null
+  // this.connectBottomion = null
   // /** @type {Blockly.Connection} */
   // this.previousConnection = null
   // /** @type {!Array.<!Blockly.Input>} */
@@ -227,7 +227,7 @@ Object.defineProperties(eYo.Block.prototype, {
       throw "FORBIDDEN"
     }
   },
-  nextConnection: {
+  connectBottomion: {
     get () {
       var m = this.eyo.magnets.bottom
       return m && m.connection

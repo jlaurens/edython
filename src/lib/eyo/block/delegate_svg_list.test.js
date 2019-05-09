@@ -46,19 +46,19 @@ describe('Enclosure connections', function() {
     // can I connect a comprehension block ?
     eYo.Test.input_length(d, 1)
     var dd1 = eYo.Test.new_dlgt('comprehension')
-    chai.assert(d.lastConnect(dd1))
+    chai.assert(d.connectLast(dd1))
     // this is a unique object:
     eYo.Test.input_length(d, 1)
     // replace with another unique object:
     var dd2 = eYo.Test.new_dlgt('yield_expr')
-    chai.assert(d.lastConnect(dd2))
+    chai.assert(d.connectLast(dd2))
     eYo.Test.input_length(d, 1)
     chai.assert(!dd1.outputConnection.t_eyo)
     dd1.block_.dispose()
     // replace with a non unique object:
     var dd3 = eYo.Test.new_dlgt(421)
     eYo.Test.dlgt(dd3, 'integer')
-    chai.assert(d.lastConnect(dd3))
+    chai.assert(d.connectLast(dd3))
     eYo.Test.input_length(d, 3)
     chai.assert(!dd2.outputConnection.t_eyo)
     chai.assert(!d.inputList[0].eyo.connect(dd2), 'UNEXPECTED connection')
@@ -66,7 +66,7 @@ describe('Enclosure connections', function() {
     dd2.block_.dispose()
     dd1 = eYo.Test.new_dlgt(124)
     eYo.Test.dlgt(dd1, 'integer')
-    chai.assert(d.lastConnect(dd1))
+    chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 5)
     dd1 = eYo.Test.new_dlgt(241)
     eYo.Test.dlgt(dd1, 'integer')
@@ -82,7 +82,7 @@ describe('Enclosure connections', function() {
     // connect a unique block
     var dd1 = eYo.Test.new_dlgt('comprehension')
     eYo.Test.input_length(d, 1)
-    chai.assert(d.lastConnect(dd1))
+    chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 1)
     eYo.Test.dlgt(d, 'set_display')
     // replace by any other unique
@@ -90,7 +90,7 @@ describe('Enclosure connections', function() {
     var unique = list.unique(d.type)
     unique.forEach(t => {
       var dd2 = eYo.Test.new_dlgt(t)
-      chai.assert(d.lastConnect(dd2))
+      chai.assert(d.connectLast(dd2))
       eYo.Test.input_length(d, 1)
       chai.assert(!dd1.outputConnection.t_eyo)
       dd1.block_.dispose()
@@ -98,7 +98,7 @@ describe('Enclosure connections', function() {
     })
     var dd2 = eYo.Test.new_dlgt('dict_comprehension')
     chai.assert(dd2.expression_s.connect(eYo.Test.new_dlgt('key_datum')))
-    d.lastConnect(dd2)
+    d.connectLast(dd2)
     dd1.block_.dispose()
     eYo.Test.dlgt(d, 'dict_display')
     d.block_.dispose()

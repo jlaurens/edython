@@ -210,7 +210,7 @@ eYo.Test.line_counts = (dlgt, cfg) => {
  * `false` otherwise.
  * Possible types are: 'output', 'top', 'bottom', 'left', right', 'suite'
  */
-eYo.Test.connections = (d, cfg) => {
+eYo.Test.magnets = (d, cfg) => {
   var failed
   var expected, available
   ;['output', 'top', 'left', 'right', 'suite', 'bottom'].some(k => {
@@ -283,7 +283,7 @@ eYo.Test.data_save = (dlgt, key, value, ignore) => {
   chai.assert(d, `UNKNOWN DATA KEY: ${key}`)
   var old = dlgt[`${key}_p`]
   dlgt[`${key}_p`] = value
-  var dom = eYo.Xml.blockToDom(dlgt)
+  var dom = eYo\.Xml\.dlgtToDom(dlgt)
   if (ignore) { // do not create a block from dom
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
@@ -382,7 +382,7 @@ eYo.Test.subtype = (dlgt, t) => {
  */
 eYo.Test.copy_paste = (dlgt, opts) => {
   chai.assert(dlgt, 'MISSING d')
-  var dom = eYo.Xml.blockToDom(dlgt.block_)
+  var dom = eYo.Xml.dlgtToDom(dlgt)
   var dd = eYo.DelegateSvg.newReady(dlgt, dom)
   eYo.Test.same(dlgt, dd)
   var M = eYo.Delegate.Manager.getModel(dlgt.type)

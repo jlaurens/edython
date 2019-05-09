@@ -166,7 +166,7 @@ eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
       var b = top.eyo.getBoundingBox()
       var target = top
       var c8n
-      while ((c8n = target.nextConnection) && (target = c8n.targetBlock())) {
+      while ((c8n = target.connectBottomion) && (target = c8n.targetBlock())) {
         b.expandToInclude(target.eyo.getBoundingBox())
       }
       var d = distance(a, b)

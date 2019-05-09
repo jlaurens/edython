@@ -29,7 +29,7 @@ describe('for_part', function() {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_dlgt('for_part')
     eYo.Test.dlgt(d1, 'for_part')
-    eYo.Test.connections(d1, {
+    eYo.Test.magnets(d1, {
       left: true,
       right: true,
       top: true,
@@ -52,7 +52,7 @@ describe('for_part', function() {
   //   var dd = eYo.Test.new_dlgt(eYo.T3.Stmt.else_part)
   //   eYo.Test.dlgt(dd, 'else_part')
   //   eYo.Test.code(dd, 'else:\n    <MISSING STATEMENT>')
-  //   chai.assert(d.nextConnect(dd))
+  //   chai.assert(d.connectBottom(dd))
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>\nelse:\n    <MISSING STATEMENT>')
   //   dd.block_.dispose()
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>')
