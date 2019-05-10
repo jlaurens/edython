@@ -43,7 +43,7 @@ goog.inherits(eYo.WorkspaceDelegate, eYo.Helper)
 eYo.Do.addProtocol(eYo.WorkspaceDelegate.prototype, 'ChangeCount')
 
 /**
- * 
+ *
  */
 eYo.WorkspaceDelegate.prototype.getRecover = (() => {
   var get = function () {
@@ -457,7 +457,7 @@ eYo.deleteBlock = function (block, deep) {
       var m4t
       if ((m4t = eyo.magnets.output)) {
         m4t = m4t.target
-      } else if ((m4t = eyo.magnets.low)) {
+      } else if ((m4t = eyo.magnets.foot)) {
         var t_eyo = m4t.t_eyo
       }
     }
@@ -465,7 +465,7 @@ eYo.deleteBlock = function (block, deep) {
       Blockly.hideChaff()
       if (deep) {
         do {
-          var low = eyo.low
+          var low = eyo.foot
           eyo.block_.dispose(false, true)
         } while ((eyo = low))
       } else {

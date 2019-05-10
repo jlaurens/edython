@@ -23,7 +23,7 @@ eYo.Model.copy__module = new eYo.Model.Module('copy__module', 'https://docs.pyth
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.copy__module.Item = function (model) {
   eYo.Model.copy__module.Item.superClass_.constructor.call(this, model)

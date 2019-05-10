@@ -23,7 +23,7 @@ eYo.Model.turtle__module = new eYo.Model.Module('turtle__module', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.turtle__module.Item = function (model) {
   eYo.Model.turtle__module.Item.superClass_.constructor.call(this, model)

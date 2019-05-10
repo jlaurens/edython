@@ -62,7 +62,7 @@ eYo.FlyoutCategory = {
                 O: "'...'"
               }
             },
-          }, 
+          },
         },
       },
     },
@@ -277,7 +277,7 @@ eYo.FlyoutCategory = {
           O: {
             type: eYo.T3.Expr.list_display,
             expression_s: "'...'"
-          }, 
+          },
         },
       },
     },
@@ -431,7 +431,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.assignment_stmt,
       value_s: {
         slots: {
-          O: "'...'", 
+          O: "'...'",
         },
       },
       title: 'text_assignment'
@@ -549,7 +549,7 @@ eYo.FlyoutCategory = {
       type: eYo.T3.Stmt.assignment_stmt,
       value_s: {
         slots: {
-          O: 0, 
+          O: 0,
         },
       },
     },

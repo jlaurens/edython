@@ -117,8 +117,8 @@ Object.defineProperties(eYo.UI.prototype, {
 
 /**
  * Render the given connection, if relevant.
- * @param {eYo.Magnet} m4t 
- * @param {*} recorder 
+ * @param {eYo.Magnet} m4t
+ * @param {*} recorder
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
@@ -134,9 +134,9 @@ eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
   }
   var do_it = !t_eyo.rendered ||
   (!this.up &&
-    !eYo.Connection.disconnectedParentM4t &&
-    !eYo.Connection.disconnectedChildM4t&&
-    !eYo.Connection.connectedParentM4t)
+    !eYo.Magnet.disconnectedParent &&
+    !eYo.Magnet.disconnectedChild&&
+    !eYo.Magnet.connectedParent)
   if (do_it) {
     var ui = t_eyo.ui
     try {
@@ -158,7 +158,7 @@ eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.UI.prototype.drawLow_ = function (recorder) {
-  return this.drawM4t_(this.node.magnets.low, recorder)
+  return this.drawM4t_(this.node.magnets.foot, recorder)
 }
 
 /**
@@ -282,7 +282,7 @@ eYo.UI.prototype.render = (() => {
     // Only when the render message did not come from above!
     var parent = this.node.parent
     if (parent) {
-      var justConnected = eYo.Connection.connectedParentM4t && this.node.magnets.output === eYo.Connection.connectedParentM4t.target
+      var justConnected = eYo.Magnet.connectedParent && this.node.magnets.output === eYo.Magnet.connectedParent.target
       if (!parent.ui.down) {
         try {
           parent.ui.up = true
@@ -356,7 +356,7 @@ eYo.UI.prototype.render = (() => {
         if (eYo.UI.debugStartTrackingRender &&  eYo.UI.debugPrefix.length) {
           eYo.UI.debugPrefix = eYo.UI.debugPrefix.substring(1)
         }
-      }    
+      }
     }
   )
   return function (optBubble, recorder) {
@@ -371,7 +371,7 @@ eYo.UI.prototype.render = (() => {
     // statement connection
     var block = this.node.block_
     if (block.rendered) {
-      if (eYo.Connection.disconnectedChildM4t && this.node.magnets.high === eYo.Connection.disconnectedChildM4t) {
+      if (eYo.Magnet.disconnectedChild && this.node.magnets.head === eYo.Magnet.disconnectedChild) {
         // this.node block is the top one
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
@@ -381,7 +381,7 @@ eYo.UI.prototype.render = (() => {
         this.node.change.save.render = this.node.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
-      } else if (eYo.Connection.disconnectedParentM4t && this.node.magnets.low === eYo.Connection.disconnectedParentM4t) {
+      } else if (eYo.Magnet.disconnectedParent && this.node.magnets.foot === eYo.Magnet.disconnectedParent) {
         // this.node block is the low one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
@@ -392,11 +392,11 @@ eYo.UI.prototype.render = (() => {
         this.node.change.save.render = this.node.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
-      } else if (eYo.Connection.connectedParentM4t) {
-        if (this.node.magnets.output && eYo.Connection.connectedParentM4t === this.node.magnets.output.target) {
+      } else if (eYo.Magnet.connectedParent) {
+        if (this.node.magnets.output && eYo.Magnet.connectedParent === this.node.magnets.output.target) {
           // this.node is not a statement connection
           // no shortcut
-        } else if (this.node.magnets.high && eYo.Connection.connectedParentM4t === this.node.magnets.high.target) {
+        } else if (this.node.magnets.head && eYo.Magnet.connectedParent === this.node.magnets.head.target) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
@@ -404,7 +404,7 @@ eYo.UI.prototype.render = (() => {
           this.updateShape()
           this.node.change.save.render = this.node.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        } else if (this.node.magnets.low && eYo.Connection.connectedParentM4t === this.node.magnets.low) {
+        } else if (this.node.magnets.foot && eYo.Magnet.connectedParent === this.node.magnets.foot) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
@@ -428,7 +428,7 @@ eYo.UI.prototype.render = (() => {
         // which means that it is an expression block's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.node.magnets.outpu === eYo.Connection.connectedParentM4t || eYo.Connection.connectedParentM4t && eYo.Connection.connectedParentM4t.b_eyo === this.node) {
+          if (!parent.ui.up && this.node.magnets.outpu === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.b_eyo === this.node) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
@@ -512,7 +512,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
   if ((m4t = m4ts.left)) {
     m4t.moveToOffset(blockTL)
   }
-  if ((m4t = m4ts.high)) {
+  if ((m4t = m4ts.head)) {
     m4t.moveToOffset(blockTL)
   }
   if ((m4t = m4ts.output)) {
@@ -526,7 +526,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
       }
     }
   })
-  if ((m4t = m4ts.low)) {
+  if ((m4t = m4ts.foot)) {
     m4t.moveToOffset(blockTL)
     if (m4t.target) {
       m4t.tighten_()
@@ -567,10 +567,10 @@ eYo.UI.prototype.layoutConnections_ = function (recorder) {
   if (m4t) {
     m4t.setOffset()
   } else {
-    if ((m4t = m4ts.high)) {
+    if ((m4t = m4ts.head)) {
       m4t.setOffset()
     }
-    if ((m4t = m4ts.low)) {
+    if ((m4t = m4ts.foot)) {
       if (this.node.isCollapsed) {
         m4t.setOffset(0, 2)
       } else {
@@ -620,7 +620,7 @@ eYo.UI.prototype.draw_ = function (recorder) {
 eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
   'alignRightEdges_',
   function (recorder) {
-    if (this.node.parent || !this.node.isStmt || !this.node.block_.rendered || !this.node.block_.workspace || !this.node.isReady) {
+    if (this.node.parent || !this.node.isStmt || !this.node.rendered || !this.node.workspace || !this.node.isReady) {
       return
     }
     var right = 0
@@ -639,7 +639,7 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
     if (right) {
       this.node.forEachStatement((eyo, depth) => {
         var width = right - t * depth
-        // find the last right block and 
+        // find the last right block and
         var x = eyo
         var b = x.block_
         while ((x = x.right)) {
@@ -760,7 +760,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
  * rendering information. It is the argument of various methods.
  * This method is executed at least once for any rendered block.
  * Since then, it won't be executed as long as the block has not been edited.
- * @param {?Object} io 
+ * @param {?Object} io
  * @private
  */
 eYo.UI.prototype.drawModel_ = function (io) {
@@ -796,7 +796,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
 
 /**
  * Terminate to render the model.
- * @param {?Object} recorder 
+ * @param {?Object} recorder
  * @private
  */
 eYo.UI.prototype.drawModelEnd_ = function (io) {
@@ -869,7 +869,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     // We ended a block. The right edge is generally a separator.
     // No need to add a separator if the block is wrapped or locked
     io.common.field.shouldSeparate && (io.common.field.shouldSeparate = !this.hasRightEdge)
-    // if the block is wrapped or locked, there won't be any 
+    // if the block is wrapped or locked, there won't be any
     // right edge where a caret could be placed.
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
@@ -926,7 +926,7 @@ eYo.UI.prototype.drawSharp_ = function (io) {
     this.driver.nodeDrawSharp(this.node_, io.block.disabled)
     if (io.block.disabled) {
       io.cursor.c += 2
-      io.common.startOfLine = io.common.startOfStatement = false  
+      io.common.startOfLine = io.common.startOfStatement = false
     }
   }
 }
@@ -1088,14 +1088,14 @@ eYo.UI.prototype.drawFields_ = function (io, only_prefix) {
 
 /**
  * Render the ending blocks.
- * 
+ *
  * In order to save space, we put caret at the end of blocks
  * and we shrink blocks to the minimum.
- * 
+ *
  * When expression blocks are stacked, there is no need to
  * spend space just to draw the edges.
  * We can save space by drawing the block edges on top of each others.
- * 
+ *
  * When we start rendering a new block,
  * `io.common.field.shouldSeparate` is set to `false`.
  * If we enter a child block, with no field nor splot before,
@@ -1297,16 +1297,16 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
             m4t.setOffset(io.cursor)
             if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
               ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
-          
+
             }
           }
-          if (io.block.eyo.magnets.output !== eYo.Connection.disconnectedChildM4t && !ui.up) {
+          if (io.block.eyo.magnets.output !== eYo.Magnet.disconnectedChild && !ui.up) {
             t_eyo.render(false, io)
             if (!t_eyo.wrapped_) {
               io.common.field.shouldSeparate = false
               io.common.field.beforeIsSeparator = true
             }
-          }      
+          }
         } catch(err) {
            console.error(err)
            throw err
@@ -1329,7 +1329,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
     } else {
       if (m4t.targetIsMissing) {
         this.someTargetIsMissing = true
-      }  
+      }
       if (m4t.bindField && m4t.bindField.isVisible()) {
         m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
         // The `bind` field hides the connection.
@@ -1447,7 +1447,7 @@ eYo.UI.prototype.isVisible = function () {
 /**
  * Set the display status of the receiver's node.
  * Forwards to the driver.
- * @param {boolean} visible 
+ * @param {boolean} visible
  */
 eYo.UI.prototype.setVisible = function (visible) {
   this.driver.nodeDisplayedSet(this.node_, visible)
@@ -1521,8 +1521,8 @@ eYo.UI.prototype.nodeSetOffset = function (dc, dl) {
 /**
  * Set the offset of the receiver's node.
  * For edython.
- * @param {*} dx 
- * @param {*} dy 
+ * @param {*} dx
+ * @param {*} dy
  * @return {boolean}
  */
 eYo.UI.prototype.setOffset = function (dx, dy) {
@@ -1642,9 +1642,9 @@ eYo.UI.prototype.removeStatusSelect_ = function () {
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
-eYo.UI.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
-  if (connection.eyo.isOutput) {
-    connection.eyo.ui.removeStatusTop_()
+eYo.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  if (m4t.isOutput) {
+    m4t.ui.removeStatusTop_()
   }
 }
 
@@ -1653,9 +1653,9 @@ eYo.UI.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) 
  * @param {!Blockly.Connection} connection what has been connected in the block
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  */
-eYo.UI.prototype.didDisconnect = function (connection, oldTargetC8n) {
-  if (connection.eyo.isOutput) {
-    connection.eyo.ui.addStatusTop_()
+eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
+  if (m4t.isOutput) {
+    m4t.ui.addStatusTop_()
   }
 }
 
@@ -1671,7 +1671,7 @@ eYo.UI.prototype.didDisconnect = function (connection, oldTargetC8n) {
 Object.defineProperties(eYo.UI.prototype, {
   xyInSurface: {
     get () {
-      return this.driver.nodeXyInSurface(this.node_)    
+      return this.driver.nodeXyInSurface(this.node_)
     }
   }
 })
@@ -1702,7 +1702,7 @@ eYo.UI.prototype.getHeightWidth = function () {
     width += nextHeightWidth.width
     // The height of the line is managed while rendering.
   }
-  if ((nn = n.low)) {
+  if ((nn = n.foot)) {
     var heightWidth = nn.ui.getHeightWidth()
     height += nextHeightWidth.height // NO Height of tab.
     width = Math.max(width, nextHeightWidth.width)

@@ -127,8 +127,8 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
         return Type.STARRED
       } else {
         if (!io.annotatedInput
-          && (goog.array.contains(check, eYo.T3.Expr.identifier_annotated) 
-          || goog.array.contains(check, eYo.T3.Expr.augtarget_annotated) 
+          && (goog.array.contains(check, eYo.T3.Expr.identifier_annotated)
+          || goog.array.contains(check, eYo.T3.Expr.augtarget_annotated)
           || goog.array.contains(check, eYo.T3.Expr.key_datum))) {
           io.annotatedInput = io.input
         }
@@ -320,12 +320,12 @@ eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (connection, oldTargetC8n) {
-  if (connection.eyo.isInput) {
+eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
+  if (m4t.isInput) {
     var other = false
-    if (this.block_.inputList.some(input => {
-      if (input.connection) {
-        var t_eyo = input.connection.eyo.t_eyo
+    if (this.inputList.some(input => {
+      if (input.eyo.magnet) {
+        var t_eyo = input.eyo.magnet.t_eyo
         if (t_eyo) {
           other= true
           if ([eYo.T3.Expr.identifier_annotated,
@@ -349,7 +349,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (connection
       (x = x.target_s) && x.bindField.setVisible(true)
     }
   }
-  eYo.DelegateSvg.Expr.target_list.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
+  eYo.DelegateSvg.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -359,10 +359,10 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (connection
  * @param {!Blockly.Connection} oldTargetC8n.
  * @param {!Blockly.Connection} targetOldC8n
  */
-eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, oldTargetC8n, targetOldC8n) {
-  eYo.DelegateSvg.Expr.target_list.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
+eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.DelegateSvg.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the block is NOT consolidated
-  if (connection.eyo.isInput) {
+  if (m4t.isInput) {
     var parent = this.parent
     if (parent) {
       parent.target_s.bindField.setVisible(false)
@@ -372,17 +372,17 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, o
       } else {
         var v = parent.variant_p
         if (v === eYo.Key.ANNOTATED) {
-          var t = connection.targetBlock()
+          var t_eyo = m4t.t_eyo
           if ([eYo.T3.Expr.identifier_annotated,
             eYo.T3.Expr.augtarget_annotated,
-            eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
+            eYo.T3.Expr.key_datum].indexOf(t_eyo.type) >= 0) {
             parent.variant_p = eYo.Key.NONE // no 2 annotations
           }
         } else if (v === eYo.Key.ANNOTATED_VALUED) {
-          var t = connection.targetBlock()
+          var t_eyo = m4t.t_eyo
           if ([eYo.T3.Expr.identifier_annotated,
             eYo.T3.Expr.augtarget_annotated,
-            eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
+            eYo.T3.Expr.key_datum].indexOf(t_eyo.type) >= 0) {
             parent.variant_p = eYo.Key.TARGET_VALUED // no 2 annotations
           }
         }
@@ -415,8 +415,8 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, o
  * call_expr ::= primary "(" argument_list_comprehensive ")"
  * subscription ::= primary "[" expression_list "]"
  * slicing ::= primary "[" slice_list "]"
- * 
- * We can notice that some 
+ *
+ * We can notice that some
  * The block inner content is divided into different parts
  * 1) the module or parent, as holder
  * For `foo.bar` construct
@@ -445,7 +445,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, o
  * c) subscript
  * subscription ::= primary "[" expression_list "]"
  * slicing ::= primary "[" slice_list "]"
- * 
+ *
  * The python type of the block is not uniquely defined.
  * For example, `foo as bar` may be both a `dotted_name_as` and
  * a `identifier_as`. On the opposit, once we know that there is an alias,
@@ -499,7 +499,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (connection, o
  * The question is to recognize whether each identifier is void or not.
  * Let `unset` denote an unset identifier.
  * `unset.unset` is of type parent_module, attributeref and dotted_name.
- * 
+ *
  * A note on type management.
  * The primary block is one of the most complex blocks in edython.
  * This design was chosen in order to ease block edition.
@@ -1004,10 +1004,10 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         }
       },
       check: eYo.T3.Expr.Check.primary,
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         this.b_eyo.updateProfile()
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         this.b_eyo.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
@@ -1051,7 +1051,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       accept: /** @suppress {globalThis} */ function (attribute) {
         return attribute === 'name'
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         // the block is not yet consolidated
         if (this.isInput) {
           var parent = this.b_eyo.parent
@@ -1079,9 +1079,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
               }
             }
           }
-        }      
+        }
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         // the block is not yet consolidated
         // when there is no connected block, we display the field
         var parent = this.parent
@@ -1184,14 +1184,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       check: [eYo.T3.Expr.identifier, eYo.T3.Expr.unset],
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.ALIASED         
+          this.owner.variant_p = eYo.Key.ALIASED
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         this.slot.bindField.setVisible(false)
         this.b_eyo.variant_p = eYo.Key.ALIASED
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         this.slot.bindField.setVisible(true)
       }
     }
@@ -1497,7 +1497,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       ? [
         eYo.T3.Expr.named_call_expr,
         eYo.T3.Expr.call_expr
-      ] 
+      ]
       : [
         eYo.T3.Expr.call_expr
       ]
@@ -1514,7 +1514,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       ? [
         eYo.T3.Expr.named_slicing,
         eYo.T3.Expr.slicing
-      ] 
+      ]
       : [
         eYo.T3.Expr.slicing
       ]
@@ -1525,7 +1525,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         eYo.T3.Expr.named_slicing,
         eYo.T3.Expr.subscription,
         eYo.T3.Expr.slicing
-      ] 
+      ]
       : [
         eYo.T3.Expr.subscription,
         eYo.T3.Expr.slicing
@@ -1682,12 +1682,12 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
         }
         return [
           eYo.T3.Expr.attributeref
-        ]  
+        ]
       }
       return [
         eYo.T3.Expr.identifier,
         eYo.T3.Expr.dotted_name
-      ]  
+      ]
     }
     if (profile.name.type === eYo.T3.Expr.dotted_name) {
       if (profile.holder.type === eYo.T3.Expr.unset

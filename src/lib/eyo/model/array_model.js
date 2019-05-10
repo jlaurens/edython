@@ -23,7 +23,7 @@ eYo.Model.array__module = new eYo.Model.Module('array__module', 'https://docs.py
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.array__module.Item = function (model) {
   eYo.Model.array__module.Item.superClass_.constructor.call(this, model)

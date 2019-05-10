@@ -84,7 +84,7 @@ eYo.Driver.nodeUpdateShape = eYo.Do.nothing
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
- * @param {Object} recorder 
+ * @param {Object} recorder
  * @private
  */
 eYo.Driver.nodeDrawModelBegin = eYo.Do.nothing
@@ -92,7 +92,7 @@ eYo.Driver.nodeDrawModelBegin = eYo.Do.nothing
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
- * @param {Object} recorder 
+ * @param {Object} recorder
  * @private
  */
 eYo.Driver.nodeDrawModelEnd = eYo.Do.nothing
@@ -342,8 +342,8 @@ eYo.Driver.nodeSendToBack = eYo.Do.nothing
  * Set the offset of the receiver's node.
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
- * @param {*} dx 
- * @param {*} dy 
+ * @param {*} dx
+ * @param {*} dy
  * @return {boolean}
  */
 eYo.Driver.nodeSetOffset = eYo.Do.nothing

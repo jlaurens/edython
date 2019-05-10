@@ -36,19 +36,19 @@ var doit = (() => {
   var n = d.items.length
   var t = d.types.length
   var c = d.categories.length
-  
+
   d.by_name['conjugate'] = n
   d.by_name['real'] = n + 1
   d.by_name['imag'] = n + 2
-  
+
   d.types.push('method')
   d.types.push('attribute')
-  
+
   d.by_type[t] = [n]
   d.by_type[t + 1] = [n + 1, n + 2]
-  
+
   d.categories.push('edython')
-  
+
   d.items.push(new M.Item({
     name: 'conjugate',
     class: 'complex',
@@ -67,5 +67,5 @@ var doit = (() => {
     class: 'complex',
     category: c,
     type_: t + 1
-  }))  
+  }))
 }) ()

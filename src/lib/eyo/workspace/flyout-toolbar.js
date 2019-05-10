@@ -124,7 +124,7 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
       this.doSelectGeneral,
       false,
       this
-    )  
+    )
     this.select_module_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'select-module')
@@ -377,7 +377,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     if (e) {
       goog.dom.classlist.remove('show')
     }
-    this.flyout_.eyo.slide()  
+    this.flyout_.eyo.slide()
     this.onButtonLeave_(e)
     var gesture = this.flyout_.targetWorkspace_.getGesture(e);
     if (gesture) {
@@ -403,7 +403,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
     gesture.cancel();// comes from flyout button
   }
   e.stopPropagation()
-  e.preventDefault()  
+  e.preventDefault()
 };
 
 /**

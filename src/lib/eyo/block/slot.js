@@ -36,7 +36,7 @@ goog.forwardDeclare('eYo.FieldHelper')
  * 3) start field
  * 4) either editable field, value input of wrapped block.
  * 5) end field
- * 
+ *
  * If the given model contains a `wrap` key, then a wrapped
  * block is created.
  *
@@ -141,7 +141,7 @@ Object.defineProperties(eYo.Slot.prototype, {
         var m4t = this.magnet
         if (m4t) {
           m4t.source = m4t.model = undefined
-        }      
+        }
       }
       if ((this.input_ = newValue)) {
         newValue.eyo.slot = this
@@ -348,7 +348,7 @@ eYo.Slot.prototype.setIncog = function (newValue) {
     newValue = !!newValue
   }
   if (this.owner.isReady) {
-    
+
   }
   var validator = this.slots && this.model.validateIncog
   if (validator) { // if !this.slots, the receiver is not yet ready
@@ -619,7 +619,7 @@ eYo.Slot.prototype.load = function (element) {
     eYo.Do.someElementChild(element, child => {
       if (this.inputType === eYo.Magnet.INPUT) {
         var attribute = child.getAttribute(eYo.Xml.SLOT)
-      } else if (this.inputType === eYo.Magnet.LOW || this.inputType === eYo.Magnet.RIGHT) {
+      } else if (this.inputType === eYo.Magnet.FOOT || this.inputType === eYo.Magnet.RIGHT) {
         attribute = child.getAttribute(eYo.Xml.FLOW)
       }
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
@@ -631,7 +631,7 @@ eYo.Slot.prototype.load = function (element) {
           if (!t_eyo && this.model.promise) {
             this.completePromise()
             t_eyo = this.t_eyo
-          } 
+          }
           if (t_eyo) {
             if (t_eyo instanceof eYo.DelegateSvg.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
@@ -671,8 +671,8 @@ eYo.Slot.prototype.load = function (element) {
             if (m4t && m4ts.output && m4t.checkType_(m4ts.output, true)) {
               m4t.connect(m4ts.output) // Notice the `.eyo`
               this.setRequiredFromModel(true)
-            } else if (m4ts.high && m4t.checkType_(m4ts.high, true)) {
-              m4t.connect(m4ts.high) // Notice the `.eyo`
+            } else if (m4ts.head && m4t.checkType_(m4ts.head, true)) {
+              m4t.connect(m4ts.head) // Notice the `.eyo`
             }
             out = t_eyo.block_
           }
@@ -712,7 +712,7 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
  * then it was the last iteration and the loop breaks.
  * For edython.
  * @param {!function} helper
- * @return {?eYo.Slot} The first slot for which `helper` returns a truthy value 
+ * @return {?eYo.Slot} The first slot for which `helper` returns a truthy value
  */
 eYo.Slot.prototype.some = function (helper) {
   if (goog.isFunction(helper)) {
@@ -764,7 +764,7 @@ eYo.Slot.prototype.some = function (helper) {
  * @param {!eYo.Delegate | eYo.Magnet} dm  a a Dlgt or magnet.
  */
 eYo.Slot.prototype.connect = function (bdc) {
-  this.magnet.connect(dm.magnets && dm.magnets.output) || dm)
+  this.magnet.connect((dm.magnets && dm.magnets.output) || dm)
 }
 
 /**
@@ -811,37 +811,40 @@ eYo.Slot.prototype.connect = function (dm) {
   }
 }
 
-/**
- * The right connection is at the right...
- * @private
- */
-eYo.Magnet.prototype.rightConnection = function() {
-  var slot = this.slot
-  if (slot) {
-    if ((slot = slot.next) && (slot = slot.some (slot => !slot.isIncog() && slot.magnet && !slot.input.connection.hidden_))) {
-      return slot.magnet
-    }
-    var b_eyo = this.b_eyo
-  } else if ((b_eyo = this.b_eyo)) {
-    var e8r = b_eyo.inputEnumerator()
-    if (e8r) {
-      while (e8r.next()) {
-        if (e8r.here.connection && this.connection === e8r.here.connection) {
-          // found it
-          while (e8r.next()) {
-            var m4t
-            if ((m4t = e8r.here.eyo.magnet) && m4t.isOutput) {
-              return m4t.connection
+Object.defineProperty(eYo.Magnet.prototype, 'right', {
+  /**
+   * The right connection is at the right... Not used.
+   * @private
+   */
+  get () {
+    var slot = this.slot
+    if (slot) {
+      if ((slot = slot.next) && (slot = slot.some (slot => !slot.isIncog() && slot.magnet && !slot.input.connection.hidden_))) {
+        return slot.magnet
+      }
+      var b_eyo = this.b_eyo
+    } else if ((b_eyo = this.b_eyo)) {
+      var e8r = b_eyo.inputEnumerator()
+      if (e8r) {
+        while (e8r.next()) {
+          if (e8r.here.connection && this.connection === e8r.here.connection) {
+            // found it
+            while (e8r.next()) {
+              var m4t
+              if ((m4t = e8r.here.eyo.magnet) && m4t.isOutput) {
+                return m4t.connection
+              }
             }
           }
         }
       }
     }
+    if (b_eyo && (m4t = b_eyo.magnets.output) && (m4t = m4t.target)) {
+      return m4t.right
+    }
   }
-  if (b_eyo && (m4t = b_eyo.magnets.output) && (m4t = m4t.target)) {
-    return m4t.rightConnection()
-  }
-}
+})
+
 
 /**
  * Complete with a promised block.

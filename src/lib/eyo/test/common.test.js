@@ -80,7 +80,7 @@ eYo.Test.new_dlgt = (t, tt, str, headless) => {
  * `k` is the key of the constructor of that block.
  * When `tt` or `k` is undefined, no corresponding test is performed.
  * When `tt` or `k` is null, it is replaced by `t` before the test is performed.
- * 
+ *
  * @param{Array} ra
  * @param{String} str
  */

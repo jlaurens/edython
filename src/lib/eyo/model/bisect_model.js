@@ -23,7 +23,7 @@ eYo.Model.bisect__module = new eYo.Model.Module('bisect__module', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.bisect__module.Item = function (model) {
   eYo.Model.bisect__module.Item.superClass_.constructor.call(this, model)

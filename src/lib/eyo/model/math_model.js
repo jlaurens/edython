@@ -23,7 +23,7 @@ eYo.Model.math__module = new eYo.Model.Module('math__module', 'https://docs.pyth
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.math__module.Item = function (model) {
   eYo.Model.math__module.Item.superClass_.constructor.call(this, model)

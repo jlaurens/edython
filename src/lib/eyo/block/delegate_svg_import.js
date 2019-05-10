@@ -179,7 +179,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
         }
       },
       promise: eYo.T3.Expr.non_void_module_as_list,
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         var parent = this.b_eyo.parent
         parent && (parent.variant_p = eYo.Key.IMPORT)
       }
@@ -218,7 +218,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           }
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         var O = this.b_eyo
         if (O.variant_p === eYo.Key.IMPORT) {
           // STAR of not ?
@@ -242,7 +242,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
           this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         var parent = this.b_eyo.parent
         parent && (parent.variant_p = eYo.Key.FROM_MODULE_IMPORT)
       }
@@ -348,7 +348,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
         this.variant_p = variant
       })
       mgr.addChild(menuItem, true)
-      menuItem.setEnabled(variant !== current)  
+      menuItem.setEnabled(variant !== current)
     }
   }
   var from = this.from_p

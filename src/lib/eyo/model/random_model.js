@@ -23,7 +23,7 @@ eYo.Model.random__module = new eYo.Model.Module('random__module', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.random__module.Item = function (model) {
   eYo.Model.random__module.Item.superClass_.constructor.call(this, model)

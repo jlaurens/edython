@@ -55,7 +55,7 @@ eYo.Do.readOnlyMixin(
 /**
  * Get the profile for that identifier,
  * create one on the first call if the module knows it.
- * @param {*} identifier 
+ * @param {*} identifier
  */
 eYo.Model.Module.prototype.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
@@ -255,8 +255,8 @@ eYo.T3.Profile.prototype.type = undefined
 */
 
 /**
- * 
- * @param {String} identifier 
+ *
+ * @param {String} identifier
  */
 eYo.T3.Profiles = function (identifier) {
   this.identifier = identifier
@@ -285,7 +285,7 @@ var setup = (() => {
       return eYo.T3.Profile.void
     }
     if (!candidate.length) {
-      return eYo.T3.Profile.unset   
+      return eYo.T3.Profile.unset
     }
     // first literals
     var ans

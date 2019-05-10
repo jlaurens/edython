@@ -117,7 +117,7 @@ eYo.Delegate = function (workspace, type, opt_id, block) {
       this.consolidate()
       // but now it should be
       this.model.init && this.model.init.call(this)
-    })  
+    })
   })
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
@@ -172,7 +172,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
         return ans
       } else if (!this.magnets.output) {
         var eyo = this.leftMost
-        while ((ans = eyo.high)) {
+        while ((ans = eyo.head)) {
           if (ans.suite === eyo) {
             return ans
           }
@@ -192,7 +192,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       var eyo = this
       var m4t
-      while ((m4t = eyo.magnets.high) && (m4t = m4t.target)) {
+      while ((m4t = eyo.magnets.head) && (m4t = m4t.target)) {
         eyo = m4t.b_eyo
         if (m4t.isSuite) {
           return eyo
@@ -240,7 +240,7 @@ Object.defineProperties(eYo.Delegate.prototype, {
   },
   /**
    * Return the parent which is a statement, if any.
-   * Never returns `this`. 
+   * Never returns `this`.
    */
   stmtParent: {
     get () {
@@ -322,16 +322,16 @@ Object.defineProperties(eYo.Delegate.prototype, {
       }
     }
   },
-  high: {
+  head: {
     get () {
-      var m = this.magnets.high
+      var m = this.magnets.head
       if (m) {
         var t = m.target
         return t && t.b_eyo
       }
     },
     set (newValue) {
-      this.magnets.high.target = newValue
+      this.magnets.head.target = newValue
     }
   },
   left: {
@@ -370,16 +370,16 @@ Object.defineProperties(eYo.Delegate.prototype, {
       this.magnets.suite.target = newValue
     }
   },
-  low: {
+  foot: {
     get () {
-      var m = this.magnets.low
+      var m = this.magnets.foot
       if (m) {
         var t = m.target
         return t && t.b_eyo
       }
     },
     set (newValue) {
-      this.magnets.low.target = newValue
+      this.magnets.foot.target = newValue
     }
   },
   leftMost: {
@@ -392,11 +392,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
-  topMost: {
+  headMost: {
     get () {
       var ans = this
       var eyo
-      while ((eyo = ans.high)) {
+      while ((eyo = ans.head)) {
         ans = eyo
       }
       return ans
@@ -412,11 +412,11 @@ Object.defineProperties(eYo.Delegate.prototype, {
       return ans
     }
   },
-  bottomMost: {
+  footMost: {
     get () {
       var ans = this
       var eyo
-      while ((eyo = ans.low)) {
+      while ((eyo = ans.foot)) {
         ans = eyo
       }
       return ans
@@ -429,19 +429,6 @@ Object.defineProperties(eYo.Delegate.prototype, {
     }
   },
   next: {
-    get () {
-      console.error("INCONSISTENCY BREAK HERE")
-      throw "FORBIDDEN"
-    }
-  },
-  //
-  nextConnection: {
-    get () {
-      console.error("INCONSISTENCY BREAK HERE")
-      throw "FORBIDDEN"
-    }
-  },
-  outputConnection: {
     get () {
       console.error("INCONSISTENCY BREAK HERE")
       throw "FORBIDDEN"
@@ -638,7 +625,7 @@ eYo.Data.prototype.change = function (newValue, validate) {
       this,
       newValue,
       validate
-    )  
+    )
   }
 }
 
@@ -652,7 +639,7 @@ eYo.Data.prototype.change = function (newValue, validate) {
  * If `do_it` return value is an object with a `return` property,
  * the `change.count` is recorded such that `do_it` won't be executed
  * until the next `change.count` increment.
- * @param {!String} key, 
+ * @param {!String} key,
  * @param {!Function} do_it  must return something.
  * @return {!Function}
  */
@@ -666,7 +653,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
     var did_it = do_it.apply(this, arguments)
     if (did_it) {
       c.save[key] = c.count
-      c.cache[key] = did_it.ans  
+      c.cache[key] = did_it.ans
     }
     return c.cache[key]
   }
@@ -760,9 +747,9 @@ eYo.Delegate.prototype.equals = function (rhs) {
  * - in the changeEnd method
  * Consolidation will not occur when no change has been
  * performed since the last consolidation.
- * 
+ *
  * The return value may be cached.
- * 
+ *
  * @param {?Boolean} deep
  * @param {?Boolean} force
  * @return {Boolean} true when consolidation occurred
@@ -1134,7 +1121,7 @@ eYo.Delegate.Manager = (() => {
                 defineDataProperty(k).call(delegateC9r.prototype)
               }
             }
-          }      
+          }
         }
         // Create properties to access slots
         if (model.slots) {
@@ -1145,7 +1132,7 @@ eYo.Delegate.Manager = (() => {
                 defineSlotProperty(k).call(delegateC9r.prototype)
               }
             }
-          }      
+          }
         }
       }
       delegateC9r.makeSubclass = function (key, model, owner, register) {
@@ -1701,7 +1688,7 @@ eYo.Delegate.prototype.type_ = undefined
  * the constructor's delegate's `type` method.
  * NEVER call this directly, except if you are a block delegate.
  * No need to override this.
- * @param {?string} optNewType, 
+ * @param {?string} optNewType,
  * @private
  */
 eYo.Delegate.prototype.setupType = function (optNewType) {
@@ -1814,11 +1801,11 @@ eYo.Delegate.prototype.consolidateConnections = function () {
   if (this.magnets.output) {
     f(this.magnets.output)
   } else {
-    f(this.magnets.high)
+    f(this.magnets.head)
     f(this.magnets.left)
     f(this.magnets.right)
     f(this.magnets.suite)
-    f(this.magnets.low)
+    f(this.magnets.foot)
   }
 }
 
@@ -1972,10 +1959,10 @@ eYo.Delegate.prototype.duringBlockUnwrapped = function () {
 
 /**
  * Will connect this block's connection to another connection.
- * @param {!Blockly.Connection} connection
- * @param {!Blockly.Connection} childConnection
+ * @param {!eYo.Magnet} m4t
+ * @param {!eYo.Magnet} childM4t
  */
-eYo.Delegate.prototype.willConnect = function (connection, childConnection) {
+eYo.Delegate.prototype.willConnect = function (m4t, childM4t) {
 }
 
 /**
@@ -2006,36 +1993,33 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
  * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
  * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
  */
-eYo.Delegate.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
+eYo.Delegate.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // how many blocks did I add ?
-  var c_eyo = connection.eyo
-  if (c_eyo.isSuite) {
-    c_eyo.b_eyo.updateBlackHeight()
-  } else if (!c_eyo.isOutput && !c_eyo.isLeft && !c_eyo.isRight) {
+  if (m4t.isSuite) {
+    this.updateBlackHeight()
+  } else if (!m4t.isOutput && !m4t.isLeft && !m4t.isRight) {
     this.updateGroupBlackHeight()
   }
-  var t_eyo = c_eyo.t_eyo
-  if (c_eyo.isNext) {
+  var t_eyo = m4t.t_eyo
+  if (m4t.isFoot) {
     this.nextHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
-  } else if (c_eyo.isSuite) {
-    t_eyo = c_eyo.t_eyo
+  } else if (m4t.isSuite) {
+    t_eyo = m4t.t_eyo
     this.suiteHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
   }
   this.consolidateType()
-  if (c_eyo.isOutput) {
-    if (this === eYo.Selected.eyo && this.locked_) {
-      eYo.Selected.eyo = t_eyo
+  if (m4t.isOutput) {
+    if (this.selected && this.locked_) {
+      t_eyo.select()
     }
   }
-  var ui = this.ui
-  ui && ui.didConnect(connection, oldTargetC8n, targetOldC8n)
 }
 
 /**
  * Will disconnect this block's connection.
- * @param {!Blockly.Connection} blockConnection
+ * @param {!eYo.Magnet} m4t
  */
-eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
+eYo.Delegate.prototype.willDisconnect = function (m4t) {
 }
 
 /**
@@ -2043,24 +2027,22 @@ eYo.Delegate.prototype.willDisconnect = function (blockConnection) {
  * @param {!Blockly.Connection} blockConnection
  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
  */
-eYo.Delegate.prototype.didDisconnect = function (connection, oldTargetC8n) {
+eYo.Delegate.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   // how many blocks did I add ?
-  var eyo = connection.eyo
-  if (eyo.isSuite) {
-    eyo.b_eyo.updateBlackHeight()
-  } else if (!eyo.isOutput) {
+  if (m4t.isSuite) {
+    m4t.b_eyo.updateBlackHeight()
+  } else if (!m4t.isOutput) {
     this.updateGroupBlackHeight()
   }
-  if (eyo.isNext) {
+  if (m4t.isFoot) {
     this.nextHeight = 0
     this.incrementChangeCount()
-  } else if (eyo.isSuite) {
+  } else if (m4t.isSuite) {
     this.suiteHeight = 0
     this.incrementChangeCount()
-  } else if (oldTargetC8n === oldTargetC8n.eyo.b_eyo.magnets.output.connection) {
+  } else if (oldTargetC8n === oldTargetM4t.b_eyo.magnets.output.connection) {
     this.incrementChangeCount()
   }
-  this.ui && this.ui.didDisconnect(connection, oldTargetC8n)
 }
 
 /**
@@ -2166,18 +2148,18 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
       // nothing to do the block is already in the good state
       return
     }
-    
+
     eYo.Events.groupWrap(() => {
       Blockly.Events.fire(new Blockly.Events.BlockChange(
         this, 'disabled', null, this.disabled_, yorn))
       var previous, next
       if (yorn) {
         // Does it break next connections
-        if ((previous = this.magnets.high) &&
+        if ((previous = this.magnets.head) &&
         (next = previous.target) &&
         next.blackMagnet) {
           var eyo = this
-          while ((previous = eyo.magnets.low) &&
+          while ((previous = eyo.magnets.foot) &&
           (previous = previous.target) &&
           (previous = previous.blackMagnet)) {
             if (next.checkType_(previous)) {
@@ -2191,7 +2173,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
       } else {
         // if the connection chain below this block is broken,
         // try to activate some blocks
-        if ((next = this.magnets.low)) {
+        if ((next = this.magnets.foot)) {
           if ((previous = next.target) &&
           (previous = previous.blackMagnet) &&
           !next.checkType_(previous)) {
@@ -2206,7 +2188,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
                 t_eyo.disabled = true
                 if (check) {
                   t_eyo.disabled = false
-                  if (!(next = t_eyo.magnets.low)) {
+                  if (!(next = t_eyo.magnets.foot)) {
                     break
                   }
                 }
@@ -2224,7 +2206,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
           }
         }
         // now consolidate the chain above
-        if ((previous = this.magnets.high)) {
+        if ((previous = this.magnets.head)) {
           if ((next = previous.target) &&
           (next = next.blackMagnet) &&
           !previous.checkType_(next)) {
@@ -2241,7 +2223,7 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
                 t_eyo.disabled = true
                 if (check) {
                   t_eyo.setDisabled(false)
-                  if (!(previous = t_eyo.magnets.high)) {
+                  if (!(previous = t_eyo.magnets.head)) {
                     break
                   }
                 }
@@ -2367,7 +2349,7 @@ eYo.Delegate.prototype.forEachInputConnection = function (helper) {
  * Runs the helper function for some input connection, until it responds true
  * For edython.
  * @param {!Function} helper
- * @return {Object} returns the first connection for which helper returns true or the helper return value 
+ * @return {Object} returns the first connection for which helper returns true or the helper return value
  */
 eYo.Delegate.prototype.someInputMagnet = function (helper) {
   return this.someInput(input => {
@@ -2433,7 +2415,7 @@ eYo.Delegate.prototype.getSlotConnections = function () {
  * @return the given block
  */
 eYo.Delegate.prototype.connectBottom = function (dlgt) {
-  this.magnets.low.connect(dlgt.magnets.high)
+  this.magnets.foot.connect(dlgt.magnets.head)
   return dlgt
 }
 

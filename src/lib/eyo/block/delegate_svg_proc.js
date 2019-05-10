@@ -133,12 +133,12 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       ],
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
-        var O = this.sourceBlock_.eyo    
+        var O = this.sourceBlock_.eyo
         return O.variant_p === eYo.Key.PROPERTY && O.property_p !== eYo.Key.GETTER
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR
       },
-      validate: /** @suppress {globalThis} */ function (newValue) {        
+      validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
@@ -333,7 +333,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
     }
   },
   statement: {
-    low: {
+    foot: {
       required: true
     }
   }
@@ -346,7 +346,7 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.decorator_stmt.prototype, {
    */
   isWhite: {
     get () {
-      return !!this.low
+      return !!this.foot
     }
   }
 })
@@ -434,7 +434,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.T3.Expr.identifier 
+        return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
           ? {validated: newValue}
           : null

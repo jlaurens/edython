@@ -116,7 +116,7 @@ describe('Primary dom', function() {
       var attr = dom.getAttribute(eYo.Key.EYO)
       chai.assert(attr === Ts[1], `FAILED ${attr} === ${Ts[1]}`)
       d.block_.dispose()
-    })  
+    })
   })
 })
 
@@ -193,7 +193,7 @@ describe('Copy/Paste', function() {
       eYo.Test.same(dd, d)
       dd.block_.dispose()
       d.block_.dispose()
-    })  
+    })
   })
   var md = eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.identifier).data
   var f = (k) => {
@@ -253,7 +253,7 @@ describe('Primary variant', function() {
   })
 })
 
-// 
+//
 describe('Basic slots incog', function() {
   [
     ['identifier', 'target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'],
@@ -282,7 +282,7 @@ describe('Basic slots incog', function() {
       var d = eYo.Test.new_dlgt(Ts[0])
       eYo.Test.incog(d, Ts)
       d.block_.dispose()
-    })  
+    })
   })
 })
 /*
@@ -311,7 +311,7 @@ describe('Basic variants and slot incogs', function() {
       d.variant_p = eYo.Key[Ts[0]]
       eYo.Test.incog(d, Ts)
       d.block_.dispose()
-    })  
+    })
   })
 })
 
@@ -347,7 +347,7 @@ describe('Copy/Paste by data', function() {
         eYo.Test.data_save(d, k, v)
       })
       d.block_.dispose()
-    })  
+    })
   }
   f('alias', 'ALIASED', ['TEST', 'TEST2', ''])
   f('annotated', 'ANNOTATED', ['TEST', 'TEST2', ''])
@@ -368,7 +368,7 @@ describe('Primary bind fields', function() {
   ].forEach(k => {
     it(`bind field: ${k}`, function() {
       eYo.Test.bind_field('identifier', k)
-    })  
+    })
   })
   ;[
     'n_ary',
@@ -376,7 +376,7 @@ describe('Primary bind fields', function() {
   ].forEach(k => {
     it(`bind field: ${k}`, function() {
       eYo.Test.bind_field('identifier', k, true)
-    })  
+    })
   })
 })
 
@@ -668,7 +668,7 @@ describe('Primary slots', function() {
     eYo.Test.code(da, 'a = c[<MISSING INPUT>], d')
     chai.assert(da.value_b.inputList[4].eyo.connect(dc), 'MISSED')
     eYo.Test.code(da, 'a = d, c[<MISSING INPUT>]')
-    eYo.Test.input_length(da.value_b, 5)    
+    eYo.Test.input_length(da.value_b, 5)
     d.block_.dispose()
     d = eYo.Test.new_dlgt('yield_expr')
     chai.assert(da.value_b.inputList[1].eyo.connect(d), 'MISSED')
@@ -1014,11 +1014,11 @@ describe('Primary(ANNOTATED)', function() {
     var cc = eYo.Test.new_dlgt('identifier')
     cc.target_p = 'cc'
     eYo.Test.code(cc, 'cc')
-    
+
     eYo.Test.list_connect(d, 'target', cc)
     eYo.Test.input_length(d.target_b, 5)
     eYo.Test.code(d, 'dd, cc = <MISSING EXPRESSION>')
-   
+
     eYo.Test.variant(d, 'TARGET_VALUED')
     cc.dispose()
     eYo.Test.variant(d, 'TARGET_VALUED')

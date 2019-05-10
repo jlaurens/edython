@@ -23,7 +23,7 @@ eYo.Model.reprlib__module = new eYo.Model.Module('reprlib__module', 'https://doc
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.reprlib__module.Item = function (model) {
   eYo.Model.reprlib__module.Item.superClass_.constructor.call(this, model)

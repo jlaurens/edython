@@ -218,34 +218,18 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   if (goog.isNumber(i)) {
     io.i = i
   }
-  var model = {
-    willConnect: /** @suppress {globalThis} */ function (targetC8n) {
-      this.will_connect_ = this.b_eyo.will_connect_ = true
-    },
-    didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
-      var b_eyo = this.b_eyo
-      this.will_connect_ = b_eyo.will_connect_ = false
-      var m4t = b_eyo.magnets.output.target
-      // duplicate? The target connection's model method is called
-      var model = m4t && m4t.model
-      if (model && goog.isFunction(model.didConnect)) {
-        model.didConnect.call(this, oldTargetC8n, targetOldC8n)
+  var model = (() => { // closure to catch `me`
+    return {
+      willConnect: /** @suppress {globalThis} */ function (targetM4t) {
+        this.will_connect_ = this.b_eyo.will_connect_ = true // do not consolidate
+      },
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+        this.will_connect_ = this.b_eyo.will_connect_ = false
       }
-      me.consolidate(b_eyo.block_, true)
-    },
-    didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-      var b_eyo = this.b_eyo
-      var m4t = b_eyo.magnets.output.target
-      // duplicate? The target connection's model method is called
-      var model = m4t && m4t.model
-      if (model && goog.isFunction(model.didDisconnect)) {
-        model.didDisconnect.call(this, oldTargetC8n)
-      }
-      me.consolidate(b_eyo.block_, true)
     }
-  }
+  })()
   var m4t = new eYo.Magnet(io.block.eyo, eYo.Magnet.INPUT, model)
-  
+
   var input = new Blockly.Input(Blockly.INPUT_VALUE, '!', io.block, m4t.connection)
   eYo.Input.setupEyO(input)
   io.list.splice(io.i, 0, input)

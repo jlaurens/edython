@@ -23,7 +23,7 @@ eYo.Model.heapq__module = new eYo.Model.Module('heapq__module', 'https://docs.py
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.heapq__module.Item = function (model) {
   eYo.Model.heapq__module.Item.superClass_.constructor.call(this, model)

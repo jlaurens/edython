@@ -132,7 +132,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
         'Error: Unknown block type "%s".', prototypeName)
     goog.mixin(this, prototype)
   }
-  
+
   // workspace.addTopBlock(this)
 
   // Call an initialization function, if it exists.
@@ -302,11 +302,11 @@ eYo.Block.prototype.dispose = function (healStack) {
       this.forEachChild(b => b.dispose(false))
     } finally {
       Blockly.Events.enable()
-    }  
+    }
   } else {
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
-    }  
+    }
   }
   Blockly.Events.disable()
   try {

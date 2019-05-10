@@ -91,7 +91,7 @@ var doit = (() => {
     F_stmt('begin_fill', 'Commencer une opération de remplissage.'),
     F_stmt('end_fill', 'Terminer une opération de remplissage.'),
     F_stmt('filling', 'En opération de remplissage ?'),// beware: NO BREAK SPACE before '?'
-    
+
     F_stmt('circle', 'Trace un cercle, un arc de cercle, un polygone régulier ou seulement une partie.'),
     F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
     F_stmt('shape', 'Choisir la forme parmi "arrow", "turtle, "circle", "square", "triangle" et "classic".'),

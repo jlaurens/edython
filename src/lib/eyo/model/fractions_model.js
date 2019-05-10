@@ -23,7 +23,7 @@ eYo.Model.fractions__module = new eYo.Model.Module('fractions__module', 'https:/
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.fractions__module.Item = function (model) {
   eYo.Model.fractions__module.Item.superClass_.constructor.call(this, model)

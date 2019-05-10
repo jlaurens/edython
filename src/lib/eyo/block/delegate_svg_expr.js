@@ -87,7 +87,7 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
       }
     } else {
       return m4t.check_.indexOf(type) >= 0
-    }  
+    }
   } else /* if (m4t.check_ === null) */ {
     return true
   }
@@ -317,7 +317,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
         parent.render()
         if (bumper) {
           bumper.ui.bumpNeighbours_()
-        }  
+        }
       }
     )
   } else {
@@ -341,7 +341,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
 eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
   if (eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
-    return (parent && parent.consolidate()) || true  
+    return (parent && parent.consolidate()) || true
   }
 }
 

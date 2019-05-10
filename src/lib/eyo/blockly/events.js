@@ -207,7 +207,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
             }
             this.afterChange(oldValue, newValue)
           }
-        })    
+        })
       })
     }
   }
@@ -221,7 +221,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
  */
 eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
 
-eYo.Events.filter = Blockly.Events.filter 
+eYo.Events.filter = Blockly.Events.filter
 
 /**
  * Filter the queued events and merge duplicates.
@@ -252,8 +252,8 @@ Blockly.Events.filter = function(queueIn, forward) {
 
 /**
  * Wrap the given function into a single undo group.
- * @param {!Function} try_f 
- * @param {?Function} finally_f 
+ * @param {!Function} try_f
+ * @param {?Function} finally_f
  */
 eYo.Events.groupWrap = eYo.Do.makeWrapper(
   () => {

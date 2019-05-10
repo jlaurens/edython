@@ -23,7 +23,7 @@ eYo.Model.pprint__module = new eYo.Model.Module('pprint__module', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.pprint__module.Item = function (model) {
   eYo.Model.pprint__module.Item.superClass_.constructor.call(this, model)

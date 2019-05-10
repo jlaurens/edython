@@ -193,17 +193,17 @@ eYo.Scan.prototype.nextToken = function () {
 
   /**
    * Advance the cursor of the given amount updating the `c` value.
-   * 
-   * @param {*} amount 
+   *
+   * @param {*} amount
    */
   var forward = (amount = 1) => {
     this.end += amount
     return (this.c = this.str[this.end] || null)
   }
-  
+
   /**
    * Back the cursor of the given amount.
-   * @param {*} amount 
+   * @param {*} amount
    */
   var backward = (amount = 1) => {
     this.end -= amount
@@ -304,7 +304,7 @@ eYo.Scan.prototype.nextToken = function () {
    * Try to scan one given character, as many times as possible.
    * Send `forward` on success.
    * Return true on success.
-   * @param {*} c 
+   * @param {*} c
    */
   var scan_s = (c) => {
     if (this.c === c) {
@@ -317,8 +317,8 @@ eYo.Scan.prototype.nextToken = function () {
 
   /**
    * Create a regular token and push it.
-   * @param {*} type 
-   * @param {*} subtype 
+   * @param {*} type
+   * @param {*} subtype
    */
   var new_Token = (type, subtype = null) => {
     var token = new eYo.Node(this, type, subtype)
@@ -333,9 +333,9 @@ eYo.Scan.prototype.nextToken = function () {
 
   /**
    * Push the token if the character(s) can be scanned.
-   * @param {!String} type 
-   * @param {?Character} c1 
-   * @param {?Character} c2 
+   * @param {!String} type
+   * @param {?Character} c1
+   * @param {?Character} c2
    */
   var new_TokenIf = (type, c1, c2) => {
     if (c1) {
@@ -360,7 +360,7 @@ eYo.Scan.prototype.nextToken = function () {
    * Subsequent error tokens will be part of this token.
    * A subsequent regular token will be a recovery
    * token attached to this error token.
-   * @param {*} subtype 
+   * @param {*} subtype
    */
   var new_Error = (subtype) => {
     var token = new_Token(eYo.TKN.ERRORTOKEN, subtype)
@@ -371,8 +371,8 @@ eYo.Scan.prototype.nextToken = function () {
 
   /**
    * Create an indentation token and push it.
-   * @param {*} col 
-   * @param {*} altcol 
+   * @param {*} col
+   * @param {*} altcol
    */
   var new_Indent = (col, altcol) => {
     var token = new_Token(eYo.TKN.INDENT)
@@ -493,7 +493,7 @@ eYo.Scan.prototype.nextToken = function () {
       return new_Token(this.start_type === eYo.TKN.single_input ? eYo.TKN.NEWLINE : eYo.TKN.ENDMARKER)
     }
   }
-  
+
   var new_COMMENT = () => {
     if (this.end > this.start) {
       if (this.start_string === undefined) {
@@ -528,11 +528,11 @@ eYo.Scan.prototype.nextToken = function () {
    * `0` has been read, try to read
    * either a binary, an octal or an hexadecimal.
    * Returns a token, possibly a recovery one.
-   * @param {*} x 
-   * @param {*} X 
-   * @param {*} read 
-   * @param {*} subtype 
-   * @param {*} MSG 
+   * @param {*} x
+   * @param {*} X
+   * @param {*} read
+   * @param {*} subtype
+   * @param {*} MSG
    */
   var new_box_literal = (x, X, reader, subtype, MSG) => {
     if (scan(x) || scan(X)) {
@@ -834,13 +834,13 @@ eYo.Scan.prototype.nextToken = function () {
           }
         } else if (col) {
           /* First indentation */
-          new_Indent(col, altcol)   
+          new_Indent(col, altcol)
         }
       }
     }
-    
+
     again:  do {
-      
+
       /* Check for EOF and errors now */
   //   /* Check for EOF and errors now */
   //   if (c == EOF) {
@@ -1097,9 +1097,9 @@ eYo.Scan.prototype.nextToken = function () {
           new_EOF()
           return shift()
         }
-      }    
+      }
     } while (read_space())
-    
+
     /* Comments */
     if (scan_Comment()) {
       if (this.list.length) {
@@ -1159,14 +1159,14 @@ eYo.Scan.prototype.nextToken = function () {
       // case '+':
       case ',':
         new_Token(eYo.TKN.COMMA)
-        break    
+        break
       // case '-':
       // case '.':
       // case '/':
       // case ':':
       case ';':
         new_Token(eYo.TKN.SEMI)
-        break    
+        break
       // case '<':
       // case '=':
       // case '>':
@@ -1179,7 +1179,7 @@ eYo.Scan.prototype.nextToken = function () {
       // case '}':
       case '~':
         new_Token(eYo.TKN.TILDE)
-        break    
+        break
       case '!':
         new_TokenIf(eYo.TKN.NOTEQUAL, '=')
           || new_Error(eYo.Scan.E.UNEXPECTED_CHARACTER)

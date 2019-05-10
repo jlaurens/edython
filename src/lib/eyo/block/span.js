@@ -44,7 +44,7 @@ eYo.Span = function (owner) {
 Object.defineProperties(eYo.Span.prototype, {
   parentSpan: {
     get () {
-      return this.owner.parent && this.owner.parent.span 
+      return this.owner.parent && this.owner.parent.span
     }
   },
   width: {

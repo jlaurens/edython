@@ -45,7 +45,7 @@ eYo.Driver.Svg.prototype.withBBox = true
 /**
  * Initialize the given node.
  * Adds to node's renderer a `svg` attribute owning all the svg related resources.
- * The svg 
+ * The svg
  * @param {!Object} node  the node the driver acts on
  */
 eYo.Driver.Svg.prototype.nodeInit = function (node) {
@@ -197,15 +197,15 @@ eYo.Driver.Svg.prototype.nodeDispose = function (node) {
   svg.pathConnection_ = undefined
   if (svg.groupContour_) {
     goog.dom.removeNode(svg.groupContour_)
-    svg.groupContour_ = undefined  
+    svg.groupContour_ = undefined
   }
   if (svg.groupShape_) {
     goog.dom.removeNode(svg.groupShape_)
-    svg.groupShape_ = undefined  
+    svg.groupShape_ = undefined
   }
   if (svg.groupSharp_) {
     goog.dom.removeNode(svg.groupSharp_)
-    svg.groupSharp_ = undefined  
+    svg.groupSharp_ = undefined
   }
   if (svg.groupPlay_) {
     goog.dom.removeNode(svg.groupPlay_)
@@ -414,8 +414,8 @@ eYo.Driver.Svg.prototype.nodeDidRender = function (node, recorder) {
 /**
  * Compute the paths of the block depending on its size.
  * @param {!Object} node  the node the driver acts on
- * @param {*} path 
- * @param {*} def 
+ * @param {*} path
+ * @param {*} def
  */
 eYo.Driver.Svg.prototype.updatePath_ = function (node, path, def) {
   if (path) {
@@ -470,7 +470,7 @@ eYo.Driver.Svg.prototype.nodeUpdateShape = function (node) {
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
- * @param {?Object} io 
+ * @param {?Object} io
  * @private
  */
 eYo.Driver.Svg.prototype.nodeDrawModelBegin = function (node, io) {
@@ -480,7 +480,7 @@ eYo.Driver.Svg.prototype.nodeDrawModelBegin = function (node, io) {
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
- * @param {?Object} io 
+ * @param {?Object} io
  * @private
  */
 eYo.Driver.Svg.prototype.nodeDrawModelEnd = function (node, io) {
@@ -996,8 +996,8 @@ eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
  * Set the offset of the receiver's node.
  * For edython.
  * @param {!Object} node  the node the driver acts on
- * @param {*} dx 
- * @param {*} dy 
+ * @param {*} dx
+ * @param {*} dy
  * @return {boolean}
  */
 eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
@@ -1072,7 +1072,7 @@ eYo.Driver.Svg.prototype.nodeXyInSurface = function (node) {
       element = element.parentNode
     } while (element && element != canvas && element != dragSurfaceGroup)
   }
-  return new goog.math.Coordinate(x, y)    
+  return new goog.math.Coordinate(x, y)
 }
 
 /**
@@ -1414,7 +1414,7 @@ eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
       var xy = this.fieldGetAbsoluteXY_(field)
       div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
       div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      f_eyo.b_eyo.changeWrap() // force rendering 
+      f_eyo.b_eyo.changeWrap() // force rendering
     }
   }
 }

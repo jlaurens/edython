@@ -28,7 +28,7 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
   statement: {
     left: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.high || this.b_eyo.low
+        return this.b_eyo.head || this.b_eyo.foot
         ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Left.simple_stmt
       }
@@ -45,14 +45,14 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
         return eYo.T3.Stmt.Right.simple_stmt
       }
     },
-    high: {
+    head: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
         : null // except start_stmt ? connections must also have an uncheck_
       }
     },
-    low: {
+    foot: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.b_eyo.left
         ? []
@@ -99,7 +99,7 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
-  var magnet = this.magnets.high
+  var magnet = this.magnets.head
   if (magnet) {
     var parent
     eYo.Events.disableWrap(
@@ -108,7 +108,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
       },
       () => {
         if (parent) {
-          var p_magnet = parent.magnets.low
+          var p_magnet = parent.magnets.foot
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(
               () => {
@@ -116,7 +116,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
                 var t_magnet = magnet.target
                 if (t_magnet) {
                   t_magnet.break()
-                  if ((t_magnet = parent.magnets.high)) {
+                  if ((t_magnet = parent.magnets.head)) {
                     p_magnet.target = t_magnet
                   }
                 } else {
@@ -136,7 +136,7 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
             parent.block_.dispose(true)
             parent = undefined
           }
-        }    
+        }
       }
     )
     return parent
@@ -156,16 +156,16 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
   return eYo.Events.groupWrap(
     () => {
       var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
-      var magnet = this.magnets.low
+      var magnet = this.magnets.foot
       var t_magnet = magnet.target
       var b_m4ts = below.magnets
       if (t_magnet) {
         t_magnet.break()
-        if (t_magnet.checkType_(b_m4ts.low)) {
-          t_magnet.target = b_magnets.low
+        if (t_magnet.checkType_(b_m4ts.foot)) {
+          t_magnet.target = b_magnets.foot
         }
       }
-      magnet.target = b_m4ts.high
+      magnet.target = b_m4ts.head
       if (eYo.Selected.eyo === this) {
         eYo.Selected.eyo = after
       }
@@ -244,7 +244,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
           endEditing: true,
           css: 'comment'
         }
-      }    
+      }
     }
   },
 })
@@ -414,7 +414,7 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
-  eYo.DelegateSvg.Manager.register(k)  
+  eYo.DelegateSvg.Manager.register(k)
 })
 
 /**

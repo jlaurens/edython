@@ -181,7 +181,7 @@ eYo.KeyHandler = (() => {
           }
           if (doFirst(newB.eyo, eYo.Magnet.INPUT)) {
             return true
-          } else if ((m4t === eyo.magnets.low) && (m4t = newB.eyo.magnets.low) && !m4t.hidden_) {
+          } else if ((m4t === eyo.magnets.foot) && (m4t = newB.eyo.magnets.foot) && !m4t.hidden_) {
             eYo.Selected.magnet = m4t
             return true
           }
@@ -541,9 +541,9 @@ eYo.KeyHandler = (() => {
  * split('foo', 'o') -> ['f', 'o']
  * split('bar', 'r') -> ['ba', '']
  * split('foo', 'b') -> undefined
- * 
- * @param {*} key 
- * @param {*} sep 
+ *
+ * @param {*} key
+ * @param {*} sep
  * @return an array of 2 elements, what is before `sep` and what is after
  */
 eYo.KeyHandler.split = function (key, sep) {
@@ -556,7 +556,7 @@ eYo.KeyHandler.split = function (key, sep) {
 
   /**
  * Turn the selected block into a call block or insert a call block.
- * @param {*} model 
+ * @param {*} model
  */
 eYo.KeyHandler.makeCall = function (model) {
   this.handleModel(model)
@@ -564,7 +564,7 @@ eYo.KeyHandler.makeCall = function (model) {
 
 /**
  * Turn the selected block into a slicing, or inert a slicing
- * @param {*} model 
+ * @param {*} model
  */
 eYo.KeyHandler.makeSlicing = function (model) {
   this.handleModel(model)
@@ -874,7 +874,7 @@ var doit = (() => {
       action: eYo.KeyHandler.makeCall,
       model: {
         type: eYo.T3.Expr.call_expr,
-        name_p: '' 
+        name_p: ''
       }
     },
     'x[…]': {

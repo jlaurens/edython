@@ -32,8 +32,8 @@ describe('for_part', function() {
     eYo.Test.magnets(d1, {
       left: true,
       right: true,
-      high: true,
-      low: true,
+      head: true,
+      foot: true,
       suite: true
     })
     eYo.Test.line_counts(d1, {

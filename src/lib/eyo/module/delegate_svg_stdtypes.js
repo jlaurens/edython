@@ -36,7 +36,7 @@ var doit = (() => {
   var n = d.items.length
   var t = d.types.indexOf('method')
   var c = d.categories.indexOf('lists')
-  
+
   var names = [
     'append',
     'clear',
@@ -52,7 +52,7 @@ var doit = (() => {
     d.by_type[t].push(n)
     ++n
   })
-  
+
   d.items.push(new M.Item({
     name: 'append',
     class: 'list',
@@ -96,7 +96,7 @@ var doit = (() => {
     ary: 1,
     mandatory: 0
   }))
-  
+
   d.items.push(new M.Item({
     name: 'remove',
     class: 'list',
@@ -104,7 +104,7 @@ var doit = (() => {
     type_: t,
     ary: 1
   }))
-  
+
   d.items.push(new M.Item({
     name: 'reverse',
     class: 'list',
@@ -112,5 +112,5 @@ var doit = (() => {
     type_: t,
     ary: 0
   }))
-  
+
 }) ()

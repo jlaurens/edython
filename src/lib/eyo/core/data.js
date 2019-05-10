@@ -170,7 +170,7 @@ eYo.Data.prototype.getOwner = function () {
  */
 eYo.Data.prototype.get = function () {
   if (!goog.isDef(this.value_)) {
-    var f = eYo.Decorate.reentrant_method.call(this, 
+    var f = eYo.Decorate.reentrant_method.call(this,
       'get',
       this.init
     )
@@ -387,7 +387,7 @@ eYo.Data.prototype.toField = function () {
  * The rendering process consists in setting the view model according
  * to the data model. Then displaying is processed by some engine
  * (in the navigator for example).
- * 
+ *
  */
 
 /**
@@ -469,7 +469,7 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
  * Returns a function with signature is `foo(before, after) → void`
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * @param {Object} key, 
+ * @param {Object} key,
  * @param {Object} do_it
  * @return undefined
  */
@@ -783,7 +783,7 @@ eYo.Data.prototype.changeIncog = function (newValue) {
       () => { // catch `this`
         this.incog_ = newValue
         this.slot && this.slot.setIncog(newValue)
-        this.field && this.field.setVisible(!newValue)    
+        this.field && this.field.setVisible(!newValue)
       }
     )
     return true

@@ -125,7 +125,7 @@ eYo.Node.prototype.simple_stmt2Dlgt = function (owner) {
         var dd = n.toDlgt(owner)
         if (dd) {
           m4t.connect(dd.magnets.left)
-          m4t = dd.magnets.rightMost      
+          m4t = dd.magnets.rightMost
         } else {
           console.error("BREAK HERE, MISSING BLOCK", n)
         }
@@ -323,7 +323,7 @@ eYo.Node.prototype.if_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(dlgt)
   var dd = dlgt
   while ((n = n.sibling)) {
-    var m4t = dd.magnets.low
+    var m4t = dd.magnets.foot
     if ((n.n_str === 'elif')) {
       dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.elif_part)
       n = n.sibling
@@ -353,7 +353,7 @@ eYo.Node.prototype.while_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(dlgt)
   var dd = dlgt
   if ((n = n.sibling)) {
-    var m4t = dd.magnets.low
+    var m4t = dd.magnets.foot
     dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.else_part)
     n.sibling.sibling.suiteInDlgt(dd)
     m4t.connectSmart(dd)
@@ -534,7 +534,7 @@ eYo.Node.prototype.decorator2Dlgt = function (workspace) {
   }
   var comments = n.comments
   if (comments.length) {
-    var m4t = dlgt.magnets.lowMost
+    var m4t = dlgt.magnets.footMost
     comments.forEach(n => {
       var m = m4t.connectSmart(n.toDlgt(workspace))
       m && (m = m4t)
@@ -681,7 +681,7 @@ eYo.Node.prototype.binary2Dlgt = function (owner, type, op) {
   while ((n1 = n0.sibling) && (n0 = n1.sibling)) {
     var dlgt = eYo.DelegateSvg.newComplete(owner, type)
     dlgt.lhs_s.connect(root)
-    dlgt.operator_p = (op && op(n1)) || n1.n_str  
+    dlgt.operator_p = (op && op(n1)) || n1.n_str
     dlgt.rhs_s.connect(n0.toDlgt(owner))
     root = dlgt
   }
@@ -940,7 +940,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
       if (this.type === eYo.TKN.file_input) {
         ds.reverse().forEach(d => {
           if (d) {
-            root.high = d
+            root.head = d
             root = d
           }
         })
@@ -949,7 +949,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
         var dd = root
         ds.forEach(d => {
           if (d) {
-            dd.low = d
+            dd.foot = d
             dd = d
           }
         })
@@ -968,7 +968,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
       var dd = root
       ds.forEach(dd => {
         if (dd) {
-          dd.low = dd
+          dd.foot = dd
           dd = dd
         }
       })
@@ -979,7 +979,7 @@ eYo.Node.prototype.toDlgt = function (workspace) {
     } else {
       console.error('BREAK HERE', this.toDlgt_(workspace))
     }
-  } 
+  }
   return root
 }
 
@@ -995,7 +995,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
     case eYo.TKN.file_input: // (NEWLINE | stmt)* ENDMARKER
       var bs = this.n_child.map(n => n.toDlgt(workspace))
       if ((root = bs.shift())) {
-        m4t = root.magnets.lowMost
+        m4t = root.magnets.footMost
         bs.forEach(dd => {
           var m = m4t.connectSmart(dd)
           m && (m4t = m)
@@ -1091,7 +1091,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
         if (n0.n0.n_type === eYo.TKN.LPAR) {
           d = d0.n_ary_t
           if (d && d0.variant_p === eYo.Key.NONE) {
-            d0.variant_p = eYo.Key.CALL_EXPR            
+            d0.variant_p = eYo.Key.CALL_EXPR
           } else {
             root = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.call_expr)
             root.target_t.connectLast(d0)
@@ -1131,7 +1131,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
                 d0.target_p = ''
               }
               d0.dotted_p = 1
-              d0.target_t.connectLast(n0.n1.NAME2Dlgt(workspace))  
+              d0.target_t.connectLast(n0.n1.NAME2Dlgt(workspace))
             })
           }
         }
@@ -1360,7 +1360,7 @@ factor: ('+'|'-'|'~') factor | power
             case eYo.TKN.for_stmt: root = n.for_stmt2Dlgt(workspace); break
           }
           root.async = true
-          return root  
+          return root
         default: console.error("BREAK HERE, UNEXPECTED NAME", n.name)
         throw 'ERROR'
       }

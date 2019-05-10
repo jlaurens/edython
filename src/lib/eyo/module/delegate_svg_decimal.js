@@ -87,7 +87,7 @@ var F_k = (name, title) => {
     'Subnormal': 28,
     'Underflow': 29,
     'FloatOperation': 30
- 
+
     */
 eYo.FlyoutCategory.basic_decimal__module = [
   {

@@ -456,8 +456,8 @@ eYo.Do.stringToDom = function (string) {
 
 /**
  * .
- * @param {*} element 
- * @param {*} handler 
+ * @param {*} element
+ * @param {*} handler
  * @param {*} thisArg
  */
 eYo.Do.forEachChild = function (element, handler, thisArg) {
@@ -467,8 +467,8 @@ eYo.Do.forEachChild = function (element, handler, thisArg) {
 
 /**
  * .
- * @param {*} element 
- * @param {*} handler 
+ * @param {*} element
+ * @param {*} handler
  * @param {*} thisArg
  */
 eYo.Do.someChild = function (element, handler, thisArg) {
@@ -478,9 +478,9 @@ eYo.Do.someChild = function (element, handler, thisArg) {
 
 /**
  * Forwards `thisArg` to the handler.
- * @param {*} element 
- * @param {*} handler 
- * @param {*} thisArg 
+ * @param {*} element
+ * @param {*} handler
+ * @param {*} thisArg
  */
 eYo.Do.forEachElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
@@ -493,9 +493,9 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
 
 /**
  * Forwards `thisArg` to the handler.
- * @param {*} element 
- * @param {*} handler 
- * @param {*} thisArg 
+ * @param {*} element
+ * @param {*} handler
+ * @param {*} thisArg
  */
 eYo.Do.someElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
@@ -508,9 +508,9 @@ eYo.Do.someElementChild = function (element, handler, thisArg) {
 
 /**
  * Forwards `this` to the handler.
- * @param {*} element 
- * @param {*} handler 
- * @param {*} thisArg 
+ * @param {*} element
+ * @param {*} handler
+ * @param {*} thisArg
  */
 eYo.Do.forEachElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
@@ -534,8 +534,8 @@ eYo.Do.nothing = function () {
 /**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
- * @param {?Function} try_f 
- * @param {?Function} finally_f 
+ * @param {?Function} try_f
+ * @param {?Function} finally_f
  * @return whatever returns try_f
  */
 eYo.Do.tryFinally = function (try_f, finally_f) {
@@ -553,16 +553,16 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * Both functions share the `this` object of the caller.
- * @param {?Function} start_f 
+ * @param {?Function} start_f
  * @param {?Function} begin_finally_f
- * @param {?Function} end_finally_f 
+ * @param {?Function} end_finally_f
  */
 eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
   return (try_f, finally_f) => {
     start_f && start_f()
     var ans
     eYo.Do.tryFinally(() => {
-      ans = try_f()  
+      ans = try_f()
     }, () => {
       begin_finally_f && begin_finally_f()
       // enable first to allow finally_f to eventually fire events
@@ -582,8 +582,8 @@ eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
 /**
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
- * @param {*} object 
- * @param {*} props 
+ * @param {*} object
+ * @param {*} props
  */
 eYo.Do.readOnlyMixin = function(object, props) {
   var key

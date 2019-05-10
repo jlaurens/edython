@@ -109,14 +109,14 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         if (this.isInput) {
           var parent = this.b_eyo.parent
           parent && (parent.variant_p = eYo.Key.EXPRESSION)
         }
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
-        if (this.connection.eyo.isInput) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
+        if (this.isInput) {
           var parent = this.b_eyo.parent
           parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.Key.EXPRESSION : eYo.Key.NONE)
         }
@@ -137,10 +137,10 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
           this.owner.variant_p = eYo.Key.FROM
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         this.b_eyo.variant_p = eYo.Key.FROM
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetC8n) {
+      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         var O = this.b_eyo
         if (O.from_p) {
           O.variant_p = eYo.Key.FROM

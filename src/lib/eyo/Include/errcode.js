@@ -31,5 +31,5 @@ Object.defineProperties(eYo.E, {
   EOLS: {get () {return 24}}, /* EOL in single-quoted string */
   LINECONT: {get () {return 25}}, /* Unexpected characters after a line continuation */
   IDENTIFIER: {get () {return 26}}, /* Invalid characters in identifier */
-  BADSINGLE: {get () {return 27}} /* Ill-formed single statement input */  
+  BADSINGLE: {get () {return 27}} /* Ill-formed single statement input */
 })

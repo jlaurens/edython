@@ -30,7 +30,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * such that in a … = … statement block, it must be possible to connect
  * some … = … expression block. It makes sense to connect in the
  * rhs position because assignment is evaluated from right to left.
- * 
+ *
  * We merge all assignment statements into only one visual block.
  * The visual block has 3 types and more variants.
  * expression_stmt ::= target_list
@@ -146,7 +146,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
         if (this.isRequiredFromSaved()) {
           if (v === eYo.Key.VALUED || v === eYo.Key.TARGET_VALUED) {
             O.variant_p = eYo.Key.ANNOTATED_VALUED
-            O.operator_p = '='  
+            O.operator_p = '='
           } else {
             O.variant_p = eYo.Key.ANNOTATED
           }
@@ -256,7 +256,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           } else if (v === eYo.Key.VALUED) {
             this.owner.variant_p = eYo.Key.TARGET_VALUED
           }
-        } 
+        }
       },
       xml: {
         accept: /** @suppress {globalThis} */ function (attribute) {
@@ -293,7 +293,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
           } else if (v !== eYo.Key.ANNOTATED_VALUED) {
             O.variant_p = eYo.Key.ANNOTATED
           }
-        } 
+        }
       }
     },
     value: {
@@ -354,7 +354,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
     x = this.target_s.unwrappedTarget
     if (x && (x.type === eYo.T3.Expr.identifier_annotated || x.type === eYo.T3.Expr.augtarget_annotated)) {
       return eYo.T3.Stmt.annotated_assignment_stmt
-    }  
+    }
     return eYo.T3.Stmt.assignment_stmt
   } else {
     return eYo.T3.Stmt.augmented_assignment_stmt

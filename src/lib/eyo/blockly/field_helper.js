@@ -197,7 +197,7 @@ goog.forwardDeclare('eYo.FieldInput')
 /**
  * Create all the fields from the given model.
  * For edython.
- * @param {!eYo.Slot|!eYo.Magnet|!eYo.Delegate} owner  
+ * @param {!eYo.Slot|!eYo.Magnet|!eYo.Delegate} owner
  * @param {!Object} fieldsModel
  */
 eYo.FieldHelper.makeFields = (() => {
@@ -403,7 +403,7 @@ eYo.FieldHelper.makeFields = (() => {
               var eyoLast = eyo.eyoLast_
               if (eyoLast) {
                 delete eyo.eyoLast_
-                eyo = eyoLast               
+                eyo = eyoLast
               //   if (eyo.nextField) {
               //     console.log('UNEXPECTED 1:', eyo)
               //   }

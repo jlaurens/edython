@@ -68,7 +68,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   SLICE: 'slice',
   N_ARY: 'n_ary',
   IDENTIFIERS: 'identifiers',
-  
+
   VALUE: 'value', // this MUST be in lower case
   LIST: 'list',
 
@@ -107,7 +107,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   AS: 'as',
   SOURCE: 'source',
   DEFINITION: 'definition',
-  
+
   // Primary delegate
   NONE: '----',
   CALL: 'call',
@@ -117,7 +117,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
 
   ROOT: 'root',
   EXPR: 'expr',
-  
+
   BACKUP: 'backup', // this MUST be in camelcase
   ALT: 'alt', // this MUST be in camelcase
 
@@ -126,7 +126,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   SEP: 'sep',
   FILE: 'file',
   FLUSH: 'flush',
-  
+
   PREFIX: 'prefix', // lowercase
   SUFFIX: 'suffix', // lowercase
   START: 'start', // lowercase
@@ -138,7 +138,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   SEPARATOR: 'separator', // lowercase
   BIND: 'bind', // lowercase
   DATA: 'data', // lowercase
-  
+
   CODE: 'code', // lowercase
   COMMENT: 'comment', // lowercase
   BLANK: 'blank', // lowercase
@@ -169,9 +169,9 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   TARGET_VALUED: 'target_valued',
   ANNOTATED_VALUED: 'annotated_valued',
   UNSET: 'unset',
-  
+
   EXPRESSION: 'expression',
-  
+
   IMPORT: 'import',
   FROM_MODULE_IMPORT: 'from_module_import',
   FROM_MODULE_IMPORT_STAR: 'from_module_import_star',
@@ -180,7 +180,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   NONLOCAL: 'nonlocal',
   DEL: 'del',
   RETURN: 'return',
-  
+
   PASS: 'pass',
   CONTINUE: 'continue',
   BREAK: 'break',
@@ -192,24 +192,24 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   STATICMETHOD: 'staticmethod',
   CLASSMETHOD: 'classmethod',
   PROPERTY: 'property',
-  
+
   GETTER: 'getter',
   SETTER: 'setter',
   DELETER: 'deleter',
-  
+
   UNARY: 'unary',
   BINARY: 'binary',
-  
+
   DOTTED_NAME: 'dotted_name',
-  
+
   CODE: 'code',
   CODE_COMMENT: 'code_comment',
-  
+
   RESTART: 'restart', // attribute name
-  
+
   TRUE: 'true', // attribute value
   FALSE: 'false', // attribute value
-  
+
   PAR: '()', // also used in xml eyo attribute
   SQB: '[]', // also used in xml eyo attribute
   BRACE: '{}', // also used in xml eyo attribute

@@ -193,7 +193,7 @@ eYo.FlyoutCategory.basic_cmath__module = [
   F('cos', 'Fonction cosinus'),
   F('sin', 'Fonction sinus'),
   F('tan', 'Fonction tangente'),
- 
+
   F('isclose', 'Teste si deux valeurs sont proches'),
 
   F_k('pi', '≅ π'),

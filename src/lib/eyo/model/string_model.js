@@ -23,7 +23,7 @@ eYo.Model.string__module = new eYo.Model.Module('string__module', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.string__module.Item = function (model) {
   eYo.Model.string__module.Item.superClass_.constructor.call(this, model)

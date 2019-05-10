@@ -165,24 +165,25 @@ Blockly.Events.Move.prototype.run = function(forward) {
       return;
     }
   }
+  var parent = parentBlock.eyo
   if (eyo.parent) {
     block.unplug()
   }
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
-    var xy = block.eyo.ui.xyInSurface;
-    block.moveBy(coordinate.x - xy.x, coordinate.y - xy.y);
+    var xy = eyo.ui.xyInSurface;
+    eyo.moveBy(coordinate.x - xy.x, coordinate.y - xy.y);
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;
     if (inputName) {
       var input = parentBlock.getInput(inputName)
       if (input) {
-        var magnet = block.eyo.magnets.output
+        var magnet = eyo.magnets.output
         if (magnet) {
           var p_magnet = input.eyo.magnet
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect with no output: " + block.eyo)
+          console.warn("Can't connect with no output: " + eyo)
         }
       } else {
         console.warn("Can't connect to non-existent input: " + inputName)
@@ -191,19 +192,19 @@ Blockly.Events.Move.prototype.run = function(forward) {
       var horizontal = forward ? this.newHorizontal : this.oldHorizontal
       if (horizontal) {
         if ((magnet = eyo.magnets.left)) {
-          if ((p_magnet = parentBlock.eyo.magnets.right)) {
+          if ((p_magnet = parent.magnets.right)) {
             magnet.connect(p_magnet)
           } else {
-            console.warn("Can't connect to non-existent right connection: " + parentBlock.eyo)
+            console.warn("Can't connect to non-existent right connection: " + parent)
           }
         } else {
           console.warn("Can't connect to non-existent left connection: " + eyo)
         }
-      } else if ((magnet = eyo.magnets.high)) {
-        if ((p_magnet = parentBlock.eyo.magnets.low)) {
+      } else if ((magnet = eyo.magnets.head)) {
+        if ((p_magnet = parent.magnets.foot)) {
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect to non-existent low connection: " + parentBlock.eyo)
+          console.warn("Can't connect to non-existent low connection: " + parent)
         }
       } else {
         console.warn("Can't connect to non-existent high connection: " + eyo)

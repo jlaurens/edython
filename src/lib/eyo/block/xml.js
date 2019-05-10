@@ -80,7 +80,7 @@ eYo.Xml = {
   CALL: 'call',
 
   LIST: 'list', // attribute name
-  
+
   WORKSPACE: 'workspace', // tag name
   CONTENT: 'content', // tag name
   EDYTHON: 'edython', // tag name
@@ -180,7 +180,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   // Safari 7.1.3 is known to provide node lists with extra references to
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
-  
+
   workspace.eyo.recover.whenRecovered(
     block => newBlockIds.push(block.id)
   )
@@ -211,7 +211,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
             : 10
           if (!isNaN(c) && !isNaN(l)) {
             block.eyo.moveBy(c, l)
-            
+
           }
         }
       }
@@ -366,7 +366,7 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
 
 /**
  * Create a new block, with full contents.
- * This is the expected way to create a block 
+ * This is the expected way to create a block
  * to be displayed immediately.
  * @param {!WorkspaceSvg} workspace
  * @param {!String|Object} model prototypeName or xml representation.
@@ -720,7 +720,7 @@ eYo.Xml.toDom = function (dlgt, element, opt) {
     // the right, suite and next flows
     magnetToDom(dlgt.magnets.right, eYo.Xml.FLOW, eYo.Xml.RIGHT)
     magnetToDom(dlgt.magnets.suite, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && magnetToDom(dlgt.magnets.low, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    !optNoNext && magnetToDom(dlgt.magnets.foot, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 
@@ -838,10 +838,10 @@ eYo.Xml.Recover.prototype.dontResit = function (dom) {
 /**
  * Create blocks with elements that were not used during the normal flow.
  * Uses `domToBlock`.
- * @param {!*} dom 
+ * @param {!*} dom
  * @param {!*} try_f
- * @param {?*} finally_f 
- * @param {?*} recovered_f 
+ * @param {?*} finally_f
+ * @param {?*} recovered_f
  */
 eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
@@ -963,7 +963,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
         var slot_m4t = input && input.eyo.magnet
         var flow_m4t = dom.getAttribute(eYo.Xml.FLOW)
           ? owner.eyo.magnets.suite
-          : owner.eyo.magnets.low
+          : owner.eyo.magnets.foot
         // return the first block that would connect to the owner
         if (!best.types.some(type => {
             var eyo = eYo.DelegateSvg.newComplete(workspace, type)
@@ -972,7 +972,7 @@ eYo.Xml.Recover.prototype.domToBlock = function (dom, owner) {
               ans = eyo
               return true
             }
-            m4t = eyo.magnets.high
+            m4t = eyo.magnets.head
             if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
               ans = eyo
               return true
@@ -1139,13 +1139,13 @@ eYo.Xml.fromDom = function (dlgt, element) {
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
         this.controller_fromDom_locked = true
-        out = controller.fromDom(this, element)        
+        out = controller.fromDom(this, element)
       }, () => {
         delete this.controller_fromDom_locked
         var state = element.getAttribute(eYo.Xml.STATE)
         if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
           this.lock()
-        }        
+        }
       })
     } else {
       eYo.Xml.Data.fromDom(this, element)
@@ -1193,9 +1193,9 @@ eYo.Xml.fromDom = function (dlgt, element) {
                 // we could create a block from that child element
                 // then connect it to
                 var m4ts = t_eyo.magnets
-                if (m4ts.high) {
-                  if (m4t.checkType_(m4ts.high)) {
-                    m4t.connect(m4ts.high)
+                if (m4ts.head) {
+                  if (m4t.checkType_(m4ts.head)) {
+                    m4t.connect(m4ts.head)
                   } else {
                     // we could not connect possibly because the
                     // type is not yet properly set
@@ -1203,9 +1203,9 @@ eYo.Xml.fromDom = function (dlgt, element) {
                     this.consolidateType()
                     this.consolidateConnections()
                     this.consolidate()
-                    if (m4t.checkType_(m4ts.high)) {
-                      m4t.connect(m4ts.high)
-                    }            
+                    if (m4t.checkType_(m4ts.head)) {
+                      m4t.connect(m4ts.head)
+                    }
                   }
                 }
                 return true
@@ -1216,7 +1216,7 @@ eYo.Xml.fromDom = function (dlgt, element) {
       }
       var out = statement(this.magnets.right, eYo.Xml.RIGHT)
       out = statement(this.magnets.suite, eYo.Xml.SUITE) || out
-      out = statement(this.magnets.low, eYo.Xml.NEXT) || out
+      out = statement(this.magnets.foot, eYo.Xml.NEXT) || out
       var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         this.lock()
@@ -1313,7 +1313,7 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
     var prototypeName = element.getAttribute(eYo.Key.EYO)
     var id = element.getAttribute('id')
     if (prototypeName === 'x') {
-      var eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.expression_stmt, id)  
+      var eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.expression_stmt, id)
       return eyo
     } else if (['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
       eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.augmented_assignment_stmt, id)

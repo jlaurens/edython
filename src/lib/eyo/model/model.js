@@ -110,7 +110,7 @@ eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
 
 /**
  * Item constuctor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.Item = function (model) {
   var key

@@ -23,7 +23,7 @@ eYo.Model.collections__module = new eYo.Model.Module('collections__module', 'htt
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.collections__module.Item = function (model) {
   eYo.Model.collections__module.Item.superClass_.constructor.call(this, model)

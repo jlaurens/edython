@@ -79,9 +79,9 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
  * @param {!Blockly.Connection} oldTargetC8n.
  * @param {!Blockly.Connection} targetOldC8n
  */
-eYo.DelegateSvg.List.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
-  eYo.DelegateSvg.List.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
-  if (connection.eyo.isOutput) {
+eYo.DelegateSvg.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.DelegateSvg.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  if (m4t.isOutput) {
     this.createConsolidator(true)
   }
 }

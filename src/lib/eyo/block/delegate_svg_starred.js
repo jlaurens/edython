@@ -32,17 +32,17 @@ eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_exp
 /**
  * Class for a DelegateSvg, starred block.
  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * 
+ *
  * Involved types:
- * 
+ *
  *   star_expr ::= "*" or_expr_all
  *   expression_star ::= "*" expression
  *   expression_star_star ::= "**" expression
  *   target_star ::= "*" target
  *   star ::= "*"
- *   parameter_star ::= "*" parameter     
+ *   parameter_star ::= "*" parameter
  *   parameter_star_star ::= "**" parameter
- * 
+ *
  * For edython.
  */
 
@@ -177,9 +177,9 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         if (Blockly.Events.recordUndo) {
-          this.slot.owner.variant_p = eYo.Key.NONE
+          this.b_eyo.variant_p = eYo.Key.NONE
         }
       }
     }
@@ -264,9 +264,9 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!Blockly.Connection} oldTargetC8n that was connected to connection
 //  * @param {!Blockly.Connection} targetOldC8n that was connected to the old target connection.
 //  */
-// eYo.DelegateSvg.Expr.Starred.prototype.didConnect = function (connection, oldTargetC8n, targetOldC8n) {
-//   eYo.DelegateSvg.Expr.Starred.superClass_.didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
-//   if (connection === this.modified_s.connection) {
+// eYo.DelegateSvg.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+//   eYo.DelegateSvg.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+//   if (m4t === this.modified_s.magnet) {
 
 //   }
 // }
@@ -276,8 +276,8 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!Blockly.Connection} blockConnection
 //  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
 //  */
-// eYo.DelegateSvg.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetC8n) {
-//   eYo.DelegateSvg.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetC8n)
+// eYo.DelegateSvg.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetM4t) {
+//   eYo.DelegateSvg.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetM4t)
 // }
 
 ;[

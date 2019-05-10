@@ -32,7 +32,7 @@ var ra_test = (name, str_s) => {
       })()
       it(str, f)
     })
-  })  
+  })
 }
 
 var ra_pass_comment = []
@@ -753,19 +753,19 @@ ra_test('named_expressions', ra_named_expressions)
 //     `
 //     src = `
 //     class PyBuildExt(build_ext):
-    
+
 //         def __init__(self, dist):
 //             build_ext.__init__(self, dist)
 //             self.failed = []
 //             self.failed_on_import = []
 //             if '-j' in os.environ.get('MAKEFLAGS', ''):
 //                 self.parallel = True
-    
+
 //         def build_extensions(self):
-    
+
 //             # Detect which modules should be compiled
 //             missing = self.detect_modules()
-    
+
 //             # Remove modules that are present on the disabled list
 //             extensions = [ext for ext in self.extensions
 //                           if ext.name not in disabled_module_list]
@@ -775,7 +775,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                 ctypes = extensions.pop(ext_map["_ctypes"])
 //                 extensions.append(ctypes)
 //             self.extensions = extensions
-    
+
 //             # Fix up the autodetected modules, prefixing all the source files
 //             # with Modules/.
 //             srcdir = sysconfig.get_config_var('srcdir')
@@ -784,21 +784,21 @@ ra_test('named_expressions', ra_named_expressions)
 //                 raise ValueError("No source directory; cannot proceed.")
 //             srcdir = os.path.abspath(srcdir)
 //             moddirlist = [os.path.join(srcdir, 'Modules')]
-    
+
 //             # Fix up the paths for scripts, too
 //             self.distribution.scripts = [os.path.join(srcdir, filename)
 //                                          for filename in self.distribution.scripts]
-    
+
 //             # Python header files
 //             headers = [sysconfig.get_config_h_filename()]
 //             headers += glob(os.path.join(sysconfig.get_path('include'), "*.h"))
-    
+
 //             # The sysconfig variables built by makesetup that list the already
 //             # built modules and the disabled modules as configured by the Setup
 //             # files.
 //             sysconf_built = sysconfig.get_config_var('MODBUILT_NAMES').split()
 //             sysconf_dis = sysconfig.get_config_var('MODDISABLED_NAMES').split()
-    
+
 //             mods_built = []
 //             mods_disabled = []
 //             for ext in self.extensions:
@@ -811,14 +811,14 @@ ra_test('named_expressions', ra_named_expressions)
 //                     ext.depends = []
 //                 # re-compile extensions if a header file has been changed
 //                 ext.depends.extend(headers)
-    
+
 //                 # If a module has already been built or has been disabled in the
 //                 # Setup files, don't build it here.
 //                 if ext.name in sysconf_built:
 //                     mods_built.append(ext)
 //                 if ext.name in sysconf_dis:
 //                     mods_disabled.append(ext)
-    
+
 //             mods_configured = mods_built + mods_disabled
 //             if mods_configured:
 //                 self.extensions = [x for x in self.extensions if x not in
@@ -828,7 +828,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     fullpath = self.get_ext_fullpath(ext.name)
 //                     if os.path.exists(fullpath):
 //                         os.unlink(fullpath)
-    
+
 //             # When you run "make CC=altcc" or something similar, you really want
 //             # those environment variables passed into the setup.py phase.  Here's
 //             # a small set of useful ones.
@@ -840,17 +840,17 @@ ra_test('named_expressions', ra_named_expressions)
 //                 (ccshared,cflags) = sysconfig.get_config_vars('CCSHARED','CFLAGS')
 //                 args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
 //             self.compiler.set_executables(**args)
-    
+
 //             build_ext.build_extensions(self)
-    
+
 //             for ext in self.extensions:
 //                 self.check_extension_import(ext)
-    
+
 //             longest = max([len(e.name) for e in self.extensions], default=0)
 //             if self.failed or self.failed_on_import:
 //                 all_failed = self.failed + self.failed_on_import
 //                 longest = max(longest, max([len(name) for name in all_failed]))
-    
+
 //             def print_three_column(lst):
 //                 lst.sort(key=str.lower)
 //                 # guarantee zip() doesn't drop anything
@@ -859,7 +859,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                 for e, f, g in zip(lst[::3], lst[1::3], lst[2::3]):
 //                     print("%-*s   %-*s   %-*s" % (longest, e, longest, f,
 //                                                   longest, g))
-    
+
 //             if missing:
 //                 print()
 //                 print("Python build finished successfully!")
@@ -869,7 +869,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                 print("To find the necessary bits, look in setup.py in"
 //                       " detect_modules() for the module's name.")
 //                 print()
-    
+
 //             if mods_built:
 //                 print()
 //                 print("The following modules found by detect_modules() in"
@@ -878,7 +878,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                 " Setup files:")
 //                 print_three_column([ext.name for ext in mods_built])
 //                 print()
-    
+
 //             if mods_disabled:
 //                 print()
 //                 print("The following modules found by detect_modules() in"
@@ -886,14 +886,14 @@ ra_test('named_expressions', ra_named_expressions)
 //                 print("been built, they are *disabled* in the Setup files:")
 //                 print_three_column([ext.name for ext in mods_disabled])
 //                 print()
-    
+
 //             if self.failed:
 //                 failed = self.failed[:]
 //                 print()
 //                 print("Failed to build these modules:")
 //                 print_three_column(failed)
 //                 print()
-    
+
 //             if self.failed_on_import:
 //                 failed = self.failed_on_import[:]
 //                 print()
@@ -901,7 +901,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                       " but were removed because they could not be imported:")
 //                 print_three_column(failed)
 //                 print()
-    
+
 //             if any('_ssl' in l
 //                    for l in (missing, self.failed, self.failed_on_import)):
 //                 print()
@@ -911,14 +911,14 @@ ra_test('named_expressions', ra_named_expressions)
 //                 print("LibreSSL 2.6.4 and earlier do not provide the necessary "
 //                       "APIs, https://github.com/libressl-portable/portable/issues/381")
 //                 print()
-    
+
 //         def build_extension(self, ext):
-    
+
 //             if ext.name == '_ctypes':
 //                 if not self.configure_ctypes(ext):
 //                     self.failed.append(ext.name)
 //                     return
-    
+
 //             try:
 //                 build_ext.build_extension(self, ext)
 //             except (CCompilerError, DistutilsError) as why:
@@ -926,7 +926,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                               (ext.name, sys.exc_info()[1]))
 //                 self.failed.append(ext.name)
 //                 return
-    
+
 //         def check_extension_import(self, ext):
 //             # Don't try to import an extension that has failed to compile
 //             if ext.name in self.failed:
@@ -934,7 +934,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     'WARNING: skipping import check for failed build "%s"' %
 //                     ext.name, level=1)
 //                 return
-    
+
 //             # Workaround for Mac OS X: The Carbon-based modules cannot be
 //             # reliably imported into a command-line Python
 //             if 'Carbon' in ext.extra_link_args:
@@ -942,7 +942,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     'WARNING: skipping import check for Carbon-based "%s"' %
 //                     ext.name)
 //                 return
-    
+
 //             if host_platform == 'darwin' and (
 //                     sys.maxsize > 2**32 and '-arch' in ext.extra_link_args):
 //                 # Don't bother doing an import check when an extension was
@@ -954,7 +954,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     'WARNING: skipping import check for "%s"' %
 //                     ext.name)
 //                 return
-    
+
 //             # Workaround for Cygwin: Cygwin currently has fork issues when many
 //             # modules have been imported
 //             if host_platform == 'cygwin':
@@ -964,16 +964,16 @@ ra_test('named_expressions', ra_named_expressions)
 //             ext_filename = os.path.join(
 //                 self.build_lib,
 //                 self.get_ext_filename(self.get_ext_fullname(ext.name)))
-    
+
 //             # If the build directory didn't exist when setup.py was
 //             # started, sys.path_importer_cache has a negative result
 //             # cached.  Clear that cache before trying to import.
 //             sys.path_importer_cache.clear()
-    
+
 //             # Don't try to load extensions for cross builds
 //             if cross_compiling:
 //                 return
-    
+
 //             loader = importlib.machinery.ExtensionFileLoader(ext.name, ext_filename)
 //             spec = importlib.util.spec_from_file_location(ext.name, ext_filename,
 //                                                           loader=loader)
@@ -989,14 +989,14 @@ ra_test('named_expressions', ra_named_expressions)
 //                 if os.path.exists(newname):
 //                     os.remove(newname)
 //                 os.rename(ext_filename, newname)
-    
+
 //             except:
 //                 exc_type, why, tb = sys.exc_info()
 //                 self.announce('*** WARNING: importing extension "%s" '
 //                               'failed with %s: %s' % (ext.name, exc_type, why),
 //                               level=3)
 //                 self.failed.append(ext.name)
-    
+
 //         def add_multiarch_paths(self):
 //             # Debian/Ubuntu multiarch support.
 //             # https://wiki.ubuntu.com/MultiarchSpec
@@ -1013,14 +1013,14 @@ ra_test('named_expressions', ra_named_expressions)
 //                         multiarch_path_component = fp.readline().strip()
 //             finally:
 //                 os.unlink(tmpfile)
-    
+
 //             if multiarch_path_component != '':
 //                 add_dir_to_list(self.compiler.library_dirs,
 //                                 '/usr/lib/' + multiarch_path_component)
 //                 add_dir_to_list(self.compiler.include_dirs,
 //                                 '/usr/include/' + multiarch_path_component)
 //                 return
-    
+
 //             if not find_executable('dpkg-architecture'):
 //                 return
 //             opt = ''
@@ -1042,7 +1042,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                                     '/usr/include/' + multiarch_path_component)
 //             finally:
 //                 os.unlink(tmpfile)
-    
+
 //         def add_gcc_paths(self):
 //             gcc = sysconfig.get_config_var('CC')
 //             tmpfile = os.path.join(self.build_temp, 'gccpaths')
@@ -1074,7 +1074,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                                                 line.strip())
 //             finally:
 //                 os.unlink(tmpfile)
-    
+
 //         def detect_modules(self):
 //             # Ensure that /usr/local is always used, but the local build
 //             # directories (i.e. '.' and 'Include') must be first.  See issue
@@ -1086,7 +1086,7 @@ ra_test('named_expressions', ra_named_expressions)
 //             if cross_compiling:
 //                 self.add_gcc_paths()
 //             self.add_multiarch_paths()
-    
+
 //             # Add paths specified in the environment variables LDFLAGS and
 //             # CPPFLAGS for header and library files.
 //             # We must get the values from the Makefile and not the environment
@@ -1105,7 +1105,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     if options.dirs:
 //                         for directory in reversed(options.dirs):
 //                             add_dir_to_list(dir_list, directory)
-    
+
 //             if (not cross_compiling and
 //                     os.path.normpath(sys.base_prefix) != '/usr' and
 //                     not sysconfig.get_config_var('PYTHONFRAMEWORK')):
@@ -1117,7 +1117,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                                 sysconfig.get_config_var("LIBDIR"))
 //                 add_dir_to_list(self.compiler.include_dirs,
 //                                 sysconfig.get_config_var("INCLUDEDIR"))
-    
+
 //             system_lib_dirs = ['/lib64', '/usr/lib64', '/lib', '/usr/lib']
 //             system_include_dirs = ['/usr/include']
 //             # lib_dirs and inc_dirs are used to search for files;
@@ -1137,21 +1137,21 @@ ra_test('named_expressions', ra_named_expressions)
 //                                           system_include_dirs))
 //             exts = []
 //             missing = []
-    
+
 //             config_h = sysconfig.get_config_h_filename()
 //             with open(config_h) as file:
 //                 config_h_vars = sysconfig.parse_config_h(file)
-    
+
 //             srcdir = sysconfig.get_config_var('srcdir')
-    
+
 //             # OSF/1 and Unixware have some stuff in /usr/ccs/lib (like -ldb)
 //             if host_platform in ['osf1', 'unixware7', 'openunix8']:
 //                 lib_dirs += ['/usr/ccs/lib']
-    
+
 //             # HP-UX11iv3 keeps files in lib/hpux folders.
 //             if host_platform == 'hp-ux11':
 //                 lib_dirs += ['/usr/lib/hpux64', '/usr/lib/hpux32']
-    
+
 //             if host_platform == 'darwin':
 //                 # This should work on any unixy platform ;-)
 //                 # If the user has bothered specifying additional -I and -L flags
@@ -1165,22 +1165,22 @@ ra_test('named_expressions', ra_named_expressions)
 //                 for item in cflags.split():
 //                     if item.startswith('-I'):
 //                         inc_dirs.append(item[2:])
-    
+
 //                 for item in ldflags.split():
 //                     if item.startswith('-L'):
 //                         lib_dirs.append(item[2:])
-    
+
 //             #
 //             # The following modules are all pretty straightforward, and compile
 //             # on pretty much any POSIXish platform.
 //             #
-    
+
 //             # array objects
 //             exts.append( Extension('array', ['arraymodule.c']) )
-    
+
 //             # Context Variables
 //             exts.append( Extension('_contextvars', ['_contextvarsmodule.c']) )
-    
+
 //             shared_math = 'Modules/_math.o'
 //             # complex math library functions
 //             exts.append( Extension('cmath', ['cmathmodule.c'],
@@ -1192,13 +1192,13 @@ ra_test('named_expressions', ra_named_expressions)
 //                                    extra_objects=[shared_math],
 //                                    depends=['_math.h', shared_math],
 //                                    libraries=['m']) )
-    
+
 //             # time libraries: librt may be needed for clock_gettime()
 //             time_libs = []
 //             lib = sysconfig.get_config_var('TIMEMODULE_LIB')
 //             if lib:
 //                 time_libs.append(lib)
-    
+
 //             # time operations and variables
 //             exts.append( Extension('time', ['timemodule.c'],
 //                                    libraries=time_libs) )
@@ -1242,11 +1242,11 @@ ra_test('named_expressions', ra_named_expressions)
 //             exts.append( Extension("_abc", ["_abc.c"]) )
 //             # _queue module
 //             exts.append( Extension("_queue", ["_queuemodule.c"]) )
-    
+
 //             # Modules with some UNIX dependencies -- on by default:
 //             # (If you have a really backward UNIX, select and socket may not be
 //             # supported...)
-    
+
 //             # fcntl(2) and ioctl(2)
 //             libs = []
 //             if (config_h_vars.get('FLOCK_NEEDS_LIBBSD', False)):
@@ -1263,35 +1263,35 @@ ra_test('named_expressions', ra_named_expressions)
 //                 exts.append( Extension('spwd', ['spwdmodule.c']) )
 //             else:
 //                 missing.append('spwd')
-    
+
 //             # select(2); not on ancient System V
 //             exts.append( Extension('select', ['selectmodule.c']) )
-    
+
 //             # Fred Drake's interface to the Python parser
 //             exts.append( Extension('parser', ['parsermodule.c']) )
-    
+
 //             # Memory-mapped files (also works on Win32).
 //             exts.append( Extension('mmap', ['mmapmodule.c']) )
-    
+
 //             # Lance Ellinghaus's syslog module
 //             # syslog daemon interface
 //             exts.append( Extension('syslog', ['syslogmodule.c']) )
-    
+
 //             # Fuzz tests.
 //             exts.append( Extension(
 //                 '_xxtestfuzz',
 //                 ['_xxtestfuzz/_xxtestfuzz.c', '_xxtestfuzz/fuzzer.c'])
 //             )
-    
+
 //             # Python interface to subinterpreter C-API.
 //             exts.append(Extension('_xxsubinterpreters', ['_xxsubinterpretersmodule.c'],
 //                                   define_macros=[('Py_BUILD_CORE', '')]))
-    
+
 //             #
 //             # Here ends the simple stuff.  From here on, modules need certain
 //             # libraries, are platform-specific, or present other surprises.
 //             #
-    
+
 //             # Multimedia modules
 //             # These don't work for 64-bit platforms!!!
 //             # These represent audio samples or images as strings:
@@ -1303,7 +1303,7 @@ ra_test('named_expressions', ra_named_expressions)
 //             # audioop needs libm for floor() in multiple functions.
 //             exts.append( Extension('audioop', ['audioop.c'],
 //                                    libraries=['m']) )
-    
+
 //             # readline
 //             do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
 //             readline_termcap_library = ""
@@ -1346,7 +1346,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                 curses_library = 'ncurses'
 //             elif self.compiler.find_library_file(lib_dirs, 'curses'):
 //                 curses_library = 'curses'
-    
+
 //             if host_platform == 'darwin':
 //                 os_release = int(os.uname()[2].split('.')[0])
 //                 dep_target = sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET')
@@ -1370,7 +1370,7 @@ ra_test('named_expressions', ra_named_expressions)
 //                     readline_extra_link_args = ('-Wl,-search_paths_first',)
 //                 else:
 //                     readline_extra_link_args = ()
-    
+
 //                 readline_libs = ['readline']
 //                 if readline_termcap_library:
 //                     pass # Issue 7384: Already linked against curses or tinfo.
@@ -1386,9 +1386,9 @@ ra_test('named_expressions', ra_named_expressions)
 //                                        libraries=readline_libs) )
 //             else:
 //                 missing.append('readline')
-    
+
 //             # crypt module.
-    
+
 //             if self.compiler.find_library_file(lib_dirs, 'crypt'):
 //                 libs = ['crypt']
 //             else:
@@ -2039,7 +2039,7 @@ ra_test('named_expressions', ra_named_expressions)
 //             libs = []
 //         exts.append( Extension('_crypt', ['_cryptmodule.c'], libraries=libs) )
 
-    
+
 //             # CSV files
 //         exts.append( Extension('_csv', ['_csv.c']) )
 
@@ -3560,5 +3560,5 @@ ra_test('named_expressions', ra_named_expressions)
 //     chai.assert(n, `FAILURE ${err_ret.error}, ${err_ret.expected}, ${err_ret.lineno}, "${err_ret.text}"`)
 //   });
 // });
-    
+
 console.log('DONE')

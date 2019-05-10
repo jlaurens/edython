@@ -780,7 +780,7 @@ describe('Scan(_KEYWORD)', function() {
         })
       }
     }
-    it(kws[i], f(kws[i])) 
+    it(kws[i], f(kws[i]))
   }
 });
 

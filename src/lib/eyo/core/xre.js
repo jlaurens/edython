@@ -34,7 +34,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
     upper: XRegExp(`^[A-Z_]*$`),
     white_space: XRegExp('\\t|\\f|\\p{Zs}|\\p{Zl}')
   })
-  
+
 eYo.Do.readOnlyMixin(eYo.XRE, {
   integer: XRegExp(
     `^(?<sign>-)?(?:

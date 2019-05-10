@@ -54,7 +54,7 @@ Object.defineProperties(stack.prototype, {
     }
   }
 })
-  
+
 /* STACK DATA TYPE *-/
 
 static void s_reset(stack *)

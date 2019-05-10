@@ -23,7 +23,7 @@ eYo.Model.statistics__module = new eYo.Model.Module('statistics__module', 'https
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.statistics__module.Item = function (model) {
   eYo.Model.statistics__module.Item.superClass_.constructor.call(this, model)

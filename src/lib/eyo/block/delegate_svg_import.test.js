@@ -164,7 +164,7 @@ describe('from module import …', function() {
       d.from_p = 'abc'
       eYo.Test.data_value(d, 'from', 'abc')
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
-      eYo.Test.code(d, `from abc import ${args[2] || '*'}`)      
+      eYo.Test.code(d, `from abc import ${args[2] || '*'}`)
       var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
       dd.target_p = 'cde'
       eYo.Test.data_value(dd, 'target', 'cde')
@@ -173,7 +173,7 @@ describe('from module import …', function() {
       eYo.Test.code(d, `from cde import ${args[2] || '*'}`)
       dd.block_.dispose()
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
-      eYo.Test.code(d, `from abc import ${args[2] || '*'}`)      
+      eYo.Test.code(d, `from abc import ${args[2] || '*'}`)
     })
     d.block_.dispose()
   })

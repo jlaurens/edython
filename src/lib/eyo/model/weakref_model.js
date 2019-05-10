@@ -23,7 +23,7 @@ eYo.Model.weakref__module = new eYo.Model.Module('weakref__module', 'https://doc
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.weakref__module.Item = function (model) {
   eYo.Model.weakref__module.Item.superClass_.constructor.call(this, model)

@@ -13,7 +13,7 @@
 goog.provide('eYo.font-face')
 
 goog.require('eYo')
- 
+
 /**
 * Setup the font style, amongst others.
 */

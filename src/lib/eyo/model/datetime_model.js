@@ -23,7 +23,7 @@ eYo.Model.datetime__module = new eYo.Model.Module('datetime__module', 'https://d
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.datetime__module.Item = function (model) {
   eYo.Model.datetime__module.Item.superClass_.constructor.call(this, model)

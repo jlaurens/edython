@@ -221,10 +221,10 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_eyo = eyo.low)) {
+  if (is_deep && (t_eyo = eyo.foot)) {
     this.newline_()
     this.exportBlock_(t_eyo, opt)
-  }  
+  }
 }
 
 /**
@@ -349,7 +349,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
         input.fieldRow.forEach(f => this.exportField_(f))
       }
     }
-  } 
+  }
 }
 
 /**

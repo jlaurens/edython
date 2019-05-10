@@ -441,14 +441,14 @@ eYo.setup.register(() => {
   )
   //, .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-contour,
   // .eyo-select.eyo-stmt *:not(.eyo-expr)>.eyo-path-inner
-  
+
   // When a statement is selected, select only expressions of that statement
   eYo.Style.insertCssRuleAt(
     `.eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
     .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
       stroke: ${eYo.Style.Path.Hilighted.colour};
     }`
-  ) 
+  )
   eYo.Style.insertCssRuleAt(
     `.eyo-start-path {
       fill: rgba(240, 240, 240, 0.97);

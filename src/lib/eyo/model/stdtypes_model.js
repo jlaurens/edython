@@ -23,7 +23,7 @@ eYo.Model.stdtypes = new eYo.Model.Module('stdtypes', 'https://docs.python.org/3
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.stdtypes.Item = function (model) {
   eYo.Model.stdtypes.Item.superClass_.constructor.call(this, model)

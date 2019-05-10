@@ -23,7 +23,7 @@ eYo.Model.enum__module = new eYo.Model.Module('enum__module', 'https://docs.pyth
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.enum__module.Item = function (model) {
   eYo.Model.enum__module.Item.superClass_.constructor.call(this, model)

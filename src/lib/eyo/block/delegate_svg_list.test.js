@@ -75,7 +75,7 @@ describe('Enclosure connections', function() {
     d.block_.dispose()
   })
   it(`'[]'`, function() {
-    
+
   })
   it(`'{}'`, function() {
     var d = eYo.Test.new_dlgt('void_dict_display')

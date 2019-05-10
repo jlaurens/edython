@@ -113,7 +113,7 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
           this.owner.variant_p = eYo.Key.EXPRESSION
         }
       },
-      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.b_eyo
         O.variant_p === eYo.Key.ALIASED || (O.variant_p = eYo.Key.EXPRESSION)
       }
@@ -138,21 +138,21 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
           this.owner.variant_p = eYo.Key.ALIASED
         }
       },
-      didConnect: /** @suppress {globalThis} */ function  (oldTargetC8n, targetOldC8n) {
+      didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.b_eyo
         O.variant_p = eYo.Key.ALIASED
       }
     }
   },
   statement: {
-    high: {
+    head: {
       check: /** @suppress {globalThis} */ function (type) {
         return type === eYo.T3.Stmt.except_part
         ? eYo.T3.Stmt.Previous.except_part
         : eYo.T3.Stmt.Previous.void_except_part
       }
     },
-    low: {
+    foot: {
       check: /** @suppress {globalThis} */ function (type) {
         return type === eYo.T3.Stmt.except_part
         ? eYo.T3.Stmt.Next.except_part
@@ -285,7 +285,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
           this.owner.variant_p = eYo.Key.FROM
         }
       }
-    }    
+    }
   },
   fields: {
     prefix: 'raise'

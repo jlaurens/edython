@@ -76,8 +76,8 @@ eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var type = newValue 
-          ? eYo.T3.Profile.get(newValue, null).expr 
+        var type = newValue
+          ? eYo.T3.Profile.get(newValue, null).expr
           : eYo.T3.Expr.integer
         this.owner.type_p = type
       },

@@ -344,7 +344,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
                     function () { // `this` is `y`
                       this.modifier_p = modifier
                       this.variant_p = flags
-                      m4t.connect(y.magnets.output)    
+                      m4t.connect(y.magnets.output)
                     }
                   )
                 }
@@ -400,9 +400,9 @@ eYo.DelegateSvg.Expr.makeSubclass('lambda', {
           // does the target accept general expression in lambda
           if (m4t.check_ && m4t.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
             return eYo.T3.Expr.Check.expression_nocond
-          } 
+          }
         }
-        return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)     
+        return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
       }
     }
   },

@@ -55,7 +55,7 @@ eYo.Shape.Style = {
 
 /**
  * parameters.
- * 
+ *
  * Geometrical conditions for the caret dimensions
  * with respect to the block ones are detailled below
  */
@@ -174,8 +174,8 @@ eYo.Shape.prototype.push = function () {
 /**
  * `m` for move with relative arguments.
  * @param {*?} is_block  In block coordinates, when true and present
- * @param {*?} c 
- * @param {*?} l 
+ * @param {*?} c
+ * @param {*?} l
  */
 eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
   if (is_block === true) {
@@ -201,8 +201,8 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
 /**
  * `M` for move with absolute arguments.
  * @param {*?} is_block  In block coordinates, when true and present
- * @param {*?} c 
- * @param {*?} l 
+ * @param {*?} c
+ * @param {*?} l
  */
 eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
   if (is_block === true) {
@@ -210,7 +210,7 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
       l = c.y
       c = c.x
     }
-    this.cursor.set({x: c, y: l})    
+    this.cursor.set({x: c, y: l})
     this.push('M', `${this.format(c)},${this.format(l)}`)
     return
   } else if (is_block !== false) {
@@ -228,8 +228,8 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
 /**
  * `l` for line with relative arguments.
  * @param {*?} is_block  In block coordinates, when true and present
- * @param {*?} c 
- * @param {*?} l 
+ * @param {*?} c
+ * @param {*?} l
  */
 eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
   if (is_block === true) {
@@ -251,8 +251,8 @@ eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
 /**
  * `L` for line with absolute arguments.
  * @param {*?} is_block  In block coordinates, when true and present
- * @param {*?} c 
- * @param {*?} l 
+ * @param {*?} c
+ * @param {*?} l
  */
 eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
   if (is_block === true) {
@@ -260,7 +260,7 @@ eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
       l = c.y
       c = c.x
     }
-    this.cursor.set({x: c, y: l})    
+    this.cursor.set({x: c, y: l})
     this.push('L', c, ',', l)
     return
   } else if (is_block !== false) {
@@ -273,8 +273,8 @@ eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
 
 /**
  * `h` for horizontal line with relative coordinates.
- * @param {*} is_block 
- * @param {*} c 
+ * @param {*} is_block
+ * @param {*} c
  */
 eYo.Shape.prototype.h = function (is_block = false, c = 0) {
   if (is_block === true) {
@@ -294,8 +294,8 @@ eYo.Shape.prototype.h = function (is_block = false, c = 0) {
 
 /**
  * `H` for horizontal line with absolute coordinates.
- * @param {*} is_block 
- * @param {*} c 
+ * @param {*} is_block
+ * @param {*} c
  */
 eYo.Shape.prototype.H = function (is_block = false, c = 0) {
   if (is_block === true) {
@@ -315,7 +315,7 @@ eYo.Shape.prototype.H = function (is_block = false, c = 0) {
 
 /**
  * `v` for vertical line with relative coordinates.
- * @param {*} l 
+ * @param {*} l
  */
 eYo.Shape.prototype.v = function (is_block, l) {
   if (is_block === true) {
@@ -336,7 +336,7 @@ eYo.Shape.prototype.v = function (is_block, l) {
 /**
  * `V` for vertical line with absolute coordinates.
  * @param {Boolean} is_block, when 'true', units are given in block coordinates
- * @param {*} l 
+ * @param {*} l
  */
 eYo.Shape.prototype.V = function (is_block, l) {
   if (is_block === true) {
@@ -350,7 +350,7 @@ eYo.Shape.prototype.V = function (is_block, l) {
   }
   if (this.cursor.l !== l) {
     this.push('V', l * eYo.Unit.y)
-    this.cursor.l = l  
+    this.cursor.l = l
   }
 }
 
@@ -367,7 +367,7 @@ eYo.Shape.prototype.V = function (is_block, l) {
  * part = 1 -> 90° ≤ -angle ≤ 90° + 90°
  * part = 2 -> 180° ≤ -angle ≤ 180° + 90°
  * part = 3 -> 270° ≤ -angle ≤ 270° + 90°
- * 
+ *
  * @param {?Number} r  optional radius.
  * @param {?Boolean} clockwise  Drawing direction.
  * @param {?Number} part  part is in [[0, 3]].
@@ -407,7 +407,7 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
  * part = 1 -> 90° ≤ -angle ≤ 90° + 180°
  * part = 2 -> 180° ≤ -angle ≤ 180° + 180°
  * part = 3 -> 270° ≤ -angle ≤ 270° + 180°
- * 
+ *
  * @param {?Number} r  optional radius. At least 2 arguments are required.
  * @param {?Boolean} part  part is in [[0, 3]].
  * @param {?Boolean} clockwise  Drawing direction.
@@ -433,7 +433,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
 
 /**
  * arc
- * @param {Number|Size} h 
+ * @param {Number|Size} h
  * @param {Number} r  optional radius
  * @param {Boolean} left
  * @param {Boolean} down
@@ -493,12 +493,12 @@ var initWithStatementNode = function(eyo, opt) {
     this.v(opt && opt.dido ? eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight : eyo.mainHeight + eyo.blackHeight)
   }
   if (eyo.next) {
-    this.H(1 / 2)     
+    this.H(1 / 2)
   } else {
     this.H(true, eYo.Unit.x / 2 + r)
     this.quarter_circle(r, true, 1)
   }
-  if (eyo.high) {
+  if (eyo.head) {
     this.V(0)
   } else {
     this.V(true, r)
@@ -544,7 +544,7 @@ var initWithGroupNode = function(eyo, opt) {
     this.H(true, eYo.Unit.x / 2 + r)
     this.quarter_circle(r, true, 1)
   }
-  if (eyo.high) {
+  if (eyo.head) {
     this.V(0)
   } else {
     this.V(true, r)
@@ -585,7 +585,7 @@ var initWithExpressionNode = function(eyo, opt) {
         this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
         this.quarter_circle(this.stmt_radius, true, 2)
       }
-      if (parent.high) {
+      if (parent.head) {
         this.V(0)
       } else {
         this.V(true, this.stmt_radius)
@@ -691,12 +691,12 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
       this.push(b_eyo.ui.driver.pathValueDef_(magnet))
     } else { // statement connection
       var w = b_eyo.span.width - eYo.Unit.x / 2
-      if (magnet.isPrevious) {
+      if (magnet.isHead) {
         this.m(true, w - 4 * r, -r)
         this.half_circle(r, true, 3)
         this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
         this.half_circle(r, true, 1)
-      } else if (magnet.isLow) {
+      } else if (magnet.isFoot) {
         if (b_eyo.span.l > 1) { // this is not clean design, really?
           this.m(true, eYo.Font.tabWidth, b_eyo.span.height - r)
           this.half_circle(r, true, 3)

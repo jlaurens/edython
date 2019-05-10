@@ -23,7 +23,7 @@ eYo.Model.decimal__module = new eYo.Model.Module('decimal__module', 'https://doc
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.decimal__module.Item = function (model) {
   eYo.Model.decimal__module.Item.superClass_.constructor.call(this, model)

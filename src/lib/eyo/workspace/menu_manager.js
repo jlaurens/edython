@@ -258,18 +258,19 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
     this.menu.hide()
     return
   }
-  var ee = block.eyo.lastMouseDownEvent
+  var eyo = block.eyo
+  var ee = eyo.lastMouseDownEvent
   if (ee) {
     // this block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (block === eYo.Selected.block) {
+      if (eyo === eYo.Selected.eyo) {
         // if the block was already selected,
         // try to select an input connection
-        eYo.Selected.connection = block.eyo.lastSelectedConnection
+        eYo.Selected.magnet = eyo.lastSelectedMagnet
       }
     }
   }
-  var target = block.eyo.getMenuTarget()
+  var target = eyo.getMenuTarget()
   this.init(target, e)
   var me = this
   me.alreadyListened = false
@@ -277,7 +278,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   parent = target.eyo
   this.populate_before_after(block)
   sep = parent.populateContextMenuFirst_(this)
-  while (parent !== block.eyo) {
+  while (parent !== eyo) {
     parent = parent.parent
     sep = parent.populateContextMenuFirst_(this) || sep
   }
@@ -291,7 +292,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
     sep = true
   }
   this.shouldSeparate(sep)
-  sep = block.eyo.populateContextMenuComment && block.eyo.populateContextMenuComment(this)
+  sep = eyo.populateContextMenuComment && eyo.populateContextMenuComment(this)
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addChild(this.insertAfterSubmenu, true)
     sep = true
@@ -303,7 +304,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   this.shouldSeparate(sep) // this algorithm needs more thinking
   parent = target.eyo
   sep = parent.populateContextMenuMiddle_(this)
-  while (parent !== block.eyo) {
+  while (parent !== eyo) {
     parent = parent.parent
     sep = parent.populateContextMenuMiddle_(this) || sep
   }
@@ -329,7 +330,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
       me.init()
     }, 10)// TODO be sure that this 10 is suffisant
   })
-  block.eyo.ui.showMenu(this.menu)
+  eyo.ui.showMenu(this.menu)
 }
 
 eYo.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
@@ -623,7 +624,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
       if (target === eYo.Selected.block && target.eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var m4t
-        if (((m4t = unwrapped.magnets.low) && (target = m4t.t_eyo)) || ((m4t = unwrapped.magnets.high) && (target = m4t.t_eyo))) {
+        if (((m4t = unwrapped.magnets.foot) && (target = m4t.t_eyo)) || ((m4t = unwrapped.magnets.head) && (target = m4t.t_eyo))) {
           eYo.Selected.eyo = target
         } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
           eYo.Selected.magnet = m4t
@@ -1005,9 +1006,9 @@ eYo.MenuManager.prototype.populate_insert_parent = function (block, model, top) 
  * @return true if an item were added to the remove menu
  */
 eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
-  var parent = block.eyo.parent
-  if (parent && parent.type === model.type) {
     var eyo = block.eyo
+  var parent = eyo.parent
+  if (parent && parent.type === model.type) {
     var input = eyo.getParentInput()
     if (model.input && input.name !== model.input) {
       return false
@@ -1062,9 +1063,9 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
     var eyo = eYo.DelegateSvg.newComplete(block, type)
-    var yorn = eyo.magnets.high &&
-    eyo.magnets.high.checkType_(m4t) &&
-    (!targetM4t || (eyo.magnets.low && targetM4t.checkType_(eyo.magnets.low)))
+    var yorn = eyo.magnets.head &&
+    eyo.magnets.head.checkType_(m4t) &&
+    (!targetM4t || (eyo.magnets.foot && targetM4t.checkType_(eyo.magnets.foot)))
     eyo.block_.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1078,9 +1079,9 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
     var eyo = eYo.DelegateSvg.newComplete(block, type)
-    var yorn = eyo.magnets.low &&
-    eyo.magnets.low.checkType_(m4t) &&
-    (!target || (eyo.magnets.high && target.checkType_(eyo.magnets.high)))
+    var yorn = eyo.magnets.foot &&
+    eyo.magnets.foot.checkType_(m4t) &&
+    (!target || (eyo.magnets.head && target.checkType_(eyo.magnets.head)))
     eyo.block_.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1093,7 +1094,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     return false
   }
   eYo.Events.disableWrap(() => {
-    if ((m4t = block.eyo.magnets.low)) {
+    if ((m4t = block.eyo.magnets.foot)) {
       var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {
         sep = F_after(target, type) || sep
@@ -1104,7 +1105,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
       }
       this.shouldSeparateInsertAfter(sep)
     }
-    if ((m4t = block.eyo.magnets.high)) {
+    if ((m4t = block.eyo.magnets.head)) {
       target = m4t.target
       for (_ = 0; (type = Us[_++]);) {
         sep = F_before(target, type) || sep

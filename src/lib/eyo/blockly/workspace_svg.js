@@ -245,17 +245,17 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
         if (eyo) {
           if (magnet.isInput) {
             t_magnet = eyo.magnets.out
-          } else if (magnet.isBottom || magnet.isSuite) {
-            t_magnet = eyo.magnets.high
-          } else if (magnet.isTop) {
-            t_magnet = eyo.magnets.low
+          } else if (magnet.isFoot || magnet.isSuite) {
+            t_magnet = eyo.magnets.head
+          } else if (magnet.isHead) {
+            t_magnet = eyo.magnets.foot
           } else if (magnet.isLeft) {
             t_magnet = eyo.magnets.right
           } else if (magnet.isRight) {
             t_magnet = eyo.magnets.left
           }
           if (t_magnet && magnet.checkType_(t_magnet)) {
-            if (magnet.isTop) {
+            if (magnet.isHead) {
               // the pasted block must move before it is connected
               // otherwise the newly created block will attract the old one
               // resulting in a move of the existing connection
@@ -274,8 +274,8 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
               t_magnet.b_eyo.moveBy(xy.x, xy.y)
             }
             magnet.connect(t_magnet)
-            if (magnet.isTop) {
-              t_magnet = eyo.magnets.low
+            if (magnet.isHead) {
+              t_magnet = eyo.magnets.foot
             }
             eYo.Selected.eyo = eyo
           }
@@ -431,7 +431,7 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
     ordered[d] = ll
   })
   tops = [].concat(...distances.map(d => ordered[d]))
-  
+
   var order = (l, r) => {
     var dx = r.xy.x - l.xy.x
     var dy = r.xy.y - l.xy.y
@@ -479,7 +479,7 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   }
   // XY is in workspace coordinates.
   var xy = block.eyo.ui.xyInSurface;
-  
+
   // Find the top left of the block in workspace units.
   var y = xy.y - eYo.Unit.y / 2
 
@@ -607,19 +607,19 @@ Blockly.Trashcan.prototype.position = function() {
     var flyoutPosition = this.workspace_.eyo.flyout_.eyo.flyoutPosition
     if (flyoutPosition) {
       this.left_ = flyoutPosition.x -
-      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness  
+      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness
     } else {
       this.left_ -= metrics.flyoutWidth
     }
   }
-  this.high_ = metrics.viewHeight + metrics.absoluteTop -
-      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.low_;
+  this.top_ = metrics.viewHeight + metrics.absoluteTop -
+      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
 
   if (metrics.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM) {
-    this.high_ -= metrics.flyoutHeight;
+    this.top_ -= metrics.flyoutHeight;
   }
   this.svgGroup_.setAttribute('transform',
-      'translate(' + this.left_ + ',' + this.high_ + ')');
+      'translate(' + this.left_ + ',' + this.top_ + ')');
 };
 
 /**
@@ -642,25 +642,25 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
         var b = topBlocks[i]
         if (b.rendered) {
           var blockBoundary = b.getBoundingRectangle()
-          if (blockBoundary.highLeft.x < bound.highLeft.x) {
-            bound.highLeft.x = blockBoundary.highLeft.x
+          if (blockBoundary.topLeft.x < bound.topLeft.x) {
+            bound.topLeft.x = blockBoundary.topLeft.x
           }
-          if (blockBoundary.lowRight.x > bound.lowRight.x) {
-            bound.lowRight.x = blockBoundary.lowRight.x
+          if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
+            bound.bottomRight.x = blockBoundary.bottomRight.x
           }
-          if (blockBoundary.highLeft.y < bound.highLeft.y) {
-            bound.highLeft.y = blockBoundary.highLeft.y
+          if (blockBoundary.topLeft.y < bound.topLeft.y) {
+            bound.topLeft.y = blockBoundary.topLeft.y
           }
-          if (blockBoundary.lowRight.y > bound.lowRight.y) {
-            bound.lowRight.y = blockBoundary.lowRight.y
+          if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
+            bound.bottomRight.y = blockBoundary.bottomRight.y
           }
         }
       }
       return {
-        x: bound.highLeft.x,
-        y: bound.highLeft.y,
-        width: bound.lowRight.x - bound.highLeft.x,
-        height: bound.lowRight.y - bound.highLeft.y
+        x: bound.topLeft.x,
+        y: bound.topLeft.y,
+        width: bound.bottomRight.x - bound.topLeft.x,
+        height: bound.bottomRight.y - bound.topLeft.y
       }
     }
     ++i

@@ -217,7 +217,7 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
         // this block was selected, select the block below or above before deletion
         var m4t, target
         var m4ts = this.eyo.targets
-        if (((m4t = m4ts.low) && (target = m4t.target)) || ((m4t = m4ts.high) && (target = m4t.target))) {
+        if (((m4t = m4ts.foot) && (target = m4t.target)) || ((m4t = m4ts.head) && (target = m4t.target))) {
           eYo.Selected.eyo = target.b_eyo
         } else if ((m4t = m4ts.output) && (target = m4t.target)) {
           eYo.Selected.magnet = target

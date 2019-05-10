@@ -23,7 +23,7 @@ eYo.Model.datamodel = new eYo.Model.Module('datamodel', 'https://docs.python.org
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.datamodel.Item = function (model) {
   eYo.Model.datamodel.Item.superClass_.constructor.call(this, model)

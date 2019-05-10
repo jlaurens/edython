@@ -25,7 +25,7 @@ goog.require('goog.dom');
  */
 eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
   statement: {
-    high: {
+    head: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
@@ -52,7 +52,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
         : null
       }
     },
-    low: {
+    foot: {
       check: /** @suppress {globalThis} */ function (type) {
         return null
       }
@@ -155,12 +155,12 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
     }
   },
   statement: {
-    high: {
+    head: {
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.T3.Stmt.Previous[type.substring(4)]
       }
     },
-    low: {
+    foot: {
       check: /** @suppress {globalThis} */ function (type) {
         return eYo.T3.Stmt.Next[type.substring(4)]
       }
@@ -196,9 +196,9 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
   if (!type) {
     var block = this.block_
     var t_magnet
-    if ((t_magnet = this.magnets.high.target)) {
+    if ((t_magnet = this.magnets.head.target)) {
       // look at the high connection
-      // 
+      //
       var t_eyo = t_magnet.b_eyo
       if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.try_else_part
@@ -206,7 +206,7 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
         type = T3.last_else_part
       }
     }
-    if (!type && (t_magnet = this.magnets.low.target)) {
+    if (!type && (t_magnet = this.magnets.foot.target)) {
       // the high connection did not add any constrain
       // may be the low connection will?
       t_eyo = t_magnet.b_eyo

@@ -30,7 +30,7 @@ describe('Each assignment block type', function() {
   })
 })
 
-//['target', 'annotated', 'value'], 
+//['target', 'annotated', 'value'],
 describe('Assignment', function() {
   var f = (t, incogs, variant) => {
     it(t, function() {
@@ -68,7 +68,7 @@ describe('Assignment', function() {
     f('ANNOTATED_VALUED', ['target', 'annotated', 'value'], 4)
     d1.block_.dispose()
     eYo.Test.tearItDown()
-  })  
+  })
 
   it('Expression only', function() {
     eYo.Test.setItUp()
@@ -109,7 +109,7 @@ describe('TEST', function () {
   it ('Annotated alone', function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_dlgt('annotated_stmt')
-    eYo.Test.variant(d1, 'ANNOTATED')    
+    eYo.Test.variant(d1, 'ANNOTATED')
     dom = eYo.Xml.dlgtToDom(d1)
     console.error(dom)
     d1.block_.dispose()
@@ -213,7 +213,7 @@ describe('Copy/Paste', function() {
       eYo.Test.incog(d, incogs)
       d.block_.dispose()
       eYo.Test.tearItDown()
-    })  
+    })
   }
   f('expression_stmt', ['Xtarget', 'Xannotated', 'value'], eYo.Key.EXPRESSION, eYo.Key.NONE)
   f('assignment_stmt', ['target', 'Xannotated', 'value'], eYo.Key.TARGET_VALUED, eYo.Key.NONE)
@@ -257,7 +257,7 @@ describe('Copy/Paste', function() {
   it ('Annotated alone', function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_dlgt('annotated_stmt')
-    eYo.Test.variant(d1, 'ANNOTATED')    
+    eYo.Test.variant(d1, 'ANNOTATED')
     var dom = eYo.Xml.dlgtToDom(d1)
     // console.error(dom)
     d1.block_.dispose()
@@ -442,7 +442,7 @@ describe('XML representation', function() {
       // console.log(dom)
       chai.assert(dom.tagName.toLowerCase() === 's')
       chai.assert(dom.getAttribute(eYo.Key.EYO) === k)
-      d.block_.dispose()  
+      d.block_.dispose()
       eYo.Test.tearItDown()
     })
   }

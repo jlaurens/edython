@@ -23,7 +23,7 @@ eYo.Model.datastructures = new eYo.Model.Module('datastructures', 'https://docs.
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.datastructures.Item = function (model) {
   eYo.Model.datastructures.Item.superClass_.constructor.call(this, model)

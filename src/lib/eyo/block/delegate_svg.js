@@ -274,7 +274,7 @@ eYo.DelegateSvg.prototype.deinit = function () {
     // this block was selected, select the block below or above before deletion
     // this does not work most probably because it is the wrong place
     var t_eyo
-    if ((t_eyo = this.low) || (t_eyo = this.high) || (t_eyo = this.output)) {
+    if ((t_eyo = this.foot) || (t_eyo = this.head) || (t_eyo = this.output)) {
       setTimeout(() => {
         eYo.Selected.eyo = t_eyo
       })// broken for output magnet ?
@@ -341,8 +341,8 @@ eYo.DelegateSvg.prototype.getMenuTarget = function () {
 
 /**
  * Render the given connection, if relevant.
- * @param {*} recorder 
- * @param {*} c8n 
+ * @param {*} recorder
+ * @param {*} c8n
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
@@ -358,9 +358,9 @@ eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
   }
   var do_it = !target.rendered ||
   (!this.ui.up &&
-    !eYo.Connection.disconnectedParentM4t &&
-    !eYo.Connection.disconnectedChildM4t&&
-    !eYo.Connection.connectedParentM4t)
+    !eYo.Magnet.disconnectedParent &&
+    !eYo.Magnet.disconnectedChild&&
+    !eYo.Magnet.connectedParent)
   if (do_it) {
     try {
       target.eyo.ui.down = true
@@ -448,7 +448,7 @@ eYo.Delegate.prototype.statementEnumerator = function () {
           }
         }
       }
-      if ((eyo = eyo.low)) {
+      if ((eyo = eyo.foot)) {
         eyos.unshift(eyo)
         e8rs.unshift(eyo.inputEnumerator())
         return eyo
@@ -681,13 +681,13 @@ eYo.DelegateSvg.newComplete = (() => {
         })
         // now blocks and slots have been set
         this.didLoad()
-        if (eyo.magnets.low) {
+        if (eyo.magnets.foot) {
           var nextModel = dataModel.next
           if (nextModel) {
             dlgt = processModel(workspace, nextModel)
-            if (dlgt && dlgt.magnets.high) {
+            if (dlgt && dlgt.magnets.head) {
               try {
-                dlgt.magnets.high.connectSmart(eyo)
+                dlgt.magnets.head.connectSmart(eyo)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -734,7 +734,7 @@ eYo.DelegateSvg.prototype.beReady = function (headless) {
       })
       ;[this.magnets.suite,
         this.magnets.right,
-        this.magnets.low
+        this.magnets.foot
       ].forEach(m => m && m.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
       this.render = eYo.DelegateSvg.prototype.render_
@@ -823,7 +823,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
   var p5e = eYo.T3.Profile.get(model, null)
   if (!p5e.isVoid && !p5e.isUnset) {
     if (m4t) {
-      if (m4t.isTop || m4t.isLeft || m4t.isRight || m4t.isSuite || m4t.isBottom) {
+      if (m4t.isHead || m4t.isLeft || m4t.isRight || m4t.isSuite || m4t.isFoot) {
         p5e.stmt && (model = {
           type: p5e.stmt,
           data: model
@@ -906,13 +906,13 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
           if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
             return fin()
           }
-        } else if (otherM4t.isTop) {
-          if ((m4t = candidate.magnets.low) && m4t.checkType_(otherM4t)) {
+        } else if (otherM4t.isHead) {
+          if ((m4t = candidate.magnets.foot) && m4t.checkType_(otherM4t)) {
             var targetM4t = otherM4t.target
-            if (targetM4t && candidate.magnets.high &&
-              targetM4t.checkType_(candidate.magnets.high)) {
+            if (targetM4t && candidate.magnets.head &&
+              targetM4t.checkType_(candidate.magnets.head)) {
               return fin(() => {
-                targetM4t.connect(candidate.magnets.high)
+                targetM4t.connect(candidate.magnets.head)
               })
             } else {
               return fin(() => {
@@ -924,12 +924,12 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
             }
             // unreachable code
           }
-        } else if (otherM4t.isSuite || otherM4t.isBottom) {
-          if ((m4t = candidate.magnets.high) && m4t.checkType_(otherM4t)) {
-            if ((targetM4t = otherM4t.target) && candidate.magnets.low &&
-            targetM4t.checkType_(candidate.magnets.low)) {
+        } else if (otherM4t.isSuite || otherM4t.isFoot) {
+          if ((m4t = candidate.magnets.head) && m4t.checkType_(otherM4t)) {
+            if ((targetM4t = otherM4t.target) && candidate.magnets.foot &&
+            targetM4t.checkType_(candidate.magnets.foot)) {
               return fin(() => {
-                targetM4t.connect(candidate.magnets.low)
+                targetM4t.connect(candidate.magnets.foot)
               })
             } else {
               return fin()
@@ -975,14 +975,14 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
           return fin()
         }
       }
-      if ((m4t = candidate.magnets.high)) {
-        if ((otherM4t = this.magnets.low) && m4t.checkType_(otherM4t)) {
+      if ((m4t = candidate.magnets.head)) {
+        if ((otherM4t = this.magnets.foot) && m4t.checkType_(otherM4t)) {
           return fin(() => {
             if ((targetM4t = otherM4t.target)) {
               // connected to something, beware of orphans
               otherM4t.disconnect()
-              if (candidate.magnets.low && candidate.magnets.low.checkType_(targetM4t)) {
-                candidate.magnets.low.connect(targetM4t)
+              if (candidate.magnets.foot && candidate.magnets.foot.checkType_(targetM4t)) {
+                candidate.magnets.foot.connect(targetM4t)
                 targetM4t = null
               }
             }
@@ -993,9 +993,9 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
           })
         }
       }
-      if ((m4t = candidate.magnets.low)) {
-        if ((otherM4t = this.magnets.high) && m4t.checkType_(otherM4t)) {
-          if ((targetM4t = otherM4t.target) && (otherM4t = candidate.magnets.high) && candidate.magnets.high.checkType_(targetM4t)) {
+      if ((m4t = candidate.magnets.foot)) {
+        if ((otherM4t = this.magnets.head) && m4t.checkType_(otherM4t)) {
+          if ((targetM4t = otherM4t.target) && (otherM4t = candidate.magnets.head) && candidate.magnets.head.checkType_(targetM4t)) {
             return fin(() => {
               otherM4t.connect(targetM4t)
             })
@@ -1100,7 +1100,7 @@ eYo.DelegateSvg.prototype.lock = function () {
       }
       if (m4t.isInput) {
         m4t.setHidden(true)
-      }      
+      }
     }
   })
   if ((m4t = this.magnets.right) && (t_eyo = m4t.t_eyo)) {
@@ -1109,7 +1109,7 @@ eYo.DelegateSvg.prototype.lock = function () {
   if ((m4t = this.magnets.suite) && (t_eyo = m4t.t_eyo)) {
     ans += t_eyo.lock()
   }
-  if ((m4t = this.magnets.low) && (t_eyo = m4t.t_eyo)) {
+  if ((m4t = this.magnets.foot) && (t_eyo = m4t.t_eyo)) {
     ans += t_eyo.lock()
   }
   if (this === eYo.Selected.eyo) {
@@ -1149,7 +1149,7 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
       m4t.setHidden(false)
     }
   })
-  if (!shallow && (m4t = block.eyo.magnets.low)) {
+  if (!shallow && (m4t = block.eyo.magnets.foot)) {
     if ((t_eyo = m4t.t_eyo)) {
       ans += t_eyo.unlock()
     }

@@ -446,7 +446,7 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
   }
 
   /* int */
-  
+
   eYo.Node.PyNode_AddChild_ = (n1, n2) =>
   {
     n1.n_child.push(n2)
@@ -460,7 +460,7 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
   }
 
   /* int */
-  
+
   eYo.Node.PyNode_AddChild = (n1, type, str, linen0, c0l_0ffset,
                   end_linen0, end_c0l_0ffset) =>
   {
@@ -478,7 +478,7 @@ eYo.Node._PyNode_FinalizeEndPos = (n) =>
     // if (nch === Number.MAX_SAFE_INTEGER || nch < 0) {
     //   return eYo.E.OVERFLOW
     // }
-    
+
 
     // n = n1.n_child[n1.n_nchildren++];
     // n.n_type = type;

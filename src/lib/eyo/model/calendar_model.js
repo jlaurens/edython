@@ -23,7 +23,7 @@ eYo.Model.calendar__module = new eYo.Model.Module('calendar__module', 'https://d
 
 /**
  * @constructor
- * @param {*} model 
+ * @param {*} model
  */
 eYo.Model.calendar__module.Item = function (model) {
   eYo.Model.calendar__module.Item.superClass_.constructor.call(this, model)

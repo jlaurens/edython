@@ -220,7 +220,7 @@ eYo.Flyout.prototype.show = function(model) {
     var contents = [];
     var gaps = [];
     var default_gap = eYo.Font.lineHeight/4;
-  
+
     this.permanentlyDisabled_.length = 0;
     model.forEach((xml) => {
       if (xml.tagName) {
@@ -278,7 +278,7 @@ eYo.Flyout.prototype.show = function(model) {
           } catch (err) {
             console.error(xml, err)
             // throw err: catch the error here definitely
-          }  
+          }
         }
         // this is the part specific to edython
         if (goog.isFunction(xml)) {
@@ -293,7 +293,7 @@ eYo.Flyout.prototype.show = function(model) {
         }
       }
     })
-    
+
     this.layout_(contents, gaps);
 
     // IE 11 is an incompetent browser that fails to fire mouseout events.
