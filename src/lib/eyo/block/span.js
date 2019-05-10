@@ -89,6 +89,7 @@ Object.defineProperties(eYo.Span.prototype, {
    * The first print has 0 head line, 2 foot lines.
    * The second print has 1 head line, 1 foot line.
    * The third print has 2 head lines, 0 foot line.
+   * An expression block has no head lines nor foot lines.
    */
   head: {
     get () {

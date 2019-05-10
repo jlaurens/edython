@@ -381,7 +381,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       init: eYo.Key.UNARY,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        this.owner.expression2_d.setIncog(newValue !== eYo.Key.BINARY)
+        this.owner.expression2_d..incog = newValue !== eYo.Key.BINARY
       }
     },
     expression: {

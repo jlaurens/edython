@@ -338,17 +338,15 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
             content,
             () => {
               var y = eYo.DelegateSvg.newComplete(this, eYo.T3.Expr.identifier)
-              eYo.Events.groupWrap(
-                () => { // `this` is catched
-                  y.changeWrap(
-                    function () { // `this` is `y`
-                      this.modifier_p = modifier
-                      this.variant_p = flags
-                      m4t.connect(y.magnets.output)
-                    }
-                  )
-                }
-              )
+              eYo.Events.groupWrap(() => { // `this` is catched
+                y.changeWrap(
+                  function () { // `this` is `y`
+                    this.modifier_p = modifier
+                    this.variant_p = flags
+                    m4t.connect(y.magnets.output)
+                  }
+                )
+              })
             }
           ))
         }

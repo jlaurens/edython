@@ -25,10 +25,10 @@ eYo.Navigate.doTab = (() => {
   var input
   var accept = input => {
     var m4t = input.eyo.magnet
-    return m4t && !m4t.isIncog() && !m4t.hidden_ && m4t.isInput
+    return m4t && !m4t.incog && !m4t.hidden_ && m4t.isInput
   }
   var doLeft = eyo => { // !eyo
-    if ((m4t = eYo.Selected.magnet) && !m4t.isIncog()) {
+    if ((m4t = eYo.Selected.magnet) && !m4t.incog) {
       input = m4t.input
     }
     if (!input) {
@@ -72,7 +72,7 @@ eYo.Navigate.doTab = (() => {
     } while ((input = input.eyo.inputLeft))
   }
   var doRight = eyo => {
-    if ((m4t = eYo.Selected.magnet) && !m4t.isIncog()) {
+    if ((m4t = eYo.Selected.magnet) && !m4t.incog) {
       input = m4t.input
     }
     if (!input) {
@@ -196,30 +196,26 @@ eYo.Selected.chooseLeft = () => {
   if (c8n) {
     var c_eyo = c8n.eyo
     if (c_eyo.isInput || c_eyo.isOutput) {
-      eYo.Selected.eyo = eyo.wrapper
       eYo.Selected.connection = null
-      eYo.Selected.scrollToVisible()
+      eyo.wrapper.select().scrollToVisible()
       return
     } else if (c_eyo.isSuite) {
       eYo.Selected.connection = null
       eYo.Selected.scrollToVisible()
       return
     } else {
-      eYo.Selected.eyo = eyo.group || eyo.root
       eYo.Selected.connection = null
-      eYo.Selected.scrollToVisible()
+      (eyo.group || eyo.root).select().scrollToVisible()
       return
     }
   } else if (eyo.isStmt) {
     var ans = eyo.group || eyo.root
     if (eyo !== ans) {
-      eYo.Selected.eyo = ans
-      eYo.Selected.scrollToVisible()
+      ans.select().scrollToVisible()
       return
     }
   } else if ((ans = eyo.stmtParent)) {
-    eYo.Selected.eyo = ans
-    eYo.Selected.scrollToVisible()
+    ans.select().scrollToVisible()
     return
   }  // now try to select a top block
   var root = eyo.root
@@ -240,8 +236,7 @@ eYo.Selected.chooseLeft = () => {
     }
   })
   eYo.Selected.connection = null
-  eYo.Selected.block = target || root.block_
-  eYo.Selected.scrollToVisible()
+  (target.eyo || root).select().scrollToVisible()
 }
 /**
  * Select the block to the right of the selection.
@@ -268,8 +263,7 @@ eYo.Selected.chooseRight = function () {
         while ((t_eyo = m4t.t_eyo) && (next = t_eyo.magnets.foot)) {
           c8n = next
         }
-        eYo.Selected.magnet = m4t
-        eYo.Selected.scrollToVisible()
+        m4t.select().scrollToVisible()
         return
       }
     } else if (m4t.isSuite) {
@@ -280,8 +274,7 @@ eYo.Selected.chooseRight = function () {
       return
     }
   } else if ((m4t = eyo.magnets.suite)) {
-    eYo.Selected.magnet = m4t
-    eYo.Selected.scrollToVisible()
+    m4t.select().scrollToVisible()
     return
   }
   // now try to select a top block
@@ -303,8 +296,7 @@ eYo.Selected.chooseRight = function () {
     }
   })
   eYo.Selected.connection = null
-  eYo.Selected.block = target || root.block_
-  eYo.Selected.scrollToVisible()
+  (target.eyo || root).select().scrollToVisible()
 }
 
 /**
@@ -322,27 +314,23 @@ eYo.Selected.chooseAbove = function () {
     if (m4t.isHead) {
       var target = m4t.target
       if (target) {
-        eYo.Selected.magnet = target
-        eYo.Selected.scrollToVisible()
+        target.select().scrollToVisible()
         return
       }
     } else if (m4t.isFoot || m4t.isSuite) {
       var b_eyo = m4t.b_eyo
       if (b_eyo) {
-        eYo.Selected.eyo = b_eyo
-        eYo.Selected.scrollToVisible()
+        b_eyo.select().scrollToVisible()
         return
       }
     }
   } else if ((m4t = eyo.magnets.head)) {
-    eYo.Selected.magnet = m4t
-    eYo.Selected.scrollToVisible()
+    m4t.select().scrollToVisible()
     return
   }
   if ((b_eyo = eyo.stmtParent) || (b_eyo = eyo.root)) {
     if (eyo !== b_eyo) {
-      eYo.Selected.eyo = b_eyo
-      eYo.Selected.scrollToVisible()
+      b_eyo.select().scrollToVisible()
       return
     }
   }
@@ -364,11 +352,10 @@ eYo.Selected.chooseAbove = function () {
   })
   if (block && (eyo = block.eyo)) {
     if (m4t && m4t.isHead && eyo.magnets.foot) {
-      eYo.Selected.magnet = eyo.magnets.foot
+      eyo.magnets.foot.select().scrollToVisible()
     } else {
-      eYo.Selected.eyo = eyo
+      eyo.select().scrollToVisible()
     }
-    eYo.Selected.scrollToVisible()
   }
 }
 
@@ -388,23 +375,19 @@ eYo.Selected.chooseBelow = () => {
     if (m4t.isFoot) {
       var target = m4t.target
       if (target) {
-        eYo.Selected.magnet = target
-        eYo.Selected.scrollToVisible()
+        target.select().scrollToVisible()
         return
       } else if ((t_eyo = eyo.group) && (m4t = t_eyo.magnets.foot)) {
-        eYo.Selected.magnet = m4t
-        eYo.Selected.scrollToVisible()
+        m4t.select().scrollToVisible()
         return
       }
     } else if (m4t.isSuite) {
       var target = m4t.target
       if (target) {
-        eYo.Selected.magnet = target
-        eYo.Selected.scrollToVisible()
+        target.select().scrollToVisible()
         return
       } else if ((t_eyo = eyo.group) && (t_eyo !== eyo) && (m4t = t_eyo.magnets.foot)) {
-        eYo.Selected.magnet = m4t
-        eYo.Selected.scrollToVisible()
+        m4t.select().scrollToVisible()
         return
       }
     } else if (m4t.isHead) {
@@ -413,8 +396,7 @@ eYo.Selected.chooseBelow = () => {
       return
     }
   } else if ((m4t = eyo.magnets.foot) || ((eyo = eyo.stmtParent) && (m4t = eyo.magnets.foot))) {
-    eYo.Selected.magnet = m4t
-    eYo.Selected.scrollToVisible()
+    m4t.select().scrollToVisible()
     return
   }
   eyo = eYo.Selected.eyo
@@ -436,11 +418,10 @@ eYo.Selected.chooseBelow = () => {
   })
   if (block && (eyo = block.eyo)) {
     if (m4t && m4t.isFoot && eyo.magnets.head) {
-      eYo.Selected.magnet = eyo.magnets.head
+      eyo.magnets.head.select().scrollToVisible()
     } else {
-      eYo.Selected.eyo = eyo
+      eyo.select().scrollToVisible()
     }
-    eYo.Selected.scrollToVisible()
   }
 }
 

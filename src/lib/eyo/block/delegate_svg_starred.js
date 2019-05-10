@@ -67,7 +67,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
-        O.modified_d.setIncog(newValue === eYo.Key.STAR)
+        O.modified_d..incog = newValue === eYo.Key.STAR
         if (newValue === eYo.Key.STAR) {
           O.modifier_p = '*'
         }
@@ -178,7 +178,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
           : eYo.T3.Expr.Check._expression_or_parameter
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        if (Blockly.Events.recordUndo) {
+        if (eYo.Events.recordUndo) {
           this.b_eyo.variant_p = eYo.Key.NONE
         }
       }
@@ -260,9 +260,9 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did connect this block's connection from another connection.
-//  * @param {!Blockly.Connection} connection
-//  * @param {!Blockly.Connection} oldTargetC8n that was connected to connection
-//  * @param {!Blockly.Connection} targetOldC8n that was connected to the old target connection.
+//  * @param {!eYo.Magnet} m4t
+//  * @param {!eYo.Magnet} oldTargetM4t that was connected to connection
+//  * @param {!eYo.Magnet} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.DelegateSvg.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 //   eYo.DelegateSvg.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -274,7 +274,7 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 // /**
 //  * Did disconnect this block's connection from another connection.
 //  * @param {!Blockly.Connection} blockConnection
-//  * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
+//  * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
 //  */
 // eYo.DelegateSvg.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetM4t) {
 //   eYo.DelegateSvg.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetM4t)

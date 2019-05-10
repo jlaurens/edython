@@ -552,12 +552,12 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
 /**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
- * Both functions share the `this` object of the caller.
+ * No `this` in both arguments.
  * @param {?Function} start_f
  * @param {?Function} begin_finally_f
  * @param {?Function} end_finally_f
  */
-eYo.Do.makeWrapper = function (start_f, begin_finally_f, end_finally_f) {
+eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
   return (try_f, finally_f) => {
     start_f && start_f()
     var ans

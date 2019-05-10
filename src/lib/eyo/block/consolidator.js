@@ -347,7 +347,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     io.c8n.setHidden((io.c8n.eyo.hidden_ = true))
   } else if (io.i === 2 && io.list.length === 3 && io.noDynamicList) {
     io.c8n.setHidden((io.c8n.eyo.hidden_ = true))
-  } else if (!io.block.eyo.isIncog()) {
+  } else if (!io.block.eyo.incog) {
     io.c8n.setHidden(false)
   }
   io.c8n.eyo.ignoreBindField = io.i === 0 && io.list.length > 1

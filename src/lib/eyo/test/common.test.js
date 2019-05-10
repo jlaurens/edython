@@ -115,7 +115,7 @@ eYo.Test.incog = (dlgt, keys) => {
   var M = eYo.Delegate.Manager.getModel(dlgt.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
-    chai.assert(!dlgt[`${k}_s`].isIncog() === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
+    chai.assert(!dlgt[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
   })
 }
 
@@ -388,8 +388,8 @@ eYo.Test.copy_paste = (dlgt, opts) => {
   var M = eYo.Delegate.Manager.getModel(dlgt.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
-    chai.assert(dlgt[key].isIncog() === dd[key].isIncog(), `INCONSISTENT INCOG for key ${k}`)
-    if (!dlgt[key].isIncog()) {
+    chai.assert(dlgt[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)
+    if (!dlgt[key].incog) {
       eYo.Test.same_list_length = (dlgt, dd, k)
     }
   })

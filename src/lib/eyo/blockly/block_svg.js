@@ -211,40 +211,21 @@ eYo.BlockSvg.prototype.dispose = function (healStack, animate) {
   if (!this.workspace) {
     return
   }
-  eYo.Events.groupWrap(
-    () => {
-      if (this === eYo.Selected.block) {
-        // this block was selected, select the block below or above before deletion
-        var m4t, target
-        var m4ts = this.eyo.targets
-        if (((m4t = m4ts.foot) && (target = m4t.target)) || ((m4t = m4ts.head) && (target = m4t.target))) {
-          eYo.Selected.eyo = target.b_eyo
-        } else if ((m4t = m4ts.output) && (target = m4t.target)) {
-          eYo.Selected.magnet = target
-        }
+  eYo.Events.groupWrap(() => {
+    if (this === eYo.Selected.block) {
+      // this block was selected, select the block below or above before deletion
+      var m4t, target
+      var m4ts = this.eyo.targets
+      if (((m4t = m4ts.foot) && (target = m4t.target)) || ((m4t = m4ts.head) && (target = m4t.target))) {
+        eYo.Selected.eyo = target.b_eyo
+      } else if ((m4t = m4ts.output) && (target = m4t.target)) {
+        eYo.Selected.magnet = target
       }
-      this.eyo.consolidate = eYo.Do.nothing
-      this.unplug(healStack)
-      eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
     }
-  )
-}
-
-/**
- * Move this block to the front of the visible workspace.
- * <g> tags do not respect z-index so SVG renders them in the
- * order that they are in the DOM.  By placing this block first within the
- * block group's <g>, it will render on top of any other blocks.
- * This message is sent from the mouse down event
- * But this event may select the block above
- * (when the connection between the blocks is selected)
- * @package
- * @override
- */
-eYo.BlockSvg.prototype.bringToFront = function () {
-  if (this === eYo.Selected.block) {
-    eYo.BlockSvg.superClass_.bringToFront.call(this)
-  }
+    this.eyo.consolidate = eYo.Do.nothing
+    this.unplug(healStack)
+    eYo.BlockSvg.superClass_.dispose.call(this, healStack, animate)
+  })
 }
 
 /**
@@ -279,18 +260,6 @@ eYo.BlockSvg.prototype.setDragging = function(adding) {
   this.eyo.isDragging_ = adding
   eYo.BlockSvg.superClass_.setDragging.call(this, adding)
 };
-
-/**
- * Move this block to the front of the visible workspace.
- * <g> tags do not respect z-index so SVG renders them in the
- * order that they are in the DOM.  By placing this block first within the
- * block group's <g>, it will render on top of any other blocks.
- * Problem with chromium.
- * @package
- */
-eYo.BlockSvg.prototype.bringToFront = function() {
-  this.eyo.ui.sendToFront()
-}
 
 /**
  * Update the visual effect for disabled/enabled blocks.

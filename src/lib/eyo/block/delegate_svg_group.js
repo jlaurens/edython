@@ -101,7 +101,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
       init: eYo.Key.IF,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.if_d.setIncog(newValue === eYo.Key.ELSE)
+        this.owner.if_d..incog = newValue === eYo.Key.ELSE
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.while_part) {

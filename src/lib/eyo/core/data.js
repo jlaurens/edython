@@ -141,18 +141,40 @@ Object.defineProperties(eYo.Data.prototype, {
       return ui && ui.driver
     }
   },
-  incog_p: {
+  incog: {
     get () {
       return this.incog_
     },
+    /**
+     * Disabled data correspond to disabled input.
+     * Changing this value will cause an UI synchronization and a change count.
+     * @param {Object} newValue  When not defined, replaced by `!this.required`
+     * @return {boolean} whether changes have been made
+     */
     set (newValue) {
-      this.changeIncog(newValue)
+      if (!goog.isDef(newValue)) {
+        newValue = !this.required
+      } else {
+        newValue = !!newValue
+      }
+      var validator = this.model.validateIncog
+      if (validator) {
+        newValue = validator.call(this, newValue)
+      }
+      if (this.incog_ !== newValue) {
+        this.owner.changeWrap(
+          () => { // catch `this`
+            this.incog_ = newValue
+            this.slot && (this.slot.incog = newValue)
+            this.field && this.field.setVisible(!newValue)
+          }
+        )
+      }
     }
   },
   requiredIncog: {
     set (newValue) {
-      this.required = newValue
-      this.setIncog()
+      this.incog = !(this.required = newValue)
     }
   }
 })
@@ -581,7 +603,7 @@ eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
  * @return undefined
  */
 eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
-  (!Blockly.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
+  (!eYo.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
 }
 
 /**
@@ -595,7 +617,7 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.duringChange = function(oldValue, newValue) {
-  (!Blockly.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+  (!eYo.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
 }
 
 /**
@@ -607,7 +629,7 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
-  (Blockly.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
+  (eYo.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
   this.synchronize(newValue)
 }
 
@@ -642,9 +664,9 @@ eYo.Data.prototype.synchronize = function (newValue) {
     goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
     var field = this.field
     if (field) {
-      if (this.incog_p) {
+      if (this.incog) {
         if (this.slot && this.slot.data === this) {
-          this.slot.setIncog(true)
+          this.slot.incog = true
         } else {
           field.setVisible(false)
         }
@@ -652,7 +674,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         eYo.Events.disableWrap(() => {
           field.setValue(this.toField())
           if (this.slot && this.slot.data === this) {
-            this.slot.setIncog(false)
+            this.slot.incog = false
             field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
           } else {
             field.setVisible(true)
@@ -735,68 +757,35 @@ eYo.Data.prototype.set = function (newValue, validate = true) {
   return true
 }
 
-/**
- * Disabled data correspond to disabled input.
- * Changing this value will cause an UI synchronization but no change count.
- * @param {Object} newValue  When not defined, replaced by `!this.required`
- * @return {boolean} whether changes have been made
- */
-eYo.Data.prototype.setIncog = function (newValue) {
-  if (!goog.isDef(newValue)) {
-    newValue = !this.required
-  } else {
-    newValue = !!newValue
-  }
-  var validator = this.model.validateIncog
-  if (validator) {
-    newValue = validator.call(this, newValue)
-  }
-  if (this.incog_ !== newValue) {
-    this.incog_ = newValue
-    if (this.slot) {
-      this.slot.setIncog(newValue)
+Object.defineProperty(eYo.Data, 'incog', {
+  get () {
+    return this.incog_
+  },
+  /**
+   * Disabled data correspond to disabled input.
+   * Changing this value will cause an UI synchronization but no change count.
+   * @param {Boolean} newValue  When not defined, replaced by `!this.required`
+   */
+  set (newValue) {
+    if (!goog.isDef(newValue)) {
+      newValue = !this.required
     } else {
-      this.field && this.field.setVisible(!newValue)
+      newValue = !!newValue
     }
-    return true
-  }
-  return false
-}
-/**
- * Disabled data correspond to disabled input.
- * Changing this value will cause an UI synchronization and a change count.
- * @param {Object} newValue  When not defined, replaced by `!this.required`
- * @return {boolean} whether changes have been made
- */
-eYo.Data.prototype.changeIncog = function (newValue) {
-  if (!goog.isDef(newValue)) {
-    newValue = !this.required
-  } else {
-    newValue = !!newValue
-  }
-  var validator = this.model.validateIncog
-  if (validator) {
-    newValue = validator.call(this, newValue)
-  }
-  if (this.incog_ !== newValue) {
-    this.owner.changeWrap(
-      () => { // catch `this`
-        this.incog_ = newValue
-        this.slot && this.slot.setIncog(newValue)
+    var validator = this.model.validateIncog
+    if (validator) {
+      newValue = validator.call(this, newValue)
+    }
+    if (this.incog_ !== newValue) {
+      this.incog_ = newValue
+      if (this.slot) {
+        this.slot.incog = newValue
+      } else {
         this.field && this.field.setVisible(!newValue)
       }
-    )
-    return true
+    }
   }
-  return false
-}
-
-/**
- * Whether the data is incognito.
- */
-eYo.Data.prototype.isIncog = function () {
-  return this.incog_
-}
+})
 
 /**
  * Consolidate the value.
@@ -856,7 +845,7 @@ eYo.Data.prototype.save = function (element, opt) {
   if (this.slot && this.slot.bindField === this.field && this.slot.unwrappedTarget) {
     return
   }
-  if (!this.isIncog() || xml && eYo.Do.valueOf(xml.force, this)) {
+  if (!this.incog || xml && eYo.Do.valueOf(xml.force, this)) {
     // in general, data should be saved
     if (xml) {
       var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)

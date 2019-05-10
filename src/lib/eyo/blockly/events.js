@@ -80,6 +80,11 @@ Blockly.Events.Change.prototype.run = (() => {
   }
 }) ()
 
+Object.defineProperty(eYo.Events, 'recordUndo', {
+  get () {
+    return Blockly.Events.recordUndo
+  }
+})
 /**
  * Start or stop a group.
  * @param {boolean|string} state True to start new group, false to end group.
@@ -255,15 +260,16 @@ Blockly.Events.filter = function(queueIn, forward) {
  * @param {!Function} try_f
  * @param {?Function} finally_f
  */
-eYo.Events.groupWrap = eYo.Do.makeWrapper(
+eYo.Events.groupWrap = (f, g) => {
+  eYo.Do.makeWrapper(
   () => {
     eYo.Events.setGroup(true)
   },
-  null,
   () => {
     eYo.Events.setGroup(false)
-  }
-)
+  },
+  g)(f)
+}
 
 /*
 function (try_f, finally_f) {

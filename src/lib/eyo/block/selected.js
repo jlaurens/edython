@@ -41,9 +41,7 @@ eYo.Selected = (() => {
     }
   }
   me.scrollToVisible = (force) => {
-    if (eyo__ && (!eyo__.inVisibleArea() || force)) {
-      eyo__.workspace.eyo.scrollBlockTopLeft(eyo__.id)
-    }
+    eyo__ && eyo__.scrollToVisible(force)
   }
   Object.defineProperties(
     me,
@@ -112,7 +110,7 @@ eYo.Selected = (() => {
                   c8n__ = null
                 }
               }
-              eyo__.block_.bringToFront()
+              eyo__.ui.sendToFront()
               this.didAdd()
             } else {
               c8n__ = null
@@ -276,9 +274,11 @@ eYo.BlockSvg.prototype.select = function () {
 /**
  * Select this magnet. Highlight it visually.
  * Wrapped magnets are not selectable.
+ * @return {eYo.Magnet} this
  */
 eYo.Magnet.prototype.select = function () {
   eYo.Selected.magnet = this
+  return this
 }
 
 /**
@@ -286,7 +286,7 @@ eYo.Magnet.prototype.select = function () {
  * If `this` is the selected magnet, it looses its status.
  * Unselect is used from click handling methods.
  */
-eYo.DelegateSvg.prototype.unselect = function () {
+eYo.Delegate.prototype.unselect = function () {
   if (this.selected) {
     eYo.Selected.magnet = null
   }
@@ -296,11 +296,10 @@ eYo.DelegateSvg.prototype.unselect = function () {
  * Select this block.  Highlight it visually.
  * Wrapped blocks are not selectable.
  */
-eYo.DelegateSvg.prototype.select = eYo.Decorate.reentrant_method('select', function () {
-  if (!this.workspace) {
-    return
-  }
-  eYo.Selected.dlgt = this
+eYo.Delegate.prototype.select = eYo.Decorate.reentrant_method('select', function () {
+  return !this.workspace
+    ? this
+    : (eYo.Selected.dlgt = this)
 })
 
 /**
@@ -591,10 +590,10 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
               if (!m4t.t_eyo) {
                 var field = m4t.bindField
                 field && (field.eyo.doNotEdit = true)
-                eYo.Selected.magnet = m4t
+                m4t.select()
               }
             } else {
-              eYo.Selected.magnet = m4t
+              m4t.select()
             }
           } else {
             eYo.Selected.magnet = null

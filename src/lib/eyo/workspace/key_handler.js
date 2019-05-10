@@ -130,7 +130,7 @@ eYo.KeyHandler = (() => {
         return
       }
       if (eyo.forEachData(d => {
-        if (!d.isIncog() && d.validate(model)) {
+        if (!d.incog && d.validate(model)) {
           d.change(model)
           return true
         }
@@ -171,7 +171,7 @@ eYo.KeyHandler = (() => {
               if (m4t.type === type) {
                 var t_eyo = m4t.t_eyo
                 if (!m4t.hidden_ && !t_eyo && (!m4t.source || !m4t.source.bindField)) {
-                  eYo.Selected.magnet = m4t
+                  m4t.select()
                   return true
                 } else {
                   return t_eyo && doFirst(t_eyo, type)
@@ -182,7 +182,7 @@ eYo.KeyHandler = (() => {
           if (doFirst(newB.eyo, eYo.Magnet.INPUT)) {
             return true
           } else if ((m4t === eyo.magnets.foot) && (m4t = newB.eyo.magnets.foot) && !m4t.hidden_) {
-            eYo.Selected.magnet = m4t
+            m4t.select()
             return true
           }
           eYo.Selected.magnet = null
@@ -194,7 +194,7 @@ eYo.KeyHandler = (() => {
         do {
           if (parent.someInputMagnet(m4t => {
             if (m4t.isInput && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
-              eYo.Selected.magnet = m4t
+              m4t.select()
               return true
             }
           })) {
@@ -519,8 +519,7 @@ eYo.KeyHandler = (() => {
         event.stopPropagation()
         var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
         if (block) {
-          block.select()
-          eYo.Selected.scrollToVisible()
+          block.eyo.select().scrollToVisible()
         }
       }
       switch (k) {
@@ -609,7 +608,7 @@ var doit = (() => {
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-          eyo.replaceBlock(parent.block_)
+          eyo.replaceDlgt(parent)
           return
         }
         if (eYo.Selected.connection) {
@@ -649,7 +648,7 @@ var doit = (() => {
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
-          eyo.replaceBlock(parent.block_)
+          eyo.replaceDlgt(parent)
           return
         }
         var model = {

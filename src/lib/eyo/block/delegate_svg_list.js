@@ -75,9 +75,9 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
 
 /**
  * Fetches the named input object, getInput.
- * @param {!Blockly.Connection} connection.
- * @param {!Blockly.Connection} oldTargetC8n.
- * @param {!Blockly.Connection} targetOldC8n
+ * @param {!eYo.Magnet} m4t.
+ * @param {!eYo.Magnet} oldTargetM4t.
+ * @param {!eYo.Magnet} targetOldM4t
  */
 eYo.DelegateSvg.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.DelegateSvg.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -133,19 +133,17 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
   var list = block.inputList
   var i = 0
   var input
-  eYo.Events.groupWrap(
-    () => {
-      while ((input = list[i++])) {
-        var c8n = input.connection
-        var target = c8n.targetBlock()
-        if (target) {
-          c8n.disconnect()
-          target.dispose()
-        }
+  eYo.Events.groupWrap(() => {
+    while ((input = list[i++])) {
+      var c8n = input.connection
+      var target = c8n.targetBlock()
+      if (target) {
+        c8n.disconnect()
+        target.dispose()
       }
-      this.consolidate()
     }
-  )
+    this.consolidate()
+  })
 }
 
 /**

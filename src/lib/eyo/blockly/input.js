@@ -60,7 +60,6 @@ Blockly.Input.prototype.setVisible = function (visible) {
 eYo.Input.setupEyO = function (input) {
   if (!input.eyo) {
     input.eyo = new eYo.InputDelegate(input)
-    input.connection && (input.connection.eyo.input = input)
   }
 }
 
@@ -70,11 +69,11 @@ eYo.Input.setupEyO = function (input) {
  */
 eYo.InputDelegate = function (input) {
   this.owner = input
-  var c8n = input.connection
-  if (c8n) {
-    c8n.eyo.name_ = input.name // the connection remembers the name of the input such that checking is fine grained.
-  }
   input.eyo = this
+  var m4t = this.magnet
+  if (m4t) {
+    m4t.input = input
+  }
 }
 
 Object.defineProperties(eYo.InputDelegate.prototype, {
@@ -86,18 +85,18 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
       return this.tile_
     }
   },
-  connection: {
-    get () {
-      return this.owner.connection
-    }
-  },
   magnet: {
     get () {
       var c8n = this.owner.connection
       return c8n && c8n.eyo
     }
   },
- b_eyo: {
+  name_: { // the name of the input such that checking is fine grained.
+    get () {
+      return this.owner.name
+    }
+  },
+  b_eyo: {
     get () {
       return this.owner.sourceBlock_.eyo
     }
@@ -116,6 +115,11 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
       }
       var s = this.slot
       return s && s.bindField
+    }
+  },
+  connection: {
+    get () {
+      return this.owner.connection
     }
   },
   target: { // to be REMOVED?

@@ -506,7 +506,7 @@ describe('Primary slots', function() {
       var unique = m.unique(eYo.T3.Expr.value_list, da.type)
       var check = m.check(eYo.T3.Expr.value_list, da.type)
       var all = m.all(eYo.T3.Expr.value_list, da.type)
-      if(da.value_s.isIncog()) {
+      if(da.value_s.incog) {
         if (unique !== null) {
           console.error('UNIK', unique)
         }
@@ -569,7 +569,7 @@ describe('Primary slots', function() {
       var unique = m.unique(eYo.T3.Expr.value_list, da.type)
       var check = m.check(eYo.T3.Expr.value_list, da.type)
       var all = m.all(eYo.T3.Expr.value_list, da.type)
-      if(da.value_s.isIncog()) {
+      if(da.value_s.incog) {
         chai.assert(unique === null, `MISSING UNIQUE NULL ${da.type}, ${da.subtype}`)
         chai.assert(check === null, `MISSING CHECK NULL ${da.type}, ${da.subtype}`)
         chai.assert(all === null, `MISSING ALL NULL ${da.type}, ${da.subtype}`)
@@ -731,7 +731,7 @@ describe('Primary(Compatibility)', function() {
       var d2 = eYo.Test.new_dlgt(dom)
       eYo.Test.dlgt(d2, expected)
       chai.assert(d2.value_s, `MISSING VALUE SLOT ${t}`)
-      chai.assert(!d2.value_s.isIncog(), `UNEXPECTED VALUE INCOG ${t}`)
+      chai.assert(!d2.value_s.incog, `UNEXPECTED VALUE INCOG ${t}`)
       chai.assert(d2.value_p === rhs, `MISSED VALUE ${d2.value_p} === ${rhs}`)
       d2.block_.dispose()
     }
@@ -839,7 +839,7 @@ describe('Primary(DEFINED)', function() {
     eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs))
     var u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs, `MISSED ${u.target_p} === ${rhs}`)
-    // d.moveBy(20, 20)
+    // d.moveByXY(20, 20)
     var dom = eYo.Xml.dlgtToDom(d)
     d.block_.dispose()
     d = eYo.Test.new_dlgt(dom)
@@ -855,7 +855,7 @@ describe('Primary(DEFINED)', function() {
     eYo.Test.list_connect(d, 'value', eYo.Test.new_dlgt(rhs_b))
     var u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
-    // d.moveBy(20, 20)
+    // d.moveByXY(20, 20)
     var dom = eYo.Xml.dlgtToDom(d)
     d.block_.dispose()
     d = eYo.Test.new_dlgt(dom)
@@ -908,7 +908,7 @@ describe('Primary(Assignment)', function() {
     // console.log(dom)
     var d2 = eYo.Test.new_dlgt(dom)
     f('assignment_chain', d2)
-    d2.moveBy(50, 10)
+    d2.moveByXY(50, 10)
     d2.block_.dispose()
   })
   it('f(… = …)', function() {

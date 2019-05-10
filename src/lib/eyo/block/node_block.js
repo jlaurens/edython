@@ -274,7 +274,7 @@ eYo.Node.prototype.for_stmt2Dlgt = function (workspace) {
   if ((n = n.sibling.sibling.sibling)) {
     var dd = eYo.DelegateSvg.newComplete(workspace, eYo.T3.Stmt.else_part)
     n.suiteInDlgt(dd)
-    dlgt.connectBottom(dd)
+    dlgt.footConnect(dd)
   }
   return b
 }
@@ -398,7 +398,7 @@ eYo.Node.prototype.try_stmt2Dlgt = function (workspace) {
     }
     n = n.sibling.sibling
     n.suiteInDlgt(dd)
-    dlgt = dlgt.connectBottom(dd)
+    dlgt = dlgt.footConnect(dd)
   }
   return root
 }
@@ -497,15 +497,15 @@ decorated: decorators (classdef | funcdef | async_funcdef)
   var root = n.decorator2Dlgt(workspace)
   var dlgt = root
   while ((n = n.sibling)) {
-    dlgt = dlgt.connectBottom(n.decorator2Dlgt(workspace))
+    dlgt = dlgt.footConnect(n.decorator2Dlgt(workspace))
   }
   n = this.n1
   if (n.type === eYo.TKN.classdef) {
-    dlgt.connectBottom(n.classdef2Dlgt(workspace))
+    dlgt.footConnect(n.classdef2Dlgt(workspace))
   } else if (n.type === eYo.TKN.funcdef) {
-    dlgt.connectBottom(n.funcdef2Dlgt(workspace))
+    dlgt.footConnect(n.funcdef2Dlgt(workspace))
   } else if (n.type === eYo.TKN.async_funcdef) {
-    dlgt.connectBottom(n.n1.funcdef2Dlgt(workspace)).async = true
+    dlgt.footConnect(n.n1.funcdef2Dlgt(workspace)).async = true
   } else {
     console.error(`UNEXPECTED node type: ${n.type}`)
   }

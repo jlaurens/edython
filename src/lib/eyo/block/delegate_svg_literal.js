@@ -184,7 +184,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         )) && {validated: newValue}
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
-        this.setIncog(!newValue || !newValue.length)
+        this..incog = !newValue || !newValue.length
         this.synchronize()
       },
       xml: false,

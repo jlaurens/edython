@@ -88,7 +88,7 @@ eYo.Slot = function (owner, key, model) {
   } else if (model.promise) {
     this.input = owner.appendPromiseValueInput(key, model.promise, model.optional, model.hidden)
     f()
-    this.setIncog(true)
+    this.incog = true
   } else if (goog.isDefAndNotNull(model.check)) {
     this.input = block.appendValueInput(key)
     f()
@@ -204,13 +204,34 @@ Object.defineProperties(eYo.Slot.prototype, {
       return ui && ui.driver
     }
   },
-  incog_p: {
+  incog: {
     get () {
-      return this.isIncog()
+      return this.incog_
     },
     set (newValue) {
+      if (this.data) {
+        newValue = this.data.incog
+      } else if (!goog.isDef(newValue)) {
+        newValue = !this.required
+      } else {
+        newValue = !!newValue
+      }
+      if (this.owner.isReady) {
+    
+      }
+      var validator = this.slots && this.model.validateIncog
+      if (validator) { // if !this.slots, the receiver is not yet ready
+        newValue = validator.call(this, newValue)
+      }
       this.owner.changeWrap(
-        this.setIncog,
+        () => {
+          this.incog = newValue
+          // forward to the connection
+          var m4t = this.magnet
+          if (m4t) {
+            m4t.incog = newValue
+          }
+        },
         this,
         newValue
       )
@@ -247,8 +268,7 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   requiredIncog: {
     set (newValue) {
-      this.required = newValue
-      this.setIncog()
+      this.incog = !(this.required = newValue)
     }
   },
   visible: {
@@ -330,48 +350,6 @@ eYo.Slot.prototype.getBlock = function () {
  */
 eYo.Slot.prototype.getConnection = function () {
   return this.connection
-}
-
-/**
- * Set the disable state.
- * Synchronize when the incog state did change.
- * For edython.
- * @param {!boolean} newValue  When not defined, replaced by `!this.required`, then validated if the model asks to.
- * @return {boolean} whether changes have been made
- */
-eYo.Slot.prototype.setIncog = function (newValue) {
-  if (this.data) {
-    newValue = this.data.isIncog()
-  } else if (!goog.isDef(newValue)) {
-    newValue = !this.required
-  } else {
-    newValue = !!newValue
-  }
-  if (this.owner.isReady) {
-
-  }
-  var validator = this.slots && this.model.validateIncog
-  if (validator) { // if !this.slots, the receiver is not yet ready
-    newValue = validator.call(this, newValue)
-  }
-  var change = this.incog !== newValue
-  if (change) {
-    this.incog = newValue
-    // forward to the connection
-    var c8n = this.connection
-    if (c8n) {
-      change = c8n.eyo.setIncog(newValue)
-    }
-  }
-  return change
-}
-
-/**
- * Get the disable state.
- * For edython.
- */
-eYo.Slot.prototype.isIncog = function () {
-  return this.incog
 }
 
 /**
@@ -466,7 +444,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
   }
   var m4t = this.magnet
   if (m4t) {
-    m4t.setIncog(this.isIncog())
+    m4t.incog = this.incog
     m4t.wrapped_ && m4t.setHidden(true) // Don't ever connect any block to this
     var v
     if ((v = this.model.check)) {
@@ -514,7 +492,7 @@ goog.forwardDeclare('eYo.DelegateSvg.List')
  * @this a block delegate
  */
 eYo.Slot.prototype.save = function (element, opt) {
-  if (this.isIncog()) {
+  if (this.incog) {
     return
   }
   var xml = this.model.xml
@@ -644,7 +622,7 @@ eYo.Slot.prototype.load = function (element) {
                     if ((grand_t_eyo)) {
                       eYo.Xml.fromDom(grand_t_eyo, grandChild)
                       this.recover.dontResit(grandChild)
-                    } else if ((grand_t_eyo = eYo.Xml.domToDlgt(grandChild, this.block))) {
+                    } else if ((grand_t_eyo = eYo.Xml.domToDlgt(grandChild, this.owner))) {
                       var t_m4t = grand_t_eyo.magnets.output
                       if (t_m4t && t_m4t.checkType_(input.eyo.magnet, true)) {
                         t_m4t.connect(input.eyo.magnet)
@@ -763,8 +741,8 @@ eYo.Slot.prototype.some = function (helper) {
  * Connect to delegate or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * @param {!eYo.Delegate | eYo.Magnet} dm  a a Dlgt or magnet.
  */
-eYo.Slot.prototype.connect = function (bdc) {
-  this.magnet.connect((dm.magnets && dm.magnets.output) || dm)
+eYo.Slot.prototype.connect = function (dm) {
+  return this.magnet.connect((dm.magnets && dm.magnets.output) || dm)
 }
 
 /**
@@ -819,7 +797,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
   get () {
     var slot = this.slot
     if (slot) {
-      if ((slot = slot.next) && (slot = slot.some (slot => !slot.isIncog() && slot.magnet && !slot.input.connection.hidden_))) {
+      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.input.connection.hidden_))) {
         return slot.magnet
       }
       var b_eyo = this.b_eyo

@@ -249,7 +249,7 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
   eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
-      io.c8n.eyo.setIncog(io.annotatedInput && io.annotatedInput !== io.input) // will ensure that there is only one annotated input
+      io.c8n.eyo.incog = io.annotatedInput && io.annotatedInput !== io.input // will ensure that there is only one annotated input
     } while (this.nextInput(io))
   }
 }
@@ -318,7 +318,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
 /**
  * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Connection} blockConnection
- * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
+ * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
 eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isInput) {
@@ -355,9 +355,9 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTa
 /**
  * Hook.
  * If more that 2 blocks are connected, the variant is target_valued.
- * @param {!Blockly.Connection} connection.
- * @param {!Blockly.Connection} oldTargetC8n.
- * @param {!Blockly.Connection} targetOldC8n
+ * @param {!eYo.Magnet} m4t.
+ * @param {!eYo.Magnet} oldTargetM4t.
+ * @param {!eYo.Magnet} targetOldM4t
  */
 eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.DelegateSvg.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -635,11 +635,12 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         // first change the dotted data to unincog the holder
+        var O = this.owner
         if (newValue) {
-          this.owner.dotted_p = 1
+          O.dotted_p = 1
         }
         this.didChange(oldValue, newValue)
-        this.owner.updateProfile()
+        O.updateProfile()
       },
       xml: {
         force: /** @suppress {globalThis} */ function () {
@@ -843,11 +844,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (b) {
           b.eyo.createConsolidator(true) // unique is special
         }
-        O.n_ary_s.setIncog(newValue !== eYo.Key.CALL_EXPR)
-        if (!O.n_ary_s.isIncog() && (b = O.n_ary_b)) {
+        O.n_ary_s..incog = newValue !== eYo.Key.CALL_EXPR
+        if (!O.n_ary_s.incog && (b = O.n_ary_b)) {
           b.eyo.createConsolidator(true)
         }
-        O.slicing_s.setIncog(newValue !== eYo.Key.SLICING)
+        O.slicing_s..incog = newValue !== eYo.Key.SLICING
       },
       xml: false
     },
@@ -868,12 +869,13 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.updateProfile()
-        var item = this.owner.item_p
+        var O = this.owner
+        O.updateProfile()
+        var item = O.item_p
         if (item) {
           // console.log('p.p5e.item', p.p5e.item.type, p.p5e.item)
-          if (item.type === 'method' && this.owner.dotted_p === 0) {
-            this.owner.dotted_p = 1
+          if (item.type === 'method' && O.dotted_p === 0) {
+            O.dotted_p = 1
           }
         }
       },
@@ -1387,7 +1389,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           ans.holder = {
             type: type,
             slot: type,
-            target: target
+            target: t_eyo
           }
           p = t_eyo.profile_p
           if (p) {
@@ -1786,11 +1788,11 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
   if (!input) {
     // we suppose that ary is set
     var f = (slot) => {
-      if (!slot.isIncog()) {
+      if (!slot.incog) {
         var input = slot.input
         if (input) {
-          var target = slot.targetBlock()
-          if (target && (input = target.getInput(name))) {
+          var t_eyo = slot.t_eyo
+          if (t_eyo && (input = t_eyo.getInput(name))) {
             return input
           }
         }

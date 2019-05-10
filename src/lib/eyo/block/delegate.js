@@ -554,7 +554,7 @@ eYo.Delegate.prototype.incrementChangeCount = function (deep) {
     this.change.step = this.change.count
   }
   if (deep) {
-    this.forEachChild(b => b.eyo.incrementChangeCount(deep))
+    this.forEachChild(d => d.incrementChangeCount(deep))
   }
 }
 
@@ -698,16 +698,16 @@ eYo.Delegate.prototype.equals = function (rhs) {
   if (equals) {
     this.forEachData(data => {
       var r_data = rhs.data[data.key]
-      equals = r_data && (data.get() == r_data.get() || (data.isIncog() && r_data.isIncog()))
+      equals = r_data && (data.get() == r_data.get() || (data.incog && r_data.incog))
       return equals // breaks if false
     })
     if (equals) {
       this.forEachSlot(slot => {
         var r_slot = rhs.slots[slot.key]
-        if (slot.isIncog()) {
-          equals = !r_slot || r_slot.isIncog()
+        if (slot.incog) {
+          equals = !r_slot || r_slot.incog
         } else if (r_slot) {
-          if (r_slot.isIncog()) {
+          if (r_slot.incog) {
             equals = false
           } else {
             var target = slot.targetBlock()
@@ -755,7 +755,7 @@ eYo.Delegate.prototype.equals = function (rhs) {
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Delegate.prototype.doConsolidate = function (deep, force) {
-  if (!force && (!Blockly.Events.recordUndo || !this.block_.workspace || this.change.level > 1)) {
+  if (!force && (!eYo.Events.recordUndo || !this.block_.workspace || this.change.level > 1)) {
     // do not consolidate while un(re)doing
     return
   }
@@ -1318,7 +1318,7 @@ eYo.Delegate.prototype.forEachField = function (helper) {
  * Works on a shallow copy of `childBlocks_`.
  */
 eYo.Delegate.prototype.forEachChild = function (helper) {
-  this.childBlocks_.slice().forEach(helper)
+  this.childBlocks_.slice().forEach((b,i, ra) => helper(b.eyo, i, ra))
 }
 
 /**
@@ -1438,17 +1438,17 @@ eYo.Delegate.prototype.setDataWithModel = function (model, noCheck) {
     var data_in = model.data
     if (goog.isString(data_in) || goog.isNumber(data_in)) {
       var d = this.main_d
-      if (d && !d.isIncog() && d.validate(data_in)) {
+      if (d && !d.incog && d.validate(data_in)) {
         d.change(data_in)
         d.setRequiredFromModel(true)
         done = true
       } else {
         this.forEachData(d => {
-          if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+          if (d.model.xml !== false && !d.incog && d.validate(data_in)) {
             // if (done) {
             //   console.error('Ambiguous model', this.type, data_in)
             //   this.forEachData(d => {
-            //     if (d.model.xml !== false && !d.isIncog() && d.validate(data_in)) {
+            //     if (d.model.xml !== false && !d.incog && d.validate(data_in)) {
             //       console.log('candidate:', d.key)
             //     }
             //   })
@@ -1863,7 +1863,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
   if (!this.wrapped_) {
     blocks.push(this.block_)
   }
-  this.forEachChild(b => blocks = blocks.concat(b.eyo.getWrappedDescendants()))
+  this.forEachChild(d => blocks = blocks.concat(d.getWrappedDescendants()))
   return blocks
 }
 
@@ -1989,9 +1989,9 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
 
 /**
  * Did connect this block's connection to another connection.
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
- * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
+ * @param {!eYo.Magnet} m4t what has been connected in the block
+ * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the block
+ * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.Delegate.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // how many blocks did I add ?
@@ -2025,7 +2025,7 @@ eYo.Delegate.prototype.willDisconnect = function (m4t) {
 /**
  * Did disconnect this block's connection from another connection.
  * @param {!Blockly.Connection} blockConnection
- * @param {!Blockly.Connection} oldTargetC8n that was connected to blockConnection
+ * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
 eYo.Delegate.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   // how many blocks did I add ?
@@ -2059,10 +2059,9 @@ eYo.Delegate.prototype.plugged_ = undefined
  * If the parent's output connection is connected,
  * can connect the block's output connection to it?
  * The connection cannot always establish.
- * @param {!Block} block
- * @param {!Block} other the block to be replaced
+ * @param {!eYo.Delegate} other  the dlgt to be replaced
  */
-eYo.Delegate.prototype.canReplaceBlock = function (other) {
+eYo.Delegate.prototype.canReplaceDlgt = function (other) {
   return false
 }
 
@@ -2088,19 +2087,6 @@ eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
   }
   if (!opt_quiet) {
     goog.asserts.fail('Inconsistent data.')
-  }
-}
-
-/**
- * When the output connection is connected,
- * returns the input holding the parent's corresponding connection.
- * @param {!Blockly.Block} block The owner of the delegate.
- * @return an input.
- */
-eYo.Delegate.prototype.getParentInput = function () {
-  var m4t = this.magnets.output
-  if (m4t && (m4t = m4t.target)) {
-    return m4t.b_eyo.inputList.some(input => (input.eyo.magnet === m4t) && input)
   }
 }
 
@@ -2250,48 +2236,47 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
   }
 })
 
-/**
- * Change the incog status.
- * An incog block won't render.
- * The connections must be explicitely hidden when the block is incog.
- * @param {!Boolean} disabled
- * @return {boolean} whether changes have been made
- */
-eYo.Delegate.prototype.setIncog = function (incog) {
-  if (!this.incog_ === !incog) {
-    return false
-  }
-  if (incog) {
-    if (this.incog_) {
-      // The block is already incognito,
-      // normally no change to the block tree
-      return false
+Object.defineProperty(eYo.Delegate.prototype, 'incog', {
+  /**
+   * Get the disable state.
+   * For edython.
+   */
+  get () {
+    return this.incog_
+  },
+  /**
+   * Change the incog status.
+   * An incog block won't render.
+   * The connections must be explicitely hidden when the block is incog.
+   * @param {!Boolean} incog
+   */
+  set (newValue) {
+    if (!this.incog_ === !newValue) {
+      return
     }
-  } else if (this.block_.disabled) {
-    // enable the block before enabling its connections
-    return false
-  }
-  this.incog_ = incog
-  this.forEachSlot(slot => slot.setIncog(incog)) // with incog validator
-  var m4t = this.magnets.suite
-  m4t && m4t.setIncog(incog)
-  this.inputList.forEach(input => {
-    if (!input.eyo.slot) {
-      var m4t = input.eyo.magnet
-      m4t && m4t.setIncog(incog) // without incog validator
+    if (newValue) {
+      if (this.incog_) {
+        // The dlgt is already incognito,
+        // normally no change to the block tree
+      }
+    } else if (this.disabled) {
+      // enable the block before enabling its connections
+      return
     }
-  })
-  this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's setIncog
-  return true
-}
-
-/**
- * Get the disable state.
- * For edython.
- */
-eYo.Delegate.prototype.isIncog = function () {
-  return this.incog_
-}
+    this.incog_ = newValue
+    this.forEachSlot(slot => slot.incog = newValue) // with incog validator
+    var m4t = this.magnets.suite
+    m4t && m4t..incog = newValue
+    this.inputList.forEach(input => {
+      if (!input.eyo.slot) {
+        var m4t = input.eyo.magnet
+        m4t && (m4t.incog = newValue) // without incog validator
+      }
+    })
+    this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's incog setter
+    return true  
+  }
+})
 
 /**
  * Input enumerator
@@ -2301,7 +2286,7 @@ eYo.Delegate.prototype.isIncog = function () {
  */
 eYo.Delegate.prototype.inputEnumerator = function (all) {
   return eYo.Do.Enumerator(this.block_.inputList, all || (x =>
-    !x.eyo.magnet || !x.eyo.magnet.slot || !x.eyo.magnet.slot.isIncog())
+    !x.eyo.magnet || !x.eyo.magnet.slot || !x.eyo.magnet.slot.incog)
   )
 }
 
@@ -2414,11 +2399,10 @@ eYo.Delegate.prototype.getSlotConnections = function () {
  * @param {!Bockly.Block} block_
  * @return the given block
  */
-eYo.Delegate.prototype.connectBottom = function (dlgt) {
+eYo.Delegate.prototype.footConnect = function (dlgt) {
   this.magnets.foot.connect(dlgt.magnets.head)
   return dlgt
 }
-
 
 /**
  * Connect the magnet of the `lastInput`, to the given expression block/magnet/type.
@@ -2433,5 +2417,17 @@ eYo.Delegate.prototype.connectLast = function (dmt) {
       m4t.connect(other)
       return m4t.target === other ? m4t.t_eyo : undefined
     }
+  }
+}
+
+/**
+ * Scrolls the receiver to the top left part of the workspace.
+ * Does nothing if the dlgt is already in the visible are,
+ * and is not forced.
+ * @param {!Boolean} force  flag
+ */
+eYo.Delegate.prototype.scrollToVisible = function (force) {
+  if (!this.inVisibleArea() || force) {
+    this.workspace.eyo.scrollBlockTopLeft(this.id)
   }
 }

@@ -120,7 +120,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceDlgt = function (dlgt) {
  * If the parent's output connection is connected,
  * connects the block's output connection to it.
  * The connection cannot always establish.
- * @param {!eYo.Delegate} other
+ * @param {!eYo.Delegate} dlgt
  */
 eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
   if (this.workspace && dlgt && dlgt.workspace) {
@@ -143,7 +143,7 @@ eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
         } else {
           var its_xy = dlgt.ui.xyInSurface
           var my_xy = this.ui.xyInSurface
-          this.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          this.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
       })
     })
@@ -220,11 +220,9 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * The holes are filled when fill_holes is true.
  * @param {!Block} block
  * @param {Object} model
- * @param {boolean} fill_holes whether holes should be filled
  * @return the created block
  */
-eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_holes) {
-  var block = this.block_
+eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.Events.disableWrap(() => {
@@ -280,46 +278,44 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model, fill_hol
   // Next connections should be connected
   var outputM4t = this.magnets.output
   if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
-    eYo.Events.groupWrap(
-      () => { // `this` is catched
-        eYo.Events.fireDlgtCreate(parent)
-        var targetM4t = parentInputM4t.target
-        if (targetM4t) {
-          console.log('input already connected, disconnect and dispose target')
-          var b_eyo = targetM4t.b_eyo
-          targetM4t.break()
-          b_eyo.block_.dispose(true)
-          b_eyo = undefined
-          targetM4t = undefined
-        }
-        // the old parent connection
-        targetM4t = outputM4t.target
-        var bumper
-        if (targetM4t) {
-          if (parent.magnets.output && targetM4t.checkType_(parent.magnets.output)) {
-            // do not disconnect here because it causes a consolidation
-            // and a connection mangling
-            targetM4t.connect(parent.magnets.output)
-          } else {
-            targetM4t.break()
-            bumper = targetM4t.b_eyo
-            var its_xy = bumper.ui.xyInSurface
-            var my_xy = parent.ui.xyInSurface
-            parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
-          }
-          targetM4t = undefined
-        } else {
-          its_xy = this.ui.xyInSurface
-          my_xy = parent.ui.xyInSurface
-          parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
-        }
-        parentInputM4t.connect(outputM4t)
-        parent.render()
-        if (bumper) {
-          bumper.ui.bumpNeighbours_()
-        }
+    eYo.Events.groupWrap(() => { // `this` is catched
+      eYo.Events.fireDlgtCreate(parent)
+      var targetM4t = parentInputM4t.target
+      if (targetM4t) {
+        console.log('input already connected, disconnect and dispose target')
+        var b_eyo = targetM4t.b_eyo
+        targetM4t.break()
+        b_eyo.block_.dispose(true)
+        b_eyo = undefined
+        targetM4t = undefined
       }
-    )
+      // the old parent connection
+      targetM4t = outputM4t.target
+      var bumper
+      if (targetM4t) {
+        if (parent.magnets.output && targetM4t.checkType_(parent.magnets.output)) {
+          // do not disconnect here because it causes a consolidation
+          // and a connection mangling
+          targetM4t.connect(parent.magnets.output)
+        } else {
+          targetM4t.break()
+          bumper = targetM4t.b_eyo
+          var its_xy = bumper.ui.xyInSurface
+          var my_xy = parent.ui.xyInSurface
+          parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+        }
+        targetM4t = undefined
+      } else {
+        its_xy = this.ui.xyInSurface
+        my_xy = parent.ui.xyInSurface
+        parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+      }
+      parentInputM4t.connect(outputM4t)
+      parent.render()
+      if (bumper) {
+        bumper.ui.bumpNeighbours_()
+      }
+    })
   } else {
     parent.block_.dispose(true)
     parent = undefined

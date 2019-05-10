@@ -36,9 +36,9 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.start_d.setIncog(newValue === eYo.Key.NONE)
-        this.owner.sep_s.setIncog(newValue === eYo.Key.NONE)
-        this.owner.step_d.setIncog(newValue !== eYo.Key.STEP)
+        this.owner.start_d..incog = newValue === eYo.Key.NONE
+        this.owner.sep_s..incog = newValue === eYo.Key.NONE
+        this.owner.step_d..incog = newValue !== eYo.Key.STEP
       },
       xml: false
     },

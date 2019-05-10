@@ -139,26 +139,22 @@ eYo.DelegateSvg.Expr.builtin__print_expr.populateContextMenuFirst_ = function (m
       }
     }
     var insert = key => {
-      eYo.Events.groupWrap(
-        () => {
-          var y = eYo.DelegateSvg.Complete(this, {
-            type: eYo.T3.Expr.identifier_valued,
-            data: key
-          })
-          // we assume that inputList is not void
-          var m4t = list.inputList[list.inputList.length - 1].eyo.magnet
-          m4t.connectSmart(y)
-        }
-      )
+      eYo.Events.groupWrap(() => {
+        var y = eYo.DelegateSvg.Complete(this, {
+          type: eYo.T3.Expr.identifier_valued,
+          data: key
+        })
+        // we assume that inputList is not void
+        var m4t = list.inputList[list.inputList.length - 1].eyo.magnet
+        m4t.connectSmart(y)
+      })
     }
     var remove = key => {
-      eYo.Events.groupWrap(
-        () => {
-          var B = has[key]
-          B.unplug()
-          B.dispose()
-        }
-      )
+      eYo.Events.groupWrap(() => {
+        var B = has[key]
+        B.unplug()
+        B.dispose()
+      })
     }
     var F = candidate => {
       var menuItem = mgr.newMenuItem(

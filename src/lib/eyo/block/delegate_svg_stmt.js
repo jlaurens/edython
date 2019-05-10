@@ -110,28 +110,26 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
         if (parent) {
           var p_magnet = parent.magnets.foot
           if (p_magnet && magnet.checkType_(p_magnet)) {
-            eYo.Events.groupWrap(
-              () => {
-                eYo.Events.fireBlockCreate(parent.block_)
-                var t_magnet = magnet.target
-                if (t_magnet) {
-                  t_magnet.break()
-                  if ((t_magnet = parent.magnets.head)) {
-                    p_magnet.target = t_magnet
-                  }
-                } else {
-                  var its_xy = this.ui.xyInSurface
-                  var my_xy = parent.ui.xyInSurface
-                  parent.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+            eYo.Events.groupWrap(() => {
+              eYo.Events.fireBlockCreate(parent.block_)
+              var t_magnet = magnet.target
+              if (t_magnet) {
+                t_magnet.break()
+                if ((t_magnet = parent.magnets.head)) {
+                  p_magnet.target = t_magnet
                 }
-                parent.render()
-                magnet.target = p_magnet
-                parent.beReady(this.isReady)
-                if (eYo.Selected.eyo === this) {
-                  eYo.Selected.eyo === parent
-                }
+              } else {
+                var its_xy = this.ui.xyInSurface
+                var my_xy = parent.ui.xyInSurface
+                parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
               }
-            )
+              parent.render()
+              magnet.target = p_magnet
+              parent.beReady(this.isReady)
+              if (eYo.Selected.eyo === this) {
+                eYo.Selected.eyo === parent
+              }
+            })
           } else {
             parent.block_.dispose(true)
             parent = undefined
@@ -153,25 +151,23 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
  * @return the created block
  */
 eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
-  return eYo.Events.groupWrap(
-    () => {
-      var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
-      var magnet = this.magnets.foot
-      var t_magnet = magnet.target
-      var b_m4ts = below.magnets
-      if (t_magnet) {
-        t_magnet.break()
-        if (t_magnet.checkType_(b_m4ts.foot)) {
-          t_magnet.target = b_magnets.foot
-        }
+  return eYo.Events.groupWrap(() => {
+    var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
+    var magnet = this.magnets.foot
+    var t_magnet = magnet.target
+    var b_m4ts = below.magnets
+    if (t_magnet) {
+      t_magnet.break()
+      if (t_magnet.checkType_(b_m4ts.foot)) {
+        t_magnet.target = b_magnets.foot
       }
-      magnet.target = b_m4ts.head
-      if (eYo.Selected.eyo === this) {
-        eYo.Selected.eyo = after
-      }
-      return after.block_
     }
-  )
+    magnet.target = b_m4ts.head
+    if (eYo.Selected.eyo === this) {
+      eYo.Selected.eyo = after
+    }
+    return after.block_
+  })
 }
 
 /**
@@ -319,9 +315,9 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.identifiers_s.setIncog(newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL)
-        O.del_s.setIncog(newValue !== eYo.Key.DEL)
-        O.return_s.setIncog(newValue !== eYo.Key.RETURN)
+        O.identifiers_s..incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
+        O.del_s..incog = newValue !== eYo.Key.DEL
+        O.return_s..incog = newValue !== eYo.Key.RETURN
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {

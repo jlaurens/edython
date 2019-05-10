@@ -206,6 +206,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
       }
     }
   },
+  ui: {
+    get () {
+      return this.b_eyo.ui
+    }
+  },
   unwrappedMagnet: {
     get () {
       // scheme:
@@ -478,53 +483,43 @@ eYo.Magnet.prototype.sourceBlock = function () {
   return this.connection.sourceBlock_
 }
 
-/**
- * Get the incognito state.
- */
-eYo.Magnet.prototype.isIncog = function () {
-  return this.incog_
-}
-
-/**
- * Set the incognito state.
- * Hide/show the connection from/to the databass and disable/enable the target's connections.
- * @param {boolean} incog
- * @return {boolean} whether changes have been made
- */
-eYo.Magnet.prototype.setIncog = function (incog) {
-  if (this.incog_ && incog) {
-    // things were unlikely to change since
-    // the last time the connections have been disabled
-    return false
-  }
-  incog = !!incog
-  var change = this.incog_ !== incog
-  if (change) {
-    this.b_eyo.incrementChangeCount()
-  }
-  if (!incog && this.promised_) {
-    this.completePromise()
-  }
-  if (incog || !this.wrapped_) {
-    // We cannot disable wrapped connections
-    this.incog_ = incog
-    var c8n = this.connection
-    if (c8n.hidden_ !== incog) {
-      c8n.setHidden(incog)
-      change = true
+Object.defineProperty(eYo.Magnet.prototype, 'incog', {
+  /**
+   * Get the incognito state.
+   */
+  get () {
+    return this.incog_
+  },
+  /**
+   * Set the incognito state.
+   * Hide/show the connection from/to the database and disable/enable the target's connections.
+   * @param {boolean} incog
+   * @return {boolean} whether changes have been made
+   */
+  set (newValue) {
+    if (this.incog_ && newValue) {
+      // things were unlikely to change since
+      // the last time the connections have been disabled
+      return
     }
-  }
-  var t_eyo = this.t_eyo
-  if (t_eyo) {
-    if (!this.isIncog()) {
-      t_eyo.setIncog(false)
+    newValue = !!newValue
+    var change = this.incog_ !== newValue
+    if (change) {
+      this.b_eyo.incrementChangeCount()
     }
-    if (t_eyo.setIncog(incog)) {
-      change = true
+    if (!newValue && this.promised_) {
+      this.completePromise()
     }
+    if (newValue || !this.wrapped_) {
+      // We cannot disable wrapped connections
+      this.incog_ = this.hidden_ = newValue
+    }
+    var t_eyo = this.t_eyo
+    if (t_eyo) {
+      t_eyo.incog = newValue
+    }  
   }
-  return change
-}
+})
 
 /**
  * Complete with a wrapped block.
@@ -585,7 +580,7 @@ eYo.Magnet.prototype.disconnect = function () {
 /**
  * Will connect.
  * Forwards to the model.
- * @param {Blockly.Connection} connection the connection owning the delegate
+ * @param {eYo.Magnet} m4t the connection owning the delegate
  * @param {Blockly.Connection} targetM4t
  */
 eYo.Magnet.prototype.willConnect = function (targetM4t) {
@@ -725,12 +720,13 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
 
 /**
  * Connection.
- * @param {!Blockly.Connection} c8n
+ * @param {!eYo.Magnet} magnet
  */
-eYo.Magnet.prototype.connect = function(c8n) {
-  if (c8n) {
-    this.setIncog(false)
-    this.connection.connect(c8n)
+eYo.Magnet.prototype.connect = function(m4t) {
+  if (m4t) {
+    this..incog = false
+    this.connection.connect(m4t.connection)
+    return m4t
   }
 }
 
@@ -837,13 +833,6 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
     console.error(this.x)
   }
   this.connection.setOffsetInBlock(this.x, this.y)
-}
-
-/**
- * May be useful for `didConnect` and `didDisconnect` in models.
- */
-eYo.Magnet.prototype.consolidateSource = function () {
-  this.b_eyo.consolidate()
 }
 
 /**
@@ -1044,14 +1033,14 @@ eYo.Magnet.prototype.prototype.connect_ = (() => {
                   var oldChild = oldChildM4t.b_eyo
                   if (oldChild) {
                     if (oldChild.wrapped_) {
-                      Blockly.Events.recordUndo && oldChild.dispose(true)
+                      eYo.Events.recordUndo && oldChild.dispose(true)
                     } else if (!oldChildM4t.t_eyo) {
                       // another chance to reconnect the orphan
                       // just in case the check_ has changed in between
                       // which might be the case for the else_part blocks
                       if (oldChildM4t.isOutput) {
                         var do_it = x => { // a slot or an input
-                          if (!x.isIncog || !x.isIncog()) {
+                          if (!x.incog) {
                             var m4t, t_eyo
                             if ((m4t = x.magnet || x.eyo.magnet)) {
                               if (m4t.hidden_ && !m4t.wrapped_) {
@@ -1089,9 +1078,9 @@ eYo.Magnet.prototype.prototype.connect_ = (() => {
                     }
                   }
                 }
-                childM4t.selected && childM4t.unelect()
-                parentM4t.selected && parentM4t.unelect()
-                child.setIncog(parentM4t.isIncog())
+                childM4t.selected && childM4t.unselect()
+                parentM4t.selected && parentM4t.unselect()
+                child.incog = parentM4t.incog)
               }, () => { // finally
                 parentM4t.startOfStatement && child.incrementChangeCount()
                 eYo.Magnet.connectedParent = parentM4t
@@ -1129,7 +1118,7 @@ eYo.Magnet.prototype.prototype.connect_ = (() => {
  * Connect two connections together.  This is the connection on the superior
  * block.
  * Add hooks to allow customization.
- * @param {!Blockly.Connection} childC8n Connection on inferior block.
+ * @param {!eYo.Magnet} childM4t Connection on inferior block.
  * @private
  * @suppress {accessControls}
  */
@@ -1228,3 +1217,43 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parent, chi
   this.eyo.disconnectInternal_(parent.eyo, child.eyo)
 }
 
+/**
+ * Move the blocks on either side of this connection right next to each other.
+ * Delegates the translate process to the block
+ * @private
+ */
+Blockly.RenderedConnection.prototype.tighten_ = function() {
+  var where = this.eyo.where
+  var target_where = this.targetConnection.eyo.where
+  var dc = target_where.c - where.c
+  var dl = target_where.l - where.l
+  if (dc != 0 || dl != 0) {
+    var block = this.targetBlock();
+    block.eyo.ui.setOffset(-dc, -dl);
+  }
+};
+
+/**
+ * Tighten_ the magnet and its target.
+ */
+eYo.Magnet.prototype.tighten_ = function() {
+  var m4t = this.target
+  if (this.target) {
+    var dx = m4t.x_ - this.x_
+    var dy = m4t.y_ - this.y_
+    if (dx != 0 || dy != 0) {
+      var t_eyo = this.t_eyo
+      t_eyo.ui.setOffset(-dx, -dy)
+    }
+  }
+}
+
+/**
+ * Scrolls the receiver to the top left part of the workspace.
+ * Does nothing if the dlgt is already in the visible are,
+ * and is not forced.
+ * @param {!Boolean} force  flag
+ */
+eYo.Magnet.prototype.scrollToVisible = function (force) {
+  this.b_eyo.scrollToVisible(force)
+}

@@ -9,7 +9,7 @@ describe('SVG coordinates', function () {
     chai.assert(xy1.y === xy2.y)
     var dx = 246 * Math.random()
     var dy = 135 * Math.random()
-    d1.moveBy(dx, dy)
+    d1.moveByXY(dx, dy)
     var xy1d = d1.ui.xyInSurface
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)
     chai.assert(xy1d.y === xy1.y + dy, `FAILURE y1: ${xy1d.y} === ${xy1.y} + ${dy}`)

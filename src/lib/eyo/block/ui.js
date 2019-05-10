@@ -891,7 +891,7 @@ eYo.UI.prototype.drawSlot_ = function (slot, io) {
   }
   var g = slot.svg && slot.svg.group_
   goog.asserts.assert(g, 'Slot with no root', io.block.type, slot.key)
-  if (slot.isIncog()) {
+  if (slot.incog) {
     g && g.setAttribute('display', 'none')
     return
   }
@@ -1638,9 +1638,9 @@ eYo.UI.prototype.removeStatusSelect_ = function () {
 /**
  * Did connect some block's connection to another connection.
  * When connecting locked blocks, select the receiver.
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
- * @param {!Blockly.Connection} targetOldC8n what was previously connected to the new targetConnection
+ * @param {!eYo.Magnet} m4t what has been connected in the block
+ * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the block
+ * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
@@ -1650,8 +1650,8 @@ eYo.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 
 /**
  * Converse of the preceeding.
- * @param {!Blockly.Connection} connection what has been connected in the block
- * @param {!Blockly.Connection} oldTargetC8n what was previously connected in the block
+ * @param {!eYo.Magnet} m4t what has been connected in the block
+ * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the block
  */
 eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isOutput) {
@@ -1671,7 +1671,7 @@ eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 Object.defineProperties(eYo.UI.prototype, {
   xyInSurface: {
     get () {
-      return this.driver.nodeXyInSurface(this.node_)
+      return this.driver.nodeXYInSurface(this.node_)
     }
   }
 })
@@ -1708,4 +1708,13 @@ eYo.UI.prototype.getHeightWidth = function () {
     width = Math.max(width, nextHeightWidth.width)
   }
   return {height: height, width: width}
+}
+
+/**
+ * Move the blocks relatively.
+ * @param {number} dx Horizontal offset in workspace units.
+ * @param {number} dy Vertical offset in workspace units.
+ */
+eYo.UI.prototype.moveByXY = function (dx, dy) {
+  this.node.block_.moveBy(dx, dy)
 }

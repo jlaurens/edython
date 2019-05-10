@@ -126,7 +126,7 @@ eYo.Driver.prototype.nodeTranslate = eYo.Do.nothing
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
  *     workspace coordinates.
  */
-eYo.Driver.prototype.nodeXyInSurface = eYo.Do.nothing
+eYo.Driver.prototype.nodeXYInSurface = eYo.Do.nothing
 
 /**
  * Set the location.

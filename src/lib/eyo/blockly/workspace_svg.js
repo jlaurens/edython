@@ -224,76 +224,65 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
 /**
  * Paste the provided block onto the workspace.
  * Take into account the selected connection if any.
- * @param {!Element} xmlBlock XML block element.
+ * @param {!Element} dom  XML block element.
  * @override
  * @suppress {accessControls}
  */
-Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
-  if (!this.rendered || xmlBlock.getElementsByTagName('block').length >=
+Blockly.WorkspaceSvg.prototype.paste = function (dom) {
+  if (!this.rendered || dom.getElementsByTagName('block').length >=
       this.remainingCapacity()) {
     return
   }
   if (this.currentGesture_) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
-  var magnet, t_magnet, block
-  if ((magnet = eYo.Selected.magnet)) {
-    eYo.Events.groupWrap(
-      () => {
-        block = Blockly.Xml.domToBlock(xmlBlock, this)
-        var eyo = block.eyo
-        if (eyo) {
-          if (magnet.isInput) {
-            t_magnet = eyo.magnets.out
-          } else if (magnet.isFoot || magnet.isSuite) {
-            t_magnet = eyo.magnets.head
-          } else if (magnet.isHead) {
-            t_magnet = eyo.magnets.foot
-          } else if (magnet.isLeft) {
-            t_magnet = eyo.magnets.right
-          } else if (magnet.isRight) {
-            t_magnet = eyo.magnets.left
-          }
-          if (t_magnet && magnet.checkType_(t_magnet)) {
-            if (magnet.isHead) {
-              // the pasted block must move before it is connected
-              // otherwise the newly created block will attract the old one
-              // resulting in a move of the existing connection
-              // 1) get the location of c8n in the workspace
-              var xy = magnet.offsetInBlock_.clone()
-              var xy_block = magnet.b_eyo.ui.xyInSurface
-              xy.translate(xy_block.x, xy_block.y)
-              // This is where the targetC8n should be once the
-              // connection has been made
-              var xyxy = t_magnet.offsetInBlock_.clone()
-              xy_block = t_magnet.b_eyo.ui.xyInSurface
-              xyxy.translate(xy_block.x, xy_block.y)
-              // This is where the targetC8n is
-              xyxy.scale(-1)
-              xy.translate(xyxy.x, xyxy.y)
-              t_magnet.b_eyo.moveBy(xy.x, xy.y)
-            }
-            magnet.connect(t_magnet)
-            if (magnet.isHead) {
-              t_magnet = eyo.magnets.foot
-            }
-            eYo.Selected.eyo = eyo
-          }
+  var magnet, t_magnet, dlgt
+  eYo.Events.groupWrap(() => {
+    if ((dlgt = eYo.Xml.domToDlgt(dom, this))) {
+      if ((magnet = eYo.Selected.magnet)) {
+        if (magnet.isInput) {
+          t_magnet = dlgt.magnets.out
+        } else if (magnet.isFoot || magnet.isSuite) {
+          t_magnet = dlgt.magnets.head
+        } else if (magnet.isHead) {
+          t_magnet = dlgt.magnets.foot
+        } else if (magnet.isLeft) {
+          t_magnet = dlgt.magnets.right
+        } else if (magnet.isRight) {
+          t_magnet = dlgt.magnets.left
         }
-      }
-    )
-    return
-  }
-  eYo.Events.groupWrap(
-    () => {
-      block = Blockly.Xml.domToBlock(xmlBlock, this)
-      if ((eyo = block.eyo)) {
+        if (t_magnet && magnet.checkType_(t_magnet)) {
+          if (magnet.isHead) {
+            // the pasted block must move before it is connected
+            // otherwise the newly created block will attract the old one
+            // resulting in a move of the existing connection
+            // 1) get the location of c8n in the workspace
+            var xy = magnet.offsetInBlock_.clone()
+            var xy_block = magnet.ui.xyInSurface
+            xy.translate(xy_block.x, xy_block.y)
+            // This is where the targetC8n should be once the
+            // connection has been made
+            var xyxy = t_magnet.offsetInBlock_.clone()
+            xy_block = t_magnet.ui.xyInSurface
+            xyxy.translate(xy_block.x, xy_block.y)
+            // This is where the targetC8n is
+            xyxy.scale(-1)
+            xy.translate(xyxy.x, xyxy.y)
+            t_magnet.b_eyo.moveByXY(xy.x, xy.y)
+          }
+          magnet.connect(t_magnet)
+          // if (magnet.isHead) {
+          //   t_magnet = dlgt.magnets.foot
+          // }
+          dlgt.select()
+        }
+      } else {
         // Move the duplicate to original position.
-        var blockX = parseInt(xmlBlock.getAttribute('x'), 10)
-        var blockY = parseInt(xmlBlock.getAttribute('y'), 10)
-        if (!isNaN(blockX) && !isNaN(blockY)) {
+        var dx = parseInt(dom.getAttribute('x'), 10)
+        var dy = parseInt(dom.getAttribute('y'), 10)
+        if (!isNaN(dx) && !isNaN(dy)) {
           if (this.RTL) {
-            blockX = -blockX
+            dx = -dx
           }
           // Offset block until not clobbering another block and not in connection
           // distance with neighbouring blocks.
@@ -302,20 +291,20 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
             do {
               var collide = allBlocks.some(b => {
                 var xy = b.eyo.ui.xyInSurface
-                if (Math.abs(blockX - xy.x) <= 10 &&
-                    Math.abs(blockY - xy.y) <= 10) {
+                if (Math.abs(dx - xy.x) <= 10 &&
+                    Math.abs(dy - xy.y) <= 10) {
                   return true
                 }
-              }) || block.getConnections_(false).some(c8n => {
+              }) || dlgt.getConnections_(false).some(c8n => {
                   var neighbour = c8n.closest(Blockly.SNAP_RADIUS,
-                    new goog.math.Coordinate(blockX, blockY))
+                    new goog.math.Coordinate(dx, dy))
                   if (neighbour.connection) {
                     return true
                   }
               })
               if (collide) {
-                blockX += Blockly.SNAP_RADIUS
-                blockY += Blockly.SNAP_RADIUS * 2
+                dx += Blockly.SNAP_RADIUS
+                dy += Blockly.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -330,21 +319,20 @@ Blockly.WorkspaceSvg.prototype.paste = function (xmlBlock) {
           var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
           var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
           var inVisibleArea = () => {
-            return blockX >= leftBound && blockX <= rightBound &&
-            blockY >= topBound && blockY <= downBound
+            return dx >= leftBound && dx <= rightBound &&
+            dy >= topBound && dy <= downBound
           }
           if (!inVisibleArea()) {
-            blockX = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
-            blockY = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
+            dx = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
+            dy = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
             avoidCollision()
           }
-          eyo.ui.moveBy(blockX, blockY)
+          eyo.moveByXY(dx, dy)
         }
-        eYo.Selected.eyo = eyo
-        eYo.Selected.scrollToVisible()
+        eyo.select().scrollToVisible()
       }
     }
-  )
+  })
 }
 /**
  * If enabled, resize the parts of the workspace that change when the workspace

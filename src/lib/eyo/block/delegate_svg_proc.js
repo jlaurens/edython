@@ -77,7 +77,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.setIncog(newValue === eYo.Key.GETTER)
+        this..incog = newValue === eYo.Key.GETTER
         // update the placeholder for the name field.
         this.owner.name_d.field.placeholderText(true)
       },
@@ -105,9 +105,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
-        this.setIncog(newValue !== eYo.Key.N_ARY)
+        this..incog = newValue !== eYo.Key.N_ARY
         this.synchronize(newValue)
-        this.owner.n_ary_s.setIncog(newValue !== eYo.Key.N_ARY)
+        this.owner.n_ary_s..incog = newValue !== eYo.Key.N_ARY
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {

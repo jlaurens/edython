@@ -225,45 +225,15 @@ eYo.Flyout.prototype.show = function(model) {
     model.forEach((xml) => {
       if (xml.tagName) {
         var tagName = xml.tagName.toUpperCase();
-        if (tagName == 'BLOCK') {
-          var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
-          if (curBlock.disabled) {
+        if (tagName.startsWith('EYO:')) {
+          var curDlgt = eYo.Xml.domToDlgt(xml, this.workspace_);
+          if (curDlgt.disabled) {
             // Record blocks that were initially disabled.
             // Do not enable these blocks as a result of capacity filtering.
-            this.permanentlyDisabled_.push(curBlock);
+            this.permanentlyDisabled_.push(curDlgt.block_);
           }
-          contents.push({type: 'block', block: curBlock});
-          var gap = parseInt(xml.getAttribute('gap'), 10);
-          gaps.push(isNaN(gap) ? default_gap : gap);
-        } else if (tagName == 'SEP') {
-          // Change the gap between two blocks.
-          // <sep gap="36"></sep>
-          // The default gap is 24, can be set larger or smaller.
-          // This overwrites the gap attribute on the previous block.
-          // Note that a deprecated method is to add a gap to a block.
-          // <block type="math_arithmetic" gap="8"></block>
-          var newGap = parseInt(xml.getAttribute('gap'), 10);
-          // Ignore gaps before the first block.
-          if (!isNaN(newGap) && gaps.length > 0) {
-            gaps[gaps.length - 1] = newGap;
-          } else {
-            gaps.push(default_gap);
-          }
-        } else if (tagName == 'BUTTON' || tagName == 'LABEL') {
-          // Labels behave the same as buttons, but are styled differently.
-          var isLabel = tagName == 'LABEL';
-          var curButton = new Blockly.FlyoutButton(this.workspace_,
-              this.targetWorkspace_, xml, isLabel);
-          contents.push({type: 'button', button: curButton});
-          gaps.push(default_gap);
-        } else if (tagName.startsWith('EYO:')) {
-          var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
-          if (curBlock.disabled) {
-            // Record blocks that were initially disabled.
-            // Do not enable these blocks as a result of capacity filtering.
-            this.permanentlyDisabled_.push(curBlock);
-          }
-          contents.push({type: 'block', block: curBlock});
+          curDlgt.beReady()
+          contents.push({type: 'block', block: curDlgt.block_});
           var gap = parseInt(xml.getAttribute('gap'), 10);
           gaps.push(isNaN(gap) ? default_gap : gap);
         }

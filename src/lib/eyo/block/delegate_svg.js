@@ -339,42 +339,6 @@ eYo.DelegateSvg.prototype.getMenuTarget = function () {
   return this.block_
 }
 
-/**
- * Render the given connection, if relevant.
- * @param {*} recorder
- * @param {*} c8n
- * @return {boolean=} true if a rendering message was sent, false otherwise.
- */
-eYo.DelegateSvg.prototype.renderDrawC8n_ = function (recorder, c8n) {
-  if (!c8n) {
-    return
-  }
-  var target = c8n.targetBlock()
-  if (!target) {
-    return
-  }
-  if (c8n.eyo.isNextLike) {
-    c8n.tighten_()
-  }
-  var do_it = !target.rendered ||
-  (!this.ui.up &&
-    !eYo.Magnet.disconnectedParent &&
-    !eYo.Magnet.disconnectedChild&&
-    !eYo.Magnet.connectedParent)
-  if (do_it) {
-    try {
-      target.eyo.ui.down = true
-      target.eyo.render(false, recorder)
-    } catch (err) {
-      console.error(err)
-      throw err
-    } finally {
-      target.eyo.ui.down = false
-    }
-    return true
-  }
-}
-
 eYo.DelegateSvg.debugPrefix = ''
 eYo.DelegateSvg.debugCount = {}
 
@@ -515,7 +479,8 @@ eYo.StatementBlockEnumerator = function (block) {
     while ((b = bs.shift())) {
       e8r = e8rs.shift()
       while (e8r.next()) {
-        if (e8r.here.eyo.isNextLike) {
+        var eyo = e8r.here.eyo.magnet
+        if (eyo.isFoot || eyo.isSuite) {
           if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
             bs.unshift(b)
             e8rs.unshift(e8r)
@@ -535,9 +500,6 @@ eYo.StatementBlockEnumerator = function (block) {
   }
   return me
 }
-
-eYo.DelegateSvg.prototype.nextStatementCheck = undefined
-eYo.DelegateSvg.prototype.previousStatementCheck = undefined
 
 /**
  * Subclassers will override this but won't call it directly,
@@ -645,7 +607,7 @@ eYo.DelegateSvg.newComplete = (() => {
                 dlgt.changeWrap(
                   () => {
                     var slot = input.eyo.magnet.slot
-                    slot && slot.setIncog(false)
+                    slot && slot..incog = false
                     dlgt.magnets.output.connect(input.eyo.magnet)
                   }
                 )
@@ -673,7 +635,7 @@ eYo.DelegateSvg.newComplete = (() => {
             y.changeWrap(
               () => {
                 // The connection can be established only when not incog
-                slot.setIncog(false)
+                slot..incog = false
                 y.magnets.output.connect(input.eyo.magnet)
               }
             )
@@ -771,11 +733,10 @@ eYo.DelegateSvg.prototype.getPythonType = function () {
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {!Block} block
  * @param {Object} model, for subclassers
- * @return {?Blockly.Block} the created block
+ * @return {?eYo.Delegate} the created block
  */
-eYo.DelegateSvg.prototype.insertParentWithModel = function (processModel) {
+eYo.DelegateSvg.prototype.insertParentWithModel = function (model) {
   goog.asserts.assert(false, 'Must be subclassed')
 }
 
@@ -919,7 +880,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
                 var its_xy = this.ui.xyInSurface
                 var my_xy = candidate.ui.xyInSurface
                 var HW = candidate.ui.getHeightWidth()
-                candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
+                candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
               })
             }
             // unreachable code
@@ -1004,7 +965,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
               var its_xy = this.ui.xyInSurface
               var my_xy = candidate.eyo.ui.xyInSurface
               var HW = candidate.ui.getHeightWidth()
-              candidate.moveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
+              candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
             })
           }
         }
@@ -1258,11 +1219,20 @@ eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
 }
 
 /**
- * Move a block by a relative offset.
- * @param {number} dx Horizontal offset in character units.
- * @param {number} dy Vertical offset in character units.
+ * Move a block by a relative offset in workspace coordinates.
+ * @param {number} dx Horizontal offset in workspace units.
+ * @param {number} dy Vertical offset in workspace units.
  */
-eYo.DelegateSvg.prototype.moveBy = function(dx, dy) {
-  this.block_.moveBy(dx * eYo.Unit.x, dy * eYo.Unit.y)
+eYo.DelegateSvg.prototype.moveByXY = function(dx, dy) {
+  this.ui.moveByXY(dx, dy)
+}
+
+/**
+ * Move a block by a relative offset in text coordinates.
+ * @param {number} dc Horizontal offset in text unit.
+ * @param {number} dl Vertical offset in text unit.
+ */
+eYo.DelegateSvg.prototype.moveBy = function(dc, dl) {
+  this.ui.moveByXY(dc * eYo.Unit.x, dl * eYo.Unit.y)
 }
 

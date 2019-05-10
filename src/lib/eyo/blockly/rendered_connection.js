@@ -110,7 +110,7 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection)
   if (rootBlock.RTL) {
     dx = -dx
   }
-  rootBlock.moveBy(dx, dy)
+  rootBlock.eyo.moveByXY(dx, dy)
   selected || rootBlock.removeSelect()
 }
 
@@ -131,6 +131,22 @@ Object.defineProperties(eYo.Connection.prototype, {
       this.eyo.name_ = newValue
     }
   },
+  x_: {
+    get () {
+      return this.eyo.x_
+    },
+    set (newValue) {
+      this.eyo.x_ = newValue
+    }
+  },
+  y_: {
+    get () {
+      return this.eyo.y_
+    },
+    set (newValue) {
+      this.eyo.y_ = newValue
+    }
+  }
   // inDB_: {
   //   get () {
   //     return this.inDB__
@@ -210,7 +226,7 @@ eYo.Connection.prototype.setCheck = function(check) {
  * @suppress {accessControls}
  */
 eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
-  if (!Blockly.Events.recordUndo) {
+  if (!eYo.Events.recordUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
     // some time ago
@@ -505,30 +521,6 @@ Blockly.Connection.lastConnectionInRow_ = function (startBlock, orphanBlock) {
   }
   return null
 }
-
-/**
- * Move the blocks on either side of this connection right next to each other.
- * Delegates the translate process to the block
- * @private
- */
-Blockly.RenderedConnection.prototype.tighten_ = function() {
-  var where = this.eyo.where
-  var target_where = this.targetConnection.eyo.where
-  var dc = target_where.c - where.c
-  var dl = target_where.l - where.l
-  if (dc != 0 || dl != 0) {
-    var block = this.targetBlock();
-    block.eyo.ui.setOffset(-dc, -dl);
-  }
-};
-Blockly.RenderedConnection.prototype.tighten_ = function() {
-  var dx = this.targetConnection.x_ - this.x_;
-  var dy = this.targetConnection.y_ - this.y_;
-  if (dx != 0 || dy != 0) {
-    var t_eyo = this.eyo.t_eyo
-    t_eyo.ui.setOffset(-dx, -dy);
-  }
-};
 
 /**
  * Returns the block that this connection connects to.

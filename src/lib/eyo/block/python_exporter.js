@@ -92,7 +92,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
  * Convert the block to python code.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
- * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBlock`.
+ * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToDlgt`.
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
@@ -358,7 +358,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
  * @private
  */
 eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
-  if (slot.isIncog()) {
+  if (slot.incog) {
     return
   }
   var bindField

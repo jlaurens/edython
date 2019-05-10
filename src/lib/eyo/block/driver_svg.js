@@ -1048,7 +1048,7 @@ eYo.Driver.Svg.prototype.nodeTranslate = function(node, x, y) {
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
  *     workspace coordinates.
  */
-eYo.Driver.Svg.prototype.nodeXyInSurface = function (node) {
+eYo.Driver.Svg.prototype.nodeXYInSurface = function (node) {
   var x = 0
   var y = 0
   var block = node.block_

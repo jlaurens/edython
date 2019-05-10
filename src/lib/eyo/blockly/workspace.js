@@ -307,7 +307,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       events.forEach((event) => {
         outputStack.push(event)
       })
-      Blockly.Events.recordUndo = false
+      eYo.Events.recordUndo = false
       var Bs = []
       eYo.Do.tryFinally(() => { // try
         if (this.rendered) {
@@ -324,7 +324,7 @@ eYo.Workspace.prototype.undo = function(redo) {
           this.eyo.updateChangeCount(event, redo)
         })
       }, () => { // finally
-        Blockly.Events.recordUndo = true
+        eYo.Events.recordUndo = true
         Bs.forEach((B) => {
           B.eyo.changeEnd()
         })
@@ -473,7 +473,7 @@ eYo.deleteBlock = function (block, deep) {
       }
     })
     if (m4t && m4t.b_eyo.workspace) {
-      eYo.Selected.magnet = m4t
+      m4t.select()
     } else if (t_eyo) {
       eYo.Selected.eyo = t_eyo
     }

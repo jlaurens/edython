@@ -46,7 +46,7 @@ describe('comment statement', function () {
     var d2 = eYo.Test.new_dlgt('comment_stmt')
     // d1.comment_p = 'abc'
     // d2.comment_p = 'cde'
-    // d2.moveBy(100,20)
+    // d2.moveByXY(100,20)
     ;[
       ['high', 'low'],
       ['left', 'right']
@@ -95,7 +95,7 @@ describe('comment statement', function () {
     var d1 = eYo.Test.new_dlgt('comment_stmt')
     d.comment_p = 'abc'
     d1.comment_p = 'cde'
-    d1.moveBy(100,20)
+    d1.moveByXY(100,20)
     eYo.Selected.connection = d1.magnets.right.connection
     // d1.block_.dispose()
     // d.block_.dispose()

@@ -473,10 +473,10 @@ eYo.MenuManager.prototype.populateLast = function (block) {
       // the topmost is itself sealed, this should never occur
       ++descendantCount
     }
-    var next = wrapper.next
-    if (next) {
+    var foot = wrapper.foot
+    if (foot) {
       // Blocks in the current stack would survive this block's deletion.
-      descendantCount -= next.getWrappedDescendants().length
+      descendantCount -= foot.getWrappedDescendants().length
     }
     menuItem = this.newMenuItem(
       descendantCount === 1 ? eYo.Msg.DELETE_BLOCK
@@ -572,26 +572,27 @@ eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (mgr, event) {
  * @param {!goog.events.Event} event The event containing as target
  */
 eYo.DelegateSvg.prototype.handleMenuItemActionLast = function (mgr, event) {
-  return mgr.handleActionLast(this.block_, event)
+  return mgr.handleActionLast(this, event)
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
- * @param {!Blockly.Block} block
+ * @param {!eYo.Delegate} dlgt
  * @param {!goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
-eYo.MenuManager.prototype.handleActionLast = function (block, event) {
+eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
   var model = event.target.model_
   if (goog.isFunction(model)) {
     setTimeout(function () {
-      model(block, event)
+      model(dlgt, event)
     }, 100)
     return true
   }
-  var target = model.target || block
+  var target = model.target || dlgt.block_
+  var t_eyo = target.eyo
   switch (model.action) {
   case eYo.ID.DUPLICATE_BLOCK:
     Blockly.duplicate_(target)
@@ -612,7 +613,7 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     target.eyo.disabled = !target.eyo.disabled
     return true
   case eYo.ID.DELETE_BLOCK:
-    var unwrapped = target.eyo
+    var unwrapped = t_eyo
     var parent
     while (unwrapped.wrapped_ && (parent = unwrapped.surround)) {
       unwrapped = parent
@@ -621,13 +622,13 @@ eYo.MenuManager.prototype.handleActionLast = function (block, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (target === eYo.Selected.block && target.eyo !== unwrapped) {
+      if (t_eyo === eYo.Selected.eyo && t_eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var m4t
-        if (((m4t = unwrapped.magnets.foot) && (target = m4t.t_eyo)) || ((m4t = unwrapped.magnets.head) && (target = m4t.t_eyo))) {
-          eYo.Selected.eyo = target
+        if (((m4t = unwrapped.magnets.foot) && (t_eyo = m4t.t_eyo)) || ((m4t = unwrapped.magnets.head) && (t_eyo = m4t.t_eyo))) {
+          t_eyo.select()
         } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
-          eYo.Selected.magnet = m4t
+          m4t.select()
         }
       }
       unwrapped.block_.dispose(true, true)
@@ -918,7 +919,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
         var key = d.key
         var content = this.get_menuitem_content(model.type, key)
         var MI = this.newMenuItem(content, () => {
-          this.insertParentWithModel(model, key)
+          this.insertParentWithModel(model)
         })
         this.addInsertChild(MI)
         return true
@@ -929,7 +930,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (block, model
             key = d.key || K
             content = this.get_menuitem_content(parent_type, key)
             MI = this.newMenuItem(content, () => {
-              this.insertParentWithModel(model, key)
+              this.insertParentWithModel(model)
             })
             this.addInsertChild(MI)
             return true
@@ -1009,16 +1010,16 @@ eYo.MenuManager.prototype.populate_replace_parent = function (block, model) {
     var eyo = block.eyo
   var parent = eyo.parent
   if (parent && parent.type === model.type) {
-    var input = eyo.getParentInput()
+    var input = eyo.magnets.output.input
     if (model.input && input.name !== model.input) {
       return false
     }
     if (!eyo.wrapped_ || eyo.canUnwrap()) {
-      if (eyo.canReplaceBlock(parent.block_)) {
+      if (eyo.canReplaceDlgt(parent)) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
-            eyo.replaceBlock(parent.block_)
+            eyo.replaceDlgt(parent)
           })
           this.addRemoveChild(MI)
           console.log(block.type, ' replace ', parent.type)

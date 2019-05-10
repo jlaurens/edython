@@ -127,7 +127,7 @@ Blockly.Events.Move.prototype.currentLocation_ = function() {
       location.horizontal = true
     }
   } else {
-    location.coordinate = block.getRelativeToSurfaceXY();
+    location.coordinate = block.eyo.ui.xyInSurface
   }
   return location;
 };
@@ -172,7 +172,7 @@ Blockly.Events.Move.prototype.run = function(forward) {
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
     var xy = eyo.ui.xyInSurface;
-    eyo.moveBy(coordinate.x - xy.x, coordinate.y - xy.y);
+    eyo.moveByXY(coordinate.x - xy.x, coordinate.y - xy.y);
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;
     if (inputName) {

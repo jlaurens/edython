@@ -299,7 +299,7 @@ eYo.Block.prototype.dispose = function (healStack) {
     try {
       // First, dispose of all my children.
       // This must be done before unplug
-      this.forEachChild(b => b.dispose(false))
+      this.eyo.forEachChild(d => d.block_.dispose(false))
     } finally {
       Blockly.Events.enable()
     }
@@ -460,12 +460,12 @@ Blockly.Block.prototype.dispose = function(healStack) {
     // methodically step through the blocks and carefully disassemble them.
 
     // First, dispose of all my children.
-    this.forEachChild(b => {
+    this.eyo.forEachChild(d => {
       // disable auto creation of wrapped targets
-      var m4t = b.eyo.magnets.output
+      var m4t = d.magnets.output
       m4t = m4t && m4t.target
       m4t && (m4t.wrapped_ = false)
-      b.dispose(false)
+      d.block_.dispose(false)
     })
     // Then dispose of myself.
     // Dispose of all inputs and their fields.
@@ -486,12 +486,4 @@ Blockly.Block.prototype.dispose = function(healStack) {
   } finally {
     Blockly.Events.enable()
   }
-}
-
-/**
- * Execute the helper for each child.
- * Works on a shallow copy of `childBlocks_`.
- */
-Blockly.Block.prototype.forEachChild = function (helper) {
-  this.eyo.forEachChild(helper)
 }
