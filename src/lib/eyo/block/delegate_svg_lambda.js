@@ -466,12 +466,11 @@ eYo.Magnet.prototype.consolidateType = function () {
     }
   }
   // better design if we use the subtype ?
-  m4tIn.setCheck(nocond_only_out
+  m4tIn.check = nocond_only_out
     ? eYo.T3.Expr.Check.expression_nocond
-    : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond))
-  m4tOut.setCheck(
+    : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
+  m4tOut.check = 
     (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
-  )
 }
 
 eYo.DelegateSvg.Lambda.T3s = [

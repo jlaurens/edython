@@ -511,7 +511,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     function (b, e) {
       console.log('Python code for', block.type)
       var p = new eYo.Py.Exporter()
-      console.log(p.export(block))
+      console.log(p.export(block.eyo))
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
@@ -521,7 +521,7 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     function (b, e) {
       console.log('Python code for', block.type)
       var p = new eYo.Py.Exporter()
-      console.log(p.export(block, {is_deep: true}))
+      console.log(p.export(block.eyo, {is_deep: true}))
       block.eyo.runScript()
     })
   menuItem.setEnabled(true)

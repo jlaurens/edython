@@ -199,23 +199,6 @@ eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
 }
 
 /**
- * Change a connection's compatibility.
- * Edython: always use `onCheckChanged_`
- * @param {*} check Compatible value type or list of value types.
- *     Null if all types are compatible.
- * @return {!Blockly.Connection} The connection being modified
- *     (to allow chaining).
- */
-eYo.Connection.prototype.setCheck = function(check) {
-  eYo.Connection.superClass_.setCheck.call(this, check)
-  if (!check) {
-    // This was not called on original Blockly
-    this.onCheckChanged_()
-  }
-  return this
-}
-
-/**
  * The type checking mechanism is fine grained compared to blockly's.
  * The check_ is used more precisely.
  * For example, elif blocks cannot connect to the suite connection, only the next connection.
@@ -438,39 +421,6 @@ Blockly.Connection.prototype.dispose = function () {
 } ()
 
 /**
- * Function to be called when this connection's compatible types have changed.
- * @private
- */
-Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
-  // The new value type may not be compatible with the existing connection.
-  if (this.isConnected() && !this.checkType_(this.targetConnection)) {
-    var child = this.isSuperior() ? this.targetBlock() : this.sourceBlock_;
-    child.unplug();
-    // Bump away.
-    this.sourceBlock_.bumpNeighbours_();
-  }
-};
-
-/**
- * Function to be called when this connection's compatible types have changed.
- * @private
- * @suppress{accessControls}
- */
-Blockly.RenderedConnection.prototype.onCheckChanged_ = function () {
-  // this is a closure
-  /** @suppress{accessControls} */
-  var onCheckChanged_ = Blockly.RenderedConnection.prototype.onCheckChanged_
-  return function () {
-    onCheckChanged_.call(this)
-    this.sourceBlock_.eyo.incrementChangeCount()
-    var target = this.targetBlock()
-    if (target) {
-      target.eyo.incrementChangeCount() // there was once a `consolidate(false, true)` here.
-    }
-  }
-} ()
-
-/**
  * Does the given block have one and only one connection point that will accept
  * an orphaned block?
  * @param {!Blockly.Block} block The superior block.
@@ -544,16 +494,7 @@ eYo.Connection.prototype.targetBlock = function() {
  *     (to allow chaining).
  */
 Blockly.Connection.prototype.setCheck = function(check) {
-  if (check) {
-    // Ensure that check is in an array.
-    if (!goog.isArray(check)) {
-      check = [check];
-    }
-    this.check_ = check;
-    this.onCheckChanged_();
-  } else {
-    this.check_ = null;
-  }
+  this.eyo.check = check;
   return this;
 }
 

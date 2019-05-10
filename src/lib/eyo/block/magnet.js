@@ -248,8 +248,33 @@ Object.defineProperties(eYo.Magnet.prototype, {
         }
       }
     },
-    check_: {
-      writable: true
+  },
+  check_: {
+    writable: true
+  },
+  check: {
+    get () {
+      return this.check_
+    },
+    set (check) {
+      if (check) {
+        // Ensure that check is in an array.
+        if (!goog.isArray(check)) {
+          check = [check];
+        }
+        this.check_ = check;
+      } else {
+        this.check_ = null;
+      }
+      var b_eyo = this.b_eyo
+      var t_eyo = this.t_eyo
+      if (t_eyo && !this.checkType_(this.target)) {
+        (this.isSuperior ? t_eyo : b_eyo).unplug()
+        // Bump away.
+        b_eyo.block_.bumpNeighbours_()
+      }
+      b_eyo.incrementChangeCount()
+      t_eyo && t_eyo.incrementChangeCount() // there was once a `consolidate(false, true)` here.
     }
   },
   /**
@@ -318,12 +343,13 @@ Object.defineProperties(eYo.Magnet.prototype, {
   /**
    * Returns an unwrapped target block
    */
-  unwrappedTargetBlock: {
+  unwrappedTarget: {
     get () {
-      var t = this.connection.targetBlock()
-      var f = b => {
-        return b && (!b.eyo.wrapped_ || b.inputList.some(i => {
-          if (f(t = i.connection && i.connection.targetBlock())) {
+      var t = this.t_eyo
+      var f = t => {
+        return t && (!t.wrapped_ || t.inputList.some(i => {
+          var m4t = i.eyo.magnet
+          if (f(t = m4t && m4t.t_eyo)) {
             return true
           }
         }))
@@ -662,18 +688,8 @@ eYo.Magnet.prototype.updateCheck = function () {
   }
   this.changeCount = eyo.change.count
   if (this.model.check) {
-    this.connection.setCheck(this.model.check.call(this, eyo.type, eyo.subtype))
+    this.check = this.model.check.call(this, eyo.type, eyo.subtype)
   }
-}
-
-/**
- * get the check_ array. This is a dynamic method.
- * The default implementation just returns the connection's check_.
- * @return the connection's check_ array.
- * @suppress {accessControls}
- */
-eYo.Magnet.prototype.getCheck = function () {
-  return this.connection.check_
 }
 
 /**
@@ -724,7 +740,7 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
  */
 eYo.Magnet.prototype.connect = function(m4t) {
   if (m4t) {
-    this..incog = false
+    this.incog = false
     this.connection.connect(m4t.connection)
     return m4t
   }
@@ -1080,7 +1096,7 @@ eYo.Magnet.prototype.prototype.connect_ = (() => {
                 }
                 childM4t.selected && childM4t.unselect()
                 parentM4t.selected && parentM4t.unselect()
-                child.incog = parentM4t.incog)
+                child.incog = parentM4t.incog
               }, () => { // finally
                 parentM4t.startOfStatement && child.incrementChangeCount()
                 eYo.Magnet.connectedParent = parentM4t

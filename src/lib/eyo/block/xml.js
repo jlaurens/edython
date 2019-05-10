@@ -134,7 +134,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
       if (!dlgt.isControl) {
-        var code = p.export(block, {is_deep: true})
+        var code = p.export(dlgt, {is_deep: true})
         if (code.length) {
           var py_dom = goog.dom.createDom(eYo.Xml.PYTHON)
           goog.dom.insertChildAt(dom, py_dom, 0)

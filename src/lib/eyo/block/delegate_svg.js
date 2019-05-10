@@ -1191,7 +1191,7 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
   } else {
     // eYo.DelegateSvg.debugStartTrackingRender = true
     // console.log('SHOW CONNECTIONS', block.id, block.type)
-    block.rendered || block.render()
+    block.eyo.rendered || block.eyo.render()
   }
 }
 

@@ -91,6 +91,16 @@ Object.defineProperties(eYo.InputDelegate.prototype, {
       return c8n && c8n.eyo
     }
   },
+  check: {
+    set () {
+      var m4t = this.magnet
+      if (m4t) {
+        m4t.check = check
+      } else {
+        console.error("NO CHECKABLE MAGNET, BREAK HERE")
+      }
+    }
+  },
   name_: { // the name of the input such that checking is fine grained.
     get () {
       return this.owner.name

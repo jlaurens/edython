@@ -89,76 +89,75 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
 }
 
 /**
- * Convert the block to python code.
+ * Convert the dlgt to python code.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!eYo.Delegate} dlgt The owner of the receiver, to be converted to python.
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToDlgt`.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
-  var eyo = block.eyo
-  if (eyo.async) {
+eYo.Py.Exporter.prototype.exportAsExpression_ = function (dlgt, opt) {
+  if (dlgt.async) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
       this.addSpace()
     }
     this.linePush('async ')
     this.shouldSeparateField = false
-  } else if (eyo.await) {
+  } else if (dlgt.await) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
       this.addSpace()
     }
     this.linePush('await ')
     this.shouldSeparateField = false
-  } else if (eyo.parenth_p) {
+  } else if (dlgt.parenth_p) {
     this.linePush('(')
   }
-  if (eyo instanceof eYo.DelegateSvg.Expr.primary) {
-    if (eyo.dotted_p === 0 && eyo.target_p === 'print' && eyo.variant_p === eYo.Key.CALL_EXPR) {
+  if (dlgt instanceof eYo.DelegateSvg.Expr.primary) {
+    if (dlgt.dotted_p === 0 && dlgt.target_p === 'print' && dlgt.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (eyo instanceof eYo.DelegateSvg.Stmt.call_stmt) {
-    if (eyo.dotted_p === 0 && eyo.target_p === 'print') {
+  } else if (dlgt instanceof eYo.DelegateSvg.Stmt.call_stmt) {
+    if (dlgt.dotted_p === 0 && dlgt.target_p === 'print') {
       this.use_print = true
     }
-  } else if (eyo instanceof eYo.DelegateSvg.Stmt.builtin__print_stmt) {
+  } else if (dlgt instanceof eYo.DelegateSvg.Stmt.builtin__print_stmt) {
     this.use_print = true
-  } else if (eyo instanceof eYo.DelegateSvg.Expr.builtin__print_expr) {
+  } else if (dlgt instanceof eYo.DelegateSvg.Expr.builtin__print_expr) {
     this.use_print = true
   }
-  if (block.type === eYo.T3.Stmt.import_stmt && !block.disabled) {
-    var importedModules = eyo.importedModules
+  if (dlgt.type === eYo.T3.Stmt.import_stmt && !dlgt.disabled) {
+    var importedModules = dlgt.importedModules
     if (importedModules && importedModules['turtle']) {
       this.use_turtle = true
     }
   }
   var field, slot
-  if ((field = eyo.fieldAtStart)) {
+  if ((field = dlgt.fieldAtStart)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
-  if ((slot = eyo.slotAtHead)) {
+  if ((slot = dlgt.slotAtHead)) {
     do {
       this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
   } else {
     // list blocks
-    block.eyo.consolidate()
-    block.eyo.forEachInput(input => {
+    dlgt.consolidate()
+    dlgt.forEachInput(input => {
       this.exportInput_(input, opt)
     })
   }
-  if ((field = eyo.toEndField)) {
+  if ((field = dlgt.toEndField)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
-  if (eyo.orphan_comma_p) {
+  if (dlgt.orphan_comma_p) {
     this.linePush(',')
   }
-  if (eyo.parenth_p) {
+  if (dlgt.parenth_p) {
     this.linePush(')')
   }
 }
@@ -170,20 +169,20 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (block, opt) {
  * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
-  var is_deep = !eyo.isControl && opt.is_deep
-  if (!eyo.magnets.output) {
-    if (block.disabled) {
+eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
+  var is_deep = !dlgt.isControl && opt.is_deep
+  if (!dlgt.magnets.output) {
+    if (dlgt.disabled) {
       this.indent_('# ')
       this.linePush('# ')
     }
   }
-  this.exportAsExpression_(eyo, opt)
+  this.exportAsExpression_(dlgt, opt)
   var m4t, rightM4t, t_eyo
-  if ((rightM4t = eyo.magnets.right) && (t_eyo = rightM4t.t_eyo)) {
+  if ((rightM4t = dlgt.magnets.right) && (t_eyo = rightM4t.t_eyo)) {
     this.exportField_(rightM4t.fields.label)
-    this.exportBlock_(t_eyo, opt)
-  } else if ((m4t = eyo.magnets.suite)) {
+    this.exportDlgt_(t_eyo, opt)
+  } else if ((m4t = dlgt.magnets.suite)) {
     // a block with a suite must also have a right connection
     this.exportField_(rightM4t.fields.label)
     var f = () => {
@@ -191,7 +190,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
-          this.exportBlock_(t_eyo, opt)
+          this.exportDlgt_(t_eyo, opt)
         }, () => {
           opt.is_deep = is_deep
         })
@@ -201,7 +200,7 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
         this.missing_statements.push(m4t.connection)
       }
     }
-    if (eyo.isControl) {
+    if (dlgt.isControl) {
       f()
     } else {
       eYo.Do.makeWrapper(() => {
@@ -210,31 +209,31 @@ eYo.Py.Exporter.prototype.exportBlock_ = function (eyo, opt) {
         this.dedent_()
       })(f)
     }
-  } else if ((m4t = eyo.magnets.right)) {
+  } else if ((m4t = dlgt.magnets.right)) {
     if ((t_eyo = m4t.t_eyo)) {
       this.exportField_(m4t.fields.label)
-      this.exportBlock_(t_eyo, opt)
+      this.exportDlgt_(t_eyo, opt)
     }
   }
-  if (!eyo.magnets.output) {
-    if (eyo.disabled) {
+  if (!dlgt.magnets.output) {
+    if (dlgt.disabled) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_eyo = eyo.foot)) {
+  if (is_deep && (t_eyo = dlgt.foot)) {
     this.newline_()
-    this.exportBlock_(t_eyo, opt)
+    this.exportDlgt_(t_eyo, opt)
   }
 }
 
 /**
- * Convert the block to python code.
+ * Convert the dlgt to python code.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
+ * @param {!eYo.Delegate} dlgt The owner of the receiver, to be converted to python.
  * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.export = function (block, opt) {
+eYo.Py.Exporter.prototype.export = function (dlgt, opt) {
   this.line = undefined
   this.lines = []
   this.indents = []
@@ -250,7 +249,7 @@ eYo.Py.Exporter.prototype.export = function (block, opt) {
     eYo.Do.tryFinally(() => {
       ++this.depth
       this.expression = []
-      this.exportBlock_(block.eyo, opt)
+      this.exportDlgt_(dlgt, opt)
     }, () => {
       --this.depth
     })
@@ -364,7 +363,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   var bindField
   if ((bindField = slot.bindField)) {
     var m4t = slot.magnet
-    bindField.setVisible(!m4t || !m4t.unwrappedTargetBlock)
+    bindField.setVisible(!m4t || !m4t.unwrappedTarget)
   }
   var field
   if ((field = slot.fieldAtStart)) {
@@ -391,7 +390,7 @@ Blockly.Field.prototype.getPythonText_ = Blockly.Field.prototype.getText
 Object.defineProperties(eYo.Delegate.prototype, {
   toString: {
     get () {
-      return new eYo.Py.Exporter().export(this.block_, {is_deep: true})
+      return new eYo.Py.Exporter().export(this, {is_deep: true})
     }
   },
   toLinearString: {

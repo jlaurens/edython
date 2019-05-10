@@ -261,9 +261,8 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   unwrappedTarget: {
     get () {
-      var c8n = this.connection
-      var b = c8n && c8n.eyo.unwrappedTargetBlock
-      return b && b.eyo
+      var m4t = this.magnet
+      return m4t && m4t.unwrappedTarget
     }
   },
   requiredIncog: {
@@ -353,40 +352,31 @@ eYo.Slot.prototype.getConnection = function () {
 }
 
 /**
- * Get the required status.
- * For edython.
- * @param {boolean} newValue
+ * @property {boolean} isRequiredToModel  Get the required status.
  */
-eYo.Slot.prototype.isRequiredToModel = function () {
-  if (this.incog) {
+Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
+  get () {
+    if (this.incog) {
+      return false
+    }
+    if (!this.connection) {
+      return false
+    }
+    if (!this.magnet.wrapped_ && this.t_eyo) {
+      return true
+    }
+    if (this.required) {
+      return true
+    }
+    if (this.data && this.data.required) {
+      return false
+    }
+    if (this.model.xml && this.model.xml.required) {
+      return true
+    }
     return false
   }
-  if (!this.connection) {
-    return false
-  }
-  if (!this.connection.eyo.wrapped_ && this.targetBlock()) {
-    return true
-  }
-  if (this.required) {
-    return true
-  }
-  if (this.data && this.data.required) {
-    return false
-  }
-  if (this.model.xml && this.model.xml.required) {
-    return true
-  }
-  return false
-}
-
-/**
- * Get the required status as stated by the model.
- * For edython.
- * @param {boolean} newValue
- */
-eYo.Slot.prototype.isRequiredFromModel = function () {
-  return this.is_required_from_model || (!this.incog && this.model.xml && this.model.xml.required)
-}
+})
 
 /**
  * Get the concrete required status.
@@ -448,8 +438,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     m4t.wrapped_ && m4t.setHidden(true) // Don't ever connect any block to this
     var v
     if ((v = this.model.check)) {
-      var check = v.call(m4t, m4t.b_eyo.type, m4t.b_eyo.variant_p)
-      m4t.setCheck(check)
+      m4t.check = v.call(m4t, m4t.b_eyo.type, m4t.b_eyo.variant_p)
     }
   }
 }
@@ -540,7 +529,7 @@ eYo.Slot.prototype.save = function (element, opt) {
       }
     }
   })()
-  if (!out && this.isRequiredToModel()) {
+  if (!out && this.isRequiredToModel {
     this.saveRequired(element, opt)
   }
 }

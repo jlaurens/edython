@@ -165,7 +165,7 @@ eYo.BlockSvg.prototype.setCollapsed = function (collapsed) {
     // No child blocks, just render this block.
     renderList[0] = this
   }
-  if (this.rendered) {
+  if (this.eyo.rendered) {
     var block
     for (i = 0; (block = renderList[i]); i++) {
       block.render()
@@ -288,7 +288,7 @@ eYo.BlockSvg.prototype.isMovable = function() {
  */
 eYo.BlockSvg.prototype.getConnections_ = function(all) {
   var myConnections = eYo.BlockSvg.superClass_.getConnections_.call(this, all)
-  if (all || this.rendered) {
+  if (all || this.eyo.rendered) {
     if (this.eyo.magnets.left) {
       myConnections.push(this.eyo.magnets.left)
     }

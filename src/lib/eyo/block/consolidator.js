@@ -301,7 +301,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   if (name && name.length) {
     io.input.name = name
   }
-  io.input.setCheck(check)
+  io.input.eyo.check = check
   io.c8n.eyo.optional_ = optional
   io.c8n.eyo.plugged_ = this.plugged
   while (io.input.fieldRow.length) {
@@ -338,7 +338,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     sep = io.eyo.postsep || this.model.postsep
     sep && sep.length && f(sep, true)
   }
-  io.input.setCheck(this.getCheck(io))
+  io.input.eyo.check = this.getCheck(io)
   io.c8n.eyo.plugged_ = this.model.plugged
   io.c8n.eyo.hidden_ = undefined
   if (io.block.eyo.locked_) {
