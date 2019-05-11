@@ -6,16 +6,16 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Lambda')
-goog.provide('eYo.DelegateSvg.Parameter')
+goog.provide('eYo.Delegate.Lambda')
+goog.provide('eYo.Delegate.Parameter')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 goog.require('eYo.Magnet')
 goog.require('goog.dom');
 
@@ -60,7 +60,7 @@ eYo.Consolidator.List.makeSubclass('Parameter', {
  */
 eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
-    var check = io.c8n.targetConnection.check_
+    var check = io.m4t.target.check_
     if (!check || goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
@@ -72,10 +72,10 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {!Blockly.Block} block owner of the receiver
+ * @param {!eYo.Delegate} dlgt owner of the receiver
  */
-eYo.Consolidator.Parameter.prototype.getIO = function (block) {
-  var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, block)
+eYo.Consolidator.Parameter.prototype.getIO = function (dlgt) {
+  var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, dlgt)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -100,7 +100,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
    * @param {Object} io, parameters....
    */
   var getCheckType = io => {
-    var target = io.c8n.targetConnection
+    var target = io.m4t.target
     if (!target) {
       return Type.unconnected
     }
@@ -125,8 +125,8 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     io.first_star_star = io.min_first_star = io.first_star = io.first_default = io.last_default = -1
     var last_default = -1
     this.setupIO(io, 0)
-    while (io.eyo) {
-      switch ((io.eyo.parameter_type_ = getCheckType(io))) {
+    while (io.input) {
+      switch ((io.input.parameter_type_ = getCheckType(io))) {
       case Type.star_star:
         if (io.first_star_star < 0) {
           io.first_star_star = io.i
@@ -166,30 +166,30 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (i >= 0 && i + 2 < io.list.length) {
       io.i = i + 2
       while (this.setupIO(io)) {
-        if (io.eyo.parameter_type_ === Type.star_star) {
+        if (io.input.parameter_type_ === Type.star_star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
           io.i += 2
         }
       }
-      if (i + 2 < io.list.length) {
-        io.eyo.edited = true
+      if (io.i + 2 < io.list.length) {
+        io.input.edited = true
         this.setupIO(io, i)
         // move this parameter to the end of the list and hide a space
         // 1) disconnect the '**' from its input
-        var c8n = io.c8n
-        var targetC8n = c8n.targetConnection
-        c8n.disconnect()
+        var m4t = io.m4t
+        var targetM4t = m4t.target
+        m4t.disconnect()
         while (true) {
           if (this.setupIO(io, io.i + 2)) {
-            var nextC8n = io.c8n
-            var nextTargetC8n = c8n.targetConnection
-            nextC8n.disconnect()
-            c8n.connect(nextTargetC8n)
-            c8n = nextC8n
+            var nextM4t = io.m4t
+            var nextTargetM4t = nextM4t.target
+            nextM4t.break()
+            m4t.connect(nextTargetM4t)
+            m4t = nextM4t
           } else {
-            c8n.connect(targetC8n)
+            m4t.connect(targetM4t)
             break
           }
         }
@@ -207,7 +207,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (i >= 0) {
       io.i = i + 2
       while (this.setupIO(io)) {
-        if (io.eyo.parameter_type_ === Type.star) {
+        if (io.input.parameter_type_ === Type.star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -220,20 +220,20 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (io.last_default >= 0 && io.last_default + 4 <= io.first_star) {
       // it means that io.last_default + 2 is a no default parameter
       // we must move the '*' block at io.last_default + 2
-      io.eyo.edited = true
+      io.input.edited = true
       this.setupIO(io, io.first_star)
-      c8n = io.c8n
-      targetC8n = c8n.targetConnection
-      c8n.disconnect()
+      m4t = io.m4t
+      targetM4t = m4t.target
+      m4t.disconnect()
       while (true) {
         this.setupIO(io, io.i - 2)
-        nextC8n = io.c8n
-        nextTargetC8n = c8n.targetConnection
-        nextC8n.disconnect()
-        c8n.connect(nextTargetC8n)
-        c8n = nextC8n
+        nextM4t = io.m4t
+        nextTargetM4t = m4t.target
+        nextM4t.break()
+        m4t.connect(nextTargetM4t)
+        m4t = nextM4t
         if (io.i <= io.last_default + 2) {
-          c8n.connect(targetC8n)
+          m4t.connect(targetM4t)
           break
         }
       }
@@ -292,12 +292,12 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
 })()
 
 /**
- * Class for a DelegateSvg, parameter_list block.
+ * Class for a Delegate, parameter_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('parameter_list', {
+eYo.Delegate.List.makeSubclass('parameter_list', {
   list: {
     consolidator: eYo.Consolidator.Parameter
   }
@@ -305,18 +305,17 @@ eYo.DelegateSvg.List.makeSubclass('parameter_list', {
 
 /**
  * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var ws = this.workspace
   var e8r = this.inputEnumerator()
   var F = (modifier, flags, msg) => {
     var y
     eYo.Events.disableWrap(() => {
-      y = eYo.DelegateSvg.newComplete(this, eYo.T3.Expr.identifier)
+      y = eYo.Delegate.newComplete(this, eYo.T3.Expr.identifier)
       y.changeWrap(
         function() { // `this` is `y`
           this.modifier_p = modifier
@@ -337,7 +336,7 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
           mgr.addInsertChild(mgr.newMenuItem(
             content,
             () => {
-              var y = eYo.DelegateSvg.newComplete(this, eYo.T3.Expr.identifier)
+              var y = eYo.Delegate.newComplete(this, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(() => { // `this` is catched
                 y.changeWrap(
                   function () { // `this` is `y`
@@ -363,22 +362,22 @@ eYo.DelegateSvg.Expr.parameter_list.prototype.populateContextMenuFirst_ = functi
   F('*', 0, '*…')
   F('**', 0, '**…')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Delegate.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
 /**
- * Class for a DelegateSvg, lambda_expr and lambda_expr_nocond block.
+ * Class for a Delegate, lambda_expr and lambda_expr_nocond block.
  * The only difference between lambda_expr and lambda_expr_nocond comes
  * from the type of the expression. We choose to gather the two blocks
  * and just change the check array depending on the type of the connected
  * expression. Whenever one of the connections connects or disconnects,
  * the checking policy changes accordingly. See the `updateLambdaCheck`
  * method of the connection's delegate.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('lambda', {
+eYo.Delegate.Expr.makeSubclass('lambda', {
   slots: {
     parameters: {
       order: 1,
@@ -426,8 +425,8 @@ var names = [
   'lambda_expr_nocond'
 ]
 names.forEach((key) => {
-  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.lambda
-  eYo.DelegateSvg.Manager.register(key)
+  eYo.Delegate.Expr[key] = eYo.Delegate.Expr.lambda
+  eYo.Delegate.Manager.register(key)
 })
 
 /**
@@ -439,7 +438,7 @@ eYo.Magnet.prototype.consolidateType = function () {
   var b_eyo = this.b_eyo
   var m4tOut = b_eyo.magnets.output
   var input = b_eyo.getInput(eYo.Key.EXPRESSION)
-  var m4tIn = input.eyo.magnet
+  var m4tIn = input.magnet
   var nocond_only_out = false
   var target = m4tOut.target
   if (target) {
@@ -473,7 +472,7 @@ eYo.Magnet.prototype.consolidateType = function () {
     (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
 }
 
-eYo.DelegateSvg.Lambda.T3s = [
+eYo.Delegate.Lambda.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda

@@ -52,7 +52,6 @@ eYo.setup = (() => {
   var i11rsHead = []
   var i11rsTail = []
   var me = (workspace) => {
-    eYo.Session.workspace = workspace
     i11rsHead.forEach(i11r => i11r())
     i11rsHead = undefined
     i11rsTail.reverse().forEach(i11r => i11r())

@@ -127,11 +127,6 @@ eYo.Slot.prototype.dispose = function () {
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
-  block: {
-    get () {
-      return this.owner.block_
-    }
-  },
   input: {
     get () {
       return this.input_
@@ -144,7 +139,7 @@ Object.defineProperties(eYo.Slot.prototype, {
         }
       }
       if ((this.input_ = newValue)) {
-        newValue.eyo.slot = this
+        newValue.slot = this
         var m4t = this.magnet
         if (m4t) {
           m4t.source = m4t.slot = this
@@ -166,31 +161,15 @@ Object.defineProperties(eYo.Slot.prototype, {
       }
     }
   },
-  inputType: {
-    get () {
-      return this.input && this.input.type
-    }
-  },
-  connection: {
-    get () {
-      return this.input && this.input.connection
-    }
-  },
   magnet: {
     get () {
-      var c8n = this.connection
-      return c8n && c8n.eyo
+      return this.input.magnet
     }
   },
   c_eyo: {
     get () {
-      console.error("BREK HERE")
+      console.error("BREAK HERE")
       throw "INCONSISTANCY"
-    }
-  },
-  sourceBlock_: {
-    get () {
-      return this.owner.block_
     }
   },
   ui: {
@@ -255,8 +234,8 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   t_eyo: {
     get () {
-      var c8n = this.connection
-      return c8n && c8n.eyo.t_eyo
+      var m4t = this.magnet
+      return m4t && m4t.t_eyo
     }
   },
   unwrappedTarget: {
@@ -272,10 +251,25 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   visible: {
     get () {
-      return this.input && this.input.isVisible()
+      return this.input && this.input.visible
     },
     set (newValue) {
-      this.input && this.input.setVisible(newValue)
+      this.input && (this.input.visible = newValue)
+    }
+  },
+  connection: {
+    get () {
+      throw "INCONSISTANCY, BREAK HERE"
+    }
+  },
+  block: {
+    get () {
+      throw "INCONSISTANCY, BREAK HERE"
+    }
+  },
+  sourceBlock_: {
+    get () {
+      throw "INCONSISTANCY, BREAK HERE"
     }
   }
 })
@@ -300,7 +294,7 @@ eYo.Slot.prototype.beReady = function () {
   var f = field => field.eyo.beReady()// installs in the owner's group, not the block group
   Object.values(this.fields).forEach(f)
   this.bindField && f(this.bindField)
-  this.input && this.input.eyo.beReady()
+  this.input && this.input.beReady()
 }
 
 /**
@@ -308,12 +302,11 @@ eYo.Slot.prototype.beReady = function () {
  * Some time we will not need these inputs.
  * It must be done only once at initialization time.
  * For edython.
- * @param {!Blockly.Input} input
+ * @param {!eYo.Input} input
  */
 eYo.Slot.prototype.setInput = function (input) {
   this.input = input
-  this.inputType = input.type
-  input.eyo.slot = this
+  input.slot = this
   var c8n = input.connection
   if (c8n) {
     var eyo = c8n.eyo
@@ -345,7 +338,7 @@ eYo.Slot.prototype.getBlock = function () {
 /**
  * Whether the input has a connection.
  * For edython.
- * @param {!Blockly.Input} workspace The block's workspace.
+ * @param {!eYo.Input} workspace The block's workspace.
  */
 eYo.Slot.prototype.getConnection = function () {
   return this.connection
@@ -388,7 +381,7 @@ eYo.Slot.prototype.isRequiredFromSaved = function () {
   if (t_eyo) {
     if (t_eyo.wrapped_) {
       // return true if one of the inputs is connected
-      return t_eyo.inputList.some(input => !!input.eyo.target)
+      return t_eyo.inputList.some(input => !!input.target)
     }
     return true
   }
@@ -469,7 +462,7 @@ eYo.Slot.prototype.synchronize = function () {
   d.slotDisplayedUpdate(this)
 }
 
-goog.forwardDeclare('eYo.DelegateSvg.List')
+goog.forwardDeclare('eYo.Delegate.List')
 
 /**
  * Convert the slot's connected target into the given xml element.
@@ -502,7 +495,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         // wrapped blocks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped block is a list
-        if (t_eyo instanceof eYo.DelegateSvg.List) {
+        if (t_eyo instanceof eYo.Delegate.List) {
           var child = eYo.Xml.dlgtToDom(t_eyo, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
@@ -516,20 +509,14 @@ eYo.Slot.prototype.save = function (element, opt) {
       } else {
         child = eYo.Xml.dlgtToDom(t_eyo, opt)
         if (child.firstElementChild || child.hasAttributes()) {
-          if (this.inputType === Blockly.INPUT_VALUE) {
-            child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
-          } else if (this.inputType === Blockly.NEXT_STATEMENT) {
-            child.setAttribute(eYo.Xml.FLOW, this.xmlKey)
-          } else if (this.inputType === eYo.Const.RIGHT_STATEMENT) {
-            child.setAttribute(eYo.Xml.FLOW, eYo.Xml.RIGHT) // only one right statement
-          }
+          child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
           return child
         }
       }
     }
   })()
-  if (!out && this.isRequiredToModel {
+  if (!out && this.isRequiredToModel) {
     this.saveRequired(element, opt)
   }
 }
@@ -577,18 +564,14 @@ eYo.Slot.prototype.load = function (element) {
   this.setRequiredFromModel(false)
   var out
   var t_eyo = this.t_eyo
-  if (t_eyo && t_eyo.wrapped_ && !(t_eyo instanceof eYo.DelegateSvg.List)) {
+  if (t_eyo && t_eyo.wrapped_ && !(t_eyo instanceof eYo.Delegate.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(t_eyo, element)
     this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
     eYo.Do.someElementChild(element, child => {
-      if (this.inputType === eYo.Magnet.INPUT) {
-        var attribute = child.getAttribute(eYo.Xml.SLOT)
-      } else if (this.inputType === eYo.Magnet.FOOT || this.inputType === eYo.Magnet.RIGHT) {
-        attribute = child.getAttribute(eYo.Xml.FLOW)
-      }
+      var attribute = child.getAttribute(eYo.Xml.SLOT)
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
@@ -600,21 +583,21 @@ eYo.Slot.prototype.load = function (element) {
             t_eyo = this.t_eyo
           }
           if (t_eyo) {
-            if (t_eyo instanceof eYo.DelegateSvg.List) {
+            if (t_eyo instanceof eYo.Delegate.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
                 var input = t_eyo.getInput(name)
                 if (input) {
-                  if (input.eyo.magnet) {
-                    var grand_t_eyo = input.eyo.target
+                  if (input.magnet) {
+                    var grand_t_eyo = input.target
                     if ((grand_t_eyo)) {
                       eYo.Xml.fromDom(grand_t_eyo, grandChild)
                       this.recover.dontResit(grandChild)
                     } else if ((grand_t_eyo = eYo.Xml.domToDlgt(grandChild, this.owner))) {
                       var t_m4t = grand_t_eyo.magnets.output
-                      if (t_m4t && t_m4t.checkType_(input.eyo.magnet, true)) {
-                        t_m4t.connect(input.eyo.magnet)
+                      if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
+                        t_m4t.connect(input.magnet)
                         this.setRequiredFromModel(true)
                       }
                       this.recover.dontResit(grandChild)
@@ -754,7 +737,7 @@ eYo.Slot.prototype.listConnect = function (dm, key) {
   }
   var input = t_eyo.getInput(key)
   if (input) {
-    var m4t = input.eyo.magnet
+    var m4t = input.magnet
     if (m4t) {
       var other = (dm.magnets && dm.magnets.output) || dm
       return m4t.connect(other)

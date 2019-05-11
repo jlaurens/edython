@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.String')
+goog.provide('eYo.Delegate.String')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -193,6 +193,6 @@ goog.mixin(eYo.Tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })
 
-eYo.DelegateSvg.String.T3s = [
+eYo.Delegate.String.T3s = [
   eYo.T3.Expr.string__const
 ]

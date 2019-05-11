@@ -195,7 +195,7 @@ describe('Copy/Paste', function() {
       d.block_.dispose()
     })
   })
-  var md = eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.identifier).data
+  var md = eYo.Delegate.Manager.getModel(eYo.T3.Expr.identifier).data
   var f = (k) => {
     var w = {
       holder: ['NONE', ['abc']],

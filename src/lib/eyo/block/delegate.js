@@ -49,7 +49,7 @@ goog.forwardDeclare('eYo.Magnets')
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.Delegate = function (workspace, type, opt_id, block) {
+eYo.Delegate = function (workspace, type, opt_id) {
   eYo.Delegate.superClass_.constructor.call(this)
   this.workspace = workspace
   this.baseType_ = type // readonly private property used by getType
@@ -57,7 +57,7 @@ eYo.Delegate = function (workspace, type, opt_id, block) {
   /** @type {string} */
   this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
       opt_id : Blockly.utils.genUid()
-  /** @type {!Array.<!Blockly.Input>} */
+  /** @type {!Array.<!eYo.Input>} */
   this.inputList = []
   /**
    * @type {!Array.<!Blockly.Block>}
@@ -68,6 +68,7 @@ eYo.Delegate = function (workspace, type, opt_id, block) {
   this.errors = Object.create(null) // just a hash
   this.block_ = block
   this.span_ = new eYo.Span(this)
+  this.xy_ = new eYo.Where(0, 0)
   block.eyo = this
   this.change = {
     // the count is incremented each time a change occurs,
@@ -119,6 +120,7 @@ eYo.Delegate = function (workspace, type, opt_id, block) {
       this.model.init && this.model.init.call(this)
     })
   })
+  this.block_ = new eYo.Block(this)
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
 }
@@ -127,17 +129,28 @@ goog.inherits(eYo.Delegate, eYo.Helper)
 /**
  * Dispose of all the resources.
  */
-eYo.Delegate.prototype.dispose = function () {
+eYo.Delegate.prototype.dispose = function (healStack, animate) {
+  this.consolidate = this.beReady = this.render = eYo.Do.nothing
+  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
   this.span.dispose()
   this.span_ = undefined
-  this.magnets.dispose()
-  this.forEachSlot(slot => slot.dispose())
-  this.slots = undefined
-  eYo.FieldHelper.disposeFields(this)
-  this.forEachData(data => data.dispose())
-  this.data = undefined
-  this.inputList = undefined
-  this.childBlocks_ = undefined
+  eYo.Events.groupWrap(() => {
+    this.magnets.dispose()
+    this.forEachSlot(slot => slot.dispose())
+    this.slots = undefined
+    eYo.FieldHelper.disposeFields(this)
+    this.forEachData(data => data.dispose())
+    this.data = undefined
+    this.inputList = undefined
+    this.childBlocks_ = undefined
+    if (this.selected) {
+      // this block was selected, select the block below or above before deletion
+      var f = m => m && m.target
+      var m4t = f(m4ts.right) || f(m4ts.left) || f(m4ts.head) || f(m4ts.foot) || f(m4ts.output)
+    }
+    this.unplug(healStack)
+     && m4t.select()
+  })
   this.workspace = undefined
 }
 
@@ -522,10 +535,56 @@ Object.defineProperties(eYo.Delegate.prototype, {
     get () {
       return this.block_.workspace.eyo.recover
     }
-  }
+  },
+  /**
+   * Full height, in text units.
+   */
+  fullHeight: {
+    get () {
+      return this.full_height_width__.height
+    }
+  },
+  /**
+   * Full width, in text units.
+   */
+  fullWidth: {
+    get () {
+      return this.full_height_width__.height
+    }
+  },
+  /**
+   * cached size of the receiver, in text units.
+   * Stores the height, minWidth and width.
+   * The latter includes the right padding.
+   * It is updated in the right alignment method.
+   */
+  size: {
+    get: eYo.Decorate.onChangeCount('full_HW__', function() {
+      var height = this.span.height
+      var minWidth = this.span.width
+      var width = minWidth
+      // Recursively add size of subsequent blocks.
+      var nn, HW
+      if ((nn = this.right)) {
+        minWidth += nn.size.minWidth
+        width += nn.size.width
+        // The height of the line is managed while rendering.
+      } else {
+        width += this.span.right
+      }
+      if ((nn = n.foot)) {
+        height += nn.size.height // NO Height of tab.
+        var w = nn.size.width
+        if (width < w) {
+          width = minWidth = w
+        } else if (minWidth < w) {
+          minWidth = w
+        }
+      }
+      return {height: height, width: width, minWidth: minWidth}
+    })
+  },
 })
-
-
 /**
  * Get the block.
  * For edython.
@@ -586,6 +645,9 @@ eYo.Delegate.prototype.changeEnd = function () {
     this.incrementChangeCount()
     this.consolidate()
     this.didChangeEnd && this.didChangeEnd(this)
+  }
+  if (!this.change.level) {
+    this.render()
   }
   return this.change.level
 }
@@ -769,7 +831,7 @@ eYo.Delegate.prototype.doConsolidate = function (deep, force) {
   this.consolidateSlots(deep, force)
   this.consolidateInputs(deep, force)
   // then the out state
-  this.consolidateConnections()
+  this.consolidateMagnets()
   return true
 }
 
@@ -976,27 +1038,6 @@ eYo.Delegate.Manager = (() => {
             }
           )
         }
-        if (!(key_b in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_b,
-            {
-              get () {
-                var s = this.slots[k] // early call
-                if (s) {
-                  var c8n = s.connection
-                  if (c8n) {
-                    if (c8n.eyo.promised_) {
-                      c8n.eyo.completePromise()
-                    }
-                    return s.targetBlock()
-                  }
-                }
-              }
-            }
-          )
-        }
         if (!(key_t in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
           Object.defineProperty(
@@ -1004,8 +1045,28 @@ eYo.Delegate.Manager = (() => {
             key_t,
             {
               get () {
-                var b = this[key_b]
-                return b && b.eyo
+                var s = this.slots[k] // early call
+                if (s) {
+                  var m4t = s.magnet
+                  if (m4t) {
+                    if (m4t.promised_) {
+                      m4t.completePromise()
+                    }
+                    return s.t_eyo
+                  }
+                }
+              }
+            }
+          )
+        }
+        if (!(key_b in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_b,
+            {
+              get () {
+                throw "NO SUCH KEY, BREAK HERE"
               }
             }
           )
@@ -1025,8 +1086,8 @@ eYo.Delegate.Manager = (() => {
       (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
       parent
-      var delegateC9r = owner[key] = function (workspace, type, opt_id, block) {
-        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id, block)
+      var delegateC9r = owner[key] = function (workspace, type, opt_id) {
+        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
       }
       goog.inherits(delegateC9r, parent)
       me.prepareDelegate(delegateC9r, key)
@@ -1752,7 +1813,7 @@ eYo.Delegate.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
     // Consolidate the child blocks that are still connected
     this.forEachInput(input => {
-      input.eyo.consolidate(deep, force)
+      input.consolidate(deep, force)
     })
   }
 }
@@ -1792,7 +1853,7 @@ eYo.Delegate.prototype.consolidateType = function () {
  * but that may not be always the case.
  * Sent by `doConsolidate` and various `isChanging` methods.
  */
-eYo.Delegate.prototype.consolidateConnections = function () {
+eYo.Delegate.prototype.consolidateMagnets = function () {
   this.completeWrap_()
   var f = m4t => {
     m4t && m4t.updateCheck()
@@ -1827,14 +1888,6 @@ eYo.Delegate.prototype.init = function () {
 */
 eYo.Delegate.prototype.deinit = function () {
   this.model.deinit && this.model.deinit.call(this)
-}
-
-/**
- * The default implementation does nothing.
- * @param {!Blockly.Block} block
- * @param {boolean} hidden True if connections are hidden.
- */
-eYo.Delegate.prototype.setConnectionsHidden = function (hidden) {
 }
 
 /**
@@ -1873,7 +1926,7 @@ eYo.Delegate.prototype.getWrappedDescendants = function () {
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * This is the only way to create a wrapped block.
- * @return {!Blockly.Input} The input object created.
+ * @return {!eYo.Input} The input object created.
  */
 eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
   goog.asserts.assert(prototypeName, 'Missing prototypeName, no block to seal')
@@ -1899,7 +1952,7 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.  Should be unique to this block.
  * This is the only way to create a wrapped block.
- * @return {!Blockly.Input} The input object created.
+ * @return {!eYo.Input} The input object created.
  */
 eYo.Delegate.prototype.appendPromiseValueInput = function (name, prototypeName, optional, hidden) {
   var input = this.appendWrapValueInput(name, prototypeName, optional, hidden)
@@ -1939,7 +1992,10 @@ eYo.Delegate.prototype.completeWrap_ = function () {
  * @private
  */
 eYo.Delegate.prototype.duringBlockWrapped = function () {
+  goog.asserts.assert(!this.uiHasSelect, 'Deselect block before')
+  this.ui && this.ui.updateBlockWrapped()
 }
+
 
 /**
  * The default implementation is false.
@@ -1955,6 +2011,7 @@ eYo.Delegate.prototype.canUnwrap = function () {
  * @private
  */
 eYo.Delegate.prototype.duringBlockUnwrapped = function () {
+  this.ui && this.ui.updateBlockWrapped()
 }
 
 /**
@@ -2066,35 +2123,9 @@ eYo.Delegate.prototype.canReplaceDlgt = function (other) {
 }
 
 /**
- * Remove an input from this block.
- * @param {!Blockly.Block} block The owner of the delegate.
- * @param {!Blockly.Input} input the input.
- * @param {boolean=} opt_quiet True to prevent error if input is not present in block.
- * @throws {goog.asserts.AssertionError} if the input is not present and
- *     opt_quiet is not true.
- */
-eYo.Delegate.prototype.removeInput = function (input, opt_quiet) {
-  var block = this.block_
-  if (input.block === block) {
-    if (input.connection && input.connection.isConnected()) {
-      input.connection.setShadowDom(null)
-      block = input.eyo.target
-      block.unplug()
-    }
-    goog.array.remove(this.inputList, input)
-    input.dispose()
-    return
-  }
-  if (!opt_quiet) {
-    goog.asserts.fail('Inconsistent data.')
-  }
-}
-
-/**
  * Returns the total number of code lines for that node and the node below.
  * One atomic instruction is one line.
  * In terms of grammar, it counts the number of simple statements.
- * @param {!Blockly.Block} block The owner of the receiver, to be converted to python.
  * @return {Number}.
  */
 eYo.Delegate.prototype.getStatementCount = function () {
@@ -2107,7 +2138,7 @@ eYo.Delegate.prototype.getStatementCount = function () {
     var t_eyo = m4t.t_eyo
     if (t_eyo) {
       do {
-        hasActive = hasActive || (!t_eyo.block_.disabled && !t_eyo.isWhite)
+        hasActive = hasActive || (!t_eyo.disabled_ && !t_eyo.isWhite)
         n += t_eyo.getStatementCount()
       } while ((t_eyo = t_eyo.next))
     }
@@ -2134,10 +2165,9 @@ Object.defineProperty(eYo.Delegate.prototype, 'disabled', {
       // nothing to do the block is already in the good state
       return
     }
-
     eYo.Events.groupWrap(() => {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-        this, 'disabled', null, this.disabled_, yorn))
+      eYo.Events.fireDlgtChange(
+        this, 'disabled', null, this.disabled_, yorn)
       var previous, next
       if (yorn) {
         // Does it break next connections
@@ -2266,10 +2296,10 @@ Object.defineProperty(eYo.Delegate.prototype, 'incog', {
     this.incog_ = newValue
     this.forEachSlot(slot => slot.incog = newValue) // with incog validator
     var m4t = this.magnets.suite
-    m4t && m4t..incog = newValue
+    m4t && (m4t.incog = newValue)
     this.inputList.forEach(input => {
-      if (!input.eyo.slot) {
-        var m4t = input.eyo.magnet
+      if (!input.slot) {
+        var m4t = input.magnet
         m4t && (m4t.incog = newValue) // without incog validator
       }
     })
@@ -2338,7 +2368,7 @@ eYo.Delegate.prototype.forEachInputConnection = function (helper) {
  */
 eYo.Delegate.prototype.someInputMagnet = function (helper) {
   return this.someInput(input => {
-    var m4t = input.eyo.magnet
+    var m4t = input.magnet
     return m4t && helper(m4t)
   })
 }
@@ -2410,7 +2440,7 @@ eYo.Delegate.prototype.footConnect = function (dlgt) {
  * @return {?eYo.Delegate}  The connected Dlgt, if any.
  */
 eYo.Delegate.prototype.connectLast = function (dmt) {
-  var other = (dmt.magnets && dmt.magnets.output) || (dmt.connection && dmt) || eYo.DelegateSvg.newComplete(this, dmt).magnets.output
+  var other = (dmt.magnets && dmt.magnets.output) || (dmt.connection && dmt) || eYo.Delegate.newComplete(this, dmt).magnets.output
   if (other.connection) {
     var m4t = this.lastInput.eyo.magnet
     if (m4t.checkType_(other)) {
@@ -2427,7 +2457,80 @@ eYo.Delegate.prototype.connectLast = function (dmt) {
  * @param {!Boolean} force  flag
  */
 eYo.Delegate.prototype.scrollToVisible = function (force) {
-  if (!this.inVisibleArea() || force) {
+  if (!this.inVisibleArea || force) {
     this.workspace.eyo.scrollBlockTopLeft(this.id)
   }
 }
+/**
+ * Returns connections originating from this block.
+ * @param {boolean} all If true, return all connections even hidden ones.
+ *     Otherwise, for a non-rendered block return an empty list, and for a
+ *     collapsed block don't return inputs connections.
+ * @return {!Array.<!Blockly.Connection>} Array of connections.
+ * @package
+ */
+eYo.Delegate.prototype.getConnections_ = function(all) {
+  var myConnections = [];
+  if (all || this.rendered) {
+    Object.values(this.magnets).forEach(m4t => myConnections.push(m4t.connection))
+    if (all || !this.collapsed_) {
+      this.inputList.forEach(input => myConnections.push(input.magnet.connection))
+    }
+  }
+  return myConnections
+}
+
+
+/**
+ * Whether the receiver is movable.
+ */
+eYo.Delegate.prototype.isMovable = function() {
+  return !this.wrapped_ && this.movable_ &&
+  !(this.workspace && this.workspace.options.readOnly)
+}
+
+/**
+ * Show the context menu for this block.
+ * @param {!Event} e Mouse event.
+ * @private
+ */
+eYo.Delegate.prototype.showContextMenu_ = function (e) {
+  // this part is copied as is from the parent's implementation. Is it relevant ?
+  if (this.workspace.options.readOnly || !this.contextMenu) {
+    return
+  }
+  eYo.MenuManager.shared().showMenu(this, e)
+}
+
+/**
+ * Set whether the receiver is collapsed or not.
+ * @param {boolean} collapsed True if collapsed.
+ */
+eYo.Delegate.prototype.setCollapsed = function (collapsed) {
+  this.collapsed = collapsed
+}
+
+Object.defineProperties(eYo.Delegate, {
+  /**
+   * Move a block by a relative offset in workspace coordinates.
+   * @param {number} dx Horizontal offset in workspace units.
+   * @param {number} dy Vertical offset in workspace units.
+   */
+  moveByXY: {
+    get() {
+      return this.ui.moveByXY
+    }
+  },
+  /**
+   * Move a block by a relative offset in text units.
+   * @param {number} dc Horizontal offset in text unit.
+   * @param {number} dl Vertical offset in text unit.
+   */
+  moveBy: {
+    get () {
+      return (dc, dl) => {
+        this.ui.moveByXY(dc * eYo.Unit.x, dl * eYo.Unit.y)
+      }
+    }
+  }
+})

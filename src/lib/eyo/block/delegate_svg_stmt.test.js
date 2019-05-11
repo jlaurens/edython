@@ -3,7 +3,7 @@ var assert = chai.assert
 var g = eYo.GMR._PyParser_Grammar
 
 var test_connection_db = () => {
-  for (var i = 1; i < eYo.Const.RIGHT_STATEMENT; i++) {
+  for (var i = 1; i < eYo.Magnet.RIGHT; i++) {
     chai.assert(Blockly.mainWorkspace.connectionDBList[i].length === 0, `Unexpected connection ${i}`)
   }
 }
@@ -96,7 +96,7 @@ describe('comment statement', function () {
     d.comment_p = 'abc'
     d1.comment_p = 'cde'
     d1.moveByXY(100,20)
-    eYo.Selected.connection = d1.magnets.right.connection
+    d1.magnets.right.select()
     // d1.block_.dispose()
     // d.block_.dispose()
     eYo.Test.tearItDown()

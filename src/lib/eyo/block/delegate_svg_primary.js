@@ -6,19 +6,19 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython, primary blocks.
+ * @fileoverview Block delegates for edython, primary blocks.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Primary')
+goog.provide('eYo.Delegate.Primary')
 
 goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Primary')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Delegate.Stmt')
 goog.require('eYo.Protocol.Register')
 goog.require('goog.dom');
 
@@ -88,13 +88,13 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!Blockly.Block} block, owner or the receiver.
+ * @param {!eYo.Delegate} dlgt, owner or the receiver.
  */
-eYo.Consolidator.List.Target.prototype.getIO = function (block) {
-  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, block)
+eYo.Consolidator.List.Target.prototype.getIO = function (dlgt) {
+  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, dlgt)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = undefined
-  io.subtype = block.eyo.subtype
+  io.subtype = dlgt.subtype
   return io
 }
 
@@ -117,11 +117,11 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
    * @param {Object} io, parameters....
    */
   var getCheckType = (io) => {
-    var c8n = io.c8n.targetConnection
-    if (!c8n) {
+    var m4t = io.m4t.target
+    if (!m4t) {
       return Type.UNCONNECTED
     }
-    var check = c8n.check_
+    var check = m4t.check_
     if (check) {
       if (goog.array.contains(check, eYo.T3.Expr.target_star)) {
         return Type.STARRED
@@ -142,12 +142,12 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     io.first_starred = io.last = -1
     io.annotatedInput = undefined
     this.setupIO(io, 0)
-    while (io.eyo) {
-      if ((io.eyo.parameter_type_ = getCheckType(io)) === Type.STARRED) {
+    while (io.input) {
+      if ((io.input.parameter_type_ = getCheckType(io)) === Type.STARRED) {
         if (io.first_starred < 0) {
           io.first_starred = io.i
         }
-      } else if (io.eyo.parameter_type_ === Type.OTHER) {
+      } else if (io.input.parameter_type_ === Type.OTHER) {
         io.last = io.i
       }
       this.nextInput(io)
@@ -159,10 +159,10 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     if (io.first_starred >= 0) {
       // ther must be only one starred
       this.setupIO(io, io.first_starred + 2)
-      while (io.eyo) {
-        if (io.eyo.parameter_type_ === Type.STARRED) {
+      while (io.input) {
+        if (io.input.parameter_type_ === Type.STARRED) {
           // disconnect this
-          io.c8n.disconnect()
+          io.m4t.break()
           // remove that input and the next one
           this.disposeAtI(io, io.i)
           this.disposeAtI(io, io.i)
@@ -227,13 +227,13 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
     if (!check) {
       console.error('NO CHECK, BREAK HERE TO DEBUG', f(io))
     }
-    var c8n = io.c8n.targetConnection
-    if (c8n) {
+    var m4t = io.m4t.target
+    if (m4t) {
       // will this connection be lost because of the check change?
-      if (c8n.check_.some(t => check.indexOf(t) >= 0)) {
+      if (m4t.check_.some(t => check.indexOf(t) >= 0)) {
         //
       } else {
-        console.error('THE CONNECTION WILL BE LOST, BREAK HERE TO DEBUG', c8n.check_, f(io))
+        console.error('THE CONNECTION WILL BE LOST, BREAK HERE TO DEBUG', m4t.check_, f(io))
       }
     }
     return check
@@ -249,16 +249,16 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
   eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
-      io.c8n.eyo.incog = io.annotatedInput && io.annotatedInput !== io.input // will ensure that there is only one annotated input
+      io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.input // will ensure that there is only one annotated input
     } while (this.nextInput(io))
   }
 }
 
 
 /**
- * Class for a DelegateSvg, target_list block.
+ * Class for a Delegate, target_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * This block appears in
  * - assignment's target slot, types:
  *    - expression_stmt
@@ -300,7 +300,7 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  * All the types involved are
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('target_list', {
+eYo.Delegate.List.makeSubclass('target_list', {
   list: {
     consolidator: eYo.Consolidator.List.Target
   }
@@ -310,7 +310,7 @@ eYo.DelegateSvg.List.makeSubclass('target_list', {
  * The subtype is the type of the enclosing block.
  * @return {String} The subtype of the receiver's block.
  */
-eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
+eYo.Delegate.Expr.target_list.prototype.getSubtype = function () {
   var parent = this.parent
   return parent && parent.type
 }
@@ -320,12 +320,12 @@ eYo.DelegateSvg.Expr.target_list.prototype.getSubtype = function () {
  * @param {!Blockly.Connection} blockConnection
  * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
-eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
+eYo.Delegate.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isInput) {
     var other = false
     if (this.inputList.some(input => {
-      if (input.eyo.magnet) {
-        var t_eyo = input.eyo.magnet.t_eyo
+      if (input.magnet) {
+        var t_eyo = input.magnet.t_eyo
         if (t_eyo) {
           other= true
           if ([eYo.T3.Expr.identifier_annotated,
@@ -349,7 +349,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTa
       (x = x.target_s) && x.bindField.setVisible(true)
     }
   }
-  eYo.DelegateSvg.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.Delegate.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -359,8 +359,8 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTa
  * @param {!eYo.Magnet} oldTargetM4t.
  * @param {!eYo.Magnet} targetOldM4t
  */
-eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.DelegateSvg.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.Delegate.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.Delegate.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the block is NOT consolidated
   if (m4t.isInput) {
     var parent = this.parent
@@ -392,7 +392,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (m4t, oldTarge
 }
 
 /**
- * Class for a DelegateSvg, primary.
+ * Class for a Delegate, primary.
  * The primary block is a foundamental piece of code.
  * It aims to answer the mutation problem on primary
  * and similar python types.
@@ -529,7 +529,7 @@ eYo.DelegateSvg.Expr.target_list.prototype.XdidConnect = function (m4t, oldTarge
 
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('primary', {
+eYo.Delegate.Expr.makeSubclass('primary', {
   xml: {
     types: [
       eYo.T3.Expr.identifier,
@@ -789,7 +789,7 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       init: eYo.Key.NONE,
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.owner.consolidateType()
-        this.owner.consolidateConnections()
+        this.owner.consolidateMagnets()
         this.duringChange(oldValue, newValue)
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -844,11 +844,11 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         if (b) {
           b.eyo.createConsolidator(true) // unique is special
         }
-        O.n_ary_s..incog = newValue !== eYo.Key.CALL_EXPR
+        O.n_ary_s.incog = newValue !== eYo.Key.CALL_EXPR
         if (!O.n_ary_s.incog && (b = O.n_ary_b)) {
           b.eyo.createConsolidator(true)
         }
-        O.slicing_s..incog = newValue !== eYo.Key.SLICING
+        O.slicing_s.incog = newValue !== eYo.Key.SLICING
       },
       xml: false
     },
@@ -929,9 +929,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_b
+        var target = this.owner.n_ary_t
         if (target) {
-          target.eyo.ary_p = newValue
+          target.ary_p = newValue
         }
         (newValue < this.owner.mandatory_p) && (this.owner.mandatory_p = newValue)
         if (goog.isDefAndNotNull(newValue)) {
@@ -974,9 +974,9 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_b
+        var target = this.owner.n_ary_t
         if (target) {
-          target.eyo.mandatory_p = newValue
+          target.mandatory_p = newValue
         }
         (newValue > this.owner.ary_p) && (this.owner.ary_p = newValue)
         if (goog.isDefAndNotNull(newValue)) {
@@ -1204,14 +1204,14 @@ eYo.DelegateSvg.Expr.makeSubclass('primary', {
     }
   },
   init: /** @suppress {globalThis} */ function () {
-    eYo.DelegateSvg.Expr.registerPrimary(this)
+    eYo.Delegate.Expr.registerPrimary(this)
   },
   deinit: /** @suppress {globalThis} */ function () {
-    eYo.DelegateSvg.Expr.unregisterPrimary(this)
+    eYo.Delegate.Expr.unregisterPrimary(this)
   },
 }, true)
 
-eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delegate) {
+eYo.Do.addProtocol(eYo.Delegate.Expr, 'Register', 'primary', function (delegate) {
   return !delegate.block_.isInFlyout
 })
 
@@ -1238,8 +1238,8 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delega
   'assignment_chain',
   'named_expr'
 ].forEach(k => {
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.primary
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Expr[k] = eYo.Delegate.Expr.primary
+  eYo.Delegate.Manager.register(k)
 })
 
 /**
@@ -1250,12 +1250,12 @@ eYo.Do.addProtocol(eYo.DelegateSvg.Expr, 'Register', 'primary', function (delega
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-eYo.DelegateSvg.Expr.primary.prototype.init = function () {
-  eYo.DelegateSvg.Expr.primary.superClass_.init.call(this)
+eYo.Delegate.Expr.primary.prototype.init = function () {
+  eYo.Delegate.Expr.primary.superClass_.init.call(this)
   this.profile_ = undefined
 }
 
-Object.defineProperties( eYo.DelegateSvg.Expr.primary.prototype, {
+Object.defineProperties( eYo.Delegate.Expr.primary.prototype, {
   profile_p : {
     get () {
       var p5e = this.getProfile()
@@ -1278,7 +1278,7 @@ Object.defineProperties( eYo.DelegateSvg.Expr.primary.prototype, {
 /**
  * updateProfile.
  */
-eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
+eYo.Delegate.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
@@ -1302,7 +1302,7 @@ eYo.DelegateSvg.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_me
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
+eYo.Delegate.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1367,10 +1367,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.identifier = p5e.name
         ans.module = p5e.holder
       }
-      var target
       if (ans.dotted === 1) {
-        if ((target = this.holder_b)) {
-          t_eyo = target.eyo
+        if ((t_eyo = this.holder_t)) {
           if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
             type = eYo.T3.Expr.identifier
           } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
@@ -1442,8 +1440,8 @@ eYo.DelegateSvg.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
  * After initialization, this should be called whenever
  * the block type has changed.
  */
-eYo.DelegateSvg.Expr.primary.prototype.consolidateConnections = function () {
-  eYo.DelegateSvg.Expr.primary.superClass_.consolidateConnections.call(this)
+eYo.Delegate.Expr.primary.prototype.consolidateMagnets = function () {
+  eYo.Delegate.Expr.primary.superClass_.consolidateMagnets.call(this)
   this.target_s.connection.setHidden(this.variant_p === eYo.Key.NONE && this.dotted_p === 0)
 }
 
@@ -1452,7 +1450,7 @@ eYo.DelegateSvg.Expr.primary.prototype.consolidateConnections = function () {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
+eYo.Delegate.Expr.primary.prototype.getBaseType = function () {
   var check = this.getOutCheck()
   if (!check.length) {
     console.error('BIG PROBLEM', this.getOutCheck())
@@ -1467,7 +1465,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getBaseType = function () {
  * getOutCheck.
  * The check_ array of the output connection.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
+eYo.Delegate.Expr.primary.prototype.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
@@ -1509,7 +1507,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
       eYo.T3.Expr.Check.slice_only = eYo.T3.Expr.Check.slice_list.filter(i => eYo.T3.Expr.Check.expression.indexOf(i) < 0)
     }
     if (this.someInput(input => {
-      var t = input.eyo.t_eyo
+      var t = input.t_eyo
       return t && t.checkOutputType(eYo.T3.Expr.Check.slice_only)
     })) {
       return named()
@@ -1770,7 +1768,7 @@ eYo.DelegateSvg.Expr.primary.prototype.getOutCheck = function () {
  * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
+eYo.Delegate.Expr.primary.prototype.getSubtype = function () {
   this.getType()
   return this.subtype_p
 }
@@ -1781,10 +1779,10 @@ eYo.DelegateSvg.Expr.primary.prototype.getSubtype = function () {
  * @param {!Block} block
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
-  var input = eYo.DelegateSvg.Expr.primary.superClass_.getInput.call(this, name)
+eYo.Delegate.Expr.primary.prototype.getInput = function (name) {
+  var input = eYo.Delegate.Expr.primary.superClass_.getInput.call(this, name)
   if (!input) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1804,20 +1802,20 @@ eYo.DelegateSvg.Expr.primary.prototype.getInput = function (name) {
 }
 
 /**
- * Class for a DelegateSvg, base call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, base call statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('pre_call_stmt', {
+eYo.Delegate.Stmt.makeSubclass('pre_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.DelegateSvg.Stmt)
+}, eYo.Delegate.Stmt)
 
 /**
- * Class for a DelegateSvg, base call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, base call statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
+eYo.Delegate.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
   data: {
     variant: {
       init: eYo.Key.CALL_EXPR,
@@ -1826,9 +1824,9 @@ eYo.DelegateSvg.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
       }
     }
   }
-}, eYo.DelegateSvg.Stmt, true)
+}, eYo.Delegate.Stmt, true)
 
-Object.defineProperties( eYo.DelegateSvg.Stmt.call_stmt.prototype, {
+Object.defineProperties( eYo.Delegate.Stmt.call_stmt.prototype, {
   profile_p : {
     get () {
       return this.profile_ === this.getProfile()
@@ -1848,17 +1846,17 @@ Object.defineProperties( eYo.DelegateSvg.Stmt.call_stmt.prototype, {
 })
 
 /**
- * Class for a DelegateSvg, call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, call statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('base_call_stmt', {
+eYo.Delegate.Stmt.makeSubclass('base_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.DelegateSvg.Stmt, true)
+}, eYo.Delegate.Stmt, true)
 
-eYo.DelegateSvg.Stmt.base_call_stmt.prototype.updateProfile = eYo.DelegateSvg.Expr.primary.prototype.updateProfile
+eYo.Delegate.Stmt.base_call_stmt.prototype.updateProfile = eYo.Delegate.Expr.primary.prototype.updateProfile
 
-eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.primary.prototype.getProfile
+eYo.Delegate.Stmt.base_call_stmt.prototype.getProfile = eYo.Delegate.Expr.primary.prototype.getProfile
 
 
 /**
@@ -1869,12 +1867,12 @@ eYo.DelegateSvg.Stmt.base_call_stmt.prototype.getProfile = eYo.DelegateSvg.Expr.
  * @param {!Blockly.Block} block to be initialized.
  * For subclassers eventually
  */
-eYo.DelegateSvg.Stmt.base_call_stmt.prototype.init = function () {
-  eYo.DelegateSvg.Stmt.base_call_stmt.superClass_.init.call(this)
+eYo.Delegate.Stmt.base_call_stmt.prototype.init = function () {
+  eYo.Delegate.Stmt.base_call_stmt.superClass_.init.call(this)
   this.profile_p = undefined
 }
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.base_call_stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.base_call_stmt.prototype, {
   profile_p: {
     get () {
       return this.profile_ === this.getProfile()
@@ -1894,14 +1892,14 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.base_call_stmt.prototype, {
 })
 
 /**
- * Class for a DelegateSvg, call statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, call statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.base_call_stmt.makeSubclass('call_stmt', {
+eYo.Delegate.Stmt.base_call_stmt.makeSubclass('call_stmt', {
 }, true)
 
-eYo.DelegateSvg.Expr.primary.T3s = [
+eYo.Delegate.Expr.primary.T3s = [
   eYo.T3.Expr.primary,
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.attributeref,

@@ -19,7 +19,7 @@ goog.require('eYo.FlyoutCategory');
 goog.require('eYo.Style');
 goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
-goog.require('eYo.DelegateSvg');
+goog.require('eYo.Delegate');
 goog.require('eYo.FlyoutToolbar');
 goog.require('eYo.Tooltip');
 goog.require('eYo.MenuRenderer');
@@ -122,12 +122,12 @@ eYo.Flyout.prototype.createDom = function(tagName) {
     <g class="eyo-workspace">...</g>
   </svg>
   */
-  this.svgGroup_ = Blockly.utils.createSvgElement(tagName,
+  this.svgGroup_ = eYo.Driver.Svg.newElement(tagName,
       {
         class: 'eyo-flyout',
         style: 'display: none'
       }, null);
-  this.svgBackground_ = Blockly.utils.createSvgElement('path', {
+  this.svgBackground_ = eYo.Driver.Svg.newElement('path', {
     class: 'eyo-flyout-background'
   }, this.svgGroup_)
   // Bad design: code reuse: options
@@ -240,7 +240,7 @@ eYo.Flyout.prototype.show = function(model) {
       } else {
         var createOneBlock = (xml) => {
           try {
-            var eyo = eYo.DelegateSvg.newReady(this.workspace_, xml)
+            var eyo = eYo.Delegate.newReady(this.workspace_, xml)
             contents.push({type: 'block', block: block.eyo})
             eyo.render()
             eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)

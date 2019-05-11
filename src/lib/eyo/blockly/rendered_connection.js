@@ -66,52 +66,7 @@ Blockly.RenderedConnection.prototype.highlight = (() => {
  * @suppress {accessControls}
  */
 Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function (staticConnection) {
-  if (!this.sourceBlock_.workspace || this.sourceBlock_.workspace.isDragging()) {
-    // Don't move blocks around while the user is doing the same
-    // or when they have been removed.
-    return
-  }
-  // Move the root block.
-  var rootBlock = this.sourceBlock_.getRootBlock()
-  if (rootBlock.isInFlyout) {
-    // Don't move blocks around in a flyout.
-    return
-  }
-  if (!rootBlock.workspace) {
-    // Well we are in the process of deleting a block.
-    // Beware of undo redo management.
-    return
-  }
-  var reverse = false
-  if (!rootBlock.isMovable()) {
-    // Can't bump an uneditable block away.
-    // Check to see if the other block is movable.
-    rootBlock = staticConnection.getSourceBlock().getRootBlock()
-    if (!rootBlock.workspace || !rootBlock.isMovable()) {
-      return
-    }
-    // Swap the connections and move the 'static' connection instead.
-    staticConnection = this
-    reverse = true
-  }
-  // Raise it to the top for extra visibility.
-  var selected = eYo.Selected.block === rootBlock
-  selected || rootBlock.addSelect()
-  var dx = (staticConnection.x_ + Blockly.SNAP_RADIUS) - this.x_
-  var dy = (staticConnection.y_ + Blockly.SNAP_RADIUS) - this.y_
-  if (reverse) {
-    // When reversing a bump due to an uneditable block, bump up.
-    dy = -dy
-  }
-  // Added by JL, I don't remember why...
-  if (staticConnection.isConnected()) {
-    dx += staticConnection.targetBlock().width
-  }
-  if (rootBlock.RTL) {
-    dx = -dx
-  }
-  rootBlock.eyo.moveByXY(dx, dy)
-  selected || rootBlock.removeSelect()
+  this.eyo.bumpAwayFrom_(staticConnection.eyo)
 }
 
 Object.defineProperties(eYo.Connection.prototype, {
@@ -152,7 +107,7 @@ Object.defineProperties(eYo.Connection.prototype, {
   //     return this.inDB__
   //   },
   //   set (newValue) {
-  //     if (this.type === eYo.Const.RIGHT_STATEMENT) {
+  //     if (this.type === eYo.Magnet.RIGHT) {
   //       console.error('inDB_ =', newValue)
   //     }
   //     this.inDB__ = newValue
@@ -167,34 +122,11 @@ Object.defineProperties(eYo.Connection.prototype, {
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
 eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
-}
-
-/**
- * Check if the two connections can be dragged to connect to each other.
- * A sealed connection is never allowed.
- * @param {!Blockly.Connection} candidate A nearby connection to check.
- * @return {boolean} True if the connection is allowed, false otherwise.
- */
-eYo.Connection.prototype.isConnectionAllowed = function (candidate) {
   if (this.eyo.wrapped_ || candidate.eyo.wrapped_) {
     return false
   }
   var yorn = eYo.Connection.superClass_.isConnectionAllowed.call(this,
     candidate)
-  // if (yorn) {
-  //   if (candidate.type == eYo.Const.LEFT_STATEMENT) {
-  //     if (candidate.isConnected() || this.isConnected()) {
-  //       return false;
-  //     }
-  //   }
-  //   // Blocks may be terminal, like the return statement.
-  //   if (this.type == eYo.Const.LEFT_STATEMENT &&
-  //     !this.sourceBlock_.eyo.rightConnection &&
-  //     candidate.isConnected() &&
-  //     candidate.targetBlock().eyo.rightConnection) {
-  //     return false;
-  //   }
-  // }
   return yorn
 }
 
@@ -221,75 +153,72 @@ eYo.Connection.prototype.checkType_ = function (otherConnection, force) {
   if (otherConnection.check_ && !otherConnection.check_.length) {
     return false
   }
-  var c8nA = this.eyo.blackMagnet.connection
-  var c8nB = otherConnection.eyo.blackMagnet.connection
-  if (!c8nA || !c8nB) {
+  var m4tA = this.eyo.blackMagnet
+  var m4tB = otherConnection.eyo.blackMagnet
+  if (!m4tA || !m4tB) {
     return true
   }
-  var sourceA = c8nA.getSourceBlock()
-  var sourceB = c8nB.getSourceBlock()
+  var dlgtA = m4tA.b_eyo
+  var dlgtB = m4tB.b_eyo
   // short stop if one of the connection is hidden or disabled
   // except when we try to establish a connection with a wrapped block.
   // in either case, returns true iff the connetion is aready established
-  if (c8nA.eyo.wrapped_) {
-    if (c8nA.targetConnection) {
-      return c8nA === c8nB.targetConnection
+  if (m4tA.wrapped_) {
+    if (m4tA.target) {
+      return m4tB === m4tA.target
     }
-  } else if (c8nB.eyo.wrapped_) {
-    if (c8nB.targetConnection) {
-      return c8nB === c8nA.targetConnection
+  } else if (m4tB.wrapped_) {
+    if (m4tB.target) {
+      return m4tA === m4tB.target
     }
-  } else if (!force && sourceA.eyo.isready && sourceB.eyo.isready && (c8nA.eyo.incog_ || c8nB.eyo.incog_ || c8nA.eyo.hidden_ || c8nB.eyo.hidden_)) { // the `force` argument may be useless now that there is a readiness test.
-    return c8nA === c8nB.targetConnection
+  } else if (!force && dlgtA.isready && dlgtB.isready && (m4tA.incog_ || m4tB.incog_ || m4tA.hidden_ || m4tB.hidden_)) { // the `force` argument may be useless now that there is a readiness test.
+    return m4tA === m4tB.target
   }
-  var typeA = sourceA.eyo.type // the block type is not up to date
-  var typeB = sourceB.eyo.type // the block type is not up to date
-  if (typeA.indexOf('eyo:') === 0 && typeB.indexOf('eyo:') === 0) {
-    var checkA = c8nA.check_
-    var checkB = c8nB.check_
-    if (c8nA.eyo.isInput) {
-      // c8nA is the connection of an input
-      if (sourceA.eyo.locked_) {
-        return c8nA.targetConnection === c8nB
-      }
-      if (checkA) {
-        if (checkB) {
-          if (checkA.some(t => checkB.indexOf(t) >= 0)) {
-            return true
-          }
-        } else {
-          return checkA.indexOf(typeB) >= 0
-        }
-      }
-      return true
-    } /* if (c8nA.eyo.name_) */
-    if (c8nB.eyo.isInput) {
-      // c8nB is the connection of an input
-      if (sourceB.eyo.locked_) {
-        return c8nA === c8nB.targetConnection
-      }
+  var typeA = dlgtA.type // the block type is not up to date
+  var typeB = dlgtB.type // the block type is not up to date
+  var checkA = m4tA.check_
+  var checkB = m4tB.check_
+  if (m4tA.isInput) {
+    // c8nA is the connection of an input
+    if (dlgtA.locked_) {
+      return m4tA.target === m4tB
+    }
+    if (checkA) {
       if (checkB) {
-        if (checkA) {
-          if (checkB.some(t => checkA.indexOf(t) >= 0)) {
-            return true
-          }
-        } else if (checkB.indexOf(typeA) < 0) {
-          return false
-        } else {
+        if (checkA.some(t => checkB.indexOf(t) >= 0)) {
           return true
         }
+      } else {
+        return checkA.indexOf(typeB) >= 0
       }
-      return true
-    } /* if (c8nB.eyo.name_) */
-    if (checkA && checkA.indexOf(typeB) < 0) {
-      return false
-    }
-    if (checkB && checkB.indexOf(typeA) < 0) {
-      return false
     }
     return true
+  } /* if (c8nA.eyo.name_) */
+  if (m4tB.isInput) {
+    // c8nB is the connection of an input
+    if (dlgtB.locked_) {
+      return m4tA === m4tB.target
+    }
+    if (checkB) {
+      if (checkA) {
+        if (checkB.some(t => checkA.indexOf(t) >= 0)) {
+          return true
+        }
+      } else if (checkB.indexOf(typeA) < 0) {
+        return false
+      } else {
+        return true
+      }
+    }
+    return true
+  } /* if (c8nB.eyo.name_) */
+  if (checkA && checkA.indexOf(typeB) < 0) {
+    return false
   }
-  return eYo.Connection.superClass_.checkType_.call(this, otherConnection)
+  if (checkB && checkB.indexOf(typeA) < 0) {
+    return false
+  }
+  return true
 }
 
 /**
@@ -332,7 +261,7 @@ Blockly.RenderedConnection.prototype.setHidden = function (hidden) {
   this.hidden_ = hidden
 }
 
-Object.definePorperty(Blockly.RenderedConnection.prototype, 'hidden_', {
+Object.defineProperty(Blockly.RenderedConnection.prototype, 'hidden_', {
   get () {
     return this.eyo.hidden_
   },
@@ -409,16 +338,14 @@ Blockly.RenderedConnection.prototype.distanceFrom = function(otherConnection) {
  * Sever all links to this connection (not including from the source object).
  * @suppress{accessControls}
  */
-Blockly.Connection.prototype.dispose = function () {
+Blockly.Connection.prototype.dispose = (() => {
   // this is a closure
   var dispose = Blockly.Connection.prototype.dispose
   return function () {
-    if (eYo.Selected.connection === this) {
-      eYo.Selected.connection = null
-    }
+    this.magnet.unselect()
     dispose.call(this)
   }
-} ()
+}) ()
 
 /**
  * Does the given block have one and only one connection point that will accept

@@ -64,7 +64,7 @@ eYo.Test.dlgt = (dlgt, t, str) => {
 
 eYo.Test.new_dlgt = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var dlgt = eYo.DelegateSvg.newReady(eYo.App.workspace, type)
+  var dlgt = eYo.Delegate.newReady(eYo.App.workspace, type)
   eYo.Test.dlgt(dlgt, tt, str)
   if (!headless) {
     dlgt.render()
@@ -288,7 +288,7 @@ eYo.Test.data_save = (dlgt, key, value, ignore) => {
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
   } else {
-    var d = eYo.DelegateSvg.newReady(dlgt, dom)
+    var d = eYo.Delegate.newReady(dlgt, dom)
     chai.assert(d, 'MISSING dd from dom')
     var saved = d[`${key}_p`]
     d.block_.dispose()
@@ -364,7 +364,7 @@ eYo.Test.list_connect = (dlgt, key, target, name) => {
   chai.assert(target, 'MISSING target')
   var s = dlgt.slots[key]
   chai.assert(s.listConnect(target, name), `CONNECTION FAILED`)
-  chai.assert(s.t_eyo.inputList.some(input => input.eyo.magnet && input.eyo.magnet.t_eyo === target.eyo), `MISSED CONNECTION for ${key} in ${dlgt.type}`)
+  chai.assert(s.t_eyo.inputList.some(input => input.magnet && input.magnet.t_eyo === target), `MISSED CONNECTION for ${key} in ${dlgt.type}`)
 }
 
 /**
@@ -383,7 +383,7 @@ eYo.Test.subtype = (dlgt, t) => {
 eYo.Test.copy_paste = (dlgt, opts) => {
   chai.assert(dlgt, 'MISSING d')
   var dom = eYo.Xml.dlgtToDom(dlgt)
-  var dd = eYo.DelegateSvg.newReady(dlgt, dom)
+  var dd = eYo.Delegate.newReady(dlgt, dom)
   eYo.Test.same(dlgt, dd)
   var M = eYo.Delegate.Manager.getModel(dlgt.type)
   Object.keys(M.slots).forEach(k => {
@@ -433,7 +433,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier Dlgt
  */
 eYo.Test.newIdentifier = (str) => {
-  var dlgt = eYo.DelegateSvg.newReady(eYo.App.workspace, eYo.T3.Expr.identifier)
+  var dlgt = eYo.Delegate.newReady(eYo.App.workspace, eYo.T3.Expr.identifier)
   dlgt.target_p = str
   eYo.Test.dlgt(dlgt, 'identifier')
   eYo.Test.data_value(dlgt, 'target', str)

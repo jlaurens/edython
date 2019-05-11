@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Statistics')
+goog.provide('eYo.Delegate.Statistics')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -121,6 +121,6 @@ goog.mixin(eYo.Tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
 
-eYo.DelegateSvg.Fractions.T3s = [
+eYo.Delegate.Fractions.T3s = [
   eYo.T3.Fraction
 ]

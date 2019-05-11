@@ -6,14 +6,14 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Argument')
+goog.provide('eYo.Delegate.Argument')
 
-goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.Delegate.List')
 
 /**
  * List consolidator for argument list.
@@ -47,10 +47,10 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!Blockly.Block} block, owner or the receiver.
+ * @param {!eYo.Delegate} dlgt, owner or the receiver.
  */
-eYo.Consolidator.Arguments.prototype.getIO = function (block) {
-  var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, block)
+eYo.Consolidator.Arguments.prototype.getIO = function (dlgt) {
+  var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, dlgt)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -78,7 +78,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
    * @param {Object} io, parameters....
    */
   var getCheckType = (io) => {
-    var target = io.c8n.targetConnection
+    var target = io.m4t.target
     if (!target) {
       return Type.UNCONNECTED
     }
@@ -105,8 +105,8 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     io.last_expression = io.last_positional = io.unique = -Infinity
     io.first_keyword_star_star = io.first_star_star = Infinity
     this.setupIO(io, 0)
-    while (!!io.eyo && io.unique < 0) {
-      switch ((io.eyo.parameter_type_ = getCheckType(io))) {
+    while (!!io.input && io.unique < 0) {
+      switch ((io.input.parameter_type_ = getCheckType(io))) {
       case Type.ARGUMENT:
         io.last_expression = io.i
       case Type.STAR:
@@ -205,12 +205,12 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
 })()
 
 /**
- * Class for a DelegateSvg, argument_list block.
+ * Class for a Delegate, argument_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('argument_list', {
+eYo.Delegate.List.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -252,18 +252,18 @@ eYo.DelegateSvg.List.makeSubclass('argument_list', {
 })
 
 /**
- * Class for a DelegateSvg, argument_list_comprehensive block.
+ * Class for a Delegate, argument_list_comprehensive block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
+eYo.Delegate.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }
 })
 
-eYo.DelegateSvg.Argument.T3s = [
+eYo.Delegate.Argument.T3s = [
   // eYo.T3.Expr.identifier_valued,
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive

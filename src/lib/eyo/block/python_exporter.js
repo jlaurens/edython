@@ -16,7 +16,7 @@ goog.provide('eYo.Py.Exporter')
 goog.require('eYo')
 goog.require('eYo.XRE')
 goog.require('eYo.Slot')
-goog.require('eYo.DelegateSvg')
+goog.require('eYo.Delegate')
 goog.require('eYo.FieldTextInput')
 
 /**
@@ -113,18 +113,14 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (dlgt, opt) {
   } else if (dlgt.parenth_p) {
     this.linePush('(')
   }
-  if (dlgt instanceof eYo.DelegateSvg.Expr.primary) {
+  if (dlgt instanceof eYo.Delegate.Expr.primary) {
     if (dlgt.dotted_p === 0 && dlgt.target_p === 'print' && dlgt.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (dlgt instanceof eYo.DelegateSvg.Stmt.call_stmt) {
+  } else if (dlgt instanceof eYo.Delegate.Stmt.call_stmt) {
     if (dlgt.dotted_p === 0 && dlgt.target_p === 'print') {
       this.use_print = true
     }
-  } else if (dlgt instanceof eYo.DelegateSvg.Stmt.builtin__print_stmt) {
-    this.use_print = true
-  } else if (dlgt instanceof eYo.DelegateSvg.Expr.builtin__print_expr) {
-    this.use_print = true
   }
   if (dlgt.type === eYo.T3.Stmt.import_stmt && !dlgt.disabled) {
     var importedModules = dlgt.importedModules
@@ -326,18 +322,18 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {Blockly.Input} input
+ * @param {eYo.Input} input
  * @param {Object} input
  * @private
  */
 eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
   if (input && input.isVisible()) {
-    var m4t = input.eyo.magnet
+    var m4t = input.magnet
     if (m4t) {
       var t_eyo = m4t.t_eyo
       if (t_eyo) {
         this.exportAsExpression_(t_eyo)
-      } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.eyo.bindField) {
+      } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.bindField) {
         console.error('BREAK HERE')
         this.shouldSeparateField && this.addSpace()
         this.linePush('<MISSING INPUT>')

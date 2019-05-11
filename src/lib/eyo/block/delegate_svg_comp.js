@@ -6,21 +6,21 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Comprehension')
+goog.provide('eYo.Delegate.Comprehension')
 
-goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.Delegate.List')
 
 /**
- * Class for a DelegateSvg, comprehension value block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, comprehension value block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
+eYo.Delegate.Expr.makeSubclass('comprehension', {
   data: {
     expression: {
       order: 1,
@@ -95,14 +95,14 @@ eYo.DelegateSvg.Expr.makeSubclass('comprehension', {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
+eYo.Delegate.Expr.comprehension.prototype.getBaseType = function () {
   var check = this.magnets.output.check_
   return (check && check[0]) || eYo.T3.Expr.comprehension
 }
 
 ;['dict_comprehension'].forEach(k => {
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.comprehension
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Expr[k] = eYo.Delegate.Expr.comprehension
+  eYo.Delegate.Manager.register(k)
 })
 
 /**
@@ -110,16 +110,16 @@ eYo.DelegateSvg.Expr.comprehension.prototype.getBaseType = function () {
  * For edython.
  * @return attr name
  */
-eYo.DelegateSvg.Expr.comprehension.prototype.xmlAttr = function () {
+eYo.Delegate.Expr.comprehension.prototype.xmlAttr = function () {
   return 'comprehension'
 }
 
 /**
- * Class for a DelegateSvg, comp_for block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, comp_for block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
+eYo.Delegate.Expr.makeSubclass('comp_for', {
   slots: {
     for: {
       order: 1,
@@ -140,11 +140,11 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_for', {
 }, true)
 
 /**
- * Class for a DelegateSvg, comp_if block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, comp_if block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
+eYo.Delegate.Expr.makeSubclass('comp_if', {
   slots: {
     if: {
       order: 1,
@@ -158,12 +158,12 @@ eYo.DelegateSvg.Expr.makeSubclass('comp_if', {
 }, true)
 
 /**
- * Class for a DelegateSvg, comp_iter_list block.
+ * Class for a Delegate, comp_iter_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
+eYo.Delegate.List.makeSubclass('comp_iter_list', {
   list: {
     check: eYo.T3.Expr.Check.comp_iter,
     mandatory: 0,
@@ -172,11 +172,11 @@ eYo.DelegateSvg.List.makeSubclass('comp_iter_list', {
 })
 
 /**
- * Class for a DelegateSvg, key_datum block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, key_datum block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
+eYo.Delegate.Expr.makeSubclass('key_datum', {
   slots: {
     key: {
       order: 1,
@@ -196,7 +196,7 @@ eYo.DelegateSvg.Expr.makeSubclass('key_datum', {
   }
 }, true)
 
-eYo.DelegateSvg.Comprehension.T3s = [
+eYo.Delegate.Comprehension.T3s = [
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.comp_for,
   eYo.T3.Expr.comp_if,

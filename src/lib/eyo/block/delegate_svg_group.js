@@ -6,24 +6,24 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Group')
+goog.provide('eYo.Delegate.Group')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Expr')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Expr')
+goog.require('eYo.Delegate.Stmt')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, base group statement block.
+ * Class for a Delegate, base group statement block.
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
+eYo.Delegate.Stmt.makeSubclass('BaseGroup', {
   statement: {
     head: {
       check: /** @suppress {globalThis} */ function (type) {
@@ -58,9 +58,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('BaseGroup', {
       }
     }
   }
-}, eYo.DelegateSvg)
+}, eYo.Delegate)
 
-Object.defineProperties(eYo.DelegateSvg.BaseGroup.prototype, {
+Object.defineProperties(eYo.Delegate.BaseGroup.prototype, {
   isGroup: {
     get () {
       return true
@@ -69,27 +69,27 @@ Object.defineProperties(eYo.DelegateSvg.BaseGroup.prototype, {
 })
 
 /**
- * Class for a DelegateSvg, statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.BaseGroup.makeSubclass('Group', {}, eYo.DelegateSvg)
+eYo.Delegate.BaseGroup.makeSubclass('Group', {}, eYo.Delegate)
 
 /**
  * Update the black count.
  */
-eYo.DelegateSvg.Group.prototype.updateBlackHeight = function () {
+eYo.Delegate.Group.prototype.updateBlackHeight = function () {
   this.blackHeight = this.magnets.suite && this.magnets.suite.blackTarget
   ? 0
   : this.left || this.right ? 0 : 1
 }
 
 /**
- * Class for a DelegateSvg, if_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, if_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('Branch', {
+eYo.Delegate.Group.makeSubclass('Branch', {
   data: {
     variant: {
       all: [
@@ -101,7 +101,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
       init: eYo.Key.IF,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.if_d..incog = newValue === eYo.Key.ELSE
+        this.owner.if_d.incog = newValue === eYo.Key.ELSE
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.while_part) {
@@ -127,7 +127,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
       },
       isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) { // same code for primary blocks
         this.owner.consolidateType()
-        this.owner.consolidateConnections()
+        this.owner.consolidateMagnets()
         this.duringChange(oldValue, newValue)
       },
     },
@@ -173,7 +173,7 @@ eYo.DelegateSvg.Group.makeSubclass('Branch', {
  * For edython.
  * @return {String}
  */
-eYo.DelegateSvg.Group.Branch.prototype.xmlAttr = function () {
+eYo.Delegate.Group.Branch.prototype.xmlAttr = function () {
   return this.variant_p
 }
 
@@ -186,7 +186,7 @@ eYo.DelegateSvg.Group.Branch.prototype.xmlAttr = function () {
  * Each type change may imply a disconnection.
  * At least, the type may change to a value when no connection is connected.
  */
-eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
+eYo.Delegate.Group.Branch.prototype.getBaseType = function () {
   var T3 = eYo.T3.Stmt
   var type = {
     [eYo.Key.IF]: T3.if_part,
@@ -227,7 +227,7 @@ eYo.DelegateSvg.Group.Branch.prototype.getBaseType = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -246,7 +246,7 @@ eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr
   F(2)
   F(3)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 ;[
@@ -258,8 +258,8 @@ eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr
   'last_else'
 ].forEach(name => {
   var key = name + '_part'
-  eYo.DelegateSvg.Stmt[key] = eYo.DelegateSvg.Group.Branch
-  eYo.DelegateSvg.Manager.register(key)
+  eYo.Delegate.Stmt[key] = eYo.Delegate.Group.Branch
+  eYo.Delegate.Manager.register(key)
 })
 
 /**
@@ -268,8 +268,8 @@ eYo.DelegateSvg.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.Group.prototype.willRender_ = function (recorder) {
-  eYo.DelegateSvg.Group.superClass_.willRender_.call(this, recorder)
+eYo.Delegate.Group.prototype.willRender_ = function (recorder) {
+  eYo.Delegate.Group.superClass_.willRender_.call(this, recorder)
   var field = this.fields.async
   if (field) {
     field.setVisible(this.async_)
@@ -282,7 +282,7 @@ eYo.DelegateSvg.Group.prototype.willRender_ = function (recorder) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Group.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   if (block.eyo.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -301,15 +301,15 @@ eYo.DelegateSvg.Group.prototype.populateContextMenuFirst_ = function (mgr) {
       mgr.shouldSeparateInsert()
     }
   }
-  return eYo.DelegateSvg.Group.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Group.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
- * Class for a DelegateSvg, for_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, for_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('for_part', {
+eYo.Delegate.Group.makeSubclass('for_part', {
   slots: {
     for: {
       order: 1,
@@ -331,11 +331,11 @@ eYo.DelegateSvg.Group.makeSubclass('for_part', {
 }, true)
 
 /**
- * Class for a DelegateSvg, with_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, with_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('with_part', {
+eYo.Delegate.Group.makeSubclass('with_part', {
   slots: {
     with: {
       order: 1,
@@ -347,7 +347,7 @@ eYo.DelegateSvg.Group.makeSubclass('with_part', {
   }
 }, true)
 
-eYo.DelegateSvg.Group.T3s = [
+eYo.Delegate.Group.T3s = [
   eYo.T3.Stmt.if_part,
   eYo.T3.Stmt.elif_part,
   eYo.T3.Stmt.else_part,

@@ -6,30 +6,30 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Expr')
+goog.provide('eYo.Delegate.Expr')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Decorate')
-goog.require('eYo.DelegateSvg')
+goog.require('eYo.Delegate')
 goog.require('eYo.T3.All')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, value block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, value block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.makeSubclass('Expr')
+eYo.Delegate.makeSubclass('Expr')
 
 // Default delegate for all expression blocks
-eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.DelegateSvg.Expr, true)
+eYo.Delegate.Manager.registerAll(eYo.T3.Expr, eYo.Delegate.Expr, true)
 
-Object.defineProperties(eYo.DelegateSvg.Expr.prototype, {
+Object.defineProperties(eYo.Delegate.Expr.prototype, {
   isExpr: {
     get () {
       return true
@@ -49,8 +49,8 @@ Object.defineProperties(eYo.DelegateSvg.Expr.prototype, {
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function (deep) {
-  eYo.DelegateSvg.Expr.superClass_.incrementChangeCount.call(this, deep)
+eYo.Delegate.Expr.prototype.incrementChangeCount = function (deep) {
+  eYo.Delegate.Expr.superClass_.incrementChangeCount.call(this, deep)
   var parent = this.parent
   parent && parent.incrementChangeCount()
 }
@@ -62,7 +62,7 @@ eYo.DelegateSvg.Expr.prototype.incrementChangeCount = function (deep) {
  * This should be used instead of direct block querying.
  * @return {String} The type of the receiver's block.
  */
-eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Delegate.Expr.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     return {
@@ -78,7 +78,7 @@ eYo.DelegateSvg.Expr.prototype.getType = eYo.Decorate.onChangeCount(
  * @param {!String} type
  * @return {Boolean}
  */
-eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
+eYo.Delegate.Expr.prototype.checkOutputType = function (type) {
   var m4t = this.magnets.output
   if (m4t.check_) {
     if (type.indexOf) {
@@ -100,7 +100,7 @@ eYo.DelegateSvg.Expr.prototype.checkOutputType = function (type) {
  * The connection cannot always establish.
  * @param {!eYo.Delegate} dlgt  the Dlgt to be replaced
  */
-eYo.DelegateSvg.Expr.prototype.canReplaceDlgt = function (dlgt) {
+eYo.Delegate.Expr.prototype.canReplaceDlgt = function (dlgt) {
   if (dlgt) {
     var m4t = dlgt.magnets.output
     if (!m4t) {
@@ -122,7 +122,7 @@ eYo.DelegateSvg.Expr.prototype.canReplaceDlgt = function (dlgt) {
  * The connection cannot always establish.
  * @param {!eYo.Delegate} dlgt
  */
-eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
+eYo.Delegate.Expr.prototype.replaceDlgt = function (dlgt) {
   if (this.workspace && dlgt && dlgt.workspace) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {
@@ -132,7 +132,7 @@ eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other block has an output connection that can connect to the block's one
           var b_eyo = its_m4t.b_eyo
-          var selected = eYo.Selected.eyo === b_eyo
+          var selected = b_eyo.selected
           // next operations may unselect the block
           var old = b_eyo.consolidating_
           its_m4t.connect(my_m4t)
@@ -155,8 +155,8 @@ eYo.DelegateSvg.Expr.prototype.replaceDlgt = function (dlgt) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.DelegateSvg.Expr.prototype.willRender_ = function (recorder) {
-  eYo.DelegateSvg.Expr.superClass_.willRender_.call(this, recorder)
+eYo.Delegate.Expr.prototype.willRender_ = function (recorder) {
+  eYo.Delegate.Expr.superClass_.willRender_.call(this, recorder)
   var field = this.fields.await
   if (field) {
     field.setVisible(this.await_)
@@ -169,7 +169,7 @@ eYo.DelegateSvg.Expr.prototype.willRender_ = function (recorder) {
  * are awaitable
  * @return yes or no
  */
-eYo.DelegateSvg.Expr.prototype.awaitable = function () {
+eYo.Delegate.Expr.prototype.awaitable = function () {
   if (!this.fields.await) {
     return false
   }
@@ -190,8 +190,8 @@ eYo.DelegateSvg.Expr.prototype.awaitable = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
-  var yorn = eYo.DelegateSvg.Expr.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Delegate.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
+  var yorn = eYo.Delegate.Expr.superClass_.populateContextMenuFirst_.call(this, mgr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
@@ -222,11 +222,11 @@ eYo.DelegateSvg.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * @param {Object} model
  * @return the created block
  */
-eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model) {
+eYo.Delegate.Expr.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.Events.disableWrap(() => {
-    parent = eYo.DelegateSvg.newComplete(this, model)
+    parent = eYo.Delegate.newComplete(this, model)
   })
   if (!parent) {
     return parent
@@ -252,7 +252,7 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model) {
     var findM4t = y => {
       var foundM4t, t_eyo
       y.someInput(input => {
-        var m4t = input.eyo.magnet
+        var m4t = input.magnet
         if (m4t) {
           var candidate
           if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.getText().length)) {
@@ -334,19 +334,19 @@ eYo.DelegateSvg.Expr.prototype.insertParentWithModel = function (model) {
  * @param {!Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.DelegateSvg.Expr.prototype.doConsolidate = function (deep, force) {
-  if (eYo.DelegateSvg.Expr.superClass_.doConsolidate.call(this, deep, force)) {
+eYo.Delegate.Expr.prototype.doConsolidate = function (deep, force) {
+  if (eYo.Delegate.Expr.superClass_.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
 }
 
 /**
- * Class for a DelegateSvg, proper_slice block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, proper_slice block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
+eYo.Delegate.Expr.makeSubclass('proper_slice', {
   data: {
     variant: {
       all: [
@@ -446,11 +446,11 @@ eYo.DelegateSvg.Expr.makeSubclass('proper_slice', {
 }, true)
 
 /**
- * Class for a DelegateSvg, conditional_expression block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, conditional_expression block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
+eYo.Delegate.Expr.makeSubclass('conditional_expression', {
   slots: {
     expression: {
       order: 1,
@@ -477,10 +477,10 @@ eYo.DelegateSvg.Expr.makeSubclass('conditional_expression', {
 }, true)
 
 /**
- * Class for a DelegateSvg, builtin object.
+ * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
+eYo.Delegate.Expr.makeSubclass('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -501,11 +501,11 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__object', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   mgr.populateProperties(block, 'value')
   mgr.shouldSeparateInsert()
-  eYo.DelegateSvg.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Delegate.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -515,15 +515,15 @@ eYo.DelegateSvg.Expr.builtin__object.prototype.populateContextMenuFirst_ = funct
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.builtin__object.prototype.makeTitle = function (op) {
+eYo.Delegate.Expr.builtin__object.prototype.makeTitle = function (op) {
   return eYo.Do.createSPAN(op, 'eyo-code-reserved')
 }
 
 /**
- * Class for a DelegateSvg, any object.
+ * Class for a Delegate, any object.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('any', {
+eYo.Delegate.Expr.makeSubclass('any', {
   data: {
     expression: {
       init: '',
@@ -541,7 +541,7 @@ eYo.DelegateSvg.Expr.makeSubclass('any', {
   }
 }, true)
 
-eYo.DelegateSvg.Expr.T3s = [
+eYo.Delegate.Expr.T3s = [
   eYo.T3.Expr.proper_slice,
   eYo.T3.Expr.conditional_expression,
   eYo.T3.Expr.starred_expression,

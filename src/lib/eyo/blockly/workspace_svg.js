@@ -17,7 +17,7 @@ goog.require('Blockly.WorkspaceSvg')
 
 goog.require('eYo.Do')
 goog.require('eYo.Msg')
-goog.require('eYo.BlockSvg')
+goog.require('eYo.Block')
 goog.require('eYo.Driver.Svg')
 goog.require('eYo.Workspace')
 goog.require('goog.dom');
@@ -27,20 +27,16 @@ eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
 
 /**
  * Obtain a newly created block.
- * Returns a block subclass for EZP blocks.
+ * Returns a block subclass for eYo blocks.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!Blockly.BlockSvg|eYo.BlockSvg} The created block.
+ * @return {!eYo.Block} The created block.
  * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName && prototypeName.startsWith('eyo:')) {
-    return new eYo.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
-  } else {
-    return new Blockly.BlockSvg(/** Blockly.Workspace */ this, prototypeName, optId)
-  }
+  return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
 }
 
 /**
@@ -122,7 +118,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     for (var i = 0; i < topBlocks.length; i++) {
       var block = topBlocks[i]
       while (block) {
-        if (block.isCollapsed()) {
+        if (block.eyo.collapsed) {
           hasCollapsedBlocks = true
         } else {
           hasExpandedBlocks = true
@@ -312,19 +308,19 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
           // is the block in the visible area ?
           var metrics = this.getMetrics()
           var scale = this.scale || 1
-          var heightWidth = eyo.ui.getHeightWidth()
+          var size = eyo.ui.size
           // the block is in the visible area if we see its center
-          var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
-          var topBound = metrics.viewTop / scale - heightWidth.height / 2
-          var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
-          var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
+          var leftBound = metrics.viewLeft / scale - size.width / 2
+          var topBound = metrics.viewTop / scale - size.height / 2
+          var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - size.width / 2
+          var downBound = (metrics.viewTop + metrics.viewHeight) / scale - size.height / 2
           var inVisibleArea = () => {
             return dx >= leftBound && dx <= rightBound &&
             dy >= topBound && dy <= downBound
           }
           if (!inVisibleArea()) {
-            dx = (metrics.viewLeft + metrics.viewWidth / 2) / scale - heightWidth.width / 2
-            dy = (metrics.viewTop + metrics.viewHeight / 2) / scale - heightWidth.height / 2
+            dx = (metrics.viewLeft + metrics.viewWidth / 2) / scale - size.width / 2
+            dy = (metrics.viewTop + metrics.viewHeight / 2) / scale - size.height / 2
             avoidCollision()
           }
           eyo.moveByXY(dx, dy)
@@ -625,11 +621,11 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
   while (i < topBlocks.length) {
     var b = topBlocks[i]
     if (b.rendered) {
-      var bound = b.getBoundingRectangle()
+      var bound = b.eyo.getBoundingRect()
       while (++i < topBlocks.length) {
         var b = topBlocks[i]
         if (b.rendered) {
-          var blockBoundary = b.getBoundingRectangle()
+          var blockBoundary = b.eyo.getBoundingRect()
           if (blockBoundary.topLeft.x < bound.topLeft.x) {
             bound.topLeft.x = blockBoundary.topLeft.x
           }

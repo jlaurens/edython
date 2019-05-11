@@ -279,10 +279,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/core/geometry.js" \
 --js "src/lib/eyo/Parser/parser.js" \
---js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/blockly/events.js" \
 --js "src/lib/eyo/blockly/field_helper.js" \
 --js "src/lib/eyo/Parser/parsetok.js" \
+--js "src/lib/eyo/blockly/rendered_connection.js" \
 --js "src/lib/eyo/core/shape.js" \
 --js "src/lib/eyo/block/span.js" \
 --js "src/lib/eyo/blockly/block_dragger.js" \
@@ -290,9 +290,11 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/protocol/change_count.js" \
 --js "src/lib/eyo/protocol/register.js" \
+--js "src/lib/eyo/block/magnet.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/model/model.js" \
 --js "src/lib/eyo/block/ui.js" \
+--js "src/lib/eyo/block/input.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
 --js "src/lib/eyo/model/array_model.js" \
 --js "src/lib/eyo/model/bisect_model.js" \
@@ -324,7 +326,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/closure-library/menu.js" \
 --js "src/lib/eyo/block/slot.js" \
 --js "src/lib/eyo/block/delegate_svg.js" \
---js "src/lib/eyo/blockly/input.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
 --js "src/lib/eyo/closure-library/submenurenderer.js" \
@@ -363,7 +364,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/module/delegate_svg_functions.js" \
 --js "src/lib/eyo/block/delegate_svg_lambda.js" \
 --js "src/lib/eyo/module/delegate_svg_math.js" \
---js "src/lib/eyo/block/delegate_svg_print.js" \
 --js "src/lib/eyo/block/delegate_svg_proc.js" \
 --js "src/lib/eyo/module/delegate_svg_random.js" \
 --js "src/lib/eyo/module/delegate_svg_statistics.js" \

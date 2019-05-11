@@ -453,7 +453,7 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
 
 /**
  * create a shape with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @param {eYo.Delegate!} eyo  Block delegate
  */
 eYo.Shape.newWithNode = function(eyo) {
   return new eYo.Shape().initWithNode(eyo)
@@ -461,7 +461,7 @@ eYo.Shape.newWithNode = function(eyo) {
 
 /**
  * Create a path definition with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  A block delegate.
+ * @param {eYo.Delegate!} eyo  A block delegate.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
@@ -471,12 +471,12 @@ eYo.Shape.definitionWithNode = function(eyo, opt) {
 
 /**
  * Inits a shape with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @param {eYo.Delegate!} eyo  Block delegate
  */
 eYo.Shape.prototype.initWithNode = (() => {
 /**
  * Inits a shape with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @param {eYo.Delegate!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithStatementNode = function(eyo, opt) {
@@ -509,7 +509,7 @@ var initWithStatementNode = function(eyo, opt) {
 
 /**
  * Inits a shape with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @param {eYo.Delegate!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithGroupNode = function(eyo, opt) {
@@ -534,7 +534,7 @@ var initWithGroupNode = function(eyo, opt) {
       this.v(eyo.mainHeight)
       this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
       this.quarter_circle(r, false, 1)
-      this.v(true, (eyo.isCollapsed ? eYo.Unit.y : eyo.span.height - eYo.Unit.y) - 2 * r)
+      this.v(true, (eyo.collapsed ? eYo.Unit.y : eyo.span.height - eYo.Unit.y) - 2 * r)
       this.quarter_circle(r, false, 2)
     }
   }
@@ -555,7 +555,7 @@ var initWithGroupNode = function(eyo, opt) {
 
 /**
  * Inits a shape with the given block delegate.
- * @param {eYo.DelegateSvg!} eyo  Block delegate
+ * @param {eYo.Delegate!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithExpressionNode = function(eyo, opt) {
@@ -637,17 +637,17 @@ eYo.Shape.newWithMagnet = function(magnet) {
 
 /**
  * Create a path definition with the given connection delegate.
- * @param {eYo.Magnet!} eyo  A connection delegate.
+ * @param {eYo.Magnet!} m4t  A connection delegate.
  * @param {?Object} opt  Optional kv arguments
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithConnectionDlgt = function(eyo, opt) {
-  return eYo.Shape.shared.initWithMagnet(eyo, opt).definition
+eYo.Shape.definitionWithMagnet = function(m4t, opt) {
+  return eYo.Shape.shared.initWithMagnet(m4t, opt).definition
 }
 
 /**
  * create a shape with the given connection delegate.
- * @param {?eYo.MagnetSvg} eyo  Connection delegate
+ * @param {?eYo.MagnetSvg} m4t  Connection delegate
  * @param {?Object} opt  Optional kv arguments
  * @return {!Object} The receiver.
  */
@@ -684,7 +684,7 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
     if (magnet.isInput) {
       if (m4t.t_eyo) {
         this.push(magnet.t_eyo.ui.driver.pathValueDef_())
-      } else if (!b_eyo.disabled_) {
+      } else if (!b_eyo.disabled) {
         this.initWithMagnet(magnet, {absolute: true})
       }
     } else if (magnet.isOutput) {

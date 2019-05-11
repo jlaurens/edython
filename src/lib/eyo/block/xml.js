@@ -37,16 +37,16 @@ goog.require('Blockly.Xml')
 goog.require('goog.dom');
 
 // Next are used to let the compiler know that we need them
-goog.require('eYo.DelegateSvg.Functions');
-goog.require('eYo.DelegateSvg.Stdtypes');
-goog.require('eYo.DelegateSvg.Random');
-goog.require('eYo.DelegateSvg.Math');
-goog.require('eYo.DelegateSvg.CMath');
-goog.require('eYo.DelegateSvg.Turtle');
-goog.require('eYo.DelegateSvg.Decimal');
-goog.require('eYo.DelegateSvg.Fractions');
-goog.require('eYo.DelegateSvg.Statistics');
-goog.require('eYo.DelegateSvg.Range')
+goog.require('eYo.Delegate.Functions');
+goog.require('eYo.Delegate.Stdtypes');
+goog.require('eYo.Delegate.Random');
+goog.require('eYo.Delegate.Math');
+goog.require('eYo.Delegate.CMath');
+goog.require('eYo.Delegate.Turtle');
+goog.require('eYo.Delegate.Decimal');
+goog.require('eYo.Delegate.Fractions');
+goog.require('eYo.Delegate.Statistics');
+goog.require('eYo.Delegate.Range')
 
 eYo.Xml = {
   URN: 'urn:edython:',
@@ -294,8 +294,8 @@ Blockly.Xml.domToBlock = function (dom, workspace) {
  * @param {?string} id
  * @private
  */
-eYo.DelegateSvg.newComplete = (() => {
-  var newComplete = eYo.DelegateSvg.newComplete
+eYo.Delegate.newComplete = (() => {
+  var newComplete = eYo.Delegate.newComplete
   return (owner, model, id) => {
     if (goog.isString(model)) {
       model = model.trim()
@@ -352,7 +352,7 @@ eYo.DelegateSvg.newComplete = (() => {
 eYo.Xml.dlgtToDom = (() => {
   var dlgtToDom = function (block, opt) {
     var eyo = block.eyo
-    if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.DelegateSvg.List)) {
+    if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.Delegate.List)) {
       // a wrapped block does not create a new element on its own
       // it only can populate an already existing xml node.
       // Except for list nodes.
@@ -371,7 +371,7 @@ eYo.Xml.dlgtToDom = (() => {
       var element = controller.dlgtToDom(eyo, opt)
     } else {
       var attr = eyo.xmlAttr()
-      element = goog.dom.createDom(eyo instanceof eYo.DelegateSvg.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
+      element = goog.dom.createDom(eyo instanceof eYo.Delegate.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute(eYo.Key.EYO, attr)
       !(opt && opt.noId) && element.setAttribute('id', block.id)
       eYo.Xml.toDom(eyo, element, opt)
@@ -391,7 +391,7 @@ eYo.Xml.dlgtToDom = (() => {
 
 goog.exportSymbol('eYo.Xml.dlgtToDom', eYo.Xml.dlgtToDom)
 
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.Delegate.Expr')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -399,13 +399,13 @@ goog.require('eYo.DelegateSvg.Expr')
  * @return attr name
  */
 eYo.Delegate.prototype.xmlAttr = function () {
-  var attr = this.constructor.eyo.xmlAttr || (this instanceof eYo.DelegateSvg.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
+  var attr = this.constructor.eyo.xmlAttr || (this instanceof eYo.Delegate.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
-goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.Delegate.Group')
 
-goog.require('eYo.DelegateSvg.List')
+goog.require('eYo.Delegate.List')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
@@ -413,10 +413,10 @@ goog.require('eYo.DelegateSvg.List')
  * For edython.
  * @return !String
  */
-eYo.DelegateSvg.List.prototype.xmlAttr = function () {
+eYo.Delegate.List.prototype.xmlAttr = function () {
   return this.wrapped_
     ? eYo.Xml.LIST
-    : eYo.DelegateSvg.List.superClass_.xmlAttr.call(this)
+    : eYo.Delegate.List.superClass_.xmlAttr.call(this)
 }
 
 goog.provide('eYo.Xml.Text')
@@ -449,7 +449,7 @@ eYo.Xml.Text.fromDom = function (dlgt, element) {
   )
 }
 
-goog.require('eYo.DelegateSvg.Literal')
+goog.require('eYo.Delegate.Literal')
 
 goog.provide('eYo.Xml.Literal')
 /**
@@ -466,18 +466,18 @@ eYo.Xml.Literal.domToComplete = (() => {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:
       case eYo.T3.Expr.imagnumber:
-        return eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.numberliteral, id)
+        return eYo.Delegate.newComplete(workspace, eYo.T3.Expr.numberliteral, id)
       case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        return eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
+        return eYo.Delegate.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
       case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        return eYo.DelegateSvg.newComplete(workspace, stmt_expected
+        return eYo.Delegate.newComplete(workspace, stmt_expected
           ? eYo.T3.Stmt.docstring_stmt
           : eYo.T3.Expr.longliteral, id)
       case eYo.T3.Expr.longbytesliteral:
-        return eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.longliteral, id)
+        return eYo.Delegate.newComplete(workspace, eYo.T3.Expr.longliteral, id)
       }
     }
   }
@@ -499,7 +499,7 @@ eYo.Xml.Literal.domToComplete = (() => {
       // there was no text node to infer the type
       eyo = newDlgt(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
-    return eyo || eYo.DelegateSvg.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
+    return eyo || eYo.Delegate.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
   }
 }) ()
 
@@ -604,8 +604,8 @@ eYo.Xml.toDom = function (dlgt, element, opt) {
     }
     // the list blocks have no slots yet
     dlgt.inputList.forEach(input => {
-      if (!input.eyo.slot) {
-        magnetToDom(input.eyo.magnet, eYo.Xml.SLOT, input.name)
+      if (!input.slot) {
+        magnetToDom(input.magnet, eYo.Xml.SLOT, input.name)
       }
     })
     // the right, suite and next flows
@@ -846,13 +846,13 @@ eYo.Xml.Recover.prototype.domToDlgt = function (dom, owner) {
       } else if (owner && (best.types.length > 1)) {
         var name = dom.getAttribute(eYo.Xml.SLOT)
         var input = owner.getInput(name)
-        var slot_m4t = input && input.eyo.magnet
+        var slot_m4t = input && input.magnet
         var flow_m4t = dom.getAttribute(eYo.Xml.FLOW)
           ? owner.magnets.suite
           : owner.magnets.foot
         // return the first block that would connect to the owner
         if (!best.types.some(type => {
-            var eyo = eYo.DelegateSvg.newComplete(workspace, type)
+            var eyo = eYo.Delegate.newComplete(workspace, type)
             var m4t = eyo && eyo.magnets.output
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
               ans = eyo
@@ -867,12 +867,12 @@ eYo.Xml.Recover.prototype.domToDlgt = function (dom, owner) {
           fallback = best.types[0]
         }
       }
-      ans || (ans = eYo.DelegateSvg.newComplete(workspace, fallback))
+      ans || (ans = eYo.Delegate.newComplete(workspace, fallback))
     }
   )
   if (ans) {
     ans.errorRecover = true
-    eYo.Events.fireBlockCreate(ans.block_)
+    eYo.Events.fireDlgtCreate(ans)
     eYo.Xml.fromDom(ans, dom)
   }
   return ans.block_
@@ -936,7 +936,7 @@ eYo.Xml.domToDlgt = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
-                  var C9r = eYo.DelegateSvg.Manager.get(candidate)
+                  var C9r = eYo.Delegate.Manager.get(candidate)
                   if (C9r && where[C9r.eyo.key]) {
                     return candidate
                   }
@@ -946,28 +946,28 @@ eYo.Xml.domToDlgt = (() => {
               return
             }
           }
-          dlgt = eYo.DelegateSvg.newComplete(workspace, prototypeName, id)
+          dlgt = eYo.Delegate.newComplete(workspace, prototypeName, id)
         } else {
           if (!name) {
             name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
           }
           prototypeName = 'eyo:'+name
           var solid = prototypeName + ''
-          var controller = eYo.DelegateSvg.Manager.get(solid)
+          var controller = eYo.Delegate.Manager.get(solid)
           if (controller) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToDlgt)) {
               return controller.eyo.domToDlgt(dom, workspace, id)
             } else if (goog.isFunction(controller.domToDlgt)) {
               return controller.domToDlgt(dom, workspace, id)
             }
-            dlgt = eYo.DelegateSvg.newComplete(workspace, solid, id)
-          } else if ((controller = eYo.DelegateSvg.Manager.get(prototypeName))) {
+            dlgt = eYo.Delegate.newComplete(workspace, solid, id)
+          } else if ((controller = eYo.Delegate.Manager.get(prototypeName))) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToDlgt)) {
               return controller.eyo.domToDlgt(dom, workspace, id)
             } else if (goog.isFunction(controller.domToDlgt)) {
               return controller.domToDlgt(dom, workspace, id)
             }
-            dlgt = eYo.DelegateSvg.newComplete(workspace, prototypeName, id)
+            dlgt = eYo.Delegate.newComplete(workspace, prototypeName, id)
           }
           // Now create the block, either solid or not
         }
@@ -1012,10 +1012,10 @@ eYo.Xml.fromDom = function (dlgt, element) {
         goog.isFunction(controller.fromDom)) ||
         ((controller = this.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.DelegateSvg.Manager.get(this.type)) &&
+        ((controller = eYo.Delegate.Manager.get(this.type)) &&
         (controller = controller.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.DelegateSvg.Manager.get(this.type)) &&
+        ((controller = eYo.Delegate.Manager.get(this.type)) &&
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
         this.controller_fromDom_locked = true
@@ -1031,11 +1031,11 @@ eYo.Xml.fromDom = function (dlgt, element) {
       eYo.Xml.Data.fromDom(this, element)
       // read slot
       this.forEachSlot(slot => slot.load(element))
-      if (this instanceof eYo.DelegateSvg.List) {
+      if (this instanceof eYo.Delegate.List) {
         eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var input = this.getInput(name)
-          var m4t = input && input.eyo.magnet
+          var m4t = input && input.magnet
           if (m4t) {
             var t_eyo = m4t.t_eyo
             if (t_eyo) {
@@ -1057,7 +1057,7 @@ eYo.Xml.fromDom = function (dlgt, element) {
         conclude = () => {
           this.incrementChangeCount() // force new type
           this.consolidateType()
-          this.consolidateConnections()
+          this.consolidateMagnets()
           this.consolidate() // too many consolidation !!!
         }
       }
@@ -1081,7 +1081,7 @@ eYo.Xml.fromDom = function (dlgt, element) {
                     // type is not yet properly set
                     this.incrementChangeCount() // force new type
                     this.consolidateType()
-                    this.consolidateConnections()
+                    this.consolidateMagnets()
                     this.consolidate()
                     if (m4t.checkType_(m4ts.head)) {
                       m4t.connect(m4ts.head)
@@ -1107,14 +1107,14 @@ eYo.Xml.fromDom = function (dlgt, element) {
   })
 }
 
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.Primary')
 
 /**
  * The xml tag name of this block, as it should appear in the saved data.
  * For edython.
  * @return !String
  */
-eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
+eYo.Delegate.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
   if ([
     eYo.T3.Expr.identifier_valued,
@@ -1166,13 +1166,13 @@ eYo.DelegateSvg.Expr.primary.prototype.xmlAttr = function () {
   return '…'
 }
 
-goog.require('eYo.DelegateSvg.Assignment')
+goog.require('eYo.Delegate.Assignment')
 
 /**
  * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.xmlAttr = function () {
+eYo.Delegate.Stmt.assignment_stmt.prototype.xmlAttr = function () {
   return this.type === eYo.T3.Stmt.augmented_assignment_stmt
   ? this.operator_p
   : this.type === eYo.T3.Stmt.annotated_stmt || this.variant_p === eYo.Key.NONE || this.variant_p === eYo.Key.VALUED || this.variant_p === eYo.Key.EXPRESSION
@@ -1193,14 +1193,14 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
     var prototypeName = element.getAttribute(eYo.Key.EYO)
     var id = element.getAttribute('id')
     if (prototypeName === 'x') {
-      var dlgt = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.expression_stmt, id)
+      var dlgt = eYo.Delegate.newComplete(owner, eYo.T3.Stmt.expression_stmt, id)
       return dlgt
     } else if (['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
-      dlgt = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.augmented_assignment_stmt, id)
+      dlgt = eYo.Delegate.newComplete(owner, eYo.T3.Stmt.augmented_assignment_stmt, id)
       dlgt.operator_p = prototypeName
       return dlgt
     } else if (prototypeName === '=') {
-      dlgt = eYo.DelegateSvg.newComplete(owner, eYo.T3.Stmt.assignment_stmt, id)
+      dlgt = eYo.Delegate.newComplete(owner, eYo.T3.Stmt.assignment_stmt, id)
       dlgt.operator_p = prototypeName
       return dlgt
     }
@@ -1208,10 +1208,10 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
 }
 
 goog.provide('eYo.Xml.Starred')
-goog.require('eYo.DelegateSvg.Starred')
+goog.require('eYo.Delegate.Starred')
 
 goog.provide('eYo.Xml.Comparison')
-goog.require('eYo.DelegateSvg.Operator')
+goog.require('eYo.Delegate.Operator')
 
 /**
  * Try to create a comparison block from the given element.
@@ -1226,19 +1226,19 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C9r, model
     var type = eYo.T3.Expr.number_comparison
-    if ((C9r = eYo.DelegateSvg.Manager.get(type))
+    if ((C9r = eYo.Delegate.Manager.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
-      var eyo = eYo.DelegateSvg.newComplete(owner, type, id)
+      var eyo = eYo.Delegate.newComplete(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
-      && (C9r = eYo.DelegateSvg.Manager.get(type))
+      && (C9r = eYo.Delegate.Manager.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
-      eyo = eYo.DelegateSvg.newComplete(owner, type, id)
+      eyo = eYo.Delegate.newComplete(owner, type, id)
     }
     return eyo
   }
@@ -1254,9 +1254,9 @@ eYo.Xml.Starred.domToComplete = function (element, owner) {
   var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === "*") {
-    var eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.star_expr, id)
+    var eyo = eYo.Delegate.newComplete(owner, eYo.T3.Expr.star_expr, id)
   } else if (prototypeName === "**") {
-    eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.or_expr_star_star, id)
+    eyo = eYo.Delegate.newComplete(owner, eYo.T3.Expr.or_expr_star_star, id)
   }
   return eyo
 }
@@ -1284,12 +1284,12 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
     } [prototypeName]
     if (t) {
       var id = element.getAttribute('id')
-      return eYo.DelegateSvg.newComplete(owner, t, id)
+      return eYo.Delegate.newComplete(owner, t, id)
     }
   }
 }
 
-goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.Delegate.Group')
 goog.provide('eYo.Xml.Group')
 
 // /**
@@ -1300,10 +1300,10 @@ goog.provide('eYo.Xml.Group')
 //  */
 // eYo.Xml.Group.domToComplete = function (element, owner) {
 //   var attr = element.getAttribute(eYo.Key.EYO)
-//   if (attr === eYo.DelegateSvg.Stmt.else_part.prototype.xmlAttr()) {
+//   if (attr === eYo.Delegate.Stmt.else_part.prototype.xmlAttr()) {
 //     var type = eYo.T3.Stmt.else_part
 //     var id = element.getAttribute('id')
-//     return eYo.DelegateSvg.newComplete(owner, type, id)
+//     return eYo.Delegate.newComplete(owner, type, id)
 //   }
 // }
 
@@ -1321,17 +1321,17 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
   if (name === 'dict_comprehension') {
     // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
     var id = element.getAttribute('id')
-    var eyo = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.comprehension, id)
+    var eyo = eYo.Delegate.newComplete(owner, eYo.T3.Expr.comprehension, id)
     if (eyo) {
-      var kd = eYo.DelegateSvg.newComplete(owner, eYo.T3.Expr.key_datum)
+      var kd = eYo.Delegate.newComplete(owner, eYo.T3.Expr.key_datum)
       // the 'key' slot
       eYo.Do.forEachElementChild(element, child => {
         var name = child.getAttribute(eYo.Xml.SLOT)
         if (name === 'key') {
-          var dd = eYo.DelegateSvg.newComplete(owner, child)
+          var dd = eYo.Delegate.newComplete(owner, child)
           kd.target_t.connectLast(dd)
         } else if (name === 'datum') {
-          dd = eYo.DelegateSvg.newComplete(owner, child)
+          dd = eYo.Delegate.newComplete(owner, child)
           kd.annotated_s.connect(dd)
         }
       })
@@ -1358,7 +1358,7 @@ eYo.Xml.Call.domToComplete = function (element, owner) {
       ? eYo.T3.Expr.call_expr
       : eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
-    return eYo.DelegateSvg.newComplete(owner, type, id)
+    return eYo.Delegate.newComplete(owner, type, id)
   }
 }
 

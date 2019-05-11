@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Decimal')
+goog.provide('eYo.Delegate.Decimal')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -266,6 +266,6 @@ goog.mixin(eYo.Tooltip.Title, {
   decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })
 
-eYo.DelegateSvg.Decimal.T3s = [
+eYo.Delegate.Decimal.T3s = [
   eYo.T3.Expr.decimal__const
 ]

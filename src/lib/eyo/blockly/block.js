@@ -17,121 +17,20 @@ goog.forwardDeclare('eYo.Delegate')
 goog.forwardDeclare('eYo.T3.All')
 
 /**
- * Class for a block.
- * Not normally called directly, workspace.newBlock() is preferred.
+ * Class for a block, this will be removed.
+ * Not normally called directly, workspace.newDlgt() is preferred.
  * For edython.
- * @param {!Blockly.Workspace} workspace The block's workspace.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
- *     create a new id.
- * @extends {Blockly.Block}
+ * @param {!eYo.Delegate} dlgt The block's owner.
  * @constructor
  */
-eYo.Block = function (workspace, prototypeName, opt_id) {
-//  eYo.Block.superClass_.constructor.call(this, workspace, prototypeName, optId)
-  if (typeof Blockly.Generator.prototype[prototypeName] !== 'undefined') {
-    console.warn('FUTURE ERROR: Block prototypeName "' + prototypeName
-        + '" conflicts with Blockly.Generator members. Registering Generators '
-        + 'for this block type will incur errors.'
-        + '\nThis name will be DISALLOWED (throwing an error) in future '
-        + 'versions of Blockly.')
-  }
-  this.eyo = eYo.Delegate.Manager.create(workspace, prototypeName, opt_id, this)
+eYo.Block = function (dlgt) {
+  this.eyo = dlgt
+  var workspace =  dlgt.workspace
 
   // /** @type {string} */
   // this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
   //     opt_id : Blockly.utils.genUid()
   workspace.blockDB_[this.id] = this
-  // /** @type {Blockly.Connection} */
-  // this.outputConnection = null
-  // /** @type {Blockly.Connection} */
-  // this.nextConnection = null
-  // /** @type {Blockly.Connection} */
-  // this.previousConnection = null
-  // /** @type {!Array.<!Blockly.Input>} */
-  // this.inputList = []
-  /** @type {boolean|undefined} */
-  this.inputsInline = undefined
-  /** @type {boolean} */
-  this.disabled = false
-  /** @type {string|!Function} */
-  this.tooltip = ''
-  /** @type {boolean} */
-  this.contextMenu = true
-
-  /**
-   * @type {Blockly.Block}
-   * @private
-   */
-  this.parentBlock_ = null
-
-  // /**
-  //  * @type {!Array.<!Blockly.Block>}
-  //  * @private
-  //  */
-  // this.childBlocks_ = []
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.deletable_ = true
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.movable_ = true
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.editable_ = true
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.isShadow_ = false
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.collapsed_ = false
-
-  /** @type {string|Blockly.Comment} */
-  this.comment = null
-
-  /**
-   * The block's position in workspace units.  (0, 0) is at the workspace's
-   * origin scale does not change this value.
-   * @type {!goog.math.Coordinate}
-   * @private
-   */
-  this.xy_ = new goog.math.Coordinate(0, 0)
-
-  // /** @type {!Blockly.Workspace} */
-  // this.workspace = workspace
-  /** @type {boolean} */
-  this.isInFlyout = workspace.isFlyout
-  /** @type {boolean} */
-  this.isInMutator = workspace.isMutator
-
-  /** @type {boolean} */
-  this.RTL = workspace.RTL
-
-  // Copy the type-specific functions and data from the prototype.
-  if (prototypeName) {
-    // /** @type {string} */
-    // this.type = prototypeName
-    var prototype = Blockly.Blocks[prototypeName]
-    goog.asserts.assertObject(prototype,
-        'Error: Unknown block type "%s".', prototypeName)
-    goog.mixin(this, prototype)
-  }
 
   // workspace.addTopBlock(this)
 
@@ -139,10 +38,6 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
   if (goog.isFunction(this.init)) {
     this.init()
   }
-
-  // Record initial inline state.
-  /** @type {boolean|undefined} */
-  this.inputsInlineDefault = this.inputsInline
 
   // Fire a create event.
   if (Blockly.Events.isEnabled()) {
@@ -157,13 +52,7 @@ eYo.Block = function (workspace, prototypeName, opt_id) {
         Blockly.Events.setGroup(false)
       }
     }
-
   }
-  // Bind an onchange function, if it exists.
-  if (goog.isFunction(this.onchange)) {
-    this.setOnChange(this.onchange)
-  }
-  // JL
   workspace.addTopBlock(this)
 }
 
@@ -173,9 +62,6 @@ Object.defineProperties(eYo.Block.prototype, {
   workspace: {
     get () {
       return this.eyo.workspace
-    },
-    set (newValue) {
-      // do nothing
     }
   },
   type: {
@@ -188,6 +74,64 @@ Object.defineProperties(eYo.Block.prototype, {
       return this.eyo.id
     }
   },
+  inputList: {
+    get () {
+      return this.eyo.inputList
+    }
+  },
+  /**
+   * @readonly
+   * @type {boolean}
+   * @private
+   */
+  deletable_: {
+    get () {
+      return this.eyo.deletable_
+    }
+  },
+  /**
+   * @readonly
+   * @type {boolean}
+   * @private
+   */
+  movable_: {
+    get () {
+      return this.eyo.movable_
+    }
+  },
+  /**
+   * @readonly
+   * @type {boolean}
+   * @private
+   */
+  editable_: {
+    get () {
+      return this.eyo.editable_
+    }
+  },
+  /**
+   * @readonly
+   * @type {boolean}
+   * @private
+   */
+  collapsed_: {
+    get () {
+      return this.eyo.collapsed_
+    }
+  },
+  /**
+   * The block's position in workspace units.
+   * (0, 0) is at the workspace's
+   * origin scale does not change this value.
+   * @readonly
+   * @type {!goog.math.Coordinate}
+   * @private
+   */
+  collapsed_: {
+    get () {
+      return this.eyo.xy_
+    }
+  },
   parentBlock_: {
     get () {
       var p = this.eyo.parent
@@ -197,14 +141,142 @@ Object.defineProperties(eYo.Block.prototype, {
       this.eyo.parent = newValue && newValue.eyo
     }
   },
-  inputList: {
+  /**
+   * Returns a bounding box describing the dimensions of this block
+   * and any blocks stacked below it.
+   * @return {!{height: number, width: number}} Object with height and width
+   *    properties in workspace units.
+   */
+  getHeightWidth: {
     get () {
-      return this.eyo.inputList
+      return () => {
+        this.eyo.ui.size
+      }
+    }
+  },
+  /**
+   * Play some UI effects (sound, ripple) after a connection has been established.
+   */
+  connectionUiEffect: {
+    get () {
+      var ui = this.eyo.ui
+      ui && ui.connectionUIEffect
+    }
+  },
+  /**
+   * Fetches the named input object.
+   * @param {string} name The name of the input.
+   * @return {eYo.Input} The input object, or null if input does not exist.
+   */
+  getInput: {
+    get () {
+      return this.eyo.getInput
+    }
+  },
+  /**
+   * Render the block.
+   * Lays out and reflows a block based on its contents and settings.
+   * @param {boolean=} optBubble If false, just render this block.
+   * @param {?Object} io  rendering state recorder.
+   *   If true, also render block's parent, grandparent, etc.  Defaults to true.
+   */
+  render: {
+    get () {
+      return this.eyo.render
+    }
+  },
+  /**
+   * Returns the named field from a block.
+   * When not found using the inherited method,
+   * ask the delegate.
+   * NB: not all fields belong to an input.
+   * @param {string} name The name of the field.
+   * @return {Blockly.Field} Named field, or null if field does not exist.
+   */
+  getField: {
+    get () {
+      return this.eyo.getField
+    }
+  },
+  /**
+   * Move this block during a drag, taking into account whether we are using a
+   * drag surface to translate blocks.
+   * This block must be a top-level block.
+   * @param {!goog.math.Coordinate} newLoc The location to translate to, in
+   *     workspace coordinates.
+   * @package
+   */
+  moveDuringDrag: {
+    get () {
+      return this.eyo.ui && this.eyo.ui.moveDuringDrag
+    }
+  },
+  /**
+   * Recursively adds or removes the dragging class to this node and its children.
+   * Store `adding` in a property of the delegate.
+   * @param {boolean} adding True if adding, false if removing.
+   * @package
+   */
+  setDragging: {
+    get () {
+      return this.eyo.ui.setDragging
+    }
+  },
+  /**
+   * Update the visual effect for disabled/enabled blocks.
+   */
+  updateDisabled: {
+    get () {
+      return this.eyo.ui && this.eyo.ui.updateDisabled
+    }
+  },
+  /**
+   * Translates the block, forwards to the ui driver.
+   * @param {number} x The x coordinate of the translation in workspace units.
+   * @param {number} y The y coordinate of the translation in workspace units.
+   */
+  translate = {
+    get() {
+      return this.eyo.ui && this.eyo.ui.translate
     }
   },
   childBlocks_: {
     get () {
       return this.eyo.childBlocks_
+    }
+  },
+  getConnections: {
+    get () {
+      return this.eyo.getConnections
+    }
+  },  
+  setCollapsed: {
+    get () {
+      return this.eyo.setCollapsed
+    }
+  },  
+  isMovable: {
+    get () {
+      return this.eyo.isMovable
+    }
+  },
+  /**
+   * Return the coordinates of the top-left corner of this block relative to the
+   * drawing surface's origin (0,0), in workspace units.
+   * If the block is on the workspace, (0, 0) is the origin of the workspace
+   * coordinate system.
+   * This does not change with workspace scale.
+   * @return {!goog.math.Coordinate} Object with .x and .y properties in
+   *     workspace coordinates.
+   */
+  getRelativeToSurfaceXY: {
+    get () {
+      throw "INCONSISTENCY: BREAK HERE"
+    }
+  },
+  getSvgRoot: {
+    get () {
+      throw "INCONSISTENCY: BREAK HERE"
     }
   },
   outputConnection: {
@@ -259,14 +331,24 @@ Object.defineProperties(eYo.Block.prototype, {
       this.eyo.disabled = newValue
     }
   },
-  isInFlyout: {
+  collapsed_: {
     get () {
-      return this.eyo.isInFlyout
+      return this.eyo.collapsed
     },
     set (newValue) {
-      this.eyo.isInFlyout = newValue
+      this.eyo.collapsed = newValue
     }
   },
+  isInFlyout: {
+    get () {
+      return this.workspace.isFlyout
+    }
+  },
+  svgGroup_: {
+    get () {
+      throw "INCONSISTANT, BREAK HERE"
+    }
+  }
 })
 
 /**
@@ -315,22 +397,6 @@ eYo.Block.prototype.dispose = function (healStack) {
   } finally {
     Blockly.Events.enable()
   }
-}
-
-/**
- * Add a value input, statement input or local variable to this block.
- * @param {number} type Either Blockly.INPUT_VALUE or Blockly.NEXT_STATEMENT or
- *     Blockly.DUMMY_INPUT.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this block.
- * @return {!Blockly.Input} The input object created.
- * @private
- * @override
- */
-eYo.Block.prototype.appendInput_ = function (type, name) {
-  var input = eYo.Block.superClass_.appendInput_.call(this, type, name)
-  eYo.Input.setupEyO(input)
-  return input
 }
 
 /**

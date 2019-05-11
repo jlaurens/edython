@@ -196,8 +196,20 @@ Blockly.Workspace.prototype.dispose = function () {
 }
 
 /**
+ * Returns a block subclass for eYo blocks.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
+ *     create a new id.
+ * @return {!eYo.Delegate} The created block.
+ */
+eYo.Workspace.prototype.newDlgt = function (prototypeName, opt_id) {
+  return eYo.Delegate.Manager.create(this, prototypeName, opt_id)
+}
+
+/**
  * Obtain a newly created block.
- * Returns a block subclass for EZP blocks.
+ * Returns a block subclass for eYo blocks.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
@@ -205,11 +217,7 @@ Blockly.Workspace.prototype.dispose = function () {
  * @return {!Blockly.Block} The created block.
  */
 eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  if (prototypeName && prototypeName.startsWith('eyo:')) {
-    return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
-  } else {
-    return new Blockly.Block(/** Blockly.Workspace */ this, prototypeName, optId)
-  }
+  return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
 }
 
 eYo.Workspace.prototype.logAllConnections = function (comment) {
@@ -388,16 +396,16 @@ Blockly.onKeyDown_ = function(e) {
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (eYo.Selected.block && eYo.Selected.block.isDeletable()) {
-      eYo.deleteBlock(eYo.Selected.block, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.Selected.eyo && eYo.Selected.eyo.isDeletable()) {
+      eYo.deleteBlock(eYo.Selected.eyo, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (eYo.Selected.block &&
-        eYo.Selected.block.isDeletable() && eYo.Selected.block.isMovable()) {
+    if (eYo.Selected.eyo &&
+        eYo.Selected.eyo.isDeletable() && eYo.Selected.eyo.isMovable()) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
@@ -407,7 +415,7 @@ Blockly.onKeyDown_ = function(e) {
         // 'c' for copy.
         Blockly.hideChaff();
         eYo.copyBlock(eYo.Selected.block, deep);
-      } else if (e.keyCode == 88 && !eYo.Selected.block.workspace.isFlyout) {
+      } else if (e.keyCode == 88 && !eYo.Selected.eyo.workspace.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
         eYo.copyBlock(eYo.Selected.block, deep);
@@ -430,7 +438,7 @@ Blockly.onKeyDown_ = function(e) {
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
       Blockly.hideChaff();
-      Blockly.mainWorkspace.undo(e.shiftKey);
+      eYo.App.workspace.undo(e.shiftKey);
     }
   }
   // Common code for delete and cut.
@@ -452,7 +460,7 @@ Blockly.onKeyDown_ = function(e) {
 eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
     var eyo = block.eyo
-    if (eYo.Selected.eyo === eyo) {
+    if (eyo.selected) {
       // prepare a connection or a block to be selected
       var m4t
       if ((m4t = eyo.magnets.output)) {
@@ -501,7 +509,7 @@ eYo.copyBlock = function(block, deep) {
  * Record the block that a gesture started on, and set the target block
  * appropriately.
  * Addendum: there is a switch to only start from a statement
- * @param {Blockly.BlockSvg} block The block the gesture started on.
+ * @param {eYo.Block} block The block the gesture started on.
  * @package
  */
 Blockly.Gesture.prototype.setStartBlock = (() => {

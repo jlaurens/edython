@@ -6,24 +6,24 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Literal')
-goog.provide('eYo.DelegateSvg.Expr.numberliteral')
+goog.provide('eYo.Delegate.Literal')
+goog.provide('eYo.Delegate.Expr.numberliteral')
 
 goog.require('eYo.XRE')
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.Delegate.Expr')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
+ * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('Literal', {
+eYo.Delegate.Expr.makeSubclass('Literal', {
   xml: {
     attr: 'literal',
   },
@@ -33,7 +33,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
       xml: false
     }
   }
-}, eYo.DelegateSvg)
+}, eYo.Delegate)
 
 /**
  * Save the block's data.
@@ -41,18 +41,18 @@ eYo.DelegateSvg.Expr.makeSubclass('Literal', {
  * @param {Element} element the persistent element.
  * @param {?Object} opt
  */
-eYo.DelegateSvg.Literal.prototype.saveData = function (element, opt) {
-  eYo.DelegateSvg.Literal.superClass_.saveData.apply(this, arguments)
+eYo.Delegate.Literal.prototype.saveData = function (element, opt) {
+  eYo.Delegate.Literal.superClass_.saveData.apply(this, arguments)
   if (this.value_p == '') {
     element.setAttribute(eYo.Key.PLACEHOLDER, this.value_d.model.placeholder)
   }
 }
 
 /**
- * Class for a DelegateSvg, number: integer, floatnumber or imagnumber.
+ * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.DelegateSvg.Literal.makeSubclass('numberliteral', {
+eYo.Delegate.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
       all: [
@@ -106,16 +106,15 @@ var names = [
   'imagnumber'
 ]
 names.forEach(key => {
-  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.numberliteral
-  eYo.DelegateSvg.Manager.register(key)
+  eYo.Delegate.Expr[key] = eYo.Delegate.Expr.numberliteral
+  eYo.Delegate.Manager.register(key)
 })
 
 /**
  * Show the editor for the given block.
- * @param {!Blockly.Block} block The block.
  * @private
  */
-eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
+eYo.Delegate.Expr.numberliteral.prototype.showEditor = function () {
   this.value_d.field.showEditor_()
 }
 
@@ -126,18 +125,18 @@ eYo.DelegateSvg.Expr.numberliteral.prototype.showEditor = function (block) {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.numberliteral.prototype.getBaseType = function () {
+eYo.Delegate.Expr.numberliteral.prototype.getBaseType = function () {
   return this.type_p
 }
 
-goog.provide('eYo.DelegateSvg.Expr.shortliteral')
+goog.provide('eYo.Delegate.Expr.shortliteral')
 
 /**
- * Class for a DelegateSvg, string litteral.
+ * Class for a Delegate, string litteral.
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
+eYo.Delegate.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -184,7 +183,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
         )) && {validated: newValue}
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
-        this..incog = !newValue || !newValue.length
+        this.incog = !newValue || !newValue.length
         this.synchronize()
       },
       xml: false,
@@ -292,8 +291,8 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
   'shortformattedliteral',
   'shortbytesliteral',
 ].forEach(t => {
-  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.shortliteral
-  eYo.DelegateSvg.Manager.register(t)
+  eYo.Delegate.Expr[t] = eYo.Delegate.Expr.shortliteral
+  eYo.Delegate.Manager.register(t)
 })
 
 /**
@@ -302,7 +301,7 @@ eYo.DelegateSvg.Literal.makeSubclass('shortliteral', {
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.getBaseType = function () {
+eYo.Delegate.Expr.shortliteral.prototype.getBaseType = function () {
   return this.subtype_p
 }
 
@@ -313,7 +312,7 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.getBaseType = function () {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
+eYo.Delegate.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.prefix_p
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
@@ -330,7 +329,7 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.validateComponents = function(kvargs
  * @param {string} op op is the operator
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (variant) {
+eYo.Delegate.Expr.shortliteral.prototype.makeTitle = function (variant) {
   return eYo.Do.createSPAN(variant + '…' + variant, 'eyo-code')
 }
 
@@ -341,7 +340,7 @@ eYo.DelegateSvg.Expr.shortliteral.prototype.makeTitle = function (variant) {
  * @private
  * @suppress {globalThis}
 */
-eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   mgr.populateProperties(block, 'delimiter')
   mgr.separate()
@@ -397,20 +396,20 @@ eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
-  eYo.DelegateSvg.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
-  eYo.DelegateSvg.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Delegate.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
+  eYo.Delegate.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
+  eYo.Delegate.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
-goog.provide('eYo.DelegateSvg.Expr.longliteral')
+goog.provide('eYo.Delegate.Expr.longliteral')
 
 /**
- * Class for a DelegateSvg, longliteral (expression).
+ * Class for a Delegate, longliteral (expression).
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
+eYo.Delegate.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [
@@ -474,7 +473,7 @@ eYo.DelegateSvg.Expr.shortliteral.makeSubclass('longliteral', {
  *     type-specific functions for this block.
  * @constructor
  */
-eYo.DelegateSvg.Expr.longliteral.prototype.validateComponents = function(kvargs) {
+eYo.Delegate.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.prefix_p
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
@@ -490,11 +489,11 @@ eYo.DelegateSvg.Expr.longliteral.prototype.validateComponents = function(kvargs)
   'longformattedliteral',
   'longbytesliteral',
 ].forEach(t => {
-  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.longliteral
-  eYo.DelegateSvg.Manager.register(t)
+  eYo.Delegate.Expr[t] = eYo.Delegate.Expr.longliteral
+  eYo.Delegate.Manager.register(t)
 })
 
-eYo.DelegateSvg.Literal.T3s = [
+eYo.Delegate.Literal.T3s = [
   eYo.T3.Expr.shortliteral,
   eYo.T3.Expr.longliteral,
   eYo.T3.Expr.numberliteral

@@ -19,21 +19,23 @@
 
 goog.provide('eYo.Selected')
 
-goog.require('eYo.BlockSvg')
+goog.require('eYo.Block')
 goog.require('eYo.Magnet')
 goog.require('eYo.Do')
+
+goog.require('goog.math')
 
 eYo.Selected = (() => {
   var me = {}
   var eyo__
-  var c8n__
+  var m4t__
   me.updateDraw = () => {
     if (eyo__ && eyo__.isReady) {
       eyo__.ui.updateShape()
-      eyo__.ui.addBlockSelect_()
+      eyo__.ui.addDlgtSelect_()
       eyo__.ui.addStatusSelect_()
-      if (c8n__) {
-        eyo__.ui.addBlockConnection_()
+      if (m4t__) {
+        eyo__.ui.addBlockMagnet_()
         eyo__.ui.removeBlockHilight_()
       } else {
         eyo__.ui.addBlockHilight_()
@@ -52,14 +54,6 @@ eYo.Selected = (() => {
         },
         set (newValue) {
           this.eyo = newValue
-        }
-      },
-      magnet: {
-        get () {
-          return c8n__ && c8n__.eyo
-        },
-        set (newValue) {
-          me.connection = newValue && newValue.connection
         }
       },
       block: {
@@ -86,11 +80,11 @@ eYo.Selected = (() => {
           if (eyo__ !== newValue) {
             if (eyo__) {
               // unselect/unhilight the previous block
-              eyo__.ui.removeBlockSelect_()
+              eyo__.ui.removeDlgtSelect_()
               eyo__.ui.removeBlockHilight_()
               eyo__.ui.removeBlockConnection_()
               eyo__.ui.removeStatusSelect_()
-              eyo__.selectedConnection = null
+              eyo__.selectedMagnet = null
               eyo__.selectedMagnetDlgt_ = null
               eyo__ = null
             }
@@ -104,56 +98,54 @@ eYo.Selected = (() => {
                   }
                 })(eyo__), 10)
               }
-              if (c8n__) {
-                var b_eyo = c8n__.eyo.b_eyo
+              if (m4t__) {
+                var b_eyo = m4t__.b_eyo
                 if (b_eyo && newValue !== b_eyo.wrapper) {
-                  c8n__ = null
+                  m4t__ = null
                 }
               }
               eyo__.ui.sendToFront()
               this.didAdd()
             } else {
-              c8n__ = null
+              m4t__ = null
               this.didRemove()
             }
           }
         }
       },
-      connection_: {
+      magnet_: {
         get () {
-          return c8n__
+          return m4t__
         },
-        set (c8n) {
-          if (c8n !== c8n__) {
-            if (c8n) {
-              var m4t = c8n.eyo
+        set (m4t) {
+          if (m4t !== m4n__) {
+            if (m4t) {
               var b_eyo = m4t.b_eyo
               if (b_eyo) {
-                var wrapper
                 // if the connection visually belongs to 2 blocks, select the top left most
                 if (m4t.isHead && m4t.target) {
-                  wrapper = m4t.t_eyo.wrapper
-                  c8n = m4t.target.connection
+                  var wrapper = m4t.t_eyo.wrapper
+                  m4t = m4t.target
                 } else {
                   wrapper = b_eyo.wrapper
                 }
                 if (wrapper && wrapper !== b_eyo) {
                   this.eyo_ = wrapper
-                  eyo__.selectedConnection = c8n__
+                  eyo__.selectedMagnet = m4t__
                   eyo__.selectedMagnetDlgt_ = b_eyo
-                  c8n__ = c8n
+                  m4t__ = m4t
                   return
                 }
-                c8n__ = c8n
+                m4t__ = m4t
                 this.eyo_ = b_eyo
               }
             } else {
               if (eyo__) {
                 eyo__.ui.removeBlockConnection_()
-                eyo__.selectedConnection = null
+                eyo__.selectedMagnet = null
                 eyo__.selectedMagnetDlgt_ = null
               }
-              c8n__ = c8n
+              m4t__ = m4t
             }
           }
         }
@@ -171,29 +163,39 @@ eYo.Selected = (() => {
           return eyo__
         },
         set (newValue) {
+          if (newValue && !newValue.workspace) return
           this.eyo_ = newValue
           this.connection = null
           this.updateDraw()
         }
       },
+      /* TO BE REMOVED */
       connection: {
         get () {
-          return c8n__
+          return m4t__.connection
         },
         set (c8n) {
-          if (c8n) {
-            if (c8n.hidden_) {
+          this.magnet = c8n && c8n.eyo
+        }
+      },
+      magnet: {
+        get () {
+          return m4t__
+        },
+        set (m4t) {
+          if (m4t) {
+            if (!m4t.workspace) return
+            if (m4t.hidden_) {
               console.error('Do not select a hidden connection')
             }
-            var c_eyo = c8n.eyo
-            var b_eyo = c_eyo.b_eyo
+            var b_eyo = m4t.b_eyo
             if (b_eyo) {
               if (b_eyo.locked_) {
                 return
               }
-              if (c_eyo.isInput) {
+              if (m4t.isInput) {
                 // Do not select a connection with a target, select the target instead
-                var t_eyo = c_eyo.t_eyo
+                var t_eyo = m4t.t_eyo
                 if (t_eyo) {
                   this.eyo =  t_eyo
                   return
@@ -201,7 +203,7 @@ eYo.Selected = (() => {
               }
             }
           }
-          this.connection_ = c8n
+          this.magnet_ = m4t
           this.updateDraw()
         }
       }
@@ -216,7 +218,7 @@ eYo.Selected = (() => {
   })
   Object.defineProperty(eYo.Magnet.prototype, 'selected', {
     get() {
-      return this.connection === c8n__
+      return this === m4t__
     }
   })
   return me
@@ -264,14 +266,6 @@ Object.defineProperties(
 )
 
 /**
- * Select this block.  Highlight it visually.
- * Wrapped blocks are not selectable.
- */
-eYo.BlockSvg.prototype.select = function () {
-  this.eyo.select()
-}
-
-/**
  * Select this magnet. Highlight it visually.
  * Wrapped magnets are not selectable.
  * @return {eYo.Magnet} this
@@ -286,7 +280,7 @@ eYo.Magnet.prototype.select = function () {
  * If `this` is the selected magnet, it looses its status.
  * Unselect is used from click handling methods.
  */
-eYo.Delegate.prototype.unselect = function () {
+eYo.Magnet.prototype.unselect = function () {
   if (this.selected) {
     eYo.Selected.magnet = null
   }
@@ -297,9 +291,7 @@ eYo.Delegate.prototype.unselect = function () {
  * Wrapped blocks are not selectable.
  */
 eYo.Delegate.prototype.select = eYo.Decorate.reentrant_method('select', function () {
-  return !this.workspace
-    ? this
-    : (eYo.Selected.dlgt = this)
+  return (eYo.Selected.dlgt = this)
 })
 
 /**
@@ -307,38 +299,10 @@ eYo.Delegate.prototype.select = eYo.Decorate.reentrant_method('select', function
  * If there is a selected connection, it is removed.
  * Unselect is used from click handling methods.
  */
-eYo.BlockSvg.prototype.unselect = function () {
-  eYo.BlockSvg.superClass_.unselect.call(this)
-  this.eyo.unselect()
-}
-
-/**
- * Unselect this block.
- * If there is a selected connection, it is removed.
- * Unselect is used from click handling methods.
- */
-eYo.DelegateSvg.prototype.unselect = function () {
+eYo.Delegate.prototype.unselect = function () {
   if (this.workspace && this.selected) {
     eYo.Selected.dlgt = null
   }
-}
-
-/**
- * Forwards to the delegate.
- * @param {!Event} e Mouse down event or touch start event.
- * @private
- */
-eYo.BlockSvg.prototype.onMouseDown_ = function (e) {
-  this.eyo.onMouseDown_(e)
-}
-
-/**
- * Forwards to the delegate.
- * @param {!Event} e Mouse down event or touch start event.
- * @private
- */
-eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
-  this.eyo.onMouseUp_(e)
 }
 
 /**
@@ -349,7 +313,7 @@ eYo.BlockSvg.prototype.onMouseUp_ = function (e) {
  * @param {Object} e in general a mouse down event
  * @return {Object|undefined|null}
  */
-eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
+eYo.Delegate.prototype.getMagnetForEvent = function (e) {
   var ws = this.workspace
   if (!ws) {
     return
@@ -363,7 +327,7 @@ eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
   ws.getInverseScreenCTM());
   where = goog.math.Coordinate.difference(where, ws.getOriginOffsetInPixels())
   where.scale(1 / ws.scale)
-  var rect = this.getBoundingRect()
+  var rect = this.boundingRect
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
   var m4t = this.someInputMagnet(m4t => {
@@ -511,17 +475,20 @@ eYo.DelegateSvg.prototype.getMagnetForEvent = function (e) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
+eYo.Delegate.prototype.onMouseDown_ = function (e) {
   if (this.locked_) {
     var parent = this.parent
     if (parent) {
       return
     }
   }
-  if (this.ui.parentIsShort && eYo.Selected.eyo !== this) {
+  if (this.ui.parentIsShort && !this.selected) {
     parent = this.parent
-    if (eYo.Selected.eyo !== parent) {
-      eYo.BlockSvg.superClass_.onMouseDown_.call(parent.block_, e)
+    if (!parent.selected) {
+      var gesture = this.workspace.getGesture(e);
+      if (gesture) {
+        gesture.handleBlockStart(e, this.block_)
+      }    
       return
     }
   }
@@ -548,8 +515,11 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
   t_eyo.lastSelectedMagnet = eYo.Selected.magnet
   t_eyo.selectedMagnetDlgt_ = null
   // Prepare the mouseUp event for an eventual connection selection
-  t_eyo.lastMouseDownEvent = t_eyo === eYo.Selected.eyo ? e : null
-  eYo.BlockSvg.superClass_.onMouseDown_.call(t_eyo.block_, e)
+  t_eyo.lastMouseDownEvent = t_eyo.selected ? e : null
+  var gesture = this.workspace.getGesture(e);
+  if (gesture) {
+    gesture.handleBlockStart(e, t_eyo.block_)
+  }
 }
 
 /**
@@ -558,7 +528,7 @@ eYo.DelegateSvg.prototype.onMouseDown_ = function (e) {
  * Then, the higlighted path of the source blocks is not the outline of the block
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
-eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
+eYo.Delegate.prototype.onMouseUp_ = function (e) {
   const m4t = this.getMagnetForEvent(e)
   var t_eyo = m4t
   ? m4t.isInput
@@ -578,11 +548,11 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
     // a block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (t_eyo === eYo.Selected.eyo) {
+      if (t_eyo.selected) {
         // the block was already selected,
         if (m4t) {
           // and there is a candidate selection
-          if (eYo.Selected.magnet === m4t) {
+          if (m4t.selected) {
             // unselect
             eYo.Selected.magnet = null
           } else if (m4t !== t_eyo.lastSelectedMagnet) {
@@ -615,7 +585,7 @@ eYo.DelegateSvg.prototype.onMouseUp_ = function (e) {
       var parent = t_eyo
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
-        if ((parent === eYo.Selected.eyo)) {
+        if ((parent.selected)) {
           eYo.Selected.eyo = t_eyo
           break
         } else if (!parent.wrapped_) {

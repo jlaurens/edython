@@ -25,7 +25,7 @@ goog.require('Blockly.BlockDragger')
 Blockly.BlockDragger.prototype.startBlockDrag = (() => {
   var startBlockDrag = Blockly.BlockDragger.prototype.startBlockDrag
   return function(currentDragDeltaXY, healStack) {
-    eYo.Selected.connection = null
+    eYo.Selected.magnet = null
     var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
     this.eyo_transformCorrection = eYo.Do.getTransformCorrection(element)
     return startBlockDrag.call(this, currentDragDeltaXY, healStack)
@@ -69,7 +69,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
   this.dragBlock(e, currentDragDeltaXY)
   this.dragIconData_ = []
 
-  Blockly.BlockSvg.disconnectUiStop_()
+  eYo.UI.disconnectUiStop_()
 
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY)
   var newLoc = goog.math.Coordinate.sum(this.startXY_, delta)

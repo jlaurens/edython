@@ -3,7 +3,7 @@ var assert = chai.assert
 describe('Primary', function () {
   it ('identifier', function () {
     var model = `<x eyo="identifier" name="k" slot="key"></x>`
-    var d = eYo.DelegateSvg.newReady(Blockly.mainWorkspace, model)
+    var d = eYo.Delegate.newReady(Blockly.mainWorkspace, model)
     assert(d, `MISSING block`)
   })
 })

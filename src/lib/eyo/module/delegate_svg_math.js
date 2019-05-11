@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Math')
+goog.provide('eYo.Delegate.Math')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -211,7 +211,7 @@ goog.mixin(eYo.Tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
 
-eYo.DelegateSvg.Math.T3s = [
+eYo.Delegate.Math.T3s = [
   eYo.T3.Stmt.math__import_stmt,
   eYo.T3.Expr.math__call_expr,
   eYo.T3.Stmt.math__call_stmt,

@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Functions')
+goog.provide('eYo.Delegate.Functions')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')

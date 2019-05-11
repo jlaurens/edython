@@ -24,7 +24,7 @@ eYo.Navigate.doTab = (() => {
   var m4t
   var input
   var accept = input => {
-    var m4t = input.eyo.magnet
+    var m4t = input.magnet
     return m4t && !m4t.incog && !m4t.hidden_ && m4t.isInput
   }
   var doLeft = eyo => { // !eyo
@@ -45,7 +45,7 @@ eYo.Navigate.doTab = (() => {
         return
       }
     }
-    var candidate = input.eyo.inputLeft
+    var candidate = input.inputLeft
     while (candidate) {
       if (accept(candidate)) {
         eYo.Selected.magnet = candidate.eyo.magnet
@@ -66,10 +66,10 @@ eYo.Navigate.doTab = (() => {
     }
     do {
       if (accept(input)) {
-        eYo.Selected.magnet = input.eyo.magnet
+        eYo.Selected.magnet = input.magnet
         return
       }
-    } while ((input = input.eyo.inputLeft))
+    } while ((input = input.inputLeft))
   }
   var doRight = eyo => {
     if ((m4t = eYo.Selected.magnet) && !m4t.incog) {
@@ -89,7 +89,7 @@ eYo.Navigate.doTab = (() => {
         return
       }
     }
-    var candidate = input.eyo.inputRight
+    var candidate = input.inputRight
     while (candidate) {
       if (accept(candidate)) {
         eYo.Selected.magnet = candidate.eyo.magnet
@@ -110,10 +110,10 @@ eYo.Navigate.doTab = (() => {
     }
     do {
       if (accept(input)) {
-        eYo.Selected.magnet = input.eyo.magnet
+        eYo.Selected.magnet = input.magnet
         return
       }
-    } while ((input = input.eyo.inputRight))
+    } while ((input = input.inputRight))
   }
   return (eyo, opt) => {
     if (eyo) {
@@ -131,45 +131,43 @@ eYo.Navigate.doTab = (() => {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!Blockly.Workspace} workspace The owner of the receiver.
+ * @param {!Blockly.Workspace} workspace .
  * @param {function(point): number} weight is a function.
  * @return {?Blockly.Block}
  */
-eYo.DelegateSvg.getBestBlock = function (workspace, weight) {
+eYo.Delegate.getBestDlgt = function (workspace, weight) {
   var smallest = Infinity
   var best
   workspace.topBlocks_.forEach(top => {
-    var box = top.eyo.getBoundingRect()
+    var box = top.eyo.ui.boundingReact
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
       best = top
     }
   })
-  return best
+  return best.eyo
 }
 
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {function(point, point): number} distance is a function.
+ * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.DelegateSvg.prototype.getBestBlock = function (distance) {
-  var block = this.block_
-  const a = this.getBoundingBox()
+eYo.Delegate.prototype.getBestBlock = function (distance) {
+  const box_a = this.ui.boundingBox
   var smallest = {}
   var best
   this.workspace.topBlocks_.forEach(top => {
-    if (top !== block) {
-      var t_eyo = top.eyo
-      var b = t_eyo.getBoundingBox()
+    var t_eyo = top.eyo
+    if (t_eyo !== this) {
+      var box_p = t_eyo.ui.boundingBox
       var m4t
       while ((m4t = t_eyo.magnets.foot) && (t_eyo = m4t.t_eyo)) {
-        b.expandToInclude(t_eyo.getBoundingBox())
+        box_p.expandToInclude(t_eyo.ui.boundingBox)
       }
-      var d = distance(a, b)
+      var d = distance(box_a, box_p)
       if (d.major && (!smallest.major || d.major < smallest.major)) {
         smallest = d
         best = top
@@ -192,19 +190,18 @@ eYo.Selected.chooseLeft = () => {
   if (!eyo) {
     return
   }
-  var c8n = eYo.Selected.connection
-  if (c8n) {
-    var c_eyo = c8n.eyo
-    if (c_eyo.isInput || c_eyo.isOutput) {
-      eYo.Selected.connection = null
+  var m4t = eYo.Selected.magnet
+  if (m4t) {
+    if (m4t.isInput || m4t.isOutput) {
+      eYo.Selected.magnet = null
       eyo.wrapper.select().scrollToVisible()
       return
-    } else if (c_eyo.isSuite) {
-      eYo.Selected.connection = null
+    } else if (m4t.isSuite) {
+      eYo.Selected.magnet = null
       eYo.Selected.scrollToVisible()
       return
     } else {
-      eYo.Selected.connection = null
+      eYo.Selected.magnet = null
       (eyo.group || eyo.root).select().scrollToVisible()
       return
     }
@@ -235,7 +232,7 @@ eYo.Selected.chooseLeft = () => {
       minor: b.foot - b.head
     }
   })
-  eYo.Selected.connection = null
+  eYo.Selected.magnet = null
   (target.eyo || root).select().scrollToVisible()
 }
 /**
@@ -252,7 +249,7 @@ eYo.Selected.chooseRight = function () {
   var m4t = eYo.Selected.magnet
   if (m4t) {
     if (m4t.isInput || m4t.isOutput) {
-      eYo.Selected.connection = null
+      eYo.Selected.magnet = null
       eYo.Selected.scrollToVisible()
       return
     } else if (m4t.isFoot) {
@@ -269,7 +266,7 @@ eYo.Selected.chooseRight = function () {
     } else if (m4t.isSuite) {
       // select a top block
     } else {
-      eYo.Selected.connection = null
+      eYo.Selected.magnet = null
       eYo.Selected.scrollToVisible()
       return
     }
@@ -295,7 +292,7 @@ eYo.Selected.chooseRight = function () {
       minor: b.foot - b.head
     }
   })
-  eYo.Selected.connection = null
+  eYo.Selected.magnet = null
   (target.eyo || root).select().scrollToVisible()
 }
 
@@ -391,7 +388,7 @@ eYo.Selected.chooseBelow = () => {
         return
       }
     } else if (m4t.isHead) {
-      eYo.Selected.connection = null
+      eYo.Selected.magnet = null
       eYo.Selected.scrollToVisible()
       return
     }

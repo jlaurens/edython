@@ -55,6 +55,17 @@ eYo.UI = function(node) {
   this.updateBlockWrapped()
 }
 
+Object.defineProperties(Blockly.BlockSvg, {
+  disconnectUiStop_: {
+    get () {
+      return eYo.UI.disconnectUiStop_
+    },
+    set (newValue) {
+      eYo.UI.disconnectUiStop_ = newValue
+    }
+  }
+})
+
 /**
  * The default implementation forwards to the driver.
  */
@@ -177,8 +188,8 @@ eYo.UI.prototype.renderRight_ = function (io) {
         ui.startOfStatement = io.common.startOfStatement
         ui.mayBeLast = ui.hasRightEdge
         ui.down = true
-        if (eYo.DelegateSvg.debugStartTrackingRender) {
-          console.log(eYo.DelegateSvg.debugPrefix, 'DOWN')
+        if (eYo.Delegate.debugStartTrackingRender) {
+          console.log(eYo.Delegate.debugPrefix, 'DOWN')
         }
         if (t_eyo.wrapped_) {
           // force target rendering
@@ -228,8 +239,8 @@ eYo.UI.prototype.renderSuite_ = function (io) {
   if (!m4t) {
     return
   }
-  if (eYo.DelegateSvg.debugStartTrackingRender) {
-    console.log(eYo.DelegateSvg.debugPrefix, 'SUITE')
+  if (eYo.Delegate.debugStartTrackingRender) {
+    console.log(eYo.Delegate.debugPrefix, 'SUITE')
   }
   m4t.setOffset(eYo.Font.tabW, 1)
   var t_eyo = m4t.t_eyo
@@ -519,7 +530,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
     m4t.moveToOffset(blockTL)
   }
   this.node.inputList.forEach(input => {
-    if ((m4t = input.eyo.magnet)) {
+    if ((m4t = input.magnet)) {
       m4t.moveToOffset(blockTL)
       if (m4t.target) {
         m4t.tighten_()
@@ -571,7 +582,7 @@ eYo.UI.prototype.layoutConnections_ = function (recorder) {
       m4t.setOffset()
     }
     if ((m4t = m4ts.foot)) {
-      if (this.node.isCollapsed) {
+      if (this.node.collapsed) {
         m4t.setOffset(0, 2)
       } else {
         m4t.setOffset(0, this.span.height)
@@ -663,8 +674,7 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
  */
 eYo.UI.prototype.newDrawRecorder = function (recorder) {
   var io = {
-    block: this.node.block_,
-    eyo: this.node,
+    dlgt: this.node,
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
     cursor: new eYo.Where(),
@@ -772,7 +782,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
   } else {
     // for dynamic lists
     this.node.inputList.forEach(input => {
-      goog.asserts.assert(input.eyo, `Input with no eyo ${input.name} in block ${this.node.type}`)
+      goog.asserts.assert(input, `Input with no eyo ${input.name} in block ${this.node.type}`)
       if (input.isVisible()) {
         io.input = input
         this.drawInput_(io)
@@ -780,11 +790,8 @@ eYo.UI.prototype.drawModel_ = function (io) {
         input.fieldRow.forEach(field => {
           this.driver.fieldDisplayedSet(field, false)
         })
-        if ((io.c8n = input.connection)) {
-          if ((io.target = io.c8n.targetBlock())) {
-            io.target.eyo.ui.hide()
-          }
-        }
+        var x = input.magnet
+        x && (x = x.t_eyo) && x.ui.hide()
       }
     })
   }
@@ -874,7 +881,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
   }
-  if (io.block === this.node.block_) {
+  if (io.dlgt === this.node) {
     this.node.lastRenderedInput = io.common.inputDone
   }
 }
@@ -890,7 +897,7 @@ eYo.UI.prototype.drawSlot_ = function (slot, io) {
     return
   }
   var g = slot.svg && slot.svg.group_
-  goog.asserts.assert(g, 'Slot with no root', io.block.type, slot.key)
+  goog.asserts.assert(g, 'Slot with no root', io.dlgt.type, slot.key)
   if (slot.incog) {
     g && g.setAttribute('display', 'none')
     return
@@ -923,8 +930,8 @@ eYo.UI.prototype.drawSharp_ = function (io) {
   if (this.node.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
   } else if (this.node.isStmt) {
-    this.driver.nodeDrawSharp(this.node_, io.block.disabled)
-    if (io.block.disabled) {
+    this.driver.nodeDrawSharp(this.node_, io.dlgt.disabled)
+    if (io.dlgt.disabled) {
       io.cursor.c += 2
       io.common.startOfLine = io.common.startOfStatement = false
     }
@@ -1158,21 +1165,21 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
           })
         }
       }
-      io.common.ending.forEach((eyo) => {
-        eyo.ui.mayBeLast = false
-        eyo.ui.isLastInExpression = isLastInExpression
-        eyo.ui.isLastInStatement = isLastInStatement
+      io.common.ending.forEach(d => {
+        d.ui.mayBeLast = false
+        d.ui.isLastInExpression = isLastInExpression
+        d.ui.isLastInStatement = isLastInStatement
       })
-      io.common.ending.forEach((eyo) => {
-        eyo.updateShape()
-        var c_eyo = eyo.ui.rightCaret
-        if (c_eyo) {
-          c_eyo.side = eYo.Key.RIGHT
-          c_eyo.shape = eYo.Key.NONE
-          c_eyo.isLastInStatement = isLastInStatement
-          var d = eYo.Shape.definitionWithConnectionDlgt(c_eyo) // depends on the shape and the side
-          var block = c_eyo.sourceBlock_
-          if (io.block === block) {
+      io.common.ending.forEach(d => {
+        d.updateShape()
+        var m4t = d.ui.rightCaret
+        if (m4t) {
+          m4t.side = eYo.Key.RIGHT
+          m4t.shape = eYo.Key.NONE
+          m4t.isLastInStatement = isLastInStatement
+          var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
+          var dlgt = m4t.b_eyo
+          if (io.dlgt === dlgt) {
             // we are lucky, this.node is the block we are currently rendering
             io.steps.push(d)
           } else {
@@ -1180,7 +1187,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
             // we must append the definition to the path
             // this.node may happen for blocks with no left or right end,
             // eg locked or wrapped blocks.
-            var path = block.eyo.pathInner_
+            var path = dlgt.pathInner_
             path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
           }
         }
@@ -1204,8 +1211,8 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       m4t.side = side
       m4t.shape = io.isLastInStatement ? eYo.Key.Right : shape
       var shp = eYo.Shape.newWithMagnet(m4t)
-      var block = m4t.sourceBlock_
-      if (io.block === block) {
+      var dlgt = m4t.b_eyo
+      if (io.dlgt === dlgt) {
         // we are lucky, this.node is the block we are currently rendering
         io.steps.push(shp.definition)
       } else {
@@ -1213,7 +1220,7 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
         // we must append the definition to the path
         // this.node may happen for blocks with no left or right end,
         // eg locked or wrapped blocks.
-        var path = block.eyo.pathInner_
+        var path = dlgt.pathInner_
         path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
       }
       if (shp.width) {
@@ -1240,16 +1247,16 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
  * @private
  */
 eYo.UI.prototype.drawValueInput_ = function (io) {
-  if (io.input.type !== Blockly.INPUT_VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
+  if (io.input.type !== eYo.Magnet.VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
     return false
   }
   // this.node is one of the reasons why we allways render from the start of a statement
-  io.input.eyo.inputRight = undefined
-  io.input.eyo.inputLeft = io.common.inputDone
+  io.input.inputRight = undefined
+  io.input.inputLeft = io.common.inputDone
   if (io.common.inputDone) {
     io.common.inputDone.eyo.inputRight = io.input
   } else {
-    io.block.eyo.firstRenderedInput = io.input
+    io.dlgt.firstRenderedInput = io.input
   }
   io.common.inputDone = io.input
   this.drawFields_(io, true)
@@ -1295,12 +1302,12 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
           if (m4t.c === 1 && !io.common.field.beforeIsBlack && m4t.slot) {
             m4t.slot.where.c -= 1
             m4t.setOffset(io.cursor)
-            if (io.input.eyo.inputLeft && io.input.eyo.inputLeft.connection.eyo.startOfLine) {
+            if (io.input.inputLeft && io.input.inputLeft.connection.eyo.startOfLine) {
               ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
 
             }
           }
-          if (io.block.eyo.magnets.output !== eYo.Magnet.disconnectedChild && !ui.up) {
+          if (io.dlgt.magnets.output !== eYo.Magnet.disconnectedChild && !ui.up) {
             t_eyo.render(false, io)
             if (!t_eyo.wrapped_) {
               io.common.field.shouldSeparate = false
@@ -1436,22 +1443,25 @@ eYo.UI.prototype.parentDidChange = function (oldParent) {
   this.driver.nodeParentDidChange(this.node_, oldParent)
 }
 
-/**
- * Set the display status of the receiver's node.
- * Forwards to the driver.
- */
-eYo.UI.prototype.isVisible = function () {
-  this.driver.nodeDisplayedGet(this.node_)
-}
-
-/**
- * Set the display status of the receiver's node.
- * Forwards to the driver.
- * @param {boolean} visible
- */
-eYo.UI.prototype.setVisible = function (visible) {
-  this.driver.nodeDisplayedSet(this.node_, visible)
-}
+Object.defineProperties(eYo.UI.prototype, {
+  visible: {
+    /**
+     * Get the display status of the receiver's node.
+     * Forwards to the driver.
+     */
+    get () {
+      return this.driver.nodeDisplayedGet(this.node_)
+    },
+    /**
+     * Set the display status of the receiver's node.
+     * Forwards to the driver.
+     * @param {boolean} visible
+     */
+    set (newValue) {
+      this.driver.nodeDisplayedSet(this.node_, visible)
+    }
+  }
+})
 
 /**
  * The default implementation forwards to the driver.
@@ -1465,6 +1475,11 @@ eYo.UI.prototype.updateDisabled = function () {
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.connectionUIEffect = function () {
+  var w = this.node.workspace
+  w.getAudioManager().play('click')
+  if (w.scale < 1) {
+    return // Too small to care about visual effects.
+  }
   this.driver.nodeConnectionUIEffect(this.node_)
 }
 
@@ -1565,7 +1580,7 @@ eYo.UI.prototype.removeBlockHilight_ =function () {
  * Add the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.addBlockSelect_ = function () {
+eYo.UI.prototype.addDlgtSelect_ = function () {
   this.driver.nodeSelectAdd(this.node_)
 }
 
@@ -1573,7 +1588,7 @@ eYo.UI.prototype.addBlockSelect_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.removeBlockSelect_ = function () {
+eYo.UI.prototype.removeDlgtSelect_ = function () {
   this.driver.nodeSelectRemove(this.node_)
 }
 
@@ -1581,8 +1596,8 @@ eYo.UI.prototype.removeBlockSelect_ = function () {
  * Add the hilight connection path_.
  * Forwards to the driver.
  */
-eYo.UI.prototype.addBlockConnection_ = function () {
-  this.driver.nodeConnectionAdd(this.node_)
+eYo.UI.prototype.addBlockMagnet_ = function () {
+  this.driver.nodeMagnetAdd(this.node_)
 }
 
 /**
@@ -1673,7 +1688,54 @@ Object.defineProperties(eYo.UI.prototype, {
     get () {
       return this.driver.nodeXYInSurface(this.node_)
     }
-  }
+  },
+  /**
+   * Returns a bounding box describing the dimensions of this block
+   * and any blocks stacked below it, in workspace unit.
+   * @return {!{height: number, minWidth: number, width: number}} Object with height and width
+   *    properties in workspace units.
+   */
+  size: {
+    get () {
+      var s = this.node.size
+      return {
+        height: s.height * eYo.Unit.y,
+        minWidth: s.minWidth * eYo.Unit.x,
+        width: s.width * eYo.Unit.x
+      }
+    }
+  },
+  /**
+   * Returns the coordinates of a bounding rect describing the dimensions of the node.
+   * Ignores the minWidth.
+   * As the shape is not the same comparing to Blockly's default,
+   * the bounding rect changes too.
+   * Coordinate system: workspace coordinates.
+   * @return {!goog.math.Rect}
+   *    Object with top left and bottom right coordinates of the bounding box.
+   */
+  boundingRect: {
+    get () {
+      return goog.math.Rect.createFromPositionAndSize(
+        this.xyInSurface,
+        this.size
+      )
+    }
+  },
+  /**
+   * Returns the coordinates of a bounding box describing the dimensions of this
+   * block.
+   * As the shape is not the same comparing to Blockly's default,
+   * the bounding box changes too.
+   * Coordinate system: workspace coordinates.
+   * @return {!goog.math.Box}
+   *    Object with top left and bottom right coordinates of the bounding box.
+   */
+  boundingBox: {
+    get () {
+      return this.boundingRect.toBox()
+    }
+  },
 })
 
 /**
@@ -1686,35 +1748,87 @@ eYo.UI.prototype.connectionHilight = function (c_eyo) {
 }
 
 /**
- * Returns a bounding box describing the dimensions of this block
- * and any blocks stacked below it.
- * @return {!{height: number, width: number}} Object with height and width
- *    properties in workspace units.
- */
-eYo.UI.prototype.getHeightWidth = function () {
-  var n = this.node
-  var height = n.height
-  var width = n.width
-  // Recursively add size of subsequent blocks.
-  var nn = n.right
-  if (nn) {
-    var heightWidth = nn.ui.getHeightWidth()
-    width += nextHeightWidth.width
-    // The height of the line is managed while rendering.
-  }
-  if ((nn = n.foot)) {
-    var heightWidth = nn.ui.getHeightWidth()
-    height += nextHeightWidth.height // NO Height of tab.
-    width = Math.max(width, nextHeightWidth.width)
-  }
-  return {height: height, width: width}
-}
-
-/**
  * Move the blocks relatively.
  * @param {number} dx Horizontal offset in workspace units.
  * @param {number} dy Vertical offset in workspace units.
  */
 eYo.UI.prototype.moveByXY = function (dx, dy) {
   this.node.block_.moveBy(dx, dy)
+}
+
+/**
+ * Move this block during a drag, taking into account whether we are using a
+ * drag surface to translate blocks.
+ * This block must be a top-level block.
+ * @param {!goog.math.Coordinate} newLoc The location to translate to, in
+ *     workspace coordinates.
+ * @package
+ */
+eYo.UI.prototype.moveDuringDrag = function(newLoc) {
+  var n = this.node
+  var d = n.ui && n.ui.getDistanceFromVisible(newLoc)
+  if (d) {
+    newLoc.x -= d.x
+    newLoc.y -= d.y
+  }
+  if (n.useDragSurface_) {
+    this.workspace.blockDragSurface_.translateSurface(newLoc.x, newLoc.y);
+  } else {
+    this.driver.nodeSetOffsetDuringDrag(n, newLoc.x, newLoc.y)
+  }
+}
+
+/**
+ * Recursively adds or removes the dragging class to this node and its children.
+ * Store `adding` in a property of the delegate.
+ * @param {boolean} adding True if adding, false if removing.
+ * @package
+ */
+eYo.UI.prototype.setDragging = function(adding) {
+  this.isDragging_ = adding
+  this.driver.nodeSetDragging(node, adding)
+}
+
+/**
+ * Get the position of receiver's block relative to
+ * the visible area.
+ * Return value: if `x < 0`, left of the visible area,
+ * if `x > 0`, right of the visible area, 0 otherwise.
+ * undefined when the block is not in a workspace.
+ * The same holds for `y`.
+ * The values are the signed distances between the center
+ * of the block and the visible area.
+ * If the answer is `{x: -15, y: 0}`, we just have to scroll the workspace
+ * 15 units to the right and the block is visible.
+ * For edython.
+ * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
+ * @return {{x: number, y: number}|undefined}
+ */
+eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
+  var workspace = this.node.workspace
+  if (!workspace) {
+    return undefined
+  }
+  // is the block in the visible area ?
+  var metrics = workspace.getMetrics()
+  if (!metrics) {
+    // sometimes undefined is returned
+    console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")
+    return {
+      x: 0,
+      y: 0
+    }
+  }
+  var scale = workspace.scale || 1
+  var HW = this.node.height_width
+  // the block is in the visible area if we see its center
+  var leftBound = metrics.viewLeft / scale - HW.width / 2
+  var topBound = metrics.viewTop / scale - HW.height / 2
+  var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - HW.width / 2
+  var downBound = (metrics.viewTop + metrics.viewHeight) / scale - HW.height / 2
+  var xy = newLoc || this.xyInSurface
+  return {
+    x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
+    y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),
+  }
 }

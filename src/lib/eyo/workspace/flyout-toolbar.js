@@ -77,11 +77,11 @@ eYo.FlyoutToolbar.prototype.createDom = function (dom) {
   this.control_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'control'))
-  var svg = Blockly.utils.createSvgElement('svg', {
+  var svg = eYo.Driver.Svg.newElement('svg', {
     id: 'eyo-flyout-control-image',
     class: goog.getCssName(cssClass, 'control-image')
   }, this.control_)
-  this.pathControl_ = Blockly.utils.createSvgElement('path', {
+  this.pathControl_ = eYo.Driver.Svg.newElement('path', {
     id: 'p-flyout-control'
   }, svg)
   if (eYo.App && eYo.App.flyoutDropDown) {

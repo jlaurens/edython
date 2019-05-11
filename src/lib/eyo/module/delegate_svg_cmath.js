@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.CMath')
+goog.provide('eYo.Delegate.CMath')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Stmt')
 
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -28,7 +28,7 @@ goog.require('eYo.FlyoutCategory')
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.DelegateSvg.Expr.cmath__call_expr.populateMenu = function (mgr) {
+// eYo.Delegate.Expr.cmath__call_expr.populateMenu = function (mgr) {
 //   var block = this.block_
 //   var eyo = block.eyo
 //   // populate the menu with the functions in the same category
@@ -85,13 +85,13 @@ goog.require('eYo.FlyoutCategory')
 // }
 
 // /**
-//  * Class for a DelegateSvg, cmath constant block.
+//  * Class for a Delegate, cmath constant block.
 //  * As call is already a reserved message in javascript,
 //  * we use call_expr instead.
-//  * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+//  * Not normally called directly, eYo.Delegate.create(...) is preferred.
 //  * For edython.
 //  */
-// eYo.DelegateSvg.Expr.cmath__call_expr.makeSubclass('cmath__const', {
+// eYo.Delegate.Expr.cmath__call_expr.makeSubclass('cmath__const', {
 //   data: {
 //     callerFlag: {
 //       init: true, // true when `foo` is expected instead of `foo(…)`
@@ -317,6 +317,6 @@ goog.mixin(eYo.Tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.DelegateSvg.CMath.T3s = [
+eYo.Delegate.CMath.T3s = [
   eYo.T3.Expr.cmath__const
 ]

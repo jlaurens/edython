@@ -6,16 +6,16 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython, `star` modifications.
+ * @fileoverview Block delegates for edython, `star` modifications.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Starred')
+goog.provide('eYo.Delegate.Starred')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Decorate')
-goog.require('eYo.DelegateSvg')
+goog.require('eYo.Delegate')
 goog.require('eYo.T3.All')
 goog.require('goog.dom');
 
@@ -30,8 +30,8 @@ eYo.T3.Expr.Check._expression_or_parameter = eYo.T3.Expr.Check.expression.concat
 eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_expr_all.concat(eYo.T3.Expr.Check.parameter).concat(eYo.T3.Expr.Check.target)
 
 /**
- * Class for a DelegateSvg, starred block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, starred block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  *
  * Involved types:
  *
@@ -46,7 +46,7 @@ eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_exp
  * For edython.
  */
 
-eYo.DelegateSvg.Expr.makeSubclass('Starred', {
+eYo.Delegate.Expr.makeSubclass('Starred', {
   xml: {
     types: [
       eYo.T3.Expr.star_expr,
@@ -67,7 +67,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var O = this.owner
-        O.modified_d..incog = newValue === eYo.Key.STAR
+        O.modified_d.incog = newValue === eYo.Key.STAR
         if (newValue === eYo.Key.STAR) {
           O.modifier_p = '*'
         }
@@ -241,7 +241,7 @@ eYo.DelegateSvg.Expr.makeSubclass('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Delegate.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     var check = this.magnets.output.check_
@@ -254,7 +254,7 @@ eYo.DelegateSvg.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
  * For edython.
  * @return {String}
  */
-eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
+eYo.Delegate.Expr.Starred.prototype.xmlAttr = function () {
   return this.modifier_p
 }
 
@@ -264,8 +264,8 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!eYo.Magnet} oldTargetM4t that was connected to connection
 //  * @param {!eYo.Magnet} targetOldM4t that was connected to the old target connection.
 //  */
-// eYo.DelegateSvg.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-//   eYo.DelegateSvg.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+// eYo.Delegate.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+//   eYo.Delegate.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
 //   if (m4t === this.modified_s.magnet) {
 
 //   }
@@ -276,8 +276,8 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!Blockly.Connection} blockConnection
 //  * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
 //  */
-// eYo.DelegateSvg.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetM4t) {
-//   eYo.DelegateSvg.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetM4t)
+// eYo.Delegate.Expr.Starred.prototype.didDisconnect = function (connection, oldTargetM4t) {
+//   eYo.Delegate.Expr.Starred.superClass_.didDisconnect.call(this, connection, oldTargetM4t)
 // }
 
 ;[
@@ -290,6 +290,6 @@ eYo.DelegateSvg.Expr.Starred.prototype.xmlAttr = function () {
   'parameter_star_star',
   'or_expr_star_star'
 ].forEach(key => {
-  eYo.DelegateSvg.Expr[key] = eYo.DelegateSvg.Expr.Starred
-  eYo.DelegateSvg.Manager.register(key)
+  eYo.Delegate.Expr[key] = eYo.Delegate.Expr.Starred
+  eYo.Delegate.Manager.register(key)
 })

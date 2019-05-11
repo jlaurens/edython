@@ -6,17 +6,17 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Proc')
+goog.provide('eYo.Delegate.Proc')
 
 goog.require('eYo.XRE')
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Primary')
-goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Delegate.Group')
 goog.require('eYo.MenuItem')
 goog.require('goog.dom');
 
@@ -46,10 +46,10 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
   )
 })
 /**
- * Class for a DelegateSvg, decorator.
+ * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
+eYo.Delegate.Stmt.makeSubclass('decorator_stmt', {
   xml: {
     attr: '@'
   },
@@ -77,7 +77,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this..incog = newValue === eYo.Key.GETTER
+        this.incog = newValue === eYo.Key.GETTER
         // update the placeholder for the name field.
         this.owner.name_d.field.placeholderText(true)
       },
@@ -105,9 +105,9 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
         }
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
-        this..incog = newValue !== eYo.Key.N_ARY
+        this.incog = newValue !== eYo.Key.N_ARY
         this.synchronize(newValue)
-        this.owner.n_ary_s..incog = newValue !== eYo.Key.N_ARY
+        this.owner.n_ary_s.incog = newValue !== eYo.Key.N_ARY
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
@@ -339,7 +339,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('decorator_stmt', {
   }
 }, true)
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.decorator_stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.decorator_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean} decorator blocks are white when followed by a statement.
@@ -357,7 +357,7 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.decorator_stmt.prototype, {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var variant_p = this.variant_p
   if (variant_p !== eYo.Key.NONE) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -412,14 +412,14 @@ eYo.DelegateSvg.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = functi
     })
   }
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
- * Class for a DelegateSvg, funcdef_part.
+ * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
+eYo.Delegate.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.TYPE],
@@ -477,7 +477,7 @@ eYo.DelegateSvg.Group.makeSubclass('funcdef_part', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var variants = this.variant_d.getAll()
   var variant = this.variant_p
@@ -499,7 +499,7 @@ eYo.DelegateSvg.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /*
@@ -507,10 +507,10 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
 */
 
 /**
- * Class for a DelegateSvg, classdef_part block.
+ * Class for a Delegate, classdef_part block.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
+eYo.Delegate.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
@@ -568,7 +568,7 @@ eYo.DelegateSvg.Group.makeSubclass('classdef_part', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var variants = this.variant_d.getAll()
   var variant = block.eyo.variant_d.get()
@@ -589,10 +589,10 @@ eYo.DelegateSvg.Stmt.classdef_part.prototype.populateContextMenuFirst_ = functio
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
-eYo.DelegateSvg.Proc.T3s = [
+eYo.Delegate.Proc.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Stmt.decorator_stmt,
   eYo.T3.Stmt.funcdef_part,

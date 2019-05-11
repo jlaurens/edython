@@ -89,7 +89,7 @@ eYo.FieldTextInput.prototype.init = function () {
  * The block must be selected before the text field would become editable.
  **/
 eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
-  if (eYo.Selected.eyo === this.eyo.b_eyo) {
+  if (this.eyo.b_eyo.selected) {
     eYo.FieldTextInput.superClass_.onMouseDown_.call(this, e)
   }
 }

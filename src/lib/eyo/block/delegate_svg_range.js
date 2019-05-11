@@ -6,23 +6,23 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Range')
+goog.provide('eYo.Delegate.Range')
 
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.Delegate.Expr')
 
 eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
 
 /**
- * Class for a DelegateSvg, range block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, range block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
+eYo.Delegate.Expr.makeSubclass('builtin__range_expr', {
   xml: {
     attr: 'range',
   },
@@ -36,9 +36,9 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.start_d..incog = newValue === eYo.Key.NONE
-        this.owner.sep_s..incog = newValue === eYo.Key.NONE
-        this.owner.step_d..incog = newValue !== eYo.Key.STEP
+        this.owner.start_d.incog = newValue === eYo.Key.NONE
+        this.owner.sep_s.incog = newValue === eYo.Key.NONE
+        this.owner.step_d.incog = newValue !== eYo.Key.STEP
       },
       xml: false
     },
@@ -168,11 +168,11 @@ eYo.DelegateSvg.Expr.makeSubclass('builtin__range_expr', {
  * The xml `eyo` attribute of this block, as it should appear in the saved data.
  * For edython.
  */
-eYo.DelegateSvg.Expr.builtin__range_expr.prototype.xmlAttr = function () {
+eYo.Delegate.Expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 
-eYo.DelegateSvg.Range.T3s = [
+eYo.Delegate.Range.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.builtin__range_expr
 ]

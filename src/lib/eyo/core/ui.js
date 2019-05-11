@@ -569,7 +569,7 @@ eYo.setup.register(() => {
     }`
   )
   eYo.Style.insertCssRuleAt(
-    `input.eyo-code-error {
+    `input-code-error {
       color: red;
     }`
   )
@@ -609,13 +609,13 @@ eYo.Style.MenuIcon = {
 }
 
 eYo.Style.MenuIcon.path = function (g) {
-  var E = Blockly.utils.createSvgElement('g',
+  var E = eYo.Driver.Svg.newElement('g',
     {'class': 'eyo-menu-icon', 'opacity': 0.1}, g)
   E.style.fill = eYo.Style.MenuIcon.color
   var h = eYo.Font.height
   var w = eYo.Style.MenuIcon.width
   var r = h / 8
-  Blockly.utils.createSvgElement('rect',
+  eYo.Driver.Svg.newElement('rect',
     {'x': '0',
       'y': '0',
       'rx': r,
@@ -624,13 +624,13 @@ eYo.Style.MenuIcon.path = function (g) {
       'height': h,
       'fill': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))},
     E)
-  Blockly.utils.createSvgElement('circle',
+  eYo.Driver.Svg.newElement('circle',
     {'cx': w / 2, 'cy': h / 2, 'r': r},
     E)
-  Blockly.utils.createSvgElement('circle',
+  eYo.Driver.Svg.newElement('circle',
     {'cx': w / 2, 'cy': h / 2 - h / 3, 'r': r},
     E)
-  Blockly.utils.createSvgElement('circle',
+  eYo.Driver.Svg.newElement('circle',
     {'cx': w / 2, 'cy': h / 2 + h / 3, 'r': r},
     E)
   return E

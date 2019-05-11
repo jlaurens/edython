@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -15,23 +15,11 @@ goog.provide('eYo.MenuManager')
 
 goog.require('eYo.Msg')
 goog.require('eYo.T3')
-goog.require('eYo.DelegateSvg')
+goog.require('eYo.Delegate')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
 goog.require('goog.dom');
 goog.require('eYo.Py.Exporter')
-
-/**
- * The block that handles the context menu is not always the one
- * which has received the messages.
- * The default handler is the block itself.
- * For wrapper blocks, the handler may be the wrapped block.
- * @param {!Blockly.Block} block The block.
- * @private
- */
-eYo.DelegateSvg.prototype.getContextMenuHandler = function (block) {
-  return block
-}
 
 /**
  * Shared context menu manager.
@@ -263,7 +251,7 @@ eYo.MenuManager.prototype.showMenu = function (block, e) {
   if (ee) {
     // this block was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (eyo === eYo.Selected.eyo) {
+      if (eyo.selected) {
         // if the block was already selected,
         // try to select an input connection
         eYo.Selected.magnet = eyo.lastSelectedMagnet
@@ -550,8 +538,8 @@ eYo.MenuManager.prototype.populateLast = function (block) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionFirst = function (mgr, event) {
-  return mgr.handleAction_movable_parent(this.block_, event)
+eYo.Delegate.prototype.handleMenuItemActionFirst = function (mgr, event) {
+  return mgr.handleAction_movable_parent(this, event)
 }
 
 /**
@@ -560,7 +548,7 @@ eYo.DelegateSvg.prototype.handleMenuItemActionFirst = function (mgr, event) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (mgr, event) {
+eYo.Delegate.prototype.handleMenuItemActionMiddle = function (mgr, event) {
   return false
 }
 
@@ -571,7 +559,7 @@ eYo.DelegateSvg.prototype.handleMenuItemActionMiddle = function (mgr, event) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.DelegateSvg.prototype.handleMenuItemActionLast = function (mgr, event) {
+eYo.Delegate.prototype.handleMenuItemActionLast = function (mgr, event) {
   return mgr.handleActionLast(this, event)
 }
 
@@ -622,7 +610,7 @@ eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (t_eyo === eYo.Selected.eyo && t_eyo !== unwrapped) {
+      if (t_eyo.selected && t_eyo !== unwrapped) {
         // this block was selected, select the block below or above before deletion
         var m4t
         if (((m4t = unwrapped.magnets.foot) && (t_eyo = m4t.t_eyo)) || ((m4t = unwrapped.magnets.head) && (t_eyo = m4t.t_eyo))) {
@@ -858,16 +846,6 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
       eYo.Do.createSPAN(' = ', 'eyo-code-reserved'),
       goog.dom.createTextNode('value')
     )
-  case eYo.T3.Stmt.print_stmt:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('print', 'eyo-code-reserved'),
-      goog.dom.createTextNode('(…)')
-    )
-  case eYo.T3.Stmt.builtin__input_stmt:
-    return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN('input', 'eyo-code-reserved'),
-      goog.dom.createTextNode('(…)')
-    )
   default:
     return 'Parent ' + type
   }
@@ -1063,7 +1041,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var eyo = eYo.DelegateSvg.newComplete(block, type)
+    var eyo = eYo.Delegate.newComplete(block, type)
     var yorn = eyo.magnets.head &&
     eyo.magnets.head.checkType_(m4t) &&
     (!targetM4t || (eyo.magnets.foot && targetM4t.checkType_(eyo.magnets.foot)))
@@ -1079,7 +1057,7 @@ eYo.MenuManager.prototype.populate_before_after = function (block) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var eyo = eYo.DelegateSvg.newComplete(block, type)
+    var eyo = eYo.Delegate.newComplete(block, type)
     var yorn = eyo.magnets.foot &&
     eyo.magnets.foot.checkType_(m4t) &&
     (!target || (eyo.magnets.head && target.checkType_(eyo.magnets.head)))

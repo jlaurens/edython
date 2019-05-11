@@ -40,6 +40,7 @@ goog.require('eYo.T3')
  */
 eYo.Magnet = function (block, type, model) {
   this.connection_ = new Blockly.RenderedConnection(block, type)
+  this.connection_.eyo = this
   this.model_ = model
   this.where_ = new eYo.Where()
   this.slot = undefined // except when the connection belongs to a slot
@@ -50,7 +51,7 @@ eYo.Magnet = function (block, type, model) {
 
 Object.defineProperties(eYo.Magnet, {
   INPUT: {
-    value: Blockly.INPUT_VALUE
+    value: eYo.Magnet.VALUE
   },
   OUTPUT: {
     value: Blockly.OUTPUT_VALUE
@@ -104,9 +105,30 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return b && b.eyo
     }
   },
+  workspace: {
+    get () {
+      var b = this.connection.sourceBlock_
+      return this.node.workspace
+    }
+  },
   type: {
     get () {
       return this.connection.type
+    }
+  },
+  visible_: {
+    writable: true
+  },
+  visible: {
+    get () {
+      return this.visible_
+    },
+    set (newValue) {
+      if (this.visible_ !== newValue) {
+        newValue ? this.connection.unhideAll() : this.connection.hideAll()
+        var t_eyo = this.t_eyo
+        t_eyo && (t_eyo.ui.visible = newValue)
+      }
     }
   },
   typeName: {
@@ -142,12 +164,12 @@ Object.defineProperties(eYo.Magnet.prototype, {
       }
     }
   },
-  c: { // in block text coordinates
+  c: { // in block text units
     get () {
       return this.slot ? this.where.c + this.slot.where.c : this.where.c
     }
   },
-  l: { // in block text coordinates
+  l: { // in block text units
     get () {
       return this.slot ? this.where.l + this.slot.where.l : this.where.l
     }
@@ -241,7 +263,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       // in a void wrapped list
       var b_eyo = this.b_eyo
       var input = b_eyo.inputList[0]
-      if (input && (input.eyo.magnet === this)) {
+      if (input && (input.magnet === this)) {
         var m4t = b_eyo.magnets.output
         if (m4t && (m4t = m4t.target)) {
           return m4t.bindField
@@ -364,7 +386,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   //     }
   //     // do not cache, unless you know what you do
   //     var b_eyo = this.b_eyo
-  //     if (b_eyo.wrapped_ && b_eyo instanceof eYo.DelegateSvg.List) {
+  //     if (b_eyo.wrapped_ && b_eyo instanceof eYo.Delegate.List) {
   //       var x = b_eyo.magnets.output.target
   //       return x && (x = x.slot) && slot.model
   //     }
@@ -450,13 +472,6 @@ eYo.Magnet.prototype.plugged_ = undefined
  * Used in lists.
  */
 eYo.Magnet.prototype.s7r_ = false
-
-/**
- * Whether the connection is disabled.
- * Separators are disabled for range arguments.
- * Used in lists.
- */
-eYo.Magnet.prototype.disabled_ = false
 
 /**
  * Whether the connection is a wrapper.
@@ -565,7 +580,7 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
       eYo.Events.disableWrap(
         () => {
           var b_eyo = this.b_eyo
-          t_eyo = eYo.DelegateSvg.newComplete(b_eyo, this.wrapped_, b_eyo.id + '.wrapped:' + this.name_)
+          t_eyo = eYo.Delegate.newComplete(b_eyo, this.wrapped_, b_eyo.id + '.wrapped:' + this.name_)
           goog.asserts.assert(t_eyo, 'completeWrap failed: ' + this.wrapped_)
           goog.asserts.assert(t_eyo.magnets.output, 'Did you declare an Expr block typed ' + t_eyo.type)
           ans = this.connect(t_eyo.magnets.output)
@@ -679,7 +694,7 @@ eYo.Magnet.prototype.didDisconnect = function (oldTargetM4t, targetOldM4t) {
 /**
  * Set the receiver's connection's check_ array according to the given type.
  * The defaults implements asks the model then sets the check_ property.
- * Called by `consolidateConnections`.
+ * Called by `consolidateMagnets`.
  */
 eYo.Magnet.prototype.updateCheck = function () {
   var eyo = this.b_eyo
@@ -848,7 +863,8 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
     this.where.set(c, l)
     console.error(this.x)
   }
-  this.connection.setOffsetInBlock(this.x, this.y)
+  this.offsetInBlock_.x = this.x
+  this.offsetInBlock_.x = this.y
 }
 
 /**
@@ -999,7 +1015,7 @@ eYo.Magnets.prototype.dispose = function () {
  * @private
  * @suppress {accessControls}
  */
-eYo.Magnet.prototype.prototype.connect_ = (() => {
+eYo.Magnet.prototype.connect_ = (() => {
   // We save a function that we replace below
   var connect_ = Blockly.RenderedConnection.prototype.connect_
   return function (childM4t) {
@@ -1074,7 +1090,7 @@ eYo.Magnet.prototype.prototype.connect_ = (() => {
                           }
                         }
                         var plug = eyo => {
-                          return eyo instanceof eYo.DelegateSvg.List
+                          return eyo instanceof eYo.Delegate.List
                           ? eyo.someInput(do_it)
                           : eyo.someSlot(do_it)
                         }
@@ -1273,3 +1289,72 @@ eYo.Magnet.prototype.tighten_ = function() {
 eYo.Magnet.prototype.scrollToVisible = function (force) {
   this.b_eyo.scrollToVisible(force)
 }
+
+/**
+ * Move the block(s) belonging to the connection to a point where they don't
+ * visually interfere with the specified connection.
+ * @param {!Blockly.Connection} staticConnection The connection to move away
+ *     from.
+ * @private
+ * @suppress {accessControls}
+ */
+eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
+  var b_eyo = this.b_eyo
+  if (!b_eyo.workspace || b_eyo.workspace.isDragging()) {
+    return
+  }
+  // Move the root block.
+  var root = b_eyo.root
+  if (root.isInFlyout) {
+    // Don't move blocks around in a flyout.
+    return
+  }
+  if (!root.workspace) {
+    return
+  }
+  var reverse = false
+  if (!root.isMovable()) {
+    // Can't bump an uneditable block away.
+    // Check to see if the other block is movable.
+    root = m4t.b_eyo.root
+    if (!root.workspace || !root.isMovable()) {
+      return
+    }
+    // Swap the connections and move the 'static' connection instead.
+    m4t = this
+    reverse = true
+  }
+  // Raise it to the top for extra visibility.
+  var selected = root.selected
+  selected || root.ui.addDlgtSelect_()
+  var dx = (m4t.x_ + Blockly.SNAP_RADIUS) - this.x_
+  var dy = (m4t.y_ + Blockly.SNAP_RADIUS) - this.y_
+  if (reverse) {
+    // When reversing a bump due to an uneditable block, bump up.
+    dy = -dy
+  }
+  // Added by JL, I don't remember exactly why...
+  if (m4t.target) {
+    dx += m4t.t_eyo.width
+  }
+  root.moveByXY(dx, dy)
+  selected || root.ui.removeDlgtSelect_()
+}
+
+Object.defineProperties(Blockly.RenderedConnection, {
+  /**
+   * To be removed.
+   */
+  offsetInBlock_: {
+    get () {
+      return this.eyo.offsetInBlock_
+    },
+    set (newValue) {
+      if (newValue) {
+        this.eyo.where.x = newValue.x
+        this.eyo.where.y = newValue.y
+      }
+    }
+  }
+})
+

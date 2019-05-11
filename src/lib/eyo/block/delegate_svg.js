@@ -6,12 +6,12 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg')
+goog.provide('eYo.Delegate')
 
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
@@ -20,269 +20,87 @@ goog.require('eYo.Slot')
 goog.require('eYo.UI')
 goog.require('eYo.Where')
 goog.require('eYo.Delegate')
-goog.forwardDeclare('eYo.BlockSvg')
-goog.forwardDeclare('eYo.DelegateSvg.Expr')
-goog.forwardDeclare('eYo.DelegateSvg.Stmt')
+goog.forwardDeclare('eYo.Delegate.Expr')
+goog.forwardDeclare('eYo.Delegate.Stmt')
 goog.forwardDeclare('eYo.Selected')
 goog.require('goog.dom')
 
 /**
- * Class for a DelegateSvg.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
- * For edython.
+ * Render the block.
+ * Lays out and reflows a block based on its contents and settings.
  */
-eYo.Delegate.makeSubclass('Svg')
-
-// Mimic Blockly naming convention
-eYo.DelegateSvg = eYo.Delegate.Svg
-
-eYo.DelegateSvg.prototype.packedQuotes = true
-eYo.DelegateSvg.prototype.packedBrackets = true
-
-Object.defineProperties(
-  eYo.DelegateSvg.prototype,
-  {
-    isCollapsed: {
-      get () {
-        return this.block_.isCollapsed()
-      }
-    },
-    ui: {
-      get () {
-        return this.ui_
-      }
-    },
-    uiHasSelect: {
-      get () {
-        return this.ui && this.ui.hasSelect
-      }
-    }
-  }
-)
-/**
- * Ends a mutation
- * For edython.
- * @return {Number} change level
- */
-eYo.DelegateSvg.prototype.changeEnd = function () {
-  var yorn = eYo.DelegateSvg.superClass_.changeEnd.call(this)
-  if (!yorn) {
-    this.render()
-  }
-  return yorn
-}
-
-eYo.DelegateSvg.Manager = eYo.Delegate.Manager
+// deleted blocks are rendered during deletion
+// this should be avoided
+eYo.Delegate.prototype.render = eYo.Do.nothing
 
 /**
- * Method to register an expression or a statement block.
- * The delegate is searched as a DelegateSvg element
- * @param{!string} key  key is the last component of the block type as a dotted name.
+ * Render the block. Real function.
  */
-eYo.DelegateSvg.Manager.register = function (key) {
-  var prototypeName = eYo.T3.Expr[key]
-  var delegateC9r, available
-  if (prototypeName) {
-    delegateC9r = eYo.DelegateSvg.Expr[key]
-    available = eYo.T3.Expr.Available
-  } else if ((prototypeName = eYo.T3.Stmt[key])) {
-    // console.log('Registering statement', key)
-    delegateC9r = eYo.DelegateSvg.Stmt[key]
-    available = eYo.T3.Stmt.Available
-  } else {
-    throw new Error('Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
-  }
-  eYo.DelegateSvg.Manager.registerDelegate_(prototypeName, delegateC9r)
-  available.push(prototypeName)
+eYo.Delegate.prototype.render_ = function () {
+  this.ui.render()
 }
 
-// TRANSITION, next is aimed to be removed
-Object.defineProperties(eYo.DelegateSvg.prototype, {
-  svgGroup_: {
-    get () {
-      return this.block_.svgGroup_
-    }
+Object.defineProperties(eYo.Delegate.prototype, {
+  collapsed_: {
+    writable: true
   },
-    /**
-   * This is the contour group.
-   * @type {SVGGroupElement}
-   * @private
-   */
-  svgGroupShape_: {
+  collapsed: {
     get () {
-      return this.ui.driver.groupShape_
+      return this.collapsed_
     },
     set (newValue) {
-      this.ui.driver.groupShape_ = newValue
+      if (this.collapsed_ === newValue) {
+        return
+      }
+      // Show/hide the next statement inputs.
+      this.forEachInput(input => input.setVisible(!collapsed))
+      eYo.Events.fireDlgtChange(
+          this, 'collapsed', null, this.collapsed_, newValue)
+      this.collapsed_ = newValue;
+      this.render()
     }
   },
-  /**
-   * This is the contour group.
-   * @type {SVGGroupElement}
-   * @private
-   */
-  svgGroupContour_: {
+  ui: {
     get () {
-      return this.ui.driver.groupContour_
-    },
-    set (newValue) {
-      this.ui.driver.groupContour_ = newValue
+      return this.ui_
     }
   },
-  /**
-   * This is the shape used to draw the outline of a block
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathShape_: {
+  uiHasSelect: {
     get () {
-      return this.ui.driver.pathShape_
-    },
-    set (newValue) {
-      this.ui.driver.pathShape_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw the background of a block
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathContour_: {
-    get () {
-      return this.ui.driver.pathContour_
-    },
-    set (newValue) {
-      this.ui.driver.pathContour_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw a collapsed block.
-   * Background or outline ?
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathCollapsed_: {
-    get () {
-      return this.ui.driver.pathCollapsed_
-    },
-    set (newValue) {
-      this.ui.driver.pathCollapsed_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw a block...
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathInner_: {
-    get () {
-      return this.ui.driver.pathInner_
-    },
-    set (newValue) {
-      this.ui.driver.pathInner_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw an highlighted block contour when selected.
-   * When a block is hilighted,
-   * the outer line stroke width is bigger and the color is different,
-   * the inner line have the same width, only the color changes.
-   * In general, this is a duplicate of svgPathShape_,
-   * but this is not (yet) a requiremenent
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathSelect_: {
-    get () {
-      return this.ui.driver.pathSelect_
-    },
-    set (newValue) {
-      this.ui.driver.pathSelect_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw an highlighted block contour when a parent is selected.
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathHilight_: {
-    get () {
-      return this.ui.driver.pathHilight_
-    },
-    set (newValue) {
-      this.ui.driver.pathHilight_ = newValue
-    }
-  },
-  /**
-   * This is the shape used to draw an highlighted connection contour.
-   * @type {SVGPathElement}
-   * @private
-   */
-  svgPathConnection_: {
-    get () {
-      return this.ui.driver.pathConnection_
-    },
-    set (newValue) {
-      this.ui.driver.pathConnection_ = newValue
+      return this.ui && this.ui.hasSelect
     }
   }
 })
 
-/**
- * When set, used to create an input value.
- * three inputs can be created on the fly.
- * The data is an object with following properties: first, middle, last
- * each value is an object with properties
- * - key, string uniquely identify the value input. When absent, a dummy input is created
- * - label, optional string
- * - wrap, optional, the type of the block wrapped by this input
- * - check, [an array of] strings, types to check the connections. When absent, replaced by `wrap` if any.
- * - optional, true/false whether the connection is optional, only when no wrap.
- */
+eYo.Delegate.prototype.packedQuotes = true
+eYo.Delegate.prototype.packedBrackets = true
 
 /**
- * Create and initialize the various paths.
- * Called once at block creation time.
- * Should not be called directly
- * The block implementation is created according to a dictionary
- * input model available through `model.slots`.
- * The structure of that dictionary is detailled in the treatment flow
- * below.
+ * Method to register an expression or a statement block.
+ * The delegate is searched as a Delegate element
+ * @param{!string} key  key is the last component of the block type as a dotted name.
  */
-eYo.DelegateSvg.prototype.init = eYo.Decorate.reentrant_method(
-  'initBlockSvg',
-  function () {
-    this.changeWrap(
-      function () {
-        eYo.DelegateSvg.superClass_.init.call(this)
-        var block = this.block_
-        block.setTooltip('')
-        block.setHelpUrl('')
-        if (this.workspace.rendered) {
-          this.beReady()
-        }
-      }
-    )
+eYo.Delegate.Manager.register = function (key) {
+  var prototypeName = eYo.T3.Expr[key]
+  var delegateC9r, available
+  if (prototypeName) {
+    delegateC9r = eYo.Delegate.Expr[key]
+    available = eYo.T3.Expr.Available
+  } else if ((prototypeName = eYo.T3.Stmt[key])) {
+    // console.log('Registering statement', key)
+    delegateC9r = eYo.Delegate.Stmt[key]
+    available = eYo.T3.Stmt.Available
+  } else {
+    throw new Error('Unknown block eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
   }
-)
-
-/**
- * Revert operation of init.
- */
-eYo.DelegateSvg.prototype.deinit = function () {
-  if (this === eYo.Selected.eyo) {
-    // this block was selected, select the block below or above before deletion
-    // this does not work most probably because it is the wrong place
-    var t_eyo
-    if ((t_eyo = this.foot) || (t_eyo = this.head) || (t_eyo = this.output)) {
-      setTimeout(() => {
-        eYo.Selected.eyo = t_eyo
-      })// broken for output magnet ?
-    }
-  }
-  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
-  eYo.DelegateSvg.superClass_.deinit.call(this)
+  eYo.Delegate.Manager.registerDelegate_(prototypeName, delegateC9r)
+  available.push(prototypeName)
 }
+
+
+// Mimic Blockly naming convention
+eYo.Delegate = eYo.Delegate
+
 
 /**
  * Called when the parent will just change.
@@ -290,7 +108,7 @@ eYo.DelegateSvg.prototype.deinit = function () {
  * in the proper domain of the dom tree.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
+eYo.Delegate.prototype.parentWillChange = function (newParent) {
 }
 
 /**
@@ -299,35 +117,26 @@ eYo.DelegateSvg.prototype.parentWillChange = function (newParent) {
  * @param {string} name The name of the field.
  * @return {Blockly.Field} Named field, or null if field does not exist.
  */
-eYo.DelegateSvg.prototype.getField = function (name) {
-  var fields = this.fields
-  for (var key in fields) {
-    var field = fields[key]
-    if (field.name === name) {
-      return field
-    }
-  }
+eYo.Delegate.prototype.getField = function (name) {
+  var ans = null
+  var f = F => Object.values(F).some(f => (f.name === name) && (ans = f))
+  if (f(this.fields)) return ans
   var slot
   if ((slot = this.slotAtHead)) {
     do {
-      var fields = slot.fields
-      for (var key in fields) {
-        var field = fields[key]
-        if (field.name === name) {
-          return field
-        }
-      }
+      if (f(slot.fields)) return ans
     } while ((slot = slot.next))
   }
-  return null
+  this.inputList.some(input => input.fieldRow.some(f => (f.name === name) && (ans = f)))
+  return ans
 }
 
 /**
  * When the block is just a wrapper, returns the wrapped target.
  */
-eYo.DelegateSvg.prototype.getMenuTarget = function () {
+eYo.Delegate.prototype.getMenuTarget = function () {
   var wrapped
-  if (this.wrap && (wrapped = this.wrap.input.eyo.target)) {
+  if (this.wrap && (wrapped = this.wrap.input.target)) {
     return wrapped.eyo.getMenuTarget()
   }
   if (this.wrappedC8nDlgt_ && this.wrappedC8nDlgt_.length === 1 &&
@@ -339,39 +148,15 @@ eYo.DelegateSvg.prototype.getMenuTarget = function () {
   return this.block_
 }
 
-eYo.DelegateSvg.debugPrefix = ''
-eYo.DelegateSvg.debugCount = {}
-
-/**
- * Render the block.
- * Lays out and reflows a block based on its contents and settings.
- */
-// deleted blocks are rendered during deletion
-// this should be avoided
-eYo.DelegateSvg.prototype.render = eYo.Do.nothing
-
-/**
- * Render the block. Real function.
- */
-eYo.DelegateSvg.prototype.render_ = function () {
-  this.ui.render()
-}
-
-/**
- * Whether the block is sealed to its parent.
- * The sealed status is decided at init time.
- * The corresponding input.eyo.connection.wrapped_ is set to true.
- * @private
- */
-eYo.DelegateSvg.prototype.wrapped_ = undefined
+eYo.Delegate.debugPrefix = ''
+eYo.Delegate.debugCount = {}
 
 /**
  * Fetches the named input object.
  * @param {!String} name The name of the input.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly. Ignored.
- * @return {Blockly.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
+ * @return {eYo.Input} The input object, or null if input does not exist. Input that are disabled are skipped.
  */
-eYo.DelegateSvg.prototype.getInput = function (name, dontCreate) {
+eYo.Delegate.prototype.getInput = function (name) {
   return this.someInput(input => input.name === name)
 }
 
@@ -502,27 +287,6 @@ eYo.StatementBlockEnumerator = function (block) {
 }
 
 /**
- * Subclassers will override this but won't call it directly,
- * except form the overriding function.
- * @private
- */
-eYo.DelegateSvg.prototype.duringBlockWrapped = function () {
-  eYo.DelegateSvg.superClass_.duringBlockWrapped.call(this)
-  goog.asserts.assert(!this.uiHasSelect, 'Deselect block before')
-  this.ui && this.ui.updateBlockWrapped()
-}
-
-/**
- * Creates the contour path.
- * Does nothing if this contour already exists.
- * @private
- */
-eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
-  eYo.DelegateSvg.superClass_.duringBlockUnwrapped.call(this)
-  this.ui && this.ui.updateBlockWrapped()
-}
-
-/**
  * Create a new delegate, with svg background.
  * This is the expected way to create the block.
  * There is a caveat due to proper timing in initializing the svg.
@@ -536,8 +300,8 @@ eYo.DelegateSvg.prototype.duringBlockUnwrapped = function () {
  * @param {?String|Object} id
  * @private
  */
-eYo.DelegateSvg.newReady = function (owner, model, id) {
-  var dlgt = eYo.DelegateSvg.newComplete.apply(null, arguments)
+eYo.Delegate.newReady = function (owner, model, id) {
+  var dlgt = eYo.Delegate.newComplete.apply(null, arguments)
   dlgt && dlgt.beReady()
   return dlgt
 }
@@ -554,14 +318,14 @@ eYo.DelegateSvg.newReady = function (owner, model, id) {
  * @param {?String|Object} id
  * @param {?eYo.Delegate} id
  */
-eYo.DelegateSvg.newComplete = (() => {
+eYo.Delegate.newComplete = (() => {
   var processModel = (workspace, model, id, eyo) => {
     var dataModel = model
     if (!eyo) {
-      if (eYo.DelegateSvg.Manager.get(model.type)) {
+      if (eYo.Delegate.Manager.get(model.type)) {
         eyo = workspace.newDlgt(model.type, id)
         eyo.setDataWithType(model.type)
-      } else if (eYo.DelegateSvg.Manager.get(model)) {
+      } else if (eYo.Delegate.Manager.get(model)) {
         eyo = workspace.newDlgt(model, id) // can undo
         eyo.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
@@ -600,15 +364,15 @@ eYo.DelegateSvg.newComplete = (() => {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var input = this.getInput(k)
             if (input && input.connection) {
-              var t_eyo = input.eyo.t_eyo
+              var t_eyo = input.t_eyo
               var V = Vs[k]
               var dlgt = processModel(workspace, V, null, t_eyo)
               if (!t_eyo && dlgt && dlgt.magnets.output) {
                 dlgt.changeWrap(
                   () => {
-                    var slot = input.eyo.magnet.slot
-                    slot && slot..incog = false
-                    dlgt.magnets.output.connect(input.eyo.magnet)
+                    var slot = input.magnet.slot
+                    slot && (slot.incog = false)
+                    dlgt.magnets.output.connect(input.magnet)
                   }
                 )
               }
@@ -618,7 +382,7 @@ eYo.DelegateSvg.newComplete = (() => {
         Vs = model
         this.forEachSlot(slot => {
           var input = slot.input
-          if (!input || !input.eyo.magnet) {
+          if (!input || !input.magnet) {
             return
           }
           k = slot.key + '_s'
@@ -629,14 +393,14 @@ eYo.DelegateSvg.newComplete = (() => {
           } else {
             return
           }
-          var t_eyo = input.eyo.magnet.t_eyo
+          var t_eyo = input.magnet.t_eyo
           var y = processModel(workspace, V, null, t_eyo)
           if (!t_eyo && y && y.magnets.output) {
             y.changeWrap(
               () => {
                 // The connection can be established only when not incog
-                slot..incog = false
-                y.magnets.output.connect(input.eyo.magnet)
+                slot.incog = false
+                y.magnets.output.connect(input.magnet)
               }
             )
           }
@@ -680,26 +444,25 @@ eYo.DelegateSvg.newComplete = (() => {
  * This is a one shot function.
  * @param {boolean} headless  no op when false
  */
-eYo.DelegateSvg.prototype.beReady = function (headless) {
+eYo.Delegate.prototype.beReady = function (headless) {
   if (headless === false || !this.workspace) {
     return
   }
-  this.changeWrap(
-    function () {
+  this.changeWrap(() => {
       this.beReady = eYo.Do.nothing // one shot function
       this.eventsInit_ = true
       this.ui_ = new eYo.UI(this)
       this.forEachField(field => field.eyo.beReady())
       this.forEachSlot(slot => slot.beReady())
       this.inputList.forEach(input => {
-        input.eyo.beReady()
+        input.beReady()
       })
       ;[this.magnets.suite,
         this.magnets.right,
         this.magnets.foot
       ].forEach(m => m && m.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
-      this.render = eYo.DelegateSvg.prototype.render_
+      this.render = eYo.Delegate.prototype.render_
     }
   )
 }
@@ -720,7 +483,7 @@ Object.defineProperties(
  * This information may be displayed as the last item in the contextual menu.
  * Wrapped blocks will return the parent's answer.
  */
-eYo.DelegateSvg.prototype.getPythonType = function () {
+eYo.Delegate.prototype.getPythonType = function () {
   if (this.wrapped_) {
     return this.parent.getPythonType()
   }
@@ -736,37 +499,8 @@ eYo.DelegateSvg.prototype.getPythonType = function () {
  * @param {Object} model, for subclassers
  * @return {?eYo.Delegate} the created block
  */
-eYo.DelegateSvg.prototype.insertParentWithModel = function (model) {
+eYo.Delegate.prototype.insertParentWithModel = function (model) {
   goog.asserts.assert(false, 'Must be subclassed')
-}
-
-/**
- * Returns the coordinates of a bounding rect describing the dimensions of this
- * block.
- * As the shape is not the same comparing to Blockly's default,
- * the bounding rect changes too.
- * Coordinate system: workspace coordinates.
- * @return {!goog.math.Rect}
- *    Object with top left and bottom right coordinates of the bounding box.
- */
-eYo.DelegateSvg.prototype.getBoundingRect = function () {
-  return goog.math.Rect.createFromPositionAndSize(
-    this.ui.xyInSurface,
-    this.ui.getHeightWidth()
-  )
-}
-
-/**
- * Returns the coordinates of a bounding box describing the dimensions of this
- * block.
- * As the shape is not the same comparing to Blockly's default,
- * the bounding box changes too.
- * Coordinate system: workspace coordinates.
- * @return {!goog.math.Box}
- *    Object with top left and bottom right coordinates of the bounding box.
- */
-eYo.DelegateSvg.prototype.getBoundingBox = function () {
-  return this.getBoundingRect().toBox()
 }
 
 /**
@@ -776,7 +510,7 @@ eYo.DelegateSvg.prototype.getBoundingBox = function () {
  * @param {eYo.Magnet} m4t
  * @return {?Blockly.Block} the block that was inserted
  */
-eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
+eYo.Delegate.prototype.insertBlockWithModel = function (model, m4t) {
   if (!model) {
     return null
   }
@@ -802,12 +536,12 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
   eYo.Events.disableWrap(
     () => {
       var m4t, otherM4t
-      candidate = eYo.DelegateSvg.newComplete(this, model)
+      candidate = eYo.Delegate.newComplete(this, model)
       var fin = prepare => {
         eYo.Events.groupWrap(() => {
           eYo.Events.enableWrap(() => {
             eYo.Do.tryFinally(() => {
-              eYo.Events.fireBlockCreate(candidate)
+              eYo.Events.fireDlgtCreate(candidate)
               prepare && prepare()
               otherM4t.connect(m4t)
             }, () => {
@@ -823,7 +557,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
         // very special management for tuple input
         if ((otherM4t = eYo.Selected.magnet) && goog.isString(model)) {
           var otherDlgt = otherM4t.b_eyo
-          if (otherDlgt instanceof eYo.DelegateSvg.List && otherM4t.eyo.isInput) {
+          if (otherDlgt instanceof eYo.Delegate.List && otherM4t.eyo.isInput) {
             eYo.Events.groupWrap(() => {
               var dlgts = model.split(',').map(x => {
                 var model = x.trim()
@@ -835,7 +569,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
                   p5e
                 }
               }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
-                var eyo = eYo.DelegateSvg.newComplete(this, x.model)
+                var eyo = eYo.Delegate.newComplete(this, x.model)
                 eyo.setDataWithModel(x.model)
                 console.error('DLGT', eyo)
                 return eyo
@@ -879,8 +613,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
               return fin(() => {
                 var its_xy = this.ui.xyInSurface
                 var my_xy = candidate.ui.xyInSurface
-                var HW = candidate.ui.getHeightWidth()
-                candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
+                candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
               })
             }
             // unreachable code
@@ -925,7 +658,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
               // then remember this connection and continue the loop
               // We remember the last separator connection
               // of the first which is not a separator
-              if (!otherM4t || (!otherM4t.eyo.disabled_ && otherM4t.eyo.s7r_)) {
+              if (!otherM4t || (!otherM4t.disabled_ && otherM4t.s7r_)) {
                 otherM4t = foundC8n
               }
             }
@@ -964,8 +697,7 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
             return fin(() => {
               var its_xy = this.ui.xyInSurface
               var my_xy = candidate.eyo.ui.xyInSurface
-              var HW = candidate.ui.getHeightWidth()
-              candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - HW.height)
+              candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
             })
           }
         }
@@ -982,19 +714,19 @@ eYo.DelegateSvg.prototype.insertBlockWithModel = function (model, m4t) {
  * For edython.
  * @return boolean
  */
-eYo.DelegateSvg.prototype.canLock = function () {
+eYo.Delegate.prototype.canLock = function () {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var c8n, target
+  var m4t, target
   return !this.someInput(input => {
-    if ((c8n = input.connection) && !c8n.eyo.disabled_) {
-      if ((target = c8n.targetBlock())) {
-        if (!target.eyo.canLock()) {
+    if ((m4t = input.magnet) && !m4t.disabled_) {
+      if ((target = m4t.target)) {
+        if (!target.canLock()) {
           return true
         }
-      } else if (!c8n.eyo.optional_ && !c8n.eyo.s7r_) {
+      } else if (!m4t.optional_ && !m4t.s7r_) {
         return true
       }
     }
@@ -1005,16 +737,16 @@ eYo.DelegateSvg.prototype.canLock = function () {
  * For edython.
  * @return {boolean}, true only if there is something to unlock
  */
-eYo.DelegateSvg.prototype.canUnlock = function () {
+eYo.Delegate.prototype.canUnlock = function () {
   if (this.locked_) {
     return true
   }
   // list all the input for a non optional connection with no target
-  var c8n, target
+  var m4t, t_eyo
   return this.someInput(input => {
-    if ((c8n = input.connection)) {
-      if ((target = c8n.targetBlock())) {
-        if (target.eyo.canUnlock()) {
+    if ((m4t = input.magnet)) {
+      if ((t_eyo = m4t.t_eyo)) {
+        if (t_eyo.canUnlock()) {
           return true
         }
       }
@@ -1027,24 +759,22 @@ eYo.DelegateSvg.prototype.canUnlock = function () {
  * For edython.
  * @return {number} the number of blocks locked
  */
-eYo.DelegateSvg.prototype.lock = function () {
+eYo.Delegate.prototype.lock = function () {
   var ans = 0
   if (this.locked_ || !this.canLock()) {
     return ans
   }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-      this.block_, eYo.Const.Event.locked, null, this.locked_, true))
-  }
+  eYo.Events.fireDlgtChange(
+    this, eYo.Const.Event.locked, null, this.locked_, true)
   this.locked_ = true
-  if (this === eYo.Selected.eyo) {
-    eYo.Selected.connection = null
+  if (this.selected) {
+    eYo.Selected.magnet = null
   }
   // list all the input for connections with a target
   var m4t
   var t_eyo
   this.forEachInput(input => {
-    if ((m4t = input.eyo.magnet)) {
+    if ((m4t = input.magnet)) {
       if ((t_eyo = m4t.t_eyo)) {
         ans += t_eyo.lock()
       }
@@ -1073,11 +803,11 @@ eYo.DelegateSvg.prototype.lock = function () {
   if ((m4t = this.magnets.foot) && (t_eyo = m4t.t_eyo)) {
     ans += t_eyo.lock()
   }
-  if (this === eYo.Selected.eyo) {
+  if (this.selected) {
     var parent = this
     while ((parent = parent.surround)) {
       if (!parent.wrapped_ && !parent.locked_) {
-        eYo.Selected.eyo = parent
+        parent.select()
         break
       }
     }
@@ -1092,28 +822,23 @@ eYo.DelegateSvg.prototype.lock = function () {
  * @param {boolean} deep Whether to unlock statements too.
  * @return {number} the number of blocks unlocked
  */
-eYo.DelegateSvg.prototype.unlock = function (shallow) {
+eYo.Delegate.prototype.unlock = function (shallow) {
   var block = this.block_
   var ans = 0
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-      this.block_, eYo.Const.Event.locked, null, this.locked_, false))
-  }
+  eYo.Events.fireDlgtChange(
+      this, eYo.Const.Event.locked, null, this.locked_, false)
   this.locked_ = false
   // list all the input for connections with a target
   var m4t, t_eyo
   this.forEachInput(input => {
-    if ((m4t = input.eyo.magnet)) {
+    if ((m4t = input.magnet)) {
       if ((!shallow || m4t.isInput) && (t_eyo = m4t.t_eyo)) {
         ans += t_eyo.unlock(shallow)
       }
       m4t.setHidden(false)
     }
   })
-  if (!shallow && (m4t = block.eyo.magnets.foot)) {
-    if ((t_eyo = m4t.t_eyo)) {
-      ans += t_eyo.unlock()
-    }
+  if (!shallow && (m4t = this.magnets.right)) {
   }
   (this.surround || this).render()
   return ans
@@ -1125,73 +850,28 @@ eYo.DelegateSvg.prototype.unlock = function (shallow) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @return {boolean}
  */
-eYo.DelegateSvg.prototype.inVisibleArea = function () {
-  var area = this.getDistanceFromVisible()
+eYo.Delegate.prototype.inVisibleArea = function () {
+  var area = this.ui && this.ui.distanceFromVisible
   return area && !area.x && !area.y
-}
-
-/**
- * Get the position of receiver's block relative to
- * the visible area.
- * Return value: if `x < 0`, left of the visible area,
- * if `x > 0`, right of the visible area, 0 otherwise.
- * undefined when the block is not in a workspace.
- * The same holds for `y`.
- * The values are the signed distances between the center
- * of the block and the visible area.
- * If the answer is `{x: -15, y: 0}`, we just have to scroll the workspace
- * 15 units to the right and the block is visible.
- * For edython.
- * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
- * @return {{x: number, y: number}|undefined}
- */
-eYo.DelegateSvg.prototype.getDistanceFromVisible = function (newLoc) {
-  var workspace = this.workspace
-  if (!workspace) {
-    return undefined
-  }
-  // is the block in the visible area ?
-  var metrics = workspace.getMetrics()
-  if (!metrics) {
-    // sometimes undefined is returned
-    metrics = workspace.getMetrics() // break here to debug
-    return {
-      x: 0,
-      y: 0
-    }
-  }
-  var scale = workspace.scale || 1
-  var heightWidth = this.ui.getHeightWidth()
-  // the block is in the visible area if we see its center
-  var leftBound = metrics.viewLeft / scale - heightWidth.width / 2
-  var topBound = metrics.viewTop / scale - heightWidth.height / 2
-  var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - heightWidth.width / 2
-  var downBound = (metrics.viewTop + metrics.viewHeight) / scale - heightWidth.height / 2
-  var xy = newLoc || this.ui.xyInSurface
-  return {
-    x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
-    y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),
-  }
 }
 
 /**
  * Side effect: renders the block when connections are no longer hidden.
  * @param {boolean} hidden True to hide connections.
  */
-eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
-  var block = this.block_
+eYo.Delegate.prototype.setConnectionsHidden = function (hidden) {
   if (this.connectionsHidden_ === hidden) {
     return
   }
   this.connectionsHidden_ = hidden
   if (hidden) {
-    if (eYo.DelegateSvg.debugStartTrackingRender) {
-      console.log('HIDE', block.id, block.type)
+    if (eYo.Delegate.debugStartTrackingRender) {
+      console.log('HIDE', this.id, this.type)
     }
   } else {
-    // eYo.DelegateSvg.debugStartTrackingRender = true
-    // console.log('SHOW CONNECTIONS', block.id, block.type)
-    block.eyo.rendered || block.eyo.render()
+    // eYo.Delegate.debugStartTrackingRender = true
+    // console.log('SHOW CONNECTIONS', this.id, this.type)
+    this.rendered || this.render()
   }
 }
 
@@ -1201,38 +881,18 @@ eYo.DelegateSvg.prototype.setConnectionsHidden = function (hidden) {
  * @param {!Function} handler `this` is the receiver.
  * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
  */
-eYo.DelegateSvg.prototype.doAndRender = function (handler, group, err_handler) {
-  var block = this.block_
-  return function (event) {
-    block.eyo.changeBegin()
+eYo.Delegate.prototype.doAndRender = function (handler, group, err_handler) {
+  return e => {
+    this.changeBegin()
     group && eYo.Events.setGroup(true)
     try {
-      handler.call(block.eyo, event)
+      handler.call(this, e)
     } catch (err) {
-      err_handler && err_handler.call(block.eyo, err) || console.error(err)
+      err_handler && err_handler.call(this, err) || console.error(err)
       throw err
     } finally {
       group && eYo.Events.setGroup(false)
-      block.eyo.changeEnd()
+      this.changeEnd()
     }
   }
 }
-
-/**
- * Move a block by a relative offset in workspace coordinates.
- * @param {number} dx Horizontal offset in workspace units.
- * @param {number} dy Vertical offset in workspace units.
- */
-eYo.DelegateSvg.prototype.moveByXY = function(dx, dy) {
-  this.ui.moveByXY(dx, dy)
-}
-
-/**
- * Move a block by a relative offset in text coordinates.
- * @param {number} dc Horizontal offset in text unit.
- * @param {number} dl Vertical offset in text unit.
- */
-eYo.DelegateSvg.prototype.moveBy = function(dc, dl) {
-  this.ui.moveByXY(dc * eYo.Unit.x, dl * eYo.Unit.y)
-}
-

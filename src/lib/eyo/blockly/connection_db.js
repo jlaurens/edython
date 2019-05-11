@@ -26,6 +26,6 @@ Blockly.ConnectionDB.init = (() => {
     // Create two extra databases, one for each connection type.
     var dbList = workspace.connectionDBList
     dbList[eYo.Const.LEFT_STATEMENT] = new Blockly.ConnectionDB()
-    dbList[eYo.Const.RIGHT_STATEMENT] = new Blockly.ConnectionDB()
+    dbList[eYo.Magnet.RIGHT] = new Blockly.ConnectionDB()
   }
 })()

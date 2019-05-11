@@ -526,7 +526,7 @@ describe('Initalize with model', function() {
 })
 
 describe('Initalize augmented_assignment_stmt', function() {
-  eYo.DelegateSvg.Manager.getModel(eYo.T3.Expr.augmented_stmt)
+  eYo.Delegate.Manager.getModel(eYo.T3.Expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
     eYo.Test.setItUp()
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.augmented_assignment_stmt)

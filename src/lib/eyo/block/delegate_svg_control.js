@@ -6,24 +6,24 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Control')
+goog.provide('eYo.Delegate.Control')
 
 goog.require('goog.ui.Dialog')
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.Delegate.Group')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, control block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, control block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.BaseGroup.makeSubclass('Control', {
+eYo.Delegate.BaseGroup.makeSubclass('Control', {
   data: {
     restart: {
       init: false,
@@ -42,25 +42,25 @@ eYo.DelegateSvg.BaseGroup.makeSubclass('Control', {
       }
     }
   }
-}, eYo.DelegateSvg)
+}, eYo.Delegate)
 
 /**
  * True for controls only.
  */
-eYo.DelegateSvg.Control.prototype.isControl = true
+eYo.Delegate.Control.prototype.isControl = true
 
 /**
  * Update the black count.
  * May be called very early.
  */
-eYo.DelegateSvg.Control.prototype.updateBlackHeight = function () {
+eYo.Delegate.Control.prototype.updateBlackHeight = function () {
   this.blackHeight = this.magnets.suite && this.magnets.suite.target ? 0 : 1
 }
 
 /**
  * Update the creation number.
  */
-eYo.DelegateSvg.Control.prototype.updateCreation = (() => {
+eYo.Delegate.Control.prototype.updateCreation = (() => {
   var creation
   return function () {
     if (goog.isDef(creation)) {
@@ -71,7 +71,7 @@ eYo.DelegateSvg.Control.prototype.updateCreation = (() => {
   }
 })()
 
-Object.defineProperties (eYo.DelegateSvg.Control.prototype, {
+Object.defineProperties (eYo.Delegate.Control.prototype, {
   creation: {
     get() {
       return this.creation__
@@ -79,8 +79,8 @@ Object.defineProperties (eYo.DelegateSvg.Control.prototype, {
   }
 })
 
-eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
-  eYo.DelegateSvg.Control.superClass_.willRender_.call(this, recorder)
+eYo.Delegate.Control.prototype.willRender_ = function (recorder) {
+  eYo.Delegate.Control.superClass_.willRender_.call(this, recorder)
   this.span.minWidth = this.block_.width = Math.max(this.block_.width, 2 * eYo.Font.tabWidth)
 }
 
@@ -88,16 +88,16 @@ eYo.DelegateSvg.Control.prototype.willRender_ = function (recorder) {
  * Run the script exported from the block.
  * @private
  */
-eYo.DelegateSvg.prototype.runScript = function () {
+eYo.Delegate.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
 /**
- * Class for a DelegateSvg, start_stmt.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, start_stmt.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
+eYo.Delegate.Control.makeSubclass('start_stmt', {
   xml: {
     attr: 'start'
   },
@@ -113,6 +113,6 @@ eYo.DelegateSvg.Control.makeSubclass('start_stmt', {
   }
 })
 
-eYo.DelegateSvg.Control.T3s = [
+eYo.Delegate.Control.T3s = [
   eYo.T3.Stmt.start_stmt
 ]

@@ -6,23 +6,23 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Assignment')
+goog.provide('eYo.Delegate.Assignment')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Primary')
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Stmt')
 goog.require('goog.dom');
 
-goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
+goog.provide('eYo.Delegate.Stmt.assignment_stmt')
 
 /**
- * Class for a DelegateSvg, assignment_stmt.
+ * Class for a Delegate, assignment_stmt.
  * This is for a single assignment `a = b`.
  * The lhs is either a field name or a target, or a targets list.
  * How would I code for `a, b = c, d = e, f`.
@@ -44,7 +44,7 @@ goog.provide('eYo.DelegateSvg.Stmt.assignment_stmt')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
+eYo.Delegate.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
       all: [
@@ -329,8 +329,8 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.assignment_stmt
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Stmt[k] = eYo.Delegate.Stmt.assignment_stmt
+  eYo.Delegate.Manager.register(k)
 })
 
 
@@ -338,7 +338,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assignment_stmt', {
  * getType.
  * @return {String} The type of the receiver's block.
  */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
+eYo.Delegate.Stmt.assignment_stmt.prototype.getType = function () {
   var x = this.variant_p
   if (x === eYo.Key.VALUED || x === eYo.Key.EXPRESSION) { // not yet consolidated
     return eYo.T3.Stmt.expression_stmt
@@ -367,7 +367,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.getType = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var target_p = this.target_p
   var variant_p = this.variant_p
   var F = (content, newVariant) => {
@@ -393,7 +393,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }
-  eYo.DelegateSvg.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Delegate.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -402,7 +402,7 @@ eYo.DelegateSvg.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = funct
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.DelegateSvg.List.makeSubclass('value_list', {
+eYo.Delegate.List.makeSubclass('value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of block types that can be unique.
@@ -546,12 +546,12 @@ eYo.DelegateSvg.List.makeSubclass('value_list', {
  * This should be used instead of direct block querying.
  * @return {String} The subtype of the receiver's block.
  */
-eYo.DelegateSvg.Expr.value_list.prototype.getSubtype = function () {
+eYo.Delegate.Expr.value_list.prototype.getSubtype = function () {
   var t = this.magnets.output.t_eyo
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.DelegateSvg.List.makeSubclass('augassigned_list', function () {
+eYo.Delegate.List.makeSubclass('augassigned_list', function () {
   var D = {
     check: eYo.T3.Expr.Check.expression,
     unique: eYo.T3.Expr.yield_expr,
@@ -567,7 +567,7 @@ eYo.DelegateSvg.List.makeSubclass('augassigned_list', function () {
   }
 })
 
-goog.provide('eYo.DelegateSvg.AugAssign')
+goog.provide('eYo.Delegate.AugAssign')
 
 // /**
 //  * Populate the context menu for the given block.
@@ -575,7 +575,7 @@ goog.provide('eYo.DelegateSvg.AugAssign')
 //  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
 //  * @private
 //  */
-// eYo.DelegateSvg.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+// eYo.Delegate.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
 //   var block = this.block_
 //   var withTarget = this.target_t
 //   var target = this.target_p
@@ -613,10 +613,10 @@ goog.provide('eYo.DelegateSvg.AugAssign')
 //   })
 //   mgr.addChild(menuItem, true)
 //   mgr.shouldSeparate()
-//   return eYo.DelegateSvg.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+//   return eYo.Delegate.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 // }
 
-eYo.DelegateSvg.Assignment.T3s = [
+eYo.Delegate.Assignment.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expr,
   eYo.T3.Expr.target_list,

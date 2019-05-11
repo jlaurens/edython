@@ -180,7 +180,7 @@ Blockly.Events.Move.prototype.run = function(forward) {
       if (input) {
         var magnet = eyo.magnets.output
         if (magnet) {
-          var p_magnet = input.eyo.magnet
+          var p_magnet = input.magnet
           magnet.connect(p_magnet)
         } else {
           console.warn("Can't connect with no output: " + eyo)

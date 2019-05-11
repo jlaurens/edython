@@ -10,9 +10,6 @@
 expression_stmt/stmt ::= any statement of nothing # with any comment or nothing, but at least one of them...
 call_stmt/call ::= call_expr
 base_call_stmt ::= call_expr
-builtin__print_expr/print ::= "print(" argument_list ")"
-builtin__print_stmt/print ::= builtin__print_expr
-print_argument_list_comprehensive ::= subclass of argument_list_comprehensive
 </pre>
 
 Adding weight to types
@@ -91,8 +88,6 @@ parameter_star(1000)
 parameter_star_star(1000)
 identifier_annotated(1000)
 identifier_valued(1000)
-builtin__print_expr(1000)
-builtin__input_expr(1000)
 key_datum_list(1000)
 slice_list(1000)
 non_void_starred_item_list(1000)
@@ -164,7 +159,6 @@ Basic:
 eYo.T3.Stmt.start_stmt
 eYo.T3.Expr.shortliteral
 eYo.T3.Expr.numberliteral
-eYo.T3.Stmt.builtin__print_stmt
 eYo.T3.Expr.builtin__input_expr
 eYo.T3.Stmt.assignment_stmt
 eYo.T3.Expr.primary
@@ -205,7 +199,6 @@ eYo.T3.Expr.lambda
 Expert:
 =======
 
-eYo.T3.Expr.builtin__print_expr
 eYo.T3.Expr.comprehension
 eYo.T3.Expr.comp_for
 eYo.T3.Expr.comp_if

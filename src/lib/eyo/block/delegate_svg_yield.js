@@ -6,23 +6,23 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Yield')
+goog.provide('eYo.Delegate.Yield')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Stmt')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, yield_expr.
+ * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
+eYo.Delegate.Expr.makeSubclass('yield_expr', {
   xml: {
     attr: 'yield'
   },
@@ -161,7 +161,7 @@ eYo.DelegateSvg.Expr.makeSubclass('yield_expr', {
  * @this {eYo.Delegate}
  * @private
  */
-eYo.DelegateSvg.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   if (block.eyo.locked_) {
     return
@@ -197,17 +197,17 @@ eYo.DelegateSvg.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  var yorn = eYo.DelegateSvg.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.DelegateSvg.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
+  var yorn = eYo.Delegate.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
 
 /**
- * Class for a DelegateSvg, yield_stmt.
+ * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
+eYo.Delegate.Stmt.makeSubclass('yield_stmt', {
   link: eYo.T3.Expr.yield_expr
 }, true)
 
@@ -217,13 +217,13 @@ eYo.DelegateSvg.Stmt.makeSubclass('yield_stmt', {
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
-  eYo.DelegateSvg.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.DelegateSvg.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Delegate.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
-eYo.DelegateSvg.Yield.T3s = [
+eYo.Delegate.Yield.T3s = [
   eYo.T3.Expr.yield_expr,
   eYo.T3.Stmt.yield_stmt
 ]

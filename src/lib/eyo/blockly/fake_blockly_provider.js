@@ -1,5 +1,4 @@
 // goog.provide('Blockly.Block')
-// goog.provide('Blockly.BlockSvg')
 // goog.provide('Blockly.Field')
 // goog.provide('Blockly.FieldDropdown')
 // goog.provide('Blockly.FieldLabel')

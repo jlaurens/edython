@@ -63,7 +63,7 @@ describe('YIELD expression and statement', function() {
     d.block_.dispose()
   })
   it(`yield abc -> yield <abc> -> yield abc`, function() {
-    var d = eYo.DelegateSvg.newReady(Blockly.mainWorkspace, eYo.T3.Stmt.yield_stmt)
+    var d = eYo.Delegate.newReady(Blockly.mainWorkspace, eYo.T3.Stmt.yield_stmt)
     d.eyo.expression_p = 'abc'
     eYo.Test.code(d, 'yield abc')
     var t_eyo = d.eyo.expression_t

@@ -6,16 +6,16 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Import')
+goog.provide('eYo.Delegate.Import')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Stmt')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Stmt')
 goog.require('goog.dom');
 
 /// //////////////     module_as      ///////////////////
@@ -32,12 +32,12 @@ module_name ::= identifier
 */
 
 /**
- * Class for a DelegateSvg, non_void_module_as_list block.
+ * Class for a Delegate, non_void_module_as_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
+eYo.Delegate.List.makeSubclass('non_void_module_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
@@ -47,12 +47,12 @@ eYo.DelegateSvg.List.makeSubclass('non_void_module_as_list', {
 })
 
 /**
- * Class for a DelegateSvg, non_void_import_identifier_as_list block.
+ * Class for a Delegate, non_void_import_identifier_as_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
+eYo.Delegate.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
@@ -65,11 +65,11 @@ eYo.DelegateSvg.List.makeSubclass('non_void_import_identifier_as_list', {
 /// //////////////     import_stmt      ///////////////////
 
 /**
- * Class for a DelegateSvg, import_stmt.
+ * Class for a Delegate, import_stmt.
  * The value property is used to store the module.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
+eYo.Delegate.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
       all: [
@@ -270,18 +270,18 @@ eYo.DelegateSvg.Stmt.makeSubclass('import_stmt', {
     }
   },
   init: /** @suppress {globalThis} */ function () {
-    eYo.DelegateSvg.Stmt.registerImport(this)
+    eYo.Delegate.Stmt.registerImport(this)
   },
   deinit: /** @suppress {globalThis} */ function () {
-    eYo.DelegateSvg.Stmt.unregisterImport(this)
+    eYo.Delegate.Stmt.unregisterImport(this)
   }
 }, true)
 
-eYo.Do.addProtocol(eYo.DelegateSvg.Stmt, 'Register', 'Import', function (delegate) {
+eYo.Do.addProtocol(eYo.Delegate.Stmt, 'Register', 'Import', function (delegate) {
   return !delegate.block_.isInFlyout
 })
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.import_stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.import_stmt.prototype, {
   star_p: {
     get () {
       return this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR
@@ -298,7 +298,7 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.import_stmt.prototype, {
 /**
  * Returns a dictionary of modules imported by this block, when not disabled.
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
+eYo.Delegate.Stmt.import_stmt.prototype.importedModules = function () {
   if (this.disabled) {
     return
   }
@@ -307,7 +307,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
   if (v === eYo.Key.IMPORT) {
     // non_void_import_identifier_as_list
     this.import_b.inputList.forEach(input => {
-      var t_eyo = input.eyo.t_eyo
+      var t_eyo = input.t_eyo
       if (t_eyo.type === eYo.T3.Expr.identifier) {
         modules[t_eyo.target_p] = t_eyo.target_p
       } else if (t_eyo.type === eYo.T3.Expr.identifier_as) {
@@ -330,7 +330,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.importedModules = function () {
 /**
  * When the block is just a wrapper, returns the wrapped target.
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
+eYo.Delegate.Stmt.import_stmt.prototype.getMenuTarget = function () {
   return this.block_
 }
 
@@ -340,7 +340,7 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.getMenuTarget = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, variant) => {
     if (variant !== current) {
@@ -375,16 +375,16 @@ eYo.DelegateSvg.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function 
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /// //////// future
 // This is expected to disappear soon
 /**
- * Class for a DelegateSvg, future_statement.
+ * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
+eYo.Delegate.Stmt.makeSubclass('future_statement', {
   slots: {
     list: {
       order: 1,
@@ -399,7 +399,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('future_statement', {
   }
 }, true)
 
-eYo.DelegateSvg.Import.T3s = [
+eYo.Delegate.Import.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.non_void_import_identifier_as_list,

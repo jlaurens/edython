@@ -6,34 +6,34 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.List')
+goog.provide('eYo.Delegate.List')
 
 goog.require('eYo.Decorate')
 goog.require('eYo.Consolidator.List')
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.Delegate.Expr')
 
 /**
- * Class for a DelegateSvg, value block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, value block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('List', {
+eYo.Delegate.Expr.makeSubclass('List', {
   list: {}
-}, eYo.DelegateSvg)
+}, eYo.Delegate)
 
 /**
  * Fetches the named input object, getInput.
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {Blockly.Input} The input object, or null if input does not exist or undefined for the default block implementation.
+ * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default block implementation.
  */
-eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
-  var input = eYo.DelegateSvg.List.superClass_.getInput.call(this, name)
+eYo.Delegate.List.prototype.getInput = function (name, dontCreate) {
+  var input = eYo.Delegate.List.superClass_.getInput.call(this, name)
   if (!input) {
     this.createConsolidator()
     input = this.consolidator.getInput(this.block_, name, dontCreate)
@@ -46,14 +46,14 @@ eYo.DelegateSvg.List.prototype.getInput = function (name, dontCreate) {
  *
  * @param {boolean} force
  */
-eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
+eYo.Delegate.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
   var type = this.type
   if (!type) {
     console.error('unexpected void type')
   }
-  var D = eYo.DelegateSvg.Manager.getModel(type).list
+  var D = eYo.Delegate.Manager.getModel(type).list
   goog.asserts.assert(D, 'inputModel__.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
@@ -79,8 +79,8 @@ eYo.DelegateSvg.List.prototype.createConsolidator = eYo.Decorate.reentrant_metho
  * @param {!eYo.Magnet} oldTargetM4t.
  * @param {!eYo.Magnet} targetOldM4t
  */
-eYo.DelegateSvg.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.DelegateSvg.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.Delegate.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.Delegate.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
   }
@@ -93,7 +93,7 @@ eYo.DelegateSvg.List.prototype.didConnect = function (m4t, oldTargetM4t, targetO
  *
  * @param {!Block} block
  */
-eYo.DelegateSvg.List.prototype.doConsolidate = (() => {
+eYo.Delegate.List.prototype.doConsolidate = (() => {
   // this is a closure
   /**
    * Consolidate the input.
@@ -109,7 +109,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.DelegateSvg.List.superClass_.doConsolidate.call(this, deep, force)) {
+    if (eYo.Delegate.List.superClass_.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && this.consolidator.consolidate(this.block_, deep, force)
     }
   }
@@ -120,7 +120,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = (() => {
   }
 }) ()
 
-// eYo.DelegateSvg.List.prototype.consolidator = undefined
+// eYo.Delegate.List.prototype.consolidator = undefined
 
 /**
  * Clear the list af all items.
@@ -128,7 +128,7 @@ eYo.DelegateSvg.List.prototype.doConsolidate = (() => {
  * @param {!Block} block
  * @private
  */
-eYo.DelegateSvg.List.prototype.removeItems = function (block) {
+eYo.Delegate.List.prototype.removeItems = function (block) {
   var block = this.block_
   var list = block.inputList
   var i = 0
@@ -151,36 +151,31 @@ eYo.DelegateSvg.List.prototype.removeItems = function (block) {
  * Force to recompute the chain tile.
  * For edython.
  */
-eYo.DelegateSvg.List.prototype.incrementInputChangeCount = function () {
-  var i = 0
-  var input
-  while ((input = this.block_.inputList[i++])) {
-    var c8n = input.connection
-    var target = c8n.targetBlock()
-    if (target) {
-      target.eyo.incrementChangeCount()
-    }
-  }
+eYo.Delegate.List.prototype.incrementInputChangeCount = function () {
+  this.forEachInput(input => {
+    var t_eyo = input.magnet.t_eyo
+    t_eyo && t_eyo.incrementChangeCount()
+  })
   this.incrementChangeCount()
 }
 
-Object.defineProperties(eYo.DelegateSvg.List.prototype, {
+Object.defineProperties(eYo.Delegate.List.prototype, {
   firstTarget: {
     get () {
       var t
-      this.inputList.some(input => (t = input.eyo.target))
+      this.inputList.some(input => (t = input.t_eyo))
       return t
     }
   }
 })
 
 /**
- * Class for a DelegateSvg, optional expression_list block.
+ * Class for a Delegate, optional expression_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
+eYo.Delegate.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 0,
@@ -190,12 +185,12 @@ eYo.DelegateSvg.List.makeSubclass('optional_expression_list', {
 })
 
 /**
- * Class for a DelegateSvg, non_void_expression_list block.
+ * Class for a Delegate, non_void_expression_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
+eYo.Delegate.List.makeSubclass('non_void_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 1,
@@ -205,12 +200,12 @@ eYo.DelegateSvg.List.makeSubclass('non_void_expression_list', {
 })
 
 /**
- * Class for a DelegateSvg, slice_list block.
+ * Class for a Delegate, slice_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('slice_list', {
+eYo.Delegate.List.makeSubclass('slice_list', {
   list: {
     check: eYo.T3.Expr.Check.slice_item,
     mandatory: 1,
@@ -219,12 +214,12 @@ eYo.DelegateSvg.List.makeSubclass('slice_list', {
 })
 
 /**
- * Class for a DelegateSvg, with_item_list block.
+ * Class for a Delegate, with_item_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass('with_item_list', {
+eYo.Delegate.List.makeSubclass('with_item_list', {
   list: {
     check: eYo.T3.Expr.Check.with_item,
     mandatory: 1,
@@ -234,9 +229,9 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
 })
 
 /**
- * Class for a DelegateSvg, enclosure block.
+ * Class for a Delegate, enclosure block.
  * This block is for subclassing only.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  * There are 4 kinds of enclosure lists:
  * 1) parent_form and generator expression
@@ -265,7 +260,7 @@ eYo.DelegateSvg.List.makeSubclass('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.DelegateSvg.List.makeSubclass('enclosure', {
+eYo.Delegate.List.makeSubclass('enclosure', {
   data: {
     variant: {
       order: 0,
@@ -356,7 +351,7 @@ eYo.DelegateSvg.List.makeSubclass('enclosure', {
   }
 })
 
-Object.defineProperties(eYo.DelegateSvg.Expr.enclosure.prototype, {
+Object.defineProperties(eYo.Delegate.Expr.enclosure.prototype, {
   profile_p : {
     get () {
       var p = this.getProfile()
@@ -374,7 +369,7 @@ Object.defineProperties(eYo.DelegateSvg.Expr.enclosure.prototype, {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
+eYo.Delegate.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
   'getProfile',
   function () {
     // this may be called very very early when
@@ -382,7 +377,7 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
     if (this.data && this.slots) {
       var f = (target, no_target) => {
         return {ans: this.someInput(input => {
-            var t = input.eyo.t_eyo
+            var t = input.t_eyo
             if (t && (t = t.magnets.output.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
             }
@@ -427,7 +422,7 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount
  * The check_ array of the output connection.
  * @param {!Object} profile
  */
-eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
+eYo.Delegate.Expr.enclosure.prototype.getOutCheck = function (profile) {
   if (profile === eYo.T3.Expr.parenth_target_list) {
     return [eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form]
   } else if (profile === eYo.T3.Expr.bracket_target_list) {
@@ -448,7 +443,7 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getOutCheck = function (profile) {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.DelegateSvg.Expr.enclosure.prototype.getBaseType = function () {
+eYo.Delegate.Expr.enclosure.prototype.getBaseType = function () {
   return this.profile_p
 }
 ;['parenth_form',
@@ -460,11 +455,11 @@ eYo.DelegateSvg.Expr.enclosure.prototype.getBaseType = function () {
 'set_display',
 'dict_display',
 'one_dict_display'].forEach(k => {
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.enclosure
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Expr[k] = eYo.Delegate.Expr.enclosure
+  eYo.Delegate.Manager.register(k)
 })
 
-eYo.DelegateSvg.List.T3s = [
+eYo.Delegate.List.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,

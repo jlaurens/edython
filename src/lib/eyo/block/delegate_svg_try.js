@@ -6,34 +6,34 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Try')
+goog.provide('eYo.Delegate.Try')
 
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.Group')
+goog.require('eYo.Delegate.Group')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, try_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, try_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('try_part', {
+eYo.Delegate.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
 }, true)
 
 /**
- * Class for a DelegateSvg, except_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, except_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('except_part', {
+eYo.Delegate.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
@@ -165,14 +165,14 @@ eYo.DelegateSvg.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.except_part
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Stmt[k] = eYo.Delegate.Stmt.except_part
+  eYo.Delegate.Manager.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Delegate.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     var block = this.block_
@@ -191,7 +191,7 @@ eYo.DelegateSvg.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, k) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -217,25 +217,25 @@ eYo.DelegateSvg.Stmt.except_part.prototype.populateContextMenuFirst_ = function 
   ), eYo.Key.ALIASED
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
- * Class for a DelegateSvg, finally_part block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, finally_part block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.Group.makeSubclass('finally_part', {
+eYo.Delegate.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
 }, true)
 
 /**
- * Class for a DelegateSvg, raise_stmt.
+ * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
+eYo.Delegate.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
       all: [
@@ -338,7 +338,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('raise_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, k) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -364,14 +364,14 @@ eYo.DelegateSvg.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (
   ), eYo.Key.FROM
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
- * Class for a DelegateSvg, assert_stmt.
+ * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
+eYo.Delegate.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [
@@ -381,7 +381,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
       init: eYo.Key.UNARY,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        this.owner.expression2_d..incog = newValue !== eYo.Key.BINARY
+        this.owner.expression2_d.incog = newValue !== eYo.Key.BINARY
       }
     },
     expression: {
@@ -443,7 +443,7 @@ eYo.DelegateSvg.Stmt.makeSubclass('assert_stmt', {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, key) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -463,10 +463,10 @@ eYo.DelegateSvg.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function 
   ), eYo.Key.BINARY
   )
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
-eYo.DelegateSvg.Try.T3s = [
+eYo.Delegate.Try.T3s = [
   eYo.T3.Stmt.try_part,
   eYo.T3.Stmt.except_part,
   eYo.T3.Stmt.void_except_part,

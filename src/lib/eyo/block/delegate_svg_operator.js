@@ -6,27 +6,27 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Operator')
+goog.provide('eYo.Delegate.Operator')
 
-goog.require('eYo.DelegateSvg.Expr')
+goog.require('eYo.Delegate.Expr')
 
 /**
- * Class for a DelegateSvg, [...] op ... block.
+ * Class for a Delegate, [...] op ... block.
  * Multiple ops.
  * Abstract class.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('binary', {
+eYo.Delegate.Expr.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var m = eYo.DelegateSvg.Expr.binary.getTypeForOperator(newValue)
+        var m = eYo.Delegate.Expr.binary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
@@ -97,7 +97,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type)
+        var m = eYo.Delegate.Expr.binary.getOperatorModelForType(type)
         if (!m) {
           console.error('NO MODEL FOR', type)
         }
@@ -134,7 +134,7 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
       },
       hole_value: 'name',
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.DelegateSvg.Expr.binary.getOperatorModelForType(type)
+        var m = eYo.Delegate.Expr.binary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
@@ -149,8 +149,8 @@ eYo.DelegateSvg.Expr.makeSubclass('binary', {
 eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
-    eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
-    eYo.DelegateSvg.Manager.register(t)
+    eYo.Delegate.Expr[t] = eYo.Delegate.Expr.binary
+    eYo.Delegate.Manager.register(t)
   }
 })
 
@@ -162,8 +162,8 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   'number_comparison',
   'object_comparison'
 ].forEach(t => {
-  eYo.DelegateSvg.Expr[t] = eYo.DelegateSvg.Expr.binary
-  eYo.DelegateSvg.Manager.register(t)
+  eYo.Delegate.Expr[t] = eYo.Delegate.Expr.binary
+  eYo.Delegate.Manager.register(t)
 })
 
 /**
@@ -171,7 +171,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.binary.getOperatorModelForType = function (type) {
+eYo.Delegate.Expr.binary.getOperatorModelForType = function (type) {
   return {
     [eYo.T3.Expr.m_expr]: {
       lhs: eYo.T3.Expr.Check.m_expr_all,
@@ -229,7 +229,7 @@ eYo.DelegateSvg.Expr.binary.getOperatorModelForType = function (type) {
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.binary.getTypeForOperator = function (op) {
+eYo.Delegate.Expr.binary.getTypeForOperator = function (op) {
   if (['*', '//', '/', '%', '@'].indexOf(op) >= 0) {
     return eYo.T3.Expr.m_expr
   }
@@ -271,7 +271,7 @@ eYo.DelegateSvg.Expr.binary.getTypeForOperator = function (op) {
  * For edython.
  * @return !String
  */
-eYo.DelegateSvg.Expr.binary.prototype.xmlAttr = function () {
+eYo.Delegate.Expr.binary.prototype.xmlAttr = function () {
   var type = this.type
   return type.endsWith('comparison') ? 'comparison' : type.substring(4)
 }
@@ -281,18 +281,18 @@ eYo.DelegateSvg.Expr.binary.prototype.xmlAttr = function () {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.binary.prototype.getBaseType = function () {
+eYo.Delegate.Expr.binary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.operator_p)
 }
 
 eYo.T3.Expr.unary = 'eyo:unary' // don't forget it !
 
 /**
- * Class for a DelegateSvg, unary op ... block.
+ * Class for a Delegate, unary op ... block.
  * u_expr.
  * For edython.
  */
-eYo.DelegateSvg.Expr.makeSubclass('unary', {
+eYo.Delegate.Expr.makeSubclass('unary', {
   xml: {
     types: [
       eYo.T3.Expr.u_expr,
@@ -305,7 +305,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
       all: ['-', '+', '~', 'not'],
       init: '-',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var m = eYo.DelegateSvg.Expr.unary.getTypeForOperator(newValue)
+        var m = eYo.Delegate.Expr.unary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
@@ -346,7 +346,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.DelegateSvg.Expr.unary.getOperatorModelForType(type)
+        var m = eYo.Delegate.Expr.unary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
@@ -362,8 +362,8 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
   'u_expr',
   'not_test'
 ].forEach((k) => {
-  eYo.DelegateSvg.Expr[k] = eYo.DelegateSvg.Expr.unary
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Expr[k] = eYo.Delegate.Expr.unary
+  eYo.Delegate.Manager.register(k)
 })
 
 /**
@@ -371,7 +371,7 @@ eYo.DelegateSvg.Expr.makeSubclass('unary', {
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.unary.getOperatorModelForType = function (type) {
+eYo.Delegate.Expr.unary.getOperatorModelForType = function (type) {
   return {
     [eYo.T3.Expr.u_expr]: {
       rhs: eYo.T3.Expr.Check.u_expr_all
@@ -387,9 +387,9 @@ eYo.DelegateSvg.Expr.unary.getOperatorModelForType = function (type) {
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.unary.prototype.getOperatorModel = function () {
+eYo.Delegate.Expr.unary.prototype.getOperatorModel = function () {
   var op = this.operator_p
-  return eYo.DelegateSvg.Expr.unary.getOperatorModel(op)
+  return eYo.Delegate.Expr.unary.getOperatorModel(op)
 }
 
 /**
@@ -397,7 +397,7 @@ eYo.DelegateSvg.Expr.unary.prototype.getOperatorModel = function () {
  * Unstable state.
  * For edython.
  */
-eYo.DelegateSvg.Expr.unary.prototype.getBaseType = function () {
+eYo.Delegate.Expr.unary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.operator_p)
 }
 
@@ -406,7 +406,7 @@ eYo.DelegateSvg.Expr.unary.prototype.getBaseType = function () {
  * For edython.
  * @return a dictionary
  */
-eYo.DelegateSvg.Expr.unary.getTypeForOperator = function (op) {
+eYo.Delegate.Expr.unary.getTypeForOperator = function (op) {
   if (['+', '-', '~'].indexOf(op) >= 0) {
     return eYo.T3.Expr.u_expr
   }
@@ -416,7 +416,7 @@ eYo.DelegateSvg.Expr.unary.getTypeForOperator = function (op) {
   return eYo.T3.Expr.unset
 }
 
-eYo.DelegateSvg.Operator.T3s = [
+eYo.Delegate.Operator.T3s = [
   eYo.T3.Expr.u_expr,
   eYo.T3.Expr.m_expr,
   eYo.T3.Expr.a_expr,

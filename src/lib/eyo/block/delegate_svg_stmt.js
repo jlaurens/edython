@@ -6,25 +6,25 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview BlockSvg delegates for edython.
+ * @fileoverview Block delegates for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.DelegateSvg.Stmt')
+goog.provide('eYo.Delegate.Stmt')
 
 goog.require('eYo.XRE')
 goog.require('eYo.Msg')
-goog.require('eYo.DelegateSvg.List')
-goog.require('eYo.DelegateSvg.Operator')
+goog.require('eYo.Delegate.List')
+goog.require('eYo.Delegate.Operator')
 goog.require('goog.dom');
 
 /**
- * Class for a DelegateSvg, statement block.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Class for a Delegate, statement block.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.makeSubclass('Stmt', {
+eYo.Delegate.makeSubclass('Stmt', {
   statement: {
     left: {
       check: /** @suppress {globalThis} */ function (type) {
@@ -61,9 +61,9 @@ eYo.DelegateSvg.makeSubclass('Stmt', {
     }
   }
 })
-eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.DelegateSvg.Stmt, true)
+eYo.Delegate.Manager.registerAll(eYo.T3.Stmt, eYo.Delegate.Stmt, true)
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.prototype, {
   isStmt: {
     get () {
       return true
@@ -83,8 +83,8 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.prototype, {
  * @return {!Object} a local recorder
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
-  var  io = eYo.DelegateSvg.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
+eYo.Delegate.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
+  var  io = eYo.Delegate.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
   io.common.inputDone = undefined
   return io
 }
@@ -98,20 +98,20 @@ eYo.DelegateSvg.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
  * @param {Object} model
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
+eYo.Delegate.Stmt.prototype.insertParentWithModel = function (model) {
   var magnet = this.magnets.head
   if (magnet) {
     var parent
     eYo.Events.disableWrap(
       () => {
-        parent = eYo.DelegateSvg.newComplete(this, model)
+        parent = eYo.Delegate.newComplete(this, model)
       },
       () => {
         if (parent) {
           var p_magnet = parent.magnets.foot
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(() => {
-              eYo.Events.fireBlockCreate(parent.block_)
+              eYo.Events.fireDlgtCreate(parent)
               var t_magnet = magnet.target
               if (t_magnet) {
                 t_magnet.break()
@@ -126,8 +126,8 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
               parent.render()
               magnet.target = p_magnet
               parent.beReady(this.isReady)
-              if (eYo.Selected.eyo === this) {
-                eYo.Selected.eyo === parent
+              if (this.selected) {
+                parent.selected
               }
             })
           } else {
@@ -150,9 +150,9 @@ eYo.DelegateSvg.Stmt.prototype.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created block
  */
-eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
+eYo.Delegate.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
-    var below = eYo.DelegateSvg.newComplete(this, belowPrototypeName)
+    var below = eYo.Delegate.newComplete(this, belowPrototypeName)
     var magnet = this.magnets.foot
     var t_magnet = magnet.target
     var b_m4ts = below.magnets
@@ -163,7 +163,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
       }
     }
     magnet.target = b_m4ts.head
-    if (eYo.Selected.eyo === this) {
+    if (this.selected) {
       eYo.Selected.eyo = after
     }
     return after.block_
@@ -176,7 +176,7 @@ eYo.DelegateSvg.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) 
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
+eYo.Delegate.Stmt.prototype.populateContextMenuComment = function (mgr) {
   var block = this.block_
   var show = false
   var content =
@@ -187,10 +187,10 @@ eYo.DelegateSvg.Stmt.prototype.populateContextMenuComment = function (mgr) {
 }
 
 /**
- * Class for a DelegateSvg, comment_stmt.
+ * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
+eYo.Delegate.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
   data: {
     variant: {
       all: [
@@ -246,11 +246,11 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.comment_stmt
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Stmt[k] = eYo.Delegate.Stmt.comment_stmt
+  eYo.Delegate.Manager.register(k)
 })
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.comment_stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.comment_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean} whether the receiver is a comment.
@@ -282,12 +282,12 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.comment_stmt.prototype, {
 
 /// /////// gobal/nonlocal statement
 /**
- * Class for a DelegateSvg, non_void_identifier_list block.
+ * Class for a Delegate, non_void_identifier_list block.
  * This block may be wrapped.
- * Not normally called directly, eYo.DelegateSvg.create(...) is preferred.
+ * Not normally called directly, eYo.Delegate.create(...) is preferred.
  * For edython.
  */
-eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
+eYo.Delegate.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.T3.Expr.Check.non_void_identifier_list,
     presep: ',',
@@ -296,10 +296,10 @@ eYo.DelegateSvg.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
 })
 
 /**
- * Class for a DelegateSvg, global_stmt.
+ * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
+eYo.Delegate.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -315,9 +315,9 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var O = this.owner
-        O.identifiers_s..incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
-        O.del_s..incog = newValue !== eYo.Key.DEL
-        O.return_s..incog = newValue !== eYo.Key.RETURN
+        O.identifiers_s.incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
+        O.del_s.incog = newValue !== eYo.Key.DEL
+        O.return_s.incog = newValue !== eYo.Key.RETURN
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
@@ -409,15 +409,15 @@ eYo.DelegateSvg.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.DelegateSvg.Stmt[k] = eYo.DelegateSvg.Stmt.global_stmt
-  eYo.DelegateSvg.Manager.register(k)
+  eYo.Delegate.Stmt[k] = eYo.Delegate.Stmt.global_stmt
+  eYo.Delegate.Manager.register(k)
 })
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Delegate.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
     this.setupType(
@@ -440,7 +440,7 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
  * For edython.
  * @return !String
  */
-eYo.DelegateSvg.Stmt.global_stmt.prototype.xmlAttr = function () {
+eYo.Delegate.Stmt.global_stmt.prototype.xmlAttr = function () {
   return this.variant_p
 }
 
@@ -450,7 +450,7 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.xmlAttr = function () {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Delegate.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var block = this.block_
   var current = this.variant_p
   var variants = this.variant_d.getAll()
@@ -486,18 +486,18 @@ eYo.DelegateSvg.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function 
   F(5)
   F(6)
   mgr.shouldSeparate()
-  return eYo.DelegateSvg.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Delegate.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
- * Class for a DelegateSvg, docstring_stmt.
+ * Class for a Delegate, docstring_stmt.
  * For edython.
  */
-eYo.DelegateSvg.Stmt.makeSubclass('docstring_stmt', {
+eYo.Delegate.Stmt.makeSubclass('docstring_stmt', {
   link: eYo.T3.Expr.longliteral
 }, true)
 
-Object.defineProperties(eYo.DelegateSvg.Stmt.docstring_stmt.prototype, {
+Object.defineProperties(eYo.Delegate.Stmt.docstring_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean}  always true
@@ -509,7 +509,7 @@ Object.defineProperties(eYo.DelegateSvg.Stmt.docstring_stmt.prototype, {
   }
 })
 
-eYo.DelegateSvg.Stmt.T3s = [
+eYo.Delegate.Stmt.T3s = [
   eYo.T3.Stmt.comment_stmt,
   eYo.T3.Stmt.pass_stmt,
   eYo.T3.Stmt.break_stmt,

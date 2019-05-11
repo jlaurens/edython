@@ -412,13 +412,13 @@ eYo.KeyHandler = (() => {
       // let someone else catch that event
       return
     }
-    var B = event.target
-    if (B !== target_) {
-      if (!(B = B.parentNode)) {
+    var dlgt = event.target.eyo
+    if (dlgt !== target_.eyo) {
+      if (!(dlgt = dlgt.parent)) {
         return
       }
-      if (B !== target_) {
-        if (!(B = B.parentNode) || (B !== target_)) {
+      if (dlgt !== target_.eyo) {
+        if (!(dlgt = dlgt.parent) || (dlgt !== target_.eyo)) {
           return
         }
       }
@@ -434,18 +434,18 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((B = eYo.Selected.block) && B.eyo.showEditor) {
+      if ((dlgt = eYo.Selected.eyo) && dlgt.showEditor) {
         event.preventDefault()
         event.stopPropagation()
-        B.eyo.showEditor(B)
+        dlgt.showEditor()
         return
       }
     }
-    if ((B = eYo.Selected.block)) {
+    if ((dlgt = eYo.Selected.eyo)) {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
-        eYo.MenuManager.shared().showMenu(B, event)
+        eYo.MenuManager.shared().showMenu(dlgt.block_, event)
         return
       }
       keys_ = []
@@ -459,9 +459,9 @@ eYo.KeyHandler = (() => {
         if (!me.alreadyListening_) {
           me.alreadyListening_ = true
           me.alreadyListened = false
-          goog.events.listenOnce(menu_, 'action', (event) => {
+          goog.events.listenOnce(menu_, 'action', (e) => {
             me.alreadyListening_ = false
-            var target = event.target
+            var target = e.target
             if (target) {
               var targetModel = target.model_
               if (targetModel) {
@@ -488,16 +488,16 @@ eYo.KeyHandler = (() => {
             }
           })
         }
-        var scaledHeight = eYo.Font.lineHeight * B.workspace.scale
-        var c8n = eYo.Selected.connection
-        if (c8n && c8n.sourceBlock_) {
-          var xy = goog.style.getPageOffset(c8n.sourceBlock_.svgGroup_)
-          var xxyy = c8n.offsetInBlock_.clone().scale(B.workspace.scale)
+        var scaledHeight = eYo.Unit.y * dlgt.workspace.scale
+        var m4t = eYo.Selected.magnet
+        if (m4t && m4t.b_eyo) {
+          var xy = goog.style.getPageOffset(m4t.b_eyo.ui.svg.group_)
+          var xxyy = m4t.offsetInBlock_.clone().scale(dlgt.workspace.scale)
           xy.translate(xxyy)
         } else {
-          xy = goog.style.getPageOffset(B.svgGroup_)
+          xy = goog.style.getPageOffset(dlgt.ui.svg.group_)
         }
-        menu_.showMenu(B.svgGroup_, xy.x, xy.y + scaledHeight + 2)
+        menu_.showMenu(dlgt.ui.svg.group_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
         var F = f => {
@@ -517,9 +517,9 @@ eYo.KeyHandler = (() => {
       F = f => {
         event.preventDefault()
         event.stopPropagation()
-        var block = eYo.DelegateSvg.getBestBlock(eYo.Session.workspace, f)
-        if (block) {
-          block.eyo.select().scrollToVisible()
+        var dlgt = eYo.Delegate.getBestDlgt(eYo.App.workspace, f)
+        if (dlgt) {
+          dlgt.select().scrollToVisible()
         }
       }
       switch (k) {
@@ -611,7 +611,7 @@ var doit = (() => {
           eyo.replaceDlgt(parent)
           return
         }
-        if (eYo.Selected.connection) {
+        if (eYo.Selected.magnet) {
           eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
         } else {
           eyo.insertParentWithModel(eYo.T3.Expr.not_test)
@@ -629,7 +629,7 @@ var doit = (() => {
           type: eYo.T3.Expr.u_expr,
           operator_p: '+'
         }
-        if (eYo.Selected.connection) {
+        if (eYo.Selected.magnet) {
           eyo.insertBlockWithModel(model)
         } else {
           eyo.insertParentWithModel(model)
@@ -655,11 +655,9 @@ var doit = (() => {
           type: eYo.T3.Expr.u_expr,
           operator_p: op
         }
-        if (eYo.Selected.connection) {
-          eyo.insertBlockWithModel(model)
-        } else {
-          eyo.insertParentWithModel(model)
-        }
+        (eYo.Selected.magnet
+          ? eyo.insertBlockWithModel
+          : eyo.insertParentWithModel)(model)
       }
     }
     return {
@@ -807,7 +805,10 @@ var doit = (() => {
       type: eYo.T3.Expr.shortliteral,
       delimiter_p: '"'
     },
-    'print(…)': eYo.T3.Stmt.builtin__print_stmt,
+    'print(…)': {
+      type: eYo.T3.Expr.call_expr,
+      name_p: 'print'
+    },
     'input(…)': {
       type: eYo.T3.Expr.call_expr,
       name_p: 'input'

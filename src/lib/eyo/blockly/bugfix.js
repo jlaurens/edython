@@ -1,7 +1,6 @@
 goog.provide('Blockly.BlockDraggerFix')
 
 goog.require('Blockly.BlockDragger')
-goog.require('Blockly.BlockSvg.render')
 goog.require('Blockly.BlockDraggerFix')
 
 /**
