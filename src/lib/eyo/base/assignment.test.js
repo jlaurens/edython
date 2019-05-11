@@ -77,7 +77,7 @@ describe('Assignment', function() {
     var d2 = eYo.Test.new_dlgt(eYo.T3.Expr.assignment_chain)
     var input = d1.value_t.lastInput
     chai.assert(d1.value_t.connectLast(d2), 'MISSED C8N 1')
-    chai.assert(input.connection.targetBlock() === d2, 'MISSED C8N 2')
+    chai.assert(input.magnet.t_eyo === d2, 'MISSED C8N 2')
     d1.block_.dispose()
     eYo.Test.tearItDown()
   })
@@ -90,7 +90,7 @@ describe('Assignment', function() {
     d2.value_p = 'EXPR'
     var input = d1.value_t.lastInput
     chai.assert(d1.value_t.connectLast(d2), 'MISSED C8N 1')
-    chai.assert(input.connection.targetBlock() === d2, 'MISSED C8N 2')
+    chai.assert(input.magnet.t_eyo === d2, 'MISSED C8N 2')
     d1.block_.dispose()
     eYo.Test.tearItDown()
   })
@@ -227,7 +227,7 @@ describe('Copy/Paste', function() {
     var d2 = eYo.Test.new_dlgt(eYo.T3.Expr.assignment_chain)
     var input = d1.value_t.lastInput
     chai.assert(d1.value_t.connectLast(d2), 'MISSED C8N 1')
-    chai.assert(input.connection.targetBlock() === d2, 'MISSED C8N 2')
+    chai.assert(input.magnet.t_eyo === d2, 'MISSED C8N 2')
     d1.block_.dispose()
     eYo.Test.tearItDown()
   })
@@ -240,7 +240,7 @@ describe('Copy/Paste', function() {
     d2.value_p = 'EXPR'
     var input = d1.value_t.lastInput
     chai.assert(d1.value_t.connectLast(d2), 'MISSED C8N 1')
-    chai.assert(input.connection.targetBlock() === d2, 'MISSED C8N 2')
+    chai.assert(input.magnet.t_eyo === d2, 'MISSED C8N 2')
     d1.block_.dispose()
     eYo.Test.tearItDown()
   })

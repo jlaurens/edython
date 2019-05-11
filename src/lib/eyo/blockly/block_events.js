@@ -94,7 +94,8 @@ Blockly.Events.Move.prototype.fromJson = function(json) {
 
 /**
  * Record the block's new location.  Called after the move.
- * The high/left management is added.
+ * The head/left management is added.
+ * Just in case there is an ambiguity.
  */
 Blockly.Events.Move.prototype.recordNew = function() {
   var location = this.currentLocation_()
@@ -107,7 +108,7 @@ Blockly.Events.Move.prototype.recordNew = function() {
 /**
  * Returns the parentId and input if the block is connected,
  *   or the XY location if disconnected.
- * The high/left management is added.
+ * The head/left management is added.
  * @return {!Object} Collection of location info.
  * @private
  */
@@ -115,19 +116,18 @@ Blockly.Events.Move.prototype.currentLocation_ = function() {
   var workspace = Blockly.Workspace.getById(this.workspaceId);
   var block = workspace.getBlockById(this.blockId);
   var location = {};
-  var parent = block.getParent();
+  var eyo = block.eyo
+  var parent = eyo.parent
   if (parent) {
     location.parentId = parent.id;
-    var input = parent.getInputWithBlock(block);
-    if (input) {
-      location.inputName = input.name;
-    }
-    var left = block.eyo.magnets.left
-    if (left && left.t_eyo === parent.eyo) {
+    var m4t = eyo.magnets.output
+    if (m4t) {
+      location.inputName = m4t.target.name
+    } else if (eyo.left === parent) {
       location.horizontal = true
     }
   } else {
-    location.coordinate = block.eyo.ui.xyInSurface
+    location.coordinate = eyo.ui.xyInSurface
   }
   return location;
 };
@@ -204,10 +204,10 @@ Blockly.Events.Move.prototype.run = function(forward) {
         if ((p_magnet = parent.magnets.foot)) {
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect to non-existent low connection: " + parent)
+          console.warn("Can't connect to non-existent foot connection: " + parent)
         }
       } else {
-        console.warn("Can't connect to non-existent high connection: " + eyo)
+        console.warn("Can't connect to non-existent head connection: " + eyo)
       }
     }
   }

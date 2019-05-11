@@ -169,15 +169,6 @@ eYo.Selected = (() => {
           this.updateDraw()
         }
       },
-      /* TO BE REMOVED */
-      connection: {
-        get () {
-          return m4t__.connection
-        },
-        set (c8n) {
-          this.magnet = c8n && c8n.eyo
-        }
-      },
       magnet: {
         get () {
           return m4t__

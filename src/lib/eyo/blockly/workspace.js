@@ -223,19 +223,19 @@ eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
 eYo.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
-    'INPUT_VALUE',
-    'OUTPUT_VALUE',
-    'NEXT_STATEMENT',
-    'PREVIOUS_STATEMENT',
-    'LEFT_STATEMENT',
-    'RIGHT_STATEMENT'
+    'INPUT',
+    'OUTPUT',
+    'FOOT',
+    'HEAD',
+    'LEFT',
+    'RIGHT'
   ].forEach(k => {
     var dbList = this.connectionDBList
-    console.log(`${comment} > ${k} connections`)
-    var db = dbList[Blockly[k] || eYo.Const[k]]
-    for (var i = 0, c8n; (c8n = db[i]); ++i) {
-      console.log(i + ':' + [c8n.x_, c8n.y_, c8n.offsetInBlock_, c8n.sourceBlock_.type])
-    }
+    console.log(`${comment} > ${k} magnet`)
+    var db = dbList[eYo.Magnet[k]]
+    dbList[eYo.Magnet[k]].forEach(m4t => {
+      console.log(m4t.x_, m4t.y_, m4t.offsetInBlock_, m4t.b_eyo.type)
+    })
   })
 }
 

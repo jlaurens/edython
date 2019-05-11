@@ -43,6 +43,57 @@ goog.inherits(eYo.Driver.Svg, eYo.Driver)
 eYo.Driver.Svg.prototype.withBBox = true
 
 /**
+ * Helper method for creating SVG elements.
+ * @param {string} name Element's tag name.
+ * @param {!Object} attrs Dictionary of attribute names and values.
+ * @param {Element} parent Optional parent on which to append the element.
+ * @return {!SVGElement} Newly created SVG element.
+ */
+Blockly.utils.createSvgElement = function(name, attrs, parent) {
+  var e = /** @type {!SVGElement} */
+      (document.createElementNS(Blockly.SVG_NS, name));
+  for (var key in attrs) {
+    e.setAttribute(key, attrs[key]);
+  }
+  // IE defines a unique attribute "runtimeStyle", it is NOT applied to
+  // elements created with createElementNS. However, Closure checks for IE
+  // and assumes the presence of the attribute and crashes.
+  if (document.body.runtimeStyle) {  // Indicates presence of IE-only attr.
+    e.runtimeStyle = e.currentStyle = e.style;
+  }
+  if (parent) {
+    parent.appendChild(e);
+  }
+  return e;
+}
+
+
+eYo.Driver.Svg.NS = 'http://www.w3.org/2000/svg'
+
+/**
+ * Helper method for creating SVG elements.
+ * @param {string} name Element's tag name.
+ * @param {!Object} attrs Dictionary of attribute names and values.
+ * @param {Element} parent Optional parent on which to append the element.
+ * @return {!SVGElement} Newly created SVG element.
+ */
+eYo.Driver.Svg.newElement = function(name, attrs, parent) {
+  var e = /** @type {!SVGElement} */
+      (document.createElementNS(eYo.Driver.Svg.NS, name))
+  for (var key in attrs) {
+    e.setAttribute(key, attrs[key])
+  }
+  // IE defines a unique attribute "runtimeStyle", it is NOT applied to
+  // elements created with createElementNS. However, Closure checks for IE
+  // and assumes the presence of the attribute and crashes.
+  if (document.body.runtimeStyle) {  // Indicates presence of IE-only attr.
+    e.runtimeStyle = e.currentStyle = e.style
+  }
+  parent && parent.appendChild(e)
+  return e
+}
+
+/**
  * Initialize the given node.
  * Adds to node's renderer a `svg` attribute owning all the svg related resources.
  * The svg
@@ -51,10 +102,9 @@ eYo.Driver.Svg.prototype.withBBox = true
 eYo.Driver.Svg.prototype.nodeInit = function (node) {
   var svg = node.ui.svg = {}
   // groups:
-  // svg.group_ comes from block
-  goog.dom.classlist.add(/** @type {!Element} */ (svg.group_),
-    'eyo-block')
-      // Expose this block's ID on its top-level SVG group.
+  svg.group_ = eYo.Driver.Svg.newElement('g',
+    {class: 'eyo-block'}, null)
+  // Expose this block's ID on its top-level SVG group.
   if (svg.group_.dataset) {
     svg.group_.dataset.id = node.id;
   }
@@ -815,31 +865,6 @@ eYo.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
 }
 
 /**
- * Helper method for creating SVG elements.
- * @param {string} name Element's tag name.
- * @param {!Object} attrs Dictionary of attribute names and values.
- * @param {Element} parent Optional parent on which to append the element.
- * @return {!SVGElement} Newly created SVG element.
- */
-eYo.Driver.Svg.createSvgElement = function(name, attrs, parent) {
-  var e = /** @type {!SVGElement} */
-      (document.createElementNS(Blockly.SVG_NS, name));
-  for (var key in attrs) {
-    e.setAttribute(key, attrs[key]);
-  }
-  // IE defines a unique attribute "runtimeStyle", it is NOT applied to
-  // elements created with createElementNS. However, Closure checks for IE
-  // and assumes the presence of the attribute and crashes.
-  if (document.body.runtimeStyle) {  // Indicates presence of IE-only attr.
-    e.runtimeStyle = e.currentStyle = e.style;
-  }
-  if (parent) {
-    parent.appendChild(e);
-  }
-  return e;
-};
-
-/**
  * Make the given field reserved or not, to emphasize reserved keywords.
  * @param {!Object} node  the node the driver acts on
  */
@@ -900,43 +925,41 @@ eYo.Driver.Svg.prototype.nodeMenuShow = function (node, menu) {
 
 /**
  * Hilight the given connection.
- * @param {!Object} c_eyo
+ * @param {!eYo.Magnet} m4t
  */
-eYo.Driver.Svg.prototype.connectionHilight = function (c_eyo) {
-  var c_eyo
-  var c8n = c_eyo.connection
-  var node = c_eyo.node
-  if (!node.workspace) {
+eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
+  if (!m4t.workspace) {
     return
   }
-  var d = node.ui.driver
+  var node = m4t.b_eyo
+  var g = node.ui.svg.group_
   var steps
-  if (c_eyo.isInput) {
-    if (c8n.isConnected()) {
-      steps = eYo.Shape.definitionWithNode(c_eyo.t_eyo)
+  if (m4t.isInput) {
+    if (m4t.target) {
+      steps = eYo.Shape.definitionWithNode(m4t.t_eyo)
     } else {
-      steps = eYo.Shape.definitionWithMagnet(c_eyo)
+      steps = eYo.Shape.definitionWithMagnet(m4t)
       Blockly.Connection.highlightedPath_ =
       eYo.Driver.Svg.newElement('path',
         {
           class: 'blocklyHighlightedConnectionPath',
           d: steps
         },
-        d.group_
+        g
       )
       return
     }
-  } else if (c_eyo.isOutput) {
+  } else if (m4t.isOutput) {
     steps = eYo.Shape.definitionWithNode(node)
   } else {
-    steps = eYo.Shape.definitionWithMagnet(c_eyo)
+    steps = eYo.Shape.definitionWithMagnet(m4t)
   }
   Blockly.Connection.highlightedPath_ =
   eYo.Driver.Svg.newElement('path',
     {class: 'blocklyHighlightedConnectionPath',
       'd': steps,
-      transform: `translate(${c_eyo.x || 0},${c_eyo.y || 0})`},
-    d.group_)
+      transform: `translate(${m4t.x || 0},${m4t.y || 0})`},
+      g)
 }
 
 /**
@@ -1330,11 +1353,11 @@ eYo.Driver.Svg.prototype.nodeDrawSharp = function (node, visible) {
 eYo.Driver.Svg.prototype.nodeSetDragging = (node, adding) => {
   var svg = node.ui.svg
   if (adding) {
-    var group = this.svg.group_
+    var group = svg.group_
     group.translate_ = '';
     group.skew_ = '';
     Blockly.draggingConnections_ =
-        Blockly.draggingConnections_.concat(node.getConnections_(true));
+        Blockly.draggingConnections_.concat(node.getMagnets_(true));
     goog.dom.classlist.add(
         /** @type {!Element} */ (group), 'eyo-dragging');
   } else {
@@ -1345,6 +1368,51 @@ eYo.Driver.Svg.prototype.nodeSetDragging = (node, adding) => {
   // Recurse through all blocks attached under this one.
   node.childBlocks_.forEach(b => b.setDragging(adding))
 }
+
+/**
+ * Move the block to the top level.
+ * @param {!eYo.Delegate} field  the node the driver acts on
+ */
+eYo.Driver.Svg.prototype.nodeSetParent = function (node, parent) {
+  var svg = node.ui.svg
+  if (parent) {
+    var p_svg = parent.ui.svg
+    var oldXY = this.nodeXYInSurface(node)
+    p_svg.group_.appendChild(svg.group_)
+    var newXY = this.nodeXYInSurface(node)
+    goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
+      'eyo-inner')
+    goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
+      'eyo-inner')
+  } else {
+    var oldXY = this.nodeXYInSurface(node)
+    node.workspace.getCanvas().appendChild(svg.group_)
+    xy && svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`)
+    var newXY = this.nodeXYInSurface(node)
+    goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
+      'eyo-inner')
+    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
+      'eyo-inner')
+  }
+  node.moveConnections_(newXY.x - oldXY.x, newXY.y - oldXY.y);
+}
+
+/**
+ * Move the block to the top level.
+ * @param {!eYo.Delegate} field  the node the driver acts on
+ */
+eYo.Driver.Svg.prototype.nodeAtTop = function (node) {
+  var g = node.ui.svg.group_
+  // Move this block up the DOM.  Keep track of x/y translations.
+  var xy = this.nodeXYInSurface(node)
+  this.workspace.getCanvas().appendChild(g)
+  g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
+}
+
 
 /**
  * The field text will change.

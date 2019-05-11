@@ -556,12 +556,10 @@ eYo.UI.prototype.renderMove_ = function (recorder) {
   // this.node.forEachSlot((slot) => {
   //   var input = slot.input
   //   if(input) {
-  //     var c8n = input.connection
-  //     if (c8n) {
-  //       c8n.moveToOffset(blockTL)
-  //       if (c8n.isConnected()) {
-  //         c8n.tighten_()
-  //       }
+  //     var m4t = input.magnet
+  //     if (m4t) {
+  //       m4t.moveToOffset(blockTL)
+  //       m4t.tighten_()
   //     }
   //   }
   // })
@@ -850,16 +848,16 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
   }
   this.drawPending_(io)
   if (!this.node.wrapped_) {
-    var c8n = io.forc && io.forc.connection
-    var target = c8n && c8n.targetBlock()
+    var m4t = io.form && io.form.connection
+    var t_eyo = m4t && m4t.t_eyo
     if (io.n < 2 && !this.node.wrapped_) {
       // this.node is a short block, special management of selection
       this.isShort = true
-      if (target) {
-        target.eyo.ui.parentIsShort = true
+      if (t_eyo) {
+        t_eyo.ui.parentIsShort = true
         // always add a space to the right
-        target.eyo.ui.isLastInStatement = false
-        target.eyo.ui.updateShape()
+        t_eyo.ui.isLastInStatement = false
+        t_eyo.ui.updateShape()
         io.cursor.c += 1
       }
     } else {
@@ -963,7 +961,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
     // is expected. It is relative to the enclosing `SVG` group,
     // which is either a block or a slot.
     // If there is a pending caret, draw it and advance the cursor.
-    io.forc = f_eyo
+    io.form = f_eyo
     f_eyo.willRender()
     var text = field.getDisplayText_()
     // Replace the text.
@@ -1247,7 +1245,7 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
  * @private
  */
 eYo.UI.prototype.drawValueInput_ = function (io) {
-  if (io.input.type !== eYo.Magnet.VALUE && io.input.type !== Blockly.DUMMY_INPUT) {
+  if (io.input.type !== eYo.Magnet.INPUT) {
     return false
   }
   // this.node is one of the reasons why we allways render from the start of a statement
@@ -1260,20 +1258,19 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
   }
   io.common.inputDone = io.input
   this.drawFields_(io, true)
-  var c8n = io.input.connection
-  if (c8n) { // once `&&!c8n.hidden_` was there, bad idea, but why was it here?
+  var m4t = io.input.magnet
+  if (m4t) { // once `&&!m4t.hidden_` was there, bad idea, but why was it here?
     ++ io.n
-    var m4t = c8n.eyo
     m4t.startOfLine = io.common.startOfLine
     m4t.startOfStatement = io.common.startOfStatement
-    io.forc = m4t
+    io.form = m4t
     m4t.side = m4t.shape = undefined
     io.common.field.canStarLike = false
     // io.cursor is relative to the block or the slot
     // but the connection must be located relative to the block
     // the connection delegate will take care of that because it knows
     // if there is a slot or only an input.
-    var t_eyo = c8n.eyo.t_eyo
+    var t_eyo = m4t.t_eyo
     if (t_eyo) {
       if (m4t.bindField && m4t.bindField.isVisible()) {
         m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
@@ -1345,7 +1342,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
         // for that connection is a bit different.
         // Don't display anything for that connection
         io.common.field.beforeIsCaret = false
-      } else if (!this.node.locked_ && !c8n.hidden_) {
+      } else if (!this.node.locked_ && !m4t.hidden_) {
         // locked blocks won't display any placeholder
         // (input with no target)
         if (!m4t.disabled_) {
@@ -1743,8 +1740,8 @@ Object.defineProperties(eYo.UI.prototype, {
  * The default implementation forwards to the driver.
  * @param {*} c_eyo
  */
-eYo.UI.prototype.connectionHilight = function (c_eyo) {
-  this.driver.connectionHilight(c_eyo)
+eYo.UI.prototype.magnetHilight = function (c_eyo) {
+  this.driver.magnetHilight(c_eyo)
 }
 
 /**
@@ -1832,3 +1829,11 @@ eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
     y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),
   }
 }
+
+/**
+ * Move the block to the top level.
+ */
+eYo.UI.prototype.setParent = function (parent) {
+  this.driver.nodeSetParent(this, parent)
+}
+

@@ -522,14 +522,6 @@ eYo.MenuManager.prototype.populateLast = function (block) {
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
-
-  if (block.eyo.plugged_) {
-    menuItem = this.newMenuItem(
-      block.eyo.plugged_.substring(4)
-    )
-    menuItem.setEnabled(false)
-    this.addChild(menuItem, true)
-  }
 }
 
 /**

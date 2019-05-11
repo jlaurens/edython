@@ -312,7 +312,7 @@ eYo.Driver.nodeMenuShow = eYo.Do.nothing
  * The default implementation does nothing.
  * @param {*} c_eyo
  */
-eYo.Driver.connectionHilight = eYo.Do.nothing
+eYo.Driver.magnetHilight = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.

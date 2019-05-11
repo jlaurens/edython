@@ -325,8 +325,8 @@ eYo.Delegate.Stmt.makeSubclass('decorator_stmt', {
       },
       promise: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        var b = this.targetBlock() // may be null ?
-        if (b && b.childBlocks_.length) {
+        var t = this.t_eyo // may be null ?
+        if (t && t.block_.childBlocks_.length) {
           this.owner.variant_p = eYo.Key.N_ARY
         }
       }

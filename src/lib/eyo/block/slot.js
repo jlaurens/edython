@@ -145,9 +145,6 @@ Object.defineProperties(eYo.Slot.prototype, {
           m4t.source = m4t.slot = this
           m4t.model = this.model
           m4t.name_ = this.key
-          if (this.model.plugged) {
-            m4t.plugged_ = this.model.plugged
-          }
           if (this.model.suite && Object.keys(this.model.suite).length) {
             goog.mixin(m4t, this.model.suite)
           }
@@ -275,15 +272,6 @@ Object.defineProperties(eYo.Slot.prototype, {
 })
 
 /**
- * Retrieve the target block.
- * Forwards to the connection.
- */
-eYo.Slot.prototype.targetBlock = function () {
-  var c8n = this.connection
-  return c8n && c8n.targetBlock()
-}
-
-/**
  * Install this slot and its associate fields on a block.
  * No data change.
  */
@@ -312,9 +300,6 @@ eYo.Slot.prototype.setInput = function (input) {
     var eyo = c8n.eyo
     eyo.slot = this
     eyo.name_ = this.key
-    if (this.model.plugged) {
-      eyo.plugged_ = this.model.plugged
-    }
     if (this.model.suite && Object.keys(this.model.suite).length) {
       goog.mixin(eyo, this.model.suite)
     }

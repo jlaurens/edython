@@ -72,10 +72,8 @@ eYo.Delegate = function (workspace, type, opt_id) {
   this.childBlocks_ = []
 
   this.errors = Object.create(null) // just a hash
-  this.block_ = block
   this.span_ = new eYo.Span(this)
   this.xy_ = new eYo.Where(0, 0)
-  block.eyo = this
   this.change = {
     // the count is incremented each time a change occurs,
     // even when undoing.
@@ -626,7 +624,7 @@ eYo.Delegate.prototype.incrementChangeCount = function (deep) {
 /**
  * Begin a mutation.
  * The change level is used to keep track of the cascading mutations.
- * When mutations imply other mutations, there is no need to perform some actions until the original mutation is done.
+ * When mutations imply other mutations, there is no need to perform some actions until the original mutation is complete.
  * For example, rendering should not be done until all the mutations are made.
  * Changes not only concern the data, they may concern the
  * slot visibility too.
@@ -778,11 +776,11 @@ eYo.Delegate.prototype.equals = function (rhs) {
           if (r_slot.incog) {
             equals = false
           } else {
-            var target = slot.targetBlock()
-            var r_target = r_slot.targetBlock()
-            equals = target
-              ? r_target && target.eyo.equals(r_target.eyo)
-              : !r_target
+            var t_eyo = slot.t_eyo
+            var r_t_eyo = r_slot.t_eyo
+            equals = t_eyo
+              ? r_t_eyo && t_eyo.equals(r_t_eyo)
+              : !r_t_eyo
           }
         } else {
           equals = false
@@ -1089,8 +1087,8 @@ eYo.Delegate.Manager = (() => {
         owner = undefined
       }
       owner = owner ||
-      (eYo.T3.Expr[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Expr) ||
-      (eYo.T3.Stmt[key] && eYo.Delegate.Svg && eYo.Delegate.Svg.Stmt) ||
+      (eYo.T3.Expr[key] && eYo.Delegate && eYo.Delegate.Expr) ||
+      (eYo.T3.Stmt[key] && eYo.Delegate && eYo.Delegate.Stmt) ||
       parent
       var delegateC9r = owner[key] = function (workspace, type, opt_id) {
         delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
@@ -1912,19 +1910,37 @@ eYo.Delegate.prototype.getVars = function (block) {
   return vars
 }
 
-/**
- * Same as Block's getDescendants except that it
- * includes this block in the list only when not sealed.
- * @return {!Array.<!Blockly.Block>} Flattened array of blocks.
- */
-eYo.Delegate.prototype.getWrappedDescendants = function () {
-  var blocks = []
-  if (!this.wrapped_) {
-    blocks.push(this.block_)
+Object.defineProperties(eYo.Delegate, {
+  /**
+   * Find all the blocks that are directly or indirectly nested inside this one.
+   * Includes this block in the list.
+   * Includes value and block inputs, as well as any following statements.
+   * Excludes any connection on an output tab or any preceding statements.
+   * @type {!Array.<!eYo.Delegate>} Flattened array of dlgt.
+   */
+  descendants: {
+    get () {
+      var ans = [this]
+      this.childBlocks_.forEach(d => ans.push.apply(ans, d.eyo.descendants))
+      return
+    }
+  },
+  /**
+   * Same as `descendants` property except that it
+   * includes the receiver in the list only when not sealed.
+   * @return {!Array.<!eYo.Delegate>} Flattened array of dlgt.
+   */
+  wrappedDescendants: {
+    get () {
+      var ans = []
+      if (!this.wrapped_) {
+        ans.push(this)
+      }
+      this.forEachChild(d => ans.push.apply(ans, d.eyo.wrappedDescendants))
+      return ans    
+    }
   }
-  this.forEachChild(d => blocks = blocks.concat(d.getWrappedDescendants()))
-  return blocks
-}
+})
 
 /**
  * Shortcut for appending a sealed value input row.
@@ -1942,11 +1958,11 @@ eYo.Delegate.prototype.appendWrapValueInput = function (name, prototypeName, opt
   c_eyo.wrapped_ = prototypeName
   c_eyo.optional_ = optional
   c_eyo.hidden_ = hidden
-  if (!this.wrappedC8nDlgt_) {
-    this.wrappedC8nDlgt_ = []
+  if (!this.wrappedM4t_) {
+    this.wrappedM4t_ = []
   }
   if (!optional) {
-    this.wrappedC8nDlgt_.push(c_eyo)
+    this.wrappedM4t_.push(c_eyo)
   }
   return input
 }
@@ -1971,20 +1987,20 @@ eYo.Delegate.prototype.appendPromiseValueInput = function (name, prototypeName, 
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the wrappedC8nDlgt_ list.
+ * The default implementation connects all the blocks from the wrappedM4t_ list.
  * Subclassers will eventually create appropriate new nodes
  * and connect it to any sealed connection.
  * @param {!Block} block
  * @private
  */
 eYo.Delegate.prototype.completeWrap_ = function () {
-  if (this.wrappedC8nDlgt_) {
+  if (this.wrappedM4t_) {
     var i = 0
-    while (i < this.wrappedC8nDlgt_.length) {
-      var d = this.wrappedC8nDlgt_[i]
+    while (i < this.wrappedM4t_.length) {
+      var d = this.wrappedM4t_[i]
       var ans = d.completeWrap()
       if (ans && ans.ans) {
-        this.wrappedC8nDlgt_.splice(i)
+        this.wrappedM4t_.splice(i)
       } else {
         ++i
       }
@@ -2054,7 +2070,7 @@ eYo.Delegate.prototype.updateGroupBlackHeight = function () {
  * Did connect this block's connection to another connection.
  * @param {!eYo.Magnet} m4t what has been connected in the block
  * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the block
- * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
+ * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new target
  */
 eYo.Delegate.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // how many blocks did I add ?
@@ -2086,14 +2102,14 @@ eYo.Delegate.prototype.willDisconnect = function (m4t) {
 }
 
 /**
- * Did disconnect this block's connection from another connection.
- * @param {!Blockly.Connection} blockConnection
- * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
+ * Did disconnect this receiver's magnet from another magnet.
+ * @param {!eYo.Magnet} m4t  
+ * @param {!eYo.Magnet} oldTargetM4t  that was connected to m4t
  */
 eYo.Delegate.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   // how many blocks did I add ?
   if (m4t.isSuite) {
-    m4t.b_eyo.updateBlackHeight()
+    this.updateBlackHeight()
   } else if (!m4t.isOutput) {
     this.updateGroupBlackHeight()
   }
@@ -2103,19 +2119,10 @@ eYo.Delegate.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   } else if (m4t.isSuite) {
     this.suiteHeight = 0
     this.incrementChangeCount()
-  } else if (oldTargetC8n === oldTargetM4t.b_eyo.magnets.output.connection) {
+  } else if (m4t.isInput) {
     this.incrementChangeCount()
   }
 }
-
-/**
- * In a connection, the inferior block's delegate may have a plugged_.
- * This is used for example to distinguish generic blocks such as identifiers.
- * An identifier is in general a variable name but sometimes it cannot be.
- * module names are such an example.
- * @private
- */
-eYo.Delegate.prototype.plugged_ = undefined
 
 /**
  * Can remove and bypass the parent?
@@ -2475,15 +2482,15 @@ eYo.Delegate.prototype.scrollToVisible = function (force) {
  * @return {!Array.<!Blockly.Connection>} Array of connections.
  * @package
  */
-eYo.Delegate.prototype.getConnections_ = function(all) {
-  var myConnections = [];
+eYo.Delegate.prototype.getMagnets_ = function(all) {
+  var ans = [];
   if (all || this.rendered) {
-    Object.values(this.magnets).forEach(m4t => myConnections.push(m4t.connection))
+    Object.values(this.magnets).forEach(m4t => ans.push(m4t.connection))
     if (all || !this.collapsed_) {
-      this.inputList.forEach(input => myConnections.push(input.magnet.connection))
+      this.inputList.forEach(input => ans.push(input.magnet.connection))
     }
   }
-  return myConnections
+  return ans
 }
 
 
@@ -2656,8 +2663,8 @@ eYo.Delegate.prototype.getMenuTarget = function () {
   if (this.wrap && (wrapped = this.wrap.input.target)) {
     return wrapped.eyo.getMenuTarget()
   }
-  if (this.wrappedC8nDlgt_ && this.wrappedC8nDlgt_.length === 1 &&
-    (wrapped = this.wrappedC8nDlgt_[0].connection.targetBlock())) {
+  if (this.wrappedM4t_ && this.wrappedM4t_.length === 1 &&
+    (wrapped = this.wrappedM4t_[0].t_eyo)) {
     // if there are more than one wrapped block,
     // then we choose none of them
     return wrapped.eyo.getMenuTarget()
@@ -2704,7 +2711,7 @@ eYo.Delegate.prototype.statementEnumerator = function () {
       e8r = e8rs.shift()
       while (e8r.next()) {
         if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-          if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
+          if (e8r.here.connection && (next = e8r.here.magnet.t_eyo)) {
             next = next.eyo
             eyos.unshift(eyo)
             e8rs.unshift(e8r)
@@ -2783,7 +2790,7 @@ eYo.StatementBlockEnumerator = function (block) {
       while (e8r.next()) {
         var eyo = e8r.here.eyo.magnet
         if (eyo.isFoot || eyo.isSuite) {
-          if (e8r.here.connection && (next = e8r.here.connection.targetBlock())) {
+          if (e8r.here.connection && (next = e8r.here.magnet.t_eyo)) {
             bs.unshift(b)
             e8rs.unshift(e8r)
             bs.unshift(next)
@@ -3176,7 +3183,7 @@ eYo.Delegate.prototype.insertBlockWithModel = function (model, m4t) {
               // We remember the last separator connection
               // of the first which is not a separator
               if (!otherM4t || (!otherM4t.disabled_ && otherM4t.s7r_)) {
-                otherM4t = foundC8n
+                otherM4t = foundM4t
               }
             }
           })
@@ -3412,4 +3419,39 @@ eYo.Delegate.prototype.doAndRender = function (handler, group, err_handler) {
       this.changeEnd()
     }
   }
+}
+
+/**
+ * Set parent of this block to be a new block or null.
+ * @param {Blockly.BlockSvg} newParent New parent block.
+ */
+Blockly.BlockSvg.prototype.setParent = function(newParent) {
+  if (newParent == this.parentBlock_) {
+    return;
+  }
+  var svgRoot = this.getSvgRoot();
+  if (this.parentBlock_) {
+    // Disconnect from superior blocks.
+    if (this.previousConnection && this.previousConnection.isConnected()) {
+      throw 'Still connected to previous block.';
+    }
+    if (this.outputConnection && this.outputConnection.isConnected()) {
+      throw 'Still connected to parent block.';
+    }
+    // Remove this block from the old parent's child list.
+    goog.array.remove(this.parentBlock_.childBlocks_, this);
+    this.parentBlock_ = null
+    this.ui.setParent(null)
+  } else {
+    // Remove this block from the workspace's list of top-most blocks.
+    this.workspace.removeTopBlock(this);
+  }
+  this.parentBlock_ = newParent;
+  if (newParent) {
+    // Add this block to the new parent's child list.
+    newParent.childBlocks_.push(this);
+  } else {
+    this.workspace.addTopBlock(this);
+  }
+  newParent && this.ui.setParent(newParent)
 }

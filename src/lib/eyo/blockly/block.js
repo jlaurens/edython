@@ -535,15 +535,6 @@ Blockly.Block.prototype.dispose = function(healStack) {
     })
     // Then dispose of myself.
     // Dispose of all inputs and their fields.
-    this.inputList.forEach(i => i.dispose())
-    this.inputList.length = 0
-    // Dispose of any remaining connections (next/previous/output).
-    this.getConnections_(true).forEach(c8n => {
-      if (c8n.isConnected()) {
-        c8n.disconnect()
-      }
-      c8n.dispose()
-    })
     // Remove this block from the workspace's list of top-most blocks.
     this.workspace.removeTopBlock(this)
     // Remove from block database.

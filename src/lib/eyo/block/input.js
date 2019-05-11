@@ -167,16 +167,6 @@ Object.defineProperties(eYo.Input.prototype, {
 })
 
 /**
- * Change a connection's compatibility.
- * @param {string|Array.<string>|null} check Compatible value type or
- *     list of value types.  Null if all types are compatible.
- * @return {!eYo.Input} The input being modified (to allow chaining).
- */
-eYo.Input.prototype.setCheck = function(check) {
-  this.check = check
-};
-
-/**
  * Sever all links to this input.
  * The wrapped_ blocks may not yet be disposed.
  */

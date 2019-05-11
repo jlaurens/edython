@@ -406,13 +406,13 @@ eYo.Delegate.Expr.makeSubclass('lambda', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       var eyo = this.b_eyo // does it always exist ?
-      var c8nIn = eyo.expression_s.connection
+      var m4tIn = eyo.expression_s.magnet
       var cond_in = true // cond are accepted by default
       var nocond_in = true // nocond are accepted by default
-      var targetC8n = c8nIn.targetConnection
-      if (targetC8n && targetC8n.check_) {
-        cond_in = eYo.T3.Expr.Check.expression.some(t => targetC8n.check_.indexOf(t) >= 0)
-        nocond_in = eYo.T3.Expr.Check.expression_nocond.some(t => targetC8n.check_.indexOf(t) >= 0)
+      var targetM4t = m4tIn.target
+      if (targetM4t && targetM4t.check_) {
+        cond_in = eYo.T3.Expr.Check.expression.some(t => targetM4t.check_.indexOf(t) >= 0)
+        nocond_in = eYo.T3.Expr.Check.expression_nocond.some(t => targetM4t.check_.indexOf(t) >= 0)
       }
       return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
     }

@@ -125,23 +125,18 @@ eYo.Delegate.List.prototype.doConsolidate = (() => {
 /**
  * Clear the list af all items.
  * For edython.
- * @param {!Block} block
  * @private
  */
-eYo.Delegate.List.prototype.removeItems = function (block) {
-  var block = this.block_
-  var list = block.inputList
-  var i = 0
-  var input
+eYo.Delegate.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
-    while ((input = list[i++])) {
-      var c8n = input.connection
-      var target = c8n.targetBlock()
-      if (target) {
-        c8n.disconnect()
-        target.dispose()
+    this.inputList.forEach(input => {
+      var m4t = input.magnet
+      var t_eyo = m4t.t_eyo
+      if (t_eyo) {
+        m4t.break()
+        t_eyo.dispose()
       }
-    }
+    })
     this.consolidate()
   })
 }

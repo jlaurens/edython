@@ -240,10 +240,8 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
     i = io.i
   }
   var input = io.list[i]
-  var c8n = input.connection
-  if (c8n && c8n.isConnected()) {
-    c8n.disconnect()
-  }
+  var m4t = input.magnet
+  m4t && m4t.break()
   input.dispose()
   io.list.splice(i, 1)
   io.edited = true
@@ -293,7 +291,6 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
   }
   io.input.check = check
   io.m4t.optional_ = optional
-  io.m4t.plugged_ = this.plugged
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
   }
@@ -329,7 +326,6 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     sep && sep.length && f(sep, true)
   }
   io.input.check = this.getCheck(io)
-  io.m4t.plugged_ = this.model.plugged
   io.m4t.hidden_ = undefined
   if (io.dlgt.locked_) {
     io.m4t.hidden_ = true

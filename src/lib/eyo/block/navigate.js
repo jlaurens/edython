@@ -258,7 +258,7 @@ eYo.Selected.chooseRight = function () {
         var t_eyo
         var next
         while ((t_eyo = m4t.t_eyo) && (next = t_eyo.magnets.foot)) {
-          c8n = next
+          m4t = next
         }
         m4t.select().scrollToVisible()
         return

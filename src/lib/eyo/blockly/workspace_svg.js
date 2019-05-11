@@ -252,16 +252,16 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
             // the pasted block must move before it is connected
             // otherwise the newly created block will attract the old one
             // resulting in a move of the existing connection
-            // 1) get the location of c8n in the workspace
+            // 1) get the location of magnet in the workspace
             var xy = magnet.offsetInBlock_.clone()
             var xy_block = magnet.ui.xyInSurface
             xy.translate(xy_block.x, xy_block.y)
-            // This is where the targetC8n should be once the
+            // This is where the target magnet should be once the
             // connection has been made
             var xyxy = t_magnet.offsetInBlock_.clone()
             xy_block = t_magnet.ui.xyInSurface
             xyxy.translate(xy_block.x, xy_block.y)
-            // This is where the targetC8n is
+            // This is where the target magnet is
             xyxy.scale(-1)
             xy.translate(xyxy.x, xyxy.y)
             t_magnet.b_eyo.moveByXY(xy.x, xy.y)
@@ -291,10 +291,10 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
                     Math.abs(dy - xy.y) <= 10) {
                   return true
                 }
-              }) || dlgt.getConnections_(false).some(c8n => {
-                  var neighbour = c8n.closest(Blockly.SNAP_RADIUS,
+              }) || dlgt.getMagnets_(false).some(m4t => {
+                  var neighbour = m4t.closest(Blockly.SNAP_RADIUS,
                     new goog.math.Coordinate(dx, dy))
-                  if (neighbour.connection) {
+                  if (neighbour) {
                     return true
                   }
               })
