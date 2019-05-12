@@ -46,7 +46,6 @@ eYo.Magnet = function (bsi, type, model) {
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
   this.targetIsMissing = false
-  model.fields && eYo.FieldHelper.makeFields(this, model.fields)
   var DB = this.magnetDBList_
   if (DB) {
     this.db_ = DB[this.type]
