@@ -26,34 +26,46 @@ goog.forwardDeclare('eYo.Slot')
  * @constructor
  */
 eYo.Input = function(owner, name, model) {
-  if (owner instanceof eYo.Slot) {
-    this.slot_ = owner
-    this.owner_ = owner.owner
-  } else {
-    this.owner_ = owner
-  }
+  this.owner = owner
   this.name_ = name
   this.magnet_ = new eYo.Magnet(owner, eYo.Magnet.INPUT, model)
   this.fieldRow_ = []
 }
 
+// private properties
+Object.defineProperties(eYo.Input.prototype, {
+  owner_: { value: undefined },
+  brick_: { value: undefined },
+  visible_: { value: undefined },
+})
+
+// computed properties
 Object.defineProperties(eYo.Input.prototype, {
   /**
    * @readonly
-   * @type {!eYo.Brick}
+   * @type {!eYo.Brick|eYo.Slot}
    */
   owner: {
     get () {
       return this.owner_
+    },
+    set (newValue) {
+      if (newValue instanceof eYo.Slot) {
+        this.owner_ = this.slot_ = owner
+        this.brick_ = owner.brick
+      } else {
+        this.slot_ = null
+        this.owner_ = this.brick_ = owner
+      }
     }
   },
   /**
    * @readonly
-   * @type {number}
+   * @type {!eYo.Brick}
    */
-  type: {
+  brick: {
     get () {
-      throw "NO WAY, BREAK HERE"
+      return this.brick_
     }
   },
   /** 
@@ -89,9 +101,6 @@ Object.defineProperties(eYo.Input.prototype, {
       this.fieldRow.forEach(f => f.setVisible(newValue))
       this.magnet && (this.magnet.visible = newValue)
     }
-  },
-  magnet_: {
-    writable: true
   },
   /**
    * @readonly
@@ -155,6 +164,15 @@ Object.defineProperties(eYo.Input.prototype, {
   connection: {
     get () {
       throw "BAD DESIGN, BREAK HERE"
+    }
+  },
+  /**
+   * @readonly
+   * @type {number}
+   */
+  type: {
+    get () {
+      throw "NO WAY, BREAK HERE"
     }
   },
 })
