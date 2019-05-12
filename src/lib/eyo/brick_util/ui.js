@@ -439,7 +439,7 @@ eYo.UI.prototype.render = (() => {
         // which means that it is an expression brick's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.node.magnets.outpu === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.b_eyo === this.node) {
+          if (!parent.ui.up && this.node.magnets.outpu === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.node) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
@@ -1176,7 +1176,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
           m4t.shape = eYo.Key.NONE
           m4t.isLastInStatement = isLastInStatement
           var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
-          var dlgt = m4t.b_eyo
+          var dlgt = m4t.brick
           if (io.dlgt === dlgt) {
             // we are lucky, this.node is the brick we are currently rendering
             io.steps.push(d)
@@ -1209,7 +1209,7 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       m4t.side = side
       m4t.shape = io.isLastInStatement ? eYo.Key.Right : shape
       var shp = eYo.Shape.newWithMagnet(m4t)
-      var dlgt = m4t.b_eyo
+      var dlgt = m4t.brick
       if (io.dlgt === dlgt) {
         // we are lucky, this.node is the brick we are currently rendering
         io.steps.push(shp.definition)
