@@ -34,9 +34,7 @@ eYo.Input = function(owner, name, model) {
 
 // private properties
 Object.defineProperties(eYo.Input.prototype, {
-  owner_: { value: undefined },
-  brick_: { value: undefined },
-  visible_: { value: undefined },
+  visible_: { value: true },
 })
 
 // computed properties
