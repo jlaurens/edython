@@ -1007,10 +1007,10 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       check: eYo.T3.Expr.Check.primary,
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
-        this.b_eyo.updateProfile()
+        this.brick.updateProfile()
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        this.b_eyo.updateProfile()
+        this.brick.updateProfile()
       },
       hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: true
@@ -1056,10 +1056,10 @@ eYo.Brick.Expr.makeSubclass('primary', {
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         // the brick is not yet consolidated
         if (this.isInput) {
-          var parent = this.b_eyo.parent
+          var parent = this.brick.parent
           if (parent) {
             parent.target_s.bindField.setVisible(false)
-            if (this.b_eyo.inputList.length > 1) {
+            if (this.brick.inputList.length > 1) {
               // this is the second brick we connect
               parent.variant_p = eYo.Key.TARGET_VALUED
             } else {
@@ -1088,7 +1088,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         // when there is no connected brick, we display the field
         var parent = this.parent
         if (parent) {
-          if (this.b_eyo.inputList.length < 4) { // bad design
+          if (this.brick.inputList.length < 4) { // bad design
             // this is the last brick we disconnected
             parent.target_s.bindField.setVisible(true)
           }
@@ -1191,7 +1191,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         this.slot.bindField.setVisible(false)
-        this.b_eyo.variant_p = eYo.Key.ALIASED
+        this.brick.variant_p = eYo.Key.ALIASED
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         this.slot.bindField.setVisible(true)
@@ -1200,7 +1200,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
-      return this.b_eyo.getOutCheck()
+      return this.brick.getOutCheck()
     }
   },
   init: /** @suppress {globalThis} */ function () {
