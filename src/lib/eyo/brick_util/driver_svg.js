@@ -750,13 +750,13 @@ eYo.Driver.Svg.prototype.fieldInit = function (field) {
   } else {
     svg.group_ = svg.textElement_
   }
-  (eyo.slot ||eyo.b_eyo.ui).svg.group_.appendChild(svg.group_)
+  (eyo.slot ||eyo.brick.ui).svg.group_.appendChild(svg.group_)
   if (eyo.css_class) {
     goog.dom.classlist.add(svg.textElement_, eYo.Do.valueOf(eyo.css_class, eyo))
   }
   if (eyo.isLabel) {
     // Configure the field to be transparent with respect to tooltips.
-    svg.textElement_.tooltip = eyo.b_eyo.block_
+    svg.textElement_.tooltip = eyo.brick.block_
     Blockly.Tooltip.bindMouseEvents(svg.textElement_)
   }
   this.fieldDisplayedUpdate(field)
@@ -931,7 +931,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
   if (!m4t.workspace) {
     return
   }
-  var node = m4t.b_eyo
+  var node = m4t.brick
   var g = node.ui.svg.group_
   var steps
   if (m4t.isInput) {
@@ -1500,11 +1500,11 @@ eYo.Driver.Svg.prototype.fieldInlineEditorShow = function (field, quietInput) {
 eYo.Driver.Svg.prototype.fieldWidgetDisposeCallback = function (field) {
   return function () {
     var f_eyo = field.eyo
-    f_eyo.b_eyo.isEditing = f_eyo.isEditing = false
+    f_eyo.brick.isEditing = f_eyo.isEditing = false
     field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
     field.callValidator()
-    f_eyo.b_eyo.changeWrap(
-      function () { // `this` is `f_eyo.b_eyo`
+    f_eyo.brick.changeWrap(
+      function () { // `this` is `f_eyo.brick`
         field.onEndEditing_ && field.onEndEditing_()
         var model = f_eyo.model
         if (model) {
@@ -1537,7 +1537,7 @@ eYo.Driver.Svg.prototype.fieldInlineEditorValidate = function (field) {
   goog.asserts.assertObject(htmlInput)
   var htmlInput = eYo.FieldTextInput.htmlInput_
   goog.asserts.assertObject(htmlInput)
-  (field.eyo.b_eyo && (null === field.callValidator(htmlInput.value))
+  (field.eyo.brick && (null === field.callValidator(htmlInput.value))
   ? goog.dom.classlist.add
   : goog.dom.classlist.remove)(htmlInput_, 'eyo-code-error')
 }
@@ -1559,7 +1559,7 @@ eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
       var xy = this.fieldGetAbsoluteXY_(field)
       div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
       div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      f_eyo.b_eyo.changeWrap() // force rendering
+      f_eyo.brick.changeWrap() // force rendering
     }
   }
 }
