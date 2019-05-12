@@ -1754,3 +1754,37 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
 
   return true
 }
+
+Object.defineProperty(eYo.Magnet.prototype, 'right', {
+  /**
+   * The right connection is just at the right... Not used.
+   * @private
+   */
+  get () {
+    var slot = this.slot
+    if (slot) {
+      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.input.connection.hidden_))) {
+        return slot.magnet
+      }
+      var brick = this.brick
+    } else if ((brick = this.brick)) {
+      var e8r = brick.inputEnumerator()
+      if (e8r) {
+        while (e8r.next()) {
+          if (this === e8r.here.magnet) {
+            // found it
+            while (e8r.next()) {
+              var m4t
+              if ((m4t = e8r.here.magnet)) {
+                return m4t
+              }
+            }
+          }
+        }
+      }
+    }
+    if (brick && (m4t = brick.magnets.output) && (m4t = m4t.target)) {
+      return m4t.right
+    }
+  }
+})
