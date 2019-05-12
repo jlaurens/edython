@@ -46,7 +46,7 @@ goog.forwardDeclare('eYo.FieldHelper')
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {!Object} owner  The owner is a brick delegate.
+ * @param {!eYo.Brick} owner  The owner is a brick.
  * @param {!string} key  One of the keys in `slots` section of the brick model.
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
@@ -59,54 +59,69 @@ eYo.Slot = function (owner, key, model) {
     console.error('Missing slot model order')
   }
   goog.asserts.assert(model.order, 'Missing slot model order')
-  this.owner = owner
-  this.key = key
-  this.reentrant_ = {}
-  var setupModel = model => {
-    if (!model.setup_) {
-      model.setup_ = true
-      if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
-        delete model.validateIncog
-      }
-    }
-  }
-  setupModel(model)
-  this.model = model
+  this.owner_ = owner
+  this.key_ = key
+  this.model_ = model
   this.input = undefined
   var brick = this.sourceBlock_
   goog.asserts.assert(brick,
     `brick must exist ${key}`)
-  eYo.FieldHelper.makeFields(this, model.fields)
-  var f = () => {
-    var m4t = this.magnet
-    m4t.source = this
-    m4t.model = model
-  }
-  if (model.wrap) {
-    this.input = owner.appendWrapValueInput(key, model.wrap, model.optional, model.hidden)
-    f()
-  } else if (model.promise) {
-    this.input = owner.appendPromiseValueInput(key, model.promise, model.optional, model.hidden)
-    f()
-    this.incog = true
-  } else if (goog.isDefAndNotNull(model.check)) {
-    this.input = brick.appendValueInput(key)
-    f()
-  }
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
-  this.where = new eYo.Where() // for rendering only
-  this.init()
-}
-
-/**
- * Init the slot.
- */
-eYo.Slot.prototype.init = function () {
+  this.where_ = new eYo.Where() // for rendering only
   var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
   f && f.call(this)
 }
+
+// Private properties
+Object.defineProperties(eYo.Slot.prototype, {
+  owner_: { writable: true },
+  key_: { writable: true },
+  reentrant_: { value: {} },
+  input__: { writable: true },
+  input_:{
+    get () {
+      return this.input__
+    },
+    set (newValue) {
+      
+    }
+  },
+  magnet_: { writable: true },
+  incog_: { writable: true },
+  where_: { writable: true },
+  model__: { writable: true },
+  model_: {
+    get () {
+      return this.model__
+    },
+    set (model) {
+      this.model__ = model
+      var setupModel = model => {
+        model.setup_ = true
+        if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+          delete model.validateIncog
+        }
+      }
+      model.setup_ || setupModel(model)
+      if (model) {
+        if (goog.isDefAndNotNull(model.check)) {
+          this.input = new eYo.Input(this, name, model)
+          if (model.wrap) {
+            this.input.magnet.wrapped = prototypeName      
+          } else if (model.promise) {
+            this.input.magnet.promised = prototypeName
+            this.incog = true
+          }
+        }
+        eYo.FieldHelper.makeFields(this, model.fields)
+      } else {
+        eYo.FieldHelper.disposeFields(this)
+      }
+    }
+  }
+})
 
 /**
  * Dispose of all attributes.
@@ -115,13 +130,11 @@ eYo.Slot.prototype.init = function () {
 eYo.Slot.prototype.dispose = function () {
   var ui = this.owner.ui
   ui && ui.driver.slotDispose(this)
+  this.model_ = undefined
   this.where.dispose && this.where.dispose()
   this.where = undefined
   this.input && this.input.dispose()
   this.input = undefined
-  eYo.FieldHelper.disposeFields(this)
-  this.model = undefined
-  this.reentrant_ = undefined
   this.key = undefined
   this.owner = undefined
 }
@@ -165,6 +178,17 @@ Object.defineProperties(eYo.Slot.prototype, {
     get () {
       return this.where_
     }
+  },
+  model: {
+    get () {
+      return this.model_
+    }
+  },
+  /**
+   * @property {eYo.Data} data  Bound data.
+   */
+  data: {
+    writable: true
   },
   ui: {
     get () {
@@ -261,11 +285,6 @@ Object.defineProperties(eYo.Slot.prototype, {
     }
   },
   connection: {
-    get () {
-      throw "INCONSISTANCY, BREAK HERE"
-    }
-  },
-  brick: {
     get () {
       throw "INCONSISTANCY, BREAK HERE"
     }
@@ -607,7 +626,7 @@ eYo.Slot.prototype.load = function (element) {
             } else if (m4ts.head && m4t.checkType_(m4ts.head, true)) {
               m4t.connect(m4ts.head) // Notice the `.eyo`
             }
-            out = t_eyo.block_
+            out = t_eyo
           }
         }
         return true // the element was found
@@ -638,25 +657,6 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
     this.model.didLoad.call(this)
   }
 })
-
-/**
- * execute the given function for the receiver and its next siblings.
- * If the return value of the given function is true,
- * then it was the last iteration and the loop breaks.
- * For edython.
- * @param {!function} helper
- * @return {?eYo.Slot} The first slot for which `helper` returns a truthy value
- */
-eYo.Slot.prototype.some = function (helper) {
-  if (goog.isFunction(helper)) {
-    var slot = this
-    var last
-    do {
-      last = helper(slot)
-    } while (!last && (slot = slot.next))
-    return last === true ? slot : last
-  }
-}
 
 /**
  * execute the given function for the receiver and its next siblings.
@@ -702,21 +702,13 @@ eYo.Slot.prototype.forEachField = function (helper) {
 }
 
 /**
- * Connect to delegate or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
- * @param {!eYo.Brick | eYo.Magnet} dm  a a Dlgt or magnet.
+ * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
+ * The slot corresponds to a wrapped list block.
+ * @param {!eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
+ * @param {?String} key an input key. When not given the last free input is used.
+ * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
-eYo.Slot.prototype.connect = function (dm) {
-  return this.magnet.connect((dm.magnets && dm.magnets.output) || dm)
-}
-
-/**
- * Connect the expression Dlgt or magnet. When not given a connection, the output connection is used. It is natural for slots.
- * The slot corresponds to a wrapped list dlgt.
- * @param {!eYo.Brick | eYo.Magnet} dm  either a Dlgt or a magnet.
- * @param {?String} key an input key. When not given the last free input is connected.
- * @return {Boolean} whether the connection has been established.
- */
-eYo.Slot.prototype.listConnect = function (dm, key) {
+eYo.Slot.prototype.listConnect = function (bm, key) {
   var t_eyo = this.t_eyo
   if (!t_eyo) {
     this.completePromise()
@@ -725,13 +717,13 @@ eYo.Slot.prototype.listConnect = function (dm, key) {
     }
   }
   if (!key) {
-    return t_eyo.connectLast(dm)
+    return t_eyo.connectLast(bm)
   }
   var input = t_eyo.getInput(key)
   if (input) {
     var m4t = input.magnet
     if (m4t) {
-      var other = (dm.magnets && dm.magnets.output) || dm
+      var other = (bm.magnets && bm.magnets.output) || bm
       return m4t.connect(other)
     }
   }
@@ -740,61 +732,28 @@ eYo.Slot.prototype.listConnect = function (dm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {!eYo.Brick | eYo.Magnet} dm (delegate of magnet)
+ * @param {!eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet} the eventual target magnet
  */
-eYo.Slot.prototype.connect = function (dm) {
+eYo.Slot.prototype.connect = function (bm) {
   var m4t = this.magnet
-  if(m4t && dm) {
-    var other = (dm.magnets && dm.magnets.output) || dm
+  if(m4t && bm) {
+    var other = (bm.magnets && bm.magnets.output) || bm
     if (m4t.checkType_(other)) {
       return m4t.connect(other)
     }
   }
 }
 
-Object.defineProperty(eYo.Magnet.prototype, 'right', {
-  /**
-   * The right connection is at the right... Not used.
-   * @private
-   */
-  get () {
-    var slot = this.slot
-    if (slot) {
-      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.input.connection.hidden_))) {
-        return slot.magnet
-      }
-      var b_eyo = this.brick
-      var e8r = b_eyo.inputEnumerator()
-      if (e8r) {
-        while (e8r.next()) {
-          if (e8r.here.connection && this.connection === e8r.here.connection) {
-            // found it
-            while (e8r.next()) {
-              var m4t
-              if ((m4t = e8r.here.eyo.magnet) && m4t.isOutput) {
-                return m4t.connection
-              }
-            }
-          }
-        }
-      }
-    }
-    if (b_eyo && (m4t = b_eyo.magnets.output) && (m4t = m4t.target)) {
-      return m4t.right
-    }
-  }
-})
-
-
 /**
  * Complete with a promised brick.
- * Forwards to the receiver's connection's delegate.
+ * Forwards to the receiver's magnet.
  * One shot in case of success.
+ * @return {Boolean} whether the complete was successfull
  */
 eYo.Slot.prototype.completePromise = function () {
-  var c8n = this.connection
-  if (c8n && c8n.eyo.completePromise()) {
+  var m4t = this.magnet
+  if (m4t && m4t.completePromise()) {
     this.completePromise = eYo.Do.nothing
     return true
   }
