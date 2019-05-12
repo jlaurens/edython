@@ -2163,7 +2163,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             if (next.checkType_(previous)) {
               break
             }
-            eyo = previous.b_eyo
+            eyo = previous.brick
             // No recursion
             eyo.setDisabled(true)
           }
@@ -2179,7 +2179,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             previous = next.target
             do {
-              var t_eyo = previous.b_eyo
+              var t_eyo = previous.brick
               if (t_eyo.disabled) {
                 t_eyo.disabled = false
                 var check = next.checkType_(previous)
@@ -2212,7 +2212,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             next = previous.target
             do {
-              t_eyo = next.b_eyo
+              t_eyo = next.brick
               if (t_eyo.disabled) {
                 // beware of some side effet below
                 // bad design, things have changed since then...
@@ -2230,7 +2230,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
                 // but the next may have change and the checkType_ must
                 // be computed once again
                 if (!next.checkType_(previous)) {
-                  t_eyo = previous.b_eyo
+                  t_eyo = previous.brick
                   t_eyo.unplug()
                   t_eyo.bumpNeighbours_()
                 }
@@ -3049,7 +3049,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
       if (!candidate) {
         // very special management for tuple input
         if ((otherM4t = eYo.Selected.magnet) && goog.isString(model)) {
-          var otherDlgt = otherM4t.b_eyo
+          var otherDlgt = otherM4t.brick
           if (otherDlgt instanceof eYo.Brick.List && otherM4t.eyo.isInput) {
             eYo.Events.groupWrap(() => {
               var dlgts = model.split(',').map(x => {
@@ -3089,7 +3089,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
         return
       }
       if ((otherM4t = eYo.Selected.magnet)) {
-        otherDlgt = otherM4t.b_eyo
+        otherDlgt = otherM4t.brick
         if (otherM4t.isInput) {
           if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
             return fin()
@@ -3175,7 +3175,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
             }
             m4t.connect(otherM4t)
             if (targetM4t) {
-              targetM4t.b_eyo.bumpNeighbours_()
+              targetM4t.brick.bumpNeighbours_()
             }
           })
         }
