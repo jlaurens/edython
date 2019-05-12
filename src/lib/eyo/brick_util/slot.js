@@ -223,6 +223,15 @@ Object.defineProperties(eYo.Slot.prototype, {
       return (this.model.xml && this.model.xml.key) || this.key
     }
   },
+})
+// obsolete API
+Object.defineProperties(eYo.Slot.prototype, {
+  c_eyo: {
+    get () {
+      console.error("BREAK HERE")
+      throw "INCONSISTANCY"
+    }
+  },
   target: {
     get () {
       console.error("BREAK HERE")
@@ -280,7 +289,7 @@ eYo.Slot.prototype.beReady = function () {
   this.ui_driver.slotInit(this)
   // init all the fields
   var f = field => field.eyo.beReady()// installs in the owner's group, not the brick group
-  Object.values(this.fields).forEach(f)
+  this.forEachField(f)
   this.bindField && f(this.bindField)
   this.input && this.input.beReady()
 }
@@ -310,14 +319,6 @@ eYo.Slot.prototype.setInput = function (input) {
       this.incog = eyo.hidden_ = true
     }
   }
-}
-
-/**
- * Get the brick.
- * For edython.
- */
-eYo.Slot.prototype.getBlock = function () {
-  return this.sourceBlock_
 }
 
 /**
@@ -416,7 +417,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
     m4t.wrapped_ && m4t.setHidden(true) // Don't ever connect any brick to this
     var v
     if ((v = this.model.check)) {
-      m4t.check = v.call(m4t, m4t.b_eyo.type, m4t.b_eyo.variant_p)
+      m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.variant_p)
     }
   }
 }
@@ -695,6 +696,15 @@ eYo.Slot.prototype.some = function (helper) {
 }
 
 /**
+ * execute the given function for the fields.
+ * For edython.
+ * @param {!function} helper
+ */
+eYo.Slot.prototype.forEachField = function (helper) {
+  this.fields && Object.values(this.fields).forEach(f => helper(f))
+}
+
+/**
  * Connect to delegate or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * @param {!eYo.Brick | eYo.Magnet} dm  a a Dlgt or magnet.
  */
@@ -757,8 +767,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
       if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.input.connection.hidden_))) {
         return slot.magnet
       }
-      var b_eyo = this.b_eyo
-    } else if ((b_eyo = this.b_eyo)) {
+      var b_eyo = this.brick
       var e8r = b_eyo.inputEnumerator()
       if (e8r) {
         while (e8r.next()) {
