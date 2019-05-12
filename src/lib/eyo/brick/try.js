@@ -114,7 +114,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
-        var O = this.b_eyo
+        var O = this.brick
         O.variant_p === eYo.Key.ALIASED || (O.variant_p = eYo.Key.EXPRESSION)
       }
     },
@@ -139,7 +139,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
-        var O = this.b_eyo
+        var O = this.brick
         O.variant_p = eYo.Key.ALIASED
       }
     }
