@@ -439,7 +439,7 @@ eYo.UI.prototype.render = (() => {
         // which means that it is an expression brick's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.node.magnets.outpu === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.node) {
+          if (!parent.ui.up && this.node.magnets.output === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.node) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
