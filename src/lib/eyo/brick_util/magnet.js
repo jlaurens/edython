@@ -97,7 +97,7 @@ Object.defineProperties(eYo.Magnet, {
  */
 eYo.Magnet.prototype.dispose = function () {
   eYo.FieldHelper.disposeFields(this)
-  this.reentrant_ = this.slot = this.where_ = this.model_ = undefined
+  this.slot = this.where_ = this.model_ = undefined
   if (this.target) {
     throw 'Disconnect connection before disposing of it.';
   }
