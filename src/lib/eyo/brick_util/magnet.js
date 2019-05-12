@@ -39,13 +39,8 @@ goog.require('eYo.T3')
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.Magnet = function (dis, type, model) {
-  if (dsi instanceof eYo.Input) {
-    this.input_ = dis
-  } else if (dsi instanceof eYo.Slot) {
-    this.slot_ = dis
-  }
-  this.owner_ = dis.owner || dis
+eYo.Magnet = function (bsi, type, model) {
+  this.owner_ = bsi
   this.type = type
   this.model_ = model
   this.where_ = new eYo.Where()
