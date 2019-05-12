@@ -127,51 +127,48 @@ eYo.Slot.prototype.dispose = function () {
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
+  /**
+   * @readonly
+   * @property {eYo.Brick} brick  the immediate brick in which this is contained
+   */
+  brick: {
+    get () {
+      return this.owner_
+    }
+  },
+  /**
+   * @readonly
+   * @property {eYo.Input} brick  the input it owns
+   */
   input: {
     get () {
       return this.input_
     },
     set (newValue) {
       if (this.input_ !== newValue) {
-        var m4t = this.magnet
-        if (m4t) {
-          m4t.source = m4t.model = undefined
-        }
-      }
-      if ((this.input_ = newValue)) {
-        newValue.slot = this
-        var m4t = this.magnet
-        if (m4t) {
-          m4t.source = m4t.slot = this
-          m4t.model = this.model
-          m4t.name_ = this.key
-          if (this.model.suite && Object.keys(this.model.suite).length) {
-            goog.mixin(m4t, this.model.suite)
-          }
-          if (this.model.optional) { // svg
-            m4t.optional_ = true
-          }
-          if (this.model.hidden) { // svg
-            this.incog = m4t.hidden_ = true
-          }
+        this.input_ && (this.input_.slot = null)
+        if ((this.input_ = newValue)) {
+          newValue.slot = this
+          this.magnet_ = input.magnet
+        } else {
+          this.magnet_ = null
         }
       }
     }
   },
   magnet: {
     get () {
-      return this.input.magnet
+      return this.magnet_
     }
   },
-  c_eyo: {
+  where: {
     get () {
-      console.error("BREAK HERE")
-      throw "INCONSISTANCY"
+      return this.where_
     }
   },
   ui: {
     get () {
-      return this.owner.ui
+      return this.brick.ui
     }
   },
   ui_driver: {
