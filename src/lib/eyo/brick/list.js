@@ -339,7 +339,7 @@ eYo.Brick.List.makeSubclass('enclosure', {
   output: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
       // retrieve the brick delegate
-      var b_eyo = this.b_eyo
+      var b_eyo = this.brick
       var p5e = b_eyo.profile_p
       return b_eyo.getOutCheck(p5e)
     }
