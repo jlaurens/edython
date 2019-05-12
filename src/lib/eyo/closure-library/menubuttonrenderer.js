@@ -55,9 +55,9 @@ eYo.MenuButtonRenderer.prototype.getCssClass = function() {
 /**
  * Returns the button's contents wrapped in the following DOM structure:
  *
- *    <div class="goog-inline-block goog-custom-button">
- *      <div class="goog-inline-block goog-custom-button-outer-box">
- *        <div class="goog-inline-block goog-custom-button-inner-box">
+ *    <div class="goog-inline-brick goog-custom-button">
+ *      <div class="goog-inline-brick goog-custom-button-outer-box">
+ *        <div class="goog-inline-brick goog-custom-button-inner-box">
  *          Contents...
  *        </div>
  *      </div>
@@ -84,12 +84,12 @@ eYo.MenuButtonRenderer.prototype.createDom = function(control) {
  * a dropdown arrow element wrapped in a pseudo-rounded-corner box.  Creates
  * the following DOM structure:
  *
- *    <div class="goog-inline-block goog-menu-button-outer-box">
- *      <div class="goog-inline-block goog-menu-button-inner-box">
- *        <div class="goog-inline-block goog-menu-button-caption">
+ *    <div class="goog-inline-brick goog-menu-button-outer-box">
+ *      <div class="goog-inline-brick goog-menu-button-inner-box">
+ *        <div class="goog-inline-brick goog-menu-button-caption">
  *          Contents...
  *        </div>
- *        <div class="goog-inline-block goog-menu-button-dropdown">
+ *        <div class="goog-inline-brick goog-menu-button-dropdown">
  *          &nbsp;
  *        </div>
  *      </div>

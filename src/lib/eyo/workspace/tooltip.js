@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Tooltip')
 
-goog.require('eYo.Delegate')
+goog.require('eYo.Brick')
 
 /**
  * Add a tooltip programatically to an element
@@ -76,13 +76,12 @@ eYo.Tooltip.hideAll = function (el) {
 }
 
 /**
- * Add tooltip to a block
+ * Add tooltip to a brick
  * @param {!String} key
  */
-eYo.Delegate.prototype.addTooltip = function (key) {
+eYo.Brick.prototype.addTooltip = function (key) {
   var options = eYo.Tooltip.options
   var g = this.ui.svg.group
-  var block = this.block_
   goog.mixin(options, {
     onShow(instance) {
       g && g.parentNode && eYo.Tooltip.hideAll(g.parentNode)

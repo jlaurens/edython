@@ -16,7 +16,7 @@ goog.provide('eYo.Field')
 goog.require('eYo.Do')
 
 /**
- * Wraps block between `Blockly`'s `startCache` and `stopCache`. Will be deprecated because of fixed width font usage.
+ * Wraps brick between `Blockly`'s `startCache` and `stopCache`. Will be deprecated because of fixed width font usage.
  * @param {*} try_f
  * @param {*} finally_f
  */

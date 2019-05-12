@@ -17,7 +17,7 @@ goog.require('Blockly.WorkspaceSvg')
 
 goog.require('eYo.Do')
 goog.require('eYo.Msg')
-goog.require('eYo.Block')
+goog.require('eYo.Brick')
 goog.require('eYo.Driver.Svg')
 goog.require('eYo.Workspace')
 goog.require('goog.dom');
@@ -32,11 +32,11 @@ eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.Block} The created block.
+ * @return {!eYo.Brick} The created block.
  * @suppress{accessControls}
  */
 Blockly.WorkspaceSvg.prototype.newBlock = function (prototypeName, optId) {
-  return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
+  return new eYo.Brick(/** Blockly.Workspace */ this, prototypeName, optId)
 }
 
 /**

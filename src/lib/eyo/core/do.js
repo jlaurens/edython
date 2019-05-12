@@ -343,7 +343,7 @@ eYo.Do.ensureFunction = function (object) {
  * Used only by the model's checking.
  * If the object is a faulthy value,
  * it means that to check array will be defined.
- * This is used to indicate that any block is accepted for a connection.
+ * This is used to indicate that any brick is accepted for a connection.
  * If object is a void array, no connection will be possible.
  * @param {?Object} object
  * @return object when a function else a function with signature f() -> []

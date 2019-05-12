@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Add methods to register block delegates, only when not in flyout.
+ * @fileoverview Add methods to register brick delegates, only when not in flyout.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

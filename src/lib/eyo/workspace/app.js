@@ -28,21 +28,21 @@ goog.require('eYo.Scan')
 eYo.App = Object.create(null)
 
 /**
- * Copy a block onto the local clipboard.
- * @param {!Blockly.Block} block Block to be copied.
+ * Copy a brick onto the local clipboard.
+ * @param {!Blockly.Block} brick Block to be copied.
  * @private
  * @return {Boolean} true if copied, false otherwise
  */
 eYo.App.doCopy = function(optNoNext) {
-  var block = eYo.Selected.block
-  if (block) {
-    eYo.copyBlock(block, !optNoNext)
+  var brick = eYo.Selected.brick
+  if (brick) {
+    eYo.copyBlock(brick, !optNoNext)
     return true
   }
 };
 
 /**
- * Send the selected block to the front.
+ * Send the selected brick to the front.
  * This is a job for the renderer.
  */
 eYo.App.doFront = function() {
@@ -53,7 +53,7 @@ eYo.App.doFront = function() {
 }
 
 /**
- * Send the selected block to the back.
+ * Send the selected brick to the back.
  */
 eYo.App.doBack = function() {
   var eyo = eYo.Selected.eyo
@@ -63,11 +63,11 @@ eYo.App.doBack = function() {
 }
 
 /**
- * Scroll the workspace to show the selected block.
+ * Scroll the workspace to show the selected brick.
  */
 eYo.App.doFocus = () => {
-  var block = eYo.Selected.block
-  if (block) {
-    block.workspace.eyo.scrollBlockTopLeft(block.id)
+  var brick = eYo.Selected.brick
+  if (brick) {
+    brick.workspace.eyo.scrollBlockTopLeft(brick.id)
   }
 }

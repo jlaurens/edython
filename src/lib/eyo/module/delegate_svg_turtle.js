@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.provide('eYo.Delegate.Turtle')
+goog.provide('eYo.Brick.Turtle')
 
 goog.require('eYo.Model.turtle__module')
 
-goog.require('eYo.Delegate.Stmt')
+goog.require('eYo.Brick.Stmt')
 
-goog.require('eYo.Delegate.List')
-goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Brick.List')
+goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Tooltip')
@@ -27,11 +27,11 @@ goog.require('eYo.FlyoutCategory')
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
 /**
- * Class for a Delegate, turtle setup statement block.
- * Not normally called directly, eYo.Delegate.create(...) is preferred.
+ * Class for a Delegate, turtle setup statement brick.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Delegate.Stmt.makeSubclass('turtle__setup_stmt', {
+eYo.Brick.Stmt.makeSubclass('turtle__setup_stmt', {
   fields: {
     label: 'edython.turtleSetup()'
   }
@@ -230,6 +230,6 @@ goog.mixin(eYo.Tooltip.Title, {
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
 
-eYo.Delegate.Turtle.T3s = [
+eYo.Brick.Turtle.T3s = [
   eYo.T3.Stmt.turtle__setup_stmt
 ]

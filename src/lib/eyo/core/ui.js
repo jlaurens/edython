@@ -22,13 +22,13 @@ goog.forwardDeclare('eYo.font-face')
 goog.forwardDeclare('eYo.Shape')
 
 /**
- * The richness of block colours, regardless of the hue.
+ * The richness of brick colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
 eYo.HSV_SATURATION = 5 / 255
 
 /**
- * The intensity of block colours, regardless of the hue.
+ * The intensity of brick colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
 eYo.HSV_VALUE = 1
@@ -254,7 +254,7 @@ eYo.setup.register(function () {
 
 eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
-    `.eyo-block .blocklyText,
+    `.eyo-brick .blocklyText,
     .eyo-var,
     .eyo-label,
     .eyo-code,
@@ -416,7 +416,7 @@ eYo.setup.register(() => {
       stroke: ${eYo.Shape.Style.inner_colour.dark};
     }`
   )
-   // When the selected block is a statement
+   // When the selected brick is a statement
   // only the following and suite statements are highlighted
   // the expression statements are selected only when the parent
   // is a selected statement, or the parent is an highlighted expression

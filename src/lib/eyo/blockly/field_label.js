@@ -16,7 +16,7 @@ goog.provide('eYo.FieldLabel')
 goog.require('eYo.FieldHelper')
 goog.require('Blockly.FieldLabel')
 goog.require('eYo.Field')
-goog.require('eYo.Block')
+goog.require('eYo.Brick')
 goog.require('goog.dom');
 
 /**

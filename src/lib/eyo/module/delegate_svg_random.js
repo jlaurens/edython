@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Delegate.Random')
+goog.provide('eYo.Brick.Random')
 
-goog.require('eYo.Delegate.Range')
+goog.require('eYo.Brick.Range')
 
 goog.require('eYo.Model.random__module')
 
-goog.require('eYo.Delegate.Stmt')
-goog.require('eYo.Delegate.List')
-goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Brick.List')
+goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
@@ -27,11 +27,11 @@ goog.require('eYo.FlyoutCategory')
 eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
 
 /**
- * Class for a Delegate, random range block.
- * Not normally called directly, eYo.Delegate.create(...) is preferred.
+ * Class for a Delegate, random range brick.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Delegate.Expr.builtin__range_expr.makeSubclass('random__randrange', {
+eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
   xml: {
     attr: 'randrange'
   },
@@ -125,10 +125,10 @@ eYo.Delegate.Expr.builtin__range_expr.makeSubclass('random__randrange', {
 }, true)
 
 /**
- * The xml `eyo` attribute of this block, as it should appear in the saved data.
+ * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.Delegate.Expr.random__randrange.prototype.xmlAttr = function () {
+eYo.Brick.Expr.random__randrange.prototype.xmlAttr = function () {
   return this.model.xml.attr
 }
 
@@ -314,6 +314,6 @@ goog.mixin(eYo.Tooltip.Title, {
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
 
-eYo.Delegate.Random.T3s = [
+eYo.Brick.Random.T3s = [
   eYo.T3.Expr.random__randrange,
 ]

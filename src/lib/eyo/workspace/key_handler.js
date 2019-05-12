@@ -113,7 +113,7 @@ eYo.KeyHandler = (() => {
     return false
   }
   me.handleFirstMenuItemAction = function (model) {
-    // first check to see if the selected block can handle the model
+    // first check to see if the selected brick can handle the model
     var eyo = eYo.Selected.eyo
     var m4t = eYo.Selected.magnet
     if (eyo && !m4t) {
@@ -148,7 +148,7 @@ eYo.KeyHandler = (() => {
     }
   }
   me.handleModel = function (model) {
-    // if key is a number, then create a number block
+    // if key is a number, then create a number brick
     // otherwise, take the first model and pass it to handleModel
     if (goog.isFunction(model.action)) {
       model.action.call(me, model.model)
@@ -513,11 +513,11 @@ eYo.KeyHandler = (() => {
         }
       }
     } else {
-      // B is not always a block!
+      // B is not always a brick!
       F = f => {
         event.preventDefault()
         event.stopPropagation()
-        var dlgt = eYo.Delegate.getBestDlgt(eYo.App.workspace, f)
+        var dlgt = eYo.Brick.getBestDlgt(eYo.App.workspace, f)
         if (dlgt) {
           dlgt.select().scrollToVisible()
         }
@@ -554,7 +554,7 @@ eYo.KeyHandler.split = function (key, sep) {
 }
 
   /**
- * Turn the selected block into a call block or insert a call block.
+ * Turn the selected brick into a call brick or insert a call brick.
  * @param {*} model
  */
 eYo.KeyHandler.makeCall = function (model) {
@@ -562,7 +562,7 @@ eYo.KeyHandler.makeCall = function (model) {
 }
 
 /**
- * Turn the selected block into a slicing, or inert a slicing
+ * Turn the selected brick into a slicing, or inert a slicing
  * @param {*} model
  */
 eYo.KeyHandler.makeSlicing = function (model) {
@@ -619,7 +619,7 @@ var doit = (() => {
       }
     },
     '+…': function (key) {
-      var eyo = eYo.Selected.block
+      var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {

@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview block shape utilities for edython.
+ * @fileoverview brick shape utilities for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -57,7 +57,7 @@ eYo.Shape.Style = {
  * parameters.
  *
  * Geometrical conditions for the caret dimensions
- * with respect to the block ones are detailled below
+ * with respect to the brick ones are detailled below
  */
 Object.defineProperties(
   eYo.Shape.prototype,
@@ -173,7 +173,7 @@ eYo.Shape.prototype.push = function () {
 
 /**
  * `m` for move with relative arguments.
- * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} is_block  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
@@ -200,7 +200,7 @@ eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
 
 /**
  * `M` for move with absolute arguments.
- * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} is_block  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
@@ -227,7 +227,7 @@ eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
 
 /**
  * `l` for line with relative arguments.
- * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} is_block  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
@@ -250,7 +250,7 @@ eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
 
 /**
  * `L` for line with absolute arguments.
- * @param {*?} is_block  In block coordinates, when true and present
+ * @param {*?} is_block  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
@@ -335,7 +335,7 @@ eYo.Shape.prototype.v = function (is_block, l) {
 
 /**
  * `V` for vertical line with absolute coordinates.
- * @param {Boolean} is_block, when 'true', units are given in block coordinates
+ * @param {Boolean} is_block, when 'true', units are given in brick coordinates
  * @param {*} l
  */
 eYo.Shape.prototype.V = function (is_block, l) {
@@ -452,16 +452,16 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
 }
 
 /**
- * create a shape with the given block delegate.
- * @param {eYo.Delegate!} eyo  Block delegate
+ * create a shape with the given brick delegate.
+ * @param {eYo.Brick!} eyo  Block delegate
  */
 eYo.Shape.newWithNode = function(eyo) {
   return new eYo.Shape().initWithNode(eyo)
 }
 
 /**
- * Create a path definition with the given block delegate.
- * @param {eYo.Delegate!} eyo  A block delegate.
+ * Create a path definition with the given brick delegate.
+ * @param {eYo.Brick!} eyo  A brick delegate.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
@@ -470,13 +470,13 @@ eYo.Shape.definitionWithNode = function(eyo, opt) {
 }
 
 /**
- * Inits a shape with the given block delegate.
- * @param {eYo.Delegate!} eyo  Block delegate
+ * Inits a shape with the given brick delegate.
+ * @param {eYo.Brick!} eyo  Block delegate
  */
 eYo.Shape.prototype.initWithNode = (() => {
 /**
- * Inits a shape with the given block delegate.
- * @param {eYo.Delegate!} eyo  Block delegate
+ * Inits a shape with the given brick delegate.
+ * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithStatementNode = function(eyo, opt) {
@@ -508,8 +508,8 @@ var initWithStatementNode = function(eyo, opt) {
 }
 
 /**
- * Inits a shape with the given block delegate.
- * @param {eYo.Delegate!} eyo  Block delegate
+ * Inits a shape with the given brick delegate.
+ * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithGroupNode = function(eyo, opt) {
@@ -517,13 +517,13 @@ var initWithGroupNode = function(eyo, opt) {
   var w = eyo.span.width
   var r = this.stmt_radius
   if (eyo.right) {
-    // simple statement with a right block
+    // simple statement with a right brick
     this.M(true, w - eYo.Unit.x / 2 + r, 0)
     this.quarter_circle(r, false, 1)
     this.V(true, eyo.mainHeight * eYo.Unit.y - r)
     this.quarter_circle(r, false, 2)
   } else if (eyo.left) {
-    // simple statement with no right block
+    // simple statement with no right brick
     this.M(true, w - eYo.Unit.x / 2, 0)
     this.V(eyo.mainHeight)
   } else {
@@ -554,13 +554,13 @@ var initWithGroupNode = function(eyo, opt) {
 }
 
 /**
- * Inits a shape with the given block delegate.
- * @param {eYo.Delegate!} eyo  Block delegate
+ * Inits a shape with the given brick delegate.
+ * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
 var initWithExpressionNode = function(eyo, opt) {
-  var block = eyo.block_
-  var width = Math.max(block.width, eyo.span.width)
+  var brick = eyo.block_
+  var width = Math.max(brick.width, eyo.span.width)
   if (opt && opt.bbox) {
     this.M(true, width)
     this.V(eyo.span.l)

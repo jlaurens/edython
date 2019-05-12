@@ -16,10 +16,10 @@ if_stmt ::=  "if" expression ":" suite
 an else:... clause may change status depending on the connection.
 When after a try:..., there can be a finally:... after
 but when after an if:..., no finally:... is allowed.
-'A B0F B' means that block A comes to the bottom of block B
-'A T0F B' means that block A comes on top of block B
-'A R0F B' means that block A comes to the right of block B
-'A L0F B' means that block A comes to the left of block B
+'A B0F B' means that brick A comes to the bottom of brick B
+'A T0F B' means that brick A comes on top of brick B
+'A R0F B' means that brick A comes to the right of brick B
+'A L0F B' means that brick A comes to the left of brick B
 For example, decorations come on top of definitions,
 whereas elif comes below if or other elif.
 Rules are cumulative, which means that A T0F B and A T0F C significates that A comes just on top of B or C.
@@ -28,7 +28,7 @@ if_stmt ::= IGNORE
 if_part/if ::= "if" expression ":"
 elif_part/elif ::= "elif" expression ":"
 else_part/else ::= "else" ":"
-last_else_part ::= else_part # this block type is never used in a definition, only for checking
+last_else_part ::= else_part # this brick type is never used in a definition, only for checking
 else_part B0F if_part | elif_part | any_stmt
 simple_stmt R0F if_part | elif_part | else_part | last_else_part
 last_else_part B0F if_part | elif_part | any_stmt
@@ -61,13 +61,13 @@ try1_stmt ::= IGNORE
 try2_stmt ::= IGNORE
 try_part/try
 except_part/except
-void_except_part ::= "except" ":" # this block type is never used in a definition, only for checking
+void_except_part ::= "except" ":" # this brick type is never used in a definition, only for checking
 finally_part/finally
 try_part T0F except_part | void_except_part | finally_part | any_stmt
 void_except_part B0F except_part
 except_part B0F try_part | except_part | any_stmt
 void_except_part B0F try_part | except_part | any_stmt
-try_else_part/else ::= else_part # this block type is never used in a definition, only for checking
+try_else_part/else ::= else_part # this brick type is never used in a definition, only for checking
 else_part B0F except_part | void_except_part | any_stmt
 try_else_part B0F except_part | void_except_part | any_stmt
 finally_part B0F try_part | except_part | void_except_part | try_else_part | else_part | any_stmt

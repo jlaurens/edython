@@ -288,7 +288,7 @@ function (try_f, finally_f) {
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Delegate} dlgt  The newly created block.
+ * @param {!eYo.Brick} dlgt  The newly created block.
  */
 eYo.Events.fireDlgtCreate = function (dlgt) {
   if (Blockly.Events.isEnabled()) {
@@ -298,7 +298,7 @@ eYo.Events.fireDlgtCreate = function (dlgt) {
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Delegate} dlgt  The newly created block.
+ * @param {!eYo.Brick} dlgt  The newly created block.
  */
 eYo.Events.fireDlgtChange = function (block, element, name, oldValue, newValue) {
   if (Blockly.Events.isEnabled()) {

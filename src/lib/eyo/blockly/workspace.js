@@ -17,7 +17,7 @@ goog.provide('eYo.WorkspaceDelegate')
 goog.require('Blockly.Workspace')
 goog.require('eYo.XRE')
 goog.require('eYo.Helper')
-goog.require('eYo.Block')
+goog.require('eYo.Brick')
 goog.require('eYo.Navigate')
 goog.require('eYo.App')
 goog.require('eYo.Xml')
@@ -201,10 +201,10 @@ Blockly.Workspace.prototype.dispose = function () {
  *     type-specific functions for this block.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.Delegate} The created block.
+ * @return {!eYo.Brick} The created block.
  */
 eYo.Workspace.prototype.newDlgt = function (prototypeName, opt_id) {
-  return eYo.Delegate.Manager.create(this, prototypeName, opt_id)
+  return eYo.Brick.Manager.create(this, prototypeName, opt_id)
 }
 
 /**
@@ -217,7 +217,7 @@ eYo.Workspace.prototype.newDlgt = function (prototypeName, opt_id) {
  * @return {!Blockly.Block} The created block.
  */
 eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  return new eYo.Block(/** Blockly.Workspace */ this, prototypeName, optId)
+  return new eYo.Brick(/** Blockly.Workspace */ this, prototypeName, optId)
 }
 
 eYo.Workspace.prototype.logAllConnections = function (comment) {
@@ -509,7 +509,7 @@ eYo.copyBlock = function(block, deep) {
  * Record the block that a gesture started on, and set the target block
  * appropriately.
  * Addendum: there is a switch to only start from a statement
- * @param {eYo.Block} block The block the gesture started on.
+ * @param {eYo.Brick} block The block the gesture started on.
  * @package
  */
 Blockly.Gesture.prototype.setStartBlock = (() => {

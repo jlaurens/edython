@@ -11,26 +11,26 @@
  */
 'use strict'
 
-goog.provide('eYo.Delegate.CMath')
+goog.provide('eYo.Brick.CMath')
 
 goog.require('eYo.Msg')
-goog.require('eYo.Delegate.Stmt')
+goog.require('eYo.Brick.Stmt')
 
-goog.require('eYo.Delegate.List')
-goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Brick.List')
+goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
 /**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
+ * Populate the context menu for the given brick.
+ * @param {!Blockly.Block} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.Delegate.Expr.cmath__call_expr.populateMenu = function (mgr) {
-//   var block = this.block_
-//   var eyo = block.eyo
+// eYo.Brick.Expr.cmath__call_expr.populateMenu = function (mgr) {
+//   var brick = this.block_
+//   var eyo = brick.eyo
 //   // populate the menu with the functions in the same category
 //   var name_get = eyo.name_d.get()
 //   var model = eYo.Model.cmath__module
@@ -85,13 +85,13 @@ goog.require('eYo.FlyoutCategory')
 // }
 
 // /**
-//  * Class for a Delegate, cmath constant block.
+//  * Class for a Delegate, cmath constant brick.
 //  * As call is already a reserved message in javascript,
 //  * we use call_expr instead.
-//  * Not normally called directly, eYo.Delegate.create(...) is preferred.
+//  * Not normally called directly, eYo.Brick.create(...) is preferred.
 //  * For edython.
 //  */
-// eYo.Delegate.Expr.cmath__call_expr.makeSubclass('cmath__const', {
+// eYo.Brick.Expr.cmath__call_expr.makeSubclass('cmath__const', {
 //   data: {
 //     callerFlag: {
 //       init: true, // true when `foo` is expected instead of `foo(…)`
@@ -317,6 +317,6 @@ goog.mixin(eYo.Tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.Delegate.CMath.T3s = [
+eYo.Brick.CMath.T3s = [
   eYo.T3.Expr.cmath__const
 ]

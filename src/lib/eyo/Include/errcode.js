@@ -25,7 +25,7 @@ Object.defineProperties(eYo.E, {
   TABSPACE: {get () {return 18}}, /* Inconsistent mixing of tabs and spaces */
   OVERFLOW: {get () {return 19}}, /* Node had too many children */
   TOODEEP: {get () {return 20}}, /* Too many indentation levels */
-  DEDENT: {get () {return 21}}, /* No matching outer block for dedent */
+  DEDENT: {get () {return 21}}, /* No matching outer brick for dedent */
   DECODE: {get () {return 22}}, /* Error in decoding into Unicode */
   EOFS: {get () {return 23}}, /* EOF in triple-quoted string */
   EOLS: {get () {return 24}}, /* EOL in single-quoted string */

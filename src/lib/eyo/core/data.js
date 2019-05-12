@@ -115,7 +115,7 @@ eYo.Data.prototype.dispose = function () {
 }
 
 Object.defineProperties(eYo.Data.prototype, {
-  block: {
+  brick: {
     get () {
       return this.owner.block_
     }
@@ -181,7 +181,7 @@ Object.defineProperties(eYo.Data.prototype, {
 
 /**
  * Get the owner of the data.
- * Actually, it returns a block delegate.
+ * Actually, it returns a brick delegate.
  */
 eYo.Data.prototype.getOwner = function () {
   return this.owner
@@ -841,7 +841,7 @@ eYo.Data.prototype.save = function (element, opt) {
     // only few data need not be saved
     return
   }
-  // do not save if there is an associate slot with a target block.
+  // do not save if there is an associate slot with a target brick.
   if (this.slot && this.slot.bindField === this.field && this.slot.unwrappedTarget) {
     return
   }
@@ -910,7 +910,7 @@ eYo.Data.prototype.customizePlaceholder = function (txt) {
 }
 
 /**
- * Convert the block's data from a dom element.
+ * Convert the brick's data from a dom element.
  * What is the status with respect to the undo management.
  * This function is important.
  * For edython.

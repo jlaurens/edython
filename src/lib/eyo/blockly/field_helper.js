@@ -151,7 +151,7 @@ eYo.FieldHelper.onEndEditing = function () {
 }
 
 /**
- * Validate the keyed data of the source block.
+ * Validate the keyed data of the source brick.
  * Asks the data object to do so.
  * The bound data must exist.
  * @param {Object} txt
@@ -162,7 +162,7 @@ eYo.FieldHelper.prototype.validate = function (txt) {
 }
 
 /**
- * Validate the keyed data of the source block.
+ * Validate the keyed data of the source brick.
  * Asks the data object to do so.
  * The bound data must exist.
  * @param {Object} txt
@@ -197,7 +197,7 @@ goog.forwardDeclare('eYo.FieldInput')
 /**
  * Create all the fields from the given model.
  * For edython.
- * @param {!eYo.Slot|!eYo.Magnet|!eYo.Delegate} owner
+ * @param {!eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
  * @param {!Object} fieldsModel
  */
 eYo.FieldHelper.makeFields = (() => {
@@ -222,7 +222,7 @@ eYo.FieldHelper.makeFields = (() => {
   }
   // Change some `... = true,` entries to real functions
   var setupModel = (model) => {
-    // no need to setup the model each time we create a new block
+    // no need to setup the model each time we create a new brick
     if (model.setup_) {
       return
     }
@@ -297,8 +297,8 @@ eYo.FieldHelper.makeFields = (() => {
     owner.fields = owner.fields || Object.create(null)
     // field maker
     // Serious things here
-    var block = owner.getBlock()
-    goog.asserts.assert(block, 'Missing block while making fields')
+    var brick = owner.getBlock()
+    goog.asserts.assert(brick, 'Missing brick while making fields')
     for (var key in fieldsModel) {
       var model = fieldsModel[key]
       var field = makeField(key, model)

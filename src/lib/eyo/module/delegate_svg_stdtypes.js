@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.Delegate.Stdtypes')
+goog.provide('eYo.Brick.Stdtypes')
 
 goog.require('eYo.Msg')
-goog.require('eYo.Delegate.Stmt')
+goog.require('eYo.Brick.Stmt')
 
-goog.require('eYo.Delegate.List')
-goog.require('eYo.Delegate.Primary')
+goog.require('eYo.Brick.List')
+goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')

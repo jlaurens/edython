@@ -22,7 +22,7 @@ goog.require('eYo.Do')
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
-  ABOVE: 'ABOVE', // not for block definition
+  ABOVE: 'ABOVE', // not for brick definition
   BELOW: 'BELOW',
 }
 

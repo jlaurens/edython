@@ -19,7 +19,7 @@ goog.require('eYo.FlyoutCategory');
 goog.require('eYo.Style');
 goog.require('eYo.Font');
 goog.require('Blockly.VerticalFlyout');
-goog.require('eYo.Delegate');
+goog.require('eYo.Brick');
 goog.require('eYo.FlyoutToolbar');
 goog.require('eYo.Tooltip');
 goog.require('eYo.MenuRenderer');
@@ -240,7 +240,7 @@ eYo.Flyout.prototype.show = function(model) {
       } else {
         var createOneBlock = (xml) => {
           try {
-            var eyo = eYo.Delegate.newReady(this.workspace_, xml)
+            var eyo = eYo.Brick.newReady(this.workspace_, xml)
             contents.push({type: 'block', block: block.eyo})
             eyo.render()
             eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)

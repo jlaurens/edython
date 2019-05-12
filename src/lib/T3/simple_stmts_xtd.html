@@ -45,8 +45,8 @@ augtarget                 ::=  identifier | attributeref | subscription | slicin
 augop                     ::=  "+=" | "-=" | "*=" | "@=" | "/=" | "//=" | "%=" | "**="
                                | ">>=" | "<<=" | "&=" | "^=" | "|="
 
-We merge all assignment statements into only one visual block.
-The visual block has 3 types and more variants.
+We merge all assignment statements into only one visual brick.
+The visual brick has 3 types and more variants.
 
 annotated_assignment_stmt ::=  augtarget ":" expression ["=" expression]
 augmented_assignment_stmt ::=  augtarget augop (expression_list | yield_expression)

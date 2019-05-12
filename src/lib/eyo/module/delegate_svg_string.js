@@ -11,17 +11,17 @@
  */
 'use strict'
 
-goog.provide('eYo.Delegate.String')
+goog.provide('eYo.Brick.String')
 
 goog.require('eYo.Msg')
-goog.require('eYo.Delegate.Stmt')
+goog.require('eYo.Brick.Stmt')
 
 goog.require('eYo.Tooltip')
 goog.require('eYo.FlyoutCategory')
 
 /**
- * Populate the context menu for the given block.
- * @param {!Blockly.Block} block The block.
+ * Populate the context menu for the given brick.
+ * @param {!Blockly.Block} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
@@ -193,6 +193,6 @@ goog.mixin(eYo.Tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })
 
-eYo.Delegate.String.T3s = [
+eYo.Brick.String.T3s = [
   eYo.T3.Expr.string__const
 ]

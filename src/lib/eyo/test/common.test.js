@@ -64,7 +64,7 @@ eYo.Test.dlgt = (dlgt, t, str) => {
 
 eYo.Test.new_dlgt = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var dlgt = eYo.Delegate.newReady(eYo.App.workspace, type)
+  var dlgt = eYo.Brick.newReady(eYo.App.workspace, type)
   eYo.Test.dlgt(dlgt, tt, str)
   if (!headless) {
     dlgt.render()
@@ -73,11 +73,11 @@ eYo.Test.new_dlgt = (t, tt, str, headless) => {
 }
 
 /**
- * Basic test for block creation.
+ * Basic test for brick creation.
  * The argument is a array of `[t, tt, k]` arrays.
  * `t` is the type of the node to be created.
- * `tt` is the type of the created block.
- * `k` is the key of the constructor of that block.
+ * `tt` is the type of the created brick.
+ * `k` is the key of the constructor of that brick.
  * When `tt` or `k` is undefined, no corresponding test is performed.
  * When `tt` or `k` is null, it is replaced by `t` before the test is performed.
  *
@@ -100,7 +100,7 @@ eYo.Test.basic = (ra, str) => {
   }
 
 /** Usage
-  eYo.Test.incog(block,
+  eYo.Test.incog(brick,
 ['holder',
 'dotted',
 'target',
@@ -112,7 +112,7 @@ eYo.Test.basic = (ra, str) => {
 'alias'])
 */
 eYo.Test.incog = (dlgt, keys) => {
-  var M = eYo.Delegate.Manager.getModel(dlgt.type)
+  var M = eYo.Brick.Manager.getModel(dlgt.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
     chai.assert(!dlgt[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
@@ -145,7 +145,7 @@ eYo.Test.all_variants = (d, required) => {
 
 eYo.Test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
-Object.defineProperties(eYo.Delegate.prototype, {
+Object.defineProperties(eYo.Brick.prototype, {
   linearizedCode: {
     get () {
       return eYo.Test.linearizeCode_(this.toString)
@@ -163,7 +163,7 @@ eYo.Test.code = (d, str) => {
   }
 }
 
-eYo.Delegate.prototype.test_display_line_counts = function () {
+eYo.Brick.prototype.test_display_line_counts = function () {
   console.log({
     head: this.headHeight,
     foot: this.footHeight,
@@ -174,11 +174,11 @@ eYo.Delegate.prototype.test_display_line_counts = function () {
   })
 }
 /**
- * Test the various block line counts.
+ * Test the various brick line counts.
  * Expected is a map, keys are strings for the type of the line count.
  * Values are integers.
  * Possible types are: 'head', 'foot', 'main', suite', 'black', 'next'
- * @param {!eYo.Delegate}  dlgt to be tested.
+ * @param {!eYo.Brick}  dlgt to be tested.
  * @param {?Object} cfg  cfg is a map file.
  */
 eYo.Test.line_counts = (dlgt, cfg) => {
@@ -259,7 +259,7 @@ eYo.Test.data_key = (dlgt, key, value) => {
 }
 
 /**
- * Test the data of the block.
+ * Test the data of the brick.
  */
 eYo.Test.data_value = (dlgt, key, value) => {
   chai.assert(dlgt, 'MISSING d')
@@ -272,8 +272,8 @@ eYo.Test.data_value = (dlgt, key, value) => {
 }
 
 /**
- * change the data of the block,
- * get the dom, create a block from that block,
+ * change the data of the brick,
+ * get the dom, create a brick from that brick,
  * and compare the data values.
  * Change back the data.
  */
@@ -284,11 +284,11 @@ eYo.Test.data_save = (dlgt, key, value, ignore) => {
   var old = dlgt[`${key}_p`]
   dlgt[`${key}_p`] = value
   var dom = eYo.Xml.dlgtToDom(dlgt)
-  if (ignore) { // do not create a block from dom
+  if (ignore) { // do not create a brick from dom
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
   } else {
-    var d = eYo.Delegate.newReady(dlgt, dom)
+    var d = eYo.Brick.newReady(dlgt, dom)
     chai.assert(d, 'MISSING dd from dom')
     var saved = d[`${key}_p`]
     d.block_.dispose()
@@ -338,7 +338,7 @@ eYo.Test.slot_connect = (dlgt, key, tb) => {
 
 /**
  * Test if the wrapped slot is functional.
- * @param {*} dlgt  a block
+ * @param {*} dlgt  a brick
  * @param {string} k  the slot key
  */
 eYo.Test.slot_wrapped = (dlgt, k) => {
@@ -383,9 +383,9 @@ eYo.Test.subtype = (dlgt, t) => {
 eYo.Test.copy_paste = (dlgt, opts) => {
   chai.assert(dlgt, 'MISSING d')
   var dom = eYo.Xml.dlgtToDom(dlgt)
-  var dd = eYo.Delegate.newReady(dlgt, dom)
+  var dd = eYo.Brick.newReady(dlgt, dom)
   eYo.Test.same(dlgt, dd)
-  var M = eYo.Delegate.Manager.getModel(dlgt.type)
+  var M = eYo.Brick.Manager.getModel(dlgt.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
     chai.assert(dlgt[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)
@@ -433,7 +433,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier Dlgt
  */
 eYo.Test.newIdentifier = (str) => {
-  var dlgt = eYo.Delegate.newReady(eYo.App.workspace, eYo.T3.Expr.identifier)
+  var dlgt = eYo.Brick.newReady(eYo.App.workspace, eYo.T3.Expr.identifier)
   dlgt.target_p = str
   eYo.Test.dlgt(dlgt, 'identifier')
   eYo.Test.data_value(dlgt, 'target', str)
@@ -442,7 +442,7 @@ eYo.Test.newIdentifier = (str) => {
 
 /**
  * Test if `node` and `parent` exist, and if node's parent is parent.
- * @param {*} svg  either a block or an svg resource object.
+ * @param {*} svg  either a brick or an svg resource object.
  * @param {string} node  the child element is `svg[node]`
  * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
  */
