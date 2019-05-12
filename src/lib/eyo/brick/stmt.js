@@ -28,7 +28,7 @@ eYo.Brick.makeSubclass('Stmt', {
   statement: {
     left: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.head || this.b_eyo.foot
+        return this.brick.head || this.brick.foot
         ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Left.simple_stmt
       }
@@ -47,14 +47,14 @@ eYo.Brick.makeSubclass('Stmt', {
     },
     head: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.left
+        return this.brick.left
         ? []
         : null // except start_stmt ? connections must also have an uncheck_
       }
     },
     foot: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.left
+        return this.brick.left
         ? []
         : null
       }
