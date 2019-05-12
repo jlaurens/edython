@@ -79,7 +79,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
         bind: {
           endEditing: true,
           placeholder: /** @suppress {globalThis} */ function () {
-            var type = this.eyo.b_eyo.type
+            var type = this.eyo.brick.type
             return {
               [eYo.T3.Expr.m_expr]: 1,
               [eYo.T3.Expr.a_expr]: 1,
@@ -115,7 +115,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
           order: 2,
           endEditing: true,
           placeholder: /** @suppress {globalThis} */ function () {
-            var type = this.eyo.b_eyo.type
+            var type = this.eyo.brick.type
             return {
               [eYo.T3.Expr.m_expr]: 1,
               [eYo.T3.Expr.a_expr]: 1,
