@@ -180,7 +180,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       },
       promise: eYo.T3.Expr.non_void_module_as_list,
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        var parent = this.b_eyo.parent
+        var parent = this.brick.parent
         parent && (parent.variant_p = eYo.Key.IMPORT)
       }
     },
@@ -194,7 +194,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var v = this.b_eyo.variant_p
+        var v = this.brick.variant_p
         return v === eYo.Key.FROM_MODULE_IMPORT_STAR
         ? [
           eYo.T3.Expr.unset,
@@ -219,7 +219,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        var O = this.b_eyo
+        var O = this.brick
         if (O.variant_p === eYo.Key.IMPORT) {
           // STAR of not ?
           O.variant_p = O.import_s.unwrappedTarget
@@ -243,7 +243,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        var parent = this.b_eyo.parent
+        var parent = this.brick.parent
         parent && (parent.variant_p = eYo.Key.FROM_MODULE_IMPORT)
       }
     },
