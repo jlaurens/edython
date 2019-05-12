@@ -61,7 +61,7 @@ Object.defineProperties(eYo.FieldTextInput.prototype, {
       this.eyo.size.set(newValue)
     }
   },
-  b_eyo: {
+  brick: {
     get () {
       return this.sourceBlock_.eyo
     }
@@ -89,7 +89,7 @@ eYo.FieldTextInput.prototype.init = function () {
  * The block must be selected before the text field would become editable.
  **/
 eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
-  if (this.eyo.b_eyo.selected) {
+  if (this.eyo.brick.selected) {
     eYo.FieldTextInput.superClass_.onMouseDown_.call(this, e)
   }
 }
@@ -123,7 +123,7 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
-  var b_eyo = this.eyo.b_eyo
+  var b_eyo = this.eyo.brick
   var block = this.sourceBlock_
   if (this.eyo.doNotEdit || b_eyo.locked_ || !b_eyo.canEdit_ || block.isInFlyout) {
     return
