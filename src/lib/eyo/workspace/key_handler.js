@@ -490,8 +490,8 @@ eYo.KeyHandler = (() => {
         }
         var scaledHeight = eYo.Unit.y * dlgt.workspace.scale
         var m4t = eYo.Selected.magnet
-        if (m4t && m4t.b_eyo) {
-          var xy = goog.style.getPageOffset(m4t.b_eyo.ui.svg.group_)
+        if (m4t && m4t.brick) {
+          var xy = goog.style.getPageOffset(m4t.brick.ui.svg.group_)
           var xxyy = m4t.offsetInBlock_.clone().scale(dlgt.workspace.scale)
           xy.translate(xxyy)
         } else {
