@@ -131,7 +131,7 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (dlgt) {
         var its_m4t = dlgt.magnets.output
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other brick has an output connection that can connect to the brick's one
-          var b_eyo = its_m4t.b_eyo
+          var b_eyo = its_m4t.brick
           var selected = b_eyo.selected
           // next operations may unselect the brick
           var old = b_eyo.consolidating_
@@ -283,7 +283,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
       var targetM4t = parentInputM4t.target
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')
-        var b_eyo = targetM4t.b_eyo
+        var b_eyo = targetM4t.brick
         targetM4t.break()
         b_eyo.block_.dispose(true)
         b_eyo = undefined
@@ -299,7 +299,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
           targetM4t.connect(parent.magnets.output)
         } else {
           targetM4t.break()
-          bumper = targetM4t.b_eyo
+          bumper = targetM4t.brick
           var its_xy = bumper.ui.xyInSurface
           var my_xy = parent.ui.xyInSurface
           parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
