@@ -76,7 +76,7 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
     check: /** @suppress {globalThis} */ function (type) {
       // `this` is a magnet
       // we do not take the type argument into account
-      var eyo = this.b_eyo
+      var eyo = this.brick
       var b = eyo.expression_b
       if (b) {
         if (b.type === eYo.T3.Expr.key_datum || b.type === eYo.T3.Expr.identifier_annotated) {
