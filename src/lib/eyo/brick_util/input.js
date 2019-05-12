@@ -86,9 +86,6 @@ Object.defineProperties(eYo.Input.prototype, {
       return this.fieldRow_
     }
   },
-  visible_: {
-    writable: true
-  },
   visible: {
     get () {
       return this.visible_
