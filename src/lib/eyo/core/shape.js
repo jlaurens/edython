@@ -654,14 +654,14 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
 eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   var dd = this.caret_extra
   if (magnet) {
-    var b_eyo = magnet.b_eyo
+    var b_eyo = magnet.brick
     var m4t
     if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (m4t = b_eyo.magnets.output)) {
       var where = new eYo.Where(magnet)
       do {
         var t_eyo = m4t.t_eyo
         where.advance(t_eyo)
-        var eyo = t_eyo.b_eyo
+        var eyo = t_eyo.brick
       } while(eyo && eyo.wrapped_ && (m4t = eyo.magnets.output))
     } else {
       where = magnet
