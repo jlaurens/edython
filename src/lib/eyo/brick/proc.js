@@ -301,7 +301,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
               eYo.Key.PROPERTY,
               eYo.Key.STATICMETHOD,
               eYo.Key.CLASSMETHOD
-            ].indexOf(this.b_eyo.decorator_p) >= 0
+            ].indexOf(this.brick.decorator_p) >= 0
             ? 'eyo-code-reserved'
             : 'eyo-code'
           }
