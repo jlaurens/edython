@@ -33,7 +33,7 @@ eYo.Brick.Stmt.makeSubclass('BaseGroup', {
     left: undefined,
     right: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.suite
+        return this.brick.suite
         ? [eYo.T3.Stmt.comment_stmt]
         : eYo.T3.Stmt.Right.simple_stmt
       },
@@ -47,7 +47,7 @@ eYo.Brick.Stmt.makeSubclass('BaseGroup', {
     },
     suite: {
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.right
+        return this.brick.right
         ? []
         : null
       }
@@ -199,7 +199,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
     if ((t_magnet = this.magnets.head.target)) {
       // look at the high connection
       //
-      var t_eyo = t_magnet.b_eyo
+      var t_eyo = t_magnet.brick
       if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.try_else_part
       } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t_eyo.type) < 0)) {
@@ -209,7 +209,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
     if (!type && (t_magnet = this.magnets.foot.target)) {
       // the high connection did not add any constrain
       // may be the low connection will?
-      t_eyo = t_magnet.b_eyo
+      t_eyo = t_magnet.brick
       if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t_eyo.type) < 0)) {
         type = T3.try_else_part
       } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t_eyo.type) < 0)) {
