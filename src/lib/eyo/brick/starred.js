@@ -173,13 +173,13 @@ eYo.Brick.Expr.makeSubclass('Starred', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        return this.b_eyo.modifier_p === '*'
+        return this.brick.modifier_p === '*'
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         if (eYo.Events.recordUndo) {
-          this.b_eyo.variant_p = eYo.Key.NONE
+          this.brick.variant_p = eYo.Key.NONE
         }
       }
     }
@@ -187,7 +187,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the brick delegate
-      var b_eyo = this.b_eyo
+      var b_eyo = this.brick
       if (b_eyo.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
