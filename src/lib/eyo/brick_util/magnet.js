@@ -897,8 +897,8 @@ eYo.Magnet.prototype.checkType_ = function (other, force) {
   if (!m4tA || !m4tB) {
     return true
   }
-  var dlgtA = m4tA.b_eyo
-  var dlgtB = m4tB.b_eyo
+  var dlgtA = m4tA.brick
+  var dlgtB = m4tB.brick
   // short stop if one of the connection is hidden or disabled
   // except when we try to establish a connection with a wrapped brick.
   // in either case, returns true iff the connetion is aready established
