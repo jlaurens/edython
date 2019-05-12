@@ -98,7 +98,7 @@ eYo.Selected = (() => {
                 })(eyo__), 10)
               }
               if (m4t__) {
-                var b_eyo = m4t__.b_eyo
+                var b_eyo = m4t__.brick
                 if (b_eyo && newValue !== b_eyo.wrapper) {
                   m4t__ = null
                 }
@@ -119,7 +119,7 @@ eYo.Selected = (() => {
         set (m4t) {
           if (m4t !== m4n__) {
             if (m4t) {
-              var b_eyo = m4t.b_eyo
+              var b_eyo = m4t.brick
               if (b_eyo) {
                 // if the connection visually belongs to 2 blocks, select the top left most
                 if (m4t.isHead && m4t.target) {
@@ -178,7 +178,7 @@ eYo.Selected = (() => {
             if (m4t.hidden_) {
               console.error('Do not select a hidden connection')
             }
-            var b_eyo = m4t.b_eyo
+            var b_eyo = m4t.brick
             if (b_eyo) {
               if (b_eyo.locked_) {
                 return
@@ -325,7 +325,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       if (m4t.isInput) {
         var target = m4t.target
         if (target) {
-          var targetM4t = target.b_eyo.getMagnetForEvent(e)
+          var targetM4t = target.brick.getMagnetForEvent(e)
           if (targetM4t) {
             return targetM4t
           }
@@ -486,8 +486,8 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
   var m4t = this.getMagnetForEvent(e)
   var t_eyo = m4t
   ? m4t.isInput
-    ? m4t.t_eyo || m4t.b_eyo
-    : m4t.b_eyo
+    ? m4t.t_eyo || m4t.brick
+    : m4t.brick
   : this
   while (t_eyo && (t_eyo.wrapped_ || t_eyo.locked_)) {
     t_eyo = t_eyo.parent
@@ -522,8 +522,8 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
   const m4t = this.getMagnetForEvent(e)
   var t_eyo = m4t
   ? m4t.isInput
-    ? m4t.t_eyo || m4t.b_eyo
-    : m4t.b_eyo
+    ? m4t.t_eyo || m4t.brick
+    : m4t.brick
   : this
   while (t_eyo && (t_eyo.wrapped_ || t_eyo.locked_)) {
     t_eyo = t_eyo.parent
