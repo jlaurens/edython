@@ -215,10 +215,10 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   }
   var model = {
     willConnect: /** @suppress {globalThis} */ function (targetM4t) {
-      this.will_connect_ = this.b_eyo.will_connect_ = true // do not consolidate
+      this.will_connect_ = this.brick.will_connect_ = true // do not consolidate
     },
     didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-      this.will_connect_ = this.b_eyo.will_connect_ = false
+      this.will_connect_ = this.brick.will_connect_ = false
     }
   }
   var input = new eYo.Input(io.dlgt, '!', model)
