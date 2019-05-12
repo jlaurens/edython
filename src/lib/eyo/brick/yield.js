@@ -111,13 +111,13 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         if (this.isInput) {
-          var parent = this.b_eyo.parent
+          var parent = this.brick.parent
           parent && (parent.variant_p = eYo.Key.EXPRESSION)
         }
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         if (this.isInput) {
-          var parent = this.b_eyo.parent
+          var parent = this.brick.parent
           parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.Key.EXPRESSION : eYo.Key.NONE)
         }
       }
@@ -138,10 +138,10 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        this.b_eyo.variant_p = eYo.Key.FROM
+        this.brick.variant_p = eYo.Key.FROM
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
-        var O = this.b_eyo
+        var O = this.brick
         if (O.from_p) {
           O.variant_p = eYo.Key.FROM
         } else if (O.expression_p || (O.expression_t && O.expression_t.unwrappedTarget)) {
