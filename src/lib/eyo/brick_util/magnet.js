@@ -43,6 +43,8 @@ eYo.Magnet = function (bsi, type, model) {
   this.owner_ = bsi
   this.type = type
   this.model_ = model
+  this.hidden_ = model.hidden
+  eYo.FieldHelper.makeFields(this, model.fields)
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
   this.targetIsMissing = false
@@ -108,12 +110,100 @@ eYo.Magnet.prototype.dispose = function () {
   this.dbOpposite_ = null;
 }
 
+// private properties
 Object.defineProperties(eYo.Magnet.prototype, {
-  check_: {
-    writable: true
+  owner_: { value: undefined },
+  brick_: { value: undefined },
+  slot_: { value: undefined },
+  input_: { value: undefined },
+  model_: { value: undefined },
+  hidden_: { value: undefined },
+  wrapped_: { value: undefined },
+  promised_: { value: undefined },
+  check_: {value: undefined },
+  name_: { value: undefined },
+  visible_: { value: undefined },
+})
+
+// computed private properties
+Object.defineProperties(eYo.Magnet.prototype, {
+  optional_: {
+    get () {
+      return this.model__.optional
+    }
   },
-  name_: {
-    writable: true
+})
+
+Object.defineProperties(eYo.Magnet.prototype, {
+  wrapped: {
+    get () {
+      return this.wrapped_
+    },
+    set (newValue) {
+      if (this.target) {
+        throw "ALREADY A WRAPPED BLOCK"
+      }
+      this.wrapped_ = newValue
+      this.promised_ = null
+      newValue && this.brick.addWrappedMagnet(this)
+    }
+  },
+  promised: {
+    get () {
+      return this.promised_
+    },
+    set (newValue) {
+      if (this.target) {
+        throw "ALREADY A WRAPPED BLOCK"
+      }
+      this.promised_ = newValue
+      this.wrapped_ && this.brick.removeWrappedMagnet(this)
+      this.wrapped_ = null
+    }
+  },
+  owner: {
+    set (newValue) {
+      this.owner_ = newValue
+      if (owner_ instanceof eYo.Input) {
+        this.input_ = owner_
+        this.slot_ = null
+        this.brick_ = owner_.brick
+      } else if (owner_ instanceof eYo.Slot) {
+        this.input_ = null
+        this.slot_ = owner_
+        this.brick_ = owner_.brick
+      } else {
+        this.input_ = this.slot_ = null
+        this.brick_ = owner_
+      }
+    }
+  },
+  /**
+   * @readonly
+   * @property {eYo.Brick} brick  each magnet belongs to a brick
+   */
+  brick: {
+    get () {
+      return this.brick_
+    }
+  },
+  /**
+   * @readonly
+   * @property {eYo.Input} input  The eventual input containing the magnet
+   */
+  input: {
+    get () {
+      return this.input_
+    }
+  },
+  /**
+   * @readonly
+   * @property {eYo.Slot} slot  The eventual slot containing the magnet
+   */
+  slot: {
+    get () {
+      return this.slot_
+    }
   },
   model: {
     get () {
@@ -144,9 +234,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
     get () {
       return eYo.Magnet.OPPOSITE_TYPE[this.type_]
     }
-  },
-  visible_: {
-    writable: true
   },
   visible: {
     get () {
@@ -252,7 +339,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     },
     set (newValue) {
       if (newValue !== this.t_eyo && newValue !== this.brick) {
-        this.break()
+        this.disconnect()
       }
       if (newValue) {
         this.connectSmart(newValue)
@@ -301,9 +388,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
         }
       }
     },
-  },
-  check_: {
-    writable: true
   },
   check: {
     get () {
@@ -409,22 +493,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
       }
       return f(t) && t
     }
-  // },
-  // model: {
-  //   get () {
-  //     if (this.model_) {
-  //       return this.model_
-  //     }
-  //     // do not cache, unless you know what you do
-  //     var b_eyo = this.b_eyo
-  //     if (b_eyo.wrapped_ && b_eyo instanceof eYo.Brick.List) {
-  //       var x = b_eyo.magnets.output.target
-  //       return x && (x = x.slot) && slot.model
-  //     }
-  //   },
-  //   set (newValue) {
-  //     this.model_ = newValue
-  //   }
   },
   /**
    * Return the black target.
@@ -497,16 +565,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
  * Used in lists.
  */
 eYo.Magnet.prototype.s7r_ = false
-
-/**
- * Whether the connection is a wrapper.
- */
-eYo.Magnet.prototype.wrapped_ = false// must change to wrapper
-
-/**
- * Whether the connection is optionally connected.
- */
-eYo.Magnet.prototype.optional_ = false// must change to wrapper
 
 /**
  * name of the connection.
@@ -651,28 +709,28 @@ eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
-  if (!this.reentrant_.didConnect) {
-    var f = this.model.didConnect
-    if (goog.isFunction(f)) {
-      this.reentrant_.didConnect = true
-      f.call(this, oldTargetM4t, targetOldM4t)
-      this.reentrant_.didConnect = false
-      return
-    }
+  var f = this.model.didConnect
+  if (goog.isFunction(f)) {
+    eYo.Decorate.reentrant_method('didConnect',f).apply(this, arguments)
+    return
   }
-  var b_eyo = this.brick
   if (this.isRight) {
-    this.fields.label.setVisible(b_eyo.isGroup || !this.t_eyo.isComment)
+    this.fields.label.setVisible(this.brick.isGroup || !this.t_eyo.isComment)
   }
 }
 
 /**
  * Will disconnect.
- * Default implementation does nothing.
+ * Default implementation forwards to the model.
+ * The model should call back.
  * This can be overriden at brick creation time.
  */
 eYo.Magnet.prototype.willDisconnect = function () {
-  this.model && goog.isFunction(this.model.willDisconnect) && this.model.willDisconnect.call(this)
+  var f = this.model.willDisconnect
+  if (goog.isFunction(f)) {
+    eYo.Decorate.reentrant_method('willDisconnect',f).apply(this, arguments)
+    return
+  }
   if (this.isRight) {
     this.fields.label.setVisible(this.brick.isGroup)
   }
@@ -707,13 +765,13 @@ eYo.Magnet.prototype.didDisconnect = function (oldTargetM4t, targetOldM4t) {
  * Called by `consolidateMagnets`.
  */
 eYo.Magnet.prototype.updateCheck = function () {
-  var eyo = this.brick
-  if(eyo.change.level > 1 || this.changeCount === eyo.change.count) {
+  var b = this.brick
+  if(b.change.level > 1 || this.changeCount_ === b.change.count) {
     return
   }
-  this.changeCount = eyo.change.count
+  this.changeCount_ = b.change.count
   if (this.model.check) {
-    this.check = this.model.check.call(this, eyo.type, eyo.subtype)
+    this.check = this.model.check.call(this, b.type, b.subtype)
   }
 }
 
