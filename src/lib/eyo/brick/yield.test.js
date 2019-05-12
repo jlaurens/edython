@@ -87,7 +87,7 @@ describe('YIELD expression and statement', function() {
   })
   it(`yield from <bcd>`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.yield_stmt)
-    d.from_s.connect(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).b_eyo.target_p = 'bcd'
+    d.from_s.connect(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).brick.target_p = 'bcd'
     eYo.Test.code(d, 'yield from bcd')
     d.block_.dispose()
   })
@@ -97,7 +97,7 @@ describe('YIELD expression and statement', function() {
     eYo.Test.data_value(d, 'from', 'abc')
     eYo.Test.variant(d, 'FROM')
     eYo.Test.code(d, 'yield from abc')
-    d.from_s.connect(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).b_eyo.target_p = 'bcd'
+    d.from_s.connect(eYo.Test.new_dlgt(eYo.T3.Expr.identifier)).brick.target_p = 'bcd'
     eYo.Test.code(d, 'yield from bcd')
     d.from_b.dispose()
     eYo.Test.code(d, 'yield from abc')
