@@ -315,7 +315,7 @@ eYo.Selected.chooseAbove = function () {
         return
       }
     } else if (m4t.isFoot || m4t.isSuite) {
-      var b_eyo = m4t.b_eyo
+      var b_eyo = m4t.brick
       if (b_eyo) {
         b_eyo.select().scrollToVisible()
         return
