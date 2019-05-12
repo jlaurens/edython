@@ -264,7 +264,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
             // This is where the target magnet is
             xyxy.scale(-1)
             xy.translate(xyxy.x, xyxy.y)
-            t_magnet.b_eyo.moveByXY(xy.x, xy.y)
+            t_magnet.brick.moveByXY(xy.x, xy.y)
           }
           magnet.connect(t_magnet)
           // if (magnet.isHead) {
