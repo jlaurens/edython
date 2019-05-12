@@ -392,7 +392,7 @@ eYo.Brick.Expr.makeSubclass('lambda', {
         label: ':'
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m4t = this.b_eyo.magnets.output.target
+        var m4t = this.brick.magnets.output.target
         if (m4t) {
           // does the target accept general expression in lambda
           if (m4t.check_ && m4t.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
@@ -405,7 +405,7 @@ eYo.Brick.Expr.makeSubclass('lambda', {
   },
   output: {
     check: /** @suppress {globalThis} */ function (type) {
-      var eyo = this.b_eyo // does it always exist ?
+      var eyo = this.brick // does it always exist ?
       var m4tIn = eyo.expression_s.magnet
       var cond_in = true // cond are accepted by default
       var nocond_in = true // nocond are accepted by default
@@ -435,7 +435,7 @@ names.forEach((key) => {
  */
 eYo.Magnet.prototype.consolidateType = function () {
   eYo.Magnet.superClass_.consolidateType.call(this)
-  var b_eyo = this.b_eyo
+  var b_eyo = this.brick
   var m4tOut = b_eyo.magnets.output
   var input = b_eyo.getInput(eYo.Key.EXPRESSION)
   var m4tIn = input.magnet
