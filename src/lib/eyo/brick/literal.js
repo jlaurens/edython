@@ -193,7 +193,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
         if (this.placeholderText_) {
           return this.placeholderText_
         }
-        var subtype = this.b_eyo.subtype_p
+        var subtype = this.brick.subtype_p
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
@@ -281,7 +281,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   },
   output: {
     check: /** @suppress globalThis */ function () {
-      return [this.b_eyo.subtype_p]
+      return [this.brick.subtype_p]
     }
   }
 })
@@ -461,7 +461,7 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
   },
   output: {
     check: /** @suppress globalThis */ function () {
-      return [this.b_eyo.subtype_p]
+      return [this.brick.subtype_p]
     }
   }
 })
