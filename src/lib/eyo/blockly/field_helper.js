@@ -61,19 +61,19 @@ Object.defineProperties(
         return this.field_
       }
     },
-    b_eyo: {
+    brick: {
       get () {
         return this.field_.sourceBlock_.eyo
       }
     },
     workspace: {
       get () {
-        return this.b_eyo.workspace
+        return this.brick.workspace
       }
     },
     ui: {
       get () {
-        return this.b_eyo.ui
+        return this.brick.ui
       }
     },
     ui_driver: {
@@ -297,7 +297,7 @@ eYo.FieldHelper.makeFields = (() => {
     owner.fields = owner.fields || Object.create(null)
     // field maker
     // Serious things here
-    var brick = owner.getBlock()
+    var brick = owner.brick
     goog.asserts.assert(brick, 'Missing brick while making fields')
     for (var key in fieldsModel) {
       var model = fieldsModel[key]
