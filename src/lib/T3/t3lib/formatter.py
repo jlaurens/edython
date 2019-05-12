@@ -203,12 +203,12 @@ class Formatter:
     preamble = """/**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * License EUPL-1.2
  */
 /**
- * @fileoverview Type constants for edython, used as blocks prototypes.
+ * @fileoverview Type constants for edython, used as bricks prototypes.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
