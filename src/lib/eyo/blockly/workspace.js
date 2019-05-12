@@ -234,7 +234,7 @@ eYo.Workspace.prototype.logAllConnections = function (comment) {
     console.log(`${comment} > ${k} magnet`)
     var db = dbList[eYo.Magnet[k]]
     dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.x_, m4t.y_, m4t.offsetInBlock_, m4t.b_eyo.type)
+      console.log(m4t.x_, m4t.y_, m4t.offsetInBlock_, m4t.brick.type)
     })
   })
 }
@@ -480,7 +480,7 @@ eYo.deleteBlock = function (block, deep) {
         eyo.block_.dispose(true, true)
       }
     })
-    if (m4t && m4t.b_eyo.workspace) {
+    if (m4t && m4t.brick.workspace) {
       m4t.select()
     } else if (t_eyo) {
       eYo.Selected.eyo = t_eyo
