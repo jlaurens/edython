@@ -112,11 +112,6 @@ Object.defineProperties(eYo.Input.prototype, {
       }
     }
   },
-  b_eyo: {
-    get () {
-      return this.owner
-    }
-  },
   t_eyo: {
     get () {
       var m4t = this.magnet
@@ -130,7 +125,7 @@ Object.defineProperties(eYo.Input.prototype, {
   },
   bindField: {
     get () {
-      var b_eyo = this.b_eyo
+      var b_eyo = this.brick
       if (b_eyo.wrapped_) {
         return b_eyo.magnets.output.t_eyo.bindField
       }
@@ -138,6 +133,10 @@ Object.defineProperties(eYo.Input.prototype, {
       return s && s.bindField
     }
   },
+})
+
+// Obsolete/forbidden properties
+Object.defineProperties(eYo.Input.prototype, {
   eyo: {
     get () {
       throw "BAD DESIGN, BREAK HERE"
@@ -151,16 +150,10 @@ Object.defineProperties(eYo.Input.prototype, {
   sourceBlock_: {
     get () {
       throw "BAD DESIGN, BREAK HERE"
-    },
-    set (newValue) {
-      throw "BAD DESIGN, BREAK HERE"
     }
   },
   connection: {
     get () {
-      throw "BAD DESIGN, BREAK HERE"
-    },
-    set (newValue) {
       throw "BAD DESIGN, BREAK HERE"
     }
   },
