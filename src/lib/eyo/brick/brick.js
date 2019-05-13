@@ -58,21 +58,19 @@ eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   this.workspace = workspace
   this.baseType_ = type // readonly private property used by getType
+  // next trick to avoid some costy computations
+  // this makes sense because subclassers may use a long getBaseType
+  // which is oftely used
   this.getBaseType = eYo.Brick.prototype.getBaseType // no side effect during creation.
   /** @type {string} */
   this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
       opt_id : Blockly.utils.genUid()
-  /** @type {!Array.<!eYo.Input>} */
-  this.inputList = []
-  /**
-   * @type {!Array.<!Blockly.Block>}
-   * @private
-   */
+  // private properties
   this.childBlocks_ = []
-
-  this.errors = Object.create(null) // just a hash
+  this.errors = Object.create(null)
   this.span_ = new eYo.Span(this)
   this.xy_ = new eYo.Where(0, 0)
+  
   this.change = {
     // the count is incremented each time a change occurs,
     // even when undoing.
@@ -103,12 +101,11 @@ eYo.Brick = function (workspace, type, opt_id) {
   }
   // to manage reentrency
   this.reentrant_ = {}
-  this.mainHeight_ = this.blackHeight_ = this.suiteHeight_ = this.nextHeight_ = this.headHeight_ = this.footHeight_ = 0
   // make the state
-  this.newData()
+  this.makeData()
   this.makeFields()
   this.makeSlots()
-  this.makeConnections()
+  this.makeMagnets()
   // now make the bounds between data and fields
   this.makeBounds()
   eYo.Events.disableWrap(() => {
@@ -128,32 +125,65 @@ eYo.Brick = function (workspace, type, opt_id) {
 }
 goog.inherits(eYo.Brick, eYo.Helper)
 
+// convenient namespace for debugging
+eYo.Brick.DEBUG = {}
+
+// owned properties with default value
+Object.defineProperties(eYo.Brick.prototype, {
+  wrappedMagnets_: { value: undefined },
+  inputList_: { value: undefined },
+  pythonType_: { value: undefined },
+})
+
 /**
  * Dispose of all the resources.
  */
 eYo.Brick.prototype.dispose = function (healStack, animate) {
+  if (!this.workspace) {
+    // The block has already been deleted.
+    return;
+  }
+  var workspace = this.workspace
+  this.workspace = undefined
+  if (this.selected) {
+    var m4ts = this.magnets
+    // this brick was selected, select the brick below or above before deletion
+    var f = m => m && m.target
+    var m4t = f(m4ts.right) || f(m4ts.left) || f(m4ts.head) || f(m4ts.foot) || f(m4ts.output)
+    m4t ? m4t.select() : this.unselect()
+    workspace.cancelCurrentGesture()
+  }
+  if (animate && this.rendered) {
+    this.unplug(healStack)
+    this.disposeUiEffect()
+  } else {
+    this.unplug()
+  }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.BlockDelete(this));
+  }
+  // Stop rerendering.
+  this.rendered = false
   this.consolidate = this.beReady = this.render = eYo.Do.nothing
-  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
+  // Remove from workspace
+  workspace.eyo.removeBrick(this)
+  this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
   this.span.dispose()
   this.span_ = undefined
-  eYo.Events.groupWrap(() => {
-    this.magnets.dispose()
-    this.forEachSlot(slot => slot.dispose())
-    this.slots = undefined
-    eYo.FieldHelper.disposeFields(this)
-    this.forEachData(data => data.dispose())
-    this.data = undefined
-    this.inputList = undefined
+  this.where.dispose()
+  this.where_ = undefined
+  eYo.Events.disableWrap(() => {
+    this.disposeMagnets()
+    this.disposeSlots()
+    this.disposeFields()
+    this.disposeData()
+    this.forEachInput(input => input.dispose())
+    this.inputList_ = undefined
     this.childBlocks_ = undefined
-    if (this.selected) {
-      // this brick was selected, select the brick below or above before deletion
-      var f = m => m && m.target
-      var m4t = f(m4ts.right) || f(m4ts.left) || f(m4ts.head) || f(m4ts.foot) || f(m4ts.output)
-    }
-    this.unplug(healStack)
-     && m4t.select()
   })
-  this.workspace = undefined
+  // this must be done after the child bricks are released
+  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
+  workspace.resizeContents();
 }
 
 /**
@@ -162,7 +192,6 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
 eYo.Do.getModel = function (type) {
   return eYo.Brick.Manager.getModel(type)
 }
-
 
 /**
  * Decorate of change count hooks.
@@ -194,27 +223,27 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
   }
 }
 
-eYo.Brick.DEBUG = {}
-
+// owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
-  block_: {
+  data: {
     get () {
-      if (!eYo.Brick.DEBUG.block_) {
-        console.error("UNEXPECTED block_ BREAK HERE")
-        eYo.Brick.DEBUG.block_ = true
-      }
-      return this
+      return this.data_
     }
   },
-  eyo: {
+  slots: {
     get () {
-      if (!eYo.Brick.DEBUG.eyo) {
-        console.error("UNEXPECTED eyo BREAK HERE")
-        eYo.Brick.DEBUG.eyo = true
-      }
-      return this
+      return this.slots_
     }
   },
+  inputList: {
+    get () {
+      return this.inputList_ || (this.inputList_ = [])
+    }
+  },
+})
+
+// computed properties
+Object.defineProperties(eYo.Brick.prototype, {
   /** @type {string} */
   type: {
     get () {
@@ -231,38 +260,33 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.constructor.eyo.model
     }
   },
+  /**
+   * Lazy list of all the wrapped magnets.
+   */
+  wrappedMagnets: {
+    get () {
+      return this.wrappedMagnets_ || (wrappedMagnets = [])
+    }
+  },
   surround: {
     get () {
-      var ans
-      if ((ans = this.output)) {
-        return ans
-      } else if (!this.magnets.output) {
-        var eyo = this.leftMost
-        while ((ans = eyo.head)) {
-          if (ans.suite === eyo) {
-            return ans
-          }
-          eyo = ans
-        }
+      var brick
+      if ((brick = this.output)) {
+        return brick
+      } else if ((brick = this.leftMost)) {
+        return brick.group
       }
       return null
     }
   },
-  surroundParent: {
-    get () {
-      var ans = this.surround
-      return ans && ans.block_
-    }
-  },
   group: {
     get () {
-      var eyo = this
-      var m4t
-      while ((m4t = eyo.magnets.head) && (m4t = m4t.target)) {
-        eyo = m4t.b_eyo
-        if (m4t.isSuite) {
-          return eyo
+      var brick = this
+      while ((head = brick.head)) {
+        if (head.suite === brick) {
+          return brick
         }
+        brick = head
       }
     }
   },
@@ -370,10 +394,6 @@ Object.defineProperties(eYo.Brick.prototype, {
       this.span.foot = newValue
     }
   },
-  // Magnets
-  magnets_: {
-    writable: true
-  },
   magnets: {
     get () {
       return this.magnets_
@@ -382,52 +402,55 @@ Object.defineProperties(eYo.Brick.prototype, {
   output: {
     get () {
       var m = this.magnets.output
-      return m && m.t_eyo
+      return m && m.targetBrick
+    },
+    set (newValue) {
+      this.magnets.output.targetBrick = newValue
     }
   },
   head: {
     get () {
       var m = this.magnets.head
-      return m && m.t_eyo
+      return m && m.targetBrick
     },
     set (newValue) {
-      this.magnets.head.target = newValue
+      this.magnets.head.targetBrick = newValue
     }
   },
   left: {
     get () {
       var m = this.magnets.left
-      return m && m.t_eyo
+      return m && m.targetBrick
     },
     set (newValue) {
-      this.magnets.left.target = newValue
+      this.magnets.left.targetBrick = newValue
     }
   },
   right: {
     get () {
       var m = this.magnets.right
-      return m && m.t_eyo
+      return m && m.targetBrick
     },
     set (newValue) {
-      this.magnets.right.target = newValue
+      this.magnets.right.targetBrick = newValue
     }
   },
   suite: {
     get () {
       var m = this.magnets.suite
-      return m && m.t_eyo
+      return m && m.targetBrick
     },
     set (newValue) {
-      this.magnets.suite.target = newValue
+      this.magnets.suite.targetBrick = newValue
     }
   },
   foot: {
     get () {
       var m = this.magnets.foot
-      return m && m.t_eyo
+      return m && m.targetBrick
     },
     set (newValue) {
-      this.magnets.foot.target = newValue
+      this.magnets.foot.targetBrick = newValue
     }
   },
   leftMost: {
@@ -468,6 +491,15 @@ Object.defineProperties(eYo.Brick.prototype, {
         ans = eyo
       }
       return ans
+    }
+  },
+})
+
+// Deprecated
+Object.defineProperties(eYo.Brick.prototype, {
+  surroundParent: {
+    get () {
+      throw "DEPRECATED, BREAK HERE"
     }
   },
   previous: {
@@ -594,6 +626,28 @@ Object.defineProperties(eYo.Brick.prototype, {
       }
       return {height: height, width: width, minWidth: minWidth}
     })
+  },
+})
+
+// Obsolete properties
+Object.defineProperties(eYo.Brick.prototype, {
+  block_: {
+    get () {
+      if (!eYo.Brick.DEBUG.block_) {
+        console.error("UNEXPECTED block_ BREAK HERE")
+        eYo.Brick.DEBUG.block_ = true
+      }
+      return this
+    }
+  },
+  eyo: {
+    get () {
+      if (!eYo.Brick.DEBUG.eyo) {
+        console.error("UNEXPECTED eyo BREAK HERE")
+        eYo.Brick.DEBUG.eyo = true
+      }
+      return this
+    }
   },
 })
 
@@ -1337,14 +1391,9 @@ eYo.Brick.prototype.someSlot = function (helper) {
  * execute the given function for the fields.
  * For edython.
  * @param {!function} helper
- * @return {boolean} whether there was a field to act upon or a valid helper
  */
 eYo.Brick.prototype.forEachField = function (helper) {
-  var ans = false
-  Object.values(this.fields).forEach(f => {
-    ans = true
-    helper(f)
-  })
+  Object.values(this.fields).forEach(f => helper(f))
 }
 
 /**
@@ -1352,7 +1401,7 @@ eYo.Brick.prototype.forEachField = function (helper) {
  * Works on a shallow copy of `childBlocks_`.
  */
 eYo.Brick.prototype.forEachChild = function (helper) {
-  this.childBlocks_.slice().forEach((b, i, ra) => helper(b.eyo, i, ra))
+  this.childBlocks_.slice().forEach((b, i, ra) => helper(b, i, ra))
 }
 
 /**
@@ -1542,23 +1591,6 @@ eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
 }
 
 /**
- * Synchronize the data to the UI.
- * The change level and change count should not change here.
- * Sends a `synchronize` message to all data controllers.
- * This is a one shot method only called by the `consolidate` method.
- * The fact is that all data must be synchronized at least once
- * at least when the model has been made. While running,
- * the synchronization will occur each time the data changes.
- * As a data change can not be reentrant, the synchronization can be
- * performed just after the change, whether doing, undoing or redoing.
- * This is why the one shot.
- */
-eYo.Brick.prototype.synchronizeData = function () {
-  this.forEachData(data => data.synchronize())
-  this.synchronizeData = eYo.Do.nothing
-}
-
-/**
  * Subclass maker.
  * Start point in the hierarchy.
  * Each subclass created will have its own makeSubclass method.
@@ -1575,7 +1607,7 @@ eYo.Brick.makeSubclass = function (key, model, owner) {
  * No data change, no rendering.
  * For edython.
  */
-eYo.Brick.prototype.newData = function () {
+eYo.Brick.prototype.makeData = function () {
   var data = Object.create(null) // just a hash
   var dataModel = this.model.data
   var byOrder = []
@@ -1602,7 +1634,7 @@ eYo.Brick.prototype.newData = function () {
       d = dd
     }
   }
-  this.data = data
+  this.data_ = data
   // now we can use `forEachData`
   this.forEachData(d => {
     Object.defineProperty(d.owner, d.key + '_d', { value: d })
@@ -1611,6 +1643,31 @@ eYo.Brick.prototype.newData = function () {
       Object.defineProperty(d.owner, 'main_d', { value: d })
     }
   })
+}
+
+/**
+ * Synchronize the data to the UI.
+ * The change level and change count should not change here.
+ * Sends a `synchronize` message to all data controllers.
+ * This is a one shot method only called by the `consolidate` method.
+ * The fact is that all data must be synchronized at least once
+ * at least when the model has been made. While running,
+ * the synchronization will occur each time the data changes.
+ * As a data change can not be reentrant, the synchronization can be
+ * performed just after the change, whether doing, undoing or redoing.
+ * This is why the one shot.
+ */
+eYo.Brick.prototype.synchronizeData = function () {
+  this.forEachData(data => data.synchronize())
+  this.synchronizeData = eYo.Do.nothing
+}
+
+/**
+ * Disposing of the data ressources.
+ */
+eYo.Brick.prototype.disposeData = function () {
+  this.forEachData(data => data.dispose())
+  this.data = undefined
 }
 
 /**
@@ -1623,98 +1680,106 @@ eYo.Brick.prototype.makeFields = function () {
 }
 
 /**
- * Make the slots
+ * Dispose of the fields.
  * For edython.
  */
-eYo.Brick.prototype.makeSlots = function () {
-  this.slots = Object.create(null) // hard to create all the slots at once.
-  this.slotAtHead = this.feedSlots(this.model.slots)
+eYo.Brick.prototype.disposeFields = function () {
+  eYo.FieldHelper.disposeFields(this, this)
 }
 
 /**
- * Create the brick connections.
- * Called from receiver's `makeState` method.
+ * Make the slots
+ * For edython.
+ */
+eYo.Brick.prototype.makeSlots = (() => {
+  var feedSlots = function (slotsModel) {
+    var slots = this.slots
+    var ordered = []
+    for (var k in slotsModel) {
+      var model = slotsModel[k]
+      if (!model) {
+        continue
+      }
+      var order = model.order
+      var insert = model.insert
+      var slot, next
+      if (insert) {
+        var model = eYo.Brick.Manager.getModel(insert)
+        if (model) {
+          if ((slot = feedSlots.call(this, model.slots))) {
+            next = slot
+            do {
+              goog.asserts.assert(!goog.isDef(slots[next.key]),
+                'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
+              slots[next.key] = next
+            } while ((next = next.next))
+          } else {
+            continue
+          }
+        } else {
+          continue
+        }
+      } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
+        goog.asserts.assert(!goog.isDef(slots[k]),
+          `Duplicate slot key ${k}/${this.block_.type}`)
+        slots[k] = slot
+        slot.slots = slots
+      } else {
+        continue
+      }
+      slot.order = order
+      for (var i = 0; i < ordered.length; i++) {
+        // we must not find an aleady existing entry.
+        goog.asserts.assert(i !== slot.order,
+          `Same order slot ${i}/${this.block_.type}`)
+        if (ordered[i].model.order > slot.model.order) {
+          break
+        }
+      }
+      ordered.splice(i, 0, slot)
+    }
+    if ((slot = ordered[0])) {
+      i = 1
+      while ((next = ordered[i++])) {
+        slot.next = next
+        next.previous = slot
+        slot = next
+      }
+      ordered[0].last = slot
+    }
+    return ordered[0]
+  }
+  return function () {
+    this.slots_ = Object.create(null) // hard to create all the slots at once, like data.
+    this.slotAtHead = feedSlots.call(this, this.model.slots)
+  }
+})()
+
+/**
+ * Dispose the slots
+ * For edython.
+ */
+eYo.Brick.prototype.disposeSlots = function () {
+  this.forEachSlot(slot => slot.dispose())
+  this.slots = null
+}
+
+/**
+ * Create the brick magnets.
  * For subclassers eventually
  */
-eYo.Brick.prototype.makeConnections = function () {
+eYo.Brick.prototype.makeMagnets = function () {
   this.magnets = new eYo.Magnets(this)
   this.updateBlackHeight()
 }
 
 /**
- * Feed the owner with slots built from the model.
- * For edython.
- * @param {!Object} input
+ * Create the brick magnets.
+ * For subclassers eventually
  */
-eYo.Brick.prototype.feedSlots = function (slotsModel) {
-  var slots = this.slots
-  var ordered = []
-  for (var k in slotsModel) {
-    var model = slotsModel[k]
-    if (!model) {
-      continue
-    }
-    var order = model.order
-    var insert = model.insert
-    var slot, next
-    if (insert) {
-      var model = eYo.Brick.Manager.getModel(insert)
-      if (model) {
-        if ((slot = this.feedSlots(model.slots))) {
-          next = slot
-          do {
-            goog.asserts.assert(!goog.isDef(slots[next.key]),
-              'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
-            slots[next.key] = next
-          } while ((next = next.next))
-        } else {
-          continue
-        }
-      } else {
-        continue
-      }
-    } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
-      goog.asserts.assert(!goog.isDef(slots[k]),
-        `Duplicate slot key ${k}/${this.block_.type}`)
-      slots[k] = slot
-      slot.slots = slots
-    } else {
-      continue
-    }
-    slot.order = order
-    for (var i = 0; i < ordered.length; i++) {
-      // we must not find an aleady existing entry.
-      goog.asserts.assert(i !== slot.order,
-        `Same order slot ${i}/${this.block_.type}`)
-      if (ordered[i].model.order > slot.model.order) {
-        break
-      }
-    }
-    ordered.splice(i, 0, slot)
-  }
-  if ((slot = ordered[0])) {
-    i = 1
-    while ((next = ordered[i++])) {
-      slot.next = next
-      next.previous = slot
-      slot = next
-    }
-    ordered[0].last = slot
-  }
-  return ordered[0]
+eYo.Brick.prototype.disposeMagnets = function () {
+  this.magnets.dispose()
 }
-
-/**
- * The python type of the owning brick.
- */
-eYo.Brick.prototype.pythonType_ = undefined
-
-/**
- * The real type of the owning brick.
- * There are fake blocks initially used for debugging purposes.
- * For a brick type eyo:fake_foo, the delegate type is eyo:foo.
- */
-eYo.Brick.prototype.type_ = undefined
 
 /**
  * Set the [python ]type of the delegate and its brick.
@@ -1785,9 +1850,7 @@ eYo.Brick.prototype.consolidateSlots = function (deep, force) {
 eYo.Brick.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
     // Consolidate the child blocks that are still connected
-    this.forEachInput(input => {
-      input.consolidate(deep, force)
-    })
+    this.forEachInput(input => input.consolidate(deep, force))
   }
 }
 
@@ -1832,14 +1895,15 @@ eYo.Brick.prototype.consolidateMagnets = function () {
     m4t && m4t.updateCheck()
   }
   this.forEachSlot(slot => f(slot.magnet))
-  if (this.magnets.output) {
-    f(this.magnets.output)
+  var m4ts = this.magnets
+  if (m4ts.output) {
+    f(m4ts.output)
   } else {
-    f(this.magnets.head)
-    f(this.magnets.left)
-    f(this.magnets.right)
-    f(this.magnets.suite)
-    f(this.magnets.foot)
+    f(m4ts.head)
+    f(m4ts.left)
+    f(m4ts.right)
+    f(m4ts.suite)
+    f(m4ts.foot)
   }
 }
 
@@ -1912,64 +1976,40 @@ Object.defineProperties(eYo.Brick, {
 })
 
 /**
- * Shortcut for appending a sealed value input row.
- * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later when the `completeWrap_` message is sent.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this brick.
- * This is the only way to create a wrapped brick.
- * @return {!eYo.Input} The input object created.
+ * Adds a magnet to later wrapping.
+ * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
  */
-eYo.Brick.prototype.appendWrapValueInput = function (name, prototypeName, optional, hidden) {
-  goog.asserts.assert(prototypeName, 'Missing prototypeName, no brick to seal')
-  var brick = this.block_
-  var input = brick.appendValueInput(name)
-  var c_eyo = input.connection.eyo
-  c_eyo.wrapped_ = prototypeName
-  c_eyo.optional_ = optional
-  c_eyo.hidden_ = hidden
-  if (!this.wrappedM4t_) {
-    this.wrappedM4t_ = []
-  }
-  if (!optional) {
-    this.wrappedM4t_.push(c_eyo)
-  }
-  return input
+eYo.Brick.prototype.addWrapperMagnet = function (magnet) {
+  magnet && this.wrappedMagnets.push(magnet)
 }
 
-
 /**
- * Shortcut for appending a sealed value input row.
- * Add a eyo.wrapped_ attribute to the connection and register the newly created input to be filled later.
- * @param {string} name Language-neutral identifier which may used to find this
- *     input again.  Should be unique to this brick.
- * This is the only way to create a wrapped brick.
- * @return {!eYo.Input} The input object created.
+ * Adds a magnet to later wrapping.
+ * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
  */
-eYo.Brick.prototype.appendPromiseValueInput = function (name, prototypeName, optional, hidden) {
-  var input = this.appendWrapValueInput(name, prototypeName, optional, hidden)
-  var c_eyo = input.connection.eyo
-  c_eyo.promised_ = prototypeName
-  c_eyo.wrapped_ = undefined
-  return input
+eYo.Brick.prototype.removeWrapperMagnet = function (magnet) {
+  var i = this.wrappedMagnets.indexOf(magnet)
+  if (i>=0) {
+    this.wrappedMagnets.splice(i)
+  }
 }
 
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the wrappedM4t_ list.
+ * The default implementation connects all the blocks from the wrappedMagnets_ list.
  * Subclassers will eventually create appropriate new nodes
  * and connect it to any sealed connection.
- * @param {!Block} brick
  * @private
  */
 eYo.Brick.prototype.completeWrap_ = function () {
-  if (this.wrappedM4t_) {
+  if (this.wrappedMagnets_) {
     var i = 0
-    while (i < this.wrappedM4t_.length) {
-      var d = this.wrappedM4t_[i]
+    while (i < this.wrappedMagnets_.length) {
+      var d = this.wrappedMagnets_[i]
       var ans = d.completeWrap()
       if (ans && ans.ans) {
-        this.wrappedM4t_.splice(i)
+        this.wrappedMagnets_.splice(i)
       } else {
         ++i
       }
@@ -2632,8 +2672,8 @@ eYo.Brick.prototype.getMenuTarget = function () {
   if (this.wrap && (wrapped = this.wrap.input.target)) {
     return wrapped.eyo.getMenuTarget()
   }
-  if (this.wrappedM4t_ && this.wrappedM4t_.length === 1 &&
-    (wrapped = this.wrappedM4t_[0].t_eyo)) {
+  if (this.wrappedMagnets_ && this.wrappedMagnets_.length === 1 &&
+    (wrapped = this.wrappedMagnets_[0].t_eyo)) {
     // if there are more than one wrapped brick,
     // then we choose none of them
     return wrapped.eyo.getMenuTarget()
