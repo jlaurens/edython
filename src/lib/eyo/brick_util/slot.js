@@ -59,68 +59,41 @@ eYo.Slot = function (owner, key, model) {
     console.error('Missing slot model order')
   }
   goog.asserts.assert(model.order, 'Missing slot model order')
+  this.reentrant_ = {}
   this.owner_ = owner
   this.key_ = key
   this.model_ = model
-  this.input = undefined
-  var brick = this.sourceBlock_
+  this.model__ = model
+  var setupModel = model => {
+    model.setup_ = true
+    if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+      delete model.validateIncog
+    }
+  }
+  model.setup_ || setupModel(model)
+  if (goog.isDefAndNotNull(model.check)) {
+    this.magnet_ = new eYo.Magnet(this, eYo.Magnet.INPUT, model)
+    if (model.wrap) {
+      this.magnet_.wrapped = prototypeName   
+    } else if (model.promise) {
+      this.magnet_.promised = prototypeName
+      this.incog = true
+    }
+  }
+  eYo.FieldHelper.makeFields(this, model.fields)
   goog.asserts.assert(brick,
     `brick must exist ${key}`)
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
-  this.where_ = new eYo.Where() // for rendering only
+  this.where_ = new eYo.Where()
   var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
   f && f.call(this)
 }
 
-// Private properties
+// Private properties with default values
 Object.defineProperties(eYo.Slot.prototype, {
-  owner_: { writable: true },
-  key_: { writable: true },
-  reentrant_: { value: {} },
-  input__: { writable: true },
-  input_:{
-    get () {
-      return this.input__
-    },
-    set (newValue) {
-      
-    }
-  },
-  magnet_: { writable: true },
-  incog_: { writable: true },
-  where_: { writable: true },
-  model__: { writable: true },
-  model_: {
-    get () {
-      return this.model__
-    },
-    set (model) {
-      this.model__ = model
-      var setupModel = model => {
-        model.setup_ = true
-        if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
-          delete model.validateIncog
-        }
-      }
-      model.setup_ || setupModel(model)
-      if (model) {
-        if (goog.isDefAndNotNull(model.check)) {
-          this.input = new eYo.Input(this, name, model)
-          if (model.wrap) {
-            this.input.magnet.wrapped = prototypeName      
-          } else if (model.promise) {
-            this.input.magnet.promised = prototypeName
-            this.incog = true
-          }
-        }
-        eYo.FieldHelper.makeFields(this, model.fields)
-      } else {
-        eYo.FieldHelper.disposeFields(this)
-      }
-    }
-  }
+  incog_: { value: true },
 })
 
 /**
@@ -130,13 +103,14 @@ Object.defineProperties(eYo.Slot.prototype, {
 eYo.Slot.prototype.dispose = function () {
   var ui = this.owner.ui
   ui && ui.driver.slotDispose(this)
+  eYo.FieldHelper.disposeFields(this)
   this.model_ = undefined
-  this.where.dispose && this.where.dispose()
-  this.where = undefined
-  this.input && this.input.dispose()
-  this.input = undefined
-  this.key = undefined
-  this.owner = undefined
+  this.where_.dispose && this.where_.dispose()
+  this.where_ = undefined
+  this.magnet_ && this.magnet_.dispose()
+  this.magnet_ = undefined
+  this.key_ = undefined
+  this.owner_ = undefined
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
@@ -149,29 +123,20 @@ Object.defineProperties(eYo.Slot.prototype, {
       return this.owner_
     }
   },
-  /**
-   * @readonly
-   * @property {eYo.Input} brick  the input it owns
-   */
-  input: {
+  key: {
     get () {
-      return this.input_
-    },
-    set (newValue) {
-      if (this.input_ !== newValue) {
-        this.input_ && (this.input_.slot = null)
-        if ((this.input_ = newValue)) {
-          newValue.slot = this
-          this.magnet_ = input.magnet
-        } else {
-          this.magnet_ = null
-        }
-      }
+      return this.key_
     }
   },
   magnet: {
     get () {
       return this.magnet_
+    }
+  },
+  targetBrick: {
+    get () {
+      var m4t = this.magnet
+      return m4t && m4t.targetBrick
     }
   },
   where: {
@@ -245,8 +210,18 @@ Object.defineProperties(eYo.Slot.prototype, {
     }
   },
 })
-// obsolete API
+// obsolete and deprecated API
 Object.defineProperties(eYo.Slot.prototype, {
+  /**
+   * @readonly
+   * @property {eYo.Input} brick  the input it owns
+   */
+  input: {
+    get () {
+      console.error("BREAK HERE")
+      throw "INCONSISTANCY"
+    }
+  },
   c_eyo: {
     get () {
       console.error("BREAK HERE")
@@ -259,10 +234,10 @@ Object.defineProperties(eYo.Slot.prototype, {
       throw "ILLEGAL"
     }
   },
-  t_eyo: {
+  t_brick: {
     get () {
       var m4t = this.magnet
-      return m4t && m4t.t_eyo
+      return m4t && m4t.targetBrick
     }
   },
   unwrappedTarget: {
@@ -357,7 +332,7 @@ Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
     if (!this.connection) {
       return false
     }
-    if (!this.magnet.wrapped_ && this.t_eyo) {
+    if (!this.magnet.wrapped_ && this.targetBrick) {
       return true
     }
     if (this.required) {
@@ -379,11 +354,11 @@ Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFromSaved = function () {
-  var t_eyo = this.t_eyo
-  if (t_eyo) {
-    if (t_eyo.wrapped_) {
+  var t_brick = this.targetBrick
+  if (t_brick) {
+    if (t_brick.wrapped_) {
       // return true if one of the inputs is connected
-      return t_eyo.inputList.some(input => !!input.target)
+      return t_brick.inputList.some(input => !!input.target)
     }
     return true
   }
@@ -491,14 +466,14 @@ eYo.Slot.prototype.save = function (element, opt) {
     }
   }
   var out = (() => {
-    var t_eyo = this.t_eyo
-    if (t_eyo) { // otherwise, there is nothing to remember
-      if (t_eyo.wrapped_) {
+    var t_brick = this.targetBrick
+    if (t_brick) { // otherwise, there is nothing to remember
+      if (t_brick.wrapped_) {
         // wrapped blocks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t_eyo instanceof eYo.Brick.List) {
-          var child = eYo.Xml.dlgtToDom(t_eyo, opt)
+        if (t_brick instanceof eYo.Brick.List) {
+          var child = eYo.Xml.dlgtToDom(t_brick, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
@@ -506,10 +481,10 @@ eYo.Slot.prototype.save = function (element, opt) {
           }
         } else {
           // let the target populate the given element
-          return eYo.Xml.toDom(t_eyo, element, opt)
+          return eYo.Xml.toDom(t_brick, element, opt)
         }
       } else {
-        child = eYo.Xml.dlgtToDom(t_eyo, opt)
+        child = eYo.Xml.dlgtToDom(t_brick, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
@@ -565,10 +540,10 @@ eYo.Slot.prototype.load = function (element) {
   }
   this.setRequiredFromModel(false)
   var out
-  var t_eyo = this.t_eyo
-  if (t_eyo && t_eyo.wrapped_ && !(t_eyo instanceof eYo.Brick.List)) {
+  var t_brick = this.targetBrick
+  if (t_brick && t_brick.wrapped_ && !(t_brick instanceof eYo.Brick.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
-    out = eYo.Xml.fromDom(t_eyo, element)
+    out = eYo.Xml.fromDom(t_brick, element)
     this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
@@ -580,24 +555,24 @@ eYo.Slot.prototype.load = function (element) {
           this.setRequiredFromModel(true)
           out = true
         } else {
-          if (!t_eyo && this.model.promise) {
+          if (!t_brick && this.model.promise) {
             this.completePromise()
-            t_eyo = this.t_eyo
+            t_brick = this.targetBrick
           }
-          if (t_eyo) {
-            if (t_eyo instanceof eYo.Brick.List) {
+          if (t_brick) {
+            if (t_brick instanceof eYo.Brick.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
-                var input = t_eyo.getInput(name)
+                var input = t_brick.getInput(name)
                 if (input) {
                   if (input.magnet) {
-                    var grand_t_eyo = input.target
-                    if ((grand_t_eyo)) {
-                      eYo.Xml.fromDom(grand_t_eyo, grandChild)
+                    var grand_t_brick = input.target
+                    if ((grand_t_brick)) {
+                      eYo.Xml.fromDom(grand_t_brick, grandChild)
                       this.recover.dontResit(grandChild)
-                    } else if ((grand_t_eyo = eYo.Xml.domToDlgt(grandChild, this.owner))) {
-                      var t_m4t = grand_t_eyo.magnets.output
+                    } else if ((grand_t_brick = eYo.Xml.domToDlgt(grandChild, this.owner))) {
+                      var t_m4t = grand_t_brick.magnets.output
                       if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
                         t_m4t.connect(input.magnet)
                         this.setRequiredFromModel(true)
@@ -611,11 +586,11 @@ eYo.Slot.prototype.load = function (element) {
               })
               out = true
             } else {
-              out = eYo.Xml.fromDom(t_eyo, child)
+              out = eYo.Xml.fromDom(t_brick, child)
             }
             this.recover.dontResit(child)
-          } else if ((t_eyo = eYo.Xml.domToDlgt(child, this.owner))) {
-            var m4ts = t_eyo.magnets
+          } else if ((t_brick = eYo.Xml.domToDlgt(child, this.owner))) {
+            var m4ts = t_brick.magnets
             // we could create a brick from that child element
             // then connect it
             this.recover.dontResit(child)
@@ -626,7 +601,7 @@ eYo.Slot.prototype.load = function (element) {
             } else if (m4ts.head && m4t.checkType_(m4ts.head, true)) {
               m4t.connect(m4ts.head) // Notice the `.eyo`
             }
-            out = t_eyo
+            out = t_brick
           }
         }
         return true // the element was found
@@ -709,17 +684,17 @@ eYo.Slot.prototype.forEachField = function (helper) {
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
 eYo.Slot.prototype.listConnect = function (bm, key) {
-  var t_eyo = this.t_eyo
-  if (!t_eyo) {
+  var t_brick = this.targetBrick
+  if (!t_brick) {
     this.completePromise()
-    if (!(t_eyo = this.t_eyo)) {
+    if (!(t_brick = this.targetBrick)) {
       return false
     }
   }
   if (!key) {
-    return t_eyo.connectLast(bm)
+    return t_brick.connectLast(bm)
   }
-  var input = t_eyo.getInput(key)
+  var input = t_brick.getInput(key)
   if (input) {
     var m4t = input.magnet
     if (m4t) {

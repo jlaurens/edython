@@ -6,7 +6,6 @@
 // goog.provide('Blockly.FieldVariable')
 // goog.provide('Blockly.VariableModel')
 // goog.provide('Blockly.Variables')
-// goog.provide('Blockly.RenderedConnection')
 // goog.provide('Blockly.Connection')
 // goog.provide('Blockly.Workspace')
 // goog.provide('Blockly.WorkspaceSvg')

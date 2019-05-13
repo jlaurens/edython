@@ -307,7 +307,7 @@ eYo.FieldHelper.makeFields = (() => {
           owner.bindField = field
         }
         owner.fields[key] = field
-        field.setSourceBlock((owner.owner && owner.owner.sourceBlock_) || owner.block_ || owner.sourceBlock_)
+        field.setSourceBlock((owner.owner && owner.owner.sourceBlock_) || owner.sourceBlock_ || owner)
         goog.asserts.assert(field.sourceBlock_, 'Missing field sourceBlock_ while making fields')
       }
     }

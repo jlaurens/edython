@@ -341,8 +341,7 @@ eYo.Brick.Expr.shortliteral.prototype.makeTitle = function (variant) {
  * @suppress {globalThis}
 */
 eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
-  mgr.populateProperties(brick, 'delimiter')
+  mgr.populateProperties(this, 'delimiter')
   mgr.separate()
   var current = this.prefix_p
   var can_b = this.validateComponents({

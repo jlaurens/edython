@@ -36,7 +36,7 @@ eYo.Brick.List.prototype.getInput = function (name, dontCreate) {
   var input = eYo.Brick.List.superClass_.getInput.call(this, name)
   if (!input) {
     this.createConsolidator()
-    input = this.consolidator.getInput(this.block_, name, dontCreate)
+    input = this.consolidator.getInput(this, name, dontCreate)
   }
   return input
 }
@@ -110,7 +110,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
     }
     force = true  // always force consolidation because of the dynamics
     if (eYo.Brick.List.superClass_.doConsolidate.call(this, deep, force)) {
-      return !this.connectionsIncog && this.consolidator.consolidate(this.block_, deep, force)
+      return !this.connectionsIncog && this.consolidator.consolidate(this, deep, force)
     }
   }
   return function (deep, force) {
@@ -131,10 +131,10 @@ eYo.Brick.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
     this.inputList.forEach(input => {
       var m4t = input.magnet
-      var t_eyo = m4t.t_eyo
-      if (t_eyo) {
+      var t_brick = m4t.targetBrick
+      if (t_brick) {
         m4t.break()
-        t_eyo.dispose()
+        t_brick.dispose()
       }
     })
     this.consolidate()
@@ -148,8 +148,8 @@ eYo.Brick.List.prototype.removeItems = function () {
  */
 eYo.Brick.List.prototype.incrementInputChangeCount = function () {
   this.forEachInput(input => {
-    var t_eyo = input.magnet.t_eyo
-    t_eyo && t_eyo.incrementChangeCount()
+    var t_brick = input.magnet.targetBrick
+    t_brick && t_brick.incrementChangeCount()
   })
   this.incrementChangeCount()
 }
@@ -158,7 +158,7 @@ Object.defineProperties(eYo.Brick.List.prototype, {
   firstTarget: {
     get () {
       var t
-      this.inputList.some(input => (t = input.t_eyo))
+      this.inputList.some(input => (t = input.targetBrick))
       return t
     }
   }
@@ -339,9 +339,9 @@ eYo.Brick.List.makeSubclass('enclosure', {
   output: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
       // retrieve the brick delegate
-      var b_eyo = this.brick
-      var p5e = b_eyo.profile_p
-      return b_eyo.getOutCheck(p5e)
+      var brick = this.brick
+      var p5e = brick.profile_p
+      return brick.getOutCheck(p5e)
     }
   }
 })
@@ -372,7 +372,7 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
     if (this.data && this.slots) {
       var f = (target, no_target) => {
         return {ans: this.someInput(input => {
-            var t = input.t_eyo
+            var t = input.targetBrick
             if (t && (t = t.magnets.output.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
             }
@@ -394,7 +394,7 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
           return {ans: eYo.T3.Expr.set_display}
         } else if (target.type === eYo.T3.Expr.dict_comprehension) {
           return {ans: eYo.T3.Expr.dict_display}
-        } else if (this.block_.inputList.length === 3) {
+        } else if (this.inputList.length === 3) {
             if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
               return {ans: eYo.T3.Expr.one_set_display}
             } else {

@@ -547,7 +547,7 @@ eYo.Brick.List.makeSubclass('value_list', {
  * @return {String} The subtype of the receiver's brick.
  */
 eYo.Brick.Expr.value_list.prototype.getSubtype = function () {
-  var t = this.magnets.output.t_eyo
+  var t = this.magnets.output.targetBrick
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
@@ -576,7 +576,7 @@ goog.provide('eYo.Brick.AugAssign')
 //  * @private
 //  */
 // eYo.Brick.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-//   var brick = this.block_
+//   var brick = this
 //   var withTarget = this.target_t
 //   var target = this.target_p
 //   var operator = this.operator_p

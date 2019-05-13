@@ -481,7 +481,7 @@ eYo.Shape.prototype.initWithNode = (() => {
  */
 var initWithStatementNode = function(eyo, opt) {
   // standard statement
-  var width = eyo.block_.width
+  var width = eyo.width
   var r = this.stmt_radius
   if (eyo.right) {
     this.M(true, width - eYo.Unit.x / 2 + r)
@@ -558,8 +558,7 @@ var initWithGroupNode = function(eyo, opt) {
  * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithExpressionNode = function(eyo, opt) {
-  var brick = eyo.block_
+var initWithExpressionNode = function(brick, opt) {
   var width = Math.max(brick.width, eyo.span.width)
   if (opt && opt.bbox) {
     this.M(true, width)
@@ -654,14 +653,14 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
 eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   var dd = this.caret_extra
   if (magnet) {
-    var b_eyo = magnet.brick
+    var brick = magnet.brick
     var m4t
-    if (b_eyo && b_eyo.wrapped_ && opt && opt.absolute && (m4t = b_eyo.magnets.output)) {
+    if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.magnets.output)) {
       var where = new eYo.Where(magnet)
       do {
-        var t_eyo = m4t.t_eyo
-        where.advance(t_eyo)
-        var eyo = t_eyo.brick
+        var t_brick = m4t.targetBrick
+        where.advance(t_brick)
+        var eyo = t_brick.brick
       } while(eyo && eyo.wrapped_ && (m4t = eyo.magnets.output))
     } else {
       where = magnet
@@ -682,23 +681,23 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   this.begin()
   if (magnet && opt && opt.hilight) {
     if (magnet.isInput) {
-      if (m4t.t_eyo) {
-        this.push(magnet.t_eyo.ui.driver.pathValueDef_())
-      } else if (!b_eyo.disabled) {
+      if (m4t.targetBrick) {
+        this.push(magnet.targetBrick.ui.driver.pathValueDef_())
+      } else if (!brick.disabled) {
         this.initWithMagnet(magnet, {absolute: true})
       }
     } else if (magnet.isOutput) {
-      this.push(b_eyo.ui.driver.pathValueDef_(magnet))
+      this.push(brick.ui.driver.pathValueDef_(magnet))
     } else { // statement connection
-      var w = b_eyo.span.width - eYo.Unit.x / 2
+      var w = brick.span.width - eYo.Unit.x / 2
       if (magnet.isHead) {
         this.m(true, w - 4 * r, -r)
         this.half_circle(r, true, 3)
         this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
         this.half_circle(r, true, 1)
       } else if (magnet.isFoot) {
-        if (b_eyo.span.l > 1) { // this is not clean design, really?
-          this.m(true, eYo.Font.tabWidth, b_eyo.span.height - r)
+        if (brick.span.l > 1) { // this is not clean design, really?
+          this.m(true, eYo.Font.tabWidth, brick.span.height - r)
           this.half_circle(r, true, 3)
           this.h(true, -eYo.Font.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l)
           this.half_circle(r, true, 1)

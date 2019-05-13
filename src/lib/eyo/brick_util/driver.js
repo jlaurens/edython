@@ -298,7 +298,7 @@ eYo.Driver.nodeUpdateDisabled = eYo.Do.nothing
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.nodeConnectionUIEffect = eYo.Do.nothing
+eYo.Driver.blockConnectEffect = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.

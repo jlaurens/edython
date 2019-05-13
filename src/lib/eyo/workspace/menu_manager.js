@@ -338,7 +338,7 @@ eYo.ID.HELP = 'HELP'
  */
 eYo.Brick.prototype.populateContextMenuFirst_ = function (mgr) {
   mgr.shouldSeparate()
-  mgr.populate_movable_parent(this.block_)
+  mgr.populate_movable_parent(this)
 }
 
 /**
@@ -357,7 +357,7 @@ eYo.Brick.prototype.populateContextMenuMiddle_ = function (mgr) {
  * @private
  */
 eYo.Brick.prototype.populateContextMenuLast_ = function (mgr) {
-  return mgr.populateLast(this.block_)
+  return mgr.populateLast(this)
 }
 
 /**
@@ -571,8 +571,8 @@ eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
     }, 100)
     return true
   }
-  var target = model.target || dlgt.block_
-  var t_eyo = target.eyo
+  var target = model.target || dlgt
+  var t_brick = target.eyo
   switch (model.action) {
   case eYo.ID.DUPLICATE_BLOCK:
     Blockly.duplicate_(target)
@@ -593,7 +593,7 @@ eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
     target.eyo.disabled = !target.eyo.disabled
     return true
   case eYo.ID.DELETE_BLOCK:
-    var unwrapped = t_eyo
+    var unwrapped = t_brick
     var parent
     while (unwrapped.wrapped_ && (parent = unwrapped.surround)) {
       unwrapped = parent
@@ -602,16 +602,16 @@ eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (t_eyo.selected && t_eyo !== unwrapped) {
+      if (t_brick.selected && t_brick !== unwrapped) {
         // this brick was selected, select the brick below or above before deletion
         var m4t
-        if (((m4t = unwrapped.magnets.foot) && (t_eyo = m4t.t_eyo)) || ((m4t = unwrapped.magnets.head) && (t_eyo = m4t.t_eyo))) {
-          t_eyo.select()
+        if (((m4t = unwrapped.magnets.foot) && (t_brick = m4t.targetBrick)) || ((m4t = unwrapped.magnets.head) && (t_brick = m4t.targetBrick))) {
+          t_brick.select()
         } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
           m4t.select()
         }
       }
-      unwrapped.block_.dispose(true, true)
+      unwrapped.dispose(true, true)
       returnState = true
     } catch (err) {
       console.error(err)
@@ -1037,7 +1037,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     var yorn = eyo.magnets.head &&
     eyo.magnets.head.checkType_(m4t) &&
     (!targetM4t || (eyo.magnets.foot && targetM4t.checkType_(eyo.magnets.foot)))
-    eyo.block_.dispose(true)
+    eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {
@@ -1053,7 +1053,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     var yorn = eyo.magnets.foot &&
     eyo.magnets.foot.checkType_(m4t) &&
     (!target || (eyo.magnets.head && target.checkType_(eyo.magnets.head)))
-    eyo.block_.dispose(true)
+    eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {

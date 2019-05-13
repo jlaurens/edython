@@ -114,7 +114,7 @@ eYo.KeyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected brick can handle the model
-    var eyo = eYo.Selected.eyo
+    var eyo = eYo.Selected.brick
     var m4t = eYo.Selected.magnet
     if (eyo && !m4t) {
       var D = model.data
@@ -154,7 +154,7 @@ eYo.KeyHandler = (() => {
       model.action.call(me, model.model)
       return
     }
-    var eyo = eYo.Selected.eyo
+    var eyo = eYo.Selected.brick
     if (eyo) {
       var m4t = eYo.Selected.magnet
       var newB = m4t && eyo.insertBlockWithModel(model, m4t)
@@ -169,12 +169,12 @@ eYo.KeyHandler = (() => {
           var doFirst = (eyo, type) => {
             return eyo.someInputMagnet(m4t => {
               if (m4t.type === type) {
-                var t_eyo = m4t.t_eyo
-                if (!m4t.hidden_ && !t_eyo && (!m4t.source || !m4t.source.bindField)) {
+                var t_brick = m4t.targetBrick
+                if (!m4t.hidden_ && !t_brick && (!m4t.source || !m4t.source.bindField)) {
                   m4t.select()
                   return true
                 } else {
-                  return t_eyo && doFirst(t_eyo, type)
+                  return t_brick && doFirst(t_brick, type)
                 }
               }
             })
@@ -434,18 +434,18 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((dlgt = eYo.Selected.eyo) && dlgt.showEditor) {
+      if ((dlgt = eYo.Selected.brick) && dlgt.showEditor) {
         event.preventDefault()
         event.stopPropagation()
         dlgt.showEditor()
         return
       }
     }
-    if ((dlgt = eYo.Selected.eyo)) {
+    if ((dlgt = eYo.Selected.brick)) {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
-        eYo.MenuManager.shared().showMenu(dlgt.block_, event)
+        eYo.MenuManager.shared().showMenu(dlgt, event)
         return
       }
       keys_ = []
@@ -604,7 +604,7 @@ var doit = (() => {
     'identifier': eYo.T3.Expr.identifier,
     'name': eYo.T3.Expr.identifier,
     'not …': function (key) {
-      var eyo = eYo.Selected.eyo
+      var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
@@ -644,7 +644,7 @@ var doit = (() => {
 
   Ks = (() => {
     var F = (key, op) => {
-      var eyo = eYo.Selected.eyo
+      var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {

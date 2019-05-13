@@ -316,7 +316,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     var f = (sep, suffix) => {
       var field = new eYo.FieldLabel(sep)
       io.input.fieldRow.splice(0, 0, field)
-      field.setSourceBlock(io.dlgt.block_)
+      field.setSourceBlock(io.dlgt)
       field.eyo.beReady(io.input.isReady)
       field.eyo.suffix = suffix
     }

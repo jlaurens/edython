@@ -9,7 +9,7 @@ var f = (str) => {
   }
   chai.assert(d, `WHERE IS THE BLOCK ${n.type}/${n.name}`)
   eYo.Test.code(d, str)
-  d.block_.dispose()
+  d.dispose()
 }
 
 describe('Python exporter', function() {

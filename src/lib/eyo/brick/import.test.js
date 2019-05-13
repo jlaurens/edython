@@ -41,7 +41,7 @@ describe('Import statement (BASIC)', function() {
       'Ximport',
       'Ximport_star'])
     eYo.Test.code(d, 'import <MISSING NAME>')
-    d.block_.dispose()
+    d.dispose()
   })
   ;[
     'IMPORT',
@@ -52,7 +52,7 @@ describe('Import statement (BASIC)', function() {
       var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
       eYo.Test.set_variant(d, k)
       eYo.Test.copy_paste(d)
-      d.block_.dispose()
+      d.dispose()
     })
   })
 })
@@ -62,13 +62,13 @@ describe('from module import …', function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
     d.from_p = 'foo.bar'
     eYo.Test.data_value(d, 'from', 'foo.bar')
-    d.block_.dispose()
+    d.dispose()
   })
   it(`from ... import ?`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
     d.from_p = '...'
     eYo.Test.data_value(d, 'from', '...')
-    d.block_.dispose()
+    d.dispose()
   })
   it(`… -> from ? import abc`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -87,7 +87,7 @@ describe('from module import …', function() {
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT')
       eYo.Test.code(d, `from <MISSING NAME> import <MISSING NAME>`)
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it(`… -> from ? import <abc>, …`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -112,7 +112,7 @@ describe('from module import …', function() {
       eYo.Test.variant(d, 'FROM_MODULE_IMPORT')
       eYo.Test.code(d, `from <MISSING NAME> import <MISSING NAME>`)
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it(`… -> from abc import ?`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -131,7 +131,7 @@ describe('from module import …', function() {
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.code(d, `from <MISSING NAME> import ${args[2] || '*'}`)
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it(`… -> from <abc> import ?`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -147,11 +147,11 @@ describe('from module import …', function() {
       eYo.Test.slot_connect(d, 'from', dd)
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.code(d, `from abc import ${args[2] || '*'}`)
-      dd.block_.dispose()
+      dd.dispose()
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.code(d, `from <MISSING NAME> import ${args[2] || '*'}`)
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it(`… -> from abc import ? <-> from <abc> import ?`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -171,11 +171,11 @@ describe('from module import …', function() {
       eYo.Test.slot_connect(d, 'from', dd)
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.code(d, `from cde import ${args[2] || '*'}`)
-      dd.block_.dispose()
+      dd.dispose()
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.code(d, `from abc import ${args[2] || '*'}`)
     })
-    d.block_.dispose()
+    d.dispose()
   })
 })
 describe('import module', function() {
@@ -200,13 +200,13 @@ describe('import module', function() {
       dd = d.import_module_s.unwrappedTarget
       eYo.Test.dlgt(dd, 'identifier')
       eYo.Test.input_length(d.import_module_b, 3)
-      dd.block_.dispose()
+      dd.dispose()
       eYo.Test.input_length(d.import_module_b, 1)
       eYo.Test.code(d, 'import abc')
       d.import_module_p = ''
       eYo.Test.code(d, 'import <MISSING NAME>')
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it (`import abc -> import <bcd> -> …`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -224,7 +224,7 @@ describe('import module', function() {
     eYo.Test.code(d, 'import cde')
     d.import_module_s.unwrappedTarget.dispose()
     eYo.Test.code(d, 'import abc')
-    d.block_.dispose()
+    d.dispose()
   })
 })
 describe('Copy/Paste', function () {
@@ -246,12 +246,12 @@ describe('Copy/Paste', function () {
       eYo.Test.data_value(dd, 'import', '')
       var d = dd.import_s.unwrappedTarget
       eYo.Test.data_value(d, 'target', 'bcd')
-      d.block_.dispose()
+      d.dispose()
       d = dd.import_s.unwrappedTarget
       eYo.Test.data_value(d, 'target', 'cde')
     },
-    filter: t_eyo => t_eyo.target_p})
-    d.block_.dispose()
+    filter: t_brick => t_brick.target_p})
+    d.dispose()
   })
   it(`from … import ?`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -266,7 +266,7 @@ describe('Copy/Paste', function () {
       eYo.Test.data_value(dd, 'from', '')
       eYo.Test.data_value(dd.from_b, 'target', 'bcd')
     }})
-    d.block_.dispose()
+    d.dispose()
   })
   it(`from ? import …`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -283,7 +283,7 @@ describe('Copy/Paste', function () {
       },
       filter: eyo => eyo.target_p
     })
-    d.block_.dispose()
+    d.dispose()
   })
   it(`from … import *`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
@@ -298,6 +298,6 @@ describe('Copy/Paste', function () {
       eYo.Test.data_value(dd, 'from', '')
       eYo.Test.data_value(dd.from_b, 'target', 'bcd')
     }})
-    d.block_.dispose()
+    d.dispose()
   })
 })

@@ -113,24 +113,23 @@ Blockly.Events.Move.prototype.recordNew = function() {
  * @private
  */
 Blockly.Events.Move.prototype.currentLocation_ = function() {
-  var workspace = Blockly.Workspace.getById(this.workspaceId);
-  var block = workspace.getBlockById(this.blockId);
   var location = {};
-  var eyo = block.eyo
-  var parent = eyo.parent
+  var workspace = Blockly.Workspace.getById(this.workspaceId)
+  var brick = workspace.getBlockById(this.blockId)
+  var parent = brick.parent
   if (parent) {
     location.parentId = parent.id;
-    var m4t = eyo.magnets.output
+    var m4t = brick.magnets.output
     if (m4t) {
       location.inputName = m4t.target.name
-    } else if (eyo.left === parent) {
+    } else if (brick.left === parent) {
       location.horizontal = true
     }
   } else {
-    location.coordinate = eyo.ui.xyInSurface
+    location.coordinate = brick.ui.xyInSurface
   }
-  return location;
-};
+  return location
+}
 
 /**
  * Does this event record any change of state?
@@ -150,24 +149,22 @@ Blockly.Events.Move.prototype.isNull = function() {
  */
 Blockly.Events.Move.prototype.run = function(forward) {
   var workspace = this.getEventWorkspace_();
-  var block = workspace.getBlockById(this.blockId);
-  if (!block) {
-    console.warn("Can't move non-existent block: " + this.blockId);
+  var brick = workspace.getBlockById(this.blockId);
+  if (!brick) {
+    console.warn("Can't move non-existent brick: " + this.blockId);
     return;
   }
-  var eyo = block.eyo
   var parentId = forward ? this.newParentId : this.oldParentId;
-  var parentBlock = null;
+  var parent = null;
   if (parentId) {
-    parentBlock = workspace.getBlockById(parentId);
-    if (!parentBlock) {
-      console.warn("Can't connect to non-existent block: " + parentId);
+    parent = workspace.getBlockById(parentId);
+    if (!parent) {
+      console.warn("Can't connect to non-existent brick: " + parentId);
       return;
     }
   }
-  var parent = parentBlock.eyo
-  if (eyo.parent) {
-    block.unplug()
+  if (brick.parent) {
+    brick.unplug()
   }
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
@@ -176,14 +173,14 @@ Blockly.Events.Move.prototype.run = function(forward) {
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;
     if (inputName) {
-      var input = parentBlock.getInput(inputName)
+      var input = parent.getInput(inputName)
       if (input) {
-        var magnet = eyo.magnets.output
+        var magnet = brick.magnets.output
         if (magnet) {
           var p_magnet = input.magnet
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect with no output: " + eyo)
+          console.warn("Can't connect with no output: " + brick)
         }
       } else {
         console.warn("Can't connect to non-existent input: " + inputName)
@@ -191,23 +188,23 @@ Blockly.Events.Move.prototype.run = function(forward) {
     } else {
       var horizontal = forward ? this.newHorizontal : this.oldHorizontal
       if (horizontal) {
-        if ((magnet = eyo.magnets.left)) {
+        if ((magnet = brick.magnets.left)) {
           if ((p_magnet = parent.magnets.right)) {
             magnet.connect(p_magnet)
           } else {
             console.warn("Can't connect to non-existent right connection: " + parent)
           }
         } else {
-          console.warn("Can't connect to non-existent left connection: " + eyo)
+          console.warn("Can't connect to non-existent left connection: " + brick)
         }
-      } else if ((magnet = eyo.magnets.head)) {
+      } else if ((magnet = brick.magnets.head)) {
         if ((p_magnet = parent.magnets.foot)) {
           magnet.connect(p_magnet)
         } else {
           console.warn("Can't connect to non-existent foot connection: " + parent)
         }
       } else {
-        console.warn("Can't connect to non-existent head connection: " + eyo)
+        console.warn("Can't connect to non-existent head connection: " + brick)
       }
     }
   }

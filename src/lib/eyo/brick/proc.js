@@ -325,8 +325,8 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
       },
       promise: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        var t = this.t_eyo // may be null ?
-        if (t && t.block_.childBlocks_.length) {
+        var t = this.targetBrick // may be null ?
+        if (t && t.childBlocks_.length) {
           this.owner.variant_p = eYo.Key.N_ARY
         }
       }
@@ -478,7 +478,6 @@ eYo.Brick.Group.makeSubclass('funcdef_part', {
  * @private
  */
 eYo.Brick.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
   var variants = this.variant_d.getAll()
   var variant = this.variant_p
   var F = (content, key) => {
@@ -569,9 +568,8 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
  * @private
  */
 eYo.Brick.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
   var variants = this.variant_d.getAll()
-  var variant = brick.eyo.variant_d.get()
+  var variant = this.variant_d.get()
   var F = (content, key) => {
     var menuItem = mgr.newMenuItem(content, () => {
       this.variant_p = key

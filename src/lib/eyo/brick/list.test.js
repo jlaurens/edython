@@ -19,7 +19,7 @@ describe('Enclosure(Basic)', function () {
     it(`${args[0]}/${args[1]}`, function() {
       var d = eYo.Test.new_dlgt(args[0], args[2] || args[0])
       eYo.Test.variant(d, args[1])
-      d.block_.dispose()
+      d.dispose()
     })
   })
   ;[
@@ -32,7 +32,7 @@ describe('Enclosure(Basic)', function () {
       d.variant_p = eYo.Key[args[1]]
       eYo.Test.variant(d, args[1])
       eYo.Test.dlgt(d, args[0])
-      d.block_.dispose()
+      d.dispose()
     })
   })
 })
@@ -54,7 +54,7 @@ describe('Enclosure connections', function() {
     chai.assert(d.connectLast(dd2))
     eYo.Test.input_length(d, 1)
     chai.assert(!dd1.magnets.output.target)
-    dd1.block_.dispose()
+    dd1.dispose()
     // replace with a non unique object:
     var dd3 = eYo.Test.new_dlgt(421)
     eYo.Test.dlgt(dd3, 'integer')
@@ -63,7 +63,7 @@ describe('Enclosure connections', function() {
     chai.assert(!dd2.magnets.output.target)
     chai.assert(!d.inputList[0].eyo.connect(dd2), 'UNEXPECTED connection')
     chai.assert(!d.inputList[2].eyo.connect(dd2), 'UNEXPECTED connection')
-    dd2.block_.dispose()
+    dd2.dispose()
     dd1 = eYo.Test.new_dlgt(124)
     eYo.Test.dlgt(dd1, 'integer')
     chai.assert(d.connectLast(dd1))
@@ -72,7 +72,7 @@ describe('Enclosure connections', function() {
     eYo.Test.dlgt(dd1, 'integer')
     chai.assert(d.inputList[0].eyo.connect(dd1), 'MISSING connection')
     eYo.Test.input_length(d, 7)
-    d.block_.dispose()
+    d.dispose()
   })
   it(`'[]'`, function() {
 
@@ -93,15 +93,15 @@ describe('Enclosure connections', function() {
       chai.assert(d.connectLast(dd2))
       eYo.Test.input_length(d, 1)
       chai.assert(!dd1.magnets.output.target)
-      dd1.block_.dispose()
+      dd1.dispose()
       dd1 = dd2
     })
     var dd2 = eYo.Test.new_dlgt('dict_comprehension')
     chai.assert(dd2.expression_s.connect(eYo.Test.new_dlgt('key_datum')))
     d.connectLast(dd2)
-    dd1.block_.dispose()
+    dd1.dispose()
     eYo.Test.dlgt(d, 'dict_display')
-    d.block_.dispose()
+    d.dispose()
   })
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {
     var d = eYo.Test.new_dlgt('parenth_form')
@@ -120,7 +120,7 @@ describe('Enclosure connections', function() {
     chai.assert(input.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.PAR
     chai.assert(input.target === dd1, 'LOST CONNECTION')
-    d.block_.dispose()
+    d.dispose()
   })
   it(`Enclosure: '() -> {}'`, function() {
     var d = eYo.Test.new_dlgt('parenth_form')
@@ -129,6 +129,6 @@ describe('Enclosure connections', function() {
     chai.assert(input.connect(dd1), 'MISSING connection')
     d.variant_p === eYo.Key.BRACE
     chai.assert(input.target === dd1, 'LOST CONNECTION')
-    d.block_.dispose()
+    d.dispose()
   })
 })

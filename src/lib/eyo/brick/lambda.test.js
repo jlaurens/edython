@@ -67,7 +67,7 @@ describe('parameter_list', function() {
                 c.eyo.variant_p = v3
                 assert(t.inputList.length === 7, 'MISSED 1')
                 var f = (n, i) => {
-                  var u = l.eyo.parameters_b.inputList[i].connection.eyo.t_eyo
+                  var u = l.eyo.parameters_b.inputList[i].connection.eyo.targetBrick
                   assert(u.target_p === n, `MISSED: ${n} at ${i}`)
                 }
                 f('a', 1)

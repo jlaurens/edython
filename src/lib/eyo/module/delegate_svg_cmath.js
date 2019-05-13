@@ -29,7 +29,7 @@ goog.require('eYo.FlyoutCategory')
  * @private
  */
 // eYo.Brick.Expr.cmath__call_expr.populateMenu = function (mgr) {
-//   var brick = this.block_
+//   var brick = this
 //   var eyo = brick.eyo
 //   // populate the menu with the functions in the same category
 //   var name_get = eyo.name_d.get()

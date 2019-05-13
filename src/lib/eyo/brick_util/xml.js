@@ -592,9 +592,9 @@ eYo.Xml.toDom = function (dlgt, element, opt) {
     var magnetToDom = (m4t, name, key) => {
       if (m4t && !m4t.wrapped_) {
         // wrapped blocks belong to slots, they are managed from there
-        var t_eyo = m4t.t_eyo
-        if (t_eyo) {
-          var child = eYo.Xml.dlgtToDom(t_eyo, opt)
+        var t_brick = m4t.targetBrick
+        if (t_brick) {
+          var child = eYo.Xml.dlgtToDom(t_brick, opt)
           if (child) {
             child.setAttribute(name, key)
             goog.dom.appendChild(element, child)
@@ -875,7 +875,7 @@ eYo.Xml.Recover.prototype.domToDlgt = function (dom, owner) {
     eYo.Events.fireDlgtCreate(ans)
     eYo.Xml.fromDom(ans, dom)
   }
-  return ans.block_
+  return ans
 }
 
 /**
@@ -1037,13 +1037,13 @@ eYo.Xml.fromDom = function (dlgt, element) {
           var input = this.getInput(name)
           var m4t = input && input.magnet
           if (m4t) {
-            var t_eyo = m4t.t_eyo
-            if (t_eyo) {
-              t_eyo.recover.dontResit(child)
-              eYo.Xml.fromDom(t_eyo, child)
-            } else if ((t_eyo = eYo.Xml.domToDlgt(child, this))) {
-              t_eyo.recover.dontResit(child)
-              var targetM4t = t_eyo.magnets.output
+            var t_brick = m4t.targetBrick
+            if (t_brick) {
+              t_brick.recover.dontResit(child)
+              eYo.Xml.fromDom(t_brick, child)
+            } else if ((t_brick = eYo.Xml.domToDlgt(child, this))) {
+              t_brick.recover.dontResit(child)
+              var targetM4t = t_brick.magnets.output
               if (targetM4t && targetM4t.checkType_(m4t)) {
                 targetM4t.connect(m4t)
               }
@@ -1068,11 +1068,11 @@ eYo.Xml.fromDom = function (dlgt, element) {
           return eYo.Do.someElementChild(element, child => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
               this.workspace.eyo.recover.dontResit(child)
-              var t_eyo = eYo.Xml.domToDlgt(child, this)
-              if (t_eyo) { // still headless!
+              var t_brick = eYo.Xml.domToDlgt(child, this)
+              if (t_brick) { // still headless!
                 // we could create a brick from that child element
                 // then connect it to
-                var m4ts = t_eyo.magnets
+                var m4ts = t_brick.magnets
                 if (m4ts.head) {
                   if (m4t.checkType_(m4ts.head)) {
                     m4t.connect(m4ts.head)

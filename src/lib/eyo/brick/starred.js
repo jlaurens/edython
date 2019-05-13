@@ -187,13 +187,13 @@ eYo.Brick.Expr.makeSubclass('Starred', {
   output: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the brick delegate
-      var b_eyo = this.brick
-      if (b_eyo.variant_p === eYo.Key.STAR) {
+      var brick = this.brick
+      if (brick.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]
       }
-      var b = b_eyo.modified_b
+      var b = brick.modified_b
       var types = []
-      if (b_eyo.modifier_p === '*') {
+      if (brick.modifier_p === '*') {
         if (b) {
           var tt = b.type
           if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, tt)) {

@@ -136,20 +136,20 @@ eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
   if (!m4t) {
     return
   }
-  var t_eyo = m4t.t_eyo
-  if (!t_eyo) {
+  var t_brick = m4t.targetBrick
+  if (!t_brick) {
     return
   }
   if (m4t.isSuperior) {
     m4t.tighten_()
   }
-  var do_it = !t_eyo.rendered ||
+  var do_it = !t_brick.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
     !eYo.Magnet.disconnectedChild&&
     !eYo.Magnet.connectedParent)
   if (do_it) {
-    var ui = t_eyo.ui
+    var ui = t_brick.ui
     try {
       ui.down = true
       ui.render(false, recorder)
@@ -180,9 +180,9 @@ eYo.UI.prototype.drawLow_ = function (recorder) {
 eYo.UI.prototype.renderRight_ = function (io) {
   var m4t = this.node.magnets.right
   if (m4t) {
-    var t_eyo = m4t.t_eyo
-    if (t_eyo) {
-      var ui = t_eyo.ui
+    var t_brick = m4t.targetBrick
+    if (t_brick) {
+      var ui = t_brick.ui
       try {
         ui.startOfLine = io.common.startOfLine
         ui.startOfStatement = io.common.startOfStatement
@@ -191,13 +191,13 @@ eYo.UI.prototype.renderRight_ = function (io) {
         if (eYo.Brick.debugStartTrackingRender) {
           console.log(eYo.Brick.debugPrefix, 'DOWN')
         }
-        if (t_eyo.wrapped_) {
+        if (t_brick.wrapped_) {
           // force target rendering
-          t_eyo.incrementChangeCount()
+          t_brick.incrementChangeCount()
         }
         if (!ui.up) {
-          t_eyo.render(false, io)
-          if (!t_eyo.wrapped_) {
+          t_brick.render(false, io)
+          if (!t_brick.wrapped_) {
             io.common.field.shouldSeparate = false
             io.common.field.beforeIsSeparator = true
           }
@@ -208,14 +208,14 @@ eYo.UI.prototype.renderRight_ = function (io) {
         throw err
       } finally {
         ui.down = false
-        var span = t_eyo.span
+        var span = t_brick.span
         if (span.width) {
           io.cursor.advance(span.width, span.height - 1)
           // We just rendered a brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
-            io.common.ending.push(t_eyo)
-            t_eyo.ui.rightCaret = undefined
+            io.common.ending.push(t_brick)
+            t_brick.ui.rightCaret = undefined
             io.common.field.shouldSeparate = false
           }
           io.common.field.beforeIsCaret = false
@@ -243,16 +243,16 @@ eYo.UI.prototype.renderSuite_ = function (io) {
     console.log(eYo.Brick.debugPrefix, 'SUITE')
   }
   m4t.setOffset(eYo.Font.tabW, 1)
-  var t_eyo = m4t.t_eyo
-  if (t_eyo) {
+  var t_brick = m4t.targetBrick
+  if (t_brick) {
     this.someTargetIsMissing = false
-    var ui = t_eyo.ui
+    var ui = t_brick.ui
     if (ui.canDraw) {
       m4t.tighten_()
-      if (!t_eyo.rendered || !ui.up) {
+      if (!t_brick.rendered || !ui.up) {
         try {
           ui.down = true
-          t_eyo.render(false)
+          t_brick.render(false)
         } catch (err) {
           console.error(err)
           throw err
@@ -380,7 +380,7 @@ eYo.UI.prototype.render = (() => {
     recorder && this.drawPending_(recorder, !this.node.wrapped_ && eYo.Key.LEFT)
     // rendering is very special when this.node is just a matter of
     // statement connection
-    var brick = this.node.block_
+    var brick = this.node
     if (brick.rendered) {
       if (eYo.Magnet.disconnectedChild && this.node.magnets.head === eYo.Magnet.disconnectedChild) {
         // this.node brick is the top one
@@ -614,7 +614,7 @@ eYo.UI.prototype.draw_ = function (recorder) {
       throw err
     } finally {
       this.node.ui.renderRight_(io) || this.node.ui.renderSuite_(io)
-      this.node.block_.height = this.span.height
+      this.node.height = this.span.height
       this.updateShape()
     }
   }
@@ -650,11 +650,11 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
         var width = right - t * depth
         // find the last right brick and
         var x = eyo
-        var b = x.block_
+        var b = x
         while ((x = x.right)) {
           width -= (eyo.span.minWidth - eYo.Unit.x) // see comment above
           eyo = x
-          b = x.block_
+          b = x
         }
         if (b.width !== width) {
           b.width = width
@@ -789,7 +789,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
           this.driver.fieldDisplayedSet(field, false)
         })
         var x = input.magnet
-        x && (x = x.t_eyo) && x.ui.hide()
+        x && (x = x.targetBrick) && x.ui.hide()
       }
     })
   }
@@ -849,15 +849,15 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
   this.drawPending_(io)
   if (!this.node.wrapped_) {
     var m4t = io.form && io.form.connection
-    var t_eyo = m4t && m4t.t_eyo
+    var t_brick = m4t && m4t.targetBrick
     if (io.n < 2 && !this.node.wrapped_) {
       // this.node is a short brick, special management of selection
       this.isShort = true
-      if (t_eyo) {
-        t_eyo.ui.parentIsShort = true
+      if (t_brick) {
+        t_brick.ui.parentIsShort = true
         // always add a space to the right
-        t_eyo.ui.isLastInStatement = false
-        t_eyo.ui.updateShape()
+        t_brick.ui.isLastInStatement = false
+        t_brick.ui.updateShape()
         io.cursor.c += 1
       }
     } else {
@@ -869,7 +869,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW)
   this.node.span.init(io.cursor)
-  this.node.span.minWidth = this.node.block_.width = Math.max(this.node.block_.width, this.node.span.width)
+  this.node.span.minWidth = this.node.width = Math.max(this.node.width, this.node.span.width)
   if (io.recorder) {
     // We ended a brick. The right edge is generally a separator.
     // No need to add a separator if the brick is wrapped or locked
@@ -1270,8 +1270,8 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
     // but the connection must be located relative to the brick
     // the connection delegate will take care of that because it knows
     // if there is a slot or only an input.
-    var t_eyo = m4t.t_eyo
-    if (t_eyo) {
+    var t_brick = m4t.targetBrick
+    if (t_brick) {
       if (m4t.bindField && m4t.bindField.isVisible()) {
         m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
         // The `bind` field hides the connection.
@@ -1281,7 +1281,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
         // Don't display anything for that connection
         io.common.field.beforeIsCaret = false
       }
-      var ui = t_eyo.ui
+      var ui = t_brick.ui
       if (ui) {
         try {
           ui.startOfLine = io.common.startOfLine
@@ -1291,9 +1291,9 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
           if (eYo.UI.debugStartTrackingRender) {
             console.log(eYo.UI.debugPrefix, 'DOWN')
           }
-          if (t_eyo.wrapped_) {
+          if (t_brick.wrapped_) {
             // force target rendering
-            t_eyo.incrementChangeCount()
+            t_brick.incrementChangeCount()
           }
           m4t.setOffset(io.cursor)
           if (m4t.c === 1 && !io.common.field.beforeIsBlack && m4t.slot) {
@@ -1305,8 +1305,8 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
             }
           }
           if (io.dlgt.magnets.output !== eYo.Magnet.disconnectedChild && !ui.up) {
-            t_eyo.render(false, io)
-            if (!t_eyo.wrapped_) {
+            t_brick.render(false, io)
+            if (!t_brick.wrapped_) {
               io.common.field.shouldSeparate = false
               io.common.field.beforeIsSeparator = true
             }
@@ -1316,13 +1316,13 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
            throw err
         } finally {
           ui.down = false
-          var span = t_eyo.span
+          var span = t_brick.span
           if (span.w) {
             io.cursor.advance(span.w, span.h - 1)
             // We just rendered a brick
             // it is potentially the rightmost object inside its parent.
             if (ui.hasRightEdge || io.common.shouldPack) {
-              io.common.ending.push(t_eyo)
+              io.common.ending.push(t_brick)
               ui.rightCaret = undefined
               io.common.field.shouldSeparate = false
             }
@@ -1471,13 +1471,22 @@ eYo.UI.prototype.updateDisabled = function () {
 /**
  * The default implementation forwards to the driver.
  */
-eYo.UI.prototype.connectionUIEffect = function () {
-  var w = this.node.workspace
+eYo.UI.prototype.connectEffect = function () {
+  var w = this.node_.workspace
   w.getAudioManager().play('click')
   if (w.scale < 1) {
     return // Too small to care about visual effects.
   }
-  this.driver.nodeConnectionUIEffect(this.node_)
+  this.driver.brickConnectEffect(this.node_)
+}
+
+/**
+ * The default implementation forwards to the driver.
+ * This must take place while the brick is still in a consistent state.
+ */
+eYo.UI.prototype.disposeEffect = function () {
+  this.node.workspace.getAudioManager().play('delete');
+  this.driver.brickDisposeEffect(this.node_)
 }
 
 /**
@@ -1552,7 +1561,7 @@ eYo.UI.prototype.setOffset = function (dx, dy) {
  * @private
  */
 eYo.UI.prototype.moveConnections_ = function (dx, dy) {
-  this.node.block_.moveConnections_(dx, dy)
+  this.node.moveConnections_(dx, dy)
 }
 
 //////////////////
@@ -1585,7 +1594,7 @@ eYo.UI.prototype.addDlgtSelect_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.removeDlgtSelect_ = function () {
+eYo.UI.prototype.brickRemoveSelect_ = function () {
   this.driver.nodeSelectRemove(this.node_)
 }
 
@@ -1601,7 +1610,7 @@ eYo.UI.prototype.addBlockMagnet_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.removeBlockConnection_ = function () {
+eYo.UI.prototype.brickRemoveMagnet_ = function () {
   this.driver.nodeConnectionRemove(this.node_)
 }
 
@@ -1750,7 +1759,7 @@ eYo.UI.prototype.magnetHilight = function (c_eyo) {
  * @param {number} dy Vertical offset in workspace units.
  */
 eYo.UI.prototype.moveByXY = function (dx, dy) {
-  this.node.block_.moveBy(dx, dy)
+  this.node.moveBy(dx, dy)
 }
 
 /**

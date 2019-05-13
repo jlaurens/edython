@@ -230,10 +230,10 @@ eYo.Flyout.prototype.show = function(model) {
           if (curDlgt.disabled) {
             // Record blocks that were initially disabled.
             // Do not enable these blocks as a result of capacity filtering.
-            this.permanentlyDisabled_.push(curDlgt.block_);
+            this.permanentlyDisabled_.push(curDlgt);
           }
           curDlgt.beReady()
-          contents.push({type: 'block', block: curDlgt.block_});
+          contents.push({type: 'block', block: curDlgt});
           var gap = parseInt(xml.getAttribute('gap'), 10);
           gaps.push(isNaN(gap) ? default_gap : gap);
         }

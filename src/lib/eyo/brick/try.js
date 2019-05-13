@@ -175,13 +175,12 @@ eYo.Brick.Group.makeSubclass('except_part', {
 eYo.Brick.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
-    var brick = this.block_
     this.setupType(
       this.variant_p === eYo.Key.NONE
       ? eYo.T3.Stmt.void_except_part
       : eYo.T3.Stmt.except_part
     )
-    return brick.type
+    return this.type
   }
 )
 

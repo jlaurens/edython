@@ -162,7 +162,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
  * @private
  */
 eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
+  var brick = this
   if (brick.eyo.locked_) {
     return
   }
@@ -198,7 +198,7 @@ eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
  * @private
  */
 eYo.Brick.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
+  var brick = this
   var yorn = eYo.Brick.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
   return eYo.Brick.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
@@ -218,7 +218,6 @@ eYo.Brick.Stmt.makeSubclass('yield_stmt', {
  * @private
  */
 eYo.Brick.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
   eYo.Brick.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
   return eYo.Brick.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }

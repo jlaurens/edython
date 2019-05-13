@@ -615,7 +615,7 @@ eYo.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
     var g = svg.group_
     if (g) {
       // Move this brick up the DOM.  Keep track of x/y translations.
-      var brick = node.block_
+      var brick = node
       brick.workspace.getCanvas().appendChild(g)
       var xy = brick.eyo.ui.xyInSurface
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
@@ -756,7 +756,7 @@ eYo.Driver.Svg.prototype.fieldInit = function (field) {
   }
   if (eyo.isLabel) {
     // Configure the field to be transparent with respect to tooltips.
-    svg.textElement_.tooltip = eyo.brick.block_
+    svg.textElement_.tooltip = eyo.brick
     Blockly.Tooltip.bindMouseEvents(svg.textElement_)
   }
   this.fieldDisplayedUpdate(field)
@@ -853,9 +853,9 @@ eYo.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
  * @param {!Object} node  the node the driver acts on
  */
 eYo.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
-  var b = node.block_
+  var brick = node
   var svg = node.ui.svg
-  if (b.disabled || b.getInheritedDisabled()) {
+  if (brick.disabled || brick.getInheritedDisabled()) {
     Blockly.utils.addClass(
         /** @type {!Element} */ (svg.group_), 'eyo-disabled')
   } else {
@@ -865,14 +865,60 @@ eYo.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
 }
 
 /**
+ * Play some UI effects (sound, animation) when disposing of a block.
+ */
+eYo.Driver.Svg.prototype.brickDisposeEffect = (() => {
+  /*
+  * Animate a cloned block and eventually dispose of it.
+  * This is a class method, not an instance method since the original block has
+  * been destroyed and is no longer accessible.
+  * @param {!Element} clone SVG element to animate and dispose of.
+  * @param {boolean} rtl True if RTL, false if LTR.
+  * @param {!Date} start Date of animation's start.
+  * @param {number} workspaceScale Scale of workspace.
+  * @private
+  */
+  var step = (clone, start, scale) => {
+    var ms = new Date - start;
+    var percent = ms / 150;
+    if (percent > 1) {
+      goog.dom.removeNode(clone)
+      return
+    }
+    var x = clone.translateX_ +
+      clone.bBox_.width * scale / 2 * percent
+    var y = clone.translateY_ +
+      clone.bBox_.height * scale * percent
+    clone.setAttribute('transform',
+      `translate(${x},${y}) scale(${(1 - percent) * scale})`)
+    setTimeout(step, 10, clone, start, scale)
+  }
+  return function(brick) {
+    var svg = brick.ui.svg
+    var xy = brick.workspace.getSvgXY(/** @type {!Element} */ (svg.group_))
+    // Deeply clone the current block.
+    var clone = svg.group_.cloneNode(true);
+    clone.translateX_ = xy.x;
+    clone.translateY_ = xy.y;
+    clone.setAttribute('transform',
+      `translate(${clone.translateX_},${clone.translateY_})`)
+    brick.workspace.getParentSvg().appendChild(clone)
+    clone.bBox_ = clone.getBBox()
+    // Start the animation.
+    step(clone, new Date, this.workspace.scale)
+  }
+})()
+
+
+/**
  * Make the given field reserved or not, to emphasize reserved keywords.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeConnectionUIEffect = function (node) {
-  var svg = node.ui.svg
-  var w = node.workspace
+eYo.Driver.Svg.prototype.brickConnectEffect = function (brick) {
+  var svg = brick.ui.svg
+  var w = brick.workspace
   var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
-  if (node.magnets.output) {
+  if (brick.magnets.output) {
     var h = svg.height * w.scale / 2
     var ripple = eYo.Driver.Svg.newElement('circle',
       {class: 'blocklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
@@ -936,7 +982,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
   var steps
   if (m4t.isInput) {
     if (m4t.target) {
-      steps = eYo.Shape.definitionWithNode(m4t.t_eyo)
+      steps = eYo.Shape.definitionWithNode(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
       Blockly.Connection.highlightedPath_ =
@@ -1128,7 +1174,7 @@ eYo.Driver.Svg.prototype.nodeTranslate = function(node, x, y) {
 eYo.Driver.Svg.prototype.nodeXYInSurface = function (node) {
   var x = 0
   var y = 0
-  var brick = node.block_
+  var brick = node
   var dragSurface = brick.useDragSurface_ && brick.workspace.blockDragSurface_
   var dragSurfaceGroup = dragSurface && dragSurface.getGroup()
   var canvas = brick.workspace.getCanvas()

@@ -131,14 +131,14 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (dlgt) {
         var its_m4t = dlgt.magnets.output
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other brick has an output connection that can connect to the brick's one
-          var b_eyo = its_m4t.brick
-          var selected = b_eyo.selected
+          var brick = its_m4t.brick
+          var selected = brick.selected
           // next operations may unselect the brick
-          var old = b_eyo.consolidating_
+          var old = brick.consolidating_
           its_m4t.connect(my_m4t)
-          b_eyo.consolidating_ = old
+          brick.consolidating_ = old
           if (selected) {
-            eYo.Selected.eyo = b_eyo
+            eYo.Selected.brick = brick
           }
         } else {
           var its_xy = dlgt.ui.xyInSurface
@@ -239,7 +239,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
     var parentInputM4t = parentInput.eyo.magnet
     goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
   } else if ((parentInput = parent.getInput(eYo.Key.LIST, true))) {
-    var list = parentInput.eyo.magnet.t_eyo
+    var list = parentInput.eyo.magnet.targetBrick
     goog.asserts.assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
@@ -250,15 +250,15 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
   } else {
     // find the first parent's connection that can accept brick
     var findM4t = y => {
-      var foundM4t, t_eyo
+      var foundM4t, t_brick
       y.someInput(input => {
         var m4t = input.magnet
         if (m4t) {
           var candidate
           if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.getText().length)) {
             candidate = m4t
-          } else if ((t_eyo = m4t.t_eyo)) {
-            candidate = findM4t(t_eyo)
+          } else if ((t_brick = m4t.targetBrick)) {
+            candidate = findM4t(t_brick)
           }
           if (candidate) {
             if (candidate.name === parentSlotName) {
@@ -283,10 +283,10 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
       var targetM4t = parentInputM4t.target
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')
-        var b_eyo = targetM4t.brick
+        var brick = targetM4t.brick
         targetM4t.break()
-        b_eyo.block_.dispose(true)
-        b_eyo = undefined
+        brick.dispose(true)
+        brick = undefined
         targetM4t = undefined
       }
       // the old parent connection
@@ -317,7 +317,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
       }
     })
   } else {
-    parent.block_.dispose(true)
+    parent.dispose(true)
     parent = undefined
   }
   return parent
@@ -502,8 +502,7 @@ eYo.Brick.Expr.makeSubclass('builtin__object', {
  * @private
  */
 eYo.Brick.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
-  mgr.populateProperties(brick, 'value')
+  mgr.populateProperties(this, 'value')
   mgr.shouldSeparateInsert()
   eYo.Brick.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true

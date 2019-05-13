@@ -66,8 +66,8 @@ Blockly.Gesture.prototype.handleWsStart = (() => {
     if (Blockly.WidgetDiv.DIV.childNodes.length) {
       Blockly.WidgetDiv.hide()
     } else {
-      if ((eYo.Selected.eyo)) {
-        eYo.Selected.eyo.selectMouseDownEvent = e
+      if ((eYo.Selected.brick)) {
+        eYo.Selected.brick.selectMouseDownEvent = e
       }
       handleWsStart.call(this, e, ws)
     }
@@ -339,7 +339,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
 Blockly.WorkspaceSvg.prototype.resizeContents = (() => {
   var resizeContents = Blockly.WorkspaceSvg.prototype.resizeContents
   return function () {
-    this.eyo.selected = eYo.Selected.eyo && eYo.Selected.eyo.inVisibleArea() && eYo.Selected.eyo
+    this.eyo.selected = eYo.Selected.brick && eYo.Selected.brick.inVisibleArea() && eYo.Selected.brick
     try {
       resizeContents.call(this)
     } finally {
@@ -453,22 +453,21 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
     console.warn('Tried to scroll a non-scrollable workspace.');
     return;
   }
-  var block = this.workspace_.getBlockById(id);
-  if (!block) {
+  var brick = this.workspace_.getBlockById(id);
+  if (!brick) {
     return;
   }
-  var eyo = block.eyo
-  if (!eyo.isStmt) {
-    (eyo = (eyo.stmtParent || eyo.root)) && (block = eyo.block_)
+  if (!brick.isStmt) {
+    (brick = (brick.stmtParent || brick.root))
   }
   // XY is in workspace coordinates.
-  var xy = block.eyo.ui.xyInSurface;
+  var xy = brick.ui.xyInSurface
 
   // Find the top left of the block in workspace units.
   var y = xy.y - eYo.Unit.y / 2
 
   // In RTL the block's position is the top right of the block, not top left.
-  var x = xy.x - eYo.Unit.x / 2 - block.eyo.depth * eYo.Font.tabWidth
+  var x = xy.x - eYo.Unit.x / 2 - brick.depth * eYo.Font.tabWidth
 
   // Workspace scale, used to convert from workspace coordinates to pixels.
   var scale = this.workspace_.scale;
@@ -482,12 +481,12 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
 
   // Scrolling to here will put the block in the top-left corner of the
   // visible workspace.
-  var scrollX = pixelX - metrics.contentLeft;
-  var scrollY = pixelY - metrics.contentTop;
+  var scrollX = pixelX - metrics.contentLeft
+  var scrollY = pixelY - metrics.contentTop
 
   Blockly.hideChaff();
-  this.workspace_.scrollbar.set(scrollX, scrollY);
-};
+  this.workspace_.scrollbar.set(scrollX, scrollY)
+}
 
 /**
  * Recalculate a horizontal scrollbar's location on the screen and path length.

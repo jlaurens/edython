@@ -4,7 +4,7 @@ describe('Simple statement and group', function () {
     var d1 = eYo.Test.new_dlgt('comment_stmt')
     var d2 = eYo.Test.new_dlgt('for_part')
     d2.magnets.right.connectSmart(d1)
-    d2.block_.dispose()
+    d2.dispose()
     eYo.Test.tearItDown()
   })
 })
@@ -20,7 +20,7 @@ describe ('with_part', function () {
     eYo.Test.code(d, 'with abc:\n    <MISSING STATEMENT>')
     dd.alias_p = 'cba'
     eYo.Test.code(d, 'with abc as cba:\n    <MISSING STATEMENT>')
-    d.block_.dispose()
+    d.dispose()
   })
 })
 
@@ -42,7 +42,7 @@ describe('for_part', function() {
     eYo.Test.code(d1, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>')
     var d2 = eYo.Test.new_dlgt('for_part')
     d1.magnets.right.connectSmart(d2)
-    // d1.block_.dispose()
+    // d1.dispose()
     eYo.Test.tearItDown()
   })
   // it(`for_part + else_part`, function() {
@@ -54,8 +54,8 @@ describe('for_part', function() {
   //   eYo.Test.code(dd, 'else:\n    <MISSING STATEMENT>')
   //   chai.assert(d.footConnect(dd))
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>\nelse:\n    <MISSING STATEMENT>')
-  //   dd.block_.dispose()
+  //   dd.dispose()
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>')
-  //   d.block_.dispose()
+  //   d.dispose()
   // })
 })

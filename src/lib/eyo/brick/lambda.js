@@ -309,8 +309,6 @@ eYo.Brick.List.makeSubclass('parameter_list', {
  * @private
  */
 eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
-  var ws = this.workspace
   var e8r = this.inputEnumerator()
   var F = (modifier, flags, msg) => {
     var y
@@ -352,7 +350,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
       }
     }
     eYo.Events.disableWrap(() => {
-      y.block_.dispose(true)
+      y.dispose(true)
     })
   }
   F('', 0, 'name')
@@ -435,9 +433,9 @@ names.forEach((key) => {
  */
 eYo.Magnet.prototype.consolidateType = function () {
   eYo.Magnet.superClass_.consolidateType.call(this)
-  var b_eyo = this.brick
-  var m4tOut = b_eyo.magnets.output
-  var input = b_eyo.getInput(eYo.Key.EXPRESSION)
+  var brick = this.brick
+  var m4tOut = brick.magnets.output
+  var input = brick.getInput(eYo.Key.EXPRESSION)
   var m4tIn = input.magnet
   var nocond_only_out = false
   var target = m4tOut.target

@@ -123,12 +123,12 @@ eYo.FieldTextInput.prototype.cssClass = 'eyo-code'
  * @suppress{accessControls}
  */
 eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
-  var b_eyo = this.eyo.brick
+  var brick = this.eyo.brick
   var block = this.sourceBlock_
-  if (this.eyo.doNotEdit || b_eyo.locked_ || !b_eyo.canEdit_ || block.isInFlyout) {
+  if (this.eyo.doNotEdit || brick.locked_ || !brick.canEdit_ || block.isInFlyout) {
     return
   }
-  b_eyo.isEditing = this.eyo.isEditing = true
+  brick.isEditing = this.eyo.isEditing = true
   this.editRect_ && goog.dom.classlist.add(this.editRect_, 'eyo-editing')
   eYo.Events.setGroup(true)
   this.eyo.grouper_ = Blockly.Events.getGroup()
@@ -142,7 +142,7 @@ eYo.FieldTextInput.prototype.showEditor_ = function (optQuietInput) {
       this.eyo.constructor.onStartEditing.call(this)
     }
   }
-  b_eyo.startEditingField && b_eyo.startEditingField(this)
+  brick.startEditingField && brick.startEditingField(this)
   this.render_()
   block.render()
   this.workspace_ = block.workspace

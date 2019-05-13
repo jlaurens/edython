@@ -73,9 +73,9 @@ eYo.FieldLabel.prototype.setValue = function (newValue) {
   var oldValue = this.getText()
   eYo.FieldLabel.superClass_.setValue.call(this, newValue)
   if (this.name) {
-    var b_eyo = this.eyo.brick
-    if (b_eyo && b_eyo.fieldValueDidChange) {
-      b_eyo.fieldValueDidChange(this.name, oldValue)
+    var brick = this.eyo.brick
+    if (brick && brick.fieldValueDidChange) {
+      brick.fieldValueDidChange(this.name, oldValue)
     }
   }
 }

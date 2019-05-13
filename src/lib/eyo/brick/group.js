@@ -194,25 +194,24 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
     [eYo.Key.WHILE]: T3.while_part
   } [this.variant_p]
   if (!type) {
-    var brick = this.block_
     var t_magnet
     if ((t_magnet = this.magnets.head.target)) {
       // look at the high connection
       //
-      var t_eyo = t_magnet.brick
-      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_eyo.type) < 0)) {
+      var t_brick = t_magnet.brick
+      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_brick.type) < 0)) {
         type = T3.try_else_part
-      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t_eyo.type) < 0)) {
+      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t_brick.type) < 0)) {
         type = T3.last_else_part
       }
     }
     if (!type && (t_magnet = this.magnets.foot.target)) {
       // the high connection did not add any constrain
       // may be the low connection will?
-      t_eyo = t_magnet.brick
-      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t_eyo.type) < 0)) {
+      t_brick = t_magnet.brick
+      if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t_brick.type) < 0)) {
         type = T3.try_else_part
-      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t_eyo.type) < 0)) {
+      } else if ((t_magnet.check_ && t_magnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t_brick.type) < 0)) {
         type = T3.last_else_part
       }
     }
@@ -283,20 +282,20 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
  * @private
  */
 eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
-  if (brick.eyo.fields.async) {
+  var brick = this
+  if (this.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
-    if (brick.eyo.getProperty(brick, eYo.Key.ASYNC)) {
+    if (this.getProperty(brick, eYo.Key.ASYNC)) {
       mgr.addRemoveChild(mgr.newMenuItem(content, function () {
         brick.eyo.setProperty(brick, eYo.Key.ASYNC, false)
       }))
       mgr.shouldSeparateRemove()
     } else {
       mgr.addInsertChild(mgr.newMenuItem(content, function () {
-        brick.eyo.setProperty(brick, eYo.Key.ASYNC, true)
+        this.setProperty(brick, eYo.Key.ASYNC, true)
       }))
       mgr.shouldSeparateInsert()
     }

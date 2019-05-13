@@ -325,12 +325,12 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
     var other = false
     if (this.inputList.some(input => {
       if (input.magnet) {
-        var t_eyo = input.magnet.t_eyo
-        if (t_eyo) {
+        var t_brick = input.magnet.targetBrick
+        if (t_brick) {
           other= true
           if ([eYo.T3.Expr.identifier_annotated,
             eYo.T3.Expr.augtarget_annotated,
-            eYo.T3.Expr.key_datum].indexOf(t_eyo.type) >= 0) {
+            eYo.T3.Expr.key_datum].indexOf(t_brick.type) >= 0) {
             return true
           }
         }
@@ -372,17 +372,17 @@ eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, 
       } else {
         var v = parent.variant_p
         if (v === eYo.Key.ANNOTATED) {
-          var t_eyo = m4t.t_eyo
+          var t_brick = m4t.targetBrick
           if ([eYo.T3.Expr.identifier_annotated,
             eYo.T3.Expr.augtarget_annotated,
-            eYo.T3.Expr.key_datum].indexOf(t_eyo.type) >= 0) {
+            eYo.T3.Expr.key_datum].indexOf(t_brick.type) >= 0) {
             parent.variant_p = eYo.Key.NONE // no 2 annotations
           }
         } else if (v === eYo.Key.ANNOTATED_VALUED) {
-          var t_eyo = m4t.t_eyo
+          var t_brick = m4t.targetBrick
           if ([eYo.T3.Expr.identifier_annotated,
             eYo.T3.Expr.augtarget_annotated,
-            eYo.T3.Expr.key_datum].indexOf(t_eyo.type) >= 0) {
+            eYo.T3.Expr.key_datum].indexOf(t_brick.type) >= 0) {
             parent.variant_p = eYo.Key.TARGET_VALUED // no 2 annotations
           }
         }
@@ -840,7 +840,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         s && s.fields.label.setValue(newValue === eYo.Key.COL_VALUED ? ':=' : '=')
         O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
 
-        var b = O.target_b // t_eyo may not yet exist
+        var b = O.target_b // t_brick may not yet exist
         if (b) {
           b.eyo.createConsolidator(true) // unique is special
         }
@@ -1065,14 +1065,14 @@ eYo.Brick.Expr.makeSubclass('primary', {
             } else {
               var v = parent.variant_p
               if (v === eYo.Key.ANNOTATED) {
-                var t = this.t_eyo
+                var t = this.targetBrick
                 if ([eYo.T3.Expr.identifier_annotated,
                   eYo.T3.Expr.augtarget_annotated,
                   eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
                   parent.variant_p = eYo.Key.NONE // no 2 annotations
                 }
               } else if (v === eYo.Key.ANNOTATED_VALUED) {
-                var t = this.t_eyo
+                var t = this.targetBrick
                 if ([eYo.T3.Expr.identifier_annotated,
                   eYo.T3.Expr.augtarget_annotated,
                   eYo.T3.Expr.key_datum].indexOf(t.type) >= 0) {
@@ -1211,8 +1211,8 @@ eYo.Brick.Expr.makeSubclass('primary', {
   },
 }, true)
 
-eYo.Do.addProtocol(eYo.Brick.Expr, 'Register', 'primary', function (delegate) {
-  return !delegate.block_.isInFlyout
+eYo.Do.addProtocol(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
+  return !brick.isInFlyout
 })
 
 ;[
@@ -1314,7 +1314,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         _defined: !this.value_d.isNone(), // unused, to be removed ?
         _annotated: !this.annotated_d.isNone(), // unused, to be removed ?
       }
-      var t_eyo, p5e
+      var t_brick, p5e
       var type
       // if the `target` slot is connected.
       if (this.target_b && this.target_b.inputList.length > 3) {
@@ -1323,25 +1323,25 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           type: type,
           slot: type
         }
-      } else if ((t_eyo = this.target_s.unwrappedTarget)) {
+      } else if ((t_brick = this.target_s.unwrappedTarget)) {
         var check
-        if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+        if (t_brick.checkOutputType(eYo.T3.Expr.identifier)) {
           type = eYo.T3.Expr.identifier
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.dotted_name)) {
           type = eYo.T3.Expr.dotted_name
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.parent_module)) {
           type = eYo.T3.Expr.parent_module
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.named_attributeref)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.named_attributeref)) {
           type = eYo.T3.Expr.named_attributeref
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.augtarget)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.augtarget)) {
           type = eYo.T3.Expr.augtarget
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
           type = eYo.T3.Expr.named_primary
           check = eYo.T3.Expr.Check.named_primary
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.primary)) {
           type = eYo.T3.Expr.primary
           check = eYo.T3.Expr.Check.primary
-        } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.expression)) {
+        } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.expression)) {
           type = eYo.T3.Expr.expression
         } else {
           type = eYo.T3.Expr.error // this brick should not be connected
@@ -1351,7 +1351,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           check: check,
           slot: type
         }
-        var p = t_eyo.profile_p
+        var p = t_brick.profile_p
         if (p) {
           ans.identifier = p.identifier
           ans.module = p.module
@@ -1368,18 +1368,18 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.module = p5e.holder
       }
       if (ans.dotted === 1) {
-        if ((t_eyo = this.holder_t)) {
-          if (t_eyo.checkOutputType(eYo.T3.Expr.identifier)) {
+        if ((t_brick = this.holder_t)) {
+          if (t_brick.checkOutputType(eYo.T3.Expr.identifier)) {
             type = eYo.T3.Expr.identifier
-          } else if (t_eyo.checkOutputType(eYo.T3.Expr.dotted_name)) {
+          } else if (t_brick.checkOutputType(eYo.T3.Expr.dotted_name)) {
             type = eYo.T3.Expr.dotted_name
-          } else if (t_eyo.checkOutputType(eYo.T3.Expr.parent_module)) {
+          } else if (t_brick.checkOutputType(eYo.T3.Expr.parent_module)) {
             type = eYo.T3.Expr.parent_module
-          } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.augtarget)) {
+          } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.augtarget)) {
             type = eYo.T3.Expr.augtarget
-          } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
+          } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.named_primary)) {
             type = eYo.T3.Expr.named_primary
-          } else if (t_eyo.checkOutputType(eYo.T3.Expr.Check.primary)) {
+          } else if (t_brick.checkOutputType(eYo.T3.Expr.Check.primary)) {
             type = eYo.T3.Expr.primary
           } else {
             type = eYo.T3.Expr.error // this brick should not be connected
@@ -1387,9 +1387,9 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
           ans.holder = {
             type: type,
             slot: type,
-            target: t_eyo
+            target: t_brick
           }
-          p = t_eyo.profile_p
+          p = t_brick.profile_p
           if (p) {
             var base = p.module
               ? p.module + '.' + p.identifier
@@ -1507,7 +1507,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
       eYo.T3.Expr.Check.slice_only = eYo.T3.Expr.Check.slice_list.filter(i => eYo.T3.Expr.Check.expression.indexOf(i) < 0)
     }
     if (this.someInput(input => {
-      var t = input.t_eyo
+      var t = input.targetBrick
       return t && t.checkOutputType(eYo.T3.Expr.Check.slice_only)
     })) {
       return named()
@@ -1789,8 +1789,8 @@ eYo.Brick.Expr.primary.prototype.getInput = function (name) {
       if (!slot.incog) {
         var input = slot.input
         if (input) {
-          var t_eyo = slot.t_eyo
-          if (t_eyo && (input = t_eyo.getInput(name))) {
+          var t_brick = slot.targetBrick
+          if (t_brick && (input = t_brick.getInput(name))) {
             return input
           }
         }

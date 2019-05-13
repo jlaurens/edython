@@ -278,7 +278,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
 }, true)
 
 eYo.Do.addProtocol(eYo.Brick.Stmt, 'Register', 'Import', function (delegate) {
-  return !delegate.block_.isInFlyout
+  return !delegate.isInFlyout
 })
 
 Object.defineProperties(eYo.Brick.Stmt.import_stmt.prototype, {
@@ -307,13 +307,13 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
   if (v === eYo.Key.IMPORT) {
     // non_void_import_identifier_as_list
     this.import_b.inputList.forEach(input => {
-      var t_eyo = input.t_eyo
-      if (t_eyo.type === eYo.T3.Expr.identifier) {
-        modules[t_eyo.target_p] = t_eyo.target_p
-      } else if (t_eyo.type === eYo.T3.Expr.identifier_as) {
-        modules[t_eyo.target_p] = t_eyo.alias_p
+      var t_brick = input.targetBrick
+      if (t_brick.type === eYo.T3.Expr.identifier) {
+        modules[t_brick.target_p] = t_brick.target_p
+      } else if (t_brick.type === eYo.T3.Expr.identifier_as) {
+        modules[t_brick.target_p] = t_brick.alias_p
       } else { // when connected to an 'any' brick
-        var any = t_eyo.expression_p
+        var any = t_brick.expression_p
         any && any.split(/\s*,\s*/).forEach(c => {
           var ased = c.split(/\s*as\s*/)
           var name = ased[0]
@@ -331,7 +331,7 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
  * When the brick is just a wrapper, returns the wrapped target.
  */
 eYo.Brick.Stmt.import_stmt.prototype.getMenuTarget = function () {
-  return this.block_
+  return this
 }
 
 /**

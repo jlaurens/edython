@@ -57,30 +57,28 @@ eYo.Magnet = function (bsi, type, model) {
 }
 
 Object.defineProperties(eYo.Magnet, {
-  INPUT: {
-    value: 1,
-  },
-  OUTPUT: {
-    value: 2
-  },
-  HEAD: {
-    value: 3
-  },
-  FOOT: {
-    value: 4
-  },
-  LEFT: {
-    value: 5
-  },
-  RIGHT: {
-    value: 6
+  INPUT: { value: 1 },
+  OUTPUT: { value: 2 },
+  HEAD: { value: 3 },
+  FOOT: { value: 4  },
+  LEFT: { value: 5 },
+  RIGHT: { value: 6 }
+})
+eYo.Magnet.OPPOSITE_TYPE = {
+  [eYo.Magnet.INPUT]: eYo.Magnet.OUTPUT,
+  [eYo.Magnet.OUTPUT]: eYo.Magnet.INPUT,
+  [eYo.Magnet.FOOT]: eYo.Magnet.HEAD,
+  [eYo.Magnet.HEAD]: eYo.Magnet.FOOT,
+  [eYo.Magnet.RIGHT]: eYo.Magnet.LEFT,
+  [eYo.Magnet.LEFT]: eYo.Magnet.RIGHT
+}
+
+// deprecated
+Object.defineProperty(Blockly, 'OPPOSITE', {
+  get () {
+    throw "FORBIDDEN"
   }
 })
-
-Blockly.OPPOSITE_TYPE[eYo.Magnet.RIGHT] = eYo.Magnet.LEFT
-Blockly.OPPOSITE_TYPE[eYo.Magnet.LEFT] = eYo.Magnet.RIGHT
-
-Blockly.OPPOSITE_TYPE = eYo.Magnet.OPPOSITE_TYPE
 
 /**
  * Constants for checking whether two connections are compatible.
@@ -242,8 +240,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
     set (newValue) {
       if (this.visible_ !== newValue) {
         newValue ? this.unhideAll() : this.hideAll()
-        var t_eyo = this.t_eyo
-        t_eyo && (t_eyo.ui.visible = newValue)
+        var targetBrick = this.targetBrick
+        targetBrick && (targetBrick.ui.visible = newValue)
       }
     }
   },
@@ -332,13 +330,13 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return this.target_
     }
   },
-  t_eyo: { // === this.target.brick
+  targetBrick: { // === this.target.brick
     get () {
       var t = this.target
       return t && t.brick
     },
     set (newValue) {
-      if (newValue !== this.t_eyo && newValue !== this.brick) {
+      if (newValue !== this.targetBrick && newValue !== this.brick) {
         this.disconnect()
       }
       if (newValue) {
@@ -356,9 +354,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
       // scheme:
       // this = output <- input <- wrapped source brick <- output <- input
       var ans = this
-      var t_eyo
-      while ((t_eyo = ans.t_eyo) && t_eyo.wrapped_) {
-        var m4t = t_eyo.magnets.output
+      var targetBrick
+      while ((targetBrick = ans.targetBrick) && targetBrick.wrapped_) {
+        var m4t = targetBrick.magnets.output
         if (m4t) {
           ans = m4t
         } else {
@@ -379,10 +377,10 @@ Object.defineProperties(eYo.Magnet.prototype, {
         return this.slot.bindField
       }
       // in a void wrapped list
-      var b_eyo = this.brick
-      var input = b_eyo.inputList[0]
+      var brick = this.brick
+      var input = brick.inputList[0]
       if (input && (input.magnet === this)) {
-        var m4t = b_eyo.magnets.output
+        var m4t = brick.magnets.output
         if (m4t && (m4t = m4t.target)) {
           return m4t.bindField
         }
@@ -403,15 +401,15 @@ Object.defineProperties(eYo.Magnet.prototype, {
       } else {
         this.check_ = null;
       }
-      var b_eyo = this.brick
-      var t_eyo = this.t_eyo
-      if (t_eyo && !this.checkType_(this.target)) {
-        (this.isSuperior ? t_eyo : b_eyo).unplug()
+      var brick = this.brick
+      var targetBrick = this.targetBrick
+      if (targetBrick && !this.checkType_(this.target)) {
+        (this.isSuperior ? targetBrick : brick).unplug()
         // Bump away.
-        b_eyo.block_.bumpNeighbours_()
+        brick.bumpNeighbours_()
       }
-      b_eyo.incrementChangeCount()
-      t_eyo && t_eyo.incrementChangeCount() // there was once a `consolidate(false, true)` here.
+      brick.incrementChangeCount()
+      targetBrick && targetBrick.incrementChangeCount() // there was once a `consolidate(false, true)` here.
     }
   },
   /**
@@ -482,11 +480,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
    */
   unwrappedTarget: {
     get () {
-      var t = this.t_eyo
+      var t = this.targetBrick
       var f = t => {
         return t && (!t.wrapped_ || t.inputList.some(i => {
           var m4t = i.eyo.magnet
-          if (f(t = m4t && m4t.t_eyo)) {
+          if (f(t = m4t && m4t.targetBrick)) {
             return true
           }
         }))
@@ -506,8 +504,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
       if (!t4t) {
         return undefined
       }
-      var b_eyo = t4t.brick
-      if (!b_eyo.isWhite) {
+      var brick = t4t.brick
+      if (!brick.isWhite) {
         return t4t
       }
       if (t4t.isHead) {
@@ -518,10 +516,10 @@ Object.defineProperties(eYo.Magnet.prototype, {
         return undefined
       }
       do {
-        if (!(t4t = F(b_eyo)) || !(t4t = t4t.target) || !(b_eyo = t4t.brick)) {
+        if (!(t4t = F(brick)) || !(t4t = t4t.target) || !(brick = t4t.brick)) {
           return undefined
         }
-        if (!b_eyo.isWhite) {
+        if (!brick.isWhite) {
           return t4t
         }
       } while (true)
@@ -586,8 +584,8 @@ eYo.Magnet.prototype.forEachField = function (helper) {
  */
 eYo.Magnet.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  var t_eyo = this.t_eyo
-  t_eyo && t_eyo.beReady()
+  var targetBrick = this.targetBrick
+  targetBrick && targetBrick.beReady()
   this.forEachField(f => f.eyo.beReady())
 }
 
@@ -595,8 +593,8 @@ eYo.Magnet.prototype.beReady = function () {
  * `consolidate` the target brick.
  */
 eYo.Magnet.prototype.consolidate = function (deep, force) {
-  var t_eyo = this.t_eyo
-  t_eyo && t_eyo.consolidate(deep, force)
+  var targetBrick = this.targetBrick
+  targetBrick && targetBrick.consolidate(deep, force)
 }
 
 Object.defineProperty(eYo.Magnet.prototype, 'incog', {
@@ -630,9 +628,9 @@ Object.defineProperty(eYo.Magnet.prototype, 'incog', {
       // We cannot disable wrapped connections
       this.incog_ = this.hidden_ = newValue
     }
-    var t_eyo = this.t_eyo
-    if (t_eyo) {
-      t_eyo.incog = newValue
+    var targetBrick = this.targetBrick
+    if (targetBrick) {
+      targetBrick.incog = newValue
     }  
   }
 })
@@ -649,16 +647,16 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
     if (!this.wrapped_) {
       return
     }
-    var t_eyo = this.t_eyo
-    if (!t_eyo) {
+    var targetBrick = this.targetBrick
+    if (!targetBrick) {
       var ans
       eYo.Events.disableWrap(
         () => {
-          var b_eyo = this.brick
-          t_eyo = eYo.Brick.newComplete(b_eyo, this.wrapped_, b_eyo.id + '.wrapped:' + this.name_)
-          goog.asserts.assert(t_eyo, 'completeWrap failed: ' + this.wrapped_)
-          goog.asserts.assert(t_eyo.magnets.output, 'Did you declare an Expr brick typed ' + t_eyo.type)
-          ans = this.connect(t_eyo.magnets.output)
+          var brick = this.brick
+          targetBrick = eYo.Brick.newComplete(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
+          goog.asserts.assert(targetBrick, 'completeWrap failed: ' + this.wrapped_)
+          goog.asserts.assert(targetBrick.magnets.output, 'Did you declare an Expr brick typed ' + targetBrick.type)
+          ans = this.connect(targetBrick.magnets.output)
         }
       )
       return ans // true when connected
@@ -682,8 +680,8 @@ eYo.Magnet.prototype.completePromise = function () {
  * Break the connection by unplugging a source brick.
  */
 eYo.Magnet.prototype.break = function () {
-  var eyo = this.isSuperior ? this.t_eyo : this.brick
-  eyo && eyo.block_.unplug()
+  var eyo = this.isSuperior ? this.targetBrick : this.brick
+  eyo && eyo.unplug()
 }
 
 /**
@@ -715,7 +713,7 @@ eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
     return
   }
   if (this.isRight) {
-    this.fields.label.setVisible(this.brick.isGroup || !this.t_eyo.isComment)
+    this.fields.label.setVisible(this.brick.isGroup || !this.targetBrick.isComment)
   }
 }
 
@@ -1041,7 +1039,7 @@ eYo.Magnet.prototype.toString = function() {
       return 'Orphan Magnet'
     }
   }
-  return msg + eyo.block_.toDevString()
+  return msg + eyo.toDevString()
 }
 
 /**
@@ -1151,7 +1149,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   var parentM4t = this
   var parent = parentM4t.brick
   var child = childM4t.brick
-  var orphan = parentM4t.t_eyo
+  var orphan = parentM4t.targetBrick
   var orphanM4t = parentM4t.target
   var oldParentM4t = childM4t.target
   var oldChildM4t = parentM4t.target
@@ -1159,6 +1157,26 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   var m4t
   var child_event
 
+  /*
+   * Find the first free magnet in the given brick
+   * that positively checks type with the given potential target magnet.
+   * @param {!eYo.Brick} brick The brick.
+   * @param {!eYo.Magnet} child The inferior brick.
+   * @private
+   * @suppress {accessControls}
+   */
+  var freeMagnet = (brick, magnet) => {
+    return brick.someSlot(slot => {
+      var ans = slot.magnet
+      if (ans) {
+        if (brick = ans.targetBrick) {
+          return freeMagnet(brick, magnet)
+        } else if (ans.checkType_(magnet)) {
+          return ans
+        }
+      }
+    })
+  }
   var attach_orphan = () => {
     if (orphanM4t) {
       // Other connection is already connected to something.
@@ -1167,7 +1185,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         // Attempt to reattach the orphan at the end of the newly inserted
         // brick.  Since this brick may be a row, walk down to the end
         // or to the first (and only) shadow brick.
-        if ((m4t = eYo.Magnet.lastMagnetInRow_(child, orphanM4t))) {
+        if ((m4t = freeMagnet(child, orphanM4t))) {
           orphanM4t.connect(m4t)
           orphan = orphanM4t = null
         }
@@ -1194,7 +1212,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     parentM4t.target_ = childM4t
     childM4t.target_ = parentM4t
     if (Blockly.Events.isEnabled()) {
-      child_event = new Blockly.Events.BlockMove(child.block_)
+      child_event = new Blockly.Events.BlockMove(child)
     }
     // Demote the inferior brick so that one is a child of the superior one.
     child.parent = parent
@@ -1257,7 +1275,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
       if (oldChild) {
         if (oldChild.wrapped_) {
           eYo.Events.recordUndo && oldChild.dispose(true)
-        } else if (!oldChildM4t.t_eyo) {
+        } else if (!oldChildM4t.targetBrick) {
           // another chance to reconnect the orphan
           // just in case the check_ has changed in between
           // which might be the case for the else_part blocks
@@ -1266,13 +1284,13 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
               ? child.someInput
               : child.someSlot)(x => { // a slot or an input
               if (!x.incog) {
-                var m4t, t_eyo
+                var m4t, targetBrick
                 if ((m4t = x.magnet || x.eyo.magnet)) {
                   if (m4t.hidden_ && !m4t.wrapped_) {
                     return
                   }
-                  if ((t_eyo = m4t.t_eyo)) {
-                    if (plug(t_eyo)) {
+                  if ((targetBrick = m4t.targetBrick)) {
+                    if (plug(targetBrick)) {
                       return true
                     }
                   } else if (m4t.checkType_(oldChildM4t)) {
@@ -1338,6 +1356,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   (unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentM4t, oldChildM4t)
 }
 
+
 /**
  * Disconnect two blocks that are connected by this connection.
  * Add hooks to allow customization.
@@ -1358,7 +1377,7 @@ eYo.Magnet.prototype.disconnectInternal_ = (() => {
     }
     var unwrappedM4t = parentM4t.unwrappedMagnet
     if (Blockly.Events.isEnabled()) {
-      var event = new Blockly.Events.BlockMove(child.block_)
+      var event = new Blockly.Events.BlockMove(child)
     }
     child.changeWrap(() => { // `this` is catched
       parent.changeWrap(() => { // `this` is catched
@@ -1442,8 +1461,8 @@ eYo.Magnet.prototype.tighten_ = function() {
     var dx = m4t.x_ - this.x_
     var dy = m4t.y_ - this.y_
     if (dx != 0 || dy != 0) {
-      var t_eyo = this.t_eyo
-      t_eyo.ui.setOffset(-dx, -dy)
+      var targetBrick = this.targetBrick
+      targetBrick.ui.setOffset(-dx, -dy)
     }
   }
 }
@@ -1467,12 +1486,12 @@ eYo.Magnet.prototype.scrollToVisible = function (force) {
  * @suppress {accessControls}
  */
 eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
-  var b_eyo = this.brick
-  if (!b_eyo.workspace || b_eyo.workspace.isDragging()) {
+  var brick = this.brick
+  if (!brick.workspace || brick.workspace.isDragging()) {
     return
   }
   // Move the root brick.
-  var root = b_eyo.root
+  var root = brick.root
   if (root.isInFlyout) {
     // Don't move blocks around in a flyout.
     return
@@ -1503,10 +1522,10 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   }
   // Added by JL, I don't remember exactly why...
   if (m4t.target) {
-    dx += m4t.t_eyo.width
+    dx += m4t.targetBrick.width
   }
   root.moveByXY(dx, dy)
-  selected || root.ui.removeDlgtSelect_()
+  selected || root.ui.brickRemoveSelect_()
 }
 
 /**
@@ -1516,9 +1535,9 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
  */
 eYo.Magnet.prototype.hideAll = function() {
   this.hidden_ = true
-  var t_eyo = this.t_eyo
-  if (t_eyo) {
-    t_eyo.descendants.forEach(dlgt => {
+  var targetBrick = this.targetBrick
+  if (targetBrick) {
+    targetBrick.descendants.forEach(dlgt => {
       dlgt.getMagnets_(true).forEach(m4t => m4t.hidden_ = true)
     })
   }
@@ -1543,10 +1562,10 @@ eYo.Magnet.prototype.neighbours_ = function(maxLimit) {
 eYo.Magnet.prototype.unhideAll = function() {
   this.hidden_ = false
   if (this.isSuperior) {
-    var t_eyo = this.t_eyo
-    t_eyo && (t_eyo.collapsed
-        ? Object.values(t_eyo.magnets)
-        : t_eyo.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
+    var targetBrick = this.targetBrick
+    targetBrick && (targetBrick.collapsed
+        ? Object.values(targetBrick.magnets)
+        : targetBrick.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
   }
 }
 
@@ -1627,17 +1646,18 @@ eYo.Magnet.prototype.disconnect = function() {
   goog.asserts.assert(other, 'Source connection not connected.');
   goog.asserts.assert(other.target === this,
       'Target magnet not connected to source connection.');
-  var sup_eyo, inf_eyo
+  var sup_brick, inf_brick
   if (this.isSuperior) {
     // Superior brick.
-    sup_eyo = this.brick
-    inf_eyo = other.brick
+    sup_brick = this.brick
+    inf_brick = other.brick
   } else {
     // Inferior brick.
-    sup_eyo = other.brick
-    inf_eyo = this.brick
+    sup_brick = other.brick
+    inf_brick = this.brick
   }
-  this.disconnectInternal_(sup_eyo, inf_eyo)
+  eYo.Events.groupWrap(() => this.disconnectInternal_(sup_brick, inf_brick))
+  
 }
 
 /**
@@ -1729,10 +1749,10 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
       return false;
     }
   }
-  var its_eyo = candidate.t_eyo
+  var its_brick = candidate.targetBrick
 
   if (candidate.type === eYo.Magnet.INPUT && candidate.target &&
-      !its_eyo.isMovable) {
+      !its_brick.isMovable) {
     return false;
   }
 
@@ -1742,15 +1762,15 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
   if (this.type === eYo.Magnet.HEAD &&
       candidate.target &&
       !this.owner.magnets.foot &&
-      its_eyo.magnets.foot) {
+      its_brick.magnets.foot) {
     return false;
   }
 
   do {
-    if (this.brick === its_eyo) {
+    if (this.brick === its_brick) {
       return false // candidate is contained in `this` owner
     }
-  } while ((its_eyo = its_eyo.parent))
+  } while ((its_brick = its_brick.parent))
 
   return true
 }

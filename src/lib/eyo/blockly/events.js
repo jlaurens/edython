@@ -50,28 +50,24 @@ Blockly.Events.Change.prototype.run = (() => {
       return
     }
     var workspace = this.getEventWorkspace_()
-    var block = workspace.getBlockById(this.blockId)
-    if (!block) {
+    var brick = workspace.getBlockById(this.blockId)
+    if (!brick) {
       console.warn("Can't change non-existant block: " + this.blockId)
       return
-    }
-    if (block.mutator) {
-      // Close the mutator (if open) since we don't want to update it.
-      block.mutator.setVisible(false)
     }
     var value = forward ? this.newValue : this.oldValue
     switch (this.element) {
     case eYo.Const.Event.locked:
       if (value) {
-        block.eyo.lock()
+        brick.lock()
       } else {
-        block.eyo.unlock()
+        brick.unlock()
       }
       break
     default:
       var m = XRegExp.exec(this.element, eYo.XRE.event_data)
       var data
-      if (m && (data = block.eyo.data[m.key])) {
+      if (m && (data = brick.data[m.key])) {
         data.set(value, false) // do not validate, it may change value
       } else {
         console.warn('Unknown change type: ' + this.element)
@@ -132,6 +128,23 @@ eYo.Events.disableWrap = eYo.Do.makeWrapper(
   Blockly.Events.disable,
   Blockly.Events.enable
 )
+
+
+/**
+ * Wrap the given function into a single undo group.
+ * @param {!Function} try_f
+ * @param {?Function} finally_f
+ */
+eYo.Events.groupWrap = (f, g) => {
+  eYo.Do.makeWrapper(
+  () => {
+    eYo.Events.setGroup(true)
+  },
+  () => {
+    eYo.Events.setGroup(false)
+  },
+  g)(f)
+}
 
 /*
 function (try_f, finally_f) {
@@ -254,23 +267,6 @@ Blockly.Events.filter = function(queueIn, forward) {
   return eYo.Events.filter(queueIn, forward)
 }
 
-
-/**
- * Wrap the given function into a single undo group.
- * @param {!Function} try_f
- * @param {?Function} finally_f
- */
-eYo.Events.groupWrap = (f, g) => {
-  eYo.Do.makeWrapper(
-  () => {
-    eYo.Events.setGroup(true)
-  },
-  () => {
-    eYo.Events.setGroup(false)
-  },
-  g)(f)
-}
-
 /*
 function (try_f, finally_f) {
   try {
@@ -292,7 +288,7 @@ function (try_f, finally_f) {
  */
 eYo.Events.fireDlgtCreate = function (dlgt) {
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(dlgt.block_))
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(dlgt))
   }
 }
 
@@ -302,6 +298,6 @@ eYo.Events.fireDlgtCreate = function (dlgt) {
  */
 eYo.Events.fireDlgtChange = function (block, element, name, oldValue, newValue) {
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(dlgt.block_, element, name, oldValue, newValue))
+    Blockly.Events.fire(new Blockly.Events.BlockChange(dlgt, element, name, oldValue, newValue))
   }
 }

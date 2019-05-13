@@ -174,19 +174,19 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
     }
   }
   this.exportAsExpression_(dlgt, opt)
-  var m4t, rightM4t, t_eyo
-  if ((rightM4t = dlgt.magnets.right) && (t_eyo = rightM4t.t_eyo)) {
+  var m4t, rightM4t, t_brick
+  if ((rightM4t = dlgt.magnets.right) && (t_brick = rightM4t.targetBrick)) {
     this.exportField_(rightM4t.fields.label)
-    this.exportDlgt_(t_eyo, opt)
+    this.exportDlgt_(t_brick, opt)
   } else if ((m4t = dlgt.magnets.suite)) {
     // a brick with a suite must also have a right connection
     this.exportField_(rightM4t.fields.label)
     var f = () => {
-      if ((t_eyo = m4t.t_eyo)) {
+      if ((t_brick = m4t.targetBrick)) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
-          this.exportDlgt_(t_eyo, opt)
+          this.exportDlgt_(t_brick, opt)
         }, () => {
           opt.is_deep = is_deep
         })
@@ -206,9 +206,9 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
       })(f)
     }
   } else if ((m4t = dlgt.magnets.right)) {
-    if ((t_eyo = m4t.t_eyo)) {
+    if ((t_brick = m4t.targetBrick)) {
       this.exportField_(m4t.fields.label)
-      this.exportDlgt_(t_eyo, opt)
+      this.exportDlgt_(t_brick, opt)
     }
   }
   if (!dlgt.magnets.output) {
@@ -216,9 +216,9 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_eyo = dlgt.foot)) {
+  if (is_deep && (t_brick = dlgt.foot)) {
     this.newline_()
-    this.exportDlgt_(t_eyo, opt)
+    this.exportDlgt_(t_brick, opt)
   }
 }
 
@@ -330,9 +330,9 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
   if (input && input.isVisible()) {
     var m4t = input.magnet
     if (m4t) {
-      var t_eyo = m4t.t_eyo
-      if (t_eyo) {
-        this.exportAsExpression_(t_eyo)
+      var t_brick = m4t.targetBrick
+      if (t_brick) {
+        this.exportAsExpression_(t_brick)
       } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.bindField) {
         console.error('BREAK HERE')
         this.shouldSeparateField && this.addSpace()

@@ -46,7 +46,7 @@ eYo.App.doCopy = function(optNoNext) {
  * This is a job for the renderer.
  */
 eYo.App.doFront = function() {
-  var eyo = eYo.Selected.eyo
+  var eyo = eYo.Selected.brick
   if (eyo) {
     eyo.ui.sendToFront()
   }
@@ -56,7 +56,7 @@ eYo.App.doFront = function() {
  * Send the selected brick to the back.
  */
 eYo.App.doBack = function() {
-  var eyo = eYo.Selected.eyo
+  var eyo = eYo.Selected.brick
   if (eyo) {
     eyo.ui.sendToBack()
   }

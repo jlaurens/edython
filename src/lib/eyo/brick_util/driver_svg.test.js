@@ -16,7 +16,7 @@ describe('SVG coordinates', function () {
     var xy2d = ui.xyInSurface
     chai.assert(xy2d.x === xy2.x + dx, `FAILURE x2: ${xy2d.x} === ${xy2.x} + ${dx}`)
     chai.assert(xy2d.y === xy2.y + dy, `FAILURE y2: ${xy2d.y} === ${xy2.y} + ${dy}`)
-    d1.block_.dispose()
+    d1.dispose()
     eYo.Test.tearItDown()
   })
 })
@@ -33,7 +33,7 @@ describe('SVG groups and paths', function () {
     var ui_driver = field.eyo.ui_driver
     chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
     chai.assert(svg.group_ === svg.textElement_, `FAILED svg.group_ === svg.textElement_ in value field of ${type}`)
-    d1.block_.dispose()
+    d1.dispose()
     chai.assert(!d1.svg, `FAILED SVG dispose`)
     eYo.Test.tearItDown()
   })
@@ -64,7 +64,7 @@ describe('SVG groups and paths', function () {
     eYo.Test.svgNodeParent(d1, 'pathSelect_')
     eYo.Test.svgNodeParent(d1, 'pathHilight_')
     eYo.Test.svgNodeParent(d1, 'pathMagnet_')
-    d1.block_.dispose()
+    d1.dispose()
     eYo.Test.tearItDown()
   })
 })

@@ -26,87 +26,77 @@ goog.require('goog.math')
 
 eYo.Selected = (() => {
   var me = {}
-  var eyo__
-  var m4t__
+  var brick__
+  var magnet__
   me.updateDraw = () => {
-    if (eyo__ && eyo__.isReady) {
-      eyo__.ui.updateShape()
-      eyo__.ui.addDlgtSelect_()
-      eyo__.ui.addStatusSelect_()
-      if (m4t__) {
-        eyo__.ui.addBlockMagnet_()
-        eyo__.ui.removeBlockHilight_()
+    if (brick__ && brick__.isReady) {
+      brick__.ui.updateShape()
+      brick__.ui.addDlgtSelect_()
+      brick__.ui.addStatusSelect_()
+      if (magnet__) {
+        brick__.ui.addBlockMagnet_()
+        brick__.ui.removeBlockHilight_()
       } else {
-        eyo__.ui.addBlockHilight_()
+        brick__.ui.addBlockHilight_()
       }
     }
   }
   me.scrollToVisible = (force) => {
-    eyo__ && eyo__.scrollToVisible(force)
+    brick__ && brick__.scrollToVisible(force)
   }
   Object.defineProperties(
     me,
     {
-      dlgt: {
-        get () {
-          return eyo__
-        },
-        set (newValue) {
-          this.eyo = newValue
-        }
-      },
       brick: {
         get () {
-          return eyo__.block_
+          return brick__
         },
         set (newValue) {
-          this.eyo_ = newValue && newValue.eyo
+          if (newValue && !newValue.workspace) return
+          this.brick_ = newValue
+          this.magnet_ = null
+          this.updateDraw()
         }
       },
-      eyo_: {
+      brick_: {
         get () {
-          return eyo__
+          return brick__
         },
         set (newValue) {
           if (newValue) {
             var wrapper = newValue.wrapper
             if (wrapper && newValue !== wrapper) {
               // Wrapped blocks should not be selected.
-              this.eyo_ = wrapper // recursive call but not reentrant
+              this.brick_ = wrapper // recursive call but not reentrant
               return
             }
           }
-          if (eyo__ !== newValue) {
-            if (eyo__) {
+          if (brick__ !== newValue) {
+            if (brick__) {
               // unselect/unhilight the previous brick
-              eyo__.ui.removeDlgtSelect_()
-              eyo__.ui.removeBlockHilight_()
-              eyo__.ui.removeBlockConnection_()
-              eyo__.ui.removeStatusSelect_()
-              eyo__.selectedMagnet = null
-              eyo__.selectedMagnetDlgt_ = null
-              eyo__ = null
+              brick__.ui.brickRemoveSelect_()
+              brick__.ui.removeBlockHilight_()
+              brick__.ui.brickRemoveMagnet_()
+              brick__.ui.removeStatusSelect_()
+              brick__.selectedMagnet = null
+              brick__ = null
             }
             if (newValue) {
-              eyo__ = newValue
-              if (!eyo__.canEdit_) {
-                // catch eyo__
-                setTimeout((eyo => {
-                  return () => {
-                    eyo.canEdit_ = true
-                  }
-                })(eyo__), 10)
+              brick__ = newValue
+              if (!brick__.canEdit_) {
+                // Why timeout
+                setTimeout(() => {brick__.canEdit_ = true}, 10)
               }
-              if (m4t__) {
-                var b_eyo = m4t__.brick
-                if (b_eyo && newValue !== b_eyo.wrapper) {
-                  m4t__ = null
+              if (magnet__) {
+                var brick = magnet__.brick
+                if (brick && newValue !== brick.wrapper) {
+                  magnet__ = null
                 }
               }
-              eyo__.ui.sendToFront()
+              brick__.ui.sendToFront()
               this.didAdd()
             } else {
-              m4t__ = null
+              magnet__ = null
               this.didRemove()
             }
           }
@@ -114,86 +104,65 @@ eYo.Selected = (() => {
       },
       magnet_: {
         get () {
-          return m4t__
+          return magnet__
         },
-        set (m4t) {
-          if (m4t !== m4n__) {
-            if (m4t) {
-              var b_eyo = m4t.brick
-              if (b_eyo) {
+        set (magnet) {
+          if (magnet !== magnet__) {
+            if (magnet) {
+              var brick = magnet.brick
+              if (brick) {
                 // if the connection visually belongs to 2 blocks, select the top left most
-                if (m4t.isHead && m4t.target) {
-                  var wrapper = m4t.t_eyo.wrapper
-                  m4t = m4t.target
+                if (magnet.isHead && magnet.target) {
+                  var wrapper = magnet.targetBrick.wrapper
+                  magnet = magnet.target
                 } else {
-                  wrapper = b_eyo.wrapper
+                  wrapper = brick.wrapper
                 }
-                if (wrapper && wrapper !== b_eyo) {
-                  this.eyo_ = wrapper
-                  eyo__.selectedMagnet = m4t__
-                  eyo__.selectedMagnetDlgt_ = b_eyo
-                  m4t__ = m4t
+                if (wrapper && wrapper !== brick) {
+                  this.brick_ = wrapper
+                  brick__.selectedMagnet = magnet__
+                  magnet__ = magnet
                   return
                 }
-                m4t__ = m4t
-                this.eyo_ = b_eyo
+                magnet__ = magnet
+                this.brick_ = brick
               }
             } else {
-              if (eyo__) {
-                eyo__.ui.removeBlockConnection_()
-                eyo__.selectedMagnet = null
-                eyo__.selectedMagnetDlgt_ = null
+              if (brick__) {
+                brick__.ui.brickRemoveMagnet_()
+                brick__.selectedMagnet = null
               }
-              m4t__ = m4t
+              magnet__ = magnet
             }
           }
-        }
-      },
-      brick: {
-        get () {
-          return eyo__.block_
-        },
-        set (newValue) {
-          this.eyo = newValue && newValue.eyo
-        }
-      },
-      eyo: {
-        get () {
-          return eyo__
-        },
-        set (newValue) {
-          if (newValue && !newValue.workspace) return
-          this.eyo_ = newValue
-          this.connection = null
-          this.updateDraw()
         }
       },
       magnet: {
         get () {
-          return m4t__
+          return magnet__
         },
-        set (m4t) {
-          if (m4t) {
-            if (!m4t.workspace) return
-            if (m4t.hidden_) {
+        set (magnet) {
+          if (magnet) {
+            if (!magnet.workspace) return
+            if (magnet.hidden_) {
               console.error('Do not select a hidden connection')
             }
-            var b_eyo = m4t.brick
-            if (b_eyo) {
-              if (b_eyo.locked_) {
+            var brick = magnet.brick
+            if (brick) {
+              if (brick.locked_) {
                 return
               }
-              if (m4t.isInput) {
+              if (magnet.isInput) {
                 // Do not select a connection with a target, select the target instead
-                var t_eyo = m4t.t_eyo
-                if (t_eyo) {
-                  this.eyo =  t_eyo
+                var t_brick = magnet.targetBrick
+                if (t_brick) {
+                  this.eyo =  t_brick
                   return
                 }
               }
             }
           }
-          this.magnet_ = m4t
+          this.magnet_ = magnet
           this.updateDraw()
         }
       }
@@ -203,12 +172,12 @@ eYo.Selected = (() => {
   me.didRemove = eYo.Do.nothing
   Object.defineProperty(eYo.Brick.prototype, 'selected', {
     get() {
-      return this === eyo__
+      return this === brick__
     }
   })
   Object.defineProperty(eYo.Magnet.prototype, 'selected', {
     get() {
-      return this === m4t__
+      return this === magnet__
     }
   })
   return me
@@ -233,7 +202,7 @@ eYo.Selected.selectOneBlockOf = (blocks, force) => {
     select = eyos[0]
   }
   if (select) {
-    eYo.Selected.eyo = select
+    eYo.Selected.brick = select
     eYo.Selected.scrollToVisible(force)
   }
 }
@@ -320,129 +289,129 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   var rect = this.boundingRect
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
   var R
-  var m4t = this.someInputMagnet(m4t => {
-    if (!m4t.disabled_ && (!m4t.hidden_ || m4t.wrapped_)) {
-      if (m4t.isInput) {
-        var target = m4t.target
+  var magnet = this.someInputMagnet(magnet => {
+    if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
+      if (magnet.isInput) {
+        var target = magnet.target
         if (target) {
           var targetM4t = target.brick.getMagnetForEvent(e)
           if (targetM4t) {
             return targetM4t
           }
           R = new goog.math.Rect(
-            m4t.offsetInBlock_.x + eYo.Unit.x / 2,
-            m4t.offsetInBlock_.y,
+            magnet.offsetInBlock_.x + eYo.Unit.x / 2,
+            magnet.offsetInBlock_.y,
             target.width - eYo.Unit.x,
             target.height
           )
           if (R.contains(where)) {
-            return m4t
+            return magnet
           }
         }
-        if (m4t.slot && m4t.slot.bindField) {
+        if (magnet.slot && magnet.slot.bindField) {
           R = new goog.math.Rect(
-            m4t.offsetInBlock_.x,
-            m4t.offsetInBlock_.y + eYo.Padding.t,
-            m4t.w * eYo.Unit.x,
+            magnet.offsetInBlock_.x,
+            magnet.offsetInBlock_.y + eYo.Padding.t,
+            magnet.w * eYo.Unit.x,
             eYo.Font.height
           )
-        } else if (m4t.optional_ || m4t.s7r_) {
+        } else if (magnet.optional_ || magnet.s7r_) {
           R = new goog.math.Rect(
-            m4t.offsetInBlock_.x - eYo.Unit.x / 4,
-            m4t.offsetInBlock_.y + eYo.Padding.t,
+            magnet.offsetInBlock_.x - eYo.Unit.x / 4,
+            magnet.offsetInBlock_.y + eYo.Padding.t,
             1.5 * eYo.Unit.x,
             eYo.Font.height
           )
         } else {
           R = new goog.math.Rect(
-            m4t.offsetInBlock_.x + eYo.Unit.x / 4,
-            m4t.offsetInBlock_.y + eYo.Padding.t,
-            (m4t.w - 1 / 2) * eYo.Unit.x,
+            magnet.offsetInBlock_.x + eYo.Unit.x / 4,
+            magnet.offsetInBlock_.y + eYo.Padding.t,
+            (magnet.w - 1 / 2) * eYo.Unit.x,
             eYo.Font.height
           )
         }
         if (R.contains(where)) {
-          return m4t
+          return magnet
         }
-      } else if (m4t.isFoot || m4t.isSuite) {
+      } else if (magnet.isFoot || magnet.isSuite) {
         R = new goog.math.Rect(
-          m4t.offsetInBlock_.x,
-          m4t.offsetInBlock_.y - eYo.Style.Path.width,
+          magnet.offsetInBlock_.x,
+          magnet.offsetInBlock_.y - eYo.Style.Path.width,
           eYo.Font.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
         if (R.contains(where)) {
-          return m4t
+          return magnet
         }
       }
     }
   })
-  if (m4t) {
-    return m4t
-  } else if ((m4t = this.magnets.head) && !m4t.hidden) {
+  if (magnet) {
+    return magnet
+  } else if ((magnet = this.magnets.head) && !magnet.hidden) {
     R = new goog.math.Rect(
-      m4t.offsetInBlock_.x,
-      m4t.offsetInBlock_.y - 2 * eYo.Style.Path.width,
+      magnet.offsetInBlock_.x,
+      magnet.offsetInBlock_.y - 2 * eYo.Style.Path.width,
       rect.width,
       1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
     if (R.contains(where)) {
-      return m4t
+      return magnet
     }
   }
-  if ((m4t = this.magnets.foot) && !m4t.hidden) {
+  if ((magnet = this.magnets.foot) && !magnet.hidden) {
     if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
       R = new goog.math.Rect(
-        m4t.offsetInBlock_.x,
-        m4t.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        magnet.offsetInBlock_.x,
+        magnet.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {
       R = new goog.math.Rect(
-        m4t.offsetInBlock_.x,
-        m4t.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        magnet.offsetInBlock_.x,
+        magnet.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         rect.width,
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
     if (R.contains(where)) {
-      return m4t
+      return magnet
     }
   }
-  if ((m4t = this.magnets.suite) && !m4t.hidden) {
+  if ((magnet = this.magnets.suite) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      m4t.offsetInBlock_.y + r,
+      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      magnet.offsetInBlock_.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return m4t
+      return magnet
     }
   }
-  if ((m4t = this.magnets.left) && !m4t.hidden) {
+  if ((magnet = this.magnets.left) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      m4t.offsetInBlock_.y + r,
+      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      magnet.offsetInBlock_.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return m4t
+      return magnet
     }
   }
-  if ((m4t = this.magnets.right) && !m4t.hidden) {
+  if ((magnet = this.magnets.right) && !magnet.hidden) {
     R = new goog.math.Rect(
-      m4t.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      m4t.offsetInBlock_.y + r,
+      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
+      magnet.offsetInBlock_.y + r,
       2 * r,
       eYo.Font.lineHeight - 2 * r // R U sure?
     )
     if (R.contains(where)) {
-      return m4t
+      return magnet
     }
   }
 }
@@ -477,38 +446,37 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
     if (!parent.selected) {
       var gesture = this.workspace.getGesture(e);
       if (gesture) {
-        gesture.handleBlockStart(e, this.block_)
+        gesture.handleBlockStart(e, this)
       }    
       return
     }
   }
   // unfortunately, the mouse events sometimes do not find there way to the proper brick
-  var m4t = this.getMagnetForEvent(e)
-  var t_eyo = m4t
-  ? m4t.isInput
-    ? m4t.t_eyo || m4t.brick
-    : m4t.brick
+  var magnet = this.getMagnetForEvent(e)
+  var t_brick = magnet
+  ? magnet.isInput
+    ? magnet.targetBrick || magnet.brick
+    : magnet.brick
   : this
-  while (t_eyo && (t_eyo.wrapped_ || t_eyo.locked_)) {
-    t_eyo = t_eyo.parent
+  while (t_brick && (t_brick.wrapped_ || t_brick.locked_)) {
+    t_brick = t_brick.parent
   }
   // console.log('MOUSE DOWN', target)
   // Next trick because of the the dual event binding
   // reentrant management
-  if (!t_eyo || t_eyo.alreadyMouseDownEvent_ === e) {
+  if (!t_brick || t_brick.alreadyMouseDownEvent_ === e) {
     return
   }
-  t_eyo.alreadyMouseDownEvent_ = e
+  t_brick.alreadyMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  t_eyo.lastSelectedMagnet = eYo.Selected.magnet
-  t_eyo.selectedMagnetDlgt_ = null
+  t_brick.lastSelectedMagnet = eYo.Selected.magnet
   // Prepare the mouseUp event for an eventual connection selection
-  t_eyo.lastMouseDownEvent = t_eyo.selected ? e : null
+  t_brick.lastMouseDownEvent = t_brick.selected ? e : null
   var gesture = this.workspace.getGesture(e);
   if (gesture) {
-    gesture.handleBlockStart(e, t_eyo.block_)
+    gesture.handleBlockStart(e, t_brick)
   }
 }
 
@@ -519,67 +487,67 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
  * but the shape of the connection as it shows when blocks are moved close enough.
  */
 eYo.Brick.prototype.onMouseUp_ = function (e) {
-  const m4t = this.getMagnetForEvent(e)
-  var t_eyo = m4t
-  ? m4t.isInput
-    ? m4t.t_eyo || m4t.brick
-    : m4t.brick
+  const magnet = this.getMagnetForEvent(e)
+  var t_brick = magnet
+  ? magnet.isInput
+    ? magnet.targetBrick || magnet.brick
+    : magnet.brick
   : this
-  while (t_eyo && (t_eyo.wrapped_ || t_eyo.locked_)) {
-    t_eyo = t_eyo.parent
+  while (t_brick && (t_brick.wrapped_ || t_brick.locked_)) {
+    t_brick = t_brick.parent
   }
   // reentrancy filter
-  if (!t_eyo || t_eyo.alreadyMouseUpEvent_ === e) {
+  if (!t_brick || t_brick.alreadyMouseUpEvent_ === e) {
     return
   }
-  t_eyo.alreadyMouseUpEvent_ = e
-  var ee = t_eyo.lastMouseDownEvent
+  t_brick.alreadyMouseUpEvent_ = e
+  var ee = t_brick.lastMouseDownEvent
   if (ee) {
     // a brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (t_eyo.selected) {
+      if (t_brick.selected) {
         // the brick was already selected,
-        if (m4t) {
+        if (magnet) {
           // and there is a candidate selection
-          if (m4t.selected) {
+          if (magnet.selected) {
             // unselect
             eYo.Selected.magnet = null
-          } else if (m4t !== t_eyo.lastSelectedMagnet) {
-            if (m4t.isInput) {
-              if (!m4t.t_eyo) {
-                var field = m4t.bindField
+          } else if (magnet !== t_brick.lastSelectedMagnet) {
+            if (magnet.isInput) {
+              if (!magnet.targetBrick) {
+                var field = magnet.bindField
                 field && (field.eyo.doNotEdit = true)
-                m4t.select()
+                magnet.select()
               }
             } else {
-              m4t.select()
+              magnet.select()
             }
           } else {
             eYo.Selected.magnet = null
           }
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
-        } else if (t_eyo.selectMouseDownEvent) {
-          eYo.Selected.eyo = (this.isStmt ? this : this.stmtParent) || t_eyo.root
-          t_eyo.selectMouseDownEvent = null
+        } else if (t_brick.selectMouseDownEvent) {
+          eYo.Selected.brick = (this.isStmt ? this : this.stmtParent) || t_brick.root
+          t_brick.selectMouseDownEvent = null
         }
       }
     }
-  } else if (eYo.Selected.eyo && (ee = eYo.Selected.eyo.selectMouseDownEvent)) {
-    eYo.Selected.eyo.selectMouseDownEvent = null
+  } else if (eYo.Selected.brick && (ee = eYo.Selected.brick.selectMouseDownEvent)) {
+    eYo.Selected.brick.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
       // select the brick which is an ancestor of the target
       // which parent is the selected brick
-      var parent = t_eyo
+      var parent = t_brick
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
         if ((parent.selected)) {
-          eYo.Selected.eyo = t_eyo
+          eYo.Selected.brick = t_brick
           break
         } else if (!parent.wrapped_) {
-          t_eyo = parent
+          t_brick = parent
         }
       }
     }

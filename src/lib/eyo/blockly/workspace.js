@@ -138,6 +138,27 @@ eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
 }
 
 /**
+ * Add a brick to the workspace.
+ * @param {eYo.Brick} brick
+ */
+eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
+  if (this.rendered) {
+    brick.beReady()
+  }
+  this.workspace.addTopBlock(brick)
+}
+
+/**
+ * Add a brick to the workspace.
+ * @param {eYo.Brick} brick
+ */
+eYo.WorkspaceDelegate.prototype.removeBrick = function (brick) {
+  this.workspace.removeTopBlock(brick)
+  // Remove from workspace
+  delete this.workspace.blockDB_[brick.id]
+}
+
+/**
  * Class for a workspace.  This is a data structure that contains blocks.
  * There is no UI, and can be created headlessly.
  * @param {Blockly.Options} optOptions Dictionary of options.
@@ -267,23 +288,24 @@ eYo.Workspace.prototype.getVariableUses = function (name, all) {
 }
 
 /**
- * Find the block on this workspace with the specified ID.
+ * Find the brick on this workspace with the specified ID.
+ * Wrapped bricks have a complex id.
  * @param {string} id ID of block to find.
  * @return {?Blockly.Block} The sought after block or null if not found.
  */
 Blockly.Workspace.prototype.getBlockById = (() => {
-  var getBlockById = Blockly.Workspace.prototype.getBlockById
+  var getBrickById = Blockly.Workspace.prototype.getBlockById
   return function (id) {
-    var block = getBlockById.call(this, id)
-    if (block) {
-      return block
+    var brick = getBrickById.call(this, id)
+    if (brick) {
+      return brick
     }
     var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
-    if (m && (block = getBlockById.call(this, m.id))) {
-      return block.eyo.someInputMagnet(m4t => {
-          var target = m4t.target
-          if (target && target.t_eyo.id === id) {
-            return target
+    if (m && (brick = getBlockById.call(this, m.id))) {
+      return brick.someInputMagnet(m4t => {
+          var brick = m4t.targetBrick
+          if (brick && brick.id === id) {
+            return brick
           }
       })
     }
@@ -376,7 +398,7 @@ Blockly.onKeyDown_ = function(e) {
   }
   // var deleteBlock = false;
   if (e.keyCode == 9) {
-    if (eYo.Navigate.doTab(eYo.Selected.eyo, {
+    if (eYo.Navigate.doTab(eYo.Selected.brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
@@ -396,16 +418,16 @@ Blockly.onKeyDown_ = function(e) {
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (eYo.Selected.eyo && eYo.Selected.eyo.isDeletable()) {
-      eYo.deleteBlock(eYo.Selected.eyo, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.Selected.brick && eYo.Selected.brick.isDeletable()) {
+      eYo.deleteBlock(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (Blockly.mainWorkspace.isDragging()) {
       return;
     }
-    if (eYo.Selected.eyo &&
-        eYo.Selected.eyo.isDeletable() && eYo.Selected.eyo.isMovable()) {
+    if (eYo.Selected.brick &&
+        eYo.Selected.brick.isDeletable() && eYo.Selected.brick.isMovable()) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable blocks. The next step
@@ -414,12 +436,12 @@ Blockly.onKeyDown_ = function(e) {
       if (e.keyCode == 67) {
         // 'c' for copy.
         Blockly.hideChaff();
-        eYo.copyBlock(eYo.Selected.block, deep);
-      } else if (e.keyCode == 88 && !eYo.Selected.eyo.workspace.isFlyout) {
+        eYo.copyBlock(eYo.Selected.brick, deep);
+      } else if (e.keyCode == 88 && !eYo.Selected.brick.workspace.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.copyBlock(eYo.Selected.block, deep);
-        eYo.deleteBlock(eYo.Selected.block, deep);
+        eYo.copyBlock(eYo.Selected.brick, deep);
+        eYo.deleteBlock(eYo.Selected.brick, deep);
       }
     }
     if (e.keyCode == 86) {
@@ -443,10 +465,10 @@ Blockly.onKeyDown_ = function(e) {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBlock && !eYo.Selected.block.workspace.isFlyout) {
+  // if (deleteBlock && !eYo.Selected.brick.workspace.isFlyout) {
   //   Blockly.Events.setGroup(true);
   //   Blockly.hideChaff();
-  //   eYo.Selected.eyo.dispose(/* heal */ true, true);
+  //   eYo.Selected.brick.dispose(/* heal */ true, true);
   //   Blockly.Events.setGroup(false);
   // }
 };
@@ -466,7 +488,7 @@ eYo.deleteBlock = function (block, deep) {
       if ((m4t = eyo.magnets.output)) {
         m4t = m4t.target
       } else if ((m4t = eyo.magnets.foot)) {
-        var t_eyo = m4t.t_eyo
+        var targetBrick = m4t.targetBrick
       }
     }
     eYo.Events.groupWrap(() => {
@@ -474,16 +496,16 @@ eYo.deleteBlock = function (block, deep) {
       if (deep) {
         do {
           var low = eyo.foot
-          eyo.block_.dispose(false, true)
+          eyo.dispose(false, true)
         } while ((eyo = low))
       } else {
-        eyo.block_.dispose(true, true)
+        eyo.dispose(true, true)
       }
     })
     if (m4t && m4t.brick.workspace) {
       m4t.select()
-    } else if (t_eyo) {
-      eYo.Selected.eyo = t_eyo
+    } else if (targetBrick) {
+      eYo.Selected.brick = targetBrick
     }
   }
 }
@@ -514,34 +536,18 @@ eYo.copyBlock = function(block, deep) {
  */
 Blockly.Gesture.prototype.setStartBlock = (() => {
   var setStartBlock = Blockly.Gesture.prototype.setStartBlock
-  return function(block) {
-    var candidate = block
-    var eyo = block.eyo
-    var s_eyo = eYo.Selected.eyo
+  return function(brick) {
+    var candidate = brick
+    var selected = eYo.Selected.brick
     do {
-      if (eyo.isStmt) {
-        candidate = s_eyo === eyo || (s_eyo && s_eyo.stmtParent === eyo)
-          ? block
-          : eyo.block_
-        break
-      } else if (s_eyo === eyo) {
-        candidate = block
+      if (brick.isStmt || selected === brick) {
+        candidate = brick
         break
       } else {
-        candidate = eyo.block_
+        candidate = brick
       }
-    } while ((eyo = eyo.parent))
+    } while ((brick = brick.parent))
     setStartBlock.call(this, candidate)
   }
 }) ()
 
-/**
- * Add a block to the list of top blocks.
- * @param {!Blockly.Block} block Block to add.
- */
-eYo.Workspace.prototype.addTopBlock = function(block) {
-  if (this.rendered) {
-    block.eyo.beReady()
-  }
-  this.topBlocks_.push(block)
-}

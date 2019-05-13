@@ -43,7 +43,7 @@ goog.require('goog.dom');
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {!Object} owner The object owning the data.
+ * @param {!eYo.Brick} owner The object owning the data.
  * @param {!string} key name of the data.
  * @param {!Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
@@ -117,12 +117,12 @@ eYo.Data.prototype.dispose = function () {
 Object.defineProperties(eYo.Data.prototype, {
   brick: {
     get () {
-      return this.owner.block_
+      return this.owner
     }
   },
-  blockType: {
+  brickType {
     get  () {
-      return this.owner.block_.type
+      return this.owner.type
     }
   },
   data: {
@@ -293,7 +293,7 @@ eYo.Data.prototype.init = function (newValue) {
     throw err
   } finally {
     if (!goog.isDef(this.value_)) {
-      console.error('THIS SHOULD BE DEFINED', this.key, this.blockType)
+      console.error('THIS SHOULD BE DEFINED', this.key, this.brickType)
     }
   }
 }
@@ -661,7 +661,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     return
   }
   if (this.reentrant_['model_synchronize'] || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.blockType)
+    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.brickType)
     var field = this.field
     if (field) {
       if (this.incog) {

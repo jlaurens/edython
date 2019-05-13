@@ -26,13 +26,20 @@ goog.forwardDeclare('eYo.Slot')
  * @constructor
  */
 eYo.Input = function(owner, name, model) {
-  this.owner = owner
+  this.owner_ = owner
+  if (owner instanceof eYo.Slot) {
+    this.slot_ = owner
+    this.brick_ = owner.brick
+  } else {
+    this.slot_ = null
+    this.brick_ = owner
+  }
   this.name_ = name
-  this.magnet_ = new eYo.Magnet(owner, eYo.Magnet.INPUT, model)
+  this.magnet_ = new eYo.Magnet(this, eYo.Magnet.INPUT, model)
   this.fieldRow_ = []
 }
 
-// private properties
+// private properties with default values
 Object.defineProperties(eYo.Input.prototype, {
   visible_: { value: true },
 })
@@ -46,15 +53,6 @@ Object.defineProperties(eYo.Input.prototype, {
   owner: {
     get () {
       return this.owner_
-    },
-    set (newValue) {
-      if (newValue instanceof eYo.Slot) {
-        this.owner_ = this.slot_ = owner
-        this.brick_ = owner.brick
-      } else {
-        this.slot_ = null
-        this.owner_ = this.brick_ = owner
-      }
     }
   },
   /**
@@ -116,10 +114,10 @@ Object.defineProperties(eYo.Input.prototype, {
       }
     }
   },
-  t_eyo: {
+  t_brick: {
     get () {
       var m4t = this.magnet
-      return m4t && m4t.t_eyo
+      return m4t && m4t.targetBrick
     }
   },
   slot: {
@@ -129,9 +127,9 @@ Object.defineProperties(eYo.Input.prototype, {
   },
   bindField: {
     get () {
-      var b_eyo = this.brick
-      if (b_eyo.wrapped_) {
-        return b_eyo.magnets.output.t_eyo.bindField
+      var brick = this.brick
+      if (brick.wrapped_) {
+        return brick.magnets.output.targetBrick.bindField
       }
       var s = this.slot
       return s && s.bindField
@@ -182,8 +180,8 @@ eYo.Input.prototype.dispose = function() {
   var m4t = this.magnet
   if (m4t) {
     m4t.wrapped_ = null
-    var t_eyo = m4t.t_eyo
-    t_eyo && t_eyo.block_.dispose()
+    var t_brick = m4t.targetBrick
+    t_brick && t_brick.dispose()
     m4t.dispose()
     this.magnet = undefined
   }

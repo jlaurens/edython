@@ -131,7 +131,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
               }
             })
           } else {
-            parent.block_.dispose(true)
+            parent.dispose(true)
             parent = undefined
           }
         }
@@ -164,9 +164,9 @@ eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
     }
     magnet.target = b_m4ts.head
     if (this.selected) {
-      eYo.Selected.eyo = after
+      eYo.Selected.brick = after
     }
-    return after.block_
+    return after
   })
 }
 
@@ -177,7 +177,7 @@ eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
  * @private
  */
 eYo.Brick.Stmt.prototype.populateContextMenuComment = function (mgr) {
-  var brick = this.block_
+  var brick = this
   var show = false
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
@@ -451,7 +451,6 @@ eYo.Brick.Stmt.global_stmt.prototype.xmlAttr = function () {
  * @private
  */
 eYo.Brick.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this.block_
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {

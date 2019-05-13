@@ -98,3 +98,4 @@ Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
   }
   Blockly.Events.setGroup(false)
 }
+

@@ -93,7 +93,7 @@ eYo.Test.basic = (ra, str) => {
       it (`${t}${tt ? `/${tt}` : ''}${k ? `/ctor: ${k}` : ''}`, function () {
         var d = eYo.Test.new_dlgt(args[0], args[1] || args[0])
         args[2] && eYo.Test.ctor(d, args[2])
-        d.block_.dispose()
+        d.dispose()
       })
     })
   })
@@ -291,7 +291,7 @@ eYo.Test.data_save = (dlgt, key, value, ignore) => {
     var d = eYo.Brick.newReady(dlgt, dom)
     chai.assert(d, 'MISSING dd from dom')
     var saved = d[`${key}_p`]
-    d.block_.dispose()
+    d.dispose()
     chai.assert(saved === value, `FAILED DATA SAVE: ${saved} === ${value}`)
   }
   dlgt[`${key}_p`] = old
@@ -319,7 +319,7 @@ eYo.Test.bind_field = (type, key, no) => {
       chai.assert(f === ff, `INCONSISTENT BIND FIELD 2 for ${key} in ${dlgt.type}`)
     }
   }
-  dlgt.block_.dispose()
+  dlgt.dispose()
 }
 
 /**
@@ -344,9 +344,9 @@ eYo.Test.slot_connect = (dlgt, key, tb) => {
 eYo.Test.slot_wrapped = (dlgt, k) => {
   var s = dlgt.slots[k]
   chai.assert(s, `MISSING wrapped ${k} slot`)
-  var t_eyo = s.target
-  chai.assert(t_eyo, 'MISSING target\'s target slot')
-  chai.assert(t_eyo.parent === dlgt, 'MISSING parent')
+  var t_brick = s.target
+  chai.assert(t_brick, 'MISSING target\'s target slot')
+  chai.assert(t_brick.parent === dlgt, 'MISSING parent')
 }
 
 eYo.Test.expect_out_check = (dlgt, check, str) => {
@@ -364,7 +364,7 @@ eYo.Test.list_connect = (dlgt, key, target, name) => {
   chai.assert(target, 'MISSING target')
   var s = dlgt.slots[key]
   chai.assert(s.listConnect(target, name), `CONNECTION FAILED`)
-  chai.assert(s.t_eyo.inputList.some(input => input.magnet && input.magnet.t_eyo === target), `MISSED CONNECTION for ${key} in ${dlgt.type}`)
+  chai.assert(s.targetBrick.inputList.some(input => input.magnet && input.magnet.targetBrick === target), `MISSED CONNECTION for ${key} in ${dlgt.type}`)
 }
 
 /**
@@ -400,16 +400,16 @@ eYo.Test.copy_paste = (dlgt, opts) => {
   var filter = opts && opts.filter
   if (goog.isFunction(filter)) {
     var f = input => {
-      var t_eyo = input.t_eyo
-      if (t_eyo) {
-        return filter(t_eyo)
+      var t_brick = input.targetBrick
+      if (t_brick) {
+        return filter(t_brick)
       }
     }
     var m = dlgt.inputList.map(f)
     var mm = dd.inputList.map(f)
     chai.assert(chai.expect(m).to.deep.equal(mm), `FAILURE filter`)
   }
-  dd.block_.dispose()
+  dd.dispose()
 }
 
 /**
@@ -422,11 +422,11 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
   var s2 = dlgt2.slots[key]
   chai.assert(s1, `MISSING d slot for key ${key}`)
   chai.assert(s2, `MISSING dd slot for key ${key}`)
-  var t1_eyo = s1.t_eyo
-  var t2_eyo = s2.t_eyo
-  chai.assert(t1_eyo, `MISSING d slot target for key ${key}`)
-  chai.assert(t2_eyo, `MISSING dd slot target for key ${key}`)
-  chai.assert(t1_eyo.inputList.length === t2_eyo.inputList.length, `FAILED inputList length ${t1_eyo.inputList.length} === ${t2_eyo.inputList.length}`)
+  var t1_brick = s1.targetBrick
+  var t2_brick = s2.targetBrick
+  chai.assert(t1_brick, `MISSING d slot target for key ${key}`)
+  chai.assert(t2_brick, `MISSING dd slot target for key ${key}`)
+  chai.assert(t1_brick.inputList.length === t2_brick.inputList.length, `FAILED inputList length ${t1_brick.inputList.length} === ${t2_brick.inputList.length}`)
 }
 
 /**
@@ -476,5 +476,5 @@ eYo.Test.source = (str) => {
   }
   chai.assert(d, `WHERE IS THE BLOCK ${n.type}/${n.name}`)
   eYo.Test.code(d, str)
-  d.block_.dispose()
+  d.dispose()
 }

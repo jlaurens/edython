@@ -13,7 +13,7 @@ describe('Literals(Basic)', function() {
     it(`${args[0]}/${args[1]}`, function() {
       var d = eYo.Test.new_dlgt(args[0])
       eYo.Test.code(d, Ts[1])
-      d.block_.dispose()
+      d.dispose()
     })
   })
 })
@@ -38,7 +38,7 @@ describe('Literals(String)', function() {
       eYo.Test.dlgt(d, Ts[1])
       eYo.Test.expect_out_check(d, eYo.T3.Stmt[Ts[1]] || eYo.T3.Expr[Ts[1]] || Ts[1])
       eYo.Test.code(d, Ts[0])
-      d.block_.dispose()
+      d.dispose()
     })
   })
 })

@@ -144,7 +144,6 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     return;
   }
   var workspace = this.workspace
-  this.workspace = undefined
   if (this.selected) {
     var m4ts = this.magnets
     // this brick was selected, select the brick below or above before deletion
@@ -155,10 +154,11 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   if (animate && this.rendered) {
     this.unplug(healStack)
-    this.disposeUiEffect()
+    this.ui && this.ui.disposeEffect()
   } else {
     this.unplug()
   }
+  this.workspace = undefined
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockDelete(this));
   }
@@ -633,9 +633,9 @@ Object.defineProperties(eYo.Brick.prototype, {
 Object.defineProperties(eYo.Brick.prototype, {
   block_: {
     get () {
-      if (!eYo.Brick.DEBUG.block_) {
+      if (!eYo.Brick.DEBUG.brick_) {
         console.error("UNEXPECTED block_ BREAK HERE")
-        eYo.Brick.DEBUG.block_ = true
+        eYo.Brick.DEBUG.brick_ = true
       }
       return this
     }
@@ -799,11 +799,11 @@ eYo.Brick.prototype.equals = function (rhs) {
           if (r_slot.incog) {
             equals = false
           } else {
-            var t_eyo = slot.t_eyo
-            var r_t_eyo = r_slot.t_eyo
-            equals = t_eyo
-              ? r_t_eyo && t_eyo.equals(r_t_eyo)
-              : !r_t_eyo
+            var t_brick = slot.targetBrick
+            var r_t_brick = r_slot.targetBrick
+            equals = t_brick
+              ? r_t_brick && t_brick.equals(r_t_brick)
+              : !r_t_brick
           }
         } else {
           equals = false
@@ -844,7 +844,7 @@ eYo.Brick.prototype.equals = function (rhs) {
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.prototype.doConsolidate = function (deep, force) {
-  if (!force && (!eYo.Events.recordUndo || !this.block_.workspace || this.change.level > 1)) {
+  if (!force && (!eYo.Events.recordUndo || !this.workspace || this.change.level > 1)) {
     // do not consolidate while un(re)doing
     return
   }
@@ -1079,7 +1079,7 @@ eYo.Brick.Manager = (() => {
                     if (m4t.promised_) {
                       m4t.completePromise()
                     }
-                    return s.t_eyo
+                    return s.targetBrick
                   }
                 }
               }
@@ -1568,7 +1568,7 @@ eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
           if (eYo.Do.hasOwnProperty(data_in, k)) {
             var D = this.data[k]
             if (!D) {
-              console.warn('Unused data:', this.block_.type, k, data_in[k])
+              console.warn('Unused data:', this.type, k, data_in[k])
             }
           }
         }
@@ -1721,7 +1721,7 @@ eYo.Brick.prototype.makeSlots = (() => {
         }
       } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
         goog.asserts.assert(!goog.isDef(slots[k]),
-          `Duplicate slot key ${k}/${this.block_.type}`)
+          `Duplicate slot key ${k}/${this.type}`)
         slots[k] = slot
         slot.slots = slots
       } else {
@@ -1731,7 +1731,7 @@ eYo.Brick.prototype.makeSlots = (() => {
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
         goog.asserts.assert(i !== slot.order,
-          `Same order slot ${i}/${this.block_.type}`)
+          `Same order slot ${i}/${this.type}`)
         if (ordered[i].model.order > slot.model.order) {
           break
         }
@@ -2088,17 +2088,17 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   } else if (!m4t.isOutput && !m4t.isLeft && !m4t.isRight) {
     this.updateGroupBlackHeight()
   }
-  var t_eyo = m4t.t_eyo
+  var t_brick = m4t.targetBrick
   if (m4t.isFoot) {
-    this.nextHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
+    this.nextHeight = t_brick.mainHeight + t_brick.blackHeight + t_brick.suiteHeight + t_brick.nextHeight
   } else if (m4t.isSuite) {
-    t_eyo = m4t.t_eyo
-    this.suiteHeight = t_eyo.mainHeight + t_eyo.blackHeight + t_eyo.suiteHeight + t_eyo.nextHeight
+    t_brick = m4t.targetBrick
+    this.suiteHeight = t_brick.mainHeight + t_brick.blackHeight + t_brick.suiteHeight + t_brick.nextHeight
   }
   this.consolidateType()
   if (m4t.isOutput) {
     if (this.selected && this.locked_) {
-      t_eyo.select()
+      t_brick.select()
     }
   }
 }
@@ -2157,12 +2157,12 @@ eYo.Brick.prototype.getStatementCount = function () {
   var m4t = this.magnets.suite
   if (m4t) {
     hasNext = true
-    var t_eyo = m4t.t_eyo
-    if (t_eyo) {
+    var t_brick = m4t.targetBrick
+    if (t_brick) {
       do {
-        hasActive = hasActive || (!t_eyo.disabled_ && !t_eyo.isWhite)
-        n += t_eyo.getStatementCount()
-      } while ((t_eyo = t_eyo.next))
+        hasActive = hasActive || (!t_brick.disabled_ && !t_brick.isWhite)
+        n += t_brick.getStatementCount()
+      } while ((t_brick = t_brick.next))
     }
   }
   return n + (hasNext && !hasActive ? 1 : 0)
@@ -2219,24 +2219,24 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             previous = next.target
             do {
-              var t_eyo = previous.brick
-              if (t_eyo.disabled) {
-                t_eyo.disabled = false
+              var t_brick = previous.brick
+              if (t_brick.disabled) {
+                t_brick.disabled = false
                 var check = next.checkType_(previous)
-                t_eyo.disabled = true
+                t_brick.disabled = true
                 if (check) {
-                  t_eyo.disabled = false
-                  if (!(next = t_eyo.magnets.foot)) {
+                  t_brick.disabled = false
+                  if (!(next = t_brick.magnets.foot)) {
                     break
                   }
                 }
-              } else if (!t_eyo.isWhite) {
+              } else if (!t_brick.isWhite) {
                 // the black connection is reached, no need to go further
                 // but the next may have change and the checkType_ must
                 // be computed once again
                 if (!next.checkType_(previous)) {
-                  t_eyo.unplug()
-                  t_eyo.bumpNeighbours_()
+                  t_brick.unplug()
+                  t_brick.bumpNeighbours_()
                 }
                 break
               }
@@ -2252,27 +2252,27 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             next = previous.target
             do {
-              t_eyo = next.brick
-              if (t_eyo.disabled) {
+              t_brick = next.brick
+              if (t_brick.disabled) {
                 // beware of some side effet below
                 // bad design, things have changed since then...
-                t_eyo.disabled = false
+                t_brick.disabled = false
                 check = previous.checkType_(next)
-                t_eyo.disabled = true
+                t_brick.disabled = true
                 if (check) {
-                  t_eyo.setDisabled(false)
-                  if (!(previous = t_eyo.magnets.head)) {
+                  t_brick.setDisabled(false)
+                  if (!(previous = t_brick.magnets.head)) {
                     break
                   }
                 }
-              } else if (!t_eyo.isWhite) {
+              } else if (!t_brick.isWhite) {
                 // the black connection is reached, no need to go further
                 // but the next may have change and the checkType_ must
                 // be computed once again
                 if (!next.checkType_(previous)) {
-                  t_eyo = previous.brick
-                  t_eyo.unplug()
-                  t_eyo.bumpNeighbours_()
+                  t_brick = previous.brick
+                  t_brick.unplug()
+                  t_brick.bumpNeighbours_()
                 }
                 break
               }
@@ -2337,7 +2337,7 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
  * @return !String
  */
 eYo.Brick.prototype.inputEnumerator = function (all) {
-  return eYo.Do.Enumerator(this.block_.inputList, all || (x =>
+  return eYo.Do.Enumerator(this.inputList, all || (x =>
     !x.eyo.magnet || !x.eyo.magnet.slot || !x.eyo.magnet.slot.incog)
   )
 }
@@ -2348,7 +2348,7 @@ eYo.Brick.prototype.inputEnumerator = function (all) {
  * @param {!Function} helper
  */
 eYo.Brick.prototype.forEachInput = function (helper) {
-  this.block_.inputList.forEach(helper)
+  this.inputList.forEach(helper)
 }
 
 /**
@@ -2359,7 +2359,7 @@ eYo.Brick.prototype.forEachInput = function (helper) {
  */
 eYo.Brick.prototype.someInput = function (helper) {
   var ans
-  var list = this.block_.inputList
+  var list = this.inputList
   for (var i = 0 ; i < list.length ; i++) {
     var input = list[i]
     if ((ans = helper(input))) {
@@ -2374,7 +2374,7 @@ eYo.Brick.prototype.someInput = function (helper) {
  * @param {!Function} helper
  */
 eYo.Brick.prototype.forEachInputConnection = function (helper) {
-  this.block_.inputList.forEach(input => {
+  this.inputList.forEach(input => {
     var c8n = input.connection
     if (c8n) {
       helper(c8n)
@@ -2467,7 +2467,7 @@ eYo.Brick.prototype.connectLast = function (dmt) {
     var m4t = this.lastInput.eyo.magnet
     if (m4t.checkType_(other)) {
       m4t.connect(other)
-      return m4t.target === other ? m4t.t_eyo : undefined
+      return m4t.target === other ? m4t.targetBrick : undefined
     }
   }
 }
@@ -2673,12 +2673,12 @@ eYo.Brick.prototype.getMenuTarget = function () {
     return wrapped.eyo.getMenuTarget()
   }
   if (this.wrappedMagnets_ && this.wrappedMagnets_.length === 1 &&
-    (wrapped = this.wrappedMagnets_[0].t_eyo)) {
+    (wrapped = this.wrappedMagnets_[0].targetBrick)) {
     // if there are more than one wrapped brick,
     // then we choose none of them
     return wrapped.eyo.getMenuTarget()
   }
-  return this.block_
+  return this
 }
 
 eYo.Brick.debugPrefix = ''
@@ -2720,7 +2720,7 @@ eYo.Brick.prototype.statementEnumerator = function () {
       e8r = e8rs.shift()
       while (e8r.next()) {
         if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-          if (e8r.here.connection && (next = e8r.here.magnet.t_eyo)) {
+          if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
             next = next.eyo
             eyos.unshift(eyo)
             e8rs.unshift(e8r)
@@ -2799,7 +2799,7 @@ eYo.StatementBlockEnumerator = function (brick) {
       while (e8r.next()) {
         var eyo = e8r.here.eyo.magnet
         if (eyo.isFoot || eyo.isSuite) {
-          if (e8r.here.connection && (next = e8r.here.magnet.t_eyo)) {
+          if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
             bs.unshift(b)
             e8rs.unshift(e8r)
             bs.unshift(next)
@@ -2897,10 +2897,10 @@ eYo.Brick.newComplete = (() => {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var input = this.getInput(k)
             if (input && input.connection) {
-              var t_eyo = input.t_eyo
+              var t_brick = input.targetBrick
               var V = Vs[k]
-              var dlgt = processModel(workspace, V, null, t_eyo)
-              if (!t_eyo && dlgt && dlgt.magnets.output) {
+              var dlgt = processModel(workspace, V, null, t_brick)
+              if (!t_brick && dlgt && dlgt.magnets.output) {
                 dlgt.changeWrap(
                   () => {
                     var slot = input.magnet.slot
@@ -2926,9 +2926,9 @@ eYo.Brick.newComplete = (() => {
           } else {
             return
           }
-          var t_eyo = input.magnet.t_eyo
-          var y = processModel(workspace, V, null, t_eyo)
-          if (!t_eyo && y && y.magnets.output) {
+          var t_brick = input.magnet.targetBrick
+          var y = processModel(workspace, V, null, t_brick)
+          if (!t_brick && y && y.magnets.output) {
             y.changeWrap(
               () => {
                 // The connection can be established only when not incog
@@ -3169,11 +3169,11 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
         // try to find a free magnet in a brick
         // When not undefined, the returned magnet can connect to m4t.
         var findM4t = eyo => {
-          var otherM4t, t_eyo
+          var otherM4t, t_brick
           otherM4t = eyo.someInputMagnet(foundM4t => {
             if (foundM4t.isInput) {
-              if ((t_eyo = foundM4t.t_eyo)) {
-                if (!(foundM4t = findM4t(t_eyo))) {
+              if ((t_brick = foundM4t.targetBrick)) {
+                if (!(foundM4t = findM4t(t_brick))) {
                   return
                 }
               } else if (!m4t.checkType_(foundM4t)) {
@@ -3239,7 +3239,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
       candidate = null
     }
   )
-  return candidate.block_
+  return candidate
 }
 
 /**
@@ -3275,11 +3275,11 @@ eYo.Brick.prototype.canUnlock = function () {
     return true
   }
   // list all the input for a non optional connection with no target
-  var m4t, t_eyo
+  var m4t, t_brick
   return this.someInput(input => {
     if ((m4t = input.magnet)) {
-      if ((t_eyo = m4t.t_eyo)) {
-        if (t_eyo.canUnlock()) {
+      if ((t_brick = m4t.targetBrick)) {
+        if (t_brick.canUnlock()) {
           return true
         }
       }
@@ -3305,11 +3305,11 @@ eYo.Brick.prototype.lock = function () {
   }
   // list all the input for connections with a target
   var m4t
-  var t_eyo
+  var t_brick
   this.forEachInput(input => {
     if ((m4t = input.magnet)) {
-      if ((t_eyo = m4t.t_eyo)) {
-        ans += t_eyo.lock()
+      if ((t_brick = m4t.targetBrick)) {
+        ans += t_brick.lock()
       }
       if (m4t.isInput) {
         m4t.setHidden(true)
@@ -3319,22 +3319,22 @@ eYo.Brick.prototype.lock = function () {
   // maybe redundant calls here
   this.forEachSlot(slot => {
     if ((m4t = slot.magnet)) {
-      if ((t_eyo = m4t.t_eyo)) {
-        ans += t_eyo.lock()
+      if ((t_brick = m4t.targetBrick)) {
+        ans += t_brick.lock()
       }
       if (m4t.isInput) {
         m4t.setHidden(true)
       }
     }
   })
-  if ((m4t = this.magnets.right) && (t_eyo = m4t.t_eyo)) {
-    ans += t_eyo.lock()
+  if ((m4t = this.magnets.right) && (t_brick = m4t.targetBrick)) {
+    ans += t_brick.lock()
   }
-  if ((m4t = this.magnets.suite) && (t_eyo = m4t.t_eyo)) {
-    ans += t_eyo.lock()
+  if ((m4t = this.magnets.suite) && (t_brick = m4t.targetBrick)) {
+    ans += t_brick.lock()
   }
-  if ((m4t = this.magnets.foot) && (t_eyo = m4t.t_eyo)) {
-    ans += t_eyo.lock()
+  if ((m4t = this.magnets.foot) && (t_brick = m4t.targetBrick)) {
+    ans += t_brick.lock()
   }
   if (this.selected) {
     var parent = this
@@ -3356,17 +3356,16 @@ eYo.Brick.prototype.lock = function () {
  * @return {number} the number of blocks unlocked
  */
 eYo.Brick.prototype.unlock = function (shallow) {
-  var brick = this.block_
   var ans = 0
   eYo.Events.fireDlgtChange(
       this, eYo.Const.Event.locked, null, this.locked_, false)
   this.locked_ = false
   // list all the input for connections with a target
-  var m4t, t_eyo
+  var m4t, t_brick
   this.forEachInput(input => {
     if ((m4t = input.magnet)) {
-      if ((!shallow || m4t.isInput) && (t_eyo = m4t.t_eyo)) {
-        ans += t_eyo.unlock(shallow)
+      if ((!shallow || m4t.isInput) && (t_brick = m4t.targetBrick)) {
+        ans += t_brick.unlock(shallow)
       }
       m4t.setHidden(false)
     }
@@ -3464,11 +3463,16 @@ Object.defineProperties(eYo.Brick, {
         // Add this brick to the new parent's child list.
         newParent.childBlocks_.push(this);
       } else {
-        this.workspace.addTopBlock(this);
+        this.workspace.eyo.addBrick(this)
       }
       newParent && this.ui.setParent(newParent)
     }
   }
 })
-Blockly.BlockSvg.prototype.setParent = function(newParent) {
+
+/**
+ * Play some UI effects (sound, ripple) after a connection has been established.
+ */
+eYo.Brick.prototype.connectionUiEffect = function() {
+  this.ui.connectEffect()
 }
