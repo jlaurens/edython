@@ -19,15 +19,15 @@ goog.require('eYo.Driver')
 /**
  * Class for a Render.
  * For edython.
- * @param {!Object} node  node is the owning node.
+ * @param {!eYo.Brick} brick  node is the owning node.
  * @readony
- * @property {object} node - The node owning of the render object.
+ * @property {eYo.Brick} brick - The brick owning the receiver.
  * @readony
  * @property {object} change - The change property of the node.
  * @readony
  * @property {object} reentrant_ - The reentrant_ property of the node.
  * @readony
- * @property {object} span - The span of the owning node.
+ * @property {object} span - The span of the owning brick.
  * @readony
  * @property {object} driver - The graphics driver.
  * @property {boolean} down - Whether in the process of down rendering, from parent to child, prevents infinite loops.
@@ -47,109 +47,99 @@ goog.require('eYo.Driver')
  * @readonly
  * @property {Object}  xyInSurface  the coordinates relative to the surface.
  */
-eYo.UI = function(node) {
-  this.node_ = node
-  node.ui_ = this
+eYo.UI = function(brick) {
+  this.brick_ = brick
+  brick.ui_ = this
   this.down = this.up = false
-  this.driver.nodeInit(node)
+  this.driver.nodeInit(brick)
   this.updateBlockWrapped()
 }
-
-Object.defineProperties(Blockly.BlockSvg, {
-  disconnectUiStop_: {
-    get () {
-      return eYo.UI.disconnectUiStop_
-    },
-    set (newValue) {
-      eYo.UI.disconnectUiStop_ = newValue
-    }
-  }
-})
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.dispose = function () {
-  this.driver.nodeDispose(this.node_)
+  this.driver.nodeDispose(this.brick_)
 }
 
+// computed properties
 Object.defineProperties(eYo.UI.prototype, {
-  node: {
+  brick: {
     get() {
-      return this.node_
+      return this.brick_
     }
   },
   driver: {
     get() {
-      return this.node_.workspace.eyo.driver
+      return this.brick_.workspace.eyo.driver
     }
   },
   change: {
     get() {
-      return this.node_.change
+      return this.brick_.change
     }
   },
   reentrant_: {
     get() {
-      return this.node_.reentrant_
+      return this.brick_.reentrant_
     }
   },
   span: {
     get() {
-      return this.node_.span
+      return this.brick_.span
     }
   },
   hasLeftEdge: {
     get () {
-      return !this.node.wrapped_ && !this.node.locked_
+      return !this.brick_.wrapped_ && !this.brick_.locked_
     }
   },
   hasRightEdge: {
     get () {
-      return !this.node_.wrapped_ && !this.node_.locked_
+      return !this.brick_.wrapped_ && !this.brick_.locked_
     }
   },
   minBlockW: {
     get () {
-      return this.node_.isStmt ? eYo.Font.tabW : 0
+      return this.brick_.isStmt ? eYo.Font.tabW : 0
     }
   },
   bBox: {
     get () {
-      return this.rendered && this.driver.nodeGetBBox(this.node_)
+      return this.rendered && this.driver.nodeGetBBox(this.brick_)
     }
   },
   hasSelect: {
     get () {
-      return this.rendered && this.driver.nodeHasSelect(this.node_)
+      return this.rendered && this.driver.nodeHasSelect(this.brick_)
     }
   }
 })
 
 /**
  * Render the given connection, if relevant.
- * @param {eYo.Magnet} m4t
+ * @param {eYo.Magnet} magnet
  * @param {*} recorder
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
-  if (!m4t) {
+eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
+  if (!magnet) {
     return
   }
-  var t_brick = m4t.targetBrick
-  if (!t_brick) {
+  var targetBrick = magnet.targetBrick
+  if (!targetBrick) {
     return
   }
-  if (m4t.isSuperior) {
-    m4t.tighten_()
+  if (magnet.isSuperior) {
+    magnet.tighten_()
   }
-  var do_it = !t_brick.rendered ||
+  var do_it = !targetBrick.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
     !eYo.Magnet.disconnectedChild&&
     !eYo.Magnet.connectedParent)
   if (do_it) {
-    var ui = t_brick.ui
+    var ui = targetBrick.ui
     try {
       ui.down = true
       ui.render(false, recorder)
@@ -169,7 +159,7 @@ eYo.UI.prototype.drawM4t_ = function (m4t, recorder) {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.UI.prototype.drawLow_ = function (recorder) {
-  return this.drawM4t_(this.node.magnets.foot, recorder)
+  return this.drawMagnet_(this.brick_.magnets.foot, recorder)
 }
 
 /**
@@ -178,7 +168,7 @@ eYo.UI.prototype.drawLow_ = function (recorder) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderRight_ = function (io) {
-  var m4t = this.node.magnets.right
+  var m4t = this.brick_.magnets.right
   if (m4t) {
     var t_brick = m4t.targetBrick
     if (t_brick) {
@@ -222,7 +212,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
         }
       }
       return true
-    } else if (this.node.isGroup) {
+    } else if (this.brick_.isGroup) {
       this.drawField_(m4t.fields.label, io) // only the ':' or ';' trailing field.
       return false
     }
@@ -235,7 +225,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderSuite_ = function (io) {
-  var m4t = this.node_.magnets.suite
+  var m4t = this.brick_.magnets.suite
   if (!m4t) {
     return
   }
@@ -262,7 +252,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
       }
     }
   }
-  this.span.main = this.node.getStatementCount()
+  this.span.main = this.brick_.getStatementCount()
   return true
 }
 
@@ -270,35 +260,35 @@ eYo.UI.prototype.renderSuite_ = function (io) {
  * Render the brick.
  * Lays out and reflows a brick based on its contents and settings.
  * @param {*} recorder
- * @param {boolean=} optBubble If false, just render this.node brick.
+ * @param {boolean=} optBubble If false, just render this.brick_ brick.
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
  */
 // deleted blocks are rendered during deletion
-// this.node should be avoided
+// this.brick_ should be avoided
 eYo.UI.prototype.render = (() => {
   // this is a closure
   /**
    * Render the parent brick, if relevant.
    * @param {Object} recorder  A recorder object.
-   * @param {boolean=} optBubble If false, just render this.node brick.
+   * @param {boolean=} optBubble If false, just render this.brick_ brick.
    *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
   var drawParent = function (recorder, optBubble) {
-    // `this.node` is a brick delegate
-    if (optBubble === false || this.node.ui.down) {
+    // `this.brick_` is a brick delegate
+    if (optBubble === false || this.brick_.ui.down) {
       return
     }
-    // Render all blocks above this.node one (propagate a reflow).
+    // Render all blocks above this.brick_ one (propagate a reflow).
     // Only when the render message did not come from above!
-    var parent = this.node.parent
+    var parent = this.brick_.parent
     if (parent) {
-      var justConnected = eYo.Magnet.connectedParent && this.node.magnets.output === eYo.Magnet.connectedParent.target
+      var justConnected = eYo.Magnet.connectedParent && this.brick_.magnets.output === eYo.Magnet.connectedParent.target
       if (!parent.ui.down) {
         try {
           parent.ui.up = true
-          var old = this.node.ui.up
-          this.node.ui.up = true
+          var old = this.brick_.ui.up
+          this.brick_.ui.up = true
           if (eYo.UI.debugStartTrackingRender) {
             console.log(eYo.UI.debugPrefix, 'UP')
           }
@@ -308,7 +298,7 @@ eYo.UI.prototype.render = (() => {
           throw err
         } finally {
           parent.ui.up = false
-          this.node.ui.up = old
+          this.brick_.ui.up = old
         }
         if (justConnected) {
           if (parent.parent) {
@@ -331,7 +321,7 @@ eYo.UI.prototype.render = (() => {
       }
     } else {
       // Top-most brick.  Fire an event to allow scrollbars to resize.
-      this.node.workspace.resizeContents()
+      this.brick_.workspace.resizeContents()
     }
   }
   var longRender = eYo.Decorate.reentrant_method(
@@ -350,8 +340,8 @@ eYo.UI.prototype.render = (() => {
         }
       }
       try {
-        this.node.span.minWidth = this.node.span.c = 0
-        this.node.consolidate()
+        this.brick_.span.minWidth = this.brick_.span.c = 0
+        this.brick_.consolidate()
         this.willRender_(recorder)
         var io = this.draw_(recorder)
         this.layoutConnections_(io)
@@ -371,66 +361,66 @@ eYo.UI.prototype.render = (() => {
     }
   )
   return function (optBubble, recorder) {
-    if (!this.node.isReady || this.rendered === false) { // this.rendered === undefined is OK
+    if (!this.brick_.isReady || this.rendered === false) { // this.rendered === undefined is OK
       return
     }
-    if (!this.node.isEditing && (this.node.isDragging_ || this.node.change.level || !this.node.workspace)) {
+    if (!this.brick_.isEditing && (this.brick_.isDragging_ || this.brick_.change.level || !this.brick_.workspace)) {
       return
     }
-    recorder && this.drawPending_(recorder, !this.node.wrapped_ && eYo.Key.LEFT)
-    // rendering is very special when this.node is just a matter of
+    recorder && this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT)
+    // rendering is very special when this.brick_ is just a matter of
     // statement connection
-    var brick = this.node
+    var brick = this.brick_
     if (brick.rendered) {
-      if (eYo.Magnet.disconnectedChild && this.node.magnets.head === eYo.Magnet.disconnectedChild) {
-        // this.node brick is the top one
+      if (eYo.Magnet.disconnectedChild && this.brick_.magnets.head === eYo.Magnet.disconnectedChild) {
+        // this.brick_ brick is the top one
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
         this.drawLow_(io)
         this.renderMove_(io)
         this.updateShape()
-        this.node.change.save.render = this.node.change.count
+        this.brick_.change.save.render = this.brick_.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
-      } else if (eYo.Magnet.disconnectedParent && this.node.magnets.foot === eYo.Magnet.disconnectedParent) {
-        // this.node brick is the low one
+      } else if (eYo.Magnet.disconnectedParent && this.brick_.magnets.foot === eYo.Magnet.disconnectedParent) {
+        // this.brick_ brick is the low one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
         this.drawLow_(io)
         this.renderMove_(io)
         this.updateShape()
-        this.node.change.save.render = this.node.change.count
+        this.brick_.change.save.render = this.brick_.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Magnet.connectedParent) {
-        if (this.node.magnets.output && eYo.Magnet.connectedParent === this.node.magnets.output.target) {
-          // this.node is not a statement connection
+        if (this.brick_.magnets.output && eYo.Magnet.connectedParent === this.brick_.magnets.output.target) {
+          // this.brick_ is not a statement connection
           // no shortcut
-        } else if (this.node.magnets.head && eYo.Magnet.connectedParent === this.node.magnets.head.target) {
+        } else if (this.brick_.magnets.head && eYo.Magnet.connectedParent === this.brick_.magnets.head.target) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
           this.renderMove_(io)
           this.updateShape()
-          this.node.change.save.render = this.node.change.count
+          this.brick_.change.save.render = this.brick_.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        } else if (this.node.magnets.foot && eYo.Magnet.connectedParent === this.node.magnets.foot) {
+        } else if (this.brick_.magnets.foot && eYo.Magnet.connectedParent === this.brick_.magnets.foot) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
           this.renderMove_(io)
           this.updateShape()
-          this.node.change.save.render = this.node.change.count
+          this.brick_.change.save.render = this.brick_.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         }
       }
     }
-    if (!this.node.ui.down && this.node.magnets.output) {
+    if (!this.brick_.ui.down && this.brick_.magnets.output) {
       // always render from a line start id est
       // an orphan brick or a statement brick
       var parent
-      if ((parent = this.node.parent)) {
+      if ((parent = this.brick_.parent)) {
         var next
         while (parent.magnets.output && (next = parent.parent)) {
           parent = next
@@ -439,7 +429,7 @@ eYo.UI.prototype.render = (() => {
         // which means that it is an expression brick's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.node.magnets.output === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.node) {
+          if (!parent.ui.up && this.brick_.magnets.output === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
@@ -456,7 +446,7 @@ eYo.UI.prototype.render = (() => {
         return
       }
     }
-    if (this.node.change.save.render === this.node.change.count) {
+    if (this.brick_.change.save.render === this.brick_.change.count) {
       // minimal rendering
       var io = this.willShortRender_(recorder)
       this.layoutConnections_(io)
@@ -467,7 +457,7 @@ eYo.UI.prototype.render = (() => {
       return
     }
     longRender.call(this, optBubble, recorder)
-    this.node.change.save.render = this.node.change.count
+    this.brick_.change.save.render = this.brick_.change.count
   }
 }) ()
 
@@ -487,7 +477,7 @@ eYo.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} y The y coordinate of the translation in workspace units.
  */
 eYo.UI.prototype.translate = function(x, y) {
-  this.driver.nodeTranslate(this.node_, x, y)
+  this.driver.nodeTranslate(this.brick_, x, y)
 }
 
 /**
@@ -496,7 +486,7 @@ eYo.UI.prototype.translate = function(x, y) {
  * @private
  */
 eYo.UI.prototype.willRender_ = function (recorder) {
-  this.driver.nodeWillRender(this.node_, recorder)
+  this.driver.nodeWillRender(this.brick_, recorder)
 }
 
 /**
@@ -505,11 +495,11 @@ eYo.UI.prototype.willRender_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.didRender_ = function (recorder) {
-  this.driver.nodeDidRender(this.node_, recorder)
+  this.driver.nodeDidRender(this.brick_, recorder)
 }
 
 /**
- * Update all of the connections on this brick with the new locations calculated
+ * Update all of the connections on this.brick_ with the new locations calculated
  * in renderCompute.  Also move all of the connected blocks based on the new
  * connection locations.
  * @private
@@ -518,7 +508,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
   var blockTL = this.xyInSurface;
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m4ts = this.node.magnets
+  var m4ts = this.brick_.magnets
   var m4t
   if ((m4t = m4ts.left)) {
     m4t.moveToOffset(blockTL)
@@ -529,7 +519,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
   if ((m4t = m4ts.output)) {
     m4t.moveToOffset(blockTL)
   }
-  this.node.inputList.forEach(input => {
+  this.brick_.inputList.forEach(input => {
     if ((m4t = input.magnet)) {
       m4t.moveToOffset(blockTL)
       if (m4t.target) {
@@ -553,7 +543,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
 eYo.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveConnections_()
   // var blockTL = this.xyInSurface
-  // this.node.forEachSlot((slot) => {
+  // this.brick_.forEachSlot((slot) => {
   //   var input = slot.input
   //   if(input) {
   //     var m4t = input.magnet
@@ -571,7 +561,7 @@ eYo.UI.prototype.renderMove_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.layoutConnections_ = function (recorder) {
-  var m4ts = this.node.magnets
+  var m4ts = this.brick_.magnets
   var m4t = m4ts.output
   if (m4t) {
     m4t.setOffset()
@@ -580,7 +570,7 @@ eYo.UI.prototype.layoutConnections_ = function (recorder) {
       m4t.setOffset()
     }
     if ((m4t = m4ts.foot)) {
-      if (this.node.collapsed) {
+      if (this.brick_.collapsed) {
         m4t.setOffset(0, 2)
       } else {
         m4t.setOffset(0, this.span.height)
@@ -601,7 +591,7 @@ eYo.UI.prototype.layoutConnections_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.draw_ = function (recorder) {
-  if (this.driver.nodeCanDraw(this.node_)) {
+  if (this.driver.nodeCanDraw(this.brick_)) {
     // if the above path does not exist
     // the brick is not yet ready for rendering
     // when defined, `recorder` comes from
@@ -613,8 +603,8 @@ eYo.UI.prototype.draw_ = function (recorder) {
       console.error (err)
       throw err
     } finally {
-      this.node.ui.renderRight_(io) || this.node.ui.renderSuite_(io)
-      this.node.height = this.span.height
+      this.brick_.ui.renderRight_(io) || this.brick_.ui.renderSuite_(io)
+      this.brick_.height = this.span.height
       this.updateShape()
     }
   }
@@ -629,12 +619,12 @@ eYo.UI.prototype.draw_ = function (recorder) {
 eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
   'alignRightEdges_',
   function (recorder) {
-    if (this.node.parent || !this.node.isStmt || !this.node.rendered || !this.node.workspace || !this.node.isReady) {
+    if (this.brick_.parent || !this.brick_.isStmt || !this.brick_.rendered || !this.brick_.workspace || !this.brick_.isReady) {
       return
     }
     var right = 0
     var t = eYo.Font.tabWidth
-    this.node.forEachStatement((eyo, depth) => {
+    this.brick_.forEachStatement((eyo, depth) => {
       if (eyo.span.minWidth) {
         var w = t * depth + eyo.span.minWidth
         // all the right blocks now
@@ -646,7 +636,7 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
       }
     })
     if (right) {
-      this.node.forEachStatement((eyo, depth) => {
+      this.brick_.forEachStatement((eyo, depth) => {
         var width = right - t * depth
         // find the last right brick and
         var x = eyo
@@ -672,13 +662,13 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
  */
 eYo.UI.prototype.newDrawRecorder = function (recorder) {
   var io = {
-    dlgt: this.node,
+    dlgt: this.brick_,
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
     cursor: new eYo.Where(),
     forc: undefined // rendered file or connection
   }
-  this.node.firstRenderedInput = this.node.lastRenderedInput = undefined
+  this.brick_.firstRenderedInput = this.brick_.lastRenderedInput = undefined
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -691,7 +681,7 @@ eYo.UI.prototype.newDrawRecorder = function (recorder) {
       beforeIsRightEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !this.node.magnets.output || !this.node.parent, // statement | orphan brick
+      startOfLine: !this.brick_.magnets.output || !this.brick_.parent, // statement | orphan brick
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
         beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
@@ -705,7 +695,7 @@ eYo.UI.prototype.newDrawRecorder = function (recorder) {
 
 /**
  * Prepare rendering.
- * @param {?Object} recorder  When null, this.node is not the start of a statement
+ * @param {?Object} recorder  When null, this.brick_ is not the start of a statement
  * @return {!Object} a local recorder
  * @private
  */
@@ -713,7 +703,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   this.parentIsShort = false
   this.isShort = false
   this.someTargetIsMissing = false
-  // we define the `io` named recorder which is specific to this.node brick.
+  // we define the `io` named recorder which is specific to this.brick_ brick.
   var io = this.newDrawRecorder(recorder)
   // A "star like" field's text is one of '*', '+', '-', '~'...
   // This field is the very first of the brick.
@@ -729,20 +719,20 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   this.isLastInStatement = false
   // Do we need some room for the left side of the brick?
   // no for wrapped blocks
-  if (!this.node.wrapped_) {
-    if (!this.node.magnets.output || !this.node.locked_ || !recorder) {
+  if (!this.brick_.wrapped_) {
+    if (!this.brick_.magnets.output || !this.brick_.locked_ || !recorder) {
       // statement or unlocked,
       // one space for the left edge of the brick
-      // (even for locked statements, this.node is to avoid a
+      // (even for locked statements, this.brick_ is to avoid a
       // display shift when locking/unlocking)
       this.span.c = 1
       io.common.field.beforeIsBlack = false
     }
   }
-  if (this.hasLeftEdge || !recorder || !this.node.magnets.output) {
+  if (this.hasLeftEdge || !recorder || !this.brick_.magnets.output) {
     // statement or unlocked,
     // one space for the left edge of the brick
-    // (even for locked statements, this.node is to avoid a
+    // (even for locked statements, this.brick_ is to avoid a
     // display shift when locking/unlocking)
     this.span.c = 1
     io.common.field.beforeIsBlack = false
@@ -751,14 +741,14 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
     // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.span.c
-  if (this.node.magnets.output) {
+  if (this.brick_.magnets.output) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
     this.startOfStatement = io.common.startOfStatement = true
     this.drawSharp_(io)
   }
-  this.driver.nodeDrawModelBegin(this.node_, io)
+  this.driver.nodeDrawModelBegin(this.brick_, io)
   return io
 }
 
@@ -772,15 +762,15 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.drawModel_ = function (io) {
-  this.fieldDrawFrom_(this.node.fieldAtStart, io)
-  if ((io.slot = this.node.slotAtHead)) {
+  this.fieldDrawFrom_(this.brick_.fieldAtStart, io)
+  if ((io.slot = this.brick_.slotAtHead)) {
     do {
       this.drawSlot_(io.slot, io)
     } while ((io.slot = io.slot.next))
   } else {
     // for dynamic lists
-    this.node.inputList.forEach(input => {
-      goog.asserts.assert(input, `Input with no eyo ${input.name} in brick ${this.node.type}`)
+    this.brick_.inputList.forEach(input => {
+      goog.asserts.assert(input, `Input with no eyo ${input.name} in brick ${this.brick_.type}`)
       if (input.isVisible()) {
         io.input = input
         this.drawInput_(io)
@@ -793,9 +783,9 @@ eYo.UI.prototype.drawModel_ = function (io) {
       }
     })
   }
-  this.fieldDrawFrom_(this.node.toEndField, io)
+  this.fieldDrawFrom_(this.brick_.toEndField, io)
   this.drawModelEnd_(io)
-  this.driver.nodeDrawModelEnd(this.node_, io)
+  this.driver.nodeDrawModelEnd(this.brick_, io)
   return
 }
 
@@ -806,8 +796,8 @@ eYo.UI.prototype.drawModel_ = function (io) {
  */
 eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
-  if (!this.node.wrapped_) {
-    if (this.node.magnets.output) {
+  if (!this.brick_.wrapped_) {
+    if (this.brick_.magnets.output) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
         io.common.field.beforeIsSeparator = false
@@ -823,7 +813,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
           io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
           io.common.field.beforeIsBlack = false
-        } else if (!this.node.locked_ && !io.common.ending.length) {
+        } else if (!this.brick_.locked_ && !io.common.ending.length) {
           io.cursor.c += 1
           io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
@@ -841,17 +831,17 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       io.common.field.beforeIsBlack = false
     }
   }
-  if (!this.node.magnets.output) {
+  if (!this.brick_.magnets.output) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
   }
   this.drawPending_(io)
-  if (!this.node.wrapped_) {
+  if (!this.brick_.wrapped_) {
     var m4t = io.form && io.form.connection
     var t_brick = m4t && m4t.targetBrick
-    if (io.n < 2 && !this.node.wrapped_) {
-      // this.node is a short brick, special management of selection
+    if (io.n < 2 && !this.brick_.wrapped_) {
+      // this.brick_ is a short brick, special management of selection
       this.isShort = true
       if (t_brick) {
         t_brick.ui.parentIsShort = true
@@ -868,8 +858,8 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     }
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBlockW)
-  this.node.span.init(io.cursor)
-  this.node.span.minWidth = this.node.width = Math.max(this.node.width, this.node.span.width)
+  this.brick_.span.init(io.cursor)
+  this.brick_.span.minWidth = this.brick_.width = Math.max(this.brick_.width, this.brick_.span.width)
   if (io.recorder) {
     // We ended a brick. The right edge is generally a separator.
     // No need to add a separator if the brick is wrapped or locked
@@ -879,8 +869,8 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     // But may be we just rendered blocks in cascade such that
     // there might be some right edge already.
   }
-  if (io.dlgt === this.node) {
-    this.node.lastRenderedInput = io.common.inputDone
+  if (io.dlgt === this.brick_) {
+    this.brick_.lastRenderedInput = io.common.inputDone
   }
 }
 
@@ -925,10 +915,10 @@ eYo.UI.prototype.drawSlot_ = function (slot, io) {
  * @private
  */
 eYo.UI.prototype.drawSharp_ = function (io) {
-  if (this.node.isControl) { // Not very clean, used as hook before rendering the comment fields.
+  if (this.brick_.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
-  } else if (this.node.isStmt) {
-    this.driver.nodeDrawSharp(this.node_, io.dlgt.disabled)
+  } else if (this.brick_.isStmt) {
+    this.driver.nodeDrawSharp(this.brick_, io.dlgt.disabled)
     if (io.dlgt.disabled) {
       io.cursor.c += 2
       io.common.startOfLine = io.common.startOfStatement = false
@@ -989,13 +979,13 @@ eYo.UI.prototype.drawField_ = function (field, io) {
           && !io.common.field.beforeIsBlack
           && !io.common.startOfLine
           && !io.common.field.beforeIsCaret) {
-          if (this.node.packedQuotes && (head === "'" || head === '"')) {
+          if (this.brick_.packedQuotes && (head === "'" || head === '"')) {
             io.cursor.c -= 1
-          } else if (this.node.packedBrackets && head === "[") {
+          } else if (this.brick_.packedBrackets && head === "[") {
             io.cursor.c -= 1
-          } else if (this.node.packedBraces && head === "{") {
+          } else if (this.brick_.packedBraces && head === "{") {
             io.cursor.c -= 1
-          } else if (this.node.packedParenthesis && head === "(") {
+          } else if (this.brick_.packedParenthesis && head === "(") {
             io.cursor.c -= 1
           }
         } else if (head === '.' && !io.common.field.beforeIsBlack) {
@@ -1032,20 +1022,20 @@ eYo.UI.prototype.drawField_ = function (field, io) {
         io.common.startOfLine = io.common.startOfStatement = false
       }
       if (io.cursor.c > 2) {
-        if ((tail === '"' || tail === "'") && this.node.packedQuotes) {
-          io.common.shouldPack = null // this.node
-        } else if (tail === ']' && this.node.packedBrackets) {
-          io.common.shouldPack = this.node
-        } else if ((tail === '}') && this.node.packedBraces) {
-          io.common.shouldPack = this.node
-        } else if ((tail === ')') && this.node.packedParenthesis) {
-          io.common.shouldPack = this.node
+        if ((tail === '"' || tail === "'") && this.brick_.packedQuotes) {
+          io.common.shouldPack = null // this.brick_
+        } else if (tail === ']' && this.brick_.packedBrackets) {
+          io.common.shouldPack = this.brick_
+        } else if ((tail === '}') && this.brick_.packedBraces) {
+          io.common.shouldPack = this.brick_
+        } else if ((tail === ')') && this.brick_.packedParenthesis) {
+          io.common.shouldPack = this.brick_
         }
       }
     }
     if (f_eyo.isEditing) {
       // This is a trick to avoid some bad geometry while editing
-      // this.node is useful for widget only.
+      // this.brick_ is useful for widget only.
       io.cursor.c += 1
       io.common.field.shouldSeparate =
       io.common.field.beforeIsBlack = false
@@ -1178,12 +1168,12 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
           var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
           var dlgt = m4t.brick
           if (io.dlgt === dlgt) {
-            // we are lucky, this.node is the brick we are currently rendering
+            // we are lucky, this.brick_ is the brick we are currently rendering
             io.steps.push(d)
           } else {
             // bad luck, brick has already been rendered
             // we must append the definition to the path
-            // this.node may happen for blocks with no left or right end,
+            // this.brick_ may happen for blocks with no left or right end,
             // eg locked or wrapped blocks.
             var path = dlgt.pathInner_
             path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
@@ -1211,12 +1201,12 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       var shp = eYo.Shape.newWithMagnet(m4t)
       var dlgt = m4t.brick
       if (io.dlgt === dlgt) {
-        // we are lucky, this.node is the brick we are currently rendering
+        // we are lucky, this.brick_ is the brick we are currently rendering
         io.steps.push(shp.definition)
       } else {
         // bad luck, brick has already been rendered
         // we must append the definition to the path
-        // this.node may happen for blocks with no left or right end,
+        // this.brick_ may happen for blocks with no left or right end,
         // eg locked or wrapped blocks.
         var path = dlgt.pathInner_
         path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
@@ -1248,7 +1238,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
   if (io.input.type !== eYo.Magnet.INPUT) {
     return false
   }
-  // this.node is one of the reasons why we allways render from the start of a statement
+  // this.brick_ is one of the reasons why we allways render from the start of a statement
   io.input.inputRight = undefined
   io.input.inputLeft = io.common.inputDone
   if (io.common.inputDone) {
@@ -1342,7 +1332,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
         // for that connection is a bit different.
         // Don't display anything for that connection
         io.common.field.beforeIsCaret = false
-      } else if (!this.node.locked_ && !m4t.hidden_) {
+      } else if (!this.brick_.locked_ && !m4t.hidden_) {
         // locked blocks won't display any placeholder
         // (input with no target)
         if (!m4t.disabled_) {
@@ -1363,12 +1353,12 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
               m4t.isAfterRightEdge = io.beforeIsRightEdge
               io.common.field.beforeIsCaret = true
             } else {
-              // we might want this.node caret not to advance the cursor
+              // we might want this.brick_ caret not to advance the cursor
               // If the next rendered object is a field, then
-              // this.node caret should be rendered normally
+              // this.brick_ caret should be rendered normally
               // and the cursor should advance.
               // If the next rendered object is an expression brick
-              // with a left end, then this.node caret shoud be rendered
+              // with a left end, then this.brick_ caret shoud be rendered
               // with a left shape and the cursor should not advance.
               // If the caret is the last rendered object of the brick,
               // then it should be rendered with special shape and
@@ -1413,7 +1403,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
  * @protected
  */
 eYo.UI.prototype.updateShape = function () {
-  this.driver.nodeUpdateShape(this.node_)
+  this.driver.nodeUpdateShape(this.brick_)
 }
 
 /**
@@ -1421,7 +1411,7 @@ eYo.UI.prototype.updateShape = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.hide = function () {
-  this.driver.nodeDisplayedSet(this.node_, false)
+  this.driver.nodeDisplayedSet(this.brick_, false)
 }
 
 /**
@@ -1429,7 +1419,7 @@ eYo.UI.prototype.hide = function () {
  * @param {!Blockly.Block} newParent to be connected.
  */
 eYo.UI.prototype.parentWillChange = function (newParent) {
-  this.driver.nodeParentWillChange(this.node_, newParent)
+  this.driver.nodeParentWillChange(this.brick_, newParent)
 }
 
 /**
@@ -1437,7 +1427,7 @@ eYo.UI.prototype.parentWillChange = function (newParent) {
  * @param {!Blockly.Block} oldParent replaced.
  */
 eYo.UI.prototype.parentDidChange = function (oldParent) {
-  this.driver.nodeParentDidChange(this.node_, oldParent)
+  this.driver.nodeParentDidChange(this.brick_, oldParent)
 }
 
 Object.defineProperties(eYo.UI.prototype, {
@@ -1447,7 +1437,7 @@ Object.defineProperties(eYo.UI.prototype, {
      * Forwards to the driver.
      */
     get () {
-      return this.driver.nodeDisplayedGet(this.node_)
+      return this.driver.nodeDisplayedGet(this.brick_)
     },
     /**
      * Set the display status of the receiver's node.
@@ -1455,7 +1445,7 @@ Object.defineProperties(eYo.UI.prototype, {
      * @param {boolean} visible
      */
     set (newValue) {
-      this.driver.nodeDisplayedSet(this.node_, visible)
+      this.driver.nodeDisplayedSet(this.brick_, visible)
     }
   }
 })
@@ -1464,20 +1454,20 @@ Object.defineProperties(eYo.UI.prototype, {
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.updateDisabled = function () {
-  this.driver.nodeUpdateDisabled(this.node_)
-  this.node.getChildren().forEach(child => child.ui.updateDisabled())
+  this.driver.nodeUpdateDisabled(this.brick_)
+  this.brick_.getChildren().forEach(child => child.ui.updateDisabled())
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.connectEffect = function () {
-  var w = this.node_.workspace
+  var w = this.brick_.workspace
   w.getAudioManager().play('click')
   if (w.scale < 1) {
     return // Too small to care about visual effects.
   }
-  this.driver.brickConnectEffect(this.node_)
+  this.driver.brickConnectEffect(this.brick_)
 }
 
 /**
@@ -1485,8 +1475,8 @@ eYo.UI.prototype.connectEffect = function () {
  * This must take place while the brick is still in a consistent state.
  */
 eYo.UI.prototype.disposeEffect = function () {
-  this.node.workspace.getAudioManager().play('delete');
-  this.driver.brickDisposeEffect(this.node_)
+  this.brick_.workspace.getAudioManager().play('delete');
+  this.driver.brickDisposeEffect(this.brick_)
 }
 
 /**
@@ -1495,7 +1485,7 @@ eYo.UI.prototype.disposeEffect = function () {
  * @param {*} menu
  */
 eYo.UI.prototype.showMenu = function (menu) {
-  this.driver.nodeMenuShow(this.node_, menu)
+  this.driver.nodeMenuShow(this.brick_, menu)
 }
 
 /**
@@ -1503,21 +1493,21 @@ eYo.UI.prototype.showMenu = function (menu) {
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.updateBlockWrapped = function () {
-  this.driver.nodeUpdateWrapped(this.node_)
+  this.driver.nodeUpdateWrapped(this.brick_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.sendToFront = function () {
-  this.driver.nodeSendToFront(this.node_)
+  this.driver.nodeSendToFront(this.brick_)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.UI.prototype.sendToBack = function () {
-  this.driver.nodeSendToFront(this.node_)
+  this.driver.nodeSendToFront(this.brick_)
 }
 
 /**
@@ -1530,12 +1520,12 @@ eYo.UI.prototype.sendToBack = function () {
  */
 eYo.UI.prototype.nodeSetOffset = function (dc, dl) {
   // Workspace coordinates.
-  if (!this.driver.nodeCanDraw(this.node)) {
-    throw `brick is not inited ${this.node.type}`
+  if (!this.driver.nodeCanDraw(this.brick_)) {
+    throw `brick is not inited ${this.brick_.type}`
   }
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
-  this.driver.nodeSetOffset(this.node_, dx, dy)
+  this.driver.nodeSetOffset(this.brick_, dx, dy)
   this.moveConnections_(dx, dy)
 }
 
@@ -1547,10 +1537,10 @@ eYo.UI.prototype.nodeSetOffset = function (dc, dl) {
  * @return {boolean}
  */
 eYo.UI.prototype.setOffset = function (dx, dy) {
-  if (!this.driver.nodeCanDraw(this.node_)) {
-    throw `brick is not inited ${this.node_.type}`
+  if (!this.driver.nodeCanDraw(this.brick_)) {
+    throw `brick is not inited ${this.brick_.type}`
   }
-  this.driver.nodeSetOffset(this.node_, dx, dy)
+  this.driver.nodeSetOffset(this.brick_, dx, dy)
   this.moveConnections_(dx, dy)
 }
 
@@ -1561,7 +1551,7 @@ eYo.UI.prototype.setOffset = function (dx, dy) {
  * @private
  */
 eYo.UI.prototype.moveConnections_ = function (dx, dy) {
-  this.node.moveConnections_(dx, dy)
+  this.brick_.moveConnections_(dx, dy)
 }
 
 //////////////////
@@ -1571,7 +1561,7 @@ eYo.UI.prototype.moveConnections_ = function (dx, dy) {
  * Forwards to the driver.
  */
 eYo.UI.prototype.addBlockHilight_ = function () {
-  this.driver.nodeHilightAdd(this.node_)
+  this.driver.nodeHilightAdd(this.brick_)
 }
 
 /**
@@ -1579,7 +1569,7 @@ eYo.UI.prototype.addBlockHilight_ = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.removeBlockHilight_ =function () {
-  this.driver.nodeHilightRemove(this.node_)
+  this.driver.nodeHilightRemove(this.brick_)
 }
 
 /**
@@ -1587,7 +1577,7 @@ eYo.UI.prototype.removeBlockHilight_ =function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.addDlgtSelect_ = function () {
-  this.driver.nodeSelectAdd(this.node_)
+  this.driver.nodeSelectAdd(this.brick_)
 }
 
 /**
@@ -1595,7 +1585,7 @@ eYo.UI.prototype.addDlgtSelect_ = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.brickRemoveSelect_ = function () {
-  this.driver.nodeSelectRemove(this.node_)
+  this.driver.nodeSelectRemove(this.brick_)
 }
 
 /**
@@ -1603,7 +1593,7 @@ eYo.UI.prototype.brickRemoveSelect_ = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.addBlockMagnet_ = function () {
-  this.driver.nodeMagnetAdd(this.node_)
+  this.driver.nodeMagnetAdd(this.brick_)
 }
 
 /**
@@ -1611,14 +1601,14 @@ eYo.UI.prototype.addBlockMagnet_ = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.brickRemoveMagnet_ = function () {
-  this.driver.nodeConnectionRemove(this.node_)
+  this.driver.nodeConnectionRemove(this.brick_)
 }
 
 /**
  * Forwards to the driver.
  */
 eYo.UI.prototype.addStatusTop_ = function () {
-  this.driver.nodeStatusTopAdd(this.node_)
+  this.driver.nodeStatusTopAdd(this.brick_)
 }
 
 
@@ -1627,15 +1617,15 @@ eYo.UI.prototype.addStatusTop_ = function () {
  * Forwards to the driver.
  */
 eYo.UI.prototype.removeStatusTop_ = function (eyo) {
-  this.driver.nodeStatusTopRemove(this.node_)
+  this.driver.nodeStatusTopRemove(this.brick_)
 }
 
 /**
  * Forwards to the driver and `addSelect` to each field.
  */
 eYo.UI.prototype.addStatusSelect_ = function () {
-  this.driver.nodeStatusSelectAdd(this.node_)
-  this.node.forEachInput(input => {
+  this.driver.nodeStatusSelectAdd(this.brick_)
+  this.brick_.forEachInput(input => {
     input.fieldRow.forEach(field => {
       if (goog.isFunction(field.addSelect)) {
         field.addSelect()
@@ -1648,8 +1638,8 @@ eYo.UI.prototype.addStatusSelect_ = function () {
  * Reverse `addStatusSelect_`. Forwards to the driver and various fields.
  */
 eYo.UI.prototype.removeStatusSelect_ = function () {
-  this.driver.nodeStatusSelectRemove(this.node_)
-  this.node.forEachInput(input => {
+  this.driver.nodeStatusSelectRemove(this.brick_)
+  this.brick_.forEachInput(input => {
     input.fieldRow.forEach(field => {
       goog.isFunction(field.removeSelect) && field.removeSelect()
     })
@@ -1681,7 +1671,7 @@ eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 }
 
 /**
- * Return the coordinates of the top-left corner of this brick relative to the
+ * Return the coordinates of the top-left corner of this.brick_ relative to the
  * drawing surface's origin (0,0), in workspace units.
  * If the brick is on the workspace, (0, 0) is the origin of the workspace
  * coordinate system.
@@ -1692,18 +1682,18 @@ eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 Object.defineProperties(eYo.UI.prototype, {
   xyInSurface: {
     get () {
-      return this.driver.nodeXYInSurface(this.node_)
+      return this.driver.nodeXYInSurface(this.brick_)
     }
   },
   /**
-   * Returns a bounding box describing the dimensions of this brick
+   * Returns a bounding box describing the dimensions of this.brick_
    * and any blocks stacked below it, in workspace unit.
    * @return {!{height: number, minWidth: number, width: number}} Object with height and width
    *    properties in workspace units.
    */
   size: {
     get () {
-      var s = this.node.size
+      var s = this.brick_.size
       return {
         height: s.height * eYo.Unit.y,
         minWidth: s.minWidth * eYo.Unit.x,
@@ -1759,19 +1749,19 @@ eYo.UI.prototype.magnetHilight = function (c_eyo) {
  * @param {number} dy Vertical offset in workspace units.
  */
 eYo.UI.prototype.moveByXY = function (dx, dy) {
-  this.node.moveBy(dx, dy)
+  this.brick_.moveBy(dx, dy)
 }
 
 /**
- * Move this brick during a drag, taking into account whether we are using a
+ * Move this.brick_ during a drag, taking into account whether we are using a
  * drag surface to translate blocks.
- * This brick must be a top-level brick.
+ * this.brick_ must be a top-level brick.
  * @param {!goog.math.Coordinate} newLoc The location to translate to, in
  *     workspace coordinates.
  * @package
  */
 eYo.UI.prototype.moveDuringDrag = function(newLoc) {
-  var n = this.node
+  var n = this.brick_
   var d = n.ui && n.ui.getDistanceFromVisible(newLoc)
   if (d) {
     newLoc.x -= d.x
@@ -1811,7 +1801,7 @@ eYo.UI.prototype.setDragging = function(adding) {
  * @return {{x: number, y: number}|undefined}
  */
 eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
-  var workspace = this.node.workspace
+  var workspace = this.brick_.workspace
   if (!workspace) {
     return undefined
   }
@@ -1826,7 +1816,7 @@ eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
     }
   }
   var scale = workspace.scale || 1
-  var HW = this.node.height_width
+  var HW = this.brick_.height_width
   // the brick is in the visible area if we see its center
   var leftBound = metrics.viewLeft / scale - HW.width / 2
   var topBound = metrics.viewTop / scale - HW.height / 2
