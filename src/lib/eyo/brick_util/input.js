@@ -172,7 +172,7 @@ Object.defineProperties(eYo.Input.prototype, {
 
 /**
  * Sever all links to this input.
- * The wrapped_ blocks may not yet be disposed.
+ * The wrapped_ bricks may not yet be disposed.
  */
 eYo.Input.prototype.dispose = function() {
   this.fieldRow.forEach(f => f.dispose())
