@@ -112,11 +112,11 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(() => {
               eYo.Events.fireDlgtCreate(parent)
-              var t_magnet = magnet.target
-              if (t_magnet) {
-                t_magnet.break()
-                if ((t_magnet = parent.magnets.head)) {
-                  p_magnet.target = t_magnet
+              var targetMagnet = magnet.target
+              if (targetMagnet) {
+                targetMagnet.disconnect()
+                if ((targetMagnet = parent.magnets.head)) {
+                  p_magnet.target = targetMagnet
                 }
               } else {
                 var its_xy = this.ui.xyInSurface
@@ -154,15 +154,15 @@ eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
     var below = eYo.Brick.newComplete(this, belowPrototypeName)
     var magnet = this.magnets.foot
-    var t_magnet = magnet.target
-    var b_m4ts = below.magnets
-    if (t_magnet) {
-      t_magnet.break()
-      if (t_magnet.checkType_(b_m4ts.foot)) {
-        t_magnet.target = b_magnets.foot
+    var targetMagnet = magnet.target
+    var magnets = below.magnets
+    if (targetMagnet) {
+      targetMagnet.disconnect()
+      if (targetMagnet.checkType_(magnets.foot)) {
+        targetMagnet.target = magnets.foot
       }
     }
-    magnet.target = b_m4ts.head
+    magnet.target = magnets.head
     if (this.selected) {
       eYo.Selected.brick = after
     }
@@ -181,7 +181,7 @@ eYo.Brick.Stmt.prototype.populateContextMenuComment = function (mgr) {
   var show = false
   var content =
   eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = mgr.newMenuItem(content, brick.eyo.doAndRender())
+  var menuItem = mgr.newMenuItem(content, brick.doAndRender())
   mgr.addChild(menuItem, true)
   return true
 }
@@ -271,7 +271,7 @@ Object.defineProperties(eYo.Brick.Stmt.comment_stmt.prototype, {
   },
   /**
    * @readonly
-   * @property {Boolean} comment blocks are white
+   * @property {Boolean} comment bricks are white
    */
   isWhite: {
     get () {
