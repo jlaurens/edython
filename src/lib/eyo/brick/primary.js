@@ -929,7 +929,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_t
+        var target = this.owner.n_ary_b
         if (target) {
           target.ary_p = newValue
         }
@@ -974,7 +974,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var target = this.owner.n_ary_t
+        var target = this.owner.n_ary_b
         if (target) {
           target.mandatory_p = newValue
         }
@@ -1368,7 +1368,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
         ans.module = p5e.holder
       }
       if (ans.dotted === 1) {
-        if ((t9k = this.holder_t)) {
+        if ((t9k = this.holder_b)) {
           if (t9k.checkOutputType(eYo.T3.Expr.identifier)) {
             type = eYo.T3.Expr.identifier
           } else if (t9k.checkOutputType(eYo.T3.Expr.dotted_name)) {

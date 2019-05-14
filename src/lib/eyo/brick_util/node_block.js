@@ -225,7 +225,7 @@ eYo.Node.prototype.comp_forInDlgt = function (brick) {
  */
 eYo.Node.prototype.sync_comp_forInDlgt = function (brick) {
   // 'for' exprlist 'in' or_test [comp_iter]
-  this.n1.exprlistInDlgt(brick.for_t)
+  this.n1.exprlistInDlgt(brick.for_b)
   brick.in_s.connect(this.n3.toBrick(brick))
   var n = this.n4
   n && (brick.comp_iter = n.comp_iter2Dlgt(brick))
@@ -266,9 +266,9 @@ eYo.Node.prototype.for_stmt2Dlgt = function (workspace) {
   // 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
   var brick = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.for_part)
   var n = this.n1
-  n.exprlistInDlgt(brick.for_t)
+  n.exprlistInDlgt(brick.for_b)
   n = n.sibling.sibling
-  n.testlistInDlgt(brick.in_t)
+  n.testlistInDlgt(brick.in_b)
   n = n.sibling.sibling
   n.suiteInDlgt(brick)
   if ((n = n.sibling.sibling.sibling)) {
@@ -292,7 +292,7 @@ eYo.Node.prototype.namedexpr_test2Dlgt = function (workspace) {
     // if this is already an identifier
     if (brick.type !== eYo.T3.Expr.identifier) {
       var dd = eYo.Brick.newComplete(workspace, eYo.T3.Expr.identifier)
-      if (dd.target_t.connectLast(brick)) {
+      if (dd.target_b.connectLast(brick)) {
         brick = dd
       } else {
         console.error('IMPOSSIBLE CONNECTION:', dd, brick)
@@ -302,7 +302,7 @@ eYo.Node.prototype.namedexpr_test2Dlgt = function (workspace) {
     // before any connection
     brick.variant_p = eYo.Key.COL_VALUED
     dd = n.toBrick(workspace)
-    if (!brick.value_t.connectLast(dd)) {
+    if (!brick.value_b.connectLast(dd)) {
       console.error('IMPOSSIBLE CONNECTION:', brick, dd)
     }
   }
@@ -411,7 +411,7 @@ eYo.Node.prototype.try_stmt2Dlgt = function (workspace) {
 eYo.Node.prototype.with_stmt2Dlgt = function (workspace) {
   // 'with' with_item (',' with_item)*  ':' suite
   var root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.with_part)
-  var with_t = root.with_t
+  var with_b = root.with_b
   var n = this.n1
   do {
     // with_item: test ['as' expr]
@@ -419,11 +419,11 @@ eYo.Node.prototype.with_stmt2Dlgt = function (workspace) {
     if (nn) {
       var dd = eYo.Brick.newComplete(workspace, eYo.T3.Expr.identifier)
       dd.alias_s.connect(nn.toBrick(workspace))
-      dd.target_t.connectLast(n.n0.toBrick(workspace))
+      dd.target_b.connectLast(n.n0.toBrick(workspace))
     } else {
       dd = n.n0.toBrick(workspace)
     }
-    with_t.connectLast(dd)
+    with_b.connectLast(dd)
   } while ((n = n.sibling) && n.type === eYo.TKN.COMMA && (n = n.sibling))
   // n.type === eYo.TKN.COLON
   n.sibling.suiteInDlgt(root)
@@ -442,7 +442,7 @@ eYo.Node.prototype.funcdef2Dlgt = function (workspace) {
   // parameters: '(' [typedargslist] ')'
   var n = this.n2.n1
   if (n.type !== eYo.TKN.RPAR) {
-    n.typedargslistInDlgt(root.parameters_t)
+    n.typedargslistInDlgt(root.parameters_b)
   }
   n = this.n4
   if (this.n3.type === eYo.TKN.RARROW) {
@@ -473,7 +473,7 @@ eYo.Node.prototype.classdef2Dlgt = function (workspace) {
     root.variant_p = eYo.Key.N_ARY
     n = n.sibling
     if (n.type !== eYo.TKN.RPAR) {
-      n.arglistInDlgt(root.n_ary_t)
+      n.arglistInDlgt(root.n_ary_b)
       n = n.sibling
     }
     n = n.sibling // skip the ')'
@@ -527,7 +527,7 @@ eYo.Node.prototype.decorator2Dlgt = function (workspace) {
     brick.variant_p = eYo.Key.N_ARY
     n = n.sibling
     if (n.n_type !== eYo.TKN.RPAR) {
-      n.arglistInDlgt(brick.n_ary_t)
+      n.arglistInDlgt(brick.n_ary_b)
       n = n.sibling
     }
     n = n.sibling
@@ -609,7 +609,7 @@ eYo.Node.prototype.typedargslistInDlgt = function (brick) {
           ? eYo.Key.ANNOTATED_VALUED
           : eYo.Key.TARGET_VALUED
           n = n.sibling
-          d.value_t.connectLast(n.toBrick(brick))
+          d.value_b.connectLast(n.toBrick(brick))
           if (!(n = n.sibling)) {
             return
           }
@@ -712,7 +712,7 @@ eYo.Node.prototype.yield_exprInDlgt = function (brick) {
     if (n.n1) {
       brick.from_s.connect(n.n1.toBrick(brick))
     } else {
-      n.n0.testlist_star_exprInDlgt(brick.expression_t)
+      n.n0.testlist_star_exprInDlgt(brick.expression_b)
     }
   }
 }
@@ -771,7 +771,7 @@ eYo.Node.prototype.varargslistInDlgt = function (brick) {
         if (n.type === eYo.TKN.EQUAL) {
           d.variant_p = eYo.Key.TARGET_VALUED
           n = n.sibling
-          d.value_t.connectLast(n.toBrick(brick))
+          d.value_b.connectLast(n.toBrick(brick))
           if (!(n = n.sibling)) {
             return
           }
@@ -840,7 +840,7 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (brick) {
         if (n1.n_type === eYo.TKN.COLON) {
           var ddd = eYo.Brick.newComplete(brick, eYo.T3.Expr.key_datum)
           brick.connectLast(ddd)
-          ddd.target_t.connectLast(dd)
+          ddd.target_b.connectLast(dd)
           if ((n2 = n1.sibling)) {
             ddd.annotated_s.connect(n2.toBrick(brick))
             if ((n3 = n2.sibling) && (n = n3.sibling)) {
@@ -868,12 +868,12 @@ eYo.Node.prototype.dictorsetmakerInDlgt = function (brick) {
  */
 eYo.Node.prototype.comprehensionInDlgt = function (brick) {
   this.comp_forInDlgt(brick)
-  var for_if_t = brick.for_if_t
+  var for_if_b = brick.for_if_b
   var d = brick
   var dd
   while ((dd = d.comp_iter)) {
     d.comp_iter = undefined
-    for_if_t.connectLast((d = dd))
+    for_if_b.connectLast((d = dd))
   }
 }
 
@@ -898,11 +898,11 @@ eYo.Node.prototype.dict_comprehension2Dlgt = function (owner) {
     */
   var brick = eYo.Brick.newComplete(owner, eYo.T3.Expr.dict_comprehension)
   var dd = eYo.Brick.newComplete(owner, eYo.T3.Expr.key_datum)
-  dd.target_t.connectLast(this.n0.toBrick(owner))
+  dd.target_b.connectLast(this.n0.toBrick(owner))
   dd.annotated_s.connect(this.n2.toBrick(owner))
   brick.expression_s.connect(dd)
   this.n3.comp_forInDlgt(brick)
-  var t = brick.for_if_t
+  var t = brick.for_if_b
   var d0 = brick
   var d1
   while ((d1 = d0.comp_iter)) {
@@ -1009,7 +1009,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
       if (!(n1 = n0.sibling)) {
         // simple expression statement: only a testlist_star_expr
         root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.expression_stmt)
-        n0.testlist_star_exprInDlgt(root.value_t)
+        n0.testlist_star_exprInDlgt(root.value_b)
         // manage comments
 
         return root
@@ -1019,13 +1019,13 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
         root = d1 = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.assignment_stmt)
         while (true) {
           // targets
-          (n0.type === eYo.TKN.yield_expr ? n0.yield_exprInListDlgt : n0.testlist_star_exprInDlgt).call(n0, d1.target_t) // .call is necessary !
+          (n0.type === eYo.TKN.yield_expr ? n0.yield_exprInListDlgt : n0.testlist_star_exprInDlgt).call(n0, d1.target_b) // .call is necessary !
           // values
           n0 = n1.sibling
           if ((n1 = n0.sibling)) {
             if (n1.n_type === eYo.TKN.EQUAL) {
               d2 = eYo.Brick.newComplete(workspace, eYo.T3.Expr.assignment_chain)
-              if ((d = d1.value_t)) {
+              if ((d = d1.value_b)) {
                 d.connectLast(d2)
                 d1.variant_p = eYo.Key.TARGET_VALUED // necessary ?
               } else {
@@ -1039,7 +1039,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
           }
           (n0.type === eYo.TKN.yield_expr
             ? n0.yield_exprInListDlgt
-            : n0.testlist_star_exprInDlgt).call(n0, d1.value_t)
+            : n0.testlist_star_exprInDlgt).call(n0, d1.value_b)
           break
         }
       } else if (n1.type === eYo.TKN.augassign) { // augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' | '<<=' | '>>=' | '**=' | '//=')
@@ -1047,23 +1047,23 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
           type: eYo.T3.Stmt.augmented_assignment_stmt,
           operator_p: n1.n0.n_str
         })
-        n0.testlist_star_exprInDlgt(root.target_t)
+        n0.testlist_star_exprInDlgt(root.target_b)
         n2 = n1.sibling
         ;(n2.type === eYo.TKN.yield_expr
             ? n2.yield_exprInListDlgt
-            : n2.testlistInDlgt).call(n2, root.value_t)
+            : n2.testlistInDlgt).call(n2, root.value_b)
       } else if (n1.type === eYo.TKN.annassign) { // ':' test ['=' (yield_expr|testlist)]
         if ((s = n1.n3)) {
           root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.annotated_assignment_stmt)
-          n0.testlist_star_exprInDlgt(root.target_t)
+          n0.testlist_star_exprInDlgt(root.target_b)
           d1 = n1.n1.toBrick(workspace)
           root.annotated_s.connect(d1)
           ;(s.type === eYo.TKN.yield_expr
             ? s.yield_exprInListDlgt
-            : s.testlistInDlgt).call(s, root.value_t)
+            : s.testlistInDlgt).call(s, root.value_b)
         } else {
           root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.annotated_stmt)
-          n0.testlist_star_exprInDlgt(root.target_t)
+          n0.testlist_star_exprInDlgt(root.target_b)
           d1 = n1.n1.toBrick(workspace)
           if (d1.toString === 'str') {
             console.error('STOP HERE')
@@ -1089,28 +1089,28 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
       while ((n0 = n0.sibling)) {
         // n0 is a trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
         if (n0.n0.n_type === eYo.TKN.LPAR) {
-          d = d0.n_ary_t
+          d = d0.n_ary_b
           if (d && d0.variant_p === eYo.Key.NONE) {
             d0.variant_p = eYo.Key.CALL_EXPR
           } else {
             root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.call_expr)
-            root.target_t.connectLast(d0)
+            root.target_b.connectLast(d0)
             d0 = root
-            d = d0.n_ary_t
+            d = d0.n_ary_b
           }
           n1 = n0.n1
           if (n1.n_type !== eYo.TKN.RPAR) {
             n1.arglistInDlgt(brick)
           }
         } else if (n0.n0.n_type === eYo.TKN.LSQB) {
-          d = d0.slicing_t
+          d = d0.slicing_b
           if (d && d0.variant_p === eYo.Key.NONE) {
             d0.variant_p = eYo.Key.SLICING
           } else {
             root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.slicing)
-            root.target_t.connectLast(d0)
+            root.target_b.connectLast(d0)
             d0 = root
-            d = d0.slicing_t
+            d = d0.slicing_b
           }
           n1 = n0.n1
           if (n1.n_type !== eYo.TKN.RSQB) {
@@ -1131,7 +1131,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
                 d0.target_p = ''
               }
               d0.dotted_p = 1
-              d0.target_t.connectLast(n0.n1.NAME2Dlgt(workspace))
+              d0.target_b.connectLast(n0.n1.NAME2Dlgt(workspace))
             })
           }
         }
@@ -1284,12 +1284,12 @@ factor: ('+'|'-'|'~') factor | power
       } else if ((n1 = n0.sibling)) {
         if (n1.n_type === eYo.TKN.COLONEQUAL) {
           root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.named_expr)
-          root.target_t.connectLast(n0.toBrick(workspace))
-          root.value_t.connectLast(n1.sibling.toBrick(workspace))
+          root.target_b.connectLast(n0.toBrick(workspace))
+          root.value_b.connectLast(n1.sibling.toBrick(workspace))
         } else if (n1.n_type === eYo.TKN.EQUAL) {
           root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.identifier_valued)
-          root.target_t.connectLast(n0.toBrick(workspace))
-          root.value_t.connectLast(n1.sibling.toBrick(workspace))
+          root.target_b.connectLast(n0.toBrick(workspace))
+          root.value_b.connectLast(n1.sibling.toBrick(workspace))
         } else {
           root = this.comprehension2Dlgt(workspace)
         }
@@ -1303,8 +1303,8 @@ factor: ('+'|'-'|'~') factor | power
       d0 = this.n0.toBrick(workspace)
       if ((n2 = this.n2)) {
         root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.named_expr)
-        root.target_t.connectLast(d0)
-        root.value_t.connectLast(n2.toBrick(workspace))
+        root.target_b.connectLast(d0)
+        root.value_b.connectLast(n2.toBrick(workspace))
       } else {
         root = d0
       }
@@ -1313,7 +1313,7 @@ factor: ('+'|'-'|'~') factor | power
       root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.lambda_expr)
       n = this.n
       if (n.type !== eYo.TKN.COLON) {
-        n.varargslistInDlgt(root.parameters_t)
+        n.varargslistInDlgt(root.parameters_b)
         n = n.sibling
       }
       n = n.sibling
@@ -1323,7 +1323,7 @@ factor: ('+'|'-'|'~') factor | power
       root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.lambda_expr_nocond)
       n = this.n
       if (n.type !== eYo.TKN.COLON) {
-        n.varargslistInDlgt(root.parameters_t)
+        n.varargslistInDlgt(root.parameters_b)
         n = n.sibling
       }
       n = n.sibling
@@ -1378,14 +1378,14 @@ factor: ('+'|'-'|'~') factor | power
       return eYo.Brick.newComplete(workspace, eYo.T3.Stmt.pass_stmt)
     case eYo.TKN.return_stmt: // 'return' [testlist_star_expr]
       root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.return_stmt)
-      (n = this.n1) && n.testlist_star_exprInDlgt(root.return_t)
+      (n = this.n1) && n.testlist_star_exprInDlgt(root.return_b)
       return root
     case eYo.TKN.import_stmt: // import_stmt: import_name | import_from
       n0 = this.n0
       if (n0.type === eYo.TKN.import_name) {
         //import_name: 'import' dotted_as_names
         root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.import_stmt)
-        var t = root.import_module_t
+        var t = root.import_module_b
         n0.n1.knownListInDlgt(t, function () {
           // dotted_as_name: dotted_name ['as' NAME]
           // dotted_name: NAME ('.' NAME)*
@@ -1429,10 +1429,10 @@ factor: ('+'|'-'|'~') factor | power
         if (n.type === eYo.TKN.STAR) {
           root.star_p = true
         } else {
-          var t = root.import_t
+          var t = root.import_b
           if (n.type === eYo.TKN.LPAR) {
             n = n.sibling
-            root.import_t.parenth_p = true
+            root.import_b.parenth_p = true
           }
           n.knownListInDlgt(t, function () {
             // import_as_name: NAME ['as' NAME]
@@ -1481,7 +1481,7 @@ factor: ('+'|'-'|'~') factor | power
     case eYo.TKN.global_stmt:
       // global_stmt: 'global' NAME (',' NAME)*
       root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.global_stmt)
-      t = root.identifiers_t
+      t = root.identifiers_b
       n = this.n1
       do {
         t.connectLast(n.toBrick(workspace))
@@ -1490,7 +1490,7 @@ factor: ('+'|'-'|'~') factor | power
     case eYo.TKN.nonlocal_stmt:
       // nonlocal_stmt: 'nonlocal' NAME (',' NAME)*
       root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.nonlocal_stmt)
-      t = root.identifiers_t
+      t = root.identifiers_b
       n = this.n1
       do {
         t.connectLast(n.toBrick(workspace))

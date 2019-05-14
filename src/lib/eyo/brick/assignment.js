@@ -577,7 +577,7 @@ goog.provide('eYo.Brick.AugAssign')
 //  */
 // eYo.Brick.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
 //   var brick = this
-//   var withTarget = this.target_t
+//   var withTarget = this.target_b
 //   var target = this.target_p
 //   var operator = this.operator_p
 //   var withBitwise = this.operator_d.bitwise

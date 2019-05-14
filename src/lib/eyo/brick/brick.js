@@ -1053,7 +1053,7 @@ eYo.Brick.Manager = (() => {
     var defineSlotProperty = k => {
       var key_s = k + '_s'
       var key_b = k + '_b'
-      var key_t = k + '_t'
+      var key_b = k + '_b'
       // make a closure to catch the value of k
       return function () {
         if (!(key_s in this)) {
@@ -1068,11 +1068,11 @@ eYo.Brick.Manager = (() => {
             }
           )
         }
-        if (!(key_t in this)) {
+        if (!(key_b in this)) {
           // print("Slot property", key, 'for', this.constructor.eyo.key)
           Object.defineProperty(
             this,
-            key_t,
+            key_b,
             {
               get () {
                 var s = this.slots[k] // early call

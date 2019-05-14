@@ -443,7 +443,7 @@ describe('Primary slots', function() {
     eYo.Test.input_length(da.target_b, 3, 'target')
     var dc = eYo.Test.new_dlgt('identifier')
     dc.target_p = 'c'
-    da.target_t.lastConnect(dc)
+    da.target_b.lastConnect(dc)
     eYo.Test.code(da, 'd, c = <MISSING EXPRESSION>')
     d.dispose()
     eYo.Test.code(da, 'c = <MISSING EXPRESSION>')
@@ -502,7 +502,7 @@ describe('Primary slots', function() {
   ].forEach(t => {
     it(`value_list checks 1/2: ${t}`, function () {
       var da = eYo.Test.new_dlgt(t)
-      var m = da.value_t.model.list
+      var m = da.value_b.model.list
       var unique = m.unique(eYo.T3.Expr.value_list, da.type)
       var check = m.check(eYo.T3.Expr.value_list, da.type)
       var all = m.all(eYo.T3.Expr.value_list, da.type)
@@ -529,11 +529,11 @@ describe('Primary slots', function() {
           if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_dlgt(tt)
             dc.variant_p = eYo.Key.SLICING
-            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
+            chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
             eYo.Test.input_length(da.value_b, 1)
-            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            chai.assert(da.value_b.lastConnect(d), `MISSED VALUE ${tt}`)
             eYo.Test.input_length(da.value_b, 1)
             d.dispose()
             eYo.Test.input_length(da.value_b, 1)
@@ -547,11 +547,11 @@ describe('Primary slots', function() {
           if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_dlgt(tt)
             dc.variant_p = eYo.Key.SLICING
-            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
+            chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
             eYo.Test.input_length(da.value_b, 1)
-            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            chai.assert(da.value_b.lastConnect(d), `MISSED VALUE ${tt}`)
             eYo.Test.input_length(da.value_b, 3)
             d.dispose()
             eYo.Test.input_length(da.value_b, 1)
@@ -565,7 +565,7 @@ describe('Primary slots', function() {
     })
     it(`value_list checks 2/2: ${t}`, function () {
       var da = eYo.Test.new_dlgt(t)
-      var m = da.value_t.model.list
+      var m = da.value_b.model.list
       var unique = m.unique(eYo.T3.Expr.value_list, da.type)
       var check = m.check(eYo.T3.Expr.value_list, da.type)
       var all = m.all(eYo.T3.Expr.value_list, da.type)
@@ -589,11 +589,11 @@ describe('Primary slots', function() {
           if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_dlgt(tt)
             dc.variant_p = eYo.Key.SLICING
-            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
+            chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
             eYo.Test.input_length(da.value_b, 1)
-            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            chai.assert(da.value_b.lastConnect(d), `MISSED VALUE ${tt}`)
             eYo.Test.input_length(da.value_b, 1)
             d.dispose()
             eYo.Test.input_length(da.value_b, 1)
@@ -607,11 +607,11 @@ describe('Primary slots', function() {
           if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_dlgt(tt)
             dc.variant_p = eYo.Key.SLICING
-            chai.assert(d.target_t.lastConnect(dc), `MISSED TARGET ${tt}`)
+            chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
             eYo.Test.input_length(da.value_b, 1)
-            chai.assert(da.value_t.lastConnect(d), `MISSED VALUE ${tt}`)
+            chai.assert(da.value_b.lastConnect(d), `MISSED VALUE ${tt}`)
             eYo.Test.input_length(da.value_b, 3)
             d.dispose()
             eYo.Test.input_length(da.value_b, 1)
@@ -637,7 +637,7 @@ describe('Primary slots', function() {
     var d = eYo.Test.new_dlgt('identifier')
     d.target_p = 'd'
     eYo.Test.code(d, 'd')
-    da.value_t.lastConnect(d)
+    da.value_b.lastConnect(d)
     eYo.Test.code(da, 'a = d')
     var dc = eYo.Test.new_dlgt('identifier')
     dc.target_p = 'c'
@@ -645,7 +645,7 @@ describe('Primary slots', function() {
     // console.error(da.value_b.inputList[0].connection.check_)
     // console.error(da.value_b.inputList[1].connection.check_)
     // console.error(da.value_b.inputList[2].connection.check_)
-    chai.assert(da.value_t.lastConnect(dc), 'MISSED')
+    chai.assert(da.value_b.lastConnect(dc), 'MISSED')
     eYo.Test.code(da, 'a = d, c')
     da.variant_p = eYo.Key.ANNOTATED
     eYo.Test.code(da, 'a: <MISSING EXPR>')
@@ -663,7 +663,7 @@ describe('Primary slots', function() {
     eYo.Test.brick(dc, 'named_subscription')
     eYo.Test.code(da, 'a = c[<MISSING INPUT>]')
     eYo.Test.input_length(da.value_b, 3)
-    chai.assert(da.value_t.lastConnect(d), 'MISSED')
+    chai.assert(da.value_b.lastConnect(d), 'MISSED')
     eYo.Test.input_length(da.value_b, 5)
     eYo.Test.code(da, 'a = c[<MISSING INPUT>], d')
     chai.assert(da.value_b.inputList[4].eyo.connect(dc), 'MISSED')

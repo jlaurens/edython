@@ -1329,7 +1329,7 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
         var name = child.getAttribute(eYo.Xml.SLOT)
         if (name === 'key') {
           var dd = eYo.Brick.newComplete(owner, child)
-          kd.target_t.connectLast(dd)
+          kd.target_b.connectLast(dd)
         } else if (name === 'datum') {
           dd = eYo.Brick.newComplete(owner, child)
           kd.annotated_s.connect(dd)
