@@ -187,7 +187,7 @@ Object.defineProperties(eYo.Span.prototype, {
   /**
    * Groups need a suite, but may not be provided with one.
    * The black count is used to display a hole,
-   * where blocks should be connected.
+   * where bricks should be connected.
    */
   black: {
     get () {
