@@ -453,7 +453,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     this.addChild(menuItem, true)
   }
   if (brick.isDeletable() && brick.isMovable() && !brick.isInFlyout) {
-    // Count the number of blocks that are nested in this brick.
+    // Count the number of bricks that are nested in this brick.
 
     var wrapper = brick.eyo.wrapper
     var descendantCount = wrapper.getWrappedDescendants().length
@@ -486,7 +486,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
 
   menuItem = this.newMenuItem(
     brick.eyo.getPythonType(), (event) => {
-      var xmlDom = eYo.Xml.dlgtToDom(brick.eyo, true)
+      var xmlDom = eYo.Xml.brickToDom(brick.eyo, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }
@@ -559,19 +559,19 @@ eYo.Brick.prototype.handleMenuItemActionLast = function (mgr, event) {
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
- * @param {!eYo.Brick} dlgt
+ * @param {!eYo.Brick} brick
  * @param {!goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
-eYo.MenuManager.prototype.handleActionLast = function (dlgt, event) {
+eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
   var model = event.target.model_
   if (goog.isFunction(model)) {
     setTimeout(function () {
-      model(dlgt, event)
+      model(brick, event)
     }, 100)
     return true
   }
-  var target = model.target || dlgt
+  var target = model.target || brick
   var t_brick = target.eyo
   switch (model.action) {
   case eYo.ID.DUPLICATE_BLOCK:
