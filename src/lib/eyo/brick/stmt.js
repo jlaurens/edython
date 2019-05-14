@@ -164,7 +164,7 @@ eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
     }
     magnet.target = magnets.head
     if (this.selected) {
-      eYo.Selected.brick = after
+      after.select()
     }
     return after
   })

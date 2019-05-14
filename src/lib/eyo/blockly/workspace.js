@@ -474,7 +474,7 @@ eYo.deleteBlock = function (block, deep) {
     if (m4t && m4t.brick.workspace) {
       m4t.select()
     } else if (t9k) {
-      eYo.Selected.brick = t9k
+      t9k.select()
     }
   }
 }

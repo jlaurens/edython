@@ -193,7 +193,7 @@ eYo.Node.prototype.comp_iter2Dlgt = function (workspace) {
   } else if (n.type === eYo.TKN.comp_for) {
     if (n.n1) {
       var b = n.n1.sync_comp_for2Dlgt(workspace)
-      brick.async = true
+      brick.async_ = true
       return b
     } else {
       return n.n0.sync_comp_for2Dlgt(workspace)
@@ -213,7 +213,7 @@ eYo.Node.prototype.comp_forInDlgt = function (brick) {
   // comp_for: ['async'] sync_comp_for
   this.last_child.sync_comp_forInDlgt(brick)
   if (this.n1) {
-    brick.async = true
+    brick.async_ = true
     console.error('async is not supported')
   }
 }
@@ -505,7 +505,7 @@ decorated: decorators (classdef | funcdef | async_funcdef)
   } else if (n.type === eYo.TKN.funcdef) {
     brick.footConnect(n.funcdef2Dlgt(workspace))
   } else if (n.type === eYo.TKN.async_funcdef) {
-    brick.footConnect(n.n1.funcdef2Dlgt(workspace)).async = true
+    brick.footConnect(n.n1.funcdef2Dlgt(workspace)).async_ = true
   } else {
     console.error(`UNEXPECTED node type: ${n.type}`)
   }
@@ -1331,7 +1331,7 @@ factor: ('+'|'-'|'~') factor | power
       return root
     case eYo.TKN.async_funcdef: // 'async' funcdef
       root = this.n1.funcdef2Dlgt(workspace)
-      root.async = true
+      root.async_ = true
       return root
     case eYo.TKN.pass_stmt: // 'pass'
       return eYo.Brick.newComplete(workspace, eYo.T3.Stmt.pass_stmt)
@@ -1359,7 +1359,7 @@ factor: ('+'|'-'|'~') factor | power
             case eYo.TKN.with_stmt: root = n.with_stmt2Dlgt(workspace); break
             case eYo.TKN.for_stmt: root = n.for_stmt2Dlgt(workspace); break
           }
-          root.async = true
+          root.async_ = true
           return root
         default: console.error("BREAK HERE, UNEXPECTED NAME", n.name)
         throw 'ERROR'

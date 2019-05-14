@@ -202,7 +202,7 @@ eYo.Selected.selectOneBlockOf = (bricks, force) => {
     select = eyos[0]
   }
   if (select) {
-    eYo.Selected.brick = select
+    select.select()
     eYo.Selected.scrollToVisible(force)
   }
 }
@@ -218,7 +218,7 @@ Object.defineProperties(
         return eYo.Selected.brick
       },
       set (newValue) {
-        eYo.Selected.brick = newValue
+        newValue.select()
       }
     }
   }
@@ -259,7 +259,7 @@ eYo.Magnet.prototype.unselect = function () {
  * Wrapped bricks are not selectable.
  */
 eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function () {
-  return (eYo.Selected.brick = this)
+  return (this).select()
 })
 
 /**
@@ -538,7 +538,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
         } else if (t9k.selectMouseDownEvent) {
-          eYo.Selected.brick = (this.isStmt ? this : this.stmtParent) || t9k.root
+          (this.isStmt.select() ? this : this.stmtParent) || t9k.root
           t9k.selectMouseDownEvent = null
         }
       }
@@ -553,7 +553,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
         if ((parent.selected)) {
-          eYo.Selected.brick = t9k
+          t9k.select()
           break
         } else if (!parent.wrapped_) {
           t9k = parent

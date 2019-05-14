@@ -96,7 +96,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
-  if (brick.async) {
+  if (brick.async_) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
       this.addSpace()

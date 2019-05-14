@@ -3,9 +3,9 @@ var expect = chai.expect
 
 describe('parameter_list', function() {
   it(`f(a[:…][=…])`, function() {
-    var l = eYo.Test.new_dlgt(eYo.T3.Expr.lambda)
+    var l = eYo.Test.new_brick(eYo.T3.Expr.lambda)
     var d = l.eyo.parameters_b
-    var a = eYo.Test.new_dlgt('a')
+    var a = eYo.Test.new_brick('a')
     assert(d.lastInput.eyo.connect(a), 'MISSING 1')
     assert(d.inputList.length === 3, 'MISSED 2')
     var f = v => {
@@ -54,15 +54,15 @@ describe('parameter_list', function() {
                 }[v]
               }
               it (`f(a${parameter(v1)}, d${parameter(v2)}, c${parameter(v3)})`, function () {
-                var l = eYo.Test.new_dlgt(eYo.T3.Expr.lambda)
+                var l = eYo.Test.new_brick(eYo.T3.Expr.lambda)
                 var t = l.eyo.parameters_b
-                var a = eYo.Test.new_dlgt('a')
+                var a = eYo.Test.new_brick('a')
                 assert(t.eyo.lastInput.eyo.connect(a), 'MISSING 1')
                 a.eyo.variant_p = v1
-                var d = eYo.Test.new_dlgt('d')
+                var d = eYo.Test.new_brick('d')
                 assert(t.eyo.lastInput.eyo.connect(d), 'MISSING 2')
                 d.variant_p = v2
-                var c = eYo.Test.new_dlgt('c')
+                var c = eYo.Test.new_brick('c')
                 assert(t.eyo.lastInput.eyo.connect(c), 'MISSING 3')
                 c.eyo.variant_p = v3
                 assert(t.inputList.length === 7, 'MISSED 1')

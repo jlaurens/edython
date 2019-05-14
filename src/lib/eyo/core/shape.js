@@ -490,7 +490,7 @@ var initWithStatementBrick = function(eyo, opt) {
     this.quarter_circle(r, false, 2)
   } else {
     this.M(true, width - eYo.Unit.x / 2)
-    this.v(opt && opt.dido ? eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight : eyo.mainHeight + eyo.blackHeight)
+    this.v(opt && opt.dido ? eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.belowHeight : eyo.mainHeight + eyo.blackHeight)
   }
   if (eyo.next) {
     this.H(1 / 2)
@@ -529,7 +529,7 @@ var initWithGroupBrick = function(eyo, opt) {
   } else {
     this.M(true, w - eYo.Unit.x / 2, 0)
     if (opt && opt.dido) {
-      this.v(eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.nextHeight)
+      this.v(eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.belowHeight)
     } else {
       this.v(eyo.mainHeight)
       this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)

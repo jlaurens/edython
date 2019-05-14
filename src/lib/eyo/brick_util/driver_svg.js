@@ -14,6 +14,187 @@
 goog.provide('eYo.Driver.Svg')
 
 goog.require('eYo.Driver')
+goog.require('eYo.setup')
+
+eYo.setup.register(function () {
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout {
+        position: absolute;
+        z-index: 20;
+      }`)
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-background {
+      fill: #ddd;
+      fill-opacity: .8;
+      pointer-events: all;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-scrollbar {
+      z-index: 30;
+    }`
+  )
+})
+
+eYo.setup.register(() => {
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar {
+      position: absolute;
+      pointer-events: all;
+      height: 3.5rem;
+      padding: 0;
+      padding-left: 0.25rem;
+      margin: 0;
+      background: rgba(221,221,221,0.8);
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar-general {
+      position: absolute;
+      pointer-events: all;
+      height: 2rem;
+      padding: 0.125rem;
+      width: 100%;
+      margin: 0;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar-module {
+      position: absolute;
+      pointer-events: all;
+      height: 1.75rem;
+      padding: 0.125rem;
+      margin: 0;
+      margin-top: 2.25rem;
+      width: 100%;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-select-general,
+    .eyo-flyout-select-module {
+      height: 100%;
+      width: 100%;
+      padding-left: 0.25rem;
+      padding-right:0.25rem;
+      margin: 0
+    }`
+  )
+  var radius = '1.125rem;'
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control {
+      background: #ddd;
+      opacity: 0.79;
+      height: 50%;
+      width: 1.25rem;
+      position: absolute;
+      top: 0px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control left {
+      border-top-right-radius:${radius};
+      border-bottom-right-radius:${radius};
+      -webkit-border-top-right-radius:${radius};
+      -webkit-border-bottom-right-radius:${radius};
+      -moz-border-radius-topright:${radius};
+      -moz-border-radius-bottomright:${radius};
+      border-top-right-radius:${radius};
+      border-bottom-right-radius:${radius};
+      right: -1.25rem;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control {
+      border-top-left-radius:${radius};
+      border-bottom-left-radius:${radius};
+      -webkit-border-top-left-radius:${radius};
+      -webkit-border-bottom-left-radius:${radius};
+      -moz-border-radius-topleft:${radius};
+      -moz-border-radius-bottomleft:${radius};
+      border-top-left-radius:${radius};
+      border-bottom-left-radius:${radius};
+      left: -1.25rem;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control-image {
+      width: 1.125rem;
+      height: 2.25rem;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control-image path {
+      fill: white;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-control-image path:hover {
+      fill:black;
+      fill-opacity: 0.075;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flash .eyo-flyout-control-image path,
+    .eyo-flash .eyo-flyout-control-image path:hover {
+      fill:black;
+      fill-opacity:0.2;
+    }`
+  )
+})
+
+eYo.setup.register(() => {
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar .eyo-menu-button {
+      background: #952276;
+      box-shadow: 0px 3px 8px #888;
+      border:0;
+    }`
+  )
+    eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar .eyo-menu-button:hover {
+      box-shadow: 0px 2px 6px #444;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-outer-box {
+      padding-left: 10px;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-inner-box {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      padding-right: 30px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-flyout-toolbar .eyo-menu-button-caption {
+      color: white;
+      vertical-align: middle;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-dropdown svg {
+      position: absolute;
+      top: 0px;
+      width: 12px;
+      height: 6px;
+    }`
+  )
+  eYo.Style.insertCssRuleAt(
+    `.eyo-menu-button-dropdown-image {
+      fill: white;
+    }`
+  )
+})
 
 /**
  * A namespace.
@@ -40,6 +221,17 @@ eYo.Driver.Svg = function () {
 }
 goog.inherits(eYo.Driver.Svg, eYo.Driver)
 
+// TO BE DEPRECATED
+Object.defineProperties(Blockly.Connection, {
+  highlightedPath_: {
+    get () {
+      return eYo.Driver.Svg.magnetHighlightedPath_
+    },
+    set (newValue) {
+      eYo.Driver.Svg.magnetHighlightedPath_ = newValue
+    }
+  }
+})
 eYo.Driver.Svg.prototype.withBBox = true
 
 /**
@@ -941,7 +1133,7 @@ eYo.Driver.Svg.prototype.brickConnectEffect = function (brick) {
       w.getParentSvg())
   } else {
   // Determine the absolute coordinates of the inferior brick.
-    var steps = Blockly.Connection.highlightedPath_.attributes['d'].value
+    var steps = eYo.Driver.Svg.magnetHighlightedPath_.attributes['d'].value
     ripple = eYo.Driver.Svg.newElement('path',
       {class: 'blocklyHighlightedConnectionPath',
         d: steps,
@@ -1001,7 +1193,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
       steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
-      Blockly.Connection.highlightedPath_ =
+      eYo.Driver.Svg.magnetHighlightedPath_ =
       eYo.Driver.Svg.newElement('path',
         {
           class: 'blocklyHighlightedConnectionPath',
@@ -1016,7 +1208,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
-  Blockly.Connection.highlightedPath_ =
+  eYo.Driver.Svg.magnetHighlightedPath_ =
   eYo.Driver.Svg.newElement('path',
     {class: 'blocklyHighlightedConnectionPath',
       'd': steps,
@@ -1791,7 +1983,7 @@ eYo.Driver.Svg.prototype.prototype.flyoutInit = function(flyout) {
  * Initializes the flyout toolbar SVG ressources.
  * @param {!eYo.FlyoutToolbar} flyoutToolbar
  */
-eYo.Driver.Svg.prototype.prototype.flyoutToolbarInit = function(flyoutToolbar) {
+eYo.Driver.Svg.prototype.prototype.flyoutToolbarInit = function(ftb) {
   if (this.div_) {
     return
   }
@@ -1921,5 +2113,5 @@ eYo.Driver.Svg.prototype.prototype.flyoutToolbarInit = function(flyoutToolbar) {
   this.onButtonLeaveWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
   this.onButtonUpWrapper_ = Blockly.bindEventWithChecks_(this.control_, 'mouseup', this, this.onButtonUp_)
 
-  goog.dom.insertSiblingBefore(flyoutToolbar.div_, flyoutToolbar.flyout_.svg.group_)
+  goog.dom.insertSiblingBefore(ftb.div_, ftb.flyout_.svg.group_)
 }

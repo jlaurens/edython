@@ -1,7 +1,7 @@
 describe('SVG coordinates', function () {
   it ('xy', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('True')
+    var d1 = eYo.Test.new_brick('True')
     var ui = d1.ui
     var xy1 = d1.ui.xyInSurface
     var xy2 = ui.xyInSurface
@@ -23,7 +23,7 @@ describe('SVG coordinates', function () {
 describe('SVG groups and paths', function () {
   it(`Field: Label`, function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('True')
+    var d1 = eYo.Test.new_brick('True')
     var field = d1.fields.value
     var svg = field.eyo.svg
     var type = d1.type
@@ -39,7 +39,7 @@ describe('SVG groups and paths', function () {
   })
   // it(`Field: Text Input`, function () {
   //   eYo.Test.setItUp()
-  //   var d1 = eYo.Test.new_dlgt('builtin__object')
+  //   var d1 = eYo.Test.new_brick('builtin__object')
   //   var field = d1.fields.value
   //   var svg = field.eyo.svg
   //   var type = d1.type
@@ -53,7 +53,7 @@ describe('SVG groups and paths', function () {
   // })
   it(`Expression`, function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('builtin__object')
+    var d1 = eYo.Test.new_brick('builtin__object')
     eYo.Test.svgNodeParent(d1, 'group_', d1.workspace.getCanvas())
     eYo.Test.svgNodeParent(d1, 'groupContour_', 'group_')
     eYo.Test.svgNodeParent(d1, 'groupShape_', 'group_')

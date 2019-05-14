@@ -585,7 +585,7 @@ eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
  * @param {*} object
  * @param {*} props
  */
-eYo.Do.readOnlyMixin = function(object, props) {
+eYo.Do.readOnlyMixin = (object, props) => {
   var key
   for (key in props) {
     goog.asserts.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)

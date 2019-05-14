@@ -373,7 +373,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       this.span.suite = newValue
     }
   },
-  nextHeight: {
+  belowHeight: {
     get () {
       return this.span.next
     },
@@ -2077,10 +2077,10 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   }
   var t9k = m4t.targetBrick
   if (m4t.isFoot) {
-    this.nextHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.nextHeight
+    this.belowHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.belowHeight
   } else if (m4t.isSuite) {
     t9k = m4t.targetBrick
-    this.suiteHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.nextHeight
+    this.suiteHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.belowHeight
   }
   this.consolidateType()
   if (m4t.isOutput) {
@@ -2110,7 +2110,7 @@ eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
     this.updateGroupBlackHeight()
   }
   if (m4t.isFoot) {
-    this.nextHeight = 0
+    this.belowHeight = 0
     this.incrementChangeCount()
   } else if (m4t.isSuite) {
     this.suiteHeight = 0

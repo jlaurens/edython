@@ -431,7 +431,7 @@ eYo.Selected.chooseNext = () => {
     return
   }
   if ((eyo = eyo.next)) {
-    eYo.Selected.brick = eyo
+    eyo.select()
     eYo.Selected.scrollToVisible()
   }
 }

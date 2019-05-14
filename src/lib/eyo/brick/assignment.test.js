@@ -4,7 +4,7 @@ describe('Wrapped slots', function() {
     'value'
   ].forEach(k => {
     it (`Slot ${k}`, function () {
-      var d = eYo.Test.new_dlgt('assignment_stmt')
+      var d = eYo.Test.new_brick('assignment_stmt')
       eYo.Test.slot_wrapped(d, k)
       d.dispose()
     })
@@ -21,7 +21,7 @@ describe('Each assignment brick type', function() {
   ].forEach(Ts => {
     it (`basic operator: ${Ts[0]} / ${Ts[1] || Ts[0]} / ${Ts[2]}`, function () {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(Ts[0], Ts[1])
+      var d = eYo.Test.new_brick(Ts[0], Ts[1])
       eYo.Test.ctor(d, 'assignment_stmt')
       eYo.Test.data_value(d, 'operator', Ts[2])
       d.dispose()
@@ -35,7 +35,7 @@ describe('Assignment', function() {
   var f = (t, incogs, variant) => {
     it(t, function() {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(t)
+      var d = eYo.Test.new_brick(t)
       eYo.Test.ctor(d, 'assignment_stmt')
       eYo.Test.variant(d, variant)
       eYo.Test.incog(d, incogs)
@@ -51,7 +51,7 @@ describe('Assignment', function() {
 
   it('variant change', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('expression_stmt')
+    var d1 = eYo.Test.new_brick('expression_stmt')
     eYo.Test.ctor(d1, 'assignment_stmt')
     eYo.Test.variant(d1, 'EXPRESSION')
     eYo.Test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
@@ -72,9 +72,9 @@ describe('Assignment', function() {
 
   it('Expression only', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt(eYo.T3.Expr.assignment_chain)
+    var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
@@ -83,9 +83,9 @@ describe('Assignment', function() {
   })
   it('connect an identifier_valued', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt('identifier_valued')
+    var d2 = eYo.Test.new_brick('identifier_valued')
     d2.eyotarget_p = 'NOM'
     d2.value_p = 'EXPR'
     var input = d1.value_b.lastInput
@@ -96,11 +96,11 @@ describe('Assignment', function() {
   })
   it ('Annotated defined and dom', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('annotated_assignment_stmt')
+    var d1 = eYo.Test.new_brick('annotated_assignment_stmt')
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
     d1.dispose()
-    d1 = eYo.Test.new_dlgt(dom)
+    d1 = eYo.Test.new_brick(dom)
     d1.dispose()
     eYo.Test.tearItDown()
   })
@@ -108,12 +108,12 @@ describe('Assignment', function() {
 describe('TEST', function () {
   it ('Annotated alone', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('annotated_stmt')
+    var d1 = eYo.Test.new_brick('annotated_stmt')
     eYo.Test.variant(d1, 'ANNOTATED')
     dom = eYo.Xml.brickToDom(d1)
     console.error(dom)
     d1.dispose()
-    d1 = eYo.Test.new_dlgt(dom)
+    d1 = eYo.Test.new_brick(dom)
     chai.assert(d1.value_s.incog, 'UNEXPECTED VALUE SLOT')
     d1.dispose()
     eYo.Test.tearItDown()
@@ -122,16 +122,16 @@ describe('TEST', function () {
 describe('T&ST', function () {
   it ('identifier_annotated in target slot', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt('identifier_annotated')
+    var d2 = eYo.Test.new_brick('identifier_annotated')
     eYo.Test.list_connect(d1, 'target', d2)
     eYo.Test.brick(d1, 'annotated_assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED') // No 2 annotations
     eYo.Test.incog(d1, ['target', 'Xannotated', 'value'])
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
-    var d3 = eYo.Test.new_dlgt(dom)
+    var d3 = eYo.Test.new_brick(dom)
     eYo.Test.incog(d3, ['target', 'Xannotated', 'value'])
     d3.dispose()
     d2.dispose()
@@ -143,10 +143,10 @@ describe('T&ST', function () {
   })
   it ('augtarget_annotated in target slot', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt('augtarget_annotated')
-    d2.target_b.connectLast(eYo.Test.new_dlgt('identifier'))
+    var d2 = eYo.Test.new_brick('augtarget_annotated')
+    d2.target_b.connectLast(eYo.Test.new_brick('identifier'))
     d2.target_s.unwrappedTarget.variant_p = eYo.Key.SLICING
     eYo.Test.brick('augtarget_annotated')
     eYo.Test.list_connect(d1, 'target', d2)
@@ -155,7 +155,7 @@ describe('T&ST', function () {
     eYo.Test.incog(d1, ['target', 'Xannotated', 'value'])
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
-    var d3 = eYo.Test.new_dlgt(dom)
+    var d3 = eYo.Test.new_brick(dom)
     eYo.Test.incog(d3, ['target', 'Xannotated', 'value'])
     d3.dispose()
     d2.dispose()
@@ -170,7 +170,7 @@ describe('T&ST', function () {
 describe('Comment/Variant changes', function() {
   it('variant change 1', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('expression_stmt')
+    var d1 = eYo.Test.new_brick('expression_stmt')
     eYo.Test.ctor(d1, 'assignment_stmt')
     eYo.Test.variant(d1, 'EXPRESSION', '1')
     eYo.Test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
@@ -181,7 +181,7 @@ describe('Comment/Variant changes', function() {
   })
   it('variant change 2', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('expression_stmt')
+    var d1 = eYo.Test.new_brick('expression_stmt')
     var f = (v, target, annotation, value, str) => {
       d1.variant_p = eYo.Key[v]
       eYo.Test.variant(d1, v, str)
@@ -200,13 +200,13 @@ describe('Copy/Paste', function() {
   var f = (t, incogs, variant) => {
     it(t, function() {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(t)
+      var d = eYo.Test.new_brick(t)
       eYo.Test.ctor(d, 'assignment_stmt')
       eYo.Test.variant(d, variant)
       eYo.Test.incog(d, incogs)
       var dom = eYo.Xml.brickToDom(d)
       d.dispose()
-      d = eYo.Test.new_dlgt(dom)
+      d = eYo.Test.new_brick(dom)
       eYo.Test.ctor(d, 'assignment_stmt')
       console.error(dom)
       eYo.Test.variant(d, variant)
@@ -222,9 +222,9 @@ describe('Copy/Paste', function() {
   f('annotated_assignment_stmt', ['target', 'annotated', 'value'], eYo.Key.ANNOTATED_VALUED, eYo.Key.NONE)
   it('Expression only', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt(eYo.T3.Expr.assignment_chain)
+    var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
@@ -233,9 +233,9 @@ describe('Copy/Paste', function() {
   })
   it('connect an identifier_valued', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_dlgt('identifier_valued')
+    var d2 = eYo.Test.new_brick('identifier_valued')
     d2.eyotarget_p = 'NOM'
     d2.value_p = 'EXPR'
     var input = d1.value_b.lastInput
@@ -246,37 +246,37 @@ describe('Copy/Paste', function() {
   })
   it ('Annotated defined and dom', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('annotated_assignment_stmt')
+    var d1 = eYo.Test.new_brick('annotated_assignment_stmt')
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
     d1.dispose()
-    d1 = eYo.Test.new_dlgt(dom)
+    d1 = eYo.Test.new_brick(dom)
     d1.dispose()
     eYo.Test.tearItDown()
   })
   it ('Annotated alone', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('annotated_stmt')
+    var d1 = eYo.Test.new_brick('annotated_stmt')
     eYo.Test.variant(d1, 'ANNOTATED')
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
     d1.dispose()
-    d1 = eYo.Test.new_dlgt(dom)
+    d1 = eYo.Test.new_brick(dom)
     chai.assert(d1.value_s.incog, 'UNEXPECTED VALUE SLOT')
     d1.dispose()
     eYo.Test.tearItDown()
   })
   it ('identifier_annotated in name', function () {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
-    var d2 = eYo.Test.new_dlgt('identifier_annotated', 'identifier_annotated')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
+    var d2 = eYo.Test.new_brick('identifier_annotated', 'identifier_annotated')
     chai.assert(d1.target_b.connectLast(d2), `MISSED M4T 1`)
     chai.assert(d1.target_s.unwrappedTarget === d2, `MISSED M4T 2`)
     eYo.Test.variant(d1, 'TARGET_VALUED')
     var dom = eYo.Xml.brickToDom(d1)
     // console.error(dom)
     d1.dispose()
-    d1 = eYo.Test.new_dlgt(dom)
+    d1 = eYo.Test.new_brick(dom)
     chai.assert(!d1.value_s.incog, 'MISSING SLOT')
     d1.dispose()
     eYo.Test.tearItDown()
@@ -286,17 +286,17 @@ describe('Copy/Paste', function() {
 describe('One brick: assignment_stmt', function() {
   it('target', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('assignment_stmt')
+    var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.incog(d1, ['target', 'Xannotated', 'value'])
     d1.variant_p = eYo.Key.TARGET
     eYo.Test.variant(d1, 'TARGET', '2')
     eYo.Test.incog(d1, ['target', 'Xannotated', 'Xvalue'])
     // connect all the possible targets
-    var d2 = eYo.Test.new_dlgt('x')
+    var d2 = eYo.Test.new_brick('x')
     d1.target_b.connectLast(d2)
     eYo.Test.input_length(d1.target_b, 3, `MISSED M4T 1`)
     chai.assert(d1.target_s.unwrappedTarget === d2, `MISSED M4T 2`)
-    var d3 =  eYo.Test.new_dlgt(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     chai.assert(d3, `MISSING …+…`)
     d3.will_remain = true
     eYo.STOP = true
@@ -311,7 +311,7 @@ describe('One brick: assignment_stmt', function() {
 describe('One brick: expression_stmt', function() {
   it('target', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('expression_stmt')
+    var d1 = eYo.Test.new_brick('expression_stmt')
     chai.assert(d1.operator_p === '', `MISSED ${d1.operator_p}`)
     eYo.Test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     d1.variant_p = eYo.Key.TARGET
@@ -321,13 +321,13 @@ describe('One brick: expression_stmt', function() {
     d1.target_p = 'abc'
     chai.assert(d1.target_p === 'abc', `MISSED ${d1.target_p} === 'abc'`)
     chai.assert(d1.target_b, 'MISSING TARGET')
-    var d2 = eYo.Test.new_dlgt('de')
+    var d2 = eYo.Test.new_brick('de')
     eYo.Test.input_length(d1.target_b, 1, `MISSED M4T 1`)
     d1.target_b.connectLast(d2)
     chai.assert(d1.target_s.unwrappedTarget === d2, 'MISSED CONNECTION 1')
     eYo.Test.input_length(d1.target_b, 3, `MISSED M4T 2`)
     /*attributeref | subscription | slicing | dotted_name*/
-    var d3 = eYo.Test.new_dlgt('root')
+    var d3 = eYo.Test.new_brick('root')
     chai.assert(d2.dotted_p === 0, `BAD 0: ${d2.dotted_p}`)
     d2.dotted_p = 1
     // d2 is disconnected
@@ -349,9 +349,9 @@ describe('One brick: expression_stmt', function() {
 describe('One brick: annotated_stmt', function() {
   it('target', function() {
     eYo.Test.setItUp()
-    var d1 = eYo.Test.new_dlgt('annotated_stmt')
+    var d1 = eYo.Test.new_brick('annotated_stmt')
     chai.assert(d1.operator_p === '=', `MISSED ${d1.operator_p}`)
-    var d2 = eYo.Test.new_dlgt('x')
+    var d2 = eYo.Test.new_brick('x')
     d1.target_b.connectLast(d2)
     eYo.Test.input_length(d1.target_b, 1, `1`)
     d1.annotated_p = 'fou+bar'
@@ -359,7 +359,7 @@ describe('One brick: annotated_stmt', function() {
     chai.assert(d1.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
     chai.assert(d1.annotated_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
     eYo.Test.code(d1, 'x:fou+bar')
-    var d3 =  eYo.Test.new_dlgt(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.Test.code(d3, 'abc + bcd')
     d1.annotated_s.connect(d3)
     chai.assert(d1.annotated_b === d3, 'MISSED M4T')
@@ -373,8 +373,8 @@ describe('One brick: annotated_stmt', function() {
 describe('One brick: annotated_assignment_stmt', function() {
   it ('target is annotated', function () {
     eYo.Test.setItUp()
-    var d_main = eYo.Test.new_dlgt('assignment_stmt')
-    var annotated = eYo.Test.new_dlgt({
+    var d_main = eYo.Test.new_brick('assignment_stmt')
+    var annotated = eYo.Test.new_brick({
       type: eYo.T3.Expr.primary,
       target_p: 'x',
       annotated_p: 'str'
@@ -388,10 +388,10 @@ describe('One brick: annotated_assignment_stmt', function() {
   })
   it('target', function() {
     eYo.Test.setItUp()
-    var d_main = eYo.Test.new_dlgt('annotated_assignment_stmt')
+    var d_main = eYo.Test.new_brick('annotated_assignment_stmt')
     chai.assert(d_main.operator_p === '=', `MISSED ${d_main.operator_p}`)
     eYo.Test.code(d_main, '<MISSING NAME>:<MISSING EXPRESSION>=<MISSING EXPRESSION>')
-    var d2 = eYo.Test.new_dlgt('x')
+    var d2 = eYo.Test.new_brick('x')
     chai.assert(d2.target_p === 'x', 'MISSED 1')
     d_main.target_b.connectLast(d2)
     eYo.Test.input_length(d_main.target_b, 1, `MISSED M4T 1`)
@@ -404,14 +404,14 @@ describe('One brick: annotated_assignment_stmt', function() {
     d2.target_p = 'xxx'
     chai.assert(d2.target_p === 'xxx', 'MISSED 2')
     eYo.Test.code(d_main, 'xxx: fou + bar = <MISSING EXPRESSION>')
-    var d3 =  eYo.Test.new_dlgt(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.Test.code(d3, 'abc + bcd')
     d_main.annotated_s.connect(d3)
     chai.assert(d_main.annotated_b === d3, 'MISSED M4T')
     chai.assert(!d_main.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
     eYo.Test.code(d_main, 'xxx: abc + bcd=<MISSING EXPRESSION>')
     // then replace the target brick with an annotated identifier
-    d3 = eYo.Test.new_dlgt('Z')
+    d3 = eYo.Test.new_brick('Z')
     d3.variant_p = eYo.Key.ANNOTATED
     d3.annotated_p = 'abcd + cdef'
     eYo.Test.code(d3, 'Z: abcd + cdef')
@@ -436,7 +436,7 @@ describe('XML representation', function() {
   var f = (t, k, do_it) => {
     it(`basic ${t}+${k}`, function() {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(t)
+      var d = eYo.Test.new_brick(t)
       do_it && do_it(d)
       var dom = eYo.Xml.brickToDom(d)
       // console.log(dom)
@@ -457,13 +457,13 @@ describe('Copy/Paste with value', function() {
   var f = t => {
     it(`basic ${t}`, function() {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(t)
-      var dd = eYo.Test.new_dlgt('identifier')
+      var d = eYo.Test.new_brick(t)
+      var dd = eYo.Test.new_brick('identifier')
       chai.assert(d.value_b.connectLast(dd))
       var dom = eYo.Xml.brickToDom(d)
       // console.log(dom)
       chai.assert(dom.tagName.toLowerCase() === 's')
-      dd = eYo.Test.new_dlgt(dom)
+      dd = eYo.Test.new_brick(dom)
       eYo.Test.variant(d, dd.variant_p)
       eYo.Test.code(d, dd.toString)
       d.dispose()
@@ -479,12 +479,12 @@ describe('Copy/Paste with data test', function() {
   var f = (t, do_it, test) => {
     it(`basic ${t}`, function() {
       eYo.Test.setItUp()
-      var d = eYo.Test.new_dlgt(t)
+      var d = eYo.Test.new_brick(t)
       do_it && do_it(d)
       var dom = eYo.Xml.brickToDom(d)
       chai.assert(dom.tagName.toLowerCase() === 's')
       console.error(t, dom)
-      var dd = eYo.Test.new_dlgt(dom)
+      var dd = eYo.Test.new_brick(dom)
       eYo.Test.variant(d, dd.variant_p)
       eYo.Test.code(d, dd.toLinearString)
       test && test(d, dd)
@@ -515,7 +515,7 @@ describe('Copy/Paste with data test', function() {
 describe('Initalize with model', function() {
   it(`basic model`, function() {
     eYo.Test.setItUp()
-    var d = eYo.Test.new_dlgt({
+    var d = eYo.Test.new_brick({
       type: eYo.T3.Stmt.augmented_assignment_stmt,
       operator_p: '+='
     })
@@ -529,7 +529,7 @@ describe('Initalize augmented_assignment_stmt', function() {
   eYo.Brick.Manager.getModel(eYo.T3.Expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
     eYo.Test.setItUp()
-    var d = eYo.Test.new_dlgt(eYo.T3.Stmt.augmented_assignment_stmt)
+    var d = eYo.Test.new_brick(eYo.T3.Stmt.augmented_assignment_stmt)
     eYo.Test.data_value(d, 'operator', '+=')
     d.dispose()
     eYo.Test.tearItDown()

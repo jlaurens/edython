@@ -12,7 +12,7 @@ describe('comment statement', function () {
   it(`One brick dbOpposite_`, function () {
     eYo.Test.setItUp()
     test_connection_db()
-    var d = eYo.Test.new_dlgt('comment_stmt')
+    var d = eYo.Test.new_brick('comment_stmt')
     // d.comment_p = 'abc'
     var m4ts = d.magnets
     ;[
@@ -42,8 +42,8 @@ describe('comment statement', function () {
   it(`Two bricks dbOpposite_`, function () {
     eYo.Test.setItUp()
     test_connection_db()
-    var d1 = eYo.Test.new_dlgt('comment_stmt')
-    var d2 = eYo.Test.new_dlgt('comment_stmt')
+    var d1 = eYo.Test.new_brick('comment_stmt')
+    var d2 = eYo.Test.new_brick('comment_stmt')
     // d1.comment_p = 'abc'
     // d2.comment_p = 'cde'
     // d2.moveByXY(100,20)
@@ -89,10 +89,10 @@ describe('comment statement', function () {
   })
   it(`Create from type`, function () {
     eYo.Test.setItUp()
-    var d = eYo.Test.new_dlgt('comment_stmt')
+    var d = eYo.Test.new_brick('comment_stmt')
     eYo.Test.brick(d, 'comment_stmt')
     eYo.Test.ctor(d, 'comment_stmt')
-    var d1 = eYo.Test.new_dlgt('comment_stmt')
+    var d1 = eYo.Test.new_brick('comment_stmt')
     d.comment_p = 'abc'
     d1.comment_p = 'cde'
     d1.moveByXY(100,20)

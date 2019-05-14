@@ -62,7 +62,7 @@ eYo.Test.brick = (brick, t, str) => {
   chai.assert(!t || (brick.type === t), `MISSED TYPE ${str || ''} ${brick.type} === ${t}`)
 }
 
-eYo.Test.new_dlgt = (t, tt, str, headless) => {
+eYo.Test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
   var brick = eYo.Brick.newReady(eYo.App.workspace, type)
   eYo.Test.brick(brick, tt, str)
@@ -91,7 +91,7 @@ eYo.Test.basic = (ra, str) => {
       var tt = args[1] || ((args[1] === null) && args[0])
       var k = args[2] || ((args[2] === null) && args[0])
       it (`${t}${tt ? `/${tt}` : ''}${k ? `/ctor: ${k}` : ''}`, function () {
-        var d = eYo.Test.new_dlgt(args[0], args[1] || args[0])
+        var d = eYo.Test.new_brick(args[0], args[1] || args[0])
         args[2] && eYo.Test.ctor(d, args[2])
         d.dispose()
       })
@@ -170,7 +170,7 @@ eYo.Brick.prototype.test_display_line_counts = function () {
     main: this.mainHeight,
     suite: this.suiteHeight,
     black: this.blackHeight,
-    next: this.nextHeight
+    next: this.belowHeight
   })
 }
 /**
@@ -193,7 +193,7 @@ eYo.Test.line_counts = (brick, cfg) => {
       main: d.mainHeight,
       suite: d.suiteHeight,
       black: d.blackHeight,
-      next: d.nextHeight
+      next: d.belowHeight
     }[k]
     if (expected !== available) {
       failed = k
@@ -301,7 +301,7 @@ eYo.Test.data_save = (brick, key, value, ignore) => {
  * Slot connection test.
  */
 eYo.Test.bind_field = (type, key, no) => {
-  var brick = eYo.Test.new_dlgt(type)
+  var brick = eYo.Test.new_brick(type)
   var s = brick.slots[key]
   chai.assert(s, `MISSING SLOT for ${key} in ${brick.type}`)
   var f = s.bindField

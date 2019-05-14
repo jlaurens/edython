@@ -138,7 +138,7 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (brick) {
           its_m4t.connect(my_m4t)
           brick.consolidating_ = old
           if (selected) {
-            eYo.Selected.brick = brick
+            brick.select()
           }
         } else {
           var its_xy = brick.ui.xyInSurface

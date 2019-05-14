@@ -17,7 +17,7 @@ describe('Enclosure(Basic)', function () {
     ['parenth_target_list', 'PAR', 'parenth_form']
   ].forEach(args => {
     it(`${args[0]}/${args[1]}`, function() {
-      var d = eYo.Test.new_dlgt(args[0], args[2] || args[0])
+      var d = eYo.Test.new_brick(args[0], args[2] || args[0])
       eYo.Test.variant(d, args[1])
       d.dispose()
     })
@@ -28,7 +28,7 @@ describe('Enclosure(Basic)', function () {
     ['void_dict_display', 'BRACE']
   ].forEach(args => {
     it(`${args[1]}/${args[0]}`, function() {
-      var d = eYo.Test.new_dlgt('enclosure')
+      var d = eYo.Test.new_brick('enclosure')
       d.variant_p = eYo.Key[args[1]]
       eYo.Test.variant(d, args[1])
       eYo.Test.brick(d, args[0])
@@ -39,24 +39,24 @@ describe('Enclosure(Basic)', function () {
 
 describe('Enclosure connections', function() {
   it(`'()'`, function() {
-    var d = eYo.Test.new_dlgt(eYo.T3.Expr.enclosure)
+    var d = eYo.Test.new_brick(eYo.T3.Expr.enclosure)
     console.error('TYPE', d.type)
     eYo.Test.brick(d, `parenth_form`) // default type
     eYo.Test.variant(d, 'PAR')
     // can I connect a comprehension brick ?
     eYo.Test.input_length(d, 1)
-    var dd1 = eYo.Test.new_dlgt('comprehension')
+    var dd1 = eYo.Test.new_brick('comprehension')
     chai.assert(d.connectLast(dd1))
     // this is a unique object:
     eYo.Test.input_length(d, 1)
     // replace with another unique object:
-    var dd2 = eYo.Test.new_dlgt('yield_expr')
+    var dd2 = eYo.Test.new_brick('yield_expr')
     chai.assert(d.connectLast(dd2))
     eYo.Test.input_length(d, 1)
     chai.assert(!dd1.magnets.output.target)
     dd1.dispose()
     // replace with a non unique object:
-    var dd3 = eYo.Test.new_dlgt(421)
+    var dd3 = eYo.Test.new_brick(421)
     eYo.Test.brick(dd3, 'integer')
     chai.assert(d.connectLast(dd3))
     eYo.Test.input_length(d, 3)
@@ -64,11 +64,11 @@ describe('Enclosure connections', function() {
     chai.assert(!d.inputList[0].eyo.connect(dd2), 'UNEXPECTED connection')
     chai.assert(!d.inputList[2].eyo.connect(dd2), 'UNEXPECTED connection')
     dd2.dispose()
-    dd1 = eYo.Test.new_dlgt(124)
+    dd1 = eYo.Test.new_brick(124)
     eYo.Test.brick(dd1, 'integer')
     chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 5)
-    dd1 = eYo.Test.new_dlgt(241)
+    dd1 = eYo.Test.new_brick(241)
     eYo.Test.brick(dd1, 'integer')
     chai.assert(d.inputList[0].eyo.connect(dd1), 'MISSING connection')
     eYo.Test.input_length(d, 7)
@@ -78,9 +78,9 @@ describe('Enclosure connections', function() {
 
   })
   it(`'{}'`, function() {
-    var d = eYo.Test.new_dlgt('void_dict_display')
+    var d = eYo.Test.new_brick('void_dict_display')
     // connect a unique brick
-    var dd1 = eYo.Test.new_dlgt('comprehension')
+    var dd1 = eYo.Test.new_brick('comprehension')
     eYo.Test.input_length(d, 1)
     chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 1)
@@ -89,23 +89,23 @@ describe('Enclosure connections', function() {
     var list = d.model.list
     var unique = list.unique(d.type)
     unique.forEach(t => {
-      var dd2 = eYo.Test.new_dlgt(t)
+      var dd2 = eYo.Test.new_brick(t)
       chai.assert(d.connectLast(dd2))
       eYo.Test.input_length(d, 1)
       chai.assert(!dd1.magnets.output.target)
       dd1.dispose()
       dd1 = dd2
     })
-    var dd2 = eYo.Test.new_dlgt('dict_comprehension')
-    chai.assert(dd2.expression_s.connect(eYo.Test.new_dlgt('key_datum')))
+    var dd2 = eYo.Test.new_brick('dict_comprehension')
+    chai.assert(dd2.expression_s.connect(eYo.Test.new_brick('key_datum')))
     d.connectLast(dd2)
     dd1.dispose()
     eYo.Test.brick(d, 'dict_display')
     d.dispose()
   })
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {
-    var d = eYo.Test.new_dlgt('parenth_form')
-    var dd1 = eYo.Test.new_dlgt('comprehension')
+    var d = eYo.Test.new_brick('parenth_form')
+    var dd1 = eYo.Test.new_brick('comprehension')
     var input = d.inputList[0]
     chai.assert(input.connect(dd1), 'MISSING connection')
     d.variant_p === eYo.Key.SQB
@@ -123,8 +123,8 @@ describe('Enclosure connections', function() {
     d.dispose()
   })
   it(`Enclosure: '() -> {}'`, function() {
-    var d = eYo.Test.new_dlgt('parenth_form')
-    var dd1 = eYo.Test.new_dlgt(421)
+    var d = eYo.Test.new_brick('parenth_form')
+    var dd1 = eYo.Test.new_brick(421)
     var input = d.inputList[0]
     chai.assert(input.connect(dd1), 'MISSING connection')
     d.variant_p === eYo.Key.BRACE

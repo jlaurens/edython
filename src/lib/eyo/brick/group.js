@@ -282,20 +282,19 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
  * @private
  */
 eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mgr) {
-  var brick = this
   if (this.fields.async) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
-    if (this.getProperty(brick, eYo.Key.ASYNC)) {
-      mgr.addRemoveChild(mgr.newMenuItem(content, function () {
-        brick.eyo.setProperty(brick, eYo.Key.ASYNC, false)
+    if (this.async_) {
+      mgr.addRemoveChild(mgr.newMenuItem(content, () => {
+        this.async_ = false
       }))
       mgr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(mgr.newMenuItem(content, function () {
-        this.setProperty(brick, eYo.Key.ASYNC, true)
+      mgr.addInsertChild(mgr.newMenuItem(content, () => {
+        this.async_ = true
       }))
       mgr.shouldSeparateInsert()
     }

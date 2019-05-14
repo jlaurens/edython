@@ -101,26 +101,6 @@ eYo.FlyoutDelegate.prototype.TOP_OFFSET = 2 * eYo.Unit.y
 
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
 
-eYo.setup.register(function () {
-  eYo.Style.insertCssRuleAt(
-    `.eyo-flyout {
-        position: absolute;
-        z-index: 20;
-      }`)
-  eYo.Style.insertCssRuleAt(
-    `.eyo-flyout-background {
-      fill: #ddd;
-      fill-opacity: .8;
-      pointer-events: all;
-    }`
-  )
-  eYo.Style.insertCssRuleAt(
-    `.eyo-flyout-scrollbar {
-      z-index: 30;
-    }`
-  )
-})
-
 /**
  * Dispose of this delegate's flyout.
  * Unlink from all DOM elements to prevent memory leaks.
