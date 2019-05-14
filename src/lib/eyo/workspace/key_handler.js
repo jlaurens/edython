@@ -412,13 +412,13 @@ eYo.KeyHandler = (() => {
       // let someone else catch that event
       return
     }
-    var dlgt = event.target.eyo
-    if (dlgt !== target_.eyo) {
-      if (!(dlgt = dlgt.parent)) {
+    var brick = event.target.eyo
+    if (brick !== target_.eyo) {
+      if (!(brick = brick.parent)) {
         return
       }
-      if (dlgt !== target_.eyo) {
-        if (!(dlgt = dlgt.parent) || (dlgt !== target_.eyo)) {
+      if (brick !== target_.eyo) {
+        if (!(brick = brick.parent) || (brick !== target_.eyo)) {
           return
         }
       }
@@ -434,18 +434,18 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((dlgt = eYo.Selected.brick) && dlgt.showEditor) {
+      if ((brick = eYo.Selected.brick) && brick.showEditor) {
         event.preventDefault()
         event.stopPropagation()
-        dlgt.showEditor()
+        brick.showEditor()
         return
       }
     }
-    if ((dlgt = eYo.Selected.brick)) {
+    if ((brick = eYo.Selected.brick)) {
       if (K === ' ') {
         event.preventDefault()
         event.stopPropagation()
-        eYo.MenuManager.shared().showMenu(dlgt, event)
+        eYo.MenuManager.shared().showMenu(brick, event)
         return
       }
       keys_ = []
@@ -488,16 +488,16 @@ eYo.KeyHandler = (() => {
             }
           })
         }
-        var scaledHeight = eYo.Unit.y * dlgt.workspace.scale
+        var scaledHeight = eYo.Unit.y * brick.workspace.scale
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.ui.svg.group_)
-          var xxyy = m4t.offsetInBlock_.clone().scale(dlgt.workspace.scale)
+          var xxyy = m4t.offsetInBlock_.clone().scale(brick.workspace.scale)
           xy.translate(xxyy)
         } else {
-          xy = goog.style.getPageOffset(dlgt.ui.svg.group_)
+          xy = goog.style.getPageOffset(brick.ui.svg.group_)
         }
-        menu_.showMenu(dlgt.ui.svg.group_, xy.x, xy.y + scaledHeight + 2)
+        menu_.showMenu(brick.ui.svg.group_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
         var F = f => {
@@ -517,9 +517,9 @@ eYo.KeyHandler = (() => {
       F = f => {
         event.preventDefault()
         event.stopPropagation()
-        var dlgt = eYo.Brick.getBestDlgt(eYo.App.workspace, f)
-        if (dlgt) {
-          dlgt.select().scrollToVisible()
+        var brick = eYo.Brick.getBestDlgt(eYo.App.workspace, f)
+        if (brick) {
+          brick.select().scrollToVisible()
         }
       }
       switch (k) {
