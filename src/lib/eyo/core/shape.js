@@ -455,8 +455,8 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
  * create a shape with the given brick delegate.
  * @param {eYo.Brick!} eyo  Block delegate
  */
-eYo.Shape.newWithNode = function(eyo) {
-  return new eYo.Shape().initWithNode(eyo)
+eYo.Shape.newWithBrick = function(eyo) {
+  return new eYo.Shape().initWithBrick(eyo)
 }
 
 /**
@@ -465,15 +465,15 @@ eYo.Shape.newWithNode = function(eyo) {
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithNode = function(eyo, opt) {
-  return eYo.Shape.shared.initWithNode(eyo, opt).definition
+eYo.Shape.definitionWithBrick = function(eyo, opt) {
+  return eYo.Shape.shared.initWithBrick(eyo, opt).definition
 }
 
 /**
  * Inits a shape with the given brick delegate.
  * @param {eYo.Brick!} eyo  Block delegate
  */
-eYo.Shape.prototype.initWithNode = (() => {
+eYo.Shape.prototype.initWithBrick = (() => {
 /**
  * Inits a shape with the given brick delegate.
  * @param {eYo.Brick!} eyo  Block delegate

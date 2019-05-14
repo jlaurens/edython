@@ -318,7 +318,7 @@ eYo.Driver.Svg.prototype.brickHasSelect = function (node) {
  * @private
  */
 eYo.Driver.Svg.prototype.pathSelectDef_ = function (node) {
-  return eYo.Shape.definitionWithNode(node, {dido: true})
+  return eYo.Shape.definitionWithBrick(node, {dido: true})
 }
 
 /**
@@ -327,7 +327,7 @@ eYo.Driver.Svg.prototype.pathSelectDef_ = function (node) {
  * @private
  */
 eYo.Driver.Svg.prototype.pathDef_ = function (node) {
-  return eYo.Shape.definitionWithNode(node)
+  return eYo.Shape.definitionWithBrick(node)
 }
 
 /**
@@ -410,7 +410,7 @@ eYo.Driver.Svg.prototype.pathConnectionDef_ = function (node) {
  * @private
  */
 eYo.Driver.Svg.prototype.pathBBoxDef_ = function (node) {
-  return eYo.Shape.definitionWithNode(node, {bbox: true})
+  return eYo.Shape.definitionWithBrick(node, {bbox: true})
 }
 
 /**
@@ -998,7 +998,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
   var steps
   if (m4t.isInput) {
     if (m4t.target) {
-      steps = eYo.Shape.definitionWithNode(m4t.targetBrick)
+      steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
       Blockly.Connection.highlightedPath_ =
@@ -1012,7 +1012,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
       return
     }
   } else if (m4t.isOutput) {
-    steps = eYo.Shape.definitionWithNode(node)
+    steps = eYo.Shape.definitionWithBrick(node)
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
