@@ -12,7 +12,7 @@ describe('Simple statement and group', function () {
 describe ('with_part', function () {
   it (`Basic`, function () {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.with_part)
-    eYo.Test.dlgt(d, 'with_part')
+    eYo.Test.brick(d, 'with_part')
     eYo.Test.code(d, 'with <MISSING INPUT>:\n    <MISSING STATEMENT>')
     var dd = eYo.Test.new_dlgt(eYo.T3.Expr.identifier)
     dd.target_p = 'abc'
@@ -28,7 +28,7 @@ describe('for_part', function() {
   it(`Basic`, function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_dlgt('for_part')
-    eYo.Test.dlgt(d1, 'for_part')
+    eYo.Test.brick(d1, 'for_part')
     eYo.Test.magnets(d1, {
       left: true,
       right: true,
@@ -47,10 +47,10 @@ describe('for_part', function() {
   })
   // it(`for_part + else_part`, function() {
   //   var d = eYo.Test.new_dlgt(eYo.T3.Stmt.for_part)
-  //   eYo.Test.dlgt(d, 'for_part')
+  //   eYo.Test.brick(d, 'for_part')
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>')
   //   var dd = eYo.Test.new_dlgt(eYo.T3.Stmt.else_part)
-  //   eYo.Test.dlgt(dd, 'else_part')
+  //   eYo.Test.brick(dd, 'else_part')
   //   eYo.Test.code(dd, 'else:\n    <MISSING STATEMENT>')
   //   chai.assert(d.footConnect(dd))
   //   eYo.Test.code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>\nelse:\n    <MISSING STATEMENT>')
