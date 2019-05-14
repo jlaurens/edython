@@ -1,7 +1,7 @@
 describe('Import statement (BASIC)', function() {
   it(`Variant change effect`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.import_stmt)
-    eYo.Test.dlgt(d, 'import_stmt')
+    eYo.Test.brick(d, 'import_stmt')
     eYo.Test.variant(d, 'IMPORT')
     eYo.Test.incog(d,
       ['import_module',
@@ -198,7 +198,7 @@ describe('import module', function() {
       eYo.Test.list_connect(d, 'import_module', dd)
       eYo.Test.code(d, 'import bcd')
       dd = d.import_module_s.unwrappedTarget
-      eYo.Test.dlgt(dd, 'identifier')
+      eYo.Test.brick(dd, 'identifier')
       eYo.Test.input_length(d.import_module_b, 3)
       dd.dispose()
       eYo.Test.input_length(d.import_module_b, 1)
