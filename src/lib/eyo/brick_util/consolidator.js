@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Consolidators for various list blocks and proper_slice, for edython.
+ * @fileoverview Consolidators for various list bricks and proper_slice, for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -58,7 +58,7 @@ eYo.Consolidator.prototype.init = function(d) {
 /**
  * Main and unique entry point.
  * Removes empty place holders
- * @param {!eYo.Brick} dlgt, to be consolidated....
+ * @param {!eYo.Brick} brick, to be consolidated....
  */
 eYo.Consolidator.prototype.consolidate = undefined
 
@@ -133,8 +133,8 @@ eYo.Consolidator.List.prototype.init = function (d) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getAry = function (io) {
-  if (io.dlgt) {
-    var d = io.dlgt.ary_d
+  if (io.brick) {
+    var d = io.brick.ary_d
     if (d) {
       return d.get()
     }
@@ -150,13 +150,13 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getMandatory = function (io) {
-  if (io.dlgt) {
-   var d = io.dlgt.mandatory_d
+  if (io.brick) {
+   var d = io.brick.mandatory_d
     if (d) {
       return d.get()
     }
     if (goog.isFunction(this.model.mandatory)) {
-      return this.model.mandatory(io.dlgt.type, io.dlgt.subtype)
+      return this.model.mandatory(io.brick.type, io.brick.subtype)
     }
   }
   return goog.isDef(this.model.mandatory)
@@ -221,7 +221,7 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
       this.will_connect_ = this.brick.will_connect_ = false
     }
   }
-  var input = new eYo.Input(io.dlgt, '!', model)
+  var input = new eYo.Input(io.brick, '!', model)
   io.list.splice(io.i, 0, input)
   io.edited = true
   this.setupIO(io)
@@ -241,7 +241,7 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
   }
   var input = io.list[i]
   var m4t = input.magnet
-  m4t && m4t.break()
+  m4t && m4t.disconnect()
   input.dispose()
   io.list.splice(i, 1)
   io.edited = true
@@ -260,17 +260,17 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
   if (this.model.all) {
     if (io.unique >= 0 || io.list.length === 1) {
       // a single brick or no brick at all
-      return this.model.all(io.dlgt.type, io.dlgt.subtype)
+      return this.model.all(io.brick.type, io.brick.subtype)
     } else if (io.list.length === 3 && io.i === 1) {
       // there is only one item in the list
       // and it can be replaced by any kind of brick
-      return this.model.all(io.dlgt.type, io.dlgt.subtype)
+      return this.model.all(io.brick.type, io.brick.subtype)
     } else {
-      // blocks of type check are already there
-      return this.model.check(io.dlgt.type, io.dlgt.subtype)
+      // bricks of type check are already there
+      return this.model.check(io.brick.type, io.brick.subtype)
     }
   }
-  return this.model.check(io.dlgt.type, io.dlgt.subtype)
+  return this.model.check(io.brick.type, io.brick.subtype)
 }
 
 /**
@@ -316,7 +316,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     var f = (sep, suffix) => {
       var field = new eYo.FieldLabel(sep)
       io.input.fieldRow.splice(0, 0, field)
-      field.setSourceBlock(io.dlgt)
+      field.setSourceBlock(io.brick)
       field.eyo.beReady(io.input.isReady)
       field.eyo.suffix = suffix
     }
@@ -327,13 +327,13 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   }
   io.input.check = this.getCheck(io)
   io.m4t.hidden_ = undefined
-  if (io.dlgt.locked_) {
+  if (io.brick.locked_) {
     io.m4t.hidden_ = true
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
     io.m4t.hidden_ = true
   } else if (io.i === 2 && io.list.length === 3 && io.noDynamicList) {
     io.m4t.hidden_ = true
-  } else if (!io.dlgt.incog) {
+  } else if (!io.brick.incog) {
     io.m4t.hidden_ = false
   }
   io.m4t.ignoreBindField = io.i === 0 && io.list.length > 1
@@ -441,9 +441,9 @@ eYo.Consolidator.List.prototype.makeUnique = function (io) {
     }
   }
   if (this.model.unique && io.m4t.target) {
-    var unique = this.model.unique(io.dlgt.type, io.dlgt.subtype)
+    var unique = this.model.unique(io.brick.type, io.brick.subtype)
     if (!unique) {
-      throw `MISSING UNIQUE ${this.model.unique(io.dlgt.type, io.dlgt.subtype)}`
+      throw `MISSING UNIQUE ${this.model.unique(io.brick.type, io.brick.subtype)}`
     } else if (io.m4t.target.check_.some(x => unique && unique.indexOf(x) >= 0)) {
       io.unique = io.i
     }
@@ -649,18 +649,18 @@ eYo.Consolidator.List.prototype.doLink = function (io) {
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
-eYo.Consolidator.List.prototype.getIO = function (dlgt) {
-  var unwrapped = dlgt.wrapper
+eYo.Consolidator.List.prototype.getIO = function (brick) {
+  var unwrapped = brick.wrapper
   var io = {
-    dlgt: dlgt,
-    noLeftSeparator: dlgt.workspace && (dlgt.workspace.eyo.options.noLeftSeparator ||
-      dlgt.workspace.eyo.options.noDynamicList) &&
+    brick: brick,
+    noLeftSeparator: brick.workspace && (brick.workspace.eyo.options.noLeftSeparator ||
+      brick.workspace.eyo.options.noDynamicList) &&
       (!unwrapped ||
         (!unwrapped.withLeftSeparator_ && !unwrapped.withDynamicList_)),
-    noDynamicList: dlgt.workspace && (dlgt.workspace.eyo.options.noDynamicList) &&
+    noDynamicList: brick.workspace && (brick.workspace.eyo.options.noDynamicList) &&
       (!unwrapped ||
         !unwrapped.withDynamicList_),
-    list: dlgt.inputList,
+    list: brick.inputList,
     presep: this.model.presep,
     postsep: this.model.postsep,
     unique: -1
@@ -673,18 +673,18 @@ eYo.Consolidator.List.prototype.getIO = function (dlgt) {
  * List consolidator.
  * Removes empty place holders, add some...
  * Problem of `when`: the brick should not consolidate when not in a wokspace.
- * @param {!eYo.Brick} dlgt, to be consolidated.
+ * @param {!eYo.Brick} brick, to be consolidated.
  * @param {boolean} force, true if no shortcut is allowed.
  */
-eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (dlgt, force) {
+eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
   // do not consolidate while changing or not in a workspace
-  if (dlgt.change.level || !dlgt.workspace) {
+  if (brick.change.level || !brick.workspace) {
     return
   }
-  var io = this.getIO(dlgt)
+  var io = this.getIO(brick)
   // things are different if one of the inputs is connected
   if (this.walk_to_next_connected(io)) {
-    // console.error('EXPECTED CONSOLIDATION', dlgt.type)
+    // console.error('EXPECTED CONSOLIDATION', brick.type)
     if (this.consolidate_first_connected(io)) {
       while (this.walk_to_next_connected(io, true) &&
         this.consolidate_connected(io)) {}
@@ -703,20 +703,20 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
 
 /**
  * Fetches the named input object
- * @param {!eYo.Brick} dlgt
+ * @param {!eYo.Brick} brick
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default brick implementation.
  */
-eYo.Consolidator.List.prototype.getInput = function (dlgt, name, dontCreate) {
+eYo.Consolidator.List.prototype.getInput = function (brick, name, dontCreate) {
   // name = eYo.Do.Name.getNormalized(name) not here
   if (!name || !name.length) {
     return null
   }
-  this.consolidate(dlgt)
+  this.consolidate(brick)
   var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', function () {
     var j = -1
-    var io = this.getIO(dlgt)
+    var io = this.getIO(brick)
     do {
       if (io.input) {
         io.presep = io.input.lst_presep || io.presep
@@ -803,11 +803,11 @@ eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
 /**
  * Whether the brick has an input for the given type.
  * Used by the print brick.
- * @param {!eYo.Brick} dlgt
+ * @param {!eYo.Brick} brick
  * @param {Object} type, string or array of strings
  * @return the next keyword item input, undefined when at end.
  */
-eYo.Consolidator.List.prototype.hasInputForType = function (dlgt, type) {
-  var io = this.getIO(dlgt)
+eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {
+  var io = this.getIO(brick)
   return !!this.nextInputForType(io, type)
 }
