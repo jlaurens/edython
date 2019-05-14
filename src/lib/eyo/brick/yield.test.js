@@ -2,13 +2,13 @@ describe('YIELD expression and statement', function() {
   it(`Basic yield statement`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Stmt.yield_stmt)
     eYo.Test.code(d, 'yield')
-    eYo.Test.dlgt(d, 'yield_stmt')
+    eYo.Test.brick(d, 'yield_stmt')
     d.dispose()
   })
   it(`Basic yield expression`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Expr.yield_expr)
     eYo.Test.code(d, 'yield')
-    eYo.Test.dlgt(d, 'yield_expr')
+    eYo.Test.brick(d, 'yield_expr')
     d.dispose()
   })
   it(`yield expression output`, function() {
