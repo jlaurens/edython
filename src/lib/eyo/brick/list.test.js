@@ -31,7 +31,7 @@ describe('Enclosure(Basic)', function () {
       var d = eYo.Test.new_dlgt('enclosure')
       d.variant_p = eYo.Key[args[1]]
       eYo.Test.variant(d, args[1])
-      eYo.Test.dlgt(d, args[0])
+      eYo.Test.brick(d, args[0])
       d.dispose()
     })
   })
@@ -41,7 +41,7 @@ describe('Enclosure connections', function() {
   it(`'()'`, function() {
     var d = eYo.Test.new_dlgt(eYo.T3.Expr.enclosure)
     console.error('TYPE', d.type)
-    eYo.Test.dlgt(d, `parenth_form`) // default type
+    eYo.Test.brick(d, `parenth_form`) // default type
     eYo.Test.variant(d, 'PAR')
     // can I connect a comprehension brick ?
     eYo.Test.input_length(d, 1)
@@ -57,7 +57,7 @@ describe('Enclosure connections', function() {
     dd1.dispose()
     // replace with a non unique object:
     var dd3 = eYo.Test.new_dlgt(421)
-    eYo.Test.dlgt(dd3, 'integer')
+    eYo.Test.brick(dd3, 'integer')
     chai.assert(d.connectLast(dd3))
     eYo.Test.input_length(d, 3)
     chai.assert(!dd2.magnets.output.target)
@@ -65,11 +65,11 @@ describe('Enclosure connections', function() {
     chai.assert(!d.inputList[2].eyo.connect(dd2), 'UNEXPECTED connection')
     dd2.dispose()
     dd1 = eYo.Test.new_dlgt(124)
-    eYo.Test.dlgt(dd1, 'integer')
+    eYo.Test.brick(dd1, 'integer')
     chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 5)
     dd1 = eYo.Test.new_dlgt(241)
-    eYo.Test.dlgt(dd1, 'integer')
+    eYo.Test.brick(dd1, 'integer')
     chai.assert(d.inputList[0].eyo.connect(dd1), 'MISSING connection')
     eYo.Test.input_length(d, 7)
     d.dispose()
@@ -84,7 +84,7 @@ describe('Enclosure connections', function() {
     eYo.Test.input_length(d, 1)
     chai.assert(d.connectLast(dd1))
     eYo.Test.input_length(d, 1)
-    eYo.Test.dlgt(d, 'set_display')
+    eYo.Test.brick(d, 'set_display')
     // replace by any other unique
     var list = d.model.list
     var unique = list.unique(d.type)
@@ -100,7 +100,7 @@ describe('Enclosure connections', function() {
     chai.assert(dd2.expression_s.connect(eYo.Test.new_dlgt('key_datum')))
     d.connectLast(dd2)
     dd1.dispose()
-    eYo.Test.dlgt(d, 'dict_display')
+    eYo.Test.brick(d, 'dict_display')
     d.dispose()
   })
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {
