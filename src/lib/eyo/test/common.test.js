@@ -344,9 +344,9 @@ eYo.Test.slot_connect = (brick, key, tb) => {
 eYo.Test.slot_wrapped = (brick, k) => {
   var s = brick.slots[k]
   chai.assert(s, `MISSING wrapped ${k} slot`)
-  var t_brick = s.target
-  chai.assert(t_brick, 'MISSING target\'s target slot')
-  chai.assert(t_brick.parent === brick, 'MISSING parent')
+  var t9k = s.targetBrick
+  chai.assert(t9k, 'MISSING target\'s target slot')
+  chai.assert(t9k.parent === brick, 'MISSING parent')
 }
 
 eYo.Test.expect_out_check = (brick, check, str) => {
@@ -400,9 +400,9 @@ eYo.Test.copy_paste = (brick, opts) => {
   var filter = opts && opts.filter
   if (goog.isFunction(filter)) {
     var f = input => {
-      var t_brick = input.targetBrick
-      if (t_brick) {
-        return filter(t_brick)
+      var t9k = input.targetBrick
+      if (t9k) {
+        return filter(t9k)
       }
     }
     var m = brick.inputList.map(f)

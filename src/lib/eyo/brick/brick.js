@@ -272,23 +272,24 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   surround: {
     get () {
-      var brick
-      if ((brick = this.output)) {
-        return brick
-      } else if ((brick = this.leftMost)) {
-        return brick.group
+      var b3k
+      if ((b3k = this.output)) {
+        return b3k
+      } else if ((b3k = this.leftMost)) {
+        return b3k.group
       }
       return null
     }
   },
   group: {
     get () {
-      var brick = this
-      while ((head = brick.head)) {
-        if (head.suite === brick) {
-          return brick
+      var b3k = this
+      var ans
+      while ((ans = b3k.head)) {
+        if (ans.suite === b3k) {
+          return ans
         }
-        brick = head
+        b3k = ans
       }
     }
   },
@@ -336,11 +337,11 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   stmtParent: {
     get () {
-      var eyo = this
+      var ans = this
       do {
-        eyo = eyo.parent
-      } while (eyo && !eyo.isStmt)
-      return eyo
+        ans = ans.parent
+      } while (ans && !ans.isStmt)
+      return ans
     }
   },
   span: {
@@ -458,9 +459,9 @@ Object.defineProperties(eYo.Brick.prototype, {
   leftMost: {
     get () {
       var ans = this
-      var eyo
-      while ((eyo = ans.left)) {
-        ans = eyo
+      var b3k
+      while ((b3k = ans.left)) {
+        ans = b3k
       }
       return ans
     }
@@ -468,9 +469,9 @@ Object.defineProperties(eYo.Brick.prototype, {
   headMost: {
     get () {
       var ans = this
-      var eyo
-      while ((eyo = ans.head)) {
-        ans = eyo
+      var b3k
+      while ((b3k = ans.head)) {
+        ans = b3k
       }
       return ans
     }
@@ -478,9 +479,9 @@ Object.defineProperties(eYo.Brick.prototype, {
   rightMost: {
     get () {
       var ans = this
-      var eyo
-      while ((eyo = ans.right)) {
-        ans = eyo
+      var b3k
+      while ((b3k = ans.right)) {
+        ans = b3k
       }
       return ans
     }
@@ -488,9 +489,9 @@ Object.defineProperties(eYo.Brick.prototype, {
   footMost: {
     get () {
       var ans = this
-      var eyo
-      while ((eyo = ans.foot)) {
-        ans = eyo
+      var b3k
+      while ((b3k = ans.foot)) {
+        ans = b3k
       }
       return ans
     }
@@ -523,12 +524,12 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   root: {
     get () {
-      var eyo = this
+      var ans = this
       var parent
-      while ((parent = eyo.parent)) {
-        eyo = parent
+      while ((parent = ans.parent)) {
+        ans = parent
       }
-      return eyo
+      return ans
     }
   },
   /**
@@ -537,17 +538,17 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   after: {
     get () {
-      var eyo = this.isStmt ? this : this.stmtParent
-      var after = eyo.right || eyo.suite || eyo.foot
-      if (after) {
-        return after
+      var b3k = this.isStmt ? this : this.stmtParent
+      var ans = b3k.right || b3k.suite || b3k.foot
+      if (ans) {
+        return ans
       }
-      while ((eyo = eyo.parent)) {
-        if ((after = eyo.foot)) {
+      while ((b3k = b3k.parent)) {
+        if ((ans = b3k.foot)) {
           break
         }
       }
-      return after
+      return ans
     },
   },
   lastInput: {
@@ -563,9 +564,9 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   rootControl: {
     get () {
-      var eyo = this
-      while (!eyo.isControl && (eyo = eyo.parent));
-      return eyo
+      var ans = this
+      while (!ans.isControl && (ans = ans.parent));
+      return ans
     }
   },
   /**
@@ -801,11 +802,11 @@ eYo.Brick.prototype.equals = function (rhs) {
           if (r_slot.incog) {
             equals = false
           } else {
-            var t_brick = slot.targetBrick
-            var r_t_brick = r_slot.targetBrick
-            equals = t_brick
-              ? r_t_brick && t_brick.equals(r_t_brick)
-              : !r_t_brick
+            var t9k = slot.targetBrick
+            var r_t9k = r_slot.targetBrick
+            equals = t9k
+              ? r_t9k && t9k.equals(r_t9k)
+              : !r_t9k
           }
         } else {
           equals = false
@@ -911,14 +912,14 @@ eYo.Brick.Manager = (() => {
    * @param {string} key
    * @private
    */
-  me.prepareDelegate = function (delegateC9r, key) {
-    var eyo = eYo.Brick.getC9rEyO(delegateC9r, key || '')
-    if (!eyo.getModel) {
-      eyo.getModel = function () {
+  me.prepareConstructor = function (delegateC9r, key) {
+    var ans = eYo.Brick.getC9rEyO(delegateC9r, key || '')
+    if (!ans.getModel) {
+      ans.getModel = function () {
         return modeller(delegateC9r)
       }
       Object.defineProperties(
-        eyo,
+        ans,
         {
           model: {
             get () {
@@ -928,7 +929,7 @@ eYo.Brick.Manager = (() => {
         }
       )
     }
-    return eyo
+    return ans
   }
   /**
    * Helper to initialize a brick's model.
@@ -1119,7 +1120,7 @@ eYo.Brick.Manager = (() => {
         delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
       }
       goog.inherits(delegateC9r, parent)
-      me.prepareDelegate(delegateC9r, key)
+      me.prepareConstructor(delegateC9r, key)
       eYo.Brick.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
       if (goog.isFunction(model)) {
         model = model()
@@ -1287,7 +1288,7 @@ eYo.Brick.Manager = (() => {
     goog.asserts.assert(prototypeName, 'Missing prototypeName')
     C9rs[prototypeName] = delegateC9r
     // cache all the input, output and statement data at the prototype level
-    me.prepareDelegate(delegateC9r, key)
+    me.prepareConstructor(delegateC9r, key)
     delegateC9r.eyo.types.push(prototypeName)
     Blockly.Blocks[prototypeName] = {}
   }
@@ -1599,7 +1600,7 @@ eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
  */
 eYo.Brick.makeSubclass = function (key, model, owner) {
   // First ensure that eYo.Brick is well formed
-  eYo.Brick.Manager.prepareDelegate(eYo.Brick)
+  eYo.Brick.Manager.prepareConstructor(eYo.Brick)
   return eYo.Brick.Manager.makeSubclass(key, model, eYo.Brick, owner)
 }
 
@@ -2057,8 +2058,8 @@ eYo.Brick.prototype.updateBlackHeight = function () {
  * Update the black count of the enclosing group.
  */
 eYo.Brick.prototype.updateGroupBlackHeight = function () {
-  var eyo = this.group
-  eyo && eyo.updateBlackHeight()
+  var b3k = this.group
+  b3k && b3k.updateBlackHeight()
 }
 
 /**
@@ -2074,17 +2075,17 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   } else if (!m4t.isOutput && !m4t.isLeft && !m4t.isRight) {
     this.updateGroupBlackHeight()
   }
-  var t_brick = m4t.targetBrick
+  var t9k = m4t.targetBrick
   if (m4t.isFoot) {
-    this.nextHeight = t_brick.mainHeight + t_brick.blackHeight + t_brick.suiteHeight + t_brick.nextHeight
+    this.nextHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.nextHeight
   } else if (m4t.isSuite) {
-    t_brick = m4t.targetBrick
-    this.suiteHeight = t_brick.mainHeight + t_brick.blackHeight + t_brick.suiteHeight + t_brick.nextHeight
+    t9k = m4t.targetBrick
+    this.suiteHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.nextHeight
   }
   this.consolidateType()
   if (m4t.isOutput) {
     if (this.selected && this.locked_) {
-      t_brick.select()
+      t9k.select()
     }
   }
 }
@@ -2143,12 +2144,12 @@ eYo.Brick.prototype.getStatementCount = function () {
   var m4t = this.magnets.suite
   if (m4t) {
     hasNext = true
-    var t_brick = m4t.targetBrick
-    if (t_brick) {
+    var t9k = m4t.targetBrick
+    if (t9k) {
       do {
-        hasActive = hasActive || (!t_brick.disabled_ && !t_brick.isWhite)
-        n += t_brick.getStatementCount()
-      } while ((t_brick = t_brick.next))
+        hasActive = hasActive || (!t9k.disabled_ && !t9k.isWhite)
+        n += t9k.getStatementCount()
+      } while ((t9k = t9k.next))
     }
   }
   return n + (hasNext && !hasActive ? 1 : 0)
@@ -2182,16 +2183,16 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
         if ((previous = this.magnets.head) &&
         (next = previous.target) &&
         next.blackMagnet) {
-          var eyo = this
-          while ((previous = eyo.magnets.foot) &&
+          var b3k = this
+          while ((previous = b3k.magnets.foot) &&
           (previous = previous.target) &&
           (previous = previous.blackMagnet)) {
             if (next.checkType_(previous)) {
               break
             }
-            eyo = previous.brick
+            b3k = previous.brick
             // No recursion
-            eyo.setDisabled(true)
+            b3k.setDisabled(true)
           }
         }
       } else {
@@ -2205,24 +2206,24 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             previous = next.target
             do {
-              var t_brick = previous.brick
-              if (t_brick.disabled) {
-                t_brick.disabled = false
+              var b3k = previous.brick
+              if (b3k.disabled) {
+                b3k.disabled = false
                 var check = next.checkType_(previous)
-                t_brick.disabled = true
+                b3k.disabled = true
                 if (check) {
-                  t_brick.disabled = false
-                  if (!(next = t_brick.magnets.foot)) {
+                  b3k.disabled = false
+                  if (!(next = b3k.magnets.foot)) {
                     break
                   }
                 }
-              } else if (!t_brick.isWhite) {
+              } else if (!b3k.isWhite) {
                 // the black connection is reached, no need to go further
                 // but the next may have change and the checkType_ must
                 // be computed once again
                 if (!next.checkType_(previous)) {
-                  t_brick.unplug()
-                  t_brick.bumpNeighbours_()
+                  b3k.unplug()
+                  b3k.bumpNeighbours_()
                 }
                 break
               }
@@ -2238,27 +2239,27 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
             // stop before the black connection found just above
             next = previous.target
             do {
-              t_brick = next.brick
-              if (t_brick.disabled) {
+              b3k = next.brick
+              if (b3k.disabled) {
                 // beware of some side effet below
                 // bad design, things have changed since then...
-                t_brick.disabled = false
+                b3k.disabled = false
                 check = previous.checkType_(next)
-                t_brick.disabled = true
+                b3k.disabled = true
                 if (check) {
-                  t_brick.setDisabled(false)
-                  if (!(previous = t_brick.magnets.head)) {
+                  b3k.setDisabled(false)
+                  if (!(previous = b3k.magnets.head)) {
                     break
                   }
                 }
-              } else if (!t_brick.isWhite) {
+              } else if (!b3k.isWhite) {
                 // the black connection is reached, no need to go further
                 // but the next may have change and the checkType_ must
                 // be computed once again
                 if (!next.checkType_(previous)) {
-                  t_brick = previous.brick
-                  t_brick.unplug()
-                  t_brick.bumpNeighbours_()
+                  b3k = previous.brick
+                  b3k.unplug()
+                  b3k.bumpNeighbours_()
                 }
                 break
               }
@@ -2465,7 +2466,7 @@ eYo.Brick.prototype.scrollToVisible = function (force) {
  * @param {boolean} all If true, return all connections even hidden ones.
  *     Otherwise, for a non-rendered brick return an empty list, and for a
  *     collapsed brick don't return inputs connections.
- * @return {!Array.<!Blockly.Connection>} Array of connections.
+ * @return {!Array.<!eYo.Magnet>} Array of magnets.
  * @package
  */
 eYo.Brick.prototype.getMagnets_ = function(all) {
@@ -2679,8 +2680,8 @@ eYo.Brick.prototype.getInput = function (name) {
  * @constructor
  */
 eYo.Brick.prototype.statementEnumerator = function () {
-  var eyo
-  var eyos = [this]
+  var b3k
+  var b4s = [this]
   var e8r
   var e8rs = [this.inputEnumerator()]
   var next
@@ -2690,27 +2691,27 @@ eYo.Brick.prototype.statementEnumerator = function () {
     return this
   }
   me.depth = () => {
-    return eyos.length
+    return b4s.length
   }
   me.next_ = () => {
-    while ((eyo = eyos.shift())) {
+    while ((b3k = b4s.shift())) {
       e8r = e8rs.shift()
       while (e8r.next()) {
         if (e8r.here.type === Blockly.NEXT_STATEMENT) {
           if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
             next = next.eyo
-            eyos.unshift(eyo)
+            b4s.unshift(b3k)
             e8rs.unshift(e8r)
-            eyos.unshift(next)
+            b4s.unshift(next)
             e8rs.unshift(next.inputEnumerator())
             return next
           }
         }
       }
-      if ((eyo = eyo.foot)) {
-        eyos.unshift(eyo)
-        e8rs.unshift(eyo.inputEnumerator())
-        return eyo
+      if ((b3k = b3k.foot)) {
+        b4s.unshift(b3k)
+        e8rs.unshift(b3k.inputEnumerator())
+        return b3k
       }
     }
   }
@@ -2725,9 +2726,9 @@ eYo.Brick.prototype.statementEnumerator = function () {
  */
 eYo.Brick.prototype.forEachStatement = function (helper) {
   var e8r = this.statementEnumerator()
-  var eyo
-  while ((eyo = e8r.next())) {
-    helper(eyo, e8r.depth())
+  var b3k
+  while ((b3k = e8r.next())) {
+    helper(b3k, e8r.depth())
   }
 }
 
@@ -2739,11 +2740,11 @@ eYo.Brick.prototype.forEachStatement = function (helper) {
  */
 eYo.Brick.prototype.someStatement = function (helper) {
   var e8r = this.statementEnumerator()
-  var eyo
+  var b3k
   var ans
-  while ((eyo = e8r.next())) {
-    if ((ans = helper(eyo, e8r.depth()))) {
-      return ans === true ? eyo : ans
+  while ((b3k = e8r.next())) {
+    if ((ans = helper(b3k, e8r.depth()))) {
+      return ans === true ? b3k : ans
     }
   }
 }
@@ -2757,8 +2758,8 @@ eYo.Brick.prototype.someStatement = function (helper) {
  * @constructor
  */
 eYo.StatementBlockEnumerator = function (brick) {
-  var b
-  var bs = [brick]
+  var b3k
+  var b4s = [brick]
   var e8r
   var e8rs = [brick.eyo.inputEnumerator()]
   var next
@@ -2768,27 +2769,27 @@ eYo.StatementBlockEnumerator = function (brick) {
     return brick
   }
   me.depth = function () {
-    return bs.length
+    return b4s.length
   }
   me.next_ = function () {
-    while ((b = bs.shift())) {
+    while ((b3k = b4s.shift())) {
       e8r = e8rs.shift()
       while (e8r.next()) {
-        var eyo = e8r.here.eyo.magnet
-        if (eyo.isFoot || eyo.isSuite) {
+        var m4t = e8r.here.eyo.magnet
+        if (m4t.isFoot || m4t.isSuite) {
           if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
-            bs.unshift(b)
+            b4s.unshift(b3k)
             e8rs.unshift(e8r)
-            bs.unshift(next)
+            b4s.unshift(next)
             e8rs.unshift(next.eyo.inputEnumerator())
             return next
           }
         }
       }
-      if ((b = b.getNextBlock())) {
-        bs.unshift(b)
-        e8rs.unshift(b.eyo.inputEnumerator())
-        return b
+      if ((b3k = b3k.getNextBlock())) {
+        b4s.unshift(b3k)
+        e8rs.unshift(b3k.eyo.inputEnumerator())
+        return b3k
       }
     }
     return undefined
@@ -2829,43 +2830,43 @@ eYo.Brick.newReady = function (owner, model, id) {
  * @param {?eYo.Brick} id
  */
 eYo.Brick.newComplete = (() => {
-  var processModel = (workspace, model, id, eyo) => {
+  var processModel = (workspace, model, id, b3k) => {
     var dataModel = model
-    if (!eyo) {
+    if (!b3k) {
       if (eYo.Brick.Manager.get(model.type)) {
-        eyo = workspace.newDlgt(model.type, id)
-        eyo.setDataWithType(model.type)
+        b3k = workspace.newBrick(model.type, id)
+        b3k.setDataWithType(model.type)
       } else if (eYo.Brick.Manager.get(model)) {
-        eyo = workspace.newDlgt(model, id) // can undo
-        eyo.setDataWithType(model)
+        b3k = workspace.newBrick(model, id) // can undo
+        b3k.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
-          var brick
-          if (p5e.expr && (brick = workspace.newDlgt(p5e.expr, id))) {
-            p5e.expr && brick.setDataWithType(p5e.expr)
-            model && brick.setDataWithModel(model)
+          var ans
+          if (p5e.expr && (ans = workspace.newBrick(p5e.expr, id))) {
+            p5e.expr && ans.setDataWithType(p5e.expr)
+            model && ans.setDataWithModel(model)
             dataModel = {data: model}
-          } else if (p5e.stmt && (brick = workspace.newDlgt(p5e.stmt, id))) {
-            p5e.stmt && brick.setDataWithType(p5e.stmt)
+          } else if (p5e.stmt && (ans = workspace.newBrick(p5e.stmt, id))) {
+            p5e.stmt && ans.setDataWithType(p5e.stmt)
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (brick = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
-            brick.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (ans = workspace.newBrick(eYo.T3.Expr.numberliteral, id))) {
+            ans.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No brick for model:', model)
           }
-          return brick
+          return ans
         }
         if (!p5e.isVoid && !p5e.isUnset) {
-          eyo = f(p5e)
+          b3k = f(p5e)
         } else {
           console.warn('No brick for model either:', model)
           return
         }
       }
     }
-    eyo && eyo.changeWrap(
+    b3k && b3k.changeWrap(
       function () { // `this` is `eyo`
         this.willLoad()
         this.setDataWithModel(dataModel)
@@ -2874,25 +2875,22 @@ eYo.Brick.newComplete = (() => {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
             var input = this.getInput(k)
             if (input && input.connection) {
-              var t_brick = input.targetBrick
+              var t9k = input.targetBrick
               var V = Vs[k]
-              var brick = processModel(workspace, V, null, t_brick)
-              if (!t_brick && brick && brick.magnets.output) {
-                brick.changeWrap(
-                  () => {
-                    var slot = input.magnet.slot
-                    slot && (slot.incog = false)
-                    brick.magnets.output.connect(input.magnet)
-                  }
-                )
+              var b3k = processModel(workspace, V, null, t9k)
+              if (!t9k && b3k && b3k.magnets.output) {
+                b3k.changeWrap(() => {
+                  var slot = input.magnet.slot
+                  slot && (slot.incog = false)
+                  b3k.magnets.output.connect(input.magnet)
+                })
               }
             }
           }
         }
         Vs = model
         this.forEachSlot(slot => {
-          var input = slot.input
-          if (!input || !input.magnet) {
+          if (!slot.magnet) {
             return
           }
           k = slot.key + '_s'
@@ -2903,27 +2901,25 @@ eYo.Brick.newComplete = (() => {
           } else {
             return
           }
-          var t_brick = input.magnet.targetBrick
-          var y = processModel(workspace, V, null, t_brick)
-          if (!t_brick && y && y.magnets.output) {
-            y.changeWrap(
-              () => {
-                // The connection can be established only when not incog
-                slot.incog = false
-                y.magnets.output.connect(input.magnet)
-              }
-            )
+          var t9k = slot.targetBrick
+          var b3k = processModel(workspace, V, null, t9k)
+          if (!t9k && b3k && b3k.magnets.output) {
+            b3k.changeWrap(() => {
+              // The connection can be established only when not incog
+              slot.incog = false
+              b3k.magnets.output.connect(slot.magnet)
+            })
           }
         })
         // now bricks and slots have been set
         this.didLoad()
-        if (eyo.magnets.foot) {
+        if (b3k.magnets.foot) {
           var nextModel = dataModel.next
           if (nextModel) {
             brick = processModel(workspace, nextModel)
             if (brick && brick.magnets.head) {
               try {
-                brick.magnets.head.connectSmart(eyo)
+                brick.magnets.head.connectSmart(b3k)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -2935,16 +2931,16 @@ eYo.Brick.newComplete = (() => {
         }
       }
     )
-    return eyo
+    return b3k
   }
   return function (owner, model, id) {
     var workspace = owner.workspace || owner
-    var eyo = processModel(workspace, model, id)
-    if (eyo) {
-      eyo.consolidate()
-      eyo.beReady(owner.isReady || workspace.rendered)
+    var b3k = processModel(workspace, model, id)
+    if (b3k) {
+      b3k.consolidate()
+      b3k.beReady(owner.isReady || workspace.rendered)
     }
-    return eyo
+    return b3k
   }
 })()
 
@@ -3066,10 +3062,10 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
       if (!candidate) {
         // very special management for tuple input
         if ((otherM4t = eYo.Selected.magnet) && goog.isString(model)) {
-          var otherDlgt = otherM4t.brick
-          if (otherDlgt instanceof eYo.Brick.List && otherM4t.eyo.isInput) {
+          var otherBrick = otherM4t.brick
+          if (otherBrick instanceof eYo.Brick.List && otherM4t.isInput) {
             eYo.Events.groupWrap(() => {
-              var dlgts = model.split(',').map(x => {
+              var b4s = model.split(',').map(x => {
                 var model = x.trim()
                 var p5e = eYo.T3.Profile.get(model, null)
                 console.warn('MODEL:', model)
@@ -3079,17 +3075,17 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
                   p5e
                 }
               }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
-                var eyo = eYo.Brick.newComplete(this, x.model)
-                eyo.setDataWithModel(x.model)
-                console.error('DLGT', eyo)
-                return eyo
+                var ans = eYo.Brick.newComplete(this, x.model)
+                ans.setDataWithModel(x.model)
+                console.error('BRICK', ans)
+                return ans
               })
-              dlgts.some(eyo => {
-                candidate = eyo
+              b4s.some(b => {
+                /* non local */ candidate = b
                 if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
                   fin()
                   var next = false
-                  otherDlgt.someInputMagnet(m4t => {
+                  otherBrick.someInputMagnet(m4t => {
                     if (next) {
                       otherM4t = m4t
                       return true
@@ -3099,14 +3095,14 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
                   })
                 }
               })
-              eYo.Selected.magnet = otherM4t
+              otherM4t.select()
             })
           }
         }
         return
       }
       if ((otherM4t = eYo.Selected.magnet)) {
-        otherDlgt = otherM4t.brick
+        otherBrick = otherM4t.brick
         if (otherM4t.isInput) {
           if ((m4t = candidate.magnets.output) && m4t.checkType_(otherM4t)) {
             return fin()
@@ -3146,11 +3142,11 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
         // try to find a free magnet in a brick
         // When not undefined, the returned magnet can connect to m4t.
         var findM4t = eyo => {
-          var otherM4t, t_brick
+          var otherM4t, t9k
           otherM4t = eyo.someInputMagnet(foundM4t => {
             if (foundM4t.isInput) {
-              if ((t_brick = foundM4t.targetBrick)) {
-                if (!(foundM4t = findM4t(t_brick))) {
+              if ((t9k = foundM4t.targetBrick)) {
+                if (!(foundM4t = findM4t(t9k))) {
                   return
                 }
               } else if (!m4t.checkType_(foundM4t)) {
@@ -3252,11 +3248,11 @@ eYo.Brick.prototype.canUnlock = function () {
     return true
   }
   // list all the input for a non optional connection with no target
-  var m4t, t_brick
+  var m4t, t9k
   return this.someInput(input => {
     if ((m4t = input.magnet)) {
-      if ((t_brick = m4t.targetBrick)) {
-        if (t_brick.canUnlock()) {
+      if ((t9k = m4t.targetBrick)) {
+        if (t9k.canUnlock()) {
           return true
         }
       }
@@ -3282,11 +3278,11 @@ eYo.Brick.prototype.lock = function () {
   }
   // list all the input for connections with a target
   var m4t
-  var t_brick
+  var t9k
   this.forEachInput(input => {
     if ((m4t = input.magnet)) {
-      if ((t_brick = m4t.targetBrick)) {
-        ans += t_brick.lock()
+      if ((t9k = m4t.targetBrick)) {
+        ans += t9k.lock()
       }
       if (m4t.isInput) {
         m4t.setHidden(true)
@@ -3296,22 +3292,22 @@ eYo.Brick.prototype.lock = function () {
   // maybe redundant calls here
   this.forEachSlot(slot => {
     if ((m4t = slot.magnet)) {
-      if ((t_brick = m4t.targetBrick)) {
-        ans += t_brick.lock()
+      if ((t9k = m4t.targetBrick)) {
+        ans += t9k.lock()
       }
       if (m4t.isInput) {
         m4t.setHidden(true)
       }
     }
   })
-  if ((m4t = this.magnets.right) && (t_brick = m4t.targetBrick)) {
-    ans += t_brick.lock()
+  if ((m4t = this.magnets.right) && (t9k = m4t.targetBrick)) {
+    ans += t9k.lock()
   }
-  if ((m4t = this.magnets.suite) && (t_brick = m4t.targetBrick)) {
-    ans += t_brick.lock()
+  if ((m4t = this.magnets.suite) && (t9k = m4t.targetBrick)) {
+    ans += t9k.lock()
   }
-  if ((m4t = this.magnets.foot) && (t_brick = m4t.targetBrick)) {
-    ans += t_brick.lock()
+  if ((m4t = this.magnets.foot) && (t9k = m4t.targetBrick)) {
+    ans += t9k.lock()
   }
   if (this.selected) {
     var parent = this
@@ -3338,11 +3334,11 @@ eYo.Brick.prototype.unlock = function (shallow) {
       this, eYo.Const.Event.locked, null, this.locked_, false)
   this.locked_ = false
   // list all the input for connections with a target
-  var m4t, t_brick
+  var m4t, t9k
   this.forEachInput(input => {
     if ((m4t = input.magnet)) {
-      if ((!shallow || m4t.isInput) && (t_brick = m4t.targetBrick)) {
-        ans += t_brick.unlock(shallow)
+      if ((!shallow || m4t.isInput) && (t9k = m4t.targetBrick)) {
+        ans += t9k.unlock(shallow)
       }
       m4t.setHidden(false)
     }

@@ -250,15 +250,15 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
   } else {
     // find the first parent's connection that can accept brick
     var findM4t = y => {
-      var foundM4t, t_brick
+      var foundM4t, t9k
       y.someInput(input => {
         var m4t = input.magnet
         if (m4t) {
           var candidate
           if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.getText().length)) {
             candidate = m4t
-          } else if ((t_brick = m4t.targetBrick)) {
-            candidate = findM4t(t_brick)
+          } else if ((t9k = m4t.targetBrick)) {
+            candidate = findM4t(t9k)
           }
           if (candidate) {
             if (candidate.name === parentSlotName) {

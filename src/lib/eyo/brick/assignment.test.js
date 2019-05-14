@@ -300,7 +300,7 @@ describe('One brick: assignment_stmt', function() {
     chai.assert(d3, `MISSING …+…`)
     d3.will_remain = true
     eYo.STOP = true
-    chai.assert(!d1.target_t.connectLast(d3), 'Connection is expected failed.')
+    chai.assert(!d1.target_t.connectLast(d3), 'connectLast failed.')
     eYo.Test.input_length(d1.target_b, 3, `MISSED M4T 2`)
     d3.dispose()
     d1.dispose()

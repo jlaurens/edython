@@ -646,7 +646,7 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
 
 /**
  * create a shape with the given connection delegate.
- * @param {?eYo.MagnetSvg} m4t  Connection delegate
+ * @param {?eYo.MagnetSvg} magnet  Magnet
  * @param {?Object} opt  Optional kv arguments
  * @return {!Object} The receiver.
  */
@@ -658,10 +658,9 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
     if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.magnets.output)) {
       var where = new eYo.Where(magnet)
       do {
-        var t_brick = m4t.targetBrick
-        where.advance(t_brick)
-        var eyo = t_brick.brick
-      } while(eyo && eyo.wrapped_ && (m4t = eyo.magnets.output))
+        var t9k = m4t.targetBrick
+        where.advance(t9k)
+      } while(t9k && t9k.wrapped_ && (m4t = t9k.magnets.output))
     } else {
       where = magnet
     }

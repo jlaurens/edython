@@ -234,7 +234,7 @@ Object.defineProperties(eYo.Slot.prototype, {
       throw "ILLEGAL"
     }
   },
-  t_brick: {
+  targetBrick: {
     get () {
       var m4t = this.magnet
       return m4t && m4t.targetBrick
@@ -327,11 +327,11 @@ Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.isRequiredFromSaved = function () {
-  var t_brick = this.targetBrick
-  if (t_brick) {
-    if (t_brick.wrapped_) {
+  var t9k = this.targetBrick
+  if (t9k) {
+    if (t9k.wrapped_) {
       // return true if one of the inputs is connected
-      return t_brick.inputList.some(input => !!input.target)
+      return t9k.inputList.some(input => !!input.target)
     }
     return true
   }
@@ -439,14 +439,14 @@ eYo.Slot.prototype.save = function (element, opt) {
     }
   }
   var out = (() => {
-    var t_brick = this.targetBrick
-    if (t_brick) { // otherwise, there is nothing to remember
-      if (t_brick.wrapped_) {
+    var t9k = this.targetBrick
+    if (t9k) { // otherwise, there is nothing to remember
+      if (t9k.wrapped_) {
         // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t_brick instanceof eYo.Brick.List) {
-          var child = eYo.Xml.brickToDom(t_brick, opt)
+        if (t9k instanceof eYo.Brick.List) {
+          var child = eYo.Xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
@@ -454,10 +454,10 @@ eYo.Slot.prototype.save = function (element, opt) {
           }
         } else {
           // let the target populate the given element
-          return eYo.Xml.toDom(t_brick, element, opt)
+          return eYo.Xml.toDom(t9k, element, opt)
         }
       } else {
-        child = eYo.Xml.brickToDom(t_brick, opt)
+        child = eYo.Xml.brickToDom(t9k, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
@@ -513,10 +513,10 @@ eYo.Slot.prototype.load = function (element) {
   }
   this.setRequiredFromModel(false)
   var out
-  var t_brick = this.targetBrick
-  if (t_brick && t_brick.wrapped_ && !(t_brick instanceof eYo.Brick.List)) {
+  var t9k = this.targetBrick
+  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Brick.List)) {
     this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
-    out = eYo.Xml.fromDom(t_brick, element)
+    out = eYo.Xml.fromDom(t9k, element)
     this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
@@ -528,16 +528,16 @@ eYo.Slot.prototype.load = function (element) {
           this.setRequiredFromModel(true)
           out = true
         } else {
-          if (!t_brick && this.model.promise) {
+          if (!t9k && this.model.promise) {
             this.completePromise()
-            t_brick = this.targetBrick
+            t9k = this.targetBrick
           }
-          if (t_brick) {
-            if (t_brick instanceof eYo.Brick.List) {
+          if (t9k) {
+            if (t9k instanceof eYo.Brick.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
-                var input = t_brick.getInput(name)
+                var input = t9k.getInput(name)
                 if (input) {
                   if (input.magnet) {
                     var grand_t_brick = input.target
@@ -559,11 +559,11 @@ eYo.Slot.prototype.load = function (element) {
               })
               out = true
             } else {
-              out = eYo.Xml.fromDom(t_brick, child)
+              out = eYo.Xml.fromDom(t9k, child)
             }
             this.recover.dontResit(child)
-          } else if ((t_brick = eYo.Xml.domToBrick(child, this.owner))) {
-            var m4ts = t_brick.magnets
+          } else if ((t9k = eYo.Xml.domToBrick(child, this.owner))) {
+            var m4ts = t9k.magnets
             // we could create a brick from that child element
             // then connect it
             this.recover.dontResit(child)
@@ -574,7 +574,7 @@ eYo.Slot.prototype.load = function (element) {
             } else if (m4ts.head && m4t.checkType_(m4ts.head, true)) {
               m4t.connect(m4ts.head) // Notice the `.eyo`
             }
-            out = t_brick
+            out = t9k
           }
         }
         return true // the element was found
@@ -657,17 +657,17 @@ eYo.Slot.prototype.forEachField = function (helper) {
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
 eYo.Slot.prototype.listConnect = function (bm, key) {
-  var t_brick = this.targetBrick
-  if (!t_brick) {
+  var t9k = this.targetBrick
+  if (!t9k) {
     this.completePromise()
-    if (!(t_brick = this.targetBrick)) {
+    if (!(t9k = this.targetBrick)) {
       return false
     }
   }
   if (!key) {
-    return t_brick.connectLast(bm)
+    return t9k.connectLast(bm)
   }
-  var input = t_brick.getInput(key)
+  var input = t9k.getInput(key)
   if (input) {
     var m4t = input.magnet
     if (m4t) {

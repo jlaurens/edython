@@ -131,10 +131,10 @@ eYo.Brick.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
     this.inputList.forEach(input => {
       var m4t = input.magnet
-      var t_brick = m4t.targetBrick
-      if (t_brick) {
+      var t9k = m4t.targetBrick
+      if (t9k) {
         m4t.disconnect()
-        t_brick.dispose()
+        t9k.dispose()
       }
     })
     this.consolidate()
@@ -148,8 +148,8 @@ eYo.Brick.List.prototype.removeItems = function () {
  */
 eYo.Brick.List.prototype.incrementInputChangeCount = function () {
   this.forEachInput(input => {
-    var t_brick = input.magnet.targetBrick
-    t_brick && t_brick.incrementChangeCount()
+    var t9k = input.magnet.targetBrick
+    t9k && t9k.incrementChangeCount()
   })
   this.incrementChangeCount()
 }

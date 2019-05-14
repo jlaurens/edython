@@ -169,12 +169,12 @@ eYo.KeyHandler = (() => {
           var doFirst = (eyo, type) => {
             return eyo.someInputMagnet(m4t => {
               if (m4t.type === type) {
-                var t_brick = m4t.targetBrick
-                if (!m4t.hidden_ && !t_brick && (!m4t.source || !m4t.source.bindField)) {
+                var t9k = m4t.targetBrick
+                if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.bindField)) {
                   m4t.select()
                   return true
                 } else {
-                  return t_brick && doFirst(t_brick, type)
+                  return t9k && doFirst(t9k, type)
                 }
               }
             })

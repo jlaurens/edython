@@ -222,7 +222,7 @@ Blockly.Workspace.prototype.dispose = function () {
  *     create a new id.
  * @return {!eYo.Brick} The created block.
  */
-eYo.Workspace.prototype.newDlgt = function (prototypeName, opt_id) {
+eYo.Workspace.prototype.newBrick = function (prototypeName, opt_id) {
   return eYo.Brick.Manager.create(this, prototypeName, opt_id)
 }
 

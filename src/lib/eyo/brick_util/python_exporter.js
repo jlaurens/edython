@@ -174,19 +174,19 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
     }
   }
   this.exportAsExpression_(brick, opt)
-  var m4t, rightM4t, t_brick
-  if ((rightM4t = brick.magnets.right) && (t_brick = rightM4t.targetBrick)) {
+  var m4t, rightM4t, t9k
+  if ((rightM4t = brick.magnets.right) && (t9k = rightM4t.targetBrick)) {
     this.exportField_(rightM4t.fields.label)
-    this.exportDlgt_(t_brick, opt)
+    this.exportDlgt_(t9k, opt)
   } else if ((m4t = brick.magnets.suite)) {
     // a brick with a suite must also have a right connection
     this.exportField_(rightM4t.fields.label)
     var f = () => {
-      if ((t_brick = m4t.targetBrick)) {
+      if ((t9k = m4t.targetBrick)) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
-          this.exportDlgt_(t_brick, opt)
+          this.exportDlgt_(t9k, opt)
         }, () => {
           opt.is_deep = is_deep
         })
@@ -206,9 +206,9 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
       })(f)
     }
   } else if ((m4t = brick.magnets.right)) {
-    if ((t_brick = m4t.targetBrick)) {
+    if ((t9k = m4t.targetBrick)) {
       this.exportField_(m4t.fields.label)
-      this.exportDlgt_(t_brick, opt)
+      this.exportDlgt_(t9k, opt)
     }
   }
   if (!brick.magnets.output) {
@@ -216,9 +216,9 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_brick = brick.foot)) {
+  if (is_deep && (t9k = brick.foot)) {
     this.newline_()
-    this.exportDlgt_(t_brick, opt)
+    this.exportDlgt_(t9k, opt)
   }
 }
 
@@ -330,9 +330,9 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
   if (input && input.isVisible()) {
     var m4t = input.magnet
     if (m4t) {
-      var t_brick = m4t.targetBrick
-      if (t_brick) {
-        this.exportAsExpression_(t_brick)
+      var t9k = m4t.targetBrick
+      if (t9k) {
+        this.exportAsExpression_(t9k)
       } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.bindField) {
         console.error('BREAK HERE')
         this.shouldSeparateField && this.addSpace()

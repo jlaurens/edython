@@ -307,13 +307,13 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
   if (v === eYo.Key.IMPORT) {
     // non_void_import_identifier_as_list
     this.import_b.inputList.forEach(input => {
-      var t_brick = input.targetBrick
-      if (t_brick.type === eYo.T3.Expr.identifier) {
-        modules[t_brick.target_p] = t_brick.target_p
-      } else if (t_brick.type === eYo.T3.Expr.identifier_as) {
-        modules[t_brick.target_p] = t_brick.alias_p
+      var t9k = input.targetBrick
+      if (t9k.type === eYo.T3.Expr.identifier) {
+        modules[t9k.target_p] = t9k.target_p
+      } else if (t9k.type === eYo.T3.Expr.identifier_as) {
+        modules[t9k.target_p] = t9k.alias_p
       } else { // when connected to an 'any' brick
-        var any = t_brick.expression_p
+        var any = t9k.expression_p
         any && any.split(/\s*,\s*/).forEach(c => {
           var ased = c.split(/\s*as\s*/)
           var name = ased[0]

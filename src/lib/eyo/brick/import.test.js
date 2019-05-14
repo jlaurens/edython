@@ -250,7 +250,7 @@ describe('Copy/Paste', function () {
       d = dd.import_s.unwrappedTarget
       eYo.Test.data_value(d, 'target', 'cde')
     },
-    filter: t_brick => t_brick.target_p})
+    filter: t9k => t9k.target_p})
     d.dispose()
   })
   it(`from … import ?`, function () {

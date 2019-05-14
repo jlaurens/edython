@@ -114,7 +114,7 @@ Object.defineProperties(eYo.Input.prototype, {
       }
     }
   },
-  t_brick: {
+  targetBrick: {
     get () {
       var m4t = this.magnet
       return m4t && m4t.targetBrick
@@ -180,8 +180,8 @@ eYo.Input.prototype.dispose = function() {
   var m4t = this.magnet
   if (m4t) {
     m4t.wrapped_ = null
-    var t_brick = m4t.targetBrick
-    t_brick && t_brick.dispose()
+    var t9k = m4t.targetBrick
+    t9k && t9k.dispose()
     m4t.dispose()
     this.magnet = undefined
   }

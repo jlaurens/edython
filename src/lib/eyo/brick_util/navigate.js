@@ -159,13 +159,12 @@ eYo.Brick.prototype.getBestBlock = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best
-  this.workspace.topBlocks_.forEach(top => {
-    var t_brick = top.eyo
-    if (t_brick !== this) {
-      var box_p = t_brick.ui.boundingBox
+  this.workspace.topBlocks_.forEach(brick => {
+    if (brick !== this) {
+      var box_p = brick.ui.boundingBox
       var m4t
-      while ((m4t = t_brick.magnets.foot) && (t_brick = m4t.targetBrick)) {
-        box_p.expandToInclude(t_brick.ui.boundingBox)
+      while ((m4t = brick.magnets.foot) && (brick = m4t.targetBrick)) {
+        box_p.expandToInclude(brick.ui.boundingBox)
       }
       var d = distance(box_a, box_p)
       if (d.major && (!smallest.major || d.major < smallest.major)) {
@@ -255,9 +254,9 @@ eYo.Selected.chooseRight = function () {
     } else if (m4t.isFoot) {
       if (eyo.isGroup) {
         m4t = eyo.magnets.suite
-        var t_brick
+        var t9k
         var next
-        while ((t_brick = m4t.targetBrick) && (next = t_brick.magnets.foot)) {
+        while ((t9k = m4t.targetBrick) && (next = t9k.magnets.foot)) {
           m4t = next
         }
         m4t.select().scrollToVisible()
@@ -362,19 +361,19 @@ eYo.Selected.chooseAbove = function () {
  * @return None
  */
 eYo.Selected.chooseBelow = () => {
-  var eyo = eYo.Selected.brick
-  if (!eyo) {
+  var brick = eYo.Selected.brick
+  if (!brick) {
     return
   }
   var m4t = eYo.Selected.magnet
-  var t_brick
+  var b3k
   if (m4t) {
     if (m4t.isFoot) {
       var target = m4t.target
       if (target) {
         target.select().scrollToVisible()
         return
-      } else if ((t_brick = eyo.group) && (m4t = t_brick.magnets.foot)) {
+      } else if ((b3k = brick.group) && (m4t = b3k.magnets.foot)) {
         m4t.select().scrollToVisible()
         return
       }
@@ -383,7 +382,7 @@ eYo.Selected.chooseBelow = () => {
       if (target) {
         target.select().scrollToVisible()
         return
-      } else if ((t_brick = eyo.group) && (t_brick !== eyo) && (m4t = t_brick.magnets.foot)) {
+      } else if ((b3k = brick.group) && (b3k !== brick) && (m4t = b3k.magnets.foot)) {
         m4t.select().scrollToVisible()
         return
       }
@@ -392,12 +391,11 @@ eYo.Selected.chooseBelow = () => {
       eYo.Selected.scrollToVisible()
       return
     }
-  } else if ((m4t = eyo.magnets.foot) || ((eyo = eyo.stmtParent) && (m4t = eyo.magnets.foot))) {
+  } else if ((m4t = brick.magnets.foot) || ((brick = brick.stmtParent) && (m4t = brick.magnets.foot))) {
     m4t.select().scrollToVisible()
     return
   }
-  eyo = eYo.Selected.brick
-  var brick = eyo.root.getBestBlock((a, b) => {
+  b3k = eYo.Selected.brick.root.getBestBlock((a, b) => {
     if (a.foot >= b.foot) {
       return {}
     }
@@ -413,11 +411,11 @@ eYo.Selected.chooseBelow = () => {
       minor: b.right - b.left
     }
   })
-  if (brick && (eyo = brick.eyo)) {
-    if (m4t && m4t.isFoot && eyo.magnets.head) {
-      eyo.magnets.head.select().scrollToVisible()
+  if (b3k) {
+    if (m4t && m4t.isFoot && b3k.magnets.head) {
+      b3k.magnets.head.select().scrollToVisible()
     } else {
-      eyo.select().scrollToVisible()
+      b3k.select().scrollToVisible()
     }
   }
 }

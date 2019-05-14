@@ -198,20 +198,20 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
     if ((targetMagnet = this.magnets.head.target)) {
       // look at the high connection
       //
-      var t_brick = targetMagnet.brick
-      if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t_brick.type) < 0)) {
+      var t9k = targetMagnet.brick
+      if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Previous.last_else_part && T3.Previous.last_else_part.indexOf(t9k.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t_brick.type) < 0)) {
+      } else if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Previous.try_else_part && T3.Previous.try_else_part.indexOf(t9k.type) < 0)) {
         type = T3.last_else_part
       }
     }
     if (!type && (targetMagnet = this.magnets.foot.target)) {
       // the high connection did not add any constrain
       // may be the low connection will?
-      t_brick = targetMagnet.brick
-      if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t_brick.type) < 0)) {
+      t9k = targetMagnet.brick
+      if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.last_else_part) < 0) || (T3.Next.last_else_part && T3.Next.last_else_part.indexOf(t9k.type) < 0)) {
         type = T3.try_else_part
-      } else if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t_brick.type) < 0)) {
+      } else if ((targetMagnet.check_ && targetMagnet.check_.indexOf(T3.try_else_part) < 0) || (T3.Next.try_else_part && T3.Next.try_else_part.indexOf(t9k.type) < 0)) {
         type = T3.last_else_part
       }
     }

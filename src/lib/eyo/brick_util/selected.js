@@ -154,9 +154,9 @@ eYo.Selected = (() => {
               }
               if (magnet.isInput) {
                 // Do not select a connection with a target, select the target instead
-                var t_brick = magnet.targetBrick
-                if (t_brick) {
-                  this.eyo =  t_brick
+                var t9k = magnet.targetBrick
+                if (t9k) {
+                  this.brick =  t9k
                   return
                 }
               }
@@ -224,25 +224,34 @@ Object.defineProperties(
   }
 )
 
+Object.defineProperties(eYo.Magnet.prototype, {
+  selected: {
+    get () {
+      return this === eYo.Selected.magnet
+    }
+  },
+  set (newValue) {
+    newValue ? this.select() : this.unselect()
+  }
+})
+
 /**
  * Select this magnet. Highlight it visually.
  * Wrapped magnets are not selectable.
  * @return {eYo.Magnet} this
  */
 eYo.Magnet.prototype.select = function () {
-  eYo.Selected.magnet = this
-  return this
+  return (eYo.Selected.magnet = this)
 }
 
 /**
  * Unselect this magnet.
  * If `this` is the selected magnet, it looses its status.
  * Unselect is used from click handling methods.
+ * Does nothing if the receiver is not selected.
  */
 eYo.Magnet.prototype.unselect = function () {
-  if (this.selected) {
-    eYo.Selected.magnet = null
-  }
+  (this === eYo.Selected.magnet) && (eYo.Selected.magnet = null)
 }
 
 /**
@@ -453,30 +462,30 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
   }
   // unfortunately, the mouse events sometimes do not find there way to the proper brick
   var magnet = this.getMagnetForEvent(e)
-  var t_brick = magnet
+  var t9k = magnet
   ? magnet.isInput
     ? magnet.targetBrick || magnet.brick
     : magnet.brick
   : this
-  while (t_brick && (t_brick.wrapped_ || t_brick.locked_)) {
-    t_brick = t_brick.parent
+  while (t9k && (t9k.wrapped_ || t9k.locked_)) {
+    t9k = t9k.parent
   }
   // console.log('MOUSE DOWN', target)
   // Next trick because of the the dual event binding
   // reentrant management
-  if (!t_brick || t_brick.alreadyMouseDownEvent_ === e) {
+  if (!t9k || t9k.alreadyMouseDownEvent_ === e) {
     return
   }
-  t_brick.alreadyMouseDownEvent_ = e
+  t9k.alreadyMouseDownEvent_ = e
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  t_brick.lastSelectedMagnet = eYo.Selected.magnet
+  t9k.lastSelectedMagnet__ = eYo.Selected.magnet
   // Prepare the mouseUp event for an eventual connection selection
-  t_brick.lastMouseDownEvent = t_brick.selected ? e : null
+  t9k.lastMouseDownEvent = t9k.selected ? e : null
   var gesture = this.workspace.getGesture(e);
   if (gesture) {
-    gesture.handleBlockStart(e, t_brick)
+    gesture.handleBlockStart(e, t9k)
   }
 }
 
@@ -488,32 +497,32 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
  */
 eYo.Brick.prototype.onMouseUp_ = function (e) {
   const magnet = this.getMagnetForEvent(e)
-  var t_brick = magnet
+  var t9k = magnet
   ? magnet.isInput
     ? magnet.targetBrick || magnet.brick
     : magnet.brick
   : this
-  while (t_brick && (t_brick.wrapped_ || t_brick.locked_)) {
-    t_brick = t_brick.parent
+  while (t9k && (t9k.wrapped_ || t9k.locked_)) {
+    t9k = t9k.parent
   }
   // reentrancy filter
-  if (!t_brick || t_brick.alreadyMouseUpEvent_ === e) {
+  if (!t9k || t9k.alreadyMouseUpEvent_ === e) {
     return
   }
-  t_brick.alreadyMouseUpEvent_ = e
-  var ee = t_brick.lastMouseDownEvent
+  t9k.alreadyMouseUpEvent_ = e
+  var ee = t9k.lastMouseDownEvent
   if (ee) {
     // a brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (t_brick.selected) {
+      if (t9k.selected) {
         // the brick was already selected,
         if (magnet) {
           // and there is a candidate selection
           if (magnet.selected) {
             // unselect
             eYo.Selected.magnet = null
-          } else if (magnet !== t_brick.lastSelectedMagnet) {
+          } else if (magnet !== t9k.lastSelectedMagnet__) {
             if (magnet.isInput) {
               if (!magnet.targetBrick) {
                 var field = magnet.bindField
@@ -528,9 +537,9 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
           }
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
-        } else if (t_brick.selectMouseDownEvent) {
-          eYo.Selected.brick = (this.isStmt ? this : this.stmtParent) || t_brick.root
-          t_brick.selectMouseDownEvent = null
+        } else if (t9k.selectMouseDownEvent) {
+          eYo.Selected.brick = (this.isStmt ? this : this.stmtParent) || t9k.root
+          t9k.selectMouseDownEvent = null
         }
       }
     }
@@ -540,14 +549,14 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
       // not a drag move
       // select the brick which is an ancestor of the target
       // which parent is the selected brick
-      var parent = t_brick
+      var parent = t9k
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
         if ((parent.selected)) {
-          eYo.Selected.brick = t_brick
+          eYo.Selected.brick = t9k
           break
         } else if (!parent.wrapped_) {
-          t_brick = parent
+          t9k = parent
         }
       }
     }

@@ -246,15 +246,14 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
     this.menu.hide()
     return
   }
-  var eyo = brick.eyo
-  var ee = eyo.lastMouseDownEvent
+  var ee = brick.lastMouseDownEvent
   if (ee) {
     // this brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (eyo.selected) {
+      if (brick.selected) {
         // if the brick was already selected,
         // try to select an input connection
-        eYo.Selected.magnet = eyo.lastSelectedMagnet
+        eYo.Selected.magnet = brick.lastSelectedMagnet__
       }
     }
   }
@@ -572,8 +571,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     return true
   }
   var target = model.target || brick
-  var t_brick = target.eyo
-  switch (model.action) {
+  witch (model.action) {
   case eYo.ID.DUPLICATE_BLOCK:
     Blockly.duplicate_(target)
     return true
@@ -593,7 +591,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     target.eyo.disabled = !target.eyo.disabled
     return true
   case eYo.ID.DELETE_BLOCK:
-    var unwrapped = t_brick
+    var unwrapped = target
     var parent
     while (unwrapped.wrapped_ && (parent = unwrapped.surround)) {
       unwrapped = parent
@@ -602,11 +600,11 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (t_brick.selected && t_brick !== unwrapped) {
+      if (target.selected && target !== unwrapped) {
         // this brick was selected, select the brick below or above before deletion
         var m4t
-        if (((m4t = unwrapped.magnets.foot) && (t_brick = m4t.targetBrick)) || ((m4t = unwrapped.magnets.head) && (t_brick = m4t.targetBrick))) {
-          t_brick.select()
+        if (((m4t = unwrapped.magnets.foot) && (target = m4t.targetBrick)) || ((m4t = unwrapped.magnets.head) && (target = m4t.targetBrick))) {
+          target.select()
         } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
           m4t.select()
         }
