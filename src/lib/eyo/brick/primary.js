@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython, primary blocks.
+ * @fileoverview Block delegates for edython, primary bricks.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -88,13 +88,13 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick} dlgt, owner or the receiver.
+ * @param {!eYo.Brick} brick, owner or the receiver.
  */
-eYo.Consolidator.List.Target.prototype.getIO = function (dlgt) {
-  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, dlgt)
+eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
+  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = undefined
-  io.subtype = dlgt.subtype
+  io.subtype = brick.subtype
   return io
 }
 
@@ -162,7 +162,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
       while (io.input) {
         if (io.input.parameter_type_ === Type.STARRED) {
           // disconnect this
-          io.m4t.break()
+          io.m4t.disconnect()
           // remove that input and the next one
           this.disposeAtI(io, io.i)
           this.disposeAtI(io, io.i)
@@ -354,7 +354,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
 
 /**
  * Hook.
- * If more that 2 blocks are connected, the variant is target_valued.
+ * If more that 2 bricks are connected, the variant is target_valued.
  * @param {!eYo.Magnet} m4t.
  * @param {!eYo.Magnet} oldTargetM4t.
  * @param {!eYo.Magnet} targetOldM4t
@@ -501,15 +501,15 @@ eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, 
  * `unset.unset` is of type parent_module, attributeref and dotted_name.
  *
  * A note on type management.
- * The primary brick is one of the most complex blocks in edython.
+ * The primary brick is one of the most complex bricks in edython.
  * This design was chosen in order to ease brick edition.
  * This was kind of necessary because data and methods were merged in the delegate.
  * If there were a data delegate and a method delegate,
  * we would be able to keep the data in place and just change the methods.
- * Drawing the blocks would be deferred to another delegate.
+ * Drawing the bricks would be deferred to another delegate.
  * This is a design that must be chosen in some future development.
  * For the moment, to make the difference between the different flavours
- * primary blocks, we have the variant and the subtype.
+ * primary bricks, we have the variant and the subtype.
  * Variants allow to chose between call, slicing, alias, other.
  * Call and slicing expressions are straightforward.
  * Alias expressions are used in 4 different contexts
@@ -1435,7 +1435,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
 /**
  * Set the connection check array.
  * The connections are supposed to be configured once.
- * This method may disconnect blocks as side effect,
+ * This method may disconnect bricks as side effect,
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
  * the brick type has changed.
