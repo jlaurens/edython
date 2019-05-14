@@ -19,7 +19,7 @@ describe('Comprehension', function() {
     var d = eYo.Test.new_dlgt('comprehension')
     d.expression_p = 'x'
     eYo.Test.expect_out_check(d, eYo.T3.Expr.comprehension)
-    eYo.Test.dlgt(d, 'comprehension')
+    eYo.Test.brick(d, 'comprehension')
     d.dispose()
   })
   it('comprehension', function() {
@@ -27,7 +27,7 @@ describe('Comprehension', function() {
     var dd = eYo.Test.newIdentifier('x')
     chai.assert(d.expression_s.connect(dd), 'MISSING connection')
     eYo.Test.expect_out_check(d, eYo.T3.Expr.comprehension)
-    eYo.Test.dlgt(d, 'comprehension')
+    eYo.Test.brick(d, 'comprehension')
     d.dispose()
   })
   it('dict_comprehension', function() {
@@ -35,12 +35,12 @@ describe('Comprehension', function() {
     var dd = eYo.Test.new_dlgt('key_datum')
     chai.assert(d.expression_s.connect(dd), 'MISSING connection')
     eYo.Test.expect_out_check(d, eYo.T3.Expr.dict_comprehension)
-    eYo.Test.dlgt(d, 'dict_comprehension')
+    eYo.Test.brick(d, 'dict_comprehension')
     d.dispose()
   })
   it('export comprehension', function() {
     var d = eYo.Test.new_dlgt('comprehension')
-    var d = eYo.Xml.dlgtToDom(d)
+    var d = eYo.Xml.brickToDom(d)
     var dd = eYo.Test.new_dlgt(d)
     eYo.Test.same(d, dd)
     d.dispose()
@@ -50,8 +50,8 @@ describe('Comprehension', function() {
     var d = eYo.Test.new_dlgt('comprehension')
     var dd = eYo.Test.new_dlgt('key_datum')
     chai.assert(d.expression_s.connect(dd), 'MISSING connection')
-    eYo.Test.dlgt(d, 'dict_comprehension')
-    var d = eYo.Xml.dlgtToDom(d)
+    eYo.Test.brick(d, 'dict_comprehension')
+    var d = eYo.Xml.brickToDom(d)
     var dd = eYo.Test.new_dlgt(d)
     eYo.Test.same(d, dd)
     d.dispose()
