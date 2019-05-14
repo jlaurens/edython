@@ -88,7 +88,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   WHILE: 'while',
   WITH: 'with',
   COMPREHENSION: 'comprehension',
-  ITEM: 'item', /* used by delimited blocks */
+  ITEM: 'item', /* used by delimited bricks */
   ROOT: 'root',
   ATTRIBUTE: 'attribute',
   PARENT_NAME: 'parent_name',
