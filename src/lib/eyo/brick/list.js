@@ -133,7 +133,7 @@ eYo.Brick.List.prototype.removeItems = function () {
       var m4t = input.magnet
       var t_brick = m4t.targetBrick
       if (t_brick) {
-        m4t.break()
+        m4t.disconnect()
         t_brick.dispose()
       }
     })
