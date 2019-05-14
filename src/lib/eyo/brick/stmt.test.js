@@ -39,7 +39,7 @@ describe('comment statement', function () {
     test_connection_db()
     eYo.Test.tearItDown()
   })
-  it(`Two blocks dbOpposite_`, function () {
+  it(`Two bricks dbOpposite_`, function () {
     eYo.Test.setItUp()
     test_connection_db()
     var d1 = eYo.Test.new_dlgt('comment_stmt')
@@ -90,7 +90,7 @@ describe('comment statement', function () {
   it(`Create from type`, function () {
     eYo.Test.setItUp()
     var d = eYo.Test.new_dlgt('comment_stmt')
-    eYo.Test.dlgt(d, 'comment_stmt')
+    eYo.Test.brick(d, 'comment_stmt')
     eYo.Test.ctor(d, 'comment_stmt')
     var d1 = eYo.Test.new_dlgt('comment_stmt')
     d.comment_p = 'abc'
