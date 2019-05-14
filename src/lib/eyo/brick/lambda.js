@@ -72,10 +72,10 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick} dlgt owner of the receiver
+ * @param {!eYo.Brick} brick owner of the receiver
  */
-eYo.Consolidator.Parameter.prototype.getIO = function (dlgt) {
-  var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, dlgt)
+eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
+  var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -185,7 +185,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
           if (this.setupIO(io, io.i + 2)) {
             var nextM4t = io.m4t
             var nextTargetM4t = nextM4t.target
-            nextM4t.break()
+            nextM4t.disconnect()
             m4t.connect(nextTargetM4t)
             m4t = nextM4t
           } else {
@@ -229,7 +229,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
         this.setupIO(io, io.i - 2)
         nextM4t = io.m4t
         nextTargetM4t = m4t.target
-        nextM4t.break()
+        nextM4t.disconnect()
         m4t.connect(nextTargetM4t)
         m4t = nextM4t
         if (io.i <= io.last_default + 2) {
@@ -367,7 +367,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
 /**
  * Class for a Delegate, lambda_expr and lambda_expr_nocond brick.
  * The only difference between lambda_expr and lambda_expr_nocond comes
- * from the type of the expression. We choose to gather the two blocks
+ * from the type of the expression. We choose to gather the two bricks
  * and just change the check array depending on the type of the connected
  * expression. Whenever one of the connections connects or disconnects,
  * the checking policy changes accordingly. See the `updateLambdaCheck`
