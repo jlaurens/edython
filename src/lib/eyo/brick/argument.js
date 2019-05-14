@@ -47,10 +47,10 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick} dlgt, owner or the receiver.
+ * @param {!eYo.Brick} brick, owner or the receiver.
  */
-eYo.Consolidator.Arguments.prototype.getIO = function (dlgt) {
-  var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, dlgt)
+eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
+  var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
