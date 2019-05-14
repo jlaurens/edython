@@ -168,8 +168,8 @@ Blockly.Events.Move.prototype.run = function(forward) {
   }
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
-    var xy = eyo.ui.xyInSurface;
-    eyo.moveByXY(coordinate.x - xy.x, coordinate.y - xy.y);
+    var xy = brick.ui.xyInSurface;
+    brick.moveByXY(coordinate.x - xy.x, coordinate.y - xy.y);
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;
     if (inputName) {
