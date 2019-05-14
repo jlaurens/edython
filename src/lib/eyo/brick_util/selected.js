@@ -66,7 +66,7 @@ eYo.Selected = (() => {
           if (newValue) {
             var wrapper = newValue.wrapper
             if (wrapper && newValue !== wrapper) {
-              // Wrapped blocks should not be selected.
+              // Wrapped bricks should not be selected.
               this.brick_ = wrapper // recursive call but not reentrant
               return
             }
@@ -111,7 +111,7 @@ eYo.Selected = (() => {
             if (magnet) {
               var brick = magnet.brick
               if (brick) {
-                // if the connection visually belongs to 2 blocks, select the top left most
+                // if the connection visually belongs to 2 bricks, select the top left most
                 if (magnet.isHead && magnet.target) {
                   var wrapper = magnet.targetBrick.wrapper
                   magnet = magnet.target
@@ -183,9 +183,9 @@ eYo.Selected = (() => {
   return me
 })()
 
-eYo.Selected.selectOneBlockOf = (blocks, force) => {
+eYo.Selected.selectOneBlockOf = (bricks, force) => {
   var select
-  var eyos = blocks.filter(brick => brick).map(brick => brick.eyo)
+  var eyos = bricks.filter(brick => brick).map(brick => brick.eyo)
   var f = (eyo) => {
     if (eyo.isControl && eyo.suiteHeight) {
       select = eyo
@@ -247,10 +247,10 @@ eYo.Magnet.prototype.unselect = function () {
 
 /**
  * Select this brick.  Highlight it visually.
- * Wrapped blocks are not selectable.
+ * Wrapped bricks are not selectable.
  */
 eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function () {
-  return (eYo.Selected.dlgt = this)
+  return (eYo.Selected.brick = this)
 })
 
 /**
@@ -260,7 +260,7 @@ eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function ()
  */
 eYo.Brick.prototype.unselect = function () {
   if (this.workspace && this.selected) {
-    eYo.Selected.dlgt = null
+    eYo.Selected.brick = null
   }
 }
 
@@ -422,11 +422,11 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
  * This is used to prevent a dragging operation on a sealed brick.
  * However, this will manage the selection of an input connection.
  * onMouseDown_ message is sent multiple times for one mouse click
- * because blocks may lay on above the other (when connected for example)
+ * because bricks may lay on above the other (when connected for example)
  * Considering the selection of a connection, we manage the onMouseDown_ calls
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.
- * There is a problem due to the shape of the blocks.
+ * There is a problem due to the shape of the bricks.
  * Depending on the brick, the coutour path ou the whole svg group
  * is better suited to listed to mouse events.
  * Actually, both are registered which implies that
@@ -481,10 +481,10 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
 }
 
 /**
- * The selected connection is used to insert blocks with the keyboard.
- * When a connection is selected, one of the ancestor blocks is also selected.
- * Then, the higlighted path of the source blocks is not the outline of the brick
- * but the shape of the connection as it shows when blocks are moved close enough.
+ * The selected connection is used to insert bricks with the keyboard.
+ * When a connection is selected, one of the ancestor bricks is also selected.
+ * Then, the higlighted path of the source bricks is not the outline of the brick
+ * but the shape of the connection as it shows when bricks are moved close enough.
  */
 eYo.Brick.prototype.onMouseUp_ = function (e) {
   const magnet = this.getMagnetForEvent(e)
