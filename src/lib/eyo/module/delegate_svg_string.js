@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview string module blocks for edython.
+ * @fileoverview string module bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

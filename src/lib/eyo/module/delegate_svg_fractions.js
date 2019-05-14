@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Fractions module blocks for edython.
+ * @fileoverview Fractions module bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Decimal module blocks for edython. BROKEN IN BRYTHON.
+ * @fileoverview Decimal module bricks for edython. BROKEN IN BRYTHON.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
