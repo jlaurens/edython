@@ -21,7 +21,7 @@ goog.require('eYo.Driver')
  */
 
 /**
- * Svg driver to help rendering blocks in a svg context.
+ * Svg driver to help rendering bricks in a svg context.
  * @readonly
  * @property {SvgGroupElement} group_  The svg group.
  * @property {SvgGroupElement} groupContour_  The svg group for the contour.
@@ -99,7 +99,7 @@ eYo.Driver.Svg.newElement = function(name, attrs, parent) {
  * The svg
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeInit = function (node) {
+eYo.Driver.Svg.prototype.brickInit = function (node) {
   var svg = node.ui.svg = {}
   // groups:
   svg.group_ = eYo.Driver.Svg.newElement('g',
@@ -219,7 +219,7 @@ eYo.Driver.Svg.prototype.nodeInit = function (node) {
  * This must be called just when changing the driver in the renderer.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeDispose = function (node) {
+eYo.Driver.Svg.prototype.brickDispose = function (node) {
   var svg = node.ui.svg
   // goog.dom.removeNode(svg.group_) only once the block_ design is removed
   goog.dom.removeNode(svg.group_)
@@ -270,7 +270,7 @@ eYo.Driver.Svg.prototype.nodeDispose = function (node) {
  * Return the svg group of the given node.
  * @return {*} Svg group element.
  */
-eYo.Driver.Svg.prototype.nodeSvgGroup = function(node) {
+eYo.Driver.Svg.prototype.brickSvgGroup = function(node) {
   return node.ui.svg.group_
 }
 
@@ -279,7 +279,7 @@ eYo.Driver.Svg.prototype.nodeSvgGroup = function(node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeCanDraw = function (node) {
+eYo.Driver.Svg.prototype.brickCanDraw = function (node) {
   return !!node.ui.svg.pathInner_
 }
 
@@ -299,7 +299,7 @@ eYo.Driver.Svg.prototype.contourAboveParent_ = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeGetBBox = function (node) {
+eYo.Driver.Svg.prototype.brickGetBBox = function (node) {
   return node.ui.svg.pathShape_.getBBox()
 }
 
@@ -308,7 +308,7 @@ eYo.Driver.Svg.prototype.nodeGetBBox = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeHasSelect = function (node) {
+eYo.Driver.Svg.prototype.brickHasSelect = function (node) {
   return goog.dom.classlist.contains(node.ui.svg.group_, 'eyo-select')
 }
 
@@ -419,7 +419,7 @@ eYo.Driver.Svg.prototype.pathBBoxDef_ = function (node) {
  * @param {*} recorder
  * @private
  */
-eYo.Driver.Svg.prototype.nodeWillRender = function (node, recorder) {
+eYo.Driver.Svg.prototype.brickWillRender = function (node, recorder) {
   var svg = node.ui.svg
   if (svg.group_) {
     var F = node.locked_ && node.output
@@ -454,7 +454,7 @@ eYo.Driver.Svg.prototype.nodeWillRender = function (node, recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Driver.Svg.prototype.nodeDidRender = function (node, recorder) {
+eYo.Driver.Svg.prototype.brickDidRender = function (node, recorder) {
 }
 
 /**
@@ -488,7 +488,7 @@ eYo.Driver.Svg.prototype.updatePath_ = function (node, path, def) {
  * This may be called too early, when the path do not exist yet
  * @private
  */
-eYo.Driver.Svg.prototype.nodeUpdateShape = function (node) {
+eYo.Driver.Svg.prototype.brickUpdateShape = function (node) {
   var svg = node.ui.svg
   if (node.ui.mayBeLast || !svg.pathContour_) {
     return
@@ -519,7 +519,7 @@ eYo.Driver.Svg.prototype.nodeUpdateShape = function (node) {
  * @param {?Object} io
  * @private
  */
-eYo.Driver.Svg.prototype.nodeDrawModelBegin = function (node, io) {
+eYo.Driver.Svg.prototype.brickDrawModelBegin = function (node, io) {
   io.steps = []
 }
 
@@ -529,7 +529,7 @@ eYo.Driver.Svg.prototype.nodeDrawModelBegin = function (node, io) {
  * @param {?Object} io
  * @private
  */
-eYo.Driver.Svg.prototype.nodeDrawModelEnd = function (node, io) {
+eYo.Driver.Svg.prototype.brickDrawModelEnd = function (node, io) {
   var d = io.steps.join(' ')
   node.ui.svg.pathInner_.setAttribute('d', d)
 }
@@ -604,7 +604,7 @@ eYo.Driver.Svg.prototype.slotDisplayedUpdate = function (slot) {
  * in the proper domain of the dom tree.
  * @param {!Blockly.Block} newParent to be connected.
  */
-eYo.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
+eYo.Driver.Svg.prototype.brickParentWillChange = function (node, newParent) {
   var svg = node.ui.svg
   if (node.parent) {
     // this brick was connected, so its paths were located in the parents
@@ -639,7 +639,7 @@ eYo.Driver.Svg.prototype.nodeParentWillChange = function (node, newParent) {
  * in the proper domain of the dom tree.
  * @param {!Blockly.Block} oldParent replaced.
  */
-eYo.Driver.Svg.prototype.nodeParentDidChange = function (node, oldParent) {
+eYo.Driver.Svg.prototype.brickParentDidChange = function (node, oldParent) {
   if (node.parent) {
     var ui = node.ui
     var svg = ui.svg
@@ -667,13 +667,13 @@ eYo.Driver.Svg.prototype.nodeParentDidChange = function (node, oldParent) {
     if ((svg.pathSelect_ &&
       svg.group_ === svg.pathSelect_.parentElement) || (svg.pathMagnet_ &&
           svg.group_ === svg.pathMagnet_.parentElement)) {
-      this.nodeSelectRemove(node)
-      this.nodeSelectAdd(node)
+      this.brickSelectRemove(node)
+      this.brickSelectAdd(node)
     } else if ((p_svg.pathSelect_ &&
         p_svg.group_ === p_svg.pathSelect_.parentNode) || (p_svg.pathMagnet_ &&
           p_svg.group_ === newParent.pathMagnet_.parentNode)) {
-      this.nodeSelectRemove(newParent)
-      this.nodeSelectRemove(newParent)
+      this.brickSelectRemove(newParent)
+      this.brickSelectRemove(newParent)
     }
   }
 }
@@ -706,6 +706,22 @@ eYo.Driver.Svg.prototype.slotDispose = function (slot) {
   goog.dom.removeNode(slot.svg.group_)
   slot.svg.group_ = null
   slot.svg = undefined
+}
+
+/**
+ * Dispose of the given slot's rendering resources.
+ * @param {eYo.Slot} slot
+ */
+eYo.Driver.Svg.prototype.slotDisplay = function (slot) {
+  var g = slot.svg && slot.svg.group_
+  goog.asserts.assert(g, 'Slot with no root', slot.brick.type, slot.key)
+  if (slot.incog) {
+    g.setAttribute('display', 'none')
+  } else {
+    g.removeAttribute('display')
+    g.setAttribute('transform',
+      `translate(${slot.where.x}, ${slot.where.y})`)
+  }
 }
 
 
@@ -852,7 +868,7 @@ eYo.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
  * Make the given field disabled eventually.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeUpdateDisabled = function (node) {
+eYo.Driver.Svg.prototype.brickUpdateDisabled = function (node) {
   var brick = node
   var svg = node.ui.svg
   if (brick.disabled || brick.getInheritedDisabled()) {
@@ -961,9 +977,9 @@ eYo.Driver.Svg.connectionUiStep_ = function (ripple, start, workspaceScale) {
  * @param {!Object} node  the node the driver acts on
  * @param {!Object} menu  the menu to be displayed
  */
-eYo.Driver.Svg.prototype.nodeMenuShow = function (node, menu) {
+eYo.Driver.Svg.prototype.brickMenuShow = function (node, menu) {
   var svg = node.ui.svg
-  var bBox = this.nodeGetBBox(node)
+  var bBox = this.brickGetBBox(node)
   var scaledHeight = bBox.height * node.workspace.scale
   var xy = goog.style.getPageOffset(svg.group_)
   menu.showMenu(svg.group_, xy.x, xy.y + scaledHeight + 2)
@@ -1013,7 +1029,7 @@ eYo.Driver.Svg.prototype.magnetHilight = function (m4t) {
  * according to the node status.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeUpdateWrapped = function (node) {
+eYo.Driver.Svg.prototype.brickUpdateWrapped = function (node) {
   var svg = node.ui.svg
   if (node.wrapped_ && !svg.wrapped) {
     svg.wrapped = true
@@ -1031,7 +1047,7 @@ eYo.Driver.Svg.prototype.nodeUpdateWrapped = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeSendToFront = function (node) {
+eYo.Driver.Svg.prototype.brickSendToFront = function (node) {
   var eyo = node
   var parent
   while ((parent = eyo.surround)) {
@@ -1067,7 +1083,7 @@ eYo.Driver.Svg.prototype.nodeSendToFront = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeSendToBack = function (node) {
+eYo.Driver.Svg.prototype.brickSendToBack = function (node) {
   var eyo = node
   var parent
   while ((parent = eyo.surround)) {
@@ -1088,7 +1104,7 @@ eYo.Driver.Svg.prototype.nodeSendToBack = function (node) {
  * @param {*} dl
  * @return {boolean}
  */
-eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
+eYo.Driver.Svg.prototype.brickSetOffset = function (node, dc, dl) {
   var svg = node.ui.svg
   // Workspace coordinates.
   var dx = dc * eYo.Unit.x
@@ -1102,14 +1118,14 @@ eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dc, dl) {
 
 /**
  * Move this brick during a drag, taking into account whether we are using a
- * drag surface to translate blocks.
+ * drag surface to translate bricks.
  * This brick must be a top-level brick.
  * @param {!eYo.Brick} node  the brick.
  * @param {!Number} dx  in workspace coordinates.
  * @param {!Number} dy  in workspace coordinates.
  * @package
  */
-eYo.Driver.Svg.prototype.nodeSetOffsetDuringDrag = function(node, dx, dy) {
+eYo.Driver.Svg.prototype.brickSetOffsetDuringDrag = function(node, dx, dy) {
   var svg = node.ui.svg
   svg.group_.translate_ = `translate(${dx},${dy})`
   svg.group_.setAttribute('transform',
@@ -1123,9 +1139,9 @@ eYo.Driver.Svg.prototype.nodeSetOffsetDuringDrag = function(node, dx, dy) {
  * @param {*} dy
  * @return {boolean}
  */
-eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
+eYo.Driver.Svg.prototype.brickSetOffset = function (node, dx, dy) {
   var svg = node.ui.svg
-  if (!this.nodeCanDraw(node)) {
+  if (!this.brickCanDraw(node)) {
     throw `brick is not inited ${node.type}`
   }
   // Workspace coordinates.
@@ -1158,7 +1174,7 @@ eYo.Driver.Svg.prototype.nodeSetOffset = function (node, dx, dy) {
  * @param {number} x The x coordinate of the translation in workspace units.
  * @param {number} y The y coordinate of the translation in workspace units.
  */
-eYo.Driver.Svg.prototype.nodeTranslate = function(node, x, y) {
+eYo.Driver.Svg.prototype.brickTranslate = function(node, x, y) {
   node.ui.svg.group_.setAttribute('transform', `translate(${x},${y})`)
 }
 
@@ -1171,7 +1187,7 @@ eYo.Driver.Svg.prototype.nodeTranslate = function(node, x, y) {
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
  *     workspace coordinates.
  */
-eYo.Driver.Svg.prototype.nodeXYInSurface = function (node) {
+eYo.Driver.Svg.prototype.brickXYInSurface = function (node) {
   var x = 0
   var y = 0
   var brick = node
@@ -1202,7 +1218,7 @@ eYo.Driver.Svg.prototype.nodeXYInSurface = function (node) {
  * Add the hilight path_.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeHilightAdd = function (node) {
+eYo.Driver.Svg.prototype.brickHilightAdd = function (node) {
   var svg = node.ui.svg
   if (!svg.pathHilight_.parentNode) {
     svg.group_.appendChild(svg.pathHilight_)
@@ -1213,7 +1229,7 @@ eYo.Driver.Svg.prototype.nodeHilightAdd = function (node) {
  * Remove the hilight path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeHilightRemove = function (node) {
+eYo.Driver.Svg.prototype.brickHilightRemove = function (node) {
   goog.dom.removeNode(node.ui.svg.pathHilight_)
 }
 
@@ -1221,7 +1237,7 @@ eYo.Driver.Svg.prototype.nodeHilightRemove = function (node) {
  * Add the select path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeSelectAdd = function (node) {
+eYo.Driver.Svg.prototype.brickSelectAdd = function (node) {
   var svg = node.ui.svg
   if (!svg.pathSelect_.parentNode) {
     if (svg.pathHilight_.parentNode) {
@@ -1238,7 +1254,7 @@ eYo.Driver.Svg.prototype.nodeSelectAdd = function (node) {
  * Remove the select path.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeSelectRemove = function (node) {
+eYo.Driver.Svg.prototype.brickSelectRemove = function (node) {
   goog.dom.removeNode(node.ui.svg.pathSelect_)
 }
 
@@ -1246,7 +1262,7 @@ eYo.Driver.Svg.prototype.nodeSelectRemove = function (node) {
  * Add the hilight path_ to the dom.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeMagnetAdd = function (node) {
+eYo.Driver.Svg.prototype.brickMagnetAdd = function (node) {
   var svg = node.ui.svg
   if (!svg.pathMagnet_.parentNode) {
     svg.group_.appendChild(svg.pathMagnet_)
@@ -1257,7 +1273,7 @@ eYo.Driver.Svg.prototype.nodeMagnetAdd = function (node) {
  * Remove the select path from the dom.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeConnectionRemove = function (node) {
+eYo.Driver.Svg.prototype.brickConnectionRemove = function (node) {
   goog.dom.removeNode(node.ui.svg.pathMagnet_)
 }
 
@@ -1265,7 +1281,7 @@ eYo.Driver.Svg.prototype.nodeConnectionRemove = function (node) {
  * The svg group has an `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeStatusTopAdd = function (node) {
+eYo.Driver.Svg.prototype.brickStatusTopAdd = function (node) {
   goog.dom.classlist.add(node.ui.svg.group_, 'eyo-top')
 }
 
@@ -1273,7 +1289,7 @@ eYo.Driver.Svg.prototype.nodeStatusTopAdd = function (node) {
  * The svg group has no `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeStatusTopRemove = function (node) {
+eYo.Driver.Svg.prototype.brickStatusTopRemove = function (node) {
   goog.dom.classlist.remove(node.ui.svg.group_, 'eyo-top')
 }
 
@@ -1281,7 +1297,7 @@ eYo.Driver.Svg.prototype.nodeStatusTopRemove = function (node) {
  * The svg group has an `eyo-select` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeStatusSelectAdd = function (node) {
+eYo.Driver.Svg.prototype.brickStatusSelectAdd = function (node) {
   var svg = node.ui.svg
   var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {
@@ -1298,7 +1314,7 @@ eYo.Driver.Svg.prototype.nodeStatusSelectAdd = function (node) {
  * The svg group has an `eyo-select` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeStatusSelectRemove = function (node) {
+eYo.Driver.Svg.prototype.brickStatusSelectRemove = function (node) {
   var svg = node.ui.svg
   var g = svg.group_
   goog.dom.classlist.remove(g, 'eyo-select')
@@ -1312,7 +1328,7 @@ eYo.Driver.Svg.prototype.nodeStatusSelectRemove = function (node) {
  * Get the displayed status of the given node.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeDisplayedGet = function (node) {
+eYo.Driver.Svg.prototype.brickDisplayedGet = function (node) {
   var g =  node.ui.svg.group_
   if (g) {
     return g.style.display !== 'none'
@@ -1324,7 +1340,7 @@ eYo.Driver.Svg.prototype.nodeDisplayedGet = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Driver.Svg.prototype.nodeDisplayedSet = function (node, visible) {
+eYo.Driver.Svg.prototype.brickDisplayedSet = function (node, visible) {
   var svg =  node.ui.svg
   var g =  svg.group_
   if (g) {
@@ -1341,7 +1357,7 @@ eYo.Driver.Svg.prototype.nodeDisplayedSet = function (node, visible) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeHide = function (node) {
+eYo.Driver.Svg.prototype.brickHide = function (node) {
   var svg = node.ui.svg
   var root = svg.group_
   if (root) {
@@ -1361,7 +1377,7 @@ eYo.Driver.Svg.prototype.nodeHide = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.Svg.prototype.nodeDrawSharp = function (node, visible) {
+eYo.Driver.Svg.prototype.brickDrawSharp = function (node, visible) {
   var g = node.ui.svg.groupSharp_
   if (visible) {
     var children = goog.dom.getChildren(g)
@@ -1394,17 +1410,17 @@ eYo.Driver.Svg.prototype.nodeDrawSharp = function (node, visible) {
 }
 
 /**
- * Set the dosplay mode for blocks.
+ * Set the dosplay mode for bricks.
  * @param {!String} mode  The display mode for bocks.
  */
-eYo.Driver.Svg.prototype.nodeSetDragging = (node, adding) => {
-  var svg = node.ui.svg
+eYo.Driver.Svg.prototype.brickSetDragging = (brick, adding) => {
+  var svg = brick.ui.svg
   if (adding) {
     var group = svg.group_
     group.translate_ = '';
     group.skew_ = '';
     Blockly.draggingConnections_ =
-        Blockly.draggingConnections_.concat(node.getMagnets_(true));
+        Blockly.draggingConnections_.concat(brick.getMagnets_(true))
     goog.dom.classlist.add(
         /** @type {!Element} */ (group), 'eyo-dragging');
   } else {
@@ -1412,21 +1428,21 @@ eYo.Driver.Svg.prototype.nodeSetDragging = (node, adding) => {
     goog.dom.classlist.remove(
         /** @type {!Element} */ (group), 'eyo-dragging');
   }
-  // Recurse through all blocks attached under this one.
-  node.childBlocks_.forEach(b => b.setDragging(adding))
+  // Recurse through all bricks attached under this one.
+  brick.children_.forEach(b => b.setDragging(adding))
 }
 
 /**
  * Move the brick to the top level.
  * @param {!eYo.Brick} field  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeSetParent = function (node, parent) {
+eYo.Driver.Svg.prototype.brickSetParent = function (node, parent) {
   var svg = node.ui.svg
   if (parent) {
     var p_svg = parent.ui.svg
-    var oldXY = this.nodeXYInSurface(node)
+    var oldXY = this.brickXYInSurface(node)
     p_svg.group_.appendChild(svg.group_)
-    var newXY = this.nodeXYInSurface(node)
+    var newXY = this.brickXYInSurface(node)
     goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
@@ -1434,10 +1450,10 @@ eYo.Driver.Svg.prototype.nodeSetParent = function (node, parent) {
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
-    var oldXY = this.nodeXYInSurface(node)
+    var oldXY = this.brickXYInSurface(node)
     node.workspace.getCanvas().appendChild(svg.group_)
     xy && svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`)
-    var newXY = this.nodeXYInSurface(node)
+    var newXY = this.brickXYInSurface(node)
     goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
@@ -1452,10 +1468,10 @@ eYo.Driver.Svg.prototype.nodeSetParent = function (node, parent) {
  * Move the brick to the top level.
  * @param {!eYo.Brick} field  the node the driver acts on
  */
-eYo.Driver.Svg.prototype.nodeAtTop = function (node) {
+eYo.Driver.Svg.prototype.brickAtTop = function (node) {
   var g = node.ui.svg.group_
   // Move this brick up the DOM.  Keep track of x/y translations.
-  var xy = this.nodeXYInSurface(node)
+  var xy = this.brickXYInSurface(node)
   this.workspace.getCanvas().appendChild(g)
   g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
 }
@@ -1673,7 +1689,7 @@ eYo.Driver.Svg.prototype.xyInParent = function(element) {
 }
 
 /**
- * Set the dosplay mode for blocks.
+ * Set the dosplay mode for bricks.
  * @param {!String} mode  The display mode for bocks.
  */
 eYo.Driver.Svg.prototype.setBlockDisplayMode = mode => {
