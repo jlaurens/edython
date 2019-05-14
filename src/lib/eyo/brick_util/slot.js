@@ -286,33 +286,6 @@ eYo.Slot.prototype.beReady = function () {
 }
 
 /**
- * Set the underlying Blockly input.
- * Some time we will not need these inputs.
- * It must be done only once at initialization time.
- * For edython.
- * @param {!eYo.Input} input
- */
-eYo.Slot.prototype.setInput = function (input) {
-  this.input = input
-  input.slot = this
-  var c8n = input.connection
-  if (c8n) {
-    var eyo = c8n.eyo
-    eyo.slot = this
-    eyo.name_ = this.key
-    if (this.model.suite && Object.keys(this.model.suite).length) {
-      goog.mixin(eyo, this.model.suite)
-    }
-    if (this.model.optional) { // svg
-      eyo.optional_ = true
-    }
-    if (this.model.hidden) { // svg
-      this.incog = eyo.hidden_ = true
-    }
-  }
-}
-
-/**
  * Whether the input has a connection.
  * For edython.
  * @param {!eYo.Input} workspace The brick's workspace.
@@ -393,7 +366,7 @@ eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
  * Consolidate the state.
  * Forwards to the connection delegate.
  * For edython.
- * @param {Boolean} deep whether to consolidate connected blocks.
+ * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
 eYo.Slot.prototype.consolidate = function (deep, force) {
@@ -446,7 +419,7 @@ goog.forwardDeclare('eYo.Brick.List')
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.dlgtToDom`.
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return a dom element, void lists may return nothing
  * @this a brick delegate
  */
@@ -469,11 +442,11 @@ eYo.Slot.prototype.save = function (element, opt) {
     var t_brick = this.targetBrick
     if (t_brick) { // otherwise, there is nothing to remember
       if (t_brick.wrapped_) {
-        // wrapped blocks are just a convenient computational model.
+        // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
         if (t_brick instanceof eYo.Brick.List) {
-          var child = eYo.Xml.dlgtToDom(t_brick, opt)
+          var child = eYo.Xml.brickToDom(t_brick, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
@@ -484,7 +457,7 @@ eYo.Slot.prototype.save = function (element, opt) {
           return eYo.Xml.toDom(t_brick, element, opt)
         }
       } else {
-        child = eYo.Xml.dlgtToDom(t_brick, opt)
+        child = eYo.Xml.brickToDom(t_brick, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
@@ -516,10 +489,10 @@ eYo.Slot.prototype.saveRequired = function (element) {
  * Given an element, initialize the slot target
  * brick with data from the given element.
  * The given element was created by the input's source brick
- * in a dlgtToDom method. If it contains a child element
+ * in a brickToDom method. If it contains a child element
  * which input attribute is exactly the input's name,
  * then we ask the input target brick to fromDom.
- * Target blocks are managed here too.
+ * Target bricks are managed here too.
  * No consistency test is made however.
  * For edython.
  * @param {Element} element a dom element in which to save the input
@@ -571,7 +544,7 @@ eYo.Slot.prototype.load = function (element) {
                     if ((grand_t_brick)) {
                       eYo.Xml.fromDom(grand_t_brick, grandChild)
                       this.recover.dontResit(grandChild)
-                    } else if ((grand_t_brick = eYo.Xml.domToDlgt(grandChild, this.owner))) {
+                    } else if ((grand_t_brick = eYo.Xml.domToBrick(grandChild, this.owner))) {
                       var t_m4t = grand_t_brick.magnets.output
                       if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
                         t_m4t.connect(input.magnet)
@@ -589,7 +562,7 @@ eYo.Slot.prototype.load = function (element) {
               out = eYo.Xml.fromDom(t_brick, child)
             }
             this.recover.dontResit(child)
-          } else if ((t_brick = eYo.Xml.domToDlgt(child, this.owner))) {
+          } else if ((t_brick = eYo.Xml.domToBrick(child, this.owner))) {
             var m4ts = t_brick.magnets
             // we could create a brick from that child element
             // then connect it
