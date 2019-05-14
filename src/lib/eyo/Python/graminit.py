@@ -166,7 +166,7 @@ rh2 = re.compile(r'^#define\s+(\S+)\s+(\d+)\s*$')
 def mh2(io):
   io.t_by_index[io.m.group(2)] = io.m.group(1)
   io.nt_by_index[io.m.group(2)] = io.m.group(1)
-  io.append(f'  {io.m.group(1)}: {{get() {{return {io.m.group(2)}}}}},\n')
+  io.append(f'  {io.m.group(1)}: {{ value: {io.m.group(2)} }},\n')
 
 rh_s = [rh1, rh2]
 mh_s = [mh1, mh2]
@@ -209,14 +209,12 @@ try:
 """)
   io.append("""Object.defineProperties(eYo.TKN, {
   _NT_NAMES: {
-    get () {
-      return [
+    value: [
 """)
   for k in sorted(io.nt_by_index.keys()):
-    io.append(f"""        '{io.nt_by_index[k]}',
+    io.append(f"""     '{io.nt_by_index[k]}',
 """)
-  io.append("""      ]
-    }
+  io.append("""   ]
   }
 })
 """)
