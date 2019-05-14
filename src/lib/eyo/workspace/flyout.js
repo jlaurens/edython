@@ -76,7 +76,7 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
  * Initializes the flyout.
  * Edython: Add a hook in the target workspace.
  * @param {!Blockly.Workspace} targetWorkspace The workspace in which to create
- *     new blocks.
+ *     new bricks.
  */
 eYo.Flyout.prototype.init = function(targetWorkspace, switcher) {
   eYo.Flyout.superClass_.init.call(this, targetWorkspace)
@@ -192,8 +192,8 @@ eYo.FlyoutDelegate.prototype.dispose = function() {
 /**
  * Show and populate the flyout.
  * More tagnames accepted.
- * @param {!Array|string} model List of blocks to show.
- *     Variables and procedures have a custom set of blocks.
+ * @param {!Array|string} model List of bricks to show.
+ *     Variables and procedures have a custom set of bricks.
  */
 eYo.Flyout.prototype.show = function(model) {
   this.workspace_.setResizesEnabled(false);
@@ -216,7 +216,7 @@ eYo.Flyout.prototype.show = function(model) {
     }
 
     this.setVisible(true);
-    // Create the blocks to be shown in this flyout.
+    // Create the bricks to be shown in this flyout.
     var contents = [];
     var gaps = [];
     var default_gap = eYo.Font.lineHeight/4;
@@ -226,10 +226,10 @@ eYo.Flyout.prototype.show = function(model) {
       if (xml.tagName) {
         var tagName = xml.tagName.toUpperCase();
         if (tagName.startsWith('EYO:')) {
-          var curDlgt = eYo.Xml.domToDlgt(xml, this.workspace_);
+          var curDlgt = eYo.Xml.domToBrick(xml, this.workspace_);
           if (curDlgt.disabled) {
-            // Record blocks that were initially disabled.
-            // Do not enable these blocks as a result of capacity filtering.
+            // Record bricks that were initially disabled.
+            // Do not enable these bricks as a result of capacity filtering.
             this.permanentlyDisabled_.push(curDlgt);
           }
           curDlgt.beReady()
@@ -240,10 +240,10 @@ eYo.Flyout.prototype.show = function(model) {
       } else {
         var createOneBlock = (xml) => {
           try {
-            var eyo = eYo.Brick.newReady(this.workspace_, xml)
-            contents.push({type: 'block', block: block.eyo})
-            eyo.render()
-            eyo.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
+            var brick = eYo.Brick.newReady(this.workspace_, xml)
+            contents.push({type: 'block', block: brick})
+            brick.render()
+            brick.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
             gaps.push(default_gap)
           } catch (err) {
             console.error(xml, err)
@@ -267,7 +267,7 @@ eYo.Flyout.prototype.show = function(model) {
     this.layout_(contents, gaps);
 
     // IE 11 is an incompetent browser that fails to fire mouseout events.
-    // When the mouse is over the background, deselect all blocks.
+    // When the mouse is over the background, deselect all bricks.
     var deselectAll = function() {
       this.workspace_.getTopBlocks(false).forEach((block) => {
         block.removeSelect()
@@ -587,15 +587,15 @@ eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
 /**
  * Copy a block from the flyout to the workspace and position it correctly.
  * Edython adds a full rendering process.
- * No rendering is made while blocks are dragging.
- * @param {!Blockly.Block} oldBlock The flyout block to copy.
- * @return {!Blockly.Block} The new block in the main workspace.
+ * No rendering is made while bricks are dragging.
+ * @param {!eYo.Brick} oldBrick The flyout block to copy.
+ * @return {!eYo.Brick} The new brick in the main workspace.
  * @private
  */
-eYo.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
-  var block = eYo.Flyout.superClass_.placeNewBlock_.call(this, oldBlock)
-  block.setConnectionsHidden(false)
-  return block;
+eYo.Flyout.prototype.placeNewBlock_ = function(oldBrick) {
+  var brick = eYo.Flyout.superClass_.placeNewBlock_.call(this, oldBrick)
+  brick.render()
+  return brick
 };
 
 /**
@@ -618,7 +618,7 @@ eYo.Flyout.prototype.getClientRect = function() {
   }
 
   var flyoutRect = this.svgGroup_.getBoundingClientRect();
-  // BIG_NUM is offscreen padding so that blocks dragged beyond the shown flyout
+  // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
   // area are still deleted.  Must be larger than the largest screen size,
   // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
   var BIG_NUM = 1000000000;
