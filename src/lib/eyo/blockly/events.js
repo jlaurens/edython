@@ -177,7 +177,7 @@ goog.require('eYo.Data')
  * As a consequence, this block automatically changes type and
  * may be disconnected.
  * Take a look at what happens regarding the default undo/redo stack
- * management when connected blocks are involved
+ * management when connected bricks are involved
  * as data change.
  * NB the changeEnd method may disconnect
  *  1) normal flow
@@ -193,10 +193,10 @@ goog.require('eYo.Data')
  *    d - the connection check change but no undo event is recorded
  *        because no block has been connected nor disconnected meanwhile
  *    e - the data rechange is pushed to the redo stack
- *    f - blocks are reconnected and the redo event is pushed to the redo stack
+ *    f - bricks are reconnected and the redo event is pushed to the redo stack
  *    undo/redo stacks : [...]/[disconnect block, data rechange]
  *  3) when redoing
- *    a - blocks are disconnected and the reconnect event is pushed to the undo stack
+ *    a - bricks are disconnected and the reconnect event is pushed to the undo stack
  *    b - the data is rechanged, with type and connection checks.
  *        No block is disconnected, no other move event is recorded.
  *    undo/redo stacks : [..., reconnect block, data undo change]/[]
@@ -284,20 +284,39 @@ function (try_f, finally_f) {
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Brick} dlgt  The newly created block.
+ * @param {!eYo.Brick} brick  The newly created block.
  */
-eYo.Events.fireDlgtCreate = function (dlgt) {
+eYo.Events.fireDlgtCreate = function (brick) {
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockCreate(dlgt))
+    Blockly.Events.fire(new Blockly.Events.BlockCreate(brick))
   }
 }
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Brick} dlgt  The newly created block.
+ * @param {!eYo.Brick} brick  The newly created block.
  */
-eYo.Events.fireDlgtChange = function (block, element, name, oldValue, newValue) {
+eYo.Events.fireDlgtChange = function (brick, element, name, oldValue, newValue) {
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(dlgt, element, name, oldValue, newValue))
+    Blockly.Events.fire(new Blockly.Events.BlockChange(brick, element, name, oldValue, newValue))
+  }
+}
+
+/**
+ * Convenient shortcut.
+ * @param {!eYo.Brick} brick  The moved brick.
+ * @param {Function} move  the move action.
+ */
+eYo.Events.fireBrickMove = (brick, move) => {
+  if (Blockly.Events.isEnabled()) {
+    var event = new Blockly.Events.BlockMove(brick)
+    try {
+      move()
+    } finally {
+      event.recordNew()
+      Blockly.Events.fire(event)
+    }
+  } else {
+    move()
   }
 }
