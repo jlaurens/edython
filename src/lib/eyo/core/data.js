@@ -120,7 +120,7 @@ Object.defineProperties(eYo.Data.prototype, {
       return this.owner
     }
   },
-  brickType {
+  brickType: {
     get  () {
       return this.owner.type
     }
