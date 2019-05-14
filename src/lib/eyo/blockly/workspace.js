@@ -103,7 +103,7 @@ eYo.WorkspaceDelegate.prototype.fromString = function (str) {
 
 /**
  * Convert the workspace to string.
- * @param {?Object} opt  See eponym parameter in `eYo\.Xml\.dlgtToDom`.
+ * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  */
 eYo.WorkspaceDelegate.prototype.toDom = function (opt) {
   return eYo.Xml.workspaceToDom(this.workspace_, opt)
