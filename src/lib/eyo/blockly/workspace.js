@@ -142,9 +142,7 @@ eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {eYo.Brick} brick
  */
 eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
-  if (this.rendered) {
-    brick.beReady()
-  }
+  this.rendered && brick.beReady()
   this.workspace.addTopBlock(brick)
 }
 
@@ -159,7 +157,7 @@ eYo.WorkspaceDelegate.prototype.removeBrick = function (brick) {
 }
 
 /**
- * Class for a workspace.  This is a data structure that contains blocks.
+ * Class for a workspace.  This is a data structure that contains bricks.
  * There is no UI, and can be created headlessly.
  * @param {Blockly.Options} optOptions Dictionary of options.
  * @constructor
@@ -217,7 +215,7 @@ Blockly.Workspace.prototype.dispose = function () {
 }
 
 /**
- * Returns a block subclass for eYo blocks.
+ * Returns a block subclass for eYo bricks.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
@@ -230,7 +228,7 @@ eYo.Workspace.prototype.newDlgt = function (prototypeName, opt_id) {
 
 /**
  * Obtain a newly created block.
- * Returns a block subclass for eYo blocks.
+ * Returns a block subclass for eYo bricks.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
@@ -258,33 +256,6 @@ eYo.Workspace.prototype.logAllConnections = function (comment) {
       console.log(m4t.x_, m4t.y_, m4t.offsetInBlock_, m4t.brick.type)
     })
   })
-}
-
-/**
- * Find all the uses of a named variable.
- * @param {string} name Name of variable.
- * @return {!Array.<!Blockly.Block>} Array of block usages.
- */
-eYo.Workspace.prototype.getVariableUses = function (name, all) {
-  var uses = all ? eYo.Workspace.superClass_.getVariableUses.call(name) : []
-  var blocks = this.getAllBlocks()
-  // Iterate through every block and check the name.
-  for (var i = 0; i < blocks.length; i++) {
-    var eyo = blocks[i].eyo
-    if (eyo) {
-      var blockVariables = eyo.getVars(blocks[i])
-      if (blockVariables) {
-        for (var j = 0; j < blockVariables.length; j++) {
-          var varName = blockVariables[j]
-          // Variable name may be null if the block is only half-built.
-          if (varName && name && Blockly.Names.equals(varName, name)) {
-            uses.push(blocks[i])
-          }
-        }
-      }
-    }
-  }
-  return uses
 }
 
 /**
@@ -341,23 +312,21 @@ eYo.Workspace.prototype.undo = function(redo) {
       var Bs = []
       eYo.Do.tryFinally(() => { // try
         if (this.rendered) {
-          events.forEach((event) => {
+          events.forEach(event => {
             var B = this.getBlockById(event.blockId)
             if (B) {
-              B.eyo.changeBegin()
+              B.changeBegin()
               Bs.push(B)
             }
           })
         }
-        events.forEach((event) => {
+        events.forEach(event => {
           event.run(redo)
           this.eyo.updateChangeCount(event, redo)
         })
       }, () => { // finally
         eYo.Events.recordUndo = true
-        Bs.forEach((B) => {
-          B.eyo.changeEnd()
-        })
+        Bs.forEach(B => B.changeEnd())
         eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
       })
       return
@@ -430,9 +399,9 @@ Blockly.onKeyDown_ = function(e) {
         eYo.Selected.brick.isDeletable() && eYo.Selected.brick.isMovable()) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
-      // Don't allow copying immovable or undeletable blocks. The next step
+      // Don't allow copying immovable or undeletable bricks. The next step
       // would be to paste, which would create additional undeletable/immovable
-      // blocks on the workspace.
+      // bricks on the workspace.
       if (e.keyCode == 67) {
         // 'c' for copy.
         Blockly.hideChaff();
@@ -516,8 +485,8 @@ eYo.deleteBlock = function (block, deep) {
  * @private
  */
 eYo.copyBlock = function(block, deep) {
-  var xml = eYo.Xml.dlgtToDom(block.eyo, {noId: true, noNext: !deep});
-  // Copy only the selected block and internal blocks.
+  var xml = eYo.Xml.brickToDom(block.eyo, {noId: true, noNext: !deep});
+  // Copy only the selected block and internal bricks.
   // Encode start position in XML.
   var xy = block.eyo.ui.xyInSurface;
   xml.setAttribute('x', block.RTL ? -xy.x : xy.x);
