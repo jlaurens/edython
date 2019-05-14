@@ -26,7 +26,7 @@ goog.require('goog.dom');
  */
 eYo.Brick.makeSubclass('Expr')
 
-// Default delegate for all expression blocks
+// Default delegate for all expression bricks
 eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick.Expr, true)
 
 Object.defineProperties(eYo.Brick.Expr.prototype, {
@@ -98,11 +98,11 @@ eYo.Brick.Expr.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {!eYo.Brick} dlgt  the Dlgt to be replaced
+ * @param {!eYo.Brick} brick  the brick to be replaced
  */
-eYo.Brick.Expr.prototype.canReplaceDlgt = function (dlgt) {
-  if (dlgt) {
-    var m4t = dlgt.magnets.output
+eYo.Brick.Expr.prototype.canReplaceDlgt = function (brick) {
+  if (brick) {
+    var m4t = brick.magnets.output
     if (!m4t) {
       return true
     }
@@ -120,15 +120,15 @@ eYo.Brick.Expr.prototype.canReplaceDlgt = function (dlgt) {
  * If the parent's output connection is connected,
  * connects the brick's output connection to it.
  * The connection cannot always establish.
- * @param {!eYo.Brick} dlgt
+ * @param {!eYo.Brick} brick
  */
-eYo.Brick.Expr.prototype.replaceDlgt = function (dlgt) {
-  if (this.workspace && dlgt && dlgt.workspace) {
+eYo.Brick.Expr.prototype.replaceDlgt = function (brick) {
+  if (this.workspace && brick && brick.workspace) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {
         var my_m4t = this.magnets.output
-        my_m4t.break()
-        var its_m4t = dlgt.magnets.output
+        my_m4t.disconnect()
+        var its_m4t = brick.magnets.output
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other brick has an output connection that can connect to the brick's one
           var brick = its_m4t.brick
@@ -141,7 +141,7 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (dlgt) {
             eYo.Selected.brick = brick
           }
         } else {
-          var its_xy = dlgt.ui.xyInSurface
+          var its_xy = brick.ui.xyInSurface
           var my_xy = this.ui.xyInSurface
           this.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
@@ -165,7 +165,7 @@ eYo.Brick.Expr.prototype.willRender_ = function (recorder) {
 
 /**
  * Whether the brick can have an 'await' prefix.
- * Only blocks that are top brick or that are directy inside function definitions
+ * Only bricks that are top brick or that are directy inside function definitions
  * are awaitable
  * @return yes or no
  */
@@ -284,7 +284,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')
         var brick = targetM4t.brick
-        targetM4t.break()
+        targetM4t.disconnect()
         brick.dispose(true)
         brick = undefined
         targetM4t = undefined
@@ -298,7 +298,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
           // and a connection mangling
           targetM4t.connect(parent.magnets.output)
         } else {
-          targetM4t.break()
+          targetM4t.disconnect()
           bumper = targetM4t.brick
           var its_xy = bumper.ui.xyInSurface
           var my_xy = parent.ui.xyInSurface
