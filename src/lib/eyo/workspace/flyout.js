@@ -81,15 +81,11 @@ goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
 eYo.Flyout.prototype.init = function(targetWorkspace, switcher) {
   eYo.Flyout.superClass_.init.call(this, targetWorkspace)
   targetWorkspace.eyo.flyout_ = this
-  this.svgGroup_ = this.createDom('svg')
-  goog.dom.insertSiblingAfter(
-    this.svgGroup_,
-    targetWorkspace.getParentSvg()
-  )
-  this.eyo.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
-  var div = this.eyo.toolbar_.createDom()
-  goog.dom.insertSiblingBefore(div, this.svgGroup_)
-  this.eyo.toolbar_.doSelectGeneral(null) // is it necessary ?
+  var d = targetWorkspace.eyo.driver
+  d.flyoutInit(this)
+  var tb = this.eyo.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
+  d.flyoutToolbarInit(tb)
+  tb.doSelectGeneral(null) // is it necessary ?
 }
 
 var one_rem = eYo.Unit.rem
@@ -104,59 +100,6 @@ eYo.FlyoutDelegate.prototype.TOP_MARGIN = 0 // 4 * one_rem
 eYo.FlyoutDelegate.prototype.TOP_OFFSET = 2 * eYo.Unit.y
 
 eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
-
-/**
- * Creates the flyout's DOM.  Only needs to be called once.  The flyout can
- * either exist as its own svg element or be a g element nested inside a
- * separate svg element.
- * @param {string} tagName The type of tag to put the flyout in. This
- *     should be <svg> or <g>.
- * @return {!Element} The flyout's SVG group.
- */
-eYo.Flyout.prototype.createDom = function(tagName) {
-  /*
-  <svg class="eyo-flyout">
-    <g class="eyo-flyout-background">
-      <path class="blocklyFlyoutBackground"/>
-    </g>
-    <g class="eyo-workspace">...</g>
-  </svg>
-  */
-  this.svgGroup_ = eYo.Driver.Svg.newElement(tagName,
-      {
-        class: 'eyo-flyout',
-        style: 'display: none'
-      }, null);
-  this.svgBackground_ = eYo.Driver.Svg.newElement('path', {
-    class: 'eyo-flyout-background'
-  }, this.svgGroup_)
-  // Bad design: code reuse: options
-  eYo.Tooltip.add(this.svgBackground_, eYo.Tooltip.getTitle('flyout'), {
-    position: 'right',
-    theme: 'light bordered',
-    flipDuration: 0,
-    inertia: true,
-    arrow: true,
-    animation: 'perspective',
-    duration: [600, 300],
-    delay: [750, 0],
-    popperOptions: {
-      modifiers: {
-        preventOverflow: {
-          enabled: true
-        }
-      }
-    },
-    onShow: (instance) => {
-      eYo.Tooltip.hideAll(this.svgBackground_)
-    }
-  })
-  var g = this.workspace_.createDom()
-  goog.dom.classlist.remove(g, 'blocklyWorkspace')
-  goog.dom.classlist.add(g, 'eyo-workspace')
-  this.svgGroup_.appendChild(g);
-  return this.svgGroup_;
-};
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
@@ -243,7 +186,7 @@ eYo.Flyout.prototype.show = function(model) {
             var brick = eYo.Brick.newReady(this.workspace_, xml)
             contents.push({type: 'block', block: brick})
             brick.render()
-            brick.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
+            brick.ui.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
             gaps.push(default_gap)
           } catch (err) {
             console.error(xml, err)

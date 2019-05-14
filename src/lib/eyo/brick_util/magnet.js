@@ -1165,8 +1165,9 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   var oldChildT4t = parentM4t.target
   var unwrappedM4t = parentM4t.unwrappedMagnet
   var m4t
-  var child_event
-
+  if (parent.workspace !== child.workspace) {
+    return
+  }
   var attach_orphan = () => {
     if (parentOldT4t) {
       // Parent magnet is already connected to something.
@@ -1221,7 +1222,6 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     childM4t.target_ = parentM4t
     child.parent = parent
   }
-
   var connect2 = () => {
     // Disconnect any existing parent on the child connection.
     eYo.Events.fireBrickMove(child, () => {
@@ -1245,9 +1245,6 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
       }
       // move ends after parent's rendering
     })
-  }
-  if (parent.workspace !== child.workspace) {
-    return
   }
   var connect1 = () => {
     connect2()

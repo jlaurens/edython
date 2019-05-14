@@ -20,6 +20,7 @@ goog.require('eYo.Brick')
  * Do nothing function, meant to be overriden.
  * @param {!Element} el Dom reference element target of the tooltip.
  * @param {!String} title tooltip string content.
+ * @param {?Object} option.
  */
 eYo.Tooltip.add = function (el, title, options) {
   if (goog.isString(title)) {
@@ -72,25 +73,6 @@ eYo.Tooltip.hideAll = function (el) {
   var tip
   while ((tip = tips[i++])) {
     tip.state.visible && tip.hide()
-  }
-}
-
-/**
- * Add tooltip to a brick
- * @param {!String} key
- */
-eYo.Brick.prototype.addTooltip = function (key) {
-  var options = eYo.Tooltip.options
-  var g = this.ui.svg.group
-  goog.mixin(options, {
-    onShow(instance) {
-      g && g.parentNode && eYo.Tooltip.hideAll(g.parentNode)
-    }
-  })
-  var model = this.constructor.eyo.model
-  var title = eYo.Tooltip.getTitle(key || model.tooltip || this.tooltipKey || this.type.substring(4))
-  if (title) {
-    eYo.Tooltip.add(g, title, options)
   }
 }
 
