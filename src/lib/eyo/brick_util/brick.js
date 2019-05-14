@@ -3443,6 +3443,13 @@ Object.defineProperties(eYo.Brick, {
 })
 
 /**
+ * To be removed, actually used by blockly.
+ */
+eYo.Brick.prototype.getParent = function () {
+  return this.parent
+}
+
+/**
  * Play some UI effects (sound, ripple) after a connection has been established.
  */
 eYo.Brick.prototype.connectionUiEffect = function() {
