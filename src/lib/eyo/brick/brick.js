@@ -66,7 +66,7 @@ eYo.Brick = function (workspace, type, opt_id) {
   this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
       opt_id : Blockly.utils.genUid()
   // private properties
-  this.childBlocks_ = []
+  this.children_ = []
   this.errors = Object.create(null)
   this.span_ = new eYo.Span(this)
   this.xy_ = new eYo.Where(0, 0)
@@ -130,9 +130,11 @@ eYo.Brick.DEBUG = {}
 
 // owned properties with default value
 Object.defineProperties(eYo.Brick.prototype, {
+  parent__: { value: undefined },
   wrappedMagnets_: { value: undefined },
   inputList_: { value: undefined },
   pythonType_: { value: undefined },
+  parent_: { value: undefined },
 })
 
 /**
@@ -152,7 +154,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     m4t ? m4t.select() : this.unselect()
     workspace.cancelCurrentGesture()
   }
-  if (animate && this.rendered) {
+  if (animate && this.ui.rendered) {
     this.unplug(healStack)
     this.ui && this.ui.disposeEffect()
   } else {
@@ -163,7 +165,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     Blockly.Events.fire(new Blockly.Events.BlockDelete(this));
   }
   // Stop rerendering.
-  this.rendered = false
+  this.ui.rendered = false
   this.consolidate = this.beReady = this.render = eYo.Do.nothing
   // Remove from workspace
   workspace.eyo.removeBrick(this)
@@ -179,7 +181,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.disposeData()
     this.forEachInput(input => input.dispose())
     this.inputList_ = undefined
-    this.childBlocks_ = undefined
+    this.children_ = undefined
   })
   // this must be done after the child bricks are released
   this.ui_ && this.ui_.dispose() && (this.ui_ = null)
@@ -568,10 +570,10 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   /**
    * @readonly
-   * @property {Boolean}  Whether this brick is white. White blocks have no effect,
+   * @property {Boolean}  Whether this brick is white. White bricks have no effect,
    * the action of the algorithm is exactly the same whether the brick is here or not.
-   * White blocks are comment statements, disabled blocks
-   * and maybe other kinds of blocks to be found...
+   * White bricks are comment statements, disabled bricks
+   * and maybe other kinds of bricks to be found...
    */
   isWhite: {
     get () {
@@ -606,7 +608,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       var height = this.span.height
       var minWidth = this.span.width
       var width = minWidth
-      // Recursively add size of subsequent blocks.
+      // Recursively add size of subsequent bricks.
       var nn, HW
       if ((nn = this.right)) {
         minWidth += nn.size.minWidth
@@ -1021,7 +1023,7 @@ eYo.Brick.Manager = (() => {
    * and in general
    * key in me.get(key).eyo.types
    * but this is not a requirement!
-   * In particular, some blocks share a basic do nothing delegate
+   * In particular, some bricks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    @return the constructor created
    */
@@ -1365,7 +1367,7 @@ eYo.Brick.prototype.getSubtype = function () {
  * Subclassers will use it to return the correct type
  * depending on their actual inner state.
  * The raw type of the brick is the type without any modifier.
- * The raw type is the same as the brick type except for blocks
+ * The raw type is the same as the brick type except for bricks
  * with modifiers.
  * This should be used instead of direct brick querying.
  * @return {?String} The type of the receiver's brick.
@@ -1398,10 +1400,10 @@ eYo.Brick.prototype.forEachField = function (helper) {
 
 /**
  * Execute the helper for each child.
- * Works on a shallow copy of `childBlocks_`.
+ * Works on a shallow copy of `children_`.
  */
 eYo.Brick.prototype.forEachChild = function (helper) {
-  this.childBlocks_.slice().forEach((b, i, ra) => helper(b, i, ra))
+  this.children_.slice().forEach((b, i, ra) => helper(b, i, ra))
 }
 
 /**
@@ -1813,7 +1815,7 @@ eYo.Brick.prototype.synchronizeSlots = function () {
 }
 
 /**
- * Some blocks may change when their properties change.
+ * Some bricks may change when their properties change.
  * Consolidate the data.
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
@@ -1825,7 +1827,7 @@ eYo.Brick.prototype.consolidateData = function () {
 }
 
 /**
- * Some blocks may change when their properties change.
+ * Some bricks may change when their properties change.
  * Consolidate the slots.
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
@@ -1835,11 +1837,11 @@ eYo.Brick.prototype.consolidateData = function () {
  */
 eYo.Brick.prototype.consolidateSlots = function (deep, force) {
   this.forEachSlot(slot => slot.consolidate(deep, force))
-  // some child blocks may be disconnected as side effect
+  // some child bricks may be disconnected as side effect
 }
 
 /**
- * Some blocks may change when their properties change.
+ * Some bricks may change when their properties change.
  * Consolidate the slots.
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
@@ -1849,13 +1851,13 @@ eYo.Brick.prototype.consolidateSlots = function (deep, force) {
  */
 eYo.Brick.prototype.consolidateInputs = function (deep, force) {
   if (deep) {
-    // Consolidate the child blocks that are still connected
+    // Consolidate the child bricks that are still connected
     this.forEachInput(input => input.consolidate(deep, force))
   }
 }
 
 /**
- * Some blocks may change when their properties change.
+ * Some bricks may change when their properties change.
  * For edython.
  * This is one of the main methods.
  * The type depends on both the properties of the brick and the connections.
@@ -1876,7 +1878,7 @@ eYo.Brick.prototype.consolidateType = function () {
 /**
  * Set the connection check array.
  * The connections are supposed to be configured only once.
- * This method may disconnect blocks as side effect,
+ * This method may disconnect bricks as side effect,
  * thus interacting with the undo manager.
  * After initialization, this should be called whenever
  * the brick type/subtype may have changed.
@@ -1927,41 +1929,25 @@ eYo.Brick.prototype.deinit = function () {
   this.model.deinit && this.model.deinit.call(this)
 }
 
-/**
- * Return all eyo variables referenced by this brick.
- * @return {!Array.<string>} List of variable names.
- */
-eYo.Brick.prototype.getVars = function (brick) {
-  var vars = []
-  for (var i = 0, input; (input = brick.inputList[i]); i++) {
-    for (var j = 0, field; (field = input.fieldRow[j]); j++) {
-      if (field instanceof eYo.FieldInput) {
-        vars.push(field.getText())
-      }
-    }
-  }
-  return vars
-}
-
 Object.defineProperties(eYo.Brick, {
   /**
-   * Find all the blocks that are directly or indirectly nested inside this one.
+   * Find all the bricks that are directly or indirectly nested inside this one.
    * Includes this brick in the list.
    * Includes value and brick inputs, as well as any following statements.
    * Excludes any connection on an output tab or any preceding statements.
-   * @type {!Array.<!eYo.Brick>} Flattened array of dlgt.
+   * @type {!Array.<!eYo.Brick>} Flattened array of brick.
    */
   descendants: {
     get () {
       var ans = [this]
-      this.childBlocks_.forEach(d => ans.push.apply(ans, d.eyo.descendants))
+      this.children_.forEach(d => ans.push.apply(ans, d.eyo.descendants))
       return
     }
   },
   /**
    * Same as `descendants` property except that it
    * includes the receiver in the list only when not sealed.
-   * @return {!Array.<!eYo.Brick>} Flattened array of dlgt.
+   * @return {!Array.<!eYo.Brick>} Flattened array of brick.
    */
   wrappedDescendants: {
     get () {
@@ -1997,7 +1983,7 @@ eYo.Brick.prototype.removeWrapperMagnet = function (magnet) {
 /**
  * If the sealed connections are not connected,
  * create a node for it.
- * The default implementation connects all the blocks from the wrappedMagnets_ list.
+ * The default implementation connects all the bricks from the wrappedMagnets_ list.
  * Subclassers will eventually create appropriate new nodes
  * and connect it to any sealed connection.
  * @private
@@ -2082,7 +2068,7 @@ eYo.Brick.prototype.updateGroupBlackHeight = function () {
  * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new target
  */
 eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  // how many blocks did I add ?
+  // how many bricks did I add ?
   if (m4t.isSuite) {
     this.updateBlackHeight()
   } else if (!m4t.isOutput && !m4t.isLeft && !m4t.isRight) {
@@ -2116,7 +2102,7 @@ eYo.Brick.prototype.willDisconnect = function (m4t) {
  * @param {!eYo.Magnet} oldTargetM4t  that was connected to m4t
  */
 eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
-  // how many blocks did I add ?
+  // how many bricks did I add ?
   if (m4t.isSuite) {
     this.updateBlackHeight()
   } else if (!m4t.isOutput) {
@@ -2138,7 +2124,7 @@ eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {!eYo.Brick} other  the dlgt to be replaced
+ * @param {!eYo.Brick} other  the brick to be replaced
  */
 eYo.Brick.prototype.canReplaceDlgt = function (other) {
   return false
@@ -2174,8 +2160,8 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
   },
   /**
    * Set the disable state of the brick.
-   * Calls the brick's method but also make sure that previous blocks
-   * and next blocks are in an acceptable state.
+   * Calls the brick's method but also make sure that previous bricks
+   * and next bricks are in an acceptable state.
    * For example, if I disable an if brick, I should also disable
    * an elif/else following brick, but only if it would make an elif/else orphan.
    * For edython.
@@ -2210,7 +2196,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
         }
       } else {
         // if the connection chain below this brick is broken,
-        // try to activate some blocks
+        // try to activate some bricks
         if ((next = this.magnets.foot)) {
           if ((previous = next.target) &&
           (previous = previous.blackMagnet) &&
@@ -2308,7 +2294,7 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
     }
     if (newValue) {
       if (this.incog_) {
-        // The dlgt is already incognito,
+        // The brick is already incognito,
         // normally no change to the brick tree
       }
     } else if (this.disabled) {
@@ -2355,17 +2341,16 @@ eYo.Brick.prototype.forEachInput = function (helper) {
  * Runs the helper function for some input, until it responds a truthy value.
  * For edython.
  * @param {!Function} helper
- * @return {Object} returns the first input for which the helper returns a truthy value
+ * @return {Object} returns the first input for which the helper returns true or the first truthy value returned by the helper.
  */
 eYo.Brick.prototype.someInput = function (helper) {
   var ans
-  var list = this.inputList
-  for (var i = 0 ; i < list.length ; i++) {
-    var input = list[i]
+  this.inputList.some(input => {
     if ((ans = helper(input))) {
       return ans === true ? input : ans
     }
-  }
+  })
+  return ans
 }
 
 /**
@@ -2373,13 +2358,8 @@ eYo.Brick.prototype.someInput = function (helper) {
  * For edython.
  * @param {!Function} helper
  */
-eYo.Brick.prototype.forEachInputConnection = function (helper) {
-  this.inputList.forEach(input => {
-    var c8n = input.connection
-    if (c8n) {
-      helper(c8n)
-    }
-  })
+eYo.Brick.prototype.forEachInputMagnet = function (helper) {
+  this.inputList.forEach(input => input.magnet && helper(input.magnet))
 }
 
 /**
@@ -2432,16 +2412,13 @@ eYo.Brick.prototype.removeError = function (key) {
 }
 
 /**
- * get the slot connections, mainly for debugging purposes.
+ * get the slot magnets, mainly for debugging purposes.
  * For edython.
  * @return An array of all the connections
  */
-eYo.Brick.prototype.getSlotConnections = function () {
+eYo.Brick.prototype.getSlotMagnetss = function () {
   var ra = []
-  this.forEachSlot(slot => {
-    var c8n = slot.connection
-    c8n && ra.push(c8n)
-  })
+  this.forEachSlot(slot => slot.magnet && ra.push(slot.magnet))
   return ra
 }
 
@@ -2451,15 +2428,15 @@ eYo.Brick.prototype.getSlotConnections = function () {
  * @param {!Bockly.Block} block_
  * @return the given brick
  */
-eYo.Brick.prototype.footConnect = function (dlgt) {
-  this.magnets.foot.connect(dlgt.magnets.head)
-  return dlgt
+eYo.Brick.prototype.footConnect = function (brick) {
+  this.magnets.foot.connect(brick.magnets.head)
+  return brick
 }
 
 /**
  * Connect the magnet of the `lastInput`, to the given expression brick/magnet/type.
  * @param {!eYo.Brick|eYo.Magnet|String} bdct  brick, delegate, connection or type
- * @return {?eYo.Brick}  The connected Dlgt, if any.
+ * @return {?eYo.Brick}  The connected brick, if any.
  */
 eYo.Brick.prototype.connectLast = function (dmt) {
   var other = (dmt.magnets && dmt.magnets.output) || (dmt.connection && dmt) || eYo.Brick.newComplete(this, dmt).magnets.output
@@ -2474,7 +2451,7 @@ eYo.Brick.prototype.connectLast = function (dmt) {
 
 /**
  * Scrolls the receiver to the top left part of the workspace.
- * Does nothing if the dlgt is already in the visible are,
+ * Does nothing if the brick is already in the visible are,
  * and is not forced.
  * @param {!Boolean} force  flag
  */
@@ -2493,7 +2470,7 @@ eYo.Brick.prototype.scrollToVisible = function (force) {
  */
 eYo.Brick.prototype.getMagnets_ = function(all) {
   var ans = [];
-  if (all || this.rendered) {
+  if (all || this.ui.rendered) {
     Object.values(this.magnets).forEach(m4t => ans.push(m4t.connection))
     if (all || !this.collapsed_) {
       this.inputList.forEach(input => ans.push(input.magnet.connection))
@@ -2562,7 +2539,7 @@ Object.defineProperties(eYo.Brick, {
  * Render the brick.
  * Lays out and reflows a brick based on its contents and settings.
  */
-// deleted blocks are rendered during deletion
+// deleted bricks are rendered during deletion
 // this should be avoided
 eYo.Brick.prototype.render = eYo.Do.nothing
 
@@ -2823,7 +2800,7 @@ eYo.StatementBlockEnumerator = function (brick) {
  * Create a new delegate, with svg background.
  * This is the expected way to create the brick.
  * There is a caveat due to proper timing in initializing the svg.
- * Whether blocks are headless or not is not clearly designed in Blockly.
+ * Whether bricks are headless or not is not clearly designed in Blockly.
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
@@ -2834,19 +2811,19 @@ eYo.StatementBlockEnumerator = function (brick) {
  * @private
  */
 eYo.Brick.newReady = function (owner, model, id) {
-  var dlgt = eYo.Brick.newComplete.apply(null, arguments)
-  dlgt && dlgt.beReady()
-  return dlgt
+  var brick = eYo.Brick.newComplete.apply(null, arguments)
+  brick && brick.beReady()
+  return brick
 }
 
 /**
- * Create a new Dlgt, with no ui.
- * This is the expected way to create the Dlgt.
+ * Create a new brick.
+ * This is the expected way to create the brick.
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
  * This is headless and should not render until a beReady message is sent.
- * @param {!*} owner  workspace or dlgt
+ * @param {!*} owner  workspace or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
  * @param {?eYo.Brick} id
@@ -2864,21 +2841,21 @@ eYo.Brick.newComplete = (() => {
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
-          var dlgt
-          if (p5e.expr && (dlgt = workspace.newDlgt(p5e.expr, id))) {
-            p5e.expr && dlgt.setDataWithType(p5e.expr)
-            model && dlgt.setDataWithModel(model)
+          var brick
+          if (p5e.expr && (brick = workspace.newDlgt(p5e.expr, id))) {
+            p5e.expr && brick.setDataWithType(p5e.expr)
+            model && brick.setDataWithModel(model)
             dataModel = {data: model}
-          } else if (p5e.stmt && (dlgt = workspace.newDlgt(p5e.stmt, id))) {
-            p5e.stmt && dlgt.setDataWithType(p5e.stmt)
+          } else if (p5e.stmt && (brick = workspace.newDlgt(p5e.stmt, id))) {
+            p5e.stmt && brick.setDataWithType(p5e.stmt)
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (dlgt = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
-            dlgt.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (brick = workspace.newDlgt(eYo.T3.Expr.numberliteral, id))) {
+            brick.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No brick for model:', model)
           }
-          return dlgt
+          return brick
         }
         if (!p5e.isVoid && !p5e.isUnset) {
           eyo = f(p5e)
@@ -2899,13 +2876,13 @@ eYo.Brick.newComplete = (() => {
             if (input && input.connection) {
               var t_brick = input.targetBrick
               var V = Vs[k]
-              var dlgt = processModel(workspace, V, null, t_brick)
-              if (!t_brick && dlgt && dlgt.magnets.output) {
-                dlgt.changeWrap(
+              var brick = processModel(workspace, V, null, t_brick)
+              if (!t_brick && brick && brick.magnets.output) {
+                brick.changeWrap(
                   () => {
                     var slot = input.magnet.slot
                     slot && (slot.incog = false)
-                    dlgt.magnets.output.connect(input.magnet)
+                    brick.magnets.output.connect(input.magnet)
                   }
                 )
               }
@@ -2938,15 +2915,15 @@ eYo.Brick.newComplete = (() => {
             )
           }
         })
-        // now blocks and slots have been set
+        // now bricks and slots have been set
         this.didLoad()
         if (eyo.magnets.foot) {
           var nextModel = dataModel.next
           if (nextModel) {
-            dlgt = processModel(workspace, nextModel)
-            if (dlgt && dlgt.magnets.head) {
+            brick = processModel(workspace, nextModel)
+            if (brick && brick.magnets.head) {
               try {
-                dlgt.magnets.head.connectSmart(eyo)
+                brick.magnets.head.connectSmart(eyo)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -3014,7 +2991,7 @@ Object.defineProperties(
 /**
  * Returns the python type of the brick.
  * This information may be displayed as the last item in the contextual menu.
- * Wrapped blocks will return the parent's answer.
+ * Wrapped bricks will return the parent's answer.
  */
 eYo.Brick.prototype.getPythonType = function () {
   if (this.wrapped_) {
@@ -3290,7 +3267,7 @@ eYo.Brick.prototype.canUnlock = function () {
 /**
  * Lock the given brick.
  * For edython.
- * @return {number} the number of blocks locked
+ * @return {number} the number of bricks locked
  */
 eYo.Brick.prototype.lock = function () {
   var ans = 0
@@ -3353,7 +3330,7 @@ eYo.Brick.prototype.lock = function () {
  * For edython.
  * @param {!Blockly.Block} brick The owner of the receiver.
  * @param {boolean} deep Whether to unlock statements too.
- * @return {number} the number of blocks unlocked
+ * @return {number} the number of bricks unlocked
  */
 eYo.Brick.prototype.unlock = function (shallow) {
   var ans = 0
@@ -3388,26 +3365,6 @@ eYo.Brick.prototype.inVisibleArea = function () {
 }
 
 /**
- * Side effect: renders the brick when connections are no longer hidden.
- * @param {boolean} hidden True to hide connections.
- */
-eYo.Brick.prototype.setConnectionsHidden = function (hidden) {
-  if (this.connectionsHidden_ === hidden) {
-    return
-  }
-  this.connectionsHidden_ = hidden
-  if (hidden) {
-    if (eYo.Brick.debugStartTrackingRender) {
-      console.log('HIDE', this.id, this.type)
-    }
-  } else {
-    // eYo.Brick.debugStartTrackingRender = true
-    // console.log('SHOW CONNECTIONS', this.id, this.type)
-    this.rendered || this.render()
-  }
-}
-
-/**
  * Execute the handler with brick rendering deferred to the end, if any.
  * handler
  * @param {!Function} handler `this` is the receiver.
@@ -3432,36 +3389,55 @@ eYo.Brick.prototype.doAndRender = function (handler, group, err_handler) {
 Object.defineProperties(eYo.Brick, {
   parent: {
     get () {
-      return this.parentBlock_
+      return this.parent__
     },
     /**
      * Set parent of this brick to be a new brick or null.
+     * Beware, we cannot replace an already existing parent!
      * @param {?eYo.Brick} newParent New parent brick.
      */
     set (newParent) {
-      if (newParent === this.parentBlock_) {
+      if (newParent === this.parent__) {
         return;
       }
-      if (this.parentBlock_) {
-        // Disconnect from superior blocks.
-        if (this.previousConnection && this.previousConnection.isConnected()) {
-          throw 'Still connected to previous brick.';
-        }
-        if (this.outputConnection && this.outputConnection.isConnected()) {
-          throw 'Still connected to parent brick.';
-        }
-        // Remove this brick from the old parent's child list.
-        goog.array.remove(this.parentBlock_.childBlocks_, this);
-        this.parentBlock_ = null
+      // First disconnect from parent, if any
+      var f = m4t => m4t && m4t.disconnect()
+      f(this.magnets.head)
+        || f(this.magnets.left)
+          || f(this.magnets.output)
+      this.parent_ = newParent
+    }
+  },
+  parent_: {
+    get () {
+      return this.parent__
+    },
+    /**
+     * Set parent__ of this brick to be a new brick or null.
+     * This has a lower level than connecting magnets.
+     * If two magnets are linked together, then their bricks
+     * are parent and child from each other.
+     * The converse is not true.
+     * 
+     * @param {?eYo.Brick} newParent New parent_ brick.
+     */
+    set (newParent) {
+      if (newParent === this.parent__) {
+        return;
+      }
+      if (this.parent__) {
+        // Remove this brick from the old parent_'s child list.
+        goog.array.remove(this.parent__.children_, this)
+        this.parent__ = null
         this.ui.setParent(null)
       } else {
-        // Remove this brick from the workspace's list of top-most blocks.
-        this.workspace.removeTopBlock(this);
+        // Remove this brick from the workspace's list of top-most bricks.
+        this.workspace.eyo.removeBrick(this)
       }
-      this.parentBlock_ = newParent;
+      this.parent__ = newParent
       if (newParent) {
-        // Add this brick to the new parent's child list.
-        newParent.childBlocks_.push(this);
+        // Add this brick to the new parent_'s child list.
+        newParent.children_.push(this)
       } else {
         this.workspace.eyo.addBrick(this)
       }
