@@ -113,7 +113,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
         save: /** @suppress {globalThis} */ function (element, opt) {
           if (this.get() === eYo.Key.N_ARY) {
             var b = this.owner.n_ary_b
-            if (b && !b.childBlocks_.length) {
+            if (b && !b.children_.length) {
               this.save(element, opt)
             }
           }
@@ -326,7 +326,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
       promise: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
         var t = this.targetBrick // may be null ?
-        if (t && t.childBlocks_.length) {
+        if (t && t.children_.length) {
           this.owner.variant_p = eYo.Key.N_ARY
         }
       }
@@ -342,7 +342,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
 Object.defineProperties(eYo.Brick.Stmt.decorator_stmt.prototype, {
   /**
    * @readonly
-   * @property {Boolean} decorator blocks are white when followed by a statement.
+   * @property {Boolean} decorator bricks are white when followed by a statement.
    */
   isWhite: {
     get () {
