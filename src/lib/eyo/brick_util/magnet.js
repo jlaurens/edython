@@ -1156,110 +1156,95 @@ eYo.Magnets.prototype.dispose = function () {
  * @suppress {accessControls}
  */
 eYo.Magnet.prototype.connect_ = function (childM4t) {
-  // `this` is actually the parentM4t
+  // `this` is actually the superior magnet
   var parentM4t = this
   var parent = parentM4t.brick
   var child = childM4t.brick
-  var orphan = parentM4t.targetBrick
-  var orphanM4t = parentM4t.target
-  var oldParentM4t = childM4t.target
-  var oldChildM4t = parentM4t.target
+  var parentOldT4t = parentM4t.target
+  var oldParentT4t = childM4t.target
+  var oldChildT4t = parentM4t.target
   var unwrappedM4t = parentM4t.unwrappedMagnet
   var m4t
   var child_event
 
-  /*
-   * Find the first free magnet in the given brick
-   * that positively checks type with the given potential target magnet.
-   * @param {!eYo.Brick} brick The brick.
-   * @param {!eYo.Magnet} child The inferior brick.
-   * @private
-   * @suppress {accessControls}
-   */
-  var freeMagnet = (brick, magnet) => {
-    return brick.someSlot(slot => {
-      var ans = slot.magnet
-      if (ans) {
-        if (brick = ans.targetBrick) {
-          return freeMagnet(brick, magnet)
-        } else if (ans.checkType_(magnet)) {
-          return ans
-        }
-      }
-    })
-  }
   var attach_orphan = () => {
-    if (orphanM4t) {
-      // Other connection is already connected to something.
+    if (parentOldT4t) {
+      // Parent magnet is already connected to something.
       // Disconnect it and reattach it or bump it as needed.
-      if (orphanM4t.isOutput) {
+      if (parentOldT4t.isOutput) {
         // Attempt to reattach the orphan at the end of the newly inserted
         // brick.  Since this brick may be a row, walk down to the end
-        // or to the first (and only) shadow brick.
-        if ((m4t = freeMagnet(child, orphanM4t))) {
-          orphanM4t.connect(m4t)
-          orphan = orphanM4t = null
+        // or to the first free magnet.
+        /*
+        * Find the first free magnet in the given brick
+        * that positively checks type with the given potential target magnet.
+        * @param {!eYo.Brick} brick The brick.
+        * @param {!eYo.Magnet} child The inferior brick.
+        * @private
+        * @suppress {accessControls}
+        */
+        var freeMagnet = (brick, magnet) => {
+          return brick.someSlot(slot => {
+            var ans = slot.magnet
+            if (ans) {
+              if (brick = ans.targetBrick) {
+                return freeMagnet(brick, magnet)
+              } else if (ans.checkType_(magnet)) {
+                return ans
+              }
+            }
+          })
         }
-      } else if (orphanM4t.isHead) {
+        if ((m4t = freeMagnet(child, parentOldT4t))) {
+          // both magnets are free, no ∞ loop
+          m4t.connect_(parentOldT4t)
+          parentOldT4t = null
+        }
+      } else if (parentOldT4t.isHead) {
         var brick = child.footMost
-        if ((m4t = brick.magnets.foot) && orphanM4t.checkType_(m4t)) {
-          m4t.connect(orphanM4t)
-          orphan = orphanM4t = null
+        if ((m4t = brick.magnets.foot) && parentOldT4t.checkType_(m4t)) {
+          m4t.connect(parentOldT4t)
+          parentOldT4t = null
         }
-      } else if (orphanM4t.isLeft) {
+      } else if (parentOldT4t.isLeft) {
         var brick = child.rightMost
-        if ((m4t = brick.magnets.right) && orphanM4t.checkType_(m4t)) {
-          m4t.connect(orphanM4t)
-          orphan = otherM4t = null
+        if ((m4t = brick.magnets.right) && parentOldT4t.checkType_(m4t)) {
+          m4t.connect(parentOldT4t)
+          otherM4t = null
         }
       }
+      parentOldT4t && parentOldT4t.bumpAwayFrom_(parentM4t)
     }
   }
-  var attach_orphan_end = () => {
-    orphanM4t && orphanM4t.bumpAwayFrom_(parentM4t)
-  }
-  var raw_connect = () => {
-    // Establish the connections.
+  var link = () => {
     parentM4t.target_ = childM4t
     childM4t.target_ = parentM4t
-    if (Blockly.Events.isEnabled()) {
-      child_event = new Blockly.Events.BlockMove(child)
-    }
-    // Demote the inferior brick so that one is a child of the superior one.
     child.parent = parent
-    if (child_event) {
-      child_event.recordNew();
-      Blockly.Events.fire(child_event);
-    }
-  }
-  var connect3 = () => {
-    // Disconnect any existing parent on the child connection.
-    childM4t.disconnect()
-    attach_orphan()
-    raw_connect()
   }
 
   var connect2 = () => {
-    connect3()
-  
-    if (parent.ui.rendered) {
-      parent.updateDisabled()
-    }
-    if (child.ui.rendered) {
-      child.updateDisabled()
-    }
-    if (parent.ui.rendered && child.ui.rendered) {
-      if (parentM4t.isFoot ||
-          parentM4t.isHead) {
-        // Child brick may need to square off its corners if it is in a stack.
-        // Rendering a child will render its parent.
-        child.render();
-      } else {
-        // Child brick does not change shape.  Rendering the parent node will
-        // move its connected children into position.
-        parent.render();
+    // Disconnect any existing parent on the child connection.
+    eYo.Events.fireBrickMove(child, () => {
+      childM4t.disconnect() // move may start here
+      attach_orphan()
+      link()
+      if (parent.ui.rendered) {
+        parent.updateDisabled()
       }
-    }
+      if (child.ui.rendered) {
+        child.updateDisabled()
+      }
+      if (parent.ui.rendered && child.ui.rendered) {
+        if (parentM4t.isFoot || parentM4t.isRight) {
+          child.render()
+        } else {
+          // Child brick does not change shape.  Rendering the parent node will
+          // move its connected children into position.
+          parent.render()
+        }
+      }
+      // move ends after parent's rendering
+    })
   }
   if (parent.workspace !== child.workspace) {
     return
@@ -1281,16 +1266,16 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         } while ((P = P.group))
       }
     }
-    if (oldChildM4t && childM4t !== oldChildM4t) {
-      var oldChild = oldChildM4t.brick
+    if (oldChildT4t && childM4t !== oldChildT4t) {
+      var oldChild = oldChildT4t.brick
       if (oldChild) {
         if (oldChild.wrapped_) {
           eYo.Events.recordUndo && oldChild.dispose(true)
-        } else if (!oldChildM4t.targetBrick) {
+        } else if (!oldChildT4t.targetBrick) {
           // another chance to reconnect the orphan
           // just in case the check_ has changed in between
           // which might be the case for the else_part bricks
-          if (oldChildM4t.isOutput) {
+          if (oldChildT4t.isOutput) {
             (child instanceof eYo.Brick.List
               ? child.someInput
               : child.someSlot)(x => { // a slot or an input
@@ -1304,8 +1289,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
                     if (plug(t9k)) {
                       return true
                     }
-                  } else if (m4t.checkType_(oldChildM4t)) {
-                    m4t.connect(oldChildM4t)
+                  } else if (m4t.checkType_(oldChildT4t)) {
+                    m4t.connect(oldChildT4t)
                     return true
                   }
                 }
@@ -1314,8 +1299,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
           } else {
             P = child.footMost
             var m4t
-            if ((m4t = P.magnets.foot) && m4t.checkType_(oldChildM4t)) {
-              m4t.connect(oldChildM4t)
+            if ((m4t = P.magnets.foot) && m4t.checkType_(oldChildT4t)) {
+              m4t.connect(oldChildT4t)
             }
           }
         }
@@ -1325,46 +1310,50 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     parentM4t.selected && parentM4t.unselect()
     child.incog = parentM4t.incog
   }
-  parent.changeWrap(() => { // Disable rendering until changes are made
-    child.changeWrap(() => { parent
-      parent.beReady(child.isReady)
-      child.beReady(parent.isReady)
-      parentM4t.willConnect(childM4t)
-      (unwrappedM4t !== parentM4t) && unwrappedM4t.willConnect(childM4t)
-      eYo.Do.tryFinally(() => {
-        childM4t.willConnect(parentM4t)
+  eYo.Events.groupWrap(() => {
+    parent.changeWrap(() => { // Disable rendering until changes are made
+      child.changeWrap(() => { parent
+        parent.beReady(child.isReady)
+        child.beReady(parent.isReady)
+        parentM4t.willConnect(childM4t)
+        (unwrappedM4t !== parentM4t) && unwrappedM4t.willConnect(childM4t)
         eYo.Do.tryFinally(() => {
-          parent.willConnect(parentM4t, childM4t)
+          childM4t.willConnect(parentM4t)
           eYo.Do.tryFinally(() => {
-            child.willConnect(childM4t, parentM4t)
-            eYo.Do.tryFinally(connect1, () => { // finally
-              parentM4t.startOfStatement && child.incrementChangeCount()
-              eYo.Magnet.connectedParent = parentM4t
+            parent.willConnect(parentM4t, childM4t)
+            eYo.Do.tryFinally(() => {
+              child.willConnect(childM4t, parentM4t)
+              eYo.Do.tryFinally(
+                connect1, // 
+                () => { // finally
+                  parentM4t.startOfStatement && child.incrementChangeCount()
+                  eYo.Magnet.connectedParent = parentM4t
+                  // next must absolutely run because of possible undo management
+                  child.didConnect(childM4t, oldParentT4t, oldChildT4t)
+                }
+              )
+            }, () => { // finally
               // next must absolutely run because of possible undo management
-              child.didConnect(childM4t, oldParentM4t, oldChildM4t)
+              parent.didConnect(parentM4t, oldChildT4t, oldParentT4t)
             })
           }, () => { // finally
+            unwrappedM4t.bindField && unwrappedM4t.bindField.setVisible(false)
             // next must absolutely run because of possible undo management
-            parent.didConnect(parentM4t, oldChildM4t, oldParentM4t)
+            parentM4t.didConnect(oldParentT4t, oldChildT4t)
+            (unwrappedM4t !== parentM4t) && unwrappedM4t.didConnect(oldParentT4t, oldChildT4t)
           })
         }, () => { // finally
-          unwrappedM4t.bindField && unwrappedM4t.bindField.setVisible(false)
-          // next must absolutely run because of possible undo management
-          parentM4t.didConnect(oldParentM4t, oldChildM4t)
-          (unwrappedM4t !== parentM4t) && unwrappedM4t.didConnect(oldParentM4t, oldChildM4t)
+          childM4t.didConnect(oldChildT4t, oldParentT4t)
+          eYo.Magnet.connectedParent = undefined
+          childM4t.bindField && childM4t.bindField.setVisible(false) // unreachable ?
         })
-      }, () => { // finally
-        childM4t.didConnect(oldChildM4t, oldParentM4t)
-        eYo.Magnet.connectedParent = undefined
-        childM4t.bindField && childM4t.bindField.setVisible(false) // unreachable ?
       })
     })
   })
-  
   var ui
-  (ui = child.ui) && ui.didConnect(childM4t, oldChildM4t, oldParentM4t)
-  (ui = parent.ui) && ui.didConnect(parentM4t, oldParentM4t, oldChildM4t)
-  (unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentM4t, oldChildM4t)
+  (ui = child.ui) && ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
+  (ui = parent.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
+  (unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
 }
 
 
@@ -1664,29 +1653,25 @@ eYo.Magnet.prototype.connect = function(other) {
   }
   switch (this.canConnectWithReason_(other)) {
     case eYo.Magnet.CAN_CONNECT:
-      break;
+      break
     case eYo.Magnet.REASON_SELF_CONNECTION:
-      throw 'Attempted to connect a brick to itself.';
+      throw 'Attempted to connect a brick to itself.'
     case eYo.Magnet.REASON_DIFFERENT_WORKSPACES:
       // Usually this means one brick has been deleted.
-      throw 'Blocks not on same workspace.';
+      throw 'Blocks not on same workspace.'
     case eYo.Magnet.REASON_WRONG_TYPE:
-      throw 'Attempt to connect incompatible types.';
+      throw 'Attempt to connect incompatible types.'
     case eYo.Magnet.REASON_TARGET_NULL:
-      throw 'Target connection is null.';
+      throw 'Target connection is null.'
     case eYo.Magnet.REASON_CHECKS_FAILED:
-      var msg = 'Connection checks failed. ';
-      msg += this + ' expected '  + this.check_ + ', found ' + target.check_;
-      throw msg;
+      throw `Connection checks failed. ${this} expected ${this.check_}, but found ${target.check_}`
     default:
-      throw 'Unknown connection failure: this should never happen!';
+      throw 'Unknown connection failure: this should never happen!'
   }
   // Determine which brick is superior (higher in the source stack).
-  if (this.isSuperior) {
-    this.connect_(other);
-  } else {
-    other.connect_(this);
-  }
+  this.isSuperior
+    ? this.connect_(other)
+    : other.connect_(this)
 }
 
 
