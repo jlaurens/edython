@@ -89,71 +89,71 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
 }
 
 /**
- * Convert the dlgt to python code.
+ * Convert the brick to python code.
  * For edython.
- * @param {!eYo.Brick} dlgt The owner of the receiver, to be converted to python.
- * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToDlgt`.
+ * @param {!eYo.Brick} brick The owner of the receiver, to be converted to python.
+ * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBrick`.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportAsExpression_ = function (dlgt, opt) {
-  if (dlgt.async) {
+eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
+  if (brick.async) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
       this.addSpace()
     }
     this.linePush('async ')
     this.shouldSeparateField = false
-  } else if (dlgt.await) {
+  } else if (brick.await) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
       this.addSpace()
     }
     this.linePush('await ')
     this.shouldSeparateField = false
-  } else if (dlgt.parenth_p) {
+  } else if (brick.parenth_p) {
     this.linePush('(')
   }
-  if (dlgt instanceof eYo.Brick.Expr.primary) {
-    if (dlgt.dotted_p === 0 && dlgt.target_p === 'print' && dlgt.variant_p === eYo.Key.CALL_EXPR) {
+  if (brick instanceof eYo.Brick.Expr.primary) {
+    if (brick.dotted_p === 0 && brick.target_p === 'print' && brick.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (dlgt instanceof eYo.Brick.Stmt.call_stmt) {
-    if (dlgt.dotted_p === 0 && dlgt.target_p === 'print') {
+  } else if (brick instanceof eYo.Brick.Stmt.call_stmt) {
+    if (brick.dotted_p === 0 && brick.target_p === 'print') {
       this.use_print = true
     }
   }
-  if (dlgt.type === eYo.T3.Stmt.import_stmt && !dlgt.disabled) {
-    var importedModules = dlgt.importedModules
+  if (brick.type === eYo.T3.Stmt.import_stmt && !brick.disabled) {
+    var importedModules = brick.importedModules
     if (importedModules && importedModules['turtle']) {
       this.use_turtle = true
     }
   }
   var field, slot
-  if ((field = dlgt.fieldAtStart)) {
+  if ((field = brick.fieldAtStart)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
-  if ((slot = dlgt.slotAtHead)) {
+  if ((slot = brick.slotAtHead)) {
     do {
       this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
   } else {
-    // list blocks
-    dlgt.consolidate()
-    dlgt.forEachInput(input => {
+    // list bricks
+    brick.consolidate()
+    brick.forEachInput(input => {
       this.exportInput_(input, opt)
     })
   }
-  if ((field = dlgt.toEndField)) {
+  if ((field = brick.toEndField)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.eyo.nextField))
   }
-  if (dlgt.orphan_comma_p) {
+  if (brick.orphan_comma_p) {
     this.linePush(',')
   }
-  if (dlgt.parenth_p) {
+  if (brick.parenth_p) {
     this.linePush(')')
   }
 }
@@ -162,23 +162,23 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (dlgt, opt) {
  * Convert the brick delegate to python code.
  * For edython.
  * @param {!eYo.Brick} eyo The owner of the receiver, to be converted to python.
- * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
+ * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
-  var is_deep = !dlgt.isControl && opt.is_deep
-  if (!dlgt.magnets.output) {
-    if (dlgt.disabled) {
+eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
+  var is_deep = !brick.isControl && opt.is_deep
+  if (!brick.magnets.output) {
+    if (brick.disabled) {
       this.indent_('# ')
       this.linePush('# ')
     }
   }
-  this.exportAsExpression_(dlgt, opt)
+  this.exportAsExpression_(brick, opt)
   var m4t, rightM4t, t_brick
-  if ((rightM4t = dlgt.magnets.right) && (t_brick = rightM4t.targetBrick)) {
+  if ((rightM4t = brick.magnets.right) && (t_brick = rightM4t.targetBrick)) {
     this.exportField_(rightM4t.fields.label)
     this.exportDlgt_(t_brick, opt)
-  } else if ((m4t = dlgt.magnets.suite)) {
+  } else if ((m4t = brick.magnets.suite)) {
     // a brick with a suite must also have a right connection
     this.exportField_(rightM4t.fields.label)
     var f = () => {
@@ -196,7 +196,7 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
         this.missing_statements.push(m4t.connection)
       }
     }
-    if (dlgt.isControl) {
+    if (brick.isControl) {
       f()
     } else {
       eYo.Do.makeWrapper(() => {
@@ -205,31 +205,31 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (dlgt, opt) {
         this.dedent_()
       })(f)
     }
-  } else if ((m4t = dlgt.magnets.right)) {
+  } else if ((m4t = brick.magnets.right)) {
     if ((t_brick = m4t.targetBrick)) {
       this.exportField_(m4t.fields.label)
       this.exportDlgt_(t_brick, opt)
     }
   }
-  if (!dlgt.magnets.output) {
-    if (dlgt.disabled) {
+  if (!brick.magnets.output) {
+    if (brick.disabled) {
       this.dedent_()
     }
   }
-  if (is_deep && (t_brick = dlgt.foot)) {
+  if (is_deep && (t_brick = brick.foot)) {
     this.newline_()
     this.exportDlgt_(t_brick, opt)
   }
 }
 
 /**
- * Convert the dlgt to python code.
+ * Convert the brick to python code.
  * For edython.
- * @param {!eYo.Brick} dlgt The owner of the receiver, to be converted to python.
- * @param {?Object} opt  flags, `is_deep` whether next blocks should be exported too.
+ * @param {!eYo.Brick} brick The owner of the receiver, to be converted to python.
+ * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.export = function (dlgt, opt) {
+eYo.Py.Exporter.prototype.export = function (brick, opt) {
   this.line = undefined
   this.lines = []
   this.indents = []
@@ -245,7 +245,7 @@ eYo.Py.Exporter.prototype.export = function (dlgt, opt) {
     eYo.Do.tryFinally(() => {
       ++this.depth
       this.expression = []
-      this.exportDlgt_(dlgt, opt)
+      this.exportDlgt_(brick, opt)
     }, () => {
       --this.depth
     })
