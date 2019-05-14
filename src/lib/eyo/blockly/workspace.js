@@ -457,7 +457,7 @@ eYo.deleteBlock = function (block, deep) {
       if ((m4t = eyo.magnets.output)) {
         m4t = m4t.target
       } else if ((m4t = eyo.magnets.foot)) {
-        var targetBrick = m4t.targetBrick
+        var t9k = m4t.targetBrick
       }
     }
     eYo.Events.groupWrap(() => {
@@ -473,8 +473,8 @@ eYo.deleteBlock = function (block, deep) {
     })
     if (m4t && m4t.brick.workspace) {
       m4t.select()
-    } else if (targetBrick) {
-      eYo.Selected.brick = targetBrick
+    } else if (t9k) {
+      eYo.Selected.brick = t9k
     }
   }
 }

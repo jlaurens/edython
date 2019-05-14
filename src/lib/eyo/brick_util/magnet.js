@@ -243,8 +243,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
     set (newValue) {
       if (this.visible_ !== newValue) {
         newValue ? this.unhideAll() : this.hideAll()
-        var targetBrick = this.targetBrick
-        targetBrick && (targetBrick.ui.visible = newValue)
+        var t9k = this.targetBrick
+        t9k && (t9k.ui.visible = newValue)
       }
     }
   },
@@ -368,9 +368,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
       // scheme:
       // this = output <- input <- wrapped source brick <- output <- input
       var ans = this
-      var targetBrick
-      while ((targetBrick = ans.targetBrick) && targetBrick.wrapped_) {
-        var m4t = targetBrick.magnets.output
+      var t9k
+      while ((t9k = ans.targetBrick) && t9k.wrapped_) {
+        var m4t = t9k.magnets.output
         if (m4t) {
           ans = m4t
         } else {
@@ -416,14 +416,14 @@ Object.defineProperties(eYo.Magnet.prototype, {
         this.check_ = null;
       }
       var brick = this.brick
-      var targetBrick = this.targetBrick
-      if (targetBrick && !this.checkType_(this.target)) {
-        (this.isSuperior ? targetBrick : brick).unplug()
+      var t9k = this.targetBrick
+      if (t9k && !this.checkType_(this.target)) {
+        (this.isSuperior ? t9k : brick).unplug()
         // Bump away.
         brick.bumpNeighbours_()
       }
       brick.incrementChangeCount()
-      targetBrick && targetBrick.incrementChangeCount() // there was once a `consolidate(false, true)` here.
+      t9k && t9k.incrementChangeCount() // there was once a `consolidate(false, true)` here.
     }
   },
   /**
@@ -601,8 +601,8 @@ eYo.Magnet.prototype.forEachField = function (helper) {
  */
 eYo.Magnet.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  var targetBrick = this.targetBrick
-  targetBrick && targetBrick.beReady()
+  var t9k = this.targetBrick
+  t9k && t9k.beReady()
   this.forEachField(f => f.eyo.beReady())
 }
 
@@ -610,8 +610,8 @@ eYo.Magnet.prototype.beReady = function () {
  * `consolidate` the target brick.
  */
 eYo.Magnet.prototype.consolidate = function (deep, force) {
-  var targetBrick = this.targetBrick
-  targetBrick && targetBrick.consolidate(deep, force)
+  var t9k = this.targetBrick
+  t9k && t9k.consolidate(deep, force)
 }
 
 Object.defineProperty(eYo.Magnet.prototype, 'incog', {
@@ -645,9 +645,9 @@ Object.defineProperty(eYo.Magnet.prototype, 'incog', {
       // We cannot disable wrapped connections
       this.incog_ = this.hidden_ = newValue
     }
-    var targetBrick = this.targetBrick
-    if (targetBrick) {
-      targetBrick.incog = newValue
+    var t9k = this.targetBrick
+    if (t9k) {
+      t9k.incog = newValue
     }  
   }
 })
@@ -664,16 +664,16 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
     if (!this.wrapped_) {
       return
     }
-    var targetBrick = this.targetBrick
-    if (!targetBrick) {
+    var t9k = this.targetBrick
+    if (!t9k) {
       var ans
       eYo.Events.disableWrap(
         () => {
           var brick = this.brick
-          targetBrick = eYo.Brick.newComplete(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
-          goog.asserts.assert(targetBrick, 'completeWrap failed: ' + this.wrapped_)
-          goog.asserts.assert(targetBrick.magnets.output, 'Did you declare an Expr brick typed ' + targetBrick.type)
-          ans = this.connect(targetBrick.magnets.output)
+          t9k = eYo.Brick.newComplete(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
+          goog.asserts.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
+          goog.asserts.assert(t9k.magnets.output, 'Did you declare an Expr brick typed ' + t9k.type)
+          ans = this.connect(t9k.magnets.output)
         }
       )
       return ans // true when connected
@@ -1295,13 +1295,13 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
               ? child.someInput
               : child.someSlot)(x => { // a slot or an input
               if (!x.incog) {
-                var m4t, targetBrick
+                var m4t, t9k
                 if ((m4t = x.magnet || x.eyo.magnet)) {
                   if (m4t.hidden_ && !m4t.wrapped_) {
                     return
                   }
-                  if ((targetBrick = m4t.targetBrick)) {
-                    if (plug(targetBrick)) {
+                  if ((t9k = m4t.targetBrick)) {
+                    if (plug(t9k)) {
                       return true
                     }
                   } else if (m4t.checkType_(oldChildM4t)) {
@@ -1377,8 +1377,8 @@ eYo.Magnet.prototype.tighten_ = function() {
     var dx = m4t.x_ - this.x_
     var dy = m4t.y_ - this.y_
     if (dx != 0 || dy != 0) {
-      var targetBrick = this.targetBrick
-      targetBrick.ui.setOffset(-dx, -dy)
+      var t9k = this.targetBrick
+      t9k.ui.setOffset(-dx, -dy)
     }
   }
 }
@@ -1451,9 +1451,9 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
  */
 eYo.Magnet.prototype.hideAll = function() {
   this.hidden_ = true
-  var targetBrick = this.targetBrick
-  if (targetBrick) {
-    targetBrick.descendants.forEach(brick => {
+  var t9k = this.targetBrick
+  if (t9k) {
+    t9k.descendants.forEach(brick => {
       brick.getMagnets_(true).forEach(m4t => m4t.hidden_ = true)
     })
   }
@@ -1478,10 +1478,10 @@ eYo.Magnet.prototype.neighbours_ = function(maxLimit) {
 eYo.Magnet.prototype.unhideAll = function() {
   this.hidden_ = false
   if (this.isSuperior) {
-    var targetBrick = this.targetBrick
-    targetBrick && (targetBrick.collapsed
-        ? Object.values(targetBrick.magnets)
-        : targetBrick.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
+    var t9k = this.targetBrick
+    t9k && (t9k.collapsed
+        ? Object.values(t9k.magnets)
+        : t9k.getMagnets_(true)).forEach(m4t => m4t.unhideAll())
   }
 }
 

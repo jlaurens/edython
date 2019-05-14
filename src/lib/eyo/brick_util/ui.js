@@ -126,20 +126,20 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
   if (!magnet) {
     return
   }
-  var targetBrick = magnet.targetBrick
-  if (!targetBrick) {
+  var t9k = magnet.targetBrick
+  if (!t9k) {
     return
   }
   if (magnet.isSuperior) {
     magnet.tighten_()
   }
-  var do_it = !targetBrick.ui.rendered ||
+  var do_it = !t9k.ui.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
     !eYo.Magnet.disconnectedChild&&
     !eYo.Magnet.connectedParent)
   if (do_it) {
-    var ui = targetBrick.ui
+    var ui = t9k.ui
     try {
       ui.down = true
       ui.render(false, recorder)
