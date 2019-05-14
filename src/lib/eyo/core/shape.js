@@ -479,7 +479,7 @@ eYo.Shape.prototype.initWithNode = (() => {
  * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithStatementNode = function(eyo, opt) {
+var initWithStatementBrick = function(eyo, opt) {
   // standard statement
   var width = eyo.width
   var r = this.stmt_radius
@@ -512,7 +512,7 @@ var initWithStatementNode = function(eyo, opt) {
  * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithGroupNode = function(eyo, opt) {
+var initWithGroupBrick = function(eyo, opt) {
   // this is a group
   var w = eyo.span.width
   var r = this.stmt_radius
@@ -558,7 +558,7 @@ var initWithGroupNode = function(eyo, opt) {
  * @param {eYo.Brick!} eyo  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithExpressionNode = function(brick, opt) {
+var initWithExpressionBrick = function(brick, opt) {
   var width = Math.max(brick.width, eyo.span.width)
   if (opt && opt.bbox) {
     this.M(true, width)
@@ -602,23 +602,23 @@ var initWithExpressionNode = function(brick, opt) {
   return this
 }
 
-var initWithControlNode = function (eyo) {
-  return initWithGroupNode.call(this, eyo)
+var initWithControlBrick = function (eyo) {
+  return initWithGroupBrick.call(this, eyo)
 }
 
 return function(eyo, opt) {
     this.begin()
     var f
     if (eyo.magnets.output) {
-      f = initWithExpressionNode
+      f = initWithExpressionBrick
     } else if (opt && opt.dido) {
-      f = initWithStatementNode
+      f = initWithStatementBrick
     } else if (eyo.isControl) {
-      f = initWithControlNode
+      f = initWithControlBrick
     } else if (eyo.magnets.suite) {
-      f = initWithGroupNode
+      f = initWithGroupBrick
     } else {
-      f = initWithStatementNode
+      f = initWithStatementBrick
     }
     f.call(this, eyo, opt)
     this.end(opt && opt.noClose)
