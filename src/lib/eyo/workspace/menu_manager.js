@@ -571,7 +571,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     return true
   }
   var target = model.target || brick
-  witch (model.action) {
+  switch (model.action) {
   case eYo.ID.DUPLICATE_BLOCK:
     Blockly.duplicate_(target)
     return true
