@@ -27,7 +27,7 @@ eYo.Do.inherits(Blockly.WorkspaceSvg, eYo.Workspace)
 
 /**
  * Obtain a newly created block.
- * Returns a block subclass for eYo blocks.
+ * Returns a block subclass for eYo bricks.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
@@ -101,7 +101,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   redoOption.callback = this.undo.bind(this, true)
   menuOptions.push(redoOption)
 
-  // Option to clean up blocks.
+  // Option to clean up bricks.
   if (this.scrollbar) {
     var cleanOption = {}
     cleanOption.text = eYo.Msg.CLEAN_UP
@@ -128,7 +128,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     }
 
     /**
-     * Option to collapse or expand top blocks.
+     * Option to collapse or expand top bricks.
      * @param {boolean} shouldCollapse Whether a block should collapse.
      * @private
      */
@@ -144,7 +144,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
       }
     }
 
-    // Option to collapse top blocks.
+    // Option to collapse top bricks.
     var collapseOption = {enabled: hasExpandedBlocks}
     collapseOption.text = eYo.Msg.COLLAPSE_ALL
     collapseOption.callback = () => {
@@ -152,7 +152,7 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     }
     menuOptions.push(collapseOption)
 
-    // Option to expand top blocks.
+    // Option to expand top bricks.
     var expandOption = {enabled: hasCollapsedBlocks}
     expandOption.text = eYo.Msg.EXPAND_ALL
     expandOption.callback = () => {
@@ -161,8 +161,8 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     menuOptions.push(expandOption)
   }
 
-  // Option to delete all blocks.
-  // Count the number of blocks that are deletable.
+  // Option to delete all bricks.
+  // Count the number of bricks that are deletable.
   var deleteList = []
   function addDeletableBlocks (block) {
     if (block.isDeletable()) {
@@ -232,22 +232,22 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
   if (this.currentGesture_) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
-  var magnet, t_magnet, dlgt
+  var magnet, targetMagnet, brick
   eYo.Events.groupWrap(() => {
-    if ((dlgt = eYo.Xml.domToDlgt(dom, this))) {
+    if ((brick = eYo.Xml.domToBrick(dom, this))) {
       if ((magnet = eYo.Selected.magnet)) {
         if (magnet.isInput) {
-          t_magnet = dlgt.magnets.out
+          targetMagnet = brick.magnets.out
         } else if (magnet.isFoot || magnet.isSuite) {
-          t_magnet = dlgt.magnets.head
+          targetMagnet = brick.magnets.head
         } else if (magnet.isHead) {
-          t_magnet = dlgt.magnets.foot
+          targetMagnet = brick.magnets.foot
         } else if (magnet.isLeft) {
-          t_magnet = dlgt.magnets.right
+          targetMagnet = brick.magnets.right
         } else if (magnet.isRight) {
-          t_magnet = dlgt.magnets.left
+          targetMagnet = brick.magnets.left
         }
-        if (t_magnet && magnet.checkType_(t_magnet)) {
+        if (targetMagnet && magnet.checkType_(targetMagnet)) {
           if (magnet.isHead) {
             // the pasted block must move before it is connected
             // otherwise the newly created block will attract the old one
@@ -258,19 +258,19 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
             xy.translate(xy_block.x, xy_block.y)
             // This is where the target magnet should be once the
             // connection has been made
-            var xyxy = t_magnet.offsetInBlock_.clone()
-            xy_block = t_magnet.ui.xyInSurface
+            var xyxy = targetMagnet.offsetInBlock_.clone()
+            xy_block = targetMagnet.ui.xyInSurface
             xyxy.translate(xy_block.x, xy_block.y)
             // This is where the target magnet is
             xyxy.scale(-1)
             xy.translate(xyxy.x, xyxy.y)
-            t_magnet.brick.moveByXY(xy.x, xy.y)
+            targetMagnet.brick.moveByXY(xy.x, xy.y)
           }
-          magnet.connect(t_magnet)
+          magnet.connect(targetMagnet)
           // if (magnet.isHead) {
-          //   t_magnet = dlgt.magnets.foot
+          //   targetMagnet = brick.magnets.foot
           // }
-          dlgt.select()
+          brick.select()
         }
       } else {
         // Move the duplicate to original position.
@@ -281,7 +281,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
             dx = -dx
           }
           // Offset block until not clobbering another block and not in connection
-          // distance with neighbouring blocks.
+          // distance with neighbouring bricks.
           var allBlocks = this.getAllBlocks()
           var avoidCollision = () => {
             do {
@@ -291,7 +291,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
                     Math.abs(dy - xy.y) <= 10) {
                   return true
                 }
-              }) || dlgt.getMagnets_(false).some(m4t => {
+              }) || brick.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(Blockly.SNAP_RADIUS,
                     new goog.math.Coordinate(dx, dy))
                   if (neighbour) {
@@ -606,12 +606,12 @@ Blockly.Trashcan.prototype.position = function() {
 };
 
 /**
- * CHANGE: Does not assume that all the top blocks have a UI.
- * Calculate the bounding box for the blocks on the workspace.
+ * CHANGE: Does not assume that all the top bricks have a UI.
+ * Calculate the bounding box for the bricks on the workspace.
  * Coordinate system: workspace coordinates.
  *
  * @return {Object} Contains the position and size of the bounding box
- *   containing the blocks on the workspace.
+ *   containing the bricks on the workspace.
  */
 Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
   var topBlocks = this.getTopBlocks(false);
@@ -619,11 +619,11 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
   var i = 0
   while (i < topBlocks.length) {
     var b = topBlocks[i]
-    if (b.rendered) {
+    if (b.ui.rendered) {
       var bound = b.eyo.getBoundingRect()
       while (++i < topBlocks.length) {
         var b = topBlocks[i]
-        if (b.rendered) {
+        if (b.ui.rendered) {
           var blockBoundary = b.eyo.getBoundingRect()
           if (blockBoundary.topLeft.x < bound.topLeft.x) {
             bound.topLeft.x = blockBoundary.topLeft.x
@@ -648,6 +648,6 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
     }
     ++i
   }
-  // There are no rendered blocks, return empty rectangle.
+  // There are no rendered bricks, return empty rectangle.
   return {x: 0, y: 0, width: 0, height: 0}
 }
