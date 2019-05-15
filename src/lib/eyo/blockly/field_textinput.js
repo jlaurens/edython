@@ -95,17 +95,6 @@ eYo.FieldTextInput.prototype.onMouseDown_ = function (e) {
 }
 
 /**
- * Updates the width of the field. This calls getCachedWidth which won't cache
- * the approximated width on IE/Edge when `getComputedTextLength` fails.
- * Once it eventually does succeed, the result will be cached.
- **/
-eYo.FieldTextInput.prototype.updateWidth = function () {
-  eYo.FieldTextInput.superClass_.updateWidth.call(this)
-  var d = this.ui_driver
-  d && d.fieldUpdateWidth(this)
-}
-
-/**
  * Mouse cursor style when over the hotspot that initiates the editor.
  */
 eYo.FieldTextInput.prototype.CURSOR = 'text'
