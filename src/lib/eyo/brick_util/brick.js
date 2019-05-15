@@ -581,6 +581,38 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.disabled
     }
   },
+  /**
+   * @readonly
+   * @type {Boolean} Whether this brick is the suite of its parent. False when there is no parent.
+   * No white brick management.
+   */
+  isSuite: {
+    get () {
+      var head = this.head
+      return head && (this === head.suite)
+    }
+  },
+  /**
+   * @readonly
+   * @type {Boolean} Whether this brick is the suite of its parent. False when there is no parent.
+   * No white brick management.
+   */
+  isFoot: {
+    get () {
+      var head = this.head
+      return head && (this === head.foot)
+    }
+  },
+  /**
+   * @readonly
+   * @type {Boolean} Whether this brick is top most, meaning the first one
+   * in a block of instructions. True iff it is the suite of a there is no brick above nor to the left
+   */
+  isTop: {
+    get () {
+      return this.isSuite || (this.isStmt && !this.isFoot)
+    }
+  },
   isExpr: {
     value: false
   },

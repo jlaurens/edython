@@ -1,17 +1,39 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * License EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Span object to store the dimensions
+ * in order to support doc strings and continuation lines.
+ * we may have the following situation:
+ * ```
+ * print('''foo
+ *         |bar'''); print('''foo
+ *                         |bar'''); print('''foo
+ *                                           |bar''')
+ * ```
+ * Both print statements have 2 main lines.
+ * The first print has 0 header line, 2 footer lines.
+ * The second print has 1 header line, 1 footer line.
+ * The third print has 2 header lines, 0 footer line.
+ * An expression brick has no header lines nor footer lines.
+ * The initial values are set to 0, except the column and main lines
+ * which are respectively 2, one for each end, and 1.
+ * During runtime, all the number of lines are modified relatively.
+ * 
+ * We do not make difference between expressions,
+ * group bricks and simple statement bricks
+ * despite that groups cannot have headers, only footers,
+ * statements cannot have black line and expression have no right padding.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 goog.provide('eYo.Span')
+
 goog.require('eYo.Unit')
 goog.forwardDeclare('eYo.Brick')
 
@@ -20,36 +42,55 @@ goog.forwardDeclare('eYo.Brick')
  * A span object stores various dimensions of a brick, in text units.
  * Each node has a span object.
  * For edython.
- * @param {!Object} owner The node owning the span.
+ * @param {!eYo.Brick} brick The brick owning the span.
  * @constructor
- * @property {object} owner - The owner
+ * @property {eYo.Brick} brick - The owner brick
  * @readonly
  * @property {number} width - The width, in workspace coordinates.
  * @readonly
  * @property {number} height - The height, in workspace coordinates.
- * @property {number} c - The number of columns, all other properties are numbers of lines
+ * @property {number} c_min - The minimum number of columns
+ * @property {number} c_padding - The extra padding at the right
+ * @property {number} c - The full number of columns
  * @property {number} l - The full number of lines
  * @property {number} main - The number of main lines
  * @property {number} black - The number of black lines
  * @property {number} suite - The number of suite lines
- * @property {number} next - The number of next lines
- * @property {number} head - The number of head lines
- * @property {number} foot - The number of black lines
+ * @property {number} foot - The number of foot lines
+ * @property {number} header - The number of header lines
+ * @property {number} footer - The number of footer lines
  */
-eYo.Span = function (owner) {
-  this.owner = owner
-  this.c_ = this.l_ = this.main_ = this.black_ = this.suite_ = this.next_ = this.head_ = this.foot_ = 0
+eYo.Span = function (brick) {
+  this.brick_ = brick
 }
 
+// default property values
 Object.defineProperties(eYo.Span.prototype, {
-  parentSpan: {
+  brick_: { value: undefined },
+  c_min_: { value: 2 },
+  l_: { value: 1 },
+  header_: { value: 0 },
+  main_: { value: 1 },
+  black_: { value: 0 },
+  footer_: { value: 0 },
+  suite_: { value: 0 },
+  foot_: { value: 0 }
+})
+
+/**
+ * @type {Number} positive number of indentation spaces.
+ */
+eYo.Span.indent = 4
+
+Object.defineProperties(eYo.Span.prototype, {
+  brick: {
     get () {
-      return this.owner.parent && this.owner.parent.span
+      return this.brick_
     }
   },
   width: {
     get () {
-      return this.c * eYo.Unit.x
+      return this.c_min_ * eYo.Unit.x
     }
   },
   x: {
@@ -57,12 +98,22 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.width
     }
   },
+  /**
+   * This is the total number of columns in that block.
+   * At least two.
+   */
+  c: {
+    get () {
+      return this.c_min_
+    }
+  },
+  /**
+   * This is the total number of lines in that block.
+   * At least one.
+   */
   l: {
     get () {
       return this.l_
-    },
-    set (newValue) {
-      this.l_ = newValue
     }
   },
   height: {
@@ -75,66 +126,9 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.height
     }
   },
-  /**
-   * This is not yet used.
-   * When we have support for doc strings,
-   * we may have the following situation:
-   * ```
-   * print('''foo
-   *         |bar'''); print('''foo
-   *                         |bar'''); print('''foo
-   *                                           |bar''')
-   * ```
-   * Both print statements have 2 main lines.
-   * The first print has 0 head line, 2 foot lines.
-   * The second print has 1 head line, 1 foot line.
-   * The third print has 2 head lines, 0 foot line.
-   * An expression brick has no head lines nor foot lines.
-   */
-  head: {
+  header: {
     get () {
-      return this.head_
-    },
-    set (newValue) {
-      var d = newValue - this.head_
-      if (d) {
-        this.owner.incrementChangeCount()
-        this.head_ = newValue
-        this.l_ += d
-        var right = this.rightSpan
-        if (right) {
-          // cascade to the right most statement
-          right.head += d
-        }
-      }
-    }
-  },
-  rightSpan: {
-    get () {
-      return this.owner.right &&  this.owner.right.span
-    }
-  },
-  foot: {
-    get () {
-      return this.foot_
-    },
-    set (newValue) {
-      var d = newValue - this.foot_
-      if (d) {
-        this.owner.incrementChangeCount()
-        this.foot_ = newValue
-        this.l_ += d
-        var left = this.leftSpan
-        if (left) {
-          // cascade to the left most statement
-          left.foot += d
-        }
-      }
-    }
-  },
-  leftSpan: {
-    get () {
-      return this.owner.left &&  this.owner.left.span
+      return this.header_
     }
   },
   /**
@@ -152,36 +146,16 @@ Object.defineProperties(eYo.Span.prototype, {
    * ```
    * has exactly two main lines.
    * When there is more than one main line,
-   * the horizontal siblings may have head and foot counts.
+   * the horizontal siblings may have header and footer counts.
    */
   main: {
     get () {
       return this.main_ // 1 or more
-    },
-    set (newValue) {
-      var d = newValue - this.main_
-      if (d) {
-        this.owner.incrementChangeCount()
-        var old = this.main_
-        this.main_ = newValue
-        this.l_ += d
-        var right = this.rightSpan
-        if (right) {
-          // if this is the first time, initialize this part with d - 1
-          right.head += old ? d : d - 1
-        }
-        var parent = this.parentSpan
-        if (parent) {
-          if (parent.next === this) {
-            parent.next += d
-          } else if (parent.right === this) {
-            // parent is a left node
-            parent.foot += old ? d : d - 1
-          } else {
-            parent.suite += d
-          }
-        }
-      }
+    }
+  },
+  footer: {
+    get () {
+      return this.footer_
     }
   },
   /**
@@ -192,68 +166,16 @@ Object.defineProperties(eYo.Span.prototype, {
   black: {
     get () {
       return this.black_ // 0 or 1
-    },
-    set (newValue) {
-      var d = newValue - this.black_
-      if (d) {
-        this.owner.incrementChangeCount()
-        this.black_ = newValue
-        this.l_ += d
-        var parent = this.parentSpan
-        if (parent) {
-          // next is not a good design
-          // because black_ has not a straightforward definition
-          if (parent.next === this) {
-            parent.next += d
-          } else {
-            parent.suite += d
-          }
-        }
-      }
     }
   },
   suite: {
     get () {
       return this.suite_
-    },
-    set (newValue) {
-      var d = newValue - this.suite_
-      if (d) {
-        this.owner.incrementChangeCount()
-        this.suite_ = newValue
-        this.l_ += d
-        var parent = this.parentSpan
-        if (parent) {
-          // next is not a good design
-          // because suite_ has not a straightforward definition
-          if (parent.next === this) {
-            parent.next += d
-          } else {
-            parent.suite += d
-          }
-        }
-      }
     }
   },
-  next: {
+  foot: {
     get () {
-      return this.next_
-    },
-    set (newValue) {
-      var d = newValue - this.next_
-      if (d) {
-        this.next_ = newValue
-        this.l_ += d
-        this.owner.incrementChangeCount()
-        var parent = this.parentSpan
-        if (parent) {
-          if (parent.next === this) {
-            parent.next += d
-          } else {
-            parent.suite += d
-          }
-        }
-      }
+      return this.foot_
     }
   }
 })
@@ -262,6 +184,239 @@ Object.defineProperties(eYo.Span.prototype, {
  * Dispose of the receiver's resources.
  */
 eYo.Span.prototype.dispose = function () {
+}
+
+// computed private properties
+Object.defineProperties(eYo.Span.prototype, {
+  parentSpan_: {
+    get () {
+      var p = this.brick.parent
+      return p && p.span
+    }
+  },
+  rightSpan_: {
+    get () {
+      var b3k = this.brick.right
+      return b3k && b3k.span
+    }
+  },
+  leftSpan_: {
+    get () {
+      var b3k = this.brick.left
+      return b3k && b3k.span
+    }
+  }
+})
+
+/**
+ * Set the right padding column number.
+ * Used to align the right edges of statement blocks.
+ * @param {Number} padding  the new value of the padding, a non negative number.
+ */
+eYo.Span.prototype.setPadding = function (padding) {
+  if (padding>=0) {
+    var right = this.rightSpan
+    if (right) {
+      // cascade to all the right statements
+      right.setPadding(delta)
+      this.c_ = this.c_min_
+    } else {
+      this.brick.incrementChangeCount()
+      if (this.brick.isGroup && !this.brick.right) {
+        this.c_min_ + padding >= 2 * eYo.Span.indent
+        var min = 2 * eYo.Span.indent - this.c_min_
+        if (padding < min) {
+          padding = min
+        }
+      }
+      this.padding_ = padding
+      this.c_ = this.c_min_ + padding  
+    }
+  }
+}
+
+/**
+ * Change the number of columns.
+ * This may occur at initialization time, when fields are edited, when input bricks are added, removed or edited.
+ * The suite bricks, if any, influence the padding.
+ * @param {Number} delta  the difference from the old value to value and the old one.
+ */
+eYo.Span.prototype.addC = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.c_min_ += delta
+    this.c_ += delta
+    if (this.brick.isExpr) {
+      var parent = this.parentSpan
+      if (parent) {
+        parent.addC(delta)
+      }
+    }
+  }
+}
+
+/**
+ * Change the number of columns.
+ * This may occur at initialization time, when fields are edited, when input bricks are added, removed or edited.
+ * The suite bricks, if any, influence the padding.
+ * @param {Number} delta  the difference from the old value to value and the old one.
+ */
+eYo.Span.prototype.addC = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.c_min_ += delta
+    this.c_ += delta
+    if (this.brick.isExpr) {
+      var parent = this.parentSpan
+      if (parent) {
+        parent.addC(delta)
+      }
+    }
+  }
+}
+
+/**
+ * Add to the header line number.
+ * This may happen only in 3 situation:
+ * 1) the left brick changes its header line number
+ * 2) The left brick changes its main line number
+ * 3) the left connection changes
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.addHeader = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.header_ += delta
+    this.l_ += delta
+    var right = this.rightSpan
+    if (right) {
+      // cascade to all the right statements
+      right.addHeader(delta)
+    }
+  }
+}
+
+/**
+ * Add to the main line number.
+ * This may happen in 3 situations:
+ * 1) a target brick with more than one line has been connected to
+ * one of the brick input magnets.
+ * 2) a line break is added inside a list (continuation lines)
+ * 3) an input brick has changed its height.
+ * As a consequence, the main line number of the receiver is changed
+ * accordingly. This change is cascaded ot the left and the right,
+ * and possibly to the head.
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.addMain = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.main_ += delta
+    this.l_ += delta
+    // propagates to the right
+    var right = this.rightSpan
+    if (right) {
+      right.addHeader(delta)
+    }
+    // propagates to the left
+    this.addLeft_(delta)
+  }
+}
+
+/**
+ * Convenient method
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.addLeft_ = function (delta) {
+  var left = this.leftSpan
+  if (left) {
+    left.addFooter(delta)
+  } else {
+    this.addParent_(delta)
+  }
+}
+
+/**
+ * Convenient method
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.addParent_ = function (delta) {
+  var parent = this.parentSpan
+  if (parent) {
+    this.brick.isTop
+      ? parent.addSuite(delta)
+      : parent.addFoot(delta)
+  }
+}
+
+/**
+ * Add to the footer line number.
+ * This may happen only in 3 situation:
+ * 1) the right brick changes its footer line number
+ * 2) The right brick changes its main line number
+ * 3) The right connection changes
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.addFooter = function (delta) {
+  if (delta) {
+    this.foot_ += delta
+    this.l_ += delta
+    this.brick.incrementChangeCount()
+    this.addLeft_(delta)
+  }
+}
+
+/**
+ * Add to the black line number.
+ * This may happen only in on of 2 situation:
+ * 1) the suite magnet connection status changes
+ * 2) the right magnet connection status changes
+ * @param {Number} delta  the value to add to the ressource.
+ * Actually it can only be 1 or -1.
+ */
+eYo.Span.prototype.addBlack = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.black_ += delta
+    this.l_ += delta
+    // change can only propagate to the parent
+    // because groups have no left blocks.
+    this.addParent_(delta)
+  }
+}
+
+/**
+ * Add to the black line number.
+ * This may happen only in on of 2 situation:
+ * 1) the suite magnet connection status changes
+ * 2) the right magnet connection status changes
+ * @param {Number} delta  the value to add to the ressource.
+ * Actually it can only be 1 or -1.
+ */
+eYo.Span.prototype.addFoot = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.foot_ += delta
+    this.l_ += delta
+    this.addParent_(delta)
+  }
+}
+
+/**
+ * Add to the black line number.
+ * This may happen only in on of 2 situation:
+ * 1) the suite magnet connection status changes
+ * 2) the right magnet connection status changes
+ * @param {Number} delta  the value to add to the ressource.
+ * Actually it can only be 1 or -1.
+ */
+eYo.Span.prototype.addSuite = function (delta) {
+  if (delta) {
+    this.brick.incrementChangeCount()
+    this.suite_ += delta
+    this.l_ += delta
+    this.addParent_(delta)
+  }
 }
 
 /**
