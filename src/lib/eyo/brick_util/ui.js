@@ -949,7 +949,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
     f_eyo.willRender()
     var text = field.getDisplayText_()
     // Replace the text.
-    this.driver.fieldTextErase(field)
+    this.driver.fieldTextRemove(field)
     f_eyo.size.set(text.length, 1)
     if (text.length) {
       if (text === '>') {
@@ -959,7 +959,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       this.drawPending_(io)
       io.common.startOfLine = io.common.startOfStatement = false
       ++ io.n
-      this.driver.fieldTextDisplay(field)
+      this.driver.fieldTextCreate(field)
       var head = text[0]
       var tail = text[text.length - 1]
       if (f_eyo.model.literal) {
