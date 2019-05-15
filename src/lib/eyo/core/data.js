@@ -861,9 +861,9 @@ eYo.Data.prototype.save = function (element, opt) {
     if (opt && opt.noEmpty && !txt.length) {
       var field = this.field
       if (field) {
-        var displayed = field.getDisplayText_()
-        if (displayed && displayed.length) {
-          txt = displayed
+        var p9r = field.placeholder
+        if (p9r && p9r.length) {
+          txt = p9r
           this.change(txt)
         }
       }
