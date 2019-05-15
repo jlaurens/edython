@@ -18,12 +18,6 @@ goog.require('eYo.Size')
 goog.require('eYo.Field')
 
 /**
- * Returns nothing.
- * @return {!Element} The group element.
- */
-Blockly.Field.prototype.getSvgRoot = eYo.Do.nothing
-
-/**
  * Class for an editable text field helper.
  * @param {eYo.TextInputField} owner  The owner of the field.
  * @property {boolean} isLabel
@@ -111,7 +105,7 @@ eYo.FieldHelper.prototype.beReady = function () {
 eYo.FieldHelper.prototype.startsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
-  var text = this.field_.getDisplayText_()
+  var text = this.field_.text
   if (text.length) {
     if (this.field_.name === 'separator'
       || (this.model && this.model.separator)
