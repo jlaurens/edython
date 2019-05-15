@@ -139,13 +139,13 @@ eYo.Driver.prototype.fieldPositionSet = eYo.Do.nothing
  * The field text will change.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Driver.fieldTextErase = eYo.Do.nothing
+eYo.Driver.fieldTextRemove = eYo.Do.nothing
 
 /**
  * Display the field text.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Driver.fieldTextDisplay = eYo.Do.nothing
+eYo.Driver.fieldTextCreate = eYo.Do.nothing
 
 /**
  * Set the visual effects of the field.
