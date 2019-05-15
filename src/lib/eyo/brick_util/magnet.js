@@ -14,12 +14,11 @@
 goog.provide('eYo.Magnet')
 goog.provide('eYo.Magnets')
 
-goog.require('eYo.Brick')
-goog.require('eYo.Const')
+goog.require('eYo.Owned')
 goog.require('eYo.Do')
-goog.require('eYo.Where')
 goog.require('eYo.T3')
-
+goog.require('eYo.Const')
+goog.require('eYo.Where')
 
 /**
  * Class for a magnet.
@@ -40,12 +39,9 @@ goog.require('eYo.T3')
  * @constructor
  */
 eYo.Magnet = function (bsi, type, model) {
-  this.owner_ = bsi
-  if (bsi instanceof eYo.Slot) {
-    this.name_ = bsi.key
-    this.slot_ = bsi
-  } else if (bsi instanceof eYo.Input) {
-    this.input_ = bsi
+  eYo.Magnet.superClass_.constructor.call(this, bsi)
+  if (this.slot) {
+    this.name_ = this.slot.key
   }
   this.type = type
   this.model_ = model
@@ -102,21 +98,19 @@ Object.defineProperties(eYo.Magnet, {
  * Dispose of the ressources.
  */
 eYo.Magnet.prototype.dispose = function () {
+  this.ui.driver.magnetDispose(this)
   eYo.FieldHelper.disposeFields(this)
-  this.slot = this.where_ = this.model_ = undefined
+  this.where_ = this.model_ = undefined
   if (this.target) {
     throw 'Disconnect connection before disposing of it.';
   }
   this.db_ && this.db_.removeConnection_(this) && (this.db_ = null)
-  this.dbOpposite_ = null;
+  this.dbOpposite_ = null
+  this.superClass_.dispose.call(this)
 }
 
 // private properties
 Object.defineProperties(eYo.Magnet.prototype, {
-  owner_: { value: undefined },
-  brick_: { value: undefined },
-  slot_: { value: undefined },
-  input_: { value: undefined },
   model_: { value: undefined },
   hidden_: { value: undefined },
   wrapped_: { value: undefined },
@@ -162,50 +156,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
       this.wrapped_ = null
     }
   },
-  owner: {
-    set (newValue) {
-      this.owner_ = newValue
-      if (owner_ instanceof eYo.Input) {
-        this.input_ = owner_
-        this.slot_ = null
-        this.brick_ = owner_.brick
-      } else if (owner_ instanceof eYo.Slot) {
-        this.input_ = null
-        this.slot_ = owner_
-        this.brick_ = owner_.brick
-      } else {
-        this.input_ = this.slot_ = null
-        this.brick_ = owner_
-      }
-    }
-  },
-  /**
-   * @readonly
-   * @property {eYo.Brick} brick  each magnet belongs to a brick
-   */
-  brick: {
-    get () {
-      return this.brick_
-    }
-  },
-  /**
-   * @readonly
-   * @property {eYo.Input} input  The eventual input containing the magnet
-   */
-  input: {
-    get () {
-      return this.input_
-    }
-  },
-  /**
-   * @readonly
-   * @property {eYo.Slot} slot  The eventual slot containing the magnet
-   */
-  slot: {
-    get () {
-      return this.slot_
-    }
-  },
   model: {
     get () {
       return this.model_
@@ -214,11 +164,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
   where: {
     get () {
       return this.where_
-    }
-  },
-  workspace: {
-    get () {
-      return this.brick.workspace
     }
   },
   magnetDB_: {
@@ -323,11 +268,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
           : 3
     }
   },
-  ui: {
-    get () {
-      return this.brick.ui
-    }
-  },
   target: {
     get () {
       return this.target_
@@ -356,11 +296,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
       if (newValue) {
         this.connectSmart(newValue)
       }
-    }
-  },
-  ui: {
-    get () {
-      return this.brick.ui
     }
   },
   unwrappedMagnet: {
