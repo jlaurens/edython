@@ -233,7 +233,7 @@ goog.inherits(eYo.FieldInput, eYo.FieldTextInput)
  * @suppress{accessControls}
  */
 eYo.FieldInput.prototype.getDisplayText_ = function () {
-  if (!this.eyo.isEditing && !this.text_.length &&(this.eyo.placeholder || (this.eyo.data && (this.eyo.data.placeholder || this.eyo.data.model.placeholder)))) {
+  if (!this.eyo.isEditing && !this.text_.length &&(this.placeholder || (this.data && (this.eyo.data.placeholder || this.data.model.placeholder)))) {
     return this.placeholderText()
   }
   return eYo.FieldInput.superClass_.getDisplayText_.call(this)
