@@ -174,8 +174,7 @@ eYo.Brick.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 0,
-    presep: ',',
-    hole_value: 'name'
+    presep: ','
   }
 })
 
@@ -189,8 +188,7 @@ eYo.Brick.List.makeSubclass('non_void_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 1,
-    presep: ',',
-    hole_value: 'name'
+    presep: ','
   }
 })
 
@@ -218,8 +216,7 @@ eYo.Brick.List.makeSubclass('with_item_list', {
   list: {
     check: eYo.T3.Expr.Check.with_item,
     mandatory: 1,
-    presep: ',',
-    hole_value: 'nom'
+    presep: ','
   }
 })
 

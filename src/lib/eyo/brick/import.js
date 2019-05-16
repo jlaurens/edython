@@ -41,8 +41,7 @@ eYo.Brick.List.makeSubclass('non_void_module_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
-    presep: ',',
-    hole_value: 'module'
+    presep: ','
   }
 })
 
@@ -57,7 +56,6 @@ eYo.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
     presep: ',',
-    hole_value: 'name',
     placeholder: eYo.Msg.Placeholder.IDENTIFIER
   }
 })

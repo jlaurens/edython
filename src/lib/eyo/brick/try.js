@@ -107,7 +107,6 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.EXPRESSION
@@ -132,7 +131,6 @@ eYo.Brick.Group.makeSubclass('except_part', {
         return this.owner.variant_p !== eYo.Key.ALIASED
       },
       check: eYo.T3.Expr.identifier,
-      hole_value: 'name',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.ALIASED
@@ -299,7 +297,6 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: eYo.Msg.Placeholder.EXPRESSION,
       xml: {
         load: /** @suppress {globalThis} */ function (element, opt) {
           this.load(element, opt)
@@ -321,7 +318,6 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: eYo.Msg.Placeholder.EXPRESSION,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.FROM
@@ -413,8 +409,7 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expr'
+      check: eYo.T3.Expr.Check.expression
     },
     expression2: {
       order: 2,
@@ -426,7 +421,6 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: eYo.Msg.Placeholder.EXPRESSION,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.BINARY

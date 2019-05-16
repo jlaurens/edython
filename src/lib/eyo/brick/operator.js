@@ -74,7 +74,6 @@ eYo.Brick.Expr.makeSubclass('binary', {
   slots: {
     lhs: {
       order: 1,
-      hole_value: 'name',
       fields: {
         bind: {
           endEditing: true,
@@ -132,7 +131,6 @@ eYo.Brick.Expr.makeSubclass('binary', {
           }
         }
       },
-      hole_value: 'name',
       check: /** @suppress {globalThis} */ function (type) {
         var m = eYo.Brick.Expr.binary.getOperatorModelForType(type)
         return m && m.rhs

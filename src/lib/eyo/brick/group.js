@@ -314,16 +314,14 @@ eYo.Brick.Group.makeSubclass('for_part', {
       fields: {
         label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list,
-      hole_value: 'element'
+      wrap: eYo.T3.Expr.target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      wrap: eYo.T3.Expr.expression_list,
-      hole_value: 'set'
+      wrap: eYo.T3.Expr.expression_list
     }
   }
 }, true)

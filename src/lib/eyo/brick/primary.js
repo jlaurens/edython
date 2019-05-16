@@ -30,7 +30,6 @@ goog.require('goog.dom');
  * @param {!String} single, the required type for a single element....
  */
 eYo.Consolidator.List.makeSubclass('Target', {
-  hole_value: 'name',
   check: null,
   mandatory: 1,
   presep: ',',
@@ -1012,7 +1011,6 @@ eYo.Brick.Expr.makeSubclass('primary', {
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         this.brick.updateProfile()
       },
-      hole_value: eYo.Msg.Placeholder.PRIMARY,
       xml: true
     },
     dotted: {
@@ -1034,7 +1032,6 @@ eYo.Brick.Expr.makeSubclass('primary', {
         } // for old name
       },
       plugged: eYo.T3.Expr.primary,
-      hole_value: 'expr',
       fields: {
         bind: {
           validate: true,
@@ -1107,7 +1104,6 @@ eYo.Brick.Expr.makeSubclass('primary', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         var O = this.owner
         var v = O.variant_p
@@ -1132,7 +1128,6 @@ eYo.Brick.Expr.makeSubclass('primary', {
         }
       },
       promise: eYo.T3.Expr.value_list,
-      hole_value: 'expr',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           if (this.owner.variant_p === eYo.Key.ANNOTATED) {

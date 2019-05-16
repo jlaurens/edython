@@ -64,8 +64,7 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test_all,
-      hole_value: 'name'
+      check: eYo.T3.Expr.Check.or_test_all
     },
     for_if: {
       order: 4,
@@ -133,8 +132,7 @@ eYo.Brick.Expr.makeSubclass('comp_for', {
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test_all,
-      hole_value: 'name'
+      check: eYo.T3.Expr.Check.or_test_all
     }
   }
 }, true)
@@ -151,8 +149,7 @@ eYo.Brick.Expr.makeSubclass('comp_if', {
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.expression_nocond,
-      hole_value: 'yorn'
+      check: eYo.T3.Expr.Check.expression_nocond
     }
   }
 }, true)
@@ -181,7 +178,6 @@ eYo.Brick.Expr.makeSubclass('key_datum', {
     key: {
       order: 1,
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'key',
       placeholder: eYo.Msg.Placeholder.KEY
     },
     datum: {
@@ -190,7 +186,6 @@ eYo.Brick.Expr.makeSubclass('key_datum', {
         label: ':'
       },
       check: eYo.T3.Expr.Check.expression,
-      hole_value: 'value',
       placeholder: eYo.Msg.Placeholder.VALUE
     }
   }

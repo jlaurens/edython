@@ -246,8 +246,7 @@ eYo.Brick.List.makeSubclass('argument_list', {
   },
   list: {
     consolidator: eYo.Consolidator.Arguments,
-    presep: ',',
-    hole_value: 'name'
+    presep: ','
   }
 })
 

@@ -4,7 +4,6 @@ eYo.Brick.Expr.makeSubclass('test_field_label', {
   slots: {
     NAME: {
       order: 1,
-      hole_value: 'name',
       fields: {
         KEY: 'key'
       }

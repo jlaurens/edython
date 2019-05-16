@@ -409,8 +409,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      optional: true,
-      hole_value: 'min'
+      optional: true
     },
     upper_bound: {
       order: 2,
@@ -421,8 +420,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      optional: true,
-      hole_value: 'end'
+      optional: true
     },
     stride: {
       order: 3,
@@ -435,7 +433,6 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      hole_value: 'stride',
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
           this.owner.variant_p = eYo.Key.STRIDE
@@ -454,24 +451,21 @@ eYo.Brick.Expr.makeSubclass('conditional_expression', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.or_test_all,
-      hole_value: 'name'
+      check: eYo.T3.Expr.Check.or_test_all
     },
     if: {
       order: 2,
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.or_test_all,
-      hole_value: 'condition'
+      check: eYo.T3.Expr.Check.or_test_all
     },
     else: {
       order: 3,
       fields: {
         label: 'else'
       },
-      check: eYo.T3.Expr.Check.expression,
-      hole_value: 'alternate'
+      check: eYo.T3.Expr.Check.expression
     }
   }
 }, true)
