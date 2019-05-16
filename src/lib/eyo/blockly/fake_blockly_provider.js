@@ -2,7 +2,7 @@
 // goog.provide('Blockly.Field')
 // goog.provide('Blockly.FieldDropdown')
 // goog.provide('Blockly.FieldLabel')
-// goog.provide('Blockly.FieldTextInput')
+// goog.provide('Blockly.FieldInput')
 // goog.provide('Blockly.FieldVariable')
 // goog.provide('Blockly.VariableModel')
 // goog.provide('Blockly.Variables')

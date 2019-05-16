@@ -42,7 +42,7 @@ eYo.Owned = function (bsi) {
 /**
  * Dispose of the ressources.
  */
-eYo.Magnet.prototype.dispose = function () {
+eYo.Owned.prototype.dispose = function () {
   this.owner_ = this.brick_ = this.slot_ = this.input_ = null
 }
 
@@ -54,7 +54,7 @@ Object.defineProperties(eYo.Owned.prototype, {
 
 // public computed properties
 
-Object.defineProperties(eYo.Magnet.prototype, {
+Object.defineProperties(eYo.Owned.prototype, {
   /**
    * @readonly
    * @type {eYo.Brick|eYo.Slot|eYo.Input} each owned object belongs to a brick

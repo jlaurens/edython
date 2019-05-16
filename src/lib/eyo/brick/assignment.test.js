@@ -357,7 +357,7 @@ describe('One brick: annotated_stmt', function() {
     d1.annotated_p = 'fou+bar'
     chai.assert(d1.annotated_p === 'fou+bar', 'MISSED ANNOTATION')
     chai.assert(d1.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    chai.assert(d1.annotated_s.bindField.getText() === 'fou+bar', 'MISSED VALUE')
+    chai.assert(d1.annotated_s.bindField.text === 'fou+bar', 'MISSED VALUE')
     eYo.Test.code(d1, 'x:fou+bar')
     var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.Test.code(d3, 'abc + bcd')
@@ -398,7 +398,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     d_main.annotated_p = 'fou + bar'
     chai.assert(d_main.annotated_p === 'fou + bar', 'MISSED ANNOTATION')
     chai.assert(d_main.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    chai.assert(d_main.annotated_s.bindField.getText() === 'fou + bar', 'MISSED VALUE')
+    chai.assert(d_main.annotated_s.bindField.text === 'fou + bar', 'MISSED VALUE')
     console.error(d_main.annotated_s)
     eYo.Test.code(d_main, 'x: fou + bar = <MISSING EXPRESSION>')
     d2.target_p = 'xxx'

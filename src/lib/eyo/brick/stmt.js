@@ -111,7 +111,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
           var p_magnet = parent.magnets.foot
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(() => {
-              eYo.Events.fireDlgtCreate(parent)
+              eYo.Events.fireBrickCreate(parent)
               var targetMagnet = magnet.target
               if (targetMagnet) {
                 targetMagnet.disconnect()
@@ -222,7 +222,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
       synchronize: true,
-      placeholderText: eYo.Msg.Placeholder.COMMENT
+      getPlaceholderText: eYo.Msg.Placeholder.COMMENT
     }
   },
   slots: {

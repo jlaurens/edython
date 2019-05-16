@@ -158,7 +158,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       init: '',
       all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner.value_s.fields.label.setValue(newValue)
+        this.owner.value_s.fields.label.text = newValue
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -387,9 +387,7 @@ eYo.Brick.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (m
   F(content, eYo.Key.TARGET_VALUED)
   mgr.shouldSeparate()
   if (variant_p !== eYo.Key.TARGET_VALUED) {
-    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME, () => {
-      this.target_d.field.showEditor()
-    })
+    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME)
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }

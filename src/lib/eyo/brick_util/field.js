@@ -1,606 +1,671 @@
 /**
- * @license
- * Visual Blocks Editor
+ * edython
  *
- * Copyright 2012 Google Inc.
- * https://developers.google.com/blockly/
+ * Copyright 2019 Jérôme LAURENS.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * License EUPL-1.2
  */
 
 /**
- * @fileoverview Field.  Used for editable titles, variables, etc.
- * This is an abstract class that defines the UI on the block.  Actual
- * instances would be Blockly.FieldTextInput, Blockly.FieldDropdown, etc.
- * @author fraser@google.com (Neil Fraser)
+ * @fileoverview Label fields and input fields.
  */
 'use strict';
 
-goog.provide('Blockly.Field');
+goog.provide('eYo.Field')
+goog.provide('eYo.FieldLabel')
+goog.provide('eYo.FieldInput')
 
-goog.require('Blockly.Events.BlockChange');
-goog.require('Blockly.Gesture');
+goog.require('eYo.Owned');
+
+goog.forwardDeclare('eYo.Size')
+goog.forwardDeclare('eYo.Events');
+
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.math.Size');
-goog.require('goog.style');
-goog.require('goog.userAgent');
-
 
 /**
- * Abstract class for an editable field.
+ * Create all the fields from the given model.
+ * For edython.
+ * @param {!eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
+ * @param {!Object} fieldsModel
+ */
+eYo.Field.makeFields = (() => {
+  // This is a closure
+  // default helper functions for an editable field bound to a data object
+  // `this` is an instance of  eYo.FieldInput
+  var validate = function (txt) {
+    // `this` is a field
+    return this.validate(txt)
+  }
+  var startEditing = function () {
+  }
+  var endEditing = function () {
+    var data = this.data
+    goog.asserts.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
+    var result = this.validate(this.text)
+    if (result) {
+      data.fromField(result)
+    } else {
+      this.text = data.toText()
+    }
+  }
+  // Change some `... = true,` entries to real functions
+  var setupModel = model => {
+    // no need to setup the model each time we create a new brick
+    if (model.setup_) {
+      return
+    }
+    model.setup_ = true
+    if (model.startEditing === true) {
+      model.startEditing = startEditing
+    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
+      delete model.startEditing
+    }
+    if (model.endEditing === true) {
+      model.endEditing = endEditing
+    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
+      delete model.endEditing
+    }
+    if (!goog.isFunction(model.didLoad)) {
+      delete model.didLoad
+    }
+    if (!goog.isFunction(model.willRender)) {
+      delete model.willRender
+    }
+    var xml = model.xml
+    if (xml) {
+      if (!goog.isFunction(xml.save)) {
+        delete xml.save
+      }
+      if (!goog.isFunction(xml.load)) {
+        delete xml.load
+      }
+    }
+  }
+  /**
+   * Make a field from a given model
+   * @param {String} name 
+   * @param {Object} model 
+   * @return {eYo.FieldLabel|eYo.FieldVariable|eYo.FieldInput}
+   */
+  var makeField = (owner, name, model) => {
+    var field
+    if (goog.isString(model)) {
+      if (model.startsWith('css')) {
+        return
+      }
+      field = new eYo.FieldLabel(owner, name, model)
+      field.css_class_ = eYo.T3.getCssClassForText(model)
+    } else if (goog.isObject(model)) {
+      setupModel(model)
+      if (model.edit || model.endEditing || model.startEditing) {
+        // this is an editable field
+        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(owner, name, model.edit || '')
+      } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
+        // this is just a label field
+        field = new eYo.FieldLabel(owner, model.value || '')
+      } else { // other entries are ignored
+        return
+      }
+      field.model = model
+      if (!(field.css_class_ = model.css_class || (model.css && 'eyo-code-' + model.css))) {
+        field.css_class_ = eYo.T3.getCssClassForText(field.text)
+      }
+      field.order__ = model.order__
+      if (model.hidden) {
+        field.visible = false
+      }
+    } else {
+      return
+    }
+    field.nextField = undefined // debug step
+    return field
+  }
+  return function (owner, fieldsModel) {
+    owner.fields = owner.fields || Object.create(null)
+    // field maker
+    // Serious things here
+    var brick = owner.brick || owner
+    goog.asserts.assert(brick, 'Missing brick while making fields')
+    for (var name in fieldsModel) {
+      var model = fieldsModel[name]
+      var field = makeField(owner, name, model)
+      if (field) {
+        if (name === eYo.Key.BIND) {
+          owner.bindField = field
+        }
+        owner.fields[name] = field
+        goog.asserts.assert(field.brick, 'Missing field brick while making fields')
+      }
+    }
+    // now order
+    // fields must not have the same order
+    // some default fields have predefined relative order
+    var byOrder = Object.create(null)
+    var unordered = []
+    var fromStart = [] // fields ordered from the beginning
+    var toEnd = [] // // fields ordered to the end
+    for (name in owner.fields) {
+      field = owner.fields[name]
+      var order = field.order__
+      if (order) {
+        goog.asserts.assert(!goog.isDefAndNotNull(byOrder[order]),
+        'Fields with the same order  %s = %s / %s',
+        byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBlock().type)
+        byOrder[order] = field
+        if (order > 0) {
+          // insert this field from the start
+          for (var i = 0; i < fromStart.length; i++) {
+            // find the first index which corresponding order is > order
+            if (fromStart[i].order__ > order) {
+              break
+            }
+          }
+          // insert the field at that position (possibly at the end)
+          fromStart.splice(i, 0, field)
+        } else /* if (order < 0) */ {
+          // insert this field to the end
+          for (i = 0; i < toEnd.length; i++) {
+            // find the first index which corresponding order is < order
+            if (toEnd[i].order__ < order) {
+              break
+            }
+          }
+          toEnd.splice(i, 0, field)
+        }
+      } else {
+        // this is an unordered field
+        unordered.push(field)
+      }
+    }
+    // now order the fields in linked lists
+    // Next returns the first field in a chain field.eyo.nextField -> ...
+    // The chain is built from the list of arguments
+    // arguments are either field names or fields
+    // When field names are given, we just insert the corresponding
+    // field into the chain
+    // When fields are given, we insert the chain starting at that point
+    // The result is a chain of fields.
+    // field.eyo.nextField points to the next field of the chain
+    // field.eyo.nextField.eyo.previousField is a fixed point.
+    // A field is the head of a chain in one of two cases
+    // 1) field.eyo.eyoLast_ is the eyo of a field (possibly the first of the chain)
+    // 2) It has no previous nor next field, meaning that
+    // ...eyo.nextField and ...eyo.previousField are false.
+    // fields with a ...eyo.previousField cannot have a ...eyo.eyoLast_ bacuse they are not the head of the chain.
+    var chain = function (/* variable argument list */) {
+      // We first loop to find the first field that can be the
+      // start of a chain. Every field before is ignored.
+      var startField, nextField
+      for (var i = 0; i < arguments.length; i++) {
+        var name = arguments[i]
+        if ((startField = goog.isString(name) ? owner.fields[name] : name)) {
+          // remove this field from the list of unordered fields
+          if (startField.previousField) {
+            // this field already belongs to a chain
+            // but it is not the first one
+            // It does not fit in
+            continue
+          }
+          // This field is acceptable as the first chain element
+          var field = startField.eyoLast_ || startField
+          // Now scan the next argument fields, if any
+          while (++i < arguments.length) {
+            name = arguments[i]
+            if ((nextField = goog.isString(name) ? owner.fields[name] : name)) {
+              if (nextField.previousField) {
+                // this was not a starting point
+                continue
+              }
+              if (nextField === startField) {
+                // avoid infinite loop
+                continue
+              }
+              field.nextField = nextField
+              nextField.previousField = field
+              field = nextField
+              var eyoLast = field.eyoLast_
+              if (eyoLast) {
+                delete field.eyoLast_
+                field = eyoLast
+              }
+            }
+          }
+          if (field) {
+            startField.eyoLast_ = field
+         } else {
+            // this chain consists in a unique element
+            startField.eyoLast_ = startField
+          }
+          break
+        }
+      }
+      return startField
+    }
+    owner.fieldAtStart = chain.apply(this, fromStart)
+    owner.fieldAtStart = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fieldAtStart)
+    owner.toEndField = chain.apply(this, toEnd)
+    owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
+    // we have exhausted all the fields that are already ordered
+    // either explicitely or not
+    // Remove from unordered what has been ordered so far
+    var j = unordered.length
+    while (j--) {
+      if (unordered[j].previousField || unordered[j].eyoLast_) {
+        unordered.splice(j, 1)
+      }
+    }
+    goog.asserts.assert(unordered.length < 2,
+      `Too many unordered fields in ${name}/${JSON.stringify(model)}`)
+    unordered[0] && (owner.fieldAtStart = chain(owner.fieldAtStart, unordered[0]))
+    owner.fieldAtStart && delete owner.fieldAtStart.eyoLast_
+    owner.toEndField && delete owner.toEndField.eyoLast_
+  }
+}) ()
+
+/**
+ * 
+ * @param {eYo.Brick|eYo.Slot|eYo.Input}
+ */
+eYo.Field.disposeFields = owner => {
+  var fields = owner.fields
+  owner.fieldAtStart = owner.toEndField = owner.bindField = owner.fields = undefined
+  Object.values(fields).forEach(f => f.dispose())
+}
+
+/**
+ * Abstract class for text fields.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
  * @param {string} text The initial content of the field.
- * @param {Function=} opt_validator An optional function that is called
- *     to validate any constraints on what the user entered.  Takes the new
- *     text as an argument and returns either the accepted text, a replacement
- *     text, or null to abort the change.
  * @constructor
  */
-Blockly.Field = function(text, opt_validator) {
-  this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
-  this.setValue(text);
-  this.setValidator(opt_validator);
-};
+eYo.Field = function (bsi, name, text) {
+  eYo.Field.superClass_.constructor.call(this, bsi)
+  this.name_ = name
+  this.size_ = new eYo.Size(0, 1)
+  this.text__ = text
+  this.reentrant_ = {}
+}
+goog.inherits(eYo.Field, eYo.Owned)
 
-/**
- * The set of all registered fields, keyed by field type as used in the JSON
- * definition of a block.
- * @type {!Object<string, !{fromJson: Function}>}
- * @private
- */
-Blockly.Field.TYPE_MAP_ = {};
+// Private properties with default values
+Object.defineProperties(eYo.Field.prototype, {
+  name_: { value: undefined },
+  text__: { value: '' },
+  visible_: { value: true },
+})
 
-/**
- * Registers a field type. May also override an existing field type.
- * Blockly.Field.fromJson uses this registry to find the appropriate field.
- * @param {!string} type The field type name as used in the JSON definition.
- * @param {!{fromJson: Function}} fieldClass The field class containing a
- *     fromJson function that can construct an instance of the field.
- * @throws {Error} if the type name is empty, or the fieldClass is not an
- *     object containing a fromJson function.
- */
-Blockly.Field.register = function(type, fieldClass) {
-  if (!goog.isString(type) || goog.string.isEmptyOrWhitespace(type)) {
-    throw new Error('Invalid field type "' + type + '"');
+// Private computed properties
+Object.defineProperties(eYo.Field.prototype, {
+  text_: {
+    get () {
+      return this.text__
+    },
+    /**
+     * 
+     */
+    set (newValue) {
+      if (!goog.isDef(newValue)) {
+        // No change if null.
+        return;
+      }
+      if (this.text__ === newValue) {
+        return
+      }
+      eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, newValue)
+      this.text__ = newValue
+      this.placeholder__ = !newValue || !newValue.length
+    }
   }
-  if (!goog.isObject(fieldClass) || !goog.isFunction(fieldClass.fromJson)) {
-    throw new Error('Field "' + fieldClass +
-        '" must have a fromJson function');
-  }
-  Blockly.Field.TYPE_MAP_[type] = fieldClass;
-};
+})
+
+// Public properties with default values
+Object.defineProperties(eYo.Field.prototype, {
+  isEditing: { value: false},
+  editable: { value: true },
+  model: {
+    value: undefined,
+    writable: true,
+  },
+})
+
+// Public readonly computed properties
+Object.defineProperties(eYo.Field.prototype, {
+  /**
+   * The name of field must be unique within a brick.
+   * This is necessary for proper undo management.
+   * Static label fields are named for practical use.
+   * @readonly
+   * @type {String} The name of the field
+   */
+  name: { get () { return this.name_ } },
+  /**
+   * @readonly
+   * @type {eYo.Size} The size of the field
+   */
+  size: { get () { return this.size_ } },
+  /**
+   * @readonly
+   * @type {String} The text of the field.
+   */
+  text: {
+    get () { return this.text_ },
+    set (newText) {
+      if (newText === null) {
+        // No change if null.
+        return;
+      }
+      newText = String(newText)
+      if (newText === this.text__) {
+        // No change.
+        return
+      }
+      this.text_ = newText // one _ only
+      this.size.fromText(newText)
+      if (this.brick.rendered) {
+        this.brick.render()
+        this.brick.bumpNeighbours_()
+      }
+    }
+  },
+  /**
+   * @readonly
+   * @type {String} The text of the field.
+   */
+  displayText: { get () { return this.text_ } },
+  /**
+   * Is the field visible, or hidden due to the block being collapsed?
+   * @type {boolean}
+   * @private
+   */
+  visible: {
+    get () { return this.visible_ },
+    /**
+     * Sets whether this editable field is visible or not.
+     * @param {boolean} visible True if visible.
+     */
+    set (visible) {
+      if (this.visible_ == visible) {
+        return;
+      }
+      this.visible_ = visible
+      var d = this.ui_driver
+      d && d.fieldDisplayedUpdate(this)
+      if (this.brick.rendered) {
+        this.brick.render()
+        visible && this.brick.bumpNeighbours_()
+      }
+    }
+  },
+  /**
+   * Check whether this field is currently editable.
+   * Text labels are not editable and are not serialized to XML.
+   * Editable fields are serialized, but may exist on locked brick.
+   * @return {boolean} whether this field is editable and on an editable brick
+   */
+  isCurrentlyEditable: {
+    get () {
+      return this.editable && this.brick.editable
+    }
+  },
+  css_class: {
+    get () {
+      return this.css_class_
+    }
+  },
+  isComment: {
+    get () {
+      return this.isComment_
+    }
+  },
+})
 
 /**
- * Construct a Field from a JSON arg object.
- * Finds the appropriate registered field by the type name as registered using
- * Blockly.Field.register.
- * @param {!Object} options A JSON object with a type and options specific
- *     to the field type.
- * @returns {?Blockly.Field} The new field instance or null if a field wasn't
- *     found with the given type name
- * @package
+ * Dispose of all DOM objects belonging to this editable field.
  */
-Blockly.Field.fromJson = function(options) {
-  var fieldClass = Blockly.Field.TYPE_MAP_[options['type']];
-  if (fieldClass) {
-    return fieldClass.fromJson(options);
-  }
-  return null;
-};
-
-/**
- * Temporary cache of text widths.
- * @type {Object}
- * @private
- */
-Blockly.Field.cacheWidths_ = null;
-
-/**
- * Number of current references to cache.
- * @type {number}
- * @private
- */
-Blockly.Field.cacheReference_ = 0;
-
-
-/**
- * Name of field.  Unique within each block.
- * Static labels are usually unnamed.
- * @type {string|undefined}
- */
-Blockly.Field.prototype.name = undefined;
-
-/**
- * Maximum characters of text to display before adding an ellipsis.
- * @type {number}
- */
-Blockly.Field.prototype.maxDisplayLength = 50;
-
-/**
- * Visible text to display.
- * @type {string}
- * @private
- */
-Blockly.Field.prototype.text_ = '';
-
-/**
- * Block this field is attached to.  Starts as null, then in set in init.
- * @type {Blockly.Block}
- * @private
- */
-Blockly.Field.prototype.sourceBlock_ = null;
-
-/**
- * Is the field visible, or hidden due to the block being collapsed?
- * @type {boolean}
- * @private
- */
-Blockly.Field.prototype.visible_ = true;
-
-/**
- * Validation function called when user edits an editable field.
- * @type {Function}
- * @private
- */
-Blockly.Field.prototype.validator_ = null;
-
-/**
- * Non-breaking space.
- * @const
- */
-Blockly.Field.NBSP = '\u00A0';
-
-/**
- * Editable fields are saved by the XML renderer, non-editable fields are not.
- */
-Blockly.Field.prototype.EDITABLE = true;
-
-/**
- * Attach this field to a block.
- * @param {!Blockly.Block} block The block containing this field.
- */
-Blockly.Field.prototype.setSourceBlock = function(block) {
-  goog.asserts.assert(!this.sourceBlock_, 'Field already bound to a block.');
-  this.sourceBlock_ = block;
-};
-
-/**
- * Install this field on a block.
- */
-Blockly.Field.prototype.init = function() {
-  if (this.fieldGroup_) {
-    // Field has already been initialized once.
-    return;
-  }
-  // Build the DOM.
-  this.fieldGroup_ = Blockly.utils.createSvgElement('g', {}, null);
-  if (!this.visible_) {
-    this.fieldGroup_.style.display = 'none';
-  }
-  this.borderRect_ = Blockly.utils.createSvgElement('rect',
-      {
-        'rx': 4,
-        'ry': 4,
-        'x': -Blockly.BlockSvg.SEP_SPACE_X / 2,
-        'y': 0,
-        'height': 16
-      }, this.fieldGroup_);
-  /** @type {!Element} */
-  this.textElement_ = Blockly.utils.createSvgElement('text',
-      {'class': 'blocklyText', 'y': this.size_.height - 12.5},
-      this.fieldGroup_);
-
-  this.updateEditable();
-  this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_);
-  this.mouseDownWrapper_ =
-      Blockly.bindEventWithChecks_(
-          this.fieldGroup_, 'mousedown', this, this.onMouseDown_);
-  // Force a render.
-  this.render_();
-};
+eYo.Field.prototype.dispose = function() {
+  var d = this.ui_driver
+  d && d.fieldDispose(this)
+  this.superClass_.dispose.call(this)
+}
 
 /**
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-Blockly.Field.prototype.initModel = function() {
-};
+eYo.Field.prototype.initModel = function() {
+}
 
 /**
- * Dispose of all DOM objects belonging to this editable field.
+ * Ensure that the field is ready.
  */
-Blockly.Field.prototype.dispose = function() {
-  if (this.mouseDownWrapper_) {
-    Blockly.unbindEvent_(this.mouseDownWrapper_);
-    this.mouseDownWrapper_ = null;
-  }
-  this.sourceBlock_ = null;
-  goog.dom.removeNode(this.fieldGroup_);
-  this.fieldGroup_ = null;
-  this.textElement_ = null;
-  this.borderRect_ = null;
-  this.validator_ = null;
-};
+eYo.Field.prototype.beReady = function () {
+  this.beReady = eYo.Do.nothing
+  var d = this.ui_driver
+  d && d.driver.fieldInit(this.field_)
+}
 
 /**
- * Add or remove the UI indicating if this field is editable or not.
+ * Whether the field of the receiver starts with a separator.
  */
-Blockly.Field.prototype.updateEditable = function() {
-  var group = this.fieldGroup_;
-  if (!this.EDITABLE || !group) {
-    return;
-  }
-  if (this.sourceBlock_.isEditable()) {
-    Blockly.utils.addClass(group, 'blocklyEditableText');
-    Blockly.utils.removeClass(group, 'blocklyNonEditableText');
-    this.fieldGroup_.style.cursor = this.CURSOR;
-  } else {
-    Blockly.utils.addClass(group, 'blocklyNonEditableText');
-    Blockly.utils.removeClass(group, 'blocklyEditableText');
-    this.fieldGroup_.style.cursor = '';
-  }
-};
-
-/**
- * Check whether this field is currently editable.  Some fields are never
- * editable (e.g. text labels).  Those fields are not serialized to XML.  Other
- * fields may be editable, and therefore serialized, but may exist on
- * non-editable blocks.
- * @return {boolean} whether this field is editable and on an editable block
- */
-Blockly.Field.prototype.isCurrentlyEditable = function() {
-  return this.EDITABLE && !!this.sourceBlock_ && this.sourceBlock_.isEditable();
-};
-
-/**
- * Gets whether this editable field is visible or not.
- * @return {boolean} True if visible.
- */
-Blockly.Field.prototype.isVisible = function() {
-  return this.visible_;
-};
-
-/**
- * Sets whether this editable field is visible or not.
- * @param {boolean} visible True if visible.
- */
-Blockly.Field.prototype.setVisible = function(visible) {
-  if (this.visible_ == visible) {
-    return;
-  }
-  this.visible_ = visible;
-  var root = this.getSvgRoot();
-  if (root) {
-    root.style.display = visible ? 'block' : 'none';
-    this.render_();
-  }
-};
-
-/**
- * Sets a new validation function for editable fields.
- * @param {Function} handler New validation function, or null.
- */
-Blockly.Field.prototype.setValidator = function(handler) {
-  this.validator_ = handler;
-};
-
-/**
- * Gets the validation function for editable fields.
- * @return {Function} Validation function, or null.
- */
-Blockly.Field.prototype.getValidator = function() {
-  return this.validator_;
-};
-
-/**
- * Validates a change.  Does nothing.  Subclasses may override this.
- * @param {string} text The user's text.
- * @return {string} No change needed.
- */
-Blockly.Field.prototype.classValidator = function(text) {
-  return text;
-};
-
-/**
- * Calls the validation function for this field, as well as all the validation
- * function for the field's class and its parents.
- * @param {string} text Proposed text.
- * @return {?string} Revised text, or null if invalid.
- */
-Blockly.Field.prototype.callValidator = function(text) {
-  var classResult = this.classValidator(text);
-  if (classResult === null) {
-    // Class validator rejects value.  Game over.
-    return null;
-  } else if (classResult !== undefined) {
-    text = classResult;
-  }
-  var userValidator = this.getValidator();
-  if (userValidator) {
-    var userResult = userValidator.call(this, text);
-    if (userResult === null) {
-      // User validator rejects value.  Game over.
-      return null;
-    } else if (userResult !== undefined) {
-      text = userResult;
+eYo.Field.prototype.startsWithSeparator = function () {
+  // if the text is void, it can not change whether
+  // the last character was a letter or not
+  var text = this.text
+  if (text.length) {
+    if (this.name === 'separator'
+      || (this.model && this.model.separator)
+      || eYo.XRE.operator.test(text[0])
+      || eYo.XRE.delimiter.test(text[0])
+      || text[0] === '.'
+      || text[0] === ':'
+      || text[0] === ','
+      || text[0] === ';') {
+      // add a separation before
+      return true
     }
   }
-  return text;
-};
-
-/**
- * Gets the group element for this editable field.
- * Used for measuring the size and for positioning.
- * @return {!Element} The group element.
- */
-Blockly.Field.prototype.getSvgRoot = function() {
-  return /** @type {!Element} */ (this.fieldGroup_);
-};
+}
 
 /**
  * Draws the border with the correct width.
  * Saves the computed width in a property.
  * @private
  */
-Blockly.Field.prototype.render_ = function() {
+eYo.Field.prototype.render_ = function() {
   if (!this.visible_) {
-    this.size_.width = 0;
-    return;
+    this.size_.width = 0
+    return
   }
-
-  // Replace the text.
-  goog.dom.removeChildren(/** @type {!Element} */ (this.textElement_));
-  var textNode = document.createTextNode(this.getDisplayText_());
-  this.textElement_.appendChild(textNode);
-
-  this.updateWidth();
-};
+  var d = this.ui_driver
+  d && (d.fieldTextRemove(field), d.fieldTextCreate(field))
+  this.updateWidth()
+}
 
 /**
- * Updates thw width of the field. This calls getCachedWidth which won't cache
- * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
- * it eventually does succeed, the result will be cached.
+ * Updates the width of the field in the UI.
  **/
-Blockly.Field.prototype.updateWidth = function() {
-  var width = Blockly.Field.getCachedWidth(this.textElement_);
-  if (this.borderRect_) {
-    this.borderRect_.setAttribute('width',
-        width + Blockly.BlockSvg.SEP_SPACE_X);
-  }
-  this.size_.width = width;
-};
+eYo.Field.prototype.updateWidth = function() {
+  var d = this.ui_driver
+  d && d.fieldUpdateWidth(this)
+}
 
 /**
- * Gets the width of a text element, caching it in the process.
- * @param {!Element} textElement An SVG 'text' element.
- * @return {number} Width of element.
+ * Validate the keyed data of the source brick.
+ * Asks the data object to do so.
+ * The bound data must exist.
+ * @param {String} txt
+ * @return {String}
  */
-Blockly.Field.getCachedWidth = function(textElement) {
-  var key = textElement.textContent + '\n' + textElement.className.baseVal;
-  var width;
+eYo.Field.prototype.validate = function (txt) {
+  var v = this.data.validate(goog.isDef(txt) ? txt : this.text)
+  return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
+}
 
-  // Return the cached width if it exists.
-  if (Blockly.Field.cacheWidths_) {
-    width = Blockly.Field.cacheWidths_[key];
-    if (width) {
-      return width;
+/**
+ * Will render the field.
+ * We should call `this.willRender()` from the model.
+ */
+eYo.Field.prototype.willRender = function () {
+  var f = this.model && eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender)
+  if (f) {
+    f.call(this)
+  } else {
+    var d = this.ui_driver
+    if (d) {
+      d.fieldMakePlaceholder(this, this.isPlaceholder)
+      d.fieldMakeComment(this, this.isComment)
     }
   }
-
-  // Attempt to compute fetch the width of the SVG text element.
-  try {
-    if (goog.userAgent.IE || goog.userAgent.EDGE) {
-      width = textElement.getBBox().width;
-    } else {
-      width = textElement.getComputedTextLength();
-    }
-  } catch (e) {
-    // In other cases where we fail to geth the computed text. Instead, use an
-    // approximation and do not cache the result. At some later point in time
-    // when the block is inserted into the visible DOM, this method will be
-    // called again and, at that point in time, will not throw an exception.
-    return textElement.textContent.length * 8;
-  }
-
-  // Cache the computed width and return.
-  if (Blockly.Field.cacheWidths_) {
-    Blockly.Field.cacheWidths_[key] = width;
-  }
-  return width;
-};
+}
 
 /**
- * Start caching field widths.  Every call to this function MUST also call
- * stopCache.  Caches must not survive between execution threads.
+ * Class for a non-editable field.
+ * The only purpose is to start with a different height.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
+ * @param {string} name The required name of the field
+ * @param {string} text The initial content of the field.
+ * @extends {eYo.Field}
+ * @constructor
  */
-Blockly.Field.startCache = function() {
-  Blockly.Field.cacheReference_++;
-  if (!Blockly.Field.cacheWidths_) {
-    Blockly.Field.cacheWidths_ = {};
-  }
-};
+eYo.FieldLabel = function (bsi, name, text) {
+  this.isLabel = true
+  eYo.FieldLabel.superClass_.constructor.call(this, bsi, name, text)
+}
+goog.inherits(eYo.FieldLabel, eYo.Field)
+
+eYo.FieldLabel.prototype.EDITABLE = false
 
 /**
- * Stop caching field widths.  Unless caching was already on when the
- * corresponding call to startCache was made.
+ * Class for an editable code field.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
+ * @param {string=} name
+ * @param {string} text The initial content of the field.
+ * @extends {eYo.Field}
+ * @constructor
  */
-Blockly.Field.stopCache = function() {
-  Blockly.Field.cacheReference_--;
-  if (!Blockly.Field.cacheReference_) {
-    Blockly.Field.cacheWidths_ = null;
-  }
-};
+eYo.FieldInput = function (bsi, name, text) {
+  goog.asserts.assert(name, 'missing name for an editable field')
+  eYo.FieldInput.superClass_.constructor.call(this, bsi, name, text)
+}
+goog.inherits(eYo.FieldInput, eYo.Field)
 
 /**
- * Returns the height and width of the field.
- * @return {!goog.math.Size} Height and width.
+ * Dispose of the delegate.
  */
-Blockly.Field.prototype.getSize = function() {
-  if (!this.size_.width) {
-    this.render_();
-  }
-  return this.size_;
-};
-
-/**
- * Returns the bounding box of the rendered field, accounting for workspace
- * scaling.
- * @return {!Object} An object with top, bottom, left, and right in pixels
- *     relative to the top left corner of the page (window coordinates).
- * @private
- */
-Blockly.Field.prototype.getScaledBBox_ = function() {
-  var bBox = this.borderRect_.getBBox();
-  var scaledHeight = bBox.height * this.sourceBlock_.workspace.scale;
-  var scaledWidth = bBox.width * this.sourceBlock_.workspace.scale;
-  var xy = this.getAbsoluteXY_();
-  return {
-    top: xy.y,
-    bottom: xy.y + scaledHeight,
-    left: xy.x,
-    right: xy.x + scaledWidth
-  };
-};
-
-/**
- * Get the text from this field as displayed on screen.  May differ from getText
- * due to ellipsis, and other formatting.
- * @return {string} Currently displayed text.
- * @private
- */
-Blockly.Field.prototype.getDisplayText_ = function() {
-  var text = this.text_;
-  if (!text) {
-    // Prevent the field from disappearing if empty.
-    return Blockly.Field.NBSP;
-  }
-  if (text.length > this.maxDisplayLength) {
-    // Truncate displayed string and add an ellipsis ('...').
-    text = text.substring(0, this.maxDisplayLength - 2) + '\u2026';
-  }
-  // Replace whitespace with non-breaking spaces so the text doesn't collapse.
-  text = text.replace(/\s/g, Blockly.Field.NBSP);
-  if (this.sourceBlock_.RTL) {
-    // The SVG is LTR, force text to be RTL.
-    text += '\u200F';
-  }
-  return text;
-};
-
-/**
- * Get the text from this field.
- * @return {string} Current text.
- */
-Blockly.Field.prototype.getText = function() {
-  return this.text_;
-};
-
-/**
- * Set the text in this field.  Trigger a rerender of the source block.
- * @param {*} newText New text.
- */
-Blockly.Field.prototype.setText = function(newText) {
-  if (newText === null) {
-    // No change if null.
-    return;
-  }
-  newText = String(newText);
-  if (newText === this.text_) {
-    // No change.
-    return;
-  }
-  this.text_ = newText;
-  this.forceRerender();
-};
-
-/**
- * Force a rerender of the block that this field is installed on, which will
- * rerender this field and adjust for any sizing changes.
- * Other fields on the same block will not rerender, because their sizes have
- * already been recorded.
- * @package
- */
-Blockly.Field.prototype.forceRerender = function() {
-  // Set width to 0 to force a rerender of this field.
-  this.size_.width = 0;
-
-  if (this.sourceBlock_ && this.sourceBlock_.rendered) {
-    this.sourceBlock_.render();
-    this.sourceBlock_.bumpNeighbours_();
-  }
-};
-
-/**
- * By default there is no difference between the human-readable text and
- * the language-neutral values.  Subclasses (such as dropdown) may define this.
- * @return {string} Current value.
- */
-Blockly.Field.prototype.getValue = function() {
-  return this.getText();
-};
-
-/**
- * By default there is no difference between the human-readable text and
- * the language-neutral values.  Subclasses (such as dropdown) may define this.
- * @param {string} newValue New value.
- */
-Blockly.Field.prototype.setValue = function(newValue) {
-  if (newValue === null) {
-    // No change if null.
-    return;
-  }
-  var oldValue = this.getValue();
-  if (oldValue == newValue) {
-    return;
-  }
-  if (this.sourceBlock_ && Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockChange(
-        this.sourceBlock_, 'field', this.name, oldValue, newValue));
-  }
-  this.setText(newValue);
-};
+// eYo.FieldInput.prototype.dispose = function () {
+//   eYo.FieldInput.superClass_.dispose.call(this)
+// }
 
 /**
  * Handle a mouse down event on a field.
  * @param {!Event} e Mouse down event.
  * @private
  */
-Blockly.Field.prototype.onMouseDown_ = function(e) {
-  if (!this.sourceBlock_ || !this.sourceBlock_.workspace) {
-    return;
+eYo.FieldInput.prototype.onMouseDown_ = function(e) {
+  if (this.workspace && this.brick.selected) {
+    var gesture = this.workspace.getGesture(e)
+    if (gesture) {
+      gesture.setStartField(this)
+    }
   }
-  var gesture = this.sourceBlock_.workspace.getGesture(e);
-  if (gesture) {
-    gesture.setStartField(this);
-  }
-};
+}
 
 /**
- * Change the tooltip text for this field.
- * @param {string|!Element} _newTip Text for tooltip or a parent element to
- *     link to for its tooltip.
+ * css class for both the text element and html input.
  */
-Blockly.Field.prototype.setTooltip = function(_newTip) {
-  // Non-abstract sub-classes may wish to implement this.  See FieldLabel.
-};
+eYo.FieldInput.prototype.css_class_ = 'eyo-code'
+
+// Private properties
+Object.defineProperties(eYo.FieldInput.prototype, {
+  text_: {
+    get () {
+      return this.text__
+    },
+    /**
+     * 
+     */
+    set (newValue) {
+      if (!goog.isDef(newValue)) {
+        // No change if null.
+        return;
+      }
+      if (this.text__ === newValue) {
+        return
+      }
+      this.text__ = newValue
+    }
+  },
+  placeholderText_: { value: undefined },
+})
+
+Object.defineProperties(eYo.FieldInput.prototype, {
+  /**
+   * Get the text from this field as displayed on screen.
+   * @return {string} Currently displayed text.
+   * @private
+   * @suppress{accessControls}
+   */
+  displayText: {
+    get () {
+      if (!this.isEditing && !this.text_.length &&(this.isPlaceholder || (this.data && (this.data.placeholder || this.data.model.placeholder)))) {
+        return this.getPlaceholderText()
+      }
+      return this.text 
+    }
+  },
+  /**
+   * Whether the field text corresponds to a placeholder.
+   */
+  isPlaceholder: {
+    get () {
+      return !!this.model.placeholder
+    }
+  }
+})
 
 /**
- * Return the absolute coordinates of the top-left corner of this field.
- * The origin (0,0) is the top-left corner of the page body.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * The placeholder text.
+ * Get the model driven value if any.
+ * @param {boolean} clear
+ * @return {string} Currently displayed text.
  * @private
  */
-Blockly.Field.prototype.getAbsoluteXY_ = function() {
-  return goog.style.getPageOffset(this.borderRect_);
-};
+eYo.FieldInput.prototype.getPlaceholderText = function (clear) {
+  if (clear) {
+    this.placeholderText_ = undefined
+  } else if (this.placeholderText_) {
+    return this.placeholderText_
+  }
+  if (this.brick) {
+    var ph = model => {
+      var placeholder = model && model.placeholder
+      if (goog.isNumber(placeholder)) {
+        return placeholder.toString()
+      }
+      placeholder = eYo.Do.valueOf(placeholder, this)
+      if (placeholder) {
+        placeholder = placeholder.toString()
+        if (placeholder.length > 1) {
+          placeholder = placeholder.trim() // one space alone is allowed
+        }
+      }
+      return placeholder
+    }
+    var data = this.data
+    return (this.placeholderText_ = ph(data && data.model) || ph(this.model) || eYo.Msg.Placeholder.CODE)
+  }
+}
+
+/**
+ * Class for an editable code field for variables.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
+ * @param {string=} name
+ * @param {string} text The initial content of the field.
+ * @extends {eYo.FieldInput}
+ * @constructor
+ */
+eYo.FieldVariable = function (bsi, name, text) {
+  eYo.FieldVariable.superClass_.constructor.call(this, bsi, name, text)
+}
+goog.inherits(eYo.FieldVariable, eYo.FieldInput)

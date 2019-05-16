@@ -15,9 +15,10 @@ goog.provide('eYo.Brick')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
-goog.require('eYo.Events')
 goog.require('eYo.Span')
-goog.require('Blockly.Blocks')
+goog.require('eYo.Field')
+
+goog.require('eYo.Events')
 
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
@@ -27,12 +28,42 @@ goog.require('eYo.Where')
 goog.require('goog.dom')
 
 goog.forwardDeclare('eYo.Slot')
-goog.forwardDeclare('eYo.FieldHelper')
 goog.forwardDeclare('eYo.Magnets')
 goog.forwardDeclare('eYo.UI')
 goog.forwardDeclare('eYo.Brick.Expr')
 goog.forwardDeclare('eYo.Brick.Stmt')
 goog.forwardDeclare('eYo.Selected')
+
+
+/**
+ * Decorate of change count hooks.
+ * Returns a function with signature is `foo(whatever) → whatever`
+ * `foo` is overriden by the model.
+ * The model `foo` can call the builtin `foo` with `this.foo(...)`.
+ * `do_it` receives all the parameters that the decorated function will receive.
+ * If `do_it` return value is not an object, the change.count is not recorded
+ * If `do_it` return value is an object with a `return` property,
+ * the `change.count` is recorded such that `do_it` won't be executed
+ * until the next `change.count` increment.
+ * @param {!String} key,
+ * @param {!Function} do_it  must return something.
+ * @return {!Function}
+ */
+eYo.Decorate.onChangeCount = function (key, do_it) {
+  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  return function() {
+    var c = this.change
+    if (c.save[key] === c.count) {
+      return c.cache[key]
+    }
+    var did_it = do_it.apply(this, arguments)
+    if (did_it) {
+      c.save[key] = c.count
+      c.cache[key] = did_it.ans
+    }
+    return c.cache[key]
+  }
+}
 
 /**
  * Class for a Block Delegate.
@@ -195,38 +226,9 @@ eYo.Do.getModel = function (type) {
   return eYo.Brick.Manager.getModel(type)
 }
 
-/**
- * Decorate of change count hooks.
- * Returns a function with signature is `foo(whatever) → whatever`
- * `foo` is overriden by the model.
- * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * `do_it` receives all the parameters that the decorated function will receive.
- * If `do_it` return value is not an object, the change.count is not recorded
- * If `do_it` return value is an object with a `return` property,
- * the `change.count` is recorded such that `do_it` won't be executed
- * until the next `change.count` increment.
- * @param {!String} key,
- * @param {!Function} do_it  must return something.
- * @return {!Function}
- */
-eYo.Decorate.onChangeCount = function (key, do_it) {
-  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
-  return function() {
-    var c = this.change
-    if (c.save[key] === c.count) {
-      return c.cache[key]
-    }
-    var did_it = do_it.apply(this, arguments)
-    if (did_it) {
-      c.save[key] = c.count
-      c.cache[key] = did_it.ans
-    }
-    return c.cache[key]
-  }
-}
-
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
+  isEditing: { value: false},
   data: {
     get () {
       return this.data_
@@ -1711,7 +1713,7 @@ eYo.Brick.prototype.disposeData = function () {
  * For edython.
  */
 eYo.Brick.prototype.makeFields = function () {
-  eYo.FieldHelper.makeFields(this, this.model.fields)
+  eYo.Field.makeFields(this, this.model.fields)
 }
 
 /**
@@ -1719,7 +1721,7 @@ eYo.Brick.prototype.makeFields = function () {
  * For edython.
  */
 eYo.Brick.prototype.disposeFields = function () {
-  eYo.FieldHelper.disposeFields(this, this)
+  eYo.Field.disposeFields(this, this)
 }
 
 /**
@@ -2207,7 +2209,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
       return
     }
     eYo.Events.groupWrap(() => {
-      eYo.Events.fireDlgtChange(
+      eYo.Events.fireBrickChange(
         this, 'disabled', null, this.disabled_, yorn)
       var previous, next
       if (yorn) {
@@ -2597,7 +2599,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       }
       // Show/hide the next statement inputs.
       this.forEachInput(input => input.setVisible(!collapsed))
-      eYo.Events.fireDlgtChange(
+      eYo.Events.fireBrickChange(
           this, 'collapsed', null, this.collapsed_, newValue)
       this.collapsed_ = newValue;
       this.render()
@@ -3079,7 +3081,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
         eYo.Events.groupWrap(() => {
           eYo.Events.enableWrap(() => {
             eYo.Do.tryFinally(() => {
-              eYo.Events.fireDlgtCreate(candidate)
+              eYo.Events.fireBrickCreate(candidate)
               prepare && prepare()
               otherM4t.connect(m4t)
             }, () => {
@@ -3302,7 +3304,7 @@ eYo.Brick.prototype.lock = function () {
   if (this.locked_ || !this.canLock()) {
     return ans
   }
-  eYo.Events.fireDlgtChange(
+  eYo.Events.fireBrickChange(
     this, eYo.Const.Event.locked, null, this.locked_, true)
   this.locked_ = true
   if (this.selected) {
@@ -3362,7 +3364,7 @@ eYo.Brick.prototype.lock = function () {
  */
 eYo.Brick.prototype.unlock = function (shallow) {
   var ans = 0
-  eYo.Events.fireDlgtChange(
+  eYo.Events.fireBrickChange(
       this, eYo.Const.Event.locked, null, this.locked_, false)
   this.locked_ = false
   // list all the input for connections with a target
@@ -3487,3 +3489,9 @@ eYo.Brick.prototype.getParent = function () {
 eYo.Brick.prototype.connectionUiEffect = function() {
   this.ui.connectEffect()
 }
+
+/**
+ * Not implemented. The purpose is to avoid brick collisions.
+ */
+eYo.Brick.prototype.bumpNeighbours_ = eYo.Do.nothing
+

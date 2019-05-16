@@ -170,16 +170,6 @@ eYo.Selected = (() => {
   )
   me.didAdd = eYo.Do.nothing
   me.didRemove = eYo.Do.nothing
-  Object.defineProperty(eYo.Brick.prototype, 'selected', {
-    get() {
-      return this === brick__
-    }
-  })
-  Object.defineProperty(eYo.Magnet.prototype, 'selected', {
-    get() {
-      return this === magnet__
-    }
-  })
   return me
 })()
 
@@ -224,14 +214,12 @@ Object.defineProperties(
   }
 )
 
-Object.defineProperties(eYo.Magnet.prototype, {
-  selected: {
-    get () {
-      return this === eYo.Selected.magnet
-    }
+Object.defineProperty(eYo.Magnet.prototype, 'selected', {
+  get() {
+    return this === magnet__
   },
   set (newValue) {
-    newValue ? this.select() : this.unselect()
+    ((newValue && this.select) || this.unselect)()
   }
 })
 
@@ -243,6 +231,15 @@ Object.defineProperties(eYo.Magnet.prototype, {
 eYo.Magnet.prototype.select = function () {
   return (eYo.Selected.magnet = this)
 }
+
+Object.defineProperty(eYo.Brick.prototype, 'selected', {
+  get() {
+    return this === brick__
+  },
+  set (newValue) {
+    ((newValue && this.select) || this.unselect)()
+  }
+})
 
 /**
  * Unselect this magnet.

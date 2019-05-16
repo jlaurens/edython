@@ -16,13 +16,13 @@ goog.provide('eYo.Slot')
 goog.require('eYo.Do')
 goog.require('eYo.Where')
 goog.require('eYo.Decorate')
+goog.require('eYo.Field')
 goog.require('eYo.Magnet')
 goog.require('eYo.T3.Profile')
 
 goog.require('goog.dom');
 
 goog.forwardDeclare('eYo.Xml')
-goog.forwardDeclare('eYo.FieldHelper')
 
 /**
  * Convenient method to wrap the Blockly input object for the outside.
@@ -80,7 +80,7 @@ eYo.Slot = function (owner, key, model) {
       this.incog = true
     }
   }
-  eYo.FieldHelper.makeFields(this, model.fields)
+  eYo.Field.makeFields(this, model.fields)
   goog.asserts.assert(brick,
     `brick must exist ${key}`)
   if (key === 'comment') {
@@ -103,7 +103,7 @@ Object.defineProperties(eYo.Slot.prototype, {
 eYo.Slot.prototype.dispose = function () {
   var ui = this.owner.ui
   ui && ui.driver.slotDispose(this)
-  eYo.FieldHelper.disposeFields(this)
+  eYo.Field.disposeFields(this)
   this.model_ = undefined
   this.where_.dispose && this.where_.dispose()
   this.where_ = undefined
@@ -232,12 +232,6 @@ Object.defineProperties(eYo.Slot.prototype, {
     get () {
       console.error("BREAK HERE")
       throw "ILLEGAL"
-    }
-  },
-  targetBrick: {
-    get () {
-      var m4t = this.magnet
-      return m4t && m4t.targetBrick
     }
   },
   unwrappedTarget: {
@@ -404,8 +398,8 @@ eYo.Slot.prototype.synchronize = function () {
   this.visible = !newValue
   if (this.visible) {
     input.fieldRow.forEach(field => {
-      if (field.getText().length > 0) {
-        field.eyo.visible = true // where is it used ?
+      if (field.text.length > 0) {
+        field.visible = true // where is it used ?
       }
     })
   }

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Driver')
 
+goog.forwardDeclare('eYo.UI')
+
 goog.require('eYo.Do')
 
 /**
@@ -231,14 +233,6 @@ eYo.Driver.fieldInit = eYo.Do.nothing
  * @param {!Object} field
  */
 eYo.Driver.fieldDispose = eYo.Do.nothing
-
-/**
- * Show the inline editor.
- * Default implementation does nothing.
- * @param {!Object} field
- * @param {boolean} quietInput
- */
-eYo.Driver.fieldInlineEditorShow = eYo.Do.nothing
 
 /**
  * Update the inline editor.

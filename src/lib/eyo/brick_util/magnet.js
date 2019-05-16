@@ -46,7 +46,7 @@ eYo.Magnet = function (bsi, type, model) {
   this.type = type
   this.model_ = model
   this.incog_ = this.hidden_ = model.hidden
-  eYo.FieldHelper.makeFields(this, model.fields)
+  eYo.Field.makeFields(this, model.fields)
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
   this.targetIsMissing = false
@@ -99,7 +99,7 @@ Object.defineProperties(eYo.Magnet, {
  */
 eYo.Magnet.prototype.dispose = function () {
   this.ui.driver.magnetDispose(this)
-  eYo.FieldHelper.disposeFields(this)
+  eYo.Field.disposeFields(this)
   this.where_ = this.model_ = undefined
   if (this.target) {
     throw 'Disconnect connection before disposing of it.';
@@ -112,7 +112,7 @@ eYo.Magnet.prototype.dispose = function () {
 // private properties
 Object.defineProperties(eYo.Magnet.prototype, {
   model_: { value: undefined },
-  hidden_: { value: undefined },
+  hidden__: { value: undefined },
   wrapped_: { value: undefined },
   promised_: { value: undefined },
   check_: {value: undefined },
@@ -122,6 +122,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
 
 // computed private properties
 Object.defineProperties(eYo.Magnet.prototype, {
+  magnetDB_: {
+    get () {
+      return this.workspace.connectionDBList
+    }
+  },
   optional_: {
     get () {
       return this.model_.optional
@@ -164,11 +169,6 @@ Object.defineProperties(eYo.Magnet.prototype, {
   where: {
     get () {
       return this.where_
-    }
-  },
-  magnetDB_: {
-    get () {
-      return this.workspace.connectionDBList
     }
   },
   type: {
@@ -508,7 +508,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
 })
 
 // Deprecated
-Object.defineProperties(eYo.MenuManager.prototype, {
+Object.defineProperties(eYo.Magnet.prototype, {
   inDB_: {
     get () {
       throw "DEPRECATED"

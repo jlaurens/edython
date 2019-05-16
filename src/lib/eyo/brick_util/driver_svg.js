@@ -14,7 +14,12 @@
 goog.provide('eYo.Driver.Svg')
 
 goog.require('eYo.Driver')
-goog.require('eYo.setup')
+goog.require('eYo')
+
+goog.require('eYo.Slot')
+goog.require('eYo.Field')
+goog.require('eYo.Input')
+goog.require('eYo.Brick')
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
@@ -731,7 +736,7 @@ eYo.Driver.Svg.prototype.brickDrawModelEnd = function (node, io) {
  * @param {!Object} field  the field to query about
  */
 eYo.Driver.Svg.prototype.fieldDisplayedGet = function (field) {
-  var g = field.eyo.svg.group_
+  var g = field.svg.group_
   return g.style.display !== 'none'
 }
 
@@ -741,11 +746,11 @@ eYo.Driver.Svg.prototype.fieldDisplayedGet = function (field) {
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
-  var root = field.eyo.svg.group_
+  var g = field.svg.group_
   if (yorn) {
-    root.removeAttribute('display')
+    g.removeAttribute('display')
   } else {
-    root.setAttribute('display', 'none')
+    g.setAttribute('display', 'none')
   }
 }
 
@@ -777,7 +782,7 @@ eYo.Driver.Svg.prototype.slotDisplayedSet = function (slot, yorn) {
   if (yorn) {
     g.removeAttribute('display')
   } else {
-    g.setAttribute('display', 'none')
+    g.style.display = 'none'
   }
 }
 
@@ -922,15 +927,14 @@ eYo.Driver.Svg.prototype.slotDisplay = function (slot) {
  * @param {!eYo.FieldLabel} field  Label field to be prepared.
  */
 eYo.Driver.Svg.prototype.fieldInit = function (field) {
-  var eyo = field.eyo
-  if (eyo.svg) {
+  if (field.svg) {
     return
   }
-  var svg = eyo.svg = {}
+  var svg = field.svg = {}
   // Build the DOM.
   svg.textElement_ = eYo.Driver.Svg.newElement('text',
   {
-    class: eyo.isLabel ? 'eyo-label' : field.cssClass,
+    class: eyo.isLabel ? 'eyo-label' : field.css_class,
     y: eYo.Font.totalAscent
   }, null)
   if (eyo.isTextInput) {
@@ -951,20 +955,19 @@ eYo.Driver.Svg.prototype.fieldInit = function (field) {
         y: -eYo.Style.Edit.padding_v,
         height: eYo.Unit.y + 2 * eYo.Style.Edit.padding_v},
       svg.group_)
-    field.updateEditable()
     field.mouseDownWrapper_ =
       Blockly.bindEventWithChecks_(svg.group_, 'mousedown', field, field.onMouseDown_
       )
   } else {
     svg.group_ = svg.textElement_
   }
-  (eyo.slot ||eyo.brick.ui).svg.group_.appendChild(svg.group_)
-  if (eyo.css_class) {
-    goog.dom.classlist.add(svg.textElement_, eYo.Do.valueOf(eyo.css_class, eyo))
+  (field.slot || field.brick.ui).svg.group_.appendChild(svg.group_)
+  if (field.css_class) {
+    goog.dom.classlist.add(svg.textElement_, eYo.Do.valueOf(field.css_class, field))
   }
-  if (eyo.isLabel) {
+  if (field.isLabel) {
     // Configure the field to be transparent with respect to tooltips.
-    svg.textElement_.tooltip = eyo.brick
+    svg.textElement_.tooltip = field.brick
     Blockly.Tooltip.bindMouseEvents(svg.textElement_)
   }
   this.fieldDisplayedUpdate(field)
@@ -975,8 +978,8 @@ eYo.Driver.Svg.prototype.fieldInit = function (field) {
  * @param {!Object} field
  */
 eYo.Driver.Svg.prototype.fieldDispose = function (field) {
-  field.eyo.svg && goog.dom.removeNode(field.eyo.svg.group_)
-  field.eyo.svg = undefined
+  field.svg && goog.dom.removeNode(field.svg.group_)
+  field.svg = undefined
 }
 
 /**
@@ -985,7 +988,7 @@ eYo.Driver.Svg.prototype.fieldDispose = function (field) {
  * @param {*} where
  */
 eYo.Driver.Svg.prototype.fieldPositionSet = function (field, where) {
-  var g = field.eyo.svg.group_
+  var g = field.svg.group_
   g.setAttribute('transform',
   `translate(${where.x}, ${where.y + eYo.Padding.t})`)
 }
@@ -995,11 +998,14 @@ eYo.Driver.Svg.prototype.fieldPositionSet = function (field, where) {
  * @param {*} field
  */
 eYo.Driver.Svg.prototype.fieldUpdateWidth = function (field) {
-  var r = field.eyo.svg.editRect_
-  if (r) {
-    var width = field.eyo.size.width
-    r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (this.eyo.left_space ? eYo.Unit.x : 0))
+  var svg = field.svg
+  if (!svg) {
+    return
   }
+  var width = field.size.width
+  svg.borderRect_.setAttribute('width', width + eYo.BlockSvg.SEP_SPACE_X)
+  var r = svg.editRect_
+  r && r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0))
 }
 
 /**
@@ -1008,7 +1014,7 @@ eYo.Driver.Svg.prototype.fieldUpdateWidth = function (field) {
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldMakeError = function (field, yorn) {
-  var root = field.eyo.svg.group_
+  var root = field.svg.group_
   if (root) {
     (yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
   }
@@ -1020,7 +1026,7 @@ eYo.Driver.Svg.prototype.fieldMakeError = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldMakeReserved = function (field, yorn) {
-  var root = field.eyo.svg.group_
+  var root = field.svg.group_
   if (root) {
     if (yorn) {
       goog.dom.classlist.add(root, 'eyo-code-reserved')
@@ -1031,12 +1037,12 @@ eYo.Driver.Svg.prototype.fieldMakeReserved = function (field, yorn) {
 }
 
 /**
- * Make the given field a placeholder.
+ * Add ui attributes to make the given field a placeholder, or not.
  * @param {*} field
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
-  var root = field.eyo.svg.group_
+  var root = field.svg.group_
   if (root) {
     if (yorn) {
       goog.dom.classlist.add(root, 'eyo-code-placeholder')
@@ -1052,7 +1058,7 @@ eYo.Driver.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldMakeComment = function (field, yorn) {
-  var root = field.eyo.svg.group_
+  var root = field.svg.group_
   root && (yorn ? goog.dom.classlist.add: goog.dom.classlist.remove)(root, 'eyo-code-comment')
 }
 
@@ -1668,166 +1674,6 @@ eYo.Driver.Svg.prototype.brickAtTop = function (node) {
   g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
 }
 
-
-/**
- * The field text will change.
- * Remove the children of the text element.
- * @param {!Object} field  the node the driver acts on
- */
-eYo.Driver.Svg.prototype.fieldTextErase = function (field) {
-  goog.dom.removeChildren(/** @type {!Element} */ (field.eyo.svg.textElement_))
-}
-
-/**
- * The field text will change.
- * Remove the children of the text element.
- * @param {!Object} field  the node the driver acts on
- */
-eYo.Driver.Svg.prototype.fieldTextDisplay = function (field) {
-  var textNode = document.createTextNode(field.getText())
-  field.eyo.svg.textElement_.appendChild(textNode)
-}
-
-/**
- * Set the visual effects of the field.
- * @param {*} field
- */
-eYo.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
-  var e = field.textElement_
-  if (e) {
-    var f = txt => {
-      switch (eYo.T3.Profile.get(txt, null).raw) {
-        case eYo.T3.Expr.reserved_identifier:
-        case eYo.T3.Expr.reserved_keyword:
-        case eYo.T3.Expr.known_identifier:
-          return 'eyo-code-reserved'
-        case eYo.T3.Expr.builtin__name:
-          return 'eyo-code-builtin'
-        default:
-          return 'eyo-code'
-      }
-    }
-    goog.dom.classlist.removeAll(e, goog.dom.classlist.get(e))
-    goog.dom.classlist.add(e, f(field.getText()))
-  }
-}
-
-/**
- * Show the inline editor.
- * @param {*} field
- * @param {boolean} quietInput
- */
-eYo.Driver.Svg.prototype.fieldInlineEditorShow = function (field, quietInput) {
-  var dispose = field.widgetDispose_()
-  Blockly.WidgetDiv.show(field, field.sourceBlock_.RTL, dispose)
-  var div = Blockly.WidgetDiv.DIV
-  // Create the input.
-  var htmlInput =
-      goog.dom.createDom(goog.dom.TagName.INPUT, 'eyo-html-input')
-  htmlInput.setAttribute('spellcheck', field.spellcheck_)
-
-  goog.dom.classlist.add(div, field.cssClass)
-  goog.dom.classlist.add(htmlInput, field.cssClass)
-  if (field.eyo.isComment) {
-    goog.dom.classlist.remove(htmlInput, 'eyo-code')
-    goog.dom.classlist.add(htmlInput, 'eyo-code-comment')
-  }
-  eYo.FieldTextInput.htmlInput_ = Blockly.FieldTextInput.htmlInput_ = htmlInput
-  div.appendChild(htmlInput)
-
-  htmlInput.value = htmlInput.defaultValue = field.text_
-  htmlInput.oldValue_ = null
-  field.validate_()
-  field.resizeEditor_()
-  if (!quietInput) {
-    htmlInput.focus()
-    htmlInput.select()
-  }
-  field.bindEvents_(htmlInput)
-}
-
-/**
- * Callback at widget disposal.
- * @param {*} field
- * @return {*} called when disposing of the widget
- */
-eYo.Driver.Svg.prototype.fieldWidgetDisposeCallback = function (field) {
-  return function () {
-    var f_eyo = field.eyo
-    f_eyo.brick.isEditing = f_eyo.isEditing = false
-    field.editRect_ && goog.dom.classlist.remove(field.editRect_, 'eyo-editing')
-    field.callValidator()
-    f_eyo.brick.changeWrap(
-      function () { // `this` is `f_eyo.brick`
-        field.onEndEditing_ && field.onEndEditing_()
-        var model = f_eyo.model
-        if (model) {
-          if (goog.isFunction(model.endEditing)) {
-            model.endEditing.call(field)
-          } else if (model.endEditing) {
-            f_eyo.constructor.onEndEditing.call(field)
-          }
-        }
-        this.endEditingField && this.endEditingField(field)
-        if (f_eyo.grouper_) {
-          eYo.Events.setGroup(false)
-          delete f_eyo.grouper_
-        }
-        field.render_()
-      }
-    )
-    eYo.FieldTextInput.superClass_.widgetDispose_.call(field)
-    Blockly.WidgetDiv.DIV.style.fontFamily = ''
-  }
-}
-
-/**
- * Check to see if the contents of the editor validates.
- * Style the editor accordingly.
- * @param {*} field
- * @private
- */
-eYo.Driver.Svg.prototype.fieldInlineEditorValidate = function (field) {
-  goog.asserts.assertObject(htmlInput)
-  var htmlInput = eYo.FieldTextInput.htmlInput_
-  goog.asserts.assertObject(htmlInput)
-  (field.eyo.brick && (null === field.callValidator(htmlInput.value))
-  ? goog.dom.classlist.add
-  : goog.dom.classlist.remove)(htmlInput_, 'eyo-code-error')
-}
-
-/**
- * Update the inline editor.
- * @param {*} field
- */
-eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
-  var f_eyo = field.eyo
-  var svg = f_eyo.svg
-  var g = svg && svg.group_
-  if (g) {
-    var div = Blockly.WidgetDiv.DIV
-    if (div.style.display !== 'none') {
-      var bBox = g.getBBox()
-      div.style.width = (bBox.width + eYo.Unit.x - (field.eyo.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * field.workspace_.scale + 'px'
-      div.style.height = bBox.height * field.workspace_.scale + 'px'
-      var xy = this.fieldGetAbsoluteXY_(field)
-      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      f_eyo.brick.changeWrap() // force rendering
-    }
-  }
-}
-
-/**
- * Return the absolute coordinates of the top-left corner of this field.
- * The origin $(0,0)$ is the top-left corner of the page body.
- * @return {!goog.math.Coordinate} Object with `.x` and `.y` properties.
- * @private
- */
-eYo.Driver.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
-  return goog.style.getPageOffset(field.eyo.svg.borderRect_)
-}
-
 /**
  * Regular expressions.
  */
@@ -1929,7 +1775,7 @@ eYo.Driver.Svg.prototype.brickAddTooltip = function (brick, key, options) {
  * Initializes the flyout SVG ressources.
  * @param {!eYo.Flyout} flyout
  */
-eYo.Driver.Svg.prototype.prototype.flyoutInit = function(flyout) {
+eYo.Driver.Svg.prototype.flyoutInit = function(flyout) {
   var svg = flyout.svg = {}
   /*
   <svg class="eyo-flyout">
@@ -1983,7 +1829,7 @@ eYo.Driver.Svg.prototype.prototype.flyoutInit = function(flyout) {
  * Initializes the flyout toolbar SVG ressources.
  * @param {!eYo.FlyoutToolbar} flyoutToolbar
  */
-eYo.Driver.Svg.prototype.prototype.flyoutToolbarInit = function(ftb) {
+eYo.Driver.Svg.prototype.flyoutToolbarInit = function(ftb) {
   if (this.div_) {
     return
   }
@@ -2115,3 +1961,185 @@ eYo.Driver.Svg.prototype.prototype.flyoutToolbarInit = function(ftb) {
 
   goog.dom.insertSiblingBefore(ftb.div_, ftb.flyout_.svg.group_)
 }
+
+// Private holder of svg ressources
+Object.defineProperties(eYo.Field, { svg_: { value: undefined } })
+
+/**
+ * Initializes the field SVG ressources.
+ * Does nothing if the field's brick has no SVG ressources.
+ * Part of the `beReady` process.
+ * @param {!eYo.Field} field
+ * @return {?eYo.Field}
+ */
+eYo.Driver.Svg.prototype.fieldInit = function(field) {
+  var svg = field.owner.svg || field.brick.ui.svg
+  if (!svg) { return }
+  var g = svg.group_
+  if (!g) { return }
+  if ((svg = field.svg)) {
+    // Field has already been initialized once.
+    return;
+  }
+  g = svg.group_ = eYo.utils.createSvgElement('g', {}, g)
+  !field.visible && (g.style.display = 'none')
+  svg.borderRect_ = eYo.utils.createSvgElement('rect', {
+    rx: 4,
+    ry: 4,
+    x: -eYo.BlockSvg.SEP_SPACE_X / 2,
+    y: 0,
+    height: 16
+  }, g)
+  /** @type {!Element} */
+  svg.textElement_ = eYo.utils.createSvgElement('text', {
+    class: 'blocklyText',
+    y: this.size_.height - 12.5
+  }, g)
+  field.mouseDownWrapper_ =
+      eYo.bindEventWithChecks_(
+          g, 'mousedown', field, field.onMouseDown_)
+  this.fieldUpdateEditable(field)
+  return field
+}
+
+/**
+ * Dispose of the field SVG ressources.
+ * @param {!eYo.Field} field
+ */
+eYo.Driver.Svg.prototype.fieldDispose = function(field) {
+  var g = field.svg && field.svg.group_
+  if (!g) {
+    // Field has already been disposed
+    return;
+  }
+  if (field.mouseDownWrapper_) {
+    eYo.unbindEvent_(field.mouseDownWrapper_)
+    field.mouseDownWrapper_ = null
+  }
+  goog.dom.removeNode(g)
+  field.svg = null
+}
+
+/**
+ * Add or remove the UI indicating if this field is editable or not.
+ * @param {!eYo.Field} field
+ */
+eYo.Driver.Svg.prototype.fieldUpdateEditable = function(field) {
+  var g = field.svg && field.svg.group_
+  if (!field.editable || !g) {
+    // Not editable or already disposed
+    return
+  }
+  if (field.brick.editable) {
+    eYo.utils.addClass(g, 'blocklyEditableText')
+    eYo.utils.removeClass(g, 'blocklyNonEditableText')
+    g.style.cursor = 'text'
+  } else {
+    eYo.utils.addClass(g, 'blocklyNonEditableText')
+    eYo.utils.removeClass(g, 'blocklyEditableText')
+    g.style.cursor = ''
+  }
+};
+
+/**
+ * The field text will change.
+ * Remove the children of the text element.
+ * @param {!Object} field  the node the driver acts on
+ */
+eYo.Driver.Svg.prototype.fieldTextRemove = function (field) {
+  goog.dom.removeChildren(/** @type {!Element} */ (field.svg.textElement_))
+}
+
+/**
+ * The field text will change.
+ * Add a text node to the text element.
+ * @param {!Object} field  the node the driver acts on
+ */
+eYo.Driver.Svg.prototype.fieldTextCreate = function (field) {
+  var textNode = document.createTextNode(field.text)
+  field.svg.textElement_.appendChild(textNode)
+}
+
+/**
+ * Set the visual effects of the field.
+ * @param {*} field
+ */
+eYo.Driver.Svg.prototype.fieldSetVisualAttribute = function (field) {
+  var e = field.svg.textElement_
+  if (e) {
+    var f = txt => {
+      switch (eYo.T3.Profile.get(txt, null).raw) {
+        case eYo.T3.Expr.reserved_identifier:
+        case eYo.T3.Expr.reserved_keyword:
+        case eYo.T3.Expr.known_identifier:
+          return 'eyo-code-reserved'
+        case eYo.T3.Expr.builtin__name:
+          return 'eyo-code-builtin'
+        default:
+          return 'eyo-code'
+      }
+    }
+    goog.dom.classlist.removeAll(e, goog.dom.classlist.get(e))
+    goog.dom.classlist.add(e, f(field.text))
+  }
+}
+
+/**
+ * Update the inline editor.
+ * @param {*} field
+ */
+eYo.Driver.Svg.prototype.fieldInlineEditorUpdate = function (field) {
+  var svg = field.svg
+  var g = svg && svg.group_
+  if (g) {
+    var div = Blockly.WidgetDiv.DIV
+    if (div.style.display !== 'none') {
+      var bBox = g.getBBox()
+      div.style.width = (bBox.width + eYo.Unit.x - (field.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * field.workspace_.scale + 'px'
+      div.style.height = bBox.height * field.workspace_.scale + 'px'
+      var xy = this.fieldGetAbsoluteXY_(field)
+      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
+      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
+      field.brick.changeWrap() // force rendering
+    }
+  }
+}
+
+/**
+ * Return the absolute coordinates of the top-left corner of this field.
+ * The origin $(0,0)$ is the top-left corner of the page body.
+ * @return {!goog.math.Coordinate} Object with `.x` and `.y` properties.
+ * @private
+ */
+eYo.Driver.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
+  return goog.style.getPageOffset(field.svg.borderRect_)
+}
+
+/**
+ * Non-breaking space.
+ * @const
+ */
+eYo.Driver.Svg.NBSP = '\u00A0';
+
+/**
+ * Get the text from this field as displayed on screen.  Differs from the original text due to non breaking spaces.
+ * @return {string} Displayed text.
+ * @private
+ */
+eYo.Driver.Svg.prototype.fieldGetDisplayText_ = function(field) {
+  var text = field.text_
+  if (!text) {
+    // Prevent the field from disappearing if empty.
+    return eYo.Driver.Svg.NBSP;
+  }
+  // Replace whitespaces with non-breaking spaces so the text doesn't collapse.
+  return text.replace(/\s/g, eYo.Driver.Svg.NBSP);
+}
+
+
+/**
+ * Dispose of the magnet SVG ressources.
+ * @param {!eYo.Magnet} magnet
+ */
+eYo.Driver.Svg.prototype.magnetDispose = eYo.Do.nothing
+

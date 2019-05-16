@@ -837,7 +837,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         O.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
         O.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.COL_VALUED
         var s = O.value_s
-        s && s.fields.label.setValue(newValue === eYo.Key.COL_VALUED ? ':=' : '=')
+        s && (s.fields.label.text = newValue === eYo.Key.COL_VALUED ? ':=' : '=')
         O.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
 
         var b = O.target_b // t9k may not yet exist

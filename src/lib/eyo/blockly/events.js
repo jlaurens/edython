@@ -220,7 +220,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
             throw err
           } finally {
             if (!this.noUndo) {
-              eYo.Events.fireDlgtChange(
+              eYo.Events.fireBrickChange(
                 this.owner, eYo.Const.Event.DATA + this.key, null, oldValue, newValue)
             }
             this.afterChange(oldValue, newValue)
@@ -286,7 +286,7 @@ function (try_f, finally_f) {
  * Convenient shortcut.
  * @param {!eYo.Brick} brick  The newly created block.
  */
-eYo.Events.fireDlgtCreate = function (brick) {
+eYo.Events.fireBrickCreate = function (brick) {
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockCreate(brick))
   }
@@ -296,7 +296,7 @@ eYo.Events.fireDlgtCreate = function (brick) {
  * Convenient shortcut.
  * @param {!eYo.Brick} brick  The newly created block.
  */
-eYo.Events.fireDlgtChange = function (brick, element, name, oldValue, newValue) {
+eYo.Events.fireBrickChange = function (brick, element, name, oldValue, newValue) {
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockChange(brick, element, name, oldValue, newValue))
   }

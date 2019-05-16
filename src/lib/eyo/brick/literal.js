@@ -111,14 +111,6 @@ names.forEach(key => {
 })
 
 /**
- * Show the editor for the given brick.
- * @private
- */
-eYo.Brick.Expr.numberliteral.prototype.showEditor = function () {
-  this.value_d.field.showEditor_()
-}
-
-/**
  * The type and connection depend on the properties prefix, value and variant.
  * For edython.
  * @param {?string} prototypeName Name of the language object containing
@@ -149,7 +141,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
         // synchronize the placeholder text
         var p = this.content_p
         if (!p || !p.length) {
-          this.owner.content_d.field.placeholderText(true)
+          this.owner.content_d.field.getPlaceholderText(true)
         }
       },
       xml: false
@@ -163,8 +155,8 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.fields.start.setValue(this.toText())
-        this.owner.fields.end.setValue(this.toText())
+        var f4s = this.owner.fields
+        f4s.start.text = f4s.end.text = this.toText()
       },
       xml: false,
     },
@@ -190,9 +182,6 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
     },
     content: { // not saved
       placeholder: /** @suppress {globalThis} */ function () {
-        if (this.placeholderText_) {
-          return this.placeholderText_
-        }
         var subtype = this.brick.subtype_p
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING

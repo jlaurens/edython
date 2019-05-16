@@ -14,7 +14,13 @@
 goog.provide('eYo.UI')
 
 goog.require('eYo.Brick')
-goog.require('eYo.Driver')
+
+goog.forwardDeclare('eYo.Driver')
+
+goog.require('goog.dom')
+goog.require('goog.style')
+goog.require('goog.userAgent')
+
 
 /**
  * Class for a Render.
@@ -67,6 +73,11 @@ Object.defineProperties(eYo.UI.prototype, {
   brick: {
     get() {
       return this.brick_
+    }
+  },
+  change: {
+    get() {
+      return this.brick_.change
     }
   },
   driver: {
@@ -938,19 +949,18 @@ eYo.UI.prototype.drawInput_ = function (io) {
  */
 eYo.UI.prototype.drawField_ = function (field, io) {
   var c = io.cursor.c
-  var f_eyo = field.eyo
-  f_eyo.ui_driver.fieldDisplayedUpdate(field)
-  if (f_eyo.visible) {
+  field.ui_driver.fieldDisplayedUpdate(field)
+  if (field.visible) {
     // Actually, io.cursor points to the location where the field
     // is expected. It is relative to the enclosing `SVG` group,
     // which is either a brick or a slot.
     // If there is a pending caret, draw it and advance the cursor.
-    io.form = f_eyo
-    f_eyo.willRender()
-    var text = field.getDisplayText_()
-    // Replace the text.
+    io.form = field
+    field.willRender()
     this.driver.fieldTextRemove(field)
-    f_eyo.size.set(text.length, 1)
+    var text = field.displayText
+    // Replace the text.
+    field.size.set(text.length, 1)
     if (text.length) {
       if (text === '>') {
         console.error(io)
@@ -962,9 +972,9 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       this.driver.fieldTextCreate(field)
       var head = text[0]
       var tail = text[text.length - 1]
-      if (f_eyo.model.literal) {
+      if (field.model.literal) {
         io.common.field.didPack = 0
-      } else if (f_eyo.isLabel && io.common.field.beforeIsBlack) {
+      } else if (field.isLabel && io.common.field.beforeIsBlack) {
         io.cursor.c += 1
         io.common.field.beforeIsBlack = true
       } else {
@@ -988,7 +998,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
           && (eYo.XRE.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
           io.cursor.c += 1
         } else if (io.common.field.shouldSeparate
-            && (!f_eyo.startsWithSeparator()
+            && (!field.startsWithSeparator()
             || head === '='
             || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
           io.cursor.c += 1
@@ -1010,8 +1020,8 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       // place the field at the right position:
       this.driver.fieldPositionSet(field, io.cursor)
       // then advance the cursor after the field.
-      if (f_eyo.size.w) {
-        io.cursor.c += f_eyo.size.w
+      if (field.size.w) {
+        io.cursor.c += field.size.w
         // now that I have rendered something
         io.common.startOfLine = io.common.startOfStatement = false
       }
@@ -1027,7 +1037,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
         }
       }
     }
-    if (f_eyo.isEditing) {
+    if (field.isEditing) {
       // This is a trick to avoid some bad geometry while editing
       // this.brick_ is useful for widget only.
       io.cursor.c += 1

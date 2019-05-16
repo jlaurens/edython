@@ -434,10 +434,9 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((brick = eYo.Selected.brick) && brick.showEditor) {
+      if ((brick = eYo.Selected.brick)) {
         event.preventDefault()
         event.stopPropagation()
-        brick.showEditor()
         return
       }
     }

@@ -872,7 +872,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
   )
   if (ans) {
     ans.errorRecover = true
-    eYo.Events.fireDlgtCreate(ans)
+    eYo.Events.fireBrickCreate(ans)
     eYo.Xml.fromDom(ans, dom)
   }
   return ans

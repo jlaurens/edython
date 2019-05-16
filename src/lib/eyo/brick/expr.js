@@ -255,7 +255,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
         var m4t = input.magnet
         if (m4t) {
           var candidate
-          if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.getText().length)) {
+          if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.text.length)) {
             candidate = m4t
           } else if ((t9k = m4t.targetBrick)) {
             candidate = findM4t(t9k)
@@ -279,7 +279,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
   var outputM4t = this.magnets.output
   if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
     eYo.Events.groupWrap(() => { // `this` is catched
-      eYo.Events.fireDlgtCreate(parent)
+      eYo.Events.fireBrickCreate(parent)
       var targetM4t = parentInputM4t.target
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')

@@ -79,7 +79,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
         this.synchronize(newValue)
         this.incog = newValue === eYo.Key.GETTER
         // update the placeholder for the name field.
-        this.owner.name_d.field.placeholderText(true)
+        this.owner.name_d.field.getPlaceholderText(true)
       },
       xml: false
     },
@@ -133,7 +133,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
       ],
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
-        var O = this.sourceBlock_.eyo
+        var O = this.owner
         return O.variant_p === eYo.Key.PROPERTY && O.property_p !== eYo.Key.GETTER
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR

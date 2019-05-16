@@ -111,35 +111,32 @@ eYo.Where.set_h = function (newValue) {
   this.h_ = newValue
 }
 
-Object.defineProperties(
-  eYo.Where.prototype,
-  {
-    c: {
-      get: eYo.Where.get_c,
-      set: eYo.Where.set_c
-    },
-    l: {
-      get: eYo.Where.get_l,
-      set: eYo.Where.set_l
-    },
-    w: {
-      get: eYo.Where.get_c,
-      set: eYo.Where.set_c
-    },
-    h: {
-      get: eYo.Where.get_l,
-      set: eYo.Where.set_l
-    },
-    x: {
-      get: eYo.Where.get_x,
-      set: eYo.Where.set_x
-    },
-    y: {
-      get: eYo.Where.get_y,
-      set: eYo.Where.set_y
-    }
+Object.defineProperties(eYo.Where.prototype, {
+  c: {
+    get: eYo.Where.get_c,
+    set: eYo.Where.set_c
+  },
+  l: {
+    get: eYo.Where.get_l,
+    set: eYo.Where.set_l
+  },
+  w: {
+    get: eYo.Where.get_c,
+    set: eYo.Where.set_c
+  },
+  h: {
+    get: eYo.Where.get_l,
+    set: eYo.Where.set_l
+  },
+  x: {
+    get: eYo.Where.get_x,
+    set: eYo.Where.set_x
+  },
+  y: {
+    get: eYo.Where.get_y,
+    set: eYo.Where.set_y
   }
-)
+})
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -165,7 +162,7 @@ eYo.Where.prototype.set = function (c = 0, l = 0) {
  * @param {Object!} s  Object with `w` and `h` number properties.
  */
 eYo.Where.prototype.setFromSize = function (s) {
-   this.set(s.w, s.h - 1)
+  this.set(s.w, s.h - 1)
 }
 
 /**
@@ -280,6 +277,17 @@ eYo.Size.prototype.set = function (c = 0, l = 0) {
  */
 eYo.Size.prototype.setFromWhere = function (w) {
   this.set(w.c, w.l + 1)
+}
+
+/**
+ * Sets from the given text.
+ * @param {String!} s
+ */
+eYo.Size.prototype.setFromText = function (txt) {
+  var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
+  var c = 0
+  lines.forEach(l => (c < l.length) && (c = l.length) )
+  this.set(c, lines.length)
 }
 
 /**

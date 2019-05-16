@@ -13,11 +13,11 @@
 
 goog.provide('eYo.Py.Exporter')
 
-goog.require('eYo')
-goog.require('eYo.XRE')
-goog.require('eYo.Slot')
+goog.require('eYo.Field')
 goog.require('eYo.Brick')
-goog.require('eYo.FieldTextInput')
+
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.Slot')
 
 /**
  * Python code generator.
@@ -165,7 +165,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
  * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
+eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
   var is_deep = !brick.isControl && opt.is_deep
   if (!brick.magnets.output) {
     if (brick.disabled) {
@@ -177,7 +177,7 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
   var m4t, rightM4t, t9k
   if ((rightM4t = brick.magnets.right) && (t9k = rightM4t.targetBrick)) {
     this.exportField_(rightM4t.fields.label)
-    this.exportDlgt_(t9k, opt)
+    this.exportBrick_(t9k, opt)
   } else if ((m4t = brick.magnets.suite)) {
     // a brick with a suite must also have a right connection
     this.exportField_(rightM4t.fields.label)
@@ -186,7 +186,7 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
         eYo.Do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
-          this.exportDlgt_(t9k, opt)
+          this.exportBrick_(t9k, opt)
         }, () => {
           opt.is_deep = is_deep
         })
@@ -208,7 +208,7 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
   } else if ((m4t = brick.magnets.right)) {
     if ((t9k = m4t.targetBrick)) {
       this.exportField_(m4t.fields.label)
-      this.exportDlgt_(t9k, opt)
+      this.exportBrick_(t9k, opt)
     }
   }
   if (!brick.magnets.output) {
@@ -218,7 +218,7 @@ eYo.Py.Exporter.prototype.exportDlgt_ = function (brick, opt) {
   }
   if (is_deep && (t9k = brick.foot)) {
     this.newline_()
-    this.exportDlgt_(t9k, opt)
+    this.exportBrick_(t9k, opt)
   }
 }
 
@@ -245,7 +245,7 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
     eYo.Do.tryFinally(() => {
       ++this.depth
       this.expression = []
-      this.exportDlgt_(brick, opt)
+      this.exportBrick_(brick, opt)
     }, () => {
       --this.depth
     })
@@ -266,7 +266,7 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
  */
 eYo.Py.Exporter.prototype.exportField_ = function (field) {
   if (field.isVisible()) {
-    var text = (field.getPythonText_ && field.getPythonText_()) || field.getText()
+    var text = (field.getPythonText_ && field.getPythonText_()) || field.text
     var f_eyo = field.eyo
     if (!text.length) {
       var d = f_eyo.data
@@ -308,7 +308,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       eYo.XRE.operator.test(tail) ||
       tail === ';' ||
       tail === ',' ||
-      (tail === '.' && !(field instanceof eYo.FieldTextInput))
+      (tail === '.' && !(field instanceof eYo.FieldInput))
       this.starSymbol = ((this.isFirst || !this.wasContinue || this.wasLeftParenth) && (['*', '@', '+', '-', '~', '.'].indexOf(text) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
@@ -375,14 +375,6 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-/**
- * Get the text from this field for use in python code.
- * @return {string} text.
- * @private
- * @suppress{accessControls}
- */
-Blockly.Field.prototype.getPythonText_ = Blockly.Field.prototype.getText
-
 Object.defineProperties(eYo.Brick.prototype, {
   toString: {
     get () {
@@ -396,3 +388,42 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   }
 })
+
+/**
+ * Get the text from this field for use in python code.
+ * @return {string} text.
+ * @private
+ * @suppress{accessControls}
+ */
+eYo.Field.prototype.getPythonText_ = function() {
+  return this.text
+}
+
+/**
+ * Get the text from this field as displayed on screen.  May differ from getText
+ * due to ellipsis, and other formatting.
+ * @return {string} Currently displayed text.
+ * @private
+ * @suppress{accessControls}
+ */
+eYo.FieldVariable.prototype.getPythonText_ = function () {
+  var candidate = this.text_ || ''
+  return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')
+}
+
+/**
+ * Get the text from this field to be use in python code.
+ * @return {string} text.
+ * @private
+ * @suppress{accessControls}
+ */
+eYo.FieldInput.prototype.getPythonText_ = function () {
+  var t = eYo.FieldInput.superClass_.getPythonText_.call(this)
+  if (!t.length && !this.optional_) {
+    if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
+      var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()
+      return t
+    }
+  }
+  return t
+}

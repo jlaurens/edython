@@ -672,7 +672,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
         }
       } else {
         eYo.Events.disableWrap(() => {
-          field.setValue(this.toField())
+          field.text = this.toField()
           if (this.slot && this.slot.data === this) {
             this.slot.incog = false
             field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
@@ -819,7 +819,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
   var field = this.fields[fieldKey || this.key]
   if (field) {
     eYo.Events.disableWrap(() => {
-      field.setValue(newValue)
+      field.text = newValue
     })
   }
 }
