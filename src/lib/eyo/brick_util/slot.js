@@ -25,7 +25,6 @@ goog.require('goog.dom');
 goog.forwardDeclare('eYo.Xml')
 
 /**
- * Convenient method to wrap the Blockly input object for the outside.
  * The model is one of the entries of the `slots` section
  * of the object used to create a delegate's subclass.
  * Here are some specifications for that model part.
@@ -82,7 +81,7 @@ eYo.Slot = function (owner, key, model) {
   }
   eYo.Field.makeFields(this, model.fields)
   if (key === 'comment') {
-    this.bind_f && (this.bind_f.eyo.isComment = true)
+    this.bind_f && (this.bind_f.isComment = true)
   }
   this.where_ = new eYo.Where()
   var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
@@ -243,14 +242,7 @@ Object.defineProperties(eYo.Slot.prototype, {
       this.incog = !(this.required = newValue)
     }
   },
-  visible: {
-    get () {
-      return this.input && this.input.visible
-    },
-    set (newValue) {
-      this.input && (this.input.visible = newValue)
-    }
-  },
+  visible: { value: true, writable: true },
   connection: {
     get () {
       throw "INCONSISTANCY, BREAK HERE"
@@ -266,7 +258,7 @@ eYo.Slot.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   this.ui_driver.slotInit(this)
   // init all the fields
-  var f = field => field.eyo.beReady()// installs in the owner's group, not the brick group
+  var f = field => field.beReady()// installs in the owner's group, not the brick group
   this.forEachField(f)
   this.bindField && f(this.bindField)
   this.input && this.input.beReady()
@@ -548,10 +540,10 @@ eYo.Slot.prototype.load = function (element) {
             this.recover.dontResit(child)
             var m4t = this.magnet
             if (m4t && m5s.out && m4t.checkType_(m5s.out, true)) {
-              m4t.connect(m5s.out) // Notice the `.eyo`
+              m4t.connect(m5s.out)
               this.setRequiredFromModel(true)
             } else if (m5s.head && m4t.checkType_(m5s.head, true)) {
-              m4t.connect(m5s.head) // Notice the `.eyo`
+              m4t.connect(m5s.head)
             }
             out = t9k
           }

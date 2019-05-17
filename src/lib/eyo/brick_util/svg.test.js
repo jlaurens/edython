@@ -89,17 +89,17 @@ describe('SVG groups and paths', function () {
     goog.dom.classlist.add(svg.groupContour_, 'eyo-expr')
     goog.dom.classlist.add(svg.group_, 'eyo-top')
   } else if (node.isStmt) {
-    svg.groupSharp_ = eYo.Driver.Svg.newElement('g',
+    svg.groupSharp_ = eYo.Svg.newElement('g',
     {class: 'eyo-sharp-group'}, null)
     goog.dom.insertSiblingAfter(svg.groupSharp_, svg.pathContour_)
     goog.dom.classlist.add(svg.groupShape_, 'eyo-stmt')
     goog.dom.classlist.add(svg.groupContour_, 'eyo-stmt')
     if (node.isControl) {
-      svg.groupPlay_ = eYo.Driver.Svg.newElement('g',
+      svg.groupPlay_ = eYo.Svg.newElement('g',
       {class: 'eyo-play'}, svg.group_)
-      svg.pathPlayContour_ = eYo.Driver.Svg.newElement('path',
+      svg.pathPlayContour_ = eYo.Svg.newElement('path',
       {class: 'eyo-path-play-contour'}, svg.groupPlay_)
-      svg.pathPlayIcon_ = eYo.Driver.Svg.newElement('path',
+      svg.pathPlayIcon_ = eYo.Svg.newElement('path',
       {class: 'eyo-path-play-icon'}, svg.groupPlay_)
       svg.pathPlayContour_.setAttribute('d', eYo.Shape.definitionForPlayContour({x: 0, y: 0}))
       svg.pathPlayIcon_.setAttribute('d', svg.eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
