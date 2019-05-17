@@ -1301,6 +1301,7 @@ eYo.Magnet.prototype.tighten_ = function() {
     if (dx != 0 || dy != 0) {
       var t9k = this.targetBrick
       t9k.ui.setOffset(-dx, -dy)
+      t9k.moveMagnets_(-dx, -dy)
     }
   }
 }
@@ -1429,7 +1430,7 @@ eYo.Magnet.prototype.closest = function (maxLimit, dxy, dy) {
 
 
 /**
- * Move this connection to the location given by its offset within the brick and
+ * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
  * @param {!goog.math.Coordinate} blockTL The location of the top left corner
  *     of the brick, in workspace coordinates.
@@ -1440,7 +1441,7 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
 }
 
 /**
- * Change the connection's coordinates.
+ * Change the magnet's global coordinates.
  * @param {number} x New absolute x coordinate, in workspace coordinates.
  * @param {number} y New absolute y coordinate, in workspace coordinates.
  */

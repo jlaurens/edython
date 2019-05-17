@@ -306,8 +306,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
             return targetM4t
           }
           R = new goog.math.Rect(
-            magnet.offsetInBlock_.x + eYo.Unit.x / 2,
-            magnet.offsetInBlock_.y,
+            magnet.x + eYo.Unit.x / 2,
+            magnet.y,
             target.width - eYo.Unit.x,
             target.height
           )
@@ -317,22 +317,22 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
         }
         if (magnet.slot && magnet.slot.bindField) {
           R = new goog.math.Rect(
-            magnet.offsetInBlock_.x,
-            magnet.offsetInBlock_.y + eYo.Padding.t,
+            magnet.x,
+            magnet.y + eYo.Padding.t,
             magnet.w * eYo.Unit.x,
             eYo.Font.height
           )
         } else if (magnet.optional_ || magnet.s7r_) {
           R = new goog.math.Rect(
-            magnet.offsetInBlock_.x - eYo.Unit.x / 4,
-            magnet.offsetInBlock_.y + eYo.Padding.t,
+            magnet.x - eYo.Unit.x / 4,
+            magnet.y + eYo.Padding.t,
             1.5 * eYo.Unit.x,
             eYo.Font.height
           )
         } else {
           R = new goog.math.Rect(
-            magnet.offsetInBlock_.x + eYo.Unit.x / 4,
-            magnet.offsetInBlock_.y + eYo.Padding.t,
+            magnet.x + eYo.Unit.x / 4,
+            magnet.y + eYo.Padding.t,
             (magnet.w - 1 / 2) * eYo.Unit.x,
             eYo.Font.height
           )
@@ -342,8 +342,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
         }
       } else if (magnet.isFoot || magnet.isSuite) {
         R = new goog.math.Rect(
-          magnet.offsetInBlock_.x,
-          magnet.offsetInBlock_.y - eYo.Style.Path.width,
+          magnet.x,
+          magnet.y - eYo.Style.Path.width,
           eYo.Font.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
@@ -357,8 +357,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
     return magnet
   } else if ((magnet = this.head_m) && !magnet.hidden) {
     R = new goog.math.Rect(
-      magnet.offsetInBlock_.x,
-      magnet.offsetInBlock_.y - 2 * eYo.Style.Path.width,
+      magnet.x,
+      magnet.y - 2 * eYo.Style.Path.width,
       rect.width,
       1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
@@ -369,15 +369,15 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   if ((magnet = this.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
       R = new goog.math.Rect(
-        magnet.offsetInBlock_.x,
-        magnet.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        magnet.x,
+        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {
       R = new goog.math.Rect(
-        magnet.offsetInBlock_.x,
-        magnet.offsetInBlock_.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        magnet.x,
+        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         rect.width,
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
@@ -389,8 +389,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   if ((magnet = this.suite_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      magnet.offsetInBlock_.y + r,
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
@@ -401,8 +401,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   if ((magnet = this.left_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
-      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      magnet.offsetInBlock_.y + r,
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
@@ -412,8 +412,8 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   }
   if ((magnet = this.right_m) && !magnet.hidden) {
     R = new goog.math.Rect(
-      magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
-      magnet.offsetInBlock_.y + r,
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
       2 * r,
       eYo.Font.lineHeight - 2 * r // R U sure?
     )
@@ -557,5 +557,5 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
       }
     }
   }
-  eYo.App.didTouchBlock && eYo.App.didTouchBlock(eYo.Selected.brick)
+  eYo.App.didTouchBrick && eYo.App.didTouchBrick(eYo.Selected.brick)
 }

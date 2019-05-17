@@ -2832,6 +2832,11 @@ eYo.StatementBlockEnumerator = function (brick) {
   return me
 }
 
+/** TO BE DEPRECATED */
+eYo.Brick.getNextBlock = function () {
+  return this.foot
+}
+
 /**
  * Create a new delegate, with svg background.
  * This is the expected way to create the brick.

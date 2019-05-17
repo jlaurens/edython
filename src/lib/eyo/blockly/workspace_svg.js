@@ -225,52 +225,44 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
  * @suppress {accessControls}
  */
 Blockly.WorkspaceSvg.prototype.paste = function (dom) {
-  if (!this.rendered || dom.getElementsByTagName('block').length >=
+  if (!this.rendered || dom.getElementsByTagName('s').length + dom.getElementsByTagName('x').length >=
       this.remainingCapacity()) {
     return
   }
   if (this.currentGesture_) {
     this.currentGesture_.cancel() // Dragging while pasting?  No.
   }
-  var magnet, targetMagnet, brick
+  var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
-    if ((brick = eYo.Xml.domToBrick(dom, this))) {
-      if ((magnet = eYo.Selected.magnet)) {
-        if (magnet.isInput) {
-          targetMagnet = brick.out_m
-        } else if (magnet.isFoot || magnet.isSuite) {
-          targetMagnet = brick.head_m
-        } else if (magnet.isHead) {
-          targetMagnet = brick.foot_m
-        } else if (magnet.isLeft) {
-          targetMagnet = brick.right_m
-        } else if (magnet.isRight) {
-          targetMagnet = brick.left_m
+    if ((b3k = eYo.Xml.domToBrick(dom, this))) {
+      if ((m4t = eYo.Selected.magnet)) {
+        if (m4t.isInput) {
+          targetM4t = b3k.out_m
+        } else if (m4t.isFoot || m4t.isSuite) {
+          targetM4t = b3k.head_m
+        } else if (m4t.isHead) {
+          targetM4t = b3k.foot_m
+        } else if (m4t.isLeft) {
+          targetM4t = b3k.right_m
+        } else if (m4t.isRight) {
+          targetM4t = b3k.left_m
         }
-        if (targetMagnet && magnet.checkType_(targetMagnet)) {
-          if (magnet.isHead) {
-            // the pasted block must move before it is connected
-            // otherwise the newly created block will attract the old one
+        if (targetM4t && m4t.checkType_(targetM4t)) {
+          if (m4t.isHead) {
+            // the pasted brick must move before it is connected
+            // otherwise the newly created brick will attract the old one
             // resulting in a move of the existing connection
-            // 1) get the location of magnet in the workspace
-            var xy = magnet.offsetInBlock_.clone()
-            var xy_block = magnet.ui.xyInSurface
-            xy.translate(xy_block.x, xy_block.y)
-            // This is where the target magnet should be once the
-            // connection has been made
-            var xyxy = targetMagnet.offsetInBlock_.clone()
-            xy_block = targetMagnet.ui.xyInSurface
-            xyxy.translate(xy_block.x, xy_block.y)
-            // This is where the target magnet is
-            xyxy.scale(-1)
-            xy.translate(xyxy.x, xyxy.y)
-            targetMagnet.brick.moveByXY(xy.x, xy.y)
+            var xy = targetM4t.ui.xyInSurface
+            var xx = targetM4t.x + xy.x
+            var yy = targetM4t.y + xy.y
+            xy = m4t.ui.xyInSurface
+            targetM4t.brick.moveByXY(m4t.x + xy.x - xx, m4t.y + xy.y - yy)
           }
-          magnet.connect(targetMagnet)
+          m4t.connect(targetM4t)
           // if (magnet.isHead) {
           //   targetMagnet = brick.foot_m
           // }
-          brick.select()
+          b3k.select()
         }
       } else {
         // Move the duplicate to original position.
@@ -291,7 +283,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
                     Math.abs(dy - xy.y) <= 10) {
                   return true
                 }
-              }) || brick.getMagnets_(false).some(m4t => {
+              }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(Blockly.SNAP_RADIUS,
                     new goog.math.Coordinate(dx, dy))
                   if (neighbour) {
@@ -620,11 +612,11 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
   while (i < topBlocks.length) {
     var b = topBlocks[i]
     if (b.ui.rendered) {
-      var bound = b.eyo.getBoundingRect()
+      var bound = b.ui.boundingRect
       while (++i < topBlocks.length) {
         var b = topBlocks[i]
         if (b.ui.rendered) {
-          var blockBoundary = b.eyo.getBoundingRect()
+          var blockBoundary = b.ui.boundingRect
           if (blockBoundary.topLeft.x < bound.topLeft.x) {
             bound.topLeft.x = blockBoundary.topLeft.x
           }

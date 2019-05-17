@@ -78,7 +78,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
   var deleted = this.maybeDeleteBlock_()
   if (!deleted) {
     // These are expensive and don't need to be done if we're deleting.
-    this.draggingBlock_.moveConnections_(delta.x, delta.y)
+    this.draggingBlock_.moveMagnets_(delta.x, delta.y)
     this.draggingBlock_.setDragging(false)
     this.fireMoveEvent_()// JL Fixed this
     this.draggedConnectionManager_.applyConnections()

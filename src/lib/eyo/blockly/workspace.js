@@ -253,7 +253,7 @@ eYo.Workspace.prototype.logAllConnections = function (comment) {
     console.log(`${comment} > ${k} magnet`)
     var db = dbList[eYo.Magnet[k]]
     dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.x_, m4t.y_, m4t.offsetInBlock_, m4t.brick.type)
+      console.log(m4t.x_, m4t.y_, m4t.xyInBlock_, m4t.brick.type)
     })
   })
 }
@@ -365,7 +365,7 @@ Blockly.onKeyDown_ = function(e) {
     // When focused on an HTML text input widget, don't trap any keys.
     return;
   }
-  // var deleteBlock = false;
+  // var deleteBrick = false;
   if (e.keyCode == 9) {
     if (eYo.Navigate.doTab(eYo.Selected.brick, {
         left: e.shiftKey,
@@ -388,7 +388,7 @@ Blockly.onKeyDown_ = function(e) {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.isDeletable()) {
-      eYo.deleteBlock(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
+      eYo.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
@@ -405,12 +405,12 @@ Blockly.onKeyDown_ = function(e) {
       if (e.keyCode == 67) {
         // 'c' for copy.
         Blockly.hideChaff();
-        eYo.copyBlock(eYo.Selected.brick, deep);
+        eYo.copyBrick(eYo.Selected.brick, deep);
       } else if (e.keyCode == 88 && !eYo.Selected.brick.workspace.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.copyBlock(eYo.Selected.brick, deep);
-        eYo.deleteBlock(eYo.Selected.brick, deep);
+        eYo.copyBrick(eYo.Selected.brick, deep);
+        eYo.deleteBrick(eYo.Selected.brick, deep);
       }
     }
     if (e.keyCode == 86) {
@@ -434,7 +434,7 @@ Blockly.onKeyDown_ = function(e) {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBlock && !eYo.Selected.brick.workspace.isFlyout) {
+  // if (deleteBrick && !eYo.Selected.brick.workspace.isFlyout) {
   //   Blockly.Events.setGroup(true);
   //   Blockly.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);
@@ -448,7 +448,7 @@ Blockly.onKeyDown_ = function(e) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {!boolean} shallow
  */
-eYo.deleteBlock = function (block, deep) {
+eYo.deleteBrick = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
     var eyo = block.eyo
     if (eyo.isSelected) {
@@ -484,7 +484,7 @@ eYo.deleteBlock = function (block, deep) {
  * @param {!Blockly.Block} block Block to be copied.
  * @private
  */
-eYo.copyBlock = function(block, deep) {
+eYo.copyBrick = function(block, deep) {
   var xml = eYo.Xml.brickToDom(block.eyo, {noId: true, noNext: !deep});
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.

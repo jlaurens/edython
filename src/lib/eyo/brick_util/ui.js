@@ -110,7 +110,7 @@ Object.defineProperties(eYo.UI.prototype, {
       return !this.brick_.wrapped_ && !this.brick_.locked_
     }
   },
-  minBlockW: {
+  minBrickW: {
     get () {
       return this.brick_.isStmt ? eYo.Font.tabW : 0
     }
@@ -515,7 +515,7 @@ eYo.UI.prototype.didRender_ = function (recorder) {
  * connection locations.
  * @private
  */
-eYo.UI.prototype.renderMoveConnections_ = function() {
+eYo.UI.prototype.renderMoveMagnets_ = function() {
   var blockTL = this.xyInSurface;
   // Don't tighten previous or output connections because they are inferior
   // connections.
@@ -552,7 +552,7 @@ eYo.UI.prototype.renderMoveConnections_ = function() {
  * @private
  */
 eYo.UI.prototype.renderMove_ = function (recorder) {
-  this.renderMoveConnections_()
+  this.renderMoveMagnets_()
   // var blockTL = this.xyInSurface
   // this.brick_.forEachSlot((slot) => {
   //   var input = slot.input
@@ -868,7 +868,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       }
     }
   }
-  io.cursor.c = Math.max(io.cursor.c, this.minBlockW)
+  io.cursor.c = Math.max(io.cursor.c, this.minBrickW)
   this.brick_.span.init(io.cursor)
   this.brick_.span.minWidth = this.brick_.width = Math.max(this.brick_.width, this.brick_.span.width)
   if (io.recorder) {
@@ -1149,7 +1149,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
               // from now on, we pack just one character width
             }
             if (pack) {
-              eyo.span.c = Math.max(this.minBlockW, eyo.span.c - 1)
+              eyo.span.c = Math.max(this.minBrickW, eyo.span.c - 1)
               eyo.span.minWidth = eyo.span.width
               io.common.field.didPack = true
               io.common.field.beforeIsBlack = true
@@ -1539,7 +1539,7 @@ eYo.UI.prototype.setOffset = function (dc, dl) {
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
   this.driver.brickSetOffset(this.brick_, dx, dy)
-  this.moveConnections_(dx, dy)
+  this.moveMagnets_(dx, dy)
 }
 
 /**
@@ -1554,7 +1554,6 @@ eYo.UI.prototype.setOffset = function (dx, dy) {
     throw `brick is not inited ${this.brick_.type}`
   }
   this.driver.brickSetOffset(this.brick_, dx, dy)
-  this.moveConnections_(dx, dy)
 }
 
 /**
@@ -1563,8 +1562,8 @@ eYo.UI.prototype.setOffset = function (dx, dy) {
  * @param {Number} dy
  * @private
  */
-eYo.UI.prototype.moveConnections_ = function (dx, dy) {
-  this.brick_.moveConnections_(dx, dy)
+eYo.UI.prototype.moveMagnets_ = function (dx, dy) {
+  this.brick_.moveMagnets_(dx, dy)
 }
 
 //////////////////
