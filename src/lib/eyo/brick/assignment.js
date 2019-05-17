@@ -158,7 +158,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       init: '',
       all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
       synchronize: /** @suppress {globalThis} */ function (newValue) {
-        this.owner.value_s.fields.label.text = newValue
+        this.owner.value_s.label_f.text = newValue
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)

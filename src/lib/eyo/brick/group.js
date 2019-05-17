@@ -268,7 +268,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
  */
 eYo.Brick.Group.prototype.willRender_ = function (recorder) {
   eYo.Brick.Group.superClass_.willRender_.call(this, recorder)
-  var field = this.fields.async
+  var field = this.async_f
   if (field) {
     field.setVisible(this.async_)
   }
@@ -281,7 +281,7 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
  * @private
  */
 eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mgr) {
-  if (this.fields.async) {
+  if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)

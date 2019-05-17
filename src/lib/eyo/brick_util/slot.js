@@ -82,7 +82,7 @@ eYo.Slot = function (owner, key, model) {
   }
   eYo.Field.makeFields(this, model.fields)
   if (key === 'comment') {
-    this.fields.bind && (this.fields.bind.eyo.isComment = true)
+    this.bind_f && (this.bind_f.eyo.isComment = true)
   }
   this.where_ = new eYo.Where()
   var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)

@@ -224,7 +224,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
       }
       return true
     } else if (this.brick_.isGroup) {
-      this.drawField_(m4t.fields.label, io) // only the ':' or ';' trailing field.
+      this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
       return false
     }
   }

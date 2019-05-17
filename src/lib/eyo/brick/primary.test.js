@@ -405,8 +405,8 @@ describe('Primary slots', function() {
     dhldr.target_p = 'a'
     eYo.Test.code(dhldr, 'a')
     chai.assert(dhldr.target_p === 'a', 'FAILED')
-    chai.assert(dhldr.target_s.fields.bind.text === 'a', `SYNCHRONIZE FAILED for target bind field in ${dhldr.type}`)
-    chai.assert(dhldr.target_s.fields.bind.isVisible(), `INVISIBLE BIND FIELD`)
+    chai.assert(dhldr.target_s.bind_f.text === 'a', `SYNCHRONIZE FAILED for target bind field in ${dhldr.type}`)
+    chai.assert(dhldr.target_s.bind_f.isVisible(), `INVISIBLE BIND FIELD`)
     dmain.target_p = 'd'
     eYo.Test.code(dmain, 'd')
     dmain.dotted_p = 1 // things change here
@@ -950,7 +950,7 @@ describe('Primary(Expression Assignment)', function() {
   it('basic', function() {
     var d = eYo.Test.new_brick(eYo.T3.Expr.named_expr)
     eYo.Test.variant(d, 'COL_VALUED')
-    chai.assert(d.value_s.fields.label.getValue() === ':=')
+    chai.assert(d.value_s.label_f.getValue() === ':=')
     d.dispose()
   })
 })

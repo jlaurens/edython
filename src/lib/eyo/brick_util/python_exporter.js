@@ -176,11 +176,11 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
   this.exportAsExpression_(brick, opt)
   var m4t, rightM4t, t9k
   if ((rightM4t = brick.right_m) && (t9k = rightM4t.targetBrick)) {
-    this.exportField_(rightM4t.fields.label)
+    this.exportField_(rightM4t.label_f)
     this.exportBrick_(t9k, opt)
   } else if ((m4t = brick.suite_m)) {
     // a brick with a suite must also have a right connection
-    this.exportField_(rightM4t.fields.label)
+    this.exportField_(rightM4t.label_f)
     var f = () => {
       if ((t9k = m4t.targetBrick)) {
         eYo.Do.tryFinally(() => {
@@ -207,7 +207,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
     }
   } else if ((m4t = brick.right_m)) {
     if ((t9k = m4t.targetBrick)) {
-      this.exportField_(m4t.fields.label)
+      this.exportField_(m4t.label_f)
       this.exportBrick_(t9k, opt)
     }
   }

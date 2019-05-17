@@ -157,7 +157,7 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (brick) {
  */
 eYo.Brick.Expr.prototype.willRender_ = function (recorder) {
   eYo.Brick.Expr.superClass_.willRender_.call(this, recorder)
-  var field = this.fields.await
+  var field = this.await_f
   if (field) {
     field.setVisible(this.await_)
   }
@@ -170,7 +170,7 @@ eYo.Brick.Expr.prototype.willRender_ = function (recorder) {
  * @return yes or no
  */
 eYo.Brick.Expr.prototype.awaitable = function () {
-  if (!this.fields.await) {
+  if (!this.await_f) {
     return false
   }
   var parent = this.parent

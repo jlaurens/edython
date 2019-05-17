@@ -264,8 +264,8 @@ eYo.Brick.List.makeSubclass('enclosure', {
       init: eYo.Key.PAR,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         var o = this.owner
-        o.fields.prefix.text = newValue[0]
-        o.fields.suffix.text = newValue[1]
+        o.prefix_f.text = newValue[0]
+        o.suffix_f.text = newValue[1]
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         return {

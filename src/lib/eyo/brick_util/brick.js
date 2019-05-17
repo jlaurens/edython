@@ -1497,7 +1497,7 @@ eYo.Brick.prototype.makeBounds = function () {
       data.slot = slot
       slot.data = data
       // try the `bind` or unique editable field
-      data.field = slot.fields.bind
+      data.field = slot.bind_f
       if (!data.field) {
         var candidate
         for (var kk in slot.fields) {

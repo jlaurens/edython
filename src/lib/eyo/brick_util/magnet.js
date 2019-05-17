@@ -666,7 +666,7 @@ eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
     return
   }
   if (this.isRight) {
-    this.fields.label.setVisible(this.brick.isGroup || !this.targetBrick.isComment)
+    this.label_f.setVisible(this.brick.isGroup || !this.targetBrick.isComment)
   }
 }
 
@@ -683,7 +683,7 @@ eYo.Magnet.prototype.willDisconnect = function () {
     return
   }
   if (this.isRight) {
-    this.fields.label.setVisible(this.brick.isGroup)
+    this.label_f.setVisible(this.brick.isGroup)
   }
 }
 

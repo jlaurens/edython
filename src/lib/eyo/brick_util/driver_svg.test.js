@@ -24,7 +24,7 @@ describe('SVG groups and paths', function () {
   it(`Field: Label`, function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('True')
-    var field = d1.fields.value
+    var field = d1.value_f
     var svg = field.eyo.svg
     var type = d1.type
     chai.assert(svg, `MISSING svg in value field of ${type}`)
@@ -40,7 +40,7 @@ describe('SVG groups and paths', function () {
   // it(`Field: Text Input`, function () {
   //   eYo.Test.setItUp()
   //   var d1 = eYo.Test.new_brick('builtin__object')
-  //   var field = d1.fields.value
+  //   var field = d1.value_f
   //   var svg = field.eyo.svg
   //   var type = d1.type
   //   chai.assert(svg, `MISSING svg in value field of ${type}`)
