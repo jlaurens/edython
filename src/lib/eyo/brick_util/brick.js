@@ -133,18 +133,16 @@ eYo.Brick = function (workspace, type, opt_id) {
   // to manage reentrency
   this.reentrant_ = {}
   // make the state
-  this.makeData()
-  this.makeFields()
-  this.makeSlots()
-  this.makeMagnets()
-  // now make the bounds between data and fields
-  this.makeBounds()
   eYo.Events.disableWrap(() => {
     this.changeWrap(() => {
+      this.makeData()
+      this.makeFields()
+      this.makeSlots()
+      this.makeMagnets()
+      // now make the bounds between data and fields
+      this.makeBounds()
       // initialize the data
-      this.updateMainCount()
       this.forEachData(data => data.init())
-      this.forEachSlot(slot => slot.init())
       // At this point the state value may not be consistent
       this.consolidate()
       // but now it should be
@@ -178,10 +176,10 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   var workspace = this.workspace
   if (this.isSelected) {
-    var m4ts = this.magnets
+    var m5s = this.magnets
     // this brick was selected, select the brick below or above before deletion
     var f = m => m && m.target
-    var m4t = f(m4ts.right) || f(m4ts.left) || f(m4ts.head) || f(m4ts.foot) || f(m4ts.output)
+    var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
     m4t ? m4t.select() : this.unselect()
     workspace.cancelCurrentGesture()
   }
@@ -275,7 +273,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   surround: {
     get () {
       var b3k
-      if ((b3k = this.output)) {
+      if ((b3k = this.out)) {
         return b3k
       } else if ((b3k = this.leftMost)) {
         return b3k.group
@@ -404,7 +402,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.magnets_
     }
   },
-  output: {
+  out: {
     get () {
       var m = this.out_m
       return m && m.targetBrick
@@ -1191,10 +1189,10 @@ eYo.Brick.Manager = (() => {
         }
         var t = eYo.T3.Expr[key]
         if (t) {
-          if (!model.output) {
-            model.output = Object.create(null)
+          if (!model.out) {
+            model.out = Object.create(null)
           }
-          model.output.check = eYo.Do.ensureArrayFunction(model.output.check || t)
+          model.out.check = eYo.Do.ensureArrayFunction(model.out.check || t)
           model.statement && (model.statement = undefined)
         } else if ((t = eYo.T3.Stmt[key])) {
           var statement = model.statement || (model.statement = Object.create(null))
@@ -1218,7 +1216,7 @@ eYo.Brick.Manager = (() => {
           f('left', 'Left')
           f('right', 'Right')
           // this is a statement, remove the irrelevant output info
-          model.output && (model.output = undefined)
+          model.out && (model.out = undefined)
         }
         delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
         // Create properties to access data
@@ -1802,7 +1800,6 @@ eYo.Brick.prototype.disposeSlots = function () {
  */
 eYo.Brick.prototype.makeMagnets = function () {
   this.magnets_ = new eYo.Magnets(this)
-  this.updateBlackHeight()
 }
 
 // magnet computed properties
@@ -1937,15 +1934,15 @@ eYo.Brick.prototype.consolidateMagnets = function () {
     m4t && m4t.updateCheck()
   }
   this.forEachSlot(slot => f(slot.magnet))
-  var m4ts = this.magnets
-  if (m4ts.output) {
-    f(m4ts.output)
+  var m5s = this.magnets
+  if (m5s.out) {
+    f(m5s.out)
   } else {
-    f(m4ts.head)
-    f(m4ts.left)
-    f(m4ts.right)
-    f(m4ts.suite)
-    f(m4ts.foot)
+    f(m5s.head)
+    f(m5s.left)
+    f(m5s.right)
+    f(m5s.suite)
+    f(m5s.foot)
   }
 }
 
@@ -2077,28 +2074,6 @@ eYo.Brick.prototype.duringBlockUnwrapped = function () {
  * @param {!eYo.Magnet} childM4t
  */
 eYo.Brick.prototype.willConnect = function (m4t, childM4t) {
-}
-
-/**
- * Update the head count.
- */
-eYo.Brick.prototype.updateMainCount = function () {
-  this.mainHeight = 1
-}
-
-/**
- * Update the black count.
- */
-eYo.Brick.prototype.updateBlackHeight = function () {
-  this.span.black_ = 0
-}
-
-/**
- * Update the black count of the enclosing group.
- */
-eYo.Brick.prototype.updateGroupBlackHeight = function () {
-  var b3k = this.group
-  b3k && b3k.updateBlackHeight()
 }
 
 /**
@@ -2870,15 +2845,15 @@ eYo.Brick.newReady = function (owner, model, id) {
  * @param {?eYo.Brick} id
  */
 eYo.Brick.newComplete = (() => {
-  var processModel = (workspace, model, id, b3k) => {
-    var dataModel = model
-    if (!b3k) {
+  var processModel = (workspace, model, id, brick) => {
+    var dataModel = model // may change below
+    if (!brick) {
       if (eYo.Brick.Manager.get(model.type)) {
-        b3k = workspace.newBrick(model.type, id)
-        b3k.setDataWithType(model.type)
+        brick = workspace.newBrick(model.type, id)
+        brick.setDataWithType(model.type)
       } else if (eYo.Brick.Manager.get(model)) {
-        b3k = workspace.newBrick(model, id) // can undo
-        b3k.setDataWithType(model)
+        brick = workspace.newBrick(model, id) // can undo
+        brick.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
@@ -2899,67 +2874,43 @@ eYo.Brick.newComplete = (() => {
           return ans
         }
         if (!p5e.isVoid && !p5e.isUnset) {
-          b3k = f(p5e)
+          brick = f(p5e)
         } else {
           console.warn('No brick for model either:', model)
           return
         }
       }
     }
-    b3k && b3k.changeWrap(
-      function () { // `this` is `eyo`
+    brick && brick.changeWrap(
+      function () { // `this` is `brick`
         this.willLoad()
         this.setDataWithModel(dataModel)
         var Vs = model.slots
         for (var k in Vs) {
           if (eYo.Do.hasOwnProperty(Vs, k)) {
-            var input = this.getInput(k)
-            if (input && input.connection) {
-              var t9k = input.targetBrick
+            var slot = this.slots[k]
+            if (slot && slot.magnet) {
+              var t9k = slot.targetBrick
               var V = Vs[k]
               var b3k = processModel(workspace, V, null, t9k)
               if (!t9k && b3k && b3k.out_m) {
                 b3k.changeWrap(() => {
-                  var slot = input.magnet.slot
                   slot && (slot.incog = false)
-                  b3k.out_m.connect(input.magnet)
+                  b3k.out_m.connect(slot.magnet)
                 })
               }
             }
           }
         }
-        Vs = model
-        this.forEachSlot(slot => {
-          if (!slot.magnet) {
-            return
-          }
-          k = slot.key + '_s'
-          if (eYo.Do.hasOwnProperty(Vs, k)) {
-            var V = Vs[k]
-          } else if (Vs.slots && eYo.Do.hasOwnProperty(Vs.slots, slot.key)) {
-            V = Vs.slots[slot.key]
-          } else {
-            return
-          }
-          var t9k = slot.targetBrick
-          var b3k = processModel(workspace, V, null, t9k)
-          if (!t9k && b3k && b3k.out_m) {
-            b3k.changeWrap(() => {
-              // The connection can be established only when not incog
-              slot.incog = false
-              b3k.out_m.connect(slot.magnet)
-            })
-          }
-        })
         // now bricks and slots have been set
         this.didLoad()
-        if (b3k.foot_m) {
-          var nextModel = dataModel.next
-          if (nextModel) {
-            brick = processModel(workspace, nextModel)
-            if (brick && brick.head_m) {
+        if (brick.foot_m) {
+          var footModel = dataModel.next
+          if (footModel) {
+            var b3k = processModel(workspace, footModel)
+            if (b3k && b3k.head_m) {
               try {
-                brick.head_m.connectSmart(b3k)
+                brick.foot_m.connect(b3k.head_m)
               } catch (err) {
                 console.error(err)
                 throw err
@@ -2971,7 +2922,7 @@ eYo.Brick.newComplete = (() => {
         }
       }
     )
-    return b3k
+    return brick
   }
   return function (owner, model, id) {
     var workspace = owner.workspace || owner

@@ -155,7 +155,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       },
     },
   },
-  output: {
+  out: {
     check: [
       eYo.T3.Expr.builtin__range_expr,
       eYo.T3.Expr.call_expr

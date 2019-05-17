@@ -519,15 +519,15 @@ eYo.UI.prototype.renderMoveMagnets_ = function() {
   var blockTL = this.xyInSurface;
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m4ts = this.brick_.magnets
+  var m5s = this.brick_.magnets
   var m4t
-  if ((m4t = m4ts.left)) {
+  if ((m4t = m5s.left)) {
     m4t.moveToOffset(blockTL)
   }
-  if ((m4t = m4ts.head)) {
+  if ((m4t = m5s.head)) {
     m4t.moveToOffset(blockTL)
   }
-  if ((m4t = m4ts.output)) {
+  if ((m4t = m5s.out)) {
     m4t.moveToOffset(blockTL)
   }
   this.brick_.inputList.forEach(input => {
@@ -538,7 +538,7 @@ eYo.UI.prototype.renderMoveMagnets_ = function() {
       }
     }
   })
-  if ((m4t = m4ts.foot)) {
+  if ((m4t = m5s.foot)) {
     m4t.moveToOffset(blockTL)
     if (m4t.target) {
       m4t.tighten_()
@@ -547,7 +547,7 @@ eYo.UI.prototype.renderMoveMagnets_ = function() {
 }
 
 /**
- * Layout previous, next and output brick connections.
+ * Layout brick magnets.
  * @param {*} recorder
  * @private
  */
@@ -572,25 +572,25 @@ eYo.UI.prototype.renderMove_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.layoutConnections_ = function (recorder) {
-  var m4ts = this.brick_.magnets
-  var m4t = m4ts.output
+  var m5s = this.brick_.magnets
+  var m4t = m5s.out
   if (m4t) {
     m4t.setOffset()
   } else {
-    if ((m4t = m4ts.head)) {
+    if ((m4t = m5s.head)) {
       m4t.setOffset()
     }
-    if ((m4t = m4ts.foot)) {
+    if ((m4t = m5s.foot)) {
       if (this.brick_.collapsed) {
         m4t.setOffset(0, 2)
       } else {
         m4t.setOffset(0, this.span.height)
       }
     }
-    if ((m4t = m4ts.left)) {
+    if ((m4t = m5s.left)) {
       m4t.setOffset()
     }
-    if ((m4t = m4ts.right)) {
+    if ((m4t = m5s.right)) {
       m4t.setOffset(this.span.width, 0)
     }
   }
@@ -1795,6 +1795,19 @@ eYo.UI.prototype.moveDuringDrag = function(newLoc) {
 eYo.UI.prototype.setDragging = function(adding) {
   this.isDragging_ = adding
   this.driver.brickSetDragging(this.brick_, adding)
+}
+
+/**
+ * Move this block to its workspace's drag surface, accounting for positioning.
+ * Generally should be called at the same time as setDragging_(true).
+ * Does nothing if useDragSurface_ is false.
+ * @private
+ */
+eYo.UI.prototype.moveToDragSurface_ = function() {
+  if (!this.useDragSurface_) {
+    return;
+  }
+  this.driver.brickMoveToDragSurface_(this.brick_)
 }
 
 /**

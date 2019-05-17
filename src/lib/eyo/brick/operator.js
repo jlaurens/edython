@@ -137,7 +137,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       return type
     }
@@ -349,7 +349,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       return type
     }

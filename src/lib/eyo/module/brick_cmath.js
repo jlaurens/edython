@@ -118,7 +118,7 @@ goog.require('eYo.FlyoutCategory')
 //     quadary: null,
 //     pentary: null,
 //   },
-//   output: {
+//   out: {
 //     check: [eYo.T3.Expr.cmath__const, eYo.T3.Expr.builtin__object]
 //   }
 // })

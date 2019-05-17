@@ -180,7 +180,7 @@ Blockly.Events.Move.prototype.run = function(forward) {
           var p_magnet = input.magnet
           magnet.connect(p_magnet)
         } else {
-          console.warn("Can't connect with no output: " + brick)
+          console.warn("Can't connect with no out: " + brick)
         }
       } else {
         console.warn("Can't connect to non-existent input: " + inputName)

@@ -529,7 +529,7 @@ eYo.Brick.Expr.makeSubclass('any', {
       endEditing: true
     }
   },
-  output: {
+  out: {
     check: null // means that every output type will fit, once we have a python parser...
   }
 }, true)

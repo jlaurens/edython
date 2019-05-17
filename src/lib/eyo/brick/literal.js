@@ -93,7 +93,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
       literal: true // no smart spacing
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       return [type]
     }
@@ -268,7 +268,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       reserved: ''
     }
   },
-  output: {
+  out: {
     check: /** @suppress globalThis */ function () {
       return [this.brick.subtype_p]
     }
@@ -447,7 +447,7 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress globalThis */ function () {
       return [this.brick.subtype_p]
     }

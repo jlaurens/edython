@@ -22,15 +22,38 @@ goog.require('Blockly.BlockDragger')
  * @param {boolean} healStack whether or not to heal the stack after disconnecting
  * @package
  */
-Blockly.BlockDragger.prototype.startBlockDrag = (() => {
-  var startBlockDrag = Blockly.BlockDragger.prototype.startBlockDrag
-  return function(currentDragDeltaXY, healStack) {
-    eYo.Selected.magnet = null
-    var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
-    this.eyo_transformCorrection = eYo.Do.getTransformCorrection(element)
-    return startBlockDrag.call(this, currentDragDeltaXY, healStack)
+Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, healStack) {
+  eYo.Selected.magnet = null
+  var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
+  this.eyo_transformCorrection = eYo.Do.getTransformCorrection(element)
+
+  if (!Blockly.Events.getGroup()) {
+    Blockly.Events.setGroup(true)
   }
-})()
+
+  this.workspace_.setResizesEnabled(false);
+  Blockly.BlockSvg.disconnectUiStop_();
+
+  if (this.draggingBlock_.parent || (healStack && this.draggingBlock_.foot)) {
+    this.draggingBlock_.unplug(healStack)
+    var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY)
+    var newLoc = goog.math.Coordinate.sum(this.startXY_, delta)
+    this.draggingBlock_.translate(newLoc.x, newLoc.y)
+    this.draggingBlock_.disconnectUiEffect()
+  }
+  this.draggingBlock_.ui.setDragging(true)
+  // For future consideration: we may be able to put moveToDragSurface inside
+  // the block dragger, which would also let the block not track the block drag
+  // surface.
+  this.draggingBlock_.ui.moveToDragSurface_()
+
+  var toolbox = this.workspace_.getToolbox();
+  if (toolbox) {
+    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
+        'blocklyToolboxGrab';
+    toolbox.addStyle(style);
+  }
+}
 
 /**
  * Execute a step of block dragging, based on the given event.  Update the
@@ -79,7 +102,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function (e, currentDragDeltaXY) {
   if (!deleted) {
     // These are expensive and don't need to be done if we're deleting.
     this.draggingBlock_.moveMagnets_(delta.x, delta.y)
-    this.draggingBlock_.setDragging(false)
+    this.draggingBlock_.ui.setDragging(false)
     this.fireMoveEvent_()// JL Fixed this
     this.draggedConnectionManager_.applyConnections()
     // Moving a block around will not cause rendering

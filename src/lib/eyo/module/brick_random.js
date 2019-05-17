@@ -116,7 +116,7 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
       },
     },
   },
-  output: {
+  out: {
     check: [eYo.T3.Expr.random__randrange, eYo.T3.Expr.call_expr]
   }
 }, true)

@@ -735,15 +735,15 @@ eYo.Magnet.prototype.updateCheck = function () {
 eYo.Magnet.prototype.getMagnetAbove = function () {
   var ans = this.brick.head
   if (ans) {
-    var m4ts = ans.magnets
+    var m5s = ans.magnets
     if (this.isFoot) {
-      return m4ts.foot
+      return m5s.foot
     } else if (this.isHead) {
-      return m4ts.head
+      return m5s.head
     } else if (this.isRight) {
-      return m4ts.right
+      return m5s.right
     } else if (this.isLeft) {
-      return m4ts.left
+      return m5s.left
     }
   }
 }
@@ -755,15 +755,15 @@ eYo.Magnet.prototype.getMagnetAbove = function () {
 eYo.Magnet.prototype.getMagnetBelow = function () {
   var ans = this.brick.foot
   if (ans) {
-    var m4ts = ans.magnets
+    var m5s = ans.magnets
     if (this.isFoot) {
-      return m4ts.foot
+      return m5s.foot
     } else if (this.isHead) {
-      return m4ts.head
+      return m5s.head
     } else if (this.isRight) {
-      return m4ts.right
+      return m5s.right
     } else if (this.isLeft) {
-      return m4ts.left
+      return m5s.left
     }
   }
 }
@@ -997,8 +997,8 @@ eYo.Magnets = function (brick) {
   // configure the connections
   var model = brick.model
   var D
-  if ((D = model.output) && Object.keys(D).length) {
-    this.output_ = new eYo.Magnet(brick, eYo.Magnet.OUT, D)
+  if ((D = model.out) && Object.keys(D).length) {
+    this.out_ = new eYo.Magnet(brick, eYo.Magnet.OUT, D)
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.head && goog.isDefAndNotNull(D.head.check)) {
       this.high_ = new eYo.Magnet(brick, eYo.Magnet.HEAD, D.head)
@@ -1019,9 +1019,9 @@ eYo.Magnets = function (brick) {
 }
 
 Object.defineProperties(eYo.Magnets.prototype, {
-  output: {
+  out: {
     get () {
-      return this.output_
+      return this.out_
     }
   },
   head: {
@@ -1068,8 +1068,8 @@ eYo.Magnets.prototype.dispose = function () {
   this.high_ = undefined
   this.foot_ && this.foot_.dispose()
   this.foot_ = undefined
-  this.output_ && this.suite_.dispose()
-  this.output_ = undefined
+  this.out_ && this.out_.dispose()
+  this.out_ = undefined
 }
 
 /**
@@ -1449,8 +1449,8 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
   if (this.x_ !== x || this.y_ !== y || (!x && !y)) {
     // Remove it from its old location in the database (if already present)
     this.db_ && this.db_.removeConnection_(this)
-    this.where.x = x;
-    this.where.y = y;
+    this.where.x = x
+    this.where.y = y
     // Insert it into its new location in the database.
     this.hidden_ || this.db_.addConnection(this)
   }

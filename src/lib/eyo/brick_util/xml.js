@@ -1072,10 +1072,10 @@ eYo.Xml.fromDom = function (brick, element) {
               if (brick) { // still headless!
                 // we could create a brick from that child element
                 // then connect it to
-                var m4ts = brick.magnets
-                if (m4ts.head) {
-                  if (m4t.checkType_(m4ts.head)) {
-                    m4t.connect(m4ts.head)
+                var m5s = brick.magnets
+                if (m5s.head) {
+                  if (m4t.checkType_(m5s.head)) {
+                    m4t.connect(m5s.head)
                   } else {
                     // we could not connect possibly because the
                     // type is not yet properly set
@@ -1083,8 +1083,8 @@ eYo.Xml.fromDom = function (brick, element) {
                     this.consolidateType()
                     this.consolidateMagnets()
                     this.consolidate()
-                    if (m4t.checkType_(m4ts.head)) {
-                      m4t.connect(m4ts.head)
+                    if (m4t.checkType_(m5s.head)) {
+                      m4t.connect(m5s.head)
                     }
                   }
                 }

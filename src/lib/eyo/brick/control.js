@@ -50,14 +50,6 @@ eYo.Brick.BaseGroup.makeSubclass('Control', {
 eYo.Brick.Control.prototype.isControl = true
 
 /**
- * Update the black count.
- * May be called very early.
- */
-eYo.Brick.Control.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.suite_m && this.suite_m.target ? 0 : 1
-}
-
-/**
  * Update the creation number.
  */
 eYo.Brick.Control.prototype.updateCreation = (() => {

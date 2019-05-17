@@ -14,22 +14,22 @@ describe('comment statement', function () {
     test_connection_db()
     var d = eYo.Test.new_brick('comment_stmt')
     // d.comment_p = 'abc'
-    var m4ts = d.magnets
+    var m5s = d.magnets
     ;[
-      m4ts.head,
-      m4ts.foot,
-      m4ts.left,
-      m4ts.right
+      m5s.head,
+      m5s.foot,
+      m5s.left,
+      m5s.right
     ].forEach(m => {
       var db = m.connection.db_
       chai.assert(db.length === 1)
       chai.assert(db.indexOf(m.connection) >= 0)
     })
     ;[
-      [m4ts.head, m4ts.foot],
-      [m4ts.foot, m4ts.head],
-      [m4ts.left, m4ts.right],
-      [m4ts.right, m4ts.left]
+      [m5s.head, m5s.foot],
+      [m5s.foot, m5s.head],
+      [m5s.left, m5s.right],
+      [m5s.right, m5s.left]
     ].forEach(ms => {
       var db = ms[0].connection.dbOpposite_
       chai.assert(db.length === 1)

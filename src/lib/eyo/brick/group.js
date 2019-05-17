@@ -75,15 +75,6 @@ Object.defineProperties(eYo.Brick.BaseGroup.prototype, {
 eYo.Brick.BaseGroup.makeSubclass('Group', {}, eYo.Brick)
 
 /**
- * Update the black count.
- */
-eYo.Brick.Group.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.suite_m && this.suite_m.blackTarget
-  ? 0
-  : this.left || this.right ? 0 : 1
-}
-
-/**
  * Class for a Delegate, if_part brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.

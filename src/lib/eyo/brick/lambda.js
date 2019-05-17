@@ -401,7 +401,7 @@ eYo.Brick.Expr.makeSubclass('lambda', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       var eyo = this.brick // does it always exist ?
       var m4tIn = eyo.expression_s.magnet

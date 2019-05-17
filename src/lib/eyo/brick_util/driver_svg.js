@@ -20,6 +20,7 @@ goog.require('eYo.Field')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Style')
+goog.forwardDeclare('goog.userAgent')
 
 eYo.setup.register(() => {
   eYo.Style.SEP_SPACE_X = 0
@@ -609,7 +610,7 @@ eYo.Driver.Svg.prototype.pathBBoxDef_ = function (node) {
 eYo.Driver.Svg.prototype.brickWillRender = function (node, recorder) {
   var svg = node.ui.svg
   if (svg.group_) {
-    var F = node.locked_ && node.output
+    var F = node.locked_ && node.out
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
     var FF = (elt, classname) => {
@@ -877,9 +878,9 @@ eYo.Driver.Svg.prototype.slotInit = function (slot) {
   if (slot.previous) {
     goog.dom.insertSiblingAfter(svg.group_, slot.previous.svg.group_)
   } else {
-    var s = slot.owner.slotAtHead
+    var s = slot.brick.slotAtHead
     if (s) {
-      goog.dom.appendChild(svg.group_, slot.owner.ui.svg.group_)
+      goog.dom.appendChild(svg.group_, slot.brick.ui.svg.group_)
     }
   }
   this.slotDisplayedUpdate(slot)
@@ -2157,3 +2158,36 @@ eYo.Driver.Svg.prototype.fieldGetDisplayText_ = function(field) {
  */
 eYo.Driver.Svg.prototype.magnetDispose = eYo.Do.nothing
 
+/**
+ * Dispose of the magnet SVG ressources.
+ * @param {!eYo.Magnet} magnet
+ */
+eYo.Driver.Svg.prototype.brickMoveToDragSurface = function (brick) {
+  // The translation for drag surface bricks,
+  // is equal to the current relative-to-surface position,
+  // to keep the position in sync as it move on/off the surface.
+  // This is in workspace coordinates.
+  var xy = this.brickXYInSurface(brick)
+  this.removeAttribute(brick.svg.group_, 'transform');
+  brick.workspace.blockDragSurface_.translateSurface(xy.x, xy.y)
+  // Execute the move on the top-level SVG component
+  brick.workspace.blockDragSurface_.setBlocksAndShow(brick.svg.group_)
+}
+
+/**
+ * Remove an attribute from a element even if it's in IE 10.
+ * Similar to Element.removeAttribute() but it works on SVG elements in IE 10.
+ * Sets the attribute to null in IE 10, which treats removeAttribute as a no-op
+ * if it's called on an SVG element.
+ * @param {!Element} element DOM element to remove attribute from.
+ * @param {string} attributeName Name of attribute to remove.
+ */
+eYo.Driver.Svg.prototype.removeAttribute = function(element, attributeName) {
+  // goog.userAgent.isVersion is deprecated, but the replacement is
+  // goog.userAgent.isVersionOrHigher.
+  if (goog.userAgent.IE && goog.userAgent.isVersion('10.0')) {
+    element.setAttribute(attributeName, null)
+  } else {
+    element.removeAttribute(attributeName)
+  }
+};

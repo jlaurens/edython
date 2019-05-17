@@ -379,10 +379,6 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
  * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
-  var input = this.input
-  if (!input) {
-    return
-  }
   var d = this.ui_driver
   if (!d) {
     return
@@ -390,11 +386,7 @@ eYo.Slot.prototype.synchronize = function () {
   var newValue = this.incog
   this.visible = !newValue
   if (this.visible) {
-    input.fieldRow.forEach(field => {
-      if (field.text.length > 0) {
-        field.visible = true // where is it used ?
-      }
-    })
+    this.forEachField(field => field.text.length > 0 && (field.visible = true))
   }
   d.slotDisplayedUpdate(this)
 }
@@ -461,7 +453,7 @@ eYo.Slot.prototype.save = function (element, opt) {
 /**
  * Save a placeholder.
  * For edython.
- * @param {Element} element a dom element in which to save the input
+ * @param {Element} element a dom element in which to save the receiver
  * @param {!Object} opt
  */
 eYo.Slot.prototype.saveRequired = function (element) {
@@ -550,16 +542,16 @@ eYo.Slot.prototype.load = function (element) {
             }
             this.recover.dontResit(child)
           } else if ((t9k = eYo.Xml.domToBrick(child, this.owner))) {
-            var m4ts = t9k.magnets
+            var m5s = t9k.magnets
             // we could create a brick from that child element
             // then connect it
             this.recover.dontResit(child)
             var m4t = this.magnet
-            if (m4t && m4ts.output && m4t.checkType_(m4ts.output, true)) {
-              m4t.connect(m4ts.output) // Notice the `.eyo`
+            if (m4t && m5s.out && m4t.checkType_(m5s.out, true)) {
+              m4t.connect(m5s.out) // Notice the `.eyo`
               this.setRequiredFromModel(true)
-            } else if (m4ts.head && m4t.checkType_(m4ts.head, true)) {
-              m4t.connect(m4ts.head) // Notice the `.eyo`
+            } else if (m5s.head && m4t.checkType_(m5s.head, true)) {
+              m4t.connect(m5s.head) // Notice the `.eyo`
             }
             out = t9k
           }

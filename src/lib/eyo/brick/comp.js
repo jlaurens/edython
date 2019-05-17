@@ -71,7 +71,7 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
       wrap: eYo.T3.Expr.comp_iter_list
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       // `this` is a magnet
       // we do not take the type argument into account

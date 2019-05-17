@@ -1190,7 +1190,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
       return this.brick.getOutCheck()
     }
@@ -1592,24 +1592,24 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
     }
     if (this.target_b.inputList.length > 1) {
       // only one connected input
-      var eyo = this.target_s.unwrappedTarget
-      if (eyo && eyo.type !== eYo.T3.Expr.identifier) {
+      var b3k = this.target_s.unwrappedTarget
+      if (b3k && b3k.type !== eYo.T3.Expr.identifier) {
         return [eYo.T3.Expr.assignment_chain]
       }
     }
     // if the first value is connected to a `… = …`
-    var eyo = this.value_s.unwrappedTarget
-    if (eyo && [
+    b3k = this.value_s.unwrappedTarget
+    if (b3k && [
       eYo.T3.Expr.identifier_valued,
       eYo.T3.Expr.assignment_chain
-    ].indexOf(eyo.type) >= 0) {
+    ].indexOf(b3k.type) >= 0) {
       return [
         eYo.T3.Expr.assignment_chain
       ]
     }
     // if the parent is a value_list
-    if ((eyo = this.output)) {
-      if (eyo.type === eYo.T3.Expr.value_list || eyo.type === eYo.T3.Expr.value_list) {
+    if ((b3k = this.out)) {
+      if (b3k.type === eYo.T3.Expr.value_list || b3k.type === eYo.T3.Expr.value_list) {
         return [
           eYo.T3.Expr.assignment_chain
         ]

@@ -183,7 +183,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
       }
     }
   },
-  output: {
+  out: {
     check: /** @suppress {globalThis} */ function (type) {
       // retrieve the brick delegate
       var brick = this.brick
