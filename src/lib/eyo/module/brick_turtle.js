@@ -6,7 +6,7 @@
  * License EUPL-1.2
  */
 /**
- * @fileoverview Math module bricks for edython.
+ * @fileoverview Turtle module bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
