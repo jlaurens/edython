@@ -291,14 +291,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/protocol/change_count.js" \
 --js "src/lib/eyo/protocol/register.js" \
---js "src/lib/eyo/brick_util/selected.js" \
 --js "src/lib/eyo/brick/expr.js" \
 --js "src/lib/eyo/brick/starred.js" \
 --js "src/lib/eyo/brick_util/consolidator.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/model/model.js" \
---js "src/lib/eyo/brick_util/navigate.js" \
 --js "src/lib/eyo/brick_util/python_exporter.js" \
+--js "src/lib/eyo/brick_util/selected.js" \
 --js "src/lib/eyo/workspace/tooltip.js" \
 --js "src/lib/eyo/brick_util/ui.js" \
 --js "src/lib/eyo/brick/literal.js" \
@@ -333,10 +332,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/model/turtle_model.js" \
 --js "src/lib/eyo/model/types_model.js" \
 --js "src/lib/eyo/model/weakref_model.js" \
+--js "src/lib/eyo/brick_util/navigate.js" \
 --js "src/lib/eyo/model/profile.js" \
 --js "src/lib/eyo/brick/argument.js" \
 --js "src/lib/eyo/brick/comp.js" \
 --js "src/lib/eyo/brick/stmt.js" \
+--js "src/lib/eyo/brick_util/driver_svg.js" \
 --js "src/lib/eyo/closure-library/menu.js" \
 --js "src/lib/eyo/brick_util/slot.js" \
 --js "src/lib/eyo/brick/group.js" \
@@ -344,7 +345,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/brick/primary.js" \
 --js "src/lib/eyo/module/delegate_svg_string.js" \
 --js "src/lib/eyo/brick/yield.js" \
---js "src/lib/eyo/brick_util/driver_svg.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
 --js "src/lib/eyo/closure-library/submenurenderer.js" \

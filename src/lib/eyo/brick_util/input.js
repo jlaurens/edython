@@ -35,7 +35,7 @@ eYo.Input = function(owner, name, model) {
     this.brick_ = owner
   }
   this.name_ = name
-  this.magnet_ = new eYo.Magnet(this, eYo.Magnet.INPUT, model)
+  this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
   this.fieldRow_ = []
 }
 

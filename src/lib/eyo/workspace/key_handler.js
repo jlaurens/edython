@@ -179,7 +179,7 @@ eYo.KeyHandler = (() => {
               }
             })
           }
-          if (doFirst(newB.eyo, eYo.Magnet.INPUT)) {
+          if (doFirst(newB.eyo, eYo.Magnet.IN)) {
             return true
           } else if ((m4t === eyo.foot_m) && (m4t = newB.eyo.foot_m) && !m4t.hidden_) {
             m4t.select()

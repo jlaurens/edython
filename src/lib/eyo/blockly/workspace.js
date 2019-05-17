@@ -242,8 +242,8 @@ eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
 eYo.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
-    'INPUT',
-    'OUTPUT',
+    'IN',
+    'OUT',
     'FOOT',
     'HEAD',
     'LEFT',

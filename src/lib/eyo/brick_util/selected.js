@@ -19,10 +19,11 @@
 
 goog.provide('eYo.Selected')
 
+goog.require('eYo.Brick')
 goog.require('eYo.Magnet')
 goog.require('eYo.Do')
 
-goog.require('goog.math')
+goog.forwardDeclare('goog.math')
 
 eYo.Selected = (() => {
   var me = {}

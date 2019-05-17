@@ -72,7 +72,7 @@ eYo.Slot = function (owner, key, model) {
   }
   model.setup_ || setupModel(model)
   if (goog.isDefAndNotNull(model.check)) {
-    this.magnet_ = new eYo.Magnet(this, eYo.Magnet.INPUT, model)
+    this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
     if (model.wrap) {
       this.magnet_.wrapped = prototypeName   
     } else if (model.promise) {

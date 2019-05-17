@@ -1390,7 +1390,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
  * @private
  */
 eYo.UI.prototype.drawValueInput_ = function (io) {
-  if (io.input.type !== eYo.Magnet.INPUT) {
+  if (io.input.type !== eYo.Magnet.IN) {
     return false
   }
   // this.brick_ is one of the reasons why we allways render from the start of a statement

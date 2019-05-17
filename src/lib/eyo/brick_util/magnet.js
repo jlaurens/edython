@@ -59,16 +59,17 @@ eYo.Magnet = function (bsi, type, model) {
 }
 
 Object.defineProperties(eYo.Magnet, {
-  INPUT: { value: 1 },
-  OUTPUT: { value: 2 },
+  IN: { value: 1 },
+  OUT: { value: 2 },
   HEAD: { value: 3 },
   FOOT: { value: 4  },
   LEFT: { value: 5 },
   RIGHT: { value: 6 }
 })
+
 eYo.Magnet.OPPOSITE_TYPE = {
-  [eYo.Magnet.INPUT]: eYo.Magnet.OUTPUT,
-  [eYo.Magnet.OUTPUT]: eYo.Magnet.INPUT,
+  [eYo.Magnet.IN]: eYo.Magnet.OUT,
+  [eYo.Magnet.OUT]: eYo.Magnet.IN,
   [eYo.Magnet.FOOT]: eYo.Magnet.HEAD,
   [eYo.Magnet.HEAD]: eYo.Magnet.FOOT,
   [eYo.Magnet.RIGHT]: eYo.Magnet.LEFT,
@@ -196,8 +197,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
   typeName: {
     get () {
       return {
-        [eYo.Magnet.INPUT]: 'input',
-        [eYo.Magnet.OUTPUT]: 'output',
+        [eYo.Magnet.IN]: 'in',
+        [eYo.Magnet.OUT]: 'out',
         [eYo.Magnet.HEAD]: 'head',
         [eYo.Magnet.FOOT]: 'foot',
         [eYo.Magnet.LEFT]: 'left',
@@ -207,7 +208,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   },
   isSuperior: {
     get () { // the source 'owns' the target
-      return this.type === eYo.Magnet.INPUT ||
+      return this.type === eYo.Magnet.IN ||
        this.type === eYo.Magnet.FOOT ||
        this.type === eYo.Magnet.RIGHT
     }
@@ -367,7 +368,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
    */
   isOutput: {
     get () {
-      return this.connection.type === eYo.Magnet.OUTPUT
+      return this.connection.type === eYo.Magnet.OUT
     }
   },
   /**
@@ -421,7 +422,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
    */
   isInput: {
     get () {
-      return this.type === eYo.Magnet.INPUT
+      return this.type === eYo.Magnet.IN
     }
   },
   /**
@@ -990,29 +991,29 @@ eYo.Magnet.prototype.toString = function() {
 
 /**
  *
- * @param {!Object} eyo  eyo is the owner
+ * @param {!eYo.Brick} brick  eyo is the owner
  */
-eYo.Magnets = function (eyo) {
+eYo.Magnets = function (brick) {
   // configure the connections
-  var model = eyo.model
+  var model = brick.model
   var D
   if ((D = model.output) && Object.keys(D).length) {
-    this.output_ = new eYo.Magnet(eyo, eYo.Magnet.OUTPUT, D)
+    this.output_ = new eYo.Magnet(brick, eYo.Magnet.OUT, D)
   } else if ((D = model.statement) && Object.keys(D).length) {
     if (D.head && goog.isDefAndNotNull(D.head.check)) {
-      this.high_ = new eYo.Magnet(eyo, eYo.Magnet.HEAD, D.head)
+      this.high_ = new eYo.Magnet(brick, eYo.Magnet.HEAD, D.head)
     }
     if (D.foot && goog.isDefAndNotNull(D.foot.check)) {
-      this.foot_ = new eYo.Magnet(eyo, eYo.Magnet.FOOT, D.foot)
+      this.foot_ = new eYo.Magnet(brick, eYo.Magnet.FOOT, D.foot)
     }
     if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suite_ = new eYo.Magnet(eyo, eYo.Magnet.FOOT, D.suite)
+      this.suite_ = new eYo.Magnet(brick, eYo.Magnet.FOOT, D.suite)
     }
     if (D.left && goog.isDefAndNotNull(D.left.check)) {
-      this.left_ = new eYo.Magnet(eyo, eYo.Magnet.LEFT, D.left)
+      this.left_ = new eYo.Magnet(brick, eYo.Magnet.LEFT, D.left)
     }
     if (D.right && goog.isDefAndNotNull(D.right.check)) {
-      this.right_ = new eYo.Magnet(eyo, eYo.Magnet.RIGHT, D.right)
+      this.right_ = new eYo.Magnet(brick, eYo.Magnet.RIGHT, D.right)
     }
   }
 }
@@ -1662,7 +1663,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
   }
   var its_brick = candidate.targetBrick
 
-  if (candidate.type === eYo.Magnet.INPUT && candidate.target &&
+  if (candidate.type === eYo.Magnet.IN && candidate.target &&
       !its_brick.isMovable) {
     return false;
   }

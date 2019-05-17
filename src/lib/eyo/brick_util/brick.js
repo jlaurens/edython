@@ -356,7 +356,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.span.main
     },
     set (newValue) {
-      this.span.main = newValue
+      this.span.main_ = newValue
     }
   },
   blackHeight: {
@@ -364,7 +364,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.span.black
     },
     set (newValue) {
-      this.span.black = newValue
+      this.span.black_ = newValue
     }
   },
   suiteHeight: {
@@ -372,15 +372,15 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.span.suite
     },
     set (newValue) {
-      this.span.suite = newValue
+      this.span.suite_ = newValue
     }
   },
   belowHeight: {
     get () {
-      return this.span.next
+      return this.span.foot
     },
     set (newValue) {
-      this.span.next = newValue
+      this.span.foot_ = newValue
     }
   },
   headHeight: {
@@ -388,7 +388,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.span.head
     },
     set (newValue) {
-      this.span.head = newValue
+      this.span.head_ = newValue
     }
   },
   footHeight: {
@@ -1811,7 +1811,7 @@ eYo.Brick.prototype.makeMagnets = function () {
 }
 
 // magnet computed properties
-Object.defineProperties(eYo.Brick.prototype {
+Object.defineProperties(eYo.Brick.prototype, {
   out_m: { get () { return this.magnets.out }},
   head_m: { get () { return this.magnets.head }},
   left_m: { get () { return this.magnets.left }},
@@ -2095,7 +2095,7 @@ eYo.Brick.prototype.updateMainCount = function () {
  * Update the black count.
  */
 eYo.Brick.prototype.updateBlackHeight = function () {
-  this.blackHeight = 0
+  this.span.black_ = 0
 }
 
 /**
@@ -2107,24 +2107,22 @@ eYo.Brick.prototype.updateGroupBlackHeight = function () {
 }
 
 /**
- * Did connect this brick's connection to another connection.
+ * Did connect this brick's magnet to another magnet.
  * @param {!eYo.Magnet} m4t what has been connected in the brick
  * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the brick
- * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new target
+ * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new magnet
  */
 eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  // how many bricks did I add ?
-  if (m4t.isSuite) {
-    this.updateBlackHeight()
-  } else if (!m4t.isOutput && !m4t.isLeft && !m4t.isRight) {
-    this.updateGroupBlackHeight()
-  }
+  // new connections change the span properties of the superior block.
+  // Actually, we assume that it never changes the size
+  // of the inferior block!!!
+  // How many lines did I add? Where did I add them?
   var t9k = m4t.targetBrick
   if (m4t.isFoot) {
-    this.belowHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.belowHeight
+    this.span.addFoot(targetBrick.span.l)
   } else if (m4t.isSuite) {
-    t9k = m4t.targetBrick
-    this.suiteHeight = t9k.mainHeight + t9k.blackHeight + t9k.suiteHeight + t9k.belowHeight
+    this.span.black = 0
+    this.span.addSuite(targetBrick.span.l)
   }
   this.consolidateType()
   if (m4t.isOutput) {

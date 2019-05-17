@@ -81,7 +81,7 @@ Object.defineProperties(eYo.Span.prototype, {
 /**
  * @type {Number} positive number of indentation spaces.
  */
-eYo.Span.indent = 4
+eYo.Span.INDENT = 4
 
 // Public readonly properties
 Object.defineProperties(eYo.Span.prototype, {
@@ -160,16 +160,6 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.footer_
     }
   },
-  /**
-   * Groups need a suite, but may not be provided with one.
-   * The black count is used to display a hole,
-   * where bricks should be connected.
-   */
-  black: {
-    get () {
-      return this.black_ // 0 or 1
-    }
-  },
   suite: {
     get () {
       return this.suite_
@@ -180,6 +170,25 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.foot_
     }
   }
+})
+// Public computed properties:
+Object.defineProperties(eYo.Span.prototype, {
+  /**
+   * Groups need a suite, but may not be provided with one.
+   * The black count is used to display a hole,
+   * where bricks should be connected.
+   */
+  black: {
+    get () {
+      return this.black_ // 0 or 1
+    },
+    set (newValue) {
+      if (this.black_ === newValue) {
+        return
+      }
+      this.addBlack(newValue ? 1 : -1)
+    }
+  },
 })
 
 /**
@@ -225,8 +234,8 @@ eYo.Span.prototype.setPadding = function (padding) {
     } else {
       this.brick.incrementChangeCount()
       if (this.brick.isGroup && !this.brick.right) {
-        this.c_min_ + padding >= 2 * eYo.Span.indent
-        var min = 2 * eYo.Span.indent - this.c_min_
+        this.c_min_ + padding >= 2 * eYo.Span.INDENT
+        var min = 2 * eYo.Span.INDENT - this.c_min_
         if (padding < min) {
           padding = min
         }
@@ -377,7 +386,7 @@ eYo.Span.prototype.addFooter = function (delta) {
  * Actually it can only be 1 or -1.
  */
 eYo.Span.prototype.addBlack = function (delta) {
-  if (delta) {
+  if (delta && this.brick.isGroup) {
     this.brick.incrementChangeCount()
     this.black_ += delta
     this.l_ += delta
