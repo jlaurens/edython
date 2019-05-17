@@ -36,8 +36,7 @@ eYo.Brick.makeSubclass('Stmt', {
     right: {
       fields: {
         label: { // don't call it 'operator'
-          value: ';',
-          css: 'reserved',
+          reserved: ';',
           hidden: true
         }
       },
@@ -99,7 +98,7 @@ eYo.Brick.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
  * @return the created brick
  */
 eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
-  var magnet = this.magnets.head
+  var magnet = this.head_m
   if (magnet) {
     var parent
     eYo.Events.disableWrap(
@@ -108,14 +107,14 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
       },
       () => {
         if (parent) {
-          var p_magnet = parent.magnets.foot
+          var p_magnet = parent.foot_m
           if (p_magnet && magnet.checkType_(p_magnet)) {
             eYo.Events.groupWrap(() => {
               eYo.Events.fireBrickCreate(parent)
               var targetMagnet = magnet.target
               if (targetMagnet) {
                 targetMagnet.disconnect()
-                if ((targetMagnet = parent.magnets.head)) {
+                if ((targetMagnet = parent.head_m)) {
                   p_magnet.target = targetMagnet
                 }
               } else {
@@ -126,8 +125,8 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
               parent.render()
               magnet.target = p_magnet
               parent.beReady(this.isReady)
-              if (this.selected) {
-                parent.selected
+              if (this.isSelected) {
+                parent.isSelected
               }
             })
           } else {
@@ -153,17 +152,17 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
 eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
     var below = eYo.Brick.newComplete(this, belowPrototypeName)
-    var magnet = this.magnets.foot
+    var magnet = this.foot_m
     var targetMagnet = magnet.target
     var magnets = below.magnets
     if (targetMagnet) {
       targetMagnet.disconnect()
-      if (targetMagnet.checkType_(magnets.foot)) {
-        targetMagnet.target = magnets.foot
+      if (targetMagnet.checkType_(foot_m)) {
+        targetMagnet.target = foot_m
       }
     }
-    magnet.target = magnets.head
-    if (this.selected) {
+    magnet.target = head_m
+    if (this.isSelected) {
       after.select()
     }
     return after
@@ -231,14 +230,13 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
       fields: {
         label: {
           order: 0,
-          value: '#',
-          css: 'reserved'
+          reserved: '#'
         },
         bind: {
           order: 1,
           validate: true,
           endEditing: true,
-          css: 'comment'
+          comment: ''
         }
       }
     }
@@ -340,7 +338,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   },
   fields: {
     variant: {
-      css: 'reserved'
+      reserved: ''
     }
   },
   slots: {

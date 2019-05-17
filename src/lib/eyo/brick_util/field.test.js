@@ -1,34 +1,34 @@
-var assert = chai.assert
+chai.assert(eYo.Test)
+chai.assert(eYo.Brick.Expr.makeSubclass)
 
-eYo.Brick.Expr.makeSubclass('test_field_label', {
-  slots: {
-    NAME: {
-      order: 1,
-      fields: {
-        KEY: 'key'
+eYo.Test.FIELD = 'field'
+;[
+  ['base', eYo.Test.FIELD],
+  ['builtin', {builtin: eYo.Test.FIELD}],
+  ['reserved', {reserved: eYo.Test.FIELD}],
+  ['comment', {comment: eYo.Test.FIELD}]
+].forEach(X => {
+  eYo.Brick.Expr.makeSubclass(`one_slot_one_field_${X[0]}`, {
+    slots: {
+      SLOT: {
+        order: 1,
+        fields: {
+          FIELD: X[1]
+        }
       }
     }
-  }
+  })  
 })
 
 describe('Create', function() {
   it(`Basic`, function() {
     eYo.Test.setItUp()
-    var d = eYo.Test.new_brick('test_field_label')
-    assert(d.change.count !== undefined, 'MISSED 3')
+    var d = eYo.Test.new_brick('one_slot_one_field_base')
+    var slot = d.SLOT_s
+    var field = slot.FIELD_f
+    chai.assert(field.text === eYo.Test.FIELD)
+    chai.assert(field.status === eYo.Field.STATUS_NONE)
     d.dispose()
     eYo.Test.tearItDown()
-  })
-})
-
-describe('One brick (ALIASED)', function () {
-  it (`white space before 'as'`, function () {
-    var d = eYo.Test.new_brick({
-      type: eYo.T3.Expr.identifier,
-      target_p: 'abc',
-      alias_p: 'cde'
-    })
-    eYo.Test.code(d, 'abc as cde')
-    d.dispose()
   })
 })

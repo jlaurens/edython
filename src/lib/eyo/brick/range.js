@@ -90,8 +90,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       fields: {
         label: {
           order:1,
-          value: 'range',
-          css: 'builtin'
+          builtin: 'range'
         },
         open: {
           value: '(',

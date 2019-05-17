@@ -11,7 +11,7 @@ describe('Comprehension (Basic)', function () {
 describe('Comprehension', function() {
   it('comprehension || dict_comprehension', function() {
     var d = eYo.Test.new_brick('comprehension')
-    chai.assert(d.magnets.output.check_.length === 2, 'BAD OUTPUT CHECK')
+    chai.assert(d.out_m.check_.length === 2, 'BAD OUTPUT CHECK')
     eYo.Test.expect_out_check(d, [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension])
     d.dispose()
   })

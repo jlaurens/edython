@@ -269,8 +269,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       fields: {
         delimiter: {
           order: 1,
-          value: ':',
-          css: 'reserved'
+          reserved: ':'
         },
         bind: {
           order: 2,
@@ -300,8 +299,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       order: 3,
       fields: {
         label: { // don't call it 'operator'
-          value: '=',
-          css: 'reserved'
+          reserved: '='
         },
         bind: {
           endEditing: true
@@ -545,7 +543,7 @@ eYo.Brick.List.makeSubclass('value_list', {
  * @return {String} The subtype of the receiver's brick.
  */
 eYo.Brick.Expr.value_list.prototype.getSubtype = function () {
-  var t = this.magnets.output.targetBrick
+  var t = this.out_m.targetBrick
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 

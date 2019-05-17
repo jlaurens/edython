@@ -79,7 +79,7 @@ eYo.Brick.Expr.prototype.getType = eYo.Decorate.onChangeCount(
  * @return {Boolean}
  */
 eYo.Brick.Expr.prototype.checkOutputType = function (type) {
-  var m4t = this.magnets.output
+  var m4t = this.out_m
   if (m4t.check_) {
     if (type.indexOf) {
       if (m4t.check_.some(t => type.indexOf(t) >= 0)) {
@@ -102,12 +102,12 @@ eYo.Brick.Expr.prototype.checkOutputType = function (type) {
  */
 eYo.Brick.Expr.prototype.canReplaceDlgt = function (brick) {
   if (brick) {
-    var m4t = brick.magnets.output
+    var m4t = brick.out_m
     if (!m4t) {
       return true
     }
     m4t = m4t.target
-    if (!m4t || m4t.checkType_(this.magnets.output)) {
+    if (!m4t || m4t.checkType_(this.out_m)) {
       // the parent brick has an output connection that can connect to the brick's one
       return true
     }
@@ -126,13 +126,13 @@ eYo.Brick.Expr.prototype.replaceDlgt = function (brick) {
   if (this.workspace && brick && brick.workspace) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {
-        var my_m4t = this.magnets.output
+        var my_m4t = this.out_m
         my_m4t.disconnect()
-        var its_m4t = brick.magnets.output
+        var its_m4t = brick.out_m
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other brick has an output connection that can connect to the brick's one
           var brick = its_m4t.brick
-          var selected = brick.selected
+          var selected = brick.isSelected
           // next operations may unselect the brick
           var old = brick.consolidating_
           its_m4t.connect(my_m4t)
@@ -255,7 +255,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
         var m4t = input.magnet
         if (m4t) {
           var candidate
-          if (m4t.checkType_(this.magnets.output) && (!m4t.bindField || !m4t.bindField.text.length)) {
+          if (m4t.checkType_(this.out_m) && (!m4t.bindField || !m4t.bindField.text.length)) {
             candidate = m4t
           } else if ((t9k = m4t.targetBrick)) {
             candidate = findM4t(t9k)
@@ -276,7 +276,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
     parentInputM4t = findM4t(parent)
   }
   // Next connections should be connected
-  var outputM4t = this.magnets.output
+  var outputM4t = this.out_m
   if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
     eYo.Events.groupWrap(() => { // `this` is catched
       eYo.Events.fireBrickCreate(parent)
@@ -293,10 +293,10 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
       targetM4t = outputM4t.target
       var bumper
       if (targetM4t) {
-        if (parent.magnets.output && targetM4t.checkType_(parent.magnets.output)) {
+        if (parent.out_m && targetM4t.checkType_(parent.out_m)) {
           // do not disconnect here because it causes a consolidation
           // and a connection mangling
-          targetM4t.connect(parent.magnets.output)
+          targetM4t.connect(parent.out_m)
         } else {
           targetM4t.disconnect()
           bumper = targetM4t.brick
@@ -484,7 +484,7 @@ eYo.Brick.Expr.makeSubclass('builtin__object', {
   },
   fields: {
     value: {
-      css: 'reserved'
+      reserved: ''
     }
   }
 }, true)

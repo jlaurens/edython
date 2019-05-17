@@ -249,10 +249,10 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   },
   fields: {
     prefix: {
-      css: 'reserved'
+      reserved: ''
     },
     start: {
-      css: 'reserved'
+      reserved: ''
     },
     content: { // this is the only really unordered field
       startEditing: /** @suppress {globalThis} */ function () {
@@ -265,7 +265,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       literal: true // no smart spacing
     },
     end: {
-      css: 'reserved'
+      reserved: ''
     }
   },
   output: {

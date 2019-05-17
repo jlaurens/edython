@@ -48,8 +48,8 @@ eYo.Owned.prototype.dispose = function () {
 
 // private properties with default values
 Object.defineProperties(eYo.Owned.prototype, {
-  slot_: { value: undefined },
-  input_: { value: undefined },
+  slot_: { value: undefined, writable: true },
+  input_: { value: undefined, writable: true },
 })
 
 // public computed properties

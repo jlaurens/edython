@@ -119,7 +119,7 @@ Blockly.Events.Move.prototype.currentLocation_ = function() {
   var parent = brick.parent
   if (parent) {
     location.parentId = parent.id;
-    var m4t = brick.magnets.output
+    var m4t = brick.out_m
     if (m4t) {
       location.inputName = m4t.target.name
     } else if (brick.left === parent) {
@@ -175,7 +175,7 @@ Blockly.Events.Move.prototype.run = function(forward) {
     if (inputName) {
       var input = parent.getInput(inputName)
       if (input) {
-        var magnet = brick.magnets.output
+        var magnet = brick.out_m
         if (magnet) {
           var p_magnet = input.magnet
           magnet.connect(p_magnet)
@@ -188,8 +188,8 @@ Blockly.Events.Move.prototype.run = function(forward) {
     } else {
       var horizontal = forward ? this.newHorizontal : this.oldHorizontal
       if (horizontal) {
-        if ((magnet = brick.magnets.left)) {
-          if ((p_magnet = parent.magnets.right)) {
+        if ((magnet = brick.left_m)) {
+          if ((p_magnet = parent.right_m)) {
             magnet.connect(p_magnet)
           } else {
             console.warn("Can't connect to non-existent right connection: " + parent)
@@ -197,8 +197,8 @@ Blockly.Events.Move.prototype.run = function(forward) {
         } else {
           console.warn("Can't connect to non-existent left connection: " + brick)
         }
-      } else if ((magnet = brick.magnets.head)) {
-        if ((p_magnet = parent.magnets.foot)) {
+      } else if ((magnet = brick.head_m)) {
+        if ((p_magnet = parent.foot_m)) {
           magnet.connect(p_magnet)
         } else {
           console.warn("Can't connect to non-existent foot connection: " + parent)

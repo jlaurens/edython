@@ -99,13 +99,11 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
       fields: {
         label: {
           order: 1,
-          value: 'random',
-          css: 'reserved'
+          reserved: 'random'
         },
         bind: {
           order: 10,
-          value: '.',
-          css: 'reserved',
+          reserved: '.',
           separator: true
         }
       }
@@ -113,8 +111,7 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
     open: {
       fields: {
         label: {
-          value: 'randrange',
-          css: ''
+          value: 'randrange'
         }
       },
     },

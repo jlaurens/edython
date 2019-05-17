@@ -353,7 +353,7 @@ eYo.Test.expect_out_check = (brick, check, str) => {
   if (check !== null && !goog.isArray(check)) {
     check = [check]
   }
-  chai.assert(chai.expect(brick.magnets.output.check_).to.deep.equal(check), `MISSED output check for ${brick.type}: ${brick.magnets.output.check_} !== ${check}`)
+  chai.assert(chai.expect(brick.out_m.check_).to.deep.equal(check), `MISSED output check for ${brick.type}: ${brick.out_m.check_} !== ${check}`)
 }
 
 /**

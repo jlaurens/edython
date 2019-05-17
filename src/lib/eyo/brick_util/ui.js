@@ -170,7 +170,7 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.UI.prototype.drawLow_ = function (recorder) {
-  return this.drawMagnet_(this.brick_.magnets.foot, recorder)
+  return this.drawMagnet_(this.brick_.foot_m, recorder)
 }
 
 /**
@@ -179,7 +179,7 @@ eYo.UI.prototype.drawLow_ = function (recorder) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderRight_ = function (io) {
-  var m4t = this.brick_.magnets.right
+  var m4t = this.brick_.right_m
   if (m4t) {
     var t9k = m4t.targetBrick
     if (t9k) {
@@ -236,7 +236,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderSuite_ = function (io) {
-  var m4t = this.brick_.magnets.suite
+  var m4t = this.brick_.suite_m
   if (!m4t) {
     return
   }
@@ -294,7 +294,7 @@ eYo.UI.prototype.render = (() => {
     // Only when the render message did not come from above!
     var parent = this.brick_.parent
     if (parent) {
-      var justConnected = eYo.Magnet.connectedParent && this.brick_.magnets.output === eYo.Magnet.connectedParent.target
+      var justConnected = eYo.Magnet.connectedParent && this.brick_.out_m === eYo.Magnet.connectedParent.target
       if (!parent.ui.down) {
         try {
           parent.ui.up = true
@@ -383,7 +383,7 @@ eYo.UI.prototype.render = (() => {
     // statement connection
     var brick = this.brick_
     if (brick.ui.rendered) {
-      if (eYo.Magnet.disconnectedChild && this.brick_.magnets.head === eYo.Magnet.disconnectedChild) {
+      if (eYo.Magnet.disconnectedChild && this.brick_.head_m === eYo.Magnet.disconnectedChild) {
         // this.brick_ brick is the top one
         var io = this.willShortRender_(recorder)
         this.layoutConnections_(io)
@@ -393,7 +393,7 @@ eYo.UI.prototype.render = (() => {
         this.brick_.change.save.render = this.brick_.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
-      } else if (eYo.Magnet.disconnectedParent && this.brick_.magnets.foot === eYo.Magnet.disconnectedParent) {
+      } else if (eYo.Magnet.disconnectedParent && this.brick_.foot_m === eYo.Magnet.disconnectedParent) {
         // this.brick_ brick is the low one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
@@ -405,10 +405,10 @@ eYo.UI.prototype.render = (() => {
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Magnet.connectedParent) {
-        if (this.brick_.magnets.output && eYo.Magnet.connectedParent === this.brick_.magnets.output.target) {
+        if (this.brick_.out_m && eYo.Magnet.connectedParent === this.brick_.out_m.target) {
           // this.brick_ is not a statement connection
           // no shortcut
-        } else if (this.brick_.magnets.head && eYo.Magnet.connectedParent === this.brick_.magnets.head.target) {
+        } else if (this.brick_.head_m && eYo.Magnet.connectedParent === this.brick_.head_m.target) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
@@ -416,7 +416,7 @@ eYo.UI.prototype.render = (() => {
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
-        } else if (this.brick_.magnets.foot && eYo.Magnet.connectedParent === this.brick_.magnets.foot) {
+        } else if (this.brick_.foot_m && eYo.Magnet.connectedParent === this.brick_.foot_m) {
           var io = this.willShortRender_(recorder)
           this.layoutConnections_(io)
           this.drawLow_(io)
@@ -427,20 +427,20 @@ eYo.UI.prototype.render = (() => {
         }
       }
     }
-    if (!this.brick_.ui.down && this.brick_.magnets.output) {
+    if (!this.brick_.ui.down && this.brick_.out_m) {
       // always render from a line start id est
       // an orphan brick or a statement brick
       var parent
       if ((parent = this.brick_.parent)) {
         var next
-        while (parent.magnets.output && (next = parent.parent)) {
+        while (parent.out_m && (next = parent.parent)) {
           parent = next
         }
         // parent has no output connection or has no parent
         // which means that it is an expression brick's delegate.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.brick_.magnets.output === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
+          if (!parent.ui.up && this.brick_.out_m === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
@@ -692,7 +692,7 @@ eYo.UI.prototype.newDrawRecorder = function (recorder) {
       beforeIsRightEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !this.brick_.magnets.output || !this.brick_.parent, // statement | orphan brick
+      startOfLine: !this.brick_.out_m || !this.brick_.parent, // statement | orphan brick
       field: {
         beforeIsBlack: false, // true if the position before the cursor contains a black character
         beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
@@ -731,7 +731,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   // Do we need some room for the left side of the brick?
   // no for wrapped bricks
   if (!this.brick_.wrapped_) {
-    if (!this.brick_.magnets.output || !this.brick_.locked_ || !recorder) {
+    if (!this.brick_.out_m || !this.brick_.locked_ || !recorder) {
       // statement or unlocked,
       // one space for the left edge of the brick
       // (even for locked statements, this.brick_ is to avoid a
@@ -740,7 +740,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
       io.common.field.beforeIsBlack = false
     }
   }
-  if (this.hasLeftEdge || !recorder || !this.brick_.magnets.output) {
+  if (this.hasLeftEdge || !recorder || !this.brick_.out_m) {
     // statement or unlocked,
     // one space for the left edge of the brick
     // (even for locked statements, this.brick_ is to avoid a
@@ -752,7 +752,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
     // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.span.c
-  if (this.brick_.magnets.output) {
+  if (this.brick_.out_m) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
@@ -808,7 +808,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
 eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
   if (!this.brick_.wrapped_) {
-    if (this.brick_.magnets.output) {
+    if (this.brick_.out_m) {
       if (io.common.field.last && io.common.field.last.eyo.isEditing) {
         io.cursor.c += 1
         io.common.field.beforeIsSeparator = false
@@ -842,7 +842,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       io.common.field.beforeIsBlack = false
     }
   }
-  if (!this.brick_.magnets.output) {
+  if (!this.brick_.out_m) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
@@ -1284,7 +1284,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
 
           }
         }
-        if (io.brick.magnets.output !== eYo.Magnet.disconnectedChild && !ui.up) {
+        if (io.brick.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
           t9k.render(false, io)
           if (!t9k.wrapped_) {
             io.common.field.shouldSeparate = false

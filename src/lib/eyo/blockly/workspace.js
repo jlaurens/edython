@@ -451,12 +451,12 @@ Blockly.onKeyDown_ = function(e) {
 eYo.deleteBlock = function (block, deep) {
   if (block && block.isDeletable() && !block.workspace.isFlyout) {
     var eyo = block.eyo
-    if (eyo.selected) {
+    if (eyo.isSelected) {
       // prepare a connection or a block to be selected
       var m4t
-      if ((m4t = eyo.magnets.output)) {
+      if ((m4t = eyo.out_m)) {
         m4t = m4t.target
-      } else if ((m4t = eyo.magnets.foot)) {
+      } else if ((m4t = eyo.foot_m)) {
         var t9k = m4t.targetBrick
       }
     }

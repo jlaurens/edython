@@ -673,7 +673,7 @@ describe('Primary slots', function() {
     d = eYo.Test.new_brick('yield_expr')
     chai.assert(da.value_b.inputList[1].eyo.connect(d), 'MISSED')
     eYo.Test.input_length(da.value_b, 1)
-    chai.assert(!dc.magnets.output.targetBrick)
+    chai.assert(!dc.out_m.targetBrick)
     dc.dispose()
     da.dispose()
   })

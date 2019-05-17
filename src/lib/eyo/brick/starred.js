@@ -160,8 +160,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
   },
   fields: {
     modifier: {
-      value: '',
-      css: 'reserved'
+      reserved: ''
     }
   },
   slots: {
@@ -244,7 +243,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
 eYo.Brick.Expr.Starred.prototype.getType = eYo.Decorate.onChangeCount(
   'getType',
   function () {
-    var check = this.magnets.output.check_
+    var check = this.out_m.check_
     return check && check[0]
   }
 )

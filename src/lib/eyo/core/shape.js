@@ -609,13 +609,13 @@ var initWithControlBrick = function (eyo) {
 return function(eyo, opt) {
     this.begin()
     var f
-    if (eyo.magnets.output) {
+    if (eyo.out_m) {
       f = initWithExpressionBrick
     } else if (opt && opt.dido) {
       f = initWithStatementBrick
     } else if (eyo.isControl) {
       f = initWithControlBrick
-    } else if (eyo.magnets.suite) {
+    } else if (eyo.suite_m) {
       f = initWithGroupBrick
     } else {
       f = initWithStatementBrick
@@ -655,12 +655,12 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   if (magnet) {
     var brick = magnet.brick
     var m4t
-    if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.magnets.output)) {
+    if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.out_m)) {
       var where = new eYo.Where(magnet)
       do {
         var t9k = m4t.targetBrick
         where.advance(t9k)
-      } while(t9k && t9k.wrapped_ && (m4t = t9k.magnets.output))
+      } while(t9k && t9k.wrapped_ && (m4t = t9k.out_m))
     } else {
       where = magnet
     }

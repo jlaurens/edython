@@ -81,8 +81,6 @@ eYo.Slot = function (owner, key, model) {
     }
   }
   eYo.Field.makeFields(this, model.fields)
-  goog.asserts.assert(brick,
-    `brick must exist ${key}`)
   if (key === 'comment') {
     this.fields.bind && (this.fields.bind.eyo.isComment = true)
   }
@@ -93,7 +91,7 @@ eYo.Slot = function (owner, key, model) {
 
 // Private properties with default values
 Object.defineProperties(eYo.Slot.prototype, {
-  incog_: { value: true },
+  incog_: { value: true, writable: true },
 })
 
 /**
@@ -539,7 +537,7 @@ eYo.Slot.prototype.load = function (element) {
                       eYo.Xml.fromDom(grand_t_brick, grandChild)
                       this.recover.dontResit(grandChild)
                     } else if ((grand_t_brick = eYo.Xml.domToBrick(grandChild, this.owner))) {
-                      var t_m4t = grand_t_brick.magnets.output
+                      var t_m4t = grand_t_brick.out_m
                       if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
                         t_m4t.connect(input.magnet)
                         this.setRequiredFromModel(true)
@@ -665,7 +663,7 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
   if (input) {
     var m4t = input.magnet
     if (m4t) {
-      var other = (bm.magnets && bm.magnets.output) || bm
+      var other = (bm.magnets && bm.out_m) || bm
       return m4t.connect(other)
     }
   }
@@ -680,7 +678,7 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
 eYo.Slot.prototype.connect = function (bm) {
   var m4t = this.magnet
   if(m4t && bm) {
-    var other = (bm.magnets && bm.magnets.output) || bm
+    var other = (bm.magnets && bm.out_m) || bm
     if (m4t.checkType_(other)) {
       return m4t.connect(other)
     }

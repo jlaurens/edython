@@ -214,7 +214,7 @@ Object.defineProperties(
   }
 )
 
-Object.defineProperty(eYo.Magnet.prototype, 'selected', {
+Object.defineProperty(eYo.Magnet.prototype, 'isSelected', {
   get() {
     return this === magnet__
   },
@@ -232,7 +232,7 @@ eYo.Magnet.prototype.select = function () {
   return (eYo.Selected.magnet = this)
 }
 
-Object.defineProperty(eYo.Brick.prototype, 'selected', {
+Object.defineProperty(eYo.Brick.prototype, 'isSelected', {
   get() {
     return this === brick__
   },
@@ -265,7 +265,7 @@ eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function ()
  * Unselect is used from click handling methods.
  */
 eYo.Brick.prototype.unselect = function () {
-  if (this.workspace && this.selected) {
+  if (this.workspace && this.isSelected) {
     eYo.Selected.brick = null
   }
 }
@@ -354,7 +354,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
   })
   if (magnet) {
     return magnet
-  } else if ((magnet = this.magnets.head) && !magnet.hidden) {
+  } else if ((magnet = this.head_m) && !magnet.hidden) {
     R = new goog.math.Rect(
       magnet.offsetInBlock_.x,
       magnet.offsetInBlock_.y - 2 * eYo.Style.Path.width,
@@ -365,7 +365,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.magnets.foot) && !magnet.hidden) {
+  if ((magnet = this.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.Font.lineHeight) { // Not the cleanest design
       R = new goog.math.Rect(
         magnet.offsetInBlock_.x,
@@ -385,7 +385,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.magnets.suite) && !magnet.hidden) {
+  if ((magnet = this.suite_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
       magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
@@ -397,7 +397,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.magnets.left) && !magnet.hidden) {
+  if ((magnet = this.left_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new goog.math.Rect(
       magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
@@ -409,7 +409,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.magnets.right) && !magnet.hidden) {
+  if ((magnet = this.right_m) && !magnet.hidden) {
     R = new goog.math.Rect(
       magnet.offsetInBlock_.x + eYo.Unit.x / 2 - r,
       magnet.offsetInBlock_.y + r,
@@ -447,9 +447,9 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
       return
     }
   }
-  if (this.ui.parentIsShort && !this.selected) {
+  if (this.ui.parentIsShort && !this.isSelected) {
     parent = this.parent
-    if (!parent.selected) {
+    if (!parent.isSelected) {
       var gesture = this.workspace.getGesture(e);
       if (gesture) {
         gesture.handleBlockStart(e, this)
@@ -479,7 +479,7 @@ eYo.Brick.prototype.onMouseDown_ = function (e) {
   // but remember it for a contextual menu
   t9k.lastSelectedMagnet__ = eYo.Selected.magnet
   // Prepare the mouseUp event for an eventual connection selection
-  t9k.lastMouseDownEvent = t9k.selected ? e : null
+  t9k.lastMouseDownEvent = t9k.isSelected ? e : null
   var gesture = this.workspace.getGesture(e);
   if (gesture) {
     gesture.handleBlockStart(e, t9k)
@@ -512,11 +512,11 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
     // a brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (t9k.selected) {
+      if (t9k.isSelected) {
         // the brick was already selected,
         if (magnet) {
           // and there is a candidate selection
-          if (magnet.selected) {
+          if (magnet.isSelected) {
             // unselect
             eYo.Selected.magnet = null
           } else if (magnet !== t9k.lastSelectedMagnet__) {
@@ -549,7 +549,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
       var parent = t9k
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
-        if ((parent.selected)) {
+        if ((parent.isSelected)) {
           t9k.select()
           break
         } else if (!parent.wrapped_) {

@@ -609,9 +609,9 @@ eYo.Xml.toDom = function (brick, element, opt) {
       }
     })
     // the right, suite and next flows
-    magnetToDom(brick.magnets.right, eYo.Xml.FLOW, eYo.Xml.RIGHT)
-    magnetToDom(brick.magnets.suite, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && magnetToDom(brick.magnets.foot, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    magnetToDom(brick.right_m, eYo.Xml.FLOW, eYo.Xml.RIGHT)
+    magnetToDom(brick.suite_m, eYo.Xml.FLOW, eYo.Xml.SUITE)
+    !optNoNext && magnetToDom(brick.foot_m, eYo.Xml.FLOW, eYo.Xml.NEXT)
   }
 }
 
@@ -848,17 +848,17 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
         var input = owner.getInput(name)
         var slot_m4t = input && input.magnet
         var flow_m4t = dom.getAttribute(eYo.Xml.FLOW)
-          ? owner.magnets.suite
-          : owner.magnets.foot
+          ? owner.suite_m
+          : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
             var eyo = eYo.Brick.newComplete(workspace, type)
-            var m4t = eyo && eyo.magnets.output
+            var m4t = eyo && eyo.out_m
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
               ans = eyo
               return true
             }
-            m4t = eyo.magnets.head
+            m4t = eyo.head_m
             if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
               ans = eyo
               return true
@@ -1043,7 +1043,7 @@ eYo.Xml.fromDom = function (brick, element) {
               eYo.Xml.fromDom(t9k, child)
             } else if ((t9k = eYo.Xml.domToBrick(child, this))) {
               t9k.recover.dontResit(child)
-              var targetM4t = t9k.magnets.output
+              var targetM4t = t9k.out_m
               if (targetM4t && targetM4t.checkType_(m4t)) {
                 targetM4t.connect(m4t)
               }
@@ -1094,9 +1094,9 @@ eYo.Xml.fromDom = function (brick, element) {
           })
         }
       }
-      var out = statement(this.magnets.right, eYo.Xml.RIGHT)
-      out = statement(this.magnets.suite, eYo.Xml.SUITE) || out
-      out = statement(this.magnets.foot, eYo.Xml.NEXT) || out
+      var out = statement(this.right_m, eYo.Xml.RIGHT)
+      out = statement(this.suite_m, eYo.Xml.SUITE) || out
+      out = statement(this.foot_m, eYo.Xml.NEXT) || out
       var state = element.getAttribute(eYo.Xml.STATE)
       if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
         this.lock()

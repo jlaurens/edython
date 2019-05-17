@@ -95,7 +95,7 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
  * As side effect, the subtype is set.
  */
 eYo.Brick.Expr.comprehension.prototype.getBaseType = function () {
-  var check = this.magnets.output.check_
+  var check = this.out_m.check_
   return (check && check[0]) || eYo.T3.Expr.comprehension
 }
 

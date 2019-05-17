@@ -96,7 +96,7 @@ describe('comment statement', function () {
     d.comment_p = 'abc'
     d1.comment_p = 'cde'
     d1.moveByXY(100,20)
-    d1.magnets.right.select()
+    d1.right_m.select()
     // d1.dispose()
     // d.dispose()
     eYo.Test.tearItDown()

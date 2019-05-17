@@ -325,7 +325,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
     while (e8r.previous()) {
       var m4t = e8r.here.eyo.magnet
       if (m4t && !m4t.target) {
-        if (m4t.checkType_(y.magnets.output)) {
+        if (m4t.checkType_(y.out_m)) {
           var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
             eYo.Do.createSPAN('( ', 'eyo-code-disabled'),
             eYo.Do.createSPAN(msg),
@@ -340,7 +340,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
                   function () { // `this` is `y`
                     this.modifier_p = modifier
                     this.variant_p = flags
-                    m4t.connect(y.magnets.output)
+                    m4t.connect(y.out_m)
                   }
                 )
               })
@@ -390,7 +390,7 @@ eYo.Brick.Expr.makeSubclass('lambda', {
         label: ':'
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m4t = this.brick.magnets.output.target
+        var m4t = this.brick.out_m.target
         if (m4t) {
           // does the target accept general expression in lambda
           if (m4t.check_ && m4t.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
@@ -434,7 +434,7 @@ names.forEach((key) => {
 eYo.Magnet.prototype.consolidateType = function () {
   eYo.Magnet.superClass_.consolidateType.call(this)
   var brick = this.brick
-  var m4tOut = brick.magnets.output
+  var m4tOut = brick.out_m
   var input = brick.getInput(eYo.Key.EXPRESSION)
   var m4tIn = input.magnet
   var nocond_only_out = false

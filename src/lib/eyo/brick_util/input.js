@@ -41,7 +41,7 @@ eYo.Input = function(owner, name, model) {
 
 // private properties with default values
 Object.defineProperties(eYo.Input.prototype, {
-  visible_: { value: true },
+  visible_: { value: true, writable: true },
 })
 
 // computed properties
@@ -129,7 +129,7 @@ Object.defineProperties(eYo.Input.prototype, {
     get () {
       var brick = this.brick
       if (brick.wrapped_) {
-        return brick.magnets.output.targetBrick.bindField
+        return brick.out_m.targetBrick.bindField
       }
       var s = this.slot
       return s && s.bindField
@@ -213,7 +213,7 @@ eYo.Input.prototype.consolidate = function () {
 eYo.Input.prototype.connect = function (dm) {
   var m4t = this.magnet
   if(m4t && dm) {
-    var other = (dm.magnets && dm.magnets.output) || dm
+    var other = (dm.magnets && dm.out_m) || dm
     if (m4t.checkType_(other)) {
       return m4t.connect(other)
     }

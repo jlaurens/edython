@@ -349,24 +349,6 @@ eYo.Do.readOnlyMixin(
 )
 
 /**
- * The css class for the given text
- * For edython.
- * @param {!string} txt The text to yield_expr
- * @return {string}
- */
-eYo.T3.getCssClassForText = function (txt) {
-  switch (eYo.T3.Profile.get(txt, null).raw) {
-  case eYo.T3.Expr.reserved_identifier:
-  case eYo.T3.Expr.reserved_keyword:
-    return 'eyo-code-reserved'
-  case eYo.T3.Expr.builtin__name:
-    return 'eyo-code-builtin'
-  default:
-    return 'eyo-code'
-  }
-}
-
-/**
  * Returns a profile if `candidate` is a dotted name
  * For edython.
  * @param {!String} candidate

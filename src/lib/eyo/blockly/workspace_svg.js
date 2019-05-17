@@ -237,15 +237,15 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
     if ((brick = eYo.Xml.domToBrick(dom, this))) {
       if ((magnet = eYo.Selected.magnet)) {
         if (magnet.isInput) {
-          targetMagnet = brick.magnets.out
+          targetMagnet = brick.out_m
         } else if (magnet.isFoot || magnet.isSuite) {
-          targetMagnet = brick.magnets.head
+          targetMagnet = brick.head_m
         } else if (magnet.isHead) {
-          targetMagnet = brick.magnets.foot
+          targetMagnet = brick.foot_m
         } else if (magnet.isLeft) {
-          targetMagnet = brick.magnets.right
+          targetMagnet = brick.right_m
         } else if (magnet.isRight) {
-          targetMagnet = brick.magnets.left
+          targetMagnet = brick.left_m
         }
         if (targetMagnet && magnet.checkType_(targetMagnet)) {
           if (magnet.isHead) {
@@ -268,7 +268,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
           }
           magnet.connect(targetMagnet)
           // if (magnet.isHead) {
-          //   targetMagnet = brick.magnets.foot
+          //   targetMagnet = brick.foot_m
           // }
           brick.select()
         }
@@ -339,11 +339,11 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
 Blockly.WorkspaceSvg.prototype.resizeContents = (() => {
   var resizeContents = Blockly.WorkspaceSvg.prototype.resizeContents
   return function () {
-    this.eyo.selected = eYo.Selected.brick && eYo.Selected.brick.inVisibleArea() && eYo.Selected.brick
+    this.eyo.isSelected = eYo.Selected.brick && eYo.Selected.brick.inVisibleArea() && eYo.Selected.brick
     try {
       resizeContents.call(this)
     } finally {
-      this.eyo.selected = null
+      this.eyo.isSelected = null
     }
   }
 })()

@@ -54,7 +54,7 @@ eYo.Brick.Control.prototype.isControl = true
  * May be called very early.
  */
 eYo.Brick.Control.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.magnets.suite && this.magnets.suite.target ? 0 : 1
+  this.blackHeight = this.suite_m && this.suite_m.target ? 0 : 1
 }
 
 /**

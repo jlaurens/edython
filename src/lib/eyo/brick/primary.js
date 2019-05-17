@@ -1017,8 +1017,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       order: 75,
       fields: {
         bind: {
-          value: '.',
-          css: 'reserved',
+          reserved: '.',
           separator: true
         }
       }
@@ -1096,8 +1095,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       order: 102,
       fields: {
         label: {
-          value: ':',
-          css: 'reserved'
+          reserved: ':'
         },
         bind: {
           endEditing: true
@@ -1120,8 +1118,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       order: 501,
       fields: {
         label: {
-          value: '=',
-          css: 'reserved'
+          reserved: '='
         },
         bind: {
           endEditing: true
@@ -1630,7 +1627,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
   // if this is just a wrapper, forwards the check array
   if (!profile.dotted) {
     return profile.name.target
-      ? profile.name.target.magnets.output.check_
+      ? profile.name.target.out_m.check_
       : profile.name.type === eYo.T3.Expr.unset
         ? [
           eYo.T3.Expr.identifier

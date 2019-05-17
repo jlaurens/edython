@@ -283,8 +283,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
   },
   fields: {
     prefix: {
-      value: '@',
-      css: 'reserved'
+      reserved: '@'
     }
   },
   slots: {
@@ -313,7 +312,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
       fields: {
         prefix: '.',
         bind: {
-          css: 'reserved'
+          reserved: ''
         }
       }
     },

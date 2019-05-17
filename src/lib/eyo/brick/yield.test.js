@@ -13,7 +13,7 @@ describe('YIELD expression and statement', function() {
   })
   it(`yield expression output`, function() {
     var d = eYo.Test.new_brick(eYo.T3.Expr.yield_expr)
-    console.error(d.magnets.output.check_)
+    console.error(d.out_m.check_)
     d.dispose()
   })
   it(`Variant`, function() {

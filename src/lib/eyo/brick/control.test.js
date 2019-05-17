@@ -12,8 +12,8 @@ eYo.Test.basic(
 describe(`start_stmt connections`, function () {
   it(`left/right`, function () {
     var d = eYo.Test.new_brick('start_stmt')
-    chai.assert(!d.magnets.right, 'Unexpected right magnet')
-    chai.assert(!d.magnets.left, 'Unexpected left magnet')
+    chai.assert(!d.right_m, 'Unexpected right magnet')
+    chai.assert(!d.left_m, 'Unexpected left magnet')
     d.dispose()
   })
 })

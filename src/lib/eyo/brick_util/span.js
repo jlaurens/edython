@@ -66,22 +66,24 @@ eYo.Span = function (brick) {
 
 // default property values
 Object.defineProperties(eYo.Span.prototype, {
-  brick_: { value: undefined },
-  c_min_: { value: 2 },
-  l_: { value: 1 },
-  header_: { value: 0 },
-  main_: { value: 1 },
-  black_: { value: 0 },
-  footer_: { value: 0 },
-  suite_: { value: 0 },
-  foot_: { value: 0 }
+  brick_: { value: undefined, writable: true },
+  c_min_: { value: 2, writable: true },
+  l_: { value: 1, writable: true },
+  header_: { value: 0, writable: true },
+  main_: { value: 1, writable: true },
+  black_: { value: 0, writable: true },
+  footer_: { value: 0, writable: true },
+  suite_: { value: 0, writable: true },
+  foot_: { value: 0, writable: true }
 })
+
 
 /**
  * @type {Number} positive number of indentation spaces.
  */
 eYo.Span.indent = 4
 
+// Public readonly properties
 Object.defineProperties(eYo.Span.prototype, {
   brick: {
     get () {

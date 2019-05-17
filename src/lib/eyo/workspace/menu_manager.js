@@ -250,7 +250,7 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
   if (ee) {
     // this brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (brick.selected) {
+      if (brick.isSelected) {
         // if the brick was already selected,
         // try to select an input connection
         eYo.Selected.magnet = brick.lastSelectedMagnet__
@@ -423,7 +423,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
         {action: eYo.ID.ADD_COMMENT,
           target: brick})
     }
-    menuItem.setEnabled(false && !goog.userAgent.IE && !brick.eyo.magnets.output)
+    menuItem.setEnabled(false && !goog.userAgent.IE && !brick.eyo.out_m)
     this.addChild(menuItem, true)
   }
   if (brick.workspace.options.collapse) {
@@ -448,7 +448,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
         ? eYo.Msg.ENABLE_BLOCK : eYo.Msg.DISABLE_BLOCK,
       {action: eYo.ID.TOGGLE_ENABLE_BLOCK,
         target: brick})
-    menuItem.setEnabled(!brick.eyo.magnets.output)
+    menuItem.setEnabled(!brick.eyo.out_m)
     this.addChild(menuItem, true)
   }
   if (brick.isDeletable() && brick.isMovable() && !brick.isInFlyout) {
@@ -600,12 +600,12 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     eYo.Events.setGroup(true)
     var returnState = false
     try {
-      if (target.selected && target !== unwrapped) {
+      if (target.isSelected && target !== unwrapped) {
         // this brick was selected, select the brick below or above before deletion
         var m4t
-        if (((m4t = unwrapped.magnets.foot) && (target = m4t.targetBrick)) || ((m4t = unwrapped.magnets.head) && (target = m4t.targetBrick))) {
+        if (((m4t = unwrapped.foot_m) && (target = m4t.targetBrick)) || ((m4t = unwrapped.head_m) && (target = m4t.targetBrick))) {
           target.select()
-        } else if ((m4t = unwrapped.magnets.output) && (m4t = m4t.target)) {
+        } else if ((m4t = unwrapped.out_m) && (m4t = m4t.target)) {
           m4t.select()
         }
       }
@@ -852,7 +852,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  */
 eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model) {
   // THIS IS BROKEN SINCE THE SLOT KEYS ARE NO LONGER INTEGERS
-  var m4t = brick.eyo.magnets.output
+  var m4t = brick.eyo.out_m
   if (!m4t) {
     // this is a statement brick
     return false
@@ -948,7 +948,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
 eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) {
   // can we insert a brick typed type between the brick and
   // the target of its output connection
-  var m4tOut = brick.eyo.magnets.output
+  var m4tOut = brick.eyo.out_m
   if (m4tOut) {
     var m4tIn = m4tOut.target
     if (!m4tIn) {
@@ -978,7 +978,7 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
     var eyo = brick.eyo
   var parent = eyo.parent
   if (parent && parent.type === model.type) {
-    var input = eyo.magnets.output.input
+    var input = eyo.out_m.input
     if (model.input && input.name !== model.input) {
       return false
     }
@@ -1032,9 +1032,9 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
     var eyo = eYo.Brick.newComplete(brick, type)
-    var yorn = eyo.magnets.head &&
-    eyo.magnets.head.checkType_(m4t) &&
-    (!targetM4t || (eyo.magnets.foot && targetM4t.checkType_(eyo.magnets.foot)))
+    var yorn = eyo.head_m &&
+    eyo.head_m.checkType_(m4t) &&
+    (!targetM4t || (eyo.foot_m && targetM4t.checkType_(eyo.foot_m)))
     eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1048,9 +1048,9 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
     var eyo = eYo.Brick.newComplete(brick, type)
-    var yorn = eyo.magnets.foot &&
-    eyo.magnets.foot.checkType_(m4t) &&
-    (!target || (eyo.magnets.head && target.checkType_(eyo.magnets.head)))
+    var yorn = eyo.foot_m &&
+    eyo.foot_m.checkType_(m4t) &&
+    (!target || (eyo.head_m && target.checkType_(eyo.head_m)))
     eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1063,7 +1063,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   eYo.Events.disableWrap(() => {
-    if ((m4t = brick.eyo.magnets.foot)) {
+    if ((m4t = brick.eyo.foot_m)) {
       var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {
         sep = F_after(target, type) || sep
@@ -1074,7 +1074,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
       }
       this.shouldSeparateInsertAfter(sep)
     }
-    if ((m4t = brick.eyo.magnets.head)) {
+    if ((m4t = brick.eyo.head_m)) {
       target = m4t.target
       for (_ = 0; (type = Us[_++]);) {
         sep = F_before(target, type) || sep

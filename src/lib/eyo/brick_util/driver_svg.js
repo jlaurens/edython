@@ -14,12 +14,12 @@
 goog.provide('eYo.Driver.Svg')
 
 goog.require('eYo.Driver')
-goog.require('eYo')
-
-goog.require('eYo.Slot')
+goog.require('eYo.T3.Profile')
 goog.require('eYo.Field')
-goog.require('eYo.Input')
-goog.require('eYo.Brick')
+
+goog.forwardDeclare('eYo.Slot')
+goog.forwardDeclare('eYo.Brick')
+goog.forwardDeclare('eYo.Style')
 
 eYo.setup.register(function () {
   eYo.Style.insertCssRuleAt(
@@ -203,7 +203,7 @@ eYo.setup.register(() => {
 
 /**
  * A namespace.
- * @namespace eYo.Brick.prototype.svg
+ * @namespace eYo.UI.prototype.svg
  */
 
 /**
@@ -924,7 +924,7 @@ eYo.Driver.Svg.prototype.slotDisplay = function (slot) {
 
 /**
  * Prepare the given label field.
- * @param {!eYo.FieldLabel} field  Label field to be prepared.
+ * @param {!eYo.Field} field  Label field to be prepared.
  */
 eYo.Driver.Svg.prototype.fieldInit = function (field) {
   if (field.svg) {
@@ -1132,7 +1132,7 @@ eYo.Driver.Svg.prototype.brickConnectEffect = function (brick) {
   var svg = brick.ui.svg
   var w = brick.workspace
   var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
-  if (brick.magnets.output) {
+  if (brick.out_m) {
     var h = svg.height * w.scale / 2
     var ripple = eYo.Driver.Svg.newElement('circle',
       {class: 'blocklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
@@ -1963,7 +1963,28 @@ eYo.Driver.Svg.prototype.flyoutToolbarInit = function(ftb) {
 }
 
 // Private holder of svg ressources
-Object.defineProperties(eYo.Field, { svg_: { value: undefined } })
+Object.defineProperties(eYo.Field, {
+  svg_: { value: undefined, writable: true }
+})
+
+
+/**
+ * The css class for the given text
+ * For edython.
+ * @param {!string} txt The text to yield_expr
+ * @return {string}
+ */
+eYo.Driver.Svg.getCssClassForText = function (txt) {
+  switch (eYo.T3.Profile.get(txt, null).raw) {
+  case eYo.T3.Expr.reserved_identifier:
+  case eYo.T3.Expr.reserved_keyword:
+    return 'eyo-code-reserved'
+  case eYo.T3.Expr.builtin__name:
+    return 'eyo-code-builtin'
+  default:
+    return 'eyo-code'
+  }
+}
 
 /**
  * Initializes the field SVG ressources.
@@ -1973,6 +1994,9 @@ Object.defineProperties(eYo.Field, { svg_: { value: undefined } })
  * @return {?eYo.Field}
  */
 eYo.Driver.Svg.prototype.fieldInit = function(field) {
+  if (!(field.css_class_ = model.css_class || (field.status && `eyo-code-${field.status}`))) {
+    field.css_class_ = eYo.Driver.Svg.getCssClassForText(field.text)
+  }
   var svg = field.owner.svg || field.brick.ui.svg
   if (!svg) { return }
   var g = svg.group_

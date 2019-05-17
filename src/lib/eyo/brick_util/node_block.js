@@ -29,7 +29,7 @@ eYo.Node.prototype.suiteInDlgt = function (brick) {
   var n = this.n0
   // suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
   if (n.n_type === eYo.TKN.NEWLINE) {
-    var m4t = brick.magnets.suite
+    var m4t = brick.suite_m
     var comments = n.comments
     if (comments.length) {
       comments.forEach(n => {
@@ -42,7 +42,7 @@ eYo.Node.prototype.suiteInDlgt = function (brick) {
     } while ((n = n.sibling) && n.n_type !== eYo.TKN.DEDENT)
   } else {
     var d = n.simple_stmt2Dlgt(brick)
-    brick.magnets.rightMost.connectSmart(d)// what if we cannot connect?
+    brick.right_mMost.connectSmart(d)// what if we cannot connect?
   }
 }
 
@@ -55,7 +55,7 @@ eYo.Node.prototype.func_body_suiteInDlgt = function (brick) {
   var n = this.n0
   // func_body_suite: simple_stmt | NEWLINE [TYPE_COMMENT NEWLINE] INDENT stmt+ DEDENT
   if (n.n_type === eYo.TKN.NEWLINE) {
-    var m4t = brick.magnets.suite
+    var m4t = brick.suite_m
     var comments = n.comments
     if (comments.length) {
       comments.forEach(n => {
@@ -80,7 +80,7 @@ eYo.Node.prototype.func_body_suiteInDlgt = function (brick) {
     } while ((n = n.sibling) && n.n_type !== eYo.TKN.DEDENT)
   } else {
     var d = n.simple_stmt2Dlgt(brick)
-    brick.magnets.rightMost.connectSmart(d)// what if we cannot connect?
+    brick.right_mMost.connectSmart(d)// what if we cannot connect?
   }
 }
 
@@ -117,15 +117,15 @@ eYo.Node.prototype.simple_stmt2Dlgt = function (owner) {
   var n = this.n0
   var brick = n.toBrick(owner)
   var d = brick
-  var m4t = d.magnets.rightMost
+  var m4t = d.right_mMost
   while ((n = n.sibling)) {
     if (n.type === eYo.TKN.SEMI) {
       n = n.sibling
       if (n.type === eYo.TKN.simple_stmt) {
         var dd = n.toBrick(owner)
         if (dd) {
-          m4t.connect(dd.magnets.left)
-          m4t = dd.magnets.rightMost
+          m4t.connect(dd.left_m)
+          m4t = dd.right_mMost
         } else {
           console.error("BREAK HERE, MISSING BLOCK", n)
         }
@@ -323,7 +323,7 @@ eYo.Node.prototype.if_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(brick)
   var dd = brick
   while ((n = n.sibling)) {
-    var m4t = dd.magnets.foot
+    var m4t = dd.foot_m
     if ((n.n_str === 'elif')) {
       dd = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.elif_part)
       n = n.sibling
@@ -353,7 +353,7 @@ eYo.Node.prototype.while_stmt2Dlgt = function (workspace) {
   n.suiteInDlgt(brick)
   var dd = brick
   if ((n = n.sibling)) {
-    var m4t = dd.magnets.foot
+    var m4t = dd.foot_m
     dd = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.else_part)
     n.sibling.sibling.suiteInDlgt(dd)
     m4t.connectSmart(dd)
@@ -451,7 +451,7 @@ eYo.Node.prototype.funcdef2Dlgt = function (workspace) {
     n = n.sibling.sibling
   }
   if (n.type === eYo.TKN.TYPE_COMMENT) {
-    root.magnets.right.connectSmart(n.typeComment2Dlgt(workspace))
+    root.right_m.connectSmart(n.typeComment2Dlgt(workspace))
     n = n.sibling
   }
   n.func_body_suiteInDlgt(root)
@@ -534,7 +534,7 @@ eYo.Node.prototype.decorator2Dlgt = function (workspace) {
   }
   var comments = n.comments
   if (comments.length) {
-    var m4t = brick.magnets.footMost
+    var m4t = brick.foot_mMost
     comments.forEach(n => {
       var m = m4t.connectSmart(n.toBrick(workspace))
       m && (m = m4t)
@@ -995,7 +995,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
     case eYo.TKN.file_input: // (NEWLINE | stmt)* ENDMARKER
       var bs = this.n_child.map(n => n.toBrick(workspace))
       if ((root = bs.shift())) {
-        m4t = root.magnets.footMost
+        m4t = root.foot_mMost
         bs.forEach(dd => {
           var m = m4t.connectSmart(dd)
           m && (m4t = m)

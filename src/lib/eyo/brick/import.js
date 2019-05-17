@@ -249,8 +249,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       order: 4,
       fields: {
         label: {
-          value: 'import *',
-          css: 'reserved'
+          reserved: 'import *'
         }
       },
       xml: {
@@ -388,8 +387,7 @@ eYo.Brick.Stmt.makeSubclass('future_statement', {
       order: 1,
       fields: {
         label: {
-          value: 'from __future__ import',
-          css: 'reserved'
+          reserved: 'from __future__ import'
         }
       },
       wrap: eYo.T3.Expr.non_void_import_identifier_as_list

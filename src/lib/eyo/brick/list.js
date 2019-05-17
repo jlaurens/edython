@@ -370,7 +370,7 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
       var f = (target, no_target) => {
         return {ans: this.someInput(input => {
             var t = input.targetBrick
-            if (t && (t = t.magnets.output.check_)) {
+            if (t && (t = t.out_m.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
             }
           })

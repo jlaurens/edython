@@ -24,6 +24,30 @@ goog.forwardDeclare('eYo.Events');
 goog.require('goog.asserts');
 
 /**
+ * Abstract class for text fields.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
+ * @param {string} text The initial content of the field.
+ * @constructor
+ */
+eYo.Field = function (bsi, name, text) {
+  eYo.Field.superClass_.constructor.call(this, bsi)
+  this.name_ = name
+  this.size_ = new eYo.Size(0, 1)
+  this.text__ = text
+  this.reentrant_ = {}
+  Object.defineProperty(bsi, `${name}_f`, { value: this})
+}
+goog.inherits(eYo.Field, eYo.Owned)
+
+Object.defineProperties(eYo.Field, {
+  STATUS_NONE: { value: 'none' },
+  STATUS_COMMENT: { value: 'comment' },
+  STATUS_RESERVED: { value: 'reserved' },
+  STATUS_BUILTIN: { value: 'builtin' },
+})
+
+
+/**
  * Create all the fields from the given model.
  * For edython.
  * @param {!eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
@@ -33,10 +57,6 @@ eYo.Field.makeFields = (() => {
   // This is a closure
   // default helper functions for an editable field bound to a data object
   // `this` is an instance of  eYo.FieldInput
-  var validate = function (txt) {
-    // `this` is a field
-    return this.validate(txt)
-  }
   var startEditing = function () {
   }
   var endEditing = function () {
@@ -91,26 +111,35 @@ eYo.Field.makeFields = (() => {
   var makeField = (owner, name, model) => {
     var field
     if (goog.isString(model)) {
-      if (model.startsWith('css')) {
-        return
-      }
       field = new eYo.FieldLabel(owner, name, model)
-      field.css_class_ = eYo.T3.getCssClassForText(model)
     } else if (goog.isObject(model)) {
       setupModel(model)
       if (model.edit || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new (model.variable? eYo.FieldVariable: eYo.FieldInput)(owner, name, model.edit || '')
-      } else if (goog.isDefAndNotNull(model.value) || goog.isDefAndNotNull(model.css)) {
+        field = new eYo.FieldInput(owner, name, model.edit || '')
+      } else if (goog.isDefAndNotNull(model.value)) {
         // this is just a label field
         field = new eYo.FieldLabel(owner, model.value || '')
+      } else if (goog.isDefAndNotNull(model.reserved)) {
+        // this is just a label field
+        field = new eYo.FieldLabel(owner, model.reserved)
+        field.status = eYo.Field.STATUS_RESERVED
+      } else if (goog.isDefAndNotNull(model.builtin)) {
+        // this is just a label field
+        field = new eYo.FieldLabel(owner, model.builtin)
+        field.status = eYo.Field.STATUS_BUILTIN
+      } else if (goog.isDefAndNotNull(model.comment)) {
+        // this is just a label field
+        field = new eYo.FieldLabel(owner, model.comment)
+        field.status = eYo.Field.STATUS_COMMENT
+      } else if (goog.isDefAndNotNull(model.status)) {
+        // this is just a label field
+        field = new eYo.FieldLabel(owner, '')
       } else { // other entries are ignored
         return
       }
+      model.status && (field.status = model.status)
       field.model = model
-      if (!(field.css_class_ = model.css_class || (model.css && 'eyo-code-' + model.css))) {
-        field.css_class_ = eYo.T3.getCssClassForText(field.text)
-      }
       field.order__ = model.order__
       if (model.hidden) {
         field.visible = false
@@ -273,26 +302,11 @@ eYo.Field.disposeFields = owner => {
   Object.values(fields).forEach(f => f.dispose())
 }
 
-/**
- * Abstract class for text fields.
- * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
- * @param {string} text The initial content of the field.
- * @constructor
- */
-eYo.Field = function (bsi, name, text) {
-  eYo.Field.superClass_.constructor.call(this, bsi)
-  this.name_ = name
-  this.size_ = new eYo.Size(0, 1)
-  this.text__ = text
-  this.reentrant_ = {}
-}
-goog.inherits(eYo.Field, eYo.Owned)
-
 // Private properties with default values
 Object.defineProperties(eYo.Field.prototype, {
-  name_: { value: undefined },
-  text__: { value: '' },
-  visible_: { value: true },
+  name_: { value: undefined, writable: true },
+  text__: { value: '', writable: true },
+  visible_: { value: true, writable: true },
 })
 
 // Private computed properties
@@ -321,12 +335,10 @@ Object.defineProperties(eYo.Field.prototype, {
 
 // Public properties with default values
 Object.defineProperties(eYo.Field.prototype, {
-  isEditing: { value: false},
-  editable: { value: true },
-  model: {
-    value: undefined,
-    writable: true,
-  },
+  status: { value: '', writable: true }, // one of STATUS_... above
+  isEditing: { value: false, writable: true},
+  editable: { value: true, writable: true },
+  model: { value: undefined, writable: true,},
 })
 
 // Public readonly computed properties
@@ -563,7 +575,7 @@ goog.inherits(eYo.FieldInput, eYo.Field)
  * @private
  */
 eYo.FieldInput.prototype.onMouseDown_ = function(e) {
-  if (this.workspace && this.brick.selected) {
+  if (this.workspace && this.brick.isSelected) {
     var gesture = this.workspace.getGesture(e)
     if (gesture) {
       gesture.setStartField(this)
@@ -656,16 +668,3 @@ eYo.FieldInput.prototype.getPlaceholderText = function (clear) {
     return (this.placeholderText_ = ph(data && data.model) || ph(this.model) || eYo.Msg.Placeholder.CODE)
   }
 }
-
-/**
- * Class for an editable code field for variables.
- * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
- * @param {string=} name
- * @param {string} text The initial content of the field.
- * @extends {eYo.FieldInput}
- * @constructor
- */
-eYo.FieldVariable = function (bsi, name, text) {
-  eYo.FieldVariable.superClass_.constructor.call(this, bsi, name, text)
-}
-goog.inherits(eYo.FieldVariable, eYo.FieldInput)

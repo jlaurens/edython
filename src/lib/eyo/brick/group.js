@@ -39,8 +39,7 @@ eYo.Brick.Stmt.makeSubclass('BaseGroup', {
       },
       fields: {
         label: { // don't call it 'operator'
-          value: ':',
-          css: 'reserved',
+          reserved: ':',
           hidden: false
         }
       }
@@ -79,7 +78,7 @@ eYo.Brick.BaseGroup.makeSubclass('Group', {}, eYo.Brick)
  * Update the black count.
  */
 eYo.Brick.Group.prototype.updateBlackHeight = function () {
-  this.blackHeight = this.magnets.suite && this.magnets.suite.blackTarget
+  this.blackHeight = this.suite_m && this.suite_m.blackTarget
   ? 0
   : this.left || this.right ? 0 : 1
 }
@@ -140,7 +139,7 @@ eYo.Brick.Group.makeSubclass('Branch', {
   },
   fields: {
     variant: {
-      css: 'reserved'
+      reserved: ''
     }
   },
   slots: {
@@ -195,7 +194,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
   } [this.variant_p]
   if (!type) {
     var targetMagnet
-    if ((targetMagnet = this.magnets.head.target)) {
+    if ((targetMagnet = this.head_m.target)) {
       // look at the high connection
       //
       var t9k = targetMagnet.brick
@@ -205,7 +204,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
         type = T3.last_else_part
       }
     }
-    if (!type && (targetMagnet = this.magnets.foot.target)) {
+    if (!type && (targetMagnet = this.foot_m.target)) {
       // the high connection did not add any constrain
       // may be the low connection will?
       t9k = targetMagnet.brick
