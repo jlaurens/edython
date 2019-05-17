@@ -409,7 +409,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       menuItem.setEnabled(false)
     }
   }
-  if (brick.isEditable() && !brick.collapsed_ &&
+  if (brick.editable && !brick.collapsed_ &&
     brick.workspace.options.comments) {
     // Option to add/remove a comment.
     if (brick.comment) { // .comment is never set

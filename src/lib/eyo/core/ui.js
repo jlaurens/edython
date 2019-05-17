@@ -148,7 +148,7 @@ eYo.EditorOffset = {x: 0, y: 0}
 /**
  * Setupt the offset of the text editor.
  */
-eYo.setup.register(function () {
+eYo.setup.register(() => {
   var ELECTRON = {x: 1, y: 2}
   var CHROME = {x: 1, y: 1}
   var GECKO = {x: 0, y: -1}
@@ -243,7 +243,7 @@ eYo.setup.register(-1, function () {
   eYo.Style.insertCssRuleAt(null)
 })
 
-eYo.setup.register(function () {
+eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt(
     `.blocklyMainBackground {
       stroke-width: 5;

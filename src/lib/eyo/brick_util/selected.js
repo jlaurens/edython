@@ -523,9 +523,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
           } else if (magnet !== t9k.lastSelectedMagnet__) {
             if (magnet.isInput) {
               if (!magnet.targetBrick) {
-                var field = magnet.bindField
-                field && (field.eyo.doNotEdit = true)
-                magnet.select()
+                magnet.bindField && magnet.select()
               }
             } else {
               magnet.select()

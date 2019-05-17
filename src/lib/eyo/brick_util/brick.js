@@ -1500,13 +1500,12 @@ eYo.Brick.prototype.makeBounds = function () {
       data.field = slot.bind_f
       if (!data.field) {
         var candidate
-        for (var kk in slot.fields) {
-          var f = slot.fields[kk]
-          if (f.eyo.isEditable) {
+        slot.forEachField(f => {
+          if (f.editable) {
             goog.asserts.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
             candidate = f
           }
-        }
+        })
       }
     } else if ((data.field = this.fields[k])) {
       data.slot = null
@@ -1525,11 +1524,7 @@ eYo.Brick.prototype.makeBounds = function () {
     if (field && k === 'name') {
       theField = field
     }
-    var eyo = field && field.eyo
-    if (eyo) {
-      // this is for editable fields
-      eyo.data = data
-    }
+    field.data = data
   }
   if (this.name_d && this.name_d.field !== theField) {
     console.error('ERROR')
@@ -2588,6 +2583,10 @@ eYo.Brick.prototype.render_ = function () {
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
+  editable: {
+    value: true,
+    writable: true
+  },
   collapsed_: {
     writable: true
   },

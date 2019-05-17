@@ -132,7 +132,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   );
 };
 
-eYo.setup.register(function () {
+eYo.setup.register(() => {
   eYo.Style.insertCssRuleAt('.eyo-menu-button {',
       'background: white;',
       'box-sizing: border-box;',

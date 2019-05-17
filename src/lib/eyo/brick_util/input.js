@@ -149,11 +149,6 @@ Object.defineProperties(eYo.Input.prototype, {
       throw "BAD DESIGN, BREAK HERE"
     }
   },
-  sourceBlock_: {
-    get () {
-      throw "BAD DESIGN, BREAK HERE"
-    }
-  },
   connection: {
     get () {
       throw "BAD DESIGN, BREAK HERE"

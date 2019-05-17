@@ -337,7 +337,7 @@ Object.defineProperties(eYo.Field.prototype, {
 Object.defineProperties(eYo.Field.prototype, {
   status: { value: '', writable: true }, // one of STATUS_... above
   isEditing: { value: false, writable: true},
-  editable: { value: true, writable: true },
+  editable: { value: false, writable: true },
   model: { value: undefined, writable: true,},
 })
 
@@ -397,7 +397,7 @@ Object.defineProperties(eYo.Field.prototype, {
      * @param {boolean} visible True if visible.
      */
     set (visible) {
-      if (this.visible_ == visible) {
+      if (this.visible_ === visible) {
         return;
       }
       this.visible_ = visible
@@ -556,8 +556,6 @@ eYo.FieldLabel = function (bsi, name, text) {
 }
 goog.inherits(eYo.FieldLabel, eYo.Field)
 
-eYo.FieldLabel.prototype.EDITABLE = false
-
 /**
  * Class for an editable code field.
  * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
@@ -569,6 +567,7 @@ eYo.FieldLabel.prototype.EDITABLE = false
 eYo.FieldInput = function (bsi, name, text) {
   goog.asserts.assert(name, 'missing name for an editable field')
   eYo.FieldInput.superClass_.constructor.call(this, bsi, name, text)
+  this.editable = true
 }
 goog.inherits(eYo.FieldInput, eYo.Field)
 

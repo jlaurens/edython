@@ -307,7 +307,7 @@ eYo.Test.bind_field = (type, key, no) => {
   var f = s.bindField
   chai.assert(!!f === !no, `${no ? 'UNEXPECTED' : 'MISSING'} BIND FIELD for ${key} in ${brick.type}`)
   if (!no) {
-    chai.assert(f.isVisible(), `INVISIBLE BIND FIELD for ${key} in ${brick.type}`)
+    chai.assert(f.visible, `INVISIBLE BIND FIELD for ${key} in ${brick.type}`)
   }
   var i = s.input
   if (i) {

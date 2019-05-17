@@ -21,7 +21,8 @@ goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Style')
 
-eYo.setup.register(function () {
+eYo.setup.register(() => {
+  eYo.Style.SEP_SPACE_X = 0
   eYo.Style.insertCssRuleAt(
     `.eyo-flyout {
         position: absolute;
@@ -226,17 +227,6 @@ eYo.Driver.Svg = function () {
 }
 goog.inherits(eYo.Driver.Svg, eYo.Driver)
 
-// TO BE DEPRECATED
-Object.defineProperties(Blockly.Connection, {
-  highlightedPath_: {
-    get () {
-      return eYo.Driver.Svg.magnetHighlightedPath_
-    },
-    set (newValue) {
-      eYo.Driver.Svg.magnetHighlightedPath_ = newValue
-    }
-  }
-})
 eYo.Driver.Svg.prototype.withBBox = true
 
 /**
@@ -760,7 +750,7 @@ eYo.Driver.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Driver.Svg.prototype.fieldDisplayedUpdate = function (field) {
-  this.fieldDisplayedSet(field, field.isVisible())
+  this.fieldDisplayedSet(field, field.visible)
 }
 
 /**
@@ -1003,7 +993,7 @@ eYo.Driver.Svg.prototype.fieldUpdateWidth = function (field) {
     return
   }
   var width = field.size.width
-  svg.borderRect_.setAttribute('width', width + eYo.BlockSvg.SEP_SPACE_X)
+  svg.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
   var r = svg.editRect_
   r && r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0))
 }
@@ -2010,7 +2000,7 @@ eYo.Driver.Svg.prototype.fieldInit = function(field) {
   svg.borderRect_ = eYo.utils.createSvgElement('rect', {
     rx: 4,
     ry: 4,
-    x: -eYo.BlockSvg.SEP_SPACE_X / 2,
+    x: -eYo.Style.SEP_SPACE_X / 2,
     y: 0,
     height: 16
   }, g)
@@ -2055,12 +2045,12 @@ eYo.Driver.Svg.prototype.fieldUpdateEditable = function(field) {
     return
   }
   if (field.brick.editable) {
-    eYo.utils.addClass(g, 'blocklyEditableText')
-    eYo.utils.removeClass(g, 'blocklyNonEditableText')
+    eYo.utils.addClass(g, 'eyo-editable-text')
+    eYo.utils.removeClass(g, 'eyo-non-editable-text')
     g.style.cursor = 'text'
   } else {
-    eYo.utils.addClass(g, 'blocklyNonEditableText')
-    eYo.utils.removeClass(g, 'blocklyEditableText')
+    eYo.utils.addClass(g, 'eyo-non-editable-text')
+    eYo.utils.removeClass(g, 'eyo-editable-text')
     g.style.cursor = ''
   }
 };

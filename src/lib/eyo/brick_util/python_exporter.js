@@ -265,21 +265,20 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
  * @private
  */
 eYo.Py.Exporter.prototype.exportField_ = function (field) {
-  if (field.isVisible()) {
-    var text = (field.getPythonText_ && field.getPythonText_()) || field.text
-    var f_eyo = field.eyo
+  if (field.visible) {
+    var text = field.getPythonText_()
     if (!text.length) {
-      var d = f_eyo.data
+      var d = field.data
       if (d) {
         if (goog.isDef(d.model.python)) {
           text = eYo.Do.valueOf(d.model.python, d) || ''
-        } else if (!f_eyo.optional_ && goog.isDef(d.model.placeholder)) {
+        } else if (!field.optional_ && goog.isDef(d.model.placeholder)) {
           text = eYo.Do.valueOf(d.model.placeholder, d) || ''
         }
       }
     }
     if (text.length) {
-      this.isSeparatorField = field.name === 'separator' || (f_eyo.model && f_eyo.model.separator)
+      this.isSeparatorField = field.name === 'separator' || (field.model && field.model.separator)
       // if the text is void, it can not change whether
       // the last character was a letter or not
       var head = text[0]
@@ -296,7 +295,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_continue.test(head))) {
         // add a separation
         this.addSpace()
-      } else if (f_eyo.isLabel && eYo.XRE.id_continue.test(head)) {
+      } else if (field.isLabel && eYo.XRE.id_continue.test(head)) {
         // add a separation here too
         this.addSpace()
       }
@@ -327,7 +326,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
  * @private
  */
 eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
-  if (input && input.isVisible()) {
+  if (input && input.visible) {
     var m4t = input.magnet
     if (m4t) {
       var t9k = m4t.targetBrick

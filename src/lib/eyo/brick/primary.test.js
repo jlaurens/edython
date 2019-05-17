@@ -406,7 +406,7 @@ describe('Primary slots', function() {
     eYo.Test.code(dhldr, 'a')
     chai.assert(dhldr.target_p === 'a', 'FAILED')
     chai.assert(dhldr.target_s.bind_f.text === 'a', `SYNCHRONIZE FAILED for target bind field in ${dhldr.type}`)
-    chai.assert(dhldr.target_s.bind_f.isVisible(), `INVISIBLE BIND FIELD`)
+    chai.assert(dhldr.target_s.bind_f.visible, `INVISIBLE BIND FIELD`)
     dmain.target_p = 'd'
     eYo.Test.code(dmain, 'd')
     dmain.dotted_p = 1 // things change here

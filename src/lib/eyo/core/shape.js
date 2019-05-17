@@ -731,7 +731,7 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
     this.half_circle(r, true, 2)
     this.z()
   } else if (magnet && magnet.bindField && !magnet.ignoreBindField) {
-    this.width = 1 + (magnet.bindField.isVisible()
+    this.width = 1 + (magnet.bindField.visible
       ? Math.max(this.width, 1)
       : 2)
     var w = this.width - 1

@@ -782,7 +782,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
     // for dynamic lists
     this.brick_.inputList.forEach(input => {
       goog.asserts.assert(input, `Input with no eyo ${input.name} in brick ${this.brick_.type}`)
-      if (input.isVisible()) {
+      if (input.visible) {
         io.input = input
         this.drawInput_(io)
       } else {
@@ -1252,7 +1252,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
   // if there is a slot or only an input.
   var t9k = m4t.targetBrick
   if (t9k) {
-    if (m4t.bindField && m4t.bindField.isVisible()) {
+    if (m4t.bindField && m4t.bindField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
@@ -1314,7 +1314,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
     if (m4t.targetIsMissing) {
       this.someTargetIsMissing = true
     }
-    if (m4t.bindField && m4t.bindField.isVisible()) {
+    if (m4t.bindField && m4t.bindField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.

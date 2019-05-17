@@ -255,11 +255,6 @@ Object.defineProperties(eYo.Slot.prototype, {
     get () {
       throw "INCONSISTANCY, BREAK HERE"
     }
-  },
-  sourceBlock_: {
-    get () {
-      throw "INCONSISTANCY, BREAK HERE"
-    }
   }
 })
 
