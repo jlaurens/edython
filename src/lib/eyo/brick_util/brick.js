@@ -2114,8 +2114,6 @@ eYo.Brick.prototype.updateGroupBlackHeight = function () {
  */
 eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // new connections change the span properties of the superior block.
-  // Actually, we assume that it never changes the size
-  // of the inferior block!!!
   // How many lines did I add? Where did I add them?
   var t9k = m4t.targetBrick
   if (m4t.isFoot) {
@@ -2125,10 +2123,8 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
     this.span.addSuite(targetBrick.span.l)
   }
   this.consolidateType()
-  if (m4t.isOutput) {
-    if (this.isSelected && this.locked_) {
-      t9k.select()
-    }
+  if (m4t.isInput && m4t.isSelected) {
+    t9k.select()
   }
 }
 
@@ -2145,21 +2141,19 @@ eYo.Brick.prototype.willDisconnect = function (m4t) {
  * @param {!eYo.Magnet} oldTargetM4t  that was connected to m4t
  */
 eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
-  // how many bricks did I add ?
-  if (m4t.isSuite) {
-    this.updateBlackHeight()
-  } else if (!m4t.isOutput) {
-    this.updateGroupBlackHeight()
-  }
+  // how many bricks/line did I remove in the superior brick?
   if (m4t.isFoot) {
-    this.belowHeight = 0
-    this.incrementChangeCount()
+    this.span.foot = 0
   } else if (m4t.isSuite) {
-    this.suiteHeight = 0
-    this.incrementChangeCount()
-  } else if (m4t.isInput) {
-    this.incrementChangeCount()
+    this.span.black = 1
+    this.span.suite = 0
+  } else if (m4t.isRight) {
+    var span = oldTargetM4t.brick.span
+    this.addFooter(-span.footer - span.main + 1)
+  } else if (m4t.isLeft) {
+    this.span.header = 0
   }
+  this.incrementChangeCount()
 }
 
 /**

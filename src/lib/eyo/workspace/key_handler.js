@@ -40,7 +40,7 @@ eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
   if (eYo.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
     return true
   }
-  return this.eyo.handleMenuKeyEvent(e)
+  return this.handleMenuKeyEvent(e)
 }
 
 /**

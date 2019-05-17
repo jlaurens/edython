@@ -1964,7 +1964,7 @@ eYo.Driver.Svg.prototype.flyoutToolbarInit = function(ftb) {
 
 // Private holder of svg ressources
 Object.defineProperties(eYo.Field, {
-  svg_: { value: undefined, writable: true }
+  svg: { value: undefined, writable: true }
 })
 
 

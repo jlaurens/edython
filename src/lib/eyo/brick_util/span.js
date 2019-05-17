@@ -41,6 +41,9 @@ goog.forwardDeclare('eYo.Brick')
  * Class for a Span object.
  * A span object stores various dimensions of a brick, in text units.
  * Each node has a span object.
+ * Any public action is expected to behave atomically.
+ * The state is always in a consistent state.
+ * However, the span state may not be consistent with the brick state.
  * For edython.
  * @param {!eYo.Brick} brick The brick owning the span.
  * @constructor
@@ -128,11 +131,6 @@ Object.defineProperties(eYo.Span.prototype, {
       return this.height
     }
   },
-  header: {
-    get () {
-      return this.header_
-    }
-  },
   /**
    * The main count is the number of main lines in statements.
    * A statement has one main line in general.
@@ -159,16 +157,6 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.footer_
     }
-  },
-  suite: {
-    get () {
-      return this.suite_
-    }
-  },
-  foot: {
-    get () {
-      return this.foot_
-    }
   }
 })
 // Public computed properties:
@@ -187,6 +175,30 @@ Object.defineProperties(eYo.Span.prototype, {
         return
       }
       this.addBlack(newValue ? 1 : -1)
+    }
+  },
+  foot: {
+    get () {
+      return this.foot_
+    },
+    set (newValue) {
+      this.addFoot(newValue - this.foot_)
+    }
+  },
+  suite: {
+    get () {
+      return this.suite_
+    },
+    set (newValue) {
+      this.addFoot(newValue - this.suite_)
+    }
+  },
+  header: {
+    get () {
+      return this.header_
+    },
+    set (newValue) {
+      this.addHeader(newValue - this.header_)
     }
   },
 })

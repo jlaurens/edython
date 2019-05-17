@@ -427,7 +427,17 @@ Object.defineProperties(eYo.Field.prototype, {
   },
   isComment: {
     get () {
-      return this.isComment_
+      return this.status === eYo.Field.STATUS_COMMENT
+    }
+  },
+  isReserved: {
+    get () {
+      return this.status === eYo.Field.STATUS_RESERVED
+    }
+  },
+  isBuiltin: {
+    get () {
+      return this.status === eYo.Field.STATUS_BUILTIN
     }
   },
 })

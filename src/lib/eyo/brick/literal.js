@@ -256,11 +256,11 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
     },
     content: { // this is the only really unordered field
       startEditing: /** @suppress {globalThis} */ function () {
-        this.eyo.getDlgt().fields.end.setVisible(false)
+        this.brick.end_f.setVisible(false)
       },
       endEditing: /** @suppress {globalThis} */ function () {
-        this.eyo.data.set(this.getValue())
-        this.eyo.getDlgt().fields.end.setVisible(true)
+        this.data.set(this.getValue())
+        this.brick.end_f.setVisible(true)
       },
       literal: true // no smart spacing
     },
