@@ -721,7 +721,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   io.common.field.canStarLike = true
   // By default, we restart from scratch,
   // set the size to 0 for the width and 1 for the height
-  this.span.init()
+  this.span.reset()
   // And reset properties
   this.mayBeLast = false
   this.isLastInExpression = false
@@ -867,7 +867,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     }
   }
   io.cursor.c = Math.max(io.cursor.c, this.minBrickW)
-  this.brick_.span.init(io.cursor)
+  this.brick_.span.reset(io.cursor)
   this.brick_.span.minWidth = this.brick_.width = Math.max(this.brick_.width, this.brick_.span.width)
   if (io.recorder) {
     // We ended a brick. The right edge is generally a separator.
