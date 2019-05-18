@@ -16,11 +16,7 @@ goog.provide('eYo.UI')
 goog.require('eYo.Brick')
 
 goog.forwardDeclare('eYo.Driver')
-
-goog.require('goog.dom')
-goog.require('goog.style')
-goog.require('goog.userAgent')
-
+goog.forwardDeclare('eYo.Svg')
 
 /**
  * Class for a Render.
@@ -1588,7 +1584,7 @@ eYo.UI.prototype.removeBlockHilight_ =function () {
  * Add the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.addDlgtSelect_ = function () {
+eYo.UI.prototype.addSelect = function () {
   this.driver.brickSelectAdd(this.brick_)
 }
 
@@ -1596,7 +1592,7 @@ eYo.UI.prototype.addDlgtSelect_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.brickRemoveSelect_ = function () {
+eYo.UI.prototype.removeSelect = function () {
   this.driver.brickSelectRemove(this.brick_)
 }
 
@@ -1604,7 +1600,7 @@ eYo.UI.prototype.brickRemoveSelect_ = function () {
  * Add the hilight connection path_.
  * Forwards to the driver.
  */
-eYo.UI.prototype.addBlockMagnet_ = function () {
+eYo.UI.prototype.addMagnet_ = function () {
   this.driver.brickMagnetAdd(this.brick_)
 }
 
@@ -1612,8 +1608,8 @@ eYo.UI.prototype.addBlockMagnet_ = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.UI.prototype.brickRemoveMagnet_ = function () {
-  this.driver.brickConnectionRemove(this.brick_)
+eYo.UI.prototype.removeMagnet_ = function () {
+  this.driver.brickMagnetRemove(this.brick_)
 }
 
 /**

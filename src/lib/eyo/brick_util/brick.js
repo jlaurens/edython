@@ -15,18 +15,16 @@ goog.provide('eYo.Brick')
 
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
-goog.require('eYo.Span')
-goog.require('eYo.Field')
-
-goog.require('eYo.Events')
-
-goog.require('eYo.XRE')
-goog.require('eYo.T3')
-goog.require('eYo.Do')
 goog.require('eYo.Data')
-goog.require('eYo.Where')
-goog.require('goog.dom')
 
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.T3')
+goog.forwardDeclare('eYo.Where')
+goog.forwardDeclare('eYo.Do')
+
+goog.forwardDeclare('eYo.Events')
+goog.forwardDeclare('eYo.Span')
+goog.forwardDeclare('eYo.Field')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Magnets')
 goog.forwardDeclare('eYo.UI')
@@ -220,7 +218,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
 /**
  * Model getter. Convenient shortcut.
  */
-eYo.Do.getModel = function (type) {
+eYo.Brick.getModel = function (type) {
   return eYo.Brick.Manager.getModel(type)
 }
 

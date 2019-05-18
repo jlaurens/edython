@@ -1352,7 +1352,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   }
   // Raise it to the top for extra visibility.
   var selected = root.isSelected
-  selected || root.ui.addDlgtSelect_()
+  selected || root.ui.addSelect()
   var dx = (m4t.x_ + Blockly.SNAP_RADIUS) - this.x_
   var dy = (m4t.y_ + Blockly.SNAP_RADIUS) - this.y_
   if (reverse) {
@@ -1364,7 +1364,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     dx += m4t.targetBrick.width
   }
   root.moveByXY(dx, dy)
-  selected || root.ui.brickRemoveSelect_()
+  selected || root.ui.removeSelect()
 }
 
 /**

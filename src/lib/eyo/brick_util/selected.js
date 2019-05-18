@@ -32,10 +32,10 @@ eYo.Selected = (() => {
   me.updateDraw = () => {
     if (brick__ && brick__.isReady) {
       brick__.ui.updateShape()
-      brick__.ui.addDlgtSelect_()
+      brick__.ui.addSelect()
       brick__.ui.addStatusSelect_()
       if (magnet__) {
-        brick__.ui.addBlockMagnet_()
+        brick__.ui.addMagnet_()
         brick__.ui.removeBlockHilight_()
       } else {
         brick__.ui.addBlockHilight_()
@@ -75,9 +75,9 @@ eYo.Selected = (() => {
           if (brick__ !== newValue) {
             if (brick__) {
               // unselect/unhilight the previous brick
-              brick__.ui.brickRemoveSelect_()
+              brick__.ui.removeSelect()
               brick__.ui.removeBlockHilight_()
-              brick__.ui.brickRemoveMagnet_()
+              brick__.ui.removeMagnet_()
               brick__.ui.removeStatusSelect_()
               brick__.selectedMagnet = null
               brick__ = null
@@ -130,7 +130,7 @@ eYo.Selected = (() => {
               }
             } else {
               if (brick__) {
-                brick__.ui.brickRemoveMagnet_()
+                brick__.ui.removeMagnet_()
                 brick__.selectedMagnet = null
               }
               magnet__ = magnet

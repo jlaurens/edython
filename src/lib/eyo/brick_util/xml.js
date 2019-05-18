@@ -824,7 +824,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
     types: []
   }
   where.Available.forEach(function(type) {
-    var data = eYo.Do.getModel(type).data
+    var data = eYo.Brick.getModel(type).data
     var match = 0
     attributeNames.forEach(function (name) {
       if (data[name]) {
