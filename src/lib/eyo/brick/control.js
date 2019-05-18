@@ -73,7 +73,7 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
 
 eYo.Brick.Control.prototype.willRender_ = function (recorder) {
   eYo.Brick.Control.superClass_.willRender_.call(this, recorder)
-  this.span.minWidth = this.width = Math.max(this.width, 2 * eYo.Font.tabWidth)
+  this.span.minWidth = this.width = Math.max(this.width, 2 * eYo.Span.tabWidth)
 }
 
 /**

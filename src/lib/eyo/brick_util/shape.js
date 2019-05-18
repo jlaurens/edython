@@ -13,9 +13,11 @@
 
 goog.provide('eYo.Shape')
 
-goog.require('eYo.Font')
 goog.require('eYo.Geometry')
-goog.require('eYo.Padding')
+
+goog.forwardDeclare('eYo.Unit')
+goog.forwardDeclare('eYo.Padding')
+goog.forwardDeclare('goog.color')
 
 /**
  * @constructor
@@ -59,62 +61,59 @@ eYo.Shape.Style = {
  * Geometrical conditions for the caret dimensions
  * with respect to the brick ones are detailled below
  */
-Object.defineProperties(
-  eYo.Shape.prototype,
-  {
-    min_expr_radius: {
-      get () {
-        var w = eYo.Unit.x
-        var h = eYo.Unit.y / 2
-        return (w ** 2 + h ** 2) / 2 / w
-      }
-    },
-    expr_radius: {
-      get () {
-        return this.min_expr_radius * 2
-      }
-    },
-    caret_width: {
-      get () {
-        var r = this.expr_radius
-        var h = eYo.Unit.y / 2
-        return r - Math.sqrt(r**2 - h**2)
-      }
-    },
-    max_caret_extra: {
-      get () {
-        return eYo.Unit.x - this.caret_width / 2
-      }
-    },
-    caret_extra: { // half the H width
-      get () {
-        return 0.25 * this.max_caret_extra // coefficient in ]0 ; 1]
-      }
-    },
-    caret_height: {
-      get () {
-        var r = this.expr_radius
-        var w = this.caret_width
-        return Math.sqrt(w * (4 * r - w))
-      }
-    },
-    stmt_radius: {
-      get () {
-        return (eYo.Unit.y - this.caret_height) / 2
-      }
-    },
-    hilighted_width: {
-      get () {
-        return eYo.Style.Path.Hilighted.width / 2
-      }
-    },
-    definition: {
-      get () {
-        return this.steps.join(' ')
-      }
+Object.defineProperties(eYo.Shape.prototype, {
+  min_expr_radius: {
+    get () {
+      var w = eYo.Unit.x
+      var h = eYo.Unit.y / 2
+      return (w ** 2 + h ** 2) / 2 / w
+    }
+  },
+  expr_radius: {
+    get () {
+      return this.min_expr_radius * 2
+    }
+  },
+  caret_width: {
+    get () {
+      var r = this.expr_radius
+      var h = eYo.Unit.y / 2
+      return r - Math.sqrt(r**2 - h**2)
+    }
+  },
+  max_caret_extra: {
+    get () {
+      return eYo.Unit.x - this.caret_width / 2
+    }
+  },
+  caret_extra: { // half the H width
+    get () {
+      return 0.25 * this.max_caret_extra // coefficient in ]0 ; 1]
+    }
+  },
+  caret_height: {
+    get () {
+      var r = this.expr_radius
+      var w = this.caret_width
+      return Math.sqrt(w * (4 * r - w))
+    }
+  },
+  stmt_radius: {
+    get () {
+      return (eYo.Unit.y - this.caret_height) / 2
+    }
+  },
+  hilighted_width: {
+    get () {
+      return eYo.Style.Path.Hilighted.width / 2
+    }
+  },
+  definition: {
+    get () {
+      return this.steps.join(' ')
     }
   }
-)
+})
 
 /**
  * begin
@@ -148,7 +147,7 @@ eYo.Shape.prototype.end = function (noClose = false) {
  * @param {Number} x
  */
 eYo.Shape.prototype.format = function (x) {
-  return Math.round(1000 * x) / 1000
+  return Math.round(100 * x) / 100
 }
 
 /**
@@ -173,183 +172,184 @@ eYo.Shape.prototype.push = function () {
 
 /**
  * `m` for move with relative arguments.
- * @param {*?} is_block  In brick coordinates, when true and present
+ * @param {*?} is_brick  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.m = function (is_block, c = 0, l = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
+  if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
       c = c.x
     }
-    this.push('m', `${this.format(c)},${this.format(l)}`)
+    this.push(`m ${this.format(c)},${this.format(l)}`)
     this.cursor.advance({x: c, y: l})
     return
-  } else if (is_block !== false) {
+  } else if (is_brick !== false) {
     l = c
-    c = is_block
+    c = is_brick
   }
   if (goog.isDef(c.x) && goog.isDef(c.y)) {
     l = c.y
     c = c.x
   }
-  this.push('m', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
+  this.push('m', `${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
   this.cursor.advance(c, l)
 }
 
 /**
  * `M` for move with absolute arguments.
- * @param {*?} is_block  In brick coordinates, when true and present
+ * @param {*?} is_brick  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.M = function (is_block, c = 0, l = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.M = function (is_brick, c = 0, l = 0) {
+  if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
       c = c.x
     }
     this.cursor.set({x: c, y: l})
-    this.push('M', `${this.format(c)},${this.format(l)}`)
+    this.push(`M ${this.format(c)},${this.format(l)}`)
     return
-  } else if (is_block !== false) {
+  } else if (is_brick !== false) {
     l = c
-    c = is_block
+    c = is_brick
   }
   if (goog.isDef(c.x) && goog.isDef(c.y)) {
     l = c.y
     c = c.x
   }
-  this.push('M', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
+  this.push('M', `${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
   this.cursor.set(c, l)
 }
 
 /**
  * `l` for line with relative arguments.
- * @param {*?} is_block  In brick coordinates, when true and present
+ * @param {*?} is_brick  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.l = function (is_block, c = 0, l = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.l = function (is_brick, c = 0, l = 0) {
+  if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
       c = c.x
     }
-    this.push('l', `${this.format(c)},${this.format(l)}`)
+    this.push(`l ${this.format(c)},${this.format(l)}`)
     this.cursor.advance({x: c, y: l})
     return
-  } else if (is_block !== false) {
+  } else if (is_brick !== false) {
     l = c
-    c = is_block
+    c = is_brick
   }
-  this.push('l', `${c * eYo.Unit.x},'${l * eYo.Unit.y}`)
+  this.push(`l ${this.format(c * eYo.Unit.x)},'${this.format(l * eYo.Unit.y)}`)
   this.cursor.advance(c, l)
 }
 
 /**
  * `L` for line with absolute arguments.
- * @param {*?} is_block  In brick coordinates, when true and present
+ * @param {Boolean?} is_brick  In brick coordinates, when true and present
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.L = function (is_block, c = 0, l = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.L = function (is_brick, c = 0, l = 0) {
+  if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
       c = c.x
     }
     this.cursor.set({x: c, y: l})
-    this.push('L', c, ',', l)
+    this.push(`L ${this.format(c)},${this.format(l)}`)
     return
-  } else if (is_block !== false) {
+  } else if (is_brick !== false) {
     l = c
-    c = is_block
+    c = is_brick
   }
-  this.push('L', `${c * eYo.Unit.x},${l * eYo.Unit.y}`)
+  this.push(`L ${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
   this.cursor.set(c, l)
 }
 
 /**
  * `h` for horizontal line with relative coordinates.
- * @param {*} is_block
+ * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.Shape.prototype.h = function (is_block = false, c = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.h = function (is_brick = false, c = 0) {
+  if (is_brick === true) {
     if (c) {
-      this.push('h', c)
+      this.push(`h ${this.format(c)}`)
       this.cursor.x += c
     }
     return
-  } else if (is_block !== false) {
-    c = is_block
+  } else if (is_brick !== false) {
+    c = is_brick
   }
   if (c) {
-    this.push('h', c * eYo.Unit.x)
+    this.push(`h ${this.format(c * eYo.Unit.x)}`)
     this.cursor.c += c
   }
 }
 
 /**
  * `H` for horizontal line with absolute coordinates.
- * @param {*} is_block
+ * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.Shape.prototype.H = function (is_block = false, c = 0) {
-  if (is_block === true) {
+eYo.Shape.prototype.H = function (is_brick = false, c = 0) {
+  if (is_brick === true) {
     if (this.cursor.x !== c) {
-      this.push('H', c)
+      this.push(`H ${this.format(c)}`)
       this.cursor.x = c
     }
     return
-  } else if (is_block !== false) {
-    c = is_block
+  } else if (is_brick !== false) {
+    c = is_brick
   }
   if (this.cursor.c !== c) {
-    this.push('H', c * eYo.Unit.x)
+    this.push(`H ${this.format(c * eYo.Unit.x)}`)
     this.cursor.c = c
   }
 }
 
 /**
  * `v` for vertical line with relative coordinates.
+ * @param {Boolean?} is_brick
  * @param {*} l
  */
-eYo.Shape.prototype.v = function (is_block, l) {
-  if (is_block === true) {
+eYo.Shape.prototype.v = function (is_brick, l) {
+  if (is_brick === true) {
     if (l) {
-      this.push('v', l)
+      this.push(`v ${this.format(l)}`)
       this.cursor.y += l
     }
     return
-  } else if (is_block !== false) {
-    l = is_block
+  } else if (is_brick !== false) {
+    l = is_brick
   }
   if (l) {
-    this.push('v', l * eYo.Unit.y)
+    this.push(`v ${this.format(l * eYo.Unit.y)}`)
     this.cursor.l += l
   }
 }
 
 /**
  * `V` for vertical line with absolute coordinates.
- * @param {Boolean} is_block, when 'true', units are given in brick coordinates
+ * @param {Boolean?} is_brick, when 'true', units are given in brick coordinates
  * @param {*} l
  */
-eYo.Shape.prototype.V = function (is_block, l) {
-  if (is_block === true) {
+eYo.Shape.prototype.V = function (is_brick, l) {
+  if (is_brick === true) {
     if (this.cursor.y !== l) {
-      this.push('V', l)
+      this.push(`V ${this.format(l)}`)
       this.cursor.y = l
     }
     return
-  } else if (is_block !== false) {
-    l = is_block
+  } else if (is_brick !== false) {
+    l = is_brick
   }
   if (this.cursor.l !== l) {
-    this.push('V', l * eYo.Unit.y)
+    this.push(`V ${this.format(l * eYo.Unit.y)}`)
     this.cursor.l = l
   }
 }
@@ -453,132 +453,141 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
 
 /**
  * create a shape with the given brick delegate.
- * @param {eYo.Brick!} eyo  Block delegate
+ * @param {eYo.Brick!} brick  Block delegate
  */
-eYo.Shape.newWithBrick = function(eyo) {
-  return new eYo.Shape().initWithBrick(eyo)
+eYo.Shape.newWithBrick = function(brick) {
+  return new eYo.Shape().initWithBrick(brick)
 }
 
 /**
  * Create a path definition with the given brick delegate.
- * @param {eYo.Brick!} eyo  A brick delegate.
+ * @param {eYo.Brick!} brick  A brick delegate.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithBrick = function(eyo, opt) {
-  return eYo.Shape.shared.initWithBrick(eyo, opt).definition
+eYo.Shape.definitionWithBrick = function(brick, opt) {
+  return eYo.Shape.shared.initWithBrick(brick, opt).definition
 }
 
 /**
  * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} eyo  Block delegate
+ * @param {eYo.Brick!} brick  Block delegate
  */
 eYo.Shape.prototype.initWithBrick = (() => {
 /**
  * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} eyo  Block delegate
+ * @param {eYo.Brick!} brick  Block delegate
  * @return {!Object} The receiver.
  */
-var initWithStatementBrick = function(eyo, opt) {
+var initWithStatementBrick = function(brick, opt) {
   // standard statement
-  var width = eyo.width
-  var r = this.stmt_radius
-  if (eyo.right) {
-    this.M(true, width - eYo.Unit.x / 2 + r)
-    this.quarter_circle(r, false, 1)
-    this.V(true, eYo.Unit.y - r)
-    this.quarter_circle(r, false, 2)
+  var s = brick.span
+  var c = s.c
+  var l = s.l
+  var r_xy = this.stmt_radius
+  var r = r_xy / eYo.Unit.x
+  var r_s = screen.rightSpan
+  if (r_s) {
+    this.M(c - 1 / 2 + r)
+    r_s.header && this.V(r_s.header)
+    this.quarter_circle(r_xy, false, 1)
+    this.V(l - r)
+    this.quarter_circle(r_xy, false, 2)
   } else {
-    this.M(true, width - eYo.Unit.x / 2)
-    this.v(opt && opt.dido ? eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.belowHeight : eyo.mainHeight + eyo.blackHeight)
+    this.M(c - eYo.Unit.x / 2)
+    this.v(l)
   }
-  if (eyo.next) {
+  if (brick.left) {
+    this.H(1 / 2 + r)
+    this.V(s.header)
+    this.quarter_circle(r_xy, true, 2)
+    s.header && this.V(0)
+    return this
+  } else if (brick.foot) {
     this.H(1 / 2)
   } else {
-    this.H(true, eYo.Unit.x / 2 + r)
-    this.quarter_circle(r, true, 1)
+    this.H(1 / 2 + r)
+    this.quarter_circle(r_xy, true, 1)
   }
-  if (eyo.head) {
+  if (brick.head) {
     this.V(0)
   } else {
-    this.V(true, r)
-    this.quarter_circle(r, true, 2)
+    this.V(r)
+    this.quarter_circle(r_xy, true, 2)
   }
   return this
 }
 
 /**
- * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} eyo  Block delegate
+ * Inits a shape with the given brick.
+ * @param {eYo.Brick!} brick
  * @return {!Object} The receiver.
  */
-var initWithGroupBrick = function(eyo, opt) {
-  // this is a group
-  var w = eyo.span.width
-  var r = this.stmt_radius
-  if (eyo.right) {
-    // simple statement with a right brick
-    this.M(true, w - eYo.Unit.x / 2 + r, 0)
-    this.quarter_circle(r, false, 1)
-    this.V(true, eyo.mainHeight * eYo.Unit.y - r)
-    this.quarter_circle(r, false, 2)
-  } else if (eyo.left) {
-    // simple statement with no right brick
-    this.M(true, w - eYo.Unit.x / 2, 0)
-    this.V(eyo.mainHeight)
-  } else {
-    this.M(true, w - eYo.Unit.x / 2, 0)
-    if (opt && opt.dido) {
-      this.v(eyo.mainHeight + eyo.blackHeight + eyo.suiteHeight + eyo.belowHeight)
-    } else {
-      this.v(eyo.mainHeight)
-      this.H(true, eYo.Font.tabWidth + r + eYo.Unit.x / 2)
-      this.quarter_circle(r, false, 1)
-      this.v(true, (eyo.collapsed ? eYo.Unit.y : eyo.span.height - eYo.Unit.y) - 2 * r)
-      this.quarter_circle(r, false, 2)
-    }
-  }
-  if (eyo.next) {
-    this.H(1/2)
-  } else {
-    this.H(true, eYo.Unit.x / 2 + r)
-    this.quarter_circle(r, true, 1)
-  }
-  if (eyo.head) {
-    this.V(0)
-  } else {
-    this.V(true, r)
-    this.quarter_circle(r, true, 2)
-  }
-  return this
-}
-
-/**
- * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} eyo  Block delegate
- * @return {!Object} The receiver.
- */
-var initWithExpressionBrick = function(brick, opt) {
-  var width = Math.max(brick.width, eyo.span.width)
+var initWithGroupBrick = function(brick, opt) {
+  var s = brick.span
   if (opt && opt.bbox) {
-    this.M(true, width)
-    this.V(eyo.span.l)
+    this.M(s.c)
+    this.V(s.l)
     this.H(0)
     this.V(0)
-    this.z()
     return this
   }
+  // this is a group
+  var c = s.c
+  var l = s.l
+  var r_xy = this.stmt_radius
+  var r = r_xy / eYo.Unit.x
+  var r_s = s.rightSpan
+  if (r_s) {
+    this.M(c - 1/2 + r, 0)
+    r_s.header && this.V(r_s.header)
+    this.quarter_circle(r_xy, false, 1)
+    this.V(l - s.suite - r)
+    this.quarter_circle(r_xy, false, 2)
+  } else {
+    this.M(c - 1/2, 0)
+    this.v(l - s.suite)
+  }
+  if (s.suite) {
+    this.H(eYo.Span.INDENT + r + 1/2)
+    this.quarter_circle(r_xy, false, 1)
+    this.v(s.suite - 2 * r)
+    this.quarter_circle(r_xy, false, 2)  
+  }
+  if (brick.foot) {
+    this.H(1/2)
+  } else {
+    this.H(1/2 + r)
+    this.quarter_circle(r_xy, true, 1)
+  }
+  if (brick.head) {
+    this.V(0)
+  } else {
+    this.V(r)
+    this.quarter_circle(r_xy, true, 2)
+  }
+  return this
+}
+
+/**
+ * Inits a shape with the given expression brick.
+ * The left part of the shape may be special.
+ * @param {eYo.Brick!} brick
+ * @return {eYo.Brick!} The receiver.
+ */
+var initWithExpressionBrick = function(brick, opt) {
+  var width = brick.span.width
   var dd = this.caret_extra
   var h = eYo.Unit.y / 2
   var r = this.expr_radius
   var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  eyo.span.l > 1 && this.V(eyo.span.l - 1)
+  brick.span.l > 1 && this.V(brick.span.l - 1)
   this.arc(eYo.Unit.y, false, true)
   var parent
-  if (eyo.startOfStatement && (parent = eyo.parent)) {
-    if ((parent = eyo.stmtParent)) {
-      if (parent.next) {
+  if (brick.startOfStatement && (parent = brick.parent)) {
+    if ((parent = brick.stmtParent)) {
+      if (parent.foot) {
         this.H(1/2)
       } else {
         this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
@@ -597,30 +606,39 @@ var initWithExpressionBrick = function(brick, opt) {
     }
   } else {
     this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
+    brick.span.l > 1 && this.V(eYo.Unit.y)
     this.arc(eYo.Unit.y, true, false)
   }
   return this
 }
 
-var initWithControlBrick = function (eyo) {
-  return initWithGroupBrick.call(this, eyo)
+var initWithControlBrick = function (brick) {
+  return initWithGroupBrick.call(this, brick)
 }
 
-return function(eyo, opt) {
+return function(brick, opt) {
     this.begin()
-    var f
-    if (eyo.out_m) {
-      f = initWithExpressionBrick
+    var s = brick.span
+    if (opt && opt.bbox) {
+      this.M(s.c)
+      this.V(s.l)
+      this.H(0)
+      this.V(0)
+      this.end(opt && opt.noClose)
+      return this
+    }
+    if (brick.out_m) {
+      var f = initWithExpressionBrick
     } else if (opt && opt.dido) {
       f = initWithStatementBrick
-    } else if (eyo.isControl) {
+    } else if (brick.isControl) {
       f = initWithControlBrick
-    } else if (eyo.suite_m) {
+    } else if (brick.suite_m) {
       f = initWithGroupBrick
     } else {
       f = initWithStatementBrick
     }
-    f.call(this, eyo, opt)
+    f.call(this, brick, opt)
     this.end(opt && opt.noClose)
     return this
   }
@@ -696,9 +714,9 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
         this.half_circle(r, true, 1)
       } else if (magnet.isFoot) {
         if (brick.span.l > 1) { // this is not clean design, really?
-          this.m(true, eYo.Font.tabWidth, brick.span.height - r)
+          this.m(true, eYo.Span.tabWidth, brick.span.height - r)
           this.half_circle(r, true, 3)
-          this.h(true, -eYo.Font.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l)
+          this.h(true, -eYo.Span.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l)
           this.half_circle(r, true, 1)
         } else {
           this.m(true, w - 4 * r, eYo.Unit.y - r)
@@ -709,7 +727,7 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
       } else if (magnet.isSuite) {
         this.m(true, w - 4 * r, -r + eYo.Unit.y)
         this.half_circle(r, true, 3)
-        this.h(true, eYo.Font.tabWidth - w + eYo.Unit.x / 2 + 8 * r)
+        this.h(true, eYo.Span.tabWidth - w + eYo.Unit.x / 2 + 8 * r)
         this.half_circle(r, true, 1)
       } else {
         this.M(true, (magnet.isLeft ? eYo.Unit.x / 2 : w) + r, eYo.Unit.y - 4 * r)
@@ -807,7 +825,7 @@ eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
 
 /**
  * Create a path definition for the play icon.
- * @param {eYo.Magnet!} eyo  A connection delegate.
+ * @param {*} cursor  A magnet.
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayIcon = function(cursor) {
@@ -817,7 +835,7 @@ eYo.Shape.definitionForPlayIcon = function(cursor) {
 
 /**
  * Create a path definition for the play icon.
- * @param {eYo.Magnet!} eyo  A connection delegate.
+ * @param {*} cursor  A connection delegate.
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayContour = function(cursor) {

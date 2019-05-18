@@ -436,6 +436,15 @@ Object.defineProperties(eYo.Brick.prototype, {
       this.right_m.targetBrick = newValue
     }
   },
+  rightComment: {
+    get () {
+      var b = this.right
+      return b && b.isComment ? b : null
+    }
+  },
+  isComment: {
+    value: false
+  },
   suite: {
     get () {
       var m = this.suite_m
@@ -1828,7 +1837,7 @@ eYo.Brick.prototype.disposeMagnets = function () {
  * @private
  */
 eYo.Brick.prototype.setupType = function (optNewType) {
-  if (!optNewType && !this.type) {
+  if (!optNewType && !this.type && !eYo.Test && !eYo.Test.no_brick_type) {
     console.error('Error!')
   }
   if (this.type_ === optNewType) {
@@ -2089,6 +2098,8 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   } else if (m4t.isSuite) {
     this.span.black = 0
     this.span.addSuite(targetBrick.span.l)
+  } else if (m4t.isRight) {
+    this.span.resetPadding() && b.updateShape()
   }
   this.consolidateType()
   if (m4t.isInput && m4t.isSelected) {
@@ -2947,11 +2958,9 @@ eYo.Brick.prototype.beReady = function (headless) {
       this.beReady = eYo.Do.nothing // one shot function
       this.eventsInit_ = true
       this.ui_ = new eYo.UI(this)
-      this.forEachField(field => field.eyo.beReady())
+      this.forEachField(field => field.beReady())
       this.forEachSlot(slot => slot.beReady())
-      this.inputList.forEach(input => {
-        input.beReady()
-      })
+      this.inputList.forEach(input => input.beReady())
       ;[this.suite_m,
         this.right_m,
         this.foot_m

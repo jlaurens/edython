@@ -344,7 +344,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
         R = new goog.math.Rect(
           magnet.x,
           magnet.y - eYo.Style.Path.width,
-          eYo.Font.tabWidth,
+          eYo.Span.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
         if (R.contains(where)) {
@@ -371,7 +371,7 @@ eYo.Brick.prototype.getMagnetForEvent = function (e) {
       R = new goog.math.Rect(
         magnet.x,
         magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
-        eYo.Font.tabWidth + eYo.Style.Path.r, // R U sure?
+        eYo.Span.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {

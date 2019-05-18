@@ -459,7 +459,7 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
   var y = xy.y - eYo.Unit.y / 2
 
   // In RTL the block's position is the top right of the block, not top left.
-  var x = xy.x - eYo.Unit.x / 2 - brick.depth * eYo.Font.tabWidth
+  var x = xy.x - eYo.Unit.x / 2 - brick.depth * eYo.Span.tabWidth
 
   // Workspace scale, used to convert from workspace coordinates to pixels.
   var scale = this.workspace_.scale;

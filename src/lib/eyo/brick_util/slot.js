@@ -251,26 +251,15 @@ Object.defineProperties(eYo.Slot.prototype, {
 })
 
 /**
- * Install this slot and its associate fields on a brick.
+ * UI management.
+ * Install this slot and its associate fields on their brick.
  * No data change.
  */
 eYo.Slot.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   this.ui_driver.slotInit(this)
-  // init all the fields
-  var f = field => field.beReady()// installs in the owner's group, not the brick group
-  this.forEachField(f)
-  this.bindField && f(this.bindField)
-  this.input && this.input.beReady()
-}
-
-/**
- * Whether the input has a connection.
- * For edython.
- * @param {!eYo.Input} workspace The brick's workspace.
- */
-eYo.Slot.prototype.getConnection = function () {
-  return this.connection
+  this.forEachField(field => field.beReady())
+  this.magnet && this.magnet.beReady()
 }
 
 /**

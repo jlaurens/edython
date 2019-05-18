@@ -228,7 +228,7 @@ eYo.Svg.prototype.fieldInit = function(field) {
     y: field.size_.height - 12.5
   }, g)
   field.mouseDownWrapper_ =
-      eYo.bindEventWithChecks_(
+      eYo.Svg.bindEventWithChecks_(
           g, 'mousedown', field, field.onMouseDown_)
   this.fieldUpdateEditable(field)
   return field

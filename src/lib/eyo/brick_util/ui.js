@@ -108,7 +108,7 @@ Object.defineProperties(eYo.UI.prototype, {
   },
   minBrickW: {
     get () {
-      return this.brick_.isStmt ? eYo.Font.tabW : 0
+      return this.brick_.isStmt ? eYo.Span.INDENT : 0
     }
   },
   bBox: {
@@ -133,20 +133,20 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
   if (!magnet) {
     return
   }
-  var targetBrick = magnet.targetBrick
-  if (!targetBrick) {
+  var t9k = magnet.targetBrick
+  if (!t9k) {
     return
   }
   if (magnet.isSuperior) {
     magnet.tighten_()
   }
-  var do_it = !targetBrick.ui.rendered ||
+  var do_it = !t9k.ui.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
     !eYo.Magnet.disconnectedChild&&
     !eYo.Magnet.connectedParent)
   if (do_it) {
-    var ui = targetBrick.ui
+    var ui = t9k.ui
     try {
       ui.down = true
       ui.render(false, recorder)
@@ -165,7 +165,7 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
  * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.UI.prototype.drawLow_ = function (recorder) {
+eYo.UI.prototype.drawFoot_ = function (recorder) {
   return this.drawMagnet_(this.brick_.foot_m, recorder)
 }
 
@@ -239,7 +239,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
   if (eYo.Brick.debugStartTrackingRender) {
     console.log(eYo.Brick.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.Font.tabW, 1)
+  m4t.setOffset(eYo.Span.INDENT, 1)
   var t9k = m4t.targetBrick
   if (t9k) {
     this.someTargetIsMissing = false
@@ -283,7 +283,7 @@ eYo.UI.prototype.render = (() => {
    */
   var drawParent = function (recorder, optBubble) {
     // `this.brick_` is a brick delegate
-    if (optBubble === false || this.brick_.ui.down) {
+    if (optBubble === false || this.down) {
       return
     }
     // Render all bricks above this.brick_ one (propagate a reflow).
@@ -294,8 +294,8 @@ eYo.UI.prototype.render = (() => {
       if (!parent.ui.down) {
         try {
           parent.ui.up = true
-          var old = this.brick_.ui.up
-          this.brick_.ui.up = true
+          var old = this.up
+          this.up = true
           if (eYo.UI.debugStartTrackingRender) {
             console.log(eYo.UI.debugPrefix, 'UP')
           }
@@ -305,7 +305,7 @@ eYo.UI.prototype.render = (() => {
           throw err
         } finally {
           parent.ui.up = false
-          this.brick_.ui.up = old
+          this.up = old
         }
         if (justConnected) {
           if (parent.parent) {
@@ -347,12 +347,12 @@ eYo.UI.prototype.render = (() => {
         }
       }
       try {
-        this.brick_.span.minWidth = this.brick_.span.c = 0
+        this.brick_.span.resetC()
         this.brick_.consolidate()
         this.willRender_(recorder)
         var io = this.draw_(recorder)
-        this.layoutConnections_(io)
-        this.drawLow_(io)
+        this.layoutMagnets_(io)
+        this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
@@ -377,45 +377,49 @@ eYo.UI.prototype.render = (() => {
     recorder && this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT)
     // rendering is very special when this.brick_ is just a matter of
     // statement connection
-    var brick = this.brick_
-    if (brick.ui.rendered) {
+    if (this.rendered) {
       if (eYo.Magnet.disconnectedChild && this.brick_.head_m === eYo.Magnet.disconnectedChild) {
-        // this.brick_ brick is the top one
+        // this.brick_ is the child one
         var io = this.willShortRender_(recorder)
-        this.layoutConnections_(io)
-        this.drawLow_(io)
+        this.layoutMagnets_(io)
+        this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
         this.brick_.change.save.render = this.brick_.change.count
-        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io) // will they have a parent meanwhile?
         return
       } else if (eYo.Magnet.disconnectedParent && this.brick_.foot_m === eYo.Magnet.disconnectedParent) {
-        // this.brick_ brick is the low one
+        // this.brick_ is the parent one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
-        this.layoutConnections_(io)
-        this.drawLow_(io)
+        this.layoutMagnets_(io)
+        this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
         this.brick_.change.save.render = this.brick_.change.count
         drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         return
       } else if (eYo.Magnet.connectedParent) {
-        if (this.brick_.out_m && eYo.Magnet.connectedParent === this.brick_.out_m.target) {
-          // this.brick_ is not a statement connection
-          // no shortcut
-        } else if (this.brick_.head_m && eYo.Magnet.connectedParent === this.brick_.head_m.target) {
+        if (this.brick_.head_m && eYo.Magnet.connectedParent === this.brick_.head_m.target) {
           var io = this.willShortRender_(recorder)
-          this.layoutConnections_(io)
-          this.drawLow_(io)
+          this.layoutMagnets_(io)
+          this.drawFoot_(io)
           this.renderMove_(io)
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
           drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
         } else if (this.brick_.foot_m && eYo.Magnet.connectedParent === this.brick_.foot_m) {
           var io = this.willShortRender_(recorder)
-          this.layoutConnections_(io)
-          this.drawLow_(io)
+          this.layoutMagnets_(io)
+          this.drawFoot_(io)
+          this.renderMove_(io)
+          this.updateShape()
+          this.brick_.change.save.render = this.brick_.change.count
+          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+        } else if (this.brick_.suite_m && eYo.Magnet.connectedParent === this.brick_.suite_m) {
+          var io = this.willShortRender_(recorder)
+          this.layoutMagnets_(io)
+          this.drawFoot_(io)
           this.renderMove_(io)
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
@@ -423,20 +427,19 @@ eYo.UI.prototype.render = (() => {
         }
       }
     }
-    if (!this.brick_.ui.down && this.brick_.out_m) {
+    if (!this.down && this.brick_.out_m) {
       // always render from a line start id est
-      // an orphan brick or a statement brick
+      // an orphan brick or a statement brick with no left brick
       var parent
       if ((parent = this.brick_.parent)) {
         var next
-        while (parent.out_m && (next = parent.parent)) {
+        while (parent.out_m && !parent.ui.down && (next = parent.parent)) {
           parent = next
         }
-        // parent has no output connection or has no parent
-        // which means that it is an expression brick's delegate.
+        // parent has no output magnet or has no parent.
         recorder && (recorder.field.last = undefined)
         if (!parent.ui.down) {
-          if (!parent.ui.up && this.brick_.out_m === eYo.Magnet.connectedParent || eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
+          if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
             try {
               parent.ui.up = true
               parent.render(optBubble, recorder)
@@ -456,8 +459,8 @@ eYo.UI.prototype.render = (() => {
     if (this.brick_.change.save.render === this.brick_.change.count) {
       // minimal rendering
       var io = this.willShortRender_(recorder)
-      this.layoutConnections_(io)
-      this.drawLow_(io)
+      this.layoutMagnets_(io)
+      this.drawFoot_(io)
       this.renderMove_(io)
       this.updateShape()
       drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
@@ -567,7 +570,7 @@ eYo.UI.prototype.renderMove_ = function (recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.UI.prototype.layoutConnections_ = function (recorder) {
+eYo.UI.prototype.layoutMagnets_ = function (recorder) {
   var m5s = this.brick_.magnets
   var m4t = m5s.out
   if (m4t) {
@@ -618,8 +621,9 @@ eYo.UI.prototype.draw_ = function (recorder) {
 }
 
 /**
- * Align the right edges by changing the size of all the connected statement bricks.
- * The default implementation does nothing.
+ * Align the right edges by changing the width of all the connected statement bricks. For each line, only the last statement
+ * of the line is extended.
+ * Only for root bricks.
  * @param {*} recorder
  * @protected
  */
@@ -630,32 +634,30 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
       return
     }
     var right = 0
-    var t = eYo.Font.tabWidth
-    this.brick_.forEachStatement((eyo, depth) => {
-      if (eyo.span.minWidth) {
-        var w = t * depth + eyo.span.minWidth
+    var t = eYo.Span.INDENT
+    this.brick_.forEachStatement((b, depth) => {
+      if (b.span.min_c) {
+        var c = t * depth + b.span.min_c
         // all the right bricks now
-        var x = eyo
+        var x = b
         while ((x = x.right)) {
-          w += x.span.minWidth - eYo.Unit.x // - eYo.Unit.x because bricks will overlap one space for the vertical boundaries
+          c += x.span.min_c - 1 // `- 1` because bricks will overlap one space for the vertical boundaries
         }
-        right = Math.max(right, w)
+        right = Math.max(right, c)
       }
     })
     if (right) {
-      this.brick_.forEachStatement((eyo, depth) => {
-        var width = right - t * depth
+      this.brick_.forEachStatement((b, depth) => {
+        var c = right - t * depth
         // find the last right brick and
-        var x = eyo
-        var b = x
-        while ((x = x.right)) {
-          width -= (eyo.span.minWidth - eYo.Unit.x) // see comment above
-          eyo = x
-          b = x
+        var bb = b
+        while ((bb = bb.right)) {
+          c -= bb.span.min_c - 1 // see comment above
+          b = bb
         }
-        if (b.width !== width) {
-          b.width = width
-          eyo.updateShape()
+        if (b.c !== c) {
+          b.span.c = c
+          b.updateShape()
         }
       })
     }
@@ -859,8 +861,8 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       }
     } else {
       this.isShort = false
-      if (target) {
-        target.eyo.ui.parentIsShort = false
+      if (t9k) {
+        t9k.ui.parentIsShort = false
       }
     }
   }
@@ -1132,35 +1134,35 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
       if (io.common.shouldPack && (!isLast || io.common.shouldPack.wrapped_)) {
         // first loop to see if there is a pending rightCaret
         // BTW, there can be an only one right caret
-        if (io.common.ending.some(eyo => !!eyo.ui.rightCaret)) {
+        if (io.common.ending.some(b3k => !!b3k.ui.rightCaret)) {
           io.common.shouldPack = undefined
         } else {
           // there is no following right caret, we can pack
           var pack = false
-          io.common.ending.forEach(eyo => {
-            if (eyo === io.common.shouldPack) {
+          io.common.ending.forEach(b3k => {
+            if (b3k === io.common.shouldPack) {
               io.common.shouldPack = undefined
               pack = true
               io.cursor.c -= 1
               // from now on, we pack just one character width
             }
             if (pack) {
-              eyo.span.c = Math.max(this.minBrickW, eyo.span.c - 1)
-              eyo.span.minWidth = eyo.span.width
+              b3k.span.c = Math.max(this.minBrickW, b3k.span.c - 1)
+              b3k.span.minWidth = b3k.span.width
               io.common.field.didPack = true
               io.common.field.beforeIsBlack = true
             }
           })
         }
       }
-      io.common.ending.forEach(d => {
-        d.ui.mayBeLast = false
-        d.ui.isLastInExpression = isLastInExpression
-        d.ui.isLastInStatement = isLastInStatement
+      io.common.ending.forEach(b3k => {
+        b3k.ui.mayBeLast = false
+        b3k.ui.isLastInExpression = isLastInExpression
+        b3k.ui.isLastInStatement = isLastInStatement
       })
-      io.common.ending.forEach(d => {
-        d.updateShape()
-        var m4t = d.ui.rightCaret
+      io.common.ending.forEach(b3k => {
+        b3k.updateShape()
+        var m4t = b3k.ui.rightCaret
         if (m4t) {
           m4t.side = eYo.Key.RIGHT
           m4t.shape = eYo.Key.NONE
@@ -1169,7 +1171,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
           var brick = m4t.brick
           if (io.brick === brick) {
             // we are lucky, this.brick_ is the brick we are currently rendering
-            io.steps.push(d)
+            io.steps.push(departFocus)
           } else {
             // bad luck, brick has already been rendered
             // we must append the definition to the path
@@ -1663,7 +1665,7 @@ eYo.UI.prototype.removeStatusSelect_ = function () {
  */
 eYo.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
-    m4t.ui.removeStatusTop_()
+    m4t.brick.ui.removeStatusTop_()
   }
 }
 
@@ -1674,7 +1676,7 @@ eYo.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
  */
 eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isOutput) {
-    m4t.ui.addStatusTop_()
+    m4t.brick.ui.addStatusTop_()
   }
 }
 
@@ -1769,16 +1771,16 @@ eYo.UI.prototype.moveByXY = function (dx, dy) {
  * @package
  */
 eYo.UI.prototype.moveDuringDrag = function(newLoc) {
-  var n = this.brick_
-  var d = n.ui && n.ui.getDistanceFromVisible(newLoc)
+  var d = this.getDistanceFromVisible(newLoc)
   if (d) {
     newLoc.x -= d.x
     newLoc.y -= d.y
   }
-  if (n.useDragSurface_) {
+  var b3k = this.brick_
+  if (b3k.useDragSurface_) {
     this.workspace.blockDragSurface_.translateSurface(newLoc.x, newLoc.y);
   } else {
-    this.driver.brickSetOffsetDuringDrag(n, newLoc.x, newLoc.y)
+    this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
   }
 }
 

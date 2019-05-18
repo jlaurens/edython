@@ -16,10 +16,11 @@ goog.provide('eYo.Font')
 goog.provide('eYo.Padding')
 
 goog.require('eYo')
-goog.require('goog.cssom');
 
+goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.font-face')
 goog.forwardDeclare('eYo.Shape')
+goog.forwardDeclare('goog.cssom');
 
 /**
  * The richness of brick colours, regardless of the hue.
@@ -42,10 +43,8 @@ eYo.hueToRgb = function (hue) {
   return goog.color.hsvToHex(hue, eYo.HSV_SATURATION, eYo.HSV_VALUE * 255)
 }
 
-eYo.Style = {}
-
-eYo.Style.weight = function (x) {
-  return x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
+eYo.Style = {
+  weight: x => x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 }
 
 var g = {
@@ -80,65 +79,56 @@ Object.defineProperties(
 eYo.Font = {
   ascent: 13,
   familyMono: 'DejaVuSansMono,monospace',
-  familySans: 'DejaVuSans,sans-serif',
-  tabW: 4
+  familySans: 'DejaVuSans,sans-serif'
 }
 
-Object.defineProperties(
-  eYo.Font,
-  {
-    size: {
-      get () {
-        return this.ascent
-      }
-    },
-    descent: {
-      get () {
-        return this.ascent * 492 / 1556
-      }
-    },
-    xHeight: {
-      get () {
-        return this.ascent * 1120 / 1556
-      }
-    },
-    space: {
-      get () {
-        return this.ascent * 1233 / 1556
-      }
-    },
-    totalAscent: {
-      get () {
-        return this.ascent * 2048 / 1556
-      }
-    },
-    height: {
-      get () {
-        return this.totalAscent + this.descent
-      }
-    },
-    lineHeight: {
-      get () {
-        return this.height + eYo.Padding.t + eYo.Padding.b
-      }
-    },
-    style: {
-      get () {
-        return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
-      }
-    },
-    menuStyle: {
-      get () {
-        return `font-family:${this.familySans};font-size:${this.ascent}pt;`
-      }
-    },
-    tabWidth: {
-      get () {
-        return this.tabW * this.space
-      }
+Object.defineProperties(eYo.Font, {
+  size: {
+    get () {
+      return this.ascent
+    }
+  },
+  descent: {
+    get () {
+      return this.ascent * 492 / 1556
+    }
+  },
+  xHeight: {
+    get () {
+      return this.ascent * 1120 / 1556
+    }
+  },
+  space: {
+    get () {
+      return this.ascent * 1233 / 1556
+    }
+  },
+  totalAscent: {
+    get () {
+      return this.ascent * 2048 / 1556
+    }
+  },
+  height: {
+    get () {
+      return this.totalAscent + this.descent
+    }
+  },
+  lineHeight: {
+    get () {
+      return this.height + eYo.Padding.t + eYo.Padding.b
+    }
+  },
+  style: {
+    get () {
+      return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
+    }
+  },
+  menuStyle: {
+    get () {
+      return `font-family:${this.familySans};font-size:${this.ascent}pt;`
     }
   }
-)
+})
 
 /**
  * Offset of the text editor.
@@ -178,6 +168,7 @@ eYo.Style.Path = {
   },
   bbox_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(120, 100 / 100, 50 / 100))
 }
+
 Object.defineProperty(
   eYo.Style.Path,
   'r',

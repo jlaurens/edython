@@ -18,8 +18,10 @@ goog.provide('eYo.Size')
 goog.provide('eYo.Rect')
 goog.provide('eYo.TRect')
 
-goog.require('eYo.Font')
+goog.require('eYo.Do')
 goog.require('goog.math')
+
+goog.forwardDeclare('eYo.Font')
 
 /**
  * unit
@@ -193,59 +195,56 @@ eYo.Size = function (w, h) {
 
 goog.inherits(eYo.Size, goog.math.Size)
 
-Object.defineProperties(
-  eYo.Size.prototype,
-  {
-    width: {
-      get () {
-        return this.c_ * eYo.Unit.x
-      },
-      set (newValue) {
-        this.c_ = Math.round(newValue / eYo.Unit.x)
-      }
+Object.defineProperties(eYo.Size.prototype, {
+  width: {
+    get () {
+      return this.c_ * eYo.Unit.x
     },
-    height: {
-      get () {
-        return this.l_ * eYo.Unit.y
-      },
-      set (newValue) {
-        this.l_ = Math.round(newValue / eYo.Unit.y)
-      }
-    },
-    c: {
-      get: eYo.Where.get_c,
-      set: eYo.Where.set_c
-    },
-    l: {
-      get: eYo.Where.get_l,
-      set: eYo.Where.set_l
-    },
-    w: {
-      get: eYo.Where.get_c,
-      set: eYo.Where.set_c
-    },
-    h: {
-      get: eYo.Where.get_l,
-      set: eYo.Where.set_l
-    },
-    x: {
-      get: eYo.Where.get_x,
-      set: eYo.Where.set_x
-    },
-    y: {
-      get: eYo.Where.get_y,
-      set: eYo.Where.set_y
-    },
-    dx: {
-      get: eYo.Where.get_x,
-      set: eYo.Where.set_x
-    },
-    dy: {
-      get: eYo.Where.get_y,
-      set: eYo.Where.set_y
+    set (newValue) {
+      this.c_ = Math.round(newValue / eYo.Unit.x)
     }
+  },
+  height: {
+    get () {
+      return this.l_ * eYo.Unit.y
+    },
+    set (newValue) {
+      this.l_ = Math.round(newValue / eYo.Unit.y)
+    }
+  },
+  c: {
+    get: eYo.Where.get_c,
+    set: eYo.Where.set_c
+  },
+  l: {
+    get: eYo.Where.get_l,
+    set: eYo.Where.set_l
+  },
+  w: {
+    get: eYo.Where.get_c,
+    set: eYo.Where.set_c
+  },
+  h: {
+    get: eYo.Where.get_l,
+    set: eYo.Where.set_l
+  },
+  x: {
+    get: eYo.Where.get_x,
+    set: eYo.Where.set_x
+  },
+  y: {
+    get: eYo.Where.get_y,
+    set: eYo.Where.set_y
+  },
+  dx: {
+    get: eYo.Where.get_x,
+    set: eYo.Where.set_x
+  },
+  dy: {
+    get: eYo.Where.get_y,
+    set: eYo.Where.set_y
   }
-)
+})
 /**
  * Dispose of the receiver's resources.
  */

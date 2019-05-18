@@ -34,7 +34,7 @@
 
 goog.provide('eYo.Span')
 
-goog.require('eYo.Unit')
+goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.Brick')
 
 /**
@@ -47,30 +47,18 @@ goog.forwardDeclare('eYo.Brick')
  * For edython.
  * @param {!eYo.Brick} brick The brick owning the span.
  * @constructor
- * @property {eYo.Brick} brick - The owner brick
- * @readonly
- * @property {number} width - The width, in workspace coordinates.
- * @readonly
- * @property {number} height - The height, in workspace coordinates.
- * @property {number} c_min - The minimum number of columns
- * @property {number} c_padding - The extra padding at the right
- * @property {number} c - The full number of columns
- * @property {number} l - The full number of lines
- * @property {number} main - The number of main lines
- * @property {number} black - The number of black lines
- * @property {number} suite - The number of suite lines
- * @property {number} foot - The number of foot lines
- * @property {number} header - The number of header lines
- * @property {number} footer - The number of footer lines
  */
 eYo.Span = function (brick) {
   this.brick_ = brick
+  this.resetC()
+  this.resetL()
 }
 
 // default property values
 Object.defineProperties(eYo.Span.prototype, {
   brick_: { value: undefined, writable: true },
   c_min_: { value: 2, writable: true },
+  c_padding_: { value: 0, writable: true },
   l_: { value: 1, writable: true },
   header_: { value: 0, writable: true },
   main_: { value: 1, writable: true },
@@ -86,19 +74,37 @@ Object.defineProperties(eYo.Span.prototype, {
  */
 eYo.Span.INDENT = 4
 
+Object.defineProperty(eYo.Span, 'tabWidth', {
+  get () {
+    return eYo.Span.INDENT * eYo.Unit.x
+  }
+})
+
 // Public readonly properties
 Object.defineProperties(eYo.Span.prototype, {
+  /**
+   * @readonly
+   * @property {eYo.Brick} brick - The owning brick
+   */
   brick: {
     get () {
       return this.brick_
     }
   },
+  /**
+  * @readonly
+  * @property {number} width  The full width, in workspace coordinates, computed based on `c`.
+  */
   width: {
     get () {
-      return this.c_min_ * eYo.Unit.x
+      return this.c * eYo.Unit.x
     }
   },
-  x: {
+  /**
+  * @readonly
+  * @property {number} x  Synonym of `width`.
+  */
+ x: {
     get () {
       return this.width
     }
@@ -106,26 +112,60 @@ Object.defineProperties(eYo.Span.prototype, {
   /**
    * This is the total number of columns in that block.
    * At least two.
+   * @readonly
+   * @property {number} c - The full number of columns
    */
   c: {
+    get () {
+      return this.c_
+    },
+    set (newValue) {
+      this.setPadding(newValue - this.c_min_)
+    }
+  },
+  /**
+   * 
+   * @readonly
+   * @property {number} c_min - The minimum number of columns
+   */
+  c_min: {
     get () {
       return this.c_min_
     }
   },
   /**
+   * @readonly
+   * @property {number} c_padding - The extra padding at the right
+   */
+  c_padding: {
+    get () {
+      return this.c_padding_
+    }
+  },
+  /**
    * This is the total number of lines in that block.
    * At least one.
+   * @property {number} l - The full number of lines
+   * @readonly
    */
   l: {
     get () {
       return this.l_
     }
   },
+  /**
+   * @readonly
+   * @property {number} height - The height, in workspace coordinates.
+   */
   height: {
     get () {
       return this.l_ * eYo.Unit.y
     }
   },
+  /**
+   * @readonly
+   * @property {number} y  Synonym of `height`.
+   */
   y: {
     get () {
       return this.height
@@ -147,12 +187,18 @@ Object.defineProperties(eYo.Span.prototype, {
    * has exactly two main lines.
    * When there is more than one main line,
    * the horizontal siblings may have header and footer counts.
+   * @readonly
+   * @property {number} main - The number of main lines
    */
   main: {
     get () {
       return this.main_ // 1 or more
     }
   },
+  /**
+   * @readonly
+   * @property {number} footer - The number of footer lines
+   */
   footer: {
     get () {
       return this.footer_
@@ -165,6 +211,10 @@ Object.defineProperties(eYo.Span.prototype, {
    * Groups need a suite, but may not be provided with one.
    * The black count is used to display a hole,
    * where bricks should be connected.
+   * If groups have a right connection, they have no suite
+   * hence no suite hole.
+   * @readonly
+   * @property {number} black - The number of black lines
    */
   black: {
     get () {
@@ -177,6 +227,10 @@ Object.defineProperties(eYo.Span.prototype, {
       this.addBlack(newValue ? 1 : -1)
     }
   },
+  /**
+   * @readonly
+   * @property {number} foot - The number of foot lines
+   */
   foot: {
     get () {
       return this.foot_
@@ -185,14 +239,25 @@ Object.defineProperties(eYo.Span.prototype, {
       this.addFoot(newValue - this.foot_)
     }
   },
+  /**
+   * If we have a suite, we do not have a header nor a footer.
+   * It is the responsibility of tha caller to verify that
+   * there is no right block, except a one line comment.
+   * @readonly
+   * @property {number} suite - The number of suite lines
+   */
   suite: {
     get () {
       return this.suite_
     },
     set (newValue) {
-      this.addFoot(newValue - this.suite_)
+      this.addSuite(newValue - this.suite_)
     }
   },
+  /** 
+   * @readonly
+   * @property {number} header - The number of header lines
+   */
   header: {
     get () {
       return this.header_
@@ -252,30 +317,30 @@ eYo.Span.prototype.setPadding = function (padding) {
           padding = min
         }
       }
-      this.padding_ = padding
+      this.c_padding_ = padding
       this.c_ = this.c_min_ + padding  
     }
   }
 }
 
 /**
- * Change the number of columns.
- * This may occur at initialization time, when fields are edited, when input bricks are added, removed or edited.
- * The suite bricks, if any, influence the padding.
- * @param {Number} delta  the difference from the old value to value and the old one.
+ * Reset the padding to 0.
+ * @result {Boolean}  true iff there was a positive padding.
  */
-eYo.Span.prototype.addC = function (delta) {
-  if (delta) {
-    this.brick.incrementChangeCount()
-    this.c_min_ += delta
-    this.c_ += delta
-    if (this.brick.isExpr) {
-      var parent = this.parentSpan
-      if (parent) {
-        parent.addC(delta)
-      }
-    }
+eYo.Span.prototype.resetPadding = function () {
+  if (this.c_padding_ > 0) {
+    this.setPadding(0)
+    return true
   }
+}
+
+/**
+ * Reset the column counts to initial values.
+ */
+eYo.Span.prototype.resetC = function () {
+  this.c_min_ = 2 // count each side as 1
+  this.c_padding_ = 0
+  this.c_ = this.c_min_ + this.c_padding_  
 }
 
 /**
@@ -296,6 +361,16 @@ eYo.Span.prototype.addC = function (delta) {
       }
     }
   }
+}
+
+/**
+ * Convenient method
+ * @param {Number} delta  the value to add to the ressource.
+ */
+eYo.Span.prototype.resetL = function () {
+  this.l_ = this.main_ = 1
+  this.header_ = this.suite_ = this.footer_ = 0
+  this.black_ = this.brick_.isStmt && !this.brick_.right ? 1 : 0
 }
 
 /**
@@ -409,7 +484,7 @@ eYo.Span.prototype.addBlack = function (delta) {
 }
 
 /**
- * Add to the black line number.
+ * Add to the foot line number.
  * This may happen only in on of 2 situation:
  * 1) the suite magnet connection status changes
  * 2) the right magnet connection status changes
@@ -420,7 +495,6 @@ eYo.Span.prototype.addFoot = function (delta) {
   if (delta) {
     this.brick.incrementChangeCount()
     this.foot_ += delta
-    this.l_ += delta
     this.addParent_(delta)
   }
 }
@@ -441,26 +515,3 @@ eYo.Span.prototype.addSuite = function (delta) {
     this.addParent_(delta)
   }
 }
-
-/**
- * Sets from the given location (`Where`).
- * @param {Number | Object!} c  Number or object with `c` and `l` number properties.
- * @param {Number} l  Number, when `c` is also a number, defaults to 1.
- */
-eYo.Span.prototype.init = function (c = 0, l = 0) {
-  if (goog.isDef(c.c)) {
-    l = c.l
-    c = c.c
-  }
-  this.c = c
-  this.main = l + 1
-}
-
-/**
- * Sets from the given location (`Where`).
- * @param {Object!} w  Object with `c` and `l` number properties.
- */
-eYo.Size.prototype.setFromWhere = function (w) {
-  this.set(w.c, w.l + 1)
-}
-
