@@ -263,8 +263,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/brick_util/field.js" \
 --js "src/lib/eyo/brick_util/helper.js" \
+--js "src/lib/eyo/brick_util/magnet.js" \
 --js "src/lib/eyo/Parser/listnode.js" \
 --js "src/lib/eyo/core/T3_all.js" \
+--js "src/lib/eyo/brick_util/input.js" \
 --js "src/lib/eyo/blockly/workspace_dragger.js" \
 --js "src/lib/eyo/blockly/block_events.js" \
 --js "src/lib/eyo/core/do.js" \
@@ -279,12 +281,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/data.js" \
 --js "src/lib/eyo/Parser/acceler.js" \
 --js "src/lib/eyo/Python/graminit.js" \
---js "src/lib/eyo/brick_util/magnet.js" \
 --js "src/lib/eyo/Parser/parser.js" \
 --js "src/lib/eyo/brick_util/shape.js" \
 --js "src/lib/eyo/brick_util/brick.js" \
 --js "src/lib/eyo/blockly/events.js" \
---js "src/lib/eyo/brick_util/input.js" \
 --js "src/lib/eyo/Parser/parsetok.js" \
 --js "src/lib/eyo/blockly/bugfix.js" \
 --js "src/lib/eyo/blockly/block_dragger.js" \

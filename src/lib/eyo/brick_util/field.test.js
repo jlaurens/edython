@@ -23,12 +23,12 @@ eYo.Test.FIELD = 'field'
 describe('Create', function() {
   it(`Basic`, function() {
     eYo.Test.setItUp()
-    var d = eYo.Test.new_brick('one_slot_one_field_base')
-    var slot = d.SLOT_s
+    var b = eYo.Test.new_brick('one_slot_one_field_base')
+    var slot = b.SLOT_s
     var field = slot.FIELD_f
     chai.assert(field.text === eYo.Test.FIELD)
     chai.assert(field.status === eYo.Field.STATUS_NONE)
-    d.dispose()
+    b.dispose()
     eYo.Test.tearItDown()
   })
 })

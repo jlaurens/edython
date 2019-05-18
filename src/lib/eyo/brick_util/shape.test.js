@@ -1,8 +1,14 @@
 eYo.Test.no_brick_type = true
 
+eYo.Brick.Expr.makeSubclass(`shape_out`, {
+  out: {
+    check: null
+  }
+})  
+
 describe('Shape', function () {
   it('statement', function() {
-    var b = new eYo.Brick.Expr(eYo.App.workspace)
+    var b = eYo.Test.new_brick('shape_out')
     chai.assert(b.isExpr, 'MISSED')
     var d = eYo.Shape.definitionWithBrick(b)
     var p = eYo.Svg.newElement('path', {

@@ -15,10 +15,9 @@ goog.provide('eYo.Magnet')
 goog.provide('eYo.Magnets')
 
 goog.require('eYo.Owned')
-goog.require('eYo.Do')
-goog.require('eYo.T3')
-goog.require('eYo.Const')
-goog.require('eYo.Where')
+
+goog.forwardDeclare('eYo.Do')
+goog.forwardDeclare('eYo.Where')
 
 /**
  * Class for a magnet.
@@ -43,21 +42,23 @@ eYo.Magnet = function (bsi, type, model) {
   if (this.slot) {
     this.name_ = this.slot.key
   }
-  this.type = type
+  this.type_ = type
   this.model_ = model
-  this.incog_ = this.hidden_ = model.hidden
+  this.incog_ = this.hidden__ = model.hidden
   eYo.Field.makeFields(this, model.fields)
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
   this.targetIsMissing = false
-  var DB = this.magnetDBList_
+  var DB = this.magnetDB_
   if (DB) {
     this.db_ = DB[this.type]
     this.dbOpposite_ = DB[this.opposite_type]
     !this.db_ && (this.hidden_ = true)
   }
 }
+goog.inherits(eYo.Magnet, eYo.Owned)
 
+// Magnet types
 Object.defineProperties(eYo.Magnet, {
   IN: { value: 1 },
   OUT: { value: 2 },
@@ -75,6 +76,22 @@ eYo.Magnet.OPPOSITE_TYPE = {
   [eYo.Magnet.RIGHT]: eYo.Magnet.LEFT,
   [eYo.Magnet.LEFT]: eYo.Magnet.RIGHT
 }
+
+/**
+ * Initialize a set of connection DBs for a specified workspace.
+ * @param {!Blockly.Workspace} workspace The workspace this DB is for.
+ */
+Blockly.ConnectionDB.init = function(workspace) {
+  // Create four databases, one for each connection type.
+  var dbList = [];
+  dbList[eYo.Magnet.IN] = new Blockly.ConnectionDB();
+  dbList[eYo.Magnet.OUT] = new Blockly.ConnectionDB();
+  dbList[eYo.Magnet.HEAD] = new Blockly.ConnectionDB();
+  dbList[eYo.Magnet.LEFT] = new Blockly.ConnectionDB();
+  dbList[eYo.Magnet.RIGHT] = new Blockly.ConnectionDB();
+  dbList[eYo.Magnet.FOOT] = new Blockly.ConnectionDB();
+  workspace.connectionDBList = dbList;
+};
 
 // deprecated
 Object.defineProperty(Blockly, 'OPPOSITE', {
@@ -113,6 +130,7 @@ eYo.Magnet.prototype.dispose = function () {
 // private properties
 Object.defineProperties(eYo.Magnet.prototype, {
   model_: { value: undefined, writable: true },
+  type_: { value: undefined, writable: true },
   hidden__: { value: undefined, writable: true },
   wrapped_: { value: undefined, writable: true },
   promised_: { value: undefined, writable: true },
