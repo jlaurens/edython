@@ -135,6 +135,11 @@ Object.defineProperties(eYo.Input.prototype, {
       return s && s.bindField
     }
   },
+  isReady: {
+    get () {
+      return this.beReady === eYo.Do.nothing
+    }
+  }
 })
 
 // Obsolete/forbidden properties

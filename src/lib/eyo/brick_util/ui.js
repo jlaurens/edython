@@ -478,7 +478,7 @@ eYo.UI.prototype.render = (() => {
  * @private
  */
 eYo.UI.prototype.willShortRender_ = function (recorder) {
-  return this.newDrawRecorder(recorder)
+  return this.newDrawRecorder_(recorder)
 }
 
 /**
@@ -669,7 +669,7 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
  * @param {*} recorder
  * @private
  */
-eYo.UI.prototype.newDrawRecorder = function (recorder) {
+eYo.UI.prototype.newDrawRecorder_ = function (recorder) {
   var io = {
     brick: this.brick_,
     steps: [],
@@ -712,8 +712,8 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   this.parentIsShort = false
   this.isShort = false
   this.someTargetIsMissing = false
-  // we define the `io` named recorder which is specific to this.brick_ brick.
-  var io = this.newDrawRecorder(recorder)
+  // we define the `io` named recorder which is specific to this.brick_.
+  var io = this.newDrawRecorder_(recorder)
   // A "star like" field's text is one of '*', '+', '-', '~'...
   // This field is the very first of the brick.
   // Once we have rendered a field with a positive length,
@@ -721,7 +721,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   io.common.field.canStarLike = true
   // By default, we restart from scratch,
   // set the size to 0 for the width and 1 for the height
-  this.span.reset()
+  this.brick_.span.resetC()
   // And reset properties
   this.mayBeLast = false
   this.isLastInExpression = false

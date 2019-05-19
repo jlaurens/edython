@@ -50,7 +50,8 @@ goog.forwardDeclare('eYo.Brick')
  */
 eYo.Span = function (brick) {
   this.brick_ = brick
-  this.reset()
+  this.resetL()
+  this.resetC()
 }
 
 // default property values
@@ -364,11 +365,10 @@ eYo.Span.prototype.addC = function (delta) {
 
 /**
  * Convenient method
- * @param {Number} delta  the value to add to the ressource.
+ * @param {Object} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.reset = function () {
-  this.resetL()
-  this.resetC()
+eYo.Span.prototype.reset = function (where) {
+  console.error('WHAT IS THE PRURPOSE ?')
 }
 
 /**

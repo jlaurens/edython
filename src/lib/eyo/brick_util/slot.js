@@ -111,6 +111,11 @@ eYo.Slot.prototype.dispose = function () {
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
+  isReady: {
+    get () {
+      return this.beReady === eYo.Do.nothing
+    }
+  },
   /**
    * @readonly
    * @property {eYo.Brick} brick  the immediate brick in which this is contained

@@ -8,6 +8,10 @@ eYo.Brick.Expr.makeSubclass(`shape_out`, {
 
 describe('Shape', function () {
   it('statement', function() {
+    var b = eYo.Brick.newComplete(eYo.App.workspace, 'shape_out')
+    b.beReady()
+    chai.assert(b.out_m.isReady, 'not ready')
+    chai.assert(b.out_m.in_DB_, 'not in db')
     var b = eYo.Test.new_brick('shape_out')
     chai.assert(b.isExpr, 'MISSED')
     var d = eYo.Shape.definitionWithBrick(b)

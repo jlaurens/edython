@@ -2836,7 +2836,7 @@ eYo.Brick.getNextBlock = function () {
  * @private
  */
 eYo.Brick.newReady = function (owner, model, id) {
-  var brick = eYo.Brick.newComplete.apply(null, arguments)
+  var brick = eYo.Brick.newComplete(owner, model, id)
   brick && brick.beReady()
   return brick
 }
@@ -2966,21 +2966,19 @@ eYo.Brick.prototype.beReady = function (headless) {
         this.foot_m
       ].forEach(m => m && m.beReady())
       this.forEachData(data => data.synchronize()) // data is no longer headless
+      this.magnets.beReady()
       this.render = eYo.Brick.prototype.render_
     }
   )
 }
 
-Object.defineProperties(
-  eYo.Brick.prototype,
-  {
-    isReady: {
-      get () {
-        return this.beReady === eYo.Do.nothing
-      }
+Object.defineProperties(eYo.Brick.prototype, {
+  isReady: {
+    get () {
+      return this.beReady === eYo.Do.nothing
     }
   }
-)
+})
 
 /**
  * Returns the python type of the brick.

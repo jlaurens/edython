@@ -440,6 +440,11 @@ Object.defineProperties(eYo.Field.prototype, {
       return this.status === eYo.Field.STATUS_BUILTIN
     }
   },
+  isReady: {
+    get () {
+      return this.beReady === eYo.Do.nothing
+    }
+  }
 })
 
 /**
