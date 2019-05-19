@@ -86,6 +86,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   this.workspace = workspace
+  workspace.addTopBlock(this)
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
@@ -179,7 +180,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     var f = m => m && m.target
     var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
     m4t ? m4t.select() : this.unselect()
-    workspace.cancelCurrentGesture()
+    this.workspace.cancelCurrentGesture()
   }
   if (animate && this.ui.rendered) {
     this.unplug(healStack)
@@ -190,7 +191,6 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
   }
-  this.workspace = undefined
   // Stop rerendering.
   this.ui.rendered = false
   this.consolidate = this.beReady = this.render = eYo.Do.nothing
@@ -199,8 +199,6 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
   this.span.dispose()
   this.span_ = undefined
-  this.where.dispose()
-  this.where_ = undefined
   eYo.Events.disableWrap(() => {
     this.disposeMagnets()
     this.disposeSlots()
@@ -212,7 +210,8 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   })
   // this must be done after the child bricks are released
   this.ui_ && this.ui_.dispose() && (this.ui_ = null)
-  workspace.resizeContents();
+  this.workspace.resizeContents()
+  this.workspace = undefined
 }
 
 /**
@@ -1704,7 +1703,7 @@ eYo.Brick.prototype.synchronizeData = function () {
  */
 eYo.Brick.prototype.disposeData = function () {
   this.forEachData(data => data.dispose())
-  this.data = undefined
+  this.data_ = undefined
 }
 
 /**
@@ -1721,7 +1720,7 @@ eYo.Brick.prototype.makeFields = function () {
  * For edython.
  */
 eYo.Brick.prototype.disposeFields = function () {
-  eYo.Field.disposeFields(this, this)
+  eYo.Field.disposeFields(this)
 }
 
 /**
@@ -1798,7 +1797,7 @@ eYo.Brick.prototype.makeSlots = (() => {
  */
 eYo.Brick.prototype.disposeSlots = function () {
   this.forEachSlot(slot => slot.dispose())
-  this.slots = null
+  this.slots_ = null
 }
 
 /**
@@ -1807,6 +1806,15 @@ eYo.Brick.prototype.disposeSlots = function () {
  */
 eYo.Brick.prototype.makeMagnets = function () {
   this.magnets_ = new eYo.Magnets(this)
+}
+
+/**
+ * Create the brick magnets.
+ * For subclassers eventually
+ */
+eYo.Brick.prototype.disposeMagnets = function () {
+  this.magnets_.dispose()
+  this.magnets_ = undefined
 }
 
 // magnet computed properties
@@ -1818,14 +1826,6 @@ Object.defineProperties(eYo.Brick.prototype, {
   suite_m: { get () { return this.magnets.suite }},
   foot_m: { get () { return this.magnets.foot }},
 })
-
-/**
- * Create the brick magnets.
- * For subclassers eventually
- */
-eYo.Brick.prototype.disposeMagnets = function () {
-  this.magnets.dispose()
-}
 
 /**
  * Set the [python ]type of the delegate and its brick.
@@ -2003,7 +2003,7 @@ eYo.Brick.prototype.deinit = function () {
   this.model.deinit && this.model.deinit.call(this)
 }
 
-Object.defineProperties(eYo.Brick, {
+Object.defineProperties(eYo.Brick.prototype, {
   /**
    * Find all the bricks that are directly or indirectly nested inside this one.
    * Includes this brick in the list.
@@ -2014,8 +2014,8 @@ Object.defineProperties(eYo.Brick, {
   descendants: {
     get () {
       var ans = [this]
-      this.children_.forEach(d => ans.push.apply(ans, d.eyo.descendants))
-      return
+      this.children_.forEach(d => ans.push.apply(ans, d.descendants))
+      return ans
     }
   },
   /**
@@ -2034,6 +2034,10 @@ Object.defineProperties(eYo.Brick, {
     }
   }
 })
+
+eYo.Brick.prototype.getDescendants = function() {
+  return this.descendants
+};
 
 /**
  * Adds a magnet to later wrapping.
@@ -2656,11 +2660,6 @@ eYo.Brick.Manager.register = function (key) {
   eYo.Brick.Manager.registerDelegate_(prototypeName, delegateC9r)
   available.push(prototypeName)
 }
-
-
-// Mimic Blockly naming convention
-eYo.Brick = eYo.Brick
-
 
 /**
  * Called when the parent will just change.

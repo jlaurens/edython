@@ -150,6 +150,11 @@ eYo.Field.makeFields = (() => {
     field.nextField = undefined // debug step
     return field
   }
+  var shortcut = name => {
+    return function () {
+      return this.fields[name]
+    }
+  }
   return function (owner, fieldsModel) {
     owner.fields = owner.fields || Object.create(null)
     // field maker
@@ -160,7 +165,7 @@ eYo.Field.makeFields = (() => {
       var model = fieldsModel[name]
       var field = makeField(owner, name, model)
       if (field) {
-        if (name === eYo.Key.BIND) {
+        if (name === eYo.Key.BIND && owner instanceof eYo.Slot) {
           owner.bindField = field
         }
         owner.fields[name] = field
@@ -298,7 +303,8 @@ eYo.Field.makeFields = (() => {
  */
 eYo.Field.disposeFields = owner => {
   var fields = owner.fields
-  owner.fieldAtStart = owner.toEndField = owner.bindField = owner.fields = undefined
+  owner.fieldAtStart = owner.toEndField = owner.fields = undefined
+  ;(owner instanceof eYo.Slot) && (owner.bindField = undefined)
   Object.values(fields).forEach(f => f.dispose())
 }
 

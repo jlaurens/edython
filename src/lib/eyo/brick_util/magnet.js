@@ -93,22 +93,22 @@ Object.defineProperties(eYo.Magnets.prototype, {
  * This is an intermediate design.
  */
 eYo.Magnets.prototype.dispose = function () {
-  if (this.left_) {
+  if (this.out_) {
+    this.out_ && this.out_.dispose()
+    this.out_ = undefined
+  } else {
+    this.head_ && this.head_.dispose()
+    this.head_ = undefined
     this.left_.dispose()
     this.left_ = undefined
     this.right_.dispose()
     this.right_ = undefined
     this.suite_ && this.suite_.dispose()
     this.suite_ = undefined
+    this.foot_ && this.foot_.dispose()
+    this.foot_ = undefined
   }
-  this.high_ && this.high_.dispose()
-  this.high_ = undefined
-  this.foot_ && this.foot_.dispose()
-  this.foot_ = undefined
-  this.out_ && this.out_.dispose()
-  this.out_ = undefined
 }
-
 
 /**
  * `beReady` the magnets.
@@ -247,15 +247,15 @@ Object.defineProperties(eYo.Magnet, {
  * Dispose of the ressources.
  */
 eYo.Magnet.prototype.dispose = function () {
-  this.ui.driver.magnetDispose(this)
-  eYo.Field.disposeFields(this)
-  this.where_ = this.model_ = undefined
   if (this.target) {
     throw 'Disconnect connection before disposing of it.';
   }
   this.inDB_ = false
   this.db_ = this.dbOpposite_ = null
-  this.superClass_.dispose.call(this)
+  this.ui.driver.magnetDispose(this)
+  eYo.Field.disposeFields(this)
+  this.where_ = this.model_ = undefined
+  eYo.Magnet.superClass_.dispose.call(this)
 }
 
 // private properties

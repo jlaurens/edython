@@ -478,3 +478,57 @@ eYo.Test.source = (str) => {
   eYo.Test.code(d, str)
   d.dispose()
 }
+
+/**
+ * Test the span of bricks, usage:
+ *     
+  eYo.Test.span(b, {
+    c_min: 2,
+    c_padding: 0,
+    c: 2,
+    header: 0,
+    main: 1,
+    black: 0,
+    footer: 0,
+    suite: 0,
+    foot: 0,
+    l: 1,
+  })
+ * When any key is omitted, the defaut value is used instead.
+ * @param {string} str  The source code to test.
+ */
+eYo.Test.span = (b, span) => {
+  [
+    'c_padding',
+    'header',
+    'footer',
+    'suite',
+    'foot',
+  ].forEach(k => { span[k] || (span[k] = 0) })
+  span.c_min || (span.c_min = 2)
+  span.c || (span.c = span.c_min + span.c_padding)
+  span.main || (span.main = 1)
+  span.black || (span.black = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
+  span.l || (span.l = 
+    b.isGroup
+    ? span.main + span.black + span.suite
+    : b.isStmt
+      ? span.header + span.main + span.footer
+      : span.main
+  )
+  ;[
+    'c_min',
+    'c_padding',
+    'c',
+    'main',
+    'header',
+    'footer',
+    'suite',
+    'l',
+    'foot',
+  ].forEach(k => {
+    chai.assert(b.span[k] === span[k], `MISSED span ${k}: ${b.span[k]} === ${span[k]}`)
+  })
+  
+}
+

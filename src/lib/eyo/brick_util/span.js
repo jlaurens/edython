@@ -50,8 +50,11 @@ goog.forwardDeclare('eYo.Brick')
  */
 eYo.Span = function (brick) {
   this.brick_ = brick
-  this.resetL()
-  this.resetC()
+  if (brick.isGroup) {
+    this.black_ = 1
+    this.l_ = 2
+    this.c_min = 2 * eYo.Span.INDENT
+  }
 }
 
 // default property values
@@ -205,6 +208,7 @@ Object.defineProperties(eYo.Span.prototype, {
     }
   }
 })
+
 // Public computed properties:
 Object.defineProperties(eYo.Span.prototype, {
   /**
@@ -378,7 +382,8 @@ eYo.Span.prototype.reset = function (where) {
 eYo.Span.prototype.resetL = function () {
   this.l_ = this.main_ = 1
   this.header_ = this.suite_ = this.footer_ = 0
-  this.black_ = this.brick_.isStmt && !this.brick_.right ? 1 : 0
+  var b = this.brick_
+  this.black_ = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0
 }
 
 /**
@@ -394,11 +399,9 @@ eYo.Span.prototype.addHeader = function (delta) {
     this.brick.incrementChangeCount()
     this.header_ += delta
     this.l_ += delta
+    // cascade to all the right statements
     var right = this.rightSpan
-    if (right) {
-      // cascade to all the right statements
-      right.addHeader(delta)
-    }
+    right && right.addHeader(delta)
   }
 }
 
@@ -465,7 +468,7 @@ eYo.Span.prototype.addParent_ = function (delta) {
  */
 eYo.Span.prototype.addFooter = function (delta) {
   if (delta) {
-    this.foot_ += delta
+    this.footer_ += delta
     this.l_ += delta
     this.brick.incrementChangeCount()
     this.addLeft_(delta)
@@ -516,7 +519,7 @@ eYo.Span.prototype.addFoot = function (delta) {
  * Actually it can only be 1 or -1.
  */
 eYo.Span.prototype.addSuite = function (delta) {
-  if (delta) {
+  if (delta && this.brick.isGroup) {
     this.brick.incrementChangeCount()
     this.suite_ += delta
     this.l_ += delta

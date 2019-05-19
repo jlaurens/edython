@@ -142,8 +142,8 @@ eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {eYo.Brick} brick
  */
 eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
-  this.rendered && brick.beReady()
-  this.workspace.addTopBlock(brick)
+  this.isReady && brick.beReady()
+  this.workspace_.addTopBlock(brick)
 }
 
 /**
@@ -151,9 +151,9 @@ eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
  * @param {eYo.Brick} brick
  */
 eYo.WorkspaceDelegate.prototype.removeBrick = function (brick) {
-  this.workspace.removeTopBlock(brick)
+  this.workspace_.removeTopBlock(brick)
   // Remove from workspace
-  delete this.workspace.blockDB_[brick.id]
+  delete this.workspace_.blockDB_[brick.id]
 }
 
 /**

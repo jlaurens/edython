@@ -38,6 +38,16 @@ goog.require('eYo.XRE')
 //)
 
 /**
+ * Compute a list of the IDs of the specified block and all its descendants.
+ * @param {!Blockly.Block} block The root block.
+ * @return {!Array.<string>} List of block IDs.
+ * @private
+ */
+Blockly.Events.getDescendantIds_ = function(brick) {
+  return brick.descendants.map(d => d.id)
+};
+
+/**
  * Run a change event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  * @suppress{accessControls}
