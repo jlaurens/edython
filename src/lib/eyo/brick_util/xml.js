@@ -107,7 +107,7 @@ Blockly.Xml.domToText = function (dom) {
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
-eYo.Xml.dlgtToDomWithXY = function(brick, opt) {
+eYo.Xml.brickToDomWithXY = function(brick, opt) {
   var element = eYo.Xml.brickToDom(brick, opt)
   var xy = brick.ui.xyInSurface
   element.setAttribute('x', Math.round(xy.x))
@@ -129,8 +129,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
   )
   var xml = root.firstChild.firstChild
   workspace.getTopBlocks(true).forEach(brick => {
-    var brick = brick.eyo
-    var dom = eYo.Xml.dlgtToDomWithXY(brick, opt)
+    var dom = eYo.Xml.brickToDomWithXY(brick, opt)
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
       if (!brick.isControl) {
@@ -261,7 +260,7 @@ goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
  * @return {!Element} Tree of XML elements, possibly null.
  */
 Blockly.Xml.blockToDom = function (brick, optNoId) {
-  return eYo.Xml.brickToDom(brick.eyo, {noId: optNoId})
+  return eYo.Xml.brickToDom(brick, {noId: optNoId})
 }
 
 /**
@@ -271,7 +270,7 @@ Blockly.Xml.blockToDom = function (brick, optNoId) {
  * @return {!Element} Tree of XML elements.
  */
 Blockly.Xml.blockToDomWithXY = function(brick, optNoId) {
-  return eYo.Xml.dlgtToDomWithXY(brick.eyo, {noId: optNoId})
+  return eYo.Xml.brickToDomWithXY(brick, {noId: optNoId})
 }
 
 /**
@@ -314,10 +313,10 @@ eYo.Brick.newComplete = (() => {
  * There are various hooks at different levels.
  * Control is tranferred to the first object in the following list
  * which implements a brickToDom function, if any.
- * 1) brick.eyo
- * 2) brick.eyo.xml
- * 3) brick.eyo.constructor.xml
- * 4) brick.eyo.constructor
+ * 1) brick
+ * 2) brick.xml
+ * 3) brick.constructor.xml
+ * 4) brick.constructor
  * Otherwise an xml element with the brick's tag name is created.
  * Then it is populated with the toDom method.
  * There are 5 particular situations: literal, augmented assignments and comparisons, wrapped bricks, list bricks and finally solid bricks.
@@ -351,33 +350,32 @@ eYo.Brick.newComplete = (() => {
  */
 eYo.Xml.brickToDom = (() => {
   var brickToDom = function (brick, opt) {
-    var eyo = brick.eyo
-    if (eyo.target_is_wrapped_ && !(eyo instanceof eYo.Brick.List)) {
+    if (brick.target_is_wrapped_ && !(brick instanceof eYo.Brick.List)) {
       // a wrapped brick does not create a new element on its own
       // it only can populate an already existing xml node.
       // Except for list nodes.
       return
     }
-    var controller = eyo
+    var controller = brick
     if ((controller &&
       goog.isFunction(controller.brickToDom)) ||
-      ((controller = eyo.xml) &&
+      ((controller = brick.xml) &&
       goog.isFunction(controller.brickToDom)) ||
-      ((controller = eyo.constructor) &&
+      ((controller = brick.constructor) &&
       (controller = controller.xml) &&
       goog.isFunction(controller.brickToDom)) ||
-      ((controller = eyo.constructor) &&
+      ((controller = brick.constructor) &&
       goog.isFunction(controller.brickToDom))) {
-      var element = controller.brickToDom(eyo, opt)
+      var element = controller.brickToDom(brick, opt)
     } else {
-      var attr = eyo.xmlAttr()
-      element = goog.dom.createDom(eyo instanceof eYo.Brick.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
+      var attr = brick.xmlAttr()
+      element = goog.dom.createDom(brick instanceof eYo.Brick.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute(eYo.Key.EYO, attr)
       !(opt && opt.noId) && element.setAttribute('id', brick.id)
-      eYo.Xml.toDom(eyo, element, opt)
+      eYo.Xml.toDom(brick, element, opt)
     }
     // this is for the editor, not python
-    if (eyo.locked_) {
+    if (brick.locked_) {
       element.setAttribute(eYo.Xml.STATE, eYo.Xml.LOCKED)
     }
     return element
@@ -429,7 +427,7 @@ goog.provide('eYo.Xml.Text')
  * @return a dom element
  */
 eYo.Xml.Text.toDom = function (brick, element) {
-  var text = brick.eyo.value_d.get()
+  var text = brick.value_d.get()
   if (text && text.length) {
     var child = goog.dom.createTextNode(text)
     goog.dom.appendChild(element, child)
@@ -489,17 +487,17 @@ eYo.Xml.Literal.domToComplete = (() => {
     // is it a statement or an expression ?
     var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
     var id = element.getAttribute('id')
-    var eyo
+    var brick
     eYo.Do.someChild(element, child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return eyo = newBrick(workspace, child.nodeValue, id, stmt_expected)
+        return brick = newBrick(workspace, child.nodeValue, id, stmt_expected)
       }
     })
-    if (!eyo) {
+    if (!brick) {
       // there was no text node to infer the type
-      eyo = newBrick(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+      brick = newBrick(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
-    return eyo || eYo.Brick.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
+    return brick || eYo.Brick.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
   }
 }) ()
 
@@ -555,10 +553,10 @@ eYo.Xml.Data.fromDom = function (brick, element) {
  * needs another xml node.
  * When possible, the control is transferred to the first controller
  * in the following list which implements a toDom method.
- * 1) brick.eyo
- * 2) brick.eyo.xml
- * 3) brick.eyo.constructor.xml (no inheritance)
- * 4) brick.eyo.constructor (no inheritance here too)
+ * 1) brick
+ * 2) brick.xml
+ * 3) brick.constructor.xml (no inheritance)
+ * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
  * to take control.
  * @param {!eYo.Brick} brick The root brick to encode.
@@ -852,15 +850,15 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
           : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
-            var eyo = eYo.Brick.newComplete(workspace, type)
-            var m4t = eyo && eyo.out_m
+            var b3k = eYo.Brick.newComplete(workspace, type)
+            var m4t = b3k && b3k.out_m
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
-              ans = eyo
+              ans = b3k
               return true
             }
-            m4t = eyo.head_m
+            m4t = b3k.head_m
             if (flow_m4t && m4t && flow_m4t.checkType_(m4t)) {
-              ans = eyo
+              ans = b3k
               return true
             }
           })) {
@@ -916,7 +914,7 @@ eYo.Xml.domToBrick = (() => {
         (brick = eYo.Xml.Literal.domToComplete(dom, owner)) ||
         (brick = eYo.Xml.Comparison.domToComplete(dom, owner)) ||
         (brick = eYo.Xml.Starred.domToComplete(dom, owner)) ||
-        // (eyo = eYo.Xml.Group.domToComplete(dom, owner)) ||
+        // (brick = eYo.Xml.Group.domToComplete(dom, owner)) ||
         (brick = eYo.Xml.Call.domToComplete(dom, owner)) ||
         (brick = eYo.Xml.Compatibility.domToComplete(dom, owner))) {
           eYo.Xml.fromDom(brick, dom)
@@ -991,10 +989,10 @@ goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
  * Decode a brick subtree from XML.
  * When possible, the control is transferred to the first controller
  * in the following list which implements a fromDom method.
- * 1) brick.eyo
- * 2) brick.eyo.xml
- * 3) brick.eyo.constructor.xml (no inheritance)
- * 4) brick.eyo.constructor (no inheritance here too)
+ * 1) brick
+ * 2) brick.xml
+ * 3) brick.constructor.xml (no inheritance)
+ * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
  * @param {!eYo.Brick} brick  The root brick to decode.
  * @param {element} dom element to encode in
@@ -1231,16 +1229,16 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
-      var eyo = eYo.Brick.newComplete(owner, type, id)
+      var b3k = eYo.Brick.newComplete(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
       && (C9r = eYo.Brick.Manager.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && model.all.indexOf(op) >= 0) {
-      eyo = eYo.Brick.newComplete(owner, type, id)
+        b3k = eYo.Brick.newComplete(owner, type, id)
     }
-    return eyo
+    return b3k
   }
 }
 
@@ -1254,11 +1252,11 @@ eYo.Xml.Starred.domToComplete = function (element, owner) {
   var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === "*") {
-    var eyo = eYo.Brick.newComplete(owner, eYo.T3.Expr.star_expr, id)
+    var b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.star_expr, id)
   } else if (prototypeName === "**") {
-    eyo = eYo.Brick.newComplete(owner, eYo.T3.Expr.or_expr_star_star, id)
+    b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.or_expr_star_star, id)
   }
-  return eyo
+  return b3k
 }
 
 goog.provide('eYo.Xml.Primary')
@@ -1321,8 +1319,8 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
   if (name === 'dict_comprehension') {
     // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
     var id = element.getAttribute('id')
-    var eyo = eYo.Brick.newComplete(owner, eYo.T3.Expr.comprehension, id)
-    if (eyo) {
+    var b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.comprehension, id)
+    if (b3k) {
       var kd = eYo.Brick.newComplete(owner, eYo.T3.Expr.key_datum)
       // the 'key' slot
       eYo.Do.forEachElementChild(element, child => {
@@ -1335,8 +1333,8 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
           kd.annotated_s.connect(dd)
         }
       })
-      eyo.expression_s.connect(kd)
-      return eyo
+      b3k.expression_s.connect(kd)
+      return b3k
     }
   }
 }

@@ -187,10 +187,10 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   } else {
     this.unplug()
   }
-  this.workspace = undefined
   if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockDelete(this));
+    Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
   }
+  this.workspace = undefined
   // Stop rerendering.
   this.ui.rendered = false
   this.consolidate = this.beReady = this.render = eYo.Do.nothing
@@ -1915,6 +1915,36 @@ eYo.Brick.prototype.consolidateType = function () {
     if (this.wrapped_) {
       var p = this.parent
       p && p.consolidateType()
+    }
+  }
+}
+
+/**
+ * Unplug this brick from its superior brick.  If this brick is a statement,
+ * optionally reconnect the brick underneath with the brick on top.
+ * @param {boolean=} opt_healStack Disconnect child statement and reconnect
+ *   stack.  Defaults to false.
+ */
+eYo.Brick.prototype.unplug = function(opt_healStack) {
+  var m4t
+  if ((m4t = this.out_m)) {
+    m4t.disconnect()
+  } else if ((m4t = this.head_m) && (m4t = m4t.target)) {
+    m4t.disconnect()
+    if (opt_healStack) {
+      var child = this.foot_m
+      if (child && (child = child.target)) {
+        child.disconnect()
+        m4t.connect(child)
+      }
+    }
+  } else if ((m4t = this.left_m) && (m4t = m4t.target)) {
+    m4t.disconnect()
+    if (opt_healStack) {
+      if ((child = this.right_m) && (child = child.target)) {
+        child.disconnect()
+        m4t.connect(child)
+      }
     }
   }
 }

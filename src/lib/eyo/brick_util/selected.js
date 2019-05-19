@@ -171,6 +171,22 @@ eYo.Selected = (() => {
   )
   me.didAdd = eYo.Do.nothing
   me.didRemove = eYo.Do.nothing
+  Object.defineProperty(eYo.Magnet.prototype, 'isSelected', {
+    get() {
+      return this === magnet__
+    },
+    set (newValue) {
+      newValue ? this.select() : this.unselect()
+    }
+  })
+  Object.defineProperty(eYo.Brick.prototype, 'isSelected', {
+    get() {
+      return this === brick__
+    },
+    set (newValue) {
+      newValue ? this.select() : this.unselect()
+    }
+  })
   return me
 })()
 
@@ -215,15 +231,6 @@ Object.defineProperties(
   }
 )
 
-Object.defineProperty(eYo.Magnet.prototype, 'isSelected', {
-  get() {
-    return this === magnet__
-  },
-  set (newValue) {
-    ((newValue && this.select) || this.unselect)()
-  }
-})
-
 /**
  * Select this magnet. Highlight it visually.
  * Wrapped magnets are not selectable.
@@ -232,15 +239,6 @@ Object.defineProperty(eYo.Magnet.prototype, 'isSelected', {
 eYo.Magnet.prototype.select = function () {
   return (eYo.Selected.magnet = this)
 }
-
-Object.defineProperty(eYo.Brick.prototype, 'isSelected', {
-  get() {
-    return this === brick__
-  },
-  set (newValue) {
-    ((newValue && this.select) || this.unselect)()
-  }
-})
 
 /**
  * Unselect this magnet.

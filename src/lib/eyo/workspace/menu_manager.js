@@ -987,7 +987,7 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
-            eyo.replaceDlgt(parent)
+            eyo.replaceBrick(parent)
           })
           this.addRemoveChild(MI)
           console.log(brick.type, ' replace ', parent.type)

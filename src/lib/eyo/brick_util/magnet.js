@@ -1292,7 +1292,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
           if (oldChildT4t.isOutput) {
             (child instanceof eYo.Brick.List
               ? child.someInput
-              : child.someSlot)(x => { // a slot or an input
+              : child.someSlot).call(this, x => { // a slot or an input
               if (!x.incog) {
                 var m4t, t9k
                 if ((m4t = x.magnet || x.eyo.magnet)) {

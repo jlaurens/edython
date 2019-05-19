@@ -3,7 +3,7 @@ setTimeout(() => {
     it('Blockly', function() {
       chai.assert(Blockly, `MISSING Blockly`)
       chai.assert(eYo.App.workspace, `MISSING eYo.App.workspace`)
-      chai.assert(eYo.Node.prototype.toBlock, `MISSING toBlock`)
+      chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
 }, 0)
@@ -470,7 +470,7 @@ eYo.Test.svgNodeParent = (svg, node, parent, type) => {
 eYo.Test.source = (str) => {
   var err_ret = {}
   var n = eYo.Parser.PyParser_ParseString(str, eYo.GMR._PyParser_Grammar, eYo.TKN.file_input, err_ret)
-  var d = n.toBlock(Blockly.mainWorkspace)
+  var d = n.toBrick(eYo.App.workspace)
   if (!d) {
     eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, n)
   }

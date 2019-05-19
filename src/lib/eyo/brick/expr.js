@@ -117,12 +117,12 @@ eYo.Brick.Expr.prototype.canReplaceDlgt = function (brick) {
 
 /**
  * Remove and bypass the other brick.
- * If the parent's output connection is connected,
- * connects the brick's output connection to it.
+ * If the parent's output magnet is connected,
+ * connects the brick's output magnet to it.
  * The connection cannot always establish.
  * @param {!eYo.Brick} brick
  */
-eYo.Brick.Expr.prototype.replaceDlgt = function (brick) {
+eYo.Brick.Expr.prototype.replaceBrick = function (brick) {
   if (this.workspace && brick && brick.workspace) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {

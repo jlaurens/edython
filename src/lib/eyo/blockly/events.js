@@ -137,12 +137,12 @@ eYo.Events.disableWrap = eYo.Do.makeWrapper(
  */
 eYo.Events.groupWrap = (f, g) => {
   eYo.Do.makeWrapper(
-  () => {
-    eYo.Events.setGroup(true)
-  },
-  () => {
-    eYo.Events.setGroup(false)
-  },
+    () => {
+      eYo.Events.setGroup(true)
+    },
+    () => {
+      eYo.Events.setGroup(false)
+    },
   g)(f)
 }
 

@@ -607,7 +607,7 @@ var doit = (() => {
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
-          eyo.replaceDlgt(parent)
+          eyo.replaceBrick(parent)
           return
         }
         if (eYo.Selected.magnet) {
@@ -643,20 +643,20 @@ var doit = (() => {
 
   Ks = (() => {
     var F = (key, op) => {
-      var eyo = eYo.Selected.brick
-      if (eyo) {
+      var brick = eYo.Selected.brick
+      if (brick) {
         var parent = eyo.surround
         if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
-          eyo.replaceDlgt(parent)
+          brick.replaceBrick(parent)
           return
         }
         var model = {
           type: eYo.T3.Expr.u_expr,
           operator_p: op
         }
-        (eYo.Selected.magnet
-          ? eyo.insertBlockWithModel
-          : eyo.insertParentWithModel)(model)
+        eYo.Selected.magnet
+          ? brick.insertBlockWithModel(model)
+          : brick.insertParentWithModel(model)
       }
     }
     return {
