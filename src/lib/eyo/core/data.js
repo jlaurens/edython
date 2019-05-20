@@ -654,19 +654,19 @@ eYo.Data.prototype.synchronize = function (newValue) {
         if (this.slot && this.slot.data === this) {
           this.slot.incog = true
         } else {
-          field.setVisible(false)
+          field.visible = false
         }
       } else {
         eYo.Events.disableWrap(() => {
           field.text = this.toField()
           if (this.slot && this.slot.data === this) {
             this.slot.incog = false
-            field.setVisible(!this.slot.unwrappedTarget && (!this.slot.input || !eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length))
+            field.visible = !this.slot.unwrappedTarget && (!eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length)
           } else {
-            field.setVisible(true)
+            field.visible = true
           }
-          var ui = field.eyo.ui
-          ui && (ui.driver.fieldMakeError(field))
+          var d = field.ui_driver
+          d && (d.fieldMakeError(field))
         })
       }
     }
@@ -767,7 +767,7 @@ Object.defineProperty(eYo.Data, 'incog', {
       if (this.slot) {
         this.slot.incog = newValue
       } else {
-        this.field && (this.field.setVisible(!newValue))
+        this.field && (this.field.visible = !newValue)
       }
     }
   }
