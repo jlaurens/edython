@@ -48,20 +48,20 @@ eYo.Navigate.doTab = (() => {
     var candidate = input.inputLeft
     while (candidate) {
       if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.eyo.magnet
+        eYo.Selected.magnet = candidate.magnet
         return
       }
-      candidate = candidate.eyo.inputLeft
+      candidate = candidate.inputLeft
     }
     candidate = input
-    while ((candidate = candidate.eyo.inputLeft)) {
+    while ((candidate = candidate.inputLeft)) {
       if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.eyo.magnet
+        eYo.Selected.magnet = candidate.magnet
         return
       }
     }
     candidate = input
-    while ((candidate = candidate.eyo.inputRight)) {
+    while ((candidate = candidate.inputRight)) {
       input = candidate
     }
     do {
@@ -92,20 +92,20 @@ eYo.Navigate.doTab = (() => {
     var candidate = input.inputRight
     while (candidate) {
       if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.eyo.magnet
+        eYo.Selected.magnet = candidate.magnet
         return
       }
-      candidate = candidate.eyo.inputRight
+      candidate = candidate.inputRight
     }
     candidate = input
-    while ((candidate = candidate.eyo.inputRight)) {
+    while ((candidate = candidate.inputRight)) {
       if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.eyo.magnet
+        eYo.Selected.magnet = candidate.magnet
         return
       }
     }
     candidate = input
-    while ((candidate = candidate.eyo.inputLeft)) {
+    while ((candidate = candidate.inputLeft)) {
       input = candidate
     }
     do {
@@ -139,14 +139,14 @@ eYo.Brick.getBestDlgt = function (workspace, weight) {
   var smallest = Infinity
   var best
   workspace.topBlocks_.forEach(top => {
-    var box = top.eyo.ui.boundingReact
+    var box = top.ui.boundingRect
     var w = weight(box.getCenter())
     if (w < smallest) {
       smallest = w
       best = top
     }
   })
-  return best.eyo
+  return best
 }
 
 /**
@@ -185,15 +185,15 @@ eYo.Brick.prototype.getBestBlock = function (distance) {
  * @return None
  */
 eYo.Selected.chooseLeft = () => {
-  const eyo = eYo.Selected.brick
-  if (!eyo) {
+  const b3k = eYo.Selected.brick
+  if (!b3k) {
     return
   }
   var m4t = eYo.Selected.magnet
   if (m4t) {
     if (m4t.isInput || m4t.isOutput) {
       eYo.Selected.magnet = null
-      eyo.wrapper.select().scrollToVisible()
+      b3k.wrapper.select().scrollToVisible()
       return
     } else if (m4t.isSuite) {
       eYo.Selected.magnet = null
@@ -201,20 +201,20 @@ eYo.Selected.chooseLeft = () => {
       return
     } else {
       eYo.Selected.magnet = null
-      (eyo.group || eyo.root).select().scrollToVisible()
+      (b3k.group || b3k.root).select().scrollToVisible()
       return
     }
-  } else if (eyo.isStmt) {
-    var ans = eyo.group || eyo.root
-    if (eyo !== ans) {
+  } else if (b3k.isStmt) {
+    var ans = b3k.group || b3k.root
+    if (b3k !== ans) {
       ans.select().scrollToVisible()
       return
     }
-  } else if ((ans = eyo.stmtParent)) {
+  } else if ((ans = b3k.stmtParent)) {
     ans.select().scrollToVisible()
     return
   }  // now try to select a top brick
-  var root = eyo.root
+  var root = b3k.root
   var target = root.getBestBlock((b, a) => {
     if (a.left >= b.left) {
       return {}
@@ -232,7 +232,7 @@ eYo.Selected.chooseLeft = () => {
     }
   })
   eYo.Selected.magnet = null
-  (target.eyo || root).select().scrollToVisible()
+  (target || root).select().scrollToVisible()
 }
 /**
  * Select the brick to the right of the selection.
@@ -292,7 +292,7 @@ eYo.Selected.chooseRight = function () {
     }
   })
   eYo.Selected.magnet = null
-  (target.eyo || root).select().scrollToVisible()
+  (target || root).select().scrollToVisible()
 }
 
 /**
@@ -346,11 +346,11 @@ eYo.Selected.chooseAbove = function () {
       minor: b.right - b.left
     }
   })
-  if (brick && (eyo = brick.eyo)) {
+  if (brick) {
     if (m4t && m4t.isHead && eyo.foot_m) {
-      eyo.foot_m.select().scrollToVisible()
+      brick.foot_m.select().scrollToVisible()
     } else {
-      eyo.select().scrollToVisible()
+      brick.select().scrollToVisible()
     }
   }
 }
