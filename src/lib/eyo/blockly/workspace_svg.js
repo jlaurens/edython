@@ -116,14 +116,14 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
     var hasCollapsedBlocks = false
     var hasExpandedBlocks = false
     for (var i = 0; i < topBlocks.length; i++) {
-      var block = topBlocks[i]
-      while (block) {
-        if (block.eyo.collapsed) {
+      var b3k = topBlocks[i]
+      while (b3k) {
+        if (b3k.collapsed) {
           hasCollapsedBlocks = true
         } else {
           hasExpandedBlocks = true
         }
-        block = block.getNextBlock()
+        b3k = b3k.getNextBlock()
       }
     }
 
@@ -164,19 +164,14 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function (e) {
   // Option to delete all bricks.
   // Count the number of bricks that are deletable.
   var deleteList = []
-  function addDeletableBlocks (block) {
-    if (block.isDeletable()) {
-      deleteList = deleteList.concat(block.eyo.getWrappedDescendants())
+  function addDeletableBlocks (b3k) {
+    if (b3k.isDeletable()) {
+      deleteList = deleteList.concat(b3k.getWrappedDescendants())
     } else {
-      var children = block.getChildren()
-      for (var i = 0; i < children.length; i++) {
-        addDeletableBlocks(children[i])
-      }
+      b3k.getChildren().forEach(child => addDeletableBlocks(child))
     }
   }
-  for (i = 0; i < topBlocks.length; i++) {
-    addDeletableBlocks(topBlocks[i])
-  }
+  topBlocks.forEach(child => addDeletableBlocks(child))
 
   function deleteNext () {
     Blockly.Events.setGroup(eventGroup)
@@ -278,7 +273,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
           var avoidCollision = () => {
             do {
               var collide = allBlocks.some(b => {
-                var xy = b.eyo.ui.xyInSurface
+                var xy = b.ui.xyInSurface
                 if (Math.abs(dx - xy.x) <= 10 &&
                     Math.abs(dy - xy.y) <= 10) {
                   return true
@@ -375,10 +370,10 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
   var topright = (tops) => {
     return lowest(tops, (top) => top.xy.y - top.xy.x)
   }
-  var tops = this.workspace_.topBlocks_.filter(block => {
+  var tops = this.workspace_.topBlocks_.filter(b3k => {
     return {
-      block,
-      xy: block.eyo.ui.xyInSurface
+      b3k,
+      xy: b3k.ui.xyInSurface
     }
   })
   var ordered = {}
