@@ -554,13 +554,10 @@ eYo.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
   // var blockTL = this.xyInSurface
   // this.brick_.forEachSlot((slot) => {
-  //   var input = slot.input
-  //   if(input) {
-  //     var m4t = input.magnet
-  //     if (m4t) {
-  //       m4t.moveToOffset(blockTL)
-  //       m4t.tighten_()
-  //     }
+  //   var m4t = input.magnet
+  //   if (m4t) {
+  //     m4t.moveToOffset(blockTL)
+  //     m4t.tighten_()
   //   }
   // })
 }
@@ -807,7 +804,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
   if (!this.brick_.wrapped_) {
     if (this.brick_.out_m) {
-      if (io.common.field.last && io.common.field.last.eyo.isEditing) {
+      if (io.common.field.last && io.common.field.last.isEditing) {
         io.cursor.c += 1
         io.common.field.beforeIsSeparator = false
         io.common.field.beforeIsBlack = false
@@ -847,7 +844,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
   }
   this.drawPending_(io)
   if (!this.brick_.wrapped_) {
-    var m4t = io.form && io.form.connection
+    var m4t = io.form
     var t9k = m4t && m4t.targetBrick
     if (io.n < 2 && !this.brick_.wrapped_) {
       // this.brick_ is a short brick, special management of selection
@@ -1059,7 +1056,7 @@ eYo.UI.prototype.fieldDrawFrom_ = function (field, io) {
   if (field) {
     do {
       this.drawField_(field, io)
-    } while ((field = field.eyo.nextField))
+    } while ((field = field.nextField))
   }
 }
 
@@ -1076,7 +1073,7 @@ eYo.UI.prototype.fieldDrawFrom_ = function (field, io) {
 eYo.UI.prototype.drawFields_ = function (io, only_prefix) {
   var current = io.cursor.c
   io.input.fieldRow.forEach((field) => {
-    if (!!only_prefix === !field.eyo.suffix) {
+    if (!!only_prefix === !field.suffix) {
       this.drawField_(field, io)
     }
   })
@@ -1392,7 +1389,7 @@ eYo.UI.prototype.drawValueInput_ = function (io) {
   io.input.inputRight = undefined
   io.input.inputLeft = io.common.inputDone
   if (io.common.inputDone) {
-    io.common.inputDone.eyo.inputRight = io.input
+    io.common.inputDone.inputRight = io.input
   } else {
     io.brick.firstRenderedInput = io.input
   }
