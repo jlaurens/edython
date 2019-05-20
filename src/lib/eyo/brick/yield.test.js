@@ -64,14 +64,14 @@ describe('YIELD expression and statement', function() {
   })
   it(`yield abc -> yield <abc> -> yield abc`, function() {
     var d = eYo.Brick.newReady(Blockly.mainWorkspace, eYo.T3.Stmt.yield_stmt)
-    d.eyo.expression_p = 'abc'
+    d.expression_p = 'abc'
     eYo.Test.code(d, 'yield abc')
-    var t9k = d.eyo.expression_b
+    var t9k = d.expression_b
     t9k.connectLast(eYo.Test.new_brick(eYo.T3.Expr.identifier)).target_p = 'bcd'
     eYo.Test.code(d, 'yield bcd')
-    d.eyo.expression_s.unwrappedTarget.dispose()
+    d.expression_s.unwrappedTarget.dispose()
     eYo.Test.code(d, 'yield abc')
-    d.eyo.expression_p = ''
+    d.expression_p = ''
     eYo.Test.code(d, 'yield')
     d.dispose()
   })
