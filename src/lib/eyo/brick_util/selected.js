@@ -43,7 +43,7 @@ eYo.Selected = (() => {
     }
   }
   me.scrollToVisible = (force) => {
-    brick__ && brick__.scrollToVisible(force)
+    brick__ && (brick__.scrollToVisible(force))
   }
   Object.defineProperties(
     me,
@@ -521,7 +521,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
           } else if (magnet !== t9k.lastSelectedMagnet__) {
             if (magnet.isInput) {
               if (!magnet.targetBrick) {
-                magnet.bindField && magnet.select()
+                magnet.bindField && (magnet.select())
               }
             } else {
               magnet.select()
@@ -555,5 +555,5 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
       }
     }
   }
-  eYo.App.didTouchBrick && eYo.App.didTouchBrick(eYo.Selected.brick)
+  eYo.App.didTouchBrick && (eYo.App.didTouchBrick(eYo.Selected.brick))
 }

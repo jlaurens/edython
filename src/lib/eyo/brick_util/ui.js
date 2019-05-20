@@ -113,12 +113,12 @@ Object.defineProperties(eYo.UI.prototype, {
   },
   bBox: {
     get () {
-      return this.rendered && this.driver.brickGetBBox(this.brick_)
+      return this.rendered && (this.driver.brickGetBBox(this.brick_))
     }
   },
   hasSelect: {
     get () {
-      return this.rendered && this.driver.brickHasSelect(this.brick_)
+      return this.rendered && (this.driver.brickHasSelect(this.brick_))
     }
   }
 })
@@ -374,7 +374,7 @@ eYo.UI.prototype.render = (() => {
     if (!this.brick_.isEditing && (this.brick_.isDragging_ || this.brick_.change.level || !this.brick_.workspace)) {
       return
     }
-    recorder && this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT)
+    recorder && (this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT))
     // rendering is very special when this.brick_ is just a matter of
     // statement connection
     if (this.rendered) {
@@ -1012,7 +1012,7 @@ eYo.UI.prototype.drawField_ = function (field, io) {
           || tail === '#'
           || tail === ','
           || (tail === '.'
-            && !(field instanceof eYo.FieldLabel)))
+            && (!(field instanceof eYo.FieldLabel))))
       io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
       io.common.field.beforeIsCaret = false
       // place the field at the right position:

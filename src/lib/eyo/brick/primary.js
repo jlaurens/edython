@@ -345,7 +345,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
         }
         return
       }
-      (x = x.target_s) && x.bindField.setVisible(true)
+      (x = x.target_s) && (x.bindField.setVisible(true))
     }
   }
   eYo.Brick.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
@@ -651,7 +651,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
               this.save(element, opt)
             }
             var v = eYo.Do.valueOf(this.model.placeholder)
-            v = v && v.toString().trim()
+            v = v && (v.toString().trim())
             if (v.length>0) {
               this.save(element, opt)
             }
@@ -1042,7 +1042,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
             var item = O.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
             var d = this.ui_driver
-            d && d.fieldMakeReserved(this.field_, reserved)
+            d && (d.fieldMakeReserved(this.field_, reserved))
           }
         }
       },
@@ -1500,7 +1500,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
     }
     if (this.someInput(input => {
       var t = input.targetBrick
-      return t && t.checkOutputType(eYo.T3.Expr.Check.slice_only)
+      return t && (t.checkOutputType(eYo.T3.Expr.Check.slice_only))
     })) {
       return named()
       ? [

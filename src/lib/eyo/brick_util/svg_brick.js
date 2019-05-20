@@ -62,7 +62,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
   // Contour
   svg.groupContour_ = eYo.Svg.newElement('g',
     {class: 'eyo-contour'}, null)
-  this.withBBox && goog.dom.appendChild(svg.groupContour_, svg.pathBBox_)
+  this.withBBox && (goog.dom.appendChild(svg.groupContour_, svg.pathBBox_))
   goog.dom.appendChild(svg.groupContour_, svg.pathInner_)
   goog.dom.appendChild(svg.groupContour_, svg.pathCollapsed_)
   goog.dom.appendChild(svg.groupContour_, svg.pathContour_)
@@ -108,7 +108,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
           return
         }
         console.log('Start executing ' + brick.id)
-        svg.runScript && svg.runScript()
+        svg.runScript && (svg.runScript())
       })
       goog.dom.classlist.add(svg.group_, 'eyo-start')
       goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')
@@ -818,7 +818,7 @@ eYo.Svg.prototype.brickXYInSurface = function (brick) {
   var y = 0
   var brick = brick
   var dragSurface = brick.useDragSurface_ && brick.workspace.blockDragSurface_
-  var dragSurfaceGroup = dragSurface && dragSurface.getGroup()
+  var dragSurfaceGroup = dragSurface && (dragSurface.getGroup())
   var canvas = brick.workspace.getCanvas()
   var element = brick.ui.svg.group_
   if (element) {
@@ -1078,7 +1078,7 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
   } else {
     var oldXY = this.brickXYInSurface(brick)
     brick.workspace.getCanvas().appendChild(svg.group_)
-    xy && svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`)
+    xy && (svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
     var newXY = this.brickXYInSurface(brick)
     goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
@@ -1112,7 +1112,7 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
   var g = brick.ui.svg.group
   goog.mixin(options, {
     onShow(instance) {
-      g && g.parentNode && eYo.Tooltip.hideAll(g.parentNode)
+      g && g.parentNode && (eYo.Tooltip.hideAll(g.parentNode))
     }
   })
   var model = brick.constructor.eyo.model

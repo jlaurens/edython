@@ -169,7 +169,7 @@ function (try_f, finally_f) {
     Blockly.Events.enable()
     // enable first to allow finally_f to eventually fire events
     // or eventually modify `out`
-    finally_f && finally_f.call(this)
+    finally_f && (finally_f.call(this))
     return out && out.ans
   }
 }
@@ -286,7 +286,7 @@ function (try_f, finally_f) {
     console.error(err)
     throw err
   } finally {
-    finally_f && finally_f.call(this)
+    finally_f && (finally_f.call(this))
     eYo.Events.setGroup(false)
   }
 }

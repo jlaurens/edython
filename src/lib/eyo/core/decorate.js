@@ -22,7 +22,7 @@ goog.provide('eYo.Decorate')
  */
 eYo.Decorate.reentrant_method = function(key, f) {
   return (!this || !this.reentrant_ || !this.reentrant_[key])
-    && goog.isFunction(f)
+    && (goog.isFunction(f))
       && function() {
         if (this.reentrant_[key]) {
           return {}

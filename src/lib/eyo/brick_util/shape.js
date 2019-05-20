@@ -489,7 +489,7 @@ var initWithStatementBrick = function(brick, opt) {
   var r_s = screen.rightSpan
   if (r_s) {
     this.M(c - 1 / 2 + r)
-    r_s.header && this.V(r_s.header)
+    r_s.header && (this.V(r_s.header))
     this.quarter_circle(r_xy, false, 1)
     this.V(l - r)
     this.quarter_circle(r_xy, false, 2)
@@ -501,7 +501,7 @@ var initWithStatementBrick = function(brick, opt) {
     this.H(1 / 2 + r)
     this.V(s.header)
     this.quarter_circle(r_xy, true, 2)
-    s.header && this.V(0)
+    s.header && (this.V(0))
     return this
   } else if (brick.foot) {
     this.H(1 / 2)
@@ -540,7 +540,7 @@ var initWithGroupBrick = function(brick, opt) {
   var r_s = s.rightSpan
   if (r_s) {
     this.M(c - 1/2 + r, 0)
-    r_s.header && this.V(r_s.header)
+    r_s.header && (this.V(r_s.header))
     this.quarter_circle(r_xy, false, 1)
     this.V(l - s.suite - r)
     this.quarter_circle(r_xy, false, 2)
@@ -582,7 +582,7 @@ var initWithExpressionBrick = function(brick, opt) {
   var r = this.expr_radius
   var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
   this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  brick.span.l > 1 && this.V(brick.span.l - 1)
+  brick.span.l > 1 && (this.V(brick.span.l - 1))
   this.arc(eYo.Unit.y, false, true)
   var parent
   if (brick.startOfStatement && (parent = brick.parent)) {
@@ -606,7 +606,7 @@ var initWithExpressionBrick = function(brick, opt) {
     }
   } else {
     this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
-    brick.span.l > 1 && this.V(eYo.Unit.y)
+    brick.span.l > 1 && (this.V(eYo.Unit.y))
     this.arc(eYo.Unit.y, true, false)
   }
   return this

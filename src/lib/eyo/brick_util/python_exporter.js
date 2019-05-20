@@ -54,7 +54,7 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
  * Insert a newline_ array.
  */
 eYo.Py.Exporter.prototype.newline_ = function () {
-  this.line && this.lines.push(this.line.join(''))
+  this.line && (this.lines.push(this.line.join('')))
   this.lineShouldAddSpace = false
   this.line = [this.indent]
   this.isFirst = true
@@ -307,7 +307,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       eYo.XRE.operator.test(tail) ||
       tail === ';' ||
       tail === ',' ||
-      (tail === '.' && !(field instanceof eYo.FieldInput))
+      (tail === '.' && (!(field instanceof eYo.FieldInput)))
       this.starSymbol = ((this.isFirst || !this.wasContinue || this.wasLeftParenth) && (['*', '@', '+', '-', '~', '.'].indexOf(text) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
@@ -334,7 +334,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
         this.exportAsExpression_(t9k)
       } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.bindField) {
         console.error('BREAK HERE')
-        this.shouldSeparateField && this.addSpace()
+        this.shouldSeparateField && (this.addSpace())
         this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE

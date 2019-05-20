@@ -60,11 +60,7 @@ eYo.Brick.Stmt.makeSubclass('BaseGroup', {
 }, eYo.Brick)
 
 Object.defineProperties(eYo.Brick.BaseGroup.prototype, {
-  isGroup: {
-    get () {
-      return true
-    }
-  }
+  isGroup: { value: true }
 })
 
 /**

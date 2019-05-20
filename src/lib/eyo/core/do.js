@@ -426,7 +426,7 @@ eYo.Do.Enumerator = function (list, filter) {
  * @return {boolean}
  */
 eYo.Do.hasOwnProperty = function (object, key) {
-  return object && key && Object.prototype.hasOwnProperty.call(object, key)
+  return object && key && (Object.prototype.hasOwnProperty.call(object, key))
 }
 
 /**
@@ -545,7 +545,7 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
     console.error(err)
     throw err
   } finally {
-    finally_f && finally_f()
+    finally_f && (finally_f())
   }
 }
 
@@ -559,12 +559,12 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
  */
 eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
   return (try_f, finally_f) => {
-    start_f && start_f()
+    start_f && (start_f())
     var ans
     eYo.Do.tryFinally(() => {
       ans = try_f()
     }, () => {
-      begin_finally_f && begin_finally_f()
+      begin_finally_f && (begin_finally_f())
       // enable first to allow finally_f to eventually fire events
       // or eventually modify `ans`
       if (finally_f) {
@@ -573,7 +573,7 @@ eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
           ans = out
         }
       }
-      end_finally_f && end_finally_f()
+      end_finally_f && (end_finally_f())
     })
     return ans
   }

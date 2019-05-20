@@ -27,7 +27,7 @@
  * We do not make difference between expressions,
  * group bricks and simple statement bricks
  * despite that groups cannot have headers, only footers,
- * statements cannot have black line and expression have no right padding.
+ * statements cannot have hole line and expression have no right padding.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -50,11 +50,16 @@ goog.forwardDeclare('eYo.Brick')
  */
 eYo.Span = function (brick) {
   this.brick_ = brick
-  if (brick.isGroup) {
-    this.black_ = 1
-    this.l_ = 2
-    this.c_min = 2 * eYo.Span.INDENT
-  }
+  this.c_min_init_ = brick.wrapped_
+    ? 0
+    : brick.isGroup
+      ? 2 * eYo.Span.INDENT
+      : brick.isStmt
+        ? eYo.Span.INDENT
+        : 2
+  this.c_min_ = this.c_min_init_
+  this.c_ = this.c_min_ + this.c_padding
+  this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
 }
 
 // default property values
@@ -65,7 +70,7 @@ Object.defineProperties(eYo.Span.prototype, {
   l_: { value: 1, writable: true },
   header_: { value: 0, writable: true },
   main_: { value: 1, writable: true },
-  black_: { value: 0, writable: true },
+  hole_: { value: 0, writable: true },
   footer_: { value: 0, writable: true },
   suite_: { value: 0, writable: true },
   foot_: { value: 0, writable: true }
@@ -127,7 +132,7 @@ Object.defineProperties(eYo.Span.prototype, {
     }
   },
   /**
-   * 
+   * The minimum number of columns, at least `this.c_min_init`.
    * @readonly
    * @property {number} c_min - The minimum number of columns
    */
@@ -213,22 +218,16 @@ Object.defineProperties(eYo.Span.prototype, {
 Object.defineProperties(eYo.Span.prototype, {
   /**
    * Groups need a suite, but may not be provided with one.
-   * The black count is used to display a hole,
+   * The hole count is used to display a hole,
    * where bricks should be connected.
    * If groups have a right connection, they have no suite
    * hence no suite hole.
    * @readonly
-   * @property {number} black - The number of black lines
+   * @property {number} hole - The number of hole lines
    */
-  black: {
+  hole: {
     get () {
-      return this.black_ // 0 or 1
-    },
-    set (newValue) {
-      if (this.black_ === newValue) {
-        return
-      }
-      this.addBlack(newValue ? 1 : -1)
+      return this.hole_ // 0 or 1
     }
   },
   /**
@@ -276,6 +275,7 @@ Object.defineProperties(eYo.Span.prototype, {
  * Dispose of the receiver's resources.
  */
 eYo.Span.prototype.dispose = function () {
+  this.brick_ = undefined
 }
 
 // computed private properties
@@ -313,7 +313,6 @@ eYo.Span.prototype.setPadding = function (padding) {
       right.setPadding(delta)
       this.c_ = this.c_min_
     } else {
-      this.brick.incrementChangeCount()
       if (this.brick.isGroup && !this.brick.right) {
         this.c_min_ + padding >= 2 * eYo.Span.INDENT
         var min = 2 * eYo.Span.INDENT - this.c_min_
@@ -342,9 +341,9 @@ eYo.Span.prototype.resetPadding = function () {
  * Reset the column counts to initial values.
  */
 eYo.Span.prototype.resetC = function () {
-  this.c_min_ = 2 // count each side as 1
+  this.c_min_ = this.c_min_init_
   this.c_padding_ = 0
-  this.c_ = this.c_min_ + this.c_padding_  
+  this.c_ = this.c_min_ + this.c_padding_
 }
 
 /**
@@ -355,7 +354,6 @@ eYo.Span.prototype.resetC = function () {
  */
 eYo.Span.prototype.addC = function (delta) {
   if (delta) {
-    this.brick.incrementChangeCount()
     this.c_min_ += delta
     this.c_ += delta
     if (this.brick.isExpr) {
@@ -372,7 +370,7 @@ eYo.Span.prototype.addC = function (delta) {
  * @param {Object} delta  the value to add to the ressource.
  */
 eYo.Span.prototype.reset = function (where) {
-  console.error('WHAT IS THE PRURPOSE ?')
+  console.error('WHAT IS THE PURPOSE ?')
 }
 
 /**
@@ -380,10 +378,15 @@ eYo.Span.prototype.reset = function (where) {
  * @param {Number} delta  the value to add to the ressource.
  */
 eYo.Span.prototype.resetL = function () {
-  this.l_ = this.main_ = 1
+  this.main_ = 1
   this.header_ = this.suite_ = this.footer_ = 0
   var b = this.brick_
-  this.black_ = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0
+  this.hole_ = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0
+  this.l_ = b.isGroup
+  ? this.main_ + this.hole_ + this.suite_
+  : b.isStmt
+    ? this.header_ + this.main_ + this.footer_
+    : this.main_
 }
 
 /**
@@ -396,12 +399,11 @@ eYo.Span.prototype.resetL = function () {
  */
 eYo.Span.prototype.addHeader = function (delta) {
   if (delta) {
-    this.brick.incrementChangeCount()
     this.header_ += delta
     this.l_ += delta
     // cascade to all the right statements
     var right = this.rightSpan
-    right && right.addHeader(delta)
+    right && (right.addHeader(delta))
   }
 }
 
@@ -419,7 +421,6 @@ eYo.Span.prototype.addHeader = function (delta) {
  */
 eYo.Span.prototype.addMain = function (delta) {
   if (delta) {
-    this.brick.incrementChangeCount()
     this.main_ += delta
     this.l_ += delta
     // propagates to the right
@@ -470,27 +471,7 @@ eYo.Span.prototype.addFooter = function (delta) {
   if (delta) {
     this.footer_ += delta
     this.l_ += delta
-    this.brick.incrementChangeCount()
     this.addLeft_(delta)
-  }
-}
-
-/**
- * Add to the black line number.
- * This may happen only in on of 2 situation:
- * 1) the suite magnet connection status changes
- * 2) the right magnet connection status changes
- * @param {Number} delta  the value to add to the ressource.
- * Actually it can only be 1 or -1.
- */
-eYo.Span.prototype.addBlack = function (delta) {
-  if (delta && this.brick.isGroup) {
-    this.brick.incrementChangeCount()
-    this.black_ += delta
-    this.l_ += delta
-    // change can only propagate to the parent
-    // because groups have no left blocks.
-    this.addParent_(delta)
   }
 }
 
@@ -504,24 +485,32 @@ eYo.Span.prototype.addBlack = function (delta) {
  */
 eYo.Span.prototype.addFoot = function (delta) {
   if (delta) {
-    this.brick.incrementChangeCount()
     this.foot_ += delta
     this.addParent_(delta)
   }
 }
 
 /**
- * Add to the black line number.
- * This may happen only in on of 2 situation:
- * 1) the suite magnet connection status changes
- * 2) the right magnet connection status changes
+ * Add to the suite line number.
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
 eYo.Span.prototype.addSuite = function (delta) {
-  if (delta && this.brick.isGroup) {
-    this.brick.incrementChangeCount()
+  var b = this.brick
+  if (delta && b.isGroup) {
     this.suite_ += delta
+    if (this.suite_) {
+      if (this.hole_) {
+        delta -= this.hole_
+        this.hole_ = 0
+      }
+    } else {
+      var r = b.right
+      if (!r || r.isComment) {
+        this.hole_ = 1
+        delta += this.hole_
+      }
+    }
     this.l_ += delta
     this.addParent_(delta)
   }

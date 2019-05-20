@@ -166,7 +166,7 @@ Object.defineProperties(eYo.Data.prototype, {
           () => { // catch `this`
             this.incog_ = newValue
             this.slot && (this.slot.incog = newValue)
-            this.field && this.field.setVisible(!newValue)
+            this.field && (this.field.setVisible(!newValue))
           }
         )
       }
@@ -196,9 +196,9 @@ eYo.Data.prototype.get = function () {
       'get',
       this.init
     )
-    f && eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+    f && (eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
       this.internalSet(ans)
-    })
+    }))
   }
   return this.value_
 }
@@ -310,9 +310,9 @@ eYo.Data.prototype.setWithType = function (type) {
     'model_fromType',
     this.model.fromType
   )
-  f && eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+  f && (eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
     this.internalSet(ans)
-  })
+  }))
 }
 
 /**
@@ -328,7 +328,7 @@ eYo.Data.prototype.all = undefined
  */
 eYo.Data.prototype.getAll = function () {
   var all = this.model.all
-  return (goog.isArray(all) && all) || (goog.isFunction(all) && goog.isArray(all = all()) && all)
+  return (goog.isArray(all) && all) || (goog.isFunction(all) && (goog.isArray(all = all()) && all))
 }
 
 /**
@@ -680,13 +680,13 @@ eYo.Data.prototype.synchronize = function (newValue) {
             field.setVisible(true)
           }
           var ui = field.eyo.ui
-          ui && ui.driver.fieldMakeError(field)
+          ui && (ui.driver.fieldMakeError(field))
         })
       }
     }
   } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
-    f && f.call(this, newValue)
+    f && (f.call(this, newValue))
   }
 }
 
@@ -781,7 +781,7 @@ Object.defineProperty(eYo.Data, 'incog', {
       if (this.slot) {
         this.slot.incog = newValue
       } else {
-        this.field && this.field.setVisible(!newValue)
+        this.field && (this.field.setVisible(!newValue))
       }
     }
   }
@@ -797,7 +797,7 @@ eYo.Data.prototype.consolidate = function () {
     return
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
-  f && f.apply(this, arguments)
+  f && (f.apply(this, arguments))
 }
 
 /**
@@ -805,7 +805,7 @@ eYo.Data.prototype.consolidate = function () {
  * @private
  */
 eYo.Data.prototype.isActive = function () {
-  return !!this.required || (!this.incog_ && goog.isString(this.value_) && this.value_.length)
+  return !!this.required || (!this.incog_ && (goog.isString(this.value_) && this.value_.length))
 }
 
 /**
@@ -900,7 +900,7 @@ eYo.Data.prototype.customizePlaceholder = function (txt) {
   }
   if (goog.isDef(this.model.custom_placeholder)) {
     var placeholder = eYo.Do.valueOf(txt, this)
-    this.model.custom_placeholder = placeholder && placeholder.toString().trim()
+    this.model.custom_placeholder = placeholder && (placeholder.toString().trim())
     return
   }
   var m = {}
@@ -951,8 +951,8 @@ eYo.Data.prototype.load = function (element) {
         }
       }
     } else {
-      txt = (this.model.xml && goog.isFunction(this.model.xml.getAttribute)
-        && this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName)
+      txt = (this.model.xml && (goog.isFunction(this.model.xml.getAttribute))
+        && (this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName))
       if (!goog.isDefAndNotNull(txt)) {
         txt = element.getAttribute(`${this.attributeName}_${eYo.Key.PLACEHOLDER}`)
         if (goog.isDefAndNotNull(txt)) {

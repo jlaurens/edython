@@ -408,10 +408,10 @@ Object.defineProperties(eYo.Field.prototype, {
       }
       this.visible_ = visible
       var d = this.ui_driver
-      d && d.fieldDisplayedUpdate(this)
+      d && (d.fieldDisplayedUpdate(this))
       if (this.brick.rendered) {
         this.brick.render()
-        visible && this.brick.bumpNeighbours_()
+        visible && (this.brick.bumpNeighbours_())
       }
     }
   },
@@ -458,7 +458,7 @@ Object.defineProperties(eYo.Field.prototype, {
  */
 eYo.Field.prototype.dispose = function() {
   var d = this.ui_driver
-  d && d.fieldDispose(this)
+  d && (d.fieldDispose(this))
   this.superClass_.dispose.call(this)
 }
 
@@ -475,7 +475,7 @@ eYo.Field.prototype.initModel = function() {
 eYo.Field.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing
   var d = this.ui_driver
-  d && d.fieldInit(this)
+  d && (d.fieldInit(this))
 }
 
 /**
@@ -520,7 +520,7 @@ eYo.Field.prototype.render_ = function() {
  **/
 eYo.Field.prototype.updateWidth = function() {
   var d = this.ui_driver
-  d && d.fieldUpdateWidth(this)
+  d && (d.fieldUpdateWidth(this))
 }
 
 /**
@@ -540,7 +540,7 @@ eYo.Field.prototype.validate = function (txt) {
  * We should call `this.willRender()` from the model.
  */
 eYo.Field.prototype.willRender = function () {
-  var f = this.model && eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender)
+  var f = this.model && (eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender))
   if (f) {
     f.call(this)
   } else {

@@ -374,13 +374,13 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
       : null
     if (holder) {
       var M = eYo.Model[holder] || eYo.Model[holder + '__module']
-      var ans = M && M.getProfile(candidate)
+      var ans = M && (M.getProfile(candidate))
     } else {
       ans = eYo.T3.Profile.getReference(candidate) || eYo.T3.Profile.getInModule(candidate)
     }
     var item = ans && ans.item
     var mdl = item && item.module
-    mdl = mdl && mdl.name.split('__')[0]
+    mdl = mdl && (mdl.name.split('__'))[0]
     return new eYo.T3.Profile(null, {
       raw: m.dots
         ? eYo.T3.Expr.custom_parent_module
@@ -569,7 +569,7 @@ eYo.T3.Profile.getReference = function (identifier) {
     'datamodel'
   ].some((ref) => {
     var M = eYo.Model[ref]
-    ans = M && M.getProfile(identifier)
+    ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
     }
@@ -608,7 +608,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
     'string'
   ].some(module => {
     var M = eYo.Model[module + '__module']
-    ans = M && M.getProfile(identifier)
+    ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
     }

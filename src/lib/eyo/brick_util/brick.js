@@ -145,7 +145,7 @@ eYo.Brick = function (workspace, type, opt_id) {
       // At this point the state value may not be consistent
       this.consolidate()
       // but now it should be
-      this.model.init && this.model.init.call(this)
+      this.model.init && (this.model.init.call(this))
     })
   })
   // Now we are ready to work
@@ -184,7 +184,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   if (animate && this.ui.rendered) {
     this.unplug(healStack)
-    this.ui && this.ui.disposeEffect()
+    this.ui && (this.ui.disposeEffect())
   } else {
     this.unplug()
   }
@@ -209,7 +209,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.children_ = undefined
   })
   // this must be done after the child bricks are released
-  this.ui_ && this.ui_.dispose() && (this.ui_ = null)
+  this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
   this.workspace.resizeContents()
   this.workspace = undefined
 }
@@ -264,7 +264,7 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   wrappedMagnets: {
     get () {
-      return this.wrappedMagnets_ || (wrappedMagnets = [])
+      return this.wrappedMagnets_ || (this.wrappedMagnets_ = [])
     }
   },
   surround: {
@@ -742,7 +742,7 @@ eYo.Brick.prototype.changeEnd = function () {
   if (this.change.level === 0) {
     this.incrementChangeCount()
     this.consolidate()
-    this.didChangeEnd && this.didChangeEnd(this)
+    this.didChangeEnd && (this.didChangeEnd(this))
   }
   if (!this.change.level) {
     this.render()
@@ -843,7 +843,7 @@ eYo.Brick.prototype.equals = function (rhs) {
             var t9k = slot.targetBrick
             var r_t9k = r_slot.targetBrick
             equals = t9k
-              ? r_t9k && t9k.equals(r_t9k)
+              ? r_t9k && (t9k.equals(r_t9k))
               : !r_t9k
           }
         } else {
@@ -938,445 +938,6 @@ eYo.Brick.getC9rEyO = (() => {
 })()
 
 /**
- * Delegate manager.
- * @param {?string} prototypeName Name of the language object containing
- */
-eYo.Brick.Manager = (() => {
-  var me = {}
-  var C9rs = Object.create(null)
-  /**
-   * Just adds a proper eyo object to the delegate.
-   * @param {Object} constructor
-   * @param {string} key
-   * @private
-   */
-  me.prepareConstructor = function (delegateC9r, key) {
-    var ans = eYo.Brick.getC9rEyO(delegateC9r, key || '')
-    if (!ans.getModel) {
-      ans.getModel = function () {
-        return modeller(delegateC9r)
-      }
-      Object.defineProperties(
-        ans,
-        {
-          model: {
-            get () {
-              return this.getModel()
-            }
-          }
-        }
-      )
-    }
-    return ans
-  }
-  /**
-   * Helper to initialize a brick's model.
-   * to and from are trees.
-   * Add to destination all the leafs from source.
-   * @param {!Object} to  destination.
-   * @param {!Object} from  source.
-   */
-  var merger = (to, from, ignore) => {
-    var from_d
-    if ((from.check)) {
-      from.check = eYo.Do.ensureArrayFunction(from.check)
-    } else if ((from_d = from.wrap)) {
-      from.check = eYo.Do.ensureArrayFunction(from_d)
-    }
-    for (var k in from) {
-      if (ignore && ignore(k)) {
-        continue
-      }
-      from_d = from[k]
-      // next contains my test for a dictionary, hence my meaning of dictionary
-      // in that context
-      if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || goog.isString(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
-        to[k] = from_d
-      } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
-        // we have a dictionary, do a mixin
-        var to_d = to[k]
-        if (to_d) {
-          if (Object.keys(to_d).length !== Object.getOwnPropertyNames(to_d).length) {
-            to_d = to[k] = Object.create(null)
-          }
-        } else {
-          to_d = to[k] = Object.create(null)
-        }
-        merger(to_d, from_d)
-      } else {
-        // it is not a dictionary, do a simple copy/override
-        to[k] = from_d
-      }
-    }
-    if ((to.check)) {
-      to.check = eYo.Do.ensureArrayFunction(to.check)
-    } else if ((to_d = to.wrap)) {
-      to.check = eYo.Do.ensureArrayFunction(to_d)
-    }
-  }
-  /**
-   * Private modeller to provide the constructor with a complete `model` property.
-   * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
-   * @param {?Object} insertModel  data and inputs entries are merged into the model.
-   */
-  var modeller = (delegateC9r, insertModel) => {
-    var eyo = delegateC9r.eyo
-    goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
-    if (eyo.model_) {
-      return eyo.model_
-    }
-    var model = Object.create(null)
-    var c = delegateC9r.superClass_
-    if (c && (c = c.constructor) && c.eyo) {
-      merger(model, modeller(c))
-    }
-    if (delegateC9r.model__) {
-      if (goog.isFunction(delegateC9r.model__)) {
-        model = delegateC9r.model__(model)
-      } else if (Object.keys(delegateC9r.model__).length) {
-        merger(model, delegateC9r.model__)
-      }
-      delete delegateC9r.model__
-    }
-    if (insertModel) {
-      insertModel.data && merger(model.data, insertModel.data)
-      insertModel.heads && merger(model.heads, insertModel.heads)
-      insertModel.slots && merger(model.slots, insertModel.slots)
-      insertModel.tails && merger(model.tails, insertModel.tails)
-      insertModel.statement && merger(model.statement, insertModel.statement)
-    }
-    // store that object permanently
-    delegateC9r.eyo.model_ = model
-    // now change the getModel to return this stored value
-    delegateC9r.eyo.getModel = function () {
-      return delegateC9r.eyo.model_
-    }
-    return model
-  }
-  /**
-   * Method to create the constructor of a subclass.
-   * One constructor, one key.
-   * Registers the subclass too.
-   * For any constructor C built with this method, we have
-   * C === me.get(C.eyo.key)
-   * and in general
-   * key in me.get(key).eyo.types
-   * but this is not a requirement!
-   * In particular, some bricks share a basic do nothing delegate
-   * because they are not meant to really exist yet.
-   @return the constructor created
-   */
-  me.makeSubclass = (() => {
-    var defineDataProperty = function (k) {
-      var key = k + '_p'
-      // make a closure to catch the value of k
-      return function () {
-        if (!(key in this)) {
-          // print("Data property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key,
-            {
-              get () {
-                return this.data[k].get()
-              },
-              set (newValue) {
-                this.data[k].change(newValue)
-              }
-            }
-          )
-        }
-      }
-    }
-    var defineSlotProperty = k => {
-      var key_s = k + '_s'
-      var key_b = k + '_b'
-      var key_b = k + '_b'
-      // make a closure to catch the value of k
-      return function () {
-        if (!(key_s in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_s,
-            {
-              get () {
-                return this.slots[k]
-              }
-            }
-          )
-        }
-        if (!(key_b in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_b,
-            {
-              get () {
-                var s = this.slots[k] // early call
-                if (s) {
-                  var m4t = s.magnet
-                  if (m4t) {
-                    if (m4t.promised_) {
-                      m4t.completePromise()
-                    }
-                    return s.targetBrick
-                  }
-                }
-              }
-            }
-          )
-        }
-        if (!(key_b in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_b,
-            {
-              get () {
-                throw "NO SUCH KEY, BREAK HERE"
-              }
-            }
-          )
-        }
-      }
-    }
-    return function (key, model, parent, owner = undefined, register = false) {
-      goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
-      if (key.indexOf('eyo:') >= 0) {
-        key = key.substring(4)
-      }
-      if (owner === true) {
-        register = true
-        owner = undefined
-      }
-      owner = owner ||
-      (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
-      (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
-      parent
-      var delegateC9r = owner[key] = function (workspace, type, opt_id) {
-        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
-      }
-      goog.inherits(delegateC9r, parent)
-      me.prepareConstructor(delegateC9r, key)
-      eYo.Brick.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
-      if (goog.isFunction(model)) {
-        model = model()
-      }
-      if (model) {
-        // manage the link: key
-        var link
-        var linkModel = model
-        if ((link = model.link)) {
-          do {
-            var linkC9r = goog.isFunction(link) ? link : me.get(link)
-            goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
-            var linkModel = linkC9r.eyo.model
-            if (linkModel) {
-              model = linkModel
-            } else {
-              break
-            }
-          } while ((link = model.link))
-          model = {}
-          linkModel && merger(model, linkModel)
-        }
-        // manage the inherits key, uncomplete management,
-        var inherits = model.inherits
-        if (inherits) {
-          var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
-          var inheritsModel = inheritsC9r.eyo.model
-          if (inheritsModel) {
-            var m = {}
-            merger(m, inheritsModel)
-            merger(m, model)
-            model = m
-          }
-        }
-        var t = eYo.T3.Expr[key]
-        if (t) {
-          if (!model.out) {
-            model.out = Object.create(null)
-          }
-          model.out.check = eYo.Do.ensureArrayFunction(model.out.check || t)
-          model.statement && (model.statement = undefined)
-        } else if ((t = eYo.T3.Stmt[key])) {
-          var statement = model.statement || (model.statement = Object.create(null))
-          var f = (k, type) => {
-            var s = statement[k]
-            if (goog.isNull(s)) {
-              s = statement[k] = Object.create(null)
-            } else if (s) {
-              if (s.check || goog.isNull(s.check)) {
-                s.check = eYo.Do.ensureArrayFunction(s.check)
-              } else {
-                var ch = eYo.T3.Stmt[type][key]
-                if (ch) {
-                  s.check = eYo.Do.ensureArrayFunction()
-                }
-              }
-            }
-          }
-          f('previous', 'Previous')
-          f('next', 'Next')
-          f('left', 'Left')
-          f('right', 'Right')
-          // this is a statement, remove the irrelevant output info
-          model.out && (model.out = undefined)
-        }
-        delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
-        // Create properties to access data
-        if (model.data) {
-          for (var k in model.data) {
-            if (eYo.Do.hasOwnProperty(model.data, k)) {
-              var MD = model.data[k]
-              if (MD) {
-                // null models are used to neutralize the inherited data
-                if (!MD.setup_) {
-                  MD.setup_ = true
-                  if (goog.isFunction(MD.willChange)
-                    && !goog.isFunction(MD.willUnchange)) {
-                      MD.willUnchange = MD.willChange
-                  }
-                  if (goog.isFunction(MD.didChange)
-                    && !goog.isFunction(MD.didUnchange)) {
-                      MD.didUnchange = MD.didChange
-                  }
-                  if (goog.isFunction(MD.isChanging)
-                    && !goog.isFunction(MD.isUnchanging)) {
-                      MD.isUnchanging = MD.isChanging
-                  }
-                }
-                defineDataProperty(k).call(delegateC9r.prototype)
-              }
-            }
-          }
-        }
-        // Create properties to access slots
-        if (model.slots) {
-          for (var k in model.slots) {
-            if (eYo.Do.hasOwnProperty(model.slots, k)) {
-              var MS = model.slots[k]
-              if (MS) {
-                defineSlotProperty(k).call(delegateC9r.prototype)
-              }
-            }
-          }
-        }
-      }
-      delegateC9r.makeSubclass = function (key, model, owner, register) {
-        return me.makeSubclass(key, model, delegateC9r, owner, register)
-      }
-      if (register) {
-        me.register(key)
-      }
-      return delegateC9r
-    }
-}) ()
-  /**
-   * Delegate instance creator.
-   * @param {!Blockly.Block} brick
-   * @param {?string} prototypeName Name of the language object containing
-   */
-  me.create = function (workspace, prototypeName, opt_id, brick) {
-    goog.asserts.assert(!goog.isString(brick), 'API DID CHANGE, update!')
-    var DelegateC9r = C9rs[prototypeName]
-    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName)
-    var d = DelegateC9r && new DelegateC9r(workspace, prototypeName, opt_id, brick)
-    return d
-  }
-  /**
-   * Get the Delegate constructor for the given prototype name.
-   * @param {?string} prototypeName Name of the language object containing
-   */
-  me.get = function (prototypeName) {
-    goog.asserts.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
-    return C9rs[prototypeName]
-  }
-  /**
-   * Get the Delegate constructor for the given prototype name.
-   * @param {?string} prototypeName Name of the language object containing
-   */
-  me.getTypes = function () {
-    return Object.keys(C9rs)
-  }
-  /**
-   * Get the input model for that prototypeName.
-   * @param {?string} prototypeName Name of the language object containing
-   * @return void object if no delegate is registered for that name
-   */
-  me.getModel = function (prototypeName) {
-    var delegateC9r = C9rs[prototypeName]
-    return (delegateC9r && delegateC9r.eyo.model) || Object.create(null)
-  }
-  /**
-   * Delegate registrator.
-   * The constructor has an eyo attached object for
-   * some kind of introspection.
-   * Computes and caches the model
-   * only once from the creation of the delegate.
-   *
-   * The last delegate registered for a given prototype name wins.
-   * @param {?string} prototypeName Name of the language object containing
-   * @param {Object} constructor
-   * @private
-   */
-  me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
-    // console.log(prototypeName+' -> '+delegateC9r)
-    goog.asserts.assert(prototypeName, 'Missing prototypeName')
-    C9rs[prototypeName] = delegateC9r
-    // cache all the input, output and statement data at the prototype level
-    me.prepareConstructor(delegateC9r, key)
-    delegateC9r.eyo.types.push(prototypeName)
-    Blockly.Blocks[prototypeName] = {}
-  }
-  /**
-   * Handy method to register an expression or statement brick.
-   */
-  me.register = function (key) {
-    var prototypeName = eYo.T3.Expr[key]
-    var delegateC9r, available
-    if (prototypeName) {
-      delegateC9r = eYo.Brick[key]
-      available = eYo.T3.Expr.Available
-    } else if ((prototypeName = eYo.T3.Stmt[key])) {
-      delegateC9r = eYo.Brick[key]
-      available = eYo.T3.Stmt.Available
-    } else {
-      throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
-    }
-    me.registerDelegate_(prototypeName, delegateC9r, key)
-    available.push(prototypeName)
-  }
-  me.registerAll = function (keyedPrototypeNames, delegateC9r, fake) {
-    for (var k in keyedPrototypeNames) {
-      var prototypeName = keyedPrototypeNames[k]
-      if (goog.isString(prototypeName)) {
-        //        console.log('Registering', k)
-        me.registerDelegate_(prototypeName, delegateC9r, k)
-        if (fake) {
-          prototypeName = prototypeName.replace('eyo:', 'eyo:fake_')
-          //          console.log('Registering', k)
-          me.registerDelegate_(prototypeName, delegateC9r, k)
-        }
-      }
-    }
-  }
-  me.display = function () {
-    var keys = Object.keys(C9rs)
-    for (var k = 0; k < keys.length; k++) {
-      var prototypeName = keys[k]
-      console.log('' + k + '->' + prototypeName + '->' + C9rs[prototypeName])
-    }
-  }
-  return me
-})()
-
-// register this delegate for all the T3 types
-eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick)
-eYo.Brick.Manager.registerAll(eYo.T3.Stmt, eYo.Brick)
-
-/**
  * getType.
  * The default implementation just returns the brick type.
  * This should be used instead of direct brick querying.
@@ -1425,7 +986,7 @@ eYo.Brick.prototype.getBaseType = function () {
  */
 eYo.Brick.prototype.someSlot = function (helper) {
   var slot = this.slotAtHead
-  return slot && slot.some(helper)
+  return slot && (slot.some(helper))
 }
 
 /**
@@ -1453,7 +1014,7 @@ eYo.Brick.prototype.forEachChild = function (helper) {
  */
 eYo.Brick.prototype.forEachSlot = function (helper) {
   var slot = this.slotAtHead
-  slot && slot.forEach(helper)
+  slot && (slot.forEach(helper))
 }
 
 /**
@@ -1464,7 +1025,7 @@ eYo.Brick.prototype.forEachSlot = function (helper) {
  */
 eYo.Brick.prototype.someSlot = function (helper) {
   var slot = this.slotAtHead
-  return slot && slot.some(helper)
+  return slot && (slot.some(helper))
 }
 
 /**
@@ -1514,21 +1075,20 @@ eYo.Brick.prototype.makeBounds = function () {
     } else if ((data.field = this.fields[k])) {
       data.slot = null
     } else {
-      for (kk in this.slots) {
-        slot = this.slots[kk]
+      this.someSlot(slot => {
         if ((data.field = slot.fields[k])) {
           goog.asserts.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
           data.slot = slot
           slot.data = data
-          break
+          return true
         }
-      }
+      })
     }
     var field = data.field
     if (field && k === 'name') {
       theField = field
     }
-    field.data = data
+    field && (field.data = data)
   }
   if (this.name_d && this.name_d.field !== theField) {
     console.error('ERROR')
@@ -1914,7 +1474,7 @@ eYo.Brick.prototype.consolidateType = function () {
     this.setupType(this.getType())
     if (this.wrapped_) {
       var p = this.parent
-      p && p.consolidateType()
+      p && (p.consolidateType())
     }
   }
 }
@@ -1968,7 +1528,7 @@ eYo.Brick.prototype.unplug = function(opt_healStack) {
 eYo.Brick.prototype.consolidateMagnets = function () {
   this.completeWrap_()
   var f = m4t => {
-    m4t && m4t.updateCheck()
+    m4t && (m4t.updateCheck())
   }
   this.forEachSlot(slot => f(slot.magnet))
   var m5s = this.magnets
@@ -2000,7 +1560,7 @@ eYo.Brick.prototype.init = function () {
 * @constructor
 */
 eYo.Brick.prototype.deinit = function () {
-  this.model.deinit && this.model.deinit.call(this)
+  this.model.deinit && (this.model.deinit.call(this))
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
@@ -2044,7 +1604,7 @@ eYo.Brick.prototype.getDescendants = function() {
  * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
  */
 eYo.Brick.prototype.addWrapperMagnet = function (magnet) {
-  magnet && this.wrappedMagnets.push(magnet)
+  magnet && (this.wrappedMagnets.push(magnet))
 }
 
 /**
@@ -2088,7 +1648,7 @@ eYo.Brick.prototype.completeWrap_ = function () {
  */
 eYo.Brick.prototype.duringBlockWrapped = function () {
   goog.asserts.assert(!this.uiHasSelect, 'Deselect brick before')
-  this.ui && this.ui.updateBlockWrapped()
+  this.ui && (this.ui.updateBlockWrapped())
 }
 
 
@@ -2106,7 +1666,7 @@ eYo.Brick.prototype.canUnwrap = function () {
  * @private
  */
 eYo.Brick.prototype.duringBlockUnwrapped = function () {
-  this.ui && this.ui.updateBlockWrapped()
+  this.ui && (this.ui.updateBlockWrapped())
 }
 
 /**
@@ -2318,7 +1878,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
       }
     }, () => {
       this.incrementChangeCount()
-      this.ui && this.ui.updateDisabled()
+      this.ui && (this.ui.updateDisabled())
       this.render()
     })
   }
@@ -2409,7 +1969,7 @@ eYo.Brick.prototype.someInput = function (helper) {
  * @param {!Function} helper
  */
 eYo.Brick.prototype.forEachInputMagnet = function (helper) {
-  this.inputList.forEach(input => input.magnet && helper(input.magnet))
+  this.inputList.forEach(input => input.magnet && (helper(input.magnet)))
 }
 
 /**
@@ -2421,7 +1981,7 @@ eYo.Brick.prototype.forEachInputMagnet = function (helper) {
 eYo.Brick.prototype.someInputMagnet = function (helper) {
   return this.someInput(input => {
     var m4t = input.magnet
-    return m4t && helper(m4t)
+    return m4t && (helper(m4t))
   })
 }
 
@@ -2468,7 +2028,7 @@ eYo.Brick.prototype.removeError = function (key) {
  */
 eYo.Brick.prototype.getSlotMagnetss = function () {
   var ra = []
-  this.forEachSlot(slot => slot.magnet && ra.push(slot.magnet))
+  this.forEachSlot(slot => slot.magnet && (ra.push(slot.magnet)))
   return ra
 }
 
@@ -2638,28 +2198,6 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 eYo.Brick.prototype.packedQuotes = true
 eYo.Brick.prototype.packedBrackets = true
-
-/**
- * Method to register an expression or a statement brick.
- * The delegate is searched as a Delegate element
- * @param{!string} key  key is the last component of the brick type as a dotted name.
- */
-eYo.Brick.Manager.register = function (key) {
-  var prototypeName = eYo.T3.Expr[key]
-  var delegateC9r, available
-  if (prototypeName) {
-    delegateC9r = eYo.Brick.Expr[key]
-    available = eYo.T3.Expr.Available
-  } else if ((prototypeName = eYo.T3.Stmt[key])) {
-    // console.log('Registering statement', key)
-    delegateC9r = eYo.Brick.Stmt[key]
-    available = eYo.T3.Stmt.Available
-  } else {
-    throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
-  }
-  eYo.Brick.Manager.registerDelegate_(prototypeName, delegateC9r)
-  available.push(prototypeName)
-}
 
 /**
  * Called when the parent will just change.
@@ -2866,7 +2404,7 @@ eYo.Brick.getNextBlock = function () {
  */
 eYo.Brick.newReady = function (owner, model, id) {
   var brick = eYo.Brick.newComplete(owner, model, id)
-  brick && brick.beReady()
+  brick && (brick.beReady())
   return brick
 }
 
@@ -2897,11 +2435,11 @@ eYo.Brick.newComplete = (() => {
         var f = p5e => {
           var ans
           if (p5e.expr && (ans = workspace.newBrick(p5e.expr, id))) {
-            p5e.expr && ans.setDataWithType(p5e.expr)
-            model && ans.setDataWithModel(model)
+            p5e.expr && (ans.setDataWithType(p5e.expr))
+            model && (ans.setDataWithModel(model))
             dataModel = {data: model}
           } else if (p5e.stmt && (ans = workspace.newBrick(p5e.stmt, id))) {
-            p5e.stmt && ans.setDataWithType(p5e.stmt)
+            p5e.stmt && (ans.setDataWithType(p5e.stmt))
             dataModel = {data: model}
           } else if (goog.isNumber(model)  && (ans = workspace.newBrick(eYo.T3.Expr.numberliteral, id))) {
             ans.setDataWithType(eYo.T3.Expr.numberliteral)
@@ -3073,7 +2611,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
           eYo.Events.enableWrap(() => {
             eYo.Do.tryFinally(() => {
               eYo.Events.fireBrickCreate(candidate)
-              prepare && prepare()
+              prepare && (prepare())
               otherM4t.connect(m4t)
             }, () => {
               eYo.Selected.eyo = candidate
@@ -3394,14 +2932,14 @@ eYo.Brick.prototype.inVisibleArea = function () {
 eYo.Brick.prototype.doAndRender = function (handler, group, err_handler) {
   return e => {
     this.changeBegin()
-    group && eYo.Events.setGroup(true)
+    group && (eYo.Events.setGroup(true))
     try {
       handler.call(this, e)
     } catch (err) {
-      err_handler && err_handler.call(this, err) || console.error(err)
+      err_handler && (err_handler.call(this, err) || console.error(err))
       throw err
     } finally {
-      group && eYo.Events.setGroup(false)
+      group && (eYo.Events.setGroup(false))
       this.changeEnd()
     }
   }
@@ -3422,7 +2960,7 @@ Object.defineProperties(eYo.Brick, {
         return;
       }
       // First disconnect from parent, if any
-      var f = m4t => m4t && m4t.disconnect()
+      var f = m4t => m4t && (m4t.disconnect())
       f(this.head_m)
         || f(this.left_m)
           || f(this.out_m)
@@ -3462,7 +3000,7 @@ Object.defineProperties(eYo.Brick, {
       } else {
         this.workspace.eyo.addBrick(this)
       }
-      newParent && this.ui.setParent(newParent)
+      newParent && (this.ui.setParent(newParent))
     }
   }
 })
@@ -3485,4 +3023,465 @@ eYo.Brick.prototype.connectionUiEffect = function() {
  * Not implemented. The purpose is to avoid brick collisions.
  */
 eYo.Brick.prototype.bumpNeighbours_ = eYo.Do.nothing
+
+/**
+ * Delegate manager.
+ * @param {?string} prototypeName Name of the language object containing
+ */
+eYo.Brick.Manager = (() => {
+  var me = {}
+  var C9rs = Object.create(null)
+  /**
+   * Just adds a proper eyo object to the delegate.
+   * @param {Object} constructor
+   * @param {string} key
+   * @private
+   */
+  me.prepareConstructor = function (delegateC9r, key) {
+    var ans = eYo.Brick.getC9rEyO(delegateC9r, key || '')
+    if (!ans.getModel) {
+      ans.getModel = function () {
+        return modeller(delegateC9r)
+      }
+      Object.defineProperties(
+        ans,
+        {
+          model: {
+            get () {
+              return this.getModel()
+            }
+          }
+        }
+      )
+    }
+    return ans
+  }
+  /**
+   * Helper to initialize a brick's model.
+   * to and from are trees.
+   * Add to destination all the leafs from source.
+   * @param {!Object} to  destination.
+   * @param {!Object} from  source.
+   */
+  var merger = (to, from, ignore) => {
+    var from_d
+    if ((from.check)) {
+      from.check = eYo.Do.ensureArrayFunction(from.check)
+    } else if ((from_d = from.wrap)) {
+      from.check = eYo.Do.ensureArrayFunction(from_d)
+    }
+    for (var k in from) {
+      if (ignore && ignore(k)) {
+        continue
+      }
+      from_d = from[k]
+      // next contains my test for a dictionary, hence my meaning of dictionary
+      // in that context
+      if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || goog.isString(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
+        to[k] = from_d
+      } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
+        // we have a dictionary, do a mixin
+        var to_d = to[k]
+        if (to_d) {
+          if (Object.keys(to_d).length !== Object.getOwnPropertyNames(to_d).length) {
+            to_d = to[k] = Object.create(null)
+          }
+        } else {
+          to_d = to[k] = Object.create(null)
+        }
+        merger(to_d, from_d)
+      } else {
+        // it is not a dictionary, do a simple copy/override
+        to[k] = from_d
+      }
+    }
+    if ((to.check)) {
+      to.check = eYo.Do.ensureArrayFunction(to.check)
+    } else if ((to_d = to.wrap)) {
+      to.check = eYo.Do.ensureArrayFunction(to_d)
+    }
+  }
+  /**
+   * Private modeller to provide the constructor with a complete `model` property.
+   * @param {!Object} delegateC9r the constructor of a delegate. Must have an `eyo` namespace.
+   * @param {?Object} insertModel  data and inputs entries are merged into the model.
+   */
+  var modeller = (delegateC9r, insertModel) => {
+    var eyo = delegateC9r.eyo
+    goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
+    if (eyo.model_) {
+      return eyo.model_
+    }
+    var model = Object.create(null)
+    var c = delegateC9r.superClass_
+    if (c && (c = c.constructor) && c.eyo) {
+      merger(model, modeller(c))
+    }
+    if (delegateC9r.model__) {
+      if (goog.isFunction(delegateC9r.model__)) {
+        model = delegateC9r.model__(model)
+      } else if (Object.keys(delegateC9r.model__).length) {
+        merger(model, delegateC9r.model__)
+      }
+      delete delegateC9r.model__
+    }
+    if (insertModel) {
+      insertModel.data && (merger(model.data, insertModel.data))
+      insertModel.heads && (merger(model.heads, insertModel.heads))
+      insertModel.slots && (merger(model.slots, insertModel.slots))
+      insertModel.tails && (merger(model.tails, insertModel.tails))
+      insertModel.statement && (merger(model.statement, insertModel.statement))
+    }
+    // store that object permanently
+    delegateC9r.eyo.model_ = model
+    // now change the getModel to return this stored value
+    delegateC9r.eyo.getModel = function () {
+      return delegateC9r.eyo.model_
+    }
+    return model
+  }
+  /**
+   * Method to create the constructor of a subclass.
+   * One constructor, one key.
+   * Registers the subclass too.
+   * For any constructor C built with this method, we have
+   * C === me.get(C.eyo.key)
+   * and in general
+   * key in me.get(key).eyo.types
+   * but this is not a requirement!
+   * In particular, some bricks share a basic do nothing delegate
+   * because they are not meant to really exist yet.
+   @return the constructor created
+   */
+  me.makeSubclass = (() => {
+    var defineDataProperty = function (k) {
+      var key = k + '_p'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key in this)) {
+          // print("Data property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get () {
+                return this.data[k].get()
+              },
+              set (newValue) {
+                this.data[k].change(newValue)
+              }
+            }
+          )
+        }
+      }
+    }
+    var defineSlotProperty = k => {
+      var key_s = k + '_s'
+      var key_b = k + '_b'
+      var key_b = k + '_b'
+      // make a closure to catch the value of k
+      return function () {
+        if (!(key_s in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_s,
+            {
+              get () {
+                return this.slots[k]
+              }
+            }
+          )
+        }
+        if (!(key_b in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_b,
+            {
+              get () {
+                var s = this.slots[k] // early call
+                if (s) {
+                  var m4t = s.magnet
+                  if (m4t) {
+                    if (m4t.promised_) {
+                      m4t.completePromise()
+                    }
+                    return s.targetBrick
+                  }
+                }
+              }
+            }
+          )
+        }
+        if (!(key_b in this)) {
+          // print("Slot property", key, 'for', this.constructor.eyo.key)
+          Object.defineProperty(
+            this,
+            key_b,
+            {
+              get () {
+                throw "NO SUCH KEY, BREAK HERE"
+              }
+            }
+          )
+        }
+      }
+    }
+    return function (key, model, parent, owner = undefined, register = false) {
+      goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
+      if (key.indexOf('eyo:') >= 0) {
+        key = key.substring(4)
+      }
+      if (owner === true) {
+        register = true
+        owner = undefined
+      }
+      owner = owner ||
+      (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
+      (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
+      parent
+      var delegateC9r = owner[key] = function (workspace, type, opt_id) {
+        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
+      }
+      goog.inherits(delegateC9r, parent)
+      me.prepareConstructor(delegateC9r, key)
+      eYo.Brick.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
+      if (goog.isFunction(model)) {
+        model = model()
+      }
+      if (model) {
+        // manage the link: key
+        var link
+        var linkModel = model
+        if ((link = model.link)) {
+          do {
+            var linkC9r = goog.isFunction(link) ? link : me.get(link)
+            goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
+            var linkModel = linkC9r.eyo.model
+            if (linkModel) {
+              model = linkModel
+            } else {
+              break
+            }
+          } while ((link = model.link))
+          model = {}
+          linkModel && (merger(model, linkModel))
+        }
+        // manage the inherits key, uncomplete management,
+        var inherits = model.inherits
+        if (inherits) {
+          var inheritsC9r = goog.isFunction(inherits) ? inherits : me.get(inherits)
+          var inheritsModel = inheritsC9r.eyo.model
+          if (inheritsModel) {
+            var m = {}
+            merger(m, inheritsModel)
+            merger(m, model)
+            model = m
+          }
+        }
+        var t = eYo.T3.Expr[key]
+        if (t) {
+          if (!model.out) {
+            model.out = Object.create(null)
+          }
+          model.out.check = eYo.Do.ensureArrayFunction(model.out.check || t)
+          model.statement && (model.statement = undefined)
+        } else if ((t = eYo.T3.Stmt[key])) {
+          var statement = model.statement || (model.statement = Object.create(null))
+          var f = (k, type) => {
+            var s = statement[k]
+            if (goog.isNull(s)) {
+              s = statement[k] = Object.create(null)
+            } else if (s) {
+              if (s.check || goog.isNull(s.check)) {
+                s.check = eYo.Do.ensureArrayFunction(s.check)
+              } else {
+                var ch = eYo.T3.Stmt[type][key]
+                if (ch) {
+                  s.check = eYo.Do.ensureArrayFunction()
+                }
+              }
+            }
+          }
+          f('previous', 'Previous')
+          f('next', 'Next')
+          f('left', 'Left')
+          f('right', 'Right')
+          // this is a statement, remove the irrelevant output info
+          model.out && (model.out = undefined)
+        }
+        delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+        // Create properties to access data
+        if (model.data) {
+          for (var k in model.data) {
+            if (eYo.Do.hasOwnProperty(model.data, k)) {
+              var MD = model.data[k]
+              if (MD) {
+                // null models are used to neutralize the inherited data
+                if (!MD.setup_) {
+                  MD.setup_ = true
+                  if (goog.isFunction(MD.willChange)
+                    && (!goog.isFunction(MD.willUnchange))) {
+                      MD.willUnchange = MD.willChange
+                  }
+                  if (goog.isFunction(MD.didChange)
+                    && (!goog.isFunction(MD.didUnchange))) {
+                      MD.didUnchange = MD.didChange
+                  }
+                  if (goog.isFunction(MD.isChanging)
+                    && (!goog.isFunction(MD.isUnchanging))) {
+                      MD.isUnchanging = MD.isChanging
+                  }
+                }
+                defineDataProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }
+        }
+        // Create properties to access slots
+        if (model.slots) {
+          for (var k in model.slots) {
+            if (eYo.Do.hasOwnProperty(model.slots, k)) {
+              var MS = model.slots[k]
+              if (MS) {
+                defineSlotProperty(k).call(delegateC9r.prototype)
+              }
+            }
+          }
+        }
+      }
+      delegateC9r.makeSubclass = function (key, model, owner, register) {
+        return me.makeSubclass(key, model, delegateC9r, owner, register)
+      }
+      if (register) {
+        me.register(key)
+      }
+      return delegateC9r
+    }
+}) ()
+  /**
+   * Delegate instance creator.
+   * @param {!Blockly.Block} brick
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.create = function (workspace, prototypeName, opt_id, brick) {
+    goog.asserts.assert(!goog.isString(brick), 'API DID CHANGE, update!')
+    var DelegateC9r = C9rs[prototypeName]
+    goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName)
+    var d = DelegateC9r && new DelegateC9r(workspace, prototypeName, opt_id, brick)
+    return d
+  }
+  /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.get = function (prototypeName) {
+    goog.asserts.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
+    return C9rs[prototypeName]
+  }
+  /**
+   * Get the Delegate constructor for the given prototype name.
+   * @param {?string} prototypeName Name of the language object containing
+   */
+  me.getTypes = function () {
+    return Object.keys(C9rs)
+  }
+  /**
+   * Get the input model for that prototypeName.
+   * @param {?string} prototypeName Name of the language object containing
+   * @return void object if no delegate is registered for that name
+   */
+  me.getModel = function (prototypeName) {
+    var delegateC9r = C9rs[prototypeName]
+    return (delegateC9r && delegateC9r.eyo.model) || Object.create(null)
+  }
+  /**
+   * Delegate registrator.
+   * The constructor has an eyo attached object for
+   * some kind of introspection.
+   * Computes and caches the model
+   * only once from the creation of the delegate.
+   *
+   * The last delegate registered for a given prototype name wins.
+   * @param {?string} prototypeName Name of the language object containing
+   * @param {Object} constructor
+   * @private
+   */
+  me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
+    // console.log(prototypeName+' -> '+delegateC9r)
+    goog.asserts.assert(prototypeName, 'Missing prototypeName')
+    C9rs[prototypeName] = delegateC9r
+    // cache all the input, output and statement data at the prototype level
+    me.prepareConstructor(delegateC9r, key)
+    delegateC9r.eyo.types.push(prototypeName)
+    Blockly.Blocks[prototypeName] = {}
+  }
+  /**
+   * Handy method to register an expression or statement brick.
+   */
+  me.register = function (key) {
+    var prototypeName = eYo.T3.Expr[key]
+    var delegateC9r, available
+    if (prototypeName) {
+      delegateC9r = eYo.Brick[key]
+      available = eYo.T3.Expr.Available
+    } else if ((prototypeName = eYo.T3.Stmt[key])) {
+      delegateC9r = eYo.Brick[key]
+      available = eYo.T3.Stmt.Available
+    } else {
+      throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
+    }
+    me.registerDelegate_(prototypeName, delegateC9r, key)
+    available.push(prototypeName)
+  }
+  me.registerAll = function (keyedPrototypeNames, delegateC9r, fake) {
+    for (var k in keyedPrototypeNames) {
+      var prototypeName = keyedPrototypeNames[k]
+      if (goog.isString(prototypeName)) {
+        //        console.log('Registering', k)
+        me.registerDelegate_(prototypeName, delegateC9r, k)
+        if (fake) {
+          prototypeName = prototypeName.replace('eyo:', 'eyo:fake_')
+          //          console.log('Registering', k)
+          me.registerDelegate_(prototypeName, delegateC9r, k)
+        }
+      }
+    }
+  }
+  me.display = function () {
+    var keys = Object.keys(C9rs)
+    for (var k = 0; k < keys.length; k++) {
+      var prototypeName = keys[k]
+      console.log('' + k + '->' + prototypeName + '->' + C9rs[prototypeName])
+    }
+  }
+  return me
+})()
+
+/**
+ * Method to register an expression or a statement brick.
+ * The delegate is searched as a Delegate element
+ * @param{!string} key  key is the last component of the brick type as a dotted name.
+ */
+eYo.Brick.Manager.register = function (key) {
+  var prototypeName = eYo.T3.Expr[key]
+  var delegateC9r, available
+  if (prototypeName) {
+    delegateC9r = eYo.Brick.Expr[key]
+    available = eYo.T3.Expr.Available
+  } else if ((prototypeName = eYo.T3.Stmt[key])) {
+    // console.log('Registering statement', key)
+    delegateC9r = eYo.Brick.Stmt[key]
+    available = eYo.T3.Stmt.Available
+  } else {
+    throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
+  }
+  eYo.Brick.Manager.registerDelegate_(prototypeName, delegateC9r)
+  available.push(prototypeName)
+}
+
+// register this delegate for all the T3 types
+eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick)
+eYo.Brick.Manager.registerAll(eYo.T3.Stmt, eYo.Brick)
 

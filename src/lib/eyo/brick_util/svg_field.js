@@ -72,11 +72,16 @@ eYo.Svg.prototype.fieldInit = function (field) {
  * @param {!Object} field
  */
 eYo.Svg.prototype.fieldDispose = function (field) {
+  var g = field.svg && field.svg.group_
+  if (!g) {
+    // Field has already been disposed
+    return;
+  }
   if (field.mouseDownWrapper_) {
-    eYo.Svg.unbindEvent_(this.mouseDownWrapper_)
+    eYo.Svg.unbindEvent_(field.mouseDownWrapper_)
     field.mouseDownWrapper_ = null
   }
-  field.svg && goog.dom.removeNode(field.svg.group_)
+  goog.dom.removeNode(g)
   field.svg = undefined
 }
 
@@ -103,7 +108,7 @@ eYo.Svg.prototype.fieldUpdateWidth = function (field) {
   var width = field.size.width
   svg.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
   var r = svg.editRect_
-  r && r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0))
+  r && (r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0)))
 }
 
 /**
@@ -232,24 +237,6 @@ eYo.Svg.prototype.fieldInit = function(field) {
           g, 'mousedown', field, field.onMouseDown_)
   this.fieldUpdateEditable(field)
   return field
-}
-
-/**
- * Dispose of the field SVG ressources.
- * @param {!eYo.Field} field
- */
-eYo.Svg.prototype.fieldDispose = function(field) {
-  var g = field.svg && field.svg.group_
-  if (!g) {
-    // Field has already been disposed
-    return;
-  }
-  if (field.mouseDownWrapper_) {
-    eYo.unbindEvent_(field.mouseDownWrapper_)
-    field.mouseDownWrapper_ = null
-  }
-  goog.dom.removeNode(g)
-  field.svg = null
 }
 
 /**

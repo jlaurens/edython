@@ -241,7 +241,7 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
   }
   var input = io.list[i]
   var m4t = input.magnet
-  m4t && m4t.disconnect()
+  m4t && (m4t.disconnect())
   input.dispose()
   io.list.splice(i, 1)
   io.edited = true
@@ -321,9 +321,9 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
       field.eyo.suffix = suffix
     }
     var sep = io.input.lst_presep || this.model.presep
-    sep && sep.length && f(sep)
+    sep && sep.length && (f(sep))
     sep = io.input.lst_postsep || this.model.postsep
-    sep && sep.length && f(sep, true)
+    sep && sep.length && (f(sep, true))
   }
   io.input.check = this.getCheck(io)
   io.m4t.hidden_ = undefined

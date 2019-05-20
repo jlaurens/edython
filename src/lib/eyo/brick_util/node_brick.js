@@ -1146,7 +1146,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
         }
       }
       root = eYo.Brick.newComplete(workspace, eYo.T3.Expr.proper_slice)
-      d0 && root.lower_bound_s.connect(d0)
+      d0 && (root.lower_bound_s.connect(d0))
       // n0.type === eYo.TKN.COLON
       if ((n0 = n0.sibling)) {
         if (n0.type === eYo.TKN.test) {
@@ -1156,7 +1156,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
           }
         }
         root.variant_p = eYo.Key.STRIDE
-        n0.n1 && root.stride_s.connect(n0.n1.toBrick(workspace))
+        n0.n1 && (root.stride_s.connect(n0.n1.toBrick(workspace)))
       }
       return root
     case eYo.TKN.atom: //atom: ('(' [yield_expr|testlist_comp] ')' | '[' [testlist_comp] ']' | '{' [dictorsetmaker] '}') | NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
@@ -1193,7 +1193,7 @@ eYo.Node.prototype.toDlgt_ = function (workspace) {
             break
         }
         root.variant_p = t
-        s && s.call(n1, root)
+        s && (s.call(n1, root))
         return root
       } else if (['...', 'None', 'True', 'False'].indexOf((s = n0.n_str)) < 0) {
         if (n0.type === eYo.TKN.NAME) {
@@ -1378,7 +1378,7 @@ factor: ('+'|'-'|'~') factor | power
       return eYo.Brick.newComplete(workspace, eYo.T3.Stmt.pass_stmt)
     case eYo.TKN.return_stmt: // 'return' [testlist_star_expr]
       root = eYo.Brick.newComplete(workspace, eYo.T3.Stmt.return_stmt)
-      (n = this.n1) && n.testlist_star_exprInDlgt(root.return_b)
+      (n = this.n1) && (n.testlist_star_exprInDlgt(root.return_b))
       return root
     case eYo.TKN.import_stmt: // import_stmt: import_name | import_from
       n0 = this.n0

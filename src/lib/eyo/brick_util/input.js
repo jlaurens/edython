@@ -181,7 +181,7 @@ eYo.Input.prototype.dispose = function() {
   if (m4t) {
     m4t.wrapped_ = null
     var t9k = m4t.targetBrick
-    t9k && t9k.dispose()
+    t9k && (t9k.dispose())
     m4t.dispose()
     this.magnet = undefined
   }
@@ -195,7 +195,7 @@ eYo.Input.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   this.fieldRow.forEach(f => field.init())
   var m4t = this.magnet
-  m4t && m4t.beReady()
+  m4t && (m4t.beReady())
 }
 
 /**
@@ -203,7 +203,7 @@ eYo.Input.prototype.beReady = function () {
  */
 eYo.Input.prototype.consolidate = function () {
   var m4t = this.magnet
-  m4t && m4t.consolidate.apply(m4t, arguments)
+  m4t && (m4t.consolidate.apply(m4t, arguments))
 }
 
 /**

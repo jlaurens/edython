@@ -87,7 +87,7 @@ eYo.WorkspaceDelegate.prototype.driverCreate = eYo.Do.nothing
  * @return {Array.<string>} An array containing new block IDs.
 */
 eYo.WorkspaceDelegate.prototype.fromDom = function (dom) {
-  return dom && eYo.Xml.domToWorkspace(dom, this.workspace_)
+  return dom && (eYo.Xml.domToWorkspace(dom, this.workspace_))
 }
 
 /**
@@ -134,7 +134,7 @@ eYo.WorkspaceDelegate.prototype.toUTF8ByteArray = function (opt_noId) {
 */
 eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
-  return str && this.fromString(str)
+  return str && (this.fromString(str))
 }
 
 /**
@@ -142,7 +142,7 @@ eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {eYo.Brick} brick
  */
 eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
-  this.isReady && brick.beReady()
+  this.isReady && (brick.beReady())
   this.workspace_.addTopBlock(brick)
 }
 
@@ -187,7 +187,7 @@ Blockly.Workspace.prototype.dispose = function () {
  */
 eYo.Workspace.prototype.clearUndo = function() {
   eYo.Workspace.superClass_.clearUndo.call(this)
-  eYo.App.didClearUndo && eYo.App.didClearUndo()
+  eYo.App.didClearUndo && (eYo.App.didClearUndo())
 }
 
 /**
@@ -327,7 +327,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       }, () => { // finally
         eYo.Events.recordUndo = true
         Bs.forEach(B => B.changeEnd())
-        eYo.App.didProcessUndo && eYo.App.didProcessUndo(redo)
+        eYo.App.didProcessUndo && (eYo.App.didProcessUndo(redo))
       })
       return
     }
@@ -346,9 +346,9 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
   if (event.recordUndo) {
     this.eyo.updateChangeCount(event, true)
     if (before === this.undoStack_.length) {
-      eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
+      eYo.App.didUnshiftUndo && (eYo.App.didUnshiftUndo())
     } else {
-      eYo.App.didPushUndo && eYo.App.didPushUndo()
+      eYo.App.didPushUndo && (eYo.App.didPushUndo())
     }
   }
 }
@@ -493,7 +493,7 @@ eYo.copyBrick = function(block, deep) {
   xml.setAttribute('y', xy.y);
   Blockly.clipboardXml_ = xml;
   Blockly.clipboardSource_ = block.workspace;
-  eYo.App.didCopyBlock && eYo.App.didCopyBlock(block, xml)
+  eYo.App.didCopyBlock && (eYo.App.didCopyBlock(block, xml))
 };
 
 /**

@@ -157,7 +157,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
         var d = this.field.eyo.ui_driver
-        d && d.fieldSetVisualAttribute(this.field, newValue)
+        d && (d.fieldSetVisualAttribute(this.field, newValue))
       },
       xml: false
     },

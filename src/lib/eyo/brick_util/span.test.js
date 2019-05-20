@@ -1,34 +1,38 @@
+// Functional tests
+
 eYo.Test.no_brick_type = true
 
 describe('Span expression', function () {
-  var type = 'test_expr_span'
-  eYo.Brick.Expr.makeSubclass(type, {
-    out: {
-      check: null
-    }
-  })  
-  var b = eYo.Test.new_brick(type)
-  var s = b.span
-  chai.assert(b.isExpr, 'MISSED')
-  var type = 'test_stmt_span'
-  eYo.Brick.Stmt.makeSubclass(type, {
-    out: {
-      check: null
-    }
-  })  
-  var b_s = eYo.Test.new_brick(type)
-  var s_s = b_s.span
-  chai.assert(b_s.isStmt, 'MISSED')
-  var type = 'test_group_span'
-  eYo.Brick.Group.makeSubclass(type, {
-    out: {
-      check: null
-    }
-  })  
-  var b_g = eYo.Test.new_brick(type)
-  var s_g = b_g.span
-  chai.assert(b_g.isGroup, 'MISSED')
-  
+  var b, s, b_g, s_g, b_s, s_s
+  before(function() {
+    var type = 'test_expr_span'
+    eYo.Brick.Expr.makeSubclass(type, {
+      out: {
+        check: null
+      }
+    })  
+    b = eYo.Test.new_brick(type)
+    s = b.span
+    chai.assert(b.isExpr, 'MISSED')
+    var type = 'test_stmt_span'
+    eYo.Brick.Stmt.makeSubclass(type, {
+      out: {
+        check: null
+      }
+    })  
+    b_s = eYo.Test.new_brick(type)
+    s_s = b_s.span
+    chai.assert(b_s.isStmt, 'MISSED')
+    var type = 'test_group_span'
+    eYo.Brick.Group.makeSubclass(type, {
+      out: {
+        check: null
+      }
+    })  
+    b_g = eYo.Test.new_brick(type)
+    s_g = b_g.span
+    chai.assert(b_g.isGroup, 'MISSED')
+  })
   it('(add|reset)C', function() {
     var test = c => eYo.Test.span(b, {
       c_min: c,
@@ -125,6 +129,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addSuite', function () {
+    console.error(b_g.span)
     var test = h => eYo.Test.span(b_g, {
       suite: h,
       l: Math.max(2, 1 + h),
@@ -148,5 +153,42 @@ describe('Span expression', function () {
     b.dispose()
     b_s.dispose()
     b_g.dispose()
+  })
+})
+
+describe('Current Span statements', function () {
+  var b_1, s_1, b_2, s_2, b_3, s_3
+  before(function() {
+    var type = 'test_stmt_span'
+    eYo.T3.Stmt[type] = type
+    eYo.Brick.Stmt.makeSubclass(type, {
+      statement: {
+        left: { check: type },
+        right: { check: type },
+      }
+    })  
+    b_1 = eYo.Test.new_brick(type)
+    s_1 = b_1.span
+    chai.assert(b_1.isStmt, 'MISSED')
+    b_2 = eYo.Test.new_brick(type)
+    s_2 = b_2.span
+    chai.assert(b_2.isStmt, 'MISSED')
+    b_3 = eYo.Test.new_brick(type)
+    s_3 = b_3.span
+    chai.assert(b_3.isStmt, 'MISSED')
+  })
+  it ('left+middle+right', function () {
+    var test = (b, h, m, f) => eYo.Test.span(b, {
+      header: h,
+      main: m,
+      footer: f
+    })
+    b_1.right_m.connect(b_2.left_m)
+    b_2.right = b_3
+  })
+  after(function() {
+    b_1.dispose()
+    b_2.dispose()
+    b_3.dispose()
   })
 })

@@ -238,7 +238,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
         })
       } else if (name === eYo.Xml.STMT || name === eYo.Xml.EXPR) {
         // for edython
-        (brick = newBrick(child)) && newBlockIds.push(brick.id)
+        (brick = newBrick(child)) && (newBlockIds.push(brick.id))
       }
     })
   }, () => {
@@ -371,7 +371,7 @@ eYo.Xml.brickToDom = (() => {
       var attr = brick.xmlAttr()
       element = goog.dom.createDom(brick instanceof eYo.Brick.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute(eYo.Key.EYO, attr)
-      !(opt && opt.noId) && element.setAttribute('id', brick.id)
+      !(opt && opt.noId) && (element.setAttribute('id', brick.id))
       eYo.Xml.toDom(brick, element, opt)
     }
     // this is for the editor, not python
@@ -381,7 +381,7 @@ eYo.Xml.brickToDom = (() => {
     return element
   }
   return function (brick, opt) {
-    eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
+    eYo.Xml.registerAllTags && (eYo.Xml.registerAllTags())
     eYo.Xml.brickToDom = brickToDom
     return brickToDom(brick, opt)
   }
@@ -609,7 +609,7 @@ eYo.Xml.toDom = function (brick, element, opt) {
     // the right, suite and next flows
     magnetToDom(brick.right_m, eYo.Xml.FLOW, eYo.Xml.RIGHT)
     magnetToDom(brick.suite_m, eYo.Xml.FLOW, eYo.Xml.SUITE)
-    !optNoNext && magnetToDom(brick.foot_m, eYo.Xml.FLOW, eYo.Xml.NEXT)
+    !optNoNext && (magnetToDom(brick.foot_m, eYo.Xml.FLOW, eYo.Xml.NEXT))
   }
 }
 
@@ -758,10 +758,10 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
         var dom
         while ((dom = this.to_resit.shift())) {
           var brick = eYo.Xml.domToBrick(dom, this.workspace)
-          brick && this.recovered.push(brick)
+          brick && (this.recovered.push(brick))
         }
         try {
-          this.recovered_f && this.recovered.forEach(this.recovered_f)
+          this.recovered_f && (this.recovered.forEach(this.recovered_f))
         } catch (err) {
           console.error(err)
           throw err
@@ -977,7 +977,7 @@ eYo.Xml.domToBrick = (() => {
     )
   }
   return function (dom, owner) {
-    eYo.Xml.registerAllTags && eYo.Xml.registerAllTags()
+    eYo.Xml.registerAllTags && (eYo.Xml.registerAllTags())
     eYo.Xml.domToBrick = domToBrick
     return domToBrick(dom, owner)
   }
@@ -1100,7 +1100,7 @@ eYo.Xml.fromDom = function (brick, element) {
         this.lock()
       }
     }
-    conclude && conclude()
+    conclude && (conclude())
     return out
   })
 }
@@ -1228,14 +1228,14 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
-      && model.all.indexOf(op) >= 0) {
+      && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.Brick.newComplete(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
       && (C9r = eYo.Brick.Manager.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
-      && model.all.indexOf(op) >= 0) {
+      && (model.all.indexOf(op) >= 0)) {
         b3k = eYo.Brick.newComplete(owner, type, id)
     }
     return b3k

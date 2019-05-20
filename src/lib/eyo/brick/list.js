@@ -110,7 +110,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
     }
     force = true  // always force consolidation because of the dynamics
     if (eYo.Brick.List.superClass_.doConsolidate.call(this, deep, force)) {
-      return !this.connectionsIncog && this.consolidator.consolidate(this, deep, force)
+      return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
   return function (deep, force) {
@@ -149,7 +149,7 @@ eYo.Brick.List.prototype.removeItems = function () {
 eYo.Brick.List.prototype.incrementInputChangeCount = function () {
   this.forEachInput(input => {
     var t9k = input.magnet.targetBrick
-    t9k && t9k.incrementChangeCount()
+    t9k && (t9k.incrementChangeCount())
   })
   this.incrementChangeCount()
 }

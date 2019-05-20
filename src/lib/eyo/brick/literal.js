@@ -353,13 +353,13 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
   if (!current.length) {
     // mgr.addInsertChild(item('u', insert))
     mgr.addInsertChild(item('r', 'r'))
-    can_f && mgr.addInsertChild(item('f', 'f'))
-    can_b && mgr.addInsertChild(item('b', 'b'))
+    can_f && (mgr.addInsertChild(item('f', 'f')))
+    can_b && (mgr.addInsertChild(item('b', 'b')))
   } else if (current === 'u') {
     mgr.addRemoveChild(item('u', ''))
   } else if (current === 'r') {
     mgr.addInsertChild(item('f', 'rf'))
-    can_b && mgr.addInsertChild(item('b', 'rb'))
+    can_b && (mgr.addInsertChild(item('b', 'rb')))
     mgr.addRemoveChild(item('r', ''))
   } else if (current === 'f') {
     mgr.addInsertChild(item('r', 'rf'))

@@ -254,7 +254,7 @@ eYo.Svg.newElement = function(name, attrs, parent) {
   if (document.body.runtimeStyle) {  // Indicates presence of IE-only attr.
     e.runtimeStyle = e.currentStyle = e.style
   }
-  parent && parent.appendChild(e)
+  parent && (parent.appendChild(e))
   return e
 }
 
@@ -333,7 +333,7 @@ eYo.Svg.prototype.xyInParent = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && transform.match(this.TRANSLATE_REGEX_)
+  var r = transform && (transform.match(this.TRANSLATE_REGEX_))
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -365,7 +365,7 @@ eYo.Svg.prototype.xyInParent = function(element) {
  */
 eYo.Svg.prototype.setBrickDisplayMode = (mode) => {
   var svg = eYo.App.workspace.svgBlockCanvas_
-  this.currentBlockDisplayMode && goog.dom.classlist.remove(svg, `eyo-${this.currentBlockDisplayMode}`)
+  this.currentBlockDisplayMode && (goog.dom.classlist.remove(svg, `eyo-${this.currentBlockDisplayMode}`))
   if ((this.currentBlockDisplayMode = mode)) {
     goog.dom.classlist.add(svg, `eyo-${this.currentBlockDisplayMode}`)
   }
@@ -645,7 +645,7 @@ eYo.Svg.bindEventWithChecks_ = function(node, name, thisObject, func,
     events.forEach(event => {
       if (noCaptureIdentifier || Blockly.Touch.shouldHandleEvent(event)) {
         Blockly.Touch.setClientFromTouch(event)
-        (thisObject && func.call(thisObject, event)) || func(event)
+        (thisObject && (func.call(thisObject, event))) || func(event)
         handled = true
       }
     })
