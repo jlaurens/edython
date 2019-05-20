@@ -3,14 +3,14 @@ var expect = chai.expect
 
 describe('parameter_list', function() {
   it(`f(a[:…][=…])`, function() {
-    var l = eYo.Test.new_brick(eYo.T3.Expr.lambda)
-    var d = l.eyo.parameters_b
+    var b3k = eYo.Test.new_brick(eYo.T3.Expr.lambda)
+    var d = b3k.parameters_b
     var a = eYo.Test.new_brick('a')
-    assert(d.lastInput.eyo.connect(a), 'MISSING 1')
+    assert(d.lastInput.connect(a), 'MISSING 1')
     assert(d.inputList.length === 3, 'MISSED 2')
     var f = v => {
-      a.eyo.variant_p = v
-      var u = l.eyo.parameters_s.unwrappedTarget
+      a.variant_p = v
+      var u = b3k.parameters_s.unwrappedTarget
       assert(u.target_p === 'a', `MISSED: ${v}`)
     }
     ;[eYo.Key.NONE,
@@ -20,7 +20,7 @@ describe('parameter_list', function() {
       eYo.Key.NONE].forEach(v => {
         f(v)
       })
-    l.dispose()
+    b3k.dispose()
     /*
     parameter_list          ::=  defparameter ("," defparameter)* ["," [parameter_list_starargs]]
                              | parameter_list_starargs
