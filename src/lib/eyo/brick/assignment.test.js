@@ -417,11 +417,11 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.Test.code(d3, 'Z: abcd + cdef')
     eYo.Test.brick(d3, 'identifier_annotated')
     // it's a unique target
-    chai.assert(d_main.target_b.inputList[0].eyo.connect(d3), 'MISSED M4T 4')
+    chai.assert(d_main.target_b.inputList[0].connect(d3), 'MISSED M4T 4')
     eYo.Test.brick(d_main, 'annotated_assignment_stmt')
     eYo.Test.input_length(d_main.target_b, 1, `MISSED M4T 5`)
-    var eyo = d_main.target_s.unwrappedTarget
-    chai.assert(eyo === d3, 'MISSED M4T 7')
+    var b3k = d_main.target_s.unwrappedTarget
+    chai.assert(b3k === d3, 'MISSED M4T 7')
     console.error(d_main.toLinearString)
     eYo.Test.code(d3, 'xxx: abcd + cdef')
     d3.dispose() // orphan recovery: the old d2 brick has been reconnected into d3
