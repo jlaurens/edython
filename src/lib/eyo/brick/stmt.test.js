@@ -21,9 +21,9 @@ describe('comment statement', function () {
       m5s.left,
       m5s.right
     ].forEach(m => {
-      var db = m.connection.db_
+      var db = m.db_
       chai.assert(db.length === 1)
-      chai.assert(db.indexOf(m.connection) >= 0)
+      chai.assert(db.indexOf(m) >= 0)
     })
     ;[
       [m5s.head, m5s.foot],
@@ -31,9 +31,9 @@ describe('comment statement', function () {
       [m5s.left, m5s.right],
       [m5s.right, m5s.left]
     ].forEach(ms => {
-      var db = ms[0].connection.dbOpposite_
+      var db = ms[0].dbOpposite_
       chai.assert(db.length === 1)
-      chai.assert(db.indexOf(ms[1].connection) >= 0)
+      chai.assert(db.indexOf(ms[1]) >= 0)
     })
     d.dispose()
     test_connection_db()
@@ -51,10 +51,10 @@ describe('comment statement', function () {
       ['high', 'low'],
       ['left', 'right']
     ].forEach(args => {
-      var c1 = d1.magnets[args[0]].connection
-      var c2 = d2.magnets[args[0]].connection
-      var cc1 = d1.magnets[args[1]].connection
-      var cc2 = d2.magnets[args[1]].connection
+      var c1 = d1.magnets[args[0]]
+      var c2 = d2.magnets[args[0]]
+      var cc1 = d1.magnets[args[1]]
+      var cc2 = d2.magnets[args[1]]
       var db = c1.db_
       chai.assert(db === c2.db_)
       var f1 = k => {
