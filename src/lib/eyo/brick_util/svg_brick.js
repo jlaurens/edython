@@ -587,7 +587,7 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
       // Move this brick up the DOM.  Keep track of x/y translations.
       var brick = brick
       brick.workspace.getCanvas().appendChild(g)
-      var xy = brick.eyo.ui.xyInSurface
+      var xy = brick.ui.xyInSurface
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
       if (svg.groupContour_) {
         goog.dom.insertChildAt(g, svg.groupContour_, 0)
@@ -1016,7 +1016,7 @@ eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
       text.appendChild(document.createTextNode('#'))
       length = 1
     }
-    var expected = brick.eyo.getStatementCount()
+    var expected = brick.getStatementCount()
     while (length < expected) {
       y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
       text = eYo.Svg.newElement('text',
