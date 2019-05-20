@@ -253,7 +253,7 @@ eYo.Magnet.prototype.dispose = function () {
   }
   this.inDB_ = false
   this.db_ = this.dbOpposite_ = null
-  this.ui.driver.magnetDispose(this)
+  this.ui_driver && this.ui_driver.magnetDispose(this)
   eYo.Field.disposeFields(this)
   this.where_ = this.model_ = undefined
   eYo.Magnet.superClass_.dispose.call(this)
@@ -413,7 +413,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   w: {
     get () {
       return this.bindField
-        ? this.bindField.eyo.size.w + 1
+        ? this.bindField.size.w + 1
         : this.optional_ || this.s7r_
           ? 1
           : 3
@@ -833,7 +833,7 @@ eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
     return
   }
   if (this.isRight && this.label_f) {
-    this.label_f.setVisible(this.brick.isGroup || !this.targetBrick.isComment)
+    this.label_f.visible = this.brick.isGroup || !this.targetBrick.isComment
   }
 }
 
@@ -850,7 +850,7 @@ eYo.Magnet.prototype.willDisconnect = function () {
     return
   }
   if (this.isRight) {
-    this.label_f.setVisible(this.brick.isGroup)
+    this.label_f.visible = this.brick.isGroup
   }
 }
 
@@ -1145,9 +1145,9 @@ eYo.Magnet.prototype.toString = function() {
   } else if (this.isRight) {
     msg = 'Right statement Magnet of '
   } else {
-    var parentInput = this.input || this.slot
-    if (parentInput) {
-      msg = 'Input "' + parentInput.name + '" connection on '
+    var parent = this.input || this.slot
+    if (parent) {
+      msg = 'Parent "' + parent.name + '" connection on '
     } else {
       console.warn('Magnet not actually connected to source')
       return 'Orphan Magnet'
@@ -1302,7 +1302,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
               : child.someSlot).call(this, x => { // a slot or an input
               if (!x.incog) {
                 var m4t, t9k
-                if ((m4t = x.magnet || x.eyo.magnet)) {
+                if ((m4t = x.magnet)) {
                   if (m4t.hidden_ && !m4t.wrapped_) {
                     return
                   }
@@ -1361,7 +1361,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
               parent.didConnect(parentM4t, oldChildT4t, oldParentT4t)
             })
           }, () => { // finally
-            unwrappedM4t.bindField && (unwrappedM4t.bindField.setVisible(false))
+            unwrappedM4t.bindField && (unwrappedM4t.bindField.visible = false)
             // next must absolutely run because of possible undo management
             parentM4t.didConnect(oldParentT4t, oldChildT4t)
             if (unwrappedM4t !== parentM4t) {
@@ -1372,16 +1372,15 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         }, () => { // finally
           childM4t.didConnect(oldChildT4t, oldParentT4t)
           eYo.Magnet.connectedParent = undefined
-          childM4t.bindField && (childM4t.bindField.setVisible(false)) // unreachable ?
+          childM4t.bindField && (childM4t.bindField.visible = false) // unreachable ?
         })
       })
     })
   })
   var ui
   (ui = child.ui) && ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
-  (ui = parent.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
-  (unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
-  parentM4t.target_ = other
+  ;(ui = parent.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
+  ;(unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
 }
 
 
@@ -1630,8 +1629,8 @@ eYo.Magnet.prototype.disconnect = (() => {
                       // eYo.Magnet.disconnectedParent = undefined
                       // eYo.Magnet.disconnectedChild = undefined
                       parent.incrementInputChangeCount && (parent.incrementInputChangeCount()) // list are special
-                      parentM4t.bindField && (parentM4t.bindField.setVisible(true)) // no wrapped test
-                      childM4t.bindField && (childM4t.bindField.setVisible(true)) // unreachable ?
+                      parentM4t.bindField && (parentM4t.bindField.visible = true) // no wrapped test
+                      childM4t.bindField && (childM4t.bindField.visible = true) // unreachable ?
                     })
                   }, () => { // finally
                     child.didDisconnect(childM4t, parentM4t)
@@ -1791,7 +1790,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
   get () {
     var slot = this.slot
     if (slot) {
-      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.input.connection.hidden_))) {
+      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.magnet.hidden_))) {
         return slot.magnet
       }
       var brick = this.brick
