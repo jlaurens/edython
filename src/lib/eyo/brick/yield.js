@@ -163,7 +163,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
  */
 eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
   var brick = this
-  if (brick.eyo.locked_) {
+  if (brick.locked_) {
     return
   }
   var current = this.variant_p
