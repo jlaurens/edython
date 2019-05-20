@@ -52,7 +52,7 @@ Object.defineProperties(eYo.Brick.Expr.prototype, {
 eYo.Brick.Expr.prototype.incrementChangeCount = function (deep) {
   eYo.Brick.Expr.superClass_.incrementChangeCount.call(this, deep)
   var parent = this.parent
-  parent && parent.incrementChangeCount()
+  parent && (parent.incrementChangeCount())
 }
 
 /**

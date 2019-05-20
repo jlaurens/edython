@@ -92,7 +92,7 @@ eYo.Test.basic = (ra, str) => {
       var k = args[2] || ((args[2] === null) && args[0])
       it (`${t}${tt ? `/${tt}` : ''}${k ? `/ctor: ${k}` : ''}`, function () {
         var d = eYo.Test.new_brick(args[0], args[1] || args[0])
-        args[2] && eYo.Test.ctor(d, args[2])
+        args[2] && (eYo.Test.ctor(d, args[2]))
         d.dispose()
       })
     })
@@ -136,7 +136,7 @@ eYo.Test.set_variant = (d, variant, str) => {
 eYo.Test.all_variants = (d, required) => {
   eYo.Test.brick(d)
   var d = d.variant_d
-  var all = d && d.getAll()
+  var all = d && (d.getAll())
   chai.assert(all || !required, `MISSING all in model ${d.type}`)
   all && all.forEach(v => {
     eYo.Test.set_variant(d, v)

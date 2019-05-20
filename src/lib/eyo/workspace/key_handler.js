@@ -157,7 +157,7 @@ eYo.KeyHandler = (() => {
     var eyo = eYo.Selected.brick
     if (eyo) {
       var m4t = eYo.Selected.magnet
-      var newB = m4t && eyo.insertBlockWithModel(model, m4t)
+      var newB = m4t && (eyo.insertBlockWithModel(model, m4t))
         || (model.parent || model.slot
           ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, m4t)
           : eyo.insertBlockWithModel(model, m4t) || eyo.insertParentWithModel(model))
@@ -174,7 +174,7 @@ eYo.KeyHandler = (() => {
                   m4t.select()
                   return true
                 } else {
-                  return t9k && doFirst(t9k, type)
+                  return t9k && (doFirst(t9k, type))
                 }
               }
             })

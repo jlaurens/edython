@@ -64,7 +64,7 @@ Tester.prototype.test = function (do_it = null) {
     assert(scan.tokens.length === this.done, `${scan.tokens.length} === ${this.done}`)
     assert(scan.last.type === eYo.TKN[key], `${scan.last.type} === ${eYo.TKN[key]}`)
     assert(scan.last.string === this.nextStr, `<${scan.last.string}> === <${this.nextStr}>`)
-    do_it && do_it.call(this, scan)
+    do_it && (do_it.call(this, scan))
   }
   assert(scan.string === scan.str, `<${scan.string}> === <${scan.str}>`)
   assert(!scan.nextToken(), `Unexpected last token <${scan.last}>`)

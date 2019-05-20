@@ -160,11 +160,11 @@ Object.defineProperties(eYo.Model.Item.prototype, {
       var ary = goog.isDef(this.ary)
         ? this.ary
         : Infinity
-      this.signatures && this.signatures.forEach((signature) => {
+      this.signatures && (this.signatures.forEach((signature) => {
         if (ary < signature.ary) {
           ary = signature.ary
         }
-      })
+      }))
       return ary
     }
   },
@@ -173,14 +173,14 @@ Object.defineProperties(eYo.Model.Item.prototype, {
       var mandatory = goog.isDef(this.mandatory)
         ? this.mandatory
         : this.ary || 0
-        this.signatures && this.signatures.forEach((signature) => {
+      this.signatures && (this.signatures.forEach((signature) => {
         var candidate = goog.isDef(signature.mandatory)
           ? signature.mandatory
           : signature.ary
         if (mandatory > candidate) {
           mandatory = candidate
         }
-      })
+      }))
       return mandatory
     }
   }
@@ -218,11 +218,11 @@ Object.defineProperties(
       get () {
         if (!this.kwargs_) {
           this.kwargs_ = []
-          this.arguments && this.arguments.forEach((arg) => {
+          this.arguments && (this.arguments.forEach((arg) => {
             if (goog.isDef(arg.default)) {
               this.kwargs_.push(arg)
             }
-          })
+          }))
         }
         return this.kwargs_
       }

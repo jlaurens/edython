@@ -72,7 +72,7 @@ eYo.Tooltip.hideAll = function (el) {
   var i = 0
   var tip
   while ((tip = tips[i++])) {
-    tip.state.visible && tip.hide()
+    tip.state.visible && (tip.hide())
   }
 }
 

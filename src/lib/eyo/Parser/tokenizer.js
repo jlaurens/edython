@@ -615,7 +615,7 @@ eYo.Scan.prototype.nextToken = function () {
         this.start_comment++
       }
       // this is not an indentation
-      col && do_space()
+      col && (do_space())
       var m = exec(eYo.Scan.XRE.type_comment)
       if (m) {
         forward(m[0].length)
@@ -766,17 +766,17 @@ eYo.Scan.prototype.nextToken = function () {
       } else if (scan('\r')) {
         // this is not an indentation either
         scan('\n')
-        col && do_space()
+        col && (do_space())
         new_NEWLINE()
         continue bol
       } else if (scan('\n')) {
         // this is not an indentation either
-        col && do_space()
+        col && (do_space())
         new_NEWLINE()
         continue bol
       }
       if (this.level) {
-        col && do_space()
+        col && (do_space())
       } else {
         if (this.indent_stack.length) {
           var indent = this.indent_stack[this.indent_stack.length - 1]

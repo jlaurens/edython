@@ -311,7 +311,7 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
         modules[t9k.target_p] = t9k.alias_p
       } else { // when connected to an 'any' brick
         var any = t9k.expression_p
-        any && any.split(/\s*,\s*/).forEach(c => {
+        any && (any.split(/\s*,\s*/)).forEach(c => {
           var ased = c.split(/\s*as\s*/)
           var name = ased[0]
           name && (modules[name] = ased[1] || name)

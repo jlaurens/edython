@@ -441,7 +441,7 @@ eYo.Magnet.prototype.consolidateType = function () {
   var target = m4tOut.target
   if (target) {
     // does the target accept general expression in lambda
-    nocond_only_out = target.check_ && target.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0
+    nocond_only_out = target.check_ && (target.check_.indexOf(eYo.T3.Expr.lambda_expr)) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default

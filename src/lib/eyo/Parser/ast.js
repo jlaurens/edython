@@ -132,13 +132,13 @@ validate_arguments(arguments_ty args)
     if (!validate_args(args->args))
         return 0;
     if (args->vararg && args->vararg->annotation
-        && !validate_expr(args->vararg->annotation, Load)) {
+        && (!validate_expr(args->vararg->annotation, Load))) {
             return 0;
     }
     if (!validate_args(args->kwonlyargs))
         return 0;
     if (args->kwarg && args->kwarg->annotation
-        && !validate_expr(args->kwarg->annotation, Load)) {
+        && (!validate_expr(args->kwarg->annotation, Load))) {
             return 0;
     }
     if (asdl_seq_LEN(args->defaults) > asdl_seq_LEN(args->args)) {
@@ -3956,7 +3956,7 @@ ast_for_if_stmt(struct compiling *c, const node *n)
         /* must reference the child n_elif+1 since 'else' token is third,
            not fourth, child from the end. *-/
         if (TYPE(CHILD(n, (n_elif + 1))) == NAME
-            && STR(CHILD(n, (n_elif + 1)))[2] == 's') {
+            && (STR(CHILD(n, (n_elif + 1)))[2] == 's')) {
             has_else = 1;
             n_elif -= 3;
         }

@@ -109,7 +109,7 @@ describe('SVG groups and paths', function () {
           return
         }
         console.log('Start executing ' + svg.id)
-        svg.runScript && svg.runScript()
+        svg.runScript && (svg.runScript())
       })
       goog.dom.classlist.add(svg.group_, 'eyo-start')
       goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')

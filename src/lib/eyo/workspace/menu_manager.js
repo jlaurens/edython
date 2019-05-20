@@ -279,7 +279,7 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
     sep = true
   }
   this.shouldSeparate(sep)
-  sep = eyo.populateContextMenuComment && eyo.populateContextMenuComment(this)
+  sep = eyo.populateContextMenuComment && (eyo.populateContextMenuComment(this))
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addChild(this.insertAfterSubmenu, true)
     sep = true
@@ -868,7 +868,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
       // d is a slotModel for a brick with type model.type
       if ((d && d.key && ((!model.input && !d.wrap) || d.key === model.input))) {
         if (outCheck) {
-          var check = d.check && d.check(model.type)
+          var check = d.check && (d.check(model.type))
           if (check) {
             var found = false
             var _ = 0
@@ -1034,7 +1034,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     var eyo = eYo.Brick.newComplete(brick, type)
     var yorn = eyo.head_m &&
     eyo.head_m.checkType_(m4t) &&
-    (!targetM4t || (eyo.foot_m && targetM4t.checkType_(eyo.foot_m)))
+    (!targetM4t || (eyo.foot_m && (targetM4t.checkType_(eyo.foot_m))))
     eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
@@ -1050,7 +1050,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     var eyo = eYo.Brick.newComplete(brick, type)
     var yorn = eyo.foot_m &&
     eyo.foot_m.checkType_(m4t) &&
-    (!target || (eyo.head_m && target.checkType_(eyo.head_m)))
+    (!target || (eyo.head_m && (target.checkType_(eyo.head_m))))
     eyo.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
