@@ -192,25 +192,24 @@ eYo.Selected = (() => {
 
 eYo.Selected.selectOneBlockOf = (bricks, force) => {
   var select
-  var eyos = bricks.filter(brick => brick).map(brick => brick.eyo)
-  var f = (eyo) => {
-    if (eyo.isControl && eyo.suiteHeight) {
-      select = eyo
+  bricks = bricks.filter(brick => brick)
+  var f = brick => {
+    if (brick.isControl && brick.span.suite) {
+      select = brick
       return true
     }
   }
-  var g = (eyo) => {
-    if (eyo.isControl) {
-      select = eyo
+  var g = brick => {
+    if (brick.isControl) {
+      select = brick
       return true
     }
   }
-  if (eyos.length && !eyos.some(f) && !eyos.some(g)) {
-    select = eyos[0]
+  if (bricks.length && !bricks.some(f) && !bricks.some(g)) {
+    select = bricks[0]
   }
   if (select) {
-    select.select()
-    eYo.Selected.scrollToVisible(force)
+    select.select().scrollToVisible(force)
   }
 }
 
