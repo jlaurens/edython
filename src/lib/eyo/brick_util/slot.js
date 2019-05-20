@@ -98,8 +98,8 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Asks the owner's renderer to do the same.
  */
 eYo.Slot.prototype.dispose = function () {
-  var ui = this.brick_.ui
-  ui && (ui.driver.slotDispose(this))
+  var d = this.ui_driver
+  ui && (d.slotDispose(this))
   eYo.Field.disposeFields(this)
   this.model_ = undefined
   this.magnet_ && (this.magnet_.dispose())
@@ -260,7 +260,7 @@ Object.defineProperties(eYo.Slot.prototype, {
 eYo.Slot.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
   this.ui_driver.slotInit(this)
-  this.forEachField(field => field.beReady())
+  this.forEachField(f => f.beReady())
   this.magnet && (this.magnet.beReady())
 }
 
@@ -272,7 +272,7 @@ Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
     if (this.incog) {
       return false
     }
-    if (!this.connection) {
+    if (!this.magnet) {
       return false
     }
     if (!this.magnet.wrapped_ && this.targetBrick) {
