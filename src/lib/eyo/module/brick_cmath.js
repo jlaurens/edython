@@ -30,13 +30,12 @@ goog.require('eYo.FlyoutCategory')
  */
 // eYo.Brick.Expr.cmath__call_expr.populateMenu = function (mgr) {
 //   var brick = this
-//   var eyo = brick.eyo
 //   // populate the menu with the functions in the same category
-//   var name_get = eyo.name_d.get()
+//   var name_get = brick.name_d.get()
 //   var model = eYo.Model.cmath__module
 //   var item_get = model.getItem(name_get)
 //   var items = model.getItemsInCategory(item_get.category)
-//   var module = eyo.data.fromFlag.get() ? '' : 'cmath.'
+//   var module = brick.data.fromFlag.get() ? '' : 'cmath.'
 //   var F = (i) => {
 //     var item = model.getItem(items[i])
 //     var type = model.data.types[item.type]
@@ -49,7 +48,7 @@ goog.require('eYo.FlyoutCategory')
 //         args
 //       )
 //       var menuItem = mgr.newMenuItem(content, function () {
-//         eyo.name_d.set(item.names[0])
+//         brick.name_d.set(item.names[0])
 //       })
 //       mgr.addChild(menuItem, true)
 //     }
