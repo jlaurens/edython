@@ -75,7 +75,7 @@ Object.defineProperties(eYo.Input.prototype, {
         return
       }
       this.visible_ = newValue
-      this.fieldRow.forEach(f => f.setVisible(newValue))
+      this.fieldRow.forEach(f => f.visible = newValue)
       this.magnet && (this.magnet.visible = newValue)
     }
   },
