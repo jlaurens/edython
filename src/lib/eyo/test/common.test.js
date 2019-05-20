@@ -269,16 +269,6 @@ eYo.Test.bind_field = (type, key, no) => {
   if (!no) {
     chai.assert(f.visible, `INVISIBLE BIND FIELD for ${key} in ${brick.type}`)
   }
-  var i = s.input
-  if (i) {
-    var ff = i.eyo.bindField
-    chai.assert(f === ff, `INCONSISTENT BIND FIELD 1 for ${key} in ${brick.type}`)
-    var m4t = i.eyo.magnet
-    if (m4t) {
-      ff = m4t.bindField
-      chai.assert(f === ff, `INCONSISTENT BIND FIELD 2 for ${key} in ${brick.type}`)
-    }
-  }
   brick.dispose()
 }
 
@@ -291,7 +281,7 @@ eYo.Test.slot_connect = (brick, key, tb) => {
   chai.assert(s === brick[`${key}_s`], `MISSED SLOT SHORTCUT for ${key} in ${brick.type}`)
   if (tb) {
     s.connect(tb)
-    chai.assert(s.target === tb.eyo, `MISSED CONNECTION for ${key} in ${brick.type}`)
+    chai.assert(s.target === tb, `MISSED CONNECTION for ${key} in ${brick.type}`)
     chai.assert(tb === brick[`${key}_b`], `MISSED TARGET SHORTCUT for ${key} in ${brick.type}`)
   }
 }
