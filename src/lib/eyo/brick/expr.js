@@ -159,7 +159,7 @@ eYo.Brick.Expr.prototype.willRender_ = function (recorder) {
   eYo.Brick.Expr.superClass_.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
-    field.setVisible(this.await_)
+    field.visible = this.await_
   }
 }
 
@@ -234,18 +234,18 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
   if (model.slot) {
     // start by the slots
     var slot = parent.slots[model.slot]
-    var parentInput = slot && slot.input
+    var parentInput = slot
     goog.asserts.assert(parentInput, 'No input named ' + model.slot)
-    var parentInputM4t = parentInput.eyo.magnet
+    var parentInputM4t = parentInput.magnet
     goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
   } else if ((parentInput = parent.getInput(eYo.Key.LIST, true))) {
-    var list = parentInput.eyo.magnet.targetBrick
+    var list = parentInput.magnet.targetBrick
     goog.asserts.assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     parentInput = list.getInput(eYo.Do.Name.middle_name)
-    parentInputM4t = parentInput.eyo.magnet
+    parentInputM4t = parentInput.magnet
     goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first parent's connection that can accept brick
