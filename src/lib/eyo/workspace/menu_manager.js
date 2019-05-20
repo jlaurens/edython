@@ -257,15 +257,15 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
       }
     }
   }
-  var target = eyo.getMenuTarget()
+  var target = brick.getMenuTarget()
   this.init(target, e)
   var me = this
   me.alreadyListened = false
   var parent, sep
-  parent = target.eyo
+  parent = target
   this.populate_before_after(brick)
   sep = parent.populateContextMenuFirst_(this)
-  while (parent !== eyo) {
+  while (parent !== brick) {
     parent = parent.parent
     sep = parent.populateContextMenuFirst_(this) || sep
   }
@@ -289,14 +289,14 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
     sep = true
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
-  parent = target.eyo
+  parent = target
   sep = parent.populateContextMenuMiddle_(this)
-  while (parent !== eyo) {
+  while (parent !== brick) {
     parent = parent.parent
     sep = parent.populateContextMenuMiddle_(this) || sep
   }
   this.shouldSeparate(sep) // this algorithm needs more thinking
-  brick.eyo.populateContextMenuLast_(this)
+  brick.populateContextMenuLast_(this)
   this.insertSubmenu.setEnabled(this.insertSubmenu.getMenu().getChildCount() > 0)
   this.removeSubmenu.setEnabled(this.removeSubmenu.getMenu().getChildCount() > 0)
   goog.events.listenOnce(this.menu, 'action', function (event) {
@@ -310,9 +310,9 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
       if (goog.isFunction(model)) {
         model(event)
       } else {
-        target.eyo.handleMenuItemActionFirst(me, event) ||
-        target.eyo.handleMenuItemActionMiddle(me, event) ||
-        target.eyo.handleMenuItemActionLast(me, event)
+        target.handleMenuItemActionFirst(me, event) ||
+        target.handleMenuItemActionMiddle(me, event) ||
+        target.handleMenuItemActionLast(me, event)
       }
       me.init()
     }, 10)// TODO be sure that this 10 is suffisant
@@ -365,12 +365,12 @@ eYo.Brick.prototype.populateContextMenuLast_ = function (mgr) {
 eYo.MenuManager.prototype.populateLast = function (brick) {
   var menuItem
   if (brick.isMovable() && !brick.isInFlyout) {
-    if (brick.eyo.canUnlock()) {
+    if (brick.canUnlock()) {
       menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
         function (event) {
           eYo.Events.setGroup(true)
           try {
-            brick.eyo.unlock()
+            brick.unlock()
           } catch (err) {
             console.error(err)
             throw err
@@ -381,12 +381,12 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       )
       this.addChild(menuItem, true)
     }
-    if (brick.eyo.canLock()) {
+    if (brick.canLock()) {
       menuItem = this.newMenuItem(eYo.Msg.LOCK_BLOCK,
         function (event) {
           eYo.Events.setGroup(true)
           try {
-            brick.eyo.lock()
+            brick.lock()
           } catch (err) {
             console.error(err)
             throw err
@@ -423,7 +423,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
         {action: eYo.ID.ADD_COMMENT,
           target: brick})
     }
-    menuItem.setEnabled(false && !goog.userAgent.IE && !brick.eyo.out_m)
+    menuItem.setEnabled(false && !goog.userAgent.IE && !brick.out_m)
     this.addChild(menuItem, true)
   }
   if (brick.workspace.options.collapse) {
@@ -438,7 +438,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
         eYo.Msg.COLLAPSE_BLOCK,
         {action: eYo.ID.COLLAPSE_BLOCK,
           target: brick})
-      menuItem.setEnabled(brick.eyo.getStatementCount() > 2)
+      menuItem.setEnabled(brick.getStatementCount() > 2)
     }
     this.addChild(menuItem, true)
   }
@@ -448,13 +448,13 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
         ? eYo.Msg.ENABLE_BLOCK : eYo.Msg.DISABLE_BLOCK,
       {action: eYo.ID.TOGGLE_ENABLE_BLOCK,
         target: brick})
-    menuItem.setEnabled(!brick.eyo.out_m)
+    menuItem.setEnabled(!brick.out_m)
     this.addChild(menuItem, true)
   }
   if (brick.isDeletable() && brick.isMovable() && !brick.isInFlyout) {
     // Count the number of bricks that are nested in this brick.
 
-    var wrapper = brick.eyo.wrapper
+    var wrapper = brick.wrapper
     var descendantCount = wrapper.getWrappedDescendants().length
     if (parent === null) {
       // the topmost is itself sealed, this should never occur
@@ -484,8 +484,8 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   this.separate()
 
   menuItem = this.newMenuItem(
-    brick.eyo.getPythonType(), (event) => {
-      var xmlDom = eYo.Xml.brickToDom(brick.eyo, true)
+    brick.getPythonType(), (event) => {
+      var xmlDom = eYo.Xml.brickToDom(brick, true)
       var xmlText = Blockly.Xml.domToText(xmlDom)
       console.log(xmlText)
     }
@@ -494,22 +494,22 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   this.addChild(menuItem, true)
 
   menuItem = this.newMenuItem(
-    brick.eyo.getPythonType() + ' python code',
+    brick.getPythonType() + ' python code',
     function (b, e) {
       console.log('Python code for', brick.type)
       var p = new eYo.Py.Exporter()
-      console.log(p.export(brick.eyo))
+      console.log(p.export(brick))
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
 
   menuItem = this.newMenuItem(
-    brick.eyo.getPythonType() + ' python code (deep)',
+    brick.getPythonType() + ' python code (deep)',
     function (b, e) {
       console.log('Python code for', brick.type)
       var p = new eYo.Py.Exporter()
-      console.log(p.export(brick.eyo, {is_deep: true}))
-      brick.eyo.runScript()
+      console.log(p.export(brick, {is_deep: true}))
+      brick.runScript()
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)
@@ -588,7 +588,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     target.setCollapsed(true)
     return true
   case eYo.ID.TOGGLE_ENABLE_BLOCK:
-    target.eyo.disabled = !target.eyo.disabled
+    target.disabled = !target.disabled
     return true
   case eYo.ID.DELETE_BLOCK:
     var unwrapped = target
@@ -852,7 +852,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  */
 eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model) {
   // THIS IS BROKEN SINCE THE SLOT KEYS ARE NO LONGER INTEGERS
-  var m4t = brick.eyo.out_m
+  var m4t = brick.out_m
   if (!m4t) {
     // this is a statement brick
     return false
@@ -948,7 +948,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
 eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) {
   // can we insert a brick typed type between the brick and
   // the target of its output connection
-  var m4tOut = brick.eyo.out_m
+  var m4tOut = brick.out_m
   if (m4tOut) {
     var m4tIn = m4tOut.target
     if (!m4tIn) {
@@ -975,19 +975,18 @@ eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) 
  * @return true if an item were added to the remove menu
  */
 eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
-    var eyo = brick.eyo
-  var parent = eyo.parent
+  var parent = brick.parent
   if (parent && parent.type === model.type) {
-    var input = eyo.out_m.input
+    var input = brick.out_m.input
     if (model.input && input.name !== model.input) {
       return false
     }
-    if (!eyo.wrapped_ || eyo.canUnwrap()) {
-      if (eyo.canReplaceDlgt(parent)) {
+    if (!brick.wrapped_ || brick.canUnwrap()) {
+      if (brick.canReplaceDlgt(parent)) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
-            eyo.replaceBrick(parent)
+            brick.replaceBrick(parent)
           })
           this.addRemoveChild(MI)
           console.log(brick.type, ' replace ', parent.type)
@@ -1063,7 +1062,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   eYo.Events.disableWrap(() => {
-    if ((m4t = brick.eyo.foot_m)) {
+    if ((m4t = brick.foot_m)) {
       var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {
         sep = F_after(target, type) || sep
@@ -1074,7 +1073,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
       }
       this.shouldSeparateInsertAfter(sep)
     }
-    if ((m4t = brick.eyo.head_m)) {
+    if ((m4t = brick.head_m)) {
       target = m4t.target
       for (_ = 0; (type = Us[_++]);) {
         sep = F_before(target, type) || sep
@@ -1150,7 +1149,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
  * @private
  */
 eYo.MenuManager.prototype.populateProperties = function (brick, key) {
-  var eyo = brick.eyo
+  var eyo = brick
   var data = eyo.data[key]
   var properties = data.getAll()
   if (properties && properties.length > 1) {
