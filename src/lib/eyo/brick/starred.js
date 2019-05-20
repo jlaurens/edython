@@ -66,10 +66,10 @@ eYo.Brick.Expr.makeSubclass('Starred', {
       init: eYo.Key.NONE, // not a lonely '*'
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var O = this.owner
-        O.modified_d.incog = newValue === eYo.Key.STAR
+        var b3k = this.brick
+        b3k.modified_d.incog = newValue === eYo.Key.STAR
         if (newValue === eYo.Key.STAR) {
-          O.modifier_p = '*'
+          b3k.modifier_p = '*'
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -84,9 +84,9 @@ eYo.Brick.Expr.makeSubclass('Starred', {
       init: '*',
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var O = this.owner
+        var b3k = this.brick
         if (newValue !== '*') {
-          O.variant_p = eYo.Key.NONE
+          b3k.variant_p = eYo.Key.NONE
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -115,7 +115,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
     modified: {
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
-        var t = this.owner && this.owner.type
+        var t = this.owner && this.brick.type
         if (t === eYo.T3.Expr.parameter_star || t === eYo.T3.Expr.parameter_star_star || t === eYo.T3.Expr.target_star) {
           return eYo.Msg.Placeholder.NAME
         } else {
@@ -133,13 +133,13 @@ eYo.Brick.Expr.makeSubclass('Starred', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue.length) {
-          this.owner.variant_p = eYo.Key.NONE
+          this.brick.variant_p = eYo.Key.NONE
         }
       },
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p !== eYo.Key.STAR && this.owner.modifier_p === '*'
+          this.required = this.brick.variant_p !== eYo.Key.STAR && this.brick.modifier_p === '*'
           this.save(element, opt)
         },
         load: /** @suppress {globalThis} */ function (element, opt) {
@@ -151,7 +151,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
         this.required_from_type = type !== eYo.T3.Expr.star
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        this.owner.variant_p = this.required_from_type || this.isRequiredFromModel()
+        this.brick.variant_p = this.required_from_type || this.isRequiredFromModel()
           ? eYo.Key.NONE
           : eYo.Key.STAR
         this.required_from_type = false

@@ -272,7 +272,7 @@ Blockly.Workspace.prototype.getBlockById = (() => {
       return brick
     }
     var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
-    if (m && (brick = getBlockById.call(this, m.id))) {
+    if (m && (brick = getBrickById.call(this, m.id))) {
       return brick.someInputMagnet(m4t => {
           var brick = m4t.targetBrick
           if (brick && brick.id === id) {

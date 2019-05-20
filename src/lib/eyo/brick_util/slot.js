@@ -45,13 +45,13 @@ goog.forwardDeclare('eYo.Xml')
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {!eYo.Brick} owner  The owner is a brick.
+ * @param {!eYo.Brick} brick  The owner is a brick.
  * @param {!string} key  One of the keys in `slots` section of the brick model.
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.Slot = function (owner, key, model) {
-  goog.asserts.assert(owner, 'Missing slot owner')
+eYo.Slot = function (brick, key, model) {
+  goog.asserts.assert(brick, 'Missing slot owner brick')
   goog.asserts.assert(key, 'Missing slot key')
   goog.asserts.assert(model, 'Missing slot model')
   if (!model.order) {
@@ -60,7 +60,7 @@ eYo.Slot = function (owner, key, model) {
   goog.asserts.assert(model.order, 'Missing slot model order')
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
-  this.owner_ = owner
+  this.brick_ = brick
   this.key_ = key
   this.model_ = model
   this.model__ = model
@@ -98,14 +98,14 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Asks the owner's renderer to do the same.
  */
 eYo.Slot.prototype.dispose = function () {
-  var ui = this.owner_.ui
+  var ui = this.brick_.ui
   ui && (ui.driver.slotDispose(this))
   eYo.Field.disposeFields(this)
   this.model_ = undefined
   this.magnet_ && (this.magnet_.dispose())
   this.magnet_ = undefined
   this.key_ = undefined
-  this.owner_ = undefined
+  this.brick_ = undefined
   this.where_.dispose && (this.where_.dispose())
   this.where_ = undefined
 }
@@ -122,7 +122,7 @@ Object.defineProperties(eYo.Slot.prototype, {
    */
   brick: {
     get () {
-      return this.owner_
+      return this.brick_
     }
   },
   key: {
@@ -184,7 +184,7 @@ Object.defineProperties(eYo.Slot.prototype, {
       if (validator) { // if !this.slots, the receiver is not yet ready
         newValue = validator.call(this, newValue)
       }
-      this.owner_.changeWrap(
+      this.brick_.changeWrap(
         () => {
           this.incog_ = newValue
           // forward to the connection
@@ -200,7 +200,7 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   recover: {
     get () {
-      return this.owner_.recover
+      return this.brick_.recover
     }
   },
   xmlKey: {
@@ -506,7 +506,7 @@ eYo.Slot.prototype.load = function (element) {
                     if ((grand_t_brick)) {
                       eYo.Xml.fromDom(grand_t_brick, grandChild)
                       this.recover.dontResit(grandChild)
-                    } else if ((grand_t_brick = eYo.Xml.domToBrick(grandChild, this.owner_))) {
+                    } else if ((grand_t_brick = eYo.Xml.domToBrick(grandChild, this.brick_))) {
                       var t_m4t = grand_t_brick.out_m
                       if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
                         t_m4t.connect(input.magnet)
@@ -524,7 +524,7 @@ eYo.Slot.prototype.load = function (element) {
               out = eYo.Xml.fromDom(t9k, child)
             }
             this.recover.dontResit(child)
-          } else if ((t9k = eYo.Xml.domToBrick(child, this.owner_))) {
+          } else if ((t9k = eYo.Xml.domToBrick(child, this.brick_))) {
             var m5s = t9k.magnets
             // we could create a brick from that child element
             // then connect it

@@ -36,9 +36,9 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.from_d.requiredIncog = newValue === eYo.Key.FROM
-        O.expression_d.requiredIncog = newValue === eYo.Key.EXPRESSION
+        var b3k = this.brick
+        b3k.from_d.requiredIncog = newValue === eYo.Key.FROM
+        b3k.expression_d.requiredIncog = newValue === eYo.Key.EXPRESSION
       },
       xml: false
     },
@@ -50,17 +50,17 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.expression_s.unwrappedTarget) {
+          if (!this.brick.expression_s.unwrappedTarget) {
             this.save(element, opt)
           }
         }
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var O = this.owner
+        var b3k = this.brick
         if (newValue) {
-          O.variant_p = eYo.Key.EXPRESSION
-        } else if (!O.expression_s.unwrappedTarget) {
-          O.variant_p = eYo.Key.NONE
+          b3k.variant_p = eYo.Key.EXPRESSION
+        } else if (!b3k.expression_s.unwrappedTarget) {
+          b3k.variant_p = eYo.Key.NONE
         }
       }
     },
@@ -70,23 +70,23 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p !== eYo.Key.NONE
+          this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
-        var O = this.owner
-        if (newValue || O.from_b) {
-          O.variant_p = eYo.Key.FROM
-        } else if (O.expression_p || (O.expression_b && O.expression_b.unwrappedTarget)) {
-          O.variant_p = eYo.Key.EXPRESSION
+        var b3k = this.brick
+        if (newValue || b3k.from_b) {
+          b3k.variant_p = eYo.Key.FROM
+        } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
+          b3k.variant_p = eYo.Key.EXPRESSION
         } else {
-          O.variant_p = eYo.Key.NONE
+          b3k.variant_p = eYo.Key.NONE
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.Key.FROM
         }
       }
     }
@@ -106,7 +106,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       wrap: eYo.T3.Expr.non_void_expression_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.EXPRESSION
+          this.brick.variant_p = eYo.Key.EXPRESSION
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
@@ -134,7 +134,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.Key.FROM
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
@@ -142,12 +142,12 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         var O = this.brick
-        if (O.from_p) {
-          O.variant_p = eYo.Key.FROM
-        } else if (O.expression_p || (O.expression_b && O.expression_b.unwrappedTarget)) {
-          O.variant_p = eYo.Key.EXPRESSION
+        if (b3k.from_p) {
+          b3k.variant_p = eYo.Key.FROM
+        } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
+          b3k.variant_p = eYo.Key.EXPRESSION
         } else {
-          O.variant_p = eYo.Key.NONE
+          b3k.variant_p = eYo.Key.NONE
         }
       }
     }

@@ -357,7 +357,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
       validate: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.stride_d.requiredIncog = newValue === eYo.Key.STRIDE
+        this.brick.stride_d.requiredIncog = newValue === eYo.Key.STRIDE
       },
       xml: false
     },
@@ -386,14 +386,14 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (this.owner.variant_p === eYo.Key.STRIDE) {
+          if (this.brick.variant_p === eYo.Key.STRIDE) {
             this.save(element, opt)
           }
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.STRIDE
+          this.brick.variant_p = eYo.Key.STRIDE
         }
       }
     }
@@ -435,7 +435,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
       optional: true,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.STRIDE
+          this.brick.variant_p = eYo.Key.STRIDE
         }
       }
     }

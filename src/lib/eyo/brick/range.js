@@ -36,9 +36,9 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        this.owner.start_d.incog = newValue === eYo.Key.NONE
-        this.owner.sep_s.incog = newValue === eYo.Key.NONE
-        this.owner.step_d.incog = newValue !== eYo.Key.STEP
+        this.brick.start_d.incog = newValue === eYo.Key.NONE
+        this.brick.sep_s.incog = newValue === eYo.Key.NONE
+        this.brick.step_d.incog = newValue !== eYo.Key.STEP
       },
       xml: false
     },
@@ -48,7 +48,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       init: '',
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p !== eYo.Key.NONE) {
+          if (this.brick.variant_p !== eYo.Key.NONE) {
             this.save(element)
           }
         }
@@ -56,7 +56,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
         if (this.isRequiredFromSaved() && newValue !== eYo.Key.STEP) {
-          this.owner.variant_p = eYo.Key.START
+          this.brick.variant_p = eYo.Key.START
         }
       }
     },
@@ -71,7 +71,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p === eYo.Key.STEP) {
+          if (this.brick.variant_p === eYo.Key.STEP) {
             this.save(element)
           }
         }
@@ -79,7 +79,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.STEP
+          this.brick.variant_p = eYo.Key.STEP
         }
       }
     }

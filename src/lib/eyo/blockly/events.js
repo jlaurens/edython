@@ -219,7 +219,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   function (newValue) {
     var oldValue = this.value_
     if (oldValue !== newValue) {
-      this.owner.changeWrap(() => { // catch `this`
+      this.brick.changeWrap(() => { // catch `this`
         eYo.Events.groupWrap(() => { // catch `this`
           this.beforeChange(oldValue, newValue)
           try {
@@ -231,7 +231,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
           } finally {
             if (!this.noUndo) {
               eYo.Events.fireBrickChange(
-                this.owner, eYo.Const.Event.DATA + this.key, null, oldValue, newValue)
+                this.brick, eYo.Const.Event.DATA + this.key, null, oldValue, newValue)
             }
             this.afterChange(oldValue, newValue)
           }

@@ -14,26 +14,19 @@
 goog.provide('eYo.Input')
 
 goog.require('eYo.Magnet')
-goog.forwardDeclare('eYo.Slot')
+goog.forwardDeclare('eYo.Brick')
 
 /**
  * Class for an input with an optional field.
  * @param {number} type The type of the input.
  * @param {string} name Language-neutral identifier which may used to find this
  *     input again.
- * @param {!eYo.Brick|eYo.Slot} owner The owner of this input.
+ * @param {!eYo.Brick} brick The owner brick of this input.
  * @param {?eYo.Magnet} magnet Optional magnet for this input.
  * @constructor
  */
-eYo.Input = function(owner, name, model) {
-  this.owner_ = owner
-  if (owner instanceof eYo.Slot) {
-    this.slot_ = owner
-    this.brick_ = owner.brick
-  } else {
-    this.slot_ = null
-    this.brick_ = owner
-  }
+eYo.Input = function(brick, name, model) {
+  this.brick_ = brick
   this.name_ = name
   this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
   this.fieldRow_ = []
@@ -46,15 +39,6 @@ Object.defineProperties(eYo.Input.prototype, {
 
 // computed properties
 Object.defineProperties(eYo.Input.prototype, {
-  /**
-   * @readonly
-   * @type {!eYo.Brick|eYo.Slot}
-   */
-  owner: {
-    get () {
-      return this.owner_
-    }
-  },
   /**
    * @readonly
    * @type {!eYo.Brick}
@@ -185,7 +169,7 @@ eYo.Input.prototype.dispose = function() {
     m4t.dispose()
     this.magnet = undefined
   }
-  this.owner = null
+  this.brick_ = null
 }
 
 /**

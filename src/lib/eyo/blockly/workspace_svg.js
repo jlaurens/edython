@@ -611,7 +611,7 @@ Blockly.WorkspaceSvg.prototype.getBlocksBoundingBox = function() {
   var i = 0
   while (i < topBlocks.length) {
     var b = topBlocks[i]
-    if (b.ui.rendered) {
+    if (b.ui && b.ui.rendered) {
       var bound = b.ui.boundingRect
       while (++i < topBlocks.length) {
         var b = topBlocks[i]

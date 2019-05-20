@@ -61,7 +61,7 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         this.requiredIncog = newValue > 0
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        var p = this.owner.profile_p
+        var p = this.brick.profile_p
         var item = p && p.p5e && p.p5e.item
         if (item) {
           if (item.type === 'method') {

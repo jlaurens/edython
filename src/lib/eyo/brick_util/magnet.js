@@ -154,6 +154,7 @@ eYo.Magnet = function (bsi, type, model) {
   }
   this.type_ = type
   this.model_ = model
+  this.optional_ = this.model_.optional
   this.incog_ = this.hidden__ = model.hidden
   eYo.Field.makeFields(this, model.fields)
   this.where_ = new eYo.Where()
@@ -277,11 +278,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return this.workspace.connectionDBList
     }
   },
-  optional_: {
-    get () {
-      return this.model_.optional
-    }
-  },
+  optional_: { writable: true },
 })
 
 // computed public properties
@@ -1772,7 +1769,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
   // is allowed.
   if (this.type === eYo.Magnet.HEAD &&
       candidate.target &&
-      !this.owner.foot_m &&
+      !this.brick.foot_m &&
       its_brick.foot_m) {
     return false;
   }

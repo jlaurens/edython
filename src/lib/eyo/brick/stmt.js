@@ -200,8 +200,8 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
       xml: false,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
+        var b3k = this.brick
+        b3k.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.blank_stmt) {
@@ -312,16 +312,16 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       init: eYo.Key.PASS,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.identifiers_s.incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
-        O.del_s.incog = newValue !== eYo.Key.DEL
-        O.return_s.incog = newValue !== eYo.Key.RETURN
+        var b3k = this.brick
+        b3k.identifiers_s.incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
+        b3k.del_s.incog = newValue !== eYo.Key.DEL
+        b3k.return_s.incog = newValue !== eYo.Key.RETURN
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
         },
         load: /** @suppress {globalThis} */ function (element) {
-          this.owner.variant_p = element.getAttribute(eYo.Key.EYO)
+          this.brick.variant_p = element.getAttribute(eYo.Key.EYO)
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -348,13 +348,13 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
-          var variant = this.owner.variant_p
+          var variant = this.brick.variant_p
           if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
             this.save(element)
           }
         },
         load: /** @suppress {globalThis} */ function (element) {
-          var variant = this.owner.variant_p
+          var variant = this.brick.variant_p
           if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
             this.load(element)
           }
@@ -367,12 +367,12 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p === eYo.Key.DEL) {
+          if (this.brick.variant_p === eYo.Key.DEL) {
             this.save(element)
           }
         },
         load: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p === eYo.Key.DEL) {
+          if (this.brick.variant_p === eYo.Key.DEL) {
             this.load(element)
           }
         }
@@ -384,12 +384,12 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p === eYo.Key.RETURN) {
+          if (this.brick.variant_p === eYo.Key.RETURN) {
             this.save(element)
           }
         },
         load: /** @suppress {globalThis} */ function (element) {
-          if (this.owner.variant_p === eYo.Key.RETURN) {
+          if (this.brick.variant_p === eYo.Key.RETURN) {
             this.load(element)
           }
         }

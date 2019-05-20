@@ -70,7 +70,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
       main: true,
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var types = this.owner.type_d.getAll()
+        var types = this.brick.type_d.getAll()
         var p5e = eYo.T3.Profile.get(newValue, null)
         return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
       },
@@ -79,7 +79,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
         var type = newValue
           ? eYo.T3.Profile.get(newValue, null).expr
           : eYo.T3.Expr.integer
-        this.owner.type_p = type
+        this.brick.type_p = type
       },
       synchronize: true,
       xml: {
@@ -141,7 +141,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
         // synchronize the placeholder text
         var p = this.content_p
         if (!p || !p.length) {
-          this.owner.content_d.field.getPlaceholderText(true)
+          this.brick.content_d.field.getPlaceholderText(true)
         }
       },
       xml: false
@@ -151,11 +151,11 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       init: '"',
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.value_d.consolidate()
+        this.brick.value_d.consolidate()
       },
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         this.synchronize(newValue)
-        var f4s = this.owner.fields
+        var f4s = this.brick.fields
         f4s.start.text = f4s.end.text = this.toText()
       },
       xml: false,
@@ -167,10 +167,10 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       init: '',
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.value_d.consolidate()
+        this.brick.value_d.consolidate()
       },
       validate: /** @this{eYo.Data} */ function (newValue) {
-        return (!goog.isDef(this.owner.content_p) || this.owner.validateComponents({
+        return (!goog.isDef(this.brick.content_p) || this.brick.validateComponents({
           prefix: newValue}
         )) && {validated: newValue}
       },
@@ -188,10 +188,10 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.value_d.consolidate()
+        this.brick.value_d.consolidate()
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
-        return ((!goog.isDef(this.owner.content_p) || this.owner.validateComponents({
+        return ((!goog.isDef(this.brick.content_p) || this.brick.validateComponents({
           content: newValue
         })) && {validated: newValue}) || null
       },
@@ -205,14 +205,14 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       },
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var O = this.owner
+        var b3k = this.brick
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            O.prefix_p = m.prefix || ''
-            O.delimiter_p = m.delimiter || "'"
-            O.content_p = m.content || ''
-            O.subtype_p = m.formatted ? (formatted || type) : type
+            b3k.prefix_p = m.prefix || ''
+            b3k.delimiter_p = m.delimiter || "'"
+            b3k.content_p = m.content || ''
+            b3k.subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
@@ -221,16 +221,16 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
         F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortformattedliteral) ||
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
-          this.owner.removeError(eYo.Key.VALUE)
+          this.brick.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.brick.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
-        var prefix = this.owner.prefix_p
-        var delimiter = this.owner.delimiter_p
-        var content = this.owner.content_p
+        var prefix = this.brick.prefix_p
+        var delimiter = this.brick.delimiter_p
+        var content = this.brick.content_p
         if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
           this.set('' + prefix + delimiter + content + delimiter)
         }
@@ -416,14 +416,14 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
       main: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        var O = this.owner
+        var b3k = this.brick
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(newValue, xre)
           if (m) {
-            O.prefix_p = m.prefix || ''
-            O.delimiter_p = m.delimiter || "'''"
-            O.content_p = m.content || ''
-            O.subtype_p = m.formatted ? (formatted || type) : type
+            b3k.prefix_p = m.prefix || ''
+            b3k.delimiter_p = m.delimiter || "'''"
+            b3k.content_p = m.content || ''
+            b3k.subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
@@ -432,9 +432,9 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
         F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longformattedliteral) ||
         F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
         F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
-          this.owner.removeError(eYo.Key.VALUE)
+          this.brick.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
-          this.owner.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
+          this.brick.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },

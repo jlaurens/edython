@@ -78,11 +78,11 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       init: eYo.Key.IMPORT,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.import_module_d.requiredIncog = newValue === eYo.Key.IMPORT
-        O.from_d.requiredIncog = newValue !== eYo.Key.IMPORT
-        O.import_d.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT
-        O.import_star_s.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
+        var b3k = this.brick
+        b3k.import_module_d.requiredIncog = newValue === eYo.Key.IMPORT
+        b3k.from_d.requiredIncog = newValue !== eYo.Key.IMPORT
+        b3k.import_d.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT
+        b3k.import_star_s.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
       }
     },
     import_module: {
@@ -102,13 +102,13 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue) {
-          this.owner.variant_p = eYo.Key.IMPORT
+          this.brick.variant_p = eYo.Key.IMPORT
         }
       },
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.import_module_s.unwrappedTarget) {
+          if (!this.brick.import_module_s.unwrappedTarget) {
             this.save(element, opt)
           }
         }
@@ -119,7 +119,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var p5e = eYo.T3.Profile.get(newValue, null)
-        var variant = this.owner.variant_p
+        var variant = this.brick.variant_p
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
@@ -131,10 +131,10 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue) {
-          var O = this.owner
-          if (O.variant_p === eYo.Key.IMPORT) {
+          var b3k = this.brick
+          if (b3k.variant_p === eYo.Key.IMPORT) {
             // STAR of not ?
-            O.variant_p = O.import_s.unwrappedTarget
+            b3k.variant_p = b3k.import_s.unwrappedTarget
             ? eYo.Key.FROM_MODULE_IMPORT
             : eYo.Key.FROM_MODULE_IMPORT_STAR
           }
@@ -154,13 +154,13 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         if (newValue) {
-          this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
+          this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.import_s.unwrappedTarget) {
+          if (!this.brick.import_s.unwrappedTarget) {
             this.save(element, opt)
           }
         }
@@ -207,10 +207,10 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          var O = this.owner
-          if (O.variant_p === eYo.Key.IMPORT) {
+          var b3k = this.brick
+          if (b3k.variant_p === eYo.Key.IMPORT) {
             // STAR of not ?
-            O.variant_p = O.import_s.unwrappedTarget
+            b3k.variant_p = b3k.import_s.unwrappedTarget
             ? eYo.Key.FROM_MODULE_IMPORT
             : eYo.Key.FROM_MODULE_IMPORT_STAR
           }
@@ -218,9 +218,9 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        if (O.variant_p === eYo.Key.IMPORT) {
+        if (b3k.variant_p === eYo.Key.IMPORT) {
           // STAR of not ?
-          O.variant_p = O.import_s.unwrappedTarget
+          b3k.variant_p = b3k.import_s.unwrappedTarget
           ? eYo.Key.FROM_MODULE_IMPORT
           : eYo.Key.FROM_MODULE_IMPORT_STAR
         }
@@ -237,7 +237,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       promise: eYo.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT
+          this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
@@ -254,13 +254,13 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (this.owner.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
+          if (this.brick.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
         },
         load: /** @suppress {globalThis} */ function (element) {
           if (element.getAttribute('star') === 'true') {
-            this.owner.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
+            this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
           }
         }
       }

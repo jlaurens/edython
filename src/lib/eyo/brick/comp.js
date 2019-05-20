@@ -34,7 +34,7 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          if (!this.owner.expression_b) {
+          if (!this.brick.expression_b) {
             this.save(element, opt)
           }
         }

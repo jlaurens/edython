@@ -86,7 +86,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   this.workspace = workspace
-  workspace.addTopBlock(this)
+  workspace.eyo.addBrick(this)
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
@@ -780,7 +780,7 @@ eYo.Brick.prototype.changeWrap = function () {
  */
 eYo.Data.prototype.change = function (newValue, validate) {
   if (newValue !== this.get()) {
-    this.owner.changeWrap(
+    this.brick.changeWrap(
       this.set,
       this,
       newValue,
@@ -1233,10 +1233,10 @@ eYo.Brick.prototype.makeData = function () {
   this.data_ = data
   // now we can use `forEachData`
   this.forEachData(d => {
-    Object.defineProperty(d.owner, d.key + '_d', { value: d })
+    Object.defineProperty(d.brick, d.key + '_d', { value: d })
     if (d.model.main === true) {
       goog.asserts.assert(!data.main, 'Only one main data please')
-      Object.defineProperty(d.owner, 'main_d', { value: d })
+      Object.defineProperty(d.brick, 'main_d', { value: d })
     }
   })
 }
@@ -3177,7 +3177,6 @@ eYo.Brick.Manager = (() => {
     }
     var defineSlotProperty = k => {
       var key_s = k + '_s'
-      var key_b = k + '_b'
       var key_b = k + '_b'
       // make a closure to catch the value of k
       return function () {

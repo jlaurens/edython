@@ -44,9 +44,9 @@ eYo.Brick.Group.makeSubclass('except_part', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.expression_d.requiredIncog = newValue !== eYo.Key.NONE
-        O.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
+        var b3k = this.brick
+        b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
+        b3k.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
       },
       xml: false
     },
@@ -57,14 +57,14 @@ eYo.Brick.Group.makeSubclass('except_part', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p !== eYo.Key.NONE
+          this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        var O = this.owner
-        if (this.isRequiredFromSaved() && O.variant_p !== eYo.Key.ALIASED) {
-          O.variant_p = eYo.Key.EXPRESSION
+        var b3k = this.brick
+        if (this.isRequiredFromSaved() && b3k.variant_p !== eYo.Key.ALIASED) {
+          b3k.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
@@ -83,13 +83,13 @@ eYo.Brick.Group.makeSubclass('except_part', {
       },
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p === eYo.Key.ALIASED
+          this.required = this.brick.variant_p === eYo.Key.ALIASED
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.ALIASED
+          this.brick.variant_p = eYo.Key.ALIASED
         }
       }
     }
@@ -108,13 +108,13 @@ eYo.Brick.Group.makeSubclass('except_part', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.owner.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.EXPRESSION
+        if (this.brick.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
+          this.brick.variant_p = eYo.Key.EXPRESSION
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        O.variant_p === eYo.Key.ALIASED || (O.variant_p = eYo.Key.EXPRESSION)
+        b3k.variant_p === eYo.Key.ALIASED || (b3k.variant_p = eYo.Key.EXPRESSION)
       }
     },
     alias: {
@@ -128,17 +128,17 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
-        return this.owner.variant_p !== eYo.Key.ALIASED
+        return this.brick.variant_p !== eYo.Key.ALIASED
       },
       check: eYo.T3.Expr.identifier,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.ALIASED
+          this.brick.variant_p = eYo.Key.ALIASED
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        O.variant_p = eYo.Key.ALIASED
+        b3k.variant_p = eYo.Key.ALIASED
       }
     }
   },
@@ -243,9 +243,9 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
       init: eYo.Key.NONE,
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var O = this.owner
-        O.expression_d.requiredIncog = newValue !== eYo.Key.NONE
-        O.from_d.requiredIncog = newValue === eYo.Key.FROM
+        var b3k = this.brick
+        b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
+        b3k.from_d.requiredIncog = newValue === eYo.Key.FROM
       },
       xml: false
     },
@@ -256,13 +256,13 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p !== eYo.Key.NONE
+          this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.EXPRESSION
+          this.brick.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
@@ -273,13 +273,13 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p === eYo.Key.FROM
+          this.required = this.brick.variant_p === eYo.Key.FROM
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.Key.FROM
         }
       }
     }
@@ -303,8 +303,8 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.owner.variant_p === eYo.Key.NONE) {
-          this.owner.variant_p = eYo.Key.EXPRESSION
+        if (this.isRequiredFromSaved() && this.brick.variant_p === eYo.Key.NONE) {
+          this.brick.variant_p = eYo.Key.EXPRESSION
         }
       }
     },
@@ -320,7 +320,7 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.Key.FROM
         }
       }
     }
@@ -376,7 +376,7 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
       init: eYo.Key.UNARY,
       synchronize: /** @suppress {globalThis} */ function (newValue){
         this.synchronize(newValue)
-        this.owner.expression2_d.incog = newValue !== eYo.Key.BINARY
+        this.brick.expression2_d.incog = newValue !== eYo.Key.BINARY
       }
     },
     expression: {
@@ -388,13 +388,13 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
       synchronize: true,
       xml: {
         save: /** @suppress {globalThis} */ function (element, opt) {
-          this.required = this.owner.variant_p === eYo.Key.BINARY
+          this.required = this.brick.variant_p === eYo.Key.BINARY
           this.save(element, opt)
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.BINARY
+          this.brick.variant_p = eYo.Key.BINARY
         }
       }
     }
@@ -423,7 +423,7 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.isRequiredFromSaved()) {
-          this.owner.variant_p = eYo.Key.BINARY
+          this.brick.variant_p = eYo.Key.BINARY
         }
       }
     }

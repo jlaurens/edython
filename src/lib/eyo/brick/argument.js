@@ -222,7 +222,7 @@ eYo.Brick.List.makeSubclass('argument_list', {
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.changeWrap(
+        this.brick.changeWrap(
           function () {
             this.createConsolidator(true)
           }
@@ -236,7 +236,7 @@ eYo.Brick.List.makeSubclass('argument_list', {
       noUndo: true,
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
-        this.owner.changeWrap(
+        this.brick.changeWrap(
           function () {
             this.createConsolidator(true)
           }

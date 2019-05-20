@@ -287,7 +287,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = und
     console.error('CONNECTIONS FORBIDDEN ?', this.getCheck(io)) // DEBUG
   }
   if (name && name.length) {
-    io.input.name = name
+    io.input.name_ = name
   }
   io.input.check = check
   io.m4t.optional_ = optional
@@ -314,11 +314,10 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     }
   } else if (!io.input.fieldRow.length) {
     var f = (sep, suffix) => {
-      var field = new eYo.FieldLabel(sep)
+      var field = new eYo.FieldLabel(io.input, sep)
       io.input.fieldRow.splice(0, 0, field)
-      field.setSourceBlock(io.brick)
-      field.eyo.beReady(io.input.isReady)
-      field.eyo.suffix = suffix
+      field.beReady(io.input.isReady)
+      field.suffix = suffix
     }
     var sep = io.input.lst_presep || this.model.presep
     sep && sep.length && (f(sep))

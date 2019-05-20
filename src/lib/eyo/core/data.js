@@ -43,31 +43,24 @@ goog.require('goog.dom');
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {!eYo.Brick} owner The object owning the data.
+ * @param {!eYo.Brick} brick The object owning the data.
  * @param {!string} key name of the data.
  * @param {!Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.Data = function (owner, key, model) {
-  goog.asserts.assert(owner, 'Missing owner')
+eYo.Data = function (brick, key, model) {
+  goog.asserts.assert(brick, 'Missing brick')
   goog.asserts.assert(key, 'Missing key')
   goog.asserts.assert(model, 'Missing model')
-  Object.defineProperties(this, {
-    reentrant_: { value: {} },
-    key: { value: key},
-    upperKey: { value: key[0].toUpperCase() + key.slice(1) },
-    model: {
-      value: goog.isObject(model) ? model: (model = {init: model}),
-      writable: true
-    },
-    name: {
-      value: 'eyo:' + (model.name || key).toLowerCase()
-    },
-    noUndo: {value: model.noUndo}
-  })
-  this.owner = owner // circular reference
+  this.reentrant_ = {},
+  this.key = key,
+  this.upperKey = key[0].toUpperCase() + key.slice(1),
+  this.model = goog.isObject(model) ? model: (model = {init: model})
+  this.name = 'eyo:' + (model.name || key).toLowerCase()
+  this.noUndo = !!model.noUndo
+  this.brick_ = brick // circular reference
   this.value_ = /** Object|null */ undefined
   this.incog_ = false
   var xml = model.xml
@@ -111,28 +104,29 @@ eYo.Data = function (owner, key, model) {
  * Dispose of the receiver's resources
  */
 eYo.Data.prototype.dispose = function () {
-  this.owner = this.value_ = undefined
+  this.brick_ = this.value_ = undefined
 }
 
+// Public properties
 Object.defineProperties(eYo.Data.prototype, {
   brick: {
     get () {
-      return this.owner
+      return this.brick_
     }
   },
   brickType: {
     get  () {
-      return this.owner.type
+      return this.brick_.type
     }
   },
   data: {
     get  () {
-      return this.owner.data
+      return this.brick_.data
     }
   },
   ui: {
     get () {
-      return this.owner.ui
+      return this.brick_.ui
     }
   },
   ui_driver: {
@@ -162,11 +156,11 @@ Object.defineProperties(eYo.Data.prototype, {
         newValue = validator.call(this, newValue)
       }
       if (this.incog_ !== newValue) {
-        this.owner.changeWrap(
+        this.brick_.changeWrap(
           () => { // catch `this`
             this.incog_ = newValue
             this.slot && (this.slot.incog = newValue)
-            this.field && (this.field.setVisible(!newValue))
+            this.field && (this.field.visible = !newValue)
           }
         )
       }
@@ -178,14 +172,6 @@ Object.defineProperties(eYo.Data.prototype, {
     }
   }
 })
-
-/**
- * Get the owner of the data.
- * Actually, it returns a brick delegate.
- */
-eYo.Data.prototype.getOwner = function () {
-  return this.owner
-}
 
 /**
  * Get the value of the data
@@ -211,7 +197,7 @@ eYo.Data.prototype.get = function () {
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
   var oldValue = this.value_
   if (oldValue !== newValue) {
-    this.owner.changeBegin()
+    this.brick_.changeBegin()
     this.beforeChange(oldValue, newValue)
     try {
       if (newValue === eYo.Key.Comment) {
@@ -224,7 +210,7 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
       throw err
     } finally {
       this.afterChange(oldValue, newValue)
-      this.owner.changeEnd() // may render
+      this.brick_.changeEnd() // may render
     }
   }
 }
@@ -793,7 +779,7 @@ Object.defineProperty(eYo.Data, 'incog', {
  * Reentrant management here of the model action.
  */
 eYo.Data.prototype.consolidate = function () {
-  if (this.owner.change.level) {
+  if (this.brick_.change.level) {
     return
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
