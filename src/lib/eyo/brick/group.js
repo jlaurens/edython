@@ -257,7 +257,7 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
   eYo.Brick.Group.superClass_.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
-    field.setVisible(this.async_)
+    field.visible = this.async_
   }
 }
 
