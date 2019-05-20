@@ -132,7 +132,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   if ((field = brick.fieldAtStart)) {
     do {
       this.exportField_(field, opt)
-    } while ((field = field.eyo.nextField))
+    } while ((field = field.nextField))
   }
   if ((slot = brick.slotAtHead)) {
     do {
@@ -148,7 +148,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   if ((field = brick.toEndField)) {
     do {
       this.exportField_(field, opt)
-    } while ((field = field.eyo.nextField))
+    } while ((field = field.nextField))
   }
   if (brick.orphan_comma_p) {
     this.linePush(',')
@@ -193,7 +193,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
       } else {
         this.newline_()
         this.linePush('<MISSING STATEMENT>')
-        this.missing_statements.push(m4t.connection)
+        this.missing_statements.push(m4t)
       }
     }
     if (brick.isControl) {
@@ -338,7 +338,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
         this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE
-        this.missing_expressions.push(m4t.connection)
+        this.missing_expressions.push(m4t)
       } else {
         input.fieldRow.forEach(f => this.exportField_(f))
       }
@@ -358,19 +358,26 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   var bindField
   if ((bindField = slot.bindField)) {
     var m4t = slot.magnet
-    bindField.setVisible(!m4t || !m4t.unwrappedTarget)
+    bindField.visible = !m4t || !m4t.unwrappedTarget
   }
   var field
   if ((field = slot.fieldAtStart)) {
     do {
       this.exportField_(field)
-    } while ((field = field.eyo.nextField))
+    } while ((field = field.nextField))
   }
-  this.exportInput_(slot.input)
+  this.exportMagnet_(slot.magnet)
+  var m4t = slot.magnet
+  if (m4t) {
+    var t9k = m4t.targetBrick
+    if (t9k) {
+      this.exportAsExpression_(t9k)
+    }
+  }
   if ((field = slot.toEndField)) {
     do {
       this.exportField_(field)
-    } while ((field = field.eyo.nextField))
+    } while ((field = field.nextField))
   }
 }
 
