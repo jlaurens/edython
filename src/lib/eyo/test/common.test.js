@@ -163,46 +163,6 @@ eYo.Test.code = (d, str) => {
   }
 }
 
-eYo.Brick.prototype.test_display_line_counts = function () {
-  console.log({
-    head: this.headHeight,
-    foot: this.footHeight,
-    main: this.mainHeight,
-    suite: this.suiteHeight,
-    black: this.blackHeight,
-    next: this.belowHeight
-  })
-}
-/**
- * Test the various brick line counts.
- * Expected is a map, keys are strings for the type of the line count.
- * Values are integers.
- * Possible types are: 'head', 'foot', 'main', suite', 'black', 'next'
- * @param {!eYo.Brick}  brick to be tested.
- * @param {?Object} cfg  cfg is a map file.
- */
-eYo.Test.line_counts = (brick, cfg) => {
-  var failed
-  var expected, available
-  var d = brick
-  ;['head', 'foot', 'main', 'suite', 'black', 'next'].some(k => {
-    expected = (cfg && cfg[k]) || (k === 'main' ? 1 : 0)
-    available = {
-      head: d.headHeight,
-      foot: d.footHeight,
-      main: d.mainHeight,
-      suite: d.suiteHeight,
-      black: d.blackHeight,
-      next: d.belowHeight
-    }[k]
-    if (expected !== available) {
-      failed = k
-      return true
-    }
-  })
-  chai.assert(!failed, `Bad ${failed} line count: ${expected} === ${available}`)
-}
-
 /**
  * Test if the connections are the expected ones.
  * Expected is a map, keys are strings for the type of the connections,
@@ -488,7 +448,7 @@ eYo.Test.source = (str) => {
     c: 2,
     header: 0,
     main: 1,
-    black: 0,
+    hole: 0,
     footer: 0,
     suite: 0,
     foot: 0,
@@ -505,13 +465,13 @@ eYo.Test.span = (b, span) => {
     'suite',
     'foot',
   ].forEach(k => { span[k] || (span[k] = 0) })
-  span.c_min || (span.c_min = 2)
+  span.c_min || (span.c_min = b.wrapped? 0 : b.isGroup ? 2 * eYo.Span.INDENT : eYo.Span.isStmt ? eYo.Span.INDENT : 2)
   span.c || (span.c = span.c_min + span.c_padding)
   span.main || (span.main = 1)
-  span.black || (span.black = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
+  span.hole || (span.hole = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
   span.l || (span.l = 
     b.isGroup
-    ? span.main + span.black + span.suite
+    ? span.main + span.hole + span.suite
     : b.isStmt
       ? span.header + span.main + span.footer
       : span.main
