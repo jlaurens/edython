@@ -1589,7 +1589,7 @@ Object.defineProperties(eYo.Brick.prototype, {
       if (!this.wrapped_) {
         ans.push(this)
       }
-      this.forEachChild(d => ans.push.apply(ans, d.eyo.wrappedDescendants))
+      this.forEachChild(b => ans.push.apply(ans, b.wrappedDescendants))
       return ans    
     }
   }
@@ -1872,7 +1872,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
                 }
                 break
               }
-            } while ((next = next.eyo.getMagnetAbove()))
+            } while ((next = next.getMagnetAbove()))
           }
         }
       }
@@ -1934,7 +1934,7 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
  */
 eYo.Brick.prototype.inputEnumerator = function (all) {
   return eYo.Do.Enumerator(this.inputList, all || (x =>
-    !x.eyo.magnet || !x.eyo.magnet.slot || !x.eyo.magnet.slot.incog)
+    !x.magnet || !x.magnet.slot || !x.magnet.slot.incog)
   )
 }
 
@@ -2045,13 +2045,13 @@ eYo.Brick.prototype.footConnect = function (brick) {
 
 /**
  * Connect the magnet of the `lastInput`, to the given expression brick/magnet/type.
- * @param {!eYo.Brick|eYo.Magnet|String} bdct  brick, delegate, connection or type
+ * @param {!eYo.Brick|eYo.Magnet|String} bdct  brick, magnet or type
  * @return {?eYo.Brick}  The connected brick, if any.
  */
-eYo.Brick.prototype.connectLast = function (dmt) {
-  var other = (dmt.magnets && dmt.out_m) || (dmt.connection && dmt) || eYo.Brick.newComplete(this, dmt).out_m
-  if (other.connection) {
-    var m4t = this.lastInput.eyo.magnet
+eYo.Brick.prototype.connectLast = function (bmt) {
+  var other = (bmt.magnets && bmt.out_m) || (bmt instanceof eYo.Magnet && bmt) || eYo.Brick.newComplete(this, bmt).out_m
+  if (other) {
+    var m4t = this.lastInput.magnet
     if (m4t.checkType_(other)) {
       m4t.connect(other)
       return m4t.target === other ? m4t.targetBrick : undefined
@@ -2081,9 +2081,9 @@ eYo.Brick.prototype.scrollToVisible = function (force) {
 eYo.Brick.prototype.getMagnets_ = function(all) {
   var ans = [];
   if (all || this.ui.rendered) {
-    Object.values(this.magnets).forEach(m4t => ans.push(m4t.connection))
+    Object.values(this.magnets).forEach(m4t => ans.push(m4t))
     if (all || !this.collapsed_) {
-      this.inputList.forEach(input => ans.push(input.magnet.connection))
+      this.inputList.forEach(input => ans.push(input.magnet))
     }
   }
   return ans
@@ -2177,7 +2177,7 @@ Object.defineProperties(eYo.Brick.prototype, {
         return
       }
       // Show/hide the next statement inputs.
-      this.forEachInput(input => input.setVisible(!collapsed))
+      this.forEachInput(input => input.visible = !collapsed)
       eYo.Events.fireBrickChange(
           this, 'collapsed', null, this.collapsed_, newValue)
       this.collapsed_ = newValue;
@@ -2234,13 +2234,13 @@ eYo.Brick.prototype.getField = function (name) {
 eYo.Brick.prototype.getMenuTarget = function () {
   var wrapped
   if (this.wrap && (wrapped = this.wrap.input.target)) {
-    return wrapped.eyo.getMenuTarget()
+    return wrapped.getMenuTarget()
   }
   if (this.wrappedMagnets_ && this.wrappedMagnets_.length === 1 &&
     (wrapped = this.wrappedMagnets_[0].targetBrick)) {
     // if there are more than one wrapped brick,
     // then we choose none of them
-    return wrapped.eyo.getMenuTarget()
+    return wrapped.getMenuTarget()
   }
   return this
 }
@@ -2262,125 +2262,85 @@ eYo.Brick.prototype.getInput = function (name) {
  * Deep first traversal.
  * Starts with the given brick.
  * The returned object has next and depth messages.
- * @param {!Blockly.Block} brick The root of the enumeration.
- * @constructor
  */
 eYo.Brick.prototype.statementEnumerator = function () {
-  var b3k
-  var b4s = [this]
-  var e8r
-  var e8rs = [this.inputEnumerator()]
-  var next
-  var me = {}
-  me.next = () => {
-    me.next = me.next_
-    return this
-  }
-  me.depth = () => {
-    return b4s.length
+  var me = {
+    current_: undefined,
+    depth: 0,
+    parents: []
   }
   me.next_ = () => {
-    while ((b3k = b4s.shift())) {
-      e8r = e8rs.shift()
-      while (e8r.next()) {
-        if (e8r.here.type === Blockly.NEXT_STATEMENT) {
-          if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
-            next = next.eyo
-            b4s.unshift(b3k)
-            e8rs.unshift(e8r)
-            b4s.unshift(next)
-            e8rs.unshift(next.inputEnumerator())
-            return next
-          }
-        }
-      }
-      if ((b3k = b3k.foot)) {
-        b4s.unshift(b3k)
-        e8rs.unshift(b3k.inputEnumerator())
-        return b3k
-      }
+    me.next_ = me.next__
+    return me.current_ = this
+  }
+  me.next__ = () => {
+    var ans
+    if((ans = me.current.right)) {
+      return (me.current = ans)
+    }
+    if ((ans = me.current.suite)) {
+      parents.push(me.current)
+      return (me.current = ans)
+    }
+    if ((ans = me.current.foot)) {
+      return (me.current = ans)
+    }
+    var b3k
+    while ((b3k = parents.pop())) {
+      if ((ans = b3k.foot)) {
+        return (me.current = ans)
+      }  
     }
   }
+  Object.defineProperties(me, {
+    depth: {
+      get () {
+        return this.parents.length
+      }
+    },
+    next: {
+      get () {
+        return this.next_()
+      }
+    },
+    current: {
+      get () {
+        return this.current_
+      }
+    }
+  })
   return me
 }
 
 /**
  * Execute the helper for all the statements.
  * Deep first traversal.
- * @param {!Function} helper
+ * @param {!Function} helper  helper has signature `(brick, depth) -> undefined`
  * @return the truthy value from the helper.
  */
 eYo.Brick.prototype.forEachStatement = function (helper) {
   var e8r = this.statementEnumerator()
   var b3k
-  while ((b3k = e8r.next())) {
-    helper(b3k, e8r.depth())
+  while ((b3k = e8r.next)) {
+    helper(b3k, e8r.depth
   }
 }
 
 /**
  * Execute the helper until one answer is a truthy value.
  * Deep first traversal.
- * @param {!Function} helper
- * @return the truthy value from the helper.
+ * @param {!Function} helper  helper has signature `(block, depth) -> truthy`
+ * @return the truthy value from the helper if it is not `true`, the brick chosen otherwise.
  */
 eYo.Brick.prototype.someStatement = function (helper) {
   var e8r = this.statementEnumerator()
   var b3k
   var ans
-  while ((b3k = e8r.next())) {
-    if ((ans = helper(b3k, e8r.depth()))) {
+  while ((b3k = e8r.next)) {
+    if ((ans = helper(b3k, e8r.depth))) {
       return ans === true ? b3k : ans
     }
   }
-}
-
-/**
- * Class for a statement brick enumerator.
- * Deep first traversal.
- * Starts with the given brick.
- * The returned object has next and depth messages.
- * @param {!Blockly.Block} brick The root of the enumeration.
- * @constructor
- */
-eYo.StatementBlockEnumerator = function (brick) {
-  var b3k
-  var b4s = [brick]
-  var e8r
-  var e8rs = [brick.eyo.inputEnumerator()]
-  var next
-  var me = {}
-  me.next = function () {
-    me.next = me.next_
-    return brick
-  }
-  me.depth = function () {
-    return b4s.length
-  }
-  me.next_ = function () {
-    while ((b3k = b4s.shift())) {
-      e8r = e8rs.shift()
-      while (e8r.next()) {
-        var m4t = e8r.here.eyo.magnet
-        if (m4t.isFoot || m4t.isSuite) {
-          if (e8r.here.connection && (next = e8r.here.magnet.targetBrick)) {
-            b4s.unshift(b3k)
-            e8rs.unshift(e8r)
-            b4s.unshift(next)
-            e8rs.unshift(next.eyo.inputEnumerator())
-            return next
-          }
-        }
-      }
-      if ((b3k = b3k.getNextBlock())) {
-        b4s.unshift(b3k)
-        e8rs.unshift(b3k.eyo.inputEnumerator())
-        return b3k
-      }
-    }
-    return undefined
-  }
-  return me
 }
 
 /** TO BE DEPRECATED */
@@ -2614,7 +2574,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
               prepare && (prepare())
               otherM4t.connect(m4t)
             }, () => {
-              eYo.Selected.eyo = candidate
+              eYo.Selected.brick = candidate
               candidate.render()
               candidate.bumpNeighbours_()
             })
@@ -2765,7 +2725,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
           } else {
             return fin(() => {
               var its_xy = this.ui.xyInSurface
-              var my_xy = candidate.eyo.ui.xyInSurface
+              var my_xy = candidate.ui.xyInSurface
               candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
             })
           }
