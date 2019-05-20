@@ -25,12 +25,12 @@ describe('SVG groups and paths', function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('True')
     var field = d1.value_f
-    var svg = field.eyo.svg
+    var svg = field.svg
     var type = d1.type
     chai.assert(svg, `MISSING svg in value field of ${type}`)
-    var ui = field.eyo.ui
-    chai.assert(ui === d1.ui, `MISSING field.eyo.ui === d1.ui for value field of ${type}`)
-    var ui_driver = field.eyo.ui_driver
+    var ui = field.ui
+    chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
+    var ui_driver = field.ui_driver
     chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
     chai.assert(svg.group_ === svg.textElement_, `FAILED svg.group_ === svg.textElement_ in value field of ${type}`)
     d1.dispose()
@@ -41,12 +41,12 @@ describe('SVG groups and paths', function () {
   //   eYo.Test.setItUp()
   //   var d1 = eYo.Test.new_brick('builtin__object')
   //   var field = d1.value_f
-  //   var svg = field.eyo.svg
+  //   var svg = field.svg
   //   var type = d1.type
   //   chai.assert(svg, `MISSING svg in value field of ${type}`)
-  //   var ui = field.eyo.ui
-  //   chai.assert(ui === d1.ui, `MISSING field.eyo.ui === d1.ui for value field of ${type}`)
-  //   var ui_driver = field.eyo.ui_driver
+  //   var ui = field.ui
+  //   chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
+  //   var ui_driver = field.ui_driver
   //   chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
   //   eYo.Test.svgNodeParent(svg, 'textElement_', 'group_', type)
   //   eYo.Test.tearItDown()
