@@ -448,15 +448,14 @@ Blockly.onKeyDown_ = function(e) {
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {!boolean} shallow
  */
-eYo.deleteBrick = function (block, deep) {
-  if (block && block.isDeletable() && !block.workspace.isFlyout) {
-    var eyo = block.eyo
-    if (eyo.isSelected) {
+eYo.deleteBrick = function (brick, deep) {
+  if (brick && brick.isDeletable() && !brick.workspace.isFlyout) {
+    if (brick.isSelected) {
       // prepare a connection or a block to be selected
       var m4t
-      if ((m4t = eyo.out_m)) {
+      if ((m4t = brick.out_m)) {
         m4t = m4t.target
-      } else if ((m4t = eyo.foot_m)) {
+      } else if ((m4t = brick.foot_m)) {
         var t9k = m4t.targetBrick
       }
     }
@@ -464,11 +463,11 @@ eYo.deleteBrick = function (block, deep) {
       Blockly.hideChaff()
       if (deep) {
         do {
-          var low = eyo.foot
-          eyo.dispose(false, true)
-        } while ((eyo = low))
+          var low = brick.foot
+          brick.dispose(false, true)
+        } while ((brick = low))
       } else {
-        eyo.dispose(true, true)
+        brick.dispose(true, true)
       }
     })
     if (m4t && m4t.brick.workspace) {
@@ -480,20 +479,20 @@ eYo.deleteBrick = function (block, deep) {
 }
 
 /**
- * Copy a block onto the local clipboard.
- * @param {!Blockly.Block} block Block to be copied.
+ * Copy a brick onto the local clipboard.
+ * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
-eYo.copyBrick = function(block, deep) {
-  var xml = eYo.Xml.brickToDom(block.eyo, {noId: true, noNext: !deep});
+eYo.copyBrick = function(brick, deep) {
+  var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep});
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
-  var xy = block.eyo.ui.xyInSurface;
-  xml.setAttribute('x', block.RTL ? -xy.x : xy.x);
+  var xy = brick.ui.xyInSurface;
+  xml.setAttribute('x', brick.RTL ? -xy.x : xy.x);
   xml.setAttribute('y', xy.y);
   Blockly.clipboardXml_ = xml;
-  Blockly.clipboardSource_ = block.workspace;
-  eYo.App.didCopyBlock && (eYo.App.didCopyBlock(block, xml))
+  Blockly.clipboardSource_ = brick.workspace;
+  eYo.App.didCopyBlock && (eYo.App.didCopyBlock(brick, xml))
 };
 
 /**
