@@ -592,7 +592,7 @@ goog.provide('eYo.Brick.AugAssign')
 //       )
 //       var menuItem = mgr.newMenuItem(content, function () {
 //         console.log('Change', withBitwise ? 'bitwise' : 'number', 'operator to', op)
-//         withBitwise ? brick.eyo.bitwiseOperator_d.set(op) : brick.eyo.numberOperator_d.set(op)
+//         withBitwise ? brick.bitwiseOperator_d.set(op) : brick.numberOperator_d.set(op)
 //       })
 //       mgr.addChild(menuItem, true)
 //     }
