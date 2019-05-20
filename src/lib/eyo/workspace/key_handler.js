@@ -179,9 +179,9 @@ eYo.KeyHandler = (() => {
               }
             })
           }
-          if (doFirst(newB.eyo, eYo.Magnet.IN)) {
+          if (doFirst(newB, eYo.Magnet.IN)) {
             return true
-          } else if ((m4t === eyo.foot_m) && (m4t = newB.eyo.foot_m) && !m4t.hidden_) {
+          } else if ((m4t === eyo.foot_m) && (m4t = newB.foot_m) && !m4t.hidden_) {
             m4t.select()
             return true
           }
@@ -412,13 +412,13 @@ eYo.KeyHandler = (() => {
       // let someone else catch that event
       return
     }
-    var brick = event.target.eyo
-    if (brick !== target_.eyo) {
+    var brick = event.target
+    if (brick !== target_) {
       if (!(brick = brick.parent)) {
         return
       }
-      if (brick !== target_.eyo) {
-        if (!(brick = brick.parent) || (brick !== target_.eyo)) {
+      if (brick !== target_) {
+        if (!(brick = brick.parent) || (brick !== target_)) {
           return
         }
       }
