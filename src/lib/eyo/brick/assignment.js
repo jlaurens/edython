@@ -122,7 +122,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.EXPRESSION) {
@@ -143,7 +143,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       didLoad: /** @suppress {globalThis} */ function () {
         var b3k = this.brick
         var v = b3k.variant_p
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           if (v === eYo.Key.VALUED || v === eYo.Key.TARGET_VALUED) {
             b3k.variant_p = eYo.Key.ANNOTATED_VALUED
             b3k.operator_p = '='
@@ -219,7 +219,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.ANNOTATED) {
@@ -248,7 +248,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       },
       wrap: eYo.T3.Expr.target_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.EXPRESSION) {
@@ -282,7 +282,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
         attr: ':'
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.TARGET || v === eYo.Key.EXPRESSION) {
@@ -307,7 +307,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       },
       wrap: eYo.T3.Expr.value_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.ANNOTATED) {

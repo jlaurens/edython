@@ -264,58 +264,59 @@ eYo.Slot.prototype.beReady = function () {
   this.magnet && (this.magnet.beReady())
 }
 
+Object.defineProperties(eYo.Slot.prototype, {
 /**
  * @property {boolean} isRequiredToModel  Get the required status.
  */
-Object.defineProperty(eYo.Slot, 'isRequiredToModel', {
-  get () {
-    if (this.incog) {
+isRequiredToModel: {
+    get () {
+      if (this.incog) {
+        return false
+      }
+      if (!this.magnet) {
+        return false
+      }
+      if (!this.magnet.wrapped_ && this.targetBrick) {
+        return true
+      }
+      if (this.required) {
+        return true
+      }
+      if (this.data && this.data.required) {
+        return false
+      }
+      if (this.model.xml && this.model.xml.required) {
+        return true
+      }
       return false
     }
-    if (!this.magnet) {
-      return false
+  },
+  /**
+   * Get the concrete required status.
+   * For edython.
+   * @param {boolean} newValue
+   */
+  requiredFromSaved: {
+    get () {
+      var t9k = this.targetBrick
+      if (t9k) {
+        if (t9k.wrapped_) {
+          // return true if one of the inputs is connected
+          return t9k.inputList.some(input => !!input.target)
+        }
+        return true
+      }
+      return this.requiredFromModel
     }
-    if (!this.magnet.wrapped_ && this.targetBrick) {
-      return true
-    }
-    if (this.required) {
-      return true
-    }
-    if (this.data && this.data.required) {
-      return false
-    }
-    if (this.model.xml && this.model.xml.required) {
-      return true
-    }
-    return false
-  }
+  },
+  /**
+   * Get the concrete required status.
+   * For edython.
+   * @param {boolean} newValue
+   */
+  requiredFromModel: { writable: true }
 })
 
-/**
- * Get the concrete required status.
- * For edython.
- * @param {boolean} newValue
- */
-eYo.Slot.prototype.isRequiredFromSaved = function () {
-  var t9k = this.targetBrick
-  if (t9k) {
-    if (t9k.wrapped_) {
-      // return true if one of the inputs is connected
-      return t9k.inputList.some(input => !!input.target)
-    }
-    return true
-  }
-  return this.isRequiredFromModel()
-}
-
-/**
- * Set the required status.
- * For edython.
- * @param {boolean} newValue
- */
-eYo.Slot.prototype.setRequiredFromModel = function (newValue) {
-  this.is_required_from_model = newValue
-}
 
 /**
  * Clean the required status, changing the value if necessary.
@@ -323,8 +324,8 @@ eYo.Slot.prototype.setRequiredFromModel = function (newValue) {
  * @param {boolean} newValue
  */
 eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
-  if (this.isRequiredFromModel()) {
-    this.setRequiredFromModel(false)
+  if (this.isRequiredFromModel) {
+    this.isRequiredFromModel = false
     if (goog.isFunction(helper)) {
       helper.call(this)
     }
@@ -348,7 +349,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog
-    m4t.wrapped_ && (m4t.setHidden(true)) // Don't ever connect any brick to this
+    m4t.wrapped_ && (m4t.hidden = true) // Don't ever connect any brick to this
     var v
     if ((v = this.model.check)) {
       m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.variant_p)
@@ -473,11 +474,11 @@ eYo.Slot.prototype.load = function (element) {
       return
     }
   }
-  this.setRequiredFromModel(false)
+  this.requiredFromModel = false
   var out
   var t9k = this.targetBrick
   if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Brick.List)) {
-    this.setRequiredFromModel(true) // this is not sure, it depends on how the target read the dom
+    this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(t9k, element)
     this.recover.dontResit(element)
   } else {
@@ -487,7 +488,7 @@ eYo.Slot.prototype.load = function (element) {
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
-          this.setRequiredFromModel(true)
+          this.requiredFromModel = true
           out = true
         } else {
           if (!t9k && this.model.promise) {
@@ -510,7 +511,7 @@ eYo.Slot.prototype.load = function (element) {
                       var t_m4t = grand_t_brick.out_m
                       if (t_m4t && t_m4t.checkType_(input.magnet, true)) {
                         t_m4t.connect(input.magnet)
-                        this.setRequiredFromModel(true)
+                        this.requiredFromModel = true
                       }
                       this.recover.dontResit(grandChild)
                     }
@@ -532,7 +533,7 @@ eYo.Slot.prototype.load = function (element) {
             var m4t = this.magnet
             if (m4t && m5s.out && m4t.checkType_(m5s.out, true)) {
               m4t.connect(m5s.out)
-              this.setRequiredFromModel(true)
+              this.requiredFromModel = true
             } else if (m5s.head && m4t.checkType_(m5s.head, true)) {
               m4t.connect(m5s.head)
             }

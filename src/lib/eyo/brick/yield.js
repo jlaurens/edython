@@ -85,7 +85,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
       }
@@ -105,7 +105,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       },
       wrap: eYo.T3.Expr.non_void_expression_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
       },
@@ -133,7 +133,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
       },

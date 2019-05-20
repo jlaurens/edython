@@ -1047,7 +1047,7 @@ eYo.Data.prototype.whenRequiredFromModel = function (helper) {
  * @param {function()} helper
  */
 eYo.Data.prototype.whenRequiredFromSaved = function (helper) {
-  if (this.isRequiredFromSaved()) {
+  if (this.requiredFromSaved) {
     this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {
       helper.call(this)

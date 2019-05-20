@@ -392,7 +392,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STRIDE
         }
       }
@@ -434,7 +434,7 @@ eYo.Brick.Expr.makeSubclass('proper_slice', {
       check: eYo.T3.Expr.Check.expression,
       optional: true,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STRIDE
         }
       }

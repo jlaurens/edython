@@ -552,7 +552,7 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
       },
       wrap: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.N_ARY
         }
       }

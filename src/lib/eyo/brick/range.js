@@ -55,7 +55,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
-        if (this.isRequiredFromSaved() && newValue !== eYo.Key.STEP) {
+        if (this.requiredFromSaved && newValue !== eYo.Key.STEP) {
           this.brick.variant_p = eYo.Key.START
         }
       }
@@ -78,7 +78,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.didLoad()
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STEP
         }
       }

@@ -206,7 +206,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
         ]
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           if (b3k.variant_p === eYo.Key.IMPORT) {
             // STAR of not ?
@@ -236,7 +236,7 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
       },
       promise: eYo.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },

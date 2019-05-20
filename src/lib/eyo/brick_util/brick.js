@@ -2322,7 +2322,7 @@ eYo.Brick.prototype.forEachStatement = function (helper) {
   var e8r = this.statementEnumerator()
   var b3k
   while ((b3k = e8r.next)) {
-    helper(b3k, e8r.depth
+    helper(b3k, e8r.depth)
   }
 }
 
@@ -2808,7 +2808,7 @@ eYo.Brick.prototype.lock = function () {
         ans += t9k.lock()
       }
       if (m4t.isInput) {
-        m4t.setHidden(true)
+        m4t.hidden = true
       }
     }
   })
@@ -2819,7 +2819,7 @@ eYo.Brick.prototype.lock = function () {
         ans += t9k.lock()
       }
       if (m4t.isInput) {
-        m4t.setHidden(true)
+        m4t.hidden = true
       }
     }
   })
@@ -2863,7 +2863,7 @@ eYo.Brick.prototype.unlock = function (shallow) {
       if ((!shallow || m4t.isInput) && (t9k = m4t.targetBrick)) {
         ans += t9k.unlock(shallow)
       }
-      m4t.setHidden(false)
+      m4t.hidden = false
     }
   })
   if (!shallow && (m4t = this.right_m)) {

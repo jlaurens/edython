@@ -624,7 +624,7 @@ Object.defineProperties(eYo.FieldInput.prototype, {
       this.text__ = newValue
     }
   },
-  placeholderText_: { value: undefined },
+  placeholderText_: { value: undefined, writable: true },
 })
 
 Object.defineProperties(eYo.FieldInput.prototype, {

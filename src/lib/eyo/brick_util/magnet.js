@@ -155,7 +155,7 @@ eYo.Magnet = function (bsi, type, model) {
   this.type_ = type
   this.model_ = model
   this.optional_ = this.model_.optional
-  this.incog_ = this.hidden__ = model.hidden
+  this.incog_ = this.hidden_ = model.hidden
   eYo.Field.makeFields(this, model.fields)
   this.where_ = new eYo.Where()
   this.reentrant_ = {}
@@ -165,7 +165,7 @@ eYo.Magnet = function (bsi, type, model) {
     if (DB) {
       this.db_ = DB[this.type]
       this.dbOpposite_ = DB[this.opposite_type]
-      this.hidden_ = false
+      this.hidden = false
     }
   }
 }
@@ -263,7 +263,7 @@ eYo.Magnet.prototype.dispose = function () {
 Object.defineProperties(eYo.Magnet.prototype, {
   model_: { value: undefined, writable: true },
   type_: { value: undefined, writable: true },
-  hidden__: { value: undefined, writable: true },
+  hidden_: { value: undefined, writable: true },
   wrapped_: { value: undefined, writable: true },
   promised_: { value: undefined, writable: true },
   check_: {value: undefined, writable: true },
@@ -294,7 +294,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       this.wrapped_ = newValue
       this.promised_ = null
       newValue && (this.brick.addWrapperMagnet(this))
-      this.hidden_ = true
+      this.hidden = true
     }
   },
   promised: {
@@ -308,7 +308,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       this.promised_ = newValue
       this.wrapped_ && (this.brick.removeWrappedMagnet(this))
       this.wrapped_ = null
-      this.hidden_ = true
+      this.hidden = true
     }
   },
   model: {
@@ -367,16 +367,16 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return this.beReady === eYo.Do.nothing
     }
   },
-  hidden_: {
+  hidden: {
     get () {
-      return this.hidden__
+      return this.hidden_
     },
     set(hidden) {
       if (!hidden && this.incog_) {
         // Incog magnets must stay hidden
         return
       }
-      this.hidden__ = hidden
+      this.hidden_ = hidden
       this.inDB_ = !hidden
     }
   },
@@ -696,7 +696,7 @@ eYo.Magnet.prototype.forEachField = function (helper) {
  */
 eYo.Magnet.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  this.inDB_ = !this.hidden_ 
+  this.inDB_ = !this.hidden_
   if (this.isSuperior) {
     var t9k = this.targetBrick
     t9k && (t9k.beReady())
@@ -741,7 +741,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'incog', {
     }
     if (newValue || !this.wrapped_) {
       // We cannot disable wrapped connections
-      this.incog_ = this.hidden_ = newValue
+      this.incog_ = this.hidden = newValue
     }
     var t9k = this.targetBrick
     if (t9k) {
@@ -1467,11 +1467,11 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
  * Also hides down-stream comments.
  */
 eYo.Magnet.prototype.hideAll = function() {
-  this.hidden_ = true
+  this.hidden = true
   var t9k = this.targetBrick
   if (t9k) {
     t9k.descendants.forEach(brick => {
-      brick.getMagnets_(true).forEach(m4t => m4t.hidden_ = true)
+      brick.getMagnets_(true).forEach(m4t => m4t.hideAll())
     })
   }
 }
@@ -1493,7 +1493,7 @@ eYo.Magnet.prototype.neighbours_ = function(maxLimit) {
  * attached to it.  This happens when a brick is expanded.
  */
 eYo.Magnet.prototype.unhideAll = function() {
-  this.hidden_ = false
+  this.hidden = false
   if (this.isSuperior) {
     var t9k = this.targetBrick
     t9k && (t9k.collapsed
@@ -1546,7 +1546,7 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
     this.where.x = x
     this.where.y = y
     // Insert it into its new location in the database.
-    this.hidden_ || (this.inDB_ = true)
+    this.hidden || (this.inDB_ = true)
   }
 }
 
@@ -1790,7 +1790,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
   get () {
     var slot = this.slot
     if (slot) {
-      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.magnet.hidden_))) {
+      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
         return slot.magnet
       }
       var brick = this.brick

@@ -63,7 +63,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
       },
       didLoad: /** @suppress {globalThis} */ function () {
         var b3k = this.brick
-        if (this.isRequiredFromSaved() && b3k.variant_p !== eYo.Key.ALIASED) {
+        if (this.requiredFromSaved && b3k.variant_p !== eYo.Key.ALIASED) {
           b3k.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -88,7 +88,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       }
@@ -108,7 +108,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.brick.variant_p === eYo.Key.NONE && this.isRequiredFromSaved()) {
+        if (this.brick.variant_p === eYo.Key.NONE && this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
       },
@@ -132,7 +132,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
       },
       check: eYo.T3.Expr.identifier,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       },
@@ -261,7 +261,7 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -278,7 +278,7 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
       }
@@ -303,7 +303,7 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved() && this.brick.variant_p === eYo.Key.NONE) {
+        if (this.requiredFromSaved && this.brick.variant_p === eYo.Key.NONE) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
       }
@@ -319,7 +319,7 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
       }
@@ -393,7 +393,7 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
         }
       }
@@ -422,7 +422,7 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
       },
       check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
         }
       }

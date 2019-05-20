@@ -679,7 +679,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       },
@@ -705,7 +705,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       didLoad: /** @suppress {globalThis} */ function (element) {
         var b3k = this.brick
         var v = b3k.variant_p
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           if (v === eYo.Key.TARGET_VALUED) {
             b3k.variant_p = eYo.Key.ANNOTATED_VALUED
           } else if (v !== eYo.Key.ANNOTATED_VALUED) {
@@ -757,7 +757,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
          }
       },
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
           if (v === eYo.Key.ANNOTATED) {
@@ -1038,11 +1038,10 @@ eYo.Brick.Expr.makeSubclass('primary', {
           variable: true,
           willRender: /** @suppress {globalThis} */ function () {
             this.willRender()
-            var O = this.data.owner
-            var item = b3k.item_p
+            var item = this.brick.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
             var d = this.ui_driver
-            d && (d.fieldMakeReserved(this.field_, reserved))
+            d && (d.fieldMakeReserved(this, reserved))
           }
         }
       },
@@ -1105,7 +1104,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       didLoad: /** @suppress {globalThis} */ function () {
         var b3k = this.brick
         var v = b3k.variant_p
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           if (v === eYo.Key.TARGET_VALUED) {
             b3k.variant_p = eYo.Key.ANNOTATED_VALUED
           } else if (v !== eYo.Key.ANNOTATED_VALUED) {
@@ -1126,7 +1125,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       promise: eYo.T3.Expr.value_list,
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           if (this.brick.variant_p === eYo.Key.ANNOTATED) {
             this.brick.variant_p = eYo.Key.ANNOTATED_VALUED
           } else if (this.brick.variant_p !== eYo.Key.ANNOTATED_VALUED && this.brick.variant_p !== eYo.Key.TARGET_VALUED && this.brick.variant_p !== eYo.Key.COL_VALUED) {
@@ -1177,7 +1176,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       check: [eYo.T3.Expr.identifier, eYo.T3.Expr.unset],
       didLoad: /** @suppress {globalThis} */ function () {
-        if (this.isRequiredFromSaved()) {
+        if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       },
@@ -1434,7 +1433,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
  */
 eYo.Brick.Expr.primary.prototype.consolidateMagnets = function () {
   eYo.Brick.Expr.primary.superClass_.consolidateMagnets.call(this)
-  this.target_s.magnet.setHidden(this.variant_p === eYo.Key.NONE && this.dotted_p === 0)
+  this.target_s.magnet.hidden = this.variant_p === eYo.Key.NONE && this.dotted_p === 0
 }
 
 /**
