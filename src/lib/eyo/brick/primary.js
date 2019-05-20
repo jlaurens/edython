@@ -345,7 +345,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
         }
         return
       }
-      (x = x.target_s) && (x.bindField.setVisible(true))
+      (x = x.target_s) && (x.bindField.visible = true)
     }
   }
   eYo.Brick.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
@@ -364,7 +364,7 @@ eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, 
   if (m4t.isInput) {
     var parent = this.parent
     if (parent) {
-      parent.target_s.bindField.setVisible(false)
+      parent.target_s.bindField.visible = false
       if (this.inputList.length > 1) {
         // this is the second brick we connect
         parent.variant_p = eYo.Key.TARGET_VALUED
@@ -581,7 +581,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         var b3k = this.brick
         b3k.holder_d.requiredIncog = newValue === 1
         b3k.updateProfile()
-        b3k.target_s.bindField.eyo.optional_ = newValue > 0
+        b3k.target_s.bindField.optional_ = newValue > 0
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         var p = this.brick.profile_p
@@ -841,11 +841,11 @@ eYo.Brick.Expr.makeSubclass('primary', {
 
         var b = b3k.target_b // t9k may not yet exist
         if (b) {
-          b.eyo.createConsolidator(true) // unique is special
+          b.createConsolidator(true) // unique is special
         }
         b3k.n_ary_s.incog = newValue !== eYo.Key.CALL_EXPR
         if (!b3k.n_ary_s.incog && (b = b3k.n_ary_b)) {
-          b.eyo.createConsolidator(true)
+          b.createConsolidator(true)
         }
         b3k.slicing_s.incog = newValue !== eYo.Key.SLICING
       },
@@ -1054,7 +1054,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         if (this.isInput) {
           var parent = this.brick.parent
           if (parent) {
-            parent.target_s.bindField.setVisible(false)
+            parent.target_s.bindField.visible = false
             if (this.brick.inputList.length > 1) {
               // this is the second brick we connect
               parent.variant_p = eYo.Key.TARGET_VALUED
@@ -1086,7 +1086,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         if (parent) {
           if (this.brick.inputList.length < 4) { // bad design
             // this is the last brick we disconnected
-            parent.target_s.bindField.setVisible(true)
+            parent.target_s.bindField.visible = true
           }
         }
       }
@@ -1182,11 +1182,11 @@ eYo.Brick.Expr.makeSubclass('primary', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        this.slot.bindField.setVisible(false)
+        this.slot.bindField.visible = false
         this.brick.variant_p = eYo.Key.ALIASED
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
-        this.slot.bindField.setVisible(true)
+        this.slot.bindField.visible = true
       }
     }
   },
@@ -1434,7 +1434,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
  */
 eYo.Brick.Expr.primary.prototype.consolidateMagnets = function () {
   eYo.Brick.Expr.primary.superClass_.consolidateMagnets.call(this)
-  this.target_s.connection.setHidden(this.variant_p === eYo.Key.NONE && this.dotted_p === 0)
+  this.target_s.magnet.setHidden(this.variant_p === eYo.Key.NONE && this.dotted_p === 0)
 }
 
 /**
@@ -1779,9 +1779,9 @@ eYo.Brick.Expr.primary.prototype.getInput = function (name) {
     // we suppose that ary is set
     var f = (slot) => {
       if (!slot.incog) {
-        var input = slot.input
-        if (input) {
-          var t9k = slot.targetBrick
+        var m4t = slot.magnet
+        if (m4t) {
+          var t9k = m4t.targetBrick
           if (t9k && (input = t9k.getInput(name))) {
             return input
           }
