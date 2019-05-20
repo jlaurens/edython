@@ -119,22 +119,22 @@ eYo.Field.makeFields = (() => {
         field = new eYo.FieldInput(owner, name, model.edit || '')
       } else if (goog.isDefAndNotNull(model.value)) {
         // this is just a label field
-        field = new eYo.FieldLabel(owner, model.value || '')
+        field = new eYo.FieldLabel(owner, name, model.value || '')
       } else if (goog.isDefAndNotNull(model.reserved)) {
         // this is just a label field
-        field = new eYo.FieldLabel(owner, model.reserved)
+        field = new eYo.FieldLabel(owner, name, model.reserved)
         field.status = eYo.Field.STATUS_RESERVED
       } else if (goog.isDefAndNotNull(model.builtin)) {
         // this is just a label field
-        field = new eYo.FieldLabel(owner, model.builtin)
+        field = new eYo.FieldLabel(owner, name, model.builtin)
         field.status = eYo.Field.STATUS_BUILTIN
       } else if (goog.isDefAndNotNull(model.comment)) {
         // this is just a label field
-        field = new eYo.FieldLabel(owner, model.comment)
+        field = new eYo.FieldLabel(owner, name, model.comment)
         field.status = eYo.Field.STATUS_COMMENT
       } else if (goog.isDefAndNotNull(model.status)) {
         // this is just a label field
-        field = new eYo.FieldLabel(owner, '')
+        field = new eYo.FieldLabel(owner, name, '')
       } else { // other entries are ignored
         return
       }
@@ -213,20 +213,20 @@ eYo.Field.makeFields = (() => {
       }
     }
     // now order the fields in linked lists
-    // Next returns the first field in a chain field.eyo.nextField -> ...
+    // Next returns the first field in a chain field.nextField -> ...
     // The chain is built from the list of arguments
     // arguments are either field names or fields
     // When field names are given, we just insert the corresponding
     // field into the chain
     // When fields are given, we insert the chain starting at that point
     // The result is a chain of fields.
-    // field.eyo.nextField points to the next field of the chain
-    // field.eyo.nextField.eyo.previousField is a fixed point.
+    // field.nextField points to the next field of the chain
+    // field.nextField.previousField is a fixed point.
     // A field is the head of a chain in one of two cases
-    // 1) field.eyo.eyoLast_ is the eyo of a field (possibly the first of the chain)
+    // 1) field.eyoLast_ is the eyo of a field (possibly the first of the chain)
     // 2) It has no previous nor next field, meaning that
-    // ...eyo.nextField and ...eyo.previousField are false.
-    // fields with a ...eyo.previousField cannot have a ...eyo.eyoLast_ bacuse they are not the head of the chain.
+    // ...nextField and ...previousField are false.
+    // fields with a ...previousField cannot have a ...eyoLast_ bacuse they are not the head of the chain.
     var chain = function (/* variable argument list */) {
       // We first loop to find the first field that can be the
       // start of a chain. Every field before is ignored.
