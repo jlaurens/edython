@@ -148,12 +148,8 @@ eYo.Field.makeFields = (() => {
       return
     }
     field.nextField = undefined // debug step
+
     return field
-  }
-  var shortcut = name => {
-    return function () {
-      return this.fields[name]
-    }
   }
   return function (owner, fieldsModel) {
     owner.fields = owner.fields || Object.create(null)
