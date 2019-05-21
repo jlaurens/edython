@@ -1276,9 +1276,8 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
         if (m4t.c === 1 && !io.common.field.afterBlack && m4t.slot) {
           m4t.slot.where.c -= 1
           m4t.setOffset(io.cursor)
-          if (io.input && io.input.inputLeft && io.input.inputLeft.magnet.startOfLine) {
+          if (io.magnet && io.magnet.renderedLeft && io.magnet.renderedLeft.startOfLine) {
             ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
-
           }
         }
         if (io.brick.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
