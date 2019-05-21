@@ -793,7 +793,7 @@ eYo.UI.prototype.drawModel_ = function (io) {
 eYo.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
   if (!this.brick_.wrapped_) {
-    if (this.brick_.out_m) {
+    if (this.brick_.isExpr) {
       if (io.common.field.last && io.common.field.last.isEditing) {
         io.cursor.c += 1
         io.common.field.afterSeparator = false
@@ -827,7 +827,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       io.common.field.afterBlack = false
     }
   }
-  if (!this.brick_.out_m) {
+  if (!this.brick_.isExpr) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
@@ -934,7 +934,6 @@ eYo.UI.prototype.drawField_ = function (field, io) {
 //    this.driver.fieldTextRemove(field)
     var text = field.displayText
     // Replace the text.
-    field.size.setFromText(text)
     this.driver.fieldTextUpdate(field)
     if (text.length) {
       if (text === '>') {
@@ -1127,8 +1126,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
               // from now on, we pack just one character width
             }
             if (pack) {
-              b3k.span.c = Math.max(this.minBrickW, b3k.span.c - 1)
-              b3k.span.minWidth = b3k.span.width
+              b3k.span.c = Math.max(b3k.ui.minBrickW, b3k.span.c - 1)
               io.common.field.didPack = true
               io.common.field.afterBlack = true
             }
@@ -1677,24 +1675,7 @@ Object.defineProperties(eYo.UI.prototype, {
     }
   },
   /**
-   * Returns a bounding box describing the dimensions of this.brick_
-   * and any bricks stacked below it, in workspace unit.
-   * @return {!{height: number, minWidth: number, width: number}} Object with height and width
-   *    properties in workspace units.
-   */
-  size: {
-    get () {
-      var s = this.brick_.size
-      return {
-        height: s.height * eYo.Unit.y,
-        minWidth: s.minWidth * eYo.Unit.x,
-        width: s.width * eYo.Unit.x
-      }
-    }
-  },
-  /**
    * Returns the coordinates of a bounding rect describing the dimensions of the brick.
-   * Ignores the minWidth.
    * As the shape is not the same comparing to Blockly's default,
    * the bounding rect changes too.
    * Coordinate system: workspace coordinates.

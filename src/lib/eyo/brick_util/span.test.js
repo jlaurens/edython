@@ -181,7 +181,9 @@ describe('Current Field', function () {
       c_min: c,
       main: m,
     })
-    // test(b_1, 6)
+    test(b_1, 6)
+    b_1.FIELD_f.text = '43xx21'
+    test(b_1, 8)
   })
   after(function() {
     // b_1.dispose()

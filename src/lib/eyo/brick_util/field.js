@@ -374,7 +374,7 @@ Object.defineProperties(eYo.Field.prototype, {
         return
       }
       this.text_ = newText // one _ only
-      this.size.fromText(newText)
+      this.size.setFromText(newText)
       if (this.brick.rendered) {
         this.brick.render()
         this.brick.bumpNeighbours_()
