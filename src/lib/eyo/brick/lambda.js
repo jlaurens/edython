@@ -322,8 +322,9 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
       )
     })
     e8r.end()
-    while (e8r.previous()) {
-      var m4t = e8r.here.magnet
+    var input
+    while ((input = e8r.previous)) {
+      var m4t = input.magnet
       if (m4t && !m4t.target) {
         if (m4t.checkType_(y.out_m)) {
           var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',

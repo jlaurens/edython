@@ -345,7 +345,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
         }
         return
       }
-      (x = x.target_s) && (x.bindField.visible = true)
+      ;(x = x.target_s) && (x.bindField.visible = true)
     }
   }
   eYo.Brick.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
@@ -932,7 +932,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         if (target) {
           target.ary_p = newValue
         }
-        (newValue < this.brick.mandatory_p) && (this.brick.mandatory_p = newValue)
+        ;(newValue < this.brick.mandatory_p) && (this.brick.mandatory_p = newValue)
         if (goog.isDefAndNotNull(newValue)) {
           this.brick.variant_p = eYo.Key.CALL_EXPR
         }
@@ -977,7 +977,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         if (target) {
           target.mandatory_p = newValue
         }
-        (newValue > this.brick.ary_p) && (this.brick.ary_p = newValue)
+        ;(newValue > this.brick.ary_p) && (this.brick.ary_p = newValue)
         if (goog.isDefAndNotNull(newValue)) {
           this.brick.variant_p = eYo.Key.CALL_EXPR
         }
@@ -1081,11 +1081,12 @@ eYo.Brick.Expr.makeSubclass('primary', {
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
         // the brick is not yet consolidated
         // when there is no connected brick, we display the field
-        var parent = this.parent
-        if (parent) {
+        var unwrappedB3k = this.unwrappedMagnet.brick
+        if (unwrappedB3k) {
           if (this.brick.inputList.length < 4) { // bad design
             // this is the last brick we disconnected
-            parent.target_s.bindField.visible = true
+            var f = unwrappedB3k.target_s.bindField
+            f && (f.visible = true)
           }
         }
       }

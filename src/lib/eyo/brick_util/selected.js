@@ -246,7 +246,7 @@ eYo.Magnet.prototype.select = function () {
  * Does nothing if the receiver is not selected.
  */
 eYo.Magnet.prototype.unselect = function () {
-  (this === eYo.Selected.magnet) && (eYo.Selected.magnet = null)
+  ;(this === eYo.Selected.magnet) && (eYo.Selected.magnet = null)
 }
 
 /**
@@ -531,7 +531,7 @@ eYo.Brick.prototype.onMouseUp_ = function (e) {
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
         } else if (t9k.selectMouseDownEvent) {
-          (this.isStmt.select() ? this : this.stmtParent) || t9k.root
+          ;(this.isStmt.select() ? this : this.stmtParent) || t9k.root
           t9k.selectMouseDownEvent = null
         }
       }

@@ -982,7 +982,7 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
       return false
     }
     if (!brick.wrapped_ || brick.canUnwrap()) {
-      if (brick.canReplaceDlgt(parent)) {
+      if (brick.canReplaceBrick(parent)) {
         var content = this.get_menuitem_content(model.type, input && input.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {

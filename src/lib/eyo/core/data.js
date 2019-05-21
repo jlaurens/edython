@@ -589,7 +589,7 @@ eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
  * @return undefined
  */
 eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
-  (!eYo.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
+  ;(!eYo.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
 }
 
 /**
@@ -603,7 +603,7 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.duringChange = function(oldValue, newValue) {
-  (!eYo.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+  ;(!eYo.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
 }
 
 /**
@@ -615,7 +615,7 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * @return undefined
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
-  (eYo.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
+  ;(eYo.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
   this.synchronize(newValue)
 }
 

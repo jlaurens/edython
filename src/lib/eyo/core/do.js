@@ -372,47 +372,62 @@ eYo.Do.createSPAN = function (text, css) {
  * @param {!function(Object): boolean} filter an optional filter.
  * @return {Object} an enumerator
  */
-eYo.Do.Enumerator = function (list, filter) {
+eYo.Do.Enumerator = (list, filter) => {
   if (!list) {
     return
   }
   var i = 0
-  var me = {here: undefined}
+  var me = {here_: undefined}
   me.start = () => {
     i = 0
-    me.here = undefined
+    me.here_ = undefined
   }
   me.end = () => {
     i = list.length
-    me.here = undefined
+    me.here_ = undefined
   }
-  me.isAtStart = () => {
-    return i === 0
-  }
-  me.isAtEnd = () => {
-    return i < list.length
-  }
+  Object.defineProperties(me, {
+    isAtStart: {
+      get () {
+        return i === 0
+      }
+    },
+    isAtEnd: {
+      get () {
+        return i < list.length
+      }
+    },
+    next: {
+      get () {
+        while ((me.here_ = next_())) {
+          if (!goog.isFunction(filter) || filter(me.here_)) {
+            break
+          }
+        }
+        return me.here_
+      }
+    },
+    previous: {
+      get () {
+        while ((me.here_ = previous_())) {
+          if (!filter || filter(me.here_)) {
+            break
+          }
+        }
+        return me.here_
+      }
+    },
+    here: {
+      get () {
+        return this.here_
+      }
+    }
+  })
   var next_ = () => {
     return i < list.length ? list[i++] : undefined
   }
   var previous_ = () => {
     return i > 0 ? list[--i] : undefined
-  }
-  me.next = () => {
-    while ((me.here = next_())) {
-      if (!goog.isFunction(filter) || filter(me.here)) {
-        break
-      }
-    }
-    return me.here
-  }
-  me.previous = () => {
-    while ((me.here = previous_())) {
-      if (!filter || filter(me.here)) {
-        break
-      }
-    }
-    return me.here
   }
   me.start()
   return me

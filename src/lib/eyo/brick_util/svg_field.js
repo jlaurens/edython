@@ -55,7 +55,7 @@ eYo.Svg.prototype.fieldInit = function (field) {
   } else {
     svg.group_ = svg.textElement_
   }
-  (field.slot || field.brick.ui).svg.group_.appendChild(svg.group_)
+  ;(field.slot || field.brick.ui).svg.group_.appendChild(svg.group_)
   if (field.css_class) {
     goog.dom.classlist.add(svg.textElement_, eYo.Do.valueOf(field.css_class, field))
   }
@@ -119,7 +119,7 @@ eYo.Svg.prototype.fieldUpdateWidth = function (field) {
 eYo.Svg.prototype.fieldMakeError = function (field, yorn) {
   var root = field.svg.group_
   if (root) {
-    (yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
+    ;(yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
   }
 }
 

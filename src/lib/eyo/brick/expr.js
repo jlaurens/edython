@@ -100,7 +100,7 @@ eYo.Brick.Expr.prototype.checkOutputType = function (type) {
  * The connection cannot always establish.
  * @param {!eYo.Brick} brick  the brick to be replaced
  */
-eYo.Brick.Expr.prototype.canReplaceDlgt = function (brick) {
+eYo.Brick.Expr.prototype.canReplaceBrick = function (brick) {
   if (brick) {
     var m4t = brick.out_m
     if (!m4t) {

@@ -244,7 +244,7 @@ eYo.Svg.NS = 'http://www.w3.org/2000/svg'
  */
 eYo.Svg.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
-      (document.createElementNS(eYo.Svg.NS, name))
+      document.createElementNS(eYo.Svg.NS, name)
   for (var key in attrs) {
     e.setAttribute(key, attrs[key])
   }
@@ -645,7 +645,7 @@ eYo.Svg.bindEventWithChecks_ = function(node, name, thisObject, func,
     events.forEach(event => {
       if (noCaptureIdentifier || Blockly.Touch.shouldHandleEvent(event)) {
         Blockly.Touch.setClientFromTouch(event)
-        (thisObject && (func.call(thisObject, event))) || func(event)
+        ;(thisObject && (func.call(thisObject, event))) || func(event)
         handled = true
       }
     })

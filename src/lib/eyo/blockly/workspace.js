@@ -140,10 +140,15 @@ eYo.WorkspaceDelegate.prototype.fromUTF8ByteArray = function (bytes) {
 /**
  * Add a brick to the workspace.
  * @param {eYo.Brick} brick
+ * @param {String} opt_id
  */
-eYo.WorkspaceDelegate.prototype.addBrick = function (brick) {
+eYo.WorkspaceDelegate.prototype.addBrick = function (brick, opt_id) {
+  var w = this.workspace_
+  brick.id = (opt_id && !w.getBlockById(opt_id)) ?
+  opt_id : Blockly.utils.genUid()
   this.isReady && (brick.beReady())
-  this.workspace_.addTopBlock(brick)
+  w.addTopBlock(brick)
+  w.blockDB_[brick.id] = brick
 }
 
 /**

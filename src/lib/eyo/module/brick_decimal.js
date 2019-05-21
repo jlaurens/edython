@@ -245,7 +245,7 @@ eYo.FlyoutCategory.decimal__module = [
       'ROUND_HALF_UP',
       'ROUND_UP',
       'ROUND_05UP'
-    ].forEach((key) => {
+    ].forEach(key => {
       createOneBlock({
         type: eYo.T3.Expr.identifier,
         name_p: key,

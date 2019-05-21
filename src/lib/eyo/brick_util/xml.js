@@ -238,7 +238,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
         })
       } else if (name === eYo.Xml.STMT || name === eYo.Xml.EXPR) {
         // for edython
-        (brick = newBrick(child)) && (newBlockIds.push(brick.id))
+        ;(brick = newBrick(child)) && (newBlockIds.push(brick.id))
       }
     })
   }, () => {
@@ -299,7 +299,7 @@ eYo.Brick.newComplete = (() => {
     if (goog.isString(model)) {
       model = model.trim()
       if (model.startsWith('<')) {
-        var brick = eYo.Xml.stringToDlgt(model, owner)
+        var brick = eYo.Xml.stringToBrick(model, owner)
       }
     } else if (model.getAttribute) {
       brick = eYo.Xml.domToBrick(model, owner)
@@ -677,7 +677,7 @@ eYo.Xml.registerAllTags = function () {
  * @param {!*} owner workspace or brick.
  * @return {?eYo.Brick} The root brick created, if any.
  */
-eYo.Xml.stringToDlgt = function (string, owner) {
+eYo.Xml.stringToBrick = function (string, owner) {
   var brick
   try {
     var dom = eYo.Do.stringToDom(string)

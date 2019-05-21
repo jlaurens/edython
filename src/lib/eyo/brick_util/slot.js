@@ -98,9 +98,9 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Asks the owner's renderer to do the same.
  */
 eYo.Slot.prototype.dispose = function () {
-  var d = this.ui_driver
-  ui && (d.slotDispose(this))
   eYo.Field.disposeFields(this)
+  var d = this.ui_driver
+  d && (d.slotDispose(this))
   this.model_ = undefined
   this.magnet_ && (this.magnet_.dispose())
   this.magnet_ = undefined

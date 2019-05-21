@@ -455,7 +455,7 @@ Object.defineProperties(eYo.Field.prototype, {
 eYo.Field.prototype.dispose = function() {
   var d = this.ui_driver
   d && (d.fieldDispose(this))
-  this.superClass_.dispose.call(this)
+  eYo.Field.superClass_.dispose.call(this)
 }
 
 /**

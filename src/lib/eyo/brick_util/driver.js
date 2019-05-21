@@ -361,14 +361,14 @@ eYo.Driver.brickRemoveBlockHilight_ = eYo.Do.nothing
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.prototype.brickAddDlgtSelect_ = eYo.Do.nothing
+eYo.Driver.prototype.brickAddSelect_ = eYo.Do.nothing
 
 /**
  * Remove the select path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveDlgtSelect_ = eYo.Do.nothing
+eYo.Driver.brickRemoveSelect_ = eYo.Do.nothing
 
 /**
  * Add the hilight path_.

@@ -445,7 +445,7 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
     return;
   }
   if (!brick.isStmt) {
-    (brick = (brick.stmtParent || brick.root))
+    brick = brick.stmtParent || brick.root
   }
   // XY is in workspace coordinates.
   var xy = brick.ui.xyInSurface

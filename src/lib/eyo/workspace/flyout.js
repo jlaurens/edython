@@ -149,14 +149,14 @@ eYo.Flyout.prototype.show = function(model) {
       if (xml.tagName) {
         var tagName = xml.tagName.toUpperCase();
         if (tagName.startsWith('EYO:')) {
-          var curDlgt = eYo.Xml.domToBrick(xml, this.workspace_);
-          if (curDlgt.disabled) {
+          var curBrick = eYo.Xml.domToBrick(xml, this.workspace_);
+          if (curBrick.disabled) {
             // Record bricks that were initially disabled.
             // Do not enable these bricks as a result of capacity filtering.
-            this.permanentlyDisabled_.push(curDlgt);
+            this.permanentlyDisabled_.push(curBrick);
           }
-          curDlgt.beReady()
-          contents.push({type: 'block', block: curDlgt});
+          curBrick.beReady()
+          contents.push({type: 'block', block: curBrick});
           var gap = parseInt(xml.getAttribute('gap'), 10);
           gaps.push(isNaN(gap) ? default_gap : gap);
         }

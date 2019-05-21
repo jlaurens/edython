@@ -135,7 +135,7 @@ eYo.Navigate.doTab = (() => {
  * @param {function(point): number} weight is a function.
  * @return {?Blockly.Block}
  */
-eYo.Brick.getBestDlgt = function (workspace, weight) {
+eYo.Brick.getBestBrick = function (workspace, weight) {
   var smallest = Infinity
   var best
   workspace.topBlocks_.forEach(top => {
@@ -201,7 +201,7 @@ eYo.Selected.chooseLeft = () => {
       return
     } else {
       eYo.Selected.magnet = null
-      (b3k.group || b3k.root).select().scrollToVisible()
+      ;(b3k.group || b3k.root).select().scrollToVisible()
       return
     }
   } else if (b3k.isStmt) {
@@ -232,7 +232,7 @@ eYo.Selected.chooseLeft = () => {
     }
   })
   eYo.Selected.magnet = null
-  (target || root).select().scrollToVisible()
+  ;(target || root).select().scrollToVisible()
 }
 /**
  * Select the brick to the right of the selection.
@@ -292,7 +292,7 @@ eYo.Selected.chooseRight = function () {
     }
   })
   eYo.Selected.magnet = null
-  (target || root).select().scrollToVisible()
+  ;(target || root).select().scrollToVisible()
 }
 
 /**

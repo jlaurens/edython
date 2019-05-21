@@ -516,7 +516,7 @@ eYo.KeyHandler = (() => {
       F = f => {
         event.preventDefault()
         event.stopPropagation()
-        var brick = eYo.Brick.getBestDlgt(eYo.App.workspace, f)
+        var brick = eYo.Brick.getBestBrick(eYo.App.workspace, f)
         if (brick) {
           brick.select().scrollToVisible()
         }

@@ -248,9 +248,19 @@ Object.defineProperties(eYo.Magnet, {
  * Dispose of the ressources.
  */
 eYo.Magnet.prototype.dispose = function () {
-  if (this.target) {
-    throw 'Disconnect connection before disposing of it.';
+  var t9k = this.targetBrick
+  if (t9k) {
+    if (!this.wrapped_) {
+      throw 'Disconnect magnet before disposing of it.'
+    }
+    this.disconnect()
+    t9k.dispose()
   }
+  if (this.wrapped_) {
+    this.brick.removeWrapperMagnet(this)
+    this.wrapped_ = undefined
+  }
+  this.promised_ = undefined
   this.inDB_ = false
   this.db_ = this.dbOpposite_ = null
   this.ui_driver && this.ui_driver.magnetDispose(this)
@@ -306,7 +316,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
         throw "ALREADY A WRAPPED BLOCK"
       }
       this.promised_ = newValue
-      this.wrapped_ && (this.brick.removeWrappedMagnet(this))
+      this.wrapped_ && (this.brick.removeWrapperMagnet(this))
       this.wrapped_ = null
       this.hidden = true
     }
@@ -455,14 +465,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
       // scheme:
       // this = output <- input <- wrapped source brick <- output <- input
       var ans = this
-      var t9k
-      while ((t9k = ans.targetBrick) && t9k.wrapped_) {
-        var m4t = t9k.out_m
-        if (m4t) {
-          ans = m4t
-        } else {
-          break
-        }
+      var t9k, m4t
+      while ((t9k = ans.targetBrick) && t9k.wrapped_ && (m4t = t9k.out_m)) {
+        ans = m4t
       }
       return ans
     }
@@ -505,7 +510,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       var brick = this.brick
       var t9k = this.targetBrick
       if (t9k && !this.checkType_(this.target)) {
-        (this.isSuperior ? t9k : brick).unplug()
+        ;(this.isSuperior ? t9k : brick).unplug()
         // Bump away.
         brick.bumpNeighbours_()
       }
@@ -585,9 +590,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       var f = t => {
         return t && (!t.wrapped_ || t.inputList.some(i => {
           var m4t = i.magnet
-          if (f(t = m4t && m4t.targetBrick)) {
-            return true
-          }
+          return f(t = m4t && m4t.targetBrick)
         }))
       }
       return f(t) && t
@@ -668,7 +671,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     set (newValue) {
       var db = this.db_
       if (db && this.inDB__ !== (newValue = !!newValue)) {
-        (this.inDB__ = newValue)
+        ;(this.inDB__ = newValue)
           ? db.addMagnet_(this)
           : db.removeMagnet_(this)
       }
@@ -1297,7 +1300,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
           // just in case the check_ has changed in between
           // which might be the case for the else_part bricks
           if (oldChildT4t.isOutput) {
-            (child instanceof eYo.Brick.List
+            ;(child instanceof eYo.Brick.List
               ? child.someInput
               : child.someSlot).call(this, x => { // a slot or an input
               if (!x.incog) {
@@ -1378,7 +1381,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     })
   })
   var ui
-  (ui = child.ui) && ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
+  ;(ui = child.ui) && ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
   ;(ui = parent.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
   ;(unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
 }
@@ -1613,7 +1616,7 @@ eYo.Magnet.prototype.disconnect = (() => {
           parent.changeWrap(() => { // `this` is catched
             eYo.Do.tryFinally(() => {
               parentM4t.willDisconnect()
-              (unwrappedM4t !== parentM4t) && unwrappedM4t.willDisconnect()
+              ;(unwrappedM4t !== parentM4t) && unwrappedM4t.willDisconnect()
               eYo.Do.tryFinally(() => {
                 childM4t.willDisconnect()
                 eYo.Do.tryFinally(() => {
@@ -1643,7 +1646,7 @@ eYo.Magnet.prototype.disconnect = (() => {
               })
             }, () => { // finally
               parentM4t.didDisconnect(childM4t)
-              (unwrappedM4t !== parentM4t) && unwrappedM4t.didDisconnect(childM4t)
+              ;(unwrappedM4t !== parentM4t) && unwrappedM4t.didDisconnect(childM4t)
             })
           })
         })
@@ -1652,9 +1655,9 @@ eYo.Magnet.prototype.disconnect = (() => {
         parent.incrementChangeCount()
         parent.consolidate()
         var ui
-        (ui = child.ui) && ui.didDisconnect(parentM4t)
-        (ui = parent.ui) && ui.didDisconnect(childM4t)
-        (unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didDisconnect(childM4t)
+        ;(ui = child.ui) && ui.didDisconnect(parentM4t)
+        ;(ui = parent.ui) && ui.didDisconnect(childM4t)
+        ;(unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didDisconnect(childM4t)
       })
       // Rerender the parent so that it may reflow.
       // this will be done later
@@ -1797,12 +1800,13 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
     } else if ((brick = this.brick)) {
       var e8r = brick.inputEnumerator()
       if (e8r) {
-        while (e8r.next()) {
-          if (this === e8r.here.magnet) {
+        var input
+        while ((input = e8r.next)) {
+          if (this === input.magnet) {
             // found it
-            while (e8r.next()) {
+            while ((input = e8r.next)) {
               var m4t
-              if ((m4t = e8r.here.magnet)) {
+              if ((m4t = input.magnet)) {
                 return m4t
               }
             }

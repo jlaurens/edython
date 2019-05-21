@@ -85,16 +85,14 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  */
 eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
+  /** @type {string} */
   this.workspace = workspace
-  workspace.eyo.addBrick(this)
+  workspace.eyo.addBrick(this, opt_id)
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
   // which is oftely used
   this.getBaseType = eYo.Brick.prototype.getBaseType // no side effect during creation.
-  /** @type {string} */
-  this.id = (opt_id && !workspace.getBlockById(opt_id)) ?
-      opt_id : Blockly.utils.genUid()
   // private properties
   this.children_ = []
   this.errors = Object.create(null)
@@ -134,10 +132,10 @@ eYo.Brick = function (workspace, type, opt_id) {
   // make the state
   eYo.Events.disableWrap(() => {
     this.changeWrap(() => {
+      this.makeMagnets()
       this.makeData()
       this.makeFields()
       this.makeSlots()
-      this.makeMagnets()
       // now make the bounds between data and fields
       this.makeBounds()
       // initialize the data
@@ -200,10 +198,10 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.span.dispose()
   this.span_ = undefined
   eYo.Events.disableWrap(() => {
-    this.disposeMagnets()
     this.disposeSlots()
     this.disposeFields()
     this.disposeData()
+    this.disposeMagnets()
     this.forEachInput(input => input.dispose())
     this.inputList_ = undefined
     this.children_ = undefined
@@ -1736,7 +1734,7 @@ eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  * The connection cannot always establish.
  * @param {!eYo.Brick} other  the brick to be replaced
  */
-eYo.Brick.prototype.canReplaceDlgt = function (other) {
+eYo.Brick.prototype.canReplaceBrick = function (other) {
   return false
 }
 
@@ -2841,7 +2839,7 @@ eYo.Brick.prototype.lock = function () {
       }
     }
   }
-  (this.surround || this).render()
+  ;(this.surround || this).render()
   return ans
 }
 /**
@@ -2868,7 +2866,7 @@ eYo.Brick.prototype.unlock = function (shallow) {
   })
   if (!shallow && (m4t = this.right_m)) {
   }
-  (this.surround || this).render()
+  ;(this.surround || this).render()
   return ans
 }
 
