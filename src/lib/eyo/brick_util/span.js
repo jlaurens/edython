@@ -201,6 +201,9 @@ Object.defineProperties(eYo.Span.prototype, {
   main: {
     get () {
       return this.main_ // 1 or more
+    },
+    set (newValue) {
+      this.addMain(newValue - this.main_)
     }
   },
   /**
@@ -210,6 +213,9 @@ Object.defineProperties(eYo.Span.prototype, {
   footer: {
     get () {
       return this.footer_
+    },
+    set (newValue) {
+      this.addFooter(newValue - this.footer_)
     }
   }
 })

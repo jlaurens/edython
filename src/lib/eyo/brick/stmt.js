@@ -77,18 +77,6 @@ Object.defineProperties(eYo.Brick.Stmt.prototype, {
 })
 
 /**
- * Prepare rendering.
- * @param {?Object} recorder  When null, this is not the start of a statement
- * @return {!Object} a local recorder
- * @private
- */
-eYo.Brick.Stmt.prototype.renderDrawModelBegin_ = function (recorder) {
-  var  io = eYo.Brick.Stmt.superClass_.renderDrawModelBegin_.call(this, recorder)
-  io.common.inputDone = undefined
-  return io
-}
-
-/**
  * Insert a brick above.
  * If the brick's previous connection is connected,
  * connects the brick above to it.

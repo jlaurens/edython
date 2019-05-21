@@ -17,111 +17,61 @@ goog.require('eYo.Selected')
 
 /**
  * Tab navigation.
- * @param {?Object} eyo Block delegate.
+ * @param {?eYo.Brick} brick  Brick.
  * @param {?Object} opt Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {
-  var m4t
-  var input
-  var accept = input => {
-    var m4t = input.magnet
-    return m4t && !m4t.incog && !m4t.hidden_ && m4t.isInput
+  var magnet
+  var accept = m4t => {
+    return m4t && !m4t.incog && !m4t.hidden && m4t.isInput && m4t
   }
-  var doLeft = eyo => { // !eyo
-    if ((m4t = eYo.Selected.magnet) && !m4t.incog) {
-      input = m4t.input
+  var doLeft = b3k => {
+    if (!(magnet = eYo.Selected.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
+      return
     }
-    if (!input) {
-      if ((m4t = eyo.out_m)) {
-        input = m4t.target.input
-      }
-      if (!input) {
-        input = eyo.lastRenderedInput
-      }
-      if (!input) {
-        input = (eyo.stmtParent || eyo.root).lastRenderedInput
-      }
-      if (!input) {
+    var m4t = magnet
+    while ((m4t = m4t.renderedLeft)) {
+      if ((eYo.Selected.magnet = accept(m4t))) {
         return
       }
     }
-    var candidate = input.inputLeft
-    while (candidate) {
-      if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.magnet
-        return
-      }
-      candidate = candidate.inputLeft
-    }
-    candidate = input
-    while ((candidate = candidate.inputLeft)) {
-      if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.magnet
-        return
-      }
-    }
-    candidate = input
-    while ((candidate = candidate.inputRight)) {
-      input = candidate
+    m4t = magnet
+    while ((magnet = magnet.renderedRight)) {
+      m4t = magnet
     }
     do {
-      if (accept(input)) {
-        eYo.Selected.magnet = input.magnet
+      if ((eYo.Selected.magnet = accept(m4t))) {
         return
       }
-    } while ((input = input.inputLeft))
+    } while ((m4t = m4t.renderedLeft))
   }
-  var doRight = eyo => {
-    if ((m4t = eYo.Selected.magnet) && !m4t.incog) {
-      input = m4t.input
+  var doRight = b3k => {
+    if (!(magnet = eYo.Selected.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.firstRenderedMagnet || (b3k.stmtParent || b3k.root).ui.firstRenderedMagnet)) {
+      return
     }
-    if (!input) {
-      if ((m4t = eyo.out_m)) {
-        input = m4t.target.input
-      }
-      if (!input) {
-        input = eyo.firstRenderedInput
-      }
-      if (!input) {
-        input = (eyo.stmtParent || eyo.root).firstRenderedInput
-      }
-      if (!input) {
+    var m4t = magnet
+    while ((m4t = m4t.renderedRight)) {
+      if ((eYo.Selected.magnet = accept(m4t))) {
         return
       }
     }
-    var candidate = input.inputRight
-    while (candidate) {
-      if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.magnet
-        return
-      }
-      candidate = candidate.inputRight
-    }
-    candidate = input
-    while ((candidate = candidate.inputRight)) {
-      if (accept(candidate)) {
-        eYo.Selected.magnet = candidate.magnet
-        return
-      }
-    }
-    candidate = input
-    while ((candidate = candidate.inputLeft)) {
-      input = candidate
+    m4t = magnet
+    while ((magnet = magnet.renderedLeft)) {
+      m4t = magnet
     }
     do {
-      if (accept(input)) {
-        eYo.Selected.magnet = input.magnet
+      if ((eYo.Selected.magnet = accept(m4t))) {
         return
       }
-    } while ((input = input.inputRight))
+    } while ((m4t = m4t.renderedRight))
   }
-  return (eyo, opt) => {
-    if (eyo) {
+  return (brick, opt) => {
+    if (brick) {
       var f = opt && opt.left ? doLeft : doRight
       var n = opt && opt.fast ? 4 : 1
       input = undefined
       while (n--) {
-        f(eyo)
+        f(brick)
       }
       return true
     }

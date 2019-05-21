@@ -281,12 +281,22 @@ eYo.Size.prototype.setFromWhere = function (w) {
 /**
  * Sets from the given text.
  * @param {String!} s
+ * @return {eYo.Size} the receiver.
  */
 eYo.Size.prototype.setFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
   this.set(c, lines.length)
+  return this
+}
+
+/**
+ * Sets from the given text.
+ * @param {String!} s
+ */
+eYo.Size.sizeOfText = function (txt) {
+  return new eYo.Size().setFromText(txt)
 }
 
 /**

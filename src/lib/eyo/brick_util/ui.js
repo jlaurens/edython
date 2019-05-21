@@ -119,12 +119,12 @@ Object.defineProperties(eYo.UI.prototype, {
 })
 
 /**
- * Render the given connection, if relevant.
- * @param {eYo.Magnet} magnet
+ * Render the next brick, if relevant.
  * @param {*} recorder
- * @return {boolean=} true if a rendering message was sent, false otherwise.
+ * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
-eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
+eYo.UI.prototype.drawFoot_ = function (recorder) {
+  var magnet = this.brick_.foot_m
   if (!magnet) {
     return
   }
@@ -132,9 +132,7 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
   if (!t9k) {
     return
   }
-  if (magnet.isSuperior) {
-    magnet.tighten_()
-  }
+  magnet.tighten_()
   var do_it = !t9k.ui.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
@@ -145,6 +143,7 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
     try {
       ui.down = true
       ui.render(false, recorder)
+      recorder.span.foot = t9k.span.l
     } catch (err) {
       console.error(err)
       throw err
@@ -156,16 +155,8 @@ eYo.UI.prototype.drawMagnet_ = function (magnet, recorder) {
 }
 
 /**
- * Render the next brick, if relevant.
- * @param {*} recorder
- * @return {boolean=} true if an rendering message was sent, false othrwise.
- */
-eYo.UI.prototype.drawFoot_ = function (recorder) {
-  return this.drawMagnet_(this.brick_.foot_m, recorder)
-}
-
-/**
  * Render the right brick, if relevant.
+ * Returns true if there is a right brick which is not a comment.
  * @param {*} io
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
@@ -174,6 +165,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
   if (m4t) {
     var t9k = m4t.targetBrick
     if (t9k) {
+      t9k.span.header = io.span.header + io.span.main - 1
       var ui = t9k.ui
       try {
         ui.startOfLine = io.common.startOfLine
@@ -191,7 +183,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
           t9k.render(false, io)
           if (!t9k.wrapped_) {
             io.common.field.shouldSeparate = false
-            io.common.field.beforeIsSeparator = true
+            io.common.field.afterSeparator = true
           }
         }
         io.cursor.c = m4t.where.c
@@ -201,7 +193,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
       } finally {
         ui.down = false
         var span = t9k.span
-        if (span.width) {
+        if (span.w) {
           io.cursor.advance(span.width, span.height - 1)
           // We just rendered a brick
           // it is potentially the rightmost object inside its parent.
@@ -210,10 +202,11 @@ eYo.UI.prototype.renderRight_ = function (io) {
             t9k.ui.rightCaret = undefined
             io.common.field.shouldSeparate = false
           }
-          io.common.field.beforeIsCaret = false
+          io.common.field.afterCaret = false
         }
       }
-      return true
+      io.span.footer = t9k.span.footer + t9k.span.main - 1
+      return !t9k.isComment
     } else if (this.brick_.isGroup) {
       this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
       return false
@@ -253,8 +246,10 @@ eYo.UI.prototype.renderSuite_ = function (io) {
         }
       }
     }
+    io.span.suite = t9k.span.l + t9k.span.foot
+  } else {
+    io.span.suite = 0
   }
-  this.span.main = this.brick_.getStatementCount()
   return true
 }
 
@@ -271,7 +266,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
 eYo.UI.prototype.render = (() => {
   // this is a closure
   /**
-   * Render the parent brick, if relevant.
+   * May render the parent brick, if relevant.
    * @param {Object} recorder  A recorder object.
    * @param {boolean=} optBubble If false, just render this.brick_ brick.
    *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
@@ -282,8 +277,8 @@ eYo.UI.prototype.render = (() => {
     if (optBubble === false || this.down) {
       return
     }
-    // Render all bricks above this.brick_ one (propagate a reflow).
-    // Only when the render message did not come from above!
+    // Render all bricks above this one only
+    // when the render message did not come from above!
     var parent = this.brick_.parent
     if (parent) {
       var justConnected = eYo.Magnet.connectedParent && this.brick_.out_m === eYo.Magnet.connectedParent.target
@@ -343,8 +338,6 @@ eYo.UI.prototype.render = (() => {
         }
       }
       try {
-        this.brick_.span.resetC()
-        this.brick_.consolidate()
         this.willRender_(recorder)
         var io = this.draw_(recorder)
         this.layoutMagnets_(io)
@@ -487,11 +480,14 @@ eYo.UI.prototype.translate = function(x, y) {
 }
 
 /**
- * Will draw the brick. forwards to the driver.
+ * Will draw the brick.
+ * Prepares the brick and forwards to the driver.
  * @param {*} recorder
  * @private
  */
 eYo.UI.prototype.willRender_ = function (recorder) {
+  this.brick_.span.resetC()
+  this.brick_.consolidate()
   this.driver.brickWillRender(this.brick_, recorder)
 }
 
@@ -595,10 +591,6 @@ eYo.UI.prototype.layoutMagnets_ = function (recorder) {
  */
 eYo.UI.prototype.draw_ = function (recorder) {
   if (this.driver.brickCanDraw(this.brick_)) {
-    // if the above path does not exist
-    // the brick is not yet ready for rendering
-    // when defined, `recorder` comes from
-    // the parent's `drawValueInput_` method.
     var io = this.drawModelBegin_(recorder)
     try {
       this.drawModel_(io)
@@ -609,8 +601,11 @@ eYo.UI.prototype.draw_ = function (recorder) {
       this.renderRight_(io) || this.renderSuite_(io)
       this.brick_.height = this.span.height
       this.updateShape()
+      this.drawSharp_(io)
     }
+    return io
   }
+  return recorder
 }
 
 /**
@@ -659,18 +654,19 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
 
 /**
  * Get a new draw recorder.
- * @param {*} recorder
+ * @param {*} recorder  Null iff this is the first brick rendered
+ * of that rendering process.
  * @private
  */
 eYo.UI.prototype.newDrawRecorder_ = function (recorder) {
   var io = {
     brick: this.brick_,
+    span: this.brick_.span, // Convenient shortcut!
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
-    cursor: new eYo.Where(),
-    forc: undefined // rendered file or connection
+    form: undefined // rendered field or magnet
   }
-  this.brick_.firstRenderedInput = this.brick_.lastRenderedInput = undefined
+  io.cursor = new eYo.Where(0, io.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -680,23 +676,32 @@ eYo.UI.prototype.newDrawRecorder_ = function (recorder) {
       pending: undefined,
       ending: [],
       shouldSeparate: false,
-      beforeIsRightEdge: false,
+      afterEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !this.brick_.out_m || !this.brick_.parent, // statement | orphan brick
+      startOfLine: !this.brick_.isExpr || !this.brick_.parent, // statement, group or orphan brick
       field: {
-        beforeIsBlack: false, // true if the position before the cursor contains a black character
-        beforeIsSeparator: false, // true if the position before the cursor contains a mandatory white character
-        beforeIsCaret: false, // true if the position before the cursor contains a caret
+        afterBlack: false, // true if the position before the cursor contains a black character
+        afterSeparator: false, // true if the position before the cursor contains a mandatory white character
+        afterCaret: false, // true if the position before the cursor contains a caret, id est an otional input magnet
         shouldSeparate: false // and other properties...
-      }
+      },
+      header: 0 // used when a brick will render its right sibling
     }
   }
+  // A "star like" field's text is one of '*', '+', '-', '~'...
+  // This field is the very first of the brick.
+  // Once we have rendered a field with a positive length,
+  // we cannot have a star like field.
+  io.common.field.canStarLike = true
+  this.firstRenderedMagnet = this.lastRenderedMagnet = undefined
+  io.footer = 0
+  io.main = 1
   return io
 }
 
 /**
- * Prepare rendering.
+ * Prepare rendering of a brick.
  * @param {?Object} recorder  When null, this.brick_ is not the start of a statement
  * @return {!Object} a local recorder
  * @private
@@ -707,14 +712,8 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   this.someTargetIsMissing = false
   // we define the `io` named recorder which is specific to this.brick_.
   var io = this.newDrawRecorder_(recorder)
-  // A "star like" field's text is one of '*', '+', '-', '~'...
-  // This field is the very first of the brick.
-  // Once we have rendered a field with a positive length,
-  // we cannot have a star like field.
-  io.common.field.canStarLike = true
   // By default, we restart from scratch,
   // set the size to 0 for the width and 1 for the height
-  this.brick_.span.resetC()
   // And reset properties
   this.mayBeLast = false
   this.isLastInExpression = false
@@ -722,13 +721,13 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
   // Do we need some room for the left side of the brick?
   // no for wrapped bricks
   if (!this.brick_.wrapped_) {
-    if (!this.brick_.out_m || !this.brick_.locked_ || !recorder) {
+    if (!this.brick_.isExpr || !this.brick_.locked_ || !recorder) {
       // statement or unlocked,
       // one space for the left edge of the brick
       // (even for locked statements, this.brick_ is to avoid a
       // display shift when locking/unlocking)
       this.span.c = 1
-      io.common.field.beforeIsBlack = false
+      io.common.field.afterBlack = false
     }
   }
   if (this.hasLeftEdge || !recorder || !this.brick_.out_m) {
@@ -737,18 +736,18 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
     // (even for locked statements, this.brick_ is to avoid a
     // display shift when locking/unlocking)
     this.span.c = 1
-    io.common.field.beforeIsBlack = false
-    io.common.field.beforeIsSeparator = true
+    io.common.field.afterBlack = false
+    io.common.field.afterSeparator = true
     io.common.field.shouldSeparate = false
     // Do not change io.common.field.shouldSeparate ?
   }
   io.cursor.c = this.span.c
-  if (this.brick_.out_m) {
+  if (this.brick_.isExpr) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
     this.startOfStatement = io.common.startOfStatement = true
-    this.drawSharp_(io)
+    io.span.header = 0
   }
   this.driver.brickDrawModelBegin(this.brick_, io)
   return io
@@ -802,35 +801,35 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     if (this.brick_.out_m) {
       if (io.common.field.last && io.common.field.last.isEditing) {
         io.cursor.c += 1
-        io.common.field.beforeIsSeparator = false
-        io.common.field.beforeIsBlack = false
+        io.common.field.afterSeparator = false
+        io.common.field.afterBlack = false
       } else if (!io.recorder || io.common.field.didPack) {
         io.cursor.c += 1
-        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+        io.common.field.afterSeparator = io.common.field.shouldSeparate
         io.common.field.shouldSeparate = false
-        io.common.field.beforeIsBlack = false
+        io.common.field.afterBlack = false
       } else if (io.common.field.shouldSeparate) {
         if (!io.recorder) {
           io.cursor.c += 1
-          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.afterSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
-          io.common.field.beforeIsBlack = false
+          io.common.field.afterBlack = false
         } else if (!this.brick_.locked_ && !io.common.ending.length) {
           io.cursor.c += 1
-          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.afterSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
-          io.common.field.beforeIsBlack = false
+          io.common.field.afterBlack = false
         }
       } else {
         io.cursor.c += 1
-        io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+        io.common.field.afterSeparator = io.common.field.shouldSeparate
         io.common.field.shouldSeparate = false
-        io.common.field.beforeIsBlack = false
+        io.common.field.afterBlack = false
       }
     } else {
       io.cursor.c += 1
-      io.common.field.beforeIsSeparator = false
-      io.common.field.beforeIsBlack = false
+      io.common.field.afterSeparator = false
+      io.common.field.afterBlack = false
     }
   }
   if (!this.brick_.out_m) {
@@ -872,7 +871,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     // there might be some right edge already.
   }
   if (io.brick === this.brick_) {
-    this.brick_.lastRenderedInput = io.common.inputDone
+    this.lastRenderedMagnet = io.common.magnetDone
   }
 }
 
@@ -923,16 +922,9 @@ eYo.UI.prototype.drawSharp_ = function (io) {
 }
 
 /**
- * Render one input of value brick.
- * @param io
- * @private
- */
-eYo.UI.prototype.drawInput_ = function (io) {
-  return this.drawValueInput_(io)
-}
-
-/**
  * Render the given field, when defined.
+ * This is the process that make the cursor move,
+ * together with brick boundaries.
  *
  * @param {!Object} field A field.
  * @param {!Object} io An input/output recorder.
@@ -948,10 +940,11 @@ eYo.UI.prototype.drawField_ = function (field, io) {
     // If there is a pending caret, draw it and advance the cursor.
     io.form = field
     field.willRender()
-    this.driver.fieldTextRemove(field)
+//    this.driver.fieldTextRemove(field)
     var text = field.displayText
     // Replace the text.
-    field.size.set(text.length, 1)
+    field.size.setFromText(text)
+    this.driver.fieldTextUpdate(field)
     if (text.length) {
       if (text === '>') {
         console.error(io)
@@ -960,59 +953,64 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       this.drawPending_(io)
       io.common.startOfLine = io.common.startOfStatement = false
       ++ io.n
-      this.driver.fieldTextCreate(field)
-      var head = text[0]
-      var tail = text[text.length - 1]
-      if (field.model.literal) {
-        io.common.field.didPack = 0
-      } else if (field.isLabel && io.common.field.beforeIsBlack) {
-        io.cursor.c += 1
-        io.common.field.beforeIsBlack = true
+      if (field.size.l > 1) {
+        
       } else {
-        if (!io.common.field.shouldSeparate
-          && !io.common.field.beforeIsSeparator
-          && !io.common.field.beforeIsBlack
-          && !io.common.startOfLine
-          && !io.common.field.beforeIsCaret) {
-          if (this.brick_.packedQuotes && (head === "'" || head === '"')) {
+  //      this.driver.fieldTextCreate(field)
+        var head = text[0]
+        var tail = text[text.length - 1]
+        if (field.model.literal) {
+          io.common.field.didPack = 0
+        } else if (field.isLabel && io.common.field.afterBlack) {
+          io.cursor.c += 1
+          io.common.field.afterBlack = true
+        } else {
+          if (!io.common.field.shouldSeparate
+            && !io.common.field.afterSeparator
+            && !io.common.field.afterBlack
+            && !io.common.startOfLine
+            && !io.common.field.afterCaret) {
+            if (this.brick_.packedQuotes && (head === "'" || head === '"')) {
+              io.cursor.c -= 1
+            } else if (this.brick_.packedBrackets && head === "[") {
+              io.cursor.c -= 1
+            } else if (this.brick_.packedBraces && head === "{") {
+              io.cursor.c -= 1
+            } else if (this.brick_.packedParenthesis && head === "(") {
+              io.cursor.c -= 1
+            }
+          } else if (head === '.' && !io.common.field.afterBlack) {
             io.cursor.c -= 1
-          } else if (this.brick_.packedBrackets && head === "[") {
-            io.cursor.c -= 1
-          } else if (this.brick_.packedBraces && head === "{") {
-            io.cursor.c -= 1
-          } else if (this.brick_.packedParenthesis && head === "(") {
-            io.cursor.c -= 1
+          } else if (io.common.field.afterBlack
+            && (eYo.XRE.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
+            io.cursor.c += 1
+          } else if (io.common.field.shouldSeparate
+              && (!field.startsWithSeparator()
+              || head === '='
+              || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
+            io.cursor.c += 1
           }
-        } else if (head === '.' && !io.common.field.beforeIsBlack) {
-          io.cursor.c -= 1
-        } else if (io.common.field.beforeIsBlack
-          && (eYo.XRE.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
-          io.cursor.c += 1
-        } else if (io.common.field.shouldSeparate
-            && (!field.startsWithSeparator()
-            || head === '='
-            || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
-          io.cursor.c += 1
         }
+        io.common.field.wasStarLike = (io.common.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
+        io.common.field.canStarLike = false
+        io.common.field.shouldSeparate = !io.common.field.wasStarLike
+          && (eYo.XRE.id_continue.test(tail)
+            || eYo.XRE.operator.test(tail)
+            || tail === ':'
+            || tail === '='
+            || tail === '#'
+            || tail === ','
+            || (tail === '.'
+              && (!(field instanceof eYo.FieldLabel))))
+        io.common.field.afterBlack = !eYo.XRE.white_space.test(tail)
+        io.common.field.afterCaret = false
+        // place the field at the right position:
       }
-      io.common.field.wasStarLike = (io.common.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
-      io.common.field.canStarLike = false
-      io.common.field.shouldSeparate = !io.common.field.wasStarLike
-        && (eYo.XRE.id_continue.test(tail)
-          || eYo.XRE.operator.test(tail)
-          || tail === ':'
-          || tail === '='
-          || tail === '#'
-          || tail === ','
-          || (tail === '.'
-            && (!(field instanceof eYo.FieldLabel))))
-      io.common.field.beforeIsBlack = !eYo.XRE.white_space.test(tail)
-      io.common.field.beforeIsCaret = false
-      // place the field at the right position:
       this.driver.fieldPositionSet(field, io.cursor)
       // then advance the cursor after the field.
       if (field.size.w) {
         io.cursor.c += field.size.w
+        io.cursor.c += field.size.l - 1
         // now that I have rendered something
         io.common.startOfLine = io.common.startOfStatement = false
       }
@@ -1033,10 +1031,10 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       // this.brick_ is useful for widget only.
       io.cursor.c += 1
       io.common.field.shouldSeparate =
-      io.common.field.beforeIsBlack = false
+      io.common.field.afterBlack = false
     }
     io.common.field.last = field
-    io.common.beforeIsRightEdge = false
+    io.common.afterEdge = false
   }
   return io.cursor.c - c
 }
@@ -1143,7 +1141,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
               b3k.span.c = Math.max(this.minBrickW, b3k.span.c - 1)
               b3k.span.minWidth = b3k.span.width
               io.common.field.didPack = true
-              io.common.field.beforeIsBlack = true
+              io.common.field.afterBlack = true
             }
           })
         }
@@ -1216,8 +1214,8 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
         io.common.field.shouldSeparate = false
         // all done
         io.common.pending = undefined
-        io.common.field.beforeIsBlack = false // do not step back
-        io.common.field.beforeIsCaret = true // do not step back
+        io.common.field.afterBlack = false // do not step back
+        io.common.field.afterCaret = true // do not step back
       }
       return shp
     }
@@ -1231,6 +1229,14 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
  */
 eYo.UI.prototype.drawInputMagnet_ = function (io) {
   var m4t = io.magnet
+  m4t.renderedRight = undefined
+  m4t.renderedLeft = io.common.magnetDone
+  if (io.common.magnetDone) {
+    io.common.magnetDone.inputRight = io.magnet
+  } else {
+    io.brick.ui.firstRenderedMagnet = io.magnet
+  }
+  io.common.magnetDone = io.magnet
   ++ io.n
   m4t.startOfLine = io.common.startOfLine
   m4t.startOfStatement = io.common.startOfStatement
@@ -1238,8 +1244,8 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
   m4t.side = m4t.shape = undefined
   io.common.field.canStarLike = false
   // io.cursor is relative to the brick or the slot
-  // but the connection must be located relative to the brick
-  // the connection delegate will take care of that because it knows
+  // but the magnet must be located relative to the brick
+  // the magnet will take care of that because it knows
   // if there is a slot or only an input.
   var t9k = m4t.targetBrick
   if (t9k) {
@@ -1250,7 +1256,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // Don't display anything for that connection
-      io.common.field.beforeIsCaret = false
+      io.common.field.afterCaret = false
     }
     var ui = t9k.ui
     if (ui) {
@@ -1267,7 +1273,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
           t9k.incrementChangeCount()
         }
         m4t.setOffset(io.cursor)
-        if (m4t.c === 1 && !io.common.field.beforeIsBlack && m4t.slot) {
+        if (m4t.c === 1 && !io.common.field.afterBlack && m4t.slot) {
           m4t.slot.where.c -= 1
           m4t.setOffset(io.cursor)
           if (io.input && io.input.inputLeft && io.input.inputLeft.magnet.startOfLine) {
@@ -1279,7 +1285,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
           t9k.render(false, io)
           if (!t9k.wrapped_) {
             io.common.field.shouldSeparate = false
-            io.common.field.beforeIsSeparator = true
+            io.common.field.afterSeparator = true
           }
         }
       } catch(err) {
@@ -1289,15 +1295,16 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
         ui.down = false
         var span = t9k.span
         if (span.w) {
-          io.cursor.advance(span.w, span.h - 1)
-          // We just rendered a brick
+          io.span.main += span.main - 1
+          io.cursor.advance(span.c, span.main - 1)
+          // We just rendered a connected input brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t9k)
             ui.rightCaret = undefined
             io.common.field.shouldSeparate = false
           }
-          io.common.field.beforeIsCaret = false
+          io.common.field.afterCaret = false
         }
       }
     }
@@ -1312,7 +1319,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
       // if the connection has a bindField, then rendering the placeholder
       // for that connection is a bit different.
       // Don't display anything for that connection
-      io.common.field.beforeIsCaret = false
+      io.common.field.afterCaret = false
     } else if (!this.brick_.locked_ && !m4t.hidden_) {
       // locked bricks won't display any placeholder
       // (input with no target)
@@ -1331,8 +1338,8 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
             m4t.setOffset(io.cursor)
             io.cursor.c += 1
             ending.ui.rightCaret = m4t
-            m4t.isAfterRightEdge = io.beforeIsRightEdge
-            io.common.field.beforeIsCaret = true
+            m4t.isAfterRightEdge = io.afterEdge
+            io.common.field.afterCaret = true
           } else {
             // we might want this.brick_ caret not to advance the cursor
             // If the next rendered object is a field, then
@@ -1366,10 +1373,10 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
             io.cursor.c += shape.width
             // a space was added as a visual separator anyway
           }
-          io.common.field.beforeIsSeparator = io.common.field.shouldSeparate
+          io.common.field.afterSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
         }
-        io.common.beforeIsRightEdge = true
+        io.common.afterEdge = true
       }
     }
   }
@@ -1380,20 +1387,10 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
  * @param {!Object} io the input/output argument.
  * @private
  */
-eYo.UI.prototype.drawValueInput_ = function (io) {
-  // this.brick_ is one of the reasons why we allways render from the start of a statement
-  io.input.inputRight = undefined
-  io.input.inputLeft = io.common.inputDone
-  if (io.common.inputDone) {
-    io.common.inputDone.inputRight = io.input
-  } else {
-    io.brick.firstRenderedInput = io.input
-  }
-  io.common.inputDone = io.input
+eYo.UI.prototype.drawInput_ = function (io) {
   this.drawFields_(io, true)
-  if ((io.magnet = io.input.magnet)) {
-    this.drawInputMagnet_(io)
-  }
+  io.magnet = io.input.magnet
+  this.drawInputMagnet_(io)
   this.drawFields_(io, false)
   return true
 }

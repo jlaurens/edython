@@ -327,9 +327,10 @@ eYo.Svg.prototype.pathBBoxDef_ = function (brick) {
 }
 
 /**
- * Prepares the various paths.
+ * If the brick has been inited for rendering,
+ * prepares the various paths.
  * @param {!eYo.Brick} brick  the brick the driver acts on
- * @param {*} recorder
+ * @param {Object} recorder
  * @private
  */
 eYo.Svg.prototype.brickWillRender = function (brick, recorder) {

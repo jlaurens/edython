@@ -280,6 +280,15 @@ eYo.Svg.prototype.fieldTextCreate = function (field) {
 }
 
 /**
+ * The field text will change.
+ * Add a text node to the text element.
+ * @param {!Object} field  the node the driver acts on
+ */
+eYo.Svg.prototype.fieldTextUpdate = function (field) {
+  field.svg.textElement_.textContent = field.text
+}
+
+/**
  * Set the visual effects of the field.
  * @param {*} field
  */
