@@ -165,7 +165,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
   if (m4t) {
     var t9k = m4t.targetBrick
     if (t9k) {
-      t9k.span.header = io.span.header + io.span.main - 1
+      t9k.span.header = this.span.header + this.span.main - 1
       var ui = t9k.ui
       try {
         ui.startOfLine = io.common.startOfLine
@@ -205,7 +205,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
           io.common.field.afterCaret = false
         }
       }
-      io.span.footer = t9k.span.footer + t9k.span.main - 1
+      this.span.footer = t9k.span.footer + t9k.span.main - 1
       return !t9k.isComment
     } else if (this.brick_.isGroup) {
       this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
@@ -227,7 +227,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
   if (eYo.Brick.debugStartTrackingRender) {
     console.log(eYo.Brick.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.Span.INDENT, this.brick_.span.l)
+  m4t.setOffset(eYo.Span.INDENT, this.span.l)
   var t9k = m4t.targetBrick
   if (t9k) {
     this.someTargetIsMissing = false
@@ -246,9 +246,9 @@ eYo.UI.prototype.renderSuite_ = function (io) {
         }
       }
     }
-    io.span.suite = t9k.span.l + t9k.span.foot
+    this.span.suite = t9k.span.l + t9k.span.foot
   } else {
-    io.span.suite = 0
+    this.span.suite = 0
   }
   return true
 }
@@ -486,7 +486,6 @@ eYo.UI.prototype.translate = function(x, y) {
  * @private
  */
 eYo.UI.prototype.willRender_ = function (recorder) {
-  this.brick_.span.resetC()
   this.brick_.consolidate()
   this.driver.brickWillRender(this.brick_, recorder)
 }
@@ -599,7 +598,6 @@ eYo.UI.prototype.draw_ = function (recorder) {
       throw err
     } finally {
       this.renderRight_(io) || this.renderSuite_(io)
-      this.brick_.height = this.span.height
       this.updateShape()
       this.drawSharp_(io)
     }
@@ -660,13 +658,11 @@ eYo.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
  */
 eYo.UI.prototype.newDrawRecorder_ = function (recorder) {
   var io = {
-    brick: this.brick_,
-    span: this.brick_.span, // Convenient shortcut!
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: undefined // rendered field or magnet
   }
-  io.cursor = new eYo.Where(0, io.span.header)
+  io.cursor = new eYo.Where(0, this.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -726,7 +722,7 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
       // one space for the left edge of the brick
       // (even for locked statements, this.brick_ is to avoid a
       // display shift when locking/unlocking)
-      this.span.c = 1
+      io.cursor.c = 1
       io.common.field.afterBlack = false
     }
   }
@@ -735,19 +731,18 @@ eYo.UI.prototype.drawModelBegin_ = function (recorder) {
     // one space for the left edge of the brick
     // (even for locked statements, this.brick_ is to avoid a
     // display shift when locking/unlocking)
-    this.span.c = 1
+    io.cursor.c = 1
     io.common.field.afterBlack = false
     io.common.field.afterSeparator = true
     io.common.field.shouldSeparate = false
     // Do not change io.common.field.shouldSeparate ?
   }
-  io.cursor.c = this.span.c
   if (this.brick_.isExpr) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
     this.startOfStatement = io.common.startOfStatement = true
-    io.span.header = 0
+    this.span.header = 0
   }
   this.driver.brickDrawModelBegin(this.brick_, io)
   return io
@@ -858,9 +853,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
       }
     }
   }
-  io.cursor.c = Math.max(io.cursor.c, this.minBrickW)
-  this.brick_.span.reset(io.cursor)
-  this.brick_.span.minWidth = this.brick_.width = Math.max(this.brick_.width, this.brick_.span.width)
+  this.span.c_min = io.cursor.c = Math.max(io.cursor.c, this.minBrickW)
   if (io.recorder) {
     // We ended a brick. The right edge is generally a separator.
     // No need to add a separator if the brick is wrapped or locked
@@ -870,9 +863,7 @@ eYo.UI.prototype.drawModelEnd_ = function (io) {
     // But may be we just rendered bricks in cascade such that
     // there might be some right edge already.
   }
-  if (io.brick === this.brick_) {
-    this.lastRenderedMagnet = io.common.magnetDone
-  }
+  this.lastRenderedMagnet = io.common.magnetDone
 }
 
 /**
@@ -913,8 +904,8 @@ eYo.UI.prototype.drawSharp_ = function (io) {
   if (this.brick_.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
   } else if (this.brick_.isStmt) {
-    this.driver.brickDrawSharp(this.brick_, io.brick.disabled)
-    if (io.brick.disabled) {
+    this.driver.brickDrawSharp(this.brick_, this.brick_.disabled)
+    if (this.brick_.disabled) {
       io.cursor.c += 2
       io.common.startOfLine = io.common.startOfStatement = false
     }
@@ -953,10 +944,8 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       this.drawPending_(io)
       io.common.startOfLine = io.common.startOfStatement = false
       ++ io.n
-      if (field.size.l > 1) {
-        
-      } else {
-  //      this.driver.fieldTextCreate(field)
+      if (field.size.l === 1) {
+      //    this.driver.fieldTextCreate(field)
         var head = text[0]
         var tail = text[text.length - 1]
         if (field.model.literal) {
@@ -1009,8 +998,8 @@ eYo.UI.prototype.drawField_ = function (field, io) {
       this.driver.fieldPositionSet(field, io.cursor)
       // then advance the cursor after the field.
       if (field.size.w) {
-        io.cursor.c += field.size.w
-        io.cursor.c += field.size.l - 1
+        io.cursor.c += field.size.c
+        io.cursor.l += field.size.l - 1
         // now that I have rendered something
         io.common.startOfLine = io.common.startOfStatement = false
       }
@@ -1160,7 +1149,7 @@ eYo.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false
           m4t.isLastInStatement = isLastInStatement
           var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
           var brick = m4t.brick
-          if (io.brick === brick) {
+          if (this.brick_ === brick) {
             // we are lucky, this.brick_ is the brick we are currently rendering
             io.steps.push(departFocus)
           } else {
@@ -1193,7 +1182,7 @@ eYo.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.K
       m4t.shape = io.isLastInStatement ? eYo.Key.Right : shape
       var shp = eYo.Shape.newWithMagnet(m4t)
       var brick = m4t.brick
-      if (io.brick === brick) {
+      if (this.brick_ === brick) {
         // we are lucky, this.brick_ is the brick we are currently rendering
         io.steps.push(shp.definition)
       } else {
@@ -1234,7 +1223,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
   if (io.common.magnetDone) {
     io.common.magnetDone.inputRight = io.magnet
   } else {
-    io.brick.ui.firstRenderedMagnet = io.magnet
+    this.firstRenderedMagnet = io.magnet
   }
   io.common.magnetDone = io.magnet
   ++ io.n
@@ -1280,7 +1269,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
             ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
           }
         }
-        if (io.brick.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
+        if (this.brick_.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
           t9k.render(false, io)
           if (!t9k.wrapped_) {
             io.common.field.shouldSeparate = false
@@ -1294,7 +1283,7 @@ eYo.UI.prototype.drawInputMagnet_ = function (io) {
         ui.down = false
         var span = t9k.span
         if (span.w) {
-          io.span.main += span.main - 1
+          this.span.main += span.main - 1
           io.cursor.advance(span.c, span.main - 1)
           // We just rendered a connected input brick
           // it is potentially the rightmost object inside its parent.

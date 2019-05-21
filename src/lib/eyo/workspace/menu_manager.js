@@ -246,14 +246,14 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
     this.menu.hide()
     return
   }
-  var ee = brick.lastMouseDownEvent
+  var ee = brick.ui.lastMouseDownEvent
   if (ee) {
     // this brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       if (brick.isSelected) {
         // if the brick was already selected,
         // try to select an input connection
-        eYo.Selected.magnet = brick.lastSelectedMagnet__
+        eYo.Selected.magnet = brick.ui.lastSelectedMagnet__
       }
     }
   }

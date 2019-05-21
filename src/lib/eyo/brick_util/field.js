@@ -40,12 +40,11 @@ eYo.Field = function (bsi, name, text) {
 goog.inherits(eYo.Field, eYo.Owned)
 
 Object.defineProperties(eYo.Field, {
-  STATUS_NONE: { value: 'none' },
+  STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names
   STATUS_COMMENT: { value: 'comment' },
   STATUS_RESERVED: { value: 'reserved' },
   STATUS_BUILTIN: { value: 'builtin' },
 })
-
 
 /**
  * Create all the fields from the given model.
@@ -337,7 +336,7 @@ Object.defineProperties(eYo.Field.prototype, {
 
 // Public properties with default values
 Object.defineProperties(eYo.Field.prototype, {
-  status: { value: '', writable: true }, // one of STATUS_... above
+  status: { value: eYo.Field.STATUS_NONE, writable: true }, // one of STATUS_... above
   isEditing: { value: false, writable: true},
   editable: { value: false, writable: true },
   model: { value: undefined, writable: true,},
@@ -584,20 +583,6 @@ goog.inherits(eYo.FieldInput, eYo.Field)
 // eYo.FieldInput.prototype.dispose = function () {
 //   eYo.FieldInput.superClass_.dispose.call(this)
 // }
-
-/**
- * Handle a mouse down event on a field.
- * @param {!Event} e Mouse down event.
- * @private
- */
-eYo.FieldInput.prototype.onMouseDown_ = function(e) {
-  if (this.workspace && this.brick.isSelected) {
-    var gesture = this.workspace.getGesture(e)
-    if (gesture) {
-      gesture.setStartField(this)
-    }
-  }
-}
 
 /**
  * css class for both the text element and html input.

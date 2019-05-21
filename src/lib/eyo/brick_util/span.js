@@ -139,6 +139,9 @@ Object.defineProperties(eYo.Span.prototype, {
   c_min: {
     get () {
       return this.c_min_
+    },
+    set (newValue) {
+      this.addC(newValue - this.c_min_)
     }
   },
   /**
@@ -148,6 +151,9 @@ Object.defineProperties(eYo.Span.prototype, {
   c_padding: {
     get () {
       return this.c_padding_
+    },
+    set (newValue) {
+      this.setPadding(newValue)
     }
   },
   /**

@@ -156,12 +156,49 @@ describe('Span expression', function () {
   })
 })
 
+describe('Current Field', function () {
+  var b_1
+  before(function() {
+    var type = 'test_stmt_span_reserved'
+    eYo.T3.Stmt[type] = type
+    eYo.Brick.Stmt.makeSubclass(type, {
+      fields: {
+        FIELD: {
+          reserved: '1234'
+        }
+      },
+      statement: {
+        left: { check: type },
+        right: { check: type },
+      }
+    })  
+    b_1 = eYo.Test.new_brick(type)
+    s_1 = b_1.span
+    chai.assert(b_1.isStmt, 'MISSED')
+  })
+  it ('FIELD: 1234', function () {
+    var test = (b, c, m) => eYo.Test.span(b, {
+      c_min: c,
+      main: m,
+    })
+    // test(b_1, 6)
+  })
+  after(function() {
+    // b_1.dispose()
+  })
+})
+
 describe('Current Span statements', function () {
   var b_1, s_1, b_2, s_2, b_3, s_3
   before(function() {
     var type = 'test_stmt_span'
     eYo.T3.Stmt[type] = type
     eYo.Brick.Stmt.makeSubclass(type, {
+      fields: {
+        FIELD: {
+          reserved: '1234'
+        }
+      },
       statement: {
         left: { check: type },
         right: { check: type },
@@ -188,11 +225,6 @@ describe('Current Span statements', function () {
     test(b_1, 0, 1, 0)
     test(b_2, 0, 1, 0)
     test(b_3, 0, 1, 0)
-    s_3.footer = 2
-    test(b_1, 0, 1, 2)
-    test(b_2, 0, 1, 2)
-    test(b_3, 0, 1, 2)
-    
   })
   after(function() {
     b_3.dispose()

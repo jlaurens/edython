@@ -373,10 +373,12 @@ eYo.Shape.prototype.V = function (is_brick, l) {
  * @param {?Number} part  part is in [[0, 3]].
  */
 eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
-  if (r === true || r === false) {
+  if (r === null) {
+    r = this.hilighted_width
+  } else if (r === true || r === false) {
     part = clockwise
     clockwise = r
-    r = this.hilighted_width
+    r = this.stmt_radius
   }
   this.push(`a ${this.format(r)},${this.format(r)} 0 0 ${clockwise ? 1 : 0}`)
   var dx = 0
@@ -485,20 +487,21 @@ var initWithStatementBrick = function(brick, opt) {
   var c = s.c
   var l = s.l
   var r_xy = this.stmt_radius
-  var r = r_xy / eYo.Unit.x
+  var r_c = r_xy / eYo.Unit.x
+  var r_l = r_xy / eYo.Unit.y
   var r_s = screen.rightSpan
   if (r_s) {
-    this.M(c - 1 / 2 + r)
+    this.M(c - 1 / 2 + r_c)
     r_s.header && (this.V(r_s.header))
     this.quarter_circle(r_xy, false, 1)
-    this.V(l - r)
+    this.V(l - r_c)
     this.quarter_circle(r_xy, false, 2)
   } else {
-    this.M(c - eYo.Unit.x / 2)
+    this.M(c - 1 / 2)
     this.v(l)
   }
   if (brick.left) {
-    this.H(1 / 2 + r)
+    this.H(1 / 2 + r_c)
     this.V(s.header)
     this.quarter_circle(r_xy, true, 2)
     s.header && (this.V(0))
@@ -506,13 +509,13 @@ var initWithStatementBrick = function(brick, opt) {
   } else if (brick.foot) {
     this.H(1 / 2)
   } else {
-    this.H(1 / 2 + r)
+    this.H(1 / 2 + r_c)
     this.quarter_circle(r_xy, true, 1)
   }
   if (brick.head) {
     this.V(0)
   } else {
-    this.V(r)
+    this.V(r_l)
     this.quarter_circle(r_xy, true, 2)
   }
   return this
@@ -536,34 +539,35 @@ var initWithGroupBrick = function(brick, opt) {
   var c = s.c
   var l = s.l
   var r_xy = this.stmt_radius
-  var r = r_xy / eYo.Unit.x
+  var r_c = r_xy / eYo.Unit.x
+  var r_l = r_xy / eYo.Unit.y
   var r_s = s.rightSpan
   if (r_s) {
-    this.M(c - 1/2 + r, 0)
+    this.M(c - 1/2 + r_c, 0)
     r_s.header && (this.V(r_s.header))
     this.quarter_circle(r_xy, false, 1)
-    this.V(l - s.suite - r)
+    this.V(l - s.suite - r_l)
     this.quarter_circle(r_xy, false, 2)
   } else {
     this.M(c - 1/2, 0)
     this.v(l - s.suite)
   }
   if (s.suite) {
-    this.H(eYo.Span.INDENT + r + 1/2)
+    this.H(eYo.Span.INDENT + r_c + 1/2)
     this.quarter_circle(r_xy, false, 1)
-    this.v(s.suite - 2 * r)
+    this.v(s.suite - 2 * r_l)
     this.quarter_circle(r_xy, false, 2)  
   }
   if (brick.foot) {
     this.H(1/2)
   } else {
-    this.H(1/2 + r)
+    this.H(1/2 + r_c)
     this.quarter_circle(r_xy, true, 1)
   }
   if (brick.head) {
     this.V(0)
   } else {
-    this.V(r)
+    this.V(r_l)
     this.quarter_circle(r_xy, true, 2)
   }
   return this
@@ -627,13 +631,13 @@ return function(brick, opt) {
       this.end(opt && opt.noClose)
       return this
     }
-    if (brick.out_m) {
+    if (brick.isExpr) {
       var f = initWithExpressionBrick
     } else if (opt && opt.dido) {
       f = initWithStatementBrick
     } else if (brick.isControl) {
       f = initWithControlBrick
-    } else if (brick.suite_m) {
+    } else if (brick.isGroup) {
       f = initWithGroupBrick
     } else {
       f = initWithStatementBrick

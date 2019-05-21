@@ -71,7 +71,7 @@ describe('SVG groups and paths', function () {
 
 /*
   // Shape
-  if (!node.workspace.options.readOnly && !svg.eventsInit_) {
+  if (!node.workspace.options.readOnly) {
     Blockly.bindEventWithChecks_(
       svg.group_, 'mousedown', brick, brick.onMouseDown_);
     Blockly.bindEventWithChecks_(

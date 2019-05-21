@@ -51,6 +51,27 @@ eYo.WorkspaceDelegate.prototype.driverCreate = function () {
 goog.provide('eYo.Gesture')
 
 /**
+ * Move the dragged/clicked block to the front of the workspace so that it is
+ * not occluded by other blocks.
+ * @private
+ */
+Blockly.Gesture.prototype.bringBlockToFront_ = function() {
+  // Blocks in the flyout don't overlap, so skip the work.
+  if (this.targetBlock_ && !this.flyout_) {
+    this.targetBlock_.ui.sendToFront()
+  }
+}
+
+/**
+ * Set the gesture's target.
+ * @param {eYo.Brick} brick  The brick the gesture targets.
+ * @private
+ */
+Blockly.Gesture.prototype.setTargetBlock_ = function(brick) {
+  this.targetBlock_ = brick
+}
+
+/**
  * Handle a mousedown/touchstart event on a workspace.
  * This is overriden because
  * `Blockly.WorkspaceSvg.prototype.onMouseDown_`

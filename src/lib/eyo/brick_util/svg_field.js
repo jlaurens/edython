@@ -15,56 +15,58 @@ goog.provide('eYo.Svg.Field')
 
 goog.require('eYo.Svg')
 
+goog.forwardDeclare('eYo.Field')
+
 // field management
+
 /**
- * Prepare the given label field.
- * @param {!eYo.Field} field  Label field to be prepared.
+ * Initializes the field SVG ressources.
+ * Does nothing if the field's brick has no SVG ressources.
+ * Part of the `beReady` process.
+ * @param {!eYo.Field} field
+ * @return {?eYo.Field}
  */
-eYo.Svg.prototype.fieldInit = function (field) {
+eYo.Svg.prototype.fieldInit = function(field) {
   if (field.svg) {
     return
   }
-  var svg = field.svg = {}
-  // Build the DOM.
-  svg.textElement_ = eYo.Svg.newElement('text',
-  {
-    class: eyo.isLabel ? 'eyo-label' : field.css_class,
-    y: eYo.Font.totalAscent
-  }, null)
-  if (eyo.isTextInput) {
-    svg.group_ = eYo.Svg.newElement('g', {}, null)
-    svg.borderRect_ = eYo.Svg.newElement('rect',
-      { class: 'eyo-none',
-        rx: 0,
-        ry: 0,
-        x: -eYo.Style.Edit.padding_h,
-        y: -eYo.Style.Edit.padding_v,
-        height: eYo.Font.height + 2 * eYo.Style.Edit.padding_v},
-      svg.group_)
-    svg.editRect_ = eYo.Svg.newElement('rect',
-      { class: 'eyo-edit',
-        rx: eYo.Style.Edit.radius,
-        ry: eYo.Style.Edit.radius,
-        x: -eYo.Style.Edit.padding_h - (eyo.left_space ? eYo.Unit.x : 0),
-        y: -eYo.Style.Edit.padding_v,
-        height: eYo.Unit.y + 2 * eYo.Style.Edit.padding_v},
-      svg.group_)
+  if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
+    field.css_class_ = eYo.Svg.getCssClassForText(field.text)
+  }
+  var svg = field.owner.svg || field.brick.ui.svg
+  if (!svg) {
+    throw 'MISSING owner svg'
+  }
+  var g = svg.group_
+  if (!g) { return }
+  svg = field.svg = {}
+  if (field.isTextInput) {
+    g = svg.group_ = eYo.Svg.newElement('g', {}, g)
+    svg.borderRect_ = eYo.Svg.newElement('rect', {
+      rx: 4,
+      ry: 4,
+      x: -eYo.Style.SEP_SPACE_X / 2,
+      y: 0,
+      height: 16
+    }, g)
+    /** @type {!Element} */
+    svg.textElement_ = eYo.Svg.newElement('text', {
+      class: field.css_class,
+      y: eYo.Font.totalAscent
+    }, g)
     field.mouseDownWrapper_ =
-      eYo.Svg.bindEventWithChecks_(svg.group_, 'mousedown', field, field.onMouseDown_
-      )
+        eYo.Svg.bindEventWithChecks_(
+      g, 'mousedown', field, eYo.Svg.fieldOnMouseDown_)
   } else {
-    svg.group_ = svg.textElement_
+    g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
+      class: field.css_class,
+      y: eYo.Font.totalAscent
+    }, g)
   }
-  ;(field.slot || field.brick.ui).svg.group_.appendChild(svg.group_)
-  if (field.css_class) {
-    goog.dom.classlist.add(svg.textElement_, eYo.Do.valueOf(field.css_class, field))
-  }
-  if (field.isLabel) {
-    // Configure the field to be transparent with respect to tooltips.
-    svg.textElement_.tooltip = field.brick
-    Blockly.Tooltip.bindMouseEvents(svg.textElement_)
-  }
-  this.fieldDisplayedUpdate(field)
+  !field.visible && (g.style.display = 'none')
+  // add tooltip management here
+  this.fieldUpdateEditable(field)
+  return field
 }
 
 /**
@@ -157,7 +159,7 @@ eYo.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
 
 /**
  * Make the given field a comment.
- * @param {*} field
+ * @param {eYo.Field} field
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeComment = function (field, yorn) {
@@ -185,7 +187,7 @@ eYo.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
   if (yorn) {
     g.removeAttribute('display')
   } else {
-    g.setAttribute('display', 'none')
+    g.style.display = 'none'
   }
 }
 
@@ -196,47 +198,6 @@ eYo.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
  */
 eYo.Svg.prototype.fieldDisplayedUpdate = function (field) {
   this.fieldDisplayedSet(field, field.visible)
-}
-
-/**
- * Initializes the field SVG ressources.
- * Does nothing if the field's brick has no SVG ressources.
- * Part of the `beReady` process.
- * @param {!eYo.Field} field
- * @return {?eYo.Field}
- */
-eYo.Svg.prototype.fieldInit = function(field) {
-  if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
-    field.css_class_ = eYo.Svg.getCssClassForText(field.text)
-  }
-  var svg = field.owner.svg || field.brick.ui.svg
-  if (!svg) { return }
-  var g = svg.group_
-  if (!g) { return }
-  if (field.svg) {
-    // Field has already been initialized once.
-    return;
-  }
-  svg = field.svg = {}
-  g = svg.group_ = eYo.Svg.newElement('g', {}, g)
-  !field.visible && (g.style.display = 'none')
-  svg.borderRect_ = eYo.Svg.newElement('rect', {
-    rx: 4,
-    ry: 4,
-    x: -eYo.Style.SEP_SPACE_X / 2,
-    y: 0,
-    height: 16
-  }, g)
-  /** @type {!Element} */
-  svg.textElement_ = eYo.Svg.newElement('text', {
-    class: 'blocklyText',
-    y: field.size_.height - 12.5
-  }, g)
-  field.mouseDownWrapper_ =
-      eYo.Svg.bindEventWithChecks_(
-          g, 'mousedown', field, field.onMouseDown_)
-  this.fieldUpdateEditable(field)
-  return field
 }
 
 /**
@@ -285,7 +246,10 @@ eYo.Svg.prototype.fieldTextCreate = function (field) {
  * @param {!Object} field  the node the driver acts on
  */
 eYo.Svg.prototype.fieldTextUpdate = function (field) {
-  field.svg.textElement_.textContent = field.text
+  // field.svg.textElement_.textContent = field.text
+  goog.dom.removeChildren(/** @type {!Element} */ (field.svg.textElement_))
+  var textNode = document.createTextNode(field.text)
+  field.svg.textElement_.appendChild(textNode)
 }
 
 /**
@@ -362,4 +326,18 @@ eYo.Svg.prototype.fieldGetDisplayText_ = function(field) {
   }
   // Replace whitespaces with non-breaking spaces so the text doesn't collapse.
   return text.replace(/\s/g, eYo.Svg.NBSP);
+}
+
+/**
+ * Handle a mouse down event on a field.
+ * @param {!Event} e Mouse down event.
+ * @private
+ */
+eYo.Svg.onFieldMouseDown_ = function(e) {
+  if (this.workspace && this.brick.isSelected) {
+    var gesture = this.workspace.getGesture(e)
+    if (gesture) {
+      gesture.setStartField(this)
+    }
+  }
 }

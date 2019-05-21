@@ -635,6 +635,16 @@ Object.defineProperties(eYo.Brick.prototype, {
   depth: {
     value: 0
   },
+  width: {
+    get () {
+      return this.span.width
+    }
+  },
+  height: {
+    get () {
+      return this.span.height
+    }
+  },
   recover: {
     get () {
       return this.workspace.eyo.recover
@@ -660,16 +670,19 @@ Object.defineProperties(eYo.Brick.prototype, {
       } else {
         width += this.span.right
       }
-      if ((nn = n.foot)) {
-        height += nn.size.height // NO Height of tab.
-        var w = nn.size.width
+      if ((nn = this.foot)) {
+        var size = nn.size
+        height += size.height // NO Height of tab.
+        var w = size.width
         if (width < w) {
           width = minWidth = w
         } else if (minWidth < w) {
           minWidth = w
         }
       }
-      return {height: height, width: width, minWidth: minWidth}
+      return {
+        ans: {height: height, width: width, minWidth: minWidth}
+      }
     })
   },
 })
@@ -2499,7 +2512,6 @@ eYo.Brick.prototype.beReady = function (headless) {
   }
   this.changeWrap(() => {
       this.beReady = eYo.Do.nothing // one shot function
-      this.eventsInit_ = true
       this.ui_ = new eYo.UI(this)
       this.forEachField(field => field.beReady())
       this.forEachSlot(slot => slot.beReady())

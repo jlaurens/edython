@@ -15,6 +15,8 @@ goog.provide('eYo.Svg.Brick')
 
 goog.require('eYo.Svg')
 
+goog.forwardDeclare('eYo.Selected')
+
 // Brick management
 
 /**
@@ -24,7 +26,11 @@ goog.require('eYo.Svg')
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickInit = function (brick) {
-  var svg = brick.ui.svg = {}
+  var ui = brick.ui
+  if (ui.svg) {
+    return
+  }
+  var svg = ui.svg = {}
   // groups:
   svg.group_ = eYo.Svg.newElement('g',
     {class: 'eyo-brick'}, null)
@@ -70,18 +76,18 @@ eYo.Svg.prototype.brickInit = function (brick) {
   svg.groupShape_ = eYo.Svg.newElement('g',
     {class: 'eyo-shape'}, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
-  if (!brick.workspace.options.readOnly && !svg.eventsInit_) {
+  if (!brick.workspace.options.readOnly) {
     eYo.Svg.bindEventWithChecks_(
-      svg.group_, 'mousedown', brick, brick.onMouseDown_);
+      svg.group_, 'mousedown', ui, ui.onMouseDown_);
     eYo.Svg.bindEventWithChecks_(
-      svg.group_, 'mouseup', brick, brick.onMouseUp_);
+      svg.group_, 'mouseup', ui, ui.onMouseUp_);
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
     eYo.Svg.bindEventWithChecks_(
-      svg.pathContour_, 'mousedown', brick, brick.onMouseDown_);
+      svg.pathContour_, 'mousedown', ui, ui.onMouseDown_);
     eYo.Svg.bindEventWithChecks_(
-      svg.pathContour_, 'mouseup', brick, brick.onMouseUp_);
+      svg.pathContour_, 'mouseup', ui, ui.onMouseUp_);
   }
   if (brick.isExpr) {
     goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -659,8 +665,8 @@ eYo.Svg.prototype.brickUpdateWrapped = function (brick) {
   var svg = brick.ui.svg
   if (brick.wrapped_ && !svg.wrapped) {
     svg.wrapped = true
-    svg.pathShape_.setAttribute('display', 'none')
-    svg.pathContour_.setAttribute('display', 'none')
+    svg.pathShape_.style.display = 'none'
+    svg.pathContour_.style.display = 'none'
   } else if (!brick.wrapped_ && svg.wrapped) {
     svg.wrapped = false
     svg.pathContour_.removeAttribute('display')
@@ -971,33 +977,13 @@ eYo.Svg.prototype.brickDisplayedSet = function (brick, visible) {
   var svg =  brick.ui.svg
   var g =  svg.group_
   if (g) {
-    var d = visible ? 'brick' : 'none'
+    var d = visible ? 'block' : 'none'
     g.style.display = d
     if ((g = svg.groupContour_)) {
       g.style.display = svg.groupShape_.style.display = d
     }
   }
 }
-
-/**
- * Hide the brick. Default implementation does nothing.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- * @private
- */
-eYo.Svg.prototype.brickHide = function (brick) {
-  var svg = brick.ui.svg
-  var root = svg.group_
-  if (root) {
-    root.setAttribute('display', 'none')
-    if (svg.groupContour_) {
-      svg.groupContour_.setAttribute('display', 'none')
-      svg.groupShape_.setAttribute('display', 'none')
-    }
-  } else {
-    console.log('Block with no root: did you ...initSvg()?')
-  }
-}
-
 
 /**
  * Draw/hide the sharp.
@@ -1019,7 +1005,7 @@ eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
     }
     var expected = brick.getStatementCount()
     while (length < expected) {
-      y = eYo.Font.totalAscent + length * eYo.Font.lineHeight
+      y = eYo.Font.totalAscent + length * eYo.Unit.y
       text = eYo.Svg.newElement('text',
         {'x': 0, 'y': y},
         g)
@@ -1155,4 +1141,295 @@ eYo.Svg.prototype.brickMoveOffDragSurface_ = function(brick, newXY) {
   // Translate to current position, turning off 3d.
   brick.translate(newXY.x, newXY.y)
   brick.workspace.blockDragSurface_.clearAndHide(brick.workspace.getCanvas())
+}
+
+/**
+ * Handle a mouse-down on an SVG brick.
+ * If the brick is sealed to its parent, forwards to the parent.
+ * This is used to prevent a dragging operation on a sealed brick.
+ * However, this will manage the selection of an input connection.
+ * onMouseDown_ message is sent multiple times for one mouse click
+ * because bricks may lay on above the other (when connected for example)
+ * Considering the selection of a connection, we manage the onMouseDown_ calls
+ * independantly. Whatever node is answering to a mousDown event,
+ * a connection will be activated if relevant.
+ * There is a problem due to the shape of the bricks.
+ * Depending on the brick, the coutour path ou the whole svg group
+ * is better suited to listed to mouse events.
+ * Actually, both are registered which implies that
+ * handlers must filter out reentrancy.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+eYo.UI.prototype.onMouseDown_ = function (e) {
+  var brick = this.brick_
+  var ws = brick.workspace
+  if (this.locked_) {
+    var parent = brick.parent
+    if (parent) {
+      return
+    }
+  }
+  if (brick.parentIsShort && !brick.isSelected) {
+    parent = brick.parent
+    if (!parent.isSelected) {
+      var gesture = ws.getGesture(e)
+      if (gesture) {
+        gesture.handleBlockStart(e, brick)
+      }    
+      return
+    }
+  }
+  // unfortunately, the mouse events sometimes do not find there way to the proper brick
+  var magnet = this.getMagnetForEvent(e)
+  var t9k = magnet
+  ? magnet.isInput
+    ? magnet.targetBrick || magnet.brick
+    : magnet.brick
+  : brick
+  while (t9k && (t9k.wrapped_ || t9k.locked_)) {
+    t9k = t9k.parent
+  }
+  // console.log('MOUSE DOWN', target)
+  // Next trick because of the the dual event binding
+  // reentrant management
+  if (!t9k || t9k.ui.alreadyMouseDownEvent_ === e) {
+    return
+  }
+  t9k.ui.alreadyMouseDownEvent_ = e
+  // Next is not good design
+  // remove any selected connection, if any
+  // but remember it for a contextual menu
+  t9k.ui.lastSelectedMagnet__ = eYo.Selected.magnet
+  // Prepare the mouseUp event for an eventual connection selection
+  t9k.ui.lastMouseDownEvent = t9k.isSelected ? e : null
+  if ((gesture = ws.getGesture(e))) {
+    gesture.handleBlockStart(e, t9k)
+  }
+}
+
+/**
+ * The selected connection is used to insert bricks with the keyboard.
+ * When a connection is selected, one of the ancestor bricks is also selected.
+ * Then, the higlighted path of the source bricks is not the outline of the brick
+ * but the shape of the connection as it shows when bricks are moved close enough.
+ */
+eYo.UI.prototype.onMouseUp_ = function (e) {
+  const magnet = this.getMagnetForEvent(e)
+  var b3k
+  var t9k = magnet
+  ? magnet.isInput
+    ? magnet.targetBrick || magnet.brick
+    : magnet.brick
+  : this.brick_
+  while (t9k && (t9k.wrapped_ || t9k.locked_)) {
+    t9k = t9k.parent
+  }
+  // reentrancy filter
+  if (!t9k || t9k.alreadyMouseUpEvent_ === e) {
+    return
+  }
+  t9k.alreadyMouseUpEvent_ = e
+  var ee = t9k.ui.lastMouseDownEvent
+  if (ee) {
+    // a brick was selected when the mouse down event was sent
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      // not a drag move
+      if (t9k.isSelected) {
+        // the brick was already selected,
+        if (magnet) {
+          // and there is a candidate selection
+          if (magnet.isSelected) {
+            // unselect
+            eYo.Selected.magnet = null
+          } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
+            if (magnet.isInput) {
+              if (!magnet.targetBrick) {
+                magnet.bindField && (magnet.select())
+              }
+            } else {
+              magnet.select()
+            }
+          } else {
+            eYo.Selected.magnet = null
+          }
+        } else if (eYo.Selected.magnet) {
+          eYo.Selected.magnet = null
+        } else if (t9k.selectMouseDownEvent) {
+          ;(this.isStmt.select() ? this : this.stmtParent) || t9k.root
+          t9k.selectMouseDownEvent = null
+        }
+      }
+    }
+  } else if ((b3k = eYo.Selected.brick) && (ee = b3k.selectMouseDownEvent)) {
+    b3k.selectMouseDownEvent = null
+    if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
+      // not a drag move
+      // select the brick which is an ancestor of the target
+      // which parent is the selected brick
+      var parent = t9k
+      while ((parent = parent.parent)) {
+        console.log('ancestor', parent.type)
+        if ((parent.isSelected)) {
+          t9k.select()
+          break
+        } else if (!parent.wrapped_) {
+          t9k = parent
+        }
+      }
+    }
+  }
+  eYo.App.didTouchBrick && (eYo.App.didTouchBrick(eYo.Selected.brick))
+}
+
+/**
+ * Get the input for the given event.
+ * The brick is already rendered once.
+ *
+ * For edython.
+ * @param {Object} e in general a mouse down event
+ * @return {Object|undefined|null}
+ */
+eYo.UI.prototype.getMagnetForEvent = function (e) {
+  var ws = this.brick_.workspace
+  if (!ws) {
+    return
+  }
+  // if we clicked on a field, no connection returned
+  var gesture = ws.getGesture(e)
+  if (gesture && gesture.startField_) {
+    return
+  }
+  var where = Blockly.utils.mouseToSvg(e, ws.getParentSvg(),
+  ws.getInverseScreenCTM());
+  where = goog.math.Coordinate.difference(where, ws.getOriginOffsetInPixels())
+  where.scale(1 / ws.scale)
+  var rect = this.boundingRect
+  where = goog.math.Coordinate.difference(where, rect.getTopLeft())
+  var R
+  var magnet = this.brick_.someInputMagnet(magnet => {
+    if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
+      if (magnet.isInput) {
+        var target = magnet.target
+        if (target) {
+          var targetM4t = target.brick.ui.getMagnetForEvent(e)
+          if (targetM4t) {
+            return targetM4t
+          }
+          R = new goog.math.Rect(
+            magnet.x + eYo.Unit.x / 2,
+            magnet.y,
+            target.width - eYo.Unit.x,
+            target.height
+          )
+          if (R.contains(where)) {
+            return magnet
+          }
+        }
+        if (magnet.slot && magnet.slot.bindField) {
+          R = new goog.math.Rect(
+            magnet.x,
+            magnet.y + eYo.Padding.t,
+            magnet.w * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else if (magnet.optional_ || magnet.s7r_) {
+          R = new goog.math.Rect(
+            magnet.x - eYo.Unit.x / 4,
+            magnet.y + eYo.Padding.t,
+            1.5 * eYo.Unit.x,
+            eYo.Font.height
+          )
+        } else {
+          R = new goog.math.Rect(
+            magnet.x + eYo.Unit.x / 4,
+            magnet.y + eYo.Padding.t,
+            (magnet.w - 1 / 2) * eYo.Unit.x,
+            eYo.Font.height
+          )
+        }
+        if (R.contains(where)) {
+          return magnet
+        }
+      } else if (magnet.isFoot || magnet.isSuite) {
+        R = new goog.math.Rect(
+          magnet.x,
+          magnet.y - eYo.Style.Path.width,
+          eYo.Span.tabWidth,
+          1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+        )
+        if (R.contains(where)) {
+          return magnet
+        }
+      }
+    }
+  })
+  if (magnet) {
+    return magnet
+  } else if ((magnet = this.brick_.head_m) && !magnet.hidden) {
+    R = new goog.math.Rect(
+      magnet.x,
+      magnet.y - 2 * eYo.Style.Path.width,
+      rect.width,
+      1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+    )
+    if (R.contains(where)) {
+      return magnet
+    }
+  }
+  if ((magnet = this.brick_.foot_m) && !magnet.hidden) {
+    if (rect.height > eYo.Unit.y) { // Not the cleanest design
+      R = new goog.math.Rect(
+        magnet.x,
+        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        eYo.Span.tabWidth + eYo.Style.Path.r, // R U sure?
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+      )
+    } else {
+      R = new goog.math.Rect(
+        magnet.x,
+        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        rect.width,
+        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+      )
+    }
+    if (R.contains(where)) {
+      return magnet
+    }
+  }
+  if ((magnet = this.brick_.suite_m) && !magnet.hidden) {
+    var r = eYo.Style.Path.Hilighted.width
+    R = new goog.math.Rect(
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
+      2 * r,
+      eYo.Unit.y - 2 * r // R U sure?
+    )
+    if (R.contains(where)) {
+      return magnet
+    }
+  }
+  if ((magnet = this.brick_.left_m) && !magnet.hidden) {
+    var r = eYo.Style.Path.Hilighted.width
+    R = new goog.math.Rect(
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
+      2 * r,
+      eYo.Unit.y - 2 * r // R U sure?
+    )
+    if (R.contains(where)) {
+      return magnet
+    }
+  }
+  if ((magnet = this.brick_.right_m) && !magnet.hidden) {
+    R = new goog.math.Rect(
+      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.y + r,
+      2 * r,
+      eYo.Unit.y - 2 * r // R U sure?
+    )
+    if (R.contains(where)) {
+      return magnet
+    }
+  }
 }

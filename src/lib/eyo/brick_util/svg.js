@@ -590,8 +590,14 @@ eYo.Svg.prototype.removeAttribute = function(element, attributeName) {
  */
 eYo.Svg.bindEventWithChecks_ = function(node, name, thisObject, func,
   opt_noCaptureIdentifier, opt_noPreventDefault) {
-  var handled = false
-  var wrapFunc = (e) => {
+    if (!func) {
+      throw 'MISSING func'
+    }
+    if (!thisObject) {
+      throw 'MISSING thisObject'
+    }
+    var handled = false
+    var wrapFunc = e => {
     // Handle each touch point separately.  If the event was a mouse event, this
     // will hand back an array with one element, which we're fine handling.
     var noCaptureIdentifier = opt_noCaptureIdentifier // catch it
@@ -599,7 +605,7 @@ eYo.Svg.bindEventWithChecks_ = function(node, name, thisObject, func,
     events.forEach(event => {
       if (noCaptureIdentifier || Blockly.Touch.shouldHandleEvent(event)) {
         Blockly.Touch.setClientFromTouch(event)
-        ;(thisObject && (func.call(thisObject, event))) || func(event)
+        thisObject ? func.call(thisObject, event) : func(event)
         handled = true
       }
     })
