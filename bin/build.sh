@@ -365,6 +365,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/closure-library/submenurenderer.js" \
 --js "src/lib/eyo/brick_util/svg_brick.js" \
 --js "src/lib/eyo/brick_util/svg_field.js" \
+--js "src/lib/eyo/brick_util/svg_magnet.js" \
 --js "src/lib/eyo/brick_util/svg_slot.js" \
 --js "src/lib/eyo/workspace/key_handler.js" \
 --js "src/lib/eyo/closure-library/submenu.js" \

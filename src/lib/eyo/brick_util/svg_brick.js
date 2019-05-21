@@ -618,8 +618,8 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
     var oldXY = ui.xyInSurface
     brick.parent.ui.svg.group_.appendChild(g)
     var newXY = ui.xyInSurface
-    // Move the connections to match the child's new position.
-    brick.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
+    // Move the magnets to match the child's new position.
+    brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     var p_svg = newParent.ui.svg
     if (svg.groupContour_ && p_svg.groupContour_) {
       if (this.contourAboveParent_(brick)) {
@@ -1087,7 +1087,7 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
   }
-  brick.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y);
+  brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y);
 }
 
 /**

@@ -183,12 +183,20 @@ describe('Current Span statements', function () {
       main: m,
       footer: f
     })
-    b_1.right_m.connect(b_2.left_m)
+    b_1.right = b_2
     b_2.right = b_3
+    test(b_1, 0, 1, 0)
+    test(b_2, 0, 1, 0)
+    test(b_3, 0, 1, 0)
+    s_3.footer = 2
+    test(b_1, 0, 1, 2)
+    test(b_2, 0, 1, 2)
+    test(b_3, 0, 1, 2)
+    
   })
   after(function() {
-    b_1.dispose()
-    b_2.dispose()
     b_3.dispose()
+    b_2.dispose()
+    b_1.dispose()
   })
 })

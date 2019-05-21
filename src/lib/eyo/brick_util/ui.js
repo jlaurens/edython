@@ -81,11 +81,6 @@ Object.defineProperties(eYo.UI.prototype, {
       return this.brick_.workspace.eyo.driver
     }
   },
-  change: {
-    get() {
-      return this.brick_.change
-    }
-  },
   reentrant_: {
     get() {
       return this.brick_.reentrant_
@@ -239,7 +234,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
   if (eYo.Brick.debugStartTrackingRender) {
     console.log(eYo.Brick.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.Span.INDENT, 1)
+  m4t.setOffset(eYo.Span.INDENT, this.brick_.span.l)
   var t9k = m4t.targetBrick
   if (t9k) {
     this.someTargetIsMissing = false
@@ -266,6 +261,7 @@ eYo.UI.prototype.renderSuite_ = function (io) {
 /**
  * Render the brick.
  * Lays out and reflows a brick based on its contents and settings.
+ * Rendering is complicated considering the possibility of both line continuation and multi line strings.
  * @param {*} recorder
  * @param {boolean=} optBubble If false, just render this.brick_ brick.
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
@@ -1549,13 +1545,19 @@ eYo.UI.prototype.setOffset = function (dx, dy) {
 }
 
 /**
- * Move the connections to follow a translation of the brick.
+ * Move the magnets to follow a translation of the brick.
  * @param {Number} dx
  * @param {Number} dy
  * @private
  */
 eYo.UI.prototype.moveMagnets_ = function (dx, dy) {
-  this.brick_.moveMagnets_(dx, dy)
+  if (!this.rendered) {
+    // Rendering is required to lay out the blocks.
+    // This is probably an invisible block attached to a collapsed block.
+    return;
+  }
+  this.brick_.forEachMagnet(m4t => m4t.moveBy(dx, dy))
+  this.childBlocks_.forEach(b3k => b3k.moveMagnets_(dx, dy))
 }
 
 //////////////////

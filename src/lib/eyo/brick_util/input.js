@@ -155,21 +155,21 @@ Object.defineProperties(eYo.Input.prototype, {
 })
 
 /**
- * Sever all links to this input.
- * The wrapped_ bricks may not yet be disposed.
+ * Dispose of the receiver and the targets.
  */
 eYo.Input.prototype.dispose = function() {
+  if (!this.brick_) {
+    return
+  }
   this.fieldRow_.forEach(f => f.dispose())
   this.fieldRow_ = undefined
   var m4t = this.magnet_
-  if (m4t) {
-    m4t.wrapped_ = null
-    var t9k = m4t.targetBrick
-    t9k && (t9k.dispose())
-    m4t.dispose()
-    this.magnet_ = undefined
-  }
-  this.brick_ = null
+  m4t.wrapped_ = null
+  var t9k = m4t.targetBrick
+  t9k && (t9k.dispose())
+  m4t.dispose()
+  this.magnet_ = undefined
+  this.brick_ = undefined
 }
 
 /**
@@ -177,7 +177,7 @@ eYo.Input.prototype.dispose = function() {
  */
 eYo.Input.prototype.beReady = function () {
   this.beReady = eYo.Do.nothing // one shot function
-  this.fieldRow.forEach(f => field.init())
+  this.fieldRow.forEach(f => f.init())
   var m4t = this.magnet
   m4t && (m4t.beReady())
 }

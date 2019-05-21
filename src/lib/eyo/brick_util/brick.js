@@ -195,19 +195,19 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   // Remove from workspace
   workspace.eyo.removeBrick(this)
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
-  this.span.dispose()
-  this.span_ = undefined
   eYo.Events.disableWrap(() => {
-    this.disposeSlots()
+    this.disposeSlots(healStack)
     this.disposeFields()
     this.disposeData()
-    this.disposeMagnets()
     this.forEachInput(input => input.dispose())
+    this.disposeMagnets()
     this.inputList_ = undefined
     this.children_ = undefined
   })
   // this must be done after the child bricks are released
   this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
+  this.span.dispose()
+  this.span_ = undefined
   this.workspace.resizeContents()
   this.workspace = undefined
 }
@@ -403,7 +403,8 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.out_m.targetBrick = newValue
+      var m = this.out_m
+      m && (m.targetBrick = newValue)
     }
   },
   head: {
@@ -412,7 +413,8 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.head_m.targetBrick = newValue
+      var m = this.head_m
+      m && (m.targetBrick = newValue)
     }
   },
   left: {
@@ -421,7 +423,8 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.left_m.targetBrick = newValue
+      var m = this.left_m
+      m && (m.targetBrick = newValue)
     }
   },
   right: {
@@ -430,17 +433,9 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.right_m.targetBrick = newValue
+      var m = this.right_m
+      m && (m.targetBrick = newValue)
     }
-  },
-  rightComment: {
-    get () {
-      var b = this.right
-      return b && b.isComment ? b : null
-    }
-  },
-  isComment: {
-    value: false
   },
   suite: {
     get () {
@@ -448,7 +443,8 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.suite_m.targetBrick = newValue
+      var m = this.suite_m
+      m && (m.targetBrick = newValue)
     }
   },
   foot: {
@@ -457,7 +453,8 @@ Object.defineProperties(eYo.Brick.prototype, {
       return m && m.targetBrick
     },
     set (newValue) {
-      this.foot_m.targetBrick = newValue
+      var m = this.foot_m
+      m && (m.targetBrick = newValue)
     }
   },
   leftMost: {
@@ -499,6 +496,15 @@ Object.defineProperties(eYo.Brick.prototype, {
       }
       return ans
     }
+  },
+  rightComment: {
+    get () {
+      var b = this.right
+      return b && b.isComment ? b : null
+    }
+  },
+  isComment: {
+    value: false
   },
 })
 
@@ -1352,9 +1358,10 @@ eYo.Brick.prototype.makeSlots = (() => {
 /**
  * Dispose the slots
  * For edython.
+ * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
  */
-eYo.Brick.prototype.disposeSlots = function () {
-  this.forEachSlot(slot => slot.dispose())
+eYo.Brick.prototype.disposeSlots = function (healStack) {
+  this.forEachSlot(slot => slot.dispose(healStack))
   this.slots_ = null
 }
 
@@ -1384,6 +1391,16 @@ Object.defineProperties(eYo.Brick.prototype, {
   suite_m: { get () { return this.magnets.suite }},
   foot_m: { get () { return this.magnets.foot }},
 })
+
+/**
+ * Execute the helper for each magnet, either superior or inferior.
+ * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> undefined
+ */
+eYo.Brick.prototype.forEachMagnet = function (helper) {
+  Object.values(this.magnets).forEach(helper)
+  this.forEachSlot(s => s.magnet && helper(s.magnet))
+  this.forEachInput(i => i.magnet && helper(i.magnet))
+}
 
 /**
  * Set the [python ]type of the delegate and its brick.
@@ -1686,10 +1703,10 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // How many lines did I add? Where did I add them?
   var t9k = m4t.targetBrick
   if (m4t.isFoot) {
-    this.span.addFoot(targetBrick.span.l)
+    this.span.addFoot(t9k.span.l)
   } else if (m4t.isSuite) {
     this.span.black = 0
-    this.span.addSuite(targetBrick.span.l)
+    this.span.addSuite(t9k.span.l)
   } else if (m4t.isRight) {
     this.span.resetPadding() && b.updateShape()
   }
@@ -1713,16 +1730,17 @@ eYo.Brick.prototype.willDisconnect = function (m4t) {
  */
 eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   // how many bricks/line did I remove in the superior brick?
+  var s = this.span
   if (m4t.isFoot) {
-    this.span.foot = 0
+    s.foot = 0
   } else if (m4t.isSuite) {
-    this.span.black = 1
-    this.span.suite = 0
+    s.black = 1
+    s.suite = 0
   } else if (m4t.isRight) {
-    var span = oldTargetM4t.brick.span
-    this.addFooter(-span.footer - span.main + 1)
+    var s_t = oldTargetM4t.brick.span
+    s.addFooter(-s_t.footer - s_t.main + 1)
   } else if (m4t.isLeft) {
-    this.span.header = 0
+    s.header = 0
   }
   this.incrementChangeCount()
 }

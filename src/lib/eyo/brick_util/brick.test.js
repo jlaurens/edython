@@ -20,3 +20,121 @@ describe('One brick (ALIASED)', function () {
     b3k.dispose()
   })
 })
+
+describe('Statement magnets', function () {
+  var b_1, b_2
+  before(function() {
+    var type = 'test_stmt_magnets'
+    eYo.T3.Stmt[type] = type
+    eYo.Brick.Stmt.makeSubclass(type, {
+      statement: {
+        left: { check: type },
+        right: { check: type },
+      }
+    })  
+    b_1 = eYo.Test.new_brick(type)
+    s_1 = b_1.span
+    chai.assert(b_1.isStmt, 'MISSED')
+    b_2 = eYo.Test.new_brick(type)
+    s_2 = b_2.span
+    chai.assert(b_2.isStmt, 'MISSED')
+  })
+  ;[
+    ['head', 'foot'],
+    ['foot', 'head'],
+    ['left', 'right'],
+    ['right', 'left'],
+  ].forEach(args => {
+    it (`${args[0]} -> ${args[1]}`, function () {
+      b_1[args[0]] = b_2
+      chai.assert(b_1[args[0]] === b_2, `MISSED ${args[0]} -> ${args[1]}`)
+      chai.assert(b_2[args[1]] === b_1, `MISSED ${args[1]} <- ${args[0]}`)
+      b_1[args[0]] = undefined
+      chai.assert(!b_1[args[0]], `MISSED ${args[0]} -> falsy`)
+      chai.assert(!b_2[args[1]], `MISSED ${args[1]} <- falsy`)
+    })  
+  })
+  ;['head', 'left'].forEach(k => {
+    it (`${k} -> parent`, function () {
+      b_1[k] = b_2
+      chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
+      chai.assert(b_1.parent === b_2, `MISSED parent <- ${k}`)
+      b_1[k] = undefined
+      chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
+      chai.assert(!b_1.parent, `MISSED parent <- falsy`)
+    })
+  })
+  ;['right', 'foot'].forEach(k => {
+    it (`${k} -> parent`, function () {
+      b_1[k] = b_2
+      chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
+      chai.assert(b_2.parent === b_1, `MISSED parent <- ${k}`)
+      b_1[k] = undefined
+      chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
+      chai.assert(!b_2.parent, `MISSED parent <- falsy`)
+    })
+  })
+  after(function() {
+    b_2.dispose()
+    b_1.dispose()
+  })
+})
+
+describe('Group magnets', function () {
+  var b_1, b_2
+  before(function() {
+    var type = 'test_group_magnets'
+    eYo.T3.Stmt[type] = type
+    eYo.Brick.Group.makeSubclass(type, {
+      statement: {
+        left: { check: type },
+        right: { check: type },
+      }
+    })  
+    b_1 = eYo.Test.new_brick(type)
+    s_1 = b_1.span
+    chai.assert(b_1.isStmt, 'MISSED')
+    b_2 = eYo.Test.new_brick(type)
+    s_2 = b_2.span
+    chai.assert(b_2.isStmt, 'MISSED')
+  })
+  ;[
+    ['head', 'foot'],
+    ['foot', 'head'],
+    ['left', 'right'],
+    ['right', 'left'],
+  ].forEach(args => {
+    it (`${args[0]} -> ${args[1]}`, function () {
+      b_1[args[0]] = b_2
+      chai.assert(b_1[args[0]] === b_2, `MISSED ${args[0]} -> ${args[1]}`)
+      chai.assert(b_2[args[1]] === b_1, `MISSED ${args[1]} <- ${args[0]}`)
+      b_1[args[0]] = undefined
+      chai.assert(!b_1[args[0]], `MISSED ${args[0]} -> falsy`)
+      chai.assert(!b_2[args[1]], `MISSED ${args[1]} <- falsy`)
+    })  
+  })
+  ;['head', 'left'].forEach(k => {
+    it (`${k} -> parent`, function () {
+      b_1[k] = b_2
+      chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
+      chai.assert(b_1.parent === b_2, `MISSED parent <- ${k}`)
+      b_1[k] = undefined
+      chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
+      chai.assert(!b_1.parent, `MISSED parent <- falsy`)
+    })
+  })
+  ;['right', 'suite', 'foot'].forEach(k => {
+    it (`${k} -> parent`, function () {
+      b_1[k] = b_2
+      chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
+      chai.assert(b_2.parent === b_1, `MISSED parent <- ${k}`)
+      b_1[k] = undefined
+      chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
+      chai.assert(!b_2.parent, `MISSED parent <- falsy`)
+    })
+  })
+  after(function() {
+    b_2.dispose()
+    b_1.dispose()
+  })
+})

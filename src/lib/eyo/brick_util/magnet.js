@@ -246,15 +246,17 @@ Object.defineProperties(eYo.Magnet, {
 
 /**
  * Dispose of the ressources.
+ * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
  */
-eYo.Magnet.prototype.dispose = function () {
+eYo.Magnet.prototype.dispose = function (healStack) {
   var t9k = this.targetBrick
   if (t9k) {
-    if (!this.wrapped_) {
-      throw 'Disconnect magnet before disposing of it.'
+    if (this.isSuperior && (this.wrapped_ || !healStack)) {
+      t9k.dispose()
+    } else {
+      this.disconnect()
     }
     this.disconnect()
-    t9k.dispose()
   }
   if (this.wrapped_) {
     this.brick.removeWrapperMagnet(this)
@@ -1396,9 +1398,9 @@ eYo.Magnet.prototype.tighten_ = function() {
     var dx = m4t.x_ - this.x_
     var dy = m4t.y_ - this.y_
     if (dx != 0 || dy != 0) {
-      var t9k = this.targetBrick
-      t9k.ui.setOffset(-dx, -dy)
-      t9k.moveMagnets_(-dx, -dy)
+      var ui = this.targetBrick.ui
+      ui.setOffset(-dx, -dy)
+      ui.moveMagnets_(-dx, -dy)
     }
   }
 }
@@ -1505,26 +1507,25 @@ eYo.Magnet.prototype.unhideAll = function() {
   }
 }
 
+// Position
+
 /**
  * Find the closest compatible connection to this connection.
  * All parameters are in workspace units.
  * @param {goog.math.Coordinate} maxLimit The maximum radius to another connection.
- * @param {goog.math.Coordinate} dx Horizontal offset between this connection's location
- *     in the database and the current location (as a result of dragging).
- * @param {goog.math.Coordinate} dy Vertical offset between this connection's location
+ * @param {goog.math.Coordinates} dxy Horizontal offset between this connection's location
  *     in the database and the current location (as a result of dragging).
  * @return {!{connection: ?eYo.Magnet, radius: number}} Contains two
  *     properties: 'connection' which is either another connection or null,
  *     and 'radius' which is the distance.
  * @suppress{accessControls}
  */
-eYo.Magnet.prototype.closest = function (maxLimit, dxy, dy) {
+eYo.Magnet.prototype.closest = function (maxLimit, dxy) {
   if (this.hidden_) {
     return {}
   }
   return this.dbOpposite_.searchForClosest(this, maxLimit, dxy)
 }
-
 
 /**
  * Move this magnet to the location given by its offset within the brick and
@@ -1551,6 +1552,15 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
     // Insert it into its new location in the database.
     this.hidden || (this.inDB_ = true)
   }
+}
+
+/**
+ * Change the connection's coordinates.
+ * @param {number} dx Change to x coordinate, in workspace units.
+ * @param {number} dy Change to y coordinate, in workspace units.
+ */
+eYo.Magnet.prototype.moveBy = function(dx, dy) {
+  this.moveTo(this.x_ + dx, this.y_ + dy)
 }
 
 /**
@@ -1669,6 +1679,7 @@ eYo.Magnet.prototype.disconnect = (() => {
         child.render()
       }
     })
+    child.parent = null
     return true
   }
  }) ()

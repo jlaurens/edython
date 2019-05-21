@@ -258,60 +258,14 @@ eYo.Svg.newElement = function(name, attrs, parent) {
   return e
 }
 
-
-// Magnet management
-
-/**
- * Dispose of the magnet SVG ressources.
- * @param {!eYo.Magnet} magnet
- */
-eYo.Svg.prototype.magnetDispose = eYo.Do.nothing
-
-/**
- * Hilight the given connection.
- * @param {!eYo.Magnet} m4t
- */
-eYo.Svg.prototype.magnetHilight = function (m4t) {
-  if (!m4t.workspace) {
-    return
-  }
-  var node = m4t.brick
-  var g = node.ui.svg.group_
-  var steps
-  if (m4t.isInput) {
-    if (m4t.target) {
-      steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
-    } else {
-      steps = eYo.Shape.definitionWithMagnet(m4t)
-      eYo.Svg.magnetHighlightedPath_ =
-      eYo.Svg.newElement('path',
-        {
-          class: 'blocklyHighlightedConnectionPath',
-          d: steps
-        },
-        g
-      )
-      return
-    }
-  } else if (m4t.isOutput) {
-    steps = eYo.Shape.definitionWithBrick(node)
-  } else {
-    steps = eYo.Shape.definitionWithMagnet(m4t)
-  }
-  eYo.Svg.magnetHighlightedPath_ =
-  eYo.Svg.newElement('path',
-    {class: 'blocklyHighlightedConnectionPath',
-      'd': steps,
-      transform: `translate(${m4t.x || 0},${m4t.y || 0})`},
-      g)
-}
-
 /**
  * Regular expressions.
  */
-eYo.Svg.prototype.TRANSLATE_REGEX_ = /translate\s*\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/
-eYo.Svg.prototype.TRANSLATE_2D_REGEX_ = /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
-eYo.Svg.prototype.TRANSLATE_3D_REGEX_ = /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
+Object.defineProperties(eYo.Svg, {
+  TRANSLATE_REGEX_: { value: /translate\s*\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/ },
+  TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
+  TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
+})
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
@@ -333,7 +287,7 @@ eYo.Svg.prototype.xyInParent = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && (transform.match(this.TRANSLATE_REGEX_))
+  var r = transform && (transform.match(eYo.Svg.TRANSLATE_REGEX_))
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -343,10 +297,10 @@ eYo.Svg.prototype.xyInParent = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style');
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(this.TRANSLATE_2D_REGEX_)
+    var styleComponents = style.match(eYo.Svg.TRANSLATE_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(this.TRANSLATE_3D_REGEX_)
+      styleComponents = style.match(eYo.Svg.TRANSLATE_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])

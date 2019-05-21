@@ -96,13 +96,14 @@ Object.defineProperties(eYo.Slot.prototype, {
 /**
  * Dispose of all attributes.
  * Asks the owner's renderer to do the same.
- */
-eYo.Slot.prototype.dispose = function () {
+* @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+*/
+eYo.Slot.prototype.dispose = function (healStack) {
   eYo.Field.disposeFields(this)
   var d = this.ui_driver
   d && (d.slotDispose(this))
   this.model_ = undefined
-  this.magnet_ && (this.magnet_.dispose())
+  this.magnet_ && (this.magnet_.dispose(healStack))
   this.magnet_ = undefined
   this.key_ = undefined
   this.brick_ = undefined
