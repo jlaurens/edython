@@ -161,6 +161,7 @@ eYo.UI.prototype.drawFoot_ = function (recorder) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.UI.prototype.renderRight_ = function (io) {
+  this.span.right = 0
   var m4t = this.brick_.right_m
   if (m4t) {
     var t9k = m4t.targetBrick
@@ -206,6 +207,7 @@ eYo.UI.prototype.renderRight_ = function (io) {
         }
       }
       this.span.footer = t9k.span.footer + t9k.span.main - 1
+      this.span.right = t9k.span.c + t9k.span.right
       return !t9k.isComment
     } else if (this.brick_.isGroup) {
       this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
@@ -1688,6 +1690,14 @@ Object.defineProperties(eYo.UI.prototype, {
         this.xyInSurface,
         this.size
       )
+    }
+  },
+  /**
+   * The size
+   */
+  size: {
+    get () {
+      return this.brick_.size
     }
   },
   /**

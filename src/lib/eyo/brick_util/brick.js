@@ -664,8 +664,9 @@ Object.defineProperties(eYo.Brick.prototype, {
       // Recursively add size of subsequent bricks.
       var nn, HW
       if ((nn = this.right)) {
-        minWidth += nn.size.minWidth
-        width += nn.size.width
+        var size = nn.size
+        minWidth += size.minWidth
+        width += size.width
         // The height of the line is managed while rendering.
       } else {
         width += this.span.right

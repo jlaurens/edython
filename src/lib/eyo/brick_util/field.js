@@ -32,8 +32,8 @@ goog.require('goog.asserts');
 eYo.Field = function (bsi, name, text) {
   eYo.Field.superClass_.constructor.call(this, bsi)
   this.name_ = name
-  this.size_ = new eYo.Size(0, 1)
-  this.text__ = text
+  this.size_ = new eYo.Size()
+  this.text_ = text
   this.reentrant_ = {}
   Object.defineProperty(bsi, `${name}_f`, { value: this})
 }
@@ -328,7 +328,7 @@ Object.defineProperties(eYo.Field.prototype, {
         return
       }
       eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, newValue)
-      this.text__ = newValue
+      this.size.setFromText(this.text__ = newValue)
       this.placeholder__ = !newValue || !newValue.length
     }
   }
@@ -373,12 +373,7 @@ Object.defineProperties(eYo.Field.prototype, {
         // No change.
         return
       }
-      this.text_ = newText // one _ only
-      this.size.setFromText(newText)
-      if (this.brick.rendered) {
-        this.brick.render()
-        this.brick.bumpNeighbours_()
-      }
+      this.brick.changeWrap(() => this.text_ = newText)
     }
   },
   /**
@@ -591,24 +586,6 @@ eYo.FieldInput.prototype.css_class_ = 'eyo-code'
 
 // Private properties
 Object.defineProperties(eYo.FieldInput.prototype, {
-  text_: {
-    get () {
-      return this.text__
-    },
-    /**
-     * 
-     */
-    set (newValue) {
-      if (!goog.isDef(newValue)) {
-        // No change if null.
-        return;
-      }
-      if (this.text__ === newValue) {
-        return
-      }
-      this.text__ = newValue
-    }
-  },
   placeholderText_: { value: undefined, writable: true },
 })
 

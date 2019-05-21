@@ -62,7 +62,7 @@ eYo.Span = function (brick) {
   this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
 }
 
-// default property values
+// default private property values
 Object.defineProperties(eYo.Span.prototype, {
   brick_: { value: undefined, writable: true },
   c_min_: { value: 2, writable: true },
@@ -223,6 +223,10 @@ Object.defineProperties(eYo.Span.prototype, {
     set (newValue) {
       this.addFooter(newValue - this.footer_)
     }
+  },
+  right: {
+    value: 0,
+    writable: true
   }
 })
 
