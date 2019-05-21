@@ -159,15 +159,15 @@ Object.defineProperties(eYo.Input.prototype, {
  * The wrapped_ bricks may not yet be disposed.
  */
 eYo.Input.prototype.dispose = function() {
-  this.fieldRow.forEach(f => f.dispose())
-  this.fieldRow = undefined
-  var m4t = this.magnet
+  this.fieldRow_.forEach(f => f.dispose())
+  this.fieldRow_ = undefined
+  var m4t = this.magnet_
   if (m4t) {
     m4t.wrapped_ = null
     var t9k = m4t.targetBrick
     t9k && (t9k.dispose())
     m4t.dispose()
-    this.magnet = undefined
+    this.magnet_ = undefined
   }
   this.brick_ = null
 }
