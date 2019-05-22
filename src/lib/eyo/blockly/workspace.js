@@ -63,6 +63,11 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.getToolbox()
     }
   },
+  draggable: {
+    get () {
+      return this.isDraggable()
+    }
+  }
 })
 
 /**
@@ -524,27 +529,34 @@ eYo.copyBrick = function(brick, deep) {
 }
 
 /**
- * Record the block that a gesture started on, and set the target block
- * appropriately.
- * Addendum: there is a switch to only start from a statement
- * @param {eYo.Brick} block The block the gesture started on.
+ * Look up the gesture that is tracking this touch stream on this workspace.
+ * May create a new gesture.
+ * @param {!Event} e Mouse event or touch event.
+ * @return {Blockly.TouchGesture} The gesture that is tracking this touch
+ *     stream, or null if no valid gesture exists.
  * @package
  */
-Blockly.Gesture.prototype.setStartBlock = function(brick) {
-  var candidate = brick
-  var selected = eYo.Selected.brick
-  do {
-    if (brick.isStmt || selected === brick) {
-      candidate = brick
-      break
-    } else {
-      candidate = brick
-    }
-  } while ((brick = brick.parent))
-  if (!this.startBlock_) {
-    this.startBlock_ = candidate
-    candidate.isInFlyout && (candidate = candidate.root)
-    this.setTargetBlock_(candidate)
-  }
-}
+Blockly.WorkspaceSvg.prototype.getGesture = function(e) {
+  var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
+      e.type == 'pointerdown');
 
+  var gesture = this.currentGesture_;
+  if (gesture) {
+    if (isStart && gesture.hasStarted()) {
+      console.warn('tried to start the same gesture twice')
+      // That's funny.  We must have missed a mouse up.
+      // Cancel it, rather than try to retrieve all of the state we need.
+      gesture.cancel()
+      return null
+    }
+    return gesture
+  }
+
+  // No gesture existed on this workspace, but this looks like the start of a
+  // new gesture.
+  if (isStart) {
+    return (this.currentGesture_ = new eYo.Gesture(e, this))
+  }
+  // No gesture existed and this event couldn't be the start of a new gesture.
+  return null
+};

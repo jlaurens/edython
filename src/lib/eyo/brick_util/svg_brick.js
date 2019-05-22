@@ -77,16 +77,16 @@ eYo.Svg.prototype.brickInit = function (brick) {
     {class: 'eyo-shape'}, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.workspace.options.readOnly) {
-    eYo.Svg.bindEventWithChecks_(
+    this.bindEventWithChecks_(
       svg.group_, 'mousedown', ui, ui.onMouseDown_);
-    eYo.Svg.bindEventWithChecks_(
+      this.bindEventWithChecks_(
       svg.group_, 'mouseup', ui, ui.onMouseUp_);
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
-    eYo.Svg.bindEventWithChecks_(
+    this.bindEventWithChecks_(
       svg.pathContour_, 'mousedown', ui, ui.onMouseDown_);
-    eYo.Svg.bindEventWithChecks_(
+    this.bindEventWithChecks_(
       svg.pathContour_, 'mouseup', ui, ui.onMouseUp_);
   }
   if (brick.isExpr) {
@@ -109,7 +109,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
       svg.pathPlayContour_.setAttribute('d', eYo.Shape.definitionForPlayContour({x: 0, y: 0}))
       svg.pathPlayIcon_.setAttribute('d', eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
       svg.mouseDownWrapper_ =
-        eYo.Svg.bindEventWithChecks_(svg.pathPlayIcon_, 'mousedown', null, e => {
+        this.bindEventWithChecks_(svg.pathPlayIcon_, 'mousedown', null, e => {
         if (brick.isInFlyout) {
           return
         }

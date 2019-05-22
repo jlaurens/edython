@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Svg')
 
-goog.require('eYo.Driver')
+goog.require('eYo.Dom')
 goog.require('eYo.T3.Profile')
 goog.require('eYo.Field')
 
@@ -229,7 +229,7 @@ eYo.setup.register(() => {
 eYo.Svg = function () {
   eYo.Svg.superClass_.constructor.call(this)
 }
-goog.inherits(eYo.Svg, eYo.Driver)
+goog.inherits(eYo.Svg, eYo.Dom)
 
 eYo.Svg.prototype.withBBox = true
 
@@ -521,10 +521,10 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     this.switcher_.style.left = '0px'
     this.switcher_.style.top = '0px'
   }
-  this.onButtonDownWrapper_ = eYo.Svg.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
-  this.onButtonEnterWrapper_ = eYo.Svg.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
-  this.onButtonLeaveWrapper_ = eYo.Svg.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
-  this.onButtonUpWrapper_ = eYo.Svg.bindEventWithChecks_(this.control_, 'mouseup', this, this.onButtonUp_)
+  this.onButtonDownWrapper_ = this.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
+  this.onButtonEnterWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
+  this.onButtonLeaveWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
+  this.onButtonUpWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseup', this, this.onButtonUp_)
 
   goog.dom.insertSiblingBefore(ftb.div_, ftb.flyout_.svg.group_)
 }
@@ -533,7 +533,6 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
 Object.defineProperties(eYo.Field, {
   svg: { value: undefined, writable: true }
 })
-
 
 /**
  * The css class for the given text
@@ -569,90 +568,4 @@ eYo.Svg.prototype.removeAttribute = function(element, attributeName) {
   } else {
     element.removeAttribute(attributeName)
   }
-}
-
-/**
- * Bind an event to a function call.  When calling the function, verifies that
- * it belongs to the touch stream that is currently being processed, and splits
- * multitouch events into multiple events as needed.
- * @param {!EventTarget} node Node upon which to listen.
- * @param {string} name Event name to listen to (e.g. 'mousedown').
- * @param {Object} thisObject The value of 'this' in the function.
- * @param {!Function} func Function to call when event is triggered.
- * @param {boolean=} opt_noCaptureIdentifier True if triggering on this event
- *     should not block execution of other event handlers on this touch or other
- *     simultaneous touches.
- * @param {boolean=} opt_noPreventDefault True if triggering on this event
- *     should prevent the default handler.  False by default.  If
- *     opt_noPreventDefault is provided, opt_noCaptureIdentifier must also be
- *     provided.
- * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent_.
- */
-eYo.Svg.bindEventWithChecks_ = function(node, name, thisObject, func,
-  opt_noCaptureIdentifier, opt_noPreventDefault) {
-    if (!func) {
-      throw 'MISSING func'
-    }
-    if (!thisObject) {
-      throw 'MISSING thisObject'
-    }
-    var handled = false
-    var wrapFunc = e => {
-    // Handle each touch point separately.  If the event was a mouse event, this
-    // will hand back an array with one element, which we're fine handling.
-    var noCaptureIdentifier = opt_noCaptureIdentifier // catch it
-    var events = Blockly.Touch.splitEventByTouches(e)
-    events.forEach(event => {
-      if (noCaptureIdentifier || Blockly.Touch.shouldHandleEvent(event)) {
-        Blockly.Touch.setClientFromTouch(event)
-        thisObject ? func.call(thisObject, event) : func(event)
-        handled = true
-      }
-    })
-  }
-  var bindData = []
-  if (window && window.PointerEvent && (name in Blockly.Touch.TOUCH_MAP)) {
-    Blockly.Touch.TOUCH_MAP[name].forEach(type => {
-      node.addEventListener(type, wrapFunc, false)
-      bindData.push([node, type, wrapFunc])
-    })
-  } else {
-    node.addEventListener(name, wrapFunc, false)
-    bindData.push([node, name, wrapFunc])
-
-    // Add equivalent touch event.
-    if (name in Blockly.Touch.TOUCH_MAP) {
-      var touchWrapFunc = (e) => {
-        wrapFunc(e)
-        // Calling preventDefault stops the browser from scrolling/zooming the
-        // page.
-        var preventDefault = !opt_noPreventDefault // catch it
-        if (handled && preventDefault) {
-          e.preventDefault()
-        }
-      }
-      Blockly.Touch.TOUCH_MAP[name].forEach(type => {
-        node.addEventListener(type, touchWrapFunc, false)
-        bindData.push([node, type, touchWrapFunc])
-      })
-    }
-  }
-  return bindData
-}
-
-/**
- * Unbind one or more events event from a function call.
- * @param {!Array.<!Array>} bindData Opaque data from bindEvent_.
- *     This list is emptied during the course of calling this function.
- * @return {!Function} The function call.
- */
-eYo.Svg.unbindEvent_ = bindData => {
-  while (bindData.length) {
-    var d = bindData.pop()
-    var node = d[0]
-    var name = d[1]
-    var func = d[2]
-    node.removeEventListener(name, func, false)
-  }
-  return func
 }

@@ -2197,6 +2197,11 @@ Object.defineProperties(eYo.Brick.prototype, {
     value: true,
     writable: true
   },
+  movable: {
+    get () {
+      return this.isMovable()
+    }
+  },
   collapsed_: {
     writable: true
   },

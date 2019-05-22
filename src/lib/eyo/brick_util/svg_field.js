@@ -54,9 +54,6 @@ eYo.Svg.prototype.fieldInit = function(field) {
       class: field.css_class,
       y: eYo.Font.totalAscent
     }, g)
-    field.mouseDownWrapper_ =
-        eYo.Svg.bindEventWithChecks_(
-      g, 'mousedown', field, eYo.Svg.fieldOnMouseDown_)
   } else {
     g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
       class: field.css_class,
@@ -78,10 +75,6 @@ eYo.Svg.prototype.fieldDispose = function (field) {
   if (!g) {
     // Field has already been disposed
     return;
-  }
-  if (field.mouseDownWrapper_) {
-    eYo.Svg.unbindEvent_(field.mouseDownWrapper_)
-    field.mouseDownWrapper_ = null
   }
   goog.dom.removeNode(g)
   field.svg = undefined
