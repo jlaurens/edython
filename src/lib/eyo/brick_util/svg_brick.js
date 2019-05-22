@@ -77,17 +77,11 @@ eYo.Svg.prototype.brickInit = function (brick) {
     {class: 'eyo-shape'}, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.workspace.options.readOnly) {
-    this.bindEventWithChecks_(
-      svg.group_, 'mousedown', ui, ui.onMouseDown_);
-      this.bindEventWithChecks_(
-      svg.group_, 'mouseup', ui, ui.onMouseUp_);
+    ui.driver.bindMouseEvents(ui, svg.group_)
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
-    this.bindEventWithChecks_(
-      svg.pathContour_, 'mousedown', ui, ui.onMouseDown_);
-    this.bindEventWithChecks_(
-      svg.pathContour_, 'mouseup', ui, ui.onMouseUp_);
+    ui.driver.bindMouseEvents(ui, svg.pathContour_)
   }
   if (brick.isExpr) {
     goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -114,7 +108,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
           return
         }
         console.log('Start executing ' + brick.id)
-        svg.runScript && (svg.runScript())
+        brick.runScript()
       })
       goog.dom.classlist.add(svg.group_, 'eyo-start')
       goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')
@@ -1054,13 +1048,13 @@ eYo.Svg.prototype.brickMoveOffDragSurface_ = function(brick, newXY) {
 }
 
 /**
- * Handle a mouse-down on an SVG brick.
+ * Handle a mousedown on an SVG brick.
  * If the brick is sealed to its parent, forwards to the parent.
  * This is used to prevent a dragging operation on a sealed brick.
  * However, this will manage the selection of an input connection.
- * onMouseDown_ message is sent multiple times for one mouse click
+ * on_mousedown message is sent multiple times for one mouse click
  * because bricks may lay on above the other (when connected for example)
- * Considering the selection of a connection, we manage the onMouseDown_ calls
+ * Considering the selection of a connection, we manage the on_mousedown calls
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.
  * There is a problem due to the shape of the bricks.
@@ -1071,16 +1065,16 @@ eYo.Svg.prototype.brickMoveOffDragSurface_ = function(brick, newXY) {
  * @param {!Event} e Mouse down event or touch start event.
  * @private
  */
-eYo.UI.prototype.onMouseDown_ = function (e) {
-  console.error('onMouseDown_')
+eYo.UI.prototype.on_mousedown = function (e) {
+  console.error('on_mousedown')
   var brick = this.brick_
-  var ws = brick.workspace
   if (this.locked_) {
     var parent = brick.parent
     if (parent) {
       return
     }
   }
+  var ws = brick.workspace
   if (brick.parentIsShort && !brick.isSelected) {
     parent = brick.parent
     if (!parent.isSelected) {
@@ -1125,7 +1119,7 @@ eYo.UI.prototype.onMouseDown_ = function (e) {
  * Then, the higlighted path of the source bricks is not the outline of the brick
  * but the shape of the connection as it shows when bricks are moved close enough.
  */
-eYo.UI.prototype.onMouseUp_ = function (e) {
+eYo.UI.prototype.on_mouseup = function (e) {
   const magnet = this.getMagnetForEvent(e)
   var b3k
   var t9k = magnet

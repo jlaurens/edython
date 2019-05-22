@@ -47,54 +47,6 @@ eYo.WorkspaceDelegate.prototype.driverCreate = function () {
   return new eYo.Svg()
 }
 
-
-goog.provide('eYo.Gesture')
-
-/**
- * Move the dragged/clicked block to the front of the workspace so that it is
- * not occluded by other blocks.
- * @private
- */
-Blockly.Gesture.prototype.bringBlockToFront_ = function() {
-  // Blocks in the flyout don't overlap, so skip the work.
-  if (this.targetBlock_ && !this.flyout_) {
-    this.targetBlock_.ui.sendToFront()
-  }
-}
-
-/**
- * Set the gesture's target.
- * @param {eYo.Brick} brick  The brick the gesture targets.
- * @private
- */
-Blockly.Gesture.prototype.setTargetBlock_ = function(brick) {
-  this.targetBlock_ = brick
-}
-
-/**
- * Handle a mousedown/touchstart event on a workspace.
- * This is overriden because
- * `Blockly.WorkspaceSvg.prototype.onMouseDown_`
- * cannot.
- * @param {!Event} e A mouse down or touch start event.
- * @param {!Blockly.Workspace} ws The workspace the event hit.
- * @package
- * @suppress{accessControls}
- */
-Blockly.Gesture.prototype.handleWsStart = (() => {
-  var handleWsStart = Blockly.Gesture.prototype.handleWsStart
-  return function (e, ws) {
-    if (Blockly.WidgetDiv.DIV.childNodes.length) {
-      Blockly.WidgetDiv.hide()
-    } else {
-      if ((eYo.Selected.brick)) {
-        eYo.Selected.brick.selectMouseDownEvent = e
-      }
-      handleWsStart.call(this, e, ws)
-    }
-  }
-}) ()
-
 /**
  * Show the context menu for the workspace.
  * @param {!Event} e Mouse event.

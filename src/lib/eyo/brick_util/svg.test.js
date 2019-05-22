@@ -73,14 +73,14 @@ describe('SVG groups and paths', function () {
   // Shape
   if (!node.workspace.options.readOnly) {
     Blockly.bindEventWithChecks_(
-      svg.group_, 'mousedown', brick, brick.onMouseDown_);
+      svg.group_, 'mousedown', brick, brick.on_mousedown);
     Blockly.bindEventWithChecks_(
       svg.group_, 'mouseup', brick, brick.onMouseUp_);
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
     Blockly.bindEventWithChecks_(
-      svg.pathContour_, 'mousedown', brick, brick.onMouseDown_);
+      svg.pathContour_, 'mousedown', brick, brick.on_mousedown);
     Blockly.bindEventWithChecks_(
       svg.pathContour_, 'mouseup', brick, brick.onMouseUp_);
   }

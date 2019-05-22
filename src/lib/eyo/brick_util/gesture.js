@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Gesture')
 
-goog.require('eYo')
+goog.require('eYo.Do')
 
 goog.forwardDeclare('eYo.BrickDragger')
 
@@ -97,15 +97,6 @@ eYo.Gesture = function(e, creatorWorkspace) {
   this.creatorWorkspace_ = creatorWorkspace;
 
   /**
-   * Whether the pointer has at any point moved out of the drag radius.
-   * A gesture that exceeds the drag radius is a drag even if it ends exactly at
-   * its start point.
-   * @type {boolean}
-   * @private
-   */
-  this.hasExceededDragRadius_ = false;
-
-  /**
    * Whether the workspace is currently being dragged.
    * @type {boolean}
    * @private
@@ -128,7 +119,7 @@ eYo.Gesture = function(e, creatorWorkspace) {
 
   /**
    * The object tracking a brick drag, or null if none is in progress.
-   * @type {Blockly.BrickDragger}
+   * @type {eYo.BrickDragger}
    * @private
    */
   this.brickDragger_ = null;
@@ -143,7 +134,7 @@ eYo.Gesture = function(e, creatorWorkspace) {
 
   /**
    * The flyout a gesture started in, if any.
-   * @type {Blockly.Flyout}
+   * @type {eYo.Flyout}
    * @private
    */
   this.flyout_ = null;
@@ -168,14 +159,14 @@ eYo.Gesture = function(e, creatorWorkspace) {
    * @type {boolean}
    * @private
    */
-  this.healStack_ = !Blockly.DRAG_STACK;
+  this.healStack_ = !eYo.Gesture.DRAG_STACK
 
   /**
    * Boolean for whether or not this gesture is a multi-touch gesture.
    * @type {boolean}
    * @private
    */
-  this.multiTouch_ = false;
+  this.multiTouch_ = false
 
   /**
    * A map of cached points used for tracking multi-touch gestures.
@@ -211,7 +202,7 @@ Object.defineProperties(eYo.Gesture, {
   /**
    * Number of pixels the mouse must move before a drag/scroll starts from the
    * flyout.  Because the drag-intention is determined when this is reached, it is
-   * larger than Blockly.DRAG_RADIUS so that the drag-direction is clearer.
+   * larger than DRAG_RADIUS so that the drag-direction is clearer.
    */
   FLYOUT_DRAG_RADIUS: { value: 10},
   /**
@@ -224,6 +215,15 @@ Object.defineProperties(eYo.Gesture, {
    * @const
    */
   ZOOM_OUT_FACTOR: { value: 6 },
+  /**
+   * Length in ms for a touch to become a long press.
+   */
+  LONG_PRESS: { value: 750 },
+  /**
+   * When dragging a block out of a stack, split the stack in two (true), or drag
+   * out the block healing the stack (false).
+   */
+  DRAG_STACK: { value: true },
 })
 
 Object.defineProperties(eYo.Gesture.prototype, {
@@ -283,13 +283,11 @@ Object.defineProperties(eYo.Gesture.prototype, {
  * @package
  */
 eYo.Gesture.prototype.dispose = function() {
-  Blockly.Touch.clearTouchIdentifier()
+  this.ui_driver.clearTouchIdentifier()
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
   this.creatorWorkspace_.clearGesture()
-
   this.ui_driver.unbindMouseEvents(self)
-
   this.startBrick_ = this.targetBrick_ = null
   this.workspace_ = this.creatorWorkspace_ = this.flyout_ = null
 
@@ -328,7 +326,7 @@ eYo.Gesture.prototype.handleStart = function(e) {
   if (this.ui_driver.isTouchEvent(e)) {
     this.handleTouchStart(e)
     if (this.multiTouch) {
-      Blockly.longStop_()
+      eYo.Do.longStop_()
     }
   }
 }
@@ -651,8 +649,10 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
       'started.');
   this.started_ = true
   this.startWorkspace_ || (this.startWorkspace_ = ws)
+  var b3k = eYo.Selected.brick
+  b3k && (b3k.selectMouseDownEvent = e)
   this.doStart(e)
-};
+}
 
 /**
  * Start a gesture: update the workspace to indicate that a gesture is in
@@ -679,14 +679,13 @@ eYo.Gesture.prototype.doStart = function(e) {
     this.targetBrick_.select()
   }
 
-  if (Blockly.utils.isRightButton(e)) {
+  if (eYo.Do.isRightButton(e)) {
     this.handleRightClick(e)
     return
   }
 
-  var t = e.type.toLowerCase()
-  if (t == 'touchstart' ||
-      (t == 'pointerdown' && e.pointerType != 'mouse')) {
+  if (e.type == 'touchstart' ||
+      (e.type == 'pointerdown' && e.pointerType != 'mouse')) {
     Blockly.longStart_(e, this)
   }
 
@@ -720,16 +719,16 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
 
 /**
  * Handle a mousedown/touchstart event on a brick.
- * Used by brick's onMouseDown_ (or synonym)
+ * Used by brick's on_mousedown (or synonym).
  * @param {!Event} e A mouse down or touch start event.
- * @param {!eYo.Brick} brick The brick the event hit.
+ * @param {!eYo.Brick} brick The brick the event hits.
  * @package
  */
 eYo.Gesture.prototype.handleBrickStart = function(e, brick) {
   goog.asserts.assert(!this.started_,
       'Tried to call gesture.handleBrickStart, but the gesture had already ' +
       'been started.')
-  this.startBrick = brick
+  this.startBrick = brick.wrapper
   this.event_ = e
 }
 
@@ -835,3 +834,63 @@ eYo.Gesture.prototype.hasStarted = function() {
   throw "DEPRECATED"
 }
 
+
+/**
+ * Is this event a right-click?
+ * @param {!Event} e Mouse event.
+ * @return {boolean} True if right-click.
+ */
+eYo.Do.isRightButton = e => {
+  if (e.ctrlKey && goog.userAgent.MAC) {
+    // Control-clicking on Mac OS X is treated as a right-click.
+    // WebKit on Mac OS X fails to change button to 2 (but Gecko does).
+    return true
+  }
+  return e.button === 2
+}
+
+/**
+ * Context menus on touch devices are activated using a long-press.
+ * Unfortunately the contextmenu touch event is currently (2015) only supported
+ * by Chrome.  This function is fired on any touchstart event, queues a task,
+ * which after about a second opens the context menu.  The tasks is killed
+ * if the touch event terminates early.
+ * @param {!Event} e Touch start event.
+ * @param {eYo.Gesture} gesture The gesture that triggered this longStart.
+ * @private
+ */
+eYo.Do.longStart_ = (() => {
+  var pid = 0
+  /**
+   * Nope, that's not a long-press.  Either touchend or touchcancel was fired,
+   * or a drag hath begun.  Kill the queued long-press task.
+   * @private
+   */
+  eYo.Do.longStop_ = () => {
+    if (pid) {
+      clearTimeout(pid)
+      pid = 0
+    }
+  }
+  return (e, gesture) => {
+    eYo.Do.longStop_()
+    // Punt on multitouch events.
+    if (e.changedTouches && e.changedTouches.length != 1) {
+      return;
+    }
+    pid = setTimeout(() => {
+      // Additional check to distinguish between touch events and pointer events
+      if (e.changedTouches) {
+        // TouchEvent
+        e.button = 2  // Simulate a right button click.
+        // e was a touch event.  It needs to pretend to be a mouse event.
+        e.clientX = e.changedTouches[0].clientX
+        e.clientY = e.changedTouches[0].clientY
+      }
+      // Let the gesture route the right-click correctly.
+      if (gesture) {
+        gesture.handleRightClick(e)
+      }
+    }, eYo.Gesture.LONG_PRESS)
+  }
+})()

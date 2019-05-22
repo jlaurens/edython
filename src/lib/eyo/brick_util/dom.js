@@ -253,6 +253,16 @@ eYo.Dom.prototype.checkTouchIdentifier = function(e) {
   return false
 }
 
+
+/**
+ * Clear the touch identifier that tracks which touch stream to pay attention
+ * to.  This ends the current drag/gesture and allows other pointers to be
+ * captured.
+ */
+eYo.Dom.prototype.clearTouchIdentifier = function() {
+  this.touchIdentifier_ = null;
+}
+
 /**
  * Get the touch identifier from the given event.  If it was a mouse event, the
  * identifier is the string 'mouse'.
