@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview A class representing menu items that open a submenu.

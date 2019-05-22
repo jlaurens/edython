@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 
 /**
@@ -126,7 +126,7 @@ Blockly.Events.Move.prototype.currentLocation_ = function() {
       location.horizontal = true
     }
   } else {
-    location.coordinate = brick.ui.xyInSurface
+    location.coordinate = brick.ui.xyInWorkspace
   }
   return location
 }
@@ -168,7 +168,7 @@ Blockly.Events.Move.prototype.run = function(forward) {
   }
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
-    var xy = brick.ui.xyInSurface;
+    var xy = brick.ui.xyInWorkspace;
     brick.moveByXY(coordinate.x - xy.x, coordinate.y - xy.y);
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;

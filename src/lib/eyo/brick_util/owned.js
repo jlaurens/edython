@@ -3,7 +3,7 @@
  *
  * Copyright 2019 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Basic object owned by either a brick, a slot or an input.

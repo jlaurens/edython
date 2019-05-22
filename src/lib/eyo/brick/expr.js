@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Block delegates for edython.
@@ -141,8 +141,8 @@ eYo.Brick.Expr.prototype.replaceBrick = function (brick) {
             brick.select()
           }
         } else {
-          var its_xy = brick.ui.xyInSurface
-          var my_xy = this.ui.xyInSurface
+          var its_xy = brick.ui.xyInWorkspace
+          var my_xy = this.ui.xyInWorkspace
           this.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
       })
@@ -300,14 +300,14 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
         } else {
           targetM4t.disconnect()
           bumper = targetM4t.brick
-          var its_xy = bumper.ui.xyInSurface
-          var my_xy = parent.ui.xyInSurface
+          var its_xy = bumper.ui.xyInWorkspace
+          var my_xy = parent.ui.xyInWorkspace
           parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
         targetM4t = undefined
       } else {
-        its_xy = this.ui.xyInSurface
-        my_xy = parent.ui.xyInSurface
+        its_xy = this.ui.xyInWorkspace
+        my_xy = parent.ui.xyInWorkspace
         parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
       }
       parentInputM4t.connect(outputM4t)

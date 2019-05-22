@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Methods for dragging a block visually with transform support.
@@ -69,6 +69,7 @@ Blockly.BlockDragger.prototype.dragBlock = (() => {
     if (currentDragDeltaXY && this.eyo_transformCorrection) {
       currentDragDeltaXY = this.eyo_transformCorrection(currentDragDeltaXY)
     }
+    console.error('DRAGGING')
     return dragBlock.call(this, e, currentDragDeltaXY)
   }
 })()

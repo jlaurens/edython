@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Xml override.
@@ -109,7 +109,7 @@ Blockly.Xml.domToText = function (dom) {
  */
 eYo.Xml.brickToDomWithXY = function(brick, opt) {
   var element = eYo.Xml.brickToDom(brick, opt)
-  var xy = brick.ui.xyInSurface
+  var xy = brick.ui.xyInWorkspace
   element.setAttribute('x', Math.round(xy.x))
   element.setAttribute('y', Math.round(xy.y))
   return element

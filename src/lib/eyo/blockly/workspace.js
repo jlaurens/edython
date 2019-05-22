@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Workspace override.
@@ -24,6 +24,201 @@ goog.require('eYo.Xml')
 goog.require('eYo.Xml.Recover')
 goog.require('eYo.Protocol.ChangeCount')
 goog.require('goog.crypt')
+
+/**
+ * Class for a workspace.  This is a data structure that contains bricks.
+ * There is no UI, and can be created headlessly.
+ * @param {Blockly.Options} optOptions Dictionary of options.
+ * @constructor
+ */
+eYo.Workspace = function (optOptions) {
+  eYo.Workspace.superClass_.constructor.call(this, optOptions)
+  this.eyo = new eYo.WorkspaceDelegate(this)
+}
+goog.inherits(eYo.Workspace, Blockly.Workspace)
+
+Object.defineProperties(eYo.Workspace, {
+  DELETE_AREA_NONE: { value: null },
+  /**
+   * ENUM representing that an event is in the delete area of the trash can.
+   * @const
+   */
+  DELETE_AREA_TRASH: { value: 1 },
+  /**
+   * ENUM representing that an event is in the delete area of the toolbox or
+   * flyout.
+   * @const
+   */
+  DELETE_AREA_TOOLBOX: { value: 2 },
+})
+
+Object.defineProperties(eYo.Workspace.prototype, {
+  audioManager: {
+    get () {
+      return this.getAudioManager()
+    }
+  },
+  getToolbox: {
+    get () {
+      return this.getToolbox()
+    }
+  },
+})
+
+/**
+ * Dispose of this workspace.
+ * Unlink from all DOM elements to prevent memory leaks.
+ * @suppress{accessControls}
+ */
+eYo.Workspace.prototype.dispose = function () {
+  this.eyo.dispose()
+  this.eyo = null
+  eYo.Workspace.superClass_.dispose.call(this)
+}
+
+/**
+ * Clear the undo/redo stacks.
+ */
+eYo.Workspace.prototype.clearUndo = function() {
+  eYo.Workspace.superClass_.clearUndo.call(this)
+  eYo.App.didClearUndo && (eYo.App.didClearUndo())
+}
+
+/**
+ * Clear of this workspace.
+ * Unlink from all DOM elements to prevent memory leaks.
+ * @suppress{accessControls}
+ */
+eYo.Workspace.prototype.clear = function () {
+  eYo.Workspace.superClass_.clear.call(this)
+  this.eyo.error = undefined
+}
+
+/**
+ * Returns a block subclass for eYo bricks.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
+ *     create a new id.
+ * @return {!eYo.Brick} The created block.
+ */
+eYo.Workspace.prototype.newBrick = function (prototypeName, opt_id) {
+  return eYo.Brick.Manager.create(this, prototypeName, opt_id)
+}
+
+/**
+ * Obtain a newly created block.
+ * Returns a block subclass for eYo bricks.
+ * @param {?string} prototypeName Name of the language object containing
+ *     type-specific functions for this block.
+ * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
+ *     create a new id.
+ * @return {!Blockly.Block} The created block.
+ */
+eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
+  return new eYo.Brick(/** Blockly.Workspace */ this, prototypeName, optId)
+}
+
+eYo.Workspace.prototype.logAllConnections = function (comment) {
+  comment = comment || ''
+  ;[
+    'IN',
+    'OUT',
+    'FOOT',
+    'HEAD',
+    'LEFT',
+    'RIGHT'
+  ].forEach(k => {
+    var dbList = this.connectionDBList
+    console.log(`${comment} > ${k} magnet`)
+    var db = dbList[eYo.Magnet[k]]
+    dbList[eYo.Magnet[k]].forEach(m4t => {
+      console.log(m4t.x_, m4t.y_, m4t.xyInBlock_, m4t.brick.type)
+    })
+  })
+}
+
+/**
+ * Undo or redo the previous action.
+ * @param {boolean} redo False if undo, true if redo.
+ */
+eYo.Workspace.prototype.undo = function(redo) {
+  var inputStack = redo ? this.redoStack_ : this.undoStack_
+  var outputStack = redo ? this.undoStack_ : this.redoStack_
+  while (true) {
+    var inputEvent = inputStack.pop()
+    if (!inputEvent) {
+      return
+    }
+    var events = [inputEvent]
+    // Do another undo/redo if the next one is of the same group.
+    while (inputStack.length && inputEvent.group &&
+        inputEvent.group == inputStack[inputStack.length - 1].group) {
+      events.push(inputStack.pop())
+      // update the change count
+    }
+    events = Blockly.Events.filter(events, redo)
+    if (events.length) {
+      // Push these popped events on the opposite stack.
+      events.forEach((event) => {
+        outputStack.push(event)
+      })
+      eYo.Events.recordUndo = false
+      var Bs = []
+      eYo.Do.tryFinally(() => { // try
+        if (this.rendered) {
+          events.forEach(event => {
+            var B = this.getBlockById(event.blockId)
+            if (B) {
+              B.changeBegin()
+              Bs.push(B)
+            }
+          })
+        }
+        events.forEach(event => {
+          event.run(redo)
+          this.eyo.updateChangeCount(event, redo)
+        })
+      }, () => { // finally
+        eYo.Events.recordUndo = true
+        Bs.forEach(B => B.changeEnd())
+        eYo.App.didProcessUndo && (eYo.App.didProcessUndo(redo))
+      })
+      return
+    }
+  }
+}
+
+/**
+ * Fire a change event.
+ * Some code is added to manage the 'edited' document status.
+ * @param {!Blockly.Events.Abstract} event Event to fire.
+ */
+eYo.Workspace.prototype.fireChangeListener = function(event) {
+  var before = this.undoStack_.length
+  eYo.Workspace.superClass_.fireChangeListener.call(this, event)
+  // For newly created events, update the change count
+  if (event.recordUndo) {
+    this.eyo.updateChangeCount(event, true)
+    if (before === this.undoStack_.length) {
+      eYo.App.didUnshiftUndo && (eYo.App.didUnshiftUndo())
+    } else {
+      eYo.App.didPushUndo && (eYo.App.didPushUndo())
+    }
+  }
+}
+
+/**
+ * Convert a coordinate object from pixels to workspace units.
+ * @param {!goog.math.Coordinate} pixelCoord  A coordinate with x and y values
+ *     in css pixel units.
+ * @return {!goog.math.Coordinate} The input coordinate divided by the workspace
+ *     scale.
+ * @private
+ */
+eYo.Workspace.prototype.fromPixelUnit = function(xy) {
+  return new goog.math.Coordinate(xy.x / this.scale, xy.y / this.scale)
+}
 
 /**
  * Class for a workspace delegate.
@@ -162,108 +357,6 @@ eYo.WorkspaceDelegate.prototype.removeBrick = function (brick) {
 }
 
 /**
- * Class for a workspace.  This is a data structure that contains bricks.
- * There is no UI, and can be created headlessly.
- * @param {Blockly.Options} optOptions Dictionary of options.
- * @constructor
- */
-eYo.Workspace = function (optOptions) {
-  eYo.Workspace.superClass_.constructor.call(this, optOptions)
-  this.eyo = new eYo.WorkspaceDelegate(this)
-}
-goog.inherits(eYo.Workspace, Blockly.Workspace)
-
-/**
- * Dispose of this workspace.
- * Unlink from all DOM elements to prevent memory leaks.
- * @suppress{accessControls}
- */
-Blockly.Workspace.prototype.dispose = function () {
-  this.listeners_.length = 0
-  this.clear()
-  this.eyo.dispose()
-  this.eyo = null
-  // Remove from workspace database.
-  delete Blockly.Workspace.WorkspaceDB_[this.id]
-}
-
-/**
- * Clear the undo/redo stacks.
- */
-eYo.Workspace.prototype.clearUndo = function() {
-  eYo.Workspace.superClass_.clearUndo.call(this)
-  eYo.App.didClearUndo && (eYo.App.didClearUndo())
-}
-
-/**
- * Clear of this workspace.
- * Unlink from all DOM elements to prevent memory leaks.
- * @suppress{accessControls}
- */
-eYo.Workspace.prototype.clear = function () {
-  eYo.Workspace.superClass_.clear.call(this)
-  this.eyo.error = undefined
-}
-
-/**
- * Dispose of this workspace.
- * Unlink from all DOM elements to prevent memory leaks.
- * @suppress{accessControls}
- */
-Blockly.Workspace.prototype.dispose = function () {
-  this.listeners_.length = 0
-  this.clear()
-  this.eyo.dispose()
-  this.eyo = null
-  // Remove from workspace database.
-  delete Blockly.Workspace.WorkspaceDB_[this.id]
-}
-
-/**
- * Returns a block subclass for eYo bricks.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
- *     create a new id.
- * @return {!eYo.Brick} The created block.
- */
-eYo.Workspace.prototype.newBrick = function (prototypeName, opt_id) {
-  return eYo.Brick.Manager.create(this, prototypeName, opt_id)
-}
-
-/**
- * Obtain a newly created block.
- * Returns a block subclass for eYo bricks.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
- *     create a new id.
- * @return {!Blockly.Block} The created block.
- */
-eYo.Workspace.prototype.newBlock = function (prototypeName, optId) {
-  return new eYo.Brick(/** Blockly.Workspace */ this, prototypeName, optId)
-}
-
-eYo.Workspace.prototype.logAllConnections = function (comment) {
-  comment = comment || ''
-  ;[
-    'IN',
-    'OUT',
-    'FOOT',
-    'HEAD',
-    'LEFT',
-    'RIGHT'
-  ].forEach(k => {
-    var dbList = this.connectionDBList
-    console.log(`${comment} > ${k} magnet`)
-    var db = dbList[eYo.Magnet[k]]
-    dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.x_, m4t.y_, m4t.xyInBlock_, m4t.brick.type)
-    })
-  })
-}
-
-/**
  * Find the brick on this workspace with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of block to find.
@@ -287,76 +380,6 @@ Blockly.Workspace.prototype.getBlockById = (() => {
     }
   }
 }) ()
-
-/**
- * Undo or redo the previous action.
- * @param {boolean} redo False if undo, true if redo.
- */
-eYo.Workspace.prototype.undo = function(redo) {
-  var inputStack = redo ? this.redoStack_ : this.undoStack_
-  var outputStack = redo ? this.undoStack_ : this.redoStack_
-  while (true) {
-    var inputEvent = inputStack.pop()
-    if (!inputEvent) {
-      return
-    }
-    var events = [inputEvent]
-    // Do another undo/redo if the next one is of the same group.
-    while (inputStack.length && inputEvent.group &&
-        inputEvent.group == inputStack[inputStack.length - 1].group) {
-      events.push(inputStack.pop())
-      // update the change count
-    }
-    events = Blockly.Events.filter(events, redo)
-    if (events.length) {
-      // Push these popped events on the opposite stack.
-      events.forEach((event) => {
-        outputStack.push(event)
-      })
-      eYo.Events.recordUndo = false
-      var Bs = []
-      eYo.Do.tryFinally(() => { // try
-        if (this.rendered) {
-          events.forEach(event => {
-            var B = this.getBlockById(event.blockId)
-            if (B) {
-              B.changeBegin()
-              Bs.push(B)
-            }
-          })
-        }
-        events.forEach(event => {
-          event.run(redo)
-          this.eyo.updateChangeCount(event, redo)
-        })
-      }, () => { // finally
-        eYo.Events.recordUndo = true
-        Bs.forEach(B => B.changeEnd())
-        eYo.App.didProcessUndo && (eYo.App.didProcessUndo(redo))
-      })
-      return
-    }
-  }
-}
-
-/**
- * Fire a change event.
- * Some code is added to manage the 'edited' document status.
- * @param {!Blockly.Events.Abstract} event Event to fire.
- */
-eYo.Workspace.prototype.fireChangeListener = function(event) {
-  var before = this.undoStack_.length
-  eYo.Workspace.superClass_.fireChangeListener.call(this, event)
-  // For newly created events, update the change count
-  if (event.recordUndo) {
-    this.eyo.updateChangeCount(event, true)
-    if (before === this.undoStack_.length) {
-      eYo.App.didUnshiftUndo && (eYo.App.didUnshiftUndo())
-    } else {
-      eYo.App.didPushUndo && (eYo.App.didPushUndo())
-    }
-  }
-}
 
 /**
  * Handle a key-down on SVG drawing surface.
@@ -492,13 +515,13 @@ eYo.copyBrick = function(brick, deep) {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep});
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
-  var xy = brick.ui.xyInSurface;
+  var xy = brick.ui.xyInWorkspace;
   xml.setAttribute('x', brick.RTL ? -xy.x : xy.x);
   xml.setAttribute('y', xy.y);
   Blockly.clipboardXml_ = xml;
   Blockly.clipboardSource_ = brick.workspace;
   eYo.App.didCopyBlock && (eYo.App.didCopyBlock(brick, xml))
-};
+}
 
 /**
  * Record the block that a gesture started on, and set the target block
@@ -507,20 +530,21 @@ eYo.copyBrick = function(brick, deep) {
  * @param {eYo.Brick} block The block the gesture started on.
  * @package
  */
-Blockly.Gesture.prototype.setStartBlock = (() => {
-  var setStartBlock = Blockly.Gesture.prototype.setStartBlock
-  return function(brick) {
-    var candidate = brick
-    var selected = eYo.Selected.brick
-    do {
-      if (brick.isStmt || selected === brick) {
-        candidate = brick
-        break
-      } else {
-        candidate = brick
-      }
-    } while ((brick = brick.parent))
-    setStartBlock.call(this, candidate)
+Blockly.Gesture.prototype.setStartBlock = function(brick) {
+  var candidate = brick
+  var selected = eYo.Selected.brick
+  do {
+    if (brick.isStmt || selected === brick) {
+      candidate = brick
+      break
+    } else {
+      candidate = brick
+    }
+  } while ((brick = brick.parent))
+  if (!this.startBlock_) {
+    this.startBlock_ = candidate
+    candidate.isInFlyout && (candidate = candidate.root)
+    this.setTargetBlock_(candidate)
   }
-}) ()
+}
 

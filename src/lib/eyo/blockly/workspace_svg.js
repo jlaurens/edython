@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview WorkspaceSvg override.
@@ -268,10 +268,10 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
             // the pasted brick must move before it is connected
             // otherwise the newly created brick will attract the old one
             // resulting in a move of the existing connection
-            var xy = targetM4t.ui.xyInSurface
+            var xy = targetM4t.ui.xyInWorkspace
             var xx = targetM4t.x + xy.x
             var yy = targetM4t.y + xy.y
-            xy = m4t.ui.xyInSurface
+            xy = m4t.ui.xyInWorkspace
             targetM4t.brick.moveByXY(m4t.x + xy.x - xx, m4t.y + xy.y - yy)
           }
           m4t.connect(targetM4t)
@@ -294,7 +294,7 @@ Blockly.WorkspaceSvg.prototype.paste = function (dom) {
           var avoidCollision = () => {
             do {
               var collide = allBlocks.some(b => {
-                var xy = b.ui.xyInSurface
+                var xy = b.ui.xyInWorkspace
                 if (Math.abs(dx - xy.x) <= 10 &&
                     Math.abs(dy - xy.y) <= 10) {
                   return true
@@ -394,7 +394,7 @@ eYo.WorkspaceDelegate.prototype.tidyUp = function (kvargs) {
   var tops = this.workspace_.topBlocks_.filter(b3k => {
     return {
       b3k,
-      xy: b3k.ui.xyInSurface
+      xy: b3k.ui.xyInWorkspace
     }
   })
   var ordered = {}
@@ -469,7 +469,7 @@ eYo.WorkspaceDelegate.prototype.scrollBlockTopLeft = function(id) {
     brick = brick.stmtParent || brick.root
   }
   // XY is in workspace coordinates.
-  var xy = brick.ui.xyInSurface
+  var xy = brick.ui.xyInWorkspace
 
   // Find the top left of the block in workspace units.
   var y = xy.y - eYo.Unit.y / 2

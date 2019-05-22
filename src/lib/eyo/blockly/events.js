@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Block for edython.
@@ -16,6 +16,7 @@
  * @namespace Blockly.Events
  */
 goog.provide('eYo.Events')
+goog.provide('eYo.Events.BrickMove')
 
 goog.require('Blockly.Events')
 goog.require('eYo.Const')
@@ -36,6 +37,8 @@ goog.require('eYo.XRE')
 //     }
 //   }
 //)
+
+eYo.Events.BrickMove = Blockly.Events.BlockMove
 
 /**
  * Compute a list of the IDs of the specified block and all its descendants.

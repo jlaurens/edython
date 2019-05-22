@@ -3,7 +3,7 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Block delegates for edython.
@@ -106,8 +106,8 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
                   p_magnet.target = targetMagnet
                 }
               } else {
-                var its_xy = this.ui.xyInSurface
-                var my_xy = parent.ui.xyInSurface
+                var its_xy = this.ui.xyInWorkspace
+                var my_xy = parent.ui.xyInWorkspace
                 parent.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
               }
               parent.render()

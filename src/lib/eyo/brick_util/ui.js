@@ -3,7 +3,7 @@
  *
  * Copyright 2019 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Rendering delegate.
@@ -47,7 +47,7 @@ goog.forwardDeclare('eYo.Svg')
  * @readonly
  * @property {boolean} hasRightEdge  whether the owning brick has a right edge.
  * @readonly
- * @property {Object}  xyInSurface  the coordinates relative to the surface.
+ * @property {Object}  xyInWorkspace  the coordinates relative to the surface.
  */
 eYo.UI = function(brick) {
   this.brick_ = brick
@@ -69,6 +69,11 @@ Object.defineProperties(eYo.UI.prototype, {
   brick: {
     get() {
       return this.brick_
+    }
+  },
+  workspace: {
+    get () {
+      return this.brick_.workspace
     }
   },
   change: {
@@ -362,7 +367,7 @@ eYo.UI.prototype.render = (() => {
     if (!this.brick_.isReady || this.rendered === false) { // this.rendered === undefined is OK
       return
     }
-    if (!this.brick_.isEditing && (this.brick_.isDragging_ || this.brick_.change.level || !this.brick_.workspace)) {
+    if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.workspace)) {
       return
     }
     recorder && (this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT))
@@ -508,7 +513,7 @@ eYo.UI.prototype.didRender_ = function (recorder) {
  * @private
  */
 eYo.UI.prototype.renderMoveMagnets_ = function() {
-  var blockTL = this.xyInSurface;
+  var blockTL = this.xyInWorkspace;
   // Don't tighten previous or output connections because they are inferior
   // connections.
   var m5s = this.brick_.magnets
@@ -545,7 +550,7 @@ eYo.UI.prototype.renderMoveMagnets_ = function() {
  */
 eYo.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
-  // var blockTL = this.xyInSurface
+  // var blockTL = this.xyInWorkspace
   // this.brick_.forEachSlot((slot) => {
   //   var m4t = input.magnet
   //   if (m4t) {
@@ -1433,6 +1438,18 @@ Object.defineProperties(eYo.UI.prototype, {
     set (newValue) {
       this.driver.brickDisplayedSet(this.brick_, visible)
     }
+  },
+  dragging: {
+    get () {
+      return this.dragging_
+    },
+    set (newValue) {
+      newValue = !!newValue
+      if (this.dragging_ !== newValue) {
+        this.dragging_ = dragging
+        this.driver.brickSetDragging(this.brick_, dragging)      
+      }
+    }
   }
 })
 
@@ -1449,7 +1466,7 @@ eYo.UI.prototype.updateDisabled = function () {
  */
 eYo.UI.prototype.connectEffect = function () {
   var w = this.brick_.workspace
-  w.getAudioManager().play('click')
+  w.audioManager.play('click')
   if (w.scale < 1) {
     return // Too small to care about visual effects.
   }
@@ -1461,7 +1478,7 @@ eYo.UI.prototype.connectEffect = function () {
  * This must take place while the brick is still in a consistent state.
  */
 eYo.UI.prototype.disposeEffect = function () {
-  this.brick_.workspace.getAudioManager().play('delete');
+  this.workspace.audioManager.play('delete');
   this.driver.brickDisposeEffect(this.brick_)
 }
 
@@ -1671,7 +1688,7 @@ eYo.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  *     workspace coordinates.
  */
 Object.defineProperties(eYo.UI.prototype, {
-  xyInSurface: {
+  xyInWorkspace: {
     get () {
       return this.driver.brickXYInSurface(this.brick_)
     }
@@ -1687,7 +1704,7 @@ Object.defineProperties(eYo.UI.prototype, {
   boundingRect: {
     get () {
       return goog.math.Rect.createFromPositionAndSize(
-        this.xyInSurface,
+        this.xyInWorkspace,
         this.size
       )
     }
@@ -1757,14 +1774,12 @@ eYo.UI.prototype.moveDuringDrag = function(newLoc) {
 }
 
 /**
- * Recursively adds or removes the dragging class to this owning brick and its children.
- * Store `adding` in a property of the delegate.
- * @param {boolean} adding True if adding, false if removing.
+ * Change the UI while dragging, or not.
+ * @param {boolean} dragging True if adding, false if removing.
  * @package
  */
-eYo.UI.prototype.setDragging = function(adding) {
-  this.isDragging_ = adding
-  this.driver.brickSetDragging(this.brick_, adding)
+eYo.UI.prototype.setDragging = function(dragging) {
+  this.dragging = dragging
 }
 
 /**
@@ -1817,7 +1832,7 @@ eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
   var topBound = metrics.viewTop / scale - HW.height / 2
   var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - HW.width / 2
   var downBound = (metrics.viewTop + metrics.viewHeight) / scale - HW.height / 2
-  var xy = newLoc || this.xyInSurface
+  var xy = newLoc || this.xyInWorkspace
   return {
     x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
     y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),

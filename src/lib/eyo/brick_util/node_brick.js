@@ -3,7 +3,7 @@
  *
  * Copyright 2019 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Create bricks from a tree node obtained by parsing some python code.

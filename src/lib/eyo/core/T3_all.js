@@ -5,7 +5,7 @@
  *
  * Copyright 2019 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Type constants for edython, used as bricks prototypes.

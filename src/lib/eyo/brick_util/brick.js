@@ -3,10 +3,10 @@
  *
  * Copyright 2018 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -161,6 +161,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   inputList_: { value: undefined, writable: true },
   pythonType_: { value: undefined, writable: true },
   parent_: { value: undefined, writable: true },
+  movable_: { value: true, writable: true },
 })
 
 /**
@@ -182,7 +183,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   if (animate && this.ui.rendered) {
     this.unplug(healStack)
-    this.ui && (this.ui.disposeEffect())
+    this.ui_ && (this.ui_.disposeEffect())
   } else {
     this.unplug()
   }
@@ -190,7 +191,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
   }
   // Stop rerendering.
-  this.ui.rendered = false
+  this.ui_ && (this.ui_.rendered = false)
   this.consolidate = this.beReady = this.render = eYo.Do.nothing
   // Remove from workspace
   workspace.eyo.removeBrick(this)
@@ -221,6 +222,7 @@ eYo.Brick.getModel = function (type) {
 
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
+  deletable: { value: false, writable: true},
   isEditing: { value: false, writable: true},
   data: {
     get () {
@@ -2669,8 +2671,8 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
               })
             } else {
               return fin(() => {
-                var its_xy = this.ui.xyInSurface
-                var my_xy = candidate.ui.xyInSurface
+                var its_xy = this.ui.xyInWorkspace
+                var my_xy = candidate.ui.xyInWorkspace
                 candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
               })
             }
@@ -2753,8 +2755,8 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
             })
           } else {
             return fin(() => {
-              var its_xy = this.ui.xyInSurface
-              var my_xy = candidate.ui.xyInSurface
+              var its_xy = this.ui.xyInWorkspace
+              var my_xy = candidate.ui.xyInWorkspace
               candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
             })
           }

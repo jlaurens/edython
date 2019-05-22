@@ -3,7 +3,7 @@
  *
  * Copyright 2019 Jérôme LAURENS.
  *
- * License EUPL-1.2
+ * @license EUPL-1.2
  */
 /**
  * @fileoverview Rendering driver, brick methods.
@@ -470,97 +470,6 @@ eYo.Svg.prototype.brickUpdateDisabled = function (brick) {
 }
 
 /**
- * Play some UI effects (sound, animation) when disposing of a block.
- */
-eYo.Svg.prototype.brickDisposeEffect = (() => {
-  /*
-  * Animate a cloned block and eventually dispose of it.
-  * This is a class method, not an instance method since the original block has
-  * been destroyed and is no longer accessible.
-  * @param {!Element} clone SVG element to animate and dispose of.
-  * @param {boolean} rtl True if RTL, false if LTR.
-  * @param {!Date} start Date of animation's start.
-  * @param {number} workspaceScale Scale of workspace.
-  * @private
-  */
-  var step = (clone, start, scale) => {
-    var ms = new Date - start;
-    var percent = ms / 150;
-    if (percent > 1) {
-      goog.dom.removeNode(clone)
-      return
-    }
-    var x = clone.translateX_ +
-      clone.bBox_.width * scale / 2 * percent
-    var y = clone.translateY_ +
-      clone.bBox_.height * scale * percent
-    clone.setAttribute('transform',
-      `translate(${x},${y}) scale(${(1 - percent) * scale})`)
-    setTimeout(step, 10, clone, start, scale)
-  }
-  return function(brick) {
-    var svg = brick.ui.svg
-    var xy = brick.workspace.getSvgXY(/** @type {!Element} */ (svg.group_))
-    // Deeply clone the current block.
-    var clone = svg.group_.cloneNode(true);
-    clone.translateX_ = xy.x;
-    clone.translateY_ = xy.y;
-    clone.setAttribute('transform',
-      `translate(${clone.translateX_},${clone.translateY_})`)
-    brick.workspace.getParentSvg().appendChild(clone)
-    clone.bBox_ = clone.getBBox()
-    // Start the animation.
-    step(clone, new Date, this.workspace.scale)
-  }
-})()
-
-
-/**
- * Make the given field reserved or not, to emphasize reserved keywords.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- */
-eYo.Svg.prototype.brickConnectEffect = function (brick) {
-  var svg = brick.ui.svg
-  var w = brick.workspace
-  var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
-  if (brick.out_m) {
-    var h = svg.height * w.scale / 2
-    var ripple = eYo.Svg.newElement('circle',
-      {class: 'blocklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
-      w.getParentSvg())
-  } else {
-  // Determine the absolute coordinates of the inferior brick.
-    var steps = eYo.Svg.magnetHighlightedPath_.attributes['d'].value
-    ripple = eYo.Svg.newElement('path',
-      {class: 'blocklyHighlightedConnectionPath',
-        d: steps,
-        transform: `translate(${xy.x},${xy.y})`},
-      w.getParentSvg())
-  }
-  // Start the animation.
-  eYo.Svg.connectionUiStep_(ripple, new Date(), w.scale)
-}
-
-/**
- * Expand a ripple around a connection.
- * @param {!Element} ripple Element to animate.
- * @param {!Date} start Date of animation's start.
- * @param {number} workspaceScale Scale of workspace.
- * @private
- */
-eYo.Svg.connectionUiStep_ = function (ripple, start, workspaceScale) {
-  var ms = new Date() - start
-  var percent = ms / 200
-  if (percent > 1) {
-    goog.dom.removeNode(ripple)
-  } else {
-    ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1 - percent, 2)
-    eYo.UI.disconnectUiStop_.pid_ = setTimeout(
-      eYo.Svg.connectionUiStep_, 10, ripple, start, workspaceScale)
-  }
-}
-
-/**
  * Show the given menu.
  * Should be obsoleted.
  * @param {!eYo.Brick} brick  the brick the driver acts on
@@ -594,7 +503,7 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
       // Move this brick up the DOM.  Keep track of x/y translations.
       var brick = brick
       brick.workspace.getCanvas().appendChild(g)
-      var xy = brick.ui.xyInSurface
+      var xy = brick.ui.xyInWorkspace
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
       if (svg.groupContour_) {
         goog.dom.insertChildAt(g, svg.groupContour_, 0)
@@ -622,9 +531,9 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
     var ui = brick.ui
     var svg = ui.svg
     var g = svg.group_
-    var oldXY = ui.xyInSurface
+    var oldXY = ui.xyInWorkspace
     brick.parent.ui.svg.group_.appendChild(g)
-    var newXY = ui.xyInSurface
+    var newXY = ui.xyInWorkspace
     // Move the magnets to match the child's new position.
     brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     var p_svg = newParent.ui.svg
@@ -1024,22 +933,23 @@ eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
 
 /**
  * Set the dosplay mode for bricks.
- * @param {!String} mode  The display mode for bocks.
+ * @param {!eYo.Brick} mode  The brick to edit.
+ * @param {Boolean} dragging  The display mode for bocks.
  */
-eYo.Svg.prototype.brickSetDragging = (brick, adding) => {
+eYo.Svg.prototype.brickSetDragging = (brick, dragging) => {
   var svg = brick.ui.svg
-  if (adding) {
+  if (dragging) {
     var group = svg.group_
-    group.translate_ = '';
-    group.skew_ = '';
+    group.translate_ = ''
+    group.skew_ = ''
     Blockly.draggingConnections_ =
         Blockly.draggingConnections_.concat(brick.getMagnets_(true))
     goog.dom.classlist.add(
-        /** @type {!Element} */ (group), 'eyo-dragging');
+        /** @type {!Element} */ (group), 'eyo-dragging')
   } else {
     Blockly.draggingConnections_ = [];
     goog.dom.classlist.remove(
-        /** @type {!Element} */ (group), 'eyo-dragging');
+        /** @type {!Element} */ (group), 'eyo-dragging')
   }
   // Recurse through all bricks attached under this one.
   brick.children_.forEach(b => b.setDragging(adding))
@@ -1162,6 +1072,7 @@ eYo.Svg.prototype.brickMoveOffDragSurface_ = function(brick, newXY) {
  * @private
  */
 eYo.UI.prototype.onMouseDown_ = function (e) {
+  console.error('onMouseDown_')
   var brick = this.brick_
   var ws = brick.workspace
   if (this.locked_) {
