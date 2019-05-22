@@ -9,6 +9,8 @@
 goog.provide('eYo.WorkspaceDragger');
 goog.require('Blockly.WorkspaceDragger');
 
+goog.forwardDeclare('eYo.Dom')
+
 /**
  * Start dragging the workspace.
  * @package

@@ -64,6 +64,13 @@ eYo.UI.prototype.dispose = function () {
   this.driver.brickDispose(this.brick_)
 }
 
+Object.defineProperties(eYo.UI, {
+  /**
+   * Delay in ms between trigger and bumping unconnected block out of alignment.
+   */
+  BUMP_DELAY: { value: 250 },
+})
+
 // computed properties
 Object.defineProperties(eYo.UI.prototype, {
   brick: {
@@ -1844,5 +1851,42 @@ eYo.UI.prototype.getDistanceFromVisible = function (newLoc) {
  */
 eYo.UI.prototype.setParent = function (parent) {
   this.driver.brickSetParent(this, parent)
+}
+
+/**
+ * Schedule snapping to grid and bumping neighbours to occur after a brief
+ * delay.
+ * @package
+ */
+eYu.UI.prototype.scheduleSnapAndBump = function() {
+  // Ensure that any snap and bump are part of this move's event group.
+  var group = Blockly.Events.getGroup()
+  setTimeout(() => {
+    Blockly.Events.setGroup(group)
+    this.snapToGrid()
+    Blockly.Events.setGroup(false)
+  }, eYo.UI.BUMP_DELAY / 2)
+  setTimeout(() => {
+    Blockly.Events.setGroup(group)
+    this.bumpNeighbours_()
+    Blockly.Events.setGroup(false)
+  }, eYo.UI.BUMP_DELAY)
+}
+
+/**
+ * Snap this block to the nearest grid point.
+ */
+eYo.UI.prototype.snapToGrid = function() {
+  if (!this.workspace || this.workspace.dragging || this.parent || this.isInFlyout) {
+    return
+  }
+  var xy = this.xyInWorkspace
+  var dx = (Math.round(xy.x / eYo.Unit.x - 1 / 2) + 1 / 2) * eYo.Unit.x - xy.x
+  dx = Math.round(dx)
+  var dy = (Math.round(xy.y / eYo.Unit.y - 1 / 2) + 1 / 2) * eYo.Unit.y - xy.y
+  dy = Math.round(dy)
+  if (dx != 0 || dy != 0) {
+    this.moveBy(dx, dy)
+  }
 }
 

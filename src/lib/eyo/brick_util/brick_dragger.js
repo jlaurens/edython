@@ -14,8 +14,8 @@
 
 goog.provide('eYo.BrickDragger')
 
-goog.require('eYo')
 
+goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Workspace')
 goog.forwardDeclare('eYo.Events.BrickMove')
@@ -142,7 +142,11 @@ eYo.BrickDragger.prototype.dispose = function() {
  * @param {boolean} healStack whether or not to heal the stack after disconnecting
  * @package
  */
-eYo.BrickDragger.prototype.startBlockDrag = function(delta, healStack) {
+eYo.BrickDragger.prototype.start = function(delta, healStack) {
+  eYo.Selected.magnet = null
+  var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
+  this.transformCorrection_ = eYo.Do.getTransformCorrection(element)
+
   if (!eYo.Events.getGroup()) {
     eYo.Events.setGroup(true);
   }
@@ -177,7 +181,10 @@ eYo.BrickDragger.prototype.startBlockDrag = function(delta, healStack) {
  *     moved from the position at the start of the drag, in pixel units.
  * @package
  */
-eYo.BrickDragger.prototype.dragBlock = function(e, delta) {
+eYo.BrickDragger.prototype.drag = function(e, delta) {
+  if (delta && this.transformCorrection_) {
+    delta = this.transformCorrection_(delta)
+  }
   var dXY = this.destination.fromPixelUnit(delta)
   var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
 
@@ -199,20 +206,24 @@ eYo.BrickDragger.prototype.dragBlock = function(e, delta) {
  *     moved from the position at the start of the drag, in pixel units.
  * @package
  */
-eYo.BrickDragger.prototype.endBlockDrag = (() => {
+eYo.BrickDragger.prototype.end = (() => {
   /**
    * Fire a move event at the end of a brick drag.
    * @private
    */
-  var fireMoveEvent = (self) => {
+  var fireMoveEvent = self => {
     var event = new eYo.Events.BrickMove(self.brick_)
     event.oldCoordinate = self.xyStart_
     event.recordNew()
     eYo.Events.fire(event)
   }
   return function(e, delta) {
+    if (delta && this.transformCorrection_) {
+      delta = this.transformCorrection_(delta)
+      this.transformCorrection_ = null // !important
+    }
     // Make sure internal state is fresh.
-    this.dragBlock(e, delta)
+    this.drag(e, delta)
     this.ui_driver.disconnectStop()
     var dXY = this.destination.fromPixelUnit(delta)
     var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
@@ -229,7 +240,7 @@ eYo.BrickDragger.prototype.endBlockDrag = (() => {
       this.connect()
       b3k.render()
       fireMoveEvent(this)
-      b3k.scheduleSnapAndBump()
+      b3k.ui.scheduleSnapAndBump()
     }
     var trashcan = this.destination.trashcan
     if (trashcan) {

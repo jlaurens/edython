@@ -21,7 +21,6 @@ goog.forwardDeclare('eYo.WorkspaceDragger')
 goog.forwardDeclare('eYo.FlyoutDragger')
 
 goog.forwardDeclare('Blockly.Tooltip')
-goog.forwardDeclare('Blockly.Touch')
 
 goog.forwardDeclare('goog.math.Coordinate')
 goog.forwardDeclare('goog.asserts')
@@ -301,24 +300,12 @@ eYo.Gesture.prototype.dispose = function() {
   }
 }
 
-eYo.Gesture.prototype.on_mousedown = function (e) {
-  this.handleStart(e)
-}
-
-eYo.Gesture.prototype.on_mousemove = function (e) {
-  this.handleMove(e)
-}
-
-eYo.Gesture.prototype.on_mouseup = function (e) {
-  this.handleUp(e)
-}
-
 /**
  * Handle a mouse down, touch start, or pointer down event.
  * @param {!Event} e A mouse down, touch start, or pointer down event.
  * @package
  */
-eYo.Gesture.prototype.handleStart = function(e) {
+eYo.Gesture.prototype.on_mousedown = function(e) {
   if (this.dragging) {
     // A drag has already started, so this can no longer be a pinch-zoom.
     return
@@ -417,7 +404,7 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
     : eYo.Gesture.DRAG_RADIUS
     if (delta > limit) {
       this.updateDraggingBrick_() || this.updateIsDraggingWorkspace_()
-      Blockly.longStop_()
+      eYo.Do.longStop_()
     }
   }
   this.event_ = e
@@ -477,8 +464,8 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
   if (this.isDraggingBrick_) {
     this.brickDragger_ = new eYo.BrickDragger(this.targetBrick_,
       this.workspace_)
-    this.brickDragger_.startBrickDrag(this.xyDelta_, this.healStack_)
-    this.brickDragger_.dragBrick(this.event_, this.xyDelta_)
+    this.brickDragger_.start(this.xyDelta_, this.healStack_)
+    this.brickDragger_.drag(this.event_, this.xyDelta_)
     return true
   }
   return false
@@ -519,7 +506,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
     if (this.isDraggingWorkspace_) {
       this.workspaceDragger_.drag(this.xyDelta_)
     } else if (this.isDraggingBrick_) {
-      this.brickDragger_.dragBrick(this.event_, this.xyDelta_)
+      this.brickDragger_.drag(this.event_, this.xyDelta_) // sometimes it failed when in Blockly
     }
     e.preventDefault()
     e.stopPropagation()  
@@ -527,7 +514,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
   return function(e) {
     if (this.dragging) {
       // We are in the middle of a drag, only handle the relevant events
-      if (Blockly.Touch.shouldHandleEvent(e)) {
+      if (this.ui_driver.shouldHandleEvent(e)) {
         move.call(this, e);
       }
       return;
@@ -536,9 +523,9 @@ eYo.Gesture.prototype.on_mousemove = (() => {
       if (this.ui_driver.isTouchEvent(e)) {
         this.handleTouchMove(e)
       }
-      Blockly.longStop_();
+      eYo.Do.longStop_()
     } else {
-      move.call(this, e);
+      move.call(this, e)
     }
   }
 })()
@@ -560,11 +547,11 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     }
   }
   if (!this.multiTouch || this.dragging) {
-    if (!Blockly.Touch.shouldHandleEvent(e)) {
+    if (!this.ui_driver.shouldHandleEvent(e)) {
       return
     }
     this.updateFromEvent_(e)
-    Blockly.longStop_()
+    eYo.Do.longStop_()
 
     if (this.isEnding_) {
       console.log('Trying to end a gesture recursively.')
@@ -577,7 +564,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
     if (this.isDraggingBrick_) {
-      this.brickDragger_.endBrickDrag(e, this.xyDelta_)
+      this.brickDragger_.end(e, this.xyDelta_)
     } else if (this.isDraggingWorkspace_) {
       this.workspaceDragger_.endDrag(this.xyDelta_)
     } else if (this.startBrick_) {
@@ -609,9 +596,9 @@ eYo.Gesture.prototype.cancel = function() {
   if (this.isEnding_) {
     return;
   }
-  Blockly.longStop_()
+  eYo.Do.longStop_()
   if (this.isDraggingBrick_) {
-    this.brickDragger_.endBrickDrag(this.event_, this.xyDelta_)
+    this.brickDragger_.end(this.event_, this.xyDelta_)
   } else if (this.isDraggingWorkspace_) {
     this.workspaceDragger_.endDrag(this.xyDelta_)
   }
@@ -650,7 +637,7 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
   this.started_ = true
   this.startWorkspace_ || (this.startWorkspace_ = ws)
   var b3k = eYo.Selected.brick
-  b3k && (b3k.selectMouseDownEvent = e)
+  b3k && (b3k.ui.selectMouseDownEvent = e)
   this.doStart(e)
 }
 
@@ -686,7 +673,7 @@ eYo.Gesture.prototype.doStart = function(e) {
 
   if (e.type == 'touchstart' ||
       (e.type == 'pointerdown' && e.pointerType != 'mouse')) {
-    Blockly.longStart_(e, this)
+    eYo.Do.longStart_(e, this)
   }
 
   this.xyStart_ = new goog.math.Coordinate(e.clientX, e.clientY);
@@ -748,7 +735,7 @@ eYo.Gesture.prototype.doBrickClick_ = function() {
         Blockly.Events.setGroup(true)
       }
       var newBrick = this.flyout_.createBrick(this.targetBrick_)
-      newBrick.scheduleSnapAndBump()
+      newBrick.ui.scheduleSnapAndBump()
     }
   } else {
     // Clicks events are on the start brick, even if it was a shadow.

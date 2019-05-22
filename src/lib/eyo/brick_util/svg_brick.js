@@ -1131,10 +1131,10 @@ eYo.UI.prototype.on_mouseup = function (e) {
     t9k = t9k.parent
   }
   // reentrancy filter
-  if (!t9k || t9k.alreadyMouseUpEvent_ === e) {
+  if (!t9k || t9k.ui.alreadyMouseUpEvent_ === e) {
     return
   }
-  t9k.alreadyMouseUpEvent_ = e
+  t9k.ui.alreadyMouseUpEvent_ = e
   var ee = t9k.ui.lastMouseDownEvent
   if (ee) {
     // a brick was selected when the mouse down event was sent
@@ -1160,14 +1160,14 @@ eYo.UI.prototype.on_mouseup = function (e) {
           }
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
-        } else if (t9k.selectMouseDownEvent) {
+        } else if (t9k.ui.selectMouseDownEvent) {
           ;(this.isStmt.select() ? this : this.stmtParent) || t9k.root
-          t9k.selectMouseDownEvent = null
+          t9k.ui.selectMouseDownEvent = null
         }
       }
     }
-  } else if ((b3k = eYo.Selected.brick) && (ee = b3k.selectMouseDownEvent)) {
-    b3k.selectMouseDownEvent = null
+  } else if ((b3k = eYo.Selected.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+    b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
       // select the brick which is an ancestor of the target

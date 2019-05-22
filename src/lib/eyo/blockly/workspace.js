@@ -560,3 +560,22 @@ Blockly.WorkspaceSvg.prototype.getGesture = function(e) {
   // No gesture existed and this event couldn't be the start of a new gesture.
   return null
 };
+
+
+/**
+ * Clean up the workspace by ordering all the blocks in a column.
+ */
+Blockly.WorkspaceSvg.prototype.cleanUp = function() {
+  this.setResizesEnabled(false)
+  Blockly.Events.setGroup(true)
+  var cursorY = 0
+  this.getTopBlocks(true).forEach(brick => {
+    var xy = brick.ui.xyInWorkspace
+    brick.ui.moveBy(-xy.x, cursorY - xy.y)
+    block.ui.snapToGrid();
+    cursorY = brick.ui.xyInWorkspace.y +
+        brick.ui.size.height + Blockly.BlockSvg.MIN_BLOCK_Y
+  })
+  Blockly.Events.setGroup(false)
+  this.setResizesEnabled(true)
+};
