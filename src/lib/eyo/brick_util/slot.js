@@ -112,9 +112,9 @@ eYo.Slot.prototype.dispose = function (healStack) {
 }
 
 Object.defineProperties(eYo.Slot.prototype, {
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   },
   /**
@@ -258,11 +258,11 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Install this slot and its associate fields on their brick.
  * No data change.
  */
-eYo.Slot.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing // one shot function
+eYo.Slot.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing // one shot function
   this.ui_driver.slotInit(this)
-  this.forEachField(f => f.beReady())
-  this.magnet && (this.magnet.beReady())
+  this.forEachField(f => f.makeUI())
+  this.magnet && (this.magnet.makeUI())
 }
 
 Object.defineProperties(eYo.Slot.prototype, {

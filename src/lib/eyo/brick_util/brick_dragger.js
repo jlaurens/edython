@@ -144,7 +144,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  */
 eYo.BrickDragger.prototype.start = function(delta, healStack) {
   eYo.Selected.magnet = null
-  var element = this.draggingBlock_.workspace.svgGroup_.parentNode.parentNode
+  var element = this.draggingBlock_.workspace.dom.group_.parentNode.parentNode
   this.transformCorrection_ = eYo.Do.getTransformCorrection(element)
 
   if (!eYo.Events.getGroup()) {

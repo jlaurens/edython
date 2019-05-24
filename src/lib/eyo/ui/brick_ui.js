@@ -279,7 +279,7 @@ eYo.Brick.UI.prototype.renderSuite_ = function (io) {
  * Lays out and reflows a brick based on its contents and settings.
  * Rendering is complicated considering the possibility of both line continuation and multi line strings.
  * @param {*} recorder
- * @param {boolean=} optBubble If false, just render this.brick_ brick.
+ * @param {boolean=} bbbl If false, just render this.brick_ brick.
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
  */
 // deleted bricks are rendered during deletion
@@ -289,13 +289,13 @@ eYo.Brick.UI.prototype.render = (() => {
   /**
    * May render the parent brick, if relevant.
    * @param {Object} recorder  A recorder object.
-   * @param {boolean=} optBubble If false, just render this.brick_ brick.
+   * @param {boolean=} bbbl If false, just render this.brick_ brick.
    *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
-  var drawParent = function (recorder, optBubble) {
+  var drawParent = function (recorder, bbbl) {
     // `this.brick_` is a brick delegate
-    if (optBubble === false || this.down) {
+    if (bbbl === false || this.down) {
       return
     }
     // Render all bricks above this one only
@@ -345,7 +345,7 @@ eYo.Brick.UI.prototype.render = (() => {
   }
   var longRender = eYo.Decorate.reentrant_method(
     'longRender',
-    function (optBubble, recorder) {
+    function (bbbl, recorder) {
       if (eYo.Brick.UI.debugStartTrackingRender) {
         var n = eYo.Brick.UI.debugCount[brick.id]
         eYo.Brick.UI.debugCount[brick.id] = (n||0)+1
@@ -365,7 +365,7 @@ eYo.Brick.UI.prototype.render = (() => {
         this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
-        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+        drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         this.didRender_(io)
       } catch (err) {
         console.error(err)
@@ -377,8 +377,8 @@ eYo.Brick.UI.prototype.render = (() => {
       }
     }
   )
-  return function (optBubble, recorder) {
-    if (!this.brick_.isReady || this.rendered === false) { // this.rendered === undefined is OK
+  return function (bbbl, recorder) {
+    if (!this.brick_.hasUI || this.rendered === false) { // this.rendered === undefined is OK
       return
     }
     if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.workspace)) {
@@ -396,7 +396,7 @@ eYo.Brick.UI.prototype.render = (() => {
         this.renderMove_(io)
         this.updateShape()
         this.brick_.change.save.render = this.brick_.change.count
-        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io) // will they have a parent meanwhile?
+        drawParent.call(this, io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
         return
       } else if (eYo.Magnet.disconnectedParent && this.brick_.foot_m === eYo.Magnet.disconnectedParent) {
         // this.brick_ is the parent one
@@ -407,7 +407,7 @@ eYo.Brick.UI.prototype.render = (() => {
         this.renderMove_(io)
         this.updateShape()
         this.brick_.change.save.render = this.brick_.change.count
-        drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+        drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         return
       } else if (eYo.Magnet.connectedParent) {
         if (this.brick_.head_m && eYo.Magnet.connectedParent === this.brick_.head_m.target) {
@@ -417,7 +417,7 @@ eYo.Brick.UI.prototype.render = (() => {
           this.renderMove_(io)
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
-          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+          drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         } else if (this.brick_.foot_m && eYo.Magnet.connectedParent === this.brick_.foot_m) {
           var io = this.willShortRender_(recorder)
           this.layoutMagnets_(io)
@@ -425,7 +425,7 @@ eYo.Brick.UI.prototype.render = (() => {
           this.renderMove_(io)
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
-          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+          drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         } else if (this.brick_.suite_m && eYo.Magnet.connectedParent === this.brick_.suite_m) {
           var io = this.willShortRender_(recorder)
           this.layoutMagnets_(io)
@@ -433,7 +433,7 @@ eYo.Brick.UI.prototype.render = (() => {
           this.renderMove_(io)
           this.updateShape()
           this.brick_.change.save.render = this.brick_.change.count
-          drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+          drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         }
       }
     }
@@ -452,7 +452,7 @@ eYo.Brick.UI.prototype.render = (() => {
           if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
             try {
               parent.ui.up = true
-              parent.render(optBubble, recorder)
+              parent.render(bbbl, recorder)
             } catch (err) {
               console.error(err)
               throw err
@@ -460,7 +460,7 @@ eYo.Brick.UI.prototype.render = (() => {
               parent.ui.up = false
             }
           } else {
-            parent.render(optBubble, recorder)
+            parent.render(bbbl, recorder)
           }
         }
         return
@@ -473,10 +473,10 @@ eYo.Brick.UI.prototype.render = (() => {
       this.drawFoot_(io)
       this.renderMove_(io)
       this.updateShape()
-      drawParent.call(this, io, optBubble) || this.alignRightEdges_(io)
+      drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
       return
     }
-    longRender.call(this, optBubble, recorder)
+    longRender.call(this, bbbl, recorder)
     this.brick_.change.save.render = this.brick_.change.count
   }
 }) ()
@@ -637,7 +637,7 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
 eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
   'alignRightEdges_',
   function (recorder) {
-    if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.workspace || !this.brick_.isReady) {
+    if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.workspace || !this.brick_.hasUI) {
       return
     }
     var right = 0

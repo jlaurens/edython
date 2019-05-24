@@ -58,7 +58,7 @@ eYo.Workspace = function(options) {
    * @type {!Object}
    * @private
    */
-  this.blockDB_ = Object.create(null)
+  this.brickDB_ = Object.create(null)
 
   this.getMetrics =
   options.getMetrics || eYo.Workspace.getTopLevelWorkspaceMetrics_
@@ -185,32 +185,26 @@ eYo.Workspace.prototype.dispose = function() {
   this.clear();
   // Remove from workspace database.
   delete eYo.Workspace.WorkspaceDB_[this.id];
-  if (this.svgGroup_) {
-    goog.dom.removeNode(this.svgGroup_);
-    this.svgGroup_ = null;
-  }
-  this.svgBlockCanvas_ = null;
-  this.svgBubbleCanvas_ = null;
+  this.ui_driver.workspaceDispose(this)
   if (this.flyout_) {
-    this.flyout_.dispose();
-    this.flyout_ = null;
+    this.flyout_.dispose()
+    this.flyout_ = null
   }
   if (this.trashcan) {
-    this.trashcan.dispose();
-    this.trashcan = null;
+    this.trashcan.dispose()
+    this.trashcan = null
   }
   if (this.scrollbar) {
-    this.scrollbar.dispose();
-    this.scrollbar = null;
+    this.scrollbar.dispose()
+    this.scrollbar = null
   }
   if (this.zoomControls_) {
-    this.zoomControls_.dispose();
-    this.zoomControls_ = null;
+    this.zoomControls_.dispose()
+    this.zoomControls_ = null
   }
-
   if (this.audioManager_) {
-    this.audioManager_.dispose();
-    this.audioManager_ = null;
+    this.audioManager_.dispose()
+    this.audioManager_ = null
   }
 
   if (this.flyoutButtonCallbacks_) {
@@ -226,6 +220,24 @@ eYo.Workspace.prototype.dispose = function() {
     this.resizeHandlerWrapper_ = null;
   }
 };
+
+/**
+ * Be ready.
+ * @param {!Blockly.Block} block Block to add.
+ */
+eYo.Workspace.prototype.makeUI = function() {
+  this.makeUI = eYo.Do.nothing
+  var d = this.driver_ = new eYo.Svg()
+  d.workspaceInit(this)
+  var bottom = Blockly.Scrollbar.scrollbarThickness
+  if (this.options.hasTrashcan) {
+    bottom = this.addTrashcan_(bottom)
+  }
+  if (workspace.options.zoomOptions && workspace.options.zoomOptions.controls) {
+    this.addZoomControls_(bottom)
+  }
+  this.recordDeleteAreas()
+}
 
 /**
  * Angle away from the horizontal to sweep for blocks.  Order of execution is
@@ -453,12 +465,12 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
  * @return {Blockly.Block} The sought after block or null if not found.
  */
 eYo.Workspace.prototype.getBlockById = eYo.Workspace.prototype.getBrickById = function(id) {
-  var brick = this.blockDB_[id]
+  var brick = this.brickDB_[id]
   if (brick) {
     return brick
   }
   var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
-  if (m && (brick = this.blockDB_[m.id])) {
+  if (m && (brick = this.brickDB_[m.id])) {
     return brick.someInputMagnet(m4t => {
       var b3k = m4t.targetBrick
       if (b3k && b3k.id === id) {
@@ -597,14 +609,14 @@ eYo.Workspace.prototype.currentGesture_ = null;
 
 /**
  * This workspace's surface for dragging blocks, if it exists.
- * @type {Blockly.BlockDragSurfaceSvg}
+ * @type {eYo.BrickDragSurfaceSvg}
  * @private
  */
 eYo.Workspace.prototype.brickDragSurface_ = null;
 
 /**
  * This workspace's drag surface, if it exists.
- * @type {Blockly.WorkspaceDragSurfaceSvg}
+ * @type {eYo.WorkspaceDragSurfaceSvg}
  * @private
  */
 eYo.Workspace.prototype.workspaceDragSurface_ = null;
@@ -696,16 +708,14 @@ eYo.Workspace.prototype.getSvgXY = function(element) {
   var x = 0;
   var y = 0;
   var scale = 1;
-  if (goog.dom.contains(this.getCanvas(), element) ||
-      goog.dom.contains(this.getBubbleCanvas(), element)) {
+  if (goog.dom.contains(this.getCanvas(), element)) {
     // Before the SVG canvas, scale the coordinates.
     scale = this.scale;
   }
   do {
     // Loop through this block and every parent.
     var xy = Blockly.utils.getRelativeXY(element);
-    if (element == this.getCanvas() ||
-        element == this.getBubbleCanvas()) {
+    if (element == this.getCanvas()) {
       // After the SVG canvas, don't scale the coordinates.
       scale = 1;
     }
@@ -725,8 +735,8 @@ eYo.Workspace.prototype.getSvgXY = function(element) {
  * @package
  */
 eYo.Workspace.prototype.getOriginOffsetInPixels = function() {
-  return Blockly.utils.getInjectionDivXY_(this.svgBlockCanvas_);
-};
+  return Blockly.utils.getInjectionDivXY_(this.dom.canvas_)
+}
 
 /**
  * Save resize handler data so we can delete it later in dispose.
@@ -735,66 +745,6 @@ eYo.Workspace.prototype.getOriginOffsetInPixels = function() {
 eYo.Workspace.prototype.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
 };
-
-/**
- * Create the workspace DOM elements.
- * @param {string=} opt_backgroundClass Either 'blocklyMainBackground' or
- *     'blocklyMutatorBackground'.
- * @return {!Element} The workspace's SVG group.
- */
-eYo.Workspace.prototype.createDom = function(opt_backgroundClass) {
-  /**
-  * <g class="blocklyWorkspace">
-  *   <rect class="blocklyMainBackground" height="100%" width="100%"></rect>
-  *   [Trashcan and/or flyout may go here]
-  *   <g class="blocklyBlockCanvas"></g>
-  *   <g class="blocklyBubbleCanvas"></g>
-  * </g>
-  * @type {SVGElement}
-  */
- /**
-   * @type {!Object}
-   * @private
-   */
-  this.bound_ = Object.create(null)
-
-  this.svgGroup_ = Blockly.utils.createSvgElement('g',
-      {'class': 'blocklyWorkspace'}, null);
-
-  // Note that a <g> alone does not receive mouse events--it must have a
-  // valid target inside it.  If no background class is specified, as in the
-  // flyout, the workspace will not receive mouse events.
-  if (opt_backgroundClass) {
-    /** @type {SVGElement} */
-    this.svgBackground_ = Blockly.utils.createSvgElement('rect',
-        {'height': '100%', 'width': '100%', 'class': opt_backgroundClass},
-        this.svgGroup_);
-
-  }
-  /** @type {SVGElement} */
-  this.svgBlockCanvas_ = Blockly.utils.createSvgElement('g',
-      {'class': 'blocklyBlockCanvas'}, this.svgGroup_);
-  /** @type {SVGElement} */
-  this.svgBubbleCanvas_ = Blockly.utils.createSvgElement('g',
-      {'class': 'blocklyBubbleCanvas'}, this.svgGroup_);
-  var bottom = Blockly.Scrollbar.scrollbarThickness;
-  if (this.options.hasTrashcan) {
-    bottom = this.addTrashcan_(bottom);
-  }
-  if (this.options.zoomOptions && this.options.zoomOptions.controls) {
-    this.addZoomControls_(bottom)
-  }
-
-  if (!this.isFlyout) {
-    this.ui_driver.workspaceBind_mousedown(this)
-    if (this.options.zoomOptions && this.options.zoomOptions.wheel) {
-      this.ui_driver.workspaceBind_wheel(this)
-    }
-  }
-
-  this.recordDeleteAreas();
-  return this.svgGroup_;
-}
 
 /**
  * Obtain a newly created block.
@@ -818,7 +768,7 @@ eYo.Workspace.prototype.addTrashcan_ = function(bottom) {
   /** @type {Blockly.Trashcan} */
   this.trashcan = new Blockly.Trashcan(this);
   var svgTrashcan = this.trashcan.createDom();
-  this.svgGroup_.insertBefore(svgTrashcan, this.svgBlockCanvas_);
+  this.dom.group_.insertBefore(svgTrashcan, this.svgBlockCanvas_);
   return this.trashcan.init(bottom);
 };
 
@@ -832,7 +782,7 @@ eYo.Workspace.prototype.addZoomControls_ = function(bottom) {
   /** @type {Blockly.ZoomControls} */
   this.zoomControls_ = new Blockly.ZoomControls(this);
   var svgZoomControls = this.zoomControls_.createDom();
-  this.svgGroup_.appendChild(svgZoomControls);
+  this.dom.group_.appendChild(svgZoomControls);
   return this.zoomControls_.init(bottom);
 };
 
@@ -946,14 +896,6 @@ eYo.Workspace.prototype.getCanvas = function() {
 };
 
 /**
- * Get the SVG element that forms the bubble surface.
- * @return {!SVGGElement} SVG element.
- */
-eYo.Workspace.prototype.getBubbleCanvas = function() {
-  return this.svgBubbleCanvas_;
-};
-
-/**
  * Get the SVG element that contains this workspace.
  * @return {Element} SVG element.
  */
@@ -961,7 +903,7 @@ eYo.Workspace.prototype.getParentSvg = function() {
   if (this.cachedParentSvg_) {
     return this.cachedParentSvg_;
   }
-  var element = this.svgGroup_;
+  var element = this.dom.group_;
   while (element) {
     if (element.tagName == 'svg') {
       this.cachedParentSvg_ = element;
@@ -983,8 +925,7 @@ eYo.Workspace.prototype.translate = function(x, y) {
   } else {
     var translation = 'translate(' + x + ',' + y + ') ' +
         'scale(' + this.scale + ')';
-    this.svgBlockCanvas_.setAttribute('transform', translation);
-    this.svgBubbleCanvas_.setAttribute('transform', translation);
+    this.svgBlockCanvas_.setAttribute('transform', translation)
   }
   // Now update the block drag surface if we're using one.
   if (this.brickDragSurface_) {
@@ -1007,11 +948,10 @@ eYo.Workspace.prototype.resetDragSurface = function() {
   this.isDragSurfaceActive_ = false;
 
   var trans = this.workspaceDragSurface_.getSurfaceTranslation();
-  this.workspaceDragSurface_.clearAndHide(this.svgGroup_);
+  this.workspaceDragSurface_.clearAndHide(this.dom.group_);
   var translation = 'translate(' + trans.x + ',' + trans.y + ') ' +
       'scale(' + this.scale + ')';
-  this.svgBlockCanvas_.setAttribute('transform', translation);
-  this.svgBubbleCanvas_.setAttribute('transform', translation);
+  this.svgBlockCanvas_.setAttribute('transform', translation)
 };
 
 /**
@@ -1043,18 +983,8 @@ eYo.Workspace.prototype.setupDragSurface = function() {
   var width = parseInt(this.getParentSvg().getAttribute('width'), 10);
   var height = parseInt(this.getParentSvg().getAttribute('height'), 10);
   var coord = Blockly.utils.getRelativeXY(this.svgBlockCanvas_);
-  this.workspaceDragSurface_.setContentsAndShow(this.svgBlockCanvas_,
-      this.svgBubbleCanvas_, previousElement, width, height, this.scale);
+  this.workspaceDragSurface_.setContentsAndShow(this.svgBlockCanvas_, previousElement, width, height, this.scale);
   this.workspaceDragSurface_.translateSurface(coord.x, coord.y);
-};
-
-/**
- * @return {?Blockly.BlockDragSurfaceSvg} This workspace's block drag surface,
- *     if one is in use.
- * @package
- */
-eYo.Workspace.prototype.getBlockDragSurface = function() {
-  return this.brickDragSurface_;
 };
 
 /**
@@ -1250,7 +1180,7 @@ eYo.Workspace.prototype.paste = function (dom) {
  * Make a list of all the delete areas for this workspace.
  */
 eYo.Workspace.prototype.recordDeleteAreas = function() {
-  if (this.trashcan && this.svgGroup_.parentNode) {
+  if (this.trashcan && this.dom.group_.parentNode) {
     this.deleteAreaTrash_ = this.trashcan.getClientRect();
   } else {
     this.deleteAreaTrash_ = null;
@@ -1297,7 +1227,6 @@ eYo.Workspace.prototype.onMouseDown_ = function(e) {
  * @param {!goog.math.Coordinate} xy Starting location of object.
  */
 eYo.Workspace.prototype.startDrag = function(e, xy) {
-  // Record the starting offset between the bubble's location and the mouse.
   var point = Blockly.utils.mouseToSvg(e, this.getParentSvg(),
       this.getInverseScreenCTM());
   // Fix scale of mouse event.
@@ -2197,9 +2126,9 @@ eYo.Workspace.prototype.fromUTF8ByteArray = function (bytes) {
 eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
   brick.id = (opt_id && !this.getBlockById(opt_id)) ?
   opt_id : Blockly.utils.genUid()
-  this.isReady && (brick.beReady())
+  this.hasUI && brick.makeUI()
   this.addTopBlock(brick)
-  this.blockDB_[brick.id] = brick
+  this.brickDB_[brick.id] = brick
 }
 
 
@@ -2210,7 +2139,7 @@ eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
 eYo.Workspace.prototype.removeBrick = function (brick) {
   this.removeTopBlock(brick)
   // Remove from workspace
-  this.blockDB_[brick.id]
+  this.brickDB_[brick.id]
 }
 
 /**
@@ -2462,6 +2391,6 @@ Blockly.Trashcan.prototype.position = function() {
   if (metrics.flyoutAnchor == eYo.Flyout.AT_BOTTOM) {
     this.top_ -= metrics.flyoutHeight
   }
-  this.svgGroup_.setAttribute('transform',
+  this.dom.group_.setAttribute('transform',
       'translate(' + this.left_ + ',' + this.top_ + ')');
 };

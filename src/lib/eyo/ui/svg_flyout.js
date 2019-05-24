@@ -64,8 +64,8 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   g.appendChild(this.workspaceInit(this.workspace_))
 
   /*var g = flyout.workspace_.createDom()
-  goog.dom.classlist.remove(g, 'blocklyWorkspace')
-  goog.dom.classlist.add(g, 'eyo-workspace')*/
+  goog.dom.classlist.remove(g, 'eyo-workspace-surface')
+  goog.dom.classlist.add(g, 'eyo-workspace-surface')*/
 
   goog.dom.insertSiblingAfter(
     g,

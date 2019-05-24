@@ -192,7 +192,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   // Stop rerendering.
   this.ui_ && (this.ui_.rendered = false)
-  this.consolidate = this.beReady = this.render = eYo.Do.nothing
+  this.consolidate = this.makeUI = this.render = eYo.Do.nothing
   // Remove from workspace
   workspace.eyo.removeBrick(this)
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
@@ -2335,7 +2335,7 @@ eYo.Brick.prototype.someStatement = function (helper) {
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
- * This is headless and should not render until a beReady message is sent.
+ * This is headless and should not render until a makeUI message is sent.
  * @param {!*} owner  workspace or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
@@ -2343,7 +2343,7 @@ eYo.Brick.prototype.someStatement = function (helper) {
  */
 eYo.Brick.newReady = function (owner, model, id) {
   var brick = eYo.Brick.newComplete(owner, model, id)
-  brick && (brick.beReady())
+  brick && (brick.makeUI())
   return brick
 }
 
@@ -2353,7 +2353,7 @@ eYo.Brick.newReady = function (owner, model, id) {
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
- * This is headless and should not render until a beReady message is sent.
+ * This is headless and should not render until a makeUI message is sent.
  * @param {!*} owner  workspace or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
@@ -2444,7 +2444,7 @@ eYo.Brick.newComplete = (() => {
     var b3k = processModel(workspace, model, id)
     if (b3k) {
       b3k.consolidate()
-      b3k.beReady(owner.isReady || workspace.rendered)
+      b3k.makeUI(owner.hasUI || workspace.rendered)
     }
     return b3k
   }
@@ -2456,31 +2456,31 @@ eYo.Brick.newComplete = (() => {
  * This is a one shot function.
  * @param {boolean} headless  no op when false
  */
-eYo.Brick.prototype.beReady = function (headless) {
+eYo.Brick.prototype.makeUI = function (headless) {
   if (headless === false || !this.workspace) {
     return
   }
   this.changeWrap(() => {
-      this.beReady = eYo.Do.nothing // one shot function
+      this.makeUI = eYo.Do.nothing // one shot function
       this.ui_ = new eYo.Brick.UI(this)
-      this.forEachField(field => field.beReady())
-      this.forEachSlot(slot => slot.beReady())
-      this.inputList.forEach(input => input.beReady())
+      this.forEachField(field => field.makeUI())
+      this.forEachSlot(slot => slot.makeUI())
+      this.inputList.forEach(input => input.makeUI())
       ;[this.suite_m,
         this.right_m,
         this.foot_m
-      ].forEach(m => m && m.beReady())
+      ].forEach(m => m && m.makeUI())
       this.forEachData(data => data.synchronize()) // data is no longer headless
-      this.magnets.beReady()
+      this.magnets.makeUI()
       this.render = eYo.Brick.prototype.render_
     }
   )
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   }
 })

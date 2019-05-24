@@ -27,19 +27,19 @@ goog.forwardDeclare('goog.userAgent')
 
 eYo.setup.register(() => {
   eYo.Style.SEP_SPACE_X = 0
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout {
         position: absolute;
         z-index: 20;
       }`)
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-background {
       fill: #ddd;
       fill-opacity: .8;
       pointer-events: all;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-scrollbar {
       z-index: 30;
     }`
@@ -47,7 +47,7 @@ eYo.setup.register(() => {
 })
 
 eYo.setup.register(() => {
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar {
       position: absolute;
       pointer-events: all;
@@ -58,7 +58,7 @@ eYo.setup.register(() => {
       background: rgba(221,221,221,0.8);
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar-general {
       position: absolute;
       pointer-events: all;
@@ -68,7 +68,7 @@ eYo.setup.register(() => {
       margin: 0;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar-module {
       position: absolute;
       pointer-events: all;
@@ -79,7 +79,7 @@ eYo.setup.register(() => {
       width: 100%;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-select-general,
     .eyo-flyout-select-module {
       height: 100%;
@@ -90,7 +90,7 @@ eYo.setup.register(() => {
     }`
   )
   var radius = '1.125rem;'
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control {
       background: #ddd;
       opacity: 0.79;
@@ -100,7 +100,7 @@ eYo.setup.register(() => {
       top: 0px;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control left {
       border-top-right-radius:${radius};
       border-bottom-right-radius:${radius};
@@ -113,7 +113,7 @@ eYo.setup.register(() => {
       right: -1.25rem;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control {
       border-top-left-radius:${radius};
       border-bottom-left-radius:${radius};
@@ -126,24 +126,24 @@ eYo.setup.register(() => {
       left: -1.25rem;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control-image {
       width: 1.125rem;
       height: 2.25rem;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control-image path {
       fill: white;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-control-image path:hover {
       fill:black;
       fill-opacity: 0.075;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flash .eyo-flyout-control-image path,
     .eyo-flash .eyo-flyout-control-image path:hover {
       fill:black;
@@ -153,19 +153,19 @@ eYo.setup.register(() => {
 })
 
 eYo.setup.register(() => {
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar .eyo-menu-button {
       background: #952276;
       box-shadow: 0px 3px 8px #888;
       border:0;
     }`
   )
-    eYo.Style.insertCssRuleAt(
+    eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar .eyo-menu-button:hover {
       box-shadow: 0px 2px 6px #444;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-menu-button-outer-box {
       padding-left: 10px;
       width: 100%;
@@ -175,7 +175,7 @@ eYo.setup.register(() => {
       -webkit-box-sizing: border-box;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-menu-button-inner-box {
       width: 100%;
       height: 100%;
@@ -185,13 +185,13 @@ eYo.setup.register(() => {
       padding-right: 30px;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-flyout-toolbar .eyo-menu-button-caption {
       color: white;
       vertical-align: middle;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-menu-button-dropdown svg {
       position: absolute;
       top: 0px;
@@ -199,7 +199,7 @@ eYo.setup.register(() => {
       height: 6px;
     }`
   )
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     `.eyo-menu-button-dropdown-image {
       fill: white;
     }`

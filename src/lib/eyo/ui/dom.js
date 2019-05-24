@@ -26,13 +26,23 @@ eYo.Dom = function () {
 goog.inherits(eYo.Dom, eYo.Driver)
 
 /**
- * Inject a Blockly editor into the specified container element (usually a div).
+ * Inject a main workspace into the specified container element (usually a div).
  * @param {!Element|string} container Containing element, or its ID,
  *     or a CSS selector.
  * @param {Object=} opt_options Optional dictionary of options.
  * @return {!Blockly.Workspace} Newly created main workspace.
  */
-eYo.Dom.inject = function(container, opt_options) {
+eYo.Dom.createMainWorkspace = function(container, opt_options) {
+  Blockly.mainWorkspace = eYo.App.workspace = eYo.Dom.createWorkspace = function(container, opt_options)
+}
+/**
+ * Inject a main workspace into the specified container element (usually a div).
+ * @param {!Element|string} container Containing element, or its ID,
+ *     or a CSS selector.
+ * @param {Object=} opt_options Optional dictionary of options.
+ * @return {!eYo.Workspace} Newly created main workspace.
+ */
+eYo.Dom.createWorkspace = function(container, opt_options) {
   if (goog.isString(container)) {
     container = document.getElementById(container) ||
         document.querySelector(container)
@@ -41,18 +51,23 @@ eYo.Dom.inject = function(container, opt_options) {
   if (!goog.dom.contains(document, container)) {
     throw 'Error: container is not in current document.';
   }
-  var subContainer = goog.dom.createDom(goog.dom.TagName.DIV, 'injectionDiv');
-  container.appendChild(subContainer)
-
-  var options = new Blockly.Options(opt_options || {})
-
-    // Sadly browsers (Chrome vs Firefox) are currently inconsistent in laying
+  // Suppress the browser's context menu.
+  eYo.Dom.bindEvent(
+    container,
+    'contextmenu',
+    null,
+    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
+  )
+  // Sadly browsers (Chrome vs Firefox) are currently inconsistent in laying
   // out content in RTL mode.  Therefore Blockly forces the use of LTR,
   // then manually positions content in RTL as needed.
   container.setAttribute('dir', 'LTR')
 
-  // Load CSS.
-  Blockly.Css.inject(options.hasCss, options.pathToMedia);
+  var subContainer = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'injectionDiv'
+  )
+  container.appendChild(subContainer)
 
   // Build the SVG DOM.
   /*
@@ -65,13 +80,6 @@ eYo.Dom.inject = function(container, opt_options) {
     ...
   </svg>
   */
-  // Suppress the browser's context menu.
-  eYo.Dom.bindEvent(
-    container,
-    'contextmenu',
-    null,
-    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
-  )
 
   var svg = eYo.Svg.createElement('svg', {
     'xmlns': 'http://www.w3.org/2000/svg',
@@ -81,7 +89,7 @@ eYo.Dom.inject = function(container, opt_options) {
     'class': 'eyo-svg'
   }, container)
   
-  return (Blockly.mainWorkspace = eYo.App.workspace = eYo.Dom.createMainWorkspace_(svg, options))
+  return eYo.Dom.createWorkspace_(svg, options)
 }
 
 /**
@@ -91,13 +99,17 @@ eYo.Dom.inject = function(container, opt_options) {
  * @return {!eYo.Workspace} Newly created main workspace.
  * @private
  */
-eYo.Dom.createMainWorkspace_ = function(svg, options) {
+eYo.Dom.createWorkspace_ = function(svg, options) {
+  options = new Blockly.Options(options || {})
+  // Load CSS.
+  Blockly.Css.inject(options.hasCss, options.pathToMedia)
+
   options.parentWorkspace = null;
 
   // Create surfaces for dragging things. These are optimizations
   // so that the broowser does not repaint during the drag.
-  options.brickDragSurface = new Blockly.BlockDragSurfaceSvg(subContainer);
-  options.workspaceDragSurface = new Blockly.WorkspaceDragSurfaceSvg(subContainer);
+  options.brickDragSurface = new eYo.BrickDragSurfaceSvg(subContainer)
+  options.workspaceDragSurface = new eYo.WorkspaceDragSurfaceSvg(subContainer)
 
   var mainWorkspace = new eYo.Workspace(options)
   mainWorkspace.scale = options.zoomOptions.startScale;
@@ -339,7 +351,7 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.Block|eYo.Workspace|eYo.Flyout}
+ * @param {eYo.Brick|eYo.Workspace|eYo.Flyout}
  */
 eYo.Dom.unbindBoundEvents = (bfw) => {
   var dom = bfw.ui.dom || bfw.dom
@@ -598,15 +610,16 @@ eYo.Dom.bindDocumentEvents = (() => {
       eYo.Dom.bindEvent(document, 'keydown', null, eYo.Dom.on_keydown)
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      Blockly.bindEvent_(document, 'touchend', null, Blockly.longStop_);
-      Blockly.bindEvent_(document, 'touchcancel', null, Blockly.longStop_);
+      eYo.Dom.bindEvent_(document, 'touchend', null, eYo.Dom.longStop_)
+      eYo.Dom.bindEvent_(document, 'touchcancel', null, eYo.Dom.longStop_)
       // Some iPad versions don't fire resize after portrait to landscape change.
       if (goog.userAgent.IPAD) {
-        Blockly.bindEventWithChecks_(window, 'orientationchange', document,
-            function() {
-              // TODO(#397): Fix for multiple blockly workspaces.
-              Blockly.svgResize(Blockly.getMainWorkspace());
-            });
+        eYo.Dom.bindEvent(
+          window,
+          'orientationchange',
+          null,
+          e => Blockly.svgResize(eYo.App.workspace) // TODO(#397): Fix for multiple workspaces.
+        )
       }
     }
     already = true
@@ -759,3 +772,44 @@ eYo.Dom.loadSounds_ = function(pathToMedia, workspace) {
   ))
 };
 
+/**
+ * Initialize the workspace dom ressources.
+ * @param {!eYo.Workspace} workspace
+ * @return {!Object} The workspace's dom repository.
+ */
+eYo.Dom.prototype.workspaceInit = function(workspace) {
+  var dom = workspace.dom
+  if (!dom) {
+    dom = workspace.dom = Object.create(null)
+    dom.bound = Object.create(null)
+  }
+  return dom
+}
+
+/**
+ * Initialize the workspace dom ressources.
+ * @param {!eYo.Workspace} workspace
+ * @return {!Object} The workspace's dom repository.
+ */
+eYo.Dom.prototype.workspaceInit = function(workspace) {
+  var dom = workspace.dom
+  if (!dom) {
+    dom = workspace.dom = Object.create(null)
+    dom.bound = Object.create(null)
+  }
+  return dom
+}
+
+/**
+ * Dispose of the workspace dom ressources.
+ * @param {!eYo.Workspace} workspace
+ * @return {!Object} The workspace's dom repository.
+ */
+eYo.Dom.prototype.workspaceDispose = function(workspace) {
+  var dom = workspace.dom
+  if (dom) {
+    eYo.Dom.unbindBoundEvents(workspace)
+    dom.bound = null
+    workspace.dom = null
+  }
+}

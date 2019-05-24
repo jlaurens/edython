@@ -59,7 +59,7 @@ eYo.Style.setControlRendererCssClass = (() => {
       }
     }
     var rule = '.' + name + '{\n' + RA.join('') + '\n}'
-    eYo.Style.insertCssRuleAt(rule)
+    eYo.Css.insertRuleAt(rule)
   }
   return function (renderer, cssClass) {
     goog.addSingletonGetter(renderer)
@@ -163,7 +163,7 @@ eYo.MenuItemRenderer.prototype.getClassForState = function (state) {
 
 
 eYo.setup.register(() => {
-  eYo.Style.insertCssRuleAt('.eyo-menuitem-content {',
+  eYo.Css.insertRuleAt('.eyo-menuitem-content {',
       eYo.Font.menuStyle,
   '}')
 })

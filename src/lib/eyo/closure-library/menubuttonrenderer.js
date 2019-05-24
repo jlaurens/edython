@@ -133,7 +133,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
 };
 
 eYo.setup.register(() => {
-  eYo.Style.insertCssRuleAt('.eyo-menu-button {',
+  eYo.Css.insertRuleAt('.eyo-menu-button {',
       'background: white;',
       'box-sizing: border-box;',
       '-moz-box-sizing: border-box;',
@@ -145,11 +145,11 @@ eYo.setup.register(() => {
       '-moz-border-radius: 5px;',
       'border-radius: 5px;',
     '}')
-    eYo.Style.insertCssRuleAt(
+    eYo.Css.insertRuleAt(
       '.eyo-menu-button-focused {',
       'outline: none;',
     '}')
-    eYo.Style.insertCssRuleAt('.eyo-menu-button-outer-box {',
+    eYo.Css.insertRuleAt('.eyo-menu-button-outer-box {',
     'padding-left: 10px;',
     'width: 100%;',
     'height: 100%;',
@@ -157,7 +157,7 @@ eYo.setup.register(() => {
     '-moz-box-sizing: border-box;',
     '-webkit-box-sizing: border-box;',
   '}')
-  eYo.Style.insertCssRuleAt(
+  eYo.Css.insertRuleAt(
     '.eyo-menu-button-inner-box {',
     'width: 100%;',
     'height: 100%;',
@@ -166,23 +166,23 @@ eYo.setup.register(() => {
     '-webkit-box-sizing: border-box;',
     'padding-right: 30px;',
     '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-caption {',
+  eYo.Css.insertRuleAt('.eyo-menu-button-caption {',
     eYo.Font.menuStyle,
     'white-space: nowrap;',
     'overflow: hidden;',
     'text-overflow: ellipsis;',
   '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown {',
+  eYo.Css.insertRuleAt('.eyo-menu-button-dropdown {',
     'position: absolute;',
     'right: 10px;',
     'top: ', ''+(eYo.Font.lineHeight/2), 'px;',
     'width: 20px;',
   '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown svg {',
+  eYo.Css.insertRuleAt('.eyo-menu-button-dropdown svg {',
     'position: absolute;',
     'top: 0px;',
   '}')
-  eYo.Style.insertCssRuleAt('.eyo-menu-button-dropdown-image {',
+  eYo.Css.insertRuleAt('.eyo-menu-button-dropdown-image {',
     'fill: #AAA;',
     'fill-opacity:0.666',
   '}')

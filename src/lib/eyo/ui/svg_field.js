@@ -22,7 +22,7 @@ goog.forwardDeclare('eYo.Field')
 /**
  * Initializes the field SVG ressources.
  * Does nothing if the field's brick has no SVG ressources.
- * Part of the `beReady` process.
+ * Part of the `makeUI` process.
  * @param {!eYo.Field} field
  * @return {?eYo.Field}
  */

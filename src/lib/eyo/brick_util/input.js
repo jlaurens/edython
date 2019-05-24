@@ -119,9 +119,9 @@ Object.defineProperties(eYo.Input.prototype, {
       return s && s.bindField
     }
   },
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   }
 })
@@ -175,11 +175,11 @@ eYo.Input.prototype.dispose = function() {
 /**
  * be ready the delegate.
  */
-eYo.Input.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing // one shot function
+eYo.Input.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing // one shot function
   this.fieldRow.forEach(f => f.init())
   var m4t = this.magnet
-  m4t && (m4t.beReady())
+  m4t && (m4t.makeUI())
 }
 
 /**

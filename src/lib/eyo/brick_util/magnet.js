@@ -111,20 +111,20 @@ eYo.Magnets.prototype.dispose = function () {
 }
 
 /**
- * `beReady` the magnets.
+ * `makeUI` the magnets.
  */
-eYo.Magnets.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing // one shot function
+eYo.Magnets.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing // one shot function
   for (var k in this) { 
     var m = this[k]
-    m && m.beReady && (m.beReady())
+    m && m.makeUI && (m.makeUI())
   }
 }
 
 Object.defineProperties(eYo.Magnets.prototype, {
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   }
 })
@@ -374,9 +374,9 @@ Object.defineProperties(eYo.Magnet.prototype, {
        this.type === eYo.Magnet.RIGHT
     }
   },
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   },
   hidden: {
@@ -697,16 +697,16 @@ eYo.Magnet.prototype.forEachField = function (helper) {
 }
 
 /**
- * `beReady` the target brick when superior and the fields.
+ * `makeUI` the target brick when superior and the fields.
  */
-eYo.Magnet.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing // one shot function
+eYo.Magnet.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing // one shot function
   this.inDB_ = !this.hidden_
   if (this.isSuperior) {
     var t9k = this.targetBrick
-    t9k && (t9k.beReady())
+    t9k && (t9k.makeUI())
   }
-  this.forEachField(f => f.beReady())
+  this.forEachField(f => f.makeUI())
 }
 
 /**
@@ -1339,8 +1339,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   eYo.Events.groupWrap(() => {
     parent.changeWrap(() => { // Disable rendering until changes are made
       child.changeWrap(() => {
-        parent.beReady(child.isReady)
-        child.beReady(parent.isReady)
+        parent.makeUI(child.hasUI)
+        child.makeUI(parent.hasUI)
         parentM4t.willConnect(childM4t)
         if (unwrappedM4t !== parentM4t) {
           unwrappedM4t.willConnect(childM4t)

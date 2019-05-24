@@ -30,7 +30,7 @@ eYo.Selected = (() => {
   var brick__
   var magnet__
   me.updateDraw = () => {
-    if (brick__ && brick__.isReady) {
+    if (brick__ && brick__.hasUI) {
       brick__.ui.updateShape()
       brick__.ui.addSelect()
       brick__.ui.addStatusSelect_()

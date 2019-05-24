@@ -436,9 +436,9 @@ Object.defineProperties(eYo.Field.prototype, {
       return this.status === eYo.Field.STATUS_BUILTIN
     }
   },
-  isReady: {
+  hasUI: {
     get () {
-      return this.beReady === eYo.Do.nothing
+      return this.makeUI === eYo.Do.nothing
     }
   }
 })
@@ -462,8 +462,8 @@ eYo.Field.prototype.initModel = function() {
 /**
  * Ensure that the field is ready.
  */
-eYo.Field.prototype.beReady = function () {
-  this.beReady = eYo.Do.nothing
+eYo.Field.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing
   var d = this.ui_driver
   d && (d.fieldInit(this))
 }

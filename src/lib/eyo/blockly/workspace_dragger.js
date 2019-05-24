@@ -18,7 +18,7 @@ goog.forwardDeclare('eYo.Dom')
 Blockly.WorkspaceDragger.prototype.startDrag = (() => {
   var startDrag = Blockly.WorkspaceDragger.prototype.startDrag
   return function() {
-    var element = this.workspace_.svgGroup_.parentNode.parentNode
+    var element = this.workspace_.dom.group_.parentNode.parentNode
     this.eyo_transformCorrection = eYo.Do.getTransformCorrection(element)
     return startDrag.call(this)
   }
