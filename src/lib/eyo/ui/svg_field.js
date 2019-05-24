@@ -27,22 +27,22 @@ goog.forwardDeclare('eYo.Field')
  * @return {?eYo.Field}
  */
 eYo.Svg.prototype.fieldInit = function(field) {
-  if (field.svg) {
+  if (field.dom) {
     return
   }
   if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
     field.css_class_ = eYo.Svg.getCssClassForText(field.text)
   }
-  var svg = field.owner.svg || field.brick.ui.svg
-  if (!svg) {
-    throw 'MISSING owner svg'
+  var dom = field.owner.dom || field.brick.ui.dom
+  if (!dom) {
+    throw 'MISSING owner dom'
   }
-  var g = svg.group_
+  var g = dom.group_
   if (!g) { return }
-  svg = field.svg = {}
+  dom = field.dom = {}
   if (field.isTextInput) {
-    g = svg.group_ = eYo.Svg.newElement('g', {}, g)
-    svg.borderRect_ = eYo.Svg.newElement('rect', {
+    g = dom.group_ = eYo.Svg.newElement('g', {}, g)
+    dom.borderRect_ = eYo.Svg.newElement('rect', {
       rx: 4,
       ry: 4,
       x: -eYo.Style.SEP_SPACE_X / 2,
@@ -50,12 +50,12 @@ eYo.Svg.prototype.fieldInit = function(field) {
       height: 16
     }, g)
     /** @type {!Element} */
-    svg.textElement_ = eYo.Svg.newElement('text', {
+    dom.textElement_ = eYo.Svg.newElement('text', {
       class: field.css_class,
       y: eYo.Font.totalAscent
     }, g)
   } else {
-    g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
+    g = dom.group_ = dom.textElement_ = eYo.Svg.newElement('text', {
       class: field.css_class,
       y: eYo.Font.totalAscent
     }, g)
@@ -71,13 +71,13 @@ eYo.Svg.prototype.fieldInit = function(field) {
  * @param {!Object} field
  */
 eYo.Svg.prototype.fieldDispose = function (field) {
-  var g = field.svg && field.svg.group_
+  var g = field.dom && field.dom.group_
   if (!g) {
     // Field has already been disposed
     return;
   }
   goog.dom.removeNode(g)
-  field.svg = undefined
+  field.dom = undefined
 }
 
 /**
@@ -86,7 +86,7 @@ eYo.Svg.prototype.fieldDispose = function (field) {
  * @param {*} where
  */
 eYo.Svg.prototype.fieldPositionSet = function (field, where) {
-  var g = field.svg.group_
+  var g = field.dom.group_
   g.setAttribute('transform',
   `translate(${where.x}, ${where.y + eYo.Padding.t})`)
 }
@@ -96,7 +96,7 @@ eYo.Svg.prototype.fieldPositionSet = function (field, where) {
  * @param {*} field
  */
 eYo.Svg.prototype.fieldUpdateWidth = function (field) {
-  var svg = field.svg
+  var svg = field.dom
   if (!svg) {
     return
   }
@@ -112,7 +112,7 @@ eYo.Svg.prototype.fieldUpdateWidth = function (field) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeError = function (field, yorn) {
-  var root = field.svg.group_
+  var root = field.dom.group_
   if (root) {
     ;(yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
   }
@@ -124,7 +124,7 @@ eYo.Svg.prototype.fieldMakeError = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeReserved = function (field, yorn) {
-  var root = field.svg.group_
+  var root = field.dom.group_
   if (root) {
     if (yorn) {
       goog.dom.classlist.add(root, 'eyo-code-reserved')
@@ -140,7 +140,7 @@ eYo.Svg.prototype.fieldMakeReserved = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
-  var root = field.svg.group_
+  var root = field.dom.group_
   if (root) {
     if (yorn) {
       goog.dom.classlist.add(root, 'eyo-code-placeholder')
@@ -156,7 +156,7 @@ eYo.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeComment = function (field, yorn) {
-  var root = field.svg.group_
+  var root = field.dom.group_
   root && (yorn ? goog.dom.classlist.add: goog.dom.classlist.remove)(root, 'eyo-code-comment')
 }
 
@@ -166,7 +166,7 @@ eYo.Svg.prototype.fieldMakeComment = function (field, yorn) {
  * @param {!Object} field  the field to query about
  */
 eYo.Svg.prototype.fieldDisplayedGet = function (field) {
-  var g = field.svg.group_
+  var g = field.dom.group_
   return g.style.display !== 'none'
 }
 
@@ -176,7 +176,7 @@ eYo.Svg.prototype.fieldDisplayedGet = function (field) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
-  var g = field.svg.group_
+  var g = field.dom.group_
   if (yorn) {
     g.removeAttribute('display')
   } else {
@@ -198,7 +198,7 @@ eYo.Svg.prototype.fieldDisplayedUpdate = function (field) {
  * @param {!eYo.Field} field
  */
 eYo.Svg.prototype.fieldUpdateEditable = function(field) {
-  var g = field.svg && field.svg.group_
+  var g = field.dom && field.dom.group_
   if (!field.editable || !g) {
     // Not editable or already disposed
     return
@@ -220,7 +220,7 @@ eYo.Svg.prototype.fieldUpdateEditable = function(field) {
  * @param {!Object} field  the node the driver acts on
  */
 eYo.Svg.prototype.fieldTextRemove = function (field) {
-  goog.dom.removeChildren(/** @type {!Element} */ (field.svg.textElement_))
+  goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
 }
 
 /**
@@ -230,7 +230,7 @@ eYo.Svg.prototype.fieldTextRemove = function (field) {
  */
 eYo.Svg.prototype.fieldTextCreate = function (field) {
   var textNode = document.createTextNode(field.text)
-  field.svg.textElement_.appendChild(textNode)
+  field.dom.textElement_.appendChild(textNode)
 }
 
 /**
@@ -239,10 +239,10 @@ eYo.Svg.prototype.fieldTextCreate = function (field) {
  * @param {!Object} field  the node the driver acts on
  */
 eYo.Svg.prototype.fieldTextUpdate = function (field) {
-  // field.svg.textElement_.textContent = field.text
-  goog.dom.removeChildren(/** @type {!Element} */ (field.svg.textElement_))
+  // field.dom.textElement_.textContent = field.text
+  goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
   var textNode = document.createTextNode(field.text)
-  field.svg.textElement_.appendChild(textNode)
+  field.dom.textElement_.appendChild(textNode)
 }
 
 /**
@@ -250,7 +250,7 @@ eYo.Svg.prototype.fieldTextUpdate = function (field) {
  * @param {*} field
  */
 eYo.Svg.prototype.fieldSetVisualAttribute = function (field) {
-  var e = field.svg.textElement_
+  var e = field.dom.textElement_
   if (e) {
     var f = txt => {
       switch (eYo.T3.Profile.get(txt, null).raw) {
@@ -270,34 +270,13 @@ eYo.Svg.prototype.fieldSetVisualAttribute = function (field) {
 }
 
 /**
- * Update the inline editor.
- * @param {*} field
- */
-eYo.Svg.prototype.fieldInlineEditorUpdate = function (field) {
-  var svg = field.svg
-  var g = svg && svg.group_
-  if (g) {
-    var div = Blockly.WidgetDiv.DIV
-    if (div.style.display !== 'none') {
-      var bBox = g.getBBox()
-      div.style.width = (bBox.width + eYo.Unit.x - (field.left_space ? eYo.Unit.x : 0) - eYo.Style.Edit.padding_h) * field.workspace_.scale + 'px'
-      div.style.height = bBox.height * field.workspace_.scale + 'px'
-      var xy = this.fieldGetAbsoluteXY_(field)
-      div.style.left = (xy.x - eYo.EditorOffset.x + eYo.Style.Edit.padding_h) + 'px'
-      div.style.top = (xy.y - eYo.EditorOffset.y) + 'px'
-      field.brick.changeWrap() // force rendering
-    }
-  }
-}
-
-/**
  * Return the absolute coordinates of the top-left corner of this field.
  * The origin $(0,0)$ is the top-left corner of the page body.
  * @return {!goog.math.Coordinate} Object with `.x` and `.y` properties.
  * @private
  */
 eYo.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
-  return goog.style.getPageOffset(field.svg.borderRect_)
+  return goog.style.getPageOffset(field.dom.borderRect_)
 }
 
 /**

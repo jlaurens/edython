@@ -298,9 +298,11 @@ function (try_f, finally_f) {
 /**
  * Convenient shortcut.
  * @param {!eYo.Brick} brick  The newly created block.
+ * @param {?Boolean|String} group  eventually set a group.
  */
-eYo.Events.fireBrickCreate = function (brick) {
+eYo.Events.fireBrickCreate = function (brick, group) {
   if (Blockly.Events.isEnabled()) {
+    goog.isDef(group) && Blockly.Events.setGroup(group)
     Blockly.Events.fire(new Blockly.Events.BlockCreate(brick))
   }
 }

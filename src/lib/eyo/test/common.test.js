@@ -17,13 +17,9 @@ eYo.temp = (() => {
     disable : true,
     maxBlocks : Infinity,
     trashcan : false,
-    horizontalLayout : false,
-    // toolboxPosition : 'end',
     css : true,
-    rtl : false,
     scrollbars : true,
-    sounds : false,
-    oneBasedIndex : true,
+    sounds : false
   };
   /* Inject your workspace */
   eYo.App.workspace = Blockly.inject('eyoDiv', options);
@@ -40,13 +36,13 @@ chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
 
 eYo.Test.setItUp = () => {
   eYo.App.workspace.clearUndo()
-  eYo.App.workspace.topBlocks_.length = 0
+  eYo.App.workspace.topBricks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
   eYo.App.workspace.clearUndo()
   if (!opt || !opt.ignoreTopBlock) {
-    chai.assert(eYo.App.workspace.topBlocks_.length === 0, `FAILED ${eYo.App.workspace.topBlocks_.length} === 0`)
+    chai.assert(eYo.App.workspace.topBricks_.length === 0, `FAILED ${eYo.App.workspace.topBricks_.length} === 0`)
   }
 }
 
@@ -392,24 +388,25 @@ eYo.Test.newIdentifier = (str) => {
 
 /**
  * Test if `node` and `parent` exist, and if node's parent is parent.
- * @param {*} svg  either a brick or an svg resource object.
+ * @param {*} svg  either a brick or a dom resource object.
  * @param {string} node  the child element is `svg[node]`
  * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
+ * @param {?string} type
  */
-eYo.Test.svgNodeParent = (svg, node, parent, type) => {
-  if (svg.ui) {
-    type = type || svg.type
-    svg = svg.ui.svg
-    chai.assert(svg, `MISSING svg in ${type}`)
+eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
+  if (bdom.ui) {
+    type = type || bdom.type
+    bdom = bdom.ui.dom
+    chai.assert(bdom, `MISSING dom in ${type}`)
   } else {
     type = type || 'svg'
   }
-  chai.assert(svg[node], `MISSING svg.${node} in ${type}`)
+  chai.assert(bdom[node], `MISSING svg.${node} in ${type}`)
   if (goog.isString(parent)) {
-    chai.assert(svg[parent], `MISSING svg.${parent} in ${type}`)
-    chai.assert(svg[node].parentNode === svg[parent], `MISSING svg.${node}.parentNode === svg.${parent} in ${type}`)
+    chai.assert(bdom[parent], `MISSING svg.${parent} in ${type}`)
+    chai.assert(bdom[node].parentNode === bdom[parent], `MISSING svg.${node}.parentNode === svg.${parent} in ${type}`)
   } else if (parent) {
-    chai.assert(svg[node].parentNode === parent, `MISSING svg.${node}.parentNode === ${parent} in ${type}`)
+    chai.assert(bdom[node].parentNode === parent, `MISSING svg.${node}.parentNode === ${parent} in ${type}`)
   }
 }
 

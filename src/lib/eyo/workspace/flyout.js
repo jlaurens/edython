@@ -12,162 +12,380 @@
 'use strict';
 
 goog.provide('eYo.Flyout');
-goog.provide('eYo.FlyoutDelegate');
 
-goog.require('eYo.Flyout');
-goog.require('eYo.FlyoutCategory');
-goog.require('eYo.Style');
-goog.require('eYo.Font');
-goog.require('Blockly.VerticalFlyout');
-goog.require('eYo.Brick');
-goog.require('eYo.FlyoutToolbar');
-goog.require('eYo.Tooltip');
-goog.require('eYo.MenuRenderer');
-goog.require('eYo.MenuButtonRenderer');
+goog.forwardDeclare('eYo.FlyoutCategory');
+goog.forwardDeclare('eYo.Style');
+goog.forwardDeclare('eYo.Unit');
+goog.forwardDeclare('eYo.Brick');
+goog.forwardDeclare('eYo.FlyoutToolbar');
+goog.forwardDeclare('eYo.Tooltip');
+goog.forwardDeclare('eYo.MenuRenderer');
+goog.forwardDeclare('eYo.MenuButtonRenderer');
 
-goog.require('goog.dom');
-goog.require('goog.math.Coordinate');
-goog.require('goog.ui.Select');
-
-
-/**
- * Class for a flyout delegate.
- * As usual, we do not want to add keys to blockly objects.
- * @param {!Blockly.Flyout} flyout
- * @constructor
- */
-eYo.FlyoutDelegate = function(flyout) {
-  this.flyout_ = flyout
-  this.closed = false
-}
-
-/**
- * Default CSS class of the flyout panel.
- * @type {string}
- */
-eYo.FlyoutDelegate.CSS_CLASS = goog.getCssName('eyo-flyout');
-
-/**
- * Returns the CSS class to be applied to the root element.
- * @return {string} Renderer-specific CSS class.
- * @override
- */
-eYo.FlyoutDelegate.prototype.getCssClass = function() {
-  return eYo.FlyoutDelegate.CSS_CLASS;
-};
+goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Class for a flyout.
- * This is not well designed because the workspace is a parameter of the init method below.
- * @param {!Object} workspaceOptions Dictionary of options for the workspace.
- * @extends {Blockly.Flyout}
+ * @param {!eYo.Workspace} targetSpace Dictionary of options for the workspace.
+ * @param {!Object} flyoutOptions Dictionary of options for the workspace.
  * @constructor
  */
-eYo.Flyout = function(workspace) {
-  eYo.Flyout.superClass_.constructor.call(this, {parentWorkspace: workspace})
-  this.toolboxPosition_ = workspace.toolboxPosition = Blockly.TOOLBOX_AT_RIGHT
-  workspace.flyout_ = this
-  this.eyo = new eYo.FlyoutDelegate(this)
-  this.workspace_.eyo.options = workspace.eyo.options
-}
-goog.inherits(eYo.Flyout, Blockly.VerticalFlyout)
+eYo.Flyout = function(targetSpace, flyoutOptions) {
+  var workspaceOptions = {}
 
-/**
- * Initializes the flyout.
- * Edython: Add a hook in the target workspace.
- * @param {!Blockly.Workspace} targetWorkspace The workspace in which to create
- *     new bricks.
- */
-eYo.Flyout.prototype.init = function(targetWorkspace, switcher) {
-  eYo.Flyout.superClass_.init.call(this, targetWorkspace)
-  targetWorkspace.eyo.flyout_ = this
-  var d = targetWorkspace.eyo.driver
+  /**
+   * Position of the toolbox and flyout relative to the workspace.
+   * @type {number}
+   * @private
+   */
+  this.anchor_ = targetSpace.flyoutAnchor = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
+  
+  targetSpace.flyout_ = this
+
+  workspaceOptions.getMetrics = this.getMetrics_.bind(this)
+  workspaceOptions.setMetrics = this.setMetrics_.bind(this)
+  workspaceOptions.targetSpace = workspaceOptions
+  
+  /**
+   * @type {!eYo.Workspace}
+   * @private
+   */
+  this.workspace_ = new eYo.Workspace(workspaceOptions)
+  this.workspace_.isFlyout = true
+  this.targetSpace_ = targetSpace
+  this.workspace_.options = targetSpace.options
+
+  /**
+   * Opaque data that can be passed to unbindEvent.
+   * @type {!Array.<!Array>}
+   * @private
+   */
+  this.eventWrappers_ = []
+
+  /**
+   * List of event listeners.
+   * Array of opaque data that can be passed to unbindEvent.
+   * @type {!Array.<!Array>}
+   * @private
+   */
+  this.listeners_ = [];
+
+  /**
+   * List of bricks that should always be disabled.
+   * @type {!Array.<!eYo.Brick>}
+   * @private
+   */
+  this.permanentlyDisabled_ = []
+
+  // Add scrollbar.
+  this.scrollbar_ = new Blockly.Scrollbar(this.workspace_,
+      false /*this.horizontalLayout_*/, false, 'eyo-flyout-scrollbar')
+
+  this.hide()
+
+  this.ui_driver.flyoutBindScrollEvents(this)
+
+  if (flyoutOptions.autoClose) {
+    this.autoClose = true
+  }
+
+  if (!this.autoClose) {
+    this.filterWrapper_ = this.filterForCapacity_.bind(this);
+    workspace.addChangeListener(this.filterWrapper_)
+  }
+  
+  // A flyout connected to a workspace doesn't have its own current gesture.
+  this.workspace_.getGesture = workspace.getGesture.bind(workspace)
+
+  var d = this.ui_driver
   d.flyoutInit(this)
-  var tb = this.eyo.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
-  d.flyoutToolbarInit(tb)
-  tb.doSelectGeneral(null) // is it necessary ?
+  if (flyoutOptions.switcher) {
+    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, flyoutOptions.switcher)
+    d.flyoutToolbarInit(tb)
+    tb.doSelectGeneral(null) // is it necessary ?
+  }
 }
 
-var one_rem = eYo.Unit.rem
-
-eYo.Flyout.prototype.CORNER_RADIUS = 0
-
-// eYo.FlyoutDelegate.prototype.TOP_MARGIN = 4 * eYo.FlyoutToolbar.prototype.BUTTON_RADIUS + 2 * eYo.FlyoutToolbar.prototype.BUTTON_MARGIN
-eYo.FlyoutDelegate.prototype.BOTTOM_MARGIN = 16 // scroll bar width
-
-eYo.FlyoutDelegate.prototype.TOP_MARGIN = 0 // 4 * one_rem
-
-eYo.FlyoutDelegate.prototype.TOP_OFFSET = 2 * eYo.Unit.y
-
-eYo.FlyoutDelegate.prototype.MARGIN = one_rem / 4
+Object.defineProperties(eYo.Flyout.prototype, {
+  anchor: {
+    get () {
+      return this.anchor_
+    }
+  },
+  /**
+   * Does the flyout automatically close when a brick is created?
+   * @type {boolean}
+   */
+  autoClose: { value: true, writable: true},
+  /**
+   * Whether the flyout is visible.
+   * @type {boolean}
+   * @private
+   */
+  visible_: { value: false, writable: true},
+  /**
+   * Whether the flyout is closed.
+   * @type {boolean}
+   * @private
+   */
+  closed: { value: false, writable: true},
+  /**
+   * Whether the workspace containing this flyout is visible.
+   * @type {boolean}
+   * @private
+   */
+  containerVisible_: { value: true, writable: true},
+  /**
+   * Top/bottom padding between scrollbar and edge of flyout background.
+   * @type {number}
+   * @const
+   */
+  SCROLLBAR_PADDING: { value: 2 },
+  TOP_MARGIN: { value: 0 }, // 4 * eYo.Unit.rem
+  BOTTOM_MARGIN: { value: 16 }, // scroll bar width
+  TOP_OFFSET : { value: 2 * eYo.Unit.y },
+  /**
+   * Margin around the edges of the bricks.
+   * @type {number}
+   * @const
+   */
+  MARGIN : { value: eYo.Unit.rem / 4 },
+  /**
+   * Width of flyout.
+   * @type {number}
+   * @private
+   */
+  width_: { value: 0, writable: true},
+  /**
+   * Height of flyout.
+   * @type {number}
+   * @private
+   */
+  height_: { value: 0, writable: true},
+  /**
+   * Range of a drag angle from a flyout considered "dragging toward workspace".
+   * Drags that are within the bounds of this many degrees from the orthogonal
+   * line to the flyout edge are considered to be "drags toward the workspace".
+   * Example:
+   * Flyout                                                  Edge   Workspace
+   * [brick] /  <-within this angle, drags "toward workspace" |
+   * [brick] ---- orthogonal to flyout boundary ----          |
+   * [brick] \                                                |
+   * The angle is given in degrees from the orthogonal.
+   *
+   * This is used to know when to create a new brick and when to scroll the
+   * flyout. Setting it to 360 means that all drags create a new brick.
+   * @type {number}
+   * @private
+  */
+  dragAngleLimit_: { value: 70, writable: true},
+  /**
+   * Return the deletion rectangle for this flyout in viewport coordinates.
+   * Edython : add management of the 0 width rectange
+   * @return {goog.math.Rect} Rectangle in which to delete.
+   */
+  clientRect: {
+    get () {
+      return this.ui_driver.flyoutClientRect(this)
+    }
+  }
+})
 
 /**
- * Dispose of this delegate's flyout.
+ * Dispose of this flyout.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.FlyoutDelegate.prototype.dispose = function() {
-  if (this.toolbarDiv_) {
-    goog.dom.removeNode(this.toolbarDiv_)
-    this.toolbarDiv_ = undefined
+eYo.Flyout.prototype.dispose = function() {
+  this.hide()
+  this.ui_driver.flyoutUnbindEvents(this)
+  if (this.filterWrapper_) {
+    this.targetSpace_.removeChangeListener(this.filterWrapper_)
+    this.filterWrapper_ = null
   }
+  if (this.scrollbar_) {
+    this.scrollbar_.dispose();
+    this.scrollbar_ = null;
+  }
+  if (this.workspace_) {
+    this.workspace_.targetSpace = null
+    this.workspace_.dispose()
+    this.workspace_ = null
+  }
+  this.ui_driver.flyoutDispose(this)
+  this.targetSpace_ = null;
+}
+
+Object.defineProperties(eYo.Flyout, {
+  AT_RIGHT: { value: 1 },
+  AT_LEFT: { value: 2 }
+})
+
+Object.defineProperties(eYo.Flyout.prototype, {
+  /**
+   * @readonly
+   * @type {number} The width of the flyout.
+   */
+  width: {
+    get () {
+      return this.width_
+    }
+  },
+  /**
+   * @readonly
+   * @type {number} The height of the flyout.
+   */
+  height: {
+    get () {
+      return this.height_
+    }
+  },
+  /**
+   * @readonly
+   * @type {eYo.Workspace} The workspace inside the flyout.
+   * @package
+   */
+  workspace: {
+    get () {
+      return this.workspace_
+    }
+  },
+  /**
+   * Is the flyout visible?
+   * @type {boolean} True if visible.
+   */
+  visible: {
+    get () {
+      return this.visible_
+    },
+    set (visible) {
+      if(visible != this.visible_) {
+        this.visible_ = visible
+        this.updateDisplay_()
+      }
+    }
+  },
+  /**
+   * Whether this flyout's container is visible.
+   * @type {boolean}
+   */
+  containerVisible: {
+    get () {
+      return this.containerVisible_
+    },
+    set (visible) {
+      if(visible != this.containerVisible_) {
+        this.containerVisible_ = visible
+        this.updateDisplay_()
+      }
+    }
+  },
+  /**
+   * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
+   *     dragging.
+   * @package
+   */
+  scrollable: {
+    get () {
+      return this.scrollbar_ ? this.scrollbar_.isVisible() : false;
+
+    }
+  },
+})
+
+eYo.Flyout.prototype.getWidth = function() {
+  throw "DEPRECATED getWidth"
+}
+
+eYo.Flyout.prototype.getHeight = function() {
+  throw "DEPRECATED getHeight"
+};
+
+eYo.Flyout.prototype.getWorkspace = function() {
+  throw "DEPRECATED getWorkspace"
+};
+
+eYo.Flyout.prototype.isVisible = function() {
+  throw "DEPRECATED isVisible"
+};
+
+eYo.Flyout.prototype.setVisible = function(visible) {
+  throw "DEPRECATED setVisible"
+};
+
+eYo.Flyout.prototype.setContainerVisible = function(visible) {
+  throw "DEPRECATED setContainerVisible"
+};
+
+eYo.Flyout.prototype.isScrollable = function() {
+  throw "DEPRECATED isScrollable"
+};
+
+/**
+ * Update the display property of the flyout based whether it thinks it should
+ * be visible and whether its containing workspace is visible.
+ * @private
+ */
+eYo.Flyout.prototype.updateDisplay_ = function() {
+  var show = this.containerVisible_ && this.visible_
+  this.ui_driver.flyoutDisplaySet(show)
+  // Update the scrollbar's visiblity too since it should mimic the
+  // flyout's visibility.
+  this.scrollbar_.setContainerVisible(show)
+}
+
+/**
+ * Hide and empty the flyout.
+ */
+eYo.Flyout.prototype.hide = function() {
+  if (!this.visible) {
+    return
+  }
+  this.visible = false
+
+  this.ui_driver.flyoutRemoveListeners(this)
+  
+  if (this.reflowWrapper_) {
+    this.workspace_.removeChangeListener(this.reflowWrapper_)
+    this.reflowWrapper_ = null;
+  }
+  // Do NOT delete the bricks here.  Wait until Flyout.show.
+  // https://neil.fraser.name/news/2014/08/09/
 };
 
 /**
  * Show and populate the flyout.
  * More tagnames accepted.
  * @param {!Array|string} model List of bricks to show.
- *     Variables and procedures have a custom set of bricks.
  */
 eYo.Flyout.prototype.show = function(model) {
-  this.workspace_.setResizesEnabled(false);
-  eYo.Tooltip.hideAll(this.svgGroup_)
-  this.hide();
+  this.workspace_.setResizesEnabled(false)
+  this.hide()
   eYo.Events.disableWrap(() => {
-    this.clearOldBlocks_()
+    this.clearOldBricks_()
 
-    // Handle dynamic categories, represented by a name instead of a list of XML.
-    // Look up the correct category generation function and call that to get a
-    // valid XML list.
-    if (typeof model == 'string') {
-      var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
-          model);
-      goog.asserts.assert(goog.isFunction(fnToApply),
-          'Couldn\'t find a callback function when opening a toolbox category.');
-      model = fnToApply(this.workspace_.targetWorkspace);
-      goog.asserts.assert(goog.isArray(model),
-          'The result of a toolbox category callback must be an array.');
-    }
-
-    this.setVisible(true);
     // Create the bricks to be shown in this flyout.
-    var contents = [];
-    var gaps = [];
-    var default_gap = eYo.Font.lineHeight/4;
+    var contents = []
 
-    this.permanentlyDisabled_.length = 0;
-    model.forEach((xml) => {
+    this.permanentlyDisabled_.length = 0
+
+    model.forEach(xml => {
       if (xml.tagName) {
         var tagName = xml.tagName.toUpperCase();
         if (tagName.startsWith('EYO:')) {
-          var curBrick = eYo.Xml.domToBrick(xml, this.workspace_);
+          var curBrick = eYo.Xml.domToBrick(xml, this.workspace_)
           if (curBrick.disabled) {
             // Record bricks that were initially disabled.
             // Do not enable these bricks as a result of capacity filtering.
-            this.permanentlyDisabled_.push(curBrick);
+            this.permanentlyDisabled_.push(curBrick)
           }
-          curBrick.beReady()
-          contents.push({type: 'block', block: curBrick});
-          var gap = parseInt(xml.getAttribute('gap'), 10);
-          gaps.push(isNaN(gap) ? default_gap : gap);
+          contents.push(curBrick)
         }
       } else {
-        var createOneBlock = (xml) => {
+        var createOneBrick = xml => {
           try {
-            var brick = eYo.Brick.newReady(this.workspace_, xml)
-            contents.push({type: 'block', block: brick})
-            brick.render()
+            var brick = this.workspace_.newBrick(xml)
+            contents.push(brick)
             brick.ui.addTooltip(xml.title || (xml.data && xml.data.main) || xml.data)
-            gaps.push(default_gap)
           } catch (err) {
             console.error(xml, err)
             // throw err: catch the error here definitely
@@ -176,253 +394,225 @@ eYo.Flyout.prototype.show = function(model) {
         // this is the part specific to edython
         if (goog.isFunction(xml)) {
           // xml is either a function that returns an array of objects
-          // or a function that creates block.
-          var ra = xml(createOneBlock)
+          // or a function that creates brick.
+          var ra = xml(createOneBrick)
           if (ra && ra.forEach) {
-            ra.forEach(createOneBlock)
+            ra.forEach(createOneBrick)
           }
         } else {
-          createOneBlock(xml)
+          createOneBrick(xml)
         }
       }
     })
 
-    this.layout_(contents, gaps);
+    this.visible = true
+    this.layout_(contents)
 
     // IE 11 is an incompetent browser that fails to fire mouseout events.
     // When the mouse is over the background, deselect all bricks.
-    var deselectAll = function() {
-      this.workspace_.getTopBlocks(false).forEach((block) => {
-        block.removeSelect()
-      })
-    };
+    this.ui_driver.flyoutListen_mouseover(this)
 
-    this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
-        'mouseover', this, deselectAll));
+    this.width_ = 0;
+    this.workspace_.setResizesEnabled(true)
+    this.reflow()
 
-    if (this.horizontalLayout_) {
-      this.height_ = 0;
-    } else {
-      this.width_ = 0;
-    }
-    this.workspace_.setResizesEnabled(true);
-    this.reflow();
-
-    this.filterForCapacity_();
+    this.filterForCapacity_()
 
     // Correctly position the flyout's scrollbar when it opens.
-    this.position();
-    this.reflowWrapper_ = this.reflow.bind(this);
-    this.workspace_.addChangeListener(this.reflowWrapper_);
+    this.position()
+
+    this.reflowWrapper_ = this.reflow.bind(this)
+    this.workspace_.addChangeListener(this.reflowWrapper_)
   })
 }
 
 /**
- * Add listeners to a block that has been added to the flyout.
- * Listeners work only when the flyout authorizes it.
- * The 'rect' listeners have been removed.
- * @param {!Element} root The root node of the SVG group the block is in.
- * @param {!Blockly.Block} block The block to add listeners for.
- * @param {!Element} rect The invisible rectangle under the block that acts as
- *     a mat for that block.
+ * Delete bricks, mats and buttons from a previous showing of the flyout.
  * @private
  */
-eYo.Flyout.prototype.addBlockListeners_ = function(root, block, rect) {
-  this.listeners_.push(Blockly.bindEventWithChecks_(root, 'mousedown', null,
-  this.blockMouseDown_(block)
-  ));
-  this.listeners_.push(Blockly.bindEvent_(root, 'mouseover', null,
-  e => {
-    if (!this.isDown) {
-      block.addSelect(e)
-    }
-  }));
-  this.listeners_.push(Blockly.bindEvent_(root, 'mouseleave', block,
-  block.removeSelect
-  ));
-};
+eYo.Flyout.prototype.clearOldBricks_ = function() {
+  // Delete any bricks from a previous showing.
+  this.workspace_.getTopBricks(false).forEach(brick => brick.dispose())
+}
 
 /**
- * Does the job of sliding the flyout in or out.
- * @param {?Boolean} close  close corresponds to the final state.
- * When not given, toggle the closed state.
+ * Scroll the flyout.
+ * @param {!Event} e Mouse wheel scroll event.
+ * @private
  */
-eYo.FlyoutDelegate.prototype.doSlide = function(close) {
-  // nothing to do if in the process of reaching the expected state
-  if (this.slide_locked) {
-    return
+eYo.Flyout.prototype.on_wheel = function(e) {
+  var delta = e.deltaY
+  if (delta) {
+    if (goog.userAgent.GECKO) {
+      // Firefox's deltas are a tenth that of Chrome/Safari.
+      delta *= 10
+    }
+    var metrics = this.getMetrics_()
+    var pos = (metrics.viewTop - metrics.contentTop) + delta
+    var limit = metrics.contentHeight - metrics.viewHeight
+    pos = Math.min(pos, limit)
+    pos = Math.max(pos, 0)
+    this.scrollbar_.set(pos)
   }
-  if (!goog.isDef(close)) {
-    close = !this.closed
-  }
-  // nothing to do either if already in the expected state
-  if (!close === !this.closed) {
-    return
-  }
-  var flyout = this.flyout_
-  var targetWorkspaceMetrics = flyout.targetWorkspace_.getMetrics();
-  if (!targetWorkspaceMetrics) {
-    // Hidden components will return null.
-    return;
-  }
-  this.slide_locked = true
-  var atRight = flyout.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
-  flyout.setVisible(true);
-  eYo.Tooltip.hideAll(flyout.svgGroup_)
-  var left = targetWorkspaceMetrics.absoluteLeft
-  var right = left + targetWorkspaceMetrics.viewWidth
-  var n_steps = 50
-  var n = 0
-  var steps = []
-  var positions = []
-  if (atRight) {
-    var x_start = close? right - flyout.width_: right
-    var x_end = close? right: right - flyout.width_
+  this.ui_driver.gobbleEvent(e)
+}
+
+/**
+ * Create a copy of this brick on the workspace.
+ * @param {!eYo.Brick} originalBrick The brick to copy from the flyout.
+ * @return {eYo.Brick} The newly created brick, or null if something
+ *     went wrong with deserialization.
+ * @package
+ */
+eYo.Flyout.prototype.createBrick = function(originalBrick) {
+  this.targetSpace_.setResizesEnabled(false)
+  var newBrick
+  eYo.Events.disableWrap(() => {
+    newBrick = this.placeNewBrick_(originalBrick)
+    // Close the flyout.
+    Blockly.hideChaff()
+  })
+  eYo.Events.fireBrickCreate(newBrick, true)
+  if (this.autoClose) {
+    this.hide()
   } else {
-    x_start = close? left: left - flyout.width_
-    x_end = close? left - flyout.width_: left
+    this.filterForCapacity_()
   }
-  steps[0] = close? 0: 1
-  positions[0] = x_start
-  for (n = 1; n < n_steps; n++) {
-    var step = Math.sin(n*Math.PI/n_steps/2)**2
-    steps[n] = close? step: 1-step
-    positions[n] = x_start + step * (x_end - x_start)
-  }
-  steps[n] = close? 1: 0
-  positions[n] = x_end
-  var y = targetWorkspaceMetrics.absoluteTop;
-  n = 0
-  var id = setInterval(() => {
-    if (n >= n_steps) {
-      clearInterval(id);
-      if ((this.closed = close)) {
-        flyout.setVisible(false)
-      }
-      flyout.setBackgroundPath_(flyout.width_, flyout.height_)
-      delete this.slide_locked
-      flyout.targetWorkspace_.recordDeleteAreas()
-      this.oneStep(steps[n_steps])
-      this.didSlide(close)
-    } else {
-      flyout.positionAt_(flyout.width_, flyout.height_, positions[n], y)
-      this.oneStep(steps[n])
-      // the scrollbar won't resize because the metrics of the workspace did not change
-      var hostMetrics = flyout.workspace_.getMetrics()
-      if (hostMetrics) {
-        flyout.scrollbar_.resizeVertical_(hostMetrics)
-      }
-      ++n
+  return newBrick
+}
+
+/**
+ * Lay out the bricks in the flyout.
+ * @param {!Array.<!Object>} contents The bricks and buttons to lay out.
+ * @param {!Array.<number>} gaps The visible gaps between bricks.
+ * @private
+ */
+eYo.Flyout.prototype.layout_ = function(contents) {
+  this.workspace_.scale = this.targetSpace_.scale
+  var cursorX = this.MARGIN
+  var cursorY = this.MARGIN
+  contents.forEach(brick => {
+    // Mark bricks as being inside a flyout.  This is used to detect and
+    // prevent the closure of the flyout if the user right-clicks on such a
+    // brick.
+    brick.getDescendants().forEach(child => child.isInFlyout = true)
+    brick.render()
+    brick.moveBy(cursorX, cursorY)
+    this.ui_driver.flyoutAddListeners(this, brick)
+    cursorY += brick.size.height + eYo.Unit.y / 4
+  })
+}
+
+/**
+ * Scroll the flyout to the top.
+ */
+eYo.Flyout.prototype.scrollToStart = function() {
+  this.scrollbar_.set(0)
+}
+
+/**
+ * Determine if a drag delta is toward the workspace, based on the position
+ * and orientation of the flyout. This is used in determineDragIntention_ to
+ * determine if a new brick should be created or if the flyout should scroll.
+ * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
+ *     moved from the position at mouse down, in pixel units.
+ * @return {boolean} true if the drag is toward the workspace.
+ * @package
+ */
+eYo.Flyout.prototype.isDragTowardWorkspace = function(delta) {
+  var dx = delta.x
+  var dy = delta.y
+  // Direction goes from -180 to 180, with 0 toward the right and 90 on top.
+  var direction = Math.atan2(dy,
+    this.anchor_ === eYo.Flyout.AT_RIGHT ? -dx : dx
+  ) / Math.PI * 180
+  var limit = this.dragAngleLimit_
+  return direction < limit && - range < limit
+}
+
+/**
+ * Filter the bricks on the flyout to disable the ones that are above the
+ * capacity limit.  For instance, if the user may only place two more bricks on
+ * the workspace, an "a + b" brick that has two shadow bricks would be disabled.
+ * @private
+ */
+eYo.Flyout.prototype.filterForCapacity_ = function() {
+  var remainingCapacity = this.targetSpace_.remainingCapacity()
+  this.workspace_.getTopBricks(false).forEach(brick => {
+    if (this.permanentlyDisabled_.indexOf(brick) < 0) {
+      var allBricks = brick.getDescendants()
+      brick.disabled = allBricks.length > remainingCapacity
     }
-  }, 20);
-};
+  })
+}
 
 /**
- * Slide the flyout in or out.
- * This 2 levels design allows overwriting.
- * Actually, the ui button calls the slide method.
- * @param {?Boolean} close  close corresponds to the final state.
- * When not given, toggle the closed state.
+ * Reflow bricks and their mats.
  */
-eYo.FlyoutDelegate.prototype.slide = function(close) {
-  this.doSlide(close)
-};
-
-/**
- * Subclassers will add there stuff here.
- * @param {number} step betwwen 0 and 1.
- */
-eYo.FlyoutDelegate.prototype.oneStep = function(step) {
-};
-
-/**
- * Subclassers will add there stuff here.
- * @param {Boolean} closed
- */
-eYo.FlyoutDelegate.prototype.didSlide = function(closed) {
-};
+eYo.Flyout.prototype.reflow = function() {
+  if (this.reflowWrapper_) {
+    this.workspace_.removeChangeListener(this.reflowWrapper_)
+  }
+  this.workspace_.scale = this.targetSpace_.scale
+  var flyoutWidth = 0
+  var bricks = this.workspace_.getTopBricks(false)
+  bricks.forEach(brick => {
+    flyoutWidth = Math.max(flyoutWidth, brick.span.size.width)
+  })
+  flyoutWidth += this.MARGIN * 1.5
+  flyoutWidth *= this.workspace_.scale
+  flyoutWidth += Blockly.Scrollbar.scrollbarThickness
+  if (this.width_ != flyoutWidth) {
+    // Record the width for .getMetrics_ and .position.
+    this.width_ = flyoutWidth
+    // Call this since it is possible the trash and zoom buttons need
+    // to move. e.g. on a bottom positioned flyout when zoom is clicked.
+    this.targetSpace_.resize()
+  }
+  if (this.reflowWrapper_) {
+    this.workspace_.addChangeListener(this.reflowWrapper_)
+  }
+}
 
 /**
  * Move the flyout to the edge of the workspace.
  */
 eYo.Flyout.prototype.position = function () {
-  var targetWorkspaceMetrics = this.targetWorkspace_.getMetrics()
-  if (!targetWorkspaceMetrics || targetWorkspaceMetrics.viewHeight <= 0) {
+  if (!this.visible_) {
+    return
+  }
+  var metrics = this.targetSpace_.getMetrics()
+  if (!metrics || metrics.viewHeight <= 0) {
     // Hidden components will return null.
     return;
   }
-  // Record the height for Blockly.Flyout.getMetrics_
-  this.height_ = targetWorkspaceMetrics.viewHeight - this.eyo.TOP_OFFSET
+  // Record the height for eYo.Flyout.getMetrics_
+  this.height_ = metrics.viewHeight - this.TOP_OFFSET
 
   var edgeWidth = this.width_
-  var edgeHeight = targetWorkspaceMetrics.viewHeight
-  this.setBackgroundPath_(edgeWidth, edgeHeight)
+  var edgeHeight = metrics.viewHeight
+  this.ui_driver.flyoutUpdate(edgeWidth, edgeHeight)
+  this.toolbar_.resize(edgeWidth, edgeHeight)
 
-  var y = targetWorkspaceMetrics.absoluteTop
-  var x = targetWorkspaceMetrics.absoluteLeft
-  if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT) {
-    x += (targetWorkspaceMetrics.viewWidth - this.width_)
-    if (this.eyo.closed) {
+  var y = metrics.absoluteTop
+  var x = metrics.absoluteLeft
+  if (this.anchor_ === eYo.Flyout.AT_RIGHT) {
+    x += (metrics.viewWidth - this.width_)
+    if (this.closed) {
       x += this.width_
     }
      // Save the location of the left edge of the flyout, for use when Firefox
     // gets the bounding client rect wrong.
     this.leftEdge_ = x
-  } else if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_LEFT) {
-    if (this.eyo.closed) {
+  } else if (this.anchor_ === eYo.Flyout.AT_LEFT) {
+    if (this.closed) {
       x -= this.width_
     }
     // Save the location of the left edge of the flyout, for use when Firefox
     // gets the bounding client rect wrong.
     this.leftEdge_ = x
   }
-  this.positionAt_(this.width_, this.height_, x, y)
-}
-
-/**
- * Update the view based on coordinates calculated in position().
- * @param {number} width The computed width of the flyout's SVG group
- * @param {number} height The computed height of the flyout's SVG group.
- * @param {number} x The computed x origin of the flyout's SVG group.
- * @param {number} y The computed y origin of the flyout's SVG group.
- * @private
- */
-eYo.Flyout.prototype.positionAt_ = function (width, height, x, y) {
-  if (width < 0 || height < 0) {
-    console.error(width, height, x, y)
-    return
-  }
-  // Always update the scrollbar (if one exists).
-  if (this.scrollbar_) {
-    // Set the scrollbars origin to be the top left of the flyout.
-    this.scrollbar_.setOrigin(x, y + this.eyo.TOP_OFFSET)
-    this.scrollbar_.oldHostMetrics_ = null
-    this.scrollbar_.resize()
-  }
-  eYo.Flyout.superClass_.positionAt_.call(this, width, height, x, y + this.eyo.TOP_OFFSET)
-  this.eyo.flyoutPosition = {
-    x: x,
-    y: y
-  }
-  if (this.eyo.toolbar_) {
-    this.eyo.toolbar_.positionAt_(width, height, x, y)
-  }
-  this.workspace_.resizeContents()
-  var workspace = this.targetWorkspace_
-  if (workspace) {
-    var scrollbar = workspace.scrollbar
-    if (scrollbar) {
-      scrollbar.oldHostMetrics_ = null
-      if (scrollbar.hScroll) {
-        scrollbar.hScroll.oldHostMetrics_ = null
-      }
-      if (scrollbar.vScroll) {
-        scrollbar.vScroll.oldHostMetrics_ = null
-      }
-    }
-    workspace.resizeContents()
-    workspace.trashcan.position()
-  }
+  this.ui_driver.positionAt_(this, this.width_, this.height_, x, y)
 }
 
 /**
@@ -442,23 +632,22 @@ eYo.Flyout.prototype.positionAt_ = function (width, height, x, y) {
  * @private
  */
 eYo.Flyout.prototype.getMetrics_ = function() {
-  if (!this.isVisible()) {
+  if (!this.visible) {
     // Flyout is hidden.
-    return null;
+    return null
   }
-
   try {
-    var optionBox = this.workspace_.getCanvas().getBBox();
+    var bbox = this.workspace_.getCanvas().getBBox()
   } catch (e) {
     // Firefox has trouble with hidden elements (Bug 528969).
-    var optionBox = {height: 0, y: 0, width: 0, x: 0};
+    var bbox = {height: 0, y: 0, width: 0, x: 0}
   }
 
   // Padding for the end of the scrollbar.
-  var absoluteTop = this.SCROLLBAR_PADDING + this.eyo.TOP_MARGIN;
-  var absoluteLeft = 0;
+  var absoluteTop = this.SCROLLBAR_PADDING + this.TOP_MARGIN
+  var absoluteLeft = 0
 
-  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.eyo.TOP_MARGIN - this.eyo.BOTTOM_MARGIN;
+  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.TOP_MARGIN - this.BOTTOM_MARGIN;
   if (viewHeight < 0) {
     viewHeight = 0
   }
@@ -466,98 +655,180 @@ eYo.Flyout.prototype.getMetrics_ = function() {
   if (!this.RTL) {
     viewWidth -= this.SCROLLBAR_PADDING;
   }
-
-  var metrics = {
+  return {
     viewHeight: viewHeight,
     viewWidth: viewWidth,
-    contentHeight: optionBox.height * this.workspace_.scale + 2 * this.MARGIN,
-    contentWidth: optionBox.width * this.workspace_.scale + 2 * this.MARGIN,
-    viewTop: -this.workspace_.scrollY + optionBox.y + this.eyo.TOP_MARGIN,
+    contentHeight: bbox.height * this.workspace_.scale + 2 * this.MARGIN,
+    contentWidth: bbox.width * this.workspace_.scale + 2 * this.MARGIN,
+    viewTop: -this.workspace_.scrollY + bbox.y + this.TOP_MARGIN,
     viewLeft: -this.workspace_.scrollX,
-    contentTop: optionBox.y + this.eyo.TOP_MARGIN,
-    contentLeft: optionBox.x,
+    contentTop: bbox.y + this.TOP_MARGIN,
+    contentLeft: bbox.x,
     absoluteTop: absoluteTop,
     absoluteLeft: absoluteLeft
-  };
-  return metrics;
-};
+  }
+}
 
 /**
- * Create and set the path for the visible boundaries of the flyout.
- * @param {number} width The width of the flyout, not including the
- *     rounded corners.
- * @param {number} height The height of the flyout, not including
- *     rounded corners.
- * @private
- */
-eYo.Flyout.prototype.setBackgroundPath_ = function(width, height) {
-  var top_margin = this.eyo.TOP_MARGIN
-  var atRight = this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT;
-  // Decide whether to start on the left or right.
-  var path = [`M ${atRight ? width : 0},${top_margin}`];
-  // Top.
-  path.push('h', atRight ? -width : width);
-  // Side closest to workspace.
-  path.push('v', Math.max(0, height - top_margin));
-  // Bottom.
-  path.push('h', atRight ? width : -width);
-  path.push('z');
-  this.svgBackground_.setAttribute('d', path.join(' '));
-
-  this.eyo.toolbar_.resize(width, height)
-};
-
-/**
- * Copy a block from the flyout to the workspace and position it correctly.
+ * Copy a brick from the flyout to the workspace and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {!eYo.Brick} oldBrick The flyout block to copy.
+ * @param {!eYo.Brick} oldBrick The flyout brick to copy.
  * @return {!eYo.Brick} The new brick in the main workspace.
  * @private
  */
-eYo.Flyout.prototype.placeNewBlock_ = function(oldBrick) {
-  var brick = eYo.Flyout.superClass_.placeNewBlock_.call(this, oldBrick)
+eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
+
+  // Create the new brick by cloning the brick in the flyout (via XML).
+  var xml = eYo.Xml.brickToDom(oldBrick)
+  // The target workspace would normally resize during domToBrick, which will
+  // lead to weird jumps.  Save it for terminateDrag.
+  var targetSpace = this.targetSpace_
+  targetSpace.setResizesEnabled(false)
+
+  // Using domToBrick instead of domToWorkspace means that the new brick will be
+  // placed at position (0, 0) in main workspace units.
+  var brick = eYo.Xml.domToBrick(xml, targetSpace)
+
+  // The offset in pixels between the main workspace's origin and the upper left
+  // corner of the injection div.
+  var mainOffsetPixels = targetSpace.getOriginOffsetInPixels()
+
+  // The offset in pixels between the flyout workspace's origin and the upper
+  // left corner of the injection div.
+  var flyoutOffsetPixels = this.workspace_.getOriginOffsetInPixels()
+
+  // The position of the old brick in flyout workspace coordinates.
+  var oldBrickPosWs = oldBrick.xyInWorkspace
+
+  // The position of the old brick in pixels relative to the flyout
+  // workspace's origin.
+  var oldBrickPosPixels = oldBrickPosWs.scale(this.workspace_.scale)
+
+  // The position of the old brick in pixels relative to the upper left corner
+  // of the injection div.
+  var oldBrickOffsetPixels = goog.math.Coordinate.sum(flyoutOffsetPixels,
+      oldBrickPosPixels)
+
+  // The position of the old brick in pixels relative to the origin of the
+  // main workspace.
+  var finalOffsetPixels = goog.math.Coordinate.difference(oldBrickOffsetPixels,
+      mainOffsetPixels)
+
+  // The position of the old brick in main workspace coordinates.
+  var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetSpace.scale)
+
+  brick.xyMoveBy(finalOffsetMainWs.x, finalOffsetMainWs.y)
+
   brick.render()
   return brick
+}
+
+/**
+ * Does the job of sliding the flyout in or out.
+ * @param {?Boolean} close  close corresponds to the final state.
+ * When not given, toggle the closed state.
+ */
+eYo.Flyout.prototype.doSlide = function(close) {
+  // nothing to do if in the process of reaching the expected state
+  if (this.slide_locked) {
+    return
+  }
+  if (!goog.isDef(close)) {
+    close = !this.closed
+  }
+  // nothing to do either if already in the expected state
+  if (!close === !this.closed) {
+    return
+  }
+  var metrics = this.targetSpace_.getMetrics()
+  if (!metrics) {
+    // Hidden components will return null.
+    return;
+  }
+  this.slide_locked = true
+  var atRight = this.anchor_ == eYo.Flyout.AT_RIGHT
+  this.visible = true
+  eYo.Tooltip.hideAll(this.dom.group_)
+  var left = metrics.absoluteLeft
+  var right = left + metrics.viewWidth
+  var n_steps = 50
+  var n = 0
+  var steps = []
+  var positions = []
+  if (atRight) {
+    var x_start = close? right - this.width_ : right
+    var x_end = close? right : right - this.width_
+  } else {
+    x_start = close? left : left - this.width_
+    x_end = close? left - this.width_ : left
+  }
+  steps[0] = close? 0: 1
+  positions[0] = x_start
+  for (n = 1; n < n_steps; n++) {
+    var step = Math.sin(n*Math.PI/n_steps/2)**2
+    steps[n] = close ? step : 1-step
+    positions[n] = x_start + step * (x_end - x_start)
+  }
+  steps[n] = close ? 1 : 0
+  positions[n] = x_end
+  var y = metrics.absoluteTop;
+  n = 0
+  var id = setInterval(() => {
+    if (n >= n_steps) {
+      clearInterval(id)
+      if ((this.closed = close)) {
+        this.visible = false
+      }
+      this.ui_driver.flyoutUpdate(this.width_, this.height_)
+      this.toolbar_.resize(this.width_, this.height_)
+      delete this.slide_locked
+      this.targetSpace_.recordDeleteAreas()
+      this.slideOneStep(steps[n_steps])
+      this.didSlide(close)
+    } else {
+      this.ui_driver.positionAt_(this, this.width_, this.height_, positions[n], y)
+      this.slideOneStep(steps[n])
+      // the scrollbar won't resize because the metrics of the workspace did not change
+      var hostMetrics = this.workspace_.getMetrics()
+      if (hostMetrics) {
+        this.scrollbar_.resizeVertical_(hostMetrics)
+      }
+      ++n
+    }
+  }, 20);
 };
+
+/**
+ * Slide the flyout in or out.
+ * This 2 levels design allows overwriting.
+ * Actually, the ui button calls the slide method.
+ * @param {?Boolean} close  close corresponds to the final state.
+ * When not given, toggle the closed state.
+ */
+eYo.Flyout.prototype.slide = function(close) {
+  this.doSlide(close)
+}
+
+/**
+ * Subclassers will add there stuff here.
+ * @param {number} step betwwen 0 and 1.
+ */
+eYo.Flyout.prototype.slideOneStep = function(step) {
+}
+
+/**
+ * Subclassers will add there stuff here.
+ * @param {Boolean} closed
+ */
+eYo.Flyout.prototype.didSlide = function(closed) {
+}
 
 /**
  * List of node models by category.
  * Used by the front end.
  * @param {!String} category The name of the category to retrieve.
  */
-eYo.FlyoutDelegate.prototype.getList = function (category) {
+eYo.Flyout.prototype.getList = function (category) {
   return eYo.FlyoutCategory[category] || []
 }
-
-/**
- * Return the deletion rectangle for this flyout in viewport coordinates.
- * Edython : add management of the 0 width rectange
- * @return {goog.math.Rect} Rectangle in which to delete.
- */
-eYo.Flyout.prototype.getClientRect = function() {
-  if (!this.svgGroup_) {
-    return null;
-  }
-
-  var flyoutRect = this.svgGroup_.getBoundingClientRect();
-  // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
-  // area are still deleted.  Must be larger than the largest screen size,
-  // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
-  var BIG_NUM = 1000000000;
-  var x = flyoutRect.left;
-  var width = flyoutRect.width;
-
-  if (!width) {
-    var xy = this.eyo.flyoutPosition
-    if (xy) {
-      x = xy.x
-    }
-  }
-  if (this.toolboxPosition_ === Blockly.TOOLBOX_AT_LEFT) {
-    return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
-        BIG_NUM * 2);
-  } else {  // Right
-    return new goog.math.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
-  }
-};

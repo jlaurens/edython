@@ -63,19 +63,19 @@ eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_R
  */
 eYo.FlyoutToolbar.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
-    Blockly.unbindEvent_(this.onButtonDownWrapper_);
+    Blockly.unbindEvent(this.onButtonDownWrapper_);
     this.onButtonDownWrapper_ = undefined
   }
   if (this.onButtonEnterWrapper_) {
-    Blockly.unbindEvent_(this.onButtonEnterWrapper_);
+    Blockly.unbindEvent(this.onButtonEnterWrapper_);
     this.onButtonEnterWrapper_ = undefined
   }
   if (this.onButtonLeaveWrapper_) {
-    Blockly.unbindEvent_(this.onButtonLeaveWrapper_);
+    Blockly.unbindEvent(this.onButtonLeaveWrapper_);
     this.onButtonLeaveWrapper_ = undefined
   }
   if (this.onButtonUpWrapper_) {
-    Blockly.unbindEvent_(this.onButtonUpWrapper_);
+    Blockly.unbindEvent(this.onButtonUpWrapper_);
     this.onButtonUpWrapper_ = undefined
   }
   if (this.selectControl_) {
@@ -93,8 +93,7 @@ eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
   this.isDown = true
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
-  e.stopPropagation()
-  e.preventDefault()
+  eYo.Dom.gobbleEvent(e)
 };
 
 /**
@@ -136,8 +135,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     if (gesture) {
       gesture.cancel();// comes from flyout button
     }
-    e.stopPropagation()
-    e.preventDefault()
+    eYo.Dom.gobbleEvent(e)
   }
 };
 // Sometimes this error has poped up.
@@ -155,8 +153,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   if (gesture) {
     gesture.cancel();// comes from flyout button
   }
-  e.stopPropagation()
-  e.preventDefault()
+  eYo.Dom.gobbleEvent(e)
 };
 
 /**

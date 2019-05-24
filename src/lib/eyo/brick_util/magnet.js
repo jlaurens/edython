@@ -514,7 +514,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
       if (t9k && !this.checkType_(this.target)) {
         ;(this.isSuperior ? t9k : brick).unplug()
         // Bump away.
-        brick.bumpNeighbours_()
+        brick.ui.bumpNeighbours_()
       }
       brick.incrementChangeCount()
       t9k && (t9k.incrementChangeCount()) // there was once a `consolidate(false, true)` here.
@@ -1777,7 +1777,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
     return false;
   }
 
-  // Don't let a brick with no next connection bump other bricks out of the
+  // Don't let a brick with no foot magnet bump other bricks out of the
   // stack.  Similarly, replacing a terminal statement with another terminal statement
   // is allowed.
   if (this.type === eYo.Magnet.HEAD &&

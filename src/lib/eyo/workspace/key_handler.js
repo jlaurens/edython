@@ -14,12 +14,13 @@
 goog.provide('eYo.KeyHandler')
 goog.provide('eYo.KeyHandlerMenu')
 
-goog.require('eYo.XRE')
-goog.require('eYo.Navigate')
 goog.require('eYo.PopupMenu')
-goog.require('eYo.MenuItem')
-goog.require('eYo.Separator')
-goog.require('goog.dom');
+
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.Dom')
+goog.forwardDeclare('eYo.Navigate')
+goog.forwardDeclare('eYo.MenuItem')
+goog.forwardDeclare('eYo.Separator')
 
 eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
@@ -101,13 +102,11 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'backspace') {
-      event.preventDefault()
-      event.stopPropagation()
+      eYo.Dom.gobbleEvent(e)
       K = undefined
     }
     if (me.updateMenu(K)) {
-      event.preventDefault()
-      event.stopPropagation()
+      eYo.Dom.gobbleEvent(e)
       return true
     }
     return false
@@ -435,23 +434,20 @@ eYo.KeyHandler = (() => {
       }
     } else if (k === 'enter' || k === 'return') {
       if ((brick = eYo.Selected.brick)) {
-        event.preventDefault()
-        event.stopPropagation()
+        eYo.Dom.gobbleEvent(e)
         return
       }
     }
     if ((brick = eYo.Selected.brick)) {
       if (K === ' ') {
-        event.preventDefault()
-        event.stopPropagation()
+        eYo.Dom.gobbleEvent(e)
         eYo.MenuManager.shared().showMenu(brick, event)
         return
       }
       keys_ = []
       me.populateMenu(K)
       if (menu_.getChildCount()) {
-        event.preventDefault()
-        event.stopPropagation()
+        eYo.Dom.gobbleEvent(e)
         if (!menu_.inDocument_) {
           menu_.render()
         }
@@ -490,18 +486,17 @@ eYo.KeyHandler = (() => {
         var scaledHeight = eYo.Unit.y * brick.workspace.scale
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
-          var xy = goog.style.getPageOffset(m4t.brick.ui.svg.group_)
+          var xy = goog.style.getPageOffset(m4t.brick.ui.dom.group_)
           var xxyy = m4t.xyInBlock_.clone().scale(brick.workspace.scale)
           xy.translate(xxyy)
         } else {
-          xy = goog.style.getPageOffset(brick.ui.svg.group_)
+          xy = goog.style.getPageOffset(brick.ui.dom.group_)
         }
-        menu_.showMenu(brick.ui.svg.group_, xy.x, xy.y + scaledHeight + 2)
+        menu_.showMenu(brick.ui.dom.group_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
         var F = f => {
-          event.preventDefault()
-          event.stopPropagation()
+          eYo.Dom.gobbleEvent(e)
           f()
         }
         switch (k) {
@@ -514,8 +509,7 @@ eYo.KeyHandler = (() => {
     } else {
       // B is not always a brick!
       F = f => {
-        event.preventDefault()
-        event.stopPropagation()
+        eYo.Dom.gobbleEvent(e)
         var brick = eYo.Brick.getBestBrick(eYo.App.workspace, f)
         if (brick) {
           brick.select().scrollToVisible()

@@ -17,8 +17,8 @@ goog.require('eYo.Do')
 
 goog.forwardDeclare('eYo.BrickDragger')
 
-goog.forwardDeclare('eYo.WorkspaceDragger')
-goog.forwardDeclare('eYo.FlyoutDragger')
+// goog.forwardDeclare('eYo.WorkspaceDragger')
+// goog.forwardDeclare('eYo.FlyoutDragger')
 
 goog.forwardDeclare('Blockly.Tooltip')
 
@@ -425,7 +425,7 @@ eYo.Gesture.prototype.updateDraggingFromFlyout_ = function() {
   if (this.targetBrick_.disabled) {
     return false
   }
-  if (!this.flyout_.isScrollable() ||
+  if (!this.flyout_.scrollable ||
       this.flyout_.isDragTowardWorkspace(this.xyDelta_)) {
     this.workspace_ = this.flyout_.targetWorkspace_
     this.workspace_.updateScreenCalculationsIfScrolled()
@@ -481,7 +481,7 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
  */
 eYo.Gesture.prototype.updateIsDraggingWorkspace_ = function() {
   var wsMovable = this.flyout_
-  ? this.flyout_.isScrollable()
+  ? this.flyout_.scrollable
   : this.workspace_ && this.workspace_.draggable
   if (!wsMovable) {
     return;
@@ -508,8 +508,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
     } else if (this.isDraggingBrick_) {
       this.brickDragger_.drag(this.event_, this.xyDelta_) // sometimes it failed when in Blockly
     }
-    e.preventDefault()
-    e.stopPropagation()  
+    this.ui_driver.gobbleEvent(e) 
   }
   return function(e) {
     if (this.dragging) {
@@ -572,17 +571,9 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     } else {
       this.doWorkspaceClick_()
     }
-
-    e.preventDefault()
-    e.stopPropagation()
-
-    this.dispose()
-  } else {
-    e.preventDefault()
-    e.stopPropagation()
-
-    this.dispose()
   }
+  this.ui_driver.gobbleEvent(e)
+  this.dispose()
 }
 
 /**
@@ -613,13 +604,11 @@ eYo.Gesture.prototype.cancel = function() {
 eYo.Gesture.prototype.handleRightClick = function(e) {
   if (this.targetBrick_) {
     this.bringBrickToFront_()
-    this.targetBrick_.showContextMenu_(e)
+    this.targetBrick_.ui.showContextMenu_(e)
   } else if (this.workspace_ && !this.flyout_) {
     this.workspace_.showContextMenu_(e)
   }
-  e.preventDefault()
-  e.stopPropagation()
-
+  eYo.Dom.gobbleEvent(e)
   this.dispose()
 }
 
@@ -684,9 +673,7 @@ eYo.Gesture.prototype.doStart = function(e) {
   if (!this.isEnding_ && this.ui_driver.isTouchEvent(e)) {
     this.handleTouchStart(e)
   }
-
-  e.preventDefault()
-  e.stopPropagation()
+  this.ui_driver.gobbleEvent(e)
 }
 
 /**
@@ -701,7 +688,7 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
       'Tried to call gesture.handleFlyoutStart, but the gesture had already ' +
       'been started.')
   this.flyout_ || (this.flyout_ = flyout)
-  this.handleWsStart(e, flyout.getWorkspace())
+  this.handleWsStart(e, flyout.workspace)
 }
 
 /**

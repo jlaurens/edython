@@ -22,18 +22,18 @@ goog.require('eYo.Svg')
  * @param {!eYo.Slot} slot to be prepared.
  */
 eYo.Svg.prototype.slotInit = function (slot) {
-  if (slot.svg) {
+  if (slot.dom) {
     return // already initialized
   }
-  var svg = slot.svg = {}
-  svg.group_ = eYo.Svg.newElement('g', {
+  var svg = slot.dom = {}
+  dom.group_ = eYo.Svg.newElement('g', {
     class: 'eyo-slot'
   }, null)
   if (slot.previous) {
-    goog.dom.insertSiblingAfter(svg.group_, slot.previous.svg.group_)
+    goog.dom.insertSiblingAfter(dom.group_, slot.previous.dom.group_)
   } else {
     goog.asserts.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
-    goog.dom.appendChild(slot.brick.ui.svg.group_, svg.group_)
+    goog.dom.appendChild(slot.brick.ui.dom.group_, dom.group_)
   }
   this.slotDisplayedUpdate(slot)
 }
@@ -43,9 +43,9 @@ eYo.Svg.prototype.slotInit = function (slot) {
  * @param {eYo.Slot} slot
  */
 eYo.Svg.prototype.slotDispose = function (slot) {
-  goog.dom.removeNode(slot.svg.group_)
-  slot.svg.group_ = null
-  slot.svg = undefined
+  goog.dom.removeNode(slot.dom.group_)
+  slot.dom.group_ = null
+  slot.dom = undefined
 }
 
 /**
@@ -53,7 +53,7 @@ eYo.Svg.prototype.slotDispose = function (slot) {
  * @param {!Object} slot  the slot to query about
  */
 eYo.Svg.prototype.slotDisplayedGet = function (slot) {
-  var g = slot.svg.group_
+  var g = slot.dom.group_
   return g.style.display !== 'none'
 }
 
@@ -63,7 +63,7 @@ eYo.Svg.prototype.slotDisplayedGet = function (slot) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.slotDisplayedSet = function (slot, yorn) {
-  var g = slot.svg.group_
+  var g = slot.dom.group_
   if (yorn) {
     g.removeAttribute('display')
   } else {
@@ -85,7 +85,7 @@ eYo.Svg.prototype.slotDisplayedUpdate = function (slot) {
  * @param {eYo.Slot} slot
  */
 eYo.Svg.prototype.slotDisplay = function (slot) {
-  var g = slot.svg && slot.svg.group_
+  var g = slot.dom && slot.dom.group_
   goog.asserts.assert(g, 'Slot with no root', slot.brick.type, slot.key)
   if (slot.incog) {
     g.setAttribute('display', 'none')

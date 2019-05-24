@@ -208,7 +208,7 @@ eYo.setup.register(() => {
 
 /**
  * A namespace.
- * @namespace eYo.UI.prototype.svg
+ * @namespace eYo.Brick.UI.prototype.dom
  */
 
 /**
@@ -223,7 +223,7 @@ eYo.setup.register(() => {
  * @property {SvgPathElement} pathCollapsed_  A path.
  * @property {SvgPathElement} pathSelect_  A path.
  * @property {SvgPathElement} pathHilight_  A path.
- * @memberof eYo.Brick.prototype.svg
+ * @memberof eYo.Brick.prototype.dom
  */
 
 eYo.Svg = function () {
@@ -336,197 +336,6 @@ eYo.Svg.prototype.addTooltip = function (el, title, options) {
   } else if (goog.isDef(title)) {
     tippy(el, title)
   }
-}
-
-/**
- * Initializes the flyout SVG ressources.
- * @param {!eYo.Flyout} flyout
- */
-eYo.Svg.prototype.flyoutInit = function(flyout) {
-  var svg = flyout.svg = {}
-  /*
-  <svg class="eyo-flyout">
-    <g class="eyo-flyout-background">
-      <path class="blocklyFlyoutBackground"/>
-    </g>
-    <g class="eyo-workspace">...</g>
-  </svg>
-  */
-  svg.group_ = eYo.Svg.newElement(tagName, {
-    class: 'eyo-flyout',
-    style: 'display: none'
-  }, null)
-  svg.background_ = eYo.Svg.newElement('path', {
-    class: 'eyo-flyout-background'
-  }, svg.group_)
-// Bad design: code reuse: options
-  this.addTooltip(svg.background_, eYo.Tooltip.getTitle('flyout'), {
-    position: 'right',
-    theme: 'light bordered',
-    flipDuration: 0,
-    inertia: true,
-    arrow: true,
-    animation: 'perspective',
-    duration: [600, 300],
-    delay: [750, 0],
-    popperOptions: {
-      modifiers: {
-        preventOverflow: {
-          enabled: true
-        }
-      }
-    },
-    onShow: (instance) => {
-      eYo.Tooltip.hideAll(this.svgBackground_)
-    }
-  })
-
-  var g = flyout.workspace_.createDom()
-  goog.dom.classlist.remove(g, 'blocklyWorkspace')
-  goog.dom.classlist.add(g, 'eyo-workspace')
-  svg.group_.appendChild(g)
-
-  goog.dom.insertSiblingAfter(
-    svg.group_,
-    targetWorkspace.getParentSvg()
-  )
-}
-
-/**
- * Initializes the flyout toolbar SVG ressources.
- * @param {!eYo.FlyoutToolbar} flyoutToolbar
- */
-eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
-  if (this.div_) {
-    return
-  }
-  /*
-  <div class="eyo-flyout-toolbar">
-    <div class="eyo-flyout-toolbar-general">
-      <div class="eyo-flyout-select-general">
-        ...
-      </div>
-      <div class="eyo-flyout-control">
-        ...
-      </div>
-    </div>
-    <div class="eyo-flyout-toolbar-module">
-      <div class="eyo-flyout-select-module">
-        ...
-      </div>
-    </div>
-  </div>
-  */
-  var cssClass = this.flyout_.eyo.getCssClass()
-  this.control_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'control'))
-  var svg = eYo.Svg.newElement('svg', {
-    id: 'eyo-flyout-control-image',
-    class: goog.getCssName(cssClass, 'control-image')
-  }, this.control_)
-  this.pathControl_ = eYo.Svg.newElement('path', {
-    id: 'p-flyout-control'
-  }, svg)
-  if (eYo.App && eYo.App.flyoutDropDown) {
-    this.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select'),
-      eYo.App.flyoutDropDown
-    )
-  } else if (eYo.App && eYo.App.flyoutDropDownGeneral && eYo.App.flyoutDropDownModule) {
-    this.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general'),
-      eYo.App.flyoutDropDownGeneral
-    )
-    this.select_module_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module'),
-      eYo.App.flyoutDropDownModule
-    )
-  } else {
-    this.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general')
-    )
-    select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(this.select_general_)
-    this.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      this.doSelectGeneral,
-      false,
-      this
-    )
-    this.select_module_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module')
-    )
-    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(this.select_module_)
-    this.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      this.doSelectGeneral,
-      false,
-      this
-    )
-  }
-  var div_general = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-general'),
-    this.select_general_
-  )
-  var div_module = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-module'),
-    this.select_module_
-  )
-  this.div_ = this.switcher_
-    ? goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar'),
-      this.switcher_,
-      this.control_
-    )
-    : goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar'),
-      div_general,
-      div_module,
-      this.control_
-    )
-  if (this.switcher_) {
-    this.switcher_.style.left = '0px'
-    this.switcher_.style.top = '0px'
-  }
-  this.onButtonDownWrapper_ = this.bindEventWithChecks_(this.control_, 'mousedown', this, this.onButtonDown_)
-  this.onButtonEnterWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseenter', this, this.onButtonEnter_)
-  this.onButtonLeaveWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseleave', this, this.onButtonLeave_)
-  this.onButtonUpWrapper_ = this.bindEventWithChecks_(this.control_, 'mouseup', this, this.onButtonUp_)
-
-  goog.dom.insertSiblingBefore(ftb.div_, ftb.flyout_.svg.group_)
 }
 
 // Private holder of svg ressources

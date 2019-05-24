@@ -27,7 +27,7 @@ goog.forwardDeclare('eYo.Span')
 goog.forwardDeclare('eYo.Field')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Magnets')
-goog.forwardDeclare('eYo.UI')
+goog.forwardDeclare('eYo.Brick.UI')
 goog.forwardDeclare('eYo.Brick.Expr')
 goog.forwardDeclare('eYo.Brick.Stmt')
 goog.forwardDeclare('eYo.Selected')
@@ -346,54 +346,6 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.span_
     }
   },
-  mainHeight: {
-    get () {
-      return this.span.main
-    },
-    set (newValue) {
-      this.span.main_ = newValue
-    }
-  },
-  blackHeight: {
-    get () {
-      return this.span.black
-    },
-    set (newValue) {
-      this.span.black_ = newValue
-    }
-  },
-  suiteHeight: {
-    get () {
-      return this.span.suite
-    },
-    set (newValue) {
-      this.span.suite_ = newValue
-    }
-  },
-  belowHeight: {
-    get () {
-      return this.span.foot
-    },
-    set (newValue) {
-      this.span.foot_ = newValue
-    }
-  },
-  headHeight: {
-    get () {
-      return this.span.head
-    },
-    set (newValue) {
-      this.span.head_ = newValue
-    }
-  },
-  footHeight: {
-    get () {
-      return this.span.foot
-    },
-    set (newValue) {
-      this.span.foot = newValue
-    }
-  },
   magnets: {
     get () {
       return this.magnets_
@@ -653,7 +605,15 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   /**
-   * cached size of the receiver, in text units.
+   * Position of the receiver in the workspace.
+   */
+  xy: {
+    get () {
+      return this.ui.xyInWorkspace
+    }
+  },
+  /**
+   * Size of the receiver, in workspace coordinates.
    * Stores the height, minWidth and width.
    * The latter includes the right padding.
    * It is updated in the right alignment method.
@@ -1864,7 +1824,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
                 // be computed once again
                 if (!next.checkType_(previous)) {
                   b3k.unplug()
-                  b3k.bumpNeighbours_()
+                  b3k.ui.bumpNeighbours_()
                 }
                 break
               }
@@ -1900,7 +1860,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
                 if (!next.checkType_(previous)) {
                   b3k = previous.brick
                   b3k.unplug()
-                  b3k.bumpNeighbours_()
+                  b3k.ui.bumpNeighbours_()
                 }
                 break
               }
@@ -2128,19 +2088,6 @@ eYo.Brick.prototype.getMagnets_ = function(all) {
 eYo.Brick.prototype.isMovable = function() {
   return !this.wrapped_ && this.movable_ &&
   !(this.workspace && this.workspace.options.readOnly)
-}
-
-/**
- * Show the context menu for this brick.
- * @param {!Event} e Mouse event.
- * @private
- */
-eYo.Brick.prototype.showContextMenu_ = function (e) {
-  // this part is copied as is from the parent's implementation. Is it relevant ?
-  if (this.workspace.options.readOnly || !this.contextMenu) {
-    return
-  }
-  eYo.MenuManager.shared().showMenu(this, e)
 }
 
 /**
@@ -2380,11 +2327,6 @@ eYo.Brick.prototype.someStatement = function (helper) {
   }
 }
 
-/** TO BE DEPRECATED */
-eYo.Brick.getNextBlock = function () {
-  return this.foot
-}
-
 /**
  * Create a new delegate, with svg background.
  * This is the expected way to create the brick.
@@ -2520,7 +2462,7 @@ eYo.Brick.prototype.beReady = function (headless) {
   }
   this.changeWrap(() => {
       this.beReady = eYo.Do.nothing // one shot function
-      this.ui_ = new eYo.UI(this)
+      this.ui_ = new eYo.Brick.UI(this)
       this.forEachField(field => field.beReady())
       this.forEachSlot(slot => slot.beReady())
       this.inputList.forEach(input => input.beReady())
@@ -2612,7 +2554,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
             }, () => {
               eYo.Selected.brick = candidate
               candidate.render()
-              candidate.bumpNeighbours_()
+              candidate.ui.bumpNeighbours_()
             })
           })
         })
@@ -2747,7 +2689,7 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
             }
             m4t.connect(otherM4t)
             if (targetM4t) {
-              targetM4t.brick.bumpNeighbours_()
+              targetM4t.brick.ui.bumpNeighbours_()
             }
           })
         }
@@ -3014,11 +2956,6 @@ eYo.Brick.prototype.getParent = function () {
 eYo.Brick.prototype.connectionUiEffect = function() {
   this.ui.connectEffect()
 }
-
-/**
- * Not implemented. The purpose is to avoid brick collisions.
- */
-eYo.Brick.prototype.bumpNeighbours_ = eYo.Do.nothing
 
 /**
  * Delegate manager.

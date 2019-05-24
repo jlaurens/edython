@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Driver')
 
-goog.forwardDeclare('eYo.UI')
+goog.forwardDeclare('eYo.Brick.UI')
 
 goog.require('eYo.Do')
 
@@ -128,7 +128,7 @@ eYo.Driver.prototype.brickTranslate = eYo.Do.nothing
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
  *     workspace coordinates.
  */
-eYo.Driver.prototype.brickXYInSurface = eYo.Do.nothing
+eYo.Driver.prototype.brickXYInWorkspace = eYo.Do.nothing
 
 /**
  * Set the location.
@@ -233,13 +233,6 @@ eYo.Driver.fieldInit = eYo.Do.nothing
  * @param {!Object} field
  */
 eYo.Driver.fieldDispose = eYo.Do.nothing
-
-/**
- * Update the inline editor.
- * Default implementation does nothing.
- * @param {!Object} field
- */
-eYo.Driver.fieldInlineEditorUpdate = eYo.Do.nothing
 
 /**
  * Callback at widget disposal.

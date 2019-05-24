@@ -401,7 +401,7 @@ Object.defineProperties(eYo.Field.prototype, {
       d && (d.fieldDisplayedUpdate(this))
       if (this.brick.rendered) {
         this.brick.render()
-        visible && (this.brick.bumpNeighbours_())
+        visible && (this.brick.ui.bumpNeighbours_())
       }
     }
   },

@@ -44,11 +44,11 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
     setTimeout(step, 10, clone, start, scale)
   }
   return function(brick) {
-    var svg = brick.ui.svg
+    var svg = brick.ui.dom
     var w = brick.workspace
-    var xy = w.getSvgXY(/** @type {!Element} */ (svg.group_))
+    var xy = w.getSvgXY(/** @type {!Element} */ (dom.group_))
     // Deeply clone the current brick.
-    var clone = svg.group_.cloneNode(true)
+    var clone = dom.group_.cloneNode(true)
     clone.translateX_ = xy.x
     clone.translateY_ = xy.y
     clone.setAttribute('transform',
@@ -84,11 +84,11 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
     }
   }
   return function (brick) {
-    var svg = brick.ui.svg
+    var dom = brick.ui.dom
     var w = brick.workspace
-    var xy = w.getSvgXY(/** @type {!Element} */ svg.group_)
+    var xy = w.getSvgXY(/** @type {!Element} */ dom.group_)
     if (brick.isExpr) {
-      var h = svg.height * w.scale / 2
+      var h = brick.span.height * w.scale / 2
       var ripple = eYo.Svg.newElement('circle',
         {class: 'bricklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
         w.getParentSvg())
@@ -148,7 +148,7 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
     var height = this.brick_.size.height
     var magnitude = - Math.atan(DISPLACEMENT / height) / Math.PI * 180
     // Start the animation.
-    this.group_ = brick.ui.svg.group_
+    this.group_ = brick.ui.dom.group_
     step(magnitude, new Date)
   }
 })()

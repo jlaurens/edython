@@ -15,6 +15,8 @@ goog.provide('eYo.Dom')
 
 goog.require('eYo.Driver')
 
+goog.forwardDeclare('goog.dom');
+
 /**
  * Model for dom utilities
  */
@@ -62,9 +64,9 @@ if (window && window.PointerEvent) {
  *     simultaneous touches.
  * @param {boolean=} opt.noPreventDefault True if triggering on this event
  *     should prevent the default handler.  False by default.
- * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent_.
+ * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.prototype.bindEventWithChecks_ = function(node, name, thisObject, func, opt) {
+eYo.Dom.prototype.bindEvent = function(node, name, thisObject, func, opt) {
   var handled = false;
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
@@ -120,7 +122,7 @@ eYo.Dom.prototype.bindEventWithChecks_ = function(node, name, thisObject, func, 
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
-eYo.Dom.prototype.unbindEvent_ = function(bindData) {
+eYo.Dom.prototype.unbindEvent = function(bindData) {
   while (bindData.length) {
     var d = bindData.pop()
     var func = datum[2]
@@ -144,7 +146,7 @@ eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
   ].forEach(k => {
     var f = listener['on_' + k + ((opt && opt.suffix) || '')]
     if (f) {
-      var ans = this.bindEventWithChecks_(element, k, listener, f, opt)
+      var ans = this.bindEvent(element, k, listener, f, opt)
       if (opt && opt.willUnbind) {
         var ra = listener.bind_data_ || (listener.bind_data_ = [])
         ra.push(ans)
@@ -159,7 +161,7 @@ eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
  * @package
  */
 eYo.Dom.prototype.unbindMouseEvents = function(listener) {
-  listener.bind_data_ && listener.bind_data_.forEach(data => this.unbindEvent_(data))
+  listener.bind_data_ && listener.bind_data_.forEach(data => this.unbindEvent(data))
 }
 
 
@@ -179,7 +181,7 @@ eYo.Dom.prototype.forEachTouch = function(e, f) {
         type: e.type,
         changedTouches: [t],
         target: e.target,
-        stopPropagation: function() { e.stopPropagation() },
+        stopPropagation: function() {  e.stopPropagation() },
         preventDefault: function() { e.preventDefault() }
       }
       f(newEvent)
@@ -190,7 +192,16 @@ eYo.Dom.prototype.forEachTouch = function(e, f) {
 }
 
 /**
- * Decide whether Blockly should handle or ignore this event.
+ * @param {eYo.Block|eYo.Workspace|eYo.Flyout} bfw
+ */
+eYo.Dom.unbindBoundEvents = funtion (bfw) {
+  var dom = bfw.ui.dom || bfw.dom
+  var bound = dom = dom.bound
+  bound && Object.values(bound).forEach(item => this.unbindEvent(item))
+}
+
+/**
+ * Decide whether we should handle or ignore this event.
  * Mouse and touch events require special checks because we only want to deal
  * with one touch stream at a time.  All other events should always be handled.
  * @param {!Event} e The event to check.
@@ -332,4 +343,24 @@ eYo.Do.getTransformCorrection = (element) => {
       }
     }
   }
+}
+
+/**
+ * Dispose of the given slot's rendering resources.
+ * @param {eYo.Flyout} flyout
+ */
+eYo.Dom.prototype.flyoutDispose = function (flyout) {
+  if (flyout.dom && flyout.dom.toolbarDiv_) {
+    goog.dom.removeNode(flyout.dom.toolbarDiv_)
+    this.dom = undefined
+  }
+}
+
+/**
+ * Prevents default behavior and stop propagation.
+ * @param {Event} e
+ */
+eYo.Dom.gobbleEvent = eYo.Dom.prototype.gobbleEvent = function (e) {
+  e.preventDefault()
+  e.stopPropagation()
 }

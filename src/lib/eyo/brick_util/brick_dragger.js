@@ -157,14 +157,14 @@ eYo.BrickDragger.prototype.start = function(delta, healStack) {
     this.brick_.unplug(healStack)
     var dXY = this.destination.fromPixelUnit(delta)
     var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
-    this.brick_.translate(newLoc.x, newLoc.y)
+    this.brick_.ui.translate(newLoc.x, newLoc.y)
     this.brick_.ui.disconnectEffect();
   }
   this.brick_.ui.dragging = true
   // For future consideration: we may be able to put moveToDragSurface inside
   // the brick dragger, which would also let the brick not track the brick drag
   // surface.
-  this.brick_.moveToDragSurface_()
+  this.brick_.ui.moveToDragSurface()
 
   var toolbox = this.destination.toolbox
   toolbox && toolbox.addStyle(this.brick_.deletable
@@ -188,11 +188,11 @@ eYo.BrickDragger.prototype.drag = function(e, delta) {
   var dXY = this.destination.fromPixelUnit(delta)
   var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
 
-  this.brick_.moveDuringDrag(newLoc)
+  this.brick_.ui.moveDuringDrag(newLoc)
   
   this.update(dXY)
 
-  this.brick_.setDeleteStyle(this.wouldDelete_)
+  this.brick_.ui.setDeleteStyle(this.wouldDelete_)
   var trashcan = this.destination.trashcan
   if (trashcan) {
     trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.DELETE_AREA_TRASH)
@@ -228,7 +228,7 @@ eYo.BrickDragger.prototype.end = (() => {
     var dXY = this.destination.fromPixelUnit(delta)
     var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
     var b3k = this.brick_
-    b3k.moveOffDragSurface_(newLoc)
+    b3k.ui.moveOffDragSurface(newLoc)
 
     if (this.wouldDelete_) {
       fireMoveEvent(this)

@@ -102,7 +102,7 @@ Object.defineProperties(eYo.Owned.prototype, {
   },
   /**
    * @readonly
-   * @type {eYo.UI}  The ui object used for rendering.
+   * @type {eYo.Brick.UI}  The ui object used for rendering.
    */
   ui: {
     get () {

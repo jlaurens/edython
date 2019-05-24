@@ -234,7 +234,6 @@ eYo.FlyoutCategory.decimal__module = [
   F('isfinite', 'Teste si l\'argument est un nombre fini'),
   F('isinf', 'Teste si l\'argument est infini (au sens informatique)'),
   F('isnan', 'Teste si l\'argument n\'est pas un nombre (Not A Number)'),
-
   (createOneBlock) => {
     [
       'ROUND_CEILING',

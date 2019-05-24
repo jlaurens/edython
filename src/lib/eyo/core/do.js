@@ -15,7 +15,6 @@ goog.provide('eYo.Do')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.math.AffineTransform')
-goog.forwardDeclare('goog.goog.userAgent')
 
 goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
