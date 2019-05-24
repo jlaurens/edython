@@ -25,9 +25,9 @@ describe('SVG groups and paths', function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('True')
     var field = d1.value_f
-    var svg = field.dom
+    var dom = field.dom
     var type = d1.type
-    chai.assert(svg, `MISSING svg in value field of ${type}`)
+    chai.assert(dom, `MISSING svg in value field of ${type}`)
     var ui = field.ui
     chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
     var ui_driver = field.ui_driver
@@ -41,14 +41,14 @@ describe('SVG groups and paths', function () {
   //   eYo.Test.setItUp()
   //   var d1 = eYo.Test.new_brick('builtin__object')
   //   var field = d1.value_f
-  //   var svg = field.dom
+  //   var dom = field.dom
   //   var type = d1.type
-  //   chai.assert(svg, `MISSING svg in value field of ${type}`)
+  //   chai.assert(dom, `MISSING svg in value field of ${type}`)
   //   var ui = field.ui
   //   chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
   //   var ui_driver = field.ui_driver
   //   chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
-  //   eYo.Test.svgNodeParent(svg, 'textElement_', 'group_', type)
+  //   eYo.Test.svgNodeParent(dom, 'textElement_', 'group_', type)
   //   eYo.Test.tearItDown()
   // })
   it(`Expression`, function () {

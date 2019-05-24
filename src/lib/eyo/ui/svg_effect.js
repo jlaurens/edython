@@ -44,7 +44,7 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
     setTimeout(step, 10, clone, start, scale)
   }
   return function(brick) {
-    var svg = brick.ui.dom
+    var dom = brick.ui.dom
     var w = brick.workspace
     var xy = w.getSvgXY(/** @type {!Element} */ (dom.group_))
     // Deeply clone the current brick.

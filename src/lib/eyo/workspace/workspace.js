@@ -67,15 +67,9 @@ eYo.Workspace = function(options) {
 
   this.targetSpace = options.targetSpace
 
-  Blockly.ConnectionDB.init(this)
-  
-  if (opt_blockDragSurface) {
-  this.brickDragSurface_ = opt_blockDragSurface
-  }
+  this.brickDragSurface_ = options.brickDragSurface
 
-  if (opt_wsDragSurface) {
-  this.workspaceDragSurface_ = opt_wsDragSurface
-  }
+  this.workspaceDragSurface_ = options.workspaceDragSurface
 
   this.useWorkspaceDragSurface_ =
     this.workspaceDragSurface_ && Blockly.utils.is3dSupported()
@@ -88,10 +82,7 @@ eYo.Workspace = function(options) {
    */
   this.highlightedBlocks_ = []
 
-  if (Blockly.Procedures && Blockly.Procedures.flyoutCategory) {
-  this.registerToolboxCategoryCallback(Blockly.PROCEDURE_CATEGORY_NAME,
-      Blockly.Procedures.flyoutCategory);
-  }
+  Blockly.ConnectionDB.init(this)
 
   /**
    * Object in charge of loading, storing, and playing audio for a workspace.
@@ -1342,8 +1333,8 @@ eYo.Workspace.prototype.isDragging = function() {
  * @return {boolean} True if this workspace may be dragged.
  */
 eYo.Workspace.prototype.isDraggable = function() {
-  return !!this.scrollbar;
-};
+  return !!this.scrollbar
+}
 
 /**
  * Calculate the bounding box for the blocks on the workspace.

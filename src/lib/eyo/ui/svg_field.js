@@ -96,13 +96,13 @@ eYo.Svg.prototype.fieldPositionSet = function (field, where) {
  * @param {*} field
  */
 eYo.Svg.prototype.fieldUpdateWidth = function (field) {
-  var svg = field.dom
-  if (!svg) {
+  var dom = field.dom
+  if (!dom) {
     return
   }
   var width = field.size.width
-  svg.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
-  var r = svg.editRect_
+  dom.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
+  var r = dom.editRect_
   r && (r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0)))
 }
 

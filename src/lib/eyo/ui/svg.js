@@ -313,19 +313,6 @@ eYo.Svg.prototype.xyInParent = function(element) {
 }
 
 /**
- * Set the display mode for bricks.
- * Used to draw bricks lighter or not.
- * @param {!String} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.setBrickDisplayMode = (mode) => {
-  var svg = eYo.App.workspace.svgBlockCanvas_
-  this.currentBlockDisplayMode && (goog.dom.classlist.remove(svg, `eyo-${this.currentBlockDisplayMode}`))
-  if ((this.currentBlockDisplayMode = mode)) {
-    goog.dom.classlist.add(svg, `eyo-${this.currentBlockDisplayMode}`)
-  }
-}
-
-/**
  * Add tooltip to an element
  * @param {!String} key
  */

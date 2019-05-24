@@ -21,7 +21,7 @@ goog.forwardDeclare('eYo.Workspace')
  * @param {!eYo.Workspace} workspace
  */
 eYo.Svg.prototype.workspaceInit = function(workspace) {
-  var svg = workspace.dom = {}
+  var dom = workspace.dom = {}
   return g
 }
 
@@ -97,3 +97,40 @@ eYo.Workspace.prototype.workspaceOn_wheel = function(e) {
   this.zoom(position.x, position.y, delta);
   e.preventDefault();
 };
+
+/**
+ * Set the display mode for bricks.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.workspaceSetBrickDisplayMode = function (workspace, mode) {
+  var canvas = workspace.svgBlockCanvas_
+  workspace.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${workspace.currentBrickDisplayMode}`))
+  if ((workspace.currentBrickDisplayMode = mode)) {
+    goog.dom.classlist.add(canvas, `eyo-${workspace.currentBrickDisplayMode}`)
+  }
+}
+
+/**
+ * Set the display mode for bricks.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
+  var bound = workspace.dom.bound || Object.create(null)
+  if (bound.mousedown) {
+    return
+  }
+  bound.resize = this.bindEvent(
+    window,
+    'resize',
+    null,
+    function() {
+      Blockly.hideChaff(true)
+      Blockly.svgResize(workspace)
+    }
+  )
+}
+

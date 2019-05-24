@@ -36,7 +36,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var brick = eYo.Selected.brick
   if (brick) {
-    eYo.copyBrick(brick, !optNoNext)
+    eYo.Desktop.copyBrick(brick, !optNoNext)
     return true
   }
 };

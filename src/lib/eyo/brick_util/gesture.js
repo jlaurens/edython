@@ -13,8 +13,9 @@
 
 goog.provide('eYo.Gesture')
 
-goog.require('eYo.Do')
+goog.require('eYo')
 
+goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.BrickDragger')
 
 // goog.forwardDeclare('eYo.WorkspaceDragger')
@@ -214,10 +215,6 @@ Object.defineProperties(eYo.Gesture, {
    * @const
    */
   ZOOM_OUT_FACTOR: { value: 6 },
-  /**
-   * Length in ms for a touch to become a long press.
-   */
-  LONG_PRESS: { value: 750 },
   /**
    * When dragging a block out of a stack, split the stack in two (true), or drag
    * out the block healing the stack (false).
@@ -822,49 +819,3 @@ eYo.Do.isRightButton = e => {
   }
   return e.button === 2
 }
-
-/**
- * Context menus on touch devices are activated using a long-press.
- * Unfortunately the contextmenu touch event is currently (2015) only supported
- * by Chrome.  This function is fired on any touchstart event, queues a task,
- * which after about a second opens the context menu.  The tasks is killed
- * if the touch event terminates early.
- * @param {!Event} e Touch start event.
- * @param {eYo.Gesture} gesture The gesture that triggered this longStart.
- * @private
- */
-eYo.Do.longStart_ = (() => {
-  var pid = 0
-  /**
-   * Nope, that's not a long-press.  Either touchend or touchcancel was fired,
-   * or a drag hath begun.  Kill the queued long-press task.
-   * @private
-   */
-  eYo.Do.longStop_ = () => {
-    if (pid) {
-      clearTimeout(pid)
-      pid = 0
-    }
-  }
-  return (e, gesture) => {
-    eYo.Do.longStop_()
-    // Punt on multitouch events.
-    if (e.changedTouches && e.changedTouches.length != 1) {
-      return;
-    }
-    pid = setTimeout(() => {
-      // Additional check to distinguish between touch events and pointer events
-      if (e.changedTouches) {
-        // TouchEvent
-        e.button = 2  // Simulate a right button click.
-        // e was a touch event.  It needs to pretend to be a mouse event.
-        e.clientX = e.changedTouches[0].clientX
-        e.clientY = e.changedTouches[0].clientY
-      }
-      // Let the gesture route the right-click correctly.
-      if (gesture) {
-        gesture.handleRightClick(e)
-      }
-    }, eYo.Gesture.LONG_PRESS)
-  }
-})()
