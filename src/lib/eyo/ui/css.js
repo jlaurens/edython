@@ -517,7 +517,7 @@ Blockly.Css.CONTENT = [
     'stroke: #c6c6c6;',  /* Equates to #ddd due to border being off-pixel. */
   '}',
 
-  `.blocklyTrash {
+  `.eyo-trash {
   }`, /* UNUSED */
 
   `.eyo-brick-canvas {

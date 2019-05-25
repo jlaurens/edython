@@ -291,10 +291,7 @@ eYo.Gesture.prototype.dispose = function() {
     this.brickDragger_.dispose()
     this.brickDragger_ = null
   }
-  if (this.workspaceDragger_) {
-    this.workspaceDragger_.dispose()
-    this.workspaceDragger_ = null
-  }
+  this.workspaceDragger_ = null
 }
 
 /**
@@ -310,7 +307,7 @@ eYo.Gesture.prototype.on_mousedown = function(e) {
   if (this.ui_driver.isTouchEvent(e)) {
     this.handleTouchStart(e)
     if (this.multiTouch) {
-      eYo.Do.longStop_()
+      eYo.Dom.longStop_()
     }
   }
 }
@@ -400,8 +397,8 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
     if (delta > limit) {
-      this.updateDraggingBrick_() || this.updateIsDraggingWorkspace_()
-      eYo.Do.longStop_()
+      this.updateDraggingBrick_() || this.updateDraggingWorkspace_()
+      eYo.Dom.longStop_()
     }
   }
   this.event_ = e
@@ -424,8 +421,6 @@ eYo.Gesture.prototype.updateDraggingFromFlyout_ = function() {
   }
   if (!this.flyout_.scrollable ||
       this.flyout_.isDragTowardWorkspace(this.xyDelta_)) {
-    this.workspace_ = this.flyout_.targetWorkspace_
-    this.workspace_.updateScreenCalculationsIfScrolled()
     // Start the event group now, so that the same event group is used for brick
     // creation and brick dragging.
     if (!Blockly.Events.getGroup()) {
@@ -435,6 +430,8 @@ eYo.Gesture.prototype.updateDraggingFromFlyout_ = function() {
     this.startBrick_ = null
     this.targetBrick_ = this.flyout_.createBrick(this.targetBrick_)
     this.targetBrick_.select()
+    this.workspace_ = this.targetBrick_.workspace_
+    this.workspace_.updateScreenCalculationsIfScrolled()
     return true
   }
   return false
@@ -459,10 +456,8 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
     this.isDraggingBrick_ = true
   }
   if (this.isDraggingBrick_) {
-    this.brickDragger_ = new eYo.BrickDragger(this.targetBrick_,
-      this.workspace_)
-    this.brickDragger_.start(this.xyDelta_, this.healStack_)
-    this.brickDragger_.drag(this.event_, this.xyDelta_)
+    this.brickDragger_ = new eYo.BrickDragger(this.workspace_)
+    this.brickDragger_.start(this.event_, this.xyDelta_, this.targetBrick_, this.healStack_)
     return true
   }
   return false
@@ -476,20 +471,15 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
  * WorkspaceDragger or FlyoutDragger and starts the drag.
  * @private
  */
-eYo.Gesture.prototype.updateIsDraggingWorkspace_ = function() {
-  var wsMovable = this.flyout_
-  ? this.flyout_.scrollable
-  : this.workspace_ && this.workspace_.draggable
-  if (!wsMovable) {
-    return;
+eYo.Gesture.prototype.updateDraggingWorkspace_ = function() {
+  if ((this.workspaceDragger_ = (
+    this.flyout_
+    ? this.flyout_.workspace_
+    : this.workspace_
+  ).dragger)) {
+    this.isDraggingWorkspace_ = true
+    this.workspaceDragger_.start(this.event_)
   }
-  if (this.flyout_) {
-    this.workspaceDragger_ = new Blockly.FlyoutDragger(this.flyout_)
-  } else {
-    this.workspaceDragger_ = new Blockly.WorkspaceDragger(this.workspace_)
-  }
-  this.isDraggingWorkspace_ = true
-  this.workspaceDragger_.startDrag()
 }
 
 /**
@@ -501,9 +491,9 @@ eYo.Gesture.prototype.on_mousemove = (() => {
   var move = function (e) {
     this.updateFromEvent_(e)
     if (this.isDraggingWorkspace_) {
-      this.workspaceDragger_.drag(this.xyDelta_)
+      this.workspaceDragger_.drag(e, this.xyDelta_)
     } else if (this.isDraggingBrick_) {
-      this.brickDragger_.drag(this.event_, this.xyDelta_) // sometimes it failed when in Blockly
+      this.brickDragger_.drag(e, this.xyDelta_) // sometimes it failed when in Blockly
     }
     this.ui_driver.gobbleEvent(e) 
   }
@@ -519,7 +509,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
       if (this.ui_driver.isTouchEvent(e)) {
         this.handleTouchMove(e)
       }
-      eYo.Do.longStop_()
+      eYo.Dom.longStop_()
     } else {
       move.call(this, e)
     }
@@ -547,7 +537,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
       return
     }
     this.updateFromEvent_(e)
-    eYo.Do.longStop_()
+    eYo.Dom.longStop_()
 
     if (this.isEnding_) {
       console.log('Trying to end a gesture recursively.')
@@ -562,7 +552,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     if (this.isDraggingBrick_) {
       this.brickDragger_.end(e, this.xyDelta_)
     } else if (this.isDraggingWorkspace_) {
-      this.workspaceDragger_.endDrag(this.xyDelta_)
+      this.workspaceDragger_.end(e, this.xyDelta_)
     } else if (this.startBrick_) {
       this.doBrickClick_()
     } else {
@@ -581,14 +571,14 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
 eYo.Gesture.prototype.cancel = function() {
   // Disposing of a brick cancels in-progress drags, but dragging to a delete
   // area disposes of a brick and leads to recursive disposal. Break that cycle.
-  if (this.isEnding_) {
-    return;
+  if (this.isEnding) {
+    return
   }
-  eYo.Do.longStop_()
+  eYo.Dom.longStop_()
   if (this.isDraggingBrick_) {
     this.brickDragger_.end(this.event_, this.xyDelta_)
   } else if (this.isDraggingWorkspace_) {
-    this.workspaceDragger_.endDrag(this.xyDelta_)
+    this.workspaceDragger_.end(this.event_, this.xyDelta_)
   }
   this.dispose()
 }

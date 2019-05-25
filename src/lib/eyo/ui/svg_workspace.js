@@ -19,11 +19,11 @@ goog.forwardDeclare('eYo.Workspace')
 /**
  * Initialize the workspace SVG ressources.
  * @param {!eYo.Workspace} workspace
- * @param {string=} opt_backgroundClass Either 'blocklyMainBackground' or
- *     'blocklyMutatorBackground'.
+ * @param {string=} options Either 'blocklyMainBackground' or
+ *     'blocklyMutatorBackground' for the key background class.
  * @return {!Element} The workspace's SVG group.
  */
-eYo.Svg.prototype.workspaceInit = function(workspace, opt_backgroundClass) {
+eYo.Svg.prototype.workspaceInit = function(workspace, options) {
   if (workspace.dom) {
     return
   }
@@ -48,11 +48,11 @@ eYo.Svg.prototype.workspaceInit = function(workspace, opt_backgroundClass) {
   // Note that a <g> alone does not receive mouse events--it must have a
   // valid target inside it.  If no background class is specified, as in the
   // flyout, the workspace will not receive mouse events.
-  if (opt_backgroundClass) {
+  if (options && options.backgroundClass) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
       'rect',
-      {'height': '100%', 'width': '100%', 'class': opt_backgroundClass},
+      {'height': '100%', 'width': '100%', 'class': options.backgroundClass},
       g
     )
   }
@@ -68,9 +68,9 @@ eYo.Svg.prototype.workspaceInit = function(workspace, opt_backgroundClass) {
       this.workspaceBind_wheel(workspace)
     }
   }
+  options.parentNode && options.parentNode.appendChild(g)
   return g
 }
-
 
 /**
  * Initializes the workspace SVG ressources.
@@ -79,28 +79,12 @@ eYo.Svg.prototype.workspaceInit = function(workspace, opt_backgroundClass) {
 eYo.Svg.prototype.workspaceDispose = function(workspace) {
   var dom = workspace.dom
   if (dom) {
-    goog.dom.removeNode(dom.group_);
-    dom.group_ = null;
+    eYo.Dom.clearBoundEvents(workspace)
+    goog.dom.removeNode(dom.svg.group_)
+    svg.group_ = svg.canvas_ = null
+    dom.svg = null
   }
-  workspace.dom = null
-}
-
-/**
- * Unbind events of the receiver.
- * @param {!eYo.Workspace} workspace
- */
-eYo.Svg.prototype.workspaceUnbindEvents = function (workspace) {
-  this.unbindEvent(workspace.eventWrappers_)
-}
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Workspace} workspace
- */
-eYo.Svg.prototype.workspaceDispose = function (workspace) {
   eYo.Svg.superClass_.workspaceDispose.call(this, workspace)
-  goog.dom.removeNode(workspace.dom.group_)
-  workspace.dom = undefined
 }
 
 /**
@@ -119,6 +103,18 @@ eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
     this.workspaceOn_mousedown.bind(workspace),
     {noPreventDefault: true}
   )
+}
+
+/**
+ * Handle a mouse-down on SVG drawing surface.
+ * @param {!Event} e Mouse down event.
+ * @private
+ */
+eYo.Svg.prototype.workspaceOn_mousedown = function(e) {
+  var gesture = this.getGesture(e)
+  if (gesture) {
+    gesture.handleWsStart(e, this)
+  }
 }
 
 /**
@@ -165,7 +161,7 @@ eYo.Workspace.prototype.workspaceOn_wheel = function(e) {
  * @param {!String} mode  The display mode for bricks.
  */
 eYo.Svg.prototype.workspaceSetBrickDisplayMode = function (workspace, mode) {
-  var canvas = workspace.dom.canvas_
+  var canvas = workspace.dom.svg.canvas_
   workspace.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${workspace.currentBrickDisplayMode}`))
   if ((workspace.currentBrickDisplayMode = mode)) {
     goog.dom.classlist.add(canvas, `eyo-${workspace.currentBrickDisplayMode}`)
@@ -180,7 +176,7 @@ eYo.Svg.prototype.workspaceSetBrickDisplayMode = function (workspace, mode) {
  */
 eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
   var bound = workspace.dom.bound || Object.create(null)
-  if (bound.mousedown) {
+  if (bound.resize) {
     return
   }
   bound.resize = this.bindEvent(
@@ -193,4 +189,16 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     }
   )
 }
+
+/**
+ * Translate this workspace to new coordinates.
+ * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {number} x Horizontal translation.
+ * @param {number} y Vertical translation.
+ */
+eYo.Svg.prototype.workspaceCanvasMoveTo = function (workspace, x, y) {
+  var translation = `translate(${x},${y}) scale(${workspace.scale})`
+  workspace.dom.svg.canvas_.setAttribute('transform', translation)
+}
+
 

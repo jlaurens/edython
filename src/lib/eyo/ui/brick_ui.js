@@ -61,7 +61,7 @@ eYo.Brick.UI = function(brick) {
    * @type {boolean}
    * @private
    */
-  this.useDragSurface_ = Blockly.utils.is3dSupported() && !!brick.workspace.brickDragSurface_
+  this.useDragSurface_ = !!brick.workspace.brickDragSurface_
 }
 
 /**
@@ -1780,8 +1780,8 @@ eYo.Brick.UI.prototype.moveDuringDrag = function(newLoc) {
     newLoc.y -= d.y
   }
   var b3k = this.brick_
-  if (b3k.ui.useDragSurface_) {
-    this.workspace.brickDragSurface_.translateSurface(newLoc.x, newLoc.y);
+  if (this.workspace.brickDragSurface_) {
+    this.workspace.brickDragSurface_.translateSurface(newLoc.x, newLoc.y)
   } else {
     this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
   }

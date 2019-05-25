@@ -112,8 +112,8 @@ eYo.Dom.createWorkspace_ = function(svg, options) {
   options.workspaceDragSurface = new eYo.WorkspaceDragSurfaceSvg(subContainer)
 
   var mainWorkspace = new eYo.Workspace(options)
-  mainWorkspace.scale = options.zoomOptions.startScale;
-  svg.appendChild(mainWorkspace.createDom('eyo-main-background'));
+  mainWorkspace.scale = options.zoomOptions.startScale
+  mainWorkspace.makeUI({parentNode: svg})
 
   // A null translation will also apply the correct initial scale.
   mainWorkspace.translate(0, 0)
@@ -353,7 +353,7 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
 /**
  * @param {eYo.Brick|eYo.Workspace|eYo.Flyout}
  */
-eYo.Dom.unbindBoundEvents = (bfw) => {
+eYo.Dom.clearBoundEvents = (bfw) => {
   var dom = bfw.ui.dom || bfw.dom
   var bound = dom = dom.bound
   bound && Object.values(bound).forEach(item => eYo.Dom.unbindEvent(item))
@@ -770,20 +770,32 @@ eYo.Dom.loadSounds_ = function(pathToMedia, workspace) {
     unbindSounds,
     {noCaptureIdentifier: true}
   ))
-};
+}
 
 /**
- * Initialize the workspace dom ressources.
- * @param {!eYo.Workspace} workspace
- * @return {!Object} The workspace's dom repository.
+ * Initialize the basic dom ressources.
+ * @param {!Object} object
+ * @return {!Object} The object's dom repository.
  */
-eYo.Dom.prototype.workspaceInit = function(workspace) {
-  var dom = workspace.dom
+eYo.Dom.prototype.basicInit = function(object) {
+  var dom = object.dom
   if (!dom) {
-    dom = workspace.dom = Object.create(null)
+    dom = object.dom = Object.create(null)
     dom.bound = Object.create(null)
   }
   return dom
+}
+
+/**
+ * Dispose of the basic dom ressources.
+ * @param {!Object} object
+ */
+eYo.Dom.prototype.basicDispose = function(object) {
+  var dom = object.dom
+  if (dom) {
+    dom.bound = null
+    object.dom = null
+  }
 }
 
 /**
@@ -791,25 +803,11 @@ eYo.Dom.prototype.workspaceInit = function(workspace) {
  * @param {!eYo.Workspace} workspace
  * @return {!Object} The workspace's dom repository.
  */
-eYo.Dom.prototype.workspaceInit = function(workspace) {
-  var dom = workspace.dom
-  if (!dom) {
-    dom = workspace.dom = Object.create(null)
-    dom.bound = Object.create(null)
-  }
-  return dom
-}
+eYo.Dom.prototype.workspaceInit = eYo.Dom.prototype.basicInit
 
 /**
  * Dispose of the workspace dom ressources.
  * @param {!eYo.Workspace} workspace
  * @return {!Object} The workspace's dom repository.
  */
-eYo.Dom.prototype.workspaceDispose = function(workspace) {
-  var dom = workspace.dom
-  if (dom) {
-    eYo.Dom.unbindBoundEvents(workspace)
-    dom.bound = null
-    workspace.dom = null
-  }
-}
+eYo.Dom.prototype.workspaceDispose = eYo.Dom.prototype.basicDispose

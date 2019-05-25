@@ -128,7 +128,7 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
     )
   )
   var xml = root.firstChild.firstChild
-  workspace.getTopBlocks(true).forEach(brick => {
+  workspace.getTopBricks(true).forEach(brick => {
     var dom = eYo.Xml.brickToDomWithXY(brick, opt)
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {

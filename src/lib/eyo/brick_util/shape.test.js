@@ -15,7 +15,7 @@ describe('Expression shape', function () {
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.Unit.x},${l * eYo.Unit.y})`
-    }, eYo.App.workspace.dom.canvas_)
+    }, eYo.App.workspace.dom.svg.canvas_)
   }
   it('column', function() {
     var d = eYo.Shape.definitionWithBrick(b)

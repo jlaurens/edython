@@ -23,7 +23,12 @@ goog.forwardDeclare('eYo.Flyout')
  * @param {!eYo.Flyout} flyout
  */
 eYo.Svg.prototype.flyoutInit = function(flyout) {
-  var dom = flyout.dom = {}
+  var dom = flyout.dom
+  if (dom) {
+    return
+  }
+  dom = flyout.dom = Object.create(null)
+  var svg = dom.svg = Object.create(null)
   /*
   <svg class="eyo-flyout">
     <g class="eyo-flyout-background">
@@ -32,15 +37,15 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     <g class="eyo-workspace">...</g>
   </svg>
   */
-  var g = dom.group_ = eYo.Svg.newElement(tagName, {
+  var g = svg.group_ = eYo.Svg.newElement(tagName, {
     class: 'eyo-flyout',
     style: 'display: none'
   }, null)
-  dom.background_ = eYo.Svg.newElement('path', {
+  svg.background_ = eYo.Svg.newElement('path', {
     class: 'eyo-flyout-background'
-  }, dom.group_)
+  }, g)
 // Bad design: code reuse: options
-  this.addTooltip(dom.background_, eYo.Tooltip.getTitle('flyout'), {
+  this.addTooltip(svg.background_, eYo.Tooltip.getTitle('flyout'), {
     position: 'right',
     theme: 'light bordered',
     flipDuration: 0,
@@ -67,10 +72,7 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   goog.dom.classlist.remove(g, 'eyo-workspace-surface')
   goog.dom.classlist.add(g, 'eyo-workspace-surface')*/
 
-  goog.dom.insertSiblingAfter(
-    g,
-    targetSpace.getParentSvg()
-  )
+  goog.dom.insertSiblingAfter(g, targetSpace.dom.svg.group_)
   return g
 }
 
@@ -87,9 +89,15 @@ eYo.Svg.prototype.flyoutUnbindEvents = function (flyout) {
  * @param {!eYo.Flyout} flyout
  */
 eYo.Svg.prototype.flyoutDispose = function (flyout) {
-  eYo.Svg.superClass_.flyoutDispose.call(this, flyout)
-  goog.dom.removeNode(flyout.dom.group_)
-  flyout.dom = undefined
+  var dom = flyout.dom
+  if (dom) {
+    eYo.Dom.clearBoundEvents(flyout)
+    goog.dom.removeNode(dom.svg.group_)
+    dom.svg.group_ = null
+    dom.svg = null
+    flyout.dom = null
+    eYo.Svg.superClass_.flyoutDispose.call(this, flyout)
+  }
 }
 
 /**
@@ -258,13 +266,14 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
 
 /**
  * Update the view based on coordinates calculated in position().
+ * @param {!eYo.Flyout} flyout
  * @param {number} width The computed width of the flyout's SVG group
  * @param {number} height The computed height of the flyout's SVG group.
  * @param {number} x The computed x origin of the flyout's SVG group.
  * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.Svg.prototype.flyoutPositionAt = function (flyout, width, height, x, y) {
+eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
   if (width < 0 || height < 0) {
     console.error(width, height, x, y)
     return
@@ -272,9 +281,8 @@ eYo.Svg.prototype.flyoutPositionAt = function (flyout, width, height, x, y) {
   var dom = flyout.dom
   var g = dom.group_
   // Always update the scrollbar (if one exists).
-
-  g.setAttribute("width", width)
-  g.setAttribute("height", height)
+  g.setAttribute('width', width)
+  g.setAttribute('height', height)
   var transform = `translate(${x}px,${y + flyout.TOP_OFFSET}px)`
   Blockly.utils.setCssTransform(g, transform)
 
@@ -322,39 +330,40 @@ eYo.Svg.prototype.flyoutPositionAt = function (flyout, width, height, x, y) {
  * .viewLeft: Offset of the left edge of visible rectangle from parent,
  * .contentLeft: Offset of the left-most content from the x=0 coordinate,
  * .absoluteLeft: Left-edge of view.
+ * @param {!eYo.Flyout} flyout
  * @return {Object} Contains size and position metrics of the flyout.
  * @private
  */
-eYo.Svg.prototype.getMetrics_ = function() {
-  if (!this.isVisible()) {
+eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
+  if (!flyout.isVisible()) {
     // Flyout is hidden.
     return null;
   }
-
+  var W = flyout.workspace_
   try {
-    var optionBox = this.workspace_.getCanvas().getBBox();
+    var optionBox = W.dom.svg.canvas_.getBBox()
   } catch (e) {
     // Firefox has trouble with hidden elements (Bug 528969).
     var optionBox = {height: 0, y: 0, width: 0, x: 0};
   }
 
   // Padding for the end of the scrollbar.
-  var absoluteTop = this.SCROLLBAR_PADDING;
+  var absoluteTop = flyout.SCROLLBAR_PADDING;
   var absoluteLeft = 0;
 
-  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING;
-  var viewWidth = this.width_;
-  if (!this.RTL) {
-    viewWidth -= this.SCROLLBAR_PADDING;
+  var viewHeight = flyout.height_ - 2 * flyout.SCROLLBAR_PADDING;
+  var viewWidth = flyout.width_;
+  if (!flyout.RTL) {
+    viewWidth -= flyout.SCROLLBAR_PADDING;
   }
 
   var metrics = {
     viewHeight: viewHeight,
     viewWidth: viewWidth,
-    contentHeight: optionBox.height * this.workspace_.scale + 2 * this.MARGIN,
-    contentWidth: optionBox.width * this.workspace_.scale + 2 * this.MARGIN,
-    viewTop: -this.workspace_.scrollY + optionBox.y,
-    viewLeft: -this.workspace_.scrollX,
+    contentHeight: optionBox.height * W.scale + 2 * flyout.MARGIN,
+    contentWidth: optionBox.width * W.scale + 2 * flyout.MARGIN,
+    viewTop: -W.scrollY + optionBox.y,
+    viewLeft: -W.scrollX,
     contentTop: optionBox.y,
     contentLeft: optionBox.x,
     absoluteTop: absoluteTop,
@@ -365,6 +374,7 @@ eYo.Svg.prototype.getMetrics_ = function() {
 
 /**
  * Sets the translation of the flyout to match the scrollbars.
+ * @param {!eYo.Flyout} flyout
  * @param {!Object} xyRatio Contains a y property which is a float
  *     between 0 and 1 specifying the degree of scrolling and a
  *     similar x property.
@@ -376,19 +386,23 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (!metrics) {
     return
   }
+  var W = flyout.workspace_
   if (goog.isNumber(xyRatio.y)) {
-    flyout.workspace_.scrollY = -metrics.contentHeight * xyRatio.y;
+    W.scrollY = -metrics.contentHeight * xyRatio.y
   }
-  flyout.workspace_.translate(flyout.workspace_.scrollX + metrics.absoluteLeft,
-      flyout.workspace_.scrollY + metrics.absoluteTop);
+  W.translate(
+    W.scrollX + metrics.absoluteLeft,
+    W.scrollY + metrics.absoluteTop
+  )
 }
 
 /**
  * Return the deletion rectangle for this flyout in viewport coordinates.
  * Edython : add management of the 0 width rectange
+ * @param {!eYo.Flyout} flyout
  * @return {goog.math.Rect} Rectangle in which to delete.
  */
-eYo.Flyout.prototype.getClientRect = function(flyout) {
+eYo.Svg.prototype.flyoutClientRect = function(flyout) {
   var g = flyout.dom.group_
   if (!g) {
     return null;
@@ -406,7 +420,7 @@ eYo.Flyout.prototype.getClientRect = function(flyout) {
   // area are still deleted.  Must be larger than the largest screen size,
   // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
   var BIG_NUM = 1000000000
-  if (flyout.position_ === Blockly.TOOLBOX_AT_LEFT) {
+  if (flyout.position_ === eYo.Flyout.AT_LEFT) {
     return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
         BIG_NUM * 2);
   } else {  // Right
@@ -502,7 +516,7 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
     'mouseover',
     null,
     () => {
-      flyout.workspace_.getTopBlocks(false).forEach(b3k => b3k.removeSelect)
+      flyout.workspace_.getTopBricks(false).forEach(b3k => b3k.removeSelect)
     }
   ))
 }
@@ -512,16 +526,19 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
  * @param {!eYo.Flyout} flyout
  */
 eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
-  Array.prototype.push.apply(flyout.eventWrappers_,
-    this.bindEvent(flyout.dom.group_, 'wheel', flyout, flyout.on_wheel))
-  
+  dom.bound.wheel = this.bindEvent(
+    flyout.dom.svg.group_,
+    'wheel',
+    null,
+    this.flyoutOn_wheel.bind(flyout)
+  )
   // Dragging the flyout up and down.
-  Array.prototype.push.apply(flyout.eventWrappers_, this.bindEvent(
-    flyout.dom.background_,
+  dom.bound.mousedown = this.bindEvent(
+    flyout.dom.svg.background_,
     'mousedown',
     null,
-    this.on_mousedown.bind(flyout)
-  ))
+    this.flyoutOn_mousedown.bind(flyout)
+  )
 }
 
 /**
@@ -529,8 +546,8 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @param {!Event} e Mouse down event.
  * @private
  */
-eYo.Svg.prototype.prototype.on_mousedown = function(e) {
-  var gesture = this.targetSpace_.getGesture(e);
+eYo.Svg.prototype.prototype.flyoutOn_mousedown = function(e) {
+  var gesture = this.targetSpace_.getGesture(e)
   if (gesture) {
     gesture.handleFlyoutStart(e, this)
   }

@@ -268,6 +268,28 @@ Object.defineProperties(eYo.Svg, {
 })
 
 /**
+ * Initialize the basic dom ressources.
+ * @param {!Object} object
+ * @return {!Object} The object's dom repository.
+ */
+eYo.Svg.prototype.basicInit = function(object) {
+  var svg = object.svg
+  if (!svg) {
+    svg = eYo.Svg.superClass_.basicInit.call(this, object)
+  }
+  return svg
+}
+
+/**
+ * Dispose of the basic dom ressources.
+ * @param {!Object} object
+ */
+eYo.Svg.prototype.basicDispose = function(object) {
+  object.dom && (object.dom.svg = null)
+  eYo.Svg.superClass_.basicDispose.call(this, object)
+}
+
+/**
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * Fixed bug in original code.

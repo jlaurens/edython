@@ -30,7 +30,48 @@ goog.forwardDeclare('goog.math.Coordinate')
  * @param {!eYo.Workspace} destination The workspace to drag on.
  * @constructor
  */
-eYo.BrickDragger = function(brick, destination) {
+eYo.BrickDragger = function(destination) {
+  /**
+   * The workspace on which the brick is being dragged.
+   * @type {!eYo.Workspace}
+   * @private
+   */
+  this.destination = destination
+}
+
+Object.defineProperties(eYo.BrickDragger, {
+  ui_driver: {
+    get () {
+      return this.destination.eyo.driver
+    }
+  },
+  workspace_: {
+    get () {
+      throw 'DEPRECATED, use destination instead'
+    }
+  }
+})
+
+/**
+ * Sever all links from this object.
+ * @package
+ */
+eYo.BrickDragger.prototype.dispose = function() {
+  this.availableMagnets_.length = 0
+  this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = null
+  this.destination = null
+}
+
+/**
+ * Start dragging a brick.  This includes moving it to the drag surface.
+ * @param {!eYo.Brick} brick The brick to drag.
+ * @param {!Event} e The most recent move event.
+ * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
+ *     moved from the position at mouse down, in pixel units.
+ * @param {boolean} healStack whether or not to heal the stack after disconnecting
+ * @package
+ */
+eYo.BrickDragger.prototype.start = function(e, delta, brick, healStack) {
   /**
    * The top brick in the stack that is being dragged.
    * @type {!eYo.Brick}
@@ -46,19 +87,12 @@ eYo.BrickDragger = function(brick, destination) {
    * @type {!Array.<!eYo.Magnet>}
    * @private
    */
-  this.availableMagnets_ = this.brick_.getMagnets_(false)
+  this.availableMagnets_ = brick.getMagnets_(false)
   // Also check the last connection on this stack
-  var m4t = this.brick_.footMost.foot_m
-  if (m4t && m4t != this.brick_.foot_m) {
+  var m4t = brick.footMost.foot_m
+  if (m4t && m4t != brick.foot_m) {
     this.availableMagnets_.push(m4t)
   }
-
-  /**
-   * The workspace on which the brick is being dragged.
-   * @type {!eYo.Workspace}
-   * @private
-   */
-  this.destination = destination
 
   /**
    * The connection that would connect to this.target_ if this brick
@@ -77,7 +111,7 @@ eYo.BrickDragger = function(brick, destination) {
    */
   this.target_ = null
 
-    /**
+  /**
    * The distance between this.target_ and this.magnet_,
    * in workspace units.
    * Updated on every mouse move.
@@ -110,39 +144,7 @@ eYo.BrickDragger = function(brick, destination) {
    * @private
    */
   this.xyStart_ = this.brick_.ui.xyInWorkspace
-}
 
-Object.defineProperties(eYo.BrickDragger, {
-  ui_driver: {
-    get () {
-      return this.destination.eyo.driver
-    }
-  },
-  workspace_: {
-    get () {
-      throw 'DEPRECATED, use destination instead'
-    }
-  }
-})
-
-/**
- * Sever all links from this object.
- * @package
- */
-eYo.BrickDragger.prototype.dispose = function() {
-  this.brick_ = this.target_ = this.magnet_ = null
-  this.availableMagnets_.length = 0
-  this.destination = null
-}
-
-/**
- * Start dragging a brick.  This includes moving it to the drag surface.
- * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
- *     moved from the position at mouse down, in pixel units.
- * @param {boolean} healStack whether or not to heal the stack after disconnecting
- * @package
- */
-eYo.BrickDragger.prototype.start = function(delta, healStack) {
   eYo.Selected.magnet = null
   var element = this.draggingBlock_.workspace.dom.group_.parentNode.parentNode
   this.transformCorrection_ = eYo.Do.getTransformCorrection(element)
@@ -171,6 +173,8 @@ eYo.BrickDragger.prototype.start = function(delta, healStack) {
     ? 'eyo-toolbox-delete'
     : 'eyo-toolbox-grab'
   )
+
+  this.drag(e, delta)
 }
 
 /**
@@ -190,7 +194,7 @@ eYo.BrickDragger.prototype.drag = function(e, delta) {
 
   this.brick_.ui.moveDuringDrag(newLoc)
   
-  this.update(dXY)
+  this.update(e, dXY)
 
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
   var trashcan = this.destination.trashcan
@@ -201,7 +205,7 @@ eYo.BrickDragger.prototype.drag = function(e, delta) {
 
 /**
  * Finish a brick drag and put the brick back on the workspace.
- * @param {!Event} e The mouseup/touchend event.
+ * @param {!Event} e The most recent move event.
  * @param {!goog.math.Coordinate} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  * @package
@@ -223,7 +227,7 @@ eYo.BrickDragger.prototype.end = (() => {
       this.transformCorrection_ = null // !important
     }
     // Make sure internal state is fresh.
-    this.drag(e, delta)
+    this.drag(delta)
     this.ui_driver.disconnectStop()
     var dXY = this.destination.fromPixelUnit(delta)
     var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
@@ -248,11 +252,9 @@ eYo.BrickDragger.prototype.end = (() => {
     }
     this.destination.setResizesEnabled(true)
 
-    var toolbox = this.destination.toolbox
-    toolbox && toolbox.removeStyle(this.brick_.deletable
-    ? 'eyo-toolbox-delete'
-    : 'eyo-toolbox-grab')
     eYo.Events.setGroup(false)
+    this.availableMagnets_.length = 0
+    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = null
   }
 })()
 
@@ -284,7 +286,7 @@ eYo.BrickDragger.prototype.connect = function() {
  *     in workspace units.
  * @package
  */
-eYo.BrickDragger.prototype.update = function(dxy) {
+eYo.BrickDragger.prototype.update = function(e, dxy) {
   this.deleteArea_ = this.destination.isDeleteArea(e)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null

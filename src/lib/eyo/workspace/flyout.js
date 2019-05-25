@@ -612,7 +612,7 @@ eYo.Flyout.prototype.position = function () {
     // gets the bounding client rect wrong.
     this.leftEdge_ = x
   }
-  this.ui_driver.positionAt_(this, this.width_, this.height_, x, y)
+  this.ui_driver.flyoutPlaceAt(this, this.width_, this.height_, x, y)
 }
 
 /**
@@ -632,41 +632,7 @@ eYo.Flyout.prototype.position = function () {
  * @private
  */
 eYo.Flyout.prototype.getMetrics_ = function() {
-  if (!this.visible) {
-    // Flyout is hidden.
-    return null
-  }
-  try {
-    var bbox = this.workspace_.getCanvas().getBBox()
-  } catch (e) {
-    // Firefox has trouble with hidden elements (Bug 528969).
-    var bbox = {height: 0, y: 0, width: 0, x: 0}
-  }
-
-  // Padding for the end of the scrollbar.
-  var absoluteTop = this.SCROLLBAR_PADDING + this.TOP_MARGIN
-  var absoluteLeft = 0
-
-  var viewHeight = this.height_ - 2 * this.SCROLLBAR_PADDING - this.TOP_MARGIN - this.BOTTOM_MARGIN;
-  if (viewHeight < 0) {
-    viewHeight = 0
-  }
-  var viewWidth = this.width_;
-  if (!this.RTL) {
-    viewWidth -= this.SCROLLBAR_PADDING;
-  }
-  return {
-    viewHeight: viewHeight,
-    viewWidth: viewWidth,
-    contentHeight: bbox.height * this.workspace_.scale + 2 * this.MARGIN,
-    contentWidth: bbox.width * this.workspace_.scale + 2 * this.MARGIN,
-    viewTop: -this.workspace_.scrollY + bbox.y + this.TOP_MARGIN,
-    viewLeft: -this.workspace_.scrollX,
-    contentTop: bbox.y + this.TOP_MARGIN,
-    contentLeft: bbox.x,
-    absoluteTop: absoluteTop,
-    absoluteLeft: absoluteLeft
-  }
+  return this.ui_driver.flyoutGetMetrics_(this)
 }
 
 /**

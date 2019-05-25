@@ -67,12 +67,11 @@ eYo.Workspace = function(options) {
 
   this.targetSpace = options.targetSpace
 
-  this.brickDragSurface_ = options.brickDragSurface
+  this.dragger_ = new eYo.WorkspaceDragger(this)
 
-  this.workspaceDragSurface_ = options.workspaceDragSurface
-
-  this.useWorkspaceDragSurface_ =
-    this.workspaceDragSurface_ && Blockly.utils.is3dSupported()
+  if (Blockly.utils.is3dSupported()) {
+    this.brickDragSurface_ = options.brickDragSurface
+  }
 
   /**
    * List of currently highlighted blocks.  Block highlighting is often used to
@@ -123,14 +122,28 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return !!this.targetSpace
     }
   },
+  /**
+   * The dragger, if relevant.
+   */
+  dragger: {
+    get () {
+      return this.draggable && this.dragger_
+    }
+  },
   audioManager: {
     get () {
       return this.getAudioManager()
     }
   },
+  /**
+   * Is this workspace draggable and scrollable?
+   * @type {boolean} True if this workspace may be dragged.
+   */
   draggable: {
     get () {
-      return this.isDraggable()
+      return this.targetSpace
+      ? this.targetSpace.flyout_.scrollable
+      : !!this.scrollbar
     }
   },
   /**
@@ -183,9 +196,12 @@ eYo.Workspace.prototype.dispose = function() {
   }
   this.listeners_.length = 0;
   this.clear();
+  if (this.dragger_) {
+    this.dragger_.dispose()
+    this.dragger_ = null
+  }
   // Remove from workspace database.
   delete eYo.Workspace.WorkspaceDB_[this.id];
-  this.ui_driver.workspaceDispose(this)
   if (this.flyout_) {
     this.flyout_.dispose()
     this.flyout_ = null
@@ -202,6 +218,8 @@ eYo.Workspace.prototype.dispose = function() {
     this.zoomControls_.dispose()
     this.zoomControls_ = null
   }
+  this.disposeUI()
+
   if (this.audioManager_) {
     this.audioManager_.dispose()
     this.audioManager_ = null
@@ -215,23 +233,19 @@ eYo.Workspace.prototype.dispose = function() {
     // SVG is injected into (i.e. injectionDiv).
     goog.dom.removeNode(this.getParentSvg().parentNode);
   }
-  if (this.resizeHandlerWrapper_) {
-    Blockly.unbindEvent(this.resizeHandlerWrapper_);
-    this.resizeHandlerWrapper_ = null;
-  }
 };
 
 /**
- * Be ready.
- * @param {!Blockly.Block} block Block to add.
+ * Make the UI.
  */
-eYo.Workspace.prototype.makeUI = function() {
+eYo.Workspace.prototype.makeUI = function(options) {
   this.makeUI = eYo.Do.nothing
   var d = this.driver_ = new eYo.Svg()
-  d.workspaceInit(this)
+  d.workspaceInit(this, options)
   var bottom = Blockly.Scrollbar.scrollbarThickness
   if (this.options.hasTrashcan) {
-    bottom = this.addTrashcan_(bottom)
+    this.trashcan = new eYo.Trashcan(this, bottom)
+    bottom = this.trashcan.top
   }
   if (workspace.options.zoomOptions && workspace.options.zoomOptions.controls) {
     this.addZoomControls_(bottom)
@@ -240,62 +254,55 @@ eYo.Workspace.prototype.makeUI = function() {
 }
 
 /**
+ * Dispose the UI related resources.
+ */
+eYo.Workspace.prototype.disposeUI = function() {
+  var d = this.driver_
+  if (d) {
+    d.workspaceDispose(this)
+  }
+  this.driver_ = null
+}
+
+/**
  * Angle away from the horizontal to sweep for blocks.  Order of execution is
  * generally top to bottom, but a small angle changes the scan to give a bit of
  * a left to right bias.  Units are in degrees.
  * See: http://tvtropes.org/pmwiki/pmwiki.php/Main/DiagonalBilling.
  */
-eYo.Workspace.SCAN_ANGLE = 3;
-
-/**
- * Add a block to the list of top blocks.
- * @param {!Blockly.Block} block Block to add.
- */
-eYo.Workspace.prototype.addTopBlock = function(block) {
-  this.topBricks_.push(block);
-};
-
-/**
- * Remove a block from the list of top blocks.
- * @param {!Blockly.Block} block Block to remove.
- */
-eYo.Workspace.prototype.removeTopBlock = function(block) {
-  if (!goog.array.remove(this.topBricks_, block)) {
-    throw 'Block not present in workspace\'s list of top-most blocks.';
-  }
-};
+eYo.Workspace.SCAN_ANGLE = 3
 
 /**
  * Finds the top-level blocks and returns them.  Blocks are optionally sorted
  * by position; top to bottom.
  * @param {boolean} ordered Sort the list if true.
- * @return {!Array.<!Blockly.Block>} The top-level block objects.
+ * @return {!Array.<!eYo.Brick>} The top-level block objects.
  */
-eYo.Workspace.prototype.getTopBlocks = function(ordered) {
+eYo.Workspace.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
-  var blocks = [].concat(this.topBricks_);
-  if (ordered && blocks.length > 1) {
+  var bricks = [].concat(this.topBricks_);
+  if (ordered && bricks.length > 1) {
     var offset = Math.sin(goog.math.toRadians(eYo.Workspace.SCAN_ANGLE));
-    blocks.sort(function(a, b) {
-      var aXY = a.getRelativeToSurfaceXY();
-      var bXY = b.getRelativeToSurfaceXY();
-      return (aXY.y + offset * aXY.x) - (bXY.y + offset * bXY.x);
-    });
+    bricks.sort(function(a, b) {
+      var aXY = a.xyInWorkspace
+      var bXY = b.xyInWorkspace
+      return (aXY.y + offset * aXY.x) - (bXY.y + offset * bXY.x)
+    })
   }
-  return blocks;
-};
+  return bricks
+}
 
 /**
  * Find all blocks in workspace.  No particular order.
- * @return {!Array.<!Blockly.Block>} Array of blocks.
+ * @return {!Array.<!eYo.Brick>} Array of bricks.
  */
-eYo.Workspace.prototype.getAllBlocks = function() {
-  var blocks = this.getTopBlocks(false);
-  for (var i = 0; i < blocks.length; i++) {
-    blocks.push.apply(blocks, blocks[i].getChildren());
+eYo.Workspace.prototype.getAllBricks = function() {
+  var bricks = this.getTopBricks(false)
+  for (var i = 0; i < bricks.length; i++) {
+    bricks.push.apply(bricks, bricks[i].getChildren())
   }
-  return blocks;
-};
+  return bricks
+}
 
 /**
  * Dispose of all blocks in workspace.
@@ -349,7 +356,7 @@ eYo.Workspace.prototype.remainingCapacity = function() {
   if (isNaN(this.options.maxBlocks)) {
     return Infinity;
   }
-  return this.options.maxBlocks - this.getAllBlocks().length;
+  return this.options.maxBlocks - this.getAllBricks().length;
 };
 
 /**
@@ -488,7 +495,7 @@ eYo.Workspace.prototype.getBlockById = eYo.Workspace.prototype.getBrickById = fu
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
 eYo.Workspace.prototype.allInputsFilled = function(opt_shadowBlocksAreFilled) {
-  var blocks = this.getTopBlocks(false);
+  var blocks = this.getTopBricks(false);
   for (var i = 0, block; block = blocks[i]; i++) {
     if (!block.allInputsFilled(opt_shadowBlocksAreFilled)) {
       return false;
@@ -520,13 +527,6 @@ eYo.Workspace.prototype['addChangeListener'] =
     eYo.Workspace.prototype.addChangeListener;
 eYo.Workspace.prototype['removeChangeListener'] =
     eYo.Workspace.prototype.removeChangeListener;
-
-/**
- * A wrapper function called when a resize event occurs.
- * You can pass the result to `unbindEvent`.
- * @type {Array.<!Array>}
- */
-eYo.Workspace.prototype.resizeHandlerWrapper_ = null;
 
 /**
  * The render status of an SVG workspace.
@@ -613,31 +613,6 @@ eYo.Workspace.prototype.currentGesture_ = null;
  * @private
  */
 eYo.Workspace.prototype.brickDragSurface_ = null;
-
-/**
- * This workspace's drag surface, if it exists.
- * @type {eYo.WorkspaceDragSurfaceSvg}
- * @private
- */
-eYo.Workspace.prototype.workspaceDragSurface_ = null;
-
-/**
- * Whether to move workspace to the drag surface when it is dragged.
- * True if it should move, false if it should be translated directly.
- * @type {boolean}
- * @private
- */
-eYo.Workspace.prototype.useWorkspaceDragSurface_ = false;
-
-/**
- * Whether the drag surface is actively in use. When true, calls to
- * translate will translate the drag surface instead of the translating the
- * workspace directly.
- * This is set to true in setupDragSurface and to false in resetDragSurface.
- * @type {boolean}
- * @private
- */
-eYo.Workspace.prototype.isDragSurfaceActive_ = false;
 
 /**
  * Last known position of the page scroll.
@@ -735,7 +710,7 @@ eYo.Workspace.prototype.getSvgXY = function(element) {
  * @package
  */
 eYo.Workspace.prototype.getOriginOffsetInPixels = function() {
-  return Blockly.utils.getInjectionDivXY_(this.dom.canvas_)
+  return Blockly.utils.getInjectionDivXY_(this.dom.svg.canvas_)
 }
 
 /**
@@ -756,20 +731,6 @@ eYo.Workspace.prototype.setResizeHandlerWrapper = function(handler) {
  */
 eYo.Workspace.prototype.newBlock = function(prototypeName, opt_id) {
   return new Blockly.BlockSvg(this, prototypeName, opt_id);
-};
-
-/**
- * Add a trashcan.
- * @param {number} bottom Distance from workspace bottom to bottom of trashcan.
- * @return {number} Distance from workspace bottom to the top of trashcan.
- * @private
- */
-eYo.Workspace.prototype.addTrashcan_ = function(bottom) {
-  /** @type {Blockly.Trashcan} */
-  this.trashcan = new Blockly.Trashcan(this);
-  var svgTrashcan = this.trashcan.createDom();
-  this.dom.group_.insertBefore(svgTrashcan, this.svgBlockCanvas_);
-  return this.trashcan.init(bottom);
 };
 
 /**
@@ -857,19 +818,19 @@ eYo.Workspace.prototype.resizeContents = function() {
  */
 eYo.Workspace.prototype.resize = function() {
   if (this.flyout_) {
-    this.flyout_.position();
+    this.flyout_.position()
   }
   if (this.trashcan) {
-    this.trashcan.position();
+    this.trashcan.position()
   }
   if (this.zoomControls_) {
-    this.zoomControls_.position();
+    this.zoomControls_.position()
   }
   if (this.scrollbar) {
-    this.scrollbar.resize();
+    this.scrollbar.resize()
   }
-  this.updateScreenCalculations_();
-};
+  this.updateScreenCalculations_()
+}
 
 /**
  * Resizes and repositions workspace chrome if the page has a new
@@ -903,16 +864,15 @@ eYo.Workspace.prototype.getParentSvg = function() {
   if (this.cachedParentSvg_) {
     return this.cachedParentSvg_;
   }
-  var element = this.dom.group_;
+  var element = this.dom.svg.group_
   while (element) {
     if (element.tagName == 'svg') {
-      this.cachedParentSvg_ = element;
-      return element;
+      return (this.cachedParentSvg_ = element)
     }
-    element = element.parentNode;
+    element = element.parentNode
   }
-  return null;
-};
+  return null
+}
 
 /**
  * Translate this workspace to new coordinates.
@@ -920,72 +880,21 @@ eYo.Workspace.prototype.getParentSvg = function() {
  * @param {number} y Vertical translation.
  */
 eYo.Workspace.prototype.translate = function(x, y) {
-  if (this.useWorkspaceDragSurface_ && this.isDragSurfaceActive_) {
-    this.workspaceDragSurface_.translateSurface(x,y);
-  } else {
-    var translation = 'translate(' + x + ',' + y + ') ' +
-        'scale(' + this.scale + ')';
-    this.svgBlockCanvas_.setAttribute('transform', translation)
-  }
+  this.dragger.translate(x, y)
   // Now update the block drag surface if we're using one.
   if (this.brickDragSurface_) {
-    this.brickDragSurface_.translateAndScaleGroup(x, y, this.scale);
+    this.brickDragSurface_.translateAndScaleGroup(x, y, this.scale)
   }
-};
+}
 
 /**
- * Called at the end of a workspace drag to take the contents
- * out of the drag surface and put them back into the workspace SVG.
- * Does nothing if the workspace drag surface is not enabled.
- * @package
+ * Translate this workspace to new coordinates.
+ * @param {number} x Horizontal translation.
+ * @param {number} y Vertical translation.
  */
-eYo.Workspace.prototype.resetDragSurface = function() {
-  // Don't do anything if we aren't using a drag surface.
-  if (!this.useWorkspaceDragSurface_) {
-    return;
-  }
-
-  this.isDragSurfaceActive_ = false;
-
-  var trans = this.workspaceDragSurface_.getSurfaceTranslation();
-  this.workspaceDragSurface_.clearAndHide(this.dom.group_);
-  var translation = 'translate(' + trans.x + ',' + trans.y + ') ' +
-      'scale(' + this.scale + ')';
-  this.svgBlockCanvas_.setAttribute('transform', translation)
-};
-
-/**
- * Called at the beginning of a workspace drag to move contents of
- * the workspace to the drag surface.
- * Does nothing if the drag surface is not enabled.
- * @package
- */
-eYo.Workspace.prototype.setupDragSurface = function() {
-  // Don't do anything if we aren't using a drag surface.
-  if (!this.useWorkspaceDragSurface_) {
-    return;
-  }
-
-  // This can happen if the user starts a drag, mouses up outside of the
-  // document where the mouseup listener is registered (e.g. outside of an
-  // iframe) and then moves the mouse back in the workspace.  On mobile and ff,
-  // we get the mouseup outside the frame. On chrome and safari desktop we do
-  // not.
-  if (this.isDragSurfaceActive_) {
-    return;
-  }
-
-  this.isDragSurfaceActive_ = true;
-
-  // Figure out where we want to put the canvas back.  The order
-  // in the is important because things are layered.
-  var previousElement = this.svgBlockCanvas_.previousSibling;
-  var width = parseInt(this.getParentSvg().getAttribute('width'), 10);
-  var height = parseInt(this.getParentSvg().getAttribute('height'), 10);
-  var coord = Blockly.utils.getRelativeXY(this.svgBlockCanvas_);
-  this.workspaceDragSurface_.setContentsAndShow(this.svgBlockCanvas_, previousElement, width, height, this.scale);
-  this.workspaceDragSurface_.translateSurface(coord.x, coord.y);
-};
+eYo.Workspace.prototype.canvasMoveTo = function(x, y) {
+  this.ui_driver.workspaceCanvasMoveTo(this, x, y)
+}
 
 /**
  * Returns the horizontal offset of the workspace.
@@ -1028,7 +937,7 @@ eYo.Workspace.prototype.setVisible = function(isVisible) {
  */
 eYo.Workspace.prototype.render = function() {
   // Generate list of all blocks.
-  var blocks = this.getAllBlocks();
+  var blocks = this.getAllBricks();
   // Render each block.
   for (var i = blocks.length - 1; i >= 0; i--) {
     blocks[i].render(false);
@@ -1127,7 +1036,7 @@ eYo.Workspace.prototype.paste = function (dom) {
         if (!isNaN(dx) && !isNaN(dy)) {
           // Offset block until not clobbering another block and not in connection
           // distance with neighbouring bricks.
-          var allBlocks = this.getAllBlocks()
+          var allBlocks = this.getAllBricks()
           var avoidCollision = () => {
             do {
               var collide = allBlocks.some(b => {
@@ -1255,14 +1164,6 @@ eYo.Workspace.prototype.moveDrag = function(e) {
  */
 eYo.Workspace.prototype.isDragging = function() {
   return this.currentGesture_ != null && this.currentGesture_.isDragging();
-};
-
-/**
- * Is this workspace draggable and scrollable?
- * @return {boolean} True if this workspace may be dragged.
- */
-eYo.Workspace.prototype.isDraggable = function() {
-  return !!this.scrollbar
 }
 
 /**
@@ -1273,7 +1174,7 @@ eYo.Workspace.prototype.isDraggable = function() {
  *   containing the blocks on the workspace.
  */
 eYo.Workspace.prototype.getBlocksBoundingBox = function() {
-  var topBlocks = this.getTopBlocks(false);
+  var topBlocks = this.getTopBricks(false);
   // Initialize boundary using the first rendered block, if any.
   var i = 0
   while (i < topBlocks.length) {
@@ -1318,7 +1219,7 @@ eYo.Workspace.prototype.cleanUp = function() {
     this.setResizesEnabled(false)
   Blockly.Events.setGroup(true)
   var cursorY = 0
-  this.getTopBlocks(true).forEach(brick => {
+  this.getTopBricks(true).forEach(brick => {
     var xy = brick.ui.xyInWorkspace
     brick.ui.moveBy(-xy.x, cursorY - xy.y)
     block.ui.snapToGrid()
@@ -1341,7 +1242,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
     return
   }
   var menuOptions = []
-  var topBlocks = this.getTopBlocks(true)
+  var topBlocks = this.getTopBricks(true)
   var eventGroup = Blockly.utils.genUid()
   var ws = this
 
@@ -1626,7 +1527,7 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
   }
 
   // XY is in workspace coordinates.
-  var xy = block.getRelativeToSurfaceXY();
+  var xy = block.xyInWorkspace;
   // Height/width is in workspace units.
   var heightWidth = block.getHeightWidth();
 
@@ -1685,30 +1586,8 @@ eYo.Workspace.prototype.setScale = function(newScale) {
     // No toolbox, resize flyout.
     this.flyout_.reflow();
   }
-};
+}
 
-/**
- * Get the dimensions of the given workspace component, in pixels.
- * @param {Blockly.Toolbox|Blockly.Flyout} elem The element to get the
- *     dimensions of, or null.  It should be a toolbox or flyout, and should
- *     implement getWidth() and getHeight().
- * @return {!Object} An object containing width and height attributes, which
- *     will both be zero if elem did not exist.
- * @private
- */
-eYo.Workspace.getDimensionsPx_ = function(elem) {
-  var width = 0;
-  var height = 0;
-  if (elem) {
-    width = elem.getWidth();
-    height = elem.getHeight();
-  }
-  return {
-    width: width,
-    height: height
-  };
-};
-  
 /**
  * Get the content dimensions of the given workspace, taking into account
  * whether or not it is scrollable and what size the workspace div is on screen.
@@ -1825,9 +1704,6 @@ eYo.Workspace.getContentDimensionsBounded_ = function(ws, svgSize) {
  */
 eYo.Workspace.getTopLevelWorkspaceMetrics_ = function() {
 
-  var flyoutDimensions =
-      eYo.Workspace.getDimensionsPx_(this.flyout_);
-
   // Contains height and width in CSS pixels.
   // svgSize is equivalent to the size of the injectionDiv at this point.
   var svgSize = Blockly.svgSize(this.getParentSvg());
@@ -1857,8 +1733,8 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = function() {
     toolboxWidth: toolboxDimensions.width,
     toolboxHeight: toolboxDimensions.height,
 
-    flyoutWidth: flyoutDimensions.width,
-    flyoutHeight: flyoutDimensions.height,
+    flyoutWidth: this.flyout_.width,
+    flyoutHeight: this.flyout_.height,
 
     flyoutAnchor: this.flyout_.anchor
   };
@@ -2127,7 +2003,7 @@ eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
   brick.id = (opt_id && !this.getBlockById(opt_id)) ?
   opt_id : Blockly.utils.genUid()
   this.hasUI && brick.makeUI()
-  this.addTopBlock(brick)
+  this.topBricks_.push(brick)
   this.brickDB_[brick.id] = brick
 }
 
@@ -2137,7 +2013,7 @@ eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
  * @param {eYo.Brick} brick
  */
 eYo.Workspace.prototype.removeBrick = function (brick) {
-  this.removeTopBlock(brick)
+  this.removeTopBrick(brick)
   // Remove from workspace
   this.brickDB_[brick.id]
 }
