@@ -486,13 +486,13 @@ eYo.KeyHandler = (() => {
         var scaledHeight = eYo.Unit.y * brick.workspace.scale
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
-          var xy = goog.style.getPageOffset(m4t.brick.ui.dom.group_)
+          var xy = goog.style.getPageOffset(m4t.brick.ui.dom.svg.group_)
           var xxyy = m4t.xyInBlock_.clone().scale(brick.workspace.scale)
           xy.translate(xxyy)
         } else {
-          xy = goog.style.getPageOffset(brick.ui.dom.group_)
+          xy = goog.style.getPageOffset(brick.ui.dom.svg.group_)
         }
-        menu_.showMenu(brick.ui.dom.group_, xy.x, xy.y + scaledHeight + 2)
+        menu_.showMenu(brick.ui.dom.svg.group_, xy.x, xy.y + scaledHeight + 2)
         menu_.highlightFirst()
       } else {
         var F = f => {

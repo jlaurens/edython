@@ -20,54 +20,7 @@ goog.require('eYo')
  * @param {!eYo.Workspace} workspace The workspace to drag.
  * @constructor
  */
-eYo.WorkspaceDragger = function(workspace) {
-  /**
-   * @type {!eYo.WorkspaceSvg}
-   * @private
-   */
-  this.workspace_ = workspace
-
-  /**
-   * The workspace's metrics object at the beginning of the drag.  Contains size
-   * and position metrics of a workspace.
-   * Coordinate system: pixel coordinates.
-   * @type {!Object}
-   * @private
-   */
-  this.startMetrics_ = workspace.getMetrics()
-
-  /**
-   * The scroll position of the workspace at the beginning of the drag.
-   * Coordinate system: pixel coordinates.
-   * @type {!goog.math.Coordinate}
-   * @private
-   */
-  this.startScroll_ = new goog.math.Coordinate(
-      workspace.scrollX, workspace.scrollY)
-  
-  /*
-  * Move the scrollbars to drag the workspace.
-  * x and y are in pixels.
-  * @param {number} x The new x position to move the scrollbar to.
-  * @param {number} y The new y position to move the scrollbar to.
-  * @private
-  */
-  this.startMetrics_.updateScroll_ = workspace.isFlyout
-  ? function (x, y) {
-    workspace.targetSpace.flyout_.scrollbar_.set(y)
-  }
-  : function (x, y) {
-    workspace.scrollbar.set(x, y)
-  }
-  /**
-   * What is the purpose of this transform correction_
-   */
-  var element = workspace.dom.svg.group_.parentNode.parentNode // div above the svg
-  this.correction_ = eYo.Do.getTransformCorrection(element)
-
-  if (Blockly.utils.is3dSupported()) {
-    this.dragSurface_ = workspace.options.workspaceDragSurface
-  }
+eYo.WorkspaceDragger = function() {
 }
 
 /**
@@ -91,14 +44,50 @@ eYo.Workspace.prototype.isDragSurfaceActive_ = false;
 
 /**
  * Start dragging the workspace.
- * @param {!Event} e The most recent move event.
+ * @param {!eYo.Gesture} gesture
  * @package
  */
-eYo.WorkspaceDragger.prototype.start = function(e) {
-  // Don't do anything if we aren't using a drag surface.
-  if (!this.dragSurface_) {
-    return
+eYo.WorkspaceDragger.prototype.start = function(gesture) {
+  var workspace = gesture.workspace
+  /**
+   * @type {!eYo.WorkspaceSvg}
+   * @private
+   */
+  this.workspace_ = workspace
+
+  /**
+   * The workspace's metrics object at the beginning of the drag.  Contains size
+   * and position metrics of a workspace.
+   * Coordinate system: pixel coordinates.
+   * @type {!Object}
+   * @private
+   */
+  this.startMetrics_ = workspace.getMetrics()
+
+  /**
+   * The scroll position of the workspace at the beginning of the drag.
+   * Coordinate system: pixel coordinates.
+   * @type {!goog.math.Coordinate}
+   * @private
+   */
+  this.startXY_ = new goog.math.Coordinate(
+      workspace.scrollX, workspace.scrollY)
+  
+  /*
+  * Move the scrollbars to drag the workspace.
+  * x and y are in pixels.
+  * @param {number} x The new x position to move the scrollbar to.
+  * @param {number} y The new y position to move the scrollbar to.
+  * @private
+  */
+  this.startMetrics_.updateScroll_ = workspace.isFlyout
+  ? function (x, y) {
+    workspace.targetSpace.flyout_.scrollbar_.set(y)
   }
+  : function (x, y) {
+    workspace.scrollbar.set(x, y)
+  }
+
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
@@ -115,13 +104,15 @@ eYo.WorkspaceDragger.prototype.start = function(e) {
 
   // Figure out where we want to put the canvas back.  The order
   // in the dom is important because things are layered.
-  var svg = this.workspace_.dom.svg
-  var previousElement = svg.canvas_.previousSibling
-  var width = parseInt(svg.group_.getAttribute('width'), 10)
-  var height = parseInt(svg.group_.getAttribute('height'), 10)
-  var coord = Blockly.utils.getRelativeXY(svg.canvas_)
-  this.dragSurface_.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
-  this.dragSurface_.translateSurface(coord.x, coord.y)
+  if (Blockly.utils.is3dSupported()) {
+    this.dragSurface_ = workspace.options.workspaceDragSurface
+  }
+  /**
+   * What is the purpose of this transform correction_?
+   * Zoom I guess
+   * Is it for the flyout also?
+   */
+  workspace.ui_driver.workspaceStartDrag(workspace)
 }
 
 /**
@@ -131,8 +122,8 @@ eYo.WorkspaceDragger.prototype.start = function(e) {
  *     moved from the position at the start of the drag, in pixel coordinates.
  * @package
  */
-eYo.WorkspaceDragger.prototype.end = function(e, delta) {
-  this.drag(delta)
+eYo.WorkspaceDragger.prototype.end = function() {
+  this.drag()
   // Don't do anything if we aren't using a drag surface.
   if (!this.dragSurface_) {
     return;
@@ -146,21 +137,19 @@ eYo.WorkspaceDragger.prototype.end = function(e, delta) {
 /**
  * Move the workspace based on the most recent mouse movements.
  * @param {!Event} e The most recent move event.
- * @param {!goog.math.Coordinate} delta How far the pointer has
+ * @param {!goog.math.Coordinate} deltaXY How far the pointer has
  *     moved from the position at the start of the drag, in pixel coordinates.
  * @package
  */
-eYo.WorkspaceDragger.prototype.drag = function(e, delta) {
-  if (this.correction_) {
-    delta = this.correction_(delta)
-  }
+eYo.WorkspaceDragger.prototype.drag = function() {
+  var deltaXY = this.workspace_.ui_driver.workspaceDragDeltaXY(this.workspace_)
   var metrics = this.startMetrics_
 
-  var x = this.startScroll_.x + delta.x + metrics.contentLeft
+  var x = this.startXY_.x + deltaXY.x + metrics.contentLeft
   x = Math.min(x, 0)
   x = Math.max(x, metrics.viewWidth - metrics.contentWidth)
 
-  var y = this.startScroll_.y + delta.y + metrics.contentTop
+  var y = this.startXY_.y + deltaXY.y + metrics.contentTop
   y = Math.min(y, 0)
   y = Math.max(y, metrics.viewHeight - metrics.contentHeight)
 

@@ -32,7 +32,7 @@ describe('SVG groups and paths', function () {
     chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
     var ui_driver = field.ui_driver
     chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
-    chai.assert(dom.group_ === dom.textElement_, `FAILED dom.group_ === dom.textElement_ in value field of ${type}`)
+    chai.assert(dom.svg.group_ === dom.svg.textElement_, `FAILED dom.svg.group_ === dom.svg.textElement_ in value field of ${type}`)
     d1.dispose()
     chai.assert(!d1.dom, `FAILED SVG dispose`)
     eYo.Test.tearItDown()

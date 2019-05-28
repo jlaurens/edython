@@ -6,30 +6,34 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Rendering delegate.
+ * @fileoverview Rendering delegate. In progress.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 goog.provide('eYo.Driver')
 
+goog.forwardDeclare('eYo.Factory')
 goog.forwardDeclare('eYo.Brick.UI')
 
 goog.require('eYo.Do')
 
 /**
  * Rendering driver to help the renderer
+ * @param {!eYo.Factory} factory
  * @constructor
  * @readonly
  */
-eYo.Driver = function() {
+eYo.Driver = function(factory) {
+  this.factory_ = factory
 }
 
 /**
- * The default implementation does nothing.
- * @param {!Object} node  the node the driver acts on
+ * Sever links.
  */
-eYo.Driver.brickDispose = eYo.Do.nothing
+eYo.Driver.brickDispose = function () {
+  this.factory_ = factory
+}
 
 /**
  * Returns the bounding box of the node.
@@ -117,7 +121,7 @@ eYo.Driver.prototype.brickDisplayedSet = eYo.Do.nothing
  * @param {number} x The x coordinate of the translation in workspace units.
  * @param {number} y The y coordinate of the translation in workspace units.
  */
-eYo.Driver.prototype.brickTranslate = eYo.Do.nothing
+eYo.Driver.prototype.brickMoveTo = eYo.Do.nothing
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the
@@ -135,7 +139,7 @@ eYo.Driver.prototype.brickXYInWorkspace = eYo.Do.nothing
  * @param {*} field
  * @param {*} where
  */
-eYo.Driver.prototype.fieldPositionSet = eYo.Do.nothing
+eYo.Driver.prototype.fieldMoveTo = eYo.Do.nothing
 
 /**
  * The field text will change.

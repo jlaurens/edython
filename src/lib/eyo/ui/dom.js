@@ -15,174 +15,18 @@ goog.provide('eYo.Dom')
 
 goog.require('eYo.Driver')
 
+goog.require('goog.events');
 goog.forwardDeclare('goog.dom');
 
 /**
  * Model for dom utilities
+ * @param {eYo.Factory} factory
+ * @constructor
  */
-eYo.Dom = function () {
-  eYo.Dom.superClass_.constructor.call(this)
+eYo.Dom = function (factory) {
+  eYo.Dom.superClass_.constructor.call(this, factory)
 }
 goog.inherits(eYo.Dom, eYo.Driver)
-
-/**
- * Inject a main workspace into the specified container element (usually a div).
- * @param {!Element|string} container Containing element, or its ID,
- *     or a CSS selector.
- * @param {Object=} opt_options Optional dictionary of options.
- * @return {!Blockly.Workspace} Newly created main workspace.
- */
-eYo.Dom.createMainWorkspace = function(container, opt_options) {
-  Blockly.mainWorkspace = eYo.App.workspace = eYo.Dom.createWorkspace = function(container, opt_options)
-}
-/**
- * Inject a main workspace into the specified container element (usually a div).
- * @param {!Element|string} container Containing element, or its ID,
- *     or a CSS selector.
- * @param {Object=} opt_options Optional dictionary of options.
- * @return {!eYo.Workspace} Newly created main workspace.
- */
-eYo.Dom.createWorkspace = function(container, opt_options) {
-  if (goog.isString(container)) {
-    container = document.getElementById(container) ||
-        document.querySelector(container)
-  }
-  // Verify that the container is in document.
-  if (!goog.dom.contains(document, container)) {
-    throw 'Error: container is not in current document.';
-  }
-  // Suppress the browser's context menu.
-  eYo.Dom.bindEvent(
-    container,
-    'contextmenu',
-    null,
-    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
-  )
-  // Sadly browsers (Chrome vs Firefox) are currently inconsistent in laying
-  // out content in RTL mode.  Therefore Blockly forces the use of LTR,
-  // then manually positions content in RTL as needed.
-  container.setAttribute('dir', 'LTR')
-
-  var subContainer = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    'injectionDiv'
-  )
-  container.appendChild(subContainer)
-
-  // Build the SVG DOM.
-  /*
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    class="blocklySvg">
-    ...
-  </svg>
-  */
-
-  var svg = eYo.Svg.createElement('svg', {
-    'xmlns': 'http://www.w3.org/2000/svg',
-    'xmlns:html': 'http://www.w3.org/1999/xhtml',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'version': '1.1',
-    'class': 'eyo-svg'
-  }, container)
-  
-  return eYo.Dom.createWorkspace_(svg, options)
-}
-
-/**
- * Create a main workspace and add it to the SVG.
- * @param {!Element} svg SVG element with pattern defined.
- * @param {!Blockly.Options} options Dictionary of options.
- * @return {!eYo.Workspace} Newly created main workspace.
- * @private
- */
-eYo.Dom.createWorkspace_ = function(svg, options) {
-  options = new Blockly.Options(options || {})
-  // Load CSS.
-  Blockly.Css.inject(options.hasCss, options.pathToMedia)
-
-  options.parentWorkspace = null;
-
-  // Create surfaces for dragging things. These are optimizations
-  // so that the broowser does not repaint during the drag.
-  options.brickDragSurface = new eYo.BrickDragSurfaceSvg(subContainer)
-  options.workspaceDragSurface = new eYo.WorkspaceDragSurfaceSvg(subContainer)
-
-  var mainWorkspace = new eYo.Workspace(options)
-  mainWorkspace.scale = options.zoomOptions.startScale
-  mainWorkspace.makeUI({parentNode: svg})
-
-  // A null translation will also apply the correct initial scale.
-  mainWorkspace.translate(0, 0)
-
-  if (!options.readOnly && !options.hasScrollbars) {
-    var workspaceChanged = function() {
-      if (!mainWorkspace.isDragging()) {
-        var metrics = mainWorkspace.getMetrics()
-        var edgeLeft = metrics.viewLeft + metrics.absoluteLeft;
-        var edgeTop = metrics.viewTop + metrics.absoluteTop;
-        if (metrics.contentTop < edgeTop ||
-            metrics.contentTop + metrics.contentHeight >
-            metrics.viewHeight + edgeTop ||
-            metrics.contentLeft <
-                (options.RTL ? metrics.viewLeft : edgeLeft) ||
-            metrics.contentLeft + metrics.contentWidth > (options.RTL ?
-                metrics.viewWidth : metrics.viewWidth + edgeLeft)) {
-          // One or more blocks may be out of bounds.  Bump them back in.
-          var MARGIN = 25;
-          mainWorkspace.getTopBricks(false).forEach(brick => {
-            var xy = brick.xyInWorkspace
-            var size = brick.size
-            // Bump any brick that's above the top back inside.
-            var overflowTop = edgeTop + MARGIN - size.height - xy.y;
-            if (overflowTop > 0) {
-              brick.xyMoveBy(0, overflowTop)
-            }
-            // Bump any brick that's below the bottom back inside.
-            var overflowBottom =
-                edgeTop + metrics.viewHeight - MARGIN - xy.y;
-            if (overflowBottom < 0) {
-              brick.xyMoveBy(0, overflowBottom)
-            }
-            // Bump any brick that's off the left back inside.
-            var overflowLeft = MARGIN + edgeLeft -
-                xy.x - size.width;
-            if (overflowLeft > 0) {
-              brick.xyMoveBy(overflowLeft, 0);
-            }
-            // Bump any brick that's off the right back inside.
-            var overflowRight = edgeLeft + metrics.viewWidth - MARGIN -
-                xy.x;
-            if (overflowRight < 0) {
-              brick.xyMoveBy(overflowRight, 0);
-            }
-          })
-        }
-      }
-    }
-    mainWorkspace.addChangeListener(workspaceChanged)
-  }
-  // The SVG is now fully assembled.
-  Blockly.svgResize(mainWorkspace)
-
-  mainWorkspace.ui_driver.workspaceBind_resize(mainWorkspace)
-  eYo.Dom.bindDocumentEvents_()
-
-  if (options.hasScrollbars) {
-    mainWorkspace.scrollbar = new Blockly.ScrollbarPair(mainWorkspace);
-    mainWorkspace.scrollbar.resize();
-  }
-
-  // Load the sounds.
-  if (options.hasSounds) {
-    eYo.Dom.loadSounds_(options.pathToMedia, mainWorkspace)
-  }
-
-  return mainWorkspace;
-}
 
 /**
  * The TOUCH_MAP lookup dictionary specifies additional touch events to fire,
@@ -211,7 +55,7 @@ if (window && window.PointerEvent) {
 }
 
 /**
- * Bind an event to a function call.  When calling the function, verifies that
+ * Bind an event to a function call. When calling the function, verifies that
  * it belongs to the touch stream that is currently being processed, and splits
  * multitouch events into multiple events as needed.
  * @param {!EventTarget} node Node upon which to listen.
@@ -447,61 +291,6 @@ eYo.Dom.prototype.touchIdentifierFromEvent = function(e) {
   : ((x = e.changedTouches) && (x = x[0]) && (x = x.identifier) != undefined && x != null)
     ? x
     : 'mouse'
-}
-
-/**
- * Get the cumulated affine transform of an element.
- * @param {*} element
- */
-eYo.Do.getAffineTransform = (() => {
-  var getAffineTransform = (str) => {
-    var values = str.split(/\s*,\s*|\)\s*|.*\(/)
-    if (values.length > 8) {
-      values = str.split(/\s*,\s+|\)\s*|.*\(/)
-    }
-    if (values.length > 6) {
-      values.pop()
-      values.shift()
-      return new goog.math.AffineTransform(...values.map(m => parseFloat(m)))
-    }
-  }
-  return (element) => {
-    var A
-    var parent
-    while ((parent = element.parentNode)) {
-      var style = window.getComputedStyle(element, null)
-      var transform = style.getPropertyValue("transform") ||
-        style.getPropertyValue("-webkit-transform") ||
-        style.getPropertyValue("-moz-transform") ||
-        style.getPropertyValue("-ms-transform") ||
-        style.getPropertyValue("-o-transform")
-      var B = getAffineTransform(transform)
-      if (B) {
-        A = A ? B.concatenate(A) : B
-      }
-      element = parent
-    }
-    return A
-  }
-})()
-
-/**
- * Get the cumulated affine transform of an element.
- * @param {*} element
- */
-eYo.Do.getTransformCorrection = (element) => {
-  var A = eYo.Do.getAffineTransform(element)
-  if (A) {
-    var B = A.createInverse()
-    if (B) {
-      return (xy) => {
-        return {
-          x: B.m00_ * xy.x + B.m01_ * xy.y + B.m02_,
-          y: B.m10_ * xy.x + B.m11_ * xy.y + B.m12_
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -745,7 +534,7 @@ eYo.Dom.loadSounds_ = function(pathToMedia, workspace) {
   var soundBinds = [];
   var unbindSounds = () => {
     while (soundBinds.length) {
-      eYo.Dom.unbindEvent_(soundBinds.pop())
+      eYo.Dom.unbindEvent(soundBinds.pop())
     }
     audioMgr.preload()
   }
@@ -787,6 +576,20 @@ eYo.Dom.prototype.basicInit = function(object) {
 }
 
 /**
+ * Decorates a function between `clearBoundEvents` and `basicDispose`.
+ */
+eYo.Dom.decorateDispose = f => {
+  return function (object) {
+    var dom = object.dom
+    if (dom) {
+      eYo.Dom.clearBoundEvents(object)
+      f.call(this, object)
+      this.basicDispose(object)
+    }
+  }
+}
+
+/**
  * Dispose of the basic dom ressources.
  * @param {!Object} object
  */
@@ -795,15 +598,60 @@ eYo.Dom.prototype.basicDispose = function(object) {
   if (dom) {
     dom.bound = null
     object.dom = null
+    eYo.Dom.superClass_.dispose.call(this)
   }
 }
 
 /**
+ * Initialize the factory SVG ressources.
+ * @param {!eYo.Factory} factory
+ * @return {!Element} The factory's SVG group.
+ */
+eYo.Dom.prototype.factoryInit = function(factory) {
+  var dom = this.basicInit(factory)
+  var div = dom.div_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-factory'
+  )
+  container.appendChild(div)
+  return g
+}
+
+/**
+ * Dispose of the factory dom resources.
+ * @param {!eYo.Factory} factory
+ */
+eYo.Dom.prototype.factoryDispose = eYo.Dom.decorateDispose(
+  function(factory) {
+    var dom = factory.dom
+    goog.dom.removeNode(dom.div_)
+    dom.div_ = null
+  }
+)
+
+/**
  * Initialize the workspace dom ressources.
  * @param {!eYo.Workspace} workspace
- * @return {!Object} The workspace's dom repository.
+ * @param {!Element|string} container Containing element, or its ID,
+ *     or a CSS selector.
+ * @param {Object=} opt_options Optional dictionary of options.
+ * @return {!eYo.Workspace} Newly created main workspace.
  */
-eYo.Dom.prototype.workspaceInit = eYo.Dom.prototype.basicInit
+eYo.Dom.workspaceInit = function(workspace) {
+  var options = workspace.options
+  var container = options.container
+  if (!container) {
+    return
+  }
+  // Suppress the browser's context menu.
+  eYo.Dom.bindEvent(
+    container,
+    'contextmenu',
+    null,
+    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
+  )
+  return dom
+}
 
 /**
  * Dispose of the workspace dom ressources.

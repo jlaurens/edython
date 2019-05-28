@@ -28,7 +28,7 @@ goog.require('Blockly')
 // Dependency ordering?
 
 /**
- * Delete this block and the next ones if requested.
+ * Delete this brick and the next ones if requested.
  * For edython.
  * @param {!Blockly.Block} block The owner of the receiver.
  * @param {!boolean} shallow

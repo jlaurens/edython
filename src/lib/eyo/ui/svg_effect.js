@@ -44,16 +44,16 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
     setTimeout(step, 10, clone, start, scale)
   }
   return function(brick) {
-    var dom = brick.ui.dom
+    var g = brick.ui.dom.svg.group_
     var w = brick.workspace
-    var xy = w.getSvgXY(/** @type {!Element} */ (dom.group_))
+    var xy = w.getSvgXY(/** @type {!Element} */ g)
     // Deeply clone the current brick.
-    var clone = dom.group_.cloneNode(true)
+    var clone = g.cloneNode(true)
     clone.translateX_ = xy.x
     clone.translateY_ = xy.y
     clone.setAttribute('transform',
       `translate(${clone.translateX_},${clone.translateY_})`)
-    w.getParentSvg().appendChild(clone)
+    w.dom.svg.root_.appendChild(clone)
     clone.bBox_ = clone.getBBox()
     // Start the animation.
     step(clone, new Date, ws.scale)
@@ -84,22 +84,33 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
     }
   }
   return function (brick) {
-    var dom = brick.ui.dom
+    var g = brick.ui.dom.svg.group_
     var w = brick.workspace
-    var xy = w.getSvgXY(/** @type {!Element} */ dom.group_)
+    var xy = w.getSvgXY(/** @type {!Element} */ g)
     if (brick.isExpr) {
       var h = brick.span.height * w.scale / 2
-      var ripple = eYo.Svg.newElement('circle',
-        {class: 'bricklyHighlightedConnectionPathH', 'cx': xy.x, 'cy': xy.y + h, 'r': 2 * h / 3},
-        w.getParentSvg())
+      var ripple = eYo.Svg.newElement(
+        'circle',
+        {
+          class: 'bricklyHighlightedConnectionPathH',
+          cx: xy.x,
+          cy: xy.y + h,
+          r: 2 * h / 3
+        },
+        w.dom.svg.root_
+      )
     } else {
     // Determine the absolute coordinates of the inferior brick.
       var steps = eYo.Svg.magnetHighlightedPath_.attributes['d'].value
-      ripple = eYo.Svg.newElement('path',
-        {class: 'bricklyHighlightedConnectionPath',
+      ripple = eYo.Svg.newElement(
+        'path',
+        {
+          class: 'bricklyHighlightedConnectionPath',
           d: steps,
-          transform: `translate(${xy.x},${xy.y})`},
-        w.getParentSvg())
+          transform: `translate(${xy.x},${xy.y})`
+        },
+        w.dom.svg.root_
+      )
     }
     // Start the animation.
     step(ripple, new Date(), w.scale)
@@ -138,7 +149,7 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
   }
   return function(brick) {
     var w = brick.workspace
-    w.audioManager.play('disconnect')
+    w.audio.play('disconnect')
     if (w.scale < 1) {
       return  // Too small to care about visual effects.
     }
@@ -148,7 +159,7 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
     var height = this.brick_.size.height
     var magnitude = - Math.atan(DISPLACEMENT / height) / Math.PI * 180
     // Start the animation.
-    this.group_ = brick.ui.dom.group_
+    this.group_ = brick.ui.dom.svg.group_
     step(magnitude, new Date)
   }
 })()

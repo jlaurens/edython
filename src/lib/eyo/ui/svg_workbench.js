@@ -6,26 +6,26 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Workspace rendering driver.
+ * @fileoverview Workbench rendering driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.Svg.Workspace')
+goog.provide('eYo.Svg.Workbench')
 
 goog.require('eYo.Svg')
 goog.forwardDeclare('eYo.Workspace')
 
 /**
- * Initialize the workspace SVG ressources.
- * @param {!eYo.Workspace} workspace
- * @return {!Element} The workspace's SVG group.
+ * Initialize the workbench SVG ressources.
+ * @param {!eYo.Workbench} workbench
+ * @return {!Element} The workbench's SVG group.
  */
-eYo.Svg.prototype.workspaceInit = function(workspace) {
-  if (workspace.dom) {
+eYo.Svg.prototype.workbenchInit = function(workbench) {
+  if (workbench.dom) {
     return
   }
-  var dom = eYo.Svg.superClass_.workspaceInit.call(this, workspace)
+  var dom = eYo.Svg.superClass_.workbenchInit.call(this, workbench)
   if (!dom) {
     return
   }
@@ -54,16 +54,16 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   // Create surfaces for dragging things. These are optimizations
   // so that the browser does not repaint during the drag.
   options.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-  options.workspaceDragSurface = new eYo.WorkspaceDragSurfaceSvg(dom.div_)
+  options.workbenchDragSurface = new eYo.WorkbenchDragSurfaceSvg(dom.div_)
 
-  options.zoomOptions && (workspace.scale = options.zoomOptions.startScale)
+  options.zoomOptions && (workbench.scale = options.zoomOptions.startScale)
   // A null translation will also apply the correct initial scale.
-  workspace.translate(0, 0)
+  workbench.translate(0, 0)
 
   if (!options.readOnly && !options.hasScrollbars) {
-    var workspaceChanged = function() {
-      if (!workspace.isDragging()) {
-        var metrics = workspace.getMetrics()
+    var workbenchChanged = function() {
+      if (!workbench.isDragging()) {
+        var metrics = workbench.getMetrics()
         var edgeLeft = metrics.viewLeft + metrics.absoluteLeft;
         var edgeTop = metrics.viewTop + metrics.absoluteTop;
         if (metrics.contentTop < edgeTop ||
@@ -75,8 +75,8 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
                 metrics.viewWidth : metrics.viewWidth + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
-          workspace.getTopBricks(false).forEach(brick => {
-            var xy = brick.xyInWorkspace
+          workbench.getTopBricks(false).forEach(brick => {
+            var xy = brick.xyInWorkbench
             var size = brick.size
             // Bump any brick that's above the top back inside.
             var overflowTop = edgeTop + MARGIN - size.height - xy.y;
@@ -105,26 +105,26 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
         }
       }
     }
-    workspace.addChangeListener(workspaceChanged)
+    workbench.addChangeListener(workbenchChanged)
   }
   // The SVG is now fully assembled.
-  Blockly.svgResize(workspace)
+  Blockly.svgResize(workbench)
 
-  workspace.ui_driver.workspaceBind_resize(workspace)
+  workbench.ui_driver.workbenchBind_resize(workbench)
   eYo.Dom.bindDocumentEvents_()
 
   if (options.hasScrollbars) {
-    workspace.scrollbar = new Blockly.ScrollbarPair(workspace);
-    workspace.scrollbar.resize();
+    workbench.scrollbar = new Blockly.ScrollbarPair(workbench);
+    workbench.scrollbar.resize();
   }
 
   // Load the sounds.
   if (options.hasSounds) {
-    eYo.Dom.loadSounds_(options.pathToMedia, workspace)
+    eYo.Dom.loadSounds_(options.pathToMedia, workbench)
   }
 
   /**
-  * <g class="eyo-workspace-surface">
+  * <g class="eyo-workbench-surface">
   *   <rect class="eyo-main-background" height="100%" width="100%"></rect>
   *   [Trashcan and/or flyout may go here]
   *   <g class="eyo-brick-canvas"></g>
@@ -133,13 +133,13 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-workspace-surface'},
+    {'class': 'eyo-workbench-surface'},
     root
   )
 
   // Note that a <g> alone does not receive mouse events--it must have a
   // valid target inside it.  If no background class is specified, as in the
-  // flyout, the workspace will not receive mouse events.
+  // flyout, the workbench will not receive mouse events.
   if (options && options.backgroundClass) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
@@ -154,10 +154,10 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     {'class': 'eyo-brick-canvas'},
     g
   )
-  if (!workspace.isFlyout) {
-    this.workspaceBind_mousedown(workspace)
-    if (workspace.options.zoomOptions && workspace.options.zoomOptions.wheel) {
-      this.workspaceBind_wheel(workspace)
+  if (!workbench.isFlyout) {
+    this.workbenchBind_mousedown(workbench)
+    if (workbench.options.zoomOptions && workbench.options.zoomOptions.wheel) {
+      this.workbenchBind_wheel(workbench)
     }
   }
 
@@ -165,26 +165,26 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
 }
 
 /**
- * Initializes the workspace SVG ressources.
- * @param {!eYo.Workspace} workspace
+ * Initializes the workbench SVG ressources.
+ * @param {!eYo.Workbench} workbench
  */
-eYo.Svg.prototype.workspaceDispose = function(workspace) {
-  var dom = workspace.dom
+eYo.Svg.prototype.workbenchDispose = function(workbench) {
+  var dom = workbench.dom
   if (dom) {
-    eYo.Dom.clearBoundEvents(workspace)
+    eYo.Dom.clearBoundEvents(workbench)
     goog.dom.removeNode(dom.svg.group_)
     svg.group_ = svg.canvas_ = null
     dom.svg = null
   }
-  eYo.Svg.superClass_.workspaceDispose.call(this, workspace)
+  eYo.Svg.superClass_.workbenchDispose.call(this, workbench)
 }
 
 /**
  * Add a `mousedown` listener.
- * @param {!eYo.Workspace} workspace
+ * @param {!eYo.Workbench} workbench
  */
-eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
-  var dom = workspace.dom
+eYo.Svg.prototype.workbenchBind_mousedown = function(workbench) {
+  var dom = workbench.dom
   var bound = dom.bound
   if (bound.mousedown) {
     return
@@ -193,19 +193,19 @@ eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
     dom.svg.group_,
     'mousedown',
     null,
-    this.workspaceOn_mousedown.bind(workspace),
+    this.workbenchOn_mousedown.bind(workbench),
     {noPreventDefault: true}
   )
 }
 
 /**
- * Handle a mouse-down on SVG drawing surface, bound to a workspace.
- * NB: this is intentionnaly not a member of `eYo.Workspace.prototype`
+ * Handle a mouse-down on SVG drawing surface, bound to a workbench.
+ * NB: this is intentionnaly not a member of `eYo.Workbench.prototype`
  * @param {!Event} e Mouse down event.
- * @this {eYo.Workspace}
+ * @this {eYo.Workbench}
  * @private
  */
-eYo.Svg.prototype.workspaceOn_mousedown = function(e) {
+eYo.Svg.prototype.workbenchOn_mousedown = function(e) {
   var gesture = this.getGesture(e)
   if (gesture) {
     gesture.handleWsStart(e, this)
@@ -214,29 +214,29 @@ eYo.Svg.prototype.workspaceOn_mousedown = function(e) {
 
 /**
  * Add a `wheel` listener.
- * @param {!eYo.Workspace} workspace
+ * @param {!eYo.Workbench} workbench
  */
-eYo.Svg.prototype.workspaceBind_wheel = function(workspace) {
-  var bound = workspace.dom.bound
+eYo.Svg.prototype.workbenchBind_wheel = function(workbench) {
+  var bound = workbench.dom.bound
   if (bound.wheel) {
     return
   }
   bound.wheel = this.bindEvent(
-    workspace.dom.svg.group_,
+    workbench.dom.svg.group_,
     'wheel',
     null,
-    this.workspaceOn_wheel.bind(workspace)
+    this.workbenchOn_wheel.bind(workbench)
   )
 }
 
 /**
  * Handle a mouse-wheel on SVG drawing surface.
- * Bound to a workspace.
+ * Bound to a workbench.
  * @param {!Event} e Mouse wheel event.
- * @this {eYo.Workspace}
+ * @this {eYo.Workbench}
  * @private
  */
-eYo.Workspace.prototype.workspaceOn_wheel = function(e) {
+eYo.Workbench.prototype.workbenchOn_wheel = function(e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
   if (this.currentGesture_) {
@@ -254,25 +254,25 @@ eYo.Workspace.prototype.workspaceOn_wheel = function(e) {
 /**
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Workbench} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceSetBrickDisplayMode = function (workspace, mode) {
-  var canvas = workspace.dom.svg.canvas_
-  workspace.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${workspace.currentBrickDisplayMode}`))
-  if ((workspace.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(canvas, `eyo-${workspace.currentBrickDisplayMode}`)
+eYo.Svg.prototype.workbenchSetBrickDisplayMode = function (workbench, mode) {
+  var canvas = workbench.dom.svg.canvas_
+  workbench.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${workbench.currentBrickDisplayMode}`))
+  if ((workbench.currentBrickDisplayMode = mode)) {
+    goog.dom.classlist.add(canvas, `eyo-${workbench.currentBrickDisplayMode}`)
   }
 }
 
 /**
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Workbench} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
-  var bound = workspace.dom.bound || Object.create(null)
+eYo.Svg.prototype.workbenchBind_resize = function (workbench) {
+  var bound = workbench.dom.bound || Object.create(null)
   if (bound.resize) {
     return
   }
@@ -282,37 +282,37 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     null,
     function() {
       Blockly.hideChaff(true)
-      Blockly.svgResize(workspace)
+      Blockly.svgResize(workbench)
     }
   )
 }
 
 /**
- * Translate this workspace to new coordinates.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * Translate this workbench to new coordinates.
+ * @param {!eYo.Workbench} mode  The display mode for bricks.
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
  */
-eYo.Svg.prototype.workspaceCanvasMoveTo = function (workspace, x, y) {
-  var translation = `translate(${x},${y}) scale(${workspace.scale})`
-  workspace.dom.svg.canvas_.setAttribute('transform', translation)
+eYo.Svg.prototype.workbenchCanvasMoveTo = function (workbench, x, y) {
+  var translation = `translate(${x},${y}) scale(${workbench.scale})`
+  workbench.dom.svg.canvas_.setAttribute('transform', translation)
 }
 
 /**
  * Prepares the UI for dragging.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Workbench} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
-  var element = workspace.dom.svg.group_.parentNode.parentNode // div above the `svg` element
-  var dragger = workspace.dragger_
+eYo.Svg.prototype.workbenchStartDrag = function (workbench) {
+  var element = workbench.dom.svg.group_.parentNode.parentNode // div above the `svg` element
+  var dragger = workbench.dragger_
   dragger.correction_ = this.getTransformCorrection(element)
   var surface = dragger.dragSurface_
   if (surface) {
-    var svg = workspace.dom.svg
+    var svg = workbench.dom.svg
     var previousElement = svg.canvas_.previousSibling
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
-    surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
+    surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workbench_.scale)
     var coord = Blockly.utils.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
@@ -320,10 +320,10 @@ eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
 
 /**
  * Prepares the UI for dragging.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Workbench} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceDragDeltaXY = function (workspace) {
-  var deltaXY = workspace.gesture_.deltaXY_
-  var correction = workspace.dragger_.correction_
+eYo.Svg.prototype.workbenchDragDeltaXY = function (workbench) {
+  var deltaXY = workbench.gesture_.deltaXY_
+  var correction = workbench.dragger_.correction_
   return correction ? correction(deltaXY) : deltaXY
 }

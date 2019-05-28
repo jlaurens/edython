@@ -419,7 +419,7 @@ eYo.Flyout.prototype.show = function(model) {
     this.filterForCapacity_()
 
     // Correctly position the flyout's scrollbar when it opens.
-    this.position()
+    this.place()
 
     this.reflowWrapper_ = this.reflow.bind(this)
     this.workspace_.addChangeListener(this.reflowWrapper_)
@@ -563,7 +563,7 @@ eYo.Flyout.prototype.reflow = function() {
   flyoutWidth *= this.workspace_.scale
   flyoutWidth += Blockly.Scrollbar.scrollbarThickness
   if (this.width_ != flyoutWidth) {
-    // Record the width for .getMetrics_ and .position.
+    // Record the width for .getMetrics_ and .place.
     this.width_ = flyoutWidth
     // Call this since it is possible the trash and zoom buttons need
     // to move. e.g. on a bottom positioned flyout when zoom is clicked.
@@ -577,7 +577,7 @@ eYo.Flyout.prototype.reflow = function() {
 /**
  * Move the flyout to the edge of the workspace.
  */
-eYo.Flyout.prototype.position = function () {
+eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
@@ -715,7 +715,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   this.slide_locked = true
   var atRight = this.anchor_ == eYo.Flyout.AT_RIGHT
   this.visible = true
-  eYo.Tooltip.hideAll(this.dom.group_)
+  eYo.Tooltip.hideAll(this.dom.svg.group_)
   var left = metrics.absoluteLeft
   var right = left + metrics.viewWidth
   var n_steps = 50

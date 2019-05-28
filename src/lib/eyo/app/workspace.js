@@ -23,17 +23,18 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.
- * There is no UI, and can be created headlessly.
- * @param {?Blockly.Options=} options Dictionary of options.
+ * @param {!eYo.Factory|eYo.Flyout} facorfly Any workspace belongs to a factory or a flyout.
  * @constructor
  */
-eYo.Workspace = function(options) {
+eYo.Workspace = function(facorfly) {
   /** @type {string} */
   this.id = Blockly.utils.genUid()
   eYo.Workspace.WorkspaceDB_[this.id] = this
-  /** @type {!Blockly.Options} */
-  this.options = options || {}
-  
+
+  this.factory_ = factory
+
+  this.options = options
+
   /**
    * @type {!Array.<!eYo.Brick>}
    * @private
@@ -68,6 +69,7 @@ eYo.Workspace = function(options) {
   this.targetSpace = options.targetSpace
 
   this.dragger_ = new eYo.WorkspaceDragger(this)
+  this.brickDragger_ = new eYo.BrickDragger(this)
 
   if (Blockly.utils.is3dSupported()) {
     this.brickDragSurface_ = options.brickDragSurface
@@ -88,10 +90,10 @@ eYo.Workspace = function(options) {
    * @type {Blockly.WorkspaceAudio}
    * @private
    */
-  this.audioManager_ = new Blockly.WorkspaceAudio(options.parentWorkspace)
 
   this.resetChangeCount()
 
+  options.container && this.makeUI()
 }
 
 eYo.Do.addProtocol(eYo.Workspace.prototype, 'ChangeCount')
@@ -130,9 +132,9 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.draggable && this.dragger_
     }
   },
-  audioManager: {
+  audio: {
     get () {
-      return this.getAudioManager()
+      return (this.factory || this.targetSpace).audio
     }
   },
   /**
@@ -176,10 +178,10 @@ Object.defineProperties(eYo.Workspace.prototype, {
   },
   driver: {
     get () {
-      return this.driver_ || (this.driver_ = this.driverCreate())
+      return this.ui_driver_ || (this.ui_driver_ = this.driverCreate())
     },
     set (newValue) {
-      this.driver_ = newValue
+      this.ui_driver_ = newValue
     }
   }
 })
@@ -238,17 +240,32 @@ eYo.Workspace.prototype.dispose = function() {
 /**
  * Make the UI.
  */
-eYo.Workspace.prototype.makeUI = function(options) {
+eYo.Workspace.prototype.makeUI = function(container) {
+  var options = this.options
+  if (container) {
+    options.container = container
+  } else {
+    container = options.container
+  }
+  // no UI if no valid container
+  if (goog.isString(container)) {
+    options.container = document.getElementById(container) ||
+        document.querySelector(container)
+  }
+  if (!goog.dom.contains(document, options.container)) {
+    throw 'Error: container is not in current document.'
+  }
   this.makeUI = eYo.Do.nothing
-  var d = this.driver_ = new eYo.Svg()
-  d.workspaceInit(this, options)
+  var d = this.ui_driver_ = new eYo.Svg()
+  d.workspaceInit(this)
   var bottom = Blockly.Scrollbar.scrollbarThickness
-  if (this.options.hasTrashcan) {
+  if (options.hasTrashcan) {
     this.trashcan = new eYo.Trashcan(this, bottom)
     bottom = this.trashcan.top
   }
-  if (workspace.options.zoomOptions && workspace.options.zoomOptions.controls) {
-    this.addZoomControls_(bottom)
+  if (options.zoomOptions && options.zoomOptions.controls) {
+    this.zoomControls_ = new eYo.ZoomControls(this, bottom)
+    return this.zoomControls_.top
   }
   this.recordDeleteAreas()
 }
@@ -257,11 +274,13 @@ eYo.Workspace.prototype.makeUI = function(options) {
  * Dispose the UI related resources.
  */
 eYo.Workspace.prototype.disposeUI = function() {
-  var d = this.driver_
+  this.zoomControls_ && this.zoomControls_.disposeUI()
+  this.trashcan && this.trashcan.disposeUI()
+  var d = this.ui_driver_
   if (d) {
     d.workspaceDispose(this)
   }
-  this.driver_ = null
+  this.ui_driver_ = null
 }
 
 /**
@@ -609,7 +628,7 @@ eYo.Workspace.prototype.currentGesture_ = null;
 
 /**
  * This workspace's surface for dragging blocks, if it exists.
- * @type {eYo.BrickDragSurfaceSvg}
+ * @type {eYo.Svg.BrickDragSurface}
  * @private
  */
 eYo.Workspace.prototype.brickDragSurface_ = null;
@@ -731,21 +750,7 @@ eYo.Workspace.prototype.setResizeHandlerWrapper = function(handler) {
  */
 eYo.Workspace.prototype.newBlock = function(prototypeName, opt_id) {
   return new Blockly.BlockSvg(this, prototypeName, opt_id);
-};
-
-/**
- * Add zoom controls.
- * @param {number} bottom Distance from workspace bottom to bottom of controls.
- * @return {number} Distance from workspace bottom to the top of controls.
- * @private
- */
-eYo.Workspace.prototype.addZoomControls_ = function(bottom) {
-  /** @type {Blockly.ZoomControls} */
-  this.zoomControls_ = new Blockly.ZoomControls(this);
-  var svgZoomControls = this.zoomControls_.createDom();
-  this.dom.group_.appendChild(svgZoomControls);
-  return this.zoomControls_.init(bottom);
-};
+}
 
 /**
  * Add a flyout element in an element with the given tag name.
@@ -818,13 +823,13 @@ eYo.Workspace.prototype.resizeContents = function() {
  */
 eYo.Workspace.prototype.resize = function() {
   if (this.flyout_) {
-    this.flyout_.position()
+    this.flyout_.place()
   }
   if (this.trashcan) {
-    this.trashcan.position()
+    this.trashcan.place()
   }
   if (this.zoomControls_) {
-    this.zoomControls_.position()
+    this.zoomControls_.place()
   }
   if (this.scrollbar) {
     this.scrollbar.resize()
@@ -1089,7 +1094,7 @@ eYo.Workspace.prototype.paste = function (dom) {
  * Make a list of all the delete areas for this workspace.
  */
 eYo.Workspace.prototype.recordDeleteAreas = function() {
-  if (this.trashcan && this.dom.group_.parentNode) {
+  if (this.trashcan && this.dom.svg.group_.parentNode) {
     this.deleteAreaTrash_ = this.trashcan.getClientRect();
   } else {
     this.deleteAreaTrash_ = null;
@@ -1459,10 +1464,10 @@ eYo.Workspace.prototype.zoom = function(x, y, amount) {
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
 eYo.Workspace.prototype.zoomCenter = function(type) {
-  var metrics = this.getMetrics();
-  var x = metrics.viewWidth / 2;
-  var y = metrics.viewHeight / 2;
-  this.zoom(x, y, type);
+  var metrics = this.getMetrics()
+  var x = metrics.viewWidth / 2
+  var y = metrics.viewHeight / 2
+  this.zoom(x, y, type)
 };
 
 /**
@@ -1697,6 +1702,8 @@ eYo.Workspace.getContentDimensionsBounded_ = function(ws, svgSize) {
  * .flyoutWidth: Width of the flyout if it is always open.  Otherwise zero.
  * .flyoutHeight: Height of flyout if it is always open.  Otherwise zero.
  * .flyoutAnchor: Top, bottom, left or right.
+ * TODO: rename/refactor to clearly make the difference between
+ * vue coordinates and workspace coordinates.
  * @return {!Object} Contains size and position metrics of a top level
  *   workspace.
  * @private
@@ -1793,9 +1800,9 @@ eYo.Workspace.prototype.setResizesEnabled = function(enabled) {
  */
 eYo.Workspace.prototype.registerButtonCallback = function(key, func) {
   goog.asserts.assert(goog.isFunction(func),
-      'Button callbacks must be functions.');
-  this.flyoutButtonCallbacks_[key] = func;
-};
+      'Button callbacks must be functions.')
+  this.flyoutButtonCallbacks_[key] = func
+}
 
 /**
  * Get the callback function associated with a given key, for clicks on buttons
@@ -1805,16 +1812,16 @@ eYo.Workspace.prototype.registerButtonCallback = function(key, func) {
  *     given key for this workspace; null if no callback is registered.
  */
 eYo.Workspace.prototype.getButtonCallback = function(key) {
-  var result = this.flyoutButtonCallbacks_[key];
-  return result ? result : null;
-};
+  var result = this.flyoutButtonCallbacks_[key]
+  return result ? result : null
+}
 
 /**
  * Remove a callback for a click on a button in the flyout.
  * @param {string} key The name associated with the callback function.
  */
 eYo.Workspace.prototype.removeButtonCallback = function(key) {
-  this.flyoutButtonCallbacks_[key] = null;
+  this.flyoutButtonCallbacks_[key] = null
 }
 
 /**
@@ -1844,8 +1851,7 @@ eYo.Workspace.prototype.getGesture = function(e) {
   // No gesture existed on this workspace, but this looks like the start of a
   // new gesture.
   if (isStart) {
-    this.currentGesture_ = new eYo.Gesture(e, this)
-    return this.currentGesture_
+    return (this.currentGesture_ = new eYo.Gesture(e, this))
   }
   // No gesture existed and this event couldn't be the start of a new gesture.
   return null
@@ -1856,8 +1862,8 @@ eYo.Workspace.prototype.getGesture = function(e) {
  * @package
  */
 eYo.Workspace.prototype.clearGesture = function() {
-  this.currentGesture_ = null;
-};
+  this.currentGesture_ = null
+}
 
 /**
  * Cancel the current gesture, if one exists.
@@ -1865,21 +1871,21 @@ eYo.Workspace.prototype.clearGesture = function() {
  */
 eYo.Workspace.prototype.cancelCurrentGesture = function() {
   if (this.currentGesture_) {
-    this.currentGesture_.cancel();
+    this.currentGesture_.cancel()
   }
-};
+}
 
 /**
  * Get the audio manager for this workspace.
  * @return {Blockly.WorkspaceAudio} The audio manager for this workspace.
  */
 eYo.Workspace.prototype.getAudioManager = function() {
-  return this.audioManager_;
+  return this.audioManager_
 };
    
 // Export symbols that would otherwise be renamed by Closure compiler.
 eYo.Workspace.prototype['setVisible'] =
-    eYo.Workspace.prototype.setVisible;
+    eYo.Workspace.prototype.setVisible
 
 eYo.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
@@ -1898,7 +1904,6 @@ eYo.Workspace.prototype.logAllConnections = function (comment) {
     })
   })
 }
-
 
 /**
  * Convert a coordinate object from pixels to workspace units.
@@ -2209,7 +2214,6 @@ Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
     // Shorten the scrollbar to make room for the corner square.
     viewSize -= Blockly.Scrollbar.scrollbarThickness;
   }
-
   var workspace = this.workspace_
   var flyout = workspace.flyout_
   if (flyout) {
@@ -2238,35 +2242,4 @@ Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   // If the view has been resized, a content resize will also be necessary.  The
   // reverse is not true.
   this.resizeContentVertical(hostMetrics);
-};
-
-/**
- * Move the trash can to the bottom-right corner.
- */
-Blockly.Trashcan.prototype.position = function() {
-  var metrics = this.workspace_.getMetrics();
-  if (!metrics) {
-    // There are no metrics available (workspace is probably not visible).
-    return;
-  }
-  this.left_ = metrics.viewWidth + metrics.absoluteLeft -
-      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
-
-  if (metrics.flyoutAnchor == eYo.Flyout.AT_RIGHT) {
-    var flyoutPosition = this.workspace_.flyout_.flyoutPosition
-    if (flyoutPosition) {
-      this.left_ = flyoutPosition.x -
-      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness
-    } else {
-      this.left_ -= metrics.flyoutWidth
-    }
-  }
-  this.top_ = metrics.viewHeight + metrics.absoluteTop -
-      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
-
-  if (metrics.flyoutAnchor == eYo.Flyout.AT_BOTTOM) {
-    this.top_ -= metrics.flyoutHeight
-  }
-  this.dom.group_.setAttribute('transform',
-      'translate(' + this.left_ + ',' + this.top_ + ')');
 };

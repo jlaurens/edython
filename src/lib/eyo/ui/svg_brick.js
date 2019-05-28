@@ -30,107 +30,126 @@ eYo.Svg.prototype.brickInit = function (brick) {
   if (ui.dom) {
     return
   }
-  var svg = ui.dom = {}
+  var dom = this.basicInit(brick)
+  var svg = ui.dom.svg = Object.create(null)
   // groups:
-  dom.group_ = eYo.Svg.newElement('g',
+  var g = svg.group_ = eYo.Svg.newElement('g',
     {class: 'eyo-brick'}, null)
   // Expose this brick's ID on its top-level SVG group.
-  if (dom.group_.dataset) {
-    dom.group_.dataset.id = brick.id
+  if (g_.dataset) {
+    g_.dataset.id = brick.id
   }
-  dom.pathInner_ = eYo.Svg.newElement('path', {
+  svg.pathInner_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-inner'
   }, null)
-  dom.pathCollapsed_ = eYo.Svg.newElement('path', {
+  svg.pathCollapsed_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-collapsed'
   }, null)
-  dom.pathContour_ = eYo.Svg.newElement('path', {
+  svg.pathContour_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-contour'
   }, null)
-  dom.pathShape_ = eYo.Svg.newElement('path', {
+  svg.pathShape_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-shape'
   }, null)
-  dom.pathSelect_ = eYo.Svg.newElement('path', {
+  svg.pathSelect_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-selected'
   }, null)
-  dom.pathHilight_ = eYo.Svg.newElement('path', {
+  svg.pathHilight_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-hilighted'
   }, null)
-  dom.pathMagnet_ = eYo.Svg.newElement('path', {
+  svg.pathMagnet_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-connection eyo-path-hilighted'
   }, null)
-  this.withBBox && (dom.pathBBox_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-bbox'
-  }, null))
   // Contour
-  dom.groupContour_ = eYo.Svg.newElement('g',
-    {class: 'eyo-contour'}, null)
-  this.withBBox && (goog.dom.appendChild(dom.groupContour_, dom.pathBBox_))
-  goog.dom.appendChild(dom.groupContour_, dom.pathInner_)
-  goog.dom.appendChild(dom.groupContour_, dom.pathCollapsed_)
-  goog.dom.appendChild(dom.groupContour_, dom.pathContour_)
+  svg.groupContour_ = eYo.Svg.newElement('g', {
+    class: 'eyo-contour'
+  }, null)
+  if (this.withBBox) {
+    svg.pathBBox_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-bbox'
+    }, null)
+    goog.dom.appendChild(svg.groupContour_, svg.pathBBox_)
+  }
+  goog.dom.appendChild(svg.groupContour_, svg.pathInner_)
+  goog.dom.appendChild(svg.groupContour_, svg.pathCollapsed_)
+  goog.dom.appendChild(svg.groupContour_, svg.pathContour_)
   // Shape
-  dom.groupShape_ = eYo.Svg.newElement('g',
-    {class: 'eyo-shape'}, null)
-  goog.dom.appendChild(dom.groupShape_, dom.pathShape_)
+  svg.groupShape_ = eYo.Svg.newElement('g', {
+    class: 'eyo-shape'
+  }, null)
+  goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.workspace.options.readOnly) {
-    ui.driver.bindMouseEvents(ui, dom.group_)
+    ui.driver.bindMouseEvents(ui, g)
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
-    ui.driver.bindMouseEvents(ui, dom.pathContour_)
+    ui.driver.bindMouseEvents(ui, svg.pathContour_)
   }
   if (brick.isExpr) {
-    goog.dom.classlist.add(dom.groupShape_, 'eyo-expr')
-    goog.dom.classlist.add(dom.groupContour_, 'eyo-expr')
-    goog.dom.classlist.add(dom.group_, 'eyo-top')
+    goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
+    goog.dom.classlist.add(svg.groupContour_, 'eyo-expr')
+    goog.dom.classlist.add(g, 'eyo-top')
   } else if (brick.isStmt) {
-    dom.groupSharp_ = eYo.Svg.newElement('g',
-    {class: 'eyo-sharp-group'}, null)
-    goog.dom.insertSiblingAfter(dom.groupSharp_, dom.pathContour_)
-    goog.dom.classlist.add(dom.groupShape_, 'eyo-stmt')
-    goog.dom.classlist.add(dom.groupContour_, 'eyo-stmt')
+    svg.groupSharp_ = eYo.Svg.newElement('g', {
+      class: 'eyo-sharp-group'
+    }, null)
+    goog.dom.insertSiblingAfter(svg.groupSharp_, svg.pathContour_)
+    goog.dom.classlist.add(svg.groupShape_, 'eyo-stmt')
+    goog.dom.classlist.add(svg.groupContour_, 'eyo-stmt')
     if (brick.isControl) {
-      dom.groupPlay_ = eYo.Svg.newElement('g',
-      {class: 'eyo-play'}, dom.group_)
-      dom.pathPlayContour_ = eYo.Svg.newElement('path',
-      {class: 'eyo-path-play-contour'}, dom.groupPlay_)
-      dom.pathPlayIcon_ = eYo.Svg.newElement('path',
-      {class: 'eyo-path-play-icon'}, dom.groupPlay_)
-      dom.pathPlayContour_.setAttribute('d', eYo.Shape.definitionForPlayContour({x: 0, y: 0}))
-      dom.pathPlayIcon_.setAttribute('d', eYo.Shape.definitionForPlayIcon({x: 0, y: 0}))
-      dom.bound.mousedown =
-        this.bindEvent(dom.pathPlayIcon_, 'mousedown', null, e => {
-        if (brick.isInFlyout) {
-          return
+      svg.groupPlay_ = eYo.Svg.newElement('g', {
+        class: 'eyo-play'
+      }, g)
+      svg.pathPlayContour_ = eYo.Svg.newElement('path', {
+        class: 'eyo-path-play-contour'
+      }, svg.groupPlay_)
+      svg.pathPlayIcon_ = eYo.Svg.newElement('path', {
+        class: 'eyo-path-play-icon'
+      }, svg.groupPlay_)
+      svg.pathPlayContour_.setAttribute(
+        'd',
+        eYo.Shape.definitionForPlayContour({x: 0, y: 0})
+      )
+      svg.pathPlayIcon_.setAttribute(
+        'd',
+        eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
+      )
+      dom.bound.mousedown = this.bindEvent(
+        svg.pathPlayIcon_,
+        'mousedown',
+        null,
+        e => {
+          if (brick.isInFlyout) {
+            return
+          }
+          console.log('Start executing ' + brick.id)
+          brick.runScript()
         }
-        console.log('Start executing ' + brick.id)
-        brick.runScript()
-      })
-      goog.dom.classlist.add(dom.group_, 'eyo-start')
-      goog.dom.classlist.add(dom.pathShape_, 'eyo-start-path')
-      goog.dom.insertSiblingAfter(dom.groupPlay_, dom.pathHilight_)
+      )
+      goog.dom.classlist.add(g, 'eyo-start')
+      goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')
+      goog.dom.insertSiblingAfter(svg.groupPlay_, svg.pathHilight_)
     }
   }
   var parent = brick.parent
   if (parent) {
-    var p_svg = parent.ui.dom
+    var p_svg = parent.ui.dom.svg
   } else {
-    brick.workspace.getCanvas().appendChild(dom.group_)
+    brick.workspace.dom.svg.canvas_.appendChild(g)
   }
   if (p_svg && p_svg.groupContour_) {
-    goog.dom.insertChildAt(p_svg.groupContour_, dom.groupContour_, 0)
-    goog.dom.classlist.add(/** @type {!Element} */(dom.groupContour_),
+    goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
-    goog.dom.appendChild(p_svg.groupShape_, dom.groupShape_)
-    goog.dom.classlist.add(/** @type {!Element} */(dom.groupShape_),
+    goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
-    goog.dom.insertChildAt(dom.group_, dom.groupContour_, 0)
-    goog.dom.classlist.remove(/** @type {!Element} */dom.groupContour_,
+    goog.dom.insertChildAt(g, svg.groupContour_, 0)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
-    goog.dom.insertSiblingBefore(dom.groupShape_, dom.groupContour_)
-    goog.dom.classlist.remove(/** @type {!Element} */dom.groupShape_,
+    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
   }
 }
@@ -141,47 +160,51 @@ eYo.Svg.prototype.brickInit = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickDispose = function (brick) {
-  this.unbindEvents(brick)
-  var dom = brick.ui.dom
-  // goog.dom.removeNode(dom.group_) only once the block_ design is removed
-  goog.dom.removeNode(dom.group_)
-  dom.group_ = undefined
+  var svg = brick.ui.dom.svg
+  if (!svg) {
+    return
+  }
+  this.clearBoundEvents(brick)
+  // goog.dom.removeNode(dom.svg.group_) only once the block_ design is removed
+  goog.dom.removeNode(svg.group_)
+  svg.group_ = undefined
   // just in case the path were not already removed as child or a removed parent
-  goog.dom.removeNode(dom.pathShape_)
-  dom.pathShape_ = undefined
-  goog.dom.removeNode(dom.pathContour_)
-  dom.pathContour_ = undefined
-  goog.dom.removeNode(dom.pathCollapsed_)
-  dom.pathCollapsed_ = undefined
-  goog.dom.removeNode(dom.pathBBox_)
-  dom.pathBBox_ = undefined
-  goog.dom.removeNode(dom.pathInner_)
-  dom.pathInner_ = undefined
-  goog.dom.removeNode(dom.pathSelect_)
-  dom.pathSelect_ = undefined
-  goog.dom.removeNode(dom.pathHilight_)
-  dom.pathHilight_ = undefined
-  goog.dom.removeNode(dom.pathMagnet_)
-  dom.pathMagnet_ = undefined
-  if (dom.groupContour_) {
-    goog.dom.removeNode(dom.groupContour_)
-    dom.groupContour_ = undefined
+  goog.dom.removeNode(svg.pathShape_)
+  svg.pathShape_ = undefined
+  goog.dom.removeNode(svg.pathContour_)
+  svg.pathContour_ = undefined
+  goog.dom.removeNode(svg.pathCollapsed_)
+  svg.pathCollapsed_ = undefined
+  goog.dom.removeNode(svg.pathBBox_)
+  svg.pathBBox_ = undefined
+  goog.dom.removeNode(svg.pathInner_)
+  svg.pathInner_ = undefined
+  goog.dom.removeNode(svg.pathSelect_)
+  svg.pathSelect_ = undefined
+  goog.dom.removeNode(svg.pathHilight_)
+  svg.pathHilight_ = undefined
+  goog.dom.removeNode(svg.pathMagnet_)
+  svg.pathMagnet_ = undefined
+  if (svg.groupContour_) {
+    goog.dom.removeNode(svg.groupContour_)
+    svg.groupContour_ = undefined
   }
-  if (dom.groupShape_) {
-    goog.dom.removeNode(dom.groupShape_)
-    dom.groupShape_ = undefined
+  if (svg.groupShape_) {
+    goog.dom.removeNode(svg.groupShape_)
+    svg.groupShape_ = undefined
   }
-  if (dom.groupSharp_) {
-    goog.dom.removeNode(dom.groupSharp_)
-    dom.groupSharp_ = undefined
+  if (svg.groupSharp_) {
+    goog.dom.removeNode(svg.groupSharp_)
+    svg.groupSharp_ = undefined
   }
-  if (dom.groupPlay_) {
-    goog.dom.removeNode(dom.groupPlay_)
-    dom.groupPlay_ = undefined
-    dom.pathPlayIcon_ = undefined
-    dom.pathPlayContour_ = undefined
+  if (svg.groupPlay_) {
+    goog.dom.removeNode(svg.groupPlay_)
+    svg.groupPlay_ = undefined
+    svg.pathPlayIcon_ = undefined
+    svg.pathPlayContour_ = undefined
   }
-  brick.ui.dom = undefined
+  brick.ui.dom.svg = undefined
+  this.basicDispose(brick)
 }
 
 /**
@@ -190,7 +213,7 @@ eYo.Svg.prototype.brickDispose = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickCanDraw = function (brick) {
-  return !!brick.ui.dom.pathInner_
+  return !!brick.ui.dom.svg.pathInner_
 }
 
 /**
@@ -219,7 +242,7 @@ eYo.Svg.prototype.brickGetBBox = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickHasSelect = function (brick) {
-  return goog.dom.classlist.contains(brick.ui.dom.group_, 'eyo-select')
+  return goog.dom.classlist.contains(brick.ui.dom.svg.group_, 'eyo-select')
 }
 
 /**
@@ -328,8 +351,8 @@ eYo.Svg.prototype.pathBBoxDef_ = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickWillRender = function (brick, recorder) {
-  var svg = brick.ui.dom
-  if (dom.group_) {
+  var svg = brick.ui.dom.svg
+  if (svg.group_) {
     var F = brick.locked_ && brick.out
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
@@ -338,21 +361,21 @@ eYo.Svg.prototype.brickWillRender = function (brick, recorder) {
         F(elt, classname)
       }
     }
-    FF(dom.group_, 'eyo-locked')
-    FF(dom.pathShape_, 'eyo-locked')
-    FF(dom.pathContour_, 'eyo-locked')
-    FF(dom.pathCollapsed_, 'eyo-locked')
-    FF(dom.pathSelect_, 'eyo-locked')
-    FF(dom.pathHilight_, 'eyo-locked')
+    FF(svg.group_, 'eyo-locked')
+    FF(svg.pathShape_, 'eyo-locked')
+    FF(svg.pathContour_, 'eyo-locked')
+    FF(svg.pathCollapsed_, 'eyo-locked')
+    FF(svg.pathSelect_, 'eyo-locked')
+    FF(svg.pathHilight_, 'eyo-locked')
     // change the class of the shape on error
     F = Object.keys(brick.errors).length
       ? goog.dom.classlist.add
       : goog.dom.classlist.remove
-    FF(dom.pathShape_, 'eyo-error')
-    FF(dom.pathContour_, 'eyo-error')
-    FF(dom.pathCollapsed_, 'eyo-error')
-    FF(dom.pathSelect_, 'eyo-error')
-    FF(dom.pathHilight_, 'eyo-error')
+    FF(svg.pathShape_, 'eyo-error')
+    FF(svg.pathContour_, 'eyo-error')
+    FF(svg.pathCollapsed_, 'eyo-error')
+    FF(svg.pathSelect_, 'eyo-error')
+    FF(svg.pathHilight_, 'eyo-error')
   }
 }
 
@@ -447,13 +470,13 @@ eYo.Svg.prototype.brickDrawModelEnd = function (brick, io) {
  */
 eYo.Svg.prototype.brickUpdateDisabled = function (brick) {
   var brick = brick
-  var svg = brick.ui.dom
+  var svg = brick.ui.dom.svg
   if (brick.disabled || brick.getInheritedDisabled()) {
     goog.dom.classlist.add(
-        /** @type {!Element} */ (dom.group_), 'eyo-disabled')
+        /** @type {!Element} */ svg.group_, 'eyo-disabled')
   } else {
     goog.dom.classlist.remove(
-        /** @type {!Element} */ (dom.group_), 'eyo-disabled')
+        /** @type {!Element} */ svg.group_, 'eyo-disabled')
   }
 }
 
@@ -467,8 +490,8 @@ eYo.Svg.prototype.brickMenuShow = function (brick, menu) {
   var svg = brick.ui.dom
   var bBox = this.brickGetBBox(brick)
   var scaledHeight = bBox.height * brick.workspace.scale
-  var xy = goog.style.getPageOffset(dom.group_)
-  menu.showMenu(dom.group_, xy.x, xy.y + scaledHeight + 2)
+  var xy = goog.style.getPageOffset(svg.group_)
+  menu.showMenu(svg.group_, xy.x, xy.y + scaledHeight + 2)
 }
 
 /**
@@ -479,28 +502,28 @@ eYo.Svg.prototype.brickMenuShow = function (brick, menu) {
  * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
-  var svg = brick.ui.dom
+  var svg = brick.ui.dom.svg
   if (brick.parent) {
     // this brick was connected, so its paths were located in the parents
     // groups.
     // First step, remove the relationship between the receiver
     // and the old parent, then link the receiver with the new parent.
     // this second step is performed in the `parentDidChange` method.
-    var g = dom.group_
+    var g = svg.group_
     if (g) {
       // Move this brick up the DOM.  Keep track of x/y translations.
       var brick = brick
-      brick.workspace.getCanvas().appendChild(g)
+      brick.workspace.dom.svg.canvas_.appendChild(g)
       var xy = brick.ui.xyInWorkspace
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
-      if (dom.groupContour_) {
-        goog.dom.insertChildAt(g, dom.groupContour_, 0)
-        dom.groupContour_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */(dom.groupContour_),
+      if (svg.groupContour_) {
+        goog.dom.insertChildAt(g, svg.groupContour_, 0)
+        svg.groupContour_.removeAttribute('transform')
+        goog.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
           'eyo-inner')
-        goog.dom.insertSiblingBefore(dom.groupShape_, dom.groupContour_)
-        dom.groupShape_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */(dom.groupShape_),
+        goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+        svg.groupShape_.removeAttribute('transform')
+        goog.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
           'eyo-inner')
       }
     }
@@ -517,36 +540,36 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
 eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
   if (brick.parent) {
     var ui = brick.ui
-    var svg = ui.dom
-    var g = dom.group_
+    var svg = ui.dom.svg
+    var g = svg.group_
     var oldXY = ui.xyInWorkspace
-    brick.parent.ui.dom.group_.appendChild(g)
+    brick.parent.ui.dom.svg.group_.appendChild(g)
     var newXY = ui.xyInWorkspace
     // Move the magnets to match the child's new position.
     brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
-    var p_svg = newParent.ui.dom
-    if (dom.groupContour_ && p_svg.groupContour_) {
+    var p_svg = newParent.ui.dom.svg
+    if (svg.groupContour_ && p_svg.groupContour_) {
       if (this.contourAboveParent_(brick)) {
-        goog.dom.appendChild(p_svg.groupContour_, dom.groupContour_)
+        goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
       } else {
-        goog.dom.insertChildAt(p_svg.groupContour_, dom.groupContour_, 0)
+        goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
       }
-      goog.dom.appendChild(p_svg.groupShape_, dom.groupShape_)
-      goog.dom.classlist.add(/** @type {!Element} */(dom.groupContour_),
+      goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
         'eyo-inner')
-      goog.dom.classlist.add(/** @type {!Element} */(dom.groupShape_),
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
         'eyo-inner')
     }
     // manage the selection,
     // this seems tricky? Is there any undocumented side effect?
     if ((dom.pathSelect_ &&
-      dom.group_ === dom.pathSelect_.parentElement) || (dom.pathMagnet_ &&
-          dom.group_ === dom.pathMagnet_.parentElement)) {
+      svg.group_ === svg.pathSelect_.parentElement) || (svg.pathMagnet_ &&
+        svg.group_ === svg.pathMagnet_.parentElement)) {
       this.brickSelectRemove(brick)
       this.brickSelectAdd(brick)
     } else if ((p_svg.pathSelect_ &&
         p_svg.group_ === p_svg.pathSelect_.parentNode) || (p_svg.pathMagnet_ &&
-          p_svg.group_ === newParent.pathMagnet_.parentNode)) {
+          p_svg.group_ === p_svg.pathMagnet_.parentNode)) {
       this.brickSelectRemove(newParent)
       this.brickSelectRemove(newParent)
     }
@@ -577,12 +600,12 @@ eYo.Svg.prototype.brickUpdateWrapped = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickSendToFront = function (brick) {
-  var eyo = brick
+  var b3k = brick
   var parent
-  while ((parent = eyo.surround)) {
-    eyo = parent
+  while ((parent = b3k.surround)) {
+    b3k = parent
   }
-  var g = eyo.ui.dom.group_
+  var g = b3k.ui.dom.svg.group_
   if (g.nextSibling && (parent = g.parentNode)) {
     parent.removeChild(g)
     parent.appendChild(g)
@@ -613,12 +636,12 @@ eYo.Svg.prototype.brickSendToFront = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickSendToBack = function (brick) {
-  var eyo = brick
+  var b3k = brick
   var parent
-  while ((parent = eyo.surround)) {
-    eyo = parent
+  while ((parent = b3k.surround)) {
+    b3k = parent
   }
-  var g = eyo.ui.dom.group_
+  var g = b3k.ui.dom.svg.group_
   if (g.previousSibling && (parent = g.parentNode)) {
     parent.removeChild(g)
     parent.insertBefore(g, parent.firstChild)
@@ -634,13 +657,13 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
  * @return {boolean}
  */
 eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
-  var svg = brick.ui.dom
+  var svg = brick.ui.dom.svg
   // Workspace coordinates.
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
-  var xy = this.xyInParent(dom.group_)
+  var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
-  ;[dom.group_, dom.groupShape_, dom.groupContour_].forEach(g => {
+  ;[svg.group_, svg.groupShape_, svg.groupContour_].forEach(g => {
     g.setAttribute('transform', transform)
   })
 }
@@ -655,10 +678,9 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
  * @package
  */
 eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
-  var svg = brick.ui.dom
-  dom.group_.translate_ = `translate(${dx},${dy})`
-  dom.group_.setAttribute('transform',
-  dom.group_.translate_ + dom.group_.skew_)
+  var g = brick.ui.dom.svg.group_
+  g.translate_ = `translate(${dx},${dy})`
+  g.setAttribute('transform', g.translate_ + g.skew_)
 }
 
 /**
@@ -670,27 +692,27 @@ eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
  * @return {boolean}
  */
 eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
-  var svg = brick.ui.dom
+  var svg = brick.ui.dom.svg
   if (!this.brickCanDraw(brick)) {
     throw `brick is not inited ${brick.type}`
   }
   // Workspace coordinates.
-  var xy = this.xyInParent(dom.group_)
+  var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
-  dom.group_.setAttribute('transform', transform)
-  var xy1 = this.xyInParent(dom.groupShape_)
-  var xy2 = this.xyInParent(dom.groupContour_)
+  svg.group_.setAttribute('transform', transform)
+  var xy1 = this.xyInParent(svg.groupShape_)
+  var xy2 = this.xyInParent(svg.groupContour_)
   if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
     console.error('WEIRD A: position !== shape position', xy, xy1)
   }
   if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
     console.error('WEIRD A: shape position !== contour position', xy1, xy2)
   }
-  dom.groupShape_.setAttribute('transform', transform)
-  dom.groupContour_.setAttribute('transform', transform)
-  xy = this.xyInParent(dom.group_)
-  xy1 = this.xyInParent(dom.groupShape_)
-  xy2 = this.xyInParent(dom.groupContour_)
+  svg.groupShape_.setAttribute('transform', transform)
+  svg.groupContour_.setAttribute('transform', transform)
+  xy = this.xyInParent(svg.group_)
+  xy1 = this.xyInParent(svg.groupShape_)
+  xy2 = this.xyInParent(svg.groupContour_)
   if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
     console.error('WEIRD B: position !== shape position', xy, xy1)
   }
@@ -704,8 +726,8 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
  * @param {number} x The x coordinate of the translation in workspace units.
  * @param {number} y The y coordinate of the translation in workspace units.
  */
-eYo.Svg.prototype.brickTranslate = function(brick, x, y) {
-  brick.ui.dom.group_.setAttribute('transform', `translate(${x},${y})`)
+eYo.Svg.prototype.brickMoveTo = function(brick, x, y) {
+  brick.ui.dom.svg.group_.setAttribute('transform', `translate(${x},${y})`)
 }
 
 /**
@@ -723,8 +745,8 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
   var brick = brick
   var dragSurface = brick.ui.useDragSurface_ && brick.workspace.brickDragSurface_
   var dragSurfaceGroup = dragSurface && (dragSurface.getGroup())
-  var canvas = brick.workspace.getCanvas()
-  var element = brick.ui.dom.group_
+  var canvas = brick.workspace.dom.svg.canvas_
+  var element = brick.ui.dom.svg.group_
   if (element) {
     do {
       // Loop through this brick and every parent.
@@ -749,9 +771,9 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickHilightAdd = function (brick) {
-  var svg = brick.ui.dom
-  if (!dom.pathHilight_.parentNode) {
-    dom.group_.appendChild(dom.pathHilight_)
+  var svg = brick.ui.dom.svg
+  if (!svg.pathHilight_.parentNode) {
+    svg.group_.appendChild(svg.pathHilight_)
   }
 }
 
@@ -768,14 +790,14 @@ eYo.Svg.prototype.brickHilightRemove = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickSelectAdd = function (brick) {
-  var svg = brick.ui.dom
-  if (!dom.pathSelect_.parentNode) {
-    if (dom.pathHilight_.parentNode) {
-      dom.group_.insertBefore(dom.pathSelect_, dom.pathHilight_)
-    } else if (dom.pathMagnet_.parentNode) {
-      dom.group_.insertBefore(dom.pathSelect_, dom.pathMagnet_)
+  var svg = brick.ui.dom.svg
+  if (!svg.pathSelect_.parentNode) {
+    if (svg.pathHilight_.parentNode) {
+      svg.group_.insertBefore(svg.pathSelect_, svg.pathHilight_)
+    } else if (svg.pathMagnet_.parentNode) {
+      svg.group_.insertBefore(svg.pathSelect_, svg.pathMagnet_)
     } else {
-      dom.group_.appendChild(dom.pathSelect_)
+      svg.group_.appendChild(svg.pathSelect_)
     }
   }
 }
@@ -793,9 +815,9 @@ eYo.Svg.prototype.brickSelectRemove = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickMagnetAdd = function (brick) {
-  var svg = brick.ui.dom
-  if (!dom.pathMagnet_.parentNode) {
-    dom.group_.appendChild(dom.pathMagnet_)
+  var svg = brick.ui.dom.svg
+  if (!svg.pathMagnet_.parentNode) {
+    svg.group_.appendChild(svg.pathMagnet_)
   }
 }
 
@@ -812,7 +834,7 @@ eYo.Svg.prototype.brickMagnetRemove = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickStatusTopAdd = function (brick) {
-  goog.dom.classlist.add(brick.ui.dom.group_, 'eyo-top')
+  goog.dom.classlist.add(brick.ui.dom.svg.group_, 'eyo-top')
 }
 
 /**
@@ -820,7 +842,7 @@ eYo.Svg.prototype.brickStatusTopAdd = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickStatusTopRemove = function (brick) {
-  goog.dom.classlist.remove(brick.ui.dom.group_, 'eyo-top')
+  goog.dom.classlist.remove(brick.ui.dom.svg.group_, 'eyo-top')
 }
 
 /**
@@ -828,13 +850,13 @@ eYo.Svg.prototype.brickStatusTopRemove = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickStatusSelectAdd = function (brick) {
-  var svg = brick.ui.dom
-  var g = dom.group_
+  var svg = brick.ui.dom.svg
+  var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {
     return
   }
   goog.dom.classlist.add(g, 'eyo-select')
-  if ((g = dom.groupContour_)) {
+  if ((g = svg.groupContour_)) {
     // maybe that brick has not been rendered yet
     goog.dom.classlist.add(g, 'eyo-select')
   }
@@ -845,10 +867,10 @@ eYo.Svg.prototype.brickStatusSelectAdd = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickStatusSelectRemove = function (brick) {
-  var svg = brick.ui.dom
-  var g = dom.group_
+  var svg = brick.ui.dom.svg
+  var g = svg.group_
   goog.dom.classlist.remove(g, 'eyo-select')
-  if ((g = dom.groupContour_)) {
+  if ((g = svg.groupContour_)) {
     // maybe that brick has not been rendered yet
     goog.dom.classlist.remove(g, 'eyo-select')
   }
@@ -859,7 +881,7 @@ eYo.Svg.prototype.brickStatusSelectRemove = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickDisplayedGet = function (brick) {
-  var g =  brick.ui.dom.group_
+  var g =  brick.ui.dom.svg.group_
   if (g) {
     return g.style.display !== 'none'
   }
@@ -871,13 +893,13 @@ eYo.Svg.prototype.brickDisplayedGet = function (brick) {
  * @param {boolean} visible  the expected visibility status
  */
 eYo.Svg.prototype.brickDisplayedSet = function (brick, visible) {
-  var svg =  brick.ui.dom
-  var g =  dom.group_
+  var svg =  brick.ui.dom.svg
+  var g =  svg.group_
   if (g) {
     var d = visible ? 'block' : 'none'
     g.style.display = d
-    if ((g = dom.groupContour_)) {
-      g.style.display = dom.groupShape_.style.display = d
+    if ((g = svg.groupContour_)) {
+      g.style.display = svg.groupShape_.style.display = d
     }
   }
 }
@@ -925,16 +947,15 @@ eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
  * @param {Boolean} dragging  The display mode for bocks.
  */
 eYo.Svg.prototype.brickSetDragging = (brick, dragging) => {
-  var svg = brick.ui.dom
+  var g = brick.ui.dom.svg.group_
   if (dragging) {
-    var group = dom.group_
-    group.translate_ = ''
-    group.skew_ = ''
+    g.translate_ = ''
+    g.skew_ = ''
     goog.dom.classlist.add(
-        /** @type {!Element} */ (group), 'eyo-dragging')
+        /** @type {!Element} */ g, 'eyo-dragging')
   } else {
     goog.dom.classlist.remove(
-        /** @type {!Element} */ (group), 'eyo-dragging')
+        /** @type {!Element} */ g, 'eyo-dragging')
   }
   // Recurse through all bricks attached under this one.
   brick.children_.forEach(b => b.ui.setDragging(adding))
@@ -945,28 +966,28 @@ eYo.Svg.prototype.brickSetDragging = (brick, dragging) => {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickSetParent = function (brick, parent) {
-  var svg = brick.ui.dom
+  var svg = brick.ui.dom.svg
   if (parent) {
     var p_svg = parent.ui.dom
     var oldXY = this.brickXYInWorkspace(brick)
-    p_svg.group_.appendChild(dom.group_)
+    p_svg.group_.appendChild(svg.group_)
     var newXY = this.brickXYInWorkspace(brick)
-    goog.dom.insertChildAt(p_svg.groupContour_, dom.groupContour_, 0)
-    goog.dom.classlist.add(/** @type {!Element} */(dom.groupContour_),
+    goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
-    goog.dom.appendChild(p_svg.groupShape_, dom.groupShape_)
-    goog.dom.classlist.add(/** @type {!Element} */(dom.groupShape_),
+    goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
     var oldXY = this.brickXYInWorkspace(brick)
-    brick.workspace.getCanvas().appendChild(dom.group_)
-    xy && (dom.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
+    brick.workspace.getCanvas().appendChild(svg.group_)
+    xy && (svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
     var newXY = this.brickXYInWorkspace(brick)
-    goog.dom.insertChildAt(dom.group_, dom.groupContour_, 0)
-    goog.dom.classlist.remove(/** @type {!Element} */dom.groupContour_,
+    goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
-    goog.dom.insertSiblingBefore(dom.groupShape_, dom.groupContour_)
-    goog.dom.classlist.remove(/** @type {!Element} */dom.groupShape_,
+    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+    goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
   }
   brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y);
@@ -977,10 +998,10 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
  * @param {!eYo.Brick} field  the brick the driver acts on
  */
 eYo.Svg.prototype.brickAtTop = function (brick) {
-  var g = brick.ui.dom.group_
+  var g = brick.ui.dom.svg.group_
   // Move this brick up the DOM.  Keep track of x/y translations.
   var xy = this.brickXYInWorkspace(brick)
-  this.workspace.getCanvas().appendChild(g)
+  this.workspace.dom.svg.canvas_.appendChild(g)
   g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
 }
 
@@ -1013,12 +1034,11 @@ eYo.Svg.prototype.brickMoveToDragSurface = function (brick) {
   // to keep the position in sync as it move on/off the surface.
   // This is in workspace coordinates.
   var xy = this.brickXYInWorkspace(brick)
-  this.removeAttribute(brick.dom.group_, 'transform');
+  this.removeAttribute(brick.dom.svg.group_, 'transform');
   brick.workspace.brickDragSurface_.translateSurface(xy.x, xy.y)
   // Execute the move on the top-level SVG component
-  brick.workspace.brickDragSurface_.setBlocksAndShow(brick.dom.group_)
+  brick.workspace.brickDragSurface_.setBlocksAndShow(brick.dom.svg.group_)
 }
-
 
 /**
  * Move this block back to the workspace block canvas.
@@ -1035,7 +1055,7 @@ eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
   }
   // Translate to current position, turning off 3d.
   brick.translate(newXY.x, newXY.y)
-  brick.workspace.brickDragSurface_.clearAndHide(brick.workspace.getCanvas())
+  brick.workspace.brickDragSurface_.clearAndHide(brick.workspace.dom.svg.canvas_)
 }
 
 /**
@@ -1045,11 +1065,10 @@ eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
  * @package
  */
 eYo.Svg.prototype.brickSetDeleteStyle = function(brick, enable) {
-  if (enable) {
-    goog.dom.classlist.add(/** @type {!Element} */ (brick.ui.dom.group_),
-        'eyo-dragging-delete')
-  } else {
-    goog.dom.classlist.remove(/** @type {!Element} */ (brick.ui.dom.group_),
-        'eyo-dragging-delete')
-  }
+  (enable
+    ? goog.dom.classlist.add
+    : goog.dom.classlist.remove)(
+      /** @type {!Element} */brick.ui.dom.svg.group_,
+      'eyo-dragging-delete'
+  )
 }

@@ -34,7 +34,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
     return
   }
   var node = m4t.brick
-  var g = node.ui.dom.group_
+  var g = node.ui.dom.svg.group_
   var steps
   if (m4t.isInput) {
     if (m4t.target) {
@@ -42,7 +42,8 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
       eYo.Svg.magnetHighlightedPath_ =
-      eYo.Svg.newElement('path',
+      eYo.Svg.newElement(
+        'path',
         {
           class: 'blocklyHighlightedConnectionPath',
           d: steps
@@ -56,12 +57,15 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
-  eYo.Svg.magnetHighlightedPath_ =
-  eYo.Svg.newElement('path',
-    {class: 'blocklyHighlightedConnectionPath',
-      'd': steps,
-      transform: `translate(${m4t.x || 0},${m4t.y || 0})`},
-      g)
+  eYo.Svg.magnetHighlightedPath_ = eYo.Svg.newElement(
+    'path',
+    {
+      class: 'blocklyHighlightedConnectionPath',
+      d: steps,
+      transform: `translate(${m4t.x || 0},${m4t.y || 0})`
+    },
+    g
+  )
 }
 
 /**

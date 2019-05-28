@@ -63,21 +63,55 @@ eYo.BrickDragger.prototype.dispose = function() {
 }
 
 /**
- * Start dragging a brick.  This includes moving it to the drag surface.
- * @param {!eYo.Brick} brick The brick to drag.
- * @param {!Event} e The most recent move event.
- * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
- *     moved from the position at mouse down, in pixel units.
- * @param {boolean} healStack whether or not to heal the stack after disconnecting
+ * Eventually start dragging a brick.
+ * @param {!eYo.Gesture} gesture  The gesture initiating the eventual drag.
+ * @return {eYo.Brick}  The target brick of the drag event, if any.
  * @package
  */
-eYo.BrickDragger.prototype.start = function(e, delta, brick, healStack) {
+eYo.BrickDragger.prototype.start = function(gesture) {
+  this.gesture_ = gesture
+  var targetBrick = gesture.targetBrick_
+  if (!targetBrick) {
+    return
+  }
+  var flyout = gesture.flyout_
+  var deltaXY = gesture.xyDelta_
+  if (flyout) {
+    /*
+     * Update this gesture to record whether a brick is being dragged from the
+     * flyout.
+     * This function should be called on a mouse/touch move event the first time the
+     * drag radius is exceeded.  It should be called no more than once per gesture.
+     * If a brick should be dragged from the flyout this function creates the new
+     * brick on the main workspace and updates targetBrick_ and workspace_.
+     * @return {boolean} True if a brick is being dragged from the flyout.
+     * @private
+     */
+    // Disabled bricks may not be dragged from the flyout.
+    if (targetBrick.disabled) {
+      return
+    }
+    if (flyout.scrollable && !flyout.isDragTowardWorkspace(deltaXY)) {
+      return
+    }
+    // Start the event group now,
+    // so that the same event group is used for brick
+    // creation and brick dragging.
+    // The start brick is no longer relevant, because this is a drag.
+    eYo.Events.disableWrap(() => {
+      targetBrick = flyout.createBrick(targetBrick)
+    })
+    targetBrick.select()
+  } else if (!targetBrick.movable) {
+    return
+  }
+  var healStack = gesture.healStack_
   /**
    * The top brick in the stack that is being dragged.
    * @type {!eYo.Brick}
    * @private
    */
-  this.brick_ = brick.select()
+  this.brick_ = targetBrick.select()
 
   /**
    * The connections on the dragging bricks that are available to connect to
@@ -87,10 +121,10 @@ eYo.BrickDragger.prototype.start = function(e, delta, brick, healStack) {
    * @type {!Array.<!eYo.Magnet>}
    * @private
    */
-  this.availableMagnets_ = brick.getMagnets_(false)
+  this.availableMagnets_ = targetBrick.getMagnets_(false)
   // Also check the last connection on this stack
-  var m4t = brick.footMost.foot_m
-  if (m4t && m4t != brick.foot_m) {
+  var m4t = targetBrick.footMost.foot_m
+  if (m4t && m4t != targetBrick.foot_m) {
     this.availableMagnets_.push(m4t)
   }
 
@@ -146,7 +180,7 @@ eYo.BrickDragger.prototype.start = function(e, delta, brick, healStack) {
   this.xyStart_ = this.brick_.ui.xyInWorkspace
 
   eYo.Selected.magnet = null
-  var element = this.draggingBlock_.workspace.dom.group_.parentNode.parentNode
+  var element = this.draggingBlock_.workspace.dom.div_
   this.transformCorrection_ = eYo.Do.getTransformCorrection(element)
 
   if (!eYo.Events.getGroup()) {
@@ -155,37 +189,29 @@ eYo.BrickDragger.prototype.start = function(e, delta, brick, healStack) {
   this.destination.setResizesEnabled(false)
   this.ui_driver.disconnectStop()
   if (this.brick_.parent ||
-      (healStack && this.brick_.foo_m && this.brick_.foo_m.target)) {
+      (healStack && this.brick_.foot_m && this.brick_.foot_m.target)) {
     this.brick_.unplug(healStack)
-    var dXY = this.destination.fromPixelUnit(delta)
-    var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
+    var xyDelta = this.destination.fromPixelUnit(deltaXY)
+    var newLoc = goog.math.Coordinate.sum(this.xyStart_, xyDelta)
     this.brick_.ui.translate(newLoc.x, newLoc.y)
     this.brick_.ui.disconnectEffect();
   }
   this.brick_.ui.dragging = true
-  // For future consideration: we may be able to put moveToDragSurface inside
-  // the brick dragger, which would also let the brick not track the brick drag
-  // surface.
   this.brick_.ui.moveToDragSurface()
 
-  var toolbox = this.destination.toolbox
-  toolbox && toolbox.addStyle(this.brick_.deletable
-    ? 'eyo-toolbox-delete'
-    : 'eyo-toolbox-grab'
-  )
-
-  this.drag(e, delta)
+  this.drag()
+  return targetBrick
 }
 
 /**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
- * @param {!Event} e The most recent move event.
  * @param {!goog.math.Coordinate} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  * @package
  */
-eYo.BrickDragger.prototype.drag = function(e, delta) {
+eYo.BrickDragger.prototype.drag = function() {
+  delta = this.gesture_.xyDelta_
   if (delta && this.transformCorrection_) {
     delta = this.transformCorrection_(delta)
   }
@@ -194,7 +220,7 @@ eYo.BrickDragger.prototype.drag = function(e, delta) {
 
   this.brick_.ui.moveDuringDrag(newLoc)
   
-  this.update(e, dXY)
+  this.update(dXY)
 
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
   var trashcan = this.destination.trashcan
@@ -233,9 +259,10 @@ eYo.BrickDragger.prototype.end = (() => {
     var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
     var b3k = this.brick_
     b3k.ui.moveOffDragSurface(newLoc)
-
     if (this.wouldDelete_) {
-      fireMoveEvent(this)
+      if (!this.gesture_.flyout_) {
+        fireMoveEvent(this)
+      }
       b3k.dispose(false, true)
     } else {
       // These are expensive and don't need to be done if we're deleting.
@@ -243,6 +270,9 @@ eYo.BrickDragger.prototype.end = (() => {
       b3k.ui.setDragging(false)
       this.connect()
       b3k.render()
+      if (this.gesture_.flyout_) {
+        eYo.Events.fireBrickCreate(b3k, true) 
+      }
       fireMoveEvent(this)
       b3k.ui.scheduleSnapAndBump()
     }
@@ -286,8 +316,8 @@ eYo.BrickDragger.prototype.connect = function() {
  *     in workspace units.
  * @package
  */
-eYo.BrickDragger.prototype.update = function(e, dxy) {
-  this.deleteArea_ = this.destination.isDeleteArea(e)
+eYo.BrickDragger.prototype.update = function(dxy) {
+  this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = Blockly.SNAP_RADIUS

@@ -497,7 +497,7 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} y The y coordinate of the translation in workspace units.
  */
 eYo.Brick.UI.prototype.translate = function(x, y) {
-  this.driver.brickTranslate(this.brick_, x, y)
+  this.driver.brickMoveTo(this.brick_, x, y)
 }
 
 /**
@@ -1015,7 +1015,7 @@ eYo.Brick.UI.prototype.drawField_ = function (field, io) {
         io.common.field.afterCaret = false
         // place the field at the right position:
       }
-      this.driver.fieldPositionSet(field, io.cursor)
+      this.driver.fieldMoveTo(field, io.cursor)
       // then advance the cursor after the field.
       if (field.size.w) {
         io.cursor.c += field.size.c
@@ -1480,7 +1480,7 @@ eYo.Brick.UI.prototype.updateDisabled = function () {
  */
 eYo.Brick.UI.prototype.connectEffect = function () {
   var w = this.brick_.workspace
-  w.audioManager.play('click')
+  w.audio.play('click')
   if (w.scale < 1) {
     return // Too small to care about visual effects.
   }
@@ -1492,7 +1492,7 @@ eYo.Brick.UI.prototype.connectEffect = function () {
  * This must take place while the brick is still in a consistent state.
  */
 eYo.Brick.UI.prototype.disposeEffect = function () {
-  this.workspace.audioManager.play('delete');
+  this.workspace.audio.play('delete');
   this.driver.brickDisposeEffect(this.brick_)
 }
 

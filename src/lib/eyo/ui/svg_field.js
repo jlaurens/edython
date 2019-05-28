@@ -37,11 +37,12 @@ eYo.Svg.prototype.fieldInit = function(field) {
   if (!dom) {
     throw 'MISSING owner dom'
   }
-  var g = dom.group_
+  var g = dom.svg.group_
   if (!g) { return }
-  dom = field.dom = {}
+  dom = this.basicInit(field)
+  var svg = dom.svg = Object.create(null)
   if (field.isTextInput) {
-    g = dom.group_ = eYo.Svg.newElement('g', {}, g)
+    g = svg.group_ = eYo.Svg.newElement('g', {}, g)
     dom.borderRect_ = eYo.Svg.newElement('rect', {
       rx: 4,
       ry: 4,
@@ -50,12 +51,12 @@ eYo.Svg.prototype.fieldInit = function(field) {
       height: 16
     }, g)
     /** @type {!Element} */
-    dom.textElement_ = eYo.Svg.newElement('text', {
+    svg.textElement_ = eYo.Svg.newElement('text', {
       class: field.css_class,
       y: eYo.Font.totalAscent
     }, g)
   } else {
-    g = dom.group_ = dom.textElement_ = eYo.Svg.newElement('text', {
+    g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
       class: field.css_class,
       y: eYo.Font.totalAscent
     }, g)
@@ -71,13 +72,10 @@ eYo.Svg.prototype.fieldInit = function(field) {
  * @param {!Object} field
  */
 eYo.Svg.prototype.fieldDispose = function (field) {
-  var g = field.dom && field.dom.group_
-  if (!g) {
-    // Field has already been disposed
-    return;
-  }
-  goog.dom.removeNode(g)
-  field.dom = undefined
+  var svg = field.dom && field.dom.svg
+  if (!svg) { return }
+  svg.group_ = goog.dom.removeNode(svg.group_)
+  this.basicDispose(field)
 }
 
 /**
@@ -85,8 +83,8 @@ eYo.Svg.prototype.fieldDispose = function (field) {
  * @param {*} field
  * @param {*} where
  */
-eYo.Svg.prototype.fieldPositionSet = function (field, where) {
-  var g = field.dom.group_
+eYo.Svg.prototype.fieldMoveTo = function (field, where) {
+  var g = field.dom.svg.group_
   g.setAttribute('transform',
   `translate(${where.x}, ${where.y + eYo.Padding.t})`)
 }
@@ -96,14 +94,12 @@ eYo.Svg.prototype.fieldPositionSet = function (field, where) {
  * @param {*} field
  */
 eYo.Svg.prototype.fieldUpdateWidth = function (field) {
-  var dom = field.dom
-  if (!dom) {
+  var svg = field.dom.svg
+  if (!svg) {
     return
   }
   var width = field.size.width
-  dom.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
-  var r = dom.editRect_
-  r && (r.setAttribute('width', width + 2 * eYo.Style.Edit.padding_h + (field.left_space ? eYo.Unit.x : 0)))
+  svg.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
 }
 
 /**
@@ -112,9 +108,14 @@ eYo.Svg.prototype.fieldUpdateWidth = function (field) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeError = function (field, yorn) {
-  var root = field.dom.group_
+  var root = field.dom.svg.group_
   if (root) {
-    ;(yorn ? goog.dom.classlist.add : goog.dom.classlist.remove)(root, 'eyo-code-reserved')
+    (yorn
+      ? goog.dom.classlist.add
+      : goog.dom.classlist.remove)(
+      root,
+      'eyo-code-reserved'
+    )
   }
 }
 
@@ -124,13 +125,14 @@ eYo.Svg.prototype.fieldMakeError = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeReserved = function (field, yorn) {
-  var root = field.dom.group_
-  if (root) {
-    if (yorn) {
-      goog.dom.classlist.add(root, 'eyo-code-reserved')
-    } else {
-      goog.dom.classlist.remove(root, 'eyo-code-reserved')
-    }
+  var g = field.dom.svg.group_
+  if (g) {
+    (yorn
+    ? goog.dom.classlist.add
+    : goog.dom.classlist.remove)(
+      g,
+      'eyo-code-reserved'
+    )
   }
 }
 
@@ -140,14 +142,11 @@ eYo.Svg.prototype.fieldMakeReserved = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
-  var root = field.dom.group_
-  if (root) {
-    if (yorn) {
-      goog.dom.classlist.add(root, 'eyo-code-placeholder')
-    } else {
-      goog.dom.classlist.remove(root, 'eyo-code-placeholder')
-    }
-  }
+  var g = field.dom.svg.group_
+  g && (yorn
+    ? goog.dom.classlist.add
+    : goog.dom.classlist.remove)(g,
+      'eyo-code-comment')
 }
 
 /**
@@ -156,8 +155,11 @@ eYo.Svg.prototype.fieldMakePlaceholder = function (field, yorn) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldMakeComment = function (field, yorn) {
-  var root = field.dom.group_
-  root && (yorn ? goog.dom.classlist.add: goog.dom.classlist.remove)(root, 'eyo-code-comment')
+  var g = field.dom.svg.group_
+  g && (yorn
+    ? goog.dom.classlist.add
+    : goog.dom.classlist.remove)(g,
+      'eyo-code-comment')
 }
 
 
@@ -166,7 +168,7 @@ eYo.Svg.prototype.fieldMakeComment = function (field, yorn) {
  * @param {!Object} field  the field to query about
  */
 eYo.Svg.prototype.fieldDisplayedGet = function (field) {
-  var g = field.dom.group_
+  var g = field.dom.svg.group_
   return g.style.display !== 'none'
 }
 
@@ -176,7 +178,7 @@ eYo.Svg.prototype.fieldDisplayedGet = function (field) {
  * @param {boolean} yorn
  */
 eYo.Svg.prototype.fieldDisplayedSet = function (field, yorn) {
-  var g = field.dom.group_
+  var g = field.dom.svg.group_
   if (yorn) {
     g.removeAttribute('display')
   } else {
@@ -198,7 +200,7 @@ eYo.Svg.prototype.fieldDisplayedUpdate = function (field) {
  * @param {!eYo.Field} field
  */
 eYo.Svg.prototype.fieldUpdateEditable = function(field) {
-  var g = field.dom && field.dom.group_
+  var g = field.dom && field.dom.svg && field.dom.svg.group_
   if (!field.editable || !g) {
     // Not editable or already disposed
     return

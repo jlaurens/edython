@@ -161,7 +161,7 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
   svg.left_ = metrics.viewWidth + metrics.absoluteLeft -
   trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
 
-  if (metrics.toolboxPosition == eYo.Flyout.AT_RIGHT) {
+  if (metrics.flyoutPosition == eYo.Flyout.AT_RIGHT) {
     svg.left_ -= metrics.flyoutWidth
   }
   svg.top_ = metrics.viewHeight + metrics.absoluteTop -

@@ -385,7 +385,7 @@ goog.forwardDeclare('eYo.Brick.List')
  * @param {Element} element the persistent element.
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return a dom element, void lists may return nothing
- * @this a brick delegate
+ * @this a brick
  */
 eYo.Slot.prototype.save = function (element, opt) {
   if (this.incog) {
