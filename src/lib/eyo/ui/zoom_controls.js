@@ -24,6 +24,7 @@ goog.require('goog.dom')
  */
 eYo.ZoomControls = function(workspace, bottom) {
   this.workspace_ = workspace
+  this.disposeUI = eYo.Do.nothing
   if (workspace.hasUI) {
     this.makeUI(bottom)
   }
@@ -95,6 +96,8 @@ Object.defineProperties(eYo.ZoomControls.prototype, {
  * @param {Number} bottom
  */
 eYo.ZoomControls.prototype.makeUI = function(bottom) {
+  this.makeUI = eYo.Do.nothing
+  delete this.disposeUI
   this.bottom_ = this.MARGIN_BOTTOM_ + bottom
   this.ui_driver.zoomControlsInit(this)
 }
@@ -104,6 +107,8 @@ eYo.ZoomControls.prototype.makeUI = function(bottom) {
  * @return {!Element} The zoom controls SVG group.
  */
 eYo.ZoomControls.prototype.disposeUI = function() {
+  this.disposeUI = eYo.Do.nothing
+  delete this.makeUI
   this.ui_driver.zoomControlsDispose(this)
 }
 
@@ -127,7 +132,7 @@ eYo.ZoomControls.prototype.place = function() {
     return
   }
   this.left_ = metrics.viewWidth + metrics.absoluteLeft -
-      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.scrollbarThickness
+      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyoutPosition === eYo.Flyout.AT_RIGHT) {
     this.left_ -= metrics.flyoutWidth

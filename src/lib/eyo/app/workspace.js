@@ -23,16 +23,15 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a workspace.  This is a data structure that contains blocks.
- * @param {!eYo.Factory|eYo.Flyout} facorfly Any workspace belongs to a factory or a flyout.
+ * @param {!eYo.Factory} factory Any workspace belongs to a factory.
  * @constructor
  */
-eYo.Workspace = function(facorfly) {
+eYo.Workspace = function(factory, options) {
   /** @type {string} */
   this.id = Blockly.utils.genUid()
   eYo.Workspace.WorkspaceDB_[this.id] = this
 
   this.factory_ = factory
-
   this.options = options
 
   /**
@@ -93,7 +92,6 @@ eYo.Workspace = function(facorfly) {
 
   this.resetChangeCount()
 
-  options.container && this.makeUI()
 }
 
 eYo.Do.addProtocol(eYo.Workspace.prototype, 'ChangeCount')
@@ -114,6 +112,16 @@ Object.defineProperties(eYo.Workspace, {
 })
 
 Object.defineProperties(eYo.Workspace.prototype, {
+  /**
+   * The factory owning the workspace.
+   * @readonly
+   * @type {eYo.Factory}
+   */
+  factory: {
+    get () {
+      return this.factory_
+    }
+  },
   /**
    * Is this workspace the surface for a flyout?
    * @readonly
@@ -258,7 +266,7 @@ eYo.Workspace.prototype.makeUI = function(container) {
   this.makeUI = eYo.Do.nothing
   var d = this.ui_driver_ = new eYo.Svg()
   d.workspaceInit(this)
-  var bottom = Blockly.Scrollbar.scrollbarThickness
+  var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
     this.trashcan = new eYo.Trashcan(this, bottom)
     bottom = this.trashcan.top
@@ -708,7 +716,7 @@ eYo.Workspace.prototype.getSvgXY = function(element) {
   }
   do {
     // Loop through this block and every parent.
-    var xy = Blockly.utils.getRelativeXY(element);
+    var xy = eYo.Svg.getRelativeXY(element);
     if (element == this.getCanvas()) {
       // After the SVG canvas, don't scale the coordinates.
       scale = 1;
@@ -752,21 +760,30 @@ eYo.Workspace.prototype.newBlock = function(prototypeName, opt_id) {
   return new Blockly.BlockSvg(this, prototypeName, opt_id);
 }
 
-/**
- * Add a flyout element in an element with the given tag name.
- * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
- */
-eYo.Workspace.prototype.addFlyout = function(switcher) {
-  var flyoutOptions = {
-    flyoutAnchor: this.options.flyoutAnchor,
-    switcher: switcher
+Object.defineProperties(eYo.Workspace.prototype, {
+  flyout: {
+    get () {
+      return this.flyout_
+    },
+    set (newValue) {
+      this.flyout_ = newValue
+      this.targetSpace_ = null
+    }
+  },
+  targetSpace: {
+    get () {
+      return this.targetSpace_
+    },
+    set (newValue) {
+      if ((this.targetSpace_ = newValue)) {
+        this.getGesture = newValue.getGesture.bind(newValue)
+      } else {
+        delete this.getGesture
+      }
+      this.flyout_ = null
+    }
   }
-  /**
-  * @type {!eYo.Flyout}
-  * @private
-  */
-  this.flyout_ = new eYo.Flyout(this, flyoutOptions)
-}
+})
 
 /**
  * Getter for the flyout associated with this workspace.  This flyout may be
@@ -2162,84 +2179,3 @@ eYo.Workspace.prototype.scrollBlockTopLeft = function(id) {
   Blockly.hideChaff();
   this.scrollbar.set(scrollX, scrollY)
 }
-
-
-/**
- * Recalculate a horizontal scrollbar's location on the screen and path length.
- * This should be called when the layout or size of the window has changed.
- * Edython: position and resize according to the position of the flyout.
- * @param {!Object} hostMetrics A data structure describing all the
- *     required dimensions, possibly fetched from the host object.
- */
-Blockly.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
-  var workspace = this.workspace_
-  var flyout = workspace.flyout_
-  if (flyout) {
-    var atRight = flyout.toolboxPosition_ === eYo.Flyout.AT_RIGHT
-    var xy = flyout.flyoutPosition
-  }
-  if (atRight && xy) {
-    var viewSize = xy.x - hostMetrics.absoluteLeft - 1
-  } else {
-    viewSize = hostMetrics.viewWidth - 1
-  }
-  if (this.pair_) {
-    // Shorten the scrollbar to make room for the corner square.
-    viewSize -= Blockly.Scrollbar.scrollbarThickness;
-  }
-  this.setScrollViewSize_(Math.max(0, viewSize));
-
-  var xCoordinate = hostMetrics.absoluteLeft + 0.5;
-  
-  // Horizontal toolbar should always be just above the bottom of the workspace.
-  var yCoordinate = hostMetrics.absoluteTop + hostMetrics.viewHeight -
-      Blockly.Scrollbar.scrollbarThickness - 0.5;
-  this.setPosition_(xCoordinate, yCoordinate);
-
-  // If the view has been resized, a content resize will also be necessary.  The
-  // reverse is not true.
-  this.resizeContentHorizontal(hostMetrics);
-};
-
-/**
- * Recalculate a vertical scrollbar's location on the screen and path length.
- * This should be called when the layout or size of the window has changed.
- * Edython: position and resize according to the position of the flyout.
- * @param {!Object} hostMetrics A data structure describing all the
- *     required dimensions, possibly fetched from the host object.
- */
-Blockly.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
-  var viewSize = hostMetrics.viewHeight - 1;
-  if (this.pair_) {
-    // Shorten the scrollbar to make room for the corner square.
-    viewSize -= Blockly.Scrollbar.scrollbarThickness;
-  }
-  var workspace = this.workspace_
-  var flyout = workspace.flyout_
-  if (flyout) {
-    var atRight = flyout.toolboxPosition_ === Blockly.TOOLBOX_AT_RIGHT
-  }
-  if (atRight) {
-    var xy = flyout.flyoutPosition
-    var yOffset = flyout.TOP_OFFSET
-  } else {
-    yOffset = 1 * eYo.Unit.rem
-  }
-  viewSize -= yOffset
-  this.setScrollViewSize_(Math.max(0, viewSize));
-
-  if (xy) {
-    var xCoordinate = xy.x - hostMetrics.absoluteLeft -     Blockly.Scrollbar.scrollbarThickness - 0.5
-  } else {
-    xCoordinate = hostMetrics.absoluteLeft + 0.5;
-    xCoordinate += hostMetrics.viewWidth -
-        Blockly.Scrollbar.scrollbarThickness - 1;
-  }
-  var yCoordinate = hostMetrics.absoluteTop + 0.5;
-  yCoordinate += yOffset
-  this.setPosition_(xCoordinate, yCoordinate);
-
-  // If the view has been resized, a content resize will also be necessary.  The
-  // reverse is not true.
-  this.resizeContentVertical(hostMetrics);
-};

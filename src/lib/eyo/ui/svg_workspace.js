@@ -34,27 +34,22 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   /*
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns: html="http://www.w3.org/1999/xhtml"
+    xmlns: xlink="http://www.w3.org/1999/xlink"
     version="1.1"
     class="blocklySvg">
     ...
   </svg>
   */
+  var div = wprkspace.factory.dom.div_
 
   var root = svg.root_ = eYo.Svg.createElement('svg', {
-    'xmlns': 'http://www.w3.org/2000/svg',
-    'xmlns:html': 'http://www.w3.org/1999/xhtml',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'version': '1.1',
-    'class': 'eyo-svg'
-  }, dom.div_)
-
-
-  // Create surfaces for dragging things. These are optimizations
-  // so that the browser does not repaint during the drag.
-  options.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-  options.workspaceDragSurface = new eYo.WorkspaceDragSurfaceSvg(dom.div_)
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'eyo-svg'
+  }, div)
 
   options.zoomOptions && (workspace.scale = options.zoomOptions.startScale)
   // A null translation will also apply the correct initial scale.
@@ -133,7 +128,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-workspace-surface'},
+    {class: 'eyo-workspace-surface'},
     root
   )
 
@@ -144,14 +139,14 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
       'rect',
-      {'height': '100%', 'width': '100%', 'class': options.backgroundClass},
+      {'height': '100%', 'width': '100%', class: options.backgroundClass},
       g
     )
   }
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-brick-canvas'},
+    {class: 'eyo-brick-canvas'},
     g
   )
   if (!workspace.isFlyout) {
@@ -313,7 +308,7 @@ eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
     surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
-    var coord = Blockly.utils.getRelativeXY(svg.canvas_)
+    var coord = eYo.Svg.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
 }

@@ -571,7 +571,7 @@ var doit = (() => {
     'if': eYo.T3.Stmt.if_part,
     'elif': eYo.T3.Stmt.elif_part,
     'else': eYo.T3.Stmt.else_part,
-    'class': eYo.T3.Stmt.classdef_part,
+    class: eYo.T3.Stmt.classdef_part,
     'except': {
       type: eYo.T3.Stmt.except_part,
       variant_p: eYo.Key.NONE

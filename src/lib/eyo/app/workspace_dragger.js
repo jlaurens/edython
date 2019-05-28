@@ -129,7 +129,7 @@ eYo.WorkspaceDragger.prototype.end = function() {
     return;
   }
   this.isActive_ = false
-  var trans = this.dragSurface_.getSurfaceTranslation()
+  var trans = this.dragSurface_.surfaceTranslation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
   this.workspace_.canvasMoveTo(trans.x, trans.y)
 }

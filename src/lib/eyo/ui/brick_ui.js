@@ -55,13 +55,6 @@ eYo.Brick.UI = function(brick) {
   this.down = this.up = false
   this.driver.brickInit(brick)
   this.updateBlockWrapped()
-  /**
-   * Whether to move the block to the drag surface when it is dragged.
-   * True if it should move, false if it should be translated directly.
-   * @type {boolean}
-   * @private
-   */
-  this.useDragSurface_ = !!brick.workspace.brickDragSurface_
 }
 
 /**
@@ -1799,30 +1792,22 @@ eYo.Brick.UI.prototype.setDragging = function(dragging) {
 /**
  * Move this block to its workspace's drag surface, accounting for positioning.
  * Generally should be called at the same time as setDragging_(true).
- * Does nothing if useDragSurface_ is false.
  * @private
  */
 eYo.Brick.UI.prototype.moveToDragSurface = function() {
-  if (!this.useDragSurface_) {
-    return
-  }
   this.driver.brickMoveToDragSurface(this.brick_)
 }
 
 /**
  * Move this block back to the workspace block canvas.
  * Generally should be called at the same time as setDragging_(false).
- * Does nothing if useDragSurface_ is false.
  * @param {!goog.math.Coordinate} newXY The position the block should take on
  *     on the workspace canvas, in workspace coordinates.
  * @private
  */
 eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
-  if (!this.useDragSurface_) {
-    return;
-  }
   this.driver.brickMoveOffDragSurface(this.brick_, newXY)
-};
+}
 
 /**
  * Get the position of receiver's brick relative to

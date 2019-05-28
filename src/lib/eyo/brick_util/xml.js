@@ -1317,7 +1317,7 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
   var name = element.getAttribute(eYo.Key.EYO)
   // deprecated since v0.3.0
   if (name === 'dict_comprehension') {
-    // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
+    // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
     var id = element.getAttribute('id')
     var b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.comprehension, id)
     if (b3k) {

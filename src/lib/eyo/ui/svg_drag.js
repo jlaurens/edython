@@ -15,7 +15,7 @@
  */
 'use strict'
 
-goog.provide('eYo.WorkspaceDragSurfaceSvg')
+goog.provide('eYo.Svg.WorkspaceDragSurface')
 goog.provide('eYo.Svg.BrickDragSurface')
 
 goog.require('eYo.Svg')
@@ -36,65 +36,75 @@ eYo.Svg.BrickDragSurface = function(container) {
    * @type {!Element}
    * @private
    */
-  this.container_ = container;
-  this.createDom();
-};
+  this.container_ = container
+  var svg = this.svg = Object.create(null)
+  svg.root_ = eYo.Svg.newElement('svg', {
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'blocklyBlockDragSurface'
+  }, this.container_)
+  svg.group_ = eYo.Svg.newElement('g', {}, svg.root_)
+}
 
-/**
- * The SVG drag surface. Set once by eYo.Svg.BrickDragSurface.createDom.
- * @type {Element}
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.SVG_ = null;
-
-/**
- * This is where blocks live while they are being dragged if the drag surface
- * is enabled.
- * @type {Element}
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.dragGroup_ = null;
-
-/**
- * Containing HTML element; parent of the workspace and the drag surface.
- * @type {Element}
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.container_ = null;
-
-/**
- * Cached value for the scale of the drag surface.
- * Used to set/get the correct translation during and after a drag.
- * @type {number}
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.scale_ = 1;
-
-/**
- * Cached value for the translation of the drag surface.
- * This translation is in pixel units, because the scale is applied to the
- * drag group rather than the top-level SVG.
- * @type {goog.math.Coordinate}
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.surfaceXY_ = null;
-
-/**
- * Create the drag surface and inject it into the container.
- */
-eYo.Svg.BrickDragSurface.prototype.createDom = function() {
-  if (this.SVG_) {
-    return;  // Already created.
-  }
-  this.SVG_ = Blockly.utils.createSvgElement('svg', {
-    'xmlns': Blockly.SVG_NS,
-    'xmlns:html': Blockly.HTML_NS,
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'version': '1.1',
-    'class': 'blocklyBlockDragSurface'
-  }, this.container_);
-  this.dragGroup_ = Blockly.utils.createSvgElement('g', {}, this.SVG_);
-};
+Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
+  /**
+   * Get the current blocks on the drag surface, if any (primarily
+   * for BlockSvg.getRelativeToSurfaceXY).
+   * @return {!Element|undefined} Drag surface block DOM element, or undefined
+   * if no blocks exist.
+   */
+  currentBrick: {
+    get () {
+      return this.svg.group_.firstChild
+    }
+  },
+  /**
+   * Containing HTML element; parent of the workspace and the drag surface.
+   * @type {Element}
+   * @private
+   */
+  container_: {
+    value: null,
+    writable: true
+  },
+  /**
+   * Cached value for the scale of the drag surface.
+   * Used to set/get the correct translation during and after a drag.
+   * @type {number}
+   * @private
+   */
+  scale_: {
+    value: 1,
+    writable: true
+  },
+  /**
+   * Cached value for the translation of the drag surface.
+   * This translation is in pixel units, because the scale is applied to the
+   * drag group rather than the top-level SVG.
+   * @type {goog.math.Coordinate}
+   * @private
+   */
+  surfaceXY_: {
+    value: null,
+    writable: true
+  },
+  /**
+   * Reports the surface translation in scaled workspace coordinates.
+   * Use this when finishing a drag to return blocks to the correct position.
+   * @return {!goog.math.Coordinate} Current translation of the surface.
+   */
+  surfaceTranslation: {
+    get () {
+      var xy = eYo.Svg.getRelativeXY(this.svg.root_)
+      return new goog.math.Coordinate(
+        xy.x / this.scale_,
+        xy.y / this.scale_
+      )
+    }
+  },
+})
 
 /**
  * Set the SVG blocks on the drag surface's group and show the surface.
@@ -104,11 +114,11 @@ eYo.Svg.BrickDragSurface.prototype.createDom = function() {
  */
 eYo.Svg.BrickDragSurface.prototype.setBlocksAndShow = function(blocks) {
   goog.asserts.assert(
-      this.dragGroup_.childNodes.length == 0, 'Already dragging a block.');
+      this.svg.group_.childNodes.length == 0, 'Already dragging a block.');
   // appendChild removes the blocks from the previous parent
-  this.dragGroup_.appendChild(blocks);
-  this.SVG_.style.display = 'block';
-  this.surfaceXY_ = new goog.math.Coordinate(0, 0);
+  this.svg.group_.appendChild(blocks)
+  this.svg.root_.style.display = 'block'
+  this.surfaceXY_ = new goog.math.Coordinate(0, 0)
 };
 
 /**
@@ -119,31 +129,16 @@ eYo.Svg.BrickDragSurface.prototype.setBlocksAndShow = function(blocks) {
  * @param {number} scale Scale of the group.
  */
 eYo.Svg.BrickDragSurface.prototype.translateAndScaleGroup = function(x, y, scale) {
-  this.scale_ = scale;
+  this.scale_ = scale
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
-  var fixedX = x.toFixed(0);
-  var fixedY = y.toFixed(0);
-  this.dragGroup_.setAttribute('transform',
-      'translate('+ fixedX + ','+ fixedY + ') scale(' + scale + ')');
-};
-
-/**
- * Translate the drag surface's SVG based on its internal state.
- * @private
- */
-eYo.Svg.BrickDragSurface.prototype.translateSurfaceInternal_ = function() {
-  var x = this.surfaceXY_.x;
-  var y = this.surfaceXY_.y;
-  // This is a work-around to prevent a the blocks from rendering
-  // fuzzy while they are being dragged on the drag surface.
-  x = x.toFixed(0);
-  y = y.toFixed(0);
-  this.SVG_.style.display = 'block';
-
-  Blockly.utils.setCssTransform(this.SVG_,
-      'translate3d(' + x + 'px, ' + y + 'px, 0px)');
-};
+  var fixedX = x.toFixed(0)
+  var fixedY = y.toFixed(0)
+  this.svg.group_.setAttribute(
+    'transform',
+    `translate(${fixedX},${fixedY}) scale(${scale})`
+  )
+}
 
 /**
  * Translate the entire drag surface during a drag.
@@ -154,38 +149,19 @@ eYo.Svg.BrickDragSurface.prototype.translateSurfaceInternal_ = function() {
  * @param {number} y Y translation for the entire surface.
  */
 eYo.Svg.BrickDragSurface.prototype.translateSurface = function(x, y) {
-  this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_);
-  this.translateSurfaceInternal_();
-};
-
-/**
- * Reports the surface translation in scaled workspace coordinates.
- * Use this when finishing a drag to return blocks to the correct position.
- * @return {!goog.math.Coordinate} Current translation of the surface.
- */
-eYo.Svg.BrickDragSurface.prototype.getSurfaceTranslation = function() {
-  var xy = Blockly.utils.getRelativeXY(this.SVG_);
-  return new goog.math.Coordinate(xy.x / this.scale_, xy.y / this.scale_);
-};
-
-/**
- * Provide a reference to the drag group (primarily for
- * BlockSvg.getRelativeToSurfaceXY).
- * @return {Element} Drag surface group element.
- */
-eYo.Svg.BrickDragSurface.prototype.getGroup = function() {
-  return this.dragGroup_;
-};
-
-/**
- * Get the current blocks on the drag surface, if any (primarily
- * for BlockSvg.getRelativeToSurfaceXY).
- * @return {!Element|undefined} Drag surface block DOM element, or undefined
- * if no blocks exist.
- */
-eYo.Svg.BrickDragSurface.prototype.getCurrentBlock = function() {
-  return this.dragGroup_.firstChild;
-};
+  this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_)
+  var x = this.surfaceXY_.x
+  var y = this.surfaceXY_.y
+  // This is a work-around to prevent a the blocks from rendering
+  // fuzzy while they are being dragged on the drag surface.
+  x = x.toFixed(0)
+  y = y.toFixed(0)
+  this.svg.root_.style.display = 'block'
+  eYo.Dom.setCssTransform(
+    this.svg.root_,
+    `translate3d(${x}px,${y}px, 0px)`
+  )
+}
 
 /**
  * Clear the group and hide the surface; move the blocks off onto the provided
@@ -198,14 +174,14 @@ eYo.Svg.BrickDragSurface.prototype.getCurrentBlock = function() {
  */
 eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
   if (opt_newSurface) {
-    // appendChild removes the node from this.dragGroup_
-    opt_newSurface.appendChild(this.getCurrentBlock());
+    // appendChild removes the node from this.svg.group_
+    opt_newSurface.appendChild(this.currentBrick)
   } else {
-    this.dragGroup_.removeChild(this.getCurrentBlock());
+    this.svg.group_.removeChild(this.currentBrick)
   }
-  this.SVG_.style.display = 'none';
+  this.svg.root_.style.display = 'none';
   goog.asserts.assert(
-      this.dragGroup_.childNodes.length == 0, 'Drag group was not cleared.');
+      this.svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
   this.surfaceXY_ = null;
 };
 
@@ -213,56 +189,54 @@ eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
  * @param {!Element} container Containing element.
  * @constructor
  */
-eYo.WorkspaceDragSurfaceSvg = function(container) {
-  this.container_ = container;
-  this.createDom();
-};
+eYo.Svg.WorkspaceDragSurface = function(container) {
+  this.container_ = container
+  /**
+   * Dom structure when the workspace is being dragged. If there is no drag in
+   * progress, the SVG is empty and display: none.
+   * <svg class="blocklyWsDragSurface" style=transform:translate3d(...)>
+   *   <g class="eyo-brick-canvas"></g>
+   * </svg>
+   */
+  this.svg = Object.create(null)
+  this.svg.root_ = eYo.Svg.newElement('svg', {
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'blocklyWsDragSurface blocklyOverflowVisible'
+  }, this.container_)
+}
 
 /**
- * The SVG drag surface. Set once by eYo.WorkspaceDragSurfaceSvg.createDom.
- * @type {Element}
+ * Dispose of the resources.
  * @private
  */
-eYo.WorkspaceDragSurfaceSvg.prototype.SVG_ = null;
+eYo.Svg.WorkspaceDragSurface.prototype.dispose = function () {
+  goog.dom.removeNode(this.svg.root_)
+  this.svg = null
+}
 
-/**
- * SVG group inside the drag surface that holds blocks while a drag is in
- * progress. Blocks are moved here by the workspace at start of a drag and moved
- * back into the main SVG at the end of a drag.
- *
- * @type {Element}
- * @private
- */
-eYo.WorkspaceDragSurfaceSvg.prototype.dragGroup_ = null;
+Object.defineProperties(eYo.Svg.WorkspaceDragSurface.prototype, {
+  /**
+   * Reports the surface translation in scaled workspace coordinates.
+   * Use this when finishing a drag to return blocks to the correct position.
+   * @type {!goog.math.Coordinate} Current translation of the surface
+   * @package
+   */
+  surfaceTranslation: {
+    get () {
+      return eYo.Svg.getRelativeXY(this.svg.root_)
+    }
+  },
+})
 
 /**
  * Containing HTML element; parent of the workspace and the drag surface.
  * @type {Element}
  * @private
  */
-eYo.WorkspaceDragSurfaceSvg.prototype.container_ = null;
-
-/**
- * Create the drag surface and inject it into the container.
- */
-eYo.WorkspaceDragSurfaceSvg.prototype.createDom = function() {
-  if (this.SVG_) {
-    return;  // Already created.
-  }
-  /**
-  * Dom structure when the workspace is being dragged. If there is no drag in
-  * progress, the SVG is empty and display: none.
-  * <svg class="blocklyWsDragSurface" style=transform:translate3d(...)>
-  *   <g class="eyo-brick-canvas"></g>
-  * </svg>
-  */
-  this.SVG_ = eYo.Svg.newElement('svg', {
-    'xmlns:html': Blockly.HTML_NS,
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'version': '1.1',
-    'class': 'blocklyWsDragSurface blocklyOverflowVisible'
-  }, this.container_)
-}
+eYo.Svg.WorkspaceDragSurface.prototype.container_ = null;
 
 /**
  * Translate the entire drag surface during a drag.
@@ -273,55 +247,45 @@ eYo.WorkspaceDragSurfaceSvg.prototype.createDom = function() {
  * @param {number} y Y translation for the entire surface
  * @package
  */
-eYo.WorkspaceDragSurfaceSvg.prototype.translateSurface = function(x, y) {
-  // This is a work-around to prevent a the blocks from rendering
+eYo.Svg.WorkspaceDragSurface.prototype.translateSurface = function(x, y) {
+  // This is a work-around to prevent the bricks from rendering
   // fuzzy while they are being moved on the drag surface.
-  var fixedX = x.toFixed(0);
-  var fixedY = y.toFixed(0);
-
-  this.SVG_.style.display = 'block';
-  Blockly.utils.setCssTransform(
-      this.SVG_, 'translate3d(' + fixedX + 'px, ' + fixedY + 'px, 0px)');
-};
-
-/**
- * Reports the surface translation in scaled workspace coordinates.
- * Use this when finishing a drag to return blocks to the correct position.
- * @return {!goog.math.Coordinate} Current translation of the surface
- * @package
- */
-eYo.WorkspaceDragSurfaceSvg.prototype.getSurfaceTranslation = function() {
-  return Blockly.utils.getRelativeXY(this.SVG_);
-};
+  var fixedX = x.toFixed(0)
+  var fixedY = y.toFixed(0)
+  this.svg.root_.style.display = 'block'
+  eYo.Dom.setCssTransform(
+    this.svg.root_,
+    `translate3d(${fixedX}px,${fixedY}px,0px)`
+  )
+}
 
 /**
  * Move the blockCanvas out of the surface SVG and on to
  * newSurface.
- * @param {SVGElement} newSurface The element to put the drag surface contents
- *     into.
+ * @param {?SVGElement} newSurface The element to put the drag surface contents
+ *     into, when there was no previous sibling.
  * @package
  */
-eYo.WorkspaceDragSurfaceSvg.prototype.clearAndHide = function(newSurface) {
-  if (!newSurface) {
-    throw 'Couldn\'t clear and hide the drag surface: missing new surface.';
-  }
-  var blockCanvas = this.SVG_.childNodes[0];
+eYo.Svg.WorkspaceDragSurface.prototype.clearAndHide = function(newSurface) {
+  var root = this.svg.root_
+  var canvas = root.childNodes[0]
 
   // If there is a previous sibling, put the blockCanvas back right afterwards,
   // otherwise insert it as the first child node in newSurface.
-  if (this.previousSibling_ != null) {
-    Blockly.utils.insertAfter_(blockCanvas, this.previousSibling_);
+  if (this.previousSibling_) {
+    eYo.Dom.insertAfter(canvas, this.previousSibling_)
+  } else if (!newSurface) {
+    throw 'Couldn\'t clear and hide the drag surface: missing new surface.'
   } else {
-    newSurface.insertBefore(blockCanvas, newSurface.firstChild);
+    newSurface.insertBefore(canvas, newSurface.firstChild)
   }
-
   // Hide the drag surface.
-  this.SVG_.style.display = 'none';
+  root.style.display = 'none'
   goog.asserts.assert(
-      this.SVG_.childNodes.length == 0, 'Drag surface was not cleared.');
-  Blockly.utils.setCssTransform(this.SVG_, '');
-  this.previousSibling_ = null;
-};
+    root.childNodes.length == 0, 'Drag surface was not cleared.')
+  eYo.Dom.setCssTransform(root, '')
+  this.previousSibling_ = null
+}
 
 /**
  * Set the SVG to have the block canvas in it and then
@@ -333,15 +297,16 @@ eYo.WorkspaceDragSurfaceSvg.prototype.clearAndHide = function(newSurface) {
  * @param {number} scale The scale of the workspace being dragged.
  * @package
  */
-eYo.WorkspaceDragSurfaceSvg.prototype.setContentsAndShow = function(
+eYo.Svg.WorkspaceDragSurface.prototype.setContentsAndShow = function(
     blockCanvas, previousSibling, width, height, scale) {
+  var root = this.svg.root_
   goog.asserts.assert(
-      this.SVG_.childNodes.length == 0, 'Already dragging a block.');
-  this.previousSibling_ = previousSibling;
+    root.childNodes.length == 0, 'Already dragging a block.');
+  this.previousSibling_ = previousSibling
   // Make sure the blocks canvas is scaled appropriately.
   blockCanvas.setAttribute('transform', `translate(0, 0) scale(${scale})`)
-  this.SVG_.setAttribute('width', width);
-  this.SVG_.setAttribute('height', height);
-  this.SVG_.appendChild(blockCanvas);
-  this.SVG_.style.display = 'block';
-};
+  root.setAttribute('width', width)
+  root.setAttribute('height', height)
+  root.appendChild(blockCanvas)
+  root.style.display = 'block'
+}

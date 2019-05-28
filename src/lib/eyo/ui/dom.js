@@ -55,6 +55,32 @@ if (window && window.PointerEvent) {
 }
 
 /**
+ * Is this event a right-click?
+ * @param {!Event} e Mouse event.
+ * @return {boolean} True if right-click.
+ */
+eYo.Dom.isRightButton = e => {
+  if (e.ctrlKey && goog.userAgent.MAC) {
+    // Control-clicking on Mac OS X is treated as a right-click.
+    // WebKit on Mac OS X fails to change button to 2 (but Gecko does).
+    return true
+  }
+  return e.button === 2
+}
+
+/**
+ * Sets the CSS transform property on an element. This function sets the
+ * non-vendor-prefixed and vendor-prefixed versions for backwards compatibility
+ * with older browsers. See http://caniuse.com/#feat=transforms2d
+ * @param {!Element} node The node which the CSS transform should be applied.
+ * @param {string} transform The value of the CSS `transform` property.
+ */
+eYo.Dom.setCssTransform = function(node, transform) {
+  node.style['transform'] = transform
+  node.style['-webkit-transform'] = transform // 2014
+}
+
+/**
  * Bind an event to a function call. When calling the function, verifies that
  * it belongs to the touch stream that is currently being processed, and splits
  * multitouch events into multiple events as needed.
@@ -132,6 +158,26 @@ eYo.Dom.unbindEvent = eYo.Dom.prototype.unbindEvent = bindData => {
     d[0].removeEventListener(d[1], func, false)
   }
   return func
+}
+
+/**
+ * Insert a node after a reference node.
+ * Contrast with node.insertBefore function.
+ * @param {!Element} after New element to insert.
+ * @param {!Element} before Existing element to precede new node.
+ * @private
+ */
+eYo.Dom.insertAfter = function(node, before) {
+  var parent = before.parentNode
+  if (!parent) {
+    throw 'Reference node has no parent.'
+  }
+  var after = before.nextSibling
+  if (after) {
+    parent.insertBefore(node, after)
+  } else {
+    parent.appendChild(node)
+  }
 }
 
 /**
@@ -300,7 +346,6 @@ eYo.Dom.prototype.touchIdentifierFromEvent = function(e) {
 eYo.Dom.prototype.flyoutDispose = function (flyout) {
   if (flyout.dom && flyout.dom.toolbarDiv_) {
     goog.dom.removeNode(flyout.dom.toolbarDiv_)
-    this.dom = undefined
   }
 }
 
@@ -326,12 +371,18 @@ eYo.Dom.isTargetInput = function(e) {
          e.target.isContentEditable
 }
 
-
 Object.defineProperties(eYo.Dom, {
   /**
    * Length in ms for a touch to become a long press.
    */
   LONG_PRESS: { value: 750 },
+  /**
+   * Required name space for HTML elements.
+   * @const
+   */
+  HTML_NS: { value: 'http://www.w3.org/1999/xhtml' },
+  SVG_NS: { value: 'http://www.w3.org/2000/svg' },
+  XLINK_NS: { value: 'http://www.w3.org/1999/xlink' },
 })
 
 /**
@@ -379,7 +430,6 @@ eYo.Dom.longStart_ = (() => {
     }, eYo.Dom.LONG_PRESS)
   }
 })()
-
 
 /**
  * Bind document events, but only once.  Destroying and reinjecting Blockly
@@ -609,12 +659,12 @@ eYo.Dom.prototype.basicDispose = function(object) {
  */
 eYo.Dom.prototype.factoryInit = function(factory) {
   var dom = this.basicInit(factory)
-  var div = dom.div_ = goog.dom.createDom(
+  dom.div_ || (dom.div_= goog.dom.createDom(
     goog.dom.TagName.DIV,
-    'eyo-factory'
-  )
-  container.appendChild(div)
-  return g
+    'eyo-factory',
+    factory.options.container
+  ))
+  return dom
 }
 
 /**

@@ -28,6 +28,7 @@ goog.require('goog.math.Rect');
  */
 eYo.Trashcan = function(workspace, bottom) {
   this.workspace_ = workspace
+  this.disposeUI = eYo.Do.nothing
   if (workspace.hasUI) {
     this.makeUI(bottom)
     this.ui_driver.trashcanSetOpen(this, false)
@@ -35,6 +36,11 @@ eYo.Trashcan = function(workspace, bottom) {
 }
 
 Object.defineProperties(eYo.Trashcan.prototype, {
+  hasUI: {
+    get () {
+      return this.makeUI === eYo.Do.nothing
+    }
+  },
   ui_driver: {
     get () {
       return this.workspace_.ui_driver
@@ -115,6 +121,7 @@ eYo.Trashcan.prototype.SPRITE_TOP_ = 32
 eYo.Trashcan.prototype.makeUI = function(bottom) {
   this.bottom_ = this.MARGIN_BOTTOM_ + bottom
   this.makeUI = eYo.Do.nothing
+  delete this.disposeUI
   this.ui_driver.trashcanInit(this)
 }
 
@@ -122,7 +129,9 @@ eYo.Trashcan.prototype.makeUI = function(bottom) {
  * Dispose of this trash's UI.
  */
 eYo.Trashcan.prototype.disposeUI = function() {
+  this.disposeUI = eYo.Do.nothing
   this.ui_driver.trashcanDispose(this)
+  delete this.makeUI
 }
 
 /**
@@ -137,19 +146,19 @@ eYo.Trashcan.prototype.dispose = function() {
  * Move the trash can to the bottom-right corner.
  */
 eYo.Trashcan.prototype.place = function() {
-  var metrics = this.workspace_.getMetrics();
+  var metrics = this.workspace_.getMetrics()
   if (!metrics) {
     // There are no metrics available (workspace is probably not visible).
     return;
   }
   this.left_ = metrics.viewWidth + metrics.absoluteLeft -
-      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
+      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyoutAnchor == eYo.Flyout.AT_RIGHT) {
-    var flyoutPosition = this.workspace_.flyout_.flyoutPosition
+    var flyoutPosition = this.workspace_.flyout_.positionInPixels
     if (flyoutPosition) {
       this.left_ = flyoutPosition.x -
-      this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness
+      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
     } else {
       this.left_ -= metrics.flyoutWidth
     }
@@ -157,9 +166,6 @@ eYo.Trashcan.prototype.place = function() {
   this.top_ = metrics.viewHeight + metrics.absoluteTop -
       (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
 
-  if (metrics.flyoutAnchor == eYo.Flyout.AT_BOTTOM) {
-    this.top_ -= metrics.flyoutHeight
-  }
   this.ui_driver.trashcanPlace(this)
 }
 

@@ -111,7 +111,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   svg.style.width = h
   svg.style.height = h * 0.866
   var path = eYo.Svg.newElement('path', {
-    'class': goog.getCssName(cssClass, 'dropdown-image')
+    class: goog.getCssName(cssClass, 'dropdown-image')
   } , svg)
   path.setAttribute('d', 'M 0,0 l '+h+',0 l -'+ (h/2) +','+(h*0.866)+' z')
   return dom.createDom(

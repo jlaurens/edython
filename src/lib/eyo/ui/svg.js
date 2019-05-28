@@ -233,8 +233,6 @@ goog.inherits(eYo.Svg, eYo.Dom)
 
 eYo.Svg.prototype.withBBox = true
 
-eYo.Svg.NS = 'http://www.w3.org/2000/svg'
-
 /**
  * Helper method for creating SVG elements.
  * @param {string} name Element's tag name.
@@ -244,7 +242,7 @@ eYo.Svg.NS = 'http://www.w3.org/2000/svg'
  */
 eYo.Svg.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
-      document.createElementNS(eYo.Svg.NS, name)
+      document.createElementNS(eYo.Dom.SVG_NS, name)
   for (var key in attrs) {
     e.setAttribute(key, attrs[key])
   }

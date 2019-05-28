@@ -233,7 +233,7 @@ eYo.Svg.prototype.contourAboveParent_ = function (brick) {
  * @private
  */
 eYo.Svg.prototype.brickGetBBox = function (brick) {
-  return brick.ui.dom.pathShape_.getBBox()
+  return brick.ui.dom.svg.pathShape_.getBBox()
 }
 
 /**
@@ -420,26 +420,26 @@ eYo.Svg.prototype.updatePath_ = function (brick, path, def) {
  */
 eYo.Svg.prototype.brickUpdateShape = function (brick) {
   var svg = brick.ui.dom
-  if (brick.ui.mayBeLast || !dom.pathContour_) {
+  if (brick.ui.mayBeLast || !svg.pathContour_) {
     return
   }
   if (brick.wrapped_) {
-    this.updatePath_(brick, dom.pathContour_)
-    this.updatePath_(brick, dom.pathShape_)
-    this.updatePath_(brick, dom.pathCollapsed_)
+    this.updatePath_(brick, svg.pathContour_)
+    this.updatePath_(brick, svg.pathShape_)
+    this.updatePath_(brick, svg.pathCollapsed_)
   } else {
-    this.updatePath_(brick, dom.pathContour_, this.pathContourDef_)
-    this.updatePath_(brick, dom.pathShape_, this.pathShapeDef_)
-    this.updatePath_(brick, dom.pathCollapsed_, this.pathCollapsedDef_)
+    this.updatePath_(brick, svg.pathContour_, this.pathContourDef_)
+    this.updatePath_(brick, svg.pathShape_, this.pathShapeDef_)
+    this.updatePath_(brick, svg.pathCollapsed_, this.pathCollapsedDef_)
   }
-  this.updatePath_(brick, dom.pathBBox_, this.pathBBoxDef_)
-  this.updatePath_(brick, dom.pathHilight_, this.pathHilightDef_)
-  this.updatePath_(brick, dom.pathSelect_, this.pathSelectDef_)
-  this.updatePath_(brick, dom.pathMagnet_, this.pathMagnetDef_)
+  this.updatePath_(brick, svg.pathBBox_, this.pathBBoxDef_)
+  this.updatePath_(brick, svg.pathHilight_, this.pathHilightDef_)
+  this.updatePath_(brick, svg.pathSelect_, this.pathSelectDef_)
+  this.updatePath_(brick, svg.pathMagnet_, this.pathMagnetDef_)
   if (brick.ui.someTargetIsMissing && !brick.isInFlyout) {
-    goog.dom.classlist.add(dom.pathContour_, 'eyo-error')
+    goog.dom.classlist.add(svg.pathContour_, 'eyo-error')
   } else {
-    goog.dom.classlist.remove(dom.pathContour_, 'eyo-error')
+    goog.dom.classlist.remove(svg.pathContour_, 'eyo-error')
   }
 }
 
@@ -461,7 +461,7 @@ eYo.Svg.prototype.brickDrawModelBegin = function (brick, io) {
  */
 eYo.Svg.prototype.brickDrawModelEnd = function (brick, io) {
   var d = io.steps.join(' ')
-  brick.ui.dom.pathInner_.setAttribute('d', d)
+  brick.ui.dom.svg.pathInner_.setAttribute('d', d)
 }
 
 /**
@@ -562,7 +562,7 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
     }
     // manage the selection,
     // this seems tricky? Is there any undocumented side effect?
-    if ((dom.pathSelect_ &&
+    if ((svg.pathSelect_ &&
       svg.group_ === svg.pathSelect_.parentElement) || (svg.pathMagnet_ &&
         svg.group_ === svg.pathMagnet_.parentElement)) {
       this.brickSelectRemove(brick)
@@ -583,14 +583,15 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
  */
 eYo.Svg.prototype.brickUpdateWrapped = function (brick) {
   var dom = brick.ui.dom
+  var svg = dom.svg
   if (brick.wrapped_ && !dom.wrapped) {
     dom.wrapped = true
-    dom.pathShape_.style.display = 'none'
-    dom.pathContour_.style.display = 'none'
+    svg.pathShape_.style.display = 'none'
+    svg.pathContour_.style.display = 'none'
   } else if (!brick.wrapped_ && dom.wrapped) {
     dom.wrapped = false
-    dom.pathContour_.removeAttribute('display')
-    dom.pathShape_.removeAttribute('display')
+    svg.pathContour_.removeAttribute('display')
+    svg.pathShape_.removeAttribute('display')
   }
 }
 
@@ -727,7 +728,10 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
  * @param {number} y The y coordinate of the translation in workspace units.
  */
 eYo.Svg.prototype.brickMoveTo = function(brick, x, y) {
-  brick.ui.dom.svg.group_.setAttribute('transform', `translate(${x},${y})`)
+  brick.ui.dom.svg.group_.setAttribute(
+    'transform',
+    `translate(${x},${y})`
+  )
 }
 
 /**
@@ -743,8 +747,8 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
   var x = 0
   var y = 0
   var brick = brick
-  var dragSurface = brick.ui.useDragSurface_ && brick.workspace.brickDragSurface_
-  var dragSurfaceGroup = dragSurface && (dragSurface.getGroup())
+  var dragSurface = brick.factory.dom.svg.brickDragSurface_
+  var dragSurfaceGroup = dragSurface.svg.group_
   var canvas = brick.workspace.dom.svg.canvas_
   var element = brick.ui.dom.svg.group_
   if (element) {
@@ -755,8 +759,8 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
       y += xy.y
       // If this element is the current element on the drag surface, include
       // the translation of the drag surface itself.
-      if (dragSurface && dragSurface.getCurrentBlock() === element) {
-        var surfaceTranslation = dragSurface.getSurfaceTranslation()
+      if (dragSurface.currentBrick === element) {
+        var surfaceTranslation = dragSurface.surfaceTranslation
         x += surfaceTranslation.x
         y += surfaceTranslation.y
       }
@@ -782,7 +786,7 @@ eYo.Svg.prototype.brickHilightAdd = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickHilightRemove = function (brick) {
-  goog.dom.removeNode(brick.ui.dom.pathHilight_)
+  goog.dom.removeNode(brick.ui.dom.svg.pathHilight_)
 }
 
 /**
@@ -807,7 +811,7 @@ eYo.Svg.prototype.brickSelectAdd = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickSelectRemove = function (brick) {
-  goog.dom.removeNode(brick.ui.dom.pathSelect_)
+  goog.dom.removeNode(brick.ui.dom.svg.pathSelect_)
 }
 
 /**
@@ -826,7 +830,7 @@ eYo.Svg.prototype.brickMagnetAdd = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickMagnetRemove = function (brick) {
-  goog.dom.removeNode(brick.ui.dom.pathMagnet_)
+  goog.dom.removeNode(brick.ui.dom.svg.pathMagnet_)
 }
 
 /**
@@ -1043,19 +1047,15 @@ eYo.Svg.prototype.brickMoveToDragSurface = function (brick) {
 /**
  * Move this block back to the workspace block canvas.
  * Generally should be called at the same time as setDragging_(false).
- * Does nothing if useDragSurface_ is false.
  * @param {!eYo.Brick} brick  The brick
  * @param {!goog.math.Coordinate} newXY The position the brick should take on
  *     on the workspace canvas, in workspace coordinates.
  * @private
  */
 eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
-  if (!brick.ui.useDragSurface_) {
-    return
-  }
   // Translate to current position, turning off 3d.
   brick.translate(newXY.x, newXY.y)
-  brick.workspace.brickDragSurface_.clearAndHide(brick.workspace.dom.svg.canvas_)
+  brick.factory.brickDragSurface_.clearAndHide(brick.workspace.dom.svg.canvas_)
 }
 
 /**

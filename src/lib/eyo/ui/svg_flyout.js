@@ -24,6 +24,7 @@ goog.forwardDeclare('eYo.Flyout')
  */
 eYo.Svg.prototype.flyoutInit = function(flyout) {
   var dom = this.basicInit(flyout)
+  this.flyoutBindScrollEvents(this)
   var svg = dom.svg
   if (svg) {
     return
@@ -38,9 +39,9 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   </svg>
   */
  var root = svg.root_ = eYo.Svg.createElement('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    'xmlns:html': 'http://www.w3.org/1999/xhtml',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+    xmlns:  eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
     class: 'eyo-flyout',
     style: 'display: none'
@@ -81,28 +82,16 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
 }
 
 /**
- * Unbind events of the receiver.
- * @param {!eYo.Flyout} flyout
- */
-eYo.Svg.prototype.flyoutUnbindEvents = function (flyout) {
-  this.unbindEvent(flyout.eventWrappers_)
-}
-
-/**
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.Flyout} flyout
  */
-eYo.Svg.prototype.flyoutDispose = function (flyout) {
+eYo.Svg.prototype.flyoutDispose = eYo.Dom.decorateDispose(function (flyout) {
   var dom = flyout.dom
-  if (dom) {
-    eYo.Dom.clearBoundEvents(flyout)
-    goog.dom.removeNode(dom.svg.group_)
-    dom.svg.group_ = null
-    dom.svg = null
-    flyout.dom = null
-    eYo.Svg.superClass_.flyoutDispose.call(this, flyout)
-  }
-}
+  goog.dom.removeNode(dom.svg.group_)
+  dom.svg.group_ = null
+  dom.svg = null
+  eYo.Svg.superClass_.flyoutDispose.call(this, flyout)
+})
 
 /**
  * Dispose of the given slot's rendering resources.
@@ -310,7 +299,7 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
   g.setAttribute('width', width)
   g.setAttribute('height', height)
   var transform = `translate(${x}px,${y + flyout.TOP_OFFSET}px)`
-  Blockly.utils.setCssTransform(g, transform)
+  eYo.Dom.setCssTransform(g, transform)
 
   if (flyout.scrollbar_) {
     // Set the scrollbars origin to be the top left of the flyout.
@@ -554,15 +543,19 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
  */
 eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
   var bound = flyout.dom.bound
+  if (bound.scroll_wheel) {
+    return
+  }
+  var svg = flyout.dom.svg
   bound.scroll_wheel = this.bindEvent(
-    flyout.dom.svg.group_,
+    svg.group_,
     'wheel',
     null,
     this.flyoutOn_wheel.bind(flyout)
   )
   // Dragging the flyout up and down.
   bound.scroll_mousedown = this.bindEvent(
-    flyout.dom.svg.background_,
+    svg.background_,
     'mousedown',
     null,
     this.flyoutOn_mousedown.bind(flyout)

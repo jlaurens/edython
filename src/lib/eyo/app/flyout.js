@@ -30,30 +30,16 @@ goog.forwardDeclare('goog.math.Coordinate')
  * @param {!Object} flyoutOptions Dictionary of options for the workspace.
  * @constructor
  */
-eYo.Flyout = function(targetSpace, flyoutOptions) {
-  var workspaceOptions = {}
+eYo.Flyout = function(factory, flyoutOptions) {
+
+  this.factory_ = factory
 
   /**
    * Position of the toolbox and flyout relative to the workspace.
    * @type {number}
    * @private
    */
-  this.anchor_ = targetSpace.flyoutAnchor = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
-  
-  targetSpace.flyout_ = this
-
-  workspaceOptions.getMetrics = this.getMetrics_.bind(this)
-  workspaceOptions.setMetrics = this.setMetrics_.bind(this)
-  workspaceOptions.targetSpace = workspaceOptions
-  
-  /**
-   * @type {!eYo.Workspace}
-   * @private
-   */
-  this.workspace_ = new eYo.Workspace(workspaceOptions)
-  this.workspace_.isFlyout = true
-  this.targetSpace_ = targetSpace
-  this.workspace_.options = targetSpace.options
+  this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
 
   /**
    * Opaque data that can be passed to unbindEvent.
@@ -77,14 +63,6 @@ eYo.Flyout = function(targetSpace, flyoutOptions) {
    */
   this.permanentlyDisabled_ = []
 
-  // Add scrollbar.
-  this.scrollbar_ = new Blockly.Scrollbar(this.workspace_,
-      false /*this.horizontalLayout_*/, false, 'eyo-flyout-scrollbar')
-
-  this.hide()
-
-  this.ui_driver.flyoutBindScrollEvents(this)
-
   if (flyoutOptions.autoClose) {
     this.autoClose = true
   }
@@ -94,16 +72,7 @@ eYo.Flyout = function(targetSpace, flyoutOptions) {
     workspace.addChangeListener(this.filterWrapper_)
   }
   
-  // A flyout connected to a workspace doesn't have its own current gesture.
-  this.workspace_.getGesture = workspace.getGesture.bind(workspace)
-
-  var d = this.ui_driver
-  d.flyoutInit(this)
-  if (flyoutOptions.switcher) {
-    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, flyoutOptions.switcher)
-    d.flyoutToolbarInit(tb)
-    tb.doSelectGeneral(null) // is it necessary ?
-  }
+  this.disposeUI = eYo.Do.nothing
 }
 
 Object.defineProperties(eYo.Flyout.prototype, {
@@ -188,31 +157,92 @@ Object.defineProperties(eYo.Flyout.prototype, {
     get () {
       return this.ui_driver.flyoutClientRect(this)
     }
+  },
+  /**
+   * @readonly
+   * @type {eYo.Workspace} The workspace inside the flyout.
+   */
+  workspace: {
+    get () {
+      return this.workspace_
+    }
+  },
+  /**
+   * @type {eYo.Workspace} The fyout's workspace's targetSpace.
+   */
+  targetSpace: {
+    get () {
+      return this.workspace_.targetSpace_
+    },
+    set (newValue) {
+      var old = this.targetSpace
+      if ((newValue !== old)) {
+        if (old) {
+          old.removeChangeListener(this.filterWrapper_)
+          this.filterWrapper_ = null
+        }
+        if (newValue && !this.autoClose) {
+          this.filterWrapper_ = this.filterForCapacity_.bind(this)
+          newValue.addChangeListener(this.filterWrapper_)
+        }
+        this.workspace_.targetSpace = newValue
+      }
+    }
   }
 })
+
+/**
+ * Make the UI
+ */
+eYo.Flyout.prototype.makeUI = function () {
+  // Add scrollbar.
+  this.scrollbar_ = new Blockly.Scrollbar(this.workspace_,
+    false /*this.horizontalLayout_*/, false, 'eyo-flyout-scrollbar')
+  this.hide()
+  var d = this.ui_driver
+  d.flyoutInit(this)
+  if (flyoutOptions.switcher) {
+    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, flyoutOptions.switcher)
+    d.flyoutToolbarInit(tb)
+    tb.doSelectGeneral(null) // is it necessary ?
+  }
+  delete this.disposeUI
+}
+
+/**
+ * Dispose of this flyout.
+ * Unlink from all DOM elements to prevent memory leaks.
+ */
+eYo.Flyout.prototype.disposeUI = function() {
+  this.hide()
+  var d = this.ui_driver
+  if (this.scrollbar_) {
+    this.scrollbar_.dispose()
+    this.scrollbar_ = null
+  }
+  d.flyoutDispose(this)
+  this.factory_ = null
+  delete this.makeUI
+}
 
 /**
  * Dispose of this flyout.
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Flyout.prototype.dispose = function() {
-  this.hide()
-  this.ui_driver.flyoutUnbindEvents(this)
-  if (this.filterWrapper_) {
-    this.targetSpace_.removeChangeListener(this.filterWrapper_)
-    this.filterWrapper_ = null
+  if (!this.factory_) {
+    return
   }
+  this.disposeUI()
   if (this.scrollbar_) {
-    this.scrollbar_.dispose();
-    this.scrollbar_ = null;
+    this.scrollbar_.dispose()
+    this.scrollbar_ = null
   }
   if (this.workspace_) {
     this.workspace_.targetSpace = null
-    this.workspace_.dispose()
     this.workspace_ = null
   }
-  this.ui_driver.flyoutDispose(this)
-  this.targetSpace_ = null;
+  this.factory_ = null
 }
 
 Object.defineProperties(eYo.Flyout, {
@@ -221,6 +251,11 @@ Object.defineProperties(eYo.Flyout, {
 })
 
 Object.defineProperties(eYo.Flyout.prototype, {
+  hasUI: {
+    get () {
+      return this.makeUI === eYo.Do.nothing
+    }
+  },
   /**
    * @readonly
    * @type {number} The width of the flyout.
@@ -237,16 +272,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   height: {
     get () {
       return this.height_
-    }
-  },
-  /**
-   * @readonly
-   * @type {eYo.Workspace} The workspace inside the flyout.
-   * @package
-   */
-  workspace: {
-    get () {
-      return this.workspace_
     }
   },
   /**
@@ -286,8 +311,26 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   scrollable: {
     get () {
-      return this.scrollbar_ ? this.scrollbar_.isVisible() : false;
-
+      return this.scrollbar_ && this.scrollbar_.isVisible()
+    }
+  },
+  /**
+   * @type {Number} Where the flyout is anchored.
+   * @package
+   */
+  anchor: {
+    get () {
+      return this.anchor_
+    }
+  },
+  /**
+   * @type {Boolean} Is it anchored at right ?
+   * @readonly
+   * @package
+   */
+  atRight: {
+    get () {
+      return this.anchor_ === eYo.Flyout.AT_RIGHT
     }
   },
 })
@@ -561,7 +604,7 @@ eYo.Flyout.prototype.reflow = function() {
   })
   flyoutWidth += this.MARGIN * 1.5
   flyoutWidth *= this.workspace_.scale
-  flyoutWidth += Blockly.Scrollbar.scrollbarThickness
+  flyoutWidth += eYo.Scrollbar.thickness
   if (this.width_ != flyoutWidth) {
     // Record the width for .getMetrics_ and .place.
     this.width_ = flyoutWidth
@@ -753,7 +796,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
     } else {
-      this.ui_driver.positionAt_(this, this.width_, this.height_, positions[n], y)
+      this.ui_driver.flyoutPlaceAt(this, this.width_, this.height_, positions[n], y)
       this.slideOneStep(steps[n])
       // the scrollbar won't resize because the metrics of the workspace did not change
       var hostMetrics = this.workspace_.getMetrics()

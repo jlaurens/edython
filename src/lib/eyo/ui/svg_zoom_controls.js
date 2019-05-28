@@ -79,7 +79,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     g
   )
   zoomoutSvg.setAttributeNS(
-    'http://www.w3.org/1999/xlink',
+    eYo.Dom.XLINK_NS,
     'xlink:href',
     workspace.options.pathToMedia + eYo.SPRITE.url
   )
@@ -105,7 +105,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     g
   )
   zoominSvg.setAttributeNS(
-    'http://www.w3.org/1999/xlink',
+    eYo.Dom.XLINK_NS,
     'xlink:href',
     workspace.options.pathToMedia + eYo.SPRITE.url
   )
@@ -129,7 +129,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     g
   )
   zoomresetSvg.setAttributeNS(
-    'http://www.w3.org/1999/xlink',
+    eYo.Dom.XLINK_NS,
     'xlink:href',
     workspace.options.pathToMedia + eYo.SPRITE.url
   )
@@ -143,7 +143,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       workspace.markFocused()
       workspace.setScale(workspace.options.zoomOptions.startScale)
       workspace.scrollCenter()
-      eYo.Touch.clearTouchIdentifier()  // Don't block future drags.
+      workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )
@@ -152,9 +152,9 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     'mousedown',
     null,
     e => {
-      workspace.markFocused();
-      workspace.zoomCenter(1);
-      eYo.Touch.clearTouchIdentifier();  // Don't block future drags.
+      workspace.markFocused()
+      workspace.zoomCenter(1)
+      workspace.ui_driver.clearTouchIdentifier();  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )

@@ -86,8 +86,8 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   /** @type {string} */
-  this.workspace = workspace
-  workspace.eyo.addBrick(this, opt_id)
+  this.workspace_ = workspace
+  workspace.addBrick(this, opt_id)
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
@@ -148,6 +148,10 @@ eYo.Brick = function (workspace, type, opt_id) {
   })
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
+  this.disposeUI = eYo.Do.nothing
+  if (workspace.hasUI) {
+    this.makeUI()
+  }
 }
 goog.inherits(eYo.Brick, eYo.Helper)
 
@@ -222,6 +226,16 @@ eYo.Brick.getModel = function (type) {
 
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
+  workspace: {
+    get () {
+      return this.workspace_
+    }
+  },
+  factory: {
+    get () {
+      return this.workspace_.factory_
+    }
+  },
   deletable: { value: false, writable: true},
   isEditing: { value: false, writable: true},
   data: {
@@ -2328,7 +2342,7 @@ eYo.Brick.prototype.someStatement = function (helper) {
 }
 
 /**
- * Create a new delegate, with svg background.
+ * Create a new brick, with UI.
  * This is the expected way to create the brick.
  * There is a caveat due to proper timing in initializing the svg.
  * Whether bricks are headless or not is not clearly designed in Blockly.
@@ -2343,7 +2357,7 @@ eYo.Brick.prototype.someStatement = function (helper) {
  */
 eYo.Brick.newReady = function (owner, model, id) {
   var brick = eYo.Brick.newComplete(owner, model, id)
-  brick && (brick.makeUI())
+  brick && brick.makeUI()
   return brick
 }
 
@@ -2353,7 +2367,8 @@ eYo.Brick.newReady = function (owner, model, id) {
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
- * This is headless and should not render until a makeUI message is sent.
+ * If the workspace is headless,
+ * this is headless and should not render until a makeUI message is sent.
  * @param {!*} owner  workspace or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
@@ -2462,6 +2477,7 @@ eYo.Brick.prototype.makeUI = function (headless) {
   }
   this.changeWrap(() => {
       this.makeUI = eYo.Do.nothing // one shot function
+      delete this.disposeUI
       this.ui_ = new eYo.Brick.UI(this)
       this.forEachField(field => field.makeUI())
       this.forEachSlot(slot => slot.makeUI())

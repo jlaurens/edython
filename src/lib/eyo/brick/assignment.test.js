@@ -296,7 +296,7 @@ describe('One brick: assignment_stmt', function() {
     d1.target_b.connectLast(d2)
     eYo.Test.input_length(d1.target_b, 3, `MISSED M4T 1`)
     chai.assert(d1.target_s.unwrappedTarget === d2, `MISSED M4T 2`)
-    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     chai.assert(d3, `MISSING …+…`)
     d3.will_remain = true
     eYo.STOP = true
@@ -359,7 +359,7 @@ describe('One brick: annotated_stmt', function() {
     chai.assert(d1.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
     chai.assert(d1.annotated_s.bindField.text === 'fou+bar', 'MISSED VALUE')
     eYo.Test.code(d1, 'x:fou+bar')
-    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.Test.code(d3, 'abc + bcd')
     d1.annotated_s.connect(d3)
     chai.assert(d1.annotated_b === d3, 'MISSED M4T')
@@ -404,7 +404,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     d2.target_p = 'xxx'
     chai.assert(d2.target_p === 'xxx', 'MISSED 2')
     eYo.Test.code(d_main, 'xxx: fou + bar = <MISSING EXPRESSION>')
-    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
+    var d3 =  eYo.Test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.Test.code(d3, 'abc + bcd')
     d_main.annotated_s.connect(d3)
     chai.assert(d_main.annotated_b === d3, 'MISSED M4T')

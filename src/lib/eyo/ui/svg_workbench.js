@@ -34,8 +34,8 @@ eYo.Svg.prototype.workbenchInit = function(workbench) {
   /*
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns: html="http://www.w3.org/1999/xhtml"
+    xmlns: xlink="http://www.w3.org/1999/xlink"
     version="1.1"
     class="blocklySvg">
     ...
@@ -43,19 +43,15 @@ eYo.Svg.prototype.workbenchInit = function(workbench) {
   */
 
   var root = svg.root_ = eYo.Svg.createElement('svg', {
-    'xmlns': 'http://www.w3.org/2000/svg',
-    'xmlns:html': 'http://www.w3.org/1999/xhtml',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'version': '1.1',
-    'class': 'eyo-svg'
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'eyo-svg'
   }, dom.div_)
 
 
-  // Create surfaces for dragging things. These are optimizations
-  // so that the browser does not repaint during the drag.
-  options.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-  options.workbenchDragSurface = new eYo.WorkbenchDragSurfaceSvg(dom.div_)
-
+  
   options.zoomOptions && (workbench.scale = options.zoomOptions.startScale)
   // A null translation will also apply the correct initial scale.
   workbench.translate(0, 0)
@@ -133,7 +129,7 @@ eYo.Svg.prototype.workbenchInit = function(workbench) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-workbench-surface'},
+    {class: 'eyo-workbench-surface'},
     root
   )
 
@@ -144,14 +140,14 @@ eYo.Svg.prototype.workbenchInit = function(workbench) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
       'rect',
-      {'height': '100%', 'width': '100%', 'class': options.backgroundClass},
+      {'height': '100%', 'width': '100%', class: options.backgroundClass},
       g
     )
   }
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-brick-canvas'},
+    {class: 'eyo-brick-canvas'},
     g
   )
   if (!workbench.isFlyout) {
@@ -313,7 +309,7 @@ eYo.Svg.prototype.workbenchStartDrag = function (workbench) {
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
     surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workbench_.scale)
-    var coord = Blockly.utils.getRelativeXY(svg.canvas_)
+    var coord = eYo.Svg.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
 }

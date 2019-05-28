@@ -221,7 +221,7 @@ var doit = (() => {
   ]
 })
 
-/* <s eyo="assignment" xmlns="urn:edython:0.2" xmlns:eyo="urn:edython:0.2">
+/* <s eyo="assignment" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2">
 <x eyo="list" slot="assigned"><x eyo="turtle__call_expr" name="stamp" ary="0" slot="O"></x>
 </x>
 </s> */

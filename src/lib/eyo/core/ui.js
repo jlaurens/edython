@@ -236,7 +236,7 @@ eYo.Style.MenuIcon = {
 
 eYo.Style.MenuIcon.path = function (g) {
   var E = eYo.Svg.newElement('g',
-    {'class': 'eyo-menu-icon', 'opacity': 0.1}, g)
+    {class: 'eyo-menu-icon', 'opacity': 0.1}, g)
   E.style.fill = eYo.Style.MenuIcon.color
   var h = eYo.Font.height
   var w = eYo.Style.MenuIcon.width

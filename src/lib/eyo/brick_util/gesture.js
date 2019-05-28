@@ -598,7 +598,7 @@ eYo.Gesture.prototype.doStart = function(e) {
     this.targetBrick_.select()
   }
 
-  if (eYo.Do.isRightButton(e)) {
+  if (eYo.Dom.isRightButton(e)) {
     this.handleRightClick(e)
     return
   }
@@ -749,19 +749,4 @@ eYo.Gesture.prototype.isDragging = function() {
 eYo.Gesture.prototype.hasStarted = function() {
   console.log('ERROR')
   throw "DEPRECATED"
-}
-
-
-/**
- * Is this event a right-click?
- * @param {!Event} e Mouse event.
- * @return {boolean} True if right-click.
- */
-eYo.Do.isRightButton = e => {
-  if (e.ctrlKey && goog.userAgent.MAC) {
-    // Control-clicking on Mac OS X is treated as a right-click.
-    // WebKit on Mac OS X fails to change button to 2 (but Gecko does).
-    return true
-  }
-  return e.button === 2
 }

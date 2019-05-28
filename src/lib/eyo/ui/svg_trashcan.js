@@ -67,7 +67,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
   }, g)
   var url = trashcan.workspace_.options.pathToMedia + Blockly.SPRITE.url
   body.setAttributeNS(
-    'http://www.w3.org/1999/xlink',
+    eYo.Dom.XLINK_NS,
     'xlink:href',
     url
   )
@@ -96,7 +96,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
     g
   )
   lid.setAttributeNS(
-    'http://www.w3.org/1999/xlink',
+    eYo.Dom.XLINK_NS,
     'xlink:href',
     url
   )
@@ -159,7 +159,7 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
     return;
   }
   svg.left_ = metrics.viewWidth + metrics.absoluteLeft -
-  trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
+  trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
 
   if (metrics.flyoutPosition == eYo.Flyout.AT_RIGHT) {
     svg.left_ -= metrics.flyoutWidth
