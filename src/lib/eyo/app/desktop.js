@@ -74,13 +74,21 @@ eYo.Desktop.deleteBrick = (brick, deep) => {
  * @private
  */
 eYo.Desktop.copyBrick = (brick, deep) => {
-  var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep});
+  var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
-  var xy = brick.ui.xyInWorkspace;
-  xml.setAttribute('x', brick.RTL ? -xy.x : xy.x);
-  xml.setAttribute('y', xy.y);
-  Blockly.clipboardXml_ = xml;
-  Blockly.clipboardSource_ = brick.workspace;
+  var xy = brick.ui.xyInWorkspace
+  xml.setAttribute('x', xy.x)
+  xml.setAttribute('y', xy.y)
+  eYo.Clipboard.xml = xml
+  eYo.Clipboard.source = brick.workspace
   eYo.App.didCopyBlock && (eYo.App.didCopyBlock(brick, xml))
+}
+
+/**
+ * Copy a brick onto the local clipboard.
+ * @param {!eYo.Brick} brick Brick to be copied.
+ * @private
+ */
+eYo.Desktop.paste = () => {
 }

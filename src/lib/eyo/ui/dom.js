@@ -86,8 +86,8 @@ eYo.Dom.setCssTransform = function(node, transform) {
  * multitouch events into multiple events as needed.
  * @param {!EventTarget} node Node upon which to listen.
  * @param {string} name Event name to listen to (e.g. 'mousedown').
- * @param {Object} thisObject The value of 'this' in the function.
  * @param {!Function} func Function to call when event is triggered.
+ * @param {Object} opt.thisObject The value of 'this' in the function.
  * @param {boolean=} opt.noCaptureIdentifier True if triggering on this event
  *     should not block execution of other event handlers on this touch or other
  *     simultaneous touches.
@@ -95,7 +95,7 @@ eYo.Dom.setCssTransform = function(node, transform) {
  *     should prevent the default handler.  False by default.
  * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
+eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, func, opt) => {
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
@@ -109,7 +109,8 @@ eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func,
           event.clientX = p.clientX
           event.clientY = p.clientY
         }
-        ; thisObject
+        var thisObject = opt && opt.thisObject
+        thisObject
         ? func.call(thisObject, event)
         : func(event)
         handled = true
@@ -499,11 +500,26 @@ eYo.Dom.bindDocumentEvents = (() => {
   var already
   return () => {
     if (!already) {
-      eYo.Dom.bindEvent(document, 'keydown', null, eYo.Dom.on_keydown)
+      eYo.Dom.bindEvent(
+        document,
+        'keydown',
+        null,
+        eYo.Dom.on_keydown
+      )
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      eYo.Dom.bindEvent_(document, 'touchend', null, eYo.Dom.longStop_)
-      eYo.Dom.bindEvent_(document, 'touchcancel', null, eYo.Dom.longStop_)
+      eYo.Dom.bindEvent_(
+        document,
+        'touchend',
+        null,
+        eYo.Dom.longStop_
+      )
+      eYo.Dom.bindEvent_(
+        document,
+        'touchcancel',
+        null,
+        eYo.Dom.longStop_
+      )
       // Some iPad versions don't fire resize after portrait to landscape change.
       if (goog.userAgent.IPAD) {
         eYo.Dom.bindEvent(
@@ -579,16 +595,13 @@ eYo.Dom.on_keydown = e => {
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      if (Blockly.clipboardXml_) {
-        Blockly.Events.setGroup(true)
-        // Pasting always pastes to the main workspace, even if the copy started
-        // in a flyout workspace.
-        var workspace = Blockly.clipboardSource_;
-        if (workspace.isFlyout) {
-          workspace = workspace.targetWorkspace;
-        }
-        workspace.paste(Blockly.clipboardXml_);
-        Blockly.Events.setGroup(false);
+      if (eYo.Clipboard.xml) {
+        eYo.Events.groupWrap(() => {
+          // Pasting always pastes to the main workspace, even if the copy started
+          // in a flyout workspace.
+          var workspace = eYo.Clipboard.mainWorkspace
+          workspace.paste(eYo.Clipboard.xml)
+        })
       }
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
