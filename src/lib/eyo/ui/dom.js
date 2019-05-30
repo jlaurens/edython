@@ -86,8 +86,8 @@ eYo.Dom.setCssTransform = function(node, transform) {
  * multitouch events into multiple events as needed.
  * @param {!EventTarget} node Node upon which to listen.
  * @param {string} name Event name to listen to (e.g. 'mousedown').
+ * @param {?Object} thisObject The value of 'this' in the function.
  * @param {!Function} func Function to call when event is triggered.
- * @param {Object} opt.thisObject The value of 'this' in the function.
  * @param {boolean=} opt.noCaptureIdentifier True if triggering on this event
  *     should not block execution of other event handlers on this touch or other
  *     simultaneous touches.
@@ -95,7 +95,12 @@ eYo.Dom.setCssTransform = function(node, transform) {
  *     should prevent the default handler.  False by default.
  * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, func, opt) => {
+eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
+  if (goog.isFunction(thisObject)) {
+    opt = func
+    func = thisObject
+    thisObject = null
+  }
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
@@ -109,7 +114,6 @@ eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, func, opt) => {
           event.clientX = p.clientX
           event.clientY = p.clientY
         }
-        var thisObject = opt && opt.thisObject
         thisObject
         ? func.call(thisObject, event)
         : func(event)
@@ -503,7 +507,6 @@ eYo.Dom.bindDocumentEvents = (() => {
       eYo.Dom.bindEvent(
         document,
         'keydown',
-        null,
         eYo.Dom.on_keydown
       )
       // longStop needs to run to stop the context menu from showing up.  It
@@ -511,13 +514,11 @@ eYo.Dom.bindDocumentEvents = (() => {
       eYo.Dom.bindEvent_(
         document,
         'touchend',
-        null,
         eYo.Dom.longStop_
       )
       eYo.Dom.bindEvent_(
         document,
         'touchcancel',
-        null,
         eYo.Dom.longStop_
       )
       // Some iPad versions don't fire resize after portrait to landscape change.
@@ -525,7 +526,6 @@ eYo.Dom.bindDocumentEvents = (() => {
         eYo.Dom.bindEvent(
           window,
           'orientationchange',
-          null,
           e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple workspaces.
         )
       }
@@ -664,14 +664,12 @@ eYo.Dom.loadSounds_ = function(pathToMedia, workspace) {
   soundBinds.push(eYo.Dom.bindEvent(
     document,
     'mousemove',
-    null,
     unbindSounds,
     {noCaptureIdentifier: true}
   ))
   soundBinds.push(eYo.Dom.bindEvent(
     document,
     'touchstart',
-    null,
     unbindSounds,
     {noCaptureIdentifier: true}
   ))
@@ -763,7 +761,6 @@ eYo.Dom.workspaceInit = function(workspace) {
   eYo.Dom.bindEvent(
     container,
     'contextmenu',
-    null,
     e => eYo.Dom.isTargetInput(e) || e.preventDefault()
   )
   return dom

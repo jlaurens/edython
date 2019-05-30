@@ -86,13 +86,11 @@ eYo.Svg.prototype.scrollbarInit = function(scrollbar) {
   bound.bar_mousedown = eYo.Dom.bindEvent(
     background,
     'mousedown',
-    null,
     this.scrollbarOnBar_mousedown.bind(scrollbar)
   )
   bound.handle_mousedown = eYo.Dom.bindEvent(
     handle,
     'mousedown',
-    null,
     this.scrollbarOnHandle_mousedown.bind(scrollbar)
   )
   return g

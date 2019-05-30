@@ -56,13 +56,11 @@ eYo.Audio = function(pathToMedia) {
   soundBinds = [eYo.Dom.bindEvent(
     document,
     'mousemove',
-    null,
     unbindSounds,
     {noCaptureIdentifier: true}
   ), eYo.Dom.bindEvent(
     document,
     'touchstart',
-    null,
     unbindSounds,
     {noCaptureIdentifier: true}
   )]

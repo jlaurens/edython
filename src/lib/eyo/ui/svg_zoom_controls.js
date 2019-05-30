@@ -139,7 +139,6 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   bound.zoomreset = eYo.Dom.bindEventWithChecks_(
     zoomresetSvg,
     'mousedown',
-    null,
     e => {
       workspace.markFocused()
       workspace.setScale(workspace.options.zoomOptions.startScale)
@@ -148,10 +147,9 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomin = eYo.Dom.bindEventWithChecks_(
+  bound.zoomin = eYo.Dom.bindEvent(
     zoominSvg,
     'mousedown',
-    null,
     e => {
       workspace.markFocused()
       workspace.zoomCenter(1)
@@ -162,7 +160,6 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   bound.zoomout = eYo.Dom.bindEventWithChecks_(
     zoomoutSvg,
     'mousedown',
-    null,
     e => {
       workspace.markFocused();
       workspace.zoomCenter(-1);
