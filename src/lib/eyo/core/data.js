@@ -35,9 +35,11 @@
 goog.provide('eYo.Data')
 
 goog.require('eYo')
+
 goog.require('eYo.XRE')
-goog.require('eYo.Decorate');
-goog.require('goog.dom');
+goog.require('eYo.Decorate')
+
+goog.require('goog.dom')
 
 /**
  * Base property constructor.

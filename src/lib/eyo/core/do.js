@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Do')
 
+goog.require('eYo')
+
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.math.AffineTransform')
 

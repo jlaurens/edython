@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Shape')
 
+goog.require('eYo')
+
 goog.require('eYo.Geometry')
 
 goog.forwardDeclare('eYo.Unit')

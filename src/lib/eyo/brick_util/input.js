@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Input')
 
+goog.require('eYo')
+
 goog.require('eYo.Magnet')
 goog.forwardDeclare('eYo.Brick')
 

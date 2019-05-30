@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Flyout');
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.FlyoutCategory');
 goog.forwardDeclare('eYo.Style');
 goog.forwardDeclare('eYo.Unit');

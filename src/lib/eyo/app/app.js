@@ -19,17 +19,15 @@
 
 goog.provide('eYo.App')
 
-goog.require('Blockly')
-goog.require('eYo.Xml')
-goog.require('eYo.App')
-goog.require('eYo.KeyHandler')
-goog.require('eYo.Scan')
+goog.require('eYo')
+goog.forwardDeclare('eYo.Desktop')
+goog.forwardDeclare('eYo.Selected')
 
 eYo.App = Object.create(null)
 
 /**
- * Copy a brick onto the local clipboard.
- * @param {!Blockly.Block} brick Block to be copied.
+ * Copy the selected brick onto the local clipboard.
+ * @param {Boolean} optNoNext Whether the next blocks may be copied too.
  * @private
  * @return {Boolean} true if copied, false otherwise
  */
@@ -46,9 +44,9 @@ eYo.App.doCopy = function(optNoNext) {
  * This is a job for the renderer.
  */
 eYo.App.doFront = function() {
-  var eyo = eYo.Selected.brick
-  if (eyo) {
-    eyo.ui.sendToFront()
+  var b3k = eYo.Selected.brick
+  if (b3k) {
+    b3k.ui.sendToFront()
   }
 }
 
@@ -56,9 +54,9 @@ eYo.App.doFront = function() {
  * Send the selected brick to the back.
  */
 eYo.App.doBack = function() {
-  var eyo = eYo.Selected.brick
-  if (eyo) {
-    eyo.ui.sendToBack()
+  var b3k = b3k.Selected.brick
+  if (b3k) {
+    b3k.ui.sendToBack()
   }
 }
 
@@ -68,7 +66,7 @@ eYo.App.doBack = function() {
 eYo.App.doFocus = () => {
   var brick = eYo.Selected.brick
   if (brick) {
-    brick.workspace.eyo.scrollBlockTopLeft(brick.id)
+    brick.workspace.scrollBrickTopLeft(brick.id)
   }
 }
 

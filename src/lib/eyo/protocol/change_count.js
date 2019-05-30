@@ -14,6 +14,7 @@
 goog.provide('eYo.Protocol.ChangeCount')
 
 goog.require('eYo.Protocol')
+
 goog.require('eYo.Events')
 
 eYo.Protocol.ChangeCount = {

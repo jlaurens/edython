@@ -18,12 +18,11 @@
  * @namespace
  **/
 
-goog.require('eYo')
-
 goog.provide('eYo.T3')
 goog.provide('eYo.T3.Expr')
 goog.provide('eYo.T3.Stmt')
 
+goog.require('eYo')
 
 eYo.T3.Stmt = {
 // part statements

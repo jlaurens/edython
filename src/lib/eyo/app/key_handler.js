@@ -14,6 +14,8 @@
 goog.provide('eYo.KeyHandler')
 goog.provide('eYo.KeyHandlerMenu')
 
+goog.require('eYo')
+
 goog.require('eYo.PopupMenu')
 
 goog.forwardDeclare('eYo.XRE')

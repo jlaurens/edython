@@ -2119,7 +2119,7 @@ eYo.Workspace.prototype.tidyUp = function (kvargs) {
  * @param {?string} id ID of block center on.
  * @public
  */
-eYo.Workspace.prototype.scrollBlockTopLeft = function(id) {
+eYo.Workspace.prototype.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable workspace.');
     return;

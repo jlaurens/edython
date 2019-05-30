@@ -13,6 +13,8 @@
 
 goog.provide('eYo.TKN')
 
+goog.require('eYo')
+
 eYo.TKN.ISTERMINAL = x => x < eYo.TKN.NT_OFFSET
 eYo.TKN.ISNONTERMINAL = x => x >= eYo.TKN.NT_OFFSET
 eYo.TKN.ISEOF = x => x === eYo.TKN.ENDMARKER

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Comprehension')
 
+goog.require('eYo')
+
 goog.require('eYo.Brick.List')
 
 /**

@@ -15,10 +15,10 @@ goog.provide('eYo.Field')
 goog.provide('eYo.FieldLabel')
 goog.provide('eYo.FieldInput')
 
-goog.require('eYo.Owned');
+goog.require('eYo.Owned')
 
 goog.forwardDeclare('eYo.Size')
-goog.forwardDeclare('eYo.Events');
+goog.forwardDeclare('eYo.Events')
 
 
 goog.require('goog.asserts');

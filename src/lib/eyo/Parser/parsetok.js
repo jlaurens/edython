@@ -11,12 +11,14 @@
  */
 'use strict'
 
+goog.provide('eYo.ParseTok')
+
+goog.require('eYo')
+
 goog.require('eYo.GMR.Init')
 goog.require('eYo.Parser')
 goog.require('eYo.Scan')
 goog.require('eYo.E')
-
-goog.provide('eYo.ParseTok')
 
 ;(function(){
 

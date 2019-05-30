@@ -14,6 +14,8 @@
 
 goog.provide('eYo.Events.BlockBase')
 
+goog.require('eYo.Events')
+
 goog.require('Blockly.Events.BlockBase')
 
 /**

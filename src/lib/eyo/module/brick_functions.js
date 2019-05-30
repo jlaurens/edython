@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Functions')
 
+goog.require('eYo.Brick')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.Stmt')
 

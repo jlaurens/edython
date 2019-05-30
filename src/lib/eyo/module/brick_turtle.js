@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Turtle')
 
+goog.require('eYo.Brick')
+
 goog.require('eYo.Model.turtle__module')
 
 goog.require('eYo.Brick.Stmt')

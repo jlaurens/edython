@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Assignment')
 
+goog.require('eYo')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.Primary')
 goog.require('eYo.Brick.List')

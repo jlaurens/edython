@@ -13,6 +13,8 @@
 
 goog.provide('eYo.E')
 
+goog.require('eYo')
+
 Object.defineProperties(eYo.E, {
   OK: {get () {return 10}}, /* No error */
   EOF: {get () {return 11}}, /* End Of File */

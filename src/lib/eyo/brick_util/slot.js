@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Slot')
 
+goog.require('eYo')
+
 goog.require('eYo.Do')
 goog.require('eYo.Where')
 goog.require('eYo.Decorate')

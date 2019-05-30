@@ -18,7 +18,10 @@ goog.provide('eYo.Size')
 goog.provide('eYo.Rect')
 goog.provide('eYo.TRect')
 
+goog.require('eYo')
+
 goog.require('eYo.Do')
+
 goog.require('goog.math')
 
 goog.forwardDeclare('eYo.Font')

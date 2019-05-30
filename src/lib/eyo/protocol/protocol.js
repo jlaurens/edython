@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Protocol')
 
+goog.require('eYo')
+
 goog.require('eYo.Do')
 
 /**

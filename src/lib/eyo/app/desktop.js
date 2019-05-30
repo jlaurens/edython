@@ -13,15 +13,20 @@
 
 goog.provide('eYo.Desktop')
 
-goog.require('eYo.XRE')
-goog.require('eYo.Helper')
-goog.require('eYo.Brick')
-goog.require('eYo.Navigate')
-goog.require('eYo.App')
-goog.require('eYo.Xml')
-goog.require('eYo.Xml.Recover')
-goog.require('eYo.Protocol.ChangeCount')
-goog.require('goog.crypt')
+goog.require('eYo')
+
+goog.forwardDeclare('eYo.Events')
+
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.Helper')
+goog.forwardDeclare('eYo.Brick')
+goog.forwardDeclare('eYo.Navigate')
+goog.forwardDeclare('eYo.App')
+goog.forwardDeclare('eYo.Xml')
+goog.forwardDeclare('eYo.Xml.Recover')
+goog.forwardDeclare('eYo.Protocol.ChangeCount')
+
+goog.forwardDeclare('goog.crypt')
 
 goog.require('Blockly')
 

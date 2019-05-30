@@ -13,9 +13,10 @@
 
 goog.provide('eYo.Brick.Starred')
 
+goog.require('eYo.Brick.Expr')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Decorate')
-goog.require('eYo.Brick')
 goog.require('eYo.T3.All')
 goog.require('goog.dom');
 

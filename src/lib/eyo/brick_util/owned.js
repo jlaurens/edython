@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Owned')
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Input')

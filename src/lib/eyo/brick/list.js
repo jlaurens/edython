@@ -13,9 +13,10 @@
 
 goog.provide('eYo.Brick.List')
 
+goog.require('eYo.Brick.Expr')
+
 goog.require('eYo.Decorate')
 goog.require('eYo.Consolidator.List')
-goog.require('eYo.Brick.Expr')
 
 /**
  * Class for a Delegate, value brick.

@@ -14,6 +14,8 @@
 goog.provide('eYo.Brick.Literal')
 goog.provide('eYo.Brick.Expr.numberliteral')
 
+goog.provide('eYo.Brick.Expr')
+
 goog.require('eYo.XRE')
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.Expr')

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.FlyoutToolbar');
 
+goog.require('eYo')
+
 goog.require('eYo.MenuRenderer');
 goog.require('eYo.MenuButtonRenderer');
 goog.require('goog.dom');

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.MenuManager')
 
+goog.require('eYo')
+
 goog.require('eYo.Msg')
 goog.require('eYo.T3')
 goog.require('eYo.Brick')

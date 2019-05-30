@@ -13,6 +13,8 @@
 
 goog.provide('eYo.ZoomControls')
 
+goog.require('eYo')
+
 goog.require('eYo.Touch')
 goog.require('goog.dom')
 

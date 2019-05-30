@@ -19,6 +19,8 @@
 
 goog.provide('eYo.Selected')
 
+goog.require('eYo')
+
 goog.require('eYo.Brick')
 goog.require('eYo.Magnet')
 goog.require('eYo.Do')

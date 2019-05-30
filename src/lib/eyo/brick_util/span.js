@@ -34,6 +34,8 @@
 
 goog.provide('eYo.Span')
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.Brick')
 

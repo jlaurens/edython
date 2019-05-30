@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Navigate')
 
+goog.require('eYo')
+
 goog.require('eYo.Selected')
 
 /**

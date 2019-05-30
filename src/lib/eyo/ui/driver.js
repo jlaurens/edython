@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Driver')
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Factory')
 goog.forwardDeclare('eYo.Brick.UI')
 

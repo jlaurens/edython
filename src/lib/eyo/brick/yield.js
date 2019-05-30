@@ -13,10 +13,12 @@
 
 goog.provide('eYo.Brick.Yield')
 
+goog.require('eYo.Brick.Stmt')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.List')
-goog.require('eYo.Brick.Stmt')
-goog.require('goog.dom');
+
+goog.require('goog.dom')
 
 /**
  * Class for a Delegate, yield_expr.

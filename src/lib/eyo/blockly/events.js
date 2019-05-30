@@ -18,6 +18,8 @@
 goog.provide('eYo.Events')
 goog.provide('eYo.Events.BrickMove')
 
+goog.require('eYo')
+
 goog.require('Blockly.Events')
 goog.require('eYo.Const')
 goog.require('eYo.Do')

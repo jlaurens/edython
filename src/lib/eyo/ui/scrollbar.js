@@ -15,6 +15,8 @@ goog.provide('eYo.Scrollbar')
 
 goog.provide('eYo.ScrollbarPair');
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Workspace')
 
 goog.forwardDeclare('goog.dom')

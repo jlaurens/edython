@@ -13,9 +13,10 @@
 
 goog.provide('eYo.Brick.Import')
 
+goog.require('eYo.Brick.Stmt')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.List')
-goog.require('eYo.Brick.Stmt')
 goog.require('goog.dom');
 
 /// //////////////     module_as      ///////////////////

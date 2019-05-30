@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Primary')
 
+goog.require('eYo.Brick.Expr')
+
 goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 

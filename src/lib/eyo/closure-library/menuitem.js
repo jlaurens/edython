@@ -22,10 +22,11 @@
 goog.provide('eYo.MenuItem')
 goog.provide('eYo.Separator')
 
+goog.require('eYo.MenuItemRenderer')
+
 goog.require('goog.dom');
 goog.require('goog.ui.MenuItem')
 goog.require('goog.ui.Separator')
-goog.require('eYo.MenuItemRenderer')
 
 // goog.forwardDeclare('goog.ui.Menu'); // circular
 

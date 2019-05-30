@@ -11,11 +11,11 @@
  */
 'use strict'
 
+goog.provide('eYo.GMR')
+
 goog.require('eYo.E')
 goog.require('eYo.Do')
 goog.require('eYo.TKN')
-
-goog.provide('eYo.GMR')
 
 /* Grammar implementation *-/
 

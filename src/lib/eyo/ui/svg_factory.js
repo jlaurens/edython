@@ -14,6 +14,7 @@
 goog.provide('eYo.Svg.Factory')
 
 goog.require('eYo.Svg')
+
 goog.forwardDeclare('eYo.Factory')
 
 /**

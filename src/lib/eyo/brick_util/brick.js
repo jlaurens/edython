@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick')
 
+goog.require('eYo')
+
 goog.require('eYo.Helper')
 goog.require('eYo.Decorate')
 goog.require('eYo.Data')
@@ -2078,7 +2080,7 @@ eYo.Brick.prototype.connectLast = function (bmt) {
  */
 eYo.Brick.prototype.scrollToVisible = function (force) {
   if (!this.inVisibleArea || force) {
-    this.workspace.eyo.scrollBlockTopLeft(this.id)
+    this.workspace.eyo.scrollBrickTopLeft(this.id)
   }
 }
 /**

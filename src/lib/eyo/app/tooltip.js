@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Tooltip')
 
+goog.require('eYo')
+
 goog.require('eYo.Brick')
 
 /**

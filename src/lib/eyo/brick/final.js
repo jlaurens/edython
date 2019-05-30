@@ -13,6 +13,9 @@
 
 goog.provide('eYo.Brick.Final')
 
+goog.require('eYo.Brick')
+
+
 /**
  * Final processing of delegates.
  * Must be loaded after all the delegates have been defined.

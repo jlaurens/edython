@@ -13,10 +13,14 @@
 
 goog.provide('eYo.Brick.Stmt')
 
+goog.require('eYo.Brick')
+
+
 goog.require('eYo.XRE')
 goog.require('eYo.Msg')
-goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Operator')
+goog.require('eYo.Brick.List')
+
 goog.require('goog.dom');
 
 /**

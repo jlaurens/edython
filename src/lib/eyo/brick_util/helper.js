@@ -18,6 +18,8 @@
 
 goog.provide('eYo.Helper')
 
+goog.require('eYo')
+
 goog.require('goog.Disposable')
 
 /**

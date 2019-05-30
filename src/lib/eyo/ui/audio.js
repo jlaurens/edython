@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Audio')
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('goog.userAgent')
 

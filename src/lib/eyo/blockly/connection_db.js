@@ -13,6 +13,8 @@
 
 goog.provide('eYo.ConnectionDB')
 
+goog.require('eYo')
+
 goog.require('Blockly.ConnectionDB');
 
 /**

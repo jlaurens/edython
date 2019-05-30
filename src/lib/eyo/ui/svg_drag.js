@@ -150,14 +150,16 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale)
  * @param {number} y Y translation for the entire surface.
  */
 eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
+  if (goog.isDef(x.x)) {
+    y = x.y
+    x = x.x
+  }
+  this.svg.root_.style.display = 'block'
   this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_)
-  var x = this.surfaceXY_.x
-  var y = this.surfaceXY_.y
+  var x = this.surfaceXY_.x.toFixed(0)
+  var y = this.surfaceXY_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
-  x = x.toFixed(0)
-  y = y.toFixed(0)
-  this.svg.root_.style.display = 'block'
   eYo.Dom.setCssTransform(
     this.svg.root_,
     `translate3d(${x}px,${y}px, 0px)`

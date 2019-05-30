@@ -14,6 +14,8 @@
 
 goog.provide('eYo.BrickDragger')
 
+goog.require('eYo')
+
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Workspace')

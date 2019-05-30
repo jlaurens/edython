@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Decorate')
 
+goog.require('eYo')
+
 /**
  * Decorate the function to be reentrant.
  * The return function will test if `this.reentrant_[key]` exists.

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Py.Exporter')
 
+goog.require('eYo')
+
 goog.require('eYo.Field')
 goog.require('eYo.Brick')
 

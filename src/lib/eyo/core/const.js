@@ -19,6 +19,7 @@ goog.provide('eYo.Const')
 goog.provide('eYo.ID')
 
 goog.require('eYo.Do')
+
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
