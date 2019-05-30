@@ -114,11 +114,6 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     workspace.scrollbar.resize();
   }
 
-  // Load the sounds.
-  if (options.hasSounds) {
-    eYo.Dom.loadSounds_(options.pathToMedia, workspace)
-  }
-
   /**
   * <g class="eyo-workspace-surface">
   *   <rect class="eyo-main-background" height="100%" width="100%"></rect>
@@ -277,7 +272,7 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     'resize',
     null,
     () => {
-      Blockly.hideChaff(true)
+      eYo.App.hideChaff(true)
       workspace.factory.resize()
     }
   )

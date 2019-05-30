@@ -19,7 +19,8 @@
 
 goog.provide('eYo.App')
 
-goog.require('eYo')
+goog.require('eYo.Do')
+
 goog.forwardDeclare('eYo.Desktop')
 goog.forwardDeclare('eYo.Selected')
 
@@ -78,3 +79,9 @@ eYo.App.makeFactory = container => {
   eYo.App.workspace = f.mainWorkspace
   f.makeUI()
 }
+
+/**
+ * Close tooltips, context menus, dropdown selections, etc.
+ * @param {boolean=} opt_allowToolbox If true, don't close the toolbox.
+ */
+eYo.App.hideChaff = eYo.Dom.nothing

@@ -151,7 +151,7 @@ eYo.Svg.prototype.factoryBind_resize = function (factory) {
     'resize',
     null,
     () => {
-      Blockly.hideChaff(true)
+      eYo.App.hideChaff(true)
       this.factoryResize(factory)
     }
   )

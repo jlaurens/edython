@@ -928,7 +928,7 @@ eYo.Workspace.prototype.setVisible = function(isVisible) {
   if (isVisible) {
     this.render();
   } else {
-    Blockly.hideChaff(true);
+    eYo.App.hideChaff(true);
   }
 };
 
@@ -986,11 +986,14 @@ eYo.Workspace.prototype.highlightBlock = function(id, opt_state) {
 };
 
 /**
- * Paste the provided block onto the workspace.
- * @param {!Element} xmlBlock XML block element.
+ * Paste the content of the clipboard onto the workspace.
  */
-eYo.Workspace.prototype.paste = function (dom) {
-  if (!this.rendered || dom.getElementsByTagName('s').length + dom.getElementsByTagName('x').length >=
+eYo.Workspace.prototype.paste = function () {
+  var xml = eYo.Clipboard.xml
+  if (!eYo.Clipboard.xml) {
+    return
+  }
+  if (!this.rendered || xml.getElementsByTagName('s').length + xml.getElementsByTagName('x').length >=
       this.remainingCapacity()) {
     return
   }
@@ -999,7 +1002,7 @@ eYo.Workspace.prototype.paste = function (dom) {
   }
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
-    if ((b3k = eYo.Xml.domToBrick(dom, this))) {
+    if ((b3k = eYo.Xml.domToBrick(xml, this))) {
       if ((m4t = eYo.Selected.magnet)) {
         if (m4t.isInput) {
           targetM4t = b3k.out_m
@@ -1031,8 +1034,8 @@ eYo.Workspace.prototype.paste = function (dom) {
         }
       } else {
         // Move the duplicate to original position.
-        var dx = parseInt(dom.getAttribute('x'), 10)
-        var dy = parseInt(dom.getAttribute('y'), 10)
+        var dx = parseInt(xml.getAttribute('x'), 10)
+        var dy = parseInt(xml.getAttribute('y'), 10)
         if (!isNaN(dx) && !isNaN(dy)) {
           // Offset block until not clobbering another block and not in connection
           // distance with neighbouring bricks.
@@ -1559,7 +1562,7 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
   var scrollToCenterX = scrollToBlockX - halfViewWidth;
   var scrollToCenterY = scrollToBlockY - halfViewHeight;
 
-  Blockly.hideChaff();
+  eYo.App.hideChaff();
   this.scrollbar.set(scrollToCenterX, scrollToCenterY);
 };
 
@@ -1581,7 +1584,7 @@ eYo.Workspace.prototype.setScale = function(newScale) {
   } else {
     this.xyMoveTo(this.scrollX, this.scrollY);
   }
-  Blockly.hideChaff(false);
+  eYo.App.hideChaff(false);
   if (this.flyout_) {
     // No toolbox, resize flyout.
     this.flyout_.reflow();
@@ -2154,6 +2157,6 @@ eYo.Workspace.prototype.scrollBrickTopLeft = function(id) {
   var scrollX = pixelX - metrics.contentLeft
   var scrollY = pixelY - metrics.contentTop
 
-  Blockly.hideChaff();
+  eYo.App.hideChaff();
   this.scrollbar.set(scrollX, scrollY)
 }

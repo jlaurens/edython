@@ -33,10 +33,9 @@ eYo.Factory = function(options) {
   // Load CSS.
   Blockly.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
-  this.audio_ = new eYo.Audio(options.pathToMedia)
 
   // create the various workspaces and flyout
-  var mainWorkspace = this.mainWorkspace_ = new eYo.Workspace(this, options)
+  this.mainWorkspace_ = new eYo.Workspace(this, options)
 }
 
 Object.defineProperties(eYo.Factory.prototype, {
@@ -55,6 +54,11 @@ Object.defineProperties(eYo.Factory.prototype, {
       return this.flyout_
     }
   },
+  audio: {
+    get () {
+      return this.audio_
+    }
+  },
 })
 
 /**
@@ -65,6 +69,7 @@ Object.defineProperties(eYo.Factory.prototype, {
 eYo.Factory.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.deleteUI
+  this.audio_ = new eYo.Audio(this.options.pathToMedia)
   this.ui_driver = new eYo.Svg(this)
   this.ui_driver.factoryInit(this)
   this.mainWorkspace_.makeUI()
@@ -76,6 +81,8 @@ eYo.Factory.prototype.makeUI = function() {
 eYo.Factory.prototype.disposeUI = function() {
   delete this.makeUI
   this.mainWorkspace_ && this.mainWorkspace_.disposeUI()
+  this.audio_.dispose()
+  this.audio_ = null
   this.flyout_ && this.flyout_.disposeUI()
   this.flyoutSpace_ && this.flyoutSpace_.disposeUI()
   this.ui_driver = null

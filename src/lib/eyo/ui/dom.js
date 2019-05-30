@@ -556,7 +556,7 @@ eYo.Dom.on_keydown = e => {
     }
   } else if (e.keyCode == 27) {
     // Pressing esc closes the context menu.
-    Blockly.hideChaff()
+    eYo.App.hideChaff()
   } else if (e.keyCode == 8 || e.keyCode == 46) {
     // Delete or backspace.
     // Stop the browser from going back to the previous page.
@@ -584,28 +584,21 @@ eYo.Dom.on_keydown = e => {
       // bricks on the workspace.
       if (e.keyCode == 67) {
         // 'c' for copy.
-        Blockly.hideChaff();
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep);
+        eYo.App.hideChaff()
+        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
       } else if (e.keyCode == 88 && !eYo.Selected.brick.workspace.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep);
-        eYo.deleteBrick(eYo.Selected.brick, deep);
+        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
+        eYo.Desktop.deleteBrick(eYo.Selected.brick, deep)
       }
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      if (eYo.Clipboard.xml) {
-        eYo.Events.groupWrap(() => {
-          // Pasting always pastes to the main workspace, even if the copy started
-          // in a flyout workspace.
-          var workspace = eYo.Clipboard.mainWorkspace
-          workspace.paste(eYo.Clipboard.xml)
-        })
-      }
+      eYo.App.workspace.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
-      Blockly.hideChaff()
+      eYo.App.hideChaff()
       eYo.App.workspace.undo(e.shiftKey)
     }
   }
@@ -613,67 +606,11 @@ eYo.Dom.on_keydown = e => {
   // Don't delete in the flyout.
   // if (deleteBrick && !eYo.Selected.brick.workspace.isFlyout) {
   //   Blockly.Events.setGroup(true);
-  //   Blockly.hideChaff();
+  //   eYo.App.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);
   //   Blockly.Events.setGroup(false);
   // }
 };
-
-/**
- * Load sounds for the given workspace.
- * @param {string} pathToMedia The path to the media directory.
- * @param {!eYo.Workspace} workspace The workspace to load sounds for.
- * @private
- */
-eYo.Dom.loadSounds_ = function(pathToMedia, workspace) {
-  var audioMgr = workspace.getAudioManager()
-  audioMgr.load(
-      [
-        pathToMedia + 'click.mp3',
-        pathToMedia + 'click.wav',
-        pathToMedia + 'click.ogg'
-      ], 'click');
-  audioMgr.load(
-      [
-        pathToMedia + 'disconnect.wav',
-        pathToMedia + 'disconnect.mp3',
-        pathToMedia + 'disconnect.ogg'
-      ], 'disconnect');
-  audioMgr.load(
-      [
-        pathToMedia + 'delete.mp3',
-        pathToMedia + 'delete.ogg',
-        pathToMedia + 'delete.wav'
-      ], 'delete');
-
-  // Bind temporary hooks that preload the sounds.
-  var soundBinds = [];
-  var unbindSounds = () => {
-    while (soundBinds.length) {
-      eYo.Dom.unbindEvent(soundBinds.pop())
-    }
-    audioMgr.preload()
-  }
-
-  // These are bound on mouse/touch events with eYo.Dom.bindEvent, so
-  // they restrict the touch identifier that will be recognized.  But this is
-  // really something that happens on a click, not a drag, so that's not
-  // necessary.
-
-  // Android ignores any sound not loaded as a result of a user action.
-  soundBinds.push(eYo.Dom.bindEvent(
-    document,
-    'mousemove',
-    unbindSounds,
-    {noCaptureIdentifier: true}
-  ))
-  soundBinds.push(eYo.Dom.bindEvent(
-    document,
-    'touchstart',
-    unbindSounds,
-    {noCaptureIdentifier: true}
-  ))
-}
 
 /**
  * Initialize the basic dom ressources.

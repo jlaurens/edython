@@ -23,12 +23,12 @@ eYo.Clipboard = function () {
 }
 
 object.defineProperties(eYo.Clipboard, {
-  xml: {
+  dom: {
     get () {
-      return this.xml_
+      return this.dom_
     },
     set (newValue) {
-      this.xml_ = newValue
+      this.dom_ = newValue
     }
   },
   sourceWorkspace: {
@@ -50,3 +50,7 @@ object.defineProperties(eYo.Clipboard, {
     }
   }
 })
+
+eYo.Clipboard.paste = () => {
+
+}

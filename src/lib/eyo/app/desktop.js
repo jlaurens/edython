@@ -50,7 +50,7 @@ eYo.Desktop.deleteBrick = (brick, deep) => {
       }
     }
     eYo.Events.groupWrap(() => {
-      Blockly.hideChaff()
+      eYo.App.hideChaff()
       if (deep) {
         do {
           var low = brick.foot

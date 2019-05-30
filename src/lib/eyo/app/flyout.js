@@ -515,7 +515,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
   eYo.Events.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
     // Close the flyout.
-    Blockly.hideChaff()
+    eYo.App.hideChaff()
   })
   eYo.Events.fireBrickCreate(newBrick, true)
   if (this.autoClose) {
