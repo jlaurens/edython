@@ -86,7 +86,7 @@ eYo.Desktop.copyBrick = (brick, deep) => {
 }
 
 /**
- * Copy a brick onto the local clipboard.
+ * Paste a brick onto the local clipboard.
  * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
