@@ -1560,6 +1560,10 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
  * @param {number} dy Change to y coordinate, in workspace units.
  */
 eYo.Magnet.prototype.moveBy = function(dx, dy) {
+  if (goog.isDef(dx.x)) {
+    dy = dx.y
+    dx = dx.x
+  }
   this.moveTo(this.x_ + dx, this.y_ + dy)
 }
 

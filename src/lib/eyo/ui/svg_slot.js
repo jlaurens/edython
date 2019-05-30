@@ -34,7 +34,7 @@ eYo.Svg.prototype.slotInit = function (slot) {
     goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
   } else {
     goog.asserts.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
-    goog.dom.appendChild(slot.brick.ui.dom.svg.group_, g)
+    goog.dom.appendChild(slot.brick.dom.svg.group_, g)
   }
   this.slotDisplayedUpdate(slot)
 }

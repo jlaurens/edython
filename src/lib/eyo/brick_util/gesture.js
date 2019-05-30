@@ -409,7 +409,7 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
  */
 eYo.Gesture.prototype.updateDraggingBrick_ = function() {
   var workspace = this.flyout_
-  ? this.flyout_.targetSpace_
+  ? this.flyout_.targetWorkspace_
   : this.workspace_
   if ((this.targetBrick_ = workspace.brickDragger_.start(this))) {
     this.startBrick_ = null

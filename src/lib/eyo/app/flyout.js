@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Class for a flyout.
- * @param {!eYo.Workspace} targetSpace Dictionary of options for the workspace.
+ * @param {!eYo.Workspace} targetWorkspace Dictionary of options for the workspace.
  * @param {!Object} flyoutOptions Dictionary of options for the workspace.
  * @constructor
  */
@@ -168,14 +168,14 @@ Object.defineProperties(eYo.Flyout.prototype, {
     }
   },
   /**
-   * @type {eYo.Workspace} The fyout's workspace's targetSpace.
+   * @type {eYo.Workspace} The fyout's workspace's targetWorkspace.
    */
-  targetSpace: {
+  targetWorkspace: {
     get () {
-      return this.workspace_.targetSpace_
+      return this.workspace_.targetWorkspace_
     },
     set (newValue) {
-      var old = this.targetSpace
+      var old = this.targetWorkspace
       if ((newValue !== old)) {
         if (old) {
           old.removeChangeListener(this.filterWrapper_)
@@ -185,7 +185,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
           this.filterWrapper_ = this.filterForCapacity_.bind(this)
           newValue.addChangeListener(this.filterWrapper_)
         }
-        this.workspace_.targetSpace = newValue
+        this.workspace_.targetWorkspace = newValue
       }
     }
   }
@@ -239,7 +239,7 @@ eYo.Flyout.prototype.dispose = function() {
     this.scrollbar_ = null
   }
   if (this.workspace_) {
-    this.workspace_.targetSpace = null
+    this.workspace_.targetWorkspace = null
     this.workspace_ = null
   }
   this.factory_ = null
@@ -508,7 +508,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
  * @package
  */
 eYo.Flyout.prototype.createBrick = function(originalBrick) {
-  this.targetSpace_.setResizesEnabled(false)
+  this.targetWorkspace_.setResizesEnabled(false)
   var newBrick
   eYo.Events.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
@@ -531,7 +531,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  * @private
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
-  this.workspace_.scale = this.targetSpace_.scale
+  this.workspace_.scale = this.targetWorkspace_.scale
   var cursorX = this.MARGIN
   var cursorY = this.MARGIN
   contents.forEach(brick => {
@@ -580,7 +580,7 @@ eYo.Flyout.prototype.isDragTowardWorkspace = function(delta) {
  * @private
  */
 eYo.Flyout.prototype.filterForCapacity_ = function() {
-  var remainingCapacity = this.targetSpace_.remainingCapacity()
+  var remainingCapacity = this.targetWorkspace_.remainingCapacity()
   this.workspace_.getTopBricks(false).forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
       var allBricks = brick.getDescendants()
@@ -596,7 +596,7 @@ eYo.Flyout.prototype.reflow = function() {
   if (this.reflowWrapper_) {
     this.workspace_.removeChangeListener(this.reflowWrapper_)
   }
-  this.workspace_.scale = this.targetSpace_.scale
+  this.workspace_.scale = this.targetWorkspace_.scale
   var flyoutWidth = 0
   var bricks = this.workspace_.getTopBricks(false)
   bricks.forEach(brick => {
@@ -610,7 +610,7 @@ eYo.Flyout.prototype.reflow = function() {
     this.width_ = flyoutWidth
     // Call this since it is possible the trash and zoom buttons need
     // to move. e.g. on a bottom positioned flyout when zoom is clicked.
-    this.targetSpace_.resize()
+    this.targetWorkspace_.resize()
   }
   if (this.reflowWrapper_) {
     this.workspace_.addChangeListener(this.reflowWrapper_)
@@ -624,7 +624,7 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var metrics = this.targetSpace_.getMetrics()
+  var metrics = this.targetWorkspace_.getMetrics()
   if (!metrics || metrics.viewHeight <= 0) {
     // Hidden components will return null.
     return;
@@ -692,16 +692,16 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
   var xml = eYo.Xml.brickToDom(oldBrick)
   // The target workspace would normally resize during domToBrick, which will
   // lead to weird jumps.  Save it for terminateDrag.
-  var targetSpace = this.targetSpace_
-  targetSpace.setResizesEnabled(false)
+  var targetWorkspace = this.targetWorkspace_
+  targetWorkspace.setResizesEnabled(false)
 
   // Using domToBrick instead of domToWorkspace means that the new brick will be
   // placed at position (0, 0) in main workspace units.
-  var brick = eYo.Xml.domToBrick(xml, targetSpace)
+  var brick = eYo.Xml.domToBrick(xml, targetWorkspace)
 
   // The offset in pixels between the main workspace's origin and the upper left
   // corner of the injection div.
-  var mainOffsetPixels = targetSpace.getOriginOffsetInPixels()
+  var mainOffsetPixels = targetWorkspace.getOriginOffsetInPixels()
 
   // The offset in pixels between the flyout workspace's origin and the upper
   // left corner of the injection div.
@@ -725,7 +725,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
       mainOffsetPixels)
 
   // The position of the old brick in main workspace coordinates.
-  var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetSpace.scale)
+  var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetWorkspace.scale)
 
   brick.xyMoveBy(finalOffsetMainWs.x, finalOffsetMainWs.y)
 
@@ -750,7 +750,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   if (!close === !this.closed) {
     return
   }
-  var metrics = this.targetSpace_.getMetrics()
+  var metrics = this.targetWorkspace_.getMetrics()
   if (!metrics) {
     // Hidden components will return null.
     return;
@@ -792,7 +792,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.ui_driver.flyoutUpdate(this.width_, this.height_)
       this.toolbar_.resize(this.width_, this.height_)
       delete this.slide_locked
-      this.targetSpace_.recordDeleteAreas()
+      this.targetWorkspace_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
     } else {

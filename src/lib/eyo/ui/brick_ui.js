@@ -489,8 +489,8 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} x The x coordinate of the translation in workspace units.
  * @param {number} y The y coordinate of the translation in workspace units.
  */
-eYo.Brick.UI.prototype.translate = function(x, y) {
-  this.driver.brickMoveTo(this.brick_, x, y)
+eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
+  this.driver.brickXYMoveTo(this.brick_, x, y)
 }
 
 /**
@@ -1766,15 +1766,15 @@ eYo.Brick.UI.prototype.moveByXY = function (dx, dy) {
  *     workspace coordinates.
  * @package
  */
-eYo.Brick.UI.prototype.moveDuringDrag = function(newLoc) {
-  var d = this.getDistanceFromVisible(newLoc)
+eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
+  var d = this.getOffsetFromVisible(newLoc)
   if (d) {
     newLoc.x -= d.x
     newLoc.y -= d.y
   }
   var b3k = this.brick_
   if (this.workspace.brickDragSurface_) {
-    this.workspace.brickDragSurface_.translateSurface(newLoc.x, newLoc.y)
+    this.workspace.brickDragSurface_.xyMoveTo(newLoc.x, newLoc.y)
   } else {
     this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
   }
@@ -1787,15 +1787,6 @@ eYo.Brick.UI.prototype.moveDuringDrag = function(newLoc) {
  */
 eYo.Brick.UI.prototype.setDragging = function(dragging) {
   this.dragging = dragging
-}
-
-/**
- * Move this block to its workspace's drag surface, accounting for positioning.
- * Generally should be called at the same time as setDragging_(true).
- * @private
- */
-eYo.Brick.UI.prototype.moveToDragSurface = function() {
-  this.driver.brickMoveToDragSurface(this.brick_)
 }
 
 /**
@@ -1824,7 +1815,7 @@ eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
  * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
  * @return {{x: number, y: number}|undefined}
  */
-eYo.Brick.UI.prototype.getDistanceFromVisible = function (newLoc) {
+eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
   var workspace = this.brick_.workspace
   if (!workspace) {
     return undefined
@@ -1840,7 +1831,7 @@ eYo.Brick.UI.prototype.getDistanceFromVisible = function (newLoc) {
     }
   }
   var scale = workspace.scale || 1
-  var HW = this.brick_.height_width
+  var HW = this.brick_.ui.size
   // the brick is in the visible area if we see its center
   var leftBound = metrics.viewLeft / scale - HW.width / 2
   var topBound = metrics.viewTop / scale - HW.height / 2
@@ -1848,8 +1839,16 @@ eYo.Brick.UI.prototype.getDistanceFromVisible = function (newLoc) {
   var downBound = (metrics.viewTop + metrics.viewHeight) / scale - HW.height / 2
   var xy = newLoc || this.xyInWorkspace
   return {
-    x: xy.x < leftBound? xy.x - leftBound: (xy.x > rightBound? xy.x - rightBound: 0),
-    y: xy.y < topBound? xy.y - topBound: (xy.y > downBound? xy.y - downBound: 0),
+    x: xy.x < leftBound
+      ? xy.x - leftBound
+      : xy.x > rightBound
+        ? xy.x - rightBound
+        : 0,
+    y: xy.y < topBound
+      ? xy.y - topBound
+      : xy.y > downBound
+        ? xy.y - downBound
+        : 0,
   }
 }
 

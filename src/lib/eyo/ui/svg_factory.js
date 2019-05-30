@@ -22,15 +22,19 @@ goog.forwardDeclare('eYo.Factory')
  * @return {!Element} The factory's SVG group.
  */
 eYo.Svg.prototype.factoryInit = function(factory) {
-  if (factory.dom) {
+  var dom = eYo.Svg.superClass_.factoryInit.call(this, factory)
+  if (dom.svg) {
     return
   }
-  var dom = eYo.Svg.superClass_.factoryInit.call(this, factory)
   var svg = dom.svg = Object.create(null)
   // Create surfaces for dragging things. These are optimizations
   // so that the browser does not repaint during the drag.
-  svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-  svg.workspaceDragSurface = new eYo.Svg.WorkspaceDragSurface(dom.div_)
+    // Figure out where we want to put the canvas back.  The order
+  // in the dom is important because things are layered.
+  if (eYo.Dom.is3dSupported) {
+    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
+    svg.workspaceDragSurface = new eYo.Svg.WorkspaceDragSurface(dom.div_)
+  }
 }
 
 /**
@@ -137,7 +141,7 @@ eYo.Svg.prototype.factorySetBrickDisplayMode = function (factory, mode) {
  * @param {!String} mode  The display mode for bricks.
  */
 eYo.Svg.prototype.factoryBind_resize = function (factory) {
-  var bound = factory.dom.bound || Object.create(null)
+  var bound = factory.dom.bound
   if (bound.resize) {
     return
   }
@@ -145,9 +149,9 @@ eYo.Svg.prototype.factoryBind_resize = function (factory) {
     window,
     'resize',
     null,
-    function() {
+    () => {
       Blockly.hideChaff(true)
-      Blockly.svgResize(factory)
+      this.factoryResize(factory)
     }
   )
 }
@@ -191,4 +195,31 @@ eYo.Svg.prototype.factoryDragDeltaXY = function (factory) {
   var deltaXY = factory.gesture_.deltaXY_
   var correction = factory.dragger_.correction_
   return correction ? correction(deltaXY) : deltaXY
+}
+
+/**
+ * Size the main workspace to completely fill its container.
+ * Call this when the view actually changes sizes
+ * (e.g. on a window resize/device orientation change).
+ * See eYo.Svg.workspaceResizeContents to resize the workspace when the contents
+ * change (e.g. when a block is added or removed).
+ * Record the height/width of the SVG image.
+ * @param {!eYo.Factory} factory A factory.
+ */
+eYo.Svg.factoryResize = eYo.Svg.prototype.factoryResize = function(factory) {
+  var div = factory.dom.div_
+  var mainWorkspace = factory.mainWorkspace
+  var svg = mainWorkspace.dom.svg
+  var root = svg.root_
+  var width = div.offsetWidth
+  var height = div.offsetHeight
+  if (svg.cachedWidth_ != width) {
+    root.setAttribute('width', width + 'px')
+    svg.cachedWidth_ = width
+  }
+  if (svg.cachedHeight_ != height) {
+    root.setAttribute('height', height + 'px')
+    svg.cachedHeight_ = height
+  }
+  mainWorkspace.resize()
 }

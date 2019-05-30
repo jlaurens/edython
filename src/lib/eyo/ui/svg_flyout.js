@@ -77,7 +77,7 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   goog.dom.classlist.remove(g, 'eyo-workspace-surface')
   goog.dom.classlist.add(g, 'eyo-workspace-surface')*/
 
-  goog.dom.insertSiblingAfter(g, targetSpace.dom.svg.root_)
+  goog.dom.insertSiblingAfter(g, targetWorkspace.dom.svg.root_)
   return g
 }
 
@@ -405,7 +405,7 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (goog.isNumber(xyRatio.y)) {
     W.scrollY = -metrics.contentHeight * xyRatio.y
   }
-  W.translate(
+  W.xyMoveTo(
     W.scrollX + metrics.absoluteLeft,
     W.scrollY + metrics.absoluteTop
   )
@@ -488,7 +488,7 @@ eYo.Svg.prototype.flyoutRemoveAllBrickListeners = function(flyout) {
  * @param {!eYo.Brick} brick The block to add listeners for.
  */
 eYo.Svg.prototype.flyoutAddListeners = function(flyout, brick) {
-  var g = brick.ui.dom.svg.group_
+  var g = brick.dom.svg.group_
   flyout.listeners_.push(this.bindEvent(
     g,
     'mousedown',
@@ -568,7 +568,7 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @private
  */
 eYo.Svg.prototype.prototype.flyoutOn_mousedown = function(e) {
-  var gesture = this.targetSpace_.getGesture(e)
+  var gesture = this.targetWorkspace_.getGesture(e)
   if (gesture) {
     gesture.handleFlyoutStart(e, this)
   }

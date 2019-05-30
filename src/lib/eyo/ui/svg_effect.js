@@ -44,7 +44,7 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
     setTimeout(step, 10, clone, start, scale)
   }
   return function(brick) {
-    var g = brick.ui.dom.svg.group_
+    var g = brick.dom.svg.group_
     var w = brick.workspace
     var xy = w.getSvgXY(/** @type {!Element} */ g)
     // Deeply clone the current brick.
@@ -84,7 +84,7 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
     }
   }
   return function (brick) {
-    var g = brick.ui.dom.svg.group_
+    var g = brick.dom.svg.group_
     var w = brick.workspace
     var xy = w.getSvgXY(/** @type {!Element} */ g)
     if (brick.isExpr) {
@@ -128,7 +128,8 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
    * @param {!Date} start Date of animation's start.
    * @private
    */
-  step = (magnitude, start) => {
+  var step = function (magnitude, start) {
+    var svg = this.svg_
     var g = this.group_
 
     var DURATION = 200  // Milliseconds.
@@ -138,29 +139,30 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
     var percent = ms / DURATION
 
     if (percent > 1) {
-      g.skew_ = ''
+      svg.skew = ''
     } else {
       var skew = Math.round(
           Math.sin(percent * Math.PI * WIGGLES) * (1 - percent) * magnitude);
-      g.skew_ = 'skewX(' + skew + ')'
+          svg.skew = `skewX(${skew})`
       this.pid_ = setTimeout(step, 10, magnitude, start)
     }
-    g.setAttribute('transform', g.translate_ + g.skew_)
+    g.setAttribute('transform', svg.translate + svg.skew)
   }
   return function(brick) {
     var w = brick.workspace
-    w.audio.play('disconnect')
+    brick.audio.play('disconnect')
     if (w.scale < 1) {
       return  // Too small to care about visual effects.
     }
     // Horizontal distance for bottom of brick to wiggle.
     var DISPLACEMENT = 10
     // Scale magnitude of skew to eight of brick.
-    var height = this.brick_.size.height
+    var height = brick.size.height
     var magnitude = - Math.atan(DISPLACEMENT / height) / Math.PI * 180
     // Start the animation.
-    this.group_ = brick.ui.dom.svg.group_
-    step(magnitude, new Date)
+    this.svg_ = brick.dom.svg
+    this.group_ = this.svg_.group_
+    step.call(this, magnitude, new Date)
   }
 })()
 
@@ -169,13 +171,14 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
  * @private
  */
 eYo.Svg.prototype.disconnectStop = function() {
-  var g = this.group_
-  if (g) {
+  var svg = this.svg_
+  if (svg) {
+    var g = this.group_
     clearTimeout(this.pid_)
     this.pid_ = 0
-    g.skew_ = ''
-    g.setAttribute('transform', g.translate_)
-    g = null
+    svg.skew = ''
+    g.setAttribute('transform', svg.translate)
+    this.svg_ = this.group_ = null
   }
 }
 

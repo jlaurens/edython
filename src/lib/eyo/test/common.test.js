@@ -396,7 +396,7 @@ eYo.Test.newIdentifier = (str) => {
 eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
   if (bdom.ui) {
     type = type || bdom.type
-    bdom = bdom.ui.dom
+    bdom = bdom.dom
     chai.assert(bdom, `MISSING dom in ${type}`)
   } else {
     type = type || 'svg'

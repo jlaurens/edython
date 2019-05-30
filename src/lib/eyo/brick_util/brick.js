@@ -236,6 +236,11 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.workspace_.factory_
     }
   },
+  audio: {
+    get () {
+      return this.factory_.audio
+    }
+  },
   deletable: { value: false, writable: true},
   isEditing: { value: false, writable: true},
   data: {

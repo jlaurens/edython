@@ -14,7 +14,6 @@
 
 goog.provide('eYo.BrickDragger')
 
-
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Workspace')
@@ -30,26 +29,50 @@ goog.forwardDeclare('goog.math.Coordinate')
  * @param {!eYo.Workspace} destination The workspace to drag on.
  * @constructor
  */
-eYo.BrickDragger = function(destination) {
-  /**
-   * The workspace on which the brick is being dragged.
-   * @type {!eYo.Workspace}
-   * @private
-   */
-  this.destination = destination
+eYo.BrickDragger = function(factory) {
+  this.factory_ = factory
+  this.disposeUI = eYo.Do.nothing
+  factory.hasUI && this.makeUI()
 }
 
-Object.defineProperties(eYo.BrickDragger, {
+Object.defineProperties(eYo.BrickDragger.prototype, {
+  xyDelta_: {
+    get () {
+      var delta = this.gesture_.xyDelta_
+      if (delta && this.transformCorrection_) {
+        delta = this.transformCorrection_(delta)
+      }
+      return this.destination.fromPixelUnit(delta)
+    }
+  },
+  xyNew_: {
+    get () {
+      return goog.math.Coordinate.sum(this.xyStart_, this.xyDelta_)
+    }
+  }
+})
+
+Object.defineProperties(eYo.BrickDragger.prototype, {
+  factory: {
+    get () {
+      return this.factory_
+    }
+  },
+  destination: {
+    get () {
+      return this.factory.mainWorkspace
+    }
+  },
   ui_driver: {
     get () {
-      return this.destination.eyo.driver
+      return this.factory.ui_driver
     }
   },
   workspace_: {
     get () {
       throw 'DEPRECATED, use destination instead'
     }
-  }
+  },
 })
 
 /**
@@ -75,7 +98,6 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     return
   }
   var flyout = gesture.flyout_
-  var deltaXY = gesture.xyDelta_
   if (flyout) {
     /*
      * Update this gesture to record whether a brick is being dragged from the
@@ -101,11 +123,9 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     eYo.Events.disableWrap(() => {
       targetBrick = flyout.createBrick(targetBrick)
     })
-    targetBrick.select()
   } else if (!targetBrick.movable) {
     return
   }
-  var healStack = gesture.healStack_
   /**
    * The top brick in the stack that is being dragged.
    * @type {!eYo.Brick}
@@ -180,24 +200,21 @@ eYo.BrickDragger.prototype.start = function(gesture) {
   this.xyStart_ = this.brick_.ui.xyInWorkspace
 
   eYo.Selected.magnet = null
-  var element = this.draggingBlock_.workspace.dom.div_
-  this.transformCorrection_ = eYo.Do.getTransformCorrection(element)
-
+  
   if (!eYo.Events.getGroup()) {
-    eYo.Events.setGroup(true);
+    eYo.Events.setGroup(true)
   }
   this.destination.setResizesEnabled(false)
   this.ui_driver.disconnectStop()
+  var healStack = gesture.healStack_
   if (this.brick_.parent ||
       (healStack && this.brick_.foot_m && this.brick_.foot_m.target)) {
     this.brick_.unplug(healStack)
-    var xyDelta = this.destination.fromPixelUnit(deltaXY)
-    var newLoc = goog.math.Coordinate.sum(this.xyStart_, xyDelta)
-    this.brick_.ui.translate(newLoc.x, newLoc.y)
-    this.brick_.ui.disconnectEffect();
+    this.brick_.ui.xyMoveTo(this.newLoc(deltaXY))
+    this.brick_.ui.disconnectEffect()
   }
   this.brick_.ui.dragging = true
-  this.brick_.ui.moveToDragSurface()
+  this.ui_driver.brickDraggerStart(this)
 
   this.drag()
   return targetBrick
@@ -211,18 +228,24 @@ eYo.BrickDragger.prototype.start = function(gesture) {
  * @package
  */
 eYo.BrickDragger.prototype.drag = function() {
-  delta = this.gesture_.xyDelta_
-  if (delta && this.transformCorrection_) {
-    delta = this.transformCorrection_(delta)
+  var xyNew = this.xyNew_
+  var b3k = this.brick_
+  var d = b3k.ui.getOffsetFromVisible(xyNew)
+  if (d) {
+    xyNew.x -= d.x
+    xyNew.y -= d.y
   }
-  var dXY = this.destination.fromPixelUnit(delta)
-  var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
-
-  this.brick_.ui.moveDuringDrag(newLoc)
-  
-  this.update(dXY)
+  var bds = this.factory.brickDragSurface
+  if (bds) {
+    bds.xyMoveTo(xyNew)
+  } else {
+    this.driver.brickSetOffsetDuringDrag(b3k, xyNew)
+  }
 
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
+  
+  this.update()
+
   var trashcan = this.destination.trashcan
   if (trashcan) {
     trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.DELETE_AREA_TRASH)
@@ -248,17 +271,10 @@ eYo.BrickDragger.prototype.end = (() => {
     eYo.Events.fire(event)
   }
   return function(e, delta) {
-    if (delta && this.transformCorrection_) {
-      delta = this.transformCorrection_(delta)
-      this.transformCorrection_ = null // !important
-    }
-    // Make sure internal state is fresh.
     this.drag(delta)
-    this.ui_driver.disconnectStop()
-    var dXY = this.destination.fromPixelUnit(delta)
-    var newLoc = goog.math.Coordinate.sum(this.xyStart_, dXY)
+    this.ui_driver.brickDraggerEnd(this)
+
     var b3k = this.brick_
-    b3k.ui.moveOffDragSurface(newLoc)
     if (this.wouldDelete_) {
       if (!this.gesture_.flyout_) {
         fireMoveEvent(this)
@@ -266,7 +282,7 @@ eYo.BrickDragger.prototype.end = (() => {
       b3k.dispose(false, true)
     } else {
       // These are expensive and don't need to be done if we're deleting.
-      b3k.moveMagnets_(dXY.x, dXY.y)
+      b3k.ui.moveMagnets_(this.xyDelta_)
       b3k.ui.setDragging(false)
       this.connect()
       b3k.render()
@@ -312,17 +328,15 @@ eYo.BrickDragger.prototype.connect = function() {
 
 /**
  * Update highlighted connections based on the most recent move location.
- * @param {!goog.math.Coordinate} dxy Position relative to drag start,
- *     in workspace units.
  * @package
  */
-eYo.BrickDragger.prototype.update = function(dxy) {
+eYo.BrickDragger.prototype.update = function() {
   this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = Blockly.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
-    var neighbour = m4t.closest(this.distance_, dxy)
+    var neighbour = m4t.closest(this.distance_, this.xyDelta_)
     if (neighbour.magnet) {
       this.target_ = neighbour.magnet
       this.magnet_ = m4t

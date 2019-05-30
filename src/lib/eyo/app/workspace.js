@@ -65,14 +65,10 @@ eYo.Workspace = function(factory, options) {
   this.setMetrics =
     options.setMetrics || eYo.Workspace.setTopLevelWorkspaceMetrics_
 
-  this.targetSpace = options.targetSpace
+  this.targetWorkspace = options.targetWorkspace
 
   this.dragger_ = new eYo.WorkspaceDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
-
-  if (Blockly.utils.is3dSupported()) {
-    this.brickDragSurface_ = options.brickDragSurface
-  }
 
   /**
    * List of currently highlighted blocks.  Block highlighting is often used to
@@ -129,7 +125,7 @@ Object.defineProperties(eYo.Workspace.prototype, {
    */
   isFlyout: {
     get () {
-      return !!this.targetSpace
+      return !!this.targetWorkspace
     }
   },
   /**
@@ -142,7 +138,7 @@ Object.defineProperties(eYo.Workspace.prototype, {
   },
   audio: {
     get () {
-      return (this.factory || this.targetSpace).audio
+      return (this.factory || this.targetWorkspace).audio
     }
   },
   /**
@@ -151,8 +147,8 @@ Object.defineProperties(eYo.Workspace.prototype, {
    */
   draggable: {
     get () {
-      return this.targetSpace
-      ? this.targetSpace.flyout_.scrollable
+      return this.targetWorkspace
+      ? this.targetWorkspace.flyout_.scrollable
       : !!this.scrollbar
     }
   },
@@ -535,7 +531,7 @@ eYo.Workspace.prototype.allInputsFilled = function(opt_shadowBlocksAreFilled) {
  * Database of all workspaces.
  * @private
  */
-eYo.Workspace.WorkspaceDB_ = Object.create(null);
+eYo.Workspace.WorkspaceDB_ = Object.create(null)
 
 /**
  * Find the workspace with the specified ID.
@@ -543,8 +539,8 @@ eYo.Workspace.WorkspaceDB_ = Object.create(null);
  * @return {eYo.Workspace} The sought after workspace or null if not found.
  */
 eYo.Workspace.getById = function(id) {
-  return eYo.Workspace.WorkspaceDB_[id] || null;
-};
+  return eYo.Workspace.WorkspaceDB_[id] || null
+}
 
 // Export symbols that would otherwise be renamed by Closure compiler.
 eYo.Workspace.prototype['clear'] = eYo.Workspace.prototype.clear;
@@ -562,13 +558,6 @@ eYo.Workspace.prototype['removeChangeListener'] =
  * @type {boolean}
  */
 eYo.Workspace.prototype.rendered = true;
-
-/**
- * Is this workspace the surface for a mutator?
- * @type {boolean}
- * @package
- */
-eYo.Workspace.prototype.isMutator = false;
 
 /**
  * Whether this workspace has resizes enabled.
@@ -607,39 +596,32 @@ eYo.Workspace.prototype.startScrollY = 0;
  * @type {goog.math.Coordinate}
  * @private
  */
-eYo.Workspace.prototype.dragDeltaXY_ = null;
+eYo.Workspace.prototype.dragDeltaXY_ = null
 
 /**
  * Current scale.
  * @type {number}
  */
-eYo.Workspace.prototype.scale = 1;
+eYo.Workspace.prototype.scale = 1
 
 /**
  * The workspace's trashcan (if any).
- * @type {Blockly.Trashcan}
+ * @type {eYo.Trashcan}
  */
-eYo.Workspace.prototype.trashcan = null;
+eYo.Workspace.prototype.trashcan = null
 
 /**
  * This workspace's scrollbars, if they exist.
- * @type {Blockly.ScrollbarPair}
+ * @type {eYo.ScrollbarPair}
  */
-eYo.Workspace.prototype.scrollbar = null;
+eYo.Workspace.prototype.scrollbar = null
 
 /**
  * The current gesture in progress on this workspace, if any.
- * @type {Blockly.TouchGesture}
+ * @type {eYo.Gesture}
  * @private
  */
-eYo.Workspace.prototype.currentGesture_ = null;
-
-/**
- * This workspace's surface for dragging blocks, if it exists.
- * @type {eYo.Svg.BrickDragSurface}
- * @private
- */
-eYo.Workspace.prototype.brickDragSurface_ = null;
+eYo.Workspace.prototype.currentGesture_ = null
 
 /**
  * Last known position of the page scroll.
@@ -671,7 +653,7 @@ eYo.Workspace.prototype.configureContextMenu = null;
  * @type {?eYo.Workspace}
  * @package
  */
-eYo.Workspace.prototype.targetSpace = null;
+eYo.Workspace.prototype.targetWorkspace = null;
 
 /**
  * Inverted screen CTM, for use in mouseToSvg.
@@ -767,15 +749,15 @@ Object.defineProperties(eYo.Workspace.prototype, {
     },
     set (newValue) {
       this.flyout_ = newValue
-      this.targetSpace_ = null
+      this.targetWorkspace_ = null
     }
   },
-  targetSpace: {
+  targetWorkspace: {
     get () {
-      return this.targetSpace_
+      return this.targetWorkspace_
     },
     set (newValue) {
-      if ((this.targetSpace_ = newValue)) {
+      if ((this.targetWorkspace_ = newValue)) {
         this.getGesture = newValue.getGesture.bind(newValue)
       } else {
         delete this.getGesture
@@ -897,16 +879,12 @@ eYo.Workspace.prototype.getParentSvg = function() {
 }
 
 /**
- * Translate this workspace to new coordinates.
+ * Move the receiver to new coordinates.
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
  */
-eYo.Workspace.prototype.translate = function(x, y) {
-  this.dragger.translate(x, y)
-  // Now update the block drag surface if we're using one.
-  if (this.brickDragSurface_) {
-    this.brickDragSurface_.translateAndScaleGroup(x, y, this.scale)
-  }
+eYo.Workspace.prototype.xyMoveTo = function(x, y) {
+  this.dragger.xyMoveTo(x, y)
 }
 
 /**
@@ -1601,7 +1579,7 @@ eYo.Workspace.prototype.setScale = function(newScale) {
   if (this.scrollbar) {
     this.scrollbar.resize();
   } else {
-    this.translate(this.scrollX, this.scrollY);
+    this.xyMoveTo(this.scrollX, this.scrollY);
   }
   Blockly.hideChaff(false);
   if (this.flyout_) {
@@ -1785,7 +1763,7 @@ eYo.Workspace.setTopLevelWorkspaceMetrics_ = function(xyRatio) {
   }
   var x = this.scrollX + metrics.absoluteLeft;
   var y = this.scrollY + metrics.absoluteTop;
-  this.translate(x, y);
+  this.xyMoveTo(x, y);
 };
 
 /**

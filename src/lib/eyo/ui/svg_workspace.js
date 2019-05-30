@@ -41,19 +41,19 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     ...
   </svg>
   */
-  var div = wprkspace.factory.dom.div_
-
+  
+  var div = workspace.factory.dom.div_
   var root = svg.root_ = eYo.Svg.createElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
-    class: 'eyo-svg'
+    'class': 'eyo-svg'
   }, div)
 
   options.zoomOptions && (workspace.scale = options.zoomOptions.startScale)
   // A null translation will also apply the correct initial scale.
-  workspace.translate(0, 0)
+  workspace.xyMoveTo(0, 0)
 
   if (!options.readOnly && !options.hasScrollbars) {
     var workspaceChanged = function() {
@@ -90,7 +90,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
             if (overflowLeft > 0) {
               brick.xyMoveBy(overflowLeft, 0);
             }
-            // Bump any brick that's off the right back inside.
+            // Bump any brick that's off the right back inside ???
             var overflowRight = edgeLeft + metrics.viewWidth - MARGIN -
                 xy.x;
             if (overflowRight < 0) {
@@ -103,7 +103,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     workspace.addChangeListener(workspaceChanged)
   }
   // The SVG is now fully assembled.
-  Blockly.svgResize(workspace)
+  workspace.ui_driver.factoryResize(factory)
 
   workspace.ui_driver.workspaceBind_resize(workspace)
   eYo.Dom.bindDocumentEvents_()
@@ -128,7 +128,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {class: 'eyo-workspace-surface'},
+    {'class': 'eyo-workspace-surface'},
     root
   )
 
@@ -139,14 +139,14 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
       'rect',
-      {'height': '100%', 'width': '100%', class: options.backgroundClass},
+      {'height': '100%', 'width': '100%', 'class': options.backgroundClass},
       g
     )
   }
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
     'g',
-    {class: 'eyo-brick-canvas'},
+    {'class': 'eyo-brick-canvas'},
     g
   )
   if (!workspace.isFlyout) {
@@ -275,9 +275,9 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     window,
     'resize',
     null,
-    function() {
+    () => {
       Blockly.hideChaff(true)
-      Blockly.svgResize(workspace)
+      workspace.factory.resize()
     }
   )
 }
@@ -308,7 +308,7 @@ eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
     surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
-    var coord = eYo.Svg.getRelativeXY(svg.canvas_)
+    var coord = Blockly.utils.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
 }
@@ -321,4 +321,39 @@ eYo.Svg.prototype.workspaceDragDeltaXY = function (workspace) {
   var deltaXY = workspace.gesture_.deltaXY_
   var correction = workspace.dragger_.correction_
   return correction ? correction(deltaXY) : deltaXY
+}
+
+/**
+ * Size the SVG image to completely fill its container. Call this when the view
+ * actually changes sizes (e.g. on a window resize/device orientation change).
+ * See Blockly.resizeSvgContents to resize the workspace when the contents
+ * change (e.g. when a block is added or removed).
+ * Record the height/width of the SVG image.
+ * @param {!Blockly.WorkspaceSvg} workspace Any workspace in the SVG.
+ */
+eYo.Svg.prototype.resize = function(workspace) {
+  var factory = workspace.factory
+  var mainWorkspace = factory.mainWorkspace
+  
+  var mainWorkspace = workspace;
+  while (mainWorkspace.options.parentWorkspace) {
+    mainWorkspace = mainWorkspace.options.parentWorkspace;
+  }
+  var root = mainWorkspace.dom.svg.root_
+  var div = root.parentNode
+  if (!div) {
+    // Workspace deleted, or something.
+    return;
+  }
+  var width = div.offsetWidth;
+  var height = div.offsetHeight;
+  if (root.cachedWidth_ != width) {
+    root.setAttribute('width', width + 'px');
+    root.cachedWidth_ = width;
+  }
+  if (root.cachedHeight_ != height) {
+    root.setAttribute('height', height + 'px');
+    root.cachedHeight_ = height;
+  }
+  mainWorkspace.resize();
 }

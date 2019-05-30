@@ -20,7 +20,53 @@ goog.require('eYo')
  * @param {!eYo.Workspace} workspace The workspace to drag.
  * @constructor
  */
-eYo.WorkspaceDragger = function() {
+eYo.WorkspaceDragger = function(factory) {
+  this.factory_ = factory
+  this.disposeUI = eYo.Do.nothing
+  factory.hasUI && this.makeUI()
+}
+
+Object.defineProperties(eYo.WorkspaceDragger.prototype, {
+  factory: {
+    get () {
+      return this.factory_
+    }
+  },
+  workspace: {
+    get () {
+      return this.workspace_
+    }
+  },
+  ui_driver: {
+    get () {
+      return this.factory_.ui_driver
+    }
+  },
+  has_UI: {
+    get () {
+      return this.makeUI === eYo.Do.nothing
+    }
+  },
+})
+
+/**
+ * Prepare the UI for dragging.
+ * @package
+ */
+eYo.WorkspaceDragger.prototype.makeUI = function() {
+  this.makeUI = eYo.Do.nothing
+  delete this.disposeUI
+  this.ui_driver.workspaceDraggerInit(this)
+}
+
+/**
+ * Dispose of the UI resources.
+ * @package
+ */
+eYo.WorkspaceDragger.prototype.disposeUI = function() {
+  this.disposeUI = eYo.Do.nothing
+  delete this.makeUI
+  this.ui_driver.workspaceDraggerDispose(this)
 }
 
 /**
@@ -28,6 +74,7 @@ eYo.WorkspaceDragger = function() {
  * @package
  */
 eYo.WorkspaceDragger.prototype.dispose = function() {
+  this.disposeUI()
   this.workspace_ = null
   this.correction_ = null
 }
@@ -40,7 +87,7 @@ eYo.WorkspaceDragger.prototype.dispose = function() {
  * @type {boolean}
  * @private
  */
-eYo.Workspace.prototype.isDragSurfaceActive_ = false;
+eYo.WorkspaceDragger.prototype.isActive_ = false;
 
 /**
  * Start dragging the workspace.
@@ -82,7 +129,7 @@ eYo.WorkspaceDragger.prototype.start = function(gesture) {
   */
   this.startMetrics_.updateScroll_ = workspace.isFlyout
   ? function (x, y) {
-    workspace.targetSpace.flyout_.scrollbar_.set(y)
+    workspace.targetWorkspace.flyout_.scrollbar_.set(y)
   }
   : function (x, y) {
     workspace.scrollbar.set(x, y)
@@ -102,11 +149,6 @@ eYo.WorkspaceDragger.prototype.start = function(gesture) {
 
   this.isActive_ = true
 
-  // Figure out where we want to put the canvas back.  The order
-  // in the dom is important because things are layered.
-  if (Blockly.utils.is3dSupported()) {
-    this.dragSurface_ = workspace.options.workspaceDragSurface
-  }
   /**
    * What is the purpose of this transform correction_?
    * Zoom I guess
@@ -161,9 +203,9 @@ eYo.WorkspaceDragger.prototype.drag = function() {
  * @param {number} x
  * @param {number} y
  */
-eYo.WorkspaceDragger.prototype.moveTo = function(x, y) {
-  if (this.dragSurface_ && this.isDragSurfaceActive_) {
-    this.dragSurface_.translateSurface(x,y)
+eYo.WorkspaceDragger.prototype.xyMoveTo = function(x, y) {
+  if (this.dragSurface_ && this.isActive_) {
+    this.dragSurface_.xyMoveTo(x,y)
   } else {
     this.workspace_.canvasMoveTo(x, y)
   }

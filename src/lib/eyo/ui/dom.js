@@ -244,7 +244,7 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
  * @param {eYo.Brick|eYo.Workspace|eYo.Flyout}
  */
 eYo.Dom.clearBoundEvents = (bfw) => {
-  var dom = bfw.ui.dom || bfw.dom
+  var dom = bfw.dom || bfw.dom
   var bound = dom = dom.bound
   bound && Object.values(bound).forEach(item => eYo.Dom.unbindEvent(item))
 }
@@ -383,6 +383,59 @@ Object.defineProperties(eYo.Dom, {
   HTML_NS: { value: 'http://www.w3.org/1999/xhtml' },
   SVG_NS: { value: 'http://www.w3.org/2000/svg' },
   XLINK_NS: { value: 'http://www.w3.org/1999/xlink' },
+  /**
+   * Check if 3D transforms are supported by adding an element
+   * and attempting to set the property.
+   * @return {boolean} true if 3D transforms are supported.
+   */
+  is3dSupported: {
+    get: (() => {
+      var is3dSupported
+      return function() {
+        if (is3dSupported !== undefined) {
+          return is3dSupported
+        }
+        // CC-BY-SA Lorenzo Polidori
+        // stackoverflow.com/questions/5661671/detecting-transform-translate3d-support
+        if (!goog.global.getComputedStyle) {
+          return false;
+        }
+
+        var el = document.createElement('p');
+        var has3d = 'none';
+        var transforms = {
+          'webkitTransform': '-webkit-transform',
+          'OTransform': '-o-transform',
+          'msTransform': '-ms-transform',
+          'MozTransform': '-moz-transform',
+          'transform': 'transform'
+        };
+
+        // Add it to the body to get the computed style.
+        document.body.insertBefore(el, null);
+
+        for (var t in transforms) {
+          if (el.style[t] !== undefined) {
+            el.style[t] = 'translate3d(1px,1px,1px)'
+            var computedStyle = goog.global.getComputedStyle(el)
+            if (!computedStyle) {
+              // getComputedStyle in Firefox returns null when blockly is loaded
+              // inside an iframe with display: none.  Returning false and not
+              // caching is3dSupported means we try again later.  This is most likely
+              // when users are interacting with blocks which should mean blockly is
+              // visible again.
+              // See https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+              document.body.removeChild(el)
+              return false
+            }
+            has3d = computedStyle.getPropertyValue(transforms[t])
+          }
+        }
+        document.body.removeChild(el)
+        return (is3dSupported = has3d !== 'none')
+      }
+    }) ()
+  }
 })
 
 /**
@@ -457,7 +510,7 @@ eYo.Dom.bindDocumentEvents = (() => {
           window,
           'orientationchange',
           null,
-          e => Blockly.svgResize(eYo.App.workspace) // TODO(#397): Fix for multiple workspaces.
+          e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple workspaces.
         )
       }
     }
@@ -527,12 +580,12 @@ eYo.Dom.on_keydown = e => {
     if (e.keyCode == 86) {
       // 'v' for paste.
       if (Blockly.clipboardXml_) {
-        Blockly.Events.setGroup(true);
+        Blockly.Events.setGroup(true)
         // Pasting always pastes to the main workspace, even if the copy started
         // in a flyout workspace.
         var workspace = Blockly.clipboardSource_;
         if (workspace.isFlyout) {
-          workspace = workspace.targetSpace;
+          workspace = workspace.targetWorkspace;
         }
         workspace.paste(Blockly.clipboardXml_);
         Blockly.Events.setGroup(false);

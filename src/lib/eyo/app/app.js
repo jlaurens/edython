@@ -71,3 +71,12 @@ eYo.App.doFocus = () => {
     brick.workspace.eyo.scrollBlockTopLeft(brick.id)
   }
 }
+
+/**
+ * Scroll the workspace to show the selected brick.
+ */
+eYo.App.makeFactory = container => {
+  var f = eYo.App.factory = new eYo.Factory(container)
+  eYo.App.workspace = f.mainWorkspace
+  f.makeUI()
+}

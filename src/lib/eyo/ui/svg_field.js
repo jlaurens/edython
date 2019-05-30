@@ -33,7 +33,7 @@ eYo.Svg.prototype.fieldInit = function(field) {
   if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
     field.css_class_ = eYo.Svg.getCssClassForText(field.text)
   }
-  var dom = field.owner.dom || field.brick.ui.dom
+  var dom = field.owner.dom || field.brick.dom
   if (!dom) {
     throw 'MISSING owner dom'
   }

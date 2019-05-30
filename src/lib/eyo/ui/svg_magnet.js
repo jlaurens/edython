@@ -34,7 +34,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
     return
   }
   var node = m4t.brick
-  var g = node.ui.dom.svg.group_
+  var g = node.dom.svg.group_
   var steps
   if (m4t.isInput) {
     if (m4t.target) {

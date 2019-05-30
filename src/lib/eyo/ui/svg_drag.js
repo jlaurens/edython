@@ -36,7 +36,6 @@ eYo.Svg.BrickDragSurface = function(container) {
    * @type {!Element}
    * @private
    */
-  this.container_ = container
   var svg = this.svg = Object.create(null)
   svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
@@ -44,8 +43,19 @@ eYo.Svg.BrickDragSurface = function(container) {
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
     class: 'blocklyBlockDragSurface'
-  }, this.container_)
+  }, container)
   svg.group_ = eYo.Svg.newElement('g', {}, svg.root_)
+}
+
+/**
+ * Sever all the links and remove dom nodes.
+ */
+eYo.Svg.prototype.dispose = function() {
+  var svg = this.svg
+  if (svg) {
+    goog.dom.removeNode(svg.root_)
+    this.svg = svg.root_ = svg.group_ = null
+  }
 }
 
 Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
@@ -59,15 +69,6 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
     get () {
       return this.svg.group_.firstChild
     }
-  },
-  /**
-   * Containing HTML element; parent of the workspace and the drag surface.
-   * @type {Element}
-   * @private
-   */
-  container_: {
-    value: null,
-    writable: true
   },
   /**
    * Cached value for the scale of the drag surface.
@@ -128,7 +129,7 @@ eYo.Svg.BrickDragSurface.prototype.setBlocksAndShow = function(blocks) {
  * @param {number} y Y translation in workspace coordinates.
  * @param {number} scale Scale of the group.
  */
-eYo.Svg.BrickDragSurface.prototype.translateAndScaleGroup = function(x, y, scale) {
+eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale) {
   this.scale_ = scale
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
@@ -148,7 +149,7 @@ eYo.Svg.BrickDragSurface.prototype.translateAndScaleGroup = function(x, y, scale
  * @param {number} x X translation for the entire surface.
  * @param {number} y Y translation for the entire surface.
  */
-eYo.Svg.BrickDragSurface.prototype.translateSurface = function(x, y) {
+eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
   this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_)
   var x = this.surfaceXY_.x
   var y = this.surfaceXY_.y
@@ -190,7 +191,6 @@ eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
  * @constructor
  */
 eYo.Svg.WorkspaceDragSurface = function(container) {
-  this.container_ = container
   /**
    * Dom structure when the workspace is being dragged. If there is no drag in
    * progress, the SVG is empty and display: none.
@@ -205,7 +205,7 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
     class: 'blocklyWsDragSurface blocklyOverflowVisible'
-  }, this.container_)
+  }, container)
 }
 
 /**
@@ -213,8 +213,11 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
  * @private
  */
 eYo.Svg.WorkspaceDragSurface.prototype.dispose = function () {
-  goog.dom.removeNode(this.svg.root_)
-  this.svg = null
+  var svg = this.svg
+  if (svg) {
+    goog.dom.removeNode(svg.root_)
+    this.svg = svg.root_ = null
+  }
 }
 
 Object.defineProperties(eYo.Svg.WorkspaceDragSurface.prototype, {
@@ -232,22 +235,19 @@ Object.defineProperties(eYo.Svg.WorkspaceDragSurface.prototype, {
 })
 
 /**
- * Containing HTML element; parent of the workspace and the drag surface.
- * @type {Element}
- * @private
- */
-eYo.Svg.WorkspaceDragSurface.prototype.container_ = null;
-
-/**
  * Translate the entire drag surface during a drag.
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {number} x X translation for the entire surface
+ * @param {number|goog.math.Coordinate} x X translation for the entire surface, or coordinates
  * @param {number} y Y translation for the entire surface
  * @package
  */
-eYo.Svg.WorkspaceDragSurface.prototype.translateSurface = function(x, y) {
+eYo.Svg.WorkspaceDragSurface.prototype.xyMoveTo = function(x, y) {
+  if (goog.isDef(x.x)) {
+    y = x.y
+    x = x.x
+  }
   // This is a work-around to prevent the bricks from rendering
   // fuzzy while they are being moved on the drag surface.
   var fixedX = x.toFixed(0)
