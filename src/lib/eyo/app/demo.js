@@ -13,5 +13,6 @@
 
 goog.provide('eYo.Demo');
 
+goog.require('eYo')
 goog.require('eYo.Xml')
 

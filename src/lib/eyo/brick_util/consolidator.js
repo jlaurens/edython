@@ -14,6 +14,7 @@
 goog.provide('eYo.Consolidator')
 
 goog.require('eYo')
+
 goog.require('eYo.Const')
 goog.require('eYo.Input')
 goog.require('eYo.Decorate')

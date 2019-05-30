@@ -11,6 +11,8 @@
 
 goog.provide('eYo.PopupMenu')
 
+goog.require('eYo')
+
 goog.require('goog.ui.PopupMenu')
 
 /**

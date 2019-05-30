@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Node')
-
 goog.provide('eYo.Node.List')
+
+goog.require('eYo.Node')
 
 /* List a node on a file *-/
 

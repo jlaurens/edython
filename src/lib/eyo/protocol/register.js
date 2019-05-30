@@ -14,6 +14,7 @@
 goog.provide('eYo.Protocol.Register')
 
 goog.require('eYo.Protocol')
+
 goog.require('eYo.Events')
 
 eYo.Protocol.Register = function (key, filter) {

@@ -13,6 +13,8 @@
 
 goog.provide('eYo.Brick.Random')
 
+goog.require('eYo.Brick')
+
 goog.require('eYo.Brick.Range')
 
 goog.require('eYo.Model.random__module')

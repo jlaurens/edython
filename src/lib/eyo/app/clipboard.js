@@ -13,6 +13,7 @@
 
 goog.provide('eYo.Clipboard')
 
+goog.require('eYo')
 goog.require('Blockly')
 
 // Dependency ordering?

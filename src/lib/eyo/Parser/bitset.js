@@ -13,6 +13,8 @@
 
 goog.provide('eYo.BitSet')
 
+goog.require('eYo')
+
 /* Bitset primitives used by the parser generator *-/
 
 #include "pgenheaders.h"

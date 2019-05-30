@@ -14,6 +14,7 @@
 goog.provide('eYo.Svg.Workspace')
 
 goog.require('eYo.Svg')
+
 goog.forwardDeclare('eYo.Workspace')
 
 /**
