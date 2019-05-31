@@ -89,3 +89,25 @@ eYo.Svg.factoryResize = eYo.Svg.prototype.factoryResize = function(factory) {
   }
   mainWorkspace.resize()
 }
+
+/**
+ * Return the coordinates of the top-left corner of this element relative to
+ * the div blockly was injected into.
+ * @param {!eYo.Factory}
+ * @param {!Element} element SVG element to find the coordinates of. If this is
+ *     not a child of the div blockly was injected into, the behaviour is
+ *     undefined.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ */
+eYo.Svg.prototype.factoryXYElement = function(factory, element) {
+  var x = 0
+  var y = 0
+  while (element && element !== factory.dom.div_) {
+    var xy = eYo.Svg.getRelativeXY(element)
+    var scale = eYo.Svg.getScale_(element)
+    x = (x * scale) + xy.x
+    y = (y * scale) + xy.y
+    element = element.parentNode
+  }
+  return new goog.math.Coordinate(x, y)
+}

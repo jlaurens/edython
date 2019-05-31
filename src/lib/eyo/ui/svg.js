@@ -442,33 +442,6 @@ eYo.Svg.prototype.getTransformCorrection = element => {
   }
 }
 
-
-/**
- * Return the coordinates of the top-left corner of this element relative to
- * the div blockly was injected into.
- * @param {!Element} element SVG element to find the coordinates of. If this is
- *     not a child of the div blockly was injected into, the behaviour is
- *     undefined.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
- */
-eYo.Svg.getInjectionDivXY_ = function(element) {
-  var x = 0;
-  var y = 0;
-  while (element) {
-    var xy = eYo.Svg.getRelativeXY(element);
-    var scale = eYo.Svg.getScale_(element);
-    x = (x * scale) + xy.x;
-    y = (y * scale) + xy.y;
-    var classes = element.getAttribute('class') || '';
-    if ((' ' + classes + ' ').indexOf(' injectionDiv ') != -1) {
-      break;
-    }
-    element = element.parentNode;
-  }
-  return new goog.math.Coordinate(x, y);
-};
-
-
 /**
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
@@ -478,26 +451,25 @@ eYo.Svg.getInjectionDivXY_ = function(element) {
 eYo.Svg.getRelativeXY = function(element) {
   var xy = new goog.math.Coordinate(0, 0);
   // First, check for x and y attributes.
-  var x = element.getAttribute('x');
+  var x = element.getAttribute('x')
   if (x) {
-    xy.x = parseInt(x, 10);
+    xy.x = parseInt(x, 10)
   }
-  var y = element.getAttribute('y');
+  var y = element.getAttribute('y')
   if (y) {
-    xy.y = parseInt(y, 10);
+    xy.y = parseInt(y, 10)
   }
   // Second, check for transform="translate(...)" attribute.
-  var transform = element.getAttribute('transform');
-  var r = transform && transform.match(eYo.Svg.getRelativeXY.XY_REGEX_);
+  var transform = element.getAttribute('transform')
+  var r = transform && transform.match(eYo.Svg.getRelativeXY.XY_REGEX_)
   if (r) {
-    xy.x += parseFloat(r[1]);
+    xy.x += parseFloat(r[1])
     if (r[3]) {
-      xy.y += parseFloat(r[3]);
+      xy.y += parseFloat(r[3])
     }
   }
-
   // Then check for style = transform: translate(...) or translate3d(...)
-  var style = element.getAttribute('style');
+  var style = element.getAttribute('style')
   if (style && style.indexOf('translate') > -1) {
     var styleComponents = style.match(eYo.Svg.getRelativeXY.XY_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
