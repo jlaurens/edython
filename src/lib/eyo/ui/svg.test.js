@@ -3,14 +3,14 @@ describe('SVG coordinates', function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('True')
     var ui = d1.ui
-    var xy1 = d1.ui.xyInWorkspace
+    var xy1 = d1.xy
     var xy2 = ui.xyInWorkspace
     chai.assert(xy1.x === xy2.x)
     chai.assert(xy1.y === xy2.y)
     var dx = 246 * Math.random()
     var dy = 135 * Math.random()
-    d1.moveByXY(dx, dy)
-    var xy1d = d1.ui.xyInWorkspace
+    d1.xyMoveBy(dx, dy)
+    var xy1d = d1.xy
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)
     chai.assert(xy1d.y === xy1.y + dy, `FAILURE y1: ${xy1d.y} === ${xy1.y} + ${dy}`)
     var xy2d = ui.xyInWorkspace
@@ -54,7 +54,7 @@ describe('SVG groups and paths', function () {
   it(`Expression`, function () {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('builtin__object')
-    eYo.Test.svgNodeParent(d1, 'group_', d1.workspace.getCanvas())
+    eYo.Test.svgNodeParent(d1, 'group_', d1.workspace.dom.svg.canvas_)
     eYo.Test.svgNodeParent(d1, 'groupContour_', 'group_')
     eYo.Test.svgNodeParent(d1, 'groupShape_', 'group_')
     eYo.Test.svgNodeParent(d1, 'pathInner_', 'groupContour_')
