@@ -28,7 +28,7 @@ goog.forwardDeclare('eYo.Desktop')
  */
 eYo.Workspace = function(factory, options) {
   /** @type {string} */
-  this.id = Blockly.utils.genUid()
+  this.id = eYo.Do.genUid()
   eYo.Workspace.WorkspaceDB_[this.id] = this
 
   this.factory_ = factory
@@ -45,12 +45,12 @@ eYo.Workspace = function(factory, options) {
    */
   this.listeners_ = []
   /**
-   * @type {!Array.<!Blockly.Events.Abstract>}
+   * @type {!Array.<!eYo.Events.Abstract>}
    * @protected
    */
   this.undoStack_ = []
   /**
-   * @type {!Array.<!Blockly.Events.Abstract>}
+   * @type {!Array.<!eYo.Events.Abstract>}
    * @protected
    */
   this.redoStack_ = []
@@ -234,12 +234,7 @@ eYo.Workspace.prototype.dispose = function() {
   if (this.flyoutButtonCallbacks_) {
     this.flyoutButtonCallbacks_ = null;
   }
-  if (!this.options.parentWorkspace) {
-    // Top-most workspace.  Dispose of the div that the
-    // SVG is injected into (i.e. injectionDiv).
-    goog.dom.removeNode(this.getParentSvg().parentNode);
-  }
-};
+}
 
 /**
  * Make the UI.
@@ -332,18 +327,17 @@ eYo.Workspace.prototype.getAllBricks = function() {
  */
 eYo.Workspace.prototype.clear = function() {
   this.setResizesEnabled(false)
-  var existingGroup = Blockly.Events.getGroup();
+  var existingGroup = eYo.Events.group
   if (!existingGroup) {
-    Blockly.Events.setGroup(true);
+    eYo.Events.group = true
   }
   while (this.topBricks_.length) {
-    this.topBricks_[0].dispose();
+    this.topBricks_[0].dispose()
   }
   if (!existingGroup) {
-    Blockly.Events.setGroup(false);
+    eYo.Events.group = false
   }
   this.setResizesEnabled(true)
-  
   this.error = undefined
 }
 
@@ -401,7 +395,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       events.push(inputStack.pop())
       // update the change count
     }
-    events = Blockly.Events.filter(events, redo)
+    events = eYo.Events.filter(events, redo)
     if (events.length) {
       // Push these popped events on the opposite stack.
       events.forEach((event) => {
@@ -412,7 +406,7 @@ eYo.Workspace.prototype.undo = function(redo) {
       eYo.Do.tryFinally(() => { // try
         if (this.rendered) {
           events.forEach(event => {
-            var B = this.getBlockById(event.blockId)
+            var B = this.getBrickById(event.brickId)
             if (B) {
               B.changeBegin()
               Bs.push(B)
@@ -440,7 +434,7 @@ eYo.Workspace.prototype.clearUndo = function() {
   this.undoStack_.length = 0;
   this.redoStack_.length = 0;
   // Stop any events already in the firing queue from being undoable.
-  Blockly.Events.clearPendingUndo()
+  eYo.Events.clearPendingUndo()
   eYo.App.didClearUndo && eYo.App.didClearUndo()
 };
 
@@ -465,7 +459,7 @@ eYo.Workspace.prototype.removeChangeListener = function(func) {
 
 /**
  * Fire a change event.
- * @param {!Blockly.Events.Abstract} event Event to fire.
+ * @param {!eYo.Events.Abstract} event Event to fire.
  */
 eYo.Workspace.prototype.fireChangeListener = function(event) {
   var before = this.undoStack_.length
@@ -494,7 +488,7 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
  * @param {string} id ID of block to find.
  * @return {Blockly.Block} The sought after block or null if not found.
  */
-eYo.Workspace.prototype.getBlockById = eYo.Workspace.prototype.getBrickById = function(id) {
+eYo.Workspace.prototype.getBrickById = eYo.Workspace.prototype.getBrickById = function(id) {
   var brick = this.brickDB_[id]
   if (brick) {
     return brick
@@ -902,7 +896,7 @@ eYo.Workspace.prototype.canvasMoveTo = function(x, y) {
  */
 eYo.Workspace.prototype.getWidth = function() {
   var metrics = this.getMetrics();
-  return metrics ? metrics.viewWidth / this.scale : 0;
+  return metrics ? metrics.view.width / this.scale : 0;
 }
 
 /**
@@ -928,7 +922,7 @@ eYo.Workspace.prototype.setVisible = function(isVisible) {
   if (isVisible) {
     this.render();
   } else {
-    eYo.App.hideChaff(true);
+    eYo.App.hideChaff()
   }
 };
 
@@ -972,7 +966,7 @@ eYo.Workspace.prototype.highlightBlock = function(id, opt_state) {
     this.highlightedBlocks_.length = 0;
   }
   // Highlight/unhighlight the specified block.
-  var block = id ? this.getBlockById(id) : null;
+  var block = id ? this.getBrickById(id) : null;
   if (block) {
     var state = (opt_state === undefined) || opt_state;
     // Using Set here would be great, but at the cost of IE10 support.
@@ -1067,17 +1061,17 @@ eYo.Workspace.prototype.paste = function () {
           var scale = this.scale || 1
           var size = b3k.size
           // the block is in the visible area if we see its center
-          var leftBound = metrics.viewLeft / scale - size.width / 2
-          var topBound = metrics.viewTop / scale - size.height / 2
-          var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - size.width / 2
-          var downBound = (metrics.viewTop + metrics.viewHeight) / scale - size.height / 2
+          var leftBound = metrics.view.left / scale - size.width / 2
+          var topBound = metrics.view.top / scale - size.height / 2
+          var rightBound = (metrics.view.left + metrics.view.width) / scale - size.width / 2
+          var downBound = (metrics.view.top + metrics.view.height) / scale - size.height / 2
           var inVisibleArea = () => {
             return dx >= leftBound && dx <= rightBound &&
             dy >= topBound && dy <= downBound
           }
           if (!inVisibleArea()) {
-            dx = (metrics.viewLeft + metrics.viewWidth / 2) / scale - size.width / 2
-            dy = (metrics.viewTop + metrics.viewHeight / 2) / scale - size.height / 2
+            dx = (metrics.view.left + metrics.view.width / 2) / scale - size.width / 2
+            dy = (metrics.view.top + metrics.view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
           b3k.moveByXY(dx, dy)
@@ -1220,7 +1214,7 @@ eYo.Workspace.prototype.getBlocksBoundingBox = function() {
  */
 eYo.Workspace.prototype.cleanUp = function() {
     this.setResizesEnabled(false)
-  Blockly.Events.setGroup(true)
+  eYo.Events.group = true
   var cursorY = 0
   this.getTopBricks(true).forEach(brick => {
     var xy = brick.ui.xyInWorkspace
@@ -1229,7 +1223,7 @@ eYo.Workspace.prototype.cleanUp = function() {
     cursorY = brick.ui.xyInWorkspace.y +
         brick.size.height + eYo.Unit.y
   })
-  Blockly.Events.setGroup(false)
+  eYo.Events.group = false
   this.setResizesEnabled(true)
 }
    
@@ -1246,7 +1240,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   }
   var menuOptions = []
   var topBlocks = this.getTopBricks(true)
-  var eventGroup = Blockly.utils.genUid()
+  var eventGroup = eYo.Do.genUid()
   var ws = this
 
   // Options to undo/redo previous action.
@@ -1334,7 +1328,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   topBlocks.forEach(child => addDeletableBlocks(child))
 
   function deleteNext () {
-    Blockly.Events.setGroup(eventGroup)
+    eYo.Events.group = eventGroup
     var block = deleteList.shift()
     if (block) {
       if (block.workspace) {
@@ -1373,48 +1367,12 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
 }
 
 /**
- * Mark this workspace as the currently focused main workspace.
+ * Mark this workspace's factory main workspace as the currently focused main workspace.
  */
 eYo.Workspace.prototype.markFocused = function() {
-  if (this.options.parentWorkspace) {
-    this.options.parentWorkspace.markFocused();
-  } else {
-    Blockly.mainWorkspace = this;
-    // We call e.preventDefault in many event handlers which means we
-    // need to explicitly grab focus (e.g from a textarea) because
-    // the browser will not do it for us.  How to do this is browser dependant.
-    this.setBrowserFocus();
-  }
-};
-
-/**
- * Set the workspace to have focus in the browser.
- * @private
- */
-eYo.Workspace.prototype.setBrowserFocus = function() {
-  // Blur whatever was focused since explcitly grabbing focus below does not
-  // work in Edge.
-  if (document.activeElement) {
-    document.activeElement.blur();
-  }
-  try {
-    // Focus the workspace SVG - this is for Chrome and Firefox.
-    this.getParentSvg().focus();
-  } catch (e) {
-    // IE and Edge do not support focus on SVG elements. When that fails
-    // above, get the injectionDiv (the workspace's parent) and focus that
-    // instead.  This doesn't work in Chrome.
-    try {
-      // In IE11, use setActive (which is IE only) so the page doesn't scroll
-      // to the workspace gaining focus.
-      this.getParentSvg().parentNode.setActive();
-    } catch (e) {
-      // setActive support was discontinued in Edge so when that fails, call
-      // focus instead.
-      this.getParentSvg().parentNode.focus();
-    }
-  }
-};
+  var mainWorkspace = this.factory.mainWorkspace
+  mainWorkspace.ui_driver.workspaceSetBrowserFocus(mainWorkspace)
+}
 
 /**
  * Zooming the blocks centered in (x, y) coordinate with zooming in or out.
@@ -1451,8 +1409,8 @@ eYo.Workspace.prototype.zoom = function(x, y, amount) {
         .scale(scaleChange);
     // newScale and matrix.a should be identical (within a rounding error).
     // ScrollX and scrollY are in pixels.
-    this.scrollX = matrix.e - metrics.absoluteLeft;
-    this.scrollY = matrix.f - metrics.absoluteTop;
+    this.scrollX = matrix.e - metrics.absolute.left;
+    this.scrollY = matrix.f - metrics.absolute.top;
   }
   this.setScale(newScale);
 };
@@ -1463,8 +1421,8 @@ eYo.Workspace.prototype.zoom = function(x, y, amount) {
  */
 eYo.Workspace.prototype.zoomCenter = function(type) {
   var metrics = this.getMetrics()
-  var x = metrics.viewWidth / 2
-  var y = metrics.viewHeight / 2
+  var x = metrics.view.width / 2
+  var y = metrics.view.height / 2
   this.zoom(x, y, type)
 };
 
@@ -1479,15 +1437,15 @@ eYo.Workspace.prototype.zoomToFit = function() {
   if (!blocksWidth) {
     return;  // Prevents zooming to infinity.
   }
-  var workspaceWidth = metrics.viewWidth;
-  var workspaceHeight = metrics.viewHeight;
+  var workspaceWidth = metrics.view.width;
+  var workspaceHeight = metrics.view.height;
   if (this.flyout_) {
     workspaceWidth -= this.flyout_.width_;
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, blocks will not scroll to center.
-    blocksWidth += metrics.contentLeft;
-    blocksHeight += metrics.contentTop;
+    blocksWidth += metrics.content.left;
+    blocksHeight += metrics.content.top;
   }
   var ratioX = workspaceWidth / blocksWidth;
   var ratioY = workspaceHeight / blocksHeight;
@@ -1505,11 +1463,11 @@ eYo.Workspace.prototype.scrollCenter = function() {
     return;
   }
   var metrics = this.getMetrics();
-  var x = (metrics.contentWidth - metrics.viewWidth) / 2;
+  var x = (metrics.content.width - metrics.view.width) / 2;
   if (this.flyout_) {
     x -= this.flyout_.width_ / 2;
   }
-  var y = (metrics.contentHeight - metrics.viewHeight) / 2;
+  var y = (metrics.content.height - metrics.view.height) / 2;
   this.scrollbar.set(x, y);
 };
   
@@ -1524,7 +1482,7 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
     return;
   }
 
-  var block = this.getBlockById(id);
+  var block = this.getBrickById(id);
   if (!block) {
     return;
   }
@@ -1551,12 +1509,12 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
 
   // Scrolling to here would put the block in the top-left corner of the
   // visible workspace.
-  var scrollToBlockX = pixelX - metrics.contentLeft;
-  var scrollToBlockY = pixelY - metrics.contentTop;
+  var scrollToBlockX = pixelX - metrics.content.left;
+  var scrollToBlockY = pixelY - metrics.content.top;
 
-  // viewHeight and viewWidth are in pixels.
-  var halfViewWidth = metrics.viewWidth / 2;
-  var halfViewHeight = metrics.viewHeight / 2;
+  // view.height and view.width are in pixels.
+  var halfViewWidth = metrics.view.width / 2;
+  var halfViewHeight = metrics.view.height / 2;
 
   // Put the block in the center of the visible workspace instead.
   var scrollToCenterX = scrollToBlockX - halfViewWidth;
@@ -1584,7 +1542,7 @@ eYo.Workspace.prototype.setScale = function(newScale) {
   } else {
     this.xyMoveTo(this.scrollX, this.scrollY);
   }
-  eYo.App.hideChaff(false);
+  eYo.App.hideChaff()
   if (this.flyout_) {
     // No toolbox, resize flyout.
     this.flyout_.reflow();
@@ -1592,114 +1550,22 @@ eYo.Workspace.prototype.setScale = function(newScale) {
 }
 
 /**
- * Get the content dimensions of the given workspace, taking into account
- * whether or not it is scrollable and what size the workspace div is on screen.
- * @param {!eYo.Workspace} ws The workspace to measure.
- * @param {!Object} svgSize An object containing height and width attributes in
- *     CSS pixels.  Together they specify the size of the visible workspace, not
- *     including areas covered up by the toolbox.
- * @return {!Object} The dimensions of the contents of the given workspace, as
- *     an object containing at least
- *     - height and width in pixels
- *     - left and top in pixels relative to the workspace origin.
- * @private
- */
-eYo.Workspace.getContentDimensions_ = function(ws, svgSize) {
-  if (ws.scrollbar) {
-    return eYo.Workspace.getContentDimensionsBounded_(ws, svgSize);
-  } else {
-    return eYo.Workspace.getContentDimensionsExact_(ws);
-  }
-};
-
-/**
- * Get the bounding box for all workspace contents, in pixels.
- * @param {!eYo.Workspace} ws The workspace to inspect.
- * @return {!Object} The dimensions of the contents of the given workspace, as
- *     an object containing
- *     - height and width in pixels
- *     - left, right, top and bottom in pixels relative to the workspace origin.
- * @private
- */
-eYo.Workspace.getContentDimensionsExact_ = function(ws) {
-  // Block bounding box is in workspace coordinates.
-  var blockBox = ws.getBlocksBoundingBox();
-  var scale = ws.scale;
-
-  // Convert to pixels.
-  var width = blockBox.width * scale;
-  var height = blockBox.height * scale;
-  var left = blockBox.x * scale;
-  var top = blockBox.y * scale;
-
-  return {
-    left: left,
-    top: top,
-    right: left + width,
-    bottom: top + height,
-    width: width,
-    height: height
-  };
-};
-  
-/**
- * Calculate the size of a scrollable workspace, which should include room for a
- * half screen border around the workspace contents.
- * @param {!eYo.Workspace} ws The workspace to measure.
- * @param {!Object} svgSize An object containing height and width attributes in
- *     CSS pixels.  Together they specify the size of the visible workspace, not
- *     including areas covered up by the toolbox.
- * @return {!Object} The dimensions of the contents of the given workspace, as
- *     an object containing
- *     - height and width in pixels
- *     - left and top in pixels relative to the workspace origin.
- * @private
- */
-eYo.Workspace.getContentDimensionsBounded_ = function(ws, svgSize) {
-  var content = eYo.Workspace.getContentDimensionsExact_(ws);
-
-  // View height and width are both in pixels, and are the same as the SVG size.
-  var viewWidth = svgSize.width;
-  var viewHeight = svgSize.height;
-  var halfWidth = viewWidth / 2;
-  var halfHeight = viewHeight / 2;
-
-  // Add a border around the content that is at least half a screenful wide.
-  // Ensure border is wide enough that blocks can scroll over entire screen.
-  var left = Math.min(content.left - halfWidth, content.right - viewWidth);
-  var right = Math.max(content.right + halfWidth, content.left + viewWidth);
-
-  var top = Math.min(content.top - halfHeight, content.bottom - viewHeight);
-  var bottom = Math.max(content.bottom + halfHeight, content.top + viewHeight);
-
-  var dimensions = {
-    left: left,
-    top: top,
-    height: bottom - top,
-    width: right - left
-  };
-  return dimensions;
-};
-
-/**
  * Return an object with all the metrics required to size scrollbars for a
  * top level workspace.  The following properties are computed:
  * Coordinate system: pixel coordinates.
- * .viewHeight: Height of the visible rectangle,
- * .viewWidth: Width of the visible rectangle,
- * .contentHeight: Height of the contents,
- * .contentWidth: Width of the content,
- * .viewTop: Offset of top edge of visible rectangle from parent,
- * .viewLeft: Offset of left edge of visible rectangle from parent,
- * .contentTop: Offset of the top-most content from the y=0 coordinate,
- * .contentLeft: Offset of the left-most content from the x=0 coordinate.
- * .absoluteTop: Top-edge of view.
- * .absoluteLeft: Left-edge of view.
- * .toolboxWidth: Width of toolbox, if it exists.  Otherwise zero.
- * .toolboxHeight: Height of toolbox, if it exists.  Otherwise zero.
- * .flyoutWidth: Width of the flyout if it is always open.  Otherwise zero.
- * .flyoutHeight: Height of flyout if it is always open.  Otherwise zero.
- * .flyoutAnchor: Top, bottom, left or right.
+ * .view.height: Height of the visible rectangle,
+ * .view.width: Width of the visible rectangle,
+ * .content.height: Height of the contents,
+ * .content.width: Width of the content,
+ * .view.top: Offset of top edge of visible rectangle from parent,
+ * .view.left: Offset of left edge of visible rectangle from parent,
+ * .content.top: Offset of the top-most content from the y=0 coordinate,
+ * .content.left: Offset of the left-most content from the x=0 coordinate.
+ * .absolute.top: Top-edge of view.
+ * .absolute.left: Left-edge of view.
+ * .flyout.width: Width of the flyout if it is always open.  Otherwise zero.
+ * .flyout.height: Height of flyout if it is always open.  Otherwise zero.
+ * .flyout.anchor: Top, bottom, left or right.
  * TODO: rename/refactor to clearly make the difference between
  * vue coordinates and workspace coordinates.
  * @return {!Object} Contains size and position metrics of a top level
@@ -1707,44 +1573,99 @@ eYo.Workspace.getContentDimensionsBounded_ = function(ws, svgSize) {
  * @private
  * @this eYo.Workspace
  */
-eYo.Workspace.getTopLevelWorkspaceMetrics_ = function() {
+eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
+  /**
+   * Get the bounding box for all workspace contents, in pixels.
+   * @param {!eYo.Workspace} ws The workspace to inspect.
+   * @return {!Object} The dimensions of the contents of the given workspace, as
+   *     an object containing
+   *     - height and width in pixels
+   *     - left, right, top and bottom in pixels relative to the workspace origin.
+   * @private
+   */
+  var getContentDimensionsExact_ = function(ws) {
+    // Block bounding box is in workspace coordinates.
+    var blockBox = ws.getBlocksBoundingBox();
+    var scale = ws.scale;
 
-  // Contains height and width in CSS pixels.
-  // svgSize is equivalent to the size of the injectionDiv at this point.
-  var svgSize = Blockly.svgSize(this.getParentSvg());
+    // Convert to pixels.
+    var width = blockBox.width * scale;
+    var height = blockBox.height * scale;
+    var left = blockBox.x * scale;
+    var top = blockBox.y * scale;
 
-  // svgSize is now the space taken up by the Blockly workspace, not including
-  // the toolbox.
-  var contentDimensions =
-      eYo.Workspace.getContentDimensions_(this, svgSize);
-
-  var absoluteLeft = 0;
-  var absoluteTop = 0;
-
-  var metrics = {
-    contentHeight: contentDimensions.height,
-    contentWidth: contentDimensions.width,
-    contentTop: contentDimensions.top,
-    contentLeft: contentDimensions.left,
-
-    viewHeight: svgSize.height,
-    viewWidth: svgSize.width,
-    viewTop: -this.scrollY,   // Must be in pixels, somehow.
-    viewLeft: -this.scrollX,  // Must be in pixels, somehow.
-
-    absoluteTop: absoluteTop,
-    absoluteLeft: absoluteLeft,
-
-    toolboxWidth: toolboxDimensions.width,
-    toolboxHeight: toolboxDimensions.height,
-
-    flyoutWidth: this.flyout_.width,
-    flyoutHeight: this.flyout_.height,
-
-    flyoutAnchor: this.flyout_.anchor
+    return {
+      left: left,
+      top: top,
+      right: left + width,
+      bottom: top + height,
+      width: width,
+      height: height
+    };
   };
-  return metrics;
-};
+    
+  /**
+   * Calculate the size of a scrollable workspace, which should include room for a
+   * half screen border around the workspace contents.
+   * @param {!eYo.Workspace} ws The workspace to measure.
+   * @param {!Object} svgSize An object containing height and width attributes in
+   *     CSS pixels.  Together they specify the size of the visible workspace, not
+   *     including areas covered up by the toolbox.
+   * @return {!Object} The dimensions of the contents of the given workspace, as
+   *     an object containing
+   *     - height and width in pixels
+   *     - left and top in pixels relative to the workspace origin.
+   * @private
+   */
+  var getContentDimensionsBounded_ = function(ws, svgSize) {
+    var content = getContentDimensionsExact_(ws)
+
+    // View height and width are both in pixels, and are the same as the SVG size.
+    var viewWidth = svgSize.width
+    var viewHeight = svgSize.height
+    var halfWidth = viewWidth / 2
+    var halfHeight = viewHeight / 2
+    // Add a border around the content that is at least half a screenful wide.
+    // Ensure border is wide enough that blocks can scroll over entire screen.
+    var left = Math.min(content.left - halfWidth, content.right - viewWidth)
+    var right = Math.max(content.right + halfWidth, content.left + viewWidth)
+    var top = Math.min(content.top - halfHeight, content.bottom - viewHeight)
+    var bottom = Math.max(content.bottom + halfHeight, content.top + viewHeight)
+    var dimensions = {
+      left: left,
+      top: top,
+      height: bottom - top,
+      width: right - left
+    }
+    return dimensions
+  }
+  return function() {
+    // Contains height and width in CSS pixels.
+    // svgSize is equivalent to the size of the injectionDiv at this point.
+    var svgSize = Blockly.svgSize(this.dom.svg.root_)
+    // svgSize is now the space taken up by the Blockly workspace
+    if (ws.scrollbar) {
+      var dimensions = getContentDimensionsBounded_(this, svgSize)
+    } else {
+      dimensions = getContentDimensionsExact_(this)
+    }
+    var metrics = {
+      content: dimensions,
+      view: {
+        height: svgSize.height,
+        width: svgSize.width,
+        top: -this.scrollY,   // Must be in pixels, somehow.
+        left: -this.scrollX,  // Must be in pixels, somehow.
+      },
+      absolute: {
+        top: 0,
+        left: 0,
+      },
+      flyout: this.flyout_.size,
+    }
+    return metrics
+  }
+})()
 
 /**
  * Sets the X/Y translations of a top level workspace to match the scrollbars.
@@ -1757,16 +1678,16 @@ eYo.Workspace.setTopLevelWorkspaceMetrics_ = function(xyRatio) {
   if (!this.scrollbar) {
     throw 'Attempt to set top level workspace scroll without scrollbars.';
   }
-  var metrics = this.getMetrics();
+  var metrics = this.getMetrics()
   if (goog.isNumber(xyRatio.x)) {
-    this.scrollX = -metrics.contentWidth * xyRatio.x - metrics.contentLeft;
+    this.scrollX = -metrics.content.width * xyRatio.x - metrics.content.left
   }
   if (goog.isNumber(xyRatio.y)) {
-    this.scrollY = -metrics.contentHeight * xyRatio.y - metrics.contentTop;
+    this.scrollY = -metrics.content.height * xyRatio.y - metrics.content.top
   }
-  var x = this.scrollX + metrics.absoluteLeft;
-  var y = this.scrollY + metrics.absoluteTop;
-  this.xyMoveTo(x, y);
+  var x = this.scrollX + metrics.absolute.left
+  var y = this.scrollY + metrics.absolute.top
+  this.xyMoveTo(x, y)
 };
 
 /**
@@ -2003,8 +1924,8 @@ eYo.Workspace.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {String} opt_id
  */
 eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
-  brick.id = (opt_id && !this.getBlockById(opt_id)) ?
-  opt_id : Blockly.utils.genUid()
+  brick.id = (opt_id && !this.getBrickById(opt_id)) ?
+  opt_id : eYo.Do.genUid()
   this.hasUI && brick.makeUI()
   this.topBricks_.push(brick)
   this.brickDB_[brick.id] = brick
@@ -2154,8 +2075,8 @@ eYo.Workspace.prototype.scrollBrickTopLeft = function(id) {
 
   // Scrolling to here will put the block in the top-left corner of the
   // visible workspace.
-  var scrollX = pixelX - metrics.contentLeft
-  var scrollY = pixelY - metrics.contentTop
+  var scrollX = pixelX - metrics.content.left
+  var scrollY = pixelY - metrics.content.top
 
   eYo.App.hideChaff();
   this.scrollbar.set(scrollX, scrollY)

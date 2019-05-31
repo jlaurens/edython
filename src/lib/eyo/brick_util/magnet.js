@@ -151,6 +151,8 @@ eYo.Magnet = function (bsi, type, model) {
   eYo.Magnet.superClass_.constructor.call(this, bsi)
   if (this.slot) {
     this.name_ = this.slot.key
+  } else if (this.input) {
+    this.name_ = this.input.name_
   }
   this.type_ = type
   this.model_ = model
@@ -178,7 +180,16 @@ Object.defineProperties(eYo.Magnet, {
   HEAD: { value: 2 },
   FOOT: { value: 5 },
   LEFT: { value: 3 },
-  RIGHT: { value: 4 }
+  RIGHT: { value: 4 },
+/**
+ * Constants for checking whether two connections are compatible.
+ */
+  CAN_CONNECT: { value: 0},
+  REASON_SELF_CONNECTION: { value: 1},
+  REASON_WRONG_TYPE: { value: 2},
+  REASON_TARGET_NULL: { value: 3},
+  REASON_CHECKS_FAILED: { value: 4},
+  REASON_DIFFERENT_WORKSPACES: { value: 5}
 })
 
 eYo.Magnet.OPPOSITE_TYPE = {
@@ -233,18 +244,6 @@ Object.defineProperty(Blockly, 'OPPOSITE', {
 })
 
 /**
- * Constants for checking whether two connections are compatible.
- */
-Object.defineProperties(eYo.Magnet, {
-  CAN_CONNECT: { value: 0},
-  REASON_SELF_CONNECTION: { value: 1},
-  REASON_WRONG_TYPE: { value: 2},
-  REASON_TARGET_NULL: { value: 3},
-  REASON_CHECKS_FAILED: { value: 4},
-  REASON_DIFFERENT_WORKSPACES: { value: 5}
-})
-
-/**
  * Dispose of the ressources.
  * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
  */
@@ -295,6 +294,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
 
 // computed public properties
 Object.defineProperties(eYo.Magnet.prototype, {
+  name: {
+    get () {
+      return this.name_
+    }
+  },
   wrapped: {
     get () {
       return this.wrapped_

@@ -50,7 +50,3 @@ object.defineProperties(eYo.Clipboard, {
     }
   }
 })
-
-eYo.Clipboard.paste = () => {
-
-}

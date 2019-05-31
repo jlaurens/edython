@@ -193,8 +193,8 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   } else {
     this.unplug()
   }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.fire(new Blockly.Events.BlockDelete(this))
+  if (eYo.Events.enabled) {
+    eYo.Events.fire(new eYo.Events.BlockDelete(this))
   }
   // Stop rerendering.
   this.ui_ && (this.ui_.rendered = false)
@@ -1591,6 +1591,17 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   /**
+   * Compute a list of the IDs of the specified brick and all its descendants.
+   * @param {!eYo.Brick} brick The root brick.
+   * @return {!Array.<string>} List of brick IDs.
+   * @private
+   */
+  descendantIds: {
+    get () {
+      return this.descendants.map(b3k => b3k.id)
+    }
+  },
+  /**
    * Same as `descendants` property except that it
    * includes the receiver in the list only when not sealed.
    * @return {!Array.<!eYo.Brick>} Flattened array of brick.
@@ -1609,7 +1620,7 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 eYo.Brick.prototype.getDescendants = function() {
   return this.descendants
-};
+}
 
 /**
  * Adds a magnet to later wrapping.
@@ -2893,14 +2904,14 @@ eYo.Brick.prototype.inVisibleArea = function () {
 eYo.Brick.prototype.doAndRender = function (handler, group, err_handler) {
   return e => {
     this.changeBegin()
-    group && (eYo.Events.setGroup(true))
+    group && (eYo.Events.group = true)
     try {
       handler.call(this, e)
     } catch (err) {
       err_handler && (err_handler.call(this, err) || console.error(err))
       throw err
     } finally {
-      group && (eYo.Events.setGroup(false))
+      group && (eYo.Events.group = false)
       this.changeEnd()
     }
   }

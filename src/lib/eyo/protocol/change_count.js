@@ -37,7 +37,7 @@ eYo.Protocol.ChangeCount.methods.resetChangeCount = function () {
  * @param {!Boolean} redo  Whether (re)doing, id est not undoing.
  */
 eYo.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {
-  if (event.type == Blockly.Events.UI) {
+  if (event.type == eYo.Events.UI) {
     return
   }
   if (redo) {

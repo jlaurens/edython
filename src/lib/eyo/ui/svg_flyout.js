@@ -335,16 +335,16 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
 /**
  * Return an object with all the metrics required to size scrollbars for the
  * flyout.  The following properties are computed:
- * .viewHeight: Height of the visible rectangle,
- * .viewWidth: Width of the visible rectangle,
- * .contentHeight: Height of the contents,
- * .contentWidth: Width of the contents,
- * .viewTop: Offset of top edge of visible rectangle from parent,
- * .contentTop: Offset of the top-most content from the y=0 coordinate,
- * .absoluteTop: Top-edge of view.
- * .viewLeft: Offset of the left edge of visible rectangle from parent,
- * .contentLeft: Offset of the left-most content from the x=0 coordinate,
- * .absoluteLeft: Left-edge of view.
+ * .view.height: Height of the visible rectangle,
+ * .view.width: Width of the visible rectangle,
+ * .content.height: Height of the contents,
+ * .content.width: Width of the contents,
+ * .view.top: Offset of top edge of visible rectangle from parent,
+ * .content.top: Offset of the top-most content from the y=0 coordinate,
+ * .absolute.top: Top-edge of view.
+ * .view.left: Offset of the left edge of visible rectangle from parent,
+ * .content.left: Offset of the left-most content from the x=0 coordinate,
+ * .absolute.left: Left-edge of view.
  * @param {!eYo.Flyout} flyout
  * @return {Object} Contains size and position metrics of the flyout.
  * @private
@@ -359,32 +359,29 @@ eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
     var optionBox = W.dom.svg.canvas_.getBBox()
   } catch (e) {
     // Firefox has trouble with hidden elements (Bug 528969).
-    var optionBox = {height: 0, y: 0, width: 0, x: 0};
+    var optionBox = {height: 0, y: 0, width: 0, x: 0}
   }
-
-  // Padding for the end of the scrollbar.
-  var absoluteTop = flyout.SCROLLBAR_PADDING;
-  var absoluteLeft = 0;
-
-  var viewHeight = flyout.height_ - 2 * flyout.SCROLLBAR_PADDING;
-  var viewWidth = flyout.width_;
-  if (!flyout.RTL) {
-    viewWidth -= flyout.SCROLLBAR_PADDING;
-  }
-
+  
   var metrics = {
-    viewHeight: viewHeight,
-    viewWidth: viewWidth,
-    contentHeight: optionBox.height * W.scale + 2 * flyout.MARGIN,
-    contentWidth: optionBox.width * W.scale + 2 * flyout.MARGIN,
-    viewTop: -W.scrollY + optionBox.y,
-    viewLeft: -W.scrollX,
-    contentTop: optionBox.y,
-    contentLeft: optionBox.x,
-    absoluteTop: absoluteTop,
-    absoluteLeft: absoluteLeft
-  };
-  return metrics;
+    content: {
+      top: optionBox.y,
+      left: optionBox.x,
+      height: optionBox.height * W.scale + 2 * flyout.MARGIN,
+      width: optionBox.width * W.scale + 2 * flyout.MARGIN,
+    },
+    view: {
+      height: flyout.height_ - 2 * flyout.SCROLLBAR_PADDING - flyout.SCROLLBAR_PADDING,
+      width: flyout.width_,
+      top: -W.scrollY + optionBox.y,
+      left: -W.scrollX,
+    },
+    // Padding for the end of the scrollbar.
+    absolute: {
+      top: flyout.SCROLLBAR_PADDING,
+      left: 0
+    }
+  }
+  return metrics
 };
 
 /**
@@ -403,11 +400,11 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   }
   var W = flyout.workspace_
   if (goog.isNumber(xyRatio.y)) {
-    W.scrollY = -metrics.contentHeight * xyRatio.y
+    W.scrollY = -metrics.content.height * xyRatio.y
   }
   W.xyMoveTo(
-    W.scrollX + metrics.absoluteLeft,
-    W.scrollY + metrics.absoluteTop
+    W.scrollX + metrics.absolute.left,
+    W.scrollY + metrics.absolute.top
   )
 }
 
@@ -435,7 +432,7 @@ eYo.Svg.prototype.flyoutClientRect = function(flyout) {
   // area are still deleted.  Must be larger than the largest screen size,
   // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
   var BIG_NUM = 1000000000
-  if (flyout.position_ === eYo.Flyout.AT_LEFT) {
+  if (flyout.anchor === eYo.Flyout.AT_LEFT) {
     return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
         BIG_NUM * 2);
   } else {  // Right
@@ -455,7 +452,7 @@ eYo.Svg.prototype.flyoutClientRect = function(flyout) {
  */
 eYo.Svg.prototype.flyoutUpdate = function(flyout, width, height) {
   var top_margin = flyout.TOP_MARGIN
-  var atRight = flyout.position_ == Blockly.TOOLBOX_AT_RIGHT
+  var atRight = flyout.anchor == Blockly.TOOLBOX_AT_RIGHT
   // Decide whether to start on the left or right.
   var path = [`M ${atRight ? width : 0},${top_margin}`];
   // Top.

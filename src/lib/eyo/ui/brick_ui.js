@@ -1833,10 +1833,10 @@ eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
   var scale = workspace.scale || 1
   var HW = this.brick_.ui.size
   // the brick is in the visible area if we see its center
-  var leftBound = metrics.viewLeft / scale - HW.width / 2
-  var topBound = metrics.viewTop / scale - HW.height / 2
-  var rightBound = (metrics.viewLeft + metrics.viewWidth) / scale - HW.width / 2
-  var downBound = (metrics.viewTop + metrics.viewHeight) / scale - HW.height / 2
+  var leftBound = metrics.view.left / scale - HW.width / 2
+  var topBound = metrics.view.top / scale - HW.height / 2
+  var rightBound = (metrics.view.left + metrics.view.width) / scale - HW.width / 2
+  var downBound = (metrics.view.top + metrics.view.height) / scale - HW.height / 2
   var xy = newLoc || this.xyInWorkspace
   return {
     x: xy.x < leftBound
@@ -1866,16 +1866,16 @@ eYo.Brick.UI.prototype.setParent = function (parent) {
  */
 eYu.UI.prototype.scheduleSnapAndBump = function() {
   // Ensure that any snap and bump are part of this move's event group.
-  var group = Blockly.Events.getGroup()
+  var group = eYo.Events.group
   setTimeout(() => {
-    Blockly.Events.setGroup(group)
+    eYo.Events.group = group
     this.snapToGrid()
-    Blockly.Events.setGroup(false)
+    eYo.Events.group = false
   }, eYo.Brick.UI.BUMP_DELAY / 2)
   setTimeout(() => {
-    Blockly.Events.setGroup(group)
+    eYo.Events.group = group
     this.bumpNeighbours_()
-    Blockly.Events.setGroup(false)
+    eYo.Events.group = false
   }, eYo.Brick.UI.BUMP_DELAY)
 }
 

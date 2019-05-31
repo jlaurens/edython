@@ -28,8 +28,6 @@ goog.forwardDeclare('eYo.Protocol.ChangeCount')
 
 goog.forwardDeclare('goog.crypt')
 
-goog.require('Blockly')
-
 // Dependency ordering?
 
 /**

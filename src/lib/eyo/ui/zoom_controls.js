@@ -133,13 +133,13 @@ eYo.ZoomControls.prototype.place = function() {
     // There are no metrics available (workspace is probably not visible).
     return
   }
-  this.left_ = metrics.viewWidth + metrics.absoluteLeft -
+  this.left_ = metrics.view.width + metrics.absolute.left -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
-  if (metrics.flyoutPosition === eYo.Flyout.AT_RIGHT) {
-    this.left_ -= metrics.flyoutWidth
+  if (metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
+    this.left_ -= metrics.flyout.width
   }
-  this.top_ = metrics.viewHeight + metrics.absoluteTop -
+  this.top_ = metrics.view.height + metrics.absolute.top -
       this.HEIGHT_ - this.bottom_
   ws.ui_driver.zoomControlsPlace(this)
 }

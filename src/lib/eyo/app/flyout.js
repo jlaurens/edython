@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -9,9 +9,9 @@
  * @fileoverview Flyout overriden.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('eYo.Flyout');
+goog.provide('eYo.Flyout')
 
 goog.require('eYo')
 
@@ -133,6 +133,19 @@ Object.defineProperties(eYo.Flyout.prototype, {
    * @private
    */
   height_: { value: 0, writable: true},
+  /**
+   * This size and anchor of the receiver and wrapped
+   * in an object with eponym keys.
+   */
+  size: {
+    get () {
+      return {
+        width: this.width_,
+        height: this.height_,
+        anchor: this.anchor_
+      }
+    }
+  },
   /**
    * Range of a drag angle from a flyout considered "dragging toward workspace".
    * Drags that are within the bounds of this many degrees from the orthogonal
@@ -493,8 +506,8 @@ eYo.Flyout.prototype.on_wheel = function(e) {
       delta *= 10
     }
     var metrics = this.getMetrics_()
-    var pos = (metrics.viewTop - metrics.contentTop) + delta
-    var limit = metrics.contentHeight - metrics.viewHeight
+    var pos = (metrics.view.top - metrics.content.top) + delta
+    var limit = metrics.content.height - metrics.view.height
     pos = Math.min(pos, limit)
     pos = Math.max(pos, 0)
     this.scrollbar_.set(pos)
@@ -540,7 +553,7 @@ eYo.Flyout.prototype.layout_ = function(contents) {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
     // brick.
-    brick.getDescendants().forEach(child => child.isInFlyout = true)
+    brick.descendants.forEach(child => child.isInFlyout = true)
     brick.render()
     brick.moveBy(cursorX, cursorY)
     this.ui_driver.flyoutAddListeners(this, brick)
@@ -585,7 +598,7 @@ eYo.Flyout.prototype.filterForCapacity_ = function() {
   var remainingCapacity = this.targetWorkspace_.remainingCapacity()
   this.workspace_.getTopBricks(false).forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
-      var allBricks = brick.getDescendants()
+      var allBricks = brick.descendants
       brick.disabled = allBricks.length > remainingCapacity
     }
   })
@@ -627,22 +640,22 @@ eYo.Flyout.prototype.place = function () {
     return
   }
   var metrics = this.targetWorkspace_.getMetrics()
-  if (!metrics || metrics.viewHeight <= 0) {
+  if (!metrics || metrics.view.height <= 0) {
     // Hidden components will return null.
     return;
   }
   // Record the height for eYo.Flyout.getMetrics_
-  this.height_ = metrics.viewHeight - this.TOP_OFFSET
+  this.height_ = metrics.view.height - this.TOP_OFFSET
 
   var edgeWidth = this.width_
-  var edgeHeight = metrics.viewHeight
+  var edgeHeight = metrics.view.height
   this.ui_driver.flyoutUpdate(edgeWidth, edgeHeight)
   this.toolbar_.resize(edgeWidth, edgeHeight)
 
-  var y = metrics.absoluteTop
-  var x = metrics.absoluteLeft
+  var y = metrics.absolute.top
+  var x = metrics.absolute.left
   if (this.anchor_ === eYo.Flyout.AT_RIGHT) {
-    x += (metrics.viewWidth - this.width_)
+    x += (metrics.view.width - this.width_)
     if (this.closed) {
       x += this.width_
     }
@@ -663,16 +676,16 @@ eYo.Flyout.prototype.place = function () {
 /**
  * Return an object with all the metrics required to size scrollbars for the
  * flyout.  The following properties are computed:
- * .viewHeight: Height of the visible rectangle,
- * .viewWidth: Width of the visible rectangle,
- * .contentHeight: Height of the contents,
- * .contentWidth: Width of the contents,
- * .viewTop: Offset of top edge of visible rectangle from parent,
- * .contentTop: Offset of the top-most content from the y=0 coordinate,
- * .absoluteTop: Top-edge of view.
- * .viewLeft: Offset of the left edge of visible rectangle from parent,
- * .contentLeft: Offset of the left-most content from the x=0 coordinate,
- * .absoluteLeft: Left-edge of view.
+ * .view.height: Height of the visible rectangle,
+ * .view.width: Width of the visible rectangle,
+ * .content.height: Height of the contents,
+ * .content.width: Width of the contents,
+ * .view.top: Offset of top edge of visible rectangle from parent,
+ * .content.top: Offset of the top-most content from the y=0 coordinate,
+ * .absolute.top: Top-edge of view.
+ * .view.left: Offset of the left edge of visible rectangle from parent,
+ * .content.left: Offset of the left-most content from the x=0 coordinate,
+ * .absolute.left: Left-edge of view.
  * @return {Object} Contains size and position metrics of the flyout.
  * @private
  */
@@ -761,8 +774,8 @@ eYo.Flyout.prototype.doSlide = function(close) {
   var atRight = this.anchor_ == eYo.Flyout.AT_RIGHT
   this.visible = true
   eYo.Tooltip.hideAll(this.dom.svg.group_)
-  var left = metrics.absoluteLeft
-  var right = left + metrics.viewWidth
+  var left = metrics.absolute.left
+  var right = left + metrics.view.width
   var n_steps = 50
   var n = 0
   var steps = []
@@ -783,7 +796,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   }
   steps[n] = close ? 1 : 0
   positions[n] = x_end
-  var y = metrics.absoluteTop;
+  var y = metrics.absolute.top;
   n = 0
   var id = setInterval(() => {
     if (n >= n_steps) {

@@ -113,7 +113,7 @@ eYo.Factory.prototype.dispose = function() {
  */
 eYo.Factory.prototype.addFlyout = function(switcher) {
   var flyoutOptions = {
-    flyoutAnchor: this.options.flyoutAnchor,
+    flyoutAnchor: this.options.flyout.anchor,
     switcher: switcher
   }
   /**

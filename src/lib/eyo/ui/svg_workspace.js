@@ -60,15 +60,15 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     var workspaceChanged = function() {
       if (!workspace.isDragging()) {
         var metrics = workspace.getMetrics()
-        var edgeLeft = metrics.viewLeft + metrics.absoluteLeft;
-        var edgeTop = metrics.viewTop + metrics.absoluteTop;
-        if (metrics.contentTop < edgeTop ||
-            metrics.contentTop + metrics.contentHeight >
-            metrics.viewHeight + edgeTop ||
-            metrics.contentLeft <
-                (options.RTL ? metrics.viewLeft : edgeLeft) ||
-            metrics.contentLeft + metrics.contentWidth > (options.RTL ?
-                metrics.viewWidth : metrics.viewWidth + edgeLeft)) {
+        var edgeLeft = metrics.view.left + metrics.absolute.left;
+        var edgeTop = metrics.view.top + metrics.absolute.top;
+        if (metrics.content.top < edgeTop ||
+            metrics.content.top + metrics.content.height >
+            metrics.view.height + edgeTop ||
+            metrics.content.left <
+                (options.RTL ? metrics.view.left : edgeLeft) ||
+            metrics.content.left + metrics.content.width > (options.RTL ?
+                metrics.view.width : metrics.view.width + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
           workspace.getTopBricks(false).forEach(brick => {
@@ -81,7 +81,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
             }
             // Bump any brick that's below the bottom back inside.
             var overflowBottom =
-                edgeTop + metrics.viewHeight - MARGIN - xy.y;
+                edgeTop + metrics.view.height - MARGIN - xy.y;
             if (overflowBottom < 0) {
               brick.xyMoveBy(0, overflowBottom)
             }
@@ -92,7 +92,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
               brick.xyMoveBy(overflowLeft, 0);
             }
             // Bump any brick that's off the right back inside ???
-            var overflowRight = edgeLeft + metrics.viewWidth - MARGIN -
+            var overflowRight = edgeLeft + metrics.view.width - MARGIN -
                 xy.x;
             if (overflowRight < 0) {
               brick.xyMoveBy(overflowRight, 0);
@@ -272,7 +272,7 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     'resize',
     null,
     () => {
-      eYo.App.hideChaff(true)
+      eYo.App.hideChaff()
       workspace.factory.resize()
     }
   )
@@ -330,11 +330,6 @@ eYo.Svg.prototype.workspaceDragDeltaXY = function (workspace) {
 eYo.Svg.prototype.resize = function(workspace) {
   var factory = workspace.factory
   var mainWorkspace = factory.mainWorkspace
-  
-  var mainWorkspace = workspace;
-  while (mainWorkspace.options.parentWorkspace) {
-    mainWorkspace = mainWorkspace.options.parentWorkspace;
-  }
   var root = mainWorkspace.dom.svg.root_
   var div = root.parentNode
   if (!div) {
@@ -352,4 +347,35 @@ eYo.Svg.prototype.resize = function(workspace) {
     root.cachedHeight_ = height;
   }
   mainWorkspace.resize();
+}
+
+/**
+ * Set the workspace to have focus in the browser.
+ * @private
+ */
+eYo.Svg.prototype.workspaceSetBrowserFocus = function(workspace) {
+  // Blur whatever was focused since explicitly grabbing focus below does not
+  // work in Edge.
+  if (document.activeElement) {
+    document.activeElement.blur()
+  }
+  var root = workspace.dom.svg.root_
+  try {
+    // Focus the workspace SVG - this is for Chrome and Firefox.
+    root.focus()
+  } catch (e) {
+    // IE and Edge do not support focus on SVG elements. When that fails
+    // above, get the injectionDiv (the workspace's parent) and focus that
+    // instead.  This doesn't work in Chrome.
+    var parent = root.parentNode
+    try {
+      // In IE11, use setActive (which is IE only) so the page doesn't scroll
+      // to the workspace gaining focus.
+      parent.setActive()
+    } catch (e) {
+      // setActive support was discontinued in Edge so when that fails, call
+      // focus instead.
+      parent.focus()
+    }
+  }
 }

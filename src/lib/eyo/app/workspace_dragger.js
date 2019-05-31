@@ -187,13 +187,13 @@ eYo.WorkspaceDragger.prototype.drag = function() {
   var deltaXY = this.workspace_.ui_driver.workspaceDragDeltaXY(this.workspace_)
   var metrics = this.startMetrics_
 
-  var x = this.startXY_.x + deltaXY.x + metrics.contentLeft
+  var x = this.startXY_.x + deltaXY.x + metrics.content.left
   x = Math.min(x, 0)
-  x = Math.max(x, metrics.viewWidth - metrics.contentWidth)
+  x = Math.max(x, metrics.view.width - metrics.content.width)
 
-  var y = this.startXY_.y + deltaXY.y + metrics.contentTop
+  var y = this.startXY_.y + deltaXY.y + metrics.content.top
   y = Math.min(y, 0)
-  y = Math.max(y, metrics.viewHeight - metrics.contentHeight)
+  y = Math.max(y, metrics.view.height - metrics.content.height)
 
   this.updateScroll_(-x, -y)
 }

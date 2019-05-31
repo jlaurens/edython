@@ -16,51 +16,51 @@ goog.provide('eYo.Events.BlockBase')
 
 goog.require('eYo.Events')
 
-goog.require('Blockly.Events.BlockBase')
+goog.require('eYo.Events.BlockBase')
 
 /**
  * Class for a block move event.  Created before the move.
  * The high/left management is added.
  * @param {Blockly.Block} block The moved block.  Null for a blank event.
- * @extends {Blockly.Events.BlockBase}
+ * @extends {eYo.Events.BlockBase}
  * @constructor
  */
-Blockly.Events.Move = function(block) {
+eYo.Events.Move = function(block) {
   if (!block) {
     return;  // Blank event to be populated by fromJson.
   }
-  Blockly.Events.Move.superClass_.constructor.call(this, block);
+  eYo.Events.Move.superClass_.constructor.call(this, block);
   var location = this.currentLocation_();
   this.oldParentId = location.parentId;
   this.oldInputName = location.inputName;
   this.oldHorizontal = location.horizontal;
   this.oldCoordinate = location.coordinate;
 };
-goog.inherits(Blockly.Events.Move, Blockly.Events.BlockBase);
+goog.inherits(eYo.Events.Move, eYo.Events.BlockBase);
 
 /**
  * Class for a block move event.  Created before the move.
  * The high/left management is added.
  * @param {Blockly.Block} block The moved block.  Null for a blank event.
- * @extends {Blockly.Events.BlockBase}
+ * @extends {eYo.Events.BlockBase}
  * @constructor
  */
-Blockly.Events.BlockMove = Blockly.Events.Move;
+eYo.Events.BlockMove = eYo.Events.Move;
 
 /**
  * Type of this event.
  * The high/left management is added.
  * @type {string}
  */
-Blockly.Events.Move.prototype.type = Blockly.Events.MOVE;
+eYo.Events.Move.prototype.type = eYo.Events.MOVE;
 
 /**
  * Encode the event as JSON.
  * The high/left management is added.
  * @return {!Object} JSON representation.
  */
-Blockly.Events.Move.prototype.toJson = function() {
-  var json = Blockly.Events.Move.superClass_.toJson.call(this);
+eYo.Events.Move.prototype.toJson = function() {
+  var json = eYo.Events.Move.superClass_.toJson.call(this);
   if (this.newParentId) {
     json['newParentId'] = this.newParentId;
   }
@@ -82,8 +82,8 @@ Blockly.Events.Move.prototype.toJson = function() {
  * The high/left management is added.
  * @param {!Object} json JSON representation.
  */
-Blockly.Events.Move.prototype.fromJson = function(json) {
-  Blockly.Events.Move.superClass_.fromJson.call(this, json);
+eYo.Events.Move.prototype.fromJson = function(json) {
+  eYo.Events.Move.superClass_.fromJson.call(this, json);
   this.newParentId = json['newParentId'];
   this.newInputName = json['newInputName'];
   this.newHorizontal = json['newHorizontal'];
@@ -99,7 +99,7 @@ Blockly.Events.Move.prototype.fromJson = function(json) {
  * The head/left management is added.
  * Just in case there is an ambiguity.
  */
-Blockly.Events.Move.prototype.recordNew = function() {
+eYo.Events.Move.prototype.recordNew = function() {
   var location = this.currentLocation_()
   this.newParentId = location.parentId
   this.newInputName = location.inputName
@@ -114,10 +114,10 @@ Blockly.Events.Move.prototype.recordNew = function() {
  * @return {!Object} Collection of location info.
  * @private
  */
-Blockly.Events.Move.prototype.currentLocation_ = function() {
+eYo.Events.Move.prototype.currentLocation_ = function() {
   var location = {};
   var workspace = Blockly.Workspace.getById(this.workspaceId)
-  var brick = workspace.getBlockById(this.blockId)
+  var brick = workspace.getBrickById(this.brickId)
   var parent = brick.parent
   if (parent) {
     location.parentId = parent.id;
@@ -137,7 +137,7 @@ Blockly.Events.Move.prototype.currentLocation_ = function() {
  * Does this event record any change of state?
  * @return {boolean} True if something changed.
  */
-Blockly.Events.Move.prototype.isNull = function() {
+eYo.Events.Move.prototype.isNull = function() {
   return this.oldParentId == this.newParentId &&
       this.oldInputName == this.newInputName &&
       this.oldHorizontal == this.newHorizontal &&
@@ -149,17 +149,17 @@ Blockly.Events.Move.prototype.isNull = function() {
  * Run a move event with left and right statements.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-Blockly.Events.Move.prototype.run = function(forward) {
-  var workspace = this.getEventWorkspace_();
-  var brick = workspace.getBlockById(this.blockId);
+eYo.Events.Move.prototype.run = function(forward) {
+  var workspace = this.workspace
+  var brick = workspace.getBrickById(this.brickId);
   if (!brick) {
-    console.warn("Can't move non-existent brick: " + this.blockId);
+    console.warn("Can't move non-existent brick: " + this.brickId);
     return;
   }
   var parentId = forward ? this.newParentId : this.oldParentId;
   var parent = null;
   if (parentId) {
-    parent = workspace.getBlockById(parentId);
+    parent = workspace.getBrickById(parentId);
     if (!parent) {
       console.warn("Can't connect to non-existent brick: " + parentId);
       return;

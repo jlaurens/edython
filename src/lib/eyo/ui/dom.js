@@ -605,10 +605,10 @@ eYo.Dom.on_keydown = e => {
   // Common code for delete and cut.
   // Don't delete in the flyout.
   // if (deleteBrick && !eYo.Selected.brick.workspace.isFlyout) {
-  //   Blockly.Events.setGroup(true);
+  //   eYo.Events.group = true
   //   eYo.App.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);
-  //   Blockly.Events.setGroup(false);
+  //   eYo.Events.group = false
   // }
 };
 

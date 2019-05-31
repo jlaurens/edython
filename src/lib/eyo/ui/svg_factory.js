@@ -151,7 +151,7 @@ eYo.Svg.prototype.factoryBind_resize = function (factory) {
     'resize',
     null,
     () => {
-      eYo.App.hideChaff(true)
+      eYo.App.hideChaff()
       this.factoryResize(factory)
     }
   )

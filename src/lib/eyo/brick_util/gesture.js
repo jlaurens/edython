@@ -27,7 +27,7 @@ goog.forwardDeclare('goog.math.Coordinate')
 goog.forwardDeclare('goog.asserts')
 
 goog.require('Blockly.constants');
-goog.require('Blockly.Events.Ui');
+goog.require('eYo.Events.Ui');
 
 /*
  * Note: In this file "start" refers to touchstart, mousedown, and pointerstart
@@ -661,19 +661,19 @@ eYo.Gesture.prototype.doBrickClick_ = function() {
   if (this.flyout_ && this.flyout_.autoClose) {
    // Brick click in an autoclosing flyout.
    if (!this.targetBrick_.disabled) {
-      if (!Blockly.Events.getGroup()) {
-        Blockly.Events.setGroup(true)
+      if (!eYo.Events.group) {
+        eYo.Events.group = true
       }
       var newBrick = this.flyout_.createBrick(this.targetBrick_)
       newBrick.ui.scheduleSnapAndBump()
     }
   } else {
     // Clicks events are on the start brick, even if it was a shadow.
-    Blockly.Events.fire(
-        new Blockly.Events.Ui(this.startBrick_, 'click', undefined, undefined))
+    eYo.Events.fire(
+        new eYo.Events.Ui(this.startBrick_, 'click', undefined, undefined))
   }
   this.bringBrickToFront_()
-  Blockly.Events.setGroup(false)
+  eYo.Events.group = false
 }
 
 /**

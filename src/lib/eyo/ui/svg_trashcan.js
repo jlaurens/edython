@@ -158,13 +158,13 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
     // There are no metrics available (workspace is probably not visible).
     return;
   }
-  svg.left_ = metrics.viewWidth + metrics.absoluteLeft -
+  svg.left_ = metrics.view.width + metrics.absolute.left -
   trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
 
-  if (metrics.flyoutPosition == eYo.Flyout.AT_RIGHT) {
-    svg.left_ -= metrics.flyoutWidth
+  if (metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
+    svg.left_ -= metrics.flyout.width
   }
-  svg.top_ = metrics.viewHeight + metrics.absoluteTop -
+  svg.top_ = metrics.view.height + metrics.absolute.top -
       (trashcan.BODY_HEIGHT_ + trashcan.LID_HEIGHT_) - trashcan.bottom_
   svg.group_.setAttribute(
     'transform',

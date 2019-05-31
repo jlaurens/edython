@@ -157,8 +157,8 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  */
 eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
   var temp = goog.math.Coordinate.sum(
-    scrollbar.position_,
-    scrollbar.origin_
+    scrollbar.position,
+    scrollbar.origin
   )
   var transform = `translate(${temp.x}px,${temp.y}px)`
   eYo.Dom.setCssTransform(scrollbar.dom.svg.root_, transform)
@@ -270,7 +270,7 @@ eYo.Scrollbar.prototype.onMouseUpHandle_ = function() {
  * @private
  */
 eYo.Svg.prototype.scrollbarCleanUp_ = function(scrollbar) {
-  eYo.hideChaff(true)
+  eYo.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
     eYo.Dom.unbindEvent(bound.mouseup)

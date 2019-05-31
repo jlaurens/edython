@@ -82,6 +82,5 @@ eYo.App.makeFactory = container => {
 
 /**
  * Close tooltips, context menus, dropdown selections, etc.
- * @param {boolean=} opt_allowToolbox If true, don't close the toolbox.
  */
-eYo.App.hideChaff = eYo.Dom.nothing
+eYo.App.hideChaff = eYo.Do.nothing

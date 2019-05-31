@@ -151,19 +151,19 @@ eYo.Trashcan.prototype.place = function() {
     // There are no metrics available (workspace is probably not visible).
     return;
   }
-  this.left_ = metrics.viewWidth + metrics.absoluteLeft -
+  this.left_ = metrics.view.width + metrics.absolute.left -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
-  if (metrics.flyoutAnchor == eYo.Flyout.AT_RIGHT) {
+  if (metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
     var flyoutPosition = this.workspace_.flyout_.positionInPixels
     if (flyoutPosition) {
       this.left_ = flyoutPosition.x -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
     } else {
-      this.left_ -= metrics.flyoutWidth
+      this.left_ -= metrics.flyout.width
     }
   }
-  this.top_ = metrics.viewHeight + metrics.absoluteTop -
+  this.top_ = metrics.view.height + metrics.absolute.top -
       (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
 
   this.ui_driver.trashcanPlace(this)

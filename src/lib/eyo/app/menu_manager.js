@@ -370,14 +370,14 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     if (brick.canUnlock()) {
       menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
         function (event) {
-          eYo.Events.setGroup(true)
+          eYo.Events.group = true
           try {
             brick.unlock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.Events.setGroup(false)
+            eYo.Events.group = false
           }
         }
       )
@@ -386,14 +386,14 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     if (brick.canLock()) {
       menuItem = this.newMenuItem(eYo.Msg.LOCK_BLOCK,
         function (event) {
-          eYo.Events.setGroup(true)
+          eYo.Events.group = true
           try {
             brick.lock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.Events.setGroup(false)
+            eYo.Events.group = false
           }
         }
       )
@@ -407,7 +407,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       {action: eYo.ID.DUPLICATE_BLOCK,
         target: brick})
     this.addChild(menuItem, true)
-    if (brick.getDescendants().length > brick.workspace.remainingCapacity()) {
+    if (brick.descendants.length > brick.workspace.remainingCapacity()) {
       menuItem.setEnabled(false)
     }
   }
@@ -599,7 +599,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
       unwrapped = parent
     }
     // unwrapped is the topmost brick or the first unwrapped parent
-    eYo.Events.setGroup(true)
+    eYo.Events.group = true
     var returnState = false
     try {
       if (target.isSelected && target !== unwrapped) {
@@ -617,7 +617,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
       console.error(err)
       throw err
     } finally {
-      eYo.Events.setGroup(false)
+      eYo.Events.group = false
     }
     return returnState
   case eYo.ID.HELP:

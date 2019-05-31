@@ -203,8 +203,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   eYo.Selected.magnet = null
   
-  if (!eYo.Events.getGroup()) {
-    eYo.Events.setGroup(true)
+  if (!eYo.Events.group) {
+    eYo.Events.group = true
   }
   this.destination.setResizesEnabled(false)
   this.ui_driver.disconnectStop()
@@ -300,7 +300,7 @@ eYo.BrickDragger.prototype.end = (() => {
     }
     this.destination.setResizesEnabled(true)
 
-    eYo.Events.setGroup(false)
+    eYo.Events.group = false
     this.availableMagnets_.length = 0
     this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = null
   }
