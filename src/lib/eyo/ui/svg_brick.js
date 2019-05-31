@@ -78,11 +78,11 @@ eYo.Svg.prototype.brickInit = function (brick) {
   }, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.workspace.options.readOnly) {
-    ui.driver.bindMouseEvents(ui, g)
+    this.bindMouseEvents(brick.ui, g)
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
-    ui.driver.bindMouseEvents(ui, svg.pathContour_)
+    this.bindMouseEvents(brick.ui, svg.pathContour_)
   }
   if (brick.isExpr) {
     goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -513,7 +513,7 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
       // Move this brick up the DOM.  Keep track of x/y translations.
       var brick = brick
       brick.workspace.dom.svg.canvas_.appendChild(g)
-      var xy = brick.ui.xyInWorkspace
+      var xy = brick.xy
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
       if (svg.groupContour_) {
         goog.dom.insertChildAt(g, svg.groupContour_, 0)
@@ -541,9 +541,9 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
     var dom = brick.dom
     var svg = dom.svg
     var g = svg.group_
-    var oldXY = ui.xyInWorkspace
+    var oldXY = xy
     brick.parent.dom.svg.group_.appendChild(g)
-    var newXY = ui.xyInWorkspace
+    var newXY = xy
     // Move the magnets to match the child's new position.
     brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     var p_svg = newParent.dom.svg
@@ -654,13 +654,24 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @param {*} dc
  * @param {*} dl
- * @return {boolean}
  */
 eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
-  var svg = brick.dom.svg
   // Workspace coordinates.
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
+  this.brickXYMoveTo(brick, dx, dy)
+}
+
+/**
+ * Set the offset of the given brick.
+ * For edython.
+ * @param {!eYo.Brick} brick  the brick the driver acts on
+ * @param {*} dx
+ * @param {*} dy
+ */
+eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
+  var svg = brick.dom.svg
+  // Workspace coordinates.
   var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
   ;[svg.group_, svg.groupShape_, svg.groupContour_].forEach(g => {
@@ -993,7 +1004,7 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
       'eyo-inner')
   } else {
     var oldXY = this.brickXYInWorkspace(brick)
-    brick.workspace.getCanvas().appendChild(svg.group_)
+    brick.workspace.dom.svg.canvas_.appendChild(svg.group_)
     xy && (svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
     var newXY = this.brickXYInWorkspace(brick)
     goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
@@ -1004,18 +1015,6 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
       'eyo-inner')
   }
   brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y);
-}
-
-/**
- * Move the brick to the top level.
- * @param {!eYo.Brick} field  the brick the driver acts on
- */
-eYo.Svg.prototype.brickAtTop = function (brick) {
-  var g = brick.dom.svg.group_
-  // Move this brick up the DOM.  Keep track of x/y translations.
-  var xy = this.brickXYInWorkspace(brick)
-  this.workspace.dom.svg.canvas_.appendChild(g)
-  g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
 }
 
 /**
@@ -1048,7 +1047,7 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
  */
 eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
   // Translate to current position, turning off 3d.
-  brick.xyMoveTo(newXY.x, newXY.y)
+  this.xyBrickMoveTo(brick, newXY)
   brick.factory.dom.svg.brickDragSurface.clearAndHide(brick.workspace.dom.svg.canvas_)
 }
 
