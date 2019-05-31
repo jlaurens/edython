@@ -23,11 +23,8 @@ goog.forwardDeclare('eYo.Workspace')
  * @return {!Element} The workspace's SVG group.
  */
 eYo.Svg.prototype.workspaceInit = function(workspace) {
-  if (workspace.dom) {
-    return
-  }
   var dom = eYo.Svg.superClass_.workspaceInit.call(this, workspace)
-  if (!dom) {
+  if (dom.svg) {
     return
   }
   var svg = dom.svg = Object.create(null)
@@ -51,14 +48,14 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     version: '1.1',
     'class': 'eyo-svg'
   }, div)
-
+  var options = workspace.options
   options.zoomOptions && (workspace.scale = options.zoomOptions.startScale)
   // A null translation will also apply the correct initial scale.
   workspace.xyMoveTo(0, 0)
 
   if (!options.readOnly && !options.hasScrollbars) {
     var workspaceChanged = function() {
-      if (!workspace.isDragging()) {
+      if (!workspace.isDragging) {
         var metrics = workspace.getMetrics()
         var edgeLeft = metrics.view.left + metrics.absolute.left;
         var edgeTop = metrics.view.top + metrics.absolute.top;
@@ -135,7 +132,11 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     /** @type {SVGElement} */
     svg.background_ = eYo.Svg.newElement(
       'rect',
-      {'height': '100%', 'width': '100%', 'class': options.backgroundClass},
+      {
+        height: '100%',
+        width: '100%',
+        class: options.backgroundClass
+      },
       g
     )
   }
@@ -227,19 +228,37 @@ eYo.Svg.prototype.workspaceBind_wheel = function(workspace) {
  * @this {eYo.Workspace}
  * @private
  */
-eYo.Workspace.prototype.workspaceOn_wheel = function(e) {
+eYo.Svg.prototype.workspaceOn_wheel = function(e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
   if (this.currentGesture_) {
     this.currentGesture_.cancel();
   }
-  // The vertical scroll distance that corresponds to a click of a zoom button.
-  var PIXELS_PER_ZOOM_STEP = 50;
-  var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP;
-  var position = Blockly.utils.mouseToSvg(e, this.dom.svg.group_,
-      this.getInverseScreenCTM())
+  var PIXELS_PER_ZOOM_STEP = 50
+  var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
+  var position = this.xyEventInWorkspace(e)
   this.zoom(position.x, position.y, delta)
   e.preventDefault()
+}
+
+/**
+ * Show or hide the svg.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.workspaceVisibleGet = function (workspace) {
+  return workspace.dom.svg.root_.style.display !== 'none'
+}
+
+/**
+ * Show or hide the svg.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.workspaceVisibleSet = function (workspace, isVisible) {
+  workspace.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
 }
 
 /**
@@ -304,7 +323,7 @@ eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
     surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
-    var coord = Blockly.utils.getRelativeXY(svg.canvas_)
+    var coord = eYo.Svg.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
 }
@@ -365,7 +384,7 @@ eYo.Svg.prototype.workspaceSetBrowserFocus = function(workspace) {
     root.focus()
   } catch (e) {
     // IE and Edge do not support focus on SVG elements. When that fails
-    // above, get the injectionDiv (the workspace's parent) and focus that
+    // above, get the factory div (the workspace's parent) and focus that
     // instead.  This doesn't work in Chrome.
     var parent = root.parentNode
     try {
@@ -378,4 +397,97 @@ eYo.Svg.prototype.workspaceSetBrowserFocus = function(workspace) {
       parent.focus()
     }
   }
+}
+
+/**
+ * Update the inverted screen CTM.
+ */
+eYo.Svg.prototype.workspaceSizeDidChange = function(workspace) {
+  var svg = workspace.dom.svg
+  var ctm = svg.root_.getScreenCTM()
+  svg.inverseScreenCTM_ = ctm ? ctm.inverse() : null
+}
+
+/**
+ * Update the inverted screen CTM.
+ */
+eYo.Svg.prototype.workspaceMouseInRoot = function(workspace, e) {
+  var svg = workspace.dom.svg
+  return Blockly.utils.mouseToSvg(e, svg.root_,
+    svg.inverseScreenCTM_)
+}
+
+/**
+ * Zooming the blocks centered in (x, y) coordinate with zooming in or out.
+ * @param {eYo.Workspace} workspace
+ * @param {number} x X coordinate of center.
+ * @param {number} y Y coordinate of center.
+ * @param {number} amount Amount of zooming
+ *                        (negative zooms out and positive zooms in).
+ */
+eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
+  var options = workspace.options.zoomOptions
+  goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
+  var speed = options.scaleSpeed
+  var metrics = workspace.getMetrics()
+  var svg = workspace.dom.svg
+  var center = svg.root_.createSVGPoint();
+  center.x = x
+  center.y = y
+  var CTM = svg.canvas_.getCTM()
+  center = center.matrixTransform(CTM.inverse())
+  x = center.x
+  y = center.y
+  // Scale factor.
+  var scaleChange = Math.pow(speed, amount)
+  // Clamp scale within valid range.
+  var newScale = workspace.scale * scaleChange;
+  if (newScale > options.maxScale) {
+    scaleChange = options.maxScale / workspace.scale
+  } else if (newScale < options.minScale) {
+    scaleChange = options.minScale / workspace.scale
+  }
+  if (workspace.scale == newScale) {
+    return // No change in zoom.
+  }
+  if (workspace.scrollbar) {
+    var matrix = CTM
+        .translate(x * (1 - scaleChange), y * (1 - scaleChange))
+        .scale(scaleChange)
+    // newScale and matrix.a should be identical (within a rounding error).
+    // ScrollX and scrollY are in pixels.
+    workspace.scrollX = matrix.e - metrics.absolute.left
+    workspace.scrollY = matrix.f - metrics.absolute.top
+  }
+  workspace.scale = newScale
+}
+
+/**
+ * Return the absolute coordinates of the top-left corner of this element,
+ * scales that after canvas SVG element, if it's a descendant.
+ * The origin (0,0) is the top-left corner of the Blockly SVG.
+ * @param {!Element} element Element to find the coordinates of.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * @private
+ */
+eYo.Svg.prototype.workspaceXYElement = function(workspace, element) {
+  var x = 0;
+  var y = 0;
+  var scale = 1
+  var canvas = workspace.dom.svg.canvas_
+  if (goog.dom.contains(canvas, element)) {
+    // Before the SVG canvas, scale the coordinates
+    scale = workspace.scale
+  }
+  do {
+    // Loop through this brick and every parent.
+    var xy = eYo.Svg.getRelativeXY(element)
+    if (element === canvas) {
+      // After the SVG canvas, don't scale the coordinates.
+      scale = 1
+    }
+    x += xy.x * scale;
+    y += xy.y * scale;
+  } while ((element = element.parentNode) && element != workspace.dom.svg.root_)
+  return new goog.math.Coordinate(x, y);
 }
