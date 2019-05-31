@@ -196,7 +196,7 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
   /**
    * Dom structure when the workspace is being dragged. If there is no drag in
    * progress, the SVG is empty and display: none.
-   * <svg class="blocklyWsDragSurface" style=transform:translate3d(...)>
+   * <svg class="eyo-Ws-drag-surface" style=transform:translate3d(...)>
    *   <g class="eyo-brick-canvas"></g>
    * </svg>
    */
@@ -206,7 +206,7 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
-    class: 'blocklyWsDragSurface blocklyOverflowVisible'
+    class: 'eyo-Ws-drag-surface eyo-overflow-visible'
   }, container)
 }
 
