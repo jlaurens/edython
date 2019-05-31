@@ -33,7 +33,6 @@ eYo.Factory = function(options) {
   // Load CSS.
   Blockly.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
-
   // create the various workspaces and flyout
   this.mainWorkspace_ = new eYo.Workspace(this, options)
 }
@@ -72,6 +71,7 @@ eYo.Factory.prototype.makeUI = function() {
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
   this.ui_driver = new eYo.Svg(this)
   this.ui_driver.factoryInit(this)
+  options.backgroundClass || (options.backgroundClass = 'eyo-main-background')
   this.mainWorkspace_.makeUI()
 }
 
@@ -138,4 +138,13 @@ eYo.Factory.prototype.addFlyout = function(switcher) {
 */
 eYo.Factory.prototype.resize = function() {
   this.ui_driver.factoryResize(this)
+}
+
+/**
+ * Size the main workspace to completely fill its container.
+ * Call this when the view actually changes sizes
+ * (e.g. on a window resize/device orientation change).
+*/
+eYo.Factory.prototype.xyElementInFactory = function(element) {
+  this.ui_driver.factoryXYElement(this, element)
 }

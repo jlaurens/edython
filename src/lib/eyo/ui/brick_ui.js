@@ -1465,7 +1465,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
  */
 eYo.Brick.UI.prototype.updateDisabled = function () {
   this.driver.brickUpdateDisabled(this.brick_)
-  this.brick_.getChildren().forEach(child => child.ui.updateDisabled())
+  this.brick_.children.forEach(child => child.ui.updateDisabled())
 }
 
 /**
@@ -1563,10 +1563,10 @@ eYo.Brick.UI.prototype.moveMagnets_ = function (dx, dy) {
   if (!this.rendered) {
     // Rendering is required to lay out the blocks.
     // This is probably an invisible block attached to a collapsed block.
-    return;
+    return
   }
   this.brick_.forEachMagnet(m4t => m4t.moveBy(dx, dy))
-  this.childBlocks_.forEach(b3k => b3k.moveMagnets_(dx, dy))
+  this.brick_.children.forEach(b3k => b3k.ui.moveMagnets_(dx, dy))
 }
 
 //////////////////
@@ -1754,7 +1754,7 @@ eYo.Brick.UI.prototype.magnetHilight = function (c_eyo) {
  * @param {number} dx Horizontal offset in workspace units.
  * @param {number} dy Vertical offset in workspace units.
  */
-eYo.Brick.UI.prototype.moveByXY = function (dx, dy) {
+eYo.Brick.UI.prototype.xyMoveBy = function (dx, dy) {
   this.brick_.moveBy(dx, dy)
 }
 
@@ -1952,9 +1952,8 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   if (gesture && gesture.startField_) {
     return
   }
-  var where = Blockly.utils.mouseToSvg(e, ws.getParentSvg(),
-  ws.getInverseScreenCTM());
-  where = goog.math.Coordinate.difference(where, ws.getOriginOffsetInPixels())
+  var where = ws.xyEventInWorkspace(e)
+  where = goog.math.Coordinate.difference(where, ws.originInFactory())
   where.scale(1 / ws.scale)
   var rect = this.boundingRect
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())

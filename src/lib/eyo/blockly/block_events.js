@@ -128,7 +128,7 @@ eYo.Events.Move.prototype.currentLocation_ = function() {
       location.horizontal = true
     }
   } else {
-    location.coordinate = brick.ui.xyInWorkspace
+    location.coordinate = brick.xy
   }
   return location
 }
@@ -170,8 +170,8 @@ eYo.Events.Move.prototype.run = function(forward) {
   }
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate;
   if (coordinate) {
-    var xy = brick.ui.xyInWorkspace;
-    brick.moveByXY(coordinate.x - xy.x, coordinate.y - xy.y);
+    var xy = brick.xy;
+    brick.xyMoveBy(coordinate.x - xy.x, coordinate.y - xy.y);
   } else {
     var inputName = forward ? this.newInputName : this.oldInputName;
     if (inputName) {

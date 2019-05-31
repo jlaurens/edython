@@ -121,14 +121,6 @@ eYo.Magnets.prototype.makeUI = function () {
   }
 }
 
-Object.defineProperties(eYo.Magnets.prototype, {
-  hasUI: {
-    get () {
-      return this.makeUI === eYo.Do.nothing
-    }
-  }
-})
-
 /**
  * Class for a magnet.
  * 
@@ -1429,7 +1421,7 @@ eYo.Magnet.prototype.scrollToVisible = function (force) {
  */
 eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   var brick = this.brick
-  if (!brick.workspace || brick.workspace.isDragging()) {
+  if (!brick.workspace || brick.workspace.isDragging) {
     return
   }
   // Move the root brick.
@@ -1466,7 +1458,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   if (m4t.target) {
     dx += m4t.targetBrick.width
   }
-  root.moveByXY(dx, dy)
+  root.xyMoveBy(dx, dy)
   selected || root.ui.removeSelect()
 }
 

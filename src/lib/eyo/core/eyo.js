@@ -82,9 +82,3 @@ eYo.setup = (() => {
   }
   return me
 })()
-
-/**
- * Removed character ` for convenience.
- */
-eYo.Do.genUid.soup_ = '!#$%()*+,-./:;=?@[]^_{|}~' +
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

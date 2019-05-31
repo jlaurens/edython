@@ -337,7 +337,7 @@ Object.defineProperties(eYo.Events.BrickMove.prototype, {
           location.left = !!m4t.target
         }
       } else {
-        location.coordinate = brick.ui.xyInWorkspace
+        location.coordinate = brick.xy
       }
       return location
     }
@@ -393,8 +393,7 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
     brick.unplug()
   }
   if (coordinate) {
-    var xy = brick.ui.xyInWorkspace
-    brick.ui.xyMoveBy(coordinate.x - xy.x, coordinate.y - xy.y)
+    brick.ui.xyMoveTo(coordinate)
   } else {
     var m4t, targetM4t
     if (name) {
@@ -414,7 +413,6 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
     }
   }
 }
-
 
 goog.require('eYo.Data')
 

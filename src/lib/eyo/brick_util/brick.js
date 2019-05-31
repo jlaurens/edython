@@ -200,7 +200,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.ui_ && (this.ui_.rendered = false)
   this.consolidate = this.makeUI = this.render = eYo.Do.nothing
   // Remove from workspace
-  workspace.eyo.removeBrick(this)
+  workspace.removeBrick(this)
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
   eYo.Events.disableWrap(() => {
     this.disposeSlots(healStack)
@@ -258,6 +258,11 @@ Object.defineProperties(eYo.Brick.prototype, {
   inputList: {
     get () {
       return this.inputList_ || (this.inputList_ = [])
+    }
+  },
+  children: {
+    get () {
+      return this.children_
     }
   },
 })
@@ -622,7 +627,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   recover: {
     get () {
-      return this.workspace.eyo.recover
+      return this.workspace.recover
     }
   },
   /**
@@ -630,7 +635,7 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   xy: {
     get () {
-      return this.ui.xyInWorkspace
+      return this.xy
     }
   },
   /**
@@ -1618,10 +1623,6 @@ Object.defineProperties(eYo.Brick.prototype, {
   }
 })
 
-eYo.Brick.prototype.getDescendants = function() {
-  return this.descendants
-}
-
 /**
  * Adds a magnet to later wrapping.
  * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
@@ -2091,7 +2092,7 @@ eYo.Brick.prototype.connectLast = function (bmt) {
  */
 eYo.Brick.prototype.scrollToVisible = function (force) {
   if (!this.inVisibleArea || force) {
-    this.workspace.eyo.scrollBrickTopLeft(this.id)
+    this.workspace.scrollBrickTopLeft(this.id)
   }
 }
 /**
@@ -2136,9 +2137,9 @@ Object.defineProperties(eYo.Brick, {
    * @param {number} dx Horizontal offset in workspace units.
    * @param {number} dy Vertical offset in workspace units.
    */
-  moveByXY: {
+  xyMoveBy: {
     get() {
-      return this.ui.moveByXY
+      return this.ui.xyMoveBy
     }
   },
   /**
@@ -2149,12 +2150,26 @@ Object.defineProperties(eYo.Brick, {
   moveBy: {
     get () {
       return (dc, dl) => {
-        this.ui.moveByXY(dc * eYo.Unit.x, dl * eYo.Unit.y)
+        this.ui.xyMoveBy(dc * eYo.Unit.x, dl * eYo.Unit.y)
       }
     }
   }
 })
 
+/**
+ * Move a standalone brick by a relative offset.
+ * @param {number} dx Horizontal offset in workspace units.
+ * @param {number} dy Vertical offset in workspace units.
+ */
+eYo.Brick.prototype.xyMoveBy = function(dx, dy) {
+  goog.asserts.assert(!this.parent, 'Block has parent.')
+  eYo.Event.fireMoveEvent(() => {
+    var xy = this.xy
+    this.ui.xyMoveTo(xy.x + dx, xy.y + dy)
+    this.ui.moveMagnets_(dx, dy)
+    this.workspace.resizeContents()
+  })
+}
 
 /**
  * Render the brick.
@@ -2652,9 +2667,9 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
               })
             } else {
               return fin(() => {
-                var its_xy = this.ui.xyInWorkspace
-                var my_xy = candidate.ui.xyInWorkspace
-                candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
+                var its_xy = this.xy
+                var my_xy = candidate.xy
+                candidate.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
               })
             }
             // unreachable code
@@ -2736,9 +2751,9 @@ eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
             })
           } else {
             return fin(() => {
-              var its_xy = this.ui.xyInWorkspace
-              var my_xy = candidate.ui.xyInWorkspace
-              candidate.moveByXY(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
+              var its_xy = this.xy
+              var my_xy = candidate.xy
+              candidate.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
             })
           }
         }
@@ -2963,14 +2978,14 @@ Object.defineProperties(eYo.Brick, {
         this.ui.setParent(null)
       } else {
         // Remove this brick from the workspace's list of top-most bricks.
-        this.workspace.eyo.removeBrick(this)
+        this.workspace.removeBrick(this)
       }
       this.parent__ = newParent
       if (newParent) {
         // Add this brick to the new parent_'s child list.
         newParent.children_.push(this)
       } else {
-        this.workspace.eyo.addBrick(this)
+        this.workspace.addBrick(this)
       }
       newParent && (this.ui.setParent(newParent))
     }

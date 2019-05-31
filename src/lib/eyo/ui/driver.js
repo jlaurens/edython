@@ -181,7 +181,7 @@ eYo.Driver.prototype.fieldDisplayedGet = eYo.Do.nothing
 eYo.Driver.prototype.fieldDisplayedSet = eYo.Do.nothing
 
 /**
- * Display/hide the given field, according to its `isVisible` status.
+ * Display/hide the given field, according to its `visible` status.
  * @param {!Object} field  the field the driver acts on
  * @param {boolean} yorn
  */

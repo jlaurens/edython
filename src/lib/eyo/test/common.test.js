@@ -19,12 +19,13 @@ eYo.temp = (() => {
     trashcan : false,
     css : true,
     scrollbars : true,
-    sounds : false
+    sounds : false,
+    container: 'eyo-factory'
   };
   /* Inject your workspace */
-  eYo.App.workspace = Blockly.inject('eyoDiv', options);
+  eYo.App.factory = new eYo.factory(options)
   eYo.setup(eYo.App.workspace)
-  eYo.App.workspace.eyo.options = {
+  eYo.App.workspace.options = {
     noLeftSeparator: true,
     noDynamicList: false,
     smartUnary: true,

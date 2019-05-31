@@ -65,6 +65,19 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
+  /**
+   * Set whether this scrollbar's container is visible.
+   * @param {boolean} visible Whether the container is visible.
+   */
+  containerVisible: {
+    get () {
+      return this.hScroll.containerVisible || this.vScroll.containerVisible
+    },
+    set (newValue) {
+      this.hScroll.containerVisible = newValue
+      this.vScroll.containerVisible = newValue
+    }
+  }
 })
 
 /**
@@ -217,15 +230,6 @@ eYo.ScrollbarPair.prototype.getRatio_ = function(handlePosition, viewSize) {
   return ratio;
 }
 
-/**
- * Set whether this scrollbar's container is visible.
- * @param {boolean} visible Whether the container is visible.
- */
-eYo.ScrollbarPair.prototype.setContainerVisible = function(visible) {
-  this.hScroll.setContainerVisible(visible)
-  this.vScroll.setContainerVisible(visible)
-}
-
 // --------------------------------------------------------------------
 
 /**
@@ -257,7 +261,51 @@ Object.defineProperties(eYo.Scrollbar, {
    */
   thickness: {
     value: goog.events.BrowserFeature.TOUCH_ENABLED ? 25 : 15
-  }
+  },
+  /**
+   * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
+   * needed.
+   * @return {boolean} True if visible.
+   */
+  visible: {
+    get () {
+      return this.visible_
+    },
+    /**
+     * Set whether the scrollbar is visible.
+     * Only applies to non-paired scrollbars.
+     * @param {boolean} newValue True if visible.
+     */
+    set (newValue) {
+      var visibilityChanged = (newValue != this.visible_)
+      // Ideally this would also apply to scrollbar pairs, but that's a bigger
+      // headache (due to interactions with the corner square).
+      if (this.pair_) {
+        throw 'Unable to toggle visibility of paired scrollbars.'
+      }
+      this.visible_ = newValue
+      if (visibilityChanged) {
+        this.updateDisplay_()
+      }
+    }
+  },
+  /**
+   * Set whether the scrollbar's container is visible and update
+   * display accordingly if visibility has changed.
+   * @param {boolean} visible Whether the container is visible
+   */
+  containerVisible: {
+    get () {
+      return this.containerVisible_
+    },
+    set (newValue) {
+      var visibilityChanged = (newValue != this.containerVisible_)
+      this.containerVisible_ = newValue
+      if (visibilityChanged) {
+        this.updateDisplay_()
+      }
+    }
+  },
 })
 
 /**
@@ -299,6 +347,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * measured in CSS pixels relative to the injection div origin.  This is usually
    * (0, 0).  When the scrollbar is in a flyout it may have a different origin.
    * @type {goog.math.Coordinate}
+   * @readonly
    */
   origin: {
     get () {
@@ -310,7 +359,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * to the scrollbar's origin.  This is usually relative to the injection div
    * origin.
    * @type {goog.math.Coordinate}
-   * @private
+   * @readonly
    */
   position: {
     get () {
@@ -363,7 +412,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * @type {boolean}
    * @private
    */
-  isVisible_: {
+  visible_: {
     value: true,
     writable: true
   },
@@ -556,7 +605,7 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
     // Only show the scrollbar if needed.
     // Ideally this would also apply to scrollbar pairs, but that's a bigger
     // headache (due to interactions with the corner square).
-    this.setVisible(this.scrollViewSize_ < hostMetrics.content.width)
+    this.visible = this.scrollViewSize_ < hostMetrics.content.width
   }
 
   this.ratio_ = this.scrollViewSize_ / hostMetrics.content.width;
@@ -574,48 +623,6 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
 }
 
 /**
- * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
- * needed.
- * @return {boolean} True if visible.
- */
-eYo.Scrollbar.prototype.isVisible = function() {
-  return this.isVisible_;
-};
-
-/**
- * Set whether the scrollbar's container is visible and update
- * display accordingly if visibility has changed.
- * @param {boolean} visible Whether the container is visible
- */
-eYo.Scrollbar.prototype.setContainerVisible = function(visible) {
-  var visibilityChanged = (visible != this.containerVisible_);
-
-  this.containerVisible_ = visible;
-  if (visibilityChanged) {
-    this.updateDisplay_();
-  }
-};
-
-/**
- * Set whether the scrollbar is visible.
- * Only applies to non-paired scrollbars.
- * @param {boolean} visible True if visible.
- */
-eYo.Scrollbar.prototype.setVisible = function(visible) {
-  var visibilityChanged = (visible != this.isVisible());
-
-  // Ideally this would also apply to scrollbar pairs, but that's a bigger
-  // headache (due to interactions with the corner square).
-  if (this.pair_) {
-    throw 'Unable to toggle visibility of paired scrollbars.';
-  }
-  this.isVisible_ = visible;
-  if (visibilityChanged) {
-    this.updateDisplay_();
-  }
-};
-
-/**
  * Update visibility of scrollbar based on whether it thinks it should
  * be visible and whether its containing workspace is visible.
  * We cannot rely on the containing workspace being hidden to hide us
@@ -624,9 +631,7 @@ eYo.Scrollbar.prototype.setVisible = function(visible) {
 eYo.Scrollbar.prototype.updateDisplay_ = function() {
   var show = true
   // Check whether our parent/container is visible.
-  show = !this.containerVisible_
-  ? false
-  : this.isVisible()
+  show = this.containerVisible_ && this.visible_
   this.ui_driver.scrollbarUpdateDisplay(this, show)
 }
 
@@ -646,11 +651,10 @@ eYo.Scrollbar.prototype.onMouseDownBar_ = function(e) {
     e.stopPropagation()
     return
   }
-  var mouseXY = eYo.utils.mouseToSvg(e, this.workspace_.getParentSvg(),
-      this.workspace_.getInverseScreenCTM());
+  var mouseXY = this.workspace_.xyEventInWorkspace(e)
   var mouseLocation = this.horizontal_ ? mouseXY.x : mouseXY.y;
 
-  var handleXY = eYo.utils.getInjectionDivXY_(this.svgHandle_);
+  var handleXY = this.workspace.factory.xyElementInFactory(this.svgHandle_)
   var handleStart = this.horizontal_ ? handleXY.x : handleXY.y;
   var handlePosition = this.handlePosition_;
 
@@ -746,7 +750,7 @@ eYo.Scrollbar.prototype.set = function(value) {
 // eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
 //   if (!this.pair_) {
 //     // Only show the scrollbar if needed.
-//     this.setVisible(this.scrollViewSize_ < hostMetrics.content.height);
+//     this.visible = this.scrollViewSize_ < hostMetrics.content.height;
 //   }
 
 //   this.ratio_ = this.scrollViewSize_ / hostMetrics.content.height;

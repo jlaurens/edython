@@ -465,7 +465,7 @@ eYo.Field.prototype.initModel = function() {
 eYo.Field.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
   var d = this.ui_driver
-  d && (d.fieldInit(this))
+  d && d.fieldInit(this)
 }
 
 /**

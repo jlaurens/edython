@@ -407,7 +407,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       {action: eYo.ID.DUPLICATE_BLOCK,
         target: brick})
     this.addChild(menuItem, true)
-    if (brick.descendants.length > brick.workspace.remainingCapacity()) {
+    if (brick.descendants.length > brick.workspace.remainingCapacity {
       menuItem.setEnabled(false)
     }
   }
@@ -519,7 +519,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   menuItem = this.newMenuItem(
     'workspace',
     function (b, e) {
-      console.log(brick.workspace.eyo.toString())
+      console.log(brick.workspace.toString())
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)

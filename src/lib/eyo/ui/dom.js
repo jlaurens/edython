@@ -564,7 +564,7 @@ eYo.Dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.App.workspace.isDragging()) {
+    if (eYo.App.workspace.isDragging) {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.isDeletable()) {
@@ -572,7 +572,7 @@ eYo.Dom.on_keydown = e => {
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.App.workspace.isDragging()) {
+    if (eYo.App.workspace.isDragging) {
       return;
     }
     if (eYo.Selected.brick &&
@@ -660,10 +660,20 @@ eYo.Dom.prototype.basicDispose = function(object) {
  */
 eYo.Dom.prototype.factoryInit = function(factory) {
   var dom = this.basicInit(factory)
+  var options = factory.options
+  var container = options.container
+  // no UI if no valid container
+  if (goog.isString(container)) {
+    container = options.container = document.getElementById(container) ||
+        document.querySelector(container)
+  }
+  if (!goog.dom.contains(document, container)) {
+    throw 'Error: container is not in current document.'
+  }
   dom.div_ || (dom.div_= goog.dom.createDom(
     goog.dom.TagName.DIV,
     'eyo-factory',
-    factory.options.container
+    container
   ))
   return dom
 }
@@ -709,3 +719,4 @@ eYo.Dom.workspaceInit = function(workspace) {
  * @return {!Object} The workspace's dom repository.
  */
 eYo.Dom.prototype.workspaceDispose = eYo.Dom.prototype.basicDispose
+

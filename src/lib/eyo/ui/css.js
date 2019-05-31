@@ -502,17 +502,17 @@ Blockly.Css.inject = function(hasCss, pathToMedia) {
  * Array making up the CSS content for Blockly.
  */
 Blockly.Css.CONTENT = [
-  '.injectionDiv {', /* -> eyo-workspace-container */
+  '.eyo-factory {', /* -> eyo-workspace-container */
     'height: 100%;',
     'position: relative;',
-    'overflow: hidden;', /* So blocks in drag surface disappear at edges */
+    'overflow: hidden;', /* So bricks in drag surface disappear at edges */
     'touch-action: none',
   '}',
 
   `.eyo-workspace {
   }`, /* UNUSED */
 
-  '.blocklyMainBackground {',
+  '.eyoMainBackground {',
     'stroke-width: 1;',
     'stroke: #c6c6c6;',  /* Equates to #ddd due to border being off-pixel. */
   '}',
@@ -523,7 +523,7 @@ Blockly.Css.CONTENT = [
   `.eyo-brick-canvas {
   }`, /* */
 
-  '.blocklyWsDragSurface {',
+  '.eyo-Ws-drag-surface {',
     'display: none;',
     'position: absolute;',
     'top: 0;',
@@ -532,9 +532,15 @@ Blockly.Css.CONTENT = [
   /* Added as a separate rule with multiple classes to make it more specific
     than a bootstrap rule that selects svg:root. See issue #1275 for context.
   */
-  '.blocklyWsDragSurface.blocklyOverflowVisible {',
+  '.eyo-Ws-drag-surface.eyo-overflow-visible {',
     'overflow: visible;',
   '}',
+
+
+  `.eyo-flyout-scroolbar {
+    z-index: 30;
+  }`,
+
 
   '.blocklyBlockDragSurface {',
     'display: none;',
@@ -813,7 +819,7 @@ Blockly.Css.CONTENT = [
     'stroke-width: 1;',
   '}',
 
-  '.blocklyFlyoutBackground {',
+  '.eyo-flyout-background {',
     'fill: #ddd;',
     'fill-opacity: .8;',
   '}',
@@ -824,10 +830,6 @@ Blockly.Css.CONTENT = [
 
   '.blocklyMainWorkspaceScrollbar {',
     'z-index: 20;',
-  '}',
-
-  '.blocklyFlyoutScrollbar {',
-    'z-index: 30;',
   '}',
 
   '.blocklyScrollbarHorizontal, .blocklyScrollbarVertical {',

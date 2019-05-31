@@ -624,7 +624,8 @@ eYo.Do.readOnlyMixin = (object, props) => {
  * @return {string} A globally unique ID string.
  */
 eYo.Do.genUid = (() => {
-  var soup = '!#$%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  // remove characters '`:()[]{}' for convenience
+  var soup = '!#$%*+,-./;=?@^_|~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   return () => {
     var soupLength = soup.length
     var id = []

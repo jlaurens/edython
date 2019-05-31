@@ -118,6 +118,28 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.factory_
     }
   },
+  flyout: {
+    get () {
+      return this.flyout_
+    },
+    set (newValue) {
+      this.flyout_ = newValue
+      this.targetWorkspace_ = null
+    }
+  },
+  targetWorkspace: {
+    get () {
+      return this.targetWorkspace_
+    },
+    set (newValue) {
+      if ((this.targetWorkspace_ = newValue)) {
+        this.getGesture = newValue.getGesture.bind(newValue)
+      } else {
+        delete this.getGesture
+      }
+      this.flyout_ = null
+    }
+  },
   /**
    * Is this workspace the surface for a flyout?
    * @readonly
@@ -145,11 +167,54 @@ Object.defineProperties(eYo.Workspace.prototype, {
    * Is this workspace draggable and scrollable?
    * @type {boolean} True if this workspace may be dragged.
    */
+  visible: {
+    get () {
+      return this.ui_driver.workspaceVisibleGet(this)
+
+    },
+    /**
+     * Toggles the visibility of the workspace.
+     * Currently only intended for main workspace.
+     * @param {boolean} newValue True if workspace should be visible.
+     */
+    set (newValue) {
+      // Tell the scrollbar whether its container is visible so it can
+      // tell when to hide itself.
+      if (this.scrollbar) {
+        this.scrollbar.containerVisible = newValue
+      }
+
+      // Tell the flyout whether its container is visible so it can
+      // tell when to hide itself.
+      if (this.flyout_) {
+        this.flyout_.containerVisible = newValue
+      }
+      this.ui_driver.workspaceVisibleSet(this, newValue)
+      if (newValue) {
+        this.render()
+      } else {
+        eYo.App.hideChaff()
+      }
+    }
+  },
+  /**
+   * Is this workspace draggable and scrollable?
+   * @type {boolean} True if this workspace may be dragged.
+   */
   draggable: {
     get () {
       return this.targetWorkspace
       ? this.targetWorkspace.flyout_.scrollable
       : !!this.scrollbar
+    }
+  },
+  /**
+   * Is the user currently dragging a block or scrolling the flyout/workspace?
+   * @return {boolean} True if currently dragging or scrolling.
+   */
+  isDragging: {
+    get () {
+      return this.currentGesture_ != null && this.currentGesture_.isDragging
     }
   },
   /**
@@ -180,14 +245,55 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.getRecover()
     }
   },
-  driver: {
+  ui_driver: {
     get () {
-      return this.ui_driver_ || (this.ui_driver_ = this.driverCreate())
-    },
-    set (newValue) {
-      this.ui_driver_ = newValue
+      return this.factory.ui_driver_
     }
-  }
+  },
+  scale: {
+    get () {
+      return this.scale_
+    },
+    /**
+     * Set the workspace's zoom factor.
+     * zoomOptions are required
+     * @param {number} newScale Zoom factor.
+     */
+    set (newScale) {
+      var options = this.options.zoomOptions
+      if (options.maxScale &&
+          newScale > options.maxScale) {
+        newScale = options.maxScale;
+      } else if (options.minScale &&
+          newScale < options.minScale) {
+        newScale = options.minScale;
+      }
+      this.scale_ = newScale
+      if (this.scrollbar) {
+        this.scrollbar.resize()
+      } else {
+        this.xyMoveTo(this.scrollX, this.scrollY)
+      }
+      eYo.App.hideChaff()
+      if (this.flyout_) {
+        // No toolbox, resize flyout.
+        this.flyout_.reflow()
+      }
+    }
+  },
+  /**
+   * Return the position of the workspace origin relative to the injection div
+   * origin in pixels.
+   * The workspace origin is where a block would render at position (0, 0).
+   * It is not the upper left corner of the workspace SVG.
+   * @return {!goog.math.Coordinate} Offset in pixels.
+   * @package
+   */
+  originInFactory: {
+    get () {
+      return this.factory_.xyElementInFactory(this.dom.svg.canvas_)
+    }
+  },
 })
 
 /**
@@ -198,16 +304,16 @@ eYo.Workspace.prototype.dispose = function() {
   // Stop rerendering.
   this.rendered = false;
   if (this.currentGesture_) {
-    this.currentGesture_.cancel();
+    this.currentGesture_.cancel()
   }
-  this.listeners_.length = 0;
-  this.clear();
+  this.listeners_.length = 0
+  this.clear()
   if (this.dragger_) {
     this.dragger_.dispose()
     this.dragger_ = null
   }
   // Remove from workspace database.
-  delete eYo.Workspace.WorkspaceDB_[this.id];
+  delete eYo.Workspace.WorkspaceDB_[this.id]
   if (this.flyout_) {
     this.flyout_.dispose()
     this.flyout_ = null
@@ -225,38 +331,16 @@ eYo.Workspace.prototype.dispose = function() {
     this.zoomControls_ = null
   }
   this.disposeUI()
-
-  if (this.audioManager_) {
-    this.audioManager_.dispose()
-    this.audioManager_ = null
-  }
-
-  if (this.flyoutButtonCallbacks_) {
-    this.flyoutButtonCallbacks_ = null;
-  }
 }
 
 /**
  * Make the UI.
+ * @param {Element!} container
  */
 eYo.Workspace.prototype.makeUI = function(container) {
   var options = this.options
-  if (container) {
-    options.container = container
-  } else {
-    container = options.container
-  }
-  // no UI if no valid container
-  if (goog.isString(container)) {
-    options.container = document.getElementById(container) ||
-        document.querySelector(container)
-  }
-  if (!goog.dom.contains(document, options.container)) {
-    throw 'Error: container is not in current document.'
-  }
   this.makeUI = eYo.Do.nothing
-  var d = this.ui_driver_ = new eYo.Svg()
-  d.workspaceInit(this)
+  this.ui_driver.workspaceInit(this)
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
     this.trashcan = new eYo.Trashcan(this, bottom)
@@ -311,18 +395,6 @@ eYo.Workspace.prototype.getTopBricks = function(ordered) {
 }
 
 /**
- * Find all blocks in workspace.  No particular order.
- * @return {!Array.<!eYo.Brick>} Array of bricks.
- */
-eYo.Workspace.prototype.getAllBricks = function() {
-  var bricks = this.getTopBricks(false)
-  for (var i = 0; i < bricks.length; i++) {
-    bricks.push.apply(bricks, bricks[i].getChildren())
-  }
-  return bricks
-}
-
-/**
  * Dispose of all blocks in workspace.
  */
 eYo.Workspace.prototype.clear = function() {
@@ -363,18 +435,6 @@ eYo.Workspace.prototype.newBrick = function (prototypeName, opt_id) {
  * @return {!Blockly.Block} The created block.
  */
 eYo.Workspace.prototype.newBlock = eYo.Workspace.prototype.newBrick
-
-/**
- * The number of blocks that may be added to the workspace before reaching
- *     the maxBlocks.
- * @return {number} Number of blocks left.
- */
-eYo.Workspace.prototype.remainingCapacity = function() {
-  if (isNaN(this.options.maxBlocks)) {
-    return Infinity;
-  }
-  return this.options.maxBlocks - this.getAllBricks().length;
-};
 
 /**
  * Undo or redo the previous action.
@@ -627,14 +687,6 @@ eYo.Workspace.prototype.currentGesture_ = null
 eYo.Workspace.prototype.lastRecordedPageScroll_ = null;
 
 /**
- * Map from function names to callbacks, for deciding what to do when a button
- * is clicked.
- * @type {!Object.<string, function(!Blockly.FlyoutButton)>}
- * @private
- */
-eYo.Workspace.prototype.flyoutButtonCallbacks_ = {};
-
-/**
  * Developers may define this function to add custom menu options to the
  * workspace's context menu or edit the workspace-created set of menu options.
  * @param {!Array.<!Object>} options List of menu options to add to.
@@ -648,73 +700,6 @@ eYo.Workspace.prototype.configureContextMenu = null;
  * @package
  */
 eYo.Workspace.prototype.targetWorkspace = null;
-
-/**
- * Inverted screen CTM, for use in mouseToSvg.
- * @type {SVGMatrix}
- * @private
- */
-eYo.Workspace.prototype.inverseScreenCTM_ = null;
-
-/**
- * Getter for the inverted screen CTM.
- * @return {SVGMatrix} The matrix to use in mouseToSvg
- */
-eYo.Workspace.prototype.getInverseScreenCTM = function() {
-  return this.inverseScreenCTM_;
-};
-
-/**
- * Update the inverted screen CTM.
- */
-eYo.Workspace.prototype.updateInverseScreenCTM = function() {
-  var ctm = this.getParentSvg().getScreenCTM();
-  if (ctm) {
-    this.inverseScreenCTM_ = ctm.inverse();
-  }
-};
-
-/**
- * Return the absolute coordinates of the top-left corner of this element,
- * scales that after canvas SVG element, if it's a descendant.
- * The origin (0,0) is the top-left corner of the Blockly SVG.
- * @param {!Element} element Element to find the coordinates of.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
- * @private
- */
-eYo.Workspace.prototype.getSvgXY = function(element) {
-  var x = 0;
-  var y = 0;
-  var scale = 1;
-  if (goog.dom.contains(this.getCanvas(), element)) {
-    // Before the SVG canvas, scale the coordinates.
-    scale = this.scale;
-  }
-  do {
-    // Loop through this block and every parent.
-    var xy = eYo.Svg.getRelativeXY(element);
-    if (element == this.getCanvas()) {
-      // After the SVG canvas, don't scale the coordinates.
-      scale = 1;
-    }
-    x += xy.x * scale;
-    y += xy.y * scale;
-    element = element.parentNode;
-  } while (element && element != this.getParentSvg());
-  return new goog.math.Coordinate(x, y);
-};
-
-/**
- * Return the position of the workspace origin relative to the injection div
- * origin in pixels.
- * The workspace origin is where a block would render at position (0, 0).
- * It is not the upper left corner of the workspace SVG.
- * @return {!goog.math.Coordinate} Offset in pixels.
- * @package
- */
-eYo.Workspace.prototype.getOriginOffsetInPixels = function() {
-  return Blockly.utils.getInjectionDivXY_(this.dom.svg.canvas_)
-}
 
 /**
  * Save resize handler data so we can delete it later in dispose.
@@ -737,28 +722,37 @@ eYo.Workspace.prototype.newBlock = function(prototypeName, opt_id) {
 }
 
 Object.defineProperties(eYo.Workspace.prototype, {
-  flyout: {
+  /**
+   * The number of blocks that may be added to the workspace before reaching
+   *     the maxBlocks.
+   * @return {number} Number of blocks left.
+   */
+  remainingCapacity: {
     get () {
-      return this.flyout_
-    },
-    set (newValue) {
-      this.flyout_ = newValue
-      this.targetWorkspace_ = null
+      if (isNaN(this.options.maxBlocks)) {
+        return Infinity;
+      }
+      return this.options.maxBlocks - this.getAllBricks().length
     }
   },
-  targetWorkspace: {
+  /**
+   * Find all blocks in workspace.  No particular order.
+   * @return {!Array.<!eYo.Brick>} Array of bricks.
+   */
+  allBricks: {
     get () {
-      return this.targetWorkspace_
-    },
-    set (newValue) {
-      if ((this.targetWorkspace_ = newValue)) {
-        this.getGesture = newValue.getGesture.bind(newValue)
-      } else {
-        delete this.getGesture
+      var bricks = this.getTopBricks(false)
+      for (var i = 0; i < bricks.length; i++) {
+        bricks.push.apply(bricks, bricks[i].children)
       }
-      this.flyout_ = null
+      return bricks
     }
-  }
+  },
+  hasUI: {
+    get () {
+      return this.makeUI === eYo.Do.nothing
+    }
+  },
 })
 
 /**
@@ -778,8 +772,8 @@ eYo.Workspace.prototype.getFlyout_ = function() {
  * @private
  */
 eYo.Workspace.prototype.updateScreenCalculations_ = function() {
-  this.updateInverseScreenCTM();
-  this.recordDeleteAreas();
+  this.ui_driver.workspaceSizeDidChange(this)
+  this.recordDeleteAreas()
 };
 
 /**
@@ -801,7 +795,7 @@ eYo.Workspace.prototype.resizeContents = function() {
       // based on contents.
       this.scrollbar.resize();
     }
-    this.updateInverseScreenCTM();
+    this.ui_driver.workspaceSizeDidChange(this)
   } finally {
     this.isSelected = null
   }
@@ -838,11 +832,13 @@ eYo.Workspace.prototype.resize = function() {
 eYo.Workspace.prototype.updateScreenCalculationsIfScrolled =
     function() {
     /* eslint-disable indent */
-  var currScroll = goog.dom.getDocumentScroll();
-  if (!goog.math.Coordinate.equals(this.lastRecordedPageScroll_,
-    currScroll)) {
-    this.lastRecordedPageScroll_ = currScroll;
-    this.updateScreenCalculations_();
+  var currScroll = goog.dom.getDocumentScroll()
+  if (!goog.math.Coordinate.equals(
+    this.lastRecordedPageScroll_,
+    currScroll
+    )) {
+    this.lastRecordedPageScroll_ = currScroll
+    this.updateScreenCalculations_()
   }
 }; /* eslint-enable indent */
 
@@ -853,24 +849,6 @@ eYo.Workspace.prototype.updateScreenCalculationsIfScrolled =
 eYo.Workspace.prototype.getCanvas = function() {
   return this.svgBlockCanvas_;
 };
-
-/**
- * Get the SVG element that contains this workspace.
- * @return {Element} SVG element.
- */
-eYo.Workspace.prototype.getParentSvg = function() {
-  if (this.cachedParentSvg_) {
-    return this.cachedParentSvg_;
-  }
-  var element = this.dom.svg.group_
-  while (element) {
-    if (element.tagName == 'svg') {
-      return (this.cachedParentSvg_ = element)
-    }
-    element = element.parentNode
-  }
-  return null
-}
 
 /**
  * Move the receiver to new coordinates.
@@ -900,53 +878,17 @@ eYo.Workspace.prototype.getWidth = function() {
 }
 
 /**
- * Toggles the visibility of the workspace.
- * Currently only intended for main workspace.
- * @param {boolean} isVisible True if workspace should be visible.
- */
-eYo.Workspace.prototype.setVisible = function(isVisible) {
-
-  // Tell the scrollbar whether its container is visible so it can
-  // tell when to hide itself.
-  if (this.scrollbar) {
-    this.scrollbar.setContainerVisible(isVisible);
-  }
-
-  // Tell the flyout whether its container is visible so it can
-  // tell when to hide itself.
-  if (this.getFlyout_()) {
-    this.getFlyout_().setContainerVisible(isVisible);
-  }
-
-  this.getParentSvg().style.display = isVisible ? 'block' : 'none';
-  if (isVisible) {
-    this.render();
-  } else {
-    eYo.App.hideChaff()
-  }
-};
-
-/**
  * Render all blocks in workspace.
  */
 eYo.Workspace.prototype.render = function() {
   // Generate list of all blocks.
-  var blocks = this.getAllBricks();
-  // Render each block.
-  for (var i = blocks.length - 1; i >= 0; i--) {
-    blocks[i].render(false);
+  var bricks = this.allBricks
+  // Render each block
+  var i = bricks.length - 1
+  while (i--) {
+    bricks[i].render(false)
   }
-};
-
-/**
- * Was used back when block highlighting (for execution) and block selection
- * (for editing) were the same thing.
- * Any calls of this function can be deleted.
- * @deprecated October 2016
- */
-eYo.Workspace.prototype.traceOn = function() {
-  console.warn('Deprecated call to traceOn, delete this.');
-};
+}
 
 /**
  * Highlight or unhighlight a block in the workspace.  Block highlighting is
@@ -988,7 +930,7 @@ eYo.Workspace.prototype.paste = function () {
     return
   }
   if (!this.rendered || xml.getElementsByTagName('s').length + xml.getElementsByTagName('x').length >=
-      this.remainingCapacity()) {
+      this.remainingCapacity) {
     return
   }
   if (this.currentGesture_) {
@@ -1014,11 +956,11 @@ eYo.Workspace.prototype.paste = function () {
             // the pasted brick must move before it is connected
             // otherwise the newly created brick will attract the old one
             // resulting in a move of the existing connection
-            var xy = targetM4t.ui.xyInWorkspace
+            var xy = targetM4t.brick.xy
             var xx = targetM4t.x + xy.x
             var yy = targetM4t.y + xy.y
-            xy = m4t.ui.xyInWorkspace
-            targetM4t.brick.moveByXY(m4t.x + xy.x - xx, m4t.y + xy.y - yy)
+            xy = m4t.brick.xy
+            targetM4t.brick.xyMoveBy(m4t.x + xy.x - xx, m4t.y + xy.y - yy)
           }
           m4t.connect(targetM4t)
           // if (magnet.isHead) {
@@ -1033,11 +975,11 @@ eYo.Workspace.prototype.paste = function () {
         if (!isNaN(dx) && !isNaN(dy)) {
           // Offset block until not clobbering another block and not in connection
           // distance with neighbouring bricks.
-          var allBlocks = this.getAllBricks()
+          var allBricks = this.allBricks
           var avoidCollision = () => {
             do {
-              var collide = allBlocks.some(b => {
-                var xy = b.ui.xyInWorkspace
+              var collide = allBricks.some(b => {
+                var xy = b.xy
                 if (Math.abs(dx - xy.x) <= 10 &&
                     Math.abs(dy - xy.y) <= 10) {
                   return true
@@ -1074,7 +1016,7 @@ eYo.Workspace.prototype.paste = function () {
             dy = (metrics.view.top + metrics.view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.moveByXY(dx, dy)
+          b3k.xyMoveBy(dx, dy)
         }
         b3k.select().scrollToVisible()
       }
@@ -1107,12 +1049,12 @@ eYo.Workspace.prototype.recordDeleteAreas = function() {
 eYo.Workspace.prototype.isDeleteArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
   if (this.deleteAreaTrash_ && this.deleteAreaTrash_.contains(xy)) {
-    return Blockly.DELETE_AREA_TRASH;
+    return eYo.Workspace.DELETE_AREA_TRASH;
   }
   if (this.deleteAreaToolbox_ && this.deleteAreaToolbox_.contains(xy)) {
-    return Blockly.DELETE_AREA_TOOLBOX;
+    return eYo.Workspace.DELETE_AREA_TOOLBOX;
   }
-  return Blockly.DELETE_AREA_NONE;
+  return eYo.Workspace.DELETE_AREA_NONE;
 };
 
 /**
@@ -1125,7 +1067,16 @@ eYo.Workspace.prototype.onMouseDown_ = function(e) {
   if (gesture) {
     gesture.handleWsStart(e, this);
   }
-};
+}
+
+/**
+ * Start tracking a drag of an object on this workspace.
+ * @param {!Event} e Mouse down event.
+ * @param {!goog.math.Coordinate} xy Starting location of object.
+ */
+eYo.Workspace.prototype.xyEventInWorkspace = function(e) {
+  return point = this.ui_driver.workspaceMouseInRoot(this, e)
+}
 
 /**
  * Start tracking a drag of an object on this workspace.
@@ -1133,13 +1084,12 @@ eYo.Workspace.prototype.onMouseDown_ = function(e) {
  * @param {!goog.math.Coordinate} xy Starting location of object.
  */
 eYo.Workspace.prototype.startDrag = function(e, xy) {
-  var point = Blockly.utils.mouseToSvg(e, this.getParentSvg(),
-      this.getInverseScreenCTM());
+  var point = this.xyEventInWorkspace(e)
   // Fix scale of mouse event.
   point.x /= this.scale;
   point.y /= this.scale;
-  this.dragDeltaXY_ = goog.math.Coordinate.difference(xy, point);
-};
+  this.dragDeltaXY_ = goog.math.Coordinate.difference(xy, point)
+}
 
 /**
  * Track a drag of an object on this workspace.
@@ -1147,20 +1097,11 @@ eYo.Workspace.prototype.startDrag = function(e, xy) {
  * @return {!goog.math.Coordinate} New location of object.
  */
 eYo.Workspace.prototype.moveDrag = function(e) {
-  var point = Blockly.utils.mouseToSvg(e, this.getParentSvg(),
-      this.getInverseScreenCTM());
+  var point = this.xyEventInWorkspace(e)
   // Fix scale of mouse event.
   point.x /= this.scale;
   point.y /= this.scale;
   return goog.math.Coordinate.sum(this.dragDeltaXY_, point);
-};
-
-/**
- * Is the user currently dragging a block or scrolling the flyout/workspace?
- * @return {boolean} True if currently dragging or scrolling.
- */
-eYo.Workspace.prototype.isDragging = function() {
-  return this.currentGesture_ != null && this.currentGesture_.isDragging();
 }
 
 /**
@@ -1217,10 +1158,10 @@ eYo.Workspace.prototype.cleanUp = function() {
   eYo.Events.group = true
   var cursorY = 0
   this.getTopBricks(true).forEach(brick => {
-    var xy = brick.ui.xyInWorkspace
+    var xy = brick.xy
     brick.ui.moveBy(-xy.x, cursorY - xy.y)
     block.ui.snapToGrid()
-    cursorY = brick.ui.xyInWorkspace.y +
+    cursorY = brick.xy.y +
         brick.size.height + eYo.Unit.y
   })
   eYo.Events.group = false
@@ -1322,7 +1263,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
     if (b3k.isDeletable()) {
       deleteList = deleteList.concat(b3k.getWrappedDescendants())
     } else {
-      b3k.getChildren().forEach(child => addDeletableBlocks(child))
+      b3k.children.forEach(child => addDeletableBlocks(child))
     }
   }
   topBlocks.forEach(child => addDeletableBlocks(child))
@@ -1382,38 +1323,8 @@ eYo.Workspace.prototype.markFocused = function() {
  *                        (negative zooms out and positive zooms in).
  */
 eYo.Workspace.prototype.zoom = function(x, y, amount) {
-  var speed = this.options.zoomOptions.scaleSpeed;
-  var metrics = this.getMetrics();
-  var center = this.getParentSvg().createSVGPoint();
-  center.x = x;
-  center.y = y;
-  center = center.matrixTransform(this.getCanvas().getCTM().inverse());
-  x = center.x;
-  y = center.y;
-  var canvas = this.getCanvas();
-  // Scale factor.
-  var scaleChange = Math.pow(speed, amount);
-  // Clamp scale within valid range.
-  var newScale = this.scale * scaleChange;
-  if (newScale > this.options.zoomOptions.maxScale) {
-    scaleChange = this.options.zoomOptions.maxScale / this.scale;
-  } else if (newScale < this.options.zoomOptions.minScale) {
-    scaleChange = this.options.zoomOptions.minScale / this.scale;
-  }
-  if (this.scale == newScale) {
-    return;  // No change in zoom.
-  }
-  if (this.scrollbar) {
-    var matrix = canvas.getCTM()
-        .translate(x * (1 - scaleChange), y * (1 - scaleChange))
-        .scale(scaleChange);
-    // newScale and matrix.a should be identical (within a rounding error).
-    // ScrollX and scrollY are in pixels.
-    this.scrollX = matrix.e - metrics.absolute.left;
-    this.scrollY = matrix.f - metrics.absolute.top;
-  }
-  this.setScale(newScale);
-};
+  this.ui_driver.workspaceZoom(this, x, y, amount)
+}
 
 /**
  * Zooming the blocks centered in the center of view with zooming in or out.
@@ -1449,8 +1360,8 @@ eYo.Workspace.prototype.zoomToFit = function() {
   }
   var ratioX = workspaceWidth / blocksWidth;
   var ratioY = workspaceHeight / blocksHeight;
-  this.setScale(Math.min(ratioX, ratioY));
-  this.scrollCenter();
+  this.scale = Math.min(ratioX, ratioY)
+  this.scrollCenter()
 };
 
 /**
@@ -1522,31 +1433,6 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
 
   eYo.App.hideChaff();
   this.scrollbar.set(scrollToCenterX, scrollToCenterY);
-};
-
-/**
- * Set the workspace's zoom factor.
- * @param {number} newScale Zoom factor.
- */
-eYo.Workspace.prototype.setScale = function(newScale) {
-  if (this.options.zoomOptions.maxScale &&
-      newScale > this.options.zoomOptions.maxScale) {
-    newScale = this.options.zoomOptions.maxScale;
-  } else if (this.options.zoomOptions.minScale &&
-      newScale < this.options.zoomOptions.minScale) {
-    newScale = this.options.zoomOptions.minScale;
-  }
-  this.scale = newScale;
-  if (this.scrollbar) {
-    this.scrollbar.resize();
-  } else {
-    this.xyMoveTo(this.scrollX, this.scrollY);
-  }
-  eYo.App.hideChaff()
-  if (this.flyout_) {
-    // No toolbox, resize flyout.
-    this.flyout_.reflow();
-  }
 }
 
 /**
@@ -1641,7 +1527,7 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
   }
   return function() {
     // Contains height and width in CSS pixels.
-    // svgSize is equivalent to the size of the injectionDiv at this point.
+    // svgSize is equivalent to the size of the factory div at this point.
     var svgSize = Blockly.svgSize(this.dom.svg.root_)
     // svgSize is now the space taken up by the Blockly workspace
     if (ws.scrollbar) {
@@ -1704,43 +1590,6 @@ eYo.Workspace.prototype.setResizesEnabled = function(enabled) {
     // Newly enabled.  Trigger a resize.
     this.resizeContents();
   }
-};
-
-/**
- * Register a callback function associated with a given key, for clicks on
- * buttons and labels in the flyout.
- * For instance, a button specified by the XML
- * <button text="create variable" callbackKey="CREATE_VARIABLE"></button>
- * should be matched by a call to
- * registerButtonCallback("CREATE_VARIABLE", yourCallbackFunction).
- * @param {string} key The name to use to look up this function.
- * @param {function(!Blockly.FlyoutButton)} func The function to call when the
- *     given button is clicked.
- */
-eYo.Workspace.prototype.registerButtonCallback = function(key, func) {
-  goog.asserts.assert(goog.isFunction(func),
-      'Button callbacks must be functions.')
-  this.flyoutButtonCallbacks_[key] = func
-}
-
-/**
- * Get the callback function associated with a given key, for clicks on buttons
- * and labels in the flyout.
- * @param {string} key The name to use to look up the function.
- * @return {?function(!Blockly.FlyoutButton)} The function corresponding to the
- *     given key for this workspace; null if no callback is registered.
- */
-eYo.Workspace.prototype.getButtonCallback = function(key) {
-  var result = this.flyoutButtonCallbacks_[key]
-  return result ? result : null
-}
-
-/**
- * Remove a callback for a click on a button in the flyout.
- * @param {string} key The name associated with the callback function.
- */
-eYo.Workspace.prototype.removeButtonCallback = function(key) {
-  this.flyoutButtonCallbacks_[key] = null
 }
 
 /**
@@ -1802,10 +1651,6 @@ eYo.Workspace.prototype.getAudioManager = function() {
   return this.audioManager_
 };
    
-// Export symbols that would otherwise be renamed by Closure compiler.
-eYo.Workspace.prototype['setVisible'] =
-    eYo.Workspace.prototype.setVisible
-
 eYo.Workspace.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
@@ -1850,14 +1695,6 @@ eYo.Workspace.prototype.getRecover = (() => {
     return this.recover_
   }
 }) ()
-
-/**
- * Create a driver for rendering.
- * @return {eYo.Driver}
- */
-eYo.Workspace.prototype.driverCreate = function () {
-  return new eYo.Svg()
-}
 
 /**
  * Add the nodes from string to the workspace.
@@ -1980,7 +1817,7 @@ eYo.Workspace.prototype.tidyUp = function (kvargs) {
   var tops = this.topBricks_.filter(b3k => {
     return {
       b3k,
-      xy: b3k.ui.xyInWorkspace
+      xy: b3k.xy
     }
   })
   var ordered = {}
@@ -2056,7 +1893,7 @@ eYo.Workspace.prototype.scrollBrickTopLeft = function(id) {
     brick = brick.stmtParent || brick.root
   }
   // XY is in workspace coordinates.
-  var xy = brick.ui.xyInWorkspace
+  var xy = brick.xy
 
   // Find the top left of the block in workspace units.
   var y = xy.y - eYo.Unit.y / 2

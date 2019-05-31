@@ -354,8 +354,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
       ? gestureScale * eYo.Gesture.ZOOM_IN_FACTOR 
       : gestureScale * eYo.Gesture.ZOOM_OUT_FACTOR
       var workspace = this.startWorkspace_
-      var position = Blockly.utils.mouseToSvg(
-          e, workspace.getParentSvg(), workspace.getInverseScreenCTM())
+      var position = workspace.xyEventInWorkspace(e)
       workspace.zoom(position.x, position.y, delta)
     }
     this.previousScale_ = scale
@@ -733,11 +732,6 @@ eYo.Gesture.prototype.setStartWorkspace_ = function(ws) {
 }
 
 /* End functions for populating a gesture at mouse down. */
-
-eYo.Gesture.prototype.isDragging = function() {
-  console.error("BREAK HERE")
-  throw "DEPRECATED"
-}
 
 /**
  * Whether this gesture has already been started.  In theory every mouse down

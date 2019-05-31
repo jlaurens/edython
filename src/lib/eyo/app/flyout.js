@@ -360,23 +360,7 @@ eYo.Flyout.prototype.getHeight = function() {
 
 eYo.Flyout.prototype.getWorkspace = function() {
   throw "DEPRECATED getWorkspace"
-};
-
-eYo.Flyout.prototype.isVisible = function() {
-  throw "DEPRECATED isVisible"
-};
-
-eYo.Flyout.prototype.setVisible = function(visible) {
-  throw "DEPRECATED setVisible"
-};
-
-eYo.Flyout.prototype.setContainerVisible = function(visible) {
-  throw "DEPRECATED setContainerVisible"
-};
-
-eYo.Flyout.prototype.isScrollable = function() {
-  throw "DEPRECATED isScrollable"
-};
+}
 
 /**
  * Update the display property of the flyout based whether it thinks it should
@@ -388,7 +372,7 @@ eYo.Flyout.prototype.updateDisplay_ = function() {
   this.ui_driver.flyoutDisplaySet(show)
   // Update the scrollbar's visiblity too since it should mimic the
   // flyout's visibility.
-  this.scrollbar_.setContainerVisible(show)
+  this.scrollbar_.containerVisible = show
 }
 
 /**
@@ -595,11 +579,10 @@ eYo.Flyout.prototype.isDragTowardWorkspace = function(delta) {
  * @private
  */
 eYo.Flyout.prototype.filterForCapacity_ = function() {
-  var remainingCapacity = this.targetWorkspace_.remainingCapacity()
+  var remainingCapacity = this.targetWorkspace_.remainingCapacity
   this.workspace_.getTopBricks(false).forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
-      var allBricks = brick.descendants
-      brick.disabled = allBricks.length > remainingCapacity
+      brick.disabled = brick.descendants.length > remainingCapacity
     }
   })
 }
@@ -716,11 +699,11 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
 
   // The offset in pixels between the main workspace's origin and the upper left
   // corner of the injection div.
-  var mainOffsetPixels = targetWorkspace.getOriginOffsetInPixels()
+  var mainOffsetPixels = targetWorkspace.originInFactory()
 
   // The offset in pixels between the flyout workspace's origin and the upper
   // left corner of the injection div.
-  var flyoutOffsetPixels = this.workspace_.getOriginOffsetInPixels()
+  var flyoutOffsetPixels = this.workspace_.originInFactory()
 
   // The position of the old brick in flyout workspace coordinates.
   var oldBrickPosWs = oldBrick.xyInWorkspace

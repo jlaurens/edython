@@ -199,7 +199,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
    * @type {!goog.math.Coordinate}
    * @private
    */
-  this.xyStart_ = this.brick_.ui.xyInWorkspace
+  this.xyStart_ = this.brick_.xy
 
   eYo.Selected.magnet = null
   
@@ -241,7 +241,7 @@ eYo.BrickDragger.prototype.drag = function() {
   if (bds) {
     bds.xyMoveTo(xyNew)
   } else {
-    this.driver.brickSetOffsetDuringDrag(b3k, xyNew)
+    this.ui_driver.brickSetOffsetDuringDrag(b3k, xyNew)
   }
 
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
@@ -250,7 +250,7 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Workspace.DELETE_AREA_TRASH)
   }
 }
 
@@ -352,7 +352,7 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteArea != Blockly.DELETE_AREA_TOOLBOX
+      deleteArea != eYo.Workspace.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteArea && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete

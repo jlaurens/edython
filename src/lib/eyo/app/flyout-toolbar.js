@@ -42,7 +42,7 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
   var workspace = this.flyout_.targetWorkspace_
   if (workspace && this.selectControl_) {
     var category = this.selectControl_.getValue()
-    var list = workspace.eyo.getFlyoutsForCategory(category)
+    var list = workspace.getFlyoutsForCategory(category)
     if (list.length) {
       this.flyout_.show(list)
     }
@@ -175,7 +175,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   // this.div_.style.height = height + 'px'
 
   var path = this.pathControl_
-  if (this.flyout_.eyo.closed) {
+  if (this.flyout_.closed) {
     path.setAttribute('d',
       `M${margin + h + this.flyout_.CORNER_RADIUS},${radius} l${-h},${-radius/2} l 0,${radius} z`
     )
@@ -195,7 +195,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
  * @private
  */
 eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
-  this.flyout_.targetWorkspace_.eyo.driver.flyoutToolbarPositionAt(width, height, x, y)
+  this.flyout_.targetWorkspace_.ui_driver.flyoutToolbarPositionAt(width, height, x, y)
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'
 };

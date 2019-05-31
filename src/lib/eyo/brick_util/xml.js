@@ -111,7 +111,7 @@ Blockly.Xml.domToText = function (dom) {
  */
 eYo.Xml.brickToDomWithXY = function(brick, opt) {
   var element = eYo.Xml.brickToDom(brick, opt)
-  var xy = brick.ui.xyInWorkspace
+  var xy = brick.xy
   element.setAttribute('x', Math.round(xy.x))
   element.setAttribute('y', Math.round(xy.y))
   return element
@@ -202,7 +202,7 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
         var y = xmlChild.hasAttribute('y')
           ? parseInt(xmlChild.getAttribute('y'), 10) : 10
         if (!isNaN(x) && !isNaN(y)) {
-          brick.moveByXY(x, y)
+          brick.xyMoveBy(x, y)
         } else {
           var c = xmlChild.hasAttribute('c')
             ? parseInt(xmlChild.getAttribute('c'), 10)

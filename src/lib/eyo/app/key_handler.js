@@ -602,7 +602,7 @@ var doit = (() => {
       var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
+        if (parent && parent.workspace.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
           eyo.replaceBrick(parent)
           return
         }
@@ -617,7 +617,7 @@ var doit = (() => {
       var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
+        if (parent && parent.workspace.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
           return
         }
         var model = {
@@ -642,7 +642,7 @@ var doit = (() => {
       var brick = eYo.Selected.brick
       if (brick) {
         var parent = eyo.surround
-        if (parent && parent.workspace.eyo.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
+        if (parent && parent.workspace.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
           brick.replaceBrick(parent)
           return
         }

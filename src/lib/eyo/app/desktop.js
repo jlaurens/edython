@@ -75,7 +75,7 @@ eYo.Desktop.copyBrick = (brick, deep) => {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
-  var xy = brick.ui.xyInWorkspace
+  var xy = brick.xy
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml

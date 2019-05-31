@@ -283,7 +283,7 @@ eYo.Events.disableOrphans = function(event) {
       if (brick.parent && !brick.parent.disabled) {
         brick.descendants.forEach(child => child.disabled = false)
       } else if ((brick.output_m || brick.head_m || brick.left_m) &&
-                 !workspace.isDragging()) {
+                 !workspace.isDragging) {
         do {
           brick.disabled = true
           brick = brick.foot
