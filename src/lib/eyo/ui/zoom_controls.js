@@ -80,7 +80,11 @@ Object.defineProperties(eYo.ZoomControls.prototype, {
       return this.workspace_.ui_driver
     }
   },
-
+  hasUI: {
+    get () {
+      return this.makeUI === eYo.Do.nothing
+    }
+  },
   /**
    * Global top coordinate of the zoom controls.
    * @type {number}
