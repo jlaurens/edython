@@ -44,7 +44,8 @@ eYo.hueToRgb = function (hue) {
 }
 
 eYo.Style = {
-  weight: x => x / (1 + x)// 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
+  weight: x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
+  SEP_SPACE_X: 0
 }
 
 var g = {
@@ -193,41 +194,6 @@ eYo.Style.Edit = {
   radius: 2,
   width: 0.5
 }
-
-eYo.Style.insertCssRuleAt = (() => {
-  var style, sheet
-  var getSheet = () => {
-    if (!sheet) {
-      // style = document.createElement('style')
-      // //document.head.appendChild(style)// only once
-      // document.head.insertBefore(style, document.head.firstChild)
-      // sheet = style.sheet
-
-      style = document.createElement('style')
-      document.head.insertBefore(style, document.head.firstChild)
-      sheet = style.sheet
-    }
-    return sheet
-  }
-  return function () {
-    var sheet = getSheet()
-    if (arguments.length === 0) {
-      return
-    }
-    var rule = []
-    var i = 0
-    while (goog.isString(arguments[i])) {
-      rule.push(arguments[i])
-      ++i
-    }
-    if (goog.isNumber(arguments[i])) {
-      var at = arguments[i]
-    }
-    if (rule.length) {
-      goog.cssom.addCssRule(sheet, rule.join(''), at)
-    }
-  }
-})()
 
 eYo.Style.MenuIcon = {
   width: eYo.Font.space,

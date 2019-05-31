@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Workspace')
+goog.provide('eYo.Svg.ZoomControl')
 
-goog.require('eYo.Svg')
+goog.require('eYo.ZoomControls')
 
 goog.forwardDeclare('eYo.Workspace')
 
@@ -31,41 +31,44 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     return
   }
    /* Here's the markup that will be generated:
-  <g class="blocklyZoom">
-    <clippath id="blocklyZoomoutClipPath837493">
+  <g class="eyo-zoom">
+    <clippath id="eyo-zoomout-clip-path837493">
       <rect width="32" height="32" y="77"></rect>
     </clippath>
     <image width="96" height="124" x="-64" y="-15" xlink:href="media/sprites.png"
-        clip-path="url(#blocklyZoomoutClipPath837493)"></image>
-    <clippath id="blocklyZoominClipPath837493">
+        clip-path="url(#eyo-zoomout-clip-path837493)"></image>
+    <clippath id="eyo-zoomin-clip-path837493">
       <rect width="32" height="32" y="43"></rect>
     </clippath>
     <image width="96" height="124" x="-32" y="-49" xlink:href="media/sprites.png"
-        clip-path="url(#blocklyZoominClipPath837493)"></image>
-    <clippath id="blocklyZoomresetClipPath837493">
+        clip-path="url(#eyo-zoomin-clip-path837493)"></image>
+    <clippath id="eyo-zoom-reset-clip-path837493">
       <rect width="32" height="32"></rect>
     </clippath>
     <image width="96" height="124" y="-92" xlink:href="media/sprites.png"
-        clip-path="url(#blocklyZoomresetClipPath837493)"></image>
+        clip-path="url(#eyo-zoom-reset-clip-path837493)"></image>
   </g>
   */
   g = svg.zoom_ = eYo.Svg.newElement(
    'g',
-    {class: 'blocklyZoom'},
+    {class: 'eyo-zoom'},
     svg.group_
   )
-  
   var rnd = String(Math.random()).substring(2)
   var clip;
  
   clip = eYo.Svg.newElement(
     'clipPath',
-    {'id': 'blocklyZoomoutClipPath' + rnd},
+    {id: 'eyo-zoomout-clip-path' + rnd},
     g
   )
   eYo.Svg.newElement(
     'rect',
-    {'width': 32, 'height': 32, 'y': 77},
+    {
+      width: 32,
+      height: 32,
+      y: 77
+    },
     clip
   )
   var zoomoutSvg = eYo.Svg.newElement(
@@ -75,7 +78,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       height: eYo.SPRITE.height,
       x: -64,
       y: -15,
-      'clip-path': `url(#blocklyZoomoutClipPath${rnd})`
+      'clip-path': `url(#eyo-zoomout-clip-path${rnd})`
     },
     g
   )
@@ -86,7 +89,9 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   clip = eYo.Svg.newElement(
     'clipPath',
-    {'id': 'blocklyZoominClipPath' + rnd},
+    {
+      id: 'eyo-zoomin-clip-path' + rnd
+    },
     g
   )
   eYo.Svg.newElement(
@@ -101,7 +106,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       height: eYo.SPRITE.height,
       x: -32,
       y: -49,
-      'clip-path': `url(#blocklyZoominClipPath${rnd})`
+      'clip-path': `url(#eyo-zoomin-clip-path${rnd})`
     },
     g
   )
@@ -112,7 +117,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   clip = eYo.Svg.newElement(
     'clipPath',
-    {id: 'blocklyZoomresetClipPath' + rnd},
+    {id: 'eyo-zoom-reset-clip-path' + rnd},
     g
   )
   eYo.Svg.newElement(
@@ -125,7 +130,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     {
       width: eYo.SPRITE.width,
       height: eYo.SPRITE.height, 'y': -92,
-      'clip-path': `url(#blocklyZoomresetClipPath${rnd})`
+      'clip-path': `url(#eyo-zoom-reset-clip-path${rnd})`
     },
     g
   )
@@ -136,12 +141,12 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   // Attach event listeners.
   var bound = dom.bound
-  bound.zoomreset = eYo.Dom.bindEventWithChecks_(
+  bound.zoomreset = eYo.Dom.bindEvent(
     zoomresetSvg,
     'mousedown',
     e => {
       workspace.markFocused()
-      workspace.scale = workspace.options.zoomOptions.startScale
+      workspace.scale = workspace.options.zoom.startScale
       workspace.scrollCenter()
       workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
@@ -157,13 +162,13 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomout = eYo.Dom.bindEventWithChecks_(
+  bound.zoomout = eYo.Dom.bindEvent(
     zoomoutSvg,
     'mousedown',
     e => {
       workspace.markFocused();
       workspace.zoomCenter(-1);
-      eYo.Touch.clearTouchIdentifier();  // Don't block future drags.
+      workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )

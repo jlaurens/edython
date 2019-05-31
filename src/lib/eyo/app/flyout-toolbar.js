@@ -1,25 +1,26 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Flyout overriden.
+ * @fileoverview Flyout toolbar extension, in progress.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
-'use strict';
+'use strict'
 
-goog.provide('eYo.FlyoutToolbar');
+goog.provide('eYo.FlyoutToolbar')
 
 goog.require('eYo')
+goog.forwardDeclare('eYo.FlyoutToolbar')
 
-goog.require('eYo.MenuRenderer');
-goog.require('eYo.MenuButtonRenderer');
-goog.require('goog.dom');
-goog.require('goog.math.Coordinate');
-goog.require('goog.ui.Select');
+goog.require('eYo.MenuRenderer')
+goog.require('eYo.MenuButtonRenderer')
+goog.require('goog.dom')
+goog.require('goog.math.Coordinate')
+goog.require('goog.ui.Select')
 
 /**
  * Class for a flyout toolbar.
@@ -42,7 +43,7 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
   var workspace = this.flyout_.targetWorkspace_
   if (workspace && this.selectControl_) {
     var category = this.selectControl_.getValue()
-    var list = workspace.getFlyoutsForCategory(category)
+    var list = eYo.FlyoutCategory[category]
     if (list.length) {
       this.flyout_.show(list)
     }
@@ -65,7 +66,7 @@ eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_R
  */
 eYo.FlyoutToolbar.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
-    Blockly.unbindEvent(this.onButtonDownWrapper_);
+    Blockly.unbindEvent(this.onButtonDownWrapper_)
     this.onButtonDownWrapper_ = undefined
   }
   if (this.onButtonEnterWrapper_) {
@@ -96,7 +97,7 @@ eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
   eYo.Dom.gobbleEvent(e)
-};
+}
 
 /**
  * That is catched when the flyout has the focus.
@@ -128,14 +129,14 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
   if (this.isDown) {
     this.isDown = false
     var el = document.querySelector('#eyo-flyout-dropdown .dropdown.show')
-    if (e) {
+    if (el) {
       goog.dom.classlist.remove('show')
     }
     this.flyout_.eyo.slide()
     this.onButtonLeave_(e)
     var gesture = this.flyout_.targetWorkspace_.getGesture(e);
     if (gesture) {
-      gesture.cancel();// comes from flyout button
+      gesture.cancel()// comes from flyout button
     }
     eYo.Dom.gobbleEvent(e)
   }
@@ -143,6 +144,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 // Sometimes this error has poped up.
 // console.error(`Uncaught TypeError: this.onButtonLeave_ is not a function
 // at eYo.FlyoutToolbar.notOnButtonUp_`)
+
 /**
  * Mouse up catcher.
  * @param {!Event} e Mouse up event.
@@ -151,12 +153,12 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
-  var gesture = this.targetWorkspace_.getGesture(e);
+  var gesture = this.targetWorkspace_.getGesture(e)
   if (gesture) {
-    gesture.cancel();// comes from flyout button
+    gesture.cancel()// comes from flyout button
   }
   eYo.Dom.gobbleEvent(e)
-};
+}
 
 /**
  * Resize.

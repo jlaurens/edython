@@ -256,11 +256,11 @@ Object.defineProperties(eYo.Workspace.prototype, {
     },
     /**
      * Set the workspace's zoom factor.
-     * zoomOptions are required
+     * zoom options are required
      * @param {number} newScale Zoom factor.
      */
     set (newScale) {
-      var options = this.options.zoomOptions
+      var options = this.options.zoom
       if (options.maxScale &&
           newScale > options.maxScale) {
         newScale = options.maxScale;
@@ -346,7 +346,7 @@ eYo.Workspace.prototype.makeUI = function(container) {
     this.trashcan = new eYo.Trashcan(this, bottom)
     bottom = this.trashcan.top
   }
-  if (options.zoomOptions && options.zoomOptions.controls) {
+  if (options.zoom && options.zoom.controls) {
     this.zoomControls_ = new eYo.ZoomControls(this, bottom)
     return this.zoomControls_.top
   }

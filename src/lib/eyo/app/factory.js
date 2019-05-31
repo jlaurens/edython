@@ -19,6 +19,7 @@ goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
 goog.forwardDeclare('eYo.Desktop')
+goog.forwardDeclare('eYo.Options')
 
 
 /**
@@ -28,10 +29,13 @@ goog.forwardDeclare('eYo.Desktop')
  * @constructor
  */
 eYo.Factory = function(options) {
-  /** @type {!Blockly.Options} */
-  options = new Blockly.Options(options || {})
+  /** @type {!eYo.Options} */
+  options = new eYo.Options(options || {})
   // Load CSS.
-  Blockly.Css.inject(options.hasCss, options.pathToMedia)
+  // Strip off any trailing slash (either Unix or Windows).
+  pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
+
+  eYo.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
   // create the various workspaces and flyout
   this.mainWorkspace_ = new eYo.Workspace(this, options)

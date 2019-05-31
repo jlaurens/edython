@@ -45,7 +45,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
       eYo.Svg.newElement(
         'path',
         {
-          class: 'blocklyHighlightedConnectionPath',
+          class: 'eyo-hilighted-magnet-path',
           d: steps
         },
         g
@@ -60,7 +60,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
   eYo.Svg.magnetHighlightedPath_ = eYo.Svg.newElement(
     'path',
     {
-      class: 'blocklyHighlightedConnectionPath',
+      class: 'eyo-hilighted-magnet-path',
       d: steps,
       transform: `translate(${m4t.x || 0},${m4t.y || 0})`
     },

@@ -33,8 +33,8 @@ goog.forwardDeclare('goog.crypt')
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {!Blockly.Block} block The owner of the receiver.
- * @param {!boolean} shallow
+ * @param {!eYo.Brick} block The brick to delete.
+ * @param {!boolean} deep
  */
 eYo.Desktop.deleteBrick = (brick, deep) => {
   if (brick && brick.isDeletable() && !brick.workspace.isFlyout) {

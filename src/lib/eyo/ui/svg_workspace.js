@@ -35,7 +35,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     xmlns: html="http://www.w3.org/1999/xhtml"
     xmlns: xlink="http://www.w3.org/1999/xlink"
     version="1.1"
-    class="blocklySvg">
+    class="eyo-svg">
     ...
   </svg>
   */
@@ -49,7 +49,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     'class': 'eyo-svg'
   }, div)
   var options = workspace.options
-  options.zoomOptions && (workspace.scale = options.zoomOptions.startScale)
+  options.zoom && (workspace.scale = options.zoom.startScale)
   // A null translation will also apply the correct initial scale.
   workspace.xyMoveTo(0, 0)
 
@@ -148,7 +148,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   )
   if (!workspace.isFlyout) {
     this.workspaceBind_mousedown(workspace)
-    if (workspace.options.zoomOptions && workspace.options.zoomOptions.wheel) {
+    if (workspace.options.zoom && workspace.options.zoom.wheel) {
       this.workspaceBind_wheel(workspace)
     }
   }
@@ -426,7 +426,7 @@ eYo.Svg.prototype.workspaceMouseInRoot = function(workspace, e) {
  *                        (negative zooms out and positive zooms in).
  */
 eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
-  var options = workspace.options.zoomOptions
+  var options = workspace.options.zoom
   goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
   var speed = options.scaleSpeed
   var metrics = workspace.getMetrics()

@@ -21,13 +21,8 @@ goog.forwardDeclare('eYo.BrickDragger')
 // goog.forwardDeclare('eYo.WorkspaceDragger')
 // goog.forwardDeclare('eYo.FlyoutDragger')
 
-goog.forwardDeclare('Blockly.Tooltip')
-
 goog.forwardDeclare('goog.math.Coordinate')
 goog.forwardDeclare('goog.asserts')
-
-goog.require('Blockly.constants');
-goog.require('eYo.Events.Ui');
 
 /*
  * Note: In this file "start" refers to touchstart, mousedown, and pointerstart
@@ -666,10 +661,6 @@ eYo.Gesture.prototype.doBrickClick_ = function() {
       var newBrick = this.flyout_.createBrick(this.targetBrick_)
       newBrick.ui.scheduleSnapAndBump()
     }
-  } else {
-    // Clicks events are on the start brick, even if it was a shadow.
-    eYo.Events.fire(
-        new eYo.Events.Ui(this.startBrick_, 'click', undefined, undefined))
   }
   this.bringBrickToFront_()
   eYo.Events.group = false
