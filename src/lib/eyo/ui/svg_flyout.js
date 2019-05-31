@@ -32,8 +32,8 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   svg = dom.svg = Object.create(null)
   /*
   <svg class="eyo-flyout">
-    <g class="eyo-flyout-background">
-      <path class="blocklyFlyoutBackground"/>
+    <g class="eyo-flyout-canvas">
+      <path class="eyo-flyout-background"/>
     </g>
     <g class="eyo-workspace">...</g>
   </svg>
@@ -46,11 +46,11 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     class: 'eyo-flyout',
     style: 'display: none'
   }, null)
-  svg.background_ = eYo.Svg.newElement('path', {
+  var background = svg.background_ = eYo.Svg.newElement('path', {
     class: 'eyo-flyout-background'
   }, root)
 // Bad design: code reuse: options
-  this.addTooltip(svg.background_, eYo.Tooltip.getTitle('flyout'), {
+  this.addTooltip(background, eYo.Tooltip.getTitle('flyout'), {
     position: 'right',
     theme: 'light bordered',
     flipDuration: 0,
@@ -67,18 +67,9 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
       }
     },
     onShow: x => {
-      eYo.Tooltip.hideAll(dom.background_)
+      eYo.Tooltip.hideAll(background)
     }
   })
-
-  g.appendChild(this.workspaceInit(this.workspace_))
-
-  /*var g = flyout.workspace_.createDom()
-  goog.dom.classlist.remove(g, 'eyo-workspace-surface')
-  goog.dom.classlist.add(g, 'eyo-workspace-surface')*/
-
-  goog.dom.insertSiblingAfter(g, targetWorkspace.dom.svg.root_)
-  return g
 }
 
 /**
@@ -87,20 +78,28 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
  */
 eYo.Svg.prototype.flyoutDispose = eYo.Dom.decorateDispose(function (flyout) {
   var dom = flyout.dom
-  goog.dom.removeNode(dom.svg.group_)
-  dom.svg.group_ = null
+  goog.dom.removeNode(dom.svg.root_)
+  dom.svg.root_ = null
   dom.svg = null
   eYo.Svg.superClass_.flyoutDispose.call(this, flyout)
 })
 
 /**
- * Dispose of the given slot's rendering resources.
+ * Set the display attribute.
  * @param {!eYo.Flyout} flyout
  * @param {Boolean} show
  */
 eYo.Svg.prototype.flyoutDisplaySet = function (flyout, show) {
-  !show && eYo.Tooltip.hideAll(flyout.dom.svg.group_)
-  flyout.dom.svg.group_.style.display = show ? 'block' : 'none'
+  !show && eYo.Tooltip.hideAll(flyout.dom.svg.root_)
+  flyout.dom.svg.root_.style.display = show ? 'block' : 'none'
+}
+
+/**
+ * Get the display attribute.
+ * @param {!eYo.Flyout} flyout
+ */
+eYo.Svg.prototype.flyoutDisplayGet = function (flyout) {
+  return flyout.dom.svg.root_.style.display !== 'none'
 }
 
 /**
@@ -350,9 +349,9 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
  * @private
  */
 eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
-  if (!flyout.isVisible()) {
+  if (!flyout.visible) {
     // Flyout is hidden.
-    return null;
+    return null
   }
   var W = flyout.workspace_
   try {
