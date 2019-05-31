@@ -141,7 +141,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     'mousedown',
     e => {
       workspace.markFocused()
-      workspace.setScale(workspace.options.zoomOptions.startScale)
+      workspace.scale = workspace.options.zoomOptions.startScale
       workspace.scrollCenter()
       workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
