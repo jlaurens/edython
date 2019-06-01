@@ -210,7 +210,7 @@ eYo.Svg.prototype.removeAttribute = function(element, attributeName) {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.Svg.prototype.getAffineTransform = (() => {
+eYo.Svg.getAffineTransform = (() => {
   var getAffineTransform = (str) => {
     var values = str.split(/\s*,\s*|\)\s*|.*\(/)
     if (values.length > 8) {
@@ -246,8 +246,8 @@ eYo.Svg.prototype.getAffineTransform = (() => {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.Svg.prototype.getTransformCorrection = element => {
-  var A = eYo.Do.getAffineTransform(element)
+eYo.Svg.getTransformCorrection = element => {
+  var A = eYo.Svg.getAffineTransform(element)
   if (A) {
     var B = A.createInverse()
     if (B) {

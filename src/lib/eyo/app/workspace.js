@@ -226,7 +226,7 @@ Object.defineProperties(eYo.Workspace.prototype, {
    */
   isDragging: {
     get () {
-      return this.currentGesture_ != null && this.currentGesture_.isDragging
+      return this.gesture_ != null && this.gesture_.isDragging
     }
   },
   /**
@@ -260,6 +260,11 @@ Object.defineProperties(eYo.Workspace.prototype, {
   ui_driver: {
     get () {
       return this.factory.ui_driver_
+    }
+  },
+  gesture: {
+    get () {
+      return this.gesture_
     }
   },
   scale: {
@@ -341,8 +346,8 @@ Object.defineProperties(eYo.Workspace.prototype, {
 eYo.Workspace.prototype.dispose = function() {
   // Stop rerendering.
   this.rendered = false;
-  if (this.currentGesture_) {
-    this.currentGesture_.cancel()
+  if (this.gesture_) {
+    this.gesture_.cancel()
   }
   this.listeners_.length = 0
   this.clear()
@@ -707,7 +712,7 @@ eYo.Workspace.prototype.scrollbar = null
  * @type {eYo.Gesture}
  * @private
  */
-eYo.Workspace.prototype.currentGesture_ = null
+eYo.Workspace.prototype.gesture_ = null
 
 /**
  * Last known position of the page scroll.
@@ -945,8 +950,8 @@ eYo.Workspace.prototype.paste = function () {
       this.remainingCapacity) {
     return
   }
-  if (this.currentGesture_) {
-    this.currentGesture_.cancel() // Dragging while pasting?  No.
+  if (this.gesture_) {
+    this.gesture_.cancel() // Dragging while pasting?  No.
   }
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
@@ -1298,8 +1303,8 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
       : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: function () {
-      if (ws.currentGesture_) {
-        ws.currentGesture_.cancel()
+      if (ws.gesture_) {
+        ws.gesture_.cancel()
       }
       if (deleteList.length < 2) {
         deleteNext()
@@ -1616,7 +1621,7 @@ eYo.Workspace.prototype.getGesture = function(e) {
   var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
       e.type == 'pointerdown')
 
-  var gesture = this.currentGesture_
+  var gesture = this.gesture_
   if (gesture) {
     if (isStart && gesture.hasStarted()) {
       console.warn('tried to start the same gesture twice')
@@ -1631,7 +1636,7 @@ eYo.Workspace.prototype.getGesture = function(e) {
   // No gesture existed on this workspace, but this looks like the start of a
   // new gesture.
   if (isStart) {
-    return (this.currentGesture_ = new eYo.Gesture(e, this))
+    return (this.gesture_ = new eYo.Gesture(e, this))
   }
   // No gesture existed and this event couldn't be the start of a new gesture.
   return null
@@ -1642,7 +1647,7 @@ eYo.Workspace.prototype.getGesture = function(e) {
  * @package
  */
 eYo.Workspace.prototype.clearGesture = function() {
-  this.currentGesture_ = null
+  this.gesture_ = null
 }
 
 /**
@@ -1650,8 +1655,8 @@ eYo.Workspace.prototype.clearGesture = function() {
  * @package
  */
 eYo.Workspace.prototype.cancelCurrentGesture = function() {
-  if (this.currentGesture_) {
-    this.currentGesture_.cancel()
+  if (this.gesture_) {
+    this.gesture_.cancel()
   }
 }
 
@@ -1780,15 +1785,16 @@ eYo.Workspace.prototype.addBrick = function (brick, opt_id) {
   this.brickDB_[brick.id] = brick
 }
 
-
 /**
  * Add a brick to the workspace.
  * @param {eYo.Brick} brick
  */
 eYo.Workspace.prototype.removeBrick = function (brick) {
-  this.removeTopBrick(brick)
+  if (!goog.array.remove(this.topBricks_, brick)) {
+    throw 'Brick not present in workspace\'s list of top-most bricks.';
+  }
   // Remove from workspace
-  this.brickDB_[brick.id]
+  this.brickDB_[brick.id] = null
 }
 
 /**

@@ -266,12 +266,13 @@ eYo.Scrollbar.prototype.onMouseUpHandle_ = function() {
 }
 
 /**
- * Hide chaff and stop binding to mouseup and mousemove events.  Call this to
+ * Stop binding to mouseup and mousemove events.  Call this to
  * wrap up lose ends associated with the scrollbar.
+ * @param {!eYo.Scrollbar}
  * @private
  */
 eYo.Svg.prototype.scrollbarCleanUp_ = function(scrollbar) {
-  eYo.hideChaff()
+  eYo.App.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
     eYo.Dom.unbindEvent(bound.mouseup)

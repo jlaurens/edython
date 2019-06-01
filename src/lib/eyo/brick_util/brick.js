@@ -216,7 +216,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.span.dispose()
   this.span_ = undefined
   this.workspace.resizeContents()
-  this.workspace = undefined
+  this.workspace_ = undefined
 }
 
 /**

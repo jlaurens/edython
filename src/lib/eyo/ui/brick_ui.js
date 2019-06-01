@@ -16,7 +16,7 @@ goog.provide('eYo.Brick.UI')
 goog.require('eYo.Brick')
 
 goog.forwardDeclare('eYo.Driver')
-goog.forwardDeclare('eYo.Svg')
+goog.forwardDeclare('eYo.Svg.Brick')
 
 /**
  * Class for a Render.

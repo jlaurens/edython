@@ -37,22 +37,21 @@ goog.forwardDeclare('goog.asserts')
  *     this gesture and has a reference to it.
  * @constructor
  */
-eYo.Gesture = function(e, creatorWorkspace) {
-
+eYo.Gesture = function(e, workspace) {
   /**
    * The position of the mouse when the gesture started.  Units are css pixels,
    * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
    * @type {goog.math.Coordinate}
    */
-  this.xyStart_ = null;
+  this.startXY_ = null;
 
   /**
    * How far the mouse has moved during this drag, in pixel units.
-   * (0, 0) is at this.xyStart_.
+   * (0, 0) is at this.startXY_.
    * @type {goog.math.Coordinate}
    * @private
    */
-  this.xyDelta_ = 0;
+  this.deltaXY_ = 0
 
   /**
    * The brick that the gesture started on, or null if it did not start on a
@@ -89,7 +88,7 @@ eYo.Gesture = function(e, creatorWorkspace) {
    * @type {eYo.Workspace}
    * @private
    */
-  this.creatorWorkspace_ = creatorWorkspace;
+  this.creatorWorkspace_ = workspace;
 
   /**
    * Whether the workspace is currently being dragged.
@@ -264,7 +263,23 @@ Object.defineProperties(eYo.Gesture.prototype, {
    */
   ui_driver: {
     get () {
-      return this.creatorWorkspace_.eyo.ui_driver
+      return this.creatorWorkspace_.ui_driver
+    }
+  },
+  /**
+   * General purpose ui_driver from the creator workspace.
+   */
+  creatorWorkspace: {
+    get () {
+      return this.creatorWorkspace_
+    }
+  },
+  /**
+   * General purpose ui_driver from the creator workspace.
+   */
+  workspace: {
+    get () {
+      return this.workspace_
     }
   }
 })
@@ -278,10 +293,9 @@ eYo.Gesture.prototype.dispose = function() {
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
   this.creatorWorkspace_.clearGesture()
-  this.ui_driver.unbindMouseEvents(self)
+  eYo.Dom.unbindMouseEvents(self)
   this.startBrick_ = this.targetBrick_ = null
   this.workspace_ = this.creatorWorkspace_ = this.flyout_ = null
-
   this.brickDragger_ = null
   this.workspaceDragger_ = null
 }
@@ -348,7 +362,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
       var delta = gestureScale > 0
       ? gestureScale * eYo.Gesture.ZOOM_IN_FACTOR 
       : gestureScale * eYo.Gesture.ZOOM_OUT_FACTOR
-      var workspace = this.startWorkspace_
+      var workspace = this.workspace_
       var position = workspace.xyEventInWorkspace(e)
       workspace.zoom(position.x, position.y, delta)
     }
@@ -364,7 +378,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
  * @package
  */
 eYo.Gesture.prototype.getTouchPoint_ = function(e) {
-  if (!this.startWorkspace_) {
+  if (!this.workspace_) {
     return null
   }
   return new goog.math.Coordinate(
@@ -380,10 +394,10 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
   this.event_ = e
-  var xyCurrent = new goog.math.Coordinate(e.clientX, e.clientY)
-  this.xyDelta_ = goog.math.Coordinate.difference(xyCurrent, this.xyStart_)
+  var currentXY = new goog.math.Coordinate(e.clientX, e.clientY)
+  this.deltaXY_ = goog.math.Coordinate.difference(currentXY, this.startXY_)
   if (!this.dragging) {
-    var delta = goog.math.Coordinate.magnitude(this.xyDelta_)
+    var delta = goog.math.Coordinate.magnitude(this.deltaXY_)
     var limit = this.flyout_
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
@@ -405,7 +419,7 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
   var workspace = this.flyout_
   ? this.flyout_.targetWorkspace_
   : this.workspace_
-  if ((this.targetBrick_ = workspace.brickDragger_.start(this))) {
+  if (workspace && (this.targetBrick_ = workspace.brickDragger_.start(this))) {
     this.startBrick_ = null
     this.brickDragger_ = workspace.brickDragger_
     this.workspace_ = workspace
@@ -561,7 +575,7 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
       'Tried to call gesture.handleWsStart, but the gesture had already been ' +
       'started.');
   this.started_ = true
-  this.startWorkspace_ || (this.startWorkspace_ = ws)
+  this.workspace_ = ws
   var b3k = eYo.Selected.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
   this.doStart(e)
@@ -575,15 +589,14 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
  * @package
  */
 eYo.Gesture.prototype.doStart = function(e) {
-  this.event_ = e
   if (eYo.Dom.isTargetInput(e)) {
     this.cancel()
     return
   }
-  this.workspace_.eyo.ui_driver.disconnectStop()
-  this.workspace_.updateScreenCalculationsIfScrolled()
-  this.workspace_.markFocused()
   this.event_ = e
+  this.ui_driver.disconnectStop()
+  this.workspace.updateScreenCalculationsIfScrolled()
+  this.workspace.markFocused()
 
   // Hide chaff also hides the flyout, so don't do it if the click is in a flyout.
   Blockly.Tooltip.block()
@@ -602,10 +615,10 @@ eYo.Gesture.prototype.doStart = function(e) {
     eYo.Do.longStart_(e, this)
   }
 
-  this.xyStart_ = new goog.math.Coordinate(e.clientX, e.clientY);
+  this.startXY_ = new goog.math.Coordinate(e.clientX, e.clientY)
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
-  this.ui_driver.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
+  eYo.Dom.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
 
   if (!this.isEnding_ && eYo.Dom.isTouchEvent(e)) {
     this.handleTouchStart(e)

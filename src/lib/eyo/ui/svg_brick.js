@@ -78,11 +78,11 @@ eYo.Svg.prototype.brickInit = function (brick) {
   }, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.workspace.options.readOnly) {
-    this.bindMouseEvents(brick.ui, g)
+    eYo.Dom.bindMouseEvents(brick.ui, g)
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
     // but some, not all?, are catched twice.
-    this.bindMouseEvents(brick.ui, svg.pathContour_)
+    eYo.Dom.bindMouseEvents(brick.ui, svg.pathContour_)
   }
   if (brick.isExpr) {
     goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -158,12 +158,8 @@ eYo.Svg.prototype.brickInit = function (brick) {
  * This must be called just when changing the driver in the renderer.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
-eYo.Svg.prototype.brickDispose = function (brick) {
+eYo.Svg.prototype.brickDispose = eYo.Dom.decorateDispose(function (brick) {
   var svg = brick.dom.svg
-  if (!svg) {
-    return
-  }
-  this.clearBoundEvents(brick)
   // goog.dom.removeNode(dom.svg.group_) only once the block_ design is removed
   goog.dom.removeNode(svg.group_)
   svg.group_ = undefined
@@ -203,8 +199,7 @@ eYo.Svg.prototype.brickDispose = function (brick) {
     svg.pathPlayContour_ = undefined
   }
   brick.dom.svg = undefined
-  this.basicDispose(brick)
-}
+})
 
 /**
  * Whether the given brick can draw.

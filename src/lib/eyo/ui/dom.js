@@ -192,14 +192,14 @@ eYo.Dom.insertAfter = function(node, before) {
  * @param {?Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  * @package
  */
-eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
+eYo.Dom.bindMouseEvents = (listener, element, opt) => {
   ;[
     'mousedown',
     'mousemove',
     'mouseup'
   ].forEach(k => {
     var f = listener['on_' + k + ((opt && opt.suffix) || '')]
-    if (f) {
+    if (goog.isFunction(f)) {
       var ans = eYo.Dom.bindEvent(element, k, listener, f, opt)
       if (opt && opt.willUnbind) {
         var ra = listener.bind_data_ || (listener.bind_data_ = [])
@@ -214,7 +214,7 @@ eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
  * @param {!Event} e A mouse down or touch start event.
  * @package
  */
-eYo.Dom.prototype.unbindMouseEvents = function(listener) {
+eYo.Dom.unbindMouseEvents = function(listener) {
   listener.bind_data_ && listener.bind_data_.forEach(data => eYo.Dom.unbindEvent(data))
 }
 

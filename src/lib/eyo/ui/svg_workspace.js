@@ -229,8 +229,8 @@ eYo.Svg.prototype.workspaceBind_wheel = function(workspace) {
 eYo.Svg.prototype.workspaceOn_wheel = function(e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
-  if (this.currentGesture_) {
-    this.currentGesture_.cancel();
+  if (this.gesture_) {
+    this.gesture_.cancel();
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
@@ -313,7 +313,7 @@ eYo.Svg.prototype.workspaceCanvasMoveTo = function (workspace, x, y) {
 eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
   var element = workspace.dom.svg.group_.parentNode.parentNode // div above the `svg` element
   var dragger = workspace.dragger_
-  dragger.correction_ = this.getTransformCorrection(element)
+  dragger.correction_ = eYo.Svg.getTransformCorrection(element)
   var surface = dragger.dragSurface_
   if (surface) {
     var svg = workspace.dom.svg

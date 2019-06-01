@@ -33,8 +33,8 @@ eYo.Driver = function(factory) {
 /**
  * Sever links.
  */
-eYo.Driver.brickDispose = function () {
-  this.factory_ = factory
+eYo.Driver.prototype.dispose = function () {
+  this.factory_ = null
 }
 
 /**
@@ -43,7 +43,7 @@ eYo.Driver.brickDispose = function () {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.brickGetBBox = function (node) {
+eYo.Driver.prototype.brickGetBBox = function (node) {
   return undefined
 }
 
@@ -53,7 +53,7 @@ eYo.Driver.brickGetBBox = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.brickHasSelect = function (node) {
+eYo.Driver.prototype.brickHasSelect = function (node) {
   return false
 }
 
@@ -63,7 +63,7 @@ eYo.Driver.brickHasSelect = function (node) {
  * @param {*} recorder
  * @private
  */
-eYo.Driver.brickWillRender = eYo.Do.nothing
+eYo.Driver.prototype.brickWillRender = eYo.Do.nothing
 
 /**
  * After node rendering.
@@ -71,7 +71,7 @@ eYo.Driver.brickWillRender = eYo.Do.nothing
  * @param {*} recorder
  * @private
  */
-eYo.Driver.brickDidRender = eYo.Do.nothing
+eYo.Driver.prototype.brickDidRender = eYo.Do.nothing
 
 /**
  * Draw the path of the brick.
@@ -79,7 +79,7 @@ eYo.Driver.brickDidRender = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDraw = function (node, recorder) {
+eYo.Driver.prototype.brickDraw = function (node, recorder) {
 }
 
 /**
@@ -87,7 +87,7 @@ eYo.Driver.brickDraw = function (node, recorder) {
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickUpdateShape = eYo.Do.nothing
+eYo.Driver.prototype.brickUpdateShape = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
@@ -95,7 +95,7 @@ eYo.Driver.brickUpdateShape = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDrawModelBegin = eYo.Do.nothing
+eYo.Driver.prototype.brickDrawModelBegin = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
@@ -103,7 +103,7 @@ eYo.Driver.brickDrawModelBegin = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDrawModelEnd = eYo.Do.nothing
+eYo.Driver.prototype.brickDrawModelEnd = eYo.Do.nothing
 
 /**
  * Get the displayed status of the given node.
@@ -147,13 +147,13 @@ eYo.Driver.prototype.fieldMoveTo = eYo.Do.nothing
  * The field text will change.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Driver.fieldTextRemove = eYo.Do.nothing
+eYo.Driver.prototype.fieldTextRemove = eYo.Do.nothing
 
 /**
  * Display the field text.
  * @param {!Object} field  the node the driver acts on
  */
-eYo.Driver.fieldTextCreate = eYo.Do.nothing
+eYo.Driver.prototype.fieldTextCreate = eYo.Do.nothing
 
 /**
  * Set the visual effects of the field.
@@ -204,41 +204,41 @@ eYo.Driver.prototype.slotDisplayedSet = eYo.Do.nothing
  * The default implementation does nothing.
  * @param {!eYo.Brick} newParent to be connected.
  */
-eYo.Driver.brickParentWillChange = eYo.Do.nothing
+eYo.Driver.prototype.brickParentWillChange = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!eYo.Brick} oldParent replaced.
  */
-eYo.Driver.brickParentDidChange = eYo.Do.nothing
+eYo.Driver.prototype.brickParentDidChange = eYo.Do.nothing
 
 /**
  * Prepare the given slot.
  * The default implementation does nothing.
  * @param {!eYo.Slot} slot  slot to be prepared.
  */
-eYo.Driver.slotInit = eYo.Do.nothing
+eYo.Driver.prototype.slotInit = eYo.Do.nothing
 
 /**
  * Dispose of the given slot's rendering resources.
  * Default implementation does nothing.
  * @param {eYo.Slot} slot
  */
-eYo.Driver.slotDispose = eYo.Do.nothing
+eYo.Driver.prototype.slotDispose = eYo.Do.nothing
 
 /**
  * Prepare the given label field.
  * The default implementation does nothing.
  * @param {!eYo.Field} field  field to be prepared.
  */
-eYo.Driver.fieldInit = eYo.Do.nothing
+eYo.Driver.prototype.fieldInit = eYo.Do.nothing
 
 /**
  * Dispose of the given field's rendering resources.
  * Default implementation does nothing.
  * @param {!Object} field
  */
-eYo.Driver.fieldDispose = eYo.Do.nothing
+eYo.Driver.prototype.fieldDispose = eYo.Do.nothing
 
 /**
  * Callback at widget disposal.
@@ -255,7 +255,7 @@ eYo.Driver.prototype.fieldWidgetDisposeCallback = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Driver.fieldMakeReserved = eYo.Do.nothing
+eYo.Driver.prototype.fieldMakeReserved = eYo.Do.nothing
 
 /**
  * Make the given field an error.
@@ -263,7 +263,7 @@ eYo.Driver.fieldMakeReserved = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Driver.fieldMakeError = eYo.Do.nothing
+eYo.Driver.prototype.fieldMakeError = eYo.Do.nothing
 
 /**
  * Make the given field a placeholder.
@@ -271,7 +271,7 @@ eYo.Driver.fieldMakeError = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Driver.fieldMakePlaceholder = eYo.Do.nothing
+eYo.Driver.prototype.fieldMakePlaceholder = eYo.Do.nothing
 
 /**
  * Make the given field a comment.
@@ -279,57 +279,57 @@ eYo.Driver.fieldMakePlaceholder = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Driver.fieldMakeComment = eYo.Do.nothing
+eYo.Driver.prototype.fieldMakeComment = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickUpdateDisabled = eYo.Do.nothing
+eYo.Driver.prototype.brickUpdateDisabled = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.blockConnectEffect = eYo.Do.nothing
+eYo.Driver.prototype.blockConnectEffect = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  * @param {!Object} menu
  */
-eYo.Driver.brickMenuShow = eYo.Do.nothing
+eYo.Driver.prototype.brickMenuShow = eYo.Do.nothing
 
 /**
  * Hilight the given connection.
  * The default implementation does nothing.
  * @param {*} c_eyo
  */
-eYo.Driver.magnetHilight = eYo.Do.nothing
+eYo.Driver.prototype.magnetHilight = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickMakeWrapped = eYo.Do.nothing
+eYo.Driver.prototype.brickMakeWrapped = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickMakeUnwrapped = eYo.Do.nothing
+eYo.Driver.prototype.brickMakeUnwrapped = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickSendToFront = eYo.Do.nothing
+eYo.Driver.prototype.brickSendToFront = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickSendToBack = eYo.Do.nothing
+eYo.Driver.prototype.brickSendToBack = eYo.Do.nothing
 
 /**
  * Set the offset of the receiver's node.
@@ -339,21 +339,21 @@ eYo.Driver.brickSendToBack = eYo.Do.nothing
  * @param {*} dy
  * @return {boolean}
  */
-eYo.Driver.brickSetOffset = eYo.Do.nothing
+eYo.Driver.prototype.brickSetOffset = eYo.Do.nothing
 
 /**
  * Add the hilight path_.
  * Default implementation does nothing
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickAddBrickHilight_ = eYo.Do.nothing
+eYo.Driver.prototype.brickAddBrickHilight_ = eYo.Do.nothing
 
 /**
  * Remove the hilight path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveBrickHilight_ = eYo.Do.nothing
+eYo.Driver.prototype.brickRemoveBrickHilight_ = eYo.Do.nothing
 
 /**
  * Add the select path.
@@ -367,46 +367,46 @@ eYo.Driver.prototype.brickAddSelect_ = eYo.Do.nothing
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveSelect_ = eYo.Do.nothing
+eYo.Driver.prototype.brickRemoveSelect_ = eYo.Do.nothing
 
 /**
  * Add the hilight path_.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickAddBlockConnection_ = eYo.Do.nothing
+eYo.Driver.prototype.brickAddBlockConnection_ = eYo.Do.nothing
 
 /**
  * Remove the select path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveBlockConnection_ = eYo.Do.nothing
+eYo.Driver.prototype.brickRemoveBlockConnection_ = eYo.Do.nothing
 
 /**
  * The svg group has an `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickAddStatusTop_ = eYo.Do.nothing
+eYo.Driver.prototype.brickAddStatusTop_ = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveStatusTop_ = eYo.Do.nothing
+eYo.Driver.prototype.brickRemoveStatusTop_ = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickAddStatusSelect_ = eYo.Do.nothing
+eYo.Driver.prototype.brickAddStatusSelect_ = eYo.Do.nothing
 
 /**
  * Reverse `nodeAddStatusSelect_`.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveStatusSelect_ = eYo.Do.nothing
+eYo.Driver.prototype.brickRemoveStatusSelect_ = eYo.Do.nothing
 
 /**
  * Set the displayed status of the given node.
@@ -414,17 +414,17 @@ eYo.Driver.brickRemoveStatusSelect_ = eYo.Do.nothing
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Driver.brickDisplayedSet = eYo.Do.nothing
+eYo.Driver.prototype.brickDisplayedSet = eYo.Do.nothing
 
 /**
  * Make the given field disabled eventually.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickUpdateDisabled = eYo.Do.nothing
+eYo.Driver.prototype.brickUpdateDisabled = eYo.Do.nothing
 
 /**
  * Set the display mode for bricks.
  * @param {!String} mode  The display mode for bocks.
  */
-eYo.Driver.setBlockDisplayMode = eYo.Do.nothing
+eYo.Driver.prototype.setBlockDisplayMode = eYo.Do.nothing
 

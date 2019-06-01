@@ -39,7 +39,7 @@ eYo.BrickDragger = function(destination) {
 Object.defineProperties(eYo.BrickDragger.prototype, {
   xyDelta_: {
     get () {
-      var delta = this.gesture_.xyDelta_
+      var delta = this.gesture_.deltaXY_
       if (delta && this.transformCorrection_) {
         delta = this.transformCorrection_(delta)
       }

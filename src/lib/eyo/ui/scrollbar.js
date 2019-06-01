@@ -811,3 +811,13 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   // The converse is not true.
   this.resizeContentVertical(hostMetrics)
 }
+
+/**
+ * Stop binding to mouseup and mousemove events.  Call this to
+ * wrap up lose ends associated with the scrollbar.
+ * @private
+ */
+eYo.Scrollbar.prototype.cleanUp_ = function() {
+  this.ui_driver.scrollbarCleanUp_(this)
+}
+

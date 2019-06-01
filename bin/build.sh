@@ -347,7 +347,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/brick/expr.js" \
 --js "src/lib/eyo/brick/final.js" \
 --js "src/lib/eyo/ui/brick_ui.js" \
---js "src/lib/eyo/blockly/connection_db.js" \
 --js "src/lib/eyo/brick_util/consolidator.js" \
 --js "src/lib/eyo/brick_util/python_exporter.js" \
 --js "src/lib/eyo/brick_util/selected.js" \

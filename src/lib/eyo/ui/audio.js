@@ -120,9 +120,12 @@ eYo.Audio.prototype.load = function(pathToMedia, name) {
  * @package
  */
 eYo.Audio.prototype.preload = function() {
+  if (eYo.Test && !eYo.Test.audio) {
+    return
+  }
   Object.values(this.sounds_).some(sound => {
     sound.volume = 0.01
-    sound.play()
+    sound.play().catch(()=>{})
     sound.pause()
     // iOS can only process one sound at a time.  Trying to load more than one
     // corrupts the earlier ones.  Just load one and leave the others uncached.
