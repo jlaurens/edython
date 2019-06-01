@@ -26,6 +26,9 @@ goog.forwardDeclare('eYo.Selected')
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
 eYo.Svg.prototype.brickInit = function (brick) {
+  if (brick.dom) {
+    return
+  }
   var dom = this.basicInit(brick)
   var svg = dom.svg
   // groups:

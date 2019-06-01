@@ -19,10 +19,13 @@ goog.require('eYo.Svg')
  * Initializes the brickDragger SVG ressources.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerInit = function(brickDragger) {
-  var dom = this.basicInit(brickDragger)
+eYo.Svg.prototype.brickDraggerInit = function(dragger) {
+  if (dragger.dom) {
+    return
+  }
+  var dom = this.basicInit(dragger)
   var svg = dom.svg
-  svg.dragSurface = brickDragger.factory.dom.svg.brickDragSurface
+  svg.dragSurface = dragger.factory.dom.svg.brickDragSurface
 }
 
 /**

@@ -659,7 +659,7 @@ eYo.Dom.prototype.basicDispose = function(object) {
  * @return {!Element} The factory's dom repository.
  */
 eYo.Dom.prototype.factoryInit = function(factory) {
-  if (dragger.dom) {
+  if (factory.dom) {
     return
   }
   var dom = this.basicInit(factory)
