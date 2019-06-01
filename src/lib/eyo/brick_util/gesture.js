@@ -274,7 +274,7 @@ Object.defineProperties(eYo.Gesture.prototype, {
  * @package
  */
 eYo.Gesture.prototype.dispose = function() {
-  this.ui_driver.clearTouchIdentifier()
+  eYo.Dom.clearTouchIdentifier()
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
   this.creatorWorkspace_.clearGesture()
@@ -296,7 +296,7 @@ eYo.Gesture.prototype.on_mousedown = function(e) {
     // A drag has already started, so this can no longer be a pinch-zoom.
     return
   }
-  if (this.ui_driver.isTouchEvent(e)) {
+  if (eYo.Dom.isTouchEvent(e)) {
     this.handleTouchStart(e)
     if (this.multiTouch) {
       eYo.Dom.longStop_()
@@ -310,7 +310,7 @@ eYo.Gesture.prototype.on_mousedown = function(e) {
  * @package
  */
 eYo.Gesture.prototype.handleTouchStart = function(e) {
-  var pointerId = this.ui_driver.touchIdentifierFromEvent(e)
+  var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
   // store the pointerId in the current list of pointers
   this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
   var pointers = Object.keys(this.cachedPoints_)
@@ -330,7 +330,7 @@ eYo.Gesture.prototype.handleTouchStart = function(e) {
  * @package
  */
 eYo.Gesture.prototype.handleTouchMove = function(e) {
-  var pointerId = this.ui_driver.touchIdentifierFromEvent(e)
+  var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
   // Update the cache
   this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
 
@@ -445,18 +445,18 @@ eYo.Gesture.prototype.on_mousemove = (() => {
     } else if (this.isDraggingBrick_) {
       this.brickDragger_.drag() // sometimes it failed when in Blockly
     }
-    this.ui_driver.gobbleEvent(e) 
+    eYo.Dom.gobbleEvent(e) 
   }
   return function(e) {
     if (this.dragging) {
       // We are in the middle of a drag, only handle the relevant events
-      if (this.ui_driver.shouldHandleEvent(e)) {
+      if (eYo.Dom.shouldHandleEvent(e)) {
         move.call(this, e);
       }
       return;
     }
     if (this.multiTouch) {
-      if (this.ui_driver.isTouchEvent(e)) {
+      if (eYo.Dom.isTouchEvent(e)) {
         this.handleTouchMove(e)
       }
       eYo.Dom.longStop_()
@@ -472,8 +472,8 @@ eYo.Gesture.prototype.on_mousemove = (() => {
  * @package
  */
 eYo.Gesture.prototype.on_mouseup = function(e) {
-  if (this.ui_driver.isTouchEvent(e) && !this.dragging) {
-    var pointerId = this.ui_driver.touchIdentifierFromEvent(e)
+  if (eYo.Dom.isTouchEvent(e) && !this.dragging) {
+    var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
     if (this.cachedPoints_[pointerId]) {
       delete this.cachedPoints_[pointerId]
     }
@@ -483,7 +483,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     }
   }
   if (!this.multiTouch || this.dragging) {
-    if (!this.ui_driver.shouldHandleEvent(e)) {
+    if (!eYo.Dom.shouldHandleEvent(e)) {
       return
     }
     this.updateFromEvent_(e)
@@ -509,7 +509,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
       this.doWorkspaceClick_()
     }
   }
-  this.ui_driver.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
   this.dispose()
 }
 
@@ -607,10 +607,10 @@ eYo.Gesture.prototype.doStart = function(e) {
 
   this.ui_driver.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
 
-  if (!this.isEnding_ && this.ui_driver.isTouchEvent(e)) {
+  if (!this.isEnding_ && eYo.Dom.isTouchEvent(e)) {
     this.handleTouchStart(e)
   }
-  this.ui_driver.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**

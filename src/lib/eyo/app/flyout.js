@@ -522,7 +522,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
     pos = Math.max(pos, 0)
     this.scrollbar_.set(pos)
   }
-  this.ui_driver.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**

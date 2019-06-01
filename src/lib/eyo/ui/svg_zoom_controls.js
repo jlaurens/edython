@@ -141,34 +141,34 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   // Attach event listeners.
   var bound = dom.bound
-  bound.zoomreset = eYo.Dom.bindEvent(
+  bound.zoomreset = this.bindEvent(
     zoomresetSvg,
     'mousedown',
     e => {
       workspace.markFocused()
       workspace.scale = workspace.options.zoom.startScale
       workspace.scrollCenter()
-      workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
+      eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomin = eYo.Dom.bindEvent(
+  bound.zoomin = this.bindEvent(
     zoominSvg,
     'mousedown',
     e => {
       workspace.markFocused()
       workspace.zoomCenter(1)
-      workspace.ui_driver.clearTouchIdentifier();  // Don't block future drags.
+      eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomout = eYo.Dom.bindEvent(
+  bound.zoomout = this.bindEvent(
     zoomoutSvg,
     'mousedown',
     e => {
       workspace.markFocused();
-      workspace.zoomCenter(-1);
-      workspace.ui_driver.clearTouchIdentifier()  // Don't block future drags.
+      workspace.zoomCenter(-1)
+      eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
   )

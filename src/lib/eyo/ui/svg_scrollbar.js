@@ -83,12 +83,12 @@ eYo.Svg.prototype.scrollbarInit = function(scrollbar, opt_class) {
     scrollbar.workspace_.dom.svg.root_
   )
   var bound = dom.bound
-  bound.bar_mousedown = eYo.Dom.bindEvent(
+  bound.bar_mousedown = this.bindEvent(
     background,
     'mousedown',
     this.scrollbarOnBar_mousedown.bind(scrollbar)
   )
-  bound.handle_mousedown = eYo.Dom.bindEvent(
+  bound.handle_mousedown = this.bindEvent(
     handle,
     'mousedown',
     this.scrollbarOnHandle_mousedown.bind(scrollbar)
@@ -225,13 +225,13 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
   // Record the current mouse position.
   this.startDragMouse_ = this.horizontal_ ? e.clientX : e.clientY
   var bound = this.dom.bound
-  bound.mouseup = eYo.Dom.bindEvent(
+  bound.mouseup = this.bindEvent(
     document,
     'mouseup',
     this,
     this.onMouseUpHandle_
   )
-  bound.mousemove = eYo.Dom.bindEvent(
+  bound.mousemove = this.bindEvent(
     document,
     'mousemove',
     this,
@@ -261,7 +261,7 @@ eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
 eYo.Scrollbar.prototype.onMouseUpHandle_ = function() {
   // Tell the workspace to clean up now that the workspace is done moving.
   this.workspace_.resetDragSurface()
-  this.workspace_.ui_driver.clearTouchIdentifier()
+  eYo.Dom.clearTouchIdentifier()
   this.cleanUp_()
 }
 
@@ -292,7 +292,7 @@ eYo.Svg.prototype.scrollbarCleanUp_ = function(scrollbar) {
  */
 eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
   this.workspace_.markFocused()
-  this.workspace_.ui_driver.clearTouchIdentifier()  // This is really a click.
+  eYo.Dom.clearTouchIdentifier()  // This is really a click.
   this.cleanUp_()
   if (eYo.Dom.isRightButton(e)) {
     // Right-click.

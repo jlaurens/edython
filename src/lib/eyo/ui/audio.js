@@ -42,11 +42,12 @@ eYo.Audio = function(pathToMedia) {
   // Android ignores any sound not loaded as a result of a user action.
   // Bind temporary hooks that preload the sounds.
   var soundBinds
+  var self = this
   var unbindSounds = () => {
     while (soundBinds.length) {
       eYo.Dom.unbindEvent(soundBinds.pop())
     }
-    this.preload()
+    self.preload()
   }
   // These are bound on mouse/touch events with Blockly.bindEventWithChecks_, so
   // they restrict the touch identifier that will be recognized.  But this is

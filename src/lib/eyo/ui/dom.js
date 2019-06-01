@@ -95,7 +95,7 @@ eYo.Dom.setCssTransform = function(node, transform) {
  *     should prevent the default handler.  False by default.
  * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
+eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
   if (goog.isFunction(thisObject)) {
     opt = func
     func = thisObject
@@ -148,6 +148,10 @@ eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func,
     }
   }
   return bindData
+}
+
+eYo.Dom.bindEvent = (node, name, thisObject, func, opt) => {
+  return eYo.App.factory.ui_driver.bindEvent(node, name, thisObject, func, opt)
 }
 
 /**
@@ -262,8 +266,8 @@ eYo.Dom.clearBoundEvents = (bfw) => {
  * @return {boolean} True if this event should be passed through to the
  *     registered handler; false if it should be blocked.
  */
-eYo.Dom.prototype.shouldHandleEvent = function(e) {
-  return !this.isMouseOrTouchEvent(e) || this.checkTouchIdentifier(e)
+eYo.Dom.shouldHandleEvent = e => {
+  return !eYo.Dom.isMouseOrTouchEvent(e) || eYo.Dom.checkTouchIdentifier(e)
 }
 
 /**
@@ -271,7 +275,7 @@ eYo.Dom.prototype.shouldHandleEvent = function(e) {
  * @param {!Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
-eYo.Dom.prototype.isTouchEvent = function(e) {
+eYo.Dom.isTouchEvent = e => {
   return /^touch|^pointer/i.test(e.type)
 }
 
@@ -280,7 +284,7 @@ eYo.Dom.prototype.isTouchEvent = function(e) {
  * @param {!Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
-eYo.Dom.prototype.isMouseOrTouchEvent = function(e) {
+eYo.Dom.isMouseOrTouchEvent = e => {
   return /^mouse|^touch|^pointer/i.test(e.type)
 }
 
@@ -296,37 +300,38 @@ eYo.Dom.prototype.isMouseOrTouchEvent = function(e) {
  * @return {boolean} Whether the identifier on the event matches the current
  *     saved identifier.
  */
-eYo.Dom.prototype.checkTouchIdentifier = function(e) {
-  var identifier = this.touchIdentifierFromEvent(e)
-
-  // if (Blockly.touchIdentifier_ )is insufficient because Android touch
-  // identifiers may be zero.
-  if (this.touchIdentifier_ != undefined && this.touchIdentifier_ != null) {
-    // We're already tracking some touch/mouse event.  Is this from the same
-    // source?
-    return this.touchIdentifier_ == identifier
+eYo.Dom.checkTouchIdentifier = (() => {
+  var touchIdentifier = null
+  /**
+   * Clear the touch identifier that tracks which touch stream to pay attention
+   * to.  This ends the current drag/gesture and allows other pointers to be
+   * captured.
+   */
+  eYo.Dom.clearTouchIdentifier = function() {
+    touchIdentifier = null
   }
-  if (e.type == 'mousedown' || e.type == 'touchstart' || e.type == 'pointerdown') {
-    // No identifier set yet, and this is the start of a drag.  Set it and
-    // return.
-    this.touchIdentifier_ = identifier;
-    return true;
+  return e => {
+    var identifier = eYo.Dom.touchIdentifierFromEvent(e)
+
+    // if (Blockly.touchIdentifier_ )is insufficient because Android touch
+    // identifiers may be zero.
+    if (touchIdentifier != undefined && touchIdentifier != null) {
+      // We're already tracking some touch/mouse event.  Is this from the same
+      // source?
+      return touchIdentifier == identifier
+    }
+    if (e.type == 'mousedown' || e.type == 'touchstart' || e.type == 'pointerdown') {
+      // No identifier set yet, and this is the start of a drag.  Set it and
+      // return.
+      touchIdentifier = identifier
+      return true
+    }
+    // There was no identifier yet, but this wasn't a start event so we're going
+    // to ignore it.  This probably means that another drag finished while this
+    // pointer was down.
+    return false
   }
-  // There was no identifier yet, but this wasn't a start event so we're going
-  // to ignore it.  This probably means that another drag finished while this
-  // pointer was down.
-  return false
-}
-
-
-/**
- * Clear the touch identifier that tracks which touch stream to pay attention
- * to.  This ends the current drag/gesture and allows other pointers to be
- * captured.
- */
-eYo.Dom.prototype.clearTouchIdentifier = function() {
-  this.touchIdentifier_ = null;
-}
+})()
 
 /**
  * Get the touch identifier from the given event.  If it was a mouse event, the
@@ -335,7 +340,7 @@ eYo.Dom.prototype.clearTouchIdentifier = function() {
  * @return {string} The touch identifier from the first changed touch, if
  *     defined.  Otherwise 'mouse'.
  */
-eYo.Dom.prototype.touchIdentifierFromEvent = function(e) {
+eYo.Dom.touchIdentifierFromEvent = e => {
   var x
   return e.pointerId != undefined
   ? e.pointerId
@@ -345,20 +350,10 @@ eYo.Dom.prototype.touchIdentifierFromEvent = function(e) {
 }
 
 /**
- * Dispose of the given slot's rendering resources.
- * @param {eYo.Flyout} flyout
- */
-eYo.Dom.prototype.flyoutDispose = function (flyout) {
-  if (flyout.dom && flyout.dom.toolbarDiv_) {
-    goog.dom.removeNode(flyout.dom.toolbarDiv_)
-  }
-}
-
-/**
  * Prevents default behavior and stop propagation.
  * @param {Event} e
  */
-eYo.Dom.gobbleEvent = eYo.Dom.prototype.gobbleEvent = function (e) {
+eYo.Dom.gobbleEvent = e => {
   e.preventDefault()
   e.stopPropagation()
 }
@@ -368,7 +363,7 @@ eYo.Dom.gobbleEvent = eYo.Dom.prototype.gobbleEvent = function (e) {
  * @param {!Event} e An event.
  * @return {boolean} True if text input.
  */
-eYo.Dom.isTargetInput = function(e) {
+eYo.Dom.isTargetInput = e => {
   return e.target.type == 'textarea' || e.target.type == 'text' ||
          e.target.type == 'number' || e.target.type == 'email' ||
          e.target.type == 'password' || e.target.type == 'search' ||
@@ -504,26 +499,26 @@ eYo.Dom.bindDocumentEvents = (() => {
   var already
   return () => {
     if (!already) {
-      eYo.Dom.bindEvent(
+      this.bindEvent(
         document,
         'keydown',
         eYo.Dom.on_keydown
       )
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      eYo.Dom.bindEvent(
+      this.bindEvent(
         document,
         'touchend',
         eYo.Dom.longStop_
       )
-      eYo.Dom.bindEvent(
+      this.bindEvent(
         document,
         'touchcancel',
         eYo.Dom.longStop_
       )
       // Some iPad versions don't fire resize after portrait to landscape change.
       if (goog.userAgent.IPAD) {
-        eYo.Dom.bindEvent(
+        this.bindEvent(
           window,
           'orientationchange',
           e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple workspaces.
@@ -654,6 +649,17 @@ eYo.Dom.prototype.basicDispose = function(object) {
 }
 
 /**
+ * Dispose of the given slot's rendering resources.
+ * @param {eYo.Flyout} flyout
+ */
+eYo.Dom.prototype.flyoutDispose = function (flyout) {
+  if (flyout.dom && flyout.dom.toolbarDiv_) {
+    goog.dom.removeNode(flyout.dom.toolbarDiv_)
+  }
+  this.basicDispose(flyout)
+}
+
+/**
  * Initialize the factory SVG ressources.
  * @param {!eYo.Factory} factory
  * @return {!Element} The factory's dom repository.
@@ -674,7 +680,7 @@ eYo.Dom.prototype.factoryInit = function(factory) {
     throw 'Error: container is not in current document.'
   }
   dom.div_ || (dom.div_= container)
-  eYo.Dom.bindEvent(
+  this.bindEvent(
     container,
     'contextmenu',
     e => eYo.Dom.isTargetInput(e) || e.preventDefault()
