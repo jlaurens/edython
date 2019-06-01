@@ -48,6 +48,7 @@ eYo.ScrollbarPair = function(workspace) {
     'blocklyMainWorkspaceScrollbar'
   )
   this.disposeUI = eYo.Do.nothing
+  workspace.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.ScrollbarPair.prototype, {
@@ -87,7 +88,7 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
  */
 eYo.ScrollbarPair.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
-  this.ui_driver.ScrollbarPairInit(this)
+  this.ui_driver.scrollbarPairInit(this)
   delete this.disposeUI
 }
 
@@ -136,55 +137,45 @@ eYo.ScrollbarPair.prototype.resize = function() {
     // Host element is likely not visible.
     return;
   }
-
+  var oldMetrics = this.oldHostMetrics_
   // Only change the scrollbars if there has been a change in metrics.
-  var resizeH = false;
-  var resizeV = false;
-  if (!this.oldHostMetrics_ ||
-      this.oldHostMetrics_.view.width != hostMetrics.view.width ||
-      this.oldHostMetrics_.view.height != hostMetrics.view.height ||
-      this.oldHostMetrics_.absolute.top != hostMetrics.absolute.top ||
-      this.oldHostMetrics_.absolute.left != hostMetrics.absolute.left) {
+  var resizeH = false
+  var resizeV = false
+  if (!oldMetrics ||
+    oldMetrics.view.width != hostMetrics.view.width ||
+    oldMetrics.view.height != hostMetrics.view.height ||
+    oldMetrics.absolute.top != hostMetrics.absolute.top ||
+    oldMetrics.absolute.left != hostMetrics.absolute.left) {
     // The window has been resized or repositioned.
     resizeH = true;
     resizeV = true;
   } else {
     // Has the content been resized or moved?
-    if (!this.oldHostMetrics_ ||
-        this.oldHostMetrics_.content.width != hostMetrics.content.width ||
-        this.oldHostMetrics_.view.left != hostMetrics.view.left ||
-        this.oldHostMetrics_.content.left != hostMetrics.content.left) {
-      resizeH = true;
+    if (!oldMetrics ||
+      oldMetrics.content.width != hostMetrics.content.width ||
+      oldMetrics.view.left != hostMetrics.view.left ||
+      oldMetrics.content.left != hostMetrics.content.left) {
+      resizeH = true
     }
-    if (!this.oldHostMetrics_ ||
-        this.oldHostMetrics_.content.height != hostMetrics.content.height ||
-        this.oldHostMetrics_.view.top != hostMetrics.view.top ||
-        this.oldHostMetrics_.content.top != hostMetrics.content.top) {
-      resizeV = true;
+    if (!oldMetrics ||
+      oldMetrics.content.height != hostMetrics.content.height ||
+      oldMetrics.view.top != hostMetrics.view.top ||
+      oldMetrics.content.top != hostMetrics.content.top) {
+      resizeV = true
     }
   }
   if (resizeH) {
-    this.hScroll.resize(hostMetrics);
+    this.hScroll.resize(hostMetrics)
   }
   if (resizeV) {
-    this.vScroll.resize(hostMetrics);
+    this.vScroll.resize(hostMetrics)
   }
-
   // Reposition the corner square.
-  if (!this.oldHostMetrics_ ||
-      this.oldHostMetrics_.view.width != hostMetrics.view.width ||
-      this.oldHostMetrics_.absolute.left != hostMetrics.absolute.left) {
-    this.corner_.setAttribute('x', this.vScroll.position.x);
-  }
-  if (!this.oldHostMetrics_ ||
-      this.oldHostMetrics_.view.height != hostMetrics.view.height ||
-      this.oldHostMetrics_.absolute.top != hostMetrics.absolute.top) {
-    this.corner_.setAttribute('y', this.hScroll.position.y);
-  }
+  this.ui_driver.scrollbarPairPlaceCorner(this, hostMetrics)
 
   // Cache the current metrics to potentially short-cut the next resize event.
-  this.oldHostMetrics_ = hostMetrics;
-};
+  this.oldHostMetrics_ = hostMetrics
+}
 
 /**
  * Set the handles of both scrollbars to be at a certain position in CSS pixels
@@ -192,43 +183,41 @@ eYo.ScrollbarPair.prototype.resize = function() {
  * @param {number} x Horizontal scroll value.
  * @param {number} y Vertical scroll value.
  */
-eYo.ScrollbarPair.prototype.set = function(x, y) {
-  // This function is equivalent to:
-  //   this.hScroll.set(x);
-  //   this.vScroll.set(y);
-  // However, that calls setMetrics twice which causes a chain of
-  // getAttribute->setAttribute->getAttribute resulting in an extra layout pass.
-  // Combining them speeds up rendering.
-  var xyRatio = {};
-
-  var hHandlePosition = x * this.hScroll.ratio_;
-  var vHandlePosition = y * this.vScroll.ratio_;
-
-  var hBarLength = this.hScroll.scrollViewSize_;
-  var vBarLength = this.vScroll.scrollViewSize_;
-
-  xyRatio.x = this.getRatio_(hHandlePosition, hBarLength);
-  xyRatio.y = this.getRatio_(vHandlePosition, vBarLength);
-  this.workspace_.setMetrics(xyRatio);
-
-  this.hScroll.setHandlePosition(hHandlePosition);
-  this.vScroll.setHandlePosition(vHandlePosition);
-};
-
-/**
- * Helper to calculate the ratio of handle position to scrollbar view size.
- * @param {number} handlePosition The value of the handle.
- * @param {number} viewSize The total size of the scrollbar's view.
- * @return {number} Ratio.
- * @private
- */
-eYo.ScrollbarPair.prototype.getRatio_ = function(handlePosition, viewSize) {
-  var ratio = handlePosition / viewSize;
-  if (isNaN(ratio)) {
-    return 0;
+eYo.ScrollbarPair.prototype.set = (() => {
+  /*
+   * Helper to calculate the ratio of handle position to scrollbar view size.
+   * @param {number} handlePosition The value of the handle.
+   * @param {number} viewSize The total size of the scrollbar's view.
+   * @return {number} Ratio.
+   * @private
+   */
+  var getRatio = function(handlePosition, viewSize) {
+    var ratio = handlePosition / viewSize
+    return isNaN(ratio) ? 0 : ratio
   }
-  return ratio;
-}
+  return function(x, y) {
+    // This function is equivalent to:
+    //   this.hScroll.set(x);
+    //   this.vScroll.set(y);
+    // However, that calls setMetrics twice which causes a chain of
+    // getAttribute->setAttribute->getAttribute resulting in an extra layout pass.
+    // Combining them speeds up rendering.
+    var xyRatio = {};
+
+    var hHandlePosition = x * this.hScroll.ratio_
+    var vHandlePosition = y * this.vScroll.ratio_
+
+    var hLength = this.hScroll.viewLength_
+    var vLength = this.vScroll.viewLength_
+
+    xyRatio.x = getRatio(hHandlePosition, hLength)
+    xyRatio.y = getRatio(vHandlePosition, vLength)
+    this.workspace_.setMetrics(xyRatio)
+
+    this.hScroll.handlePosition = hHandlePosition
+    this.vScroll.handlePosition = vHandlePosition
+  }
+})()
 
 // --------------------------------------------------------------------
 
@@ -251,7 +240,7 @@ eYo.Scrollbar = function(workspace, horizontal, opt_pair, opt_class) {
   this.x_ = this.y_ = this.dx_ = this.dy_ = 0
   
   this.disposeUI = eYo.Do.nothing
-  this.makeUI(opt_class)  
+  workspace.hasUI && this.makeUI(opt_class)
 }
 
 Object.defineProperties(eYo.Scrollbar, {
@@ -337,6 +326,15 @@ eYo.Scrollbar.metricsAreEquivalent_ = function(first, second) {
 }
 
 Object.defineProperties(eYo.Scrollbar.prototype, {
+/**
+   * @type{eYo.Driver} The ui driver...
+   * @readonly
+   */
+  ui_driver: {
+    get () {
+      return this.workspace_.ui_driver
+    }
+  },
   hasUI: {
     get () {
       return this.makeUI === eYo.Do.nothing
@@ -384,7 +382,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * @type {number}
    * @private
    */
-  scrollViewSize_: {
+  viewLength_: {
     value: 0,
     writable: true
   },
@@ -406,6 +404,26 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
   handlePosition_: {
     value: 0,
     writable: true
+  },
+  /**
+   * The offset of the start of the handle from the scrollbar position, in CSS
+   * pixels.
+   * @type {number}
+   * @private
+   */
+  handlePosition: {
+    get () {
+      return this.handlePosition_
+    },
+    /**
+     * Set the offset of the scrollbar's handle from the scrollbar's position, and
+     * change the SVG attribute accordingly.
+     * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
+     */
+    set (newValue) {
+      this.handlePosition_ = newValue
+      this.ui_driver.scrollbarUpdateHandle(this)
+    }
   },
   /**
    * Whether the scrollbar handle is visible.
@@ -470,23 +488,13 @@ eYo.Scrollbar.prototype.setHandleLength_ = function(newLength) {
 }
 
 /**
- * Set the offset of the scrollbar's handle from the scrollbar's position, and
- * change the SVG attribute accordingly.
- * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
- */
-eYo.Scrollbar.prototype.setHandlePosition = function(newPosition) {
-  this.handlePosition_ = newPosition
-  this.ui_driver.scrollbarUpdateHandle(this)
-}
-
-/**
  * Set the size of the scrollbar's background and change the SVG attribute
  * accordingly.
  * @param {number} newSize The new scrollbar background length in CSS pixels.
  * @private
  */
 eYo.Scrollbar.prototype.setScrollViewSize_ = function(newSize) {
-  this.scrollViewSize_ = newSize
+  this.viewLength_ = newSize
   this.ui_driver.scrollbarUpdateView(this)
 }
 
@@ -605,10 +613,10 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
     // Only show the scrollbar if needed.
     // Ideally this would also apply to scrollbar pairs, but that's a bigger
     // headache (due to interactions with the corner square).
-    this.visible = this.scrollViewSize_ < hostMetrics.content.width
+    this.visible = this.viewLength_ < hostMetrics.content.width
   }
 
-  this.ratio_ = this.scrollViewSize_ / hostMetrics.content.width;
+  this.ratio_ = this.viewLength_ / hostMetrics.content.width;
   if (this.ratio_ === -Infinity || this.ratio_ === Infinity ||
       isNaN(this.ratio_)) {
     this.ratio_ = 0
@@ -619,7 +627,7 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
 
   var handlePosition = (hostMetrics.view.left - hostMetrics.content.left) *
       this.ratio_
-  this.setHandlePosition(this.constrainHandle_(handlePosition))
+  this.handlePosition = this.constrainHandle_(handlePosition)
 }
 
 /**
@@ -636,44 +644,6 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
 }
 
 /**
- * Scroll by one pageful.
- * Called when scrollbar background is clicked.
- * @param {!Event} e Mouse down event.
- * @private
- */
-eYo.Scrollbar.prototype.onMouseDownBar_ = function(e) {
-  this.workspace_.markFocused()
-  this.workspace_.ui_driver.clearTouchIdentifier()  // This is really a click.
-  this.cleanUp_()
-  if (eYo.Dom.isRightButton(e)) {
-    // Right-click.
-    // Scrollbars have no context menu.
-    e.stopPropagation()
-    return
-  }
-  var mouseXY = this.workspace_.xyEventInWorkspace(e)
-  var mouseLocation = this.horizontal_ ? mouseXY.x : mouseXY.y;
-
-  var handleXY = this.workspace.factory.xyElementInFactory(this.svgHandle_)
-  var handleStart = this.horizontal_ ? handleXY.x : handleXY.y;
-  var handlePosition = this.handlePosition_;
-
-  var pageLength = this.handleLength_ * 0.95;
-  if (mouseLocation <= handleStart) {
-    // Decrease the scrollbar's value by a page.
-    handlePosition -= pageLength;
-  } else if (mouseLocation >= handleStart + this.handleLength_) {
-    // Increase the scrollbar's value by a page.
-    handlePosition += pageLength;
-  }
-
-  this.setHandlePosition(this.constrainHandle_(handlePosition));
-
-  this.didScroll_();
-  eYo.Dom.gobbleEvent(e)
-};
-
-/**
  * Constrain the handle's position within the minimum (0) and maximum
  * (length of scrollbar) values allowed for the scrollbar.
  * @param {number} value Value that is potentially out of bounds, in CSS pixels.
@@ -681,10 +651,10 @@ eYo.Scrollbar.prototype.onMouseDownBar_ = function(e) {
  * @private
  */
 eYo.Scrollbar.prototype.constrainHandle_ = function(value) {
-  if (value <= 0 || isNaN(value) || this.scrollViewSize_ < this.handleLength_) {
+  if (value <= 0 || isNaN(value) || this.viewLength_ < this.handleLength_) {
     value = 0;
   } else {
-    value = Math.min(value, this.scrollViewSize_ - this.handleLength_);
+    value = Math.min(value, this.viewLength_ - this.handleLength_);
   }
   return value;
 };
@@ -694,7 +664,7 @@ eYo.Scrollbar.prototype.constrainHandle_ = function(value) {
  * @private
  */
 eYo.Scrollbar.prototype.didScroll_ = function() {
-  var ratio = this.handlePosition_ / this.scrollViewSize_
+  var ratio = this.handlePosition_ / this.viewLength_
   if (isNaN(ratio)) {
     ratio = 0
   }
@@ -710,7 +680,7 @@ eYo.Scrollbar.prototype.didScroll_ = function() {
  *     scrollbar handle.
  */
 eYo.Scrollbar.prototype.set = function(value) {
-  this.setHandlePosition(this.constrainHandle_(value * this.ratio_))
+  this.handlePosition = this.constrainHandle_(value * this.ratio_)
   this.didScroll_()
 }
 
@@ -741,31 +711,31 @@ eYo.Scrollbar.prototype.set = function(value) {
 //   this.resizeContentVertical(hostMetrics);
 // };
 
-// /**
-//  * Recalculate a vertical scrollbar's location within its path and length.
-//  * This should be called when the contents of the workspace have changed.
-//  * @param {!Object} hostMetrics A data structure describing all the
-//  *     required dimensions, possibly fetched from the host object.
-//  */
-// eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
-//   if (!this.pair_) {
-//     // Only show the scrollbar if needed.
-//     this.visible = this.scrollViewSize_ < hostMetrics.content.height;
-//   }
+/**
+ * Recalculate a vertical scrollbar's location within its path and length.
+ * This should be called when the contents of the workspace have changed.
+ * @param {!Object} hostMetrics A data structure describing all the
+ *     required dimensions, possibly fetched from the host object.
+ */
+eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
+  if (!this.pair_) {
+    // Only show the scrollbar if needed.
+    this.visible = this.viewLength_ < hostMetrics.content.height;
+  }
 
-//   this.ratio_ = this.scrollViewSize_ / hostMetrics.content.height;
-//   if (this.ratio_ == -Infinity || this.ratio_ == Infinity ||
-//       isNaN(this.ratio_)) {
-//     this.ratio_ = 0;
-//   }
+  this.ratio_ = this.viewLength_ / hostMetrics.content.height;
+  if (this.ratio_ == -Infinity || this.ratio_ == Infinity ||
+      isNaN(this.ratio_)) {
+    this.ratio_ = 0;
+  }
 
-//   var handleLength = hostMetrics.view.height * this.ratio_;
-//   this.setHandleLength_(Math.max(0, handleLength));
+  var handleLength = hostMetrics.view.height * this.ratio_;
+  this.setHandleLength_(Math.max(0, handleLength));
 
-//   var handlePosition = (hostMetrics.view.top - hostMetrics.content.top) *
-//       this.ratio_;
-//   this.setHandlePosition(this.constrainHandle_(handlePosition));
-// };
+  var handlePosition = (hostMetrics.view.top - hostMetrics.content.top) *
+      this.ratio_;
+  this.handlePosition = this.constrainHandle_(handlePosition)
+};
 
 
 /**

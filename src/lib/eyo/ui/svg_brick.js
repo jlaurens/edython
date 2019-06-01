@@ -27,16 +27,13 @@ goog.forwardDeclare('eYo.Selected')
  */
 eYo.Svg.prototype.brickInit = function (brick) {
   var dom = this.basicInit(brick)
-  if (dom.svg) {
-    return
-  }
-  var svg = dom.svg = Object.create(null)
+  var svg = dom.svg
   // groups:
   var g = svg.group_ = eYo.Svg.newElement('g',
     {class: 'eyo-brick'}, null)
   // Expose this brick's ID on its top-level SVG group.
-  if (g_.dataset) {
-    g_.dataset.id = brick.id
+  if (g.dataset) {
+    g.dataset.id = brick.id
   }
   svg.pathInner_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-inner'
@@ -766,8 +763,8 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
   var x = 0
   var y = 0
   var brick = brick
-  var dragSurface = brick.factory.dom.svg.brickDragSurface_
-  var dragSurfaceGroup = dragSurface.svg.group_
+  var dragSurface = brick.factory.dom.svg.brickDragSurface
+  var dragSurfaceGroup = dragSurface.dom.svg.group_
   var canvas = brick.workspace.dom.svg.canvas_
   var element = brick.dom.svg.group_
   if (element) {
@@ -779,9 +776,9 @@ eYo.Svg.prototype.brickXYInWorkspace = function (brick) {
       // If this element is the current element on the drag surface, include
       // the translation of the drag surface itself.
       if (dragSurface.currentBrick === element) {
-        var surfaceTranslation = dragSurface.surfaceTranslation
-        x += surfaceTranslation.x
-        y += surfaceTranslation.y
+        var translation = dragSurface.translation
+        x += translation.x
+        y += translation.y
       }
       element = element.parentNode
     } while (element && element != canvas && element != dragSurfaceGroup)

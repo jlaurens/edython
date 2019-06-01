@@ -14,6 +14,7 @@
 goog.provide('eYo.Brick.Import')
 
 goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Protocol')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.List')

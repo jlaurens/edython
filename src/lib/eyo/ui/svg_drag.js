@@ -36,7 +36,8 @@ eYo.Svg.BrickDragSurface = function(container) {
    * @type {!Element}
    * @private
    */
-  var svg = this.svg = Object.create(null)
+  var dom = this.dom = Object.create(null)
+  var svg = dom.svg = Object.create(null)
   svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
@@ -96,7 +97,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    * Use this when finishing a drag to return blocks to the correct position.
    * @return {!goog.math.Coordinate} Current translation of the surface.
    */
-  surfaceTranslation: {
+  translation: {
     get () {
       var xy = eYo.Svg.getRelativeXY(this.svg.root_)
       return new goog.math.Coordinate(
@@ -229,7 +230,7 @@ Object.defineProperties(eYo.Svg.WorkspaceDragSurface.prototype, {
    * @type {!goog.math.Coordinate} Current translation of the surface
    * @package
    */
-  surfaceTranslation: {
+  translation: {
     get () {
       return eYo.Svg.getRelativeXY(this.svg.root_)
     }

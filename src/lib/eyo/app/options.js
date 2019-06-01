@@ -67,42 +67,30 @@ eYo.Options = function(options) {
     var hasDisable = false
     var hasSounds = false
   } else {
-    var hasTrashcan = options.trashcan
-    if (hasTrashcan === undefined) {
-      hasTrashcan = true
-    }
-    var hasCollapse = options.collapse
-    if (hasCollapse === undefined) {
-      hasCollapse = true
-    }
-    var hasDisable = options.disable
-    if (hasDisable === undefined) {
-      hasDisable = true
-    }
-    var hasSounds = options.sounds
-    if (hasSounds === undefined) {
-      hasSounds = true
-    }
+    var hasTrashcan = eYo.Do.ifDef(options.trashcan, true)
+    var hasCollapse = eYo.Do.ifDef(options.collapse, true)
+    var hasDisable = eYo.Do.ifDef(options.disable, true)
+    var hasSounds = eYo.Do.ifDef(options.sounds, true)
+
   }
-  var hasScrollbars = options.scrollbars
-  if (hasScrollbars === undefined) {
-    hasScrollbars = false
-  }
-  var hasCss = options.ss
-  if (hasCss === undefined) {
-    hasCss = true
-  }
+  this.readOnly = readOnly
+  this.hasTrashcan = hasTrashcan
+  this.collapse = hasCollapse
+  this.disable = hasDisable
+  this.hasSounds = hasSounds
+  this.hasScrollbars = eYo.Do.ifDef(options.scrollbars, true)
+  this.maxBlocks = options.maxBlocks || Infinity
+  this.hasCss = eYo.Do.ifDef(options.css, true)
+  this.noLeftSeparator = eYo.Do.ifDef(options.noLeftSeparator, true)
+  this.noDynamicList = eYo.Do.ifDef(options.noDynamicList, false)
+  this.smartUnary = eYo.Do.ifDef(options.smartUnary, true)
+  this.flyoutAnchor = eYo.Do.ifDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
+  this.container = eYo.Do.ifDef(options.container, 'eyo-factory')
+  this.backgroundClass = eYo.Do.ifDef(options.backgroundClass,'eyo-main-workspace-background')
   var pathToMedia = options.media || './static/media'
-  
-  this.collapse = hasCollapse;
-  this.disable = hasDisable;
-  this.readOnly = readOnly;
-  this.maxBlocks = options.maxBlocks || Infinity;
-  this.pathToMedia = pathToMedia;
-  this.hasScrollbars = hasScrollbars;
-  this.hasTrashcan = hasTrashcan;
-  this.hasSounds = hasSounds;
-  this.hasCss = hasCss;
+  // Strip off any trailing slash (either Unix or Windows).
+  pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
+  this.pathToMedia = pathToMedia
   this.zoomOptions = eYo.Options.parseZoomOptions_(options)
 }
 

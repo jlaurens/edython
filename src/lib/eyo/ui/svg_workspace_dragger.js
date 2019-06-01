@@ -19,14 +19,13 @@ goog.require('eYo.Svg')
  * Initializes the workspaceDragger SVG ressources.
  * @param {!eYo.WorkspaceDragger} workspaceDragger
  */
-eYo.Svg.prototype.workspaceDraggerInit = function(workspaceDragger) {
-  var dom = this.basicInit(workspaceDragger)
-  var svg = dom.svg
-  if (svg) {
+eYo.Svg.prototype.workspaceDraggerInit = function(dragger) {
+  if (dragger.dom) {
     return
   }
-  svg = dom.svg = Object.create(null)
-  svg.dragSurface = workspaceDragger.factory.dom.svg.workspaceDragSurface
+  var dom = this.basicInit(dragger)
+  var svg = dom.svg
+  svg.dragSurface = dragger.factory.dom.svg.workspaceDragSurface
 }
 
 /**

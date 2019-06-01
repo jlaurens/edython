@@ -132,7 +132,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     if (el) {
       goog.dom.classlist.remove('show')
     }
-    this.flyout_.eyo.slide()
+    this.flyout_.slide()
     this.onButtonLeave_(e)
     var gesture = this.flyout_.targetWorkspace_.getGesture(e);
     if (gesture) {

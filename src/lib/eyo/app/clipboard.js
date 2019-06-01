@@ -22,7 +22,7 @@ eYo.Clipboard = function () {
 
 }
 
-object.defineProperties(eYo.Clipboard, {
+Object.defineProperties(eYo.Clipboard, {
   dom: {
     get () {
       return this.dom_

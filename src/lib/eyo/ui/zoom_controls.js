@@ -139,7 +139,7 @@ eYo.ZoomControls.prototype.place = function() {
   this.left_ = metrics.view.width + metrics.absolute.left -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
-  if (metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
+  if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
     this.left_ -= metrics.flyout.width
   }
   this.top_ = metrics.view.height + metrics.absolute.top -

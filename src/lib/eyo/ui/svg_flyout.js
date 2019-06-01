@@ -23,13 +23,12 @@ goog.forwardDeclare('eYo.Flyout')
  * @param {!eYo.Flyout} flyout
  */
 eYo.Svg.prototype.flyoutInit = function(flyout) {
+  if (flyout.dom) {
+    return
+  }
   var dom = this.basicInit(flyout)
   this.flyoutBindScrollEvents(this)
   var svg = dom.svg
-  if (svg) {
-    return
-  }
-  svg = dom.svg = Object.create(null)
   /*
   <svg class="eyo-flyout">
     <g class="eyo-flyout-canvas">
@@ -38,7 +37,7 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     <g class="eyo-workspace">...</g>
   </svg>
   */
- var root = svg.root_ = eYo.Svg.createElement('svg', {
+ var root = svg.root_ = eYo.Svg.newElement('svg', {
     xmlns:  eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
@@ -123,11 +122,11 @@ eYo.Svg.prototype.flyoutCssClass = function() {
  * @param {!eYo.FlyoutToolbar} flyoutToolbar
  */
 eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
-  var dom = this.basicInit(ftp)
-  if (dom.svg) {
+  if (ftp.dom) {
     return
   }
-  dom.svg = Object.create(null)
+  var dom = this.basicInit(ftp)
+  var svg = dom.svg
   /*
   <div class="eyo-flyout-toolbar">
     <div class="eyo-flyout-toolbar-general">
@@ -563,7 +562,7 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @param {!Event} e Mouse down event.
  * @private
  */
-eYo.Svg.prototype.prototype.flyoutOn_mousedown = function(e) {
+eYo.Svg.prototype.flyoutOn_mousedown = function(e) {
   var gesture = this.targetWorkspace_.getGesture(e)
   if (gesture) {
     gesture.handleFlyoutStart(e, this)

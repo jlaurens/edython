@@ -26,24 +26,25 @@ var eYo = Object.create(null)
 eYo.Version = Object.create(null)
 eYo.Session = Object.create(null)
 
+Object.defineProperties(eYo.Version, {
+  /** @define {number} */
+  MAJOR: { value: 0 },
 
-/** @define {number} */
-eYo.Version.MAJOR = 0
+  /** @define {number} */
+  MINOR: { value: 1 },
 
-/** @define {number} */
-eYo.Version.MINOR = 1
+  /** @define {number} */
+  PATCH: { value: 0 },
 
-/** @define {number} */
-eYo.Version.PATCH = 0
+  /** @define {string} */
+  PRERELEASE: { value: '' },
 
-/** @define {string} */
-eYo.Version.PRERELEASE = ''
+  /** @define {string} */
+  BUILD_DATE: { value: '' },
 
-/** @define {string} */
-eYo.Version.BUILD_DATE = ''
-
-/** @define {string} */
-eYo.Version.GIT_HEAD = ''
+  /** @define {string} */
+  GIT_HEAD: { value: '' },
+})
 
 /**
  * Setup.

@@ -27,14 +27,13 @@ goog.forwardDeclare('goog.math.Coordinate')
 /**
  * Class for a brick dragger.  It moves bricks around the workspace when they
  * are being dragged by a mouse or touch.
- * @param {!eYo.Brick} brick The brick to drag.
  * @param {!eYo.Workspace} destination The workspace to drag on.
  * @constructor
  */
-eYo.BrickDragger = function(factory) {
-  this.factory_ = factory
+eYo.BrickDragger = function(destination) {
+  this.destination_ = destination
   this.disposeUI = eYo.Do.nothing
-  factory.hasUI && this.makeUI()
+  destination.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.BrickDragger.prototype, {
@@ -57,22 +56,17 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
 Object.defineProperties(eYo.BrickDragger.prototype, {
   factory: {
     get () {
-      return this.factory_
+      return this.workspace_.factory
     }
   },
   destination: {
     get () {
-      return this.factory.mainWorkspace
+      return this.destination_
     }
   },
   ui_driver: {
     get () {
       return this.factory.ui_driver
-    }
-  },
-  workspace_: {
-    get () {
-      throw 'DEPRECATED, use destination instead'
     }
   },
 })

@@ -13,9 +13,7 @@ eYo.Test = Object.create(null)
 eYo.temp = (() => {
   var options = {
     collapse : true,
-    comments : false,
     disable : true,
-    maxBlocks : Infinity,
     trashcan : false,
     css : true,
     scrollbars : true,
@@ -23,14 +21,7 @@ eYo.temp = (() => {
     container: 'eyo-factory'
   };
   /* Inject your workspace */
-  eYo.App.factory = new eYo.factory(options)
-  eYo.setup(eYo.App.workspace)
-  eYo.App.workspace.options = {
-    noLeftSeparator: true,
-    noDynamicList: false,
-    smartUnary: true,
-  }
-  eYo.App.workspace.clearUndo()
+  eYo.App.makeFactory(options)
 })()
 
 chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')

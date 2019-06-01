@@ -22,10 +22,6 @@ goog.require('eYo.Svg')
 eYo.Svg.prototype.brickDraggerInit = function(brickDragger) {
   var dom = this.basicInit(brickDragger)
   var svg = dom.svg
-  if (svg) {
-    return
-  }
-  svg = dom.svg = Object.create(null)
   svg.dragSurface = brickDragger.factory.dom.svg.brickDragSurface
 }
 

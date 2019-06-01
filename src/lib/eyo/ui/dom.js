@@ -152,7 +152,7 @@ eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func,
 
 /**
  * Unbind one or more events event from a function call.
- * @param {!Array.<!Array>} bindData Opaque data from bindEvent_.
+ * @param {!Array.<!Array>} bindData Opaque data from bindEvent.
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
@@ -511,12 +511,12 @@ eYo.Dom.bindDocumentEvents = (() => {
       )
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      eYo.Dom.bindEvent_(
+      eYo.Dom.bindEvent(
         document,
         'touchend',
         eYo.Dom.longStop_
       )
-      eYo.Dom.bindEvent_(
+      eYo.Dom.bindEvent(
         document,
         'touchcancel',
         eYo.Dom.longStop_
@@ -656,9 +656,12 @@ eYo.Dom.prototype.basicDispose = function(object) {
 /**
  * Initialize the factory SVG ressources.
  * @param {!eYo.Factory} factory
- * @return {!Element} The factory's SVG group.
+ * @return {!Element} The factory's dom repository.
  */
 eYo.Dom.prototype.factoryInit = function(factory) {
+  if (dragger.dom) {
+    return
+  }
   var dom = this.basicInit(factory)
   var options = factory.options
   var container = options.container
@@ -670,11 +673,12 @@ eYo.Dom.prototype.factoryInit = function(factory) {
   if (!goog.dom.contains(document, container)) {
     throw 'Error: container is not in current document.'
   }
-  dom.div_ || (dom.div_= goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    'eyo-factory',
-    container
-  ))
+  dom.div_ || (dom.div_= container)
+  eYo.Dom.bindEvent(
+    container,
+    'contextmenu',
+    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
+  )
   return dom
 }
 
@@ -698,20 +702,7 @@ eYo.Dom.prototype.factoryDispose = eYo.Dom.decorateDispose(
  * @param {Object=} opt_options Optional dictionary of options.
  * @return {!eYo.Workspace} Newly created main workspace.
  */
-eYo.Dom.workspaceInit = function(workspace) {
-  var options = workspace.options
-  var container = options.container
-  if (!container) {
-    return
-  }
-  // Suppress the browser's context menu.
-  eYo.Dom.bindEvent(
-    container,
-    'contextmenu',
-    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
-  )
-  return dom
-}
+eYo.Dom.prototype.workspaceInit = eYo.Dom.prototype.basicInit
 
 /**
  * Dispose of the workspace dom ressources.

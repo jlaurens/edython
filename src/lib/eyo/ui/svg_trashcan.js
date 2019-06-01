@@ -26,7 +26,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
   if (trashcan.dom) {
     return
   }
-  var svg = this.basicInit(trashcan)
+  var svg = trashcan.dom.svg
   svg.state_ = svg.left_ = svg.top_ = 0
   /* Here's the markup that will be generated:
   <g class="eyo-trash">
@@ -161,7 +161,7 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
   svg.left_ = metrics.view.width + metrics.absolute.left -
   trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
 
-  if (metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
+  if (metrics.flyout && metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
     svg.left_ -= metrics.flyout.width
   }
   svg.top_ = metrics.view.height + metrics.absolute.top -
@@ -178,7 +178,7 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
  * @param {boolean} state True if open.
  * @private
  */
-eYo.Trashcan.prototype.trashcanSetOpen = function(trashcan, state) {
+eYo.Svg.prototype.trashcanSetOpen = function(trashcan, state) {
   var dom = trashcan.dom
   if (dom.isOpen == state) {
     return

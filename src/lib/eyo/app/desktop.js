@@ -24,7 +24,6 @@ goog.forwardDeclare('eYo.Navigate')
 goog.forwardDeclare('eYo.App')
 goog.forwardDeclare('eYo.Xml')
 goog.forwardDeclare('eYo.Xml.Recover')
-goog.forwardDeclare('eYo.Protocol.ChangeCount')
 
 goog.forwardDeclare('goog.crypt')
 

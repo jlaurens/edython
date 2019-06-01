@@ -41,7 +41,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   */
   
   var div = workspace.factory.dom.div_
-  var root = svg.root_ = eYo.Svg.createElement('svg', {
+  var root = svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
@@ -53,6 +53,45 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   // A null translation will also apply the correct initial scale.
   workspace.xyMoveTo(0, 0)
 
+  /**
+  * <g class="eyo-workspace-surface">
+  *   <rect class="eyo-main-workspace-background" height="100%" width="100%"></rect>
+  *   [Trashcan and/or flyout may go here]
+  *   <g class="eyo-brick-canvas"></g>
+  * </g>
+  * @type {SVGElement}
+  */
+  var g = svg.group_ = eYo.Svg.newElement(
+    'g',
+    {'class': 'eyo-workspace-surface'},
+    root
+  )
+
+  // Note that a <g> alone does not receive mouse events--it must have a
+  // valid target inside it.  If no background class is specified, as in the
+  // flyout, the workspace will not receive mouse events.
+  /** @type {SVGElement} */
+  svg.background_ = eYo.Svg.newElement(
+    'rect',
+    {
+      height: '100%',
+      width: '100%',
+      class: options.backgroundClass
+    },
+    g
+  )
+  /** @type {SVGElement} */
+  svg.canvas_ = eYo.Svg.newElement(
+    'g',
+    {'class': 'eyo-brick-canvas'},
+    g
+  )
+  if (!workspace.isFlyout) {
+    this.workspaceBind_mousedown(workspace)
+    if (workspace.options.zoom && workspace.options.zoom.wheel) {
+      this.workspaceBind_wheel(workspace)
+    }
+  }
   if (!options.readOnly && !options.hasScrollbars) {
     var workspaceChanged = function() {
       if (!workspace.isDragging) {
@@ -101,63 +140,21 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     workspace.addChangeListener(workspaceChanged)
   }
   // The SVG is now fully assembled.
-  workspace.ui_driver.factoryResize(factory)
+  this.factoryResize(workspace.factory)
 
-  workspace.ui_driver.workspaceBind_resize(workspace)
-  eYo.Dom.bindDocumentEvents_()
+  this.workspaceBind_resize(workspace)
+  eYo.Dom.bindDocumentEvents()
 
   if (options.hasScrollbars) {
-    workspace.scrollbar = new Blockly.ScrollbarPair(workspace);
-    workspace.scrollbar.resize();
-  }
-
-  /**
-  * <g class="eyo-workspace-surface">
-  *   <rect class="eyo-main-background" height="100%" width="100%"></rect>
-  *   [Trashcan and/or flyout may go here]
-  *   <g class="eyo-brick-canvas"></g>
-  * </g>
-  * @type {SVGElement}
-  */
-  var g = svg.group_ = eYo.Svg.newElement(
-    'g',
-    {'class': 'eyo-workspace-surface'},
-    root
-  )
-
-  // Note that a <g> alone does not receive mouse events--it must have a
-  // valid target inside it.  If no background class is specified, as in the
-  // flyout, the workspace will not receive mouse events.
-  if (options && options.backgroundClass) {
-    /** @type {SVGElement} */
-    svg.background_ = eYo.Svg.newElement(
-      'rect',
-      {
-        height: '100%',
-        width: '100%',
-        class: options.backgroundClass
-      },
-      g
-    )
-  }
-  /** @type {SVGElement} */
-  svg.canvas_ = eYo.Svg.newElement(
-    'g',
-    {'class': 'eyo-brick-canvas'},
-    g
-  )
-  if (!workspace.isFlyout) {
-    this.workspaceBind_mousedown(workspace)
-    if (workspace.options.zoom && workspace.options.zoom.wheel) {
-      this.workspaceBind_wheel(workspace)
-    }
+    workspace.scrollbar = new eYo.ScrollbarPair(workspace)
+    workspace.scrollbar.resize()
   }
 
   return g
 }
 
 /**
- * Initializes the workspace SVG ressources.
+ * Dispose of the workspace SVG ressources.
  * @param {!eYo.Workspace} workspace
  */
 eYo.Svg.prototype.workspaceDispose = function(workspace) {

@@ -32,9 +32,6 @@ eYo.Factory = function(options) {
   /** @type {!eYo.Options} */
   options = new eYo.Options(options || {})
   // Load CSS.
-  // Strip off any trailing slash (either Unix or Windows).
-  pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
-
   eYo.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
   // create the various workspaces and flyout
@@ -57,9 +54,19 @@ Object.defineProperties(eYo.Factory.prototype, {
       return this.flyout_
     }
   },
+  ui_driver: {
+    get () {
+      return this.ui_driver_
+    }
+  },
   audio: {
     get () {
       return this.audio_
+    }
+  },
+  options: {
+    get () {
+      return this.options_
     }
   },
 })
@@ -73,9 +80,8 @@ eYo.Factory.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.deleteUI
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
-  this.ui_driver = new eYo.Svg(this)
-  this.ui_driver.factoryInit(this)
-  options.backgroundClass || (options.backgroundClass = 'eyo-main-background')
+  this.ui_driver_ = new eYo.Svg(this)
+  this.ui_driver_.factoryInit(this)
   this.mainWorkspace_.makeUI()
 }
 
@@ -89,7 +95,8 @@ eYo.Factory.prototype.disposeUI = function() {
   this.audio_ = null
   this.flyout_ && this.flyout_.disposeUI()
   this.flyoutSpace_ && this.flyoutSpace_.disposeUI()
-  this.ui_driver = null
+  this.ui_driver_ && this.ui_driver_.dispose()
+  this.ui_driver_ = null
 }
 
 /**
@@ -117,7 +124,7 @@ eYo.Factory.prototype.dispose = function() {
  */
 eYo.Factory.prototype.addFlyout = function(switcher) {
   var flyoutOptions = {
-    flyoutAnchor: this.options.flyout.anchor,
+    flyoutAnchor: this.options.flyoutAnchor,
     switcher: switcher
   }
   /**
@@ -141,7 +148,7 @@ eYo.Factory.prototype.addFlyout = function(switcher) {
  * (e.g. on a window resize/device orientation change).
 */
 eYo.Factory.prototype.resize = function() {
-  this.ui_driver.factoryResize(this)
+  this.ui_driver_.factoryResize(this)
 }
 
 /**
@@ -150,5 +157,5 @@ eYo.Factory.prototype.resize = function() {
  * (e.g. on a window resize/device orientation change).
 */
 eYo.Factory.prototype.xyElementInFactory = function(element) {
-  this.ui_driver.factoryXYElement(this, element)
+  this.ui_driver_.factoryXYElement(this, element)
 }

@@ -46,8 +46,8 @@ goog.forwardDeclare('goog.userAgent')
  * @memberof eYo.Brick.prototype.dom
  */
 
-eYo.Svg = function () {
-  eYo.Svg.superClass_.constructor.call(this)
+eYo.Svg = function (factory) {
+  eYo.Svg.superClass_.constructor.call(this, factory)
 }
 goog.inherits(eYo.Svg, eYo.Dom)
 
@@ -91,11 +91,11 @@ Object.defineProperties(eYo.Svg, {
  * @return {!Object} The object's dom repository.
  */
 eYo.Svg.prototype.basicInit = function(object) {
-  var svg = object.svg
-  if (!svg) {
-    svg = eYo.Svg.superClass_.basicInit.call(this, object)
+  var dom = eYo.Svg.superClass_.basicInit.call(this, object)
+  if (!dom.svg) {
+    dom.svg = Object.create(null)
   }
-  return svg
+  return dom
 }
 
 /**

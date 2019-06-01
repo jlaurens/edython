@@ -13,11 +13,10 @@
 
 goog.provide('eYo.Flyout')
 
-goog.require('eYo')
+goog.require('eYo.Unit')
 
 goog.forwardDeclare('eYo.FlyoutCategory');
 goog.forwardDeclare('eYo.Style');
-goog.forwardDeclare('eYo.Unit');
 goog.forwardDeclare('eYo.Brick');
 goog.forwardDeclare('eYo.FlyoutToolbar');
 goog.forwardDeclare('eYo.Tooltip');
@@ -78,11 +77,6 @@ eYo.Flyout = function(factory, flyoutOptions) {
 }
 
 Object.defineProperties(eYo.Flyout.prototype, {
-  anchor: {
-    get () {
-      return this.anchor_
-    }
-  },
   /**
    * Does the flyout automatically close when a brick is created?
    * @type {boolean}

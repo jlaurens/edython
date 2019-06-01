@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Workspace')
 
-goog.require('eYo')
+goog.require('eYo.Protocol.ChangeCount')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
@@ -653,12 +653,6 @@ eYo.Workspace.prototype.startScrollY = 0;
 eYo.Workspace.prototype.dragDeltaXY_ = null
 
 /**
- * Current scale.
- * @type {number}
- */
-eYo.Workspace.prototype.scale = 1
-
-/**
  * The workspace's trashcan (if any).
  * @type {eYo.Trashcan}
  */
@@ -856,7 +850,7 @@ eYo.Workspace.prototype.getCanvas = function() {
  * @param {number} y Vertical translation.
  */
 eYo.Workspace.prototype.xyMoveTo = function(x, y) {
-  this.dragger.xyMoveTo(x, y)
+  this.dragger && this.dragger.xyMoveTo(x, y)
 }
 
 /**
@@ -1530,7 +1524,7 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
     // svgSize is equivalent to the size of the factory div at this point.
     var svgSize = Blockly.svgSize(this.dom.svg.root_)
     // svgSize is now the space taken up by the Blockly workspace
-    if (ws.scrollbar) {
+    if (this.scrollbar) {
       var dimensions = getContentDimensionsBounded_(this, svgSize)
     } else {
       dimensions = getContentDimensionsExact_(this)
@@ -1547,7 +1541,7 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
         top: 0,
         left: 0,
       },
-      flyout: this.flyout_.size,
+      flyout: this.flyout_ && this.flyout_.size,
     }
     return metrics
   }

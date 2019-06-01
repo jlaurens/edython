@@ -11,17 +11,17 @@
  */
 'use strict'
 
-goog.provide('eYo.Events.BrickBase');
-goog.provide('eYo.Events.BrickChange');
-goog.provide('eYo.Events.BrickCreate');
-goog.provide('eYo.Events.BrickDelete');
-goog.provide('eYo.Events.BrickMove');
+goog.provide('eYo.Events.BrickBase')
+goog.provide('eYo.Events.BrickCreate')
+goog.provide('eYo.Events.BrickChange')
+goog.provide('eYo.Events.BrickMove')
+goog.provide('eYo.Events.BrickDelete')
 
-goog.require('eYo.Events');
-goog.require('eYo.Events.Abstract');
+goog.require('eYo.Events')
+goog.require('eYo.Events.Abstract')
 
-goog.require('goog.array');
-goog.require('goog.math.Coordinate');
+goog.forwardDeclare('goog.array')
+goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Convenient shortcut.
@@ -156,42 +156,6 @@ eYo.Events.BrickChange.prototype.run = function(forward) {
       break
     default:
       console.warn('Unknown change type: ' + this.element)
-  }
-};
-/**
- * Run a change event.
- * @param {boolean} forward True if run forward, false if run backward (undo).
- * @suppress{accessControls}
- */
-eYo.Events.BlockChange.prototype.run = function (forward) {
-  var brick = this.brick
-  if (!brick) {
-    console.warn("Can't change non-existant block: " + this.brickId)
-    return
-  }
-  var value = forward ? this.newValue : this.oldValue
-  switch (this.element) {
-    case 'collapsed':
-      brick.collapsed = value
-      break
-    case 'disabled':
-      brick.disabled = value
-      break
-  case eYo.Const.Event.locked:
-    if (value) {
-      brick.lock()
-    } else {
-      brick.unlock()
-    }
-    break
-  default:
-    var m = XRegExp.exec(this.element, eYo.XRE.event_data)
-    var data
-    if (m && (data = brick.data[m.key])) {
-      data.set(value, false) // do not validate, it may change value
-    } else {
-      console.warn('Unknown change type: ' + this.element)
-    }
   }
 }
 

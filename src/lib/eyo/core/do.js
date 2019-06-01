@@ -542,11 +542,14 @@ eYo.Do.valueOf = function (f, thisObject) {
   return goog.isFunction(f) ? f.call(thisObject) : f
 }
 
+eYo.Do.ifDef = function (object, fallout) {
+  return goog.isDef(object) ? object : fallout
+}
+
 /**
  * Void function frequently used.
  */
-eYo.Do.nothing = function () {
-}
+eYo.Do.nothing = () => {}
 
 /**
  * A wrapper creator.

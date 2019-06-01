@@ -40,7 +40,7 @@ eYo.Css.insertRuleAt = (() => {
     }
     return sheet
   }
-  return () => {
+  return function () { // arguments array is required
     var sheet = getSheet()
     if (arguments.length === 0) {
       return
@@ -257,32 +257,32 @@ eYo.Css.CONTENT = path => {
       'z-index: 20;',
     '}',
 
-    '.blocklyScrollbarHorizontal, .blocklyScrollbarVertical {',
+    '.eyo-scrollbar-horizontal, .eyo-scrollbar-vertical {',
       'position: absolute;',
       'outline: none;',
     '}',
 
-    '.blocklyScrollbarBackground {',
+    '.eyo-scrollbar-background {',
       'opacity: 0;',
     '}',
 
-    '.blocklyScrollbarHandle {',
+    '.eyo-scrollbar-handle {',
       'fill: #ccc;',
     '}',
 
-    '.blocklyScrollbarBackground:hover+.blocklyScrollbarHandle,',
-    '.blocklyScrollbarHandle:hover {',
+    '.eyo-scrollbar-background:hover+.eyo-scrollbar-handle,',
+    '.eyo-scrollbar-handle:hover {',
       'fill: #bbb;',
     '}',
 
     /* Darken flyout scrollbars due to being on a grey background. */
     /* By contrast, workspace scrollbars are on a white background. */
-    '.blocklyFlyout .blocklyScrollbarHandle {',
+    '.blocklyFlyout .eyo-scrollbar-handle {',
       'fill: #bbb;',
     '}',
 
-    '.blocklyFlyout .blocklyScrollbarBackground:hover+.blocklyScrollbarHandle,',
-    '.blocklyFlyout .blocklyScrollbarHandle:hover {',
+    '.blocklyFlyout .eyo-scrollbar-background:hover+.eyo-scrollbar-handle,',
+    '.blocklyFlyout .eyo-scrollbar-handle:hover {',
       'fill: #aaa;',
     '}',
 

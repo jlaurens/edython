@@ -89,7 +89,6 @@ eYo.Brick = function (workspace, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   /** @type {string} */
   this.workspace_ = workspace
-  workspace.addBrick(this, opt_id)
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
@@ -151,6 +150,7 @@ eYo.Brick = function (workspace, type, opt_id) {
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
   this.disposeUI = eYo.Do.nothing
+  workspace.addBrick(this, opt_id)
   if (workspace.hasUI) {
     this.makeUI()
   }

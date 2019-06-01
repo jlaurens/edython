@@ -407,7 +407,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       {action: eYo.ID.DUPLICATE_BLOCK,
         target: brick})
     this.addChild(menuItem, true)
-    if (brick.descendants.length > brick.workspace.remainingCapacity {
+    if (brick.descendants.length > brick.workspace.remainingCapacity) {
       menuItem.setEnabled(false)
     }
   }

@@ -20,16 +20,16 @@ goog.require('eYo')
  * @param {!eYo.Workspace} workspace The workspace to drag.
  * @constructor
  */
-eYo.WorkspaceDragger = function(factory) {
-  this.factory_ = factory
+eYo.WorkspaceDragger = function(workspace) {
+  this.workspace_ = workspace
   this.disposeUI = eYo.Do.nothing
-  factory.hasUI && this.makeUI()
+  workspace.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.WorkspaceDragger.prototype, {
   factory: {
     get () {
-      return this.factory_
+      return this.workspace_.factory
     }
   },
   workspace: {
@@ -171,7 +171,7 @@ eYo.WorkspaceDragger.prototype.end = function() {
     return;
   }
   this.isActive_ = false
-  var trans = this.dragSurface_.surfaceTranslation
+  var trans = this.dragSurface_.translation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
   this.workspace_.canvasMoveTo(trans.x, trans.y)
 }

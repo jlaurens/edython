@@ -259,7 +259,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/Include/errcode.js" \
 --js "src/lib/eyo/app/factory.js" \
---js "src/lib/eyo/app/flyout.js" \
 --js "src/lib/eyo/core/ui.js" \
 --js "src/lib/eyo/brick_util/gesture.js" \
 --js "src/lib/eyo/msg/js/base.js" \
@@ -268,7 +267,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/brick_util/span.js" \
 --js "src/lib/eyo/core/T3.js" \
 --js "src/lib/eyo/Parser/token.js" \
---js "src/lib/eyo/app/workspace.js" \
 --js "src/lib/eyo/app/workspace_dragger.js" \
 --js "src/lib/eyo/core/font.js" \
 --js "src/lib/eyo/Parser/ast.js" \
@@ -292,12 +290,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/geometry.js" \
 --js "src/lib/eyo/Parser/parser.js" \
 --js "src/lib/eyo/core/events.js" \
+--js "src/lib/eyo/app/flyout.js" \
 --js "src/lib/eyo/Parser/parsetok.js" \
 --js "src/lib/eyo/brick_util/shape.js" \
---js "src/lib/eyo/blockly/block_events.js" \
 --js "src/lib/eyo/protocol/change_count.js" \
 --js "src/lib/eyo/protocol/register.js" \
 --js "src/lib/eyo/model/model.js" \
+--js "src/lib/eyo/app/workspace.js" \
 --js "src/lib/eyo/model/array_model.js" \
 --js "src/lib/eyo/model/bisect_model.js" \
 --js "src/lib/eyo/model/calendar_model.js" \

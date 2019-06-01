@@ -90,7 +90,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   driver: {
     get() {
-      return this.brick_.workspace.eyo.driver
+      return this.brick_.workspace.ui_driver
     }
   },
   reentrant_: {
@@ -1864,7 +1864,7 @@ eYo.Brick.UI.prototype.setParent = function (parent) {
  * delay.
  * @package
  */
-eYu.UI.prototype.scheduleSnapAndBump = function() {
+eYo.Brick.UI.prototype.scheduleSnapAndBump = function() {
   // Ensure that any snap and bump are part of this move's event group.
   var group = eYo.Events.group
   setTimeout(() => {

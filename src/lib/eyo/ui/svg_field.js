@@ -40,7 +40,7 @@ eYo.Svg.prototype.fieldInit = function(field) {
   var g = dom.svg.group_
   if (!g) { return }
   dom = this.basicInit(field)
-  var svg = dom.svg = Object.create(null)
+  var svg = dom.svg
   if (field.isTextInput) {
     g = svg.group_ = eYo.Svg.newElement('g', {}, g)
     dom.borderRect_ = eYo.Svg.newElement('rect', {
