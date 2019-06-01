@@ -612,7 +612,7 @@ static void get_last_end_pos(asdl_seq *, int *, int *);
 static int
 init_normalization(struct compiling *c)
 {
-    PyObject *m = PyImport_ImportModuleNoBlock("unicodedata");
+    PyObject *m = PyImport_ImportModuleNoBrick("unicodedata");
     if (!m)
         return 0;
     c->c_normalize = PyObject_GetAttrString(m, "normalize");

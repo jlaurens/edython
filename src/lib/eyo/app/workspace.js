@@ -65,26 +65,18 @@ eYo.Workspace = function(factory, options) {
   this.setMetrics =
     options.setMetrics || eYo.Workspace.setTopLevelWorkspaceMetrics_
 
-  this.targetWorkspace = options.targetWorkspace
-
   this.dragger_ = new eYo.WorkspaceDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
 
   /**
-   * List of currently highlighted blocks.  Block highlighting is often used to
-   * visually mark blocks currently being executed.
-   * @type !Array.<!Blockly.BlockSvg>
+   * List of currently highlighted bricks.  Brick highlighting is often used to
+   * visually mark bricks currently being executed.
+   * @type !Array.<!eYo.Brick>
    * @private
    */
-  this.highlightedBlocks_ = []
+  this.highlightedBricks_ = []
 
-  Blockly.ConnectionDB.init(this)
-
-  /**
-   * Object in charge of loading, storing, and playing audio for a workspace.
-   * @type {Blockly.WorkspaceAudio}
-   * @private
-   */
+  eYo.Magnet.DB.init(this)
 
   this.resetChangeCount()
 
@@ -93,6 +85,7 @@ eYo.Workspace = function(factory, options) {
 eYo.Do.addProtocol(eYo.Workspace.prototype, 'ChangeCount')
 
 Object.defineProperties(eYo.Workspace, {
+  SNAP_RADIUS: { value: 20 },
   DELETE_AREA_NONE: { value: null },
   /**
    * ENUM representing that an event is in the delete area of the trash can.
@@ -123,8 +116,17 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.flyout_
     },
     set (newValue) {
-      this.flyout_ = newValue
-      this.targetWorkspace_ = null
+      var oldValue = this.flyout_
+      if (newValue !== oldValue) {
+        this.flyout_ = newValue
+        if (oldValue) {
+          oldValue.targetWorkspace = null
+        }
+        if (newValue) {
+          this.targetWorkspace = null
+          newValue.workspace.targetWorkspace = this
+        }
+      }
     }
   },
   targetWorkspace: {
@@ -132,12 +134,22 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.targetWorkspace_
     },
     set (newValue) {
-      if ((this.targetWorkspace_ = newValue)) {
-        this.getGesture = newValue.getGesture.bind(newValue)
-      } else {
-        delete this.getGesture
+      var oldValue = this.targetWorkspace_
+      if (newValue !== oldValue) {
+        this.targetWorkspace_ = newValue
+        if (oldValue) {
+          oldValue.flyout = null
+        }
+        if (newValue) {
+          this.getGesture = newValue.getGesture.bind(newValue)
+          this.flyout = null
+          if (newValue.flyout) {
+            newValue.flyout.targetWorkspace = newValue
+          }
+        } else {
+          delete this.getGesture
+        }
       }
-      this.flyout_ = null
     }
   },
   /**
@@ -294,6 +306,32 @@ Object.defineProperties(eYo.Workspace.prototype, {
       return this.factory_.xyElementInFactory(this.dom.svg.canvas_)
     }
   },
+  scale: {
+    value: 1,
+    writable: true
+  },
+  scrollX: {
+    get () {
+      return this.scrollX_
+    },
+    set (newValue) {
+      if (isNaN(newValue)) {
+        throw "MISSED"
+      }
+      this.scrollX_ = newValue
+    }
+  },
+  scrollY: {
+    get () {
+      return this.scrollY_
+    },
+    set (newValue) {
+      if (isNaN(newValue)) {
+        throw "MISSED"
+      }
+      this.scrollY_ = newValue
+    }
+  }
 })
 
 /**
@@ -375,7 +413,7 @@ eYo.Workspace.prototype.disposeUI = function() {
 eYo.Workspace.SCAN_ANGLE = 3
 
 /**
- * Finds the top-level blocks and returns them.  Blocks are optionally sorted
+ * Finds the top-level blocks and returns them.  Bricks are optionally sorted
  * by position; top to bottom.
  * @param {boolean} ordered Sort the list if true.
  * @return {!Array.<!eYo.Brick>} The top-level block objects.
@@ -432,9 +470,9 @@ eYo.Workspace.prototype.newBrick = function (prototypeName, opt_id) {
  *     type-specific functions for this block.
  * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!Blockly.Block} The created block.
+ * @return {!eYo.Brick} The created block.
  */
-eYo.Workspace.prototype.newBlock = eYo.Workspace.prototype.newBrick
+eYo.Workspace.prototype.newBrick = eYo.Workspace.prototype.newBrick
 
 /**
  * Undo or redo the previous action.
@@ -546,7 +584,7 @@ eYo.Workspace.prototype.fireChangeListener = function(event) {
  * Find the block on this workspace with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of block to find.
- * @return {Blockly.Block} The sought after block or null if not found.
+ * @return {eYo.Brick} The sought after block or null if not found.
  */
 eYo.Workspace.prototype.getBrickById = eYo.Workspace.prototype.getBrickById = function(id) {
   var brick = this.brickDB_[id]
@@ -567,14 +605,14 @@ eYo.Workspace.prototype.getBrickById = eYo.Workspace.prototype.getBrickById = fu
 /**
  * Checks whether all value and statement inputs in the workspace are filled
  * with blocks.
- * @param {boolean=} opt_shadowBlocksAreFilled An optional argument controlling
+ * @param {boolean=} opt_shadowBricksAreFilled An optional argument controlling
  *     whether shadow blocks are counted as filled. Defaults to true.
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
-eYo.Workspace.prototype.allInputsFilled = function(opt_shadowBlocksAreFilled) {
+eYo.Workspace.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
   var blocks = this.getTopBricks(false);
   for (var i = 0, block; block = blocks[i]; i++) {
-    if (!block.allInputsFilled(opt_shadowBlocksAreFilled)) {
+    if (!block.allInputsFilled(opt_shadowBricksAreFilled)) {
       return false;
     }
   }
@@ -693,7 +731,7 @@ eYo.Workspace.prototype.configureContextMenu = null;
  * @type {?eYo.Workspace}
  * @package
  */
-eYo.Workspace.prototype.targetWorkspace = null;
+eYo.Workspace.prototype.targetWorkspace = null
 
 /**
  * Save resize handler data so we can delete it later in dispose.
@@ -701,32 +739,20 @@ eYo.Workspace.prototype.targetWorkspace = null;
  */
 eYo.Workspace.prototype.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
-};
-
-/**
- * Obtain a newly created block.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this block.
- * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
- *     create a new ID.
- * @return {!Blockly.BlockSvg} The created block.
- */
-eYo.Workspace.prototype.newBlock = function(prototypeName, opt_id) {
-  return new Blockly.BlockSvg(this, prototypeName, opt_id);
 }
 
 Object.defineProperties(eYo.Workspace.prototype, {
   /**
    * The number of blocks that may be added to the workspace before reaching
-   *     the maxBlocks.
+   *     the maxBricks.
    * @return {number} Number of blocks left.
    */
   remainingCapacity: {
     get () {
-      if (isNaN(this.options.maxBlocks)) {
+      if (isNaN(this.options.maxBricks)) {
         return Infinity;
       }
-      return this.options.maxBlocks - this.getAllBricks().length
+      return this.options.maxBricks - this.getAllBricks().length
     }
   },
   /**
@@ -753,7 +779,7 @@ Object.defineProperties(eYo.Workspace.prototype, {
  * Getter for the flyout associated with this workspace.  This flyout may be
  * owned by either the toolbox or the workspace, depending on toolbox
  * configuration.  It will be null if there is no flyout.
- * @return {Blockly.Flyout} The flyout on this workspace.
+ * @return {eYo.Flyout} The flyout on this workspace.
  * @package
  */
 eYo.Workspace.prototype.getFlyout_ = function() {
@@ -837,14 +863,6 @@ eYo.Workspace.prototype.updateScreenCalculationsIfScrolled =
 }; /* eslint-enable indent */
 
 /**
- * Get the SVG element that forms the drawing surface.
- * @return {!Element} SVG element.
- */
-eYo.Workspace.prototype.getCanvas = function() {
-  return this.svgBlockCanvas_;
-};
-
-/**
  * Move the receiver to new coordinates.
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
@@ -885,21 +903,21 @@ eYo.Workspace.prototype.render = function() {
 }
 
 /**
- * Highlight or unhighlight a block in the workspace.  Block highlighting is
- * often used to visually mark blocks currently being executed.
- * @param {?string} id ID of block to highlight/unhighlight,
- *   or null for no block (used to unhighlight all blocks).
- * @param {boolean=} opt_state If undefined, highlight specified block and
+ * Highlight or unhighlight a brick in the workspace.  Brick highlighting is
+ * often used to visually mark bricks currently being executed.
+ * @param {?string} id ID of brick to highlight/unhighlight,
+ *   or null for no brick (used to unhighlight all bricks).
+ * @param {boolean=} opt_state If undefined, highlight specified brick and
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified block.
  */
-eYo.Workspace.prototype.highlightBlock = function(id, opt_state) {
+eYo.Workspace.prototype.highlightBrick = function(id, opt_state) {
   if (opt_state === undefined) {
     // Unhighlight all blocks.
-    for (var i = 0, block; block = this.highlightedBlocks_[i]; i++) {
+    for (var i = 0, block; block = this.highlightedBricks_[i]; i++) {
       block.setHighlighted(false);
     }
-    this.highlightedBlocks_.length = 0;
+    this.highlightedBricks_.length = 0;
   }
   // Highlight/unhighlight the specified block.
   var block = id ? this.getBrickById(id) : null;
@@ -907,9 +925,9 @@ eYo.Workspace.prototype.highlightBlock = function(id, opt_state) {
     var state = (opt_state === undefined) || opt_state;
     // Using Set here would be great, but at the cost of IE10 support.
     if (!state) {
-      goog.array.remove(this.highlightedBlocks_, block);
-    } else if (this.highlightedBlocks_.indexOf(block) == -1) {
-      this.highlightedBlocks_.push(block);
+      goog.array.remove(this.highlightedBricks_, block);
+    } else if (this.highlightedBricks_.indexOf(block) == -1) {
+      this.highlightedBricks_.push(block);
     }
     block.setHighlighted(state);
   }
@@ -979,15 +997,15 @@ eYo.Workspace.prototype.paste = function () {
                   return true
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
-                  var neighbour = m4t.closest(Blockly.SNAP_RADIUS,
+                  var neighbour = m4t.closest(Brickly.SNAP_RADIUS,
                     new goog.math.Coordinate(dx, dy))
                   if (neighbour) {
                     return true
                   }
               })
               if (collide) {
-                dx += Blockly.SNAP_RADIUS
-                dy += Blockly.SNAP_RADIUS * 2
+                dx += eYo.Workspace.SNAP_RADIUS
+                dy += eYo.Workspace.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -1105,16 +1123,16 @@ eYo.Workspace.prototype.moveDrag = function(e) {
  * @return {Object} Contains the position and size of the bounding box
  *   containing the blocks on the workspace.
  */
-eYo.Workspace.prototype.getBlocksBoundingBox = function() {
-  var topBlocks = this.getTopBricks(false);
+eYo.Workspace.prototype.getBricksBoundingBox = function() {
+  var topBricks = this.getTopBricks(false);
   // Initialize boundary using the first rendered block, if any.
   var i = 0
-  while (i < topBlocks.length) {
-    var b = topBlocks[i]
+  while (i < topBricks.length) {
+    var b = topBricks[i]
     if (b.ui && b.ui.rendered) {
       var bound = b.ui.boundingRect
-      while (++i < topBlocks.length) {
-        var b = topBlocks[i]
+      while (++i < topBricks.length) {
+        var b = topBricks[i]
         if (b.ui.rendered) {
           var blockBoundary = b.ui.boundingRect
           if (blockBoundary.topLeft.x < bound.topLeft.x) {
@@ -1174,7 +1192,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
     return
   }
   var menuOptions = []
-  var topBlocks = this.getTopBricks(true)
+  var topBricks = this.getTopBricks(true)
   var eventGroup = eYo.Do.genUid()
   var ws = this
 
@@ -1194,7 +1212,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   if (this.scrollbar) {
     var cleanOption = {}
     cleanOption.text = eYo.Msg.CLEAN_UP
-    cleanOption.enabled = topBlocks.length > 1
+    cleanOption.enabled = topBricks.length > 1
     cleanOption.callback = this.cleanUp.bind(this)
     menuOptions.push(cleanOption)
   }
@@ -1202,15 +1220,15 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   // Add a little animation to collapsing and expanding.
   var DELAY = 10
   if (this.options.collapse) {
-    var hasCollapsedBlocks = false
-    var hasExpandedBlocks = false
-    for (var i = 0; i < topBlocks.length; i++) {
-      var b3k = topBlocks[i]
+    var hasCollapsedBricks = false
+    var hasExpandedBricks = false
+    for (var i = 0; i < topBricks.length; i++) {
+      var b3k = topBricks[i]
       while (b3k) {
         if (b3k.collapsed) {
-          hasCollapsedBlocks = true
+          hasCollapsedBricks = true
         } else {
-          hasExpandedBlocks = true
+          hasExpandedBricks = true
         }
         b3k = b3k.foot
       }
@@ -1223,8 +1241,8 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
      */
     var toggleOption = (shouldCollapse) => {
       var ms = 0
-      for (var i = 0; i < topBlocks.length; i++) {
-        var block = topBlocks[i]
+      for (var i = 0; i < topBricks.length; i++) {
+        var block = topBricks[i]
         while (block) {
           setTimeout(block.setCollapsed.bind(block, shouldCollapse), ms)
           block = block.foot
@@ -1234,7 +1252,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
     }
 
     // Option to collapse top bricks.
-    var collapseOption = {enabled: hasExpandedBlocks}
+    var collapseOption = {enabled: hasExpandedBricks}
     collapseOption.text = eYo.Msg.COLLAPSE_ALL
     collapseOption.callback = () => {
       toggleOption(true)
@@ -1242,7 +1260,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
     menuOptions.push(collapseOption)
 
     // Option to expand top bricks.
-    var expandOption = {enabled: hasCollapsedBlocks}
+    var expandOption = {enabled: hasCollapsedBricks}
     expandOption.text = eYo.Msg.EXPAND_ALL
     expandOption.callback = () => {
       toggleOption(false)
@@ -1253,14 +1271,14 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   // Option to delete all bricks.
   // Count the number of bricks that are deletable.
   var deleteList = []
-  function addDeletableBlocks (b3k) {
+  function addDeletableBricks (b3k) {
     if (b3k.isDeletable()) {
       deleteList = deleteList.concat(b3k.getWrappedDescendants())
     } else {
-      b3k.children.forEach(child => addDeletableBlocks(child))
+      b3k.children.forEach(child => addDeletableBricks(child))
     }
   }
-  topBlocks.forEach(child => addDeletableBlocks(child))
+  topBricks.forEach(child => addDeletableBricks(child))
 
   function deleteNext () {
     eYo.Events.group = eventGroup
@@ -1336,7 +1354,7 @@ eYo.Workspace.prototype.zoomCenter = function(type) {
  */
 eYo.Workspace.prototype.zoomToFit = function() {
   var metrics = this.getMetrics();
-  var blocksBox = this.getBlocksBoundingBox();
+  var blocksBox = this.getBricksBoundingBox();
   var blocksWidth = blocksBox.width;
   var blocksHeight = blocksBox.height;
   if (!blocksWidth) {
@@ -1381,7 +1399,7 @@ eYo.Workspace.prototype.scrollCenter = function() {
  * @param {?string} id ID of block center on.
  * @public
  */
-eYo.Workspace.prototype.centerOnBlock = function(id) {
+eYo.Workspace.prototype.centerOnBrick = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable workspace.');
     return;
@@ -1414,16 +1432,16 @@ eYo.Workspace.prototype.centerOnBlock = function(id) {
 
   // Scrolling to here would put the block in the top-left corner of the
   // visible workspace.
-  var scrollToBlockX = pixelX - metrics.content.left;
-  var scrollToBlockY = pixelY - metrics.content.top;
+  var scrollToBrickX = pixelX - metrics.content.left;
+  var scrollToBrickY = pixelY - metrics.content.top;
 
   // view.height and view.width are in pixels.
   var halfViewWidth = metrics.view.width / 2;
   var halfViewHeight = metrics.view.height / 2;
 
   // Put the block in the center of the visible workspace instead.
-  var scrollToCenterX = scrollToBlockX - halfViewWidth;
-  var scrollToCenterY = scrollToBlockY - halfViewHeight;
+  var scrollToCenterX = scrollToBrickX - halfViewWidth;
+  var scrollToCenterY = scrollToBrickY - halfViewHeight;
 
   eYo.App.hideChaff();
   this.scrollbar.set(scrollToCenterX, scrollToCenterY);
@@ -1464,8 +1482,8 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
    * @private
    */
   var getContentDimensionsExact_ = function(ws) {
-    // Block bounding box is in workspace coordinates.
-    var blockBox = ws.getBlocksBoundingBox();
+    // Brick bounding box is in workspace coordinates.
+    var blockBox = ws.getBricksBoundingBox();
     var scale = ws.scale;
 
     // Convert to pixels.
@@ -1522,7 +1540,7 @@ eYo.Workspace.getTopLevelWorkspaceMetrics_ = (() => {
   return function() {
     // Contains height and width in CSS pixels.
     // svgSize is equivalent to the size of the factory div at this point.
-    var svgSize = Blockly.svgSize(this.dom.svg.root_)
+    var svgSize = this.dom.svg.size
     // svgSize is now the space taken up by the Blockly workspace
     if (this.scrollbar) {
       var dimensions = getContentDimensionsBounded_(this, svgSize)
@@ -1590,7 +1608,7 @@ eYo.Workspace.prototype.setResizesEnabled = function(enabled) {
  * Look up the gesture that is tracking this touch stream on this workspace.
  * May create a new gesture.
  * @param {!Event} e Mouse event or touch event.
- * @return {Blockly.TouchGesture} The gesture that is tracking this touch
+ * @return {Brickly.TouchGesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
  * @package
  */
@@ -1639,7 +1657,7 @@ eYo.Workspace.prototype.cancelCurrentGesture = function() {
 
 /**
  * Get the audio manager for this workspace.
- * @return {Blockly.WorkspaceAudio} The audio manager for this workspace.
+ * @return {Brickly.WorkspaceAudio} The audio manager for this workspace.
  */
 eYo.Workspace.prototype.getAudioManager = function() {
   return this.audioManager_
@@ -1655,10 +1673,10 @@ eYo.Workspace.prototype.logAllConnections = function (comment) {
     'LEFT',
     'RIGHT'
   ].forEach(k => {
-    var dbList = this.connectionDBList
+    var dbList = this.magnetDBList
     console.log(`${comment} > ${k} magnet`)
     dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.x_, m4t.y_, m4t.xyInBlock_, m4t.brick.type)
+      console.log(m4t.x_, m4t.y_, m4t.xyInBrick_, m4t.brick.type)
     })
   })
 }

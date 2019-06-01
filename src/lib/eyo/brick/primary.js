@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython, primary bricks.
+ * @fileoverview Bricks for edython, primary bricks.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -1242,7 +1242,7 @@ eYo.Do.addProtocol(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!Blockly.Block} brick to be initialized.
+ * @param {!eYo.Brick} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Brick.Expr.primary.prototype.init = function () {
@@ -1771,7 +1771,7 @@ eYo.Brick.Expr.primary.prototype.getSubtype = function () {
 /**
  * Fetches the named input object, getInput.
  * This is not a very strong design but it should work, I guess.
- * @param {!Block} brick
+ * @param {!Brick} brick
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default brick implementation.
@@ -1859,7 +1859,7 @@ eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Brick.Expr.primary.prot
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!Blockly.Block} brick to be initialized.
+ * @param {!eYo.Brick} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Brick.Stmt.base_call_stmt.prototype.init = function () {

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython, `star` modifications.
+ * @fileoverview Bricks for edython, `star` modifications.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -186,7 +186,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
   },
   out: {
     check: /** @suppress {globalThis} */ function (type) {
-      // retrieve the brick delegate
+      // retrieve the brick
       var brick = this.brick
       if (brick.variant_p === eYo.Key.STAR) {
         return [eYo.T3.Expr.star]

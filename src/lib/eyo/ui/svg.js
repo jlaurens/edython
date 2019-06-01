@@ -377,3 +377,21 @@ eYo.Svg.getRelativeXY.XY_3D_REGEX_ =
  */
 eYo.Svg.getRelativeXY.XY_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
+
+/**
+ * Return the converted coordinates of the given mouse event.
+ * The origin (0,0) is the top-left corner of the SVG.
+ * @param {!Element} svg SVG element.
+ * @param {!Event} e Mouse event.
+ * @param {SVGMatrix} matrix Inverted screen CTM to use.
+ * @return {!SVGPoint} Object with .x and .y properties.
+ */
+eYo.Svg.locationOfEvent = (svg, e, matrix) => {
+  var svgPoint = svg.createSVGPoint()
+  svgPoint.x = e.clientX
+  svgPoint.y = e.clientY
+  if (!matrix) {
+    matrix = svg.getScreenCTM().inverse()
+  }
+  return svgPoint.matrixTransform(matrix)
+}

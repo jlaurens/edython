@@ -1,4 +1,4 @@
-// goog.provide('Blockly.Block')
+// goog.provide('eYo.Brick')
 // goog.provide('Blockly.Field')
 // goog.provide('Blockly.FieldDropdown')
 // goog.provide('Blockly.FieldLabel')

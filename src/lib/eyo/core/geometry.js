@@ -172,6 +172,9 @@ eYo.Where.prototype.setFromSize = function (s) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
+ * @param {number} c
+ * @param {number} l
+ * @return {eYo.Where} c
  */
 eYo.Where.prototype.advance = function (c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
@@ -183,10 +186,45 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
   } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
     this.x += c.x
     this.y += c.y
-    return
+    return this
   }
   this.c_ += c
   this.l_ += l
+  return this
+}
+
+/**
+ * Like `set` but advance the coordinates, instead of setting them.
+ * @param {number} c
+ * @param {number} l
+ * @return {eYo.Where} c
+ */
+eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
+  if (goog.isDef(x.x) && goog.isDef(x.y)) {
+    y = x.x || 0
+    x = x.y || 0
+  } else if (goog.isDef(x.width) && goog.isDef(x.height)) {
+    x = x.width || 0
+    y = x.height || 0
+  } else if (goog.isDef(x.c) && goog.isDef(x.l)) {
+    this.c_ += x.c
+    this.l_ += x.l
+    return this
+  }
+  this.x += x
+  this.y += y
+  return this
+}
+
+/**
+ * Euclidian distance between points.
+ * @param {!eYo.Where} other
+ * @return {number} non negative number
+ */
+eYo.Where.prototype.distanceFrom = function (other) {
+  var dx = this.x_ - other.x_
+  var dy = this.y_ - other.y_
+  return Math.sqrt(dx * dx + dy * dy)
 }
 
 /**

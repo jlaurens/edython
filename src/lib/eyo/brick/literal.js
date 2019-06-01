@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -316,7 +316,7 @@ eYo.Brick.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -326,7 +326,7 @@ eYo.Brick.Expr.shortliteral.prototype.makeTitle = function (variant) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
@@ -382,7 +382,7 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

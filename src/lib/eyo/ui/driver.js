@@ -202,13 +202,13 @@ eYo.Driver.prototype.slotDisplayedSet = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
- * @param {!Blockly.Block} newParent to be connected.
+ * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Driver.brickParentWillChange = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
- * @param {!Blockly.Block} oldParent replaced.
+ * @param {!eYo.Brick} oldParent replaced.
  */
 eYo.Driver.brickParentDidChange = eYo.Do.nothing
 
@@ -346,14 +346,14 @@ eYo.Driver.brickSetOffset = eYo.Do.nothing
  * Default implementation does nothing
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickAddBlockHilight_ = eYo.Do.nothing
+eYo.Driver.brickAddBrickHilight_ = eYo.Do.nothing
 
 /**
  * Remove the hilight path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickRemoveBlockHilight_ = eYo.Do.nothing
+eYo.Driver.brickRemoveBrickHilight_ = eYo.Do.nothing
 
 /**
  * Add the select path.

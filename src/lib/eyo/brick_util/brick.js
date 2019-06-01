@@ -66,7 +66,7 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
 }
 
 /**
- * Class for a Block Delegate.
+ * Class for a Brick.
  * Not normally called directly, eYo.Brick.Manager.create(...) is preferred.
  * Also initialize a implementation model.
  * The underlying state and model are not expected to change while running.
@@ -194,7 +194,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.unplug()
   }
   if (eYo.Events.enabled) {
-    eYo.Events.fire(new eYo.Events.BlockDelete(this))
+    eYo.Events.fire(new eYo.Events.BrickDelete(this))
   }
   // Stop rerendering.
   this.ui_ && (this.ui_.rendered = false)
@@ -336,9 +336,9 @@ Object.defineProperties(eYo.Brick.prototype, {
     },
     set (newValue) {
       if (newValue && !this.wrapped__) {
-        this.duringBlockWrapped()
+        this.duringBrickWrapped()
       } else if (!newValue && this.wrapped__) {
-        this.duringBlockUnwrapped()
+        this.duringBrickUnwrapped()
       }
       this.wrapped__ = newValue
     }
@@ -604,7 +604,10 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   isExpr: {
-    value: false
+    get () {
+      console.log('BRICK IS NOT AN EXPRESSION')
+      return false
+    }
   },
   isStmt: {
     value: false
@@ -823,11 +826,11 @@ eYo.Brick.prototype.didLoad = function () {
 }
 
 /**
- * Tests if two brick delegates are equal.
- * Blocks must be of the same type.
+ * Tests if two bricks are equal.
+ * Bricks must be of the same type.
  * Lists and dictionaries are managed differently.
  * Usefull for testing purposes for example.
- * @param {?eYo.Brick} rhs  Another brick delegate
+ * @param {?eYo.Brick} rhs  Another brick
  */
 eYo.Brick.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
@@ -1408,7 +1411,7 @@ eYo.Brick.prototype.forEachMagnet = function (helper) {
  * Set the [python ]type of the delegate and its brick.
  * The only accepted types are the ones of
  * the constructor's delegate's `type` method.
- * NEVER call this directly, except if you are a brick delegate.
+ * NEVER call this directly, except if you are a brick.
  * No need to override this.
  * @param {?string} optNewType,
  * @private
@@ -1670,9 +1673,9 @@ eYo.Brick.prototype.completeWrap_ = function () {
  * Subclassers will override this but no one will call it.
  * @private
  */
-eYo.Brick.prototype.duringBlockWrapped = function () {
+eYo.Brick.prototype.duringBrickWrapped = function () {
   goog.asserts.assert(!this.uiHasSelect, 'Deselect brick before')
-  this.ui && (this.ui.updateBlockWrapped())
+  this.ui && (this.ui.updateBrickWrapped())
 }
 
 
@@ -1689,8 +1692,8 @@ eYo.Brick.prototype.canUnwrap = function () {
  * Subclassers will override this but won't call it.
  * @private
  */
-eYo.Brick.prototype.duringBlockUnwrapped = function () {
-  this.ui && (this.ui.updateBlockWrapped())
+eYo.Brick.prototype.duringBrickUnwrapped = function () {
+  this.ui && (this.ui.updateBrickWrapped())
 }
 
 /**
@@ -2013,7 +2016,7 @@ eYo.Brick.prototype.someInputMagnet = function (helper) {
 /**
  * Set the error
  * For edython.
- * @param {!Blockly.Block} brick The owner of the receiver.
+ * @param {!eYo.Brick} brick The owner of the receiver.
  * @param {!string} key
  * @param {!string} msg
  * @return true if the given value is accepted, false otherwise
@@ -2027,7 +2030,7 @@ eYo.Brick.prototype.setError = function (key, msg) {
 /**
  * get the error
  * For edython.
- * @param {!Blockly.Block} brick The owner of the receiver.
+ * @param {!eYo.Brick} brick The owner of the receiver.
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
@@ -2038,7 +2041,7 @@ eYo.Brick.prototype.getError = function (key) {
 /**
  * get the error
  * For edython.
- * @param {!Blockly.Block} brick The owner of the receiver.
+ * @param {!eYo.Brick} brick The owner of the receiver.
  * @param {!string} key
  * @return true if the given value is accepted, false otherwise
  */
@@ -2060,7 +2063,7 @@ eYo.Brick.prototype.getSlotMagnetss = function () {
 /**
  * get the slot connections, mainly for debugging purposes.
  * For edython.
- * @param {!Bockly.Block} block_
+ * @param {!eYo.Brick} brick
  * @return the given brick
  */
 eYo.Brick.prototype.footConnect = function (brick) {
@@ -2162,7 +2165,7 @@ Object.defineProperties(eYo.Brick, {
  * @param {number} dy Vertical offset in workspace units.
  */
 eYo.Brick.prototype.xyMoveBy = function(dx, dy) {
-  goog.asserts.assert(!this.parent, 'Block has parent.')
+  goog.asserts.assert(!this.parent, 'Brick has parent.')
   eYo.Event.fireMoveEvent(() => {
     var xy = this.xy
     this.ui.xyMoveTo(xy.x + dx, xy.y + dy)
@@ -2234,7 +2237,7 @@ eYo.Brick.prototype.packedBrackets = true
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {!Blockly.Block} newParent to be connected.
+ * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Brick.prototype.parentWillChange = function (newParent) {
 }
@@ -2243,7 +2246,7 @@ eYo.Brick.prototype.parentWillChange = function (newParent) {
  * Returns the named field from a brick.
  * Only fields that do not belong to an input are searched for.
  * @param {string} name The name of the field.
- * @return {Blockly.Field} Named field, or null if field does not exist.
+ * @return {eYo.Field} Named field, or null if field does not exist.
  */
 eYo.Brick.prototype.getField = function (name) {
   var ans = null
@@ -2564,9 +2567,9 @@ eYo.Brick.prototype.insertParentWithModel = function (model) {
  * For edython.
  * @param {Object|string} model
  * @param {eYo.Magnet} m4t
- * @return {?Blockly.Block} the brick that was inserted
+ * @return {?eYo.Brick} the brick that was inserted
  */
-eYo.Brick.prototype.insertBlockWithModel = function (model, m4t) {
+eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
   if (!model) {
     return null
   }
@@ -2874,7 +2877,7 @@ eYo.Brick.prototype.lock = function () {
 /**
  * Unlock the given brick.
  * For edython.
- * @param {!Blockly.Block} brick The owner of the receiver.
+ * @param {!eYo.Brick} brick The owner of the receiver.
  * @param {boolean} deep Whether to unlock statements too.
  * @return {number} the number of bricks unlocked
  */
@@ -2902,7 +2905,7 @@ eYo.Brick.prototype.unlock = function (shallow) {
 /**
  * Whether the brick of the receiver is in the visible area.
  * For edython.
- * @param {!Blockly.Block} brick The owner of the receiver.
+ * @param {!eYo.Brick} brick The owner of the receiver.
  * @return {boolean}
  */
 eYo.Brick.prototype.inVisibleArea = function () {
@@ -3222,12 +3225,12 @@ eYo.Brick.Manager = (() => {
       (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
       parent
-      var delegateC9r = owner[key] = function (workspace, type, opt_id) {
-        delegateC9r.superClass_.constructor.call(this, workspace, type, opt_id)
+      var c9r = owner[key] = function (workspace, type, opt_id) {
+        c9r.superClass_.constructor.call(this, workspace, type, opt_id)
       }
-      goog.inherits(delegateC9r, parent)
-      me.prepareConstructor(delegateC9r, key)
-      eYo.Brick.Manager.registerDelegate_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, delegateC9r)
+      goog.inherits(c9r, parent)
+      me.prepareConstructor(c9r, key)
+      eYo.Brick.Manager.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
       if (goog.isFunction(model)) {
         model = model()
       }
@@ -3292,7 +3295,7 @@ eYo.Brick.Manager = (() => {
           // this is a statement, remove the irrelevant output info
           model.out && (model.out = undefined)
         }
-        delegateC9r.model__ = model // intermediate storage used by `modeller` in due time
+        c9r.model__ = model // intermediate storage used by `modeller` in due time
         // Create properties to access data
         if (model.data) {
           for (var k in model.data) {
@@ -3315,7 +3318,7 @@ eYo.Brick.Manager = (() => {
                       MD.isUnchanging = MD.isChanging
                   }
                 }
-                defineDataProperty(k).call(delegateC9r.prototype)
+                defineDataProperty(k).call(c9r.prototype)
               }
             }
           }
@@ -3326,24 +3329,24 @@ eYo.Brick.Manager = (() => {
             if (eYo.Do.hasOwnProperty(model.slots, k)) {
               var MS = model.slots[k]
               if (MS) {
-                defineSlotProperty(k).call(delegateC9r.prototype)
+                defineSlotProperty(k).call(c9r.prototype)
               }
             }
           }
         }
       }
-      delegateC9r.makeSubclass = function (key, model, owner, register) {
-        return me.makeSubclass(key, model, delegateC9r, owner, register)
+      c9r.makeSubclass = function (key, model, owner, register) {
+        return me.makeSubclass(key, model, c9r, owner, register)
       }
       if (register) {
         me.register(key)
       }
-      return delegateC9r
+      return c9r
     }
 }) ()
   /**
    * Delegate instance creator.
-   * @param {!Blockly.Block} brick
+   * @param {!eYo.Brick} brick
    * @param {?string} prototypeName Name of the language object containing
    */
   me.create = function (workspace, prototypeName, opt_id, brick) {
@@ -3389,31 +3392,30 @@ eYo.Brick.Manager = (() => {
    * @param {Object} constructor
    * @private
    */
-  me.registerDelegate_ = function (prototypeName, delegateC9r, key) {
-    // console.log(prototypeName+' -> '+delegateC9r)
+  me.register_ = function (prototypeName, c9r, key) {
+    // console.log(prototypeName+' -> '+c9r)
     goog.asserts.assert(prototypeName, 'Missing prototypeName')
-    C9rs[prototypeName] = delegateC9r
+    C9rs[prototypeName] = c9r
     // cache all the input, output and statement data at the prototype level
-    me.prepareConstructor(delegateC9r, key)
-    delegateC9r.eyo.types.push(prototypeName)
-    Blockly.Blocks[prototypeName] = {}
+    me.prepareConstructor(c9r, key)
+    c9r.eyo.types.push(prototypeName)
   }
   /**
    * Handy method to register an expression or statement brick.
    */
   me.register = function (key) {
     var prototypeName = eYo.T3.Expr[key]
-    var delegateC9r, available
+    var c9r, available
     if (prototypeName) {
-      delegateC9r = eYo.Brick[key]
+      c9r = eYo.Brick[key]
       available = eYo.T3.Expr.Available
     } else if ((prototypeName = eYo.T3.Stmt[key])) {
-      delegateC9r = eYo.Brick[key]
+      c9r = eYo.Brick[key]
       available = eYo.T3.Stmt.Available
     } else {
       throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
     }
-    me.registerDelegate_(prototypeName, delegateC9r, key)
+    me.register_(prototypeName, c9r, key)
     available.push(prototypeName)
   }
   me.registerAll = function (keyedPrototypeNames, delegateC9r, fake) {
@@ -3421,11 +3423,11 @@ eYo.Brick.Manager = (() => {
       var prototypeName = keyedPrototypeNames[k]
       if (goog.isString(prototypeName)) {
         //        console.log('Registering', k)
-        me.registerDelegate_(prototypeName, delegateC9r, k)
+        me.register_(prototypeName, delegateC9r, k)
         if (fake) {
           prototypeName = prototypeName.replace('eyo:', 'eyo:fake_')
           //          console.log('Registering', k)
-          me.registerDelegate_(prototypeName, delegateC9r, k)
+          me.register_(prototypeName, delegateC9r, k)
         }
       }
     }
@@ -3447,18 +3449,18 @@ eYo.Brick.Manager = (() => {
  */
 eYo.Brick.Manager.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
-  var delegateC9r, available
+  var c9r, available
   if (prototypeName) {
-    delegateC9r = eYo.Brick.Expr[key]
+    c9r = eYo.Brick.Expr[key]
     available = eYo.T3.Expr.Available
   } else if ((prototypeName = eYo.T3.Stmt[key])) {
     // console.log('Registering statement', key)
-    delegateC9r = eYo.Brick.Stmt[key]
+    c9r = eYo.Brick.Stmt[key]
     available = eYo.T3.Stmt.Available
   } else {
     throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
   }
-  eYo.Brick.Manager.registerDelegate_(prototypeName, delegateC9r)
+  eYo.Brick.Manager.register_(prototypeName, c9r)
   available.push(prototypeName)
 }
 

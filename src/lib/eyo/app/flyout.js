@@ -27,36 +27,43 @@ goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Class for a flyout.
- * @param {!eYo.Workspace} targetWorkspace Dictionary of options for the workspace.
+ * Circular dependencies:
+ *  flyout >>> workspace >>> targetWorkspace >>> flyout
+ * 
+ * When defined, we have
+ * flyout === flyout.workspace.targetWorkspace.flyout
+ * A workspace has either a flyout or a targetWorkspace
+ * but never has both.
+ * This constructor takes care of this cycle.
+ * @param {!eYo.Workspace} workspace
+ * @param {!eYo.Workspace} targetWorkspace
  * @param {!Object} flyoutOptions Dictionary of options for the workspace.
  * @constructor
  */
-eYo.Flyout = function(factory, flyoutOptions) {
-
-  this.factory_ = factory
-
+eYo.Flyout = function(workspace, targetWorkspace, flyoutOptions) {
+  // First
+  this.workspace = workspace
+  // second
+  this.targetWorkspace = targetWorkspace
   /**
    * Position of the toolbox and flyout relative to the workspace.
    * @type {number}
    * @private
    */
   this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
-
   /**
    * Opaque data that can be passed to unbindEvent.
    * @type {!Array.<!Array>}
    * @private
    */
   this.eventWrappers_ = []
-
   /**
    * List of event listeners.
    * Array of opaque data that can be passed to unbindEvent.
    * @type {!Array.<!Array>}
    * @private
    */
-  this.listeners_ = [];
-
+  this.listeners_ = []
   /**
    * List of bricks that should always be disabled.
    * @type {!Array.<!eYo.Brick>}
@@ -67,16 +74,73 @@ eYo.Flyout = function(factory, flyoutOptions) {
   if (flyoutOptions.autoClose) {
     this.autoClose = true
   }
-
-  if (!this.autoClose) {
-    this.filterWrapper_ = this.filterForCapacity_.bind(this);
-    workspace.addChangeListener(this.filterWrapper_)
-  }
-  
   this.disposeUI = eYo.Do.nothing
 }
 
 Object.defineProperties(eYo.Flyout.prototype, {
+  /**
+   * The factory
+   * @type {eYo.Factory}
+   * @readonly
+   */
+  factory: { 
+    get () {
+      return this.factory_
+    }
+  },
+  /**
+   * @type {eYo.Workspace} The workspace inside the flyout.
+   */
+  workspace: {
+    get () {
+      return this.workspace_
+    },
+    set (newValue) {
+      var oldValue = this.workspace_ 
+      if (newValue !== oldValue) {
+        var oldTWS = this.targetWorkspace
+        this.workspace_ = newValue
+        if (newValue) {
+          if (newValue.targetWorkspace !== oldTWS) {
+            if (oldTWS) {
+              oldTWS.removeChangeListener(this.filterWrapper_)
+              this.filterWrapper_ = null
+            }
+            var newTWS = newValue.targetWorkspace
+            if (!this.autoClose) {
+              this.filterWrapper_ = this.filterForCapacity_.bind(this)
+              newTWS.addChangeListener(this.filterWrapper_)
+            }
+            newTWS.flyout = this
+          }
+        }
+      }
+    }
+  },
+  /**
+   * @type {eYo.Workspace} The fyout's workspace's targetWorkspace.
+   */
+  targetWorkspace: {
+    get () {
+      return this.workspace_ && this.workspace_.targetWorkspace_
+    },
+    set (newValue) {
+      var old = this.targetWorkspace
+      if ((newValue !== old)) {
+        if (old) {
+          old.removeChangeListener(this.filterWrapper_)
+          this.filterWrapper_ = null
+        }
+        if (newValue && !this.autoClose) {
+          this.filterWrapper_ = this.filterForCapacity_.bind(this)
+          newValue.addChangeListener(this.filterWrapper_)
+        }
+        if ((this.workspace_.targetWorkspace = newValue)) {
+          newValue.flyout = this
+        }
+      }
+    }
+  },
   /**
    * Does the flyout automatically close when a brick is created?
    * @type {boolean}
@@ -166,37 +230,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
     get () {
       return this.ui_driver.flyoutClientRect(this)
     }
-  },
-  /**
-   * @readonly
-   * @type {eYo.Workspace} The workspace inside the flyout.
-   */
-  workspace: {
-    get () {
-      return this.workspace_
-    }
-  },
-  /**
-   * @type {eYo.Workspace} The fyout's workspace's targetWorkspace.
-   */
-  targetWorkspace: {
-    get () {
-      return this.workspace_.targetWorkspace_
-    },
-    set (newValue) {
-      var old = this.targetWorkspace
-      if ((newValue !== old)) {
-        if (old) {
-          old.removeChangeListener(this.filterWrapper_)
-          this.filterWrapper_ = null
-        }
-        if (newValue && !this.autoClose) {
-          this.filterWrapper_ = this.filterForCapacity_.bind(this)
-          newValue.addChangeListener(this.filterWrapper_)
-        }
-        this.workspace_.targetWorkspace = newValue
-      }
-    }
   }
 })
 
@@ -205,7 +238,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
  */
 eYo.Flyout.prototype.makeUI = function () {
   // Add scrollbar.
-  this.scrollbar_ = new Blockly.Scrollbar(this.workspace_,
+  this.scrollbar_ = new eYo.Scrollbar(this.workspace_,
     false /*this.horizontalLayout_*/, false, 'eyo-flyout-scrollbar')
   this.hide()
   var d = this.ui_driver
@@ -219,12 +252,13 @@ eYo.Flyout.prototype.makeUI = function () {
 }
 
 /**
- * Dispose of this flyout.
+ * Dispose of this flyout UI resources.
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Flyout.prototype.disposeUI = function() {
   this.hide()
   var d = this.ui_driver
+  this.toolbar_ && d.flyoutToolbarDispose(tb)
   if (this.scrollbar_) {
     this.scrollbar_.dispose()
     this.scrollbar_ = null
@@ -247,10 +281,8 @@ eYo.Flyout.prototype.dispose = function() {
     this.scrollbar_.dispose()
     this.scrollbar_ = null
   }
-  if (this.workspace_) {
-    this.workspace_.targetWorkspace = null
-    this.workspace_ = null
-  }
+  this.targetWorkspace = null
+  this.workspace = null
   this.factory_ = null
 }
 

@@ -26,7 +26,7 @@ goog.require('eYo.FlyoutCategory')
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

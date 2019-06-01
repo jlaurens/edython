@@ -115,17 +115,31 @@ eYo.Svg.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
  */
 eYo.Svg.prototype.flyoutCssClass = function() {
   return eYo.Svg.FLYOUT_CSS_CLASS
-};
+}
+
+/**
+ * Initializes the flyout toolbar SVG ressources.
+ * @param {!eYo.FlyoutToolbar} flyoutToolbar
+ */
+eYo.Svg.prototype.flyoutToolbarDispose = function(ftb) {
+  var dom = this.basicInit(ftb)
+  goog.dom.removeNode(dom.control_)
+  goog.dom.removeNode(dom.div_)
+  var svg = dom.svg
+  goog.dom.removeNode(svg.root_)
+  this.basicDispose(ftb)
+}
 
 /**
  * Initializes the flyout toolbar SVG ressources.
  * @param {!eYo.FlyoutToolbar} flyoutToolbar
  */
 eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
-  if (ftp.dom) {
+  if (ftb.dom) {
     return
   }
-  var dom = this.basicInit(ftp)
+  var flyout = ftb.flyout
+  var dom = this.basicInit(ftb)
   var svg = dom.svg
   /*
   <div class="eyo-flyout-toolbar">
@@ -249,7 +263,7 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     flyout.switcher_.style.left = '0px'
     flyout.switcher_.style.top = '0px'
   }
-  var bound = flyout.dom.bound
+  var bound = dom.bound
   bound.mousedown = this.bindEvent(
     dom.control_,
     'mousedown',
@@ -274,7 +288,6 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     flyout,
     flyout.on_mouseup
   )
-
   goog.dom.insertSiblingBefore(dom.div_, ftb.flyout_.dom.svg.root_)
 }
 
@@ -450,7 +463,7 @@ eYo.Svg.prototype.flyoutClientRect = function(flyout) {
  */
 eYo.Svg.prototype.flyoutUpdate = function(flyout, width, height) {
   var top_margin = flyout.TOP_MARGIN
-  var atRight = flyout.anchor == Blockly.TOOLBOX_AT_RIGHT
+  var atRight = flyout.anchor == eYo.Flyout.AT_RIGHT
   // Decide whether to start on the left or right.
   var path = [`M ${atRight ? width : 0},${top_margin}`];
   // Top.

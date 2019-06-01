@@ -2,11 +2,13 @@ eYo.Test.no_brick_type = true
 
 describe('Expression shape', function () {
   var type = 'test_shape_out'
+  eYo.T3.Expr[type] = type
   eYo.Brick.Expr.makeSubclass(type, {
     out: {
       check: null
     }
-  })  
+  }) 
+  chai.assert(eYo.Brick.Expr.test_shape_out)
   var b = eYo.Test.new_brick(type)
   chai.assert(b.isExpr, 'MISSED')
   var createPath = (d, c, l) => {

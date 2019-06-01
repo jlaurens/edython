@@ -19,7 +19,6 @@ goog.provide('eYo.Svg.WorkspaceDragSurface')
 goog.provide('eYo.Svg.BrickDragSurface')
 
 goog.require('eYo.Svg')
-goog.forwardDeclare('Blockly.utils')
 
 goog.forwardDeclare('goog.asserts')
 goog.forwardDeclare('goog.math.Coordinate')
@@ -51,12 +50,10 @@ eYo.Svg.BrickDragSurface = function(container) {
 /**
  * Sever all the links and remove dom nodes.
  */
-eYo.Svg.prototype.dispose = function() {
-  var svg = this.svg
-  if (svg) {
-    goog.dom.removeNode(svg.root_)
-    this.svg = svg.root_ = svg.group_ = null
-  }
+eYo.Svg.BrickDragSurface.prototype.dispose = function() {
+  this.dispose = eYo.Do.Nothing
+  goog.dom.removeNode(this.dom.svg.root_)
+  this.dom = null
 }
 
 Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
@@ -68,7 +65,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   currentBrick: {
     get () {
-      return this.svg.group_.firstChild
+      return this.dom.svg.group_.firstChild
     }
   },
   /**
@@ -99,7 +96,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   translation: {
     get () {
-      var xy = eYo.Svg.getRelativeXY(this.svg.root_)
+      var xy = eYo.Svg.getRelativeXY(this.dom.svg.root_)
       return new goog.math.Coordinate(
         xy.x / this.scale_,
         xy.y / this.scale_
@@ -111,15 +108,15 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
 /**
  * Set the SVG blocks on the drag surface's group and show the surface.
  * Only one block group should be on the drag surface at a time.
- * @param {!Element} blocks Block or group of blocks to place on the drag
+ * @param {!Element} blocks Brick or group of blocks to place on the drag
  * surface.
  */
-eYo.Svg.BrickDragSurface.prototype.setBlocksAndShow = function(blocks) {
+eYo.Svg.BrickDragSurface.prototype.setBricksAndShow = function(blocks) {
   goog.asserts.assert(
-      this.svg.group_.childNodes.length == 0, 'Already dragging a block.');
+      this.dom.svg.group_.childNodes.length == 0, 'Already dragging a block.');
   // appendChild removes the blocks from the previous parent
-  this.svg.group_.appendChild(blocks)
-  this.svg.root_.style.display = 'block'
+  this.dom.svg.group_.appendChild(blocks)
+  this.dom.svg.root_.style.display = 'block'
   this.surfaceXY_ = new goog.math.Coordinate(0, 0)
 };
 
@@ -136,7 +133,7 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale)
   // fuzzy while they are being dragged on the drag surface.
   var fixedX = x.toFixed(0)
   var fixedY = y.toFixed(0)
-  this.svg.group_.setAttribute(
+  this.dom.svg.group_.setAttribute(
     'transform',
     `translate(${fixedX},${fixedY}) scale(${scale})`
   )
@@ -155,14 +152,14 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
     y = x.y
     x = x.x
   }
-  this.svg.root_.style.display = 'block'
+  this.dom.svg.root_.style.display = 'block'
   this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_)
   var x = this.surfaceXY_.x.toFixed(0)
   var y = this.surfaceXY_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
   eYo.Dom.setCssTransform(
-    this.svg.root_,
+    this.dom.svg.root_,
     `translate3d(${x}px,${y}px, 0px)`
   )
 }
@@ -178,14 +175,14 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
  */
 eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
   if (opt_newSurface) {
-    // appendChild removes the node from this.svg.group_
+    // appendChild removes the node from this.dom.svg.group_
     opt_newSurface.appendChild(this.currentBrick)
   } else {
-    this.svg.group_.removeChild(this.currentBrick)
+    this.dom.svg.group_.removeChild(this.currentBrick)
   }
-  this.svg.root_.style.display = 'none';
+  this.dom.svg.root_.style.display = 'none';
   goog.asserts.assert(
-      this.svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
+      this.dom.svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
   this.surfaceXY_ = null;
 };
 
@@ -201,8 +198,9 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
    *   <g class="eyo-brick-canvas"></g>
    * </svg>
    */
-  this.svg = Object.create(null)
-  this.svg.root_ = eYo.Svg.newElement('svg', {
+  var dom = this.dom = Object.create(null)
+  var svg = dom.svg = Object.create(null)
+  svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
@@ -216,10 +214,11 @@ eYo.Svg.WorkspaceDragSurface = function(container) {
  * @private
  */
 eYo.Svg.WorkspaceDragSurface.prototype.dispose = function () {
-  var svg = this.svg
+  this.clearAndHide.dispose = eYo.Do.nothing
+  var svg = this.dom.svg
   if (svg) {
     goog.dom.removeNode(svg.root_)
-    this.svg = svg.root_ = null
+    this.dom = this.dom.svg = svg.root_ = null
   }
 }
 
@@ -232,7 +231,7 @@ Object.defineProperties(eYo.Svg.WorkspaceDragSurface.prototype, {
    */
   translation: {
     get () {
-      return eYo.Svg.getRelativeXY(this.svg.root_)
+      return eYo.Svg.getRelativeXY(this.dom.svg.root_)
     }
   },
 })
@@ -255,9 +254,9 @@ eYo.Svg.WorkspaceDragSurface.prototype.xyMoveTo = function(x, y) {
   // fuzzy while they are being moved on the drag surface.
   var fixedX = x.toFixed(0)
   var fixedY = y.toFixed(0)
-  this.svg.root_.style.display = 'block'
+  this.dom.svg.root_.style.display = 'block'
   eYo.Dom.setCssTransform(
-    this.svg.root_,
+    this.dom.svg.root_,
     `translate3d(${fixedX}px,${fixedY}px,0px)`
   )
 }
@@ -270,7 +269,7 @@ eYo.Svg.WorkspaceDragSurface.prototype.xyMoveTo = function(x, y) {
  * @package
  */
 eYo.Svg.WorkspaceDragSurface.prototype.clearAndHide = function(newSurface) {
-  var root = this.svg.root_
+  var root = this.dom.svg.root_
   var canvas = root.childNodes[0]
 
   // If there is a previous sibling, put the blockCanvas back right afterwards,
@@ -302,7 +301,7 @@ eYo.Svg.WorkspaceDragSurface.prototype.clearAndHide = function(newSurface) {
  */
 eYo.Svg.WorkspaceDragSurface.prototype.setContentsAndShow = function(
     blockCanvas, previousSibling, width, height, scale) {
-  var root = this.svg.root_
+  var root = this.dom.svg.root_
   goog.asserts.assert(
     root.childNodes.length == 0, 'Already dragging a block.');
   this.previousSibling_ = previousSibling

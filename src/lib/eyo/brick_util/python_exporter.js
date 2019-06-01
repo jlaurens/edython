@@ -161,7 +161,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 }
 
 /**
- * Convert the brick delegate to python code.
+ * Convert the brick to python code.
  * For edython.
  * @param {!eYo.Brick} eyo The owner of the receiver, to be converted to python.
  * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.

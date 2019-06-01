@@ -42,7 +42,7 @@ eYo.Audio = function(pathToMedia) {
   // Android ignores any sound not loaded as a result of a user action.
   // Bind temporary hooks that preload the sounds.
   var soundBinds
-  var unbindSounds = function() {
+  var unbindSounds = () => {
     while (soundBinds.length) {
       eYo.Dom.unbindEvent(soundBinds.pop())
     }

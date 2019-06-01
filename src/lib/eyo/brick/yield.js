@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -158,7 +158,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @this {eYo.Brick}
  * @private
@@ -195,7 +195,7 @@ eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
@@ -215,7 +215,7 @@ eYo.Brick.Stmt.makeSubclass('yield_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */

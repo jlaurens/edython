@@ -277,14 +277,14 @@ eYo.Svg.prototype.pathControlDef_ = eYo.Svg.prototype.pathDef_
 eYo.Svg.prototype.pathStatementDef_ = eYo.Svg.prototype.pathDef_
 
 /**
- * Block path.
+ * Brick path.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
 eYo.Svg.prototype.pathGroupShapeDef_ = eYo.Svg.prototype.pathDef_
 
 /**
- * Block path.
+ * Brick path.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
@@ -292,7 +292,7 @@ eYo.Svg.prototype.pathValueDef_ = eYo.Svg.prototype.pathDef_
 
 
 /**
- * Block outline. Default implementation forwards to pathDef_.
+ * Brick outline. Default implementation forwards to pathDef_.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
@@ -306,14 +306,14 @@ eYo.Svg.prototype.pathContourDef_ = eYo.Svg.prototype.pathDef_
 eYo.Svg.prototype.pathHilightDef_ = eYo.Svg.prototype.pathDef_
 
 /**
- * Block outline. Default implementation forwards to pathDef_.
+ * Brick outline. Default implementation forwards to pathDef_.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
 eYo.Svg.prototype.pathShapeDef_ = eYo.Svg.prototype.pathDef_
 
 /**
- * Block path when collapsed.
+ * Brick path when collapsed.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */

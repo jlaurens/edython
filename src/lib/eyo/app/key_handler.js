@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Key handler for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -158,10 +158,10 @@ eYo.KeyHandler = (() => {
     var eyo = eYo.Selected.brick
     if (eyo) {
       var m4t = eYo.Selected.magnet
-      var newB = m4t && (eyo.insertBlockWithModel(model, m4t))
+      var newB = m4t && (eyo.insertBrickWithModel(model, m4t))
         || (model.parent || model.slot
-          ? eyo.insertParentWithModel(model) || eyo.insertBlockWithModel(model, m4t)
-          : eyo.insertBlockWithModel(model, m4t) || eyo.insertParentWithModel(model))
+          ? eyo.insertParentWithModel(model) || eyo.insertBrickWithModel(model, m4t)
+          : eyo.insertBrickWithModel(model, m4t) || eyo.insertParentWithModel(model))
       if (newB) {
         if (m4t) {
           // There was a selected connection,
@@ -489,7 +489,7 @@ eYo.KeyHandler = (() => {
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)
-          var xxyy = m4t.xyInBlock_.clone().scale(brick.workspace.scale)
+          var xxyy = m4t.xyInBrick_.clone().scale(brick.workspace.scale)
           xy.translate(xxyy)
         } else {
           xy = goog.style.getPageOffset(brick.dom.svg.group_)
@@ -607,7 +607,7 @@ var doit = (() => {
           return
         }
         if (eYo.Selected.magnet) {
-          eyo.insertBlockWithModel(eYo.T3.Expr.not_test)
+          eyo.insertBrickWithModel(eYo.T3.Expr.not_test)
         } else {
           eyo.insertParentWithModel(eYo.T3.Expr.not_test)
         }
@@ -625,7 +625,7 @@ var doit = (() => {
           operator_p: '+'
         }
         if (eYo.Selected.magnet) {
-          eyo.insertBlockWithModel(model)
+          eyo.insertBrickWithModel(model)
         } else {
           eyo.insertParentWithModel(model)
         }
@@ -651,7 +651,7 @@ var doit = (() => {
           operator_p: op
         }
         eYo.Selected.magnet
-          ? brick.insertBlockWithModel(model)
+          ? brick.insertBrickWithModel(model)
           : brick.insertParentWithModel(model)
       }
     }

@@ -11,7 +11,7 @@
  * In order to avoid name collisions, every subclass of either a
  * closure object or a Blockly object has a minimum of extra properties.
  * All these properties and methods are gathered in the  helper.
- * Block helpers are called delegates.
+ * Brick helpers are called delegates.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

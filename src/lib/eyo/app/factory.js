@@ -119,10 +119,15 @@ eYo.Factory.prototype.dispose = function() {
 }
 
 /**
- * Add a flyout element in an element with the given tag name.
+ * Add a flyout.
  * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
  */
 eYo.Factory.prototype.addFlyout = function(switcher) {
+  if (!this.hasUI) {
+    this.willFlyout_ = true
+    return
+  }
+  delete this.willFlyout_
   var flyoutOptions = {
     flyoutAnchor: this.options.flyoutAnchor,
     switcher: switcher
@@ -131,15 +136,28 @@ eYo.Factory.prototype.addFlyout = function(switcher) {
   * @type {!eYo.Flyout}
   * @private
   */
-  var flyout = this.flyout = new eYo.Flyout(this, flyoutOptions)
   var options = {
     getMetrics: flyout.getMetrics_.bind(flyout),
     setMetrics: flyout.setMetrics_.bind(flyout),
   }
   var space = this.flyoutSpace_ = new eYo.Workspace(this, options)
   space.options = this.mainWorkspace_.options
-  this.mainWorkspace_.flyout = flyout
-  space.targetWorkspace_ = this.mainWorkspace_
+  var flyout = this.flyout_ = new eYo.Flyout(this, space, flyoutOptions)
+  flyout.workspace = this.flyoutSpace_
+  flyout.targetWorkspace = this.mainWorkspace_
+}
+
+/**
+ * Remove a previously added flyout.
+*/
+eYo.Factory.prototype.removeFlyout = function() {
+  var x = this.flyout_
+  if (x) {
+    this.flyout_ = null
+    this.mainWorkspace_.flyout = null
+    x.dispose()
+
+  }
 }
 
 /**

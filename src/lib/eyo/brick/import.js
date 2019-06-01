@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -335,7 +335,7 @@ eYo.Brick.Stmt.import_stmt.prototype.getMenuTarget = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

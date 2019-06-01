@@ -159,7 +159,7 @@ eYo.Dom.bindEvent = eYo.Dom.prototype.bindEvent = (node, name, thisObject, func,
 eYo.Dom.unbindEvent = eYo.Dom.prototype.unbindEvent = bindData => {
   while (bindData.length) {
     var d = bindData.pop()
-    var func = datum[2]
+    var func = d[2]
     d[0].removeEventListener(d[1], func, false)
   }
   return func

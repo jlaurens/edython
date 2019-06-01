@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -141,7 +141,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
+eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
     var below = eYo.Brick.newComplete(this, belowPrototypeName)
     var magnet = this.foot_m
@@ -163,7 +163,7 @@ eYo.Brick.Stmt.prototype.insertBlockAfter = function (belowPrototypeName) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
@@ -436,7 +436,7 @@ eYo.Brick.Stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

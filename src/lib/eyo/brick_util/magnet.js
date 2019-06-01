@@ -194,27 +194,70 @@ eYo.Magnet.OPPOSITE_TYPE = {
 }
 
 /**
- * Initialize a set of connection DBs for a specified workspace.
- * @param {!Blockly.Workspace} workspace The workspace this DB is for.
+ * Database of magnets.
+ * Magnets are stored in order of their vertical component.  This way
+ * connections in an area may be looked up quickly using a binary search.
+ * @constructor
  */
-Blockly.ConnectionDB.init = function(workspace) {
+eYo.Magnet.DB = function() {
+}
+eYo.Magnet.DB.prototype = new Array()
+/**
+ * Don't inherit the constructor from Array.
+ * @type {!Function}
+ */
+eYo.Magnet.DB.constructor = eYo.Magnet.DB
+
+/**
+ * Initialize a set of connection DBs for a specified workspace.
+ * @param {!Brickly.Workspace} workspace The workspace this DB is for.
+ */
+eYo.Magnet.DB.init = function(workspace) {
   // Create four databases, one for each connection type.
-  var dbList = [];
-  dbList[eYo.Magnet.IN] = new Blockly.ConnectionDB();
-  dbList[eYo.Magnet.OUT] = new Blockly.ConnectionDB();
-  dbList[eYo.Magnet.HEAD] = new Blockly.ConnectionDB();
-  dbList[eYo.Magnet.LEFT] = new Blockly.ConnectionDB();
-  dbList[eYo.Magnet.RIGHT] = new Blockly.ConnectionDB();
-  dbList[eYo.Magnet.FOOT] = new Blockly.ConnectionDB();
-  workspace.connectionDBList = dbList;
+  var dbList = []
+  dbList[eYo.Magnet.IN] = new eYo.Magnet.DB()
+  dbList[eYo.Magnet.OUT] = new eYo.Magnet.DB()
+  dbList[eYo.Magnet.HEAD] = new eYo.Magnet.DB()
+  dbList[eYo.Magnet.LEFT] = new eYo.Magnet.DB()
+  dbList[eYo.Magnet.RIGHT] = new eYo.Magnet.DB()
+  dbList[eYo.Magnet.FOOT] = new eYo.Magnet.DB()
+  workspace.magnetDBList = dbList
 };
+
+/**
+ * Finds a candidate position for inserting this magnet into the list.
+ * This will be in the correct y order
+ * but makes no guarantees about ordering in the x axis.
+ * @param {!float} y  The y coordinate of the magnet to add.
+ * @return {number} The candidate index.
+ * @private
+ */
+eYo.Magnet.DB.prototype.findIndex_ = function(y) {
+  if (!this.length) {
+    return 0;
+  }
+  var min = 0
+  var max = this.length
+  while (min < max) {
+    var mid = Math.floor((min + max) / 2)
+    if (this[mid].y < y) {
+      min = mid + 1
+    } else if (this[mid].y > y) {
+      max = mid
+    } else {
+      min = mid
+      break
+    }
+  }
+  return min
+}
 
 /**
  * Add a magnet to the database. Do not look for duplicates.
  * @param {!eYo.Magnet} magnet The magnet to be added.
  */
-Blockly.ConnectionDB.prototype.addMagnet_ = function(magnet) {
-  var magnetIndex = this.findPositionForConnection_(magnet)
+eYo.Magnet.DB.prototype.addMagnet_ = function(magnet) {
+  var magnetIndex = this.findIndex_(magnet.y)
   this.splice(magnetIndex, 0, magnet)
 }
 
@@ -222,11 +265,47 @@ Blockly.ConnectionDB.prototype.addMagnet_ = function(magnet) {
  * Remove a magnet from the database. Do not look for duplicates.
  * @param {!eYo.Magnet} magnet The magnet to be remove.
  */
-Blockly.ConnectionDB.prototype.removeMagnet_ = function(magnet) {
-  var magnetIndex = this.findConnection(magnet)
-  magnetIndex >= 0 && (this.splice(magnetIndex, 1))
-}
-
+eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
+  /*
+   * Find the given connection.
+   * Starts by doing a binary search to find the approximate location, then
+   *     linearly searches nearby for the exact connection.
+   * @param {!Brickly.Connection} conn The connection to find.
+   * @return {number} The index of the connection, or -1 if the connection was
+   *     not found.
+   */
+  var findMagnet = (db, magnet) => {
+    if (!db.length) {
+      return -1
+    }
+    var bestGuess = db.findIndex_(magnet.y)
+    if (bestGuess >= db.length) {
+      // Not in list
+      return -1
+    }
+    var y = magnet.y
+    // Walk forward and back on the y axis looking for the magnet.
+    var min = bestGuess
+    while (min >= 0 && db[min].y === y) {
+      if (db[min] === magnet) {
+        return min
+      }
+      min--
+    }
+    var max = bestGuess
+    while (max < db.length && db[max].y === yPos) {
+      if (db[max] === magnet) {
+        return max
+      }
+      max++
+    }
+    return -1
+  }
+  return function(magnet) {
+    var magnetIndex = findMagnet(this, magnet)
+    magnetIndex >= 0 && (this.splice(magnetIndex, 1))
+  }
+})()
 
 // deprecated
 Object.defineProperty(Blockly, 'OPPOSITE', {
@@ -278,7 +357,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
 Object.defineProperties(eYo.Magnet.prototype, {
   magnetDB_: {
     get () {
-      return this.workspace.connectionDBList
+      return this.workspace.magnetDBList
     }
   },
   optional_: { writable: true },
@@ -365,9 +444,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   },
   isSuperior: {
     get () { // the source 'owns' the target
-      return this.type === eYo.Magnet.IN ||
-       this.type === eYo.Magnet.FOOT ||
-       this.type === eYo.Magnet.RIGHT
+      return this.isInput || this.isFoot || this.isRight
     }
   },
   hasUI: {
@@ -1516,12 +1593,61 @@ eYo.Magnet.prototype.unhideAll = function() {
  *     and 'radius' which is the distance.
  * @suppress{accessControls}
  */
-eYo.Magnet.prototype.closest = function (maxLimit, dxy) {
-  if (this.hidden_) {
-    return {}
+eYo.Magnet.prototype.closest = (() => {
+  /*
+   * Find the closest compatible connection to this connection.
+   * @param {!Brickly.Connection} conn The connection searching for a compatible
+   *     mate.
+   * @param {number} maxRadius The maximum radius to another connection.
+   * @param {!goog.math.Coordinate} dxy Offset between this connection's location
+   *     in the database and the current location (as a result of dragging).
+   * @return {!{connection: ?Brickly.Connection, radius: number}} Contains two
+   *     properties:' connection' which is either another connection or null,
+   *     and 'radius' which is the distance.
+   */
+  var searchForClosest = (db, magnet, maxRadius, dxy) => {
+    // Don't bother.
+    if (!db.length) {
+      return {magnet: null, radius: maxRadius}
+    }
+    var where = new eYo.Where(magnet.where).advance(dxy)
+    // findPositionForConnection finds an index for insertion, which is always
+    // after any block with the same y index.  We want to search both forward
+    // and back, so search on both sides of the index.
+    var closestIndex = db.findIndex_(where.y)
+    var bestMagnet = null
+    var bestRadius = maxRadius
+    var temp;
+
+    // Walk forward and back on the y axis looking for the closest x,y point.
+    var min = closestIndex - 1
+    while (min >= 0) {
+      temp = db[min--]
+      var radius = where.distanceFrom(temp.where)
+      if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
+        bestMagnet = temp
+        bestRadius = radius
+      }
+    }
+    var max = closestIndex
+    while (max < db.length) {
+      temp = db[max++]
+      var radius = where.distanceFrom(temp.where)
+      if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
+        bestMagnet = temp
+        bestRadius = radius
+      }
+    }
+    // If there were no valid connections, bestConnection will be null.
+    return {magnet: bestMagnet, radius: bestRadius}
   }
-  return this.dbOpposite_.searchForClosest(this, maxLimit, dxy)
-}
+  return function (maxLimit, dxy) {
+    if (this.hidden_) {
+      return {}
+    }
+    return searchForClosest(this.dbOpposite_, this, maxLimit, dxy)
+  }
+})()
 
 /**
  * Move this magnet to the location given by its offset within the brick and
@@ -1566,20 +1692,12 @@ eYo.Magnet.prototype.moveBy = function(dx, dy) {
 /**
  * Returns the distance between this magnet and another magnet in
  * workspace units.
- * The computation takes into account the width of statement bricks.
  * @param {!eYo.Magnet} other The other connection to measure
  *     the distance to.
- * @return {number} The distance between connections, in workspace units.
+ * @return {number} The distance between magnets, in workspace units.
  */
 eYo.Magnet.prototype.distanceFrom = function(other) {
-  var dx = this.where.x_ - other.where.x_
-  var dy = this.where.y_ - other.where.y_
-  if (this.isInput) {
-    dy += eYo.Padding.h
-  } else if (other.isInput) {
-    dy -= eYo.Padding.h
-  }
-  return Math.sqrt(dx * dx + dy * dy)
+  return this.where.distanceFrom(other.where)
 }
 
 /**
@@ -1700,7 +1818,7 @@ eYo.Magnet.prototype.connect = function(other) {
       throw 'Attempted to connect a brick to itself.'
     case eYo.Magnet.REASON_DIFFERENT_WORKSPACES:
       // Usually this means one brick has been deleted.
-      throw 'Blocks not on same workspace.'
+      throw 'Bricks not on same workspace.'
     case eYo.Magnet.REASON_WRONG_TYPE:
       throw 'Attempt to connect incompatible types.'
     case eYo.Magnet.REASON_TARGET_NULL:
@@ -1752,14 +1870,15 @@ eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
  * @param {!eYo.Magnet} candidate A nearby connection to check.
+ * @param {?Boolean} ignoreDistance
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
-eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
+eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
-  if (this.distanceFrom(candidate) > maxRadius) {
-    return false;
+  if (goog.isDef(maxRadius) && this.distanceFrom(candidate) > maxRadius) {
+    return false
   }
   // Type checking.
   if (this.canConnectWithReason_(candidate) !== eYo.Magnet.CAN_CONNECT) {
@@ -1767,12 +1886,11 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
   }
   if (!candidate.isSuperior) {
     if (candidate.target || this.target) {
-      return false;
+      return false
     }
   }
   var its_brick = candidate.targetBrick
-
-  if (candidate.type === eYo.Magnet.IN && candidate.target &&
+  if (candidate.isInput && candidate.target &&
       !its_brick.isMovable) {
     return false;
   }
@@ -1780,7 +1898,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate) {
   // Don't let a brick with no foot magnet bump other bricks out of the
   // stack.  Similarly, replacing a terminal statement with another terminal statement
   // is allowed.
-  if (this.type === eYo.Magnet.HEAD &&
+  if (this.isHead &&
       candidate.target &&
       !this.brick.foot_m &&
       its_brick.foot_m) {

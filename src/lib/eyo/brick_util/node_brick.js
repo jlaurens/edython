@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Node.Block')
+goog.provide('eYo.Node.Brick')
 
 goog.require('eYo.Node')
 
@@ -23,7 +23,7 @@ goog.require('eYo.Brick.Primary')
 /**
  * Converts the receiver to a visual brick.
  * `this.type === eYo.TKN.suite`.
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.suiteInBrick = function (brick) {
   // simple_stmt | NEWLINE INDENT stmt+ DEDENT
@@ -50,7 +50,7 @@ eYo.Node.prototype.suiteInBrick = function (brick) {
 /**
  * `this` is the function body node.
  * `this.type === eYo.TKN.func_body_suite`.
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.func_body_suiteInBrick = function (brick) {
   var n = this.n0
@@ -88,7 +88,7 @@ eYo.Node.prototype.func_body_suiteInBrick = function (brick) {
 /**
  * `this` is the comment node.
  * `this.type === eYo.TKN.COMMENT`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.comment2Brick = function (owner) {
   var brick = eYo.Brick.newComplete(owner, eYo.T3.Stmt.comment_stmt)
@@ -100,7 +100,7 @@ eYo.Node.prototype.comment2Brick = function (owner) {
 /**
  * `this` is the comment node.
  * `this.type === eYo.TKN.TYPE_COMMENT`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.typeComment2Brick = function (owner) {
   var slgt = eYo.Brick.newComplete(owner, eYo.T3.Stmt.comment_stmt)
@@ -111,7 +111,7 @@ eYo.Node.prototype.typeComment2Brick = function (owner) {
 /**
  * `this` is the simple statement node.
  * `this.type === eYo.TKN.simple_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.simple_stmt2Brick = function (owner) {
   // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
@@ -147,7 +147,7 @@ eYo.Node.prototype.simple_stmt2Brick = function (owner) {
 /**
  * `this` is the NAME node.
  * `this.type === eYo.TKN.NAME`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.NAME2Brick = function (owner) {
   var brick = eYo.Brick.newComplete(owner, {
@@ -161,7 +161,7 @@ eYo.Node.prototype.NAME2Brick = function (owner) {
 /**
  * `this` is the dotted_name node.
  * `this.type === eYo.TKN.dotted_name`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.dotted_name2Brick = function (owner) {
   // dotted_name: NAME ('.' NAME)*
@@ -184,7 +184,7 @@ eYo.Node.prototype.dotted_name2Brick = function (owner) {
 /**
  * `this` is the comp_iter node.
  * `this.type === eYo.TKN.comp_iter`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.comp_iter2Brick = function (workspace) {
   // comp_iter: comp_for | comp_if
@@ -208,7 +208,7 @@ eYo.Node.prototype.comp_iter2Brick = function (workspace) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.TKN.comp_for`
- * @param {!eYo.Brick} brick  a brick delegate with a 'for' slot.
+ * @param {!eYo.Brick} brick  a brick with a 'for' slot.
  */
 eYo.Node.prototype.comp_forInBrick = function (brick) {
   // comp_for: ['async'] sync_comp_for
@@ -222,7 +222,7 @@ eYo.Node.prototype.comp_forInBrick = function (brick) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.TKN.sync_comp_for`
- * @param {!eYo.Brick} brick  a brick delegate with a 'for' slot.
+ * @param {!eYo.Brick} brick  a brick with a 'for' slot.
  */
 eYo.Node.prototype.sync_comp_forInBrick = function (brick) {
   // 'for' exprlist 'in' or_test [comp_iter]
@@ -235,7 +235,7 @@ eYo.Node.prototype.sync_comp_forInBrick = function (brick) {
 /**
  * `this` is the sync_comp_for node.
  * `this.type === eYo.TKN.sync_comp_for`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.sync_comp_for2Brick = function (workspace) {
   // 'for' exprlist 'in' or_test [comp_iter]
@@ -247,7 +247,7 @@ eYo.Node.prototype.sync_comp_for2Brick = function (workspace) {
 /**
  * `this` is the comp_if node.
  * `this.type === eYo.TKN.comp_if`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.comp_if2Brick = function (workspace) {
   // 'if' test_nocond [comp_iter]
@@ -261,7 +261,7 @@ eYo.Node.prototype.comp_if2Brick = function (workspace) {
 /**
  * `this` is the for_stmt node.
  * `this.type === eYo.TKN.for_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.for_stmt2Brick = function (workspace) {
   // 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
@@ -283,7 +283,7 @@ eYo.Node.prototype.for_stmt2Brick = function (workspace) {
 /**
  * `this` is the namedexpr_test node.
  * `this.type === eYo.TKN.namedexpr_test`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.namedexpr_test2Brick = function (workspace) {
   // test [':=' test]
@@ -313,7 +313,7 @@ eYo.Node.prototype.namedexpr_test2Brick = function (workspace) {
 /**
  * `this` is the if_stmt node.
  * `this.type === eYo.TKN.if_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.if_stmt2Brick = function (workspace) {
   // 'if' namedexpr_test ':' suite ('elif' namedexpr_test ':' suite)* ['else' ':' suite]
@@ -343,7 +343,7 @@ eYo.Node.prototype.if_stmt2Brick = function (workspace) {
  * `this` is the while_stmt node.
  * We coud have merged with the if_stmt2Brick above.
  * `this.type === eYo.TKN.while_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.while_stmt2Brick = function (workspace) {
   // 'while' namedexpr_test ':' suite ['else' ':' suite]
@@ -365,7 +365,7 @@ eYo.Node.prototype.while_stmt2Brick = function (workspace) {
 /**
  * `this` is the try_stmt node.
  * `this.type === eYo.TKN.try_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.try_stmt2Brick = function (workspace) {
   /*try_stmt: ('try' ':' suite
@@ -407,7 +407,7 @@ eYo.Node.prototype.try_stmt2Brick = function (workspace) {
 /**
  * `this` is the with_stmt node.
  * `this.type === eYo.TKN.with_stmt`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.with_stmt2Brick = function (workspace) {
   // 'with' with_item (',' with_item)*  ':' suite
@@ -434,7 +434,7 @@ eYo.Node.prototype.with_stmt2Brick = function (workspace) {
 /**
  * `this` is the funcdef node.
  * `this.type === eYo.TKN.funcdef`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.funcdef2Brick = function (workspace) {
   // 'def' NAME parameters ['->' test] ':' [TYPE_COMMENT] func_body_suite
@@ -462,7 +462,7 @@ eYo.Node.prototype.funcdef2Brick = function (workspace) {
 /**
  * `this` is the classdef node.
  * `this.type === eYo.TKN.classdef`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.classdef2Brick = function (workspace) {
   // 'class' NAME ['(' [arglist] ')'] ':' suite
@@ -486,7 +486,7 @@ eYo.Node.prototype.classdef2Brick = function (workspace) {
 /**
  * `this` is the decorated node.
  * `this.type === eYo.TKN.decorated`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.decorated2Brick = function (workspace) {
   /*
@@ -516,7 +516,7 @@ decorated: decorators (classdef | funcdef | async_funcdef)
 /**
  * `this` is the decorator node.
  * `this.type === eYo.TKN.decorator`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.decorator2Brick = function (workspace) {
   // decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
@@ -547,7 +547,7 @@ eYo.Node.prototype.decorator2Brick = function (workspace) {
 /**
  * `this` is the tfpdef2Brick node.
  * `this.type === eYo.TKN.tfpdef`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.tfpdef2Brick = function (workspace) {
   /* tfpdef: NAME [':' test] */
@@ -564,7 +564,7 @@ eYo.Node.prototype.tfpdef2Brick = function (workspace) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.TKN.typedargslist`
- * @param {!eYo.Brick} brick  a brick delegate
+ * @param {!eYo.Brick} brick  a brick
  */
 eYo.Node.prototype.typedargslistInBrick = function (brick) {
   var n = this.n0
@@ -626,7 +626,7 @@ eYo.Node.prototype.typedargslistInBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * You'd better not call this twice on the same target.
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.knownListInBrick = function (brick, toBrick) {
   var n = this.n0
@@ -648,7 +648,7 @@ eYo.Node.prototype.knownListInBrick = function (brick, toBrick) {
 
 /**
  * `this` is the first node of a typedargslist.
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.do_list = function (brick) {
   var n = this.n0
@@ -705,7 +705,7 @@ yield_arg: 'from' test | testlist_star_expr */
 /**
  * `this` is a yield_expr.
  * `this.type === eYo.TKN.yield_expr`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.yield_exprInBrick = function (brick) {
   var n = this.n1
@@ -730,7 +730,7 @@ eYo.Node.prototype.yield_exprInListBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.TKN.varargslist`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.varargslistInBrick = function (brick) {
 /* (vfpdef ['=' test] (',' vfpdef ['=' test])* [',' [
@@ -789,7 +789,7 @@ eYo.Node.prototype.varargslistInBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.TKN.dictorsetmaker`
- * @param {!eYo.Brick} brick  a brick delegate
+ * @param {!eYo.Brick} brick  a brick
  */
 eYo.Node.prototype.dictorsetmakerInBrick = function (brick) {
 /*dictorsetmaker: ( ((test ':' test | '**' expr)
@@ -865,7 +865,7 @@ eYo.Node.prototype.dictorsetmakerInBrick = function (brick) {
 /**
  * Partially converts the node `this` to a visual brick.
  * `this.n_type === eo.TKN.comp_for`
- * @param {!eYo.Brick} brick a brick delegate
+ * @param {!eYo.Brick} brick a brick
  */
 eYo.Node.prototype.comprehensionInBrick = function (brick) {
   this.comp_forInBrick(brick)
@@ -892,7 +892,7 @@ eYo.Node.prototype.comprehension2Brick = function (owner) {
 /**
  * Converts the node `this` to a visual brick.
  * `this.type === eYo.TKN.dictorsetaker`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.dict_comprehension2Brick = function (owner) {
   /*dictorsetmaker: (test ':' test | '**' expr) comp_for
@@ -916,7 +916,7 @@ eYo.Node.prototype.dict_comprehension2Brick = function (owner) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.TKN.testlist_comp`
- * @param {!Object} a brick delegate
+ * @param {!Object} a brick
  */
 eYo.Node.prototype.testlist_compInBrick = function (brick) {
   // (namedexpr_test|star_expr) ( comp_for | (',' (namedexpr_test|star_expr))* [','] )
@@ -963,7 +963,7 @@ eYo.Node.prototype.toBrick = function (workspace) {
           root.pendingComments = ds
         }
       } else {
-        root.commentBlocks = ds
+        root.commentBricks = ds
       }
     } else if ((root = ds.shift())) {
       var dd = root

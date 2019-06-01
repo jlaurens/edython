@@ -23,11 +23,12 @@ goog.forwardDeclare('eYo.Workspace')
  * @return {!Element} The workspace's SVG group.
  */
 eYo.Svg.prototype.workspaceInit = function(workspace) {
-  var dom = eYo.Svg.superClass_.workspaceInit.call(this, workspace)
-  if (dom.svg) {
+  if (workspace.dom) {
     return
   }
+  var dom = eYo.Svg.superClass_.workspaceInit.call(this, workspace)
   var svg = dom.svg = Object.create(null)
+  svg.size = {}
   // Build the SVG DOM.
   /*
   <svg
@@ -336,36 +337,6 @@ eYo.Svg.prototype.workspaceDragDeltaXY = function (workspace) {
 }
 
 /**
- * Size the SVG image to completely fill its container. Call this when the view
- * actually changes sizes (e.g. on a window resize/device orientation change).
- * See Blockly.resizeSvgContents to resize the workspace when the contents
- * change (e.g. when a block is added or removed).
- * Record the height/width of the SVG image.
- * @param {!Blockly.WorkspaceSvg} workspace Any workspace in the SVG.
- */
-eYo.Svg.prototype.resize = function(workspace) {
-  var factory = workspace.factory
-  var mainWorkspace = factory.mainWorkspace
-  var root = mainWorkspace.dom.svg.root_
-  var div = root.parentNode
-  if (!div) {
-    // Workspace deleted, or something.
-    return;
-  }
-  var width = div.offsetWidth;
-  var height = div.offsetHeight;
-  if (root.cachedWidth_ != width) {
-    root.setAttribute('width', width + 'px');
-    root.cachedWidth_ = width;
-  }
-  if (root.cachedHeight_ != height) {
-    root.setAttribute('height', height + 'px');
-    root.cachedHeight_ = height;
-  }
-  mainWorkspace.resize();
-}
-
-/**
  * Set the workspace to have focus in the browser.
  * @private
  */
@@ -410,7 +381,7 @@ eYo.Svg.prototype.workspaceSizeDidChange = function(workspace) {
  */
 eYo.Svg.prototype.workspaceMouseInRoot = function(workspace, e) {
   var svg = workspace.dom.svg
-  return Blockly.utils.mouseToSvg(e, svg.root_,
+  return eYo.Svg.locationOfEvent(svg.root_, e, 
     svg.inverseScreenCTM_)
 }
 
@@ -462,7 +433,7 @@ eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
 /**
  * Return the absolute coordinates of the top-left corner of this element,
  * scales that after canvas SVG element, if it's a descendant.
- * The origin (0,0) is the top-left corner of the Blockly SVG.
+ * The origin (0,0) is the top-left corner of the SVG.
  * @param {!Element} element Element to find the coordinates of.
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
  * @private

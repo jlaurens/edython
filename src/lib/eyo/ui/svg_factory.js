@@ -23,10 +23,10 @@ goog.forwardDeclare('eYo.Factory')
  * @return {!Element} The factory's SVG group.
  */
 eYo.Svg.prototype.factoryInit = function(factory) {
-  var dom = eYo.Svg.superClass_.factoryInit.call(this, factory)
-  if (dom.svg) {
+  if (factory.dom) {
     return
   }
+  var dom = eYo.Svg.superClass_.factoryInit.call(this, factory)
   var svg = dom.svg = Object.create(null)
   // Create surfaces for dragging things. These are optimizations
   // so that the browser does not repaint during the drag.
@@ -73,19 +73,20 @@ eYo.Svg.prototype.factorySetBrickDisplayMode = function (factory, mode) {
  * @param {!eYo.Factory} factory A factory.
  */
 eYo.Svg.factoryResize = eYo.Svg.prototype.factoryResize = function(factory) {
-  var div = factory.dom.div_
   var mainWorkspace = factory.mainWorkspace
   var svg = mainWorkspace.dom.svg
+  var size = svg.size
   var root = svg.root_
+  var div = factory.dom.div_
   var width = div.offsetWidth
   var height = div.offsetHeight
-  if (svg.cachedWidth_ != width) {
+  if (size.width != width) {
     root.setAttribute('width', width + 'px')
-    svg.cachedWidth_ = width
+    size.width = width
   }
-  if (svg.cachedHeight_ != height) {
+  if (size.height != height) {
     root.setAttribute('height', height + 'px')
-    svg.cachedHeight_ = height
+    size.height = height
   }
   mainWorkspace.resize()
 }

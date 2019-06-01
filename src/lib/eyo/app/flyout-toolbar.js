@@ -35,6 +35,33 @@ eYo.FlyoutToolbar = function(flyout, switcher) {
 }
 
 /**
+ * Dispose of this flyout toolbar.
+ * Unlink from all DOM elements to prevent memory leaks.
+ */
+eYo.FlyoutToolbar.prototype.dispose = function() {
+  if (this.onButtonDownWrapper_) {
+    eYo.unbindEvent(this.onButtonDownWrapper_)
+    this.onButtonDownWrapper_ = undefined
+  }
+  if (this.onButtonEnterWrapper_) {
+    eYo.unbindEvent(this.onButtonEnterWrapper_);
+    this.onButtonEnterWrapper_ = undefined
+  }
+  if (this.onButtonLeaveWrapper_) {
+    eYo.unbindEvent(this.onButtonLeaveWrapper_);
+    this.onButtonLeaveWrapper_ = undefined
+  }
+  if (this.onButtonUpWrapper_) {
+    eYo.unbindEvent(this.onButtonUpWrapper_);
+    this.onButtonUpWrapper_ = undefined
+  }
+  if (this.selectControl_) {
+    this.selectControl_.unlisten(this.listenableKey)
+    this.selectControl_ = undefined
+  }
+}
+
+/**
  * Creates the flyout toolbar's DOM.
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
@@ -59,33 +86,6 @@ eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight + 2 * eYo.FlyoutTo
 eYo.FlyoutToolbar.prototype.BUTTON_RADIUS = eYo.FlyoutToolbar.prototype.HEIGHT / 4
 // left margin
 eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_RADIUS / 8
-
-/**
- * Dispose of this flyout toolbar.
- * Unlink from all DOM elements to prevent memory leaks.
- */
-eYo.FlyoutToolbar.prototype.dispose = function() {
-  if (this.onButtonDownWrapper_) {
-    Blockly.unbindEvent(this.onButtonDownWrapper_)
-    this.onButtonDownWrapper_ = undefined
-  }
-  if (this.onButtonEnterWrapper_) {
-    Blockly.unbindEvent(this.onButtonEnterWrapper_);
-    this.onButtonEnterWrapper_ = undefined
-  }
-  if (this.onButtonLeaveWrapper_) {
-    Blockly.unbindEvent(this.onButtonLeaveWrapper_);
-    this.onButtonLeaveWrapper_ = undefined
-  }
-  if (this.onButtonUpWrapper_) {
-    Blockly.unbindEvent(this.onButtonUpWrapper_);
-    this.onButtonUpWrapper_ = undefined
-  }
-  if (this.selectControl_) {
-    this.selectControl_.unlisten(this.listenableKey)
-    this.selectControl_ = undefined
-  }
-};
 
 /**
  * Slide out.
@@ -134,7 +134,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     }
     this.flyout_.slide()
     this.onButtonLeave_(e)
-    var gesture = this.flyout_.targetWorkspace_.getGesture(e);
+    var gesture = this.flyout_.targetWorkspace_.getGesture(e)
     if (gesture) {
       gesture.cancel()// comes from flyout button
     }

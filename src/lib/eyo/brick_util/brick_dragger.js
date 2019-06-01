@@ -318,7 +318,7 @@ eYo.BrickDragger.prototype.connect = function() {
       // Bring the just-edited stack to the front.
       this.brick_.root.ui.sendToFront()
     }
-    this.target_ && this.target_.ui.removeBlockHilight_()
+    this.target_ && this.target_.ui.removeBrickHilight_()
   }
 }
 
@@ -330,7 +330,7 @@ eYo.BrickDragger.prototype.update = function() {
   this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = Blockly.SNAP_RADIUS
+  this.distance_ = eYo.Workspace.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta_)
     if (neighbour.magnet) {
@@ -340,7 +340,7 @@ eYo.BrickDragger.prototype.update = function() {
     }
   })
   if (oldTarget && oldTarget != this.target_) {
-    oldTarget.ui.removeBlockHilight_()
+    oldTarget.ui.removeBrickHilight_()
   }
 
   // Prefer connecting over dropping into the trash can, but prefer dragging to
@@ -353,10 +353,10 @@ eYo.BrickDragger.prototype.update = function() {
 
   // Get rid of highlighting so we don't send mixed messages.
   if (wouldDelete && this.target_) {
-    this.target_.ui.removeBlockHilight_()
+    this.target_.ui.removeBrickHilight_()
     this.target_ = null
   }
   if (!wouldDelete_ && this.target_ && oldTarget != this.target_) {
-    this.target_.ui.addBlockHilight_()
+    this.target_.ui.addBrickHilight_()
   }
 }

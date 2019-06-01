@@ -33,7 +33,7 @@ eYo.Test.setItUp = () => {
 
 eYo.Test.tearItDown = (opt) => {
   eYo.App.workspace.clearUndo()
-  if (!opt || !opt.ignoreTopBlock) {
+  if (!opt || !opt.ignoreTopBrick) {
     chai.assert(eYo.App.workspace.topBricks_.length === 0, `FAILED ${eYo.App.workspace.topBricks_.length} === 0`)
   }
 }

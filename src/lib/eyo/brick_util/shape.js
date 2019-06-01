@@ -456,16 +456,16 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
 }
 
 /**
- * create a shape with the given brick delegate.
- * @param {eYo.Brick!} brick  Block delegate
+ * create a shape with the given brick.
+ * @param {eYo.Brick!} brick  Brick
  */
 eYo.Shape.newWithBrick = function(brick) {
   return new eYo.Shape().initWithBrick(brick)
 }
 
 /**
- * Create a path definition with the given brick delegate.
- * @param {eYo.Brick!} brick  A brick delegate.
+ * Create a path definition with the given brick.
+ * @param {eYo.Brick!} brick  A brick.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
@@ -474,13 +474,13 @@ eYo.Shape.definitionWithBrick = function(brick, opt) {
 }
 
 /**
- * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} brick  Block delegate
+ * Inits a shape with the given brick.
+ * @param {eYo.Brick!} brick  Brick
  */
 eYo.Shape.prototype.initWithBrick = (() => {
 /**
- * Inits a shape with the given brick delegate.
- * @param {eYo.Brick!} brick  Block delegate
+ * Inits a shape with the given brick.
+ * @param {eYo.Brick!} brick  Brick
  * @return {!Object} The receiver.
  */
 var initWithStatementBrick = function(brick, opt) {

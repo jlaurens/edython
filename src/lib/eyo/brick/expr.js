@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -32,9 +32,7 @@ eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick.Expr, true)
 
 Object.defineProperties(eYo.Brick.Expr.prototype, {
   isExpr: {
-    get () {
-      return true
-    }
+    value: true
   },
   depth: {
     get () {
@@ -74,7 +72,7 @@ eYo.Brick.Expr.prototype.getType = eYo.Decorate.onChangeCount(
 
 /**
  * Whether the receiver's brick is of the given type.
- * Blocks may have different types (eg identifier and dotted_name).
+ * Bricks may have different types (eg identifier and dotted_name).
  * This is recorded in the output connection.
  * @param {!String} type
  * @return {Boolean}
@@ -219,7 +217,7 @@ eYo.Brick.Expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled when fill_holes is true.
- * @param {!Block} brick
+ * @param {!Brick} brick
  * @param {Object} model
  * @return the created brick
  */
@@ -492,7 +490,7 @@ eYo.Brick.Expr.makeSubclass('builtin__object', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
@@ -505,7 +503,7 @@ eYo.Brick.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (m
 
 /**
  * Get the content for the menu item.
- * @param {!Blockly.Block} brick The brick.
+ * @param {!eYo.Brick} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

@@ -54,7 +54,7 @@ eYo.Brick.UI = function(brick) {
   brick.ui_ = this
   this.down = this.up = false
   this.driver.brickInit(brick)
-  this.updateBlockWrapped()
+  this.updateBrickWrapped()
 }
 
 /**
@@ -287,7 +287,7 @@ eYo.Brick.UI.prototype.render = (() => {
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
   var drawParent = function (recorder, bbbl) {
-    // `this.brick_` is a brick delegate
+    // `this.brick_` is a brick
     if (bbbl === false || this.down) {
       return
     }
@@ -1414,7 +1414,7 @@ eYo.Brick.UI.prototype.hide = function () {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!Blockly.Block} newParent to be connected.
+ * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
   this.driver.brickParentWillChange(this.brick_, newParent)
@@ -1422,7 +1422,7 @@ eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!Blockly.Block} oldParent replaced.
+ * @param {!eYo.Brick} oldParent replaced.
  */
 eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
   this.driver.brickParentDidChange(this.brick_, oldParent)
@@ -1502,7 +1502,7 @@ eYo.Brick.UI.prototype.showMenu = function (menu) {
  * Make the given brick wrapped.
  * The default implementation forwards to the driver.
  */
-eYo.Brick.UI.prototype.updateBlockWrapped = function () {
+eYo.Brick.UI.prototype.updateBrickWrapped = function () {
   this.driver.brickUpdateWrapped(this.brick_)
 }
 
@@ -1575,7 +1575,7 @@ eYo.Brick.UI.prototype.moveMagnets_ = function (dx, dy) {
  * Add the hilight path_.
  * Forwards to the driver.
  */
-eYo.Brick.UI.prototype.addBlockHilight_ = function () {
+eYo.Brick.UI.prototype.addBrickHilight_ = function () {
   this.driver.brickHilightAdd(this.brick_)
 }
 
@@ -1583,7 +1583,7 @@ eYo.Brick.UI.prototype.addBlockHilight_ = function () {
  * Remove the hilight path.
  * Forwards to the driver.
  */
-eYo.Brick.UI.prototype.removeBlockHilight_ =function () {
+eYo.Brick.UI.prototype.removeBrickHilight_ =function () {
   this.driver.brickHilightRemove(this.brick_)
 }
 

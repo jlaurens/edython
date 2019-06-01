@@ -85,7 +85,7 @@ eYo.Navigate.doTab = (() => {
  * For edython.
  * @param {!Blockly.Workspace} workspace .
  * @param {function(point): number} weight is a function.
- * @return {?Blockly.Block}
+ * @return {?eYo.Brick}
  */
 eYo.Brick.getBestBrick = function (workspace, weight) {
   var smallest = Infinity
@@ -107,7 +107,7 @@ eYo.Brick.getBestBrick = function (workspace, weight) {
  * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.Brick.prototype.getBestBlock = function (distance) {
+eYo.Brick.prototype.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best
@@ -167,7 +167,7 @@ eYo.Selected.chooseLeft = () => {
     return
   }  // now try to select a top brick
   var root = b3k.root
-  var target = root.getBestBlock((b, a) => {
+  var target = root.getBestBrick((b, a) => {
     if (a.left >= b.left) {
       return {}
     }
@@ -227,7 +227,7 @@ eYo.Selected.chooseRight = function () {
   }
   // now try to select a top brick
   var root = eyo.root
-  var target = root.getBestBlock((a, b) => {
+  var target = root.getBestBrick((a, b) => {
     if (a.right >= b.right) {
       return {}
     }
@@ -282,7 +282,7 @@ eYo.Selected.chooseAbove = function () {
       return
     }
   }
-  var brick = eyo.root.getBestBlock((a, b) => {
+  var brick = eyo.root.getBestBrick((a, b) => {
     if (a.head <= b.head) {
       return {}
     }
@@ -347,7 +347,7 @@ eYo.Selected.chooseBelow = () => {
     m4t.select().scrollToVisible()
     return
   }
-  b3k = eYo.Selected.brick.root.getBestBlock((a, b) => {
+  b3k = eYo.Selected.brick.root.getBestBrick((a, b) => {
     if (a.foot >= b.foot) {
       return {}
     }

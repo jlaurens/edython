@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Block delegates for edython.
+ * @fileoverview Bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -92,7 +92,7 @@ eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t)
  * Removes empty place holders.
  * This must not be overriden.
  *
- * @param {!Block} brick
+ * @param {!Brick} brick
  */
 eYo.Brick.List.prototype.doConsolidate = (() => {
   // this is a closure
@@ -336,7 +336,7 @@ eYo.Brick.List.makeSubclass('enclosure', {
   }) (),
   out: {
     check: /** @suppress {globalThis} */ function (type, subtype) {
-      // retrieve the brick delegate
+      // retrieve the brick
       var brick = this.brick
       var p5e = brick.profile_p
       return brick.getOutCheck(p5e)

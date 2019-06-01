@@ -141,10 +141,9 @@ eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
   var W = trashcan.workspace_
   var dx = W.startScrollX - W.scrollX
   var dy = W.startScrollY - W.scrollY
-  if (Math.sqrt(dx * dx + dy * dy) > Blockly.DRAG_RADIUS) {
+  if (Math.sqrt(dx * dx + dy * dy) > eYo.Gesture.DRAG_RADIUS) {
     return
   }
-  console.error('MISSING IMPLEMENTATION')
 }
 
 /**

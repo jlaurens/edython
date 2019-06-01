@@ -257,7 +257,7 @@ goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
 
 /**
  * Encode a brick subtree as XML.
- * @param {!Blockly.Block} brick The root brick to encode.
+ * @param {!eYo.Brick} brick The root brick to encode.
  * @param {boolean} optNoId True if the encoder should skip the brick id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
@@ -267,7 +267,7 @@ Blockly.Xml.blockToDom = function (brick, optNoId) {
 
 /**
  * Encode a brick subtree as XML with XY coordinates.
- * @param {!Blockly.Block} brick The root brick to encode.
+ * @param {!eYo.Brick} brick The root brick to encode.
  * @param {boolean=} optNoId True if the encoder should skip the brick ID.
  * @return {!Element} Tree of XML elements.
  */
@@ -278,11 +278,11 @@ Blockly.Xml.blockToDomWithXY = function(brick, optNoId) {
 /**
  * Decode an XML brick tag and create a brick (and possibly sub bricks) on the
  * workspace.
- * @param {!Element|string} xmlBlock XML brick element or string representation of an xml brick.
+ * @param {!Element|string} xmlBrick XML brick element or string representation of an xml brick.
  * @param {!Blockly.Workspace} workspace The workspace.
- * @return {!Blockly.Block} The root brick created.
+ * @return {!eYo.Brick} The root brick created.
  */
-Blockly.Xml.domToBlock = function (dom, workspace) {
+Blockly.Xml.domToBrick = function (dom, workspace) {
   throw "FORBIDDEN CALL, BREAK HERE"
 }
 
@@ -346,7 +346,7 @@ eYo.Brick.newComplete = (() => {
  * 5) solid bricks are named after their type which eyo:foo.
  * These brick types correspond to an alternate in the python grammar.
  * The persistence storage may remember these bricks as eyo:foo instead of eyo:foo.
- * @param {!Blockly.Block} brick The root brick to encode.
+ * @param {!eYo.Brick} brick The root brick to encode.
  * @param {?Object} opt  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
@@ -424,7 +424,7 @@ goog.provide('eYo.Xml.Text')
 /**
  * Convert the brick's value to a text dom element.
  * For edython.
- * @param {!Blockly.Block} brick The brick to be converted.
+ * @param {!eYo.Brick} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -440,7 +440,7 @@ eYo.Xml.Text.toDom = function (brick, element) {
 /**
  * Convert the brick from a dom element.
  * For edython.
- * @param {!Blockly.Block} brick The brick to be converted.
+ * @param {!eYo.Brick} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -528,7 +528,7 @@ eYo.Brick.prototype.saveSlots = function (element, opt) {
 /**
  * Convert the brick's data from a dom element.
  * For edython.
- * @param {!Blockly.Block} brick The brick to be converted.
+ * @param {!eYo.Brick} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  */
 eYo.Xml.Data.fromDom = function (brick, element) {
@@ -793,7 +793,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
     workspace = owner
     owner = undefined
   }
-  if (!workspace.newBlock) {
+  if (!workspace.newBrick) {
     console.error('ARGH')
   }
   // First create a brick that we will return to replace the expected one
@@ -892,9 +892,9 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
  * of the constructor itself.
  * Is it really headless ?
  *
- * @param {!Element} xmlBlock XML brick element.
+ * @param {!Element} xmlBrick XML brick element.
  * @param {*} owner The workspace or the owning brick.
- * @return {!Blockly.Block} The root brick created.
+ * @return {!eYo.Brick} The root brick created.
  */
 eYo.Xml.domToBrick = (() => {
   var domToBrick = function (dom, owner) {
@@ -1003,7 +1003,7 @@ goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
 eYo.Xml.fromDom = function (brick, element) {
   // headless please
   brick.changeWrap(function () { // `this` is `brick`
-  //    console.log('Block created from dom:', xmlBlock, brick.type, brick.id)
+  //    console.log('Brick created from dom:', xmlBrick, brick.type, brick.id)
   // then fill it based on the xml data
     this.willLoad()
     var conclude // will run at the end if any
@@ -1370,7 +1370,7 @@ eYo.Xml.Call.domToComplete = function (element, owner) {
  * @param {!eYo.Brick} rhs
  * @return {Number} classical values -1, 0 or 1.
  */
-eYo.Xml.compareBlocks = function (lhs, rhs) {
+eYo.Xml.compareBricks = function (lhs, rhs) {
   var xmlL = goog.dom.xml.serialize(eYo.Xml.brickToDom(lhs, {noId: true}))
   var xmlR = goog.dom.xml.serialize(eYo.Xml.brickToDom(rhs, {noId: true}))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)

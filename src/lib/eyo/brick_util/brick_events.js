@@ -25,7 +25,7 @@ goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Brick} brick  The newly created block.
+ * @param {!eYo.Brick} brick  The newly created brick.
  * @param {?Boolean|String} group  eventually set a group.
  */
 eYo.Events.fireBrickCreate = function (brick, group) {
@@ -37,11 +37,11 @@ eYo.Events.fireBrickCreate = function (brick, group) {
 
 /**
  * Convenient shortcut.
- * @param {!eYo.Brick} brick  The newly created block.
+ * @param {!eYo.Brick} brick  The newly created brick.
  */
 eYo.Events.fireBrickChange = function (brick, element, name, oldValue, newValue) {
   if (eYo.Events.enabled) {
-    eYo.Events.fire(new eYo.Events.BlockChange(brick, element, name, oldValue, newValue))
+    eYo.Events.fire(new eYo.Events.BrickChange(brick, element, name, oldValue, newValue))
   }
 }
 
@@ -52,7 +52,7 @@ eYo.Events.fireBrickChange = function (brick, element, name, oldValue, newValue)
  */
 eYo.Events.fireBrickMove = (brick, move) => {
   if (eYo.Events.enabled) {
-    var event = new eYo.Events.BlockMove(brick)
+    var event = new eYo.Events.BrickMove(brick)
     try {
       move()
     } finally {
@@ -220,9 +220,9 @@ eYo.Events.BrickDelete = function(brick) {
   eYo.Events.BrickDelete.superClass_.constructor.call(this, brick)
 
   if (brick.workspace.rendered) {
-    this.oldXml = Blockly.Xml.brickToDomWithXY(brick)
+    this.oldXml = eYo.Xml.brickToDomWithXY(brick)
   } else {
-    this.oldXml = Blockly.Xml.brickToDom(brick)
+    this.oldXml = eYo.Xml.brickToDom(brick)
   }
   this.ids = brick.descendantIds
 }
@@ -386,8 +386,8 @@ goog.require('eYo.Data')
  * `duringChange` message is sent just before consolidating and undo registration.
  * Note on interference with the undo stack.
  * Let's suppose that we have triggered a UI event
- * that modifies some data of a block.
- * As a consequence, this block automatically changes type and
+ * that modifies some data of a brick.
+ * As a consequence, this brick automatically changes type and
  * may be disconnected.
  * Take a look at what happens regarding the default undo/redo stack
  * management when connected bricks are involved
@@ -396,23 +396,23 @@ goog.require('eYo.Data')
  *  1) normal flow
  *    a - the user asks for a data change
  *    b - the type change
- *    c - the connection check change triggering a disconnect block event
+ *    c - the connection check change triggering a disconnect brick event
  *    d - the data change undo event is trigerred
- *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
  *  2) when undoing
  *    a - the user asks for an undo
  *    b - the data undo change is performed first
  *    c - the type change
  *    d - the connection check change but no undo event is recorded
- *        because no block has been connected nor disconnected meanwhile
+ *        because no brick has been connected nor disconnected meanwhile
  *    e - the data rechange is pushed to the redo stack
  *    f - bricks are reconnected and the redo event is pushed to the redo stack
- *    undo/redo stacks : [...]/[disconnect block, data rechange]
+ *    undo/redo stacks : [...]/[disconnect brick, data rechange]
  *  3) when redoing
  *    a - bricks are disconnected and the reconnect event is pushed to the undo stack
  *    b - the data is rechanged, with type and connection checks.
- *        No block is disconnected, no other move event is recorded.
- *    undo/redo stacks : [..., reconnect block, data undo change]/[]
+ *        No brick is disconnected, no other move event is recorded.
+ *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
  * This is the reason why we consolidate the type before the undo change is recorded.
  * @param {Object} newValue
  * @param {Boolean} noRender

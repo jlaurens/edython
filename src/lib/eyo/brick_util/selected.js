@@ -38,9 +38,9 @@ eYo.Selected = (() => {
       brick__.ui.addStatusSelect_()
       if (magnet__) {
         brick__.ui.addMagnet_()
-        brick__.ui.removeBlockHilight_()
+        brick__.ui.removeBrickHilight_()
       } else {
-        brick__.ui.addBlockHilight_()
+        brick__.ui.addBrickHilight_()
       }
     }
   }
@@ -78,7 +78,7 @@ eYo.Selected = (() => {
             if (brick__) {
               // unselect/unhilight the previous brick
               brick__.ui.removeSelect()
-              brick__.ui.removeBlockHilight_()
+              brick__.ui.removeBrickHilight_()
               brick__.ui.removeMagnet_()
               brick__.ui.removeStatusSelect_()
               brick__.selectedMagnet = null

@@ -79,7 +79,7 @@ eYo.Desktop.copyBrick = (brick, deep) => {
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml
   eYo.Clipboard.source = brick.workspace
-  eYo.App.didCopyBlock && (eYo.App.didCopyBlock(brick, xml))
+  eYo.App.didCopyBrick && (eYo.App.didCopyBrick(brick, xml))
 }
 
 /**
