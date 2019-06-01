@@ -179,7 +179,7 @@ eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
   if (bound.mousedown) {
     return
   }
-  bound.mousedown = this.bindEvent(
+  bound.mousedown = eYo.Dom.bindEvent(
     dom.svg.group_,
     'mousedown',
     null,
@@ -211,7 +211,7 @@ eYo.Svg.prototype.workspaceBind_wheel = function(workspace) {
   if (bound.wheel) {
     return
   }
-  bound.wheel = this.bindEvent(
+  bound.wheel = eYo.Dom.bindEvent(
     workspace.dom.svg.group_,
     'wheel',
     null,
@@ -284,7 +284,7 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
   if (bound.resize) {
     return
   }
-  bound.resize = this.bindEvent(
+  bound.resize = eYo.Dom.bindEvent(
     window,
     'resize',
     null,

@@ -100,7 +100,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
     'xlink:href',
     url
   )
-  dom.bound.mouseup = this.bindEvent(
+  dom.bound.mouseup = eYo.Dom.bindEvent(
     g,
     'mouseup',
     null,

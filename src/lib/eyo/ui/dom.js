@@ -95,7 +95,7 @@ eYo.Dom.setCssTransform = function(node, transform) {
  *     should prevent the default handler.  False by default.
  * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
+eYo.Dom.bindEvent = (node, name, thisObject, func, opt) => {
   if (goog.isFunction(thisObject)) {
     opt = func
     func = thisObject
@@ -150,17 +150,13 @@ eYo.Dom.prototype.bindEvent = (node, name, thisObject, func, opt) => {
   return bindData
 }
 
-eYo.Dom.bindEvent = (node, name, thisObject, func, opt) => {
-  return eYo.App.factory.ui_driver.bindEvent(node, name, thisObject, func, opt)
-}
-
 /**
  * Unbind one or more events event from a function call.
  * @param {!Array.<!Array>} bindData Opaque data from bindEvent.
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
-eYo.Dom.unbindEvent = eYo.Dom.prototype.unbindEvent = bindData => {
+eYo.Dom.unbindEvent = bindData => {
   while (bindData.length) {
     var d = bindData.pop()
     var func = d[2]
@@ -204,7 +200,7 @@ eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
   ].forEach(k => {
     var f = listener['on_' + k + ((opt && opt.suffix) || '')]
     if (f) {
-      var ans = this.bindEvent(element, k, listener, f, opt)
+      var ans = eYo.Dom.bindEvent(element, k, listener, f, opt)
       if (opt && opt.willUnbind) {
         var ra = listener.bind_data_ || (listener.bind_data_ = [])
         ra.push(ans)
@@ -219,7 +215,7 @@ eYo.Dom.prototype.bindMouseEvents = function(listener, element, opt) {
  * @package
  */
 eYo.Dom.prototype.unbindMouseEvents = function(listener) {
-  listener.bind_data_ && listener.bind_data_.forEach(data => this.unbindEvent(data))
+  listener.bind_data_ && listener.bind_data_.forEach(data => eYo.Dom.unbindEvent(data))
 }
 
 
@@ -499,26 +495,26 @@ eYo.Dom.bindDocumentEvents = (() => {
   var already
   return () => {
     if (!already) {
-      this.bindEvent(
+      eYo.Dom.bindEvent(
         document,
         'keydown',
         eYo.Dom.on_keydown
       )
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      this.bindEvent(
+      eYo.Dom.bindEvent(
         document,
         'touchend',
         eYo.Dom.longStop_
       )
-      this.bindEvent(
+      eYo.Dom.bindEvent(
         document,
         'touchcancel',
         eYo.Dom.longStop_
       )
       // Some iPad versions don't fire resize after portrait to landscape change.
       if (goog.userAgent.IPAD) {
-        this.bindEvent(
+        eYo.Dom.bindEvent(
           window,
           'orientationchange',
           e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple workspaces.
@@ -680,7 +676,7 @@ eYo.Dom.prototype.factoryInit = function(factory) {
     throw 'Error: container is not in current document.'
   }
   dom.div_ || (dom.div_= container)
-  this.bindEvent(
+  eYo.Dom.bindEvent(
     container,
     'contextmenu',
     e => eYo.Dom.isTargetInput(e) || e.preventDefault()

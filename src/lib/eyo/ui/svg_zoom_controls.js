@@ -141,7 +141,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   // Attach event listeners.
   var bound = dom.bound
-  bound.zoomreset = this.bindEvent(
+  bound.zoomreset = eYo.Dom.bindEvent(
     zoomresetSvg,
     'mousedown',
     e => {
@@ -152,7 +152,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomin = this.bindEvent(
+  bound.zoomin = eYo.Dom.bindEvent(
     zoominSvg,
     'mousedown',
     e => {
@@ -162,7 +162,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
       eYo.Dom.gobbleEvent(e)
     }
   )
-  bound.zoomout = this.bindEvent(
+  bound.zoomout = eYo.Dom.bindEvent(
     zoomoutSvg,
     'mousedown',
     e => {

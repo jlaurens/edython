@@ -638,7 +638,7 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   xy: {
     get () {
-      return this.xy
+      return this.xy_
     }
   },
   /**

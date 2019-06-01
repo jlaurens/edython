@@ -113,7 +113,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
         'd',
         eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
       )
-      dom.bound.mousedown = this.bindEvent(
+      dom.bound.mousedown = eYo.Dom.bindEvent(
         svg.pathPlayIcon_,
         'mousedown',
         null,

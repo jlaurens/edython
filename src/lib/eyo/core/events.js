@@ -192,7 +192,7 @@ eYo.Events.filter = function(queueIn, forward) {
     if (queueIn.length === 3) {
       var first = queueIn[0]
       var last = queueIn[queueIn.length-1]
-      if (!first.isNull() && !last.isNull()
+      if (!first.isNull && !last.isNull
           && first.type === eYo.Events.DELETE
           && last.type === eYo.Events.CREATE
           && first.workspaceId === last.workspaceId
@@ -212,7 +212,7 @@ eYo.Events.filter = function(queueIn, forward) {
   var hash = Object.create(null);
   // Merge duplicates.
   queue.forEach(event => {
-    if (!event.isNull()) {
+    if (!event.isNull) {
       var key = [event.type, event.brickId, event.workspaceId].join(' ')
       var lastEvent = hash[key]
       if (!lastEvent) {
@@ -236,7 +236,7 @@ eYo.Events.filter = function(queueIn, forward) {
     }
   })
   // Filter out any events that have become null due to merging.
-  queue = mergedQueue.filter((e) => !e.isNull())
+  queue = mergedQueue.filter((e) => !e.isNull)
   if (!forward) {
     // Restore undo order.
     queue.reverse()

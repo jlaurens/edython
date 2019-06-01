@@ -83,12 +83,12 @@ eYo.Svg.prototype.scrollbarInit = function(scrollbar, opt_class) {
     scrollbar.workspace_.dom.svg.root_
   )
   var bound = dom.bound
-  bound.bar_mousedown = this.bindEvent(
+  bound.bar_mousedown = eYo.Dom.bindEvent(
     background,
     'mousedown',
     this.scrollbarOnBar_mousedown.bind(scrollbar)
   )
-  bound.handle_mousedown = this.bindEvent(
+  bound.handle_mousedown = eYo.Dom.bindEvent(
     handle,
     'mousedown',
     this.scrollbarOnHandle_mousedown.bind(scrollbar)
@@ -225,13 +225,13 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
   // Record the current mouse position.
   this.startDragMouse_ = this.horizontal_ ? e.clientX : e.clientY
   var bound = this.dom.bound
-  bound.mouseup = this.bindEvent(
+  bound.mouseup = eYo.Dom.bindEvent(
     document,
     'mouseup',
     this,
     this.onMouseUpHandle_
   )
-  bound.mousemove = this.bindEvent(
+  bound.mousemove = eYo.Dom.bindEvent(
     document,
     'mousemove',
     this,
