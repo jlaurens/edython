@@ -87,7 +87,7 @@ eYo.Dom.setCssTransform = function(node, transform) {
  * @param {!EventTarget} node Node upon which to listen.
  * @param {string} name Event name to listen to (e.g. 'mousedown').
  * @param {?Object} thisObject The value of 'this' in the function.
- * @param {!Function} func Function to call when event is triggered.
+ * @param {!Function} callback Function to call when event is triggered.
  * @param {boolean=} opt.noCaptureIdentifier True if triggering on this event
  *     should not block execution of other event handlers on this touch or other
  *     simultaneous touches.
@@ -95,12 +95,13 @@ eYo.Dom.setCssTransform = function(node, transform) {
  *     should prevent the default handler.  False by default.
  * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.bindEvent = (node, name, thisObject, func, opt) => {
+eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
   if (goog.isFunction(thisObject)) {
-    opt = func
-    func = thisObject
+    opt = callback
+    callback = thisObject
     thisObject = null
   }
+  goog.asserts.assert(goog.isFunction(callback))
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
@@ -115,8 +116,8 @@ eYo.Dom.bindEvent = (node, name, thisObject, func, opt) => {
           event.clientY = p.clientY
         }
         thisObject
-        ? func.call(thisObject, event)
-        : func(event)
+        ? callback.call(thisObject, event)
+        : callback(event)
         handled = true
       }
     })

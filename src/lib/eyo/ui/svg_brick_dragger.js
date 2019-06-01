@@ -46,7 +46,7 @@ eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.decorateDispose(function (brickD
  */
 eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   var div = brickDragger.factory.dom.div_
-  brickDragger.dom.transformCorrection_ = this.getTransformCorrection(div)
+  brickDragger.dom.transformCorrection_ = eYo.Svg.getTransformCorrection(div)
   // Move the brick dragged to the drag surface
     // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,

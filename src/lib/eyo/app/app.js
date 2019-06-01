@@ -21,6 +21,7 @@ goog.provide('eYo.App')
 
 goog.require('eYo.Do')
 
+goog.forwardDeclare('eYo.Css')
 goog.forwardDeclare('eYo.Desktop')
 goog.forwardDeclare('eYo.Selected')
 

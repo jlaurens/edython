@@ -61,6 +61,7 @@ eYo.Svg.prototype.fieldInit = function(field) {
       y: eYo.Font.totalAscent
     }, g)
   }
+  g.dataset && (g.dataset.name = field.name)
   !field.visible && (g.style.display = 'none')
   // add tooltip management here
   this.fieldUpdateEditable(field)

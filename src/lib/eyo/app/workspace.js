@@ -1092,7 +1092,7 @@ eYo.Workspace.prototype.onMouseDown_ = function(e) {
  * @param {!goog.math.Coordinate} xy Starting location of object.
  */
 eYo.Workspace.prototype.xyEventInWorkspace = function(e) {
-  return point = this.ui_driver.workspaceMouseInRoot(this, e)
+  return this.ui_driver.workspaceMouseInRoot(this, e)
 }
 
 /**

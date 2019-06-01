@@ -83,11 +83,11 @@ eYo.WorkspaceDragger.prototype.dispose = function() {
  * Whether the drag surface is actively in use. When true, calls to
  * translate will translate the drag surface instead of the translating the
  * workspace directly.
- * This is set to true in dragSetup and to false in resetDragSurface.
+ * This is set to true in dragSetup and to false in the end of drag management.
  * @type {boolean}
  * @private
  */
-eYo.WorkspaceDragger.prototype.isActive_ = false;
+eYo.WorkspaceDragger.prototype.isActive_ = false
 
 /**
  * Start dragging the workspace.
@@ -195,7 +195,7 @@ eYo.WorkspaceDragger.prototype.drag = function() {
   y = Math.min(y, 0)
   y = Math.max(y, metrics.view.height - metrics.content.height)
 
-  this.updateScroll_(-x, -y)
+  this.startMetrics_.updateScroll_(-x, -y)
 }
 
 /**

@@ -293,7 +293,7 @@ eYo.Gesture.prototype.dispose = function() {
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
   this.creatorWorkspace_.clearGesture()
-  eYo.Dom.unbindMouseEvents(self)
+  eYo.Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
   this.workspace_ = this.creatorWorkspace_ = this.flyout_ = null
   this.brickDragger_ = null
@@ -437,11 +437,11 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
  * @private
  */
 eYo.Gesture.prototype.updateDraggingWorkspace_ = function() {
-  if ((this.workspaceDragger_ = (
+  var workspace = 
     this.flyout_
     ? this.flyout_.workspace_
     : this.workspace_
-  ).dragger)) {
+  if (workspace && (this.workspaceDragger_ = workspace.dragger)) {
     this.workspaceDragger_.start(this)
   }
 }
@@ -618,6 +618,7 @@ eYo.Gesture.prototype.doStart = function(e) {
   this.startXY_ = new goog.math.Coordinate(e.clientX, e.clientY)
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
+  eYo.Dom.unbindMouseEvents(this)
   eYo.Dom.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
 
   if (!this.isEnding_ && eYo.Dom.isTouchEvent(e)) {

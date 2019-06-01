@@ -37,14 +37,14 @@ eYo.Svg.BrickDragSurface = function(container) {
    */
   var dom = this.dom = Object.create(null)
   var svg = dom.svg = Object.create(null)
-  svg.root_ = eYo.Svg.newElement('svg', {
+  var root = svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
     class: 'eyo-brick-drag-surface'
   }, container)
-  svg.group_ = eYo.Svg.newElement('g', {}, svg.root_)
+  svg.group_ = eYo.Svg.newElement('g', {}, root)
 }
 
 /**

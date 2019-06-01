@@ -217,11 +217,6 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
   // Look up the current translation and record it.
   this.startDragHandle = this.handlePosition_
 
-  // Tell the workspace to setup its drag surface since it is about to move.
-  // onMouseMoveHandle will call onScroll which actually tells the workspace
-  // to move.
-  this.workspace_.setupDragSurface()
-
   // Record the current mouse position.
   this.startDragMouse_ = this.horizontal_ ? e.clientX : e.clientY
   var bound = this.dom.bound
@@ -229,13 +224,13 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
     document,
     'mouseup',
     this,
-    this.onMouseUpHandle_
+    this.ui_driver.scrollbarOn_mouseup
   )
   bound.mousemove = eYo.Dom.bindEvent(
     document,
     'mousemove',
     this,
-    this.onMouseMoveHandle_
+    this.ui_driver.scrollbarOn_mousemove
   )
   eYo.Dom.gobbleEvent(e)
 }
@@ -255,12 +250,12 @@ eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
 }
 
 /**
- * Release the scrollbar handle and reset state accordingly.
- * @private
+ * End of scrolling.
+ * @param {!Event} e Mouse up event.
+ * @this {eYo.Scrollbar}
  */
-eYo.Scrollbar.prototype.onMouseUpHandle_ = function() {
+eYo.Svg.prototype.scrollbarOn_mouseup = function() {
   // Tell the workspace to clean up now that the workspace is done moving.
-  this.workspace_.resetDragSurface()
   eYo.Dom.clearTouchIdentifier()
   this.cleanUp_()
 }

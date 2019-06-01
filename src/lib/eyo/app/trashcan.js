@@ -119,9 +119,9 @@ eYo.Trashcan.prototype.SPRITE_TOP_ = 32
  * @param {Number} bottom
  */
 eYo.Trashcan.prototype.makeUI = function(bottom) {
-  this.bottom_ = this.MARGIN_BOTTOM_ + bottom
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
+  this.bottom_ = this.MARGIN_BOTTOM_ + bottom
   this.ui_driver.trashcanInit(this)
 }
 
