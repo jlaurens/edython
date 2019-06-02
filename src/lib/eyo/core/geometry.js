@@ -228,7 +228,7 @@ eYo.Where.prototype.distanceFrom = function (other) {
 }
 
 /**
- * `Size` is a descendant of `goog.math.Size` that stores its data in text units instead of desk units.
+ * `Size` is a descendant of `goog.math.Size` that stores its data in text units instead of board units.
  */
 eYo.Size = function (w, h) {
   this.set(w, h)

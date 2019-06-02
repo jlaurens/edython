@@ -485,11 +485,11 @@ eYo.KeyHandler = (() => {
             }
           })
         }
-        var scaledHeight = eYo.Unit.y * brick.desk.scale
+        var scaledHeight = eYo.Unit.y * brick.board.scale
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)
-          var xxyy = m4t.xyInBrick_.clone().scale(brick.desk.scale)
+          var xxyy = m4t.xyInBrick_.clone().scale(brick.board.scale)
           xy.translate(xxyy)
         } else {
           xy = goog.style.getPageOffset(brick.dom.svg.group_)
@@ -512,7 +512,7 @@ eYo.KeyHandler = (() => {
       // B is not always a brick!
       F = f => {
         eYo.Dom.gobbleEvent(e)
-        var brick = eYo.Brick.getBestBrick(eYo.App.desk, f)
+        var brick = eYo.Brick.getBestBrick(eYo.App.board, f)
         if (brick) {
           brick.select().scrollToVisible()
         }
@@ -602,7 +602,7 @@ var doit = (() => {
       var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.desk.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
           eyo.replaceBrick(parent)
           return
         }
@@ -617,7 +617,7 @@ var doit = (() => {
       var eyo = eYo.Selected.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.desk.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
           return
         }
         var model = {
@@ -642,7 +642,7 @@ var doit = (() => {
       var brick = eYo.Selected.brick
       if (brick) {
         var parent = eyo.surround
-        if (parent && parent.desk.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
           brick.replaceBrick(parent)
           return
         }

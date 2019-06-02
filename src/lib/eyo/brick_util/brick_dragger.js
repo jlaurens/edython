@@ -18,16 +18,16 @@ goog.require('eYo')
 
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Desk')
+goog.forwardDeclare('eYo.Board')
 goog.forwardDeclare('eYo.Events.BrickMove')
 
 goog.forwardDeclare('goog.math.Coordinate')
 
 
 /**
- * Class for a brick dragger.  It moves bricks around the desk when they
+ * Class for a brick dragger.  It moves bricks around the board when they
  * are being dragged by a mouse or touch.
- * @param {!eYo.Desk} destination The desk to drag on.
+ * @param {!eYo.Board} destination The board to drag on.
  * @constructor
  */
 eYo.BrickDragger = function(destination) {
@@ -63,9 +63,9 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
 })
 
 Object.defineProperties(eYo.BrickDragger.prototype, {
-  factory: {
+  desk: {
     get () {
-      return this.destination_.factory
+      return this.destination_.desk
     }
   },
   destination: {
@@ -75,7 +75,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   ui_driver: {
     get () {
-      return this.factory.ui_driver
+      return this.desk.ui_driver
     }
   },
 })
@@ -110,7 +110,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
      * This function should be called on a mouse/touch move event the first time the
      * drag radius is exceeded.  It should be called no more than once per gesture.
      * If a brick should be dragged from the flyout this function creates the new
-     * brick on the main desk and updates targetBrick_ and desk_.
+     * brick on the main board and updates targetBrick_ and board_.
      * @return {boolean} destination_ if a brick is being dragged from the flyout.
      * @private
      */
@@ -118,7 +118,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     if (targetBrick.disabled) {
       return
     }
-    if (flyout.scrollable && !flyout.isDragTowardDesk(deltaXY)) {
+    if (flyout.scrollable && !flyout.isDragTowardBoard(deltaXY)) {
       return
     }
     // Start the event group now,
@@ -172,7 +172,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * The distance between this.target_ and this.magnet_,
-   * in desk units.
+   * in board units.
    * Updated on every mouse move.
    * @type {number}
    * @private
@@ -189,8 +189,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * Which delete area the mouse pointer is over, if any.
-   * One of {@link eYo.Desk.DELETE_AREA_TRASH},
-   * {@link eYo.Desk.DELETE_AREA_TOOLBOX}, or {@link eYo.Desk.DELETE_AREA_NONE}.
+   * One of {@link eYo.Board.DELETE_AREA_TRASH},
+   * {@link eYo.Board.DELETE_AREA_TOOLBOX}, or {@link eYo.Board.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -198,7 +198,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * The location of the top left corner of the dragging brick at the beginning
-   * of the drag in desk coordinates.
+   * of the drag in board coordinates.
    * @type {!goog.math.Coordinate}
    * @private
    */
@@ -240,7 +240,7 @@ eYo.BrickDragger.prototype.drag = function() {
     xyNew.x -= d.x
     xyNew.y -= d.y
   }
-  var bds = this.factory.brickDragSurface
+  var bds = this.desk.brickDragSurface
   if (bds) {
     bds.xyMoveTo(xyNew)
   } else {
@@ -253,12 +253,12 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Desk.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Board.DELETE_AREA_TRASH)
   }
 }
 
 /**
- * Finish a brick drag and put the brick back on the desk.
+ * Finish a brick drag and put the brick back on the board.
  * @param {!Event} e The most recent move event.
  * @param {!goog.math.Coordinate} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
@@ -339,7 +339,7 @@ eYo.BrickDragger.prototype.update = function() {
   var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = eYo.Desk.SNAP_RADIUS
+  this.distance_ = eYo.Board.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta_)
     if (neighbour.magnet) {
@@ -354,7 +354,7 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteArea != eYo.Desk.DELETE_AREA_TOOLBOX
+      deleteArea != eYo.Board.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteArea && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete

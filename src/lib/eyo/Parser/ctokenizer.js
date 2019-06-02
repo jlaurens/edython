@@ -47,7 +47,7 @@ static int tok_nextc(struct tok_state *tok);
 static void tok_backup(struct tok_state *tok, int c);
 
 
-/* Desks in this constant are treated as "zero or more spaces or tabs" when
+/* Boards in this constant are treated as "zero or more spaces or tabs" when
    tokenizing. *-/
 static const char* type_comment_prefix = "# type: ";
 

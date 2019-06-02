@@ -2,7 +2,7 @@ setTimeout(() => {
   describe('PREPARE', function() {
     it('Blockly', function() {
       chai.assert(Blockly, `MISSING Blockly`)
-      chai.assert(eYo.App.desk, `MISSING eYo.App.desk`)
+      chai.assert(eYo.App.board, `MISSING eYo.App.board`)
       chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
@@ -10,8 +10,8 @@ setTimeout(() => {
 
 eYo.Test = Object.create(null)
 
-eYo.Test.makeFactory = options => {
-  if (!eYo.App.desk) {
+eYo.Test.makeDesk = options => {
+  if (!eYo.App.board) {
     options = options || {}
     goog.mixin(options, {
       collapse : true,
@@ -20,28 +20,28 @@ eYo.Test.makeFactory = options => {
       css : true,
       scrollbars : true,
       sounds : false,
-      container: 'eyo-factory'
+      container: 'eyo-desk'
     })
     if (options.container && (document.getElementById(options.container) ||
     document.querySelector(options.container))) {
-      eYo.App.makeFactory(options)
+      eYo.App.makeDesk(options)
     }
   }
 }
 
 beforeEach(function() {
-  eYo.Test.makeFactory()
+  eYo.Test.makeDesk()
 })
 
 eYo.Test.setItUp = () => {
-  eYo.App.desk.clearUndo()
-  eYo.App.desk.topBricks_.length = 0
+  eYo.App.board.clearUndo()
+  eYo.App.board.topBricks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
-  eYo.App.desk.clearUndo()
+  eYo.App.board.clearUndo()
   if (!opt || !opt.ignoreTopBrick) {
-    chai.assert(eYo.App.desk.topBricks_.length === 0, `FAILED ${eYo.App.desk.topBricks_.length} === 0`)
+    chai.assert(eYo.App.board.topBricks_.length === 0, `FAILED ${eYo.App.board.topBricks_.length} === 0`)
   }
 }
 
@@ -59,7 +59,7 @@ eYo.Test.brick = (brick, t, str) => {
 
 eYo.Test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var brick = eYo.Brick.newReady(eYo.App.desk, type)
+  var brick = eYo.Brick.newReady(eYo.App.board, type)
   eYo.Test.brick(brick, tt, str)
   if (!headless) {
     brick.render()
@@ -378,7 +378,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.Brick.newReady(eYo.App.desk, eYo.T3.Expr.identifier)
+  var brick = eYo.Brick.newReady(eYo.App.board, eYo.T3.Expr.identifier)
   brick.target_p = str
   eYo.Test.brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)
@@ -416,7 +416,7 @@ eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
 eYo.Test.source = (str) => {
   var err_ret = {}
   var n = eYo.Parser.PyParser_ParseString(str, eYo.GMR._PyParser_Grammar, eYo.TKN.file_input, err_ret)
-  var d = n.toBrick(eYo.App.desk)
+  var d = n.toBrick(eYo.App.board)
   if (!d) {
     eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, n)
   }

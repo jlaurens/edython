@@ -77,7 +77,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
     class: 'eyo-shape'
   }, null)
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
-  if (!brick.desk.options.readOnly) {
+  if (!brick.board.options.readOnly) {
     eYo.Dom.bindMouseEvents(brick.ui, g)
     // I could not achieve to use only one binding
     // With 2 bindings all the mouse events are catched,
@@ -134,7 +134,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
   if (parent) {
     var p_svg = parent.dom.svg
   } else {
-    brick.desk.dom.svg.canvas_.appendChild(g)
+    brick.board.dom.svg.canvas_.appendChild(g)
   }
   if (p_svg && p_svg.groupContour_) {
     goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
@@ -483,7 +483,7 @@ eYo.Svg.prototype.brickUpdateDisabled = function (brick) {
 eYo.Svg.prototype.brickMenuShow = function (brick, menu) {
   var svg = brick.dom
   var bBox = this.brickGetBBox(brick)
-  var scaledHeight = bBox.height * brick.desk.scale
+  var scaledHeight = bBox.height * brick.board.scale
   var xy = goog.style.getPageOffset(svg.group_)
   menu.showMenu(svg.group_, xy.x, xy.y + scaledHeight + 2)
 }
@@ -507,7 +507,7 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
     if (g) {
       // Move this brick up the DOM.  Keep track of x/y translations.
       var brick = brick
-      brick.desk.dom.svg.canvas_.appendChild(g)
+      brick.board.dom.svg.canvas_.appendChild(g)
       var xy = brick.xy
       g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
       if (svg.groupContour_) {
@@ -651,7 +651,7 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
  * @param {*} dl
  */
 eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
-  // Desk coordinates.
+  // Board coordinates.
   var dx = dc * eYo.Unit.x
   var dy = dl * eYo.Unit.y
   this.brickXYMoveTo(brick, dx, dy)
@@ -666,7 +666,7 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
  */
 eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
   var svg = brick.dom.svg
-  // Desk coordinates.
+  // Board coordinates.
   var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
   ;[svg.group_, svg.groupShape_, svg.groupContour_].forEach(g => {
@@ -679,8 +679,8 @@ eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
  * drag surface to translate bricks.
  * This brick must be a top-level brick.
  * @param {!eYo.Brick} brick  the brick.
- * @param {!Number} dx  in desk coordinates.
- * @param {!Number} dy  in desk coordinates.
+ * @param {!Number} dx  in board coordinates.
+ * @param {!Number} dy  in board coordinates.
  * @package
  */
 eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
@@ -707,7 +707,7 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
   if (!this.brickCanDraw(brick)) {
     throw `brick is not inited ${brick.type}`
   }
-  // Desk coordinates.
+  // Board coordinates.
   var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
   svg.group_.setAttribute('transform', transform)
@@ -734,8 +734,8 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
 
 /**
  * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in desk units.
- * @param {number} y The y coordinate of the translation in desk units.
+ * @param {number} x The x coordinate of the translation in board units.
+ * @param {number} y The y coordinate of the translation in board units.
  */
 eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
   if (goog.isDef(x.x)) {
@@ -750,20 +750,20 @@ eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the
- * drawing surface's origin (0,0), in desk units.
- * If the brick is on the desk, (0, 0) is the origin of the desk
+ * drawing surface's origin (0,0), in board units.
+ * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
- * This does not change with desk scale.
+ * This does not change with board scale.
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
- *     desk coordinates.
+ *     board coordinates.
  */
-eYo.Svg.prototype.brickXYInDesk = function (brick) {
+eYo.Svg.prototype.brickXYInBoard = function (brick) {
   var x = 0
   var y = 0
   var brick = brick
-  var dragSurface = brick.factory.dom.svg.brickDragSurface
+  var dragSurface = brick.desk.dom.svg.brickDragSurface
   var dragSurfaceGroup = dragSurface.dom.svg.group_
-  var canvas = brick.desk.dom.svg.canvas_
+  var canvas = brick.board.dom.svg.canvas_
   var element = brick.dom.svg.group_
   if (element) {
     do {
@@ -990,9 +990,9 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
   var svg = brick.dom.svg
   if (parent) {
     var p_svg = parent.dom
-    var oldXY = this.brickXYInDesk(brick)
+    var oldXY = this.brickXYInBoard(brick)
     p_svg.group_.appendChild(svg.group_)
-    var newXY = this.brickXYInDesk(brick)
+    var newXY = this.brickXYInBoard(brick)
     goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
@@ -1000,10 +1000,10 @@ eYo.Svg.prototype.brickSetParent = function (brick, parent) {
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
-    var oldXY = this.brickXYInDesk(brick)
-    brick.desk.dom.svg.canvas_.appendChild(svg.group_)
+    var oldXY = this.brickXYInBoard(brick)
+    brick.board.dom.svg.canvas_.appendChild(svg.group_)
     xy && (svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
-    var newXY = this.brickXYInDesk(brick)
+    var newXY = this.brickXYInBoard(brick)
     goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
@@ -1035,17 +1035,17 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
 }
 
 /**
- * Move this block back to the desk block canvas.
+ * Move this block back to the board block canvas.
  * Generally should be called at the same time as setDragging_(false).
  * @param {!eYo.Brick} brick  The brick
  * @param {!goog.math.Coordinate} newXY The position the brick should take on
- *     on the desk canvas, in desk coordinates.
+ *     on the board canvas, in board coordinates.
  * @private
  */
 eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
   // Translate to current position, turning off 3d.
   this.xyBrickMoveTo(brick, newXY)
-  brick.factory.dom.svg.brickDragSurface.clearAndHide(brick.desk.dom.svg.canvas_)
+  brick.desk.dom.svg.brickDragSurface.clearAndHide(brick.board.dom.svg.canvas_)
 }
 
 /**

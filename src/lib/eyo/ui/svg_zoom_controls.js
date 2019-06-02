@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk rendering driver.
+ * @fileoverview Board rendering driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -15,16 +15,16 @@ goog.provide('eYo.Svg.ZoomControl')
 
 goog.require('eYo.ZoomControls')
 
-goog.forwardDeclare('eYo.Desk')
+goog.forwardDeclare('eYo.Board')
 
 /**
- * Initialize the desk SVG ressources.
+ * Initialize the board SVG ressources.
  * @param {!eYo.ZoomControls} constrols
  * @return {!Element} The controls's SVG group.
  */
 eYo.Svg.prototype.zoomControlsInit = function(controls) {
-  var desk = controls.desk_
-  var dom = desk.dom
+  var board = controls.board_
+  var dom = board.dom
   var svg = dom.svg
   var g = svg.zoom_
   if (g) {
@@ -85,7 +85,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   zoomoutSvg.setAttributeNS(
     eYo.Dom.XLINK_NS,
     'xlink:href',
-    desk.options.pathToMedia + eYo.SPRITE.url
+    board.options.pathToMedia + eYo.SPRITE.url
   )
   clip = eYo.Svg.newElement(
     'clipPath',
@@ -113,7 +113,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   zoominSvg.setAttributeNS(
     eYo.Dom.XLINK_NS,
     'xlink:href',
-    desk.options.pathToMedia + eYo.SPRITE.url
+    board.options.pathToMedia + eYo.SPRITE.url
   )
   clip = eYo.Svg.newElement(
     'clipPath',
@@ -137,7 +137,7 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   zoomresetSvg.setAttributeNS(
     eYo.Dom.XLINK_NS,
     'xlink:href',
-    desk.options.pathToMedia + eYo.SPRITE.url
+    board.options.pathToMedia + eYo.SPRITE.url
   )
   // Attach event listeners.
   var bound = dom.bound
@@ -145,9 +145,9 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     zoomresetSvg,
     'mousedown',
     e => {
-      desk.markFocused()
-      desk.scale = desk.options.zoom.startScale
-      desk.scrollCenter()
+      board.markFocused()
+      board.scale = board.options.zoom.startScale
+      board.scrollCenter()
       eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
@@ -156,8 +156,8 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     zoominSvg,
     'mousedown',
     e => {
-      desk.markFocused()
-      desk.zoomCenter(1)
+      board.markFocused()
+      board.zoomCenter(1)
       eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
@@ -166,8 +166,8 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
     zoomoutSvg,
     'mousedown',
     e => {
-      desk.markFocused();
-      desk.zoomCenter(-1)
+      board.markFocused();
+      board.zoomCenter(-1)
       eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
       eYo.Dom.gobbleEvent(e)
     }
@@ -180,8 +180,8 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
  * @param {!eYo.ZoomControls} constrols
  */
 eYo.Svg.prototype.zoomControlsDispose = function(controls) {
-  var desk = controls.desk_
-  var dom = desk.dom
+  var board = controls.board_
+  var dom = board.dom
   var svg = dom.svg
   var g = svg.zoom_
   if (!g) {
@@ -201,7 +201,7 @@ eYo.Svg.prototype.zoomControlsDispose = function(controls) {
  * @param {!eYo.ZoomControls} controls
  */
 eYo.Svg.prototype.zoomControlsPlace = function(controls) {
-  controls.desk_.dom.svg.zoom_.setAttribute(
+  controls.board_.dom.svg.zoom_.setAttribute(
     'transform',
     `translate(${controls.left_},${controls.top_})`
   )

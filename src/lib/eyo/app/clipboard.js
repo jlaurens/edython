@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk override.
+ * @fileoverview Board override.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -31,22 +31,22 @@ Object.defineProperties(eYo.Clipboard, {
       this.dom_ = newValue
     }
   },
-  sourceDesk: {
+  sourceBoard: {
     get () {
-      return this.sourceDesk_
+      return this.sourceBoard_
     },
     set (newValue) {
-      this.sourceDesk_ = newValue
+      this.sourceBoard_ = newValue
     }
   },
-  factory: {
+  desk: {
     get () {
-      return this.sourceDesk_.factory
+      return this.sourceBoard_.desk
     }
   },
-  mainDesk: {
+  mainBoard: {
     get () {
-      return this.sourceDesk_.factory.mainDesk
+      return this.sourceBoard_.desk.mainBoard
     }
   }
 })

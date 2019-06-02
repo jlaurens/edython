@@ -47,7 +47,7 @@ goog.forwardDeclare('eYo.Svg.Brick')
  * @readonly
  * @property {boolean} hasRightEdge  whether the owning brick has a right edge.
  * @readonly
- * @property {Object}  xyInDesk  the coordinates relative to the surface.
+ * @property {Object}  xyInBoard  the coordinates relative to the surface.
  */
 eYo.Brick.UI = function(brick) {
   this.brick_ = brick
@@ -78,9 +78,9 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       return this.brick_
     }
   },
-  desk: {
+  board: {
     get () {
-      return this.brick_.desk
+      return this.brick_.board
     }
   },
   change: {
@@ -90,7 +90,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   driver: {
     get() {
-      return this.brick_.desk.ui_driver
+      return this.brick_.board.ui_driver
     }
   },
   reentrant_: {
@@ -333,7 +333,7 @@ eYo.Brick.UI.prototype.render = (() => {
       }
     } else {
       // Top-most brick.  Fire an event to allow scrollbars to resize.
-      this.brick_.desk.resizeContents()
+      this.brick_.board.resizeContents()
     }
   }
   var longRender = eYo.Decorate.reentrant_method(
@@ -374,7 +374,7 @@ eYo.Brick.UI.prototype.render = (() => {
     if (!this.brick_.hasUI || this.rendered === false) { // this.rendered === undefined is OK
       return
     }
-    if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.desk)) {
+    if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.board)) {
       return
     }
     recorder && (this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT))
@@ -486,8 +486,8 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
 
 /**
  * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in desk units.
- * @param {number} y The y coordinate of the translation in desk units.
+ * @param {number} x The x coordinate of the translation in board units.
+ * @param {number} y The y coordinate of the translation in board units.
  */
 eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
   this.driver.brickXYMoveTo(this.brick_, x, y)
@@ -520,7 +520,7 @@ eYo.Brick.UI.prototype.didRender_ = function (recorder) {
  * @private
  */
 eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
-  var blockTL = this.xyInDesk;
+  var blockTL = this.xyInBoard;
   // Don't tighten previous or output connections because they are inferior
   // connections.
   var m5s = this.brick_.magnets
@@ -557,7 +557,7 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
  */
 eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
-  // var blockTL = this.xyInDesk
+  // var blockTL = this.xyInBoard
   // this.brick_.forEachSlot((slot) => {
   //   var m4t = input.magnet
   //   if (m4t) {
@@ -630,7 +630,7 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
 eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
   'alignRightEdges_',
   function (recorder) {
-    if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.desk || !this.brick_.hasUI) {
+    if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.board || !this.brick_.hasUI) {
       return
     }
     var right = 0
@@ -1472,7 +1472,7 @@ eYo.Brick.UI.prototype.updateDisabled = function () {
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.connectEffect = function () {
-  var w = this.brick_.desk
+  var w = this.brick_.board
   w.audio.play('click')
   if (w.scale < 1) {
     return // Too small to care about visual effects.
@@ -1485,7 +1485,7 @@ eYo.Brick.UI.prototype.connectEffect = function () {
  * This must take place while the brick is still in a consistent state.
  */
 eYo.Brick.UI.prototype.disposeEffect = function () {
-  this.desk.audio.play('delete');
+  this.board.audio.play('delete');
   this.driver.brickDisposeEffect(this.brick_)
 }
 
@@ -1529,7 +1529,7 @@ eYo.Brick.UI.prototype.sendToBack = function () {
  * @return {boolean}
  */
 eYo.Brick.UI.prototype.setOffset = function (dc, dl) {
-  // Desk coordinates.
+  // Board coordinates.
   if (!this.driver.brickCanDraw(this.brick_)) {
     throw `brick is not inited ${this.brick_.type}`
   }
@@ -1687,31 +1687,31 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 
 /**
  * Return the coordinates of the top-left corner of this.brick_ relative to the
- * drawing surface's origin (0,0), in desk units.
- * If the brick is on the desk, (0, 0) is the origin of the desk
+ * drawing surface's origin (0,0), in board units.
+ * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
- * This does not change with desk scale.
+ * This does not change with board scale.
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
- *     desk coordinates.
+ *     board coordinates.
  */
 Object.defineProperties(eYo.Brick.UI.prototype, {
-  xyInDesk: {
+  xyInBoard: {
     get () {
-      return this.driver.brickXYInDesk(this.brick_)
+      return this.driver.brickXYInBoard(this.brick_)
     }
   },
   /**
    * Returns the coordinates of a bounding rect describing the dimensions of the brick.
    * As the shape is not the same comparing to Blockly's default,
    * the bounding rect changes too.
-   * Coordinate system: desk coordinates.
+   * Coordinate system: board coordinates.
    * @return {!goog.math.Rect}
    *    Object with top left and bottom right coordinates of the bounding box.
    */
   boundingRect: {
     get () {
       return goog.math.Rect.createFromPositionAndSize(
-        this.xyInDesk,
+        this.xyInBoard,
         this.size
       )
     }
@@ -1729,7 +1729,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
    * brick.
    * As the shape is not the same comparing to Blockly's default,
    * the bounding box changes too.
-   * Coordinate system: desk coordinates.
+   * Coordinate system: board coordinates.
    * @return {!goog.math.Box}
    *    Object with top left and bottom right coordinates of the bounding box.
    */
@@ -1751,8 +1751,8 @@ eYo.Brick.UI.prototype.magnetHilight = function (c_eyo) {
 
 /**
  * Move the bricks relatively.
- * @param {number} dx Horizontal offset in desk units.
- * @param {number} dy Vertical offset in desk units.
+ * @param {number} dx Horizontal offset in board units.
+ * @param {number} dy Vertical offset in board units.
  */
 eYo.Brick.UI.prototype.xyMoveBy = function (dx, dy) {
   this.brick_.moveBy(dx, dy)
@@ -1763,7 +1763,7 @@ eYo.Brick.UI.prototype.xyMoveBy = function (dx, dy) {
  * drag surface to translate bricks.
  * this.brick_ must be a top-level brick.
  * @param {!goog.math.Coordinate} newLoc The location to translate to, in
- *     desk coordinates.
+ *     board coordinates.
  * @package
  */
 eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
@@ -1773,8 +1773,8 @@ eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
     newLoc.y -= d.y
   }
   var b3k = this.brick_
-  if (this.desk.brickDragSurface) {
-    this.desk.brickDragSurface.xyMoveTo(newLoc.x, newLoc.y)
+  if (this.board.brickDragSurface) {
+    this.board.brickDragSurface.xyMoveTo(newLoc.x, newLoc.y)
   } else {
     this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
   }
@@ -1790,10 +1790,10 @@ eYo.Brick.UI.prototype.setDragging = function(dragging) {
 }
 
 /**
- * Move this block back to the desk block canvas.
+ * Move this block back to the board block canvas.
  * Generally should be called at the same time as setDragging_(false).
  * @param {!goog.math.Coordinate} newXY The position the block should take on
- *     on the desk canvas, in desk coordinates.
+ *     on the board canvas, in board coordinates.
  * @private
  */
 eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
@@ -1805,23 +1805,23 @@ eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
  * the visible area.
  * Return value: if `x < 0`, left of the visible area,
  * if `x > 0`, right of the visible area, 0 otherwise.
- * undefined when the brick is not in a desk.
+ * undefined when the brick is not in a board.
  * The same holds for `y`.
  * The values are the signed distances between the center
  * of the brick and the visible area.
- * If the answer is `{x: -15, y: 0}`, we just have to scroll the desk
+ * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
  * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
  * @return {{x: number, y: number}|undefined}
  */
 eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
-  var desk = this.brick_.desk
-  if (!desk) {
+  var board = this.brick_.board
+  if (!board) {
     return undefined
   }
   // is the brick in the visible area ?
-  var metrics = desk.getMetrics()
+  var metrics = board.getMetrics()
   if (!metrics) {
     // sometimes undefined is returned
     console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")
@@ -1830,14 +1830,14 @@ eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
       y: 0
     }
   }
-  var scale = desk.scale || 1
+  var scale = board.scale || 1
   var HW = this.brick_.ui.size
   // the brick is in the visible area if we see its center
   var leftBound = metrics.view.left / scale - HW.width / 2
   var topBound = metrics.view.top / scale - HW.height / 2
   var rightBound = (metrics.view.left + metrics.view.width) / scale - HW.width / 2
   var downBound = (metrics.view.top + metrics.view.height) / scale - HW.height / 2
-  var xy = newLoc || this.xyInDesk
+  var xy = newLoc || this.xyInBoard
   return {
     x: xy.x < leftBound
       ? xy.x - leftBound
@@ -1883,10 +1883,10 @@ eYo.Brick.UI.prototype.scheduleSnapAndBump = function() {
  * Snap this block to the nearest grid point.
  */
 eYo.Brick.UI.prototype.snapToGrid = function() {
-  if (!this.desk || this.desk.dragging || this.parent || this.isInFlyout) {
+  if (!this.board || this.board.dragging || this.parent || this.isInFlyout) {
     return
   }
-  var xy = this.xyInDesk
+  var xy = this.xyInBoard
   var dx = (Math.round(xy.x / eYo.Unit.x - 1 / 2) + 1 / 2) * eYo.Unit.x - xy.x
   dx = Math.round(dx)
   var dy = (Math.round(xy.y / eYo.Unit.y - 1 / 2) + 1 / 2) * eYo.Unit.y - xy.y
@@ -1903,7 +1903,7 @@ eYo.Brick.UI.prototype.snapToGrid = function() {
  * @private
  */
 eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
-  if (!this.desk || this.desk.dragging) {
+  if (!this.board || this.board.dragging) {
     return;  // Don't bump blocks during a drag.
   }
   var root = this.brick_.root
@@ -1943,7 +1943,7 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  * @return {Object|undefined|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
-  var ws = this.brick_.desk
+  var ws = this.brick_.board
   if (!ws) {
     return
   }
@@ -1952,8 +1952,8 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   if (gesture && gesture.startField_) {
     return
   }
-  var where = ws.xyEventInDesk(e)
-  where = goog.math.Coordinate.difference(where, ws.originInFactory)
+  var where = ws.xyEventInBoard(e)
+  where = goog.math.Coordinate.difference(where, ws.originInDesk)
   where.scale(1 / ws.scale)
   var rect = this.boundingRect
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
@@ -2121,7 +2121,7 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
       return
     }
   }
-  var ws = brick.desk
+  var ws = brick.board
   if (brick.parentIsShort && !brick.isSelected) {
     parent = brick.parent
     if (!parent.isSelected) {
@@ -2241,7 +2241,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
  */
 eYo.Brick.UI.prototype.showContextMenu_ = function (e) {
   // this part is copied as is from the parent's implementation. Is it relevant ?
-  if (this.desk.options.readOnly || !this.contextMenu) {
+  if (this.board.options.readOnly || !this.contextMenu) {
     return
   }
   eYo.MenuManager.shared().showMenu(this.brick_, e)

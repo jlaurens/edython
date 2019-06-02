@@ -8,7 +8,7 @@ console.log('RUNNING NODE/BLOCK TESTS')
 //     eYo.Test.setItUp()
 //     var err_ret = {}
 //     var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
-//     var d = n.toBrick(eYo.App.desk)
+//     var d = n.toBrick(eYo.App.board)
 //     chai.assert(d, 'MISSING BLOCK')
 //     d.dispose()
 //     eYo.Test.tearItDown()

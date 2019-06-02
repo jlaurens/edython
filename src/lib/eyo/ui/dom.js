@@ -20,11 +20,11 @@ goog.forwardDeclare('goog.dom');
 
 /**
  * Model for dom utilities
- * @param {eYo.Factory} factory
+ * @param {eYo.Desk} desk
  * @constructor
  */
-eYo.Dom = function (factory) {
-  eYo.Dom.superClass_.constructor.call(this, factory)
+eYo.Dom = function (desk) {
+  eYo.Dom.superClass_.constructor.call(this, desk)
 }
 goog.inherits(eYo.Dom, eYo.Driver)
 
@@ -247,7 +247,7 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.Brick|eYo.Desk|eYo.Flyout}
+ * @param {eYo.Brick|eYo.Board|eYo.Flyout}
  */
 eYo.Dom.clearBoundEvents = (bfw) => {
   var dom = bfw.dom || bfw.dom
@@ -484,7 +484,7 @@ eYo.Dom.longStart_ = (() => {
 /**
  * Bind document events, but only once.  Destroying and reinjecting Blockly
  * should not bind again.
- * Bind events for scrolling the desk.
+ * Bind events for scrolling the board.
  * Most of these events should be bound to the SVG's surface.
  * However, 'mouseup' has to be on the whole document so that a block dragged
  * out of bounds and released will know that it has been released.
@@ -518,7 +518,7 @@ eYo.Dom.bindDocumentEvents = (() => {
         eYo.Dom.bindEvent(
           window,
           'orientationchange',
-          e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple desks.
+          e => eYo.Svg.deskResize(eYo.App.desk) // TODO(#397): Fix for multiple boards.
         )
       }
     }
@@ -533,8 +533,8 @@ eYo.Dom.bindDocumentEvents = (() => {
  * @private
  */
 eYo.Dom.on_keydown = e => {
-  if (eYo.App.desk.options.readOnly || eYo.Dom.isTargetInput(e)) {
-    // No key actions on readonly desks.
+  if (eYo.App.board.options.readOnly || eYo.Dom.isTargetInput(e)) {
+    // No key actions on readonly boards.
     // When focused on an HTML text input widget, don't trap any keys.
     return
   }
@@ -556,15 +556,15 @@ eYo.Dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.App.desk.isDragging) {
+    if (eYo.App.board.isDragging) {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
-      eYo.Desktop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
+      eYo.Boardtop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.App.desk.isDragging) {
+    if (eYo.App.board.isDragging) {
       return;
     }
     if (eYo.Selected.brick &&
@@ -573,30 +573,30 @@ eYo.Dom.on_keydown = e => {
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
       // would be to paste, which would create additional undeletable/immovable
-      // bricks on the desk.
+      // bricks on the board.
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.App.hideChaff()
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.Selected.brick.desk.isFlyout) {
+        eYo.Boardtop.copyBrick(eYo.Selected.brick, deep)
+      } else if (e.keyCode == 88 && !eYo.Selected.brick.board.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-        eYo.Desktop.deleteBrick(eYo.Selected.brick, deep)
+        eYo.Boardtop.copyBrick(eYo.Selected.brick, deep)
+        eYo.Boardtop.deleteBrick(eYo.Selected.brick, deep)
       }
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      eYo.App.desk.paste()
+      eYo.App.board.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
       eYo.App.hideChaff()
-      eYo.App.desk.undo(e.shiftKey)
+      eYo.App.board.undo(e.shiftKey)
     }
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.Selected.brick.desk.isFlyout) {
+  // if (deleteBrick && !eYo.Selected.brick.board.isFlyout) {
   //   eYo.Events.group = true
   //   eYo.App.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);
@@ -657,16 +657,16 @@ eYo.Dom.prototype.flyoutDispose = function (flyout) {
 }
 
 /**
- * Initialize the factory SVG ressources.
- * @param {!eYo.Factory} factory
- * @return {!Element} The factory's dom repository.
+ * Initialize the desk SVG ressources.
+ * @param {!eYo.Desk} desk
+ * @return {!Element} The desk's dom repository.
  */
-eYo.Dom.prototype.factoryInit = function(factory) {
-  if (factory.dom) {
+eYo.Dom.prototype.deskInit = function(desk) {
+  if (desk.dom) {
     return
   }
-  var dom = this.basicInit(factory)
-  var options = factory.options
+  var dom = this.basicInit(desk)
+  var options = desk.options
   var container = options.container
   // no UI if no valid container
   if (goog.isString(container)) {
@@ -686,31 +686,31 @@ eYo.Dom.prototype.factoryInit = function(factory) {
 }
 
 /**
- * Dispose of the factory dom resources.
- * @param {!eYo.Factory} factory
+ * Dispose of the desk dom resources.
+ * @param {!eYo.Desk} desk
  */
-eYo.Dom.prototype.factoryDispose = eYo.Dom.decorateDispose(
-  function(factory) {
-    var dom = factory.dom
+eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(
+  function(desk) {
+    var dom = desk.dom
     goog.dom.removeNode(dom.div_)
     dom.div_ = null
   }
 )
 
 /**
- * Initialize the desk dom ressources.
- * @param {!eYo.Desk} desk
+ * Initialize the board dom ressources.
+ * @param {!eYo.Board} board
  * @param {!Element|string} container Containing element, or its ID,
  *     or a CSS selector.
  * @param {Object=} opt_options Optional dictionary of options.
- * @return {!eYo.Desk} Newly created main desk.
+ * @return {!eYo.Board} Newly created main board.
  */
-eYo.Dom.prototype.deskInit = eYo.Dom.prototype.basicInit
+eYo.Dom.prototype.boardInit = eYo.Dom.prototype.basicInit
 
 /**
- * Dispose of the desk dom ressources.
- * @param {!eYo.Desk} desk
- * @return {!Object} The desk's dom repository.
+ * Dispose of the board dom ressources.
+ * @param {!eYo.Board} board
+ * @return {!Object} The board's dom repository.
  */
-eYo.Dom.prototype.deskDispose = eYo.Dom.prototype.basicDispose
+eYo.Dom.prototype.boardDispose = eYo.Dom.prototype.basicDispose
 

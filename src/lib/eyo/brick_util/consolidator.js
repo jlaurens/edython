@@ -653,11 +653,11 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
   var unwrapped = brick.wrapper
   var io = {
     brick: brick,
-    noLeftSeparator: brick.desk && (brick.desk.eyo.options.noLeftSeparator ||
-      brick.desk.eyo.options.noDynamicList) &&
+    noLeftSeparator: brick.board && (brick.board.eyo.options.noLeftSeparator ||
+      brick.board.eyo.options.noDynamicList) &&
       (!unwrapped ||
         (!unwrapped.withLeftSeparator_ && !unwrapped.withDynamicList_)),
-    noDynamicList: brick.desk && (brick.desk.eyo.options.noDynamicList) &&
+    noDynamicList: brick.board && (brick.board.eyo.options.noDynamicList) &&
       (!unwrapped ||
         !unwrapped.withDynamicList_),
     list: brick.inputList,
@@ -677,8 +677,8 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
-  // do not consolidate while changing or not in a desk
-  if (brick.change.level || !brick.desk) {
+  // do not consolidate while changing or not in a board
+  if (brick.change.level || !brick.board) {
     return
   }
   var io = this.getIO(brick)

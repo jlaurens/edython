@@ -25,7 +25,7 @@ eYo.Svg.prototype.brickDraggerInit = function(dragger) {
   }
   var dom = this.basicInit(dragger)
   var svg = dom.svg
-  svg.dragSurface = dragger.factory.dom.svg.brickDragSurface
+  svg.dragSurface = dragger.desk.dom.svg.brickDragSurface
 }
 
 /**
@@ -45,16 +45,16 @@ eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.decorateDispose(function (brickD
  * @param {!eYo.brickDragger} brickDragger
  */
 eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
-  var div = brickDragger.factory.dom.div_
+  var div = brickDragger.desk.dom.div_
   brickDragger.transformCorrection_ = eYo.Svg.getTransformCorrection(div)
   // Move the brick dragged to the drag surface
     // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
   // to keep the position in sync as it moves on/off the surface.
   var brick = brickDragger.brick_
-  var xy = this.brickXYInDesk(brick)
+  var xy = this.brickXYInBoard(brick)
   this.removeAttribute(brick.dom.svg.group_, 'transform')
-  var dragSurface = brickDragger.factory.dom.svg.brickDragSurface
+  var dragSurface = brickDragger.desk.dom.svg.brickDragSurface
   dragSurface.xyMoveTo(xy.x, xy.y)
   // Execute the move on the top-level SVG component
   dragSurface.setBricksAndShow(brick.dom.svg.group_)
@@ -67,12 +67,12 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
 eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
   dragger.transformCorrection_ = null
   this.disconnectStop()
-  var dXY = dragger.delta_
-  var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, dXY)
+  var xyDelta = dragger.xyDelta
+  var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, xyDelta)
   var b3k = dragger.brick_
   // Translate to current position, turning off 3d.
-  var dXY = dragger.destination.fromPixelUnit(delta)
-  var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, dXY)
+  xyDelta = dragger.destination.fromPixelUnit(delta)
+  var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, xyDelta)
   b3k.ui.xyMoveTo(newLoc)
-  b3k.factory.dom.svg.brickDragSurface.clearAndHide(b3k.desk.dom.svg.canvas_)
+  b3k.desk.dom.svg.brickDragSurface.clearAndHide(b3k.board.dom.svg.canvas_)
 }

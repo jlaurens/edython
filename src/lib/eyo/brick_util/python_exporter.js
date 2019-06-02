@@ -57,7 +57,7 @@ eYo.Py.Exporter.prototype.dedent_ = function () {
  */
 eYo.Py.Exporter.prototype.newline_ = function () {
   this.line && (this.lines.push(this.line.join('')))
-  this.lineShouldAddDesk = false
+  this.lineShouldAddBoard = false
   this.line = [this.indent]
   this.isFirst = true
   this.shouldSeparateField = false
@@ -73,8 +73,8 @@ eYo.Py.Exporter.prototype.newline_ = function () {
  * For edython.
  * @param {!String} s  the string to be appended to the line.
  */
-eYo.Py.Exporter.prototype.addDesk = function () {
-  this.line.length > 1 && (this.lineShouldAddDesk = true) // this line contains at least one indentation string
+eYo.Py.Exporter.prototype.addBoard = function () {
+  this.line.length > 1 && (this.lineShouldAddBoard = true) // this line contains at least one indentation string
 }
 
 /**
@@ -83,8 +83,8 @@ eYo.Py.Exporter.prototype.addDesk = function () {
  * @param {!String} s  the string to be appended to the line.
  */
 eYo.Py.Exporter.prototype.linePush = function (s) {
-  if (this.lineShouldAddDesk) {
-    this.lineShouldAddDesk = false
+  if (this.lineShouldAddBoard) {
+    this.lineShouldAddBoard = false
     this.line.push(' ')
   }
   this.line.push(s)
@@ -101,14 +101,14 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   if (brick.async_) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
-      this.addDesk()
+      this.addBoard()
     }
     this.linePush('async ')
     this.shouldSeparateField = false
   } else if (brick.await) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
-      this.addDesk()
+      this.addBoard()
     }
     this.linePush('await ')
     this.shouldSeparateField = false
@@ -285,21 +285,21 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       // the last character was a letter or not
       var head = text[0]
       if (text === ':=') {
-        this.addDesk()
+        this.addBoard()
       } else if (this.wasRightParenth) {
         // do not always add white space
         if (eYo.XRE.id_continue.test(head)) {
-          this.addDesk()
+          this.addBoard()
         }
       } else if (this.wasColon && (eYo.XRE.id_continue.test(head) || head === '[')) {
         // add a separation
-        this.addDesk()
+        this.addBoard()
       } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_continue.test(head))) {
         // add a separation
-        this.addDesk()
+        this.addBoard()
       } else if (field.isLabel && eYo.XRE.id_continue.test(head)) {
         // add a separation here too
-        this.addDesk()
+        this.addBoard()
       }
       this.linePush(text)
       var isContinue = eYo.XRE.tail_continue.test(text) // what about surrogate pairs ?
@@ -336,7 +336,7 @@ eYo.Py.Exporter.prototype.exportInput_ = function (input, opt) {
         this.exportAsExpression_(t9k)
       } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !input.bindField) {
         console.error('BREAK HERE')
-        this.shouldSeparateField && (this.addDesk())
+        this.shouldSeparateField && (this.addBoard())
         this.linePush('<MISSING INPUT>')
         this.shouldSeparateField = true
         // NEWLINE

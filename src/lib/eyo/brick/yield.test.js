@@ -63,7 +63,7 @@ describe('YIELD expression and statement', function() {
     d.dispose()
   })
   it(`yield abc -> yield <abc> -> yield abc`, function() {
-    var d = eYo.Brick.newReady(Blockly.mainDesk, eYo.T3.Stmt.yield_stmt)
+    var d = eYo.Brick.newReady(Blockly.mainBoard, eYo.T3.Stmt.yield_stmt)
     d.expression_p = 'abc'
     eYo.Test.code(d, 'yield abc')
     var t9k = d.expression_b

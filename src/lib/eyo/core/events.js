@@ -170,9 +170,9 @@ eYo.Events.fire = function(event) {
       var queue = eYo.Events.filter(eYo.Events.FIRE_QUEUE_, true)
       eYo.Events.FIRE_QUEUE_.length = 0
       queue.forEach(event => {
-        var desk = eYo.Desk.getById(event.deskId)
-        if (desk) {
-          desk.fireChangeListener(event)
+        var board = eYo.Board.getById(event.boardId)
+        if (board) {
+          board.fireChangeListener(event)
         }
       }) 
     }, 0)
@@ -195,7 +195,7 @@ eYo.Events.filter = function(queueIn, forward) {
       if (!first.isNull && !last.isNull
           && first.type === eYo.Events.DELETE
           && last.type === eYo.Events.CREATE
-          && first.deskId === last.deskId
+          && first.boardId === last.boardId
           && first.group === last.group
           && first.brickId === last.brickId) {
         queueIn.length = 0
@@ -213,7 +213,7 @@ eYo.Events.filter = function(queueIn, forward) {
   // Merge duplicates.
   queue.forEach(event => {
     if (!event.isNull) {
-      var key = [event.type, event.brickId, event.deskId].join(' ')
+      var key = [event.type, event.brickId, event.boardId].join(' ')
       var lastEvent = hash[key]
       if (!lastEvent) {
         hash[key] = event
@@ -246,7 +246,7 @@ eYo.Events.filter = function(queueIn, forward) {
 
 /**
  * Modify pending undo events so that when they are fired they don't land
- * in the undo stack.  Called by eYo.Desk.clearUndo.
+ * in the undo stack.  Called by eYo.Board.clearUndo.
  */
 eYo.Events.clearPendingUndo = function() {
   eYo.Events.FIRE_QUEUE_.forEach(event => (event.recordUndo = false))
@@ -277,13 +277,13 @@ eYo.Events.enable = function() {
 eYo.Events.disableOrphans = function(event) {
   if (event.type === eYo.Events.BRICK_MOVE ||
       event.type === eYo.Events.BRICK_CREATE) {
-    var desk = eYo.Desk.getById(event.deskId)
-    var brick = desk.getBrickById(event.brickId)
+    var board = eYo.Board.getById(event.boardId)
+    var brick = board.getBrickById(event.brickId)
     if (brick) {
       if (brick.parent && !brick.parent.disabled) {
         brick.descendants.forEach(child => child.disabled = false)
       } else if ((brick.output_m || brick.head_m || brick.left_m) &&
-                 !desk.isDragging) {
+                 !board.isDragging) {
         do {
           brick.disabled = true
           brick = brick.foot
@@ -297,12 +297,12 @@ eYo.Events.disableOrphans = function(event) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.Events.Abstract = function(desk) {
+eYo.Events.Abstract = function(board) {
   /**
-   * The desk identifier for this event.
+   * The board identifier for this event.
    * @type {string|undefined}
    */
-  this.deskId = desk.id
+  this.boardId = board.id
 
   /**
    * The event group id for the group this event belongs to. Groups define
@@ -330,19 +330,19 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
     }
   },
   /**
-   * Get desk the event belongs to.
-   * @return {eYo.Desk} The desk the event belongs to.
-   * @throws {Error} if desk is null.
+   * Get board the event belongs to.
+   * @return {eYo.Board} The board the event belongs to.
+   * @throws {Error} if board is null.
    * @protected
    */
-  desk: {
+  board: {
     get () {
-      var desk = eYo.Desk.getById(this.deskId)
-      if (!desk) {
-        throw Error('Desk is null. Event must have been generated from real' +
+      var board = eYo.Board.getById(this.boardId)
+      if (!board) {
+        throw Error('Board is null. Event must have been generated from real' +
           ' Edython events.')
       }
-      return desk
+      return board
     }
   }
 })

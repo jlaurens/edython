@@ -107,20 +107,20 @@ Object.defineProperties(eYo.Owned.prototype, {
   },
   /**
    * @readonly
-   * @type {eYo.Desk}  The desk...
+   * @type {eYo.Board}  The board...
    */
-  factory: {
+  desk: {
     get () {
-      return this.brick.desk.factory
+      return this.brick.board.desk
     }
   },
   /**
    * @readonly
-   * @type {eYo.Desk}  The desk...
+   * @type {eYo.Board}  The board...
    */
-  desk: {
+  board: {
     get () {
-      return this.brick.desk
+      return this.brick.board
     }
   },
   /**
@@ -138,7 +138,7 @@ Object.defineProperties(eYo.Owned.prototype, {
    */
   ui_driver: {
     get () {
-      return this.hasUI && this.factory.ui_driver
+      return this.hasUI && this.desk.ui_driver
     }
   },
 })

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk rendering driver.
+ * @fileoverview Board rendering driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -65,7 +65,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
     y: -trashcan.SPRITE_TOP_,
     'clip-path': 'url(#eyo-trash-body-clip-' + rnd + ')'
   }, g)
-  var url = trashcan.desk_.options.pathToMedia + Blockly.SPRITE.url
+  var url = trashcan.board_.options.pathToMedia + Blockly.SPRITE.url
   body.setAttributeNS(
     eYo.Dom.XLINK_NS,
     'xlink:href',
@@ -106,7 +106,7 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
     null,
     this.trashcanOn_mouseup.bind(trashcan)
   )
-  svg = this.desk_.dom.svg
+  svg = this.board_.dom.svg
   svg.group_.insertBefore(g, svg.canvas_)
 
   trashcan.animateLid_()
@@ -138,7 +138,7 @@ eYo.Svg.prototype.trashcanDispose = function(trashcan) {
  * Inspect the contents of the trash.
  */
 eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
-  var W = trashcan.desk_
+  var W = trashcan.board_
   var dx = W.startScrollX - W.scrollX
   var dy = W.startScrollY - W.scrollY
   if (Math.sqrt(dx * dx + dy * dy) > eYo.Gesture.DRAG_RADIUS) {
@@ -152,9 +152,9 @@ eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
  */
 eYo.Svg.prototype.trashcanPlace = function(trashcan) {
   var svg = trashcan.dom.svg
-  var metrics = trashcan.desk_.getMetrics()
+  var metrics = trashcan.board_.getMetrics()
   if (!metrics) {
-    // There are no metrics available (desk is probably not visible).
+    // There are no metrics available (board is probably not visible).
     return;
   }
   svg.left_ = metrics.view.width + metrics.absolute.left -

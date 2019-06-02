@@ -46,8 +46,8 @@ goog.forwardDeclare('goog.userAgent')
  * @memberof eYo.Brick.prototype.dom
  */
 
-eYo.Svg = function (factory) {
-  eYo.Svg.superClass_.constructor.call(this, factory)
+eYo.Svg = function (desk) {
+  eYo.Svg.superClass_.constructor.call(this, desk)
 }
 goog.inherits(eYo.Svg, eYo.Dom)
 

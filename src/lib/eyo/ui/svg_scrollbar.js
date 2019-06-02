@@ -80,7 +80,7 @@ eYo.Svg.prototype.scrollbarInit = function(scrollbar, opt_class) {
   }
   eYo.Dom.insertAfter(
     root,
-    scrollbar.desk_.dom.svg.root_
+    scrollbar.board_.dom.svg.root_
   )
   var bound = dom.bound
   bound.bar_mousedown = eYo.Dom.bindEvent(
@@ -109,8 +109,8 @@ eYo.Svg.prototype.scrollbarDispose = eYo.Dom.decorateDispose(function (scrollbar
 
 /**
  * Update visibility of scrollbar based on whether it thinks it should
- * be visible and whether its containing desk is visible.
- * We cannot rely on the containing desk being hidden to hide us
+ * be visible and whether its containing board is visible.
+ * We cannot rely on the containing board being hidden to hide us
  * because it is not necessarily our parent in the DOM.
  * @param {eYo.Scrollbar} scrollbar
  * @param {Boolean} show
@@ -184,7 +184,7 @@ eYo.Svg.prototype.scrollbarPairInit = function(pair) {
   )
   eYo.Dom.insertAfter(
     corner,
-    pair.desk_.dom.svg.canvas_
+    pair.board_.dom.svg.canvas_
   )
 }
 
@@ -206,7 +206,7 @@ eYo.Svg.prototype.scrollbarPairDispose = eYo.Dom.decorateDispose(function (scrol
  * @private
  */
 eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
-  this.desk_.markFocused()
+  this.board_.markFocused()
   this.cleanUp_()
   if (eYo.Dom.isRightButton(e)) {
     // Right-click.
@@ -255,7 +255,7 @@ eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
  * @this {eYo.Scrollbar}
  */
 eYo.Svg.prototype.scrollbarOn_mouseup = function() {
-  // Tell the desk to clean up now that the desk is done moving.
+  // Tell the board to clean up now that the board is done moving.
   eYo.Dom.clearTouchIdentifier()
   this.cleanUp_()
 }
@@ -287,7 +287,7 @@ eYo.Svg.prototype.scrollbarCleanUp_ = function(scrollbar) {
  * @private
  */
 eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
-  this.desk_.markFocused()
+  this.board_.markFocused()
   eYo.Dom.clearTouchIdentifier()  // This is really a click.
   this.cleanUp_()
   if (eYo.Dom.isRightButton(e)) {
@@ -296,10 +296,10 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
     e.stopPropagation()
     return
   }
-  var mouseXY = this.desk_.xyEventInDesk(e)
+  var mouseXY = this.board_.xyEventInBoard(e)
   var mouseLocation = this.horizontal_ ? mouseXY.x : mouseXY.y
 
-  var handleXY = this.desk.factory.xyElementInFactory(this.svgHandle_)
+  var handleXY = this.board.desk.xyElementInDesk(this.svgHandle_)
   var handleStart = this.horizontal_ ? handleXY.x : handleXY.y
   var handlePosition = this.handlePosition_
 

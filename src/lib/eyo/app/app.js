@@ -22,7 +22,7 @@ goog.provide('eYo.App')
 goog.require('eYo.Do')
 
 goog.forwardDeclare('eYo.Css')
-goog.forwardDeclare('eYo.Desktop')
+goog.forwardDeclare('eYo.Boardtop')
 goog.forwardDeclare('eYo.Selected')
 
 eYo.App = Object.create(null)
@@ -36,7 +36,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var brick = eYo.Selected.brick
   if (brick) {
-    eYo.Desktop.copyBrick(brick, !optNoNext)
+    eYo.Boardtop.copyBrick(brick, !optNoNext)
     return true
   }
 };
@@ -63,23 +63,23 @@ eYo.App.doBack = function() {
 }
 
 /**
- * Scroll the desk to show the selected brick.
+ * Scroll the board to show the selected brick.
  */
 eYo.App.doFocus = () => {
   var brick = eYo.Selected.brick
   if (brick) {
-    brick.desk.scrollBrickTopLeft(brick.id)
+    brick.board.scrollBrickTopLeft(brick.id)
   }
 }
 
 /**
- * Scroll the desk to show the selected brick.
+ * Scroll the board to show the selected brick.
  */
-eYo.App.makeFactory = options => {
-  var f = eYo.App.factory = new eYo.Factory(options)
-  eYo.App.desk = f.mainDesk
-  eYo.setup(eYo.App.desk)
-  eYo.App.desk.clearUndo()
+eYo.App.makeDesk = options => {
+  var f = eYo.App.desk = new eYo.Desk(options)
+  eYo.App.board = f.mainBoard
+  eYo.setup(eYo.App.board)
+  eYo.App.board.clearUndo()
   f.makeUI()
 }
 

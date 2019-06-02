@@ -18,7 +18,7 @@ goog.require('eYo')
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.BrickDragger')
 
-// goog.forwardDeclare('eYo.DeskDragger')
+// goog.forwardDeclare('eYo.BoardDragger')
 // goog.forwardDeclare('eYo.FlyoutDragger')
 
 goog.forwardDeclare('goog.math.Coordinate')
@@ -33,11 +33,11 @@ goog.forwardDeclare('goog.asserts')
 /**
  * Class for one gesture.
  * @param {!Event} e The event that kicked off this gesture.
- * @param {!eYo.Desk} creatorDesk The desk that created
+ * @param {!eYo.Board} creatorBoard The board that created
  *     this gesture and has a reference to it.
  * @constructor
  */
-eYo.Gesture = function(e, desk) {
+eYo.Gesture = function(e, board) {
   /**
    * The position of the mouse when the gesture started.  Units are css pixels,
    * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
@@ -72,30 +72,30 @@ eYo.Gesture = function(e, desk) {
   this.targetBrick_ = null;
 
   /**
-   * The desk that the gesture started on.  There may be multiple
-   * desks on a page; this is more accurate than using
-   * Blockly.getMainDesk().
-   * @type {eYo.Desk}
+   * The board that the gesture started on.  There may be multiple
+   * boards on a page; this is more accurate than using
+   * Blockly.getMainBoard().
+   * @type {eYo.Board}
    * @private
    */
-  this.desk_ = null;
+  this.board_ = null;
 
   /**
-   * The desk that created this gesture.  This desk keeps a reference
+   * The board that created this gesture.  This board keeps a reference
    * to the gesture, which will need to be cleared at deletion.
-   * This may be different from the start desk.  For instance, a flyout is
-   * a desk, but its parent desk manages gestures for it.
-   * @type {eYo.Desk}
+   * This may be different from the start board.  For instance, a flyout is
+   * a board, but its parent board manages gestures for it.
+   * @type {eYo.Board}
    * @private
    */
-  this.creatorDesk_ = desk;
+  this.creatorBoard_ = board;
 
   /**
-   * Whether the desk is currently being dragged.
+   * Whether the board is currently being dragged.
    * @type {boolean}
    * @private
    */
-  this.deskDragger_ = undefined
+  this.boardDragger_ = undefined
 
   /**
    * Whether the brick is currently being dragged.
@@ -119,12 +119,12 @@ eYo.Gesture = function(e, desk) {
   this.brickDragger_ = null
 
   /**
-   * The object tracking a desk or flyout desk drag, or null if none
+   * The object tracking a board or flyout board drag, or null if none
    * is in progress.
-   * @type {Blockly.DeskDragger}
+   * @type {Blockly.BoardDragger}
    * @private
    */
-  this.deskDragger_ = null;
+  this.boardDragger_ = null;
 
   /**
    * The flyout a gesture started in, if any.
@@ -218,14 +218,14 @@ Object.defineProperties(eYo.Gesture, {
 
 Object.defineProperties(eYo.Gesture.prototype, {
   /**
-   * Whether this gesture is a drag of either a desk or brick.
+   * Whether this gesture is a drag of either a board or brick.
    * @readonly
-   * @type{boolean} true if this gesture is a drag of a desk or brick.
+   * @type{boolean} true if this gesture is a drag of a board or brick.
    * @package
    */
   dragging: {
     get () {
-      return this.deskDragger_ || this.brickDragger_
+      return this.boardDragger_ || this.brickDragger_
     }
   },
   started: {
@@ -259,27 +259,27 @@ Object.defineProperties(eYo.Gesture.prototype, {
     }
   },
   /**
-   * General purpose ui_driver from the creator desk.
+   * General purpose ui_driver from the creator board.
    */
   ui_driver: {
     get () {
-      return this.creatorDesk_.ui_driver
+      return this.creatorBoard_.ui_driver
     }
   },
   /**
-   * General purpose ui_driver from the creator desk.
+   * General purpose ui_driver from the creator board.
    */
-  creatorDesk: {
+  creatorBoard: {
     get () {
-      return this.creatorDesk_
+      return this.creatorBoard_
     }
   },
   /**
-   * General purpose ui_driver from the creator desk.
+   * General purpose ui_driver from the creator board.
    */
-  desk: {
+  board: {
     get () {
-      return this.desk_
+      return this.board_
     }
   }
 })
@@ -292,12 +292,12 @@ eYo.Gesture.prototype.dispose = function() {
   eYo.Dom.clearTouchIdentifier()
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
-  this.creatorDesk_.clearGesture()
+  this.creatorBoard_.clearGesture()
   eYo.Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
-  this.desk_ = this.creatorDesk_ = this.flyout_ = null
+  this.board_ = this.creatorBoard_ = this.flyout_ = null
   this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearGesture())
-  this.deskDragger_ && (this.deskDragger_ = this.deskDragger_.clearGesture())
+  this.boardDragger_ && (this.boardDragger_ = this.boardDragger_.clearGesture())
 }
 
 /**
@@ -362,9 +362,9 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
       var delta = gestureScale > 0
       ? gestureScale * eYo.Gesture.ZOOM_IN_FACTOR 
       : gestureScale * eYo.Gesture.ZOOM_OUT_FACTOR
-      var desk = this.desk_
-      var position = desk.xyEventInDesk(e)
-      desk.zoom(position.x, position.y, delta)
+      var board = this.board_
+      var position = board.xyEventInBoard(e)
+      board.zoom(position.x, position.y, delta)
     }
     this.previousScale_ = scale
     e.preventDefault()
@@ -378,7 +378,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
  * @package
  */
 eYo.Gesture.prototype.getTouchPoint_ = function(e) {
-  if (!this.desk_) {
+  if (!this.board_) {
     return null
   }
   return new goog.math.Coordinate(
@@ -403,7 +403,7 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
     if (delta > limit) {
-      this.updateDraggingBrick_() || this.updateDraggingDesk_()
+      this.updateDraggingBrick_() || this.updateDraggingBoard_()
       eYo.Dom.longStop_()
     }
   }
@@ -417,33 +417,33 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
  * @private
  */
 eYo.Gesture.prototype.updateDraggingBrick_ = function() {
-  var desk = this.flyout_
-  ? this.flyout_.targetDesk_
-  : this.desk_
-  if (desk && (this.targetBrick_ = desk.brickDragger_.start(this))) {
+  var board = this.flyout_
+  ? this.flyout_.targetBoard_
+  : this.board_
+  if (board && (this.targetBrick_ = board.brickDragger_.start(this))) {
     this.startBrick_ = null
-    this.brickDragger_ = desk.brickDragger_
-    this.desk_ = desk
-    desk.updateScreenCalculationsIfScrolled()
+    this.brickDragger_ = board.brickDragger_
+    this.board_ = board
+    board.updateScreenCalculationsIfScrolled()
     return true
   }
 }
 
 /**
- * Update this gesture to record whether a desk is being dragged.
+ * Update this gesture to record whether a board is being dragged.
  * This function should be called on a mouse/touch move event the first time the
  * drag radius is exceeded.  It should be called no more than once per gesture.
- * If a desk is being dragged this function creates the necessary
- * DeskDragger or FlyoutDragger and starts the drag.
+ * If a board is being dragged this function creates the necessary
+ * BoardDragger or FlyoutDragger and starts the drag.
  * @private
  */
-eYo.Gesture.prototype.updateDraggingDesk_ = function() {
-  var desk = 
+eYo.Gesture.prototype.updateDraggingBoard_ = function() {
+  var board = 
     this.flyout_
-    ? this.flyout_.desk_
-    : this.desk_
-  if (desk && (this.deskDragger_ = desk.dragger)) {
-    this.deskDragger_.start(this)
+    ? this.flyout_.board_
+    : this.board_
+  if (board && (this.boardDragger_ = board.dragger)) {
+    this.boardDragger_.start(this)
   }
 }
 
@@ -455,8 +455,8 @@ eYo.Gesture.prototype.updateDraggingDesk_ = function() {
 eYo.Gesture.prototype.on_mousemove = (() => {
   var move = function (e) {
     this.updateFromEvent_(e)
-    if (this.deskDragger_) {
-      this.deskDragger_.drag()
+    if (this.boardDragger_) {
+      this.boardDragger_.drag()
     } else if (this.brickDragger_) {
       this.brickDragger_.drag() // sometimes it failed when in Blockly
     }
@@ -511,17 +511,17 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     this.isEnding_ = true
     // The ordering of these checks is important: drags have higher priority than
     // clicks.  Magnets have higher priority than bricks; bricks have higher
-    // priority than desks.
+    // priority than boards.
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
     if (this.brickDragger_) {
       this.brickDragger_.end()
-    } else if (this.deskDragger_) {
-      this.deskDragger_.end()
+    } else if (this.boardDragger_) {
+      this.boardDragger_.end()
     } else if (this.startBrick_) {
       this.doBrickClick_()
     } else {
-      this.doDeskClick_()
+      this.doBoardClick_()
     }
   }
   eYo.Dom.gobbleEvent(e)
@@ -529,7 +529,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
 }
 
 /**
- * Cancel an in-progress gesture.  If a desk or brick drag is in progress,
+ * Cancel an in-progress gesture.  If a board or brick drag is in progress,
  * end the drag at the most recent location.
  * @package
  */
@@ -542,8 +542,8 @@ eYo.Gesture.prototype.cancel = function() {
   eYo.Dom.longStop_()
   if (this.brickDragger_) {
     this.brickDragger_.end()
-  } else if (this.deskDragger_) {
-    this.deskDragger_.end()
+  } else if (this.boardDragger_) {
+    this.boardDragger_.end()
   }
   this.dispose()
 }
@@ -557,18 +557,18 @@ eYo.Gesture.prototype.handleRightClick = function(e) {
   if (this.targetBrick_) {
     this.bringBrickToFront_()
     this.targetBrick_.ui.showContextMenu_(e)
-  } else if (this.desk_ && !this.flyout_) {
-    this.desk_.showContextMenu_(e)
+  } else if (this.board_ && !this.flyout_) {
+    this.board_.showContextMenu_(e)
   }
   eYo.Dom.gobbleEvent(e)
   this.dispose()
 }
 
 /**
- * Handle a mousedown/touchstart event on a desk.
- * Used by desk and flyout.
+ * Handle a mousedown/touchstart event on a board.
+ * Used by board and flyout.
  * @param {!Event} e A mouse down or touch start event.
- * @param {!Blockly.Desk} ws The desk the event hit.
+ * @param {!Blockly.Board} ws The board the event hit.
  * @package
  */
 eYo.Gesture.prototype.handleWsStart = function(e, ws) {
@@ -576,14 +576,14 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
       'Tried to call gesture.handleWsStart, but the gesture had already been ' +
       'started.');
   this.started_ = true
-  this.desk_ = ws
+  this.board_ = ws
   var b3k = eYo.Selected.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
   this.doStart(e)
 }
 
 /**
- * Start a gesture: update the desk to indicate that a gesture is in
+ * Start a gesture: update the board to indicate that a gesture is in
  * progress and bind mousemove and mouseup handlers.
  * Called from `handleWsStart`
  * @param {!Event} e A mouse down or touch start event.
@@ -596,8 +596,8 @@ eYo.Gesture.prototype.doStart = function(e) {
   }
   this.event_ = e
   this.ui_driver.disconnectStop()
-  this.desk.updateScreenCalculationsIfScrolled()
-  this.desk.markFocused()
+  this.board.updateScreenCalculationsIfScrolled()
+  this.board.markFocused()
 
   // Hide chaff also hides the flyout, so don't do it if the click is in a flyout.
   Blockly.Tooltip.block()
@@ -640,7 +640,7 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
       'Tried to call gesture.handleFlyoutStart, but the gesture had already ' +
       'been started.')
   this.flyout_ || (this.flyout_ = flyout)
-  this.handleWsStart(e, flyout.desk)
+  this.handleWsStart(e, flyout.board)
 }
 
 /**
@@ -682,10 +682,10 @@ eYo.Gesture.prototype.doBrickClick_ = function() {
 }
 
 /**
- * Execute a desk click.
+ * Execute a board click.
  * @private
  */
-eYo.Gesture.prototype.doDeskClick_ = function() {
+eYo.Gesture.prototype.doBoardClick_ = function() {
   eYo.Selected.brick && eYo.Selected.brick.unselect()
 }
 
@@ -693,7 +693,7 @@ eYo.Gesture.prototype.doDeskClick_ = function() {
  * of target. */
 
 /**
- * Move the dragged/clicked brick to the front of the desk so that it is
+ * Move the dragged/clicked brick to the front of the board so that it is
  * not occluded by other bricks.
  * @private
  */
@@ -728,11 +728,11 @@ eYo.Gesture.prototype.setStartFlyout_ = function(flyout) {
 }
 
 /**
- * Record the desk that a gesture started on.
- * @param {eYo.Desk} ws The desk the gesture started on.
+ * Record the board that a gesture started on.
+ * @param {eYo.Board} ws The board the gesture started on.
  * @private
  */
-eYo.Gesture.prototype.setStartDesk_ = function(ws) {
+eYo.Gesture.prototype.setStartBoard_ = function(ws) {
   console.error("BREAK HERE")
   throw "DEPRECATED"
 }
@@ -743,7 +743,7 @@ eYo.Gesture.prototype.setStartDesk_ = function(ws) {
  * Whether this gesture has already been started.  In theory every mouse down
  * has a corresponding mouse up, but in reality it is possible to lose a
  * mouse up, leaving an in-process gesture hanging.
- * @return {boolean} whether this gesture was a click on a desk.
+ * @return {boolean} whether this gesture was a click on a board.
  * @package
  */
 eYo.Gesture.prototype.hasStarted = function() {

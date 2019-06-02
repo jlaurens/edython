@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview An SVG that floats on top of the desk.
+ * @fileoverview An SVG that floats on top of the board.
  * Bricks are moved into this SVG during a drag, improving performance.
  * The entire SVG is translated using css translation instead of SVG so the
  * blocks are never repainted during drag improving performance.
@@ -15,7 +15,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.DeskDragSurface')
+goog.provide('eYo.Svg.BoardDragSurface')
 goog.provide('eYo.Svg.BrickDragSurface')
 
 goog.require('eYo.Svg')
@@ -90,7 +90,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
     writable: true
   },
   /**
-   * Reports the surface translation in scaled desk coordinates.
+   * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
    * @return {!goog.math.Coordinate} Current translation of the surface.
    */
@@ -122,9 +122,9 @@ eYo.Svg.BrickDragSurface.prototype.setBricksAndShow = function(blocks) {
 
 /**
  * Translate and scale the entire drag surface group to the given position, to
- * keep in sync with the desk.
- * @param {number} x X translation in desk coordinates.
- * @param {number} y Y translation in desk coordinates.
+ * keep in sync with the board.
+ * @param {number} x X translation in board coordinates.
+ * @param {number} y Y translation in board coordinates.
  * @param {number} scale Scale of the group.
  */
 eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale) {
@@ -190,11 +190,11 @@ eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
  * @param {!Element} container Containing element.
  * @constructor
  */
-eYo.Svg.DeskDragSurface = function(container) {
+eYo.Svg.BoardDragSurface = function(container) {
   /**
-   * Dom structure when the desk is being dragged. If there is no drag in
+   * Dom structure when the board is being dragged. If there is no drag in
    * progress, the SVG is empty and display: none.
-   * <svg class="eyo-desk-drag-surface" style=transform:translate3d(...)>
+   * <svg class="eyo-board-drag-surface" style=transform:translate3d(...)>
    *   <g class="eyo-brick-canvas"></g>
    * </svg>
    */
@@ -205,7 +205,7 @@ eYo.Svg.DeskDragSurface = function(container) {
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
-    class: 'eyo-desk-drag-surface eyo-overflow-visible'
+    class: 'eyo-board-drag-surface eyo-overflow-visible'
   }, container)
 }
 
@@ -213,7 +213,7 @@ eYo.Svg.DeskDragSurface = function(container) {
  * Dispose of the resources.
  * @private
  */
-eYo.Svg.DeskDragSurface.prototype.dispose = function () {
+eYo.Svg.BoardDragSurface.prototype.dispose = function () {
   this.clearAndHide.dispose = eYo.Do.nothing
   var svg = this.dom.svg
   if (svg) {
@@ -222,9 +222,9 @@ eYo.Svg.DeskDragSurface.prototype.dispose = function () {
   }
 }
 
-Object.defineProperties(eYo.Svg.DeskDragSurface.prototype, {
+Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
   /**
-   * Reports the surface translation in scaled desk coordinates.
+   * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
    * @type {!goog.math.Coordinate} Current translation of the surface
    * @package
@@ -245,7 +245,7 @@ Object.defineProperties(eYo.Svg.DeskDragSurface.prototype, {
  * @param {number} y Y translation for the entire surface
  * @package
  */
-eYo.Svg.DeskDragSurface.prototype.xyMoveTo = function(x, y) {
+eYo.Svg.BoardDragSurface.prototype.xyMoveTo = function(x, y) {
   if (goog.isDef(x.x)) {
     y = x.y
     x = x.x
@@ -268,7 +268,7 @@ eYo.Svg.DeskDragSurface.prototype.xyMoveTo = function(x, y) {
  *     into, when there was no previous sibling.
  * @package
  */
-eYo.Svg.DeskDragSurface.prototype.clearAndHide = function(newSurface) {
+eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
   var root = this.dom.svg.root_
   var canvas = root.childNodes[0]
 
@@ -292,14 +292,14 @@ eYo.Svg.DeskDragSurface.prototype.clearAndHide = function(newSurface) {
 /**
  * Set the SVG to have the block canvas in it and then
  * show the surface.
- * @param {!Element} blockCanvas The block canvas <g> element from the desk.
+ * @param {!Element} blockCanvas The block canvas <g> element from the board.
  * @param {?Element} previousSibling The element to insert the block canvas after when it goes back in the DOM at the end of a drag.
- * @param {number} width The width of the desk SVG element.
- * @param {number} height The height of the desk SVG element.
- * @param {number} scale The scale of the desk being dragged.
+ * @param {number} width The width of the board SVG element.
+ * @param {number} height The height of the board SVG element.
+ * @param {number} scale The scale of the board being dragged.
  * @package
  */
-eYo.Svg.DeskDragSurface.prototype.setContentsAndShow = function(
+eYo.Svg.BoardDragSurface.prototype.setContentsAndShow = function(
     blockCanvas, previousSibling, width, height, scale) {
   var root = this.dom.svg.root_
   goog.asserts.assert(

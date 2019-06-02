@@ -15,26 +15,26 @@ goog.provide('eYo.Driver')
 
 goog.require('eYo')
 
-goog.forwardDeclare('eYo.Factory')
+goog.forwardDeclare('eYo.Desk')
 goog.forwardDeclare('eYo.Brick.UI')
 
 goog.require('eYo.Do')
 
 /**
  * Rendering driver to help the renderer
- * @param {!eYo.Factory} factory
+ * @param {!eYo.Desk} desk
  * @constructor
  * @readonly
  */
-eYo.Driver = function(factory) {
-  this.factory_ = factory
+eYo.Driver = function(desk) {
+  this.desk_ = desk
 }
 
 /**
  * Sever links.
  */
 eYo.Driver.prototype.dispose = function () {
-  this.factory_ = null
+  this.desk_ = null
 }
 
 /**
@@ -120,21 +120,21 @@ eYo.Driver.prototype.brickDisplayedSet = eYo.Do.nothing
 
 /**
  * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in desk units.
- * @param {number} y The y coordinate of the translation in desk units.
+ * @param {number} x The x coordinate of the translation in board units.
+ * @param {number} y The y coordinate of the translation in board units.
  */
 eYo.Driver.prototype.brickMoveTo = eYo.Do.nothing
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the
- * drawing surface's origin (0,0), in desk units.
- * If the brick is on the desk, (0, 0) is the origin of the desk
+ * drawing surface's origin (0,0), in board units.
+ * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
- * This does not change with desk scale.
+ * This does not change with board scale.
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
- *     desk coordinates.
+ *     board coordinates.
  */
-eYo.Driver.prototype.brickXYInDesk = eYo.Do.nothing
+eYo.Driver.prototype.brickXYInBoard = eYo.Do.nothing
 
 /**
  * Set the location.

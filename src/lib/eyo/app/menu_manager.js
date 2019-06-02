@@ -407,12 +407,12 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       {action: eYo.ID.DUPLICATE_BLOCK,
         target: brick})
     this.addChild(menuItem, true)
-    if (brick.descendants.length > brick.desk.remainingCapacity) {
+    if (brick.descendants.length > brick.board.remainingCapacity) {
       menuItem.setEnabled(false)
     }
   }
   if (brick.editable && !brick.collapsed_ &&
-    brick.desk.options.comments) {
+    brick.board.options.comments) {
     // Option to add/remove a comment.
     if (brick.comment) { // .comment is never set
       menuItem = this.newMenuItem(
@@ -428,7 +428,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     menuItem.setEnabled(false && !goog.userAgent.IE && !brick.out_m)
     this.addChild(menuItem, true)
   }
-  if (brick.desk.options.collapse) {
+  if (brick.board.options.collapse) {
     if (brick.collapsed_) {
       menuItem = this.newMenuItem(
         eYo.Msg.EXPAND_BLOCK,
@@ -444,7 +444,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     }
     this.addChild(menuItem, true)
   }
-  if (brick.desk.options.disable) {
+  if (brick.board.options.disable) {
     menuItem = this.newMenuItem(
       brick.disabled
         ? eYo.Msg.ENABLE_BLOCK : eYo.Msg.DISABLE_BLOCK,
@@ -517,9 +517,9 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   this.addChild(menuItem, true)
 
   menuItem = this.newMenuItem(
-    'desk',
+    'board',
     function (b, e) {
-      console.log(brick.desk.toString())
+      console.log(brick.board.toString())
     })
   menuItem.setEnabled(true)
   this.addChild(menuItem, true)

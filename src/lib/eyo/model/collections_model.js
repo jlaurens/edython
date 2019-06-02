@@ -59,7 +59,7 @@ eYo.Model.collections__module.setData({
     'counter-objects',
     'deque-objects',
     'defaultdict-objects',
-    'namedtuple-factory-function-for-tuples-with-named-fields',
+    'namedtuple-desk-function-for-tuples-with-named-fields',
     'ordereddict-objects',
     'userdict-objects',
     'userlist-objects',
@@ -310,7 +310,7 @@ eYo.Model.collections__module.setData({
       mandatory: 0,
       arguments: [
         {
-          name: 'default_factory',
+          name: 'default_desk',
           optional: true
         },
         {

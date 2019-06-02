@@ -111,14 +111,14 @@ eYo.Css.inject = (hasCss, pathToMedia) => {
  */
 eYo.Css.CONTENT = path => {
   return [/* So bricks in drag surface disappear at edges */
-    `#eyo-factory {
+    `#eyo-desk {
   height: 100%;
   position: relative;
   overflow: hidden; 
   touch-action: none;
   background: orange;
 }`,
-    `.eyo-desk {
+    `.eyo-board {
 }`, /* UNUSED */
 
     `.eyo-trash {
@@ -127,7 +127,7 @@ eYo.Css.CONTENT = path => {
     `.eyo-brick-canvas {
 }`, /* */
 
-    '.eyo-desk-drag-surface {',
+    '.eyo-board-drag-surface {',
       'display: none;',
       'position: absolute;',
       'top: 0;',
@@ -136,7 +136,7 @@ eYo.Css.CONTENT = path => {
     /* Added as a separate rule with multiple classes to make it more specific
       than a bootstrap rule that selects svg:root. See issue #1275 for context.
     */
-    `.eyo-desk-drag-surface.eyo-overflow-visible {
+    `.eyo-board-drag-surface.eyo-overflow-visible {
   overflow: visible;
 }
 .eyo-flyout-scroolbar {
@@ -246,7 +246,7 @@ eYo.Css.CONTENT = path => {
       'opacity: 0;',
     '}',
 
-    '.blocklyMainDeskScrollbar {',
+    '.blocklyMainBoardScrollbar {',
       'z-index: 20;',
     '}',
 
@@ -269,7 +269,7 @@ eYo.Css.CONTENT = path => {
     '}',
 
     /* Darken flyout scrollbars due to being on a grey background. */
-    /* By contrast, desk scrollbars are on a white background. */
+    /* By contrast, board scrollbars are on a white background. */
     '.blocklyFlyout .eyo-scrollbar-handle {',
       'fill: #bbb;',
     '}',
@@ -612,7 +612,7 @@ text.eyo-code-comment {
   stroke-width: ${eYo.Style.Path.Hilighted.width}px;
   fill: none;
 }`,
-`.eyo-main-desk-background {
+`.eyo-main-board-background {
   fill: white;
 }`,
   ]

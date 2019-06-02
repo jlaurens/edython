@@ -6,12 +6,12 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk override.
+ * @fileoverview Board override.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.Desktop')
+goog.provide('eYo.Boardtop')
 
 goog.require('eYo')
 
@@ -35,8 +35,8 @@ goog.forwardDeclare('goog.crypt')
  * @param {!eYo.Brick} block The brick to delete.
  * @param {!boolean} deep
  */
-eYo.Desktop.deleteBrick = (brick, deep) => {
-  if (brick && brick.deletable && !brick.desk.isFlyout) {
+eYo.Boardtop.deleteBrick = (brick, deep) => {
+  if (brick && brick.deletable && !brick.board.isFlyout) {
     if (brick.isSelected) {
       // prepare a connection or a block to be selected
       var m4t
@@ -57,7 +57,7 @@ eYo.Desktop.deleteBrick = (brick, deep) => {
         brick.dispose(true, true)
       }
     })
-    if (m4t && m4t.brick.desk) {
+    if (m4t && m4t.brick.board) {
       m4t.select()
     } else if (t9k) {
       t9k.select()
@@ -70,7 +70,7 @@ eYo.Desktop.deleteBrick = (brick, deep) => {
  * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
-eYo.Desktop.copyBrick = (brick, deep) => {
+eYo.Boardtop.copyBrick = (brick, deep) => {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
@@ -78,7 +78,7 @@ eYo.Desktop.copyBrick = (brick, deep) => {
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml
-  eYo.Clipboard.source = brick.desk
+  eYo.Clipboard.source = brick.board
   eYo.App.didCopyBrick && (eYo.App.didCopyBrick(brick, xml))
 }
 
@@ -87,5 +87,5 @@ eYo.Desktop.copyBrick = (brick, deep) => {
  * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
-eYo.Desktop.paste = () => {
+eYo.Boardtop.paste = () => {
 }

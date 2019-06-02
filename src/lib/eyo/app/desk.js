@@ -6,47 +6,47 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Factory model.
+ * @fileoverview Desk model.
  * @author jerome.laurens@u-bourgogne.fr
  */
 'use strict'
 
-goog.provide('eYo.Factory')
+goog.provide('eYo.Desk')
 
 goog.require('eYo')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
-goog.forwardDeclare('eYo.Desktop')
+goog.forwardDeclare('eYo.Boardtop')
 goog.forwardDeclare('eYo.Options')
 
 
 /**
- * Class for a factory.
- * This is the structure above the desk and the flyout.
+ * Class for a desk.
+ * This is the structure above the board and the flyout.
  * @param {?Object=} options Dictionary of options.
  * @constructor
  */
-eYo.Factory = function(options) {
+eYo.Desk = function(options) {
   /** @type {!eYo.Options} */
   options = new eYo.Options(options || {})
   // Load CSS.
   eYo.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
-  // create the various desks and flyout
-  this.mainDesk_ = new eYo.Desk(this, options)
+  // create the various boards and flyout
+  this.mainBoard_ = new eYo.Board(this, options)
 }
 
-Object.defineProperties(eYo.Factory.prototype, {
+Object.defineProperties(eYo.Desk.prototype, {
   hasUI: {
     get () {
       return this.makeUI === eYo.Do.nothing
     }
   },
-  mainDesk: {
+  mainBoard: {
     get () {
-      return this.mainDesk_
+      return this.mainBoard_
     }
   },
   flyout: {
@@ -72,49 +72,49 @@ Object.defineProperties(eYo.Factory.prototype, {
 })
 
 /**
- * Class for a factory. This is the structure above the desk.
+ * Class for a desk. This is the structure above the board.
  * @param {?eYo.Options=} options Dictionary of options.
  * @constructor
  */
-eYo.Factory.prototype.makeUI = function() {
+eYo.Desk.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.deleteUI
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
   this.ui_driver_ = new eYo.Svg(this)
-  this.ui_driver_.factoryInit(this)
-  this.mainDesk_.makeUI()
+  this.ui_driver_.deskInit(this)
+  this.mainBoard_.makeUI()
 }
 
 /**
  * Dispose of UI resources.
  */
-eYo.Factory.prototype.disposeUI = function() {
+eYo.Desk.prototype.disposeUI = function() {
   delete this.makeUI
-  this.mainDesk_ && this.mainDesk_.disposeUI()
+  this.mainBoard_ && this.mainBoard_.disposeUI()
   this.audio_.dispose()
   this.audio_ = null
   this.flyout_ && this.flyout_.disposeUI()
-  this.flyoutDesk_ && this.flyoutDesk_.disposeUI()
+  this.flyoutBoard_ && this.flyoutBoard_.disposeUI()
   this.ui_driver_ && this.ui_driver_.dispose()
   this.ui_driver_ = null
 }
 
 /**
- * Dispose of this factory.
+ * Dispose of this desk.
  */
-eYo.Factory.prototype.dispose = function() {
+eYo.Desk.prototype.dispose = function() {
   if (this.flyout_) {
-    this.mainDesk_.flyout = null
+    this.mainBoard_.flyout = null
     this.flyout_.dispose()
     this.flyout_ = null
   }
-  if (this.flyoutDesk_) {
-    this.flyoutDesk_.dispose()
-    this.flyoutDesk_ = null
+  if (this.flyoutBoard_) {
+    this.flyoutBoard_.dispose()
+    this.flyoutBoard_ = null
   }
-  if (this.mainDesk_) {
-    this.mainDesk_.dispose()
-    this.mainDesk_ = null
+  if (this.mainBoard_) {
+    this.mainBoard_.dispose()
+    this.mainBoard_ = null
   }
 }
 
@@ -122,7 +122,7 @@ eYo.Factory.prototype.dispose = function() {
  * Add a flyout.
  * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
  */
-eYo.Factory.prototype.addFlyout = function(switcher) {
+eYo.Desk.prototype.addFlyout = function(switcher) {
   if (!this.hasUI) {
     this.willFlyout_ = true
     return
@@ -140,40 +140,40 @@ eYo.Factory.prototype.addFlyout = function(switcher) {
     getMetrics: flyout.getMetrics_.bind(flyout),
     setMetrics: flyout.setMetrics_.bind(flyout),
   }
-  var space = this.flyoutDesk_ = new eYo.Desk(this, options)
-  space.options = this.mainDesk_.options
+  var space = this.flyoutBoard_ = new eYo.Board(this, options)
+  space.options = this.mainBoard_.options
   var flyout = this.flyout_ = new eYo.Flyout(this, space, flyoutOptions)
-  flyout.desk = this.flyoutDesk_
-  flyout.targetDesk = this.mainDesk_
+  flyout.board = this.flyoutBoard_
+  flyout.targetBoard = this.mainBoard_
 }
 
 /**
  * Remove a previously added flyout.
 */
-eYo.Factory.prototype.removeFlyout = function() {
+eYo.Desk.prototype.removeFlyout = function() {
   var x = this.flyout_
   if (x) {
     this.flyout_ = null
-    this.mainDesk_.flyout = null
+    this.mainBoard_.flyout = null
     x.dispose()
 
   }
 }
 
 /**
- * Size the main desk to completely fill its container.
+ * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
 */
-eYo.Factory.prototype.resize = function() {
-  this.ui_driver_.factoryResize(this)
+eYo.Desk.prototype.resize = function() {
+  this.ui_driver_.deskResize(this)
 }
 
 /**
- * Size the main desk to completely fill its container.
+ * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
 */
-eYo.Factory.prototype.xyElementInFactory = function(element) {
-  return this.ui_driver_.factoryXYElement(this, element)
+eYo.Desk.prototype.xyElementInDesk = function(element) {
+  return this.ui_driver_.deskXYElement(this, element)
 }

@@ -103,7 +103,7 @@ Object.defineProperties(eYo.Span.prototype, {
   },
   /**
   * @readonly
-  * @property {number} width  The full width, in desk coordinates, computed based on `c`.
+  * @property {number} width  The full width, in board coordinates, computed based on `c`.
   */
   width: {
     get () {
@@ -225,7 +225,7 @@ Object.defineProperties(eYo.Span.prototype, {
   },
   /**
    * @readonly
-   * @property {number} height - The height, in desk coordinates.
+   * @property {number} height - The height, in board coordinates.
    */
   height: {
     get () {

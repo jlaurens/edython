@@ -6,32 +6,32 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk model.
+ * @fileoverview Board model.
  * @author jerome.laurens@u-bourgogne.fr
  */
 'use strict'
 
-goog.provide('eYo.Desk')
+goog.provide('eYo.Board')
 
 goog.require('eYo.Protocol.ChangeCount')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
-goog.forwardDeclare('eYo.Desktop')
+goog.forwardDeclare('eYo.Boardtop')
 
 
 /**
- * Class for a desk.  This is a data structure that contains blocks.
- * @param {!eYo.Factory} factory Any desk belongs to a factory.
+ * Class for a board.  This is a data structure that contains blocks.
+ * @param {!eYo.Desk} desk Any board belongs to a desk.
  * @constructor
  */
-eYo.Desk = function(factory, options) {
+eYo.Board = function(desk, options) {
   /** @type {string} */
   this.id = eYo.Do.genUid()
-  eYo.Desk.DeskDB_[this.id] = this
+  eYo.Board.BoardDB_[this.id] = this
 
-  this.factory_ = factory
+  this.desk_ = desk
   this.options = options
 
   /**
@@ -61,11 +61,11 @@ eYo.Desk = function(factory, options) {
   this.brickDB_ = Object.create(null)
 
   this.getMetrics =
-  options.getMetrics || eYo.Desk.getTopLevelDeskMetrics_
+  options.getMetrics || eYo.Board.getTopLevelBoardMetrics_
   this.setMetrics =
-    options.setMetrics || eYo.Desk.setTopLevelDeskMetrics_
+    options.setMetrics || eYo.Board.setTopLevelBoardMetrics_
 
-  this.dragger_ = new eYo.DeskDragger(this)
+  this.dragger_ = new eYo.BoardDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
 
   /**
@@ -82,9 +82,9 @@ eYo.Desk = function(factory, options) {
 
 }
 
-eYo.Do.addProtocol(eYo.Desk.prototype, 'ChangeCount')
+eYo.Do.addProtocol(eYo.Board.prototype, 'ChangeCount')
 
-Object.defineProperties(eYo.Desk, {
+Object.defineProperties(eYo.Board, {
   SNAP_RADIUS: { value: 20 },
   DELETE_AREA_NONE: { value: null },
   /**
@@ -100,15 +100,15 @@ Object.defineProperties(eYo.Desk, {
   DELETE_AREA_TOOLBOX: { value: 2 },
 })
 
-Object.defineProperties(eYo.Desk.prototype, {
+Object.defineProperties(eYo.Board.prototype, {
   /**
-   * The factory owning the desk.
+   * The desk owning the board.
    * @readonly
-   * @type {eYo.Factory}
+   * @type {eYo.Desk}
    */
-  factory: {
+  desk: {
     get () {
-      return this.factory_
+      return this.desk_
     }
   },
   flyout: {
@@ -120,23 +120,23 @@ Object.defineProperties(eYo.Desk.prototype, {
       if (newValue !== oldValue) {
         this.flyout_ = newValue
         if (oldValue) {
-          oldValue.targetDesk = null
+          oldValue.targetBoard = null
         }
         if (newValue) {
-          this.targetDesk = null
-          newValue.desk.targetDesk = this
+          this.targetBoard = null
+          newValue.board.targetBoard = this
         }
       }
     }
   },
-  targetDesk: {
+  targetBoard: {
     get () {
-      return this.targetDesk_
+      return this.targetBoard_
     },
     set (newValue) {
-      var oldValue = this.targetDesk_
+      var oldValue = this.targetBoard_
       if (newValue !== oldValue) {
-        this.targetDesk_ = newValue
+        this.targetBoard_ = newValue
         if (oldValue) {
           oldValue.flyout = null
         }
@@ -144,7 +144,7 @@ Object.defineProperties(eYo.Desk.prototype, {
           this.getGesture = newValue.getGesture.bind(newValue)
           this.flyout = null
           if (newValue.flyout) {
-            newValue.flyout.targetDesk = newValue
+            newValue.flyout.targetBoard = newValue
           }
         } else {
           delete this.getGesture
@@ -153,13 +153,13 @@ Object.defineProperties(eYo.Desk.prototype, {
     }
   },
   /**
-   * Is this desk the surface for a flyout?
+   * Is this board the surface for a flyout?
    * @readonly
    * @type {boolean}
    */
   isFlyout: {
     get () {
-      return !!this.targetDesk
+      return !!this.targetBoard
     }
   },
   /**
@@ -172,22 +172,22 @@ Object.defineProperties(eYo.Desk.prototype, {
   },
   audio: {
     get () {
-      return (this.factory || this.targetDesk).audio
+      return (this.desk || this.targetBoard).audio
     }
   },
   /**
-   * Is this desk draggable and scrollable?
-   * @type {boolean} True if this desk may be dragged.
+   * Is this board draggable and scrollable?
+   * @type {boolean} True if this board may be dragged.
    */
   visible: {
     get () {
-      return this.ui_driver.deskVisibleGet(this)
+      return this.ui_driver.boardVisibleGet(this)
 
     },
     /**
-     * Toggles the visibility of the desk.
-     * Currently only intended for main desk.
-     * @param {boolean} newValue True if desk should be visible.
+     * Toggles the visibility of the board.
+     * Currently only intended for main board.
+     * @param {boolean} newValue True if board should be visible.
      */
     set (newValue) {
       // Tell the scrollbar whether its container is visible so it can
@@ -201,7 +201,7 @@ Object.defineProperties(eYo.Desk.prototype, {
       if (this.flyout_) {
         this.flyout_.containerVisible = newValue
       }
-      this.ui_driver.deskVisibleSet(this, newValue)
+      this.ui_driver.boardVisibleSet(this, newValue)
       if (newValue) {
         this.render()
       } else {
@@ -210,18 +210,18 @@ Object.defineProperties(eYo.Desk.prototype, {
     }
   },
   /**
-   * Is this desk draggable and scrollable?
-   * @type {boolean} True if this desk may be dragged.
+   * Is this board draggable and scrollable?
+   * @type {boolean} True if this board may be dragged.
    */
   draggable: {
     get () {
-      return this.targetDesk
-      ? this.targetDesk.flyout_.scrollable
+      return this.targetBoard
+      ? this.targetBoard.flyout_.scrollable
       : !!this.scrollbar
     }
   },
   /**
-   * Is the user currently dragging a block or scrolling the flyout/desk?
+   * Is the user currently dragging a block or scrolling the flyout/board?
    * @return {boolean} True if currently dragging or scrolling.
    */
   isDragging: {
@@ -230,7 +230,7 @@ Object.defineProperties(eYo.Desk.prototype, {
     }
   },
   /**
-   * Returns `true` if the desk is visible and `false` if it's headless.
+   * Returns `true` if the board is visible and `false` if it's headless.
    * @type {boolean}
    */
   rendered: {
@@ -259,7 +259,7 @@ Object.defineProperties(eYo.Desk.prototype, {
   },
   ui_driver: {
     get () {
-      return this.factory.ui_driver_
+      return this.desk.ui_driver_
     }
   },
   gesture: {
@@ -272,7 +272,7 @@ Object.defineProperties(eYo.Desk.prototype, {
       return this.scale_
     },
     /**
-     * Set the desk's zoom factor.
+     * Set the board's zoom factor.
      * zoom options are required
      * @param {number} newScale Zoom factor.
      */
@@ -299,16 +299,16 @@ Object.defineProperties(eYo.Desk.prototype, {
     }
   },
   /**
-   * Return the position of the desk origin relative to the injection div
+   * Return the position of the board origin relative to the injection div
    * origin in pixels.
-   * The desk origin is where a block would render at position (0, 0).
-   * It is not the upper left corner of the desk SVG.
+   * The board origin is where a block would render at position (0, 0).
+   * It is not the upper left corner of the board SVG.
    * @return {!goog.math.Coordinate} Offset in pixels.
    * @package
    */
-  originInFactory: {
+  originInDesk: {
     get () {
-      return this.factory_.xyElementInFactory(this.dom.svg.canvas_)
+      return this.desk_.xyElementInDesk(this.dom.svg.canvas_)
     }
   },
   scale: {
@@ -340,10 +340,10 @@ Object.defineProperties(eYo.Desk.prototype, {
 })
 
 /**
- * Dispose of this desk.
+ * Dispose of this board.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.Desk.prototype.dispose = function() {
+eYo.Board.prototype.dispose = function() {
   // Stop rerendering.
   this.rendered = false;
   if (this.gesture_) {
@@ -355,8 +355,8 @@ eYo.Desk.prototype.dispose = function() {
     this.dragger_.dispose()
     this.dragger_ = null
   }
-  // Remove from desk database.
-  delete eYo.Desk.DeskDB_[this.id]
+  // Remove from board database.
+  delete eYo.Board.BoardDB_[this.id]
   if (this.flyout_) {
     this.flyout_.dispose()
     this.flyout_ = null
@@ -380,10 +380,10 @@ eYo.Desk.prototype.dispose = function() {
  * Make the UI.
  * @param {Element!} container
  */
-eYo.Desk.prototype.makeUI = function(container) {
+eYo.Board.prototype.makeUI = function(container) {
   var options = this.options
   this.makeUI = eYo.Do.nothing
-  this.ui_driver.deskInit(this)
+  this.ui_driver.boardInit(this)
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
     this.trashcan = new eYo.Trashcan(this, bottom)
@@ -399,12 +399,12 @@ eYo.Desk.prototype.makeUI = function(container) {
 /**
  * Dispose the UI related resources.
  */
-eYo.Desk.prototype.disposeUI = function() {
+eYo.Board.prototype.disposeUI = function() {
   this.zoomControls_ && this.zoomControls_.disposeUI()
   this.trashcan && this.trashcan.disposeUI()
   var d = this.ui_driver_
   if (d) {
-    d.deskDispose(this)
+    d.boardDispose(this)
   }
   this.ui_driver_ = null
 }
@@ -415,7 +415,7 @@ eYo.Desk.prototype.disposeUI = function() {
  * a left to right bias.  Units are in degrees.
  * See: http://tvtropes.org/pmwiki/pmwiki.php/Main/DiagonalBilling.
  */
-eYo.Desk.SCAN_ANGLE = 3
+eYo.Board.SCAN_ANGLE = 3
 
 /**
  * Finds the top-level blocks and returns them.  Bricks are optionally sorted
@@ -423,14 +423,14 @@ eYo.Desk.SCAN_ANGLE = 3
  * @param {boolean} ordered Sort the list if true.
  * @return {!Array.<!eYo.Brick>} The top-level block objects.
  */
-eYo.Desk.prototype.getTopBricks = function(ordered) {
+eYo.Board.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
   var bricks = [].concat(this.topBricks_);
   if (ordered && bricks.length > 1) {
-    var offset = Math.sin(goog.math.toRadians(eYo.Desk.SCAN_ANGLE));
+    var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE));
     bricks.sort(function(a, b) {
-      var aXY = a.xyInDesk
-      var bXY = b.xyInDesk
+      var aXY = a.xyInBoard
+      var bXY = b.xyInBoard
       return (aXY.y + offset * aXY.x) - (bXY.y + offset * bXY.x)
     })
   }
@@ -438,9 +438,9 @@ eYo.Desk.prototype.getTopBricks = function(ordered) {
 }
 
 /**
- * Dispose of all blocks in desk.
+ * Dispose of all blocks in board.
  */
-eYo.Desk.prototype.clear = function() {
+eYo.Board.prototype.clear = function() {
   this.setResizesEnabled(false)
   var existingGroup = eYo.Events.group
   if (!existingGroup) {
@@ -464,7 +464,7 @@ eYo.Desk.prototype.clear = function() {
  *     create a new id.
  * @return {!eYo.Brick} The created block.
  */
-eYo.Desk.prototype.newBrick = function (prototypeName, opt_id) {
+eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
   return eYo.Brick.Manager.create(this, prototypeName, opt_id)
 }
 
@@ -477,13 +477,13 @@ eYo.Desk.prototype.newBrick = function (prototypeName, opt_id) {
  *     create a new id.
  * @return {!eYo.Brick} The created block.
  */
-eYo.Desk.prototype.newBrick = eYo.Desk.prototype.newBrick
+eYo.Board.prototype.newBrick = eYo.Board.prototype.newBrick
 
 /**
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.Desk.prototype.undo = function(redo) {
+eYo.Board.prototype.undo = function(redo) {
   var inputStack = redo ? this.redoStack_ : this.undoStack_
   var outputStack = redo ? this.undoStack_ : this.redoStack_
   while (true) {
@@ -533,7 +533,7 @@ eYo.Desk.prototype.undo = function(redo) {
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Desk.prototype.clearUndo = function() {
+eYo.Board.prototype.clearUndo = function() {
   this.undoStack_.length = 0;
   this.redoStack_.length = 0;
   // Stop any events already in the firing queue from being undoable.
@@ -542,21 +542,21 @@ eYo.Desk.prototype.clearUndo = function() {
 };
 
 /**
- * When something in this desk changes, call a function.
+ * When something in this board changes, call a function.
  * @param {!Function} func Function to call.
  * @return {!Function} Function that can be passed to
  *     removeChangeListener.
  */
-eYo.Desk.prototype.addChangeListener = function(func) {
+eYo.Board.prototype.addChangeListener = function(func) {
   this.listeners_.push(func);
   return func;
 };
 
 /**
- * Stop listening for this desk's changes.
+ * Stop listening for this board's changes.
  * @param {Function} func Function to stop calling.
  */
-eYo.Desk.prototype.removeChangeListener = function(func) {
+eYo.Board.prototype.removeChangeListener = function(func) {
   goog.array.remove(this.listeners_, func);
 };
 
@@ -564,7 +564,7 @@ eYo.Desk.prototype.removeChangeListener = function(func) {
  * Fire a change event.
  * @param {!eYo.Events.Abstract} event Event to fire.
  */
-eYo.Desk.prototype.fireChangeListener = function(event) {
+eYo.Board.prototype.fireChangeListener = function(event) {
   var before = this.undoStack_.length
   if (event.recordUndo) {
     this.undoStack_.push(event);
@@ -586,12 +586,12 @@ eYo.Desk.prototype.fireChangeListener = function(event) {
 }
 
 /**
- * Find the block on this desk with the specified ID.
+ * Find the block on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of block to find.
  * @return {eYo.Brick} The sought after block or null if not found.
  */
-eYo.Desk.prototype.getBrickById = eYo.Desk.prototype.getBrickById = function(id) {
+eYo.Board.prototype.getBrickById = eYo.Board.prototype.getBrickById = function(id) {
   var brick = this.brickDB_[id]
   if (brick) {
     return brick
@@ -608,13 +608,13 @@ eYo.Desk.prototype.getBrickById = eYo.Desk.prototype.getBrickById = function(id)
 }
 
 /**
- * Checks whether all value and statement inputs in the desk are filled
+ * Checks whether all value and statement inputs in the board are filled
  * with blocks.
  * @param {boolean=} opt_shadowBricksAreFilled An optional argument controlling
  *     whether shadow blocks are counted as filled. Defaults to true.
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
-eYo.Desk.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
+eYo.Board.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
   var blocks = this.getTopBricks(false);
   for (var i = 0, block; block = blocks[i]; i++) {
     if (!block.allInputsFilled(opt_shadowBricksAreFilled)) {
@@ -625,94 +625,94 @@ eYo.Desk.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
 }
 
 /**
- * Database of all desks.
+ * Database of all boards.
  * @private
  */
-eYo.Desk.DeskDB_ = Object.create(null)
+eYo.Board.BoardDB_ = Object.create(null)
 
 /**
- * Find the desk with the specified ID.
- * @param {string} id ID of desk to find.
- * @return {eYo.Desk} The sought after desk or null if not found.
+ * Find the board with the specified ID.
+ * @param {string} id ID of board to find.
+ * @return {eYo.Board} The sought after board or null if not found.
  */
-eYo.Desk.getById = function(id) {
-  return eYo.Desk.DeskDB_[id] || null
+eYo.Board.getById = function(id) {
+  return eYo.Board.BoardDB_[id] || null
 }
 
 // Export symbols that would otherwise be renamed by Closure compiler.
-eYo.Desk.prototype['clear'] = eYo.Desk.prototype.clear;
-eYo.Desk.prototype['clearUndo'] =
-    eYo.Desk.prototype.clearUndo;
-eYo.Desk.prototype['addChangeListener'] =
-    eYo.Desk.prototype.addChangeListener;
-eYo.Desk.prototype['removeChangeListener'] =
-    eYo.Desk.prototype.removeChangeListener;
+eYo.Board.prototype['clear'] = eYo.Board.prototype.clear;
+eYo.Board.prototype['clearUndo'] =
+    eYo.Board.prototype.clearUndo;
+eYo.Board.prototype['addChangeListener'] =
+    eYo.Board.prototype.addChangeListener;
+eYo.Board.prototype['removeChangeListener'] =
+    eYo.Board.prototype.removeChangeListener;
 
 /**
- * The render status of an SVG desk.
- * Returns `true` for visible desks and `false` for non-visible,
- * or headless, desks.
+ * The render status of an SVG board.
+ * Returns `true` for visible boards and `false` for non-visible,
+ * or headless, boards.
  * @type {boolean}
  */
-eYo.Desk.prototype.rendered = true;
+eYo.Board.prototype.rendered = true;
 
 /**
- * Whether this desk has resizes enabled.
+ * Whether this board has resizes enabled.
  * Disable during batch operations for a performance improvement.
  * @type {boolean}
  * @private
  */
-eYo.Desk.prototype.resizesEnabled_ = true;
+eYo.Board.prototype.resizesEnabled_ = true;
 
 /**
  * Current horizontal scrolling offset in pixel units.
  * @type {number}
  */
-eYo.Desk.prototype.scrollX = 0;
+eYo.Board.prototype.scrollX = 0;
 
 /**
  * Current vertical scrolling offset in pixel units.
  * @type {number}
  */
-eYo.Desk.prototype.scrollY = 0;
+eYo.Board.prototype.scrollY = 0;
 
 /**
  * Horizontal scroll value when scrolling started in pixel units.
  * @type {number}
  */
-eYo.Desk.prototype.startScrollX = 0;
+eYo.Board.prototype.startScrollX = 0;
 
 /**
  * Vertical scroll value when scrolling started in pixel units.
  * @type {number}
  */
-eYo.Desk.prototype.startScrollY = 0;
+eYo.Board.prototype.startScrollY = 0;
 
 /**
  * Distance from mouse to object being dragged.
  * @type {goog.math.Coordinate}
  * @private
  */
-eYo.Desk.prototype.dragDeltaXY_ = null
+eYo.Board.prototype.dragDeltaXY_ = null
 
 /**
- * The desk's trashcan (if any).
+ * The board's trashcan (if any).
  * @type {eYo.Trashcan}
  */
-eYo.Desk.prototype.trashcan = null
+eYo.Board.prototype.trashcan = null
 
 /**
- * This desk's scrollbars, if they exist.
+ * This board's scrollbars, if they exist.
  * @type {eYo.ScrollbarPair}
  */
-eYo.Desk.prototype.scrollbar = null
+eYo.Board.prototype.scrollbar = null
 
 /**
- * The current gesture in progress on this desk, if any.
+ * The current gesture in progress on this board, if any.
  * @type {eYo.Gesture}
  * @private
  */
-eYo.Desk.prototype.gesture_ = null
+eYo.Board.prototype.gesture_ = null
 
 /**
  * Last known position of the page scroll.
@@ -721,34 +721,34 @@ eYo.Desk.prototype.gesture_ = null
  * @type {!goog.math.Coordinate}
  * @private
  */
-eYo.Desk.prototype.lastRecordedPageScroll_ = null;
+eYo.Board.prototype.lastRecordedPageScroll_ = null;
 
 /**
  * Developers may define this function to add custom menu options to the
- * desk's context menu or edit the desk-created set of menu options.
+ * board's context menu or edit the board-created set of menu options.
  * @param {!Array.<!Object>} options List of menu options to add to.
  */
-eYo.Desk.prototype.configureContextMenu = null;
+eYo.Board.prototype.configureContextMenu = null;
 
 /**
- * In a flyout, the target desk where blocks should be placed after a drag.
+ * In a flyout, the target board where blocks should be placed after a drag.
  * Otherwise null.
- * @type {?eYo.Desk}
+ * @type {?eYo.Board}
  * @package
  */
-eYo.Desk.prototype.targetDesk = null
+eYo.Board.prototype.targetBoard = null
 
 /**
  * Save resize handler data so we can delete it later in dispose.
  * @param {!Array.<!Array>} handler Data that can be passed to unbindEvent.
  */
-eYo.Desk.prototype.setResizeHandlerWrapper = function(handler) {
+eYo.Board.prototype.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
 }
 
-Object.defineProperties(eYo.Desk.prototype, {
+Object.defineProperties(eYo.Board.prototype, {
   /**
-   * The number of blocks that may be added to the desk before reaching
+   * The number of blocks that may be added to the board before reaching
    *     the maxBricks.
    * @return {number} Number of blocks left.
    */
@@ -761,7 +761,7 @@ Object.defineProperties(eYo.Desk.prototype, {
     }
   },
   /**
-   * Find all blocks in desk.  No particular order.
+   * Find all blocks in board.  No particular order.
    * @return {!Array.<!eYo.Brick>} Array of bricks.
    */
   allBricks: {
@@ -781,13 +781,13 @@ Object.defineProperties(eYo.Desk.prototype, {
 })
 
 /**
- * Getter for the flyout associated with this desk.  This flyout may be
- * owned by either the toolbox or the desk, depending on toolbox
+ * Getter for the flyout associated with this board.  This flyout may be
+ * owned by either the toolbox or the board, depending on toolbox
  * configuration.  It will be null if there is no flyout.
- * @return {eYo.Flyout} The flyout on this desk.
+ * @return {eYo.Flyout} The flyout on this board.
  * @package
  */
-eYo.Desk.prototype.getFlyout_ = function() {
+eYo.Board.prototype.getFlyout_ = function() {
   return this.flyout_
 }
 
@@ -796,18 +796,18 @@ eYo.Desk.prototype.getFlyout_ = function() {
  * because something has changed (e.g. scroll position, window size).
  * @private
  */
-eYo.Desk.prototype.updateScreenCalculations_ = function() {
-  this.ui_driver.deskSizeDidChange(this)
+eYo.Board.prototype.updateScreenCalculations_ = function() {
+  this.ui_driver.boardSizeDidChange(this)
   this.recordDeleteAreas()
 };
 
 /**
- * If enabled, resize the parts of the desk that change when the desk
+ * If enabled, resize the parts of the board that change when the board
  * contents (e.g. block positions) change.  This will also scroll the
- * desk contents if needed.
+ * board contents if needed.
  * @package
  */
-eYo.Desk.prototype.resizeContents = function() {
+eYo.Board.prototype.resizeContents = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return;
   }
@@ -820,20 +820,20 @@ eYo.Desk.prototype.resizeContents = function() {
       // based on contents.
       this.scrollbar.resize();
     }
-    this.ui_driver.deskSizeDidChange(this)
+    this.ui_driver.boardSizeDidChange(this)
   } finally {
     this.isSelected = null
   }
 };
 
 /**
- * Resize and reposition all of the desk chrome (toolbox,
+ * Resize and reposition all of the board chrome (toolbox,
  * trash, scrollbars etc.)
  * This should be called when something changes that
  * requires recalculating dimensions and positions of the
  * trash, zoom, toolbox, etc. (e.g. window resize).
  */
-eYo.Desk.prototype.resize = function() {
+eYo.Board.prototype.resize = function() {
   if (this.flyout_) {
     this.flyout_.place()
   }
@@ -850,11 +850,11 @@ eYo.Desk.prototype.resize = function() {
 }
 
 /**
- * Resizes and repositions desk chrome if the page has a new
+ * Resizes and repositions board chrome if the page has a new
  * scroll position.
  * @package
  */
-eYo.Desk.prototype.updateScreenCalculationsIfScrolled =
+eYo.Board.prototype.updateScreenCalculationsIfScrolled =
     function() {
     /* eslint-disable indent */
   var currScroll = goog.dom.getDocumentScroll()
@@ -872,32 +872,32 @@ eYo.Desk.prototype.updateScreenCalculationsIfScrolled =
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
  */
-eYo.Desk.prototype.xyMoveTo = function(x, y) {
+eYo.Board.prototype.xyMoveTo = function(x, y) {
   this.dragger && this.dragger.xyMoveTo(x, y)
 }
 
 /**
- * Translate this desk to new coordinates.
+ * Translate this board to new coordinates.
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
  */
-eYo.Desk.prototype.canvasMoveTo = function(x, y) {
-  this.ui_driver.deskCanvasMoveTo(this, x, y)
+eYo.Board.prototype.canvasMoveTo = function(x, y) {
+  this.ui_driver.boardCanvasMoveTo(this, x, y)
 }
 
 /**
- * Returns the horizontal offset of the desk.
+ * Returns the horizontal offset of the board.
  * @return {number} Width.
  */
-eYo.Desk.prototype.getWidth = function() {
+eYo.Board.prototype.getWidth = function() {
   var metrics = this.getMetrics();
   return metrics ? metrics.view.width / this.scale : 0;
 }
 
 /**
- * Render all blocks in desk.
+ * Render all blocks in board.
  */
-eYo.Desk.prototype.render = function() {
+eYo.Board.prototype.render = function() {
   // Generate list of all blocks.
   var bricks = this.allBricks
   // Render each block
@@ -908,7 +908,7 @@ eYo.Desk.prototype.render = function() {
 }
 
 /**
- * Highlight or unhighlight a brick in the desk.  Brick highlighting is
+ * Highlight or unhighlight a brick in the board.  Brick highlighting is
  * often used to visually mark bricks currently being executed.
  * @param {?string} id ID of brick to highlight/unhighlight,
  *   or null for no brick (used to unhighlight all bricks).
@@ -916,7 +916,7 @@ eYo.Desk.prototype.render = function() {
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified block.
  */
-eYo.Desk.prototype.highlightBrick = function(id, opt_state) {
+eYo.Board.prototype.highlightBrick = function(id, opt_state) {
   if (opt_state === undefined) {
     // Unhighlight all blocks.
     for (var i = 0, block; block = this.highlightedBricks_[i]; i++) {
@@ -939,9 +939,9 @@ eYo.Desk.prototype.highlightBrick = function(id, opt_state) {
 };
 
 /**
- * Paste the content of the clipboard onto the desk.
+ * Paste the content of the clipboard onto the board.
  */
-eYo.Desk.prototype.paste = function () {
+eYo.Board.prototype.paste = function () {
   var xml = eYo.Clipboard.xml
   if (!eYo.Clipboard.xml) {
     return
@@ -1009,8 +1009,8 @@ eYo.Desk.prototype.paste = function () {
                   }
               })
               if (collide) {
-                dx += eYo.Desk.SNAP_RADIUS
-                dy += eYo.Desk.SNAP_RADIUS * 2
+                dx += eYo.Board.SNAP_RADIUS
+                dy += eYo.Board.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -1042,9 +1042,9 @@ eYo.Desk.prototype.paste = function () {
 }
 
 /**
- * Make a list of all the delete areas for this desk.
+ * Make a list of all the delete areas for this board.
  */
-eYo.Desk.prototype.recordDeleteAreas = function() {
+eYo.Board.prototype.recordDeleteAreas = function() {
   if (this.trashcan && this.dom.svg.group_.parentNode) {
     this.deleteAreaTrash_ = this.trashcan.getClientRect();
   } else {
@@ -1063,15 +1063,15 @@ eYo.Desk.prototype.recordDeleteAreas = function() {
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.Desk.prototype.isDeleteArea = function(e) {
+eYo.Board.prototype.isDeleteArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
   if (this.deleteAreaTrash_ && this.deleteAreaTrash_.contains(xy)) {
-    return eYo.Desk.DELETE_AREA_TRASH;
+    return eYo.Board.DELETE_AREA_TRASH;
   }
   if (this.deleteAreaToolbox_ && this.deleteAreaToolbox_.contains(xy)) {
-    return eYo.Desk.DELETE_AREA_TOOLBOX;
+    return eYo.Board.DELETE_AREA_TOOLBOX;
   }
-  return eYo.Desk.DELETE_AREA_NONE;
+  return eYo.Board.DELETE_AREA_NONE;
 };
 
 /**
@@ -1079,7 +1079,7 @@ eYo.Desk.prototype.isDeleteArea = function(e) {
  * @param {!Event} e Mouse down event.
  * @private
  */
-eYo.Desk.prototype.onMouseDown_ = function(e) {
+eYo.Board.prototype.onMouseDown_ = function(e) {
   var gesture = this.getGesture(e)
   if (gesture) {
     gesture.handleWsStart(e, this);
@@ -1087,21 +1087,21 @@ eYo.Desk.prototype.onMouseDown_ = function(e) {
 }
 
 /**
- * Start tracking a drag of an object on this desk.
+ * Start tracking a drag of an object on this board.
  * @param {!Event} e Mouse down event.
  * @param {!goog.math.Coordinate} xy Starting location of object.
  */
-eYo.Desk.prototype.xyEventInDesk = function(e) {
-  return this.ui_driver.deskMouseInRoot(this, e)
+eYo.Board.prototype.xyEventInBoard = function(e) {
+  return this.ui_driver.boardMouseInRoot(this, e)
 }
 
 /**
- * Start tracking a drag of an object on this desk.
+ * Start tracking a drag of an object on this board.
  * @param {!Event} e Mouse down event.
  * @param {!goog.math.Coordinate} xy Starting location of object.
  */
-eYo.Desk.prototype.startDrag = function(e, xy) {
-  var point = this.xyEventInDesk(e)
+eYo.Board.prototype.startDrag = function(e, xy) {
+  var point = this.xyEventInBoard(e)
   // Fix scale of mouse event.
   point.x /= this.scale;
   point.y /= this.scale;
@@ -1109,12 +1109,12 @@ eYo.Desk.prototype.startDrag = function(e, xy) {
 }
 
 /**
- * Track a drag of an object on this desk.
+ * Track a drag of an object on this board.
  * @param {!Event} e Mouse move event.
  * @return {!goog.math.Coordinate} New location of object.
  */
-eYo.Desk.prototype.moveDrag = function(e) {
-  var point = this.xyEventInDesk(e)
+eYo.Board.prototype.moveDrag = function(e) {
+  var point = this.xyEventInBoard(e)
   // Fix scale of mouse event.
   point.x /= this.scale;
   point.y /= this.scale;
@@ -1122,13 +1122,13 @@ eYo.Desk.prototype.moveDrag = function(e) {
 }
 
 /**
- * Calculate the bounding box for the blocks on the desk.
- * Coordinate system: desk coordinates.
+ * Calculate the bounding box for the blocks on the board.
+ * Coordinate system: board coordinates.
  *
  * @return {Object} Contains the position and size of the bounding box
- *   containing the blocks on the desk.
+ *   containing the blocks on the board.
  */
-eYo.Desk.prototype.getBricksBoundingBox = function() {
+eYo.Board.prototype.getBricksBoundingBox = function() {
   var topBricks = this.getTopBricks(false);
   // Initialize boundary using the first rendered block, if any.
   var i = 0
@@ -1168,9 +1168,9 @@ eYo.Desk.prototype.getBricksBoundingBox = function() {
 }
 
 /**
- * Clean up the desk by ordering all the blocks in a column.
+ * Clean up the board by ordering all the blocks in a column.
  */
-eYo.Desk.prototype.cleanUp = function() {
+eYo.Board.prototype.cleanUp = function() {
     this.setResizesEnabled(false)
   eYo.Events.group = true
   var cursorY = 0
@@ -1187,12 +1187,12 @@ eYo.Desk.prototype.cleanUp = function() {
    
 
 /**
- * Show the context menu for the desk.
+ * Show the context menu for the board.
  * @param {!Event} e Mouse event.
  * @private
  * @suppress{accessControls}
  */
-eYo.Desk.prototype.showContextMenu_ = function (e) {
+eYo.Board.prototype.showContextMenu_ = function (e) {
   if (this.options.readOnly || this.isFlyout) {
     return
   }
@@ -1289,7 +1289,7 @@ eYo.Desk.prototype.showContextMenu_ = function (e) {
     eYo.Events.group = eventGroup
     var block = deleteList.shift()
     if (block) {
-      if (block.desk) {
+      if (block.board) {
         block.dispose(false, true)
         setTimeout(deleteNext, DELAY)
       } else {
@@ -1325,11 +1325,11 @@ eYo.Desk.prototype.showContextMenu_ = function (e) {
 }
 
 /**
- * Mark this desk's factory main desk as the currently focused main desk.
+ * Mark this board's desk main board as the currently focused main board.
  */
-eYo.Desk.prototype.markFocused = function() {
-  var mainDesk = this.factory.mainDesk
-  mainDesk.ui_driver.deskSetBrowserFocus(mainDesk)
+eYo.Board.prototype.markFocused = function() {
+  var mainBoard = this.desk.mainBoard
+  mainBoard.ui_driver.boardSetBrowserFocus(mainBoard)
 }
 
 /**
@@ -1339,15 +1339,15 @@ eYo.Desk.prototype.markFocused = function() {
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
-eYo.Desk.prototype.zoom = function(x, y, amount) {
-  this.ui_driver.deskZoom(this, x, y, amount)
+eYo.Board.prototype.zoom = function(x, y, amount) {
+  this.ui_driver.boardZoom(this, x, y, amount)
 }
 
 /**
  * Zooming the blocks centered in the center of view with zooming in or out.
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
-eYo.Desk.prototype.zoomCenter = function(type) {
+eYo.Board.prototype.zoomCenter = function(type) {
   var metrics = this.getMetrics()
   var x = metrics.view.width / 2
   var y = metrics.view.height / 2
@@ -1355,9 +1355,9 @@ eYo.Desk.prototype.zoomCenter = function(type) {
 };
 
 /**
- * Zoom the blocks to fit in the desk if possible.
+ * Zoom the blocks to fit in the board if possible.
  */
-eYo.Desk.prototype.zoomToFit = function() {
+eYo.Board.prototype.zoomToFit = function() {
   var metrics = this.getMetrics();
   var blocksBox = this.getBricksBoundingBox();
   var blocksWidth = blocksBox.width;
@@ -1365,29 +1365,29 @@ eYo.Desk.prototype.zoomToFit = function() {
   if (!blocksWidth) {
     return;  // Prevents zooming to infinity.
   }
-  var deskWidth = metrics.view.width;
-  var deskHeight = metrics.view.height;
+  var boardWidth = metrics.view.width;
+  var boardHeight = metrics.view.height;
   if (this.flyout_) {
-    deskWidth -= this.flyout_.width_;
+    boardWidth -= this.flyout_.width_;
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, blocks will not scroll to center.
     blocksWidth += metrics.content.left;
     blocksHeight += metrics.content.top;
   }
-  var ratioX = deskWidth / blocksWidth;
-  var ratioY = deskHeight / blocksHeight;
+  var ratioX = boardWidth / blocksWidth;
+  var ratioY = boardHeight / blocksHeight;
   this.scale = Math.min(ratioX, ratioY)
   this.scrollCenter()
 };
 
 /**
- * Center the desk.
+ * Center the board.
  */
-eYo.Desk.prototype.scrollCenter = function() {
+eYo.Board.prototype.scrollCenter = function() {
   if (!this.scrollbar) {
-    // Can't center a non-scrolling desk.
-    console.warn('Tried to scroll a non-scrollable desk.');
+    // Can't center a non-scrolling board.
+    console.warn('Tried to scroll a non-scrollable board.');
     return;
   }
   var metrics = this.getMetrics();
@@ -1400,13 +1400,13 @@ eYo.Desk.prototype.scrollCenter = function() {
 };
   
 /**
- * Scroll the desk to center on the given block.
+ * Scroll the board to center on the given block.
  * @param {?string} id ID of block center on.
  * @public
  */
-eYo.Desk.prototype.centerOnBrick = function(id) {
+eYo.Board.prototype.centerOnBrick = function(id) {
   if (!this.scrollbar) {
-    console.warn('Tried to scroll a non-scrollable desk.');
+    console.warn('Tried to scroll a non-scrollable board.');
     return;
   }
 
@@ -1415,20 +1415,20 @@ eYo.Desk.prototype.centerOnBrick = function(id) {
     return;
   }
 
-  // XY is in desk coordinates.
-  var xy = block.xyInDesk;
-  // Height/width is in desk units.
+  // XY is in board coordinates.
+  var xy = block.xyInBoard;
+  // Height/width is in board units.
   var heightWidth = block.getHeightWidth();
 
-  // Find the enter of the block in desk units.
+  // Find the enter of the block in board units.
   var blockCenterY = xy.y + heightWidth.height / 2;
 
   var blockCenterX = xy.x + heightWidth.width / 2;
 
-  // Desk scale, used to convert from desk coordinates to pixels.
+  // Board scale, used to convert from board coordinates to pixels.
   var scale = this.scale;
 
-  // Center in pixels.  0, 0 is at the desk origin.  These numbers may
+  // Center in pixels.  0, 0 is at the board origin.  These numbers may
   // be negative.
   var pixelX = blockCenterX * scale;
   var pixelY = blockCenterY * scale;
@@ -1436,7 +1436,7 @@ eYo.Desk.prototype.centerOnBrick = function(id) {
   var metrics = this.getMetrics();
 
   // Scrolling to here would put the block in the top-left corner of the
-  // visible desk.
+  // visible board.
   var scrollToBrickX = pixelX - metrics.content.left;
   var scrollToBrickY = pixelY - metrics.content.top;
 
@@ -1444,7 +1444,7 @@ eYo.Desk.prototype.centerOnBrick = function(id) {
   var halfViewWidth = metrics.view.width / 2;
   var halfViewHeight = metrics.view.height / 2;
 
-  // Put the block in the center of the visible desk instead.
+  // Put the block in the center of the visible board instead.
   var scrollToCenterX = scrollToBrickX - halfViewWidth;
   var scrollToCenterY = scrollToBrickY - halfViewHeight;
 
@@ -1454,7 +1454,7 @@ eYo.Desk.prototype.centerOnBrick = function(id) {
 
 /**
  * Return an object with all the metrics required to size scrollbars for a
- * top level desk.  The following properties are computed:
+ * top level board.  The following properties are computed:
  * Coordinate system: pixel coordinates.
  * .view.height: Height of the visible rectangle,
  * .view.width: Width of the visible rectangle,
@@ -1470,24 +1470,24 @@ eYo.Desk.prototype.centerOnBrick = function(id) {
  * .flyout.height: Height of flyout if it is always open.  Otherwise zero.
  * .flyout.anchor: Top, bottom, left or right.
  * TODO: rename/refactor to clearly make the difference between
- * vue coordinates and desk coordinates.
+ * vue coordinates and board coordinates.
  * @return {!Object} Contains size and position metrics of a top level
- *   desk.
+ *   board.
  * @private
- * @this eYo.Desk
+ * @this eYo.Board
  */
-eYo.Desk.getTopLevelDeskMetrics_ = (() => {
+eYo.Board.getTopLevelBoardMetrics_ = (() => {
   /**
-   * Get the bounding box for all desk contents, in pixels.
-   * @param {!eYo.Desk} ws The desk to inspect.
-   * @return {!Object} The dimensions of the contents of the given desk, as
+   * Get the bounding box for all board contents, in pixels.
+   * @param {!eYo.Board} ws The board to inspect.
+   * @return {!Object} The dimensions of the contents of the given board, as
    *     an object containing
    *     - height and width in pixels
-   *     - left, right, top and bottom in pixels relative to the desk origin.
+   *     - left, right, top and bottom in pixels relative to the board origin.
    * @private
    */
   var getContentDimensionsExact_ = function(ws) {
-    // Brick bounding box is in desk coordinates.
+    // Brick bounding box is in board coordinates.
     var blockBox = ws.getBricksBoundingBox();
     var scale = ws.scale;
 
@@ -1508,16 +1508,16 @@ eYo.Desk.getTopLevelDeskMetrics_ = (() => {
   };
     
   /**
-   * Calculate the size of a scrollable desk, which should include room for a
-   * half screen border around the desk contents.
-   * @param {!eYo.Desk} ws The desk to measure.
+   * Calculate the size of a scrollable board, which should include room for a
+   * half screen border around the board contents.
+   * @param {!eYo.Board} ws The board to measure.
    * @param {!Object} svgSize An object containing height and width attributes in
-   *     CSS pixels.  Together they specify the size of the visible desk, not
+   *     CSS pixels.  Together they specify the size of the visible board, not
    *     including areas covered up by the toolbox.
-   * @return {!Object} The dimensions of the contents of the given desk, as
+   * @return {!Object} The dimensions of the contents of the given board, as
    *     an object containing
    *     - height and width in pixels
-   *     - left and top in pixels relative to the desk origin.
+   *     - left and top in pixels relative to the board origin.
    * @private
    */
   var getContentDimensionsBounded_ = function(ws, svgSize) {
@@ -1544,9 +1544,9 @@ eYo.Desk.getTopLevelDeskMetrics_ = (() => {
   }
   return function() {
     // Contains height and width in CSS pixels.
-    // svgSize is equivalent to the size of the factory div at this point.
+    // svgSize is equivalent to the size of the desk div at this point.
     var svgSize = this.dom.svg.size
-    // svgSize is now the space taken up by the Blockly desk
+    // svgSize is now the space taken up by the Blockly board
     if (this.scrollbar) {
       var dimensions = getContentDimensionsBounded_(this, svgSize)
     } else {
@@ -1571,15 +1571,15 @@ eYo.Desk.getTopLevelDeskMetrics_ = (() => {
 })()
 
 /**
- * Sets the X/Y translations of a top level desk to match the scrollbars.
+ * Sets the X/Y translations of a top level board to match the scrollbars.
  * @param {!Object} xyRatio Contains an x and/or y property which is a float
  *     between 0 and 1 specifying the degree of scrolling.
  * @private
- * @this eYo.Desk
+ * @this eYo.Board
  */
-eYo.Desk.setTopLevelDeskMetrics_ = function(xyRatio) {
+eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   if (!this.scrollbar) {
-    throw 'Attempt to set top level desk scroll without scrollbars.';
+    throw 'Attempt to set top level board scroll without scrollbars.';
   }
   var metrics = this.getMetrics()
   if (goog.isNumber(xyRatio.x)) {
@@ -1594,13 +1594,13 @@ eYo.Desk.setTopLevelDeskMetrics_ = function(xyRatio) {
 };
 
 /**
- * Update whether this desk has resizes enabled.
- * If enabled, desk will resize when appropriate.
- * If disabled, desk will not resize until re-enabled.
+ * Update whether this board has resizes enabled.
+ * If enabled, board will resize when appropriate.
+ * If disabled, board will not resize until re-enabled.
  * Use to avoid resizing during a batch operation, for performance.
  * @param {boolean} enabled Whether resizes should be enabled.
  */
-eYo.Desk.prototype.setResizesEnabled = function(enabled) {
+eYo.Board.prototype.setResizesEnabled = function(enabled) {
   var reenabled = (!this.resizesEnabled_ && enabled);
   this.resizesEnabled_ = enabled;
   if (reenabled) {
@@ -1610,14 +1610,14 @@ eYo.Desk.prototype.setResizesEnabled = function(enabled) {
 }
 
 /**
- * Look up the gesture that is tracking this touch stream on this desk.
+ * Look up the gesture that is tracking this touch stream on this board.
  * May create a new gesture.
  * @param {!Event} e Mouse event or touch event.
  * @return {Brickly.TouchGesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
  * @package
  */
-eYo.Desk.prototype.getGesture = function(e) {
+eYo.Board.prototype.getGesture = function(e) {
   var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
       e.type == 'pointerdown')
 
@@ -1633,7 +1633,7 @@ eYo.Desk.prototype.getGesture = function(e) {
     return gesture
   }
 
-  // No gesture existed on this desk, but this looks like the start of a
+  // No gesture existed on this board, but this looks like the start of a
   // new gesture.
   if (isStart) {
     return (this.gesture_ = new eYo.Gesture(e, this))
@@ -1646,7 +1646,7 @@ eYo.Desk.prototype.getGesture = function(e) {
  * Clear the reference to the current gesture.
  * @package
  */
-eYo.Desk.prototype.clearGesture = function() {
+eYo.Board.prototype.clearGesture = function() {
   this.gesture_ = null
 }
 
@@ -1654,21 +1654,21 @@ eYo.Desk.prototype.clearGesture = function() {
  * Cancel the current gesture, if one exists.
  * @package
  */
-eYo.Desk.prototype.cancelCurrentGesture = function() {
+eYo.Board.prototype.cancelCurrentGesture = function() {
   if (this.gesture_) {
     this.gesture_.cancel()
   }
 }
 
 /**
- * Get the audio manager for this desk.
- * @return {Brickly.DeskAudio} The audio manager for this desk.
+ * Get the audio manager for this board.
+ * @return {Brickly.BoardAudio} The audio manager for this board.
  */
-eYo.Desk.prototype.getAudioManager = function() {
+eYo.Board.prototype.getAudioManager = function() {
   return this.audioManager_
 };
    
-eYo.Desk.prototype.logAllConnections = function (comment) {
+eYo.Board.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
     'IN',
@@ -1687,21 +1687,21 @@ eYo.Desk.prototype.logAllConnections = function (comment) {
 }
 
 /**
- * Convert a coordinate object from pixels to desk units.
+ * Convert a coordinate object from pixels to board units.
  * @param {!goog.math.Coordinate} pixelCoord  A coordinate with x and y values
  *     in css pixel units.
- * @return {!goog.math.Coordinate} The input coordinate divided by the desk
+ * @return {!goog.math.Coordinate} The input coordinate divided by the board
  *     scale.
  * @private
  */
-eYo.Desk.prototype.fromPixelUnit = function(xy) {
+eYo.Board.prototype.fromPixelUnit = function(xy) {
   return new goog.math.Coordinate(xy.x / this.scale, xy.y / this.scale)
 }
 
 /**
  *
  */
-eYo.Desk.prototype.getRecover = (() => {
+eYo.Board.prototype.getRecover = (() => {
   var get = function () {
     return this.recover_
   }
@@ -1714,21 +1714,21 @@ eYo.Desk.prototype.getRecover = (() => {
 }) ()
 
 /**
- * Add the nodes from string to the desk.
+ * Add the nodes from string to the board.
  * Usefull for testing? -> commonn test methods.
  * @param {!String} str
  * @return {Array.<string>} An array containing new block IDs.
  */
-eYo.Desk.prototype.fromDom = function (dom) {
-  return dom &&(eYo.Xml.domToDesk(dom, this))
+eYo.Board.prototype.fromDom = function (dom) {
+  return dom &&(eYo.Xml.domToBoard(dom, this))
 }
 
 /**
- * Add the nodes from string to the desk.
+ * Add the nodes from string to the board.
  * @param {!String} str
  * @return {Array.<string>} An array containing new block IDs.
  */
-eYo.Desk.prototype.fromString = function (str) {
+eYo.Board.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
   return this.fromDom(dom)
@@ -1736,48 +1736,48 @@ eYo.Desk.prototype.fromString = function (str) {
 
 
 /**
- * Convert the desk to string.
+ * Convert the board to string.
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  */
-eYo.Desk.prototype.toDom = function (opt) {
-  return eYo.Xml.deskToDom(this, opt)
+eYo.Board.prototype.toDom = function (opt) {
+  return eYo.Xml.boardToDom(this, opt)
 }
 
 /**
- * Convert the desk to string.
+ * Convert the board to string.
  * @param {?Boolean} opt_noId
  */
-eYo.Desk.prototype.toString = function (opt_noId) {
+eYo.Board.prototype.toString = function (opt_noId) {
   let oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(this.toDom())
 }
 
 /**
- * Convert the desk to UTF8 byte array.
+ * Convert the board to UTF8 byte array.
  * @param {?Boolean} opt_noId
  */
-eYo.Desk.prototype.toUTF8ByteArray = function (opt_noId) {
+eYo.Board.prototype.toUTF8ByteArray = function (opt_noId) {
   var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
   return goog.crypt.toUTF8ByteArray(s)
 }
 
 /**
- * Add the nodes from UTF8 string representation to the desk. UNUSED.
+ * Add the nodes from UTF8 string representation to the board. UNUSED.
  * @param {!Array} bytes
  * @return {Array.<string>} An array containing new block IDs.
  */
-eYo.Desk.prototype.fromUTF8ByteArray = function (bytes) {
+eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
   return str && (this.fromString(str))
 }
 
 
 /**
- * Add a brick to the desk.
+ * Add a brick to the board.
  * @param {eYo.Brick} brick
  * @param {String} opt_id
  */
-eYo.Desk.prototype.addBrick = function (brick, opt_id) {
+eYo.Board.prototype.addBrick = function (brick, opt_id) {
   brick.id = (opt_id && !this.getBrickById(opt_id)) ?
   opt_id : eYo.Do.genUid()
   this.hasUI && brick.makeUI()
@@ -1786,14 +1786,14 @@ eYo.Desk.prototype.addBrick = function (brick, opt_id) {
 }
 
 /**
- * Add a brick to the desk.
+ * Add a brick to the board.
  * @param {eYo.Brick} brick
  */
-eYo.Desk.prototype.removeBrick = function (brick) {
+eYo.Board.prototype.removeBrick = function (brick) {
   if (!goog.array.remove(this.topBricks_, brick)) {
-    throw 'Brick not present in desk\'s list of top-most bricks.';
+    throw 'Brick not present in board\'s list of top-most bricks.';
   }
-  // Remove from desk
+  // Remove from board
   this.brickDB_[brick.id] = null
 }
 
@@ -1801,7 +1801,7 @@ eYo.Desk.prototype.removeBrick = function (brick) {
  * Tidy up the nodes.
  * @param {?Object} kvargs  key value arguments
  * IN PROGRESS
-eYo.Desk.prototype.tidyUp = function (kvargs) {
+eYo.Board.prototype.tidyUp = function (kvargs) {
   // x + y < O / x + y > 0
   var x_plus_y = (l, r) => {
     var dx = r.xy.x - l.xy.x
@@ -1894,13 +1894,13 @@ eYo.Desk.prototype.tidyUp = function (kvargs) {
 */
 
 /**
- * Scroll the desk to center on the given block.
+ * Scroll the board to center on the given block.
  * @param {?string} id ID of block center on.
  * @public
  */
-eYo.Desk.prototype.scrollBrickTopLeft = function(id) {
+eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
-    console.warn('Tried to scroll a non-scrollable desk.');
+    console.warn('Tried to scroll a non-scrollable board.');
     return;
   }
   var brick = this.getBrickById(id);
@@ -1910,18 +1910,18 @@ eYo.Desk.prototype.scrollBrickTopLeft = function(id) {
   if (!brick.isStmt) {
     brick = brick.stmtParent || brick.root
   }
-  // XY is in desk coordinates.
+  // XY is in board coordinates.
   var xy = brick.xy
 
-  // Find the top left of the block in desk units.
+  // Find the top left of the block in board units.
   var y = xy.y - eYo.Unit.y / 2
 
   var x = xy.x - eYo.Unit.x / 2 - brick.depth * eYo.Span.tabWidth
 
-  // Desk scale, used to convert from desk coordinates to pixels.
+  // Board scale, used to convert from board coordinates to pixels.
   var scale = this.scale;
 
-  // Center in pixels.  0, 0 is at the desk origin.  These numbers may
+  // Center in pixels.  0, 0 is at the board origin.  These numbers may
   // be negative.
   var pixelX = x * scale;
   var pixelY = y * scale;
@@ -1929,7 +1929,7 @@ eYo.Desk.prototype.scrollBrickTopLeft = function(id) {
   var metrics = this.getMetrics()
 
   // Scrolling to here will put the block in the top-left corner of the
-  // visible desk.
+  // visible board.
   var scrollX = pixelX - metrics.content.left
   var scrollY = pixelY - metrics.content.top
 
