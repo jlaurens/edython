@@ -296,8 +296,8 @@ eYo.Gesture.prototype.dispose = function() {
   eYo.Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
   this.workspace_ = this.creatorWorkspace_ = this.flyout_ = null
-  this.brickDragger_ = null
-  this.workspaceDragger_ = null
+  this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearGesture())
+  this.workspaceDragger_ && (this.workspaceDragger_ = this.workspaceDragger_.clearGesture())
 }
 
 /**
@@ -393,6 +393,7 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
  * @private
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
+  console.log(e)
   this.event_ = e
   var currentXY = new goog.math.Coordinate(e.clientX, e.clientY)
   this.deltaXY_ = goog.math.Coordinate.difference(currentXY, this.startXY_)
@@ -456,7 +457,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
     this.updateFromEvent_(e)
     if (this.workspaceDragger_) {
       this.workspaceDragger_.drag()
-    } else if (this.isDraggingBrick_) {
+    } else if (this.brickDragger_) {
       this.brickDragger_.drag() // sometimes it failed when in Blockly
     }
     eYo.Dom.gobbleEvent(e) 
@@ -513,7 +514,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     // priority than workspaces.
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
-    if (this.isDraggingBrick_) {
+    if (this.brickDragger_) {
       this.brickDragger_.end()
     } else if (this.workspaceDragger_) {
       this.workspaceDragger_.end()
@@ -539,7 +540,7 @@ eYo.Gesture.prototype.cancel = function() {
     return
   }
   eYo.Dom.longStop_()
-  if (this.isDraggingBrick_) {
+  if (this.brickDragger_) {
     this.brickDragger_.end()
   } else if (this.workspaceDragger_) {
     this.workspaceDragger_.end()

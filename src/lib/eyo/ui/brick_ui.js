@@ -2208,7 +2208,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
-          (this.isSelected ? this : this.stmtParent) || t9k.root
+          // (this.isSelected ? this : this.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null
         }
       }

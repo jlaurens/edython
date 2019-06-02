@@ -305,7 +305,7 @@ eYo.BrickDragger.prototype.end = (() => {
 
     eYo.Events.group = false
     this.availableMagnets_.length = 0
-    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = null
+    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.gesture_ = null
   }
 })()
 

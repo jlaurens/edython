@@ -2194,7 +2194,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   movable: {
     get () {
-      return this.isMovable()
+      return this.movable_
     }
   },
   collapsed_: {

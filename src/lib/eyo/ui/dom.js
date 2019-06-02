@@ -559,7 +559,7 @@ eYo.Dom.on_keydown = e => {
     if (eYo.App.workspace.isDragging) {
       return;
     }
-    if (eYo.Selected.brick && eYo.Selected.brick.isDeletable()) {
+    if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
       eYo.Desktop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
@@ -568,7 +568,7 @@ eYo.Dom.on_keydown = e => {
       return;
     }
     if (eYo.Selected.brick &&
-        eYo.Selected.brick.isDeletable() && eYo.Selected.brick.isMovable()) {
+        eYo.Selected.brick.deletable && eYo.Selected.brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step

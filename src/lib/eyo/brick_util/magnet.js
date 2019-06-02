@@ -1511,11 +1511,11 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     return
   }
   var reverse = false
-  if (!root.isMovable()) {
+  if (!root.movable) {
     // Can't bump an uneditable brick away.
     // Check to see if the other brick is movable.
     root = m4t.brick.root
-    if (!root.workspace || !root.isMovable()) {
+    if (!root.workspace || !root.movable) {
       return
     }
     // Swap the connections and move the 'static' connection instead.

@@ -1277,7 +1277,7 @@ eYo.Workspace.prototype.showContextMenu_ = function (e) {
   // Count the number of bricks that are deletable.
   var deleteList = []
   function addDeletableBricks (b3k) {
-    if (b3k.isDeletable()) {
+    if (b3k.deletable) {
       deleteList = deleteList.concat(b3k.getWrappedDescendants())
     } else {
       b3k.children.forEach(child => addDeletableBricks(child))

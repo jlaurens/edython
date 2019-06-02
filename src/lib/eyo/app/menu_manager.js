@@ -366,7 +366,7 @@ eYo.Brick.prototype.populateContextMenuLast_ = function (mgr) {
  */
 eYo.MenuManager.prototype.populateLast = function (brick) {
   var menuItem
-  if (brick.isMovable() && !brick.isInFlyout) {
+  if (brick.movable && !brick.isInFlyout) {
     if (brick.canUnlock()) {
       menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
         function (event) {
@@ -400,7 +400,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       this.addChild(menuItem, true)
     }
   }
-  if (brick.isDeletable() && brick.isMovable() && !brick.isInFlyout) {
+  if (brick.deletable && brick.movable && !brick.isInFlyout) {
     // Option to duplicate this brick.
     menuItem = this.newMenuItem(
       eYo.Msg.DUPLICATE_BLOCK,
@@ -453,7 +453,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     menuItem.setEnabled(!brick.out_m)
     this.addChild(menuItem, true)
   }
-  if (brick.isDeletable() && brick.isMovable() && !brick.isInFlyout) {
+  if (brick.deletable && brick.movable && !brick.isInFlyout) {
     // Count the number of bricks that are nested in this brick.
 
     var wrapper = brick.wrapper
