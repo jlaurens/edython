@@ -241,7 +241,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Expr.Starred.prototype.getType = eYo.Cache.decorate(
+eYo.Brick.Expr.Starred.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     var check = this.out_m.check_

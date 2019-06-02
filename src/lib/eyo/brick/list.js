@@ -147,12 +147,12 @@ eYo.Brick.List.prototype.removeItems = function () {
  * Force to recompute the chain tile.
  * For edython.
  */
-eYo.Brick.List.prototype.incrementInputChangeCount = function () {
+eYo.Brick.List.prototype.changeInputDone = function () {
   this.forEachInput(input => {
-    var t9k = input.magnet.targetBrick
-    t9k && (t9k.incrementChangeCount())
+    var t9k = input.targetBrick
+    t9k && (t9k.changeDone())
   })
-  this.incrementChangeCount()
+  this.changeDone()
 }
 
 Object.defineProperties(eYo.Brick.List.prototype, {
@@ -362,7 +362,7 @@ Object.defineProperties(eYo.Brick.Expr.enclosure.prototype, {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Cache.decorate(
+eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
   'getProfile',
   function () {
     // this may be called very very early when

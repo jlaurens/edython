@@ -187,7 +187,7 @@ Object.defineProperties(eYo.Slot.prototype, {
       if (validator) { // if !this.slots, the receiver is not yet ready
         newValue = validator.call(this, newValue)
       }
-      this.brick_.changeWrap(
+      this.brick_.change.wrap(
         () => {
           this.incog_ = newValue
           // forward to the connection

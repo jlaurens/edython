@@ -862,7 +862,7 @@ describe('Primary(DEFINED)', function() {
     u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
     eYo.Test.input_length(d.value_b, 5)
-    var name = d.value_b.inputList[3].magnet.targetBrick.target_p
+    var name = d.value_b.inputList[3].targetBrick.target_p
     chai.assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
     d.dispose()
   })

@@ -190,7 +190,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
         }
         if (t9k.wrapped_) {
           // force target rendering
-          t9k.incrementChangeCount()
+          t9k.changeDone()
         }
         if (!ui.up) {
           t9k.render(false, io)
@@ -627,7 +627,7 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Cache.decorate(
+eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Change.decorate(
   'alignRightEdges_',
   function (recorder) {
     if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.board || !this.brick_.hasUI) {
@@ -1271,7 +1271,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
         }
         if (t9k.wrapped_) {
           // force target rendering
-          t9k.incrementChangeCount()
+          t9k.changeDone()
         }
         m4t.setOffset(io.cursor)
         if (m4t.c === 1 && !io.common.field.afterBlack && m4t.slot) {

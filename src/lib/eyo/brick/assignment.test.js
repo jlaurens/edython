@@ -77,7 +77,7 @@ describe('Assignment', function() {
     var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
-    chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
+    chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
     eYo.Test.tearItDown()
   })
@@ -90,7 +90,7 @@ describe('Assignment', function() {
     d2.value_p = 'EXPR'
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
-    chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
+    chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
     eYo.Test.tearItDown()
   })
@@ -227,7 +227,7 @@ describe('Copy/Paste', function() {
     var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
-    chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
+    chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
     eYo.Test.tearItDown()
   })
@@ -240,7 +240,7 @@ describe('Copy/Paste', function() {
     d2.value_p = 'EXPR'
     var input = d1.value_b.lastInput
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
-    chai.assert(input.magnet.targetBrick === d2, 'MISSED M4T 2')
+    chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
     eYo.Test.tearItDown()
   })

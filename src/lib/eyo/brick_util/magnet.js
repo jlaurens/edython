@@ -589,8 +589,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
         // Bump away.
         brick.ui.bumpNeighbours_()
       }
-      brick.incrementChangeCount()
-      t9k && (t9k.incrementChangeCount()) // there was once a `consolidate(false, true)` here.
+      brick.changeDone()
+      t9k && (t9k.changeDone()) // there was once a `consolidate(false, true)` here.
     }
   },
   /**
@@ -812,7 +812,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'incog', {
     newValue = !!newValue
     var change = this.incog_ !== newValue
     if (change) {
-      this.brick.incrementChangeCount()
+      this.brick.changeDone()
     }
     if (!newValue && this.promised_) {
       this.completePromise()
@@ -1410,8 +1410,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     child.incog = parentM4t.incog
   }
   eYo.Events.groupWrap(() => {
-    parent.changeWrap(() => { // Disable rendering until changes are made
-      child.changeWrap(() => {
+    parent.change.wrap(() => { // Disable rendering until changes are made
+      child.change.wrap(() => {
         parent.makeUI(child.hasUI)
         child.makeUI(parent.hasUI)
         parentM4t.willConnect(childM4t)
@@ -1428,7 +1428,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
               eYo.Do.tryFinally(
                 connect1, // 
                 () => { // finally
-                  parentM4t.startOfStatement && (child.incrementChangeCount())
+                  parentM4t.startOfStatement && (child.changeDone())
                   eYo.Magnet.connectedParent = parentM4t
                   // next must absolutely run because of possible undo management
                   child.didConnect(childM4t, oldParentT4t, oldChildT4t)
@@ -1740,8 +1740,8 @@ eYo.Magnet.prototype.disconnect = (() => {
     unwrappedM4t = parentM4t.unwrappedMagnet
     eYo.Events.groupWrap(() => {
       eYo.Events.fireBrickMove(child, () => {
-        child.changeWrap(() => { // `this` is catched
-          parent.changeWrap(() => { // `this` is catched
+        child.change.wrap(() => { // `this` is catched
+          parent.change.wrap(() => { // `this` is catched
             eYo.Do.tryFinally(() => {
               parentM4t.willDisconnect()
               ;(unwrappedM4t !== parentM4t) && unwrappedM4t.willDisconnect()
@@ -1759,7 +1759,7 @@ eYo.Magnet.prototype.disconnect = (() => {
                       // eYo.Magnet.disconnectedChild = childM4t
                       // eYo.Magnet.disconnectedParent = eYo.VOID
                       // eYo.Magnet.disconnectedChild = eYo.VOID
-                      parent.incrementInputChangeCount && (parent.incrementInputChangeCount()) // list are special
+                      parent.changeInputDone && (parent.changeInputDone()) // list are special
                       parentM4t.bindField && (parentM4t.bindField.visible = true) // no wrapped test
                       childM4t.bindField && (childM4t.bindField.visible = true) // unreachable ?
                     })
@@ -1778,9 +1778,9 @@ eYo.Magnet.prototype.disconnect = (() => {
             })
           })
         })
-        child.incrementChangeCount()
+        child.changeDone()
         child.consolidate()
-        parent.incrementChangeCount()
+        parent.changeDone()
         parent.consolidate()
         var ui
         ;(ui = child.ui) && ui.didDisconnect(parentM4t)

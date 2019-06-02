@@ -162,22 +162,6 @@ eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
 }
 
 /**
- * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
- * @private
- */
-eYo.Brick.Stmt.prototype.populateContextMenuComment = function (mgr) {
-  var brick = this
-  var show = false
-  var content =
-  eYo.Do.createSPAN(show ? eYo.Msg.Placeholder.REMOVE_COMMENT : eYo.Msg.Placeholder.ADD_COMMENT, null)
-  var menuItem = mgr.newMenuItem(content, brick.doAndRender())
-  mgr.addChild(menuItem, true)
-  return true
-}
-
-/**
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
@@ -407,7 +391,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Cache.decorate(
+eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     this.setupType(

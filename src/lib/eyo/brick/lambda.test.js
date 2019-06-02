@@ -68,7 +68,7 @@ describe('parameter_list', function() {
             c.variant_p = v3
             assert(t.inputList.length === 7, 'MISSED 1')
             var f = (n, i) => {
-              var u = b3k.parameters_b.inputList[i].magnet.targetBrick
+              var u = b3k.parameters_b.inputList[i].targetBrick
               assert(u.target_p === n, `MISSED: ${n} at ${i}`)
             }
             f('a', 1)

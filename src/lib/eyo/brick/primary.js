@@ -327,7 +327,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
     var other = false
     if (this.inputList.some(input => {
       if (input.magnet) {
-        var t9k = input.magnet.targetBrick
+        var t9k = input.targetBrick
         if (t9k) {
           other= true
           if ([eYo.T3.Expr.identifier_annotated,
@@ -1297,7 +1297,7 @@ eYo.Brick.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.Brick.Expr.primary.prototype.getProfile = eYo.Cache.decorate(
+eYo.Brick.Expr.primary.prototype.getProfile = eYo.Change.decorate(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1467,7 +1467,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
   var profile = this.profile_p
   if (!profile) {
     console.warn('NO PROFILE, is it normal?')
-    this.incrementChangeCount()
+    this.changeDone()
     profile = this.profile_p
     if (!profile) {
       console.error('NO PROFILE')
@@ -1475,7 +1475,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
   }
   if (!profile.name) {
     console.error('NO NAME')
-    this.incrementChangeCount()
+    this.changeDone()
     this.getProfile()
   }
 

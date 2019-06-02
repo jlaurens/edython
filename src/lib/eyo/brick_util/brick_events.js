@@ -422,7 +422,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   function (newValue) {
     var oldValue = this.value_
     if (oldValue !== newValue) {
-      this.brick.changeWrap(() => { // catch `this`
+      this.brick.change.wrap(() => { // catch `this`
         eYo.Events.groupWrap(() => { // catch `this`
           this.beforeChange(oldValue, newValue)
           try {

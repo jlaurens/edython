@@ -281,7 +281,6 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
     sep = true
   }
   this.shouldSeparate(sep)
-  sep = eyo.populateContextMenuComment && (eyo.populateContextMenuComment(this))
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addChild(this.insertAfterSubmenu, true)
     sep = true

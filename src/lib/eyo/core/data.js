@@ -116,6 +116,11 @@ Object.defineProperties(eYo.Data.prototype, {
       return this.brick_
     }
   },
+  change: {
+    get () {
+      return this.brick_.change
+    }
+  },
   brickType: {
     get  () {
       return this.brick_.type
@@ -158,7 +163,7 @@ Object.defineProperties(eYo.Data.prototype, {
         newValue = validator.call(this, newValue)
       }
       if (this.incog_ !== newValue) {
-        this.brick_.changeWrap(
+        this.brick_.change.wrap(
           () => { // catch `this`
             this.incog_ = newValue
             this.slot && (this.slot.incog = newValue)

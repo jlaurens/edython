@@ -511,7 +511,7 @@ eYo.Board.prototype.undo = function(redo) {
           events.forEach(event => {
             var B = this.getBrickById(event.brickId)
             if (B) {
-              B.changeBegin()
+              B.change.begin()
               Bs.push(B)
             }
           })
@@ -522,7 +522,7 @@ eYo.Board.prototype.undo = function(redo) {
         })
       }, () => { // finally
         eYo.Events.recordUndo = true
-        Bs.forEach(B => B.changeEnd())
+        Bs.forEach(B => B.change.end())
         eYo.App.didProcessUndo && (eYo.App.didProcessUndo(redo))
       })
       return

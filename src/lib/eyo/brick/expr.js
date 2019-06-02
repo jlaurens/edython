@@ -48,10 +48,10 @@ Object.defineProperties(eYo.Brick.Expr.prototype, {
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.Brick.Expr.prototype.incrementChangeCount = function (deep) {
-  eYo.Brick.Expr.superClass_.incrementChangeCount.call(this, deep)
+eYo.Brick.Expr.prototype.changeDone = function (deep) {
+  eYo.Brick.Expr.superClass_.changeDone.call(this, deep)
   var parent = this.parent
-  parent && (parent.incrementChangeCount())
+  parent && (parent.changeDone())
 }
 
 /**
@@ -61,7 +61,7 @@ eYo.Brick.Expr.prototype.incrementChangeCount = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Brick.Expr.prototype.getType = eYo.Cache.decorate(
+eYo.Brick.Expr.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     return {
@@ -238,7 +238,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
     var parentInputM4t = parentInput.magnet
     goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
   } else if ((parentInput = parent.getInput(eYo.Key.LIST, true))) {
-    var list = parentInput.magnet.targetBrick
+    var list = parentInput.targetBrick
     goog.asserts.assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh

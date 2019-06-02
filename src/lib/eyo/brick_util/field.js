@@ -375,7 +375,7 @@ Object.defineProperties(eYo.Field.prototype, {
         // No change.
         return
       }
-      this.brick.changeWrap(() => this.text_ = newText)
+      this.brick.change.wrap(() => this.text_ = newText)
     }
   },
   /**

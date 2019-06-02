@@ -308,7 +308,7 @@ eYo.Test.list_connect = (brick, key, target, name) => {
   chai.assert(target, 'MISSING target')
   var s = brick.slots[key]
   chai.assert(s.listConnect(target, name), `CONNECTION FAILED`)
-  chai.assert(s.targetBrick.inputList.some(input => input.magnet && input.magnet.targetBrick === target), `MISSED CONNECTION for ${key} in ${brick.type}`)
+  chai.assert(s.targetBrick.inputList.some(input => input.magnet && input.targetBrick === target), `MISSED CONNECTION for ${key} in ${brick.type}`)
 }
 
 /**

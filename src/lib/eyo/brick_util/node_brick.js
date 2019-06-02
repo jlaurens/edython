@@ -1124,7 +1124,7 @@ eYo.Node.prototype.toBrick_ = function (board) {
             d0 = root
             d0.dotted_p = 1
           } else {
-            d0.changeWrap(() => {
+            d0.change.wrap(() => {
               if ((d = d0.target_s.unwrappedTarget)) {
                 d0.holder_s.connect(d)
               } else {

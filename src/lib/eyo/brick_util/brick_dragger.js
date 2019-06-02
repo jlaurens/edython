@@ -62,7 +62,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
     }
   },
   xyDelta: {
-    get: eYo.Cache.decorate(function () {
+    get: eYo.Change.decorate(function () {
       var delta = this.gesture_.deltaXY_
       if (delta && this.transformCorrection_) {
         delta = this.transformCorrection_(delta)

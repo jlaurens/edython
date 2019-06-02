@@ -533,7 +533,7 @@ eYo.Brick.prototype.saveSlots = function (element, opt) {
  */
 eYo.Xml.Data.fromDom = function (brick, element) {
   var hasText
-  brick.changeWrap(
+  brick.change.wrap(
     function () { // `this` is `brick`
       this.forEachData(data => {
         data.load(element)
@@ -1003,7 +1003,7 @@ goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
  */
 eYo.Xml.fromDom = function (brick, element) {
   // headless please
-  brick.changeWrap(function () { // `this` is `brick`
+  brick.change.wrap(function () { // `this` is `brick`
   //    console.log('Brick created from dom:', xmlBrick, brick.type, brick.id)
   // then fill it based on the xml data
     this.willLoad()
@@ -1056,7 +1056,7 @@ eYo.Xml.fromDom = function (brick, element) {
           }
         })
         conclude = () => {
-          this.incrementChangeCount() // force new type
+          this.changeDone() // force new type
           this.consolidateType()
           this.consolidateMagnets()
           this.consolidate() // too many consolidation !!!
@@ -1080,7 +1080,7 @@ eYo.Xml.fromDom = function (brick, element) {
                   } else {
                     // we could not connect possibly because the
                     // type is not yet properly set
-                    this.incrementChangeCount() // force new type
+                    this.changeDone() // force new type
                     this.consolidateType()
                     this.consolidateMagnets()
                     this.consolidate()
