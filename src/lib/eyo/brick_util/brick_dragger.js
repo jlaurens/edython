@@ -46,18 +46,33 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
       this.brick__ = newValue
     }
   },
-  xyDelta_: {
+  brick: {
     get () {
+      return this.brick__
+    }
+  },
+  xyStart: {
+    get () {
+      return this.xyStart_
+    }
+  },
+  cache: {
+    get () {
+      return this.gesture_.cache
+    }
+  },
+  xyDelta: {
+    get: eYo.Cache.decorate(function () {
       var delta = this.gesture_.deltaXY_
       if (delta && this.transformCorrection_) {
         delta = this.transformCorrection_(delta)
       }
-      return this.destination.fromPixelUnit(delta)
-    }
+      return {ans: this.destination.fromPixelUnit(delta)}
+    }),
   },
   xyNew_: {
     get () {
-      return goog.math.Coordinate.sum(this.xyStart_, this.xyDelta_)
+      return goog.math.Coordinate.sum(this.xyStart_, this.xyDelta)
     }
   }
 })
@@ -287,7 +302,7 @@ eYo.BrickDragger.prototype.end = (() => {
       b3k.dispose(false, true)
     } else {
       // These are expensive and don't need to be done if we're deleting.
-      b3k.ui.moveMagnets_(this.xyDelta_)
+      b3k.ui.moveMagnets_(this.xyDelta)
       b3k.ui.setDragging(false)
       this.connect()
       b3k.render()
@@ -341,7 +356,7 @@ eYo.BrickDragger.prototype.update = function() {
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.Board.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
-    var neighbour = m4t.closest(this.distance_, this.xyDelta_)
+    var neighbour = m4t.closest(this.distance_, this.xyDelta)
     if (neighbour.magnet) {
       this.target_ = neighbour.magnet
       this.magnet_ = m4t
