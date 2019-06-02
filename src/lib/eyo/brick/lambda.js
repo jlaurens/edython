@@ -313,7 +313,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
   var F = (modifier, flags, msg) => {
     var y
     eYo.Events.disableWrap(() => {
-      y = eYo.Brick.newComplete(this, eYo.T3.Expr.identifier)
+      y = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
       y.changeWrap(
         function() { // `this` is `y`
           this.modifier_p = modifier
@@ -335,7 +335,7 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
           mgr.addInsertChild(mgr.newMenuItem(
             content,
             () => {
-              var y = eYo.Brick.newComplete(this, eYo.T3.Expr.identifier)
+              var y = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(() => { // `this` is catched
                 y.changeWrap(
                   function () { // `this` is `y`

@@ -30,7 +30,7 @@ eYo.Svg.prototype.slotInit = function (slot) {
   var g = svg.group_ = eYo.Svg.newElement('g', {
     class: 'eyo-slot'
   }, null)
-  g.dataset && (g.dataset.name = slot.name)
+  g.dataset && (g.dataset.slotKey = slot.key)
   if (slot.previous) {
     goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
   } else {

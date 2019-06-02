@@ -29,7 +29,7 @@ eYo.Test.makeFactory = options => {
   }
 }
 
-before(function() {
+beforeEach(function() {
   eYo.Test.makeFactory()
 })
 

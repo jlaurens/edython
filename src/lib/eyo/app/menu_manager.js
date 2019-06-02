@@ -1032,7 +1032,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var eyo = eYo.Brick.newComplete(brick, type)
+    var eyo = eYo.Brick.newReady(brick, type)
     var yorn = eyo.head_m &&
     eyo.head_m.checkType_(m4t) &&
     (!targetM4t || (eyo.foot_m && (targetM4t.checkType_(eyo.foot_m))))
@@ -1048,7 +1048,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var eyo = eYo.Brick.newComplete(brick, type)
+    var eyo = eYo.Brick.newReady(brick, type)
     var yorn = eyo.foot_m &&
     eyo.foot_m.checkType_(m4t) &&
     (!target || (eyo.head_m && (target.checkType_(eyo.head_m))))

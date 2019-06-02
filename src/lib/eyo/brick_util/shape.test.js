@@ -10,7 +10,7 @@ describe('Expression shape', function () {
   }) 
   chai.assert(eYo.Brick.Expr.test_shape_out)
   var b
-  before(function() {
+  beforeEach(function() {
     b = eYo.Test.new_brick(type)
     chai.assert(b.isExpr, 'MISSED')
   })
@@ -27,7 +27,7 @@ describe('Expression shape', function () {
     b.span.addC(2)
     createPath(b, 5, 0.5)
   })
-  after(function() {
+  afterEach(function() {
     b.dispose()
   })
 })

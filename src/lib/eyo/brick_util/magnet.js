@@ -846,7 +846,7 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
       eYo.Events.disableWrap(
         () => {
           var brick = this.brick
-          t9k = eYo.Brick.newComplete(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
+          t9k = eYo.Brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
           goog.asserts.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
           goog.asserts.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
           ans = this.connect(t9k.out_m)

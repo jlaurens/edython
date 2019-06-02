@@ -387,7 +387,7 @@ eYo.Svg.prototype.brickDidRender = eYo.Do.nothing
  * @param {*} path
  * @param {*} def
  */
-eYo.Svg.prototype.updatePath_ = function (brick, path, def) {
+eYo.Svg.prototype.brickUpdatePath_ = function (brick, path, def) {
   if (path) {
     if (def) {
       try {
@@ -418,18 +418,18 @@ eYo.Svg.prototype.brickUpdateShape = function (brick) {
     return
   }
   if (brick.wrapped_) {
-    this.updatePath_(brick, svg.pathContour_)
-    this.updatePath_(brick, svg.pathShape_)
-    this.updatePath_(brick, svg.pathCollapsed_)
+    this.brickUpdatePath_(brick, svg.pathContour_)
+    this.brickUpdatePath_(brick, svg.pathShape_)
+    this.brickUpdatePath_(brick, svg.pathCollapsed_)
   } else {
-    this.updatePath_(brick, svg.pathContour_, this.pathContourDef_)
-    this.updatePath_(brick, svg.pathShape_, this.pathShapeDef_)
-    this.updatePath_(brick, svg.pathCollapsed_, this.pathCollapsedDef_)
+    this.brickUpdatePath_(brick, svg.pathContour_, this.pathContourDef_)
+    this.brickUpdatePath_(brick, svg.pathShape_, this.pathShapeDef_)
+    this.brickUpdatePath_(brick, svg.pathCollapsed_, this.pathCollapsedDef_)
   }
-  this.updatePath_(brick, svg.pathBBox_, this.pathBBoxDef_)
-  this.updatePath_(brick, svg.pathHilight_, this.pathHilightDef_)
-  this.updatePath_(brick, svg.pathSelect_, this.pathSelectDef_)
-  this.updatePath_(brick, svg.pathMagnet_, this.pathMagnetDef_)
+  this.brickUpdatePath_(brick, svg.pathBBox_, this.pathBBoxDef_)
+  this.brickUpdatePath_(brick, svg.pathHilight_, this.pathHilightDef_)
+  this.brickUpdatePath_(brick, svg.pathSelect_, this.pathSelectDef_)
+  this.brickUpdatePath_(brick, svg.pathMagnet_, this.pathMagnetDef_)
   if (brick.ui.someTargetIsMissing && !brick.isInFlyout) {
     goog.dom.classlist.add(svg.pathContour_, 'eyo-error')
   } else {

@@ -1717,7 +1717,7 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
     this.span.black = 0
     this.span.addSuite(t9k.span.l)
   } else if (m4t.isRight) {
-    this.span.resetPadding() && b.updateShape()
+    this.span.resetPadding() && b.ui.updateShape()
   }
   this.consolidateType()
   if (m4t.isInput && m4t.isSelected) {
@@ -2074,7 +2074,7 @@ eYo.Brick.prototype.footConnect = function (brick) {
  * @return {?eYo.Brick}  The connected brick, if any.
  */
 eYo.Brick.prototype.connectLast = function (bmt) {
-  var other = (bmt.magnets && bmt.out_m) || (bmt instanceof eYo.Magnet && bmt) || eYo.Brick.newComplete(this, bmt).out_m
+  var other = (bmt.magnets && bmt.out_m) || (bmt instanceof eYo.Magnet && bmt) || eYo.Brick.newReady(this, bmt).out_m
   if (other) {
     var m4t = this.lastInput.magnet
     if (m4t.checkType_(other)) {
@@ -2375,26 +2375,6 @@ eYo.Brick.prototype.someStatement = function (helper) {
 }
 
 /**
- * Create a new brick, with UI.
- * This is the expected way to create the brick.
- * There is a caveat due to proper timing in initializing the svg.
- * Whether bricks are headless or not is not clearly designed in Blockly.
- * If the model fits an identifier, then create an identifier
- * If the model fits a number, then create a number
- * If the model fits a string literal, then create a string literal...
- * This is headless and should not render until a makeUI message is sent.
- * @param {!*} owner  workspace or brick
- * @param {!String|Object} model
- * @param {?String|Object} id
- * @private
- */
-eYo.Brick.newReady = function (owner, model, id) {
-  var brick = eYo.Brick.newComplete(owner, model, id)
-  brick && brick.makeUI()
-  return brick
-}
-
-/**
  * Create a new brick.
  * This is the expected way to create the brick.
  * If the model fits an identifier, then create an identifier
@@ -2407,7 +2387,7 @@ eYo.Brick.newReady = function (owner, model, id) {
  * @param {?String|Object} id
  * @param {?eYo.Brick} id
  */
-eYo.Brick.newComplete = (() => {
+eYo.Brick.newReady = (() => {
   var processModel = (workspace, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
@@ -2492,7 +2472,7 @@ eYo.Brick.newComplete = (() => {
     var b3k = processModel(workspace, model, id)
     if (b3k) {
       b3k.consolidate()
-      b3k.makeUI(owner.hasUI || workspace.rendered)
+      owner.hasUI && b3k.makeUI()
     }
     return b3k
   }
@@ -2504,10 +2484,9 @@ eYo.Brick.newComplete = (() => {
  * This is a one shot function.
  * @param {boolean} headless  no op when false
  */
-eYo.Brick.prototype.makeUI = function (headless) {
-  if (headless === false || !this.workspace) {
-    return
-  }
+eYo.Brick.prototype.makeUI = function () {
+  this.makeUI = eYo.Do.nothing
+  delete this.disposeUI
   this.changeWrap(() => {
       this.makeUI = eYo.Do.nothing // one shot function
       delete this.disposeUI
@@ -2592,7 +2571,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
   eYo.Events.disableWrap(
     () => {
       var m4t, otherM4t
-      candidate = eYo.Brick.newComplete(this, model)
+      candidate = eYo.Brick.newReady(this, model)
       var fin = prepare => {
         eYo.Events.groupWrap(() => {
           eYo.Events.enableWrap(() => {
@@ -2625,7 +2604,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
                   p5e
                 }
               }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
-                var ans = eYo.Brick.newComplete(this, x.model)
+                var ans = eYo.Brick.newReady(this, x.model)
                 ans.setDataWithModel(x.model)
                 console.error('BRICK', ans)
                 return ans

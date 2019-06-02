@@ -295,8 +295,8 @@ Blockly.Xml.domToBrick = function (dom, workspace) {
  * @param {?string} id
  * @private
  */
-eYo.Brick.newComplete = (() => {
-  var newComplete = eYo.Brick.newComplete
+eYo.Brick.newReady = (() => {
+  var newReady = eYo.Brick.newReady
   return (owner, model, id) => {
     if (goog.isString(model)) {
       model = model.trim()
@@ -306,7 +306,7 @@ eYo.Brick.newComplete = (() => {
     } else if (model.getAttribute) {
       brick = eYo.Xml.domToBrick(model, owner)
     }
-    return brick || newComplete(owner, model, id)
+    return brick || newReady(owner, model, id)
   }
 }) ()
 
@@ -466,18 +466,18 @@ eYo.Xml.Literal.domToComplete = (() => {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:
       case eYo.T3.Expr.imagnumber:
-        return eYo.Brick.newComplete(workspace, eYo.T3.Expr.numberliteral, id)
+        return eYo.Brick.newReady(workspace, eYo.T3.Expr.numberliteral, id)
       case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        return eYo.Brick.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
+        return eYo.Brick.newReady(workspace, eYo.T3.Expr.shortliteral, id)
       case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        return eYo.Brick.newComplete(workspace, stmt_expected
+        return eYo.Brick.newReady(workspace, stmt_expected
           ? eYo.T3.Stmt.docstring_stmt
           : eYo.T3.Expr.longliteral, id)
       case eYo.T3.Expr.longbytesliteral:
-        return eYo.Brick.newComplete(workspace, eYo.T3.Expr.longliteral, id)
+        return eYo.Brick.newReady(workspace, eYo.T3.Expr.longliteral, id)
       }
     }
   }
@@ -499,7 +499,7 @@ eYo.Xml.Literal.domToComplete = (() => {
       // there was no text node to infer the type
       brick = newBrick(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
-    return brick || eYo.Brick.newComplete(workspace, eYo.T3.Expr.shortliteral, id)
+    return brick || eYo.Brick.newReady(workspace, eYo.T3.Expr.shortliteral, id)
   }
 }) ()
 
@@ -852,7 +852,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
           : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
-            var b3k = eYo.Brick.newComplete(workspace, type)
+            var b3k = eYo.Brick.newReady(workspace, type)
             var m4t = b3k && b3k.out_m
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
               ans = b3k
@@ -867,7 +867,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
           fallback = best.types[0]
         }
       }
-      ans || (ans = eYo.Brick.newComplete(workspace, fallback))
+      ans || (ans = eYo.Brick.newReady(workspace, fallback))
     }
   )
   if (ans) {
@@ -946,7 +946,7 @@ eYo.Xml.domToBrick = (() => {
               return
             }
           }
-          brick = eYo.Brick.newComplete(workspace, prototypeName, id)
+          brick = eYo.Brick.newReady(workspace, prototypeName, id)
         } else {
           if (!name) {
             name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
@@ -960,19 +960,20 @@ eYo.Xml.domToBrick = (() => {
             } else if (goog.isFunction(controller.domToBrick)) {
               return controller.domToBrick(dom, workspace, id)
             }
-            brick = eYo.Brick.newComplete(workspace, solid, id)
+            brick = eYo.Brick.newReady(workspace, solid, id)
           } else if ((controller = eYo.Brick.Manager.get(prototypeName))) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, workspace, id)
             } else if (goog.isFunction(controller.domToBrick)) {
               return controller.domToBrick(dom, workspace, id)
             }
-            brick = eYo.Brick.newComplete(workspace, prototypeName, id)
+            brick = eYo.Brick.newReady(workspace, prototypeName, id)
           }
           // Now create the brick, either solid or not
         }
         if (brick) {
           eYo.Xml.fromDom(brick, dom)
+          workspace.hasUI && brick.makeUI()
           return brick
         }
       }
@@ -1193,14 +1194,14 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
     var prototypeName = element.getAttribute(eYo.Key.EYO)
     var id = element.getAttribute('id')
     if (prototypeName === 'x') {
-      var brick = eYo.Brick.newComplete(owner, eYo.T3.Stmt.expression_stmt, id)
+      var brick = eYo.Brick.newReady(owner, eYo.T3.Stmt.expression_stmt, id)
       return brick
     } else if (['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
-      brick = eYo.Brick.newComplete(owner, eYo.T3.Stmt.augmented_assignment_stmt, id)
+      brick = eYo.Brick.newReady(owner, eYo.T3.Stmt.augmented_assignment_stmt, id)
       brick.operator_p = prototypeName
       return brick
     } else if (prototypeName === '=') {
-      brick = eYo.Brick.newComplete(owner, eYo.T3.Stmt.assignment_stmt, id)
+      brick = eYo.Brick.newReady(owner, eYo.T3.Stmt.assignment_stmt, id)
       brick.operator_p = prototypeName
       return brick
     }
@@ -1231,14 +1232,14 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
-      var b3k = eYo.Brick.newComplete(owner, type, id)
+      var b3k = eYo.Brick.newReady(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
       && (C9r = eYo.Brick.Manager.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
-        b3k = eYo.Brick.newComplete(owner, type, id)
+        b3k = eYo.Brick.newReady(owner, type, id)
     }
     return b3k
   }
@@ -1254,9 +1255,9 @@ eYo.Xml.Starred.domToComplete = function (element, owner) {
   var prototypeName = element.getAttribute(eYo.Key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === "*") {
-    var b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.star_expr, id)
+    var b3k = eYo.Brick.newReady(owner, eYo.T3.Expr.star_expr, id)
   } else if (prototypeName === "**") {
-    b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.or_expr_star_star, id)
+    b3k = eYo.Brick.newReady(owner, eYo.T3.Expr.or_expr_star_star, id)
   }
   return b3k
 }
@@ -1284,7 +1285,7 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
     } [prototypeName]
     if (t) {
       var id = element.getAttribute('id')
-      return eYo.Brick.newComplete(owner, t, id)
+      return eYo.Brick.newReady(owner, t, id)
     }
   }
 }
@@ -1303,7 +1304,7 @@ goog.provide('eYo.Xml.Group')
 //   if (attr === eYo.Brick.Stmt.else_part.prototype.xmlAttr()) {
 //     var type = eYo.T3.Stmt.else_part
 //     var id = element.getAttribute('id')
-//     return eYo.Brick.newComplete(owner, type, id)
+//     return eYo.Brick.newReady(owner, type, id)
 //   }
 // }
 
@@ -1321,17 +1322,17 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
   if (name === 'dict_comprehension') {
     // <x eyo="dict_comprehension" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="k" slot="key"></x><x eyo="identifier" name="d" slot="datum"></x></x>
     var id = element.getAttribute('id')
-    var b3k = eYo.Brick.newComplete(owner, eYo.T3.Expr.comprehension, id)
+    var b3k = eYo.Brick.newReady(owner, eYo.T3.Expr.comprehension, id)
     if (b3k) {
-      var kd = eYo.Brick.newComplete(owner, eYo.T3.Expr.key_datum)
+      var kd = eYo.Brick.newReady(owner, eYo.T3.Expr.key_datum)
       // the 'key' slot
       eYo.Do.forEachElementChild(element, child => {
         var name = child.getAttribute(eYo.Xml.SLOT)
         if (name === 'key') {
-          var dd = eYo.Brick.newComplete(owner, child)
+          var dd = eYo.Brick.newReady(owner, child)
           kd.target_b.connectLast(dd)
         } else if (name === 'datum') {
-          dd = eYo.Brick.newComplete(owner, child)
+          dd = eYo.Brick.newReady(owner, child)
           kd.annotated_s.connect(dd)
         }
       })
@@ -1358,7 +1359,7 @@ eYo.Xml.Call.domToComplete = function (element, owner) {
       ? eYo.T3.Expr.call_expr
       : eYo.T3.Stmt.call_stmt
     var id = element.getAttribute('id')
-    return eYo.Brick.newComplete(owner, type, id)
+    return eYo.Brick.newReady(owner, type, id)
   }
 }
 

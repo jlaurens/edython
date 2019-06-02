@@ -95,7 +95,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
     var parent
     eYo.Events.disableWrap(
       () => {
-        parent = eYo.Brick.newComplete(this, model)
+        parent = eYo.Brick.newReady(this, model)
       },
       () => {
         if (parent) {
@@ -143,7 +143,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
  */
 eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
-    var below = eYo.Brick.newComplete(this, belowPrototypeName)
+    var below = eYo.Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target
     var magnets = below.magnets

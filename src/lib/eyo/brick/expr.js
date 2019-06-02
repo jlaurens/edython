@@ -225,7 +225,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.Events.disableWrap(() => {
-    parent = eYo.Brick.newComplete(this, model)
+    parent = eYo.Brick.newReady(this, model)
   })
   if (!parent) {
     return parent

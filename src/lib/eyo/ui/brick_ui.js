@@ -657,7 +657,7 @@ eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
         }
         if (b.c !== c) {
           b.span.c = c
-          b.updateShape()
+          b.ui.updateShape()
         }
       })
     }
@@ -1153,7 +1153,7 @@ eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement =
         b3k.ui.isLastInStatement = isLastInStatement
       })
       io.common.ending.forEach(b3k => {
-        b3k.updateShape()
+        b3k.ui.updateShape()
         var m4t = b3k.ui.rightCaret
         if (m4t) {
           m4t.side = eYo.Key.RIGHT
