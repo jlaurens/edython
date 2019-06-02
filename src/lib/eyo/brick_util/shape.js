@@ -491,7 +491,7 @@ var initWithStatementBrick = function(brick, opt) {
   var r_xy = this.stmt_radius
   var r_c = r_xy / eYo.Unit.x
   var r_l = r_xy / eYo.Unit.y
-  var r_s = screen.rightSpan
+  var r_s = s.rightSpan
   if (r_s) {
     this.M(c - 1 / 2 + r_c)
     r_s.header && (this.V(r_s.header))

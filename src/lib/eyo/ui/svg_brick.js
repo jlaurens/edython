@@ -928,7 +928,7 @@ eYo.Svg.prototype.brickDisplayedSet = function (brick, visible) {
  * @private
  */
 eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
-  var g = brick.dom.groupSharp_
+  var g = brick.dom.svg.groupSharp_
   if (visible) {
     var children = goog.dom.getChildren(g)
     var length = children.length
@@ -954,8 +954,10 @@ eYo.Svg.prototype.brickDrawSharp = function (brick, visible) {
       g.removeChild(text)
     }
     g.setAttribute('transform', `translate(${io.cursor.x},${eYo.Padding.t})`)
+    g.style.display = 'block'
   } else {
     goog.dom.removeChildren(g)
+    g.style.display = 'none'
   }
 }
 

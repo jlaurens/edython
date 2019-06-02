@@ -242,10 +242,11 @@ eYo.Svg.prototype.fieldTextCreate = function (field) {
  * @param {!Object} field  the node the driver acts on
  */
 eYo.Svg.prototype.fieldTextUpdate = function (field) {
-  // field.dom.textElement_.textContent = field.text
-  goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
+  var text = field.dom.svg.textElement_
+  // text.textContent = field.text
+  goog.dom.removeChildren(/** @type {!Element} */ text)
   var textNode = document.createTextNode(field.text)
-  field.dom.textElement_.appendChild(textNode)
+  text.appendChild(textNode)
 }
 
 /**

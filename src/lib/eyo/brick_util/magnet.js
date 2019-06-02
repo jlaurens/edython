@@ -94,18 +94,18 @@ Object.defineProperties(eYo.Magnets.prototype, {
  */
 eYo.Magnets.prototype.dispose = function () {
   if (this.out_) {
-    this.out_ && (this.out_.dispose())
+    this.out_.dispose()
     this.out_ = undefined
   } else {
-    this.head_ && (this.head_.dispose())
+    this.head_ && this.head_.dispose()
     this.head_ = undefined
-    this.left_.dispose()
+    this.left_ && this.left_.dispose()
     this.left_ = undefined
-    this.right_.dispose()
+    this.right_ && this.right_.dispose()
     this.right_ = undefined
-    this.suite_ && (this.suite_.dispose())
+    this.suite_ && this.suite_.dispose()
     this.suite_ = undefined
-    this.foot_ && (this.foot_.dispose())
+    this.foot_ && this.foot_.dispose()
     this.foot_ = undefined
   }
 }
@@ -293,7 +293,7 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
       min--
     }
     var max = bestGuess
-    while (max < db.length && db[max].y === yPos) {
+    while (max < db.length && db[max].y === y) {
       if (db[max] === magnet) {
         return max
       }

@@ -10,21 +10,28 @@ setTimeout(() => {
 
 eYo.Test = Object.create(null)
 
-eYo.temp = (() => {
-  var options = {
-    collapse : true,
-    disable : true,
-    trashcan : false,
-    css : true,
-    scrollbars : true,
-    sounds : false,
-    container: 'eyo-factory'
-  };
-  /* Inject your workspace */
-  eYo.App.makeFactory(options)
-})()
+eYo.Test.makeFactory = options => {
+  if (!eYo.App.workspace) {
+    options = options || {}
+    goog.mixin(options, {
+      collapse : true,
+      disable : true,
+      trashcan : false,
+      css : true,
+      scrollbars : true,
+      sounds : false,
+      container: 'eyo-factory'
+    })
+    if (options.container && (document.getElementById(options.container) ||
+    document.querySelector(options.container))) {
+      eYo.App.makeFactory(options)
+    }
+  }
+}
 
-chai.assert(eYo.App.workspace, 'NO MAIN WORKSPACE')
+before(function() {
+  eYo.Test.makeFactory()
+})
 
 eYo.Test.setItUp = () => {
   eYo.App.workspace.clearUndo()

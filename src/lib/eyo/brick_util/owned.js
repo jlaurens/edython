@@ -18,26 +18,27 @@ goog.require('eYo')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Input')
-
-goog.require('eYo')
-
+goog.forwardDeclare('eYo.Magnet')
 
 /**
  * Class for a basic object.
  * 
- * @param {!eYo.Brick|eYo.Input|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {!eYo.Brick|eYo.Input|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.Owned = function (bsi) {
-  this.owner_ = bsi
-  if (bsi instanceof eYo.Input) {
-    this.input_ = bsi
-    this.brick_ = bsi.brick
-  } else if (bsi instanceof eYo.Slot) {
-    this.slot_ = bsi
-    this.brick_ = bsi.brick
+eYo.Owned = function (bsim) {
+  this.owner_ = bsim
+  if (bsim instanceof eYo.Input) {
+    this.input_ = bsim
+    this.brick_ = bsim.brick
+  } else if (bsim instanceof eYo.Slot) {
+    this.slot_ = bsim
+    this.brick_ = bsim.brick
+  } else if (bsim instanceof eYo.Magnet) {
+    this.magnet_ = bsim
+    this.brick_ = bsim.brick
   } else {
-    this.brick_ = bsi
+    this.brick_ = bsim
   }
 }
 
@@ -45,13 +46,15 @@ eYo.Owned = function (bsi) {
  * Dispose of the ressources.
  */
 eYo.Owned.prototype.dispose = function () {
-  this.owner_ = this.brick_ = this.slot_ = this.input_ = null
+  this.owner_ = this.brick_ = this.slot_ = this.input_ = this.magnet_ = null
 }
 
 // private properties with default values
 Object.defineProperties(eYo.Owned.prototype, {
+  magnet_: { value: undefined, writable: true },
   slot_: { value: undefined, writable: true },
   input_: { value: undefined, writable: true },
+  brick_: { value: undefined, writable: true },
 })
 
 // public computed properties
@@ -77,6 +80,15 @@ Object.defineProperties(eYo.Owned.prototype, {
   },
   /**
    * @readonly
+   * @type {eYo.Slot}  The eventual slot containing the object
+   */
+  slot: {
+    get () {
+      return this.slot_
+    }
+  },
+  /**
+   * @readonly
    * @type {eYo.Input}  The eventual input containing the object
    */
   input: {
@@ -86,11 +98,20 @@ Object.defineProperties(eYo.Owned.prototype, {
   },
   /**
    * @readonly
-   * @type {eYo.Slot}  The eventual slot containing the object
+   * @type {eYo.Input}  The eventual input containing the object
    */
-  slot: {
+  magnet: {
     get () {
-      return this.slot_
+      return this.magnet_
+    }
+  },
+  /**
+   * @readonly
+   * @type {eYo.Workspace}  The workspace...
+   */
+  factory: {
+    get () {
+      return this.brick.workspace.factory
     }
   },
   /**
@@ -117,8 +138,7 @@ Object.defineProperties(eYo.Owned.prototype, {
    */
   ui_driver: {
     get () {
-      var ui = this.ui
-      return ui && ui.driver
+      return this.hasUI && this.factory.ui_driver
     }
   },
 })

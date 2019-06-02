@@ -100,7 +100,7 @@ Object.defineProperties(eYo.Events.BrickBase.prototype, {
  * @constructor
  */
 eYo.Events.BrickChange = function(brick, element, name, oldValue, newValue) {
-  eYo.Events.Change.superClass_.constructor.call(this, brick)
+  eYo.Events.BrickChange.superClass_.constructor.call(this, brick)
   this.element = element
   this.name = name
   this.oldValue = oldValue

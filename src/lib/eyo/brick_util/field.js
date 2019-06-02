@@ -25,17 +25,19 @@ goog.require('goog.asserts');
 
 /**
  * Abstract class for text fields.
- * @param {!eYo.Brick|eYo.Slot|eYo.Input} bsi The owner of the field.
+ * @param {!eYo.Brick|eYo.Slot|eYo.Input|eYo.Magnet} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.Field = function (bsi, name, text) {
-  eYo.Field.superClass_.constructor.call(this, bsi)
+eYo.Field = function (bsim, name, text) {
+  eYo.Field.superClass_.constructor.call(this, bsim)
   this.name_ = name
   this.size_ = new eYo.Size()
   this.text_ = text
   this.reentrant_ = {}
-  Object.defineProperty(bsi, `${name}_f`, { value: this})
+  Object.defineProperty(bsim, `${name}_f`, { value: this})
+  this.disposeUI = eYo.Do.nothing
+  bsim.hasUI && this.makeUI()
 }
 goog.inherits(eYo.Field, eYo.Owned)
 

@@ -55,9 +55,9 @@ eYo.Span = function (brick) {
   this.c_min_init_ = brick.wrapped_
     ? 0
     : brick.isGroup
-      ? 2 * eYo.Span.INDENT
+      ? 2 * eYo.Span.INDENT + 1
       : brick.isStmt
-        ? eYo.Span.INDENT
+        ? eYo.Span.INDENT + 1
         : 2
   this.c_min_ = this.c_min_init_
   this.c_ = this.c_min_ + this.c_padding
@@ -147,7 +147,6 @@ Object.defineProperties(eYo.Span.prototype, {
     }
   },
   /**
-   * @readonly
    * @property {number} c_padding - The extra padding at the right
    */
   c_padding: {
@@ -156,6 +155,61 @@ Object.defineProperties(eYo.Span.prototype, {
     },
     set (newValue) {
       this.setPadding(newValue)
+    }
+  },
+  /**
+   * @property {number} right  The number of right columns
+   */
+  right: {
+    value: 0,
+    writable: true
+  },
+  /**
+   * The main count is the number of main lines in statements.
+   * A statement has one main line in general.
+   * When there is a doc string inside the statement,
+   * the main line might be bigger:
+   * ```
+   * print('abc')
+   * ```
+   * has exactly one main line whereas
+   * ```
+   * print('''foo
+   * bar''')
+   * ```
+   * has exactly two main lines.
+   * When there is more than one main line,
+   * the horizontal siblings may have header and footer counts.
+   * @property {number} main - The number of main lines
+   */
+  main: {
+    get () {
+      return this.main_ // 1 or more
+    },
+    set (newValue) {
+      this.addMain(newValue - this.main_)
+    }
+  },
+  /** 
+   * @property {number} header - The number of header lines
+   */
+  header: {
+    get () {
+      return this.header_
+    },
+    set (newValue) {
+      this.addHeader(newValue - this.header_)
+    }
+  },
+  /**
+   * @property {number} footer - The number of footer lines
+   */
+  footer: {
+    get () {
+      return this.footer_
+    },
+    set (newValue) {
+      this.addFooter(newValue - this.footer_)
     }
   },
   /**
@@ -186,49 +240,6 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.height
     }
-  },
-  /**
-   * The main count is the number of main lines in statements.
-   * A statement has one main line in general.
-   * When there is a doc string inside the statement,
-   * the main line might be bigger:
-   * ```
-   * print('abc')
-   * ```
-   * has exactly one main line whereas
-   * ```
-   * print('''foo
-   * bar''')
-   * ```
-   * has exactly two main lines.
-   * When there is more than one main line,
-   * the horizontal siblings may have header and footer counts.
-   * @readonly
-   * @property {number} main - The number of main lines
-   */
-  main: {
-    get () {
-      return this.main_ // 1 or more
-    },
-    set (newValue) {
-      this.addMain(newValue - this.main_)
-    }
-  },
-  /**
-   * @readonly
-   * @property {number} footer - The number of footer lines
-   */
-  footer: {
-    get () {
-      return this.footer_
-    },
-    set (newValue) {
-      this.addFooter(newValue - this.footer_)
-    }
-  },
-  right: {
-    value: 0,
-    writable: true
   }
 })
 
@@ -262,7 +273,7 @@ Object.defineProperties(eYo.Span.prototype, {
   },
   /**
    * If we have a suite, we do not have a header nor a footer.
-   * It is the responsibility of tha caller to verify that
+   * It is the responsibility of the caller to verify that
    * there is no right block, except a one line comment.
    * @readonly
    * @property {number} suite - The number of suite lines
@@ -273,18 +284,6 @@ Object.defineProperties(eYo.Span.prototype, {
     },
     set (newValue) {
       this.addSuite(newValue - this.suite_)
-    }
-  },
-  /** 
-   * @readonly
-   * @property {number} header - The number of header lines
-   */
-  header: {
-    get () {
-      return this.header_
-    },
-    set (newValue) {
-      this.addHeader(newValue - this.header_)
     }
   },
 })
@@ -361,7 +360,8 @@ eYo.Span.prototype.resetPadding = function () {
 eYo.Span.prototype.resetC = function () {
   this.c_min_ = this.c_min_init_
   this.c_padding_ = 0
-  this.c_ = this.c_min_ + this.c_padding_
+  var c = this.c_min_ + this.c_padding_
+  this.addC(c - this.c_)
 }
 
 /**
@@ -371,6 +371,9 @@ eYo.Span.prototype.resetC = function () {
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
 eYo.Span.prototype.addC = function (delta) {
+  if (this.c_min_ + delta < this.c_min_init_) {
+    delta = this.c_min_init_ - this.c_min_
+  }
   if (delta) {
     this.c_min_ += delta
     this.c_ += delta
@@ -380,6 +383,18 @@ eYo.Span.prototype.addC = function (delta) {
         parent.addC(delta)
       }
     }
+  }
+}
+
+/**
+ * Change the number of lines.
+ * This may occur at initialization time, when fields are edited, when input bricks are added, removed or edited.
+ * The suite bricks, if any, influence the padding.
+ * @param {Number} delta  the difference from the old value to value and the old one.
+ */
+eYo.Span.prototype.addL = function (delta) {
+  if (delta) {
+    this.l_ += delta
   }
 }
 

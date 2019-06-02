@@ -604,10 +604,7 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   isExpr: {
-    get () {
-      console.log('BRICK IS NOT AN EXPRESSION')
-      return false
-    }
+    value: false
   },
   isStmt: {
     value: false
