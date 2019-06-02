@@ -115,7 +115,7 @@ describe('Scan(COMMENT)', function() {
       'ENDMARKER'
     )
     tester.test()
-    assert(tester.scan.last.start_string === undefined, 'Unexpected comment')
+    assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
   });
   it('TYPE_IGNORE', function() {
     var tester = new Tester(
@@ -124,7 +124,7 @@ describe('Scan(COMMENT)', function() {
       'ENDMARKER'
     )
     tester.test()
-    assert(tester.scan.last.start_string === undefined, 'Unexpected comment')
+    assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
   });
 });
 

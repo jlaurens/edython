@@ -1,8 +1,8 @@
 describe('Enclosure(Basic)', function () {
   it(`Prepare`, function() {
-    chai.assert(eYo.Key.PAR !== undefined, `MISSING eYo.Key.PAR`)
-    chai.assert(eYo.Key.SQB !== undefined, `MISSING eYo.Key.SQB`)
-    chai.assert(eYo.Key.BRACE !== undefined, `MISSING eYo.Key.BRACE`)
+    chai.assert(eYo.Key.PAR !== eYo.VOID, `MISSING eYo.Key.PAR`)
+    chai.assert(eYo.Key.SQB !== eYo.VOID, `MISSING eYo.Key.SQB`)
+    chai.assert(eYo.Key.BRACE !== eYo.VOID, `MISSING eYo.Key.BRACE`)
   })
   ;[
     ['enclosure', 'PAR', 'parenth_form'],

@@ -515,7 +515,7 @@ describe('Primary slots', function() {
         chai.assert(all === null, `MISSING ALL NULL ${da.type}, ${da.subtype}`)
       } else {
         var f = (ra, str) => {
-          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str || ''}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra !== eYo.VOID, `UNEXPECTED UNDEFINED ${str || ''}: ${da.type}, ${da.subtype}`)
           chai.assert(ra !== null, `UNEXPECTED NULL ${str || ''}: ${da.type}, ${da.subtype}`)
           chai.assert(ra.length !== 0, `MISSING ${str || ''}: ${da.type}, ${da.subtype}`)
         }
@@ -575,7 +575,7 @@ describe('Primary slots', function() {
         chai.assert(all === null, `MISSING ALL NULL ${da.type}, ${da.subtype}`)
       } else {
         var f = (ra, str) => {
-          chai.assert(ra !== undefined, `UNEXPECTED UNDEFINED ${str}: ${da.type}, ${da.subtype}`)
+          chai.assert(ra !== eYo.VOID, `UNEXPECTED UNDEFINED ${str}: ${da.type}, ${da.subtype}`)
           chai.assert(ra !== null, `UNEXPECTED NULL ${str}: ${da.type}, ${da.subtype}`)
           chai.assert(ra.length !== 0, `MISSING ${str}: ${da.type}, ${da.subtype}`)
         }

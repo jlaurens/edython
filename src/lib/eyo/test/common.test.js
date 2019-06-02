@@ -2,7 +2,6 @@ setTimeout(() => {
   describe('PREPARE', function() {
     it('Blockly', function() {
       chai.assert(Blockly, `MISSING Blockly`)
-      chai.assert(eYo.App.board, `MISSING eYo.App.board`)
       chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
@@ -204,7 +203,7 @@ eYo.Test.data_key = (brick, key, value) => {
   var dd = d[`${key}_d`]
   chai.assert(d === dd, `NO DATA SHORTCUT FOR ${key} in ${brick.type}`)
   chai.assert(d.get() === d[`${key}_p`], `NO VALUE SHORTCUT FOR ${key} in ${brick.type}`)
-  if (value !== undefined) {
+  if (value !== eYo.VOID) {
     var old = d.get()
     d.set(value)
     chai.assert(d.get() === value, `NO CHANGE FOR ${key} in ${brick.type}: ${d.get()} === ${value}`)

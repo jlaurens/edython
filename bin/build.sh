@@ -254,6 +254,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/app/board_dragger.js" \
 --js "src/lib/eyo/app/desktop.js" \
 --js "src/lib/eyo/brick_util/brick_dragger.js" \
+--js "src/lib/eyo/core/change.js" \
 --js "src/lib/eyo/app/clipboard.js" \
 --js "src/lib/eyo/core/decorate.js" \
 --js "src/lib/eyo/app/desk.js" \
