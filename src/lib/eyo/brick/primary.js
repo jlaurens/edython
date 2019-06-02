@@ -16,6 +16,8 @@ goog.provide('eYo.Brick.Primary')
 goog.require('eYo.Brick.Expr')
 goog.require('eYo.Protocol')
 
+goog.require('eYo.Change')
+
 goog.require('eYo.Model.stdtypes')
 goog.require('eYo.Model.functions')
 
@@ -591,12 +593,12 @@ eYo.Brick.Expr.makeSubclass('primary', {
         var item = p.p5e && p.p5e.item
         if (item) {
           if (item.type === 'method') {
-            this.change(1)
+            this.doChange(1)
             return
           }
         }
         if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.named_attributeref || type === eYo.T3.Expr.dotted_name_as || type === eYo.T3.Expr.dotted_name || type === eYo.T3.Expr.parent_module) {
-          this.change(1)
+          this.doChange(1)
         }
       },
       fromField: /** @suppress {globalThis} */ function (value) {
@@ -801,36 +803,36 @@ eYo.Brick.Expr.makeSubclass('primary', {
         if (type === eYo.T3.Expr.call_expr ||
             type === eYo.T3.Expr.named_call_expr ||
             type === eYo.T3.Stmt.call_stmt) {
-          this.change(eYo.Key.CALL_EXPR)
+          this.doChange(eYo.Key.CALL_EXPR)
         } else if (type === eYo.T3.Expr.slicing ||
             type === eYo.T3.Expr.named_slicing ||
             type === eYo.T3.Expr.subscription ||
             type === eYo.T3.Expr.named_subscription) {
-          this.change(eYo.Key.SLICING)
+          this.doChange(eYo.Key.SLICING)
         } else if (type === eYo.T3.Expr.dotted_name_as ||
             type === eYo.T3.Expr.identifier_as ||
             type === eYo.T3.Expr.expression_as) {
-          this.change(eYo.Key.ALIASED)
+          this.doChange(eYo.Key.ALIASED)
         } else if (type === eYo.T3.Expr.identifier_annotated ||
           type === eYo.T3.Expr.augtarget_annotated ||
           type === eYo.T3.Expr.key_datum) {
-          this.change(eYo.Key.ANNOTATED)
+          this.doChange(eYo.Key.ANNOTATED)
           b3k.annotated_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_valued ||
             type === eYo.T3.Expr.assignment_chain) {
           if (this.value_ !== eYo.Key.TARGET_VALUED) {
-            this.change(eYo.Key.TARGET_VALUED)
+            this.doChange(eYo.Key.TARGET_VALUED)
           }
           b3k.value_d.required_from_type = true
         } else if (type === eYo.T3.Expr.identifier_annotated_valued) {
-          this.change(eYo.Key.ANNOTATED_VALUED)
+          this.doChange(eYo.Key.ANNOTATED_VALUED)
           b3k.annotated_d.required_from_type = true
           b3k.value_d.required_from_type = true
         } else if (type === eYo.T3.Expr.named_expr) {
-          this.change(eYo.Key.COL_VALUED)
+          this.doChange(eYo.Key.COL_VALUED)
           b3k.value_d.required_from_type = true
         } else {
-          this.change(eYo.Key.NONE)
+          this.doChange(eYo.Key.NONE)
         }
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {

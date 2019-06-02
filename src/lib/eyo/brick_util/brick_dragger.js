@@ -15,6 +15,7 @@
 goog.provide('eYo.BrickDragger')
 
 goog.require('eYo')
+goog.require('eYo.Change')
 
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
@@ -56,13 +57,13 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
       return this.xyStart_
     }
   },
-  cache: {
+  change: {
     get () {
-      return this.gesture_.cache
+      return this.gesture_.change
     }
   },
   xyDelta: {
-    get: eYo.Change.decorate(function () {
+    get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
       var delta = this.gesture_.deltaXY_
       if (delta && this.transformCorrection_) {
         delta = this.transformCorrection_(delta)

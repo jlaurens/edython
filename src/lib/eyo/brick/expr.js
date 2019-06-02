@@ -14,6 +14,7 @@
 goog.provide('eYo.Brick.Expr')
 
 goog.require('eYo.Brick')
+goog.require('eYo.Change')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Decorate')

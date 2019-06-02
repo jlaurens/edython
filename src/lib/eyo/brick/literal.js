@@ -239,9 +239,9 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.shortformattedliteral) {
-          this.change(`f''`)
+          this.doChange(`f''`)
         } else {
-          this.change(`''`)
+          this.doChange(`''`)
         }
       },
       xml: {
@@ -442,9 +442,9 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Expr.longformattedliteral) {
-          this.change(`f''''''`)
+          this.doChange(`f''''''`)
         } else {
-          this.change(`''''''`)
+          this.doChange(`''''''`)
         }
       }
     }

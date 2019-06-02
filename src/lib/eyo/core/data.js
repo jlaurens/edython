@@ -163,7 +163,7 @@ Object.defineProperties(eYo.Data.prototype, {
         newValue = validator.call(this, newValue)
       }
       if (this.incog_ !== newValue) {
-        this.brick_.change.wrap(
+        this.change.wrap(
           () => { // catch `this`
             this.incog_ = newValue
             this.slot && (this.slot.incog = newValue)
@@ -204,7 +204,7 @@ eYo.Data.prototype.get = function () {
 eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
   var oldValue = this.value_
   if (oldValue !== newValue) {
-    this.brick_.changeBegin()
+    this.change.begin()
     this.beforeChange(oldValue, newValue)
     try {
       if (newValue === eYo.Key.Comment) {
@@ -217,7 +217,7 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
       throw err
     } finally {
       this.afterChange(oldValue, newValue)
-      this.brick_.changeEnd() // may render
+      this.change.end() // may render
     }
   }
 }
@@ -419,7 +419,7 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
     if (f) {
       eYo.Decorate.whenAns(f.apply(this, arguments), ans => {
-        this.change(ans, validate)
+        this.doChange(ans, validate)
       })
       return
     }
@@ -431,7 +431,7 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
     }
   }
   if (!validate) {
-    this.change(txt, false)
+    this.doChange(txt, false)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
     if (!v7d || !goog.isDef((v7d = v7d.validated))) {
@@ -488,7 +488,7 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
  * @param {Object} do_it
  * @return eYo.VOID
  */
-eYo.Data.decorateChange = function (key, do_it) {
+eYo.Data.decoratedChange = function (key, do_it) {
   var model_lock = 'model_' + key
   return function(before, after) {
     if (!this.reentrant_[model_lock]) {
@@ -528,7 +528,7 @@ eYo.Data.decorateChange = function (key, do_it) {
  * @param {Object} newValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.willChange = eYo.Data.decorateChange('willChange')
+eYo.Data.prototype.willChange = eYo.Data.decoratedChange('willChange')
 
 /**
  * When unchange the value of the property.
@@ -539,7 +539,7 @@ eYo.Data.prototype.willChange = eYo.Data.decorateChange('willChange')
  * @param {Object} oldValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.didUnchange = eYo.Data.decorateChange('didUnchange')
+eYo.Data.prototype.didUnchange = eYo.Data.decoratedChange('didUnchange')
 
 /**
  * Did change the value of the property.
@@ -549,7 +549,7 @@ eYo.Data.prototype.didUnchange = eYo.Data.decorateChange('didUnchange')
  * @param {Object} newValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.didChange = eYo.Data.decorateChange('didChange')
+eYo.Data.prototype.didChange = eYo.Data.decoratedChange('didChange')
 
 /**
  * Will unchange the value of the property.
@@ -560,7 +560,7 @@ eYo.Data.prototype.didChange = eYo.Data.decorateChange('didChange')
  * @param {Object} newValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.willUnchange = eYo.Data.decorateChange('willUnchange')
+eYo.Data.prototype.willUnchange = eYo.Data.decoratedChange('willUnchange')
 
 /**
  * Before the didChange message is sent.
@@ -573,7 +573,7 @@ eYo.Data.prototype.willUnchange = eYo.Data.decorateChange('willUnchange')
  * @param {Object} newValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.isChanging = eYo.Data.decorateChange('isChanging')
+eYo.Data.prototype.isChanging = eYo.Data.decoratedChange('isChanging')
 
 /**
  * Before the didUnchange message is sent.
@@ -586,7 +586,7 @@ eYo.Data.prototype.isChanging = eYo.Data.decorateChange('isChanging')
  * @param {Object} newValue
  * @return eYo.VOID
  */
-eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
+eYo.Data.prototype.isUnchanging = eYo.Data.decoratedChange('isUnchanging')
 
 /**
  * Before change the value of the property.
@@ -857,7 +857,7 @@ eYo.Data.prototype.save = function (element, opt) {
         var p9r = field.placeholder
         if (p9r && p9r.length) {
           txt = p9r
-          this.change(txt)
+          this.doChange(txt)
         }
       }
     }

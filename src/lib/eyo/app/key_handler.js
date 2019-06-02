@@ -132,7 +132,7 @@ eYo.KeyHandler = (() => {
       }
       if (eyo.forEachData(d => {
         if (!d.incog && d.validate(model)) {
-          d.change(model)
+          d.doChange(model)
           return true
         }
       })) {

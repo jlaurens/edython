@@ -80,13 +80,13 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
         if (type === eYo.T3.Stmt.expression_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
-          this.change(eYo.Key.EXPRESSION)
+          this.doChange(eYo.Key.EXPRESSION)
         } else if (type === eYo.T3.Stmt.annotated_stmt) {
-          this.change(eYo.Key.ANNOTATED)
+          this.doChange(eYo.Key.ANNOTATED)
         } else if (type === eYo.T3.Stmt.annotated_assignment_stmt) {
-          this.change(eYo.Key.ANNOTATED_VALUED)
+          this.doChange(eYo.Key.ANNOTATED_VALUED)
         } else if (this.value_ !== eYo.Key.TARGET_VALUED) {
-          this.change(eYo.Key.TARGET_VALUED)
+          this.doChange(eYo.Key.TARGET_VALUED)
         }
       },
       consolidate: /** @suppress {globalThis} */ function () {
@@ -95,9 +95,9 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
         if (t && (t.type === eYo.T3.Expr.identifier_annotated || t.type === eYo.T3.Expr.augtarget_annotated)) {
           // no 2 annotations
           if (b3k.variant_p === eYo.Key.ANNOTATED) {
-            this.change(eYo.Key.TARGET)
+            this.doChange(eYo.Key.TARGET)
           } else if (b3k.variant_p === eYo.Key.ANNOTATED_VALUED) {
-            this.change(eYo.Key.TARGET_VALUED)
+            this.doChange(eYo.Key.TARGET_VALUED)
           }
         }
       }
@@ -174,7 +174,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
       validate: true,
       fromType: /** @suppress {globalThis} */ function (type) {
         if (type === eYo.T3.Stmt.augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
-          this.change('+=')
+          this.doChange('+=')
         }
       },
       xml: false

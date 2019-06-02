@@ -15,9 +15,11 @@ goog.provide('eYo.Brick.Try')
 
 goog.require('eYo.Brick.Group')
 
-goog.require('eYo.Msg')
+goog.require('eYo.Change')
 
-goog.require('goog.dom')
+goog.forwardDeclare('eYo.Msg')
+
+goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.

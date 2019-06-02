@@ -186,6 +186,8 @@ eYo.Gesture = function(e, board) {
    */
   this.startDistance_ = 0;
 
+  this.change_ = new eYo.Change(this)
+
 }
 
 Object.defineProperties(eYo.Gesture, {
@@ -298,6 +300,7 @@ eYo.Gesture.prototype.dispose = function() {
   this.board_ = this.creatorBoard_ = this.flyout_ = null
   this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearGesture())
   this.boardDragger_ && (this.boardDragger_ = this.boardDragger_.clearGesture())
+  this.change_ = null
 }
 
 /**

@@ -15,13 +15,14 @@ goog.provide('eYo.Brick.Stmt')
 
 goog.require('eYo.Brick')
 
+goog.require('eYo.Change')
 
-goog.require('eYo.XRE')
-goog.require('eYo.Msg')
-goog.require('eYo.Brick.Operator')
-goog.require('eYo.Brick.List')
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.Msg')
+goog.forwardDeclare('eYo.Brick.Operator')
+goog.forwardDeclare('eYo.Brick.List')
 
-goog.require('goog.dom');
+goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, statement brick.
@@ -183,9 +184,9 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
         if (type === eYo.T3.Stmt.blank_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
-          this.change(eYo.Key.BLANK)
+          this.doChange(eYo.Key.BLANK)
         } else {
-          this.change(eYo.Key.COMMENT)
+          this.doChange(eYo.Key.COMMENT)
         }
       }
     },

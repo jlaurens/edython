@@ -67,12 +67,12 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         var item = p && p.p5e && p.p5e.item
         if (item) {
           if (item.type === 'method') {
-            this.change(1)
+            this.doChange(1)
             return
           }
         }
         if (type === eYo.T3.Expr.attributeref || type === eYo.T3.Expr.dotted_name || type === eYo.T3.Expr.parent_module) {
-          this.change(1)
+          this.doChange(1)
         }
       },
       fromField: /** @suppress {globalThis} */ function (value) {

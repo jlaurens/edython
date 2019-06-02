@@ -15,6 +15,8 @@ goog.provide('eYo.Brick.UI')
 
 goog.require('eYo.Brick')
 
+goog.require('eYo.Change')
+
 goog.forwardDeclare('eYo.Driver')
 goog.forwardDeclare('eYo.Svg.Brick')
 
