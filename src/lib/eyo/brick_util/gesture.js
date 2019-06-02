@@ -252,7 +252,7 @@ Object.defineProperties(eYo.Gesture.prototype, {
         do {
           candidate = brick
         } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
-        this.startBlock_ = candidate
+        this.startBrick_ = candidate
         candidate.isInFlyout && (candidate = candidate.root)
         this.targetBrick_ = candidate
       }

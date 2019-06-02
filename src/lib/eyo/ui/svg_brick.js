@@ -413,7 +413,7 @@ eYo.Svg.prototype.brickUpdatePath_ = function (brick, path, def) {
  * @private
  */
 eYo.Svg.prototype.brickUpdateShape = function (brick) {
-  var svg = brick.dom
+  var svg = brick.dom.svg
   if (brick.ui.mayBeLast || !svg.pathContour_) {
     return
   }

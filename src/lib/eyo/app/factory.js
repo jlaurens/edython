@@ -175,5 +175,5 @@ eYo.Factory.prototype.resize = function() {
  * (e.g. on a window resize/device orientation change).
 */
 eYo.Factory.prototype.xyElementInFactory = function(element) {
-  this.ui_driver_.factoryXYElement(this, element)
+  return this.ui_driver_.factoryXYElement(this, element)
 }

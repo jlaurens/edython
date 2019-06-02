@@ -20,9 +20,10 @@ goog.require('eYo')
  * The return function will test if `this.reentrant_[key]` exists.
  * @param {!string} key
  * @param {!function} f
- * @return An object which `ans` property is the value returned by f when called.
+ * @param {?Boolean} raw
+ * @return {Object | *} An object which `ans` property is the value returned by f when called. When `raw` is true, the value returned by f is returned.
  */
-eYo.Decorate.reentrant_method = function(key, f) {
+eYo.Decorate.reentrant_method = function(key, f, raw) {
   return (!this || !this.reentrant_ || !this.reentrant_[key])
     && (goog.isFunction(f))
       && function() {
@@ -30,13 +31,15 @@ eYo.Decorate.reentrant_method = function(key, f) {
           return {}
         }
         this.reentrant_[key] = true
+        var ans
         try {
-          return {ans: f.apply(this, arguments)}
+          ans = f.apply(this, arguments)
         } catch (err) {
           console.error(err)
           throw err
         } finally {
           this.reentrant_[key] = false
+          return raw ? ans : {ans: ans}
         }
       }
 }

@@ -318,7 +318,7 @@ eYo.Svg.getScale_ = function(element) {
     var transformComponents =
         transform.match(eYo.Svg.getScale_REGEXP_)
     if (transformComponents && transformComponents[0]) {
-      scale = parseFloat(transformComponents[0])
+      scale = parseFloat(transformComponents[1])
     }
   }
   return scale

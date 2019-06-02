@@ -32,11 +32,20 @@ goog.forwardDeclare('goog.math.Coordinate')
  */
 eYo.BrickDragger = function(destination) {
   this.destination_ = destination
-  this.disposeUI = eYo.Do.nothing
-  destination.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.BrickDragger.prototype, {
+  brick_: {
+    get () {
+      return this.brick__
+    },
+    set (newValue) {
+      if (newValue && newValue.ans) {
+        throw 'UNEXPECTED'
+      }
+      this.brick__ = newValue
+    }
+  },
   xyDelta_: {
     get () {
       var delta = this.gesture_.deltaXY_
@@ -56,7 +65,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
 Object.defineProperties(eYo.BrickDragger.prototype, {
   factory: {
     get () {
-      return this.workspace_.factory
+      return this.destination_.factory
     }
   },
   destination: {
@@ -102,7 +111,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
      * drag radius is exceeded.  It should be called no more than once per gesture.
      * If a brick should be dragged from the flyout this function creates the new
      * brick on the main workspace and updates targetBrick_ and workspace_.
-     * @return {boolean} True if a brick is being dragged from the flyout.
+     * @return {boolean} destination_ if a brick is being dragged from the flyout.
      * @private
      */
     // Disabled bricks may not be dragged from the flyout.
@@ -327,7 +336,7 @@ eYo.BrickDragger.prototype.connect = function() {
  * @package
  */
 eYo.BrickDragger.prototype.update = function() {
-  this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
+  var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.Workspace.SNAP_RADIUS
@@ -342,7 +351,6 @@ eYo.BrickDragger.prototype.update = function() {
   if (oldTarget && oldTarget != this.target_) {
     oldTarget.ui.removeBrickHilight_()
   }
-
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
@@ -356,7 +364,7 @@ eYo.BrickDragger.prototype.update = function() {
     this.target_.ui.removeBrickHilight_()
     this.target_ = null
   }
-  if (!wouldDelete_ && this.target_ && oldTarget != this.target_) {
+  if (!wouldDelete && this.target_ && oldTarget != this.target_) {
     this.target_.ui.addBrickHilight_()
   }
 }

@@ -725,11 +725,11 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
 
   // The offset in pixels between the main workspace's origin and the upper left
   // corner of the injection div.
-  var mainOffsetPixels = targetWorkspace.originInFactory()
+  var mainOffsetPixels = targetWorkspace.originInFactory
 
   // The offset in pixels between the flyout workspace's origin and the upper
   // left corner of the injection div.
-  var flyoutOffsetPixels = this.workspace_.originInFactory()
+  var flyoutOffsetPixels = this.workspace_.originInFactory
 
   // The position of the old brick in flyout workspace coordinates.
   var oldBrickPosWs = oldBrick.xyInWorkspace

@@ -46,7 +46,7 @@ eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.decorateDispose(function (brickD
  */
 eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   var div = brickDragger.factory.dom.div_
-  brickDragger.dom.transformCorrection_ = eYo.Svg.getTransformCorrection(div)
+  brickDragger.transformCorrection_ = eYo.Svg.getTransformCorrection(div)
   // Move the brick dragged to the drag surface
     // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
@@ -54,7 +54,7 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   var brick = brickDragger.brick_
   var xy = this.brickXYInWorkspace(brick)
   this.removeAttribute(brick.dom.svg.group_, 'transform')
-  var dragSurface = brickDragger.factory.dom.svg.brickDragSurface_
+  var dragSurface = brickDragger.factory.dom.svg.brickDragSurface
   dragSurface.xyMoveTo(xy.x, xy.y)
   // Execute the move on the top-level SVG component
   dragSurface.setBricksAndShow(brick.dom.svg.group_)
@@ -65,7 +65,7 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
  * @param {!eYoBrickDragger} dragger
  */
 eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
-  dragger.dom.transformCorrection_ = null
+  dragger.transformCorrection_ = null
   this.disconnectStop()
   var dXY = dragger.delta_
   var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, dXY)

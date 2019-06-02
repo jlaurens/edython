@@ -56,6 +56,9 @@ eYo.Selected = (() => {
         },
         set (newValue) {
           if (newValue && !newValue.workspace) return
+          if (!newValue) {
+            console.error('BREAK HERE')
+          }
           this.brick_ = newValue
           this.magnet_ = null
           this.updateDraw()
@@ -86,10 +89,6 @@ eYo.Selected = (() => {
             }
             if (newValue) {
               brick__ = newValue
-              if (!brick__.canEdit_) {
-                // Why timeout
-                setTimeout(() => {brick__.canEdit_ = true}, 10)
-              }
               if (magnet__) {
                 var brick = magnet__.brick
                 if (brick && newValue !== brick.wrapper) {
@@ -192,7 +191,7 @@ eYo.Selected = (() => {
   return me
 })()
 
-eYo.Selected.selectOneBlockOf = (bricks, force) => {
+eYo.Selected.selectOneBrickOf = (bricks, force) => {
   var select
   bricks = bricks.filter(brick => brick)
   var f = brick => {
@@ -248,7 +247,7 @@ eYo.Magnet.prototype.select = function () {
  * Does nothing if the receiver is not selected.
  */
 eYo.Magnet.prototype.unselect = function () {
-  ;(this === eYo.Selected.magnet) && (eYo.Selected.magnet = null)
+  (this === eYo.Selected.magnet) && (eYo.Selected.magnet = null)
 }
 
 /**
@@ -256,8 +255,8 @@ eYo.Magnet.prototype.unselect = function () {
  * Wrapped bricks are not selectable.
  */
 eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function () {
-  return (this).select()
-})
+  return (eYo.Selected.brick = this)
+}, true)
 
 /**
  * Unselect this brick.

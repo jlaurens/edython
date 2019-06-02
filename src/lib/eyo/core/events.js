@@ -98,18 +98,18 @@ Object.defineProperties(eYo.Events, {
       var level = 0
       return state => {
         if (goog.isString(state)) {
-          eYo.Events.group = state
+          eYo.Events.group_ = state
           level = 1
         } else if (state) {
           if (!level++) {
-            eYo.Events.group = eYo.Do.genUid()
+            eYo.Events.group_ = eYo.Do.genUid()
           }
         } else {
           if (level > 1) {
             --level
           } else if (level) {
             --level
-            eYo.Events.group = ''
+            eYo.Events.group_ = ''
           }
         }
       }

@@ -1623,7 +1623,7 @@ eYo.Workspace.prototype.getGesture = function(e) {
 
   var gesture = this.gesture_
   if (gesture) {
-    if (isStart && gesture.hasStarted()) {
+    if (isStart && gesture.started) {
       console.warn('tried to start the same gesture twice')
       // That's funny.  We must have missed a mouse up.
       // Cancel it, rather than try to retrieve all of the state we need.

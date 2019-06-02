@@ -149,8 +149,8 @@ eYo.Brick = function (workspace, type, opt_id) {
   })
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
-  this.disposeUI = eYo.Do.nothing
   workspace.addBrick(this, opt_id)
+  this.disposeUI = eYo.Do.nothing
   if (workspace.hasUI) {
     this.makeUI()
   }
@@ -176,8 +176,9 @@ Object.defineProperties(eYo.Brick.prototype, {
 eYo.Brick.prototype.dispose = function (healStack, animate) {
   if (!this.workspace) {
     // The block has already been deleted.
-    return;
+    return
   }
+  this.disposeUI(healStack, animate)
   var workspace = this.workspace
   if (this.isSelected) {
     var m5s = this.magnets
@@ -212,7 +213,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.children_ = undefined
   })
   // this must be done after the child bricks are released
-  this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
+  this.disposeUI()
   this.span.dispose()
   this.span_ = undefined
   this.workspace.resizeContents()
@@ -2488,8 +2489,6 @@ eYo.Brick.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
   this.changeWrap(() => {
-      this.makeUI = eYo.Do.nothing // one shot function
-      delete this.disposeUI
       this.ui_ = new eYo.Brick.UI(this)
       this.forEachField(field => field.makeUI())
       this.forEachSlot(slot => slot.makeUI())
@@ -2500,9 +2499,33 @@ eYo.Brick.prototype.makeUI = function () {
       ].forEach(m => m && m.makeUI())
       this.forEachData(data => data.synchronize()) // data is no longer headless
       this.magnets.makeUI()
+      this.ui.updateShape()
       this.render = eYo.Brick.prototype.render_
     }
   )
+}
+
+/**
+ * Dispose of the ui resource.
+ */
+eYo.Brick.prototype.disposeUI = function (healStack, animate) {
+  this.disposeUI = eYo.Do.nothing
+  delete this.makeUI
+  this.changeWrap(() => {
+    this.render = eYo.Do.nothing
+    this.forEachField(field => field.disposeUI())
+    this.forEachSlot(slot => slot.disposeUI())
+    this.inputList.forEach(input => input.disposeUI())
+    ;[this.suite_m,
+      this.right_m,
+      this.foot_m
+    ].forEach(m => m && m.disposeUI())
+    this.magnets.disposeUI()
+    this.ui_.dispose()
+    this.ui_ = null
+  }
+)
+this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
 }
 
 Object.defineProperties(eYo.Brick.prototype, {

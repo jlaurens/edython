@@ -1453,8 +1453,8 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
     set (newValue) {
       newValue = !!newValue
       if (this.dragging_ !== newValue) {
-        this.dragging_ = dragging
-        this.driver.brickSetDragging(this.brick_, dragging)      
+        this.dragging_ = newValue
+        this.driver.brickSetDragging(this.brick_, newValue)      
       }
     }
   }
@@ -1773,8 +1773,8 @@ eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
     newLoc.y -= d.y
   }
   var b3k = this.brick_
-  if (this.workspace.brickDragSurface_) {
-    this.workspace.brickDragSurface_.xyMoveTo(newLoc.x, newLoc.y)
+  if (this.workspace.brickDragSurface) {
+    this.workspace.brickDragSurface.xyMoveTo(newLoc.x, newLoc.y)
   } else {
     this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
   }
@@ -1953,7 +1953,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
     return
   }
   var where = ws.xyEventInWorkspace(e)
-  where = goog.math.Coordinate.difference(where, ws.originInFactory())
+  where = goog.math.Coordinate.difference(where, ws.originInFactory)
   where.scale(1 / ws.scale)
   var rect = this.boundingRect
   where = goog.math.Coordinate.difference(where, rect.getTopLeft())
@@ -2114,7 +2114,6 @@ eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
  * @private
  */
 eYo.Brick.UI.prototype.on_mousedown = function (e) {
-  console.error('on_mousedown')
   var brick = this.brick_
   if (this.locked_) {
     var parent = brick.parent
@@ -2128,8 +2127,8 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
     if (!parent.isSelected) {
       var gesture = ws.getGesture(e)
       if (gesture) {
-        gesture.handleBlockStart(e, brick)
-      }    
+        gesture.handleBrickStart(e, brick)
+      }
       return
     }
   }
@@ -2157,7 +2156,7 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.isSelected ? e : null
   if ((gesture = ws.getGesture(e))) {
-    gesture.handleBlockStart(e, t9k)
+    gesture.handleBrickStart(e, t9k)
   }
 }
 
@@ -2198,7 +2197,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isInput) {
               if (!magnet.targetBrick) {
-                magnet.bindField && (magnet.select())
+                magnet.bindField && magnet.select()
               }
             } else {
               magnet.select()
@@ -2209,7 +2208,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
         } else if (eYo.Selected.magnet) {
           eYo.Selected.magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
-          ;(this.isStmt.select() ? this : this.stmtParent) || t9k.root
+          (this.isSelected ? this : this.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null
         }
       }
