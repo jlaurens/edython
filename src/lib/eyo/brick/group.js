@@ -32,7 +32,7 @@ eYo.Brick.Stmt.makeSubclass('BaseGroup', {
         return null
       }
     },
-    left: undefined,
+    left: eYo.VOID,
     right: {
       check: /** @suppress {globalThis} */ function (type) {
         return this.brick.suite

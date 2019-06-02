@@ -115,32 +115,32 @@ eYo.Options.prototype.getMetrics = null
 eYo.Options.parseZoomOptions_ = function(options) {
   var zoom = options.zoom || {}
   var zoomOptions = {}
-  if (zoom.controls === undefined) {
+  if (zoom.controls === eYo.VOID) {
     zoomOptions.controls = false
   } else {
     zoomOptions.controls = !!zoom.controls
   }
-  if (zoom.wheel === undefined) {
+  if (zoom.wheel === eYo.VOID) {
     zoomOptions.wheel = false
   } else {
     zoomOptions.wheel = !!zoom.wheel
   }
-  if (zoom.startScale === undefined) {
+  if (zoom.startScale === eYo.VOID) {
     zoomOptions.startScale = 1
   } else {
     zoomOptions.startScale = parseFloat(zoom.startScale);
   }
-  if (zoom.maxScale === undefined) {
+  if (zoom.maxScale === eYo.VOID) {
     zoomOptions.maxScale = 3
   } else {
     zoomOptions.maxScale = parseFloat(zoom.maxScale)
   }
-  if (zoom.minScale === undefined) {
+  if (zoom.minScale === eYo.VOID) {
     zoomOptions.minScale = 0.3
   } else {
     zoomOptions.minScale = parseFloat(zoom.minScale);
   }
-  if (zoom.scaleSpeed === undefined) {
+  if (zoom.scaleSpeed === eYo.VOID) {
     zoomOptions.scaleSpeed = 1.2
   } else {
     zoomOptions.scaleSpeed = parseFloat(zoom.scaleSpeed)

@@ -51,10 +51,10 @@ eYo.Owned.prototype.dispose = function () {
 
 // private properties with default values
 Object.defineProperties(eYo.Owned.prototype, {
-  magnet_: { value: undefined, writable: true },
-  slot_: { value: undefined, writable: true },
-  input_: { value: undefined, writable: true },
-  brick_: { value: undefined, writable: true },
+  magnet_: { value: eYo.VOID, writable: true },
+  slot_: { value: eYo.VOID, writable: true },
+  input_: { value: eYo.VOID, writable: true },
+  brick_: { value: eYo.VOID, writable: true },
 })
 
 // public computed properties

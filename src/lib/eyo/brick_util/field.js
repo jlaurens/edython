@@ -148,7 +148,7 @@ eYo.Field.makeFields = (() => {
     } else {
       return
     }
-    field.nextField = undefined // debug step
+    field.nextField = eYo.VOID // debug step
 
     return field
   }
@@ -300,14 +300,14 @@ eYo.Field.makeFields = (() => {
  */
 eYo.Field.disposeFields = owner => {
   var fields = owner.fields
-  owner.fieldAtStart = owner.toEndField = owner.fields = undefined
-  ;(owner instanceof eYo.Slot) && (owner.bindField = undefined)
+  owner.fieldAtStart = owner.toEndField = owner.fields = eYo.VOID
+  ;(owner instanceof eYo.Slot) && (owner.bindField = eYo.VOID)
   Object.values(fields).forEach(f => f.dispose())
 }
 
 // Private properties with default values
 Object.defineProperties(eYo.Field.prototype, {
-  name_: { value: undefined, writable: true },
+  name_: { value: eYo.VOID, writable: true },
   text__: { value: '', writable: true },
   visible_: { value: true, writable: true },
 })
@@ -341,7 +341,7 @@ Object.defineProperties(eYo.Field.prototype, {
   status: { value: eYo.Field.STATUS_NONE, writable: true }, // one of STATUS_... above
   isEditing: { value: false, writable: true},
   editable: { value: false, writable: true },
-  model: { value: undefined, writable: true,},
+  model: { value: eYo.VOID, writable: true,},
 })
 
 // Public readonly computed properties
@@ -588,7 +588,7 @@ eYo.FieldInput.prototype.css_class_ = 'eyo-code'
 
 // Private properties
 Object.defineProperties(eYo.FieldInput.prototype, {
-  placeholderText_: { value: undefined, writable: true },
+  placeholderText_: { value: eYo.VOID, writable: true },
 })
 
 Object.defineProperties(eYo.FieldInput.prototype, {
@@ -625,7 +625,7 @@ Object.defineProperties(eYo.FieldInput.prototype, {
  */
 eYo.FieldInput.prototype.getPlaceholderText = function (clear) {
   if (clear) {
-    this.placeholderText_ = undefined
+    this.placeholderText_ = eYo.VOID
   } else if (this.placeholderText_) {
     return this.placeholderText_
   }

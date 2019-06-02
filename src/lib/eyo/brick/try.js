@@ -172,7 +172,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Stmt.except_part.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Brick.Stmt.except_part.prototype.getType = eYo.Cache.decorate(
   'getType',
   function () {
     this.setupType(

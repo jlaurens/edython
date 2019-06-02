@@ -97,7 +97,7 @@ eYo.Svg.deskResize = eYo.Svg.prototype.deskResize = function(desk) {
  * @param {!eYo.Desk}
  * @param {!Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is
- *     undefined.
+ *     eYo.VOID.
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
  */
 eYo.Svg.prototype.deskXYElement = function(desk, element) {

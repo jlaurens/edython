@@ -104,13 +104,13 @@ eYo.Slot.prototype.dispose = function (healStack) {
   eYo.Field.disposeFields(this)
   var d = this.ui_driver
   d && (d.slotDispose(this))
-  this.model_ = undefined
+  this.model_ = eYo.VOID
   this.magnet_ && (this.magnet_.dispose(healStack))
-  this.magnet_ = undefined
-  this.key_ = undefined
-  this.brick_ = undefined
+  this.magnet_ = eYo.VOID
+  this.key_ = eYo.VOID
+  this.brick_ = eYo.VOID
   this.where_.dispose && (this.where_.dispose())
-  this.where_ = undefined
+  this.where_ = eYo.VOID
 }
 
 Object.defineProperties(eYo.Slot.prototype, {

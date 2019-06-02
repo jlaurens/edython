@@ -66,7 +66,7 @@ eYo.Span = function (brick) {
 
 // default private property values
 Object.defineProperties(eYo.Span.prototype, {
-  brick_: { value: undefined, writable: true },
+  brick_: { value: eYo.VOID, writable: true },
   c_min_: { value: 2, writable: true },
   c_padding_: { value: 0, writable: true },
   l_: { value: 1, writable: true },
@@ -292,7 +292,7 @@ Object.defineProperties(eYo.Span.prototype, {
  * Dispose of the receiver's resources.
  */
 eYo.Span.prototype.dispose = function () {
-  this.brick_ = undefined
+  this.brick_ = eYo.VOID
 }
 
 // computed private properties

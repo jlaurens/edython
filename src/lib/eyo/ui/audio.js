@@ -159,7 +159,7 @@ eYo.Audio.prototype.play = function(name, opt_volume) {
     } else {
       mySound = sound.cloneNode()
     }
-    mySound.volume = (opt_volume === undefined ? eYo.Audio.SOUND_VOLUME : opt_volume)
+    mySound.volume = (opt_volume === eYo.VOID ? eYo.Audio.SOUND_VOLUME : opt_volume)
     mySound.play()
   }
 }

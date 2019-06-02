@@ -249,7 +249,7 @@ Object.defineProperties(eYo.Board.prototype, {
    * @type {*}
    */
   error: {
-    value: undefined,
+    value: eYo.VOID,
     writable: true
   },
   recover: {
@@ -453,7 +453,7 @@ eYo.Board.prototype.clear = function() {
     eYo.Events.group = false
   }
   this.setResizesEnabled(true)
-  this.error = undefined
+  this.error = eYo.VOID
 }
 
 /**
@@ -912,12 +912,12 @@ eYo.Board.prototype.render = function() {
  * often used to visually mark bricks currently being executed.
  * @param {?string} id ID of brick to highlight/unhighlight,
  *   or null for no brick (used to unhighlight all bricks).
- * @param {boolean=} opt_state If undefined, highlight specified brick and
+ * @param {boolean=} opt_state If eYo.VOID, highlight specified brick and
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified block.
  */
 eYo.Board.prototype.highlightBrick = function(id, opt_state) {
-  if (opt_state === undefined) {
+  if (opt_state === eYo.VOID) {
     // Unhighlight all blocks.
     for (var i = 0, block; block = this.highlightedBricks_[i]; i++) {
       block.setHighlighted(false);
@@ -927,7 +927,7 @@ eYo.Board.prototype.highlightBrick = function(id, opt_state) {
   // Highlight/unhighlight the specified block.
   var block = id ? this.getBrickById(id) : null;
   if (block) {
-    var state = (opt_state === undefined) || opt_state;
+    var state = (opt_state === eYo.VOID) || opt_state;
     // Using Set here would be great, but at the cost of IE10 support.
     if (!state) {
       goog.array.remove(this.highlightedBricks_, block);

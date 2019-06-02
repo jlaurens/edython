@@ -31,7 +31,7 @@ eYo.Brick.Expr.makeSubclass('List', {
  * Fetches the named input object, getInput.
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default brick implementation.
+ * @return {eYo.Input} The input object, or null if input does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Brick.List.prototype.getInput = function (name, dontCreate) {
   var input = eYo.Brick.List.superClass_.getInput.call(this, name)
@@ -121,7 +121,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
   }
 }) ()
 
-// eYo.Brick.List.prototype.consolidator = undefined
+// eYo.Brick.List.prototype.consolidator = eYo.VOID
 
 /**
  * Clear the list af all items.
@@ -362,7 +362,7 @@ Object.defineProperties(eYo.Brick.Expr.enclosure.prototype, {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Decorate.onChangeCount(
+eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Cache.decorate(
   'getProfile',
   function () {
     // this may be called very very early when

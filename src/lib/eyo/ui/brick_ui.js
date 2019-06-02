@@ -212,7 +212,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t9k)
-            t9k.ui.rightCaret = undefined
+            t9k.ui.rightCaret = eYo.VOID
             io.common.field.shouldSeparate = false
           }
           io.common.field.afterCaret = false
@@ -371,7 +371,7 @@ eYo.Brick.UI.prototype.render = (() => {
     }
   )
   return function (bbbl, recorder) {
-    if (!this.brick_.hasUI || this.rendered === false) { // this.rendered === undefined is OK
+    if (!this.brick_.hasUI || this.rendered === false) { // this.rendered === eYo.VOID is OK
       return
     }
     if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.board)) {
@@ -440,7 +440,7 @@ eYo.Brick.UI.prototype.render = (() => {
           parent = next
         }
         // parent has no output magnet or has no parent.
-        recorder && (recorder.field.last = undefined)
+        recorder && (recorder.field.last = eYo.VOID)
         if (!parent.ui.down) {
           if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
             try {
@@ -627,7 +627,7 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Decorate.onChangeCount(
+eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Cache.decorate(
   'alignRightEdges_',
   function (recorder) {
     if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.board || !this.brick_.hasUI) {
@@ -674,7 +674,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
   var io = {
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
-    form: undefined // rendered field or magnet
+    form: eYo.VOID // rendered field or magnet
   }
   io.cursor = new eYo.Where(0, this.span.header)
   if (recorder) {
@@ -683,7 +683,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
     io.common = recorder.common // It is always defined
   } else {
     io.common = {
-      pending: undefined,
+      pending: eYo.VOID,
       ending: [],
       shouldSeparate: false,
       afterEdge: false,
@@ -704,7 +704,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
   // Once we have rendered a field with a positive length,
   // we cannot have a star like field.
   io.common.field.canStarLike = true
-  this.firstRenderedMagnet = this.lastRenderedMagnet = undefined
+  this.firstRenderedMagnet = this.lastRenderedMagnet = eYo.VOID
   io.footer = 0
   io.main = 1
   return io
@@ -1128,13 +1128,13 @@ eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement =
         // first loop to see if there is a pending rightCaret
         // BTW, there can be an only one right caret
         if (io.common.ending.some(b3k => !!b3k.ui.rightCaret)) {
-          io.common.shouldPack = undefined
+          io.common.shouldPack = eYo.VOID
         } else {
           // there is no following right caret, we can pack
           var pack = false
           io.common.ending.forEach(b3k => {
             if (b3k === io.common.shouldPack) {
-              io.common.shouldPack = undefined
+              io.common.shouldPack = eYo.VOID
               pack = true
               io.cursor.c -= 1
               // from now on, we pack just one character width
@@ -1214,7 +1214,7 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
         // a space was added as a visual separator anyway
         io.common.field.shouldSeparate = false
         // all done
-        io.common.pending = undefined
+        io.common.pending = eYo.VOID
         io.common.field.afterBlack = false // do not step back
         io.common.field.afterCaret = true // do not step back
       }
@@ -1230,7 +1230,7 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
  */
 eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
   var m4t = io.magnet
-  m4t.renderedRight = undefined
+  m4t.renderedRight = eYo.VOID
   m4t.renderedLeft = io.common.magnetDone
   if (io.common.magnetDone) {
     io.common.magnetDone.inputRight = io.magnet
@@ -1242,7 +1242,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
   m4t.startOfLine = io.common.startOfLine
   m4t.startOfStatement = io.common.startOfStatement
   io.form = m4t
-  m4t.side = m4t.shape = undefined
+  m4t.side = m4t.shape = eYo.VOID
   io.common.field.canStarLike = false
   // io.cursor is relative to the brick or the slot
   // but the magnet must be located relative to the brick
@@ -1301,7 +1301,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t9k)
-            ui.rightCaret = undefined
+            ui.rightCaret = eYo.VOID
             io.common.field.shouldSeparate = false
           }
           io.common.field.afterCaret = false
@@ -1805,25 +1805,25 @@ eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
  * the visible area.
  * Return value: if `x < 0`, left of the visible area,
  * if `x > 0`, right of the visible area, 0 otherwise.
- * undefined when the brick is not in a board.
+ * eYo.VOID when the brick is not in a board.
  * The same holds for `y`.
  * The values are the signed distances between the center
  * of the brick and the visible area.
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {?Object} newLoc The new location of the receiver, the actual location when undefined.
- * @return {{x: number, y: number}|undefined}
+ * @param {?Object} newLoc The new location of the receiver, the actual location when eYo.VOID.
+ * @return {{x: number, y: number}|eYo.VOID}
  */
 eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
   var board = this.brick_.board
   if (!board) {
-    return undefined
+    return eYo.VOID
   }
   // is the brick in the visible area ?
   var metrics = board.getMetrics()
   if (!metrics) {
-    // sometimes undefined is returned
+    // sometimes eYo.VOID is returned
     console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")
     return {
       x: 0,
@@ -1940,7 +1940,7 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  *
  * For edython.
  * @param {Object} e in general a mouse down event
- * @return {Object|undefined|null}
+ * @return {Object|eYo.VOID|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   var ws = this.brick_.board

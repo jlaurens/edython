@@ -164,14 +164,14 @@ eYo.Input.prototype.dispose = function() {
     return
   }
   this.fieldRow_.forEach(f => f.dispose())
-  this.fieldRow_ = undefined
+  this.fieldRow_ = eYo.VOID
   var m4t = this.magnet_
   m4t.wrapped_ = null
   var t9k = m4t.targetBrick
   t9k && (t9k.dispose())
   m4t.dispose()
-  this.magnet_ = undefined
-  this.brick_ = undefined
+  this.magnet_ = eYo.VOID
+  this.brick_ = eYo.VOID
 }
 
 /**

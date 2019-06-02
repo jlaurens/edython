@@ -61,7 +61,7 @@ eYo.Brick.Expr.prototype.incrementChangeCount = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Brick.Expr.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Brick.Expr.prototype.getType = eYo.Cache.decorate(
   'getType',
   function () {
     return {
@@ -285,8 +285,8 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
         var brick = targetM4t.brick
         targetM4t.disconnect()
         brick.dispose(true)
-        brick = undefined
-        targetM4t = undefined
+        brick = eYo.VOID
+        targetM4t = eYo.VOID
       }
       // the old parent connection
       targetM4t = outputM4t.target
@@ -303,7 +303,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
           var my_xy = parent.xy
           parent.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
         }
-        targetM4t = undefined
+        targetM4t = eYo.VOID
       } else {
         its_xy = this.xy
         my_xy = parent.xy
@@ -317,7 +317,7 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
     })
   } else {
     parent.dispose(true)
-    parent = undefined
+    parent = eYo.VOID
   }
   return parent
 }

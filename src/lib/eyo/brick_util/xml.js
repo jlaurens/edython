@@ -791,7 +791,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
   var board = owner.board
   if (!board) {
     board = owner
-    owner = undefined
+    owner = eYo.VOID
   }
   if (!board.newBrick) {
     console.error('ARGH')
@@ -899,7 +899,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
 eYo.Xml.domToBrick = (() => {
   var domToBrick = function (dom, owner) {
     if (!goog.isFunction(dom.getAttribute)) {
-      return undefined
+      return eYo.VOID
     }
     var id = dom.getAttribute('id')
     var name = dom.getAttribute(eYo.Key.EYO)

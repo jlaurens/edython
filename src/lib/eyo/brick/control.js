@@ -89,8 +89,8 @@ eYo.Brick.Control.makeSubclass('start_stmt', {
     attr: 'start'
   },
   statement: {
-    left: undefined, // override inherited
-    right: undefined, // override inherited
+    left: eYo.VOID, // override inherited
+    right: eYo.VOID, // override inherited
     head: {
       check: eYo.T3.Stmt.start_stmt
     },

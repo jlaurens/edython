@@ -60,7 +60,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
   /**
    * Get the current blocks on the drag surface, if any (primarily
    * for BlockSvg.getRelativeToSurfaceXY).
-   * @return {!Element|undefined} Drag surface block DOM element, or undefined
+   * @return {!Element|eYo.VOID} Drag surface block DOM element, or eYo.VOID
    * if no blocks exist.
    */
   currentBrick: {

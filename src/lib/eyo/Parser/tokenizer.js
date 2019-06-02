@@ -432,7 +432,7 @@ eYo.Scan.prototype.nextToken = function () {
     ++this.lineno
     if (!no_EOL) {
       if (this.end > this.start) {
-        if (this.start_string === undefined) {
+        if (this.start_string === eYo.VOID) {
           this.start_string = this.start
         }
       }
@@ -448,7 +448,7 @@ eYo.Scan.prototype.nextToken = function () {
     this.at_bol = true
     ++this.lineno
     if (this.end > this.start) {
-      if (this.start_string === undefined) {
+      if (this.start_string === eYo.VOID) {
         this.start_string = this.start
       }
     }
@@ -461,7 +461,7 @@ eYo.Scan.prototype.nextToken = function () {
   var do_continue = () => {
     this.at_bol = true
     ++this.lineno
-    if (this.start_string === undefined) {
+    if (this.start_string === eYo.VOID) {
       this.start_string = this.start
     }
     this.start = this.end
@@ -498,7 +498,7 @@ eYo.Scan.prototype.nextToken = function () {
 
   var new_COMMENT = () => {
     if (this.end > this.start) {
-      if (this.start_string === undefined) {
+      if (this.start_string === eYo.VOID) {
         this.start_string = this.start
       }
       return new_Token(eYo.TKN.COMMENT)
@@ -512,7 +512,7 @@ eYo.Scan.prototype.nextToken = function () {
    * on a non blank line.
    */
   var do_space = () => {
-    if (this.end > this.start && this.start_string === undefined) {
+    if (this.end > this.start && this.start_string === eYo.VOID) {
       this.start_string = this.start
     }
     this.start = this.end
@@ -606,7 +606,7 @@ eYo.Scan.prototype.nextToken = function () {
  * Scan a comment.
  * 2 situations, reading the comment from indentation lookup
  * or reading comment after something else.
- * @param {*} col  undefined when the comment follows something,
+ * @param {*} col  eYo.VOID when the comment follows something,
  * otherwise col is the number of spaces before.
  */
   var scan_Comment = col => {
@@ -625,7 +625,7 @@ eYo.Scan.prototype.nextToken = function () {
             ? eYo.TKN.TYPE_IGNORE
             : eYo.TKN.TYPE_COMMENT)
         tkn.continuation = !this.level
-        tkn.blank = col !== undefined
+        tkn.blank = col !== eYo.VOID
         if (scan('\r')) {
           scan('\n')
           do_EOL() // no NEWLINE after a comment
@@ -649,7 +649,7 @@ eYo.Scan.prototype.nextToken = function () {
           }
           tkn = new_COMMENT()
           tkn.continuation = !this.level
-          tkn.blank = col !== undefined
+          tkn.blank = col !== eYo.VOID
           after()
           return true
         }
@@ -1256,7 +1256,7 @@ eYo.Scan.prototype.nextToken = function () {
       // case '\\':
       // case '\r':
       // case '\n':
-      case undefined:
+      case eYo.VOID:
         new_EOF()
         break
       default:

@@ -71,7 +71,7 @@ eYo.Navigate.doTab = (() => {
     if (brick) {
       var f = opt && opt.left ? doLeft : doRight
       var n = opt && opt.fast ? 4 : 1
-      input = undefined
+      input = eYo.VOID
       while (n--) {
         f(brick)
       }

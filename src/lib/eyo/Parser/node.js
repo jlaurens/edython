@@ -38,7 +38,7 @@ node * */
  * @property {string} name  name is the human readable type of the node.
  */
 eYo.Node = function (scan, type, subtype) {
-  if (type === undefined || type === eYo.TKN.ERRORTOKEN) {
+  if (type === eYo.VOID || type === eYo.TKN.ERRORTOKEN) {
     console.error('WTF')
   }
   this.scan = scan
@@ -47,12 +47,12 @@ eYo.Node = function (scan, type, subtype) {
   this.start = scan.start
   this.start_string = scan.start_string
   this.start_comment = scan.start_comment
-  scan.start_string = scan.start_comment = undefined
+  scan.start_string = scan.start_comment = eYo.VOID
   this.end = scan.start = scan.end
   if (scan.first_lineno) {
     this.lineno = scan.first_lineno
     this.end_lineno = scan.lineno
-    scan.first_lineno = undefined
+    scan.first_lineno = eYo.VOID
   } else {
     this.lineno = scan.lineno
   }
@@ -107,7 +107,7 @@ Object.defineProperties(eYo.Node.prototype, {
       if (this._string) {
         return this._string
       }
-      if (this.start_string !== undefined) {
+      if (this.start_string !== eYo.VOID) {
         return (this._string = this.str.substring(this.start_string, this.end))
       }
       return (this._string = this.content)
@@ -140,7 +140,7 @@ Object.defineProperties(eYo.Node.prototype, {
   },
   next: {
     get () {
-      if (this.next_ !== undefined) {
+      if (this.next_ !== eYo.VOID) {
         return this.next_
       }
       if (this.type === eYo.TKN.ENDMARKER) {
@@ -207,7 +207,7 @@ Object.defineProperties(eYo.Node.prototype, {
   },
   acceptComments: {
     get () {
-      if (this.acceptComments_ !== undefined) {
+      if (this.acceptComments_ !== eYo.VOID) {
         return this.acceptComments_
       } else if ([ // statements
         eYo.TKN.single_input,

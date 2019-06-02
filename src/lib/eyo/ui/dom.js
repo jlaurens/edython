@@ -225,7 +225,7 @@ eYo.Dom.unbindMouseEvents = function(listener) {
  * point.
  * @param {!Event} e A mouse event or a touch event with one or more changed
  * touches.
- * @param {!Function} f A function to be executed for each event, signature (<!Event>e) -> undefined.
+ * @param {!Function} f A function to be executed for each event, signature (<!Event>e) -> eYo.VOID.
  * @return {!Array.<!Event>} An array of mouse or touch events.  Each touch
  *     event will have exactly one changed touch.
  */
@@ -312,7 +312,7 @@ eYo.Dom.checkTouchIdentifier = (() => {
 
     // if (Blockly.touchIdentifier_ )is insufficient because Android touch
     // identifiers may be zero.
-    if (touchIdentifier != undefined && touchIdentifier != null) {
+    if (touchIdentifier != eYo.VOID && touchIdentifier != null) {
       // We're already tracking some touch/mouse event.  Is this from the same
       // source?
       return touchIdentifier == identifier
@@ -339,9 +339,9 @@ eYo.Dom.checkTouchIdentifier = (() => {
  */
 eYo.Dom.touchIdentifierFromEvent = e => {
   var x
-  return e.pointerId != undefined
+  return e.pointerId != eYo.VOID
   ? e.pointerId
-  : ((x = e.changedTouches) && (x = x[0]) && (x = x.identifier) != undefined && x != null)
+  : ((x = e.changedTouches) && (x = x[0]) && (x = x.identifier) != eYo.VOID && x != null)
     ? x
     : 'mouse'
 }
@@ -389,7 +389,7 @@ Object.defineProperties(eYo.Dom, {
     get: (() => {
       var is3dSupported
       return function() {
-        if (is3dSupported !== undefined) {
+        if (is3dSupported !== eYo.VOID) {
           return is3dSupported
         }
         // CC-BY-SA Lorenzo Polidori
@@ -412,7 +412,7 @@ Object.defineProperties(eYo.Dom, {
         document.body.insertBefore(el, null);
 
         for (var t in transforms) {
-          if (el.style[t] !== undefined) {
+          if (el.style[t] !== eYo.VOID) {
             el.style[t] = 'translate3d(1px,1px,1px)'
             var computedStyle = goog.global.getComputedStyle(el)
             if (!computedStyle) {

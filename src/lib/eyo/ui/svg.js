@@ -167,7 +167,7 @@ eYo.Svg.prototype.addTooltip = function (el, title, options) {
 
 // Private holder of svg ressources
 Object.defineProperties(eYo.Field, {
-  svg: { value: undefined, writable: true }
+  svg: { value: eYo.VOID, writable: true }
 })
 
 /**

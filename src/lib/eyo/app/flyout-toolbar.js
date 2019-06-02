@@ -41,23 +41,23 @@ eYo.FlyoutToolbar = function(flyout, switcher) {
 eYo.FlyoutToolbar.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
     eYo.Dom.unbindEvent(this.onButtonDownWrapper_)
-    this.onButtonDownWrapper_ = undefined
+    this.onButtonDownWrapper_ = eYo.VOID
   }
   if (this.onButtonEnterWrapper_) {
     eYo.Dom.unbindEvent(this.onButtonEnterWrapper_);
-    this.onButtonEnterWrapper_ = undefined
+    this.onButtonEnterWrapper_ = eYo.VOID
   }
   if (this.onButtonLeaveWrapper_) {
     eYo.Dom.unbindEvent(this.onButtonLeaveWrapper_);
-    this.onButtonLeaveWrapper_ = undefined
+    this.onButtonLeaveWrapper_ = eYo.VOID
   }
   if (this.onButtonUpWrapper_) {
     eYo.Dom.unbindEvent(this.onButtonUpWrapper_);
-    this.onButtonUpWrapper_ = undefined
+    this.onButtonUpWrapper_ = eYo.VOID
   }
   if (this.selectControl_) {
     this.selectControl_.unlisten(this.listenableKey)
-    this.selectControl_ = undefined
+    this.selectControl_ = eYo.VOID
   }
 }
 

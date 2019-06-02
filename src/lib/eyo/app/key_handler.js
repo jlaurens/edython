@@ -59,7 +59,7 @@ eYo.KeyHandler = (() => {
   var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
   var target_
-  var menu_ = new eYo.KeyHandlerMenu(/* undefined, ContextMenuRenderer */)
+  var menu_ = new eYo.KeyHandlerMenu(/* eYo.VOID, ContextMenuRenderer */)
   menu_.eyo = me
   /**
  * Setup the shared key handler.
@@ -70,7 +70,7 @@ eYo.KeyHandler = (() => {
     target_ = document
     goog.events.listen(
       document, goog.events.EventType.KEYDOWN, me.handleKeyDown_,
-      undefined /* opt_capture */, me
+      eYo.VOID /* opt_capture */, me
     )
   }
   me.register = function (key, model) {
@@ -105,7 +105,7 @@ eYo.KeyHandler = (() => {
       }
     } else if (k === 'backspace') {
       eYo.Dom.gobbleEvent(e)
-      K = undefined
+      K = eYo.VOID
     }
     if (me.updateMenu(K)) {
       eYo.Dom.gobbleEvent(e)
@@ -282,7 +282,7 @@ eYo.KeyHandler = (() => {
   }
   me.updateMenu = function (sep) {
     var newCurrent = []
-    if (sep === undefined) {
+    if (sep === eYo.VOID) {
       var key = keys_.pop()
       if (current_.length) {
         var l = current_[0].components.length - 2
@@ -346,7 +346,7 @@ eYo.KeyHandler = (() => {
         var d
         content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
           goog.dom.createTextNode(c))
-        while ((d = Cs[j++]) !== undefined && (c = Cs[j++]) !== undefined) {
+        while ((d = Cs[j++]) !== eYo.VOID && (c = Cs[j++]) !== eYo.VOID) {
           content.appendChild(eYo.Do.createSPAN(d, 'eyo-code-emph'))
           content.appendChild(goog.dom.createTextNode(c))
         }
@@ -391,7 +391,7 @@ eYo.KeyHandler = (() => {
         shortcut.components = [split[0], key, split[1]]
         me.insertShortcutInArray_(shortcut, current_)
       } else {
-        shortcut.components = undefined
+        shortcut.components = eYo.VOID
       }
     }
     if (current_.length) {
@@ -530,11 +530,11 @@ eYo.KeyHandler = (() => {
 
 /**
  * Separate key in 2 parts: what is before the first occurrence of sep and what is after.
- * If sep is not in the list, returns undefined.
+ * If sep is not in the list, returns eYo.VOID.
  * split('foo', 'f') -> ['', 'oo']
  * split('foo', 'o') -> ['f', 'o']
  * split('bar', 'r') -> ['ba', '']
- * split('foo', 'b') -> undefined
+ * split('foo', 'b') -> eYo.VOID
  *
  * @param {*} key
  * @param {*} sep
@@ -543,7 +543,7 @@ eYo.KeyHandler = (() => {
 eYo.KeyHandler.split = function (key, sep) {
   var i = key.indexOf(sep)
   if (i < 0) {
-    return undefined
+    return eYo.VOID
   }
   return [key.substring(0, i), key.substring(i + sep.length)]
 }

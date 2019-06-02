@@ -85,7 +85,7 @@ eYo.Do.Name = (() => {
    * except for the one length string '!' itself.
    * @param {!string} lhs
    * @param {!string} rhs
-   * @return an object {sign: ±1, value: rhs - lhs as array} or undefined on entry error
+   * @return an object {sign: ±1, value: rhs - lhs as array} or eYo.VOID on entry error
    */
   me.getDelta = function (lhs, rhs) {
     // turn rhs and lhs into an array
@@ -113,7 +113,7 @@ eYo.Do.Name = (() => {
     // console.log('R', R)
     if (L[L.length - 1] === 1 && R[R.length - 1] === 1) {
       // bad string format
-      return undefined
+      return eYo.VOID
     }
     // both arrays represent a number:
     // L[0]+ L[1]/base + L[2]/base**2 ...
@@ -215,7 +215,7 @@ eYo.Do.Name = (() => {
    * @return -1 if lhs < rhs,
    * 0 if lhs === rhs,
    * 1 if lhs > rhs,
-   * undefined if one of lhs or rhs does not have the proper format
+   * eYo.VOID if one of lhs or rhs does not have the proper format
    */
   me.getOrder = function (lhs, rhs) {
     var l, r
@@ -268,7 +268,7 @@ eYo.Do.Name = (() => {
     // of char codes relative to min
     var D = me.getDelta(lhs, rhs)
     if (!D || D.sign >= 0) {
-      return undefined
+      return eYo.VOID
     }
     if (weight <= 0) {
       return lhs
@@ -379,14 +379,14 @@ eYo.Do.Enumerator = (list, filter) => {
     return
   }
   var i = 0
-  var me = {here_: undefined}
+  var me = {here_: eYo.VOID}
   me.start = () => {
     i = 0
-    me.here_ = undefined
+    me.here_ = eYo.VOID
   }
   me.end = () => {
     i = list.length
-    me.here_ = undefined
+    me.here_ = eYo.VOID
   }
   Object.defineProperties(me, {
     isAtStart: {
@@ -426,10 +426,10 @@ eYo.Do.Enumerator = (list, filter) => {
     }
   })
   var next_ = () => {
-    return i < list.length ? list[i++] : undefined
+    return i < list.length ? list[i++] : eYo.VOID
   }
   var previous_ = () => {
-    return i > 0 ? list[--i] : undefined
+    return i > 0 ? list[--i] : eYo.VOID
   }
   me.start()
   return me

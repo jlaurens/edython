@@ -162,43 +162,43 @@ eYo.Svg.prototype.brickDispose = eYo.Dom.decorateDispose(function (brick) {
   var svg = brick.dom.svg
   // goog.dom.removeNode(dom.svg.group_) only once the block_ design is removed
   goog.dom.removeNode(svg.group_)
-  svg.group_ = undefined
+  svg.group_ = eYo.VOID
   // just in case the path were not already removed as child or a removed parent
   goog.dom.removeNode(svg.pathShape_)
-  svg.pathShape_ = undefined
+  svg.pathShape_ = eYo.VOID
   goog.dom.removeNode(svg.pathContour_)
-  svg.pathContour_ = undefined
+  svg.pathContour_ = eYo.VOID
   goog.dom.removeNode(svg.pathCollapsed_)
-  svg.pathCollapsed_ = undefined
+  svg.pathCollapsed_ = eYo.VOID
   goog.dom.removeNode(svg.pathBBox_)
-  svg.pathBBox_ = undefined
+  svg.pathBBox_ = eYo.VOID
   goog.dom.removeNode(svg.pathInner_)
-  svg.pathInner_ = undefined
+  svg.pathInner_ = eYo.VOID
   goog.dom.removeNode(svg.pathSelect_)
-  svg.pathSelect_ = undefined
+  svg.pathSelect_ = eYo.VOID
   goog.dom.removeNode(svg.pathHilight_)
-  svg.pathHilight_ = undefined
+  svg.pathHilight_ = eYo.VOID
   goog.dom.removeNode(svg.pathMagnet_)
-  svg.pathMagnet_ = undefined
+  svg.pathMagnet_ = eYo.VOID
   if (svg.groupContour_) {
     goog.dom.removeNode(svg.groupContour_)
-    svg.groupContour_ = undefined
+    svg.groupContour_ = eYo.VOID
   }
   if (svg.groupShape_) {
     goog.dom.removeNode(svg.groupShape_)
-    svg.groupShape_ = undefined
+    svg.groupShape_ = eYo.VOID
   }
   if (svg.groupSharp_) {
     goog.dom.removeNode(svg.groupSharp_)
-    svg.groupSharp_ = undefined
+    svg.groupSharp_ = eYo.VOID
   }
   if (svg.groupPlay_) {
     goog.dom.removeNode(svg.groupPlay_)
-    svg.groupPlay_ = undefined
-    svg.pathPlayIcon_ = undefined
-    svg.pathPlayContour_ = undefined
+    svg.groupPlay_ = eYo.VOID
+    svg.pathPlayIcon_ = eYo.VOID
+    svg.pathPlayContour_ = eYo.VOID
   }
-  brick.dom.svg = undefined
+  brick.dom.svg = eYo.VOID
 })
 
 /**

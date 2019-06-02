@@ -95,7 +95,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
 eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
-  io.annotatedInput = undefined
+  io.annotatedInput = eYo.VOID
   io.subtype = brick.subtype
   return io
 }
@@ -142,7 +142,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
   }
   var setupFirst = function (io) {
     io.first_starred = io.last = -1
-    io.annotatedInput = undefined
+    io.annotatedInput = eYo.VOID
     this.setupIO(io, 0)
     while (io.input) {
       if ((io.input.parameter_type_ = getCheckType(io)) === Type.STARRED) {
@@ -1247,7 +1247,7 @@ eYo.Do.addProtocol(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
  */
 eYo.Brick.Expr.primary.prototype.init = function () {
   eYo.Brick.Expr.primary.superClass_.init.call(this)
-  this.profile_ = undefined
+  this.profile_ = eYo.VOID
 }
 
 Object.defineProperties( eYo.Brick.Expr.primary.prototype, {
@@ -1297,7 +1297,7 @@ eYo.Brick.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.Brick.Expr.primary.prototype.getProfile = eYo.Decorate.onChangeCount(
+eYo.Brick.Expr.primary.prototype.getProfile = eYo.Cache.decorate(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1774,7 +1774,7 @@ eYo.Brick.Expr.primary.prototype.getSubtype = function () {
  * @param {!Brick} brick
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default brick implementation.
+ * @return {eYo.Input} The input object, or null if input does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Brick.Expr.primary.prototype.getInput = function (name) {
   var input = eYo.Brick.Expr.primary.superClass_.getInput.call(this, name)
@@ -1864,7 +1864,7 @@ eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Brick.Expr.primary.prot
  */
 eYo.Brick.Stmt.base_call_stmt.prototype.init = function () {
   eYo.Brick.Stmt.base_call_stmt.superClass_.init.call(this)
-  this.profile_p = undefined
+  this.profile_p = eYo.VOID
 }
 
 Object.defineProperties(eYo.Brick.Stmt.base_call_stmt.prototype, {

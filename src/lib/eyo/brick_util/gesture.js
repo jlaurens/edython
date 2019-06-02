@@ -95,14 +95,14 @@ eYo.Gesture = function(e, board) {
    * @type {boolean}
    * @private
    */
-  this.boardDragger_ = undefined
+  this.boardDragger_ = eYo.VOID
 
   /**
    * Whether the brick is currently being dragged.
    * @type {boolean}
    * @private
    */
-  this.brickDragger_ = undefined
+  this.brickDragger_ = eYo.VOID
 
   /**
    * The event that most recently updated this gesture.

@@ -63,7 +63,7 @@ eYo.Data = function (brick, key, model) {
   this.name = 'eyo:' + (model.name || key).toLowerCase()
   this.noUndo = !!model.noUndo
   this.brick_ = brick // circular reference
-  this.value_ = /** Object|null */ undefined
+  this.value_ = /** Object|null */ eYo.VOID
   this.incog_ = false
   var xml = model.xml
   if (goog.isDefAndNotNull(xml) || xml !== false) {
@@ -106,7 +106,7 @@ eYo.Data = function (brick, key, model) {
  * Dispose of the receiver's resources
  */
 eYo.Data.prototype.dispose = function () {
-  this.brick_ = this.value_ = undefined
+  this.brick_ = this.value_ = eYo.VOID
 }
 
 // Public properties
@@ -304,12 +304,12 @@ eYo.Data.prototype.setWithType = function (type) {
 }
 
 /**
- * When not undefined, this is the array of all possible values.
+ * When not eYo.VOID, this is the array of all possible values.
  * May be overriden by the model.
  * Do not use this directly because this can be a function.
  * Always use `getAll` instead.
  */
-eYo.Data.prototype.all = undefined
+eYo.Data.prototype.all = eYo.VOID
 
 /**
  * Get all the values.
@@ -481,7 +481,7 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
  * @param {Object} key,
  * @param {Object} do_it
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.decorateChange = function (key, do_it) {
   var model_lock = 'model_' + key
@@ -521,7 +521,7 @@ eYo.Data.decorateChange = function (key, do_it) {
  * May be overriden by the model.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.willChange = eYo.Data.decorateChange('willChange')
 
@@ -532,7 +532,7 @@ eYo.Data.prototype.willChange = eYo.Data.decorateChange('willChange')
  * Replaces `willChange` when undoing.
  * @param {Object} newValue
  * @param {Object} oldValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.didUnchange = eYo.Data.decorateChange('didUnchange')
 
@@ -542,7 +542,7 @@ eYo.Data.prototype.didUnchange = eYo.Data.decorateChange('didUnchange')
  * May be overriden by the model.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.didChange = eYo.Data.decorateChange('didChange')
 
@@ -553,7 +553,7 @@ eYo.Data.prototype.didChange = eYo.Data.decorateChange('didChange')
  * May be overriden by the model.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.willUnchange = eYo.Data.decorateChange('willUnchange')
 
@@ -566,7 +566,7 @@ eYo.Data.prototype.willUnchange = eYo.Data.decorateChange('willUnchange')
  * before undo events are posted.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.isChanging = eYo.Data.decorateChange('isChanging')
 
@@ -579,7 +579,7 @@ eYo.Data.prototype.isChanging = eYo.Data.decorateChange('isChanging')
  * before undo events are posted.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
 
@@ -588,7 +588,7 @@ eYo.Data.prototype.isUnchanging = eYo.Data.decorateChange('isUnchanging')
  * Branch to `willChange` or `willUnchange`.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
   ;(!eYo.Events.recordUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
@@ -602,7 +602,7 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
  * Branch to `isChanging` or `isUnchanging`.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.duringChange = function(oldValue, newValue) {
   ;(!eYo.Events.recordUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
@@ -614,7 +614,7 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * `synchronize` in fine.
  * @param {Object} oldValue
  * @param {Object} newValue
- * @return undefined
+ * @return eYo.VOID
  */
 eYo.Data.prototype.afterChange = function(oldValue, newValue) {
   ;(eYo.Events.recordUndo ? this.didChange : this.didUnchange).apply(this, arguments)
@@ -625,7 +625,7 @@ eYo.Data.prototype.afterChange = function(oldValue, newValue) {
  * Wether a value change fires an undo event.
  * May be overriden by the javascript model.
  */
-eYo.Data.prototype.noUndo = undefined
+eYo.Data.prototype.noUndo = eYo.VOID
 
 /**
  * Synchronize the value of the property with the UI.

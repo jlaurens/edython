@@ -29,7 +29,7 @@ goog.require('eYo.Py.Exporter')
  * @constructor
  */
 eYo.MenuManager = function () {
-  this.menu = new eYo.PopupMenu(/* undefined, ContextMenuRenderer */)
+  this.menu = new eYo.PopupMenu(/* eYo.VOID, ContextMenuRenderer */)
   this.insertSubmenu = new eYo.SubMenu(eYo.Msg.ADD)
   this.insertBeforeSubmenu = new eYo.SubMenu(eYo.Msg.ADD_BEFORE)
   this.insertAfterSubmenu = new eYo.SubMenu(eYo.Msg.ADD_AFTER)
@@ -57,7 +57,7 @@ eYo.MenuManager.shared = (() => {
  * Get the menu, in case clients may want to populate it directly.
  * Each manager has its own menu.
  */
-eYo.MenuManager.prototype.menu = undefined
+eYo.MenuManager.prototype.menu = eYo.VOID
 
 /**
  * Create a new menu item.
@@ -224,7 +224,7 @@ eYo.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
  * @param {!Event=} e Mouse event.
  * @private
  */
-eYo.MenuManager.prototype.init = function (brick = undefined, e = undefined) {
+eYo.MenuManager.prototype.init = function (brick = eYo.VOID, e = eYo.VOID) {
   if (!this.menu.inDocument_) {
     this.menu.render()
   }

@@ -96,14 +96,14 @@ eYo.T3.Profile = function (owner, model) {
     raw: eYo.T3.Expr.unset,
     expr: eYo.T3.Expr.unset,
     stmt: eYo.T3.Expr.unset,
-    prefixDots: undefined,
-    base: undefined,
-    name: undefined,
-    module: undefined,
-    holder: undefined,
-    item: undefined,
-    type: undefined,
-    prefixDots: undefined
+    prefixDots: eYo.VOID,
+    base: eYo.VOID,
+    name: eYo.VOID,
+    module: eYo.VOID,
+    holder: eYo.VOID,
+    item: eYo.VOID,
+    type: eYo.VOID,
+    prefixDots: eYo.VOID
   }
   if (model) {
     var methods = model.methods
@@ -141,7 +141,7 @@ eYo.T3.Profile = function (owner, model) {
         this,
         key,
         {
-          value: goog.isString(value) ? value : undefined
+          value: goog.isString(value) ? value : eYo.VOID
         }
       )
       delete m[key]
@@ -246,13 +246,13 @@ Object.defineProperties(
 /*
 eYo.T3.Profile.prototype.isUnset = False
 eYo.T3.Profile.prototype.isVoid = False
-eYo.T3.Profile.prototype.raw = undefined
-eYo.T3.Profile.prototype.expr = undefined
-eYo.T3.Profile.prototype.stmt = undefined
-eYo.T3.Profile.prototype.name = undefined
-eYo.T3.Profile.prototype.module = undefined
-eYo.T3.Profile.prototype.item = undefined
-eYo.T3.Profile.prototype.type = undefined
+eYo.T3.Profile.prototype.raw = eYo.VOID
+eYo.T3.Profile.prototype.expr = eYo.VOID
+eYo.T3.Profile.prototype.stmt = eYo.VOID
+eYo.T3.Profile.prototype.name = eYo.VOID
+eYo.T3.Profile.prototype.module = eYo.VOID
+eYo.T3.Profile.prototype.item = eYo.VOID
+eYo.T3.Profile.prototype.type = eYo.VOID
 */
 
 /**

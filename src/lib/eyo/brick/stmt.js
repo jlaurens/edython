@@ -123,7 +123,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
             })
           } else {
             parent.dispose(true)
-            parent = undefined
+            parent = eYo.VOID
           }
         }
       }
@@ -407,7 +407,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Decorate.onChangeCount(
+eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Cache.decorate(
   'getType',
   function () {
     this.setupType(

@@ -39,12 +39,12 @@ eYo.Driver.prototype.dispose = function () {
 
 /**
  * Returns the bounding box of the node.
- * Defaults implementation returns `undefined`.
+ * Defaults implementation returns `eYo.VOID`.
  * @param {!Object} node  the node the driver acts on
  * @private
  */
 eYo.Driver.prototype.brickGetBBox = function (node) {
-  return undefined
+  return eYo.VOID
 }
 
 /**

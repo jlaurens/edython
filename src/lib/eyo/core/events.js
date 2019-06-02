@@ -300,7 +300,7 @@ eYo.Events.disableOrphans = function(event) {
 eYo.Events.Abstract = function(board) {
   /**
    * The board identifier for this event.
-   * @type {string|undefined}
+   * @type {string|eYo.VOID}
    */
   this.boardId = board.id
 

@@ -873,7 +873,7 @@ eYo.Node.prototype.comprehensionInBrick = function (brick) {
   var d = brick
   var dd
   while ((dd = d.comp_iter)) {
-    d.comp_iter = undefined
+    d.comp_iter = eYo.VOID
     for_if_b.connectLast((d = dd))
   }
 }
@@ -907,7 +907,7 @@ eYo.Node.prototype.dict_comprehension2Brick = function (owner) {
   var d0 = brick
   var d1
   while ((d1 = d0.comp_iter)) {
-    d0.comp_iter = undefined
+    d0.comp_iter = eYo.VOID
     t.connectLast((d0 = d1))
   }
   return brick

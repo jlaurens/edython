@@ -54,9 +54,9 @@ eYo.setup = (() => {
   var i11rsTail = []
   var me = (board) => {
     i11rsHead.forEach(i11r => i11r())
-    i11rsHead = undefined
+    i11rsHead = eYo.VOID
     i11rsTail.reverse().forEach(i11r => i11r())
-    i11rsTail = undefined
+    i11rsTail = eYo.VOID
   }
   me.register = (when, i11r, key) => {
     if (goog.isFunction(when)) {
@@ -83,3 +83,17 @@ eYo.setup = (() => {
   }
   return me
 })()
+
+Object.defineProperties(eYo, {
+  Temp: {
+    value: Object.create(null)
+  }
+})
+
+eYo.Temp.x = (() => {
+  var x
+  Object.defineProperty(eYo, 'VOID', {
+    value: x
+  })
+})()
+

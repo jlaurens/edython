@@ -232,7 +232,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
  * @return some python code
  */
 eYo.Py.Exporter.prototype.export = function (brick, opt) {
-  this.line = undefined
+  this.line = eYo.VOID
   this.lines = []
   this.indents = []
   this.indent = ''

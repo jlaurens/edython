@@ -2,7 +2,7 @@ describe('Create', function() {
   it(`Basic`, function() {
     eYo.Test.setItUp()
     var b3k = eYo.Test.new_brick('identifier')
-    chai.assert(b3k.change.count !== undefined, 'MISSED 3')
+    chai.assert(b3k.change.count !== eYo.VOID, 'MISSED 3')
     chai.assert(eYo.App.board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
     b3k.dispose()
     eYo.Test.tearItDown()
@@ -49,7 +49,7 @@ describe('Statement magnets', function () {
       b_1[args[0]] = b_2
       chai.assert(b_1[args[0]] === b_2, `MISSED ${args[0]} -> ${args[1]}`)
       chai.assert(b_2[args[1]] === b_1, `MISSED ${args[1]} <- ${args[0]}`)
-      b_1[args[0]] = undefined
+      b_1[args[0]] = eYo.VOID
       chai.assert(!b_1[args[0]], `MISSED ${args[0]} -> falsy`)
       chai.assert(!b_2[args[1]], `MISSED ${args[1]} <- falsy`)
     })  
@@ -59,7 +59,7 @@ describe('Statement magnets', function () {
       b_1[k] = b_2
       chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
       chai.assert(b_1.parent === b_2, `MISSED parent <- ${k}`)
-      b_1[k] = undefined
+      b_1[k] = eYo.VOID
       chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
       chai.assert(!b_1.parent, `MISSED parent <- falsy`)
     })
@@ -69,7 +69,7 @@ describe('Statement magnets', function () {
       b_1[k] = b_2
       chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
       chai.assert(b_2.parent === b_1, `MISSED parent <- ${k}`)
-      b_1[k] = undefined
+      b_1[k] = eYo.VOID
       chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
       chai.assert(!b_2.parent, `MISSED parent <- falsy`)
     })
@@ -108,7 +108,7 @@ describe('Group magnets', function () {
       b_1[args[0]] = b_2
       chai.assert(b_1[args[0]] === b_2, `MISSED ${args[0]} -> ${args[1]}`)
       chai.assert(b_2[args[1]] === b_1, `MISSED ${args[1]} <- ${args[0]}`)
-      b_1[args[0]] = undefined
+      b_1[args[0]] = eYo.VOID
       chai.assert(!b_1[args[0]], `MISSED ${args[0]} -> falsy`)
       chai.assert(!b_2[args[1]], `MISSED ${args[1]} <- falsy`)
     })  
@@ -118,7 +118,7 @@ describe('Group magnets', function () {
       b_1[k] = b_2
       chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
       chai.assert(b_1.parent === b_2, `MISSED parent <- ${k}`)
-      b_1[k] = undefined
+      b_1[k] = eYo.VOID
       chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
       chai.assert(!b_1.parent, `MISSED parent <- falsy`)
     })
@@ -128,7 +128,7 @@ describe('Group magnets', function () {
       b_1[k] = b_2
       chai.assert(b_1[k] === b_2, `MISSED ${k} -> parent`)
       chai.assert(b_2.parent === b_1, `MISSED parent <- ${k}`)
-      b_1[k] = undefined
+      b_1[k] = eYo.VOID
       chai.assert(!b_1[k], `MISSED ${k} -> falsy`)
       chai.assert(!b_2.parent, `MISSED parent <- falsy`)
     })

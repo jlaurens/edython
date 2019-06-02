@@ -61,7 +61,7 @@ eYo.Consolidator.prototype.init = function(d) {
  * Removes empty place holders
  * @param {!eYo.Brick} brick, to be consolidated....
  */
-eYo.Consolidator.prototype.consolidate = undefined
+eYo.Consolidator.prototype.consolidate = eYo.VOID
 
 /**
  * Create a subclass of a consolidator.
@@ -171,7 +171,7 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.setupIO = function (io, i) {
-  if (i !== undefined) {
+  if (i !== eYo.VOID) {
     io.i = i
   }
   if ((io.input = io.list[io.i])) {
@@ -207,7 +207,7 @@ eYo.Consolidator.List.prototype.willBeConnected = function (io) {
  * Insert a placeholder at the given index.
  * io is properly set up at the end.
  * @param {!Object} io parameter.
- * @param {number} i When undefined, take io.i
+ * @param {number} i When eYo.VOID, take io.i
  * @return {eYo.Input}, the input inserted.
  */
 eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
@@ -278,7 +278,7 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
  * Finalize the current input as a placeholder.
  * @param {!Object} io parameter.
  */
-eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = undefined, optional = false) {
+eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo.VOID, optional = false) {
   io.input.lst_n = io.n
   io.input.lst_presep = io.presep
   io.input.lst_postsep = io.postsep
@@ -326,7 +326,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     sep && sep.length && (f(sep, true))
   }
   io.input.check = this.getCheck(io)
-  io.m4t.hidden_ = undefined
+  io.m4t.hidden_ = eYo.VOID
   if (io.brick.locked_) {
     io.m4t.hidden_ = true
   } else if (io.i === 0 && io.noLeftSeparator && io.list.length > 1) {
@@ -588,7 +588,7 @@ eYo.Consolidator.List.prototype.doAry = function (io) {
 eYo.Consolidator.List.prototype.doFinalize = function (io) {
   this.setupIO(io, 0)
   if (io.list.length === 1) {
-    this.doFinalizePlaceholder(io, undefined, !this.getMandatory(io))
+    this.doFinalizePlaceholder(io, eYo.VOID, !this.getMandatory(io))
     return
   }
   var previous = eYo.Do.Name.min_name
@@ -622,12 +622,12 @@ eYo.Consolidator.List.prototype.doFinalize = function (io) {
 eYo.Consolidator.List.prototype.doLink = function (io) {
   this.setupIO(io, 0)
   var wasSeparator = false
-  var previous = undefined
+  var previous = eYo.VOID
   while (this.nextInput(io)) {
     if (io.m4t.s7r_) {
       if (previous) {
         previous.nextIsSeparator = true
-        previous = undefined
+        previous = eYo.VOID
       }
       wasSeparator = true
     } else {
@@ -706,7 +706,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
  * @param {!eYo.Brick} brick
  * @param {String} name The name of the input.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {eYo.Input} The input object, or null if input does not exist or undefined for the default brick implementation.
+ * @return {eYo.Input} The input object, or null if input does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Consolidator.List.prototype.getInput = function (brick, name, dontCreate) {
   // name = eYo.Do.Name.getNormalized(name) not here
@@ -777,7 +777,7 @@ eYo.Consolidator.List.prototype.getInput = function (brick, name, dontCreate) {
  * Enumerator object. Used by the print brick.
  * @param {object} io argument object
  * @param {Object} type, string or array of strings
- * @return the next keyword item input, undefined when at end.
+ * @return the next keyword item input, eYo.VOID when at end.
  */
 eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
   var filter = goog.isArray(type)
@@ -797,7 +797,7 @@ eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
       return io.input
     }
   }
-  return undefined
+  return eYo.VOID
 }
 
 /**
@@ -805,7 +805,7 @@ eYo.Consolidator.List.prototype.nextInputForType = function (io, type) {
  * Used by the print brick.
  * @param {!eYo.Brick} brick
  * @param {Object} type, string or array of strings
- * @return the next keyword item input, undefined when at end.
+ * @return the next keyword item input, eYo.VOID when at end.
  */
 eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {
   var io = this.getIO(brick)

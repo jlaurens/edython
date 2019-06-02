@@ -95,18 +95,18 @@ Object.defineProperties(eYo.Magnets.prototype, {
 eYo.Magnets.prototype.dispose = function () {
   if (this.out_) {
     this.out_.dispose()
-    this.out_ = undefined
+    this.out_ = eYo.VOID
   } else {
     this.head_ && this.head_.dispose()
-    this.head_ = undefined
+    this.head_ = eYo.VOID
     this.left_ && this.left_.dispose()
-    this.left_ = undefined
+    this.left_ = eYo.VOID
     this.right_ && this.right_.dispose()
-    this.right_ = undefined
+    this.right_ = eYo.VOID
     this.suite_ && this.suite_.dispose()
-    this.suite_ = undefined
+    this.suite_ = eYo.VOID
     this.foot_ && this.foot_.dispose()
-    this.foot_ = undefined
+    this.foot_ = eYo.VOID
   }
 }
 
@@ -330,27 +330,27 @@ eYo.Magnet.prototype.dispose = function (healStack) {
   }
   if (this.wrapped_) {
     this.brick.removeWrapperMagnet(this)
-    this.wrapped_ = undefined
+    this.wrapped_ = eYo.VOID
   }
-  this.promised_ = undefined
+  this.promised_ = eYo.VOID
   this.inDB_ = false
   this.db_ = this.dbOpposite_ = null
   this.ui_driver && this.ui_driver.magnetDispose(this)
   eYo.Field.disposeFields(this)
-  this.where_ = this.model_ = undefined
+  this.where_ = this.model_ = eYo.VOID
   eYo.Magnet.superClass_.dispose.call(this)
 }
 
 // private properties
 Object.defineProperties(eYo.Magnet.prototype, {
-  model_: { value: undefined, writable: true },
-  type_: { value: undefined, writable: true },
-  hidden_: { value: undefined, writable: true },
-  wrapped_: { value: undefined, writable: true },
-  promised_: { value: undefined, writable: true },
-  check_: {value: undefined, writable: true },
-  name_: { value: undefined, writable: true },
-  visible_: { value: undefined, writable: true },
+  model_: { value: eYo.VOID, writable: true },
+  type_: { value: eYo.VOID, writable: true },
+  hidden_: { value: eYo.VOID, writable: true },
+  wrapped_: { value: eYo.VOID, writable: true },
+  promised_: { value: eYo.VOID, writable: true },
+  check_: {value: eYo.VOID, writable: true },
+  name_: { value: eYo.VOID, writable: true },
+  visible_: { value: eYo.VOID, writable: true },
 })
 
 // computed private properties
@@ -681,7 +681,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     get () {
       var t4t = this.target
       if (!t4t) {
-        return undefined
+        return eYo.VOID
       }
       var brick = t4t.brick
       if (!brick.isWhite) {
@@ -692,11 +692,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
       } else if (t4t.isFoot) {
         F = x => x.head_m
       } else {
-        return undefined
+        return eYo.VOID
       }
       do {
         if (!(t4t = F(brick)) || !(t4t = t4t.target) || !(brick = t4t.brick)) {
-          return undefined
+          return eYo.VOID
         }
         if (!brick.isWhite) {
           return t4t
@@ -713,7 +713,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
    * If the connection is named, returns the connection, whatever its source brick
    * status may be.
    * @param F optional function defaults to !argument.isWhite
-   * @return a connection, possibly undefined
+   * @return a connection, possibly eYo.VOID
    */
   blackMagnet: {
     get () {
@@ -975,7 +975,7 @@ eYo.Magnet.prototype.updateCheck = function () {
  * Get the magnet of the same kind on the brick above.
  * If the magnet is named (Why should it be?), returns the connection,
  * whatever its source brick status may be.
- * @return a connection, possibly undefined
+ * @return a connection, possibly eYo.VOID
  */
 eYo.Magnet.prototype.getMagnetAbove = function () {
   var ans = this.brick.head
@@ -995,7 +995,7 @@ eYo.Magnet.prototype.getMagnetAbove = function () {
 
 /**
  * Get the connection of the same kind on the brick below.
- * @return a magnet, possibly undefined
+ * @return a magnet, possibly eYo.VOID
  */
 eYo.Magnet.prototype.getMagnetBelow = function () {
   var ans = this.brick.foot
@@ -1449,7 +1449,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
           })
         }, () => { // finally
           childM4t.didConnect(oldChildT4t, oldParentT4t)
-          eYo.Magnet.connectedParent = undefined
+          eYo.Magnet.connectedParent = eYo.VOID
           childM4t.bindField && (childM4t.bindField.visible = false) // unreachable ?
         })
       })
@@ -1757,8 +1757,8 @@ eYo.Magnet.prototype.disconnect = (() => {
                       // next is not strong enough to save rendering
                       // eYo.Magnet.disconnectedParent = parentM4t
                       // eYo.Magnet.disconnectedChild = childM4t
-                      // eYo.Magnet.disconnectedParent = undefined
-                      // eYo.Magnet.disconnectedChild = undefined
+                      // eYo.Magnet.disconnectedParent = eYo.VOID
+                      // eYo.Magnet.disconnectedChild = eYo.VOID
                       parent.incrementInputChangeCount && (parent.incrementInputChangeCount()) // list are special
                       parentM4t.bindField && (parentM4t.bindField.visible = true) // no wrapped test
                       childM4t.bindField && (childM4t.bindField.visible = true) // unreachable ?
