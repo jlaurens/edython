@@ -122,7 +122,7 @@ eYo.Brick.Expr.prototype.canReplaceBrick = function (brick) {
  * @param {!eYo.Brick} brick
  */
 eYo.Brick.Expr.prototype.replaceBrick = function (brick) {
-  if (this.workspace && brick && brick.workspace) {
+  if (this.desk && brick && brick.desk) {
     eYo.Events.groupWrap(() => {
       eYo.Do.tryFinally(() => {
         var my_m4t = this.out_m

@@ -6,27 +6,27 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Workspace rendering driver.
+ * @fileoverview Desk rendering driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.Svg.Workspace')
+goog.provide('eYo.Svg.Desk')
 
 goog.require('eYo.Svg')
 
-goog.forwardDeclare('eYo.Workspace')
+goog.forwardDeclare('eYo.Desk')
 
 /**
- * Initialize the workspace SVG ressources.
- * @param {!eYo.Workspace} workspace
- * @return {!Element} The workspace's SVG group.
+ * Initialize the desk SVG ressources.
+ * @param {!eYo.Desk} desk
+ * @return {!Element} The desk's SVG group.
  */
-eYo.Svg.prototype.workspaceInit = function(workspace) {
-  if (workspace.dom) {
+eYo.Svg.prototype.deskInit = function(desk) {
+  if (desk.dom) {
     return
   }
-  var dom = eYo.Svg.superClass_.workspaceInit.call(this, workspace)
+  var dom = eYo.Svg.superClass_.deskInit.call(this, desk)
   var svg = dom.svg = Object.create(null)
   svg.size = {}
   // Build the SVG DOM.
@@ -41,7 +41,7 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   </svg>
   */
   
-  var div = workspace.factory.dom.div_
+  var div = desk.factory.dom.div_
   var root = svg.root_ = eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
@@ -49,14 +49,14 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     version: '1.1',
     'class': 'eyo-svg'
   }, div)
-  var options = workspace.options
-  options.zoom && (workspace.scale = options.zoom.startScale)
+  var options = desk.options
+  options.zoom && (desk.scale = options.zoom.startScale)
   // A null translation will also apply the correct initial scale.
-  workspace.xyMoveTo(0, 0)
+  desk.xyMoveTo(0, 0)
 
   /**
-  * <g class="eyo-workspace-surface">
-  *   <rect class="eyo-main-workspace-background" height="100%" width="100%"></rect>
+  * <g class="eyo-desk-surface">
+  *   <rect class="eyo-main-desk-background" height="100%" width="100%"></rect>
   *   [Trashcan and/or flyout may go here]
   *   <g class="eyo-brick-canvas"></g>
   * </g>
@@ -64,13 +64,13 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-workspace-surface'},
+    {'class': 'eyo-desk-surface'},
     root
   )
 
   // Note that a <g> alone does not receive mouse events--it must have a
   // valid target inside it.  If no background class is specified, as in the
-  // flyout, the workspace will not receive mouse events.
+  // flyout, the desk will not receive mouse events.
   /** @type {SVGElement} */
   svg.background_ = eYo.Svg.newElement(
     'rect',
@@ -87,16 +87,16 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
     {'class': 'eyo-brick-canvas'},
     g
   )
-  if (!workspace.isFlyout) {
-    this.workspaceBind_mousedown(workspace)
-    if (workspace.options.zoom && workspace.options.zoom.wheel) {
-      this.workspaceBind_wheel(workspace)
+  if (!desk.isFlyout) {
+    this.deskBind_mousedown(desk)
+    if (desk.options.zoom && desk.options.zoom.wheel) {
+      this.deskBind_wheel(desk)
     }
   }
   if (!options.readOnly && !options.hasScrollbars) {
-    var workspaceChanged = function() {
-      if (!workspace.isDragging) {
-        var metrics = workspace.getMetrics()
+    var deskChanged = function() {
+      if (!desk.isDragging) {
+        var metrics = desk.getMetrics()
         var edgeLeft = metrics.view.left + metrics.absolute.left;
         var edgeTop = metrics.view.top + metrics.absolute.top;
         if (metrics.content.top < edgeTop ||
@@ -108,8 +108,8 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
                 metrics.view.width : metrics.view.width + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
-          workspace.getTopBricks(false).forEach(brick => {
-            var xy = brick.xyInWorkspace
+          desk.getTopBricks(false).forEach(brick => {
+            var xy = brick.xyInDesk
             var size = brick.size
             // Bump any brick that's above the top back inside.
             var overflowTop = edgeTop + MARGIN - size.height - xy.y;
@@ -138,43 +138,43 @@ eYo.Svg.prototype.workspaceInit = function(workspace) {
         }
       }
     }
-    workspace.addChangeListener(workspaceChanged)
+    desk.addChangeListener(deskChanged)
   }
   // The SVG is now fully assembled.
-  this.factoryResize(workspace.factory)
+  this.factoryResize(desk.factory)
 
-  this.workspaceBind_resize(workspace)
+  this.deskBind_resize(desk)
   eYo.Dom.bindDocumentEvents()
 
   if (options.hasScrollbars) {
-    workspace.scrollbar = new eYo.ScrollbarPair(workspace)
-    workspace.scrollbar.resize()
+    desk.scrollbar = new eYo.ScrollbarPair(desk)
+    desk.scrollbar.resize()
   }
 
   return g
 }
 
 /**
- * Dispose of the workspace SVG ressources.
- * @param {!eYo.Workspace} workspace
+ * Dispose of the desk SVG ressources.
+ * @param {!eYo.Desk} desk
  */
-eYo.Svg.prototype.workspaceDispose = function(workspace) {
-  var dom = workspace.dom
+eYo.Svg.prototype.deskDispose = function(desk) {
+  var dom = desk.dom
   if (dom) {
-    eYo.Dom.clearBoundEvents(workspace)
+    eYo.Dom.clearBoundEvents(desk)
     goog.dom.removeNode(dom.svg.group_)
     svg.group_ = svg.canvas_ = null
     dom.svg = null
   }
-  eYo.Svg.superClass_.workspaceDispose.call(this, workspace)
+  eYo.Svg.superClass_.deskDispose.call(this, desk)
 }
 
 /**
  * Add a `mousedown` listener.
- * @param {!eYo.Workspace} workspace
+ * @param {!eYo.Desk} desk
  */
-eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
-  var dom = workspace.dom
+eYo.Svg.prototype.deskBind_mousedown = function(desk) {
+  var dom = desk.dom
   var bound = dom.bound
   if (bound.mousedown) {
     return
@@ -183,19 +183,19 @@ eYo.Svg.prototype.workspaceBind_mousedown = function(workspace) {
     dom.svg.group_,
     'mousedown',
     null,
-    this.workspaceOn_mousedown.bind(workspace),
+    this.deskOn_mousedown.bind(desk),
     {noPreventDefault: true}
   )
 }
 
 /**
- * Handle a mouse-down on SVG drawing surface, bound to a workspace.
- * NB: this is intentionnaly not a member of `eYo.Workspace.prototype`
+ * Handle a mouse-down on SVG drawing surface, bound to a desk.
+ * NB: this is intentionnaly not a member of `eYo.Desk.prototype`
  * @param {!Event} e Mouse down event.
- * @this {eYo.Workspace}
+ * @this {eYo.Desk}
  * @private
  */
-eYo.Svg.prototype.workspaceOn_mousedown = function(e) {
+eYo.Svg.prototype.deskOn_mousedown = function(e) {
   var gesture = this.getGesture(e)
   if (gesture) {
     gesture.handleWsStart(e, this)
@@ -204,29 +204,29 @@ eYo.Svg.prototype.workspaceOn_mousedown = function(e) {
 
 /**
  * Add a `wheel` listener.
- * @param {!eYo.Workspace} workspace
+ * @param {!eYo.Desk} desk
  */
-eYo.Svg.prototype.workspaceBind_wheel = function(workspace) {
-  var bound = workspace.dom.bound
+eYo.Svg.prototype.deskBind_wheel = function(desk) {
+  var bound = desk.dom.bound
   if (bound.wheel) {
     return
   }
   bound.wheel = eYo.Dom.bindEvent(
-    workspace.dom.svg.group_,
+    desk.dom.svg.group_,
     'wheel',
     null,
-    this.workspaceOn_wheel.bind(workspace)
+    this.deskOn_wheel.bind(desk)
   )
 }
 
 /**
  * Handle a mouse-wheel on SVG drawing surface.
- * Bound to a workspace.
+ * Bound to a desk.
  * @param {!Event} e Mouse wheel event.
- * @this {eYo.Workspace}
+ * @this {eYo.Desk}
  * @private
  */
-eYo.Svg.prototype.workspaceOn_wheel = function(e) {
+eYo.Svg.prototype.deskOn_wheel = function(e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
   if (this.gesture_) {
@@ -234,7 +234,7 @@ eYo.Svg.prototype.workspaceOn_wheel = function(e) {
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
-  var position = this.xyEventInWorkspace(e)
+  var position = this.xyEventInDesk(e)
   this.zoom(position.x, position.y, delta)
   e.preventDefault()
 }
@@ -242,45 +242,45 @@ eYo.Svg.prototype.workspaceOn_wheel = function(e) {
 /**
  * Show or hide the svg.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceVisibleGet = function (workspace) {
-  return workspace.dom.svg.root_.style.display !== 'none'
+eYo.Svg.prototype.deskVisibleGet = function (desk) {
+  return desk.dom.svg.root_.style.display !== 'none'
 }
 
 /**
  * Show or hide the svg.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceVisibleSet = function (workspace, isVisible) {
-  workspace.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
+eYo.Svg.prototype.deskVisibleSet = function (desk, isVisible) {
+  desk.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
 }
 
 /**
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceSetBrickDisplayMode = function (workspace, mode) {
-  var canvas = workspace.dom.svg.canvas_
-  workspace.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${workspace.currentBrickDisplayMode}`))
-  if ((workspace.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(canvas, `eyo-${workspace.currentBrickDisplayMode}`)
+eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
+  var canvas = desk.dom.svg.canvas_
+  desk.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${desk.currentBrickDisplayMode}`))
+  if ((desk.currentBrickDisplayMode = mode)) {
+    goog.dom.classlist.add(canvas, `eyo-${desk.currentBrickDisplayMode}`)
   }
 }
 
 /**
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
-  var bound = workspace.dom.bound || Object.create(null)
+eYo.Svg.prototype.deskBind_resize = function (desk) {
+  var bound = desk.dom.bound || Object.create(null)
   if (bound.resize) {
     return
   }
@@ -290,37 +290,37 @@ eYo.Svg.prototype.workspaceBind_resize = function (workspace) {
     null,
     () => {
       eYo.App.hideChaff()
-      workspace.factory.resize()
+      desk.factory.resize()
     }
   )
 }
 
 /**
- * Translate this workspace to new coordinates.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * Translate this desk to new coordinates.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {number} x Horizontal translation.
  * @param {number} y Vertical translation.
  */
-eYo.Svg.prototype.workspaceCanvasMoveTo = function (workspace, x, y) {
-  var translation = `translate(${x},${y}) scale(${workspace.scale})`
-  workspace.dom.svg.canvas_.setAttribute('transform', translation)
+eYo.Svg.prototype.deskCanvasMoveTo = function (desk, x, y) {
+  var translation = `translate(${x},${y}) scale(${desk.scale})`
+  desk.dom.svg.canvas_.setAttribute('transform', translation)
 }
 
 /**
  * Prepares the UI for dragging.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
-  var element = workspace.dom.svg.group_.parentNode.parentNode // div above the `svg` element
-  var dragger = workspace.dragger_
+eYo.Svg.prototype.deskStartDrag = function (desk) {
+  var element = desk.dom.svg.group_.parentNode.parentNode // div above the `svg` element
+  var dragger = desk.dragger_
   dragger.correction_ = eYo.Svg.getTransformCorrection(element)
   var surface = dragger.dragSurface_
   if (surface) {
-    var svg = workspace.dom.svg
+    var svg = desk.dom.svg
     var previousElement = svg.canvas_.previousSibling
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
-    surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.workspace_.scale)
+    surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.desk_.scale)
     var coord = eYo.Svg.getRelativeXY(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
@@ -328,36 +328,36 @@ eYo.Svg.prototype.workspaceStartDrag = function (workspace) {
 
 /**
  * Prepares the UI for dragging.
- * @param {!eYo.Workspace} mode  The display mode for bricks.
+ * @param {!eYo.Desk} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.workspaceDragDeltaXY = function (workspace) {
-  var deltaXY = workspace.gesture_.deltaXY_
-  var correction = workspace.dragger_.correction_
+eYo.Svg.prototype.deskDragDeltaXY = function (desk) {
+  var deltaXY = desk.gesture_.deltaXY_
+  var correction = desk.dragger_.correction_
   return correction ? correction(deltaXY) : deltaXY
 }
 
 /**
- * Set the workspace to have focus in the browser.
+ * Set the desk to have focus in the browser.
  * @private
  */
-eYo.Svg.prototype.workspaceSetBrowserFocus = function(workspace) {
+eYo.Svg.prototype.deskSetBrowserFocus = function(desk) {
   // Blur whatever was focused since explicitly grabbing focus below does not
   // work in Edge.
   if (document.activeElement) {
     document.activeElement.blur()
   }
-  var root = workspace.dom.svg.root_
+  var root = desk.dom.svg.root_
   try {
-    // Focus the workspace SVG - this is for Chrome and Firefox.
+    // Focus the desk SVG - this is for Chrome and Firefox.
     root.focus()
   } catch (e) {
     // IE and Edge do not support focus on SVG elements. When that fails
-    // above, get the factory div (the workspace's parent) and focus that
+    // above, get the factory div (the desk's parent) and focus that
     // instead.  This doesn't work in Chrome.
     var parent = root.parentNode
     try {
       // In IE11, use setActive (which is IE only) so the page doesn't scroll
-      // to the workspace gaining focus.
+      // to the desk gaining focus.
       parent.setActive()
     } catch (e) {
       // setActive support was discontinued in Edge so when that fails, call
@@ -370,8 +370,8 @@ eYo.Svg.prototype.workspaceSetBrowserFocus = function(workspace) {
 /**
  * Update the inverted screen CTM.
  */
-eYo.Svg.prototype.workspaceSizeDidChange = function(workspace) {
-  var svg = workspace.dom.svg
+eYo.Svg.prototype.deskSizeDidChange = function(desk) {
+  var svg = desk.dom.svg
   var ctm = svg.root_.getScreenCTM()
   svg.inverseScreenCTM_ = ctm ? ctm.inverse() : null
 }
@@ -379,26 +379,26 @@ eYo.Svg.prototype.workspaceSizeDidChange = function(workspace) {
 /**
  * Update the inverted screen CTM.
  */
-eYo.Svg.prototype.workspaceMouseInRoot = function(workspace, e) {
-  var svg = workspace.dom.svg
+eYo.Svg.prototype.deskMouseInRoot = function(desk, e) {
+  var svg = desk.dom.svg
   return eYo.Svg.locationOfEvent(svg.root_, e, 
     svg.inverseScreenCTM_)
 }
 
 /**
  * Zooming the blocks centered in (x, y) coordinate with zooming in or out.
- * @param {eYo.Workspace} workspace
+ * @param {eYo.Desk} desk
  * @param {number} x X coordinate of center.
  * @param {number} y Y coordinate of center.
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
-eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
-  var options = workspace.options.zoom
+eYo.Svg.prototype.deskZoom = function(desk, x, y, amount) {
+  var options = desk.options.zoom
   goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
   var speed = options.scaleSpeed
-  var metrics = workspace.getMetrics()
-  var svg = workspace.dom.svg
+  var metrics = desk.getMetrics()
+  var svg = desk.dom.svg
   var center = svg.root_.createSVGPoint();
   center.x = x
   center.y = y
@@ -409,25 +409,25 @@ eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
   // Scale factor.
   var scaleChange = Math.pow(speed, amount)
   // Clamp scale within valid range.
-  var newScale = workspace.scale * scaleChange;
+  var newScale = desk.scale * scaleChange;
   if (newScale > options.maxScale) {
-    scaleChange = options.maxScale / workspace.scale
+    scaleChange = options.maxScale / desk.scale
   } else if (newScale < options.minScale) {
-    scaleChange = options.minScale / workspace.scale
+    scaleChange = options.minScale / desk.scale
   }
-  if (workspace.scale == newScale) {
+  if (desk.scale == newScale) {
     return // No change in zoom.
   }
-  if (workspace.scrollbar) {
+  if (desk.scrollbar) {
     var matrix = CTM
         .translate(x * (1 - scaleChange), y * (1 - scaleChange))
         .scale(scaleChange)
     // newScale and matrix.a should be identical (within a rounding error).
     // ScrollX and scrollY are in pixels.
-    workspace.scrollX = matrix.e - metrics.absolute.left
-    workspace.scrollY = matrix.f - metrics.absolute.top
+    desk.scrollX = matrix.e - metrics.absolute.left
+    desk.scrollY = matrix.f - metrics.absolute.top
   }
-  workspace.scale = newScale
+  desk.scale = newScale
 }
 
 /**
@@ -438,14 +438,14 @@ eYo.Svg.prototype.workspaceZoom = function(workspace, x, y, amount) {
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
  * @private
  */
-eYo.Svg.prototype.workspaceXYElement = function(workspace, element) {
+eYo.Svg.prototype.deskXYElement = function(desk, element) {
   var x = 0;
   var y = 0;
   var scale = 1
-  var canvas = workspace.dom.svg.canvas_
+  var canvas = desk.dom.svg.canvas_
   if (goog.dom.contains(canvas, element)) {
     // Before the SVG canvas, scale the coordinates
-    scale = workspace.scale
+    scale = desk.scale
   }
   do {
     // Loop through this brick and every parent.
@@ -456,6 +456,6 @@ eYo.Svg.prototype.workspaceXYElement = function(workspace, element) {
     }
     x += xy.x * scale;
     y += xy.y * scale;
-  } while ((element = element.parentNode) && element != workspace.dom.svg.root_)
+  } while ((element = element.parentNode) && element != desk.dom.svg.root_)
   return new goog.math.Coordinate(x, y);
 }

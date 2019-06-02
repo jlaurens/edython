@@ -39,7 +39,7 @@ goog.provide('eYo.Options')
  *  Supresses the flyout and trashcan.
  *  Defaults to false.
  * scrollbars:	boolean
- *  Sets whether the workspace is scrollable or not.
+ *  Sets whether the desk is scrollable or not.
  *  Defaults to false.
  * sounds:	boolean
  *  If false, don't play sounds (e.g. click and delete).
@@ -86,7 +86,7 @@ eYo.Options = function(options) {
   this.smartUnary = eYo.Do.ifDef(options.smartUnary, true)
   this.flyoutAnchor = eYo.Do.ifDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
   this.container = eYo.Do.ifDef(options.container, 'eyo-factory')
-  this.backgroundClass = eYo.Do.ifDef(options.backgroundClass,'eyo-main-workspace-background')
+  this.backgroundClass = eYo.Do.ifDef(options.backgroundClass,'eyo-main-desk-background')
   var pathToMedia = options.media || './static/media'
   // Strip off any trailing slash (either Unix or Windows).
   pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
@@ -95,12 +95,12 @@ eYo.Options = function(options) {
 }
 
 /**
- * If set, sets the translation of the workspace to match the scrollbars.
+ * If set, sets the translation of the desk to match the scrollbars.
  */
 eYo.Options.prototype.setMetrics = null
 
 /**
- * Return an object with the metrics required to size the workspace.
+ * Return an object with the metrics required to size the desk.
  * @return {Object} Contains size and position metrics, or null.
  */
 eYo.Options.prototype.getMetrics = null

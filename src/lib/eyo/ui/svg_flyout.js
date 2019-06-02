@@ -34,7 +34,7 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     <g class="eyo-flyout-canvas">
       <path class="eyo-flyout-background"/>
     </g>
-    <g class="eyo-workspace">...</g>
+    <g class="eyo-desk">...</g>
   </svg>
   */
  var root = svg.root_ = eYo.Svg.newElement('svg', {
@@ -325,10 +325,10 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
   if (flyout.toolbar_) {
     flyout.toolbar_.positionAt_(width, height, x, y)
   }
-  flyout.workspace_.resizeContents()
-  var workspace = flyout.targetWorkspace_
-  if (workspace) {
-    var scrollbar = workspace.scrollbar
+  flyout.desk_.resizeContents()
+  var desk = flyout.targetDesk_
+  if (desk) {
+    var scrollbar = desk.scrollbar
     if (scrollbar) {
       scrollbar.oldHostMetrics_ = null
       if (scrollbar.hScroll) {
@@ -338,8 +338,8 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
         scrollbar.vScroll.oldHostMetrics_ = null
       }
     }
-    workspace.resizeContents()
-    workspace.trashcan.place()
+    desk.resizeContents()
+    desk.trashcan.place()
   }
 }
 
@@ -365,7 +365,7 @@ eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
     // Flyout is hidden.
     return null
   }
-  var W = flyout.workspace_
+  var W = flyout.desk_
   try {
     var optionBox = W.dom.svg.canvas_.getBBox()
   } catch (e) {
@@ -409,7 +409,7 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (!metrics) {
     return
   }
-  var W = flyout.workspace_
+  var W = flyout.desk_
   if (goog.isNumber(xyRatio.y)) {
     W.scrollY = -metrics.content.height * xyRatio.y
   }
@@ -468,7 +468,7 @@ eYo.Svg.prototype.flyoutUpdate = function(flyout, width, height) {
   var path = [`M ${atRight ? width : 0},${top_margin}`];
   // Top.
   path.push('h', atRight ? -width : width);
-  // Side closest to workspace.
+  // Side closest to desk.
   path.push('v', Math.max(0, height - top_margin));
   // Bottom.
   path.push('h', atRight ? width : -width);
@@ -502,7 +502,7 @@ eYo.Svg.prototype.flyoutAddListeners = function(flyout, brick) {
     'mousedown',
     null,
     e => {
-      var gesture = flyout.targetWorkspace_.getGesture(e)
+      var gesture = flyout.targetDesk_.getGesture(e)
       if (gesture) {
         gesture.startBrick = brick
         gesture.handleFlyoutStart(e, flyout)
@@ -540,7 +540,7 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
     'mouseover',
     null,
     () => {
-      flyout.workspace_.getTopBricks(false).forEach(b3k => b3k.removeSelect)
+      flyout.desk_.getTopBricks(false).forEach(b3k => b3k.removeSelect)
     }
   ))
 }
@@ -576,7 +576,7 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @private
  */
 eYo.Svg.prototype.flyoutOn_mousedown = function(e) {
-  var gesture = this.targetWorkspace_.getGesture(e)
+  var gesture = this.targetDesk_.getGesture(e)
   if (gesture) {
     gesture.handleFlyoutStart(e, this)
   }

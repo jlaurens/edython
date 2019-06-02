@@ -52,7 +52,7 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   // is equal to the current relative-to-surface position,
   // to keep the position in sync as it moves on/off the surface.
   var brick = brickDragger.brick_
-  var xy = this.brickXYInWorkspace(brick)
+  var xy = this.brickXYInDesk(brick)
   this.removeAttribute(brick.dom.svg.group_, 'transform')
   var dragSurface = brickDragger.factory.dom.svg.brickDragSurface
   dragSurface.xyMoveTo(xy.x, xy.y)
@@ -74,5 +74,5 @@ eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
   var dXY = dragger.destination.fromPixelUnit(delta)
   var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, dXY)
   b3k.ui.xyMoveTo(newLoc)
-  b3k.factory.dom.svg.brickDragSurface.clearAndHide(b3k.workspace.dom.svg.canvas_)
+  b3k.factory.dom.svg.brickDragSurface.clearAndHide(b3k.desk.dom.svg.canvas_)
 }

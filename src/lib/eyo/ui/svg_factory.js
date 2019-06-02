@@ -34,7 +34,7 @@ eYo.Svg.prototype.factoryInit = function(factory) {
   // in the dom is important because things are layered.
   if (eYo.Dom.is3dSupported) {
     svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-    svg.workspaceDragSurface = new eYo.Svg.WorkspaceDragSurface(dom.div_)
+    svg.deskDragSurface = new eYo.Svg.DeskDragSurface(dom.div_)
   }
 }
 
@@ -64,17 +64,17 @@ eYo.Svg.prototype.factorySetBrickDisplayMode = function (factory, mode) {
 }
 
 /**
- * Size the main workspace to completely fill its container.
+ * Size the main desk to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
- * See eYo.Svg.workspaceResizeContents to resize the workspace when the contents
+ * See eYo.Svg.deskResizeContents to resize the desk when the contents
  * change (e.g. when a block is added or removed).
  * Record the height/width of the SVG image.
  * @param {!eYo.Factory} factory A factory.
  */
 eYo.Svg.factoryResize = eYo.Svg.prototype.factoryResize = function(factory) {
-  var mainWorkspace = factory.mainWorkspace
-  var svg = mainWorkspace.dom.svg
+  var mainDesk = factory.mainDesk
+  var svg = mainDesk.dom.svg
   var size = svg.size
   var root = svg.root_
   var div = factory.dom.div_
@@ -88,7 +88,7 @@ eYo.Svg.factoryResize = eYo.Svg.prototype.factoryResize = function(factory) {
     root.setAttribute('height', height + 'px')
     size.height = height
   }
-  mainWorkspace.resize()
+  mainDesk.resize()
 }
 
 /**

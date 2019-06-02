@@ -17,7 +17,7 @@ goog.provide('eYo.ScrollbarPair');
 
 goog.require('eYo')
 
-goog.forwardDeclare('eYo.Workspace')
+goog.forwardDeclare('eYo.Desk')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -30,25 +30,25 @@ goog.forwardDeclare('goog.events')
 
 /**
  * Class for a pair of scrollbars.  Horizontal and vertical.
- * @param {!eYo.Workspace} workspace Workspace to bind the scrollbars to.
+ * @param {!eYo.Desk} desk Desk to bind the scrollbars to.
  * @constructor
  */
-eYo.ScrollbarPair = function(workspace) {
-  this.workspace_ = workspace;
+eYo.ScrollbarPair = function(desk) {
+  this.desk_ = desk;
   this.hScroll = new eYo.Scrollbar(
-    workspace,
+    desk,
     true,
     true,
-    'blocklyMainWorkspaceScrollbar'
+    'blocklyMainDeskScrollbar'
   )
   this.vScroll = new eYo.Scrollbar(
-    workspace,
+    desk,
     false,
     true,
-    'blocklyMainWorkspaceScrollbar'
+    'blocklyMainDeskScrollbar'
   )
   this.disposeUI = eYo.Do.nothing
-  workspace.hasUI && this.makeUI()
+  desk.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.ScrollbarPair.prototype, {
@@ -58,7 +58,7 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
    */
   ui_driver: {
     get () {
-      return this.workspace_.ui_driver
+      return this.desk_.ui_driver
     }
   },
   hasUI: {
@@ -82,7 +82,7 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
 })
 
 /**
- * Previously recorded metrics from the workspace.
+ * Previously recorded metrics from the desk.
  * @type {Object}
  * @private
  */
@@ -93,7 +93,7 @@ eYo.ScrollbarPair.prototype.makeUI = function () {
 }
 
 /**
- * Previously recorded metrics from the workspace.
+ * Previously recorded metrics from the desk.
  * @type {Object}
  * @private
  */
@@ -106,7 +106,7 @@ eYo.ScrollbarPair.prototype.disposeUI = function () {
 }
 
 /**
- * Previously recorded metrics from the workspace.
+ * Previously recorded metrics from the desk.
  * @type {Object}
  * @private
  */
@@ -118,7 +118,7 @@ eYo.ScrollbarPair.prototype.oldHostMetrics_ = null;
  */
 eYo.ScrollbarPair.prototype.dispose = function() {
   this.disposeUI()
-  this.workspace_ = null
+  this.desk_ = null
   this.oldHostMetrics_ = null
   this.hScroll.dispose()
   this.hScroll = null
@@ -132,7 +132,7 @@ eYo.ScrollbarPair.prototype.dispose = function() {
  */
 eYo.ScrollbarPair.prototype.resize = function() {
   // Look up the host metrics once, and use for both scrollbars.
-  var hostMetrics = this.workspace_.getMetrics();
+  var hostMetrics = this.desk_.getMetrics();
   if (!hostMetrics) {
     // Host element is likely not visible.
     return;
@@ -212,7 +212,7 @@ eYo.ScrollbarPair.prototype.set = (() => {
 
     xyRatio.x = getRatio(hHandlePosition, hLength)
     xyRatio.y = getRatio(vHandlePosition, vLength)
-    this.workspace_.setMetrics(xyRatio)
+    this.desk_.setMetrics(xyRatio)
 
     this.hScroll.handlePosition = hHandlePosition
     this.vScroll.handlePosition = vHandlePosition
@@ -225,14 +225,14 @@ eYo.ScrollbarPair.prototype.set = (() => {
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {!eYo.Workspace} workspace Workspace to bind the scrollbar to.
+ * @param {!eYo.Desk} desk Desk to bind the scrollbar to.
  * @param {boolean} horizontal True if horizontal, false if vertical.
  * @param {boolean=} opt_pair True if scrollbar is part of a horiz/vert pair.
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.Scrollbar = function(workspace, horizontal, opt_pair, opt_class) {
-  this.workspace_ = workspace
+eYo.Scrollbar = function(desk, horizontal, opt_pair, opt_class) {
+  this.desk_ = desk
   this.pair_ = opt_pair || false
   this.horizontal_ = horizontal
 
@@ -240,7 +240,7 @@ eYo.Scrollbar = function(workspace, horizontal, opt_pair, opt_class) {
   this.x_ = this.y_ = this.dx_ = this.dy_ = 0
   
   this.disposeUI = eYo.Do.nothing
-  workspace.hasUI && this.makeUI(opt_class)
+  desk.hasUI && this.makeUI(opt_class)
 }
 
 Object.defineProperties(eYo.Scrollbar, {
@@ -299,9 +299,9 @@ Object.defineProperties(eYo.Scrollbar, {
 
 /**
  * @param {!Object} first An object containing computed measurements of a
- *    workspace.
+ *    desk.
  * @param {!Object} second Another object containing computed measurements of a
- *    workspace.
+ *    desk.
  * @return {boolean} Whether the two sets of metrics are equivalent.
  * @private
  */
@@ -332,7 +332,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    */
   ui_driver: {
     get () {
-      return this.workspace_.ui_driver
+      return this.desk_.ui_driver
     }
   },
   hasUI: {
@@ -341,7 +341,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     }
   },
   /**
-   * The location of the origin of the workspace that the scrollbar is in,
+   * The location of the origin of the desk that the scrollbar is in,
    * measured in CSS pixels relative to the injection div origin.  This is usually
    * (0, 0).  When the scrollbar is in a flyout it may have a different origin.
    * @type {goog.math.Coordinate}
@@ -435,7 +435,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     writable: true
   },
   /**
-   * Whether the workspace containing this scrollbar is visible.
+   * Whether the desk containing this scrollbar is visible.
    * @type {boolean}
    * @private
    */
@@ -453,7 +453,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
  * @private
  */
 eYo.Scrollbar.prototype.makeUI = function(opt_class) {
-  if (this.workspace_.hasUI) {
+  if (this.desk_.hasUI) {
     this.makeUI = eYo.Do.nothing
     delete this.disposeUI
     return this.ui_driver.scrollbarInit(this, opt_class)
@@ -474,7 +474,7 @@ eYo.Scrollbar.prototype.disposeUI = function() {
  */
 eYo.Scrollbar.prototype.dispose = function() {
   this.disposeUI()
-  this.workspace_ = null
+  this.desk_ = null
 }
 
 /**
@@ -500,7 +500,7 @@ eYo.Scrollbar.prototype.setScrollViewSize_ = function(newSize) {
 
 /**
  * Set the position of the scrollbar's SVG group in CSS pixels relative to the
- * scrollbar's origin.  This sets the scrollbar's location within the workspace.
+ * scrollbar's origin.  This sets the scrollbar's location within the desk.
  * @param {number} x The new x coordinate.
  * @param {number} y The new y coordinate.
  * @private
@@ -517,9 +517,9 @@ eYo.Scrollbar.prototype.setPosition_ = function(x, y) {
 }
 
 /**
- * Record the origin of the workspace that the scrollbar is in, in pixels
+ * Record the origin of the desk that the scrollbar is in, in pixels
  * relative to the injection div origin. This is for times when the scrollbar is
- * used in an object whose origin isn't the same as the main workspace
+ * used in an object whose origin isn't the same as the main desk
  * (e.g. in a flyout.)
  * @param {number} x The x coordinate of the scrollbar's origin, in CSS pixels.
  * @param {number} y The y coordinate of the scrollbar's origin, in CSS pixels.
@@ -544,7 +544,7 @@ eYo.Scrollbar.prototype.resize = function(opt_metrics) {
   // Determine the location, height and width of the host element.
   var hostMetrics = opt_metrics
   if (!hostMetrics) {
-    hostMetrics = this.workspace_.getMetrics()
+    hostMetrics = this.desk_.getMetrics()
     if (!hostMetrics) {
       // Host element is likely not visible.
       return
@@ -592,7 +592,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   this.setScrollViewSize_(Math.max(0, viewSize))
 
   var xCoordinate = hostMetrics.absolute.left + 0.5
-  // Horizontal toolbar should always be just above the bottom of the workspace.
+  // Horizontal toolbar should always be just above the bottom of the desk.
   var yCoordinate = hostMetrics.absolute.top + hostMetrics.view.height -
       eYo.Scrollbar.thickness - 0.5
   this.setPosition_(xCoordinate, yCoordinate)
@@ -604,7 +604,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
 
 /**
  * Recalculate a horizontal scrollbar's location within its path and length.
- * This should be called when the contents of the workspace have changed.
+ * This should be called when the contents of the desk have changed.
  * @param {!Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
  */
@@ -632,8 +632,8 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
 
 /**
  * Update visibility of scrollbar based on whether it thinks it should
- * be visible and whether its containing workspace is visible.
- * We cannot rely on the containing workspace being hidden to hide us
+ * be visible and whether its containing desk is visible.
+ * We cannot rely on the containing desk being hidden to hide us
  * because it is not necessarily our parent in the DOM.
  */
 eYo.Scrollbar.prototype.updateDisplay_ = function() {
@@ -670,7 +670,7 @@ eYo.Scrollbar.prototype.didScroll_ = function() {
   }
   var xyRatio = {}
   xyRatio[this.horizontal_ ? 'x' : 'y'] = ratio
-  this.workspace_.setMetrics(xyRatio)
+  this.desk_.setMetrics(xyRatio)
 }
 
 /**
@@ -699,7 +699,7 @@ eYo.Scrollbar.prototype.set = function(value) {
 //   this.setScrollViewSize_(Math.max(0, viewSize));
 
 //   var xCoordinate = hostMetrics.absolute.left + 0.5;
-//   if (!this.workspace_.RTL) {
+//   if (!this.desk_.RTL) {
 //     xCoordinate += hostMetrics.view.width -
 //         eYo.Scrollbar.thickness - 1;
 //   }
@@ -713,7 +713,7 @@ eYo.Scrollbar.prototype.set = function(value) {
 
 /**
  * Recalculate a vertical scrollbar's location within its path and length.
- * This should be called when the contents of the workspace have changed.
+ * This should be called when the contents of the desk have changed.
  * @param {!Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
  */
@@ -746,8 +746,8 @@ eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
  *     required dimensions, possibly fetched from the host object.
  */
 eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
-  var workspace = this.workspace_
-  var flyout = workspace.flyout_
+  var desk = this.desk_
+  var flyout = desk.flyout_
   if (flyout && flyout.atRight) {
     var xy = flyout.positionInPixels
     var viewSize = xy.x - hostMetrics.absolute.left - 1
@@ -762,7 +762,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
 
   var xCoordinate = hostMetrics.absolute.left + 0.5;
   
-  // Horizontal toolbar should always be just above the bottom of the workspace.
+  // Horizontal toolbar should always be just above the bottom of the desk.
   var yCoordinate = hostMetrics.absolute.top + hostMetrics.view.height -
       eYo.Scrollbar.thickness - 0.5;
   this.setPosition_(xCoordinate, yCoordinate);
@@ -785,8 +785,8 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
     // Shorten the scrollbar to make room for the corner square.
     viewSize -= eYo.Scrollbar.thickness;
   }
-  var workspace = this.workspace_
-  var flyout = workspace.flyout_
+  var desk = this.desk_
+  var flyout = desk.flyout_
   if (flyout && flyout.atRight) {
     var xy = flyout.positionInPixels
     var yOffset = flyout.TOP_OFFSET

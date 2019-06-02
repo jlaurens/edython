@@ -25,7 +25,7 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
   * @param {!Element} clone SVG element to animate and dispose of.
   * @param {boolean} rtl True if RTL, false if LTR.
   * @param {!Date} start Date of animation's start.
-  * @param {number} workspaceScale Scale of workspace.
+  * @param {number} deskScale Scale of desk.
   * @private
   */
   var step = (clone, start, scale) => {
@@ -45,8 +45,8 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
   }
   return function(brick) {
     var g = brick.dom.svg.group_
-    var w = brick.workspace
-    var xy = w.ui_driver.workspaceXYElement(/** @type {!Element} */ g)
+    var w = brick.desk
+    var xy = w.ui_driver.deskXYElement(/** @type {!Element} */ g)
     // Deeply clone the current brick.
     var clone = g.cloneNode(true)
     clone.translateX_ = xy.x
@@ -70,7 +70,7 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
    * Expand a ripple around a connection.
    * @param {!Element} ripple Element to animate.
    * @param {!Date} start Date of animation's start.
-   * @param {number} scale Scale of workspace.
+   * @param {number} scale Scale of desk.
    * @private
    */
   var step = (ripple, start, scale) => {
@@ -85,8 +85,8 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
   }
   return function (brick) {
     var g = brick.dom.svg.group_
-    var w = brick.workspace
-    var xy = w.ui_driver.workspaceXYElement(/** @type {!Element} */ g)
+    var w = brick.desk
+    var xy = w.ui_driver.deskXYElement(/** @type {!Element} */ g)
     if (brick.isExpr) {
       var h = brick.span.height * w.scale / 2
       var ripple = eYo.Svg.newElement(
@@ -149,7 +149,7 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
     g.setAttribute('transform', svg.translate + svg.skew)
   }
   return function(brick) {
-    var w = brick.workspace
+    var w = brick.desk
     brick.audio.play('disconnect')
     if (w.scale < 1) {
       return  // Too small to care about visual effects.

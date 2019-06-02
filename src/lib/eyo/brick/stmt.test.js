@@ -4,7 +4,7 @@ var g = eYo.GMR._PyParser_Grammar
 
 var test_connection_db = () => {
   for (var i = 1; i < eYo.Magnet.RIGHT; i++) {
-    chai.assert(Blockly.mainWorkspace.magnetDBList[i].length === 0, `Unexpected connection ${i}`)
+    chai.assert(Blockly.mainDesk.magnetDBList[i].length === 0, `Unexpected connection ${i}`)
   }
 }
 

@@ -107,20 +107,20 @@ Object.defineProperties(eYo.Owned.prototype, {
   },
   /**
    * @readonly
-   * @type {eYo.Workspace}  The workspace...
+   * @type {eYo.Desk}  The desk...
    */
   factory: {
     get () {
-      return this.brick.workspace.factory
+      return this.brick.desk.factory
     }
   },
   /**
    * @readonly
-   * @type {eYo.Workspace}  The workspace...
+   * @type {eYo.Desk}  The desk...
    */
-  workspace: {
+  desk: {
     get () {
-      return this.brick.workspace
+      return this.brick.desk
     }
   },
   /**

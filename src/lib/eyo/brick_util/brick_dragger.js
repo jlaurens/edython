@@ -18,16 +18,16 @@ goog.require('eYo')
 
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Workspace')
+goog.forwardDeclare('eYo.Desk')
 goog.forwardDeclare('eYo.Events.BrickMove')
 
 goog.forwardDeclare('goog.math.Coordinate')
 
 
 /**
- * Class for a brick dragger.  It moves bricks around the workspace when they
+ * Class for a brick dragger.  It moves bricks around the desk when they
  * are being dragged by a mouse or touch.
- * @param {!eYo.Workspace} destination The workspace to drag on.
+ * @param {!eYo.Desk} destination The desk to drag on.
  * @constructor
  */
 eYo.BrickDragger = function(destination) {
@@ -110,7 +110,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
      * This function should be called on a mouse/touch move event the first time the
      * drag radius is exceeded.  It should be called no more than once per gesture.
      * If a brick should be dragged from the flyout this function creates the new
-     * brick on the main workspace and updates targetBrick_ and workspace_.
+     * brick on the main desk and updates targetBrick_ and desk_.
      * @return {boolean} destination_ if a brick is being dragged from the flyout.
      * @private
      */
@@ -118,7 +118,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     if (targetBrick.disabled) {
       return
     }
-    if (flyout.scrollable && !flyout.isDragTowardWorkspace(deltaXY)) {
+    if (flyout.scrollable && !flyout.isDragTowardDesk(deltaXY)) {
       return
     }
     // Start the event group now,
@@ -172,7 +172,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * The distance between this.target_ and this.magnet_,
-   * in workspace units.
+   * in desk units.
    * Updated on every mouse move.
    * @type {number}
    * @private
@@ -189,8 +189,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * Which delete area the mouse pointer is over, if any.
-   * One of {@link eYo.Workspace.DELETE_AREA_TRASH},
-   * {@link eYo.Workspace.DELETE_AREA_TOOLBOX}, or {@link eYo.Workspace.DELETE_AREA_NONE}.
+   * One of {@link eYo.Desk.DELETE_AREA_TRASH},
+   * {@link eYo.Desk.DELETE_AREA_TOOLBOX}, or {@link eYo.Desk.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -198,7 +198,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * The location of the top left corner of the dragging brick at the beginning
-   * of the drag in workspace coordinates.
+   * of the drag in desk coordinates.
    * @type {!goog.math.Coordinate}
    * @private
    */
@@ -253,12 +253,12 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Workspace.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Desk.DELETE_AREA_TRASH)
   }
 }
 
 /**
- * Finish a brick drag and put the brick back on the workspace.
+ * Finish a brick drag and put the brick back on the desk.
  * @param {!Event} e The most recent move event.
  * @param {!goog.math.Coordinate} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
@@ -339,7 +339,7 @@ eYo.BrickDragger.prototype.update = function() {
   var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = eYo.Workspace.SNAP_RADIUS
+  this.distance_ = eYo.Desk.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta_)
     if (neighbour.magnet) {
@@ -354,7 +354,7 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteArea != eYo.Workspace.DELETE_AREA_TOOLBOX
+      deleteArea != eYo.Desk.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteArea && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete

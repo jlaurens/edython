@@ -71,7 +71,7 @@ eYo.Events.fireBrickMove = (brick, move) => {
  * @constructor
  */
 eYo.Events.BrickBase = function(brick) {
-  eYo.Events.BrickBase.superClass_.constructor.call(this, brick.workspace)
+  eYo.Events.BrickBase.superClass_.constructor.call(this, brick.desk)
   /**
    * The brick id for the brick this event pertains to
    * @type {string}
@@ -83,8 +83,8 @@ goog.inherits(eYo.Events.BrickBase, eYo.Events.Abstract);
 Object.defineProperties(eYo.Events.BrickBase.prototype, {
   brick: {
     get () {
-      var workspace = this.workspace
-      return workspace && workspace.getBrickById(this.brickId)
+      var desk = this.desk
+      return desk && desk.getBrickById(this.brickId)
     }
   }
 })
@@ -167,7 +167,7 @@ eYo.Events.BrickChange.prototype.run = function(forward) {
  */
 eYo.Events.BrickCreate = function(brick) {
   eYo.Events.BrickCreate.superClass_.constructor.call(this, brick)
-  if (brick.workspace.rendered) {
+  if (brick.desk.rendered) {
     this.xml = eYo.Xml.brickToDomWithXY(brick)
   } else {
     this.xml = eYo.Xml.brickToDom(brick)
@@ -189,14 +189,14 @@ Object.defineProperties(eYo.Events.BrickCreate.prototype, {
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 eYo.Events.BrickCreate.prototype.run = function(forward) {
-  var workspace = this.workspace
+  var desk = this.desk
   if (forward) {
     var xml = goog.dom.createDom('xml')
     xml.appendChild(this.xml)
-    eYo.Xml.domToWorkspace(xml, workspace)
+    eYo.Xml.domToDesk(xml, desk)
   } else {
     this.ids.forEach(id => {
-      var brick = workspace.getBrickById(id)
+      var brick = desk.getBrickById(id)
       if (brick) {
         brick.dispose(false, false)
       } else if (id === this.brickId) {
@@ -219,7 +219,7 @@ eYo.Events.BrickDelete = function(brick) {
   }
   eYo.Events.BrickDelete.superClass_.constructor.call(this, brick)
 
-  if (brick.workspace.rendered) {
+  if (brick.desk.rendered) {
     this.oldXml = eYo.Xml.brickToDomWithXY(brick)
   } else {
     this.oldXml = eYo.Xml.brickToDom(brick)
@@ -241,10 +241,10 @@ Object.defineProperties(eYo.Events.BrickDelete.prototype, {
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 eYo.Events.BrickDelete.prototype.run = function(forward) {
-  var workspace = this.workspace
+  var desk = this.desk
   if (forward) {
     this.ids.forEach(id => {
-      var brick = workspace.getBrickById(id)
+      var brick = desk.getBrickById(id)
       if (brick) {
         brick.dispose()
       } else if (id === this.brickId) {
@@ -255,7 +255,7 @@ eYo.Events.BrickDelete.prototype.run = function(forward) {
   } else {
     var xml = goog.dom.createDom('xml')
     xml.appendChild(this.oldXml)
-    eYo.Xml.domToWorkspace(xml, workspace)
+    eYo.Xml.domToDesk(xml, desk)
   }
 }
 
@@ -347,7 +347,7 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
   var coordinate = forward ? this.newCoordinate : this.oldCoordinate
   var parentBrick = null
   if (parentId) {
-    parentBrick = this.workspace.getBrickById(parentId)
+    parentBrick = this.desk.getBrickById(parentId)
     if (!parentBrick) {
       console.warn("Can't connect to non-existent brick: " + parentId)
       return

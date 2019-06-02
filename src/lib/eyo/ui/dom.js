@@ -247,7 +247,7 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.Brick|eYo.Workspace|eYo.Flyout}
+ * @param {eYo.Brick|eYo.Desk|eYo.Flyout}
  */
 eYo.Dom.clearBoundEvents = (bfw) => {
   var dom = bfw.dom || bfw.dom
@@ -484,7 +484,7 @@ eYo.Dom.longStart_ = (() => {
 /**
  * Bind document events, but only once.  Destroying and reinjecting Blockly
  * should not bind again.
- * Bind events for scrolling the workspace.
+ * Bind events for scrolling the desk.
  * Most of these events should be bound to the SVG's surface.
  * However, 'mouseup' has to be on the whole document so that a block dragged
  * out of bounds and released will know that it has been released.
@@ -518,7 +518,7 @@ eYo.Dom.bindDocumentEvents = (() => {
         eYo.Dom.bindEvent(
           window,
           'orientationchange',
-          e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple workspaces.
+          e => eYo.Svg.factoryResize(eYo.App.factory) // TODO(#397): Fix for multiple desks.
         )
       }
     }
@@ -533,8 +533,8 @@ eYo.Dom.bindDocumentEvents = (() => {
  * @private
  */
 eYo.Dom.on_keydown = e => {
-  if (eYo.App.workspace.options.readOnly || eYo.Dom.isTargetInput(e)) {
-    // No key actions on readonly workspaces.
+  if (eYo.App.desk.options.readOnly || eYo.Dom.isTargetInput(e)) {
+    // No key actions on readonly desks.
     // When focused on an HTML text input widget, don't trap any keys.
     return
   }
@@ -556,7 +556,7 @@ eYo.Dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.App.workspace.isDragging) {
+    if (eYo.App.desk.isDragging) {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
@@ -564,7 +564,7 @@ eYo.Dom.on_keydown = e => {
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.App.workspace.isDragging) {
+    if (eYo.App.desk.isDragging) {
       return;
     }
     if (eYo.Selected.brick &&
@@ -573,12 +573,12 @@ eYo.Dom.on_keydown = e => {
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
       // would be to paste, which would create additional undeletable/immovable
-      // bricks on the workspace.
+      // bricks on the desk.
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.App.hideChaff()
         eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.Selected.brick.workspace.isFlyout) {
+      } else if (e.keyCode == 88 && !eYo.Selected.brick.desk.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
         eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
@@ -587,16 +587,16 @@ eYo.Dom.on_keydown = e => {
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      eYo.App.workspace.paste()
+      eYo.App.desk.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
       eYo.App.hideChaff()
-      eYo.App.workspace.undo(e.shiftKey)
+      eYo.App.desk.undo(e.shiftKey)
     }
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.Selected.brick.workspace.isFlyout) {
+  // if (deleteBrick && !eYo.Selected.brick.desk.isFlyout) {
   //   eYo.Events.group = true
   //   eYo.App.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);
@@ -698,19 +698,19 @@ eYo.Dom.prototype.factoryDispose = eYo.Dom.decorateDispose(
 )
 
 /**
- * Initialize the workspace dom ressources.
- * @param {!eYo.Workspace} workspace
+ * Initialize the desk dom ressources.
+ * @param {!eYo.Desk} desk
  * @param {!Element|string} container Containing element, or its ID,
  *     or a CSS selector.
  * @param {Object=} opt_options Optional dictionary of options.
- * @return {!eYo.Workspace} Newly created main workspace.
+ * @return {!eYo.Desk} Newly created main desk.
  */
-eYo.Dom.prototype.workspaceInit = eYo.Dom.prototype.basicInit
+eYo.Dom.prototype.deskInit = eYo.Dom.prototype.basicInit
 
 /**
- * Dispose of the workspace dom ressources.
- * @param {!eYo.Workspace} workspace
- * @return {!Object} The workspace's dom repository.
+ * Dispose of the desk dom ressources.
+ * @param {!eYo.Desk} desk
+ * @return {!Object} The desk's dom repository.
  */
-eYo.Dom.prototype.workspaceDispose = eYo.Dom.prototype.basicDispose
+eYo.Dom.prototype.deskDispose = eYo.Dom.prototype.basicDispose
 

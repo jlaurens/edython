@@ -209,10 +209,10 @@ eYo.Magnet.DB.prototype = new Array()
 eYo.Magnet.DB.constructor = eYo.Magnet.DB
 
 /**
- * Initialize a set of connection DBs for a specified workspace.
- * @param {!Brickly.Workspace} workspace The workspace this DB is for.
+ * Initialize a set of connection DBs for a specified desk.
+ * @param {!Brickly.Desk} desk The desk this DB is for.
  */
-eYo.Magnet.DB.init = function(workspace) {
+eYo.Magnet.DB.init = function(desk) {
   // Create four databases, one for each connection type.
   var dbList = []
   dbList[eYo.Magnet.IN] = new eYo.Magnet.DB()
@@ -221,7 +221,7 @@ eYo.Magnet.DB.init = function(workspace) {
   dbList[eYo.Magnet.LEFT] = new eYo.Magnet.DB()
   dbList[eYo.Magnet.RIGHT] = new eYo.Magnet.DB()
   dbList[eYo.Magnet.FOOT] = new eYo.Magnet.DB()
-  workspace.magnetDBList = dbList
+  desk.magnetDBList = dbList
 };
 
 /**
@@ -357,7 +357,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
 Object.defineProperties(eYo.Magnet.prototype, {
   magnetDB_: {
     get () {
-      return this.workspace.magnetDBList
+      return this.desk.magnetDBList
     }
   },
   optional_: { writable: true },
@@ -485,12 +485,12 @@ Object.defineProperties(eYo.Magnet.prototype, {
       return this.y_
     }
   },
-  x_: { // in workspace coordinates
+  x_: { // in desk coordinates
     get () {
       return this.slot ? this.where.x + this.slot.where.x : this.where.x
     }
   },
-  y_: { // in workspace coordinates
+  y_: { // in desk coordinates
     get () {
       return this.slot ? this.where.y + this.slot.where.y : this.where.y
     }
@@ -1267,7 +1267,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   var oldChildT4t = parentM4t.target
   var unwrappedM4t = parentM4t.unwrappedMagnet
   var m4t
-  if (parent.workspace !== child.workspace) {
+  if (parent.desk !== child.desk) {
     return
   }
   var attach_orphan = () => {
@@ -1479,7 +1479,7 @@ eYo.Magnet.prototype.tighten_ = function() {
 }
 
 /**
- * Scrolls the receiver to the top left part of the workspace.
+ * Scrolls the receiver to the top left part of the desk.
  * Does nothing if the brick is already in the visible are,
  * and is not forced.
  * @param {!Boolean} force  flag
@@ -1498,7 +1498,7 @@ eYo.Magnet.prototype.scrollToVisible = function (force) {
  */
 eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   var brick = this.brick
-  if (!brick.workspace || brick.workspace.isDragging) {
+  if (!brick.desk || brick.desk.isDragging) {
     return
   }
   // Move the root brick.
@@ -1507,7 +1507,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     // Don't move bricks around in a flyout.
     return
   }
-  if (!root.workspace) {
+  if (!root.desk) {
     return
   }
   var reverse = false
@@ -1515,7 +1515,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     // Can't bump an uneditable brick away.
     // Check to see if the other brick is movable.
     root = m4t.brick.root
-    if (!root.workspace || !root.movable) {
+    if (!root.desk || !root.movable) {
       return
     }
     // Swap the connections and move the 'static' connection instead.
@@ -1558,7 +1558,7 @@ eYo.Magnet.prototype.hideAll = function() {
  * Find all nearby compatible magnets to the receiver.
  * Type checking does not apply, since this function is used for bumping.
  * @param {number} maxLimit The maximum radius to another connection, in
- *     workspace units.
+ *     desk units.
  * @return {!Array.<!eYo.Magnet>} List of magnets.
  * @private
  */
@@ -1584,7 +1584,7 @@ eYo.Magnet.prototype.unhideAll = function() {
 
 /**
  * Find the closest compatible connection to this connection.
- * All parameters are in workspace units.
+ * All parameters are in desk units.
  * @param {goog.math.Coordinate} maxLimit The maximum radius to another connection.
  * @param {goog.math.Coordinates} dxy Horizontal offset between this connection's location
  *     in the database and the current location (as a result of dragging).
@@ -1653,7 +1653,7 @@ eYo.Magnet.prototype.closest = (() => {
  * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
  * @param {!goog.math.Coordinate} blockTL The location of the top left corner
- *     of the brick, in workspace coordinates.
+ *     of the brick, in desk coordinates.
  */
 eYo.Magnet.prototype.moveToOffset = function(blockTL) {
   this.moveTo(blockTL.x + this.where.x,
@@ -1662,8 +1662,8 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
 
 /**
  * Change the magnet's global coordinates.
- * @param {number} x New absolute x coordinate, in workspace coordinates.
- * @param {number} y New absolute y coordinate, in workspace coordinates.
+ * @param {number} x New absolute x coordinate, in desk coordinates.
+ * @param {number} y New absolute y coordinate, in desk coordinates.
  */
 eYo.Magnet.prototype.moveTo = function(x, y) {
   if (this.where.x !== x || this.where.y !== y || (!x && !y)) {
@@ -1678,8 +1678,8 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
 
 /**
  * Change the connection's coordinates.
- * @param {number} dx Change to x coordinate, in workspace units.
- * @param {number} dy Change to y coordinate, in workspace units.
+ * @param {number} dx Change to x coordinate, in desk units.
+ * @param {number} dy Change to y coordinate, in desk units.
  */
 eYo.Magnet.prototype.moveBy = function(dx, dy) {
   if (goog.isDef(dx.x)) {
@@ -1691,10 +1691,10 @@ eYo.Magnet.prototype.moveBy = function(dx, dy) {
 
 /**
  * Returns the distance between this magnet and another magnet in
- * workspace units.
+ * desk units.
  * @param {!eYo.Magnet} other The other connection to measure
  *     the distance to.
- * @return {number} The distance between magnets, in workspace units.
+ * @return {number} The distance between magnets, in desk units.
  */
 eYo.Magnet.prototype.distanceFrom = function(other) {
   return this.where.distanceFrom(other.where)
@@ -1818,7 +1818,7 @@ eYo.Magnet.prototype.connect = function(other) {
       throw 'Attempted to connect a brick to itself.'
     case eYo.Magnet.REASON_DIFFERENT_WORKSPACES:
       // Usually this means one brick has been deleted.
-      throw 'Bricks not on same workspace.'
+      throw 'Bricks not on same desk.'
     case eYo.Magnet.REASON_WRONG_TYPE:
       throw 'Attempt to connect incompatible types.'
     case eYo.Magnet.REASON_TARGET_NULL:
@@ -1858,7 +1858,7 @@ eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
     return eYo.Magnet.REASON_SELF_CONNECTION
   } else if (target.type !== this.opposite_type) {
     return eYo.Magnet.REASON_WRONG_TYPE
-  } else if (dlgt_A && dlgt_B && dlgt_A.workspace !== dlgt_B.workspace) {
+  } else if (dlgt_A && dlgt_B && dlgt_A.desk !== dlgt_B.desk) {
     return eYo.Magnet.REASON_DIFFERENT_WORKSPACES
   } else if (!this.checkType_(target)) {
     return eYo.Magnet.REASON_CHECKS_FAILED

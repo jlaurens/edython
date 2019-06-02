@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Workspace model.
+ * @fileoverview Desk model.
  * @author jerome.laurens@u-bourgogne.fr
  */
 'use strict'
@@ -20,13 +20,13 @@ goog.require('goog.dom')
 
 /**
  * Zoom controls model
- * @param {!eYo.Workspace} workspace Workspace to zoom.
+ * @param {!eYo.Desk} desk Desk to zoom.
  * @constructor
  */
-eYo.ZoomControls = function(workspace, bottom) {
-  this.workspace_ = workspace
+eYo.ZoomControls = function(desk, bottom) {
+  this.desk_ = desk
   this.disposeUI = eYo.Do.nothing
-  if (workspace.hasUI) {
+  if (desk.hasUI) {
     this.makeUI(bottom)
   }
 }
@@ -47,14 +47,14 @@ Object.defineProperties(eYo.ZoomControls.prototype, {
   HEIGHT_: { value: 110 },
 
   /**
-   * Distance between zoom controls and bottom edge of workspace.
+   * Distance between zoom controls and bottom edge of desk.
    * @type {number}
    * @private
    */
   MARGIN_BOTTOM_: { value: 20 },
 
   /**
-   * Distance between zoom controls and right edge of workspace.
+   * Distance between zoom controls and right edge of desk.
    * @type {number}
    * @private
    */
@@ -76,7 +76,7 @@ Object.defineProperties(eYo.ZoomControls.prototype, {
 
   ui_driver: {
     get () {
-      return this.workspace_.ui_driver
+      return this.desk_.ui_driver
     }
   },
   hasUI: {
@@ -123,17 +123,17 @@ eYo.ZoomControls.prototype.disposeUI = function() {
  */
 eYo.ZoomControls.prototype.dispose = function() {
   this.disposeUI()
-  this.workspace_ = null
+  this.desk_ = null
 };
 
 /**
  * Move the zoom controls to the bottom-right corner.
  */
 eYo.ZoomControls.prototype.place = function() {
-  var ws = this.workspace_
+  var ws = this.desk_
   var metrics = ws.getMetrics()
   if (!metrics) {
-    // There are no metrics available (workspace is probably not visible).
+    // There are no metrics available (desk is probably not visible).
     return
   }
   this.left_ = metrics.view.width + metrics.absolute.left -

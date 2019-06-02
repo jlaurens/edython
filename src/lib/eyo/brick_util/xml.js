@@ -19,7 +19,7 @@
  * the latter are characterized by an input attribute, which may be
  * a void string. This is useful for call expression that can appear as
  * statements too.
- * The domToWorkspace has been overriden to manage more bricks.
+ * The domToDesk has been overriden to manage more bricks.
  * When both an expression and a statement share the same
  * tag, the expression always have an input attribute,
  * which may be void.
@@ -83,7 +83,7 @@ eYo.Xml = {
 
   LIST: 'list', // attribute name
 
-  WORKSPACE: 'workspace', // tag name
+  WORKSPACE: 'desk', // tag name
   CONTENT: 'content', // tag name
   EDYTHON: 'edython', // tag name
 }
@@ -119,18 +119,18 @@ eYo.Xml.brickToDomWithXY = function(brick, opt) {
 
 /**
  * Encode a brick tree as XML.
- * @param {!Blockly.Workspace} workspace The workspace containing bricks.
+ * @param {!Blockly.Desk} desk The desk containing bricks.
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} XML document.
  */
-eYo.Xml.workspaceToDom = function(workspace, opt) {
+eYo.Xml.deskToDom = function(desk, opt) {
   var root = goog.dom.createDom(eYo.Xml.EDYTHON, null,
     goog.dom.createDom(eYo.Xml.WORKSPACE, null,
       goog.dom.createDom(eYo.Xml.CONTENT)
     )
   )
   var xml = root.firstChild.firstChild
-  workspace.getTopBricks(true).forEach(brick => {
+  desk.getTopBricks(true).forEach(brick => {
     var dom = eYo.Xml.brickToDomWithXY(brick, opt)
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
@@ -152,26 +152,26 @@ eYo.Xml.workspaceToDom = function(workspace, opt) {
 };
 
 /**
- * Decode an XML DOM and create bricks on the workspace.
+ * Decode an XML DOM and create bricks on the desk.
  * overriden to support other kind of bricks
  * This is a copy with a tiny formal modification.
  * @param {!Element} xml XML DOM.
- * @param {!*} owner The workspace or the parent brick.
+ * @param {!*} owner The desk or the parent brick.
  * @return {Array.<string>} An array containing new brick IDs.
  */
-Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
-  var workspace = owner
-  if (xml instanceof Blockly.Workspace) {
+Blockly.Xml.domToDesk = eYo.Xml.domToDesk = function (xml, owner) {
+  var desk = owner
+  if (xml instanceof Blockly.Desk) {
     var swap = xml
-    xml = workspace
-    workspace = swap
-    console.warn('Deprecated call to Blockly.Xml.domToWorkspace, ' +
+    xml = desk
+    desk = swap
+    console.warn('Deprecated call to Blockly.Xml.domToDesk, ' +
                  'swap the arguments.')
   }
-  var workspace = owner.workspace || owner
+  var desk = owner.desk || owner
   var width // Not used in LTR.
-  if (workspace.RTL) {
-    width = workspace.getWidth()
+  if (desk.RTL) {
+    width = desk.getWidth()
   }
   if (goog.isString(xml)) {
     var parser = new DOMParser()
@@ -182,13 +182,13 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
 
-  workspace.eyo.recover.whenRecovered(
+  desk.eyo.recover.whenRecovered(
     brick => newBlockIds.push(brick.id)
   )
 
-  // Disable workspace resizes as an optimization.
-  if (workspace.setResizesEnabled) {
-    workspace.setResizesEnabled(false)
+  // Disable desk resizes as an optimization.
+  if (desk.setResizesEnabled) {
+    desk.setResizesEnabled(false)
   }
 
   // This part is a custom part for edython
@@ -244,16 +244,16 @@ Blockly.Xml.domToWorkspace = eYo.Xml.domToWorkspace = function (xml, owner) {
       }
     })
   }, () => {
-    // Re-enable workspace resizing.
-    if (workspace.setResizesEnabled) {
-      workspace.setResizesEnabled(true)
+    // Re-enable desk resizing.
+    if (desk.setResizesEnabled) {
+      desk.setResizesEnabled(true)
     }
-    workspace.eyo.recover.whenRecovered(null) // clean
+    desk.eyo.recover.whenRecovered(null) // clean
   })
   return newBlockIds
 }
 
-goog.exportSymbol('eYo.Xml.domToWorkspace', eYo.Xml.domToWorkspace)
+goog.exportSymbol('eYo.Xml.domToDesk', eYo.Xml.domToDesk)
 
 /**
  * Encode a brick subtree as XML.
@@ -277,12 +277,12 @@ Blockly.Xml.blockToDomWithXY = function(brick, optNoId) {
 
 /**
  * Decode an XML brick tag and create a brick (and possibly sub bricks) on the
- * workspace.
+ * desk.
  * @param {!Element|string} xmlBrick XML brick element or string representation of an xml brick.
- * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {!Blockly.Desk} desk The desk.
  * @return {!eYo.Brick} The root brick created.
  */
-Blockly.Xml.domToBrick = function (dom, workspace) {
+Blockly.Xml.domToBrick = function (dom, desk) {
   throw "FORBIDDEN CALL, BREAK HERE"
 }
 
@@ -290,7 +290,7 @@ Blockly.Xml.domToBrick = function (dom, workspace) {
  * Create a new brick, with full contents.
  * This is the expected way to create a brick
  * to be displayed immediately.
- * @param {!WorkspaceSvg} workspace
+ * @param {!DeskSvg} desk
  * @param {!String|Object} model prototypeName or xml representation.
  * @param {?string} id
  * @private
@@ -455,29 +455,29 @@ goog.provide('eYo.Xml.Literal')
 /**
  * Try to create a Literal brick from the given element.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick.
+ * @param {!*} owner  The desk or the parent brick.
  * @override
  */
 eYo.Xml.Literal.domToComplete = (() => {
-  var newBrick = (workspace, text, id, stmt_expected) => {
+  var newBrick = (desk, text, id, stmt_expected) => {
     if (text && text.length) {
       var type = eYo.T3.Profile.get(text, null).expr
       switch (type) {
       case eYo.T3.Expr.integer:
       case eYo.T3.Expr.floatnumber:
       case eYo.T3.Expr.imagnumber:
-        return eYo.Brick.newReady(workspace, eYo.T3.Expr.numberliteral, id)
+        return eYo.Brick.newReady(desk, eYo.T3.Expr.numberliteral, id)
       case eYo.T3.Expr.shortliteral:
       case eYo.T3.Expr.shortstringliteral:
       case eYo.T3.Expr.shortbytesliteral:
-        return eYo.Brick.newReady(workspace, eYo.T3.Expr.shortliteral, id)
+        return eYo.Brick.newReady(desk, eYo.T3.Expr.shortliteral, id)
       case eYo.T3.Expr.longliteral:
       case eYo.T3.Expr.longstringliteral:
-        return eYo.Brick.newReady(workspace, stmt_expected
+        return eYo.Brick.newReady(desk, stmt_expected
           ? eYo.T3.Stmt.docstring_stmt
           : eYo.T3.Expr.longliteral, id)
       case eYo.T3.Expr.longbytesliteral:
-        return eYo.Brick.newReady(workspace, eYo.T3.Expr.longliteral, id)
+        return eYo.Brick.newReady(desk, eYo.T3.Expr.longliteral, id)
       }
     }
   }
@@ -485,21 +485,21 @@ eYo.Xml.Literal.domToComplete = (() => {
     if (element.getAttribute(eYo.Key.EYO) !== eYo.Xml.LITERAL) {
       return
     }
-    var workspace = owner.workspace || owner
+    var desk = owner.desk || owner
     // is it a statement or an expression ?
     var stmt_expected = element.tagName.toLowerCase() === eYo.Xml.STMT
     var id = element.getAttribute('id')
     var brick
     eYo.Do.someChild(element, child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return brick = newBrick(workspace, child.nodeValue, id, stmt_expected)
+        return brick = newBrick(desk, child.nodeValue, id, stmt_expected)
       }
     })
     if (!brick) {
       // there was no text node to infer the type
-      brick = newBrick(workspace, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+      brick = newBrick(desk, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
-    return brick || eYo.Brick.newReady(workspace, eYo.T3.Expr.shortliteral, id)
+    return brick || eYo.Brick.newReady(desk, eYo.T3.Expr.shortliteral, id)
   }
 }) ()
 
@@ -672,11 +672,11 @@ eYo.Xml.registerAllTags = function () {
 
 /**
  * Decode a string and create a brick (and possibly sub bricks)
- * on the workspace.
+ * on the desk.
  * If the string is not valid xml, then nothing is returned.
  *
  * @param {!String} string a serialized dom element.
- * @param {!*} owner workspace or brick.
+ * @param {!*} owner desk or brick.
  * @return {?eYo.Brick} The root brick created, if any.
  */
 eYo.Xml.stringToBrick = function (string, owner) {
@@ -698,8 +698,8 @@ goog.provide('eYo.Xml.Recover')
 /**
  * Recover nodes from a possibly corrupted xml data.
  */
-eYo.Xml.Recover = function (workspace) {
-  this.workspace = workspace
+eYo.Xml.Recover = function (desk) {
+  this.desk = desk
   this.recovered = []
   this.to_resit = []
   this.to_resit_stack = []
@@ -717,7 +717,7 @@ eYo.Xml.Recover.prototype.whenRecovered = function (f) {
  * Don't resit the given dom.
  *
  * @param {!Element} dom XML dom element.
- * @param {!Blockly.Workspace} workspace  The workspace.
+ * @param {!Blockly.Desk} desk  The desk.
  */
 eYo.Xml.Recover.prototype.dontResit = function (dom) {
   var i = this.to_resit.indexOf(dom)
@@ -759,7 +759,7 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
         this.recovered.length = 0
         var dom
         while ((dom = this.to_resit.shift())) {
-          var brick = eYo.Xml.domToBrick(dom, this.workspace)
+          var brick = eYo.Xml.domToBrick(dom, this.desk)
           brick && (this.recovered.push(brick))
         }
         try {
@@ -784,16 +784,16 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
  * and parse the children separately with `recoverDom`
  *
  * @param {!Element} dom XML dom element.
- * @param {eYo.Workspace | eYo.Brick} owner either the workspace or a brick.
+ * @param {eYo.Desk | eYo.Brick} owner either the desk or a brick.
  * @return {!eYo.Brick} The root brick created.
  */
 eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
-  var workspace = owner.workspace
-  if (!workspace) {
-    workspace = owner
+  var desk = owner.desk
+  if (!desk) {
+    desk = owner
     owner = undefined
   }
-  if (!workspace.newBrick) {
+  if (!desk.newBrick) {
     console.error('ARGH')
   }
   // First create a brick that we will return to replace the expected one
@@ -852,7 +852,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
           : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
-            var b3k = eYo.Brick.newReady(workspace, type)
+            var b3k = eYo.Brick.newReady(desk, type)
             var m4t = b3k && b3k.out_m
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
               ans = b3k
@@ -867,7 +867,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
           fallback = best.types[0]
         }
       }
-      ans || (ans = eYo.Brick.newReady(workspace, fallback))
+      ans || (ans = eYo.Brick.newReady(desk, fallback))
     }
   )
   if (ans) {
@@ -880,7 +880,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
 
 /**
  * Decode an XML brick tag and create a brick (and possibly sub bricks)
- * on the workspace.
+ * on the desk.
  * Try to decode a literal or other special node.
  * If that does not work, try to deconde ans edython brick,
  * if that still does not work, fall down to the original
@@ -893,7 +893,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
  * Is it really headless ?
  *
  * @param {!Element} xmlBrick XML brick element.
- * @param {*} owner The workspace or the owning brick.
+ * @param {*} owner The desk or the owning brick.
  * @return {!eYo.Brick} The root brick created.
  */
 eYo.Xml.domToBrick = (() => {
@@ -905,8 +905,8 @@ eYo.Xml.domToBrick = (() => {
     var name = dom.getAttribute(eYo.Key.EYO)
     var prototypeName
     //
-    var workspace = owner.workspace || owner
-    return workspace.eyo.recover.resitWrap(
+    var desk = owner.desk || owner
+    return desk.eyo.recover.resitWrap(
       dom,
       () => {
         var brick
@@ -946,7 +946,7 @@ eYo.Xml.domToBrick = (() => {
               return
             }
           }
-          brick = eYo.Brick.newReady(workspace, prototypeName, id)
+          brick = eYo.Brick.newReady(desk, prototypeName, id)
         } else {
           if (!name) {
             name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
@@ -956,24 +956,24 @@ eYo.Xml.domToBrick = (() => {
           var controller = eYo.Brick.Manager.get(solid)
           if (controller) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, workspace, id)
+              return controller.eyo.domToBrick(dom, desk, id)
             } else if (goog.isFunction(controller.domToBrick)) {
-              return controller.domToBrick(dom, workspace, id)
+              return controller.domToBrick(dom, desk, id)
             }
-            brick = eYo.Brick.newReady(workspace, solid, id)
+            brick = eYo.Brick.newReady(desk, solid, id)
           } else if ((controller = eYo.Brick.Manager.get(prototypeName))) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, workspace, id)
+              return controller.eyo.domToBrick(dom, desk, id)
             } else if (goog.isFunction(controller.domToBrick)) {
-              return controller.domToBrick(dom, workspace, id)
+              return controller.domToBrick(dom, desk, id)
             }
-            brick = eYo.Brick.newReady(workspace, prototypeName, id)
+            brick = eYo.Brick.newReady(desk, prototypeName, id)
           }
           // Now create the brick, either solid or not
         }
         if (brick) {
           eYo.Xml.fromDom(brick, dom)
-          workspace.hasUI && brick.makeUI()
+          desk.hasUI && brick.makeUI()
           return brick
         }
       }
@@ -1068,7 +1068,7 @@ eYo.Xml.fromDom = function (brick, element) {
         if (m4t) {
           return eYo.Do.someElementChild(element, child => {
             if ((child.getAttribute(eYo.Xml.FLOW) === key)) {
-              this.workspace.eyo.recover.dontResit(child)
+              this.desk.eyo.recover.dontResit(child)
               var brick = eYo.Xml.domToBrick(child, this)
               if (brick) { // still headless!
                 // we could create a brick from that child element
@@ -1186,7 +1186,7 @@ goog.provide('eYo.Xml.Assignment')
 /**
  * Try to create a primary brick from the given element.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick.
+ * @param {!*} owner  The desk or the parent brick.
  * @override
  */
 eYo.Xml.Assignment.domToComplete = function (element, owner) {
@@ -1217,7 +1217,7 @@ goog.require('eYo.Brick.Operator')
 /**
  * Try to create a comparison brick from the given element.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick.
+ * @param {!*} owner  The desk or the parent brick.
  * @override
  */
 eYo.Xml.Comparison.domToComplete = function (element, owner) {
@@ -1248,7 +1248,7 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
 /**
  * Try to create a starred brick from the given element.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick.
+ * @param {!*} owner  The desk or the parent brick.
  * @override
  */
 eYo.Xml.Starred.domToComplete = function (element, owner) {
@@ -1267,7 +1267,7 @@ goog.provide('eYo.Xml.Primary')
 /**
  * Try to create a primary brick from the given element.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick.
+ * @param {!*} owner  The desk or the parent brick.
  * @override
  */
 eYo.Xml.Primary.domToComplete = function (element, owner) {
@@ -1296,7 +1296,7 @@ goog.provide('eYo.Xml.Group')
 // /**
 //  * Reads the given element into a brick.
 //  * @param {!Element} element dom element to be read.
-//  * @param {!*} owner  The workspace or the parent brick.
+//  * @param {!*} owner  The desk or the parent brick.
 //  * @override
 //  */
 // eYo.Xml.Group.domToComplete = function (element, owner) {
@@ -1313,7 +1313,7 @@ goog.provide('eYo.Xml.Compatibility')
 /**
  * .
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick
+ * @param {!*} owner  The desk or the parent brick
  * @override
  */
 eYo.Xml.Compatibility.domToComplete = function (element, owner) {
@@ -1350,7 +1350,7 @@ goog.provide('eYo.Xml.Call')
  * if there is an eyo:input attribute, even a ''
  * then it is an expression brick otherwise it is a statement brick. DEPRECATED.
  * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The workspace or the parent brick
+ * @param {!*} owner  The desk or the parent brick
  * @override
  */
 eYo.Xml.Call.domToComplete = function (element, owner) {

@@ -67,8 +67,8 @@ eYo.FlyoutToolbar.prototype.dispose = function() {
  * @return {!Element} The flyout toolbar's div.
  */
 eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
-  var workspace = this.flyout_.targetWorkspace_
-  if (workspace && this.selectControl_) {
+  var desk = this.flyout_.targetDesk_
+  if (desk && this.selectControl_) {
     var category = this.selectControl_.getValue()
     var list = eYo.FlyoutCategory[category]
     if (list.length) {
@@ -134,7 +134,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     }
     this.flyout_.slide()
     this.onButtonLeave_(e)
-    var gesture = this.flyout_.targetWorkspace_.getGesture(e)
+    var gesture = this.flyout_.targetDesk_.getGesture(e)
     if (gesture) {
       gesture.cancel()// comes from flyout button
     }
@@ -153,7 +153,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
-  var gesture = this.targetWorkspace_.getGesture(e)
+  var gesture = this.targetDesk_.getGesture(e)
   if (gesture) {
     gesture.cancel()// comes from flyout button
   }
@@ -197,7 +197,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
  * @private
  */
 eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
-  this.flyout_.targetWorkspace_.ui_driver.flyoutToolbarPositionAt(width, height, x, y)
+  this.flyout_.targetDesk_.ui_driver.flyoutToolbarPositionAt(width, height, x, y)
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'
 };

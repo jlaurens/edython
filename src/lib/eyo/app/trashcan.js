@@ -23,13 +23,13 @@ goog.require('goog.math.Rect');
 
 /**
  * Class for a trash can.
- * @param {!eYo.Workspace} workspace The workspace to sit in.
+ * @param {!eYo.Desk} desk The desk to sit in.
  * @constructor
  */
-eYo.Trashcan = function(workspace, bottom) {
-  this.workspace_ = workspace
+eYo.Trashcan = function(desk, bottom) {
+  this.desk_ = desk
   this.disposeUI = eYo.Do.nothing
-  if (workspace.hasUI) {
+  if (desk.hasUI) {
     this.makeUI(bottom)
     this.ui_driver.trashcanSetOpen(this, false)
   }
@@ -43,7 +43,7 @@ Object.defineProperties(eYo.Trashcan.prototype, {
   },
   ui_driver: {
     get () {
-      return this.workspace_.ui_driver
+      return this.desk_.ui_driver
     }
   },
   isOpen: {
@@ -80,14 +80,14 @@ eYo.Trashcan.prototype.BODY_HEIGHT_ = 44
 eYo.Trashcan.prototype.LID_HEIGHT_ = 16
 
 /**
- * Distance between trashcan and bottom edge of workspace.
+ * Distance between trashcan and bottom edge of desk.
  * @type {number}
  * @private
  */
 eYo.Trashcan.prototype.MARGIN_BOTTOM_ = 20
 
 /**
- * Distance between trashcan and right edge of workspace.
+ * Distance between trashcan and right edge of desk.
  * @type {number}
  * @private
  */
@@ -139,23 +139,23 @@ eYo.Trashcan.prototype.disposeUI = function() {
  */
 eYo.Trashcan.prototype.dispose = function() {
   this.disposeUI()
-  this.workspace_ = null
+  this.desk_ = null
 }
 
 /**
  * Move the trash can to the bottom-right corner.
  */
 eYo.Trashcan.prototype.place = function() {
-  var metrics = this.workspace_.getMetrics()
+  var metrics = this.desk_.getMetrics()
   if (!metrics) {
-    // There are no metrics available (workspace is probably not visible).
+    // There are no metrics available (desk is probably not visible).
     return;
   }
   this.left_ = metrics.view.width + metrics.absolute.left -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
-    var flyoutPosition = this.workspace_.flyout_.positionInPixels
+    var flyoutPosition = this.desk_.flyout_.positionInPixels
     if (flyoutPosition) {
       this.left_ = flyoutPosition.x -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness

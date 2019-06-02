@@ -120,21 +120,21 @@ eYo.Driver.prototype.brickDisplayedSet = eYo.Do.nothing
 
 /**
  * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in workspace units.
- * @param {number} y The y coordinate of the translation in workspace units.
+ * @param {number} x The x coordinate of the translation in desk units.
+ * @param {number} y The y coordinate of the translation in desk units.
  */
 eYo.Driver.prototype.brickMoveTo = eYo.Do.nothing
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the
- * drawing surface's origin (0,0), in workspace units.
- * If the brick is on the workspace, (0, 0) is the origin of the workspace
+ * drawing surface's origin (0,0), in desk units.
+ * If the brick is on the desk, (0, 0) is the origin of the desk
  * coordinate system.
- * This does not change with workspace scale.
+ * This does not change with desk scale.
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
- *     workspace coordinates.
+ *     desk coordinates.
  */
-eYo.Driver.prototype.brickXYInWorkspace = eYo.Do.nothing
+eYo.Driver.prototype.brickXYInDesk = eYo.Do.nothing
 
 /**
  * Set the location.

@@ -24,7 +24,7 @@ goog.forwardDeclare('eYo.Options')
 
 /**
  * Class for a factory.
- * This is the structure above the workspace and the flyout.
+ * This is the structure above the desk and the flyout.
  * @param {?Object=} options Dictionary of options.
  * @constructor
  */
@@ -34,8 +34,8 @@ eYo.Factory = function(options) {
   // Load CSS.
   eYo.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
-  // create the various workspaces and flyout
-  this.mainWorkspace_ = new eYo.Workspace(this, options)
+  // create the various desks and flyout
+  this.mainDesk_ = new eYo.Desk(this, options)
 }
 
 Object.defineProperties(eYo.Factory.prototype, {
@@ -44,9 +44,9 @@ Object.defineProperties(eYo.Factory.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
-  mainWorkspace: {
+  mainDesk: {
     get () {
-      return this.mainWorkspace_
+      return this.mainDesk_
     }
   },
   flyout: {
@@ -72,7 +72,7 @@ Object.defineProperties(eYo.Factory.prototype, {
 })
 
 /**
- * Class for a factory. This is the structure above the workspace.
+ * Class for a factory. This is the structure above the desk.
  * @param {?eYo.Options=} options Dictionary of options.
  * @constructor
  */
@@ -82,7 +82,7 @@ eYo.Factory.prototype.makeUI = function() {
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
   this.ui_driver_ = new eYo.Svg(this)
   this.ui_driver_.factoryInit(this)
-  this.mainWorkspace_.makeUI()
+  this.mainDesk_.makeUI()
 }
 
 /**
@@ -90,11 +90,11 @@ eYo.Factory.prototype.makeUI = function() {
  */
 eYo.Factory.prototype.disposeUI = function() {
   delete this.makeUI
-  this.mainWorkspace_ && this.mainWorkspace_.disposeUI()
+  this.mainDesk_ && this.mainDesk_.disposeUI()
   this.audio_.dispose()
   this.audio_ = null
   this.flyout_ && this.flyout_.disposeUI()
-  this.flyoutSpace_ && this.flyoutSpace_.disposeUI()
+  this.flyoutDesk_ && this.flyoutDesk_.disposeUI()
   this.ui_driver_ && this.ui_driver_.dispose()
   this.ui_driver_ = null
 }
@@ -104,17 +104,17 @@ eYo.Factory.prototype.disposeUI = function() {
  */
 eYo.Factory.prototype.dispose = function() {
   if (this.flyout_) {
-    this.mainWorkspace_.flyout = null
+    this.mainDesk_.flyout = null
     this.flyout_.dispose()
     this.flyout_ = null
   }
-  if (this.flyoutSpace_) {
-    this.flyoutSpace_.dispose()
-    this.flyoutSpace_ = null
+  if (this.flyoutDesk_) {
+    this.flyoutDesk_.dispose()
+    this.flyoutDesk_ = null
   }
-  if (this.mainWorkspace_) {
-    this.mainWorkspace_.dispose()
-    this.mainWorkspace_ = null
+  if (this.mainDesk_) {
+    this.mainDesk_.dispose()
+    this.mainDesk_ = null
   }
 }
 
@@ -140,11 +140,11 @@ eYo.Factory.prototype.addFlyout = function(switcher) {
     getMetrics: flyout.getMetrics_.bind(flyout),
     setMetrics: flyout.setMetrics_.bind(flyout),
   }
-  var space = this.flyoutSpace_ = new eYo.Workspace(this, options)
-  space.options = this.mainWorkspace_.options
+  var space = this.flyoutDesk_ = new eYo.Desk(this, options)
+  space.options = this.mainDesk_.options
   var flyout = this.flyout_ = new eYo.Flyout(this, space, flyoutOptions)
-  flyout.workspace = this.flyoutSpace_
-  flyout.targetWorkspace = this.mainWorkspace_
+  flyout.desk = this.flyoutDesk_
+  flyout.targetDesk = this.mainDesk_
 }
 
 /**
@@ -154,14 +154,14 @@ eYo.Factory.prototype.removeFlyout = function() {
   var x = this.flyout_
   if (x) {
     this.flyout_ = null
-    this.mainWorkspace_.flyout = null
+    this.mainDesk_.flyout = null
     x.dispose()
 
   }
 }
 
 /**
- * Size the main workspace to completely fill its container.
+ * Size the main desk to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
 */
@@ -170,7 +170,7 @@ eYo.Factory.prototype.resize = function() {
 }
 
 /**
- * Size the main workspace to completely fill its container.
+ * Size the main desk to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
 */

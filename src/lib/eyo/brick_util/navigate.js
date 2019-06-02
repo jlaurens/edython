@@ -83,14 +83,14 @@ eYo.Navigate.doTab = (() => {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!Blockly.Workspace} workspace .
+ * @param {!Blockly.Desk} desk .
  * @param {function(point): number} weight is a function.
  * @return {?eYo.Brick}
  */
-eYo.Brick.getBestBrick = function (workspace, weight) {
+eYo.Brick.getBestBrick = function (desk, weight) {
   var smallest = Infinity
   var best
-  workspace.topBricks_.forEach(top => {
+  desk.topBricks_.forEach(top => {
     var box = top.ui.boundingRect
     var w = weight(box.getCenter())
     if (w < smallest) {
@@ -111,7 +111,7 @@ eYo.Brick.prototype.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best
-  this.workspace.topBricks_.forEach(brick => {
+  this.desk.topBricks_.forEach(brick => {
     if (brick !== this) {
       var box_p = brick.ui.boundingBox
       var m4t

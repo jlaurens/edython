@@ -85,10 +85,10 @@ eYo.Decorate.onChangeCount = function (key, do_it) {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.Brick = function (workspace, type, opt_id) {
+eYo.Brick = function (desk, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this)
   /** @type {string} */
-  this.workspace_ = workspace
+  this.desk_ = desk
   this.baseType_ = type // readonly private property used by getType
   // next trick to avoid some costy computations
   // this makes sense because subclassers may use a long getBaseType
@@ -149,9 +149,9 @@ eYo.Brick = function (workspace, type, opt_id) {
   })
   // Now we are ready to work
   delete this.getBaseType // next call will use the overriden method if any
-  workspace.addBrick(this, opt_id)
+  desk.addBrick(this, opt_id)
   this.disposeUI = eYo.Do.nothing
-  if (workspace.hasUI) {
+  if (desk.hasUI) {
     this.makeUI()
   }
 }
@@ -174,19 +174,19 @@ Object.defineProperties(eYo.Brick.prototype, {
  * Dispose of all the resources.
  */
 eYo.Brick.prototype.dispose = function (healStack, animate) {
-  if (!this.workspace) {
+  if (!this.desk) {
     // The block has already been deleted.
     return
   }
   this.disposeUI(healStack, animate)
-  var workspace = this.workspace
+  var desk = this.desk
   if (this.isSelected) {
     var m5s = this.magnets
     // this brick was selected, select the brick below or above before deletion
     var f = m => m && m.target
     var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
     m4t ? m4t.select() : this.unselect()
-    this.workspace.cancelCurrentGesture()
+    this.desk.cancelCurrentGesture()
   }
   if (animate && this.ui.rendered) {
     this.unplug(healStack)
@@ -200,8 +200,8 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   // Stop rerendering.
   this.ui_ && (this.ui_.rendered = false)
   this.consolidate = this.makeUI = this.render = eYo.Do.nothing
-  // Remove from workspace
-  workspace.removeBrick(this)
+  // Remove from desk
+  desk.removeBrick(this)
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
   eYo.Events.disableWrap(() => {
     this.disposeSlots(healStack)
@@ -216,8 +216,8 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.disposeUI()
   this.span.dispose()
   this.span_ = undefined
-  this.workspace.resizeContents()
-  this.workspace_ = undefined
+  this.desk.resizeContents()
+  this.desk_ = undefined
 }
 
 /**
@@ -229,14 +229,14 @@ eYo.Brick.getModel = function (type) {
 
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
-  workspace: {
+  desk: {
     get () {
-      return this.workspace_
+      return this.desk_
     }
   },
   factory: {
     get () {
-      return this.workspace_.factory_
+      return this.desk_.factory_
     }
   },
   audio: {
@@ -628,11 +628,11 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   recover: {
     get () {
-      return this.workspace.recover
+      return this.desk.recover
     }
   },
   /**
-   * Position of the receiver in the workspace.
+   * Position of the receiver in the desk.
    */
   xy: {
     get () {
@@ -640,7 +640,7 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   /**
-   * Size of the receiver, in workspace coordinates.
+   * Size of the receiver, in desk coordinates.
    * Stores the height, minWidth and width.
    * The latter includes the right padding.
    * It is updated in the right alignment method.
@@ -892,7 +892,7 @@ eYo.Brick.prototype.equals = function (rhs) {
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.prototype.doConsolidate = function (deep, force) {
-  if (!force && (!eYo.Events.recordUndo || !this.workspace || this.change.level > 1)) {
+  if (!force && (!eYo.Events.recordUndo || !this.desk || this.change.level > 1)) {
     // do not consolidate while un(re)doing
     return
   }
@@ -1488,7 +1488,7 @@ eYo.Brick.prototype.consolidateInputs = function (deep, force) {
  * See assignment_chain.
  */
 eYo.Brick.prototype.consolidateType = function () {
-  if (this.workspace) {
+  if (this.desk) {
     this.setupType(this.getType())
     if (this.wrapped_) {
       var p = this.parent
@@ -2086,14 +2086,14 @@ eYo.Brick.prototype.connectLast = function (bmt) {
 }
 
 /**
- * Scrolls the receiver to the top left part of the workspace.
+ * Scrolls the receiver to the top left part of the desk.
  * Does nothing if the brick is already in the visible are,
  * and is not forced.
  * @param {!Boolean} force  flag
  */
 eYo.Brick.prototype.scrollToVisible = function (force) {
   if (!this.inVisibleArea || force) {
-    this.workspace.scrollBrickTopLeft(this.id)
+    this.desk.scrollBrickTopLeft(this.id)
   }
 }
 /**
@@ -2121,7 +2121,7 @@ eYo.Brick.prototype.getMagnets_ = function(all) {
  */
 eYo.Brick.prototype.isMovable = function() {
   return !this.wrapped_ && this.movable_ &&
-  !(this.workspace && this.workspace.options.readOnly)
+  !(this.desk && this.desk.options.readOnly)
 }
 
 /**
@@ -2134,9 +2134,9 @@ eYo.Brick.prototype.setCollapsed = function (collapsed) {
 
 Object.defineProperties(eYo.Brick, {
   /**
-   * Move a brick by a relative offset in workspace coordinates.
-   * @param {number} dx Horizontal offset in workspace units.
-   * @param {number} dy Vertical offset in workspace units.
+   * Move a brick by a relative offset in desk coordinates.
+   * @param {number} dx Horizontal offset in desk units.
+   * @param {number} dy Vertical offset in desk units.
    */
   xyMoveBy: {
     get() {
@@ -2159,8 +2159,8 @@ Object.defineProperties(eYo.Brick, {
 
 /**
  * Move a standalone brick by a relative offset.
- * @param {number} dx Horizontal offset in workspace units.
- * @param {number} dy Vertical offset in workspace units.
+ * @param {number} dx Horizontal offset in desk units.
+ * @param {number} dy Vertical offset in desk units.
  */
 eYo.Brick.prototype.xyMoveBy = function(dx, dy) {
   goog.asserts.assert(!this.parent, 'Brick has parent.')
@@ -2168,7 +2168,7 @@ eYo.Brick.prototype.xyMoveBy = function(dx, dy) {
     var xy = this.xy
     this.ui.xyMoveTo(xy.x + dx, xy.y + dy)
     this.ui.moveMagnets_(dx, dy)
-    this.workspace.resizeContents()
+    this.desk.resizeContents()
   })
 }
 
@@ -2381,35 +2381,35 @@ eYo.Brick.prototype.someStatement = function (helper) {
  * If the model fits an identifier, then create an identifier
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
- * If the workspace is headless,
+ * If the desk is headless,
  * this is headless and should not render until a makeUI message is sent.
- * @param {!*} owner  workspace or brick
+ * @param {!*} owner  desk or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
  * @param {?eYo.Brick} id
  */
 eYo.Brick.newReady = (() => {
-  var processModel = (workspace, model, id, brick) => {
+  var processModel = (desk, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
       if (eYo.Brick.Manager.get(model.type)) {
-        brick = workspace.newBrick(model.type, id)
+        brick = desk.newBrick(model.type, id)
         brick.setDataWithType(model.type)
       } else if (eYo.Brick.Manager.get(model)) {
-        brick = workspace.newBrick(model, id) // can undo
+        brick = desk.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
           var ans
-          if (p5e.expr && (ans = workspace.newBrick(p5e.expr, id))) {
+          if (p5e.expr && (ans = desk.newBrick(p5e.expr, id))) {
             p5e.expr && (ans.setDataWithType(p5e.expr))
             model && (ans.setDataWithModel(model))
             dataModel = {data: model}
-          } else if (p5e.stmt && (ans = workspace.newBrick(p5e.stmt, id))) {
+          } else if (p5e.stmt && (ans = desk.newBrick(p5e.stmt, id))) {
             p5e.stmt && (ans.setDataWithType(p5e.stmt))
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (ans = workspace.newBrick(eYo.T3.Expr.numberliteral, id))) {
+          } else if (goog.isNumber(model)  && (ans = desk.newBrick(eYo.T3.Expr.numberliteral, id))) {
             ans.setDataWithType(eYo.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
@@ -2436,7 +2436,7 @@ eYo.Brick.newReady = (() => {
             if (slot && slot.magnet) {
               var t9k = slot.targetBrick
               var V = Vs[k]
-              var b3k = processModel(workspace, V, null, t9k)
+              var b3k = processModel(desk, V, null, t9k)
               if (!t9k && b3k && b3k.out_m) {
                 b3k.changeWrap(() => {
                   slot && (slot.incog = false)
@@ -2451,7 +2451,7 @@ eYo.Brick.newReady = (() => {
         if (brick.foot_m) {
           var footModel = dataModel.next
           if (footModel) {
-            var b3k = processModel(workspace, footModel)
+            var b3k = processModel(desk, footModel)
             if (b3k && b3k.head_m) {
               try {
                 brick.foot_m.connect(b3k.head_m)
@@ -2469,8 +2469,8 @@ eYo.Brick.newReady = (() => {
     return brick
   }
   return function (owner, model, id) {
-    var workspace = owner.workspace || owner
-    var b3k = processModel(workspace, model, id)
+    var desk = owner.desk || owner
+    var b3k = processModel(desk, model, id)
     if (b3k) {
       b3k.consolidate()
       owner.hasUI && b3k.makeUI()
@@ -2979,15 +2979,15 @@ Object.defineProperties(eYo.Brick, {
         this.parent__ = null
         this.ui.setParent(null)
       } else {
-        // Remove this brick from the workspace's list of top-most bricks.
-        this.workspace.removeBrick(this)
+        // Remove this brick from the desk's list of top-most bricks.
+        this.desk.removeBrick(this)
       }
       this.parent__ = newParent
       if (newParent) {
         // Add this brick to the new parent_'s child list.
         newParent.children_.push(this)
       } else {
-        this.workspace.addBrick(this)
+        this.desk.addBrick(this)
       }
       newParent && (this.ui.setParent(newParent))
     }
@@ -3224,8 +3224,8 @@ eYo.Brick.Manager = (() => {
       (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
       parent
-      var c9r = owner[key] = function (workspace, type, opt_id) {
-        c9r.superClass_.constructor.call(this, workspace, type, opt_id)
+      var c9r = owner[key] = function (desk, type, opt_id) {
+        c9r.superClass_.constructor.call(this, desk, type, opt_id)
       }
       goog.inherits(c9r, parent)
       me.prepareConstructor(c9r, key)
@@ -3348,11 +3348,11 @@ eYo.Brick.Manager = (() => {
    * @param {!eYo.Brick} brick
    * @param {?string} prototypeName Name of the language object containing
    */
-  me.create = function (workspace, prototypeName, opt_id, brick) {
+  me.create = function (desk, prototypeName, opt_id, brick) {
     goog.asserts.assert(!goog.isString(brick), 'API DID CHANGE, update!')
     var DelegateC9r = C9rs[prototypeName]
     goog.asserts.assert(DelegateC9r, 'No delegate for ' + prototypeName)
-    var d = DelegateC9r && new DelegateC9r(workspace, prototypeName, opt_id, brick)
+    var d = DelegateC9r && new DelegateC9r(desk, prototypeName, opt_id, brick)
     return d
   }
   /**

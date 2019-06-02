@@ -30,7 +30,7 @@ eYo.Svg.prototype.magnetDispose = eYo.Do.nothing
  * @param {!eYo.Magnet} m4t
  */
 eYo.Svg.prototype.magnetHilight = function (m4t) {
-  if (!m4t.workspace) {
+  if (!m4t.desk) {
     return
   }
   var node = m4t.brick

@@ -52,7 +52,7 @@ Object.defineProperties(eYo.Version, {
 eYo.setup = (() => {
   var i11rsHead = []
   var i11rsTail = []
-  var me = (workspace) => {
+  var me = (desk) => {
     i11rsHead.forEach(i11r => i11r())
     i11rsHead = undefined
     i11rsTail.reverse().forEach(i11r => i11r())

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Workspace override.
+ * @fileoverview Desk override.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -36,7 +36,7 @@ goog.forwardDeclare('goog.crypt')
  * @param {!boolean} deep
  */
 eYo.Desktop.deleteBrick = (brick, deep) => {
-  if (brick && brick.deletable && !brick.workspace.isFlyout) {
+  if (brick && brick.deletable && !brick.desk.isFlyout) {
     if (brick.isSelected) {
       // prepare a connection or a block to be selected
       var m4t
@@ -57,7 +57,7 @@ eYo.Desktop.deleteBrick = (brick, deep) => {
         brick.dispose(true, true)
       }
     })
-    if (m4t && m4t.brick.workspace) {
+    if (m4t && m4t.brick.desk) {
       m4t.select()
     } else if (t9k) {
       t9k.select()
@@ -78,7 +78,7 @@ eYo.Desktop.copyBrick = (brick, deep) => {
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml
-  eYo.Clipboard.source = brick.workspace
+  eYo.Clipboard.source = brick.desk
   eYo.App.didCopyBrick && (eYo.App.didCopyBrick(brick, xml))
 }
 

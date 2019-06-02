@@ -55,7 +55,7 @@ eYo.Selected = (() => {
           return brick__
         },
         set (newValue) {
-          if (newValue && !newValue.workspace) return
+          if (newValue && !newValue.desk) return
           if (!newValue) {
             console.error('BREAK HERE')
           }
@@ -145,7 +145,7 @@ eYo.Selected = (() => {
         },
         set (magnet) {
           if (magnet) {
-            if (!magnet.workspace) return
+            if (!magnet.desk) return
             if (magnet.hidden_) {
               console.error('Do not select a hidden connection')
             }
@@ -264,7 +264,7 @@ eYo.Brick.prototype.select = eYo.Decorate.reentrant_method('select', function ()
  * Unselect is used from click handling methods.
  */
 eYo.Brick.prototype.unselect = function () {
-  if (this.workspace && this.isSelected) {
+  if (this.desk && this.isSelected) {
     eYo.Selected.brick = null
   }
 }

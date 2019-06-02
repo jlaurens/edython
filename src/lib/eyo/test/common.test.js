@@ -2,7 +2,7 @@ setTimeout(() => {
   describe('PREPARE', function() {
     it('Blockly', function() {
       chai.assert(Blockly, `MISSING Blockly`)
-      chai.assert(eYo.App.workspace, `MISSING eYo.App.workspace`)
+      chai.assert(eYo.App.desk, `MISSING eYo.App.desk`)
       chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
@@ -11,7 +11,7 @@ setTimeout(() => {
 eYo.Test = Object.create(null)
 
 eYo.Test.makeFactory = options => {
-  if (!eYo.App.workspace) {
+  if (!eYo.App.desk) {
     options = options || {}
     goog.mixin(options, {
       collapse : true,
@@ -34,14 +34,14 @@ beforeEach(function() {
 })
 
 eYo.Test.setItUp = () => {
-  eYo.App.workspace.clearUndo()
-  eYo.App.workspace.topBricks_.length = 0
+  eYo.App.desk.clearUndo()
+  eYo.App.desk.topBricks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
-  eYo.App.workspace.clearUndo()
+  eYo.App.desk.clearUndo()
   if (!opt || !opt.ignoreTopBrick) {
-    chai.assert(eYo.App.workspace.topBricks_.length === 0, `FAILED ${eYo.App.workspace.topBricks_.length} === 0`)
+    chai.assert(eYo.App.desk.topBricks_.length === 0, `FAILED ${eYo.App.desk.topBricks_.length} === 0`)
   }
 }
 
@@ -59,7 +59,7 @@ eYo.Test.brick = (brick, t, str) => {
 
 eYo.Test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var brick = eYo.Brick.newReady(eYo.App.workspace, type)
+  var brick = eYo.Brick.newReady(eYo.App.desk, type)
   eYo.Test.brick(brick, tt, str)
   if (!headless) {
     brick.render()
@@ -378,7 +378,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.Brick.newReady(eYo.App.workspace, eYo.T3.Expr.identifier)
+  var brick = eYo.Brick.newReady(eYo.App.desk, eYo.T3.Expr.identifier)
   brick.target_p = str
   eYo.Test.brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)
@@ -416,7 +416,7 @@ eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
 eYo.Test.source = (str) => {
   var err_ret = {}
   var n = eYo.Parser.PyParser_ParseString(str, eYo.GMR._PyParser_Grammar, eYo.TKN.file_input, err_ret)
-  var d = n.toBrick(eYo.App.workspace)
+  var d = n.toBrick(eYo.App.desk)
   if (!d) {
     eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, n)
   }

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Workspace override.
+ * @fileoverview Desk override.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -31,22 +31,22 @@ Object.defineProperties(eYo.Clipboard, {
       this.dom_ = newValue
     }
   },
-  sourceWorkspace: {
+  sourceDesk: {
     get () {
-      return this.sourceWorkspace_
+      return this.sourceDesk_
     },
     set (newValue) {
-      this.sourceWorkspace_ = newValue
+      this.sourceDesk_ = newValue
     }
   },
   factory: {
     get () {
-      return this.sourceWorkspace_.factory
+      return this.sourceDesk_.factory
     }
   },
-  mainWorkspace: {
+  mainDesk: {
     get () {
-      return this.sourceWorkspace_.factory.mainWorkspace
+      return this.sourceDesk_.factory.mainDesk
     }
   }
 })

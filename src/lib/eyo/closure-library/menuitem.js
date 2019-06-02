@@ -98,7 +98,7 @@ eYo.MenuItem.prototype.getCaption = function () {
               }
             })
           .join('')
-    return goog.string.collapseBreakingSpaces(caption)
+    return goog.string.collapseBreakingDesks(caption)
   }
   return goog.ui.MenuItem.superClass_.getCaption.call(this)
 }

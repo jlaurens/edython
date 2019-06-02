@@ -63,23 +63,23 @@ eYo.App.doBack = function() {
 }
 
 /**
- * Scroll the workspace to show the selected brick.
+ * Scroll the desk to show the selected brick.
  */
 eYo.App.doFocus = () => {
   var brick = eYo.Selected.brick
   if (brick) {
-    brick.workspace.scrollBrickTopLeft(brick.id)
+    brick.desk.scrollBrickTopLeft(brick.id)
   }
 }
 
 /**
- * Scroll the workspace to show the selected brick.
+ * Scroll the desk to show the selected brick.
  */
 eYo.App.makeFactory = options => {
   var f = eYo.App.factory = new eYo.Factory(options)
-  eYo.App.workspace = f.mainWorkspace
-  eYo.setup(eYo.App.workspace)
-  eYo.App.workspace.clearUndo()
+  eYo.App.desk = f.mainDesk
+  eYo.setup(eYo.App.desk)
+  eYo.App.desk.clearUndo()
   f.makeUI()
 }
 
