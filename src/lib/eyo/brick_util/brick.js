@@ -2082,49 +2082,7 @@ eYo.Brick.prototype.setCollapsed = function (collapsed) {
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
-  /**
-   * Move a brick to an offset in board coordinates.
-   * @param {number} dx Horizontal offset in board units.
-   * @param {number} dy Vertical offset in board units.
-   */
-  moveTo: {
-    get() {
-      return this.ui.moveTo
-    }
-  },
-  /**
-   * Move a brick to an offset in board coordinates.
-   * @param {number} dx Horizontal offset in board units.
-   * @param {number} dy Vertical offset in board units.
-   */
-  xyMoveTo: {
-    get() {
-      return this.ui.xyMoveTo
-    }
-  },
-  /**
-   * Move a brick by a relative offset in board coordinates.
-   * @param {number} dx Horizontal offset in board units.
-   * @param {number} dy Vertical offset in board units.
-   */
-  xyMoveBy: {
-    get() {
-      return this.ui.xyMoveBy
-    }
-  },
-  /**
-   * Move a brick by a relative offset in text units.
-   * @param {number} dc Horizontal offset in text unit.
-   * @param {number} dl Vertical offset in text unit.
-   */
-  moveBy: {
-    get () {
-      return (dc, dl) => {
-        this.ui.xyMoveBy(dc * eYo.Unit.x, dl * eYo.Unit.y)
-      }
-    }
-  },
-  /**
+/**
    * Position of the receiver in the board.
    */
   xy: {
@@ -2133,6 +2091,42 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
 })
+
+/**
+ * Move a brick to an offset in board coordinates.
+ * @param {number} dx Horizontal offset in board units.
+ * @param {number} dy Vertical offset in board units.
+ */
+eYo.Brick.prototype.moveTo = function (x, y) {
+  this.ui.moveTo(x, y)
+}
+
+/**
+ * Move a brick to an offset in board coordinates.
+ * @param {number} c Horizontal offset in text units.
+ * @param {number} l Vertical offset in text units.
+ */
+eYo.Brick.prototype.xyMoveTo = function (c, l) {
+  return this.ui.moveTo(c, l)
+}
+
+/**
+ * Move a brick by a relative offset in board coordinates.
+ * @param {number} dx Horizontal offset in board units.
+ * @param {number} dy Vertical offset in board units.
+ */
+eYo.Brick.prototype.xyMoveBy = function (dx, dy) {
+  this.ui.xyMoveBy(dx, dy)
+}
+
+/**
+ * Move a brick by a relative offset in text units.
+ * @param {number} dc Horizontal offset in text unit.
+ * @param {number} dl Vertical offset in text unit.
+ */
+eYo.Brick.prototype.moveBy = function (dc, dl) {
+  this.ui.moveBy(dc, dl)
+}
 
 /**
  * Render the brick.
@@ -2456,20 +2450,19 @@ eYo.Brick.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
   this.change.wrap(() => {
-      this.ui_ = new eYo.Brick.UI(this)
-      this.forEachField(field => field.makeUI())
-      this.forEachSlot(slot => slot.makeUI())
-      this.forEachInput(input => input.makeUI())
-      ;[this.suite_m,
-        this.right_m,
-        this.foot_m
-      ].forEach(m => m && m.makeUI())
-      this.forEachData(data => data.synchronize()) // data is no longer headless
-      this.magnets.makeUI()
-      this.ui.updateShape()
-      this.render = eYo.Brick.prototype.render_
-    }
-  )
+    this.ui_ = new eYo.Brick.UI(this)
+    this.forEachField(field => field.makeUI())
+    this.forEachSlot(slot => slot.makeUI())
+    this.forEachInput(input => input.makeUI())
+    ;[this.suite_m,
+      this.right_m,
+      this.foot_m
+    ].forEach(m => m && m.makeUI())
+    this.forEachData(data => data.synchronize()) // data is no longer headless
+    this.magnets.makeUI()
+    this.ui.updateShape()
+    this.render = eYo.Brick.prototype.render_
+  })
 }
 
 /**
