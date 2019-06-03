@@ -13,11 +13,10 @@
 
 goog.provide('eYo.Brick')
 
-goog.require('eYo')
-
-goog.require('eYo.Helper')
-goog.require('eYo.Decorate')
+goog.require('eYo.Change')
 goog.require('eYo.Data')
+goog.require('eYo.Decorate')
+goog.require('eYo.Helper')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.T3')
@@ -34,36 +33,6 @@ goog.forwardDeclare('eYo.Brick.Expr')
 goog.forwardDeclare('eYo.Brick.Stmt')
 goog.forwardDeclare('eYo.Selected')
 
-
-/**
- * Decorate of change count hooks.
- * Returns a function with signature is `foo(whatever) → whatever`
- * `foo` is overriden by the model.
- * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * `do_it` receives all the parameters that the decorated function will receive.
- * If `do_it` return value is not an object, the change.count is not recorded
- * If `do_it` return value is an object with a `return` property,
- * the `change.count` is recorded such that `do_it` won't be executed
- * until the next `change.count` increment.
- * @param {!String} key,
- * @param {!Function} do_it  must return something.
- * @return {!Function}
- */
-eYo.Decorate.onChangeCount = function (key, do_it) {
-  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
-  return function() {
-    var c = this.change
-    if (c.save[key] === c.count) {
-      return c.cache[key]
-    }
-    var did_it = do_it.apply(this, arguments)
-    if (did_it) {
-      c.save[key] = c.count
-      c.cache[key] = did_it.ans
-    }
-    return c.cache[key]
-  }
-}
 
 /**
  * Class for a Brick.
@@ -100,39 +69,12 @@ eYo.Brick = function (board, type, opt_id) {
   this.span_ = new eYo.Span(this)
   this.xy_ = new eYo.Where(0, 0)
   
-  this.change = {
-    // the count is incremented each time a change occurs,
-    // even when undoing.
-    // Some lengthy actions may be shortened when the count
-    // has not changed since the last time it was performed
-    count: 0,
-    // the step is the count, except that it is freezed while editing
-    step: 0,
-    // The level indicates cascading changes
-    // Some actions that are performed when something changes
-    // should not be performed while there is a pending change.
-    // The level is incremented before the change and
-    // decremented after the change (see `changeWrap`)
-    // If we have
-    // A change (level 1) => B change (level 2) => C change (level 3)
-    // Such level aware actions are not performed when B and C
-    // have changed because the level is positive (respectivelly 1 and 2),// a contrario they are performed when the A has changed because
-    // the level is 0.
-    level: 0,
-    // Some operations are performed only when there is a change
-    // In order to decide whether to run or do nothing,
-    // we have to store the last change count when the operation was
-    // last performed. See `onChangeCount` decorator.
-    save: {},
-    // When these operations return values, they are cached below
-    // until they are computed once again.
-    cache: {}
-  }
+  this.change_ = new eYo.Change(this)
   // to manage reentrency
   this.reentrant_ = {}
   // make the state
   eYo.Events.disableWrap(() => {
-    this.changeWrap(() => {
+    this.change.wrap(() => {
       this.makeMagnets()
       this.makeData()
       this.makeFields()
@@ -162,11 +104,11 @@ eYo.Brick.DEBUG = {}
 
 // owned properties with default value
 Object.defineProperties(eYo.Brick.prototype, {
-  parent__: { value: undefined, writable: true },
-  wrappedMagnets_: { value: undefined, writable: true },
-  inputList_: { value: undefined, writable: true },
-  pythonType_: { value: undefined, writable: true },
-  parent_: { value: undefined, writable: true },
+  parent__: { value: eYo.VOID, writable: true },
+  wrappedMagnets_: { value: eYo.VOID, writable: true },
+  inputList_: { value: eYo.VOID, writable: true },
+  pythonType_: { value: eYo.VOID, writable: true },
+  parent_: { value: eYo.VOID, writable: true },
   movable_: { value: true, writable: true },
 })
 
@@ -209,15 +151,17 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.disposeData()
     this.forEachInput(input => input.dispose())
     this.disposeMagnets()
-    this.inputList_ = undefined
-    this.children_ = undefined
+    this.inputList_ = eYo.VOID
+    this.children_ = eYo.VOID
   })
   // this must be done after the child bricks are released
   this.disposeUI()
   this.span.dispose()
-  this.span_ = undefined
+  this.span_ = eYo.VOID
   this.board.resizeContents()
-  this.board_ = undefined
+  this.board_ = eYo.VOID
+  this.change__.dispose()
+  this.change__ = eYo.VOID
 }
 
 /**
@@ -646,7 +590,7 @@ Object.defineProperties(eYo.Brick.prototype, {
    * It is updated in the right alignment method.
    */
   size: {
-    get: eYo.Decorate.onChangeCount('full_HW__', function() {
+    get: eYo.Change.decorate('full_HW__', function() {
       var height = this.span.height
       var minWidth = this.span.width
       var width = minWidth
@@ -712,14 +656,8 @@ Object.defineProperties(eYo.Brick.prototype, {
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.Brick.prototype.incrementChangeCount = function (deep) {
-  ++ this.change.count
-  if (!this.isEditing) {
-    this.change.step = this.change.count
-  }
-  if (deep) {
-    this.forEachChild(d => d.incrementChangeCount(deep))
-  }
+eYo.Brick.prototype.changeDone = function (deep) {
+  this.change.done()
 }
 
 /**
@@ -732,7 +670,18 @@ eYo.Brick.prototype.incrementChangeCount = function (deep) {
  * For edython.
  */
 eYo.Brick.prototype.changeBegin = function () {
-  ++this.change.level
+  this.change_.begin()
+}
+
+/**
+ * When a change is done.
+ * For edython.
+ * @param {*} deep  Whether to propagate the message to children.
+ */
+eYo.Brick.prototype.onChangeDone = function (deep) {
+  if (deep) {
+    this.forEachChild(b3k => b3k.changeDone(deep))
+  }
 }
 
 /**
@@ -742,41 +691,25 @@ eYo.Brick.prototype.changeBegin = function () {
  * is consolidated.
  * This is the only place where consolidation should occur.
  * For edython.
- * @return {Number} the change level
  */
-eYo.Brick.prototype.changeEnd = function () {
-  --this.change.level
-  if (this.change.level === 0) {
-    this.incrementChangeCount()
-    this.consolidate()
-    this.didChangeEnd && (this.didChangeEnd(this))
-  }
-  if (!this.change.level) {
-    this.render()
-  }
-  return this.change.level
+eYo.Brick.prototype.onChangeEnd = function () {
+  this.render()
 }
 
 /**
- * Begin a mutation.
+ * Ends a mutation.
+ * When a change is complete at the top level,
+ * the change count is incremented and the receiver
+ * is consolidated.
+ * This is the only place where consolidation should occur.
  * For edython.
- * @param {!Function} do_it
- * @param {*} thisObject
- * @param {*} rest
  */
-eYo.Brick.prototype.changeWrap = function () {
-  var args = Array.prototype.slice.call(arguments)
-  var ans
-  try {
-    this.changeBegin()
-    args[0] && (ans = args[0].apply(args[1] || this, args.slice(2)))
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    this.changeEnd()
+eYo.Brick.prototype.changeEnd = function () {
+  --this.change_.level
+  if (this.change_.level === 0) {
+    this.change.done()
+    this.onChangeEnd(arguments)
   }
-  return ans
 }
 
 /**
@@ -785,9 +718,9 @@ eYo.Brick.prototype.changeWrap = function () {
  * @param {Object} newValue
  * @param {Boolean} notUndoable
  */
-eYo.Data.prototype.change = function (newValue, validate) {
+eYo.Data.prototype.doChange = function (newValue, validate) {
   if (newValue !== this.get()) {
-    this.brick.changeWrap(
+    this.brick.change.wrap(
       this.set,
       this,
       newValue,
@@ -820,7 +753,7 @@ eYo.Brick.prototype.didLoad = function () {
   if (goog.isFunction(didLoad)) {
     didLoad.call(this)
   }
-  this.incrementChangeCount()
+  this.changeDone()
 }
 
 /**
@@ -892,7 +825,7 @@ eYo.Brick.prototype.equals = function (rhs) {
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.prototype.doConsolidate = function (deep, force) {
-  if (!force && (!eYo.Events.recordUndo || !this.board || this.change.level > 1)) {
+  if (!force && (!eYo.Events.recordUndo || !this.board || this.change_.level > 1)) {
     // do not consolidate while un(re)doing
     return
   }
@@ -915,7 +848,7 @@ eYo.Brick.prototype.doConsolidate = function (deep, force) {
  */
 eYo.Brick.prototype.consolidate = eYo.Decorate.reentrant_method(
   'consolidate',
-  eYo.Decorate.onChangeCount(
+  eYo.Change.decorate(
     'consolidate',
     function (deep, force) {
       this.doConsolidate(deep, force)
@@ -1061,7 +994,7 @@ eYo.Brick.prototype.forEachData = function (helper) {
  * otherwise send an init message to all the data controllers.
  */
 eYo.Brick.prototype.makeBounds = function () {
-  var theField = undefined
+  var theField = eYo.VOID
   for (var k in this.data) {
     var data = this.data[k]
     var slot = this.slots[k]
@@ -1120,12 +1053,12 @@ eYo.Brick.prototype.setDataWithType = function (type) {
 eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
   var done = false
   this.forEachData(data => data.setRequiredFromModel(false))
-  this.changeWrap(() => {
+  this.change.wrap(() => {
     var data_in = model.data
     if (goog.isString(data_in) || goog.isNumber(data_in)) {
       var d = this.main_d
       if (d && !d.incog && d.validate(data_in)) {
-        d.change(data_in)
+        d.doChange(data_in)
         d.setRequiredFromModel(true)
         done = true
       } else {
@@ -1140,7 +1073,7 @@ eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
             //   })
             // }
             goog.asserts.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
-            d.change(data_in)
+            d.doChange(data_in)
             d.setRequiredFromModel(true)
             done = d.key
           }
@@ -1270,7 +1203,7 @@ eYo.Brick.prototype.synchronizeData = function () {
  */
 eYo.Brick.prototype.disposeData = function () {
   this.forEachData(data => data.dispose())
-  this.data_ = undefined
+  this.data_ = eYo.VOID
 }
 
 /**
@@ -1382,7 +1315,7 @@ eYo.Brick.prototype.makeMagnets = function () {
  */
 eYo.Brick.prototype.disposeMagnets = function () {
   this.magnets_.dispose()
-  this.magnets_ = undefined
+  this.magnets_ = eYo.VOID
 }
 
 // magnet computed properties
@@ -1397,7 +1330,7 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 /**
  * Execute the helper for each magnet, either superior or inferior.
- * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> undefined
+ * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.VOID
  */
 eYo.Brick.prototype.forEachMagnet = function (helper) {
   Object.values(this.magnets).forEach(helper)
@@ -1752,7 +1685,7 @@ eYo.Brick.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   } else if (m4t.isLeft) {
     s.header = 0
   }
-  this.incrementChangeCount()
+  this.changeDone()
 }
 
 /**
@@ -1903,7 +1836,7 @@ Object.defineProperty(eYo.Brick.prototype, 'disabled', {
         }
       }
     }, () => {
-      this.incrementChangeCount()
+      this.changeDone()
       this.ui && (this.ui.updateDisabled())
       this.render()
     })
@@ -2080,7 +2013,7 @@ eYo.Brick.prototype.connectLast = function (bmt) {
     var m4t = this.lastInput.magnet
     if (m4t.checkType_(other)) {
       m4t.connect(other)
-      return m4t.target === other ? m4t.targetBrick : undefined
+      return m4t.target === other ? m4t.targetBrick : eYo.VOID
     }
   }
 }
@@ -2188,6 +2121,25 @@ eYo.Brick.prototype.render_ = function () {
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
+  /**
+   * @type{eYo.Change}
+   * @readonly
+   */
+  change: {
+    get () {
+      return this.change_
+    }
+  },
+  /**
+   * Freeze the change step while editing.
+   * @type{Boolean}
+   * @readonly
+   */
+  changeStepFreeze: {
+    get () {
+      return this.isEditing
+    }
+  },
   editable: {
     value: true,
     writable: true
@@ -2297,7 +2249,7 @@ eYo.Brick.prototype.getInput = function (name) {
  */
 eYo.Brick.prototype.statementEnumerator = function () {
   var me = {
-    current_: undefined,
+    current_: eYo.VOID,
     depth: 0,
     parents: []
   }
@@ -2347,7 +2299,7 @@ eYo.Brick.prototype.statementEnumerator = function () {
 /**
  * Execute the helper for all the statements.
  * Deep first traversal.
- * @param {!Function} helper  helper has signature `(brick, depth) -> undefined`
+ * @param {!Function} helper  helper has signature `(brick, depth) -> eYo.VOID`
  * @return the truthy value from the helper.
  */
 eYo.Brick.prototype.forEachStatement = function (helper) {
@@ -2425,7 +2377,7 @@ eYo.Brick.newReady = (() => {
         }
       }
     }
-    brick && brick.changeWrap(
+    brick && brick.change.wrap(
       function () { // `this` is `brick`
         this.willLoad()
         this.setDataWithModel(dataModel)
@@ -2438,7 +2390,7 @@ eYo.Brick.newReady = (() => {
               var V = Vs[k]
               var b3k = processModel(board, V, null, t9k)
               if (!t9k && b3k && b3k.out_m) {
-                b3k.changeWrap(() => {
+                b3k.change.wrap(() => {
                   slot && (slot.incog = false)
                   b3k.out_m.connect(slot.magnet)
                 })
@@ -2488,7 +2440,7 @@ eYo.Brick.newReady = (() => {
 eYo.Brick.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
-  this.changeWrap(() => {
+  this.change.wrap(() => {
       this.ui_ = new eYo.Brick.UI(this)
       this.forEachField(field => field.makeUI())
       this.forEachSlot(slot => slot.makeUI())
@@ -2511,7 +2463,7 @@ eYo.Brick.prototype.makeUI = function () {
 eYo.Brick.prototype.disposeUI = function (healStack, animate) {
   this.disposeUI = eYo.Do.nothing
   delete this.makeUI
-  this.changeWrap(() => {
+  this.change.wrap(() => {
     this.render = eYo.Do.nothing
     this.forEachField(field => field.disposeUI())
     this.forEachSlot(slot => slot.disposeUI())
@@ -2692,7 +2644,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
       var c8n_N = model.input
       if ((m4t = candidate.out_m)) {
         // try to find a free magnet in a brick
-        // When not undefined, the returned magnet can connect to m4t.
+        // When not eYo.VOID, the returned magnet can connect to m4t.
         var findM4t = eyo => {
           var otherM4t, t9k
           otherM4t = eyo.someInputMagnet(foundM4t => {
@@ -2910,28 +2862,6 @@ eYo.Brick.prototype.unlock = function (shallow) {
 eYo.Brick.prototype.inVisibleArea = function () {
   var area = this.ui && this.ui.distanceFromVisible
   return area && !area.x && !area.y
-}
-
-/**
- * Execute the handler with brick rendering deferred to the end, if any.
- * handler
- * @param {!Function} handler `this` is the receiver.
- * @param {!Function} err_handler `this` is the receiver, one argument: the error catched.
- */
-eYo.Brick.prototype.doAndRender = function (handler, group, err_handler) {
-  return e => {
-    this.changeBegin()
-    group && (eYo.Events.group = true)
-    try {
-      handler.call(this, e)
-    } catch (err) {
-      err_handler && (err_handler.call(this, err) || console.error(err))
-      throw err
-    } finally {
-      group && (eYo.Events.group = false)
-      this.changeEnd()
-    }
-  }
 }
 
 Object.defineProperties(eYo.Brick, {
@@ -3152,7 +3082,7 @@ eYo.Brick.Manager = (() => {
                 return this.data[k].get()
               },
               set (newValue) {
-                this.data[k].change(newValue)
+                this.data[k].doChange(newValue)
               }
             }
           )
@@ -3211,14 +3141,14 @@ eYo.Brick.Manager = (() => {
         }
       }
     }
-    return function (key, model, parent, owner = undefined, register = false) {
+    return function (key, model, parent, owner = eYo.VOID, register = false) {
       goog.asserts.assert(parent.eyo, 'Only subclass constructors with an `eyo` namespace.')
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
       }
       if (owner === true) {
         register = true
-        owner = undefined
+        owner = eYo.VOID
       }
       owner = owner ||
       (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
@@ -3269,7 +3199,7 @@ eYo.Brick.Manager = (() => {
             model.out = Object.create(null)
           }
           model.out.check = eYo.Do.ensureArrayFunction(model.out.check || t)
-          model.statement && (model.statement = undefined)
+          model.statement && (model.statement = eYo.VOID)
         } else if ((t = eYo.T3.Stmt[key])) {
           var statement = model.statement || (model.statement = Object.create(null))
           var f = (k, type) => {
@@ -3292,7 +3222,7 @@ eYo.Brick.Manager = (() => {
           f('left', 'Left')
           f('right', 'Right')
           // this is a statement, remove the irrelevant output info
-          model.out && (model.out = undefined)
+          model.out && (model.out = eYo.VOID)
         }
         c9r.model__ = model // intermediate storage used by `modeller` in due time
         // Create properties to access data
