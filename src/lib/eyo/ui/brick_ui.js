@@ -149,7 +149,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   xy: {
     get () {
-      return thi.xy_
+      return this.xy_
     }
   }
 })
