@@ -158,6 +158,14 @@ eYo.BoardDragger.prototype.start = function(gesture) {
 }
 
 /**
+ * Reset gesture.
+ * @package
+ */
+eYo.BrickDragger.prototype.clearGesture = function() {
+  this.gesture_ = null
+}
+
+/**
  * Finish dragging the board and put everything back where it belongs.
  * @param {!Event} e The most recent move event.
  * @param {!goog.math.Coordinate} delta How far the pointer has

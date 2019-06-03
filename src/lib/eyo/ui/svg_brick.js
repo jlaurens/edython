@@ -37,6 +37,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
   // Expose this brick's ID on its top-level SVG group.
   if (g.dataset) {
     g.dataset.id = brick.id
+    g.dataset.type = brick.type
   }
   svg.pathInner_ = eYo.Svg.newElement('path', {
     class: 'eyo-path-inner'
@@ -63,6 +64,10 @@ eYo.Svg.prototype.brickInit = function (brick) {
   svg.groupContour_ = eYo.Svg.newElement('g', {
     class: 'eyo-contour'
   }, null)
+  if (svg.groupContour_.dataset) {
+    svg.groupContour_.dataset.id = brick.id
+    svg.groupContour_.dataset.type = brick.type
+  }
   if (this.withBBox) {
     svg.pathBBox_ = eYo.Svg.newElement('path', {
       class: 'eyo-path-bbox'
@@ -76,6 +81,10 @@ eYo.Svg.prototype.brickInit = function (brick) {
   svg.groupShape_ = eYo.Svg.newElement('g', {
     class: 'eyo-shape'
   }, null)
+  if (svg.groupShape_.dataset) {
+    svg.groupShape_.dataset.id = brick.id
+    svg.groupShape_.dataset.type = brick.type
+  }
   goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
   if (!brick.board.options.readOnly) {
     eYo.Dom.bindMouseEvents(brick.ui, g)
@@ -667,7 +676,7 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
  * @param {number} x The x coordinate of the translation in board units.
  * @param {number} y The y coordinate of the translation in board units.
  */
-eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
+eYo.Svg.prototype.brickXYMoveTo = function(brick, x = 0, y = 0) {
   if (goog.isDef(x.x)) {
     y = x.y
     x = x.x
@@ -797,6 +806,27 @@ eYo.Svg.prototype.brickXYInBoard = function (brick) {
     element = element.parentNode
   } while (element && element != canvas && element != bdsGroup)
   return new eYo.Where(x, y)
+}
+
+
+/**
+ * Return the coordinates of the top-left corner
+ * of this brick relative to the desk.
+ * @return {!eYo.Where} Object with .x and .y properties in
+ *     desk coordinates.
+ */
+eYo.Svg.prototype.brickXYInDesk = function (brick) {
+  var ans = new eYo.Where()
+  var bds = brick.desk.dom.svg.brickDragSurface
+  var current = bds.brickGroup
+  var bdsRoot = bds.dom.svg.root_
+  var boardRoot = brick.board.dom.svg.root_
+  var element = brick.dom.svg.group_
+  do {
+    // Loop through this brick and every parent.
+    ans.xyAdvance(this.xyInParent(element))
+  } while ((element = element.parentNode) && element != boardRoot && element != bdsRoot)
+  return ans
 }
 
 /**

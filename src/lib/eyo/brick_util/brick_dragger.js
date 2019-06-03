@@ -331,7 +331,6 @@ eYo.BrickDragger.prototype.clearGesture = function() {
   this.gesture_ = null
 }
 
-
 /**
  * Connect to the closest magnet and render the results.
  * This should be called at the end of a drag.

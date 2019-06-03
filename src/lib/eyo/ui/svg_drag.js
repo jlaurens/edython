@@ -184,10 +184,11 @@ eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
   } else {
     svg.group_.removeChild(this.brickGroup)
   }
-  svg.root_.style.display = 'none';
+  svg.root_.style.display = 'none'
+  svg.root_.removeAttribute('transform')
+  this.surfaceXY_ = null
   goog.asserts.assert(
     svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
-  this.surfaceXY_ = null
 }
 
 /**

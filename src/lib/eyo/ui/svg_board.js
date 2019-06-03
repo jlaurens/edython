@@ -302,7 +302,7 @@ eYo.Svg.prototype.boardBind_resize = function (board) {
  * @param {number} y Vertical translation.
  */
 eYo.Svg.prototype.boardCanvasMoveTo = function (board, x, y) {
-  if (x && gog.isDef(x.x)) {
+  if (x && goog.isDef(x.x)) {
     y = x.y
     x = x.x
   }

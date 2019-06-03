@@ -247,6 +247,7 @@ eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
   // Position the bar.
   this.handlePosition = this.constrainHandle_(handlePosition)
   this.didScroll_()
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**

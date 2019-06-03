@@ -1738,6 +1738,11 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       return this.driver.brickXYInBoard(this.brick_)
     }
   },
+  xyInDesk: {
+    get () {
+      return this.driver.brickXYInDesk(this.brick_)
+    }
+  },
   /**
    * Returns the coordinates of a bounding rect describing the dimensions of the brick.
    * As the shape is not the same comparing to Blockly's default,

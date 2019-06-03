@@ -34,7 +34,7 @@ goog.forwardDeclare('goog.events')
  * @constructor
  */
 eYo.ScrollbarPair = function(board) {
-  this.board_ = board;
+  this.board_ = board
   this.hScroll = new eYo.Scrollbar(
     board,
     true,
@@ -52,6 +52,15 @@ eYo.ScrollbarPair = function(board) {
 }
 
 Object.defineProperties(eYo.ScrollbarPair.prototype, {
+  /**
+   * @type{eYo.Board} The scrolled board...
+   * @readonly
+   */
+  board: {
+    get () {
+      return this.board_
+    }
+  },
   /**
    * @type{eYo.Driver} The ui driver...
    * @readonly
@@ -244,6 +253,15 @@ eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
 }
 
 Object.defineProperties(eYo.Scrollbar, {
+  /**
+   * @type{eYo.Board} The scrolled board...
+   * @readonly
+   */
+  board: {
+    get () {
+      return this.board_
+    }
+  },
   /**
    * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
    * Scrollbars should be larger on touch devices.
@@ -600,7 +618,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   // If the view has been resized, a content resize will also be necessary.
   // The converse is not true.
   this.resizeContentHorizontal(hostMetrics)
-};
+}
 
 /**
  * Recalculate a horizontal scrollbar's location within its path and length.
@@ -616,7 +634,7 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
     this.visible = this.viewLength_ < hostMetrics.content.width
   }
 
-  this.ratio_ = this.viewLength_ / hostMetrics.content.width;
+  this.ratio_ = this.viewLength_ / hostMetrics.content.width
   if (this.ratio_ === -Infinity || this.ratio_ === Infinity ||
       isNaN(this.ratio_)) {
     this.ratio_ = 0
@@ -657,7 +675,7 @@ eYo.Scrollbar.prototype.constrainHandle_ = function(value) {
     value = Math.min(value, this.viewLength_ - this.handleLength_);
   }
   return value;
-};
+}
 
 /**
  * Called when scrollbar has moved.
@@ -735,7 +753,7 @@ eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
   var handlePosition = (hostMetrics.view.top - hostMetrics.content.top) *
       this.ratio_;
   this.handlePosition = this.constrainHandle_(handlePosition)
-};
+}
 
 
 /**
