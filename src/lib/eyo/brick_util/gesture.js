@@ -277,11 +277,19 @@ Object.defineProperties(eYo.Gesture.prototype, {
     }
   },
   /**
-   * General purpose ui_driver from the creator board.
+   * The actual board.
    */
   board: {
     get () {
       return this.board_
+    }
+  },
+  /**
+   * General purpose ui_driver from the creator board.
+   */
+  change: {
+    get () {
+      return this.change_
     }
   }
 })

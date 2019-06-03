@@ -67,12 +67,8 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
 eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
   dragger.transformCorrection_ = null
   this.disconnectStop()
-  var xyDelta = dragger.xyDelta
-  var newLoc = goog.math.Coordinate.sum(dragger.xyStart_, xyDelta)
   var b3k = dragger.brick
   // Translate to current position, turning off 3d.
-  xyDelta = dragger.destination.fromPixelUnit(delta)
-  var newLoc = goog.math.Coordinate.sum(dragger.xyStart, xyDelta)
-  b3k.ui.xyMoveTo(newLoc)
+  b3k.ui.xyMoveTo(dragger.xyNew_)
   b3k.desk.dom.svg.brickDragSurface.clearAndHide(b3k.board.dom.svg.canvas_)
 }

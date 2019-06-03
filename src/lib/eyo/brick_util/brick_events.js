@@ -266,7 +266,7 @@ eYo.Events.BrickDelete.prototype.run = function(forward) {
  * @constructor
  */
 eYo.Events.BrickMove = function(brick) {
-  eYo.Events.Move.superClass_.constructor.call(this, brick)
+  eYo.Events.BrickMove.superClass_.constructor.call(this, brick)
   var location = this.currentLocation_()
   this.oldParentId = location.parentId
   this.oldName = location.name

@@ -60,6 +60,16 @@ Object.defineProperties(eYo.Change.prototype, {
    * the level is 0.
    */
   level: { value: 0, writable: true},
+  cache: {
+    get () {
+      return this.cache_
+    }
+  },
+  save: {
+    get () {
+      return this.save_
+    }
+  }
 })
 
 /**
@@ -79,7 +89,7 @@ Object.defineProperties(eYo.Change.prototype, {
 eYo.Change.decorate = function (key, do_it) {
   goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
   return function() {
-    var c = this.cache
+    var c = this.change
     if (c.save_[key] === c.count) {
       return c.cache_[key]
     }
@@ -110,8 +120,8 @@ eYo.Change.prototype.begin = function () {
  * For edython.
  */
 eYo.Change.prototype.end = function () {
-  --this.change_.level
-  if (this.change_.level === 0) {
+  --this.level
+  if (this.level === 0) {
     this.done()
     var O = this.owner_
     O.onChangeEnd && O.onChangeEnd(arguments)
