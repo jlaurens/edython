@@ -2213,6 +2213,17 @@ eYo.Brick.prototype.packedBrackets = true
  * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Brick.prototype.parentWillChange = function (newParent) {
+  this.ui.parentWillChange(newParent)
+}
+
+/**
+ * Called when the parent will just change.
+ * This code is responsible to place the various path
+ * in the proper domain of the dom tree.
+ * @param {!eYo.Brick} oldParent that was disConnected.
+ */
+eYo.Brick.prototype.parentDidChange = function (oldParent) {
+  this.ui.parentDidChange(newParent)
 }
 
 /**
@@ -2878,15 +2889,18 @@ Object.defineProperties(eYo.Brick, {
      * @param {?eYo.Brick} newParent New parent brick.
      */
     set (newParent) {
-      if (newParent === this.parent__) {
+      var oldParent = this.parent__
+      if (newParent === oldParent) {
         return;
       }
       // First disconnect from parent, if any
-      var f = m4t => m4t && (m4t.disconnect())
+      this.parentWillChange(newParent)
+      var f = m4t => m4t && m4t.disconnect()
       f(this.head_m)
         || f(this.left_m)
           || f(this.out_m)
       this.parent_ = newParent
+      this.parentDidChange(oldParent)
     }
   },
   parent_: {

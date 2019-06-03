@@ -1505,22 +1505,6 @@ eYo.Brick.UI.prototype.hide = function () {
   this.driver.brickDisplayedSet(this.brick_, false)
 }
 
-/**
- * The default implementation forwards to the driver.
- * @param {!eYo.Brick} newParent to be connected.
- */
-eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
-  this.driver.brickParentWillChange(this.brick_, newParent)
-}
-
-/**
- * The default implementation forwards to the driver.
- * @param {!eYo.Brick} oldParent replaced.
- */
-eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
-  this.driver.brickParentDidChange(this.brick_, oldParent)
-}
-
 Object.defineProperties(eYo.Brick.UI.prototype, {
   visible: {
     /**
@@ -1880,7 +1864,23 @@ eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
  * Move the brick to the top level.
  */
 eYo.Brick.UI.prototype.setParent = function (parent) {
-  this.driver.brickSetParent(this, parent)
+  this.driver.brickParentSet(this, parent)
+}
+
+/**
+ * The default implementation forwards to the driver.
+ * @param {!eYo.Brick} newParent to be connected.
+ */
+eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
+  this.driver.brickParentWillChange(this.brick_, newParent)
+}
+
+/**
+ * The default implementation forwards to the driver.
+ * @param {!eYo.Brick} oldParent replaced.
+ */
+eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
+  this.driver.brickParentDidChange(this.brick_, oldParent)
 }
 
 /**

@@ -134,7 +134,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
   if (parent) {
     this.brickParentDidChange(brick)
   } else {
-    this.brickParentWillChange(brick)
+    this.brickPlaceOnTop(brick)
   }
   if (parent) {
     var p_svg = parent.dom.svg
@@ -502,28 +502,39 @@ eYo.Svg.prototype.brickMenuShow = function (brick, menu) {
  * @param {!eYo.Brick} brick child.
  * @param {!eYo.Brick} newParent to be connected.
  */
-eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
+eYo.Svg.prototype.brickPlaceOnTop = function (brick) {
   var svg = brick.dom.svg
+  // this brick was connected, so its paths were located in the parents
+  // groups.
+  // First step, remove the relationship between the receiver
+  // and the old parent, then link the receiver with the new parent.
+  // this second step is performed in the `parentDidChange` method.
+  var g = svg.group_
+  // Move this brick up the DOM.  Keep track of x/y translations.
+  brick.board.dom.svg.canvas_.appendChild(g)
+  var xy = brick.xy
+  g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
+  goog.dom.insertChildAt(g, svg.groupContour_, 0)
+  svg.groupContour_.removeAttribute('transform')
+  goog.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
+    'eyo-inner')
+  goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+  svg.groupShape_.removeAttribute('transform')
+  goog.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
+    'eyo-inner')
+  svg.groups = [g]
+}
+
+/**
+ * Called when the parent will just change.
+ * This code is responsible to place the various path
+ * in the proper domain of the dom tree.
+ * @param {!eYo.Brick} brick child.
+ * @param {!eYo.Brick} newParent to be connected.
+ */
+eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
   if (brick.parent) {
-    // this brick was connected, so its paths were located in the parents
-    // groups.
-    // First step, remove the relationship between the receiver
-    // and the old parent, then link the receiver with the new parent.
-    // this second step is performed in the `parentDidChange` method.
-    var g = svg.group_
-    // Move this brick up the DOM.  Keep track of x/y translations.
-    brick.board.dom.svg.canvas_.appendChild(g)
-    var xy = brick.xy
-    g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
-    goog.dom.insertChildAt(g, svg.groupContour_, 0)
-    svg.groupContour_.removeAttribute('transform')
-    goog.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
-      'eyo-inner')
-    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
-    svg.groupShape_.removeAttribute('transform')
-    goog.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
-      'eyo-inner')
-    svg.groups = [g]
+    this.brickPlaceOnTop(brick)
   }
 }
 
@@ -980,7 +991,7 @@ eYo.Svg.prototype.brickSetDragging = (brick, dragging) => {
  * Move the brick to the top level.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
-eYo.Svg.prototype.brickSetParent = function (brick, parent) {
+eYo.Svg.prototype.brickParentSet = function (brick, parent) {
   var svg = brick.dom.svg
   if (parent) {
     var p_svg = parent.dom
