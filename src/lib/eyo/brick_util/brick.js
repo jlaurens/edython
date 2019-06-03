@@ -575,14 +575,6 @@ Object.defineProperties(eYo.Brick.prototype, {
     }
   },
   /**
-   * Position of the receiver in the board.
-   */
-  xy: {
-    get () {
-      return this.ui.xy_
-    }
-  },
-  /**
    * Size of the receiver, in board coordinates.
    * Stores the height, minWidth and width.
    * The latter includes the right padding.
@@ -2089,7 +2081,7 @@ eYo.Brick.prototype.setCollapsed = function (collapsed) {
   this.collapsed = collapsed
 }
 
-Object.defineProperties(eYo.Brick, {
+Object.defineProperties(eYo.Brick.prototype, {
   /**
    * Move a brick to an offset in board coordinates.
    * @param {number} dx Horizontal offset in board units.
@@ -2131,7 +2123,15 @@ Object.defineProperties(eYo.Brick, {
         this.ui.xyMoveBy(dc * eYo.Unit.x, dl * eYo.Unit.y)
       }
     }
-  }
+  },
+  /**
+   * Position of the receiver in the board.
+   */
+  xy: {
+    get () {
+      return this.ui.xy_
+    }
+  },
 })
 
 /**
