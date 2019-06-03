@@ -232,7 +232,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
         ui.down = false
         var span = t9k.span
         if (span.w) {
-          io.cursor.forward(span.width, span.height - 1)
+          io.cursor.advance(span.width, span.height - 1)
           // We just rendered a brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
@@ -1004,7 +1004,7 @@ eYo.Brick.UI.prototype.drawSlot_ = function (io) {
     }
     this.fieldDrawFrom_(slot.toEndField, io)
     // come back to the brick coordinates
-    io.cursor.forward(slot.where)
+    io.cursor.advance(slot.where)
     // translate at the end because `slot.where` may change
     // due to the shrink process
   }
@@ -1311,7 +1311,7 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
       if (shp.width) {
         // should we advance the cursor?
         if (m4t.side === eYo.Key.NONE) {
-          io.cursor.forward(shp.width)
+          io.cursor.advance(shp.width)
           io.common.startOfLine = io.common.startOfStatement = false
         }
         // a space was added as a visual separator anyway
@@ -1399,7 +1399,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
         var span = t9k.span
         if (span.w) {
           this.span.main += span.main - 1
-          io.cursor.forward(span.c, span.main - 1)
+          io.cursor.advance(span.c, span.main - 1)
           // We just rendered a connected input brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {

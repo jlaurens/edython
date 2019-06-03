@@ -176,7 +176,7 @@ eYo.Where.prototype.setFromSize = function (s) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where.prototype.forward = function (c = 0, l = 0) {
+eYo.Where.prototype.advance = function (c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l || 0
     c = c.c || 0

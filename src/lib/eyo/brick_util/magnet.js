@@ -1613,7 +1613,7 @@ eYo.Magnet.prototype.closest = (() => {
     if (!db.length) {
       return {magnet: null, radius: maxRadius}
     }
-    var where = new eYo.Where(magnet.where).forward(dxy)
+    var where = new eYo.Where(magnet.where).advance(dxy)
     // findPositionForConnection finds an index for insertion, which is always
     // after any block with the same y index.  We want to search both forward
     // and back, so search on both sides of the index.
