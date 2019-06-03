@@ -694,6 +694,9 @@ eYo.Svg.prototype.brickXYMoveTo = function (brick, dx = 0, dy = 0) {
   // Board coordinates.
   var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
+  if (transform.match(/NaN/)) {
+    throw 'FAILURE'
+  }
   svg.groups.forEach(g => {
     g.setAttribute('transform', transform)
   })

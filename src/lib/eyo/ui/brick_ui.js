@@ -513,6 +513,10 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} y The y coordinate of the translation in board units.
  */
 eYo.Brick.UI.prototype.moveTo = function(c, l) {
+  if (c && goog.isDef(c.c)) {
+    l = c.l
+    c = c.c
+  }
   this.xyMoveTo(c * eYo.Unit.x, l * eYo.Unit.y)
 }
 
@@ -532,7 +536,11 @@ eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
  * @param {number} dy Vertical offset in board units.
  */
 eYo.Brick.UI.prototype.moveBy = function (dc, dl) {
-  this.xyMoveBy(c * eYo.Unit.x, l * eYo.Unit.y)
+  if (dc && goog.isDef(dc.c)) {
+    dl = dc.l
+    dc = dc.c
+  }
+  this.xyMoveBy(dc * eYo.Unit.x, dl * eYo.Unit.y)
 }
 
 /**
@@ -541,7 +549,11 @@ eYo.Brick.UI.prototype.moveBy = function (dc, dl) {
  * @param {number} dx Horizontal offset in board units.
  * @param {number} dy Vertical offset in board units.
  */
-eYo.Brick.UI.prototype.xyMoveBy = function(dx, dy) {
+eYo.Brick.UI.prototype.xyMoveBy = function(dx = 0, dy = 0) {
+  if (dx && goog.isDef(dx.x)) {
+    dy = dx.y
+    dx = dx.x
+  }
   var xy = this.xy
   if (this.brick_.parent || this.isDragging) {
     this.xyMoveTo(xy.x + dx, xy.y + dy)

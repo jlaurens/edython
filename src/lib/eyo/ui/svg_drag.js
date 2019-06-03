@@ -121,11 +121,16 @@ eYo.Svg.BrickDragSurface.prototype.brickDragSurfaceShow = function(blocks) {
 /**
  * Translate and scale the entire drag surface group to the given position, to
  * keep in sync with the board.
- * @param {number} x X translation in board coordinates.
- * @param {number} y Y translation in board coordinates.
- * @param {number} scale Scale of the group.
+ * @param {?number | eYo.Where} x X translation in board coordinates.
+ * @param {?number} y Y translation in board coordinates, or scale.
+ * @param {?number} scale Scale of the group.
  */
-eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale) {
+eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x = 0, y = 0, scale = 1) {
+  if (x && goog.isDef(x.x)) {
+    scale = y
+    y = x.y
+    x = x.x
+  }
   this.scale_ = scale
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
@@ -145,7 +150,7 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x, y, scale)
  * @param {number} x X translation for the entire surface.
  * @param {number} y Y translation for the entire surface.
  */
-eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
+eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
   if (goog.isDef(x.x)) {
     y = x.y
     x = x.x
@@ -244,7 +249,7 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
  * @param {number} y Y translation for the entire surface
  * @package
  */
-eYo.Svg.BoardDragSurface.prototype.xyMoveTo = function(x, y) {
+eYo.Svg.BoardDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
   if (goog.isDef(x.x)) {
     y = x.y
     x = x.x

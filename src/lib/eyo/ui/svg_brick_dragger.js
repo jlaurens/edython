@@ -70,6 +70,6 @@ eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
   var b3k = dragger.brick
   // Translate to current position, turning off 3d.
   var bds = b3k.desk.dom.svg.brickDragSurface
-  bds.clearAndHide(b3k.board.dom.svg.canvas_)
   b3k.xyMoveBy(bds.surfaceXY_)
+  bds.clearAndHide(b3k.board.dom.svg.canvas_)
 }
