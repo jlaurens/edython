@@ -545,11 +545,9 @@ eYo.Brick.UI.prototype.xyMoveBy = function(dx, dy) {
   var xy = this.xy
   if (this.brick_.parent || this.isDragging) {
     this.xyMoveTo(xy.x + dx, xy.y + dy)
-    this.placeMagnets_()
   } else {
-    eYo.Event.fireBrickMove(this.brick_, () => {
+    eYo.Events.fireBrickMove(this.brick_, () => {
       this.xyMoveTo(xy.x + dx, xy.y + dy)
-      this.placeMagnets_()
       this.board.resizeContents()
     })
   }
