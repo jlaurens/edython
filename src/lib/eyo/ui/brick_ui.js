@@ -152,11 +152,12 @@ eYo.Brick.UI.prototype.drawFoot_ = function (recorder) {
   if (!magnet) {
     return
   }
+  m4t.setOffset(0, this.span.l)
   var t9k = magnet.targetBrick
   if (!t9k) {
     return
   }
-  magnet.tighten_()
+  magnet.tighten()
   var do_it = !t9k.ui.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
@@ -253,23 +254,21 @@ eYo.Brick.UI.prototype.renderSuite_ = function (io) {
   if (eYo.Brick.debugStartTrackingRender) {
     console.log(eYo.Brick.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.Span.INDENT, this.span.l)
+  m4t.setOffset(eYo.Span.INDENT, this.span.main)
   var t9k = m4t.targetBrick
   if (t9k) {
     this.someTargetIsMissing = false
     var ui = t9k.ui
-    if (ui.canDraw) {
-      m4t.tighten_()
-      if (!t9k.ui.rendered || !ui.up) {
-        try {
-          ui.down = true
-          t9k.render(false)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          ui.down = false
-        }
+    m4t.tighten()
+    if (!t9k.ui.rendered || !ui.up) {
+      try {
+        ui.down = true
+        t9k.render(false)
+      } catch (err) {
+        console.error(err)
+        throw err
+      } finally {
+        ui.down = false
       }
     }
     this.span.suite = t9k.span.l + t9k.span.foot
@@ -526,18 +525,22 @@ eYo.Brick.UI.prototype.moveBy = function (dc, dl) {
 
 /**
  * Move a standalone brick by a relative offset.
- * Event aware.
+ * Event aware for top blocks, except when dragging.
  * @param {number} dx Horizontal offset in board units.
  * @param {number} dy Vertical offset in board units.
  */
 eYo.Brick.UI.prototype.xyMoveBy = function(dx, dy) {
-  goog.asserts.assert(!this.brick_.parent, 'Brick has parent.')
-  eYo.Event.fireBrickMove(this.brick_, () => {
-    var xy = this.xy
+  var xy = this.xy
+  if (this.brick_.parent || this.isDragging) {
     this.xyMoveTo(xy.x + dx, xy.y + dy)
     this.placeMagnets_()
-    this.board.resizeContents()
-  })
+  } else {
+    eYo.Event.fireBrickMove(this.brick_, () => {
+      this.xyMoveTo(xy.x + dx, xy.y + dy)
+      this.placeMagnets_()
+      this.board.resizeContents()
+    })
+  }
 }
 
 /**
@@ -564,36 +567,68 @@ eYo.Brick.UI.prototype.didRender_ = function (recorder) {
  * Update all of the connections on this.brick_ with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
-  var blockTL = this.xyInBoard;
+  var xy = this.xyInBoard
+  var f = m4t => {
+    if (m4t) {
+      m4t.moveToOffset(xy)
+      m4t.target && m4t.tighten()
+    }
+  }
   // Don't tighten previous or output connections because they are inferior
   // connections.
   var m5s = this.brick_.magnets
   var m4t
   if ((m4t = m5s.left)) {
-    m4t.moveToOffset(blockTL)
+    m4t.moveToOffset(xy)
   }
   if ((m4t = m5s.head)) {
-    m4t.moveToOffset(blockTL)
+    m4t.moveToOffset(xy)
   }
   if ((m4t = m5s.out)) {
-    m4t.moveToOffset(blockTL)
+    m4t.moveToOffset(xy)
   }
-  this.brick_.forEachSlot(slot => {
-    if ((m4t = slot.magnet)) {
-      m4t.moveToOffset(blockTL)
-      m4t.target && m4t.tighten_()
+  this.brick_.forEachSlot(slot => f(slot.magnet))
+  this.brick_.forEachInput(input => f(input.magnet))
+  // next is done while rendering
+  // f(m5s.right)
+  // f(m5s.suite)
+  f(m5s.foot)
+}
+
+/**
+ * Update all of the connections on this.brick_ with the new locations.  * @private
+ */
+eYo.Brick.UI.prototype.placeMagnets_ = function() {
+  var xy = this.xyInBoard
+  var f = m4t => {
+    if (m4t) {
+      m4t.moveToOffset(xy)
+      var t9k = m4t.targetBrick
+      if (t9k) {
+        m4t.tighten()
+        t9k.placeMagnets_()
+      }
     }
-  })
-  this.brick_.forEachInput(input => {
-    if ((m4t = input.magnet)) {
-      m4t.moveToOffset(blockTL)
-      m4t.target && m4t.tighten_()
-    }
-  })
-  if ((m4t = m5s.foot)) {
-    m4t.moveToOffset(blockTL)
-    m4t.target && m4t.tighten_()
   }
+  // Don't tighten previous or output connections because they are inferior
+  // connections.
+  var m5s = this.brick_.magnets
+  var m4t
+  if ((m4t = m5s.left)) {
+    m4t.moveToOffset(xy)
+  }
+  if ((m4t = m5s.head)) {
+    m4t.moveToOffset(xy)
+  }
+  if ((m4t = m5s.out)) {
+    m4t.moveToOffset(xy)
+  }
+  this.brick_.forEachSlot(slot => f(slot.magnet))
+  this.brick_.forEachInput(input => f(input.magnet))
+  // next is done while rendering
+  // f(m5s.right)
+  // f(m5s.suite)
+  f(m5s.foot)
 }
 
 /**
@@ -608,7 +643,7 @@ eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
   //   var m4t = input.magnet
   //   if (m4t) {
   //     m4t.moveToOffset(blockTL)
-  //     m4t.tighten_()
+  //     m4t.tighten()
   //   }
   // })
 }
@@ -1564,22 +1599,6 @@ eYo.Brick.UI.prototype.sendToFront = function () {
  */
 eYo.Brick.UI.prototype.sendToBack = function () {
   this.driver.brickSendToFront(this.brick_)
-}
-
-/**
- * Move the magnets to follow a translation of the brick.
- * @param {Number} dx
- * @param {Number} dy
- * @private
- */
-eYo.Brick.UI.prototype.placeMagnets_ = function () {
-  if (!this.rendered) {
-    // Rendering is required to lay out the blocks.
-    // This is probably an invisible block attached to a collapsed block.
-    return
-  }
-  this.brick_.forEachMagnet(m4t => m4t.place())
-  this.brick_.children.forEach(b3k => b3k.ui.placeMagnets_())
 }
 
 //////////////////

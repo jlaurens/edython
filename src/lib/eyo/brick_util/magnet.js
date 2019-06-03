@@ -1470,7 +1470,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
 /**
  * Tighten_ the magnet and its target.
  */
-eYo.Magnet.prototype.tighten_ = function() {
+eYo.Magnet.prototype.tighten = function() {
   var m4t = this.target
   if (this.target) {
     var dx = m4t.x_ - this.x_
@@ -1661,16 +1661,6 @@ eYo.Magnet.prototype.closest = (() => {
 eYo.Magnet.prototype.moveToOffset = function(blockTL) {
   this.moveTo(blockTL.x + this.where.x,
       blockTL.y + this.where.y);
-}
-
-/**
- * Move this magnet to the location given by its offset within the brick and
- * the location of the brick's top left corner.
- * @param {!goog.math.Coordinate} blockTL The location of the top left corner
- *     of the brick, in board coordinates.
- */
-eYo.Magnet.prototype.place = function() {
-  this.moveToOffset(this.brick_.xyInBoard)
 }
 
 /**

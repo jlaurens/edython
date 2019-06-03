@@ -64,11 +64,11 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyDelta: {
     get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
-      var delta = this.gesture_.deltaXY_
-      if (delta && this.transformCorrection_) {
-        delta = this.transformCorrection_(delta)
+      var dXY = this.gesture_.deltaXY_
+      if (dXY && this.transformCorrection_) {
+        dXY = this.transformCorrection_(dXY)
       }
-      return {ans: this.destination.fromPixelUnit(delta)}
+      return {ans: this.destination.fromPixelUnit(dXY)}
     }),
   },
   xyNew_: {
@@ -134,7 +134,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     if (targetBrick.disabled) {
       return
     }
-    if (flyout.scrollable && !flyout.isDragTowardBoard(deltaXY)) {
+    if (!flyout.isDragTowardBoard(gesture)) {
       return
     }
     // Start the event group now,
@@ -228,13 +228,14 @@ eYo.BrickDragger.prototype.start = function(gesture) {
   this.destination.setResizesEnabled(false)
   this.ui_driver.disconnectStop()
   var healStack = gesture.healStack_
-  if (this.brick_.parent ||
-      (healStack && this.brick_.foot_m && this.brick_.foot_m.target)) {
-    this.brick_.unplug(healStack)
-    this.brick_.ui.xyMoveTo(this.newLoc(deltaXY))
-    this.brick_.ui.disconnectEffect()
+  var b3k = this.brick_
+  b3k.ui.dragging = true
+  if (b3k.parent ||
+      (healStack && b3k.foot_m && b3k.foot_m.target)) {
+    b3k.unplug(healStack)
+    b3k.xyMoveTo(this.newXY)
+    b3k.ui.disconnectEffect()
   }
-  this.brick_.ui.dragging = true
   this.ui_driver.brickDraggerStart(this)
 
   this.drag()

@@ -582,26 +582,28 @@ eYo.Flyout.prototype.scrollToStart = function() {
  * Determine if a drag delta is toward the board, based on the position
  * and orientation of the flyout. This is used in determineDragIntention_ to
  * determine if a new brick should be created or if the flyout should scroll.
- * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
- *     moved from the position at mouse down, in pixel units.
+ * @param {!eYo.Gesture} gesture.
  * @return {boolean} true if the drag is toward the board.
  * @package
  */
-eYo.Flyout.prototype.isDragTowardBoard = function(delta) {
-  var dx = delta.x
-  var dy = delta.y
-  // Direction goes from -180 to 180, with 0 toward the right and 90 on top.
+eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
+  if(!this.scrollable) {
+    return true
+  }
+  var dx = gesture.deltaXY_.x
+  var dy = gesture.deltaXY_.y
+  // Direction goes from -180 to 180, with 0 toward the board.
   var direction = Math.atan2(dy,
     this.anchor_ === eYo.Flyout.AT_RIGHT ? -dx : dx
   ) / Math.PI * 180
   var limit = this.dragAngleLimit_
-  return direction < limit && - range < limit
+  return -limit < direction && direction < limit
 }
 
 /**
  * Filter the bricks on the flyout to disable the ones that are above the
  * capacity limit.  For instance, if the user may only place two more bricks on
- * the board, an "a + b" brick that has two shadow bricks would be disabled.
+ * the board, an "a + b" brick that has two required placeholders would be disabled.
  * @private
  */
 eYo.Flyout.prototype.filterForCapacity_ = function() {

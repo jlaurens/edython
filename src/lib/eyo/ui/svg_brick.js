@@ -57,7 +57,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
     class: 'eyo-path-hilighted'
   }, null)
   svg.pathMagnet_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-connection eyo-path-hilighted'
+    class: 'eyo-path-magnet eyo-path-hilighted'
   }, null)
   // Contour
   svg.groupContour_ = eYo.Svg.newElement('g', {
@@ -132,26 +132,33 @@ eYo.Svg.prototype.brickInit = function (brick) {
   }
   var parent = brick.parent
   if (parent) {
-    var p_svg = parent.dom.svg
+    this.brickParentDidChange(brick)
   } else {
-    brick.board.dom.svg.canvas_.appendChild(g)
+    this.brickParentWillChange(brick)
   }
-  if (p_svg && p_svg.groupContour_) {
+  if (parent) {
+    var p_svg = parent.dom.svg
     goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
     goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
+    svg.groups = [g, svg.groupShape_, svg.groupContour_]
   } else {
+    brick.board.dom.svg.canvas_.appendChild(g)
     goog.dom.insertChildAt(g, svg.groupContour_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
     goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
+    svg.groupContour_.removeAttribute('transform')
+    svg.groupShape_.removeAttribute('transform')
+    svg.groups = [g]
   }
 }
+
 
 /**
  * Remove the svg related resources of brick.
@@ -504,23 +511,19 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
     // and the old parent, then link the receiver with the new parent.
     // this second step is performed in the `parentDidChange` method.
     var g = svg.group_
-    if (g) {
-      // Move this brick up the DOM.  Keep track of x/y translations.
-      var brick = brick
-      brick.board.dom.svg.canvas_.appendChild(g)
-      var xy = brick.xy
-      g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
-      if (svg.groupContour_) {
-        goog.dom.insertChildAt(g, svg.groupContour_, 0)
-        svg.groupContour_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
-          'eyo-inner')
-        goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
-        svg.groupShape_.removeAttribute('transform')
-        goog.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
-          'eyo-inner')
-      }
-    }
+    // Move this brick up the DOM.  Keep track of x/y translations.
+    brick.board.dom.svg.canvas_.appendChild(g)
+    var xy = brick.xy
+    g.setAttribute('transform', `translate(${xy.x},${xy.y})`)
+    goog.dom.insertChildAt(g, svg.groupContour_, 0)
+    svg.groupContour_.removeAttribute('transform')
+    goog.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
+      'eyo-inner')
+    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+    svg.groupShape_.removeAttribute('transform')
+    goog.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
+      'eyo-inner')
+    svg.groups = [g]
   }
 }
 
@@ -542,30 +545,22 @@ eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
     // Move the magnets to match the child's new position.
     brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
     var p_svg = newParent.dom.svg
-    if (svg.groupContour_ && p_svg.groupContour_) {
-      if (this.contourAboveParent_(brick)) {
-        goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
-      } else {
-        goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
-      }
-      goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
-      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
-        'eyo-inner')
-      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
-        'eyo-inner')
+    if (this.contourAboveParent_(brick)) {
+      goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
+    } else {
+      goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
     }
-    // manage the selection,
+    goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
+      'eyo-inner')
+    goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
+      'eyo-inner')
+    svg.groups = [g, svg.groupContour_, svg.groupShape_]
+      // manage the selection,
     // this seems tricky? Is there any undocumented side effect?
-    if ((svg.pathSelect_ &&
-      svg.group_ === svg.pathSelect_.parentElement) || (svg.pathMagnet_ &&
-        svg.group_ === svg.pathMagnet_.parentElement)) {
+    if ((svg.group_ === svg.pathSelect_.parentElement) || (svg.group_ === svg.pathMagnet_.parentElement)) {
       this.brickSelectRemove(brick)
       this.brickSelectAdd(brick)
-    } else if ((p_svg.pathSelect_ &&
-        p_svg.group_ === p_svg.pathSelect_.parentNode) || (p_svg.pathMagnet_ &&
-          p_svg.group_ === p_svg.pathMagnet_.parentNode)) {
-      this.brickSelectRemove(newParent)
-      this.brickSelectRemove(newParent)
     }
   }
 }
@@ -658,6 +653,22 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
 }
 
 /**
+ * Translates the brick.
+ * @param {number} x The x coordinate of the translation in board units.
+ * @param {number} y The y coordinate of the translation in board units.
+ */
+eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
+  if (goog.isDef(x.x)) {
+    y = x.y
+    x = x.x
+  }
+  var transform = `translate(${x},${y})`
+  brick.dom.svg.groups.forEach(g => {
+    g.setAttribute('transform', transform)
+  })
+}
+
+/**
  * Set the offset of the given brick.
  * For edython.
  * @param {!eYo.Brick} brick  the brick the driver acts on
@@ -669,29 +680,9 @@ eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
   // Board coordinates.
   var xy = this.xyInParent(svg.group_)
   var transform = `translate(${xy.x + dx},${xy.y + dy})`
-  ;[svg.group_, svg.groupShape_, svg.groupContour_].forEach(g => {
+  svg.groups.forEach(g => {
     g.setAttribute('transform', transform)
   })
-}
-
-/**
- * Move this brick during a drag, taking into account whether we are using a
- * drag surface to translate bricks.
- * This brick must be a top-level brick.
- * @param {!eYo.Brick} brick  the brick.
- * @param {!Number} dx  in board coordinates.
- * @param {!Number} dy  in board coordinates.
- * @package
- */
-eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
-  if (goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
-  var svg = brick.dom.svg
-  var g = svg.group_
-  g.translate_ = `translate(${dx},${dy})`
-  g.setAttribute('transform', g.translate_ + g.skew_)
 }
 
 /**
@@ -733,19 +724,23 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
 }
 
 /**
- * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in board units.
- * @param {number} y The y coordinate of the translation in board units.
+ * Move this brick during a drag, taking into account whether we are using a
+ * drag surface to translate bricks.
+ * This brick must be a top-level brick.
+ * @param {!eYo.Brick} brick  the brick.
+ * @param {!Number} dx  in board coordinates.
+ * @param {!Number} dy  in board coordinates.
+ * @package
  */
-eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
-  if (goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
+eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
+  if (goog.isDef(dx.x)) {
+    dy = dx.y
+    dx = dx.x
   }
-  brick.dom.svg.group_.setAttribute(
-    'transform',
-    `translate(${x},${y})`
-  )
+  var svg = brick.dom.svg
+  var g = svg.group_
+  g.translate_ = `translate(${dx},${dy})`
+  g.setAttribute('transform', g.translate_ + g.skew_)
 }
 
 /**

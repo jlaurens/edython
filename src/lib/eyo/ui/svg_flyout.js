@@ -409,13 +409,13 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (!metrics) {
     return
   }
-  var W = flyout.board_
+  var b3d = flyout.board_
   if (goog.isNumber(xyRatio.y)) {
-    W.scrollY = -metrics.content.height * xyRatio.y
+    b3d.scrollY = -metrics.content.height * xyRatio.y
   }
-  W.xyMoveTo(
-    W.scrollX + metrics.absolute.left,
-    W.scrollY + metrics.absolute.top
+  b3d.xyMoveTo(
+    b3d.scrollX + metrics.absolute.left,
+    b3d.scrollY + metrics.absolute.top
   )
 }
 

@@ -69,6 +69,6 @@ eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
   this.disconnectStop()
   var b3k = dragger.brick
   // Translate to current position, turning off 3d.
-  b3k.ui.xyMoveTo(dragger.xyNew_)
+  b3k.xyMoveTo(dragger.xyNew_)
   b3k.desk.dom.svg.brickDragSurface.clearAndHide(b3k.board.dom.svg.canvas_)
 }
