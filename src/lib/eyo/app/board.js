@@ -1176,7 +1176,7 @@ eYo.Board.prototype.cleanUp = function() {
   var cursorY = 0
   this.getTopBricks(true).forEach(brick => {
     var xy = brick.xy
-    brick.ui.moveBy(-xy.x, cursorY - xy.y)
+    brick.ui.xyMoveBy(-xy.x, cursorY - xy.y)
     block.ui.snapToGrid()
     cursorY = brick.xy.y +
         brick.size.height + eYo.Unit.y

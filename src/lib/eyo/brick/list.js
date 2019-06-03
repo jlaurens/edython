@@ -131,7 +131,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
  */
 eYo.Brick.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
-    this.inputList.forEach(input => {
+    this.forEachInput(input => {
       var m4t = input.magnet
       var t9k = m4t.targetBrick
       if (t9k) {

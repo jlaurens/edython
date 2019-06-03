@@ -55,6 +55,7 @@ eYo.Brick.UI = function(brick) {
   this.brick_ = brick
   brick.ui_ = this
   this.down = this.up = false
+  this.xy_ = new eYo.Where(0, 0)
   this.driver.brickInit(brick)
   this.updateBrickWrapped()
 }
@@ -63,7 +64,11 @@ eYo.Brick.UI = function(brick) {
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.dispose = function () {
-  this.driver.brickDispose(this.brick_)
+  if (this.xy_) {
+    this.driver.brickDispose(this.brick_)
+    this.xy_.dispose()
+    this.xy_= null
+  }
 }
 
 Object.defineProperties(eYo.Brick.UI, {
@@ -128,6 +133,11 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   hasSelect: {
     get () {
       return this.rendered && (this.driver.brickHasSelect(this.brick_))
+    }
+  },
+  xy: {
+    get () {
+      return thi.xy_
     }
   }
 })
@@ -491,8 +501,43 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} x The x coordinate of the translation in board units.
  * @param {number} y The y coordinate of the translation in board units.
  */
+eYo.Brick.UI.prototype.moveTo = function(c, l) {
+  this.xyMoveTo(c * eYo.Unit.x, l * eYo.Unit.y)
+}
+
+/**
+ * Translates the brick, forwards to the ui driver.
+ * @param {number} x The x coordinate of the translation in board units.
+ * @param {number} y The y coordinate of the translation in board units.
+ */
 eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
   this.driver.brickXYMoveTo(this.brick_, x, y)
+  this.brick.magnets.brickDidMove()
+}
+
+/**
+ * Move the bricks relatively.
+ * @param {number} dx Horizontal offset in board units.
+ * @param {number} dy Vertical offset in board units.
+ */
+eYo.Brick.UI.prototype.moveBy = function (dc, dl) {
+  this.xyMoveBy(c * eYo.Unit.x, l * eYo.Unit.y)
+}
+
+/**
+ * Move a standalone brick by a relative offset.
+ * Event aware.
+ * @param {number} dx Horizontal offset in board units.
+ * @param {number} dy Vertical offset in board units.
+ */
+eYo.Brick.UI.prototype.xyMoveBy = function(dx, dy) {
+  goog.asserts.assert(!this.brick_.parent, 'Brick has parent.')
+  eYo.Event.fireBrickMove(this.brick_, () => {
+    var xy = this.xy
+    this.xyMoveTo(xy.x + dx, xy.y + dy)
+    this.placeMagnets_()
+    this.board.resizeContents()
+  })
 }
 
 /**
@@ -516,10 +561,7 @@ eYo.Brick.UI.prototype.didRender_ = function (recorder) {
 }
 
 /**
- * Update all of the connections on this.brick_ with the new locations calculated
- * in renderCompute.  Also move all of the connected bricks based on the new
- * connection locations.
- * @private
+ * Update all of the connections on this.brick_ with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
   var blockTL = this.xyInBoard;
@@ -536,19 +578,21 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
   if ((m4t = m5s.out)) {
     m4t.moveToOffset(blockTL)
   }
-  this.brick_.inputList.forEach(input => {
+  this.brick_.forEachSlot(slot => {
+    if ((m4t = slot.magnet)) {
+      m4t.moveToOffset(blockTL)
+      m4t.target && m4t.tighten_()
+    }
+  })
+  this.brick_.forEachInput(input => {
     if ((m4t = input.magnet)) {
       m4t.moveToOffset(blockTL)
-      if (m4t.target) {
-        m4t.tighten_()
-      }
+      m4t.target && m4t.tighten_()
     }
   })
   if ((m4t = m5s.foot)) {
     m4t.moveToOffset(blockTL)
-    if (m4t.target) {
-      m4t.tighten_()
-    }
+    m4t.target && m4t.tighten_()
   }
 }
 
@@ -781,7 +825,7 @@ eYo.Brick.UI.prototype.drawModel_ = function (io) {
     } while ((io.slot = io.slot.next))
   } else {
     // for dynamic lists
-    this.brick_.inputList.forEach(input => {
+    this.brick_.forEachInput(input => {
       goog.asserts.assert(input, `Input with no eyo ${input.name} in brick ${this.brick_.type}`)
       if (input.visible) {
         io.input = input
@@ -1523,52 +1567,19 @@ eYo.Brick.UI.prototype.sendToBack = function () {
 }
 
 /**
- * Set the offset of the receiver's brick.
- * NOT YET USED. OVERRIDEN BELOW.
- * For edython.
- * @param {*} dc
- * @param {*} dl
- * @return {boolean}
- */
-eYo.Brick.UI.prototype.setOffset = function (dc, dl) {
-  // Board coordinates.
-  if (!this.driver.brickCanDraw(this.brick_)) {
-    throw `brick is not inited ${this.brick_.type}`
-  }
-  var dx = dc * eYo.Unit.x
-  var dy = dl * eYo.Unit.y
-  this.driver.brickSetOffset(this.brick_, dx, dy)
-  this.moveMagnets_(dx, dy)
-}
-
-/**
- * Set the offset of the receiver's brick.
- * For edython.
- * @param {*} dx
- * @param {*} dy
- * @return {boolean}
- */
-eYo.Brick.UI.prototype.setOffset = function (dx, dy) {
-  if (!this.driver.brickCanDraw(this.brick_)) {
-    throw `brick is not inited ${this.brick_.type}`
-  }
-  this.driver.brickSetOffset(this.brick_, dx, dy)
-}
-
-/**
  * Move the magnets to follow a translation of the brick.
  * @param {Number} dx
  * @param {Number} dy
  * @private
  */
-eYo.Brick.UI.prototype.moveMagnets_ = function (dx, dy) {
+eYo.Brick.UI.prototype.placeMagnets_ = function () {
   if (!this.rendered) {
     // Rendering is required to lay out the blocks.
     // This is probably an invisible block attached to a collapsed block.
     return
   }
-  this.brick_.forEachMagnet(m4t => m4t.moveBy(dx, dy))
-  this.brick_.children.forEach(b3k => b3k.ui.moveMagnets_(dx, dy))
+  this.brick_.forEachMagnet(m4t => m4t.place())
+  this.brick_.children.forEach(b3k => b3k.ui.placeMagnets_())
 }
 
 //////////////////
@@ -1752,15 +1763,6 @@ eYo.Brick.UI.prototype.magnetHilight = function (c_eyo) {
 }
 
 /**
- * Move the bricks relatively.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
- */
-eYo.Brick.UI.prototype.xyMoveBy = function (dx, dy) {
-  this.brick_.moveBy(dx, dy)
-}
-
-/**
  * Move this.brick_ during a drag, taking into account whether we are using a
  * drag surface to translate bricks.
  * this.brick_ must be a top-level brick.
@@ -1894,7 +1896,7 @@ eYo.Brick.UI.prototype.snapToGrid = function() {
   var dy = (Math.round(xy.y / eYo.Unit.y - 1 / 2) + 1 / 2) * eYo.Unit.y - xy.y
   dy = Math.round(dy)
   if (dx != 0 || dy != 0) {
-    this.moveBy(dx, dy)
+    this.xyMoveBy(dx, dy)
   }
 }
 

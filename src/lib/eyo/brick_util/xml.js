@@ -603,7 +603,7 @@ eYo.Xml.toDom = function (brick, element, opt) {
       }
     }
     // the list bricks have no slots yet
-    brick.inputList.forEach(input => {
+    brick.forEachInput(input => {
       if (!input.slot) {
         magnetToDom(input.magnet, eYo.Xml.SLOT, input.name)
       }

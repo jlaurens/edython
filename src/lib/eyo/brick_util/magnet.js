@@ -1456,11 +1456,16 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
     })
   })
   var ui
-  ;(ui = child.ui) && ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
-  ;(ui = parent.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
-  ;(unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui) && ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
+  if (ui = child.ui) {
+    ui.didConnect(childM4t, oldChildT4t, oldParentT4t)
+  }
+  if (ui = parent.ui) {
+    ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
+  }
+  if ((unwrappedM4t !== parentM4t) && (ui = unwrappedM4t.ui)) {
+    ui.didConnect(parentM4t, oldParentT4t, oldChildT4t)
+  }
 }
-
 
 /**
  * Tighten_ the magnet and its target.
@@ -1471,9 +1476,7 @@ eYo.Magnet.prototype.tighten_ = function() {
     var dx = m4t.x_ - this.x_
     var dy = m4t.y_ - this.y_
     if (dx != 0 || dy != 0) {
-      var ui = this.targetBrick.ui
-      ui.setOffset(-dx, -dy)
-      ui.moveMagnets_(-dx, -dy)
+      this.targetBrick.xyMoveBy(-dx, -dy)
     }
   }
 }
@@ -1661,6 +1664,16 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
 }
 
 /**
+ * Move this magnet to the location given by its offset within the brick and
+ * the location of the brick's top left corner.
+ * @param {!goog.math.Coordinate} blockTL The location of the top left corner
+ *     of the brick, in board coordinates.
+ */
+eYo.Magnet.prototype.place = function() {
+  this.moveToOffset(this.brick_.xyInBoard)
+}
+
+/**
  * Change the magnet's global coordinates.
  * @param {number} x New absolute x coordinate, in board coordinates.
  * @param {number} y New absolute y coordinate, in board coordinates.
@@ -1681,7 +1694,7 @@ eYo.Magnet.prototype.moveTo = function(x, y) {
  * @param {number} dx Change to x coordinate, in board units.
  * @param {number} dy Change to y coordinate, in board units.
  */
-eYo.Magnet.prototype.moveBy = function(dx, dy) {
+eYo.Magnet.prototype.xyMoveBy = function(dx, dy) {
   if (goog.isDef(dx.x)) {
     dy = dx.y
     dx = dx.x

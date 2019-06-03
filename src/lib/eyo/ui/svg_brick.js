@@ -1038,13 +1038,13 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
  * Move this block back to the board block canvas.
  * Generally should be called at the same time as setDragging_(false).
  * @param {!eYo.Brick} brick  The brick
- * @param {!goog.math.Coordinate} newXY The position the brick should take on
+ * @param {!goog.math.Coordinate} xyNew The position the brick should take on
  *     on the board canvas, in board coordinates.
  * @private
  */
-eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, newXY) {
+eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, xyNew) {
   // Translate to current position, turning off 3d.
-  this.xyBrickMoveTo(brick, newXY)
+  this.brickXYMoveTo(brick, xyNew)
   brick.desk.dom.svg.brickDragSurface.clearAndHide(brick.board.dom.svg.canvas_)
 }
 

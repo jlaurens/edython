@@ -67,7 +67,6 @@ eYo.Brick = function (board, type, opt_id) {
   this.children_ = []
   this.errors = Object.create(null)
   this.span_ = new eYo.Span(this)
-  this.xy_ = new eYo.Where(0, 0)
   
   this.change_ = new eYo.Change(this)
   // to manage reentrency
@@ -580,7 +579,7 @@ Object.defineProperties(eYo.Brick.prototype, {
    */
   xy: {
     get () {
-      return this.xy_
+      return this.ui.xy_
     }
   },
   /**
@@ -929,6 +928,7 @@ eYo.Brick.prototype.someSlot = function (helper) {
   return slot && (slot.some(helper))
 }
 
+// various forEach convenient methods
 /**
  * execute the given function for the fields.
  * For edython.
@@ -958,6 +958,25 @@ eYo.Brick.prototype.forEachSlot = function (helper) {
 }
 
 /**
+ * execute the given function for the head slot of the receiver and its next sibling.
+ * For edython.
+ * @param {!function} helper
+ * @return {boolean} whether there was an slot to act upon or a valid helper
+ */
+eYo.Brick.prototype.forEachInput = function (helper) {
+  this.inputList_.forEach(helper)
+}
+
+/**
+ * Runs the helper function for each input connection
+ * For edython.
+ * @param {!Function} helper
+ */
+eYo.Brick.prototype.forEachInputMagnet = function (helper) {
+  this.forEachInput(input => input.magnet && (helper(input.magnet)))
+}
+
+/**
  * execute the given function for the head slot of the receiver and its next sibling. Stops as soon as the helper returns a truthy value.
  * For edython.
  * @param {!function} helper
@@ -983,6 +1002,39 @@ eYo.Brick.prototype.forEachData = function (helper) {
       last = helper(data)
     } while (!last && (data = data.next))
     return !!last
+  }
+}
+
+/**
+ * Execute the helper for each magnet, either superior or inferior.
+ * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.VOID
+ */
+eYo.Brick.prototype.forEachMagnet = function (helper) {
+  Object.values(this.magnets).forEach(helper)
+  this.forEachSlot(s => s.magnet && helper(s.magnet))
+  this.forEachInput(i => i.magnet && helper(i.magnet))
+}
+
+/**
+ * Runs the helper function for each input
+ * For edython.
+ * @param {!Function} helper
+ */
+eYo.Brick.prototype.forEachInput = function (helper) {
+  this.inputList.forEach(helper)
+}
+
+/**
+ * Execute the helper for all the statements.
+ * Deep first traversal.
+ * @param {!Function} helper  helper has signature `(brick, depth) -> eYo.VOID`
+ * @return the truthy value from the helper.
+ */
+eYo.Brick.prototype.forEachStatement = function (helper) {
+  var e8r = this.statementEnumerator()
+  var b3k
+  while ((b3k = e8r.next)) {
+    helper(b3k, e8r.depth)
   }
 }
 
@@ -1327,16 +1379,6 @@ Object.defineProperties(eYo.Brick.prototype, {
   suite_m: { get () { return this.magnets.suite }},
   foot_m: { get () { return this.magnets.foot }},
 })
-
-/**
- * Execute the helper for each magnet, either superior or inferior.
- * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.VOID
- */
-eYo.Brick.prototype.forEachMagnet = function (helper) {
-  Object.values(this.magnets).forEach(helper)
-  this.forEachSlot(s => s.magnet && helper(s.magnet))
-  this.forEachInput(i => i.magnet && helper(i.magnet))
-}
 
 /**
  * Set the [python ]type of the delegate and its brick.
@@ -1874,7 +1916,7 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
     this.forEachSlot(slot => slot.incog = newValue) // with incog validator
     var m4t = this.suite_m
     m4t && (m4t.incog = newValue)
-    this.inputList.forEach(input => {
+    this.forEachInput(input => {
       if (!input.slot) {
         var m4t = input.magnet
         m4t && (m4t.incog = newValue) // without incog validator
@@ -1898,15 +1940,6 @@ eYo.Brick.prototype.inputEnumerator = function (all) {
 }
 
 /**
- * Runs the helper function for each input
- * For edython.
- * @param {!Function} helper
- */
-eYo.Brick.prototype.forEachInput = function (helper) {
-  this.inputList.forEach(helper)
-}
-
-/**
  * Runs the helper function for some input, until it responds a truthy value.
  * For edython.
  * @param {!Function} helper
@@ -1920,15 +1953,6 @@ eYo.Brick.prototype.someInput = function (helper) {
     }
   })
   return ans
-}
-
-/**
- * Runs the helper function for each input connection
- * For edython.
- * @param {!Function} helper
- */
-eYo.Brick.prototype.forEachInputMagnet = function (helper) {
-  this.inputList.forEach(input => input.magnet && (helper(input.magnet)))
 }
 
 /**
@@ -2042,7 +2066,7 @@ eYo.Brick.prototype.getMagnets_ = function(all) {
   if (all || this.ui.rendered) {
     Object.values(this.magnets).forEach(m4t => ans.push(m4t))
     if (all || !this.collapsed_) {
-      this.inputList.forEach(input => ans.push(input.magnet))
+      this.forEachInput(input => ans.push(input.magnet))
     }
   }
   return ans
@@ -2067,6 +2091,26 @@ eYo.Brick.prototype.setCollapsed = function (collapsed) {
 
 Object.defineProperties(eYo.Brick, {
   /**
+   * Move a brick to an offset in board coordinates.
+   * @param {number} dx Horizontal offset in board units.
+   * @param {number} dy Vertical offset in board units.
+   */
+  moveTo: {
+    get() {
+      return this.ui.moveTo
+    }
+  },
+  /**
+   * Move a brick to an offset in board coordinates.
+   * @param {number} dx Horizontal offset in board units.
+   * @param {number} dy Vertical offset in board units.
+   */
+  xyMoveTo: {
+    get() {
+      return this.ui.xyMoveTo
+    }
+  },
+  /**
    * Move a brick by a relative offset in board coordinates.
    * @param {number} dx Horizontal offset in board units.
    * @param {number} dy Vertical offset in board units.
@@ -2089,21 +2133,6 @@ Object.defineProperties(eYo.Brick, {
     }
   }
 })
-
-/**
- * Move a standalone brick by a relative offset.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
- */
-eYo.Brick.prototype.xyMoveBy = function(dx, dy) {
-  goog.asserts.assert(!this.parent, 'Brick has parent.')
-  eYo.Event.fireMoveEvent(() => {
-    var xy = this.xy
-    this.ui.xyMoveTo(xy.x + dx, xy.y + dy)
-    this.ui.moveMagnets_(dx, dy)
-    this.board.resizeContents()
-  })
-}
 
 /**
  * Render the brick.
@@ -2297,20 +2326,6 @@ eYo.Brick.prototype.statementEnumerator = function () {
 }
 
 /**
- * Execute the helper for all the statements.
- * Deep first traversal.
- * @param {!Function} helper  helper has signature `(brick, depth) -> eYo.VOID`
- * @return the truthy value from the helper.
- */
-eYo.Brick.prototype.forEachStatement = function (helper) {
-  var e8r = this.statementEnumerator()
-  var b3k
-  while ((b3k = e8r.next)) {
-    helper(b3k, e8r.depth)
-  }
-}
-
-/**
  * Execute the helper until one answer is a truthy value.
  * Deep first traversal.
  * @param {!Function} helper  helper has signature `(block, depth) -> truthy`
@@ -2444,7 +2459,7 @@ eYo.Brick.prototype.makeUI = function () {
       this.ui_ = new eYo.Brick.UI(this)
       this.forEachField(field => field.makeUI())
       this.forEachSlot(slot => slot.makeUI())
-      this.inputList.forEach(input => input.makeUI())
+      this.forEachInput(input => input.makeUI())
       ;[this.suite_m,
         this.right_m,
         this.foot_m
@@ -2467,17 +2482,12 @@ eYo.Brick.prototype.disposeUI = function (healStack, animate) {
     this.render = eYo.Do.nothing
     this.forEachField(field => field.disposeUI())
     this.forEachSlot(slot => slot.disposeUI())
-    this.inputList.forEach(input => input.disposeUI())
-    ;[this.suite_m,
-      this.right_m,
-      this.foot_m
-    ].forEach(m => m && m.disposeUI())
+    this.forEachInput(input => input.disposeUI())
     this.magnets.disposeUI()
     this.ui_.dispose()
     this.ui_ = null
-  }
-)
-this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
+  })
+  this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
 }
 
 Object.defineProperties(eYo.Brick.prototype, {

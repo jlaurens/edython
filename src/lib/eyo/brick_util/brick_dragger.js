@@ -286,7 +286,7 @@ eYo.BrickDragger.prototype.end = (() => {
    * @private
    */
   var fireMoveEvent = self => {
-    eYo.Events.fireBrickMove(event => {
+    eYo.Events.fireBrickMove(self.brick_, event => {
       event.oldCoordinate = self.xyStart_
     })
   }
