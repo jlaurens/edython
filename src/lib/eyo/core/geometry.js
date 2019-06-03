@@ -222,8 +222,8 @@ eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
  * @return {!eYo.Where} the receiver
  */
 eYo.Where.prototype.scale = function (scale) {
-  this.c *= scale
-  this.l *= scale
+  this.c_ *= scale
+  this.l_ *= scale
   return this
 }
 
@@ -232,9 +232,9 @@ eYo.Where.prototype.scale = function (scale) {
  * @param {!eYo.Where} other
  * @return {!eYo.Where} the receiver
  */
-eYo.Where.prototype.scale = function (scale) {
-  this.c /= scale
-  this.l /= scale
+eYo.Where.prototype.unscale = function (scale) {
+  this.c_ /= scale
+  this.l_ /= scale
   return this
 }
 
@@ -244,8 +244,8 @@ eYo.Where.prototype.scale = function (scale) {
  * @return {number} non negative number
  */
 eYo.Where.prototype.distanceFrom = function (other) {
-  var dx = this.x_ - other.x_
-  var dy = this.y_ - other.y_
+  var dx = this.x - other.x
+  var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
 }
 
@@ -264,7 +264,7 @@ Object.defineProperties(eYo.Size.prototype, {
       return this.c_ * eYo.Unit.x
     },
     set (newValue) {
-      this.c_ = Math.round(newValue / eYo.Unit.x)
+      this.c_ = newValue / eYo.Unit.x
     }
   },
   height: {
@@ -272,7 +272,7 @@ Object.defineProperties(eYo.Size.prototype, {
       return this.l_ * eYo.Unit.y
     },
     set (newValue) {
-      this.l_ = Math.round(newValue / eYo.Unit.y)
+      this.l_ = newValue / eYo.Unit.y
     }
   },
   c: {
@@ -317,17 +317,17 @@ eYo.Size.prototype.dispose = eYo.Do.nothing
  * set the `Size`.
  */
 eYo.Size.prototype.set = function (c = 0, l = 0) {
-  if (goog.isDef(c.width) && goog.isDef(c.height)) {
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    this.x = c.x
+    this.y = c.y
+    return
+  } else if (goog.isDef(c.width) && goog.isDef(c.height)) {
     this.width = c.width
     this.height = c.height
     return
   } else if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l || 0
     c = c.c || 0
-  } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x = c.x
-    this.y = c.y
-    return
   }
   this.c_ = c
   this.l_ = l
@@ -364,6 +364,7 @@ eYo.Size.sizeOfText = function (txt) {
 
 /**
  * `Rect` is a descendant of `goog.math.Rect` that stores its data in text units.
+ * NOT YET USED.
  * Class for representing rectangular regions.
  * @param {number} c Left, in text units.
  * @param {number} l Top, in text units.

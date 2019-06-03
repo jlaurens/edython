@@ -25,7 +25,6 @@ goog.forwardDeclare('goog.color')
  * @constructor
  */
 eYo.Shape = function () {
-  this.size = new eYo.Size()
   this.cursor = new eYo.Where()
   // allways start from the top left
 }
