@@ -66,6 +66,7 @@ eYo.Brick.UI = function(brick) {
 eYo.Brick.UI.prototype.dispose = function () {
   if (this.xy_) {
     this.driver.brickDispose(this.brick_)
+    this.brick_ = null
     this.xy_.dispose()
     this.xy_= null
   }
@@ -83,6 +84,17 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   brick: {
     get() {
       return this.brick_
+    }
+  },
+  brick_: {
+    get() {
+      return this.brick__
+    },
+    set (newValue) {
+      if (!newValue) {
+        console.error('BREAK HERE')
+      }
+      this.brick__ = newValue
     }
   },
   board: {
