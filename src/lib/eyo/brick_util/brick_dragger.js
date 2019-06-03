@@ -237,7 +237,6 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     b3k.ui.disconnectEffect()
   }
   this.ui_driver.brickDraggerStart(this)
-
   this.drag()
   return targetBrick
 }

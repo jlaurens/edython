@@ -43,7 +43,7 @@ eYo.Gesture = function(e, board) {
    * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
    * @type {goog.math.Coordinate}
    */
-  this.startXY_ = null;
+  this.startXY_ = null
 
   /**
    * How far the mouse has moved during this drag, in pixel units.
@@ -51,7 +51,7 @@ eYo.Gesture = function(e, board) {
    * @type {goog.math.Coordinate}
    * @private
    */
-  this.deltaXY_ = 0
+  this.deltaXY_ = null
 
   /**
    * The brick that the gesture started on, or null if it did not start on a
@@ -59,7 +59,7 @@ eYo.Gesture = function(e, board) {
    * @type {eYo.Brick}
    * @private
    */
-  this.startBrick_ = null;
+  this.startBrick_ = null
 
   /**
    * The brick that this gesture targets.  If the gesture started on a
@@ -69,7 +69,7 @@ eYo.Gesture = function(e, board) {
    * @type {eYo.Brick}
    * @private
    */
-  this.targetBrick_ = null;
+  this.targetBrick_ = null
 
   /**
    * The board that the gesture started on.  There may be multiple
@@ -78,7 +78,7 @@ eYo.Gesture = function(e, board) {
    * @type {eYo.Board}
    * @private
    */
-  this.board_ = null;
+  this.board_ = null
 
   /**
    * The board that created this gesture.  This board keeps a reference
@@ -88,7 +88,7 @@ eYo.Gesture = function(e, board) {
    * @type {eYo.Board}
    * @private
    */
-  this.creatorBoard_ = board;
+  this.creatorBoard_ = board
 
   /**
    * Whether the board is currently being dragged.
@@ -109,7 +109,7 @@ eYo.Gesture = function(e, board) {
    * @type {!Event}
    * @private
    */
-  this.event_ = e;
+  this.event_ = e
 
   /**
    * The object tracking a brick drag, or null if none is in progress.
@@ -124,28 +124,28 @@ eYo.Gesture = function(e, board) {
    * @type {Blockly.BoardDragger}
    * @private
    */
-  this.boardDragger_ = null;
+  this.boardDragger_ = null
 
   /**
    * The flyout a gesture started in, if any.
    * @type {eYo.Flyout}
    * @private
    */
-  this.flyout_ = null;
+  this.flyout_ = null
 
   /**
    * Boolean for sanity-checking that some code is only called once.
    * @type {boolean}
    * @private
    */
-  this.started_ = false;
+  this.started_ = false
 
   /**
    * Boolean used internally to break a cycle in disposal.
    * @type {boolean}
    * @private
    */
-  this.isEnding_ = false;
+  this.isEnding_ = false
 
   /**
    * Boolean used to indicate whether or not to heal the stack after
@@ -167,7 +167,7 @@ eYo.Gesture = function(e, board) {
    * @type {Object<number|string, goog.math.Coordinate>}
    * @private
    */
-  this.cachedPoints_ = {};
+  this.cachedPoints_ = {}
 
   /**
    * This is the ratio between the starting distance between the touch points
@@ -177,17 +177,16 @@ eYo.Gesture = function(e, board) {
    * @type {number}
    * @private
    */
-  this.previousScale_ = 0;
+  this.previousScale_ = 0
 
   /**
    * The starting distance between two touch points.
    * @type {number}
    * @private
    */
-  this.startDistance_ = 0;
+  this.startDistance_ = 0
 
   this.change_ = new eYo.Change(this)
-
 }
 
 Object.defineProperties(eYo.Gesture, {
@@ -317,6 +316,7 @@ eYo.Gesture.prototype.dispose = function() {
  * @package
  */
 eYo.Gesture.prototype.on_mousedown = function(e) {
+  this.change.done()
   if (this.dragging) {
     // A drag has already started, so this can no longer be a pinch-zoom.
     return
@@ -404,7 +404,6 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
  * @private
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
-  console.log(e)
   this.event_ = e
   var currentXY = new goog.math.Coordinate(e.clientX, e.clientY)
   this.deltaXY_ = goog.math.Coordinate.difference(currentXY, this.startXY_)
@@ -436,6 +435,7 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
     this.brickDragger_ = board.brickDragger_
     this.board_ = board
     board.updateScreenCalculationsIfScrolled()
+    console.log('updateDraggingBrick_: ', this.deltaXY_)
     return true
   }
 }
@@ -464,20 +464,21 @@ eYo.Gesture.prototype.updateDraggingBoard_ = function() {
  * @package
  */
 eYo.Gesture.prototype.on_mousemove = (() => {
-  var move = function (e) {
-    this.updateFromEvent_(e)
-    if (this.boardDragger_) {
-      this.boardDragger_.drag()
-    } else if (this.brickDragger_) {
-      this.brickDragger_.drag() // sometimes it failed when in Blockly
+  var move = function (self, e) {
+    self.updateFromEvent_(e)
+    if (self.boardDragger_) {
+      self.boardDragger_.drag()
+    } else if (self.brickDragger_) {
+      self.brickDragger_.drag() // sometimes it failed when in Blockly
     }
     eYo.Dom.gobbleEvent(e) 
   }
   return function(e) {
+    this.change.done()
     if (this.dragging) {
       // We are in the middle of a drag, only handle the relevant events
       if (eYo.Dom.shouldHandleEvent(e)) {
-        move.call(this, e);
+        move(this, e)
       }
       return;
     }
@@ -487,7 +488,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
       }
       eYo.Dom.longStop_()
     } else {
-      move.call(this, e)
+      move(this, e)
     }
   }
 })()
@@ -498,6 +499,7 @@ eYo.Gesture.prototype.on_mousemove = (() => {
  * @package
  */
 eYo.Gesture.prototype.on_mouseup = function(e) {
+  this.change.done()
   if (eYo.Dom.isTouchEvent(e) && !this.dragging) {
     var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
     if (this.cachedPoints_[pointerId]) {

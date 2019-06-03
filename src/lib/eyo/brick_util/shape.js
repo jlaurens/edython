@@ -185,7 +185,7 @@ eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
       c = c.x
     }
     this.push(`m ${this.format(c)},${this.format(l)}`)
-    this.cursor.advance({x: c, y: l})
+    this.cursor.forward({x: c, y: l})
     return
   } else if (is_brick !== false) {
     l = c
@@ -196,7 +196,7 @@ eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
     c = c.x
   }
   this.push('m', `${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
-  this.cursor.advance(c, l)
+  this.cursor.forward(c, l)
 }
 
 /**
@@ -239,14 +239,14 @@ eYo.Shape.prototype.l = function (is_brick, c = 0, l = 0) {
       c = c.x
     }
     this.push(`l ${this.format(c)},${this.format(l)}`)
-    this.cursor.advance({x: c, y: l})
+    this.cursor.forward({x: c, y: l})
     return
   } else if (is_brick !== false) {
     l = c
     c = is_brick
   }
   this.push(`l ${this.format(c * eYo.Unit.x)},'${this.format(l * eYo.Unit.y)}`)
-  this.cursor.advance(c, l)
+  this.cursor.forward(c, l)
 }
 
 /**
@@ -395,7 +395,7 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
     dy = -dy
   }
   this.push(`${this.format(dx)},${this.format(dy)}`)
-  this.cursor.advance(dx, dy)
+  this.cursor.forward(dx, dy)
 }
 
 /**
@@ -432,7 +432,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
     default: dy = -2 * r; break
   }
   this.push(`${this.format(dx)},${this.format(dy)}`)
-  this.cursor.advance(dx, dy)
+  this.cursor.forward(dx, dy)
 }
 
 /**
@@ -452,7 +452,7 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
   var dy = goog.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
   this.push('a', `${this.format(r)},${this.format(r)}`, '0 0', (left === down? 0 : 1), `${this.format(dx)},${this.format(dy)}`)
-  this.cursor.advance(dx, dy)
+  this.cursor.forward(dx, dy)
 }
 
 /**
@@ -683,7 +683,7 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
       var where = new eYo.Where(magnet)
       do {
         var t9k = m4t.targetBrick
-        where.advance(t9k)
+        where.forward(t9k)
       } while(t9k && t9k.wrapped_ && (m4t = t9k.out_m))
     } else {
       where = magnet

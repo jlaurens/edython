@@ -176,7 +176,7 @@ eYo.Where.prototype.setFromSize = function (s) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where.prototype.advance = function (c = 0, l = 0) {
+eYo.Where.prototype.forward = function (c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l || 0
     c = c.c || 0
@@ -213,6 +213,28 @@ eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
   }
   this.x += x
   this.y += y
+  return this
+}
+
+/**
+ * Scale the receiver.
+ * @param {!Number} scale
+ * @return {!eYo.Where} the receiver
+ */
+eYo.Where.prototype.scale = function (scale) {
+  this.c *= scale
+  this.l *= scale
+  return this
+}
+
+/**
+ * Unscale the receiver.
+ * @param {!eYo.Where} other
+ * @return {!eYo.Where} the receiver
+ */
+eYo.Where.prototype.scale = function (scale) {
+  this.c /= scale
+  this.l /= scale
   return this
 }
 

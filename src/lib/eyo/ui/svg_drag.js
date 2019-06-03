@@ -63,7 +63,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    * @return {!Element|eYo.VOID} Drag surface block DOM element, or eYo.VOID
    * if no blocks exist.
    */
-  currentBrick: {
+  brickGroup: {
     get () {
       return this.dom.svg.group_.firstChild
     }
@@ -106,19 +106,17 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
 })
 
 /**
- * Set the SVG blocks on the drag surface's group and show the surface.
- * Only one block group should be on the drag surface at a time.
- * @param {!Element} blocks Brick or group of blocks to place on the drag
- * surface.
+ * Set the SVG block's group on the drag surface's group and show the surface.
+ * @param {!Element} group Brick's group element.
  */
-eYo.Svg.BrickDragSurface.prototype.setBricksAndShow = function(blocks) {
+eYo.Svg.BrickDragSurface.prototype.brickDragSurfaceShow = function(blocks) {
   goog.asserts.assert(
       this.dom.svg.group_.childNodes.length == 0, 'Already dragging a block.');
   // appendChild removes the blocks from the previous parent
   this.dom.svg.group_.appendChild(blocks)
   this.dom.svg.root_.style.display = 'block'
   this.surfaceXY_ = new goog.math.Coordinate(0, 0)
-};
+}
 
 /**
  * Translate and scale the entire drag surface group to the given position, to
@@ -174,17 +172,18 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x, y) {
  *     being moved to a different surface.
  */
 eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
+  var svg = this.dom.svg
   if (opt_newSurface) {
     // appendChild removes the node from this.dom.svg.group_
-    opt_newSurface.appendChild(this.currentBrick)
+    opt_newSurface.appendChild(this.brickGroup)
   } else {
-    this.dom.svg.group_.removeChild(this.currentBrick)
+    svg.group_.removeChild(this.brickGroup)
   }
-  this.dom.svg.root_.style.display = 'none';
+  svg.root_.style.display = 'none';
   goog.asserts.assert(
-      this.dom.svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
-  this.surfaceXY_ = null;
-};
+    svg.group_.childNodes.length == 0, 'Drag group was not cleared.');
+  this.surfaceXY_ = null
+}
 
 /**
  * @param {!Element} container Containing element.
@@ -214,7 +213,7 @@ eYo.Svg.BoardDragSurface = function(container) {
  * @private
  */
 eYo.Svg.BoardDragSurface.prototype.dispose = function () {
-  this.clearAndHide.dispose = eYo.Do.nothing
+  this.dispose = eYo.Do.nothing
   var svg = this.dom.svg
   if (svg) {
     goog.dom.removeNode(svg.root_)

@@ -683,9 +683,13 @@ eYo.Svg.prototype.brickXYMoveTo = function(brick, x, y) {
  * For edython.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @param {*} dx
- * @param {*} dy
+ * @param {?Number} dy
  */
-eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
+eYo.Svg.prototype.brickXYMoveTo = function (brick, dx = 0, dy = 0) {
+  if (dx && goog.isDef(dx.x)) {
+    dy = dx.y
+    dx = dx.x
+  }
   var svg = brick.dom.svg
   // Board coordinates.
   var xy = this.xyInParent(svg.group_)
@@ -703,7 +707,11 @@ eYo.Svg.prototype.brickXYMoveTo = function (brick, dx, dy) {
  * @param {*} dy
  * @return {boolean}
  */
-eYo.Svg.prototype.brickSetOffset = function (brick, dx, dy) {
+eYo.Svg.prototype.brickSetOffset = function (brick, dx = 0, dy = 0) {
+  if (goog.isDef(dx.x)) {
+    dy = dx.y
+    dx = dx.x
+  }
   var svg = brick.dom.svg
   if (!this.brickCanDraw(brick)) {
     throw `brick is not inited ${brick.type}`
@@ -759,34 +767,33 @@ eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.Svg.prototype.brickXYInBoard = function (brick) {
   var x = 0
   var y = 0
   var brick = brick
-  var dragSurface = brick.desk.dom.svg.brickDragSurface
-  var dragSurfaceGroup = dragSurface.dom.svg.group_
+  var bds = brick.desk.dom.svg.brickDragSurface
+  var current = bds.brickGroup
+  var bdsGroup = bds.dom.svg.group_
   var canvas = brick.board.dom.svg.canvas_
   var element = brick.dom.svg.group_
-  if (element) {
-    do {
-      // Loop through this brick and every parent.
-      var xy = this.xyInParent(element)
-      x += xy.x
-      y += xy.y
-      // If this element is the current element on the drag surface, include
-      // the translation of the drag surface itself.
-      if (dragSurface.currentBrick === element) {
-        var translation = dragSurface.translation
-        x += translation.x
-        y += translation.y
-      }
-      element = element.parentNode
-    } while (element && element != canvas && element != dragSurfaceGroup)
-  }
-  return new goog.math.Coordinate(x, y)
+  do {
+    // Loop through this brick and every parent.
+    var xy = this.xyInParent(element)
+    x += xy.x
+    y += xy.y
+    // If this element is the current element on the drag surface, include
+    // the translation of the drag surface itself.
+    if (current === element) {
+      var translation = bds.translation
+      x += translation.x
+      y += translation.y
+    }
+    element = element.parentNode
+  } while (element && element != canvas && element != bdsGroup)
+  return new eYo.Where(x, y)
 }
 
 /**
