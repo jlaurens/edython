@@ -122,14 +122,14 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
   )
   eYo.Svg.newElement(
     'rect',
-    {'width': 32, 'height': 32},
+    {width: 32, height: 32},
     clip
   )
   var zoomresetSvg = eYo.Svg.newElement(
     'image',
     {
       width: eYo.SPRITE.width,
-      height: eYo.SPRITE.height, 'y': -92,
+      height: eYo.SPRITE.height, y: -92,
       'clip-path': `url(#eyo-zoom-reset-clip-path${rnd})`
     },
     g

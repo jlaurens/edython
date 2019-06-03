@@ -48,16 +48,19 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   var div = brickDragger.desk.dom.div_
   brickDragger.transformCorrection_ = eYo.Svg.getTransformCorrection(div)
   // Move the brick dragged to the drag surface
-    // The translation for drag surface bricks,
+  // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
   // to keep the position in sync as it moves on/off the surface.
   var brick = brickDragger.brick_
-  var xy = this.brickXYInBoard(brick)
-  this.removeAttribute(brick.dom.svg.group_, 'transform')
+  var board = brick.board
+  var canvas = board.dom.svg.canvas_
   var dragSurface = brickDragger.desk.dom.svg.brickDragSurface
-  dragSurface.xyMoveTo(xy.x, xy.y)
+  dragSurface.dom.svg.canvas_.setAttribute(
+    'transform',
+    canvas.getAttribute('transform')
+  )
   // Execute the move on the top-level SVG component
-  dragSurface.brickDragSurfaceShow(brick.dom.svg.group_)
+  dragSurface.show(brick.dom.svg.group_)
 }
 
 /**

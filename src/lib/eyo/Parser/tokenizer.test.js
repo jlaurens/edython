@@ -1,858 +1,859 @@
-var assert = chai.assert;
+describe('Tokenizer', function() {
+  var assert = chai.assert;
 
-console.log('RUNNING TOKENIZER TESTS')
+  console.log('RUNNING TOKENIZER TESTS')
 
-describe('Scan', function() {
-  it('goog should be available', function() {
-    assert(goog);
+  describe('Scan', function() {
+    it('goog should be available', function() {
+      assert(goog);
+    });
+    it('eYo.Scan should be available', function() {
+      assert(eYo.Scan);
+    });
   });
-  it('eYo.Scan should be available', function() {
-    assert(eYo.Scan);
-  });
-});
 
-describe('Scan(XRegExp)', function() {
-  var key = 'XRegExp'
-  it(key, function() {
-    var str = 'a'
-    var m = XRegExp.exec(str, eYo.Scan.XRE.id_start, 0, true)
-    assert(m && (m[0] === str), `id_start ${str}`)
-    str = 'ᢅ'
-    m = XRegExp.exec(str, eYo.Scan.XRE.id_start, 0, true)
-    assert(m && (m[0] === str), `id_start ${str}`)
-    str = '·'
-    m = XRegExp.exec(str, eYo.Scan.XRE.id_continue, 0, true)
-    assert(m && (m[0] === str), `id_continue ${str}`)
-    str = 'ᢅ·'
-    m = XRegExp.exec(str, eYo.Scan.XRE.id_continue, 0, true)
-    assert(m && (m[0] === str), `id_continue ${str}`)
-    str = 'br'
-    m = XRegExp.exec(str, eYo.Scan.XRE.prefix, 0, true)
-    assert(m && (m[0] === str), `prefix ${str}`)
+  describe('Scan(XRegExp)', function() {
+    var key = 'XRegExp'
+    it(key, function() {
+      var str = 'a'
+      var m = XRegExp.exec(str, eYo.Scan.XRE.id_start, 0, true)
+      assert(m && (m[0] === str), `id_start ${str}`)
+      str = 'ᢅ'
+      m = XRegExp.exec(str, eYo.Scan.XRE.id_start, 0, true)
+      assert(m && (m[0] === str), `id_start ${str}`)
+      str = '·'
+      m = XRegExp.exec(str, eYo.Scan.XRE.id_continue, 0, true)
+      assert(m && (m[0] === str), `id_continue ${str}`)
+      str = 'ᢅ·'
+      m = XRegExp.exec(str, eYo.Scan.XRE.id_continue, 0, true)
+      assert(m && (m[0] === str), `id_continue ${str}`)
+      str = 'br'
+      m = XRegExp.exec(str, eYo.Scan.XRE.prefix, 0, true)
+      assert(m && (m[0] === str), `prefix ${str}`)
+    });
   });
-});
 
-var Tester = function (...args) {
-  this.done = 0
-  this.keys = []
-  this.strs = []
-  strs = []
-  var key, str
-  while (args.length > 1) {
-    key = args.shift()
-    this.keys.push(key)
-    str = args.shift()
-    this.strs.push(str)
-    strs.push(str)
-  }
-  if (args.length) {
-    key = args.shift()
-    this.keys.push(key)
-    str = ''
-    this.strs.push(str)
-    strs.push(str)
-  }
-  this.string = strs.join('')
-}
-Tester.prototype.test = function (do_it = null) {
-  var scan = this.scan = new eYo.Scan()
-  scan.init(this.string, true)
-  var key
-  while ((key = this.nextKey)) {
-    scan.nextToken()
-    assert(!scan.error, `<${scan.error}>`)
-    assert(scan.tokens.length === this.done, `${scan.tokens.length} === ${this.done}`)
-    assert(scan.last.type === eYo.TKN[key], `${scan.last.type} === ${eYo.TKN[key]}`)
-    assert(scan.last.string === this.nextStr, `<${scan.last.string}> === <${this.nextStr}>`)
-    do_it && (do_it.call(this, scan))
-  }
-  assert(scan.string === scan.str, `<${scan.string}> === <${scan.str}>`)
-  assert(!scan.nextToken(), `Unexpected last token <${scan.last}>`)
-}
-Tester.testSrc = function (str) {
-  var scan = this.scan = new eYo.Scan()
-  scan.init(str)
-  while (scan.nextToken()) {}
-  assert(!scan.errorCount, `errorCount: <${scan.errorCount}>`)
-  assert(scan.last.type === eYo.TKN.ENDMARKER, `${scan.last.type} === eYo.TKN.ENDMARKER`)
-}
-Object.defineProperties(Tester.prototype, {
-  nextKey: {
-    get () {
-      ++this.done
-      this._str = this.strs.shift()
-      return this.keys.shift()
+  var Tester = function (...args) {
+    this.done = 0
+    this.keys = []
+    this.strs = []
+    strs = []
+    var key, str
+    while (args.length > 1) {
+      key = args.shift()
+      this.keys.push(key)
+      str = args.shift()
+      this.strs.push(str)
+      strs.push(str)
     }
-  },
-  nextStr: {
-    get () {
-      return this._str
+    if (args.length) {
+      key = args.shift()
+      this.keys.push(key)
+      str = ''
+      this.strs.push(str)
+      strs.push(str)
     }
+    this.string = strs.join('')
   }
-})
-
-describe('Scan(ENDMARKER)', function() {
-  var tester = new Tester(
-      'NEWLINE', '',
-      'ENDMARKER')
-  it('ENDMARKER', function() {
-    tester.test()
-  });
-});
-
-describe('Scan(COMMENT)', function() {
-  it('COMMENT', function() {
-    var tester = new Tester(
-        'NEWLINE', '#',
-        'ENDMARKER')
-    tester.test()
-    assert(tester.scan.first.start_string === 0, `Comment is not parsed: ${tester.scan.first.start_string}`)
-  });
-  it('TYPE_COMMENT', function() {
-    var tester = new Tester(
-      'TYPE_COMMENT', '# type: foo',
-      'NEWLINE', '',
-      'ENDMARKER'
-    )
-    tester.test()
-    assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
-  });
-  it('TYPE_IGNORE', function() {
-    var tester = new Tester(
-      'TYPE_IGNORE', '# type: ignorebla',
-      'NEWLINE', '',
-      'ENDMARKER'
-    )
-    tester.test()
-    assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
-  });
-});
-
-describe('Scan(NAME)', function() {
-  it('abc', function() {
-    var tester = new Tester(
-        'NAME', 'abc',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('a1\u09B2\uff4d', function() {
-    var tester = new Tester(
-        'NAME', 'a1\u09B2\uff4d',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('__a1', function() {
-    var tester = new Tester(
-        'NAME', '__a1',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(DOTS)', function() {
-  it('.', function() {
-    var tester = new Tester(
-        'DOT', '.',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('..', function() {
-    var tester = new Tester(
-        'DOT', '.',
-        'DOT', '.',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('...', function() {
-    var tester = new Tester(
-        'ELLIPSIS', '...',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('....', function() {
-    var tester = new Tester(
-        'ELLIPSIS', '...',
-        'DOT', '.',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(NUMBER)', function() {
-  it('7', function() {
-    var tester = new Tester(
-        'NUMBER', '7',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('2147483647', function() {
-    var tester = new Tester(
-        'NUMBER', '2147483647',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0o177', function() {
-    var tester = new Tester(
-        'NUMBER', '0o177',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0b100110111', function() {
-    var tester = new Tester(
-        'NUMBER', '0b100110111',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('79228162514264337593543950336', function() {
-    var tester = new Tester(
-        'NUMBER', '79228162514264337593543950336',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0o377', function() {
-    var tester = new Tester(
-        'NUMBER', '0o377',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0xdeadbeef', function() {
-    var tester = new Tester(
-        'NUMBER', '0xdeadbeef',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('100_000_000_000', function() {
-    var tester = new Tester(
-        'NUMBER', '100_000_000_000',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0b_1110_0101', function() {
-    var tester = new Tester(
-        'NUMBER', '0b_1110_0101',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('3.14', function() {
-    var tester = new Tester(
-        'NUMBER', '3.14',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('10.', function() {
-    var tester = new Tester(
-        'NUMBER', '10.',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('.001', function() {
-    var tester = new Tester(
-        'NUMBER', '.001',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('1e100', function() {
-    var tester = new Tester(
-        'NUMBER', '1e100',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('3.14e-10', function() {
-    var tester = new Tester(
-        'NUMBER', '3.14e-10',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('0e0', function() {
-    var tester = new Tester(
-        'NUMBER', '0e0',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('3.14_15_93', function() {
-    var tester = new Tester(
-        'NUMBER', '3.14_15_93',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(STRING)', function() {
-  it(`''`, function() {
-    var tester = new Tester(
-        'STRING', `''`,
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it(`''''''`, function() {
-    var tester = new Tester(
-        'STRING', `''''''`,
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('""', function() {
-    var tester = new Tester(
-        'STRING', '""',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it('""""""', function() {
-    var tester = new Tester(
-        'STRING', '""""""',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it(`'abc'`, function() {
-    var tester = new Tester(
-        'STRING', `'abc'`,
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-  it(`"""
-  dfg
-  klm
-  """`, function() {
-    var tester = new Tester(
-        'STRING', `"""
-    dfg
-    klm
-    """`,
-    'NEWLINE', '',
-    'ENDMARKER')
-    tester.test()
-  });
-  it(`"""
-  dfg
-  klm
-  """`, function() {
-    var tester = new Tester(
-        'STRING', `f"""
-    dfg
-    klm
-    """`,
-    'NEWLINE', '',
-    'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(NEWLINE)', function() {
-  it(`NEWLINE`, function() {
-    var tester = new Tester(
-      'STRING', `f"""
-    dfg
-    klm
-    """`,
-    'NEWLINE', `
-`,
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-  it(`NEWLINE`, function() {
-    var tester = new Tester(
-      'STRING', `'abc'`,
-      'NEWLINE', '\n',
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-  it(`NEWLINE`, function() {
-    var tester = new Tester(
-      'STRING', `'abc'`,
-      'NEWLINE', '\r',
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-  it(`NEWLINE`, function() {
-    var tester = new Tester(
-      'STRING', `'abc'`,
-      'NEWLINE', '\r\n',
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-});
-
-describe('Scan(INDENT)', function() {
-  it('INDENT', function() {
-    var tester = new Tester(
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '',
-      'DEDENT', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT_…^$', function() {
-    var tester = new Tester(
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT_…=…^$', function() {
-    var tester = new Tester(
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'NAME', ' y',
-      'NEWLINE', '',
-      'DEDENT', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…_…^^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'INDENT', '  ',
-      'NAME', 'y',
-      'NEWLINE', '',
-      'DEDENT', '',
-      'DEDENT', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 'y',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…_…^…^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'INDENT', '  ',
-      'NAME', 'u',
-      'NEWLINE', '\n',
-      'DEDENT', ' ',
-      'NAME', 'y',
-      'NEWLINE', '',
-      'DEDENT', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…_…^…^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'INDENT', '  ',
-      'NAME', 'u',
-      'NEWLINE', '\n',
-      'DEDENT', ' ',
-      'NAME', 'y',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 't',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…^…_…^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 'u',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'y',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 't',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…_…^^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'INDENT', '  ',
-      'NAME', 'u',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'DEDENT', '',
-      'NAME', 't',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '  \n',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '  \n',
-      'NAME', 'z',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…=…^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'NAME', '  \n y',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 'z',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…#^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '  #',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…#^$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '  #\n',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…#^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'DEDENT', '  #\n',
-      'NAME', 'z',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-  it('INDENT=…_…#=…^…$', function() {
-    var tester = new Tester(
-      'NAME', 'a',
-      'NEWLINE', '\n',
-      'INDENT', ' ',
-      'NAME', 'x',
-      'NEWLINE', '\n',
-      'NAME', '  #\n y',
-      'NEWLINE', '\n',
-      'DEDENT', '',
-      'NAME', 'z',
-      'NEWLINE', '',
-      'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(OP)', function() {
-  it('ALL OPS 1/2', function() {
-    var tester = new Tester(
-      'LPAR', '(',
-      'RPAR', ')',
-      'LSQB', '[',
-      'RSQB', ']',
-      'COLON', ':',
-      'COMMA', ',',
-      'SEMI', ';',
-      'PLUS', '+',
-      'MINUS', '-',
-      'STAR', '*',
-      'SLASH', '/',
-      'VBAR', '|',
-      'AMPER', '&',
-      // 'LESS', '<', SPECIAL
-      'GREATER', '>',
-      'NEWLINE', '',
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-  it('ALL OPS 2/2', function() {
-    var tester = new Tester(
-      'EQUAL', '=',
-      'DOT', '.',
-      'PERCENT', '%',
-      'LBRACE', '{',
-      'RBRACE', '}',
-      'EQEQUAL', '==',
-      'NOTEQUAL', '!=',
-      'LESSEQUAL', '<=',
-      'GREATEREQUAL', '>=',
-      'TILDE', '~',
-      'CIRCUMFLEX', '^',
-      'LEFTSHIFT', '<<',
-      'RIGHTSHIFT', '>>',
-      'DOUBLESTAR', '**',
-      'PLUSEQUAL', '+=',
-      'MINEQUAL', '-=',
-      'STAREQUAL', '*=',
-      'SLASHEQUAL', '/=',
-      'PERCENTEQUAL', '%=',
-      'AMPEREQUAL', '&=',
-      'VBAREQUAL', '|=',
-      'CIRCUMFLEXEQUAL', '^=',
-      'LEFTSHIFTEQUAL', '<<=',
-      'RIGHTSHIFTEQUAL', '>>=',
-      'DOUBLESTAREQUAL', '**=',
-      'DOUBLESLASH', '//',
-      'DOUBLESLASHEQUAL', '//=',
-      'AT', '@',
-      'ATEQUAL', '@=',
-      'RARROW', '->',
-      'ELLIPSIS', '...',
-      'COLONEQUAL', ':=',
-      'NEWLINE', '',
-      'ENDMARKER'
-    )
-    tester.test()
-  });
-  it('LESS', function() {
-    var tester = new Tester(
-        'NOTEQUAL', '<>',
-        'NEWLINE', '',
-        'ENDMARKER')
-    tester.test()
-  });
-});
-
-describe('Scan(PAREN)', function() {
-  it('(⏎)', function() {
-    var tester = new Tester(
-      'LPAR', '(',
-      'RPAR', '\n)',
-      'NEWLINE', '',
-      'ENDMARKER'
-      )
-    tester.test()
-  });
-  it('(()⏎)', function() {
-    var tester = new Tester(
-      'LPAR', '(',
-      'LPAR', '(',
-      'RPAR', ')',
-      'RPAR', '\n)',
-      'NEWLINE', '',
-      'ENDMARKER'
-      )
-    tester.test()
-  });
-  it('(()⏎)⏎', function() {
-    var tester = new Tester(
-      'LPAR', '(',
-      'LPAR', '(',
-      'RPAR', ')',
-      'RPAR', '\n)',
-      'NEWLINE', '\n',
-      'ENDMARKER'
-      )
-    tester.test()
-  });
-});
-
-describe('Scan(_KEYWORD)', function() {
-  var kws = [
-    'False',
-    'None',
-    'True',
-    'await',
-    'and',
-    'as',
-    'assert',
-    'async',
-    'break',
-    'class',
-    'continue',
-    'def',
-    'del',
-    'elif',
-    'else',
-    'except',
-    'finally',
-    'for',
-    'from',
-    'global',
-    'if',
-    'import',
-    'in',
-    'is',
-    'lambda',
-    'nonlocal',
-    'not',
-    'or',
-    'pass',
-    'raise',
-    'return',
-    'try',
-    'while',
-    'with',
-    'yield'
-  ]
-  var i = 0
-  for (i = 0 ; i < kws.length ; ++i) {
-    var f = kw => {
-      return function() {
-        var tester = new Tester(
-            'NAME', kw,
-            'NEWLINE', '',
-            'ENDMARKER')
-        tester.test(function (scan) {
-          assert(scan.first.is_keyword, `Not a key word ?`)
-        })
+  Tester.prototype.test = function (do_it = null) {
+    var scan = this.scan = new eYo.Scan()
+    scan.init(this.string, true)
+    var key
+    while ((key = this.nextKey)) {
+      scan.nextToken()
+      assert(!scan.error, `<${scan.error}>`)
+      assert(scan.tokens.length === this.done, `${scan.tokens.length} === ${this.done}`)
+      assert(scan.last.type === eYo.TKN[key], `${scan.last.type} === ${eYo.TKN[key]}`)
+      assert(scan.last.string === this.nextStr, `<${scan.last.string}> === <${this.nextStr}>`)
+      do_it && (do_it.call(this, scan))
+    }
+    assert(scan.string === scan.str, `<${scan.string}> === <${scan.str}>`)
+    assert(!scan.nextToken(), `Unexpected last token <${scan.last}>`)
+  }
+  Tester.testSrc = function (str) {
+    var scan = this.scan = new eYo.Scan()
+    scan.init(str)
+    while (scan.nextToken()) {}
+    assert(!scan.errorCount, `errorCount: <${scan.errorCount}>`)
+    assert(scan.last.type === eYo.TKN.ENDMARKER, `${scan.last.type} === eYo.TKN.ENDMARKER`)
+  }
+  Object.defineProperties(Tester.prototype, {
+    nextKey: {
+      get () {
+        ++this.done
+        this._str = this.strs.shift()
+        return this.keys.shift()
+      }
+    },
+    nextStr: {
+      get () {
+        return this._str
       }
     }
-    it(kws[i], f(kws[i]))
-  }
-});
-
-describe('Scan(LINE/COL NO)', function() {
-  it('fx', function() {
-    var tester = new Tester(
-      'ENDMARKER'
-    )
   })
-});
 
-describe('Scan(TEST)', function() {
-  it('fx', function() {
+  describe('Scan(ENDMARKER)', function() {
     var tester = new Tester(
-      'INDENT', '    ',
-      'NAME', 'listdir',
-      'DOT', '.',
-      'NAME', 'insert',
-      'LPAR', '(',
-      'NUMBER', '0',
-      'COMMA', ',',
+        'NEWLINE', '',
+        'ENDMARKER')
+    it('ENDMARKER', function() {
+      tester.test()
+    });
+  });
+
+  describe('Scan(COMMENT)', function() {
+    it('COMMENT', function() {
+      var tester = new Tester(
+          'NEWLINE', '#',
+          'ENDMARKER')
+      tester.test()
+      assert(tester.scan.first.start_string === 0, `Comment is not parsed: ${tester.scan.first.start_string}`)
+    });
+    it('TYPE_COMMENT', function() {
+      var tester = new Tester(
+        'TYPE_COMMENT', '# type: foo',
+        'NEWLINE', '',
+        'ENDMARKER'
+      )
+      tester.test()
+      assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
+    });
+    it('TYPE_IGNORE', function() {
+      var tester = new Tester(
+        'TYPE_IGNORE', '# type: ignorebla',
+        'NEWLINE', '',
+        'ENDMARKER'
+      )
+      tester.test()
+      assert(tester.scan.last.start_string === eYo.VOID, 'Unexpected comment')
+    });
+  });
+
+  describe('Scan(NAME)', function() {
+    it('abc', function() {
+      var tester = new Tester(
+          'NAME', 'abc',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('a1\u09B2\uff4d', function() {
+      var tester = new Tester(
+          'NAME', 'a1\u09B2\uff4d',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('__a1', function() {
+      var tester = new Tester(
+          'NAME', '__a1',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(DOTS)', function() {
+    it('.', function() {
+      var tester = new Tester(
+          'DOT', '.',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('..', function() {
+      var tester = new Tester(
+          'DOT', '.',
+          'DOT', '.',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('...', function() {
+      var tester = new Tester(
+          'ELLIPSIS', '...',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('....', function() {
+      var tester = new Tester(
+          'ELLIPSIS', '...',
+          'DOT', '.',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(NUMBER)', function() {
+    it('7', function() {
+      var tester = new Tester(
+          'NUMBER', '7',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('2147483647', function() {
+      var tester = new Tester(
+          'NUMBER', '2147483647',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0o177', function() {
+      var tester = new Tester(
+          'NUMBER', '0o177',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0b100110111', function() {
+      var tester = new Tester(
+          'NUMBER', '0b100110111',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('79228162514264337593543950336', function() {
+      var tester = new Tester(
+          'NUMBER', '79228162514264337593543950336',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0o377', function() {
+      var tester = new Tester(
+          'NUMBER', '0o377',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0xdeadbeef', function() {
+      var tester = new Tester(
+          'NUMBER', '0xdeadbeef',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('100_000_000_000', function() {
+      var tester = new Tester(
+          'NUMBER', '100_000_000_000',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0b_1110_0101', function() {
+      var tester = new Tester(
+          'NUMBER', '0b_1110_0101',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('3.14', function() {
+      var tester = new Tester(
+          'NUMBER', '3.14',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('10.', function() {
+      var tester = new Tester(
+          'NUMBER', '10.',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('.001', function() {
+      var tester = new Tester(
+          'NUMBER', '.001',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('1e100', function() {
+      var tester = new Tester(
+          'NUMBER', '1e100',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('3.14e-10', function() {
+      var tester = new Tester(
+          'NUMBER', '3.14e-10',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('0e0', function() {
+      var tester = new Tester(
+          'NUMBER', '0e0',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('3.14_15_93', function() {
+      var tester = new Tester(
+          'NUMBER', '3.14_15_93',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(STRING)', function() {
+    it(`''`, function() {
+      var tester = new Tester(
+          'STRING', `''`,
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it(`''''''`, function() {
+      var tester = new Tester(
+          'STRING', `''''''`,
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('""', function() {
+      var tester = new Tester(
+          'STRING', '""',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it('""""""', function() {
+      var tester = new Tester(
+          'STRING', '""""""',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it(`'abc'`, function() {
+      var tester = new Tester(
+          'STRING', `'abc'`,
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+    it(`"""
+    dfg
+    klm
+    """`, function() {
+      var tester = new Tester(
+          'STRING', `"""
+      dfg
+      klm
+      """`,
+      'NEWLINE', '',
+      'ENDMARKER')
+      tester.test()
+    });
+    it(`"""
+    dfg
+    klm
+    """`, function() {
+      var tester = new Tester(
+          'STRING', `f"""
+      dfg
+      klm
+      """`,
+      'NEWLINE', '',
+      'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(NEWLINE)', function() {
+    it(`NEWLINE`, function() {
+      var tester = new Tester(
+        'STRING', `f"""
+      dfg
+      klm
+      """`,
+      'NEWLINE', `
+  `,
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+    it(`NEWLINE`, function() {
+      var tester = new Tester(
+        'STRING', `'abc'`,
+        'NEWLINE', '\n',
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+    it(`NEWLINE`, function() {
+      var tester = new Tester(
+        'STRING', `'abc'`,
+        'NEWLINE', '\r',
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+    it(`NEWLINE`, function() {
+      var tester = new Tester(
+        'STRING', `'abc'`,
+        'NEWLINE', '\r\n',
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+  });
+
+  describe('Scan(INDENT)', function() {
+    it('INDENT', function() {
+      var tester = new Tester(
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '',
+        'DEDENT', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT_…^$', function() {
+      var tester = new Tester(
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT_…=…^$', function() {
+      var tester = new Tester(
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'NAME', ' y',
+        'NEWLINE', '',
+        'DEDENT', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…_…^^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'INDENT', '  ',
+        'NAME', 'y',
+        'NEWLINE', '',
+        'DEDENT', '',
+        'DEDENT', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 'y',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…_…^…^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'INDENT', '  ',
+        'NAME', 'u',
+        'NEWLINE', '\n',
+        'DEDENT', ' ',
+        'NAME', 'y',
+        'NEWLINE', '',
+        'DEDENT', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…_…^…^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'INDENT', '  ',
+        'NAME', 'u',
+        'NEWLINE', '\n',
+        'DEDENT', ' ',
+        'NAME', 'y',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 't',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…^…_…^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 'u',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'y',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 't',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…_…^^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'INDENT', '  ',
+        'NAME', 'u',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'DEDENT', '',
+        'NAME', 't',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '  \n',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '  \n',
+        'NAME', 'z',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…=…^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'NAME', '  \n y',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 'z',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…#^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '  #',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…#^$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '  #\n',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…#^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'DEDENT', '  #\n',
+        'NAME', 'z',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+    it('INDENT=…_…#=…^…$', function() {
+      var tester = new Tester(
+        'NAME', 'a',
+        'NEWLINE', '\n',
+        'INDENT', ' ',
+        'NAME', 'x',
+        'NEWLINE', '\n',
+        'NAME', '  #\n y',
+        'NEWLINE', '\n',
+        'DEDENT', '',
+        'NAME', 'z',
+        'NEWLINE', '',
+        'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(OP)', function() {
+    it('ALL OPS 1/2', function() {
+      var tester = new Tester(
+        'LPAR', '(',
+        'RPAR', ')',
+        'LSQB', '[',
+        'RSQB', ']',
+        'COLON', ':',
+        'COMMA', ',',
+        'SEMI', ';',
+        'PLUS', '+',
+        'MINUS', '-',
+        'STAR', '*',
+        'SLASH', '/',
+        'VBAR', '|',
+        'AMPER', '&',
+        // 'LESS', '<', SPECIAL
+        'GREATER', '>',
+        'NEWLINE', '',
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+    it('ALL OPS 2/2', function() {
+      var tester = new Tester(
+        'EQUAL', '=',
+        'DOT', '.',
+        'PERCENT', '%',
+        'LBRACE', '{',
+        'RBRACE', '}',
+        'EQEQUAL', '==',
+        'NOTEQUAL', '!=',
+        'LESSEQUAL', '<=',
+        'GREATEREQUAL', '>=',
+        'TILDE', '~',
+        'CIRCUMFLEX', '^',
+        'LEFTSHIFT', '<<',
+        'RIGHTSHIFT', '>>',
+        'DOUBLESTAR', '**',
+        'PLUSEQUAL', '+=',
+        'MINEQUAL', '-=',
+        'STAREQUAL', '*=',
+        'SLASHEQUAL', '/=',
+        'PERCENTEQUAL', '%=',
+        'AMPEREQUAL', '&=',
+        'VBAREQUAL', '|=',
+        'CIRCUMFLEXEQUAL', '^=',
+        'LEFTSHIFTEQUAL', '<<=',
+        'RIGHTSHIFTEQUAL', '>>=',
+        'DOUBLESTAREQUAL', '**=',
+        'DOUBLESLASH', '//',
+        'DOUBLESLASHEQUAL', '//=',
+        'AT', '@',
+        'ATEQUAL', '@=',
+        'RARROW', '->',
+        'ELLIPSIS', '...',
+        'COLONEQUAL', ':=',
+        'NEWLINE', '',
+        'ENDMARKER'
+      )
+      tester.test()
+    });
+    it('LESS', function() {
+      var tester = new Tester(
+          'NOTEQUAL', '<>',
+          'NEWLINE', '',
+          'ENDMARKER')
+      tester.test()
+    });
+  });
+
+  describe('Scan(PAREN)', function() {
+    it('(⏎)', function() {
+      var tester = new Tester(
+        'LPAR', '(',
+        'RPAR', '\n)',
+        'NEWLINE', '',
+        'ENDMARKER'
+        )
+      tester.test()
+    });
+    it('(()⏎)', function() {
+      var tester = new Tester(
+        'LPAR', '(',
+        'LPAR', '(',
+        'RPAR', ')',
+        'RPAR', '\n)',
+        'NEWLINE', '',
+        'ENDMARKER'
+        )
+      tester.test()
+    });
+    it('(()⏎)⏎', function() {
+      var tester = new Tester(
+        'LPAR', '(',
+        'LPAR', '(',
+        'RPAR', ')',
+        'RPAR', '\n)',
+        'NEWLINE', '\n',
+        'ENDMARKER'
+        )
+      tester.test()
+    });
+  });
+
+  describe('Scan(_KEYWORD)', function() {
+    var kws = [
+      'False',
+      'None',
+      'True',
+      'await',
+      'and',
+      'as',
+      'assert',
+      'async',
+      'break',
+      'class',
+      'continue',
+      'def',
+      'del',
+      'elif',
+      'else',
+      'except',
+      'finally',
+      'for',
+      'from',
+      'global',
+      'if',
+      'import',
+      'in',
+      'is',
+      'lambda',
+      'nonlocal',
+      'not',
+      'or',
+      'pass',
+      'raise',
+      'return',
+      'try',
+      'while',
+      'with',
+      'yield'
+    ]
+    var i = 0
+    for (i = 0 ; i < kws.length ; ++i) {
+      var f = kw => {
+        return function() {
+          var tester = new Tester(
+              'NAME', kw,
+              'NEWLINE', '',
+              'ENDMARKER')
+          tester.test(function (scan) {
+            assert(scan.first.is_keyword, `Not a key word ?`)
+          })
+        }
+      }
+      it(kws[i], f(kws[i]))
+    }
+  });
+
+  describe('Scan(LINE/COL NO)', function() {
+    it('fx', function() {
+      var tester = new Tester(
+        'ENDMARKER'
+      )
+    })
+  });
+
+  describe('Scan(TEST)', function() {
+    it('fx', function() {
+      var tester = new Tester(
+        'INDENT', '    ',
+        'NAME', 'listdir',
+        'DOT', '.',
+        'NAME', 'insert',
+        'LPAR', '(',
+        'NUMBER', '0',
+        'COMMA', ',',
+        'RPAR', ')',
+        'NEWLINE', '',
+        'DEDENT', '',
+        'ENDMARKER'
+        )
+      tester.test()
+    });
+  });
+
+  describe('Scan(Expressions)', function() {
+    it('foo(1)', function() {
+      var tester = new Tester(
+      'NAME', 'foo',
+      'LPAR', '\(',
+      'NUMBER', '1',
       'RPAR', ')',
       'NEWLINE', '',
-      'DEDENT', '',
-      'ENDMARKER'
-      )
-    tester.test()
+      'ENDMARKER')
+      tester.test()
+    });
   });
-});
 
-describe('Scan(Expressions)', function() {
-  it('foo(1)', function() {
-    var tester = new Tester(
-    'NAME', 'foo',
-    'LPAR', '\(',
-    'NUMBER', '1',
-    'RPAR', ')',
-    'NEWLINE', '',
-    'ENDMARKER')
-    tester.test()
+  describe('Scan(tokenize_tests)', function() {
+    it('tokenize_tests-…', function() {
+      var src =
+  `# IMPORTANT: this file has the utf-8 BOM signature '\xef\xbb\xbf'
+  # at the start of it.  Make sure this is preserved if any changes
+  # are made!
+
+  # Arbitrary encoded utf-8 text (stolen from test_doctest2.py).
+  x = 'ЉЊЈЁЂ'
+  def y():
+      """
+      And again in a comment.  ЉЊЈЁЂ
+      """
+      pass
+  `
+      Tester.testSrc(src)
+    })
   });
-});
 
-describe('Scan(tokenize_tests)', function() {
-  it('tokenize_tests-…', function() {
-    var src =
-`# IMPORTANT: this file has the utf-8 BOM signature '\xef\xbb\xbf'
-# at the start of it.  Make sure this is preserved if any changes
-# are made!
-
-# Arbitrary encoded utf-8 text (stolen from test_doctest2.py).
-x = 'ЉЊЈЁЂ'
-def y():
-    """
-    And again in a comment.  ЉЊЈЁЂ
-    """
-    pass
-`
-    Tester.testSrc(src)
-  })
-});
-
-describe('Scan(setup.py)', function() {
-  it('setup.py', function() {
-    // this test file is
-    // https://raw.githubusercontent.com/python/cpython/master/setup.py
-    // with 2 modifications:
-    // 1) '\1' -> '0o1' (octal not permitted in javascript format strings)
-    // 2) "\n" -> "\\n" because format string will turn the escaped
-    // sequence into a real line feed whicj causes a parsing error.
-    var src =
-`# Autodetecting setup.py script for building the Python extensions
+  describe('Scan(setup.py)', function() {
+    it('setup.py', function() {
+      // this test file is
+      // https://raw.githubusercontent.com/python/cpython/master/setup.py
+      // with 2 modifications:
+      // 1) '\1' -> '0o1' (octal not permitted in javascript format strings)
+      // 2) "\n" -> "\\n" because format string will turn the escaped
+      // sequence into a real line feed whicj causes a parsing error.
+      var src =
+  `# Autodetecting setup.py script for building the Python extensions
 #
 
 import sys, os, importlib.machinery, re, argparse
@@ -1107,7 +1108,7 @@ class PyBuildExt(build_ext):
 
         # Fix up the paths for scripts, too
         self.distribution.scripts = [os.path.join(srcdir, filename)
-                                     for filename in self.distribution.scripts]
+                                    for filename in self.distribution.scripts]
 
         # Python header files
         headers = [sysconfig.get_config_h_filename()]
@@ -1126,7 +1127,7 @@ class PyBuildExt(build_ext):
                             for filename in ext.sources ]
             if ext.depends is not None:
                 ext.depends = [find_module_file(filename, moddirlist)
-                               for filename in ext.depends]
+                              for filename in ext.depends]
             else:
                 ext.depends = []
             # re-compile extensions if a header file has been changed
@@ -1142,7 +1143,7 @@ class PyBuildExt(build_ext):
         mods_configured = mods_built + mods_disabled
         if mods_configured:
             self.extensions = [x for x in self.extensions if x not in
-                               mods_configured]
+                              mods_configured]
             # Remove the shared libraries built by a previous build.
             for ext in mods_configured:
                 fullpath = self.get_ext_fullpath(ext.name)
@@ -1223,7 +1224,7 @@ class PyBuildExt(build_ext):
             print()
 
         if any('_ssl' in l
-               for l in (missing, self.failed, self.failed_on_import)):
+              for l in (missing, self.failed, self.failed_on_import)):
             print()
             print("Could not build the ssl module!")
             print("Python requires an OpenSSL 1.0.2 or 1.1 compatible "
@@ -1504,14 +1505,14 @@ class PyBuildExt(build_ext):
         shared_math = 'Modules/_math.o'
         # complex math library functions
         exts.append( Extension('cmath', ['cmathmodule.c'],
-                               extra_objects=[shared_math],
-                               depends=['_math.h', shared_math],
-                               libraries=['m']) )
+                              extra_objects=[shared_math],
+                              depends=['_math.h', shared_math],
+                              libraries=['m']) )
         # math library functions, e.g. sin()
         exts.append( Extension('math',  ['mathmodule.c'],
-                               extra_objects=[shared_math],
-                               depends=['_math.h', shared_math],
-                               libraries=['m']) )
+                              extra_objects=[shared_math],
+                              depends=['_math.h', shared_math],
+                              libraries=['m']) )
 
         # time libraries: librt may be needed for clock_gettime()
         time_libs = []
@@ -1521,11 +1522,11 @@ class PyBuildExt(build_ext):
 
         # time operations and variables
         exts.append( Extension('time', ['timemodule.c'],
-                               libraries=time_libs) )
+                              libraries=time_libs) )
         # libm is needed by delta_new() that uses round() and by accum() that
         # uses modf().
         exts.append( Extension('_datetime', ['_datetimemodule.c'],
-                               libraries=['m']) )
+                              libraries=['m']) )
         # random number generator implemented in C
         exts.append( Extension("_random", ["_randommodule.c"]) )
         # bisect
@@ -1538,11 +1539,11 @@ class PyBuildExt(build_ext):
         exts.append( Extension("atexit", ["atexitmodule.c"]) )
         # _json speedups
         exts.append( Extension("_json", ["_json.c"],
-                               # pycore_accu.h requires Py_BUILD_CORE_BUILTIN
-                               extra_compile_args=['-DPy_BUILD_CORE_BUILTIN']) )
+                              # pycore_accu.h requires Py_BUILD_CORE_BUILTIN
+                              extra_compile_args=['-DPy_BUILD_CORE_BUILTIN']) )
         # Python C API test module
         exts.append( Extension('_testcapi', ['_testcapimodule.c'],
-                               depends=['testcapi_long.h']) )
+                              depends=['testcapi_long.h']) )
         # Python PEP-3118 (buffer protocol) test module
         exts.append( Extension('_testbuffer', ['_testbuffer.c']) )
         # Test loading multiple modules from one compiled file (http://bugs.python.org/issue16421)
@@ -1553,7 +1554,7 @@ class PyBuildExt(build_ext):
         exts.append( Extension('_lsprof', ['_lsprof.c', 'rotatingtree.c']) )
         # static Unicode character database
         exts.append( Extension('unicodedata', ['unicodedata.c'],
-                               depends=['unicodedata_db.h', 'unicodename_db.h']) )
+                              depends=['unicodedata_db.h', 'unicodename_db.h']) )
         # _opcode module
         exts.append( Extension('_opcode', ['_opcode.c']) )
         # asyncio speedups
@@ -1622,7 +1623,7 @@ class PyBuildExt(build_ext):
         #
         # audioop needs libm for floor() in multiple functions.
         exts.append( Extension('audioop', ['audioop.c'],
-                               libraries=['m']) )
+                              libraries=['m']) )
 
         # readline
         do_readline = self.compiler.find_library_file(lib_dirs, 'readline')
@@ -1637,7 +1638,7 @@ class PyBuildExt(build_ext):
             if cross_compiling:
                 ret = os.system("%s -d %s | grep '(NEEDED)' > %s" \
                                 % (sysconfig.get_config_var('READELF'),
-                                   do_readline, tmpfile))
+                                  do_readline, tmpfile))
             elif find_executable('ldd'):
                 ret = os.system("ldd %s > %s" % (do_readline, tmpfile))
             else:
@@ -1697,13 +1698,13 @@ class PyBuildExt(build_ext):
             elif curses_library:
                 readline_libs.append(curses_library)
             elif self.compiler.find_library_file(lib_dirs +
-                                                     ['/usr/lib/termcap'],
-                                                     'termcap'):
+                                                    ['/usr/lib/termcap'],
+                                                    'termcap'):
                 readline_libs.append('termcap')
             exts.append( Extension('readline', ['readline.c'],
-                                   library_dirs=['/usr/lib/termcap'],
-                                   extra_link_args=readline_extra_link_args,
-                                   libraries=readline_libs) )
+                                  library_dirs=['/usr/lib/termcap'],
+                                  extra_link_args=readline_extra_link_args,
+                                  libraries=readline_libs) )
         else:
             missing.append('readline')
 
@@ -1723,7 +1724,7 @@ class PyBuildExt(build_ext):
 
         # socket(2)
         exts.append( Extension('_socket', ['socketmodule.c'],
-                               depends = ['socketmodule.h']) )
+                              depends = ['socketmodule.h']) )
         # Detect SSL support for the socket module (via _ssl)
         ssl_ext, hashlib_ext = self._detect_openssl(inc_dirs, lib_dirs)
         if ssl_ext is not None:
@@ -1739,30 +1740,30 @@ class PyBuildExt(build_ext):
         # It's harmless and the object code is tiny (40-50 KiB per module,
         # only loaded when actually used).
         exts.append( Extension('_sha256', ['sha256module.c'],
-                               depends=['hashlib.h']) )
+                              depends=['hashlib.h']) )
         exts.append( Extension('_sha512', ['sha512module.c'],
-                               depends=['hashlib.h']) )
+                              depends=['hashlib.h']) )
         exts.append( Extension('_md5', ['md5module.c'],
-                               depends=['hashlib.h']) )
+                              depends=['hashlib.h']) )
         exts.append( Extension('_sha1', ['sha1module.c'],
-                               depends=['hashlib.h']) )
+                              depends=['hashlib.h']) )
 
         blake2_deps = glob(os.path.join(os.getcwd(), srcdir,
                                         'Modules/_blake2/impl/*'))
         blake2_deps.append('hashlib.h')
 
         exts.append( Extension('_blake2',
-                               ['_blake2/blake2module.c',
+                              ['_blake2/blake2module.c',
                                 '_blake2/blake2b_impl.c',
                                 '_blake2/blake2s_impl.c'],
-                               depends=blake2_deps) )
+                              depends=blake2_deps) )
 
         sha3_deps = glob(os.path.join(os.getcwd(), srcdir,
                                       'Modules/_sha3/kcp/*'))
         sha3_deps.append('hashlib.h')
         exts.append( Extension('_sha3',
-                               ['_sha3/sha3module.c'],
-                               depends=sha3_deps))
+                              ['_sha3/sha3module.c'],
+                              depends=sha3_deps))
 
         # Modules that provide persistent dictionary-like semantics.  You will
         # probably want to arrange for at least one of them to be available on
@@ -1978,12 +1979,12 @@ class PyBuildExt(build_ext):
         # We need to find >= sqlite version 3.0.8
         sqlite_incdir = sqlite_libdir = None
         sqlite_inc_paths = [ '/usr/include',
-                             '/usr/include/sqlite',
-                             '/usr/include/sqlite3',
-                             '/usr/local/include',
-                             '/usr/local/include/sqlite',
-                             '/usr/local/include/sqlite3',
-                             ]
+                            '/usr/include/sqlite',
+                            '/usr/include/sqlite3',
+                            '/usr/local/include',
+                            '/usr/local/include/sqlite',
+                            '/usr/local/include/sqlite3',
+                            ]
         if cross_compiling:
             sqlite_inc_paths = []
         MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)
@@ -2092,7 +2093,7 @@ class PyBuildExt(build_ext):
         # The standard Unix dbm module:
         if host_platform not in ['cygwin']:
             config_args = [arg.strip("'")
-                           for arg in sysconfig.get_config_var("CONFIG_ARGS").split()]
+                          for arg in sysconfig.get_config_var("CONFIG_ARGS").split()]
             dbm_args = [arg for arg in config_args
                         if arg.startswith('--with-dbmliborder=')]
             if dbm_args:
@@ -2106,26 +2107,26 @@ class PyBuildExt(build_ext):
                         # Some systems have -lndbm, others have -lgdbm_compat,
                         # others don't have either
                         if self.compiler.find_library_file(lib_dirs,
-                                                               'ndbm'):
+                                                              'ndbm'):
                             ndbm_libs = ['ndbm']
                         elif self.compiler.find_library_file(lib_dirs,
-                                                             'gdbm_compat'):
+                                                            'gdbm_compat'):
                             ndbm_libs = ['gdbm_compat']
                         else:
                             ndbm_libs = []
                         if dbm_setup_debug: print("building dbm using ndbm")
                         dbmext = Extension('_dbm', ['_dbmmodule.c'],
-                                           define_macros=[
-                                               ('HAVE_NDBM_H',None),
-                                               ],
-                                           libraries=ndbm_libs)
+                                          define_macros=[
+                                              ('HAVE_NDBM_H',None),
+                                              ],
+                                          libraries=ndbm_libs)
                         break
 
                 elif cand == "gdbm":
                     if self.compiler.find_library_file(lib_dirs, 'gdbm'):
                         gdbm_libs = ['gdbm']
                         if self.compiler.find_library_file(lib_dirs,
-                                                               'gdbm_compat'):
+                                                              'gdbm_compat'):
                             gdbm_libs.append('gdbm_compat')
                         if find_file("gdbm/ndbm.h", inc_dirs, []) is not None:
                             if dbm_setup_debug: print("building dbm using gdbm")
@@ -2149,14 +2150,14 @@ class PyBuildExt(build_ext):
                     if dblibs:
                         if dbm_setup_debug: print("building dbm using bdb")
                         dbmext = Extension('_dbm', ['_dbmmodule.c'],
-                                           library_dirs=dblib_dir,
-                                           runtime_library_dirs=dblib_dir,
-                                           include_dirs=db_incs,
-                                           define_macros=[
-                                               ('HAVE_BERKDB_H', None),
-                                               ('DB_DBM_HSEARCH', None),
-                                               ],
-                                           libraries=dblibs)
+                                          library_dirs=dblib_dir,
+                                          runtime_library_dirs=dblib_dir,
+                                          include_dirs=db_incs,
+                                          define_macros=[
+                                              ('HAVE_BERKDB_H', None),
+                                              ('DB_DBM_HSEARCH', None),
+                                              ],
+                                          libraries=dblibs)
                         break
             if dbmext is not None:
                 exts.append(dbmext)
@@ -2167,7 +2168,7 @@ class PyBuildExt(build_ext):
         if ('gdbm' in dbm_order and
             self.compiler.find_library_file(lib_dirs, 'gdbm')):
             exts.append( Extension('_gdbm', ['_gdbmmodule.c'],
-                                   libraries = ['gdbm'] ) )
+                                  libraries = ['gdbm'] ) )
         else:
             missing.append('_gdbm')
 
@@ -2214,9 +2215,9 @@ class PyBuildExt(build_ext):
         if curses_library.startswith('ncurses'):
             curses_libs = [curses_library]
             exts.append( Extension('_curses', ['_cursesmodule.c'],
-                                   include_dirs=curses_includes,
-                                   define_macros=curses_defines,
-                                   libraries = curses_libs) )
+                                  include_dirs=curses_includes,
+                                  define_macros=curses_defines,
+                                  libraries = curses_libs) )
         elif curses_library == 'curses' and host_platform != 'darwin':
                 # OSX has an old Berkeley curses, not good enough for
                 # the _curses module.
@@ -2228,8 +2229,8 @@ class PyBuildExt(build_ext):
                 curses_libs = ['curses']
 
             exts.append( Extension('_curses', ['_cursesmodule.c'],
-                                   define_macros=curses_defines,
-                                   libraries = curses_libs) )
+                                  define_macros=curses_defines,
+                                  libraries = curses_libs) )
         else:
             missing.append('_curses')
 
@@ -2237,9 +2238,9 @@ class PyBuildExt(build_ext):
         if (module_enabled(exts, '_curses') and
             self.compiler.find_library_file(lib_dirs, panel_library)):
             exts.append( Extension('_curses_panel', ['_curses_panel.c'],
-                                   include_dirs=curses_includes,
-                                   define_macros=curses_defines,
-                                   libraries = [panel_library] + curses_libs) )
+                                  include_dirs=curses_includes,
+                                  define_macros=curses_defines,
+                                  libraries = [panel_library] + curses_libs) )
         else:
             missing.append('_curses_panel')
 
@@ -2278,8 +2279,8 @@ class PyBuildExt(build_ext):
                     else:
                         zlib_extra_link_args = ()
                     exts.append( Extension('zlib', ['zlibmodule.c'],
-                                           libraries = ['z'],
-                                           extra_link_args = zlib_extra_link_args))
+                                          libraries = ['z'],
+                                          extra_link_args = zlib_extra_link_args))
                     have_zlib = True
                 else:
                     missing.append('zlib')
@@ -2299,9 +2300,9 @@ class PyBuildExt(build_ext):
             libraries = []
             extra_link_args = []
         exts.append( Extension('binascii', ['binascii.c'],
-                               extra_compile_args = extra_compile_args,
-                               libraries = libraries,
-                               extra_link_args = extra_link_args) )
+                              extra_compile_args = extra_compile_args,
+                              libraries = libraries,
+                              extra_link_args = extra_link_args) )
 
         # Gustavo Niemeyer's bz2 module.
         if (self.compiler.find_library_file(lib_dirs, 'bz2')):
@@ -2310,15 +2311,15 @@ class PyBuildExt(build_ext):
             else:
                 bz2_extra_link_args = ()
             exts.append( Extension('_bz2', ['_bz2module.c'],
-                                   libraries = ['bz2'],
-                                   extra_link_args = bz2_extra_link_args) )
+                                  libraries = ['bz2'],
+                                  extra_link_args = bz2_extra_link_args) )
         else:
             missing.append('_bz2')
 
         # LZMA compression support.
         if self.compiler.find_library_file(lib_dirs, 'lzma'):
             exts.append( Extension('_lzma', ['_lzmamodule.c'],
-                                   libraries = ['lzma']) )
+                                  libraries = ['lzma']) )
         else:
             missing.append('_lzma')
 
@@ -2351,20 +2352,20 @@ class PyBuildExt(build_ext):
             extra_compile_args = []
             expat_lib = []
             expat_sources = ['expat/xmlparse.c',
-                             'expat/xmlrole.c',
-                             'expat/xmltok.c']
+                            'expat/xmlrole.c',
+                            'expat/xmltok.c']
             expat_depends = ['expat/ascii.h',
-                             'expat/asciitab.h',
-                             'expat/expat.h',
-                             'expat/expat_config.h',
-                             'expat/expat_external.h',
-                             'expat/internal.h',
-                             'expat/latin1tab.h',
-                             'expat/utf8tab.h',
-                             'expat/xmlrole.h',
-                             'expat/xmltok.h',
-                             'expat/xmltok_impl.h'
-                             ]
+                            'expat/asciitab.h',
+                            'expat/expat.h',
+                            'expat/expat_config.h',
+                            'expat/expat_external.h',
+                            'expat/internal.h',
+                            'expat/latin1tab.h',
+                            'expat/utf8tab.h',
+                            'expat/xmlrole.h',
+                            'expat/xmltok.h',
+                            'expat/xmltok_impl.h'
+                            ]
 
             cc = sysconfig.get_config_var('CC').split()[0]
             ret = os.system(
@@ -2437,12 +2438,12 @@ class PyBuildExt(build_ext):
 
         if host_platform == 'win32':
             multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
-                                     '_multiprocessing/semaphore.c',
-                                   ]
+                                    '_multiprocessing/semaphore.c',
+                                  ]
 
         else:
             multiprocessing_srcs = [ '_multiprocessing/multiprocessing.c',
-                                   ]
+                                  ]
             if (sysconfig.get_config_var('HAVE_SEM_OPEN') and not
                 sysconfig.get_config_var('POSIX_SEMAPHORES_NOT_ENABLED')):
                 multiprocessing_srcs.append('_multiprocessing/semaphore.c')
@@ -2455,9 +2456,9 @@ class PyBuildExt(build_ext):
                     # need to link with librt to get shm_open()
                     libs.append('rt')
                 exts.append( Extension('_posixshmem', posixshmem_srcs,
-                                       define_macros={},
-                                       libraries=libs,
-                                       include_dirs=["Modules/_multiprocessing"]))
+                                      define_macros={},
+                                      libraries=libs,
+                                      include_dirs=["Modules/_multiprocessing"]))
 
         exts.append ( Extension('_multiprocessing', multiprocessing_srcs,
                                 define_macros=list(macros.items()),
@@ -2472,10 +2473,10 @@ class PyBuildExt(build_ext):
 
         if host_platform == 'darwin':
             exts.append(
-                       Extension('_scproxy', ['_scproxy.c'],
-                       extra_link_args=[
-                           '-framework', 'SystemConfiguration',
-                           '-framework', 'CoreFoundation',
+                      Extension('_scproxy', ['_scproxy.c'],
+                      extra_link_args=[
+                          '-framework', 'SystemConfiguration',
+                          '-framework', 'CoreFoundation',
                         ]))
 
         self.extensions.extend(exts)
@@ -2494,8 +2495,8 @@ class PyBuildExt(build_ext):
             else:
                 uuid_libs = []
             self.extensions.append(Extension('_uuid', ['_uuidmodule.c'],
-                                   libraries=uuid_libs,
-                                   include_dirs=uuid_incs))
+                                  libraries=uuid_libs,
+                                  include_dirs=uuid_incs))
         else:
             missing.append('_uuid')
 
@@ -2660,7 +2661,7 @@ class PyBuildExt(build_ext):
             tklib = self.compiler.find_library_file(lib_dirs,
                                                         'tk' + version)
             tcllib = self.compiler.find_library_file(lib_dirs,
-                                                         'tcl' + version)
+                                                        'tcl' + version)
             if tklib and tcllib:
                 # Exit the loop when we've found the Tcl/Tk libraries
                 break
@@ -2719,7 +2720,7 @@ class PyBuildExt(build_ext):
 
         # Check for BLT extension
         if self.compiler.find_library_file(lib_dirs + added_lib_dirs,
-                                               'BLT8.0'):
+                                              'BLT8.0'):
             defs.append( ('WITH_BLT', 1) )
             libs.append('BLT8.0')
         elif self.compiler.find_library_file(lib_dirs + added_lib_dirs,
@@ -2761,16 +2762,16 @@ class PyBuildExt(build_ext):
         ffi_srcdir = os.path.abspath(os.path.join(srcdir, 'Modules',
                                                   '_ctypes', 'libffi_osx'))
         sources = [os.path.join(ffi_srcdir, p)
-                   for p in ['ffi.c',
-                             'x86/darwin64.S',
-                             'x86/x86-darwin.S',
-                             'x86/x86-ffi_darwin.c',
-                             'x86/x86-ffi64.c',
-                             'powerpc/ppc-darwin.S',
-                             'powerpc/ppc-darwin_closure.S',
-                             'powerpc/ppc-ffi_darwin.c',
-                             'powerpc/ppc64-darwin_closure.S',
-                             ]]
+                  for p in ['ffi.c',
+                            'x86/darwin64.S',
+                            'x86/x86-darwin.S',
+                            'x86/x86-ffi_darwin.c',
+                            'x86/x86-ffi64.c',
+                            'powerpc/ppc-darwin.S',
+                            'powerpc/ppc-darwin_closure.S',
+                            'powerpc/ppc-ffi_darwin.c',
+                            'powerpc/ppc64-darwin_closure.S',
+                            ]]
 
         # Add .S (preprocessed assembly) to C compiler source extensions.
         self.compiler.src_extensions.append('.S')
@@ -2795,10 +2796,10 @@ class PyBuildExt(build_ext):
         extra_compile_args = []
         extra_link_args = []
         sources = ['_ctypes/_ctypes.c',
-                   '_ctypes/callbacks.c',
-                   '_ctypes/callproc.c',
-                   '_ctypes/stgdict.c',
-                   '_ctypes/cfield.c']
+                  '_ctypes/callbacks.c',
+                  '_ctypes/callproc.c',
+                  '_ctypes/stgdict.c',
+                  '_ctypes/cfield.c']
         depends = ['_ctypes/ctypes.h']
 
         if host_platform == 'darwin':
@@ -2832,8 +2833,8 @@ class PyBuildExt(build_ext):
                         depends=depends)
         # function my_sqrt() needs libm for sqrt()
         ext_test = Extension('_ctypes_test',
-                     sources=['_ctypes/_ctypes_test.c'],
-                     libraries=['m'])
+                    sources=['_ctypes/_ctypes_test.c'],
+                    libraries=['m'])
         self.extensions.extend([ext, ext_test])
 
         if host_platform == 'darwin':
@@ -2878,9 +2879,9 @@ class PyBuildExt(build_ext):
         else:
             srcdir = sysconfig.get_config_var('srcdir')
             include_dirs = [os.path.abspath(os.path.join(srcdir,
-                                                         'Modules',
-                                                         '_decimal',
-                                                         'libmpdec'))]
+                                                        'Modules',
+                                                        '_decimal',
+                                                        'libmpdec'))]
             libraries = ['m']
             sources = [
               '_decimal/_decimal.c',
@@ -2951,7 +2952,7 @@ class PyBuildExt(build_ext):
         elif sizeof_size_t == 4:
             ppro = sysconfig.get_config_var('HAVE_GCC_ASM_FOR_X87')
             if ppro and ('gcc' in cc or 'clang' in cc) and \
-               not 'sunos' in host_platform:
+              not 'sunos' in host_platform:
                 # solaris: problems with register allocation.
                 # icc >= 11.0 works as well.
                 define_macros = config['ppro']
@@ -3217,14 +3218,14 @@ def main():
           # check the PyBuildScripts command above, and change the links
           # created by the bininstall target in Makefile.pre.in
           scripts = ["Tools/scripts/pydoc3", "Tools/scripts/idle3",
-                     "Tools/scripts/2to3"]
+                    "Tools/scripts/2to3"]
         )
 
 # --install-platlib
 if __name__ == '__main__':
     main()`
-    Tester.testSrc(src)
-  });
-});
+      Tester.testSrc(src)
+    })
+  })
 
-console.log('DONE')
+})

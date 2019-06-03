@@ -32,7 +32,7 @@ goog.require('eYo.Model.functions')
  * by `modulebot.py`.
  */
 
-var doit = (() => {
+;(function () {
   var M = eYo.Model.functions
   var d = M.data
   var n = d.items.length

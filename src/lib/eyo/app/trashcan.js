@@ -151,7 +151,7 @@ eYo.Trashcan.prototype.place = function() {
     // There are no metrics available (board is probably not visible).
     return;
   }
-  this.left_ = metrics.view.width + metrics.absolute.left -
+  this.left_ = metrics.view.width + metrics.absolute.x -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
@@ -163,7 +163,7 @@ eYo.Trashcan.prototype.place = function() {
       this.left_ -= metrics.flyout.width
     }
   }
-  this.top_ = metrics.view.height + metrics.absolute.top -
+  this.top_ = metrics.view.height + metrics.absolute.y -
       (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
 
   this.ui_driver.trashcanPlace(this)

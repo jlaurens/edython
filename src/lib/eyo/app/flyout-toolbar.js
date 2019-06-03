@@ -78,8 +78,6 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
 }
 
 // toolbar height
-var one_rem = eYo.Unit.rem
-
 eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t
 eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
 
@@ -169,8 +167,8 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
 eYo.FlyoutToolbar.prototype.resize = function(width, height) {
   var height = this.HEIGHT
   var margin = this.MARGIN
-  var big_radius = 1.25 * one_rem
-  var radius = 1.125 * one_rem
+  var big_radius = 1.25 * eYo.Unit.rem
+  var radius = 1.125 * eYo.Unit.rem
   var h = radius * 0.75
 
   this.div_.style.width = width + 'px'

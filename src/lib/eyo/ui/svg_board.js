@@ -64,7 +64,7 @@ eYo.Svg.prototype.boardInit = function(board) {
   */
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-board-surface'},
+    {class: 'eyo-board-surface'},
     root
   )
 
@@ -84,7 +84,7 @@ eYo.Svg.prototype.boardInit = function(board) {
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
     'g',
-    {'class': 'eyo-brick-canvas'},
+    {class: 'eyo-brick-canvas'},
     g
   )
   if (!board.isFlyout) {
@@ -97,8 +97,8 @@ eYo.Svg.prototype.boardInit = function(board) {
     var boardChanged = function() {
       if (!board.isDragging) {
         var metrics = board.getMetrics()
-        var edgeLeft = metrics.view.left + metrics.absolute.left;
-        var edgeTop = metrics.view.top + metrics.absolute.top;
+        var edgeLeft = metrics.view.left + metrics.absolute.x;
+        var edgeTop = metrics.view.top + metrics.absolute.y;
         if (metrics.content.top < edgeTop ||
             metrics.content.top + metrics.content.height >
             metrics.view.height + edgeTop ||
@@ -428,8 +428,8 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
         .scale(scaleChange)
     // newScale and matrix.a should be identical (within a rounding error).
     // ScrollX and scrollY are in pixels.
-    board.scrollX = matrix.e - metrics.absolute.left
-    board.scrollY = matrix.f - metrics.absolute.top
+    board.scrollX = matrix.e - metrics.absolute.x
+    board.scrollY = matrix.f - metrics.absolute.y
   }
   board.scale = newScale
 }

@@ -566,7 +566,7 @@ eYo.KeyHandler.makeSlicing = function (model) {
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
-var doit = (() => {
+;(function () {
 
   var Ks = {
     'start': eYo.T3.Stmt.start_stmt,

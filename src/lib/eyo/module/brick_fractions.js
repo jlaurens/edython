@@ -36,32 +36,32 @@ goog.require('eYo.FlyoutCategory')
     '__round__': 8,
  */
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'fractions__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    name_p: name,
-    holder_p: 'fractions',
-    dotted_p: 0,
-    title: key
+  var F = (name, title) => {
+    var key = 'fractions__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      name_p: name,
+      holder_p: 'fractions',
+      dotted_p: 0,
+      title: key
+    }
   }
-}
 
-var F_instance = (name, type, title) => {
-  var key = 'fractions__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: type,
-    data: {
-      name: name,
-      dotted: 1
-    },
-    title: key
+  var F_instance = (name, type, title) => {
+    var key = 'fractions__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: type,
+      data: {
+        name: name,
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.basic_fractions__module = [
   {

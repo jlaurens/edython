@@ -29,7 +29,7 @@ eYo.Model.bisect__module.Item = function (model) {
   eYo.Model.bisect__module.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.bisect__module.Item
 

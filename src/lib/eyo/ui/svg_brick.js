@@ -774,6 +774,15 @@ eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
 }
 
 /**
+ * Return the coordinates of the top-left corner of this brick relative to the parent, in board units.
+ * @return {!eYo.Where} Object with .x and .y properties in
+ *     board coordinates.
+ */
+eYo.Svg.prototype.brickXYInParent = function (brick) {
+  return this.xyInParent(brick.dom.svg.group_)
+}
+
+/**
  * Return the coordinates of the top-left corner of this brick relative to the
  * drawing surface's origin (0,0), in board units.
  * If the brick is on the board, (0, 0) is the origin of the board
@@ -783,9 +792,7 @@ eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
  *     board coordinates.
  */
 eYo.Svg.prototype.brickXYInBoard = function (brick) {
-  var x = 0
-  var y = 0
-  var brick = brick
+  var ans = new eYo.Where()
   var bds = brick.desk.dom.svg.brickDragSurface
   var current = bds.brickGroup
   var bdsGroup = bds.dom.svg.group_
@@ -793,21 +800,16 @@ eYo.Svg.prototype.brickXYInBoard = function (brick) {
   var element = brick.dom.svg.group_
   do {
     // Loop through this brick and every parent.
-    var xy = this.xyInParent(element)
-    x += xy.x
-    y += xy.y
+    ans.advance(this.xyInParent(element))
     // If this element is the current element on the drag surface, include
     // the translation of the drag surface itself.
     if (current === element) {
-      var translation = bds.translation
-      x += translation.x
-      y += translation.y
+      ans.advance(bds.translation)
     }
     element = element.parentNode
   } while (element && element != canvas && element != bdsGroup)
-  return new eYo.Where(x, y)
+  return ans
 }
-
 
 /**
  * Return the coordinates of the top-left corner
@@ -818,7 +820,6 @@ eYo.Svg.prototype.brickXYInBoard = function (brick) {
 eYo.Svg.prototype.brickXYInDesk = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.desk.dom.svg.brickDragSurface
-  var current = bds.brickGroup
   var bdsRoot = bds.dom.svg.root_
   var boardRoot = brick.board.dom.svg.root_
   var element = brick.dom.svg.group_

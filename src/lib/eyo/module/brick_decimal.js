@@ -33,33 +33,33 @@ goog.require('eYo.Model.decimal__module')
  * @private
  */
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'decimal__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    name_p: name,
-    holder_p: 'decimal',
-    dotted_p: 0,
-    title: key
+  var F = (name, title) => {
+    var key = 'decimal__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      name_p: name,
+      holder_p: 'decimal',
+      dotted_p: 0,
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'decimal__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.identifier,
-    name_p: name,
-    holder_p: 'decimal',
-    dotted_p: 0,
-    title: key
+  var F_k = (name, title) => {
+    var key = 'decimal__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.identifier,
+      name_p: name,
+      holder_p: 'decimal',
+      dotted_p: 0,
+      title: key
+    }
   }
-}
-/*
+  /*
     'Decimal': 0,
-    'getcontext': 1,
+    getcontext: 1,
     'setcontext': 2,
     'localcontext': 3,
     'BasicContext': 4,
@@ -162,32 +162,32 @@ eYo.FlyoutCategory.basic_decimal__module = [
   }
 ]
 
-var F = (name, title) => {
-  var key = 'decimal__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'decimal',
-      dotted: 1
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'decimal__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'decimal',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'decimal__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: name,
-      holder: 'decimal',
-      dotted: 1
-    },
-    title: key
+  var F_k = (name, title) => {
+    var key = 'decimal__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.attributeref,
+      data: {
+        name: name,
+        holder: 'decimal',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.decimal__module = [
   {

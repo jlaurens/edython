@@ -102,12 +102,11 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   }
 })
 
-var names = [
+;[
   'integer',
   'floatnumber',
   'imagnumber'
-]
-names.forEach(key => {
+].forEach(key => {
   eYo.Brick.Expr[key] = eYo.Brick.Expr.numberliteral
   eYo.Brick.Manager.register(key)
 })

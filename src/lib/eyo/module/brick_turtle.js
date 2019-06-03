@@ -39,7 +39,7 @@ eYo.Brick.Stmt.makeSubclass('turtle__setup_stmt', {
   }
 }, true)
 
-var doit = (() => {
+;(function () {
   var F_expr = (name, title) => {
     var key = 'turtle__'+name
     title && (eYo.Tooltip.Title[key] = title)

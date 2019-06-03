@@ -29,7 +29,7 @@ eYo.Model.stdtypes.Item = function (model) {
   eYo.Model.stdtypes.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.stdtypes.Item
 

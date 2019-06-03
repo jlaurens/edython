@@ -29,7 +29,7 @@ eYo.Model.datamodel.Item = function (model) {
   eYo.Model.datamodel.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.datamodel.Item
 

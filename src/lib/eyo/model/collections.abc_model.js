@@ -29,7 +29,7 @@ eYo.Model.collections.abc__module.Item = function (model) {
   eYo.Model.collections.abc__module.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.collections.abc__module.Item
 

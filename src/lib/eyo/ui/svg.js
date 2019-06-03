@@ -129,7 +129,6 @@ eYo.Svg.prototype.xyInParent = function(element) {
   var transform = element.getAttribute('transform')
   var r = transform && (transform.match(eYo.Svg.TRANSLATE_REGEX_))
   if (r) {
-    console.log(transform, r)
     xy.x += parseFloat(r[1])
     if (r[3]) {
       xy.y += parseFloat(r[3])

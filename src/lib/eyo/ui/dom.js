@@ -36,21 +36,21 @@ goog.inherits(eYo.Dom, eYo.Driver)
 eYo.Dom.TOUCH_MAP = {}
 if (window && window.PointerEvent) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
-    'mousedown': { value: ['pointerdown'] },
-    'mouseenter': { value: ['pointerenter'] },
-    'mouseleave': { value: ['pointerleave'] },
-    'mousemove': { value: ['pointermove'] },
-    'mouseout': { value: ['pointerout'] },
-    'mouseover': { value: ['pointerover'] },
-    'mouseup': { value: ['pointerup', 'pointercancel'] },
-    'touchend': { value: ['pointerup'] },
+    mousedown: { value: ['pointerdown'] },
+    mouseenter: { value: ['pointerenter'] },
+    mouseleave: { value: ['pointerleave'] },
+    mousemove: { value: ['pointermove'] },
+    mouseout: { value: ['pointerout'] },
+    mouseover: { value: ['pointerover'] },
+    mouseup: { value: ['pointerup', 'pointercancel'] },
+    touchend: { value: ['pointerup'] },
     'touchcancel': { value: ['pointercancel'] }
   })
 } else if (goog.events.BrowserFeature.TOUCH_ENABLED) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
-    'mousedown': { value: ['touchstart'] },
-    'mousemove': { value: ['touchmove'] },
-    'mouseup': { value: ['touchend', 'touchcancel'] },
+    mousedown: { value: ['touchstart'] },
+    mousemove: { value: ['touchmove'] },
+    mouseup: { value: ['touchend', 'touchcancel'] },
   })
 }
 

@@ -201,8 +201,8 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
  */
 eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
   if (goog.isDef(x.x) && goog.isDef(x.y)) {
-    y = x.x || 0
-    x = x.y || 0
+    y = x.y || 0
+    x = x.x || 0
   } else if (goog.isDef(x.width) && goog.isDef(x.height)) {
     x = x.width || 0
     y = x.height || 0

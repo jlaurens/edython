@@ -131,32 +131,32 @@ eYo.Brick.Expr.random__randrange.prototype.xmlAttr = function () {
   return this.model.xml.attr
 }
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'random__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'random',
-      dotted: 0
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'random__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'random',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
-var F_s = (name, title) => {
-  var key = 'random__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Stmt.call_stmt,
-    name_p: name,
-    holder_p: 'random',
-    dotted_p: 0,
-    title: key
+  var F_s = (name, title) => {
+    var key = 'random__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Stmt.call_stmt,
+      name_p: name,
+      holder_p: 'random',
+      dotted_p: 0,
+      title: key
+    }
   }
-}
 eYo.FlyoutCategory.basic_random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,

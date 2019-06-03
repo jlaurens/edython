@@ -1462,8 +1462,8 @@ eYo.Board.prototype.centerOnBrick = function(id) {
  * .view.left: Offset of left edge of visible rectangle from parent,
  * .content.top: Offset of the top-most content from the y=0 coordinate,
  * .content.left: Offset of the left-most content from the x=0 coordinate.
- * .absolute.top: Top-edge of view.
- * .absolute.left: Left-edge of view.
+ * .absolute.y: Top-edge of view.
+ * .absolute.x: Left-edge of view.
  * .flyout.width: Width of the flyout if it is always open.  Otherwise zero.
  * .flyout.height: Height of flyout if it is always open.  Otherwise zero.
  * .flyout.anchor: Top, bottom, left or right.
@@ -1577,7 +1577,7 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
  */
 eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   if (!this.scrollbar) {
-    throw 'Attempt to set top level board scroll without scrollbars.';
+    throw 'Attempt to set top level board scroll without scrollbars.'
   }
   var metrics = this.getMetrics()
   if (goog.isNumber(xyRatio.x)) {
@@ -1586,10 +1586,10 @@ eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   if (goog.isNumber(xyRatio.y)) {
     this.scrollY = -metrics.content.height * xyRatio.y - metrics.content.top
   }
-  var x = this.scrollX + metrics.absolute.left
-  var y = this.scrollY + metrics.absolute.top
+  var x = this.scrollX + metrics.absolute.x
+  var y = this.scrollY + metrics.absolute.y
   this.xyMoveTo(x, y)
-};
+}
 
 /**
  * Update whether this board has resizes enabled.

@@ -90,7 +90,7 @@ Object.defineProperties(eYo, {
   }
 })
 
-eYo.Temp.x = (() => {
+;(function () {
   var x
   Object.defineProperty(eYo, 'VOID', {
     value: x

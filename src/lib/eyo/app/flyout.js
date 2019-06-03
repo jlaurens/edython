@@ -663,8 +663,8 @@ eYo.Flyout.prototype.place = function () {
   this.ui_driver.flyoutUpdate(edgeWidth, edgeHeight)
   this.toolbar_.resize(edgeWidth, edgeHeight)
 
-  var y = metrics.absolute.top
-  var x = metrics.absolute.left
+  var y = metrics.absolute.y
+  var x = metrics.absolute.x
   if (this.anchor_ === eYo.Flyout.AT_RIGHT) {
     x += (metrics.view.width - this.width_)
     if (this.closed) {
@@ -693,10 +693,10 @@ eYo.Flyout.prototype.place = function () {
  * .content.width: Width of the contents,
  * .view.top: Offset of top edge of visible rectangle from parent,
  * .content.top: Offset of the top-most content from the y=0 coordinate,
- * .absolute.top: Top-edge of view.
+ * .absolute.y: Top-edge of view.
  * .view.left: Offset of the left edge of visible rectangle from parent,
  * .content.left: Offset of the left-most content from the x=0 coordinate,
- * .absolute.left: Left-edge of view.
+ * .absolute.x: Left-edge of view.
  * @return {Object} Contains size and position metrics of the flyout.
  * @private
  */
@@ -785,7 +785,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   var atRight = this.anchor_ == eYo.Flyout.AT_RIGHT
   this.visible = true
   eYo.Tooltip.hideAll(this.dom.svg.group_)
-  var left = metrics.absolute.left
+  var left = metrics.absolute.x
   var right = left + metrics.view.width
   var n_steps = 50
   var n = 0
@@ -807,7 +807,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   }
   steps[n] = close ? 1 : 0
   positions[n] = x_end
-  var y = metrics.absolute.top;
+  var y = metrics.absolute.y;
   n = 0
   var id = setInterval(() => {
     if (n >= n_steps) {

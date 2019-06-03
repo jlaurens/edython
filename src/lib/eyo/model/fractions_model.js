@@ -29,7 +29,7 @@ eYo.Model.fractions__module.Item = function (model) {
   eYo.Model.fractions__module.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.fractions__module.Item
 

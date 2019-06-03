@@ -671,7 +671,7 @@ eYo.Model.{{key}}.Item = function (model) {
   eYo.Model.{{key}}.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+eYo.Temp.x = (() => {
 
 var Item = eYo.Model.{{key}}.Item
 
@@ -710,7 +710,7 @@ Object.defineProperties(
             self.categories = {}
             self.types = {}
             self.depth = 0
-            self.url = "https://docs.python.org/" + version + "/library/{}.html".format(self.key)
+            self.url = f"https://docs.python.org/{version}/library/{self.key}.html"
 
         def process_dl(self, dl):
             if dl.attrib['class'] == 'docutils':
@@ -766,7 +766,7 @@ Object.defineProperties(
                     ) # this line needs certification
                 except:
                     print('Failed')
-                    self.url = "https://docs.python.org/" + version + "/tutorial/{}.html".format(self.key)
+                    self.url = f"https://docs.python.org/{version}/tutorial/{self.key}.html"
                     print('Downloading', self.url)
                     try:
                         urllib.request.urlretrieve (
@@ -775,7 +775,7 @@ Object.defineProperties(
                         ) # this line needs certification
                     except:
                         print('Failed')
-                        self.url = "https://docs.python.org/" + version + "/reference/{}.html".format(self.key)
+                        self.url = f"https://docs.python.org/{version}/reference/{self.key}.html"
                         print('Downloading', self.url)
                         urllib.request.urlretrieve (
                             self.url,

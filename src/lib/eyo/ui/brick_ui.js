@@ -1737,6 +1737,11 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  *     board coordinates.
  */
 Object.defineProperties(eYo.Brick.UI.prototype, {
+  xyInParent: {
+    get () {
+      return this.driver.brickXYInParent(this.brick_)
+    }
+  },
   xyInBoard: {
     get () {
       return this.driver.brickXYInBoard(this.brick_)
@@ -1794,28 +1799,6 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
  */
 eYo.Brick.UI.prototype.magnetHilight = function (c_eyo) {
   this.driver.magnetHilight(c_eyo)
-}
-
-/**
- * Move this.brick_ during a drag, taking into account whether we are using a
- * drag surface to translate bricks.
- * this.brick_ must be a top-level brick.
- * @param {!goog.math.Coordinate} newLoc The location to translate to, in
- *     board coordinates.
- * @package
- */
-eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
-  var d = this.getOffsetFromVisible(newLoc)
-  if (d) {
-    newLoc.x -= d.x
-    newLoc.y -= d.y
-  }
-  var b3k = this.brick_
-  if (this.board.brickDragSurface) {
-    this.board.brickDragSurface.xyMoveTo(newLoc.x, newLoc.y)
-  } else {
-    this.driver.brickSetOffsetDuringDrag(b3k, newLoc.x, newLoc.y)
-  }
 }
 
 /**

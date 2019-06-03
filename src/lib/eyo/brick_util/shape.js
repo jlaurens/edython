@@ -477,151 +477,151 @@ eYo.Shape.definitionWithBrick = function(brick, opt) {
  * @param {eYo.Brick!} brick  Brick
  */
 eYo.Shape.prototype.initWithBrick = (() => {
-/**
- * Inits a shape with the given brick.
- * @param {eYo.Brick!} brick  Brick
- * @return {!Object} The receiver.
- */
-var initWithStatementBrick = function(brick, opt) {
-  // standard statement
-  var s = brick.span
-  var c = s.c
-  var l = s.l
-  var r_xy = this.stmt_radius
-  var r_c = r_xy / eYo.Unit.x
-  var r_l = r_xy / eYo.Unit.y
-  var r_s = s.rightSpan
-  if (r_s) {
-    this.M(c - 1 / 2 + r_c)
-    r_s.header && (this.V(r_s.header))
-    this.quarter_circle(r_xy, false, 1)
-    this.V(l - r_c)
-    this.quarter_circle(r_xy, false, 2)
-  } else {
-    this.M(c - 1 / 2)
-    this.v(l)
-  }
-  if (brick.left) {
-    this.H(1 / 2 + r_c)
-    this.V(s.header)
-    this.quarter_circle(r_xy, true, 2)
-    s.header && (this.V(0))
-    return this
-  } else if (brick.foot) {
-    this.H(1 / 2)
-  } else {
-    this.H(1 / 2 + r_c)
-    this.quarter_circle(r_xy, true, 1)
-  }
-  if (brick.head) {
-    this.V(0)
-  } else {
-    this.V(r_l)
-    this.quarter_circle(r_xy, true, 2)
-  }
-  return this
-}
-
-/**
- * Inits a shape with the given brick.
- * @param {eYo.Brick!} brick
- * @return {!Object} The receiver.
- */
-var initWithGroupBrick = function(brick, opt) {
-  var s = brick.span
-  if (opt && opt.bbox) {
-    this.M(s.c)
-    this.V(s.l)
-    this.H(0)
-    this.V(0)
+  /**
+   * Inits a shape with the given brick.
+   * @param {eYo.Brick!} brick  Brick
+   * @return {!Object} The receiver.
+   */
+  var initWithStatementBrick = function(brick, opt) {
+    // standard statement
+    var s = brick.span
+    var c = s.c
+    var l = s.l
+    var r_xy = this.stmt_radius
+    var r_c = r_xy / eYo.Unit.x
+    var r_l = r_xy / eYo.Unit.y
+    var r_s = s.rightSpan
+    if (r_s) {
+      this.M(c - 1 / 2 + r_c)
+      r_s.header && (this.V(r_s.header))
+      this.quarter_circle(r_xy, false, 1)
+      this.V(l - r_c)
+      this.quarter_circle(r_xy, false, 2)
+    } else {
+      this.M(c - 1 / 2)
+      this.v(l)
+    }
+    if (brick.left) {
+      this.H(1 / 2 + r_c)
+      this.V(s.header)
+      this.quarter_circle(r_xy, true, 2)
+      s.header && (this.V(0))
+      return this
+    } else if (brick.foot) {
+      this.H(1 / 2)
+    } else {
+      this.H(1 / 2 + r_c)
+      this.quarter_circle(r_xy, true, 1)
+    }
+    if (brick.head) {
+      this.V(0)
+    } else {
+      this.V(r_l)
+      this.quarter_circle(r_xy, true, 2)
+    }
     return this
   }
-  // this is a group
-  var c = s.c
-  var l = s.l
-  var r_xy = this.stmt_radius
-  var r_c = r_xy / eYo.Unit.x
-  var r_l = r_xy / eYo.Unit.y
-  var r_s = s.rightSpan
-  if (r_s) {
-    this.M(c - 1/2 + r_c, 0)
-    r_s.header && (this.V(r_s.header))
-    this.quarter_circle(r_xy, false, 1)
-    this.V(l - s.suite - r_l)
-    this.quarter_circle(r_xy, false, 2)
-  } else {
-    this.M(c - 1/2, 0)
-    this.v(l - s.suite)
-  }
-  if (s.suite) {
-    this.H(eYo.Span.INDENT + r_c + 1/2)
-    this.quarter_circle(r_xy, false, 1)
-    this.v(s.suite - 2 * r_l)
-    this.quarter_circle(r_xy, false, 2)  
-  }
-  if (brick.foot) {
-    this.H(1/2)
-  } else {
-    this.H(1/2 + r_c)
-    this.quarter_circle(r_xy, true, 1)
-  }
-  if (brick.head) {
-    this.V(0)
-  } else {
-    this.V(r_l)
-    this.quarter_circle(r_xy, true, 2)
-  }
-  return this
-}
 
-/**
- * Inits a shape with the given expression brick.
- * The left part of the shape may be special.
- * @param {eYo.Brick!} brick
- * @return {eYo.Brick!} The receiver.
- */
-var initWithExpressionBrick = function(brick, opt) {
-  var width = brick.span.width
-  var dd = this.caret_extra
-  var h = eYo.Unit.y / 2
-  var r = this.expr_radius
-  var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
-  this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
-  brick.span.l > 1 && (this.V(brick.span.l - 1))
-  this.arc(eYo.Unit.y, false, true)
-  var parent
-  if (brick.startOfStatement && (parent = brick.parent)) {
-    if ((parent = brick.stmtParent)) {
-      if (parent.foot) {
-        this.H(1/2)
+  /**
+   * Inits a shape with the given brick.
+   * @param {eYo.Brick!} brick
+   * @return {!Object} The receiver.
+   */
+  var initWithGroupBrick = function(brick, opt) {
+    var s = brick.span
+    if (opt && opt.bbox) {
+      this.M(s.c)
+      this.V(s.l)
+      this.H(0)
+      this.V(0)
+      return this
+    }
+    // this is a group
+    var c = s.c
+    var l = s.l
+    var r_xy = this.stmt_radius
+    var r_c = r_xy / eYo.Unit.x
+    var r_l = r_xy / eYo.Unit.y
+    var r_s = s.rightSpan
+    if (r_s) {
+      this.M(c - 1/2 + r_c, 0)
+      r_s.header && (this.V(r_s.header))
+      this.quarter_circle(r_xy, false, 1)
+      this.V(l - s.suite - r_l)
+      this.quarter_circle(r_xy, false, 2)
+    } else {
+      this.M(c - 1/2, 0)
+      this.v(l - s.suite)
+    }
+    if (s.suite) {
+      this.H(eYo.Span.INDENT + r_c + 1/2)
+      this.quarter_circle(r_xy, false, 1)
+      this.v(s.suite - 2 * r_l)
+      this.quarter_circle(r_xy, false, 2)  
+    }
+    if (brick.foot) {
+      this.H(1/2)
+    } else {
+      this.H(1/2 + r_c)
+      this.quarter_circle(r_xy, true, 1)
+    }
+    if (brick.head) {
+      this.V(0)
+    } else {
+      this.V(r_l)
+      this.quarter_circle(r_xy, true, 2)
+    }
+    return this
+  }
+
+  /**
+   * Inits a shape with the given expression brick.
+   * The left part of the shape may be special.
+   * @param {eYo.Brick!} brick
+   * @return {eYo.Brick!} The receiver.
+   */
+  var initWithExpressionBrick = function(brick, opt) {
+    var width = brick.span.width
+    var dd = this.caret_extra
+    var h = eYo.Unit.y / 2
+    var r = this.expr_radius
+    var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
+    this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
+    brick.span.l > 1 && (this.V(brick.span.l - 1))
+    this.arc(eYo.Unit.y, false, true)
+    var parent
+    if (brick.startOfStatement && (parent = brick.parent)) {
+      if ((parent = brick.stmtParent)) {
+        if (parent.foot) {
+          this.H(1/2)
+        } else {
+          this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
+          this.quarter_circle(this.stmt_radius, true, 2)
+        }
+        if (parent.head) {
+          this.V(0)
+        } else {
+          this.V(true, this.stmt_radius)
+          this.quarter_circle(this.stmt_radius, true, 3)
+        }
       } else {
-        this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
-        this.quarter_circle(this.stmt_radius, true, 2)
-      }
-      if (parent.head) {
+        this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
+        this.arc(eYo.Unit.y, true, false)
         this.V(0)
-      } else {
-        this.V(true, this.stmt_radius)
-        this.quarter_circle(this.stmt_radius, true, 3)
       }
     } else {
       this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
+      brick.span.l > 1 && (this.V(eYo.Unit.y))
       this.arc(eYo.Unit.y, true, false)
-      this.V(0)
     }
-  } else {
-    this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
-    brick.span.l > 1 && (this.V(eYo.Unit.y))
-    this.arc(eYo.Unit.y, true, false)
+    return this
   }
-  return this
-}
 
-var initWithControlBrick = function (brick) {
-  return initWithGroupBrick.call(this, brick)
-}
+  var initWithControlBrick = function (brick) {
+    return initWithGroupBrick.call(this, brick)
+  }
 
-return function(brick, opt) {
+  return function(brick, opt) {
     this.begin()
     var s = brick.span
     if (opt && opt.bbox) {

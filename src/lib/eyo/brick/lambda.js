@@ -418,12 +418,11 @@ eYo.Brick.Expr.makeSubclass('lambda', {
   }
 }, true)
 
-var names = [
+;[
   // 'if',
   'lambda_expr',
   'lambda_expr_nocond'
-]
-names.forEach((key) => {
+].forEach((key) => {
   eYo.Brick.Expr[key] = eYo.Brick.Expr.lambda
   eYo.Brick.Manager.register(key)
 })

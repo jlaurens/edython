@@ -28,53 +28,53 @@ goog.require('eYo.FlyoutCategory')
  * @private
  */
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title, holder = 'formatter') => {
-  var key = 'string__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    name_p: name,
-    holder_p: holder,
-    dotted_p: 1,
-    title: key
+  var F = (name, title, holder = 'formatter') => {
+    var key = 'string__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      name_p: name,
+      holder_p: holder,
+      dotted_p: 1,
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'string__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.identifier,
-    name_p: name,
-    holder_p: 'string',
-    dotted_p: 0,
-    title: key
+  var F_k = (name, title) => {
+    var key = 'string__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.identifier,
+      name_p: name,
+      holder_p: 'string',
+      dotted_p: 0,
+      title: key
+    }
   }
-}
 /*
     'ascii_letters': 0,
     'ascii_lowercase': 1,
     'ascii_uppercase': 2,
-    'digits': 3,
-    'hexdigits': 4,
-    'octdigits': 5,
-    'punctuation': 6,
-    'printable': 7,
-    'whitespace': 8,
+    digits: 3,
+    hexdigits: 4,
+    octdigits: 5,
+    punctuation: 6,
+    printable: 7,
+    whitespace: 8,
     'Formatter': 9,
-    'format': 10,
-    'vformat': 11,
-    'parse': 12,
+    format: 10,
+    vformat: 11,
+    parse: 12,
     'get_field': 13,
     'get_value': 14,
     'check_unused_args': 15,
     'format_field': 16,
     'convert_field': 17,
     'Template': 18,
-    'substitute': 19,
+    substitute: 19,
     'safe_substitute': 20,
-    'template': 21,
+    template: 21,
     'capwords': 22
   */
 eYo.FlyoutCategory.basic_string__module = [
@@ -116,32 +116,32 @@ eYo.FlyoutCategory.basic_string__module = [
   F('convert_field', '')
 ]
 
-var F = (name, title) => {
-  var key = 'string__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'string',
-      dotted: 1
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'string__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'string',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'string__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: name,
-      holder: 'string',
-      dotted: 1
-    },
-    title: key
+  var F_k = (name, title) => {
+    var key = 'string__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.attributeref,
+      data: {
+        name: name,
+        holder: 'string',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.string__module = [
   {

@@ -329,12 +329,12 @@ eYo.Svg.prototype.scrollbarPairPlaceCorner = function(pair, newMetrics) {
   var corner = pair.dom.svg.corner_
   if (!oldMetrics ||
     oldMetrics.view.width != newMetrics.view.width ||
-    oldMetrics.absolute.left != newMetrics.absolute.left) {
+    oldMetrics.absolute.x != newMetrics.absolute.x) {
       corner.setAttribute('x', pair.vScroll.position.x)
   }
   if (!oldMetrics ||
     oldMetrics.view.height != newMetrics.view.height ||
-    oldMetrics.absolute.top != newMetrics.absolute.top) {
+    oldMetrics.absolute.y != newMetrics.absolute.y) {
       corner.setAttribute('y', pair.hScroll.position.y)
   }
 }

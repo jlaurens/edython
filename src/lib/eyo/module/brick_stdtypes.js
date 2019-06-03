@@ -32,7 +32,7 @@ goog.require('eYo.Model.stdtypes')
  * by `modulebot.py`.
  */
 
-var doit = (() => {
+;(function () {
   var M = eYo.Model.stdtypes
   var d = M.data
   var n = d.items.length

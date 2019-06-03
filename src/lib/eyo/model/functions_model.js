@@ -29,7 +29,7 @@ eYo.Model.functions.Item = function (model) {
   eYo.Model.functions.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.functions.Item
 

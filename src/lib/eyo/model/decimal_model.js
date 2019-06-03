@@ -29,7 +29,7 @@ eYo.Model.decimal__module.Item = function (model) {
   eYo.Model.decimal__module.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.decimal__module.Item
 

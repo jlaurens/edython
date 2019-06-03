@@ -153,8 +153,8 @@ eYo.ScrollbarPair.prototype.resize = function() {
   if (!oldMetrics ||
     oldMetrics.view.width != hostMetrics.view.width ||
     oldMetrics.view.height != hostMetrics.view.height ||
-    oldMetrics.absolute.top != hostMetrics.absolute.top ||
-    oldMetrics.absolute.left != hostMetrics.absolute.left) {
+    oldMetrics.absolute.y != hostMetrics.absolute.y ||
+    oldMetrics.absolute.x != hostMetrics.absolute.x) {
     // The window has been resized or repositioned.
     resizeH = true;
     resizeV = true;
@@ -254,6 +254,16 @@ eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
 
 Object.defineProperties(eYo.Scrollbar, {
   /**
+   * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
+   * Scrollbars should be larger on touch devices.
+   */
+  thickness: {
+    value: goog.events.BrowserFeature.TOUCH_ENABLED ? 25 : 15
+  },
+})
+
+Object.defineProperties(eYo.Scrollbar.prototype, {
+  /**
    * @type{eYo.Board} The scrolled board...
    * @readonly
    */
@@ -261,13 +271,6 @@ Object.defineProperties(eYo.Scrollbar, {
     get () {
       return this.board_
     }
-  },
-  /**
-   * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
-   * Scrollbars should be larger on touch devices.
-   */
-  thickness: {
-    value: goog.events.BrowserFeature.TOUCH_ENABLED ? 25 : 15
   },
   /**
    * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
@@ -331,8 +334,8 @@ eYo.Scrollbar.metricsAreEquivalent_ = function(first, second) {
       first.view.height != second.view.height ||
       first.view.left != second.view.left ||
       first.view.top != second.view.top ||
-      first.absolute.top != second.absolute.top ||
-      first.absolute.left != second.absolute.left ||
+      first.absolute.y != second.absolute.y ||
+      first.absolute.x != second.absolute.x ||
       first.content.width != second.content.width ||
       first.content.height != second.content.height ||
       first.content.left != second.content.left ||
@@ -583,8 +586,8 @@ eYo.Scrollbar.prototype.resize = function(opt_metrics) {
    * .view.left: Offset of left edge of visible rectangle from parent,
    * .content.top: Offset of the top-most content from the y=0 coordinate,
    * .content.left: Offset of the left-most content from the x=0 coordinate,
-   * .absolute.top: Top-edge of view.
-   * .absolute.left: Left-edge of view.
+   * .absolute.y: Top-edge of view.
+   * .absolute.x: Left-edge of view.
    */
   if (this.horizontal_) {
     this.resizeViewHorizontal(hostMetrics)
@@ -609,9 +612,9 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   }
   this.setScrollViewSize_(Math.max(0, viewSize))
 
-  var xCoordinate = hostMetrics.absolute.left + 0.5
+  var xCoordinate = hostMetrics.absolute.x + 0.5
   // Horizontal toolbar should always be just above the bottom of the board.
-  var yCoordinate = hostMetrics.absolute.top + hostMetrics.view.height -
+  var yCoordinate = hostMetrics.absolute.y + hostMetrics.view.height -
       eYo.Scrollbar.thickness - 0.5
   this.setPosition_(xCoordinate, yCoordinate)
 
@@ -716,12 +719,12 @@ eYo.Scrollbar.prototype.set = function(value) {
 //   }
 //   this.setScrollViewSize_(Math.max(0, viewSize));
 
-//   var xCoordinate = hostMetrics.absolute.left + 0.5;
+//   var xCoordinate = hostMetrics.absolute.x + 0.5;
 //   if (!this.board_.RTL) {
 //     xCoordinate += hostMetrics.view.width -
 //         eYo.Scrollbar.thickness - 1;
 //   }
-//   var yCoordinate = hostMetrics.absolute.top + 0.5;
+//   var yCoordinate = hostMetrics.absolute.y + 0.5;
 //   this.setPosition_(xCoordinate, yCoordinate);
 
 //   // If the view has been resized, a content resize will also be necessary.  The
@@ -768,7 +771,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   var flyout = board.flyout_
   if (flyout && flyout.atRight) {
     var xy = flyout.positionInPixels
-    var viewSize = xy.x - hostMetrics.absolute.left - 1
+    var viewSize = xy.x - hostMetrics.absolute.x - 1
   } else {
     viewSize = hostMetrics.view.width - 1
   }
@@ -778,10 +781,10 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   }
   this.setScrollViewSize_(Math.max(0, viewSize));
 
-  var xCoordinate = hostMetrics.absolute.left + 0.5;
+  var xCoordinate = hostMetrics.absolute.x + 0.5;
   
   // Horizontal toolbar should always be just above the bottom of the board.
-  var yCoordinate = hostMetrics.absolute.top + hostMetrics.view.height -
+  var yCoordinate = hostMetrics.absolute.y + hostMetrics.view.height -
       eYo.Scrollbar.thickness - 0.5;
   this.setPosition_(xCoordinate, yCoordinate);
 
@@ -815,13 +818,13 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   this.setScrollViewSize_(Math.max(0, viewSize));
 
   if (xy) {
-    var xCoordinate = xy.x - hostMetrics.absolute.left -     eYo.Scrollbar.thickness - 0.5
+    var xCoordinate = xy.x - hostMetrics.absolute.x -     eYo.Scrollbar.thickness - 0.5
   } else {
-    xCoordinate = hostMetrics.absolute.left + 0.5;
+    xCoordinate = hostMetrics.absolute.x + 0.5;
     xCoordinate += hostMetrics.view.width -
         eYo.Scrollbar.thickness - 1
   }
-  var yCoordinate = hostMetrics.absolute.top + 0.5
+  var yCoordinate = hostMetrics.absolute.y + 0.5
   yCoordinate += yOffset
   this.setPosition_(xCoordinate, yCoordinate)
 

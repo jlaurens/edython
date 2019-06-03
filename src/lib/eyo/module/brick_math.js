@@ -26,34 +26,34 @@ goog.require('eYo.FlyoutCategory')
 
 goog.require('eYo.Model.math__module')
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'math__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'math',
-      dotted: 0
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'math__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'math',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'math__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: name,
-      holder: 'math',
-      dotted: 0
-    },
-    title: key
+  var F_k = (name, title) => {
+    var key = 'math__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.attributeref,
+      data: {
+        name: name,
+        holder: 'math',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
 eYo.FlyoutCategory.basic_math__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
@@ -112,32 +112,32 @@ eYo.FlyoutCategory.basic_math__module = [
   // F('lgamma', 'Logarithme népérien de la fonction Gamma')
 ]
 
-var F = (name, title) => {
-  var key = 'math__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'math',
-      dotted: 1
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'math__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'math',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'math__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.attributeref,
-    data: {
-      name: name,
-      holder: 'math',
-      dotted: 1
-    },
-    title: key
+  var F_k = (name, title) => {
+    var key = 'math__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.attributeref,
+      data: {
+        name: name,
+        holder: 'math',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
 eYo.FlyoutCategory.math__module = [
   {
     type: eYo.T3.Stmt.import_stmt,

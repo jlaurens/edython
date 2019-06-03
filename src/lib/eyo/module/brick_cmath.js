@@ -124,34 +124,34 @@ goog.require('eYo.FlyoutCategory')
 //   }
 // })
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'cmath__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'cmath',
-      dotted: 0
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'cmath__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'cmath',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
-var F_k = (name, title) => {
-  var key = 'cmath__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'cmath',
-      dotted: 0
-    },
-    title: key
+  var F_k = (name, title) => {
+    var key = 'cmath__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'cmath',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.basic_cmath__module = [
   {

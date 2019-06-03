@@ -105,7 +105,7 @@ eYo.Style.setControlRendererCssClass(
   eYo.MenuSeparatorRenderer,
   'eyo-menuseparator',
   { 'border-top': '1px solid #ccc',
-    'margin': 0,
+    margin: 0,
     'padding': 0}
 )
 
@@ -140,7 +140,7 @@ eYo.Style.setControlRendererCssClass(
   eYo.MenuItemRenderer,
   'eyo-menuitem',
   'content',
-  {'padding': '4px 6px'},
+  {padding: '4px 6px'},
   'hover', // hover or highlight?
   {'background-color': '#d6e9f8',
   'color': '#16181b'}

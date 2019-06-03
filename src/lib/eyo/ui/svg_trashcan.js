@@ -87,10 +87,10 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
   var lid = svg.lid_ = eYo.Svg.newElement(
     'image',
     {
-      'width': Blockly.SPRITE.width,
-      'x': -trashcan.SPRITE_LEFT_,
-      'height': Blockly.SPRITE.height,
-      'y': -trashcan.SPRITE_TOP_,
+      width: Blockly.SPRITE.width,
+      x: -trashcan.SPRITE_LEFT_,
+      height: Blockly.SPRITE.height,
+      y: -trashcan.SPRITE_TOP_,
       'clip-path': 'url(#eyo-trash-lid-clip-' + rnd + ')'
     },
     g
@@ -157,13 +157,13 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
     // There are no metrics available (board is probably not visible).
     return;
   }
-  svg.left_ = metrics.view.width + metrics.absolute.left -
+  svg.left_ = metrics.view.width + metrics.absolute.x -
   trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
 
   if (metrics.flyout && metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
     svg.left_ -= metrics.flyout.width
   }
-  svg.top_ = metrics.view.height + metrics.absolute.top -
+  svg.top_ = metrics.view.height + metrics.absolute.y -
       (trashcan.BODY_HEIGHT_ + trashcan.LID_HEIGHT_) - trashcan.bottom_
   svg.group_.setAttribute(
     'transform',

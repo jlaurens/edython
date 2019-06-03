@@ -352,10 +352,10 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
  * .content.width: Width of the contents,
  * .view.top: Offset of top edge of visible rectangle from parent,
  * .content.top: Offset of the top-most content from the y=0 coordinate,
- * .absolute.top: Top-edge of view.
+ * .absolute.y: Top-edge of view.
  * .view.left: Offset of the left edge of visible rectangle from parent,
  * .content.left: Offset of the left-most content from the x=0 coordinate,
- * .absolute.left: Left-edge of view.
+ * .absolute.x: Left-edge of view.
  * @param {!eYo.Flyout} flyout
  * @return {Object} Contains size and position metrics of the flyout.
  * @private
@@ -414,8 +414,8 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
     b3d.scrollY = -metrics.content.height * xyRatio.y
   }
   b3d.xyMoveTo(
-    b3d.scrollX + metrics.absolute.left,
-    b3d.scrollY + metrics.absolute.top
+    b3d.scrollX + metrics.absolute.x,
+    b3d.scrollY + metrics.absolute.y
   )
 }
 

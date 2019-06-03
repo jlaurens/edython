@@ -29,7 +29,7 @@ eYo.Model.weakref__module.Item = function (model) {
   eYo.Model.weakref__module.Item.superClass_.constructor.call(this, model)
 }
 
-var doit = (() => {
+;(function () {
 
 var Item = eYo.Model.weakref__module.Item
 

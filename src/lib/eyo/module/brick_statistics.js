@@ -39,21 +39,21 @@ goog.require('eYo.FlyoutCategory')
     'harmonic_mean': 1
  */
 
-var doit = (() => {
+;(function () {
 
-var F = (name, title) => {
-  var key = 'statistics__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'statistics',
-      dotted: 0
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'statistics__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'statistics',
+        dotted: 0
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.basic_statistics__module = [
   {
@@ -76,19 +76,19 @@ eYo.FlyoutCategory.basic_statistics__module = [
   F('StatisticsError', 'Exception spécifique au module `statistics`')
 ]
 
-var F = (name, title) => {
-  var key = 'statistics__'+name
-  title && (eYo.Tooltip.Title[key] = title)
-  return {
-    type: eYo.T3.Expr.call_expr,
-    data: {
-      name: name,
-      holder: 'statistics',
-      dotted: 1
-    },
-    title: key
+  var F = (name, title) => {
+    var key = 'statistics__'+name
+    title && (eYo.Tooltip.Title[key] = title)
+    return {
+      type: eYo.T3.Expr.call_expr,
+      data: {
+        name: name,
+        holder: 'statistics',
+        dotted: 1
+      },
+      title: key
+    }
   }
-}
 
 eYo.FlyoutCategory.statistics__module = [
   {

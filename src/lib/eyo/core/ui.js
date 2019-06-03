@@ -48,32 +48,34 @@ eYo.Style = {
   SEP_SPACE_X: 0
 }
 
-var g = {
-  get () {
-    return 8 * eYo.Style.weight(eYo.Font.size / 10)
+;(function () {
+  var g = {
+    get () {
+      return 8 * eYo.Style.weight(eYo.Font.size / 10)
+    }
   }
-}
-Object.defineProperties(
-  eYo.Padding,
-  {
-    l: g,
-    r: g,
-    h: g
+  Object.defineProperties(
+    eYo.Padding,
+    {
+      l: g,
+      r: g,
+      h: g
+    }
+  )
+  g = {
+    get () {
+      return 6 * eYo.Style.weight(eYo.Font.size / 10)
+    }
   }
-)
-g = {
-  get () {
-    return 6 * eYo.Style.weight(eYo.Font.size / 10)
-  }
-}
-Object.defineProperties(
-  eYo.Padding,
-  {
-    t: g,
-    b: g,
-    v: g
-  }
-)
+  Object.defineProperties(
+    eYo.Padding,
+    {
+      t: g,
+      b: g,
+      v: g
+    }
+  )
+})()
 /**
  * Point size of text.
  */
@@ -202,28 +204,28 @@ eYo.Style.MenuIcon = {
 
 eYo.Style.MenuIcon.path = function (g) {
   var E = eYo.Svg.newElement('g',
-    {class: 'eyo-menu-icon', 'opacity': 0.1}, g)
+    {class: 'eyo-menu-icon', opacity: 0.1}, g)
   E.style.fill = eYo.Style.MenuIcon.color
   var h = eYo.Font.height
   var w = eYo.Style.MenuIcon.width
   var r = h / 8
-  eYo.Svg.newElement('rect',
-    {'x': '0',
-      'y': '0',
-      'rx': r,
-      'ry': r,
-      'width': w,
-      'height': h,
-      'fill': goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))},
+  eYo.Svg.newElement('rect', {
+    x: '0',
+    y: '0',
+    rx: r,
+    ry: r,
+    width: w,
+    height: h,
+    fill: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))
+  }, E)
+  eYo.Svg.newElement('circle',
+    {cx: w / 2, cy: h / 2, r: r},
     E)
   eYo.Svg.newElement('circle',
-    {'cx': w / 2, 'cy': h / 2, 'r': r},
+    {cx: w / 2, cy: h / 2 - h / 3, r: r},
     E)
   eYo.Svg.newElement('circle',
-    {'cx': w / 2, 'cy': h / 2 - h / 3, 'r': r},
-    E)
-  eYo.Svg.newElement('circle',
-    {'cx': w / 2, 'cy': h / 2 + h / 3, 'r': r},
+    {cx: w / 2, cy: h / 2 + h / 3, r: r},
     E)
   return E
 }
