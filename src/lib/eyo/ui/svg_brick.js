@@ -535,16 +535,15 @@ eYo.Svg.prototype.brickParentWillChange = function (brick, newParent) {
  * @param {!eYo.Brick} oldParent replaced.
  */
 eYo.Svg.prototype.brickParentDidChange = function (brick, oldParent) {
-  if (brick.parent) {
+  var newParent = brick.parent
+  if (newParent) {
     var dom = brick.dom
     var svg = dom.svg
     var g = svg.group_
-    var oldXY = xy
-    brick.parent.dom.svg.group_.appendChild(g)
-    var newXY = xy
     // Move the magnets to match the child's new position.
-    brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y)
+    brick.ui.placeMagnets_()
     var p_svg = newParent.dom.svg
+    p_svg.group_.appendChild(g)
     if (this.contourAboveParent_(brick)) {
       goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
     } else {
