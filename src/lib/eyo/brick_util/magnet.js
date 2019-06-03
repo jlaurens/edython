@@ -1655,7 +1655,7 @@ eYo.Magnet.prototype.closest = (() => {
 /**
  * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
- * @param {!goog.math.Coordinate} blockTL The location of the top left corner
+ * @param {!eYo.Where} blockTL The location of the top left corner
  *     of the brick, in board coordinates.
  */
 eYo.Magnet.prototype.moveToOffset = function(blockTL) {
@@ -1664,18 +1664,13 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
 
 /**
  * Change the magnet's global coordinates.
- * @param {number} x New absolute x coordinate, in board coordinates.
- * @param {number} y New absolute y coordinate, in board coordinates.
+ * @param {eYo.Where} here
  */
-eYo.Magnet.prototype.moveTo = function(x = 0, y = 0) {
-  if (x && goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
-  }
-  if (this.where.x !== x || this.where.y !== y || (!x && !y)) {
+eYo.Magnet.prototype.moveTo = function(here) {
+  if (this.where.x !== here.x || this.where.y !== here.y || (!here.x && !here.y)) {
     // Remove it from its old location in the database (if already present)
     this.inDB_ = false
-    this.where.set(x, y)
+    this.where.set(here)
     // Insert it into its new location in the database.
     this.hidden || (this.inDB_ = true)
   }

@@ -628,7 +628,7 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
       var t9k = m4t.targetBrick
       if (t9k) {
         m4t.tighten()
-        t9k.placeMagnets_()
+        t9k.ui.placeMagnets_()
       }
     }
   }

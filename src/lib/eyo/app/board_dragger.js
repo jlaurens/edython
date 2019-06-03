@@ -161,7 +161,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
  * Reset gesture.
  * @package
  */
-eYo.BrickDragger.prototype.clearGesture = function() {
+eYo.BoardDragger.prototype.clearGesture = function() {
   this.gesture_ = null
 }
 
@@ -176,12 +176,13 @@ eYo.BoardDragger.prototype.end = function() {
   this.drag()
   // Don't do anything if we aren't using a drag surface.
   if (!this.dragSurface_) {
-    return;
+    return
   }
   this.isActive_ = false
   var trans = this.dragSurface_.translation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
-  this.board_.canvasMoveTo(trans.x, trans.y)
+  this.board_.canvasMoveTo(trans)
+  console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
 }
 
 /**

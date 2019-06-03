@@ -528,12 +528,16 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
     if (this.brickDragger_) {
+      console.error('brickDragger_.end')
       this.brickDragger_.end()
     } else if (this.boardDragger_) {
+      console.error('boardDragger_.end')
       this.boardDragger_.end()
     } else if (this.startBrick_) {
+      console.error('doBrickClick_')
       this.doBrickClick_()
     } else {
+      console.error('doBoardClick_')
       this.doBoardClick_()
     }
   }

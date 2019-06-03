@@ -565,7 +565,7 @@ eYo.Flyout.prototype.layout_ = function(contents) {
     // brick.
     brick.descendants.forEach(child => child.isInFlyout = true)
     brick.render()
-    brick.ui.xyMoveBy(cursorX, cursorY)
+    brick.xyMoveBy(cursorX, cursorY)
     this.ui_driver.flyoutAddListeners(this, brick)
     cursorY += brick.size.height + eYo.Unit.y / 4
   })

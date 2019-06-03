@@ -71,49 +71,49 @@ eYo.Where.get_c = function () {
   return this.c_
 }
 eYo.Where.set_c = function (newValue) {
-  this.c_ = newValue
+  this.c_ = Math.round(newValue)
 }
 eYo.Where.get_l = function () {
   return this.l_
 }
 eYo.Where.set_l = function (newValue) {
-  this.l_ = newValue
+  this.l_ = Math.round(2 * newValue) / 2
 }
 eYo.Where.get_x = function () {
   return this.c * eYo.Unit.x
 }
 eYo.Where.set_x = function (newValue) {
-  this.c = Math.round(newValue / eYo.Unit.x)
+  this.c_ = newValue / eYo.Unit.x
 }
 eYo.Where.get_y = function () {
   return this.l * eYo.Unit.y
 }
 eYo.Where.set_y = function (newValue) {
-  this.l = Math.round(newValue / eYo.Unit.y)
+  this.l_ = newValue / eYo.Unit.y
 }
 eYo.Where.get_width = function () {
-  return this.w * eYo.Unit.x
+  return this.w_ * eYo.Unit.x
 }
 eYo.Where.set_width = function (newValue) {
-  this.w = Math.round(newValue / eYo.Unit.x)
+  this.w_ = newValue / eYo.Unit.x
 }
 eYo.Where.get_height = function () {
-  return this.dl * eYo.Unit.y
+  return this.h_ * eYo.Unit.y
 }
 eYo.Where.set_height = function (newValue) {
-  this.h = Math.round(newValue / eYo.Unit.y)
+  this.h_ = newValue / eYo.Unit.y
 }
 eYo.Where.get_w = function () {
   return this.w_
 }
 eYo.Where.set_w = function (newValue) {
-  this.w_ = newValue
+  this.w_ = Math.round(newValue)
 }
 eYo.Where.get_h = function () {
   return this.h_
 }
 eYo.Where.set_h = function (newValue) {
-  this.h_ = newValue
+  this.h_ = Math.round(newValue)
 }
 
 Object.defineProperties(eYo.Where.prototype, {
@@ -147,16 +147,16 @@ Object.defineProperties(eYo.Where.prototype, {
  * Like `advance` but sets the coordinates, instead of advancing them.
  */
 eYo.Where.prototype.set = function (c = 0, l = 0) {
-  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    this.x = c.x
+    this.y = c.y
+    return
+  } else if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l || 0
     c = c.c || 0
   } else if (goog.isDef(c.w) && goog.isDef(c.h)) {
     c = c.w || 0
     l = c.h || 0
-  } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x = c.x
-    this.y = c.y
-    return
   }
   this.c_ = c
   this.l_ = l
@@ -177,16 +177,16 @@ eYo.Where.prototype.setFromSize = function (s) {
  * @return {eYo.Where} c
  */
 eYo.Where.prototype.advance = function (c = 0, l = 0) {
-  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    this.x += c.x
+    this.y += c.y
+    return this
+  } else if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l || 0
     c = c.c || 0
   } else if (goog.isDef(c.w) && goog.isDef(c.h)) {
     c = c.w || 0
     l = c.h || 0
-  } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x += c.x
-    this.y += c.y
-    return this
   }
   this.c_ += c
   this.l_ += l
