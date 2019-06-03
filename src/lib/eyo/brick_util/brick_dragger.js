@@ -286,10 +286,9 @@ eYo.BrickDragger.prototype.end = (() => {
    * @private
    */
   var fireMoveEvent = self => {
-    var event = new eYo.Events.BrickMove(self.brick_)
-    event.oldCoordinate = self.xyStart_
-    event.recordNew()
-    eYo.Events.fire(event)
+    eYo.Events.fireBrickMove(event => {
+      event.oldCoordinate = self.xyStart_
+    })
   }
   return function(e, delta) {
     this.drag(delta)
@@ -321,9 +320,18 @@ eYo.BrickDragger.prototype.end = (() => {
 
     eYo.Events.group = false
     this.availableMagnets_.length = 0
-    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.gesture_ = null
+    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearGesture()
   }
 })()
+
+/**
+ * Reset gesture.
+ * @package
+ */
+eYo.BrickDragger.prototype.clearGesture = function() {
+  this.gesture_ = null
+}
+
 
 /**
  * Connect to the closest magnet and render the results.

@@ -48,13 +48,13 @@ eYo.Events.fireBrickChange = function (brick, element, name, oldValue, newValue)
 /**
  * Convenient shortcut.
  * @param {!eYo.Brick} brick  The moved brick.
- * @param {Function} move  the move action.
+ * @param {Function} move  the move action, signature: (event) -> void
  */
 eYo.Events.fireBrickMove = (brick, move) => {
   if (eYo.Events.enabled) {
     var event = new eYo.Events.BrickMove(brick)
     try {
-      move()
+      move(event)
     } finally {
       event.recordNew()
       eYo.Events.fire(event)
