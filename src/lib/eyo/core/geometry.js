@@ -185,8 +185,8 @@ eYo.Where.prototype.advance = function (c = 0, l = 0) {
     l = c.l || 0
     c = c.c || 0
   } else if (goog.isDef(c.w) && goog.isDef(c.h)) {
-    c = c.w || 0
     l = c.h || 0
+    c = c.w || 0
   }
   this.c_ += c
   this.l_ += l
@@ -247,6 +247,15 @@ eYo.Where.prototype.distanceFrom = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
+ * Euclidian distance between points.
+ * @param {!eYo.Where} other
+ * @return {number} non negative number
+ */
+eYo.Where.prototype.toString = function () {
+  return `eYo.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
 }
 
 /**

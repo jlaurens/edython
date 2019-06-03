@@ -115,7 +115,7 @@ eYo.Svg.prototype.basicDispose = function(object) {
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
  */
 eYo.Svg.prototype.xyInParent = function(element) {
-  var xy = new goog.math.Coordinate(0, 0)
+  var xy = new eYo.Where(0, 0)
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
   if (x) {
@@ -129,6 +129,7 @@ eYo.Svg.prototype.xyInParent = function(element) {
   var transform = element.getAttribute('transform')
   var r = transform && (transform.match(eYo.Svg.TRANSLATE_REGEX_))
   if (r) {
+    console.log(transform, r)
     xy.x += parseFloat(r[1])
     if (r[3]) {
       xy.y += parseFloat(r[3])

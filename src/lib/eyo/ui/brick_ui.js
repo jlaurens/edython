@@ -512,10 +512,14 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {number} x The x coordinate of the translation in board units.
  * @param {number} y The y coordinate of the translation in board units.
  */
-eYo.Brick.UI.prototype.moveTo = function(c, l) {
-  if (c && goog.isDef(c.c)) {
-    l = c.l
-    c = c.c
+eYo.Brick.UI.prototype.moveTo = function(c = 0, l = 0) {
+  if (c) {
+    if (goog.isDef(c.x)) {
+      this.xyMoveTo(c)
+    } else if (goog.isDef(c.c)) {
+      l = c.l
+      c = c.c
+    }
   }
   this.xyMoveTo(c * eYo.Unit.x, l * eYo.Unit.y)
 }
