@@ -974,7 +974,7 @@ eYo.Svg.prototype.brickSetDragging = (brick, dragging) => {
         /** @type {!Element} */ g, 'eyo-dragging')
   }
   // Recurse through all bricks attached under this one.
-  brick.children_.forEach(b => b.ui.setDragging(adding))
+  brick.forEachChild(b => b.ui.dragging = dragging)
 }
 
 /**
@@ -1027,20 +1027,6 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
   if (title) {
     this.addTooltip(g, title, options)
   }
-}
-
-/**
- * Move this block back to the board block canvas.
- * Generally should be called at the same time as setDragging_(false).
- * @param {!eYo.Brick} brick  The brick
- * @param {!goog.math.Coordinate} xyNew The position the brick should take on
- *     on the board canvas, in board coordinates.
- * @private
- */
-eYo.Svg.prototype.brickMoveOffDragSurface = function(brick, xyNew) {
-  // Translate to current position, turning off 3d.
-  this.brickXYMoveTo(brick, xyNew)
-  brick.desk.dom.svg.brickDragSurface.clearAndHide(brick.board.dom.svg.canvas_)
 }
 
 /**

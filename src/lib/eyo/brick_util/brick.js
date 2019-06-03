@@ -2094,11 +2094,11 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 /**
  * Move a brick to an offset in board coordinates.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
+ * @param {number} x Horizontal offset in board units.
+ * @param {number} y Vertical offset in board units.
  */
-eYo.Brick.prototype.moveTo = function (x, y) {
-  this.ui.moveTo(x, y)
+eYo.Brick.prototype.xyMoveTo = function (x, y) {
+  this.ui.xyMoveTo(x, y)
 }
 
 /**
@@ -2106,7 +2106,7 @@ eYo.Brick.prototype.moveTo = function (x, y) {
  * @param {number} c Horizontal offset in text units.
  * @param {number} l Vertical offset in text units.
  */
-eYo.Brick.prototype.xyMoveTo = function (c, l) {
+eYo.Brick.prototype.moveTo = function (c, l) {
   return this.ui.moveTo(c, l)
 }
 

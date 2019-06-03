@@ -523,7 +523,7 @@ eYo.Brick.UI.prototype.moveTo = function(c, l) {
  */
 eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
   this.driver.brickXYMoveTo(this.brick_, x, y)
-  this.brick.magnets.brickDidMove()
+  this.placeMagnets_()
 }
 
 /**
@@ -1822,17 +1822,6 @@ eYo.Brick.UI.prototype.xyMoveDuringDrag = function(newLoc) {
  */
 eYo.Brick.UI.prototype.setDragging = function(dragging) {
   this.dragging = dragging
-}
-
-/**
- * Move this block back to the board block canvas.
- * Generally should be called at the same time as setDragging_(false).
- * @param {!goog.math.Coordinate} newXY The position the block should take on
- *     on the board canvas, in board coordinates.
- * @private
- */
-eYo.Brick.UI.prototype.moveOffDragSurface = function(newXY) {
-  this.driver.brickMoveOffDragSurface(this.brick_, newXY)
 }
 
 /**

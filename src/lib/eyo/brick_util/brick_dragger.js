@@ -294,7 +294,6 @@ eYo.BrickDragger.prototype.end = (() => {
   return function(e, delta) {
     this.drag(delta)
     this.ui_driver.brickDraggerEnd(this)
-
     var b3k = this.brick_
     if (this.wouldDelete_) {
       if (!this.gesture_.flyout_) {
@@ -302,9 +301,9 @@ eYo.BrickDragger.prototype.end = (() => {
       }
       b3k.dispose(false, true)
     } else {
-      // These are expensive and don't need to be done if we're deleting.
-      b3k.ui.moveMagnets_(this.xyDelta)
-      b3k.ui.setDragging(false)
+      // These may be expensive and don't need to be done if we're deleting.
+      b3k.ui.placeMagnets_()
+      b3k.ui.dragging = false
       this.connect()
       b3k.render()
       if (this.gesture_.flyout_) {

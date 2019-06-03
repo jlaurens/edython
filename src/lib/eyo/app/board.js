@@ -1175,16 +1175,14 @@ eYo.Board.prototype.cleanUp = function() {
   eYo.Events.group = true
   var cursorY = 0
   this.getTopBricks(true).forEach(brick => {
-    var xy = brick.xy
-    brick.ui.xyMoveBy(-xy.x, cursorY - xy.y)
+    brick.xyMoveTo(0, cursorY)
     block.ui.snapToGrid()
     cursorY = brick.xy.y +
-        brick.size.height + eYo.Unit.y
+        brick.size.height + eYo.Unit.y / 2
   })
   eYo.Events.group = false
   this.setResizesEnabled(true)
 }
-   
 
 /**
  * Show the context menu for the board.
