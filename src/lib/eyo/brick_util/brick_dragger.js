@@ -104,6 +104,19 @@ eYo.BrickDragger.prototype.dispose = function() {
 
 /**
  * Eventually start dragging a brick.
+ * One of the problem is to constrain dragging.
+ * There are different options, but the one chosen implies
+ * the dragging of the board.
+ * There is a possibility that has not been explored:
+ * move the bricks on the board to indicate where to put the dradded brick.
+ * This seems a very interesting and appealing strategy but highly expensive.
+ * Here is how it is implemented.
+ * As long as the brick is in the visible area, do not scroll the board.
+ * When the brick will be out of the visible area, scroll the board instead
+ * as far as possible, then scroll the brick accordingly.
+ * We track both the mouse location and the brick location.
+ * When the center of the brick will gout out the visible area,
+ * we scroll the brick board to keep it back.
  * @param {!eYo.Gesture} gesture  The gesture initiating the eventual drag.
  * @return {eYo.Brick}  The target brick of the drag event, if any.
  * @package
@@ -238,6 +251,60 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 }
 
 /**
+ * Get the position of receiver's brick relative to
+ * the visible area.
+ * Return value: if `x < 0`, left of the visible area,
+ * if `x > 0`, right of the visible area, 0 otherwise.
+ * eYo.VOID when the brick is not in a board.
+ * The same holds for `y`.
+ * The values are the signed distances between the center
+ * of the brick and the visible area.
+ * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
+ * 15 units to the right and the brick is visible.
+ * For edython.
+ * @param {eYo.Brick} brick The new location of the receiver, the actual location when eYo.VOID.
+ * @param {?Object} newLoc The new location of the receiver, the actual location when eYo.VOID.
+ * @return {{x: number, y: number}|eYo.VOID}
+ */
+eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
+  var ui = brick.ui
+  var board = brick.board
+  if (!board) {
+    return eYo.VOID
+  }
+  // is the brick in the visible area ?
+  var metrics = board.getMetrics()
+  if (!metrics) {
+    // sometimes eYo.VOID is returned
+    console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")
+    return {
+      x: 0,
+      y: 0
+    }
+  }
+  var scale = board.scale || 1
+  var HW = ui.size
+  // the brick is in the visible area if we see its center
+  var leftBound = metrics.view.x / scale - HW.width / 2
+  var topBound = metrics.view.y / scale - HW.height / 2
+  var rightBound = (metrics.view.x + metrics.view.width) / scale - HW.width / 2
+  var downBound = (metrics.view.y + metrics.view.height) / scale - HW.height / 2
+  var xy = newLoc || ui.xyInBoard
+  return {
+    x: xy.x < leftBound
+      ? xy.x - leftBound
+      : xy.x > rightBound
+        ? xy.x - rightBound
+        : 0,
+    y: xy.y < topBound
+      ? xy.y - topBound
+      : xy.y > downBound
+        ? xy.y - downBound
+        : 0,
+  }
+}
+
+/**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
  * @param {!goog.math.Coordinate} delta How far the pointer has
@@ -247,7 +314,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 eYo.BrickDragger.prototype.drag = function() {
   var xyNew = this.xyNew_
   var b3k = this.brick_
-  var d = b3k.ui.getOffsetFromVisible(xyNew)
+  var d = this.getOffsetFromVisible(b3k, xyNew)
   if (d) {
     xyNew.x -= d.x
     xyNew.y -= d.y
@@ -354,7 +421,7 @@ eYo.BrickDragger.prototype.connect = function() {
  * @package
  */
 eYo.BrickDragger.prototype.update = function() {
-  var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_.event_)
+  var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.Board.SNAP_RADIUS

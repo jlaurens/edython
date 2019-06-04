@@ -516,7 +516,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
       delta *= 10
     }
     var metrics = this.getMetrics_()
-    var pos = (metrics.view.top - metrics.content.top) + delta
+    var pos = (metrics.view.y - metrics.content.yMin) + delta
     var limit = metrics.content.height - metrics.view.height
     pos = Math.min(pos, limit)
     pos = Math.max(pos, 0)
@@ -691,11 +691,11 @@ eYo.Flyout.prototype.place = function () {
  * .view.width: Width of the visible rectangle,
  * .content.height: Height of the contents,
  * .content.width: Width of the contents,
- * .view.top: Offset of top edge of visible rectangle from parent,
- * .content.top: Offset of the top-most content from the y=0 coordinate,
+ * .view.y: Offset of top edge of visible rectangle from parent,
+ * .content.yMin: Offset of the top-most content from the y=0 coordinate,
  * .absolute.y: Top-edge of view.
- * .view.left: Offset of the left edge of visible rectangle from parent,
- * .content.left: Offset of the left-most content from the x=0 coordinate,
+ * .view.x: Offset of the left edge of visible rectangle from parent,
+ * .content.xMin: Offset of the left-most content from the x=0 coordinate,
  * .absolute.x: Left-edge of view.
  * @return {Object} Contains size and position metrics of the flyout.
  * @private

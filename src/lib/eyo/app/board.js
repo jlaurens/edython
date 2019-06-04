@@ -1020,17 +1020,17 @@ eYo.Board.prototype.paste = function () {
           var scale = this.scale || 1
           var size = b3k.size
           // the block is in the visible area if we see its center
-          var leftBound = metrics.view.left / scale - size.width / 2
-          var topBound = metrics.view.top / scale - size.height / 2
-          var rightBound = (metrics.view.left + metrics.view.width) / scale - size.width / 2
-          var downBound = (metrics.view.top + metrics.view.height) / scale - size.height / 2
+          var leftBound = metrics.view.x / scale - size.width / 2
+          var topBound = metrics.view.y / scale - size.height / 2
+          var rightBound = (metrics.view.x + metrics.view.width) / scale - size.width / 2
+          var downBound = (metrics.view.y + metrics.view.height) / scale - size.height / 2
           var inVisibleArea = () => {
             return dx >= leftBound && dx <= rightBound &&
             dy >= topBound && dy <= downBound
           }
           if (!inVisibleArea()) {
-            dx = (metrics.view.left + metrics.view.width / 2) / scale - size.width / 2
-            dy = (metrics.view.top + metrics.view.height / 2) / scale - size.height / 2
+            dx = (metrics.view.x + metrics.view.width / 2) / scale - size.width / 2
+            dy = (metrics.view.y + metrics.view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
           b3k.xyMoveBy(dx, dy)
@@ -1058,21 +1058,22 @@ eYo.Board.prototype.recordDeleteAreas = function() {
 };
 
 /**
- * Is the mouse event over a delete area (toolbox or non-closing flyout)?
- * @param {!Event} e Mouse move event.
+ * Is the gesture over a delete area (toolbox or non-closing flyout)?
+ * @param {!eYo.Gesture} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.Board.prototype.isDeleteArea = function(e) {
+eYo.Board.prototype.isDeleteArea = function(gesture) {
+  var e = gesture.event
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
   if (this.deleteAreaTrash_ && this.deleteAreaTrash_.contains(xy)) {
-    return eYo.Board.DELETE_AREA_TRASH;
+    return eYo.Board.DELETE_AREA_TRASH
   }
   if (this.deleteAreaToolbox_ && this.deleteAreaToolbox_.contains(xy)) {
-    return eYo.Board.DELETE_AREA_TOOLBOX;
+    return eYo.Board.DELETE_AREA_TOOLBOX
   }
-  return eYo.Board.DELETE_AREA_NONE;
-};
+  return eYo.Board.DELETE_AREA_NONE
+}
 
 /**
  * Handle a mouse-down on SVG drawing surface.
@@ -1129,39 +1130,31 @@ eYo.Board.prototype.moveDrag = function(e) {
  *   containing the blocks on the board.
  */
 eYo.Board.prototype.getBricksBoundingBox = function() {
-  var topBricks = this.getTopBricks(false);
-  // Initialize boundary using the first rendered block, if any.
-  var i = 0
-  while (i < topBricks.length) {
-    var b = topBricks[i]
-    if (b.ui && b.ui.rendered) {
-      var bound = b.ui.boundingRect
-      while (++i < topBricks.length) {
-        var b = topBricks[i]
-        if (b.ui.rendered) {
-          var blockBoundary = b.ui.boundingRect
-          if (blockBoundary.topLeft.x < bound.topLeft.x) {
-            bound.topLeft.x = blockBoundary.topLeft.x
-          }
-          if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
-            bound.bottomRight.x = blockBoundary.bottomRight.x
-          }
-          if (blockBoundary.topLeft.y < bound.topLeft.y) {
-            bound.topLeft.y = blockBoundary.topLeft.y
-          }
-          if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
-            bound.bottomRight.y = blockBoundary.bottomRight.y
-          }
-        }
+  var topBricks = this.getTopBricks(false).filter(b3k => b3k.ui && b3k.ui.rendered)
+  if (topBricks.length) {
+    var bound = topBricks.shift().ui.boundingRect
+    topBricks.forEach(b3k => {
+      // Initialize boundary using the first rendered block, if any.
+      var blockBoundary = b3k.ui.boundingRect
+      if (blockBoundary.topLeft.x < bound.topLeft.x) {
+        bound.topLeft.x = blockBoundary.topLeft.x
       }
-      return {
-        x: bound.topLeft.x,
-        y: bound.topLeft.y,
-        width: bound.bottomRight.x - bound.topLeft.x,
-        height: bound.bottomRight.y - bound.topLeft.y
+      if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
+        bound.bottomRight.x = blockBoundary.bottomRight.x
       }
+      if (blockBoundary.topLeft.y < bound.topLeft.y) {
+        bound.topLeft.y = blockBoundary.topLeft.y
+      }
+      if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
+        bound.bottomRight.y = blockBoundary.bottomRight.y
+      }
+    })
+    return {
+      x: bound.topLeft.x,
+      y: bound.topLeft.y,
+      width: bound.bottomRight.x - bound.topLeft.x,
+      height: bound.bottomRight.y - bound.topLeft.y
     }
-    ++i
   }
   // There are no rendered bricks, return empty rectangle.
   return {x: 0, y: 0, width: 0, height: 0}
@@ -1370,8 +1363,8 @@ eYo.Board.prototype.zoomToFit = function() {
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, blocks will not scroll to center.
-    blocksWidth += metrics.content.left;
-    blocksHeight += metrics.content.top;
+    blocksWidth += metrics.content.xMin;
+    blocksHeight += metrics.content.yMin;
   }
   var ratioX = boardWidth / blocksWidth;
   var ratioY = boardHeight / blocksHeight;
@@ -1435,8 +1428,8 @@ eYo.Board.prototype.centerOnBrick = function(id) {
 
   // Scrolling to here would put the block in the top-left corner of the
   // visible board.
-  var scrollToBrickX = pixelX - metrics.content.left;
-  var scrollToBrickY = pixelY - metrics.content.top;
+  var scrollToBrickX = pixelX - metrics.content.xMin;
+  var scrollToBrickY = pixelY - metrics.content.yMin;
 
   // view.height and view.width are in pixels.
   var halfViewWidth = metrics.view.width / 2;
@@ -1458,10 +1451,10 @@ eYo.Board.prototype.centerOnBrick = function(id) {
  * .view.width: Width of the visible rectangle,
  * .content.height: Height of the contents,
  * .content.width: Width of the content,
- * .view.top: Offset of top edge of visible rectangle from parent,
- * .view.left: Offset of left edge of visible rectangle from parent,
- * .content.top: Offset of the top-most content from the y=0 coordinate,
- * .content.left: Offset of the left-most content from the x=0 coordinate.
+ * .view.y: Offset of top edge of visible rectangle from parent,
+ * .view.x: Offset of left edge of visible rectangle from parent,
+ * .content.yMin: Offset of the top-most content from the y=0 coordinate,
+ * .content.xMin: Offset of the left-most content from the x=0 coordinate.
  * .absolute.y: Top-edge of view.
  * .absolute.x: Left-edge of view.
  * .flyout.width: Width of the flyout if it is always open.  Otherwise zero.
@@ -1484,26 +1477,17 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
    *     - left, right, top and bottom in pixels relative to the board origin.
    * @private
    */
-  var getContentDimensionsExact_ = function(ws) {
+  var getContentDimensionsExact_ = function(brd) {
     // Brick bounding box is in board coordinates.
-    var blockBox = ws.getBricksBoundingBox();
-    var scale = ws.scale;
-
-    // Convert to pixels.
-    var width = blockBox.width * scale;
-    var height = blockBox.height * scale;
-    var left = blockBox.x * scale;
-    var top = blockBox.y * scale;
-
+    var box = brd.getBricksBoundingBox()
+    var scale = brd.scale
     return {
-      left: left,
-      top: top,
-      right: left + width,
-      bottom: top + height,
-      width: width,
-      height: height
-    };
-  };
+      xMin: box.x * scale,
+      yMin: box.y * scale,
+      width: box.width * scale,
+      height: box.height * scale
+    }
+  }
     
   /**
    * Calculate the size of a scrollable board, which should include room for a
@@ -1518,8 +1502,8 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
    *     - left and top in pixels relative to the board origin.
    * @private
    */
-  var getContentDimensionsBounded_ = function(ws, svgSize) {
-    var content = getContentDimensionsExact_(ws)
+  var getContentDimensionsBounded_ = function(brd, svgSize) {
+    var content = getContentDimensionsExact_(brd)
 
     // View height and width are both in pixels, and are the same as the SVG size.
     var viewWidth = svgSize.width
@@ -1527,14 +1511,16 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
     var halfWidth = viewWidth / 2
     var halfHeight = viewHeight / 2
     // Add a border around the content that is at least half a screenful wide.
-    // Ensure border is wide enough that blocks can scroll over entire screen.
-    var left = Math.min(content.left - halfWidth, content.right - viewWidth)
-    var right = Math.max(content.right + halfWidth, content.left + viewWidth)
-    var top = Math.min(content.top - halfHeight, content.bottom - viewHeight)
-    var bottom = Math.max(content.bottom + halfHeight, content.top + viewHeight)
+    // Ensure border is wide enough that bricks can scroll over entire screen.
+    var max = content.xMin + content.width
+    var left = Math.min(content.xMin - halfWidth, max - viewWidth)
+    var right = Math.max(max + halfWidth, content.xMin + viewWidth)
+    max = content.yMin + content.height
+    var top = Math.min(content.yMin - halfHeight, max - viewHeight)
+    var bottom = Math.max(max + halfHeight, content.yMin + viewHeight)
     var dimensions = {
-      left: left,
-      top: top,
+      xMin: left,
+      yMin: top,
       height: bottom - top,
       width: right - left
     }
@@ -1544,7 +1530,7 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
     // Contains height and width in CSS pixels.
     // svgSize is equivalent to the size of the desk div at this point.
     var svgSize = this.dom.svg.size
-    // svgSize is now the space taken up by the Blockly board
+    // svgSize is now the space taken up by the board
     if (this.scrollbar) {
       var dimensions = getContentDimensionsBounded_(this, svgSize)
     } else {
@@ -1559,8 +1545,8 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
         left: -this.scrollX,  // Must be in pixels, somehow.
       },
       absolute: {
-        top: 0,
-        left: 0,
+        x: 0,
+        y: 0,
       },
       flyout: this.flyout_ && this.flyout_.size,
     }
@@ -1581,10 +1567,10 @@ eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   }
   var metrics = this.getMetrics()
   if (goog.isNumber(xyRatio.x)) {
-    this.scrollX = -metrics.content.width * xyRatio.x - metrics.content.left
+    this.scrollX = -metrics.content.width * xyRatio.x - metrics.content.xMin
   }
   if (goog.isNumber(xyRatio.y)) {
-    this.scrollY = -metrics.content.height * xyRatio.y - metrics.content.top
+    this.scrollY = -metrics.content.height * xyRatio.y - metrics.content.yMin
   }
   var x = this.scrollX + metrics.absolute.x
   var y = this.scrollY + metrics.absolute.y
@@ -1928,8 +1914,8 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
 
   // Scrolling to here will put the block in the top-left corner of the
   // visible board.
-  var scrollX = pixelX - metrics.content.left
-  var scrollY = pixelY - metrics.content.top
+  var scrollX = pixelX - metrics.content.xMin
+  var scrollY = pixelY - metrics.content.yMin
 
   eYo.App.hideChaff();
   this.scrollbar.set(scrollX, scrollY)

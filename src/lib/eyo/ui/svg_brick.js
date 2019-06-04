@@ -237,9 +237,9 @@ eYo.Svg.prototype.contourAboveParent_ = function (brick) {
 }
 
 /**
- * Whether the contour of the receiver is above or below the parent's one.
- * True for statements, false otherwise.
+ * Return the bbox of the given brick.
  * @param {!eYo.Brick} brick  the brick the driver acts on
+ * @return {Object}
  * @private
  */
 eYo.Svg.prototype.brickGetBBox = function (brick) {
@@ -249,6 +249,7 @@ eYo.Svg.prototype.brickGetBBox = function (brick) {
 /**
  * Whether the brick is visually selected.
  * @param {!eYo.Brick} brick  the brick the driver acts on
+ * @return {Boolean}
  * @private
  */
 eYo.Svg.prototype.brickHasSelect = function (brick) {

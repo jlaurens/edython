@@ -162,14 +162,14 @@ eYo.ScrollbarPair.prototype.resize = function() {
     // Has the content been resized or moved?
     if (!oldMetrics ||
       oldMetrics.content.width != hostMetrics.content.width ||
-      oldMetrics.view.left != hostMetrics.view.left ||
-      oldMetrics.content.left != hostMetrics.content.left) {
+      oldMetrics.view.x != hostMetrics.view.x ||
+      oldMetrics.content.xMin != hostMetrics.content.xMin) {
       resizeH = true
     }
     if (!oldMetrics ||
       oldMetrics.content.height != hostMetrics.content.height ||
-      oldMetrics.view.top != hostMetrics.view.top ||
-      oldMetrics.content.top != hostMetrics.content.top) {
+      oldMetrics.view.y != hostMetrics.view.y ||
+      oldMetrics.content.yMin != hostMetrics.content.yMin) {
       resizeV = true
     }
   }
@@ -332,14 +332,14 @@ eYo.Scrollbar.metricsAreEquivalent_ = function(first, second) {
   }
   if (first.view.width != second.view.width ||
       first.view.height != second.view.height ||
-      first.view.left != second.view.left ||
-      first.view.top != second.view.top ||
+      first.view.x != second.view.x ||
+      first.view.y != second.view.y ||
       first.absolute.y != second.absolute.y ||
       first.absolute.x != second.absolute.x ||
       first.content.width != second.content.width ||
       first.content.height != second.content.height ||
-      first.content.left != second.content.left ||
-      first.content.top != second.content.top) {
+      first.content.xMin != second.content.xMin ||
+      first.content.yMin != second.content.yMin) {
     return false
   }
 
@@ -582,10 +582,10 @@ eYo.Scrollbar.prototype.resize = function(opt_metrics) {
    * .view.width: Width of the visible rectangle,
    * .content.height: Height of the contents,
    * .content.width: Width of the content,
-   * .view.top: Offset of top edge of visible rectangle from parent,
-   * .view.left: Offset of left edge of visible rectangle from parent,
-   * .content.top: Offset of the top-most content from the y=0 coordinate,
-   * .content.left: Offset of the left-most content from the x=0 coordinate,
+   * .view.y: Offset of top edge of visible rectangle from parent,
+   * .view.x: Offset of left edge of visible rectangle from parent,
+   * .content.yMin: Offset of the top-most content from the y=0 coordinate,
+   * .content.xMin: Offset of the left-most content from the x=0 coordinate,
    * .absolute.y: Top-edge of view.
    * .absolute.x: Left-edge of view.
    */
@@ -646,7 +646,7 @@ eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
   var handleLength = hostMetrics.view.width * this.ratio_
   this.setHandleLength_(Math.max(0, handleLength))
 
-  var handlePosition = (hostMetrics.view.left - hostMetrics.content.left) *
+  var handlePosition = (hostMetrics.view.x - hostMetrics.content.xMin) *
       this.ratio_
   this.handlePosition = this.constrainHandle_(handlePosition)
 }
@@ -753,7 +753,7 @@ eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
   var handleLength = hostMetrics.view.height * this.ratio_;
   this.setHandleLength_(Math.max(0, handleLength));
 
-  var handlePosition = (hostMetrics.view.top - hostMetrics.content.top) *
+  var handlePosition = (hostMetrics.view.y - hostMetrics.content.yMin) *
       this.ratio_;
   this.handlePosition = this.constrainHandle_(handlePosition)
 }

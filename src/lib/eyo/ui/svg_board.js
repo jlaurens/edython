@@ -97,14 +97,14 @@ eYo.Svg.prototype.boardInit = function(board) {
     var boardChanged = function() {
       if (!board.isDragging) {
         var metrics = board.getMetrics()
-        var edgeLeft = metrics.view.left + metrics.absolute.x;
-        var edgeTop = metrics.view.top + metrics.absolute.y;
-        if (metrics.content.top < edgeTop ||
-            metrics.content.top + metrics.content.height >
+        var edgeLeft = metrics.view.x + metrics.absolute.x;
+        var edgeTop = metrics.view.y + metrics.absolute.y;
+        if (metrics.content.yMin < edgeTop ||
+            metrics.content.yMin + metrics.content.height >
             metrics.view.height + edgeTop ||
-            metrics.content.left <
-                (options.RTL ? metrics.view.left : edgeLeft) ||
-            metrics.content.left + metrics.content.width > (options.RTL ?
+            metrics.content.xMin <
+                (options.RTL ? metrics.view.x : edgeLeft) ||
+            metrics.content.xMin + metrics.content.width > (options.RTL ?
                 metrics.view.width : metrics.view.width + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;

@@ -86,17 +86,17 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       return this.brick_
     }
   },
-  brick_: {
-    get() {
-      return this.brick__
-    },
-    set (newValue) {
-      if (!newValue) {
-        console.error('BREAK HERE')
-      }
-      this.brick__ = newValue
-    }
-  },
+  // brick_: {
+  //   get() {
+  //     return this.brick__
+  //   },
+  //   set (newValue) {
+  //     if (!newValue) {
+  //       console.error('BREAK HERE')
+  //     }
+  //     this.brick__ = newValue
+  //   }
+  // },
   board: {
     get () {
       return this.brick_.board
@@ -1811,62 +1811,10 @@ eYo.Brick.UI.prototype.setDragging = function(dragging) {
 }
 
 /**
- * Get the position of receiver's brick relative to
- * the visible area.
- * Return value: if `x < 0`, left of the visible area,
- * if `x > 0`, right of the visible area, 0 otherwise.
- * eYo.VOID when the brick is not in a board.
- * The same holds for `y`.
- * The values are the signed distances between the center
- * of the brick and the visible area.
- * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
- * 15 units to the right and the brick is visible.
- * For edython.
- * @param {?Object} newLoc The new location of the receiver, the actual location when eYo.VOID.
- * @return {{x: number, y: number}|eYo.VOID}
- */
-eYo.Brick.UI.prototype.getOffsetFromVisible = function (newLoc) {
-  var board = this.brick_.board
-  if (!board) {
-    return eYo.VOID
-  }
-  // is the brick in the visible area ?
-  var metrics = board.getMetrics()
-  if (!metrics) {
-    // sometimes eYo.VOID is returned
-    console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")
-    return {
-      x: 0,
-      y: 0
-    }
-  }
-  var scale = board.scale || 1
-  var HW = this.brick_.ui.size
-  // the brick is in the visible area if we see its center
-  var leftBound = metrics.view.left / scale - HW.width / 2
-  var topBound = metrics.view.top / scale - HW.height / 2
-  var rightBound = (metrics.view.left + metrics.view.width) / scale - HW.width / 2
-  var downBound = (metrics.view.top + metrics.view.height) / scale - HW.height / 2
-  var xy = newLoc || this.xyInBoard
-  return {
-    x: xy.x < leftBound
-      ? xy.x - leftBound
-      : xy.x > rightBound
-        ? xy.x - rightBound
-        : 0,
-    y: xy.y < topBound
-      ? xy.y - topBound
-      : xy.y > downBound
-        ? xy.y - downBound
-        : 0,
-  }
-}
-
-/**
- * Move the brick to the top level.
+ * Set the parent.
  */
 eYo.Brick.UI.prototype.setParent = function (parent) {
-  this.driver.brickParentSet(this, parent)
+  this.driver.brickParentSet(this.brick, parent)
 }
 
 /**
