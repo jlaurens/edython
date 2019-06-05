@@ -21,7 +21,6 @@ goog.require('eYo.Events')
 goog.require('eYo.Events.Abstract')
 
 goog.forwardDeclare('goog.array')
-goog.forwardDeclare('goog.math.Coordinate')
 
 /**
  * Convenient shortcut.
@@ -315,7 +314,7 @@ Object.defineProperties(eYo.Events.BrickMove.prototype, {
       return this.oldParentId === this.newParentId &&
         this.oldName === this.newName &&
         this.oldLeft === this.newLeft &&
-          goog.math.Coordinate.equals(this.oldCoordinate, this.newCoordinate)
+        this.oldCoordinate.equals(this.newCoordinate)
     }
   },
 })
