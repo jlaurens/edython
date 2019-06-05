@@ -1129,7 +1129,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
  * @param {Number} c The column index.
  * @param {Number} l The line index.
  */
-eYo.Magnet.prototype.setOffset = function(c = 0, l  0) {
+eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l
     c = c.c
