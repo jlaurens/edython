@@ -164,6 +164,23 @@ eYo.Where.prototype.forward = function (c = 0, l = 0) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
+ * @param {number | eYo.Where | eYo.Size} c
+ * @param {number} l
+ * @return {eYo.Where} c
+ */
+eYo.Where.prototype.backward = function (c = 0, l = 0) {
+  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    this.x -= c.x
+    this.y -= c.y
+    return this
+  }
+  this.c -= c
+  this.l -= l
+  return this
+}
+
+/**
+ * Like `set` but advance the coordinates, instead of setting them.
  * Board coodinates
  * @param {number} c
  * @param {number} l
@@ -222,7 +239,7 @@ eYo.Where.prototype.toString = function () {
 }
 
 /**
- * `Size` is a.Where.
+ * `Size` is a Point.
  */
 eYo.Size = eYo.Where
 
