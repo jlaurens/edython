@@ -164,7 +164,7 @@ eYo.Gesture = function(e, board) {
 
   /**
    * A map of cached points used for tracking multi-touch gestures.
-   * @type {Object<number|string, goog.math.Coordinate>}
+   * @type {Object<number|string, eYo.Where>}
    * @private
    */
   this.cache.Wheres_ = {}
