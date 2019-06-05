@@ -23,8 +23,6 @@ goog.forwardDeclare('eYo.Tooltip');
 goog.forwardDeclare('eYo.MenuRenderer');
 goog.forwardDeclare('eYo.MenuButtonRenderer');
 
-goog.forwardDeclare('goog.math.Coordinate')
-
 /**
  * Class for a flyout.
  * Circular dependencies:
@@ -731,15 +729,12 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
   // placed at position (0, 0) in main board units.
   var brick = eYo.Xml.domToBrick(xml, targetBoard)
 
-  // The position of the old brick in pixels relative to the origin of the
-  // main board.
-  var finalOffsetPixels = this.board_.originInDesk
+  var xy = this.board_.originInDesk
   .forward(
     oldBrick.xyInBoard.scale(this.board_.scale)
   ).backward(targetBoard.originInDesk)
   .unscale(targetBoard.scale)
-
-  brick.xyMoveBy(finalOffsetPixels)
+  brick.xyMoveTo(xy)
 
   brick.render()
   return brick
