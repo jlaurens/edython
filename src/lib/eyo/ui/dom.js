@@ -34,7 +34,7 @@ goog.inherits(eYo.Dom, eYo.Driver)
  * @type {Object}
  */
 eYo.Dom.TOUCH_MAP = {}
-if (window && window.PointerEvent) {
+if (window && window.WhereerEvent) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
     mousedown: { value: ['pointerdown'] },
     mouseenter: { value: ['pointerenter'] },
@@ -123,7 +123,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
     })
   }
   var bindData = []
-  if (window && window.PointerEvent && (name in eYo.Dom.TOUCH_MAP)) {
+  if (window && window.WhereerEvent && (name in eYo.Dom.TOUCH_MAP)) {
     eYo.Dom.TOUCH_MAP[name].forEach(type => {
       node.addEventListener(type, wrapFunc, false)
       bindData.push([node, type, wrapFunc])
@@ -706,11 +706,3 @@ eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(
  * @return {!eYo.Board} Newly created main board.
  */
 eYo.Dom.prototype.boardInit = eYo.Dom.prototype.basicInit
-
-/**
- * Dispose of the board dom ressources.
- * @param {!eYo.Board} board
- * @return {!Object} The board's dom repository.
- */
-eYo.Dom.prototype.boardDispose = eYo.Dom.prototype.basicDispose
-

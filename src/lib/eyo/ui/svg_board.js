@@ -158,16 +158,13 @@ eYo.Svg.prototype.boardInit = function(board) {
  * Dispose of the board SVG ressources.
  * @param {!eYo.Board} board
  */
-eYo.Svg.prototype.boardDispose = function(board) {
+eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
   var dom = board.dom
-  if (dom) {
-    eYo.Dom.clearBoundEvents(board)
-    goog.dom.removeNode(dom.svg.group_)
-    svg.group_ = svg.canvas_ = null
-    dom.svg = null
-  }
-  eYo.Svg.superClass_.boardDispose.call(this, board)
-}
+  var svg = dom.svg
+  goog.dom.removeNode(svg.root_)
+  svg.matrixFromScreen_ = svg.group_ = svg.canvas_ = null
+  dom.svg = null
+})
 
 /**
  * Add a `mousedown` listener.
@@ -372,21 +369,26 @@ eYo.Svg.prototype.boardSetBrowserFocus = function(board) {
 }
 
 /**
- * Update the inverted screen CTM.
+ * Clean the cached inverted screen CTM.
  */
 eYo.Svg.prototype.boardSizeDidChange = function(board) {
   var svg = board.dom.svg
-  var ctm = svg.root_.getScreenCTM()
-  svg.inverseScreenCTM_ = ctm ? ctm.inverse() : null
+  svg.matrixFromScreen_ = null
 }
 
 /**
- * Update the inverted screen CTM.
+ * Get the mouse location in board coordinates.
  */
 eYo.Svg.prototype.boardMouseInRoot = function(board, e) {
   var svg = board.dom.svg
-  return eYo.Svg.locationOfEvent(svg.root_, e, 
-    svg.inverseScreenCTM_)
+  var svg = svg.root_.createSVG()
+  svg.x = e.clientX
+  svg.y = e.clientY
+  var matrix = svg.matrixFromScreen_
+  if (!matrix) {
+    matrix = svg.matrixFromScreen_ = svg.root_.getScreenCTM().inverse()
+  }
+  return svg.matrixTransform(matrix)
 }
 
 /**
@@ -403,7 +405,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
   var speed = options.scaleSpeed
   var metrics = board.getMetrics()
   var svg = board.dom.svg
-  var center = svg.root_.createSVGPoint();
+  var center = svg.root_.createSVG();
   center.x = x
   center.y = y
   var CTM = svg.canvas_.getCTM()
@@ -439,7 +441,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
  * scales that after canvas SVG element, if it's a descendant.
  * The origin (0,0) is the top-left corner of the SVG.
  * @param {!Element} element Element to find the coordinates of.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * @return {!eYo.Where} Object with .x and .y properties.
  * @private
  */
 eYo.Svg.prototype.boardXYElement = function(board, element) {
@@ -461,5 +463,5 @@ eYo.Svg.prototype.boardXYElement = function(board, element) {
     x += xy.x * scale;
     y += xy.y * scale;
   } while ((element = element.parentNode) && element != board.dom.svg.root_)
-  return new goog.math.Coordinate(x, y);
+  return new eYo.Where(x, y);
 }

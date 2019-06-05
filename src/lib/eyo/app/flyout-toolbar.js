@@ -19,7 +19,6 @@ goog.forwardDeclare('eYo.FlyoutToolbar')
 goog.require('eYo.MenuRenderer')
 goog.require('eYo.MenuButtonRenderer')
 goog.require('goog.dom')
-goog.require('goog.math.Coordinate')
 goog.require('goog.ui.Select')
 
 /**

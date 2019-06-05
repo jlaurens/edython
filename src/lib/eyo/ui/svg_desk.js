@@ -44,7 +44,10 @@ eYo.Svg.prototype.deskInit = function(desk) {
  */
 eYo.Svg.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
   var dom = desk.dom
-  goog.dom.removeNode(dom.svg.group_)
+  var svg = dom.svg
+  goog.dom.removeNode(svg.group_)
+  goog.dom.removeNode(svg.brickDragSurface)
+  goog.dom.removeNode(svg.boardDragSurface)
   dom.svg = null
   eYo.Svg.superClass_.deskDispose.call(this, desk)
 })
@@ -92,13 +95,45 @@ eYo.Svg.deskResize = eYo.Svg.prototype.deskResize = function(desk) {
 }
 
 /**
+ * Install the main board as first child of the desk.
+ * @param {!eYo.Desk}
+ */
+eYo.Svg.prototype.deskInstallMainBoard = function(desk) {
+  goog.dom.insertChildAt(
+    desk.dom.div_,
+    desk.mainBoard.dom.svg.root_,
+    0
+  )
+}
+
+/**
+ * Install the flyout svg at the correct place,
+ * just after the main board.
+ * The flyout toolbar is also managed.
+ * @param {!eYo.Desk}
+ */
+eYo.Svg.prototype.deskInstallFlyout = function(desk) {
+  var flyout = desk.flyout
+  var root = flyout.dom.svg.root_
+  goog.dom.insertSiblingAfter(
+    root,
+    desk.mainBoard.dom.svg.root_
+  )
+  var tb = flyout.toolbar
+  tb && goog.dom.insertSiblingBefore(
+    tb.dom.div_,
+    root
+  )
+}
+
+/**
  * Return the coordinates of the top-left corner of this element relative to
  * the div blockly was injected into.
  * @param {!eYo.Desk}
  * @param {!Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is
  *     eYo.VOID.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * @return {!eYo.Where} Object with .x and .y properties.
  */
 eYo.Svg.prototype.deskXYElement = function(desk, element) {
   var x = 0
@@ -110,5 +145,5 @@ eYo.Svg.prototype.deskXYElement = function(desk, element) {
     y = (y * scale) + xy.y
     element = element.parentNode
   }
-  return new goog.math.Coordinate(x, y)
+  return new eYo.Where(x, y)
 }

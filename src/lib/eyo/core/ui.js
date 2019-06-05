@@ -77,7 +77,7 @@ eYo.Style = {
   )
 })()
 /**
- * Point size of text.
+ *.Where size of text.
  */
 eYo.Font = {
   ascent: 13,

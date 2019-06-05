@@ -112,7 +112,7 @@ eYo.Svg.prototype.basicDispose = function(object) {
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * Fixed bug in original code.
  * @param {!Element} element SVG element to find the coordinates of.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * @return {!eYo.Where} Object with .x and .y properties.
  */
 eYo.Svg.prototype.xyInParent = function(element) {
   var xy = new eYo.Where(0, 0)
@@ -265,10 +265,10 @@ eYo.Svg.getTransformCorrection = element => {
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * @param {!Element} element SVG element to find the coordinates of.
- * @return {!goog.math.Coordinate} Object with .x and .y properties.
+ * @return {!eYo.Where} Object with .x and .y properties.
  */
 eYo.Svg.getRelativeXY = function(element) {
-  var xy = new goog.math.Coordinate(0, 0);
+  var xy = new eYo.Where(0, 0);
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
   if (x) {
@@ -377,21 +377,3 @@ eYo.Svg.getRelativeXY.XY_3D_REGEX_ =
  */
 eYo.Svg.getRelativeXY.XY_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
-
-/**
- * Return the converted coordinates of the given mouse event.
- * The origin (0,0) is the top-left corner of the SVG.
- * @param {!Element} svg SVG element.
- * @param {!Event} e Mouse event.
- * @param {SVGMatrix} matrix Inverted screen CTM to use.
- * @return {!SVGPoint} Object with .x and .y properties.
- */
-eYo.Svg.locationOfEvent = (svg, e, matrix) => {
-  var svgPoint = svg.createSVGPoint()
-  svgPoint.x = e.clientX
-  svgPoint.y = e.clientY
-  if (!matrix) {
-    matrix = svg.getScreenCTM().inverse()
-  }
-  return svgPoint.matrixTransform(matrix)
-}

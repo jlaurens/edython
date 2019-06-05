@@ -75,6 +75,7 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
     this.autoClose = true
   }
   this.disposeUI = eYo.Do.nothing
+  this.makeUI()
 }
 
 Object.defineProperties(eYo.Flyout.prototype, {
@@ -230,6 +231,11 @@ Object.defineProperties(eYo.Flyout.prototype, {
     get () {
       return this.ui_driver.flyoutClientRect(this)
     }
+  },
+  toolbar: {
+    get () {
+      return this.toolbar_
+    }
   }
 })
 
@@ -237,9 +243,14 @@ Object.defineProperties(eYo.Flyout.prototype, {
  * Make the UI
  */
 eYo.Flyout.prototype.makeUI = function () {
+  delete this.disposeUI
+  this.makeUI = eYo.Do.nothing
   // Add scrollbar.
-  this.scrollbar_ = new eYo.Scrollbar(this.board_,
-    false /*this.horizontalLayout_*/, false, 'eyo-flyout-scrollbar')
+  this.scrollbar_ = new eYo.Scrollbar(
+    this.board_,
+    false /*this.horizontalLayout_*/,
+    false, 'eyo-flyout-scrollbar'
+  )
   this.hide()
   var d = this.ui_driver
   d.flyoutInit(this)
@@ -248,7 +259,6 @@ eYo.Flyout.prototype.makeUI = function () {
     d.flyoutToolbarInit(tb)
     tb.doSelectGeneral(null) // is it necessary ?
   }
-  delete this.disposeUI
 }
 
 /**
@@ -256,16 +266,16 @@ eYo.Flyout.prototype.makeUI = function () {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Flyout.prototype.disposeUI = function() {
+  delete this.makeUI
+  this.disposeUI = eYo.Do.nothing
   this.hide()
   var d = this.ui_driver
   this.toolbar_ && d.flyoutToolbarDispose(tb)
+  d.flyoutDispose(this)
   if (this.scrollbar_) {
     this.scrollbar_.dispose()
     this.scrollbar_ = null
   }
-  d.flyoutDispose(this)
-  this.desk_ = null
-  delete this.makeUI
 }
 
 /**
@@ -277,10 +287,6 @@ eYo.Flyout.prototype.dispose = function() {
     return
   }
   this.disposeUI()
-  if (this.scrollbar_) {
-    this.scrollbar_.dispose()
-    this.scrollbar_ = null
-  }
   this.targetBoard = null
   this.board = null
   this.desk_ = null
@@ -725,35 +731,15 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
   // placed at position (0, 0) in main board units.
   var brick = eYo.Xml.domToBrick(xml, targetBoard)
 
-  // The offset in pixels between the main board's origin and the upper left
-  // corner of the injection div.
-  var mainOffsetPixels = targetBoard.originInDesk
-
-  // The offset in pixels between the flyout board's origin and the upper
-  // left corner of the injection div.
-  var flyoutOffsetPixels = this.board_.originInDesk
-
-  // The position of the old brick in flyout board coordinates.
-  var oldBrickPosWs = oldBrick.xyInBoard
-
-  // The position of the old brick in pixels relative to the flyout
-  // board's origin.
-  var oldBrickPosPixels = oldBrickPosWs.scale(this.board_.scale)
-
-  // The position of the old brick in pixels relative to the upper left corner
-  // of the injection div.
-  var oldBrickOffsetPixels = goog.math.Coordinate.sum(flyoutOffsetPixels,
-      oldBrickPosPixels)
-
   // The position of the old brick in pixels relative to the origin of the
   // main board.
-  var finalOffsetPixels = goog.math.Coordinate.difference(oldBrickOffsetPixels,
-      mainOffsetPixels)
+  var finalOffsetPixels = this.board_.originInDesk
+  .forward(
+    oldBrick.xyInBoard.scale(this.board_.scale)
+  ).backward(targetBoard.originInDesk)
+  .unscale(targetBoard.scale)
 
-  // The position of the old brick in main board coordinates.
-  var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetBoard.scale)
-
-  brick.xyMoveBy(finalOffsetMainWs.x, finalOffsetMainWs.y)
+  brick.xyMoveBy(finalOffsetPixels)
 
   brick.render()
   return brick

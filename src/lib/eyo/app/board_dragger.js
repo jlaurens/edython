@@ -114,11 +114,10 @@ eYo.BoardDragger.prototype.start = function(gesture) {
   /**
    * The scroll position of the board at the beginning of the drag.
    * Coordinate system: pixel coordinates.
-   * @type {!goog.math.Coordinate}
+   * @type {!eYo.Where}
    * @private
    */
-  this.startXY_ = new goog.math.Coordinate(
-      board.scrollX, board.scrollY)
+  this.startXY_ = new eYo.Where(board.scrollX, board.scrollY)
   
   /*
   * Move the scrollbars to drag the board.
@@ -168,7 +167,7 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 /**
  * Finish dragging the board and put everything back where it belongs.
  * @param {!Event} e The most recent move event.
- * @param {!goog.math.Coordinate} delta How far the pointer has
+ * @param {!eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel coordinates.
  * @package
  */
@@ -188,7 +187,7 @@ eYo.BoardDragger.prototype.end = function() {
 /**
  * Move the board based on the most recent mouse movements.
  * @param {!Event} e The most recent move event.
- * @param {!goog.math.Coordinate} deltaXY How far the pointer has
+ * @param {!eYo.Where} deltaXY How far the pointer has
  *     moved from the position at the start of the drag, in pixel coordinates.
  * @package
  */

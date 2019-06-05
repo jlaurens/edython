@@ -58,7 +58,7 @@ eYo.Svg.BrickDragSurface = function(container) {
 eYo.Svg.BrickDragSurface.prototype.dispose = function() {
   this.dispose = eYo.Do.Nothing
   goog.dom.removeNode(this.dom.svg.root_)
-  this.dom = null
+  this.limits_ = this.dom = null
 }
 
 Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
@@ -87,7 +87,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    * Cached value for the translation of the drag surface.
    * This translation is in pixel units, because the scale is applied to the
    * drag group rather than the top-level SVG.
-   * @type {goog.math.Coordinate}
+   * @type {eYo.Where}
    * @private
    */
   surfaceXY_: {
@@ -97,17 +97,25 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
-   * @return {!goog.math.Coordinate} Current translation of the surface.
+   * @return {!eYo.Where} Current translation of the surface.
    */
   translation: {
     get () {
       var xy = eYo.Svg.getRelativeXY(this.dom.svg.root_)
-      return new goog.math.Coordinate(
+      return new eYo.Where(
         xy.x / this.scale_,
         xy.y / this.scale_
       )
     }
   },
+  /**
+   * @return {eYo.Rect}
+   */
+  limits: {
+    get () {
+      return this.limits_
+    }
+  }
 })
 
 /**
@@ -161,7 +169,7 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
     x = x.x
   }
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new goog.math.Coordinate(x * this.scale_, y * this.scale_)
+  this.surfaceXY_ = new eYo.Where(x * this.scale_, y * this.scale_)
   var x = this.surfaceXY_.x.toFixed(0)
   var y = this.surfaceXY_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering
@@ -221,16 +229,15 @@ eYo.Svg.BoardDragSurface = function(container) {
 }
 
 /**
- * Dispose of the resources.
+ * Sever all links.
  * @private
  */
 eYo.Svg.BoardDragSurface.prototype.dispose = function () {
   this.dispose = eYo.Do.nothing
   var svg = this.dom.svg
-  if (svg) {
-    goog.dom.removeNode(svg.root_)
-    this.dom = this.dom.svg = svg.root_ = null
-  }
+  var svg = dom.svg
+  goog.dom.removeNode(svg.root_)
+  this.dom = dom.svg = svg.root_ = null
 }
 
 Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
@@ -252,7 +259,7 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {number|goog.math.Coordinate} x X translation for the entire surface, or coordinates
+ * @param {number|eYo.Where} x X translation for the entire surface, or coordinates
  * @param {number} y Y translation for the entire surface
  * @package
  */

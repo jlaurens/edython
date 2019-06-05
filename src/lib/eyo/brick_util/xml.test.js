@@ -4,7 +4,7 @@ describe('XMl', function () {
   describe('Primary', function () {
     it ('identifier', function () {
       var model = `<x eyo="identifier" name="k" slot="key"></x>`
-      var d = eYo.Brick.newReady(Blockly.mainBoard, model)
+      var d = eYo.Brick.newReady(eYo.App.board, model)
       assert(d, `MISSING brick`)
     })
   })

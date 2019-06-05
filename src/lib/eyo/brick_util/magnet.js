@@ -1588,7 +1588,7 @@ eYo.Magnet.prototype.unhideAll = function() {
 /**
  * Find the closest compatible connection to this connection.
  * All parameters are in board units.
- * @param {goog.math.Coordinate} maxLimit The maximum radius to another connection.
+ * @param {eYo.Where} maxLimit The maximum radius to another connection.
  * @param {goog.math.Coordinates} dxy Horizontal offset between this connection's location
  *     in the database and the current location (as a result of dragging).
  * @return {!{connection: ?eYo.Magnet, radius: number}} Contains two
@@ -1602,7 +1602,7 @@ eYo.Magnet.prototype.closest = (() => {
    * @param {!Brickly.Connection} conn The connection searching for a compatible
    *     mate.
    * @param {number} maxRadius The maximum radius to another connection.
-   * @param {!goog.math.Coordinate} dxy Offset between this connection's location
+   * @param {!eYo.Where} dxy Offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?Brickly.Connection, radius: number}} Contains two
    *     properties:' connection' which is either another connection or null,
@@ -1613,7 +1613,7 @@ eYo.Magnet.prototype.closest = (() => {
     if (!db.length) {
       return {magnet: null, radius: maxRadius}
     }
-    var where = new eYo.Where(magnet.where).advance(dxy)
+    var where = new eYo.Where(magnet.where).forward(dxy)
     // findPositionForConnection finds an index for insertion, which is always
     // after any block with the same y index.  We want to search both forward
     // and back, so search on both sides of the index.
@@ -1659,7 +1659,7 @@ eYo.Magnet.prototype.closest = (() => {
  *     of the brick, in board coordinates.
  */
 eYo.Magnet.prototype.moveToOffset = function(blockTL) {
-  this.moveTo(blockTL.advance(this.where))
+  this.moveTo(blockTL.forward(this.where))
 }
 
 /**

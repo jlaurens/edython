@@ -365,24 +365,24 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * The location of the origin of the board that the scrollbar is in,
    * measured in CSS pixels relative to the injection div origin.  This is usually
    * (0, 0).  When the scrollbar is in a flyout it may have a different origin.
-   * @type {goog.math.Coordinate}
+   * @type {eYo.Where}
    * @readonly
    */
   origin: {
     get () {
-      return new goog.math.Coordinate(this.x_, this.y_)
+      return new eYo.Where(this.x_, this.y_)
     }
   },
   /**
    * The upper left corner of the scrollbar's SVG group in CSS pixels relative
    * to the scrollbar's origin.  This is usually relative to the injection div
    * origin.
-   * @type {goog.math.Coordinate}
+   * @type {eYo.Where}
    * @readonly
    */
   position: {
     get () {
-      return new goog.math.Coordinate(this.dx_, this.dy_)
+      return new eYo.Where(this.dx_, this.dy_)
     }
   },
   /**
@@ -391,7 +391,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * Units are CSS pixels, with (0, 0) at the top left of the browser window.
    * For a horizontal scrollbar this is the x coordinate of the mouse down event;
    * for a vertical scrollbar it's the y coordinate of the mouse down event.
-   * @type {goog.math.Coordinate}
+   * @type {eYo.Where}
    */
   startDragMouse_: {
     value: 0,

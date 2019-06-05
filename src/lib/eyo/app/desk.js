@@ -80,9 +80,11 @@ eYo.Desk.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.deleteUI
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
-  this.ui_driver_ = new eYo.Svg(this)
-  this.ui_driver_.deskInit(this)
+  var d = this.ui_driver_ = new eYo.Svg(this)
+  d.deskInit(this)
   this.mainBoard_.makeUI()
+  d.deskInstallMainBoard(this)
+  this.willFlyout_ && this.addFlyout()
 }
 
 /**
@@ -132,19 +134,15 @@ eYo.Desk.prototype.addFlyout = function(switcher) {
     flyoutAnchor: this.options.flyoutAnchor,
     switcher: switcher
   }
-  /**
-  * @type {!eYo.Flyout}
-  * @private
-  */
   var options = {
     getMetrics: flyout.getMetrics_.bind(flyout),
     setMetrics: flyout.setMetrics_.bind(flyout),
   }
-  var space = this.flyoutBoard_ = new eYo.Board(this, options)
-  space.options = this.mainBoard_.options
-  var flyout = this.flyout_ = new eYo.Flyout(this, space, flyoutOptions)
-  flyout.board = this.flyoutBoard_
+  var board = this.flyoutBoard_ = new eYo.Board(this, options)
+  board.options = this.mainBoard_.options
+  var flyout = this.flyout_ = new eYo.Flyout(this, board, flyoutOptions)
   flyout.targetBoard = this.mainBoard_
+  this.ui_driver.deskInstallFlyout(this)
 }
 
 /**

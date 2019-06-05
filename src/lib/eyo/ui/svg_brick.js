@@ -100,7 +100,7 @@ eYo.Svg.prototype.brickInit = function (brick) {
   } else if (brick.isStmt) {
     svg.groupSharp_ = eYo.Svg.newElement('g', {
       class: 'eyo-sharp-group'
-    }, null)
+    })
     goog.dom.insertSiblingAfter(svg.groupSharp_, svg.pathContour_)
     goog.dom.classlist.add(svg.groupShape_, 'eyo-stmt')
     goog.dom.classlist.add(svg.groupContour_, 'eyo-stmt')
@@ -801,11 +801,11 @@ eYo.Svg.prototype.brickXYInBoard = function (brick) {
   var element = brick.dom.svg.group_
   do {
     // Loop through this brick and every parent.
-    ans.advance(this.xyInParent(element))
+    ans.forward(this.xyInParent(element))
     // If this element is the current element on the drag surface, include
     // the translation of the drag surface itself.
     if (current === element) {
-      ans.advance(bds.translation)
+      ans.forward(bds.translation)
     }
     element = element.parentNode
   } while (element && element != canvas && element != bdsGroup)

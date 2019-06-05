@@ -5222,7 +5222,7 @@ typedef struct {
 
     Py_ssize_t allocated;  /* Number we've allocated. *-/
     Py_ssize_t size;       /* Number we've used. *-/
-    expr_ty    *p;         /* Pointer to the memory we're actually
+    expr_ty    *p;         /*.Whereer to the memory we're actually
                               using. Will point to 'data' until we
                               start dynamically allocating. *-/
     expr_ty    data[EXPRLIST_N_CACHED];

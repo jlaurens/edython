@@ -44,7 +44,7 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     version: '1.1',
     class: 'eyo-flyout',
     style: 'display: none'
-  }, null)
+  })
   var background = svg.background_ = eYo.Svg.newElement('path', {
     class: 'eyo-flyout-background'
   }, root)
@@ -288,7 +288,6 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     flyout,
     flyout.on_mouseup
   )
-  goog.dom.insertSiblingBefore(dom.div_, ftb.flyout_.dom.svg.root_)
 }
 
 /**

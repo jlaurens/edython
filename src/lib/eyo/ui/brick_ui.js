@@ -232,7 +232,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
         ui.down = false
         var span = t9k.span
         if (span.w) {
-          io.cursor.advance(span.width, span.height - 1)
+          io.cursor.forward(span.width, span.height - 1)
           // We just rendered a brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
@@ -1008,7 +1008,7 @@ eYo.Brick.UI.prototype.drawSlot_ = function (io) {
     }
     this.fieldDrawFrom_(slot.toEndField, io)
     // come back to the brick coordinates
-    io.cursor.advance(slot.where)
+    io.cursor.forward(slot.where)
     // translate at the end because `slot.where` may change
     // due to the shrink process
   }
@@ -1315,7 +1315,7 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
       if (shp.width) {
         // should we advance the cursor?
         if (m4t.side === eYo.Key.NONE) {
-          io.cursor.advance(shp.width)
+          io.cursor.forward(shp.width)
           io.common.startOfLine = io.common.startOfStatement = false
         }
         // a space was added as a visual separator anyway
@@ -1403,7 +1403,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
         var span = t9k.span
         if (span.w) {
           this.span.main += span.main - 1
-          io.cursor.advance(span.c, span.main - 1)
+          io.cursor.forward(span.c, span.main - 1)
           // We just rendered a connected input brick
           // it is potentially the rightmost object inside its parent.
           if (ui.hasRightEdge || io.common.shouldPack) {
@@ -1733,7 +1733,7 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 Object.defineProperties(eYo.Brick.UI.prototype, {
@@ -1762,7 +1762,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
    */
   boundingRect: {
     get () {
-      return goog.math.Rect.createFromPositionAndSize(
+      return new eYo.Rect(
         this.xyInBoard,
         this.size
       )
@@ -1917,20 +1917,20 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  * @return {Object|eYo.VOID|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
-  var ws = this.brick_.board
-  if (!ws) {
+  var b4d = this.brick_.board
+  if (!b4d) {
     return
   }
   // if we clicked on a field, no connection returned
-  var gesture = ws.getGesture(e)
+  var gesture = b4d.getGesture(e)
   if (gesture && gesture.startField_) {
     return
   }
-  var where = ws.xyEventInBoard(e)
-  where = goog.math.Coordinate.difference(where, ws.originInDesk)
-  where.scale(1 / ws.scale)
+  var xy = b4d.xyEventInBoard(e)
+  xy = goog.math.Coordinate.difference(xy, b4d.originInDesk)
+  xy.scale(1 / b4d.scale)
   var rect = this.boundingRect
-  where = goog.math.Coordinate.difference(where, rect.getTopLeft())
+  xy = goog.math.Coordinate.difference(xy, rect.getTopLeft())
   var R
   var magnet = this.brick_.someInputMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
@@ -1947,7 +1947,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
             target.width - eYo.Unit.x,
             target.height
           )
-          if (R.contains(where)) {
+          if (R.contains(xy)) {
             return magnet
           }
         }
@@ -1973,7 +1973,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
             eYo.Font.height
           )
         }
-        if (R.contains(where)) {
+        if (R.contains(xy)) {
           return magnet
         }
       } else if (magnet.isFoot || magnet.isSuite) {
@@ -1983,7 +1983,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
           eYo.Span.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
-        if (R.contains(where)) {
+        if (R.contains(xy)) {
           return magnet
         }
       }
@@ -1998,7 +1998,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       rect.width,
       1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
-    if (R.contains(where)) {
+    if (R.contains(xy)) {
       return magnet
     }
   }
@@ -2018,7 +2018,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
-    if (R.contains(where)) {
+    if (R.contains(xy)) {
       return magnet
     }
   }
@@ -2030,7 +2030,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(where)) {
+    if (R.contains(xy)) {
       return magnet
     }
   }
@@ -2042,7 +2042,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(where)) {
+    if (R.contains(xy)) {
       return magnet
     }
   }
@@ -2053,7 +2053,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(where)) {
+    if (R.contains(xy)) {
       return magnet
     }
   }

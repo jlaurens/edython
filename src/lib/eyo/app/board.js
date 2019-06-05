@@ -303,7 +303,7 @@ Object.defineProperties(eYo.Board.prototype, {
    * origin in pixels.
    * The board origin is where a block would render at position (0, 0).
    * It is not the upper left corner of the board SVG.
-   * @return {!goog.math.Coordinate} Offset in pixels.
+   * @return {!eYo.Where} Offset in pixels.
    * @package
    */
   originInDesk: {
@@ -335,6 +335,14 @@ Object.defineProperties(eYo.Board.prototype, {
         throw "MISSED"
       }
       this.scrollY_ = newValue
+    }
+  },
+  /**
+   * the top bricks of the board.
+   */
+  topBricks: {
+    get () {
+      return this.topBricks_
     }
   }
 })
@@ -615,13 +623,10 @@ eYo.Board.prototype.getBrickById = eYo.Board.prototype.getBrickById = function(i
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
 eYo.Board.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
-  var blocks = this.getTopBricks(false);
-  for (var i = 0, block; block = blocks[i]; i++) {
-    if (!block.allInputsFilled(opt_shadowBricksAreFilled)) {
-      return false;
-    }
+  if (this.getTopBricks(false).some(b3k => !block.allInputsFilled(opt_shadowBricksAreFilled))) {
+    return false
   }
-  return true;
+  return true
 }
 
 /**
@@ -689,13 +694,6 @@ eYo.Board.prototype.startScrollX = 0;
 eYo.Board.prototype.startScrollY = 0;
 
 /**
- * Distance from mouse to object being dragged.
- * @type {goog.math.Coordinate}
- * @private
- */
-eYo.Board.prototype.dragDeltaXY_ = null
-
-/**
  * The board's trashcan (if any).
  * @type {eYo.Trashcan}
  */
@@ -718,7 +716,7 @@ eYo.Board.prototype.gesture_ = null
  * Last known position of the page scroll.
  * This is used to determine whether we have recalculated screen coordinate
  * stuff since the page scrolled.
- * @type {!goog.math.Coordinate}
+ * @type {!eYo.Where}
  * @private
  */
 eYo.Board.prototype.lastRecordedPageScroll_ = null;
@@ -858,10 +856,7 @@ eYo.Board.prototype.updateScreenCalculationsIfScrolled =
     function() {
     /* eslint-disable indent */
   var currScroll = goog.dom.getDocumentScroll()
-  if (!goog.math.Coordinate.equals(
-    this.lastRecordedPageScroll_,
-    currScroll
-    )) {
+  if (!this.lastRecordedPageScroll_.equals(currScroll)) {
     this.lastRecordedPageScroll_ = currScroll
     this.updateScreenCalculations_()
   }
@@ -1003,7 +998,7 @@ eYo.Board.prototype.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(Brickly.SNAP_RADIUS,
-                    new goog.math.Coordinate(dx, dy))
+                    new eYo.Where(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -1064,8 +1059,7 @@ eYo.Board.prototype.recordDeleteAreas = function() {
  *     which delete area the event is over.
  */
 eYo.Board.prototype.isDeleteArea = function(gesture) {
-  var e = gesture.event
-  var xy = new goog.math.Coordinate(e.clientX, e.clientY);
+  var xy = gesture.where
   if (this.deleteAreaTrash_ && this.deleteAreaTrash_.contains(xy)) {
     return eYo.Board.DELETE_AREA_TRASH
   }
@@ -1076,50 +1070,12 @@ eYo.Board.prototype.isDeleteArea = function(gesture) {
 }
 
 /**
- * Handle a mouse-down on SVG drawing surface.
- * @param {!Event} e Mouse down event.
- * @private
- */
-eYo.Board.prototype.onMouseDown_ = function(e) {
-  var gesture = this.getGesture(e)
-  if (gesture) {
-    gesture.handleWsStart(e, this);
-  }
-}
-
-/**
  * Start tracking a drag of an object on this board.
  * @param {!Event} e Mouse down event.
- * @param {!goog.math.Coordinate} xy Starting location of object.
+ * @param {!eYo.Where} xy Starting location of object.
  */
 eYo.Board.prototype.xyEventInBoard = function(e) {
   return this.ui_driver.boardMouseInRoot(this, e)
-}
-
-/**
- * Start tracking a drag of an object on this board.
- * @param {!Event} e Mouse down event.
- * @param {!goog.math.Coordinate} xy Starting location of object.
- */
-eYo.Board.prototype.startDrag = function(e, xy) {
-  var point = this.xyEventInBoard(e)
-  // Fix scale of mouse event.
-  point.x /= this.scale;
-  point.y /= this.scale;
-  this.dragDeltaXY_ = goog.math.Coordinate.difference(xy, point)
-}
-
-/**
- * Track a drag of an object on this board.
- * @param {!Event} e Mouse move event.
- * @return {!goog.math.Coordinate} New location of object.
- */
-eYo.Board.prototype.moveDrag = function(e) {
-  var point = this.xyEventInBoard(e)
-  // Fix scale of mouse event.
-  point.x /= this.scale;
-  point.y /= this.scale;
-  return goog.math.Coordinate.sum(this.dragDeltaXY_, point);
 }
 
 /**
@@ -1135,18 +1091,18 @@ eYo.Board.prototype.getBricksBoundingBox = function() {
     var bound = topBricks.shift().ui.boundingRect
     topBricks.forEach(b3k => {
       // Initialize boundary using the first rendered block, if any.
-      var blockBoundary = b3k.ui.boundingRect
-      if (blockBoundary.topLeft.x < bound.topLeft.x) {
-        bound.topLeft.x = blockBoundary.topLeft.x
+      var brickBoundary = b3k.ui.boundingRect
+      if (brickBoundary.topLeft.x < bound.topLeft.x) {
+        bound.topLeft.x = brickBoundary.topLeft.x
       }
-      if (blockBoundary.bottomRight.x > bound.bottomRight.x) {
-        bound.bottomRight.x = blockBoundary.bottomRight.x
+      if (brickBoundary.bottomRight.x > bound.bottomRight.x) {
+        bound.bottomRight.x = brickBoundary.bottomRight.x
       }
-      if (blockBoundary.topLeft.y < bound.topLeft.y) {
-        bound.topLeft.y = blockBoundary.topLeft.y
+      if (brickBoundary.topLeft.y < bound.topLeft.y) {
+        bound.topLeft.y = brickBoundary.topLeft.y
       }
-      if (blockBoundary.bottomRight.y > bound.bottomRight.y) {
-        bound.bottomRight.y = blockBoundary.bottomRight.y
+      if (brickBoundary.bottomRight.y > bound.bottomRight.y) {
+        bound.bottomRight.y = brickBoundary.bottomRight.y
       }
     })
     return {
@@ -1597,7 +1553,7 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
  * Look up the gesture that is tracking this touch stream on this board.
  * May create a new gesture.
  * @param {!Event} e Mouse event or touch event.
- * @return {Brickly.TouchGesture} The gesture that is tracking this touch
+ * @return {eYo.Gesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
  * @package
  */
@@ -1672,14 +1628,14 @@ eYo.Board.prototype.logAllConnections = function (comment) {
 
 /**
  * Convert a coordinate object from pixels to board units.
- * @param {!goog.math.Coordinate} pixelCoord  A coordinate with x and y values
+ * @param {!eYo.Where} pixelCoord  A coordinate with x and y values
  *     in css pixel units.
- * @return {!goog.math.Coordinate} The input coordinate divided by the board
+ * @return {!eYo.Where} The input coordinate divided by the board
  *     scale.
  * @private
  */
 eYo.Board.prototype.fromPixelUnit = function(xy) {
-  return new goog.math.Coordinate(xy.x / this.scale, xy.y / this.scale)
+  return new eYo.Where(xy.x / this.scale, xy.y / this.scale)
 }
 
 /**

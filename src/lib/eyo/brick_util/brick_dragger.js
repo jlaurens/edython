@@ -224,7 +224,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
   /**
    * The location of the top left corner of the dragging brick at the beginning
    * of the drag in board coordinates.
-   * @type {!goog.math.Coordinate}
+   * @type {!eYo.Where}
    * @private
    */
   this.xyStart_ = this.brick_.xy
@@ -307,7 +307,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
 /**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
- * @param {!goog.math.Coordinate} delta How far the pointer has
+ * @param {!eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  * @package
  */
@@ -325,7 +325,6 @@ eYo.BrickDragger.prototype.drag = function() {
   } else {
     this.ui_driver.brickSetOffsetDuringDrag(b3k, xyNew)
   }
-
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
   
   this.update()
@@ -339,7 +338,7 @@ eYo.BrickDragger.prototype.drag = function() {
 /**
  * Finish a brick drag and put the brick back on the board.
  * @param {!Event} e The most recent move event.
- * @param {!goog.math.Coordinate} delta How far the pointer has
+ * @param {!eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  * @package
  */

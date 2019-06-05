@@ -276,7 +276,7 @@ eYo.Svg.prototype.fieldSetVisualAttribute = function (field) {
 /**
  * Return the absolute coordinates of the top-left corner of this field.
  * The origin $(0,0)$ is the top-left corner of the page body.
- * @return {!goog.math.Coordinate} Object with `.x` and `.y` properties.
+ * @return {!eYo.Where} Object with `.x` and `.y` properties.
  * @private
  */
 eYo.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {

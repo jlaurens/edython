@@ -131,7 +131,7 @@ eYo.Driver.prototype.brickMoveTo = eYo.Do.nothing
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.Driver.prototype.brickXYInBoard = eYo.Do.nothing
