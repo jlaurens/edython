@@ -2096,38 +2096,18 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 /**
  * Move a brick to an offset in board coordinates.
- * @param {number} x Horizontal offset in board units.
- * @param {number} y Vertical offset in board units.
+ * @param {eYo.Where} xy Offset in board units.
  */
-eYo.Brick.prototype.xyMoveTo = function (x, y) {
-  this.ui.xyMoveTo(x, y)
-}
-
-/**
- * Move a brick to an offset in board coordinates.
- * @param {number} c Horizontal offset in text units.
- * @param {number} l Vertical offset in text units.
- */
-eYo.Brick.prototype.moveTo = function (c, l) {
-  return this.ui.moveTo(c, l)
+eYo.Brick.prototype.moveTo = function (xy) {
+  this.ui.moveTo(xy)
 }
 
 /**
  * Move a brick by a relative offset in board coordinates.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
+ * @param {number} dxy Offset in board units.
  */
-eYo.Brick.prototype.xyMoveBy = function (dx, dy) {
-  this.ui.xyMoveBy(dx, dy)
-}
-
-/**
- * Move a brick by a relative offset in text units.
- * @param {number} dc Horizontal offset in text unit.
- * @param {number} dl Vertical offset in text unit.
- */
-eYo.Brick.prototype.moveBy = function (dc, dl) {
-  this.ui.moveBy(dc, dl)
+eYo.Brick.prototype.moveBy = function (dxy) {
+  this.ui.moveBy(dxy)
 }
 
 /**
@@ -2637,9 +2617,9 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
               })
             } else {
               return fin(() => {
-                var its_xy = this.xy
-                var my_xy = candidate.xy
-                candidate.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
+                var xy = this.xy.backward(candidate.xy)
+                xy.y -= candidate.size.height
+                candidate.moveBy(xy)
               })
             }
             // unreachable code
@@ -2721,9 +2701,9 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
             })
           } else {
             return fin(() => {
-              var its_xy = this.xy
-              var my_xy = candidate.xy
-              candidate.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y - candidate.size.height * eYo.Unit.y)
+              var xy = this.xy.backward(candidate.xy)
+              xy.y -= candidate.size.height
+              candidate.moveBy(xy)
             })
           }
         }

@@ -514,61 +514,25 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
 
 /**
  * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in board units.
- * @param {number} y The y coordinate of the translation in board units.
+ * @param {eYo.Where} xy The xy coordinate of the translation in board units.
  */
-eYo.Brick.UI.prototype.moveTo = function(c = 0, l = 0) {
-  if (c) {
-    if (goog.isDef(c.x)) {
-      this.xyMoveTo(c)
-    } else if (goog.isDef(c.c)) {
-      l = c.l
-      c = c.c
-    }
-  }
-  this.xyMoveTo(c * eYo.Unit.x, l * eYo.Unit.y)
-}
-
-/**
- * Translates the brick, forwards to the ui driver.
- * @param {number} x The x coordinate of the translation in board units.
- * @param {number} y The y coordinate of the translation in board units.
- */
-eYo.Brick.UI.prototype.xyMoveTo = function(x, y) {
-  this.driver.brickXYMoveTo(this.brick_, x, y)
+eYo.Brick.UI.prototype.moveTo = function(xy) {
+  this.driver.brickXYMoveTo(this.brick_, xy)
   this.placeMagnets_()
-}
-
-/**
- * Move the bricks relatively.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
- */
-eYo.Brick.UI.prototype.moveBy = function (dc, dl) {
-  if (dc && goog.isDef(dc.c)) {
-    dl = dc.l
-    dc = dc.c
-  }
-  this.xyMoveBy(dc * eYo.Unit.x, dl * eYo.Unit.y)
 }
 
 /**
  * Move a standalone brick by a relative offset.
  * Event aware for top blocks, except when dragging.
- * @param {number} dx Horizontal offset in board units.
- * @param {number} dy Vertical offset in board units.
+ * @param {number} dxy Offset in board units.
  */
-eYo.Brick.UI.prototype.xyMoveBy = function(dx = 0, dy = 0) {
-  if (dx && goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
-  var xy = this.xy
+eYo.Brick.UI.prototype.moveBy = function(dxy) {
+  var xy = this.xy.forward(dxy)
   if (this.brick_.parent || this.isDragging) {
-    this.xyMoveTo(xy.x + dx, xy.y + dy)
+    this.moveTo(xy)
   } else {
     eYo.Events.fireBrickMove(this.brick_, () => {
-      this.xyMoveTo(xy.x + dx, xy.y + dy)
+      this.moveTo(xy)
       this.board.resizeContents()
     })
   }
@@ -1866,12 +1830,9 @@ eYo.Brick.UI.prototype.snapToGrid = function() {
     return
   }
   var xy = this.xyInBoard
-  var dx = (Math.round(xy.x / eYo.Unit.x - 1 / 2) + 1 / 2) * eYo.Unit.x - xy.x
-  dx = Math.round(dx)
-  var dy = (Math.round(xy.y / eYo.Unit.y - 1 / 2) + 1 / 2) * eYo.Unit.y - xy.y
-  dy = Math.round(dy)
-  if (dx != 0 || dy != 0) {
-    this.xyMoveBy(dx, dy)
+  var dxy = new eYo.Where().set(xy.c, xy.l).backward(xy)
+  if (dxy.x || dxy.y ) {
+    this.moveBy(dxy)
   }
 }
 

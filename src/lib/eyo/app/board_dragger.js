@@ -208,13 +208,12 @@ eYo.BoardDragger.prototype.drag = function() {
 
 /**
  * Translate the board to new coordinates.
- * @param {number} x
- * @param {number} y
+ * @param {eYo.Where} xy
  */
-eYo.BoardDragger.prototype.xyMoveTo = function(x, y) {
+eYo.BoardDragger.prototype.moveTo = function(xy) {
   if (this.dragSurface_ && this.isActive_) {
-    this.dragSurface_.xyMoveTo(x,y)
+    this.dragSurface_.moveTo(xy)
   } else {
-    this.board_.canvasMoveTo(x, y)
+    this.board_.canvasMoveTo(xy)
   }
 }

@@ -52,7 +52,7 @@ eYo.Svg.prototype.boardInit = function(board) {
   var options = board.options
   options.zoom && (board.scale = options.zoom.startScale)
   // A null translation will also apply the correct initial scale.
-  board.xyMoveTo(0, 0)
+  board.moveTo(new eYo.Where())
 
   /**
   * <g class="eyo-board-surface">
@@ -112,28 +112,20 @@ eYo.Svg.prototype.boardInit = function(board) {
             var xy = brick.xyInBoard
             var size = brick.size
             // Bump any brick that's above the top back inside.
-            var overflowTop = edgeTop + MARGIN - size.height - xy.y;
-            if (overflowTop > 0) {
-              brick.xyMoveBy(0, overflowTop)
+            var overflow = new eYo.Where()
+            overflow.y = edgeTop + MARGIN - size.height - xy.y
+            if (overflow.y <= 0) {
+              // Bump any brick that's below the bottom back inside.
+              overflow.y = Math.min(edgeTop + metrics.view.height - MARGIN - xy.y, 0)
             }
-            // Bump any brick that's below the bottom back inside.
-            var overflowBottom =
-                edgeTop + metrics.view.height - MARGIN - xy.y;
-            if (overflowBottom < 0) {
-              brick.xyMoveBy(0, overflowBottom)
-            }
+            overflow.y = 0
             // Bump any brick that's off the left back inside.
-            var overflowLeft = MARGIN + edgeLeft -
-                xy.x - size.width;
-            if (overflowLeft > 0) {
-              brick.xyMoveBy(overflowLeft, 0);
+            overflow.x = MARGIN + edgeLeft - xy.x - size.width
+            if (overflow.x <= 0) {
+              // Bump any brick that's off the right back inside ???
+              overflow.x = Math.min(edgeLeft + metrics.view.width - MARGIN - xy.x, 0)
             }
-            // Bump any brick that's off the right back inside ???
-            var overflowRight = edgeLeft + metrics.view.width - MARGIN -
-                xy.x;
-            if (overflowRight < 0) {
-              brick.xyMoveBy(overflowRight, 0);
-            }
+            brick.moveBy(overflow)
           })
         }
       }
@@ -294,16 +286,11 @@ eYo.Svg.prototype.boardBind_resize = function (board) {
 
 /**
  * Translate this board to new coordinates.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {number} x Horizontal translation.
- * @param {number} y Vertical translation.
+ * @param {!eYo.Board} board  The bord owning the canvas.
+ * @param {number} xy Translation.
  */
-eYo.Svg.prototype.boardCanvasMoveTo = function (board, x, y) {
-  if (x && goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
-  }
-  var translation = `translate(${x},${y}) scale(${board.scale})`
+eYo.Svg.prototype.boardCanvasMoveTo = function (board, xy) {
+  var translation = `translate(${xy.x},${xy.y}) scale(${board.scale})`
   board.dom.svg.canvas_.setAttribute('transform', translation)
 }
 

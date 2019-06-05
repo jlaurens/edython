@@ -659,99 +659,17 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
 }
 
 /**
- * Set the offset of the given brick.
- * For edython.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- * @param {*} dc
- * @param {*} dl
- */
-eYo.Svg.prototype.brickSetOffset = function (brick, dc, dl) {
-  // Board coordinates.
-  var dx = dc * eYo.Unit.x
-  var dy = dl * eYo.Unit.y
-  this.brickXYMoveTo(brick, dx, dy)
-}
-
-/**
  * Translates the brick.
- * @param {number} x The x coordinate of the translation in board units.
- * @param {number} y The y coordinate of the translation in board units.
+ * @param {eYo.Where} xy The coordinates of the translation in board units.
  */
-eYo.Svg.prototype.brickXYMoveTo = function(brick, x = 0, y = 0) {
-  if (goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
-  }
-  var transform = `translate(${x},${y})`
-  brick.dom.svg.groups.forEach(g => {
-    g.setAttribute('transform', transform)
-  })
-}
-
-/**
- * Set the offset of the given brick.
- * For edython.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- * @param {*} dx
- * @param {?Number} dy
- */
-eYo.Svg.prototype.brickXYMoveTo = function (brick, dx = 0, dy = 0) {
-  if (dx && goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
-  var svg = brick.dom.svg
-  // Board coordinates.
-  var xy = this.xyInParent(svg.group_)
-  var transform = `translate(${xy.x + dx},${xy.y + dy})`
+eYo.Svg.prototype.brickXYMoveTo = function(brick, xy) {
+  var transform = `translate(${xy.x},${xy.y})`
   if (transform.match(/NaN/)) {
     throw 'FAILURE'
   }
-  svg.groups.forEach(g => {
+  brick.dom.svg.groups.forEach(g => {
     g.setAttribute('transform', transform)
   })
-}
-
-/**
- * Set the offset of the receiver's brick.
- * For edython.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- * @param {*} dx
- * @param {*} dy
- * @return {boolean}
- */
-eYo.Svg.prototype.brickSetOffset = function (brick, dx = 0, dy = 0) {
-  if (goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
-  var svg = brick.dom.svg
-  if (!this.brickCanDraw(brick)) {
-    throw `brick is not inited ${brick.type}`
-  }
-  // Board coordinates.
-  var xy = this.xyInParent(svg.group_)
-  var transform = `translate(${xy.x + dx},${xy.y + dy})`
-  svg.group_.setAttribute('transform', transform)
-  var xy1 = this.xyInParent(svg.groupShape_)
-  var xy2 = this.xyInParent(svg.groupContour_)
-  if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
-    console.error('WEIRD A: position !== shape position', xy, xy1)
-  }
-  if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
-    console.error('WEIRD A: shape position !== contour position', xy1, xy2)
-  }
-  svg.groupShape_.setAttribute('transform', transform)
-  svg.groupContour_.setAttribute('transform', transform)
-  xy = this.xyInParent(svg.group_)
-  xy1 = this.xyInParent(svg.groupShape_)
-  xy2 = this.xyInParent(svg.groupContour_)
-  if ((xy.x !== xy1.x || xy.y !== xy1.y) && (xy1.x || xy1.y)) {
-    console.error('WEIRD B: position !== shape position', xy, xy1)
-  }
-  if (xy1.x !== xy2.x || xy1.y !== xy2.y) {
-    console.error('WEIRD B: shape position !== contour position', xy1, xy2)
-  }
 }
 
 /**
@@ -759,18 +677,13 @@ eYo.Svg.prototype.brickSetOffset = function (brick, dx = 0, dy = 0) {
  * drag surface to translate bricks.
  * This brick must be a top-level brick.
  * @param {!eYo.Brick} brick  the brick.
- * @param {!Number} dx  in board coordinates.
- * @param {!Number} dy  in board coordinates.
+ * @param {!eYo.Where} dxy  in board coordinates.
  * @package
  */
-eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dx, dy) {
-  if (goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
+eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dxy) {
   var svg = brick.dom.svg
   var g = svg.group_
-  g.translate_ = `translate(${dx},${dy})`
+  g.translate_ = `translate(${dxy.x},${dxy.y})`
   g.setAttribute('transform', g.translate_ + g.skew_)
 }
 

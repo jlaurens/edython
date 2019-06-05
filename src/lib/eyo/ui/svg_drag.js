@@ -127,44 +127,15 @@ eYo.Svg.BrickDragSurface.prototype.show = function(blocks) {
 }
 
 /**
- * Translate and scale the entire drag surface group to the given position, to
- * keep in sync with the board.
- * @param {?number | eYo.Where} x X translation in board coordinates.
- * @param {?number} y Y translation in board coordinates, or scale.
- * @param {?number} scale Scale of the group.
- */
-eYo.Svg.BrickDragSurface.prototype.xyMoveToAndScaleGroup = function(x = 0, y = 0, scale = 1) {
-  if (x && goog.isDef(x.x)) {
-    scale = y
-    y = x.y
-    x = x.x
-  }
-  this.scale_ = scale
-  // This is a work-around to prevent bricks from rendering
-  // fuzzy while dragged.
-  var fixedX = x.toFixed(0)
-  var fixedY = y.toFixed(0)
-  this.dom.svg.canvas_.setAttribute(
-    'transform',
-    `translate(${fixedX},${fixedY}) scale(${scale})`
-  )
-}
-
-/**
  * Translate the entire drag surface during a drag.
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {number} x X translation for the entire surface.
- * @param {number} y Y translation for the entire surface.
+ * @param {eYo.Where} xy Y Translation for the entire surface.
  */
-eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
-  if (goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
-  }
+eYo.Svg.BrickDragSurface.prototype.moveTo = function(xy) {
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new eYo.Where().xySet(x, y).scale(this.scale_)
+  this.surfaceXY_ = new eYo.Where(xy).scale(this.scale_)
   var x = this.surfaceXY_.x.toFixed(0)
   var y = this.surfaceXY_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering
@@ -254,22 +225,18 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {number|eYo.Where} x X translation for the entire surface, or coordinates
- * @param {number} y Y translation for the entire surface
+ * @param {eYo.Where} xy Translation for the entire surface
  * @package
  */
-eYo.Svg.BoardDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
-  if (goog.isDef(x.x)) {
-    y = x.y
-    x = x.x
-  }
+eYo.Svg.BoardDragSurface.prototype.moveTo = function(xy) {
   // This is a work-around to prevent the bricks from rendering
   // fuzzy while they are being moved on the drag surface.
-  var fixedX = x.toFixed(0)
-  var fixedY = y.toFixed(0)
-  this.dom.svg.root_.style.display = 'block'
+  var fixedX = xy.x.toFixed(0)
+  var fixedY = xy.y.toFixed(0)
+  var root = this.dom.svg.root_
+  root.style.display = 'block'
   eYo.Dom.setCssTransform(
-    this.dom.svg.root_,
+    root,
     `translate3d(${fixedX}px,${fixedY}px,0px)`
   )
 }

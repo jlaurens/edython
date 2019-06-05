@@ -111,9 +111,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
                   p_magnet.target = targetMagnet
                 }
               } else {
-                var its_xy = this.xy
-                var my_xy = parent.xy
-                parent.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+                parent.moveTo(this.xy)
               }
               parent.render()
               magnet.target = p_magnet

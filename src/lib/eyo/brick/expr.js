@@ -141,9 +141,7 @@ eYo.Brick.Expr.prototype.replaceBrick = function (brick) {
             brick.select()
           }
         } else {
-          var its_xy = brick.xy
-          var my_xy = this.xy
-          this.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          this.moveTo(brick.xy)
         }
       })
     })
@@ -300,15 +298,11 @@ eYo.Brick.Expr.prototype.insertParentWithModel = function (model) {
         } else {
           targetM4t.disconnect()
           bumper = targetM4t.brick
-          var its_xy = bumper.xy
-          var my_xy = parent.xy
-          parent.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+          parent.moveTo(bumper.xy)
         }
         targetM4t = eYo.VOID
       } else {
-        its_xy = this.xy
-        my_xy = parent.xy
-        parent.xyMoveBy(its_xy.x - my_xy.x, its_xy.y - my_xy.y)
+        parent.moveTo(this.xy)
       }
       parentInputM4t.connect(outputM4t)
       parent.render()

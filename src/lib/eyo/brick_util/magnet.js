@@ -1472,11 +1472,11 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
  */
 eYo.Magnet.prototype.tighten = function() {
   var m4t = this.target
-  if (this.target) {
+  if (m4t) {
     var dx = m4t.x_ - this.x_
     var dy = m4t.y_ - this.y_
     if (dx != 0 || dy != 0) {
-      this.targetBrick.xyMoveBy(-dx, -dy)
+      this.targetBrick.moveBy(new eYo.Where().xySet(-dx, -dy))
     }
   }
 }
@@ -1538,7 +1538,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   if (m4t.target) {
     dx += m4t.targetBrick.width
   }
-  root.xyMoveBy(dx, dy)
+  root.moveBy(new eYo.Where(dx, dy))
   selected || root.ui.removeSelect()
 }
 
@@ -1667,7 +1667,7 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
  * @param {eYo.Where} here
  */
 eYo.Magnet.prototype.moveTo = function(here) {
-  if (this.where.x !== here.x || this.where.y !== here.y || (!here.x && !here.y)) {
+  if (!this.where.equals(here) || (!here.x && !here.y)) {
     // Remove it from its old location in the database (if already present)
     this.inDB_ = false
     this.where.set(here)
@@ -1678,15 +1678,10 @@ eYo.Magnet.prototype.moveTo = function(here) {
 
 /**
  * Change the connection's coordinates.
- * @param {number} dx Change to x coordinate, in board units.
- * @param {number} dy Change to y coordinate, in board units.
+ * @param {eYo.Where} dxy Change to coordinates, in board units.
  */
-eYo.Magnet.prototype.xyMoveBy = function(dx, dy) {
-  if (goog.isDef(dx.x)) {
-    dy = dx.y
-    dx = dx.x
-  }
-  this.moveTo(this.x_ + dx, this.y_ + dy)
+eYo.Magnet.prototype.moveBy = function(dxy) {
+  this.moveTo(new eYo.Where(dxy).forward(this))
 }
 
 /**

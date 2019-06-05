@@ -412,7 +412,7 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (goog.isNumber(xyRatio.y)) {
     b3d.scroll_.y = -metrics.content.height * xyRatio.y
   }
-  b3d.xyMoveTo(b3d.scroll.forward(metrics.absolute))
+  b3d.moveTo(b3d.scroll.forward(metrics.absolute))
 }
 
 /**

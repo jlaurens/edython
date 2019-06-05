@@ -291,7 +291,7 @@ Object.defineProperties(eYo.Board.prototype, {
       if (this.scrollbar) {
         this.scrollbar.resize()
       } else {
-        this.xyMoveTo(this.scroll)
+        this.moveTo(this.scroll)
       }
       eYo.App.hideChaff()
       if (this.flyout_) {
@@ -841,20 +841,18 @@ eYo.Board.prototype.updateScreenCalculationsIfScrolled =
 
 /**
  * Move the receiver to new coordinates.
- * @param {number} x Horizontal translation.
- * @param {number} y Vertical translation.
+ * @param {eYo.Where} xy Translation.
  */
-eYo.Board.prototype.xyMoveTo = function(x, y) {
-  this.dragger && this.dragger.xyMoveTo(x, y)
+eYo.Board.prototype.moveTo = function(xy) {
+  this.dragger && this.dragger.moveTo(xy)
 }
 
 /**
  * Translate this board to new coordinates.
- * @param {number} x Horizontal translation.
- * @param {number} y Vertical translation.
+ * @param {eYo.Where} xyy translation.
  */
-eYo.Board.prototype.canvasMoveTo = function(x, y) {
-  this.ui_driver.boardCanvasMoveTo(this, x, y)
+eYo.Board.prototype.canvasMoveTo = function(xy) {
+  this.ui_driver.boardCanvasMoveTo(this, xy)
 }
 
 /**
@@ -941,15 +939,12 @@ eYo.Board.prototype.paste = function () {
           targetM4t = b3k.left_m
         }
         if (targetM4t && m4t.checkType_(targetM4t)) {
-          if (m4t.isHead) {
+          if (m4t.isHead || m4t.isRight) {
             // the pasted brick must move before it is connected
             // otherwise the newly created brick will attract the old one
             // resulting in a move of the existing connection
-            var xy = targetM4t.brick.xy
-            var xx = targetM4t.x + xy.x
-            var yy = targetM4t.y + xy.y
-            xy = m4t.brick.xy
-            targetM4t.brick.xyMoveBy(m4t.x + xy.x - xx, m4t.y + xy.y - yy)
+            var xy = targetM4t.brick.xy.forward(m4t).backward(targetM4t)
+            targetM4t.brick.moveBy(xy)
           }
           m4t.connect(targetM4t)
           // if (magnet.isHead) {
@@ -1005,7 +1000,7 @@ eYo.Board.prototype.paste = function () {
             dy = (metrics.view.y + metrics.view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.xyMoveBy(dx, dy)
+          b3k.moveBy(new eYo.Where(dx, dy))
         }
         b3k.select().scrollToVisible()
       }
@@ -1099,11 +1094,11 @@ eYo.Board.prototype.getBricksBoundingBox = function() {
 eYo.Board.prototype.cleanUp = function() {
     this.setResizesEnabled(false)
   eYo.Events.group = true
-  var cursorY = 0
+  var cursor = new eYo.Where()
   this.getTopBricks(true).forEach(brick => {
-    brick.xyMoveTo(0, cursorY)
+    brick.moveTo(cursor)
     block.ui.snapToGrid()
-    cursorY = brick.xy.y +
+    cursor.y = brick.xy.y +
         brick.size.height + eYo.Unit.y / 2
   })
   eYo.Events.group = false
@@ -1505,7 +1500,7 @@ eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   if (goog.isNumber(xyRatio.y)) {
     this.scroll_.y = -metrics.content.height * xyRatio.y - metrics.content.y_min
   }
-  this.xyMoveTo(this.scroll.forward(metrics.absolute))
+  this.moveTo(this.scroll.forward(metrics.absolute))
 }
 
 /**

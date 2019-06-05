@@ -356,7 +356,7 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
     brick.unplug()
   }
   if (coordinate) {
-    brick.xyMoveTo(coordinate)
+    brick.moveTo(coordinate)
   } else {
     var m4t, targetM4t
     if (name) {

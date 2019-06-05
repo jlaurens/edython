@@ -561,17 +561,16 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.targetBoard_.scale
-  var cursorX = this.MARGIN
-  var cursorY = this.MARGIN
+  var cursor = new eYo.Where().xySet(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
     // brick.
     brick.descendants.forEach(child => child.isInFlyout = true)
     brick.render()
-    brick.xyMoveBy(cursorX, cursorY)
+    brick.moveBy(cursor)
     this.ui_driver.flyoutAddListeners(this, brick)
-    cursorY += brick.size.height + eYo.Unit.y / 4
+    cursor.y += brick.size.height + eYo.Unit.y / 4
   })
 }
 
@@ -734,7 +733,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
     oldBrick.xyInBoard.scale(this.board_.scale)
   ).backward(targetBoard.originInDesk)
   .unscale(targetBoard.scale)
-  brick.xyMoveTo(xy)
+  brick.moveTo(xy)
 
   brick.render()
   return brick

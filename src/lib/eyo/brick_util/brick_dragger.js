@@ -239,7 +239,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
   if (b3k.parent ||
       (healStack && b3k.foot_m && b3k.foot_m.target)) {
     b3k.unplug(healStack)
-    b3k.xyMoveBy(this.xyDelta)
+    b3k.moveBy(this.xyDelta)
     b3k.ui.disconnectEffect()
   }
   this.ui_driver.brickDraggerStart(this)
@@ -318,7 +318,7 @@ eYo.BrickDragger.prototype.drag = function() {
   }
   var bds = this.desk.dom.svg.brickDragSurface
   if (bds) {
-    bds.xyMoveTo(xyNew)
+    bds.moveTo(xyNew)
   } else {
     this.ui_driver.brickSetOffsetDuringDrag(b3k, xyNew)
   }

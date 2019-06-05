@@ -7,9 +7,8 @@ describe('SVG coordinates', function () {
     var xy2 = ui.xyInBoard
     chai.assert(xy1.x === xy2.x)
     chai.assert(xy1.y === xy2.y)
-    var dx = 246 * Math.random()
-    var dy = 135 * Math.random()
-    d1.xyMoveBy(dx, dy)
+    var d = new eYo.Were().xySet(246 * Math.random(), 135 * Math.random())
+    d1.moveBy(d)
     var xy1d = d1.xy
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)
     chai.assert(xy1d.y === xy1.y + dy, `FAILURE y1: ${xy1d.y} === ${xy1.y} + ${dy}`)

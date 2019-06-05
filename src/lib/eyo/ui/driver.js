@@ -332,16 +332,6 @@ eYo.Driver.prototype.brickSendToFront = eYo.Do.nothing
 eYo.Driver.prototype.brickSendToBack = eYo.Do.nothing
 
 /**
- * Set the offset of the receiver's node.
- * The default implementation does nothing.
- * @param {!Object} node  the node the driver acts on
- * @param {*} dx
- * @param {*} dy
- * @return {boolean}
- */
-eYo.Driver.prototype.brickSetOffset = eYo.Do.nothing
-
-/**
  * Add the hilight path_.
  * Default implementation does nothing
  * @param {!Object} node  the node the driver acts on

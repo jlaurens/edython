@@ -197,21 +197,22 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((brick = eYo.Xml.domToBrick(xmlChild, owner))) {
         newBlockIds.push(brick.id)
-        var x = xmlChild.hasAttribute('x')
+        var xy = new eYo.Where()
+        xy.x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
-        var y = xmlChild.hasAttribute('y')
+        xy.y = xmlChild.hasAttribute('y')
           ? parseInt(xmlChild.getAttribute('y'), 10) : 10
-        if (!isNaN(x) && !isNaN(y)) {
-          brick.xyMoveBy(x, y)
+        if (!isNaN(xy.x) && !isNaN(xy.y)) {
+          brick.moveBy(xy)
         } else {
-          var c = xmlChild.hasAttribute('c')
+          xy.c = xmlChild.hasAttribute('c')
             ? parseInt(xmlChild.getAttribute('c'), 10)
-            : 10
-          var l = xmlChild.hasAttribute('l')
+            : 1
+            xy.l = xmlChild.hasAttribute('l')
             ? parseInt(xmlChild.getAttribute('l'), 10)
-            : 10
+            : 1
           if (!isNaN(c) && !isNaN(l)) {
-            brick.moveBy(c, l)
+            brick.moveBy(xy)
           }
         }
       }
