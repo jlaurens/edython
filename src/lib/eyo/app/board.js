@@ -65,6 +65,9 @@ eYo.Board = function(desk, options) {
   this.setMetrics =
     options.setMetrics || eYo.Board.setTopLevelBoardMetrics_
 
+  this.scroll_ = new eYo.Where()
+  this.startScroll_ = new eYo.Where()
+
   this.dragger_ = new eYo.BoardDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
 
@@ -79,7 +82,6 @@ eYo.Board = function(desk, options) {
   eYo.Magnet.DB.init(this)
 
   this.resetChangeCount()
-
 }
 
 eYo.Do.addProtocol(eYo.Board.prototype, 'ChangeCount')
@@ -289,7 +291,7 @@ Object.defineProperties(eYo.Board.prototype, {
       if (this.scrollbar) {
         this.scrollbar.resize()
       } else {
-        this.xyMoveTo(this.scrollX, this.scrollY)
+        this.xyMoveTo(this.scroll)
       }
       eYo.App.hideChaff()
       if (this.flyout_) {
@@ -315,26 +317,24 @@ Object.defineProperties(eYo.Board.prototype, {
     value: 1,
     writable: true
   },
-  scrollX: {
+  /**
+   * Current scrolling offset in pixel units.
+   * @readonly
+   * @type {eYo.Where}
+   */
+  scroll: {
     get () {
-      return this.scrollX_
-    },
-    set (newValue) {
-      if (isNaN(newValue)) {
-        throw "MISSED"
-      }
-      this.scrollX_ = newValue
+      return new eYo.Where(this.scroll_)
     }
   },
-  scrollY: {
+  /**
+   * Scroll value when scrolling started in pixel units.
+   * @readonly
+   * @type {eYo.Where}
+   */
+startScroll: {
     get () {
-      return this.scrollY_
-    },
-    set (newValue) {
-      if (isNaN(newValue)) {
-        throw "MISSED"
-      }
-      this.scrollY_ = newValue
+      return new eYo.Where(this.startScroll_)
     }
   },
   /**
@@ -381,6 +381,7 @@ eYo.Board.prototype.dispose = function() {
     this.zoomControls_.dispose()
     this.zoomControls_ = null
   }
+  this.scroll_ = this.startScroll_ = null
   this.disposeUI()
 }
 
@@ -668,30 +669,6 @@ eYo.Board.prototype.rendered = true;
  * @private
  */
 eYo.Board.prototype.resizesEnabled_ = true;
-
-/**
- * Current horizontal scrolling offset in pixel units.
- * @type {number}
- */
-eYo.Board.prototype.scrollX = 0;
-
-/**
- * Current vertical scrolling offset in pixel units.
- * @type {number}
- */
-eYo.Board.prototype.scrollY = 0;
-
-/**
- * Horizontal scroll value when scrolling started in pixel units.
- * @type {number}
- */
-eYo.Board.prototype.startScrollX = 0;
-
-/**
- * Vertical scroll value when scrolling started in pixel units.
- * @type {number}
- */
-eYo.Board.prototype.startScrollY = 0;
 
 /**
  * The board's trashcan (if any).
@@ -998,7 +975,7 @@ eYo.Board.prototype.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(Brickly.SNAP_RADIUS,
-                    new eYo.Where(dx, dy))
+                    new eYo.Where().xySet(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -1319,8 +1296,8 @@ eYo.Board.prototype.zoomToFit = function() {
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, blocks will not scroll to center.
-    blocksWidth += metrics.content.xMin;
-    blocksHeight += metrics.content.yMin;
+    blocksWidth += metrics.content.x_min;
+    blocksHeight += metrics.content.y_min;
   }
   var ratioX = boardWidth / blocksWidth;
   var ratioY = boardHeight / blocksHeight;
@@ -1384,8 +1361,8 @@ eYo.Board.prototype.centerOnBrick = function(id) {
 
   // Scrolling to here would put the block in the top-left corner of the
   // visible board.
-  var scrollToBrickX = pixelX - metrics.content.xMin;
-  var scrollToBrickY = pixelY - metrics.content.yMin;
+  var scrollToBrickX = pixelX - metrics.content.x_min;
+  var scrollToBrickY = pixelY - metrics.content.y_min;
 
   // view.height and view.width are in pixels.
   var halfViewWidth = metrics.view.width / 2;
@@ -1409,8 +1386,8 @@ eYo.Board.prototype.centerOnBrick = function(id) {
  * .content.width: Width of the content,
  * .view.y: Offset of top edge of visible rectangle from parent,
  * .view.x: Offset of left edge of visible rectangle from parent,
- * .content.yMin: Offset of the top-most content from the y=0 coordinate,
- * .content.xMin: Offset of the left-most content from the x=0 coordinate.
+ * .content.y_min: Offset of the top-most content from the y=0 coordinate,
+ * .content.x_min: Offset of the left-most content from the x=0 coordinate.
  * .absolute.y: Top-edge of view.
  * .absolute.x: Left-edge of view.
  * .flyout.width: Width of the flyout if it is always open.  Otherwise zero.
@@ -1438,8 +1415,8 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
     var box = brd.getBricksBoundingBox()
     var scale = brd.scale
     return {
-      xMin: box.x * scale,
-      yMin: box.y * scale,
+      x_min: box.x * scale,
+      y_min: box.y * scale,
       width: box.width * scale,
       height: box.height * scale
     }
@@ -1468,15 +1445,15 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
     var halfHeight = viewHeight / 2
     // Add a border around the content that is at least half a screenful wide.
     // Ensure border is wide enough that bricks can scroll over entire screen.
-    var max = content.xMin + content.width
-    var left = Math.min(content.xMin - halfWidth, max - viewWidth)
-    var right = Math.max(max + halfWidth, content.xMin + viewWidth)
-    max = content.yMin + content.height
-    var top = Math.min(content.yMin - halfHeight, max - viewHeight)
-    var bottom = Math.max(max + halfHeight, content.yMin + viewHeight)
+    var max = content.x_min + content.width
+    var left = Math.min(content.x_min - halfWidth, max - viewWidth)
+    var right = Math.max(max + halfWidth, content.x_min + viewWidth)
+    max = content.y_min + content.height
+    var top = Math.min(content.y_min - halfHeight, max - viewHeight)
+    var bottom = Math.max(max + halfHeight, content.y_min + viewHeight)
     var dimensions = {
-      xMin: left,
-      yMin: top,
+      x_min: left,
+      y_min: top,
       height: bottom - top,
       width: right - left
     }
@@ -1497,8 +1474,8 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
       view: {
         height: svgSize.height,
         width: svgSize.width,
-        top: -this.scrollY,   // Must be in pixels, somehow.
-        left: -this.scrollX,  // Must be in pixels, somehow.
+        top: -this.scroll.y,   // Must be in pixels, somehow.
+        left: -this.scroll.x,  // Must be in pixels, somehow.
       },
       absolute: {
         x: 0,
@@ -1523,14 +1500,12 @@ eYo.Board.setTopLevelBoardMetrics_ = function(xyRatio) {
   }
   var metrics = this.getMetrics()
   if (goog.isNumber(xyRatio.x)) {
-    this.scrollX = -metrics.content.width * xyRatio.x - metrics.content.xMin
+    this.scroll_.x = -metrics.content.width * xyRatio.x - metrics.content.x_min
   }
   if (goog.isNumber(xyRatio.y)) {
-    this.scrollY = -metrics.content.height * xyRatio.y - metrics.content.yMin
+    this.scroll_.y = -metrics.content.height * xyRatio.y - metrics.content.y_min
   }
-  var x = this.scrollX + metrics.absolute.x
-  var y = this.scrollY + metrics.absolute.y
-  this.xyMoveTo(x, y)
+  this.xyMoveTo(this.scroll.forward(metrics.absolute))
 }
 
 /**
@@ -1635,7 +1610,7 @@ eYo.Board.prototype.logAllConnections = function (comment) {
  * @private
  */
 eYo.Board.prototype.fromPixelUnit = function(xy) {
-  return new eYo.Where(xy.x / this.scale, xy.y / this.scale)
+  return new eYo.Where(xy).unscale(this.scale)
 }
 
 /**
@@ -1843,7 +1818,7 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
     console.warn('Tried to scroll a non-scrollable board.');
     return;
   }
-  var brick = this.getBrickById(id);
+  var brick = this.getBrickById(id)
   if (!brick) {
     return;
   }
@@ -1852,27 +1827,11 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   }
   // XY is in board coordinates.
   var xy = brick.xy
-
   // Find the top left of the block in board units.
-  var y = xy.y - eYo.Unit.y / 2
-
-  var x = xy.x - eYo.Unit.x / 2 - brick.depth * eYo.Span.tabWidth
-
-  // Board scale, used to convert from board coordinates to pixels.
-  var scale = this.scale;
-
-  // Center in pixels.  0, 0 is at the board origin.  These numbers may
-  // be negative.
-  var pixelX = x * scale;
-  var pixelY = y * scale;
-
-  var metrics = this.getMetrics()
-
+  .backward(1/2, 1/2 + brick.depth * eYo.Span.INDENT)
+  .scale(this.scale)
+  .backward(this.getMetrics())
   // Scrolling to here will put the block in the top-left corner of the
   // visible board.
-  var scrollX = pixelX - metrics.content.xMin
-  var scrollY = pixelY - metrics.content.yMin
-
-  eYo.App.hideChaff();
-  this.scrollbar.set(scrollX, scrollY)
+  this.scrollbar.set(xy)
 }

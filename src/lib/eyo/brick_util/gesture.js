@@ -235,12 +235,17 @@ Object.defineProperties(eYo.Gesture.prototype, {
   },
   where: {
     get () {
-      return new eYo.Where(this.event_.clientX, this.event_.clientY)
+      return new eYo.Where(this.event_)
     }
   },
+  /**
+   * Position of the receiver's event in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
   xy: {
     get () {
-      return new eYo.Where(this.event_.clientX, this.event_.clientY)
+      return new eYo.Where(this.event_)
     }
   },
   started: {
@@ -406,7 +411,7 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
   if (!this.board_) {
     return null
   }
-  return new eYo.Where(
+  return new eYo.Where().xySet(
     (e.pageX ? e.pageX : e.changedTouches[0].pageX),
     (e.pageY ? e.pageY : e.changedTouches[0].pageY)
   )
@@ -419,9 +424,9 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
   this.event_ = e
-  this.deltaXY_ = new eYo.Where(e.clientX, e.clientY).backward(this.startXY_)
+  this.deltaXY_ = this.where.backward(this.startXY_)
   if (!this.dragging) {
-    var delta = this.deltaXY_.magnitude()
+    var delta = this.deltaXY_.magnitude
     var limit = this.flyout_
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
@@ -646,7 +651,7 @@ eYo.Gesture.prototype.doStart = function(e) {
     eYo.Do.longStart_(e, this)
   }
 
-  this.startXY_ = new eYo.Where(e.clientX, e.clientY)
+  this.startXY_ = this.where(e)
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
   eYo.Dom.unbindMouseEvents(this)

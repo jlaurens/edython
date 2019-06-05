@@ -1283,8 +1283,8 @@ eYo.Brick.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
     this.subtype_p = p5e && p5e.raw
     var item = p5e && p5e.item
     if (item) {
-      this.ary_p = item.aryMax
-      this.mandatory_p = item.mandatoryMin
+      this.ary_p = item.ary_max
+      this.mandatory_p = item.mandatory_min
     } else {
       this.ary_p = Infinity
       this.mandatory_p = 0

@@ -155,7 +155,7 @@ Object.defineProperties(eYo.Model.Item.prototype, {
       throw 'RENAMED property: model -> module'
     }
   },
-  aryMax: {
+  ary_max: {
     get () {
       var ary = goog.isDef(this.ary)
         ? this.ary
@@ -168,7 +168,7 @@ Object.defineProperties(eYo.Model.Item.prototype, {
       return ary
     }
   },
-  mandatoryMin: {
+  mandatory_min: {
     get () {
       var mandatory = goog.isDef(this.mandatory)
         ? this.mandatory

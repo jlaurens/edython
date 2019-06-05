@@ -33,7 +33,7 @@ goog.inherits(eYo.Dom, eYo.Driver)
  * @return {eYo.Where}
  */
 eYo.Dom.getDocumentScroll = () => {
-  return new eYo.Where(goog.dom.getDocumentScroll())
+  return new eYo.Where().xySet(goog.dom.getDocumentScroll())
 }
 
 /**

@@ -99,12 +99,12 @@ eYo.Svg.prototype.boardInit = function(board) {
         var metrics = board.getMetrics()
         var edgeLeft = metrics.view.x + metrics.absolute.x;
         var edgeTop = metrics.view.y + metrics.absolute.y;
-        if (metrics.content.yMin < edgeTop ||
-            metrics.content.yMin + metrics.content.height >
+        if (metrics.content.y_min < edgeTop ||
+            metrics.content.y_min + metrics.content.height >
             metrics.view.height + edgeTop ||
-            metrics.content.xMin <
+            metrics.content.x_min <
                 (options.RTL ? metrics.view.x : edgeLeft) ||
-            metrics.content.xMin + metrics.content.width > (options.RTL ?
+            metrics.content.x_min + metrics.content.width > (options.RTL ?
                 metrics.view.width : metrics.view.width + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
@@ -381,7 +381,7 @@ eYo.Svg.prototype.boardSizeDidChange = function(board) {
  */
 eYo.Svg.prototype.boardMouseInRoot = function(board, e) {
   var svg = board.dom.svg
-  var svg = svg.root_.createSVG()
+  var svg = svg.root_.createSVGPoint()
   svg.x = e.clientX
   svg.y = e.clientY
   var matrix = svg.matrixFromScreen_
@@ -429,9 +429,8 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
         .translate(x * (1 - scaleChange), y * (1 - scaleChange))
         .scale(scaleChange)
     // newScale and matrix.a should be identical (within a rounding error).
-    // ScrollX and scrollY are in pixels.
-    board.scrollX = matrix.e - metrics.absolute.x
-    board.scrollY = matrix.f - metrics.absolute.y
+    board.scroll_.x = matrix.e - metrics.absolute.x
+    board.scroll_.y = matrix.f - metrics.absolute.y
   }
   board.scale = newScale
 }
@@ -445,8 +444,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
  * @private
  */
 eYo.Svg.prototype.boardXYElement = function(board, element) {
-  var x = 0;
-  var y = 0;
+  var ans = new eYo.Where()
   var scale = 1
   var canvas = board.dom.svg.canvas_
   if (goog.dom.contains(canvas, element)) {
@@ -456,12 +454,11 @@ eYo.Svg.prototype.boardXYElement = function(board, element) {
   do {
     // Loop through this brick and every parent.
     var xy = eYo.Svg.getRelativeXY(element)
-    if (element === canvas) {
-      // After the SVG canvas, don't scale the coordinates.
-      scale = 1
+    if (element !== canvas) {
+      // Before the SVG canvas, scale the coordinates.
+      xy.scale(scale)
     }
-    x += xy.x * scale;
-    y += xy.y * scale;
+    ans.forward(xy)
   } while ((element = element.parentNode) && element != board.dom.svg.root_)
-  return new eYo.Where(x, y);
+  return ans
 }

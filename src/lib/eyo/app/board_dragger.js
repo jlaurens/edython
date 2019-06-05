@@ -117,7 +117,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!eYo.Where}
    * @private
    */
-  this.startXY_ = new eYo.Where(board.scrollX, board.scrollY)
+  this.startXY_ = new eYo.Where(board.scroll)
   
   /*
   * Move the scrollbars to drag the board.
@@ -195,11 +195,11 @@ eYo.BoardDragger.prototype.drag = function() {
   var deltaXY = this.board_.ui_driver.boardDragDeltaXY(this.board_)
   var metrics = this.startMetrics_
 
-  var x = this.startXY_.x + deltaXY.x + metrics.content.xMin
+  var x = this.startXY_.x + deltaXY.x + metrics.content.x_min
   x = Math.min(x, 0)
   x = Math.max(x, metrics.view.width - metrics.content.width)
 
-  var y = this.startXY_.y + deltaXY.y + metrics.content.yMin
+  var y = this.startXY_.y + deltaXY.y + metrics.content.y_min
   y = Math.min(y, 0)
   y = Math.max(y, metrics.view.height - metrics.content.height)
 

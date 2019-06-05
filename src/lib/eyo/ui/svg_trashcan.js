@@ -138,10 +138,8 @@ eYo.Svg.prototype.trashcanDispose = function(trashcan) {
  * Inspect the contents of the trash.
  */
 eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
-  var W = trashcan.board_
-  var dx = W.startScrollX - W.scrollX
-  var dy = W.startScrollY - W.scrollY
-  if (Math.sqrt(dx * dx + dy * dy) > eYo.Gesture.DRAG_RADIUS) {
+  var b3d = trashcan.board_
+  if (b3d.startScroll.backward(b3d.scroll).magnitude > eYo.Gesture.DRAG_RADIUS) {
     return
   }
 }

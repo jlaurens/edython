@@ -2082,8 +2082,10 @@ eYo.Brick.prototype.setCollapsed = function (collapsed) {
 }
 
 Object.defineProperties(eYo.Brick.prototype, {
-/**
+  /**
    * Position of the receiver in the board.
+   * @type {eYo.Where}
+   * @readonly
    */
   xy: {
     get () {

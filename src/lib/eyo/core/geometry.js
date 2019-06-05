@@ -111,16 +111,33 @@ Object.defineProperties(eYo.Where.prototype, {
   height: eYo.Where.property_y_,
   dx: eYo.Where.property_x_,
   dy: eYo.Where.property_y_,
+  /**
+   * Euclidian magnitude between points.
+   * @return {number} non negative number
+   */
+  magnitude: {
+    get () {
+      var dx = this.x
+      var dy = this.y
+      return Math.sqrt(dx * dx + dy * dy)
+    }
+  }
 })
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
+ * @param {Number | eYo.Where | Event | Object} c
+ * @param {?Number} l
  * @return {eYo.Where} The receiver
  */
 eYo.Where.prototype.set = function (c = 0, l = 0) {
   if (goog.isDef(c.x) && goog.isDef(c.y)) {
     this.x = c.x
     this.y = c.y
+    return this
+  } else if (goog.isDef(c.clientX) && goog.isDef(c.clientY)) {
+    this.x = c.clientX
+    this.y = c.clientY
     return this
   }
   this.c = c
@@ -220,16 +237,6 @@ eYo.Where.prototype.unscale = function (scale) {
   this.c_ /= scale
   this.l_ /= scale
   return this
-}
-
-/**
- * Euclidian magnitude between points.
- * @return {number} non negative number
- */
-eYo.Where.prototype.magnitude = function () {
-  var dx = this.x
-  var dy = this.y
-  return Math.sqrt(dx * dx + dy * dy)
 }
 
 /**
@@ -555,17 +562,17 @@ eYo.Rect.prototype.union = function (rect) {
   if (a < this.x) {
     this.x = a
   }
-  a = rect.xMax
-  if (this.xMax < a) {
-    this.xMax = a
+  a = rect.x_max
+  if (this.x_max < a) {
+    this.x_max = a
   }
   a = rect.y
   if (a < this.y) {
     this.y = a
   }
-  a = rect.yMax
-  if (this.yMax < a) {
-    this.yMax = a
+  a = rect.y_max
+  if (this.y_max < a) {
+    this.y_max = a
   }
   return this
 }

@@ -100,11 +100,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   translation: {
     get () {
-      var xy = eYo.Svg.getRelativeXY(this.dom.svg.root_)
-      return new eYo.Where(
-        xy.x / this.scale_,
-        xy.y / this.scale_
-      )
+      return eYo.Svg.getRelativeXY(this.dom.svg.root_).unscale(this.scale_)
     }
   },
   /**
@@ -127,7 +123,7 @@ eYo.Svg.BrickDragSurface.prototype.show = function(blocks) {
   // appendChild removes the blocks from the previous parent
   this.dom.svg.canvas_.appendChild(blocks)
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new eYo.Where(0, 0)
+  this.surfaceXY_ = new eYo.Where()
 }
 
 /**
@@ -168,7 +164,7 @@ eYo.Svg.BrickDragSurface.prototype.xyMoveTo = function(x = 0, y = 0) {
     x = x.x
   }
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new eYo.Where(x * this.scale_, y * this.scale_)
+  this.surfaceXY_ = new eYo.Where().xySet(x, y).scale(this.scale_)
   var x = this.surfaceXY_.x.toFixed(0)
   var y = this.surfaceXY_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering

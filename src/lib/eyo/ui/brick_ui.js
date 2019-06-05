@@ -55,7 +55,7 @@ eYo.Brick.UI = function(brick) {
   this.brick_ = brick
   brick.ui_ = this
   this.down = this.up = false
-  this.xy_ = new eYo.Where(0, 0)
+  this.xy_ = new eYo.Where()
   this.driver.brickInit(brick)
   this.updateBrickWrapped()
 }
@@ -147,9 +147,14 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       return this.rendered && (this.driver.brickHasSelect(this.brick_))
     }
   },
+  /**
+   * Position of the receiver in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
   xy: {
     get () {
-      return this.xy_
+      return new eYo.Where(this.xy_)
     }
   }
 })
@@ -783,7 +788,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.VOID // rendered field or magnet
   }
-  io.cursor = new eYo.Where(0, this.span.header)
+  io.cursor = new eYo.Where().xySet(0, this.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder

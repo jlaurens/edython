@@ -313,7 +313,7 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
 
   if (flyout.scrollbar_) {
     // Set the scrollbars origin to be the top left of the flyout.
-    flyout.scrollbar_.setOrigin(x, y + flyout.TOP_OFFSET)
+    flyout.scrollbar_.origin = new eYo.Where().xySet(x, y + flyout.TOP_OFFSET)
     flyout.scrollbar_.oldHostMetrics_ = null
     flyout.scrollbar_.resize()
   }
@@ -350,10 +350,10 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
  * .content.height: Height of the contents,
  * .content.width: Width of the contents,
  * .view.y: Offset of top edge of visible rectangle from parent,
- * .content.yMin: Offset of the top-most content from the y=0 coordinate,
+ * .content.y_min: Offset of the top-most content from the y=0 coordinate,
  * .absolute.y: Top-edge of view.
  * .view.x: Offset of the left edge of visible rectangle from parent,
- * .content.xMin: Offset of the left-most content from the x=0 coordinate,
+ * .content.x_min: Offset of the left-most content from the x=0 coordinate,
  * .absolute.x: Left-edge of view.
  * @param {!eYo.Flyout} flyout
  * @return {Object} Contains size and position metrics of the flyout.
@@ -382,8 +382,8 @@ eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
     view: {
       height: flyout.height_ - 2 * flyout.SCROLLBAR_PADDING - flyout.SCROLLBAR_PADDING,
       width: flyout.width_,
-      top: -W.scrollY + optionBox.y,
-      left: -W.scrollX,
+      top: -W.scroll_.y + optionBox.y,
+      left: -W.scroll_.x,
     },
     // Padding for the end of the scrollbar.
     absolute: {
@@ -410,12 +410,9 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   }
   var b3d = flyout.board_
   if (goog.isNumber(xyRatio.y)) {
-    b3d.scrollY = -metrics.content.height * xyRatio.y
+    b3d.scroll_.y = -metrics.content.height * xyRatio.y
   }
-  b3d.xyMoveTo(
-    b3d.scrollX + metrics.absolute.x,
-    b3d.scrollY + metrics.absolute.y
-  )
+  b3d.xyMoveTo(b3d.scroll.forward(metrics.absolute))
 }
 
 /**

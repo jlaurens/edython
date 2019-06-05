@@ -171,7 +171,8 @@ eYo.Desk.prototype.resize = function() {
  * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
-*/
+ * @return {eYo.Where}
+ */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
   return this.ui_driver_.deskXYElement(this, element)
 }
